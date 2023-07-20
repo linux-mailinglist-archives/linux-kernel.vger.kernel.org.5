@@ -2,385 +2,502 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D532E75B924
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4194675B92C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbjGTVBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 17:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45514 "EHLO
+        id S229628AbjGTVDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 17:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjGTVBU (ORCPT
+        with ESMTP id S229593AbjGTVDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 17:01:20 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C3C196
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:01:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689886879; x=1721422879;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=Hh6rekOy1WZ9Vjh040E9Bt6MFaGZDceCvyOXOPwyPkw=;
-  b=UQZWGKTO8IxrzEVP3tkYf59+3TdAbI3a+WsGgpJAdeXuoPUa3qpTY+4n
-   vzBQOLCUkV5ThhBMV18RnwuGmpk9vGCMw5MCsUixTOSXeq1gH/GsI8rIb
-   yC+1ZwyP69BgnCX8mnW6OOlcb8moLKd8KQwl5s0+IXOuIxmi1dqag+uWB
-   L9by6E9sh+2OqDlkHBnqiM4Rqa4pA5HH43H1kzWh7VxWU6lvUAUMhAjwz
-   RbTX5pPCo51C5bZBChpQ6nYVf95qa+AfeMLx1XZ5N7DDam0VOA/wJxXRC
-   3Q/v4adR8In3mWWVgT4UU/2iLvF6XDdCwBJXlk2kRW+0HrjRIk3P/ROdz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="453240920"
-X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
-   d="scan'208";a="453240920"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 14:01:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="867987613"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga001.fm.intel.com with ESMTP; 20 Jul 2023 14:01:13 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 20 Jul 2023 14:01:12 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 20 Jul 2023 14:01:11 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 20 Jul 2023 14:01:11 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+        Thu, 20 Jul 2023 17:03:20 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21617271E;
+        Thu, 20 Jul 2023 14:03:15 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36KFkfJ5009054;
+        Thu, 20 Jul 2023 21:03:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=qcppdkim1;
+ bh=ArzehO3fCDSfspL6YrhcHeoMA4xNUv0kkNrMRzcrDIk=;
+ b=FHCIWMXD5VQYpXTLsm/8OZlsq2Vfaxe4gp0As2M8BLAN6rv03YOt6ajr8qQIVtFPL13o
+ 3LWf0gBk9Zlj2OJRZvXZbo/+Rb+fXGfp5dA7Es4sDbSoks5vK40I1qEi5v/cHroyMbHI
+ L7t6QTUq5oKIyTswXEWlJceF7amX6/aexJy6Eb8wTGNA3Ygdrgc0wcBwhmB30vxrk6aY
+ lTB7FiiVKurnT75tm2T9GlVF+SknPKTbtzYQf/IdQP5T5MArxuE6qYH1MrW8iv8iOmne
+ bVT9rS2m4dVNrNWZGofj8gSGA0oZfTkyhm3iQNIsSme8nLzFQvQ6/9npHicvKWw0+5Gr tQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxg3vbs32-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 21:03:03 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36KL32HI019409
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 21:03:02 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 20 Jul 2023 14:01:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=niKNjKcxM6BLEClGO27vcpbK8/BgXaRCJvft+dHjPZvunLuHm+S8q1HKw9R+6HmfB99QsRTH3b7iCBhyGVdb67KsfNNJwuB86wJcm+TpsltTQGvHFdUxDXWZuJjgwaRbWP8ZD9TV+dQKOpitfGfklEqSbH+qmke0GewxlvpYhsuTaNIkc4FOKcV3zx5uiLKdJglqjp4vz1qsrPF5rvmFcIE7cxc3Tin2B6j/j1/jVEnG7w0qFXHHqQz+jJeaL2fOYtWG1QSX2F/1X96zhrK6S0wZkgV0L2rsKXYSRkUTLxk/mz7D1IGiFY6PFErwGhO5R7H2YGCJ0EfCD2hRSiDTfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BPNMIi802F7iEfmOpFJqDzAIsCOgkWhFyJtjoi38bHk=;
- b=Iydkru/UnWm6cWZ6Z8hu8I8x9Gj3jMUW7F9pQxAM75QKWKAS1WAtsAhSny98BDUIrQ/VXSnPhHjOmk1JC+s3qcaPF5X0MZOpVeAxKZeyHT3F3/AEVn/o6R8XbXVnygG2yo+etOAQBlMIKmhfeyzcNpxokwtV32ADI23x6I63vTQaEvG2UcHTms+DQ2ySZc9THTyLW0RQLt7lZJz+UtdtgFhY0z7TkEpsosYYWfJxeRgfBBLdWTcw9XRFg7rZ0sp4jog21t+we3Q8g90O+UXAk0+ffohjkaq3+/EBDZLTCoMKC87LSdlQ4JzsZ+qgvclbFyxNz1Anqktu+rC+JNW2Xw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB6522.namprd11.prod.outlook.com (2603:10b6:510:212::12)
- by MN6PR11MB8243.namprd11.prod.outlook.com (2603:10b6:208:46e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Thu, 20 Jul
- 2023 21:01:09 +0000
-Received: from PH7PR11MB6522.namprd11.prod.outlook.com
- ([fe80::5645:50f0:9b06:1dd0]) by PH7PR11MB6522.namprd11.prod.outlook.com
- ([fe80::5645:50f0:9b06:1dd0%3]) with mapi id 15.20.6588.031; Thu, 20 Jul 2023
- 21:01:08 +0000
-Date:   Thu, 20 Jul 2023 21:00:22 +0000
-From:   Matthew Brost <matthew.brost@intel.com>
-To:     Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>
-CC:     <intel-xe@lists.freedesktop.org>,
-        Nirmoy Das <nirmoy.das@intel.com>,
-        Danilo Krummrich <dakr@redhat.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Oak Zeng <oak.zeng@intel.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5] Documentation/gpu: Add a VM_BIND async draft document
-Message-ID: <ZLmgZl8fc59kPe4/@DUT025-TGLU.fm.intel.com>
-References: <20230715154543.13183-1-thomas.hellstrom@linux.intel.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230715154543.13183-1-thomas.hellstrom@linux.intel.com>
-X-ClientProxiedBy: SJ0PR03CA0381.namprd03.prod.outlook.com
- (2603:10b6:a03:3a1::26) To PH7PR11MB6522.namprd11.prod.outlook.com
- (2603:10b6:510:212::12)
+ 15.2.1118.30; Thu, 20 Jul 2023 14:03:02 -0700
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+CC:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+Subject: [PATCH] mailmap: Update remaining active codeaurora.org email addresses
+Date:   Thu, 20 Jul 2023 14:02:56 -0700
+Message-ID: <20230720210256.1296567-1-quic_bjorande@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB6522:EE_|MN6PR11MB8243:EE_
-X-MS-Office365-Filtering-Correlation-Id: 236d014d-fb5e-4282-e325-08db896470b1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ehPRC/XzHzhHk65pJt+Q70NA46FgFhVpxxyBCyOookLQNpEP55jCR/XuN14TAOysu478HdQadPkuz/CdCg5QBRI70PeynQMR8MzZwUYN27f14AXfg4PJEfsbMEBYEwnqhscLHinEzx2v19eek3Es59v4EqAdQSs/pVbfN0VcAL4oTZuH/SsHlohI/TKM0JY9LbaLQCfRqRBSSLLCxGXRxICzRAtLIBjK2sDDPY8L/T4GCFYR43k6lw4Vk3ZGimMBo//Qd6cKCMFni+c7O7PFvijWaVvh8hYimiSAcKg2NGhIdgTN5NiWBKRKxG9z2YzYxVDVb65PVCdVuX/hvRsLT/ZZ/w92kV7IsysPc7VnsoiAGPn6TpRDtUmHxrAVyTysIk1f/HUTd1svnyr6lekFX4i5oNsgWWl9e22EpMx3GAPhTTpXbh4W70+8CYZXz8qEWNVbFUq1AeoamCYu/MXdaX402nOOJ8WSYdWyYITxYtwqkID18L5KgYWBhyrz7jmSf9I35/GTjYdGRYHBxRXkAx8X8Yl37VO/AvU7QYZEHIA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6522.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(39860400002)(366004)(396003)(346002)(376002)(451199021)(4326008)(6916009)(6666004)(38100700002)(86362001)(66476007)(66946007)(66556008)(6512007)(2906002)(6486002)(186003)(26005)(6506007)(54906003)(478600001)(8676002)(8936002)(30864003)(41300700001)(44832011)(5660300002)(316002)(66574015)(66899021)(82960400001)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?IY6nOJ45LxA/RULYf++L1X7D6+odt6RdAxGZA2Zq+zuweR6RdgpXiW96Ry?=
- =?iso-8859-1?Q?IFPnBiWvoNbGK2P5UGRglbPMCuG1NT+J0onMfYMYbiWnPJ9ykwB71rsYFD?=
- =?iso-8859-1?Q?peOxsbLS9V3RG6DVqnuc2elRSX23ZbOjsL1o89ixonFdyUinbfHrT9BkFF?=
- =?iso-8859-1?Q?UxP0wfzraGss2APOnJI9f0x6gGD32AUsAg9rdPbEdm47Q7h1AgmgyUrpLL?=
- =?iso-8859-1?Q?7OIFMSH6zb0F64sV6+G5P27SBHveH0qhiBUveK9QM7nzVTtJNW+8qebLj2?=
- =?iso-8859-1?Q?4a3ZZoZgDKeFcZpIUf2ri6yDzrzsYNfz/DuqY06lnQe7Pcxdjs60elSDTc?=
- =?iso-8859-1?Q?bHEf1m+cP2Mxt2crklS5F+uwd6sqipf4XZHeeQu7ZKWsjhII4C4ieaW1PQ?=
- =?iso-8859-1?Q?PcIcT7qFXEfTiOiWsr2vFmCW5fs8ZTwc9/8U3YlDbUM+l3vaLyxt9MR4v3?=
- =?iso-8859-1?Q?7k7nshmrZSMZchiFjJyIKBZ7tMbh7ws6OdBmlH/Li1FR72IgBKwv/jmeSK?=
- =?iso-8859-1?Q?ncZeNTj7Fyyo8GmZRYHSeQywGeSbYaez+h0ZI7h71gl60QQOV41yXaUwLz?=
- =?iso-8859-1?Q?Wxi7uxpmOrLzEYYeVx4y0rFhlJvOnQDYCQk4os45m1X9PR+6k32v6bW+IG?=
- =?iso-8859-1?Q?lLS/3YZuU+v8rMx57PrRNX9KlMCSU6mL2X4CPgllVTe7uU+6EOYUkQfFoq?=
- =?iso-8859-1?Q?+twXRP0fVbyqWUgCOjqpff8yKyjKYF0RRm/8jiTQgo2872PKSDcsM4oNLi?=
- =?iso-8859-1?Q?NYpYgtG2ybpi4zBxgijU8gKDcwMyz8i8xKY19t4HCag5TgNicW6KTGNuPG?=
- =?iso-8859-1?Q?K/01I5LPSLwzosvScLpQZ8eQdxhjeHfV/eAu8I/r4s5XPCA9nNSk6CYUOF?=
- =?iso-8859-1?Q?uE0WtS1ePhijijMX6FREyOBaCs73rHq0X9aZFSQJ04K9YvHyWS2WYpBRhm?=
- =?iso-8859-1?Q?E/tOHr/ALgNFXkL7vohuO8eecDfWIpbcsX/uFFVV+UGp6wjE0/w8d3cuU7?=
- =?iso-8859-1?Q?MMjpcX1UIM10SzKoXxZKLHBegKLpGB6yTg2LMEjrrrxn/tgDwYaWGlIjR5?=
- =?iso-8859-1?Q?63TW1xiG66ykCPKqx5pEQ/upBmrNEFy06ut3dvEhunHHX7BlfxfcmmOigg?=
- =?iso-8859-1?Q?q2frJF/XrJDtAmapk/+EnjObPNTYuYq1bKnT4U5fnV9PHAXyAEfTUn9NSv?=
- =?iso-8859-1?Q?yj+7YJGkH0XZO38kuNWuC0WCC1RK8jF1C7rYqvaT49pDOpxv957Sw6TeOY?=
- =?iso-8859-1?Q?mJFZI6T/Vi4/lb51h9fuI8E1INEqNLW4lipXeDWGogjzLeb6bv28JBkExO?=
- =?iso-8859-1?Q?/EE0vTMTQhdoRfCInyyyL7QXnW0qkYDJiML4kmSiLIiaXVcEuJa01YoJpE?=
- =?iso-8859-1?Q?+UJWiiidJ3ZBUaZGK8GvCO5+VD4RhHQQ3PSS7neasjfcvJpPKo6MWC0b19?=
- =?iso-8859-1?Q?/ALHln0QrtTVQ4J9GvylxscYKBBQ9ZT8kzPb5LOzGonio9xjRoh3Zobp9q?=
- =?iso-8859-1?Q?OQHVVVc6GsF8V3AvcC0nk3TOXkboMbNEerFefJ+HCvObDHCIlNF9SZBeqz?=
- =?iso-8859-1?Q?+TN2Pmv6XKfYyuKTvKGC5lrImG7Du6O+3Addf8zj2Wt5/Jgm/9laX2tviD?=
- =?iso-8859-1?Q?eiSDWtsW2YjiUYJg/JLO9Txc5GPH5x+7kI0RJcIQf5alNQbY/Szq8mnA?=
- =?iso-8859-1?Q?=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 236d014d-fb5e-4282-e325-08db896470b1
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6522.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 21:01:08.7174
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ghzkBOmpLH0pvdHdLQ+W4pNn4tEPw5M2tIY+ApJKfkVvS3me443+Bx8O2B4cWNAImV9qeXSsDGqzqCUaNYnscQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR11MB8243
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 33Sv81_nfXTgQXUl9rSByCSSDO8PCFAS
+X-Proofpoint-ORIG-GUID: 33Sv81_nfXTgQXUl9rSByCSSDO8PCFAS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-20_10,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ suspectscore=0 clxscore=1011 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2307200178
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 15, 2023 at 05:45:43PM +0200, Thomas Hellstr�m wrote:
-> Add a motivation for and description of asynchronous VM_BIND operation
-> 
-> v2:
-> - Fix typos (Nirmoy Das)
-> - Improve the description of a memory fence (Oak Zeng)
-> - Add a reference to the document in the Xe RFC.
-> - Add pointers to sample uAPI suggestions
-> v3:
-> - Address review comments (Danilo Krummrich)
-> - Formatting fixes
-> v4:
-> - Address typos (Francois Dugast)
-> - Explain why in-fences are not allowed for VM_BIND operations for long-
->   running workloads (Matthew Brost)
-> v5:
-> - More typo- and style fixing
-> - Further clarify the implications of disallowing in-fences for VM_BIND
->   operations for long-running workloads (Matthew Brost)
-> 
-> Signed-off-by: Thomas Hellstr�m <thomas.hellstrom@linux.intel.com>
+The lack of mailmap updates for @codeaurora.org addresses reduces the
+usefulness of tools such as get_maintainer.pl. Some recent (and
+welcome!) additions has been made to improve the situation, this
+concludes the effort.
 
-Reviewed-by: Matthew Brost <matthew.brost@intel.com>
+Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+---
+ .mailmap | 97 +++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 96 insertions(+), 1 deletion(-)
 
-> Acked-by: Nirmoy Das <nirmoy.das@intel.com>
-> ---
->  Documentation/gpu/drm-vm-bind-async.rst | 171 ++++++++++++++++++++++++
->  Documentation/gpu/rfc/xe.rst            |   4 +-
->  2 files changed, 173 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/gpu/drm-vm-bind-async.rst
-> 
-> diff --git a/Documentation/gpu/drm-vm-bind-async.rst b/Documentation/gpu/drm-vm-bind-async.rst
-> new file mode 100644
-> index 000000000000..d2b02a38198a
-> --- /dev/null
-> +++ b/Documentation/gpu/drm-vm-bind-async.rst
-> @@ -0,0 +1,171 @@
-> +====================
-> +Asynchronous VM_BIND
-> +====================
-> +
-> +Nomenclature:
-> +=============
-> +
-> +* ``VRAM``: On-device memory. Sometimes referred to as device local memory.
-> +
-> +* ``gpu_vm``: A GPU address space. Typically per process, but can be shared by
-> +  multiple processes.
-> +
-> +* ``VM_BIND``: An operation or a list of operations to modify a gpu_vm using
-> +  an IOCTL. The operations include mapping and unmapping system- or
-> +  VRAM memory.
-> +
-> +* ``syncobj``: A container that abstracts synchronization objects. The
-> +  synchronization objects can be either generic, like dma-fences or
-> +  driver specific. A syncobj typically indicates the type of the
-> +  underlying synchronization object.
-> +
-> +* ``in-syncobj``: Argument to a VM_BIND IOCTL, the VM_BIND operation waits
-> +  for these before starting.
-> +
-> +* ``out-syncobj``: Argument to a VM_BIND_IOCTL, the VM_BIND operation
-> +  signals these when the bind operation is complete.
-> +
-> +* ``memory fence``: A synchronization object, different from a dma-fence.
-> +  A memory fence uses the value of a specified memory location to determine
-> +  signaled status. A memory fence can be awaited and signaled by both
-> +  the GPU and CPU. Memory fences are sometimes referred to as
-> +  user-fences, userspace-fences or gpu futexes and do not necessarily obey
-> +  the dma-fence rule of signaling within a "reasonable amount of time".
-> +  The kernel should thus avoid waiting for memory fences with locks held.
-> +
-> +* ``long-running workload``: A workload that may take more than the
-> +  current stipulated dma-fence maximum signal delay to complete and
-> +  which therefore needs to set the gpu_vm or the GPU execution context in
-> +  a certain mode that disallows completion dma-fences.
-> +
-> +* ``exec function``: An exec function is a function that revalidates all
-> +  affected gpu_vmas, submits a GPU command batch and registers the
-> +  dma_fence representing the GPU command's activity with all affected
-> +  dma_resvs. For completeness, although not covered by this document,
-> +  it's worth mentioning that an exec function may also be the
-> +  revalidation worker that is used by some drivers in compute /
-> +  long-running mode.
-> +
-> +* ``bind context``: A context identifier used for the VM_BIND
-> +  operation. VM_BIND operations that use the same bind context can be
-> +  assumed, where it matters, to complete in order of submission. No such
-> +  assumptions can be made for VM_BIND operations using separate bind contexts.
-> +
-> +* ``UMD``: User-mode driver.
-> +
-> +* ``KMD``: Kernel-mode driver.
-> +
-> +
-> +Synchronous / Asynchronous VM_BIND operation
-> +============================================
-> +
-> +Synchronous VM_BIND
-> +___________________
-> +With Synchronous VM_BIND, the VM_BIND operations all complete before the
-> +IOCTL returns. A synchronous VM_BIND takes neither in-fences nor
-> +out-fences. Synchronous VM_BIND may block and wait for GPU operations;
-> +for example swap-in or clearing, or even previous binds.
-> +
-> +Asynchronous VM_BIND
-> +____________________
-> +Asynchronous VM_BIND accepts both in-syncobjs and out-syncobjs. While the
-> +IOCTL may return immediately, the VM_BIND operations wait for the in-syncobjs
-> +before modifying the GPU page-tables, and signal the out-syncobjs when
-> +the modification is done in the sense that the next exec function that
-> +awaits for the out-syncobjs will see the change. Errors are reported
-> +synchronously assuming that the asynchronous part of the job never errors.
-> +In low-memory situations the implementation may block, performing the
-> +VM_BIND synchronously, because there might not be enough memory
-> +immediately available for preparing the asynchronous operation.
-> +
-> +If the VM_BIND IOCTL takes a list or an array of operations as an argument,
-> +the in-syncobjs needs to signal before the first operation starts to
-> +execute, and the out-syncobjs signal after the last operation
-> +completes. Operations in the operation list can be assumed, where it
-> +matters, to complete in order.
-> +
-> +Since asynchronous VM_BIND operations may use dma-fences embedded in
-> +out-syncobjs and internally in KMD to signal bind completion,  any
-> +memory fences given as VM_BIND in-fences need to be awaited
-> +synchronously before the VM_BIND ioctl returns, since dma-fences,
-> +required to signal in a reasonable amount of time, can never be made
-> +to depend on memory fences that don't have such a restriction.
-> +
-> +To aid in supporting user-space queues, the VM_BIND may take a bind context.
-> +
-> +The purpose of an Asynchronous VM_BIND operation is for user-mode
-> +drivers to be able to pipeline interleaved gpu_vm modifications and
-> +exec functions. For long-running workloads, such pipelining of a bind
-> +operation is not allowed and any in-fences need to be awaited
-> +synchronously. The reason for this is twofold. First, any memory
-> +fences gated by a long-running workload and used as in-syncobjs for the
-> +VM_BIND operation will need to be awaited synchronously anyway (see
-> +above). Second, any dma-fences used as in-syncobjs for VM_BIND
-> +operations for long-running workloads will not allow for pipelining
-> +anyway since long-running workloads don't allow for dma-fences as
-> +out-syncobjs, so while theoretically possible the use of them is
-> +questionable and should be rejected until there is a valuable use-case.
-> +Note that this is not a limitation imposed by dma-fence rules, but
-> +rather a limitation imposed to keep KMD implementation simple. It does
-> +not affect using dma-fences as dependencies for the long-running
-> +workload itself, which is allowed by dma-fence rules, but rather for
-> +the VM_BIND operation only.
-> +
-> +Also for VM_BINDS for long-running gpu_vms the user-mode driver should typically
-> +select memory fences as out-fences since that gives greater flexibility for
-> +the kernel mode driver to inject other operations into the bind /
-> +unbind operations. Like for example inserting breakpoints into batch
-> +buffers. The workload execution can then easily be pipelined behind
-> +the bind completion using the memory out-fence as the signal condition
-> +for a GPU semaphore embedded by UMD in the workload.
-> +
-> +Multi-operation VM_BIND IOCTL error handling and interrupts
-> +===========================================================
-> +
-> +The VM_BIND operations of the IOCTL may error due to lack of resources
-> +to complete and also due to interrupted waits. In both situations UMD
-> +should preferably restart the IOCTL after taking suitable action. If
-> +UMD has over-committed a memory resource, an -ENOSPC error will be
-> +returned, and UMD may then unbind resources that are not used at the
-> +moment and restart the IOCTL. On -EINTR, UMD should simply restart the
-> +IOCTL and on -ENOMEM user-space may either attempt to free known
-> +system memory resources or abort the operation. If aborting as a
-> +result of a failed operation in a list of operations, some operations
-> +may still have completed, and to get back to a known state, user-space
-> +should therefore attempt to unbind all virtual memory regions touched
-> +by the failing IOCTL.
-> +Unbind operations are guaranteed not to cause any errors due to
-> +resource constraints.
-> +In between a failed VM_BIND IOCTL and a successful restart there may
-> +be implementation defined restrictions on the use of the gpu_vm. For a
-> +description why, please see KMD implementation details under `error
-> +state saving`_.
-> +
-> +Sample uAPI implementations
-> +===========================
-> +Suggested uAPI implementations at the moment of writing can be found for
-> +the Nouveau driver `here
-> +<https://patchwork.freedesktop.org/patch/543260/?series=112994&rev=6>`_.
-> +and for the Xe driver `here
-> +<https://cgit.freedesktop.org/drm/drm-xe/diff/include/uapi/drm/xe_drm.h?h=drm-xe-next&id=9cb016ebbb6a275f57b1cb512b95d5a842391ad7>`_.
-> +
-> +KMD implementation details
-> +==========================
-> +
-> +Error state saving
-> +__________________
-> +Open: When the VM_BIND IOCTL returns an error, some or even parts of
-> +an operation may have been completed. If the IOCTL is restarted, in
-> +order to know where to restart, the KMD can either put the gpu_vm in
-> +an error state and save one instance of the needed restart state
-> +internally. In this case, KMD needs to block further modifications of
-> +the gpu_vm state that may cause additional failures requiring a
-> +restart state save, until the error has been fully resolved. If the
-> +uAPI instead defines a pointer to a UMD allocated cookie in the IOCTL
-> +struct, it could also choose to store the restart state in that cookie.
-> +
-> +The restart state may, for example, be the number of successfully
-> +completed operations.
-> +
-> +Easiest for UMD would of course be if KMD did a full unwind on error
-> +so that no error state needs to be saved.
-> diff --git a/Documentation/gpu/rfc/xe.rst b/Documentation/gpu/rfc/xe.rst
-> index 2516fe141db6..0f062e1346d2 100644
-> --- a/Documentation/gpu/rfc/xe.rst
-> +++ b/Documentation/gpu/rfc/xe.rst
-> @@ -138,8 +138,8 @@ memory fences. Ideally with helper support so people don't get it wrong in all
->  possible ways.
->  
->  As a key measurable result, the benefits of ASYNC VM_BIND and a discussion of
-> -various flavors, error handling and a sample API should be documented here or in
-> -a separate document pointed to by this document.
-> +various flavors, error handling and sample API suggestions are documented in
-> +Documentation/gpu/drm-vm-bind-async.rst
->  
->  Userptr integration and vm_bind
->  -------------------------------
-> -- 
-> 2.40.1
-> 
+diff --git a/.mailmap b/.mailmap
+index 89b7f33cd330..9f067df9c306 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -13,7 +13,9 @@
+ Aaron Durbin <adurbin@google.com>
+ Abel Vesa <abelvesa@kernel.org> <abel.vesa@nxp.com>
+ Abel Vesa <abelvesa@kernel.org> <abelvesa@gmail.com>
++Abhijeet Dharmapurikar <quic_adharmap@quicinc.com> <adharmap@codeaurora.org>
+ Abhinav Kumar <quic_abhinavk@quicinc.com> <abhinavk@codeaurora.org>
++Ahmad Masri <quic_amasri@quicinc.com> <amasri@codeaurora.org>
+ Adam Oldham <oldhamca@gmail.com>
+ Adam Radford <aradford@gmail.com>
+ Adriana Reus <adi.reus@gmail.com> <adriana.reus@intel.com>
+@@ -30,6 +32,7 @@ Alexander Mikhalitsyn <alexander@mihalicyn.com> <alexander.mikhalitsyn@virtuozzo
+ Alexander Mikhalitsyn <alexander@mihalicyn.com> <aleksandr.mikhalitsyn@canonical.com>
+ Alexandre Belloni <alexandre.belloni@bootlin.com> <alexandre.belloni@free-electrons.com>
+ Alexandre Ghiti <alex@ghiti.fr> <alexandre.ghiti@canonical.com>
++Alexei Avshalom Lazar <quic_ailizaro@quicinc.com> <ailizaro@codeaurora.org>
+ Alexei Starovoitov <ast@kernel.org> <alexei.starovoitov@gmail.com>
+ Alexei Starovoitov <ast@kernel.org> <ast@fb.com>
+ Alexei Starovoitov <ast@kernel.org> <ast@plumgrid.com>
+@@ -37,8 +40,11 @@ Alex Hung <alexhung@gmail.com> <alex.hung@canonical.com>
+ Alex Shi <alexs@kernel.org> <alex.shi@intel.com>
+ Alex Shi <alexs@kernel.org> <alex.shi@linaro.org>
+ Alex Shi <alexs@kernel.org> <alex.shi@linux.alibaba.com>
++Aloka Dixit <quic_alokad@quicinc.com> <alokad@codeaurora.org>
+ Al Viro <viro@ftp.linux.org.uk>
+ Al Viro <viro@zenIV.linux.org.uk>
++Amit Blay <quic_ablay@quicinc.com> <ablay@codeaurora.org>
++Amit Nischal <quic_anischal@quicinc.com> <anischal@codeaurora.org>
+ Andi Kleen <ak@linux.intel.com> <ak@suse.de>
+ Andi Shyti <andi@etezian.org> <andi.shyti@samsung.com>
+ Andreas Herrmann <aherrman@de.ibm.com>
+@@ -54,6 +60,8 @@ Andrey Ryabinin <ryabinin.a.a@gmail.com> <aryabinin@virtuozzo.com>
+ Andrzej Hajda <andrzej.hajda@intel.com> <a.hajda@samsung.com>
+ André Almeida <andrealmeid@igalia.com> <andrealmeid@collabora.com>
+ Andy Adamson <andros@citi.umich.edu>
++Anilkumar Kolli <quic_akolli@quicinc.com> <akolli@codeaurora.org>
++Anirudh Ghayal <quic_aghayal@quicinc.com> <aghayal@codeaurora.org>
+ Antoine Tenart <atenart@kernel.org> <antoine.tenart@bootlin.com>
+ Antoine Tenart <atenart@kernel.org> <antoine.tenart@free-electrons.com>
+ Antonio Ospite <ao2@ao2.it> <ao2@amarulasolutions.com>
+@@ -62,9 +70,17 @@ Archit Taneja <archit@ti.com>
+ Ard Biesheuvel <ardb@kernel.org> <ard.biesheuvel@linaro.org>
+ Arnaud Patard <arnaud.patard@rtp-net.org>
+ Arnd Bergmann <arnd@arndb.de>
++Arun Kumar Neelakantam <quic_aneela@quicinc.com> <aneela@codeaurora.org>
++Ashok Raj Nagarajan <quic_arnagara@quicinc.com> <arnagara@codeaurora.org>
++Ashwin Chaugule <quic_ashwinc@quicinc.com> <ashwinc@codeaurora.org>
++Asutosh Das <quic_asutoshd@quicinc.com> <asutoshd@codeaurora.org>
+ Atish Patra <atishp@atishpatra.org> <atish.patra@wdc.com>
++Avaneesh Kumar Dwivedi <quic_akdwived@quicinc.com> <akdwived@codeaurora.org>
+ Axel Dyks <xl@xlsigned.net>
+ Axel Lin <axel.lin@gmail.com>
++Balakrishna Godavarthi <quic_bgodavar@quicinc.com> <bgodavar@codeaurora.org>
++Banajit Goswami <quic_bgoswami@quicinc.com> <bgoswami@codeaurora.org>
++Baochen Qiang <quic_bqiang@quicinc.com> <bqiang@codeaurora.org>
+ Baolin Wang <baolin.wang@linux.alibaba.com> <baolin.wang@linaro.org>
+ Baolin Wang <baolin.wang@linux.alibaba.com> <baolin.wang@spreadtrum.com>
+ Baolin Wang <baolin.wang@linux.alibaba.com> <baolin.wang@unisoc.com>
+@@ -93,12 +109,15 @@ Brian Avery <b.avery@hp.com>
+ Brian King <brking@us.ibm.com>
+ Brian Silverman <bsilver16384@gmail.com> <brian.silverman@bluerivertech.com>
+ Cai Huoqing <cai.huoqing@linux.dev> <caihuoqing@baidu.com>
++Can Guo <quic_cang@quicinc.com> <cang@codeaurora.org>
++Carl Huang <quic_cjhuang@quicinc.com> <cjhuang@codeaurora.org>
+ Changbin Du <changbin.du@intel.com> <changbin.du@gmail.com>
+ Changbin Du <changbin.du@intel.com> <changbin.du@intel.com>
+ Chao Yu <chao@kernel.org> <chao2.yu@samsung.com>
+ Chao Yu <chao@kernel.org> <yuchao0@huawei.com>
+ Chris Chiu <chris.chiu@canonical.com> <chiu@endlessm.com>
+ Chris Chiu <chris.chiu@canonical.com> <chiu@endlessos.org>
++Chris Lew <quic_clew@quicinc.com> <clew@codeaurora.org>
+ Christian Borntraeger <borntraeger@linux.ibm.com> <borntraeger@de.ibm.com>
+ Christian Borntraeger <borntraeger@linux.ibm.com> <cborntra@de.ibm.com>
+ Christian Borntraeger <borntraeger@linux.ibm.com> <borntrae@de.ibm.com>
+@@ -119,7 +138,10 @@ Daniel Borkmann <daniel@iogearbox.net> <dborkmann@redhat.com>
+ Daniel Borkmann <daniel@iogearbox.net> <dborkman@redhat.com>
+ Daniel Borkmann <daniel@iogearbox.net> <dxchgb@gmail.com>
+ David Brownell <david-b@pacbell.net>
++David Collins <quic_collinsd@quicinc.com> <collinsd@codeaurora.org>
+ David Woodhouse <dwmw2@shinybook.infradead.org>
++Dedy Lansky <quic_dlansky@quicinc.com> <dlansky@codeaurora.org>
++Deepak Kumar Singh <quic_deesin@quicinc.com> <deesin@codeaurora.org>
+ Dengcheng Zhu <dzhu@wavecomp.com> <dczhu@mips.com>
+ Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@gmail.com>
+ Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@imgtec.com>
+@@ -136,6 +158,7 @@ Dmitry Safonov <0x7f454c46@gmail.com> <dsafonov@virtuozzo.com>
+ Domen Puncer <domen@coderock.org>
+ Douglas Gilbert <dougg@torque.net>
+ Ed L. Cashin <ecashin@coraid.com>
++Elliot Berman <quic_eberman@quicinc.com> <eberman@codeaurora.org>
+ Enric Balletbo i Serra <eballetbo@kernel.org> <enric.balletbo@collabora.com>
+ Enric Balletbo i Serra <eballetbo@kernel.org> <eballetbo@iseebcn.com>
+ Erik Kaneda <erik.kaneda@intel.com> <erik.schmauss@intel.com>
+@@ -148,6 +171,7 @@ Faith Ekstrand <faith.ekstrand@collabora.com> <jason.ekstrand@collabora.com>
+ Felipe W Damasio <felipewd@terra.com.br>
+ Felix Kuhling <fxkuehl@gmx.de>
+ Felix Moeller <felix@derklecks.de>
++Fenglin Wu <quic_fenglinw@quicinc.com> <fenglinw@codeaurora.org>
+ Filipe Lautert <filipe@icewall.org>
+ Finn Thain <fthain@linux-m68k.org> <fthain@telegraphics.com.au>
+ Franck Bui-Huu <vagabon.xyz@gmail.com>
+@@ -171,8 +195,11 @@ Greg Kurz <groug@kaod.org> <gkurz@linux.vnet.ibm.com>
+ Gregory CLEMENT <gregory.clement@bootlin.com> <gregory.clement@free-electrons.com>
+ Guilherme G. Piccoli <kernel@gpiccoli.net> <gpiccoli@linux.vnet.ibm.com>
+ Guilherme G. Piccoli <kernel@gpiccoli.net> <gpiccoli@canonical.com>
++Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com> <gokulsri@codeaurora.org>
++Govindaraj Saminathan <quic_gsamin@quicinc.com> <gsamin@codeaurora.org>
+ Guo Ren <guoren@kernel.org> <guoren@linux.alibaba.com>
+ Guo Ren <guoren@kernel.org> <ren_guo@c-sky.com>
++Guru Das Srinagesh <quic_gurus@quicinc.com> <gurus@codeaurora.org>
+ Gustavo Padovan <gustavo@las.ic.unicamp.br>
+ Gustavo Padovan <padovan@profusion.mobi>
+ Hanjun Guo <guohanjun@huawei.com> <hanjun.guo@linaro.org>
+@@ -190,6 +217,7 @@ Huacai Chen <chenhuacai@kernel.org> <chenhuacai@loongson.cn>
+ J. Bruce Fields <bfields@fieldses.org> <bfields@redhat.com>
+ J. Bruce Fields <bfields@fieldses.org> <bfields@citi.umich.edu>
+ Jacob Shin <Jacob.Shin@amd.com>
++Jack Pham <quic_jackp@quicinc.com> <jackp@codeaurora.org>
+ Jaegeuk Kim <jaegeuk@kernel.org> <jaegeuk@google.com>
+ Jaegeuk Kim <jaegeuk@kernel.org> <jaegeuk.kim@samsung.com>
+ Jaegeuk Kim <jaegeuk@kernel.org> <jaegeuk@motorola.com>
+@@ -217,10 +245,12 @@ Jayachandran C <c.jayachandran@gmail.com> <jchandra@digeo.com>
+ Jayachandran C <c.jayachandran@gmail.com> <jnair@caviumnetworks.com>
+ <jean-philippe@linaro.org> <jean-philippe.brucker@arm.com>
+ Jean Tourrilhes <jt@hpl.hp.com>
++Jeevan Shriram <quic_jshriram@quicinc.com> <jshriram@codeaurora.org>
+ Jeff Garzik <jgarzik@pretzel.yyz.us>
+ Jeff Layton <jlayton@kernel.org> <jlayton@poochiereds.net>
+ Jeff Layton <jlayton@kernel.org> <jlayton@primarydata.com>
+ Jeff Layton <jlayton@kernel.org> <jlayton@redhat.com>
++Jeffrey Hugo <quic_jhugo@quicinc.com> <jhugo@codeaurora.org>
+ Jens Axboe <axboe@kernel.dk> <axboe@suse.de>
+ Jens Axboe <axboe@kernel.dk> <jens.axboe@oracle.com>
+ Jens Axboe <axboe@kernel.dk> <axboe@fb.com>
+@@ -228,6 +258,7 @@ Jens Axboe <axboe@kernel.dk> <axboe@meta.com>
+ Jens Osterkamp <Jens.Osterkamp@de.ibm.com>
+ Jernej Skrabec <jernej.skrabec@gmail.com> <jernej.skrabec@siol.net>
+ Jessica Zhang <quic_jesszhan@quicinc.com> <jesszhan@codeaurora.org>
++Jilai Wang <quic_jilaiw@quicinc.com> <jilaiw@codeaurora.org>
+ Jiri Pirko <jiri@resnulli.us> <jiri@nvidia.com>
+ Jiri Pirko <jiri@resnulli.us> <jiri@mellanox.com>
+ Jiri Pirko <jiri@resnulli.us> <jpirko@redhat.com>
+@@ -238,6 +269,7 @@ Jiri Slaby <jirislaby@kernel.org> <jslaby@suse.cz>
+ Jiri Slaby <jirislaby@kernel.org> <xslaby@fi.muni.cz>
+ Jisheng Zhang <jszhang@kernel.org> <jszhang@marvell.com>
+ Jisheng Zhang <jszhang@kernel.org> <Jisheng.Zhang@synaptics.com>
++Jishnu Prakash <quic_jprakash@quicinc.com> <jprakash@codeaurora.org>
+ Johan Hovold <johan@kernel.org> <jhovold@gmail.com>
+ Johan Hovold <johan@kernel.org> <johan@hovoldconsulting.com>
+ John Crispin <john@phrozen.org> <blogic@openwrt.org>
+@@ -255,6 +287,7 @@ Jordan Crouse <jordan@cosmicpenguin.net> <jcrouse@codeaurora.org>
+ <josh@joshtriplett.org> <josht@vnet.ibm.com>
+ Josh Poimboeuf <jpoimboe@kernel.org> <jpoimboe@redhat.com>
+ Josh Poimboeuf <jpoimboe@kernel.org> <jpoimboe@us.ibm.com>
++Jouni Malinen <quic_jouni@quicinc.com> <jouni@codeaurora.org>
+ Juha Yrjola <at solidboot.com>
+ Juha Yrjola <juha.yrjola@nokia.com>
+ Juha Yrjola <juha.yrjola@solidboot.com>
+@@ -262,6 +295,8 @@ Julien Thierry <julien.thierry.kdev@gmail.com> <julien.thierry@arm.com>
+ Iskren Chernev <me@iskren.info> <iskren.chernev@gmail.com>
+ Kalle Valo <kvalo@kernel.org> <kvalo@codeaurora.org>
+ Kalyan Thota <quic_kalyant@quicinc.com> <kalyan_t@codeaurora.org>
++Karthikeyan Periyasamy <quic_periyasa@quicinc.com> <periyasa@codeaurora.org>
++Kathiravan T <quic_kathirav@quicinc.com> <kathirav@codeaurora.org>
+ Kay Sievers <kay.sievers@vrfy.org>
+ Kees Cook <keescook@chromium.org> <kees.cook@canonical.com>
+ Kees Cook <keescook@chromium.org> <keescook@google.com>
+@@ -270,6 +305,8 @@ Kees Cook <keescook@chromium.org> <kees@ubuntu.com>
+ Keith Busch <kbusch@kernel.org> <keith.busch@intel.com>
+ Keith Busch <kbusch@kernel.org> <keith.busch@linux.intel.com>
+ Kenneth W Chen <kenneth.w.chen@intel.com>
++Kenneth Westfield <quic_kwestfie@quicinc.com> <kwestfie@codeaurora.org>
++Kiran Gunda <quic_kgunda@quicinc.com> <kgunda@codeaurora.org>
+ Kirill Tkhai <tkhai@ya.ru> <ktkhai@virtuozzo.com>
+ Konstantin Khlebnikov <koct9i@gmail.com> <khlebnikov@yandex-team.ru>
+ Konstantin Khlebnikov <koct9i@gmail.com> <k.khlebnikov@samsung.com>
+@@ -278,6 +315,7 @@ Krishna Manikandan <quic_mkrishn@quicinc.com> <mkrishn@codeaurora.org>
+ Krzysztof Kozlowski <krzk@kernel.org> <k.kozlowski.k@gmail.com>
+ Krzysztof Kozlowski <krzk@kernel.org> <k.kozlowski@samsung.com>
+ Krzysztof Kozlowski <krzk@kernel.org> <krzysztof.kozlowski@canonical.com>
++Kshitiz Godara <quic_kgodara@quicinc.com> <kgodara@codeaurora.org>
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ Kuogee Hsieh <quic_khsieh@quicinc.com> <khsieh@codeaurora.org>
+ Lee Jones <lee@kernel.org> <joneslee@google.com>
+@@ -291,19 +329,27 @@ Leonid I Ananiev <leonid.i.ananiev@intel.com>
+ Leon Romanovsky <leon@kernel.org> <leon@leon.nu>
+ Leon Romanovsky <leon@kernel.org> <leonro@mellanox.com>
+ Leon Romanovsky <leon@kernel.org> <leonro@nvidia.com>
++Liam Mark <quic_lmark@quicinc.com> <lmark@codeaurora.org>
+ Linas Vepstas <linas@austin.ibm.com>
+ Linus Lüssing <linus.luessing@c0d3.blue> <linus.luessing@ascom.ch>
+ Linus Lüssing <linus.luessing@c0d3.blue> <linus.luessing@web.de>
+ <linux-hardening@vger.kernel.org> <kernel-hardening@lists.openwall.com>
+ Li Yang <leoyang.li@nxp.com> <leoli@freescale.com>
+ Li Yang <leoyang.li@nxp.com> <leo@zh-kernel.org>
++Lior David <quic_liord@quicinc.com> <liord@codeaurora.org>
+ Lorenzo Pieralisi <lpieralisi@kernel.org> <lorenzo.pieralisi@arm.com>
+ Luca Ceresoli <luca.ceresoli@bootlin.com> <luca@lucaceresoli.net>
+ Lukasz Luba <lukasz.luba@arm.com> <l.luba@partner.samsung.com>
++Luo Jie <quic_luoj@quicinc.com> <luoj@codeaurora.org>
+ Maciej W. Rozycki <macro@mips.com> <macro@imgtec.com>
+ Maciej W. Rozycki <macro@orcam.me.uk> <macro@linux-mips.org>
++Maharaja Kennadyrajan <quic_mkenna@quicinc.com> <mkenna@codeaurora.org>
++Maheshwar Ajja <quic_majja@quicinc.com> <majja@codeaurora.org>
++Malathi Gottam <quic_mgottam@quicinc.com> <mgottam@codeaurora.org>
++Manikanta Pubbisetty <quic_mpubbise@quicinc.com> <mpubbise@codeaurora.org>
+ Manivannan Sadhasivam <mani@kernel.org> <manivannanece23@gmail.com>
+ Manivannan Sadhasivam <mani@kernel.org> <manivannan.sadhasivam@linaro.org>
++Manoj Basapathi <quic_manojbm@quicinc.com> <manojbm@codeaurora.org>
+ Marcin Nowakowski <marcin.nowakowski@mips.com> <marcin.nowakowski@imgtec.com>
+ Marc Zyngier <maz@kernel.org> <marc.zyngier@arm.com>
+ Marek Behún <kabel@kernel.org> <marek.behun@nic.cz>
+@@ -333,6 +379,7 @@ Matt Ranostay <matt.ranostay@konsulko.com> <matt@ranostay.consulting>
+ Matt Ranostay <mranostay@gmail.com> Matthew Ranostay <mranostay@embeddedalley.com>
+ Matt Ranostay <mranostay@gmail.com> <matt.ranostay@intel.com>
+ Matt Redfearn <matt.redfearn@mips.com> <matt.redfearn@imgtec.com>
++Maulik Shah <quic_mkshah@quicinc.com> <mkshah@codeaurora.org>
+ Mauro Carvalho Chehab <mchehab@kernel.org> <maurochehab@gmail.com>
+ Mauro Carvalho Chehab <mchehab@kernel.org> <mchehab@brturbo.com.br>
+ Mauro Carvalho Chehab <mchehab@kernel.org> <mchehab@infradead.org>
+@@ -345,7 +392,10 @@ Maxim Mikityanskiy <maxtram95@gmail.com> <maximmi@nvidia.com>
+ Maxime Ripard <mripard@kernel.org> <maxime@cerno.tech>
+ Maxime Ripard <mripard@kernel.org> <maxime.ripard@bootlin.com>
+ Maxime Ripard <mripard@kernel.org> <maxime.ripard@free-electrons.com>
++Maya Erez <quic_merez@quicinc.com> <merez@codeaurora.org>
+ Mayuresh Janorkar <mayur@ti.com>
++Md Sadre Alam <quic_mdalam@quicinc.com> <mdalam@codeaurora.org>
++Miaoqing Pan <quic_miaoqing@quicinc.com> <miaoqing@codeaurora.org>
+ Michael Buesch <m@bues.ch>
+ Michal Simek <michal.simek@amd.com> <michal.simek@xilinx.com>
+ Michel Dänzer <michel@tungstengraphics.com>
+@@ -356,6 +406,7 @@ Miguel Ojeda <ojeda@kernel.org> <miguel.ojeda.sandonis@gmail.com>
+ Mike Rapoport <rppt@kernel.org> <mike@compulab.co.il>
+ Mike Rapoport <rppt@kernel.org> <mike.rapoport@gmail.com>
+ Mike Rapoport <rppt@kernel.org> <rppt@linux.ibm.com>
++Mike Tipton <quic_mdtipton@quicinc.com> <mdtipton@codeaurora.org>
+ Miodrag Dinic <miodrag.dinic@mips.com> <miodrag.dinic@imgtec.com>
+ Miquel Raynal <miquel.raynal@bootlin.com> <miquel.raynal@free-electrons.com>
+ Mitesh shah <mshah@teja.com>
+@@ -364,9 +415,13 @@ Morten Welinder <terra@gnome.org>
+ Morten Welinder <welinder@anemone.rentec.com>
+ Morten Welinder <welinder@darter.rentec.com>
+ Morten Welinder <welinder@troll.com>
++Mukesh Ojha <quic_mojha@quicinc.com> <mojha@codeaurora.org>
++Muna Sinada <quic_msinada@quicinc.com> <msinada@codeaurora.org>
++Murali Nalajala <quic_mnalajal@quicinc.com> <mnalajal@codeaurora.org>
+ Mythri P K <mythripk@ti.com>
+ Nadia Yvette Chambers <nyc@holomorphy.com> William Lee Irwin III <wli@holomorphy.com>
+ Nathan Chancellor <nathan@kernel.org> <natechancellor@gmail.com>
++Neeraj Upadhyay <quic_neeraju@quicinc.com> <neeraju@codeaurora.org>
+ Neil Armstrong <neil.armstrong@linaro.org> <narmstrong@baylibre.com>
+ Nguyen Anh Quynh <aquynh@gmail.com>
+ Nicholas Piggin <npiggin@gmail.com> <npiggen@suse.de>
+@@ -385,6 +440,7 @@ Nikolay Aleksandrov <razor@blackwall.org> <nikolay@redhat.com>
+ Nikolay Aleksandrov <razor@blackwall.org> <nikolay@cumulusnetworks.com>
+ Nikolay Aleksandrov <razor@blackwall.org> <nikolay@nvidia.com>
+ Nikolay Aleksandrov <razor@blackwall.org> <nikolay@isovalent.com>
++Odelu Kukatla <quic_okukatla@quicinc.com> <okukatla@codeaurora.org>
+ Oleksandr Natalenko <oleksandr@natalenko.name> <oleksandr@redhat.com>
+ Oleksij Rempel <linux@rempel-privat.de> <bug-track@fisher-privat.net>
+ Oleksij Rempel <linux@rempel-privat.de> <external.Oleksij.Rempel@de.bosch.com>
+@@ -392,6 +448,7 @@ Oleksij Rempel <linux@rempel-privat.de> <fixed-term.Oleksij.Rempel@de.bosch.com>
+ Oleksij Rempel <linux@rempel-privat.de> <o.rempel@pengutronix.de>
+ Oleksij Rempel <linux@rempel-privat.de> <ore@pengutronix.de>
+ Oliver Upton <oliver.upton@linux.dev> <oupton@google.com>
++Oza Pawandeep <quic_poza@quicinc.com> <poza@codeaurora.org>
+ Pali Rohár <pali@kernel.org> <pali.rohar@gmail.com>
+ Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
+ Patrick Mochel <mochel@digitalimplant.org>
+@@ -403,11 +460,14 @@ Paul E. McKenney <paulmck@kernel.org> <paulmck@linux.vnet.ibm.com>
+ Paul E. McKenney <paulmck@kernel.org> <paulmck@us.ibm.com>
+ Paul Mackerras <paulus@ozlabs.org> <paulus@samba.org>
+ Paul Mackerras <paulus@ozlabs.org> <paulus@au1.ibm.com>
++Pavankumar Kondeti <quic_pkondeti@quicinc.com> <pkondeti@codeaurora.org>
+ Peter A Jonsson <pj@ludd.ltu.se>
+ Peter Oruba <peter.oruba@amd.com>
+ Peter Oruba <peter@oruba.de>
+ Pratyush Anand <pratyush.anand@gmail.com> <pratyush.anand@st.com>
+ Praveen BP <praveenbp@ti.com>
++Pradeep Kumar Chitrapu <quic_pradeepc@quicinc.com> <pradeepc@codeaurora.org>
++Prasad Sodagudi <quic_psodagud@quicinc.com> <psodagud@codeaurora.org>
+ Punit Agrawal <punitagrawal@gmail.com> <punit.agrawal@arm.com>
+ Qais Yousef <qyousef@layalina.io> <qais.yousef@imgtec.com>
+ Qais Yousef <qyousef@layalina.io> <qais.yousef@arm.com>
+@@ -416,10 +476,16 @@ Quentin Perret <qperret@qperret.net> <quentin.perret@arm.com>
+ Rafael J. Wysocki <rjw@rjwysocki.net> <rjw@sisk.pl>
+ Rajeev Nandan <quic_rajeevny@quicinc.com> <rajeevny@codeaurora.org>
+ Rajendra Nayak <quic_rjendra@quicinc.com> <rnayak@codeaurora.org>
++Rajeshwari Ravindra Kamble <quic_rkambl@quicinc.com> <rkambl@codeaurora.org>
++Raju P.L.S.S.S.N <quic_rplsssn@quicinc.com> <rplsssn@codeaurora.org>
+ Rajesh Shah <rajesh.shah@intel.com>
++Rakesh Pillai <quic_pillair@quicinc.com> <pillair@codeaurora.org>
+ Ralf Baechle <ralf@linux-mips.org>
+ Ralf Wildenhues <Ralf.Wildenhues@gmx.de>
++Ram Chandra Jangir <quic_rjangir@quicinc.com> <rjangir@codeaurora.org>
+ Randy Dunlap <rdunlap@infradead.org> <rdunlap@xenotime.net>
++Ravi Kumar Bokka <quic_rbokka@quicinc.com> <rbokka@codeaurora.org>
++Ravi Kumar Siddojigari <quic_rsiddoji@quicinc.com> <rsiddoji@codeaurora.org>
+ Rémi Denis-Courmont <rdenis@simphalempin.com>
+ Ricardo Ribalda <ribalda@kernel.org> <ricardo@ribalda.com>
+ Ricardo Ribalda <ribalda@kernel.org> Ricardo Ribalda Delgado <ribalda@kernel.org>
+@@ -428,6 +494,7 @@ Richard Leitner <richard.leitner@linux.dev> <dev@g0hl1n.net>
+ Richard Leitner <richard.leitner@linux.dev> <me@g0hl1n.net>
+ Richard Leitner <richard.leitner@linux.dev> <richard.leitner@skidata.com>
+ Robert Foss <rfoss@kernel.org> <robert.foss@linaro.org>
++Rocky Liao <quic_rjliao@quicinc.com> <rjliao@codeaurora.org>
+ Roman Gushchin <roman.gushchin@linux.dev> <guro@fb.com>
+ Roman Gushchin <roman.gushchin@linux.dev> <guroan@gmail.com>
+ Roman Gushchin <roman.gushchin@linux.dev> <klamm@yandex-team.ru>
+@@ -445,22 +512,33 @@ Santosh Shilimkar <santosh.shilimkar@oracle.org>
+ Santosh Shilimkar <ssantosh@kernel.org>
+ Sarangdhar Joshi <spjoshi@codeaurora.org>
+ Sascha Hauer <s.hauer@pengutronix.de>
++Sahitya Tummala <quic_stummala@quicinc.com> <stummala@codeaurora.org>
++Sathishkumar Muruganandam <quic_murugana@quicinc.com> <murugana@codeaurora.org>
+ Satya Priya <quic_c_skakit@quicinc.com> <skakit@codeaurora.org>
+ S.Çağlar Onur <caglar@pardus.org.tr>
++Sayali Lokhande <quic_sayalil@quicinc.com> <sayalil@codeaurora.org>
+ Sean Christopherson <seanjc@google.com> <sean.j.christopherson@intel.com>
+ Sean Nyekjaer <sean@geanix.com> <sean.nyekjaer@prevas.dk>
++Sean Tranchetti <quic_stranche@quicinc.com> <stranche@codeaurora.org>
+ Sebastian Reichel <sre@kernel.org> <sebastian.reichel@collabora.co.uk>
+ Sebastian Reichel <sre@kernel.org> <sre@debian.org>
+ Sedat Dilek <sedat.dilek@gmail.com> <sedat.dilek@credativ.de>
++Senthilkumar N L <quic_snlakshm@quicinc.com> <snlakshm@codeaurora.org>
+ Seth Forshee <sforshee@kernel.org> <seth.forshee@canonical.com>
+ Shannon Nelson <shannon.nelson@amd.com> <snelson@pensando.io>
++Sharath Chandra Vurukala <quic_sharathv@quicinc.com> <sharathv@codeaurora.org>
+ Shiraz Hashim <shiraz.linux.kernel@gmail.com> <shiraz.hashim@st.com>
+ Shuah Khan <shuah@kernel.org> <shuahkhan@gmail.com>
+ Shuah Khan <shuah@kernel.org> <shuah.khan@hp.com>
+ Shuah Khan <shuah@kernel.org> <shuahkh@osg.samsung.com>
+ Shuah Khan <shuah@kernel.org> <shuah.kh@samsung.com>
++Sibi Sankar <quic_sibis@quicinc.com> <sibis@codeaurora.org>
++Sid Manning <quic_sidneym@quicinc.com> <sidneym@codeaurora.org>
+ Simon Arlott <simon@octiron.net> <simon@fire.lp0.eu>
+ Simon Kelley <simon@thekelleys.org.uk>
++Sricharan Ramabadhran <quic_srichara@quicinc.com> <sricharan@codeaurora.org>
++Srinivas Ramana <quic_sramana@quicinc.com> <sramana@codeaurora.org>
++Sriram R <quic_srirrama@quicinc.com> <srirrama@codeaurora.org>
+ Stéphane Witzmann <stephane.witzmann@ubpmes.univ-bpclermont.fr>
+ Stephen Hemminger <stephen@networkplumber.org> <shemminger@linux-foundation.org>
+ Stephen Hemminger <stephen@networkplumber.org> <shemminger@osdl.org>
+@@ -468,22 +546,30 @@ Stephen Hemminger <stephen@networkplumber.org> <sthemmin@microsoft.com>
+ Stephen Hemminger <stephen@networkplumber.org> <sthemmin@vyatta.com>
+ Steve Wise <larrystevenwise@gmail.com> <swise@chelsio.com>
+ Steve Wise <larrystevenwise@gmail.com> <swise@opengridcomputing.com>
+-Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
++Subash Abhinov Kasiviswanathan <quic_subashab@quicinc.com> <subashab@codeaurora.org>
++Subbaraman Narayanamurthy <quic_subbaram@quicinc.com> <subbaram@codeaurora.org>
+ Subhash Jadavani <subhashj@codeaurora.org>
++Sudarshan Rajagopalan <quic_sudaraja@quicinc.com> <sudaraja@codeaurora.org>
+ Sudeep Holla <sudeep.holla@arm.com> Sudeep KarkadaNagesha <sudeep.karkadanagesha@arm.com>
+ Sumit Semwal <sumit.semwal@ti.com>
++Surabhi Vishnoi <quic_svishnoi@quicinc.com> <svishnoi@codeaurora.org>
+ Takashi YOSHII <takashi.yoshii.zj@renesas.com>
++Tamizh Chelvam Raja <quic_tamizhr@quicinc.com> <tamizhr@codeaurora.org>
++Taniya Das <quic_tdas@quicinc.com> <tdas@codeaurora.org>
+ Tejun Heo <htejun@gmail.com>
+ Thomas Graf <tgraf@suug.ch>
+ Thomas Körper <socketcan@esd.eu> <thomas.koerper@esd.eu>
+ Thomas Pedersen <twp@codeaurora.org>
+ Tiezhu Yang <yangtiezhu@loongson.cn> <kernelpatch@126.com>
++Tingwei Zhang <quic_tingwei@quicinc.com> <tingwei@codeaurora.org>
++Tirupathi Reddy <quic_tirupath@quicinc.com> <tirupath@codeaurora.org>
+ Tobias Klauser <tklauser@distanz.ch> <tobias.klauser@gmail.com>
+ Tobias Klauser <tklauser@distanz.ch> <klto@zhaw.ch>
+ Tobias Klauser <tklauser@distanz.ch> <tklauser@nuerscht.ch>
+ Tobias Klauser <tklauser@distanz.ch> <tklauser@xenon.tklauser.home>
+ Todor Tomov <todor.too@gmail.com> <todor.tomov@linaro.org>
+ Tony Luck <tony.luck@intel.com>
++Trilok Soni <quic_tsoni@quicinc.com> <tsoni@codeaurora.org>
+ TripleX Chung <xxx.phy@gmail.com> <triplex@zh-kernel.org>
+ TripleX Chung <xxx.phy@gmail.com> <zhongyu@18mail.cn>
+ Tsuneo Yoshioka <Tsuneo.Yoshioka@f-secure.com>
+@@ -496,11 +582,17 @@ Uwe Kleine-König <ukleinek@strlen.de>
+ Uwe Kleine-König <ukl@pengutronix.de>
+ Uwe Kleine-König <Uwe.Kleine-Koenig@digi.com>
+ Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
++Vara Reddy <quic_varar@quicinc.com> <varar@codeaurora.org>
++Varadarajan Narayanan <quic_varada@quicinc.com> <varada@codeaurora.org>
++Vasanthakumar Thiagarajan <quic_vthiagar@quicinc.com> <vthiagar@codeaurora.org>
+ Vasily Averin <vasily.averin@linux.dev> <vvs@virtuozzo.com>
+ Vasily Averin <vasily.averin@linux.dev> <vvs@openvz.org>
+ Vasily Averin <vasily.averin@linux.dev> <vvs@parallels.com>
+ Vasily Averin <vasily.averin@linux.dev> <vvs@sw.ru>
+ Valentin Schneider <vschneid@redhat.com> <valentin.schneider@arm.com>
++Veera Sundaram Sankaran <quic_veeras@quicinc.com> <veeras@codeaurora.org>
++Veerabhadrarao Badiganti <quic_vbadigan@quicinc.com> <vbadigan@codeaurora.org>
++Venkateswara Naralasetty <quic_vnaralas@quicinc.com> <vnaralas@codeaurora.org>
+ Vikash Garodia <quic_vgarodia@quicinc.com> <vgarodia@codeaurora.org>
+ Vinod Koul <vkoul@kernel.org> <vinod.koul@intel.com>
+ Vinod Koul <vkoul@kernel.org> <vinod.koul@linux.intel.com>
+@@ -510,11 +602,14 @@ Viresh Kumar <vireshk@kernel.org> <viresh.kumar@st.com>
+ Viresh Kumar <vireshk@kernel.org> <viresh.linux@gmail.com>
+ Viresh Kumar <viresh.kumar@linaro.org> <viresh.kumar@linaro.org>
+ Viresh Kumar <viresh.kumar@linaro.org> <viresh.kumar@linaro.com>
++Vivek Aknurwar <quic_viveka@quicinc.com> <viveka@codeaurora.org>
+ Vivien Didelot <vivien.didelot@gmail.com> <vivien.didelot@savoirfairelinux.com>
+ Vlad Dogaru <ddvlad@gmail.com> <vlad.dogaru@intel.com>
+ Vladimir Davydov <vdavydov.dev@gmail.com> <vdavydov@parallels.com>
+ Vladimir Davydov <vdavydov.dev@gmail.com> <vdavydov@virtuozzo.com>
+ WeiXiong Liao <gmpy.liaowx@gmail.com> <liaoweixiong@allwinnertech.com>
++Wen Gong <quic_wgong@quicinc.com> <wgong@codeaurora.org>
++Wesley Cheng <quic_wcheng@quicinc.com> <wcheng@codeaurora.org>
+ Will Deacon <will@kernel.org> <will.deacon@arm.com>
+ Wolfram Sang <wsa@kernel.org> <w.sang@pengutronix.de>
+ Wolfram Sang <wsa@kernel.org> <wsa@the-dreams.de>
+-- 
+2.25.1
+
