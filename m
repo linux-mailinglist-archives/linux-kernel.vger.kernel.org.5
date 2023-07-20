@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0581E75AC11
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB0775AC1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbjGTKdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 06:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38778 "EHLO
+        id S229711AbjGTKgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 06:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbjGTKc6 (ORCPT
+        with ESMTP id S229601AbjGTKgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 06:32:58 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9FD2718
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:32:40 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-668711086f4so453276b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:32:40 -0700 (PDT)
+        Thu, 20 Jul 2023 06:36:04 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DC81701;
+        Thu, 20 Jul 2023 03:36:01 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9922d6f003cso115598066b.0;
+        Thu, 20 Jul 2023 03:36:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689849158; x=1690453958;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=xKYUhMR1McdxFbQ4Jo6vuraMtMWIn8Z/zfmypgVmrcY=;
-        b=tsOv8B+/t6cC16KWe9C2LxhDAI52NK3+hCr2mhHy5psUUZT826eCwd0faElZmDomg0
-         0/Y+6a0X0EEP9f65G9w8lUZ4z1aJnul16vxYroSnBn3wp0JL6VoO/O4+YaAIlTZh7ykD
-         sKWBQlvf+BfY7AjSscbM+8n0s4UNALx9dAaJcpE+L7a3LJ6lgUCGJFAAITJ4SRbGpLui
-         yG/8PMQ5m5cUfX8a74aBl7ael2RjuPY8gZc1IGHKmtdSoLfDPfjqL8Mv7huSICRu2CBF
-         lQGvwGcwQXhtPUHuei6DelkyV1gyZGQQx+CBv3g/dLxOn8uWkiUMOhW4HCCrSLLejbOP
-         NFiQ==
+        d=googlemail.com; s=20221208; t=1689849360; x=1690454160;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SUzZiQbIbwXExbwyLXyL6QTtU7zKUZIs5oay+PeoQH4=;
+        b=lbGAhI3TWPCeHfjuTvzHxUhuanEelb/heJ7SeHctCRYfm+QWF8GHn8Md+He+VbiGXZ
+         QlGXhDQfXsHA5j6cRbnU2NnRAfxcjpMhA3LSuP/aDtd2nzHfqsIRN7ATOF6tJ9sGiiyE
+         iX7nHni3ggsr7NLqwIjpCswqaHAUD/HUukm/BgAyx7qU7tumOpIcMYFrwkgYxgR3tpsb
+         vhXmSj59goiwRwyY3OQKYqjAoUynyL/lf2bFSO5xinYswZL7bjBDVbRiegECwjTEoK0X
+         f9SmgN/4g3reSciKakAhevHDI0Tet1HTmogQdn5QoMxmvAyRk1tWIOa0F2aD3ZeB37G9
+         CtkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689849158; x=1690453958;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xKYUhMR1McdxFbQ4Jo6vuraMtMWIn8Z/zfmypgVmrcY=;
-        b=gg1sOJ54jvnqCg/Mts20kAiQBg0u21RLu+cIn/sMffBZEr2JSj8G28Juj8Qh7oCXjU
-         zznOsGgVECkUBpCnjTeTIk+xAx/R2zSYfv/XT13SG75hq34MC3M4p/2O8Qq0nmKWt48x
-         PyQXijjV4d4rLkM5qpiz9vTQYjiNXNTdyxq87DJtZ3wiPpBK6qHcfAYRJE2CfYPynZfk
-         fqaOhCcL/Z9+8SwDiYRX7VzyWiR52sAARnmg2W+JyMNSBlvXoZJox5+2NzrKD0LoZT95
-         XyLk8YfNIWKCyLxaDVe5AIc8k2FLx5dJgEhCiO4o+P/io4YhvTXZ4XC8AjZIccvVgLEl
-         abOg==
-X-Gm-Message-State: ABy/qLbBxexr5LXutOu84ab47SznxU/x17F2Albznx0sdsYSqO47GzKi
-        2l3sfhcMHgyjs0dD3KWAIWiwjw==
-X-Google-Smtp-Source: APBJJlFPGHydCjtzxTJZnytC6CyFKFv8hJWClYfqDJkKXIBvrrDMTEHas0e4QsNhT7++H33b2LhJ3g==
-X-Received: by 2002:a05:6a21:3291:b0:132:7d91:aadb with SMTP id yt17-20020a056a21329100b001327d91aadbmr6219794pzb.6.1689849157754;
-        Thu, 20 Jul 2023 03:32:37 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id m7-20020aa79007000000b006636c4f57a6sm861335pfo.27.2023.07.20.03.32.36
+        d=1e100.net; s=20221208; t=1689849360; x=1690454160;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SUzZiQbIbwXExbwyLXyL6QTtU7zKUZIs5oay+PeoQH4=;
+        b=f8aYa4xczfi+Z7pEvpdrVXLW/ChvnKieKPCiIy/nweSTLhqQILFSdUzlXDKasYmXjZ
+         KOMW+CFyUOO3/I82cB2QNL5IPhv58JKvHb2NVvhf2xCDXqEkxEFMKi1b6FhgCkgy5evs
+         5uspAjVJNxQmjeGebutzyX1eiLaJu4x7/m3/H1EK8kt+nq0QVuDKHfX/69bh/TNCdtb7
+         +6KNN1XfKpyArUkl9t6uFWmCWz0IMCyfodm+LI8JGyOLaBYOUoS47+UsURSj2hS3fj9x
+         qc40Q9EueYrdrPXIbg6LzRwRaXqmswVLRBmvjTAqNQ4and3B8TGQIzmZDXEDOXiTvmQd
+         183A==
+X-Gm-Message-State: ABy/qLZh52JN6wCU2j8QqaxrC0f47S2vUohWrDNg6UzXuKU2G/aRZzct
+        nT8Vm9GSHU2WM786qeVo4kPD77eVuBRPQg==
+X-Google-Smtp-Source: APBJJlHU7RWvGxx4xRhz7aGfsiE5xm9sPm1j5fol2plE9ifR8JSz0gNkRTG0N1XxmLaYU9NQHPhTyA==
+X-Received: by 2002:a17:906:3f4f:b0:997:e7ce:1e8e with SMTP id f15-20020a1709063f4f00b00997e7ce1e8emr4858854ejj.55.1689849359620;
+        Thu, 20 Jul 2023 03:35:59 -0700 (PDT)
+Received: from debian_development.DebianHome (dynamic-077-008-188-137.77.8.pool.telefonica.de. [77.8.188.137])
+        by smtp.gmail.com with ESMTPSA id z9-20020a1709064e0900b009886aaeb722sm496540eju.137.2023.07.20.03.35.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 03:32:37 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 16:02:35 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Yangtao Li <frank.li@vivo.com>
-Cc:     Yangtao Li <tiny.windzz@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        Thu, 20 Jul 2023 03:35:59 -0700 (PDT)
+From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+To:     selinux@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/19] cpufreq: sun50i: Convert to platform remove
- callback returning void
-Message-ID: <20230720103235.ao3664ibqjksun5u@vireshk-i7>
-References: <20230712093322.37322-1-frank.li@vivo.com>
+Subject: [RFC PATCH] selinux: log about VM being executable by default
+Date:   Thu, 20 Jul 2023 12:35:49 +0200
+Message-Id: <20230720103549.25255-1-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230712093322.37322-1-frank.li@vivo.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-07-23, 17:33, Yangtao Li wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is (mostly) ignored
-> and this typically results in resource leaks. To improve here there is a
-> quest to make the remove callback return void. In the first step of this
-> quest all drivers are converted to .remove_new() which already returns
-> void.
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
->  drivers/cpufreq/sun50i-cpufreq-nvmem.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+In case virtual memory is being marked as executable by default, SELinux
+checks regarding explicit potential dangerous use are disabled.
 
-Applied all the patches. Thanks.
+Inform the user about it.
 
+Signed-off-by: Christian GÃ¶ttsche <cgzones@googlemail.com>
+---
+ security/selinux/hooks.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 6f53fa71fbdb..3a7ece84c2cc 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -7265,6 +7265,8 @@ static __init int selinux_init(void)
+ 	cred_init_security();
+ 
+ 	default_noexec = !(VM_DATA_DEFAULT_FLAGS & VM_EXEC);
++	if (!default_noexec)
++		pr_notice("SELinux:  virtual memory is executable by default - related checks disabled\n");
+ 
+ 	avc_init();
+ 
 -- 
-viresh
+2.40.1
+
