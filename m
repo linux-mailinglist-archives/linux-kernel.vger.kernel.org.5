@@ -2,114 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE4875B17B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884CE75B182
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbjGTOp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 10:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35160 "EHLO
+        id S231898AbjGTOqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 10:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232311AbjGTOpW (ORCPT
+        with ESMTP id S229448AbjGTOq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 10:45:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C3AC6;
-        Thu, 20 Jul 2023 07:45:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 291AC61B1F;
-        Thu, 20 Jul 2023 14:45:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B9F1C433C8;
-        Thu, 20 Jul 2023 14:45:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689864320;
-        bh=GYxbZ9V7Fkq63Zz96wh6w+B4fuq6/5qxNdUP/M4S/1A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tUmiJK/OckNFf/iUr7fc2/XxAlzTuC4EaZlkHLH3KbKpb/ypm6CMsfv6C1U+GlqJz
-         8q10sLYH2P7LiufKTsqOEHdBbgrD2kx4V5gXs7WPILi3J5Wx5jNp/QPQrWLtyg1YuK
-         cF3PFo+3xxzybwIaC+/bB3ZIPxNN8Xyu2mQGsP1HNPaa77a5MA71ORoRJuUELiWL0r
-         TbWQD5yZwrTCuPs+8OdrlD2bbEY5V/iDP7h4Jprcidb6JzSRH+PfZoqYKgfk77Y+l0
-         8Lc4qqBNhEyPPGd/Q5Zh6TwVZomNMhbGI9ePMbw1O6d8IJmSxJF8LkAtSt1dVlUDSP
-         NrNJ6woF+ORPw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9531E40516; Thu, 20 Jul 2023 11:45:17 -0300 (-03)
-Date:   Thu, 20 Jul 2023 11:45:17 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>, luhongfei@vivo.com
-Cc:     Rong Qianfeng <rongqianfeng@vivo.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        opensource.kernel@vivo.com
-Subject: Re: [PATCH] tools: perf: Two typos have been corrected
-Message-ID: <ZLlIfXUB9nd20Lzw@kernel.org>
-References: <20230720034022.31937-1-rongqianfeng@vivo.com>
- <CAP-5=fXQY1T2VQxs2ZBX_9ksuVfYvvzA6xSeOUpSQ8Sz1eJv_Q@mail.gmail.com>
+        Thu, 20 Jul 2023 10:46:28 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D092127;
+        Thu, 20 Jul 2023 07:46:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689864388; x=1721400388;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=K1NwaJnTR9TKmGdPrMBjNm/Xn1+Yu2b1Z2uzK/Twzrs=;
+  b=Rcpot/vVybToIWtgA0TXdPpqxO21KgUHOmUM0CT/q5lVuKa7A67n0i0L
+   2OUnXSLjv60IFOVxPOu88R+0zb1KsWa4QAo8yKEaC8uXSmqqykfXzziI7
+   2FvowXTwm4vFr5TQuOdYQYF7Q1Y7nZSj7SYud7KaiCFIG0KQkdGqEuXGV
+   bEGjjrlzIj5yUh9jZHFjdwhe0ljLlw9eQRdQeboFcTvxsCFGDCniH/DTi
+   W2cIIzRD3anxJZPJp2w7M/cOFEr8Pjb2561MB0cSOzYn2lQLT9VTrA3/+
+   NQ6FfnE/DJHiQ0bcvuUg9yrEQCZUNVdnaA3/xnQ1Vm9Vw7W/t6KYVp7z+
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="364218123"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="364218123"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 07:46:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="971059338"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="971059338"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.6.77]) ([10.93.6.77])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 07:45:52 -0700
+Message-ID: <83eb5c50-7287-7845-ffc3-a7c58e638ea5@intel.com>
+Date:   Thu, 20 Jul 2023 22:45:48 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fXQY1T2VQxs2ZBX_9ksuVfYvvzA6xSeOUpSQ8Sz1eJv_Q@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20230718234512.1690985-1-seanjc@google.com>
+ <20230718234512.1690985-13-seanjc@google.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <20230718234512.1690985-13-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jul 19, 2023 at 09:32:57PM -0700, Ian Rogers escreveu:
-> On Wed, Jul 19, 2023 at 8:40 PM Rong Qianfeng <rongqianfeng@vivo.com> wrote:
-> >
-> > When wrapping code, use ';' better than using ',' which is more
-> > in line with the coding habits of most engineers.
-> >
-> > Signed-off-by: Rong Qianfeng <rongqianfeng@vivo.com>
-> 
-> Snap: https://lore.kernel.org/lkml/20230706094635.1553-1-luhongfei@vivo.com/
+On 7/19/2023 7:44 AM, Sean Christopherson wrote:
+> @@ -5134,6 +5167,16 @@ static long kvm_vm_ioctl(struct file *filp,
+>   	case KVM_GET_STATS_FD:
+>   		r = kvm_vm_ioctl_get_stats_fd(kvm);
+>   		break;
+> +	case KVM_CREATE_GUEST_MEMFD: {
+> +		struct kvm_create_guest_memfd guest_memfd;
+> +
+> +		r = -EFAULT;
+> +		if (copy_from_user(&guest_memfd, argp, sizeof(guest_memfd)))
+> +			goto out;
+> +
+> +		r = kvm_gmem_create(kvm, &guest_memfd);
+> +		break;
+> +	}
 
-Applied the one from luhongfei@vivo.com,
+Does it need a new CAP to indicate the support of guest_memfd?
 
-Thanks,
+This is patch series introduces 3 new CAPs and it seems any one of them 
+can serve as the indicator of guest_memfd.
 
-- Arnaldo
- 
-> Thanks,
-> Ian
-> 
-> > ---
-> >  tools/perf/builtin-diff.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
-> > index e8a1b16aa5f8..57d300d8e570
-> > --- a/tools/perf/builtin-diff.c
-> > +++ b/tools/perf/builtin-diff.c
-> > @@ -1915,8 +1915,8 @@ static int data_init(int argc, const char **argv)
-> >                 struct perf_data *data = &d->data;
-> >
-> >                 data->path  = use_default ? defaults[i] : argv[i];
-> > -               data->mode  = PERF_DATA_MODE_READ,
-> > -               data->force = force,
-> > +               data->mode  = PERF_DATA_MODE_READ;
-> > +               data->force = force;
-> >
-> >                 d->idx  = i;
-> >         }
-> > --
-> > 2.39.0
-> >
++#define KVM_CAP_USER_MEMORY2 230
++#define KVM_CAP_MEMORY_ATTRIBUTES 231
++#define KVM_CAP_VM_TYPES 232
 
--- 
-
-- Arnaldo
+or we just go and try the ioctl, the return value will tell the result?
