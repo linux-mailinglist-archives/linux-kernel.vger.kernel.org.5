@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B0C75A629
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A281775A62C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjGTGRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
+        id S230064AbjGTGSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbjGTGQ6 (ORCPT
+        with ESMTP id S230088AbjGTGR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:16:58 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154C51BF2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:16:57 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R62X65mRzzBRDsB
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:16:54 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689833814; x=1692425815; bh=lJ2z1PnaNM6Y2Mn1zwiU8mdSCQy
-        pr99a1vck88s3bIM=; b=SByFtHhZptFIIvUl2eh07ulhGO/QPCKByzYmD7qqxGe
-        VwhJ9kL1jPg2MQKPDUIHpsNpn4kvrKPYYiWVJQCcLh2h8dxnipuWhUx6GaCBZi5W
-        jIebCLxBwkmh5yPu1scO4JFfJiyBxjlAQzN3QTrss8wDzXUh9W+/+lGTpBwyaC2s
-        CF4ofZ4A3FZV3bzs9+JS1FQ7HTFAs3cWK9g3PtTRw9yIda40qj6LD0IX2206kh+e
-        V/a/ON3unNSqL6fP95Yu4LzXeLy1exuEMp/RVa5R1OL2z8gDcvbpzV+gvGdIezo3
-        o9hgSCkAUkB/QCuDd07K0f7H4lEcxisGtmzUulSwgWw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3K-XVBkviTeX for <linux-kernel@vger.kernel.org>;
-        Thu, 20 Jul 2023 14:16:54 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R62X63mFGzBR1P6;
-        Thu, 20 Jul 2023 14:16:54 +0800 (CST)
+        Thu, 20 Jul 2023 02:17:57 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6DF2115
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:17:52 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52176fdad9dso570169a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689833871; x=1692425871;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7qMbEIAGEmSCr9GEUb2WgyAYulDvpm3IyXUtdPprmrA=;
+        b=ek55b0caiiFJP/P+T7uTJx8tiGG4WH21B7V0Q6dVTJR+wegukc/G7Rf01r3yRwUv0C
+         F6eBLgypzJIkvZMT1jIIHY0kJkx94QIF+bjGEmtCFHgcXVGhD0soVVFH4RQz/u9PDBjA
+         w2qJOvhwmx7aynACkrYzdG7VDvifuxfyAHazp60Ny+UJsWZGthgIXgUw5rEMX+MAzHc7
+         aXU96roQGt0vZurTatFmi5XuRq0ng4bliRkcqW1SsOEYePS6VsFRWTCTbAEoprmOZMIY
+         7jEHgCjIhg+z5BBUOYu9nX5e90fXS26wxiNV2DGEvLKUU06+FN6uSTnNAWTe4fSaX/7o
+         5aaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689833871; x=1692425871;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7qMbEIAGEmSCr9GEUb2WgyAYulDvpm3IyXUtdPprmrA=;
+        b=RzEzG9C+VC2AYzGka2Zol6owBVzl/OKiWm3g1Ntm/ey7sld1zFl50va48f8cNjn2nw
+         6mdvN0vpgBu3B03NYYK55xhAeQNfvABaw79u2z+MbHBW5m+4Chjc38pa0X5a3gJODPWJ
+         fovGZoYUR+sr3Ye3JDg/MLvMoeKCj0Bc2TXmfTqROdpenm3nKSKeWThKS6n8xiNc8oNn
+         etRKVUV8HhOMbU+A+3bSfave0gF32wG7iEmYjVPEFdPuUSaVdw/EwggcTzuqGFSzNUVC
+         klkYRlbGnWzNxK39AerFxDiOY69mIJskA6fWvI00RWZcAS6H/WBKeXdgpPgEmZ2SskIr
+         PKVA==
+X-Gm-Message-State: ABy/qLYVdDRrtNm7EzyH/dLCHTWzp3Wg2yOj497ggECYzY9me9iz2YBE
+        e9LuH410kbi7ufUZUvP1BxvGYw==
+X-Google-Smtp-Source: APBJJlEkdm92MM7BkSSd4ckerjHjOqQNmjO4MFFqBjG59Vise3NVYmLk8X5P3s/TSXWFRG/uwFznQg==
+X-Received: by 2002:a50:ed96:0:b0:521:7a5e:ab1e with SMTP id h22-20020a50ed96000000b005217a5eab1emr4205824edr.21.1689833871230;
+        Wed, 19 Jul 2023 23:17:51 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id ca2-20020aa7cd62000000b0051e0ea53eaasm261321edb.97.2023.07.19.23.17.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 23:17:50 -0700 (PDT)
+Message-ID: <b0993a11-6589-2fcd-3487-2e6eb68e18e4@linaro.org>
+Date:   Thu, 20 Jul 2023 08:17:48 +0200
 MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 14:16:54 +0800
-From:   sunran001@208suo.com
-To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: aic7xxx: "foo* bar" should be "foo *bar"
-In-Reply-To: <20230720061553.2523-1-xujianghui@cdjrlc.com>
-References: <20230720061553.2523-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <035e4317991f34f20b8dfec0c574ec0f@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 0/4] Add support for PECI Nuvoton
+Content-Language: en-US
+To:     Iwona Winiarska <iwona.winiarska@intel.com>,
+        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+References: <20230719220853.1029316-1-iwona.winiarska@intel.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230719220853.1029316-1-iwona.winiarska@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: "foo* bar" should be "foo *bar"
+On 20/07/2023 00:08, Iwona Winiarska wrote:
+> Hi!
+> 
+> The series adds support for PECI on Nuvoton-based BMC boards.
+> It is based on patches that were sent by Tomer Maimon from
+> Nuvoton [1].
+> Similar to Aspeed driver, unused (as in, default values were used in
+> all of the available DTS files) vendor-specific properties were
+> removed.
+> If there is a use-case for such properties, they can be added in
+> a separate series.
+> 
+> Thank you Tomer for testing this series on Nuvoton hardware.
+> 
+> Thanks
+> -Iwona
+> 
+> [1] https://lore.kernel.org/openbmc/CAP6Zq1jnbQ8k9VEyf9WgVq5DRrEzf5V6kaYP30S7g9BV9jKtaQ@mail.gmail.com/
+> 
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
+This is not v1 but v3 or v4. Please provide proper changelog and versioning.
 
-diff --git a/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h 
-b/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h
-index ed3bdd43c297..ec4eae41418a 100644
---- a/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h
-+++ b/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h
-@@ -65,7 +65,7 @@ typedef enum {
-  	RO = 0x01,
-  	WO = 0x02,
-  	RW = 0x03
--}amode_t;
-+} amode_t;
+Best regards,
+Krzysztof
 
-  typedef SLIST_HEAD(symlist, symbol_node) symlist_t;
-
-@@ -113,7 +113,7 @@ STAILQ_HEAD(macro_arg_list, macro_arg);
-  struct macro_info {
-  	struct macro_arg_list args;
-  	int   narg;
--	const char* body;
-+	const char *body;
-  };
-
-  typedef struct expression_info {
