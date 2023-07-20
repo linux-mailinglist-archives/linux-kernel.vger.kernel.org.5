@@ -2,71 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BBD75B9AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794B775B9AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbjGTVjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 17:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
+        id S230136AbjGTVjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 17:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbjGTVjO (ORCPT
+        with ESMTP id S229528AbjGTVjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 17:39:14 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D842718
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:39:10 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-992acf67388so185486766b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:39:10 -0700 (PDT)
+        Thu, 20 Jul 2023 17:39:04 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52342711;
+        Thu, 20 Jul 2023 14:39:03 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-5634d8d1db0so897181eaf.0;
+        Thu, 20 Jul 2023 14:39:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689889149; x=1690493949;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xQU5ilzcOlx1ker9FtySpdRzva8lrA7ZPN1m8QAc4bs=;
-        b=kApWVfk7mgCl3vz5Ks34PjDck0dcLfzryvNcDaqjJnMkjghZ5oWGDsCEc/ao3rre/Z
-         Jdt2WbFSa0GjyRtPQsuWBQbrMofTViCueIJJ8NwHEf7hUAbR7knh77AhxDeySQRXM6Zt
-         3synq3Y/BGvqXj0u6r/OHrp2S9+PmXOs5WvLuirsre55+YMvlLmO1ApDM0OvpuBC3UBK
-         aGTNEBGtoKrWlX9jkCPpkZZr6dW9pCRMvfWfwicy15H4IZR4GvUKe6WvyLmwSQdCNaPl
-         mReDkJfjQmxbt+aAbnqqTjL3LtUuLI9RIvjbTdrbKL2z4INQd1/hGTT0vjsjTJ9c8yxJ
-         cvjg==
+        d=gmail.com; s=20221208; t=1689889143; x=1690493943;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dYRT8gR63QqqutiXBMjJgTOolNJSeb3NYTp1ggZnVKs=;
+        b=VUKpGzl0QmLZoG4AixW1FNm6MZLVscI7HSnH+yQ2S69X9KvLvYNNcPWo+9fTGgG69C
+         XkWMW0FSBeM2JfnQeqf05ws31rzZNmsHAr6oXuR2TWdDTGbJhS1u0ooVFIM1X4mJOSva
+         AuaYKm6PwaLRzCaOL/kff4xXwUuNzPDMVBuvIxLnRfgwQNqQ0BE7ZGwdIPwe0mIxVM+U
+         tS3kBrn27axHlaGVlR7wg+RoJL50fwx3iNJmu+fjhlZkDZ09pR/3Pk6FzzsoWVyeKyZT
+         tafEnuzOm3ZOUMqDi3GzRPVfQk7PNwNw26gFNYHLCqsgwgOfG21mlqNZl0skPu45bRFI
+         IqIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689889149; x=1690493949;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xQU5ilzcOlx1ker9FtySpdRzva8lrA7ZPN1m8QAc4bs=;
-        b=fAtg4K52n7u4eMN8WPY9ipw1jYj8an+5E0aQuHWf4YVULzR8jn8ihtTh93kXzu/pce
-         nGjAW/prE9nvZPd1Z++DG/8A2LXxeU9sgL/sqycV0juvhtrhFyCJpNRSqTZhuBJdSoko
-         mRXyTIMOz4ITMIW4fM0OhEPrCneA9aY4u1EkbiyJnGrjzJVCfM9zUz+WmBryCVmDO7mc
-         1eYayKoc2eFEremfteVa303HzKd5u8FqGgR9WPWzkZcxJebrnX77c/BdapoPNOMY987r
-         YvvRQVb7zrYT5sBwgUUe/0vVUINpGSJga6pVnYfeUXEoZXgOGmSPJ8ljjND+JY2waGOq
-         Ituw==
-X-Gm-Message-State: ABy/qLaw7vE6lEzaK5c0AYSDEkXF0FugzUi5vwEDopXaevBKEjNVUbxm
-        o39FfGxupvEP3GYX6D8RZEDjYOABZaNhSoFgRbeo+A==
-X-Google-Smtp-Source: APBJJlHD7hrlkeh8bvoOtQtbsJUcPMsqPD5d1X8nOdFkRBVotzn7dstMixhkYI1uBNQo63PIZ1QUnDDiJGoXHWBicjE=
-X-Received: by 2002:a17:907:b0a:b0:993:fa99:d7e2 with SMTP id
- h10-20020a1709070b0a00b00993fa99d7e2mr23601ejl.21.1689889148704; Thu, 20 Jul
- 2023 14:39:08 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689889143; x=1690493943;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dYRT8gR63QqqutiXBMjJgTOolNJSeb3NYTp1ggZnVKs=;
+        b=eCtj62K69IKKic66G7frMa+cFaQYhV0f3yZbVkOEPmmCqaRi0IK6E+cNgvBmcvML7B
+         tmA35fJ+EmKL+Eq9aAEaQYxiv1FiKSyrK+BgsK13316HiTfQWXBL39d2mO/8TXYfZUjB
+         ozNzqLv67FGzGZDzGYZ11zcEsVzIcTO9EB7NJLqMtgISygEZeNMMAojPyI/NixNWgDsI
+         XzfCCR4BKdaRHCIooKQTe0VgqBz/714kML81ob7u9Hoa7shOaMfxGWsaXw4qq7Wm3mz+
+         XFFqjL6GLxecAqTk/Kwj8L0Rb3FE+NQH4O+hSd1PGN6CXNvV8VLzuqe69CKp22DXh2n4
+         ln3A==
+X-Gm-Message-State: ABy/qLZKTrKf5LiOcIouqsG5sdHLh1+bg/OREJwG8IIuEo4Lo83JXugN
+        nRhNYQDgmFediAtQT/8HrCQSS742AC3u1I5WjOY=
+X-Google-Smtp-Source: APBJJlFkP7d8cztDg5vTHEWZqe100qSHRs8QuvUy5m3xEBh4upu9IXMIuup4mlqAcJscbYhC7cBhJQQCzzbZNb7BSw4=
+X-Received: by 2002:a4a:391b:0:b0:567:27f4:8c45 with SMTP id
+ m27-20020a4a391b000000b0056727f48c45mr93537ooa.8.1689889143157; Thu, 20 Jul
+ 2023 14:39:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230713042037.980211-1-42.hyeyoo@gmail.com> <20230720071826.GE955071@google.com>
- <CAJD7tka2b-VsLJRrwfdbFAwvfKV+sHvNyRBJsG+81EmQ-=MkyA@mail.gmail.com>
- <CAB=+i9QUNVbc+pEZD5vG_DUTcLrco5JNOrkkRDdcAfj08u7vVA@mail.gmail.com>
- <CAJD7tkbO0W4woJtidbQU0F2iOCQcDG024c6EZ1ZOb2sLOG1ovg@mail.gmail.com> <CAB=+i9R+BnePZWJGm-5xi+2HEiM=_5EBZtFGmaHye+iZvVR2Vw@mail.gmail.com>
-In-Reply-To: <CAB=+i9R+BnePZWJGm-5xi+2HEiM=_5EBZtFGmaHye+iZvVR2Vw@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 20 Jul 2023 14:38:32 -0700
-Message-ID: <CAJD7tkaXKLgWhOnGPXhs513kEZERyD6eX7btuU7f5dXuhWY62g@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 00/21] mm/zsmalloc: Split zsdesc from struct page
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>
+References: <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
+ <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
+ <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com> <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
+ <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com> <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
+ <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com> <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
+ <ZLlvII/jMPTT32ef@casper.infradead.org> <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de>
+ <ZLl2Fq35Ya0cNbIm@casper.infradead.org>
+In-Reply-To: <ZLl2Fq35Ya0cNbIm@casper.infradead.org>
+Reply-To: noloader@gmail.com
+From:   Jeffrey Walton <noloader@gmail.com>
+Date:   Thu, 20 Jul 2023 17:38:52 -0400
+Message-ID: <CAH8yC8=BwacXyFQret5pKVCzXXO0jLM_u9eW3bTdyPi4y8CSfw@mail.gmail.com>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org,
+        debian-ports <debian-ports@lists.debian.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,39 +90,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<snip>
+On Thu, Jul 20, 2023 at 2:39=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
 >
-> > > > It seems to me though the sizeof(zsdesc) is actually 56 bytes (on
-> > > > 64-bit), so sizeof(zsdesc) + sizeof(memdesc) would be equal to the
-> > > > current size of struct page. If that's true, then there is no loss,
-> > >
-> > > Yeah, zsdesc would be 56 bytes on 64 bit CPUs as memcg_data field is
-> > > not used in zsmalloc.
-> > > More fields in the current struct page might not be needed in the
-> > > future, although it's hard to say at the moment.
-> > > but it's not a loss.
+> On Thu, Jul 20, 2023 at 07:50:47PM +0200, John Paul Adrian Glaubitz wrote=
+:
+> > > Then we should delete the HFS/HFS+ filesystems.  They're orphaned in
+> > > MAINTAINERS and if distros are going to do such a damnfool thing,
+> > > then we must stop them.
 > >
-> > Is page->memcg_data something that we can drop? Aren't there code
-> > paths that will check page->memcg_data even for kernel pages (e.g.
-> > __folio_put() -> __folio_put_small() -> mem_cgroup_uncharge() ) ?
+> > Both HFS and HFS+ work perfectly fine. And if distributions or users ar=
+e so
+> > sensitive about security, it's up to them to blacklist individual featu=
+res
+> > in the kernel.
+> >
+> > Both HFS and HFS+ have been the default filesystem on MacOS for 30 year=
+s
+> > and I don't think it's justified to introduce such a hard compatibility
+> > breakage just because some people are worried about theoretical evil
+> > maid attacks.
+> >
+> > HFS/HFS+ mandatory if you want to boot Linux on a classic Mac or PowerM=
+ac
+> > and I don't think it's okay to break all these systems running Linux.
 >
-> zsmalloc pages are not accounted for via __GFP_ACCOUNT,
+> If they're so popular, then it should be no trouble to find somebody
+> to volunteer to maintain those filesystems.  Except they've been
+> marked as orphaned since 2011 and effectively were orphaned several
+> years before that (the last contribution I see from Roman Zippel is
+> in 2008, and his last contribution to hfs was in 2006).
 
-Yeah, but the code in the free path above will check page->memcg_data
-nonetheless to check if it is charged. I think to drop memcg_data we
-need to enlighten the code that some pages do not even have memcg_data
-at all, no?
+One data point may help.. I've been running Linux on an old PowerMac
+and an old Intel MacBook since about 2014 or 2015 or so. I have needed
+the HFS/HFS+ filesystem support for about 9 years now (including that
+"blessed" support for the Apple Boot partition).
 
-> and IIUC the current implementation of zswap memcg charging does not
-> use memcg_data
-> either - so I think it can be dropped.
+There's never been a problem with Linux and the Apple filesystems.
+Maybe it speaks to the maturity/stability of the code that already
+exists. The code does not need a lot of attention nowadays.
 
-My question is more about the generic mm code expecting to see
-page->memcg_data in every page, even if it is not actually used
-(zero).
+Maybe the orphaned status is the wrong metric to use to determine
+removal. Maybe a better metric would be installation base. I.e., how
+many users use the filesystem.
 
->
-> I think we don't want to increase memdesc to 16 bytes by adding memcg_data.
-> It should be in use-case specific descriptors if it can be charged to memcg?
->
-<snip>
+Jeff
