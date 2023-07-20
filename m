@@ -2,139 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C1975AFBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 880EF75AFC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbjGTN0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
+        id S231303AbjGTN1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbjGTN0Z (ORCPT
+        with ESMTP id S229616AbjGTN1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:26:25 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11740210B
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:26:19 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qMTfL-0007aN-QI; Thu, 20 Jul 2023 15:25:59 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qMTfK-000qcF-DI; Thu, 20 Jul 2023 15:25:58 +0200
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qMTfJ-000Ezt-15;
-        Thu, 20 Jul 2023 15:25:57 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: [PATCH net-next v1 6/6] net: dsa: microchip: ksz9477: make switch MAC address configurable
-Date:   Thu, 20 Jul 2023 15:25:56 +0200
-Message-Id: <20230720132556.57562-7-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230720132556.57562-1-o.rempel@pengutronix.de>
-References: <20230720132556.57562-1-o.rempel@pengutronix.de>
+        Thu, 20 Jul 2023 09:27:50 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2492D5E;
+        Thu, 20 Jul 2023 06:27:25 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b9d9cbcc70so1075225ad.0;
+        Thu, 20 Jul 2023 06:27:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689859633; x=1690464433;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GlAwLGhvuTr8ROLaXnMqr4ZXOd2hH6vJbKxn4BmvVKs=;
+        b=huDDrITdBQpnjKy+gDaMGWTj8DruZyx+0VmbxI7pvAzYWUumkCsWPk5KSoHQUhGIUH
+         kcHhw5Aegb2cJR+OCtvopNOa4kFPcmdPVw6pyOGi9s1yZZXUapjMMHcc8gk6so/WzTVE
+         cEc8m05nr2de6/RdYAd6slrngsMhespqEptzgsuT1doWySDXJyjc0ul5UqwOo81m1jaP
+         1Z+2A2WjGvz4hxFUnvyAXuCq1MWmpc25fKCOeF291lCorrWKegL36wLtYaULSBT76RWM
+         gzzcOmXHnmwu0eWk7BlfS/G87Hb7la79NNUk0wbuMTLzcoLqG1HprfVsqDry4/1NAUPr
+         Bp4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689859633; x=1690464433;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GlAwLGhvuTr8ROLaXnMqr4ZXOd2hH6vJbKxn4BmvVKs=;
+        b=YBA62jlinsx0YnYVNYoy+FdLIt+gB4YDD1BEYaCNz+KSg5FWft0K8UucNzxoVE9qKx
+         ijCTUtCfnWN95FnvBYCE4ZcXsEGvOT+0KOXDxUzp7Ii6Dzqp70E3fB3VzgkL+/cFLOXf
+         B5GN0kZWDRg4x/TJGaacegLdzSvQBZxdW+LRY7Kmke/+bfsX4uanaXJ/Z0flbkIkLJr/
+         FLy0brAU1jlZVKxp+KKH/pYbTV7GjSJHc5iBInLieRNHAYxjqLpGTUHrao+KzgG54XFT
+         z/0C9hEpCS+uuWfdSsfouzgo4iqh+/7oqcMH3LGh6DRRsJyBstMFWNYYk7jXghj0eNgt
+         4M8w==
+X-Gm-Message-State: ABy/qLaeX1asY65yQQMUY1WiFitIpd7XwiKD1IzuERLh/oxufa/g7NJk
+        XlELHbkbpNgDDDsTDgIO1iaS2W2uckA3MqxqP38=
+X-Google-Smtp-Source: APBJJlHpIpx+6q4xexQorUGUZRl3XBmaiEghmv4HN9QAPhLEnB8YKY6NgvI1sBgEFzkyO/gUyYDYrDwAttqI4bmlW/M=
+X-Received: by 2002:a17:902:da85:b0:1b8:9fc4:2733 with SMTP id
+ j5-20020a170902da8500b001b89fc42733mr19322083plx.3.1689859632641; Thu, 20 Jul
+ 2023 06:27:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230720131028.3730704-1-james.hilliard1@gmail.com> <20230720131028.3730704-2-james.hilliard1@gmail.com>
+In-Reply-To: <20230720131028.3730704-2-james.hilliard1@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 20 Jul 2023 10:27:00 -0300
+Message-ID: <CAOMZO5BPadhvTux-YMRZtZS=QaQhk9z+h7COk7_5S4gaqeE2eQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] ARM: dts: imx6qdl: Add Variscite VAR-SOM-MX6 SoM support
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     devicetree@vger.kernel.org,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The switch MAC address is used for sending pause frames and for Wake on Magic
-Packet. So, make use of local-mac-address property in the switch node
-root and configure it in the HW.
+On Thu, Jul 20, 2023 at 10:10=E2=80=AFAM James Hilliard
+<james.hilliard1@gmail.com> wrote:
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/dsa/microchip/ksz9477.c    | 8 ++++++++
- drivers/net/dsa/microchip/ksz_common.c | 7 +++++++
- drivers/net/dsa/microchip/ksz_common.h | 2 ++
- 3 files changed, 17 insertions(+)
+> +       reg_audio: regulator-audio {
+> +               compatible =3D "regulator-fixed";
+> +               regulator-name =3D "tlv320aic3x-supply";
+> +               enable-active-high;
 
-diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-index 1a3d7ae5970e2..f3c59f5fd4dc2 100644
---- a/drivers/net/dsa/microchip/ksz9477.c
-+++ b/drivers/net/dsa/microchip/ksz9477.c
-@@ -1211,6 +1211,14 @@ int ksz9477_setup(struct dsa_switch *ds)
- 	if (dev->wakeup_source)
- 		ksz_write8(dev, REG_SW_PME_CTRL, PME_ENABLE);
- 
-+	if (is_valid_ether_addr(dev->mac_addr)) {
-+		int i;
-+
-+		for (i = 0; i < ETH_ALEN; i++)
-+			ksz_write8(dev, REG_SW_MAC_ADDR_0 + i,
-+				   dev->mac_addr[i]);
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 354cc5333675b..b6ad1f2dddf3b 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -3686,6 +3686,8 @@ int ksz_switch_register(struct ksz_device *dev)
- 	for (port_num = 0; port_num < dev->info->port_cnt; ++port_num)
- 		dev->ports[port_num].interface = PHY_INTERFACE_MODE_NA;
- 	if (dev->dev->of_node) {
-+		const u8 *mac;
-+
- 		ret = of_get_phy_mode(dev->dev->of_node, &interface);
- 		if (ret == 0)
- 			dev->compat_interface = interface;
-@@ -3720,6 +3722,11 @@ int ksz_switch_register(struct ksz_device *dev)
- 
- 		dev->wakeup_source = of_property_read_bool(dev->dev->of_node,
- 							   "wakeup-source");
-+
-+		mac = of_get_property(dev->dev->of_node, "local-mac-address",
-+				      NULL);
-+		if (mac)
-+			memcpy(dev->mac_addr, mac, ETH_ALEN);
- 	}
- 
- 	ret = dsa_register_switch(dev->ds);
-diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index b67bb9b4631ea..adedc95c60fac 100644
---- a/drivers/net/dsa/microchip/ksz_common.h
-+++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -171,6 +171,8 @@ struct ksz_device {
- 	struct mutex lock_irq;		/* IRQ Access */
- 	struct ksz_irq girq;
- 	struct ksz_ptp_data ptp_data;
-+
-+	u8 mac_addr[ETH_ALEN];
- };
- 
- /* List of supported models */
--- 
-2.39.2
+enable-active-high should only be used when there is a corresponding
+gpio property.
 
+> +&ecspi3 {
+> +       fsl,spi-num-chipselects =3D <1>;
+> +       pinctrl-names =3D "default";
+> +       pinctrl-0 =3D <&pinctrl_ecspi3>;
+> +       cs-gpios =3D <&gpio4 24 GPIO_ACTIVE_HIGH>;
+
+This should be ACTIVE_LOW instead.
+
+> +       status =3D "okay";
+> +};
+> +
+> +&fec {
+> +       pinctrl-names =3D "default";
+> +       pinctrl-0 =3D <&pinctrl_enet>;
+> +       phy-mode =3D "rgmii";
+> +       phy-reset-gpios =3D <&gpio1 25 GPIO_ACTIVE_LOW>;
+
+This is a deprecated property.
+
+The recommendation is to add a mdio node with:
+
+reset-gpios =3D <&gpio1 25 GPIO_ACTIVE_LOW>;
+reset-assert-us =3D <10000>;
+
+Is this an Atheros AR8031 PHY. If so, please check imx6qdl-sabresd.dtsi.
+
+> +&ssi2 {
+> +       fsl,mode =3D "i2s-slave";
+
+This is unused, drop it.
+
+Please check commit ece1e4999 606 ("ASoC: fsl_ssi: Remove unneeded
+'i2s-slave' property")
+
+> +&usdhc3 {
+> +       pinctrl-names =3D "default", "state_100mhz", "state_200mhz";
+> +       pinctrl-0 =3D <&pinctrl_usdhc3>;
+> +       pinctrl-1 =3D <&pinctrl_usdhc3_100mhz>;
+> +       pinctrl-2 =3D <&pinctrl_usdhc3_200mhz>;
+> +       bus-width =3D <4>;
+> +       vmmc-supply =3D <&reg_wl18xx_vmmc>;
+> +       non-removable;
+> +       wakeup-source;
+> +       keep-power-in-suspend;
+> +       cap-power-off-card;
+> +       #address-cells =3D <1>;
+> +       #size-cells =3D <0>;
+> +       status =3D "okay";
+> +
+> +       wifi: wifi@0 {
+> +               compatible =3D "ti,wl1835";
+> +               reg =3D <2>;
+
+@0 and reg =3D <2> do not match.
