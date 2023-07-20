@@ -2,404 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717CA75B0F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A1675B0FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbjGTOOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 10:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47658 "EHLO
+        id S232127AbjGTOOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 10:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbjGTOOb (ORCPT
+        with ESMTP id S232051AbjGTOOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 10:14:31 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739DC2686;
-        Thu, 20 Jul 2023 07:14:26 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-cfcebc33d04so748442276.2;
-        Thu, 20 Jul 2023 07:14:26 -0700 (PDT)
+        Thu, 20 Jul 2023 10:14:36 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F52211F;
+        Thu, 20 Jul 2023 07:14:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1689862473; x=1721398473;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+  b=KaIb1MKbGTs3dCaxjS0utsaPnvWxpGoC2SjaWpxFVmAYUaqMUP1RV2Ee
+   FkDpoWqst3g4/CN31rvmqa3591wB+j8A/T+QWqtP3QR93fly0xGTg45G/
+   lq9yF2IlabjXBUovYfGnNiKsdxgJB3Gb2oGQiDNa01veBt1cu5b8oLjW9
+   GlJfxUpHnLg/r/T5pG44S1EYKqIoFmVVAUyo+7L94aSk9oSXvAjf7o7My
+   VReNl/eii2yL7LMeR7GMwccnRZmXSS2ynXL9fT509B5MunWBf4vJc02FF
+   ZP+dTIKl2D2ebpVDaZ60SsjFU10Tcnq4aEviGUcyjzLo1QqXQK7zdklqT
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,219,1684771200"; 
+   d="scan'208";a="343692798"
+Received: from mail-dm6nam04lp2043.outbound.protection.outlook.com (HELO NAM04-DM6-obe.outbound.protection.outlook.com) ([104.47.73.43])
+  by ob1.hgst.iphmx.com with ESMTP; 20 Jul 2023 22:14:31 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QZ6IO9pQ0K4EjA94tDYAc5A+mHcq8MUrJWGVsc3/lk6Bxc+PNUpIbOldhnbksS3kWWnkaqjoIXfR5A90pnHxBGFqa4GIxUDsE2j/FfaVZ7zVBBt55X/UdZepJce+PXeReBJfGsZM+7lnkgRhpVV8AOTGzGw4jAEysR22vhyilTpHwRnWWpEzF682HxGk5O6Zp6OFmINPpDBumKNCTveNJN3Himwq21LMz9qDgoBW0efTjt1hdi+/0PCNEHYoVvGfj8QjciyMOk+I+RdNl5UmNzMukIGSouNuaZqS8bNJiQN+k76ROkpyu1ZXdOXKiWuZ5DOUdyVfe3dTm53qo0hxfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=Yx7Dx5V6IiIgGsAcskNtuKESr+tCTW8jCEKyAKg18g7/lXX2n2LrVE15+Mr0aFGdE/scUgJtsASAV8K31jepCqW2D3IBiOcoJ7rDei49sevqHF5SYsDxr4PGtw/BZuFhWPXhyaHfZhay6mQAGyZtY69E6T7NLLw3uTyd+/uDGYc9NGfbH4mkHddWIA+4eK5U2YgznrlYxt1bTWxSpt/W+aMGH0Obu1R+Dlt+n2b7bqsTVZy6umuMvz+Ql1cH03LU9hPc88rhyZ/yS4t2qhTFqERk9z5bvmqcZuxgOPFdv7i6cVqvF0s6AG3d6V0BKqFIiS2si5/Bi7AyEuhQSkRdEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689862465; x=1690467265;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Z+6ZA3+zW2x/yG4Zxjlc9UzudCwrZGMn9TeL09tqn4=;
-        b=om+ItY/6ZVzt+Timon50dblX3VqF9g43SkFSIjVB0vbqeDtABwGs0mgcsS1mmIMJ/c
-         n7m++QCJVy2FR/3nHclD8ADdpt0C4jB7N1MACTF1hKKungfzkXmwtdt5wml9j/29FElM
-         xu7TeiIMhJGW/ZSyGIK/ohVYsmGfEtDIZJBtEt6ugemX/+ko6/RyBrgJe2nn6QZwlqXh
-         K8o4eAr5jOqnoiJhwklTSXYcy6cLsjoykYIejzg411/0VGPNBwDXJkPOwIFfljoHG1mg
-         a9mY0v5Pqwt5YFdIzy+IxgyqO3ev7NmxpS26sVUe6ox3as2PBRFc9PEo7P7k5S6s36jb
-         JVnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689862465; x=1690467265;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4Z+6ZA3+zW2x/yG4Zxjlc9UzudCwrZGMn9TeL09tqn4=;
-        b=JAitwEg0nNRHjPktZAWlh9dBxFUcM+2DMPHldhRXj/MgsACsg9fVNCXE8NdYLTPsMo
-         20jS/W+JBYb49altdTR+QG8VB4MM/OZFNXQdM9V52dZ/UOEvyVeIMVybG1+lfIXX1cSa
-         oK/xoY/jGVBvPZ6Wz5gjF4KoL9+BycVoMrGWbVT6QYpXLSZjDb9D53Bm6Ind288vlEQ9
-         ck+MNtGfQtpEa7XkAOI6GU5HD6v4C9buZdpMJJQBZBfjldn1VoBQoMaJNmoM3lShr75m
-         e2o7VuZgQo5d9ZPQaMeoRZ5MzYqd7fyaZm+QzKVBv7Jkacc99UX/NF5TdNeFGAWtYN7H
-         VuEA==
-X-Gm-Message-State: ABy/qLZctqReH6VrClwPETIQiNT6HsMsTs4Ym1uTpIJnmn2zta19NXDs
-        bR3Btis3qfDr2fCz8XV9HPI=
-X-Google-Smtp-Source: APBJJlEErtXcd9P4kGpnmsDkOD9fvAus333hyUySJgHFNxRkZWhyPtDIk94mhdqVyWLRzE6u4QGShA==
-X-Received: by 2002:a81:a197:0:b0:576:916d:96b with SMTP id y145-20020a81a197000000b00576916d096bmr5865169ywg.36.1689862465495;
-        Thu, 20 Jul 2023 07:14:25 -0700 (PDT)
-Received: from z-Lenovo-Product.lan ([2605:59c8:6153:ca10::4f6])
-        by smtp.gmail.com with ESMTPSA id z195-20020a0dd7cc000000b00583414320d2sm221362ywd.111.2023.07.20.07.14.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 07:14:25 -0700 (PDT)
-From:   David Ober <dober6023@gmail.com>
-To:     wim@linux-watchdog.org
-Cc:     linux@roeck-us.net, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, mpearson@lenovo.com,
-        dober@lenovo.com, David Ober <dober6023@gmail.com>
-Subject: [PATCH v2] Watchdog: New module for ITE 5632 watchdog
-Date:   Thu, 20 Jul 2023 10:14:21 -0400
-Message-Id: <20230720141421.119237-1-dober6023@gmail.com>
-X-Mailer: git-send-email 2.34.1
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=dUNcuQuYCN4kiptu5wR143yslFxEadcLpcRqa0l4vDHUAhch9uyuC1veSmFkfgbj9XLzRE/zUfaRP/Rx0wSs9Yj7fL1yUvLgStWAErTudU5+cgcusZHH4LkKH7itsrmLC9gdnuZw1qoD0ETco58yV4uu7WghgTNwFiuKFWD6RWU=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by SJ0PR04MB7615.namprd04.prod.outlook.com (2603:10b6:a03:32b::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Thu, 20 Jul
+ 2023 14:14:29 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::64cc:161:b43c:a656]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::64cc:161:b43c:a656%3]) with mapi id 15.20.6609.025; Thu, 20 Jul 2023
+ 14:14:29 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+CC:     "Darrick J. Wong" <djwong@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Brauner <christian@brauner.io>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/6] block: open code __generic_file_write_iter for blkdev
+ writes
+Thread-Topic: [PATCH 3/6] block: open code __generic_file_write_iter for
+ blkdev writes
+Thread-Index: AQHZuxNAkwfYrjnF8UmZO5DlP5Du26/CstYA
+Date:   Thu, 20 Jul 2023 14:14:29 +0000
+Message-ID: <19c737c7-8a62-5688-e279-1587b4d6b5d7@wdc.com>
+References: <20230720140452.63817-1-hch@lst.de>
+ <20230720140452.63817-4-hch@lst.de>
+In-Reply-To: <20230720140452.63817-4-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|SJ0PR04MB7615:EE_
+x-ms-office365-filtering-correlation-id: 3d5894eb-3115-46a9-e46d-08db892ba1c4
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: S4LLSjwwCAgLYb/fNw0Wx40IPIQkmIXEycgclL6WrIb26Qg3uvtdO61nUZcWEEP2pSJiQ1285vdZDVHF58HbA/g+V/Jw6EctMl2XpKEYLLdUwiurBVDzMaTkIg3PHVgBL7J8kxmJertboh+82cV9SRA/02QDnvRwHrlJG5dfm5koF8sj1VIVN6Sij+R30giK6bOp8RY9xcKTVeae8zKPVh12UUPgyeHYhumpgm/RG5DYYvnPBu8WaawqEJxMdKbrdc6q9qK6lKc1QyMjJZoiKx3XS1fMgv2ykjwMjokuY5OC772txljyZYvVg88ISpQ8szeDW4EW8djog2N7Gb14WJKIO7ykn4kFIcM/Jze3oVbhv4+g1W1U++mgE9SrBNSZ2Rer+3y02pAQ+4KbHO/z41zQ3ChU7oj2XLK3QNJdURKPf3eV9YHAON/L+qBVLWVpXb3cAobtKC3TFUwkNfXRgV9ywBDvvWwZYOpW3ZljG4NcwvP6tUymDh9LQPvho5QqPQkUMuz6Tj76YKJLfMAp2KGPbwIBreeFtEaBMH/tw0hkmZSe+XNeUBzpiqYtJJ24mSVq9wfBnzVwtuT3q+NIviZyuBdgb21/oh+EyfOsJwvNC54MbKFzizMpf2xAJpwaEediFiNqSxu1SFseVfffn7qaGimKZ9uaE/W6k1xI2jIDlQD8WZL3xY2OhV6CVES8P7kdJQg5QTEwtGmwWVb9yw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(396003)(376002)(39860400002)(346002)(451199021)(71200400001)(4270600006)(31686004)(4326008)(6512007)(316002)(41300700001)(26005)(6506007)(186003)(54906003)(110136005)(5660300002)(6486002)(66556008)(66446008)(66946007)(66476007)(64756008)(8676002)(7416002)(8936002)(91956017)(76116006)(478600001)(19618925003)(2616005)(2906002)(38100700002)(38070700005)(122000001)(82960400001)(86362001)(36756003)(31696002)(558084003)(41533002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TElXcXN1NlJ5ckc0aTNVcXhFL2UxMUhkbG42OGZEMDh3VWVPNE5oMmoxdXRN?=
+ =?utf-8?B?dk5SQTMwaVVJaFdkTGRhQk8yaDB2RElhTGw2clZSamR0eDFrcnVRZ1dZUkZG?=
+ =?utf-8?B?MmVQTERGN0xBbXJQYlJoeThwSVFvSml5c3pMQkkxWDBIaWRYaFhJMSsvd1dh?=
+ =?utf-8?B?VXBKclFuK0p6MUZEZTF6Nnd6ZlJkbjNJNHkrWFpHdyt0dG00Z3R6TzlnTFVu?=
+ =?utf-8?B?aTNXMmp5MWNndUZKSld0ek8zQkNCMkVZeW9WVnVvQTBlcUEzaFZmRU1Ed0tJ?=
+ =?utf-8?B?NGNvMVVCUmZueU1wY1BESWFLT3JMS0hsdi9kTW1aLzBMb2I1MkJQbUtwY1J0?=
+ =?utf-8?B?MWRMeUp0RThHZ2lqRnMvdkVtVlFHc3FUMEQ1cDBXNVZWN09scmN4V1VOVEdS?=
+ =?utf-8?B?amIycVJHUGk0ZnNZZFFvVHYvNzhWZ0RTVEc4YkVtRkcwTzh4R1BoYXpmbUFU?=
+ =?utf-8?B?VnA4SjlBdFBWUDU2NTVCYjlpUGFlaTNjM3QwZFhxajNMWmtmcVU5NDhGYTBt?=
+ =?utf-8?B?cXZrSnFLb29ub2tDZnNManRnSEN1azMzL3BBaXVvR3AwYzh3d2xseWJveFRE?=
+ =?utf-8?B?QklTblErMlh6TExPMmZ2K1ZGOFBjYkllWlI2SlVTV0N5bmVzNUIyanVmWlMw?=
+ =?utf-8?B?NFFYWU10VDdEZU1CcXNvN281OEhVdkp4WVlwS0ViWHdNRkRJajBHYUNVSTZr?=
+ =?utf-8?B?elNITUdubHNCaVFtcWVRQnlpKzhZeTNTMWd5c3BPc2Z5cXlodFpFNVNJTEIx?=
+ =?utf-8?B?Zmg2MTZsbzZsb0pLV0lQbU9TaVFFWnppcnZVUlU1QjF6MDl3a212THM1a1l0?=
+ =?utf-8?B?Yzh0dXkrekFGRis5dzVBTnZmU3pNam1PUVpoT25reTJjL1VKQmhHWFRnNjYx?=
+ =?utf-8?B?bjBSU1dnbTl5bEZzd2k3MkdPTDcvYUc3SzB3alBFdkJPK0J2czdNSEVrQ3NC?=
+ =?utf-8?B?dDdOZnVpQ3BTVS9yT0dnWmYyYjJNWUZUajVneExGZ0RPRU1Oa3FLRmlRUXFq?=
+ =?utf-8?B?OUozQVFZL2x4YXJ3VDg1SW9XSHBPdEtnOStHbUFPQ1dqQlNiWmtzeFkvY1pC?=
+ =?utf-8?B?akNMaTY2YkpYcEd4YmFLSmFqeXoxSHhCT0ZxQmZnanh3SDRyOXVtcVBQbG12?=
+ =?utf-8?B?ZnBFbDcvU1V6b0ZXZk5NMEYrUHpMbDk1VmNxclhJeFpBdFczU2NyNlhMTUxY?=
+ =?utf-8?B?TE5Xak5hL0lua3pMVHBWWi9iUE5YOExmMzRURmxXbWN6Q3g4YjN6N1F2ZzM2?=
+ =?utf-8?B?TUtCdTIvMktWTEROdDU4NlAwcnRXeUV5V0NJRytLUlIyTzU5NUFCRW9mNjQ5?=
+ =?utf-8?B?aHcyUzV1M0lmaWRlZnRqTmdicUp5Uk1iV2dQeWFQNi9tSVRzNVcyWXdxQ0c0?=
+ =?utf-8?B?MW9yYUF1N3dUQVN4RTVic2tPdlYxMENCUUJ0SnB2NFBKMWN4NW9xY212dUky?=
+ =?utf-8?B?c1RnT3BsVGhFS2VTSDh3RXBTZThwZlpnUTIya3hheGZ5cDF3RDduRVZ2NVpu?=
+ =?utf-8?B?R1gvK094T1JsalZHVGRYM0EvRUZJZXkxMGcvK0swNFFpdDBISnZ4NXdIeHp1?=
+ =?utf-8?B?eXgzakEvQzJYZW1Ec3g1Q2dNMUtPRDdYRE9JbkNpcm8xWXVBSjhwbFcvaHpn?=
+ =?utf-8?B?YnRIcjdTV0dKQjlVMlRqZytMK1NBZlBDWGo2dDhqdU1ieGZqSmladkNKQXAr?=
+ =?utf-8?B?blJSOXdRTDJZbnZzSUxZcnk0V1dsaXFPcCtrR1hmNzhCQlRVcWwyZElJb3Fz?=
+ =?utf-8?B?MStVdEZOekxjdDZWSWlSYWoxMXJJSXNRdlJNSDd5Z0lBVk8wM3RzMWtLOUtu?=
+ =?utf-8?B?elRwU29sU3hna0poc3VzdXp3VUlkblhocXlGZGJqVndnK1JSMGZLNEtCNjl4?=
+ =?utf-8?B?cUdmZWtWY1NiaEw3VnZVRkNqZGt4c1Z3d1lZZ3lyM08zUzlKeXVUbkRTY3A5?=
+ =?utf-8?B?RTgrcDkwS2VyUnVKYmZPT3Ayb1E0UWloTWVYakZKMzg5d3hkdlJpaER0L1R6?=
+ =?utf-8?B?TzFIclhkMjNQOFpEMGZyZDJrUmtRRXdYVjhlK05RNk0wWFl1Nm8xMHJicGpG?=
+ =?utf-8?B?MGxDbWJjdjd5dE8vcHJjRTZRcWxjMEVIdzhLUjYvUXBueVFuQnFZUStUK3Zw?=
+ =?utf-8?B?SnpsbmltVGYvcXBZMFU5Y1JXaTUwdUlWeHNRNml1aFJMVkp0S0Z5cmp0QUYx?=
+ =?utf-8?B?V3c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A38DD0537ACFC84A8121054649D7C3D7@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?UHdPdERwcGdra2N1T0JXZ1Zyb29SL2dCTWZWV1RlQUlNR1NYQldGM3dEY0FE?=
+ =?utf-8?B?Y3FDSlUyM2ZQbjVUczFDNm5JSDlmWkdVdFh5ekM2blIxbldoeEZsUkdObDdk?=
+ =?utf-8?B?M255T1NKRDIzT0lKTFQxRklXSXJabUJZRXpoNUVKZTNxN1RNckJON2hJNnd2?=
+ =?utf-8?B?c1luWDVBRUxxRUJMbThmYjVUMzl5aUpsRHFkVU5ZTWFmQk5aVlgvZjRnRW9w?=
+ =?utf-8?B?QzNPZWk4d0J3TnNWYmcyVDJqcDRpV2E0N29qQnNSL3lBZmsveDdQU2sxQjFM?=
+ =?utf-8?B?di82NzZFMFdVTmxmTXd3WllDWEJ1WnFlV2VYS2VtZVFWbFY2MWVVTmk5VS8x?=
+ =?utf-8?B?TG4xd09GVWFnL3JhTG13aFJCNDVhYXBQdGFBVy8wVFQxODJBUzVQdEFLME1G?=
+ =?utf-8?B?U3NDQ3hoMDlDTGJsZitwT2lvMVBzQmI2R1lEa29OdG5tT2tqN213TVprT0V2?=
+ =?utf-8?B?TTJsa05ZblkzU2RBZnpxWWgwZG5zbVJhWUFoZXRQaDBrUWJCOVVkcUpaNG9X?=
+ =?utf-8?B?UHZJc0l0alFNT2lpZTJxNldlbmNSR1pTVittY1h3LzBybGh3SGpCdWZBMGV6?=
+ =?utf-8?B?MnVnSFJTTjhLN25jWXBaQlp2bUtaSm0wNUFCRXlEaldHZmRpYkhnWTgwdWhI?=
+ =?utf-8?B?R3F5NXFTTytrb1NvcTVvWlNFeVFWS0lFQWQxMVAyMklvT2ZRQ09xVzZxcDA2?=
+ =?utf-8?B?U21hTFZoNjJpL2tmUndHd3dQRXdnczFsa044aDdJZWdOYStyRm1rZjRvMUxo?=
+ =?utf-8?B?MkhCNk9BclpVWFRDaTF3WGNZVnpobWpUWCtFcXI5alBadkJ3czdZTlZldGRi?=
+ =?utf-8?B?VUtrbUp4MUhSRkpaNUMvTXpNK1o4VmtNMVZZSDBtQm1zVjdwMFFlWmJPREVU?=
+ =?utf-8?B?YVNSbFVSZ3RQOVFSTFJzOUg3cUttSzhpY2tIanIyVjdZbXJXbVQrdlRySDkr?=
+ =?utf-8?B?ZHpucXZhRXc1T1F2Y3ZwMG83ZHlycmtOOTZKS3pYVk5lRTM0czhDbzBpK1Ex?=
+ =?utf-8?B?a1JxbGpFOE5Ub0J4VDM5NjBoQ1VJYmtISHJQNytoUEg5dzI1WVNmdGVrK0U5?=
+ =?utf-8?B?am0xZ3Y0Z3lRVTljalZaalVVMFI3WDRuNm91K0xxbVBOYVdhMElvVHRFUVhL?=
+ =?utf-8?B?TTUvL0hzU0V4UU5pTUpxbXpHM05Fb0dISm1DeVd4bWVKTk9hcUlKT3hyV0ls?=
+ =?utf-8?B?dFdKejlTRjlXeTBETXB6S0pQUFJFYTEvcVVTcExYSGlvQWpUTGlMbXhPNUxE?=
+ =?utf-8?B?ZnQxT2U3SkQvMUVqdExzVjlIdHZ0ZnBiWGJkSzlKREhzdUVQejYwZVEramFm?=
+ =?utf-8?Q?IQGGZIyg5fhv/SzVJOTQFzwgeKcG4vRGrs?=
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d5894eb-3115-46a9-e46d-08db892ba1c4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2023 14:14:29.3409
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZvGTTZh2zeqFLSjl63MFUXUZYIkKMrMenCtPyRSSCeWMivC5+HeRLlFzQg38j03bjPEMVvYV9jmQNpT4SK59olPM07qMAz107HoJWG9SQMI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7615
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This modules is to allow for the new ITE 5632 EC chip
-to support the watchdog for initial use in the Lenovo SE10
-
-Signed-off-by: David Ober <dober6023@gmail.com>
-
-V2 Fix stop to deactivate wdog on unload of module
-V2 Remove extra logging that is not needed
-V2 change udelays to usleep_range 
-V2 Changed to now request region on start and release on stop instead 
-   of for every ping and read/write 
-
----
- drivers/watchdog/Kconfig       |  10 ++
- drivers/watchdog/Makefile      |   1 +
- drivers/watchdog/ite5632_wdt.c | 273 +++++++++++++++++++++++++++++++++
- 3 files changed, 284 insertions(+)
- create mode 100644 drivers/watchdog/ite5632_wdt.c
-
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index ee97d89dfc11..861cc0eff468 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -264,6 +264,16 @@ config MENZ069_WATCHDOG
- 	  This driver can also be built as a module. If so the module
- 	  will be called menz069_wdt.
- 
-+config ITE5632_WDT
-+        tristate "ITE 5632"
-+        select WATCHDOG_CORE
-+        help
-+          If you say yes here you get support for the watchdog
-+          functionality of the ITE 5632 eSIO chip.
-+
-+          This driver can also be built as a module. If so, the module
-+          will be called ite5632_wdt.
-+
- config WDAT_WDT
- 	tristate "ACPI Watchdog Action Table (WDAT)"
- 	depends on ACPI
-diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-index 3633f5b98236..32c8340f3175 100644
---- a/drivers/watchdog/Makefile
-+++ b/drivers/watchdog/Makefile
-@@ -119,6 +119,7 @@ obj-$(CONFIG_WAFER_WDT) += wafer5823wdt.o
- obj-$(CONFIG_I6300ESB_WDT) += i6300esb.o
- obj-$(CONFIG_IE6XX_WDT) += ie6xx_wdt.o
- obj-$(CONFIG_ITCO_WDT) += iTCO_wdt.o
-+obj-$(CONFIG_ITE5632_WDT) += ite5632_wdt.o
- ifeq ($(CONFIG_ITCO_VENDOR_SUPPORT),y)
- obj-$(CONFIG_ITCO_WDT) += iTCO_vendor_support.o
- endif
-diff --git a/drivers/watchdog/ite5632_wdt.c b/drivers/watchdog/ite5632_wdt.c
-new file mode 100644
-index 000000000000..4b1fe6de6f87
---- /dev/null
-+++ b/drivers/watchdog/ite5632_wdt.c
-@@ -0,0 +1,273 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *	Customized ITE5632 WDT driver for Lenovo SE10.
-+ *
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/delay.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/ioport.h>
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/platform_device.h>
-+#include <linux/string.h>
-+#include <linux/types.h>
-+#include <linux/watchdog.h>
-+
-+#define EC_STATUS_port	0x6C
-+#define EC_CMD_port	0x6C
-+#define EC_DATA_port	0x68
-+#define EC_OBF		0x01
-+#define EC_IBF		0x02
-+#define CFG_LDN		0x07
-+#define CFG_BRAM_LDN	0x10    /* for BRAM Base */
-+#define CFG_PORT	0x2E
-+
-+#define CUS_WDT_SWI		0x1A
-+#define CUS_WDT_CFG		0x1B
-+#define CUS_WDT_FEED		0xB0
-+#define CUS_WDT_CNT		0xB1
-+
-+#define DRVNAME			"ite5632"
-+
-+/*The timeout range is 1-255 seconds*/
-+#define MIN_TIMEOUT		1
-+#define MAX_TIMEOUT		255
-+
-+#define WATCHDOG_TIMEOUT	60	/* 60 sec default timeout */
-+static unsigned short bram_base;
-+
-+static int timeout;	/* in seconds */
-+module_param(timeout, int, 0);
-+MODULE_PARM_DESC(timeout,
-+		 "Watchdog timeout in seconds. 1 <= timeout <= 255, default="
-+		 __MODULE_STRING(WATCHDOG_TIMEOUT) ".");
-+
-+static bool nowayout = WATCHDOG_NOWAYOUT;
-+module_param(nowayout, bool, 0);
-+MODULE_PARM_DESC(nowayout,
-+		 "Watchdog cannot be stopped once started (default="
-+		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
-+
-+struct ite5632_data_t {
-+	struct watchdog_device wdt;
-+	int region_locked;
-+};
-+
-+/* Kernel methods. */
-+static void set_bram(unsigned char offset, unsigned char val)
-+{
-+	outb(offset, bram_base);
-+	outb(val, bram_base + 1);
-+}
-+
-+/* wait EC output buffer full */
-+static void wait_EC_OBF(void)
-+{
-+	while (1) {
-+		if (inb(EC_STATUS_port) & EC_OBF)
-+			break;
-+		usleep_range(10, 125);
-+	}
-+}
-+
-+/* wait EC input buffer empty */
-+static void wait_EC_IBE(void)
-+{
-+	while (1) {
-+		if (!(inb(EC_STATUS_port) & EC_IBF))
-+			break;
-+		usleep_range(10, 125);
-+	}
-+}
-+
-+static void send_EC_cmd(unsigned char eccmd)
-+{
-+	wait_EC_IBE();
-+	outb(eccmd, EC_CMD_port);
-+	wait_EC_IBE();
-+}
-+
-+static unsigned char Read_EC_data(void)
-+{
-+	wait_EC_OBF();
-+	return inb(EC_DATA_port);
-+}
-+
-+static void LPC_Write_Byte(unsigned char index, unsigned char data)
-+{
-+	outb(index, CFG_PORT);
-+	outb(data, CFG_PORT + 1);
-+}
-+
-+static unsigned char LPC_Read_Byte(unsigned char index)
-+{
-+	outb(index, CFG_PORT);
-+	return inb(CFG_PORT + 1);
-+}
-+
-+static int GetChipID(void)
-+{
-+	unsigned char MSB, LSB;
-+	unsigned char cmd = 0x55;
-+
-+	outb(0x87, CFG_PORT);
-+	outb(0x01, CFG_PORT);
-+	outb(0x55, CFG_PORT);
-+	outb(cmd, CFG_PORT);
-+	outb(0x20, CFG_PORT);
-+	MSB = inb(CFG_PORT + 1);
-+	outb(0x21, CFG_PORT);
-+	LSB = inb(CFG_PORT + 1);
-+	return (MSB * 256 + LSB);
-+}
-+
-+static int wdt_start(struct watchdog_device *wdog)
-+{
-+	struct ite5632_data_t *data = watchdog_get_drvdata(wdog);
-+
-+	if (!request_region(EC_DATA_port, 5, "EC")) {
-+		dev_err(data->wdt.parent, ":request fail\n");
-+		return 0;
-+	}
-+	data->region_locked = 1;
-+	set_bram(CUS_WDT_SWI, 0x80);
-+	return 0;
-+}
-+
-+static int wdt_set_timeout(struct watchdog_device *wdog, unsigned int timeout)
-+{
-+	wdog->timeout = timeout;
-+	set_bram(CUS_WDT_CFG, wdog->timeout);
-+	return 0;
-+}
-+
-+static int wdt_stop(struct watchdog_device *wdog)
-+{
-+	struct ite5632_data_t *data = watchdog_get_drvdata(wdog);
-+
-+	set_bram(CUS_WDT_SWI, 0);
-+	if (data->region_locked == 1)
-+		release_region(EC_DATA_port, 5);
-+	return 0;
-+}
-+
-+static unsigned int wdt_get_time(struct watchdog_device *wdog)
-+{
-+	unsigned int timeleft;
-+
-+	send_EC_cmd(CUS_WDT_CNT);
-+
-+	timeleft = Read_EC_data();
-+	return timeleft;
-+}
-+
-+static int wdt_ping(struct watchdog_device *wdog)
-+{
-+	send_EC_cmd(CUS_WDT_FEED);
-+	return 0;
-+}
-+
-+/* Kernel Interfaces */
-+static const struct watchdog_info wdt_info = {
-+	.options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE,
-+	.identity = "5632 Watchdog",
-+};
-+
-+static const struct watchdog_ops wdt_ops = {
-+	.owner = THIS_MODULE,
-+	.start = wdt_start,
-+	.stop = wdt_stop,
-+	.ping = wdt_ping,
-+	.set_timeout = wdt_set_timeout,
-+	.get_timeleft = wdt_get_time,
-+};
-+
-+static int ite5632_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct ite5632_data_t *data = NULL;
-+
-+	dev_info(&pdev->dev, "Probe ITE5632 called\n");
-+
-+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->region_locked = 0;
-+	data->wdt.info = &wdt_info,
-+	data->wdt.ops = &wdt_ops,
-+	data->wdt.timeout = WATCHDOG_TIMEOUT; /* Set default timeout */
-+	data->wdt.min_timeout = MIN_TIMEOUT;
-+	data->wdt.max_timeout = MAX_TIMEOUT;
-+	data->wdt.parent = &pdev->dev;
-+
-+	watchdog_init_timeout(&data->wdt, timeout, &pdev->dev);
-+	watchdog_set_drvdata(&data->wdt, data);
-+
-+	watchdog_set_nowayout(&data->wdt, nowayout);
-+	watchdog_stop_on_reboot(&data->wdt);
-+	watchdog_stop_on_unregister(&data->wdt);
-+
-+	dev_info(&pdev->dev, "initialized. timeout=%d sec (nowayout=%d)\n",
-+		 data->wdt.timeout, nowayout);
-+
-+	return devm_watchdog_register_device(dev, &data->wdt);
-+}
-+
-+static struct platform_driver ite5632_driver = {
-+	.driver = {
-+		.name = DRVNAME,
-+	},
-+	.probe  = ite5632_probe,
-+};
-+
-+static struct platform_device *pdev;
-+
-+static int __init wdt_init(void)
-+{
-+	int ret;
-+	int chip;
-+
-+	chip = GetChipID();
-+
-+	if (chip == 0x5632)
-+		pr_info("Found ITE ChipID = %4X\n", chip);
-+	else
-+		return -ENODEV;
-+
-+	LPC_Write_Byte(CFG_LDN, CFG_BRAM_LDN);
-+	bram_base = ((LPC_Read_Byte(0x60) << 8) | LPC_Read_Byte(0x61));
-+
-+	platform_driver_register(&ite5632_driver);
-+
-+	pdev = platform_device_alloc(DRVNAME, bram_base);
-+
-+	/* platform_device_add calls probe() */
-+	ret = platform_device_add(pdev);
-+	if (ret) {
-+		platform_device_put(pdev);
-+		if (pdev)
-+			platform_device_unregister(pdev);
-+		platform_driver_unregister(&ite5632_driver);
-+	}
-+	return ret;
-+}
-+
-+static void __exit wdt_exit(void)
-+{
-+	platform_device_unregister(pdev);
-+	platform_driver_unregister(&ite5632_driver);
-+
-+	LPC_Write_Byte(2, 2);
-+}
-+
-+module_init(wdt_init);
-+module_exit(wdt_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("David Ober<dober@lenovo.com>");
-+MODULE_DESCRIPTION("WDT driver for ITE5632");
--- 
-2.34.1
-
+TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
+dW1zaGlybkB3ZGMuY29tPg0K
