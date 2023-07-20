@@ -2,132 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6976575AEE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C2375AEFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbjGTM5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
+        id S231133AbjGTNAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbjGTM5F (ORCPT
+        with ESMTP id S229983AbjGTNAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:57:05 -0400
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0F7269E
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:56:44 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-48137084a66so333634e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689857803; x=1690462603;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j1ZGppFUGoT15EF4YCw8tI150/zjcmWJj2k2NeFQg9w=;
-        b=es0BgeZaDaDOKqofQU0YHlAOa+KzCTxpREmCuxqWHQtEkfGhmDdxb7N5cUZJTGgMvx
-         xMw9eFq+UZ86AKpp5hN/YnRtAuHi/UOqxhNZEc+5zikZVHRPSyAO5roxPCpH6cCTJ47U
-         7iiH8DkYAsiIeyNfME+fDNAsOIVby8Xbooiw1MDp+iquFx23/TVerqTlvCw6AHD/gHf/
-         Za/chXdMetU6rmRSlu0Oaa8ls9PFUMxAcQCVN6p/0jR6wSL1LVUW2o5K0b2un+wGgrwK
-         r1LxlIcX/bB0QRy8XyTF2wz8b/0qcqfMtNSeSQrDqE6tEJqI3uns8+/tKYlWUfXj9YZT
-         C+rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689857803; x=1690462603;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j1ZGppFUGoT15EF4YCw8tI150/zjcmWJj2k2NeFQg9w=;
-        b=XymSc15/lkpIr4P6B98kx3WGOHMJnQsTUuI+O+QvmOTH19FVVpDG/wz4jNTTwqgfm2
-         jzG8BMgbkbagjSUw4T5madmNbPw/gWlPlbi7OBgerB1l9mkypO21Co5rBUD2SUXse71v
-         e5Tn/o2MiuWQAMSEY/2+WqvH3n4VGUBrAQF1ktrqFyt2YoWJj4tCPf0R5Dii+q83FSRw
-         WDKWSq+3n9PC8SmN2oNir5hH+J8hLUfMboXFvma9yh/6zWXR4C1PxK6mDiwN1id8htTC
-         +xmwHTxEEIASSYK2881iVVHqnG0UeZ9MSze5nu7GKcRJ3TX2MZD4NlFkI6H06UsZELVR
-         tzvA==
-X-Gm-Message-State: ABy/qLb58CXZ5ZPfZKOK1xc9ZUlXj2qqpDjIYa5G3Dee2l443dqJ51PH
-        OGt65pMdqJlVOtiFGCLfVn1PJcLInOoXWakRLF6/oQ==
-X-Google-Smtp-Source: APBJJlEee1o0YKvrMhtsL8MF+yRoXumnj5SDxTztT8XCVutkM3cq6ZpTzwL4P1daguUDMQI5ldv8Cm3SKluYLA9wjIc=
-X-Received: by 2002:a1f:cc86:0:b0:481:388e:b908 with SMTP id
- c128-20020a1fcc86000000b00481388eb908mr5707827vkg.6.1689857803203; Thu, 20
- Jul 2023 05:56:43 -0700 (PDT)
+        Thu, 20 Jul 2023 09:00:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8161269A
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:00:39 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 15:00:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1689858038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nusw9jg0we31NCClupilhXQ04h8H2SKrWfbhWg8vE2w=;
+        b=vqiuDGjeaHoN8wiDBM/fghBXFBNYWPYIaK1t8iB/DtUlC3pLOALp6YEXqCT7tfG8d9SIeE
+        473u8jzjBv1AEDM5Lk98h+0m8MPvFxE1lYPY/hlxbDb0ky3LgmZeX3O/OFlfsq9os8dbC0
+        0RjbwfCrVfg3pB1QEjtKZO2dgzeH09bFmY8/hfqPFIa97Ermv/2rt4/IgEsfxjK1UhxNTU
+        GVV1K2lPVo2ue2ik9dy8pQZ1mAQGBHLVGY5JVXwlm6XG51YBs7y0VoJ0aJtjHX+V+f83eC
+        bsX+LnOm+xlMi4Hk/pdERnJ+q4r2DsOJ8SA60m9mUDQjZ4zwdSmXnGUddbPtjA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1689858038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nusw9jg0we31NCClupilhXQ04h8H2SKrWfbhWg8vE2w=;
+        b=3cmQGps2Z24GA1U0Xck3vOPkQ0iYRD9kJMxLkIeL31gOACoJIhwwkvNmUXw9cgUBPnQON0
+        Dtu6A9noOKKE07Cw==
+From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Subject: Re: Stopping the tick on a fully loaded system
+In-Reply-To: <CAKfTPtCSsLz+qD-xUnm4N1HyZqtQD+rYVagnSur+hfUHEk0sYg@mail.gmail.com>
+Message-ID: <ad370ab-5694-d6e4-c888-72bdc635824@linutronix.de>
+References: <80956e8f-761e-b74-1c7a-3966f9e8d934@linutronix.de> <CAKfTPtCSsLz+qD-xUnm4N1HyZqtQD+rYVagnSur+hfUHEk0sYg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230720061105.154821-1-victor.liu@nxp.com> <20230720112742.GA2525277@aspen.lan>
-In-Reply-To: <20230720112742.GA2525277@aspen.lan>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 20 Jul 2023 14:56:32 +0200
-Message-ID: <CAMRc=MfbWjWTdU4ToFMp_ZV6eGdRnjD--Y+qsN329TsLFGQYxg@mail.gmail.com>
-Subject: Re: [PATCH] backlight: gpio_backlight: Drop output gpio direction
- check for initial power state
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Ying Liu <victor.liu@nxp.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lee@kernel.org" <lee@kernel.org>,
-        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
-        "deller@gmx.de" <deller@gmx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 1:27=E2=80=AFPM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> On Thu, Jul 20, 2023 at 06:06:27AM +0000, Ying Liu wrote:
-> > Bootloader may leave gpio direction as input and gpio value as logical =
-low.
-> > It hints that initial backlight power state should be FB_BLANK_POWERDOW=
-N
-> > since the gpio value is literally logical low.
->
-> To be honest this probably "hints" that the bootloader simply didn't
-> consider the backlight at all :-) . I'd rather the patch description
-> focus on what circumstances lead to the current code making a bad
-> decision. More like:
->
->   If the GPIO pin is in the input state but the backlight is currently
->   off due to default pull downs then ...
->
-> > So, let's drop output gpio
-> > direction check and only check gpio value to set the initial power stat=
-e.
->
-> This check was specifically added by Bartosz so I'd be interested in his
-> opinion of this change (especially since he is now a GPIO maintainer)!
->
-> What motivates (or motivated) the need to check the direction rather
-> than just read that current logic level on the pin?
->
->
-> Daniel.
-> [I'm done but since Bartosz and Linus were not on copy of the original
-> thread I've left the rest of the patch below as a convenience ;-) ]
+Hi Vincent,
+
+On Thu, 20 Jul 2023, Vincent Guittot wrote:
+
+> On Thu, 20 Jul 2023 at 08:51, Anna-Maria Behnsen
+> <anna-maria@linutronix.de> wrote:
+> >
+> > Hi,
+> >
+> > during tests of the timer pull model, Gautham observed regressions under
+> > load. With the timer pull model in place, going idle is more expensive. My
+> > naive assumption, that a system which is fully loaded will not go idle was
+> > simply wrong. Under a fully loaded system (top shows ~1% idle), some CPUs
+> > go idle and stop the tick for several us and come back to work and this
+> > heavily repeats.
+> >
+> > Peter and tglx helped me to track it down to find the reason: The governor
+> > which decides if the tick will be stopped only looks at the next timer but
+> > does not take into account how busy the system is. Here Peter pointed to
+> > the scheduler avg_idle value.
+> >
+> > Beside the existing avg_idle, I introduced really_avg_idle which is not
+> > limited to twice max_idle_balance_cost but also updated in
+> > ttwu_do_activate() when avg_idle is updated.
+> >
+> > With tracing, I was able to see that in the fully loaded case, 75%-80% of
+> > the idle periods have been shorter than the really_avg_idle value. (trace
+> > printk of really_avg_idle values directly at the begin of
+> > tick_nohz_next_event(); enabling sched_wakeup tracepoint; take the delta
+> > between the timestamps of the first and the latter as idle time).
+> >
+> > A generalized approach to prevent going idle, when the system is loaded,
+> > would be to add a check how busy the system is to tick_nohz_next_event().
+> 
+> Would it be better to let the cpuidle governor decide whether to stop
+> or not the tick instead ?
+> With your change, tick_nohz_next_event() becomes an random value which
+> might return something else than the real next event
+> 
+> you might me interested by this:
+> https://lore.kernel.org/all/20230105145159.1089531-1-kajetan.puchalski@arm.com/
+> 
+> They use cpu utilization to stay in shallow c-states some of which
+> don't stop the tick. Maybe you extend this to make sure to not stop
+> the tick for high load
+
+I had also a look at teo. It makes things better but does not solve the
+underlying problem that I see here - please correct me if I missed
+something or if I'm simply wrong:
+
+Yes, the governors have to decide in the end, whether it makes sense to
+stop the tick or not. For this decision, the governors require information
+about the current state of the core and how long nothing has to be done
+propably. At the moment the governors therefore call
+tick_nohz_get_sleep_length(). This checks first whether the tick can be
+stopped. Then it takes into account whether rcu, irq_work, arch_work needs
+the CPU or a timer softirq is pending. If non of this is true, then the
+timers are checked. So tick_nohz_get_sleep_length() isn't only based on
+timers already.
+
+The information about the sleep length of the scheduler perspective is
+completely missing in the current existing check for the probable sleep
+length.
+
+Sure, teo takes scheduler utilization into account directly in the
+governor. But for me it is not comprehensible, why the CPU utilization
+check is done after asking for the possible sleep length where timers are
+taken into account. If the CPU is busy anyway, the information generated by
+tick_nohz_next_event() is irrelevant. And when the CPU is not busy, then it
+makes sense to ask for the sleep length also from a timer perspective.
+
+When this CPU utilization check is implemented directly inside the
+governor, every governor has to implement it on it's own. So wouldn't it
+make sense to implement a "how utilized is the CPU out of a scheduler
+perspective" in one place and use this as the first check in
+tick_nohz_get_sleep_length()/tick_nohz_next_event()?
+
+> >
+> > In my PoC (find it at the end) it's simply checked whether the
+> > really_avg_idle value is smaller than TICK_NSEC. It's not possible to use
+> > the existing avg_idle value as it is always smaller than TICK_NSEC on 250HZ
+> > systems. But there regressions occur under load and the standard deviation
+> > of the test results were in the same range as the regression (between 5 and
+> > 10%).
+> >
+> > So I wanted to understand the avg_idle values and examined the distribution
+> > with different load scenarios. There my next naive assumption was, that
+> > under load mainly short values will be seen. This is true, when the system
+> > is halfway loaded (top shows ~50% idle). But when the system is fully
+> > loaded, the avg_idle values are no longer 'focused' on small values.
+> 
+> avg_idle is broken for what you want to do. It is updated only when
+> you leave an idle state which means that it stays stuck to the old avg
+> idle time when your system is fully busy
 >
 
-This was done in commit: 706dc68102bc ("backlight: gpio: Explicitly
-set the direction of the GPIO").
+As I said, I'm not familiar with scheduler internals. If avg_idle is not
+the right thing, there might be another possibility to generate the
+information about a possible sleep length out of the already existing
+scheduler data.
 
-Let me quote myself from it:
+Thanks,
 
---
-The GPIO backlight driver currently requests the line 'as is', without
-actively setting its direction. This can lead to problems: if the line
-is in input mode by default, we won't be able to drive it later when
-updating the status and also reading its initial value doesn't make
-sense for backlight setting.
---
+	Anna-Maria
 
-I agree with Thomas that it's highly unlikely the bootloader "hints"
-at any specific backlight settings. That being said, the change itself
-looks correct to me. The other branch of that if will always unblank
-the backlight if the GPIO is in input mode which may not be desirable.
-I don't see any obvious problem with this change, just make sure the
-commit message makes more sense.
-
-Bartosz
