@@ -2,79 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC78975AE55
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F79275AE51
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbjGTM1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39716 "EHLO
+        id S230518AbjGTM1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 08:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbjGTM1m (ORCPT
+        with ESMTP id S230386AbjGTM1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:27:42 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F202681;
-        Thu, 20 Jul 2023 05:27:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1689856056; x=1721392056;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2ZGiXBA7knMeVbYBzBnYdJHrkPeF9rSCMSWxNZrS0q0=;
-  b=RuuxtmR7clv93YDpjqpFEQW0pvzrkQUQpIMq5LgpIEdiKI1jXH1HiRCi
-   cSRjBdtGl2k3aO2nRo4sRz32RkU1LtaieQDa2RRW4UY3HVOa3fCX6z1h0
-   XtIKKiaGLsmEWw4K5N9GHWmK1INqq0CMVIGoUSdMtD8CRisoZfDWYeyxh
-   pBIrhfRaUTemhaaWqZYWS+AEpwmXD1D1eU4mh5nZ5NWK/YpF4Wlrrj1Jk
-   tPRJBmHuBQ1bMGN2ux4NOENjFVM5hm329VblTPMquq0+iivzlIYuitOmJ
-   F754/PHqcrAXEzJ+nK81AkSVtSytg70/xRcdIrDxcLlMAWFuF0Z7mwE9r
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="asc'?scan'208";a="224927705"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Jul 2023 05:27:33 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 20 Jul 2023 05:27:31 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 20 Jul 2023 05:27:27 -0700
-Date:   Thu, 20 Jul 2023 13:26:54 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Minda Chen <minda.chen@starfivetech.com>
-CC:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v1 4/9] PCI: microchip: Move PCIe driver to PLDA directory
-Message-ID: <20230720-exception-spectator-b48ecb9d4c39@wendy>
-References: <20230719102057.22329-1-minda.chen@starfivetech.com>
- <20230719102057.22329-5-minda.chen@starfivetech.com>
+        Thu, 20 Jul 2023 08:27:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE1F2118;
+        Thu, 20 Jul 2023 05:27:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ABB0F618F6;
+        Thu, 20 Jul 2023 12:27:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB6CAC433C8;
+        Thu, 20 Jul 2023 12:27:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689856036;
+        bh=rCw+psKLDBdl6kAXIJPY9IcEhZY5IxhHwvg4KUYy27Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BwiRNKVJdr15gmyYf87c5qkAeJKVgK0bUhpYNBH1JoM8PiqO/jE0lKC7Dha56w0BT
+         7O/vwi9WBffNUurAE/FZjy7XJUz2CFkFxvVB7vCi6Ru6h6KIU083RJOIryIfENkD1X
+         oTENDWIdJqSXUAPOfCcYOIf/NGXgzL/80xC+2m1uOmTieNUgd9F7ACJib/Zssmi7kJ
+         h8IWNcPMAhii51lmlhTmMjHATZ9KWJgeQ7ghBT/98FD0E6coqekAxPi+iTbkKn/6IH
+         LI7B5Qlh4ewNKw5JkkAM1YGH45chzb7Sy41C856SadZ3c4y6onctYse05VbAblsj7m
+         JvR4b6hrEFSTA==
+Date:   Thu, 20 Jul 2023 13:27:10 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        David Spickett <David.Spickett@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] arm64/fpsimd: Ensure SME storage is allocated after
+ SVE VL changes
+Message-ID: <3ce4fc14-bd43-47e9-aa37-59bb3cd5d051@sirena.org.uk>
+References: <20230713-arm64-fix-sve-sme-vl-change-v1-0-129dd8611413@kernel.org>
+ <20230713-arm64-fix-sve-sme-vl-change-v1-1-129dd8611413@kernel.org>
+ <20230720105235.GD11034@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Lilo/J5IxQgX/2YQ"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="CyMXBdFoH12etnuE"
 Content-Disposition: inline
-In-Reply-To: <20230719102057.22329-5-minda.chen@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20230720105235.GD11034@willie-the-truck>
+X-Cookie: Ginger snap.
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,36 +63,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Lilo/J5IxQgX/2YQ
+
+--CyMXBdFoH12etnuE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hey Minda,
+On Thu, Jul 20, 2023 at 11:52:36AM +0100, Will Deacon wrote:
+> On Thu, Jul 13, 2023 at 09:06:04PM +0100, Mark Brown wrote:
 
-On Wed, Jul 19, 2023 at 06:20:52PM +0800, Minda Chen wrote:
-> Move Microchip specific platform codes to PLDA directory.
-> Including clock init, interrupt event handle and platform
-> init codes.
->=20
-> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> > Since the ABI does not specify that changing the SVE vector length disturbs
+> > SME state, and since SVE code may not be aware of SME code in the process,
+> > we shouldn't simply discard any ZA state. Instead immediately reallocate
+> > the storage for SVE if SME is active, and disable SME if we change the SVE
+> > vector length while there is no SME state active.
 
-Something else that I noticed, looking at what is not in the diff here,
-but is everything under the "/* PCIe Controller Phy Regs */" comment
-that remains in the microchip driver not also common to the plda IP?
+> What is the advantage of keep the old behaviour in this case? In other
+> words, if it's acceptable to reallocate the state when SME is active, why
+> not just reallocate in all cases?
 
-Thanks,
-Conor.
+It was minimising the changes to the status quo given how attached
+people often are to these things.
 
---Lilo/J5IxQgX/2YQ
+--CyMXBdFoH12etnuE
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLkoDgAKCRB4tDGHoIJi
-0vX+AQCNRNQvcPAT0vcVJXASNscuAioQvT52F/KhEUDLy/SoSAEA6U+2742WoaFO
-H9PBHMPTzScdWPvpyEsWaGVXPs7Z+gc=
-=rUDs
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS5KB4ACgkQJNaLcl1U
+h9C+0gf/fQxZuh51kIYByTPW3QLeYr1gzvXo8eFWKQxVOYg96BpcLaqbrocw6ZLg
+E0VA1/CrGB56VUq99z4VY0JUrqFoupiFJE5M5MihIAUi/0PPH9LsvzvuXuIAnrK4
+CmqsOfSQTbsXhntG34dq3UkcK7VZlbK4iSZsaKig3BLtIWHBVJ1WvLpnxEkVu0Mv
++qJM4GDgPeIXRKiMcxT6+Gd96Vza5VFUemOFSO9BGW5XzQE7Ix+NpT99XvE0MtwJ
+mTVS7V3g0F+19U08hExwfgrKS1ybUONPOqncDhwLdghsLFFOeW8WI1ttxw26afX8
+UO1YvtblScSAt6Aex+N4yBujBbHMaA==
+=NOme
 -----END PGP SIGNATURE-----
 
---Lilo/J5IxQgX/2YQ--
+--CyMXBdFoH12etnuE--
