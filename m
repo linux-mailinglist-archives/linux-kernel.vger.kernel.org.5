@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A78875B128
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF6975B12C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbjGTOYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 10:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54352 "EHLO
+        id S232192AbjGTOZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 10:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232187AbjGTOYC (ORCPT
+        with ESMTP id S232209AbjGTOZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 10:24:02 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A9E1B6;
-        Thu, 20 Jul 2023 07:24:01 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b9cdef8619so5519855ad.0;
-        Thu, 20 Jul 2023 07:24:01 -0700 (PDT)
+        Thu, 20 Jul 2023 10:25:02 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B33A2137;
+        Thu, 20 Jul 2023 07:25:01 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-668711086f4so610772b3a.1;
+        Thu, 20 Jul 2023 07:25:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689863041; x=1690467841;
+        d=gmail.com; s=20221208; t=1689863101; x=1690467901;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=db8g/w+T6FNZ3LBDgyxuQRCSEt2p8ggcXHIRpLXdWUM=;
-        b=cyGK9wBYYAi5j2Xt1kfHbzQwMVRjRxitX0Ypq3HmQBapmJR7oKBpw7Cv0wi5gfoWOA
-         fDxu0Ri4te7UaTtPscsJn7hrrvAfODvvflMJfkP+lisr8svYIOP/IRkGikrVKKaUoWQd
-         K02KBThRDO0KQL60Aql0GGnc1Y5Ka4WO7ll5M7UNKDtJieKFKmqJ6HcUzRt+En6mXRk4
-         wmwpLWpCCmRo0H3WAj/+Mjm1ru4LJ4b+iA0RgBvNqtCV9im5TCfLuKEZv/ahmk4/dfRW
-         QNwVNakQcNjUTJQuWwXIgN0t4FFeQw7kPtQ+q5tN1dI1Qq1nw0JCswSlnqBGAnb2I9DT
-         BoqQ==
+        bh=L4y9ZuelBDfhc/Z9jVOloH9vaZiYPNgHHQLzZ9s4yJM=;
+        b=BcVCANS7GPhquWck9X1J75g1o4IQ1lduc89vAgleCksT49Q1zsCmZ6xhpGoyZ3Ev5M
+         m0GaFUGaY+Fa0ri5lhodXmcaai1RNt7+5rVtkDpbTQECG9oJvULC/ZY8UMtcEUduoy/E
+         W3hFfjBnrQkM/WTtzgLwycuqxaykqz4x9u9o/jb5cA39RnJforLmvYWzCtPII61pwWvz
+         igs2QlK8fxKueGtGorxwvP2F5FsmWIB3PukXgrr13oBfwN6xVIq6ZINrQW2DLvB95lJ/
+         yhCp/toRCy3e6zt8JmrWoGdobQ4UMzi8dqLtYcBKWAyHaEFnQ/AHQrA/hp/8s9vqfSiF
+         ygPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689863041; x=1690467841;
+        d=1e100.net; s=20221208; t=1689863101; x=1690467901;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=db8g/w+T6FNZ3LBDgyxuQRCSEt2p8ggcXHIRpLXdWUM=;
-        b=XPncLqhV4LjXMIs4cYygPZp0VZgyDuV2g13OSFMP5071/2021fsvqGIVn6+evYlx9p
-         1tMWI6E3++ZJl2DB5SL/U6miMIZWoiWw8obVBAwC+qe3a5R2giotfhKnA5bC1wCBhFgx
-         41DIlIzaE/JCxzx+6Cu9ZaS/a4ebVsnG+w3r/p+3xrA5JD32iRltPGRG+Z9e7eCQqW58
-         q7Ze1IAt7haXL7TDCePnIPVhcpqYCNZ+d4JW98Qd2U6odlYvAWZDZ+7/P2EaAORhKudz
-         TTVoFGEqt62FukVy3ltlCxP7WIr6skJoQHlHge9p5kBe2dq68p60Dcth1+CTIIb6C8bT
-         R22Q==
-X-Gm-Message-State: ABy/qLbiNOp6wPusTiI1KBGp4jXfnUfiwiNWr7cV9qvQRIa0Frj8TehN
-        sl6swdBrDuFgNOfteIalTJs=
-X-Google-Smtp-Source: APBJJlFo6L3Zpe4P6MJPpzfYxTYnlCBNAE0U26IEgcPKXEE26ntfbOm9QM4Tmki6Dnk+ik2hlzjeTQ==
-X-Received: by 2002:a17:902:d3cc:b0:1b8:1e05:ed09 with SMTP id w12-20020a170902d3cc00b001b81e05ed09mr40007plb.36.1689863040781;
-        Thu, 20 Jul 2023 07:24:00 -0700 (PDT)
+        bh=L4y9ZuelBDfhc/Z9jVOloH9vaZiYPNgHHQLzZ9s4yJM=;
+        b=XMDMJZtiFgjyY02MNCnNfVbLOGj5rGzvGwgZGtwgd9A21F7g7kaAJzzZfdo9Fa/PxE
+         DSvK7pKN3VU+Wk1nfKetZjWdh/WW2KR+YOS6/ozWZ0LJJXMEwprAxTSDN1ZYgZlRGGo/
+         QmGFgKaoqJJymmPQkhm2nU8Aeo1sU90W5ekdkNqPoQAaQ0wYqMKskI3HtB+P105e3dEH
+         8MDYkuEw6jy+K0WgCl9w6iGiIzDtJGnuWGx/mjwmF8uq2/ghhuOqqIhZo/SKNxe0e9FI
+         MYvq8MCM3R9o3Ctbkh27cOwNjx+DqIuL/6+5B2Z28lGZi0qJS+U6PNkHnDiiX8uGw86o
+         Qf3Q==
+X-Gm-Message-State: ABy/qLZHO6JO8tpTh9sAnffjAkk39O+JKungF1wE1AAHqNqWbsLazy+l
+        fakczVwGi9DcoPdtkBxyaRo=
+X-Google-Smtp-Source: APBJJlEaiFiqTnmaMbyIaMjtgpAFKNehiSOQbKFmC0kJG0Jk4jVdjeR6WBT0MbJTF+t5cp2uP8d2KA==
+X-Received: by 2002:a05:6a00:1f96:b0:682:93ce:4825 with SMTP id bg22-20020a056a001f9600b0068293ce4825mr6157683pfb.3.1689863100668;
+        Thu, 20 Jul 2023 07:25:00 -0700 (PDT)
 Received: from yoga ([2400:1f00:13:4928:ca70:2ef7:845e:1b9e])
-        by smtp.gmail.com with ESMTPSA id t7-20020a170902a5c700b001b8918da8d1sm1435796plq.80.2023.07.20.07.23.56
+        by smtp.gmail.com with ESMTPSA id x23-20020aa79197000000b0064fa2fdfa9esm1241820pfa.81.2023.07.20.07.24.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 07:24:00 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 19:53:53 +0530
+        Thu, 20 Jul 2023 07:25:00 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 19:54:53 +0530
 From:   Anup Sharma <anupnewsmail@gmail.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -62,9 +62,9 @@ To:     Peter Zijlstra <peterz@infradead.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Anup Sharma <anupnewsmail@gmail.com>,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] perf scripts python: Add command execution for firefox
- gecko converter script
-Message-ID: <c8b61c91991c10f0245548afbb5572e92af5e9dd.1689862609.git.anupnewsmail@gmail.com>
+Subject: [PATCH 2/2] perf test: Add support for testing firefox gecko
+ converter script
+Message-ID: <d89a4469444b4106e6a681632adcd4710a3eaa7e.1689862609.git.anupnewsmail@gmail.com>
 References: <cover.1689862609.git.anupnewsmail@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -80,34 +80,216 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This will enable the execution of firefox-gecko-converter.py script
-using record and report commands.
+This commit add support for testing firefox-gecko-converter script.
+This test checks for the presence of required sections such as "meta,"
+"threads," "samples," "frameTable," "stackTable," "stringTable,"
+and "pausedRanges" which are few essential parameter to be present
+in output file. It also tests for user-defined color changes using
+the --user-color flag, and verifies the validity of the JSON format
+using Python's JSON library if available.
 
 Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
 ---
- tools/perf/scripts/python/bin/firefox-gecko-converter-record | 2 ++
- tools/perf/scripts/python/bin/firefox-gecko-converter-report | 3 +++
- 2 files changed, 5 insertions(+)
- create mode 100755 tools/perf/scripts/python/bin/firefox-gecko-converter-record
- create mode 100755 tools/perf/scripts/python/bin/firefox-gecko-converter-report
+ .../shell/test_firefox-gecko-converter.sh     | 190 ++++++++++++++++++
+ 1 file changed, 190 insertions(+)
+ create mode 100755 tools/perf/tests/shell/test_firefox-gecko-converter.sh
 
-diff --git a/tools/perf/scripts/python/bin/firefox-gecko-converter-record b/tools/perf/scripts/python/bin/firefox-gecko-converter-record
+diff --git a/tools/perf/tests/shell/test_firefox-gecko-converter.sh b/tools/perf/tests/shell/test_firefox-gecko-converter.sh
 new file mode 100755
-index 000000000000..7df5a19c0163
+index 000000000000..7c30191efb91
 --- /dev/null
-+++ b/tools/perf/scripts/python/bin/firefox-gecko-converter-record
-@@ -0,0 +1,2 @@
++++ b/tools/perf/tests/shell/test_firefox-gecko-converter.sh
+@@ -0,0 +1,190 @@
 +#!/bin/bash
-+perf record -g "$@"
-diff --git a/tools/perf/scripts/python/bin/firefox-gecko-converter-report b/tools/perf/scripts/python/bin/firefox-gecko-converter-report
-new file mode 100755
-index 000000000000..2405c6b26446
---- /dev/null
-+++ b/tools/perf/scripts/python/bin/firefox-gecko-converter-report
-@@ -0,0 +1,3 @@
-+#!/bin/bash
-+# description: create firefox gecko profile json format from perf.data
-+perf script -s "$PERF_EXEC_PATH"/scripts/python/firefox-gecko-converter.py -- "$@"
++# perf script firefox-gecko-converter tests
++# SPDX-License-Identifier: GPL-2.0
++
++#set -x
++
++err=0
++
++if [ "$PYTHON" = "" ] ; then
++	if which python3 > /dev/null ; then
++		PYTHON=python3
++	elif which python > /dev/null ; then
++		PYTHON=python
++	else
++		echo Skipping JSON format check, python not detected please set environment variable PYTHON.
++		PYTHON_NOT_AVAILABLE=1
++	fi
++fi
++
++# set PERF_EXEC_PATH to find scripts in the source directory
++perfdir=$(dirname "$0")/../..
++if [ -e "$perfdir/scripts/python/Perf-Trace-Util" ]; then
++  export PERF_EXEC_PATH=$perfdir
++fi
++
++tmpdir=$(mktemp -d /tmp/perf-script-firefox-gecko-converter-XXXXX)
++
++cleanup() {
++  rm -f perf.data
++  rm -f perf.data.old
++  rm -rf "$tmpdir"
++  trap - exit term int
++}
++
++trap_cleanup() {
++  cleanup
++  exit 1
++}
++trap trap_cleanup exit term int
++
++report() {
++	if [ "$1" = 0 ]; then
++		echo "PASS: \"$2\""
++	else
++		echo "FAIL: \"$2\" Error message: \"$3\""
++		err=1
++	fi
++}
++
++check_exec_0() {
++	if [ $? != 0 ]; then
++		report 1 "invocation of $1 command failed"
++	fi
++}
++
++find_str_or_fail() {
++	#echo "\"$1"\"
++	#echo "\"$2"\"
++	grep -q "$1" "$2"
++	if [ "$?" != 0 ]; then
++		report 1 "$3" "Failed to find required string:'${1}'."
++	else
++		report 0 "$3"
++	fi
++}
++
++prepare_perf_data() {
++	# 3s should be sufficient to catch few samples
++	perf record -g -- sleep 3 > /dev/null 2>&1
++	# check if perf data file got created in above step.
++	if [ ! -e "perf.data" ]; then
++		printf "FAIL: perf record failed to create \"perf.data\" \n"
++		return 1
++	fi
++}
++
++# check execution of command
++test_firefox-gecko_converter_command()
++{
++	echo "Testing Firefox Gecko Converter Command"
++	out="$tmpdir/perf.out"
++	perf script report firefox-gecko-converter > "$out"
++	check_exec_0 "perf script report firefox-gecko-converter"
++	if [ $(cat "${out}" | wc -l) -gt "0" ] ; then
++		echo "PASS: \"Firefox Gecko Converter Command\""
++	else
++		echo "FAIL: \"Firefox Gecko Converter Command\""
++		err=1
++		exit
++	fi
++}
++
++# with the help of python json libary validate the json output
++if [ "$PYTHON_NOT_AVAILABLE" != "0" ]; then
++	validate_json_format()
++	{
++		out="$tmpdir/perf.out"
++		if [ -f "$out" ] ; then
++			if $PYTHON -c  "import json; json.load(open('$out'))" >/dev/null 2>&1 ; then
++				echo "PASS: \"The file contains valid JSON format\""
++			else
++				echo "FAIL: \"The file does not contain valid JSON format\""
++				err=1
++				exit
++			fi
++		else
++			echo "FAIL: \"File not found\""
++			err=2
++			exit
++		fi
++	}
++fi
++
++# validate output for the presence of "meta".
++test_meta() {
++	out="$tmpdir/perf.out"
++	perf script report firefox-gecko-converter > "$out"
++	check_exec_0 "perf script report firefox-gecko-converter"
++	find_str_or_fail "meta" "$out" "${FUNCNAME[0]}"
++}
++
++# validate output for the presence of "threads".
++test_threads() {
++	out="$tmpdir/perf.out"
++	perf script report firefox-gecko-converter > "$out"
++	check_exec_0 "perf script report firefox-gecko-converter"
++	find_str_or_fail "threads" "$out" "${FUNCNAME[0]}"
++}
++
++# validate output for the presence of "samples".
++test_samples() {
++	out="$tmpdir/perf.out"
++	perf script report firefox-gecko-converter > "$out"
++	check_exec_0 "perf script report firefox-gecko-converter"
++	find_str_or_fail "samples" "$out" "${FUNCNAME[0]}"
++}
++
++# validate output for the presence of "frameTable".
++test_frametable() {
++	out="$tmpdir/perf.out"
++	perf script report firefox-gecko-converter > "$out"
++	check_exec_0 "perf script report firefox-gecko-converter"
++	find_str_or_fail "frameTable" "$out" "${FUNCNAME[0]}"
++}
++
++# validate output for the presence of "stackTable".
++test_stacktable() {
++	out="$tmpdir/perf.out"
++	perf script report firefox-gecko-converter > "$out"
++	check_exec_0 "perf script report firefox-gecko-converter"
++	find_str_or_fail "stackTable" "$out" "${FUNCNAME[0]}"
++}
++
++# validate output for the presence of "stringTable"
++test_stringtable() {
++	out="$tmpdir/perf.out"
++	perf script report firefox-gecko-converter > "$out"
++	check_exec_0 "perf script report firefox-gecko-converter"
++	find_str_or_fail "stringTable" "$out" "${FUNCNAME[0]}"
++}
++
++# validate output for the presence of "pausedRanges".
++test_pauseranges(){
++	out="$tmpdir/perf.out"
++	perf script report firefox-gecko-converter > "$out"
++	check_exec_0 "perf script report firefox-gecko-converter"
++	find_str_or_fail "pausedRanges" "$out" "${FUNCNAME[0]}"
++}
++
++# validate user-defined color presence in output "green"
++test_categorycolorchange(){
++	out="$tmpdir/perf.out"
++	perf script report firefox-gecko-converter --user-color="green"> "$out"
++	check_exec_0 "perf script report firefox-gecko-converter --user-color"
++	find_str_or_fail "green" "$out" "${FUNCNAME[0]}"
++}
++
++prepare_perf_data
++test_firefox-gecko_converter_command
++validate_json_format
++test_meta
++test_threads
++test_samples
++test_frametable
++test_stacktable
++test_stringtable
++test_pauseranges
++test_categorycolorchange
++cleanup
++exit $err
 -- 
 2.34.1
 
