@@ -2,172 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA2475B608
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E71875B60A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbjGTSA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 14:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
+        id S229782AbjGTSAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 14:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjGTSAZ (ORCPT
+        with ESMTP id S231562AbjGTSAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:00:25 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15712733
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:00:21 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-38c35975545so784177b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:00:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689876021; x=1690480821;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pbYc3nOyz3w0g5N21KHrIHLBOSDWflXwjWJQLgw2CWk=;
-        b=ZTcWs0IsdaJVr+puZZx6YFyGQGkpYLbfH6SJWfFTUCXLhR665GcAL8lMLKOKXPPAv5
-         Y/+03uQ3B2pMx1HBNXQq6JdI0nexaVwAEyWoz/3PYY+Jq8p1tok1DbVd02FVSaQbEdup
-         Zn+BQdURIvNu/YUHsDIR2PbCYn2M+KK/R3KrKracp43QGkgPOTzpZbPrvCvA/Pylp+r8
-         rYxcjm18i1UK/m4Lv3FUmeKmYI0hACI1kcFneRYjQfq+DqluC4XlLZWF3PhHC3iaSddF
-         adjD9CanElVSXbIofcTmQriFiEUwHJbCW1ZkPL5bGWNUTT/vllerVdN0nCw1m1BH3Sad
-         gtHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689876021; x=1690480821;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pbYc3nOyz3w0g5N21KHrIHLBOSDWflXwjWJQLgw2CWk=;
-        b=DA5XRQpYFAqWAF/phtgP9ugCMavyUNXv8JgVo3ZS66/7SnRvSxr26lg9RQgRUSdFcC
-         lXzD62w+2gZg7IjGTn7YpPMrG7PfmYlfVcid/2k2DzsAm7B40BXoUXbDVTNU/rcLg0+D
-         EI7kDqLfojA3sh2WqH9mnXONUmEQkifp3pbmT4GB9sDngHc6QAtkE83J+8hyjTApmkd0
-         GmYPxwLXoYZAcQGhfSPXZObFXXhVkhFErk6HO2GL4lZAuu9g2Ttc0e364H8axUsMiuzq
-         398aHatsCqRE/jZvF8R+33PNRnSCRkopvKMCkx3VP+NNfkpGYQhWhj5t1bV/B+xfUqjk
-         EgbQ==
-X-Gm-Message-State: ABy/qLZZOJ/rB1kuKg8LhOE043vMKkLY37CKGM+iDvOqhrnAtWWRydgc
-        xZ6XchQqt3Sun4GdZ9eTSvZRJRUdmRiVZiSnRqbriQ==
-X-Google-Smtp-Source: APBJJlG52Rb02KkBG7WCWyzJeoWISmJNBOh4rKJA34OBgfty1aWkRdipEyXQi+tR07GSAKJXWo2n35OGLa+TciKgCEM=
-X-Received: by 2002:a05:6808:11c9:b0:3a3:7248:252a with SMTP id
- p9-20020a05680811c900b003a37248252amr222247oiv.0.1689876021113; Thu, 20 Jul
- 2023 11:00:21 -0700 (PDT)
+        Thu, 20 Jul 2023 14:00:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E38270D
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:00:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B257C61BB6
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 18:00:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B174CC433C7;
+        Thu, 20 Jul 2023 18:00:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689876029;
+        bh=7zlXtpjQE5GsiUCG8T5VeQsjP7xxM1cSIbwNm1yLxBU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Q9i2KlNic8DT0aV6wei/pn/69NnpnLEOl6A5KpT0D+5gBE5EQ75jsSPR2pszdDquy
+         h0Vr8sba6J3Z8Z6XUGYoqxiTYSvYq/y+u3YPm21zno40p5GItvroYgfGafZxv2OZdQ
+         NnROMTed50T0p4vtabWit1SP/F5q4TVbmVKy9UpfTC3qo676e0x5oda7gb++e3Bnc+
+         DqL86OoukRxtv1Nt4UKGoVBdt0YDTPzQuD4oo9eniO++HlR3BKBipBd70U4zH3FepH
+         oRGNqovTUNhPvvjJ52w35hqz4LV0ybJhcUEjw9ZGA4ggDpXYqRP8Prp8v4fG3Lj/y2
+         NKsx0/bGGfvsg==
+Date:   Thu, 20 Jul 2023 11:00:27 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC net-next v2 7/7] net: skbuff: always try to recycle
+ PP pages directly when in softirq
+Message-ID: <20230720110027.4bd43ee7@kernel.org>
+In-Reply-To: <8e65c3d3-c628-2176-2fc2-a1bc675ad607@intel.com>
+References: <20230714170853.866018-1-aleksander.lobakin@intel.com>
+        <20230714170853.866018-10-aleksander.lobakin@intel.com>
+        <20230718174042.67c02449@kernel.org>
+        <d7cd1903-de0e-0fe3-eb15-0146b589c7b0@intel.com>
+        <20230719135150.4da2f0ff@kernel.org>
+        <48c1d70b-d4bd-04c0-ab46-d04eaeaf4af0@intel.com>
+        <20230720101231.7a5ff6cd@kernel.org>
+        <8e65c3d3-c628-2176-2fc2-a1bc675ad607@intel.com>
 MIME-Version: 1.0
-References: <cover.1689792825.git.tjeznach@rivosinc.com> <1fd79e5c53d9d6ed2264f60dd4261f293cc00472.1689792825.git.tjeznach@rivosinc.com>
- <5b8fd18e-8dfa-96bf-cdd4-4498b1d15ab9@ics.forth.gr>
-In-Reply-To: <5b8fd18e-8dfa-96bf-cdd4-4498b1d15ab9@ics.forth.gr>
-From:   Tomasz Jeznach <tjeznach@rivosinc.com>
-Date:   Thu, 20 Jul 2023 11:00:10 -0700
-Message-ID: <CAH2o1u7uAuXsD6+6Dvam4kzQuUj8s98G0sR26_-q31wvSUYZNA@mail.gmail.com>
-Subject: Re: [PATCH 06/11] RISC-V: drivers/iommu/riscv: Add command, fault,
- page-req queues
-To:     Nick Kossifidis <mick@ics.forth.gr>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Sebastien Boeuf <seb@rivosinc.com>, iommu@lists.linux.dev,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@rivosinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 8:12=E2=80=AFPM Nick Kossifidis <mick@ics.forth.gr>=
- wrote:
->
-> Hello Tomasz,
->
-> On 7/19/23 22:33, Tomasz Jeznach wrote:
-> > Enables message or wire signal interrupts for PCIe and platforms device=
-s.
-> >
->
-> The description doesn't match the subject nor the patch content (we
-> don't jus enable interrupts, we also init the queues).
->
-> > +     /* Parse Queue lengts */
-> > +     ret =3D of_property_read_u32(pdev->dev.of_node, "cmdq_len", &iomm=
-u->cmdq_len);
-> > +     if (!ret)
-> > +             dev_info(dev, "command queue length set to %i\n", iommu->=
-cmdq_len);
-> > +
-> > +     ret =3D of_property_read_u32(pdev->dev.of_node, "fltq_len", &iomm=
-u->fltq_len);
-> > +     if (!ret)
-> > +             dev_info(dev, "fault/event queue length set to %i\n", iom=
-mu->fltq_len);
-> > +
-> > +     ret =3D of_property_read_u32(pdev->dev.of_node, "priq_len", &iomm=
-u->priq_len);
-> > +     if (!ret)
-> > +             dev_info(dev, "page request queue length set to %i\n", io=
-mmu->priq_len);
-> > +
-> >       dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
-> >
->
-> We need to add those to the device tree binding doc (or throw them away,
-> I thought it would be better to have them as part of the device
-> desciption than a module parameter).
->
+On Thu, 20 Jul 2023 19:48:06 +0200 Alexander Lobakin wrote:
+> >> My question was "how can two things race on one CPU in one context if it
+> >> implies they won't ever happen simultaneously", but maybe my zero
+> >> knowledge of netcons hides something from me.  
+> > 
+> > One of them is in hardirq.  
+> 
+> If I got your message correctly, that means softirq_count() can return
+> `true` even if we're in hardirq context, but there are some softirqs
+> pending? 
 
-We can add them as an optional fields to DT.
-Alternatively, I've been looking into an option to auto-scale CQ/PQ
-based on number of attached devices, but this gets trickier for
-hot-pluggable systems. I've added module parameters as a bare-minimum,
-but still looking for better solutions.
+Not pending, being executed. Hardirq can come during softirq.
 
->
-> > +static irqreturn_t riscv_iommu_priq_irq_check(int irq, void *data);
-> > +static irqreturn_t riscv_iommu_priq_process(int irq, void *data);
-> > +
->
-> > +     case RISCV_IOMMU_PAGE_REQUEST_QUEUE:
-> > +             q =3D &iommu->priq;
-> > +             q->len =3D sizeof(struct riscv_iommu_pq_record);
-> > +             count =3D iommu->priq_len;
-> > +             irq =3D iommu->irq_priq;
-> > +             irq_check =3D riscv_iommu_priq_irq_check;
-> > +             irq_process =3D riscv_iommu_priq_process;
-> > +             q->qbr =3D RISCV_IOMMU_REG_PQB;
-> > +             q->qcr =3D RISCV_IOMMU_REG_PQCSR;
-> > +             name =3D "priq";
-> > +             break;
->
->
-> It makes more sense to add the code for the page request queue in the
-> patch that adds ATS/PRI support IMHO. This comment also applies to its
-> interrupt handlers below.
->
+> I.e. if I call local_irq_save() inside NAPI poll loop,
+> in_softirq() will still return `true`? (I'll check it myself in a bit,
+> but why not ask).
 
-ack. will do.
+Yes.
 
->
-> > +static inline void riscv_iommu_cmd_inval_set_addr(struct riscv_iommu_c=
-ommand *cmd,
-> > +                                               u64 addr)
-> > +{
-> > +     cmd->dword0 |=3D RISCV_IOMMU_CMD_IOTINVAL_AV;
-> > +     cmd->dword1 =3D addr;
-> > +}
-> > +
->
-> This needs to be (addr >> 2) to match the spec, same as in the iofence
-> command.
->
+> Isn't checking for `interrupt_context_level() == 1` more appropriate
+> then? Page Pool core code also uses in_softirq(), as well as a hellaton
+> of other networking-related places.
 
-oops. Thanks!
+Right now page pool only supports BH and process contexts. IOW the
+"else" branch of if (in_softirq()) in page pool is expecting to be
+in process context.
 
-> Regards,
-> Nick
->
+Supporting hard irq would mean we need to switch to _irqsave() locking.
+That's likely way too costly.
 
-regards,
-- Tomasz
+Or stash the freed pages away and free them lazily.
+
+Or add a lockdep warning and hope nobody will ever free a page-pool
+backed skb from hard IRQ context :)
