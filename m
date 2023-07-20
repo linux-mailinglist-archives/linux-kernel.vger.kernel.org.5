@@ -2,314 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CFD75B715
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34D675B7BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbjGTSuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 14:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45908 "EHLO
+        id S230306AbjGTTOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 15:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbjGTSuC (ORCPT
+        with ESMTP id S230252AbjGTTOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:50:02 -0400
-Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F9E171B
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:50:00 -0700 (PDT)
-Received: by mail-vk1-xa31.google.com with SMTP id 71dfb90a1353d-48138ef0c3eso457411e0c.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:50:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689879000; x=1690483800;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=47VRng0K3KEZnQHzer+QQBEt4eStFdrT5Gpil6rEOTc=;
-        b=hDY9UfenLOhlxmipNDa6S19arCcMFcDXN2mksFWWmKcrGwqXEi+P6qFemmgdGpxpDW
-         Ye5q6R6pTs1WR4uX9Jg1Bpi2btCK1s9qaPSVEXXP96xlQhMOc04dIq335ynBzPEqKVpO
-         qr1FORNrS48wh7aI18u+9QC/eb0rmp4phXMl4DQNURuZy8JdKD7kUM6Nb92ltwcuvwz1
-         v19Up7vMuB3rOtHLe2JTuijTF0wcVZtYb2WxwgRqvCeioBIquJ0WuhQ8XfolxZFolLg8
-         +NmO1Ng4nafz6gpViDMTFUPi9n/EBvpc7XMxaKkh3nHp/HX0oVAcU0oD5Ntq1mdSGh+t
-         4M3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689879000; x=1690483800;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=47VRng0K3KEZnQHzer+QQBEt4eStFdrT5Gpil6rEOTc=;
-        b=YPzfvBkh4CPjNKKABwj2XRVBKMMN1xZ0HbvVdcyZtyGgrohnPb5LROgPsVdEpLa3Id
-         kDfVaGRdne7GNWf2sfmlKvKWoPCYihAtJ36Fx0XPwyrSl5EAmDirT2QKK5wI5YFvXXio
-         DrRJ88+8iwQyRo//vByRir/3tuYIIqkcvK3VGMV0com9Gu2ymUtPZAmx2rJSgCqEXJA5
-         3ciR7UGhzTeC3vX5te65lhc1AZrmCdFWHZ6v2Uv+6O8Wa7tU7/ggyUC5Nvz9t5oAiZpz
-         drGD5aAkUVc1TDhsZwrTALfNx8h3tBITyrcrYb+Y8w5+RZ4i/QgGLrdSppHr3UsEDOs2
-         yUFQ==
-X-Gm-Message-State: ABy/qLY7EyHZogHS4ctHSzYA55MNU6D3s9GofoXfHZnQcmsIe9JRgvnh
-        gaCsXp3NZgoJoF6aBzW1wkUu/w==
-X-Google-Smtp-Source: APBJJlGxMG0odt5XnwWXp50Eu92UKYDu9KmTr2OHhGCYdmNmFXK+GEFxafD5A4keOPMLOdyfTS+CYw==
-X-Received: by 2002:a1f:4183:0:b0:471:b557:12a with SMTP id o125-20020a1f4183000000b00471b557012amr2556702vka.11.1689878999771;
-        Thu, 20 Jul 2023 11:49:59 -0700 (PDT)
-Received: from localhost.localdomain (072-189-067-006.res.spectrum.com. [72.189.67.6])
-        by smtp.gmail.com with ESMTPSA id h7-20020a0561220b6700b0047dbd48bc44sm238059vkf.17.2023.07.20.11.49.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 11:49:59 -0700 (PDT)
-From:   William Breathitt Gray <william.gray@linaro.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        William Breathitt Gray <william.gray@linaro.org>
-Subject: [RESEND PATCH 1/2] gpio: 104-dio-48e: Add Counter/Timer support
-Date:   Thu, 20 Jul 2023 14:49:43 -0400
-Message-ID: <9b159da19bb78df21c1dc24161188c9b8452720a.1689878150.git.william.gray@linaro.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1689878150.git.william.gray@linaro.org>
-References: <cover.1689878150.git.william.gray@linaro.org>
+        Thu, 20 Jul 2023 15:14:12 -0400
+Received: from mailout.easymail.ca (mailout.easymail.ca [64.68.200.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00729171D;
+        Thu, 20 Jul 2023 12:14:09 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mailout.easymail.ca (Postfix) with ESMTP id C37EA61FBF;
+        Thu, 20 Jul 2023 18:49:45 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at emo09-pco.easydns.vpn
+Received: from mailout.easymail.ca ([127.0.0.1])
+        by localhost (emo09-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id EgNO-Y6m_DM9; Thu, 20 Jul 2023 18:49:45 +0000 (UTC)
+Received: from mail.gonehiking.org (unknown [38.15.45.1])
+        by mailout.easymail.ca (Postfix) with ESMTPA id 03D9261DE6;
+        Thu, 20 Jul 2023 18:49:45 +0000 (UTC)
+Received: from [192.168.1.4] (internal [192.168.1.4])
+        by mail.gonehiking.org (Postfix) with ESMTP id 960493EED6;
+        Thu, 20 Jul 2023 12:49:43 -0600 (MDT)
+Message-ID: <392b33e3-18b2-73b6-f804-7a7ec1de0b99@gonehiking.org>
+Date:   Thu, 20 Jul 2023 12:49:43 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Reply-To: khalid@gonehiking.org
+Subject: Re: [PATCH v2 2/9] vgacon: rework screen_info #ifdef checks
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>, linux-fbdev@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Helge Deller <deller@gmx.de>,
+        Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Deepak Rawat <drawat.floss@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guo Ren <guoren@kernel.org>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        WANG Xuerui <kernel@xen0n.name>, Wei Liu <wei.liu@kernel.org>,
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20230719123944.3438363-1-arnd@kernel.org>
+ <20230719123944.3438363-3-arnd@kernel.org>
+From:   Khalid Aziz <khalid@gonehiking.org>
+In-Reply-To: <20230719123944.3438363-3-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 104-DIO-48E features an 8254 Counter/Timer chip providing three
-counter/timers which can be used for frequency measurement, frequency
-output, pulse width modulation, pulse width measurement, event count,
-etc. The counter/timers use the same addresses as PPI 0 (addresses 0x0
-to 0x3), so a raw_spinlock_t is used to synchronize operations between
-the two regmap mappings to prevent clobbering.
+On 7/19/23 6:39 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> On non-x86 architectures, the screen_info variable is generally only
+> used for the VGA console where supported, and in some cases the EFI
+> framebuffer or vga16fb.
+> 
+> Now that we have a definite list of which architectures actually use it
+> for what, use consistent #ifdef checks so the global variable is only
+> defined when it is actually used on those architectures.
+> 
+> Loongarch and riscv have no support for vgacon or vga16fb, but
+> they support EFI firmware, so only that needs to be checked, and the
+> initialization can be removed because that is handled by EFI.
+> IA64 has both vgacon and EFI, though EFI apparently never uses
+> a framebuffer here.
+> 
+> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
----
- drivers/gpio/Kconfig            |   1 +
- drivers/gpio/gpio-104-dio-48e.c | 127 ++++++++++++++++++++++++++++----
- 2 files changed, 112 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index e382dfebad7c..49466a148678 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -858,6 +858,7 @@ config GPIO_104_DIO_48E
- 	select REGMAP_IRQ
- 	select GPIOLIB_IRQCHIP
- 	select GPIO_I8255
-+	select I8254
- 	help
- 	  Enables GPIO support for the ACCES 104-DIO-48E series (104-DIO-48E,
- 	  104-DIO-24E). The base port addresses for the devices may be
-diff --git a/drivers/gpio/gpio-104-dio-48e.c b/drivers/gpio/gpio-104-dio-48e.c
-index 8ff5f4ff5958..4df9becaf349 100644
---- a/drivers/gpio/gpio-104-dio-48e.c
-+++ b/drivers/gpio/gpio-104-dio-48e.c
-@@ -9,6 +9,7 @@
- #include <linux/bits.h>
- #include <linux/device.h>
- #include <linux/err.h>
-+#include <linux/i8254.h>
- #include <linux/ioport.h>
- #include <linux/irq.h>
- #include <linux/isa.h>
-@@ -16,6 +17,7 @@
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/regmap.h>
-+#include <linux/spinlock.h>
- #include <linux/types.h>
- 
- #include "gpio-i8255.h"
-@@ -37,6 +39,8 @@ MODULE_PARM_DESC(irq, "ACCES 104-DIO-48E interrupt line numbers");
- 
- #define DIO48E_ENABLE_INTERRUPT 0xB
- #define DIO48E_DISABLE_INTERRUPT DIO48E_ENABLE_INTERRUPT
-+#define DIO48E_ENABLE_COUNTER_TIMER_ADDRESSING 0xD
-+#define DIO48E_DISABLE_COUNTER_TIMER_ADDRESSING DIO48E_ENABLE_COUNTER_TIMER_ADDRESSING
- #define DIO48E_CLEAR_INTERRUPT 0xF
- 
- #define DIO48E_NUM_PPI 2
-@@ -75,18 +79,20 @@ static const struct regmap_access_table dio48e_precious_table = {
- 	.yes_ranges = dio48e_precious_ranges,
- 	.n_yes_ranges = ARRAY_SIZE(dio48e_precious_ranges),
- };
--static const struct regmap_config dio48e_regmap_config = {
--	.reg_bits = 8,
--	.reg_stride = 1,
--	.val_bits = 8,
--	.io_port = true,
--	.max_register = 0xF,
--	.wr_table = &dio48e_wr_table,
--	.rd_table = &dio48e_rd_table,
--	.volatile_table = &dio48e_volatile_table,
--	.precious_table = &dio48e_precious_table,
--	.cache_type = REGCACHE_FLAT,
--	.use_raw_spinlock = true,
-+
-+static const struct regmap_range pit_wr_ranges[] = {
-+	regmap_reg_range(0x0, 0x3),
-+};
-+static const struct regmap_range pit_rd_ranges[] = {
-+	regmap_reg_range(0x0, 0x2),
-+};
-+static const struct regmap_access_table pit_wr_table = {
-+	.yes_ranges = pit_wr_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(pit_wr_ranges),
-+};
-+static const struct regmap_access_table pit_rd_table = {
-+	.yes_ranges = pit_rd_ranges,
-+	.n_yes_ranges = ARRAY_SIZE(pit_rd_ranges),
- };
- 
- /* only bit 3 on each respective Port C supports interrupts */
-@@ -102,14 +108,56 @@ static const struct regmap_irq dio48e_regmap_irqs[] = {
- 
- /**
-  * struct dio48e_gpio - GPIO device private data structure
-+ * @lock:	synchronization lock to prevent I/O race conditions
-  * @map:	Regmap for the device
-+ * @regs:	virtual mapping for device registers
-+ * @flags:	IRQ flags saved during locking
-  * @irq_mask:	Current IRQ mask state on the device
-  */
- struct dio48e_gpio {
-+	raw_spinlock_t lock;
- 	struct regmap *map;
-+	void __iomem *regs;
-+	unsigned long flags;
- 	unsigned int irq_mask;
- };
- 
-+static void dio48e_regmap_lock(void *lock_arg) __acquires(&dio48egpio->lock)
-+{
-+	struct dio48e_gpio *const dio48egpio = lock_arg;
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&dio48egpio->lock, flags);
-+	dio48egpio->flags = flags;
-+}
-+
-+static void dio48e_regmap_unlock(void *lock_arg) __releases(&dio48egpio->lock)
-+{
-+	struct dio48e_gpio *const dio48egpio = lock_arg;
-+
-+	raw_spin_unlock_irqrestore(&dio48egpio->lock, dio48egpio->flags);
-+}
-+
-+static void pit_regmap_lock(void *lock_arg) __acquires(&dio48egpio->lock)
-+{
-+	struct dio48e_gpio *const dio48egpio = lock_arg;
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&dio48egpio->lock, flags);
-+	dio48egpio->flags = flags;
-+
-+	iowrite8(0x00, dio48egpio->regs + DIO48E_ENABLE_COUNTER_TIMER_ADDRESSING);
-+}
-+
-+static void pit_regmap_unlock(void *lock_arg) __releases(&dio48egpio->lock)
-+{
-+	struct dio48e_gpio *const dio48egpio = lock_arg;
-+
-+	ioread8(dio48egpio->regs + DIO48E_DISABLE_COUNTER_TIMER_ADDRESSING);
-+
-+	raw_spin_unlock_irqrestore(&dio48egpio->lock, dio48egpio->flags);
-+}
-+
- static int dio48e_handle_mask_sync(const int index,
- 				   const unsigned int mask_buf_def,
- 				   const unsigned int mask_buf,
-@@ -176,6 +224,9 @@ static int dio48e_probe(struct device *dev, unsigned int id)
- 	struct i8255_regmap_config config = {};
- 	void __iomem *regs;
- 	struct regmap *map;
-+	struct regmap_config dio48e_regmap_config;
-+	struct regmap_config pit_regmap_config;
-+	struct i8254_regmap_config pit_config;
- 	int err;
- 	struct regmap_irq_chip *chip;
- 	struct dio48e_gpio *dio48egpio;
-@@ -187,21 +238,58 @@ static int dio48e_probe(struct device *dev, unsigned int id)
- 		return -EBUSY;
- 	}
- 
-+	dio48egpio = devm_kzalloc(dev, sizeof(*dio48egpio), GFP_KERNEL);
-+	if (!dio48egpio)
-+		return -ENOMEM;
-+
- 	regs = devm_ioport_map(dev, base[id], DIO48E_EXTENT);
- 	if (!regs)
- 		return -ENOMEM;
- 
-+	dio48egpio->regs = regs;
-+
-+	raw_spin_lock_init(&dio48egpio->lock);
-+
-+	dio48e_regmap_config = (struct regmap_config) {
-+		.reg_bits = 8,
-+		.reg_stride = 1,
-+		.val_bits = 8,
-+		.lock = dio48e_regmap_lock,
-+		.unlock = dio48e_regmap_unlock,
-+		.lock_arg = dio48egpio,
-+		.io_port = true,
-+		.wr_table = &dio48e_wr_table,
-+		.rd_table = &dio48e_rd_table,
-+		.volatile_table = &dio48e_volatile_table,
-+		.precious_table = &dio48e_precious_table,
-+		.cache_type = REGCACHE_FLAT,
-+	};
-+
- 	map = devm_regmap_init_mmio(dev, regs, &dio48e_regmap_config);
- 	if (IS_ERR(map))
- 		return dev_err_probe(dev, PTR_ERR(map),
- 				     "Unable to initialize register map\n");
- 
--	dio48egpio = devm_kzalloc(dev, sizeof(*dio48egpio), GFP_KERNEL);
--	if (!dio48egpio)
--		return -ENOMEM;
--
- 	dio48egpio->map = map;
- 
-+	pit_regmap_config = (struct regmap_config) {
-+		.name = "i8254",
-+		.reg_bits = 8,
-+		.reg_stride = 1,
-+		.val_bits = 8,
-+		.lock = pit_regmap_lock,
-+		.unlock = pit_regmap_unlock,
-+		.lock_arg = dio48egpio,
-+		.io_port = true,
-+		.wr_table = &pit_wr_table,
-+		.rd_table = &pit_rd_table,
-+	};
-+
-+	pit_config.map = devm_regmap_init_mmio(dev, regs, &pit_regmap_config);
-+	if (IS_ERR(pit_config.map))
-+		return dev_err_probe(dev, PTR_ERR(pit_config.map),
-+				     "Unable to initialize i8254 register map\n");
-+
- 	chip = devm_kzalloc(dev, sizeof(*chip), GFP_KERNEL);
- 	if (!chip)
- 		return -ENOMEM;
-@@ -225,6 +313,12 @@ static int dio48e_probe(struct device *dev, unsigned int id)
- 	if (err)
- 		return dev_err_probe(dev, err, "IRQ registration failed\n");
- 
-+	pit_config.parent = dev;
-+
-+	err = devm_i8254_regmap_register(dev, &pit_config);
-+	if (err)
-+		return err;
-+
- 	config.parent = dev;
- 	config.map = map;
- 	config.num_ppi = DIO48E_NUM_PPI;
-@@ -245,3 +339,4 @@ module_isa_driver_with_irq(dio48e_driver, num_dio48e, num_irq);
- MODULE_AUTHOR("William Breathitt Gray <vilhelm.gray@gmail.com>");
- MODULE_DESCRIPTION("ACCES 104-DIO-48E GPIO driver");
- MODULE_LICENSE("GPL v2");
-+MODULE_IMPORT_NS(I8254);
--- 
-2.41.0
+Reviewed-by: Khalid Aziz <khalid@gonehiking.org>
+
+> ---
+> v2 changes:
+>   - split out mips/jazz change
+>   - improve ia64 #ifdef changes
+> ---
+>   arch/alpha/kernel/setup.c      |  2 ++
+>   arch/alpha/kernel/sys_sio.c    |  2 ++
+>   arch/ia64/kernel/setup.c       |  6 ++++++
+>   arch/loongarch/kernel/setup.c  |  2 ++
+>   arch/mips/kernel/setup.c       |  2 +-
+>   arch/mips/sibyte/swarm/setup.c |  2 +-
+>   arch/mips/sni/setup.c          |  2 +-
+>   arch/riscv/kernel/setup.c      | 11 ++---------
+>   8 files changed, 17 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
+> index b650ff1cb022e..b4d2297765c02 100644
+> --- a/arch/alpha/kernel/setup.c
+> +++ b/arch/alpha/kernel/setup.c
+> @@ -131,6 +131,7 @@ static void determine_cpu_caches (unsigned int);
+>   
+>   static char __initdata command_line[COMMAND_LINE_SIZE];
+>   
+> +#ifdef CONFIG_VGA_CONSOLE
+>   /*
+>    * The format of "screen_info" is strange, and due to early
+>    * i386-setup code. This is just enough to make the console
+> @@ -147,6 +148,7 @@ struct screen_info screen_info = {
+>   };
+>   
+>   EXPORT_SYMBOL(screen_info);
+> +#endif
+>   
+>   /*
+>    * The direct map I/O window, if any.  This should be the same
+> diff --git a/arch/alpha/kernel/sys_sio.c b/arch/alpha/kernel/sys_sio.c
+> index 7c420d8dac53d..7de8a5d2d2066 100644
+> --- a/arch/alpha/kernel/sys_sio.c
+> +++ b/arch/alpha/kernel/sys_sio.c
+> @@ -57,11 +57,13 @@ sio_init_irq(void)
+>   static inline void __init
+>   alphabook1_init_arch(void)
+>   {
+> +#ifdef CONFIG_VGA_CONSOLE
+>   	/* The AlphaBook1 has LCD video fixed at 800x600,
+>   	   37 rows and 100 cols. */
+>   	screen_info.orig_y = 37;
+>   	screen_info.orig_video_cols = 100;
+>   	screen_info.orig_video_lines = 37;
+> +#endif
+>   
+>   	lca_init_arch();
+>   }
+> diff --git a/arch/ia64/kernel/setup.c b/arch/ia64/kernel/setup.c
+> index 5a55ac82c13a4..d2c66efdde560 100644
+> --- a/arch/ia64/kernel/setup.c
+> +++ b/arch/ia64/kernel/setup.c
+> @@ -86,9 +86,13 @@ EXPORT_SYMBOL(local_per_cpu_offset);
+>   #endif
+>   unsigned long ia64_cycles_per_usec;
+>   struct ia64_boot_param *ia64_boot_param;
+> +#if defined(CONFIG_VGA_CONSOLE) || defined(CONFIG_EFI)
+>   struct screen_info screen_info;
+> +#endif
+> +#ifdef CONFIG_VGA_CONSOLE
+>   unsigned long vga_console_iobase;
+>   unsigned long vga_console_membase;
+> +#endif
+>   
+>   static struct resource data_resource = {
+>   	.name	= "Kernel data",
+> @@ -497,6 +501,7 @@ early_console_setup (char *cmdline)
+>   static void __init
+>   screen_info_setup(void)
+>   {
+> +#ifdef CONFIG_VGA_CONSOLE
+>   	unsigned int orig_x, orig_y, num_cols, num_rows, font_height;
+>   
+>   	memset(&screen_info, 0, sizeof(screen_info));
+> @@ -525,6 +530,7 @@ screen_info_setup(void)
+>   	screen_info.orig_video_mode = 3;	/* XXX fake */
+>   	screen_info.orig_video_isVGA = 1;	/* XXX fake */
+>   	screen_info.orig_video_ega_bx = 3;	/* XXX fake */
+> +#endif
+>   }
+>   
+>   static inline void
+> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
+> index 95e6b579dfdd1..77e7a3722caa6 100644
+> --- a/arch/loongarch/kernel/setup.c
+> +++ b/arch/loongarch/kernel/setup.c
+> @@ -57,7 +57,9 @@
+>   #define SMBIOS_CORE_PACKAGE_OFFSET	0x23
+>   #define LOONGSON_EFI_ENABLE		(1 << 3)
+>   
+> +#ifdef CONFIG_EFI
+>   struct screen_info screen_info __section(".data");
+> +#endif
+>   
+>   unsigned long fw_arg0, fw_arg1, fw_arg2;
+>   DEFINE_PER_CPU(unsigned long, kernelsp);
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index cb871eb784a7c..1aba7dc95132c 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -54,7 +54,7 @@ struct cpuinfo_mips cpu_data[NR_CPUS] __read_mostly;
+>   
+>   EXPORT_SYMBOL(cpu_data);
+>   
+> -#ifdef CONFIG_VT
+> +#ifdef CONFIG_VGA_CONSOLE
+>   struct screen_info screen_info;
+>   #endif
+>   
+> diff --git a/arch/mips/sibyte/swarm/setup.c b/arch/mips/sibyte/swarm/setup.c
+> index 76683993cdd3a..37df504d3ecbb 100644
+> --- a/arch/mips/sibyte/swarm/setup.c
+> +++ b/arch/mips/sibyte/swarm/setup.c
+> @@ -129,7 +129,7 @@ void __init plat_mem_setup(void)
+>   	if (m41t81_probe())
+>   		swarm_rtc_type = RTC_M41T81;
+>   
+> -#ifdef CONFIG_VT
+> +#ifdef CONFIG_VGA_CONSOLE
+>   	screen_info = (struct screen_info) {
+>   		.orig_video_page	= 52,
+>   		.orig_video_mode	= 3,
+> diff --git a/arch/mips/sni/setup.c b/arch/mips/sni/setup.c
+> index efad85c8c823b..9984cf91be7d0 100644
+> --- a/arch/mips/sni/setup.c
+> +++ b/arch/mips/sni/setup.c
+> @@ -38,7 +38,7 @@ extern void sni_machine_power_off(void);
+>   
+>   static void __init sni_display_setup(void)
+>   {
+> -#if defined(CONFIG_VT) && defined(CONFIG_VGA_CONSOLE) && defined(CONFIG_FW_ARC)
+> +#if defined(CONFIG_VGA_CONSOLE) && defined(CONFIG_FW_ARC)
+>   	struct screen_info *si = &screen_info;
+>   	DISPLAY_STATUS *di;
+>   
+> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> index 971fe776e2f8b..a3dbe13f45fb3 100644
+> --- a/arch/riscv/kernel/setup.c
+> +++ b/arch/riscv/kernel/setup.c
+> @@ -39,15 +39,8 @@
+>   
+>   #include "head.h"
+>   
+> -#if defined(CONFIG_DUMMY_CONSOLE) || defined(CONFIG_EFI)
+> -struct screen_info screen_info __section(".data") = {
+> -	.orig_video_lines	= 30,
+> -	.orig_video_cols	= 80,
+> -	.orig_video_mode	= 0,
+> -	.orig_video_ega_bx	= 0,
+> -	.orig_video_isVGA	= 1,
+> -	.orig_video_points	= 8
+> -};
+> +#if defined(CONFIG_EFI)
+> +struct screen_info screen_info __section(".data");
+>   #endif
+>   
+>   /*
 
