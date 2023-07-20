@@ -2,120 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEA975ACD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FAF75ACD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbjGTLRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:17:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57152 "EHLO
+        id S229654AbjGTLTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:19:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230337AbjGTLQg (ORCPT
+        with ESMTP id S229560AbjGTLTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:16:36 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDA1BE;
-        Thu, 20 Jul 2023 04:16:19 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36KBDrYg021492;
-        Thu, 20 Jul 2023 11:16:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Y/AVyy3eVUhLJPSl/fjofbi3XXu96ZS05+ot+xzodXA=;
- b=BnNwQfuOwa5I4RqXetQXSh79oqmLMQ3MxHEKl40njhyKj5SlgY6dgg0nbNb0jeGHO3Fz
- PAtUyZSZBWuSBfGVBZRPCmINIsOwjmyLd8boxOfZvYIRxKHrV56tbdDr65/lTsxfGEjS
- 7tll+jwr7Azf2/42BDHm2mRkuXOowgyoOAe1bcethnaPZsd0Z4heg/wKa/Xt6FqhPOEn
- gd8Mil7KhZ3wXqfPOMBTNfpshRAVzAWB5g+Cbfl8Bu2RDRaqj3ZWiDglwvigM5wdnVfk
- MkWcrT7rzSs0tqa3y+QUNqW2jCeACxh2RHg0bqa7Bwqp9jUMf2e7qmr2OCYVfqO1onXh nA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxexkjfx2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jul 2023 11:16:14 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36KBGBcO009098
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jul 2023 11:16:11 GMT
-Received: from [10.201.197.30] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
- 2023 04:16:07 -0700
-Message-ID: <267e7d8d-887e-99e8-f367-f6b614a721fb@quicinc.com>
-Date:   Thu, 20 Jul 2023 16:46:04 +0530
+        Thu, 20 Jul 2023 07:19:35 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97B8269F;
+        Thu, 20 Jul 2023 04:19:32 -0700 (PDT)
+Received: from kwepemi500011.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R69BP2R1GzLnlt;
+        Thu, 20 Jul 2023 19:17:01 +0800 (CST)
+Received: from [10.67.103.39] (10.67.103.39) by kwepemi500011.china.huawei.com
+ (7.221.188.124) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 20 Jul
+ 2023 19:19:29 +0800
+Message-ID: <64B91840.6040801@hisilicon.com>
+Date:   Thu, 20 Jul 2023 19:19:28 +0800
+From:   Wei Xu <xuwei5@hisilicon.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: ipq5018: add support for the RDP415
- variant
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
-        <quic_kathirav@quicinc.com>, <quic_arajkuma@quicinc.com>,
-        <quic_anusha@quicinc.com>
-References: <20230720074846.20350-1-quic_harihk@quicinc.com>
- <20230720074846.20350-3-quic_harihk@quicinc.com>
- <6f26ab9d-cf92-e918-866c-daa68096ee08@linaro.org>
-From:   Hariharan K <quic_harihk@quicinc.com>
-In-Reply-To: <6f26ab9d-cf92-e918-866c-daa68096ee08@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: hisilicon: minor whitespace cleanup around
+ '='
+References: <20230702185308.44544-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230702185308.44544-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: xIjgTt_tvrlytDtmoN-RK_-50dpItyKr
-X-Proofpoint-GUID: xIjgTt_tvrlytDtmoN-RK_-50dpItyKr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-20_04,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 bulkscore=0 spamscore=0 priorityscore=1501
- malwarescore=0 phishscore=0 clxscore=1015 suspectscore=0 impostorscore=0
- mlxlogscore=827 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307200094
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.103.39]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemi500011.china.huawei.com (7.221.188.124)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Krzysztof,
 
-
-On 7/20/2023 1:46 PM, Konrad Dybcio wrote:
-> On 20.07.2023 09:48, Hariharan K wrote:
->> Add the initial device tree support for the Reference Design
->> Platform(RDP) 415 based on IPQ5018 family of SoC. This patch
->> carries the support for Console UART and eMMC.
->>
->> Signed-off-by: Hariharan K <quic_harihk@quicinc.com>
->> ---
-> [...]
+On 2023/7/3 2:53, Krzysztof Kozlowski wrote:
+> The DTS code coding style expects exactly one space before and after '='
+> sign.
 > 
->> +
->> +&sdhc_1 {
->> +	pinctrl-0 = <&sdc_default_state>;
->> +	pinctrl-names = "default";
->> +	mmc-ddr-1_8v;
->> +	mmc-hs200-1_8v;
->> +	max-frequency = <192000000>;
->> +	bus-width = <4>;
->> +	status = "okay";
-> Since some (but presumably not all) SKUs have SDHCI, you can define
-> the plumbing for it in the common DTSI but only enable it on ones
-> that do (or disable on those that don't)
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Sure. Will update in the next version.
+Applied to the HiSilicon arm64 dt tree.
+Thanks!
 
-Best regards,
-Hariharan K
+Best Regards,
+Wei
 
+> ---
+>  arch/arm64/boot/dts/hisilicon/hi6220.dtsi | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
 > 
-> Konrad
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi6220.dtsi b/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
+> index b7e2cbf466b3..f29a3e471288 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
+> @@ -1032,17 +1032,17 @@ mali: gpu@f4080000 {
+>  			compatible = "hisilicon,hi6220-mali", "arm,mali-450";
+>  			reg = <0x0 0xf4080000 0x0 0x00040000>;
+>  			interrupt-parent = <&gic>;
+> -			interrupts =	<GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> -					<GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> -					<GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> -					<GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> -					<GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> -					<GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> -					<GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> -					<GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> -					<GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> -					<GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> -					<GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupts = <GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_PPI 126 IRQ_TYPE_LEVEL_HIGH>;
+>  
+>  			interrupt-names = "gp",
+>  					  "gpmmu",
+> 
