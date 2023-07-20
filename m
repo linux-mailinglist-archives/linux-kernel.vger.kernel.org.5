@@ -2,116 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B673A75B1F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C38975B1F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbjGTPD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45606 "EHLO
+        id S232405AbjGTPD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbjGTPDY (ORCPT
+        with ESMTP id S232401AbjGTPD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:03:24 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F007BB
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:03:17 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-66c729f5618so778748b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:03:17 -0700 (PDT)
+        Thu, 20 Jul 2023 11:03:56 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288E01BC6;
+        Thu, 20 Jul 2023 08:03:56 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-66872d4a141so592805b3a.1;
+        Thu, 20 Jul 2023 08:03:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689865397; x=1690470197;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
+        d=gmail.com; s=20221208; t=1689865435; x=1690470235;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wnxkxQ0PxkB3p5PqVcQ0DO2VgVD/sjfzmwcVTmlPiY8=;
-        b=M4J6bZ8ONXHBSU6thvDpIQmjNg8G4ztS1mfot8KtlnCyN44Ct2PTyAnku1hUIucr0Q
-         /ZppzYhm85PYp5W6lmXGhBB920k0uOstdxOpDt+F0hLuBMsK39d5TNC2VfNFp2vnztLc
-         L345C11D73guky6QcVA9UFHeHUWOt3U/bwI0eIdOuaJfEXJieVH2m2hGkeqfeJReQxnG
-         PBPejokm21juaN3pNtbsu+E+4B5AHJXrLatu2GCb2F2sDwXyXzGMPdVp3oNiNAhZoi4o
-         W+h+4JMBCFGfGr7C4UEmFm1NUR5ApiPpPnC5ZjQOwOyYWMS4XVkUxvKPzwQi2Cgo2eFo
-         viOQ==
+        bh=3r2QdODMt24JWTT3oaeZ32YYnCKvklyvwUm1SrldXO8=;
+        b=m+3jtebFSl/u6Q9KBLsw2Q9VS5OcZdC/k6SlxqN/lQ5bSyP29lk0BFfI21JluJyNpd
+         X3Fvcbj9EdyfbZcbNpJLToun699qXMAXGQSDr1P5zxjLy9C4aUTrKmxvnxV5QcuLO9C4
+         jIvm1VlRNOP5OdBlT6FVuOv7v5rEimyFj2Cf8OCUmJAsjWX0e9ncgV0WS7prUpSGfTv0
+         m3lfPGlarUtKey3LEf2HbAuGjwbLEl51qC5R6wyXkRj2/oi1KoXiBNKiVgitw5N2Kz0E
+         RSyNfc3MbrbTEi6dLldij/Ld5dk4xisKHuCFH6gBzMve04q7olL4QyK+Ts2Tj5UCwEv3
+         mA3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689865397; x=1690470197;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
+        d=1e100.net; s=20221208; t=1689865435; x=1690470235;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wnxkxQ0PxkB3p5PqVcQ0DO2VgVD/sjfzmwcVTmlPiY8=;
-        b=buNSlKzx7jZZqcx89tsCStxmK7QLzc5NfmjaUk9n1whxeQ8vutWxxbh24d+GVCYmA7
-         RzDXEUxMV2fuuzJeXqviTqjsElZ8rAmdMUPt5ZTPyUgeeBKPUgBvqqGNoLXsEdgHNCqq
-         Ixwz/yVDRfP2yhZVbHNBaRkD2u2IYjMvVmqd+OoawOQQG6YvhtSQXuedpS6Uv4qNiIqO
-         2emtWqj/gQn5RMTGkZRp1sNz9Eg6n+JAeeqWOexPRIr3vHv3ElaYecYkuQAjZ7/2NqcO
-         J2AnqgmGbwNZ9Opba0dS5f0uNjE9qthYl72B36UHG99R1te5g3sSOsVu5fIm33aZkFWW
-         QNVg==
-X-Gm-Message-State: ABy/qLayMwHlDSZtwBFcec5dDG5i3ajmHJlKsM8VZStKrJbmZEJcOlCP
-        Cx6bxuRlELU9entG9uZ+F88=
-X-Google-Smtp-Source: APBJJlFTnXIfwkObV5tkC7sG/dKujh/U0MICNOCQUwbHnRTM+AZNBdvfG6UeN1RMTA+c0Rk0X+hySg==
-X-Received: by 2002:a05:6a00:803:b0:668:82fe:16f1 with SMTP id m3-20020a056a00080300b0066882fe16f1mr7857465pfk.1.1689865395099;
-        Thu, 20 Jul 2023 08:03:15 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y10-20020aa7804a000000b006862af32fbesm1358280pfm.14.2023.07.20.08.03.14
+        bh=3r2QdODMt24JWTT3oaeZ32YYnCKvklyvwUm1SrldXO8=;
+        b=OxmtM9TH6hrHVnD2YdvRg50T707Fqa0bZnVXZYm99yiwY0oe08v0YgQnKK44Xom/pr
+         Xv3KWxhwVqyxMlyLjczZ1Xo5RhBBhshFxIWL1IR1LCIaBwu0RI55v/jJYsBP4IW42zOK
+         vHB1S6sUwbPRz2wUXBu7FXE2FUaU09apswS3tORK51CD+czQnBUZYxCCHXDHufDmMqZl
+         OF7IVVIk0wVKbUYoZIslBvAtGUN6LkYHYmkK5V/wy7SXaBL8wAZzkgsLyPqyCZPW2lCa
+         j2qPBE5i4igM8amNFPr+zWTds4ct1BgNisRCepMR5qfZJN7k/hHujlPv0v0+GxJIrTV4
+         fHGQ==
+X-Gm-Message-State: ABy/qLYcJ43wL56O9AMGDaLVm6nS8Z0TS+rnH9qhfawOfr9CTuT7YigG
+        UZGsreaXqPvoa80LURgjiwQ=
+X-Google-Smtp-Source: APBJJlFVtJZKjyiighRxE5mEk35cM8Dd8dreqWkeoTf6MyBSM1enMxAspccBtb4/nTq1g/v5ZTUg6g==
+X-Received: by 2002:a05:6a00:cc7:b0:66a:5e6f:8b21 with SMTP id b7-20020a056a000cc700b0066a5e6f8b21mr6724779pfv.2.1689865435391;
+        Thu, 20 Jul 2023 08:03:55 -0700 (PDT)
+Received: from [192.168.1.12] (bb219-74-209-211.singnet.com.sg. [219.74.209.211])
+        by smtp.gmail.com with ESMTPSA id l24-20020a62be18000000b0064f7c56d8b7sm1239911pff.219.2023.07.20.08.03.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 08:03:14 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <d29552c2-f20c-cf68-76ae-e03a2cc7e0ba@roeck-us.net>
-Date:   Thu, 20 Jul 2023 08:03:13 -0700
+        Thu, 20 Jul 2023 08:03:55 -0700 (PDT)
+Message-ID: <b86b4a28-29d0-ed2e-ab82-449d1652b10c@gmail.com>
+Date:   Thu, 20 Jul 2023 23:03:48 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add testcase for xdp
+ attaching failure tracepoint
 Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <ee59d128-413c-48ad-a3aa-d9d350c80042@roeck-us.net>
- <336fc14e-f734-49ea-97ce-802f03fa4422@kadam.mountain>
- <198c4edf-045c-8d85-1d5c-018378eeb490@roeck-us.net>
- <055f2564-551d-4b5f-a6e3-d54ae104d5c9@sirena.org.uk>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: Traceback with CONFIG_REGMAP_KUNIT=y+CONFIG_DEBUG_ATOMIC_SLEEP=y
-In-Reply-To: <055f2564-551d-4b5f-a6e3-d54ae104d5c9@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Yizhou Tang <tangyeechou@gmail.com>, kernel-patches-bot@fb.com,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+References: <20230719125232.92607-1-hffilwlqm@gmail.com>
+ <20230719125232.92607-3-hffilwlqm@gmail.com>
+ <CAADnVQKxGNNbn-OnQzrbcOfC6c_5tL0PSfZM0y8h_FJ0Pg=sDg@mail.gmail.com>
+From:   Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <CAADnVQKxGNNbn-OnQzrbcOfC6c_5tL0PSfZM0y8h_FJ0Pg=sDg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 07:31, Mark Brown wrote:
-> On Thu, Jul 20, 2023 at 07:26:54AM -0700, Guenter Roeck wrote:
->> On 7/20/23 01:50, Dan Carpenter wrote:
-> 
->>> +++ b/drivers/base/regmap/regcache-rbtree.c
->>> @@ -187,7 +187,7 @@ static int regcache_rbtree_init(struct regmap *map)
->>>    	int i;
->>>    	int ret;
->>> -	map->cache = kmalloc(sizeof *rbtree_ctx, GFP_KERNEL);
->>> +	map->cache = kmalloc(sizeof *rbtree_ctx, map->alloc_flags);
-> 
->> Yes, that might work as well (and after looking more deeply into the code
->> I wondered why it wasn't used in the first place).
-> 
->> Based on Mark's feedback I submitted
->> https://lore.kernel.org/lkml/20230720032848.1306349-1-linux@roeck-us.net/
->> Sorry, I forgot to copy you on that one.
-> 
->> Mark, please let me know what you prefer.
-> 
-> They're both independently fine, but I wouldn't expect anything that's
-> running in atomic context to be actually using dynamic allocations.
 
-Which one do you prefer ? As I mentioned in my second patch, there are
-two drivers which use fast_io together with REGCACHE_RBTREE and thus
-are likely affected by this problem. Dan's solution would cover that,
-while my current RFC patch would likely cause those drivers to fail.
-Plus, of course, they could get stuck if they actually end up trying to
-sleep while allocating memory.
+
+On 2023/7/20 01:39, Alexei Starovoitov wrote:
+> On Wed, Jul 19, 2023 at 5:53 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
+>> +       return 0;
+>> +}
+>> +
+>> +/*
+>> + * Reuse the XDP program in xdp_dummy.c.
+>> + */
+>> +
+>> +char LICENSE[] SEC("license") = "GPL";
+> 
+> Do you have a hidden char in the above?
+> git considers the last line to be part of the commit log instead
+> of part of the patchset and it fails CI.
+
+Sorry for it.
+
+I'll use ./scripts/checkpatch.pl to check it again to make sure no style
+issue, then resend this patchset.
 
 Thanks,
-Guenter
-
+Leon
