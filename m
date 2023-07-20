@@ -2,81 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F3F75A88F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A758275A893
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbjGTICq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 04:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
+        id S229891AbjGTID1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 04:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjGTICm (ORCPT
+        with ESMTP id S229680AbjGTIDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 04:02:42 -0400
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1646D135;
-        Thu, 20 Jul 2023 01:02:42 -0700 (PDT)
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by bee.tesarici.cz (Postfix) with ESMTPSA id 3ECD7164269;
-        Thu, 20 Jul 2023 10:02:39 +0200 (CEST)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-        t=1689840159; bh=D7uejbPnusryYbx96m6L7cjLYp5Gmplm0qfp8geBlY4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=y5azLUXFqHfPiDcwLhK9RwnD6ejtiZ+5Q02Bj+zd22Fr+LTkHaT722JMUBsOsMObf
-         d/uJjgs0CGt4ina28Lmi+hf5m9guZ+TRvuODDbwcLdrHc3ABi2F9r9nWpfci2kQrla
-         Z2yA0zYxxpDaId3rWBew7EufpvEwO7go1DmYHTMzHoRlZ7WPskE92l6RVNhUeRWnKg
-         fKAg7BCd5Gjf6KvOFOw4bkEQUU4pOxankJGS7I9GPQu8i9MLEdtCZumfu7B6IuuFen
-         OKCplt0boWwWvjkRP8KQZMs+QBemLE/Tga0vCGYkGNdPfyg0bvUJ2CxXY0zZ+Agu45
-         DanUaK6MSjTxA==
-Date:   Thu, 20 Jul 2023 10:02:38 +0200
-From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Petr Tesarik <petrtesarik@huaweicloud.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Seo <james@equiv.tech>,
-        James Clark <james.clark@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "moderated list:XEN HYPERVISOR ARM" <xen-devel@lists.xenproject.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:XEN SWIOTLB SUBSYSTEM" <iommu@lists.linux.dev>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: Re: [PATCH v4 8/8] swiotlb: search the software IO TLB only if a
- device makes use of it
-Message-ID: <20230720100238.58f11c06@meshulam.tesarici.cz>
-In-Reply-To: <20230720064744.GA4395@lst.de>
-References: <cover.1689261692.git.petr.tesarik.ext@huawei.com>
-        <a8d31d3fffa0867dce2b44b98dc2714289edfdc9.1689261692.git.petr.tesarik.ext@huawei.com>
-        <20230720064744.GA4395@lst.de>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
+        Thu, 20 Jul 2023 04:03:25 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8B22111
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:03:23 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1689840201;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7PdFSlTwZ92Iu5k4zEnx3qqOg4qIJ3r9ex8fDWUMyQs=;
+        b=0cQT47GzdUVme/i2+7thYh3x4MMiijFZotMrqpPhvAycv90bqdewOt2F0N7+Zn5jzZdSua
+        IXB2wUJfwxCO0bcdbiZeaRQ7ZaTCEwqDDJENOE5h8hSKRnJEOa0mDa1Npw3o6ZepNgdxjW
+        Cff1F2iQjjknPeFFrhumcjhyZ9Ej02dmjjJ2XZ7J7n4Bcd/5VoWhWIWeN9evr5xHjkW8tU
+        vfwBO4jBzpgqQbLfHe4VW3QHOo0lBwu6Nagc2wNsgoEwjKS5NO+mWA4ZyoACCyCtzcNWkC
+        /dBfZM80B9ZIE7nfWQbvaERAY1Kwgoj9nlmDkSV51TT7RZoT5OAw5xGBI8tPMw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1689840201;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7PdFSlTwZ92Iu5k4zEnx3qqOg4qIJ3r9ex8fDWUMyQs=;
+        b=7DV908KZMFJFpWqwq8Jh2x8+pq0b/LPLwpqWiUMCa2fiuanFPgaDFmduqMhnONMnSRf7tC
+        TdFzQOEcaLKB8pCg==
+To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: RE: [patch 19/58] x86/apic: Get rid of apic_phys
+In-Reply-To: <BYAPR21MB1688E1BDE9B6D1225E590FF1D73EA@BYAPR21MB1688.namprd21.prod.outlook.com>
+References: <20230717223049.327865981@linutronix.de>
+ <20230717223224.207131427@linutronix.de> <87edl5xt2n.ffs@tglx>
+ <BYAPR21MB1688E1BDE9B6D1225E590FF1D73EA@BYAPR21MB1688.namprd21.prod.outlook.com>
+Date:   Thu, 20 Jul 2023 10:03:20 +0200
+Message-ID: <874jlz3t87.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,22 +64,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023 08:47:44 +0200
-Christoph Hellwig <hch@lst.de> wrote:
+On Thu, Jul 20 2023 at 04:18, Michael Kelley wrote:
 
-> Any reason this can't just do a list_empty_careful on the list
-> instead of adding yet another field that grows struct device?
+> From: Thomas Gleixner <tglx@linutronix.de> Sent: Tuesday, July 18, 2023 6:12 AM
+>> 
+>> On Tue, Jul 18 2023 at 01:15, Thomas Gleixner wrote:
+>> > @@ -1921,7 +1922,6 @@ static __init void try_to_enable_x2apic(
+>> >  		 * be addressed must not be brought online.
+>> >  		 */
+>> >  		x2apic_set_max_apicid(apic_limit);
+>> > -		x2apic_phys = 1;
 
-On which list?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ This hunk _IS_ wrong and needs to be
+reverted obvioulsy.
 
-The dma_io_tlb_pools list only contains transient pools, but a device
-may use bounce buffers from a regular pool.
+>> >  	}
+>> >  	x2apic_enable();
+>> >  }
+>> 
+>> This hunk is obviously bogus. I just noticed on a VM which takes this
+>> code path...
+>
+> I'm testing guests on Hyper-V.  The case where the x2apic is enabled
+> in the BIOS works, but when the x2apic must be enabled by Linux,
+> the VMbus drivers never get initialized and things go downhill from
+> there. Your comment above is somewhat cryptic (as I haven't studied
+> the patches in detail), but I'm guessing it explains the failure I'm seeing.
+>
+> Let me know if I should debug the failure I'm seeing.  Otherwise
+> I'll wait for a new version and try again.
 
-The dma_io_tlb_mem.pools list will always be non-empty, unless the
-system runs without SWIOTLB.
+Can you add that line back and retest?
 
-On a system which does have a SWIOTLB, the flag allows to differentiate
-between devices that actually use bounce buffers and devices that do
-not (e.g. because they do not have any addressing limitations).
+Thanks,
 
-Petr T
+        tglx
