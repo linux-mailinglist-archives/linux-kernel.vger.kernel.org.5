@@ -2,613 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD3175B677
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A06F75B67B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbjGTSTK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 Jul 2023 14:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
+        id S231199AbjGTST3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 14:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjGTSTI (ORCPT
+        with ESMTP id S230261AbjGTSTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:19:08 -0400
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CBD5135;
-        Thu, 20 Jul 2023 11:19:06 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-4fbf9e4c0d5so281504e87.1;
-        Thu, 20 Jul 2023 11:19:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689877144; x=1690481944;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wCRumtcHokLowYb9kUO3NkQ68Fh6SmscyOqPUFdz3Rg=;
-        b=Hix3kbnuC3AEXD4XKqrKiUy0LpfPYlDmA6umYcRrJOGeCaak3EuVkWDpNTY6q0EJqi
-         /v4UfLj6sVqIcBCahguMSYq4gIND7EAqQQNPhiJOUDDn1ElBRpCzHvyi4cr8kZv0gmF/
-         8nPb3G+pHGEQDzkqQjG1YMAn/tba7P7mSSMYIZnGVygsKb53Ql/Dx14OvB48MHzaowSC
-         xEG173eTKQJc7+Ymxdh0hXG2+oM6XgSYJBtwQdoC+d8NwGSGj+31MCM12fp6jc9Lyst1
-         rzP3qV9EVQXNVlnJFr/9BtY3GaI1Z9x2ENIBbl2rOoVNDTZo1aYi/yX6eCVhEaJeRDMY
-         ZOWw==
-X-Gm-Message-State: ABy/qLbjK2evbD5VWJJuSug5VurXGnKQ6gKXyeUj+jDumkLIRfXGah6U
-        3azgjDUdK1UCg7M4G5HV29qecHCTBBfCETjj0sE=
-X-Google-Smtp-Source: APBJJlEKpWaVZfwuSBgUXT3vtt8gLuAqtqi0CfK9tWksgQRUy38c4Jpp1DGhrlIQQhc8qFsCLmYQz+navAgMqAnlzE0=
-X-Received: by 2002:ac2:4c21:0:b0:4fd:d186:6603 with SMTP id
- u1-20020ac24c21000000b004fdd1866603mr2353165lfq.0.1689877143830; Thu, 20 Jul
- 2023 11:19:03 -0700 (PDT)
+        Thu, 20 Jul 2023 14:19:20 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2095.outbound.protection.outlook.com [40.107.243.95])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0912D40;
+        Thu, 20 Jul 2023 11:19:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IjwqDMV72pzvfm7aDhp58lu25Vt/khHG512if65YAZTimAOT+q0v2QS0HnBoeMe5RxUnZwIxEfCqg7S0QsKP3VxKvf718dexR6mA9gXJuYCCelC8eQ34RK7hQxOhf6sGJ62SKWD37k7Jlo5CvU9OWo3UR14TPxlTRZI1e/hWG3j1x9N9sapbwVdRix0tzKKDhGL0wzaWHewkjLVPZFcDOhyxyhQfF0ByctDAopurg+NVIRfk/GGlWvcj3IIX3ga0pF6OGCcDW+v1MFHVHvXTWITMC49gCbRGvmW2Nztdq4iPjiB5Tb89ZJd/UqIUtfMTWYVxfWD6lKoF6B2HZ4t7tg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EaR8rJCQA5TUOOuZQFIXz8CJ1lqGguNQsOTOy1MMFB8=;
+ b=XZ084WZc/zMGIZo+ApWHsi/V/S7O1KMTfQa5MuVOP7nda+DSd7p3N5E+zFBJPRgZKzsEz1XCVlwbMwrRmadZKde0WGbQWyqQTbongP7vaczTExj7Rp6ZAVMI/0k3tziOFCByFKYPak35GNPz3lgopG6kLFgpQGQNeOQATt8K1sPiHt5rvpJVb+M/mUy18OEchD7o+GTZ45MKeM8yy6ACUo8VFtoB2OE6KkL++Mp/Q8J/WihvLxaAS8qPlEa7VVIfodu6Yp/eHhEUfYa/VDGy0wEiu7kRFbfQIwROsjLjQCzZpjT/TEU2F5S+WDztLgWMda2dPybfVjXLsOYiJrAQEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EaR8rJCQA5TUOOuZQFIXz8CJ1lqGguNQsOTOy1MMFB8=;
+ b=BxQDwRmCInHTboBx52SDzOPINLJfkMqUQsZqp5CVk9QEpN4KzMlLZtixaeFPbqi7fFtj+B3uRWJxN0/MRTKnZOG0Gk9eRnUN+CESgtWjoG9nqQThUF0Bq4tKJWxGUAatVcXNOeYN1NfrPdh5VPR3zUPSC2TDfJiPF34etUVu9Rw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by BY5PR13MB3617.namprd13.prod.outlook.com (2603:10b6:a03:21b::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Thu, 20 Jul
+ 2023 18:19:13 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.025; Thu, 20 Jul 2023
+ 18:19:13 +0000
+Date:   Thu, 20 Jul 2023 19:19:04 +0100
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
+        Petr Machata <petrm@nvidia.com>
+Subject: Re: [PATCH net-next v2 1/1] net: dsa: microchip: Add partial ACL
+ support for ksz9477 switches
+Message-ID: <ZLl6mF8iKBD/OeHb@corigine.com>
+References: <20230719111930.515070-1-o.rempel@pengutronix.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719111930.515070-1-o.rempel@pengutronix.de>
+X-ClientProxiedBy: LO4P123CA0395.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18f::22) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-References: <20230113193006.1320379-1-bgeffon@google.com> <20230714175506.2797899-1-bgeffon@google.com>
-In-Reply-To: <20230714175506.2797899-1-bgeffon@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 20 Jul 2023 20:18:52 +0200
-Message-ID: <CAJZ5v0i-Gv3zDvF2ZsOXLgfoS6ZnaRbQcdpxOhgv7tg0PYR6NA@mail.gmail.com>
-Subject: Re: [PATCH v7] PM: hibernate: don't store zero pages in the image file.
-To:     Brian Geffon <bgeffon@google.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthias Kaehlcke <mka@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|BY5PR13MB3617:EE_
+X-MS-Office365-Filtering-Correlation-Id: b0c49f2e-9014-4c71-cc4c-08db894dd1f0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: valxGXFU5vNQNTSYCjPLsA8923Ag5Dq9z4ehsDpVXuzvPwJa/4UJsOBXZbD3jyB7TlGfRen8XzORYSJ0mmU2RsGHKla+6PZXw2TA7MMmx0ZghDnUf+kzdIvmoI1SBvTxmgTg6W7NhDEZ1RMpqeBZTP6wjRpSBZVzvr0lqbpmXHdxMkIYuhLzPeI9qw/KK8Xud4vBpE7dsytlTbzle5cLIM0w8pTqtkK1WyijaRBOlFzr5zAGxGLFd3AjGEtVZiSNnaIRhQpNOA8TXIgclbP09SrFgaLLgTe/W8++j+NlUx8KysgM2BU8JpwBwffQSmpUc7hkZZWbdQhyle3uPVhAlSlwIgZhWTojolQOt+Q4y/1t3jTUg1D12OkAE5/f/TBoqfYY34RqF7fDZ95Q53WfSbi22FEjl2R2LK8MSGFjtER5ExFgKvRsfSk+xULS2A5AAd366C97Ri3pSDBPLIDWw8v0mc12RoDO805XQ7rCSHe3Y4936jAPssMxFjkfogG4zJ7O1YIZ/uSSql6fkCPZH/eWgJkBWrMd60zUeBEIKY/fZ8mBmjRMs709lWzCbA6HRxfB17UiJez/VHFyvN9NSiZ+UWrIy+fxYg+vAh3Mjxk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(136003)(39830400003)(366004)(376002)(451199021)(6916009)(66476007)(26005)(55236004)(6506007)(4326008)(66946007)(478600001)(66556008)(54906003)(6486002)(6666004)(36756003)(86362001)(83380400001)(186003)(2616005)(316002)(8676002)(5660300002)(41300700001)(44832011)(6512007)(2906002)(8936002)(38100700002)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xs6MIFLC4PS9ySRFdonrXT5YFbUVtY5ZuS5sxnhNNfOxF9ri3Rsyc4v6GqxB?=
+ =?us-ascii?Q?/yIfCjvsycIAMm9D5WMFhQo8RTljGipQJs0ZEo/DAjFmkIErF53F8DxP7QWo?=
+ =?us-ascii?Q?jIDdps6epiXmAXIqi0uD+bnxBN2HrRDJxRSINd1Qbvx2TO8ReqUPF3iuDwJ/?=
+ =?us-ascii?Q?prHCBWjxOXfCNwYvv6kAXPlE4aKNU1Cbrhj/if7jP7pXA4XwvGTYjsjq4ca1?=
+ =?us-ascii?Q?rU52SeWHsXEgqw4v64sz4ytxGaHXt6aN+/9j4czkfngRbbweAFZREtoisfZ8?=
+ =?us-ascii?Q?RUYvPAjWpyYn/YbzfCCQe8Ll3ICOecVtMLRtfn7tEsqhp6KyP7F1UXFI1nPx?=
+ =?us-ascii?Q?rq1W7D7YRDjst8ZNJm0D2DbmfPz9SZAyYYzZyYVaoMWbdvsbqBWDL0+gDUCY?=
+ =?us-ascii?Q?RAH4OfnsbtcUgSK5kZHFugY/La0vOo40a1YnkvFY67ujgzB5Dmf+MPZ6qZns?=
+ =?us-ascii?Q?zolRJiZ4L+KhtNv+N4ipz2lQwT6M2oZvAjApw84bBlsFxaTwaEnss1T/UiQO?=
+ =?us-ascii?Q?ed2bywgrCwcq4h1QLH1+wevxG6A75gjB0yItdgme5Xol/BI1SDehWztyLU4g?=
+ =?us-ascii?Q?eisPErfPHUHSWvPCTN/7+W0NzWo21Dz6QZLve1aFhy+59RT3GxgIe7nArWs1?=
+ =?us-ascii?Q?d54s+8N9nErcpptD6Lr+nHtQbTAckWr041aarKOU1Mxfx3iddN89GuAlAidz?=
+ =?us-ascii?Q?f/wUHQPF9RZ1ZgbJuZMr2XtDIbJGGQ4G+gEBwks2ID5zhHM+sqtfIwVs7cDN?=
+ =?us-ascii?Q?dpWPzRYjARi0vy9dp0m3upcJ9mdNFsWAHpoGt/aEtZqE/E0Sc/cjcv/G+/mY?=
+ =?us-ascii?Q?L6Kop9oRH+3qmd6FjZKB0UdHscQp4fgqkIiLdmotxBFJZTAPTcyfxfpt0Nlz?=
+ =?us-ascii?Q?367vtd9ox2ltrG+v6MyAiHtgq6iSUN0QYzSYYqmhFKl8MgFFGSKc5RGi9piC?=
+ =?us-ascii?Q?HYSZivYbdK+lPyac6eVjms8E+7NzFB4VLWiQnfe1IsG7mWAmuuiFhWFtCv2/?=
+ =?us-ascii?Q?iqv4Z95qb8IwqQiudvIdvxfNDWoYosoDlpj+67fxzKiWa04faXf/JVvJJcZD?=
+ =?us-ascii?Q?bUcdde3ER1HGFvwdK8gdcCsGCYewzsz+wqg0z+a1DQA6JGdWYvE+BLjlnTiu?=
+ =?us-ascii?Q?eAyZDaMqVc0MCrCve9E0+xgekWu/Kzg5M29qu1okAKsio+c+dS7paw55CMlU?=
+ =?us-ascii?Q?2CdcDPOjrDv2X6TJD8yWI2RU0sEpW/d4fweXk9u2t/b06HQEJcJ8q5sxvLCm?=
+ =?us-ascii?Q?D7Ehr+cYTJ0Cscnx+pWXVej+BfXEop97rJaYlfimCWzbGo6RwjTMhCEN7Dnz?=
+ =?us-ascii?Q?XPLWxWF62PZNAOZVdi00ixwqKZdV8UBxGyZho1r6rcnYmuQVumph9qFwzmyD?=
+ =?us-ascii?Q?ECe8NT6jYmX5yzFHrLd+zEBKyx6hFvX4eKpaowm8/BiHy/PGVfn6WqHHBr88?=
+ =?us-ascii?Q?B2XYZZvKYiqmXT0AcD3kX7Et1g+d136qcPRF3xPm/gKxK12M3I4lmDFd7f0f?=
+ =?us-ascii?Q?XmIGSL6Rh5DW4jsNPah9/i3nD+tJSbwUFQ7KRDBRS7sd7vgfuVymgsNwVOgV?=
+ =?us-ascii?Q?Yvi/RmdEpujOkPUnPEVLczJg12gJavqiZj50kC/RH98cC6/FsFX0IxIEF/hj?=
+ =?us-ascii?Q?fg=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0c49f2e-9014-4c71-cc4c-08db894dd1f0
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 18:19:13.3992
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: poeMcFDkTim8C4uUy0P48mLSmUaOojiM/FalYsCGXVE0XLvsf9V2tngUAZavrCG2mcoQbUc4YzINCVFFIrLfv+HDNIaDBmlSRDdxknhFuBs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR13MB3617
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 7:55 PM Brian Geffon <bgeffon@google.com> wrote:
->
-> On ChromeOS we've observed a considerable number of in-use pages filled with
-> zeros. Today with hibernate it's entirely possible that saveable pages are just
-> zero filled. Since we're already copying pages word-by-word in do_copy_page it
-> becomes almost free to determine if a page was completely filled with zeros.
->
-> This change introduces a new bitmap which will track these zero pages. If a page
-> is zero it will not be included in the saved image, instead to track these zero
-> pages in the image file we will introduce a new flag which we will set on the
-> packed PFN list. When reading back in the image file we will detect these zero
-> page PFNs and rebuild the zero page bitmap.
->
-> When the image is being loaded through calls to write_next_page if we encounter
-> a zero page we will silently memset it to 0 and then continue on to the next
-> page. Given the implementation in snapshot_read_next/snapshot_write_next this
-> change  will be transparent to non-compressed/compressed and swsusp modes of
-> operation.
->
-> To provide some concrete numbers from simple ad-hoc testing, on a device which
-> was lightly in use we saw that:
->
-> PM: hibernation: Image created (964408 pages copied, 548304 zero pages)
->
-> Of the approximately 6.2GB of saveable pages 2.2GB (36%) were just zero filled
-> and could be tracked entirely within the packed PFN list. The savings would
-> obviously be much lower for lzo compressed images, but even in the case of
-> compression not copying pages across to the compression threads will still
-> speed things up. It's also possible that we would see better overall compression
-> ratios as larger regions of "real data" would improve the compressibility.
->
-> Finally, such an approach could dramatically improve swsusp performance
-> as each one of those zero pages requires a write syscall to reload, by
-> handling it as part of the packed PFN list we're able to fully avoid
-> that.
->
-> Patch v6 -> v7:
-> - Fix a bug in image_loaded() not accounting for zero pages.
->
-> Patch v5 -> v6:
-> - Correcting missed variable when changing types.
->
-> Patch v4 -> v5:
-> - Addressed numerous style comments from Rafael J. Wysocki.
->
-> Patch v3 -> v4:
-> - Suggestions from Matthias Kaehlcke:
->  - Return number of copy pages from copy_data_pages
->  - Use an explicit temporary bitmap while moving the zerm_bm
->    to safe pages.
->
-> Patch v2 -> v3:
-> - Use nr_zero_pages rather than walking each pfn to count.
-> - Make sure zero_bm is allocated in safe pages on resume.
->  When reading in the pfn list and building the zero page bm
->  we don't know which pages are unsafe yet so we will need to
->  copy this bm to safe pages after the metadata has been read.
->
-> Patch v1 -> v2:
-> - minor code mistake from rebasing corrected.
->
-> Signed-off-by: Brian Geffon <bgeffon@google.com>
-> ---
->  kernel/power/snapshot.c | 186 ++++++++++++++++++++++++++++++++--------
->  1 file changed, 148 insertions(+), 38 deletions(-)
->
-> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-> index cd8b7b35f1e8..1f2a052b56b8 100644
-> --- a/kernel/power/snapshot.c
-> +++ b/kernel/power/snapshot.c
-> @@ -404,6 +404,7 @@ struct bm_position {
->         struct mem_zone_bm_rtree *zone;
->         struct rtree_node *node;
->         unsigned long node_pfn;
-> +       unsigned long cur_pfn;
->         int node_bit;
->  };
->
-> @@ -589,6 +590,7 @@ static void memory_bm_position_reset(struct memory_bitmap *bm)
->         bm->cur.node = list_entry(bm->cur.zone->leaves.next,
->                                   struct rtree_node, list);
->         bm->cur.node_pfn = 0;
-> +       bm->cur.cur_pfn = BM_END_OF_MAP;
->         bm->cur.node_bit = 0;
->  }
->
-> @@ -799,6 +801,7 @@ static int memory_bm_find_bit(struct memory_bitmap *bm, unsigned long pfn,
->         bm->cur.zone = zone;
->         bm->cur.node = node;
->         bm->cur.node_pfn = (pfn - zone->start_pfn) & ~BM_BLOCK_MASK;
-> +       bm->cur.cur_pfn = pfn;
->
->         /* Set return values */
->         *addr = node->data;
-> @@ -850,6 +853,11 @@ static void memory_bm_clear_current(struct memory_bitmap *bm)
->         clear_bit(bit, bm->cur.node->data);
->  }
->
-> +static unsigned long memory_bm_get_current(struct memory_bitmap *bm)
-> +{
-> +       return bm->cur.cur_pfn;
-> +}
-> +
->  static int memory_bm_test_bit(struct memory_bitmap *bm, unsigned long pfn)
->  {
->         void *addr;
-> @@ -929,10 +937,12 @@ static unsigned long memory_bm_next_pfn(struct memory_bitmap *bm)
->                 if (bit < bits) {
->                         pfn = bm->cur.zone->start_pfn + bm->cur.node_pfn + bit;
->                         bm->cur.node_bit = bit + 1;
-> +                       bm->cur.cur_pfn = pfn;
->                         return pfn;
->                 }
->         } while (rtree_next_node(bm));
->
-> +       bm->cur.cur_pfn = BM_END_OF_MAP;
->         return BM_END_OF_MAP;
->  }
->
-> @@ -1371,14 +1381,18 @@ static unsigned int count_data_pages(void)
->
->  /*
->   * This is needed, because copy_page and memcpy are not usable for copying
-> - * task structs.
-> + * task structs. Returns true if the page was filled with only zeros, otherwise false.
->   */
-> -static inline void do_copy_page(long *dst, long *src)
-> +static inline bool do_copy_page(long *dst, long *src)
->  {
-> +       long z = 0;
->         int n;
->
-> -       for (n = PAGE_SIZE / sizeof(long); n; n--)
-> +       for (n = PAGE_SIZE / sizeof(long); n; n--) {
-> +               z |= *src;
->                 *dst++ = *src++;
-> +       }
-> +       return !z;
->  }
->
->  /**
-> @@ -1387,17 +1401,20 @@ static inline void do_copy_page(long *dst, long *src)
->   * Check if the page we are going to copy is marked as present in the kernel
->   * page tables. This always is the case if CONFIG_DEBUG_PAGEALLOC or
->   * CONFIG_ARCH_HAS_SET_DIRECT_MAP is not set. In that case kernel_page_present()
-> - * always returns 'true'.
-> + * always returns 'true'. Returns true if the page was entirely composed of zeros
-> + * otherwise it will return false.
->   */
-> -static void safe_copy_page(void *dst, struct page *s_page)
-> +static bool safe_copy_page(void *dst, struct page *s_page)
->  {
-> +       bool zeros_only;
->         if (kernel_page_present(s_page)) {
-> -               do_copy_page(dst, page_address(s_page));
-> +               zeros_only = do_copy_page(dst, page_address(s_page));
->         } else {
->                 hibernate_map_page(s_page);
-> -               do_copy_page(dst, page_address(s_page));
-> +               zeros_only = do_copy_page(dst, page_address(s_page));
->                 hibernate_unmap_page(s_page);
->         }
-> +       return zeros_only;
->  }
->
->  #ifdef CONFIG_HIGHMEM
-> @@ -1407,17 +1424,18 @@ static inline struct page *page_is_saveable(struct zone *zone, unsigned long pfn
->                 saveable_highmem_page(zone, pfn) : saveable_page(zone, pfn);
->  }
->
-> -static void copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
-> +static bool copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
->  {
->         struct page *s_page, *d_page;
->         void *src, *dst;
-> +       bool zeros_only;
->
->         s_page = pfn_to_page(src_pfn);
->         d_page = pfn_to_page(dst_pfn);
->         if (PageHighMem(s_page)) {
->                 src = kmap_atomic(s_page);
->                 dst = kmap_atomic(d_page);
-> -               do_copy_page(dst, src);
-> +               zeros_only = do_copy_page(dst, src);
->                 kunmap_atomic(dst);
->                 kunmap_atomic(src);
->         } else {
-> @@ -1426,30 +1444,39 @@ static void copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
->                          * The page pointed to by src may contain some kernel
->                          * data modified by kmap_atomic()
->                          */
-> -                       safe_copy_page(buffer, s_page);
-> +                       zeros_only = safe_copy_page(buffer, s_page);
->                         dst = kmap_atomic(d_page);
->                         copy_page(dst, buffer);
->                         kunmap_atomic(dst);
->                 } else {
-> -                       safe_copy_page(page_address(d_page), s_page);
-> +                       zeros_only = safe_copy_page(page_address(d_page), s_page);
->                 }
->         }
-> +       return zeros_only;
->  }
->  #else
->  #define page_is_saveable(zone, pfn)    saveable_page(zone, pfn)
->
-> -static inline void copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
-> +static inline int copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
->  {
-> -       safe_copy_page(page_address(pfn_to_page(dst_pfn)),
-> +       return safe_copy_page(page_address(pfn_to_page(dst_pfn)),
->                                 pfn_to_page(src_pfn));
->  }
->  #endif /* CONFIG_HIGHMEM */
->
-> -static void copy_data_pages(struct memory_bitmap *copy_bm,
-> -                           struct memory_bitmap *orig_bm)
-> +/*
-> + * Copy data pages will copy all pages into pages pulled from the copy_bm.
-> + * If a page was entirely filled with zeros it will be marked in the zero_bm.
-> + *
-> + * Returns the number of pages copied.
-> + */
-> +static unsigned long copy_data_pages(struct memory_bitmap *copy_bm,
-> +                           struct memory_bitmap *orig_bm,
-> +                           struct memory_bitmap *zero_bm)
->  {
-> +       unsigned long copied_pages = 0;
->         struct zone *zone;
-> -       unsigned long pfn;
-> +       unsigned long pfn, copy_pfn;
->
->         for_each_populated_zone(zone) {
->                 unsigned long max_zone_pfn;
-> @@ -1462,18 +1489,30 @@ static void copy_data_pages(struct memory_bitmap *copy_bm,
->         }
->         memory_bm_position_reset(orig_bm);
->         memory_bm_position_reset(copy_bm);
-> +       copy_pfn = memory_bm_next_pfn(copy_bm);
->         for(;;) {
->                 pfn = memory_bm_next_pfn(orig_bm);
->                 if (unlikely(pfn == BM_END_OF_MAP))
->                         break;
-> -               copy_data_page(memory_bm_next_pfn(copy_bm), pfn);
-> +               if (copy_data_page(copy_pfn, pfn)) {
-> +                       memory_bm_set_bit(zero_bm, pfn);
-> +
-> +                       /* Use this copy_pfn for a page that is not full of zeros */
-> +                       continue;
-> +               }
-> +               copied_pages++;
-> +               copy_pfn = memory_bm_next_pfn(copy_bm);
->         }
-> +       return copied_pages;
->  }
->
->  /* Total number of image pages */
->  static unsigned int nr_copy_pages;
->  /* Number of pages needed for saving the original pfns of the image pages */
->  static unsigned int nr_meta_pages;
-> +/* Number of zero pages */
-> +static unsigned int nr_zero_pages;
-> +
->  /*
->   * Numbers of normal and highmem page frames allocated for hibernation image
->   * before suspending devices.
-> @@ -1494,6 +1533,9 @@ static struct memory_bitmap orig_bm;
->   */
->  static struct memory_bitmap copy_bm;
->
-> +/* Memory bitmap which tracks which saveable pages were zero filled. */
-> +static struct memory_bitmap zero_bm;
-> +
->  /**
->   * swsusp_free - Free pages allocated for hibernation image.
->   *
-> @@ -1538,6 +1580,7 @@ void swsusp_free(void)
->  out:
->         nr_copy_pages = 0;
->         nr_meta_pages = 0;
-> +       nr_zero_pages = 0;
->         restore_pblist = NULL;
->         buffer = NULL;
->         alloc_normal = 0;
-> @@ -1756,8 +1799,15 @@ int hibernate_preallocate_memory(void)
->                 goto err_out;
->         }
->
-> +       error = memory_bm_create(&zero_bm, GFP_IMAGE, PG_ANY);
-> +       if (error) {
-> +               pr_err("Cannot allocate zero bitmap\n");
-> +               goto err_out;
-> +       }
-> +
->         alloc_normal = 0;
->         alloc_highmem = 0;
-> +       nr_zero_pages = 0;
->
->         /* Count the number of saveable data pages. */
->         save_highmem = count_highmem_pages();
-> @@ -2037,19 +2087,19 @@ asmlinkage __visible int swsusp_save(void)
->          * Kill them.
->          */
->         drain_local_pages(NULL);
-> -       copy_data_pages(&copy_bm, &orig_bm);
-> +       nr_copy_pages = copy_data_pages(&copy_bm, &orig_bm, &zero_bm);
->
->         /*
->          * End of critical section. From now on, we can write to memory,
->          * but we should not touch disk. This specially means we must _not_
->          * touch swap space! Except we must write out our image of course.
->          */
-> -
->         nr_pages += nr_highmem;
-> -       nr_copy_pages = nr_pages;
-> +       /* We don't actually copy the zero pages */
-> +       nr_zero_pages = nr_pages - nr_copy_pages;
->         nr_meta_pages = DIV_ROUND_UP(nr_pages * sizeof(long), PAGE_SIZE);
->
-> -       pr_info("Image created (%d pages copied)\n", nr_pages);
-> +       pr_info("Image created (%d pages copied, %d zero pages)\n", nr_copy_pages, nr_zero_pages);
->
->         return 0;
->  }
-> @@ -2094,15 +2144,22 @@ static int init_header(struct swsusp_info *info)
->         return init_header_complete(info);
->  }
->
-> +#define ENCODED_PFN_ZERO_FLAG ((unsigned long)1 << (BITS_PER_LONG - 1))
-> +#define ENCODED_PFN_MASK (~ENCODED_PFN_ZERO_FLAG)
-> +
->  /**
->   * pack_pfns - Prepare PFNs for saving.
->   * @bm: Memory bitmap.
->   * @buf: Memory buffer to store the PFNs in.
-> + * @zero_bm: Memory bitmap containing PFNs of zero pages.
->   *
->   * PFNs corresponding to set bits in @bm are stored in the area of memory
-> - * pointed to by @buf (1 page at a time).
-> + * pointed to by @buf (1 page at a time). Pages which were filled with only
-> + * zeros will have the highest bit set in the packed format to distinguish
-> + * them from PFNs which will be contained in the image file.
->   */
-> -static inline void pack_pfns(unsigned long *buf, struct memory_bitmap *bm)
-> +static inline void pack_pfns(unsigned long *buf, struct memory_bitmap *bm,
-> +               struct memory_bitmap *zero_bm)
->  {
->         int j;
->
-> @@ -2110,6 +2167,8 @@ static inline void pack_pfns(unsigned long *buf, struct memory_bitmap *bm)
->                 buf[j] = memory_bm_next_pfn(bm);
->                 if (unlikely(buf[j] == BM_END_OF_MAP))
->                         break;
-> +               if (memory_bm_test_bit(zero_bm, buf[j]))
-> +                       buf[j] |= ENCODED_PFN_ZERO_FLAG;
->         }
->  }
->
-> @@ -2151,7 +2210,7 @@ int snapshot_read_next(struct snapshot_handle *handle)
->                 memory_bm_position_reset(&copy_bm);
->         } else if (handle->cur <= nr_meta_pages) {
->                 clear_page(buffer);
-> -               pack_pfns(buffer, &orig_bm);
-> +               pack_pfns(buffer, &orig_bm, &zero_bm);
->         } else {
->                 struct page *page;
->
-> @@ -2247,24 +2306,35 @@ static int load_header(struct swsusp_info *info)
->   * unpack_orig_pfns - Set bits corresponding to given PFNs in a memory bitmap.
->   * @bm: Memory bitmap.
->   * @buf: Area of memory containing the PFNs.
-> + * @zero_bm: Memory bitmap with the zero PFNs marked.
->   *
->   * For each element of the array pointed to by @buf (1 page at a time), set the
-> - * corresponding bit in @bm.
-> + * corresponding bit in @bm. If the page was originally populated with only
-> + * zeros then a corresponding bit will also be set in @zero_bm.
->   */
-> -static int unpack_orig_pfns(unsigned long *buf, struct memory_bitmap *bm)
-> +static int unpack_orig_pfns(unsigned long *buf, struct memory_bitmap *bm,
-> +               struct memory_bitmap *zero_bm)
->  {
-> +       unsigned long decoded_pfn;
-> +        bool zero;
->         int j;
->
->         for (j = 0; j < PAGE_SIZE / sizeof(long); j++) {
->                 if (unlikely(buf[j] == BM_END_OF_MAP))
->                         break;
->
-> -               if (pfn_valid(buf[j]) && memory_bm_pfn_present(bm, buf[j])) {
-> -                       memory_bm_set_bit(bm, buf[j]);
-> +               zero = !!(buf[j] & ENCODED_PFN_ZERO_FLAG);
-> +               decoded_pfn = buf[j] & ENCODED_PFN_MASK;
-> +               if (pfn_valid(decoded_pfn) && memory_bm_pfn_present(bm, decoded_pfn)) {
-> +                       memory_bm_set_bit(bm, decoded_pfn);
-> +                       if (zero) {
-> +                               memory_bm_set_bit(zero_bm, decoded_pfn);
-> +                               nr_zero_pages++;
-> +                       }
->                 } else {
-> -                       if (!pfn_valid(buf[j]))
-> +                       if (!pfn_valid(decoded_pfn))
->                                 pr_err(FW_BUG "Memory map mismatch at 0x%llx after hibernation\n",
-> -                                      (unsigned long long)PFN_PHYS(buf[j]));
-> +                                      (unsigned long long)PFN_PHYS(decoded_pfn));
->                         return -EFAULT;
->                 }
->         }
-> @@ -2486,6 +2556,7 @@ static inline void free_highmem_data(void) {}
->   * prepare_image - Make room for loading hibernation image.
->   * @new_bm: Uninitialized memory bitmap structure.
->   * @bm: Memory bitmap with unsafe pages marked.
-> + * @zero_bm: Memory bitmap containing the zero pages.
->   *
->   * Use @bm to mark the pages that will be overwritten in the process of
->   * restoring the system memory state from the suspend image ("unsafe" pages)
-> @@ -2496,10 +2567,15 @@ static inline void free_highmem_data(void) {}
->   * pages will be used for just yet.  Instead, we mark them all as allocated and
->   * create a lists of "safe" pages to be used later.  On systems with high
->   * memory a list of "safe" highmem pages is created too.
-> + *
-> + * Because it was not known which pages were unsafe when @zero_bm was created,
-> + * make a copy of it and recreate it within safe pages.
->   */
-> -static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm)
-> +static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm,
-> +               struct memory_bitmap *zero_bm)
->  {
->         unsigned int nr_pages, nr_highmem;
-> +       struct memory_bitmap tmp;
->         struct linked_page *lp;
->         int error;
->
-> @@ -2516,6 +2592,24 @@ static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm)
->
->         duplicate_memory_bitmap(new_bm, bm);
->         memory_bm_free(bm, PG_UNSAFE_KEEP);
-> +
-> +       /* Make a copy of zero_bm so it can be created in safe pages */
-> +       error = memory_bm_create(&tmp, GFP_ATOMIC, PG_ANY);
-> +       if (error)
-> +               goto Free;
-> +
-> +       duplicate_memory_bitmap(&tmp, zero_bm);
-> +       memory_bm_free(zero_bm, PG_UNSAFE_KEEP);
-> +
-> +       /* Recreate zero_bm in safe pages */
-> +       error = memory_bm_create(zero_bm, GFP_ATOMIC, PG_SAFE);
-> +       if (error)
-> +               goto Free;
-> +
-> +       duplicate_memory_bitmap(zero_bm, &tmp);
-> +       memory_bm_free(&tmp, PG_UNSAFE_KEEP);
-> +       /* At this point zero_bm is in safe pages and it can be used for restoring. */
-> +
->         if (nr_highmem > 0) {
->                 error = prepare_highmem_image(bm, &nr_highmem);
->                 if (error)
-> @@ -2530,7 +2624,7 @@ static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm)
->          *
->          * nr_copy_pages cannot be less than allocated_unsafe_pages too.
->          */
-> -       nr_pages = nr_copy_pages - nr_highmem - allocated_unsafe_pages;
-> +       nr_pages = (nr_zero_pages + nr_copy_pages) - nr_highmem - allocated_unsafe_pages;
->         nr_pages = DIV_ROUND_UP(nr_pages, PBES_PER_LINKED_PAGE);
->         while (nr_pages > 0) {
->                 lp = get_image_page(GFP_ATOMIC, PG_SAFE);
-> @@ -2543,7 +2637,7 @@ static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm)
->                 nr_pages--;
->         }
->         /* Preallocate memory for the image */
-> -       nr_pages = nr_copy_pages - nr_highmem - allocated_unsafe_pages;
-> +       nr_pages = (nr_zero_pages + nr_copy_pages) - nr_highmem - allocated_unsafe_pages;
->         while (nr_pages > 0) {
->                 lp = (struct linked_page *)get_zeroed_page(GFP_ATOMIC);
->                 if (!lp) {
-> @@ -2631,8 +2725,9 @@ int snapshot_write_next(struct snapshot_handle *handle)
->         static struct chain_allocator ca;
->         int error = 0;
->
-> +next:
->         /* Check if we have already loaded the entire image */
-> -       if (handle->cur > 1 && handle->cur > nr_meta_pages + nr_copy_pages)
-> +       if (handle->cur > 1 && handle->cur > nr_meta_pages + nr_copy_pages + nr_zero_pages)
->                 return 0;
->
->         handle->sync_read = 1;
-> @@ -2657,19 +2752,26 @@ int snapshot_write_next(struct snapshot_handle *handle)
->                 if (error)
->                         return error;
->
-> +               error = memory_bm_create(&zero_bm, GFP_ATOMIC, PG_ANY);
-> +               if (error)
-> +                       return error;
-> +
-> +               nr_zero_pages = 0;
-> +
->                 hibernate_restore_protection_begin();
->         } else if (handle->cur <= nr_meta_pages + 1) {
-> -               error = unpack_orig_pfns(buffer, &copy_bm);
-> +               error = unpack_orig_pfns(buffer, &copy_bm, &zero_bm);
->                 if (error)
->                         return error;
->
->                 if (handle->cur == nr_meta_pages + 1) {
-> -                       error = prepare_image(&orig_bm, &copy_bm);
-> +                       error = prepare_image(&orig_bm, &copy_bm, &zero_bm);
->                         if (error)
->                                 return error;
->
->                         chain_init(&ca, GFP_ATOMIC, PG_SAFE);
->                         memory_bm_position_reset(&orig_bm);
-> +                       memory_bm_position_reset(&zero_bm);
->                         restore_pblist = NULL;
->                         handle->buffer = get_buffer(&orig_bm, &ca);
->                         handle->sync_read = 0;
-> @@ -2686,6 +2788,14 @@ int snapshot_write_next(struct snapshot_handle *handle)
->                         handle->sync_read = 0;
->         }
->         handle->cur++;
-> +
-> +       /* Zero pages were not included in the image, memset it and move on. */
-> +       if ((handle->cur > (nr_meta_pages + 1)) &&
-> +                       memory_bm_test_bit(&zero_bm, memory_bm_get_current(&orig_bm))) {
-> +               memset(handle->buffer, 0, PAGE_SIZE);
-> +               goto next;
-> +       }
-> +
->         return PAGE_SIZE;
->  }
->
-> @@ -2702,7 +2812,7 @@ void snapshot_write_finalize(struct snapshot_handle *handle)
->         copy_last_highmem_page();
->         hibernate_restore_protect_page(handle->buffer);
->         /* Do that only if we have loaded the image entirely */
-> -       if (handle->cur > 1 && handle->cur > nr_meta_pages + nr_copy_pages) {
-> +       if (handle->cur > 1 && handle->cur > nr_meta_pages + nr_copy_pages + nr_zero_pages) {
->                 memory_bm_recycle(&orig_bm);
->                 free_highmem_data();
->         }
-> @@ -2711,7 +2821,7 @@ void snapshot_write_finalize(struct snapshot_handle *handle)
->  int snapshot_image_loaded(struct snapshot_handle *handle)
->  {
->         return !(!nr_copy_pages || !last_highmem_page_copied() ||
-> -                       handle->cur <= nr_meta_pages + nr_copy_pages);
-> +                       handle->cur <= nr_meta_pages + nr_copy_pages + nr_zero_pages);
->  }
->
->  #ifdef CONFIG_HIGHMEM
-> --
+On Wed, Jul 19, 2023 at 01:19:29PM +0200, Oleksij Rempel wrote:
 
-Applied as 6.6 material with some minor adjustments, thanks!
+...
+
+Hi Oleksij,
+
+> +/**
+> + * ksz9477_acl_port_enable - Enables ACL functionality on a given port.
+> + * @dev: The ksz_device instance.
+> + * @port: The port number on which to enable ACL functionality.
+> + *
+> + * This function enables ACL functionality on the specified port by configuring
+> + * the appropriate control registers. It returns 0 if the operation is
+> + * successful, or a negative error code if an error occurs.
+> + *
+> + * 0xn801 - KSZ9477S 5.2.8.2 Port Priority Control Register
+> + *        Bit 7 - Highest Priority
+> + *        Bit 6 - OR'ed Priority
+> + *        Bit 4 - MAC Address Priority Classification
+> + *        Bit 3 - VLAN Priority Classification
+> + *        Bit 2 - 802.1p Priority Classification
+> + *        Bit 1 - Diffserv Priority Classification
+> + *        Bit 0 - ACL Priority Classification
+> + *
+> + * Note: current driver implementation sets 802.1p priority classification
+> + * by default. In this function we add ACL priority classification with OR'ed
+> + * priority. According to testing, priority set by ACL will supersede the
+> + * 802.1p priority.
+> + *
+> + * 0xn803 - KSZ9477S 5.2.8.4 Port Authentication Control Register
+> + *        Bit 2 - Access Control List (ACL) Enable
+> + *        Bits 1:0 - Authentication Mode
+> + *                00 = Reserved
+> + *                01 = Block Mode. Authentication is enabled. When ACL is
+> + *                     enabled, all traffic that misses the ACL rules is
+> + *                     blocked; otherwise ACL actions apply.
+> + *                10 = Pass Mode. Authentication is disabled. When ACL is
+> + *                     enabled, all traffic that misses the ACL rules is
+> + *                     forwarded; otherwise ACL actions apply.
+> + *                11 = Trap Mode. Authentication is enabled. All traffic is
+> + *                     forwarded to the host port. When ACL is enabled, all
+> + *                     traffic that misses the ACL rules is blocked; otherwise
+> + *                     ACL actions apply.
+> + *
+> + * Note: we are using Pass Mode here.
+
+kernel-doc gcc-12 W=1 and clang-16 W=1 all complains
+that there is a duplicate Note section in the above.
+
+...
+
+> +/**
+> + * ksz9477_acl_matching_rule_cfg_l2 - Configure an ACL filtering entry to match
+> + *				      L2 types of Ethernet frames
+> + * @entry: Pointer to ACL entry buffer
+> + * @ethertype: Ethertype value
+> + * @eth_addr: Pointer to Ethernet address
+> + * @is_src: If true, match the source MAC address; if false, match the
+> + *	    destination MAC address
+> + *
+> + * This function configures an Access Control List (ACL) filtering
+> + * entry to match Layer 2 types of Ethernet frames based on the provided
+> + * ethertype and Ethernet address. Additionally, it can match either the source
+> + * or destination MAC address depending on the value of the is_src parameter.
+> + *
+> + * Register Descriptions for MD = 01 and ENB != 00 (Layer 2 MAC header
+> + * filtering)
+> + *
+> + * 0x01 - Mode and Enable
+> + *        Bits 5:4 - MD (Mode)
+> + *                01 = Layer 2 MAC header or counter filtering
+> + *        Bits 3:2 - ENB (Enable)
+> + *                01 = Comparison is performed only on the TYPE value
+> + *                10 = Comparison is performed only on the MAC Address value
+> + *                11 = Both the MAC Address and TYPE are tested
+> + *        Bit  1   - S/D (Source / Destination)
+> + *                0 = Destination address
+> + *                1 = Source address
+> + *        Bit  0   - EQ (Equal / Not Equal)
+> + *                0 = Not Equal produces true result
+> + *                1 = Equal produces true result
+> + *
+> + * 0x02-0x07 - MAC Address
+> + *        0x02 - MAC Address [47:40]
+> + *        0x03 - MAC Address [39:32]
+> + *        0x04 - MAC Address [31:24]
+> + *        0x05 - MAC Address [23:16]
+> + *        0x06 - MAC Address [15:8]
+> + *        0x07 - MAC Address [7:0]
+> + *
+> + * 0x08-0x09 - EtherType
+> + *        0x08 - EtherType [15:8]
+> + *        0x09 - EtherType [7:0]
+> + */
+> +static void ksz9477_acl_matching_rule_cfg_l2(u8 *entry, __be16 ethertype,
+> +					     u8 *eth_addr, bool is_src)
+> +{
+> +	u8 enb = 0;
+> +	u8 val;
+> +
+> +	if (ethertype)
+> +		enb |= KSZ9477_ACL_ENB_L2_TYPE;
+> +	if (eth_addr)
+> +		enb |= KSZ9477_ACL_ENB_L2_MAC;
+> +
+> +	val = FIELD_PREP(KSZ9477_ACL_MD_MASK, KSZ9477_ACL_MD_L2_MAC) |
+> +	      FIELD_PREP(KSZ9477_ACL_ENB_MASK, enb) |
+> +	      FIELD_PREP(KSZ9477_ACL_SD_SRC, is_src) | KSZ9477_ACL_EQ_EQUAL;
+> +	ksz9477_acl_set_reg(entry, KSZ9477_ACL_PORT_ACCESS_1, val);
+> +
+> +	if (eth_addr) {
+> +		int i;
+> +
+> +		for (i = 0; i < ETH_ALEN; i++) {
+> +			ksz9477_acl_set_reg(entry,
+> +					    KSZ9477_ACL_PORT_ACCESS_2 + i,
+> +					    eth_addr[i]);
+> +		}
+> +	}
+> +
+> +	ksz9477_acl_set_reg(entry, KSZ9477_ACL_PORT_ACCESS_8, ethertype & 0xff);
+> +	ksz9477_acl_set_reg(entry, KSZ9477_ACL_PORT_ACCESS_9, ethertype >> 8);
+
+ethertype is big endian.
+But host byte order math is done on it in the two lines above.
+This doesn't seem right.
+
+...
+
+> +/**
+> + * ksz9477_flower_parse_action - Parse flow rule actions for a specified port
+> + *				 on a ksz_device.
+> + * @dev: The ksz_device instance.
+> + * @port: The port number to parse the flow rule actions for.
+> + * @extack: The netlink extended ACK for reporting errors.
+> + * @cls: The flow_cls_offload instance containing the flow rule.
+> + * @entry_idx: The index of the ACL entry to store the action.
+> + *
+> + * This function checks if the actions in the flow rule are supported by
+> + * the device. Currently, only actions that change priorities are supported.
+> + * If unsupported actions are encountered, an error message is set in the
+> + * extended ACK.
+> + *
+> + * Returns 0 on success or a negative error code on failure.
+> + */
+> +static int ksz9477_flower_parse_action(struct ksz_device *dev, int port,
+> +				       struct netlink_ext_ack *extack,
+> +				       struct flow_cls_offload *cls,
+> +				       int entry_idx)
+> +{
+> +	struct flow_rule *rule = flow_cls_offload_flow_rule(cls);
+> +	struct ksz9477_acl_priv *acl = dev->ports[port].acl_priv;
+> +	const struct flow_action_entry *act;
+> +	struct ksz9477_acl_entry *entry;
+> +	bool prio_force = false;
+> +	u8 prio_val;
+> +	int i;
+> +
+> +	if (TC_H_MIN(cls->classid)) {
+> +		NL_SET_ERR_MSG_MOD(extack, "hw_tc is not supported. Use: action skbedit prio");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	flow_action_for_each(i, act, &rule->action) {
+> +		switch (act->id) {
+> +		case FLOW_ACTION_PRIORITY:
+> +			if (act->priority > KSZ9477_MAX_TC) {
+> +				NL_SET_ERR_MSG_MOD(extack, "Priority value is too high");
+> +				return -EOPNOTSUPP;
+> +			}
+> +			prio_force = true;
+> +			prio_val = act->priority;
+> +			break;
+> +		default:
+> +			NL_SET_ERR_MSG_MOD(extack, "action not supported");
+> +			return -EOPNOTSUPP;
+> +		}
+> +	}
+> +
+> +	/* pick entry to store action */
+> +	entry = &acl->acles.entries[entry_idx];
+> +
+> +	ksz9477_acl_action_rule_cfg(entry->entry, prio_force, prio_val);
+
+If the flow_action_for_each loop iterates zero times then
+prio_val will be uninitialised here. gcc-12 [-Wmaybe-uninitialized]
+and Smatch warn about this. But I'm unsure if it can actually happen.
+
+> +	ksz9477_acl_processing_rule_set_action(entry->entry, entry_idx);
+> +
+> +	return 0;
+> +}
+
+...
