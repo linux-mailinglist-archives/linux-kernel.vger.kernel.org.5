@@ -2,57 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D32F275B068
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CA275B075
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbjGTNwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
+        id S231667AbjGTNxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231405AbjGTNwN (ORCPT
+        with ESMTP id S231975AbjGTNxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:52:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9EE2122;
-        Thu, 20 Jul 2023 06:52:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8317F61ADE;
-        Thu, 20 Jul 2023 13:52:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5AA9C433C7;
-        Thu, 20 Jul 2023 13:52:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689861128;
-        bh=7qMBM2O1eJyO65YYQrFbKbYLInUaocfLwQBu0lo73lM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o6YH0LUfb24M65v9ROoNvDh8Qv9ongsj8EZseujrAh9lDOgvB30wCbr2YrQeb9BJg
-         kn2VrBEcezhPPaylGcSJPlvdML6oyab9cxkBiaLZLSceFVEYYqjbqOkQptMjGan/zG
-         V/tuQxem6P07BjaGDC5FPbrbcsoSsGcKzGlWoUV4Xj8+esVugPL4c3NMHDZV6auttH
-         juVxunPlaDKV9YjJ0oHZxD9LfYJeJAR6wYvMTmsVFAhjtF6AMIKvtmh6i7H1qSBTuy
-         4up25ZwO0yfWB2efP0qDYlUZzh2cPptHOu4rqJQAT6Q3hWVedXzuPymbi3ae/hjwTh
-         w9uqRSbCZ6clg==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qMU4m-0007v3-1f;
-        Thu, 20 Jul 2023 15:52:17 +0200
-Date:   Thu, 20 Jul 2023 15:52:16 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Jarkko Sonninen <kasper@iki.fi>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] USB: serial: xr: Add TIOCGRS485 and TIOCSRS485 ioctls
-Message-ID: <ZLk8ECsKZc-akHef@hovoldconsulting.com>
-References: <ZJGduS4z5U65T7IL@hovoldconsulting.com>
- <20230708145651.1860565-1-kasper@iki.fi>
+        Thu, 20 Jul 2023 09:53:00 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B341230C6;
+        Thu, 20 Jul 2023 06:52:38 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 33664E0012;
+        Thu, 20 Jul 2023 13:52:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1689861146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oQjwgP8NyAhjmDO+mDi8yi5oc9GjBls2NUUYZadye/k=;
+        b=NOCwrt5yLMd025/qXCMrQZBKyitZGU/phqpgRJQmxaRbDcgwPdCM2gYvs5ya5Yc9vrgf8s
+        d3lNaCv1ST9SGcmM1VJyDoemLKD4Xg3UoMTNwpHEuKcvH075SjTU9KVrNY8XcliymaB/LW
+        vEcISNBI6flr0Q7dLuetw43OT0Q5Sgz4CxVTeTPQEgOtcazabOzO0EmQXZSYEfaLiYQvWT
+        7Zio2o1k3vgkAoHZiY+vTmR63m/rEYrD0D+9eDwc8T1fPI3/ys3pNgXgcHllQziEBBnEa7
+        x1Xxx9zjzy70d0aIDj73JEH5lGovbNdz03mluByJxeWF6bm+BFbbVEEAy8j1dw==
+Date:   Thu, 20 Jul 2023 15:52:23 +0200
+From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Subject: Re: [PATCH 2/3] dt-bindings: display: panel: Add panels based on
+ ILITEK ILI9806E
+Message-ID: <20230720155223.7f4da41a@booty>
+In-Reply-To: <20230719-sizing-ribbon-9e62a4afb5f6@spud>
+References: <20230719152147.355486-1-luca.ceresoli@bootlin.com>
+        <20230719152147.355486-2-luca.ceresoli@bootlin.com>
+        <20230719-sizing-ribbon-9e62a4afb5f6@spud>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230708145651.1860565-1-kasper@iki.fi>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: luca.ceresoli@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,55 +66,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 08, 2023 at 05:56:50PM +0300, Jarkko Sonninen wrote:
-> Exar devices like XR21B1411 can control an RS485 transceiver by
-> automatically asserting the RTS#/RS485 pin before sending data
-> and deasserting it when the last stop bit has been transmitted.
-> The polarity of the RST#/RS485 signal is configurable and the
-> hardware also supports half-duplex turn-around delay and
-> address matching mode.
+Hello Conor,
+
+thanks for reviewing.
+
+On Wed, 19 Jul 2023 17:44:45 +0100
+Conor Dooley <conor@kernel.org> wrote:
+
+> Hey Luca,
 > 
-> Add support for enabling and disabling RS-485 mode and
-> configuring the RST#/RS485 signal polarity using the TIOCGRS485
-> and TIOCSRS485 ioctls. Support for half-duplex turn-around delay
-> and address matching mode are left unimplemented for now.
+> On Wed, Jul 19, 2023 at 05:21:46PM +0200, Luca Ceresoli wrote:
+> > Add bindings for LCD panels based on the ILITEK ILI9806E RGB controller
+> > connected over SPI and the "ShenZhen New Display Co NDS040480800-V3"
+> > 480x800 panel based on it.
+> > 
+> > Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> > ---
+> >  .../display/panel/ilitek,ili9806e.yaml        | 69 +++++++++++++++++++
+> >  MAINTAINERS                                   |  6 ++
+> >  2 files changed, 75 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml
+> > new file mode 100644
+> > index 000000000000..42abc6923065
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml
+> > @@ -0,0 +1,69 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/display/panel/ilitek,ili9806e.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Ilitek ILI9806E display panels
+> > +
+> > +maintainers:
+> > +  - Luca Ceresoli <luca.ceresoli@bootlin.com>
+> > +
+> > +description:
+> > +  This binding is for display panels using an Ilitek ILI9806E controller in
+> > +  SPI mode.  
 > 
-> User enables RS-485 mode by setting SER_RS485_ENABLED flag in
-> struct serial_rs485 flags. User should also set either
-> SER_RS485_RTS_ON_SEND or SER_RS485_RTS_AFTER_SEND to select the
-> behaviour of the RTS#/RS485 pin. Setting SER_RS485_RTS_AFTER_SEND
-> will drive RTS#/RS485 high during transmission. As this is the
-> typical application described by Exar, it is selected when
-> user sets neither or both flags.
+> I figure you explicitly mention SPI mode here because it also supports
+> D{P,S}I?
+
+Exactly, DSI is supported as well by the chip.
+
+> > +allOf:
+> > +  - $ref: panel-common.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - enum:
+> > +          # ShenZhen New Display Co 3.97" 480x800 RGB a-SI TFT LCD
+> > +          - newdisplay,nds040480800-v3
+> > +      - const: ilitek,ili9806e
+> > +
+> > +  reg: true
+> > +  spi-max-frequency: true
+> > +  reset-gpios: true
+> > +  backlight: true
+> > +  port: true
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - port
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +
+> > +    backlight: backlight {
+> > +        compatible = "gpio-backlight";
+> > +        gpios = <&gpio 22 GPIO_ACTIVE_HIGH>;
+> > +    };
+> > +    spi {  
 > 
-> Signed-off-by: Jarkko Sonninen <kasper@iki.fi>
-> ---
-> Changes in v3:
->  - In this version only rs485.flags are stored to state.
->  - There is no locking as only one bit of the flags is used.
->  - ioctl returns -ENOIOCTLCMD as the actual error handling is in tty code.
-> Changes in v4:
->  - Store struct rs485 to data
->  - Add mutex to protect data->rs485.
->  - Implement SER_RS485_RTS_ON_SEND or SER_RS485_RTS_AFTER_SEND flags
->  - SER_RS485_RTS_ON_SEND is the default like in serial_core.c
-> Change in v5:
->  - Use tty->termios_rwsem semaphore instead of own mutex
->  - Set SER_RS485_RTS_AFTER_SEND as the default
->  - Fix XR_GPIO_MODE_RS485_TX_H setting with SER_RS485_RTS_ON_SEND
->  - Add missing __user directives
+> Just a nit, a blank line between properties please. Clearly no
+> respinning needed for that...
 
-I've applied this one now but with the small change I just mentioned
-that makes SER_RS485_RTS_ON_SEND determine SER_RS485_RTS_AFTER_SEND.
+I agree. This comes from copy-paste from another bindings file so I'm
+probably sending a separate series to fix it and avoid the same issue
+in the future.
 
-Since this sets SER_RS485_RTS_AFTER_SEND when neither flag is set, I
-believe you get the behaviour you preferred (even if
-SER_RS485_RTS_AFTER_SEND is now cleared when both flags are set).
+Luca
 
-Let me know otherwise and we'll discuss it. Here's the result:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git/commit/?h=usb-next&id=974e2f6a0554685493cc44406bc7d8ba0a3b0e33
-
-Thanks for sticking with. I think the end result looks really good.
-
-Johan
+-- 
+Luca Ceresoli, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
