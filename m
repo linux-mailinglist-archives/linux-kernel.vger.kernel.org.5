@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A2E75B994
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA9675B99D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjGTVbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 17:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
+        id S229651AbjGTVd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 17:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbjGTVbb (ORCPT
+        with ESMTP id S229797AbjGTVdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 17:31:31 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B24B2111
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:31:29 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-516500163b2so1627a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:31:29 -0700 (PDT)
+        Thu, 20 Jul 2023 17:33:55 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1B92712
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:33:53 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-992dcae74e0so204800866b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:33:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689888688; x=1690493488;
+        d=google.com; s=20221208; t=1689888832; x=1690493632;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o+TZv+9vK9meP7yrsiegPH7fftVme4KMzKQcTAi+dYg=;
-        b=J9e30X5mOAwxlKHrwP2CbSu1F/CG6CRF7CJdwE5hWdatry0QdC7GvE9sa2GAUHmqfx
-         BQnNh2u/B8EU2isZoPyJaY55LxZr8Wk7ijCpORBGrRQRtcI9DRSQa1JxA+IpFvev3qHQ
-         2NETPb6LKzoIq9u5qvcHNgD/tLM6DhBjaeNaA/47QL1sXQacbivg0MR8Mg4hi0l70+UI
-         z9aWO1z0PneeUD7Gx5YAfVdbYnZ5MQ4/NvrTPiy0rWggWHYTSo+esvZacmx3WmPFCilh
-         cFtM8RiYLG+6x9amz7i0XqnUCojw/43ZFwPD+JXlTBit32B5TjQlPciHIN99sayBH5Rx
-         tn+w==
+        bh=I+zX1bzsNkI0w4pR3H5aVCG6OfBqU8naraYStIVWSF8=;
+        b=gTnuC4fXAxfL5c6Up6plbcrQtf7FKHa3JMqHzp4fQaIZs9BAU7DSP9RBRD8kfaprby
+         7PM/C/nMYLbnYTEn2on3Gp8g2rXccV4oqyTTptnSQKmYl2RgvUKAhSZc1pdnaXm79pN/
+         n0XfmbV4Kuc4fBaA1Syuq/uaRlj2UEM+ywUYy2DSo0FVUPVD3G0GeD48yMcH0pDYXHv1
+         VUlX2xxNvRi4TJNe6LUvJtUU5Ay8w+K86np4gJYgx+M8kHBm6ToKixbj0Iq8R+dBW7/r
+         /ItHmvbE56th06WI6rUnaFogKID7C25DD2kjdr0yxz1JrKxdtm792yTnLMMZTDQ3jv7+
+         0tZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689888688; x=1690493488;
+        d=1e100.net; s=20221208; t=1689888832; x=1690493632;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=o+TZv+9vK9meP7yrsiegPH7fftVme4KMzKQcTAi+dYg=;
-        b=f2s/lAKHLIybC7lfyExVbJQEy7H7Dl/WCVpQoExd6fvOKVkxqsNOxC/zXSCz28KLsU
-         A+nPCzg0uIEHruGhQiC/niROtJKQM1vHyF69v/Z/3HgQmL1AiY7rCZ68mJnl+aW15G4e
-         WWWJAGkJEsZV3qPncx458XukBXi5vS5yoKxs4UdCHjBUjPCqFC2PMiGvljhqisRGaTr9
-         KvXXT25Tqm8BAAaIwWNHH3VagYD3VwxbW8ItaM/2AK1w5JfsAd3pOkQabJM8Ri9fmK5U
-         lHUBtJGPezRhPBAnOHLSYjXbzyTdBVMYDEp6eNQoTlZqnMA+pEDekOvsQn3eXoaCjR9N
-         gknw==
-X-Gm-Message-State: ABy/qLauaosI1G3ZCUchcZXW6n+VR358COxGXhXH4KZZWzBHuZkNbWfb
-        NqvKR7SB7tTyaak5kHZLYqV5DXqzbegn9YclsLTxlg==
-X-Google-Smtp-Source: APBJJlHZmK/ZBI3PExS8dMAh0beNXqHS4PzqN8eSz+tcvORm0rEPyAk7MU4aQKmS9HkW2VbAurIC5Ay813GGueoI0q4=
-X-Received: by 2002:a50:cd16:0:b0:51e:27ac:8f9a with SMTP id
- z22-20020a50cd16000000b0051e27ac8f9amr10339edi.1.1689888687673; Thu, 20 Jul
- 2023 14:31:27 -0700 (PDT)
+        bh=I+zX1bzsNkI0w4pR3H5aVCG6OfBqU8naraYStIVWSF8=;
+        b=GgzejAUyKLHZ7eIWQnjAtWZX1b8KseHdbFU54PUQ1epdZdF9m5gvWCCdSzAfSX/gf6
+         t8hfzOz2QSx2PmnLzUOJpRVLwEhLIIZVyrtpB6aLcSf1igukyeOIKgSrTJAjjQQ6szrL
+         YN8PPRHYwtapH8YnoM5WjtDSgZkIlJhPuAFJkd63HWWt5QBIGLZibvJUxTqrQPqbMDWq
+         kuLHhg0/gAp2EKkkf8bBkAe5pY5yxnlvfqhbZtsksq9yRdLoEa9X4D1lRDrOd6jxp7ow
+         rOxV3tot/8qfLLGUnxzcMK+PZeU9engVm0YEJ2TEylFlwf1e4wZ1hoc8bObnnGWr4NNg
+         tPqg==
+X-Gm-Message-State: ABy/qLbVuS+4h+RLsU7cTEyIFtMNBNg4SsJZI0ba2W8FfBrAOnmBMfzG
+        EwWPFui9aizSbeK3ssMRe2Fssyn1DJv3dbdEGngsJg==
+X-Google-Smtp-Source: APBJJlHClqjXEv232QGItn5yfuuiWOqyC8aEClANG7DWCGb/UZTeybGhmJoLhBKgxCs8lAv98ukjUkIhwEHMUSAyobY=
+X-Received: by 2002:a17:906:74d6:b0:993:e695:b589 with SMTP id
+ z22-20020a17090674d600b00993e695b589mr19488ejl.20.1689888831528; Thu, 20 Jul
+ 2023 14:33:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230420205734.1288498-1-rmoar@google.com>
-In-Reply-To: <20230420205734.1288498-1-rmoar@google.com>
-From:   Rae Moar <rmoar@google.com>
-Date:   Thu, 20 Jul 2023 17:31:07 -0400
-Message-ID: <CA+GJov6w2GvD8th0t9RW=K1ntHk4dQRuYa4hoDHcmzBDK5YriA@mail.gmail.com>
-Subject: Re: [KTAP V2 PATCH] ktap_v2: add test metadata
-To:     frowand.list@gmail.com, davidgow@google.com,
-        skhan@linuxfoundation.org, keescook@chromium.org,
-        Tim.Bird@sony.com, brendanhiggins@google.com
-Cc:     corbet@lwn.net, guillaume.tucker@collabora.com,
-        dlatypov@google.com, kernelci@lists.linux.dev,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230720070825.992023-1-yosryahmed@google.com> <20230720153515.GA1003248@cmpxchg.org>
+In-Reply-To: <20230720153515.GA1003248@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 20 Jul 2023 14:33:15 -0700
+Message-ID: <CAJD7tkb7MKR=b09etEb4jPSMRKj=w1B2PSf3_vWyuWHh+iyppg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "T.J. Mercier" <tjmercier@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,147 +82,214 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 20, 2023 at 4:57=E2=80=AFPM Rae Moar <rmoar@google.com> wrote:
+On Thu, Jul 20, 2023 at 8:35=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
 >
-> Add specification for declaring test metadata to the KTAP v2 spec.
->
-> The purpose of test metadata is to allow for the declaration of essential
-> testing information in KTAP output. This information includes test
-> names, test configuration info, test attributes, and test files.
->
-> There have been similar ideas around the idea of test metadata such as te=
-st
-> prefixes and test name lines. However, I propose this specification as an
-> overall fix for these issues.
->
-> These test metadata lines are a form of diagnostic lines with the
-> format: "# <metadata_type>: <data>". As a type of diagnostic line, test
-> metadata lines are compliant with KTAP v1, which will help to not
-> interfere too much with current parsers.
->
-> Specifically the "# Subtest:" line is derived from the TAP 14 spec:
-> https://testanything.org/tap-version-14-specification.html.
->
-> The proposed location for test metadata is in the test header, between th=
+> On Thu, Jul 20, 2023 at 07:08:17AM +0000, Yosry Ahmed wrote:
+> > This patch series implements the proposal in LSF/MM/BPF 2023 conference
+> > for reducing offline/zombie memcgs by memory recharging [1]. The main
+> > difference is that this series focuses on recharging and does not
+> > include eviction of any memory charged to offline memcgs.
+> >
+> > Two methods of recharging are proposed:
+> >
+> > (a) Recharging of mapped folios.
+> >
+> > When a memcg is offlined, queue an asynchronous worker that will walk
+> > the lruvec of the offline memcg and try to recharge any mapped folios t=
+o
+> > the memcg of one of the processes mapping the folio. The main assumptio=
+n
+> > is that a process mapping the folio is the "rightful" owner of the
+> > memory.
+> >
+> > Currently, this is only supported for evictable folios, as the
+> > unevictable lru is imaginary and we cannot iterate the folios on it. A
+> > separate proposal [2] was made to revive the unevictable lru, which
+> > would allow recharging of unevictable folios.
+> >
+> > (b) Deferred recharging of folios.
+> >
+> > For folios that are unmapped, or mapped but we fail to recharge them
+> > with (a), we rely on deferred recharging. Simply put, any time a folio
+> > is accessed or dirtied by a userspace process, and that folio is charge=
+d
+> > to an offline memcg, we will try to recharge it to the memcg of the
+> > process accessing the folio. Again, we assume this process should be th=
 e
-> version line and the test plan line. Note including diagnostic lines in
-> the test header is a depature from KTAP v1.
+> > "rightful" owner of the memory. This is also done asynchronously to avo=
+id
+> > slowing down the data access path.
 >
-> This location provides two main benefits:
->
-> First, metadata will be printed prior to when subtests are run. Then if a
-> test fails, test metadata can help discern which test is causing the issu=
-e
-> and potentially why.
->
-> Second, this location ensures that the lines will not be accidentally
-> parsed as a subtest's diagnostic lines because the lines are bordered by
-> the version line and plan line.
->
-> Here is an example of test metadata:
->
->  KTAP version 2
->  # Config: CONFIG_TEST=3Dy
->  1..1
->      KTAP version 2
->      # Subtest: test_suite
->      # File: /sys/kernel/...
->      # Attributes: slow
->      # Other: example_test
->      1..2
->      ok 1 test_1
->      ok 2 test_2
->  ok 1 test_suite
+> I'm super skeptical of this proposal.
 
-Hi everyone!
-
-I have been doing some more thinking on KTAP Metadata as I have been
-working on the KUnit Test Attributes patch set
-(https://lore.kernel.org/all/20230719222338.259684-1-rmoar@google.com/).
-Two additional ideas have come up in the discussion:
-
-1) I wonder if it would be easier to separate "ktap_attributes" into
-individual attributes.
-
-The two proposed KUnit attributes currently are speed and module name.
-I think it would be easier for parsing and reading if these attributes
-had corresponding "ktap_speed" and "ktap_module" categories. Then, in
-the future if there are too many attributes to print on separate lines
-they could be grouped into a "ktap_attributes" category later.
-
-2) I wonder if we can shift the concept of KTAP metadata to all tests
-rather than just suites.
-
-I think it would be very valuable to have a KTAP metadata format that
-is flexible to work for both suites and test cases. To transition this
-to test cases, I propose we would use the same format we have been
-discussing but just printed just before the test result line (David
-Gow originally came up with this idea). This would look something like
-this:
-
-KTAP version 2
-# ktap_config: CONFIG_TEST=3Dy
-1..1
-    KTAP version 2
-    # ktap_test: test_suite
-    # ktap_module: example
-    1..2
-    ok 1 test_1
-    # ktap_test: test_2
-    # ktap_speed: slow
-    # test initializing   // diagnostic data
-    ok 2 test_2
-ok 1 test_suite
-
-I don't love using the "ktap_test: test_2" line since the test name is
-repeated. However, I like that this mirrors the same format used for a
-suite and I currently think it is the best way to define the start of
-the metadata header.
-
-The test name line could actually be useful by providing context for
-any test diagnostic data printed below or if the test crashes while
-running.
-
-What do people think of these ideas?
-
-Thanks!
--Rae
+I expected this :)
 
 >
-> Here is a link to a version of the KUnit parser that is able to parse tes=
-t
-> metadata lines for KTAP version 2. Note this includes test metadata
-> lines for the main level of KTAP.
+> Recharging *might* be the most desirable semantics from a user pov,
+> but only if it applies consistently to the whole memory footprint.
+> There is no mention of slab allocations such as inodes, dentries,
+> network buffers etc. which can be a significant part of a cgroup's
+> footprint. These are currently reparented. I don't think doing one
+> thing with half of the memory, and a totally different thing with the
+> other half upon cgroup deletion is going to be acceptable semantics.
+
+I think, as you say, recharging has the most desirable semantics
+because the charge is maintained where it *should* be (with who is
+actually using it). We simply cannot do that for kernel memory,
+because we have no way of attributing it to a user. On the other hand,
+we *can* attribute user memory to a user. Consistency is great, but
+our inability to do (arguably) the right thing for one type of memory,
+doesn't mean we shouldn't do it when we can. I would also argue that
+user memory (anon/file pages) would commonly be the larger portion of
+memory on a machine compared to kernel memory (e.g. slab).
+
 >
-> Link: https://kunit-review.googlesource.com/c/linux/+/5809
+> It appears this also brings back the reliability issue that caused us
+> to deprecate charge moving. The recharge path has trylocks, LRU
+> isolation attempts, GFP_ATOMIC allocations. These introduce a variable
+> error rate into the relocation process,
+
+Recharging is naturally best effort, because it's non-disruptive.
+After a memcg dies, the kernel continuously tries to move the charges
+away from it on every chance it gets. If it fails one time that's
+fine, there will be other chances. Compared to the status quo, it is
+definitely better than just leaving all the memory behind with the
+zombie memcg. I would argue that over time (and accesses), most/all
+memory should eventually get recharged. If not, something is not
+working correctly, or a wrong assumption is being made.
+
+> which causes pages that should
+> belong to the same domain to be scattered around all over the place.
+
+I strongly disagree with this point. Ideally, yes, memory charged to a
+memcg would belong to the same domain. In practice, due to the first
+touch charging semantics, this is far from the truth. For anonymous
+memory, sure, they all belong to the same domain (mostly), the process
+they belong to. But most of anonymous memory will go away when the
+process dies anyway, the problem is mostly with shared resources (e.g.
+file, tmpfs, ..). With file/tmpfs memory, the charging behavior is
+random. The first memcg that touches a page gets charged for it.
+Consequently, the file/tmpfs memory charged to a memcg would be a
+mixture of pages from different files in different mounts, definitely
+not a single domain. Perhaps with some workloads, where each memcg is
+accessing different files, most memory charged to a memcg will belong
+to the same domain, but in this case, recharging wouldn't move it away
+anyway.
+
+> It also means that zombie pinning still exists, but it's now even more
+> influenced by timing and race conditions, and so less predictable.
+
+It still exists, but it is improved. The kernel tries to move charges
+away from zombies on every chance it gets instead of doing nothing
+about it. It is less predictable, can't argue about this, but it can't
+get worse, only better.
+
 >
-> Signed-off-by: Rae Moar <rmoar@google.com>
-> ---
+> There are two issues being conflated here:
 >
-> Hi everyone,
+> a) the problem of zombie cgroups, and
 >
-> I would like to use this proposal similar to an RFC to gather ideas on th=
-e
-> topic of test metadata. Let me know what you think.
+> b) who controls resources that outlive the control domain.
 >
-> I am also interested in brainstorming a list of recognized metadata types=
-.
-> Providing recognized metadata types would be helpful in parsing and
-> displaying test metadata in a useful way.
+> For a), reparenting is still the most reasonable proposal. It's
+> reliable for one, but it also fixes the problem fully within the
+> established, user-facing semantics: resources that belong to a cgroup
+> also hierarchically belong to all ancestral groups; if those resources
+> outlive the last-level control domain, they continue to belong to the
+> parents. This is how it works today, and this is how it continues to
+> work with reparenting. The only difference is that those resources no
+> longer pin a dead cgroup anymore, but instead are physically linked to
+> the next online ancestor. Since dead cgroups have no effective control
+> parameters anymore, this is semantically equivalent - it's just a more
+> memory efficient implementation of the same exact thing.
+
+I agree that reparenting is more deterministic and reliable, but there
+are two major flaws off the top of my head:
+
+(1) If a memcg touches a page one time and gets charged for it, the
+charge is stuck in its hierarchy forever. It can get reparented, but
+it will never be charged to whoever is actually using it again, unless
+it is reclaimed and refaulted (in some cases).
+
+Consider this hierarchy:
+    root
+  /       \
+A        B
+            \
+            C
+
+Consider a case where memcg C touches a library file once, and gets
+charged for some memory, and then dies. The memory gets reparente to
+memcg B. Meanwhile, memcg A is continuously using the memory that
+memcg B is charged for. memcg B would be indefinitely taxed by memcg
+A. The only way out is if memcg B hit its limit, and the pages get
+reclaimed, and then refaulted and recharged to memcg A. In some cases
+(e.g. tmpfs), even then the memory would still get charged to memcg B.
+There is no way to get rid of the charge until the resource itself is
+freed.
+
+This problem exists today, even without reparenting, with the
+difference being that the charge will remain with C instead of B.
+Recharging offers a better alternative where the charge will be
+correctly moved to A, the "rightful" owner.
+
+(2) In the above scenario, when memcg B dies, the memory will be
+reparented to the root. That's even worse. Now memcg A is using memory
+that is not accounted for anywhere, essentially an accounting leak.
+From an admin perspective, the memory charged to root is system
+overhead, it is lost capacity. For long-living systems, as memcgs are
+created and destroyed for different workloads, memory will keep
+accumulating at the root. The machine will keep leaking capacity over
+time, and accounting becomes less and less accurate as more memory
+becomes charged to the root.
+
 >
-> Current ideas:
-> - "# Subtest: <test_name>" to indicate test name (name must match
->   corresponding result line)
-> - "# Attributes: <attributes list>" to indicate test attributes (list
->   separated by commas)
-> - "# File: <file_path>" to indicate file used in testing
+> b) is a discussion totally separate from this.
+
+I would argue that the zombie problem is (at least partially) an
+artifact of the shared/sticky resources problem. If all resources are
+used by one memcg and do not outlive it, we wouldn't have zombies.
+
+> We can argue what we
+> want this behavior to be, but I'd argue strongly that whatever we do
+> here should apply to all resources managed by the controller equally.
+
+User memory and kernel memory are very different in nature. Ideally
+yeah, we want to treat all resources equally. But user memory is
+naturally more attributable to users and easier to account correctly
+than kernel memory.
+
 >
-> Any other ideas?
+> It could also be argued that if you don't want to lose control over a
+> set of resources, then maybe don't delete their control domain while
+> they are still alive and in use.
+
+This is easier said than done :) As I mentioned earlier, the charging
+semantics are inherently indeterministic for shared resources (e.g.
+file/tmpfs). The user cannot control or monitor which resources belong
+to which control domain. Each memcg in the system could be charged for
+one page from each file in a shared library for all that matters :)
+
+> For example, when restarting a
+> workload, and the new instance is expected to have largely the same
+> workingset, consider reusing the cgroup instead of making a new one.
+
+In a large fleet with many different jobs getting rescheduled and
+restarted on different machines, it's really hard in practice to do
+so. We can keep the same cgroup if the same workload is being
+restarted on the same machine, sure, but most of the time there's a
+new workload arriving or so. We can't reuse containers in this case.
+
 >
-> Note this proposal replaces two of my previous proposals: "ktap_v2: add
-> recognized test name line" and "ktap_v2: allow prefix to KTAP lines."
->
-> Thanks!
-> -Rae
->
-> Note: this patch is based on Frank's ktap_spec_version_2 branch.
+> For the zombie problem, I think we should merge Muchun's patches
+> ASAP. They've been proposed several times, they have Roman's reviews
+> and acks, and they do not change user-facing semantics. There is no
+> good reason not to merge them.
+
+There are some, which I pointed out above.
+
+All in all, I understand where you are coming from. Your concerns are
+valid. Recharging is not a perfect approach, but it is arguably the
+best we can do at this point. Being indeterministic sucks, but our
+charging semantics are inherently indeterministic anyway.
