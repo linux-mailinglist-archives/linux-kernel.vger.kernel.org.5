@@ -2,90 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0362F75A4C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3236175A4CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbjGTDah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 23:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
+        id S229701AbjGTDci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 23:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGTDae (ORCPT
+        with ESMTP id S229675AbjGTDcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 23:30:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CB41B9;
-        Wed, 19 Jul 2023 20:30:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B222F6126D;
-        Thu, 20 Jul 2023 03:30:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F35FC433C8;
-        Thu, 20 Jul 2023 03:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689823832;
-        bh=OnSRL/M/dbuk991nGBrfC0/pCCMwx2qMx5t/Th8WDY4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DLP0S+lHKonruVV95NGNwFLFr5aWNx45vINgAd1CVjDbI/PxvcmUv57niu5feAGkY
-         AWElUA7x+ISFrYGq/jkvkfn4q6t04zKRia/WReyo9T88T6CNd+m2heMlul2896iWth
-         JguL4emjfN7RreQNklhpOSKt4TGwUgNqssc7rhrAOqGdUy0Ixax1p0M54pRFVuyGwE
-         i7dgQlwm0YcCQHmSiMSik+TgPhgoWfrExGhO4xVhNqw1sBDlfaokr/47tixTw3D+mM
-         IrJc2AQzdNVRpO4QDu4TdwbOA4T2hESliP6LNvOgpqRdMk7YriQ3UqnC9d8w085jmB
-         EIvkZAqeEpKSg==
-Date:   Wed, 19 Jul 2023 20:30:30 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     Florian Westphal <fw@strlen.de>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        syzbot <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com>,
-        dsterba@suse.cz, bakmitopiacibubur@boga.indosterling.com,
-        clm@fb.com, davem@davemloft.net, dsahern@kernel.org,
-        dsterba@suse.com, gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        josef@toxicpanda.com, kadlec@netfilter.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux@armlinux.org.uk, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [btrfs?] [netfilter?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS
- too low! (2)
-Message-ID: <20230719203030.1296596a@kernel.org>
-In-Reply-To: <20230719231207.GF32192@breakpoint.cc>
-References: <20230719170446.GR20457@twin.jikos.cz>
-        <00000000000042a3ac0600da1f69@google.com>
-        <CANp29Y4Dx3puutrowfZBzkHy1VpWHhQ6tZboBrwq_qNcFRrFGw@mail.gmail.com>
-        <20230719231207.GF32192@breakpoint.cc>
+        Wed, 19 Jul 2023 23:32:35 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89BEDF0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:32:34 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R5ytR6fJQzBRDs7
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:32:31 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689823951; x=1692415952; bh=7Vqv8tfjJj3dYvjSYbQJwUzBoso
+        1s7DkYVwhfz0M8e0=; b=fn35EcSKLXg+nNIpxSp+KmT7Uowb+Kr68kH7cNzooWg
+        ELVkPMw3i0IeNXqdIp0LbAe0eNpxSbfLdIj0I+FCPFfruf5gchaNbEiQI2hiw/hI
+        VCOUehVRspCbmAH2FynAkGK6B7cimHdAG9FcaA/YvQH64vyNZZPgNNmQD5eJpKx+
+        BUGUqD+2WFNJT13n+GHx00au6cVJbqqx2AhFSb35dyaPRRNtBAE4ETKlG8MJgYpI
+        bo+vI/hChoPo+yenBX+t5M1p3Ufv1MUeXfLEqJgq6m1r1qwzslD0dSMAddzszT8b
+        8Mc+QOZDiRyNouZpA+8QkI5T0pkBvdehJHngE3l0CPQ==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id K5RJPXanipbk for <linux-kernel@vger.kernel.org>;
+        Thu, 20 Jul 2023 11:32:31 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R5ytR3ywkzBR1P6;
+        Thu, 20 Jul 2023 11:32:31 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Date:   Thu, 20 Jul 2023 11:32:31 +0800
+From:   sunran001@208suo.com
+To:     airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] vt: remove spaces after '*'
+In-Reply-To: <20230720032846.1980-1-xujianghui@cdjrlc.com>
+References: <20230720032846.1980-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <ac611801abfacd368376321f259a577a@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PLING_QUERY,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023 01:12:07 +0200 Florian Westphal wrote:
-> I don't see any netfilter involvement here.
-> 
-> The repro just creates a massive amount of team devices.
-> 
-> At the time it hits the LOCKDEP limits on my test vm it has
-> created ~2k team devices, system load is at +14 because udev
-> is also busy spawing hotplug scripts for the new devices.
-> 
-> After reboot and suspending the running reproducer after about 1500
-> devices (before hitting lockdep limits), followed by 'ip link del' for
-> the team devices gets the lockdep entries down to ~8k (from 40k),
-> which is in the range that it has on this VM after a fresh boot.
-> 
-> So as far as I can see this workload is just pushing lockdep
-> past what it can handle with the configured settings and is
-> not triggering any actual bug.
+remove redundant spaces to clear checkpatch errors.
 
-The lockdep splat because of netdevice stacking is one of our top
-reports from syzbot. Is anyone else feeling like we should add 
-an artificial but very high limit on netdev stacking? :(
+ERROR: "foo * bar" should be "foo *bar"
+
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  include/linux/kbd_kern.h | 20 ++++++++++----------
+  1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/include/linux/kbd_kern.h b/include/linux/kbd_kern.h
+index c40811d79769..6cb4ab685a84 100644
+--- a/include/linux/kbd_kern.h
++++ b/include/linux/kbd_kern.h
+@@ -69,52 +69,52 @@ extern void (*kbd_ledfunc)(unsigned int led);
+  extern int set_console(int nr);
+  extern void schedule_console_callback(void);
+
+-static inline int vc_kbd_mode(struct kbd_struct * kbd, int flag)
++static inline int vc_kbd_mode(struct kbd_struct *kbd, int flag)
+  {
+  	return ((kbd->modeflags >> flag) & 1);
+  }
+
+-static inline int vc_kbd_led(struct kbd_struct * kbd, int flag)
++static inline int vc_kbd_led(struct kbd_struct *kbd, int flag)
+  {
+  	return ((kbd->ledflagstate >> flag) & 1);
+  }
+
+-static inline void set_vc_kbd_mode(struct kbd_struct * kbd, int flag)
++static inline void set_vc_kbd_mode(struct kbd_struct *kbd, int flag)
+  {
+  	kbd->modeflags |= 1 << flag;
+  }
+
+-static inline void set_vc_kbd_led(struct kbd_struct * kbd, int flag)
++static inline void set_vc_kbd_led(struct kbd_struct *kbd, int flag)
+  {
+  	kbd->ledflagstate |= 1 << flag;
+  }
+
+-static inline void clr_vc_kbd_mode(struct kbd_struct * kbd, int flag)
++static inline void clr_vc_kbd_mode(struct kbd_struct *kbd, int flag)
+  {
+  	kbd->modeflags &= ~(1 << flag);
+  }
+
+-static inline void clr_vc_kbd_led(struct kbd_struct * kbd, int flag)
++static inline void clr_vc_kbd_led(struct kbd_struct *kbd, int flag)
+  {
+  	kbd->ledflagstate &= ~(1 << flag);
+  }
+
+-static inline void chg_vc_kbd_lock(struct kbd_struct * kbd, int flag)
++static inline void chg_vc_kbd_lock(struct kbd_struct *kbd, int flag)
+  {
+  	kbd->lockstate ^= 1 << flag;
+  }
+
+-static inline void chg_vc_kbd_slock(struct kbd_struct * kbd, int flag)
++static inline void chg_vc_kbd_slock(struct kbd_struct *kbd, int flag)
+  {
+  	kbd->slockstate ^= 1 << flag;
+  }
+
+-static inline void chg_vc_kbd_mode(struct kbd_struct * kbd, int flag)
++static inline void chg_vc_kbd_mode(struct kbd_struct *kbd, int flag)
+  {
+  	kbd->modeflags ^= 1 << flag;
+  }
+
+-static inline void chg_vc_kbd_led(struct kbd_struct * kbd, int flag)
++static inline void chg_vc_kbd_led(struct kbd_struct *kbd, int flag)
+  {
+  	kbd->ledflagstate ^= 1 << flag;
+  }
