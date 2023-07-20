@@ -2,50 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E05975AC60
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFED575AC68
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbjGTKvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 06:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
+        id S231157AbjGTKwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 06:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjGTKvf (ORCPT
+        with ESMTP id S229453AbjGTKwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 06:51:35 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E98671726;
-        Thu, 20 Jul 2023 03:51:33 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3EAD2F4;
-        Thu, 20 Jul 2023 03:52:16 -0700 (PDT)
-Received: from [10.1.36.21] (e122027.cambridge.arm.com [10.1.36.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9C0ED3F6C4;
-        Thu, 20 Jul 2023 03:51:29 -0700 (PDT)
-Message-ID: <010b58cd-1225-02f7-33f0-c678e5cd349d@arm.com>
-Date:   Thu, 20 Jul 2023 11:51:27 +0100
+        Thu, 20 Jul 2023 06:52:22 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E54172A;
+        Thu, 20 Jul 2023 03:52:21 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36KAq3et002313;
+        Thu, 20 Jul 2023 10:52:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=UwF3Q94ZQtLXCR5FqDfs3Vvs8RGFryqhI1TAbooTbSE=;
+ b=U/YIA0LlLwUgfix3dYSU80xEyQ3iF6BLZjHs4gojkOU49oXfYzKhTyRw2Qt/C4q+m8iC
+ 4y6wY1Vss2o0hlkN3mPrgLcOUYgdnMY1M3aX19l8pslkFo0DZmd06jP3rg7U+/rGy5Hz
+ 5fQvxMM/08gzeb3s8x+1LXugUvESvEzVBXf80mK5H9YJnwbx7YeBgxapKW5nWYRGyKu+
+ GDeBmYZooV9DfkNqnhLaWf1Hl6okEjcZOZkMwJcRVfH95L4epFL5Cp1Eb6nye0zi9o12
+ 5ANtHJxxUtJWyYfapcln6dvCueN4D16Zdft1ukbbb2N1n28dZkHeB2s7hJQKWhb14Swp hA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxexkjebg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 10:52:03 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36KAq2We008973
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 10:52:02 GMT
+Received: from [10.201.3.182] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
+ 2023 03:51:56 -0700
+Message-ID: <8e209cd1-aa52-b947-bffd-15931af58391@quicinc.com>
+Date:   Thu, 20 Jul 2023 16:21:53 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next v8 02/12] drm: debugfs: provide
- infrastructure to dump a DRM GPU VA space
-Content-Language: en-GB
-To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, tzimmermann@suse.de, mripard@kernel.org,
-        corbet@lwn.net, christian.koenig@amd.com, bskeggs@redhat.com,
-        Liam.Howlett@oracle.com, matthew.brost@intel.com,
-        boris.brezillon@collabora.com, alexdeucher@gmail.com,
-        ogabbay@kernel.org, bagasdotme@gmail.com, willy@infradead.org,
-        jason@jlekstrand.net, donald.robson@imgtec.com
-Cc:     nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org
-References: <20230720001443.2380-1-dakr@redhat.com>
- <20230720001443.2380-3-dakr@redhat.com>
-From:   Steven Price <steven.price@arm.com>
-In-Reply-To: <20230720001443.2380-3-dakr@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [v11 5/6] arm64: dts: Add ipq5018 SoC and rdp432-c2 board support
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <ulf.hansson@linaro.org>,
+        <linus.walleij@linaro.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <p.zabel@pengutronix.de>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <robimarko@gmail.com>,
+        <andy.shevchenko@gmail.com>
+References: <20230616101749.2083974-1-quic_srichara@quicinc.com>
+ <20230616101749.2083974-6-quic_srichara@quicinc.com>
+ <53721566-2a85-76cb-a4cf-2819f08dfc85@linaro.org>
+From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
+In-Reply-To: <53721566-2a85-76cb-a4cf-2819f08dfc85@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 2rBOnBTtDA0BKQkA2mSmcep7l7EAnhSL
+X-Proofpoint-GUID: 2rBOnBTtDA0BKQkA2mSmcep7l7EAnhSL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-20_04,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 bulkscore=0 spamscore=0 priorityscore=1501
+ malwarescore=0 phishscore=0 clxscore=1011 suspectscore=0 impostorscore=0
+ mlxlogscore=969 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307200091
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,117 +90,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2023 01:14, Danilo Krummrich wrote:
-> This commit adds a function to dump a DRM GPU VA space and a macro for
-> drivers to register the struct drm_info_list 'gpuvas' entry.
+Hi,
+
+On 7/20/2023 2:14 PM, Krzysztof Kozlowski wrote:
+> On 16/06/2023 12:17, Sricharan Ramabadhran wrote:
+>> Add initial device tree support for the Qualcomm IPQ5018 SoC and
+>> rdp432-c2 board.
+>>
+>> Few things like 'reboot' does not work because, couple of more 'SCM'
+>> APIS are needed to clear some TrustZone settings. Those will be
+>> posted separately.
+>>
+>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+>> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+>> Co-developed-by: Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
+>> Signed-off-by: Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
+>> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/Makefile             |   1 +
+>>   .../arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts |  72 +++++
+>>   arch/arm64/boot/dts/qcom/ipq5018.dtsi         | 250 ++++++++++++++++++
+>>   3 files changed, 323 insertions(+)
+>>   create mode 100644 arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+>>   create mode 100644 arch/arm64/boot/dts/qcom/ipq5018.dtsi
+>>
 > 
-> Most likely, most drivers might maintain one DRM GPU VA space per struct
-> drm_file, but there might also be drivers not having a fixed relation
-> between DRM GPU VA spaces and a DRM core infrastructure, hence we need the
-> indirection via the driver iterating it's maintained DRM GPU VA spaces.
+> NAK, please do not merge.
 > 
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
-> ---
->  drivers/gpu/drm/drm_debugfs.c | 40 +++++++++++++++++++++++++++++++++++
->  include/drm/drm_debugfs.h     | 25 ++++++++++++++++++++++
->  2 files changed, 65 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-> index 4855230ba2c6..c90dbcffa0dc 100644
-> --- a/drivers/gpu/drm/drm_debugfs.c
-> +++ b/drivers/gpu/drm/drm_debugfs.c
-> @@ -39,6 +39,7 @@
->  #include <drm/drm_file.h>
->  #include <drm/drm_gem.h>
->  #include <drm/drm_managed.h>
-> +#include <drm/drm_gpuva_mgr.h>
->  
->  #include "drm_crtc_internal.h"
->  #include "drm_internal.h"
-> @@ -175,6 +176,45 @@ static const struct file_operations drm_debugfs_fops = {
->  	.release = single_release,
->  };
->  
-> +/**
-> + * drm_debugfs_gpuva_info - dump the given DRM GPU VA space
-> + * @m: pointer to the &seq_file to write
-> + * @mgr: the &drm_gpuva_manager representing the GPU VA space
-> + *
-> + * Dumps the GPU VA mappings of a given DRM GPU VA manager.
-> + *
-> + * For each DRM GPU VA space drivers should call this function from their
-> + * &drm_info_list's show callback.
-> + *
-> + * Returns: 0 on success, -ENODEV if the &mgr is not initialized
-> + */
-> +int drm_debugfs_gpuva_info(struct seq_file *m,
-> +			   struct drm_gpuva_manager *mgr)
-> +{
-> +	struct drm_gpuva *va, *kva = &mgr->kernel_alloc_node;
-> +
-> +	if (!mgr->name)
-> +		return -ENODEV;
-> +
-> +	seq_printf(m, "DRM GPU VA space (%s) [0x%016llx;0x%016llx]\n",
-> +		   mgr->name, mgr->mm_start, mgr->mm_start + mgr->mm_range);
-> +	seq_printf(m, "Kernel reserved node [0x%016llx;0x%016llx]\n",
-> +		   kva->va.addr, kva->va.addr + kva->va.range);
-> +	seq_puts(m, "\n");
-> +	seq_puts(m, " VAs | start              | range              | end                | object             | object offset\n");
-> +	seq_puts(m, "-------------------------------------------------------------------------------------------------------------\n");
-> +	drm_gpuva_for_each_va(va, mgr) {
-> +		if (unlikely(va == kva))
-> +			continue;
-> +
-> +		seq_printf(m, "     | 0x%016llx | 0x%016llx | 0x%016llx | 0x%016llx | 0x%016llx\n",
-> +			   va->va.addr, va->va.range, va->va.addr + va->va.range,
-> +			   (u64)va->gem.obj, va->gem.offset);
+> It turns out there are some problems here (pointed out by Hariharan K).
 
-Casting a pointer to u64 generates a warning on 32 bit systems:
+   The changes from Hariharan K to rename the dts compatibles is not
+   correct. So the compatibles/names in this series should be used.
+   Hariharan can fix his series and re-post.
 
-drivers/gpu/drm/drm_debugfs.c:212:7: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
-  212 |       (u64)va->gem.obj, va->gem.offset);
-      |       ^
-
-Adding an extra cast to uintptr_t shuts the compiler up (alternatively a 
-proper pointer type like %px could be used in the format string, but 
-that does make the table layout harder).
-
-The patch below fixes the warning for me.
-
-Steve
-
-----8<----
-From bea59724d68fec0b3a56f82a42d0e4e59c514565 Mon Sep 17 00:00:00 2001
-From: Steven Price <steven.price@arm.com>
-Date: Thu, 20 Jul 2023 11:45:11 +0100
-Subject: [PATCH] drm: debugfs: Silence warning from cast
-
-Casting a pointer to an integer of a different size generates a warning
-from the compiler. First cast the pointer to a pointer-sized type to
-keep the compiler happy.
-
-Fixes: 4f66feeab173 ("drm: debugfs: provide infrastructure to dump a DRM GPU VA space")
-Signed-off-by: Steven Price <steven.price@arm.com>
----
- drivers/gpu/drm/drm_debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-index c90dbcffa0dc..a3a488205009 100644
---- a/drivers/gpu/drm/drm_debugfs.c
-+++ b/drivers/gpu/drm/drm_debugfs.c
-@@ -209,7 +209,7 @@ int drm_debugfs_gpuva_info(struct seq_file *m,
- 
- 		seq_printf(m, "     | 0x%016llx | 0x%016llx | 0x%016llx | 0x%016llx | 0x%016llx\n",
- 			   va->va.addr, va->va.range, va->va.addr + va->va.range,
--			   (u64)va->gem.obj, va->gem.offset);
-+			   (u64)(uintptr_t)va->gem.obj, va->gem.offset);
- 	}
- 
- 	return 0;
--- 
-2.39.2
-
-
+Regards,
+  Sricharan
