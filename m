@@ -2,87 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F80975B3CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B670F75B3D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbjGTQGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
+        id S230151AbjGTQH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjGTQGQ (ORCPT
+        with ESMTP id S229555AbjGTQHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:06:16 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26ABACE
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:06:16 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R6Hc42RMSzBRDt0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 00:06:12 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689869171; x=1692461172; bh=JDPE0gY2EAQkPsdOqBvmm0/vLJD
-        5CubpDsaJaKXZx1A=; b=1WSa2No1l0KZmow4Fdyqpya+iRUGjHYtjeHzTKSmqB4
-        PZeggS0ybvA4/tZyCySf/CgzD6fpoIoF/iDCi7GuCgA6gld1+FvAIKTCCvDf46Mz
-        x5x1F7RAxeaiVZbkj1tNPR9Kr965eqECvxBZCgTBc7Fm37lowIfqyLhgnXDvevJ5
-        J3XgnHQ28ghRvLrZLV0JzC44uZhAxLqd9s+xz9RVW+2QX6bXXLJvkaCLA5E6WGpM
-        Yip41T3p15HwPuwBsBpsK3o37bOauA7+YIYpRf6tc1/26vNyIz7kKpIuCuHJilij
-        sJ/nYmePfZJHApfqA5yOmcKTgkjH4vBlmaoA/88wPGA==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id e0EfisCcE8k6 for <linux-kernel@vger.kernel.org>;
-        Fri, 21 Jul 2023 00:06:11 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R6Hc32BnPzBHXgs;
-        Fri, 21 Jul 2023 00:06:11 +0800 (CST)
+        Thu, 20 Jul 2023 12:07:24 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BC2CE;
+        Thu, 20 Jul 2023 09:07:23 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b703cbfaf5so14514761fa.1;
+        Thu, 20 Jul 2023 09:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689869242; x=1690474042;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CjpaXRyovFt4+Nz0cyo8GxXlLalmODjwxKNY5UBoRaU=;
+        b=Hqt2yzKLXcKbOqavhn94wBwXqIJu3Plz2LCMyyB4bhl5kALZFcsnvseez4DpZfb62+
+         hwUnc2U0o30h3YG9Dl411XKWjaDXp+jZ7CcIoFwdx8HZn/FQSUz5+oP91htgTQCMPuuJ
+         PCJ5FGEcMsYdk7wHbNnfcqeo31LFlG5gXdQmTzV+Yqu/eAD9Vk4KdRhxb5O0GC2dwys6
+         469u7QeZlq0OkfTc35GNCrKMx+VU+dYp7bVJutLiEmtO7HwKAS2j5Ruz47JrWPxQ+F1N
+         NeX6aSGHtyVCJdl2ULhhtI3RAU7K8c85Vb1uHci+bxOSwySqIGQ5dUmFCnia34QrnDCL
+         OOYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689869242; x=1690474042;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CjpaXRyovFt4+Nz0cyo8GxXlLalmODjwxKNY5UBoRaU=;
+        b=ZKCbqm2XBS/dWNpD1mclcrhx/DZthh4+1/fS/Q3X0claFOxLyEhYEKZpXIh2g3yx63
+         c0rUoQ+G2qjMOkHpvykowlqoiG50P6224ma2gekB33GDCpP+HdF1fNp2mKsDOF/8INbM
+         lZvRCGIftOCq5TJc9barVv6lDc9hluJs0Hqr0Yn31nRR5EaXmqERuysttX6YUKQ3pvaf
+         rmdghKUv6ZuVBedKRX8g0OZ1au5jeBpDWSHyMZ7bkFpi7LnwA2f++TtbLM5mmTXYyo6a
+         EDI/RiDl78A8k727wmRFqYbjKe8qv/Rj/Sc0UIQ8CVUAMB9GFqAP455UD33APN1S9CJK
+         ebPQ==
+X-Gm-Message-State: ABy/qLZqB2eS5IA8D3H/MUNLMNDccwZW5kZq7lAmX+0qmk6LOCNNy9sX
+        chLnrYqsUnfG+Tu7xfKDS+IurQqfbvJsQJBly0s=
+X-Google-Smtp-Source: APBJJlFJSrSlbDs0Awxp8kmJS9Vyn69EhNnfWr0kV7di92MBpCh0nr3qtKge//MoYES/ay3jfDxZguEkM/kQsjzJ+Vw=
+X-Received: by 2002:a2e:9b5a:0:b0:2b9:4841:9652 with SMTP id
+ o26-20020a2e9b5a000000b002b948419652mr2582916ljj.25.1689869241505; Thu, 20
+ Jul 2023 09:07:21 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Fri, 21 Jul 2023 00:06:11 +0800
-From:   pangzizhen001@208suo.com
-To:     oliver@neukum.org, aliakc@web.de, lenehan@twibble.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers/scsi: Fix typos in comments
-In-Reply-To: <20230720160417.4434-1-wangjianli@cdjrlc.com>
-References: <20230720160417.4434-1-wangjianli@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <0dbfe7a07c205bde3fc60408ce7aa55a@208suo.com>
-X-Sender: pangzizhen001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230720132535.23413-1-aboutphysycs@gmail.com>
+In-Reply-To: <20230720132535.23413-1-aboutphysycs@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 20 Jul 2023 19:06:44 +0300
+Message-ID: <CAHp75VeDGa9eKJv+4F13LRLhCutTWOhQcU66CnDaeTLCsSbP8A@mail.gmail.com>
+Subject: Re: [PATCH] gpio : max77620: remove unneeded platform_set_drvdata() call
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        andy@kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org,
+        Alexandru Ardelean <alex@shruggie.ro>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete duplicate word "the"
+On Thu, Jul 20, 2023 at 4:26=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.=
+com> wrote:
+>
+> This function call is not required because no counterpart
+> platform_get_drvdata() call is present to leverage the private data of
+> the driver.
+> Since the private data is confined to this driver file, external access
+> is not feasible.
+> The use of this function appears redundant in the current context of the
+> driver's implementation.
 
-Signed-off-by: Zizhen Pang <pangzizhen001@208suo.com>
----
-  drivers/scsi/dc395x.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+Use full room of the lines, no need to start each sentence at a new line.
 
-diff --git a/drivers/scsi/dc395x.c b/drivers/scsi/dc395x.c
-index c8e86f8a631e..077e76407c58 100644
---- a/drivers/scsi/dc395x.c
-+++ b/drivers/scsi/dc395x.c
-@@ -2052,7 +2052,7 @@ static void data_in_phase0(struct AdapterCtlBlk 
-*acb, struct ScsiReqBlk *srb,
-          /*
-           * KG: We should wait for the DMA FIFO to be empty ...
-           * but: it would be better to wait first for the SCSI FIFO and 
-then the
--         * the DMA FIFO to become empty? How do we know, that the 
-device not already
-+         * DMA FIFO to become empty? How do we know, that the device 
-not already
-           * sent data to the FIFO in a MsgIn phase, eg.?
-           */
-          if (!(DC395x_read8(acb, TRM_S1040_DMA_FIFOSTAT) & 0x80)) {
+Also, fix the Subject.
+It should be prefixed with "gpio: DRIVER: ", where DRIVER is one in
+question. This applies to all your last patches.
+
+--=20
+With Best Regards,
+Andy Shevchenko
