@@ -2,416 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0977275ADA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F18A75ADAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbjGTL6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
+        id S231249AbjGTL7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjGTL6h (ORCPT
+        with ESMTP id S229818AbjGTL7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:58:37 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2077.outbound.protection.outlook.com [40.107.220.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAEEE10CB
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:58:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iCq//9NXjn8tb1hFLphvG4x3ueM9vr58jrk4R61oTZp8nkVyVgLaq9CcSJ43SZJhN7BWteCOotEciLAVkGfaMs5aGQBFoBdynYJzJlFFuxHuybwh6tukh+ZUvex9EBk5ibAydppkXLoue5XJSv8DVLgjMoDJt4bLeXMrwBAjFKFAB6Ljsnn2EqqbPUiViFKnHf4eauFsY8BCvd4d8XIAHLg+YmNmqTP5GKvoWH3x828C1DEOmcjnmH41iO0RIGxy/UPk8L4OoWEa8PoSLtnfj1ZvhlTFHzG6RiFyFXxNngmRcAdncwQDSxjnywrBKjue/C4kkJawjvwDonapMu2WkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wcZo3bf8z8SwwQG9zNxK76NSvPfAhiyEQDRvnk3eIKo=;
- b=MMSSJuoGXLjD18ssdDQdeUi51d3jOfBeAN6FINIuILA7/MrhNdtpYII+FVgi2F4xGzSAHJ0oWcZLHsDkMZsOgFYTLah1fHv19X3dhBJI2Hz/Tm2uwyxxV2Pi00LRoXQt3B3TmCD80Qq6bLXoC8DdyHp04qRcarb6uAPhK3Z0+XjdQAPk4NDtQA8a6wGqKYxRUVQ2dTLh1t2Yd22WZRdoN8KxWX5styp4WCoNXeX0AkJK4Tmf3pKNVDHH6uCCdi52dmBfaEFshYHSSWAkd/EH5SzW5qbty3MBkUGQ5dAObqPV53BoKydI+OlI+nXQ5Lwis9B5nZY8H4NZBzJbk8Oa3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wcZo3bf8z8SwwQG9zNxK76NSvPfAhiyEQDRvnk3eIKo=;
- b=3xM41brXrV41SQi5aGHUg4e8YBp0dtYJsjcpZuX3kZIQXTEyAPImTi8vyfN5Ow+zlDOpGLd51GYxkUKswviSkMfx+fTkB91/XAGa1HYRedKMIGXzWsC1uRhdlIkPQcIiP6jD+svfaGFiw2TxLCbolTpeP2Os2Yma88u25GGuPK4=
-Received: from BYAPR07CA0087.namprd07.prod.outlook.com (2603:10b6:a03:12b::28)
- by CY5PR12MB6599.namprd12.prod.outlook.com (2603:10b6:930:41::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Thu, 20 Jul
- 2023 11:58:33 +0000
-Received: from DM6NAM11FT020.eop-nam11.prod.protection.outlook.com
- (2603:10b6:a03:12b:cafe::26) by BYAPR07CA0087.outlook.office365.com
- (2603:10b6:a03:12b::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25 via Frontend
- Transport; Thu, 20 Jul 2023 11:58:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT020.mail.protection.outlook.com (10.13.172.224) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6609.25 via Frontend Transport; Thu, 20 Jul 2023 11:58:32 +0000
-Received: from cjq-desktop.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 20 Jul
- 2023 06:58:26 -0500
-From:   Jiqian Chen <Jiqian.Chen@amd.com>
-To:     David Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@gmail.com>,
-        "Gurchetan Singh" <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>,
-        "Juergen Gross" <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
-        Robert Beckett <bob.beckett@collabora.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
-CC:     <xen-devel@lists.xenproject.org>,
-        Alex Deucher <Alexander.Deucher@amd.com>,
-        Christian Koenig <Christian.Koenig@amd.com>,
-        Stewart Hildebrand <Stewart.Hildebrand@amd.com>,
-        Xenia Ragiadakou <burzalodowa@gmail.com>,
-        Honglei Huang <Honglei1.Huang@amd.com>,
-        Julia Zhang <Julia.Zhang@amd.com>,
-        Huang Rui <Ray.Huang@amd.com>,
-        Jiqian Chen <Jiqian.Chen@amd.com>
-Subject: [LINUX KERNEL PATCH v3 1/1] virtgpu: init vq during resume and notify qemu guest status
-Date:   Thu, 20 Jul 2023 19:58:05 +0800
-Message-ID: <20230720115805.8206-2-Jiqian.Chen@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230720115805.8206-1-Jiqian.Chen@amd.com>
-References: <20230720115805.8206-1-Jiqian.Chen@amd.com>
+        Thu, 20 Jul 2023 07:59:37 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696BE1724
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:59:35 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fdd31bf179so1104417e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:59:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689854374; x=1690459174;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uEMcg3t4E/tnVfbXGr+wTg7QMHaLToS8oYTXp4ZjrZI=;
+        b=ZUtgvvtiCRD5FHcGrWyyzSTxc/hwUIe8NQ6Fnx9D9r73THvayVLTo/1djwh78kiihp
+         fKwt+MGengNss0v+PBeqV4nP7fT6kL7PfVUnLDyytu7iK/fZpsklLWP6UKvBlxLQO6z1
+         1lXrCzNOQw82pyow7mkcM5449pRCaMgdtgZ5aPAuxSKt6LfwV0A9wX6aEapBX6H108eW
+         ivGBpncATPS6NAhj9fnfZ6Khj4sB6AF9UK/OIk6PkdmWYzwKU63rPjpZQHDuxe/Iyccv
+         4NBTFvtRJaS9mHjPCAmokWLh9+xcYUv4DW+BqzN3OcHvI3KyHjrVQiYzZ9x7oCiwXFRx
+         BacQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689854374; x=1690459174;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uEMcg3t4E/tnVfbXGr+wTg7QMHaLToS8oYTXp4ZjrZI=;
+        b=bQp9uPTmGoHD3HzMLgbCJJWDtDOS7ei8iyME0jToc8dmbQ0BstCYemaejNOTx2OjQi
+         T729dPvxvx8o1mClHLRCtlKhhJ6pc48L8VjP1qyhh3FIIheUUU3G1D+ki6vYCJ8137jJ
+         6NchFMnMH0wTGFX/c5pOI4OQ9xD+GsGkCyi95ilimnvDjR6lRkxbINYty6ySZ7Ge79UL
+         P6TXuB3ADf/sEN8IC61FOlBIpKVKsO3b+hxmIMocy1Knmv7TAiBHwkHl3Ehu9Azh9duv
+         C93I3JWhKWnmv6sAebTssS47lgfMDMwpqeT5BW9xXant7XQCwzVec1GhIhkQquw3eger
+         7RUQ==
+X-Gm-Message-State: ABy/qLbEYkSOkIUMxrIwnmJnfJilTXcg44nwB73sQ9KzY9MAyoHxny7s
+        yEWVJFYRZ9QC/NS+ILsvoM02cg==
+X-Google-Smtp-Source: APBJJlG+zh/y+vMW71ABKVjMj4CMKjnxWVKiDSCxrX5zgrSLUDqzz9qPxRaS5ny5wRaXCT7dj5X+kg==
+X-Received: by 2002:a05:6512:74e:b0:4fb:8b78:4a93 with SMTP id c14-20020a056512074e00b004fb8b784a93mr2156035lfs.7.1689854373638;
+        Thu, 20 Jul 2023 04:59:33 -0700 (PDT)
+Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
+        by smtp.gmail.com with ESMTPSA id r13-20020ac24d0d000000b004f86d3e52c0sm175860lfi.4.2023.07.20.04.59.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 04:59:33 -0700 (PDT)
+Message-ID: <07140181-33d0-1c64-5e93-a1882553bdf2@linaro.org>
+Date:   Thu, 20 Jul 2023 13:59:31 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT020:EE_|CY5PR12MB6599:EE_
-X-MS-Office365-Filtering-Correlation-Id: 70a254fa-62fe-41cb-5368-08db8918a3bf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m/6Q4PufneewRpaES0AJdpc9BR71BIZIvXuofHBOmrvME8bcydnYQN634iA/qn02iqsVTd+E4ttm0FuWHhJGJ6R+E0ZE6eYOqG46q3h9PYiEUfE6c1wE5/Ii9Vmxp/ZF6a6+Td/56RGOFo4AiT8pa+/gtwLf6k7otfO2cKCOFAmcnvnqyH18zPh83qSR/OrxN57zcClRHixesYDokFGDFckN5vNSPMisyAgm/ncfjybkYx58+axIZpT9IcYfIKIOElgHrpaY7gHGIMqNvQeQFws7h6pQtFrEdg0xz2coAYwUYxxz8PE+8QP/ZNRJyJR8AO8tSEmGiOc7spcwdHBFEWAU5ApQn18RrqqOjUcICtDYaCNYRrxvCIdm9RUC5sRdW8wdRpZdfawJnxuchZDZTIaU3k+OHXVFGpGGKresLr7YQUXf207QBTUfltowiEbvamRnFOIM4bbLUk+tOjdC+8Pjir3weUmUCj9yWE0NGZi7HRcJyjTTsY5quIRoEJVRbfLR/xxc/7dLFtWMVRfPuQJdD9RxcMXkx6NLAe3hQv+ggopoyPOvcWZ4SvQHAFsnFQujwie+eJ9g+3O8SeKkG3YlC9BMs+lpm25HDVD1ICWa0l+/Sm2BHzaNU352auPtdhvxlLVn5ieG3DYMSeBWsm+kVoyJROTwWFr7XYDiai0bsA/7QvTPGhLkeCH4Tl1YUus57TIhQlwsGdkMXnGr3T6TrC4VAe+Z0FNKWfDNeOvgQC9jnIaRDjbz88BREj8T2GAdTbyH6H8hVnXA3kbdkZVu6gcuC7obsUIA3SQlstY=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(376002)(346002)(39860400002)(82310400008)(451199021)(40470700004)(46966006)(36840700001)(336012)(7696005)(6666004)(26005)(186003)(70586007)(70206006)(316002)(4326008)(40480700001)(41300700001)(1076003)(16526019)(5660300002)(54906003)(110136005)(478600001)(7416002)(8936002)(8676002)(2616005)(356005)(47076005)(426003)(921005)(40460700003)(83380400001)(36860700001)(30864003)(2906002)(81166007)(82740400003)(36756003)(86362001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 11:58:32.1721
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 70a254fa-62fe-41cb-5368-08db8918a3bf
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT020.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6599
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] arm64: dts: qcom: msm8953-vince: drop duplicated
+ touschreen parent interrupt
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Gianluca Boiano <morf3089@gmail.com>,
+        Eugene Lepshy <fekz115@gmail.com>, Luca Weiss <luca@z3ntu.xyz>,
+        Yassine Oudjana <y.oudjana@protonmail.com>,
+        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org
+References: <20230720115335.137354-1-krzysztof.kozlowski@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230720115335.137354-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch solves two problem:
+On 20.07.2023 13:53, Krzysztof Kozlowski wrote:
+> Interrupts extended already define a parent interrupt controller:
+> 
+>   msm8953-xiaomi-vince.dtb: touchscreen@20: Unevaluated properties are not allowed ('interrupts-parent' was unexpected)
+> 
+> Fixes: aa17e707e04a ("arm64: dts: qcom: msm8953: Add device tree for Xiaomi Redmi 5 Plus")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-First, when we suspended guest VM, it called into Qemu to call
-virtio_reset->__virtio_queue_reset, this cleared all virtuqueue
-information of virtgpu on Qemu end. As a result, after guest
-resumed, guest sended ctrl/cursor requests to Qemu through
-virtqueue, but Qemu can't get requests from the virtqueue now.
-In function virtio_queue_notify, vq->vring.desc is NULL.
-
-So, this patch add freeze and restore function for virtgpu driver.
-In freeze function, it flushes all virtqueue works and deletes
-virtqueues. In restore function, it initializes virtqueues. And
-then, Qemu and guest can communicate normally.
-
-Second, when we suspended guest VM, it called into Qemu to call
-virtio_reset->virtio_gpu_gl_reset, this destroyed resources and
-reset renderer which were used for display. As a result, after
-guest resumed, the display can't come back and we only saw a black
-screen.
-
-So, this patch add a new ctrl message VIRTIO_GPU_CMD_SET_FREEZE_MODE.
-When guest is during suspending, we set freeze mode to freeze_S3 to
-notify Qemu that guest entered suspending, and then Qemu will not
-destroy resources. When guest is during resuming, we set freeze mode
-to unfreeze to notify Qemu that guest exited suspending, and then
-Qemu will keep its origin actions. As a result, the display can come
-back and everything of guest can come back to the time when guest
-was suspended.
-
-Due to this implemention needs cooperation with host Qemu, so it
-added a new feature flag VIRTIO_GPU_F_FREEZE_S3, so that guest and
-host can negotiate whenever freeze_S3 is supported or not.
-
-Signed-off-by: Jiqian Chen <Jiqian.Chen@amd.com>
----
- drivers/gpu/drm/virtio/virtgpu_debugfs.c |  1 +
- drivers/gpu/drm/virtio/virtgpu_drv.c     | 39 ++++++++++++++++++++++++
- drivers/gpu/drm/virtio/virtgpu_drv.h     |  5 +++
- drivers/gpu/drm/virtio/virtgpu_kms.c     | 36 ++++++++++++++++------
- drivers/gpu/drm/virtio/virtgpu_vq.c      | 16 ++++++++++
- include/uapi/linux/virtio_gpu.h          | 19 ++++++++++++
- 6 files changed, 107 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/gpu/drm/virtio/virtgpu_debugfs.c b/drivers/gpu/drm/virtio/virtgpu_debugfs.c
-index 853dd9aa397e..c84fd6d7f5f3 100644
---- a/drivers/gpu/drm/virtio/virtgpu_debugfs.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_debugfs.c
-@@ -55,6 +55,7 @@ static int virtio_gpu_features(struct seq_file *m, void *data)
- 
- 	virtio_gpu_add_bool(m, "blob resources", vgdev->has_resource_blob);
- 	virtio_gpu_add_bool(m, "context init", vgdev->has_context_init);
-+	virtio_gpu_add_bool(m, "freeze_S3", vgdev->has_freeze_S3);
- 	virtio_gpu_add_int(m, "cap sets", vgdev->num_capsets);
- 	virtio_gpu_add_int(m, "scanouts", vgdev->num_scanouts);
- 	if (vgdev->host_visible_region.len) {
-diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.c b/drivers/gpu/drm/virtio/virtgpu_drv.c
-index add075681e18..83ad0ac82b94 100644
---- a/drivers/gpu/drm/virtio/virtgpu_drv.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_drv.c
-@@ -130,6 +130,40 @@ static void virtio_gpu_config_changed(struct virtio_device *vdev)
- 	schedule_work(&vgdev->config_changed_work);
- }
- 
-+#ifdef CONFIG_PM
-+static int virtio_gpu_freeze(struct virtio_device *dev)
-+{
-+	struct drm_device *ddev = dev->priv;
-+	struct virtio_gpu_device *vgdev = ddev->dev_private;
-+	int ret = 0;
-+
-+	if (vgdev->has_freeze_S3) {
-+		ret = virtio_gpu_cmd_set_freeze_mode(vgdev,
-+					VIRTIO_GPU_FREEZE_MODE_FREEZE_S3);
-+	}
-+	if (!ret) {
-+		flush_work(&vgdev->ctrlq.dequeue_work);
-+		flush_work(&vgdev->cursorq.dequeue_work);
-+		vgdev->vdev->config->del_vqs(vgdev->vdev);
-+	}
-+	return ret;
-+}
-+
-+static int virtio_gpu_restore(struct virtio_device *dev)
-+{
-+	struct drm_device *ddev = dev->priv;
-+	struct virtio_gpu_device *vgdev = ddev->dev_private;
-+	int ret;
-+
-+	ret = virtio_gpu_init_vqs(dev);
-+	if (!ret && vgdev->has_freeze_S3) {
-+		ret = virtio_gpu_cmd_set_freeze_mode(vgdev,
-+					VIRTIO_GPU_FREEZE_MODE_UNFREEZE);
-+	}
-+	return ret;
-+}
-+#endif
-+
- static struct virtio_device_id id_table[] = {
- 	{ VIRTIO_ID_GPU, VIRTIO_DEV_ANY_ID },
- 	{ 0 },
-@@ -148,6 +182,7 @@ static unsigned int features[] = {
- 	VIRTIO_GPU_F_RESOURCE_UUID,
- 	VIRTIO_GPU_F_RESOURCE_BLOB,
- 	VIRTIO_GPU_F_CONTEXT_INIT,
-+	VIRTIO_GPU_F_FREEZE_S3,
- };
- static struct virtio_driver virtio_gpu_driver = {
- 	.feature_table = features,
-@@ -156,6 +191,10 @@ static struct virtio_driver virtio_gpu_driver = {
- 	.driver.owner = THIS_MODULE,
- 	.id_table = id_table,
- 	.probe = virtio_gpu_probe,
-+#ifdef CONFIG_PM
-+	.freeze = virtio_gpu_freeze,
-+	.restore = virtio_gpu_restore,
-+#endif
- 	.remove = virtio_gpu_remove,
- 	.config_changed = virtio_gpu_config_changed
- };
-diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
-index 4126c384286b..231b5a6138b2 100644
---- a/drivers/gpu/drm/virtio/virtgpu_drv.h
-+++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
-@@ -246,6 +246,7 @@ struct virtio_gpu_device {
- 	bool has_resource_blob;
- 	bool has_host_visible;
- 	bool has_context_init;
-+	bool has_freeze_S3;
- 	struct virtio_shm_region host_visible_region;
- 	struct drm_mm host_visible_mm;
- 
-@@ -282,6 +283,7 @@ extern struct drm_ioctl_desc virtio_gpu_ioctls[DRM_VIRTIO_NUM_IOCTLS];
- void virtio_gpu_create_context(struct drm_device *dev, struct drm_file *file);
- 
- /* virtgpu_kms.c */
-+int virtio_gpu_init_vqs(struct virtio_device *vdev);
- int virtio_gpu_init(struct virtio_device *vdev, struct drm_device *dev);
- void virtio_gpu_deinit(struct drm_device *dev);
- void virtio_gpu_release(struct drm_device *dev);
-@@ -425,6 +427,9 @@ virtio_gpu_cmd_set_scanout_blob(struct virtio_gpu_device *vgdev,
- 				uint32_t width, uint32_t height,
- 				uint32_t x, uint32_t y);
- 
-+int virtio_gpu_cmd_set_freeze_mode(struct virtio_gpu_device *vgdev,
-+				virtio_gpu_freeze_mode_t freeze_mode);
-+
- /* virtgpu_display.c */
- int virtio_gpu_modeset_init(struct virtio_gpu_device *vgdev);
- void virtio_gpu_modeset_fini(struct virtio_gpu_device *vgdev);
-diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
-index 5a3b5aaed1f3..a762a762f907 100644
---- a/drivers/gpu/drm/virtio/virtgpu_kms.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
-@@ -114,16 +114,33 @@ static void virtio_gpu_get_capsets(struct virtio_gpu_device *vgdev,
- 	vgdev->num_capsets = num_capsets;
- }
- 
--int virtio_gpu_init(struct virtio_device *vdev, struct drm_device *dev)
-+int virtio_gpu_init_vqs(struct virtio_device *vdev)
- {
- 	static vq_callback_t *callbacks[] = {
- 		virtio_gpu_ctrl_ack, virtio_gpu_cursor_ack
- 	};
- 	static const char * const names[] = { "control", "cursor" };
-+	struct drm_device *dev = vdev->priv;
-+	struct virtio_gpu_device *vgdev = dev->dev_private;
-+	struct virtqueue *vqs[2];
-+	int ret;
-+
-+	virtio_gpu_init_vq(&vgdev->ctrlq, virtio_gpu_dequeue_ctrl_func);
-+	virtio_gpu_init_vq(&vgdev->cursorq, virtio_gpu_dequeue_cursor_func);
-+
-+	ret = virtio_find_vqs(vgdev->vdev, 2, vqs, callbacks, names, NULL);
-+	if (ret) {
-+		DRM_ERROR("failed to find virt queues\n");
-+		return ret;
-+	}
-+	vgdev->ctrlq.vq = vqs[0];
-+	vgdev->cursorq.vq = vqs[1];
-+	return 0;
-+}
- 
-+int virtio_gpu_init(struct virtio_device *vdev, struct drm_device *dev)
-+{
- 	struct virtio_gpu_device *vgdev;
--	/* this will expand later */
--	struct virtqueue *vqs[2];
- 	u32 num_scanouts, num_capsets;
- 	int ret = 0;
- 
-@@ -144,8 +161,6 @@ int virtio_gpu_init(struct virtio_device *vdev, struct drm_device *dev)
- 	ida_init(&vgdev->ctx_id_ida);
- 	ida_init(&vgdev->resource_ida);
- 	init_waitqueue_head(&vgdev->resp_wq);
--	virtio_gpu_init_vq(&vgdev->ctrlq, virtio_gpu_dequeue_ctrl_func);
--	virtio_gpu_init_vq(&vgdev->cursorq, virtio_gpu_dequeue_cursor_func);
- 
- 	vgdev->fence_drv.context = dma_fence_context_alloc(1);
- 	spin_lock_init(&vgdev->fence_drv.lock);
-@@ -197,6 +212,9 @@ int virtio_gpu_init(struct virtio_device *vdev, struct drm_device *dev)
- 	if (virtio_has_feature(vgdev->vdev, VIRTIO_GPU_F_CONTEXT_INIT)) {
- 		vgdev->has_context_init = true;
- 	}
-+	if (virtio_has_feature(vgdev->vdev, VIRTIO_GPU_F_FREEZE_S3)) {
-+		vgdev->has_freeze_S3 = true;
-+	}
- 
- 	DRM_INFO("features: %cvirgl %cedid %cresource_blob %chost_visible",
- 		 vgdev->has_virgl_3d    ? '+' : '-',
-@@ -207,13 +225,13 @@ int virtio_gpu_init(struct virtio_device *vdev, struct drm_device *dev)
- 	DRM_INFO("features: %ccontext_init\n",
- 		 vgdev->has_context_init ? '+' : '-');
- 
--	ret = virtio_find_vqs(vgdev->vdev, 2, vqs, callbacks, names, NULL);
-+	DRM_INFO("features: %cfreeze_S3\n",
-+		 vgdev->has_freeze_S3 ? '+' : '-');
-+
-+	ret = virtio_gpu_init_vqs(vdev);
- 	if (ret) {
--		DRM_ERROR("failed to find virt queues\n");
- 		goto err_vqs;
- 	}
--	vgdev->ctrlq.vq = vqs[0];
--	vgdev->cursorq.vq = vqs[1];
- 	ret = virtio_gpu_alloc_vbufs(vgdev);
- 	if (ret) {
- 		DRM_ERROR("failed to alloc vbufs\n");
-diff --git a/drivers/gpu/drm/virtio/virtgpu_vq.c b/drivers/gpu/drm/virtio/virtgpu_vq.c
-index b1a00c0c25a7..74b34951e4fa 100644
---- a/drivers/gpu/drm/virtio/virtgpu_vq.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_vq.c
-@@ -1302,3 +1302,19 @@ void virtio_gpu_cmd_set_scanout_blob(struct virtio_gpu_device *vgdev,
- 
- 	virtio_gpu_queue_ctrl_buffer(vgdev, vbuf);
- }
-+
-+int virtio_gpu_cmd_set_freeze_mode(struct virtio_gpu_device *vgdev,
-+				virtio_gpu_freeze_mode_t freeze_mode)
-+{
-+	struct virtio_gpu_set_freeze_mode *cmd_p;
-+	struct virtio_gpu_vbuffer *vbuf;
-+
-+	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
-+	memset(cmd_p, 0, sizeof(*cmd_p));
-+
-+	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_SET_FREEZE_MODE);
-+	cmd_p->freeze_mode = freeze_mode;
-+	virtio_gpu_queue_ctrl_buffer(vgdev, vbuf);
-+	virtio_gpu_notify(vgdev);
-+	return 0;
-+}
-\ No newline at end of file
-diff --git a/include/uapi/linux/virtio_gpu.h b/include/uapi/linux/virtio_gpu.h
-index f556fde07b76..21ca87bf7417 100644
---- a/include/uapi/linux/virtio_gpu.h
-+++ b/include/uapi/linux/virtio_gpu.h
-@@ -65,6 +65,11 @@
-  */
- #define VIRTIO_GPU_F_CONTEXT_INIT        4
- 
-+/*
-+ * VIRTIO_GPU_CMD_SET_FREEZE_MODE
-+ */
-+#define VIRTIO_GPU_F_FREEZE_S3            5
-+
- enum virtio_gpu_ctrl_type {
- 	VIRTIO_GPU_UNDEFINED = 0,
- 
-@@ -100,6 +105,9 @@ enum virtio_gpu_ctrl_type {
- 	VIRTIO_GPU_CMD_UPDATE_CURSOR = 0x0300,
- 	VIRTIO_GPU_CMD_MOVE_CURSOR,
- 
-+	/* freeze mode */
-+	VIRTIO_GPU_CMD_SET_FREEZE_MODE = 0x0400,
-+
- 	/* success responses */
- 	VIRTIO_GPU_RESP_OK_NODATA = 0x1100,
- 	VIRTIO_GPU_RESP_OK_DISPLAY_INFO,
-@@ -453,4 +461,15 @@ struct virtio_gpu_resource_unmap_blob {
- 	__le32 padding;
- };
- 
-+/* VIRTIO_GPU_CMD_SET_FREEZE_MODE */
-+typedef enum {
-+	VIRTIO_GPU_FREEZE_MODE_UNFREEZE = 0,
-+	VIRTIO_GPU_FREEZE_MODE_FREEZE_S3 = 3,
-+} virtio_gpu_freeze_mode_t;
-+
-+struct virtio_gpu_set_freeze_mode {
-+	struct virtio_gpu_ctrl_hdr hdr;
-+	virtio_gpu_freeze_mode_t freeze_mode;
-+};
-+
- #endif
--- 
-2.34.1
-
+Konrad
