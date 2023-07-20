@@ -2,142 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DCD75A44C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 04:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44A675A45F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 04:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbjGTCQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 22:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
+        id S229746AbjGTC2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 22:28:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGTCQF (ORCPT
+        with ESMTP id S229452AbjGTC2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 22:16:05 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1A21FFE;
-        Wed, 19 Jul 2023 19:16:02 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 3FCC580C5;
-        Thu, 20 Jul 2023 10:15:54 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 20 Jul
- 2023 10:15:54 +0800
-Received: from [192.168.125.127] (113.72.147.86) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 20 Jul
- 2023 10:15:53 +0800
-Message-ID: <52ebc991-0e73-8df4-61b2-32989ab4e62c@starfivetech.com>
-Date:   Thu, 20 Jul 2023 10:15:51 +0800
+        Wed, 19 Jul 2023 22:28:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3B92103
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 19:27:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689820039;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PhX0KcPz6bpGMzzt6+Tw+HFeLg7cMeTIF/CHwLfDxqU=;
+        b=BbApqAQ3eq8jRT4AFLuBmJJT/Ym3bmz5fqKVq7nptiwIPyhkXm/wh4KyRHcWVTPXMwR2eC
+        2iu1CINyoxc79xNWibg0KE2bJNpmNmo4LiFQuUGfmFrblc8gA0fSpufbxJJHYY6P52sl92
+        y1UsCrj7nnUZxuGGsyB+W+bsIPVVGzI=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-460-c7fmM1GbN3GdXFHEEA3ojA-1; Wed, 19 Jul 2023 22:27:17 -0400
+X-MC-Unique: c7fmM1GbN3GdXFHEEA3ojA-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b708e49042so2388101fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 19:27:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689820036; x=1692412036;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PhX0KcPz6bpGMzzt6+Tw+HFeLg7cMeTIF/CHwLfDxqU=;
+        b=Q1B7yA9QVqM32xCEpy4tqnZUtVK+o0IXGzvw/Ydh94OLn2woCJUAQlmxg0f63vEGWV
+         R0XgqzA5xMymCI3U0TAIWK0+t7s664QFmzO+9Qy3Ik5WSVJsY298y6NpDPF7TAHTXyFL
+         b/0nHZrICsKon+iF4T7EZxR+/uKRPO0hUvUQJijxz76WN1GctWFKkxy0PIc7BIYYj73X
+         X9vuJhfNjrfKdKPIlRXlCz6mEJsPvh9YZ5Cfwj5wlOYiaJWd1IlADu2o8cHb7HUXjk7J
+         fo3+gJrBquY6OSkPEeXRJ6pixGITs121yLNt+9UQ0LcsaLUmAOSg++MgMJNBX0kYomwh
+         xgRg==
+X-Gm-Message-State: ABy/qLY/8zB+0o7JOfuHJvDLeLRNbfM9VqeJJiShsk0Oi9w9IR/R/ah7
+        1b4ESB2lJNNoE1yqjOT0TUgFx6lE71e6eDC8AOj5CwpnwAIuzDQXD/joAxtzR5M6S7BUeaajuCZ
+        4gQ8YkhpdlV34NF1S/NGY6S7xzjyL0ORS+4/gWWMk
+X-Received: by 2002:a2e:b70a:0:b0:2a7:adf7:1781 with SMTP id j10-20020a2eb70a000000b002a7adf71781mr1207369ljo.2.1689820036242;
+        Wed, 19 Jul 2023 19:27:16 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGG8VfnWGKux2XQqloHvmum/oTHRj7uk/Z8damP4dF1V13QVr/IDb3lqUNAF2zJ46P6L2CkZPMsB4+tjAqSbnQ=
+X-Received: by 2002:a2e:b70a:0:b0:2a7:adf7:1781 with SMTP id
+ j10-20020a2eb70a000000b002a7adf71781mr1207359ljo.2.1689820035929; Wed, 19 Jul
+ 2023 19:27:15 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v1 0/9] Refactoring Microchip PolarFire PCIe driver
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20230719152626.GA502469@bhelgaas>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <20230719152626.GA502469@bhelgaas>
+References: <20230719154550.79536-1-feliu@nvidia.com>
+In-Reply-To: <20230719154550.79536-1-feliu@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 20 Jul 2023 10:27:04 +0800
+Message-ID: <CACGkMEv1b698NcpZHxpDoNokWH0gEs07D2eYSAjsiF1efhxORw@mail.gmail.com>
+Subject: Re: [PATCH v1] virtio-pci: Fix legacy device flag setting error in probe
+To:     Feng Liu <feliu@nvidia.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Bodong Wang <bodong@nvidia.com>,
+        Parav Pandit <parav@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.147.86]
-X-ClientProxiedBy: EXCAS065.cuchost.com (172.16.6.25) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 19, 2023 at 11:46=E2=80=AFPM Feng Liu <feliu@nvidia.com> wrote:
+>
+> The 'is_legacy' flag is used to differentiate between legacy vs modern
+> device. Currently, it is based on the value of vp_dev->ldev.ioaddr.
+> However, due to the shared memory of the union between struct
+> virtio_pci_legacy_device and struct virtio_pci_modern_device, when
+> virtio_pci_modern_probe modifies the content of struct
+> virtio_pci_modern_device, it affects the content of struct
+> virtio_pci_legacy_device, and ldev.ioaddr is no longer zero, causing
+> the 'is_legacy' flag to be set as true. To resolve issue, when legacy
+> device is probed, mark 'is_legacy' as true, when modern device is
+> probed, keep 'is_legacy' as false.
+>
+> Fixes: 4f0fc22534e3 ("virtio_pci: Optimize virtio_pci_device structure si=
+ze")
+> Signed-off-by: Feng Liu <feliu@nvidia.com>
+> Reviewed-by: Parav Pandit <parav@nvidia.com>
+> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+> ---
+>  drivers/virtio/virtio_pci_common.c | 2 --
+>  drivers/virtio/virtio_pci_legacy.c | 1 +
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_p=
+ci_common.c
+> index a6c86f916dbd..c2524a7207cf 100644
+> --- a/drivers/virtio/virtio_pci_common.c
+> +++ b/drivers/virtio/virtio_pci_common.c
+> @@ -557,8 +557,6 @@ static int virtio_pci_probe(struct pci_dev *pci_dev,
+>
+>         pci_set_master(pci_dev);
+>
+> -       vp_dev->is_legacy =3D vp_dev->ldev.ioaddr ? true : false;
+> -
+>         rc =3D register_virtio_device(&vp_dev->vdev);
+>         reg_dev =3D vp_dev;
+>         if (rc)
+> diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_p=
+ci_legacy.c
+> index 2257f1b3d8ae..d9cbb02b35a1 100644
+> --- a/drivers/virtio/virtio_pci_legacy.c
+> +++ b/drivers/virtio/virtio_pci_legacy.c
+> @@ -223,6 +223,7 @@ int virtio_pci_legacy_probe(struct virtio_pci_device =
+*vp_dev)
+>         vp_dev->config_vector =3D vp_config_vector;
+>         vp_dev->setup_vq =3D setup_vq;
+>         vp_dev->del_vq =3D del_vq;
+> +       vp_dev->is_legacy =3D true;
 
+This seems break force_legacy for modern device:
 
-On 2023/7/19 23:26, Bjorn Helgaas wrote:
-> On Wed, Jul 19, 2023 at 06:20:48PM +0800, Minda Chen wrote:
->> This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
->>   dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
->> JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
->> same IP and have commit their codes, which are mixed with PLDA
->> controller codes and Microchip platform codes.
-> 
-> I guess this actually adds TWO drivers: PCIE_PLDA_PLAT_HOST (claims
-> "plda,xpressrich-pcie-host" devices) and PCIE_STARFIVE_HOST (claims
-> "starfive,jh7110-pcie" devices), right?
-> 
-Yes, plda,xpressrich-pcie-host is IP controller driver. Do it like designware/cadence/mobiveil, (pcie-(ip)-plat.c)
-But I can't test it. I don't whether need it. If it not required, I will delete it.
->> For re-use the PLDA controller codes, I request refactoring microchip
->> codes, move PLDA common codes to PLDA files.
->> Desigware and Cadence is good example for refactoring codes.
->> 
->> So first step is extract the PLDA common codes from microchip, and
->> refactoring the microchip codes.(patch1 - 4)
->> Then add the PLDA platform codes. (patch5, 6)
->> At last, add Starfive codes. (patch7 - 9)
->> 
->> This patchset is base on v6.5-rc1
-> 
-> Doesn't quite apply cleanly for me:
-> 
-I am sorry, The driver need stg clk and syscon driver, which are have't be merge to main line.
-mainly dts is(patch9) rejected, Must apply this series patch first. (I forget add this link in cover letter)
-https://patchwork.kernel.org/project/linux-riscv/cover/20230712092007.31013-1-xingyu.wu@starfivetech.com/
-and this syscon patch 
-https://patchwork.kernel.org/project/linux-riscv/patch/20230717023040.78860-7-xingyu.wu@starfivetech.com/
->   10:10:15 ~/linux (main)$ git checkout -b wip/minda-starfive-v1 v6.5-rc1
->   Switched to a new branch 'wip/minda-starfive-v1'
->   10:10:33 ~/linux (wip/minda-starfive-v1)$ git am m/20230719_minda_chen_refactoring_microchip_polarfire_pcie_driver.mbx
->   Applying: dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
->   Applying: dt-bindings: PCI: microchip: Remove the PLDA common properties
->   Applying: PCI: PLDA: Get PLDA common codes from Microchip PolarFire host
->   Applying: PCI: microchip: Move PCIe driver to PLDA directory
->   Applying: dt-bindings: PLDA: Add PLDA XpressRICH PCIe host controller
->   Applying: PCI: PLDA: Add host conroller platform driver
->   Applying: dt-bindings: PCI: Add StarFive JH7110 PCIe controller
->   Applying: PCI: PLDA: starfive: Add JH7110 PCIe controller
->   Applying: riscv: dts: starfive: add PCIe dts configuration for JH7110
->   error: patch failed: arch/riscv/boot/dts/starfive/jh7110.dtsi:629
->   error: arch/riscv/boot/dts/starfive/jh7110.dtsi: patch does not apply
->   Patch failed at 0009 riscv: dts: starfive: add PCIe dts configuration for JH7110
-> 
->>   dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
->>   dt-bindings: PCI: microchip: Remove the PLDA common properties
->>   PCI: PLDA: Get PLDA common codes from Microchip PolarFire host
->>   PCI: microchip: Move PCIe driver to PLDA directory
->>   dt-bindings: PLDA: Add PLDA XpressRICH PCIe host controller
->>   PCI: PLDA: Add host conroller platform driver
-> 
-> "controller"
->ok
->>   dt-bindings: PCI: Add StarFive JH7110 PCIe controller
->>   PCI: PLDA: starfive: Add JH7110 PCIe controller
->>   riscv: dts: starfive: add PCIe dts configuration for JH7110
-> 
-> Use "PCI: plda: " prefix for PLDA things that are shared across
-> multiple drivers.
-> 
-> Use "PCI: starfive: " prefix for starfive-specific things.
-> 
-> This is the same as how drivers/pci/controller/dwc/* looks.
-> 
-ok, thanks.
-> Bjorn
+        if (force_legacy) {
+                rc =3D virtio_pci_legacy_probe(vp_dev);
+                /* Also try modern mode if we can't map BAR0 (no IO space).=
+ */
+                if (rc =3D=3D -ENODEV || rc =3D=3D -ENOMEM)
+                        rc =3D virtio_pci_modern_probe(vp_dev);
+
+Thanks
+
+>
+>         return 0;
+>  }
+> --
+> 2.37.1 (Apple Git-137.1)
+>
+
