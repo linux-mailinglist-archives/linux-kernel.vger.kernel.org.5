@@ -2,242 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDFD75AB5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C333C75AB63
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbjGTJsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:48:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46620 "EHLO
+        id S230472AbjGTJtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbjGTJsD (ORCPT
+        with ESMTP id S231370AbjGTJsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:48:03 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF1935A0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:46:16 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R679d3hSJzBRDsT
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 17:46:13 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689846373; x=1692438374; bh=o9JOFlbGVJvu3Fw63HuzTzQdpgV
-        xk3SPDUv4pVrDud4=; b=JlvLy+pWgQ5Gr9vKbQDlNZRn/hB5VaS+RHv37e1AXLJ
-        xNkgC+E/D0I10GVWRCOGIH5vt5vxZYU3j9aZqlrDwcNNtYfBJ2ZMGt0aBuP0tyba
-        5WhQcj6ALdjV1gZjFuBuctkG8TQCb12jmyceBuPOlMTEcs47X5FtDpWsGqf5Fg4D
-        T+H7cVxOqafI9lV6rnkXx2pzz83amYnaFwSFehzLA8sAQpylV3tU1sxZksKZyhS7
-        SLv76x9Ncbce1m7VEL2hTs++xZWMcfWboMYhOgpk4dmRuuwPYmsoiYVDDA+fiaeY
-        SQB9VS9CaHYfue5TBNB9mV9OapXMI4m5NH+fsft82ng==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id yRyOVIrC-sIC for <linux-kernel@vger.kernel.org>;
-        Thu, 20 Jul 2023 17:46:13 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R679d1YldzBRDrZ;
-        Thu, 20 Jul 2023 17:46:13 +0800 (CST)
+        Thu, 20 Jul 2023 05:48:10 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE4226B6
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:47:09 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbd200d354so48975e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:47:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689846428; x=1690451228;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H70QPrwV0n7u44BE2OYdm8oLTPU3a+ECk2OOoT5kVss=;
+        b=Vtp6c/hWNuy+zRZB1kkCrooRRCMmOfl0Mj0AkZbvIBgm4lLaDLhSHDI2fTAoObdK/e
+         yhKRAalQqy/DsE7ijEVnwHwyiID5OcPmP0SNq0jqYYjUR4jY8M44g2aYAfuoSCRPvAHy
+         4bsZIAnguX/MD6WKAmJquT1iHShJEwve+tpK26LDWqk2lbIl5+QHz/kDO2RvviTsBAEA
+         uOnZXsINb7eGccM+7yv6Sn9gexHRADbk5V79KY4M0z5q8N0Et+VwlovQbN4Guz3Fh0Mz
+         bQaRHxjhZZNUdfEboB3RslAyiUm0wacAikdNpR1e631d03C4qRwBKa2Q5ZLeBqcLS089
+         ww9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689846428; x=1690451228;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H70QPrwV0n7u44BE2OYdm8oLTPU3a+ECk2OOoT5kVss=;
+        b=JVTfjoVoHWP/yucoata5apD9yc3B6b3sA4zoOnwgb29QPYQiDhE8aEKNpjTdFbzfaH
+         R+q4kyS7C36CTQF/NlKAx7MU45/3QN9TbET/Z9PEUz2YS3+RiyhYRPa/jRh0G1g5lvu/
+         elTnINzgasE9reVrHoXgKSPwOpOFhAwXwurjz85z3CfOT4K7iJJMGxJKKZDrQwj0qN5I
+         KTy0xuUE7OdrfP7r0TbevAX3xFdHk8lKlh+ITfO05LWwTVnrwfdH30IJB1WP3mkj4dkV
+         UafaJwDmyJHd5lI1W/vSvG/fOuFtUcQSf5mBi/YHoeF/jh9gr13L42UXUZGnaR9wZ/7O
+         1MwA==
+X-Gm-Message-State: ABy/qLb7Ce06+3CWaLSUzb6tgWyKwmIHDPn2Onq3Gq1rfkztERRYwjKC
+        QiSjfhgYVMBTPdDMeO2E2N5ewFisy9SUU8Gwbq0m/w==
+X-Google-Smtp-Source: APBJJlGu/xW7CTKYLQzNfqfiCyBaMnRPgnvnypkk/JE6dvatTfikV5svcnxVAUFi3SwaEZ1LRGuE2fsFvbJbIaZBhrE=
+X-Received: by 2002:a05:600c:5126:b0:3f4:2736:b5eb with SMTP id
+ o38-20020a05600c512600b003f42736b5ebmr65885wms.1.1689846427341; Thu, 20 Jul
+ 2023 02:47:07 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 17:46:13 +0800
-From:   sunran001@208suo.com
-To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: aic7xxx: fix the following errors
-In-Reply-To: <20230720094503.3863-1-xujianghui@cdjrlc.com>
-References: <20230720094503.3863-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <24ac6e965ee9dc4be3fd2f1932ba33f7@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <000000000000f7b82505e9982685@google.com> <0000000000002f22130600e7fb01@google.com>
+In-Reply-To: <0000000000002f22130600e7fb01@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Thu, 20 Jul 2023 11:46:55 +0200
+Message-ID: <CANp29Y5HZDVrsZcauU2BbHy2TgRcV26e4g7Oud991dk6B-e55A@mail.gmail.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in assertfail (2)
+To:     syzbot <syzbot+c4614eae20a166c25bf0@syzkaller.appspotmail.com>
+Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        wqu@suse.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: "foo * bar" should be "foo *bar"
-ERROR: return is not a function, parentheses are not required
-ERROR: open brace '{' following function definitions go on the next line
+On Thu, Jul 20, 2023 at 11:43=E2=80=AFAM syzbot
+<syzbot+c4614eae20a166c25bf0@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 745806fb4554f334e6406fa82b328562aa48f08f
+> Author: Qu Wenruo <wqu@suse.com>
+> Date:   Sun Jun 11 00:09:13 2023 +0000
+>
+>     btrfs: do not ASSERT() on duplicated global roots
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D16d92676a8=
+0000
+> start commit:   830b3c68c1fb Linux 6.1
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D26d9ba6d9b746=
+f4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dc4614eae20a166c=
+25bf0
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D14078087880=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1403948f88000=
+0
+>
+> If the result looks correct, please mark the issue as fixed by replying w=
+ith:
+>
+> #syz fix: btrfs: do not ASSERT() on duplicated global roots
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  drivers/scsi/aic7xxx/aic7xxx_osm.h | 47 +++++++++++++++---------------
-  1 file changed, 23 insertions(+), 24 deletions(-)
+Looks reasonable.
 
-diff --git a/drivers/scsi/aic7xxx/aic7xxx_osm.h 
-b/drivers/scsi/aic7xxx/aic7xxx_osm.h
-index 51d9f4de0734..ad63b6cda3b7 100644
---- a/drivers/scsi/aic7xxx/aic7xxx_osm.h
-+++ b/drivers/scsi/aic7xxx/aic7xxx_osm.h
-@@ -140,19 +140,17 @@ typedef union {
-  	volatile uint8_t __iomem *maddr;
-  } bus_space_handle_t;
+#syz fix: btrfs: do not ASSERT() on duplicated global roots
 
--typedef struct bus_dma_segment
--{
-+typedef struct bus_dma_segment {
-  	dma_addr_t	ds_addr;
-  	bus_size_t	ds_len;
-  } bus_dma_segment_t;
-
--struct ahc_linux_dma_tag
--{
-+struct ahc_linux_dma_tag {
-  	bus_size_t	alignment;
-  	bus_size_t	boundary;
-  	bus_size_t	maxsize;
-  };
--typedef struct ahc_linux_dma_tag* bus_dma_tag_t;
-+typedef struct ahc_linux_dma_tag *bus_dma_tag_t;
-
-  typedef dma_addr_t bus_dmamap_t;
-
-@@ -367,11 +365,11 @@ void ahc_delay(long);
-
-
-  /***************************** Low Level I/O 
-**********************************/
--uint8_t ahc_inb(struct ahc_softc * ahc, long port);
--void ahc_outb(struct ahc_softc * ahc, long port, uint8_t val);
--void ahc_outsb(struct ahc_softc * ahc, long port,
-+uint8_t ahc_inb(struct ahc_softc *ahc, long port);
-+void ahc_outb(struct ahc_softc *ahc, long port, uint8_t val);
-+void ahc_outsb(struct ahc_softc *ahc, long port,
-  	       uint8_t *, int count);
--void ahc_insb(struct ahc_softc * ahc, long port,
-+void ahc_insb(struct ahc_softc *ahc, long port,
-  	       uint8_t *, int count);
-
-  /**************************** Initialization 
-**********************************/
-@@ -434,8 +432,7 @@ ahc_unlock(struct ahc_softc *ahc, unsigned long 
-*flags)
-  /* config registers for header type 0 devices */
-  #define PCIR_MAPS	0x10
-
--typedef enum
--{
-+typedef enum {
-  	AHC_POWER_STATE_D0,
-  	AHC_POWER_STATE_D1,
-  	AHC_POWER_STATE_D2,
-@@ -450,10 +447,12 @@ int			 aic7770_map_registers(struct ahc_softc 
-*ahc,
-  					       u_int port);
-  int			 aic7770_map_int(struct ahc_softc *ahc, u_int irq);
-  #else
--static inline int	ahc_linux_eisa_init(void) {
-+static inline int	ahc_linux_eisa_init(void)
-+{
-  	return -ENODEV;
-  }
--static inline void	ahc_linux_eisa_exit(void) {
-+static inline void	ahc_linux_eisa_exit(void)
-+{
-  }
-  #endif
-
-@@ -475,21 +474,21 @@ static inline int 
-ahc_get_pci_function(ahc_dev_softc_t);
-  static inline int
-  ahc_get_pci_function(ahc_dev_softc_t pci)
-  {
--	return (PCI_FUNC(pci->devfn));
-+	return PCI_FUNC(pci->devfn);
-  }
-
-  static inline int ahc_get_pci_slot(ahc_dev_softc_t);
-  static inline int
-  ahc_get_pci_slot(ahc_dev_softc_t pci)
-  {
--	return (PCI_SLOT(pci->devfn));
-+	return PCI_SLOT(pci->devfn);
-  }
-
-  static inline int ahc_get_pci_bus(ahc_dev_softc_t);
-  static inline int
-  ahc_get_pci_bus(ahc_dev_softc_t pci)
-  {
--	return (pci->bus->number);
-+	return pci->bus->number;
-  }
-  #else
-  static inline int ahc_linux_pci_init(void) {
-@@ -524,7 +523,7 @@ void ahc_cmd_set_transaction_status(struct scsi_cmnd 
-*cmd, uint32_t status)
-  static inline
-  void ahc_set_transaction_status(struct scb *scb, uint32_t status)
-  {
--	ahc_cmd_set_transaction_status(scb->io_ctx,status);
-+	ahc_cmd_set_transaction_status(scb->io_ctx, status);
-  }
-
-  static inline
-@@ -549,7 +548,7 @@ uint32_t ahc_cmd_get_transaction_status(struct 
-scsi_cmnd *cmd)
-  static inline
-  uint32_t ahc_get_transaction_status(struct scb *scb)
-  {
--	return (ahc_cmd_get_transaction_status(scb->io_ctx));
-+	return ahc_cmd_get_transaction_status(scb->io_ctx);
-  }
-
-  static inline
-@@ -561,7 +560,7 @@ uint32_t ahc_cmd_get_scsi_status(struct scsi_cmnd 
-*cmd)
-  static inline
-  uint32_t ahc_get_scsi_status(struct scb *scb)
-  {
--	return (ahc_cmd_get_scsi_status(scb->io_ctx));
-+	return ahc_cmd_get_scsi_status(scb->io_ctx);
-  }
-
-  static inline
-@@ -576,13 +575,13 @@ void ahc_set_transaction_tag(struct scb *scb, int 
-enabled, u_int type)
-  static inline
-  u_long ahc_get_transfer_length(struct scb *scb)
-  {
--	return (scb->platform_data->xfer_len);
-+	return scb->platform_data->xfer_len;
-  }
-
-  static inline
-  int ahc_get_transfer_dir(struct scb *scb)
-  {
--	return (scb->io_ctx->sc_data_direction);
-+	return scb->io_ctx->sc_data_direction;
-  }
-
-  static inline
-@@ -606,7 +605,7 @@ u_long ahc_get_residual(struct scb *scb)
-  static inline
-  u_long ahc_get_sense_residual(struct scb *scb)
-  {
--	return (scb->platform_data->sense_resid);
-+	return scb->platform_data->sense_resid;
-  }
-
-  static inline
-@@ -617,13 +616,13 @@ int ahc_perform_autosense(struct scb *scb)
-  	 * On other platforms this is set on a
-  	 * per-transaction basis.
-  	 */
--	return (1);
-+	return 1;
-  }
-
-  static inline uint32_t
-  ahc_get_sense_bufsize(struct ahc_softc *ahc, struct scb *scb)
-  {
--	return (sizeof(struct scsi_sense_data));
-+	return sizeof(struct scsi_sense_data);
-  }
-
-  static inline void
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
