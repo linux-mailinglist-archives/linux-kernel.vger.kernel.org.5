@@ -2,133 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F18A75ADAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70E575ADB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbjGTL7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56408 "EHLO
+        id S231573AbjGTMB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 08:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbjGTL7h (ORCPT
+        with ESMTP id S229838AbjGTMBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:59:37 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696BE1724
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:59:35 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fdd31bf179so1104417e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:59:35 -0700 (PDT)
+        Thu, 20 Jul 2023 08:01:25 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044AD10F5
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:01:24 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-78654448524so28777139f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:01:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689854374; x=1690459174;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uEMcg3t4E/tnVfbXGr+wTg7QMHaLToS8oYTXp4ZjrZI=;
-        b=ZUtgvvtiCRD5FHcGrWyyzSTxc/hwUIe8NQ6Fnx9D9r73THvayVLTo/1djwh78kiihp
-         fKwt+MGengNss0v+PBeqV4nP7fT6kL7PfVUnLDyytu7iK/fZpsklLWP6UKvBlxLQO6z1
-         1lXrCzNOQw82pyow7mkcM5449pRCaMgdtgZ5aPAuxSKt6LfwV0A9wX6aEapBX6H108eW
-         ivGBpncATPS6NAhj9fnfZ6Khj4sB6AF9UK/OIk6PkdmWYzwKU63rPjpZQHDuxe/Iyccv
-         4NBTFvtRJaS9mHjPCAmokWLh9+xcYUv4DW+BqzN3OcHvI3KyHjrVQiYzZ9x7oCiwXFRx
-         BacQ==
+        d=google.com; s=20221208; t=1689854483; x=1690459283;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/tPgRTBCM977gv6ppD9dyp6sm3R1el/53OCuH7O8kZs=;
+        b=HCCWLsdMHVrRSRmcWQZ1gyQhIQ8PnZKEgxRhbxB4rzrssUNXiyiEHCiQTy9m2CaVUD
+         UC7hMy9bDCXQitgt9kEW40HmaobypIsgcOh6dTaLhUsRdXEy0UgQhdarWl8nEjesiMqu
+         wf94a8jLEFk04/WCVqYe6tapDFuSVjBgyS5OpZt/0oZOve7cYVpEGottkxqZGBzX47Ql
+         w6+gDTrOSXAZ/BcABN30IDbdfi2r1U2qys6+Rp5M2yNZMw4/Xo3rJ1QslrUhF1tmwhFN
+         NLdvGC4WoKZU1q2yrX1bWPUXS9Vfb3rlVxqYSlyxiDcpYPUfzkOQyZvICHSD0tGzVZbq
+         /jOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689854374; x=1690459174;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uEMcg3t4E/tnVfbXGr+wTg7QMHaLToS8oYTXp4ZjrZI=;
-        b=bQp9uPTmGoHD3HzMLgbCJJWDtDOS7ei8iyME0jToc8dmbQ0BstCYemaejNOTx2OjQi
-         T729dPvxvx8o1mClHLRCtlKhhJ6pc48L8VjP1qyhh3FIIheUUU3G1D+ki6vYCJ8137jJ
-         6NchFMnMH0wTGFX/c5pOI4OQ9xD+GsGkCyi95ilimnvDjR6lRkxbINYty6ySZ7Ge79UL
-         P6TXuB3ADf/sEN8IC61FOlBIpKVKsO3b+hxmIMocy1Knmv7TAiBHwkHl3Ehu9Azh9duv
-         C93I3JWhKWnmv6sAebTssS47lgfMDMwpqeT5BW9xXant7XQCwzVec1GhIhkQquw3eger
-         7RUQ==
-X-Gm-Message-State: ABy/qLbEYkSOkIUMxrIwnmJnfJilTXcg44nwB73sQ9KzY9MAyoHxny7s
-        yEWVJFYRZ9QC/NS+ILsvoM02cg==
-X-Google-Smtp-Source: APBJJlG+zh/y+vMW71ABKVjMj4CMKjnxWVKiDSCxrX5zgrSLUDqzz9qPxRaS5ny5wRaXCT7dj5X+kg==
-X-Received: by 2002:a05:6512:74e:b0:4fb:8b78:4a93 with SMTP id c14-20020a056512074e00b004fb8b784a93mr2156035lfs.7.1689854373638;
-        Thu, 20 Jul 2023 04:59:33 -0700 (PDT)
-Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
-        by smtp.gmail.com with ESMTPSA id r13-20020ac24d0d000000b004f86d3e52c0sm175860lfi.4.2023.07.20.04.59.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 04:59:33 -0700 (PDT)
-Message-ID: <07140181-33d0-1c64-5e93-a1882553bdf2@linaro.org>
-Date:   Thu, 20 Jul 2023 13:59:31 +0200
+        d=1e100.net; s=20221208; t=1689854483; x=1690459283;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/tPgRTBCM977gv6ppD9dyp6sm3R1el/53OCuH7O8kZs=;
+        b=M3pkjmP+w8+FDOVji+jHE2OOrKQl48u56ehyAzKEVnsfE3m9/51QpHht4xmvcye7SA
+         ox6HQJmQB4HdK37GsphkXKujY88LZo0NKoQxP6z8iFRCBF/jM42dDKgmoBdNZCvkvAlF
+         I002whqepcvDic/TEmAPIRAJFuDs/4Foil1ecd732Ym4kSofYudxV81gS0P4ffHqi071
+         vBUMuHQjd2e0bm/bGSbfvuX25TOrfKZhwA96CIIvGktSkAwOHn5NBdl96QYnv/inIHhl
+         XnAAuwWdM/MIXA1JwVn4NN4bSj/hF9pAUW54pVvQio8F3tnRO2oxyGTTGEMkl8fTQshD
+         FnNQ==
+X-Gm-Message-State: ABy/qLbJD2Iv4nr8JPOFtrAslEzxpxZxunR6gjHV2T+YS+9myX0NvCxI
+        tWfm0W07MTBIeZtZc4JibO1iVNTt5P/nNpBFQMiwDyWsHwueN8W6ODJSsQ==
+X-Google-Smtp-Source: APBJJlGo7PEyRReYO9+p6LLeUUTPFw7HirHSo/Bn91FisLSigztupOls/qSdo1v5ldtaZUTFDzRtAyX9iK196mYflvs=
+X-Received: by 2002:a5e:9403:0:b0:784:314f:8d68 with SMTP id
+ q3-20020a5e9403000000b00784314f8d68mr8639142ioj.1.1689854483201; Thu, 20 Jul
+ 2023 05:01:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] arm64: dts: qcom: msm8953-vince: drop duplicated
- touschreen parent interrupt
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Gianluca Boiano <morf3089@gmail.com>,
-        Eugene Lepshy <fekz115@gmail.com>, Luca Weiss <luca@z3ntu.xyz>,
-        Yassine Oudjana <y.oudjana@protonmail.com>,
-        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-References: <20230720115335.137354-1-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230720115335.137354-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230717113709.328671-1-glider@google.com> <20230717113709.328671-4-glider@google.com>
+ <ZLd+J3BkI3oK5vCw@yury-ThinkPad> <CAG_fn=USWBm=mdhgOz_df0veGQdioGOARqpZH5rAg3_fwhpbjA@mail.gmail.com>
+ <ZLhQRyWSQax5/DCL@yury-ThinkPad>
+In-Reply-To: <ZLhQRyWSQax5/DCL@yury-ThinkPad>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 20 Jul 2023 14:00:42 +0200
+Message-ID: <CAG_fn=WPE9fS=iKiYZB0dwNpdbdDwQWz+3XTECN3r131Hm4sGQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] arm64: mte: implement CONFIG_ARM64_MTE_COMP
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.07.2023 13:53, Krzysztof Kozlowski wrote:
-> Interrupts extended already define a parent interrupt controller:
-> 
->   msm8953-xiaomi-vince.dtb: touchscreen@20: Unevaluated properties are not allowed ('interrupts-parent' was unexpected)
-> 
-> Fixes: aa17e707e04a ("arm64: dts: qcom: msm8953: Add device tree for Xiaomi Redmi 5 Plus")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Wed, Jul 19, 2023 at 11:06=E2=80=AFPM Yury Norov <yury.norov@gmail.com> =
+wrote:
+>
+> > Would it help if I add a comment explaining that iN is an N-bit
+> > integer? Or do you prefer something like
+> >
+> >   r_sizes[0..4] : 5 x 7 bits
+> >
+> > ?
+>
+> Yes, that would help.
+Ok.
 
-Konrad
+
+> > >                      7 : Invalid handler
+> >
+> > No, 7 means "treat this handle as an out-of-line one". It is still
+> > valid, but instead of tag data it contains a pointer.
+>
+> So, it's invalid combination for _inline_ handler, right?
+Yes, that's right.
+
+> Anyways, I'm
+> waiting for an updated docs, so it will hopefully bring some light.
+It's on the way.
+
+> > > > +
+> > > > +/* Transform tag ranges back into tags. */
+> > > > +void ea0_ranges_to_tags(u8 *r_tags, short *r_sizes, int r_len, u8 =
+*tags)
+> > > > +{
+> > > > +     int i, j, pos =3D 0;
+> > > > +     u8 prev;
+> > > > +
+> > > > +     for (i =3D 0; i < r_len; i++) {
+> > > > +             for (j =3D 0; j < r_sizes[i]; j++) {
+> > > > +                     if (pos % 2)
+> > > > +                             tags[pos / 2] =3D (prev << 4) | r_tag=
+s[i];
+> > > > +                     else
+> > > > +                             prev =3D r_tags[i];
+> > > > +                     pos++;
+>
+> This code flushes tags at every 2nd iteration. Is that true that
+> there's always an even number of iterations, i.e. rsizes is always
+> even, assuming r_len can be 1?
+>
+> If not, it's possible to loose a tag, consider rlen =3D=3D 1 and
+> rsizes[0] =3D=3D 1.
+
+By design, ea0_ranges_to_tags() only accepts ranges that sum up to 256
+(as produced by ea0_tags_to_ranges())
+We could add a check for that, but given that it is an internal
+helper, a comment should suffice.
+
+But r_sizes[i] does not have to be even (otherwise we could've used
+this fact for a more efficient compression).
+For example, if the array of tags is {0xab, 0x0, 0x0, 0x0...}, then
+r_len =3D 3, r_sizes[] =3D {1, 1, 254}, r_tags =3D {0x0a, 0x0b, 0x0}.
+
+>
+> If yes, you can simplify:
+>
+>      for (i =3D 0; i < r_len; i++)
+>              for (j =3D 0; j < r_sizes[i]; j++)
+>                      tags[pos++] =3D (r_tags[i] << 4) | r_tags[i];
+>
+> Anyways, in the test can you run all possible combinations?
+
+I will extract code from compress_range_helper() to generate different
+numbers of ranges and test against those.
+
+
+> > > > +/* Translate allocation size into maximum number of ranges that it=
+ can hold. */
+> > > > +static int ea0_size_to_ranges(int size)
+> > > > +{
+> > > > +     switch (size) {
+> > > > +     case 8:
+> > > > +             return 6;
+> > > > +     case 16:
+> > > > +             return 11;
+> > > > +     case 32:
+> > > > +             return 23;
+> > > > +     case 64:
+> > > > +             return 46;
+> > > > +     default:
+> > > > +             return 0;
+> > > > +     }
+> > > > +}
+> > >
+> > > I wonder if there's a math formula here? Can you explain where from
+> > > those numbers come?
+> >
+> > I'll add a comment there.
+> > Basically, for the inline case it is the biggest N such as 4 + 4*N +
+> > 7*(N-1) <=3D 63
+> >
+> > (not 64, because Xarray steals one bit from us)
+> >
+> > For the out-of-line case it is the biggest N such as 6+4*N + 7*(N-1)
+> > <=3D array size in bits (128, 256, or 512).
+>
+> So it's: N <=3D (BIT_CAPACITY + NUM4 - NUM7) / (TAGSZ + SZ)
+>
+> Doesn't look like a rocket science...
+
+Note that the size of largest_idx is picked based on the largest N for
+64-byte buffers.
+And the size of r_sizes[] depends on the number of tags that fit into
+128 bytes: if we throw away the largest range, each of the remaining
+ones will fit into 7 bits.
+But this will not be the case for e.g. 3-bit tags (we'll need 8-bit sizes t=
+hen).
+
+Changing mte_size_to_ranges() to "(size * 8 + MTE_BITS_PER_SIZE -
+largest_bits) / (MTE_BITS_PER_TAG + MTE_BITS_PER_SIZE)" indeed looks
+better than hardcoded numbers, but we should keep in mind that the
+parameters depend on each other and cannot be easily changed.
+
+>
+> Why don't you code the formula instead of results? Are there any
+> difficulties? Things may change. For example, in next spec they
+> may bring 3- or 5-bit tags, and your compressor will crack loudly
+> with hardcoded numbers.
+
+The main reason for the compressor to crack loudly would be the
+hardcoded assumption of the tags consisting of 4 bits.
+I don't think it is practical to account on that number to change (and
+e.g. use bitmap_read/bitmap_write to convert tags into ranges) - we'd
+rather have a static assert for that.
+
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
