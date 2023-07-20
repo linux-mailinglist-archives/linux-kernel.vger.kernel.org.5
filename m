@@ -2,91 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EC175A7B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146DE75A7B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbjGTHWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:22:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51418 "EHLO
+        id S231490AbjGTHXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbjGTHWH (ORCPT
+        with ESMTP id S231330AbjGTHXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:22:07 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795821998
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:22:04 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R63zG32VFzBRDsQ
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:22:02 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689837722; x=1692429723; bh=v7iw69mxg3QBIitceoQwmpcV5rP
-        7d16JIacjEOzr9gM=; b=E/YINLxVeTo+Zy6P/B4BJv2wN1pCgt1xmH4R0ajLPun
-        Y62vhHxpIF4zKsogrnOn+uhVUjnPn1NZW5jrqVGQNXVDjHqyUDFCuKyJ/Ul1Ig7k
-        ts+8qjFy3mBcknjvJmpAznaG/sm7q65RhHTVAjFkZNpBrXoh4GgPc3TjFpQAZtR2
-        n/pgbJ6WPUJcCmALC64gKSgD16+f1AB967Rua1ILkqCGhs9SN0AyTmRkM3ONOVtV
-        e3k/+GzEsaNO2X3fqk1bwRxYsmPHqXo8Ykd+s3kUFLMhcELVBvL0NsS99nKj7MSb
-        GI4PHmRICtW0xc0XQ8DNhEoLxFDKhjEqH17FcDEEIng==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id bTWmjkS6HhTI for <linux-kernel@vger.kernel.org>;
-        Thu, 20 Jul 2023 15:22:02 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R63zG0M6jzBRDs1;
-        Thu, 20 Jul 2023 15:22:01 +0800 (CST)
+        Thu, 20 Jul 2023 03:23:34 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873B319A4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:23:33 -0700 (PDT)
+Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <m.felsch@pengutronix.de>)
+        id 1qMO0H-00086j-G1; Thu, 20 Jul 2023 09:23:13 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, mcoquelin.stm32@gmail.com
+Cc:     devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH net-next v3 1/2] dt-bindings: net: snps,dwmac: add phy-supply support
+Date:   Thu, 20 Jul 2023 09:23:03 +0200
+Message-Id: <20230720072304.3358701-1-m.felsch@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 15:22:01 +0800
-From:   hanyu001@208suo.com
-To:     mpe@ellerman.id.au, npiggin@gmail.com, windhl@126.com,
-        robh@kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] embedded6xx: holly: use seq_puts instead of seq_printf
-In-Reply-To: <tencent_E0E757021CD56C9510E3C044A6B421B59E08@qq.com>
-References: <tencent_E0E757021CD56C9510E3C044A6B421B59E08@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <2d238f3ebbd359d18eae523925d0c8bf@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::28
+X-SA-Exim-Mail-From: m.felsch@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix checkpatch WARNINGS:
+Document the common phy-supply property to be able to specify a phy
+regulator.
 
-/platforms/embedded6xx/holly.c:199: WARNING: Prefer seq_puts to 
-seq_printf
-/platforms/embedded6xx/holly.c:200: WARNING: Prefer seq_puts to 
-seq_printf
-
-Signed-off-by: Yu Han <hanyu001@208suo.com>
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
-  arch/powerpc/platforms/embedded6xx/holly.c | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
+Changelog
+v3:
+- no changes
 
-diff --git a/arch/powerpc/platforms/embedded6xx/holly.c 
-b/arch/powerpc/platforms/embedded6xx/holly.c
-index 02ff260ae1ee..11820d0d22c4 100644
---- a/arch/powerpc/platforms/embedded6xx/holly.c
-+++ b/arch/powerpc/platforms/embedded6xx/holly.c
-@@ -196,8 +196,8 @@ static void __init holly_init_IRQ(void)
+v2:
+- added Krzysztof ack-by
 
-  static void holly_show_cpuinfo(struct seq_file *m)
-  {
--    seq_printf(m, "vendor\t\t: IBM\n");
--    seq_printf(m, "machine\t\t: PPC750 GX/CL\n");
-+    seq_puts(m, "vendor\t\t: IBM\n");
-+    seq_puts(m, "machine\t\t: PPC750 GX/CL\n");
-  }
+ Documentation/devicetree/bindings/net/snps,dwmac.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-  static void __noreturn holly_restart(char *cmd)
+diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+index ddf9522a5dc23..847ecb82b37ee 100644
+--- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+@@ -160,6 +160,9 @@ properties:
+       can be passive (no SW requirement), and requires that the MAC operate
+       in a different mode than the PHY in order to function.
+ 
++  phy-supply:
++    description: PHY regulator
++
+   snps,axi-config:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description:
+-- 
+2.39.2
+
