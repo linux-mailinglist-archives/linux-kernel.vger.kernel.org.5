@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A45A575B39B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE3575B39D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233040AbjGTPzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
+        id S232322AbjGTP4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233060AbjGTPzs (ORCPT
+        with ESMTP id S233030AbjGTP4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:55:48 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385FD1734;
-        Thu, 20 Jul 2023 08:55:47 -0700 (PDT)
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9AEB11EC0A91;
-        Thu, 20 Jul 2023 17:55:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1689868545;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=PmNbUxyEE0l8Z9YYKaE3k/0qpfJpr5hMoskcLrvm7zc=;
-        b=ICiSdZSBoO/DByWJtVET1EfrKxhw7Wn38YoXWNI2c9Zu6gdOJKfQRB1QystE/OHEfqLfku
-        +8ogBZuOt9KVbCO/dqi9DiMd97w79l68SJ73dWw1Um4cR3+0QkMVn7TuvEkx76PqirfGRi
-        I4QvI1YgBPCuPkmpZnqjwNWrLltVY+Y=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 9wutOKxgZUeM; Thu, 20 Jul 2023 15:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1689868543; bh=PmNbUxyEE0l8Z9YYKaE3k/0qpfJpr5hMoskcLrvm7zc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KMfzzMP6eU7l+/JBybIe8nV6z1zbtlyQHjd4d5ur23PeKfIFlHreojSTSFwlCtvY+
-         4C+kUaknQ8d78jsDVajE9LmLLMGLeg++24CtbQVC3gfhTR9rK/i96Dx0GP5Oi2A/Pk
-         YlWU0DmLB4vXFLDkF7htwpKSnuKhE2snyv0U6d2kp6cIuXHowCZfG5AbriXfITlvfc
-         tEwwPYDwIIgyRavWrBS2CLYOH8KEEQofMRNYhHZls02PMtgGc+bi/lOSrwDNSrZXYb
-         eNJp5fP0k52a1KSAJw8QuGgKLpVqjIKBMNTv/D/t/P54GfwkjTRDvWXOpjlcdiFQv3
-         jfhR1XjJDSfb5mGPHBY8H1Yi89aomM0D83Rb7moD+PNwIE4fHwsFP0zWA+58npXNFJ
-         +/8ZyDRXKNV18vLSLyarXlsG7O++oha5lsNiQpF4pj8OQGk0yTAlxaAK1DCRRNB0AW
-         jy4KXXLkgQSVC2TIlG5Gn/3uCFpaXHwWvll+U29s1CTsoHb8f4a7OID5cBR74NGulW
-         jyLsZ4bCfMvlWTh4IAhQvrK8ixf9pbtDwxGGDP3AdlWU3h5fDoGuvXT88s9Ik5PgIH
-         GhV/8rzGtr4Guy6Ee0PMyydR5dKlFrWsLp+uGQDJBmiZL9vNWOV+ukV13FDA7Lca2/
-         hGwJYzgGKBkmgeOfyW63NYcg=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 32A7040E01EB;
-        Thu, 20 Jul 2023 15:55:34 +0000 (UTC)
-Date:   Thu, 20 Jul 2023 17:55:33 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "M K, Muralidhara" <muralimk@amd.com>
-Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
-        nchatrad@amd.com, yazen.ghannam@amd.com,
-        Muralidhara M K <muralidhara.mk@amd.com>
-Subject: Re: [PATCH 2/7] EDAC/mce_amd: Remove SMCA Extended Error code
- descriptions
-Message-ID: <20230720155533.GBZLlY9cgqIZb2kd5J@fat_crate.local>
-References: <20230720125425.3735538-1-muralimk@amd.com>
- <20230720125425.3735538-3-muralimk@amd.com>
- <20230720135950.GHZLk91jGbX7l+7AMz@fat_crate.local>
- <b70fa364-2f68-1336-8d1c-7687f5c4f1b4@amd.com>
+        Thu, 20 Jul 2023 11:56:14 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B4CE0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:56:11 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbc59de0e2so7861245e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:56:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689868570; x=1690473370;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cDZiEbAryDtT6b4dJ7CPGyIFUH+xNqjsXBnjfT/64bw=;
+        b=cSR12mqNhibdO0PRFT43zOAR0T3KpTWjOTJf6mtMCd5S2VfDkUvrRiHzfUN+ysC76G
+         1Vz/wz9kexOGjG/HNgqMJ/Yt+K3aiYoN6SAElL4uUDDmi2msQiHOt2NLoOTDE3K0WhJx
+         UltMt+hDQOlriTB0Be7nM5Qe7LSAmx7WnrYcXbW/mzt7LGAQuaVDcsTOjJ57sfWMpZYv
+         5xK/WXx174ScXkHqFQAJvisYnu3Pqf4O9XbgOkbWw92Xq3CcdiJtzXEWV39OQGwvbmj5
+         Kb1xH8cLb8wgUYjhbDABBgs082b/3ReRSdMP8DXtMqdrahQd8YEY4KW6xjrxW3SjkxRK
+         qAjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689868570; x=1690473370;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cDZiEbAryDtT6b4dJ7CPGyIFUH+xNqjsXBnjfT/64bw=;
+        b=WORwYd/KpXA/SP+ugLeH9CptBIS3N3vWM6gH0uhTL+VN9qCH80R1Qp0+G2Ng8NKSoO
+         KU7J890Dk+5APFtvkkTPjgVLfp8KOf3mOzD4DYUTJye8e9uDZLLiiI2iZOIsMtTOY9s4
+         rVow/ZBn8hN7DYUEG27CV8cB2xvirNNyeEyRqQvCWqilTO1+6yZTPv5djO3HUC3hggU+
+         OCVgQsY8WRg9Zae0iwwWKHZtVFCXCYo2UKfC4XOBDpIDPIC1QeqhomSfRi0mxcDAttde
+         BQZ0CMeTYcG8fd3aPmGOuwRYm54qJEbw8quGQWS2S2BjBXi8OfL8//Hp0Yf8eYxJUyLi
+         6bxA==
+X-Gm-Message-State: ABy/qLbADxq8VQmJmtRhrVGzb0Bn1FdMWUQdpORneBGUtwFGqiHAWz76
+        YWKlU5FbhCxa2LJxhpc21yc6Hw==
+X-Google-Smtp-Source: APBJJlHkaJLHeTVodXnfjyaWtUl9ixUdRLHPGNnR93G3Z+1iFPPtUHNv6avOf2uwAq+mH+s77ZG5Kw==
+X-Received: by 2002:a1c:7507:0:b0:3fc:f9c:a3e6 with SMTP id o7-20020a1c7507000000b003fc0f9ca3e6mr7462943wmc.9.1689868570376;
+        Thu, 20 Jul 2023 08:56:10 -0700 (PDT)
+Received: from [10.1.3.131] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id u6-20020a05600c00c600b003fbb5142c4bsm4285451wmm.18.2023.07.20.08.56.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 08:56:09 -0700 (PDT)
+Message-ID: <21596789-71c0-351e-bfc7-8e81c7b1b175@baylibre.com>
+Date:   Thu, 20 Jul 2023 17:56:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b70fa364-2f68-1336-8d1c-7687f5c4f1b4@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6 01/11] drm/mediatek: dp: Add missing error checks in
+ mtk_dp_parse_capabilities
+Content-Language: en-US
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, chunkuang.hu@kernel.org
+Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
+        matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
+        wenst@chromium.org, nfraprado@collabora.com
+References: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
+ <20230717141438.274419-2-angelogioacchino.delregno@collabora.com>
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20230717141438.274419-2-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 08:55:01PM +0530, M K, Muralidhara wrote:
-> Pull request created in rasdaemon for the same.
-> https://github.com/mchehab/rasdaemon/pull/106/commits/09026653864305b7a91dcb3604b91a9c0c0d74f3
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-I'd like to see a single error, once decoded with rasdaemon, after those
-are applied, and once with the kernel, before this change.
-
-Then add that info to the commit message so that people know what to do
-when they see an error and how to go about decoding it.
-
-Thx.
+On 17/07/2023 16:14, AngeloGioacchino Del Regno wrote:
+> If reading the RX capabilities fails the training pattern will be set
+> wrongly: add error checking for drm_dp_read_dpcd_caps() and return if
+> anything went wrong with it.
+> 
+> While at it, also add a less critical error check when writing to
+> clear the ESI0 IRQ vector.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Regards,
+Alexandre
