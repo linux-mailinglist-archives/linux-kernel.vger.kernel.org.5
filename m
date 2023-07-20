@@ -2,108 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CED75BB0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8D675BB12
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbjGTXWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 19:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37206 "EHLO
+        id S229487AbjGTXX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 19:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjGTXWD (ORCPT
+        with ESMTP id S229555AbjGTXXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 19:22:03 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1347B1724
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 16:22:01 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bb119be881so9942605ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 16:22:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689895320; x=1690500120;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rjCoDcXSzuJEaW1efhPSb3RNSUyxQu5V/Hxq+lz3rlw=;
-        b=L4fS7j2fP9Ixp3TUxZ0LXvyn+Awk0N+bglYo1G6/i3mCE3jlY34HTMNCldI7WxMBsQ
-         35cLp+dS+mQG3H1znRyLlYZcdXhr1C1S34jqspVjAXjBrN1z0HnI0El3F1jmowVFTK/0
-         cyvXCkJerzdjL5cRL4p4mkV1bdx5TxpXxskdWcgUOOzYwplG7++TDRi9zD70vbaAIrVA
-         p/i+8dGWCMp2bpKBs26/+MpGdi9wO2Su9FXPtYrP8s5CHiTsuNzkNQNqEVtMQOt7Jnha
-         0VCE0G2znj/f9yzzWnlP2OK1gMRKbXT6FSDAg048/irqq3eaT3JXIUOvtl0fh4o4hAYH
-         ULDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689895320; x=1690500120;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rjCoDcXSzuJEaW1efhPSb3RNSUyxQu5V/Hxq+lz3rlw=;
-        b=K5xs9QotPQ/IMTiobbGLLGbdWd/rLDXqSLG/k2e1WtiZTjX1NvsZVEnAAWzmuGCsuv
-         KSxJi/z8FmTtnj1q83BvzJPcY6yILcOtjVQM+afvyoUmGo1uhDaoJhh1SIqApPwjyg3K
-         tkv1laMJeatTvt29EUCVcN1orbbjqDF7e+JreD+weKaAMpH2Wi5+wfuD/kmVtwBT+u0Y
-         larLKDn2kMtilH6y3afTBTwL7SgkG+6u+2bSzODiD+ve6/vjM9/vjcs4x9I4Z2W0H/9j
-         6dA8bMVy2PHxLgXTZ2iGuGix9nQ+Gto1RO0z5IHgHmnbJEc56dgGTMinaMIXViPUWvj4
-         HyjA==
-X-Gm-Message-State: ABy/qLYd3Z5HPwMsrSkaA/L1tnnCNilzQlfW3BK1BzAqvSMqK8MO0FuW
-        62uNQzJ6G0SOpXQnkBl1zqI=
-X-Google-Smtp-Source: APBJJlHhaKPGvjH/nZHIpKyzPxtoroonfLHzarlmGBQ3jJimUanhdgD+rzgA9NzzZ5cFqKoVBiFd1A==
-X-Received: by 2002:a17:902:c103:b0:1b6:9551:e2b8 with SMTP id 3-20020a170902c10300b001b69551e2b8mr376261pli.34.1689895320439;
-        Thu, 20 Jul 2023 16:22:00 -0700 (PDT)
-Received: from ubuntu777.domain.name (36-228-98-231.dynamic-ip.hinet.net. [36.228.98.231])
-        by smtp.gmail.com with ESMTPSA id ik24-20020a170902ab1800b001b7f40a8959sm1986182plb.76.2023.07.20.16.21.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 16:22:00 -0700 (PDT)
-From:   Min-Hua Chen <minhuadotchen@gmail.com>
-To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     Min-Hua Chen <minhuadotchen@gmail.com>, asahi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] iommu/apple-dart: mark apple_dart_pm_ops static
-Date:   Fri, 21 Jul 2023 07:21:54 +0800
-Message-Id: <20230720232155.3923-1-minhuadotchen@gmail.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 20 Jul 2023 19:23:54 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6FE812709;
+        Thu, 20 Jul 2023 16:23:53 -0700 (PDT)
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id AB9B6236EBE2;
+        Thu, 20 Jul 2023 16:23:52 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AB9B6236EBE2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1689895432;
+        bh=SA9Rg3cMgQ7b1lFGvwN/QhJbcx0qd36JOXDv4dAQXxY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cVupQpfkOgBO/eAATTcmC1NeKzfe8T3WsdUXDeZPP7LR4RW3+9TH2nGRt3emkuyYJ
+         Q38NW7QQpLKa1Sn/BKofbm4IIths4zBfi1zkNRXn4/MHO/c26lOcnBj2SGHgnTsxCP
+         rnzqimOFAkzmLzcF671NKwvUXJTiOUFl9SwVTU+U=
+From:   Easwar Hariharan <eahariha@linux.microsoft.com>
+To:     stable@vger.kernel.org
+Cc:     easwar.hariharan@microsoft.com, catalin.marinas@arm.com,
+        will@kernel.org, corbet@lwn.net, robin.murphy@arm.com,
+        joro@8bytes.org, linux-arm-kernel@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev
+Subject: [PATCH 5.15 0/4] ARM64 errata for stable kernel 5.15 and above
+Date:   Thu, 20 Jul 2023 16:23:30 -0700
+Message-Id: <1689895414-17425-1-git-send-email-eahariha@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the following sparse warning:
+From: Easwar Hariharan <easwar.hariharan@microsoft.com>
 
-drivers/iommu/apple-dart.c:1279:1: sparse: warning: symbol 'apple_dart_pm_ops' was not declared. Should it be static?
+This series works around a few ARM64 errata. Please pick these up for
+v6.1 and v6.4 as well.
 
-No functional change intended.
-
-Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
-Acked-by: Sven Peter <sven@svenpeter.dev>
-
+Cc: Catalin Marinas <catalin.marinas@arm.com> 
+Cc: Will Deacon <will@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: iommu@lists.linux.dev
+Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 ---
+Robin Murphy (1):
+  iommu/arm-smmu-v3: Document MMU-700 erratum 2812531
 
-Change since v1:
-fix a typo
+Suzuki K Poulose (3):
+  arm64: errata: Add detection for TRBE overwrite in FILL mode
+  arm64: errata: Add workaround for TSB flush failures
+  arm64: errata: Add detection for TRBE write to out-of-range
 
----
- drivers/iommu/apple-dart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/arm64/silicon-errata.rst      |  16 +++
+ arch/arm64/Kconfig                          | 115 ++++++++++++++++++++
+ arch/arm64/include/asm/barrier.h            |  16 ++-
+ arch/arm64/kernel/cpu_errata.c              |  65 +++++++++++
+ arch/arm64/tools/cpucaps                    |   3 +
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  41 +++++++
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |   1 +
+ 7 files changed, 256 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
-index 8af64b57f048..2082081402d3 100644
---- a/drivers/iommu/apple-dart.c
-+++ b/drivers/iommu/apple-dart.c
-@@ -1276,7 +1276,7 @@ static __maybe_unused int apple_dart_resume(struct device *dev)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_DEV_PM_OPS(apple_dart_pm_ops, apple_dart_suspend, apple_dart_resume);
-+static DEFINE_SIMPLE_DEV_PM_OPS(apple_dart_pm_ops, apple_dart_suspend, apple_dart_resume);
- 
- static const struct of_device_id apple_dart_of_match[] = {
- 	{ .compatible = "apple,t8103-dart", .data = &apple_dart_hw_t8103 },
 -- 
-2.34.1
+2.25.1
 
