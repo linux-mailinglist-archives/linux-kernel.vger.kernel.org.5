@@ -2,59 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6C175B4A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEB675B4A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbjGTQiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57390 "EHLO
+        id S231189AbjGTQjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:39:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231536AbjGTQhp (ORCPT
+        with ESMTP id S230210AbjGTQjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:37:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07ED92D56
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:37:10 -0700 (PDT)
+        Thu, 20 Jul 2023 12:39:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4315A2736;
+        Thu, 20 Jul 2023 09:39:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 752A561B75
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 16:36:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08D09C433C8;
-        Thu, 20 Jul 2023 16:36:09 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C224F61B8D;
+        Thu, 20 Jul 2023 16:38:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 643A1C433C9;
+        Thu, 20 Jul 2023 16:38:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689870971;
-        bh=lLVbwlvSneF9kalZkrAQVBEp6JOJfRh7MRh7iEhEshI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J/5lDXQzBI4Ic2qzdpwkM2BbLqdj1ze4TCC+kXiIW8vHch/98E21Nqj7Olg5J6+bz
-         dtTpzxJOhC9EJDFLp62CiMcB3p9VMDZ5zbgDrjDPPHchwAaFLbZ6tfaeCmC6vMTaOD
-         AxWge01GKcRrQf7SNyncAi0EPLnSHrgomu0mA6lR2gVy38E4t/eKhMe6JSqcWcO1Wc
-         HoD7Je2Npd7vE9FoAST+XuzuAsrfGTlNReAiywFu3KpjZbXekE1M4jdMZP7Q2nxYym
-         Guyd6Gu7wOKn4dnzR1JyjUvxgJxd8i7YAeASLxeWge8StByu/9UZh0ybm7B71mx0BD
-         1TKze3+Yd0TyA==
-Date:   Thu, 20 Jul 2023 17:36:06 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Traceback with CONFIG_REGMAP_KUNIT=y+CONFIG_DEBUG_ATOMIC_SLEEP=y
-Message-ID: <048530b2-8eb5-4c57-b01a-49ac88c3c936@sirena.org.uk>
-References: <ee59d128-413c-48ad-a3aa-d9d350c80042@roeck-us.net>
- <336fc14e-f734-49ea-97ce-802f03fa4422@kadam.mountain>
- <198c4edf-045c-8d85-1d5c-018378eeb490@roeck-us.net>
- <055f2564-551d-4b5f-a6e3-d54ae104d5c9@sirena.org.uk>
- <d29552c2-f20c-cf68-76ae-e03a2cc7e0ba@roeck-us.net>
- <12e6144c-0d24-4556-beef-d754273992e4@sirena.org.uk>
- <e3799cbf-daf2-c805-4c70-09679c4b6cf5@roeck-us.net>
+        s=k20201202; t=1689871138;
+        bh=2gME/jlBfFp+8xl95AKBlT8xPNpXAgidZPMiIKzm32Y=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Fb92fS5asKJzq6Mu5j24cHQoFdOXPSZ/ZUap5QSJsjG/1bou29cK0J4edyVTnPCor
+         aeW5PgvI/lVZiKEjyyd61uEIE/4fTiPifu2VETw7hYh3nVKL2eQtWRBmAlOi8VFVgp
+         D+xZsb6fSDIMZWWP5k8fGFpxmizV0gv2IDeyl9htBBwxgqthhs8RO6bppbtUJmZDtp
+         qkX1lLXiUiubi0nrCNH5m0hc7Fll3eGvF1wfLold/C/oTAyUz33c4+firN16khUIdr
+         5+0yP3WYRZGqgiVxPtki+TXwyZyN4lMUiRzh3t5tnO/0yTW1QLrsJA70N02hM8ctfM
+         L7xdZBds0Lhtw==
+Message-ID: <016b04630ce7e168cbaacb1a27bd95b966b8c64e.camel@kernel.org>
+Subject: Re: [PATCH] nfsd: remove unsafe BUG_ON from set_change_info
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Boyang Xue <bxue@redhat.com>
+Date:   Thu, 20 Jul 2023 12:38:56 -0400
+In-Reply-To: <C4A9048C-C3C8-4C62-B68F-7170C6CDC5BE@oracle.com>
+References: <20230720-bz2223560-v1-1-edb4900043b8@kernel.org>
+         <4B067A0F-93E3-435A-A32B-B17BC07D4606@oracle.com>
+         <061f2b988de3da1dac32ecb3d8ac76319065b51d.camel@kernel.org>
+         <C4A9048C-C3C8-4C62-B68F-7170C6CDC5BE@oracle.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p/7KVl6ZkPAy4BGn"
-Content-Disposition: inline
-In-Reply-To: <e3799cbf-daf2-c805-4c70-09679c4b6cf5@roeck-us.net>
-X-Cookie: Ginger snap.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -65,42 +62,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2023-07-20 at 15:37 +0000, Chuck Lever III wrote:
+>=20
+> > On Jul 20, 2023, at 11:33 AM, Jeff Layton <jlayton@kernel.org> wrote:
+> >=20
+> > On Thu, 2023-07-20 at 15:15 +0000, Chuck Lever III wrote:
+> > >=20
+> > > > On Jul 20, 2023, at 10:59 AM, Jeff Layton <jlayton@kernel.org> wrot=
+e:
+> > > >=20
+> > > > At one time, nfsd would scrape inode information directly out of st=
+ruct
+> > > > inode in order to populate the change_info4. At that time, the BUG_=
+ON in
+> > > > set_change_info made some sense, since having it unset meant a codi=
+ng
+> > > > error.
+> > > >=20
+> > > > More recently, it calls vfs_getattr to get this information, which =
+can
+> > > > fail. If that fails, fh_pre_saved can end up not being set. While t=
+his
+> > > > situation is unfortunate, we don't need to crash the box.
+> > >=20
+> > > I'm always happy to get rid of a BUG_ON(). But I'm not sure even
+> > > a warning is necessary in this case. It's not likely that it's
+> > > a software bug or something that the server administrator can
+> > > do something about.
+> > >=20
+> > > Can you elaborate on why the vfs_getattr() might fail? Eg, how
+> > > was it failing in 2223560 ?
+> > >=20
+> >=20
+> > I'm fine with dropping the WARN_ON. You are correct that there is
+> > probably little the admin can do about it.
+> >=20
+> > vfs_getattr can fail for all sorts of reasons. It really depends on the
+> > underlying filesystem. In 2223560, I don't know for sure, but just prio=
+r
+> > to the oops, there were these messages in the log:
+> >=20
+> > [51935.482019] XFS (vda3): Filesystem has been shut down due to log err=
+or (0x2).=20
+> > [51935.482020] XFS (vda3): Please unmount the filesystem and rectify th=
+e problem(s).=20
+> > [51935.482550] vda3: writeback error on inode 25320400, offset 2097152,=
+ sector 58684120=20
+> >=20
+> > My assumption was that the fs being shut down caused some VFS operation=
+s
+> > to start returning errors (including getattr) and that is why
+> > fh_pre_saved ultimately didn't get set.
+>=20
+> I'm wondering if the operation should just fail in this case
+> rather than return a cobbled-up changeinfo4. Maybe for another
+> day.
+>=20
 
---p/7KVl6ZkPAy4BGn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Actually, this doesn't look too hard to do. We should be able to just
+unwind and return an error in all cases if collecting pre_op_attrs
+fails.
 
-On Thu, Jul 20, 2023 at 09:25:42AM -0700, Guenter Roeck wrote:
-> On 7/20/23 08:07, Mark Brown wrote:
+The trickier bit is what to do if collecting post_op_attrs fails after
+collecting pre-op attrs and the operation itself succeeded. What should
+go into the after_change value? 0? Should we just copy the before_change
+value?
 
-> > Like I say I don't think it's an either/or - we can do both
-> > independently, they both make sense standalone and don't conflict with
-> > each other.
-
-> I guess I am missing something. I have not tried it, but wouldn't my patches
-> be unnecessary if Dan's patch is applied ?
-
-Dan's patch doesn't cover the maple tree cache so there's still an issue
-there, but yes once Dan's patch is applied (assuming it covered all
-cases) the tests should run fine modulo any issues caused by trying to
-do atomic allocations triggering us to fail allocations on smaller
-systems or something.  My inclination is to do things like that in -next
-and send your simpler approach to Linus, though it's really not
-something I think it's a good idea for anyone to actually try to use.
-
---p/7KVl6ZkPAy4BGn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS5YnUACgkQJNaLcl1U
-h9C+rwf1HjE686LAPt/mf+1LT3w/S6I+2OM9jhknkKqZFFR7LUTn3FuKziRoM8GF
-l/SMJNpRmsXhJS9ceyAROwXKPbUJvJG/wlRcZ0ARlFzFVtyp5ZsWPIgIkhTBYInn
-fGD2UJTcC0/coFdOTPUz7B/8iCQ8n1dTmjcUMatd8iTCbZucMMCPKqJZ59ia29HI
-aHN4cGrjnggUSLEPeIgOslEdRkhL4ZouObhb3qvNN0QMTLdsLksPf9LfImoeqiTg
-vPrVx370uOgPe+4bgrHCI2jJPrJDRMdhojkYAgsj20QTqpVrTuc6WF6kJUt02QfV
-QTmIjQ6YfANzGM0rXUFqpzr/nkVs
-=Cj0x
------END PGP SIGNATURE-----
-
---p/7KVl6ZkPAy4BGn--
+--=20
+Jeff Layton <jlayton@kernel.org>
