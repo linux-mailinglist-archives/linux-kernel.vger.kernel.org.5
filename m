@@ -2,109 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC2B75B05D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E799475B060
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbjGTNtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60834 "EHLO
+        id S231342AbjGTNuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjGTNtr (ORCPT
+        with ESMTP id S231250AbjGTNuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:49:47 -0400
-Received: from out203-205-251-60.mail.qq.com (out203-205-251-60.mail.qq.com [203.205.251.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41998A2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:49:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1689860984;
-        bh=pXW60cWQc6IVLFxjVvj7YpZW/1awm7nI8f7WBZ++PB0=;
-        h=From:To:Cc:Subject:Date;
-        b=Aq3Bw+BCcxdgCDvvAa3fqwDzj69wgcMLdEwyk8gdel78LBywHPRiCFX6/qeEH0Hl6
-         RVSHwCg5jL/GRep42w7lvrvAZ6cDS+PXGTa2zdQSykD205K6MRBBwM9DKkzUj6i5nk
-         3Njk/FGPtEH1h6c2G2y1bHF25h07o7HVjbGJkF0E=
-Received: from linkpc.nju.edu.cn ([58.213.8.104])
-        by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-        id C68A9691; Thu, 20 Jul 2023 21:49:40 +0800
-X-QQ-mid: xmsmtpt1689860980tn9rzsk4s
-Message-ID: <tencent_710619B2865DE8AC059D51A027D919CBD00A@qq.com>
-X-QQ-XMAILINFO: NQR8mRxMnur9MiK9Mh21RRx51oFb4x9WBhNn4UDTn639pc4tGVsSTqKNyRa4Xg
-         Q1QUnzgAW8GPIrMPjjUnEe85hK160jUTPb9nABOIEBtJlWLgTXCc/uXRqv1+odsLuOiU26CKKIDL
-         8JPGv2g1U3n5cZGESqlvHOzHxNsvfeCQmglFwDeaNLCOpnHiAx1AUhagSwsx52l4+hqTxbMLXQP7
-         DSnENmPGvdKp+TCg0BpuxajnNrX79wcQlEDZctavG68QP+XZcZI8x7q4jHOImM26qsO5uLThgYS8
-         PkphtqL5jGTUm9b9ck5ONzAQk0KgWeR5dZIVU3WDrgUnjetA2gahOCYBatd0QSt0942X8bKvVb3Y
-         Y2jr/SctdX8utM+y85pSWJVvlAYmigaEsk6wKZVJ32WwfSK9qporgqi6owFrbnwICKI6OW0yyxJz
-         DWBKfafR0KcGC5KZNlwyom+0lzPt57gaj+BnAWUBIrOxxWkzazmkD4wJdZram93HpiHx51+ohkZS
-         wpdFfD7QJBvLA4sKsGgVXa7Q2TofJFNPKlGTCfUkEBtO1NUtT/D8tT6DRJG/rOXqMP9vf8nFwYyG
-         /a8pzBubKaFlHfLfEY7eD/6478UY1cjGSr5poT9g4ys3KsCMQs0OJaeIzD1JevoUacClx9BJOQnp
-         78XD6o4sf/ZRS9aB9Jdbe9UdVWbim+maRjo9KQScq7PtD1wT8Ub6J+HHIxWtoztUEtJSSRjQiYfS
-         gBuyTCGL9AA3xZPdgJBzpiLTGEwviQY0xTe7IdAQoiJijdm5NWGlZl5gS57uIx1T1pNddlta2Tp2
-         +9u/S8oYkmxxMWNOS98vmfEg1l6IS7UDHyMxv+UsKiEXO7Fo87xrEVBXFA4nQyJnK+hYMaQBwcjT
-         bfhzfJ9WJnqnBN0fEjgywojTlrLwfWl/Oe82aXLwhER0asFz7ysGilw0mJTIbxvEK7gEUBLjfz2u
-         EW26SrvrCflB/+eOvJg2RNnhsA58aeSQcpIBpsra7o2c1jsOOuqSRdhGSpCPGw
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From:   Linke Li <lilinke99@foxmail.com>
-To:     linux-mm@kvack.org
-Cc:     mike.kravetz@oracle.com, muchun.song@linux.dev, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        dan.carpenter@linaro.org, Linke Li <lilinke99@gmail.com>
-Subject: [PATCH v2] hugetlbfs: Fix integer overflow check in hugetlbfs_file_mmap()
-Date:   Thu, 20 Jul 2023 21:49:39 +0800
-X-OQ-MSGID: <20230720134939.121783-1-lilinke99@foxmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 20 Jul 2023 09:50:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FF326B3;
+        Thu, 20 Jul 2023 06:50:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D54761ADA;
+        Thu, 20 Jul 2023 13:50:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84835C433C8;
+        Thu, 20 Jul 2023 13:49:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689860999;
+        bh=nEFwg6fbISW6I5JdM4+Aiiv7SRb3ZillJUpOlDVgGy4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kmWGzH+vbToIUE5yzzMCmBnwZe2Q/PRiqmc6oxcALqYG1XxrP3UebqY6d92GChnjH
+         mW08ScEd1/wI74wDdsb4TcKBmb4Uebu1dpL9nZmVDlYFrEjUDit2BSoRdg4dg4qJ76
+         uzUcYfzlApacO48te1v54vig8b1gsZtRlYHVvNMZyaiSv7ERy3lQ95JZ+S1/Sv7tNV
+         ckG7f4XAzcj5jkW6vcWDVCOl30xb3MzM4rUhtJC1syQCiDZE3K24j1NOVtnFKbtv4P
+         xEn2/HzhLaPd38cmZMzxc03uawgefGI6jyLoiUhpmHx3wwEfp7gO3qnRbMwJEqhHB9
+         OpxfxRvfxca2Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D155240516; Thu, 20 Jul 2023 10:49:56 -0300 (-03)
+Date:   Thu, 20 Jul 2023 10:49:56 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH 2/6] perf thread: Allow tools to register a thread->priv
+ destructor
+Message-ID: <ZLk7hOvDsliOboEH@kernel.org>
+References: <20230719202951.534582-1-acme@kernel.org>
+ <20230719202951.534582-3-acme@kernel.org>
+ <CAP-5=fV3Er=Ek8=iE=bSGbEBmM56_PJffMWot1g_5Bh8B5hO7A@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <CAP-5=fV3Er=Ek8=iE=bSGbEBmM56_PJffMWot1g_5Bh8B5hO7A@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linke Li <lilinke99@gmail.com>
+Em Wed, Jul 19, 2023 at 03:31:41PM -0700, Ian Rogers escreveu:
+> On Wed, Jul 19, 2023 at 1:30 PM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > From: Arnaldo Carvalho de Melo <acme@redhat.com>
+> >
+> > So that when thread__delete() runs it can be called and free stuff tools
+> > stashed into thread->priv, like 'perf trace' does and will use this
+> > new facility to plug some leaks.
+> >
+> > Cc: Adrian Hunter <adrian.hunter@intel.com>
+> > Cc: Ian Rogers <irogers@google.com>
+> > Cc: Jiri Olsa <jolsa@kernel.org>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > ---
+> >  tools/perf/util/thread.c | 11 +++++++++++
+> >  tools/perf/util/thread.h |  2 ++
+> >  2 files changed, 13 insertions(+)
+> >
+> > diff --git a/tools/perf/util/thread.c b/tools/perf/util/thread.c
+> > index 0b166404c5c365cf..35dd4e716e411da9 100644
+> > --- a/tools/perf/util/thread.c
+> > +++ b/tools/perf/util/thread.c
+> > @@ -80,6 +80,13 @@ struct thread *thread__new(pid_t pid, pid_t tid)
+> >         return NULL;
+> >  }
+> >
+> > +static void (*thread__priv_destructor)(void *priv);
+> > +
+> > +void thread__set_priv_destructor(void (*destructor)(void *priv))
+> > +{
+> 
+> Perhaps:
+> assert(thread__priv_destructor == NULL);
 
-```
-	vma_len = (loff_t)(vma->vm_end - vma->vm_start);
-	len = vma_len + ((loff_t)vma->vm_pgoff << PAGE_SHIFT);
-	/* check for overflow */
-	if (len < vma_len)
-		return -EINVAL;
-```
-
-There is a signed integer overflow in the code, which is undefined
-behavior according to the C stacnard. Although kernel disables some
-optimizations by using the "-fno-strict-overflow" option, there is
-still a risk.
-
-Using macro "check_add_overflow" to do the overflow check can
-effectively detect integer overflow and avoid any undefined behavior.
-
-Signed-off-by: Linke Li <lilinke99@gmail.com>
----
- fs/hugetlbfs/inode.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 7b17ccfa039d..60f3010b0f71 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -155,9 +155,7 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 		return -EINVAL;
+I'll add that.
  
- 	vma_len = (loff_t)(vma->vm_end - vma->vm_start);
--	len = vma_len + ((loff_t)vma->vm_pgoff << PAGE_SHIFT);
--	/* check for overflow */
--	if (len < vma_len)
-+    if (check_add_overflow(vma_len, (loff_t)vma->vm_pgoff << PAGE_SHIFT, &len))
- 		return -EINVAL;
- 
- 	inode_lock(inode);
+> To make it clear that there should never be >1 currently.
+> 
+> > +       thread__priv_destructor = destructor;
+> > +}
+> > +
+> >  void thread__delete(struct thread *thread)
+> >  {
+> >         struct namespaces *namespaces, *tmp_namespaces;
+> > @@ -112,6 +119,10 @@ void thread__delete(struct thread *thread)
+> >         exit_rwsem(thread__namespaces_lock(thread));
+> >         exit_rwsem(thread__comm_lock(thread));
+> >         thread__free_stitch_list(thread);
+> > +
+> > +       if (thread__priv_destructor)
+> > +               thread__priv_destructor(thread__priv(thread));
+> > +
+> >         RC_CHK_FREE(thread);
+> >  }
+> >
+> > diff --git a/tools/perf/util/thread.h b/tools/perf/util/thread.h
+> > index 9068a21ce0fa1b0f..e79225a0ea46b789 100644
+> > --- a/tools/perf/util/thread.h
+> > +++ b/tools/perf/util/thread.h
+> > @@ -71,6 +71,8 @@ struct thread *thread__new(pid_t pid, pid_t tid);
+> >  int thread__init_maps(struct thread *thread, struct machine *machine);
+> >  void thread__delete(struct thread *thread);
+> >
+> > +void thread__set_priv_destructor(void (*destructor)(void *priv));
+> > +
+> >  struct thread *thread__get(struct thread *thread);
+> >  void thread__put(struct thread *thread);
+> >
+> > --
+> > 2.41.0
+> >
+
 -- 
-2.25.1
 
+- Arnaldo
