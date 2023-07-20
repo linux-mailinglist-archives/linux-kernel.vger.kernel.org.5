@@ -2,112 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A024F75B6B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633A675B6B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbjGTSYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 14:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
+        id S231432AbjGTSZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 14:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbjGTSY3 (ORCPT
+        with ESMTP id S231410AbjGTSZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:24:29 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BDF270C
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:24:10 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b703a0453fso16776631fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:24:10 -0700 (PDT)
+        Thu, 20 Jul 2023 14:25:21 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546A02713
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:24:59 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-986d8332f50so184166266b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:24:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689877448; x=1690482248;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yJbGKInlejV3VBpG5lEDNq2UlayrlJtje9RzPRt66/k=;
-        b=lUXvfFB/TUTP9i4ubj+/XnDoC2z0EeSV4kj8IPHoFxmNTzAZ2sOtVt6ZjpD4AK/Jtr
-         P9yoiJnwNdDYtgeUSadSscna6eWzWoWdj+lT4h+sqUalqPpyf/NtUqpvGxiUMEYiqSc0
-         e/naKrZE3sJM27pDBT5OEewYfnx7PeO7RsA9veLGYX+9AEeyJY3F4XGVtBNV5vUGkR/C
-         Fz4uD+WVdU+8qH66tX0QJLDnkTv/xV8ohza82S7kTfRDC0pUKH9eS6cKM1g/KRhiaJ7o
-         TaEjOThGah/45S6sfsa8UZdU2XLAmv+CdFt/Z0H0a+0oMMC4a0IxccPphGEpcYst68ST
-         FKGg==
+        d=google.com; s=20221208; t=1689877498; x=1690482298;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WGZYDyMNM2urRP5vx8c4QdZu7AgAmPw6pFOTfwzWRZg=;
+        b=mt1sBgB8r8M1WCu/khBK23vqsKmLfRnOL6qK7jQNjWuQznHO23Bay2e130cpCoAeEe
+         73wl6cIlXIIHsARp6vmsbAgqU8tjbFsub99lKb6wOpa+2M7PaWHciatXeIKNUuKhG8Hq
+         gvLVGkhokRJM843fQ4gfqbjq4sybR7Spbv7PsPcpms2MdS2TKW/uGAdo4EF3+79d+WGL
+         FR5LA8exsfDUsRso36GvGWEESx7vwxbfo4RVNcEMX5czOJIcjwKxvMamEAV9G2TkUhul
+         /2qFpAFCbsvjtw9NnwnnoXvY9OXP5eTbP3aC5STbEiXWIRUNvSN+B28jk9P5SDDLA9AR
+         /NTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689877448; x=1690482248;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689877498; x=1690482298;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yJbGKInlejV3VBpG5lEDNq2UlayrlJtje9RzPRt66/k=;
-        b=ftGmcGgjlyy1Op0z9y0/JX0viyXIokzJ0e5w0cxnBlrbEKRL2fGJjDBIO8+1gu/s04
-         eqTy0YruuSjGuD0b+0O6fa9y+J3aafI7h+DcOVEK/3IwLwEzwkTz1uifBmjFwICZjW/i
-         Im/kz55JMyQMHezTSYeXmyJQc0j6NDjRw9Fe90X7Xn25UmN8OXZdHHUcG97kDVn6YHHy
-         MXIOXCX/UxmnG+f8mFYpiuSV5rCsH71xBqzAsWkRp1KuDtkLRyvsNvXBsmQMJJZXJf7v
-         +TNsrjq+GDxZY6LmLDTCdwqddRfn39FMAJlaRXF+iDTi9OfEAOxQx5GPZHiQ3/D41qct
-         515w==
-X-Gm-Message-State: ABy/qLbHrDuGgKT01w2D8zeQ8uqc+U+7GddfZe2J09xCHdYM4s+1E1AN
-        yu+bVslEMElhVuUg89+VYaSVRtV9qRHIM/jfMpmggw==
-X-Google-Smtp-Source: APBJJlHV1QHpzsg80ARmHDESJiKhl5IF5JagGcUDVuYGprI5a6So4BFnkaUdKnPLxqlrI8RqgACZPQ==
-X-Received: by 2002:a05:651c:d7:b0:2b4:6eb0:2a27 with SMTP id 23-20020a05651c00d700b002b46eb02a27mr3212817ljr.17.1689877448302;
-        Thu, 20 Jul 2023 11:24:08 -0700 (PDT)
-Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
-        by smtp.gmail.com with ESMTPSA id g23-20020a2e9397000000b002b31ec01c97sm428304ljh.15.2023.07.20.11.24.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 11:24:08 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Thu, 20 Jul 2023 20:24:01 +0200
-Subject: [PATCH 2/2] interconnect: qcom: qcm2290: Enable sync state
+        bh=WGZYDyMNM2urRP5vx8c4QdZu7AgAmPw6pFOTfwzWRZg=;
+        b=bNY7D/3647rpqzkUFppQhtekGb3s4G/UbMLqPJNYxbgyv5iGyaucU1WWDOvLm19NGx
+         M7e7NKHmDzGTNc8BK0ekYjr77FQvnD8dm7Fh6+84ryo5kRE/t9gKvQGF/S+CSmw87P3e
+         OJ360UYu20ing2GjrMjl7BOWNacVVckX3WQzJy8317Q2eUErTj9PHhNdO/Bc9SdGk5RA
+         skWJDUFbJUfUldw4jg3gbpVL5oV4F+zPg+xpkB7Lc7ggXZ6EpHiOBQ6zu4RMwJgI00O6
+         /j8uduY6SkJJ67pCm4A0B3YfIxenqGiyqVxgnCfpXUqQAPu/ek9L6NjdSFlSmHEPwf3v
+         QZSQ==
+X-Gm-Message-State: ABy/qLbuQMEX1Y99B0OsLHRw8fSFUMTNBUfspP4y4CYw7QxCV7W1fUu8
+        RNrWzzCZOvR2bIzBdNOSVmI+1CRklCY7igU3ktECNw==
+X-Google-Smtp-Source: APBJJlGZb3WymIaX1uRXdrzpAriwl5oRaFaeofNe1umRFQSKMrse/fgm7TbBbCD9GqEa6VUNJPBZ4YV8vzmdo9H5tic=
+X-Received: by 2002:a17:907:2716:b0:99b:499d:4635 with SMTP id
+ w22-20020a170907271600b0099b499d4635mr2319758ejk.75.1689877497693; Thu, 20
+ Jul 2023 11:24:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230720-topic-qcm2290_icc-v1-2-7f67f2e259c1@linaro.org>
-References: <20230720-topic-qcm2290_icc-v1-0-7f67f2e259c1@linaro.org>
-In-Reply-To: <20230720-topic-qcm2290_icc-v1-0-7f67f2e259c1@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Shawn Guo <shawn.guo@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689877443; l=848;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=2/Oo4HuXZdKRBcTWrVM14eHjkhJTowhQs8f0byzlaxA=;
- b=2gODwk7mWvcrH5TQAE0U2G2K/SvZ95dPHXuYPuK3g+M4nAEtnVC0r7SxHnKOKLbIiCVrjsW36
- WuqFs51GY1ADgmVf+qN+a2iYVWXF4g5plMugYznKlk5iAxPCiI/xHId
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230720070825.992023-1-yosryahmed@google.com>
+ <20230720070825.992023-8-yosryahmed@google.com> <ZLl5XA25BIlYyngD@bombadil.infradead.org>
+In-Reply-To: <ZLl5XA25BIlYyngD@bombadil.infradead.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 20 Jul 2023 11:24:20 -0700
+Message-ID: <CAJD7tkbsZ5rAn5nNUvhuN9uUb4qPcsGZ8pcwCHzbqbajXKP9=g@mail.gmail.com>
+Subject: Re: [RFC PATCH 7/8] memcg: add sysctl and config option to control
+ memory recharging
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Yu Zhao <yuzhao@google.com>, Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "T.J. Mercier" <tjmercier@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Very surprisingly, qcm2290 does not seem to require any interface
-clocks. It's therefore safe to enable sync_state to park unused devices.
-Do so.
+On Thu, Jul 20, 2023 at 11:13=E2=80=AFAM Luis Chamberlain <mcgrof@kernel.or=
+g> wrote:
+>
+> On Thu, Jul 20, 2023 at 07:08:24AM +0000, Yosry Ahmed wrote:
+> > Add a sysctl to enable/disable memory recharging for offline memcgs. Ad=
+d
+> > a config option to control whether or not it is enabled by default.
+> >
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > ---
+> >  include/linux/memcontrol.h |  2 ++
+> >  kernel/sysctl.c            | 11 +++++++++++
+> >  mm/Kconfig                 | 12 ++++++++++++
+> >  mm/memcontrol.c            |  9 ++++++++-
+> >  4 files changed, 33 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 59b653d4a76e..ae9f09ee90cb 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -60,6 +60,8 @@ struct mem_cgroup_reclaim_cookie {
+> >
+> >  #ifdef CONFIG_MEMCG
+> >
+> > +extern int sysctl_recharge_offline_memcgs;
+> > +
+> >  #define MEM_CGROUP_ID_SHIFT  16
+> >  #define MEM_CGROUP_ID_MAX    USHRT_MAX
+> >
+> > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> > index 354a2d294f52..1735d1d95652 100644
+> > --- a/kernel/sysctl.c
+> > +++ b/kernel/sysctl.c
+> > @@ -2249,6 +2249,17 @@ static struct ctl_table vm_table[] =3D {
+> >               .extra2         =3D (void *)&mmap_rnd_compat_bits_max,
+> >       },
+> >  #endif
+> > +#ifdef CONFIG_MEMCG
+> > +     {
+> > +             .procname       =3D "recharge_offline_memcgs",
+> > +             .data           =3D &sysctl_recharge_offline_memcgs,
+> > +             .maxlen         =3D sizeof(sysctl_recharge_offline_memcgs=
+),
+> > +             .mode           =3D 0644,
+> > +             .proc_handler   =3D proc_dointvec_minmax,
+> > +             .extra1         =3D SYSCTL_ZERO,
+> > +             .extra2         =3D SYSCTL_ONE,
+> > +     },
+> > +#endif /* CONFIG_MEMCG */
+> >       { }
+> >  };
+>
+> Please don't add any more sysctls to kernel/sysctl.c, git log that file
+> for a series of cleanups which show how to use your own and why we have
+> been doing that cleanup.
 
-Fixes: 1a14b1ac3935 ("interconnect: qcom: Add QCM2290 driver support")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/interconnect/qcom/qcm2290.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks for pointing this out, I definitely missed it. Will do that in
+the next version. I guess this will also reduce the reviewer churn if
+I won't be touching kernel/sysctl.c?
 
-diff --git a/drivers/interconnect/qcom/qcm2290.c b/drivers/interconnect/qcom/qcm2290.c
-index c22354f3e667..5bc4b7516608 100644
---- a/drivers/interconnect/qcom/qcm2290.c
-+++ b/drivers/interconnect/qcom/qcm2290.c
-@@ -1364,6 +1364,7 @@ static struct platform_driver qcm2290_noc_driver = {
- 	.driver = {
- 		.name = "qnoc-qcm2290",
- 		.of_match_table = qcm2290_noc_of_match,
-+		.sync_state = icc_sync_state,
- 	},
- };
- module_platform_driver(qcm2290_noc_driver);
-
--- 
-2.41.0
-
+>
+>   Luis
