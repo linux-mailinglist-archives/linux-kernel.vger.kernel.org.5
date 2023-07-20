@@ -2,165 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B4875B07A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9282A75B084
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbjGTNxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
+        id S231690AbjGTNzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbjGTNxY (ORCPT
+        with ESMTP id S231705AbjGTNza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:53:24 -0400
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D989B2737;
-        Thu, 20 Jul 2023 06:52:54 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C984D4000D;
-        Thu, 20 Jul 2023 13:52:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689861161;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aqgjGCqvaiSNlmDsRmBgwW6pMJtbiMAZmpY9wcvjHx8=;
-        b=Q+VuocpWXVnPx1WTifgxymPhNNJ0KxzjDRTn/uTlgSnJQa8DltTxIsUVzHI+DJz8PUVpE8
-        Hce1XkYFmfI4WQ7tmRnAblRvwb/ZgYMGFjxF/N0RNV7kGGlWBnulI3kB7Qfq43QzXsaZXI
-        lScIHIIm0wrdphLQZoeU0ZJ0lmplkBs+/INiA8sQpsUDuK9QGQTLFMHO7zYZjbMDOa7E7m
-        OsEcxMwax0gFuzTlzfoWHCsltwSEm44rvl3DWnf9Efb+t0LPhGVw0Su208bw0EYJ28cUTs
-        z1zfaaX84kgrW5QOwHJ1FfoCYugcrbn7kvaZv+5nuxwZA4kCuzueYb3uaT4c3g==
-Date:   Thu, 20 Jul 2023 15:52:38 +0200
-From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: Re: [PATCH 2/3] dt-bindings: display: panel: Add panels based on
- ILITEK ILI9806E
-Message-ID: <20230720155238.6fb8ac8c@booty>
-In-Reply-To: <20230719190254.GA578754-robh@kernel.org>
-References: <20230719152147.355486-1-luca.ceresoli@bootlin.com>
-        <20230719152147.355486-2-luca.ceresoli@bootlin.com>
-        <20230719190254.GA578754-robh@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Thu, 20 Jul 2023 09:55:30 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA57212C;
+        Thu, 20 Jul 2023 06:55:27 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36KDt2rU031293;
+        Thu, 20 Jul 2023 08:55:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1689861302;
+        bh=OlA7APl85CTRM4v1xEv5Mr7tHgBX2kPzkTIV6nm8RDk=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=kAjy6SkecAFSXmgLBXOD3MZJkLmrPcEc9YpnW1Vd5g+Lvfv8ezSZyk+obcqiG2SiE
+         YtzshLQ8t/VjtWxhC1DO7RHH69zT6Tg3unaBZfpk4NkTQ+7MvststKpt5LTpDQyLD5
+         HjanjvU22uDS3TBsUOZpkcli7F0gZw4WCrIr0UA8=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36KDt2Cs010235
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 20 Jul 2023 08:55:02 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 20
+ Jul 2023 08:55:01 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 20 Jul 2023 08:55:01 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36KDt11M125270;
+        Thu, 20 Jul 2023 08:55:01 -0500
+Date:   Thu, 20 Jul 2023 08:55:01 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     <sunran001@208suo.com>
+CC:     <kristo@kernel.org>, <ssantosh@kernel.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH] clk: keystone: sci-clk: fix application of sizeof to
+ pointer
+Message-ID: <20230720135501.uxjb4oyn26ztmngv@bonelike>
+References: <20230720074906.3373-1-xujianghui@cdjrlc.com>
+ <3ad9c41575c274137001916c896bf2b6@208suo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: luca.ceresoli@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <3ad9c41575c274137001916c896bf2b6@208suo.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob,
+On 16:42-20230720, sunran001@208suo.com wrote:
+> The coccinelle check report:
+> ./drivers/scsi/csiostor/csio_mb.c:1554:46-52: ERROR: application of
+> sizeof to pointer
 
-thanks for reviewing.
-
-On Wed, 19 Jul 2023 13:02:54 -0600
-Rob Herring <robh@kernel.org> wrote:
-
-> On Wed, Jul 19, 2023 at 05:21:46PM +0200, Luca Ceresoli wrote:
-> > Add bindings for LCD panels based on the ILITEK ILI9806E RGB controller
-> > connected over SPI and the "ShenZhen New Display Co NDS040480800-V3"
-> > 480x800 panel based on it.
-> > 
-> > Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> > ---
-> >  .../display/panel/ilitek,ili9806e.yaml        | 69 +++++++++++++++++++
-> >  MAINTAINERS                                   |  6 ++
-> >  2 files changed, 75 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml
-> > new file mode 100644
-> > index 000000000000..42abc6923065
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml
-> > @@ -0,0 +1,69 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/display/panel/ilitek,ili9806e.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Ilitek ILI9806E display panels
-> > +
-> > +maintainers:
-> > +  - Luca Ceresoli <luca.ceresoli@bootlin.com>
-> > +
-> > +description:
-> > +  This binding is for display panels using an Ilitek ILI9806E controller in
-> > +  SPI mode.
-> > +
-> > +allOf:
-> > +  - $ref: panel-common.yaml#  
+-ECONFUSED -> the report does'nt match the file here. did I miss
+something?
 > 
-> A SPI device should reference spi-peripheral-props.yaml as well.
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  drivers/clk/keystone/sci-clk.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - enum:
-> > +          # ShenZhen New Display Co 3.97" 480x800 RGB a-SI TFT LCD
-> > +          - newdisplay,nds040480800-v3
-> > +      - const: ilitek,ili9806e
-> > +
-> > +  reg: true  
+> diff --git a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/sci-clk.c
+> index 6c1df4f11536..2c68c1e09d1f 100644
+> --- a/drivers/clk/keystone/sci-clk.c
+> +++ b/drivers/clk/keystone/sci-clk.c
+> @@ -389,7 +389,7 @@ static struct clk_hw *sci_clk_get(struct of_phandle_args
+> *clkspec, void *data)
+>  	key.clk_id = clkspec->args[1];
 > 
-> maxItems: 1
+>  	clk = bsearch(&key, provider->clocks, provider->num_clocks,
+> -		      sizeof(clk), _cmp_sci_clk);
+> +		      sizeof(**clk), _cmp_sci_clk);
 > 
-> > +  spi-max-frequency: true
-> > +  reset-gpios: true
-> > +  backlight: true
-> > +  port: true  
-> 
-> Drop all these and ...
-> 
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - port
-> > +
-> > +additionalProperties: false  
-> 
-> ... use "unevaluatedProperties" instead.
-> 
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +
-> > +    backlight: backlight {
-> > +        compatible = "gpio-backlight";
-> > +        gpios = <&gpio 22 GPIO_ACTIVE_HIGH>;
-> > +    };  
-> 
-> The exact backlight is outside the scope of this binding and should be 
-> dropped from the example.
-
-As this comes from copy-pasting from the bindings yaml for another
-panel, would it be useful if I send a patch to remove it?
-
-Requested changes queued for v2.
-
-Luca
+>  	if (!clk)
+>  		return ERR_PTR(-ENODEV);
 
 -- 
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
