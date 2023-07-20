@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7B575A49B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEFF75A4A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbjGTDBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 23:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
+        id S229824AbjGTDJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 23:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjGTDBq (ORCPT
+        with ESMTP id S229463AbjGTDJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 23:01:46 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A351739
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:01:45 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R5yBt3XkpzBRDrr
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:01:42 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689822102; x=1692414103; bh=7TaMCUMPT1gwp5Zxmj+joOcKEEc
-        ciuWrPqbP1dQvF8k=; b=A4HtVwIyZaYQbnWRDZHTLuFRFrmZ1S+9GPUGP9d96pp
-        VE5JwAB7OFEQFWpEt0/Ug7rxYyEXtsw5Se1mRJxnC3e6lrmnqogBJ5XyALPE+emq
-        SQliwTJ7NCdPmrRXhcrqWbitbqgsELFQfAw17l6stqwNmbvNo1nOQhcKWSPqpVc7
-        2IjMZAY/f6SxS4dysQpthh+GNeCsCtGjsMRgxy4gpUiCf84HI0QoBvRnTb/YNCes
-        UHKI/wuksDl3QqINkMm8vkXPQBufXwt/2YlfbTUR3Jals9DHwsdXniQ37guAKv55
-        XeXqQMol/SEXN0c3xi1Hvrfl1dywEtG2sXdvKTnXeag==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id JCtgkpDuH0RX for <linux-kernel@vger.kernel.org>;
-        Thu, 20 Jul 2023 11:01:42 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R5yBt25TSzBRDrS;
-        Thu, 20 Jul 2023 11:01:42 +0800 (CST)
-MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 11:01:42 +0800
-From:   sunran001@208suo.com
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hv: put parentheses on macros with complex values in hyperv.h
-In-Reply-To: <20230720030009.1369-1-xujianghui@cdjrlc.com>
-References: <20230720030009.1369-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <e4b504ab6a1534cd26be777c9cb0bb6a@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Wed, 19 Jul 2023 23:09:45 -0400
+X-Greylist: delayed 366 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 19 Jul 2023 20:09:42 PDT
+Received: from lobo.ruivo.org (lobo.ruivo.org [173.14.175.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E811739
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:09:42 -0700 (PDT)
+Received: by lobo.ruivo.org (Postfix, from userid 1011)
+        id 66E9252C72; Wed, 19 Jul 2023 23:03:35 -0400 (EDT)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
+Received: from jake.ruivo.org (bob.qemu.ruivo [192.168.72.19])
+        by lobo.ruivo.org (Postfix) with ESMTPA id 87ADF529EE;
+        Wed, 19 Jul 2023 23:03:17 -0400 (EDT)
+Received: by jake.ruivo.org (Postfix, from userid 1000)
+        id 6356F220029; Wed, 19 Jul 2023 23:03:17 -0400 (EDT)
+Date:   Wed, 19 Jul 2023 23:03:17 -0400
+From:   Aristeu Rozanski <aris@ruivo.org>
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     rostedt@goodmis.org, linux-kernel@vger.kernel.org
+Subject: Re: rasdaemon broke between v6.0 and v6.3?
+Message-ID: <20230720030317.GC94963@cathedrallabs.org>
+References: <ZLhzWoyRCWN0FmqE@agluck-desk3>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZLhzWoyRCWN0FmqE@agluck-desk3>
+User-Agent: Mutt/2.2.9 (2022-11-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix "Macros with complex values should be enclosed in parentheses"
-checkpatch error.
+On Wed, Jul 19, 2023 at 04:35:54PM -0700, Tony Luck wrote:
+> [resend as plain text - sorry for the earlier HTML]
+> 
+> An internal team is seeing tests that worked on v6.0 fail on v6.3. The problem is that
+> rasdaemon isn’t waking up to process the “mce_record” trace events.
+> 
+> Manually checking for them works:
+> 
+> root@R-4251:/sys/kernel/debug/tracing>systemctl stop rasdaemon
+> root@R-4251:/sys/kernel/debug/tracing>
+> root@R-4251:/sys/kernel/debug/tracing>
+> root@R-4251:/sys/kernel/debug/tracing>echo 1 > events/mce/mce_record/enable
+> root@R-4251:/sys/kernel/debug/tracing>
+> root@R-4251:/sys/kernel/debug/tracing>cat trace_pipe
+>            <...>-235     [000] .....   596.892583: mce_record: CPU: 0, MCGc/s: f000c15/0, MC13: 8c00004200800090, IPID: 0000000000000000, ADDR/MISC/SYND: 0000000123450000/08000a80c2982086/0000000000000000, RIP: 00:<0000000000000000>, TSC: 14120b051a1, PROCESSOR: 0:c06f1, TIME: 1689802780, SOCKET: 0, APIC: 0
+>      kworker/0:2-235     [000] .....   597.204343: mce_record: CPU: 0, MCGc/s: f000c15/0, MC255: 9c0000000000009f, IPID: 0000000000000000, ADDR/MISC/SYND: 0000000123450000/000000000000008c/0000000000000000, RIP: 00:<0000000000000000>, TSC: 0, PROCESSOR: 0:c06f1, TIME: 1689802781, SOCKET: 0, APIC: 0
+> 
+> So their tests are injecting errors, and the trace event is firing.
+> 
+> Is there some updated version of rasdaemon needed?
+> 
+> Some kernel CONFIG option problem?
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  include/linux/hyperv.h | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
+Looks like you're hitting the issue this commit is supposed to fix:
+http://git.infradead.org/users/mchehab/rasdaemon.git/commit/6986d818e6d2c846c001fc7211b5a4153e5ecd11
 
-diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-index bfbc37ce223b..6f6fdc7cf086 100644
---- a/include/linux/hyperv.h
-+++ b/include/linux/hyperv.h
-@@ -428,9 +428,9 @@ union vmpacket_largest_possible_header {
-  	struct vmdata_gpa_direct data_gpa_direct_hdr;
-  };
+-- 
+Aristeu
 
--#define VMPACKET_DATA_START_ADDRESS(__packet)	\
-+#define VMPACKET_DATA_START_ADDRESS((__packet)	\
-  	(void *)(((unsigned char *)__packet) +	\
--	 ((struct vmpacket_descriptor)__packet)->offset8 * 8)
-+	 ((struct vmpacket_descriptor)__packet)->offset8 * 8))
-
-  #define VMPACKET_DATA_LENGTH(__packet)		\
-  	((((struct vmpacket_descriptor)__packet)->len8 -	\
