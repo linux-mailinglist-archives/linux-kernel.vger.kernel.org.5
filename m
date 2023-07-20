@@ -2,91 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B5A75BA98
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56F975BAA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbjGTW2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 18:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
+        id S229690AbjGTWbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 18:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbjGTW2O (ORCPT
+        with ESMTP id S229569AbjGTWbF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:28:14 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EE010A
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:28:13 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-262ee777d1cso178893a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:28:13 -0700 (PDT)
+        Thu, 20 Jul 2023 18:31:05 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21D810A;
+        Thu, 20 Jul 2023 15:31:04 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-66f3fc56ef4so1697025b3a.0;
+        Thu, 20 Jul 2023 15:31:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1689892093; x=1690496893;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ER64QQYHsUjwnG72el4kyuwJDiqUwTkcoHvph6BDruY=;
-        b=xvnxeikI4preGoplg4GJa2wMcpwX156LfaLr8H24NbeffloJZcxZ79aZcYtr3mITgR
-         J3SBSJ4LeXPYFbhe91Z0vaDGcAyXlTZf5tXCmRzOBCpy7n3NtPOf7HIr2lzT+ShELXLd
-         C3Sbk0INLRfUrb5HCB9ayySAPcoatZ2wF5LstdPXuVWobEPNOV1iHKqyw6ZJcCmmxVbs
-         E0ty3dIfkDANo1MPs9ZAKju5ZQy2F1bHqVxTca5GYUMJJzQNvfLot9kZ3k1Z20R4KOVy
-         LQmKKwgSfWkJU/hVi2kEoJasJvfst55olSEhnUFyOHfj7wNkqiBT+sB+OHZU3Cxks0cd
-         0egA==
+        d=gmail.com; s=20221208; t=1689892264; x=1690497064;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NZpl8s75HuZGEhNzUvLR3L4qywqf/Lpjo/SjREf5tA4=;
+        b=ghf2BigSLopuzIAO9mo5bilaWUW4pw/MFFRLacsY7gWLDlVj9giiAM8MRIJR4yUUN1
+         0eZXp+66XIpghEylgvGqAISiRJtWYiAeKFk7WqWG9YoONhzF7W8uockvwN6JHX9P2ZkX
+         1WQhxBW7HjKnkQF7XhjgGOYKP2fXw2EG0F8J+r2UjwCm20cngLNEKgvq2w+1/xMghmP4
+         0F1mD2djp/qp+HRvQPIcmx4EbINiffoW4s2adiKXZS/QnQC/F3zsDi5AZw11mkZQfaLw
+         JFzkRMQNS3a5BSHUM/Gm5XZF6bkZeN/kuIDV0MNaB/JLMC1CDfRMDUaljWa1nfZfBNCU
+         Dtbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689892093; x=1690496893;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689892264; x=1690497064;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ER64QQYHsUjwnG72el4kyuwJDiqUwTkcoHvph6BDruY=;
-        b=fsvaUA1dVcVnCkoFBbQNLBu2DUlnGJiK3vJe+Rkq/VrO+oQyxncot9lHrk5XNU2qVz
-         /xXufwVTLRbW0AIcSi/W0LgiJiiHwvD8e513LIAe5vBN33oNJ66TYjpMlPYhcf2F3MOP
-         d9xrg/i/ZQ9qtgfFexbyt2lfI+uGCl8njHtaecfnvmTGTOUGdnQkj/gPspnZFwwqFc97
-         AqFiYjucJnEknIEucJjEpn2DiXFqB/h0pAkLc/SnHcZKqzRFsTbd54dOrxqBqWAQmEb9
-         xcV0xj44raokofVAdLZ7H1vLRK2Y5IR7AfpI1vFZALZcf35NfDStRpadXsj/Ew4WawKY
-         P67Q==
-X-Gm-Message-State: ABy/qLYICb6EYQb46IQaJYhHk7f36Kj4O6t9p3r6+g90QuylOtROIEOp
-        O+6ZhwLHFi7SMtadFhHJDKU6Fm9R+uADC56GBM4=
-X-Google-Smtp-Source: APBJJlGb5KbDm3ra3A6zcXjXBrySFNfNSVxxeSzp8vPmQrISvsnUWmY7D8a8kPz7CxMAemHOYr+xMg==
-X-Received: by 2002:a17:90a:304b:b0:262:c2a1:c01f with SMTP id q11-20020a17090a304b00b00262c2a1c01fmr30777pjl.3.1689892093322;
-        Thu, 20 Jul 2023 15:28:13 -0700 (PDT)
-Received: from [127.0.0.1] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id gv20-20020a17090b11d400b0025bf1ea918asm1409443pjb.55.2023.07.20.15.28.12
+        bh=NZpl8s75HuZGEhNzUvLR3L4qywqf/Lpjo/SjREf5tA4=;
+        b=fBP2iO6r/eY0GUu7m1CiKqzT6MMiwMMzubKuro+J8CCtXbjKhLerg+LBXg0KelEpXQ
+         0ylcAmkAHzUoqk5O30W5xa1rwE72J6AjL4tXxrBx8LJpZH7LB+mqtIA1vGPAic82z28U
+         1qyeqvj5/Cp0zRTxaVIWkPZ4Bn+CerI+3lM+W+JQ5DGivUkAzyn/OXEfuC+1RAd18ugU
+         Tno4p0mHFGcK6PUu9psmBy5qUxYIlkgmWR5M6REP2vmPtwozS5TFCgs7wuLDE+KgKxea
+         Nh+FlkeftNhDA58mMxLigyzjLud/uAKspyfu2jBriRm7N6ioAPB7OocMuG2pfmXbSZh8
+         5ZRQ==
+X-Gm-Message-State: ABy/qLaQvBJU/2Zknl7RgRCwcEDYVS/oo+SW8PiDuyq58BbI/muOY+m9
+        2ZLiLQJ6qPpgsgGse2hfKxo=
+X-Google-Smtp-Source: APBJJlEzg0Yil3Q92R9mP6SC1Y2AeH6CTu+qTw9rhX9Zts56WnHzBb54bFsTGCD2r51MF7MGt0yucQ==
+X-Received: by 2002:a05:6a20:8401:b0:132:7d91:aadb with SMTP id c1-20020a056a20840100b001327d91aadbmr381237pzd.6.1689892264054;
+        Thu, 20 Jul 2023 15:31:04 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:fbd8])
+        by smtp.gmail.com with ESMTPSA id d20-20020aa78154000000b00682a8e600f0sm1684817pfn.35.2023.07.20.15.31.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 15:28:12 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Nitesh Shetty <nj.shetty@samsung.com>
-Cc:     martin.petersen@oracle.com, gost.dev@samsung.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230719121608.32105-1-nj.shetty@samsung.com>
-References: <CGME20230719121928epcas5p3c2af8016b8ffd5d4cb53238a5528eec8@epcas5p3.samsung.com>
- <20230719121608.32105-1-nj.shetty@samsung.com>
-Subject: Re: [PATCH] block: refactor to use helper
-Message-Id: <168989209223.138604.5420894293792909192.b4-ty@kernel.dk>
-Date:   Thu, 20 Jul 2023 16:28:12 -0600
+        Thu, 20 Jul 2023 15:31:03 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 20 Jul 2023 12:31:02 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "T.J. Mercier" <tjmercier@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
+Message-ID: <ZLm1ptOYH6F8fGHT@slm.duckdns.org>
+References: <20230720070825.992023-1-yosryahmed@google.com>
+ <20230720153515.GA1003248@cmpxchg.org>
+ <ZLmRlTej8Tm82kXG@slm.duckdns.org>
+ <CAJD7tkYhu3g9u7HkUTFBtT3Q4edVZ2g1TWV1FDcyM9srrYCBLg@mail.gmail.com>
+ <ZLmxLUNdxMi5s2Kq@slm.duckdns.org>
+ <CAJD7tkZKo_oSZ-mQc-knMELP8kiY1N7taQhdV6tPsqN0tg=gog@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkZKo_oSZ-mQc-knMELP8kiY1N7taQhdV6tPsqN0tg=gog@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On Wed, 19 Jul 2023 17:46:08 +0530, Nitesh Shetty wrote:
-> Reduce some code by making use of bio_integrity_bytes().
+On Thu, Jul 20, 2023 at 03:23:59PM -0700, Yosry Ahmed wrote:
+> > On its own, AFAICS, I'm not sure the scope of problems it can actually solve
+> > is justifiably greater than what can be achieved with simple nesting.
 > 
-> 
+> In our use case nesting is not a viable option. As I said, in a large
+> fleet where a lot of different workloads are dynamically being
+> scheduled on different machines, and where there is no way of knowing
+> what resources are being shared among what workloads, and even if we
+> do, it wouldn't be constant, it's very difficult to construct the
+> hierarchy with nesting to keep the resources confined.
 
-Applied, thanks!
+Hmm... so, usually, the problems we see are resources that are persistent
+across different instances of the same application as they may want to share
+large chunks of memory like on-memory cache. I get that machines get
+different dynamic jobs but unrelated jobs usually don't share huge amount of
+memory at least in our case. The sharing across them comes down to things
+like some common library pages which don't really account for much these
+days.
 
-[1/1] block: refactor to use helper
-      commit: 8f63fef5867fb5e8c29d9c14b6d739bfc1869d32
+> Keep in mind that the environment is dynamic, workloads are constantly
+> coming and going. Even if find the perfect nesting to appropriately
+> scope resources, some rescheduling may render the hierarchy obsolete
+> and require us to start over.
 
-Best regards,
+Can you please go into more details on how much memory is shared for what
+across unrelated dynamic workloads? That sounds different from other use
+cases.
+
+Thanks.
+
 -- 
-Jens Axboe
-
-
-
+tejun
