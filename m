@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7699675BB4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD9975BB54
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbjGTXoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 19:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49318 "EHLO
+        id S229905AbjGTXu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 19:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjGTXoI (ORCPT
+        with ESMTP id S229571AbjGTXuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 19:44:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94E410A
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 16:43:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689896600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qcWYhPUx1OxTKdJoZ4TFTmi7V95A65ppmXd4UUqPNwI=;
-        b=XSvOUbA0ErvGTvPgdt6xPAlBhZie8oLEtiWo9mfSQsVr7L+XQKwA8M5318IdrqY2xTxxqS
-        SrJhHQe4/Mnt8R9HVdaRZyoSl1S1t7AfHrwIZWI6QJ2vOY+WKqmFIu2DG6WLdBGrf74LtT
-        52TFThyatOhExqCB45DX2SJyrKBN5og=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-352-ApuzmyMUNXaSyBW43ZtX4w-1; Thu, 20 Jul 2023 19:43:15 -0400
-X-MC-Unique: ApuzmyMUNXaSyBW43ZtX4w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 20 Jul 2023 19:50:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86780273A;
+        Thu, 20 Jul 2023 16:50:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EDCFD2800E83;
-        Thu, 20 Jul 2023 23:43:13 +0000 (UTC)
-Received: from localhost (ovpn-12-18.pek2.redhat.com [10.72.12.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E899F40C206F;
-        Thu, 20 Jul 2023 23:43:12 +0000 (UTC)
-Date:   Fri, 21 Jul 2023 07:43:09 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     sunran001@208suo.com, dennis@kernel.org, tj@kernel.org,
-        cl@linux.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/percpu.c: change GFP_KERNEL to GFP_ATOMIC
-Message-ID: <ZLnGjanv23R8O4FU@MiWiFi-R3L-srv>
-References: <20230718063328.16140-1-xujianghui@cdjrlc.com>
- <7aa3a1cee63518cb13906d11ea130c9c@208suo.com>
- <20230718101735.aa31791899e2f9e19e8e0a75@linux-foundation.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0C07661CCC;
+        Thu, 20 Jul 2023 23:50:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5FB79C433C8;
+        Thu, 20 Jul 2023 23:50:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689897021;
+        bh=feJewLUTFiUeftAknY22nUa7pWdY5sIWSFqpthJJNOs=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=tXBDZOgsmTJnhGz7BNLECINsPd6ybEu+oBNJSilrewRog3SQz9ZhoqJNRumFvO4/n
+         VSUvaCzLsE5VtAri9r/PYG8eni8lspd28m2qrse6zvuwLwG1ca1zB7ZO4+i4RY+8N1
+         fuyg3ODxaGveVsJTfgwXlZOG5Qjm875XmS34ksuLnsuTwdcKyotEF+G/+wK0PoBXw4
+         PRSuYZTbu/W5ZE7qdLvCUN3HqdMMfPaV4fmkrlX9t/Qea3XbNOhxYls0a4Qw/L1fBA
+         WdoJJOUixdLOUu76cur/wiw+GU3f6EjTo45m2ecPEookHgzSM758bOGPCt9pdWKaYg
+         /8NhzLAUWTxLQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 41E98C595C3;
+        Thu, 20 Jul 2023 23:50:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718101735.aa31791899e2f9e19e8e0a75@linux-foundation.org>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] bluetooth: Explicitly include correct DT includes
+From:   patchwork-bot+bluetooth@kernel.org
+Message-Id: <168989702126.8881.8720051222737802178.git-patchwork-notify@kernel.org>
+Date:   Thu, 20 Jul 2023 23:50:21 +0000
+References: <20230714174057.4041063-1-robh@kernel.org>
+In-Reply-To: <20230714174057.4041063-1-robh@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     sean.wang@mediatek.com, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        devicetree@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/18/23 at 10:17am, Andrew Morton wrote:
-> On Tue, 18 Jul 2023 14:35:11 +0800 sunran001@208suo.com wrote:
-> 
-> > ERROR: function pcpu_balance_populated called on line 2238 inside lock
-> > on line 2234 but uses GFP_KERNEL
-> > 
-> > Generated by: scripts/coccinelle/locks/call_kern.cocci
-> > 
-> > ...
-> >
-> > --- a/mm/percpu.c
-> > +++ b/mm/percpu.c
-> > @@ -2033,7 +2033,7 @@ static void pcpu_balance_free(bool empty_only)
-> >   static void pcpu_balance_populated(void)
-> >   {
-> >       /* gfp flags passed to underlying allocators */
-> > -    const gfp_t gfp = GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
-> > +    const gfp_t gfp = GFP_ATOMIC | __GFP_NORETRY | __GFP_NOWARN;
-> >       struct pcpu_chunk *chunk;
-> >       int slot, nr_to_pop, ret;
-> 
-> I don't believe this warning is correct.  
+Hello:
 
-Yeah, the warning is false positive. It releases the lock when
-requesting memory allocation, then take the lock again.
+This patch was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
+On Fri, 14 Jul 2023 11:40:57 -0600 you wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
 > 
-> 			spin_unlock_irq(&pcpu_lock);
-> 			ret = pcpu_populate_chunk(chunk, rs, rs + nr, gfp);
-> 			cond_resched();
-> 			spin_lock_irq(&pcpu_lock);
-> 
+> [...]
+
+Here is the summary with links:
+  - bluetooth: Explicitly include correct DT includes
+    https://git.kernel.org/bluetooth/bluetooth-next/c/f0eecb651f96
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
