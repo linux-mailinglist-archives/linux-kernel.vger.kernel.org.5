@@ -2,115 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F67875AAF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E88775AB17
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbjGTJgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:36:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
+        id S229904AbjGTJkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbjGTJgZ (ORCPT
+        with ESMTP id S230044AbjGTJkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:36:25 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB83659FD;
-        Thu, 20 Jul 2023 02:31:38 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-992f15c36fcso102387166b.3;
-        Thu, 20 Jul 2023 02:31:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689845378; x=1692437378;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5RoYsLMnGNe370x/PWpt6fRr+CVnI3rb6B5FxBlD/WA=;
-        b=kmvo5JSSEt1EhryFKa3eb3dtiAtJoPVxrN6WfHIK7hDynxFff9ivv8P2ST6bI43WBD
-         1y2h7N+tD2g64pg03sox94Qz2a3L2YcYRuRRrdy1DS7Er9y4z0BGRctOJLIh2Z+P/XEI
-         78hNv9B3AMgkCgmrQElg5GMRU7mqu2PF5CMm+aCL+Rbgu0vTsmckrrQU4Z7k2aYXSimt
-         tqSxPfbfLf5NhDNsibMmHKcqYPZcsAdN8AOwkx2LgUv60QYw/tT2ZkC41/N7b4oi6ETt
-         aHa789dSZkY2Zs6DykU4aJd3FqMujxP8cdvcadR6boz/skL0byc5uUMEIValtIS4xIje
-         h3DQ==
-X-Gm-Message-State: ABy/qLbQwWKtzCuVnFyOR7ujAwuCRlmXxo//pz8AVA6tjLzgkOPMGM6g
-        85kYnOPcSfcaEaOSniaekrE=
-X-Google-Smtp-Source: APBJJlHkJywRjVkZQwN03Cbfk0eu/+dNa6uJAGKwjTe4AASepKeIlg3Ko4e5vauro2zPz6HmF5+0fw==
-X-Received: by 2002:a17:906:d8ae:b0:969:93f2:259a with SMTP id qc14-20020a170906d8ae00b0096993f2259amr4338341ejb.73.1689845378108;
-        Thu, 20 Jul 2023 02:29:38 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-017.fbsv.net. [2a03:2880:31ff:11::face:b00c])
-        by smtp.gmail.com with ESMTPSA id r27-20020a17090638db00b009786c8249d6sm421063ejd.175.2023.07.20.02.29.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 02:29:37 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 02:29:35 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc:     alexander@mihalicyn.com, ast@kernel.org, davem@davemloft.net,
-        dhowells@redhat.com, edumazet@google.com, kernelxing@tencent.com,
-        kuba@kernel.org, leit@meta.com, linux-kernel@vger.kernel.org,
-        lucien.xin@gmail.com, martin.lau@kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com
-Subject: Re: [PATCH net-next] net: Use _K_SS_MAXSIZE instead of absolute value
-Message-ID: <ZLj+f4heU8Bk7GVq@gmail.com>
-References: <ZLga+cBUKkN5Fnn7@gmail.com>
- <20230719173017.33951-1-kuniyu@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230719173017.33951-1-kuniyu@amazon.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Thu, 20 Jul 2023 05:40:14 -0400
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD87930EA
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:36:33 -0700 (PDT)
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230720092959epoutp04aa0b8f0be0f7bf58abbc247b455ab904~ziW-75Zlu0876108761epoutp040
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:29:59 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230720092959epoutp04aa0b8f0be0f7bf58abbc247b455ab904~ziW-75Zlu0876108761epoutp040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1689845399;
+        bh=nGeZCbqTKt9GUpDssg640prX0TVeJcRGPnCQlXxuDF8=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=U8XincyAfZcUCI+XG+PFDNayJLbUCum0RTEa2mov4A6em9Cc9isnWCZNAnP7wMbQD
+         tilFVJ/29kSiysiwIJgEWHSLZmIJHT7LLU0+D4N1YWVsUUlPGcVanLJm//sCg1gLsG
+         iAo2+g8VBL0HEmmHP+06It8LAbD3m4H0q5Jv8sLw=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20230720092958epcas2p337adc17ec76a86125b70561a74631592~ziW-Q5fAI3131731317epcas2p3s;
+        Thu, 20 Jul 2023 09:29:58 +0000 (GMT)
+Received: from epsmgec2p1.samsung.com (unknown [182.195.36.99]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4R66pt01VKz4x9Px; Thu, 20 Jul
+        2023 09:29:58 +0000 (GMT)
+X-AuditID: b6c32a43-2f3ff7000001d7ef-00-64b8fe9563f7
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmgec2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        14.B5.55279.59EF8B46; Thu, 20 Jul 2023 18:29:57 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH v2] md/bitmap: Avoid protection error writing bitmap page
+ with block integrity
+Reply-To: j-young.choi@samsung.com
+Sender: Jinyoung Choi <j-young.choi@samsung.com>
+From:   Jinyoung Choi <j-young.choi@samsung.com>
+To:     "song@kernel.org" <song@kernel.org>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20230720092957epcms2p6cbd0ecdf7f5bf0db3c04eefaf0a6644d@epcms2p6>
+Date:   Thu, 20 Jul 2023 18:29:57 +0900
+X-CMS-MailID: 20230720092957epcms2p6cbd0ecdf7f5bf0db3c04eefaf0a6644d
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGKsWRmVeSWpSXmKPExsWy7bCmhe7UfztSDP4vNrN4eUjTord/K5vF
+        5V1z2Cza5+9itHg5K83i+PK/bA5sHptWdbJ5PDk3gdmjb8sqRo/Pm+QCWKKybTJSE1NSixRS
+        85LzUzLz0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOAVisplCXmlAKFAhKLi5X0
+        7WyK8ktLUhUy8otLbJVSC1JyCswL9IoTc4tL89L18lJLrAwNDIxMgQoTsjNWnYos2C9W8enu
+        L+YGxqcCXYycHBICJhJ3OtexdDFycQgJ7GCUuDbpBmsXIwcHr4CgxN8dwiA1wgIJEm3LN7CA
+        2EICShLn1sxihIgbSLTcbgOLswnoSex4vpsdxBYRWMoo8agbbD6zgLHE8tebmCF28UrMaH/K
+        AmFLS2xfvpURwtaQ+LGsF6pGVOLm6rfsMPb7Y/OhakQkWu+dhaoRlHjwczdUXFLi0KGvbCAn
+        SwjkS2w4EAgRrpFo+/Ueqlxf4lrHRrC1vAK+EkdfPAJrZRFQlejbsRVqlYvE/mXXmCFOlpfY
+        /nYOM8hIZgFNifW79CGmK0scucUCUcEn0XH4LzvMUw0bf2Nl75j3hAmiVU1iUZMRRFhG4uvh
+        +ewTGJVmIUJ5FpK1sxDWLmBkXsUollpQnJuemmxUYAiP1+T83E2M4ASo5byD8cr8f3qHGJk4
+        GA8xSnAwK4nwPrq8LUWINyWxsiq1KD++qDQntfgQoynQwxOZpUST84EpOK8k3tDE0sDEzMzQ
+        3MjUwFxJnPde69wUIYH0xJLU7NTUgtQimD4mDk6pBqY0HreiYl6f3xyfevb5/7yZNWlmo2vs
+        zl28DEtstPY0TQpmSLob+Pttge5Bu/ZUKbV94g9nFjxqcfJQ5r6mt7zjY+7ibXPPRN/e3S8h
+        ftTH7VngtYMPMn/4r8q9p2Z5/1MExx/Bu0/OyvY+cw7yZg8XniqvdeBRsOqlPT6cB/ednS/N
+        MH19iM3Rx5fk+6RkFqh1/3U4bcNWtmvFg0kbF3uqX8uYNykgbJVusZbv2VYvDq09XqeLVpqt
+        yZf50D7x5LJ+4XuOCo8Yv0cmLzwX2Rn+Z0qR2qyJU/72/T9acEVGsOP7e82XNw6VfA1bvvJh
+        ypSglmx5adYoG6UDZvve3w0pv1kpFMu7tVNLgXH+YlklluKMREMt5qLiRADA68L5CQQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230720092957epcms2p6cbd0ecdf7f5bf0db3c04eefaf0a6644d
+References: <CGME20230720092957epcms2p6cbd0ecdf7f5bf0db3c04eefaf0a6644d@epcms2p6>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 10:30:17AM -0700, Kuniyuki Iwashima wrote:
-> From: Breno Leitao <leitao@debian.org>
-> Date: Wed, 19 Jul 2023 10:18:49 -0700
-> > On Wed, Jul 19, 2023 at 10:04:45AM -0700, Kuniyuki Iwashima wrote:
-> > > From: Breno Leitao <leitao@debian.org>
-> > > Date: Wed, 19 Jul 2023 01:44:12 -0700
-> > > > Looking at sk_getsockopt function, it is unclear why 128 is a magical
-> > > > number.
-> > > > 
-> > > > Use the proper macro, so it becomes clear to understand what the value
-> > > > mean, and get a reference where it is coming from (user-exported API).
-> > > > 
-> > > > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > > > ---
-> > > >  net/core/sock.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/net/core/sock.c b/net/core/sock.c
-> > > > index 9370fd50aa2c..58b6f00197d6 100644
-> > > > --- a/net/core/sock.c
-> > > > +++ b/net/core/sock.c
-> > > > @@ -1815,7 +1815,7 @@ int sk_getsockopt(struct sock *sk, int level, int optname,
-> > > >  
-> > > >  	case SO_PEERNAME:
-> > > >  	{
-> > > > -		char address[128];
-> > > > +		char address[_K_SS_MAXSIZE];
-> > > 
-> > > I guess you saw a bug caught by the fortified memcpy(), but this
-> > > doesn't fix it properly.
-> > 
-> > Not really, in fact. I was reading this code, and I found this
-> > discussion a while ago, where I got the idea:
-> > 
-> > https://lore.kernel.org/lkml/20140930.005925.995989898229686123.davem@davemloft.net/
-> 
-> I got it, but I prefer using struct sockaddr_storage as done in
-> other places.
-> 
->   $ grep -rn sockaddr_storage net/
-> 
-> Also, there would be some situations where we must cast each
-> family-specific address back to sockaddr_storage for fortified
-> library.
-> 
-> Then, it makes more sense to use sockaddr_storage rather than
-> _K_SS_MAXSIZE.
+Changing the bitmap page is also possible on the page where the DMA is
+being performed or scheduled in the MD.
 
-Agree, that is a better fix. Thanks for working on it!
+When configuring raid1 (mirror) with devices that support block integrity,
+the same bitmap page is sent to the device twice during the resync process,
+causing the following problems.
+(When requeue is executed, integrity is not updated)
+
+             [Func 1]                          [Func 2]
+
+1     A(page) + a(integrity)
+2        (sq doorbell)
+3                                          A(page) -> A-1(page)
+4  A-1(page-updated) + a(integrity)     A-1(page) + a-1(integrity)
+5                                            (sq doorbell)
+6           (DMA)                                (DMA)
+
+       I/O Fail and retry N                   I/O Success
+       To be Faulty Device
+
+My Test Env: Two FIPS PM1743
+- nvme format /dev/nvme2n1 --force -n 1 -i 1 -p 0 -m 0 -l 1 -r
+- nvme format /dev/nvme3n1 --force -n 1 -i 1 -p 0 -m 0 -l 1 -r
+- mdadm -C /dev/md0 -l 1 -n 2 /dev/nvme2n1 /dev/nvme3n1
+
+The following is the log when a problem occurs. The problematic device
+is in the faulty device state.
+
+Log:
+[  135.037253] md/raid1:md0: active with 2 out of 2 mirrors
+[  135.038228] md0: detected capacity change from 0 to 7501212288
+[  135.038270] md: resync of RAID array md0
+[  151.252172] nvme2n1: I/O Cmd(0x1) @ LBA 16, 8 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[  151.252180] protection error, dev nvme2n1, sector 16 op 0x1:(WRITE) flags 0x10800 phys_seg 1 prio class 2
+[  151.252185] md: super_written gets error=-84
+[  151.252187] md/raid1:md0: Disk failure on nvme2n1, disabling device.
+               md/raid1:md0: Operation continuing on 1 devices.
+[  151.267450] nvme3n1: I/O Cmd(0x1) @ LBA 16, 8 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[  151.267457] protection error, dev nvme3n1, sector 16 op 0x1:(WRITE) flags 0x10800 phys_seg 1 prio class 2
+[  151.267460] md: super_written gets error=-84
+[  151.268458] md: md0: resync interrupted.
+[  151.320765] md: resync of RAID array md0
+[  151.321205] md: md0: resync done.
+
+Signed-off-by: Jinyoung Choi <j-young.choi@samsung.com>
+---
+ drivers/md/md-bitmap.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+index 1ff712889a3b..dfb7418ba48a 100644
+--- a/drivers/md/md-bitmap.c
++++ b/drivers/md/md-bitmap.c
+@@ -467,6 +467,13 @@ void md_bitmap_update_sb(struct bitmap *bitmap)
+ 		return;
+ 	if (!bitmap->storage.sb_page) /* no superblock */
+ 		return;
++
++	/*
++	 * Before modifying the bitmap page and re-issue it, wait for
++	 * the requests previously sent to the device to be completed.
++	 */
++	md_bitmap_wait_writes(bitmap);
++
+ 	sb = kmap_atomic(bitmap->storage.sb_page);
+ 	sb->events = cpu_to_le64(bitmap->mddev->events);
+ 	if (bitmap->mddev->events < bitmap->events_cleared)
+-- 
+2.34.1
