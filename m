@@ -2,66 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5170A75A56E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF99F75A56F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbjGTFWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 01:22:37 -0400
+        id S229785AbjGTFWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 01:22:42 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGTFWf (ORCPT
+        with ESMTP id S229675AbjGTFWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 01:22:35 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E621710;
-        Wed, 19 Jul 2023 22:22:32 -0700 (PDT)
+        Thu, 20 Jul 2023 01:22:37 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322B1110
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 22:22:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=s57Opk6b0bNX8mn2+UgCeeEZ8NdfAgz5xgbafB6twJY=; b=XJQM9DEpRZVxAYds4ZQDpT9M3A
-        1IXnYbR4myMJDom6EN4MgEKpmQE6/jYsrP/Ex4SYeV9hESlCN1pyHO2rtrn18Gt3AR+usNC6xi+2O
-        0s7v5pKLSw0ZZA198XHdbCkbfvz8pNpkPHSnZ/Vz7rn//biaPb0YaHzk1UZ006fqfRh+ixzS1TVGH
-        /wfNTiGCPmXjVMXNg3PFLsrLSi5PorJrj5tRJG0SzImUs1mPw1QkL5JDG7ffDzWQLz8VnYrmvxKm2
-        kW6fiHSWKehDJuoAaND8eoFk+Sd5d2Lm5GNqFM5Kn/aXL7AJTnTPVAqr/fDXTQ4IQn8HGWooL/zTh
-        q00hwCrA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qMM77-00FJM2-1f;
-        Thu, 20 Jul 2023 05:22:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5D892300346;
-        Thu, 20 Jul 2023 07:22:08 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 461B92B326660; Thu, 20 Jul 2023 07:22:08 +0200 (CEST)
-Date:   Thu, 20 Jul 2023 07:22:08 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Petr Mladek <pmladek@suse.com>, Brian Gerst <brgerst@gmail.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        alyssa.milburn@linux.intel.com, keescook@chromium.org,
-        joao@overdrivepizza.com, tim.c.chen@linux.intel.com,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] x86: Rewrite ret_from_fork() in C
-Message-ID: <20230720052208.GO4253@hirez.programming.kicks-ass.net>
-References: <20230623225529.34590-1-brgerst@gmail.com>
- <20230623225529.34590-3-brgerst@gmail.com>
- <ZLf_Z5dCSm7zKDel@alley>
- <20230719200222.GD3529734@hirez.programming.kicks-ass.net>
- <20230719201538.GA3553016@hirez.programming.kicks-ass.net>
- <20230719205050.GG3529734@hirez.programming.kicks-ass.net>
- <20230719233111.kqafaqect4v2ehu6@treble>
+        bh=CDKYREQdRXyTlFXvhiTxHWPhw/v5r8WPhz7dV9fWKqU=; b=tYgOcUvNE6Cg4zr2JuXcJPczFB
+        DXC6CUKnyFJOBQqHeqQAoN9bj3gxTr5+AmnZ4hxKsr0pmF2lACUlK2M+NNP87bo3wnJL/DdXoIzzQ
+        gxj5v0eWICQYh1S1fksK4QIh50kNiKsq/HyxQmqjU9ewjR4V4nof6B/iuCKLtD/fGq+gZyAHheox9
+        JAV+ubv2L22CiXGk0iGyG8V2mVlLuSmkGJQifQSDHa2NEhb2lxtHn9zb52hlxiEbJtb1J4o1oYogK
+        H9HumonrZHn7d9qmnaVYMi7pLSHJZn4LDVUmhZFsnbzUm7YpXm843JRMa/WfTYCca84Ddj6099c2o
+        uxE0+aHQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qMM7V-009p1m-31;
+        Thu, 20 Jul 2023 05:22:33 +0000
+Date:   Wed, 19 Jul 2023 22:22:33 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Peng Zhang <zhangpeng362@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, sidhartha.kumar@oracle.com,
+        akpm@linux-foundation.org, wangkefeng.wang@huawei.com,
+        sunnanyong@huawei.com, Kent Overstreet <kent.overstreet@gmail.com>
+Subject: Re: [PATCH 2/6] mm/page_io: use a folio in sio_read_complete()
+Message-ID: <ZLjEmULp8gQ4TkGf@infradead.org>
+References: <20230717132602.2202147-1-zhangpeng362@huawei.com>
+ <20230717132602.2202147-3-zhangpeng362@huawei.com>
+ <ZLVEyG7SZMzgY7ov@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230719233111.kqafaqect4v2ehu6@treble>
+In-Reply-To: <ZLVEyG7SZMzgY7ov@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -72,52 +55,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 04:31:11PM -0700, Josh Poimboeuf wrote:
-> On Wed, Jul 19, 2023 at 10:50:50PM +0200, Peter Zijlstra wrote:
-> > > The below cures things; Josh, did I miss anything?
-> > > 
-> > > ---
-> > >  arch/x86/entry/entry_64.S | 14 +++++++++++++-
-> > >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> > > index 91f6818884fa..cfe7882ea9ae 100644
-> > > --- a/arch/x86/entry/entry_64.S
-> > > +++ b/arch/x86/entry/entry_64.S
-> > > @@ -285,7 +285,14 @@ SYM_FUNC_END(__switch_to_asm)
-> > >   */
-> > >  .pushsection .text, "ax"
-> > >  SYM_CODE_START(ret_from_fork_asm)
-> > > -	UNWIND_HINT_REGS
-> > > +	/*
-> > > +	 * This is the start of the kernel stack; even through there's a regs
-> > > +	 * set at the top, there is no real exception frame and one cannot
-> > > +	 * unwind further. This is the end.
-> > > +	 *
-> > > +	 * This ensures stack unwinds of kernel threads hit a known good state.
-> > > +	 */
-> > > +	UNWIND_HINT_END_OF_STACK
+On Mon, Jul 17, 2023 at 02:40:24PM +0100, Matthew Wilcox wrote:
+> >  		for (p = 0; p < sio->pages; p++) {
+> > -			struct page *page = sio->bvec[p].bv_page;
+> > +			struct folio *folio = page_folio(sio->bvec[p].bv_page);
+> >  
+> > -			SetPageUptodate(page);
+> > -			unlock_page(page);
+> > +			folio_mark_uptodate(folio);
+> > +			folio_unlock(folio);
+> >  		}
 > 
-> The comments may be a bit superfluous (to me at least) but the patch
-> looks fine.
+> I'm kind of shocked this works today.  Usually bvecs coalesce adjacent
+> pages into a single entry, so you need to use a real iterator like
+> bio_for_each_folio_all() to extract individual pages from a bvec.
+> Maybe the sio bvec is constructed inefficiently.
 
-Right, well, it took me a minute to figure out how it was all supposed
-to work, I figured I'd stick a comment on it.
+sio_read_complete is a kiocb.ki_complete handler.  There is no
+coalesce going on for ITER_BVEC iov_iters, which share nothing
+but the underlying data structure with the block I/O path.
 
-The bit I missed is that if you reach the return-to-user part, you will
-actually have user_mode() true on the regset.
-
-> > So unwind_orc.c:unwind_next_frame() will terminate on this hint *or* on
-> > user_mode(state->regs).
-> > 
-> > AFAICT way things are set up in copy_thread(), user_mode() will not be
-> > true -- after all there is no usermode, the kthread would first have to
-> > exec() something to create a usermode.
-> > 
-> > Yet I'm wondering if perhaps we should spoof the regs to make
-> > user_mode() true and auto-terminate without this explicit hint.
-> 
-> I'm not sure that would be worth the trouble / cleverness.  The hint is
-> straightforward IMO.
-
-I tried, it doesn't work, clearly I missed something.
