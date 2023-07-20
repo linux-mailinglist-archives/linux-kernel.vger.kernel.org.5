@@ -2,85 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCC875AFD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A7775AFDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbjGTN2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47324 "EHLO
+        id S229651AbjGTN3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbjGTN2d (ORCPT
+        with ESMTP id S229517AbjGTN3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:28:33 -0400
-Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7BF2733
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:28:17 -0700 (PDT)
-Received: by mail-ed1-x549.google.com with SMTP id 4fb4d7f45d1cf-51bef8bb689so2397653a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:28:17 -0700 (PDT)
+        Thu, 20 Jul 2023 09:29:01 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC502D77;
+        Thu, 20 Jul 2023 06:28:36 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b852785a65so6073965ad.0;
+        Thu, 20 Jul 2023 06:28:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689859694; x=1690464494;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I3r7xstMG/kDrYDN8axEH3Hi8qFOTJMe4TLJz4jYmBg=;
-        b=PTe1ehyaKvilZef3g4vHLFsfgo/zjZhhl9Hu/iFK5kZArR9dMNrbE3QWMg+AmoPIDS
-         PJf4ZRbrfKuVvvAvvt6ISNzv4r+XBbfEC3rUutmrzkVHQsgi10tQh7bqlw5aQAiCHM5y
-         ywOBIRZOHiQLIpx9vCE1HbLq7dWAynqIIE+8ru3jTrYYPMRo34dL1yeH6BnWo+FMZXXI
-         S6hEcngC5n0blUSac32IEbftzUGXb+pJ9QrTFvPnUkBTOgbv+3qZP2hTwG8jc/0yg4/a
-         PbO/WcveNUfrxLTHl43LFNAxZfYqFHVSpEClNkrt4X0HB0ppOjpjGsvhV36D95ZoQ73T
-         RllQ==
+        d=gmail.com; s=20221208; t=1689859715; x=1690464515;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=3o5zfhOrGvbkMhIZNHbLcgV0VOFO8KOUPcq8qPlAWh4=;
+        b=II3kNkpXwPdcCl5YHO4c2SdZlaof4sRkgoc/bpxKmFONK+AnVHwT1l7cn4fep4l2pZ
+         RKQPLK4YtMeQSGR5iqY/qohmxFaLzZ1ClUnoBaAnXkyj8ZtgLGPZrxlSRrbXTRR6JuFE
+         1/XRgM2FIIeAEdO8c6Bnsmo11XN81iFNABpU1uWMfxl2AT70aV2t6lD+Lvsz3z0sVruD
+         Uow4lWraZWjlX9pw2usWm2WakkdaoKw1c6bRllOiAPjWueKo+tDHsJogOPb38guW70UF
+         VU2sVcwD6/G14KhffAcn6pAqokkebSFot2kkwvOG6VTqnh2LdN7nEmxQT8ylWbgSo4Lq
+         gfBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689859694; x=1690464494;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=I3r7xstMG/kDrYDN8axEH3Hi8qFOTJMe4TLJz4jYmBg=;
-        b=keu9lXg4d2nMs3XMZzdKCwJtTdYeSRBYiigbvqu3CcNGNrg2+ZSTVTBGeVUonehTG3
-         ewoFP8bp5PIx7+SrRbGRv3Q7K6cKovnHTquLbjjso5aWaEzw5lxaJPD+SGmQBKxAqW7W
-         DTjzaylfG/yw7/RvgrUUC9ySCHUoMr1aKkF6xnxGW3h2cyWxmGGTkwzT5VKUhvVvwsyQ
-         NgrH5yI+u4md9Z/9s7c41Db5yjfjVuM/2Q0Oy6GL67g9GB/CNFRHCh6Uml14gqOHYe68
-         dpq9rQeYQtnotjy7wGQJT/mLr2y+QkkFM/IJCtGMWFDxNuCPI+vvztACIxb03jAPRIeb
-         jJnA==
-X-Gm-Message-State: ABy/qLYRGFyFMRVKbGDOzNH/aXElC+T5h0n2aOD/1srdPqWP/TOHTyKg
-        +KrYY2bIhW2gdvxwQc2NI1YJHoEnhynrPjA=
-X-Google-Smtp-Source: APBJJlE8OrGrsbaMdmuytTZFTGo4pUACU92mRTmpZoM7CghjuXix569QQaRuSbm3GdfAAXcCGw6VBYGTYzP1YwU=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:aa7:d885:0:b0:51e:3859:396e with SMTP id
- u5-20020aa7d885000000b0051e3859396emr36329edq.2.1689859694714; Thu, 20 Jul
- 2023 06:28:14 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 13:28:07 +0000
-In-Reply-To: <20230719141918.543938-8-benno.lossin@proton.me>
-Mime-Version: 1.0
-References: <20230719141918.543938-8-benno.lossin@proton.me>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230720132811.3544642-1-aliceryhl@google.com>
-Subject: Re: [PATCH v2 07/12] rust: init: Add functions to create array initializers
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     benno.lossin@proton.me
-Cc:     alex.gaynor@gmail.com, aliceryhl@google.com,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
-        lina@asahilina.net, linux-kernel@vger.kernel.org, nmi@metaspace.dk,
-        ojeda@kernel.org, rust-for-linux@vger.kernel.org,
-        wedsonaf@gmail.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689859715; x=1690464515;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3o5zfhOrGvbkMhIZNHbLcgV0VOFO8KOUPcq8qPlAWh4=;
+        b=TqjV+s1zQkdYN47mIkCCe5FpwDkxLvduj45yNSd8nQHNO10uVHPp22/1+VUUS4j+GJ
+         q5gcshwfruENAO9bhjtVzn4D1smLqXzhBbyXQLxMi+pIYdzCy7WaEX6vhhyKdo4qBFU/
+         Qu75T3Ld1VMW4ma8UuB6+JVd33fjDdA/K7xXqnc4LPTZy/mHIBRZjBRQVKJeJr2spnAX
+         eAnQW0/FHZQvM6m+YPlRgXXgKBWLr9jmLi0FM6iXr2MBb90i7Ps3yjkckLeBVCvaNqxI
+         hCjzMYpAJbdXq1CLRG3cgombPJUcMr8xviCQtUroKCGt4DEWhlVcPwWiOK7KVW9/o1RS
+         8wHA==
+X-Gm-Message-State: ABy/qLaFVp/M30aIwkZq8a7ntKoFRzom3T4uRveoyR5IFgXi/lVfVBq2
+        amuhaoni2DIzQvmb1BQ7Dgk=
+X-Google-Smtp-Source: APBJJlHUPUivfHOgoXJP79qDNd5D4J3nF3SUABKNXv3IzHnbDE0pcAqJjXDoFhMrl2kqZtr0UmSiBg==
+X-Received: by 2002:a17:902:c94c:b0:1b7:ca9c:4f5c with SMTP id i12-20020a170902c94c00b001b7ca9c4f5cmr6694496pla.28.1689859715396;
+        Thu, 20 Jul 2023 06:28:35 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id jc15-20020a17090325cf00b001b5247cac3dsm1346340plb.110.2023.07.20.06.28.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 06:28:34 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <def5b29c-3318-2db1-a7fa-612ed1e81be6@roeck-us.net>
+Date:   Thu, 20 Jul 2023 06:28:31 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 12/42] dt-bindings: watchdog: Add Cirrus EP93x
+Content-Language: en-US
+To:     nikita.shubin@maquefel.me,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Peters <mpeters@embeddedTS.com>,
+        Kris Bahnsen <kris@embeddedTS.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-12-3d63a5f1103e@maquefel.me>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230605-ep93xx-v3-12-3d63a5f1103e@maquefel.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Add two functions `pin_init_array_from_fn` and `init_array_from_fn` that
-> take a function that generates initializers for `T` from usize, the added
-> functions then return an initializer for `[T; N]` where every element is
-> initialized by an element returned from the generator function.
->=20
-> Suggested-by: Asahi Lina <lina@asahilina.net>
-> Reviewed-by: Bj=C3=B6rn Roy Baron <bjorn3_gh@protonmail.com>
-> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+On 7/20/23 04:29, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+> 
+> This adds device tree bindings for the Cirrus Logic EP93xx
+> watchdog block used in these SoCs.
+> 
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> ---
+>   .../bindings/watchdog/cirrus,ep9301-wdt.yaml       | 46 ++++++++++++++++++++++
+>   1 file changed, 46 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml b/Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml
+> new file mode 100644
+> index 000000000000..d54595174a12
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/watchdog/cirrus,ep9301-wdt.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Cirrus Logic EP93xx Watchdog Timer
+> +
+> +maintainers:
+> +  - Nikita Shubin <nikita.shubin@maquefel.me>
+> +  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> +
+> +description:
+> +  Cirrus Logic EP93xx SoC family has it's own watchdog implementation
+> +
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+Odd description. Isn't that true for pretty much every devicetree
+bindings file, and pretty much every hardware driver ?
+
+> +allOf:
+> +  - $ref: watchdog.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: cirrus,ep9301-wdt
+> +      - items:
+> +          - enum:
+> +              - cirrus,ep9302-wdt
+> +              - cirrus,ep9307-wdt
+> +              - cirrus,ep9312-wdt
+> +              - cirrus,ep9315-wdt
+> +          - const: cirrus,ep9301-wdt
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    watchdog@80940000 {
+> +        compatible = "cirrus,ep9301-wdt";
+> +        reg = <0x80940000 0x08>;
+> +    };
+> +
+> 
+
