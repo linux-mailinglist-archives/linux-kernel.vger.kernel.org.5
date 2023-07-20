@@ -2,98 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7B075AFF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5497575AFF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbjGTNaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
+        id S232040AbjGTNaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbjGTN3o (ORCPT
+        with ESMTP id S231950AbjGTN3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:29:44 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503C22D7C;
-        Thu, 20 Jul 2023 06:29:25 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51e5e4c6026so1042397a12.0;
-        Thu, 20 Jul 2023 06:29:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689859763; x=1690464563;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EAKOFZ4eRsWM0xGfBzouN0FPvtStI7fkmnGxkak+jLg=;
-        b=kUloNH7XNx93JEpMMMeQvXV1FAHG24vvyml07aorZwaR5WVpsIEW8rFRUW6hs0LU1v
-         ZLgFGKA9ctbVvhQsS3cfCUYSoA3IAZw4QaPpz6uidkPAcon0CBdwkXMRSFTwzxYagaxT
-         b4KXk7d8khUHSMfnM/baf7yQb5gauWR0U90qCARs4Am6m32HESpvWu1478uNMCW04hmD
-         gUqYHRFxogDRQER9S8U+ELs77R1NkTwMlF8H5oA/FGl5QVeb04ZfKQln5iTpJ+6n1E+2
-         L/5yGas9/lLfMhhgVoMFOotZn0JLu4P4tYYW9q6GKsK/qFcAUteCp3rMAQyk1ps8EVdh
-         9qQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689859763; x=1690464563;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EAKOFZ4eRsWM0xGfBzouN0FPvtStI7fkmnGxkak+jLg=;
-        b=g17+b5cvPB4QUrIQZ3+SFgVub/WGoVH52qXbJuoZiez9ilgsbpcshWc5NA8scA0GFN
-         e+T1FMIac3qA0nHpyUVzDrk8VoxuekwwpAK8gMgi4cwZ4CvtHo/Bx9IN6sFD9k5WvFOj
-         TLxcRPVINz4/P6DeMlZZBD11k0GeseM4lS8reeSe+tDa4/IUFoWq1MkQBMdlQ6yiw9SS
-         RK8z2h5V/KdZ50+mLGNnCaEdfPkVBV24zRntcPWOvmA7h7vAcMNoQkM1ZeVLWlErJaRs
-         sHrgtgo7l8aN/EtMz7lzyJVvYGBH0gijJEAUSoV2MZuRJNc2ndt/YE/zIdgbX9Cfe/nb
-         MxJg==
-X-Gm-Message-State: ABy/qLYxgSULMDqBq9rATxt/jZzBLZqwBzadh+Rf4Ds812Dz4JBPECnx
-        09NFqaWOYlo2g6She8hitxZXhy8XUGiK7Q==
-X-Google-Smtp-Source: APBJJlH/SP0nlLL+fGYpzF5xxnfPCGA3bUHuwKYTRAcCYT6CWkI0alP57EibCaBWPraggifTbQXhFg==
-X-Received: by 2002:a17:907:6d20:b0:991:e815:a1ef with SMTP id sa32-20020a1709076d2000b00991e815a1efmr5419375ejc.31.1689859763311;
+        Thu, 20 Jul 2023 09:29:37 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D8A2D71;
         Thu, 20 Jul 2023 06:29:23 -0700 (PDT)
-Received: from localhost.localdomain ([92.85.190.61])
-        by smtp.gmail.com with ESMTPSA id ju13-20020a17090798ad00b00988be3c1d87sm704189ejc.116.2023.07.20.06.29.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7835ae70e46so32916939f.3;
+        Thu, 20 Jul 2023 06:29:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689859762; x=1690464562;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=x7oP+tgkV5g5gPIWjsy0lzcqUnb7CSAq9qZKlzt2F6c=;
+        b=rIQoiENQDVB93EfK7Iwx+E2mxs3LQ0YPdhj/iK7ys8ALeunIn8wezadJpkQTW+Sjif
+         UlzB5oAiRo65QeGsQurJ0qXGhqKvssdTu16jb/Fhkf9SqC8Bc+Rk/BsoxsRJLBYJLXie
+         qSkDkv93lfgJS9eeZoTTuLFqvnVba5pEa9rxlsf2P4+u/2Q9YgNlA8/OlETqH0QdCUIx
+         f+omEBPKkwxj2rkDHti14N9qCY7Jh/R98b9DjfJKJo0LqwlJxUz0B1WIH6XLq/3Tsr/q
+         4DXjtnqzPe7gvYhNRU0XZVUqawMJUtcZ5iUFQMGml0Di+4pHyvV3iE4sXw0M7Z/OaTcz
+         y40Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689859762; x=1690464562;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x7oP+tgkV5g5gPIWjsy0lzcqUnb7CSAq9qZKlzt2F6c=;
+        b=CguvsPosbFs4nDDU8G5fxr9K3wbHcPVB7ZfHBvKgcnpFC0v4mpj78dEBfvgVkHiM5j
+         SRdlpbK09w1fbMrDfcccAjn/1Swdt9w3qzWufrHOmsz+QChPxgWRogXGCcp25GHCB/Wg
+         vlkVhA3JfR5u3sjH5/U1rCHdoNWBf9AlJbBfeYueWVxPD0MuIDwAE3NCy6hrpIzNvnT5
+         cOFHz99phLXsZPItUdMOcRxmZ8SZM9lPI8UfRYc2PbJv5R6rm/u0CRgxcvXRHj1xZEr6
+         gUCOn8TEd7W91KbjmJXjprMfoTjoS81uJochbQ+BLYt2aTgaeAYqfu7AvLSN6yqiOlpX
+         ADGA==
+X-Gm-Message-State: ABy/qLbgsj54N3GlQDPUccApQwNphPKTLFNefKdrzvIV5BKMS9hA1HYN
+        flOu5TV1Th+waisks4006Qk=
+X-Google-Smtp-Source: APBJJlE+ImiGpXR+XhiWfpQ8DqRAptYIM/vmmrqcxub/OhO7f7vQvGYjfcGO6fmJR6FGooFnlcTVMw==
+X-Received: by 2002:a05:6e02:1d83:b0:348:936e:d01c with SMTP id h3-20020a056e021d8300b00348936ed01cmr9173098ila.1.1689859762259;
         Thu, 20 Jul 2023 06:29:22 -0700 (PDT)
-From:   Andrei Coardos <aboutphysycs@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Cc:     andy@kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org,
-        Andrei Coardos <aboutphysycs@gmail.com>,
-        Alexandru Ardelean <alex@shruggie.ro>
-Subject: [PATCH] gpio :lp3943 :remove unneeded platform_set_drvdata() call
-Date:   Thu, 20 Jul 2023 16:29:11 +0300
-Message-Id: <20230720132911.23449-1-aboutphysycs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 66-20020a17090a09c800b0025be7b69d73sm1065543pjo.12.2023.07.20.06.29.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 06:29:21 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <f7d7ed7b-5a12-b393-54cf-eafd51bf72e7@roeck-us.net>
+Date:   Thu, 20 Jul 2023 06:29:18 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 13/42] watchdog: ep93xx: add DT support for Cirrus
+ EP93xx
+Content-Language: en-US
+To:     nikita.shubin@maquefel.me,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Peters <mpeters@embeddedTS.com>,
+        Kris Bahnsen <kris@embeddedTS.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-13-3d63a5f1103e@maquefel.me>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230605-ep93xx-v3-13-3d63a5f1103e@maquefel.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function call was found to be unnecessary as there is no equivalent
-platform_get_drvdata() call, to access the private data of the driver.
-Also, the private data is defined in this driver, so there is no risk of
-it being accessed outside of this driver file.
+On 7/20/23 04:29, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+> 
+> Add OF ID match table.
+> 
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
-Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
----
- drivers/gpio/gpio-lp3943.c | 2 --
- 1 file changed, 2 deletions(-)
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/drivers/gpio/gpio-lp3943.c b/drivers/gpio/gpio-lp3943.c
-index 79edd5db49d2..8e58242f5123 100644
---- a/drivers/gpio/gpio-lp3943.c
-+++ b/drivers/gpio/gpio-lp3943.c
-@@ -199,8 +199,6 @@ static int lp3943_gpio_probe(struct platform_device *pdev)
- 	lp3943_gpio->chip = lp3943_gpio_chip;
- 	lp3943_gpio->chip.parent = &pdev->dev;
- 
--	platform_set_drvdata(pdev, lp3943_gpio);
--
- 	return devm_gpiochip_add_data(&pdev->dev, &lp3943_gpio->chip,
- 				      lp3943_gpio);
- }
--- 
-2.34.1
+> ---
+>   drivers/watchdog/ep93xx_wdt.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/watchdog/ep93xx_wdt.c b/drivers/watchdog/ep93xx_wdt.c
+> index 59dfd7f6bf0b..af89b7bb8f66 100644
+> --- a/drivers/watchdog/ep93xx_wdt.c
+> +++ b/drivers/watchdog/ep93xx_wdt.c
+> @@ -19,6 +19,7 @@
+>    */
+>   
+>   #include <linux/platform_device.h>
+> +#include <linux/mod_devicetable.h>
+>   #include <linux/module.h>
+>   #include <linux/watchdog.h>
+>   #include <linux/io.h>
+> @@ -127,9 +128,16 @@ static int ep93xx_wdt_probe(struct platform_device *pdev)
+>   	return 0;
+>   }
+>   
+> +static const struct of_device_id ep93xx_wdt_of_ids[] = {
+> +	{ .compatible = "cirrus,ep9301-wdt" },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, ep93xx_wdt_of_ids);
+> +
+>   static struct platform_driver ep93xx_wdt_driver = {
+>   	.driver		= {
+>   		.name	= "ep93xx-wdt",
+> +		.of_match_table = ep93xx_wdt_of_ids,
+>   	},
+>   	.probe		= ep93xx_wdt_probe,
+>   };
+> 
 
