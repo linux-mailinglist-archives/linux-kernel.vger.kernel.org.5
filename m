@@ -2,160 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF29375AC3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0872D75AC39
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbjGTKnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 06:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
+        id S229730AbjGTKmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 06:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGTKnL (ORCPT
+        with ESMTP id S229536AbjGTKmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 06:43:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE185171B
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689849746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=s8/QNK9aMUaZdF5PbcawFqcpmmy8WkA3CGA4nPhCcCE=;
-        b=HYLk1YOpmNJVWmugdqAIJcWt3j91RAZ0vKAdN+JAcJNlPAm/3mUuz5Ut36MwntmeUQmAiY
-        gprpPTKb5WSyOot80lklzfVGf6cQMh0+2k62QTEDskYvDIt+rwZofjQHu2zpG1lkxd5HXP
-        cZOWfNHOBxRHBz9bOB9/ka/kTumDt5A=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-49-akr8w9otM2219EkUuhg6wA-1; Thu, 20 Jul 2023 06:42:24 -0400
-X-MC-Unique: akr8w9otM2219EkUuhg6wA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-315a03cae87so814729f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:42:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689849743; x=1690454543;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s8/QNK9aMUaZdF5PbcawFqcpmmy8WkA3CGA4nPhCcCE=;
-        b=X4ljVRclhVT0i/hgeIKlLsNgd9yOoH8s6BZtMvZcMLVCG9I8Q1p/H/z/aii5zdUpTc
-         BqPkakYMNKPTbWFmHXBeiIdsP35WQz2WXH85jmIqnd6Vsz7Nm2NH71/J/EpM1UcZqtqk
-         CnIfq4PCzu5m7ug0dsYbFNscM64QbzevqOLkTPRBzl5DeQSFinlqo8iIG9SxeHZylo9w
-         wXnqv1Pm8zp9zdRw4H/7F/R/j83+6+6nTQ1ivJTooqR3vqa119lZgCEuvlHc1MzkuxIe
-         idK+Awuzsz0Ta3YYotnoTIf2dIEFQVVIkLyeLVFqp0gbHKQpbgZ3Qp6/ioSfCj2opDXm
-         zD6w==
-X-Gm-Message-State: ABy/qLbdX68ooeJ6WR6O+IaJvEr9gSmvbpQTJABsWLPjUREqo1kRpsy0
-        DdiXEY4SjY75Fr7OIieZwOPMz60RZto7fQug1yiH+ESxlW/BeCZVB4ObkAQGc6BValJABDhy9Mb
-        Et9JIGZHb5giktnOcYDYxx9M1YvxB3ytE
-X-Received: by 2002:a5d:684b:0:b0:314:3e96:bd7e with SMTP id o11-20020a5d684b000000b003143e96bd7emr2366482wrw.4.1689849743445;
-        Thu, 20 Jul 2023 03:42:23 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGMNc4DgpuEF386zoNSiKXYMeDCfdF3dk3DGXK5Uhi37HIkp4KWrrVHNkylycNEbWdq0OXybA==
-X-Received: by 2002:a5d:684b:0:b0:314:3e96:bd7e with SMTP id o11-20020a5d684b000000b003143e96bd7emr2366467wrw.4.1689849743156;
-        Thu, 20 Jul 2023 03:42:23 -0700 (PDT)
-Received: from localhost ([91.126.32.244])
-        by smtp.gmail.com with ESMTPSA id h10-20020a5d6e0a000000b003141e9e2f81sm987499wrz.4.2023.07.20.03.42.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 03:42:22 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Maxime Ripard <mripard@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v3] drm/ssd130x: Fix an oops when attempting to update a
- disabled plane
-In-Reply-To: <c5khbm4v2ynjgcfhin2htixkyuycfydr6rie5irnyu6gytxg6q@4ghg4ufjgnfx>
-References: <20230717163027.480918-1-javierm@redhat.com>
- <c5khbm4v2ynjgcfhin2htixkyuycfydr6rie5irnyu6gytxg6q@4ghg4ufjgnfx>
-Date:   Thu, 20 Jul 2023 12:42:21 +0200
-Message-ID: <87pm4mj242.fsf@minerva.mail-host-address-is-not-set>
+        Thu, 20 Jul 2023 06:42:39 -0400
+Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E71910F1;
+        Thu, 20 Jul 2023 03:42:38 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 10:42:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1689849754; x=1690108954;
+        bh=Y2JtQMmANk8Ycv1ygWijsVhzopEKF97I4GcrRrQYLhY=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=ifiSn1BVQhYuF6auOiOe5xF4+dOBSMI5GX8fKT/+2qrBFGS8+RYiUgRzBvHyLJpU7
+         9vKNWuClzGiMUHSy+1He0DiT4ch14w1Bz3gnhfOVDMksEK6IzYKWaUfd0BjhJruH3N
+         QjtsrwtIQHdbIovCpuULiJByjFYiet4/c4njYrmE0UIPXxYg7lkEEnq2NCySCqZf2V
+         SYdkdupFOIUHkvLpFaT/Xk2Ej06PIHTK7lrnP3vo7+O/JhhP/oR0agsmakuAVQvhsW
+         ecSET+iklcOJszEiSZ5FK4ooUf0M2UFnRkfsZONUH5EeaFzK8phKrYNnXniWM0QTKI
+         rOP3V9YWPOxYA==
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Mark Gross <markgross@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Armin Wolf <W_Armin@gmx.de>
+Subject: Re: [RFC PATCH v1] platform/x86: wmi: Do not register driver with invalid GUID
+Message-ID: <_szgAop-lIsQt90xoCYXQbiJtrQclFitfhE2ak2omTiPCx37toqB4lq7OTmBD_vMEn6TonpAns5NgVH1xFpGQLyuLkd0pOGwRqrB8C9INRw=@protonmail.com>
+In-Reply-To: <ZLjyDQ80QKWtKqUk@smile.fi.intel.com>
+References: <20230715211604.1272227-1-pobrn@protonmail.com> <ZLUOxnE58wUgZXWx@smile.fi.intel.com> <mL0s5ZsO3eU18EzO_7zVsawf2rr7o-zsOrwBDncazQIAgRn-LRNTGw2ugm1bfRoHKWTRYmUHt8s7zjfNEESapwFZlaNj6B041x_AZ-pagoI=@protonmail.com> <ZLUmh0nKJdRMmhX1@smile.fi.intel.com> <kN5iBK5RwAEr8LXNTgb6dUk7zxuGFFtF2q_ReNezksLqaq7C4frYfo6ELswUu0wVoewy3UENAwFjjK48d2qBwf6q4is8ST28zpK6-ze_eIU=@protonmail.com> <ZLjyDQ80QKWtKqUk@smile.fi.intel.com>
+Feedback-ID: 20568564:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxime Ripard <mripard@redhat.com> writes:
+Hi
 
-Hello Maxime,
 
-Thanks a lot for your feedback.
+2023. j=C3=BAlius 20., cs=C3=BCt=C3=B6rt=C3=B6k 10:36 keltez=C3=A9ssel, And=
+y Shevchenko =C3=ADrta:
 
-> Hi,
->
-> On Mon, Jul 17, 2023 at 06:30:22PM +0200, Javier Martinez Canillas wrote:
->> Geert reports that the following NULL pointer dereference happens for him
->> after commit 49d7d581ceaf ("drm/ssd130x: Don't allocate buffers on each
->> plane update"):
->> 
->>     [drm] Initialized ssd130x 1.0.0 20220131 for 0-003c on minor 0
->>     ssd130x-i2c 0-003c: [drm] surface width(128), height(32), bpp(1)
->>     and format(R1   little-endian (0x20203152))
->>     Unable to handle kernel NULL pointer dereference at virtual address 00000000
->>     Oops [#1]
->>     CPU: 0 PID: 1 Comm: swapper Not tainted
->>     6.5.0-rc1-orangecrab-02219-g0a529a1e4bf4 #565
->>     epc : ssd130x_update_rect.isra.0+0x13c/0x340
->>      ra : ssd130x_update_rect.isra.0+0x2bc/0x340
->>     ...
->>     status: 00000120 badaddr: 00000000 cause: 0000000f
->>     [<c0303d90>] ssd130x_update_rect.isra.0+0x13c/0x340
->>     [<c0304200>] ssd130x_primary_plane_helper_atomic_update+0x26c/0x284
->>     [<c02f8d54>] drm_atomic_helper_commit_planes+0xfc/0x27c
->>     [<c02f9314>] drm_atomic_helper_commit_tail+0x5c/0xb4
->>     [<c02f94fc>] commit_tail+0x190/0x1b8
->>     [<c02f99fc>] drm_atomic_helper_commit+0x194/0x1c0
->>     [<c02c5d00>] drm_atomic_commit+0xa4/0xe4
->>     [<c02cce40>] drm_client_modeset_commit_atomic+0x244/0x278
->>     [<c02ccef0>] drm_client_modeset_commit_locked+0x7c/0x1bc
->>     [<c02cd064>] drm_client_modeset_commit+0x34/0x64
->>     [<c0301a78>] __drm_fb_helper_restore_fbdev_mode_unlocked+0xc4/0xe8
->>     [<c0303424>] drm_fb_helper_set_par+0x38/0x58
->>     [<c027c410>] fbcon_init+0x294/0x534
->>     ...
->> 
->> The problem is that fbcon calls fbcon_init() which triggers a DRM modeset
->> and this leads to drm_atomic_helper_commit_planes() attempting to commit
->> the atomic state for all planes, even the ones whose CRTC is not enabled.
->> 
->> Since the primary plane buffer is allocated in the encoder .atomic_enable
->> callback, this happens after that initial modeset commit and leads to the
->> mentioned NULL pointer dereference.
->
-> I think that's where the problem lies: you must not allocate a buffer in
-> atomic_enable.
->
-> After drm_atomic_helper_swap_state(), the new commit is being applied
-> and you aren't allowed to fail, and an allocation can fail.
->
-> Everything needs to be prepared by the time _swap_state is called, and
-> it's one of the point of atomic_check.
->
-> So you need to allocate your buffer there, and use it in whatever
-> atomic_commit related hook you need it in.
->
-> The typical way of doing this would be to create a custom state
-> structure that embeds the global one, create your own reset,
-> atomic_duplicate_state and atomic_destroy_state implementations, and
-> store the buffer pointer there.
->
+> On Wed, Jul 19, 2023 at 07:23:37PM +0000, Barnab=C3=A1s P=C5=91cze wrote:
+> > 2023. j=C3=BAlius 17., h=C3=A9tf=C5=91 13:31 keltez=C3=A9ssel, Andy She=
+vchenko =C3=ADrta:
+> > > On Mon, Jul 17, 2023 at 11:23:50AM +0000, Barnab=C3=A1s P=C5=91cze wr=
+ote:
+> > > > 2023. j=C3=BAlius 17., h=C3=A9tf=C5=91 11:49 keltez=C3=A9ssel, Andy=
+ Shevchenko <andriy.shevchenko@linux.intel.com> =C3=ADrta:
+> > > > On Sat, Jul 15, 2023 at 09:24:16PM +0000, Barnab=C3=A1s P=C5=91cze =
+wrote:
+>=20
+> ...
+>=20
+> > > > > Besides using wrong API (uuid_*() vs. guid_*() one), I don't
+> > > >
+> > > > As far as I can see `guid_parse()` also uses `uuid_is_valid()`, the=
+ format is the same.
+> > >
+> > > Then add guid_is_valid() to complete the API. Perhaps with the renami=
+ng the
+> > > common part to something else.
+> >
+> > But that would be the exact same function. GUIDs are UUIDs, aren't they=
+?
+>=20
+> Yes and no. If we want to validate the respective bit for GUID vs. UUID, =
+they
+> will be different. Currently they are the same as validation is relaxed i=
+n the
+> kernel.
 
-I see. That makes totally sense to me. I'll do that in v4 then!
+I see. Regardless, that is the only check `guid_parse()` does, so I don't t=
+hink
+it is unreasonable to have only that check for the time being.
 
-> Maxime
 
--- 
-Best regards,
+>=20
+> > > > > think we need to validate it here. Why not in file2alias.c?
+> > > > > [...]
+> > > >
+> > > > 1) that seems like a more complicated change (duplicating `uuid_is_=
+valid()`?);
+> > > > 2) that will only check the GUIDs specified by `MODULE_DEVICE_TABLE=
+()`.
+> > > >
+> > > > Arguably the second point is not that significant since most users =
+will indeed
+> > > > use `MODULE_DEVICE_TABLE()`. But I think the first point has some m=
+erit. And
+> > > > furthermore, I think this check should be here regardless of whethe=
+r file2alias.c
+> > > > also contains an equivalent/similar check.
+> > >
+> > > Why do we need it? We never match against wrong GUID from ACPI, since=
+ it would
+> > > be very weird ACPI table.
+> > > [...]
+> >
+> > The point is to catch typos in drivers' WMI ID tables.
+>=20
+> Yes, that's what file2alias is for. We trust modules we build, right?
+> If you don't trust, then we have much bigger problem than this patch
+> tries to address.
+> [...]
 
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+It seems we have to agree to disagree then.
 
+
+Regards,
+Barnab=C3=A1s P=C5=91cze
