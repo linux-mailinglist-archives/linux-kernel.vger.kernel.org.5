@@ -2,346 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C10A75B30F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83AAF75B2C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbjGTPhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41610 "EHLO
+        id S232563AbjGTPeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbjGTPhR (ORCPT
+        with ESMTP id S232579AbjGTPeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:37:17 -0400
-Received: from frasgout11.his.huawei.com (unknown [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D3B2716;
-        Thu, 20 Jul 2023 08:36:45 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4R6Gj00GQdz9xqxM;
-        Thu, 20 Jul 2023 23:25:24 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwBHquXFU7lkGHDRBA--.21759S13;
-        Thu, 20 Jul 2023 16:36:02 +0100 (CET)
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     dhowells@redhat.com, dwmw2@infradead.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        jarkko@kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, pbrobinson@gmail.com,
-        zbyszek@in.waw.pl, wiktor@metacode.biz,
-        devel@lists.sequoia-pgp.org, gnupg-devel@gnupg.org,
-        ebiggers@kernel.org, Jason@zx2c4.com, mail@maciej.szmigiero.name,
-        antony@vennard.ch, konstantin@linuxfoundation.org,
-        James.Bottomley@HansenPartnership.com,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][GNUPG][PATCH v3 2/2] Convert PGP signatures to the user asymmetric key signatures format
-Date:   Thu, 20 Jul 2023 17:32:47 +0200
-Message-Id: <20230720153247.3755856-12-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230720153247.3755856-1-roberto.sassu@huaweicloud.com>
-References: <20230720153247.3755856-1-roberto.sassu@huaweicloud.com>
+        Thu, 20 Jul 2023 11:34:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB850272E;
+        Thu, 20 Jul 2023 08:33:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 813DB61B56;
+        Thu, 20 Jul 2023 15:33:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 295A4C433C8;
+        Thu, 20 Jul 2023 15:33:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689867188;
+        bh=c+ZVWxgh/CXsH1c2vchK7aDDzJLtNw5gn/vP1LDRfrk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Ss0zSK6F0+4lGy54qqR1dvx6YnED5rmrZaLh5EMf0WvrtKYiZ5aOFQEcoV3HF56y6
+         gJxR1V0HYFFZvj+XHxGBK/U8zHuOa+GwFfuc3V0KU6lbvy5whQv96ZQiFbyiIbsS3Z
+         KO+MXOnS8JuTMJf0L1ThvssfCTff5R1pW3ui+OVQD/NbTUg+KGogsnoYNBeTvT6tys
+         nkOmDh+i5aWzLua+aIshQwTIk06CX1OigMhfKic9ABGXJSB1KIX1btXzQjnDazjIX+
+         x0DjilsZFVpTLvZVpF0sxcYABtgCXzTJu4c71p2Y7olUzhyQBsjx81o4BPwhFOFaGw
+         ZwUnP0JrprvQw==
+Message-ID: <061f2b988de3da1dac32ecb3d8ac76319065b51d.camel@kernel.org>
+Subject: Re: [PATCH] nfsd: remove unsafe BUG_ON from set_change_info
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Boyang Xue <bxue@redhat.com>
+Date:   Thu, 20 Jul 2023 11:33:06 -0400
+In-Reply-To: <4B067A0F-93E3-435A-A32B-B17BC07D4606@oracle.com>
+References: <20230720-bz2223560-v1-1-edb4900043b8@kernel.org>
+         <4B067A0F-93E3-435A-A32B-B17BC07D4606@oracle.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwBHquXFU7lkGHDRBA--.21759S13
-X-Coremail-Antispam: 1UD129KBjvJXoWxtFWUur13Wr4fKr4DJryDtrb_yoW3Gry8pa
-        sakFySqrW5Zrn3Kr43Gw4FqF13JwnYg3WDKFW7G3WS9wnIqrZFqF1jvFyIgryrGFWIgF18
-        Ar4DXFZ7Wr4DAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E
-        14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I
-        80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCj
-        c4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28Icx
-        kI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
-        xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42
-        IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87
-        Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjxUFgAwUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAEBF1jj4y-4AABsh
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_RDNS_DYNAMIC_FP,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+On Thu, 2023-07-20 at 15:15 +0000, Chuck Lever III wrote:
+>=20
+> > On Jul 20, 2023, at 10:59 AM, Jeff Layton <jlayton@kernel.org> wrote:
+> >=20
+> > At one time, nfsd would scrape inode information directly out of struct
+> > inode in order to populate the change_info4. At that time, the BUG_ON i=
+n
+> > set_change_info made some sense, since having it unset meant a coding
+> > error.
+> >=20
+> > More recently, it calls vfs_getattr to get this information, which can
+> > fail. If that fails, fh_pre_saved can end up not being set. While this
+> > situation is unfortunate, we don't need to crash the box.
+>=20
+> I'm always happy to get rid of a BUG_ON(). But I'm not sure even
+> a warning is necessary in this case. It's not likely that it's
+> a software bug or something that the server administrator can
+> do something about.
+>=20
+> Can you elaborate on why the vfs_getattr() might fail? Eg, how
+> was it failing in 2223560 ?
+>=20
 
-Enhance the gpg command --conv-kernel to also support converting PGP
-signatures to the user asymmetric key signatures format.
+I'm fine with dropping the WARN_ON. You are correct that there is
+probably little the admin can do about it.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- g10/conv-packet.c | 200 ++++++++++++++++++++++++++++++++++++++++++++++
- g10/conv-packet.h |   7 ++
- g10/mainproc.c    |   1 +
- 3 files changed, 208 insertions(+)
+vfs_getattr can fail for all sorts of reasons. It really depends on the
+underlying filesystem. In 2223560, I don't know for sure, but just prior
+to the oops, there were these messages in the log:
 
-diff --git a/g10/conv-packet.c b/g10/conv-packet.c
-index 8f2fc40b980..be7eb3c80f8 100644
---- a/g10/conv-packet.c
-+++ b/g10/conv-packet.c
-@@ -28,6 +28,8 @@
- #include <linux/uasym_parser.h>
- #include <asm/byteorder.h>
- #include <linux/pub_key_info.h>
-+#include <linux/sig_enc_info.h>
-+#include <linux/hash_info.h>
- 
- #include "gpg.h"
- #include "../common/util.h"
-@@ -38,6 +40,16 @@
- 
- static estream_t listfp;
- 
-+static const enum hash_algo pgp_hash_algorithms[DIGEST_ALGO_SHA224 + 1] = {
-+  [DIGEST_ALGO_MD5]                = HASH_ALGO_MD5,
-+  [DIGEST_ALGO_SHA1]               = HASH_ALGO_SHA1,
-+  [DIGEST_ALGO_RMD160]             = HASH_ALGO_RIPE_MD_160,
-+  [DIGEST_ALGO_SHA256]             = HASH_ALGO_SHA256,
-+  [DIGEST_ALGO_SHA384]             = HASH_ALGO_SHA384,
-+  [DIGEST_ALGO_SHA512]             = HASH_ALGO_SHA512,
-+  [DIGEST_ALGO_SHA224]             = HASH_ALGO_SHA224,
-+};
-+
- static void init_output(void)
- {
-   if (!listfp)
-@@ -282,3 +294,191 @@ out:
-   xfree(buffer);
-   return 0;
- }
-+
-+/* Taken from sig_check.c */
-+static int get_sig_data(PKT_signature * sig, __u8 **buf, __u32 *buf_len)
-+{
-+  __u8 *buf_ptr;
-+
-+  *buf = xmalloc_clear(4 + 2 + sig->hashed->len + 6);
-+  if (!*buf)
-+    return -ENOMEM;
-+
-+  buf_ptr = *buf;
-+
-+  if (sig->version >= 4)
-+    *buf_ptr++ = sig->version;
-+
-+  *buf_ptr++ = sig->sig_class;
-+  if (sig->version < 4)
-+    {
-+      u32 a = sig->timestamp;
-+      *buf_ptr++ = ((a >> 24) & 0xff);
-+      *buf_ptr++ = ((a >> 16) & 0xff);
-+      *buf_ptr++ = ((a >>  8) & 0xff);
-+      *buf_ptr++ = (a & 0xff);
-+    }
-+  else
-+    {
-+      size_t n;
-+      *buf_ptr++ = sig->pubkey_algo;
-+      *buf_ptr++ = sig->digest_algo;
-+      if (sig->hashed)
-+        {
-+          n = sig->hashed->len;
-+          *buf_ptr++ = n >> 8;
-+          *buf_ptr++ = n;
-+          memcpy(buf_ptr, sig->hashed->data, n);
-+          buf_ptr += n;
-+          n += 6;
-+	}
-+      else
-+        {
-+	  /* Two octets for the (empty) length of the hashed
-+           * section. */
-+          *buf_ptr++ = 0;
-+	  *buf_ptr++ = 0;
-+	  n = 6;
-+	}
-+      /* Add some magic per Section 5.2.4 of RFC 4880.  */
-+      *buf_ptr++ = sig->version;
-+      *buf_ptr++ = 0xff;
-+      *buf_ptr++ = n >> 24;
-+      *buf_ptr++ = n >> 16;
-+      *buf_ptr++ = n >>  8;
-+      *buf_ptr++ = n;
-+    }
-+
-+    *buf_len = buf_ptr - *buf;
-+    return 0;
-+}
-+
-+int write_kernel_signature(PKT_signature *sig)
-+{
-+  unsigned char *buffer = NULL;
-+  size_t buffer_len = 0, buffer_len_padded = 0;
-+  struct tlv_hdr hdr = { 0 };
-+  struct tlv_entry e_key_algo = { 0 };
-+  struct tlv_entry e_hash_algo = { 0 };
-+  struct tlv_entry e_sig_encoding = { 0 };
-+  struct tlv_entry e_sig_kid0 = { 0 };
-+  struct tlv_entry e_sig_pub = { 0 };
-+  struct tlv_entry e_sig_data = { 0 };
-+  __u8 pkey_algo;
-+  __u8 hash_algo;
-+  __u8 sig_encoding = SIG_ENC_PKCS1;
-+  __u8 *sig_data = NULL;
-+  __u32 _keyid, sig_data_len;
-+  __u64 total_len = 0;
-+  gpg_error_t err;
-+  int ret = 0;
-+
-+  init_output();
-+
-+  ret = pgp_to_kernel_algo(sig->pubkey_algo, NULL, &pkey_algo);
-+  if (ret < 0)
-+    return ret;
-+
-+  if (pkey_algo == PKEY_ALGO_ECDSA)
-+    sig_encoding = SIG_ENC_X962;
-+
-+  hash_algo = pgp_hash_algorithms[sig->digest_algo];
-+
-+  /* sig key algo */
-+  e_key_algo.field = __cpu_to_be64(SIG_KEY_ALGO);
-+  e_key_algo.length = __cpu_to_be64(sizeof(pkey_algo));
-+  total_len += sizeof(e_key_algo) + sizeof(pkey_algo);
-+
-+  /* sig hash algo */
-+  e_hash_algo.field = __cpu_to_be64(SIG_HASH_ALGO);
-+  e_hash_algo.length = __cpu_to_be64(sizeof(hash_algo));
-+  total_len += sizeof(e_hash_algo) + sizeof(hash_algo);
-+
-+  /* sig encoding */
-+  e_sig_encoding.field = __cpu_to_be64(SIG_ENC);
-+  e_sig_encoding.length = __cpu_to_be64(sizeof(sig_encoding));
-+  total_len += sizeof(e_sig_encoding) + sizeof(sig_encoding);
-+
-+  /* sig kid0 */
-+  e_sig_kid0.field = __cpu_to_be64(SIG_KID0);
-+  e_sig_kid0.length = __cpu_to_be64(2 * sizeof(*sig->keyid));
-+  total_len += sizeof(e_sig_kid0) + 2 * sizeof(*sig->keyid);
-+
-+  /* sig data */
-+  e_sig_data.field = __cpu_to_be64(SIG_DATA_END);
-+  ret = get_sig_data(sig, &sig_data, &sig_data_len);
-+  if (ret < 0)
-+    goto out;
-+
-+  e_sig_data.length = __cpu_to_be64(sig_data_len);
-+  total_len += sizeof(e_sig_data) + sig_data_len;
-+
-+  switch (sig->pubkey_algo) {
-+  case PUBKEY_ALGO_ECDSA:
-+    ret = mpis_to_asn1_sequence(sig->data, 2, &buffer, &buffer_len_padded);
-+    break;
-+  case PUBKEY_ALGO_RSA:
-+    err = gcry_mpi_print(GCRYMPI_FMT_USG, NULL, 0, &buffer_len, sig->data[0]);
-+    if (err) {
-+      ret = -EINVAL;
-+      break;
-+    }
-+
-+    buffer_len_padded = ((buffer_len + 7) / 8) * 8;
-+    buffer = xmalloc_clear(buffer_len_padded);
-+    if (!buffer) {
-+      ret = -ENOMEM;
-+      break;
-+    }
-+
-+    err = gcry_mpi_print(GCRYMPI_FMT_USG,
-+                         buffer + buffer_len_padded - buffer_len, buffer_len,
-+                         &buffer_len, sig->data[0]);
-+    if (err)
-+      ret = -EINVAL;
-+    break;
-+  default:
-+    ret = -EOPNOTSUPP;
-+    break;
-+  }
-+
-+  if (ret < 0)
-+    goto out;
-+
-+  /* key blob */
-+  e_sig_pub.field = __cpu_to_be64(SIG_S);
-+  e_sig_pub.length = __cpu_to_be64(buffer_len_padded);
-+  total_len += sizeof(e_sig_pub) + buffer_len_padded;
-+
-+  hdr.data_type = __cpu_to_be64(TYPE_SIG);
-+  hdr.num_fields = __cpu_to_be64(6);
-+  hdr.total_len = __cpu_to_be64(total_len);
-+
-+  es_write(listfp, &hdr, sizeof(hdr), NULL);
-+
-+  es_write(listfp, &e_key_algo, sizeof(e_key_algo), NULL);
-+  es_write(listfp, &pkey_algo, sizeof(pkey_algo), NULL);
-+
-+  es_write(listfp, &e_hash_algo, sizeof(e_hash_algo), NULL);
-+  es_write(listfp, &hash_algo, sizeof(hash_algo), NULL);
-+
-+  es_write(listfp, &e_sig_encoding, sizeof(e_sig_encoding), NULL);
-+  es_write(listfp, &sig_encoding, sizeof(sig_encoding), NULL);
-+
-+  es_write(listfp, &e_sig_kid0, sizeof(e_sig_kid0), NULL);
-+  _keyid = __cpu_to_be32(sig->keyid[0]);
-+  es_write(listfp, &_keyid, sizeof(_keyid), NULL);
-+  _keyid = __cpu_to_be32(sig->keyid[1]);
-+  es_write(listfp, &_keyid, sizeof(_keyid), NULL);
-+
-+  es_write(listfp, &e_sig_pub, sizeof(e_sig_pub), NULL);
-+  es_write(listfp, buffer, buffer_len_padded, NULL);
-+
-+  es_write(listfp, &e_sig_data, sizeof(e_sig_data), NULL);
-+  es_write(listfp, sig_data, sig_data_len, NULL);
-+
-+out:
-+  xfree(sig_data);
-+  xfree(buffer);
-+  return 0;
-+}
-diff --git a/g10/conv-packet.h b/g10/conv-packet.h
-index d35acb985fc..ef718de0a7a 100644
---- a/g10/conv-packet.h
-+++ b/g10/conv-packet.h
-@@ -26,6 +26,7 @@
- 
- #ifdef UASYM_KEYS_SIGS
- int write_kernel_key(PKT_public_key *pk);
-+int write_kernel_signature(PKT_signature *sig);
- #else
- static inline int write_kernel_key(PKT_public_key *pk)
- {
-@@ -33,5 +34,11 @@ static inline int write_kernel_key(PKT_public_key *pk)
-    return 0;
- }
- 
-+static inline int write_kernel_signature(PKT_signature *sig)
-+{
-+   (void)sig;
-+   return 0;
-+}
-+
- #endif /* UASYM_KEYS_SIGS */
- #endif /*G10_CONV_PACKET_H*/
-diff --git a/g10/mainproc.c b/g10/mainproc.c
-index edef9907127..1cb08d82000 100644
---- a/g10/mainproc.c
-+++ b/g10/mainproc.c
-@@ -502,6 +502,7 @@ proc_conv (PACKET *pkt)
-   switch (pkt->pkttype)
-     {
-     case PKT_PUBLIC_KEY: write_kernel_key(pkt->pkt.public_key); break;
-+    case PKT_SIGNATURE: write_kernel_signature(pkt->pkt.signature); break;
-     default: break;
-     }
-   free_packet(pkt, NULL);
--- 
-2.34.1
+[51935.482019] XFS (vda3): Filesystem has been shut down due to log error (=
+0x2).=20
+[51935.482020] XFS (vda3): Please unmount the filesystem and rectify the pr=
+oblem(s).=20
+[51935.482550] vda3: writeback error on inode 25320400, offset 2097152, sec=
+tor 58684120=20
 
+My assumption was that the fs being shut down caused some VFS operations
+to start returning errors (including getattr) and that is why
+fh_pre_saved ultimately didn't get set.
+
+>=20
+> > Move set_change_info to nfs4proc.c since all of the callers are there.
+> > Revise the condition for setting "atomic" to also check for
+> > fh_pre_saved. Drop the BUG_ON and make it a WARN_ON, and just have it
+> > zero out both change_attr4s when this occurs.
+> >=20
+> > Link: https://bugzilla.redhat.com/show_bug.cgi?id=3D2223560
+> > Reported-by: Boyang Xue <bxue@redhat.com>
+>=20
+> checkpatch now wants
+>=20
+> Reported-by:
+> Closes:
+>=20
+> in that order.
+>=20
+
+
+Mmmmkay. So I assume the URL should go in the Closes: field then?
+
+I'll take out the WARN_ON_ONCE and resend, once others have had a chance
+to comment.
+
+Thanks!
+
+>=20
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> > fs/nfsd/nfs4proc.c | 30 ++++++++++++++++++++++++++++++
+> > fs/nfsd/xdr4.h     | 11 -----------
+> > 2 files changed, 30 insertions(+), 11 deletions(-)
+> >=20
+> > diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+> > index d8e7a533f9d2..e6f406f27821 100644
+> > --- a/fs/nfsd/nfs4proc.c
+> > +++ b/fs/nfsd/nfs4proc.c
+> > @@ -380,6 +380,36 @@ nfsd4_create_file(struct svc_rqst *rqstp, struct s=
+vc_fh *fhp,
+> > return status;
+> > }
+> >=20
+> > +/**
+> > + * set_change_info - set up the change_info4 for a reply
+> > + * @cinfo: pointer to nfsd4_change_info to be populated
+> > + * @fhp: pointer to svc_fh to use as source
+> > + *
+> > + * Many operations in NFSv4 require change_info4 in the reply. This fu=
+nction
+> > + * populates that from the info that we (should!) have already collect=
+ed. In
+> > + * the event that we didn't get any pre-attrs, throw a warning and jus=
+t
+> > + * zero out both change_attr4 fields.
+> > + */
+> > +static void
+> > +set_change_info(struct nfsd4_change_info *cinfo, struct svc_fh *fhp)
+> > +{
+> > + cinfo->atomic =3D (u32)(fhp->fh_pre_saved && fhp->fh_post_saved && !f=
+hp->fh_no_atomic_attr);
+> > +
+> > + /*
+> > + * In the event that we couldn't fetch attributes from the
+> > + * server for some reason, just zero out the before and after
+>=20
+> "From the server"? Is it only likely to fail if the exported
+> filesystem is an NFS mount? Or did you mean "from the filesystem" ?
+>=20
+>=20
+> > + * change values, after throwing a warning.
+> > + */
+> > + if (WARN_ON_ONCE(!fhp->fh_pre_saved)) {
+>=20
+> Maybe you should clear ->atomic as well in this case.
+>=20
+>=20
+> > + cinfo->before_change =3D 0;
+> > + cinfo->after_change =3D 0;
+> > + return;
+> > + }
+> > +
+> > + cinfo->before_change =3D fhp->fh_pre_change;
+> > + cinfo->after_change =3D fhp->fh_post_change;
+> > +}
+> > +
+> > static __be32
+> > do_open_lookup(struct svc_rqst *rqstp, struct nfsd4_compound_state *cst=
+ate, struct nfsd4_open *open, struct svc_fh **resfh)
+> > {
+> > diff --git a/fs/nfsd/xdr4.h b/fs/nfsd/xdr4.h
+> > index b2931fdf53be..9e67f63c5f4d 100644
+> > --- a/fs/nfsd/xdr4.h
+> > +++ b/fs/nfsd/xdr4.h
+> > @@ -775,17 +775,6 @@ void warn_on_nonidempotent_op(struct nfsd4_op *op)=
+;
+> >=20
+> > #define NFS4_SVC_XDRSIZE sizeof(struct nfsd4_compoundargs)
+> >=20
+> > -static inline void
+> > -set_change_info(struct nfsd4_change_info *cinfo, struct svc_fh *fhp)
+> > -{
+> > - BUG_ON(!fhp->fh_pre_saved);
+> > - cinfo->atomic =3D (u32)(fhp->fh_post_saved && !fhp->fh_no_atomic_attr=
+);
+> > -
+> > - cinfo->before_change =3D fhp->fh_pre_change;
+> > - cinfo->after_change =3D fhp->fh_post_change;
+> > -}
+> > -
+> > -
+> > bool nfsd4_mach_creds_match(struct nfs4_client *cl, struct svc_rqst *rq=
+stp);
+> > bool nfs4svc_decode_compoundargs(struct svc_rqst *rqstp, struct xdr_str=
+eam *xdr);
+> > bool nfs4svc_encode_compoundres(struct svc_rqst *rqstp, struct xdr_stre=
+am *xdr);
+> >=20
+> > ---
+> > base-commit: 070f391ca4d48e1750ee6108eb44f751a9e9448e
+> > change-id: 20230720-bz2223560-9c4690a8217b
+> >=20
+> > Best regards,
+> > --=20
+> > Jeff Layton <jlayton@kernel.org>
+> >=20
+>=20
+> --
+> Chuck Lever
+>=20
+>=20
+
+--=20
+Jeff Layton <jlayton@kernel.org>
