@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC2075AA94
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AD475AAC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbjGTJZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
+        id S229828AbjGTJ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGTJZI (ORCPT
+        with ESMTP id S230368AbjGTJ3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:25:08 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F872AA6F;
-        Thu, 20 Jul 2023 02:08:02 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R66Gx5Dn5z18LYT;
-        Thu, 20 Jul 2023 17:05:45 +0800 (CST)
-Received: from [10.174.151.185] (10.174.151.185) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 20 Jul 2023 17:06:30 +0800
-Subject: Re: [PATCH] mm/memory-failure: fix hardware poison check in
- unpoison_memory()
-To:     Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-CC:     <akpm@linux-foundation.org>, <willy@infradead.org>,
-        <naoya.horiguchi@nec.com>, <stable@vger.kernel.org>
-References: <20230717181812.167757-1-sidhartha.kumar@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <0f1f354b-7308-d170-d84e-3c64161be647@huawei.com>
-Date:   Thu, 20 Jul 2023 17:06:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 20 Jul 2023 05:29:04 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C510135EA7;
+        Thu, 20 Jul 2023 02:14:49 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 9DB1A1C0A94; Thu, 20 Jul 2023 11:06:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+        t=1689843996;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8CmyUGkYoqBMN7yQuwyjyUq79PeTXu2tHN3lGSPclOI=;
+        b=P868O6Of04Gt35xLIFimGpUUpOj9Ciz+zJmAiQ2ggQdddHn6vu9APv3LSdL+pxmSsKX9mY
+        bR1O3sVvjLls1xNCAjaBPV/jeixHYYrvpEHRUvMubpTiuyo1T2dothb2ZfUFHywJOB0wzO
+        DoPSBQYWM27EoKTIDjJtMbLKoq/t6Ek=
+Date:   Thu, 20 Jul 2023 11:06:36 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     =?utf-8?B?546L5piOLei9r+S7tuW6leWxguaKgOacr+mDqA==?= 
+        <machel@vivo.com>, Ajay Singh <ajay.kathat@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "opensource.kernel" <opensource.kernel@vivo.com>
+Subject: Re: [PATCH net v2] net: wireless: Use kfree_sensitive instead of
+ kfree
+Message-ID: <ZLj5HPT2y8cRhWnC@duo.ucw.cz>
+References: <20230719022041.663-1-machel@vivo.com>
+ <2023071950-nervous-grub-5ee3@gregkh>
 MIME-Version: 1.0
-In-Reply-To: <20230717181812.167757-1-sidhartha.kumar@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="oMVjCGt+mpHmJqRG"
+Content-Disposition: inline
+In-Reply-To: <2023071950-nervous-grub-5ee3@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/18 2:18, Sidhartha Kumar wrote:
-> It was pointed out[1] that using folio_test_hwpoison() is wrong
-> as we need to check the indiviual page that has poison.
-> folio_test_hwpoison() only checks the head page so go back to using
-> PageHWPoison().
-> 
-> Reported-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Fixes: a6fddef49eef ("mm/memory-failure: convert unpoison_memory() to folios")
-> Cc: stable@vger.kernel.org #v6.4
-> Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-> 
-> [1]: https://lore.kernel.org/lkml/ZLIbZygG7LqSI9xe@casper.infradead.org/
-> ---
->  mm/memory-failure.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 02b1d8f104d51..a114c8c3039cd 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -2523,7 +2523,7 @@ int unpoison_memory(unsigned long pfn)
->  		goto unlock_mutex;
->  	}
->  
-> -	if (!folio_test_hwpoison(folio)) {
-> +	if (!PageHWPoison(p)) {
 
-For successfully handled pages, they should be non-compound pages (dissolved, splitted or normal pages).
-So this patch makes no change for them. But for failed to hwpoisoned thp and hugetlb, there's some difference.
-But since Naoya points out that, "the users of unpoison should know where the PageHWPoison is set via
-/proc/kpageflags.", I'm fine with this patch.
+--oMVjCGt+mpHmJqRG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Hi!
 
-Thanks.
+> > diff --git a/drivers/net/wireless/microchip/wilc1000/cfg80211.c b/drive=
+rs/net/wireless/microchip/wilc1000/cfg80211.c
+> > index b545d93c6e37..45bcadeba2da 100644
+> > --- a/drivers/net/wireless/microchip/wilc1000/cfg80211.c
+> > +++ b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
+> > @@ -518,7 +518,7 @@ static int wilc_wfi_cfg_allocate_wpa_igtk_entry(str=
+uct wilc_priv *priv, u8 idx)
+> >  static int wilc_wfi_cfg_copy_wpa_info(struct wilc_wfi_key *key_info,
+> >  				      struct key_params *params)
+> >  {
+> > -	kfree(key_info->key);
+> > +	kfree_sensitive(key_info->key);
+> > =20
+> >  	key_info->key =3D kmemdup(params->key, params->key_len, GFP_KERNEL);
+> >  	if (!key_info->key)
+> > @@ -656,7 +656,7 @@ static int del_key(struct wiphy *wiphy, struct net_=
+device *netdev, int link_id,
+> >  	if (!pairwise && (key_index =3D=3D 4 || key_index =3D=3D 5)) {
+> >  		key_index -=3D 4;
+> >  		if (priv->wilc_igtk[key_index]) {
+> > -			kfree(priv->wilc_igtk[key_index]->key);
+> > +			kfree_sensitive(priv->wilc_igtk[key_index]->key);
+>=20
+> Normally "kfree_sensitive()" is used at the end of a function for when
+> kfree() of a local variable might not be called because the compiler
+> thinks it is smarter than us and optimizes it away.
+>=20
+> Putting it here, in the normal operation, really doesn't do anything,
+> right?  There's always going to be odd data in the heap and normal
 
+It does memzero.
 
+https://elixir.bootlin.com/linux/latest/source/mm/slab_common.c#L1411
+								Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--oMVjCGt+mpHmJqRG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZLj5HAAKCRAw5/Bqldv6
+8q9CAJwI/0+AlEP6IBPaTJ2R5lpBx4s09gCdFA9DHOso/HkKZEgWU4YwD8Hp59k=
+=ZG6L
+-----END PGP SIGNATURE-----
+
+--oMVjCGt+mpHmJqRG--
