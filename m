@@ -2,112 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E2D75B259
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C65C75B25C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbjGTPUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
+        id S232141AbjGTPVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbjGTPUs (ORCPT
+        with ESMTP id S231487AbjGTPVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:20:48 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F270132
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:20:47 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b8390003e2so13490251fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:20:47 -0700 (PDT)
+        Thu, 20 Jul 2023 11:21:21 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E552106;
+        Thu, 20 Jul 2023 08:21:19 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fb761efa7aso1511455e87.0;
+        Thu, 20 Jul 2023 08:21:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689866445; x=1690471245;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/ylREXqkz3fT0Pf+CqfXaE+BQjJpH6bs6sgNBPlTXhI=;
-        b=eLtIQlQmHqbxvCJnjDOWTgaHJOOwYT6srOrs0dZW1ZWqHoGrwm8XvGUBNGapJkhmEo
-         qRHi3020i91UaAeF4aM9lWpHWLSPLNcFA93AJzVXmUMGpZ8cSQ/SENE6f1sT6ANl6IUW
-         he/Zqsvc7eif7bgAdSAkiUSFL/Ib46IwGwLxw3A8nh7Q4MVt+h8GYconsoN1pUgPbMO2
-         JsXHf73zr6z1MZq9e/mKaAsA4ua0543e70maFxBcxUoXzNz3al7Cb2geIt5Yu/dUOTxg
-         37FvKICFIE3nrfIRyBPUBifW6/RacBrL0tw/osRdJ4NCcgKnFxheCocCHJYKs9vIsZbw
-         15Qw==
+        d=gmail.com; s=20221208; t=1689866478; x=1690471278;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mnTujjggntaI1TmQTK0d3ossyVsbJfJshYOQ8cji1+g=;
+        b=eYBY+0MqJpx4ADKrFOk20ov8zksVoswb1FqL1JkrQQJZQaZOVmbjDDRE5iv/ob6b2T
+         TdZWg67WnIqEawluTRPPIMqogMLvCN76xbJPFjb8HrLO/Kaa6A+3kf6Bg8WoTGY0AxbS
+         R1YAvfGwIRPkt/FuIXqwk8KQe1h7vT8q79SI481RZwXa+AqjKPFo5ZCCUlfHnACnBmI5
+         NPewOhfrPnjFMnsrsdnqrmIY6Cmi71opkivYrRbSsqkT0wLbc9pUtaPdvv6Lf3dYYRI3
+         b1mrv/1La9liZXsjVVVj2f/PMa6krpXBegrcHr71TmRRlmDYyfq4r4Z7MTEuYV4+tgZw
+         8StA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689866445; x=1690471245;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/ylREXqkz3fT0Pf+CqfXaE+BQjJpH6bs6sgNBPlTXhI=;
-        b=NodssyRfDk3kP+KdZ44PH+XSpH/2FKN+uZOFcHNDbhBpuPvnm3PcHlW0FU9rvtitN4
-         BevVWif/DpweXvIohqCfGm9C6FKmT/CmrFVh6eqQ+ZbX0khYfEvX2cdpCD98/bgs4+8y
-         awy+AlIkdtlaZ/4Ry5WQiINhFb8LOM3isF47KfljUblBkYgpQDpFDXt6kaM0aYn2y9qm
-         T13S1lpuO5dmbCTVAH1upIBl8vPkz5YjNulZxaPWwRfGub8NYhbxh67mTmCgDWTUhSLO
-         BEV7uN+m2974gHHpnQkS9efb3g79lBUW4wPgm4cXcLJ7mN5lAXURygKMUNP2DEueYtgL
-         vB4w==
-X-Gm-Message-State: ABy/qLbtNl3UGN3f5yvQr+wqnwz6Kp23rJfNiBRzBCkv4f7OkyLuswjG
-        of2TIjTmsehFz4D1C4gRBKUOgLuZgs/oBXnO42vdQQ==
-X-Google-Smtp-Source: APBJJlGfNUWyNpCrqPbSIXlMquubbeynlWBhna2HQB+0ToDiza9YnGsEanbvJwHqlXirOL1qasExPLPfmhAzG13Kkgo=
-X-Received: by 2002:a2e:b17b:0:b0:2b6:cbba:1307 with SMTP id
- a27-20020a2eb17b000000b002b6cbba1307mr2352594ljm.0.1689866445627; Thu, 20 Jul
- 2023 08:20:45 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689866478; x=1690471278;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mnTujjggntaI1TmQTK0d3ossyVsbJfJshYOQ8cji1+g=;
+        b=ataJXJTk4wRq8NzapUGVdmEcT9pfs/Melo8+rKePqM7kmuTG62j2EHM1LVrb7pDE9Z
+         DMG4WKg7/yi78QH79yyVhcBbZH2oW3fKFUgk+CKxde1tpvtWT5r3GFcFuhSGBZfJSasd
+         yTisHi7k4J6TF3gyS26NU0seWaSe79rQ0G0Od6+qHASGy9JRVkEw35nw5EHPKdKLO6nm
+         Wl22L+l4LodhAnG8GYaYiepT8yZclhUblxV6tYh5qsyHEEUJUdIjx6yCEBOFYYFiEyLH
+         btIc+pYvJ6BnPa+qeTfoYf1EvQN+d+uJ/aKQOoZ/5vNVvObjLmuKIAqmjWxAXTq/FIrO
+         gKHg==
+X-Gm-Message-State: ABy/qLbb/9JjGPjKikkHy0WEwHptJ3pCGzEfAnZjlXWuUsSnAb7Wf+Ac
+        tzKb3qJ8+MRwL1PMb9SB80s=
+X-Google-Smtp-Source: APBJJlEfv0/EHwJ7NV0K3JdyPsHFLdZdxhd9iuy4QjFGZdqWyjzfXmKeb9j6SF3A7f84ceZcyrxLRA==
+X-Received: by 2002:a05:6512:368c:b0:4fb:85ad:b6e2 with SMTP id d12-20020a056512368c00b004fb85adb6e2mr2176714lfs.50.1689866477781;
+        Thu, 20 Jul 2023 08:21:17 -0700 (PDT)
+Received: from [192.168.0.34] (031011148015.gdynia.vectranet.pl. [31.11.148.15])
+        by smtp.gmail.com with ESMTPSA id k24-20020ac24578000000b004fb7be56ff0sm246450lfm.292.2023.07.20.08.21.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 08:21:17 -0700 (PDT)
+Message-ID: <bc13797b-d3b1-ac3a-5c87-16ca42e99138@gmail.com>
+Date:   Thu, 20 Jul 2023 17:21:15 +0200
 MIME-Version: 1.0
-References: <20230712074553.35907-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230712074553.35907-1-krzysztof.kozlowski@linaro.org>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 20 Jul 2023 17:20:33 +0200
-Message-ID: <CAMRc=Mf3G1NfwZv8nDdBMA2kqyuA77e2GS_OdU8uyxvfn6NhYQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: gpio: snps,dw-apb: allow gpio-line-names
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ARM: dts: samsung: fix Exynos4212 Tab3 makefile entries
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux Kernel Functional Testing <lkft@linaro.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+References: <20230720141537.188869-1-krzysztof.kozlowski@linaro.org>
+From:   Artur Weber <aweber.kernel@gmail.com>
+In-Reply-To: <20230720141537.188869-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 9:45=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> Allow the GPIO controller subnode to define GPIO names.  Already used in
-> at least on DTS:
->
->   bitmain/bm1880-sophon-edge.dtb: gpio@50027000: gpio-controller@0: 'gpio=
--line-names' does not match any of the regexes: 'pinctrl-[0-9]+'
->
+On 20.07.2023 16:15, Krzysztof Kozlowski wrote:
+> Makefile targets are DTB, not DTS.
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Closes: https://lore.kernel.org/linux-arm-kernel/CA+G9fYsfziBmQGQMGAKojhemCXssFyiNgk6aNjVXpJNNFh_5mg@mail.gmail.com/
+> Fixes: ee37a457af1d ("ARM: dts: exynos: Add Samsung Galaxy Tab 3 8.0 boards")
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml=
- b/Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml
-> index b391cc1b4590..209f03bba0a7 100644
-> --- a/Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml
-> @@ -61,6 +61,10 @@ patternProperties:
->        '#gpio-cells':
->          const: 2
->
-> +      gpio-line-names:
-> +        minItems: 1
-> +        maxItems: 32
-> +
->        ngpios:
->          default: 32
->          minimum: 1
-> --
-> 2.34.1
->
+>   arch/arm/boot/dts/samsung/Makefile | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
 
-Applied, thanks!
+Reviewed-by: Artur Weber <aweber.kernel@gmail.com>
 
-Bart
+Best regards
+Artur
