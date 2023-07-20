@@ -2,99 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD86675B4F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 746C475B50F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbjGTQsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
+        id S230028AbjGTQ4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231342AbjGTQsh (ORCPT
+        with ESMTP id S229689AbjGTQ4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:48:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6147C1715
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:48:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 20 Jul 2023 12:56:12 -0400
+X-Greylist: delayed 362 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 20 Jul 2023 09:56:09 PDT
+Received: from smtp4.goneo.de (smtp4.goneo.de [IPv6:2001:1640:5::8:59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDAC119
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:56:09 -0700 (PDT)
+Received: from hub1.goneo.de (hub1.goneo.de [85.220.129.52])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E927E61B7F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 16:48:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAC4AC433D9;
-        Thu, 20 Jul 2023 16:48:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689871715;
-        bh=O7hvPEsA3AiqsX5BWwDH200Ixzbu48Olxgtg3+mkbCw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YaSMYusal0PvVy01tmmI/xV+/0tdXb7MjQn7x4PUKkMxUhlvDKuw9XF2/chMGIYJ3
-         nHCiDfJMiLB/Wxd09Vuk7fWc4qZaMtdcr5GRQA6w6lyUbOloZdk14iPEZBICNaavYK
-         CJP1evKJMQBl7vdBYK3+znMEUGi2sPCv1C9pu7nN6qgcrqrVt38pzz+hFQ5baDdeq5
-         Lf68JKok/MA/vtVp5+NxkSnokOoK37vLx1i3sTOfndrtqYwZvP7yYXtC/2plAdNeXz
-         kTMw2B8J4Ks+feed4/VuaVQCj4YsUNm9tvjiExlU3PlO2ySkTTs1Kqx9HSww5JY7X2
-         WO7Z/+GskV4ew==
-Date:   Thu, 20 Jul 2023 17:48:30 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Traceback with CONFIG_REGMAP_KUNIT=y+CONFIG_DEBUG_ATOMIC_SLEEP=y
-Message-ID: <0e64a83a-fb53-48c4-b790-8e8dfa888ef3@sirena.org.uk>
-References: <ee59d128-413c-48ad-a3aa-d9d350c80042@roeck-us.net>
- <336fc14e-f734-49ea-97ce-802f03fa4422@kadam.mountain>
- <198c4edf-045c-8d85-1d5c-018378eeb490@roeck-us.net>
- <055f2564-551d-4b5f-a6e3-d54ae104d5c9@sirena.org.uk>
- <d29552c2-f20c-cf68-76ae-e03a2cc7e0ba@roeck-us.net>
- <12e6144c-0d24-4556-beef-d754273992e4@sirena.org.uk>
- <e3799cbf-daf2-c805-4c70-09679c4b6cf5@roeck-us.net>
- <9595effb-e01c-6c5c-362e-b8e8ad364fd7@roeck-us.net>
+        by smtp4.goneo.de (Postfix) with ESMTPS id 47BAB10A1E83;
+        Thu, 20 Jul 2023 18:50:02 +0200 (CEST)
+Received: from hub1.goneo.de (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        by hub1.goneo.de (Postfix) with ESMTPS id B2A55105C5F8;
+        Thu, 20 Jul 2023 18:50:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lemonage.de; s=DKIM001;
+        t=1689871800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iWOmNXCe1n/AaDrwwRNqn13hsApWVf7kAvHyrB0V0vg=;
+        b=O267U7dftQNtEcPGlVfA3cEXnQXDCz0DY/e9grKyujNdPLAs8Z4QDweI+9V5IZ8+lk7WoZ
+        eec1lKtdMHTvyM8s75vwxonXRkNcGguOPJHYhBVFt8nbRvs5dpndoONgev9zw0nw/7L1co
+        syVsee07nYS3Fqo52Bez14iQRec9MOqiqGMTpzWcmXbU4vI0byi81ZjiuhF/VDNXMZO8rb
+        loydPvPZBt9RrjQOql5rw6k1hGB8A7rcarc5Dn8yt2L1tlyiB9F9YRuAzJBYwWCfSao/fY
+        INEuOBisRWgfQKzwN9IvZqbRN9YrJDDje3C9plzYNIa4TRHYHaHfWcwCp5+rAA==
+Received: from webmail.goneo.de (webmail.goneo.de [IPv6:2001:1640:5::2:12])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hub1.goneo.de (Postfix) with ESMTPSA id 6407D105C5C4;
+        Thu, 20 Jul 2023 18:49:59 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9rqWvBLsjc3bRaXd"
-Content-Disposition: inline
-In-Reply-To: <9595effb-e01c-6c5c-362e-b8e8ad364fd7@roeck-us.net>
-X-Cookie: Ginger snap.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Thu, 20 Jul 2023 18:49:59 +0200
+From:   poeschel@lemonage.de
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        linux-kernel@vger.kernel.org, geert@linux-m68k.org,
+        Christian Meusel <christian.meusel@posteo.de>
+Subject: Re: [PATCH] auxdisplay: hd44780: move cursor home after clear display
+ command
+In-Reply-To: <20230706154937.1380bdcf9d84e1cff78911fa@hugovil.com>
+References: <20230706185100.84322-1-hugo@hugovil.com>
+ <CANiq72kZ0cHxCKkm_781G__9tJxYCw3tpJarqvLOFB4Jw6ZONw@mail.gmail.com>
+ <20230706154937.1380bdcf9d84e1cff78911fa@hugovil.com>
+User-Agent: goneo Webmail
+Message-ID: <7eb2d50baf269310e51854f700936e94@lemonage.de>
+X-Sender: poeschel@lemonage.de
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Rspamd-UID: 22c9a0
+X-Rspamd-UID: cd634c
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 2023-07-06 21:49, schrieb Hugo Villeneuve:
+> On Thu, 6 Jul 2023 21:33:05 +0200
+> Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> wrote:
+> 
+>> On Thu, Jul 6, 2023 at 8:51 PM Hugo Villeneuve <hugo@hugovil.com> 
+>> wrote:
+>> >
+>> > The "clear display" command on the NewHaven NHD-0220DZW-AG5 display
+>> > does NOT change the DDRAM address to 00h (home position) like the
+>> > standard Hitachi HD44780 controller. As a consequence, the starting
+>> > position of the initial string LCD_INIT_TEXT is not guaranteed to be
+>> > at 0,0 depending on where the cursor was before the clear display
+>> > command.
+>> >
+>> > Extract of CLEAR_DISPLAY command from datasheets of:
+>> >
+>> >     Hitachi HD44780:
+>> >         ... It then sets DDRAM address 0 into the address counter...
+>> >
+>> >     NewHaven NHD-0220DZW-AG5 datasheet:
+>> >         ... This instruction does not change the DDRAM Address
+>> >
+>> > Move the cursor home after sending clear display command to support
+>> > non-standard LCDs.
+>> >
+>> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+>> 
+>> Thanks! Sounds good to me, as long the extra command does not
+>> introduce some issue with the actual HD44780 -- can we double-check
+>> the HD44780 still works as expected?
+>> 
+>> Cc'ing Lars and Geert since they may be able to give it a quick test.
+> 
+> Hi Miguel,
+> I do not have a standard Hitachi controller to test it on, so lets wait
+> for feedback from Lars and Geert or others.
 
---9rqWvBLsjc3bRaXd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sorry guys,
+I do not have access to the relevant hardware anymore. I am CC'ing 
+Christian,
+who has the relevant hardware and maybe he can help testing the patch.
+Christian is on vacation up until mid august, so we have to wait a bit 
+more
+for someone able to test this.
 
-On Thu, Jul 20, 2023 at 09:41:42AM -0700, Guenter Roeck wrote:
+BTW: The displays I did the work back then on were for sure not genuine
+Hitachi ones either.
+I do not see, that the little patch should do any harm.
 
-> After adding the GFP_KERNEL -> map->alloc_flags changes to the maple tree
-> code while skipping the init functions, I no longer see the traceback.
-> This is without my patches.
-
-Ah, excellent - yes, that should sort it.  I've already queued your
-original patch for CI for 6.5, we could then apply both your new patch
-and Dan's for 6.6 to support anyone who for some reason does want to try
-dynamic allocation at runtime in atomic context.
-
---9rqWvBLsjc3bRaXd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS5ZV4ACgkQJNaLcl1U
-h9BjdQf/YGXJWl0RtGYYej01F84n9TZsha2Ht0LzhS7bymXZpU02zAGN7hnzujxi
-1yrpv8bdUibK26T7jDDIn3Ch1A+mJqtjfcAyUjoPkX0RiyOk/L+1HGv4IkQRx7Cb
-mI3yAQbuhLT8jVTsUbYpb/GFl+uFUPwVFGwvhg4bKcj5d+BHNsuErrp4pGV1WMtk
-4CizLMBfrW/9uDvFMqnd4H0W29bOkTbX39ZWVzXKpRRCiBCAUBQ1TOiCmSs/xCwc
-zkuz0WP0KbU+T11VwZ9WRjml0lB71AMdM1nywWP3eqhZ4bEGsla8WUlCir+PFQY2
-Op1pFXf+FV5kKf7g1eVOSRdd4ZtbQw==
-=E46E
------END PGP SIGNATURE-----
-
---9rqWvBLsjc3bRaXd--
+Regards,
+Lars
