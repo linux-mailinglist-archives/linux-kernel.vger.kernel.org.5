@@ -2,127 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1C775BA93
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B5A75BA98
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbjGTWYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 18:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
+        id S230260AbjGTW2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 18:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230214AbjGTWYs (ORCPT
+        with ESMTP id S230049AbjGTW2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:24:48 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329D0E44;
-        Thu, 20 Jul 2023 15:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689891887; x=1721427887;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=rdKwApR3nE0JioSbploXwNi+nKycgqcT+OaCWqAn1So=;
-  b=HJJkOmz0DSMX2l9ayx+quSZxgst6t6XP/S6iw2o9stPOFKq3WmHsYW08
-   Jd7wO51xF+XFavAui5u9YiswKMpuaOBhPbh+yrk3MV57/LgL5+/Qo47TM
-   Bqjn77O+exqglCaliDo6xuSdYl7luQKeN0VqGJyV462wdgptOXi0uT7kT
-   zH0iRYGk3p1sDKMLA2X1acVY9okQRbLWnQV4WDIrlqxad31GY0l8TQKOU
-   4YVoPAxTWrRL1kdKyxw3PfiD5TOwsRkdfuZtcsqMCfPBBgxf2rs+2V1b9
-   zK/2q9VJEjMOEJ4BXWyg3UH+C76ZeNsg34Rg0q46qb+2Jz5y7QW1Md+gD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="453256097"
-X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
-   d="scan'208";a="453256097"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 15:24:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="814713346"
-X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
-   d="scan'208";a="814713346"
-Received: from tholtx-mobl.amr.corp.intel.com (HELO [10.209.39.44]) ([10.209.39.44])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 15:24:34 -0700
-Message-ID: <ac578d2f-7567-708d-f131-9899f1b8dec1@intel.com>
-Date:   Thu, 20 Jul 2023 15:24:33 -0700
+        Thu, 20 Jul 2023 18:28:14 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EE010A
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:28:13 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-262ee777d1cso178893a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:28:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1689892093; x=1690496893;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ER64QQYHsUjwnG72el4kyuwJDiqUwTkcoHvph6BDruY=;
+        b=xvnxeikI4preGoplg4GJa2wMcpwX156LfaLr8H24NbeffloJZcxZ79aZcYtr3mITgR
+         J3SBSJ4LeXPYFbhe91Z0vaDGcAyXlTZf5tXCmRzOBCpy7n3NtPOf7HIr2lzT+ShELXLd
+         C3Sbk0INLRfUrb5HCB9ayySAPcoatZ2wF5LstdPXuVWobEPNOV1iHKqyw6ZJcCmmxVbs
+         E0ty3dIfkDANo1MPs9ZAKju5ZQy2F1bHqVxTca5GYUMJJzQNvfLot9kZ3k1Z20R4KOVy
+         LQmKKwgSfWkJU/hVi2kEoJasJvfst55olSEhnUFyOHfj7wNkqiBT+sB+OHZU3Cxks0cd
+         0egA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689892093; x=1690496893;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ER64QQYHsUjwnG72el4kyuwJDiqUwTkcoHvph6BDruY=;
+        b=fsvaUA1dVcVnCkoFBbQNLBu2DUlnGJiK3vJe+Rkq/VrO+oQyxncot9lHrk5XNU2qVz
+         /xXufwVTLRbW0AIcSi/W0LgiJiiHwvD8e513LIAe5vBN33oNJ66TYjpMlPYhcf2F3MOP
+         d9xrg/i/ZQ9qtgfFexbyt2lfI+uGCl8njHtaecfnvmTGTOUGdnQkj/gPspnZFwwqFc97
+         AqFiYjucJnEknIEucJjEpn2DiXFqB/h0pAkLc/SnHcZKqzRFsTbd54dOrxqBqWAQmEb9
+         xcV0xj44raokofVAdLZ7H1vLRK2Y5IR7AfpI1vFZALZcf35NfDStRpadXsj/Ew4WawKY
+         P67Q==
+X-Gm-Message-State: ABy/qLYICb6EYQb46IQaJYhHk7f36Kj4O6t9p3r6+g90QuylOtROIEOp
+        O+6ZhwLHFi7SMtadFhHJDKU6Fm9R+uADC56GBM4=
+X-Google-Smtp-Source: APBJJlGb5KbDm3ra3A6zcXjXBrySFNfNSVxxeSzp8vPmQrISvsnUWmY7D8a8kPz7CxMAemHOYr+xMg==
+X-Received: by 2002:a17:90a:304b:b0:262:c2a1:c01f with SMTP id q11-20020a17090a304b00b00262c2a1c01fmr30777pjl.3.1689892093322;
+        Thu, 20 Jul 2023 15:28:13 -0700 (PDT)
+Received: from [127.0.0.1] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id gv20-20020a17090b11d400b0025bf1ea918asm1409443pjb.55.2023.07.20.15.28.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 15:28:12 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Nitesh Shetty <nj.shetty@samsung.com>
+Cc:     martin.petersen@oracle.com, gost.dev@samsung.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230719121608.32105-1-nj.shetty@samsung.com>
+References: <CGME20230719121928epcas5p3c2af8016b8ffd5d4cb53238a5528eec8@epcas5p3.samsung.com>
+ <20230719121608.32105-1-nj.shetty@samsung.com>
+Subject: Re: [PATCH] block: refactor to use helper
+Message-Id: <168989209223.138604.5420894293792909192.b4-ty@kernel.dk>
+Date:   Thu, 20 Jul 2023 16:28:12 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH RFC v9 08/51] x86/speculation: Do not enable Automatic
- IBRS if SEV SNP is enabled
-Content-Language: en-US
-To:     Kim Phillips <kim.phillips@amd.com>,
-        Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
-Cc:     linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        bp@alien8.de, vbabka@suse.cz, kirill@shutemov.name,
-        ak@linux.intel.com, tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        dgilbert@redhat.com, jarkko@kernel.org, ashish.kalra@amd.com,
-        nikunj.dadhania@amd.com, liam.merwick@oracle.com,
-        zhi.a.wang@intel.com
-References: <20230612042559.375660-1-michael.roth@amd.com>
- <20230612042559.375660-9-michael.roth@amd.com>
- <696ea7fe-3294-f21b-3bc0-3f8cc0a718e9@intel.com>
- <b8eeb557-0a6b-3aff-0f31-1c5e3e965a50@amd.com>
- <396d0e29-defc-e207-2cbd-fe7137e798ad@intel.com>
- <a11ba4c9-8f6f-c231-c480-e2f25b8132b8@amd.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <a11ba4c9-8f6f-c231-c480-e2f25b8132b8@amd.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 12:11, Kim Phillips wrote:
-> Hopefully the commit text in this version will help answer all your
-> questions?:
 
-To be honest, it didn't really.  I kinda feel like I was having the APM
-contents tossed casually in my direction rather than being provided a
-fully considered explanation.
+On Wed, 19 Jul 2023 17:46:08 +0530, Nitesh Shetty wrote:
+> Reduce some code by making use of bio_integrity_bytes().
+> 
+> 
 
-Here's what I came up with instead:
+Applied, thanks!
 
-Host-side Automatic IBRS has different behavior based on whether SEV-SNP
-is enabled.
+[1/1] block: refactor to use helper
+      commit: 8f63fef5867fb5e8c29d9c14b6d739bfc1869d32
 
-Without SEV-SNP, Automatic IBRS protects only the kernel.  But when
-SEV-SNP is enabled, the Automatic IBRS protection umbrella widens to all
-host-side code, including userspace.  This protection comes at a cost:
-reduced userspace indirect branch performance.
+Best regards,
+-- 
+Jens Axboe
 
-To avoid this performance loss, nix using Automatic IBRS on SEV-SNP
-hosts.  Fall back to retpolines instead.
 
-=====
 
-Is that about right?
-
-I don't think any chit-chat about the guest side is even relevant.
-
-This also absolutely needs a comment.  Perhaps just pull the code up to
-the top level of the function and do this:
-
-	/*
-	 * Automatic IBRS imposes unacceptable overhead on host
-	 * userspace for SEV-SNP systems.  Zap it instead.
-	 */
-	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-		setup_clear_cpu_cap(X86_FEATURE_AUTOIBRS);
-
-BTW, I assume you've grumbled to folks about this.  It's an awful shame
-the hardware (or ucode) was built this was.  It's just throwing
-Automatic IBRS out the window because it's not architected in a nice way.
-
-Is there any plan to improve this?
