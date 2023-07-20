@@ -2,71 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 282C075B6D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9F175B6CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbjGTSbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 14:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37012 "EHLO
+        id S230007AbjGTSbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 14:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbjGTSbu (ORCPT
+        with ESMTP id S232072AbjGTSbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:31:50 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD675E47
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:31:38 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b703cbfaf5so16667021fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:31:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689877897; x=1690482697;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JrkFFvhCDJb8jzV4vfT/0jPY3RsaSNNqzn4aYV8R2Cs=;
-        b=m5mX4VS30OmUMkZ/G4ry1B4ELa9sEbB7lDPhBwdjeD7O2pRls71f6H0h//qa1Cck+B
-         7rt4dNLeKGXLeFI94ATkHwYPSgllaoUaJh4Xg+dGtHKXyOYE2wBrse7NDqIYpR8MOwqX
-         HiDlViZfqEBtqAURT6ykbrUMhj0IzH11ROq7SEKVrs8yUEojlDXiGiPkYOq+EvYihD8Q
-         6FAu97w8KIqxwEub7Ne+dIWdGM7cahPln4DkJvA9zOjGgWD5TcQnaFpuhsLsGzr0BehK
-         7xQLfNw6AM6wiDM+DzOM3M09l+pAvK4m2ZN3YdM+F+pEkokXOEGyZ2I+wxjmZAfp1tbU
-         2NZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689877897; x=1690482697;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JrkFFvhCDJb8jzV4vfT/0jPY3RsaSNNqzn4aYV8R2Cs=;
-        b=Wfwvxhv9KHzXQ/Lxp8PmVcXbjjuvQCNCvA+cWis9b6pU4NV0yzukgYYzVH20Oh7aeP
-         Mv3ePNu6LH3hPJth6zM4Uiwcwjzoo/uPYgY0+oZclEQmzfJl6XqDMx9/Wh0WZw34bYif
-         IN8A6dzdoZWgyQCUB2ELuuUHjpiR7lEcgLmzu3MCRbqdiUDNQTmWhhKrNCAGNJBv458+
-         p1D8K2mMvQeaTrJgQCqDGU37Z56v1eUWX1Dyk9TazbaMybtuD4cw1tHZnsKpe2shXqh7
-         bhGlARfU5XJEknlKavoXgs2t+Ecmqhw1qRnkd/OFC4CLFbvLVoIg4oH+50ZNTSTqH95T
-         mFkg==
-X-Gm-Message-State: ABy/qLbGRdvUpzsQLm72BrTu6AKwrMHTfAD3eD1sElUVMO8YmwsfPkci
-        wraDmAIZfAJ5jlvjMpSn2K++gwNz6qfObfyK3dxivtYN18pFl+HqCJF39w==
-X-Google-Smtp-Source: APBJJlE1BjjSg2woF/XJDLyNu/ayF8F8B6HCNXDFXwHIE5YnroYP7jQXWe5Vgzm3KTmEcJ6zOtUbG2PIILbLvjZqEXU=
-X-Received: by 2002:a2e:a28c:0:b0:2b4:45bc:7bd with SMTP id
- k12-20020a2ea28c000000b002b445bc07bdmr3118296lja.4.1689877896635; Thu, 20 Jul
- 2023 11:31:36 -0700 (PDT)
+        Thu, 20 Jul 2023 14:31:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CD11734;
+        Thu, 20 Jul 2023 11:31:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0ACA061BDC;
+        Thu, 20 Jul 2023 18:31:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 853CBC433C9;
+        Thu, 20 Jul 2023 18:31:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689877877;
+        bh=CtNFdU3F9NU71cT8OwvsL628imoZj0J7FgObAG63Kxs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f3oMGjflOKxpKcCuRTekPugXGhdCEoJECkCTCtljh9qkBNODb2gjp/RH8CrfeBET3
+         V08CAQ5L9vSmqBuNoa0cwYWxopmZ5ohkahFf2x+u1lf2LjjL/ThDQE8eEP3imj/n2s
+         XjvY50a4o8mJpBIu9YI+Goan+/t1AadoS2R9nhmLxM49gjZHc4ddLrAIE8c2QHhhoF
+         imn4wueHAcTdZV+KnNNPpD/A06brA5ZstZxqjtZwxb9vjbKeCc1lWlbZtdCZCo5Pj4
+         s7zXHStdAlWnD9z0EraLhldfQRFvipqq5zuitrNJjgvpfxeDN/aDZOtNQxzUuEJqW2
+         4gxfgLSwZs5PA==
+Date:   Thu, 20 Jul 2023 19:31:11 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Edward Cree <ecree.xilinx@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, corbet@lwn.net,
+        Andrew Lunn <andrew@lunn.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux@leemhuis.info, kvalo@kernel.org,
+        benjamin.poirier@gmail.com
+Subject: Re: [PATCH docs v3] docs: maintainer: document expectations of small
+ time maintainers
+Message-ID: <1d136db7-4c39-4b56-86fc-3840b1395b4d@sirena.org.uk>
+References: <20230719183225.1827100-1-kuba@kernel.org>
+ <50164116-9d12-698d-f552-96b52c718749@gmail.com>
 MIME-Version: 1.0
-References: <20230713042037.980211-1-42.hyeyoo@gmail.com> <20230720071826.GE955071@google.com>
- <CAJD7tka2b-VsLJRrwfdbFAwvfKV+sHvNyRBJsG+81EmQ-=MkyA@mail.gmail.com> <CAB=+i9QUNVbc+pEZD5vG_DUTcLrco5JNOrkkRDdcAfj08u7vVA@mail.gmail.com>
-In-Reply-To: <CAB=+i9QUNVbc+pEZD5vG_DUTcLrco5JNOrkkRDdcAfj08u7vVA@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 20 Jul 2023 11:31:00 -0700
-Message-ID: <CAJD7tkbO0W4woJtidbQU0F2iOCQcDG024c6EZ1ZOb2sLOG1ovg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 00/21] mm/zsmalloc: Split zsdesc from struct page
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jb9kzeyvt9pPL7IP"
+Content-Disposition: inline
+In-Reply-To: <50164116-9d12-698d-f552-96b52c718749@gmail.com>
+X-Cookie: Ginger snap.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,130 +65,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 4:34=E2=80=AFAM Hyeonggon Yoo <42.hyeyoo@gmail.com>=
- wrote:
->
-> On Thu, Jul 20, 2023 at 4:55=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > On Thu, Jul 20, 2023 at 12:18=E2=80=AFAM Sergey Senozhatsky
-> > <senozhatsky@chromium.org> wrote:
-> > >
-> > > On (23/07/13 13:20), Hyeonggon Yoo wrote:
-> > > > The purpose of this series is to define own memory descriptor for z=
-smalloc,
-> > > > instead of re-using various fields of struct page. This is a part o=
-f the
-> > > > effort to reduce the size of struct page to unsigned long and enabl=
-e
-> > > > dynamic allocation of memory descriptors.
-> > > >
-> > > > While [1] outlines this ultimate objective, the current use of stru=
-ct page
-> > > > is highly dependent on its definition, making it challenging to sep=
-arately
-> > > > allocate memory descriptors.
-> > >
-> > > I glanced through the series and it all looks pretty straight forward=
- to
-> > > me. I'll have a closer look. And we definitely need Minchan to ACK it=
-.
-> > >
-> > > > Therefore, this series introduces new descriptor for zsmalloc, call=
-ed
-> > > > zsdesc. It overlays struct page for now, but will eventually be all=
-ocated
-> > > > independently in the future.
-> > >
-> > > So I don't expect zsmalloc memory usage increase. On one hand for eac=
-h
-> > > physical page that zspage consists of we will allocate zsdesc (extra =
-bytes),
-> > > but at the same time struct page gets slimmer. So we should be even, =
-or
-> > > am I wrong?
-> >
-> > Well, it depends. Here is my understanding (which may be completely wro=
-ng):
-> >
-> > The end goal would be to have an 8-byte memdesc for each order-0 page,
-> > and then allocate a specialized struct per-folio according to the use
-> > case. In this case, we would have a memdesc and a zsdesc for each
-> > order-0 page. If sizeof(zsdesc) is 64 bytes (on 64-bit), then it's a
-> > net loss. The savings only start kicking in with higher order folios.
-> > As of now, zsmalloc only uses order-0 pages as far as I can tell, so
-> > the usage would increase if I understand correctly.
->
-> I partially agree with you that the point of memdesc stuff is
-> allocating a use-case specific
-> descriptor per folio. but I thought the primary gain from memdesc was
-> from anon and file pages
-> (where high order pages are more usable), rather than zsmalloc.
->
-> And I believe enabling a memory descriptor per folio would be
-> impossible (or inefficient)
-> if zsmalloc and other subsystems are using struct page in the current
-> way (or please tell me I'm wrong?)
->
-> So I expect the primary gain would be from high-order anon/file folios,
-> while this series is a prerequisite for them to work sanely.
 
-Right, I agree with that, sorry if I wasn't clear. I meant that
-generally speaking, we see gains from memdesc from higher order
-folios, so for zsmalloc specifically we probably won't see seeing any
-savings, and *might* see some extra usage (which I might be wrong
-about, see below).
+--jb9kzeyvt9pPL7IP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
-> > It seems to me though the sizeof(zsdesc) is actually 56 bytes (on
-> > 64-bit), so sizeof(zsdesc) + sizeof(memdesc) would be equal to the
-> > current size of struct page. If that's true, then there is no loss,
->
-> Yeah, zsdesc would be 56 bytes on 64 bit CPUs as memcg_data field is
-> not used in zsmalloc.
-> More fields in the current struct page might not be needed in the
-> future, although it's hard to say at the moment.
-> but it's not a loss.
+On Thu, Jul 20, 2023 at 07:23:56PM +0100, Edward Cree wrote:
+> On 19/07/2023 19:32, Jakub Kicinski wrote:
 
-Is page->memcg_data something that we can drop? Aren't there code
-paths that will check page->memcg_data even for kernel pages (e.g.
-__folio_put() -> __folio_put_small() -> mem_cgroup_uncharge() ) ?
+> > +Maintainers must review *all* patches touching exclusively their drivers,
+> > +no matter how trivial. If the patch is a tree wide change and modifies
+> > +multiple drivers - whether to provide a review is left to the maintainer.
 
->
-> > and there's potential gain if we start using higher order folios in
-> > zsmalloc in the future.
->
-> AFAICS zsmalloc should work even when the system memory is fragmented,
-> so we may implement fallback allocation (as currently discussed in
-> large anon folios thread).
+> Does this apply even to "checkpatch cleanup patch spam", where other patches
+>  sprayed from the same source (perhaps against other drivers) have already
+>  been nacked as worthless churn?  I've generally been assuming I can ignore
+>  those, do I need to make sure to explicitly respond with typically a repeat
+>  of what's already been said elsewhere?
 
-Of course, any usage of higher order folios in zsmalloc must have a
-fallback logic, although it might be simpler for zsmalloc than anon
-folios. I agree that's off topic here.
+Yeah, it's this sort of stuff that makes me concerned about the "must"
+wording.  I'd say it's obviously reasonable to ignore such things.
 
->
-> It might work, but IMHO the purpose of this series is to enable memdesc
-> for large anon/file folios, rather than seeing a large gain in zsmalloc i=
-tself.
-> (But even in zsmalloc, it's not a loss)
->
-> > (That is of course unless we want to maintain cache line alignment for
-> > the zsdescs, then we might end up using 64 bytes anyway).
->
-> we already don't require cache line alignment for struct page. the curren=
-t
-> alignment requirement is due to SLUB's cmpxchg128 operation, not cache
-> line alignment.
+--jb9kzeyvt9pPL7IP
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I thought we want  struct page to be cache line aligned (to avoid
-having to fetch two cache lines for one struct page), but I can easily
-be wrong.
+-----BEGIN PGP SIGNATURE-----
 
->
-> I might be wrong in some aspects, so please tell me if I am.
-> And thank you and Sergey for taking a look at this!
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS5fW4ACgkQJNaLcl1U
+h9AIHQf/Q9pz80IaSHLonaCmKZBC/PhYzARUEaUDHduoe5xLcbBScTYkq8I6Z7Xp
+MMEdiuI9ueOcSGGJNwSxrsjJMPvYQ59ji4fsJ7hEQULZZ+44f5XBR46jRd0rYX3z
+b3fNyivasjTQEo/yNinlzMDQBA5Bzgquft3GCSd7sOn+Ba76YWofKBrAWJ9XfHqs
+Hc9JY98Eh/sa03U8rTMF8BuDKpz+XNexp6r5WY9SbVwtHlNOM/vwvb3Lf3EK5TYA
+Xau0KMJYF+Z+kIn7vElXvGwxLPa1rbxZfj8yuvEnwxX76U0in2XSXmJ2b8Nyd2I4
+wF7oOllE5TwlbmHTw0i5uBWk33Npdw==
+=XcvA
+-----END PGP SIGNATURE-----
 
-Thanks to you for doing the work!
-
-> --
-> Hyeonggon
+--jb9kzeyvt9pPL7IP--
