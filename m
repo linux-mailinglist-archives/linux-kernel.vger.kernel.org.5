@@ -2,81 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8923575AC2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B002375AC30
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbjGTKj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 06:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43650 "EHLO
+        id S230253AbjGTKkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 06:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbjGTKj4 (ORCPT
+        with ESMTP id S229704AbjGTKkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 06:39:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA37E10FC;
-        Thu, 20 Jul 2023 03:39:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 20 Jul 2023 06:40:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C777510FC
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:40:29 -0700 (PDT)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qMR53-0003bG-FA; Thu, 20 Jul 2023 12:40:21 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 76ED9619D6;
-        Thu, 20 Jul 2023 10:39:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 628BEC433C8;
-        Thu, 20 Jul 2023 10:39:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689849594;
-        bh=Ar/Gi1NpfeGPQHX9IvNG60t0nluiTW51x6QacXx+2Fo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=itESVfl4kwoeHpazFODI25Ze0/Mpw2JE1wwRTKeEpY6l2/WuEIglQJEqaZBBDgn9G
-         81ZjDN1xNM6U6lOU5IKpsoInvikT3lNMYPlf2Mc4fbJklfhGG7ZcbZe6A3fxkBtDnq
-         CLge5Hw424qwiu1mL+NxMUzR4+xHVahM3J/cxYe/iJpsCf0yzo2FM4d4R+jZyrDM5h
-         1l93xBHmhfkfp2igQPCjy3TW3h0uWjhOImxdePy2KnFv0i/P5a5EmsX5MIWawoytEZ
-         OFbqU1U4a+vkd+dex7ykkUUD5hnFA7JFDZWuwsLfRomtCCgHVX36A4MjmX2km/T+de
-         05/h+1VZXHCdQ==
-Date:   Thu, 20 Jul 2023 11:39:47 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Elliot Berman <quic_eberman@quicinc.com>
-Cc:     Alex Elder <elder@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
-        Murali Nalajala <quic_mnalajal@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>,
-        Carl van Schaik <quic_cvanscha@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, qperret@google.com
-Subject: Re: [PATCH v13 10/24] gunyah: vm_mgr: Add/remove user memory regions
-Message-ID: <20230720103946.GC11034@willie-the-truck>
-References: <20230509204801.2824351-1-quic_eberman@quicinc.com>
- <20230509204801.2824351-11-quic_eberman@quicinc.com>
- <20230519115948.GB2637@willie-the-truck>
- <e22c31bd-10ed-f242-3e72-debf40e01e3c@quicinc.com>
- <20230605141839.GD21212@willie-the-truck>
- <3bd86221-ee2e-d157-009b-11f6ada98537@quicinc.com>
- <eae302ab-b508-cdc6-847f-dff6a6b82798@quicinc.com>
- <04605642-cad8-1701-ff41-63f2f00ba5f6@quicinc.com>
- <20230714121321.GB5597@willie-the-truck>
- <5ef4a5f7-27a0-f46c-fcbd-c3b8c93e0366@quicinc.com>
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id F200D1F6205;
+        Thu, 20 Jul 2023 10:40:19 +0000 (UTC)
+Date:   Thu, 20 Jul 2023 12:40:19 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>,
+        support@ems-wuensche.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-can@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v2 2/2] can: ems_pci: move ASIX AX99100 ids to pci_ids.h
+Message-ID: <20230720-document-tingle-e5d555714021-mkl@pengutronix.de>
+References: <20230720102859.2985655-1-jiaqing.zhao@linux.intel.com>
+ <20230720102859.2985655-3-jiaqing.zhao@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ywabkzbnj5v34fnc"
 Content-Disposition: inline
-In-Reply-To: <5ef4a5f7-27a0-f46c-fcbd-c3b8c93e0366@quicinc.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <20230720102859.2985655-3-jiaqing.zhao@linux.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -85,56 +58,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 07:28:49PM -0700, Elliot Berman wrote:
-> On 7/14/2023 5:13 AM, Will Deacon wrote:
-> > On Thu, Jul 13, 2023 at 01:28:34PM -0700, Elliot Berman wrote:
-> > > On 6/22/2023 4:56 PM, Elliot Berman wrote:
-> > > > On 6/7/2023 8:54 AM, Elliot Berman wrote:
-> > > > > On 6/5/2023 7:18 AM, Will Deacon wrote:
-> > > > > > Right, protected guests will use the new restricted memfd ("guest mem"
-> > > > > > now, I think?), but non-protected guests should implement the existing
-> > > > > > interface *without* the need for the GUP pin on guest memory pages. Yes,
-> > > > > > that means full support for MMU notifiers so that these pages can be
-> > > > > > managed properly by the host kernel. We're working on that for pKVM, but
-> > > > > > it requires a more flexible form of memory sharing over what we
-> > > > > > currently
-> > > > > > have so that e.g. the zero page can be shared between multiple entities.
-> > > > > 
-> > > > > Gunyah doesn't support swapping pages out while the guest is running
-> > > > > and the design of Gunyah isn't made to give host kernel full control
-> > > > > over the S2 page table for its guests. As best I can tell from
-> > > > > reading the respective drivers, ACRN and Nitro Enclaves both GUP pin
-> > > > > guest memory pages prior to giving them to the guest, so I don't
-> > > > > think this requirement from Gunyah is particularly unusual.
-> > > > > 
-> > > > 
-> > > > I read/dug into mmu notifiers more and I don't think it matches with
-> > > > Gunyah's features today. We don't allow the host to freely manage VM's
-> > > > pages because it requires the guest VM to have a level of trust on the
-> > > > host. Once a page is given to the guest, it's done for the lifetime of
-> > > > the VM. Allowing the host to replace pages in the guest memory map isn't
-> > > > part of any VM's security model that we run in Gunyah. With that
-> > > > requirement, longterm pinning looks like the correct approach to me.
-> > > 
-> > > Is my approach of longterm pinning correct given that Gunyah doesn't allow
-> > > host to freely swap pages?
-> > 
-> > No, I really don't think a longterm GUP pin is the right approach for this.
-> > GUP pins in general are horrible for the mm layer, but required for cases
-> > such as DMA where I/O faults are unrecoverable. Gunyah is not a good
-> > justification for such a hack, and I don't think you get to choose which
-> > parts of the Linux mm you want and which bits you don't.
-> > 
-> > In other words, either carve out your memory and pin it that way, or
-> > implement the proper hooks for the mm to do its job.
-> 
-> I talked to the team about whether we can extend the Gunyah support for
-> this. We have plans to support sharing/lending individual pages when the
-> guest faults on them. The support also allows (unprotected) pages to be
-> removed from the VM. We'll need to temporarily pin the pages of the VM
-> configuration device tree blob while the VM is being created and those pages
-> can be unpinned once the VM starts. I'll work on this.
 
-That's pleasantly unexpected, thanks for pursuing this!
+--ywabkzbnj5v34fnc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Will
+On 20.07.2023 10:28:59, Jiaqing Zhao wrote:
+> Move PCI Vendor and Device ID of ASIX AX99100 PCIe to Multi I/O
+> Controller to pci_ids.h for its serial and parallel port driver
+> support in subsequent patches.
+
+Sorry, I haven't noticed the change in "include/linux/pci_ids.h", that
+the other patches depend on. How to coordinate among the subsystems?
+
+I don't mind taking the entire (v1) series with the Acks from the
+tty/serial and parport maintainers, or give my Acked-by to upstream
+via their trees.
+
+> Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  drivers/net/can/sja1000/ems_pci.c | 6 +-----
+>  include/linux/pci_ids.h           | 4 ++++
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--ywabkzbnj5v34fnc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmS5DxAACgkQvlAcSiqK
+BOg1UAf/ZpmSvdfWjnvUZk3Qv6CwO0u6+aHK85LaqW2FCBv8xe0Ci75aMDbTPUn/
+RPkl6x1csKOKwJP8AwktGovSKKMSeBDyROTbsYBbbt31pjimsw+8Iys8/fl+evQK
+wZj6Smf98VWGg8FxCAOPBmdJNA6R/6nR1Wdv9Ernqemv/WmJGvEYpvbVGg6++gZj
+1/vGdFAw5G6k84HAktpsynVBlTZ5lRQaJHTTavXlo+sL143PePp5aSewYBqd0e26
+bAwZU/HNTcmcAhyzaczd/Hi49A6ZFZLM4RuY2pzpWFYhgYM+sel34Q95d63aA+hx
+VpTBRe3wOLTGC6KkKsuoN395qO3UlA==
+=6EYy
+-----END PGP SIGNATURE-----
+
+--ywabkzbnj5v34fnc--
