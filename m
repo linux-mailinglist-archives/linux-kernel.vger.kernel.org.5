@@ -2,146 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A0A75A715
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C041475A71A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231407AbjGTG7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
+        id S231396AbjGTHBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbjGTG7d (ORCPT
+        with ESMTP id S230194AbjGTHBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:59:33 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1575DCC;
-        Wed, 19 Jul 2023 23:59:29 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 21FB424E3BF;
-        Thu, 20 Jul 2023 14:59:27 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 20 Jul
- 2023 14:59:27 +0800
-Received: from [192.168.125.127] (113.72.147.86) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 20 Jul
- 2023 14:59:23 +0800
-Message-ID: <5e4d5920-f346-a6ae-8548-f70d9fa911fe@starfivetech.com>
-Date:   Thu, 20 Jul 2023 14:59:21 +0800
+        Thu, 20 Jul 2023 03:01:01 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5FC110
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:00:59 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3159da54e95so302699f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:00:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689836458; x=1690441258;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3ZEjFz7LOZdmaaeUrHv50TFnsXpX5R1v3ht7TZZ808M=;
+        b=1MfTo46HP0GNpJ9cJoyU1w/4UKVOAFz6QpJ4q70QXZNvjfL/YVfMgjHYqRYUSAxHDc
+         jTtWwxIaJkGms8cWTugFcMm3Mz/kMh171waQTUmVGUrnhWRdSZZAnopxNT52sGyk4Vhr
+         JccuRh1ReQQymlnZdjxbyC4YAll5dWm92TQo+/lCGQexj5cQvGKHZ8hgObMHOvGcBNKc
+         O5YUKLp3tsmyVHte9MmjUkozGnbFeFs6ggXSUOdv86CnBPa+ITw35RBr4dJ9ncycHteI
+         yoBB4mBa6g7bQWRNx+/Wq4Kah+D6A8vPku4/YRJO5RvDvi7ldgcJ20Ijhjk2fCg6Vb/c
+         pjSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689836458; x=1690441258;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3ZEjFz7LOZdmaaeUrHv50TFnsXpX5R1v3ht7TZZ808M=;
+        b=k8L1Ut4NwGNixkAwJqilatzjJ5WNio3jp+keARbpt/D1LfDyFIt8QbFt0R3A+626G4
+         aMujUwUWF/drvbPixAlGVAhZ+L3E7lds+5GizWWXgtuYjwezTAyIbZA4nMvpzu0J1wbu
+         ZieV3YFjty0GIfAS/yw+C/S17INjbooqxU7PRj7FS/j1Xp1rhqxMPPDjSfg6FBI64MpC
+         N4ty8M2SqnyqdCHW2SoYqtUm1sj8vmen4XYYElbipgN2MLpvd19DH9cKWK4Zb4CjiVmw
+         tNvbNqUcx11ITQYJNPh6GwGKCS5wis9i2va9sCYZoW3Hb48IQXqWf0CTqGCyMGTgE9eh
+         suIw==
+X-Gm-Message-State: ABy/qLaBIfsPdXeMCPkEZUGNOlFVP6WH2F0j5fAwtLUt10J5neNWTOy4
+        0LyDK8c0rEeV3q0xeHaxGbkXRjVGP7AoD5Bj/+08lw==
+X-Google-Smtp-Source: APBJJlFTDTlY08cieS+z3W0RyAq1pip8zIDcg55w3AOM8lXoEXjLTyl+gVgmTMjFP8mz/ktC3zk5jdu+9sPkK0WnKYA=
+X-Received: by 2002:adf:e903:0:b0:30e:3da5:46e5 with SMTP id
+ f3-20020adfe903000000b0030e3da546e5mr1830181wrm.59.1689836457755; Thu, 20 Jul
+ 2023 00:00:57 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v1 1/9] dt-bindings: PCI: Add PLDA XpressRICH PCIe host
- common properties
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20230719102057.22329-1-minda.chen@starfivetech.com>
- <20230719102057.22329-2-minda.chen@starfivetech.com>
- <c1dea7c8-2bc4-a113-0d40-098228fe3860@linaro.org>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <c1dea7c8-2bc4-a113-0d40-098228fe3860@linaro.org>
+References: <20230714165508.94561-1-charlie@rivosinc.com> <20230714165508.94561-4-charlie@rivosinc.com>
+In-Reply-To: <20230714165508.94561-4-charlie@rivosinc.com>
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+Date:   Thu, 20 Jul 2023 09:00:46 +0200
+Message-ID: <CAHVXubhUdtiP_G4PwsmQTkKbsQ0PuL-Xjtyowz9iXDeDPeiHFA@mail.gmail.com>
+Subject: Re: [PATCH v6 3/4] RISC-V: mm: Update pgtable comment documentation
+To:     Charlie Jenkins <charlie@rivosinc.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        conor@kernel.org, paul.walmsley@sifive.com, palmer@rivosinc.com,
+        aou@eecs.berkeley.edu, anup@brainfault.org,
+        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.147.86]
-X-ClientProxiedBy: EXCAS063.cuchost.com (172.16.6.23) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 14, 2023 at 6:56=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.c=
+om> wrote:
+>
+> sv57 is supported in the kernel so pgtable.h should reflect that.
+>
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/pgtable.h | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pg=
+table.h
+> index e13f5872bfe9..28660bab754c 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -840,14 +840,16 @@ static inline pte_t pte_swp_clear_exclusive(pte_t p=
+te)
+>   * Task size is 0x4000000000 for RV64 or 0x9fc00000 for RV32.
+>   * Note that PGDIR_SIZE must evenly divide TASK_SIZE.
+>   * Task size is:
+> - * -     0x9fc00000 (~2.5GB) for RV32.
+> - * -   0x4000000000 ( 256GB) for RV64 using SV39 mmu
+> - * - 0x800000000000 ( 128TB) for RV64 using SV48 mmu
+> + * -        0x9fc00000 (~2.5GB) for RV32.
+> + * -      0x4000000000 ( 256GB) for RV64 using SV39 mmu
+> + * -    0x800000000000 ( 128TB) for RV64 using SV48 mmu
+> + * - 0x100000000000000 (  64PB) for RV64 using SV57 mmu
+>   *
+>   * Note that PGDIR_SIZE must evenly divide TASK_SIZE since "RISC-V
+>   * Instruction Set Manual Volume II: Privileged Architecture" states tha=
+t
+>   * "load and store effective addresses, which are 64bits, must have bits
+>   * 63=E2=80=9348 all equal to bit 47, or else a page-fault exception wil=
+l occur."
+> + * Similarly for SV57, bits 63=E2=80=9357 must be equal to bit 56.
+>   */
+>  #ifdef CONFIG_64BIT
+>  #define TASK_SIZE_64   (PGDIR_SIZE * PTRS_PER_PGD / 2)
+> --
+> 2.41.0
+>
 
+You can add:
 
-On 2023/7/19 18:52, Krzysztof Kozlowski wrote:
-> On 19/07/2023 12:20, Minda Chen wrote:
->> Add PLDA XpressRICH PCIe host common properties dt-binding doc.
->> Microchip PolarFire PCIe host using PLDA IP.
->> Extract properties from Microchip PolarFire PCIe host.
->> 
->> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
->> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
->> ---
->>  .../pci/plda,xpressrich-pcie-common.yaml      | 72 +++++++++++++++++++
->>  1 file changed, 72 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml
-> 
-> How is it related with existing plda,xpressrich3-axi?
-> 
- yes, I just found plda,xpressrich3-axi. It is same IP in ARM juno soc. But it is firmware-initialized while microchip and starfive not.
-maybe I can rename this file to plda,xpressrich3-axi-common.yaml
->> 
->> diff --git a/Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml b/Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml
->> new file mode 100644
->> index 000000000000..3627a846c5d1
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml
->> @@ -0,0 +1,72 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/pci/plda,xpressrich-pcie-common.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: PLDA XpressRICH PCIe host common properties
->> +
->> +maintainers:
->> +  - Daire McNamara <daire.mcnamara@microchip.com>
->> +  - Minda Chen <minda.chen@starfivetech.com>
->> +
->> +description:
->> +  Generic PLDA XpressRICH PCIe host common properties.
->> +
->> +select: false
-> 
-> This should not be needed.
-> 
-ok
->> +
->> +properties:
->> +  reg:
->> +    description:
->> +      At least host IP register set and configuration space are
-> 
-> "At least" does not fit here since you do not allow anything else.
-> 
-I will delete "At least"
->> +      required for normal controller work.
->> +    maxItems: 2
->> +
->> +  reg-names:
->> +    oneOf:
->> +      - items:
->> +          - const: cfg
->> +          - const: apb
->> +      - items:
->> +          - const: host
->> +          - const: cfg
-> 
-> Maybe keep similar order, so cfg followed by host?
-> 
-I will follow cfg, apb
-> Best regards,
-> Krzysztof
-> 
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+
+Thanks,
+
+Alex
