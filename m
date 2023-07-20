@@ -2,220 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B70E575ADB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282BE75ADB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbjGTMB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
+        id S231569AbjGTMBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 08:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbjGTMBZ (ORCPT
+        with ESMTP id S229838AbjGTMBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:01:25 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044AD10F5
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:01:24 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-78654448524so28777139f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:01:23 -0700 (PDT)
+        Thu, 20 Jul 2023 08:01:17 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4199E4C
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:01:15 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fa48b5dc2eso1076866e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:01:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689854483; x=1690459283;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/tPgRTBCM977gv6ppD9dyp6sm3R1el/53OCuH7O8kZs=;
-        b=HCCWLsdMHVrRSRmcWQZ1gyQhIQ8PnZKEgxRhbxB4rzrssUNXiyiEHCiQTy9m2CaVUD
-         UC7hMy9bDCXQitgt9kEW40HmaobypIsgcOh6dTaLhUsRdXEy0UgQhdarWl8nEjesiMqu
-         wf94a8jLEFk04/WCVqYe6tapDFuSVjBgyS5OpZt/0oZOve7cYVpEGottkxqZGBzX47Ql
-         w6+gDTrOSXAZ/BcABN30IDbdfi2r1U2qys6+Rp5M2yNZMw4/Xo3rJ1QslrUhF1tmwhFN
-         NLdvGC4WoKZU1q2yrX1bWPUXS9Vfb3rlVxqYSlyxiDcpYPUfzkOQyZvICHSD0tGzVZbq
-         /jOg==
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689854474; x=1690459274;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YgJO0hqYDA2Nqh6mu9cc9MRnvY6CGEvkARFrTIY0YJA=;
+        b=EOnVsmgf5wMcztiewlDLKo7adJCc3hQNng9qGUN5JC8Hcg+x8KA9b2OnMFx6Y0HL21
+         BV994Fat4mX+vuYsz8ITdIIyYDIrszAQlgSl/eplNkls4pfBNg4xIAzQghKmT3CG2P6c
+         1q74DYVpdC1OL7bkDbZ78t9OLKcAXnBCDUboybEIsiGVBUivIhLWBa/7JKecC8TiKlVQ
+         S8vOm3+7srRHbyo7DrkQNI6S/KNUsMYUyF2zkSfKHBh/LoKkON8ede3wZzn61J/JzaLu
+         3J/kVU/2stVdKKxvg+2YFEsZt7y8c+hK7msmYqYP0m9VJwiNBFgUsIFVB3z1osESOkdb
+         JSyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689854483; x=1690459283;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/tPgRTBCM977gv6ppD9dyp6sm3R1el/53OCuH7O8kZs=;
-        b=M3pkjmP+w8+FDOVji+jHE2OOrKQl48u56ehyAzKEVnsfE3m9/51QpHht4xmvcye7SA
-         ox6HQJmQB4HdK37GsphkXKujY88LZo0NKoQxP6z8iFRCBF/jM42dDKgmoBdNZCvkvAlF
-         I002whqepcvDic/TEmAPIRAJFuDs/4Foil1ecd732Ym4kSofYudxV81gS0P4ffHqi071
-         vBUMuHQjd2e0bm/bGSbfvuX25TOrfKZhwA96CIIvGktSkAwOHn5NBdl96QYnv/inIHhl
-         XnAAuwWdM/MIXA1JwVn4NN4bSj/hF9pAUW54pVvQio8F3tnRO2oxyGTTGEMkl8fTQshD
-         FnNQ==
-X-Gm-Message-State: ABy/qLbJD2Iv4nr8JPOFtrAslEzxpxZxunR6gjHV2T+YS+9myX0NvCxI
-        tWfm0W07MTBIeZtZc4JibO1iVNTt5P/nNpBFQMiwDyWsHwueN8W6ODJSsQ==
-X-Google-Smtp-Source: APBJJlGo7PEyRReYO9+p6LLeUUTPFw7HirHSo/Bn91FisLSigztupOls/qSdo1v5ldtaZUTFDzRtAyX9iK196mYflvs=
-X-Received: by 2002:a5e:9403:0:b0:784:314f:8d68 with SMTP id
- q3-20020a5e9403000000b00784314f8d68mr8639142ioj.1.1689854483201; Thu, 20 Jul
- 2023 05:01:23 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689854474; x=1690459274;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YgJO0hqYDA2Nqh6mu9cc9MRnvY6CGEvkARFrTIY0YJA=;
+        b=Eb2gtSymfKBfacMttncmOVtfo5Yu4SMGEz4KCkhyofdIK+hbtBavS01AQKVSispXOR
+         eZtNOCH+1+McKCPbyaD3GktoPfMb4XYiNnttaYZs8o4r2gtOD52CrlVFNqLg/vP9lAh/
+         v0Xi/CqSk3yRV33VRZWfCmrAUjurWOJgCs0UWhxP52UZ2fEpqUZRlac3nsG9sR4xZjz/
+         j7r1qPO+1399VdxtnRBYlOGX9sYJiLFyhxCF/NXqbLr1oQBAYK9UyJrAOseyZLX7w874
+         PbU/DJOoanKgljMO0GltAhpmn6NINo1IpWEKZuhlsYhUAo9YnciRstiFCyXEIwfJTEt6
+         pSBA==
+X-Gm-Message-State: ABy/qLYl8NyuSQ7tkZaqhuzusF77aCwlFwe6zDMCrw91EmWLKTXuw4uJ
+        6QXlBPz+bqcM2N8FyFjEcVYYEA==
+X-Google-Smtp-Source: APBJJlEnYSy7ib/63UPVp8rdhMsFgvKjS/5g6LIpVjoes/s6RzvAdUJsWw142TXV/PG4TnnV8arOQw==
+X-Received: by 2002:a05:6512:2212:b0:4fb:844c:a867 with SMTP id h18-20020a056512221200b004fb844ca867mr2658884lfu.9.1689854474121;
+        Thu, 20 Jul 2023 05:01:14 -0700 (PDT)
+Received: from [10.1.3.131] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id h1-20020aa7de01000000b0051a4fcf7187sm663363edv.62.2023.07.20.05.01.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 05:01:13 -0700 (PDT)
+Message-ID: <a85ee57b-d000-7eef-6817-82539d37ed32@baylibre.com>
+Date:   Thu, 20 Jul 2023 14:01:12 +0200
 MIME-Version: 1.0
-References: <20230717113709.328671-1-glider@google.com> <20230717113709.328671-4-glider@google.com>
- <ZLd+J3BkI3oK5vCw@yury-ThinkPad> <CAG_fn=USWBm=mdhgOz_df0veGQdioGOARqpZH5rAg3_fwhpbjA@mail.gmail.com>
- <ZLhQRyWSQax5/DCL@yury-ThinkPad>
-In-Reply-To: <ZLhQRyWSQax5/DCL@yury-ThinkPad>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 20 Jul 2023 14:00:42 +0200
-Message-ID: <CAG_fn=WPE9fS=iKiYZB0dwNpdbdDwQWz+3XTECN3r131Hm4sGQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] arm64: mte: implement CONFIG_ARM64_MTE_COMP
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 3/3] arm64: dts: mediatek: mt6795-xperia-m5: Add DSI
+ Display and its vregs
+Content-Language: en-US
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, matthias.bgg@gmail.com
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, kernel@collabora.com
+References: <20230720091559.86406-1-angelogioacchino.delregno@collabora.com>
+ <20230720091559.86406-4-angelogioacchino.delregno@collabora.com>
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20230720091559.86406-4-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 11:06=E2=80=AFPM Yury Norov <yury.norov@gmail.com> =
-wrote:
->
-> > Would it help if I add a comment explaining that iN is an N-bit
-> > integer? Or do you prefer something like
-> >
-> >   r_sizes[0..4] : 5 x 7 bits
-> >
-> > ?
->
-> Yes, that would help.
-Ok.
 
 
-> > >                      7 : Invalid handler
-> >
-> > No, 7 means "treat this handle as an out-of-line one". It is still
-> > valid, but instead of tag data it contains a pointer.
->
-> So, it's invalid combination for _inline_ handler, right?
-Yes, that's right.
+On 20/07/2023 11:15, AngeloGioacchino Del Regno wrote:
+> Add support for the DSI display found on the Sony Xperia M5, including
+> the necessary regulators configuration for it.
 
-> Anyways, I'm
-> waiting for an updated docs, so it will hopefully bring some light.
-It's on the way.
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-> > > > +
-> > > > +/* Transform tag ranges back into tags. */
-> > > > +void ea0_ranges_to_tags(u8 *r_tags, short *r_sizes, int r_len, u8 =
-*tags)
-> > > > +{
-> > > > +     int i, j, pos =3D 0;
-> > > > +     u8 prev;
-> > > > +
-> > > > +     for (i =3D 0; i < r_len; i++) {
-> > > > +             for (j =3D 0; j < r_sizes[i]; j++) {
-> > > > +                     if (pos % 2)
-> > > > +                             tags[pos / 2] =3D (prev << 4) | r_tag=
-s[i];
-> > > > +                     else
-> > > > +                             prev =3D r_tags[i];
-> > > > +                     pos++;
->
-> This code flushes tags at every 2nd iteration. Is that true that
-> there's always an even number of iterations, i.e. rsizes is always
-> even, assuming r_len can be 1?
->
-> If not, it's possible to loose a tag, consider rlen =3D=3D 1 and
-> rsizes[0] =3D=3D 1.
-
-By design, ea0_ranges_to_tags() only accepts ranges that sum up to 256
-(as produced by ea0_tags_to_ranges())
-We could add a check for that, but given that it is an internal
-helper, a comment should suffice.
-
-But r_sizes[i] does not have to be even (otherwise we could've used
-this fact for a more efficient compression).
-For example, if the array of tags is {0xab, 0x0, 0x0, 0x0...}, then
-r_len =3D 3, r_sizes[] =3D {1, 1, 254}, r_tags =3D {0x0a, 0x0b, 0x0}.
-
->
-> If yes, you can simplify:
->
->      for (i =3D 0; i < r_len; i++)
->              for (j =3D 0; j < r_sizes[i]; j++)
->                      tags[pos++] =3D (r_tags[i] << 4) | r_tags[i];
->
-> Anyways, in the test can you run all possible combinations?
-
-I will extract code from compress_range_helper() to generate different
-numbers of ranges and test against those.
-
-
-> > > > +/* Translate allocation size into maximum number of ranges that it=
- can hold. */
-> > > > +static int ea0_size_to_ranges(int size)
-> > > > +{
-> > > > +     switch (size) {
-> > > > +     case 8:
-> > > > +             return 6;
-> > > > +     case 16:
-> > > > +             return 11;
-> > > > +     case 32:
-> > > > +             return 23;
-> > > > +     case 64:
-> > > > +             return 46;
-> > > > +     default:
-> > > > +             return 0;
-> > > > +     }
-> > > > +}
-> > >
-> > > I wonder if there's a math formula here? Can you explain where from
-> > > those numbers come?
-> >
-> > I'll add a comment there.
-> > Basically, for the inline case it is the biggest N such as 4 + 4*N +
-> > 7*(N-1) <=3D 63
-> >
-> > (not 64, because Xarray steals one bit from us)
-> >
-> > For the out-of-line case it is the biggest N such as 6+4*N + 7*(N-1)
-> > <=3D array size in bits (128, 256, or 512).
->
-> So it's: N <=3D (BIT_CAPACITY + NUM4 - NUM7) / (TAGSZ + SZ)
->
-> Doesn't look like a rocket science...
-
-Note that the size of largest_idx is picked based on the largest N for
-64-byte buffers.
-And the size of r_sizes[] depends on the number of tags that fit into
-128 bytes: if we throw away the largest range, each of the remaining
-ones will fit into 7 bits.
-But this will not be the case for e.g. 3-bit tags (we'll need 8-bit sizes t=
-hen).
-
-Changing mte_size_to_ranges() to "(size * 8 + MTE_BITS_PER_SIZE -
-largest_bits) / (MTE_BITS_PER_TAG + MTE_BITS_PER_SIZE)" indeed looks
-better than hardcoded numbers, but we should keep in mind that the
-parameters depend on each other and cannot be easily changed.
-
->
-> Why don't you code the formula instead of results? Are there any
-> difficulties? Things may change. For example, in next spec they
-> may bring 3- or 5-bit tags, and your compressor will crack loudly
-> with hardcoded numbers.
-
-The main reason for the compressor to crack loudly would be the
-hardcoded assumption of the tags consisting of 4 bits.
-I don't think it is practical to account on that number to change (and
-e.g. use bitmap_read/bitmap_write to convert tags into ranges) - we'd
-rather have a static assert for that.
-
-
---=20
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+-- 
+Regards,
+Alexandre
