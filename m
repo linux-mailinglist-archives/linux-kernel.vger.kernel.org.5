@@ -2,73 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB91375B3C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F80975B3CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbjGTQEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
+        id S230406AbjGTQGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjGTQEb (ORCPT
+        with ESMTP id S229744AbjGTQGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:04:31 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1956FCE;
-        Thu, 20 Jul 2023 09:04:31 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qMW70-0004pa-2K;
-        Thu, 20 Jul 2023 16:02:42 +0000
-Date:   Thu, 20 Jul 2023 17:02:32 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Jan Kara <jack@suse.cz>, Damien Le Moal <dlemoal@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>, Min Li <min15.li@samsung.com>,
-        Christian Loehle <CLoehle@hyperstone.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Yeqi Fu <asuk4.q@gmail.com>, Avri Altman <avri.altman@wdc.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ye Bin <yebin10@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH 6/6] block: implement NVMEM provider
-Message-ID: <ZLlaOB1sb8wSd7Aq@makrotopia.org>
-References: <cover.1689802933.git.daniel@makrotopia.org>
- <e5b709e15739dc0563e9497a2dbbe63050381db0.1689802933.git.daniel@makrotopia.org>
- <ZLjci5bHzTI+/Kxs@infradead.org>
+        Thu, 20 Jul 2023 12:06:16 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26ABACE
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:06:16 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R6Hc42RMSzBRDt0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 00:06:12 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689869171; x=1692461172; bh=JDPE0gY2EAQkPsdOqBvmm0/vLJD
+        5CubpDsaJaKXZx1A=; b=1WSa2No1l0KZmow4Fdyqpya+iRUGjHYtjeHzTKSmqB4
+        PZeggS0ybvA4/tZyCySf/CgzD6fpoIoF/iDCi7GuCgA6gld1+FvAIKTCCvDf46Mz
+        x5x1F7RAxeaiVZbkj1tNPR9Kr965eqECvxBZCgTBc7Fm37lowIfqyLhgnXDvevJ5
+        J3XgnHQ28ghRvLrZLV0JzC44uZhAxLqd9s+xz9RVW+2QX6bXXLJvkaCLA5E6WGpM
+        Yip41T3p15HwPuwBsBpsK3o37bOauA7+YIYpRf6tc1/26vNyIz7kKpIuCuHJilij
+        sJ/nYmePfZJHApfqA5yOmcKTgkjH4vBlmaoA/88wPGA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id e0EfisCcE8k6 for <linux-kernel@vger.kernel.org>;
+        Fri, 21 Jul 2023 00:06:11 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R6Hc32BnPzBHXgs;
+        Fri, 21 Jul 2023 00:06:11 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZLjci5bHzTI+/Kxs@infradead.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Fri, 21 Jul 2023 00:06:11 +0800
+From:   pangzizhen001@208suo.com
+To:     oliver@neukum.org, aliakc@web.de, lenehan@twibble.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers/scsi: Fix typos in comments
+In-Reply-To: <20230720160417.4434-1-wangjianli@cdjrlc.com>
+References: <20230720160417.4434-1-wangjianli@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <0dbfe7a07c205bde3fc60408ce7aa55a@208suo.com>
+X-Sender: pangzizhen001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 12:04:43AM -0700, Christoph Hellwig wrote:
-> The layering here is exactly the wrong way around.  This block device
-> as nvmem provide has not business sitting in the block layer and being
-> keyed ff the gendisk registration.  Instead you should create a new
-> nvmem backed that opens the block device as needed if it fits your
-> OF description without any changes to the core block layer.
-> 
+Delete duplicate word "the"
 
-Ok. I will use a class_interface instead.
+Signed-off-by: Zizhen Pang <pangzizhen001@208suo.com>
+---
+  drivers/scsi/dc395x.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/dc395x.c b/drivers/scsi/dc395x.c
+index c8e86f8a631e..077e76407c58 100644
+--- a/drivers/scsi/dc395x.c
++++ b/drivers/scsi/dc395x.c
+@@ -2052,7 +2052,7 @@ static void data_in_phase0(struct AdapterCtlBlk 
+*acb, struct ScsiReqBlk *srb,
+          /*
+           * KG: We should wait for the DMA FIFO to be empty ...
+           * but: it would be better to wait first for the SCSI FIFO and 
+then the
+-         * the DMA FIFO to become empty? How do we know, that the 
+device not already
++         * DMA FIFO to become empty? How do we know, that the device 
+not already
+           * sent data to the FIFO in a MsgIn phase, eg.?
+           */
+          if (!(DC395x_read8(acb, TRM_S1040_DMA_FIFOSTAT) & 0x80)) {
