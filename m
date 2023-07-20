@@ -2,336 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 210B075A5D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5825E75A5A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbjGTFpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 01:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
+        id S229789AbjGTFnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 01:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjGTFof (ORCPT
+        with ESMTP id S229777AbjGTFm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 01:44:35 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C850130F1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 22:43:31 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b8b4748fe4so2421445ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 22:43:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689831805; x=1690436605;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F4qF4m4CZ0J7MvKDZ7SuDqx2/4RIpDDKOilKu08KHM4=;
-        b=IyrHl2OL+ZaFltLDIVasngj2j1K+OZ+qa+3QXu79XWtVglM2cWkiGeKirVDN95uSIh
-         v8LLz6u0koidgBc6XA/UobhzQ2/Fy4zpfegH+qVo+7tcdbe8jTPxlugiZtaXWZtASDOt
-         kZT5/xRO69U70JpND6GldCzsYqsW4kCQhdZwNW2DRYEoxv+EmwCcUZqwX9B6LLdf/RmZ
-         YKpWGnqr5n/W08TVl4YBWGmElXYfqC4SDgOome0jUhTHdV5qy1AdxIoZnu/DSQHe/Vec
-         M3rIB3zRJE3lBlpkwgWNX3PyFhO7wCMNVINkCeadNTSDD+5VXHZItKNkM4nntMcxu23l
-         nDnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689831805; x=1690436605;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F4qF4m4CZ0J7MvKDZ7SuDqx2/4RIpDDKOilKu08KHM4=;
-        b=OZgvyX5dECiJ4PeBnj9FfN2v0cv1o3nMGFnojRHHlSSJXJucrjfD04PGsWksbnI/Up
-         Ao/SeD8d8YoqyTe3TQ7NJNNc5IUMMr+BJ3HHcYjtloRhfvEpT6jwuD5fc/j5yvx4UpIV
-         U14N+Hlu8JtbAVvtIqIxgMD1L6xExdsSXkzfL3Ruv56tLF4U8Ze4nDYwVEzG7O2pr9+B
-         DHkFbIsSaFMS7AULZkobTCBbalEbg9oPRgl9Kwww085IMllHcqnYM2qnuHpZKeLB+nKl
-         +1y0dkwT2AJRRPN2flqfXBK3OsM5yU/MTWAkXCC+S97CWlK8xPc92bj3GC9irlO8tW15
-         TlHQ==
-X-Gm-Message-State: ABy/qLZl0Jzrx0eqrlx+KDQT5AcKoZ2gML4qWDJeggpjYdj6rtmAREJQ
-        4LtqqAyIAcirLLGJ/ctX84yp
-X-Google-Smtp-Source: APBJJlH3D+p4R3kYiaf5ofKVmz6jSEu1z7fUOCxzuFzRG/QRgpY4X9zV5+Oe9oJNO8Ju2/+Rd7QbtA==
-X-Received: by 2002:a17:902:cecb:b0:1b8:b288:6274 with SMTP id d11-20020a170902cecb00b001b8b2886274mr4003427plg.18.1689831805211;
-        Wed, 19 Jul 2023 22:43:25 -0700 (PDT)
-Received: from localhost.localdomain ([117.206.119.70])
-        by smtp.gmail.com with ESMTPSA id r2-20020a170902be0200b001b85bb5fd77sm263367pls.119.2023.07.19.22.43.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 22:43:24 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, andersson@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
-        quic_nitirawa@quicinc.com, quic_narepall@quicinc.com,
-        quic_bhaskarv@quicinc.com, quic_richardp@quicinc.com,
-        quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
-        bmasney@redhat.com, krzysztof.kozlowski@linaro.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 15/15] scsi: ufs: qcom: Add support for scaling interconnects
-Date:   Thu, 20 Jul 2023 11:11:00 +0530
-Message-Id: <20230720054100.9940-16-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230720054100.9940-1-manivannan.sadhasivam@linaro.org>
-References: <20230720054100.9940-1-manivannan.sadhasivam@linaro.org>
+        Thu, 20 Jul 2023 01:42:57 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9678726B3;
+        Wed, 19 Jul 2023 22:42:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689831730; x=1721367730;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=MxY21H5/SQdW3PMRwfr7m9ZIcvcF/tWof2ULeHHJEG4=;
+  b=YKC8vqx/oB4XCAsYzh3zHSWddC7knVSe2RaL3/oAAWvJ3TiJ49mXsJOt
+   eX8mId8USIQkCdvtksoBP8VdGM/Ua1Y98kfPW5cL8vLZkqaJja0Me2gZL
+   mMCPDpQQcUaeo/C9XlYa9qO//SuthiQ4F688ro+WxWPEq2Ezs5ynADJzo
+   A+uxVuCFI+Y4VFsz0lMzntTV6KXEZjldhFJ/8gZzbqpcdCBiGHqX6X470
+   QzeBQu0xbxE+1kpRTia59FVwb5aeqZ1yysG4L7+0MnGJuVIEMlCK0F4Q4
+   vvDLdNu+28FfNV5imgEjzr5zwRDSGNIXNzyPZxoVra3yO4tOdWhTJaEYP
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="351503998"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="351503998"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 22:42:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="814381643"
+X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
+   d="scan'208";a="814381643"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.32.109])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 22:42:02 -0700
+Message-ID: <e1e94935-31b3-a567-44f7-739330548e7d@intel.com>
+Date:   Thu, 20 Jul 2023 08:41:59 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v2 5/7] perf evlist: Skip dummy event sample_type check
+ for evlist_config
+Content-Language: en-US
+To:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, kan.liang@linux.intel.com,
+        james.clark@arm.com, tmricht@linux.ibm.com, ak@linux.intel.com,
+        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+References: <20230715032915.97146-1-yangjihong1@huawei.com>
+ <20230715032915.97146-6-yangjihong1@huawei.com>
+ <5797e5a7-a85f-4f7c-1649-88f8f9ff7a6b@intel.com>
+ <44645529-0ee6-fe69-bc03-fefbc6f73d4d@huawei.com>
+ <c4b7fb70-7b2e-74e9-576f-33b29e8801cd@intel.com>
+ <77ea9309-da6f-f7b9-a822-b371e0f832d3@huawei.com>
+ <ab152551-5e65-c43d-2046-a096a28db913@intel.com>
+ <ca64f76f-ccf4-3779-4090-6028b7ee7bef@huawei.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <ca64f76f-ccf4-3779-4090-6028b7ee7bef@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qcom SoCs require scaling the interconnect paths for proper working of the
-peripherals connected through interconnects. Even for accessing the UFS
-controller, someone should setup the interconnect paths. So far, the
-bootloaders used to setup the interconnect paths before booting linux as
-they need to access the UFS storage for things like fetching boot firmware.
-But with the advent of multi boot options, bootloader nowadays like in
-SA8540p SoC do not setup the interconnect paths at all.
+On 18/07/23 14:32, Yang Jihong wrote:
+> Hello,
+> 
+> On 2023/7/18 18:29, Adrian Hunter wrote:
+>> On 18/07/23 13:17, Yang Jihong wrote:
+>>> Hello,
+>>>
+>>> On 2023/7/18 17:56, Adrian Hunter wrote:
+>>>> On 18/07/23 12:30, Yang Jihong wrote:
+>>>>> Hello,
+>>>>>
+>>>>> On 2023/7/17 22:41, Adrian Hunter wrote:
+>>>>>> On 15/07/23 06:29, Yang Jihong wrote:
+>>>>>>> The dummp event does not contain sampls data. Therefore, sample_type does
+>>>>>>> not need to be checked.
+>>>>>>>
+>>>>>>> Currently, the sample id format of the actual sampling event may be changed
+>>>>>>> after the dummy event is added.
+>>>>>>>
+>>>>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>>>>>>> ---
+>>>>>>>     tools/perf/util/record.c | 7 +++++++
+>>>>>>>     1 file changed, 7 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+>>>>>>> index 9eb5c6a08999..0240be3b340f 100644
+>>>>>>> --- a/tools/perf/util/record.c
+>>>>>>> +++ b/tools/perf/util/record.c
+>>>>>>> @@ -128,6 +128,13 @@ void evlist__config(struct evlist *evlist, struct record_opts *opts, struct call
+>>>>>>>             evlist__for_each_entry(evlist, evsel) {
+>>>>>>>                 if (evsel->core.attr.sample_type == first->core.attr.sample_type)
+>>>>>>>                     continue;
+>>>>>>> +
+>>>>>>> +            /*
+>>>>>>> +             * Skip the sample_type check for the dummy event
+>>>>>>> +             * because it does not have any samples anyway.
+>>>>>>> +             */
+>>>>>>> +            if (evsel__is_dummy_event(evsel))
+>>>>>>> +                continue;
+>>>>>>
+>>>>>> Sideband event records have "ID samples" so the sample type still matters.
+>>>>>>
+>>>>> Okay, will remove this patch in next version.
+>>>>>
+>>>>> Can I ask a little more about this?
+>>>>>
+>>>>> Use PERF_SAMPLE_IDENTIFICATION instead of PERF_SAMPLE_ID because for samples of type PERF_RECORD_SAMPLE, there may be different record formats due to different *sample_type* settings, so the fixed SAMPLE_ID  location mode PERF_SAMPLE_NAME is required here.
+>>>>>
+>>>>> However, for the sideband event, the samples of the PERF_RECORD_SAMPLE type is not recorded (only PERF_RECORD_MMAP, PERF_RECORD_COMM, and so on). Therefore, the "use sample identifier "check can be skipped here.
+>>>>>
+>>>>> That's my understanding of PERF_SAMPLE_IDENTIFICATION . If there is any error, please help to correct it.
+>>>>>
+>>>>> *Sideband event records have "ID samples" so the sample type still matters.*
+>>>>>
+>>>>> Does this mean that sideband will also record samples of type PERF_RECORD_SAMPLE? What exactly is the sampling data?
+>>>>
+>>>> No.  There are additional members as defined by struct sample_id for PERF_RECORD_MMAP:
+>>>>
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/perf_event.h?h=v6.4#n872
+>>>>
+>>> I'm sorry, maybe my comments didn't make it clear.
+>>> I mean, can we skip the "use_sample_identifier" check here?
+>>>
+>>> That is, set sample_type to *XXX|PERF_SAMPLE_ID* instead of *XXX|PERF_SAMPLE_IDENTIFICATION*
+>>
+>> In general, when there are different values of sample_type, the PERF_SAMPLE_ID is needed to determine which is which.
+>> But PERF_SAMPLE_ID is not at a fixed position, so the sample_type is needed to find it.  That is why PERF_SAMPLE_IDENTIFIER is better.
+>>
+>> Why do want to change it?
+> 
+> Without this patch, we now add a system_wide tracking event and modify the sample_type of the  actual sample event.
+> 
+> For example, when we run:
+>   # perf record -e cycles -C 0
+> 
+> 1. The default sample_type of the "cycles" is IP|TID|TIME|CPU|PERIOD.
+> 2. Then add a system_wide sideband event whose sample_type is IP|TID|TIME|CPU.
+> 3. The two sample_types are different.
+> 4. Therefore, the evlist__config adds a PERF_SAMPLE_IDENTIFICATION to both sample_types instead of PERF_SAMPLE_ID.
+> 
+> evlist__config {
+>         ...
+>          } else if (evlist->core.nr_entries > 1) {
+>          // One is cycles and the other is sideband .
+>                  struct evsel *first = evlist__first(evlist);
+> 
+> 
+>                  evlist__for_each_entry(evlist, evsel) {
+>                          if (evsel->core.attr.sample_type == first->core.attr.sample_type)
+>                                  continue;
+>                          use_sample_identifier = perf_can_sample_identifier();
+>                          // the sample_type of cycles is different from that of sideband.
+>                          // Therefore, use_sample_identifier is set to true.
+>                          break;
+>                  }
+>                  sample_id = true;
+>          }
+> 
+> 
+>          if (sample_id) {
+>                  evlist__for_each_entry(evlist, evsel)
+>                          evsel__set_sample_id(evsel, use_sample_identifier);
+>                          // both cycles and sideband set PERF_SAMPLE_IDENTIFICATION                         
+>          }
+>         ...
+> }
+> 
+> The comparison of the sideband event sample_type is skipped so that the sample_type of the original cycles is not changed.
+> 
+> It does not seem necessary to compare the sample_type of sidebband event. It is not an actual sample event, so I'd like to confirm that.
 
-So trying to configure UFS in the absence of the interconnect path
-configuration, results in boot crash.
+It is necessary.  The sample type is used to parse ID samples
+that are part of e.g. MMAP events - refer perf_evsel__parse_id_sample()
 
-To fix this issue and also to dynamically scale the interconnects (UFS-DDR
-and CPU-UFS), interconnect API support is added to the Qcom UFS driver.
-With this support, the interconnect paths are scaled dynamically based on
-the gear configuration.
+We could teach perf to handle dummy events differently because they
+do not use all the sample_type bits (only the ones in perf_evsel__parse_id_sample())
+but that is probably not backward compatible.
 
-During the early stage of ufs_qcom_init(), ufs_qcom_icc_init() will setup
-the paths to max bandwidth to allow configuring the UFS registers. Touching
-the registers without configuring the icc paths would result in a crash.
-However, we don't really need to set max vote for the icc paths as any
-minimal vote would suffice. But the max value would allow initialization to
-be done faster. After init, the bandwidth will get updated using
-ufs_qcom_icc_update_bw() based on the gear and lane configuration.
+The only value in that would be to make it work without
+PERF_SAMPLE_ID or PERF_SAMPLE_IDENTIFIER because that would
+save 8-bytes per event record.
 
-The bandwidth values defined in ufs_qcom_bw_table struct are taken from
-Qcom downstream vendor devicetree source and are calculated as per the
-UFS3.1 Spec, Section 6.4.1, HS Gear Rates. So it is fixed across platforms.
+Otherwise there is no benefit to prefer PERF_SAMPLE_ID over
+PERF_SAMPLE_IDENTIFIER except backward compatibility with
+some other tool that doesn't know about PERF_SAMPLE_IDENTIFIER.
 
-Cc: Brian Masney <bmasney@redhat.com>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/ufs/host/ufs-qcom.c | 131 +++++++++++++++++++++++++++++++++++-
- drivers/ufs/host/ufs-qcom.h |   3 +
- 2 files changed, 133 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index 8d6fd4c3324f..2ab09d65f1f4 100644
---- a/drivers/ufs/host/ufs-qcom.c
-+++ b/drivers/ufs/host/ufs-qcom.c
-@@ -7,6 +7,7 @@
- #include <linux/time.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
-+#include <linux/interconnect.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-@@ -46,6 +47,49 @@ enum {
- 	TSTBUS_MAX,
- };
- 
-+#define QCOM_UFS_MAX_GEAR 4
-+#define QCOM_UFS_MAX_LANE 2
-+
-+enum {
-+	MODE_MIN,
-+	MODE_PWM,
-+	MODE_HS_RA,
-+	MODE_HS_RB,
-+	MODE_MAX,
-+};
-+
-+struct __ufs_qcom_bw_table {
-+	u32 mem_bw;
-+	u32 cfg_bw;
-+} ufs_qcom_bw_table[MODE_MAX + 1][QCOM_UFS_MAX_GEAR + 1][QCOM_UFS_MAX_LANE + 1] = {
-+	[MODE_MIN][0][0]		   = { 0,		0 }, /* Bandwidth values in KB/s */
-+	[MODE_PWM][UFS_PWM_G1][UFS_LANE_1] = { 922,		1000 },
-+	[MODE_PWM][UFS_PWM_G2][UFS_LANE_1] = { 1844,		1000 },
-+	[MODE_PWM][UFS_PWM_G3][UFS_LANE_1] = { 3688,		1000 },
-+	[MODE_PWM][UFS_PWM_G4][UFS_LANE_1] = { 7376,		1000 },
-+	[MODE_PWM][UFS_PWM_G1][UFS_LANE_2] = { 1844,		1000 },
-+	[MODE_PWM][UFS_PWM_G2][UFS_LANE_2] = { 3688,		1000 },
-+	[MODE_PWM][UFS_PWM_G3][UFS_LANE_2] = { 7376,		1000 },
-+	[MODE_PWM][UFS_PWM_G4][UFS_LANE_2] = { 14752,		1000 },
-+	[MODE_HS_RA][UFS_HS_G1][UFS_LANE_1] = { 127796,		1000 },
-+	[MODE_HS_RA][UFS_HS_G2][UFS_LANE_1] = { 255591,		1000 },
-+	[MODE_HS_RA][UFS_HS_G3][UFS_LANE_1] = { 1492582,	102400 },
-+	[MODE_HS_RA][UFS_HS_G4][UFS_LANE_1] = { 2915200,	204800 },
-+	[MODE_HS_RA][UFS_HS_G1][UFS_LANE_2] = { 255591,		1000 },
-+	[MODE_HS_RA][UFS_HS_G2][UFS_LANE_2] = { 511181,		1000 },
-+	[MODE_HS_RA][UFS_HS_G3][UFS_LANE_2] = { 1492582,	204800 },
-+	[MODE_HS_RA][UFS_HS_G4][UFS_LANE_2] = { 2915200,	409600 },
-+	[MODE_HS_RB][UFS_HS_G1][UFS_LANE_1] = { 149422,		1000 },
-+	[MODE_HS_RB][UFS_HS_G2][UFS_LANE_1] = { 298189,		1000 },
-+	[MODE_HS_RB][UFS_HS_G3][UFS_LANE_1] = { 1492582,	102400 },
-+	[MODE_HS_RB][UFS_HS_G4][UFS_LANE_1] = { 2915200,	204800 },
-+	[MODE_HS_RB][UFS_HS_G1][UFS_LANE_2] = { 298189,		1000 },
-+	[MODE_HS_RB][UFS_HS_G2][UFS_LANE_2] = { 596378,		1000 },
-+	[MODE_HS_RB][UFS_HS_G3][UFS_LANE_2] = { 1492582,	204800 },
-+	[MODE_HS_RB][UFS_HS_G4][UFS_LANE_2] = { 2915200,	409600 },
-+	[MODE_MAX][0][0]		    = { 7643136,	307200 },
-+};
-+
- static struct ufs_qcom_host *ufs_qcom_hosts[MAX_UFS_QCOM_HOSTS];
- 
- static void ufs_qcom_get_default_testbus_cfg(struct ufs_qcom_host *host);
-@@ -789,6 +833,51 @@ static void ufs_qcom_dev_ref_clk_ctrl(struct ufs_qcom_host *host, bool enable)
- 	}
- }
- 
-+static int ufs_qcom_icc_set_bw(struct ufs_qcom_host *host, u32 mem_bw, u32 cfg_bw)
-+{
-+	struct device *dev = host->hba->dev;
-+	int ret;
-+
-+	ret = icc_set_bw(host->icc_ddr, 0, mem_bw);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to set bandwidth request: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = icc_set_bw(host->icc_cpu, 0, cfg_bw);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to set bandwidth request: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct __ufs_qcom_bw_table ufs_qcom_get_bw_table(struct ufs_qcom_host *host)
-+{
-+	struct ufs_pa_layer_attr *p = &host->dev_req_params;
-+	int gear = max_t(u32, p->gear_rx, p->gear_tx);
-+	int lane = max_t(u32, p->lane_rx, p->lane_tx);
-+
-+	if (ufshcd_is_hs_mode(p)) {
-+		if (p->hs_rate == PA_HS_MODE_B)
-+			return ufs_qcom_bw_table[MODE_HS_RB][gear][lane];
-+		else
-+			return ufs_qcom_bw_table[MODE_HS_RA][gear][lane];
-+	} else {
-+		return ufs_qcom_bw_table[MODE_PWM][gear][lane];
-+	}
-+}
-+
-+static int ufs_qcom_icc_update_bw(struct ufs_qcom_host *host)
-+{
-+	struct __ufs_qcom_bw_table bw_table;
-+
-+	bw_table = ufs_qcom_get_bw_table(host);
-+
-+	return ufs_qcom_icc_set_bw(host, bw_table.mem_bw, bw_table.cfg_bw);
-+}
-+
- static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
- 				enum ufs_notify_change_status status,
- 				struct ufs_pa_layer_attr *dev_max_params,
-@@ -852,6 +941,8 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
- 		memcpy(&host->dev_req_params,
- 				dev_req_params, sizeof(*dev_req_params));
- 
-+		ufs_qcom_icc_update_bw(host);
-+
- 		/* disable the device ref clock if entered PWM mode */
- 		if (ufshcd_is_hs_mode(&hba->pwr_info) &&
- 			!ufshcd_is_hs_mode(dev_req_params))
-@@ -981,7 +1072,9 @@ static int ufs_qcom_setup_clocks(struct ufs_hba *hba, bool on,
- 
- 	switch (status) {
- 	case PRE_CHANGE:
--		if (!on) {
-+		if (on) {
-+			ufs_qcom_icc_update_bw(host);
-+		} else {
- 			if (!ufs_qcom_is_link_active(hba)) {
- 				/* disable device ref_clk */
- 				ufs_qcom_dev_ref_clk_ctrl(host, false);
-@@ -993,6 +1086,9 @@ static int ufs_qcom_setup_clocks(struct ufs_hba *hba, bool on,
- 			/* enable the device ref clock for HS mode*/
- 			if (ufshcd_is_hs_mode(&hba->pwr_info))
- 				ufs_qcom_dev_ref_clk_ctrl(host, true);
-+		} else {
-+			ufs_qcom_icc_set_bw(host, ufs_qcom_bw_table[MODE_MIN][0][0].mem_bw,
-+					    ufs_qcom_bw_table[MODE_MIN][0][0].cfg_bw);
- 		}
- 		break;
- 	}
-@@ -1031,6 +1127,34 @@ static const struct reset_control_ops ufs_qcom_reset_ops = {
- 	.deassert = ufs_qcom_reset_deassert,
- };
- 
-+static int ufs_qcom_icc_init(struct ufs_qcom_host *host)
-+{
-+	struct device *dev = host->hba->dev;
-+	int ret;
-+
-+	host->icc_ddr = devm_of_icc_get(dev, "ufs-ddr");
-+	if (IS_ERR(host->icc_ddr))
-+		return dev_err_probe(dev, PTR_ERR(host->icc_ddr),
-+				    "failed to acquire interconnect path\n");
-+
-+	host->icc_cpu = devm_of_icc_get(dev, "cpu-ufs");
-+	if (IS_ERR(host->icc_cpu))
-+		return dev_err_probe(dev, PTR_ERR(host->icc_cpu),
-+				    "failed to acquire interconnect path\n");
-+
-+	/*
-+	 * Set Maximum bandwidth vote before initializing the UFS controller and
-+	 * device. Ideally, a minimal interconnect vote would suffice for the
-+	 * initialization, but a max vote would allow faster initialization.
-+	 */
-+	ret = ufs_qcom_icc_set_bw(host, ufs_qcom_bw_table[MODE_MAX][0][0].mem_bw,
-+				  ufs_qcom_bw_table[MODE_MAX][0][0].cfg_bw);
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret, "failed to set bandwidth request\n");
-+
-+	return 0;
-+}
-+
- /**
-  * ufs_qcom_init - bind phy with controller
-  * @hba: host controller instance
-@@ -1085,6 +1209,10 @@ static int ufs_qcom_init(struct ufs_hba *hba)
- 		}
- 	}
- 
-+	err = ufs_qcom_icc_init(host);
-+	if (err)
-+		goto out_variant_clear;
-+
- 	host->device_reset = devm_gpiod_get_optional(dev, "reset",
- 						     GPIOD_OUT_HIGH);
- 	if (IS_ERR(host->device_reset)) {
-@@ -1282,6 +1410,7 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
- 				    dev_req_params->pwr_rx,
- 				    dev_req_params->hs_rate,
- 				    false);
-+		ufs_qcom_icc_update_bw(host);
- 		ufshcd_uic_hibern8_exit(hba);
- 	}
- 
-diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
-index 6289ad5a42d0..dc27395ecba1 100644
---- a/drivers/ufs/host/ufs-qcom.h
-+++ b/drivers/ufs/host/ufs-qcom.h
-@@ -206,6 +206,9 @@ struct ufs_qcom_host {
- 	struct clk *tx_l1_sync_clk;
- 	bool is_lane_clks_enabled;
- 
-+	struct icc_path *icc_ddr;
-+	struct icc_path *icc_cpu;
-+
- #ifdef CONFIG_SCSI_UFS_CRYPTO
- 	struct qcom_ice *ice;
- #endif
--- 
-2.25.1
+> 
+> If the change is as expected and necessary, then I'll remove the patch.
+> 
+> Thanks,
+> Yang
+> 
 
