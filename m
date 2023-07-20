@@ -2,144 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AD075B822
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02D475B826
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbjGTTic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 15:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45272 "EHLO
+        id S231130AbjGTTjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 15:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjGTTia (ORCPT
+        with ESMTP id S230516AbjGTTjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 15:38:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E191733;
-        Thu, 20 Jul 2023 12:38:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4D97461C2C;
-        Thu, 20 Jul 2023 19:38:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20640C433C8;
-        Thu, 20 Jul 2023 19:38:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689881908;
-        bh=By0NPw7H/C/+dXpxiKt2BsETcxwIAwyz076qNq493fs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KkXrnUFkxGKR1VycaaU+e/LHj6F4FdnNy7lB+dNSK9Q61ZsVz0CREEYQ5CPAbtr3z
-         vE7NT0zo6qbfN0kKA8mL9nnBVaeRM2SzBl8Qd6DYp5q/9kcjyKBsMD1DzB46LsvuYb
-         zp9905JKe/0jYGhatoJCvet6ORCSWtNZkqq7pwic=
-Date:   Thu, 20 Jul 2023 21:38:21 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jirislaby@kernel.org, jringle@gridpoint.com,
-        tomasz.mon@camlingroup.com, l.perczak@camlintechnologies.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v7 5/9] serial: sc16is7xx: fix regression with GPIO
- configuration
-Message-ID: <2023072040-clock-waltz-a5f2@gregkh>
-References: <CAHp75VeWFPBmsD8zsSAaQGNNXtfgLtQuM9AMGfLPk-6p0VW=Pg@mail.gmail.com>
- <20230620100846.d58436efc061fb91074fa7e5@hugovil.com>
- <CAHp75VcWSVgA8LFLo0-b5TfKWdHb2GfLpXV-V3PZvthTv1Xc4A@mail.gmail.com>
- <20230620113312.882d8f0c7d5603b1c93f33fb@hugovil.com>
- <CAHp75VfGm6=ULW6kMjsg2OgB1z1T0YdmzvCTa3DFXXX-q_RnfA@mail.gmail.com>
- <20230620114209.fb5272ad8cf5c5e2895d68b1@hugovil.com>
- <CAHp75VcieuYqxWrO7rknx2ROYz=rnWnKV6s9eXZ5Zd1BKc6YMg@mail.gmail.com>
- <20230620121645.512b31a872306b43a276bbac@hugovil.com>
- <20230719144048.4f340b8aa0a29ab65a274273@hugovil.com>
- <2023071922-rigor-collage-804e@gregkh>
+        Thu, 20 Jul 2023 15:39:02 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B242118
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:39:01 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6bb07d274feso708200a34.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:39:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689881940; x=1690486740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9+940zjds4bSCgKIfbB+4h4F9JhiabKtFHTSYiorpkM=;
+        b=xau+BeGnyS2usHyzCT7o9jXEktoyvjp12ixYPPNawQWUEIL8od5FVs5CDnn4V+m+14
+         03ETb6Yu9BgA0hg5yr1GbgpLd6Z/14Cw7l8DFTxwCO68I26BO45HQ2FXM9ZkY8OcoYMZ
+         sMvj+Ocq77RIpGaVwk8NRGvSixQYqx2bIAV1knjJfDOWUQD4fhY5tz5scW3HbkrUj42A
+         bpx4qQgEW8OKH/m8WPkpAJMXOKzhDjuxfeBQjL3HwabE6t2n1eannNNzhs2TxLwsk1NQ
+         Coxd4j4se52HFavrFh+adE+QB0HS8Gzd3om1nqCv0Rtfzrl8pJsHAnVaMXm8i84nj/vA
+         THeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689881940; x=1690486740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9+940zjds4bSCgKIfbB+4h4F9JhiabKtFHTSYiorpkM=;
+        b=AOyjBD8o3oaDYhOkxQuYjQAEKonX7s2Drl97JXZNR8/YDZ1QCBhU9jL6RodEweJ0zN
+         UOuTbFLq7pJ/I0+pcpz9B/QIwnUrPG9LvYRI7PUn7pAz/lASIi+39GEc5cyU6B7UjBVe
+         oizY8uT5jNvrN7HT8a0Tso/KJbsuhzK14iBdd7+zWMFr19gABDWcP9rvW21CivJPxEvw
+         /4PrFlHfzDDM9RzX+2kesmYXcoIdMyNgmVMly2TDPAE0Ru8L4FS5ZB/EsygAUQQbew83
+         f969nznw9f/HV5ZcYlHhpa8UTQgj501E3q87IP4TrgBMLv/b3zjQOMMKutaY5BUpNuMx
+         nZmw==
+X-Gm-Message-State: ABy/qLam04jM8h0xhTgXo70kxkBL4qux3RTbl+YjFdN78Y8HqajTTK9q
+        bmc+xRoi7cAvjTs8d58MmmDWFojclyzenzxyWlL05A==
+X-Google-Smtp-Source: APBJJlHxlB8o/cqiFOLqYhuTYMWBF3q2dKdZ0BspgF6BWNj8zk5Ho3Qo5xNlFK8k7e+JM/0rKSf9LuvJuG2y4pHZdaw=
+X-Received: by 2002:a05:6830:1d85:b0:6b9:6ffd:91e6 with SMTP id
+ y5-20020a0568301d8500b006b96ffd91e6mr3881194oti.32.1689881940658; Thu, 20 Jul
+ 2023 12:39:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2023071922-rigor-collage-804e@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230714-topic-lpass_lpi_cleanup-v1-0-dc18b5bd14f7@linaro.org>
+In-Reply-To: <20230714-topic-lpass_lpi_cleanup-v1-0-dc18b5bd14f7@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 20 Jul 2023 21:38:49 +0200
+Message-ID: <CACRpkdYBNOWC1NfBd6dXCFrP3zRK3kDeL_H=HyfFk=e1bko=eA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Clean up LPASS_LPI probe
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 09:14:23PM +0200, Greg KH wrote:
-> On Wed, Jul 19, 2023 at 02:40:48PM -0400, Hugo Villeneuve wrote:
-> > On Tue, 20 Jun 2023 12:16:45 -0400
-> > Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > 
-> > > On Tue, 20 Jun 2023 18:45:51 +0300
-> > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > 
-> > > > On Tue, Jun 20, 2023 at 6:42 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > > On Tue, 20 Jun 2023 18:35:48 +0300
-> > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > > > On Tue, Jun 20, 2023 at 6:33 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > > > > On Tue, 20 Jun 2023 18:18:12 +0300
-> > > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > > > > > On Tue, Jun 20, 2023 at 5:08 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > > > > > > On Sun, 4 Jun 2023 22:31:04 +0300
-> > > > > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > 
-> > > > ...
-> > > > 
-> > > > > > > > > did you have a chance to look at V8 (sent two weks ago) which fixed all
-> > > > > > > > > of what we discussed?
-> > > > > > > >
-> > > > > > > > The patch 6 already has my tag, anything specific you want me to do?
-> > > > > > >
-> > > > > > > Hi Andy,
-> > > > > > > I forgot to remove your "Reviewed-by: Andy..." tag before sending V8
-> > > > > > > since there were some changes involved in patch 6 and I wanted you to
-> > > > > > > review them. Can you confirm if the changes are correct?
-> > > > > > >
-> > > > > > > I also added a new patch "remove obsolete out_thread label". It has no
-> > > > > > > real impact on the code generation itself, but maybe you can review and
-> > > > > > > confirm if tags are ok or not, based on commit message and also
-> > > > > > > additional commit message.
-> > > > > >
-> > > > > > Both are fine to me.
-> > > > >
-> > > > > Hi,
-> > > > > Ok, thank you for reviewing this.
-> > > > >
-> > > > > I guess now we are good to go with this series if the stable tags and
-> > > > > patches order are good after Greg's review?
-> > > > 
-> > > > Taking into account that we are at rc7, and even with Fixes tags in
-> > > > your series I think Greg might take this after v6.5-0rc1 is out. It's
-> > > > up to him how to proceed with that. Note, he usually has thousands of
-> > > > patches in backlog, you might need to respin it after the above
-> > > > mentioned rc1.
-> > > 
-> > > Ok, understood.
-> > > 
-> > > Let's wait then.
-> > 
-> > Hi Andy/Greg,
-> > we are now at v6.5-rc2 and I still do not see any of our patches in
-> > linus or gregkh_tty repos.
-> > 
-> > Is there something missing from my part (or someone else) to go forward
-> > with integrating these patches (v8) for v6.5?
-> 
-> My queue is huge right now, please be patient, I want to have them all
-> handled by the end of next week...
-> 
-> You can always help out by reviewing other patches on the mailing list
-> to reduce my review load.
+On Fri, Jul 14, 2023 at 2:40=E2=80=AFPM Konrad Dybcio <konrad.dybcio@linaro=
+.org> wrote:
 
-Wait, no, this series was superseeded by v8, and in there you said you
-were going to send a new series.  So please, fix it up and send the
-updated version of the series, this one isn't going to be applied for
-obvious reasons.
+> Some SoCs (like SM6115 or SC7280 with various firmwares) expect a single
+> clock for the LPASS pinctrl.
+>
+> This serires addresses that by simplifying the probe code and relying
+> on bindings to sanction the correct number of clocks. That allows us to
+> shoot down another downstream-ism.
+>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-thanks,
+Patch 1 & 2 applied to the pinctrl tree, please funnel patch 3 through
+the SoC tree.
 
-greg k-h
+Yours,
+Linus Walleij
