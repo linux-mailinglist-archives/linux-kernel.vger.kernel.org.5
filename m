@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A24A375AD9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D9C75AD9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbjGTL5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54280 "EHLO
+        id S231549AbjGTL5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbjGTL53 (ORCPT
+        with ESMTP id S229687AbjGTL5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:57:29 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71CA10CB;
-        Thu, 20 Jul 2023 04:57:28 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99357737980so127795466b.2;
-        Thu, 20 Jul 2023 04:57:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689854247; x=1690459047;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YEIUFqZ8/Bo/7OzswG7WehHeVU6nxJVjchlFmBJN/gc=;
-        b=sab3O3jQd+CYRloP7X1t93c1kiFsTEZMeKDriFob1uWehLbaMPJ+g2pWNgohwFwh0x
-         oAJ8KmaC+OUVyt2n9kzP+MW98HQAlGrq08ZbSx4L89P3tvD7Bzq5WGS2vhJZxfJ9zdpg
-         6aiiUlRvxYhbTm5ZkeInx8OAFeuKXreaWRLT+j1RbWse+ynByELtOsPyalFMu4boPT8O
-         fCzDsc/IkW9VlU9WT5J25rF22j8kpjBGdnLHm3R95HKg/7jofdJGa/XPqGJUlhRzAvd9
-         EEtwfheOkWWWut6YTMfP3gIpgdMfUCywCGSW700nbP0hfM8hW87xRzq4D6xtc/SpFPx+
-         QrgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689854247; x=1690459047;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YEIUFqZ8/Bo/7OzswG7WehHeVU6nxJVjchlFmBJN/gc=;
-        b=doxIELDLJcVbRF66q93X2P6Sp85dUpe1Vojz2Uuw/M+BRbVZdBhvRYDuuQKi7QXay1
-         2o/uA5e+JYwfMy+J/IzVTLhuNibtGC+a1VwXbmFtxne4iMK2CdDJf1+U4mS7rM+NY48h
-         EFgd1lzlDUTpxypfRgzo+30ZdBzS2bi4u0fkl5pjUCbeEtorIXNdOQPVWut3Pqn4ffqm
-         TIlT7Hsiiu6GetHeH+H3REqdnKGIT+rC06vvNHJRLDMcIEeD4mVQY45Z6n4Hdk8bnkdX
-         8gsvQIGBwgbTIOp3sBheV0uv+U8Av0AIs9wf6h1M2UQEOYGoXPc7WQ55ONiB/OrZsCry
-         3c4A==
-X-Gm-Message-State: ABy/qLay1BgR2XjZtfYdzBuBzikCK7+INDq5mMh4+F1GuVzvJW3tIn1T
-        QKQHdV3t+gFAn8khQLtOniPDOVietujsTVETXEZjqO6nlInZzw==
-X-Google-Smtp-Source: APBJJlEoHj71E+vGYJG8JbpB0Axw6SNrU+WwCO42wG0fT6uXmh4s5Fs8rHDoYtAI8FCj5BDLDCAw0GN8uFKmw+ifjsg=
-X-Received: by 2002:a17:906:158:b0:99b:40b5:1c3b with SMTP id
- 24-20020a170906015800b0099b40b51c3bmr4219040ejh.57.1689854247186; Thu, 20 Jul
- 2023 04:57:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230720115445.15583-1-piotr.siminski@globallogic.com>
-In-Reply-To: <20230720115445.15583-1-piotr.siminski@globallogic.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Thu, 20 Jul 2023 13:57:18 +0200
-Message-ID: <CAKXUXMzL4i0jT0xPFsV4ZG6L82yDCYLtKoUL7t=21ZDZ4OMY7w@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: change reiserfs status to obsolete
-To:     Piotr Siminski <piotr.siminski@globallogic.com>,
-        Jan Kara <jack@suse.cz>
-Cc:     reiserfs-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Thu, 20 Jul 2023 07:57:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BEE6AC;
+        Thu, 20 Jul 2023 04:57:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0605561A0F;
+        Thu, 20 Jul 2023 11:57:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE185C433C7;
+        Thu, 20 Jul 2023 11:57:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689854251;
+        bh=HYzOZwBCPNFiT5kmjwwkWIQMMa++9Xa/tD7IznzAtKo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E3ivI/wuaeM27HfM8GmboxrvtMcFm0CpdZ+1ijS5A7XMiHT/Vi9KejOY3R0wYf0Lg
+         aXKR1Zu8Ask5XVQs0mSkDXU7l00KHN+UGt+rrOkKKycCZcJfqTfcociTe5nA95gfui
+         dFaBfE5AYNLYo04zuhJveheh5zTvh6QDbFELy+zdMrmRa6qLUqOBgu7E02wM6EJc3f
+         KSPjbjdb6z3UzTH/CUJhMSJ8eAZK3OKxtE6uY2fjgTE6s5FYBN/f/9J96wVq4sup3A
+         RHph1oSpfx9mqMuaSaGtqqSTwLUzUdQ1UEvtrW+tg8mA/v3D+9d2MvY01vKvlPSoYk
+         eg6vAweIuanVA==
+Date:   Thu, 20 Jul 2023 13:57:28 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     David Gow <davidgow@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v2 3/3] drivers: base: Free devm resources when
+ unregistering a device
+Message-ID: <ktpru2pormh4fgkwxjpidk3vrlg3qh47tmye5l4vk6slutd25p@fwtkiizh3fa4>
+References: <20230329-kunit-devm-inconsistencies-test-v2-0-19feb71e864b@kernel.org>
+ <20230329-kunit-devm-inconsistencies-test-v2-3-19feb71e864b@kernel.org>
+ <CABVgOSmBcSA69SXEOh8_A7=aSigv5vztkhPYt9TBSNnxhiRSYA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CABVgOSmBcSA69SXEOh8_A7=aSigv5vztkhPYt9TBSNnxhiRSYA@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Piotr, thanks for the clean up in the MAINTAINERS file.
+On Wed, Jul 19, 2023 at 05:13:58PM +0800, David Gow wrote:
+> On Wed, 28 Jun 2023 at 17:50, Maxime Ripard <mripard@kernel.org> wrote:
+> >
+> > From: David Gow <davidgow@google.com>
+> >
+> > In the current code, devres_release_all() only gets called if the device
+> > has a bus and has been probed.
+> >
+> > This leads to issues when using bus-less or driver-less devices where
+> > the device might never get freed if a managed resource holds a reference
+> > to the device. This is happening in the DRM framework for example.
+> >
+> > We should thus call devres_release_all() in the device_del() function to
+> > make sure that the device-managed actions are properly executed when the
+> > device is unregistered, even if it has neither a bus nor a driver.
+> >
+> > This is effectively the same change than commit 2f8d16a996da ("devres:
+> > release resources on device_del()") that got reverted by commit
+> > a525a3ddeaca ("driver core: free devres in device_release") over
+> > use-after-free concerns.
+> >
+> > It's not clear whether those concerns are legitimate though, but I would
+> > expect drivers not to register new resources in their device-managed
+> > actions.
+>=20
+> It might be clearer to notice that this patch effectively combines the
+> two patches above, freeing _both_ on device_del() and
+> device_release(). This should give us the best of both worlds.
 
-Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+You're right I'll add that part to the commit log.
 
-Jan, could you pick this patch?
+> I'm not aware of a use-after-free issue that could result here, though
+> it's possible there's a double free I'm missing now that we are
+> freeing things twice. My understanding is that commit a525a3ddeaca
+> ("driver core: free devres in device_release") was more to avoid a
+> leak than a use-after-free, but I could be wrong.
 
-Lukas
+Yeah, I'm not sure where I got the UAF from. I probably
+misread/misremembered.
 
-
-On Thu, Jul 20, 2023 at 1:54=E2=80=AFPM Piotr Siminski
-<piotr.siminski@globallogic.com> wrote:
->
-> Reiserfs file system is no longer supported and is going to be removed
-> in 2025 as stated in commit eb103a51640e ("reiserfs: Deprecate reiserfs")=
-.
->
-> Signed-off-by: Piotr Siminski <piotr.siminski@globallogic.com>
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index a5c16bb92fe2..c340c6fc7923 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -18064,7 +18064,7 @@ F:      include/linux/regmap.h
->
->  REISERFS FILE SYSTEM
->  L:     reiserfs-devel@vger.kernel.org
-> -S:     Supported
-> +S:     Obsolete
->  F:     fs/reiserfs/
->
->  REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM
-> --
-> 2.34.1
->
+Maxime
