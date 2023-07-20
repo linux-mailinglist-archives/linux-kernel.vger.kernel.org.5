@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAF575AB8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A44ED75AB90
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbjGTJ6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        id S231181AbjGTJ7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbjGTJ6E (ORCPT
+        with ESMTP id S231167AbjGTJ7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:58:04 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A80EE
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:58:03 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4A5D022B4E;
-        Thu, 20 Jul 2023 09:58:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689847082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sHzbbuCMHfXitdRlhu6CbOu8h6g1SgL0u67GCVg312E=;
-        b=EH0tPb84wa+gVtdOZdXgNL5NQIPNb66mpUXoBRWwL6GOYaDmeJ73oNfl7Vnc1UGIKuDYCW
-        87auuZNyKIItvtaFxRyTxVFb9V2A0cDPsjNUH+dPBwogyQ/fyByenD1Gkhd0VeKEdK1SLq
-        b2m93e0Sc4zkgddM/cqJkfjnAZLNqGk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689847082;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sHzbbuCMHfXitdRlhu6CbOu8h6g1SgL0u67GCVg312E=;
-        b=jS4/SYMM25FVLJF4c4U12FGyRKwC3mQUVQ0Cl7iLBI28ToDyEnpBbAJQAtXLSUXA72pVfp
-        CfMX2sjLjxRp2LDQ==
-Received: from suse.de (unknown [10.163.43.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 7AFCF2C143;
-        Thu, 20 Jul 2023 09:58:00 +0000 (UTC)
-Date:   Thu, 20 Jul 2023 10:57:57 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Cyril Hrubis <chrubis@suse.cz>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, ltp@lists.linux.it,
-        Jiri Bohac <jbohac@suse.cz>
-Subject: Re: [PATCH 1/2] sched/rt: Fix sysctl_sched_rr_timeslice intial value
-Message-ID: <20230720095757.syyntxzoqgiucxng@suse.de>
-References: <20230719103743.4775-1-chrubis@suse.cz>
- <20230719103743.4775-2-chrubis@suse.cz>
+        Thu, 20 Jul 2023 05:59:34 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89B6BB;
+        Thu, 20 Jul 2023 02:59:33 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-cc7863e7b82so565549276.0;
+        Thu, 20 Jul 2023 02:59:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689847173; x=1690451973;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YKuuwxkODmr9Zm8vKZysQKHD2KRDyuArZZruCry8jeM=;
+        b=pznHFrr9YJM+RHqmlxyNJKXxI4h342lvODnvMjAwuIofkBABz6uKv0WMDFNup1Hdc5
+         5jGNH94K9B+Rdq7apgK9JIPzNCMfE47B4efwzN1blJcyOvW5k+w7RNxm6GsYvCBiz6eE
+         ru6042+DSrI4b2jXhoy+5yFR82uGwSOZQg3nZ7WW22sD0VRAT6YotZm0b3UrbqB56Lo5
+         7Tl9NAu2AU2ZXHdBK8cc3AZn9EkoMqZBp07R2tX17t6r08TDzyqbPk/NYWnRyWZ2OZHf
+         peAvgMcRRPDWHOXzDrVsjhQOT6RITDpkkWGFJ2yn7YiDlfV31DI5tSHrEQIezLGG95Qu
+         C3CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689847173; x=1690451973;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YKuuwxkODmr9Zm8vKZysQKHD2KRDyuArZZruCry8jeM=;
+        b=FJJj1eZjfStGVzhG+avLcbKY1x9ji5+oFmK6O9bneBzOBEik+3cOKNlSI8Apnnspa4
+         2wzi4YrXeABQWJhK9bpxc9x9gjNmEud30GsA3BwkgqcEEoGV79rdlrpedIWA21W4WCU+
+         1tN8j+HJR21Om8i9ZQ3EVRic/myUOmQPoYeBqSlMSLGkUxbDQyez3rZYHCwKGpgMc20+
+         i2Ai3W1I3K4knx4liOqnPX4AOKTDAR8X7FFj6gOTIWPAefYwWrNlpPR5BH8qb6fV+q+5
+         6V3tShxlQFg4zkyCLOcmL8YiM+NitYBJ4ueIY4UeVO+vKAtglIXXdy6vli7S5IZABs1l
+         Qf0w==
+X-Gm-Message-State: ABy/qLbFRgh7TAz69fEOaoVzPkk59QemeuodlcYMBc+9tqIAns7VSDAv
+        1fyFLPVo885Lrpz3ksWW/DoWW2NKw0v28TnAgG2Ha1ZR
+X-Google-Smtp-Source: APBJJlFkbKzQpdC8KXGZW/X7uIsPXOLOYb3PRWFlS+ylspA7+yj85YcX50IxoR5pIDz0zccZqnOiHBLqWmdgKO1t4Ag=
+X-Received: by 2002:a5b:3ce:0:b0:c60:1036:2082 with SMTP id
+ t14-20020a5b03ce000000b00c6010362082mr4195170ybp.22.1689847172885; Thu, 20
+ Jul 2023 02:59:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20230719103743.4775-2-chrubis@suse.cz>
+References: <20230718052752.1045248-1-ojeda@kernel.org> <20230718052752.1045248-7-ojeda@kernel.org>
+ <CABVgOSnCY66C5wza-ZXb8c8UHg8ydbFv4U_7A14UU_gXeESKZg@mail.gmail.com>
+ <CANiq72m08qGAa7k37A0rQNf7vvBc1o8JjSY8jNd+m2XzVOT9rw@mail.gmail.com> <CABVgOSnL0Kiv1Mo6feCLYVq6bGUjxN3gUVrW4ZKD4Fh1wUhWrQ@mail.gmail.com>
+In-Reply-To: <CABVgOSnL0Kiv1Mo6feCLYVq6bGUjxN3gUVrW4ZKD4Fh1wUhWrQ@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 20 Jul 2023 11:59:21 +0200
+Message-ID: <CANiq72nSy2r-sv_4EFJUsFB67WOiMTeaMoER0wKQBRtVx7jzNA@mail.gmail.com>
+Subject: Re: [PATCH v2 6/7] rust: support running Rust documentation tests as
+ KUnit ones
+To:     David Gow <davidgow@google.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 12:37:42PM +0200, Cyril Hrubis wrote:
-> Thre is 10% rounding error in the intial value of the
-> sysctl_sched_rr_timeslice with  CONFIG_HZ_300=y.
-> 
-> This was found with LTP test sched_rr_get_interval01:
-> 
-> sched_rr_get_interval01.c:57: TPASS: sched_rr_get_interval() passed
-> sched_rr_get_interval01.c:64: TPASS: Time quantum 0s 99999990ns
-> sched_rr_get_interval01.c:72: TFAIL: /proc/sys/kernel/sched_rr_timeslice_ms != 100 got 90
-> sched_rr_get_interval01.c:57: TPASS: sched_rr_get_interval() passed
-> sched_rr_get_interval01.c:64: TPASS: Time quantum 0s 99999990ns
-> sched_rr_get_interval01.c:72: TFAIL: /proc/sys/kernel/sched_rr_timeslice_ms != 100 got 90
-> 
-> What this test does is to compare the return value from the
-> sched_rr_get_interval() and the sched_rr_timeslice_ms sysctl file and
-> fails if they do not match.
-> 
-> The prolem it found is the intial sysctl file value which was computed as:
-> 
-> static int sysctl_sched_rr_timeslice = (MSEC_PER_SEC / HZ) * RR_TIMESLICE;
-> 
-> which works fine as long as MSEC_PER_SEC is multiple of HZ, however it
-> introduces 10% rounding error for CONFIG_HZ_300:
-> 
-> (MSEC_PER_SEC / HZ) * (100 * HZ / 1000)
-> 
-> (1000 / 300) * (100 * 300 / 1000)
-> 
-> 3 * 30 = 90
-> 
-> This can be easily fixed by reversing the order of the multiplication
-> and division. After this fix we get:
-> 
-> (MSEC_PER_SEC * (100 * HZ / 1000)) / HZ
-> 
-> (1000 * (100 * 300 / 1000)) / 300
-> 
-> (1000 * 30) / 300 = 100
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> CC: Jiri Bohac <jbohac@suse.cz>
+On Thu, Jul 20, 2023 at 8:37=E2=80=AFAM David Gow <davidgow@google.com> wro=
+te:
+>
+> We merged this as-is, and I've sent out a fixup patch here:
+> https://lore.kernel.org/linux-kselftest/20230720062939.2411889-1-davidgow=
+@google.com/T/#u
 
-Acked-by: Mel Gorman <mgorman@suse.de>
+Thanks!
 
--- 
-Mel Gorman
-SUSE Labs
+> I wasn't able to find any issues with changing the indentation, but
+> let me know if there's some tool which complains about seeing tabs in
+> .rs files we need to worry about.
+
+Given it is inside a literal, I would expect it to work (I replied in
+the thread).
+
+Cheers,
+Miguel
