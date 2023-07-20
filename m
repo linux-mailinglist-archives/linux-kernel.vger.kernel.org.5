@@ -2,257 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D312375A6FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C29AE75A6FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbjGTGzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34356 "EHLO
+        id S231245AbjGTGzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjGTGzE (ORCPT
+        with ESMTP id S229826AbjGTGzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:55:04 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9939B10A
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:55:02 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5704991ea05so5205497b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:55:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689836102; x=1690440902;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6NrGsEHnDYLyNJqvwAEW/Qe4/fd0kz4NPjCMl8a0lCE=;
-        b=B91pALtjxL5niF8zoPcxIastjU+J9gimCXkruBNCQgADWJtxA2+JER3zmkYzVkBBnk
-         MvJwm/C0aEkPVxXfGRILNGsfW+DCjRvkN2GoXMuBDJFzxBMuOmkMPA6r1yjpFTrlLqV0
-         5A857sKZKzdSJ1h8yoJs+rV8gU6iKSjZoLIIV06U9sHuVwsIyUZNtm/EUC+DqkMLS28C
-         GtVj3AUgrHYm4Mr2CcyYGim3H+S8aBtZ+sIaEgyI66wwU5RR75WHtQ/E/FgOskhAT+B4
-         ZQI80x8YwsoeL/4NBtHVERFqXesvL70UhpBOW1hV+yoU71HAb+FzGMlFAEJo1gRiVrLf
-         LtFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689836102; x=1690440902;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6NrGsEHnDYLyNJqvwAEW/Qe4/fd0kz4NPjCMl8a0lCE=;
-        b=HfkJjf0YuQZHps5YlWvsRk0knPembcDWRZ1So7qHQ80CmqR/DgTcVQmk+Xa2AxDZd6
-         lLY94xBkfmn9DiUq9YEfBsD0F8kLUTqGyUF1tdwaKnqvdBtUzVH1DEP3XOvIywB1rIEI
-         nZJtZGlSakM785AQ2+qKg+ihWiYNPIAohDTs8LqgDhR59BWMYZ0yKNhQd7u2Jn8lOzZ7
-         b8rOzJkmf0b01J7Wcre6PRG9Yy6omZ1FG9HHmllcEh+RNcvogBnTqdWOpGa9rDctR1mV
-         tr//SWhozff3Imtvzri4qyAxUgHGZsFiMyfFitCkyWH8AyJeTh0gFgDZ3m9oYCMgtjT7
-         npAw==
-X-Gm-Message-State: ABy/qLZ4WkwO1T6saWE5XHithIrLNUSaNV+ccAaB25TLvZgxYObTgjAU
-        TzxhwcyTsPJiBtJti4dc9HOBRCQ=
-X-Google-Smtp-Source: APBJJlFhZw/NRj76MsfDecdVc5P9tSi1HtsFkfBgB68OTX2wk1VwPDXGlGw/6crZl26Lw5teVJQDgIc=
-X-Received: from hmarynka.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:925])
- (user=ovt job=sendgmr) by 2002:a81:8d47:0:b0:573:8316:8d04 with SMTP id
- w7-20020a818d47000000b0057383168d04mr74936ywj.4.1689836101886; Wed, 19 Jul
- 2023 23:55:01 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 06:54:27 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230720065430.2178136-1-ovt@google.com>
-Subject: [PATCH] shmem: add support for user extended attributes
-From:   Oleksandr Tymoshenko <ovt@google.com>
-To:     Jonathan Corbet <corbet@lwn.net>, Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     ovt@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 20 Jul 2023 02:55:44 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9253C12F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:55:42 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R63Nn32YkzBRDsQ
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:55:37 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689836137; x=1692428138; bh=NEZ/o7/CYbI/STdiYnu78RjdMH3
+        ly697rFlKyHDjoWw=; b=Y3Cn5b2W3vn6QuInxM2KFWsA92zQ10YVH0ISCm7isGs
+        5uLAGaovhnuW8e2RMwaBw5GeGoa5IyY2bRZeaudqMuMNe6R0toetf2RSJweQSCYe
+        o3V1EQR2BYRfuvaC2g+lh/kpcfI0cP7aG74YFsBWuWG12puscYQ2OP/1yel0oujh
+        PRvimccqUWSWwwda1J67IRx5zVPm9n795vc66n4B/5MA8LbUZRoa1GHea1nYVhmp
+        bMD9bpFGbAB0+OggeUFwC/zX1C1gwU9ZLXYTpVnJDRo0Yq5RjAaRi9JrtUByFVov
+        iQn4oJj+5cZzRqwsa0gKqUlHr6l3B0KZz1FEHiXklbw==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id WL7e_udTW8A7 for <linux-kernel@vger.kernel.org>;
+        Thu, 20 Jul 2023 14:55:37 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R63Nn0zSwzBRDsD;
+        Thu, 20 Jul 2023 14:55:37 +0800 (CST)
+MIME-Version: 1.0
+Date:   Thu, 20 Jul 2023 14:55:37 +0800
+From:   hanyu001@208suo.com
+To:     linus.walleij@linaro.org, brgl@bgdev.pl
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers: gpio: Remove unnecessary spaces
+In-Reply-To: <tencent_E888A1BD4167B61E1D3EF3F8488A8B148A08@qq.com>
+References: <tencent_E888A1BD4167B61E1D3EF3F8488A8B148A08@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <6c89e70749c462d441bd0c157d260570@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-User extended attributes are not enabled in tmpfs because
-the size of the value is not limited and the memory allocated
-for it is not counted against any limit. Malicious
-non-privileged user can exhaust kernel memory by creating
-user.* extended attribute with very large value.
+Fix checkpatch warnings:
 
-There are still situations when enabling suport for extended
-user attributes on tmpfs is required and the attack vector
-is not applicable, for instance batch jobs with trusted binaries.
+./drivers/gpio/gpio-pca953x.c:1352: ERROR: space prohibited after that 
+open parenthesis '('
+./drivers/gpio/gpio-pca953x.c:1353: ERROR: space prohibited after that 
+open parenthesis '('
+./drivers/gpio/gpio-pca953x.c:1354: ERROR: space prohibited after that 
+open parenthesis '('
+./drivers/gpio/gpio-pca953x.c:1359: ERROR: space prohibited after that 
+open parenthesis '('
+./drivers/gpio/gpio-pca953x.c:1360: ERROR: space prohibited after that 
+open parenthesis '('
 
-This patch introduces two mount options to enable/disable
-support for user.* extended attributes on tmpfs:
-
-user_xattr    enable support for user extended aatributes
-nouser_xattr  disable support for user extended attributes
-
-The default behavior of the filesystem is not changed.
-
-Signed-off-by: Oleksandr Tymoshenko <ovt@google.com>
+Signed-off-by: Yu Han <hanyu001@208suo.com>
 ---
- Documentation/filesystems/tmpfs.rst | 12 ++++++++
- include/linux/shmem_fs.h            |  1 +
- mm/shmem.c                          | 45 +++++++++++++++++++++++++++++
- 3 files changed, 58 insertions(+)
+  drivers/gpio/gpio-pca953x.c | 10 +++++-----
+  1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/filesystems/tmpfs.rst b/Documentation/filesystems/tmpfs.rst
-index f18f46be5c0c..5700ba72d095 100644
---- a/Documentation/filesystems/tmpfs.rst
-+++ b/Documentation/filesystems/tmpfs.rst
-@@ -215,6 +215,16 @@ will give you tmpfs instance on /mytmpfs which can allocate 10GB
- RAM/SWAP in 10240 inodes and it is only accessible by root.
- 
- 
-+tmpfs, when compiled with CONFIG_TMPFS_XATTR, does not support
-+Extended User Attributes for security reasons. The support can be
-+enabled/disabled by two mount options:
-+
-+============  ===========================================
-+user_xattr    Enable support for Extended User Attributes
-+nouser_xattr  Disable upport for Extended User Attributes
-+============  ===========================================
-+
-+
- :Author:
-    Christoph Rohland <cr@sap.com>, 1.12.01
- :Updated:
-@@ -223,3 +233,5 @@ RAM/SWAP in 10240 inodes and it is only accessible by root.
-    KOSAKI Motohiro, 16 Mar 2010
- :Updated:
-    Chris Down, 13 July 2020
-+:Updated:
-+   Oleksandr Tymoshenko, 19 July 2023
-diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
-index 9029abd29b1c..f06d18b9041c 100644
---- a/include/linux/shmem_fs.h
-+++ b/include/linux/shmem_fs.h
-@@ -53,6 +53,7 @@ struct shmem_sb_info {
- 	spinlock_t shrinklist_lock;   /* Protects shrinklist */
- 	struct list_head shrinklist;  /* List of shinkable inodes */
- 	unsigned long shrinklist_len; /* Length of shrinklist */
-+	bool user_xattr;	      /* user.* xattrs are allowed */
- };
- 
- static inline struct shmem_inode_info *SHMEM_I(struct inode *inode)
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 2f2e0e618072..4f7d46d65494 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -85,6 +85,7 @@ static struct vfsmount *shm_mnt;
- 
- #define BLOCKS_PER_PAGE  (PAGE_SIZE/512)
- #define VM_ACCT(size)    (PAGE_ALIGN(size) >> PAGE_SHIFT)
-+#define TMPFS_USER_XATTR_INDEX 1
- 
- /* Pretend that each entry is of this size in directory's i_size */
- #define BOGO_DIRENT_SIZE 20
-@@ -116,11 +117,13 @@ struct shmem_options {
- 	int huge;
- 	int seen;
- 	bool noswap;
-+	bool user_xattr;
- #define SHMEM_SEEN_BLOCKS 1
- #define SHMEM_SEEN_INODES 2
- #define SHMEM_SEEN_HUGE 4
- #define SHMEM_SEEN_INUMS 8
- #define SHMEM_SEEN_NOSWAP 16
-+#define SHMEM_SEEN_USER_XATTR 32
- };
- 
- #ifdef CONFIG_TMPFS
-@@ -3447,6 +3450,16 @@ static int shmem_xattr_handler_get(const struct xattr_handler *handler,
- 				   const char *name, void *buffer, size_t size)
- {
- 	struct shmem_inode_info *info = SHMEM_I(inode);
-+	struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
-+
-+	switch (handler->flags) {
-+	case TMPFS_USER_XATTR_INDEX:
-+		if (!sbinfo->user_xattr)
-+			return -EOPNOTSUPP;
-+		break;
-+	default:
-+		break;
-+	}
- 
- 	name = xattr_full_name(handler, name);
- 	return simple_xattr_get(&info->xattrs, name, buffer, size);
-@@ -3459,8 +3472,18 @@ static int shmem_xattr_handler_set(const struct xattr_handler *handler,
- 				   size_t size, int flags)
- {
- 	struct shmem_inode_info *info = SHMEM_I(inode);
-+	struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
- 	int err;
- 
-+	switch (handler->flags) {
-+	case TMPFS_USER_XATTR_INDEX:
-+		if (!sbinfo->user_xattr)
-+			return -EOPNOTSUPP;
-+		break;
-+	default:
-+		break;
-+	}
-+
- 	name = xattr_full_name(handler, name);
- 	err = simple_xattr_set(&info->xattrs, name, value, size, flags, NULL);
- 	if (!err) {
-@@ -3482,9 +3505,17 @@ static const struct xattr_handler shmem_trusted_xattr_handler = {
- 	.set = shmem_xattr_handler_set,
- };
- 
-+static const struct xattr_handler shmem_user_xattr_handler = {
-+	.prefix = XATTR_USER_PREFIX,
-+	.flags = TMPFS_USER_XATTR_INDEX,
-+	.get = shmem_xattr_handler_get,
-+	.set = shmem_xattr_handler_set,
-+};
-+
- static const struct xattr_handler *shmem_xattr_handlers[] = {
- 	&shmem_security_xattr_handler,
- 	&shmem_trusted_xattr_handler,
-+	&shmem_user_xattr_handler,
- 	NULL
- };
- 
-@@ -3604,6 +3635,8 @@ enum shmem_param {
- 	Opt_inode32,
- 	Opt_inode64,
- 	Opt_noswap,
-+	Opt_user_xattr,
-+	Opt_nouser_xattr,
- };
- 
- static const struct constant_table shmem_param_enums_huge[] = {
-@@ -3626,6 +3659,8 @@ const struct fs_parameter_spec shmem_fs_parameters[] = {
- 	fsparam_flag  ("inode32",	Opt_inode32),
- 	fsparam_flag  ("inode64",	Opt_inode64),
- 	fsparam_flag  ("noswap",	Opt_noswap),
-+	fsparam_flag  ("user_xattr",	Opt_user_xattr),
-+	fsparam_flag  ("nouser_xattr",	Opt_nouser_xattr),
- 	{}
- };
- 
-@@ -3717,6 +3752,14 @@ static int shmem_parse_one(struct fs_context *fc, struct fs_parameter *param)
- 		ctx->noswap = true;
- 		ctx->seen |= SHMEM_SEEN_NOSWAP;
- 		break;
-+	case Opt_user_xattr:
-+		ctx->user_xattr = true;
-+		ctx->seen |= SHMEM_SEEN_USER_XATTR;
-+		break;
-+	case Opt_nouser_xattr:
-+		ctx->user_xattr = false;
-+		ctx->seen |= SHMEM_SEEN_USER_XATTR;
-+		break;
- 	}
- 	return 0;
- 
-@@ -3834,6 +3877,8 @@ static int shmem_reconfigure(struct fs_context *fc)
- 		sbinfo->max_inodes  = ctx->inodes;
- 		sbinfo->free_inodes = ctx->inodes - inodes;
- 	}
-+	if (ctx->seen & SHMEM_SEEN_USER_XATTR)
-+		sbinfo->user_xattr = ctx->user_xattr;
- 
- 	/*
- 	 * Preserve previous mempolicy unless mpol remount option was specified.
--- 
-2.41.0.255.g8b1d071c50-goog
+diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
+index a806a3c..7f4f7ee 100644
+--- a/drivers/gpio/gpio-pca953x.c
++++ b/drivers/gpio/gpio-pca953x.c
+@@ -1349,15 +1349,15 @@ static int pca953x_resume(struct device *dev)
+      { .compatible = "maxim,max7315", .data = OF_953X( 8, PCA_INT), },
+      { .compatible = "maxim,max7318", .data = OF_953X(16, PCA_INT), },
 
+-    { .compatible = "ti,pca6107", .data = OF_953X( 8, PCA_INT), },
+-    { .compatible = "ti,pca9536", .data = OF_953X( 4, 0), },
+-    { .compatible = "ti,tca6408", .data = OF_953X( 8, PCA_INT), },
++    { .compatible = "ti,pca6107", .data = OF_953X(8, PCA_INT), },
++    { .compatible = "ti,pca9536", .data = OF_953X(4, 0), },
++    { .compatible = "ti,tca6408", .data = OF_953X(8, PCA_INT), },
+      { .compatible = "ti,tca6416", .data = OF_953X(16, PCA_INT), },
+      { .compatible = "ti,tca6424", .data = OF_953X(24, PCA_INT), },
+      { .compatible = "ti,tca9539", .data = OF_953X(16, PCA_INT), },
+
+-    { .compatible = "onnn,cat9554", .data = OF_953X( 8, PCA_INT), },
+-    { .compatible = "onnn,pca9654", .data = OF_953X( 8, PCA_INT), },
++    { .compatible = "onnn,cat9554", .data = OF_953X(8, PCA_INT), },
++    { .compatible = "onnn,pca9654", .data = OF_953X(8, PCA_INT), },
+      { .compatible = "onnn,pca9655", .data = OF_953X(16, PCA_INT), },
+
+      { .compatible = "exar,xra1202", .data = OF_953X( 8, 0), },
