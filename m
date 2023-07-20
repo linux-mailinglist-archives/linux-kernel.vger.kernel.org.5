@@ -2,128 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E252675A54F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6D375A557
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjGTFDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 01:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
+        id S229730AbjGTFHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 01:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjGTFDg (ORCPT
+        with ESMTP id S229451AbjGTFHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 01:03:36 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BF4BE;
-        Wed, 19 Jul 2023 22:03:34 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 0608D6015E;
-        Thu, 20 Jul 2023 07:03:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1689829411; bh=ATlhYaC4/eBWEtfxH5B5MahIAXkAd2Dl3aEC80RgbtA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=0GFQfHp57rZE3O7//QvLdaIk3wecUDr+qys/SFnxJEoSBDadfF5VViDHUz0lag8xY
-         XUSPOwfemzh9wE3Enof5apqg7JwnMXW3iU7AQD5x6xBCGT377NDH51AJo8ep4GxPy4
-         yozekWGSORY9TOg2XocUfn/UPpkUUjS/KQd0TDS+9NDDWOyYu37ABwlTkApPKPMxXN
-         Lv5GYDMoiYNklx7OsRLyyGv4zi6rzLI4nvWpPdd6BL+tDEIeCD+riiSUBMccYZxw7t
-         0xiJH+JYEXYAqEEQ+m4whYPzXZzOTgrEEw8PItoKMjkLakbZ9biwgawSQt6gtf2W9C
-         u7jHHqbqqc8IA==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 33o0xE-ZJ_c7; Thu, 20 Jul 2023 07:03:28 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id A160360157;
-        Thu, 20 Jul 2023 07:03:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1689829408; bh=ATlhYaC4/eBWEtfxH5B5MahIAXkAd2Dl3aEC80RgbtA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=X0VMgcGh+QgHSRj5tZAf5IWszAcX4u9C+ioajSpcDckDpdpsXUP76GHkZeLKiN8gk
-         8Pv3xkEVRXZDSjRdTZxrFXLgGOc1YRVHWIeDZfS8CbmkQbI5UYJhKbS+rXNK0XEoTh
-         PTrIqJIgA8IHTOtuwk/5grJ6CnO6obddRqPpHM08tAYXByHT0ejQCaAYad0cXEKkUI
-         aRKzDWQHolYLEuU5TvXT7nsQ0+Y9Ppmf2G13FtBRiljO2G3hAdtghRZIH3mNVtZTyx
-         9jjk9rw+Nvq3td4TcZpkgp1UGrTj0q4eU+I+2FG5uydSfsHmUdQoC4wEbaEDBRjFRI
-         jIS+poqpj7uDw==
-Message-ID: <7bd3ef7b-a4dc-6d0f-6d58-66533de292cf@alu.unizg.hr>
-Date:   Thu, 20 Jul 2023 07:03:07 +0200
+        Thu, 20 Jul 2023 01:07:34 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAC9BE;
+        Wed, 19 Jul 2023 22:07:33 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36K3OwUZ019810;
+        Thu, 20 Jul 2023 05:07:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=0QJyCvh/MFbjPdpLadzjz1UKlzbXi9w2Jw8V1eoZ7I4=;
+ b=Yn8gDOo+s/A36RSdsA4yRepXaHQtvxybxaAzJzbkqNaD5TIc7wQij07JViyBuqao3HAj
+ 41SwLsaTWenHYKJ4sOhqqwj9bkTVanOqIwId11ikts/feZeeDbsEQR57RIybZANa8vlY
+ ncNmtCbkFbhsYpLDymqWVZ27PWhlx7QLGItQipe+OFBFizTwFUUSjARVQejNHn4BMDdW
+ raG3/ze2qjBO/sA+WA2nSou5xUDuHb8QUi9Vx1bFQcZFfOs+uEt/kqH7Qa4Rx2qBE9gh
+ 4wexRZ/KNDZe7wrTea1tIamKMhu7TLojGIvwKy6EqQDJYnXatVBhmD2jy0PbO9/bxB+p DQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxt188dcc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 05:07:28 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36K57SMw004801
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 05:07:28 GMT
+Received: from [10.216.26.184] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 19 Jul
+ 2023 22:07:23 -0700
+Message-ID: <f4d6f3d3-568a-c3ee-3c87-9b0a65ad2912@quicinc.com>
+Date:   Thu, 20 Jul 2023 10:36:22 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PROBLEM] selftests: net/forwarding/bridge_mdb.sh: 'Command
- "replace" is unknown, try "bridge mdb help"'
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>, linux-kernel@vger.kernel.org
-References: <6b04b2ba-2372-6f6b-3ac8-b7cba1cfae83@alu.unizg.hr>
- <ZLffjNMaJZiGJytj@shredder>
+Subject: Re: [PATCH] clk: qcom: clk-alpha-pll: Use determine_rate instead of
+ round_rate
+To:     Stephen Boyd <sboyd@kernel.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <mturquette@baylibre.com>
+CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
+        <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>,
+        <quic_saahtoma@quicinc.com>
+References: <20230710093206.18894-1-quic_devipriy@quicinc.com>
+ <f726290fe0678217f2e17b6a68c20d42.sboyd@kernel.org>
 Content-Language: en-US
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZLffjNMaJZiGJytj@shredder>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   Devi Priya <quic_devipriy@quicinc.com>
+In-Reply-To: <f726290fe0678217f2e17b6a68c20d42.sboyd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: aPGJfiqPoxV_2knw5irdosx8OoLbHadh
+X-Proofpoint-GUID: aPGJfiqPoxV_2knw5irdosx8OoLbHadh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-19_16,2023-07-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 priorityscore=1501 mlxlogscore=990 adultscore=0
+ impostorscore=0 malwarescore=0 clxscore=1015 bulkscore=0 mlxscore=0
+ spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307200041
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/23 15:05, Ido Schimmel wrote:
-> On Tue, Jul 18, 2023 at 09:02:31PM +0200, Mirsad Todorovac wrote:
->> Command "replace" is unknown, try "bridge mdb help".
-> 
-> You are running the test with an old iproute2 that doesn't support the
-> replace command. The following patches [1][2] skip the tests in this
-> case. However, you will get better test coverage with iproute2-next [3]
-> compared to the version shipped with your distribution.
 
-You are right and though I was using the latest iproute2 from the
-Ubuntu 22.04 LTS and 22.10, the iproute2-next had unlocked the test suite.
 
-> [1]
-> diff --git a/tools/testing/selftests/net/forwarding/bridge_mdb.sh b/tools/testing/selftests/net/forwarding/bridge_mdb.sh
-> index ae3f9462a2b6..a1bd4900acb6 100755
-> --- a/tools/testing/selftests/net/forwarding/bridge_mdb.sh
-> +++ b/tools/testing/selftests/net/forwarding/bridge_mdb.sh
-> @@ -1206,6 +1206,12 @@ ctrl_test()
->          ctrl_mldv2_is_in_test
->   }
->   
-> +bridge mdb help 2>&1 | grep -q "replace"
-> +if [ $? -ne 0 ]; then
-> +       echo "SKIP: iproute2 too old, missing bridge mdb replace support"
-> +       exit $ksft_skip
-> +fi
-> +
->   trap cleanup EXIT
->   
->   setup_prepare
+On 7/20/2023 1:34 AM, Stephen Boyd wrote:
+> Quoting Devi Priya (2023-07-10 02:32:06)
+>> @@ -1094,25 +1099,25 @@ static const struct clk_div_table clk_alpha_2bit_div_table[] = {
+>>          { }
+>>   };
+>>   
+>> -static long
+>> -clk_alpha_pll_postdiv_round_rate(struct clk_hw *hw, unsigned long rate,
+>> -                                unsigned long *prate)
+>> +static int clk_alpha_pll_postdiv_determine_rate(struct clk_hw *hw,
+>> +                                               struct clk_rate_request *req)
+>>   {
+>>          struct clk_alpha_pll_postdiv *pll = to_clk_alpha_pll_postdiv(hw);
+>>          const struct clk_div_table *table;
+>> +       unsigned long rate = req->rate;
+>>   
+>>          if (pll->width == 2)
+>>                  table = clk_alpha_2bit_div_table;
+>>          else
+>>                  table = clk_alpha_div_table;
+>>   
+>> -       return divider_round_rate(hw, rate, prate, table,
+>> -                                 pll->width, CLK_DIVIDER_POWER_OF_TWO);
+>> +       req->rate = divider_round_rate(hw, rate, &req->best_parent_rate, table,
 > 
-> [2]
-> diff --git a/tools/testing/selftests/net/forwarding/bridge_mdb_max.sh b/tools/testing/selftests/net/forwarding/bridge_mdb_max.sh
-> index ae255b662ba3..a1c4aec4cbb1 100755
-> --- a/tools/testing/selftests/net/forwarding/bridge_mdb_max.sh
-> +++ b/tools/testing/selftests/net/forwarding/bridge_mdb_max.sh
-> @@ -1328,6 +1328,12 @@ test_8021qvs()
->          switch_destroy
->   }
->   
-> +bridge link help 2>&1 | grep -q "mcast_max_groups"
-> +if [ $? -ne 0 ]; then
-> +       echo "SKIP: iproute2 too old, missing bridge \"mcast_max_groups\" support"
-> +       exit $ksft_skip
-> +fi
-> +
->   trap cleanup EXIT
->   
->   setup_prepare
+> Can you use divider_determine_rate() instead?
+
+Sure, okay
 > 
-> [3] https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git
+>> +                                      pll->width, CLK_DIVIDER_POWER_OF_TWO);
+>> +       return 0;
+>>   }
+>>   
+>> -static long
+>> -clk_alpha_pll_postdiv_round_ro_rate(struct clk_hw *hw, unsigned long rate,
+>> -                                   unsigned long *prate)
+>> +static int clk_alpha_pll_postdiv_determine_ro_rate(struct clk_hw *hw,
+>> +                                                  struct clk_rate_request *req)
+>>   {
+>>          struct clk_alpha_pll_postdiv *pll = to_clk_alpha_pll_postdiv(hw);
+>>          u32 ctl, div;
+> [...]
+>> @@ -1452,14 +1459,16 @@ clk_trion_pll_postdiv_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+>>          return (parent_rate / div);
+>>   }
+>>   
+>> -static long
+>> -clk_trion_pll_postdiv_round_rate(struct clk_hw *hw, unsigned long rate,
+>> -                                unsigned long *prate)
+>> +static int
+>> +clk_trion_pll_postdiv_determine_rate(struct clk_hw *hw,
+>> +                                    struct clk_rate_request *req)
+>>   {
+>>          struct clk_alpha_pll_postdiv *pll = to_clk_alpha_pll_postdiv(hw);
+>>   
+>> -       return divider_round_rate(hw, rate, prate, pll->post_div_table,
+>> -                                 pll->width, CLK_DIVIDER_ROUND_CLOSEST);
+>> +       req->rate = divider_round_rate(hw, req->rate, &req->best_parent_rate,
+> 
+> divider_determine_rate()?
+Sure
+> 
+>> +                                      pll->post_div_table, pll->width,
+>> +                                      CLK_DIVIDER_ROUND_CLOSEST);
+>> +       return 0;
+>>   };
+>>   
+>>   static int
+>> @@ -1485,18 +1494,21 @@ clk_trion_pll_postdiv_set_rate(struct clk_hw *hw, unsigned long rate,
+>>   
+>>   const struct clk_ops clk_alpha_pll_postdiv_trion_ops = {
+>>          .recalc_rate = clk_trion_pll_postdiv_recalc_rate,
+>> -       .round_rate = clk_trion_pll_postdiv_round_rate,
+>> +       .determine_rate = clk_trion_pll_postdiv_determine_rate,
+>>          .set_rate = clk_trion_pll_postdiv_set_rate,
+>>   };
+>>   EXPORT_SYMBOL_GPL(clk_alpha_pll_postdiv_trion_ops);
+>>   
+>> -static long clk_alpha_pll_postdiv_fabia_round_rate(struct clk_hw *hw,
+>> -                               unsigned long rate, unsigned long *prate)
+>> +static int
+>> +clk_alpha_pll_postdiv_fabia_determine_rate(struct clk_hw *hw,
+>> +                                          struct clk_rate_request *req)
+>>   {
+>>          struct clk_alpha_pll_postdiv *pll = to_clk_alpha_pll_postdiv(hw);
+>>   
+>> -       return divider_round_rate(hw, rate, prate, pll->post_div_table,
+>> -                               pll->width, CLK_DIVIDER_ROUND_CLOSEST);
+>> +       req->rate = divider_round_rate(hw, req->rate, &req->best_parent_rate,
+>> +                                      pll->post_div_table, pll->width,
+>> +                                       CLK_DIVIDER_ROUND_CLOSEST);
+> 
+> divider_determine_rate()?
+Sure
+
+Thanks,
+Devi Priya
