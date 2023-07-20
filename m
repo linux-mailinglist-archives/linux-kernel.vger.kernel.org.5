@@ -2,75 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D032475B394
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC2675B396
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbjGTPy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
+        id S231464AbjGTPzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232224AbjGTPyz (ORCPT
+        with ESMTP id S231827AbjGTPzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:54:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1F312F;
-        Thu, 20 Jul 2023 08:54:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0727961B79;
-        Thu, 20 Jul 2023 15:54:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6827DC433CA;
-        Thu, 20 Jul 2023 15:54:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689868466;
-        bh=g/klJKu4e9nEA6xOvl8vjvc+D39ecUc8yVX0M5tAQsg=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Vp11WSeZ/sh+kUM+Zgs2EiAh8AUk36dVREhBq6wgS2Vpy9TfB9VCy3ct0S6q430ZB
-         cJP0g8cF53jFgSMCbP+ygr+UIFib65LUXKwVWvqcI3QnhNDwH/53jD+YOZ3WLaFO2Q
-         nGdJD7WzcJK5BWzAN9K7hJFYw2xdtRoD/lLE7P8uOhRCi65MgPDZkYnZUEJcL2J5tG
-         KbOGbamIGU7fVcLp9NuNs7ic4QAvAFZr5dae4YxgFwKmQKjtXMdhUIdKnXjOGABNy7
-         +poF8Lp7EkP9//NLvRNOOoEc3Go2qFIfRv8ZCm/Wo0nks0UlXQbXDt/hSTiGtK3TUw
-         5s6aUtLFMVVtg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 54CF4E21EFB;
-        Thu, 20 Jul 2023 15:54:26 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.5-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1689800327.git.dsterba@suse.com>
-References: <cover.1689800327.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1689800327.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.5-rc2-tag
-X-PR-Tracked-Commit-Id: aa84ce8a78a1a5c10cdf9c7a5fb0c999fbc2c8d6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 46670259519f4ee4ab378dc014798aabe77c5057
-Message-Id: <168986846634.27763.18201552089227974454.pr-tracker-bot@kernel.org>
-Date:   Thu, 20 Jul 2023 15:54:26 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 20 Jul 2023 11:55:19 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95FC21FCD
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:55:10 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fba86f069bso1442398e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689868509; x=1690473309;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R/vajSz0EMzHxMTH4BJFALvBAcvnPkERwUPuHlbHS8Y=;
+        b=GMKGYC43J5tI4ZHdzTaBI/o/alJd9YdIhB6mQCzf0Ewrhd6/KZNv4tDsSkOsaZ20qN
+         O4K5O35MUgU4VN6yPLYbkNZXEiD0s7mpvRkzYRnUyzwDKQWITr1tTAO9JtRx1mmIvkWS
+         KqoW72N6eu6cVUlR/nc7dTg2sKLp49PIsN2ocLCIca7vvwSW6ET/iXtFkh2EuL7kxcm5
+         92R1jXNGkeHRXvuJCY+bKOeNBMCqXSKSYj9CE2lrkExjAOCzkMtC26JDlEQ8HU2LlJJr
+         6iBgbKzPD5PkQyxmfjhj/5exLb6hJ7WTRc3c0idlcIx0AqNf61XVJdpdvZC7q/GDJMKk
+         qvzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689868509; x=1690473309;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R/vajSz0EMzHxMTH4BJFALvBAcvnPkERwUPuHlbHS8Y=;
+        b=khy8yZluBXR0T2mfZMJxw/yQ58yQA6I/5uQVoDaXf+n4KWAMTSz4RbqBFR6oUC4Q0p
+         TNbLWrNGRKijcTdFTDz/SHuJUyt11QI2M/fzmP7KesVuPkXw8TaW8TJcQLHaXCg3kwrz
+         3V3ZZW6AvFVsnlrkxFa/97tjr9SyN2DFqliwwjwtnxCnIwu0R0gKdjcximtKHFfYdHse
+         XLQJ36pCPjgkk5pkrYQ+goi5x2HM7076m5dkv0sdcqGo8aOuITMuciua8cUbzNQb8tD+
+         P73ogU8dhxp8wIeadkldmSAEP09p6Us739z1xfclmRYOWsqluT7Fz5TlhakcdB1qFr14
+         h84A==
+X-Gm-Message-State: ABy/qLYexhQEuqv6onRKWPF+QEIurLU6CpDHC9oon1rh9tXiIXKUJRQe
+        nt7uZzYUn0OdupBaXKuOUIGyxw==
+X-Google-Smtp-Source: APBJJlEBIY1TvT6KLSO+AQ7zN+qW0dTIKxqy0mEXcL2xvmxKlSGoTfz+JsEur/+Zh4XZ44l7bzIJlA==
+X-Received: by 2002:a05:6512:3443:b0:4fb:8a0a:31f2 with SMTP id j3-20020a056512344300b004fb8a0a31f2mr2428594lfr.69.1689868508680;
+        Thu, 20 Jul 2023 08:55:08 -0700 (PDT)
+Received: from [10.1.3.131] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id q17-20020adff511000000b0031272fced4dsm1695889wro.52.2023.07.20.08.55.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 08:55:08 -0700 (PDT)
+Message-ID: <f7234a53-2449-426c-4cff-91c89bada258@baylibre.com>
+Date:   Thu, 20 Jul 2023 17:55:07 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6 11/11] drm/mediatek: dp: Don't register HPD interrupt
+ handler for eDP case
+Content-Language: en-US
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, chunkuang.hu@kernel.org
+Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
+        matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
+        wenst@chromium.org, nfraprado@collabora.com
+References: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
+ <20230717141438.274419-12-angelogioacchino.delregno@collabora.com>
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20230717141438.274419-12-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 20 Jul 2023 16:23:50 +0200:
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.5-rc2-tag
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/46670259519f4ee4ab378dc014798aabe77c5057
-
-Thank you!
+On 17/07/2023 16:14, AngeloGioacchino Del Regno wrote:
+> The interrupt handler for HPD is useful only if a display is actually
+> supposed to be hotpluggable, as that manages the machinery to perform
+> cable (un)plug detection, debouncing and setup for re-training.
+> 
+> Since eDP panels are not supposed to be hotpluggable we can avoid
+> using the HPD interrupts altogether and rely on HPD polling only
+> for the suspend/resume case, saving us some spinlocking action and
+> the overhead of interrupts firing at every suspend/resume cycle,
+> achieving a faster (even if just slightly) display resume.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Regards,
+Alexandre
