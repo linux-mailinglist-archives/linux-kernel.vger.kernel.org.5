@@ -2,122 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AEC75B5AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D436275B5C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbjGTRdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 13:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35334 "EHLO
+        id S231768AbjGTRi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 13:38:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbjGTRdG (ORCPT
+        with ESMTP id S229683AbjGTRiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 13:33:06 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE50A1984
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:33:05 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-262dc1ced40so620964a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:33:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689874385; x=1690479185;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ghQpfFyvcfhUNISvLwJyXktxUkGP1dSbutRKHuLM3bw=;
-        b=dfISc7U6AF5BJRDv8tvjGb/dY6p+ULVVoRlY0W50Ki8JhqALjc5fwJwr0qMlKmM41b
-         nkePpa4MjWqtrC3H+etMall5C1i2RCWAd877lqFJq0trUt166uqd2WPKoPJlHCuYAK33
-         1+WGH/EeEp7h85+vs7uq7kfg0/UvoNPpY/mZhF7mS3H9T5nBEDZb8kkpKXGy9kwE+MDz
-         HCJQ4oow1i1mNO+8YCAXWK1bjkEr3/TF9NsqQ1b2B4UTPrVOLICIGH+nUC6FLIDTbr9o
-         jH8et3vA22SYu6+YJIxV5cJfxn5FHGTqRIhVzWxposUnSULOclCAYCDAOx+lEF10yvNj
-         B2lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689874385; x=1690479185;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ghQpfFyvcfhUNISvLwJyXktxUkGP1dSbutRKHuLM3bw=;
-        b=FCt9EnkJabpFTQubnnJy2xOtaxiPo+fNdnPdJWndslC8yX8j6piWo8G0k1EBfbohpi
-         4ugaFDR6u90Z9XgGA5ex8cOZzz2tQXEcOD9o+QcD+Z88fJ0NjKHSiDoRHDjeNzJ7C1B7
-         DL16yZMpz+CXkpDn6GN6qSe4MnJCOVpPmpi+v70tcC/fij1Cntiv7QMUj0W7A23wXfVx
-         zaY1FD8NSTSG4XQyRETqEJ2kimWQRZeVz30cf4/th8Q868f0UF44obVtUVVSsQGjkw6d
-         NrHFeMBDTgUdzNNHM9w03EbVuLSlokLhteBwQD4ah3D+tIxpko9m9hYn3wZj1M81H1A5
-         ZFdw==
-X-Gm-Message-State: ABy/qLbi/mHgUSXhhUK6vH3PlTBfIaGYLM+4aSNAF8cbDYnGH6/Lh4Pl
-        tWUG0h2UK8kaPoKLl+X4zvxEqxTYXW9phNu6Fwlwcw==
-X-Google-Smtp-Source: APBJJlFxII+Gi7msvyAsb7Vr6LA5urVxi7htutTXVflD5dwYC2EC1sjXNCgFUpAOMtOs2njJbMS+eqcv23XsZ0xHh4s=
-X-Received: by 2002:a17:90a:38e5:b0:24e:4b1c:74d2 with SMTP id
- x92-20020a17090a38e500b0024e4b1c74d2mr129400pjb.32.1689874385349; Thu, 20 Jul
- 2023 10:33:05 -0700 (PDT)
+        Thu, 20 Jul 2023 13:38:25 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512D72719
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689874703; x=1721410703;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=deBOvTeII7hbzJ6MM2i8mI3IXlmLFekUZCFAL/jP414=;
+  b=Zz0fyfXloavXmBC4rSUStGXw3vcsZfLVgnG2wpGFXFx0gSI8c29215tY
+   CSWfyZg2nTcdmC6R1nr38XVMDEJT/sD5f78niGbTeeJaG63y0TS8X7EkL
+   0Wxqh+NoAxi3r03LhBCZk3GzdoSG/cmTq0MmOhuiNjNgIYwTRvWcFZukf
+   LJe2xkRAYpYQc5oxV7iRCsBO68zs58YL4hmudC0UCZL0xzlXp9UA7NnTl
+   HTTLISmQcgZxy3iIVuYl7QDhui4U4yGr88xjo2JcarvMgEvH7sAwbkuyw
+   Hwv5DQpxFm8gwhJChSvD60kor2/ikHEQe9irbvd5sAFtOuujrfq5+5bfC
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="433037073"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="433037073"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 10:35:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="718511340"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="718511340"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 20 Jul 2023 10:35:28 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qMXYk-0006KR-2R;
+        Thu, 20 Jul 2023 17:35:26 +0000
+Date:   Fri, 21 Jul 2023 01:35:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Vineet Gupta <vgupta@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org
+Subject: include/linux/compiler_types.h:328:45: error: call to
+ '__compiletime_assert_312' declared with attribute error: BUILD_BUG_ON
+ failed: (PTRS_PER_PGD * sizeof(pgd_t)) > PAGE_SIZE
+Message-ID: <202307210114.a8lhJ4rl-lkp@intel.com>
 MIME-Version: 1.0
-References: <cover.1689792825.git.tjeznach@rivosinc.com> <e1578b96b9c75433d8c49b6a173ff47a64675c2b.1689792825.git.tjeznach@rivosinc.com>
- <376985dd-a8b9-b86a-3c12-4633dd4505d7@linux.intel.com>
-In-Reply-To: <376985dd-a8b9-b86a-3c12-4633dd4505d7@linux.intel.com>
-From:   Tomasz Jeznach <tjeznach@rivosinc.com>
-Date:   Thu, 20 Jul 2023 10:32:54 -0700
-Message-ID: <CAH2o1u4GuVw-V0AVar97F7ByRWpgRBMrAEP_FTvsrxSKqF8pEw@mail.gmail.com>
-Subject: Re: [PATCH 04/11] MAINTAINERS: Add myself for RISC-V IOMMU driver
-To:     Baolu Lu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Sebastien Boeuf <seb@rivosinc.com>, iommu@lists.linux.dev,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@rivosinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 5:42=E2=80=AFAM Baolu Lu <baolu.lu@linux.intel.com>=
- wrote:
->
-> On 2023/7/20 3:33, Tomasz Jeznach wrote:
-> > Signed-off-by: Tomasz Jeznach <tjeznach@rivosinc.com>
-> > ---
-> >   MAINTAINERS | 7 +++++++
-> >   1 file changed, 7 insertions(+)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index aee340630eca..d28b1b99f4c6 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -18270,6 +18270,13 @@ F:   arch/riscv/
-> >   N:  riscv
-> >   K:  riscv
-> >
-> > +RISC-V IOMMU
-> > +M:   Tomasz Jeznach <tjeznach@rivosinc.com>
-> > +L:   linux-riscv@lists.infradead.org
->
-> Please add the iommu subsystem mailing list.
->
-> iommu@lists.linux.dev
->
-> It's the right place to discuss iommu drivers.
->
+Hi Vineet,
 
-ack. will add in the next version. Thanks
+FYI, the error/warning still remains.
 
-> > +S:   Maintained
-> > +F:   Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
-> > +F:   drivers/iommu/riscv/
-> > +
-> >   RISC-V MICROCHIP FPGA SUPPORT
-> >   M:  Conor Dooley <conor.dooley@microchip.com>
-> >   M:  Daire McNamara <daire.mcnamara@microchip.com>
->
-> Best regards,
-> baolu
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   46670259519f4ee4ab378dc014798aabe77c5057
+commit: d9820ff76f95fa26d33e412254a89cd65b23142d ARC: mm: switch pgtable_t back to struct page *
+date:   1 year, 11 months ago
+config: arc-randconfig-r014-20230720 (https://download.01.org/0day-ci/archive/20230721/202307210114.a8lhJ4rl-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230721/202307210114.a8lhJ4rl-lkp@intel.com/reproduce)
 
-regards,
-- Tomasz
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307210114.a8lhJ4rl-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   arch/arc/mm/init.c:35:13: warning: no previous prototype for 'arc_get_mem_sz' [-Wmissing-prototypes]
+      35 | long __init arc_get_mem_sz(void)
+         |             ^~~~~~~~~~~~~~
+   arch/arc/mm/init.c:88:13: warning: no previous prototype for 'setup_arch_memory' [-Wmissing-prototypes]
+      88 | void __init setup_arch_memory(void)
+         |             ^~~~~~~~~~~~~~~~~
+   In file included from <command-line>:
+   arch/arc/mm/init.c: In function 'mem_init':
+>> include/linux/compiler_types.h:328:45: error: call to '__compiletime_assert_312' declared with attribute error: BUILD_BUG_ON failed: (PTRS_PER_PGD * sizeof(pgd_t)) > PAGE_SIZE
+     328 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:309:25: note: in definition of macro '__compiletime_assert'
+     309 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:328:9: note: in expansion of macro '_compiletime_assert'
+     328 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |         ^~~~~~~~~~~~~~~~
+   arch/arc/mm/init.c:193:9: note: in expansion of macro 'BUILD_BUG_ON'
+     193 |         BUILD_BUG_ON((PTRS_PER_PGD * sizeof(pgd_t)) > PAGE_SIZE);
+         |         ^~~~~~~~~~~~
+
+
+vim +/__compiletime_assert_312 +328 include/linux/compiler_types.h
+
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  314  
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  315  #define _compiletime_assert(condition, msg, prefix, suffix) \
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  316  	__compiletime_assert(condition, msg, prefix, suffix)
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  317  
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  318  /**
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  319   * compiletime_assert - break build and emit msg if condition is false
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  320   * @condition: a compile-time constant condition to check
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  321   * @msg:       a message to emit if condition is false
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  322   *
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  323   * In tradition of POSIX assert, this macro will break the build if the
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  324   * supplied condition is *false*, emitting the supplied error message if the
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  325   * compiler has support to do so.
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  326   */
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  327  #define compiletime_assert(condition, msg) \
+eb5c2d4b45e3d2 Will Deacon 2020-07-21 @328  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  329  
+
+:::::: The code at line 328 was first introduced by commit
+:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
+
+:::::: TO: Will Deacon <will@kernel.org>
+:::::: CC: Will Deacon <will@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
