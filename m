@@ -2,61 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA7F75A604
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9179475A606
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbjGTGHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:07:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
+        id S229835AbjGTGIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjGTGHs (ORCPT
+        with ESMTP id S229832AbjGTGI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:07:48 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE3D1734;
-        Wed, 19 Jul 2023 23:07:47 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C188067373; Thu, 20 Jul 2023 08:07:42 +0200 (CEST)
-Date:   Thu, 20 Jul 2023 08:07:42 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, linux-doc@vger.kernel.org,
-        iommu@lists.linux.dev
-Subject: Re: [PATCH] dma: DMA_ATTR_SKIP_CPU_SYNC documentation tweaks
-Message-ID: <20230720060742.GA2987@lst.de>
-References: <98ef4f76d7a5f90b0878e649a70b101402b8889d.1689761699.git.mst@redhat.com>
+        Thu, 20 Jul 2023 02:08:29 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345071985
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:08:27 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R62LG6jwgzBRDs8
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:08:22 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689833302; x=1692425303; bh=CqFzjHxcc+z7cjMF9hVel9FQGh2
+        4WWb7acalQVdNRLc=; b=FDOvXPBWw/mdXWUuhkew6q4wQjgB56VxGybU1/u3Dzt
+        iewh8G24qfgvgl636npqGTI8AmPOpzadVSCBD2naYwkp2ip9JcPeXOUrRlVG01Ey
+        u7RmBD6ot2q1+QDJkVe5DLeAMaL1/pnGggmrGMlnd7Fr+5970o/D1Xxf4GOKY6ib
+        RjNiepea9QHHnQJCGJ0106eJAwE/zo1zfJX2fvNlkAsWDSlNW8iutSyFQbvA4/qX
+        MLgmxbYZMvkErcbXXbpJaAnohBELYZSRtiDkXV02l6KNdfhUnhX6TCHBvNsROfj0
+        jh73dklUwZuHbOMuGbZDo5Ux+mMgTt/R6B6h4e3irig==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id IJvXve9wuEaF for <linux-kernel@vger.kernel.org>;
+        Thu, 20 Jul 2023 14:08:22 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R62LG35wXzBR1P6;
+        Thu, 20 Jul 2023 14:08:22 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <98ef4f76d7a5f90b0878e649a70b101402b8889d.1689761699.git.mst@redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Thu, 20 Jul 2023 14:08:22 +0800
+From:   sunran001@208suo.com
+To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: aic7xxx: add missing spaces before '(' and after '!='
+In-Reply-To: <20230720060342.2381-1-xujianghui@cdjrlc.com>
+References: <20230720060342.2381-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <178634b2c91aa1441a6d0eb2fcb4da36@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 06:15:59AM -0400, Michael S. Tsirkin wrote:
-> A recent patchset highlighted to me that DMA_ATTR_SKIP_CPU_SYNC
-> might be easily misunderstood.
+Add missing spaces to clear checkpatch errors.
 
-.. just curious: what patchset is that?  DMA_ATTR_SKIP_CPU_SYNC is
-often a bad idea and all users probably could use a really good
-audit..
+ERROR: space required before the open parenthesis '('
+ERROR: spaces required around that '!=' (ctx:WxV)
 
->  #define DMA_ATTR_NO_KERNEL_MAPPING	(1UL << 4)
->  /*
-> - * DMA_ATTR_SKIP_CPU_SYNC: Allows platform code to skip synchronization of
-> - * the CPU cache for the given buffer assuming that it has been already
-> - * transferred to 'device' domain.
-> + * DMA_ATTR_SKIP_CPU_SYNC: Allows platform code to skip synchronization of the
-> + * CPU and device domains for the given buffer.
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/scsi/aic7xxx/aicasm/aicasm_symbol.c | 18 +++++++++---------
+  1 file changed, 9 insertions(+), 9 deletions(-)
 
-While we're at it, I think "allows" is the wrong word here, we really
-must skip the synchronization or else we're in trouble.
+diff --git a/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.c 
+b/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.c
+index c8170bbd67da..6c06e3652e85 100644
+--- a/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.c
++++ b/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.c
+@@ -87,7 +87,7 @@ symbol_delete(symbol_t *symbol)
+  		key.size = strlen(symbol->name);
+  		symtable->del(symtable, &key, /*flags*/0);
+  	}
+-	switch(symbol->type) {
++	switch (symbol->type) {
+  	case SCBLOC:
+  	case SRAMLOC:
+  	case REGISTER:
+@@ -183,7 +183,7 @@ symtable_get(char *name)
+  			data.data = &new_symbol;
+  			data.size = sizeof(new_symbol);
+  			if (symtable->put(symtable, &key, &data,
+-					  /*flags*/0) !=0) {
++					  /*flags*/0) != 0) {
+  				perror("Symtable put failed");
+  				exit(EX_SOFTWARE);
+  			}
+@@ -197,7 +197,7 @@ symtable_get(char *name)
+  	memcpy(&stored_ptr, data.data, sizeof(stored_ptr));
+  	stored_ptr->count++;
+  	data.data = &stored_ptr;
+-	if (symtable->put(symtable, &key, &data, /*flags*/0) !=0) {
++	if (symtable->put(symtable, &key, &data, /*flags*/0) != 0) {
+  		perror("Symtable put failed");
+  		exit(EX_SOFTWARE);
+  	}
+@@ -210,7 +210,7 @@ symlist_search(symlist_t *symlist, char *symname)
+  	symbol_node_t *curnode;
+
+  	curnode = SLIST_FIRST(symlist);
+-	while(curnode != NULL) {
++	while (curnode != NULL) {
+  		if (strcmp(symname, curnode->symbol->name) == 0)
+  			break;
+  		curnode = SLIST_NEXT(curnode, links);
+@@ -234,7 +234,7 @@ symlist_add(symlist_t *symlist, symbol_t *symbol, 
+int how)
+  		int field;
+
+  		field = FALSE;
+-		switch(symbol->type) {
++		switch (symbol->type) {
+  		case REGISTER:
+  		case SCBLOC:
+  		case SRAMLOC:
+@@ -314,7 +314,7 @@ symlist_merge(symlist_t *symlist_dest, symlist_t 
+*symlist_src1,
+  	symbol_node_t *node;
+
+  	*symlist_dest = *symlist_src1;
+-	while((node = SLIST_FIRST(symlist_src2)) != NULL) {
++	while ((node = SLIST_FIRST(symlist_src2)) != NULL) {
+  		SLIST_REMOVE_HEAD(symlist_src2, links);
+  		SLIST_INSERT_HEAD(symlist_dest, node, links);
+  	}
+@@ -492,7 +492,7 @@ symtable_dump(FILE *ofile, FILE *dfile)
+  		symbol_t *cursym;
+
+  		memcpy(&cursym, data.data, sizeof(cursym));
+-		switch(cursym->type) {
++		switch (cursym->type) {
+  		case REGISTER:
+  		case SCBLOC:
+  		case SRAMLOC:
+@@ -538,7 +538,7 @@ symtable_dump(FILE *ofile, FILE *dfile)
+  		if (curnode->symbol->dont_generate_debug_code)
+  			continue;
+
+-		switch(curnode->symbol->type) {
++		switch (curnode->symbol->type) {
+  		case REGISTER:
+  		case SCBLOC:
+  		case SRAMLOC:
+@@ -606,7 +606,7 @@ symtable_dump(FILE *ofile, FILE *dfile)
+
+  		curnode = SLIST_FIRST(&registers);
+  		SLIST_REMOVE_HEAD(&registers, links);
+-		switch(curnode->symbol->type) {
++		switch (curnode->symbol->type) {
+  		case REGISTER:
+  		case SCBLOC:
+  		case SRAMLOC:
