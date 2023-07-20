@@ -2,83 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D1875ABF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DA375ABFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231352AbjGTK3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 06:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
+        id S231359AbjGTKbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 06:31:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbjGTK3l (ORCPT
+        with ESMTP id S230493AbjGTKbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 06:29:41 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289FF199A
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:29:36 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbb634882dso1043495e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:29:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1689848975; x=1690453775;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=55ldkBN7Z9rmeZAoOny3CqxP4h68H/R8XHjCRpEpvaM=;
-        b=To/aqJ+AR8e5dWEecXLmVyKzJv7p/eXCLLd8C+JTITCgvgX10gO3bPy9mTfjfApmKC
-         pxsQe0Zi0t9ZTJKAnnPaXOSY+2KgC+undQtxxu7OXKGlWVpCoprWFOsxf+W4mnSLiDLC
-         pAgi2NsmcZku6fKLA/jCVUWBjUWpmQMelRwLE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689848975; x=1690453775;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=55ldkBN7Z9rmeZAoOny3CqxP4h68H/R8XHjCRpEpvaM=;
-        b=MZZHa6dXJ3m/J8j9gm2qWVDthDjrTsMzaqE2jLeaA/zVb8Lmyh4/ClyOzv/PzQ+51L
-         syWIUE7vj99V3HVm6/QehPUViTCOV3Zsms/jUrt4x2UYDktSHe1TY8yUcY7QrnfaFWIs
-         tGQ/sOgmFCkRMtI4TBg752u3vSFjy3ZhaerdjAbnlUwg/ACUnZ50GoAYmxgwvTwK1d09
-         X6b3Y6MyYy+nsjqxmOKkvgArXXlWj6ZeBXADslpoCj9I5Rv0zEONc7jQ1oh+zL56D74o
-         uEqAPeS2bDJoXs6MC7D2C9C5eaH50m+ep5idxWdNsTlxU72jDuorFr3wl0DepEM8389e
-         oUcw==
-X-Gm-Message-State: ABy/qLYlFAWDo8vd/qe/kBSb+64uFS7vGJZ2XQNvqjXe0ZTdq4zg4z5k
-        n5sEks4KmOb8LsKSHKaArddIFUEJCVw/iSA0qTc=
-X-Google-Smtp-Source: APBJJlGt+6m30H+euMcgCia5xz8EHhxIYsHnKz/Fj04bqSKh9ChxaTbMBvaixRVxb9X8NJRNSY8UQQ==
-X-Received: by 2002:a05:600c:354f:b0:3fa:9587:8fc1 with SMTP id i15-20020a05600c354f00b003fa95878fc1mr1968458wmq.1.1689848974989;
-        Thu, 20 Jul 2023 03:29:34 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f14-20020a7bcd0e000000b003fc01f7b415sm3582137wmj.39.2023.07.20.03.29.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 03:29:34 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 12:29:32 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     Tomer Tayar <ttayar@habana.ai>, Arnd Bergmann <arnd@kernel.org>,
-        Ohad Sharabi <osharabi@habana.ai>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Dafna Hirschfeld <dhirschfeld@habana.ai>,
-        Ofir Bitton <obitton@habana.ai>
-Subject: Re: [PATCH] accel/habanalabs: add more debugfs stub helpers
-Message-ID: <ZLkMjL8Aebipv4QR@phenom.ffwll.local>
-Mail-Followup-To: Oded Gabbay <ogabbay@kernel.org>,
-        Tomer Tayar <ttayar@habana.ai>, Arnd Bergmann <arnd@kernel.org>,
-        Ohad Sharabi <osharabi@habana.ai>, Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Dafna Hirschfeld <dhirschfeld@habana.ai>,
-        Ofir Bitton <obitton@habana.ai>
-References: <20230609120636.3969045-1-arnd@kernel.org>
- <b3a3e2f8-51d8-f8ce-95ce-1180f80cc2d2@habana.ai>
- <CAFCwf122kE8sNksXivPA+E=BWzjroKowwqDJrHVMNj-o3oJq0A@mail.gmail.com>
+        Thu, 20 Jul 2023 06:31:40 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DD81705;
+        Thu, 20 Jul 2023 03:31:39 -0700 (PDT)
+Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2A9E4EBA;
+        Thu, 20 Jul 2023 12:30:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1689849041;
+        bh=FKPk/eWfRryDWZfeoKDk/qnFgxfZjp8mjYjlaloxrdY=;
+        h=From:Subject:Date:To:Cc:From;
+        b=VsCmzI4eZZ5z7xomvErdLYImzjHqdkmorL1rhUY+TooC33b/jNHGwUZTnXvCwlzWb
+         Cp47azyVgrTheCVpIHTcwhmssawt8gmo2q1N7+z+fgvj/rKGlIWiiETXIXSQ+7ZSNs
+         RoKXsl6vH9sTlBsFa86ZlWHnd23HNRt3PO88iouY=
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: [PATCH v2 0/8] media: i2c: ds90ub9xx: Misc improvements
+Date:   Thu, 20 Jul 2023 13:30:31 +0300
+Message-Id: <20230720-fpdlink-additions-v2-0-b91b1eca2ad3@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFCwf122kE8sNksXivPA+E=BWzjroKowwqDJrHVMNj-o3oJq0A@mail.gmail.com>
-X-Operating-System: Linux phenom 6.3.0-2-amd64 
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAMcMuWQC/yWNQQ6DIBREr2JYFyMfldBV79G4QPnWHxUMENPGe
+ PdSu3yTmTcHixgII7sXBwu4UyTvMsCtYMNk3As52cwMKpCVgoqPm13IzdxYSymXIx/7RmolZau
+ gYXm3BRzpfTmfXeaJYvLhc13s4pf+ba1ohWw0QFnXoJXmgie/UrmbZUZy6B5k0UTvem+CLQe/s
+ u48zy/Xjct3swAAAA==
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Satish Nagireddy <satish.nagireddy@getcruise.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1662;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=FKPk/eWfRryDWZfeoKDk/qnFgxfZjp8mjYjlaloxrdY=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBkuQ0EPt3I0636QXuPa2dSxCBk7GGfVzpyIk082
+ DlQM6fnHhiJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZLkNBAAKCRD6PaqMvJYe
+ 9Xa5D/9a35RuACGQ3cTXv43WLemB7mjHWL59Q2FYSx+YjPVeHJKXxOj0yj5XdC1n0ERybAapjfT
+ oavk+xiNpAdi0L8tEE4SvqVlpLHLTxfffWhrps4Dfl+EpIBNQSHUWq9a3e1sOmK0Bov4Fc/mBB+
+ ZBK5fKvV+UueOiLoFzxBL20VIn8tzpzhJAJ5aJp8I8LINKdvTp1hA6LvBaIcKep/3PR8CFEZsH5
+ Owy0r3TxMiEcm9aXu7EkfJEV2SqpFjfMdufd3M1xjNfhJJ6yEpgNvzVoxcQTCyw00+7JtGRNnvr
+ u76Vorx1JLypUI+xhFnEUJjDmVV/59IsKap70xA0i/FAds4TauKB7qHvmgQjpEnZlHQht+eOY0n
+ TAc/QFWCSbNPeSjSWpSYhq/abPpcuxXR1Ajwwyyi836qMGSNdwKBGuwbWzoDwp9Z0yWCuF3+EDB
+ q8OwPBdsx5CpkYOgdAluH7d0o1p5HoBV4fX7dpRoQmUWknB/OCS/MLnzpP41QtNrxuY/TZt3nVT
+ QBYUweWIqPCVf1wFWp2aP1id4okUyhjY1wrg+is6NSnmZWsEDyiu22e1XfFqVNI/7zSd2Rhub3E
+ +Dz2Sr6leH9adyBT1PhTf8tXhWhfs+Z8m8tMbZVeLzAlBCEhFirx+HrzVjfYrrWV8E5x056lIVy
+ OQ2pwB+i31GYSLw==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,64 +75,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 11, 2023 at 12:50:31PM +0300, Oded Gabbay wrote:
-> On Fri, Jun 9, 2023 at 4:37 PM Tomer Tayar <ttayar@habana.ai> wrote:
-> >
-> > On 09/06/2023 15:06, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > Two functions got added with normal prototypes for debugfs, but not
-> > > alternative when building without it:
-> > >
-> > > drivers/accel/habanalabs/common/device.c: In function 'hl_device_init':
-> > > drivers/accel/habanalabs/common/device.c:2177:14: error: implicit declaration of function 'hl_debugfs_device_init'; did you mean 'hl_debugfs_init'? [-Werror=implicit-function-declaration]
-> > > drivers/accel/habanalabs/common/device.c:2305:9: error: implicit declaration of function 'hl_debugfs_device_fini'; did you mean 'hl_debugfs_remove_file'? [-Werror=implicit-function-declaration]
-> > >
-> > > Add stubs for these as well.
-> > >
-> > > Fixes: 553311fc7b76e ("accel/habanalabs: expose debugfs files later")
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Thanks,
-> > Reviewed-by: Tomer Tayar <ttayar@habana.ai>
-> 
-> Thanks,
-> Applied to -fixes.
+This series contains small miscellaneous improvements to the FPD-Link
+drivers.
 
-As requested applied to drm-fixes, hopeful for the next one your drm-misc
-account issue is fixed.
--Daniel
+These were sent originally in v14 of the "i2c-atr and FPDLink" series
+(link below), but were then left out for v15. So I have assigned v2 to
+this series.
 
-> Oded
-> >
-> > > ---
-> > >   drivers/accel/habanalabs/common/habanalabs.h | 9 +++++++++
-> > >   1 file changed, 9 insertions(+)
-> > >
-> > > diff --git a/drivers/accel/habanalabs/common/habanalabs.h b/drivers/accel/habanalabs/common/habanalabs.h
-> > > index d92ba2e30e310..2f027d5a82064 100644
-> > > --- a/drivers/accel/habanalabs/common/habanalabs.h
-> > > +++ b/drivers/accel/habanalabs/common/habanalabs.h
-> > > @@ -3980,6 +3980,15 @@ static inline void hl_debugfs_fini(void)
-> > >   {
-> > >   }
-> > >
-> > > +static inline int hl_debugfs_device_init(struct hl_device *hdev)
-> > > +{
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static inline void hl_debugfs_device_fini(struct hl_device *hdev)
-> > > +{
-> > > +}
-> > > +
-> > >   static inline void hl_debugfs_add_device(struct hl_device *hdev)
-> > >   {
-> > >   }
-> >
-> >
+I have trimmed the to/cc list a bit, as these don't really deal with i2c
+and dt anymore.
 
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+---
+Changes in v2:
+- New patch which renames ASYNC to NONSYNC
+- Minor cosmetic change
+- I didn't take u32_fract into use (as suggested by Andy), as I think it
+  makes the driver a bit more confusing.
+- Link to v1: https://lore.kernel.org/r/20230616135922.442979-1-tomi.valkeinen@ideasonboard.com
+
+---
+Tomi Valkeinen (8):
+      media: i2c: ds90ub960: Configure CSI-2 continuous clock
+      media: i2c: ds90ub953: Use v4l2_fwnode_endpoint_parse()
+      media: i2c: ds90ub913: Use v4l2_fwnode_endpoint_parse()
+      media: i2c: ds90ub953: Handle V4L2_MBUS_CSI2_NONCONTINUOUS_CLOCK
+      media: i2c: ds90ub960: Allow FPD-Link async mode
+      media: i2c: ds90ub953: Restructure clkout management
+      media: i2c: ds90ub953: Support non-sync mode
+      media: i2c: ds90ub960: Rename RXPORT_MODE_CSI2_ASYNC to RXPORT_MODE_CSI2_NONSYNC
+
+ drivers/media/i2c/ds90ub913.c |  32 ++++---
+ drivers/media/i2c/ds90ub953.c | 193 +++++++++++++++++++++++++-----------------
+ drivers/media/i2c/ds90ub960.c |  31 ++++---
+ 3 files changed, 152 insertions(+), 104 deletions(-)
+---
+base-commit: 28999781d15f94046e6c23a9a7d92ad28a436abf
+change-id: 20230720-fpdlink-additions-fb5397336725
+
+Best regards,
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+
