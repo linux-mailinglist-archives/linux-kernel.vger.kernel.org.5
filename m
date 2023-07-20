@@ -2,71 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D2975A7EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D928375A804
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbjGTHhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58486 "EHLO
+        id S231655AbjGTHnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbjGTHhF (ORCPT
+        with ESMTP id S231303AbjGTHm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:37:05 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44489270C;
-        Thu, 20 Jul 2023 00:36:58 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-51d95aed33aso543564a12.3;
-        Thu, 20 Jul 2023 00:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689838616; x=1690443416;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4qZwMtxgR24ffVzoknfQ/q2ATGXoER3/4MloiA6E2QA=;
-        b=UqUfLPVvOzR0QUcX3cHeyso0h74BPjo2kY5a/VmeXpH413em3icaIykI4fXiMlRP6o
-         cJtTpdfFiE3jLRr7+DNcSdsACqr1eTZXndPSKiJLyKRqIQCFG70x2xyDR5aI50jmx0dN
-         X8tCHVQoNP8fdbox4QIpF0O6Qoh6ZZRdJWExkctP50fBquEpim8y7CRxT7ZcWBaEoyKs
-         VTe0V6JI3X/KHOEIZlqTC8DkjZc4borNy1Mwa1XXln2OAnzuSET7OnfVD0dwK8n4r/uZ
-         vI4W4qzeSDJudRpcx51gAakfYf/D+RVMhEC0eQU6zeBnQi4rp8nMsrGiFcpnLKAW0Z8b
-         Szew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689838616; x=1690443416;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=4qZwMtxgR24ffVzoknfQ/q2ATGXoER3/4MloiA6E2QA=;
-        b=jrB2UYQeem0VVZ7+kGEtpYSRY2USywojSchTgPeARXerZrhZ01PZwGQGYSUZ4ZQPjd
-         vWYb/eDr0zTIAG2eIlvBPV9gi/rzzwz5d4yiT2NWYCE2J/s15+IkSR47YH39IvVlzT0+
-         J1cTu8+0L/nXXcplNjPaKMjjyBnWimNPWIsvxAdlvcUYYoGxUajSIdh0df/laODfPhtk
-         TN86wwbyNetQIaXuMb0umxWe3pOIaAboI3F2PM3J7fh9gqRPvERPt0fTrE79mA0jRHpH
-         +RZeVmz3TMf5plmeL6DqJ3Kkru9QJ+/GFXhEGFyIxa9cl3RE/bcin7nl6doatu2iiNZw
-         V5Sw==
-X-Gm-Message-State: ABy/qLatkbCowHiGizlm0bNU8H4rugeYdE38sDu+fLArzsLQeTin0CvB
-        3WBbov8E1WhF37m8S97JF9N45g03yKXVhg==
-X-Google-Smtp-Source: APBJJlHHT2doglvzYSOvcOqT5o5T1PQEtjXjBKQGd6NH6kqb6tc0LxcWNtxYdD7xuYiiIs2yaQf+mw==
-X-Received: by 2002:a17:907:c0a:b0:991:b613:9b65 with SMTP id ga10-20020a1709070c0a00b00991b6139b65mr4893318ejc.37.1689838616542;
-        Thu, 20 Jul 2023 00:36:56 -0700 (PDT)
-Received: from ?IPv6:2003:f6:ef05:8700:f946:69a3:7954:9ee0? (p200300f6ef058700f94669a379549ee0.dip0.t-ipconnect.de. [2003:f6:ef05:8700:f946:69a3:7954:9ee0])
-        by smtp.gmail.com with ESMTPSA id c26-20020a170906925a00b00982be08a9besm277871ejx.172.2023.07.20.00.36.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 00:36:56 -0700 (PDT)
-Message-ID: <810d290b629e2d40550a2b375229fe2e4dd58085.camel@gmail.com>
-Subject: Re: [PATCH v2 2/3] iio: imu: adis16475.c: Add has_burst32 flag to
- adis16477 devices
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Ramona Bolboaca <ramona.bolboaca@analog.com>, jic23@kernel.org,
-        nuno.sa@analog.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 20 Jul 2023 09:39:27 +0200
-In-Reply-To: <20230719123152.309624-3-ramona.bolboaca@analog.com>
-References: <20230719123152.309624-1-ramona.bolboaca@analog.com>
-         <20230719123152.309624-3-ramona.bolboaca@analog.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.48.4 
+        Thu, 20 Jul 2023 03:42:56 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B59C2118;
+        Thu, 20 Jul 2023 00:42:55 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 896F6660707E;
+        Thu, 20 Jul 2023 08:42:52 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689838973;
+        bh=qql06jpSc72dkLq4FdZfoamoL5RBmEctV2tIFgfKNAo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=a4UkT6nTjXp2W/l2ACa0ChLRSV/AGn3QpUHSpdxfWsu67VsEa+aeF6qEQk2S+8XPo
+         DDzYFePfFmO0UXJ0V9CHzb1cX6nsNWSWxxPyNasFdT/ctXHlTsbYYtixl7GH6FK/Wm
+         1cBZJL5Aad0XCjNaMpKEMDk0AkfNIMut2g0a2Xce3ucyRsKpV252mhORhSRsLkG/66
+         oR54TKmnhhgh4T1cCh8Ww3lu4Zld3Vj5RwBfT69WJz/NYWDe4hdcthnAgW1RVDokgZ
+         lQA3VaxGRcwBXbdV1bj7qrrXET1Fv7nxRDRbcoUsvXsKVnpL3jHYWzp/h+gosVtMGT
+         EKbOankWmv9bw==
+Message-ID: <78efa42b-cf2e-bf3c-a59a-99d61225c629@collabora.com>
+Date:   Thu, 20 Jul 2023 09:42:49 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 02/15] arm64: dts: qcom: sm6125: Sort spmi_bus node
+ numerically by reg
+Content-Language: en-US
+To:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Krishna Manikandan <quic_mkrishn@quicinc.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>
+References: <20230718-sm6125-dpu-v3-0-6c5a56e99820@somainline.org>
+ <20230718-sm6125-dpu-v3-2-6c5a56e99820@somainline.org>
+ <149d15e6-4995-8ff6-5191-77783c3dedb8@linaro.org>
+ <2zwj7sgsvcl7czobhokop37ycsekiivtuznwegaeybu577skcc@mqdkoolwkail>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <2zwj7sgsvcl7czobhokop37ycsekiivtuznwegaeybu577skcc@mqdkoolwkail>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,40 +84,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIzLTA3LTE5IGF0IDE1OjMxICswMzAwLCBSYW1vbmEgQm9sYm9hY2Egd3JvdGU6
-Cj4gYWRpczE2NDc3IGRldmljZXMgc3VwcG9ydCBidXJzdDMyIGZ1bmN0aW9uLCB0aHVzIGhhc19i
-dXJzdDMyCj4gZmxhZyBzaG91bGQgYmUgc2V0IHRvIHRydWUuCj4gCj4gU2lnbmVkLW9mZi1ieTog
-UmFtb25hIEJvbGJvYWNhIDxyYW1vbmEuYm9sYm9hY2FAYW5hbG9nLmNvbT4KPiAtLS0KClVwcy4u
-LgoKUmV2aWV3ZWQtYnk6IE51bm8gU2EgPG51bm8uc2FAYW5hbG9nLmNvbT4KCj4gwqBkcml2ZXJz
-L2lpby9pbXUvYWRpczE2NDc1LmMgfCAzICsrKwo+IMKgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0
-aW9ucygrKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lpby9pbXUvYWRpczE2NDc1LmMgYi9k
-cml2ZXJzL2lpby9pbXUvYWRpczE2NDc1LmMKPiBpbmRleCAyNDNmMGE5MWZkZjkuLjE3Mjc1YTUz
-Y2EyYyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2lpby9pbXUvYWRpczE2NDc1LmMKPiArKysgYi9k
-cml2ZXJzL2lpby9pbXUvYWRpczE2NDc1LmMKPiBAQCAtNzI2LDYgKzcyNiw3IEBAIHN0YXRpYyBj
-b25zdCBzdHJ1Y3QgYWRpczE2NDc1X2NoaXBfaW5mbwo+IGFkaXMxNjQ3NV9jaGlwX2luZm9bXSA9
-IHsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5tYXhfZGVjID0gMTk5OSwKPiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5zeW5jID0gYWRpczE2NDc1X3N5bmNfbW9k
-ZSwKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5udW1fc3luYyA9IEFSUkFZX1NJ
-WkUoYWRpczE2NDc1X3N5bmNfbW9kZSksCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oC5oYXNfYnVyc3QzMiA9IHRydWUsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAu
-YWRpc19kYXRhID0gQURJUzE2NDc1X0RBVEEoMTY0NzcsICZhZGlzMTY0NzVfdGltZW91dHMpLAo+
-IMKgwqDCoMKgwqDCoMKgwqB9LAo+IMKgwqDCoMKgwqDCoMKgwqBbQURJUzE2NDc3XzJdID0gewo+
-IEBAIC03NDEsNiArNzQyLDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhZGlzMTY0NzVfY2hpcF9p
-bmZvCj4gYWRpczE2NDc1X2NoaXBfaW5mb1tdID0gewo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgLm1heF9kZWMgPSAxOTk5LAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgLnN5bmMgPSBhZGlzMTY0NzVfc3luY19tb2RlLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgLm51bV9zeW5jID0gQVJSQVlfU0laRShhZGlzMTY0NzVfc3luY19tb2RlKSwKPiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLmhhc19idXJzdDMyID0gdHJ1ZSwKPiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5hZGlzX2RhdGEgPSBBRElTMTY0NzVfREFUQSgx
-NjQ3NywgJmFkaXMxNjQ3NV90aW1lb3V0cyksCj4gwqDCoMKgwqDCoMKgwqDCoH0sCj4gwqDCoMKg
-wqDCoMKgwqDCoFtBRElTMTY0NzdfM10gPSB7Cj4gQEAgLTc1Niw2ICs3NTgsNyBAQCBzdGF0aWMg
-Y29uc3Qgc3RydWN0IGFkaXMxNjQ3NV9jaGlwX2luZm8KPiBhZGlzMTY0NzVfY2hpcF9pbmZvW10g
-PSB7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAubWF4X2RlYyA9IDE5OTksCj4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuc3luYyA9IGFkaXMxNjQ3NV9zeW5jX21v
-ZGUsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAubnVtX3N5bmMgPSBBUlJBWV9T
-SVpFKGFkaXMxNjQ3NV9zeW5jX21vZGUpLAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAuaGFzX2J1cnN0MzIgPSB0cnVlLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-LmFkaXNfZGF0YSA9IEFESVMxNjQ3NV9EQVRBKDE2NDc3LCAmYWRpczE2NDc1X3RpbWVvdXRzKSwK
-PiDCoMKgwqDCoMKgwqDCoMKgfSwKPiDCoMKgwqDCoMKgwqDCoMKgW0FESVMxNjQ2NV8xXSA9IHsK
-Cg==
+Il 19/07/23 23:54, Marijn Suijten ha scritto:
+> On 2023-07-19 01:02:56, Dmitry Baryshkov wrote:
+>> On 19/07/2023 00:24, Marijn Suijten wrote:
+>>> This node has always resided in the wrong spot, making it somewhat
+>>> harder to contribute new node entries while maintaining proper sorting
+>>> around it.  Move the node up to sit after hsusb_phy1 where it maintains
+>>> proper numerical sorting on the (first of its many) reg address
+>>> property.
+>>>
+>>> Fixes: cff4bbaf2a2d ("arm64: dts: qcom: Add support for SM6125")
+>>> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+>>> ---
+>>>    arch/arm64/boot/dts/qcom/sm6125.dtsi | 38 ++++++++++++++++++------------------
+>>>    1 file changed, 19 insertions(+), 19 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sm6125.dtsi b/arch/arm64/boot/dts/qcom/sm6125.dtsi
+>>> index 6937c7ebdb81..cfd0901d4555 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sm6125.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sm6125.dtsi
+>>> @@ -684,6 +684,24 @@ hsusb_phy1: phy@1613000 {
+>>>    			status = "disabled";
+>>>    		};
+>>>    
+>>> +		spmi_bus: spmi@1c40000 {
+>>> +			compatible = "qcom,spmi-pmic-arb";
+>>> +			reg = <0x01c40000 0x1100>,
+>>> +			      <0x01e00000 0x2000000>,
+>>> +			      <0x03e00000 0x100000>,
+>>> +			      <0x03f00000 0xa0000>,
+>>> +			      <0x01c0a000 0x26000>;
+>>> +			reg-names = "core", "chnls", "obsrvr", "intr", "cnfg";
+>>> +			interrupt-names = "periph_irq";
+>>> +			interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
+>>> +			qcom,ee = <0>;
+>>> +			qcom,channel = <0>;
+>>> +			#address-cells = <2>;
+>>> +			#size-cells = <0>;
+>>> +			interrupt-controller;
+>>> +			#interrupt-cells = <4>;
+>>> +		};
+>>> +
+>>>    		rpm_msg_ram: sram@45f0000 {
+>>>    			compatible = "qcom,rpm-msg-ram";
+>>>    			reg = <0x045f0000 0x7000>;
+>>> @@ -1189,27 +1207,9 @@ sram@4690000 {
+>>>    			reg = <0x04690000 0x10000>;
+>>>    		};
+>>>    
+>>> -		spmi_bus: spmi@1c40000 {
+>>> -			compatible = "qcom,spmi-pmic-arb";
+>>> -			reg = <0x01c40000 0x1100>,
+>>> -			      <0x01e00000 0x2000000>,
+>>> -			      <0x03e00000 0x100000>,
+>>> -			      <0x03f00000 0xa0000>,
+>>> -			      <0x01c0a000 0x26000>;
+>>> -			reg-names = "core", "chnls", "obsrvr", "intr", "cnfg";
+>>> -			interrupt-names = "periph_irq";
+>>> -			interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
+>>> -			qcom,ee = <0>;
+>>> -			qcom,channel = <0>;
+>>> -			#address-cells = <2>;
+>>> -			#size-cells = <0>;
+>>> -			interrupt-controller;
+>>> -			#interrupt-cells = <4>;
+>>> -		};
+>>> -
+>>>    		apps_smmu: iommu@c600000 {
+>>>    			compatible = "qcom,sm6125-smmu-500", "qcom,smmu-500", "arm,mmu-500";
+>>> -			reg = <0xc600000 0x80000>;
+>>> +			reg = <0x0c600000 0x80000>;
+>>
+>> Irrelevant, please split.
+> 
+> This was already here in v1, and it is what likely contributed to the
+> sorting mismatch in the first place.
+> 
+> But will split it and send a v4 for just this...
+> 
+
+I agree in that it is irrelevant, but anyway, for the next time: you should at
+least mention "the other change" in your commit message ;-)
+
+Also, remember that this commit has a Fixes tag........ :-)
+
+Cheers,
+Angelo
+
+
 
