@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBAD75AF7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F331F75AF7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbjGTNQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40216 "EHLO
+        id S231750AbjGTNRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbjGTNQd (ORCPT
+        with ESMTP id S231635AbjGTNQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:16:33 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7028F269E
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1lUx4dPqIzmUvRIIeoBsSJ/oceUFmIU9b7XhudJ2c+8=; b=AOtOAXXXRvzabYI1HO+7lR6Nb/
-        zWGsrxxxGJjbaTiZuFYQSisVZ7yMYBBYc3D+WDAYi0zeM2cw1vU57BGshyo5f5PIU5KuwFRhxEoMH
-        +Ku+i6za52vIFiChAXcEHVBGr1y5wYEc3i3KgOiDLg3RXq6w324TWvDLYvy4YvL1uITKaQ8Z/mFY5
-        1P9yjvrwB1aMMLw1lvLo3Tk8wIC0UX7gP7DEferhcJUc7XdSnDt5t+KzfArD4hKP8hQrKst4crN9M
-        Ndr6DWwN827f7ooRUtuZVO/QOFKN9QZIWiNS1q59A7Bm580i0+UwLaT4QE5RkH662BV2BZG8OPTx4
-        8IlTerBg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qMTVp-00FbxV-31;
-        Thu, 20 Jul 2023 13:16:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0EFBF30049D;
-        Thu, 20 Jul 2023 15:16:09 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EA63129E775E8; Thu, 20 Jul 2023 15:16:08 +0200 (CEST)
-Date:   Thu, 20 Jul 2023 15:16:08 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org,
-        dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
-        pbonzini@redhat.com, isaku.yamahata@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        n.borisov.lkml@gmail.com
-Subject: Re: [PATCH v2 00/11] Unify TDCALL/SEAMCALL and TDVMCALL assembly
-Message-ID: <20230720131608.GE3569127@hirez.programming.kicks-ass.net>
-References: <cover.1689855280.git.kai.huang@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1689855280.git.kai.huang@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 20 Jul 2023 09:16:56 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DA526BA
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:16:53 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-57704af0e64so7479197b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:16:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689859012; x=1690463812;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jZDyfQVqAO0bnYa7VYw9MMaKrL6NuobnBPEQu7nAapA=;
+        b=b6DzRutOpRlchzhGc+vWqutvZPPlCW3TQf+U9eOy+pcYyCjPEjS83wJDT+mdAcH9WS
+         ZKa2pOq77PfNzKjFJeVwBMyLfacxlFfOUdD20e/AOBtvomkN6yOFjVc5/eYRgrx+3l7d
+         3ejGayJL4s3SMDgZFhcQ5GwPji6pqyjsIW+1b1tC53n1xDH2P9QNV7otpXOyxZGO772D
+         ZxbDafbsKOn49/SC3si7WnXYIu6/Ki7S83+EjdnudP/wTEGox6vKP7+EvdIQDScKBWgw
+         x1Ugue/ctvM4GE26AaDdqJwsK3jh18x1OFYNbPkBImnt09s7m3hTGf2grI49QkwZ5XV5
+         6pmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689859012; x=1690463812;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jZDyfQVqAO0bnYa7VYw9MMaKrL6NuobnBPEQu7nAapA=;
+        b=GkRVUWYp+tc0AlXYocU+axaD6wTKVunTRhzBovwF18xyss/jBkZRlOIX6I3A1rbO9z
+         u3YI29LOcQwphk/XJfIniyiIlPq7+RjPKuyfif/iNTcoLnsdSO0if/9vIr2ygwCD4QFT
+         bg/UsisBf4HZIxNyByhFamnXiZOklQ0G8cC5cyaUGg1TuNMx/K/4z9fxiIaW4gObhlN0
+         E3ep58RqO+22pKYigmoWSU+WkkwXZoNXRNsIcPpcm8ruziy+gA+MqKPkAoUk0mLy2mdK
+         ZgQTbgjqEQ87VTOtQECrz9Omqx2uEcJ9Pe6xV9iW11+vTgsa3mfwPC2PNJBYrdgnPlLK
+         EibA==
+X-Gm-Message-State: ABy/qLaACIaIt/nIrgfeoT3YOvxfPEWuBda0G9PmfqTZbtbb834CHyTh
+        x0px+DFkV7K6S282VNIiFmEzP+xrQy3knvs=
+X-Google-Smtp-Source: APBJJlFilV9dSuhKU7Af7K+uRVO6k7U92+nHUAIyOw7PsPz2kKbD7kCT1zItva0bW5jPFRiobB7cXYXHGmnRxgY=
+X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
+ (user=aliceryhl job=sendgmr) by 2002:a81:b70d:0:b0:581:7b58:5e70 with SMTP id
+ v13-20020a81b70d000000b005817b585e70mr59224ywh.5.1689859012266; Thu, 20 Jul
+ 2023 06:16:52 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 13:16:48 +0000
+In-Reply-To: <20230719141918.543938-4-benno.lossin@proton.me>
+Mime-Version: 1.0
+References: <20230719141918.543938-4-benno.lossin@proton.me>
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
+Message-ID: <20230720131648.3542031-1-aliceryhl@google.com>
+Subject: Re: [PATCH v2 03/12] rust: init: make guards in the init macros hygienic
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     benno.lossin@proton.me
+Cc:     alex.gaynor@gmail.com, aliceryhl@google.com,
+        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
+        lina@asahilina.net, linux-kernel@vger.kernel.org, nmi@metaspace.dk,
+        ojeda@kernel.org, rust-for-linux@vger.kernel.org,
+        wedsonaf@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 12:28:03AM +1200, Kai Huang wrote:
+Benno Lossin <benno.lossin@proton.me> writes:
+> Use hygienic identifiers for the guards instead of the field names. This
+> makes the init macros feel more like normal struct initializers, since
+> assigning identifiers with the name of a field does not create
+> conflicts.
+> Also change the internals of the guards, no need to make the `forget`
+> function `unsafe`, since users cannot access the guards anyways. Now the
+> guards are carried directly on the stack and have no extra `Cell<bool>`
+> field that marks if they have been forgotten or not, instead they are
+> just forgotten via `mem::forget`.
+> 
+> Suggested-by: Asahi Lina <lina@asahilina.net>
+> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 
-> Kai Huang (11):
->   x86/tdx: Zero out the missing RSI in TDX_HYPERCALL macro
->   x86/tdx: Skip saving output regs when SEAMCALL fails with
->     VMFailInvalid
->   x86/tdx: Make macros of TDCALLs consistent with the spec
->   x86/tdx: Rename __tdx_module_call() to __tdcall()
->   x86/tdx: Pass TDCALL/SEAMCALL input/output registers via a structure
->   x86/tdx: Extend TDX_MODULE_CALL to support more TDCALL/SEAMCALL leafs
->   x86/tdx: Make TDX_HYPERCALL asm similar to TDX_MODULE_CALL
->   x86/tdx: Reimplement __tdx_hypercall() using TDX_MODULE_CALL asm
->   x86/tdx: Remove 'struct tdx_hypercall_args'
->   x86/virt/tdx: Wire up basic SEAMCALL functions
->   x86/virt/tdx: Allow SEAMCALL to handle #UD and #GP
-
-These look ok to me, thanks!
-
-This does not yet re-order the args structure to conform to the hardware
-index order as per kvm's requirement, right? That will be part of the
-KVM series?
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
