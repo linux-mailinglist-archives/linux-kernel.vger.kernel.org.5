@@ -2,302 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F02975A809
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876E675A815
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbjGTHnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60414 "EHLO
+        id S231679AbjGTHny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231670AbjGTHnD (ORCPT
+        with ESMTP id S231691AbjGTHnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:43:03 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07882123;
-        Thu, 20 Jul 2023 00:43:01 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 053696732D; Thu, 20 Jul 2023 09:42:57 +0200 (CEST)
-Date:   Thu, 20 Jul 2023 09:42:56 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Nitesh Shetty <nj.shetty@samsung.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        willy@infradead.org, hare@suse.de, djwong@kernel.org,
-        bvanassche@acm.org, ming.lei@redhat.com, dlemoal@kernel.org,
-        nitheshshetty@gmail.com, gost.dev@samsung.com,
-        Anuj Gupta <anuj20.g@samsung.com>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v13 2/9] block: Add copy offload support infrastructure
-Message-ID: <20230720074256.GA5042@lst.de>
-References: <20230627183629.26571-1-nj.shetty@samsung.com> <CGME20230627184010epcas5p4bb6581408d9b67bbbcad633fb26689c9@epcas5p4.samsung.com> <20230627183629.26571-3-nj.shetty@samsung.com>
+        Thu, 20 Jul 2023 03:43:46 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2312699;
+        Thu, 20 Jul 2023 00:43:28 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36K6uOrd012946;
+        Thu, 20 Jul 2023 07:43:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=Eq8q5Jz/iTKpMXrgwf4Vw8JxBKKL4DTxzHKL5u7rdLo=;
+ b=f7FYMox/vNVWVJuWJH3wkOwYdtN2QV7k0rDXbIf0jpNr5vXQ1ph+Y1fScBf3yrqLxa+E
+ sdCKZxyEYsJw8HXSTlHXTHa3FqiStkfDh27aKgQ33fWg9oeOJ7yG8L8UhHaU7px6RilM
+ 9M+iqTj+STEBgvmOFeKJEo5oZnzpk8Ylez/A2mQQgGznAxzAFaIzLBWhcLqLfEXV9sHT
+ lNgc/j682zrTe6JFL6fKEKT1TpiNQSb6BYXWlxYHD513k9LYo9lHWZ3Z5kdWV2UshzcO
+ KY6HQiK7Dsf47QCUi3XS6CQYRR+OSwAS9bo6Y12gBCw1q6FQmCJV2oZV+iukfy4kfjqW LQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxpyqrycf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 07:43:24 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36K7hNbf031064
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 07:43:23 GMT
+Received: from harihk-linux.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 20 Jul 2023 00:43:18 -0700
+From:   Hariharan K <quic_harihk@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
+        <quic_kathirav@quicinc.com>, <quic_arajkuma@quicinc.com>,
+        <quic_anusha@quicinc.com>, <quic_harihk@quicinc.com>
+Subject: [PATCH 0/2] Add initial support for RDP404 of IPQ5018 family
+Date:   Thu, 20 Jul 2023 13:13:00 +0530
+Message-ID: <20230720074302.13585-1-quic_harihk@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230627183629.26571-3-nj.shetty@samsung.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: itIZ6nWJqlnz_lH53Po6jF_j_ROdFE3M
+X-Proofpoint-ORIG-GUID: itIZ6nWJqlnz_lH53Po6jF_j_ROdFE3M
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-20_02,2023-07-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ mlxlogscore=756 malwarescore=0 phishscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 bulkscore=0 spamscore=0 priorityscore=1501
+ suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2307200063
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I wonder if this might benefit if you split the actual block
-layer copy infrastructure from the blkdev_copy_offload* helpers
-that just make use of it.
+Add the initial device tree support for the Reference Design
+Platform(RDP) 404 based on IPQ5018 family of SoC. This patch
+carries the support for Console UART and eMMC.
 
-> Suggested-by: Christoph Hellwig <hch@lst.de>
+This series is based on the below series,
+https://lore.kernel.org/lkml/20230720072938.315
+46-1-quic_harihk@quicinc.com/
 
-Hmm, I'm not sure I suggested adding copy offload..
+Hariharan K (2):
+  dt-bindings: arm: qcom: Document MP03.1-C2 board based on IPQ5018
+    family
+  arm64: dts: qcom: ipq5018: add support for the RDP404 variant
 
-> +/*
-> + * For synchronous copy offload/emulation, wait and process all in-flight BIOs.
-> + * This must only be called once all bios have been issued so that the refcount
-> + * can only decrease. This just waits for all bios to make it through
-> + * blkdev_copy_(offload/emulate)_(read/write)_endio.
-> + */
-> +static ssize_t blkdev_copy_wait_io_completion(struct cio *cio)
-> +{
-> +	ssize_t ret;
-> +
-> +	if (cio->endio)
-> +		return 0;
+ .../devicetree/bindings/arm/qcom.yaml         |  2 +
+ arch/arm64/boot/dts/qcom/Makefile             |  1 +
+ arch/arm64/boot/dts/qcom/ipq5018-rdp404.dts   | 49 +++++++++++++++++++
+ 3 files changed, 52 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/ipq5018-rdp404.dts
 
-I'd move this to the caller to make things more clear.
+-- 
+2.17.1
 
-> +
-> +	if (atomic_read(&cio->refcount)) {
-> +		__set_current_state(TASK_UNINTERRUPTIBLE);
-> +		blk_io_schedule();
-
-I don't think the refcount scheme you have works, instead you need
-to have an extra count for the submitter, which is dropped using
-atomic_dec_and_test here.  Take a look at ref scheme in blkdev_dio
-which should be applicable here.
-
-> +	ret = cio->comp_len;
-
-The comp_len name for this variable confuses me.  I think is the length
-that has succesfully been copied.  So maybe name it copied?
-
-> +static void blkdev_copy_offload_read_endio(struct bio *bio)
-> +{
-> +	struct cio *cio = bio->bi_private;
-> +	sector_t clen;
-> +
-> +	if (bio->bi_status) {
-> +		clen = (bio->bi_iter.bi_sector << SECTOR_SHIFT) - cio->pos_out;
-> +		cio->comp_len = min_t(sector_t, clen, cio->comp_len);
-
-bi_sector can be thrashed once you hit the end_io handler.
-
-> +	if (!atomic_dec_and_test(&cio->refcount))
-> +		return;
-> +	if (cio->endio) {
-> +		cio->endio(cio->private, cio->comp_len);
-> +		kfree(cio);
-> +	} else
-> +		blk_wake_io_task(cio->waiter);
-> +}
-
-This code is duplicated in a few places, please add a helper for it.
-
-Also don't we need a way to return an error code through ->endio?
-
-> +static ssize_t __blkdev_copy_offload(
-> +		struct block_device *bdev_in, loff_t pos_in,
-> +		struct block_device *bdev_out, loff_t pos_out,
-> +		size_t len, cio_iodone_t endio, void *private, gfp_t gfp_mask)
-
-I'd call this something like blkdev_copy_native, or maybe just
-blkdev_copy_offlod.  Also given that we only want to support
-single-device copies there i no need to pass two block_devices here.
-
-Also please use the available space on the declaration line:
-
-static ssize_t __blkdev_copy_offload(struct block_device *bdev_in,
-		loff_t pos_in, struct block_device *bdev_out, loff_t pos_out,
-		size_t len, cio_iodone_t endio, void *private, gfp_t gfp_mask)
-
-Also the cio_iodone_t name is very generic.  Givne that there aren't
-many places where we pass these callbacks I'd probably just drop the
-typedef entirely.
-
-> +	/* If there is a error, comp_len will be set to least successfully
-> +	 * completed copied length
-> +	 */
-
-This is not the canonical kernel comment style.
-
-> +	cio->comp_len = len;
-> +	for (rem = len; rem > 0; rem -= copy_len) {
-> +		copy_len = min(rem, max_copy_len);
-> +
-> +		write_bio = bio_alloc(bdev_out, 0, REQ_OP_COPY_DST, gfp_mask);
-> +		if (!write_bio)
-> +			goto err_write_bio_alloc;
-> +		write_bio->bi_iter.bi_size = copy_len;
-> +		write_bio->bi_iter.bi_sector = pos_out >> SECTOR_SHIFT;
-> +
-> +		blk_start_plug(&plug);
-> +		read_bio = blk_next_bio(write_bio, bdev_in, 0, REQ_OP_COPY_SRC,
-> +						gfp_mask);
-> +		read_bio->bi_iter.bi_size = copy_len;
-> +		read_bio->bi_iter.bi_sector = pos_in >> SECTOR_SHIFT;
-> +		read_bio->bi_end_io = blkdev_copy_offload_read_endio;
-> +		read_bio->bi_private = cio;
-
-The chaining order here seems inverse to what I'd expect.  At least
-for NVMe the copy command supports multiple input ranges being copied
-to a single output range, and that is a very useful and important
-feature for garbage collection in out of place write file systems.
-
-So I'd expect to see one or more read bios first, which get chained
-to the write bio that drives the completion.  We don't need the
-multiple input range support in the very first version, but I'd expect
-it to be added soon later so we better get the infrastructure right
-for it.
-
-> +
-> +static inline ssize_t blkdev_copy_sanity_check(
-> +	struct block_device *bdev_in, loff_t pos_in,
-> +	struct block_device *bdev_out, loff_t pos_out,
-> +	size_t len)
-
-Two tab indents for the prototype, please.
-
-> +{
-> +	unsigned int align = max(bdev_logical_block_size(bdev_out),
-> +					bdev_logical_block_size(bdev_in)) - 1;
-> +
-> +	if (bdev_read_only(bdev_out))
-> +		return -EPERM;
-> +
-> +	if ((pos_in & align) || (pos_out & align) || (len & align) || !len ||
-> +		len >= COPY_MAX_BYTES)
-
-This indentation should also use two tabs or alignent of the opening
-brace, and not the same as the indented branch.
-
-> +ssize_t blkdev_copy_offload(
-
-Just blkdev_copy?  Especially as the non-offloaded version is added
-later.
-
-> diff --git a/block/blk-merge.c b/block/blk-merge.c
-> index 65e75efa9bd3..bfd86c54df22 100644
-> --- a/block/blk-merge.c
-> +++ b/block/blk-merge.c
-> @@ -922,6 +922,9 @@ bool blk_rq_merge_ok(struct request *rq, struct bio *bio)
->  	if (!rq_mergeable(rq) || !bio_mergeable(bio))
->  		return false;
->  
-> +	if ((req_op(rq) == REQ_OP_COPY_DST) && (bio_op(bio) == REQ_OP_COPY_SRC))
-> +		return true;
-
-This seems to be equivalent to blk_copy_offload_mergable, so why not
-use that?
-
-> +static enum bio_merge_status bio_attempt_copy_offload_merge(
-> +	struct request_queue *q, struct request *req, struct bio *bio)
-
-Same comment about the indentation as above (I'm not going to mention
-it further, please do a sweep).
-
-Also we don't need the q argument, it must be req->q.
-
-> +{
-> +	if (req->__data_len != bio->bi_iter.bi_size)
-> +		return BIO_MERGE_FAILED;
-> +
-> +	req->biotail->bi_next = bio;
-> +	req->biotail = bio;
-> +	req->nr_phys_segments = blk_rq_nr_phys_segments(req) + 1;
-
-This should just be req->nr_phys_segments++, shouldn't it?
-
->  }
->  
-> +static inline bool blk_copy_offload_mergable(struct request *req,
-> +					     struct bio *bio)
-> +{
-> +	return ((req_op(req) == REQ_OP_COPY_DST)  &&
-> +		(bio_op(bio) == REQ_OP_COPY_SRC));
-> +}
-
-Can you please add a comment explaining the logic of merging different
-operations here?
-
-Also all the braces in the function body are superflous and there is a
-double whitespace before the &&.
-
->  static inline unsigned int blk_rq_get_max_segments(struct request *rq)
->  {
->  	if (req_op(rq) == REQ_OP_DISCARD)
-> @@ -303,6 +310,8 @@ static inline bool bio_may_exceed_limits(struct bio *bio,
->  		break;
->  	}
->  
-> +	if (unlikely(op_is_copy(bio->bi_opf)))
-> +		return false;
-
-This looks wrong to me.  I think the copy ops need to be added to the
-switch statement above as they have non-trivial splitting decisions.
-Or at least should have those as we're missing the code to split
-copy commands right now.
-
-> diff --git a/include/linux/bio.h b/include/linux/bio.h
-> index c4f5b5228105..a2673f24e493 100644
-> --- a/include/linux/bio.h
-> +++ b/include/linux/bio.h
-> @@ -57,7 +57,9 @@ static inline bool bio_has_data(struct bio *bio)
->  	    bio->bi_iter.bi_size &&
->  	    bio_op(bio) != REQ_OP_DISCARD &&
->  	    bio_op(bio) != REQ_OP_SECURE_ERASE &&
-> -	    bio_op(bio) != REQ_OP_WRITE_ZEROES)
-> +	    bio_op(bio) != REQ_OP_WRITE_ZEROES &&
-> +	    bio_op(bio) != REQ_OP_COPY_DST &&
-> +	    bio_op(bio) != REQ_OP_COPY_SRC)
-
-It probably make sense to replace this with a positive check
-for the operations that do have data as a prep patch, which is
-just REQ_OP_READ an  REQ_OP_WRITE.
-
->  	/* reset all the zone present on the device */
->  	REQ_OP_ZONE_RESET_ALL	= (__force blk_opf_t)17,
->  
-> +	REQ_OP_COPY_SRC		= (__force blk_opf_t)18,
-> +	REQ_OP_COPY_DST		= (__force blk_opf_t)19,
-
-Little comments on these ops, please.
-
-> +static inline bool op_is_copy(blk_opf_t op)
-> +{
-> +	return (((op & REQ_OP_MASK) == REQ_OP_COPY_SRC) ||
-> +		((op & REQ_OP_MASK) == REQ_OP_COPY_DST));
-
-All but the inner most braces here are superflous.
-
-> +struct cio {
-> +	struct task_struct *waiter;     /* waiting task (NULL if none) */
-> +	loff_t pos_in;
-> +	loff_t pos_out;
-> +	ssize_t comp_len;
-> +	cio_iodone_t *endio;		/* applicable for async operation */
-> +	void *private;			/* applicable for async operation */
-> +	atomic_t refcount;
-> +};
-
-The name for this structure is way to generic.  It also is only used
-inside of blk-lib.c and should be moved there.
