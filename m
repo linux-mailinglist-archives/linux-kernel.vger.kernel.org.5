@@ -2,67 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B270275ACD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEA975ACD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbjGTLRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
+        id S229619AbjGTLRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:17:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbjGTLQr (ORCPT
+        with ESMTP id S230337AbjGTLQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:16:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E53626BA;
-        Thu, 20 Jul 2023 04:16:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EE78861A3C;
-        Thu, 20 Jul 2023 11:16:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC9B7C433C8;
-        Thu, 20 Jul 2023 11:16:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689851787;
-        bh=1nrTAqbBZBRZUWDEE1a4SHpcULf4RL/1UmtaRjuNMUQ=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=lz8IptbCLxR2awc9YH2yICNKvrOS1iLA0ys8CGXwD+1ZP9bB6leHWgjd9xk44hFt9
-         z/HNJuRve2OSgiwQ6MVOAKkQFdcdXk3OwiWojddAcTNK6E39iNt3OEJ9gJVUBNodq9
-         QgacqYyNYJAhsXxnfFnEGTNENiIpP6J0ySOPJYwgaCe3MvP7BhWydIqyZv8vbjq5Bd
-         k1OvSsI9Zvm9WFZr6e1kMyZeTPl6aQkxGxMgjExGUeG9uHlGmcwRBt5RJwvXsz5wQ9
-         lgsHMFe2vlINz41eBlt6b0oQWIDr8wbU0OrHUBg60Eupig6CA8MWV781ws9aEOLsDr
-         acEnsjlp4qQJQ==
-From:   Maxime Ripard <mripard@kernel.org>
-Date:   Thu, 20 Jul 2023 13:15:56 +0200
-Subject: [PATCH v2 11/11] drm/vc4: tests: pv-muxing: Document test scenario
+        Thu, 20 Jul 2023 07:16:36 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDA1BE;
+        Thu, 20 Jul 2023 04:16:19 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36KBDrYg021492;
+        Thu, 20 Jul 2023 11:16:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Y/AVyy3eVUhLJPSl/fjofbi3XXu96ZS05+ot+xzodXA=;
+ b=BnNwQfuOwa5I4RqXetQXSh79oqmLMQ3MxHEKl40njhyKj5SlgY6dgg0nbNb0jeGHO3Fz
+ PAtUyZSZBWuSBfGVBZRPCmINIsOwjmyLd8boxOfZvYIRxKHrV56tbdDr65/lTsxfGEjS
+ 7tll+jwr7Azf2/42BDHm2mRkuXOowgyoOAe1bcethnaPZsd0Z4heg/wKa/Xt6FqhPOEn
+ gd8Mil7KhZ3wXqfPOMBTNfpshRAVzAWB5g+Cbfl8Bu2RDRaqj3ZWiDglwvigM5wdnVfk
+ MkWcrT7rzSs0tqa3y+QUNqW2jCeACxh2RHg0bqa7Bwqp9jUMf2e7qmr2OCYVfqO1onXh nA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxexkjfx2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 11:16:14 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36KBGBcO009098
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 11:16:11 GMT
+Received: from [10.201.197.30] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
+ 2023 04:16:07 -0700
+Message-ID: <267e7d8d-887e-99e8-f367-f6b614a721fb@quicinc.com>
+Date:   Thu, 20 Jul 2023 16:46:04 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: ipq5018: add support for the RDP415
+ variant
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
+        <quic_kathirav@quicinc.com>, <quic_arajkuma@quicinc.com>,
+        <quic_anusha@quicinc.com>
+References: <20230720074846.20350-1-quic_harihk@quicinc.com>
+ <20230720074846.20350-3-quic_harihk@quicinc.com>
+ <6f26ab9d-cf92-e918-866c-daa68096ee08@linaro.org>
+From:   Hariharan K <quic_harihk@quicinc.com>
+In-Reply-To: <6f26ab9d-cf92-e918-866c-daa68096ee08@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230720-kms-kunit-actions-rework-v2-11-175017bd56ab@kernel.org>
-References: <20230720-kms-kunit-actions-rework-v2-0-175017bd56ab@kernel.org>
-In-Reply-To: <20230720-kms-kunit-actions-rework-v2-0-175017bd56ab@kernel.org>
-To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>
-Cc:     =?utf-8?q?Ma=C3=ADra_Canal?= <mairacanal@riseup.net>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        dri-devel@lists.freedesktop.org, David Gow <davidgow@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Brendan Higgins <brendan.higgins@linux.dev>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2062; i=mripard@kernel.org;
- h=from:subject:message-id; bh=1nrTAqbBZBRZUWDEE1a4SHpcULf4RL/1UmtaRjuNMUQ=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDCk7xTNaps5z1zfa0BmT7dNsLnmD7dCelUXi6zYKbuwRv
- cKss0+ko5SFQYyLQVZMkSVG2HxJ3KlZrzvZ+ObBzGFlAhnCwMUpABPh4WT4K7ki8gvLjBfx+RGv
- DcQ+Sq3e+7svemfO20LBAnG5xy4PYhkZtrCtZ1jtxlJ0pthq2knuaTuWNs3u8Z8yc1m56q0jQi9
- jWAE=
-X-Developer-Key: i=mripard@kernel.org; a=openpgp;
- fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: xIjgTt_tvrlytDtmoN-RK_-50dpItyKr
+X-Proofpoint-GUID: xIjgTt_tvrlytDtmoN-RK_-50dpItyKr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-20_04,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 bulkscore=0 spamscore=0 priorityscore=1501
+ malwarescore=0 phishscore=0 clxscore=1015 suspectscore=0 impostorscore=0
+ mlxlogscore=827 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307200094
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,57 +87,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We've had a couple of tests that weren't really obvious, nor did they
-document what they were supposed to test. Document that to make it
-hopefully more obvious.
 
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-Signed-off-by: Maxime Ripard <mripard@kernel.org>
----
- drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
 
-diff --git a/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c b/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c
-index 5f9f5626329d..61622e951031 100644
---- a/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c
-+++ b/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c
-@@ -845,6 +845,13 @@ static void drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable(struct kunit *tes
- 	KUNIT_EXPECT_NE(test, hdmi0_channel, hdmi1_channel);
- }
- 
-+/*
-+ * This test makes sure that we never change the FIFO of an active HVS
-+ * channel if we disable a FIFO with a lower index.
-+ *
-+ * Doing so would result in a FIFO stall and would disrupt an output
-+ * supposed to be unaffected by the commit.
-+ */
- static void drm_test_vc5_pv_muxing_bugs_stable_fifo(struct kunit *test)
- {
- 	struct drm_modeset_acquire_ctx *ctx;
-@@ -924,6 +931,21 @@ static void drm_test_vc5_pv_muxing_bugs_stable_fifo(struct kunit *test)
- 	}
- }
- 
-+/*
-+ * Test that if we affect a single output, only the CRTC state of that
-+ * output will be pulled in the global atomic state.
-+ *
-+ * This is relevant for two things:
-+ *
-+ *   - If we don't have that state at all, we are unlikely to affect the
-+ *     FIFO muxing. This is somewhat redundant with
-+ *     drm_test_vc5_pv_muxing_bugs_stable_fifo()
-+ *
-+ *   - KMS waits for page flips to occur on all the CRTC found in the
-+ *     CRTC state. Since the CRTC is unaffected, we would over-wait, but
-+ *     most importantly run into corner cases like waiting on an
-+ *     inactive CRTC that never completes.
-+ */
- static void
- drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable_too_many_crtc_state(struct kunit *test)
- {
+On 7/20/2023 1:46 PM, Konrad Dybcio wrote:
+> On 20.07.2023 09:48, Hariharan K wrote:
+>> Add the initial device tree support for the Reference Design
+>> Platform(RDP) 415 based on IPQ5018 family of SoC. This patch
+>> carries the support for Console UART and eMMC.
+>>
+>> Signed-off-by: Hariharan K <quic_harihk@quicinc.com>
+>> ---
+> [...]
+> 
+>> +
+>> +&sdhc_1 {
+>> +	pinctrl-0 = <&sdc_default_state>;
+>> +	pinctrl-names = "default";
+>> +	mmc-ddr-1_8v;
+>> +	mmc-hs200-1_8v;
+>> +	max-frequency = <192000000>;
+>> +	bus-width = <4>;
+>> +	status = "okay";
+> Since some (but presumably not all) SKUs have SDHCI, you can define
+> the plumbing for it in the common DTSI but only enable it on ones
+> that do (or disable on those that don't)
 
--- 
-2.41.0
+Sure. Will update in the next version.
 
+Best regards,
+Hariharan K
+
+> 
+> Konrad
