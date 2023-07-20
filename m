@@ -2,86 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B748775AE13
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC9975AE18
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbjGTMQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35932 "EHLO
+        id S230171AbjGTMQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 08:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbjGTMQD (ORCPT
+        with ESMTP id S229628AbjGTMQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:16:03 -0400
-Received: from out-5.mta1.migadu.com (out-5.mta1.migadu.com [IPv6:2001:41d0:203:375::5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0391BC6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:16:01 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689855359;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1qUoKI3SbOAj4JugO0eFEKpo/XtZkaAZd4jHbDGRCXI=;
-        b=UYRVGSJeMWgVT/Cmj35t2ZweiX0f74MUBaOSw4MLtDmMy3IiuQrHv8RU4qRm/+sTXZG3zj
-        +eK1+VPGThdCpfSCGWbopKgw5Dw3dyzfnI+h4Dk0lnIiYvGH6rNedI6u3cchFohjzDfaRp
-        UtcGfRKuKFeW1oGmtQWsxdDyRcpHit4=
-From:   chengming.zhou@linux.dev
-To:     tj@kernel.org, josef@toxicpanda.com
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhouchengming@bytedance.com
-Subject: [PATCH] blk-iocost: skip empty flush bio in iocost
-Date:   Thu, 20 Jul 2023 20:14:41 +0800
-Message-ID: <20230720121441.1408522-1-chengming.zhou@linux.dev>
+        Thu, 20 Jul 2023 08:16:32 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B18F2115;
+        Thu, 20 Jul 2023 05:16:27 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51e590a8ab5so986200a12.2;
+        Thu, 20 Jul 2023 05:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689855386; x=1690460186;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1jBjQi0KhEajIiTYUBIV9zjJYw88SZt2ebRbzw25T54=;
+        b=Rx0IAvtvCgI478Tkv9nAG5r3qxTK+G/bHLDDC8u16yEs67xixXmUqwZS9nLOPKdM+W
+         ph77qh0JHo1ss4Lu8VDfmU3l6eTWWDcDnw6QEmEr0njduggDYjOHgK/tuLlfHKp1NY8G
+         Z/CV/k3C3x4OqXSsVfiZf+Q4iEPIADB4ELX8OSnOYuZWT2s5vZ464il1TJErf4wmwZ1o
+         HfUrAZLINzpFrQmdb8/WIhcC88nIMn7fFDT8fZgp9sqqIVm1FxJv5cb/w+1aDJcAmG4Y
+         zXlEvKnvjlZqc/D1vwr1GEjfUoJoIU3k1LgeemK8rSr7o4nBDaMVq+cnzouZvz5JyM1A
+         p5Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689855386; x=1690460186;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1jBjQi0KhEajIiTYUBIV9zjJYw88SZt2ebRbzw25T54=;
+        b=C0sO1MtI5AV9yHMBItUiVngaro0FEBPUYW0tnXaJBPa6DVeIa5x112Pne5BDY6EyUf
+         mHx3RLyFHTcAbCHalBqgh6sDUsFLAXXgwcarHy5uD8N3YtaSvzp5nmQ+AxnocbA8ht5T
+         5BYDDQcNLDJAGHfDoJwVZcYvT0nmSyM4LYPzoKEZbgJz3MIX926qp5ZP4XFjS+D76epR
+         +YEzV8gIbETMPFAsIpy5a1czr0bIa6yZkC0ICaDCQj+FZ5kzKfASmtvMvdIFPxCm6ptQ
+         kNBCXGvIviQ+4/xTaOk4T14aaM/SnE/WFE4DXbczytG2JpWB+YXmYnPh9zoyaRQnY756
+         bniA==
+X-Gm-Message-State: ABy/qLYN0sSL5cpgNGgeI7c70qHFqgF0FNzq9vrzPhYcPRw3uvty6hM5
+        K8mN9tSdsXseSC8OuvXDFBw=
+X-Google-Smtp-Source: APBJJlG7WK2iF0b+9kUZXbq11rWoRyzLjsln3AKLNuSgbBGU6mf9LZUG7nRD/QWLPX4YXC9MQvMLHg==
+X-Received: by 2002:a17:906:18:b0:993:e752:1a6f with SMTP id 24-20020a170906001800b00993e7521a6fmr4504228eja.6.1689855385738;
+        Thu, 20 Jul 2023 05:16:25 -0700 (PDT)
+Received: from [192.168.4.4] (host-95-237-109-246.retail.telecomitalia.it. [95.237.109.246])
+        by smtp.gmail.com with ESMTPSA id lf26-20020a170906ae5a00b0098e42bef736sm628637ejb.176.2023.07.20.05.16.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 05:16:25 -0700 (PDT)
+Message-ID: <b82ee6d3-fa33-1e5a-be9d-7f13259dbcda@gmail.com>
+Date:   Thu, 20 Jul 2023 14:16:24 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Andrea Collamati <andrea.collamati@gmail.com>
+Subject: Re: [PATCH v2 2/2] iio: add mcp4728 I2C DAC driver
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <cover.1689541455.git.andrea.collamati@gmail.com>
+ <75145a12-a85e-e553-d32f-3212357c4a7e@gmail.com>
+ <bd3890e4-3880-b292-5b9f-e9443185681c@kernel.org>
+Content-Language: en-US
+In-Reply-To: <bd3890e4-3880-b292-5b9f-e9443185681c@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengming Zhou <zhouchengming@bytedance.com>
 
-The flush bio may have data, may have no data (empty flush), we couldn't
-calculate cost for empty flush bio. So we'd better just skip it for now.
+On 7/17/23 08:38, Krzysztof Kozlowski wrote:
+> On 16/07/2023 23:26, Andrea Collamati wrote:
+>> mcp4728 is a 12-bit quad channel DAC with I2C interface.
+>>
+>> support for:
+>> * per-channel gain
+>> * per-channel power state
+>> * per-channel power down mode control
+>> * per-channel vref selection internal/vdd
+>> * store current state to on-chip EEPROM
+>>
+>> Signed-off-by: Andrea Collamati <andrea.collamati@gmail.com>
+>> ---
+> What changed? Are you saying you ignored entire review you got?
+I didn't ignored, but I didn't list the changes. I will look at other emails to understand how to write v2 v3 ... changes..Sorry.
+>> drivers/iio/dac/Kconfig | 12 +
+>> drivers/iio/dac/Makefile | 1 +
+>> drivers/iio/dac/mcp4728.c | 635 ++++++++++++++++++++++++++++++++++++++
+>> 3 files changed, 648 insertions(+)
+>> create mode 100644 drivers/iio/dac/mcp4728.c
+>>
+>> diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
+>> index 3acd9c3f388e..fa1516f6a285 100644
+>> --- a/drivers/iio/dac/Kconfig
+>> +++ b/drivers/iio/dac/Kconfig
+>> @@ -389,6 +389,18 @@ config MCP4725
+>> To compile this driver as a module, choose M here: the module
+>> will be called mcp4725.
+>> +config MCP4728
+>> + tristate "MCP4728 DAC driver"
+>> + depends on I2C
+>> + help
+>> + Say Y here if you want to build a driver for the Microchip
+>> + MCP4728 quad channel, 12-bit digital-to-analog converter (DAC)
+>> + with I2C interface.
+>> +
+>> + To compile this driver as a module, choose M here: the module
+>> + will be called mcp4728.
+>> +
+>> +
+> Why two blank lines?
+>
+>> config MCP4922
+>> tristate "MCP4902, MCP4912, MCP4922 DAC driver"
+>> depends on SPI
+>> diff --git a/drivers/iio/dac/Makefile b/drivers/iio/dac/Makefile
+>> index addd97a78838..5b2bac900d5a 100644
+> ...
+>
+>> +
+>> +static void mcp4728_remove(struct i2c_client *client)
+>> +{
+>> + struct iio_dev *indio_dev = i2c_get_clientdata(client);
+>> + struct mcp4728_data *data = iio_priv(indio_dev);
+>> +
+>> + iio_device_unregister(indio_dev);
+>> + regulator_disable(data->vdd_reg);
+>> +}
+>> +
+>> +static const struct i2c_device_id mcp4728_id[] = { { "mcp4728", MCP4728 }, {} };
+>> +MODULE_DEVICE_TABLE(i2c, mcp4728_id);
 
-Another side effect is that empty flush bio's bio_end_sector() is 0, cause
-iocg->cursor reset to 0, may break the cost calculation of other bios.
+Sorry.. I fixed but then I code formatter replace the old one. I will pay more attention..
 
-This isn't good enough, since flush bio still consume the device bandwidth,
-but flush request is special, can be merged randomly in the flush state
-machine, we don't know how to calculate cost for it for now.
+besides clang-format and checkpatch are there any other tools to avoid these formatting errors?
 
-Its completion time also has flaws, which may include the pre-flush or
-post-flush completion time, but I don't know if we need to fix that and
-how to fix it.
+Thank you
 
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- block/blk-iocost.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 6084a9519883..e735b3e9997c 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -2516,6 +2516,10 @@ static void calc_vtime_cost_builtin(struct bio *bio, struct ioc_gq *iocg,
- 	u64 seek_pages = 0;
- 	u64 cost = 0;
- 
-+	/* Can't calculate cost for empty bio */
-+	if (!bio->bi_iter.bi_size)
-+		goto out;
-+
- 	switch (bio_op(bio)) {
- 	case REQ_OP_READ:
- 		coef_seqio	= ioc->params.lcoefs[LCOEF_RSEQIO];
--- 
-2.41.0
-
+> Yeah, my feedback was ignored.
+>
+> That's not how it works. Anyway, I doubt that it should be a new driver.
+>
+> If Jonathan agrees to have new/duplicated drivers, then fine with me,
+> but then don't ignore the comments. Instead:
+>
+> It seems my previous comments were not fully addressed. Maybe my
+> feedback got lost between the quotes, maybe you just forgot to apply it.
+> Please go back to the previous discussion and either implement all
+> requested changes or keep discussing them.
+Ok.
+> Best regards,
+> Krzysztof
+>
