@@ -2,238 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D94475B3E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A9D75B3EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbjGTQLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43180 "EHLO
+        id S229818AbjGTQMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjGTQLI (ORCPT
+        with ESMTP id S229619AbjGTQMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:11:08 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A56F0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:11:06 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5834d9ec5f7so33077777b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:11:06 -0700 (PDT)
+        Thu, 20 Jul 2023 12:12:05 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA1AE44;
+        Thu, 20 Jul 2023 09:12:03 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-992b27e1c55so163038066b.2;
+        Thu, 20 Jul 2023 09:12:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689869465; x=1690474265;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qp196USLnAy4LTAkpGzxnXfWsR6U5xBzW1Ke9Zcywm4=;
-        b=0xJVu/W/3xHLwIgQt4AdT6cR/YUtiNdLdmQJXkVP0EBEOh0s1C8pMSYPVmVX56g0qL
-         iY14aVUZXceX1+sSx47/A3Oz42zFfT6/iI72X+dHAkxW9xroRWzw6ItifadoKfASJ3u8
-         hBpU/RpuzpltTY33o0ZEKscU+ZkWmBRLI+L2oSSkqem1In1o/8kvyeLQtZwigN3E10vS
-         NgK9xlM5rN/Z00gvjRghEprD9TdNy5Vmx8iwjIOd4Y+GZ8uG8ZEDfW1U7NXUAb9hO2fz
-         tMytb0jSh5n09x1tTZWMd313KeCvKYZeX3DaeKAhaFjFGLwW9FuzHttvsRB6eaajnMdp
-         HzOw==
+        d=gmail.com; s=20221208; t=1689869522; x=1690474322;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h0nrbQn1sFt+hrc37Tnt0J9Wx46AspN3f8YZCBPziq4=;
+        b=p7hIaMOMHLK0Suqn6HH3aXxki2zzGmkbWsJUlNcpr2DA22XWi9uv87SMXBTs24xDuN
+         tNA8wvxpZvToGcCci2SeC4oSXs4WHzj+tN7tMkaItJE1hG85eEeLk3XLDmt1bVZwP8Cp
+         JkVe3h5rFu75qKDZWocdshcQI327qC5ykZMETMADbUEIq4QtBQTQdaQTXeT0eszld5PC
+         exJ2wwlgW23rc4ybLqutmm2n4kOOX/J/giglcQzSMeFsITJiJTRPKUZw2WSbiIrzHTd/
+         3uDKWSpmxtyKMoT68ttd8HVwMvVPCO9yI/5cd1kv7rpYafwBKU4Eq6ftgH6sy12B+sxV
+         IWDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689869465; x=1690474265;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qp196USLnAy4LTAkpGzxnXfWsR6U5xBzW1Ke9Zcywm4=;
-        b=MtIzwEoyMX/ivxkOaEXTExBVLFekFuWXjQldkhrN66Hmroh6PnaJGaKJCpU7SQHAOK
-         3hvuOlcaKa2xLREKVLBL2K3S5odpu+lkMp71N44EKwZ34WeFNNZ5NpUHvDLsmXamxSTS
-         gViO8C58NKEIPelZX4kMLY3waNEhanmEmTYma9dirP1TbSHUwnw8dYQ/Za04K2cNK1h4
-         2lNtavXRYLNKrpNO4H1xhFrVf34xqGQ1npNJYJcT6zYJTx29ZZnjMUs28SpbR1oVefrX
-         NNqIObU+LixKEyAuZKbnLM3nCivBnvNExf/S8DU4KcS5+Gh0Cia95evsX6/dnONXehAv
-         K+ng==
-X-Gm-Message-State: ABy/qLZBmxVGCDpsfFop3/dKb2J8YG5fJ0ur2Hrfs4iYeyiGPDn/Kkay
-        YAmSA4YjTYBKClnP2GchLc3DxIJ6gXXwRQ==
-X-Google-Smtp-Source: APBJJlEiVEmuesw68z+x28qFD4ReuJRNuf+WB6wQmhi/bG4Ofb/elfxoE7pV67Grv8RRZAJJig+fwLf/UqbQFQ==
-X-Received: from tef.lon.corp.google.com ([2a00:79e0:d:209:c4c4:9486:83f9:4510])
- (user=gprocida job=sendgmr) by 2002:a5b:349:0:b0:ceb:324c:ba8e with SMTP id
- q9-20020a5b0349000000b00ceb324cba8emr77473ybp.4.1689869465517; Thu, 20 Jul
- 2023 09:11:05 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 17:10:53 +0100
-In-Reply-To: <20230407203456.27141-2-quic_johmoo@quicinc.com>
-Mime-Version: 1.0
-References: <20230407203456.27141-2-quic_johmoo@quicinc.com>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230720161053.1213680-1-gprocida@google.com>
-Subject: [PATCH] scripts/check-uapi.sh: add stgdiff support
-From:   Giuliano Procida <gprocida@google.com>
-To:     quic_johmoo@quicinc.com
-Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
-        nicolas@fjasle.eu, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, gregkh@linuxfoundation.org,
-        rdunlap@infradead.org, arnd@arndb.de, andersson@kernel.org,
-        tkjos@google.com, maennich@google.com, gprocida@google.com,
-        kernel-team@android.com, libabigail@sourceware.org,
-        jorcrous@amazon.com, quic_tsoni@quicinc.com,
-        quic_satyap@quicinc.com, quic_eberman@quicinc.com,
-        quic_gurus@quicinc.com
+        d=1e100.net; s=20221208; t=1689869522; x=1690474322;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h0nrbQn1sFt+hrc37Tnt0J9Wx46AspN3f8YZCBPziq4=;
+        b=Stbl97Kov98ro1pLyCERqAMJvQFjvXh3D13oItzREjRa4wUzVNe5a/KaAKeQ6E/Iek
+         StNLLxu6uvB5AW8AfBqTzvK09+bCPBEc7cLwbwXZVPO7MeLGuwDEU8IfZpWueAGWkE3Z
+         33GARKZzuk6xIO5YcAlSK0WJQeLpHbaB2vn/pKAL6NeT5hpnFOzTDZNmIHDC6lMOpCwA
+         oURg8511kmTgdeyMPBCb9eOK0ZOqKGEHAvK0lKlJ+Oqve0GYHyQcXZeU/ppNE1MuZMEj
+         zYx+4gArAo+HmPOp8lECdT2mzDs+IFn6mj6JexAokmMSHq6h0/cqqxs2INXZNvn9YYwU
+         XgCg==
+X-Gm-Message-State: ABy/qLZdrOqPjIllegvO4miQCVlPljZ6fx9fB/RJ1DaNigZSK1+26KFO
+        FOc25C4AZ/6UeR4h58oBj8BeXmOuu2KnRnXB6Pw=
+X-Google-Smtp-Source: APBJJlEnUEKc1nZ6g4LU0MLJRu8qBi9abiNe++BWYtu6/abRbCIn/YlRMjBaWCk6kGuncCaVmTrbpS+6zKjnHlyhDA4=
+X-Received: by 2002:a17:906:d7:b0:993:d617:bdc5 with SMTP id
+ 23-20020a17090600d700b00993d617bdc5mr2870468eji.37.1689869522220; Thu, 20 Jul
+ 2023 09:12:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1686063941.git.oleksii_moisieiev@epam.com>
+ <43109a0f2f362222fca79e2afd15c46ed9a32977.1686063941.git.oleksii_moisieiev@epam.com>
+ <ZIAxLdexyKBnMOmU@surfacebook> <87sf9ihfc7.fsf@epam.com>
+In-Reply-To: <87sf9ihfc7.fsf@epam.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 20 Jul 2023 19:11:25 +0300
+Message-ID: <CAHp75Vf+H_wnhT=2w=A9M7wFeOkf_m1M1gmL9vd8WHNid7+YBg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] pinctrl: Implementation of the generic
+ scmi-pinctrl driver
+To:     Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
+Cc:     "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John.
+On Thu, Jul 20, 2023 at 4:40=E2=80=AFPM Oleksii Moisieiev
+<Oleksii_Moisieiev@epam.com> wrote:
+> andy.shevchenko@gmail.com writes:
+> > Tue, Jun 06, 2023 at 04:22:28PM +0000, Oleksii Moisieiev kirjoitti:
 
-I spent a few minutes adding stgdiff support to the script. It's
-really just for illustration purposes.
+...
 
-As I think you know, STG doesn't yet exist as a project outside of
-AOSP. Nevertheless, this may be useful to you as-is.
+> >> +    devm_kfree(pmx->dev, pmx->functions[selector].groups);
+> >
+> > Red Flag. Please, elaborate.
+>
+> Thank you for the review.
+> I did some research regarding this and now I'm confused. Could you
+> please explain to me why it's a red flag?
+> IIUC devm_alloc/free functions are the calls to the resource-managed
+> alloc/free command, which is bound to the device.
+> pinctrl-scmi driver does devm_pinctrl_register_and_init which does
+> devres_alloc and doesn't open devres_group like
+> scmi_alloc_init_protocol_instance (thanks to Cristian detailed
+> explanation).
+>
+> As was mentioned in Documentation/driver-api/driver-model/devres.rst:
+>
+> ```
+> No matter what, all devres entries are released on driver detach.  On
+> release, the associated release function is invoked and then the
+> devres entry is freed.
+> ```
 
-STG has quite a different philosophy to libabigil in terms of
-filtering out certain kinds of differences. Some of the things (like
-enum enumerator additions) are not considered harmless. The reasoning
-behind this is basically...
-https://en.wikipedia.org/wiki/Covariance_and_contravariance_(computer_science)
+Precisely. So, why do you intervene in this?
 
-However, it does have --ignore interface_addition (and the related
---ignore type_definition_addition) which can be used to detect whether
-one ABI is a subset of another.
+> Also there is devm_pinctrl_get call listed in the managed interfaces.
+>
+> My understanding is that all resources, bound to the particular device
+> will be freed on driver detach.
+>
+> Also I found some examples of using devm_alloc/free like from dt_node_to_=
+map
+> call in pinctrl-simple.c driver.
+>
+> I agree that I need to implement .remove callback with proper cleanup,
+> but why can't I use devm_* here?
 
-I am looking at adding support for macro definitions (gcc -g3) to STG
-which will then let us cover significantly more of the UAPI surface.
+You can use devm_*(), but what's the point if you call release
+yourself? That's quite a red flag usually shows a bigger issue
+(misunderstanding of the objects lifetimes and their interaction).
 
-Unfortunately, there are some headers which use anonymous enums to
-define constants (e.g. and ironically BTF). ABI tracking these types
-would require something a bit hacky. Or we could just name them.
+> Maybe I've misunderstood your point.
 
-Regards,
-Giuliano.
-
-Signed-off-by: Giuliano Procida <gprocida@google.com>
----
- scripts/check-uapi.sh | 102 ++++++++++++++++++++++++++++--------------
- 1 file changed, 69 insertions(+), 33 deletions(-)
-
-diff --git a/scripts/check-uapi.sh b/scripts/check-uapi.sh
-index 755187f27be5..982666b48f3b 100755
---- a/scripts/check-uapi.sh
-+++ b/scripts/check-uapi.sh
-@@ -32,6 +32,7 @@ Options:
-     -v             Verbose operation (print more information about each header being checked).
- 
- Environmental args:
-+    STGDIFF  Custom path to stgdiff binary - use stgdiff instead of abidiff
-     ABIDIFF  Custom path to abidiff binary
-     CC       C compiler (default is "gcc")
-     ARCH     Target architecture of C compiler (default is host arch)
-@@ -270,43 +271,78 @@ compare_abi() {
- 		exit "$FAIL_COMPILE"
- 	fi
- 
--	local ret=0
--	"$ABIDIFF" --non-reachable-types "${past_header}.bin" "${base_header}.bin" > "$log" || ret="$?"
--	if [ "$ret" -eq 0 ]; then
--		if [ "$VERBOSE" = "true" ]; then
--			printf "No ABI differences detected in %s from %s -> %s\n" "$file" "$past_ref" "${base_ref:-dirty tree}"
-+	if [ "$STGDIFF" ]; then
-+		local ret=0
-+		"$STGDIFF" --types --ignore interface_addition --elf "${past_header}.bin" "${base_header}.bin" --format small --output "$log" || ret="$?"
-+		if [ "$ret" -eq 0 ]; then
-+			if [ "$VERBOSE" = "true" ]; then
-+				printf "No ABI differences detected in %s from %s -> %s\n" "$file" "$past_ref" "${base_ref:-dirty tree}"
-+			fi
-+		else
-+			# stgdiff's return code can be used to determine the type of error
-+			if [ $((ret & 0x1)) -gt 0 ]; then
-+				eprintf "error - stgdiff failed\n"
-+				exit 1
-+			fi
-+
-+			{
-+				printf "!!! ABI differences detected in %s from %s -> %s !!!\n\n" "$file" "$past_ref" "${base_ref:-dirty tree}"
-+				sed  -e 's/^/  /g' "$log"
-+
-+				if ! cmp "$past_header" "$base_header" > /dev/null 2>&1; then
-+					printf "\nHeader file diff (after headers_install):\n"
-+					diff -Naur "$past_header" "$base_header" \
-+						| sed -e "s|${past_header}|${past_ref}/${file}|g" \
-+						      -e "s|${base_header}|${base_ref:-dirty}/${file}|g"
-+					printf "\n"
-+				else
-+					printf "\n%s did not change between %s and %s...\n" "$file" "$past_ref" "${base_ref:-dirty tree}"
-+					printf "It's possible a change to one of the headers it includes caused this error:\n"
-+					grep '^#include' "$base_header"
-+					printf "\n"
-+				fi
-+			} | tee "${base_header}.error" >&2
-+			return 1
- 		fi
- 	else
--		# Bits in abidiff's return code can be used to determine the type of error
--		if [ $((ret & 0x1)) -gt 0 ]; then
--			eprintf "error - abidiff did not run properly\n"
--			exit 1
--		fi
-+		local ret=0
-+		"$ABIDIFF" --non-reachable-types "${past_header}.bin" "${base_header}.bin" > "$log" || ret="$?"
-+		if [ "$ret" -eq 0 ]; then
-+			if [ "$VERBOSE" = "true" ]; then
-+				printf "No ABI differences detected in %s from %s -> %s\n" "$file" "$past_ref" "${base_ref:-dirty tree}"
-+			fi
-+		else
-+			# Bits in abidiff's return code can be used to determine the type of error
-+			if [ $((ret & 0x1)) -gt 0 ]; then
-+				eprintf "error - abidiff did not run properly\n"
-+				exit 1
-+			fi
- 
--		# If the only changes were additions (not modifications to existing APIs), then
--		# there's no problem. Ignore these diffs.
--		if grep "Unreachable types summary" "$log" | grep -q "0 removed" &&
--		   grep "Unreachable types summary" "$log" | grep -q "0 changed"; then
--			return 0
--		fi
--		{
--			printf "!!! ABI differences detected in %s from %s -> %s !!!\n\n" "$file" "$past_ref" "${base_ref:-dirty tree}"
--			sed  -e '/summary:/d' -e '/changed type/d' -e '/^$/d' -e 's/^/  /g' "$log"
--
--			if ! cmp "$past_header" "$base_header" > /dev/null 2>&1; then
--				printf "\nHeader file diff (after headers_install):\n"
--				diff -Naur "$past_header" "$base_header" \
--					| sed -e "s|${past_header}|${past_ref}/${file}|g" \
--					      -e "s|${base_header}|${base_ref:-dirty}/${file}|g"
--				printf "\n"
--			else
--				printf "\n%s did not change between %s and %s...\n" "$file" "$past_ref" "${base_ref:-dirty tree}"
--				printf "It's possible a change to one of the headers it includes caused this error:\n"
--				grep '^#include' "$base_header"
--				printf "\n"
-+			# If the only changes were additions (not modifications to existing APIs), then
-+			# there's no problem. Ignore these diffs.
-+			if grep "Unreachable types summary" "$log" | grep -q "0 removed" &&
-+			   grep "Unreachable types summary" "$log" | grep -q "0 changed"; then
-+				return 0
- 			fi
--		} | tee "${base_header}.error" >&2
--		return 1
-+			{
-+				printf "!!! ABI differences detected in %s from %s -> %s !!!\n\n" "$file" "$past_ref" "${base_ref:-dirty tree}"
-+				sed  -e '/summary:/d' -e '/changed type/d' -e '/^$/d' -e 's/^/  /g' "$log"
-+
-+				if ! cmp "$past_header" "$base_header" > /dev/null 2>&1; then
-+					printf "\nHeader file diff (after headers_install):\n"
-+					diff -Naur "$past_header" "$base_header" \
-+						| sed -e "s|${past_header}|${past_ref}/${file}|g" \
-+						      -e "s|${base_header}|${base_ref:-dirty}/${file}|g"
-+					printf "\n"
-+				else
-+					printf "\n%s did not change between %s and %s...\n" "$file" "$past_ref" "${base_ref:-dirty tree}"
-+					printf "It's possible a change to one of the headers it includes caused this error:\n"
-+					grep '^#include' "$base_header"
-+					printf "\n"
-+				fi
-+			} | tee "${base_header}.error" >&2
-+			return 1
-+		fi
- 	fi
- }
- 
--- 
-2.41.0.255.g8b1d071c50-goog
-
+--=20
+With Best Regards,
+Andy Shevchenko
