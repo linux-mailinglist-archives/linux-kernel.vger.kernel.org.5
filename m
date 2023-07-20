@@ -2,151 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BE475BA84
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D115475BA87
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbjGTWW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 18:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
+        id S229674AbjGTWWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 18:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbjGTWWY (ORCPT
+        with ESMTP id S230054AbjGTWWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:22:24 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46ECC30F5
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:21:54 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-5661eb57452so847955eaf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:21:54 -0700 (PDT)
+        Thu, 20 Jul 2023 18:22:43 -0400
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C7630C8;
+        Thu, 20 Jul 2023 15:22:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1689891659; x=1690496459;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ww5WuryDbj+ot6eFUCZgy718TF10XCTB2MyAj3dfUMk=;
-        b=kMTrQS+AVMKURWTk8oT3YVUndrkw3YBFkSDPZfJfY/C+8W4opz2ZMK02Nlmjo8l6HR
-         E8TYoLgI7yI0pqyy47KYCf0iT7ejiT2nT2Ofa5l2C/crlyHBKTAArhiVCdyikgfNKpwe
-         +b66TFAyhOe7XyQM3ft0ise9UZuDXiDQ9bRe0XbTAcSgrx3vkmZmmviWMdDc7EJVgGHG
-         +MfYOuElupYwFtTkpBDMWPWQ3m4zjiZGh6ojXvcea75t5WwAEAN5QR7rV5Pck3GgVZa7
-         p2nbuHWDCAgAJywseSy+RnD3xifTl9d4wJ+BWajfFiR6R+JpwXtwltpRShZCpOJwdbS8
-         Mbmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689891659; x=1690496459;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ww5WuryDbj+ot6eFUCZgy718TF10XCTB2MyAj3dfUMk=;
-        b=DjHzDTFHkeuYQ1tVpt84XrntoAHUp0/Uv4yM6OZ2irJuMU84tXfMb0KLdbad9tiCJM
-         cmkkscnq6uGIGN/DdsI0X6T5GxkT13XWoexH/tGc5gWmJNoGz8eDgNZeqhZHO4ZGLoxN
-         r8T0Yjh3eKFLZZ4+XvlJm4fwNpjxkTShPxl+hrI9X8JTDhX4ih3RMsbnwDa1FJaFW3y6
-         x+3eovlXLUs1K0BsLGnkjCGtlph5Bshbw6jDGq40++tpfF1NWu4BdVpqlLRaCprEiEBg
-         sj+ot2H3XlWhpMkSHnze6ewj4/vq64cKXyXpXBxM0EqYZJrcAUO0zdp+0Vs0FIoFxi4e
-         rOKA==
-X-Gm-Message-State: ABy/qLZP+GnaLp033rTRhDzXacerK8k4YSTOrxEK2l9Araxg4CgmCyL6
-        CXvTbnEtSFyXwMgJ418bRTj2qQ==
-X-Google-Smtp-Source: APBJJlHEKoknw6tsS4AKB23rpXbrSIf0brs+wH8Daq3iqSBdDAYBXthi8Oaw/cEKo3F2y9BIkUw1QQ==
-X-Received: by 2002:aca:1214:0:b0:39e:8678:4035 with SMTP id 20-20020aca1214000000b0039e86784035mr230543ois.13.1689891659575;
-        Thu, 20 Jul 2023 15:20:59 -0700 (PDT)
-Received: from dread.disaster.area (pa49-186-119-116.pa.vic.optusnet.com.au. [49.186.119.116])
-        by smtp.gmail.com with ESMTPSA id gz18-20020a17090b0ed200b00263dfe9b972sm3127330pjb.0.2023.07.20.15.20.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 15:20:58 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qMc12-008Wfy-04;
-        Fri, 21 Jul 2023 08:20:56 +1000
-Date:   Fri, 21 Jul 2023 08:20:56 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        christian.brauner@ubuntu.com,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        ZhangPeng <zhangpeng362@huawei.com>,
-        linux-m68k@lists.linux-m68k.org,
-        debian-ports <debian-ports@lists.debian.org>
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-Message-ID: <ZLmzSEV6Wk+oRVoL@dread.disaster.area>
-References: <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
- <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
- <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
- <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
- <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
- <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
- <ZLlvII/jMPTT32ef@casper.infradead.org>
- <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de>
- <ZLl2Fq35Ya0cNbIm@casper.infradead.org>
- <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org>
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1689891733; x=1721427733;
+  h=from:to:cc:subject:date:message-id:content-id:
+   content-transfer-encoding:mime-version;
+  bh=hfdQGIsHPiSQmCXDTfRO/5MVXiYRyT+9p4R1RbR27kw=;
+  b=VH99/a6yH6SV6pLeQv0VGS9p4Q7VPb79tHVtXVcXiND7SKVd3Qciva99
+   kdzEWq1xj2vvCSPziwVQgoRIP9RpVUqj6HjFdlEeOWP5DA2pCtO7RpYB8
+   fm6TlJNxplXlxOsjtT3tw8+Pr5koRkzOYsgFLkIJCK6HCAjjsbXVWcAcF
+   s=;
+X-IronPort-AV: E=Sophos;i="6.01,219,1684800000"; 
+   d="scan'208";a="228078880"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-dc7c3f8b.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 22:21:05 +0000
+Received: from EX19MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2c-m6i4x-dc7c3f8b.us-west-2.amazon.com (Postfix) with ESMTPS id A05DCA0BED;
+        Thu, 20 Jul 2023 22:21:04 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 20 Jul 2023 22:21:04 +0000
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.30;
+ Thu, 20 Jul 2023 22:21:03 +0000
+Received: from EX19D004ANA001.ant.amazon.com ([fe80::f099:cbca:cc6b:91ec]) by
+ EX19D004ANA001.ant.amazon.com ([fe80::f099:cbca:cc6b:91ec%5]) with mapi id
+ 15.02.1118.030; Thu, 20 Jul 2023 22:21:02 +0000
+From:   "Iwashima, Kuniyuki" <kuniyu@amazon.co.jp>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     "Von Dentz, Luiz" <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Networking <netdev@vger.kernel.org>,
+        "Alexander Mikhalitsyn" <alexander@mihalicyn.com>,
+        "Iwashima, Kuniyuki" <kuniyu@amazon.co.jp>,
+        "Iwashima, Kuniyuki" <kuniyu@amazon.co.jp>
+Subject: Re: linux-next: build failure after merge of the bluetooth tree
+Thread-Topic: linux-next: build failure after merge of the bluetooth tree
+Thread-Index: AQHZu1h3eGn2lfLtVEiF5x1iaOX/zA==
+Date:   Thu, 20 Jul 2023 22:21:02 +0000
+Message-ID: <D8591926-7C73-4D2A-A4C9-6706432171A3@amazon.co.jp>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.106.101.12]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <628F1A2A1220534B8BA73F7078945E27@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 02:27:50PM -0400, Jeff Layton wrote:
-> On Thu, 2023-07-20 at 18:59 +0100, Matthew Wilcox wrote:
-> > On Thu, Jul 20, 2023 at 07:50:47PM +0200, John Paul Adrian Glaubitz wrote:
-> > > > Then we should delete the HFS/HFS+ filesystems.  They're orphaned in
-> > > > MAINTAINERS and if distros are going to do such a damnfool thing,
-> > > > then we must stop them.
-> > > 
-> > > Both HFS and HFS+ work perfectly fine. And if distributions or users are so
-> > > sensitive about security, it's up to them to blacklist individual features
-> > > in the kernel.
-> > > 
-> > > Both HFS and HFS+ have been the default filesystem on MacOS for 30 years
-> > > and I don't think it's justified to introduce such a hard compatibility
-> > > breakage just because some people are worried about theoretical evil
-> > > maid attacks.
-> > > 
-> > > HFS/HFS+ mandatory if you want to boot Linux on a classic Mac or PowerMac
-> > > and I don't think it's okay to break all these systems running Linux.
-> > 
-> > If they're so popular, then it should be no trouble to find somebody
-> > to volunteer to maintain those filesystems.  Except they've been
-> > marked as orphaned since 2011 and effectively were orphaned several
-> > years before that (the last contribution I see from Roman Zippel is
-> > in 2008, and his last contribution to hfs was in 2006).
-> 
-> I suspect that this is one of those catch-22 situations: distros are
-> going to enable every feature under the sun. That doesn't mean that
-> anyone is actually _using_ them these days.
-> 
-> Is "staging" still a thing? Maybe we should move these drivers into the
-> staging directory and pick a release where we'll sunset it, and then see
-> who comes out of the woodwork?
-
-No, the train wreck of filesystems in staging proved that it wasn't
-a viable process.
-
-We should just follow the same process as we are using for reiser -
-mark it as deprecated in place, pick a date that we are going to
-remove it, then add a warning (both runtime, in kconfig and probably
-in the kernel filesystem documentation) that it is deprecated and
-support is going to be removed at a certain date.
-
-We should be applying the same criteria and process for all the
-other filesystems that are orphaned, too. We need to much more
-proactive about dropping support for unmaintained filesystems that
-nobody is ever fixing despite the constant stream of
-corruption- and deadlock- related bugs reported against them.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+RnJvbTogU3RlcGhlbiBSb3Rod2VsbCA8c2ZyQGNhbmIuYXV1Zy5vcmcuYXU+DQpEYXRlOiBGcmks
+IDIxIEp1bCAyMDIzIDA4OjEyOjU4ICsxMDAwDQo+IEhpIEpha3ViLA0KPiANCj4gT24gVGh1LCAy
+MCBKdWwgMjAyMyAwODoxNDozMCAtMDcwMCBKYWt1YiBLaWNpbnNraSA8a3ViYUBrZXJuZWwub3Jn
+PiB3cm90ZToNCj4gPg0KPiA+IE9uIFdlZCwgMTkgSnVsIDIwMjMgMjA6MjQ6MzUgLTA3MDAgSmFr
+dWIgS2ljaW5za2kgd3JvdGU6DQo+ID4gPiBPbiBUaHUsIDIwIEp1bCAyMDIzIDAzOjE3OjM3ICsw
+MDAwIFZvbiBEZW50eiwgTHVpeiB3cm90ZTogIA0KPiA+ID4gPiBTb3JyeSBmb3Igbm90IHJlcGx5
+aW5nIGlubGluZSwgb3V0bG9vayBvbiBhbmRyb2lkLCB3ZSB1c2Ugc2NtX3JlY3YNCj4gPiA+ID4g
+bm90IHNjbV9yZWN2X3VuaXgsIHNvIElkIGFzc3VtZSB0aGF0IGNoYW5nZSB3b3VsZCByZXR1cm4g
+dGhlIGluaXRpYWwNCj4gPiA+ID4gYmVoYXZpb3IsIGlmIGl0IGRpZCBub3QgdGhlbiBpdCBpcyBu
+b3QgZml4aW5nIGFueXRoaW5nLiAgICANCj4gPiA+DQo+ID4gPiBBY2ssIHRoYXQncyB3aGF0IGl0
+IHNlZW1zIGxpa2UgdG8gbWUgYXMgd2VsbC4NCj4gPiA+DQo+ID4gPiBJIGZpcmVkIHVwIGFuIGFs
+bG1vZGNvbmZpZyBidWlsZCBvZiBsaW51eC1uZXh0LiBJIHNob3VsZCBiZSBhYmxlDQo+ID4gPiB0
+byBnZXQgdG8gdGhlIGJvdHRvbSBvZiB0aGlzIGluIH4yMG1pbiA6KSAgDQo+ID4NCj4gPiBJIGtp
+Y2tlZCBpdCBvZmYgYW5kIGZvcmdvdCBhYm91dCBpdC4NCj4gPiBhbGxtb2Rjb25maWcgb24gMzUy
+Y2UzOWE4YmJhZWMwNCAobmV4dC0yMDIzMDcxOSkgYnVpbGRzIGp1c3QgZmluZSA6Uw0KPiANCj4g
+T2YgY291cnNlIGl0IGRvZXMsIGFzIGNvbW1pdA0KPiANCj4gODE3ZWZkM2NhZDc0ICgiQmx1ZXRv
+b3RoOiBoY2lfc29jazogRm9yd2FyZCBjcmVkZW50aWFscyB0byBtb25pdG9yIikNCj4gDQo+IGlz
+IHJldmVydGVkIGluIGxpbnV4LW5leHQuICBUaGUgcXVlc3Rpb24gaXMgIkRvZXMgdGhlIGJsdWV0
+b290aCB0cmVlDQo+IGJ1aWxkPyIgb3IgIkRvZXMgdGhlIG5ldC1uZXh0IHRyZWUgYnVpbGQgKmlm
+KiB5b3UgbWVyZ2UgdGhlIGJsdWV0b290aA0KPiB0cmVlIGludG8gaXQ/Ig0KDQpGV0lXLCBJIHdh
+cyBhYmxlIHRvIGJ1aWx0IG5ldC1uZXh0IHdpdGggdGhlIGNvbW1pdCB5ZXN0ZXJkYXkuDQoNCi0t
+LTg8LS0tDQokIGdyZXAgQ09ORklHX0JUIC5jb25maWcNCkNPTkZJR19CVD1tDQpDT05GSUdfQlRf
+QlJFRFI9eQ0KQ09ORklHX0JUX1JGQ09NTT1tDQpDT05GSUdfQlRfUkZDT01NX1RUWT15DQpDT05G
+SUdfQlRfQk5FUD1tDQpDT05GSUdfQlRfQk5FUF9NQ19GSUxURVI9eQ0KQ09ORklHX0JUX0JORVBf
+UFJPVE9fRklMVEVSPXkNCkNPTkZJR19CVF9ISURQPW0NCkNPTkZJR19CVF9IUz15DQpDT05GSUdf
+QlRfTEU9eQ0KQ09ORklHX0JUX0xFX0wyQ0FQX0VDUkVEPXkNCkNPTkZJR19CVF9MRURTPXkNCkNP
+TkZJR19CVF9NU0ZURVhUPXkNCkNPTkZJR19CVF9BT1NQRVhUPXkNCkNPTkZJR19CVF9ERUJVR0ZT
+PXkNCkNPTkZJR19CVF9TRUxGVEVTVD15DQpDT05GSUdfQlRfU0VMRlRFU1RfRUNESD15DQpDT05G
+SUdfQlRfU0VMRlRFU1RfU01QPXkNCkNPTkZJR19CVF9GRUFUVVJFX0RFQlVHPXkNCkNPTkZJR19C
+VF9JTlRFTD1tDQpDT05GSUdfQlRfQkNNPW0NCkNPTkZJR19CVF9SVEw9bQ0KQ09ORklHX0JUX01U
+Sz1tDQpDT05GSUdfQlRfSENJQlRVU0I9bQ0KQ09ORklHX0JUX0hDSUJUVVNCX0FVVE9TVVNQRU5E
+PXkNCkNPTkZJR19CVF9IQ0lCVFVTQl9QT0xMX1NZTkM9eQ0KQ09ORklHX0JUX0hDSUJUVVNCX0JD
+TT15DQpDT05GSUdfQlRfSENJQlRVU0JfTVRLPXkNCkNPTkZJR19CVF9IQ0lCVFVTQl9SVEw9eQ0K
+Q09ORklHX0JUX0hDSVVBUlQ9bQ0KQ09ORklHX0JUX0hDSVVBUlRfSDQ9eQ0KQ09ORklHX0JUX0hD
+SVVBUlRfQkNTUD15DQpDT05GSUdfQlRfSENJVUFSVF9BVEgzSz15DQpDT05GSUdfQlRfSENJVUFS
+VF9BRzZYWD15DQpDT05GSUdfQlRfSENJQkNNMjAzWD1tDQpDT05GSUdfQlRfSENJQkNNNDM3Nz1t
+DQpDT05GSUdfQlRfSENJQlBBMTBYPW0NCkNPTkZJR19CVF9IQ0lCRlVTQj1tDQpDT05GSUdfQlRf
+SENJRFRMMT1tDQpDT05GSUdfQlRfSENJQlQzQz1tDQpDT05GSUdfQlRfSENJQkxVRUNBUkQ9bQ0K
+Q09ORklHX0JUX0hDSVZIQ0k9bQ0KQ09ORklHX0JUX01SVkw9bQ0KQ09ORklHX0JUX0FUSDNLPW0N
+CkNPTkZJR19CVF9WSVJUSU89bQ0KLS0tODwtLS0NCg0K
