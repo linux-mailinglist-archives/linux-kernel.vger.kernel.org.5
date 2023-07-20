@@ -2,120 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A242575A787
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3AE75A79C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbjGTHPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48546 "EHLO
+        id S229825AbjGTHSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbjGTHPs (ORCPT
+        with ESMTP id S231425AbjGTHSJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:15:48 -0400
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E502118
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:15:44 -0700 (PDT)
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230720071542epoutp04d7eadafed2446337b9a2084376ebb06e~zghwjdzvs0884708847epoutp04E
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:15:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230720071542epoutp04d7eadafed2446337b9a2084376ebb06e~zghwjdzvs0884708847epoutp04E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1689837342;
-        bh=3tl7faBvI9QEX5maxzKSbUjRYhYxM6dis+ORKWtEhb0=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=FiOp/+XN7DhIX0bCTNA3ch73DLRQKy1MNNhz7rOBdouiF4zVrXndVpjamsQR1GfO7
-         vCC+EKQLdFoBhSWfUyhlywJUwnRo5RAxgB++CK+EKc/h+TVDFkG0PlaRX8LTGe8bPB
-         bCdCvIRoP6l7b8UmRo2rVUtQG6gNN8E42xOE+wVY=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20230720071542epcas2p4f0406b7d295e694f18779ea70f7e8fac~zghwVbK1h2982529825epcas2p48;
-        Thu, 20 Jul 2023 07:15:42 +0000 (GMT)
-Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.102]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4R63qy06nWz4x9QD; Thu, 20 Jul
-        2023 07:15:42 +0000 (GMT)
-X-AuditID: b6c32a4d-637c170000047356-49-64b8df1d58cf
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F0.8E.29526.D1FD8B46; Thu, 20 Jul 2023 16:15:41 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE:(2) [PATCH] md/bitmap: Fix bitmap page writing problem when
- using block integrity
-Reply-To: j-young.choi@samsung.com
-Sender: Jinyoung Choi <j-young.choi@samsung.com>
-From:   Jinyoung Choi <j-young.choi@samsung.com>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-CC:     "song@kernel.org" <song@kernel.org>, "shli@fb.com" <shli@fb.com>,
-        "neilb@suse.com" <neilb@suse.com>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <a658717c-8388-6e56-4d8d-096b0a1aefb9@molgen.mpg.de>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20230720071441epcms2p3af7d4941dd0a9ab8243e873af43791f8@epcms2p3>
-Date:   Thu, 20 Jul 2023 16:14:41 +0900
-X-CMS-MailID: 20230720071441epcms2p3af7d4941dd0a9ab8243e873af43791f8
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkk+LIzCtJLcpLzFFi42LZdljTTFf2/o4Ug+W71SxeHtK0uLxrDptF
-        +/xdjBafNsZavJyVZrFsZz+LxfHlf9kc2D0mNr9j99i0qpPN48m5CcwefVtWMXqs33KVxePz
-        JrkAtqhsm4zUxJTUIoXUvOT8lMy8dFsl7+B453hTMwNDXUNLC3MlhbzE3FRbJRefAF23zByg
-        Q5QUyhJzSoFCAYnFxUr6djZF+aUlqQoZ+cUltkqpBSk5BeYFesWJucWleel6eaklVoYGBkam
-        QIUJ2Rmf1vayFTxkrli5aANTA+Nbpi5GTg4JAROJe/t+sXUxcnEICexhlLjzZCFLFyMHB6+A
-        oMTfHcIgNcIC8RK7Lr9jBrGFBJQkzq2ZxQgRN5Boud3GAmKzCehJ7Hi+mx3EFhFQl1j1uxss
-        zizwnFFi3elaiF28EjPan7JA2NIS25dvBZvDKeAo8XHjczaIuIbEj2W9zBC2qMTN1W/ZYez3
-        x+YzQtgiEq33zkLVCEo8+LkbKi4pcejQVzaQ8yUE8iU2HAiECNdItP16D1WuL3GtYyPYCbwC
-        vhKPfx4FG88ioCrR92M91GkuEh8vQ5zDLCAvsf3tHGaQkcwCmhLrd+lDTFeWOHIL6kE+iY7D
-        f9lhHmzY+Bsre8e8J0wQrWoSi5qMJjAqz0KE8iwkq2YhrFrAyLyKUSq1oDg3PTXZqMBQNy+1
-        HB65yfm5mxjBaVLLdwfj6/V/9Q4xMnEwHmKU4GBWEuF9dHlbihBvSmJlVWpRfnxRaU5q8SFG
-        U6BHJzJLiSbnAxN1Xkm8oYmlgYmZmaG5kamBuZI4773WuSlCAumJJanZqakFqUUwfUwcnFIN
-        TI1dGv5uN+43HwyoieN0yru7PP/W9DPfXav+V7yckp/IWqHakGDZcv1J4ENGz9CdPVaKTLus
-        5oRtrb+lUndgFaPf2dTNbpv28rn0H3qwQI2Ty9Ny6nKBFywMTv2952+JmBf9cyvf+Gp2ZsDG
-        vx/0bnJ9iLv82HLefpGSrwsTrPNzbq39Lr75EluTL8fLzjXuiUFRzKs2Jjw5yK2qtEbCVK08
-        5fnrKesWhvDO3jLTUP6k8vz46wurt0yMfLIjzuLa9dzbE4s2FGiJJXEfrrp4QHT7/A1NG9XC
-        y7vbKjx9FhzcxS/qe8yz8n7PovcGG+yi2KdKzNCvejJzXrdgyhtjkWt9HXrHzWZNjpoxIXVt
-        iBJLcUaioRZzUXEiAAmMStwcBAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230720061234epcms2p32e02cd528fc834491816b379ae189012
-References: <a658717c-8388-6e56-4d8d-096b0a1aefb9@molgen.mpg.de>
-        <20230720061234epcms2p32e02cd528fc834491816b379ae189012@epcms2p3>
-        <CGME20230720061234epcms2p32e02cd528fc834491816b379ae189012@epcms2p3>
+        Thu, 20 Jul 2023 03:18:09 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C81AFD;
+        Thu, 20 Jul 2023 00:18:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689837485; x=1721373485;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ctwPcolnlChySfEEHvIATfgLhsWOHS1eXrogNw0NAdA=;
+  b=IZ7ZBB2PiyrHYCEKFieE2txYzZJdLUw7BQr0l7IuCYqysmWDYd9VDq6G
+   XWbi6JpgTMZ5IBmJwglg/3+AaCcKnggUxDSS/pmcOl64YIoAAW3lJUGZp
+   NNuleapiBqplY+cl7GVWG3wohHxwPv3G5SdxmNlBHtfxXVTiJd0k1bRBu
+   Gxt47CtEsUsFHwmBM2ejGmDRMPQYtbR1CYKaZxIpkR3k478AGOSGJvkRm
+   3yDV2vwrGoeYHm9pX+VP2bhKLmLpHa04qRwUPN0rpn6z8NKedpnaeOl5N
+   PRP9KHGpl4KefVK5EN3W0HljdvYt0nFgUq72MQlJB74cPnYpI293nJrJF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="370225270"
+X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
+   d="scan'208";a="370225270"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 00:18:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="724291670"
+X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
+   d="scan'208";a="724291670"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 20 Jul 2023 00:18:02 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qMNvG-0005sT-04;
+        Thu, 20 Jul 2023 07:18:02 +0000
+Date:   Thu, 20 Jul 2023 15:17:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     sunran001@208suo.com, mchehab@kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hv: put parentheses on macros with complex values in
+ hyperv.h
+Message-ID: <202307201511.TvSDQJLn-lkp@intel.com>
+References: <e4b504ab6a1534cd26be777c9cb0bb6a@208suo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e4b504ab6a1534cd26be777c9cb0bb6a@208suo.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Paul,
+Hi,
 
-> Dear Jinyoung,
-> 
-> 
-> Thank you very much for your patch. Some minor comments, you can also 
-> ignore.
+kernel test robot noticed the following build errors:
 
-I will reflect the advice you gave me regarding the commit message and send it again.
+[auto build test ERROR on linus/master]
+[also build test ERROR on sailus-media-tree/streams v6.5-rc2 next-20230720]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> Your From line spells it CHOI. Maybe you can update your git 
-> configuration to also use Choi?
+url:    https://github.com/intel-lab-lkp/linux/commits/sunran001-208suo-com/hv-put-parentheses-on-macros-with-complex-values-in-hyperv-h/20230720-110337
+base:   linus/master
+patch link:    https://lore.kernel.org/r/e4b504ab6a1534cd26be777c9cb0bb6a%40208suo.com
+patch subject: [PATCH] hv: put parentheses on macros with complex values in hyperv.h
+config: i386-randconfig-i013-20230720 (https://download.01.org/0day-ci/archive/20230720/202307201511.TvSDQJLn-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20230720/202307201511.TvSDQJLn-lkp@intel.com/reproduce)
 
-It was being set like that in the company mail system. (CHOI)
-I will modify it to be seen as "Choi".
-Thank you for your comment. :)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307201511.TvSDQJLn-lkp@intel.com/
 
-Best Regards,
-Jinyoung.
+All errors (new ones prefixed by >>):
+
+   In file included from arch/x86/events/intel/core.c:17:
+   In file included from include/linux/kvm_host.h:45:
+   In file included from arch/x86/include/asm/kvm_host.h:27:
+>> include/linux/hyperv.h:431:37: error: invalid token in macro parameter list
+   #define VMPACKET_DATA_START_ADDRESS((__packet)  \
+                                       ^
+   1 error generated.
+
+
+vim +431 include/linux/hyperv.h
+
+   430	
+ > 431	#define VMPACKET_DATA_START_ADDRESS((__packet)	\
+   432		(void *)(((unsigned char *)__packet) +	\
+   433		 ((struct vmpacket_descriptor)__packet)->offset8 * 8))
+   434	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
