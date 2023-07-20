@@ -2,123 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3633875B1C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E9A75B1C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbjGTOxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 10:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41076 "EHLO
+        id S231739AbjGTOyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 10:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232430AbjGTOxE (ORCPT
+        with ESMTP id S229586AbjGTOyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 10:53:04 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90928E60;
-        Thu, 20 Jul 2023 07:53:03 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-579ed2829a8so10627287b3.1;
-        Thu, 20 Jul 2023 07:53:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689864783; x=1690469583;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bvMr3T1p15XlXcu1FTpChfqGLr/+qVrwbwtZIWp+fI0=;
-        b=kO9WQz7rK0/+lGVQ/yK7d94iSfvTSIIQLoqAX4O+kisIiIZMV60Ouel/kc4srVmbqF
-         76rOjM3GrcgFOEroazpxRfB2lJ/JIupbg3qnvOM5+7WhZ0Y7MRlB5xQ3cYinYN7miYE9
-         iXq7/NZ3gYGKmB7Ftd7LT8oRPQP4wlgS5PD6aOcjvVp3Kx0KGh82dH87Y8hpkf1opaNr
-         ymmkdCQp8tVU9WBqir+RsXB+GRWBhpbGN7Nknx97c4gQdNxs/HoI77nwAJzPJCsOY7kV
-         gsgxKEoCt5fq6NnDpY7+nA0KGQ9TvzaIEvj/klJJcc4fdap60SZRd1X865x/Me+PhNOS
-         9e4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689864783; x=1690469583;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bvMr3T1p15XlXcu1FTpChfqGLr/+qVrwbwtZIWp+fI0=;
-        b=dlENfrS0oL870RGAWdlqS0gQXioUZGnsFKv9auS7+vxEaRLPvLLRm6E/slA1AkS4Ic
-         tIlfgixVl6tw7fhVI58FncILoWYDU6B6eBtfDB6mC5ZgMT2zqy0Jquqgo4hBs3QBJXDn
-         /vFCwt2aSikjzNuYvLm9twcOgHss8z3iBz36T8GXYS5xSddl04PzfgIBbRDP6YfseN3b
-         mlLM0nINleME7quCYyMA6pswTJn/rMPMRD+LKtIDc7Pujj2yRtosqIofz9YqA1WsIa+S
-         GhXmM6rs8+wJo6RkFyORmBn/r8WqE76OKa7JI3Ut8eZG59A6i9tVMUzWy3Eut3laH2BR
-         Kl1Q==
-X-Gm-Message-State: ABy/qLa374eDUUDNBTwqDQtHqBAG+PEcOtMQAhBj9BKxBp1dfZkEUiyA
-        IllKU9vFd6xiQ+LP1rc3S4S+czEz8dmAUX90IaY=
-X-Google-Smtp-Source: APBJJlEiujDeAVJNH/1GLw2NmF8gP6rL7sbKwZBUpbAW83QGPF1do6ceqgk/eUhEkCIZRtIvJQHpIx3rCQauF60rxw8=
-X-Received: by 2002:a81:488b:0:b0:577:60ba:440a with SMTP id
- v133-20020a81488b000000b0057760ba440amr19093706ywa.50.1689864782754; Thu, 20
- Jul 2023 07:53:02 -0700 (PDT)
+        Thu, 20 Jul 2023 10:54:08 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B11E60;
+        Thu, 20 Jul 2023 07:54:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689864846; x=1721400846;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=sHKUqdVr24phow31YhtFZABiwRr2DFpKSY1jczZqZxk=;
+  b=R3CLeoNxR1pWeGZ6lhUUnlD0wpf1aH2Kl3PINQJyKYJsQWxW7z7/BZsU
+   7O8FIFR/69VBjNshhWXDlWT9vwFquJC3bp7YxB9YhDMb0yD5ef0klpZyF
+   JbvQwejeUmrhrb2Y2yrycvF9rXcQ56BYf/Q7Z8LeZkpjA4GRE1gGD+eqh
+   CMd0LwJgHNvuUrkpceV6iFsHyjmDlW474AhVJoKpJcJGik6VpuPI8F35y
+   siqmAVxcDYDuGg5429Smk7k5nhYSHydvyDOo6oQ0iwoTo4YzE0kPkXr5o
+   bRiM5C/453tz0AUqMxEwXm3ia3Kyr8ot/ZSjmllNMDKiFZLto07ZXXp06
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="369433469"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="369433469"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 07:54:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="718430688"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="718430688"
+Received: from jiaqingz-mobl.ccr.corp.intel.com (HELO [10.93.4.236]) ([10.93.4.236])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 07:54:03 -0700
+Message-ID: <61bbb2e6-8c18-d2fc-ce1e-78d462ac1bba@linux.intel.com>
+Date:   Thu, 20 Jul 2023 22:54:01 +0800
 MIME-Version: 1.0
-References: <20230718054416.861412-1-tmgross@umich.edu> <20230718054416.861412-2-tmgross@umich.edu>
-In-Reply-To: <20230718054416.861412-2-tmgross@umich.edu>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 20 Jul 2023 16:52:51 +0200
-Message-ID: <CANiq72=L+_1OctE_fgeXfmzL2PCZmmMLW9i0GJZyCcf=B_=pRQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] docs: rust: update instructions for obtaining 'core' source
-To:     Trevor Gross <tmgross@umich.edu>
-Cc:     ojeda@kernel.org, alex.gaynor@gmail.com, wedsonaf@gmail.com,
-        boqun.feng@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com,
-        benno.lossin@proton.me, corbet@lwn.net, linux-doc@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/2] can: ems_pci: move ASIX AX99100 ids to pci_ids.h
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>,
+        support@ems-wuensche.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-can@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+References: <20230720102859.2985655-1-jiaqing.zhao@linux.intel.com>
+ <20230720102859.2985655-3-jiaqing.zhao@linux.intel.com>
+ <20230720-document-tingle-e5d555714021-mkl@pengutronix.de>
+Content-Language: en-US
+From:   Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+In-Reply-To: <20230720-document-tingle-e5d555714021-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 7:50=E2=80=AFAM Trevor Gross <tmgross@umich.edu> wr=
-ote:
->
-> The source for Rust's 'core' library is needed to build the kernel with
-> Rust support. This must be obtained manually when using a non-rustup
-> install, such as when using 'rustc' from a package manager or from a
+On 2023-07-20 18:40, Marc Kleine-Budde wrote:
+> On 20.07.2023 10:28:59, Jiaqing Zhao wrote:
+>> Move PCI Vendor and Device ID of ASIX AX99100 PCIe to Multi I/O
+>> Controller to pci_ids.h for its serial and parallel port driver
+>> support in subsequent patches.
+> 
+> Sorry, I haven't noticed the change in "include/linux/pci_ids.h", that
+> the other patches depend on. How to coordinate among the subsystems?
+> 
+> I don't mind taking the entire (v1) series with the Acks from the
+> tty/serial and parport maintainers, or give my Acked-by to upstream
+> via their trees.
 
-What does "manually" mean here? I guess "setting it up by hand", but a
-distribution may provide a package for that (e.g. `rust-1.62-src` in
-Ubuntu), so it is essentially the same as with `rustup` in that case
-(i.e. when the distribution provides the means via the package
-manager).
+Add tty and parport maintainers to this thread.
 
-> standalone installer. Currently, the documentation suggests cloning the
-> 'rust' repository to obtain these sources, but this is quite slow (on
-> the order of a few minutes).
->
-> This patch changes this documentation to suggest using the source
-> tarball instead, which includes only needed information (<5M) and is
-> significantly faster to download. This is more in line with what
-> 'rustup' does.
-
-If I recall correctly, the idea with the clone was to easily change
-the tag when migrating to another version (assuming the base path does
-not need to change across versions). But the tarball approach is
-likely better anyway, especially for the majority of users.
-
-> Signed-off-by: Trevor Gross <tmgross@umich.edu>
-
-It may be nice to add `Link:
-https://github.com/Rust-for-Linux/linux/pull/1024`, but I can do that
-on my side.
-
-In addition, commit messages should describe the changes in imperative
-mood. Many commits do not follow that convention, but it is what the
-kernel docs say, so we should try to adhere to it if possible.
-
-> -Otherwise, if a standalone installer is used, the Rust repository may be=
- cloned
-> -into the installation folder of the toolchain::
-> +Otherwise, if a standalone installer is used, the Rust source tree may b=
-e
-> +downloaded into the toolchain's installation folder::
-
-Is the rewording (i.e. the Saxon genitive change) expected? Not a big
-deal, of course -- I am mentioning it since, in general, all changes
-should be mentioned so that that they are expected, e.g. with a quick
-"and improve the wording while at it".
-
-Cheers,
-Miguel
+I'd like to ask other maintainers' opinion as I'm not sure which option
+is better and I had no similar experience before. 
+ 
+>> Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+>> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+>> ---
+>>  drivers/net/can/sja1000/ems_pci.c | 6 +-----
+>>  include/linux/pci_ids.h           | 4 ++++
+>>  2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> Marc
+> 
