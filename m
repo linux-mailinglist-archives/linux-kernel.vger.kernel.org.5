@@ -2,157 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC5175A6CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D5175A6CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbjGTGp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
+        id S230158AbjGTGqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbjGTGpS (ORCPT
+        with ESMTP id S229656AbjGTGqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:45:18 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E25B268C;
-        Wed, 19 Jul 2023 23:45:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689835517; x=1721371517;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=TfkzamveMbxl7osZRf/DBt0QPKBNI6ZOlRULHeBX3RI=;
-  b=EQenF/8dkNkt+AT4vyXKxEuDvWkGcdmVeRix2H+i20u9FkNMNAYQoIXS
-   4iG1W6FMsqClzffE+EN2lAucP7OeigR5Gh9LaBLi9byJcVpLwIkt/Bu9a
-   6z/dV8G2YSAs6jJdn7Z2lBuZVmVNR2To5ynHxjkG4MX762YagyX3WPuT0
-   KU46lJ3r1lbGhD2boxKdFEfZPeiR6YWZ0BDQnSrkN4F5y7Tv8DCQgC4yj
-   2wAwDsb7Vjo4juwo58k3htCXRE45nC+Axh8G+uM6SdK/XpiB77xRiPKpZ
-   PyEOQWa/fS+XLDC2d5/Sx04LMWZGoId5s1ajEYJwcRde/m3F9yxTl1IN1
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="356614779"
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="356614779"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 23:45:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="674584718"
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="674584718"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.32.109])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 23:45:05 -0700
-Message-ID: <ff06bd46-bf43-d2dc-751f-47f41ccc1821@intel.com>
-Date:   Thu, 20 Jul 2023 09:44:56 +0300
+        Thu, 20 Jul 2023 02:46:11 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9041FD7
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:46:10 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id d2e1a72fcca58-666e6ecb52dso243441b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689835570; x=1692427570;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:date:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Qgqhs/1lTyAbPO02GYGHlDlSU1g7wtuCLpVWkMtjYf0=;
+        b=gK/yn8maJ3MZp6CQUIAEcUT9MWu/7c9O5zZ+YCJ1pu+jAlq4c43AZWLBdZ9vvrX5QN
+         hrPcCHgrFxNZTHxwm4wFMnzfO0GfzI2CHYWc0avb1j9tXydTURfGjLVAJNkuKIY0+wiY
+         egm7tQqBxZDN7Ee98Pd5Sqc46N/w4egAWWmmN+oS0iZtFd5ojERsHyVa2TsW/Ib9KfRg
+         OoyBmi+Sa06WBmrH/drHEur0pMf7u4a0Kmn8QtaAvQNSXMGqYFnAzLyicqJjOPbmRIk6
+         qNus9yTF8ytvNRAaulC0r59A9MaEHpZyw/jv2DgVOHBLziHH2yVQqH/py1zR9y7DNNDO
+         9SCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689835570; x=1692427570;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:cc:to:date:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Qgqhs/1lTyAbPO02GYGHlDlSU1g7wtuCLpVWkMtjYf0=;
+        b=OUeuZJsJZkByvIqzi8XNgBegNjikinoKZG745ckjdt7RVlpIMhebUwKG5j8aH1X7YH
+         ER3AvOAWzLRp62lIv7zvgaAfK/3xYnfmdd5uCLxjtdFzlyzX5Hsa7i7foKUP7X8Rz6aP
+         C+yfELTVrh9eJHO/cTSoO2jAfBa2IcRC5TyRKADbIbgJayXT+5F5Et6NzzOzr/WXAm4c
+         /tuy3ral6TDYOs3EbeSiEb7aX1N/CbztIwxXs3A3UqOS1W6S7h6vd+OliCqW9IUQS1G8
+         t4Sbz1SBnMQJcXGR7OoGfAMMEUdjdTAbXRVqW1KTa4o1k8IgNzQy5RWXT9YSyebuJOd2
+         bMQA==
+X-Gm-Message-State: ABy/qLagSedwliOaNZI4HJeRbTl/6VpvbNsuRdDKW6rU/1nICA0fgiaT
+        lRX/5W66Pqcu4xHyLus2Wak=
+X-Google-Smtp-Source: APBJJlHwiV2jMn0EixFhhaqW77Z1RHimnV/10+I0waoX2pIkB3VdJxUPO4dmUTSnX5gjdF3cyZWMwg==
+X-Received: by 2002:a05:6a20:6a22:b0:134:d4d3:f0a7 with SMTP id p34-20020a056a206a2200b00134d4d3f0a7mr11293569pzk.9.1689835570008;
+        Wed, 19 Jul 2023 23:46:10 -0700 (PDT)
+Received: from [127.0.0.1] ([212.107.28.54])
+        by smtp.gmail.com with ESMTPSA id d7-20020a170902728700b001b8a3729c23sm450389pll.17.2023.07.19.23.46.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 23:46:09 -0700 (PDT)
+From:   Celeste Liu <coelacanthushex@gmail.com>
+X-Google-Original-From: Celeste Liu <CoelacanthusHex@gmail.com>
+Date:   Thu, 20 Jul 2023 14:46:03 +0800
+To:     =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Andreas Schwab <schwab@suse.de>
+CC:     Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Felix Yan <felixonmars@archlinux.org>,
+        Ruizhe Pan <c141028@gmail.com>,
+        Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
+Subject: Re: [PATCH v3] riscv: entry: set a0 = -ENOSYS only when syscall != -1
+User-Agent: K-9 Mail for Android
+In-Reply-To: <878rbbkgqo.fsf@all.your.base.are.belong.to.us>
+References: <20230718210037.250665-1-CoelacanthusHex@gmail.com> <mvmo7k8cqns.fsf@suse.de> <878rbbkgqo.fsf@all.your.base.are.belong.to.us>
+Message-ID: <54D8BFF7-C4D2-417E-B18C-62B5DB17B51B@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH] mmc: core: Remove FW revision from CID check
-Content-Language: en-US
-To:     Wenchao Chen <wenchao.chen666@gmail.com>
-Cc:     Wenchao Chen <wenchao.chen@unisoc.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhenxiong.lai@unisoc.com, chunyan.zhang@unisoc.com,
-        yuelin.tang@unisoc.com
-References: <20230718011504.10947-1-wenchao.chen@unisoc.com>
- <b4ef97ba-440a-2641-0811-bb05e630ccb1@intel.com>
- <CA+Da2qxOhK7Uc8_ONVgkR=3pTnTo7KgcJi-yS3Cv730+J0pAxA@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CA+Da2qxOhK7Uc8_ONVgkR=3pTnTo7KgcJi-yS3Cv730+J0pAxA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/23 05:46, Wenchao Chen wrote:
-> On Tue, Jul 18, 2023 at 2:13 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+On July 20, 2023 12:28:47 AM GMT+08:00, "Bj=C3=B6rn T=C3=B6pel" <bjorn@kern=
+el=2Eorg> wrote:
+>Andreas Schwab <schwab@suse=2Ede> writes:
+>
+>> On Jul 19 2023, Celeste Liu wrote:
 >>
->> On 18/07/23 04:15, Wenchao Chen wrote:
->>> When the card is reset, mmc_card_init() will check if this
->>> card is the previous card by comparing the CID.
->>>
->>> If the firmware is upgraded, the product version may change,
->>> so we remove the product version from the CID check.
+>>> @@ -308,7 +312,7 @@ asmlinkage __visible __trap_section void do_trap_e=
+call_u(struct pt_regs *regs)
+>>> =20
+>>>  		if (syscall < NR_syscalls)
+>>>  			syscall_handler(regs, syscall);
+>>> -		else
+>>> +		else if ((long)syscall !=3D -1L)
 >>
->> What is the use-case for this?  I would have thought it is safer
->> not to assume anything about the card after the firmware has been
->> upgraded.
->>
-> Hi adrian
->     Understood, but we have case:
->     1.Before the firmware upgrade
->         [T5745@C0] mmc0 oldcard raw->cid[2]: 32691160, raw->cid[3]: d9241800
->         PRV=69
->     2.After the firmware upgrade
->         [T5745@C0] mmc0 cid[2]: 32011160 cid[3]: d9241800
->         PRV=01
->     If the PRV is not excluded in the CID check, then the mmc
-> initialization will fail after the mmc reset.
->     In addition, CRC is excluded because some controllers support
-> SDHCI_QUIRK2_RSP_136_HAS_CRC.
+>> You can also use syscall !=3D -1UL or even syscall !=3D -1=2E
+>
+>The former is indeed better for the eyes! :-) The latter will get a
+>-Wsign-compare warning, no?
+>
+>
+>Bj=C3=B6rn
 
-I do not know what others are doing in this regard, nor what
-circumstances are leading to the re-initialization.
-
-Presumably a clean re-initialization could be done by
-unbinding and rebinding the host controller.
-
-> 
->>>
->>> Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
->>> ---
->>>  drivers/mmc/core/mmc.c | 18 +++++++++++++++++-
->>>  1 file changed, 17 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
->>> index 89cd48fcec79..32a73378d5c3 100644
->>> --- a/drivers/mmc/core/mmc.c
->>> +++ b/drivers/mmc/core/mmc.c
->>> @@ -32,6 +32,9 @@
->>>  #define MIN_CACHE_EN_TIMEOUT_MS 1600
->>>  #define CACHE_FLUSH_TIMEOUT_MS 30000 /* 30s */
->>>
->>> +#define MMC_CID_PRV_MASK GENMASK(23, 16)
->>> +#define MMC_CID_CRC_MASK GENMASK(7, 0)
->>> +
->>>  static const unsigned int tran_exp[] = {
->>>       10000,          100000,         1000000,        10000000,
->>>       0,              0,              0,              0
->>> @@ -126,6 +129,19 @@ static int mmc_decode_cid(struct mmc_card *card)
->>>       return 0;
->>>  }
->>>
->>> +static int mmc_check_cid(u32 *cid, u32 *raw_cid)
->>> +{
->>> +     /*
->>> +      * When comparing CID, we need to remove the product
->>> +      * version (Field PRV, offset 55:48) and CRC. Because
->>> +      * the product version will change when the firmware
->>> +      * is upgraded. Also, the new CRC is different.
->>> +      */
->>> +     return cid[0] != raw_cid[0] || cid[1] != raw_cid[1] ||
->>> +             (cid[2] & ~MMC_CID_PRV_MASK) != (raw_cid[2] & ~MMC_CID_PRV_MASK) ||
->>> +             (cid[3] & ~MMC_CID_CRC_MASK) != (raw_cid[3] & ~MMC_CID_CRC_MASK);
->>> +}
->>> +
->>>  static void mmc_set_erase_size(struct mmc_card *card)
->>>  {
->>>       if (card->ext_csd.erase_group_def & 1)
->>> @@ -1640,7 +1656,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
->>>               goto err;
->>>
->>>       if (oldcard) {
->>> -             if (memcmp(cid, oldcard->raw_cid, sizeof(cid)) != 0) {
->>> +             if (mmc_check_cid(cid, oldcard->raw_cid)) {
->>>                       pr_debug("%s: Perhaps the card was replaced\n",
->>>                               mmc_hostname(host));
->>>                       err = -ENOENT;
->>
-
+Well, that's true=2E And I just found out that by C standards, converting
+ulong to long is implementation-defined behavior, unlike long to ulong
+which is well-defined=2E So it is really better than (long)syscall !=3D -1=
+L=2E
