@@ -2,114 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F07B75A6B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A1275A6BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbjGTGks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
+        id S230400AbjGTGl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:41:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbjGTGkb (ORCPT
+        with ESMTP id S230464AbjGTGlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:40:31 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003DC2711
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:39:53 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R631d4c6tzBRDsK
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:39:01 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689835141; x=1692427142; bh=QQ4F6/NsViTAdHqa0Q2JmIWKtN/
-        0Miytj1rY2XW/4Sc=; b=L65OXSFRzV/28Rcz8ukL9Grtu/e4CE0SCtv3s7IRxNn
-        huTl65AHbBsIhB39mVFP6UUv4N6fsVGyJP/y5IBiGX5LQbZaTRO1S+7/FhrwLLYG
-        MSmULSuu5hePloKlNYd5ncS8dmgdwaIp1JNHW6HkPVHRfI5wBTPjG+F9egUxaUG2
-        peA8a++blIQxq4Rr1HfKTo9aKDfd9CrGkCDMoFAudkdLpPGCwP8j0JHYHyy0qBFL
-        iIAoNf7WG/m0Fvml1x1TKOLLMwhVr9S6ghkZ8yzxLOJyShlbZfnynb/AqaY94O8z
-        cy9mAOcuMo6q99XQwDqWHro6iPcfuDdTuAJJBAmluqg==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id tZaEPnkX6t0e for <linux-kernel@vger.kernel.org>;
-        Thu, 20 Jul 2023 14:39:01 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R631d2F0bzBRDsD;
-        Thu, 20 Jul 2023 14:39:01 +0800 (CST)
+        Thu, 20 Jul 2023 02:41:08 -0400
+Received: from out199-7.us.a.mail.aliyun.com (out199-7.us.a.mail.aliyun.com [47.90.199.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D562C3A87;
+        Wed, 19 Jul 2023 23:40:29 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VnottGz_1689835157;
+Received: from 30.97.48.52(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VnottGz_1689835157)
+          by smtp.aliyun-inc.com;
+          Thu, 20 Jul 2023 14:39:18 +0800
+Message-ID: <3a8b32da-0376-3633-b7da-0273da945af1@linux.alibaba.com>
+Date:   Thu, 20 Jul 2023 14:39:37 +0800
 MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 14:39:01 +0800
-From:   sunran001@208suo.com
-To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: aic7xxx: add missing spaces
-In-Reply-To: <20230720063719.2618-1-xujianghui@cdjrlc.com>
-References: <20230720063719.2618-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <e8abfa9b5579c6ed85ed35662bac290b@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] gpio: eic-sprd: remove unneeded platform_set_drvdata()
+ call
+To:     Andrei Coardos <aboutphysycs@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Cc:     zhang.lyra@gmail.com, orsonzhai@gmail.com, andy@kernel.org,
+        brgl@bgdev.pl, linus.walleij@linaro.org,
+        Alexandru Ardelean <alex@shruggie.ro>
+References: <20230717121004.5205-1-aboutphysycs@gmail.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230717121004.5205-1-aboutphysycs@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing spaces to clear checkpatch errors.
 
-ERROR: space required before the open parenthesis '('
-ERROR: spaces required around that '=' (ctx:VxW)
-ERROR: space required after that ',' (ctx:VxV)
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  drivers/scsi/aic7xxx/aicasm/aicasm.c | 8 ++++----
-  1 file changed, 4 insertions(+), 4 deletions(-)
+On 7/17/2023 8:10 PM, Andrei Coardos wrote:
+> The platform_set_drvdata() call was never used, ever since the driver was
+> originally added.
+> It looks like this copy+paste left-over. Possibly the author copied from a
+> driver that had this line, but also had a remove hook.
+> 
+> Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
 
-diff --git a/drivers/scsi/aic7xxx/aicasm/aicasm.c 
-b/drivers/scsi/aic7xxx/aicasm/aicasm.c
-index cd692a4c5f85..a22f0fffc9b9 100644
---- a/drivers/scsi/aic7xxx/aicasm/aicasm.c
-+++ b/drivers/scsi/aic7xxx/aicasm/aicasm.c
-@@ -396,7 +396,7 @@ output_code()
+LGTM. Thanks.
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-  	for (cur_node = SLIST_FIRST(&patch_functions);
-  	     cur_node != NULL;
--	     cur_node = SLIST_NEXT(cur_node,links)) {
-+	     cur_node = SLIST_NEXT(cur_node, links)) {
-  		fprintf(ofile,
-  "static %spatch_func_t %spatch%d_func;\n"
-  "\n"
-@@ -424,7 +424,7 @@ output_code()
-
-  	for (cur_patch = STAILQ_FIRST(&patches);
-  	     cur_patch != NULL;
--	     cur_patch = STAILQ_NEXT(cur_patch,links)) {
-+	     cur_patch = STAILQ_NEXT(cur_patch, links)) {
-  		fprintf(ofile, "%s\t{ %spatch%d_func, %d, %d, %d }",
-  			cur_patch == STAILQ_FIRST(&patches) ? "" : ",\n",
-  			prefix,
-@@ -638,7 +638,7 @@ output_listing(char *ifilename)
-  		instrptr++;
-  	}
-  	/* Dump the remainder of the file */
--	while(fgets(buf, sizeof(buf), ifile) != NULL)
-+	while (fgets(buf, sizeof(buf), ifile) != NULL)
-  		fprintf(listfile, "             %s", buf);
-
-  	fclose(ifile);
-@@ -747,7 +747,7 @@ cs_alloc()
-  {
-  	critical_section_t *new_cs;
-
--	new_cs= (critical_section_t *)malloc(sizeof(critical_section_t));
-+	new_cs = (critical_section_t *)malloc(sizeof(critical_section_t));
-  	if (new_cs == NULL)
-  		stop("Unable to malloc critical_section object", EX_SOFTWARE);
-  	memset(new_cs, 0, sizeof(*new_cs));
+> ---
+>   drivers/gpio/gpio-eic-sprd.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
+> index 84352a6f4973..53db88ae2a20 100644
+> --- a/drivers/gpio/gpio-eic-sprd.c
+> +++ b/drivers/gpio/gpio-eic-sprd.c
+> @@ -653,7 +653,6 @@ static int sprd_eic_probe(struct platform_device *pdev)
+>   		return ret;
+>   	}
+>   
+> -	platform_set_drvdata(pdev, sprd_eic);
+>   	return 0;
+>   }
+>   
