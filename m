@@ -2,59 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2491275B96B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBF875B96F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbjGTVQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 17:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
+        id S230185AbjGTVQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 17:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGTVQP (ORCPT
+        with ESMTP id S229868AbjGTVQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 17:16:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDCCE52;
-        Thu, 20 Jul 2023 14:16:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mAIECjlxNyDVRvgqQU5JRwDkhf3FG1hvVqeRd1UnP7c=; b=Zv+zeJ7FCrZRIJyvDdKRp/HRy/
-        pRg40dFXS20Df12rafoi9ZXxkg3xB4nIeQ0TWxzJp4XJrCqN6YWDDWy8W0Uuth8hz/4mw+S4tgQ4J
-        cZNpNCIszGnnAZeAf7oCQyDDLSR0XTWX3+05ZarrfOc0Zm/B3ve6E6YDj3XBsbjtaQ/bsbCSKtVHT
-        tfYOoYdyPtiqrw5sDcic36jcZOrC4MwdvCZloYoDd2Rmze4tEDJlT6WJP1QEA77ifpMlF3BZ2WcqM
-        I0jrz0fNd7UeW6TzsnZvg0OqYJ3raZm/whDktBvOUVuGhoDtTJnGyuIm+4Ro2dk9T9i8P0ZA9d9FB
-        xiARg0yg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qMb06-000SgR-Fz; Thu, 20 Jul 2023 21:15:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8469330020C;
-        Thu, 20 Jul 2023 23:15:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6321E31B1759F; Thu, 20 Jul 2023 23:15:53 +0200 (CEST)
-Date:   Thu, 20 Jul 2023 23:15:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 1/1] x86/hyperv: Disable IBT when hypercall page lacks
- ENDBR instruction
-Message-ID: <20230720211553.GA3615208@hirez.programming.kicks-ass.net>
-References: <1689885237-32662-1-git-send-email-mikelley@microsoft.com>
+        Thu, 20 Jul 2023 17:16:31 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492E52D41
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:16:26 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3a3b7fafd61so883501b6e.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:16:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1689887785; x=1690492585;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qG+ThjVmfgJOgCEH3FGED5B6h6SrS5o6Axcjc3bwSOI=;
+        b=PlsOhuAwUTnsUHdCrAacS252UIxiMGOunaN7sjGqk6IdEDvWSfDkeAaUkUyPQ8TsWM
+         dSwDx1M0yS6cP18SL/J1e1PXgjFT+K9g6o5oDfjX5KtL6NSbkgGERWclg4dqpb5RXbRk
+         mgSxD4tswhi0vnWZ7QVrXYqDP0D8ob9/9QUQ6YAxjdxcpwGDgQkVMpn2oIljVP+8n250
+         Cvgx17BBdzoeGzK2qImORkfKCzx9ew4k1bBToLGVABe29MENH0fq/kJj3qouvSeuyZdO
+         /Z1VN2fJikHf9jRa4qnEkTjqz53WsvY8WrwXfru0TXBwVShYekLaJiGmdg8c8HjFud4b
+         s4CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689887785; x=1690492585;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qG+ThjVmfgJOgCEH3FGED5B6h6SrS5o6Axcjc3bwSOI=;
+        b=SBvFxijnUQ8S+a+bQUq9URp+u05wz8iO9KFkulwaHvvoWt4/Vl5n5Xp2HBacgkGcpT
+         kVXWcJykDvvbWdZ1y/Xu9JcddzZSvG1D3ZqUEfxMnIeAGBXC3ZitZKz2EfrvjA9qDSbf
+         7NUGWwZJi+JZ7n8LGEY7y69EClp75TPfOz7Ezl7SV4jxYwWoJvqgheSKUJ2H5XVMb29R
+         86beDl566MevMUdxbss7Nak5xLs2XZnhV2XqpX1iRAmOoQMlHRWg4n2cCGukTCmLCZ05
+         DiNg3VUvR3Y7lH/LH+HQGvuIC6zHotjO9VkNdzXDIJWXHkGLzQ0epZixbamOOEFo56id
+         3Law==
+X-Gm-Message-State: ABy/qLZ7N0P1nZ8gTnvSZ8zJPRgOych0eNPKF13gCL3tLvABeCmRkUTS
+        +cHWep9IxZYAy2eauHlxLeZ9l/eWwiKwJIHxhFix
+X-Google-Smtp-Source: APBJJlEhgxTXc1qyzkAvHpHuXwIG3OtHxUZ6QwrqTdkR8L2OyhsuJu/aP2P2r4S2KF4Tr6uErZhsPZjFCuLra+hXwe4=
+X-Received: by 2002:aca:1218:0:b0:3a4:8e9b:e5cb with SMTP id
+ 24-20020aca1218000000b003a48e9be5cbmr84720ois.1.1689887785358; Thu, 20 Jul
+ 2023 14:16:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1689885237-32662-1-git-send-email-mikelley@microsoft.com>
+References: <20230719075127.47736-1-wangkefeng.wang@huawei.com>
+ <20230719075127.47736-4-wangkefeng.wang@huawei.com> <CAJ2a_DfGvPeDuN38UBXD4f2928n9GZpHFgdiPo9MoSAY7YXeOg@mail.gmail.com>
+ <dc8223db-b4ac-7bee-6f89-63475a7dcaf8@huawei.com> <CAHC9VhQzJ3J0kEymDUn3i+dnP_34GMNRjaCHXc4oddUCFb0Ygw@mail.gmail.com>
+ <1e839238-c78d-71e0-28ae-7efff0e04953@huawei.com>
+In-Reply-To: <1e839238-c78d-71e0-28ae-7efff0e04953@huawei.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 20 Jul 2023 17:16:14 -0400
+Message-ID: <CAHC9VhRBxQmxegjLQ73J7zMOTpsOOBTj9PwZ6BptV=6ToC+1BA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] selinux: use vma_is_initial_stack() and vma_is_initial_heap()
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+        selinux@vger.kernel.org,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,72 +78,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 01:33:57PM -0700, Michael Kelley wrote:
-> On hardware that supports Indirect Branch Tracking (IBT), Hyper-V VMs
-> with ConfigVersion 9.3 or later support IBT in the guest. However,
-> current versions of Hyper-V have a bug in that there's not an ENDBR64
-> instruction at the beginning of the hypercall page. 
+On Thu, Jul 20, 2023 at 4:28=E2=80=AFAM Kefeng Wang <wangkefeng.wang@huawei=
+.com> wrote:
+> On 2023/7/19 23:25, Paul Moore wrote:
+> > On Wed, Jul 19, 2023 at 6:23=E2=80=AFAM Kefeng Wang <wangkefeng.wang@hu=
+awei.com> wrote:
+> >> On 2023/7/19 17:02, Christian G=C3=B6ttsche wrote:
+> >>> On Wed, 19 Jul 2023 at 09:40, Kefeng Wang <wangkefeng.wang@huawei.com=
+> wrote:
+> >>>>
+> >>>> Use the helpers to simplify code.
+> >>>>
+> >>>> Cc: Paul Moore <paul@paul-moore.com>
+> >>>> Cc: Stephen Smalley <stephen.smalley.work@gmail.com>
+> >>>> Cc: Eric Paris <eparis@parisplace.org>
+> >>>> Acked-by: Paul Moore <paul@paul-moore.com>
+> >>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> >>>> ---
+> >>>>    security/selinux/hooks.c | 7 ++-----
+> >>>>    1 file changed, 2 insertions(+), 5 deletions(-)
+> >>>>
+> >>>> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> >>>> index d06e350fedee..ee8575540a8e 100644
+> >>>> --- a/security/selinux/hooks.c
+> >>>> +++ b/security/selinux/hooks.c
+> >>>> @@ -3762,13 +3762,10 @@ static int selinux_file_mprotect(struct vm_a=
+rea_struct *vma,
+> >>>>           if (default_noexec &&
+> >>>>               (prot & PROT_EXEC) && !(vma->vm_flags & VM_EXEC)) {
+> >>>>                   int rc =3D 0;
+> >>>> -               if (vma->vm_start >=3D vma->vm_mm->start_brk &&
+> >>>> -                   vma->vm_end <=3D vma->vm_mm->brk) {
+> >>>> +               if (vma_is_initial_heap(vma)) {
+> >>>
+> >>> This seems to change the condition from
+> >>>
+> >>>       vma->vm_start >=3D vma->vm_mm->start_brk && vma->vm_end <=3D vm=
+a->vm_mm->brk
+> >>>
+> >>> to
+> >>>
+> >>>       vma->vm_start <=3D vma->vm_mm->brk && vma->vm_end >=3D vma->vm_=
+mm->start_brk
+> >>>
+> >>> (or AND arguments swapped)
+> >>>
+> >>>       vma->vm_end >=3D vma->vm_mm->start_brk && vma->vm_start <=3D vm=
+a->vm_mm->brk
+> >>>
+> >>> Is this intended?
+> >>
+> >> The new condition is to check whether there is intersection between
+> >> [startbrk,brk] and [vm_start,vm_end], it contains orignal check, so
+> >> I think it is ok, but for selinux check, I am not sure if there is
+> >> some other problem.
+> >
+> > This particular SELinux vma check is see if the vma falls within the
+> > heap; can you confirm that this change preserves this?
+>
+> Yes, within is one case of new vma scope check.
 
-Whoops :/
+Thanks for the confirmation.
 
-> Since hypercalls are
-> made with an indirect call to the hypercall page, all hypercall attempts
-> fail with an exception and Linux panics.
-> 
-> A Hyper-V fix is in progress to add ENDBR64. But guard against the Linux
-> panic by clearing X86_FEATURE_IBT if the hypercall page doesn't start
-> with ENDBR. The VM will boot and run without IBT.
-> 
-> If future Linux 32-bit kernels were to support IBT, additional hypercall
-> page hackery would be needed to make IBT work for such kernels in a
-> Hyper-V VM.
-
-There are currently no plans to add IBT support to 32bit.
-
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
-> ---
->  arch/x86/hyperv/hv_init.c | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index 6c04b52..5cbee24 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -14,6 +14,7 @@
->  #include <asm/apic.h>
->  #include <asm/desc.h>
->  #include <asm/sev.h>
-> +#include <asm/ibt.h>
->  #include <asm/hypervisor.h>
->  #include <asm/hyperv-tlfs.h>
->  #include <asm/mshyperv.h>
-> @@ -472,6 +473,26 @@ void __init hyperv_init(void)
->  	}
->  
->  	/*
-> +	 * Some versions of Hyper-V that provide IBT in guest VMs have a bug
-> +	 * in that there's no ENDBR64 instruction at the entry to the
-> +	 * hypercall page. Because hypercalls are invoked via an indirect call
-> +	 * to the hypercall page, all hypercall attempts fail when IBT is
-> +	 * enabled, and Linux panics. For such buggy versions, disable IBT.
-> +	 *
-> +	 * Fixed versions of Hyper-V always provide ENDBR64 on the hypercall
-> +	 * page, so if future Linux kernel versions enable IBT for 32-bit
-> +	 * builds, additional hypercall page hackery will be required here
-> +	 * to provide an ENDBR32.
-> +	 */
-> +#ifdef CONFIG_X86_KERNEL_IBT
-> +	if (cpu_feature_enabled(X86_FEATURE_IBT) &&
-> +	    *(u32 *)hv_hypercall_pg != gen_endbr()) {
-> +		setup_clear_cpu_cap(X86_FEATURE_IBT);
-> +		pr_info("Hyper-V: Disabling IBT because of Hyper-V bug\n");
-> +	}
-> +#endif
-
-pr_warn() perhaps?
-
-Other than that, this seems fairly straight forward. One thing I
-wondered about; wouldn't it be possible to re-write the indirect
-hypercall thingies to a direct call? I mean, once we have the hypercall
-page mapped, the address is known right?
+--=20
+paul-moore.com
