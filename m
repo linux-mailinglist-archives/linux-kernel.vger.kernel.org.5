@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 303BF75B6A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A7575B6A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbjGTSXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 14:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58336 "EHLO
+        id S231501AbjGTSYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 14:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231383AbjGTSXh (ORCPT
+        with ESMTP id S231519AbjGTSYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:23:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51612272A;
-        Thu, 20 Jul 2023 11:23:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C5DB561BD6;
-        Thu, 20 Jul 2023 18:23:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 774AEC433C9;
-        Thu, 20 Jul 2023 18:23:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689877413;
-        bh=jKKeU03qB6wSaY/9QeYm5xXkIiRbAsA5WZOfWdz1d20=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=hdmDeHyOF6rP5yExA2dI53Zgug7c4I+C7VzuO/2/wvdlJxUg6eKfw6MWKux+kCKjr
-         lucoK2ctTkb69VEFqUvFb2zLm3I4ut0luBjAIVxgdICnIvHXI3ilJZ0nstGbx3i3yJ
-         gydyR1NamB1a55v9lyp/9Qov08Yda0bwZ2ZQKjeYyc4UTHTSI9eFdKkzRSH1YBFe7C
-         QUM2NDoUf9XVAwsTHVRC5oKNTvJopcGoj3xLgDWAUFvmHfd1oG603mL2D53Tc60945
-         Gj4V9AIzFJfDEYWcHpnmjn6YL8/Hhxy7M7YpuKiTbsWsx9xgQUVhEUJs7LX3g3FMy3
-         bcTMJgDJhtwAw==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Thu, 20 Jul 2023 14:23:21 -0400
-Subject: [PATCH v2 2/2] nfsd: remove unsafe BUG_ON from set_change_info
+        Thu, 20 Jul 2023 14:24:20 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0DA2D5D;
+        Thu, 20 Jul 2023 11:23:59 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-307d20548adso911720f8f.0;
+        Thu, 20 Jul 2023 11:23:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689877438; x=1690482238;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tx9RtKQ03Nd1GuwyZE0noO7TOti2z3ne8no8zAe784s=;
+        b=jmdcc9prvj3Nk1J8/5XJfiTTkfWYn+BjtTwbUnUVLt1Ytq69Ux/NMf0BQdehKwxqKN
+         uKi2uUicZtqCUOMh4KB7s91FSaO1IQCYaYUAz4gJ3tHvz6FJT+SNmNn7lg30vlEKXgpf
+         Ti6iXqU1ex9KpgnjF61O36t5WTsPOs2j4XzpipW6qsE0AclZQ/+d5r0zEENIhL4SUDLK
+         pAxBbSDZ0gY/cYNcl7zXioy/ZNAdCz8I1vcQrSk5dvqenGJXh/WGv8LlApTZfMg6sxdi
+         TyCglpVeDQPTBCB/zcM9V4r2miNmJoqlYzn0mtX2NSzFeniY23+XVe6DCNEeJd+CgRhT
+         OefA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689877438; x=1690482238;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tx9RtKQ03Nd1GuwyZE0noO7TOti2z3ne8no8zAe784s=;
+        b=jcx4SejeuNyxCdVhy4XPH3HZQqbZfIHyk1zkhj/BMqnKrQ8pGk7+1oKzTd67AmciEA
+         u9fVBWAMkMko6pGwhtteT7DseEJqn3XXecjkQa5wAlSbvrmnwZf7P66yWjiPDUiCQLWy
+         XflMZnn/UIo0+IXXXgIU49azFX8Exzg97DXpxGE5CHQp8nGh16i1LY/jcRTG0ZDCp6fJ
+         gDzTYi92iyeu+3W9uEo+knzKuEG5aQ9YI4yPM4MaWfY6X9rJz36Dz9AZdia8ovm6XJpn
+         3hrIJXjCNTld2PBoQ//V0EC8PEy0xeezUK+ZmCW2Vo+HUsGdZxksizQGzz4OV7Fg6fpx
+         rymw==
+X-Gm-Message-State: ABy/qLYjx1PD0CGGc04nqvH0CSQiu17cJs6ayom1hQkGmz1ocLYrg10h
+        oJTdRedKaYnYnO68AimeDZA=
+X-Google-Smtp-Source: APBJJlHyoNH+nfkRuS5hV4IuhlxA0HDhX7nfF0PQfFOI23Z58N69P0JU+5GuxGGQqDB+ciUQvGtasw==
+X-Received: by 2002:a05:6000:ce:b0:317:1911:fd7a with SMTP id q14-20020a05600000ce00b003171911fd7amr2750481wrx.12.1689877437799;
+        Thu, 20 Jul 2023 11:23:57 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id w10-20020adfd4ca000000b003140f47224csm2004755wrk.15.2023.07.20.11.23.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 11:23:57 -0700 (PDT)
+Subject: Re: [PATCH docs v3] docs: maintainer: document expectations of small
+ time maintainers
+To:     Jakub Kicinski <kuba@kernel.org>, corbet@lwn.net
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux@leemhuis.info, kvalo@kernel.org,
+        benjamin.poirier@gmail.com
+References: <20230719183225.1827100-1-kuba@kernel.org>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <50164116-9d12-698d-f552-96b52c718749@gmail.com>
+Date:   Thu, 20 Jul 2023 19:23:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230720-bz2223560-v2-2-070aaf2660b7@kernel.org>
-References: <20230720-bz2223560-v2-0-070aaf2660b7@kernel.org>
-In-Reply-To: <20230720-bz2223560-v2-0-070aaf2660b7@kernel.org>
-To:     Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
-Cc:     Boyang Xue <bxue@redhat.com>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3438; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=jKKeU03qB6wSaY/9QeYm5xXkIiRbAsA5WZOfWdz1d20=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBkuXuiMsg2S8SgxdqtY3Xh7fzaNBidHZ3LVKQWw
- 8REgPndYKSJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZLl7ogAKCRAADmhBGVaC
- FVVqEADN0pNpC9pl2UcTsyIvtNwBpTIRk98fqUkcuK6JLmrwjtjFFWpaxrMcCqaPKqpae68reAf
- q5gInG7ZzJnDdcBmsWAbb+YfzuZw5vuL1KPYXFDsSkQ+I7ftIggjJu8bp8hC5Zb7fnG8UEBk2bV
- ljKhKSja5qIKo8Pf28vEPbj6UEX2/LGHC8XxNcrcOrLgsg3TBdvuv2PCHgz6Oasnimn/Q7pqIaU
- oB7ErmpPrBqS/cJxgxK/6JhYV/Bnhxq5qecp1lZ/e0sFkmirftqXzVbX9Ehm6zC3XUBX2kr9eEe
- fRTXqGhtFqtt9RU+feNY3bV6Cp4kc+YuprG7L8Wc6pcvgdRGWWBMVu9G4HZGTyQWsDwI/MJycQ2
- EMImx1P76f7nMh0mD/M+23iHm9FXuUQ1jEFbKk0KfgCfnPaJ6PFUAb/WNGS+sduLtsvnucHnBO/
- NTMPp2+7XRa+GktVrQRFKrsZYRu8reZYh0Xxq2VLRdBinZ1rc4UU03THl7KgoFbsWPb58gTv3HO
- 8CNDIDdGEP1ouvzfC+xGrhTS49+O2wRkX56n5PvWokFPcOELT29iIAF20uhQqJtg0X1RKnkgHib
- cGGxt2zjFFMFw6WxrYJ95GeGZjUvAxQj7t+k96rjreoJAmYO/caa9BNRzopz1ZXn2nl+IqX7gTm
- 4urwpua1Euy3Pew==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <20230719183225.1827100-1-kuba@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,93 +82,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At one time, nfsd would scrape inode information directly out of struct
-inode in order to populate the change_info4. At that time, the BUG_ON in
-set_change_info made some sense, since having it unset meant a coding
-error.
+On 19/07/2023 19:32, Jakub Kicinski wrote:
+> We appear to have a gap in our process docs. We go into detail
+> on how to contribute code to the kernel, and how to be a subsystem
+> maintainer. I can't find any docs directed towards the thousands
+> of small scale maintainers, like folks maintaining a single driver
+> or a single network protocol.
+> 
+> Document our expectations and best practices. I'm hoping this doc
+> will be particularly useful to set expectations with HW vendors.
+> 
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
 
-More recently, it calls vfs_getattr to get this information, which can
-fail. If that fails, fh_pre_saved can end up not being set. While this
-situation is unfortunate, we don't need to crash the box.
+Thanks for writing this.  One question—
 
-Move set_change_info to nfs4proc.c since all of the callers are there.
-Revise the condition for setting "atomic" to also check for
-fh_pre_saved, and rework the rest to try and handle either flag being
-missing when this occurs.
+> +Reviews
+> +-------
+> +
+> +Maintainers must review *all* patches touching exclusively their drivers,
+> +no matter how trivial. If the patch is a tree wide change and modifies
+> +multiple drivers - whether to provide a review is left to the maintainer.
 
-Reported-by: Boyang Xue <bxue@redhat.com>
-Closes: https://bugzilla.redhat.com/show_bug.cgi?id=2223560
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/nfsd/nfs4proc.c | 31 +++++++++++++++++++++++++++++++
- fs/nfsd/xdr4.h     | 11 -----------
- 2 files changed, 31 insertions(+), 11 deletions(-)
+Does this apply even to "checkpatch cleanup patch spam", where other patches
+ sprayed from the same source (perhaps against other drivers) have already
+ been nacked as worthless churn?  I've generally been assuming I can ignore
+ those, do I need to make sure to explicitly respond with typically a repeat
+ of what's already been said elsewhere?
 
-diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-index 9285e1eab4d5..4467be7d9c2a 100644
---- a/fs/nfsd/nfs4proc.c
-+++ b/fs/nfsd/nfs4proc.c
-@@ -382,6 +382,37 @@ nfsd4_create_file(struct svc_rqst *rqstp, struct svc_fh *fhp,
- 	return status;
- }
- 
-+/**
-+ * set_change_info - set up the change_info4 for a reply
-+ * @cinfo: pointer to nfsd4_change_info to be populated
-+ * @fhp: pointer to svc_fh to use as source
-+ *
-+ * Many operations in NFSv4 require change_info4 in the reply. This function
-+ * populates that from the info that we (should!) have already collected. In
-+ * the event that we didn't get any pre-attrs, just zero out both.
-+ */
-+static void
-+set_change_info(struct nfsd4_change_info *cinfo, struct svc_fh *fhp)
-+{
-+	cinfo->atomic = (u32)(fhp->fh_pre_saved && fhp->fh_post_saved && !fhp->fh_no_atomic_attr);
-+	cinfo->before_change = fhp->fh_pre_change;
-+	cinfo->after_change = fhp->fh_post_change;
-+
-+	/*
-+	 * If fetching the pre-change attributes failed, then we should
-+	 * have already failed the whole operation. We could have still
-+	 * failed to fetch post-change attributes however.
-+	 *
-+	 * The pre field should be set at this point. WARN if it's
-+	 * that's ever not the case. If either value is unset, then just
-+	 * zero out the field since we don't have any other recourse.
-+	 */
-+	if (WARN_ON_ONCE(!fhp->fh_pre_saved))
-+		cinfo->before_change = 0;
-+	if (!fhp->fh_post_saved)
-+		cinfo->after_change = 0;
-+}
-+
- static __be32
- do_open_lookup(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate, struct nfsd4_open *open, struct svc_fh **resfh)
- {
-diff --git a/fs/nfsd/xdr4.h b/fs/nfsd/xdr4.h
-index b2931fdf53be..9e67f63c5f4d 100644
---- a/fs/nfsd/xdr4.h
-+++ b/fs/nfsd/xdr4.h
-@@ -775,17 +775,6 @@ void warn_on_nonidempotent_op(struct nfsd4_op *op);
- 
- #define NFS4_SVC_XDRSIZE		sizeof(struct nfsd4_compoundargs)
- 
--static inline void
--set_change_info(struct nfsd4_change_info *cinfo, struct svc_fh *fhp)
--{
--	BUG_ON(!fhp->fh_pre_saved);
--	cinfo->atomic = (u32)(fhp->fh_post_saved && !fhp->fh_no_atomic_attr);
--
--	cinfo->before_change = fhp->fh_pre_change;
--	cinfo->after_change = fhp->fh_post_change;
--}
--
--
- bool nfsd4_mach_creds_match(struct nfs4_client *cl, struct svc_rqst *rqstp);
- bool nfs4svc_decode_compoundargs(struct svc_rqst *rqstp, struct xdr_stream *xdr);
- bool nfs4svc_encode_compoundres(struct svc_rqst *rqstp, struct xdr_stream *xdr);
-
--- 
-2.41.0
-
+-ed
