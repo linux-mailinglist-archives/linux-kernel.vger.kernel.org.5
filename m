@@ -2,87 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A805B75BA43
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36A175BA45
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbjGTWGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 18:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
+        id S229905AbjGTWHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 18:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjGTWGi (ORCPT
+        with ESMTP id S229487AbjGTWHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:06:38 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96755B3;
-        Thu, 20 Jul 2023 15:06:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1689890790;
-        bh=8PjLe55C10eFLpdIOnx+lNPejBKkr1eSfY6bH407UWU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tO1oUVrIrpYaXvEgtGv83tj0ssuOTJJOTpP16CA/pbAbxFpqVUlBplZLVSDGPbQNP
-         lpgHDzWktYCFlqso4dAjqDh71L8h1xYEh+qDQDsJMIZNYEMzVET2fn+XbZ0W3elA/G
-         lsTotNvmwyErMVVZJdW9f7nmwIqCr5QvTrjj0wwxZLGedG7TSZmksY69+JVnd5lagg
-         IMwb3VoJf5KhIjyZMNghC5/VoGpak3myXRYHew5nK4APlQmEMCg3s418TgZ4GiuAB8
-         Rk23KjcuhonGR97GaHZ9/J2+y7fqL1bHk3i+SQE4mJsGuzhyX6Aay65mCYomOmRy5/
-         09+TrU05M35GQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Thu, 20 Jul 2023 18:07:31 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20119B3;
+        Thu, 20 Jul 2023 15:07:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R6Rbp3knsz4wqW;
-        Fri, 21 Jul 2023 08:06:30 +1000 (AEST)
-Date:   Fri, 21 Jul 2023 08:06:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Teigland <teigland@redhat.com>
-Cc:     Alexander Aring <aahringo@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the dlm tree
-Message-ID: <20230721080618.0dcdd503@canb.auug.org.au>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3A62D21DC2;
+        Thu, 20 Jul 2023 22:07:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689890843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wH0mag0dNrA3/nZZ/acE5Q2iSsRcVegnYHZodYGffs4=;
+        b=prWEn9xRvLEtC+MfBzb6XEqwAzK57atOyC9LvVU07n9nSKxOPNyLFcwT/HMAwKwGwBOZzS
+        gVwOrx0pLpzboQRaZBFDqkaCDM65AIhPs/UBmcwmPFJYv8OuQixMXCfzTVk6YB6+HhZRlE
+        9WgmSe3NSZgdufrlyE4qmWWMzLzaFVQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689890843;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wH0mag0dNrA3/nZZ/acE5Q2iSsRcVegnYHZodYGffs4=;
+        b=Z89wmJkUCylKd7agLmssa8NIJPa5g26qp7dQiKwGh8YGmZf5C3cOn9aE/DgtaWdrDjBGFR
+        6wTfIgLdHhHXNqCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B9B5138EC;
+        Thu, 20 Jul 2023 22:07:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GEMiBxiwuWSfSQAAMHmgww
+        (envelope-from <neilb@suse.de>); Thu, 20 Jul 2023 22:07:20 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/I+h4JHv=bn+1YA26S+wPJ9m";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Jeff Layton" <jlayton@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     "Chuck Lever" <chuck.lever@oracle.com>,
+        "Olga Kornievskaia" <kolga@netapp.com>,
+        "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nfsd: add a MODULE_DESCRIPTION
+In-reply-to: <20230720133454.38695-1-jlayton@kernel.org>
+References: <20230720133454.38695-1-jlayton@kernel.org>
+Date:   Fri, 21 Jul 2023 08:07:16 +1000
+Message-id: <168989083691.11078.1519785551812636491@noble.neil.brown.name>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/I+h4JHv=bn+1YA26S+wPJ9m
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 20 Jul 2023, Jeff Layton wrote:
+> I got this today from modpost:
+>=20
+>     WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nfsd/nfsd.o
+>=20
+> Add a module description.
+>=20
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/nfsd/nfsctl.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
+> index 1b8b1aab9a15..7070969a38b5 100644
+> --- a/fs/nfsd/nfsctl.c
+> +++ b/fs/nfsd/nfsctl.c
+> @@ -1626,6 +1626,7 @@ static void __exit exit_nfsd(void)
+>  }
+> =20
+>  MODULE_AUTHOR("Olaf Kirch <okir@monad.swb.de>");
+> +MODULE_DESCRIPTION("The Linux kernel NFS server");
 
-Hi all,
+Of 9176 MODULE_DESCRIPTIONs in Linux, 21 start with "The ".
+Does having that word add anything useful?
+Amusingly 129 end with a period.  I wonder what Jon Corbet would prefer
+:-)=20
 
-Commits
+A few tell us what the module does.
+"Measures" "Provides"....
+Do we want "Implements" ??
 
-  32b62ba6dcbe ("fs: dlm: fix F_CANCELLK to cancel pending request")
-  09abc5f6f348 ("fs: dlm: allow to F_SETLKW getting interrupted")
-  33c63abadcf6 ("fs: dlm: remove twice newline")
+232 start "Driver " and 214 are "Driver for"....
+Should we have "Server for" ??
 
-are missing a Signed-off-by from their author.
+26 start "Linux" ... which seems a bit redundant
+  12 contain "for Linux".  67 mention linux in some way.
+28 contain the word "kernel" - also redundant.
+Only three (others) mention "Linux kernel"
 
---=20
-Cheers,
-Stephen Rothwell
+drivers/pcmcia/cs.c:MODULE_DESCRIPTION("Linux Kernel Card Services");
+fs/ksmbd/server.c:MODULE_DESCRIPTION("Linux kernel CIFS/SMB SERVER");
+fs/orangefs/orangefs-mod.c:MODULE_DESCRIPTION("The Linux Kernel VFS interface=
+ to ORANGEFS");
 
---Sig_/I+h4JHv=bn+1YA26S+wPJ9m
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+hmmm..  192 contain the word "module".  Fortunately none say=20
+  "Linux kernel module for ..."
+I would have found that to be a step too far.
 
------BEGIN PGP SIGNATURE-----
+I'd like to suggest
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS5r9oACgkQAVBC80lX
-0Gzyrwf/Zpo4yvLGDMTR5FPHJ9k8dz10RpTdlSiZ1KiTLaCY8jNc3QfKVHiiD1Hh
-Za1Tdxm4oB5uFeOa0MtU/XzsZxIsSHtpi5z+XwPWeL6JEQnzNLet/y71R99Iut1A
-rfOwoJMNY5Yd6P2ppRO5L32RsTSBoBLOufDUsFTigLdKRMQcrjocSxuN8gOX2BGg
-VSG6AW2M/0qAuQwE4XkNGHpcJXjHflvtoUzKn1Ff8VC3wE5/uvkkC/ApZZoc76ig
-UNxJk9L5DviNWEYuhvAv4Pti4Zkqghs/IowyhA62Ob9GvhciXoY9BoPKWkb7NfTP
-ZvAzxgL05m/6dRpTWGji5ajs2g9QdA==
-=h6iw
------END PGP SIGNATURE-----
+  "Implements Server for NFS - v2, 3, v4.{0,1,2}"
 
---Sig_/I+h4JHv=bn+1YA26S+wPJ9m--
+But that would require excessive #ifdef magic to get right.
+
+A small part of me wants to suggest:
+
+   "nfsd"
+
+but maybe I'm just in a whimsical mood today.
+
+NeilBrown
+
+
+>  MODULE_LICENSE("GPL");
+>  module_init(init_nfsd)
+>  module_exit(exit_nfsd)
+> --=20
+> 2.41.0
+>=20
+>=20
+
