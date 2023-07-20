@@ -2,148 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 544FE75AB74
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563DB75AB7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbjGTJvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
+        id S229652AbjGTJzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbjGTJvG (ORCPT
+        with ESMTP id S229503AbjGTJzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:51:06 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D675D272E
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:49:35 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b708e49059so8244511fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:49:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1689846569; x=1690451369;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LdPjULmUPa6VP/P9oFjDeDKjVlgwghUFnuvoEEW98lk=;
-        b=HHofg5goD3MCmhVbpsCJpFHRqzFOOdspVHBHc2MmFRD4bmqkIYAxGzBuDtetpWZPfH
-         0OJthp6Qkx/3jOFMvTzKiR0fyy7UKyy0cUctbhp3dZ2VKuc70D7P/iv8pu70g+fg4YkI
-         6RLLYKp57LctOmyKyTv0pimuRRljO1xwIiG1mWGlVUrZwWPZbnjwmZJp+vbwoCBfgTFZ
-         TTwyMSqWWCtioNyhmH+rq3zt1frT7WCEB7CRtzCOB+sCSOXwUFi9h+K14ZuikqRVksfI
-         /KX7rJS+ULnu9yD9vnOJu2FDyx9T8JsnwE2uabQVA7SqQw1q4TihZ7xiF9R6WNJHgh6Y
-         mQbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689846569; x=1690451369;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LdPjULmUPa6VP/P9oFjDeDKjVlgwghUFnuvoEEW98lk=;
-        b=Xpevp0MDXTOpD8uprdHPdiLi4Ifyd68fxudTvlBr+rAUqHLnewlCpmQl3fdbXfAcE7
-         D3c3MoeprRVsun0q0TCYUjZcDHiE3blJuoIYBTnnwdHm+oGrNuGlphFcXsD+CiHdC+sx
-         Q8wFYWr7FZu9YqptUaXfQyp9EGuiZym7h9ar3XZPAZMu6qXCYtXdWr/eFAd4jXABA36S
-         JVS1S9KkvutY5N7d57D9tkd7vie98DrS2rMIdUY1Pgh7jXM4E9l4H1j3bQ5gbMm5Wa9Q
-         GgxXiYBxCD4oyxqfWiJ75eyq5b+I12iNX8l0CngIUvYKW1Srg5vQVKjNugCthZgcZ95F
-         fU5A==
-X-Gm-Message-State: ABy/qLZCA8X16LWmzn6DmZcB59gDkAaguC2jyPpQlisErAsxfgXm9JYq
-        mBNacWdRkJNH2ygyPepeDO4kyO5+QAcavB71nS7FzQ==
-X-Google-Smtp-Source: APBJJlHcYyplb13P09E5HKiNPAyWuhkGEPGYuJW5CEjmOyn+qs4zkcM4vBw7USD+ttdRYJCm7IwZvsQDTv4pBHBNPdU=
-X-Received: by 2002:a2e:8654:0:b0:2b6:e2cd:20f5 with SMTP id
- i20-20020a2e8654000000b002b6e2cd20f5mr2276664ljj.9.1689846568698; Thu, 20 Jul
- 2023 02:49:28 -0700 (PDT)
+        Thu, 20 Jul 2023 05:55:04 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E203EA2;
+        Thu, 20 Jul 2023 02:55:02 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36K7SYIg023406;
+        Thu, 20 Jul 2023 09:54:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=cJY51DTALiME3j4X6NH/CagxAQEjwHwyhncEMLUCyT0=;
+ b=I9qofbxOyk4gpFKL7ulZRgyHo5FUt3ONFmR5xAm7iDh9C4JFU0+4aDvlQt64ZtVoaZKq
+ zz2AoiwgJLbdDNIGpqRKeB1S00TtGvf12aQZ3gdhAPXYjEfbASPSsP/I+j/l+Wby0D/2
+ 0IeM8AfOcdk6xTetQIOkEjWNB4YOYIl0e4beKsYHdM/CFhyRts5LJNww5drvTT6LvfYY
+ DkGrBfhXegKDi71sNlW1qhVIt65tX44ix7wuERk7vki8YlgsWrTEiTHQhSWHsOo3a0sX
+ I3bcgqA4LtsXeFsZGOk1NE9a5XG43QaUdB2hlKCC/2N/HkMFTivQ4kYkYYGRIP5jkgd0 oQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxg3va6tc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 09:54:57 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36K9susA002462
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 09:54:56 GMT
+Received: from [10.50.14.220] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
+ 2023 02:54:52 -0700
+Message-ID: <304f3664-d04b-db74-24bb-a16c3982651a@quicinc.com>
+Date:   Thu, 20 Jul 2023 15:24:49 +0530
 MIME-Version: 1.0
-References: <20230616063210.19063-1-eric.lin@sifive.com> <20230616063210.19063-4-eric.lin@sifive.com>
- <2437bda9-bbdb-ad80-7201-1e16e1388890@linaro.org> <CAPqJEFoTsmVZ4kvsSB0RkQZaQGyXC96KV6RvdpeC5XxURCOZ0w@mail.gmail.com>
- <8c9ed2d4-83ab-ecc0-a300-e6bc8e2047b6@linaro.org> <CAPqJEFqhmxksvEgvC61cJcRGR0DrSWDZxJC3J7tdgcG8UY+sFw@mail.gmail.com>
- <f5275617-d68c-c76b-d799-106f67cc2071@linaro.org> <20230712110908.GA23216@hsinchu16>
- <0865b422-d587-c1c7-9463-510832ddddf4@linaro.org>
-In-Reply-To: <0865b422-d587-c1c7-9463-510832ddddf4@linaro.org>
-From:   Eric Lin <eric.lin@sifive.com>
-Date:   Thu, 20 Jul 2023 17:49:17 +0800
-Message-ID: <CAPqJEFp_YgsXOymQPH1Pr4cORtv=8oS0OWnACWqNe69ARMRwvA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] dt-bindings: riscv: sifive: Add SiFive Private L2
- cache controller
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     conor@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dslin1010@gmail.com,
-        Zong Li <zong.li@sifive.com>, vincent.chen@sifive.com,
-        Greentime Hu <greentime.hu@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] pinctrl: qcom: Add intr_target_width field to support
+ increased number of interrupt targets
+Content-Language: en-US
+To:     Bjorn Andersson <andersson@kernel.org>
+CC:     <agross@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ppareek@quicinc.com>,
+        <psodagud@quicinc.com>, <quic_kprasan@quicinc.com>,
+        <quic_ymg@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>
+References: <20230718064246.12429-1-quic_ninanaik@quicinc.com>
+ <fskuol2q4wbfilrz3x3dcmikhjgfsajgnuqjnp4petxr2ne6at@zfnonisxnjh3>
+From:   Ninad Naik <quic_ninanaik@quicinc.com>
+In-Reply-To: <fskuol2q4wbfilrz3x3dcmikhjgfsajgnuqjnp4petxr2ne6at@zfnonisxnjh3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: c1HiPTXAGjSrHTC3JqmvboXz4zMooUyX
+X-Proofpoint-ORIG-GUID: c1HiPTXAGjSrHTC3JqmvboXz4zMooUyX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-20_03,2023-07-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ suspectscore=0 clxscore=1015 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2307200083
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Hi Bjorn,
 
-On Wed, Jul 12, 2023 at 8:30=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 12/07/2023 13:09, Eric Lin wrote:
-> > On Sat, Jul 01, 2023 at 10:22:25AM +0200, Krzysztof Kozlowski wrote:
-> >> On 28/06/2023 18:31, Eric Lin wrote:
-> >>
-> >>>>>>
-> >>>>>>> +      - enum:
-> >>>>>>> +          - sifive,pL2Cache0
-> >>>>>>> +          - sifive,pL2Cache1
-> >>>>>>
-> >>>>>> What is "0" and "1" here? What do these compatibles represent? Why=
- they
-> >>>>>> do not have any SoC related part?
-> >>>>>
-> >>>>> The pL2Cache1 has minor changes in hardware, but it can use the sam=
-e
-> >>>>> pl2 cache driver.
-> >>>>
-> >>>> Then why aren't they compatible?
-> >>>>
-> >>>
-> >>> The pL2Cache1 has removed some unused bits in the register compared t=
-o
-> >>> pl2Cache0.
-> >>> From the hardware perspective, they are not compatible but they can
-> >>> share the same pl2 cache driver in software.
-> >>
-> >> So they are compatible... If they were not compatible, you wouldn't be
-> >> able to use the same match in the driver.
-> >>
-> >>> Thus, we would like to keep both. It would be great if you can provid=
-e
-> >>> some suggestions. Thanks.
-> >>
-> >> I propose to make them compatible, like every other piece of SoC. I
-> >> don't see any benefit of having them separate.
-> >>
-> >
-> > Hi Krzysztof,
-> >
-> > Sorry for the late reply.
-> > The pl2 cache is our internal platform IP and is not part of any SoC.
-> >
-> > The reason why this driver is compatible with the hardware "pl2cache0" =
-and hardware "pl2cache1"
-> > is that it doesn't program the different parts of the config register
-> > However, our internal software (e.g., bare-metal software) will program=
- these different parts,
-> > so it needs to rely on the different compatible string to identify the =
-hardware.
-> >
-> > Additionally, we would like the compatible strings to reflect which har=
-dware is being used Thanks.
->
-> I don't understand how does it contradicts anything I said. So you do
-> agree with me? Or what?
->
+On 7/18/2023 9:02 PM, Bjorn Andersson wrote:
+> On Tue, Jul 18, 2023 at 12:12:46PM +0530, Ninad Naik wrote:
+>> SA8775 and newer target have added support for an increased number of
+>> interrupt targets. To implement this change, the intr_target field, which
+>> is used to configure the interrupt target in the interrupt configuration
+>> register is increased from 3 bits to 4 bits.
+>>
+>> In accordance to these updates, a new intr_target_width member is
+>> introduced in msm_pingroup structure. This member stores the value of
+>> width of intr_target field in the interrupt configuration register. This
+>> value is used to dynamically calculate and generate mask for setting the
+>> intr_target field. By default, this mask is set to 3 bit wide, to ensure
+>> backward compatibility with the older targets.
+>>
+>> Changes in v2 :
+>> -----------------
+>> - Changed initial definition of intr_target_mask variable to use GENMASK().
+>> - Update commit subject appropiately.
+>> - Add Fixes tag.
+>> - v1 : https://lore.kernel.org/all/20230714061010.15817-1-quic_ninanaik@quicinc.com/
+> 
+> Thanks for adding a good changelog, very much appreciated. The changelog
+> should be added below the '---' line though, as it typically don't add
+> value to the git history (except drivers/gpu/* which wants it here...).
+> 
+Apologies for the mistake. I will make a note of this and correct going 
+forward.
+> Perhaps Linus can drop it as he applies the patch, no need to resubmit
+> unless he ask you to.
+> 
+> Thanks,
+> Bjorn
 
-Thanks for your suggestions. OK, I'll fix it in v2.
-
-Best regards,
-Eric Lin
-
-> Best regards,
-> Krzysztof
->
+Thanks,
+Ninad
