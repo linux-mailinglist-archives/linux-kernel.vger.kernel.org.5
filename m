@@ -2,162 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6589675A828
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D645975A829
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbjGTHtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35604 "EHLO
+        id S231776AbjGTHuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbjGTHti (ORCPT
+        with ESMTP id S231748AbjGTHty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:49:38 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB9426A6;
-        Thu, 20 Jul 2023 00:49:35 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36K4VLVR028811;
-        Thu, 20 Jul 2023 07:49:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=hZCTA+Dezo7rOXu2oXjAmz468DRPfRjvDzJER+LOdtk=;
- b=eCujZ94vZTQl6TRah3vTMw8pac04Sv0HzKZnpc35Tu6/53+Le8Vo4o1jIGSUzDsBG7Jp
- bE4KIxbFF1iR/Ds4tYbB8Hq2gOwcB54j06Y47tkhbiaa9Z9ii5IyOr/sZGOQoxTlhEeU
- NR6qgrC55dUrCKMXeX8VBvuOMXXwwPZVrK82wzmQ9HiatzwGq0HhGFi3PWC6WgsGh89i
- 3s7G859I32GHmx7oZuT12vh16aA9GQGhuTZnYa7Iv6/ZULGDlRIq1y3/oK9kZs99kJnV
- cR56vo6x1wlk/ChUiq4PrfAhgNaia/G3U/nmemUb6Nvmn05qsM6wdbxJXRisi6ixTVoh 0A== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxpyqryp8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jul 2023 07:49:31 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36K7nUpu006737
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jul 2023 07:49:30 GMT
-Received: from harihk-linux.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 20 Jul 2023 00:49:26 -0700
-From:   Hariharan K <quic_harihk@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
-        <quic_kathirav@quicinc.com>, <quic_arajkuma@quicinc.com>,
-        <quic_anusha@quicinc.com>, <quic_harihk@quicinc.com>
-Subject: [PATCH 2/2] arm64: dts: qcom: ipq5018: add support for the RDP415 variant
-Date:   Thu, 20 Jul 2023 13:18:46 +0530
-Message-ID: <20230720074846.20350-3-quic_harihk@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230720074846.20350-1-quic_harihk@quicinc.com>
-References: <20230720074846.20350-1-quic_harihk@quicinc.com>
+        Thu, 20 Jul 2023 03:49:54 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D3B26B2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:49:43 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 206D720564;
+        Thu, 20 Jul 2023 07:49:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1689839376; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lRC0RZqoqHV1iZY41MWNjsNJG0i4hN0HBuJmKMyE0Wo=;
+        b=aQCzKzGBMeKi2sz6zlSxFkgL6KNrlffTJAKxJ6W/tSXCyraqlNP8363C5ZdtM+eUPG7SYq
+        OaQTD+7y/8DeJNf1nuta4obUaMKlHOr/zxlTsadPxS/XvzTGMs86rsmOIiw7o+i3yOnBX0
+        /GSI5f9uVgZk+AnvtksAvwDvNa59EhA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12050138EC;
+        Thu, 20 Jul 2023 07:49:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 6/KNAxDnuGSAEQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 20 Jul 2023 07:49:36 +0000
+Date:   Thu, 20 Jul 2023 09:49:35 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Ross Zwisler <zwisler@google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Jiri Bohac <jbohac@suse.cz>
+Subject: Re: collision between ZONE_MOVABLE and memblock allocations
+Message-ID: <ZLjnDzTdXPlM3KY6@dhcp22.suse.cz>
+References: <20230718220106.GA3117638@google.com>
+ <ZLd/WEZTH5rlwYjP@dhcp22.suse.cz>
+ <20230719224821.GC3528218@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: JBqnSweyfFKOWDz0QPgS4rH47FkbkVua
-X-Proofpoint-ORIG-GUID: JBqnSweyfFKOWDz0QPgS4rH47FkbkVua
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-20_02,2023-07-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 phishscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 bulkscore=0 spamscore=0 priorityscore=1501
- suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307200063
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719224821.GC3528218@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the initial device tree support for the Reference Design
-Platform(RDP) 415 based on IPQ5018 family of SoC. This patch
-carries the support for Console UART and eMMC.
+[CC Jiri Bohac]
 
-Signed-off-by: Hariharan K <quic_harihk@quicinc.com>
----
- arch/arm64/boot/dts/qcom/Makefile           |  1 +
- arch/arm64/boot/dts/qcom/ipq5018-rdp415.dts | 49 +++++++++++++++++++++
- 2 files changed, 50 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/ipq5018-rdp415.dts
+On Wed 19-07-23 16:48:21, Ross Zwisler wrote:
+> On Wed, Jul 19, 2023 at 08:14:48AM +0200, Michal Hocko wrote:
+> > On Tue 18-07-23 16:01:06, Ross Zwisler wrote:
+> > [...]
+> > > I do think that we need to fix this collision between ZONE_MOVABLE and memmap
+> > > allocations, because this issue essentially makes the movablecore= kernel
+> > > command line parameter useless in many cases, as the ZONE_MOVABLE region it
+> > > creates will often actually be unmovable.
+> > 
+> > movablecore is kinda hack and I would be more inclined to get rid of it
+> > rather than build more into it. Could you be more specific about your
+> > use case?
+> 
+> The problem that I'm trying to solve is that I'd like to be able to get kernel
+> core dumps off machines (chromebooks) so that we can debug crashes.  Because
+> the memory used by the crash kernel ("crashkernel=" kernel command line
+> option) is consumed the entire time the machine is booted, there is a strong
+> motivation to keep the crash kernel as small and as simple as possible.  To
+> this end I'm trying to get away without SSD drivers, not having to worry about
+> encryption on the SSDs, etc.
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 6334e552b7c1..53df7f24488a 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -4,6 +4,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= apq8039-t2.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= apq8094-sony-xperia-kitakami-karin_windy.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-ifc6640.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= ipq5018-rdp415.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq5018-rdp432-c2.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq5332-rdp441.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq5332-rdp442.dtb
-diff --git a/arch/arm64/boot/dts/qcom/ipq5018-rdp415.dts b/arch/arm64/boot/dts/qcom/ipq5018-rdp415.dts
-new file mode 100644
-index 000000000000..5c4b43f76a48
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/ipq5018-rdp415.dts
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0+ OR BSD-3-Clause
-+/*
-+ * IPQ5018 MP03.3-C2 board device tree source
-+ * Copyright (c) 2023, The Linux Foundation. All rights reserved.
-+ */
-+
-+/dts-v1/;
-+
-+#include "ipq5018-rdp-common.dtsi"
-+
-+/ {
-+	model = "Qualcomm Technologies, Inc. IPQ5018/AP-MP03.3-C2";
-+	compatible = "qcom,ipq5018-ap-mp03.3-c2", "qcom,ipq5018";
-+};
-+
-+&sdhc_1 {
-+	pinctrl-0 = <&sdc_default_state>;
-+	pinctrl-names = "default";
-+	mmc-ddr-1_8v;
-+	mmc-hs200-1_8v;
-+	max-frequency = <192000000>;
-+	bus-width = <4>;
-+	status = "okay";
-+};
-+
-+&tlmm {
-+	sdc_default_state: sdc-default-state {
-+		clk-pins {
-+			pins = "gpio9";
-+			function = "sdc1_clk";
-+			drive-strength = <8>;
-+			bias-disable;
-+		};
-+
-+		cmd-pins {
-+			pins = "gpio8";
-+			function = "sdc1_cmd";
-+			drive-strength = <8>;
-+			bias-pull-up;
-+		};
-+
-+		data-pins {
-+			pins = "gpio4", "gpio5", "gpio6", "gpio7";
-+			function = "sdc1_data";
-+			drive-strength = <8>;
-+			bias-disable;
-+		};
-+	};
-+};
+This is something Jiri is also looking into.
+ 
+> So, the rough plan right now is:
+> 
+> 1) During boot set aside some memory that won't contain kernel allocations.
+> I'm trying to do this now with ZONE_MOVABLE, but I'm open to better ways.
+> 
+> We set aside memory for a crash kernel & arm it so that the ZONE_MOVABLE
+> region (or whatever non-kernel region) will be set aside as PMEM in the crash
+> kernel.  This is done with the memmap=nn[KMG]!ss[KMG] kernel command line
+> parameter passed to the crash kernel.
+> 
+> So, in my sample 4G VM system, I see:
+> 
+>   # lsmem --split ZONES --output-all
+>   RANGE                                  SIZE  STATE REMOVABLE BLOCK NODE   ZONES
+>   0x0000000000000000-0x0000000007ffffff  128M online       yes     0    0    None
+>   0x0000000008000000-0x00000000bfffffff  2.9G online       yes  1-23    0   DMA32
+>   0x0000000100000000-0x000000012fffffff  768M online       yes 32-37    0  Normal
+>   0x0000000130000000-0x000000013fffffff  256M online       yes 38-39    0 Movable
+>   
+>   Memory block size:       128M
+>   Total online memory:       4G
+>   Total offline memory:      0B
+> 
+> so I'll pass "memmap=256M!0x130000000" to the crash kernel.
+> 
+> 2) When we hit a kernel crash, we know (hope?) that the PMEM region we've set
+> aside only contains user data, which we don't want to store anyway.  We make a
+> filesystem in there, and create a kernel crash dump using 'makedumpfile':
+> 
+>   mkfs.ext4 /dev/pmem0
+>   mount /dev/pmem0 /mnt
+>   makedumpfile -c -d 31 /proc/vmcore /mnt/kdump
+> 
+> We then set up the next full kernel boot to also have this same PMEM region,
+> using the same memmap kernel parameter.  We reboot back into a full kernel.
+> 
+> 3) The next full kernel will be a normal boot with a full networking stack,
+> SSD drivers, disk encryption, etc.  We mount up our PMEM filesystem, pull out
+> the kdump and either store it somewhere persistent or upload it somewhere.  We
+> can then unmount the PMEM and reconfigure it back to system ram so that the
+> live system isn't missing memory.
+> 
+>   ndctl create-namespace --reconfig=namespace0.0 -m devdax -f
+>   daxctl reconfigure-device --mode=system-ram dax0.0
+> 
+> This is the flow I'm trying to support, and have mostly working in a VM,
+> except up until now makedumpfile would crash because all the memblock
+> structures it needed were in the PMEM area that I had just wiped out by making
+> a new filesystem. :)
+> 
+> Do you see any blockers that would make this infeasible?
+> 
+> For the non-kernel memory, is the ZONE_MOVABLE path that I'm currently
+> pursuing the best option, or would we be better off with your suggestion
+> elsewhere in this thread:
+
+The main problem I would see with this approach is that the small
+Movable zone you set aside would be easily consumed and reclaimed. That
+could generate some unexpected performance artifacts. We used to see
+those with small zones or large differences in zone sizes in the past.
+But functionally this should work. Or I do not see any fundamental
+problems at least.
+
+Jiri is looking at this from a slightly different angle. Very broadly,
+he would like to have a dedicated CMA pool and reuse that for the
+kernel memory (dropping anything sitting there) when crashing.
+GFP_MOVABLE allocations can use CMA pools.
+
+> > If the spefic placement of the movable memory is not important and the only
+> > thing that matters is the size and numa locality then an easier to maintain
+> > solution would be to simply offline enough memory blocks very early in the
+> > userspace bring up and online it back as movable. If offlining fails just
+> > try another memblock. This doesn't require any kernel code change.
+> 
+> If this 2nd way is preferred, can you point me to how I can offline the memory
+> blocks & then get them back later in boot?
+
+/bin/echo offline > /sys/devices/system/memory/memory$NUM/state && \
+echo online_movable > /sys/devices/system/memory/memory$NUM/state
+
+more in Documentation/admin-guide/mm/memory-hotplug.rst
+
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
