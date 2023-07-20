@@ -2,66 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A296C75B0F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960F175B0F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbjGTONw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 10:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
+        id S231851AbjGTONq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 10:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbjGTONo (ORCPT
+        with ESMTP id S230509AbjGTONm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 10:13:44 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77B1211D
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:13:43 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-444c5209861so328549137.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:13:43 -0700 (PDT)
+        Thu, 20 Jul 2023 10:13:42 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341A12135
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:13:40 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b93fba1f62so12411041fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:13:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689862422; x=1690467222;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LYeTnX0ktaD2hs8ft560UZNiRm51amQas2cIgUUmFfI=;
-        b=kAn24OTQ4vb0TF3yTtDLq9PWfO6GyVuCDDvkwEKkXgSEN5b36cRSrw1pKxpALm9CKA
-         rWKWHPiuSU2E4JZcWe2yPU8oXCDhbqvjprZJDNMoPG8hxd4S/6f5FLguNUUui5QOVCw6
-         u5zW9BdjCmNznhLIdxjwk+OgI4pIcxGLAAze1VTDBv7YuH/9rZ94ca3q1e1DWwClBjbq
-         h/hHEcPr7oUhFhB7u7rfLxP8ezyi2Avc4nhQNvltIIZzoTrQp0TrMqW36X6VjjB2E5nu
-         /vvOTMDBIQB57UDS1r6iY7saMOAnO9TXQ2Oz+tkkeU4ViSfpa4y8axg/EZKNTHQNYd0E
-         F6sg==
+        d=linaro.org; s=google; t=1689862418; x=1690467218;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ERQ0Qu3T6Bz3k+ywQiOUif0b4ZsQ7lChxmwFwBw8hTs=;
+        b=HSBJvB5Cd67p4JvLMey/aDWMBCFn6p1aofMqSm7puXk2Ghe97RK1IUwyT6UeEcagmt
+         B8vCUMxGdt03qsSm2JDLEOeYj6H9FosR8gPhmQ6SoMRYcvbEpSs+O/vOG8h0AQkFlAaz
+         R4cDr1oN0ubZLBRmJWWgGUlzR4z932clQBBY3uJ9ywJIW8WCU0korUD/d1k0Ml8dzzTc
+         r6q4hd4x/meKCqpCDr6JrjKIo+NozsTwnXXaI14miR1xwv9klqL99XDDcY70E6oqsbO4
+         pIv5z8jI58a6jpZkME/nitDks7wnthn9AsUerus6IeW2wwvLxVbuqUqDxOhnpkAU4JZw
+         IrIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689862422; x=1690467222;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LYeTnX0ktaD2hs8ft560UZNiRm51amQas2cIgUUmFfI=;
-        b=duEO6SD80BtwAWCv6yoBgElo5UhvAPsa2qsVBgkUDcpvMV75c9Uavp3p9WrgDN6gh6
-         FHqfR92Z0yOlqTI+GrtVb4S7gUTGEDiDPEVRFT1YxXW6MDfmDpKsdZ++wlrjzC3o+SwV
-         F0hqRGChWqnnbwheoUm10lE8AShUoeEN9L1gPv831oXEt5KgZ0sttcS7AgQjhtyv9vi7
-         opMYuxGsK0Hs48tuLJyp0brb0escMQk+tnEOpggTl8jdb8P6TlHfmo5cpCz5EKiDlO61
-         F934WnCPvsoza53zYSPW/Ol+RbpwEXdHyLkZJBD6a3tVNyQ6spgGMLdvFKMpsrPtvhnY
-         sSAQ==
-X-Gm-Message-State: ABy/qLbtzCTYOTv1lziNgJcAXGZ2ybAUpvp5awHk86UIqktD5OxJOOBQ
-        OZNPKgL84yMfyn2E+T0lFel/bzUwXtKOm0SnnujY0nUYBm+ziWeNVD8=
-X-Google-Smtp-Source: APBJJlGJ9epJUV2htxdaWBnegz8aVGpAucsS8qRau2RZHnQGzhDGv2JOguFaJ50KJJKHiJTEuXV65HIcF1KuyMzNQo4=
-X-Received: by 2002:a67:eac2:0:b0:443:8eab:c664 with SMTP id
- s2-20020a67eac2000000b004438eabc664mr5433670vso.13.1689862422250; Thu, 20 Jul
- 2023 07:13:42 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689862418; x=1690467218;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ERQ0Qu3T6Bz3k+ywQiOUif0b4ZsQ7lChxmwFwBw8hTs=;
+        b=FIkyXFAcnhw6MV5yp5wE0qxijBbDVWVT0sh9qhwccjChQoftldoaDMShJ6y9H2UVbm
+         ZWqeniG2joV/Ow0Cdm6R1gxOf/QE7sjiLK2fUNjP6FmiFEbepZGJ5gzlVwofVxsxTwuJ
+         iOZVzWAsvQSUm6mohXnZdl6PQxO0+tSODB5ean7E5cqPlTDfzFgadSWR1o6WScmYDkPF
+         V1ujLDy/fcrOEJUy7pzDdgUVqSOJggYISqSEwmTDY7Sy8S0Hbaw/BRbournw/X9Ax72X
+         /kaA39IsSzMQsRhhy8DJHjEKJo8qm3fYHJWq8hEZEQbTH6mhxZ3pnq7BPzdrR+/mno9+
+         s30A==
+X-Gm-Message-State: ABy/qLYE23ACo/3tq7iK1oePL7qxNZ7TQ7WjacPBmhQy+nlGAlk4kY6b
+        +QHMGfYNq2bbNkwVjCWTf9Te5A==
+X-Google-Smtp-Source: APBJJlHBphGKstGk7EBxhAe0LG1t1rqwF3LxHgC2TQIHknyOF/bOOSmH41DtrjQ6hKYblqDd4QJoEw==
+X-Received: by 2002:a2e:9695:0:b0:2b6:dc55:c3c7 with SMTP id q21-20020a2e9695000000b002b6dc55c3c7mr2066251lji.20.1689862418392;
+        Thu, 20 Jul 2023 07:13:38 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id n15-20020a1c720f000000b003fc0505be19sm1270545wmc.37.2023.07.20.07.13.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 07:13:35 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 17:13:33 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Linke Li <lilinke99@foxmail.com>
+Cc:     linux-mm@kvack.org, mike.kravetz@oracle.com, muchun.song@linux.dev,
+        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Linke Li <lilinke99@gmail.com>
+Subject: Re: [PATCH v2] hugetlbfs: Fix integer overflow check in
+ hugetlbfs_file_mmap()
+Message-ID: <5630f9d8-660f-46ec-8e44-91b00e301bb2@kadam.mountain>
+References: <tencent_710619B2865DE8AC059D51A027D919CBD00A@qq.com>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 20 Jul 2023 19:43:31 +0530
-Message-ID: <CA+G9fYsfziBmQGQMGAKojhemCXssFyiNgk6aNjVXpJNNFh_5mg@mail.gmail.com>
-Subject: next: arm: dtbs/exynos4212-tab3-3g8.dts', needed by '__dtbs_install'.
-To:     open list <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Artur Weber <aweber.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_710619B2865DE8AC059D51A027D919CBD00A@qq.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,33 +74,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following build errors noticed while making dtbs_install for arm on
-Linux next-20230720 tag.
+On Thu, Jul 20, 2023 at 09:49:39PM +0800, Linke Li wrote:
+> From: Linke Li <lilinke99@gmail.com>
+> 
+> ```
+> 	vma_len = (loff_t)(vma->vm_end - vma->vm_start);
+> 	len = vma_len + ((loff_t)vma->vm_pgoff << PAGE_SHIFT);
+> 	/* check for overflow */
+> 	if (len < vma_len)
+> 		return -EINVAL;
+> ```
+> 
+> There is a signed integer overflow in the code, which is undefined
+> behavior according to the C stacnard. Although kernel disables some
+> optimizations by using the "-fno-strict-overflow" option, there is
+> still a risk.
 
-Regressions found on arm:
+It's not a risk.  Better to say, "although this works, it's still a bit
+ugly and static checkers will complain".
 
- - build/gcc-12-exynos_defconfig
- - build/gcc-8-exynos_defconfig
+I wouldn't have commented on the commit message except that this patch
+checkpatch warning so you're going to have to redo it anyway.  Run
+scripts/checkpatch.pl on your patches before sending them.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+WARNING: please, no spaces at the start of a line
+#49: FILE: fs/hugetlbfs/inode.c:158:
++    if (check_add_overflow(vma_len, (loff_t)vma->vm_pgoff << PAGE_SHIFT, &len))$
 
-make[4]: *** No rule to make target
-'/home/tuxbuild/.cache/tuxmake/builds/1/build/dtbsinstall/dtbs/exynos4212-tab3-3g8.dts',
-needed by '__dtbs_install'.
-make[4]: *** No rule to make target
-'/home/tuxbuild/.cache/tuxmake/builds/1/build/dtbsinstall/dtbs/exynos4212-tab3-lte8.dts',
-needed by '__dtbs_install'.
-make[4]: *** No rule to make target
-'/home/tuxbuild/.cache/tuxmake/builds/1/build/dtbsinstall/dtbs/exynos4212-tab3-wifi8.dts',
-needed by '__dtbs_install'.
-make[4]: Target '__dtbs_install' not remade because of errors.
+WARNING: suspect code indent for conditional statements (4, 16)
+#49: FILE: fs/hugetlbfs/inode.c:158:
++    if (check_add_overflow(vma_len, (loff_t)vma->vm_pgoff << PAGE_SHIFT, &len))
+                return -EINVAL;
 
+total: 0 errors, 2 warnings, 10 lines checked
 
-Links,
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230720/testrun/18470052/suite/build/test/gcc-8-defconfig/log
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230720/testrun/18470065/suite/build/tests/
+regards,
+dan carpenter
 
-
---
-Linaro LKFT
-https://lkft.linaro.org
