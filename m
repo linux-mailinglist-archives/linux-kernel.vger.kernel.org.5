@@ -2,336 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D5B75BAFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F01475BB01
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbjGTXEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 19:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
+        id S229682AbjGTXKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 19:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGTXEc (ORCPT
+        with ESMTP id S229451AbjGTXKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 19:04:32 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009DD19A1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 16:04:30 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36KLNJkL003496;
-        Thu, 20 Jul 2023 23:04:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=dqwAq2R/vvjtwXf8b9obG668Y0VR7muP7GrQRA1u89Q=;
- b=sIz1GsPzfdK09Sge7ccLvvJa3DtopfGO6sqajRVPW0mCin15EVY96pX7lwMY7BYx/FJl
- KPfJYGHA9W1gp2qCi532F5oFRMN8fg6Ef3I8ATlEnBTonUjZzTzCf5t91ry7wq06vy4M
- LoYQVHGIlwcQj4uraGFFrtLuE+PI4bcPx5eJN7TCcaUIQMfhl12Z23Xmnxa8E38NRPga
- pwmZa0AYvtVfchRH8+203HN52m5ytKUPIGZOCd/ft6wug0mh/XwPJAFdQimn1hm659rO
- z5gJ0U7PuOIZPluZ9LvgqLTABMuaK26+ETiBvp4VpK/kBoyRSWkNrVPGp2XzMQ7gan94 tQ== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run8aawc9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 Jul 2023 23:04:13 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36KM3N86017397;
-        Thu, 20 Jul 2023 23:04:13 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2176.outbound.protection.outlook.com [104.47.57.176])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw98sjv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 Jul 2023 23:04:12 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Hsrq9NzBenlGnD55/QeqE/bwKTlIWPIjoHEu4eWFoKHSWd+rbHLoX6IuXXPJ9TLOgdtwUcYtPZDW0tuOtxOr0aJmtaDjhoxppuVgG7osY917inFN/1u2o5Nh9NS7sY0dmzWcJXwF/+qlwIajCYRWTUtQ4IoU7wvTZGSpdEHZW6vADQ/w9pZ8hOCzpNUbFkalUgv0+Mt9mt9ghlC7D+2s2Idf3Z2/wY/VpPKLXvL1MFCZwPYS+pGcDKLz4wFNI/QWHeqL0s/NiJreYR0nEZxtegefPaUTrXaR2CQ/DwMs7GRqAya9OgCnNzZdfVX3q3tFt0fUKSfWNAC1cyiQqy82OA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dqwAq2R/vvjtwXf8b9obG668Y0VR7muP7GrQRA1u89Q=;
- b=O7LiNJ7tfajXFFAyZs7VbIfEmc2OypRapy58baRuQXzCb1sAoqpo3CLGZ8ChrlcoHNvEHFagOscB/jbWdbLfcPhnFsjpa+fIXr5t1nbK6xhADOxEv0jr0cuefuVvHn6EJrdRcBaRJtyjPIEDgnBlBwKo4z/XlFjzQmg7F+oSPFMRc9V5jPh6qunLShDaLVcsjtjy0Twz/SxovS+X3G2yYR1wwzmwkn9nXlU33qQFmHxzE+JGLtcsyiSL0F1uanY6bPGGKl/PcVrmrueec3OLxouLCiSZvGARpOXBi5TuuH0U3h4dePVje6EKZm9mZGmQDNjfrbQ3WDy79IDcPGQqMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dqwAq2R/vvjtwXf8b9obG668Y0VR7muP7GrQRA1u89Q=;
- b=cpWXdea/NUvTucqQHyD+J9nIC399jAXa/7mOaoCFPC4QNmpoCMg9uiCIXaDLGj7IPZqASa+a98W6kj+4tIU1Qhjncnht+ZF1ukQEMI3xyVYpUW+T5Urs5WUGg/7rMSqXwfP//1BGm5UNMiRqkOWV+zU3iVUMd2lnY3OZ+8BVXbM=
-Received: from SJ2PR10MB7860.namprd10.prod.outlook.com (2603:10b6:a03:574::11)
- by SA3PR10MB7022.namprd10.prod.outlook.com (2603:10b6:806:317::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33; Thu, 20 Jul
- 2023 23:04:10 +0000
-Received: from SJ2PR10MB7860.namprd10.prod.outlook.com
- ([fe80::f981:32d8:3526:993a]) by SJ2PR10MB7860.namprd10.prod.outlook.com
- ([fe80::f981:32d8:3526:993a%7]) with mapi id 15.20.6609.024; Thu, 20 Jul 2023
- 23:04:10 +0000
-From:   Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-CC:     Chen Yu <yu.c.chen@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "zhangqiao22@huawei.com" <zhangqiao22@huawei.com>
-Subject: Re: Reporting a performance regression in sched/fair on Unixbench
- Shell Scripts with commit a53ce18cacb4
-Thread-Topic: Reporting a performance regression in sched/fair on Unixbench
- Shell Scripts with commit a53ce18cacb4
-Thread-Index: AQHZmltYLRrf94uAqU6ZfNgQYN2haa+CsM4AgAZ3AICAALi9gIALqS8AgAzxIYCAAKoOAIAgY1uA
-Date:   Thu, 20 Jul 2023 23:04:10 +0000
-Message-ID: <CFDAB0A8-9131-408A-97EB-2F4F8E20E86B@oracle.com>
-References: <F4B69136-C13A-4449-9005-4BB0617E60AC@oracle.com>
- <CAKfTPtCBQJYfFgFhA6=364onup2TU1hrTxJYJA5OiSJ_ECB0JA@mail.gmail.com>
- <7C9D3ABF-E878-4B75-9ED6-AD6EFB6243C5@oracle.com>
- <ZIlgD36syo5nGoZI@chenyu5-mobl2.ccr.corp.intel.com>
- <E0B1B4B6-8281-49AC-AC77-4920D209796F@oracle.com>
- <1F10D321-2EB5-4546-96BB-0ABEC7638D6E@oracle.com>
- <CAKfTPtBDfCFQUTOmT1BXO8=ena0j5HEBsgcNF5eZdWtMEWP2kg@mail.gmail.com>
-In-Reply-To: <CAKfTPtBDfCFQUTOmT1BXO8=ena0j5HEBsgcNF5eZdWtMEWP2kg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3696.120.41.1.1)
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ2PR10MB7860:EE_|SA3PR10MB7022:EE_
-x-ms-office365-filtering-correlation-id: b4065398-4418-4e82-7459-08db8975a083
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: J29iEP9guNsTaTIIMXiQaUSBIeraS1Tl4KfwftAHZ8M86GaLmD5S5B+9lGDKOkZCty33/jucjJAuEwpzPvMb0AavhBFwIpCixCogvsvhx/57o47g8XBHk5+ywRxTiigBNdixAwZsgPMhBjwwgvT330RMOi7VWG3UcoK32TVBV4GRHbVzlJPbTMAmswsaa9xMjylLMHYRIONEbFDqdE5SXxLJtOjY1h2dxmXRJszKVk9ge3+m57YQs59it5iF0/b7npPT/WBXiOz5cepOH+2sctsTwpdRyUK2e0OaisJrnEcgMzA9TUCrHYeVSevTHHzYTJOoKV0fplZfqyXibYV0QWJVm8bnehAJMlkLbeqtMLWQI7sFNPDETYbk4RMty2MGrPBW0r/QNc+sWHz+V0VAuntn14BaeD4zpcXh3Q6WT0MNQzlb5HG6BU1f9VaTMMNd4+iYRL9nhHpY9agESxVWObr6sn22g1FoQUjeCvnbxQZ5Ds2lc04sYG/uBKHKT0ue1ytu0xyPzGkVIqQgZVTrA8ByWp3F768ttwoOOeF1+yp2LGynfTNq1XKxrUw7ckJXR/E7dIHRpE8e7p4DAIKk6xwlZkRBXjfkwSg5UHMxF91EG77KzeKdLsWD1/+2bVwZWvpCoC5DjmyIKieaC12bfa22pLHxL4u9T4k63F2BWVg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR10MB7860.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(136003)(346002)(376002)(39860400002)(366004)(451199021)(71200400001)(478600001)(54906003)(6486002)(6512007)(19627235002)(6506007)(26005)(2906002)(76116006)(66556008)(38100700002)(53546011)(8936002)(66446008)(41300700001)(6916009)(64756008)(8676002)(44832011)(66476007)(5660300002)(66946007)(4326008)(122000001)(316002)(38070700005)(33656002)(86362001)(2616005)(83380400001)(36756003)(186003)(84970400001)(98903001)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SVpYWnh0SXY2ZUFWalJvM2NnY0xhN3ZIdXFjVktZaWxFRmVDNG5yYjUvWTdm?=
- =?utf-8?B?YnNaQmhaZWhCcHZZbHhpRVBYckpFWEZMVGtqZlZWMjZkdHhnMXE5VVk1clpQ?=
- =?utf-8?B?dHZXdVpVMEpndFdwU0FwNzVtNitka2hmN2c2Y2pxMFk1Nk04QW9KWkFReS9K?=
- =?utf-8?B?TVcxY0pTbEtWd09EWVc0dDN4ZkYrazU0KytJandhaXl5dmJtZkJ2VXMyZnJl?=
- =?utf-8?B?ejZNdHJHNitURUlCNUVLZ0lQZTRLN3lQTnV6VVBQR3lZcTgvNDhEVllFeVNj?=
- =?utf-8?B?SzlINXRET1BVR3ZJbTI1YXZNZzdnYWZYUG9GV0l1bWk1Ni93WFVHTElYelFP?=
- =?utf-8?B?Y1ZQVGF0L1N0dUdqT0RJcUJMYlRqcHRmSWNvZzdEa2hpOFV2NS83VEE0Y3l4?=
- =?utf-8?B?YVZnR3JFa1pIWDRmU0svdm1pb1haQlorczVNQkxoa2hiYm9hcFZLV0lXZGI5?=
- =?utf-8?B?L0hxT2lFOUxDbm5BR1VFLzZXdWFhbDArV201NGlvbVBBMEpQcGtCZ2lqL1hK?=
- =?utf-8?B?RjVkalYwQWYzd0g4eHdUTUtIQXRiUURpd0pxbFZJd3FOMnZJd2xzbW51UmF2?=
- =?utf-8?B?WERtZkZVNmk3V3BXYmpBSHBvM2tpNEcwb0RSQzI1YzR3T05MUE1nODhvM2hB?=
- =?utf-8?B?dFlaYml1OFc0SUxwdUsyeTV4ZTZRT3BEeTZpbzcvaktLaWp5UmVTUnVsS3VS?=
- =?utf-8?B?bnRydHVQSEh6YVZTWldmcEZXekNRbzdzTnpHS2NiWGtMTnVJZjRGVEpqakh4?=
- =?utf-8?B?RUtKNHJMdTZVZk4zeUVXVW5OMEwxWnhTeml4WEVHTmtCUFJ3akNLTDAyWk95?=
- =?utf-8?B?azNFQ2xjeUt5aUk4Um9CM0l5R21oWUZwMmFOTklIZnpobDNPS0p3R1ZkRjht?=
- =?utf-8?B?RzUxMGNaN2tRWFU1YzlFeXo4ZXVpMGFpM0JPckZwY2pTcExZbldXam1iVThU?=
- =?utf-8?B?bG1VOElYUU9CVjhscU9EeTNFbWtaQzc5OUdVZDkyZ3RxeFFEQndHU1R6WkNo?=
- =?utf-8?B?SjMxb2lkSS95cm01bjVMVXROdWRvdmVXL1FkNXVGWFpQV01ETzd5UVBOWStt?=
- =?utf-8?B?aklGYUEveWxJYTZLYWx6d1V5WHd3WVRPQ0JrMk1hSkZBeVdyNlVkVWgwbVBQ?=
- =?utf-8?B?NVFsUmpZVFA1YkRpQzZ2WTAzSW1UODBZNzNqMjdGNHJ2MHBQbkc1VWNLbXYr?=
- =?utf-8?B?SnkvV3NCRnh0VFdMMC96cVYraWVCM2U4N28yMDJxMVJmMG5GMWtzcFZOTnlh?=
- =?utf-8?B?TnlOcndpdHMyb1hVWFJ1Qi8wQUJnSE91UFU5SjBXditYN0FhejNTa0hmZXBu?=
- =?utf-8?B?bmZyL0pNZnRab3puaFVzbGhyUkM3VzUyU2NiendNdVFWYUdWVjhSNWZaRHlC?=
- =?utf-8?B?S1cyNWhqeGxvUnpvamptbGtpVWlaUHE4OWkzbXB4eEwvRFVSTUt1ZTROMUhv?=
- =?utf-8?B?RUcxeHRBOXhoUkhtK2hURzlPR0pJSG5UQTBUYVhXRmdKcXQyQUtKRnYxTmhI?=
- =?utf-8?B?K2d5Q2tnY25QQnZZVFRGZ0I2UGxPc000WklwYWIzTXRER3RWRGdnNkY0aXp1?=
- =?utf-8?B?VVVnWVpkUS9MUWRUQ01qT2w1UU9DeVhEWHJ6Nk1zaTJDNXBYa0VwZUw1SlVK?=
- =?utf-8?B?MlA0YmFrMDFFbjZWOU5saDB0SVR4aitiN3dGbVpwUjBsRnBwb0daaDN1SXdJ?=
- =?utf-8?B?V3hkeHBGUmwyVUhSQkozQUxuUDVHdzZuVGh5VEM3Zy9rOU5BODl6MFpuTWVW?=
- =?utf-8?B?anJMQVA4OWJqKzZ5TFk4dUFuSmFoYTMxamlTb1dzUEJESWpGYU9paENvVFla?=
- =?utf-8?B?bm5GWjltajJXNmpzZlhPRXBkakZKR1U1Z1VZczVoVFZFdWpCRk14T1ppd2l5?=
- =?utf-8?B?YS9mZUVvNG80SVBHNmh0L0Z5T09nNWh3dDlwb2c3TW94TjdzMXQ4bkl5RkhJ?=
- =?utf-8?B?UE0zUDJzTGwxVmtWT0ZRcHlBemVCTWJkNHdXN24rOTRsMGRZVVlobWJDNjBO?=
- =?utf-8?B?WjcreDBpSjJlQTkrQWhCSVlZUldLWFJ2cnREUjM3M1VBSXJEdnhraUxralkw?=
- =?utf-8?B?NURWZ2VlT250ZGE2ZjZzR3lYc3k5V0lLb1BpWWdCKzd6Wk12RFdPUWMyOVVL?=
- =?utf-8?B?eXEvMkdjS1lSaXZuUCtJVi9PM29IRFlKNnVaY09hNmUxdVdzTFBva1hFT1Yw?=
- =?utf-8?Q?hwylTOKCgOsq1SbwbSb40cM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <97D5961A4730744FA564B2DB832E1293@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 20 Jul 2023 19:10:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C482111;
+        Thu, 20 Jul 2023 16:09:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B8E0E61CAF;
+        Thu, 20 Jul 2023 23:09:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 508FAC433C8;
+        Thu, 20 Jul 2023 23:09:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689894598;
+        bh=5u2MFbEXRLM0Yy5+2PHiozlXGPM2MahnPfqlMUKj5t0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dbA9l5NBi2Eb17ZHDob8XvgSLd4QlORT31d5Aub82a5uvPmL7+D5Q8pmEKQ+YCJs/
+         khFYxKZtN+IOayjVNKbDzhiv2lkYO0m9HxKrice8DvAgiarc/jWuyWZEhN7bkfsJOm
+         Y8AE6Yl2HoqdQzZDIBHrfWyHjozxDyoAISLpmAuELNkOdIOdOHPtom+JwMth12RYFY
+         7far7M2Omx2zcqIoucbEyYx5j9J2ISujVN1d0FSs2pgmuBpo8Tc+1sEtTaRSvXk84x
+         20cvue/CLcE/uEClYadd1WoYq3YTPtT6M166TBMGvVMzVTqGob7XrleBNWieHIOvBt
+         Ug/DmOXxwIhmg==
+Date:   Thu, 20 Jul 2023 19:09:55 -0400
+From:   Chuck Lever <cel@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Boyang Xue <bxue@redhat.com>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] nfsd: handle failure to collect pre/post-op attrs
+ more sanely
+Message-ID: <ZLm+w+aYVm59ctGq@manet.1015granger.net>
+References: <20230720-bz2223560-v2-0-070aaf2660b7@kernel.org>
+ <20230720-bz2223560-v2-1-070aaf2660b7@kernel.org>
+ <168988958067.11078.10143293324143654882@noble.neil.brown.name>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 1IbHD+xH4paC5wXY+PpnKDh0I9EhVBkkB2Mpgz3wNeS6UdHe4qoIIjRjWfaQTTaD+hF5VM+at8d+yKq6G0IYEUch2sCPUBErOW8NvECxprVmnFfAA2DHwyT19n9U3mVj3a2NKTFSL6fbC2alLLhnfU526o6Iwz4Kgw9ijfG+US85jQ3O8cMp3cXVOdtm3Q6sK5005gU8pBLy/5LX2u/Y9a0a5G3Ajdg0nOf+GzgriU3TxbmjZ6obDaggBXcj/yAO4vBjaY73AwV3nrfIB0DE0lKhxC4Awf1301MuvYOxvQo3oJ8SAPjsM0JzrrggSZ+8bHKIkw1Jeq1aX82Otgxqhxs5NVoac7aBcDuqw91q6lVhljXk/G32AWQl8b2vY71+a5q3Gmt45itC0rZ87coGkBx/LyySu9JVJhyj955N2XyJraBy6vYmM3kr4Pjlb4YtmI2FCcR3m3bAuEvHBd6SVv1HDjyoPfSlSuA7NeRF4z+0WPiiKsqJM1RCh5DimxbmOuHIy/kf8WHglOJ/P7ha5nvbSWQ6ss6Db5SUm4W3Lxp4RbdCEjtrd/45riDxLSCQ8vkedBO40TPGVSKF5SxoShAtBDTgQSuY3aIr7bU4JSlJL1Fm7ZIUfF7BGPU4u1lQYZc7wkqKmXabuOythBXERTtmcLQovIUe2l+MCzEyTAipZ4xmEmnPeT1FLoQBHagyFEGKvEHqBYN7UT8XpoSAOSj0HUvCPmuzEv+kqx0pUXMtAqTdNlN85Yny9kNfjaTsv4WHwq52F/u4YBfdtwTD4zii4E85fSBDNRmryvKiesnhTv++/YjX5wAabyjJvBnM7drFof428sxvUx99NhWzDRP8dtdkqp6m5JfURACsTR0A3CHiaog6CHpDshzpE8c21+FhD66yQL7tDwhwNO1Ovh8r4OrET3SpYzEPrqgVCxw=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR10MB7860.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4065398-4418-4e82-7459-08db8975a083
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2023 23:04:10.0202
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kwrYar7dO6pPfTzWutJHM2Ebbx9n64OG5/iehfwYmKx+6aYtgoT/Si3tRZUtGigBo1Hjbzn0zRNw/c/6VQW1KUDS4HGCwVVRJzRECpllCWk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR10MB7022
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-20_10,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
- suspectscore=0 phishscore=0 mlxscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307200197
-X-Proofpoint-ORIG-GUID: jatx8ONQ4BAHNl-dkfSpzFKHpWDpHmAL
-X-Proofpoint-GUID: jatx8ONQ4BAHNl-dkfSpzFKHpWDpHmAL
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <168988958067.11078.10143293324143654882@noble.neil.brown.name>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgVmluY2VudCwNCg0KPiBPbiBKdW4gMzAsIDIwMjMsIGF0IDE6MjggQU0sIFZpbmNlbnQgR3Vp
-dHRvdCA8dmluY2VudC5ndWl0dG90QGxpbmFyby5vcmc+IHdyb3RlOg0KPiANCj4gT24gRnJpLCAz
-MCBKdW4gMjAyMyBhdCAwMDoyMCwgU2FlZWQgTWlyemFtb2hhbW1hZGkNCj4gPHNhZWVkLm1pcnph
-bW9oYW1tYWRpQG9yYWNsZS5jb20+IHdyb3RlOg0KPj4gDQo+PiANCj4+IA0KPj4+IE9uIEp1biAy
-MSwgMjAyMywgYXQgOTo0MSBBTSwgU2FlZWQgTWlyemFtb2hhbW1hZGkgPHNhZWVkLm1pcnphbW9o
-YW1tYWRpQG9yYWNsZS5jb20+IHdyb3RlOg0KPj4+IA0KPj4+IEhpIENoZW4sIFZpbmNlbnQsDQo+
-Pj4gDQo+Pj4+IE9uIEp1biAxMywgMjAyMywgYXQgMTE6MzcgUE0sIENoZW4gWXUgPHl1LmMuY2hl
-bkBpbnRlbC5jb20+IHdyb3RlOg0KPj4+PiANCj4+Pj4gT24gMjAyMy0wNi0xMyBhdCAxOTozNTo1
-NSArMDAwMCwgU2FlZWQgTWlyemFtb2hhbW1hZGkgd3JvdGU6DQo+Pj4+PiBIaSBWaW5jZW50LA0K
-Pj4+Pj4gDQo+Pj4+Pj4gT24gSnVuIDksIDIwMjMsIGF0IDk6NTIgQU0sIFZpbmNlbnQgR3VpdHRv
-dCA8dmluY2VudC5ndWl0dG90QGxpbmFyby5vcmc+IHdyb3RlOg0KPj4+Pj4+IA0KPj4+Pj4+IEhp
-IFNhZWVkLA0KPj4+Pj4+IA0KPj4+Pj4+IE9uIEZyaSwgOSBKdW4gMjAyMyBhdCAwMDo0OCwgU2Fl
-ZWQgTWlyemFtb2hhbW1hZGkNCj4+Pj4+PiA8c2FlZWQubWlyemFtb2hhbW1hZGlAb3JhY2xlLmNv
-bT4gd3JvdGU6DQo+Pj4+Pj4+IA0KPj4+Pj4+PiBIaSBhbGwsDQo+Pj4+Pj4+IA0KPj4+Pj4+PiBJ
-4oCZbSByZXBvcnRpbmcgYSByZWdyZXNzaW9uIG9mIHVwIHRvIDglIHdpdGggVW5peGJlbmNoIFNo
-ZWxsIFNjcmlwdHMgYmVuY2htYXJrcyBhZnRlciB0aGUgZm9sbG93aW5nIGNvbW1pdDoNCj4+Pj4+
-Pj4gDQo+Pj4+Pj4+IENvbW1pdCBEYXRhOg0KPj4+Pj4+PiBjb21taXQtaWQgICAgICAgIDogYTUz
-Y2UxOGNhY2I0NzdkZDA1MTNjNjA3ZjE4N2QxNmYwZmE5NmY3MQ0KPj4+Pj4+PiBzdWJqZWN0ICAg
-ICAgICAgIDogc2NoZWQvZmFpcjogU2FuaXRpemUgdnJ1bnRpbWUgb2YgZW50aXR5IGJlaW5nIG1p
-Z3JhdGVkDQo+Pj4+Pj4+IGF1dGhvciAgICAgICAgICAgOiB2aW5jZW50Lmd1aXR0b3RAbGluYXJv
-Lm9yZw0KPj4+Pj4+PiBhdXRob3IgZGF0ZSAgICAgIDogMjAyMy0wMy0xNyAxNjowODoxMA0KPj4+
-Pj4+PiANCj4+Pj4+Pj4gDQo+Pj4+Pj4+IFdlIGhhdmUgb2JzZXJ2ZWQgdGhpcyBvbiBvdXIgdjUu
-NCBhbmQgdjQuMTQga2VybmVsIGFuZCBub3QgeWV0IHRlc3RlZCA1LjE1IGJ1dCBJIGV4cGVjdCB0
-aGUgc2FtZS4NCj4+Pj4+PiANCj4+Pj4+PiBJdCB3b3VsZCBiZSBnb29kIHRvIGNvbmZpcm0gdGhh
-dCB0aGUgcmVncmVzc2lvbiBpcyBwcmVzZW50IG9uIHY2LjMNCj4+Pj4+PiB3aGVyZSB0aGUgcGF0
-Y2ggaGFzIGJlZW4gbWVyZ2VkIG9yaWdpbmFsbHkuICBJdCBjYW4gYmUgdGhhdCB0aGVyZSBpcw0K
-Pj4+Pj4+IGhpZGRlbiBkZXBlbmRlbmN5IHdpdGggb3RoZXIgcGF0Y2hlcyBpbnRyb2R1Y2VkIHNp
-bmNlIHY1LjQNCj4+Pj4+IA0KPj4+Pj4gUmVncmVzc2lvbiBpcyBwcmVzZW50IG9uIHY2LjMgYXMg
-d2VsbCwgZXhhbXBsZXM6DQo+Pj4+PiB1Yl9nY2NfMjI0Y29waWVzX1NoZWxsX1NjcmlwdHNfOF9j
-b25jdXJyZW50OiB+NiUNCj4+Pj4+IHViX2djY18yMjRjb3BpZXNfU2hlbGxfU2NyaXB0c18xNl9j
-b25jdXJyZW50OiB+OCUNCj4+Pj4+IHViX2djY180NDhjb3BpZXNfU2hlbGxfU2NyaXB0c18xX2Nv
-bmN1cnJlbnQ6IH4yJQ0KPj4+IA0KPj4+IEFwb2xvZ2l6ZSBmb3IgdGhlIGNvbmZ1c2lvbiwgSSBz
-aG91bGQgY29ycmVjdCB0aGUgdjYuMyB1cHN0cmVhbSByZXN1bHQgYWJvdmUuIHY2LjMgZG9lc27i
-gJl0IGhhdmUgYW55IHJlZ3Jlc3Npb24uDQo+Pj4gdjYuMy55IC0+IG5vIHJlZ3Jlc3Npb24NCj4+
-PiB2NS4xNS55IC0+IG5vIHJlZ3Jlc3Npb24NCj4+PiB2NS40LnkgLT4gNS04JSByZWdyZXNzaW9u
-Lg0KPj4gDQo+PiBBIGdlbnRsZSByZW1pbmRlciBpZiB0aGVyZSBpcyBhbnkgcmVjb21tZW5kYXRp
-b24gZm9yIHY1LjQueSBhbmQgdjQuMTQueSByZWdyZXNzaW9uLiBUaGFua3MhDQo+IA0KPiBJIHRy
-aWVkIHRvIGZpbmQgd2h5IHRoZSByZWdyZXNzaW9uIGhhcHBlbnMgb25seSBmb3IgdjUuNC55IChv
-ciBsb3dlcikNCj4gYW5kIG5vdCBmb3IgdjUuMTUueSAob3IgYWJvdmUpIGJ1dCBJIGhhdmVuJ3Qg
-YmVlbiBhYmxlIHRvIGZpbmQgYW55DQo+IHBvc3NpYmxlIHJlYXNvbiBpbiB0aGUgY29kZS4NCj4g
-DQo+IFJlZ2FyZGluZyB0aGUgMiBjb21taXRzIGJlbG93LCB0aGV5IG11c3QgY29tZSB0b2dldGhl
-ciBzbyB3ZSBjYW4ndA0KPiBzaW1wbHkgcmV2ZXJ0IDEgYW5kIG5vdCB0aGUgb3RoZXIuDQo+IGNv
-bW1pdCA4MjljMTY1MWU5YzQgc2NoZWQvZmFpcjogc2FuaXRpemUgdnJ1bnRpbWUgb2YgZW50aXR5
-IGJlaW5nIHBsYWNlZA0KPiBjb21taXQgYTUzY2UxOGNhY2I0IHNjaGVkL2ZhaXI6IFNhbml0aXpl
-IHZydW50aW1lIG9mIGVudGl0eSBiZWluZyBtaWdyYXRlZA0KPiANClRlc3RzIHdlcmUgZG9uZSBi
-ZWZvcmUgYW5kIGFmdGVyIHRoZXNlIDIgY29tbWl0cy4NCg0KPiBlbnRpdHlfaXNfbG9uZ19zbGVl
-cGVyKCkgc2hvdWxkIG5ldmVyIHJldHVybiB0cnVlIGluIHlvdXIgY2FzZS4gQ291bGQNCj4geW91
-IHRyeSB0byBjaGVjayB0aGF0IGl0J3MgdGhlIGNhc2UgZm9yIHlvdSA/DQo+IA0KVGVzdGVkIHRo
-aXMgYW5kIGVudGl0eV9pc19sb25nX3NsZWVwZXIoKSBuZXZlciByZXR1cm5zIFRydWUuDQoNCkkg
-YWN0dWFsbHkgcmVtb3ZlZCB0aGUgcmVsYXRlZCBwYXJ0LCB0ZXN0ZWQsIGFuZCB0aGUgcmVncmVz
-c2lvbiBpcyBnb25lIHdpdGggdGhlIGZvbGxvd2luZyBjaGFuZ2UgKHBhcnRpYWwgcmV2ZXJ0KToN
-Cg0KZGlmZiAtLWdpdCBhL2tlcm5lbC9zY2hlZC9jb3JlLmMgYi9rZXJuZWwvc2NoZWQvY29yZS5j
-DQppbmRleCAzZWJkMjA1NDk5NmJjLi4wZDcwZGQ2ZTE0ODQ0IDEwMDY0NA0KLS0tIGEva2VybmVs
-L3NjaGVkL2NvcmUuYw0KKysrIGIva2VybmVsL3NjaGVkL2NvcmUuYw0KQEAgLTc5Miw5ICs3OTIs
-NiBAQCBzdGF0aWMgaW5saW5lIHZvaWQgZGVxdWV1ZV90YXNrKHN0cnVjdCBycSAqcnEsIHN0cnVj
-dCB0YXNrX3N0cnVjdCAqcCwgaW50IGZsYWdzKQ0KIA0KIHZvaWQgYWN0aXZhdGVfdGFzayhzdHJ1
-Y3QgcnEgKnJxLCBzdHJ1Y3QgdGFza19zdHJ1Y3QgKnAsIGludCBmbGFncykNCiB7DQotICAgICAg
-IGlmICh0YXNrX29uX3JxX21pZ3JhdGluZyhwKSkNCi0gICAgICAgICAgICAgICBmbGFncyB8PSBF
-TlFVRVVFX01JR1JBVEVEOw0KLQ0KICAgICAgICBpZiAodGFza19jb250cmlidXRlc190b19sb2Fk
-KHApKQ0KICAgICAgICAgICAgICAgIHJxLT5ucl91bmludGVycnVwdGlibGUtLTsNCiANCmRpZmYg
-LS1naXQgYS9rZXJuZWwvc2NoZWQvZmFpci5jIGIva2VybmVsL3NjaGVkL2ZhaXIuYw0KaW5kZXgg
-ODNhN2NmNjJjMGY1My4uZWY5YWNhMDVjN2JkZiAxMDA2NDQNCi0tLSBhL2tlcm5lbC9zY2hlZC9m
-YWlyLmMNCisrKyBiL2tlcm5lbC9zY2hlZC9mYWlyLmMNCkBAIC0zNzc5LDkgKzM3NzksNiBAQCBl
-bnF1ZXVlX2VudGl0eShzdHJ1Y3QgY2ZzX3JxICpjZnNfcnEsIHN0cnVjdCBzY2hlZF9lbnRpdHkg
-KnNlLCBpbnQgZmxhZ3MpDQogDQogICAgICAgIGlmIChmbGFncyAmIEVOUVVFVUVfV0FLRVVQKQ0K
-ICAgICAgICAgICAgICAgIHBsYWNlX2VudGl0eShjZnNfcnEsIHNlLCAwKTsNCi0gICAgICAgLyog
-RW50aXR5IGhhcyBtaWdyYXRlZCwgbm8gbG9uZ2VyIGNvbnNpZGVyIHRoaXMgdGFzayBob3QgKi8N
-Ci0gICAgICAgaWYgKGZsYWdzICYgRU5RVUVVRV9NSUdSQVRFRCkNCi0gICAgICAgICAgICAgICBz
-ZS0+ZXhlY19zdGFydCA9IDA7DQogDQogICAgICAgIGNoZWNrX3NjaGVkc3RhdF9yZXF1aXJlZCgp
-Ow0KICAgICAgICB1cGRhdGVfc3RhdHNfZW5xdWV1ZShjZnNfcnEsIHNlLCBmbGFncyk7DQpAQCAt
-NjE4Miw2ICs2MTc5LDkgQEAgc3RhdGljIHZvaWQgbWlncmF0ZV90YXNrX3JxX2ZhaXIoc3RydWN0
-IHRhc2tfc3RydWN0ICpwKQ0KIA0KICAgICAgICAvKiBUZWxsIG5ldyBDUFUgd2UgYXJlIG1pZ3Jh
-dGVkICovDQogICAgICAgIHAtPnNlLmF2Zy5sYXN0X3VwZGF0ZV90aW1lID0gMDsNCisNCisgICAg
-ICAgLyogV2UgaGF2ZSBtaWdyYXRlZCwgbm8gbG9uZ2VyIGNvbnNpZGVyIHRoaXMgdGFzayBob3Qg
-Ki8NCisgICAgICAgcC0+c2UuZXhlY19zdGFydCA9IDA7DQogfQ0KIA0KIHN0YXRpYyB2b2lkIHRh
-c2tfZGVhZF9mYWlyKHN0cnVjdCB0YXNrX3N0cnVjdCAqcCkNCg0KDQo+IA0KPiANCj4gDQo+IA0K
-Pj4gDQo+Pj4gDQo+Pj4gDQo+Pj4+Pj4gDQo+Pj4+Pj4gDQo+Pj4+Pj4+IA0KPj4+Pj4+PiB1Yl9n
-Y2NfMWNvcHlfU2hlbGxfU2NyaXB0c18xX2NvbmN1cnJlbnQgIDogIC0wLjAxJQ0KPj4+Pj4+PiB1
-Yl9nY2NfMWNvcHlfU2hlbGxfU2NyaXB0c184X2NvbmN1cnJlbnQgIDogIC0wLjElDQo+Pj4+Pj4+
-IHViX2djY18xY29weV9TaGVsbF9TY3JpcHRzXzE2X2NvbmN1cnJlbnQgIDogIC0wLjEyJSUNCj4+
-Pj4+Pj4gdWJfZ2NjXzU2Y29waWVzX1NoZWxsX1NjcmlwdHNfMV9jb25jdXJyZW50ICA6ICAtMi4y
-OSUlDQo+Pj4+Pj4+IHViX2djY181NmNvcGllc19TaGVsbF9TY3JpcHRzXzhfY29uY3VycmVudCAg
-OiAgLTQuMjIlDQo+Pj4+Pj4+IHViX2djY181NmNvcGllc19TaGVsbF9TY3JpcHRzXzE2X2NvbmN1
-cnJlbnQgIDogIC00LjIzJQ0KPj4+Pj4+PiB1Yl9nY2NfMjI0Y29waWVzX1NoZWxsX1NjcmlwdHNf
-MV9jb25jdXJyZW50ICA6ICAtNS41NCUNCj4+Pj4+Pj4gdWJfZ2NjXzIyNGNvcGllc19TaGVsbF9T
-Y3JpcHRzXzhfY29uY3VycmVudCAgOiAgLTglDQo+Pj4+Pj4+IHViX2djY18yMjRjb3BpZXNfU2hl
-bGxfU2NyaXB0c18xNl9jb25jdXJyZW50ICA6ICAtNy4wNSUNCj4+Pj4+Pj4gdWJfZ2NjXzQ0OGNv
-cGllc19TaGVsbF9TY3JpcHRzXzFfY29uY3VycmVudCAgOiAgLTYuNCUNCj4+Pj4+Pj4gdWJfZ2Nj
-XzQ0OGNvcGllc19TaGVsbF9TY3JpcHRzXzhfY29uY3VycmVudCAgOiAgLTguMzUlDQo+Pj4+Pj4+
-IHViX2djY180NDhjb3BpZXNfU2hlbGxfU2NyaXB0c18xNl9jb25jdXJyZW50ICA6ICAtNy4wOSUN
-Cj4+Pj4+Pj4gDQo+Pj4+Pj4+IExpbmsgdG8gdW5peGJlbmNoOg0KPj4+Pj4+PiBnaXRodWIuY29t
-L2tkbHVjYXMvYnl0ZS11bml4YmVuY2gNCj4+Pj4+PiANCj4+Pj4+PiBJIHRyaWVkIHRvIHJlcHJv
-ZHVjZSB0aGUgcHJvYmxlbSB3aXRoIHY2LjMgb24gbXkgc3lzdGVtIGJ1dCBJIGRvbid0DQo+Pj4+
-Pj4gc2VlIGFueSBkaWZmZXJlbmNlIHdpdGggb3Igd2l0aG91dCB0aGUgcGF0Y2gNCj4+Pj4+PiAN
-Cj4+Pj4+PiBEbyB5b3UgaGF2ZSBtb3JlIGRldGFpbHMgb24geW91ciBzZXR1cCA/IG51bWJlciBv
-ZiBjcHUgYW5kIHRvcG9sb2d5ID8NCj4+Pj4+PiANCj4+Pj4+IG1vZGVsIG5hbWUgIDogSW50ZWwo
-UikgWGVvbihSKSBDUFUgRTUtMjY5MCB2NCBAIDIuNjBHSHoNCj4+Pj4+IA0KPj4+Pj4gVG9wb2xv
-Z3k6DQo+Pj4+PiBub2RlICAgMCAgIDENCj4+Pj4+IDA6ICAxMCAgMjENCj4+Pj4+IDE6ICAyMSAg
-MTANCj4+Pj4+IA0KPj4+Pj4gQXJjaGl0ZWN0dXJlOiAgICAgICAgICB4ODZfNjQNCj4+Pj4+IENQ
-VSBvcC1tb2RlKHMpOiAgICAgICAgMzItYml0LCA2NC1iaXQNCj4+Pj4+IENQVShzKTogICAgICAg
-ICAgICAgICAgNTYNCj4+Pj4+IE9uLWxpbmUgQ1BVKHMpIGxpc3Q6ICAgMC01NQ0KPj4+Pj4gVGhy
-ZWFkKHMpIHBlciBjb3JlOiAgICAyDQo+Pj4+PiBDb3JlKHMpIHBlciBzb2NrZXQ6ICAgIDE0DQo+
-Pj4+PiBTb2NrZXQocyk6ICAgICAgICAgICAgIDINCj4+Pj4+IE5VTUEgbm9kZShzKTogICAgICAg
-ICAgMg0KPj4+Pj4gDQo+Pj4+IFRlc3RlZCBvbiBhIHNpbWlsYXIgcGxhdGZvcm0gRTUtMjY5NyB2
-MiBAIDIuNzBHSHogd2hpY2ggaGFzIDIgbm9kZXMsDQo+Pj4+IDI0IGNvcmVzLzQ4IENQVXMgaW4g
-dG90YWwsIGhvd2V2ZXIgSSBjb3VsZCBub3QgcmVwcm9kdWNlIHRoZSBpc3N1ZS4NCj4+Pj4gU2lu
-Y2UgdGhlIHJlZ3Jlc3Npb24gd2FzIHJlcG9ydGVkIG1haW5seSBhZ2FpbnN0IDIyNCBhbmQgNDQ4
-IGNvcGllcyBjYXNlDQo+Pj4+IG9uIHlvdXIgcGxhdGZvcm0sIEkgdGVzdGVkIHVuaXhiZW5jaCBz
-aGVsbDEgd2l0aCA0IHggNDggPSAxOTIgY29waWVzLg0KPj4+PiANCj4+Pj4gDQo+Pj4+IGE1M2Nl
-MThjYWNiNDc3ZGQgMjEzYWNhZGQyMWEwODBmYzhjZGE4ZWViZTZkDQo+Pj4+IC0tLS0tLS0tLS0t
-LS0tLS0gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+Pj4+ICAgICAgICVzdGRkZXYgICAg
-ICVjaGFuZ2UgICAgICAgICAlc3RkZGV2DQo+Pj4+ICAgICAgICAgICBcICAgICAgICAgIHwgICAg
-ICAgICAgICAgICAgXA0KPj4+PiAgIDIxMzA0ICAgICAgICAgICAgKzAuNSUgICAgICAyMTQyMCAg
-ICAgICAgdW5peGJlbmNoLnNjb3JlDQo+Pj4+ICA2MzIuNDMgICAgICAgICAgICArMC4wJSAgICAg
-NjMyLjQ0ICAgICAgICB1bml4YmVuY2gudGltZS5lbGFwc2VkX3RpbWUNCj4+Pj4gIDYzMi40MyAg
-ICAgICAgICAgICswLjAlICAgICA2MzIuNDQgICAgICAgIHVuaXhiZW5jaC50aW1lLmVsYXBzZWRf
-dGltZS5tYXgNCj4+Pj4gMTE4MzcwNDYgICAgICAgICAgICAtNC43JSAgIDExMjc3NzI3ICAgICAg
-ICB1bml4YmVuY2gudGltZS5pbnZvbHVudGFyeV9jb250ZXh0X3N3aXRjaGVzDQo+Pj4+ICA4NjQ3
-MTMgICAgICAgICAgICArMC4xJSAgICAgODY1OTE0ICAgICAgICB1bml4YmVuY2gudGltZS5tYWpv
-cl9wYWdlX2ZhdWx0cw0KPj4+PiAgICA5NjAwICAgICAgICAgICAgKzQuMCUgICAgICAgOTk4NCAg
-ICAgICAgdW5peGJlbmNoLnRpbWUubWF4aW11bV9yZXNpZGVudF9zZXRfc2l6ZQ0KPj4+PiA4LjQz
-M2UrMDggICAgICAgICAgICArMC42JSAgIDguNDhlKzA4ICAgICAgICB1bml4YmVuY2gudGltZS5t
-aW5vcl9wYWdlX2ZhdWx0cw0KPj4+PiAgICA0MDk2ICAgICAgICAgICAgKzAuMCUgICAgICAgNDA5
-NiAgICAgICAgdW5peGJlbmNoLnRpbWUucGFnZV9zaXplDQo+Pj4+ICAgIDM3NDEgICAgICAgICAg
-ICArMS4xJSAgICAgICAzNzgzICAgICAgICB1bml4YmVuY2gudGltZS5wZXJjZW50X29mX2NwdV90
-aGlzX2pvYl9nb3QNCj4+Pj4gICAxODM0MSAgICAgICAgICAgICsxLjMlICAgICAgMTg1NzIgICAg
-ICAgIHVuaXhiZW5jaC50aW1lLnN5c3RlbV90aW1lDQo+Pj4+ICAgIDUzMjMgICAgICAgICAgICAr
-MC42JSAgICAgICA1MzUzICAgICAgICB1bml4YmVuY2gudGltZS51c2VyX3RpbWUNCj4+Pj4gNzgx
-OTcwNDQgICAgICAgICAgICAtMy4xJSAgIDc1NzkxNzAxICAgICAgICB1bml4YmVuY2gudGltZS52
-b2x1bnRhcnlfY29udGV4dF9zd2l0Y2hlcw0KPj4+PiA1NzE3ODU3MyAgICAgICAgICAgICswLjQl
-ICAgNTczOTkwNjEgICAgICAgIHVuaXhiZW5jaC53b3JrbG9hZA0KPj4+PiANCj4+Pj4gVGhlcmUg
-aXMgbm8gbXVjaCBkaWZmZXJlbmNlIHdpdGggYTUzY2UxOGNhY2I0NzdkZCBhcHBsaWVkIG9yIG5v
-dC4NCj4+Pj4gDQo+Pj4+IA0KPj4+PiANCj4+Pj4gDQo+Pj4+IA0KPj4+PiBhMmU5MDYxMWI5ZjQy
-NWFkIDgyOWMxNjUxZTljNGE2Zjc4Mzk4ZDNlNjc2NQ0KPj4+PiAtLS0tLS0tLS0tLS0tLS0tIC0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPj4+PiAgICAgICAlc3RkZGV2ICAgICAlY2hhbmdl
-ICAgICAgICAgJXN0ZGRldg0KPj4+PiAgICAgICAgICAgXCAgICAgICAgICB8ICAgICAgICAgICAg
-ICAgIFwNCj4+Pj4gICAxOTk4NSAgICAgICAgICAgICs4LjYlICAgICAgMjE2OTcgICAgICAgIHVu
-aXhiZW5jaC5zY29yZQ0KPj4+PiAgNjMyLjY0ICAgICAgICAgICAgLTAuMCUgICAgIDYzMi41MyAg
-ICAgICAgdW5peGJlbmNoLnRpbWUuZWxhcHNlZF90aW1lDQo+Pj4+ICA2MzIuNjQgICAgICAgICAg
-ICAtMC4wJSAgICAgNjMyLjUzICAgICAgICB1bml4YmVuY2gudGltZS5lbGFwc2VkX3RpbWUubWF4
-DQo+Pj4+IDExNDUzOTg1ICAgICAgICAgICAgKzMuNyUgICAxMTg4MDI1OSAgICAgICAgdW5peGJl
-bmNoLnRpbWUuaW52b2x1bnRhcnlfY29udGV4dF9zd2l0Y2hlcw0KPj4+PiAgODE4OTk2ICAgICAg
-ICAgICAgKzMuMSUgICAgIDg0NDY4MSAgICAgICAgdW5peGJlbmNoLnRpbWUubWFqb3JfcGFnZV9m
-YXVsdHMNCj4+Pj4gICAgOTYwMCAgICAgICAgICAgICswLjAlICAgICAgIDk2MDAgICAgICAgIHVu
-aXhiZW5jaC50aW1lLm1heGltdW1fcmVzaWRlbnRfc2V0X3NpemUNCj4+Pj4gNy45MTFlKzA4ICAg
-ICAgICAgICAgKzguNCUgIDguNTc1ZSswOCAgICAgICAgdW5peGJlbmNoLnRpbWUubWlub3JfcGFn
-ZV9mYXVsdHMNCj4+Pj4gICAgNDA5NiAgICAgICAgICAgICswLjAlICAgICAgIDQwOTYgICAgICAg
-IHVuaXhiZW5jaC50aW1lLnBhZ2Vfc2l6ZQ0KPj4+PiAgICAzNzY3ICAgICAgICAgICAgLTAuNCUg
-ICAgICAgMzc1MiAgICAgICAgdW5peGJlbmNoLnRpbWUucGVyY2VudF9vZl9jcHVfdGhpc19qb2Jf
-Z290DQo+Pj4+ICAgMTg4NzMgICAgICAgICAgICAtMi40JSAgICAgIDE4NDIzICAgICAgICB1bml4
-YmVuY2gudGltZS5zeXN0ZW1fdGltZQ0KPj4+PiAgICA0OTYwICAgICAgICAgICAgKzcuMSUgICAg
-ICAgNTMxMyAgICAgICAgdW5peGJlbmNoLnRpbWUudXNlcl90aW1lDQo+Pj4+IDc1NDM2MDAwICAg
-ICAgICAgICArMTAuOCUgICA4MzU4MTQ4MyAgICAgICAgdW5peGJlbmNoLnRpbWUudm9sdW50YXJ5
-X2NvbnRleHRfc3dpdGNoZXMNCj4+Pj4gNTM1NTM0MDQgICAgICAgICAgICArOC43JSAgIDU4MjM1
-MzAzICAgICAgICB1bml4YmVuY2gud29ya2xvYWQNCj4+Pj4gDQo+Pj4+IFByZXZpb3VzbHkgd2l0
-aCA4MjljMTY1MWU5YzRhNmYgaW50cm9kdWNlZCwgdGhlcmUgaXMgOC42JSBpbXByb3ZlbWVudC4g
-QW5kIHRoaXMgaW1wcm92ZW1lbnQNCj4+Pj4gcmVtYWlucyB3aXRoIGE1M2NlMThjYWNiNDc3ZGQg
-YXBwbGllZC4NCj4+Pj4gDQo+Pj4+IENhbiB5b3Ugc2VuZCB0aGUgZnVsbCB0ZXN0IHNjcmlwdCBz
-byBJIGNhbiBoYXZlIGEgdHJ5IGxvY2FsbHk/DQo+Pj4gDQo+Pj4gVGhhbmtzIGZvciB0ZXN0aW5n
-IHRoaXMuIEZvciB2NS40Lnkga2VybmVsIChub3QgZm9yIHY2LjMueSBvciB2NS4xNS55KSwgdGhl
-cmUgaXMgYW4gOCUgcmVncmVzc2lvbiB3aXRoIHRoZSBmb2xsb3dpbmcgdGVzdDogdWJfZ2NjXzQ0
-OGNvcGllc19TaGVsbF9TY3JpcHRzXzhfY29uY3VycmVudA0KPj4+IEFuZCB0aGF04oCZcyDigJlz
-aGVsbDjigJkgd2l0aCDigJgtYyA0NDjigJkgY29waWVzIHBhc3NlZCBhcyBhcmd1bWVudC4NCj4+
-PiANCj4+PiBUaGFua3MsDQo+Pj4gU2FlZWQNCj4+PiANCj4+Pj4gDQo+Pj4+IHRoYW5rcywNCj4+
-Pj4gQ2hlbnl1DQoNCg==
+On Fri, Jul 21, 2023 at 07:46:20AM +1000, NeilBrown wrote:
+> On Fri, 21 Jul 2023, Jeff Layton wrote:
+> > Collecting pre_op_attrs can fail, in which case it's probably best to
+> > fail the whole operation.
+> > 
+> > Change fh_fill_{pre,post,both}_attrs to return __be32. For the pre and
+> > both functions, have the callers check the return code and abort the
+> > operation if it failed.
+> > 
+> > If fh_fill_post_attrs fails, then it's too late to do anything about it,
+> > so most of those callers ignore the return value. If this happens, then
+> > fh_post_saved will be false, which should cue the later stages to deal
+> > with it.
+> > 
+> > Suggested-by: Chuck Lever <chuck.lever@oracle.com>
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  fs/nfsd/nfs3proc.c |  4 +++-
+> >  fs/nfsd/nfs4proc.c | 14 ++++++------
+> >  fs/nfsd/nfsfh.c    | 26 ++++++++++++++---------
+> >  fs/nfsd/nfsfh.h    |  6 +++---
+> >  fs/nfsd/vfs.c      | 62 ++++++++++++++++++++++++++++++++++--------------------
+> >  5 files changed, 69 insertions(+), 43 deletions(-)
+> > 
+> > diff --git a/fs/nfsd/nfs3proc.c b/fs/nfsd/nfs3proc.c
+> > index fc8d5b7db9f8..268ef57751c4 100644
+> > --- a/fs/nfsd/nfs3proc.c
+> > +++ b/fs/nfsd/nfs3proc.c
+> > @@ -307,7 +307,9 @@ nfsd3_create_file(struct svc_rqst *rqstp, struct svc_fh *fhp,
+> >  	if (!IS_POSIXACL(inode))
+> >  		iap->ia_mode &= ~current_umask();
+> >  
+> > -	fh_fill_pre_attrs(fhp);
+> > +	status = fh_fill_pre_attrs(fhp);
+> > +	if (status != nfs_ok)
+> > +		goto out;
+> >  	host_err = vfs_create(&nop_mnt_idmap, inode, child, iap->ia_mode, true);
+> >  	if (host_err < 0) {
+> >  		status = nfserrno(host_err);
+> > diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+> > index d8e7a533f9d2..9285e1eab4d5 100644
+> > --- a/fs/nfsd/nfs4proc.c
+> > +++ b/fs/nfsd/nfs4proc.c
+> > @@ -297,12 +297,12 @@ nfsd4_create_file(struct svc_rqst *rqstp, struct svc_fh *fhp,
+> >  	}
+> >  
+> >  	if (d_really_is_positive(child)) {
+> > -		status = nfs_ok;
+> > -
+> >  		/* NFSv4 protocol requires change attributes even though
+> >  		 * no change happened.
+> >  		 */
+> > -		fh_fill_both_attrs(fhp);
+> > +		status = fh_fill_both_attrs(fhp);
+> > +		if (status != nfs_ok)
+> > +			goto out;
+> >  
+> >  		switch (open->op_createmode) {
+> >  		case NFS4_CREATE_UNCHECKED:
+> > @@ -345,7 +345,9 @@ nfsd4_create_file(struct svc_rqst *rqstp, struct svc_fh *fhp,
+> >  	if (!IS_POSIXACL(inode))
+> >  		iap->ia_mode &= ~current_umask();
+> >  
+> > -	fh_fill_pre_attrs(fhp);
+> > +	status = fh_fill_pre_attrs(fhp);
+> > +	if (status != nfs_ok)
+> > +		goto out;
+> >  	status = nfsd4_vfs_create(fhp, child, open);
+> >  	if (status != nfs_ok)
+> >  		goto out;
+> > @@ -424,11 +426,11 @@ do_open_lookup(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate, stru
+> >  	} else {
+> >  		status = nfsd_lookup(rqstp, current_fh,
+> >  				     open->op_fname, open->op_fnamelen, *resfh);
+> > -		if (!status)
+> > +		if (status == nfs_ok)
+> >  			/* NFSv4 protocol requires change attributes even though
+> >  			 * no change happened.
+> >  			 */
+> > -			fh_fill_both_attrs(current_fh);
+> > +			status = fh_fill_both_attrs(current_fh);
+> >  	}
+> >  	if (status)
+> >  		goto out;
+> > diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
+> > index c291389a1d71..f7e68a91e826 100644
+> > --- a/fs/nfsd/nfsfh.c
+> > +++ b/fs/nfsd/nfsfh.c
+> > @@ -614,7 +614,7 @@ fh_update(struct svc_fh *fhp)
+> >   * @fhp: file handle to be updated
+> >   *
+> >   */
+> > -void fh_fill_pre_attrs(struct svc_fh *fhp)
+> > +__be32 fh_fill_pre_attrs(struct svc_fh *fhp)
+> >  {
+> >  	bool v4 = (fhp->fh_maxsize == NFS4_FHSIZE);
+> >  	struct inode *inode;
+> > @@ -622,12 +622,12 @@ void fh_fill_pre_attrs(struct svc_fh *fhp)
+> >  	__be32 err;
+> >  
+> >  	if (fhp->fh_no_wcc || fhp->fh_pre_saved)
+> > -		return;
+> > +		return nfs_ok;
+> >  
+> >  	inode = d_inode(fhp->fh_dentry);
+> >  	err = fh_getattr(fhp, &stat);
+> >  	if (err)
+> > -		return;
+> > +		return err;
+> >  
+> >  	if (v4)
+> >  		fhp->fh_pre_change = nfsd4_change_attribute(&stat, inode);
+> > @@ -636,6 +636,7 @@ void fh_fill_pre_attrs(struct svc_fh *fhp)
+> >  	fhp->fh_pre_ctime = stat.ctime;
+> >  	fhp->fh_pre_size  = stat.size;
+> >  	fhp->fh_pre_saved = true;
+> > +	return nfs_ok;
+> >  }
+> >  
+> >  /**
+> > @@ -643,26 +644,27 @@ void fh_fill_pre_attrs(struct svc_fh *fhp)
+> >   * @fhp: file handle to be updated
+> >   *
+> >   */
+> > -void fh_fill_post_attrs(struct svc_fh *fhp)
+> > +__be32 fh_fill_post_attrs(struct svc_fh *fhp)
+> >  {
+> >  	bool v4 = (fhp->fh_maxsize == NFS4_FHSIZE);
+> >  	struct inode *inode = d_inode(fhp->fh_dentry);
+> >  	__be32 err;
+> >  
+> >  	if (fhp->fh_no_wcc)
+> > -		return;
+> > +		return nfs_ok;
+> >  
+> >  	if (fhp->fh_post_saved)
+> >  		printk("nfsd: inode locked twice during operation.\n");
+> >  
+> >  	err = fh_getattr(fhp, &fhp->fh_post_attr);
+> >  	if (err)
+> > -		return;
+> > +		return err;
+> >  
+> >  	fhp->fh_post_saved = true;
+> >  	if (v4)
+> >  		fhp->fh_post_change =
+> >  			nfsd4_change_attribute(&fhp->fh_post_attr, inode);
+> > +	return nfs_ok;
+> >  }
+> >  
+> >  /**
+> > @@ -672,16 +674,20 @@ void fh_fill_post_attrs(struct svc_fh *fhp)
+> >   * This is used when the directory wasn't changed, but wcc attributes
+> >   * are needed anyway.
+> >   */
+> > -void fh_fill_both_attrs(struct svc_fh *fhp)
+> > +__be32 fh_fill_both_attrs(struct svc_fh *fhp)
+> >  {
+> > -	fh_fill_post_attrs(fhp);
+> > -	if (!fhp->fh_post_saved)
+> > -		return;
+> > +	__be32 err;
+> > +
+> > +	err = fh_fill_post_attrs(fhp);
+> > +	if (err)
+> > +		return err;
+> > +
+> >  	fhp->fh_pre_change = fhp->fh_post_change;
+> >  	fhp->fh_pre_mtime = fhp->fh_post_attr.mtime;
+> >  	fhp->fh_pre_ctime = fhp->fh_post_attr.ctime;
+> >  	fhp->fh_pre_size = fhp->fh_post_attr.size;
+> >  	fhp->fh_pre_saved = true;
+> > +	return nfs_ok;
+> >  }
+> >  
+> >  /*
+> > diff --git a/fs/nfsd/nfsfh.h b/fs/nfsd/nfsfh.h
+> > index 4e0ecf0ae2cf..486803694acc 100644
+> > --- a/fs/nfsd/nfsfh.h
+> > +++ b/fs/nfsd/nfsfh.h
+> > @@ -294,7 +294,7 @@ static inline void fh_clear_pre_post_attrs(struct svc_fh *fhp)
+> >  }
+> >  
+> >  u64 nfsd4_change_attribute(struct kstat *stat, struct inode *inode);
+> > -extern void fh_fill_pre_attrs(struct svc_fh *fhp);
+> > -extern void fh_fill_post_attrs(struct svc_fh *fhp);
+> > -extern void fh_fill_both_attrs(struct svc_fh *fhp);
+> > +__be32 fh_fill_pre_attrs(struct svc_fh *fhp);
+> > +__be32 fh_fill_post_attrs(struct svc_fh *fhp);
+> > +__be32 fh_fill_both_attrs(struct svc_fh *fhp);
+> >  #endif /* _LINUX_NFSD_NFSFH_H */
+> > diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
+> > index 8a2321d19194..f200afd33630 100644
+> > --- a/fs/nfsd/vfs.c
+> > +++ b/fs/nfsd/vfs.c
+> > @@ -1537,9 +1537,11 @@ nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
+> >  	dput(dchild);
+> >  	if (err)
+> >  		goto out_unlock;
+> > -	fh_fill_pre_attrs(fhp);
+> > -	err = nfsd_create_locked(rqstp, fhp, attrs, type, rdev, resfhp);
+> > -	fh_fill_post_attrs(fhp);
+> > +	err = fh_fill_pre_attrs(fhp);
+> > +	if (err == nfs_ok) {
+> > +		err = nfsd_create_locked(rqstp, fhp, attrs, type, rdev, resfhp);
+> > +		fh_fill_post_attrs(fhp);
+> 
+> Most error handling in nfsd is
+>  
+>    if (err)
+>        goto ....
+> 
+> Here (and one other place I think) you have
+>    if (not err)
+>        do stuff;
+> 
+> Do we want to be more consistent?
+
+Yes, unless being consistent makes this code unreadable. There
+doesn't seem to be a reason to drop that convention here.
+
+
+> I'm in two minds about this and I
+> don't dislike your patch.  But I noticed the inconsistency and thought I
+> should mention it.
+> 
+> Also, should we put a __must_check annotation on fh_fill_pre_attrs() and
+> ..post..?  Then I wouldn't have to manually check that you found and
+> fixed all callers (which I haven't).
