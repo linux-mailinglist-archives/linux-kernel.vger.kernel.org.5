@@ -2,85 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B343375AF83
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D4175AF32
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbjGTNSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
+        id S231370AbjGTNJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbjGTNSc (ORCPT
+        with ESMTP id S229535AbjGTNJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:18:32 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CA410FC
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:18:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689859111; x=1721395111;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=StnBaGaOlRqqTLgANOZt5SAXy2wagVOHiKTaAVKHt2Y=;
-  b=NESimaLjYzpdcbjHU3VdRjEJS5kh0K5WoiaiWm9yqxP48ui06Ej0rGOn
-   D6VAguqUew3vkoeT6D9z9/Rg2dypjx/tQDblLMYYNq792C5eOkABOBvDq
-   f0sbfwbFFa/m8Ju2MvsZjjVYj4fICK3QyZGW38IKkUN+XZefeUCowM1lG
-   qYytyDzJgKF3/uRaAQMR4BucZtZGMTIgjnkX9S2cAbtkAqticGK3ZHQhF
-   T4X17xX0vesZXA1evnfvgDbKrb2IqibmNd2S0xpXnlhQCE8lO2B6W/dlh
-   bWKRPNWdGZZZNjbRqN7Hm/nNLjXIOHxJQ2fEqB/+p8EQrXQbfkW4dUkq7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="370297816"
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="370297816"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 06:08:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="727684950"
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="727684950"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.191.109]) ([10.252.191.109])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 06:08:28 -0700
-Message-ID: <d766f11f-45a6-9d47-3bfb-b3632a0b0f0b@linux.intel.com>
-Date:   Thu, 20 Jul 2023 21:08:22 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com, Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Sebastien Boeuf <seb@rivosinc.com>, iommu@lists.linux.dev,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@rivosinc.com
-Subject: Re: [PATCH 06/11] RISC-V: drivers/iommu/riscv: Add command, fault,
- page-req queues
-Content-Language: en-US
-To:     Tomasz Jeznach <tjeznach@rivosinc.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
-References: <cover.1689792825.git.tjeznach@rivosinc.com>
- <1fd79e5c53d9d6ed2264f60dd4261f293cc00472.1689792825.git.tjeznach@rivosinc.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <1fd79e5c53d9d6ed2264f60dd4261f293cc00472.1689792825.git.tjeznach@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 20 Jul 2023 09:09:20 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67310269A
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:09:18 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-579dd7e77f5so7542167b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:09:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689858557; x=1690463357;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=URfFYme25baLr1pjIuGY05OV9hkL1kZ6iw1B9jJiYbQ=;
+        b=F1G3kgAJMRCPvFvLCqBdv+xE6HqvaZGWiFw3zRdSvtXqFJplEV1kUadc60xdVwMnXY
+         yg9K5YIzN8VUIXwyGhBPyb58shkiGB5lkFYcoxkfxIhI4RhyeUs5HA5rktribN1cW1x6
+         VMUXrmNIKewfokNGJhSGvBnsQAbnUWn5/ryMC5GNNH9kXgbFMHnx0WShS0Uda32PvQ4o
+         Ba+93DSCGje/0zbz9tYu2JAglOCpV0FwuuZiEx8ca51okjoiV+trPqjOmEcGdemYTe80
+         rX+Jf6iAuWqS177gedZ4hAfQuINeN/RrX5izHYE50h4pbOGf5MktTyY+jpWfQ8ho1VbV
+         Y+yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689858557; x=1690463357;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=URfFYme25baLr1pjIuGY05OV9hkL1kZ6iw1B9jJiYbQ=;
+        b=STl6TMokjK9DuudQ1SunXe8LMbpyShPEKhXBMMxb6U0sihqtuGetfgUp4A5Hq1Q5Pd
+         ZuOP+Ym3RfXhUqEQijljEM2dHPQQk3Kkup5ghkBveYMRiCG71scsgT/EnsYhWmDYDwJ+
+         xfoYb0RAHZmUhxrVEKF9EnMPeBy1n6I/EZMs7FF56ROKnJepqE4l1SChbPQRhC+7py8Y
+         5j41UdZQ/LGn8JI3cRRoGYVG/pKssUgb39fmjr5ZEUqHnxqPLIexNBwq/f5GQ7KUrEgP
+         wXfEG8/ndXhkTXkb7Aql5wJqeyjar7Nqc9jplEfnjpm3HjEKp6wX0IeE9WHrkI4AHHuc
+         Qe7g==
+X-Gm-Message-State: ABy/qLZLftaDNzEhuHz7pkh5uzOdOrzzb9XFkXxnwD383YZ0Av/EZHMr
+        jJqWE4JUIrdQ2u7l85VDGGe05DPEsfT13eA=
+X-Google-Smtp-Source: APBJJlGHH4ltUoNcMtMERBQVB1eY3JEqao0P6GUXo8NypCt2sNtKFSCkfmV87W2+owVqImszJvp06ud6yEhQ9ls=
+X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
+ (user=aliceryhl job=sendgmr) by 2002:a81:c545:0:b0:576:f3ee:4e67 with SMTP id
+ o5-20020a81c545000000b00576f3ee4e67mr58729ywj.8.1689858557661; Thu, 20 Jul
+ 2023 06:09:17 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 13:09:01 +0000
+In-Reply-To: <20230719141918.543938-2-benno.lossin@proton.me>
+Mime-Version: 1.0
+References: <20230719141918.543938-2-benno.lossin@proton.me>
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
+Message-ID: <20230720130905.3498563-1-aliceryhl@google.com>
+Subject: Re: [PATCH v2 01/12] rust: init: consolidate init macros
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     benno.lossin@proton.me
+Cc:     alex.gaynor@gmail.com, aliceryhl@google.com,
+        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
+        linux-kernel@vger.kernel.org, nmi@metaspace.dk, ojeda@kernel.org,
+        rust-for-linux@vger.kernel.org, wedsonaf@gmail.com
+Content-Type: text/plain; charset="yes"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/20 3:33, Tomasz Jeznach wrote:
-> Enables message or wire signal interrupts for PCIe and platforms devices.
+Benno Lossin <benno.lossin@proton.me> writes:
+> Merges the implementations of `try_init!` and `try_pin_init!`. These two
+> macros are very similar, but use different traits. The new macro
+> `__init_internal!` that is now the implementation for both takes these
+> traits as parameters.
+>=20
+> This change does not affect any users, as no public API has been
+> changed, but it should simplify maintaining the init macros.
+>=20
+> Reviewed-by: Bj=C3=B6rn Roy Baron <bjorn3_gh@protonmail.com>
+> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 
-If this patch could be divided into multiple small patches, each
-logically doing one specific thing, it will help people better review
-the code.
-
-Best regards,
-baolu
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
