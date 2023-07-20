@@ -2,146 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C36A175BA45
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D7975BA47
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbjGTWHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 18:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
+        id S229945AbjGTWI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 18:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjGTWHb (ORCPT
+        with ESMTP id S229914AbjGTWIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:07:31 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20119B3;
-        Thu, 20 Jul 2023 15:07:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 20 Jul 2023 18:08:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6617186
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:08:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3A62D21DC2;
-        Thu, 20 Jul 2023 22:07:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689890843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wH0mag0dNrA3/nZZ/acE5Q2iSsRcVegnYHZodYGffs4=;
-        b=prWEn9xRvLEtC+MfBzb6XEqwAzK57atOyC9LvVU07n9nSKxOPNyLFcwT/HMAwKwGwBOZzS
-        gVwOrx0pLpzboQRaZBFDqkaCDM65AIhPs/UBmcwmPFJYv8OuQixMXCfzTVk6YB6+HhZRlE
-        9WgmSe3NSZgdufrlyE4qmWWMzLzaFVQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689890843;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wH0mag0dNrA3/nZZ/acE5Q2iSsRcVegnYHZodYGffs4=;
-        b=Z89wmJkUCylKd7agLmssa8NIJPa5g26qp7dQiKwGh8YGmZf5C3cOn9aE/DgtaWdrDjBGFR
-        6wTfIgLdHhHXNqCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B9B5138EC;
-        Thu, 20 Jul 2023 22:07:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id GEMiBxiwuWSfSQAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 20 Jul 2023 22:07:20 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BCE161C37
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 22:08:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BAAEC433C7;
+        Thu, 20 Jul 2023 22:08:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689890932;
+        bh=Z5s9oLlOTT+MLoGJ5I83fWvkRr0YoIV/xJy4YEJUgtw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t0XsLlQQATT/gwcGZUW2DUbvGbOilzbNnHvR4yU3t7nXjnpzgwle8lagwXaOH993P
+         dNC+u9nKfZkC+Az6XPGRksZ+hDSHDJwq6WIo7s97j4A/sUN6tbV5ELf8ZVi+ADwyvQ
+         /fTDctNQdflbUcnQnd5kSQtVbi/XiLHtI1V17PKCM0Farsaf2bfL2RbmZLtgY2249c
+         SD3HCak7x86hAoe1XUjsQDTq/4jKmHG7Sh7GI7WhxgGZzWAZotqbWA9srxhGrH6/O+
+         jWOau6Tnvi/WTonz6i0fF5kj1inLN1NcgJZn1X6++sBDF1RZD8aDYQt5FkIXit4J6K
+         H8+mBM70ijQIA==
+Date:   Thu, 20 Jul 2023 23:08:47 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Tomasz Jeznach <tjeznach@rivosinc.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Sebastien Boeuf <seb@rivosinc.com>, iommu@lists.linux.dev,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux@rivosinc.com
+Subject: Re: [PATCH 05/11] RISC-V: drivers/iommu/riscv: Add sysfs interface
+Message-ID: <20230720-bully-famine-dfc9a5e688ef@spud>
+References: <cover.1689792825.git.tjeznach@rivosinc.com>
+ <610abe685f90870be52bc7c2ca45ab5235bd8eb4.1689792825.git.tjeznach@rivosinc.com>
+ <c26d029e-dabc-9ad2-ed42-bb6ee276e3fb@kernel.org>
+ <CAH2o1u6pMF3MN=oFBcs9kOf-nwnEYfD2Vv=89+DzUanV59R5dw@mail.gmail.com>
+ <69800c58-2df8-25e5-09e0-c9929bae2193@kernel.org>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Jeff Layton" <jlayton@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     "Chuck Lever" <chuck.lever@oracle.com>,
-        "Olga Kornievskaia" <kolga@netapp.com>,
-        "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nfsd: add a MODULE_DESCRIPTION
-In-reply-to: <20230720133454.38695-1-jlayton@kernel.org>
-References: <20230720133454.38695-1-jlayton@kernel.org>
-Date:   Fri, 21 Jul 2023 08:07:16 +1000
-Message-id: <168989083691.11078.1519785551812636491@noble.neil.brown.name>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bcun5Y1HEGvpIqWO"
+Content-Disposition: inline
+In-Reply-To: <69800c58-2df8-25e5-09e0-c9929bae2193@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023, Jeff Layton wrote:
-> I got this today from modpost:
+
+--bcun5Y1HEGvpIqWO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Jul 20, 2023 at 11:37:50PM +0200, Krzysztof Kozlowski wrote:
+> On 20/07/2023 20:30, Tomasz Jeznach wrote:
+
+> >>> +#define sysfs_dev_to_iommu(dev) \
+> >>> +     container_of(dev_get_drvdata(dev), struct riscv_iommu_device, i=
+ommu)
+> >>> +
+> >>> +static ssize_t address_show(struct device *dev,
+> >>> +                         struct device_attribute *attr, char *buf)
+> >>
+> >>
+> >> Where is the sysfs ABI documented?
+> >>
+> >=20
+> > Sysfs for now is used only to expose selected IOMMU memory mapped
+> > registers, with complete documentation in the RISC-V IOMMU Arch Spec
+> > [1], and some comments in iommu-bits.h file.
+> > LMK If it would be better to put a dedicated file documenting those
+> > with the patch itself.
 >=20
->     WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nfsd/nfsd.o
->=20
-> Add a module description.
->=20
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/nfsd/nfsctl.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-> index 1b8b1aab9a15..7070969a38b5 100644
-> --- a/fs/nfsd/nfsctl.c
-> +++ b/fs/nfsd/nfsctl.c
-> @@ -1626,6 +1626,7 @@ static void __exit exit_nfsd(void)
->  }
-> =20
->  MODULE_AUTHOR("Olaf Kirch <okir@monad.swb.de>");
-> +MODULE_DESCRIPTION("The Linux kernel NFS server");
+> I meant, you created new sysfs interface. Maybe I missed something in
+> the patchset, but each new sysfs interface required documenting in
+> Documentation/ABI/.
 
-Of 9176 MODULE_DESCRIPTIONs in Linux, 21 start with "The ".
-Does having that word add anything useful?
-Amusingly 129 end with a period.  I wonder what Jon Corbet would prefer
-:-)=20
+| expose selected IOMMU memory mapped registers
 
-A few tell us what the module does.
-"Measures" "Provides"....
-Do we want "Implements" ??
+| Enable sysfs debug / visibility interface providing restricted
+| access to hardware registers.
 
-232 start "Driver " and 214 are "Driver for"....
-Should we have "Server for" ??
+Documentation requirements of sysfs stuff aside, I'm not sure that we
+even want a sysfs interface for this in the first place? Seems like, if
+at all, this should be debugfs instead? Seems like the only use case for
+it is debugging/development...
 
-26 start "Linux" ... which seems a bit redundant
-  12 contain "for Linux".  67 mention linux in some way.
-28 contain the word "kernel" - also redundant.
-Only three (others) mention "Linux kernel"
+--bcun5Y1HEGvpIqWO
+Content-Type: application/pgp-signature; name="signature.asc"
 
-drivers/pcmcia/cs.c:MODULE_DESCRIPTION("Linux Kernel Card Services");
-fs/ksmbd/server.c:MODULE_DESCRIPTION("Linux kernel CIFS/SMB SERVER");
-fs/orangefs/orangefs-mod.c:MODULE_DESCRIPTION("The Linux Kernel VFS interface=
- to ORANGEFS");
+-----BEGIN PGP SIGNATURE-----
 
-hmmm..  192 contain the word "module".  Fortunately none say=20
-  "Linux kernel module for ..."
-I would have found that to be a step too far.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLmwbwAKCRB4tDGHoIJi
+0j3GAP4sKlFBg9b3mVUW8DI1uEli6p+U8QzmKoSPgvciU6lUXwEA/kTBkmBeUY/1
+NthONKHle/tjSb9Hf+te2bjd72ZZGgM=
+=lL8V
+-----END PGP SIGNATURE-----
 
-I'd like to suggest
-
-  "Implements Server for NFS - v2, 3, v4.{0,1,2}"
-
-But that would require excessive #ifdef magic to get right.
-
-A small part of me wants to suggest:
-
-   "nfsd"
-
-but maybe I'm just in a whimsical mood today.
-
-NeilBrown
-
-
->  MODULE_LICENSE("GPL");
->  module_init(init_nfsd)
->  module_exit(exit_nfsd)
-> --=20
-> 2.41.0
->=20
->=20
-
+--bcun5Y1HEGvpIqWO--
