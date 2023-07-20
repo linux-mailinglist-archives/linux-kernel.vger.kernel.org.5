@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 216E275AAE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F91575AAE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbjGTJbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
+        id S229918AbjGTJc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjGTJbY (ORCPT
+        with ESMTP id S230451AbjGTJcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:31:24 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56627359E
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:22:12 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R66dr2ClKzBRDsL
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 17:22:08 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689844928; x=1692436929; bh=OFKE5E9c4rF6D5IgSGAwbuC0/Ms
-        M5ASBbtPBPoN95a8=; b=vHzayJ+Wm8ij9fhl7eRhD2fmd9As1ben7A/JIdyjzEO
-        AbEtC8hO54KGu9QG/yjknyhxS+lQvPamFUIvi7apXVKsJXeNZ8hn1ZJDea0WnNxD
-        qbjVfoRVDexaQMYXkE7IjJdMsasWYPuGIYByH0F0zZWki03UQCY1xH4H6JTp5A6J
-        pswVtL6lMWOyG+JsOLdV57A5t63I9Jp2gB0fZQUR+Kg/eAFUHyeCAodwQhQlKgww
-        1paEZ5enRRfxb2CglJlDlQpcaRNjrxNClfjymUs16g6Zq3i8+4FWPad8qJPucbpO
-        oigLSehWmY5BKqa0iF2DuKuMzABK0wD0gIOlsKTtliw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 5iZDg_YgSRJd for <linux-kernel@vger.kernel.org>;
-        Thu, 20 Jul 2023 17:22:08 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R66dr0DYnzBHXhQ;
-        Thu, 20 Jul 2023 17:22:08 +0800 (CST)
+        Thu, 20 Jul 2023 05:32:14 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7B6448A
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:26:16 -0700 (PDT)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qMPvE-0001QP-NM; Thu, 20 Jul 2023 11:26:08 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 2355C1F6110;
+        Thu, 20 Jul 2023 09:26:07 +0000 (UTC)
+Date:   Thu, 20 Jul 2023 11:26:06 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-serial@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] add support for ASIX AX99100
+Message-ID: <20230720-enlarged-scratch-5c8629dc8bea-mkl@pengutronix.de>
+References: <20230718174200.2862849-1-jiaqing.zhao@linux.intel.com>
 MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 17:22:07 +0800
-From:   sunran001@208suo.com
-To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: aic79xx: fix some errors related to spaces
-In-Reply-To: <20230720092058.3618-1-xujianghui@cdjrlc.com>
-References: <20230720092058.3618-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <3029a40608f9337530b3cb767d936f36@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="p6ccc7kw3oatnm5q"
+Content-Disposition: inline
+In-Reply-To: <20230718174200.2862849-1-jiaqing.zhao@linux.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: space prohibited before that close parenthesis ')'
-ERROR: open brace '{' following struct go on the same line
-ERROR: space prohibited before open square bracket '['
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  drivers/scsi/aic7xxx/aic79xx.h | 7 +++----
-  1 file changed, 3 insertions(+), 4 deletions(-)
+--p6ccc7kw3oatnm5q
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/scsi/aic7xxx/aic79xx.h 
-b/drivers/scsi/aic7xxx/aic79xx.h
-index 59e9321815c8..a1fdefdfddd8 100644
---- a/drivers/scsi/aic7xxx/aic79xx.h
-+++ b/drivers/scsi/aic7xxx/aic79xx.h
-@@ -66,7 +66,7 @@ struct scb_platform_data;
-  #define	SCB_LIST_NULL		0xFF00
-  #define	SCB_LIST_NULL_LE	(ahd_htole16(SCB_LIST_NULL))
-  #define QOUTFIFO_ENTRY_VALID 0x80
--#define SCBID_IS_NULL(scbid) (((scbid) & 0xFF00 ) == SCB_LIST_NULL)
-+#define SCBID_IS_NULL(scbid) (((scbid) & 0xFF00) == SCB_LIST_NULL)
+On 18.07.2023 17:41:56, Jiaqing Zhao wrote:
+> This patch adds kernel inbox driver support for the serial port and
+> parallel port mode controller of ASIX AX99100 PCIe to Multi I/O
+> Controller. This device has 4 separate PCI functions and each functions
+> can be configured to operate in different modes.
+>=20
+> This patchset is tested with ASIX AX99100 in following modes:
+> * 4 x Serial Port
+> * 2 x Serial Port
+> * 2 x Serial Port + 1 x Parallel Port
+> * 1 x Parallel Port
 
-  #define SCSIID_TARGET(ahd, scsiid)	\
-  	(((scsiid) & TID) >> TID_SHIFT)
-@@ -1043,8 +1043,7 @@ typedef enum {
+I think it's better to split the series into subsystems. For CAN that
+would be patches 1 and 2. Please add support@ems-wuensche.com and
+uttenthaler@ems-wuensche.com on Cc.
 
-  typedef uint8_t ahd_mode_state;
+regards,
+Marc
 
--struct ahd_completion
--{
-+struct ahd_completion {
-  	uint16_t	tag;
-  	uint8_t		sg_status;
-  	uint8_t		valid_tag;
-@@ -1316,7 +1315,7 @@ struct aic7770_identity {
-  	const char		*name;
-  	ahd_device_setup_t	*setup;
-  };
--extern struct aic7770_identity aic7770_ident_table [];
-+extern struct aic7770_identity aic7770_ident_table[];
-  extern const int ahd_num_aic7770_devs;
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-  #define AHD_EISA_SLOT_OFFSET	0xc00
+--p6ccc7kw3oatnm5q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmS4/akACgkQvlAcSiqK
+BOhxdgf/SWvDQp7oKl0hy/pf7oUnlBLlQcXCv3JXbrRDfYQsqM9pMEoy9T8pb68n
+UQqP/3GWxbH8u/Ajwo4j2E52vKraiIbkpiOKa0lFWVjlPMhwO3WhENsn1LECE1D6
+WmJlz9AMjKNaR69ncoNsWVig2xmyD2RRurAQdFIBYsDQcuIRqF0u3/Lisbm97rCK
+x2fAyeYkG4/VcwZOQkkJDpphcT7YTIHeDwe02d3PFp8JypcSVIkRnZrWqc43o9ux
+kOyrpa3+X26pxGRPBIojd21HB4q74r7ziQbUqU0X4IJcML8cELTQt12ngfWMtFES
+XimYTl0QvduhSs8NtEwrGbWIecQ+zw==
+=Wz7L
+-----END PGP SIGNATURE-----
+
+--p6ccc7kw3oatnm5q--
