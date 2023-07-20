@@ -2,129 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EC375B960
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B99D75B964
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbjGTVLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 17:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49126 "EHLO
+        id S229820AbjGTVNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 17:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjGTVLs (ORCPT
+        with ESMTP id S229451AbjGTVNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 17:11:48 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BBC271D
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:11:46 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40371070eb7so40961cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:11:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689887505; x=1690492305;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GFMBMSuSHT3wjfgxcRFwsxpzW94657vZDmNiGlKTyzE=;
-        b=IPspuDslZlm2yuv2pkMnm34gJ09M9jC1mazBAa+MyjyKQT2PgjpJFMvIY2iv3fLB01
-         XaXFjpgclKZqQIqkcuEfTM3kDXorrJ6nYfH8SLfRNNi1/kXZuXGInFSbV78gZqaGq6x5
-         9WvurKXxRnBEeAPXjPgGu53aoQWWhXW37IroTwlvPHyiPvAeUMpkiPBiYHFO9eSIQn6b
-         gVrgOhKU6RHj6jObpnBs5Dyzhx4UI7+McuaRszsPGt0AZkWhRS8b40v5WREAWvwVmK36
-         XTY0n7az8ibie3Dal1wvEKgqhgHYiE2ixzzJMbO0aNKM20clCXzO0vJkXuE6NrJ37MZS
-         biCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689887505; x=1690492305;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GFMBMSuSHT3wjfgxcRFwsxpzW94657vZDmNiGlKTyzE=;
-        b=hwVHAnHqYqkCjpl0zGtjM2Aq6R7V7DwS0UkO7k77Kv0TwGd7S+fkGy3h+5wl1BQeOP
-         z5RO4eVki3aCIa3YSZSXcyqCyZuV4J75zyyoEpbBgVMOXZP/6zI9a7Sbe+LCeWUfd2lF
-         KF3Mg0QPywDzrmbfJ5+3YlCd+jp21iTow+y0YW9+MT3Z3gjMdVQuVkq8hmnSm8Lpx1H/
-         a+IhucSPNQeKdLTHsiC/6NtWv1YgE+xa9Ht9K7b9iokmeX3FFXTKyjFghm7G0OcXJ4ON
-         c4yPcpwYa/+w6uKlCswpPj0Mm546JQ7zGo5HjGp9oD88CaqS3np2IeUX0DAJRi6KMOHF
-         Y5oQ==
-X-Gm-Message-State: ABy/qLYo26bPvQQr3hCE6mXBLD8OnAAIJAV+Cb5ZaU5AR8FdkbKpXTvW
-        1WxhpCBf6aSJ2RidHE1Ll/4pJIIxA0pr7BT0NJOOM29jxAP9YUud9AA=
-X-Google-Smtp-Source: APBJJlFBWH+aa25PymwXQ4F9F/xaqcI0bxtFwMcMF7EMlYPMzL+/MvIfDaqZZfubPOJaRmZVG0MtsUG1oXNV/nH/7LE=
-X-Received: by 2002:a05:622a:1792:b0:3f8:5b2:aef4 with SMTP id
- s18-20020a05622a179200b003f805b2aef4mr78399qtk.28.1689887505057; Thu, 20 Jul
- 2023 14:11:45 -0700 (PDT)
+        Thu, 20 Jul 2023 17:13:36 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C361E52;
+        Thu, 20 Jul 2023 14:13:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689887614; x=1721423614;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=F1bYz3hgit6KaUoqzvThCzYOIRPkgaYh6xO1/Oye1q0=;
+  b=YRzK0Rp+7yKvH7ejEkrigFZCCAu5EEchsRPT1XUwNi878zGaco1zqfJZ
+   pAoFEaAyndS8QQqLgqoqyg2e0TUn8iUbFYYsZDAmNrtlQ7yu6nP+lZIa8
+   QdQDE7aJcmpwWgEEc85N/Q9Pik45P/MN5Cw6GyhYlXR7lM/2L9N6BGqoU
+   nkqoY1FbviqjwxhwG5vL9tFltfVswcGWlQ5aFlMXQ1FeVFz+mH132mAQv
+   yRamRusw0W3QzM2VYkrl4ux1OjQePrc++byNufGrTAW78eCMgCNQ5Bnab
+   JmHnzZVchWNrO8qTIvn4J+1WPC+v3AbNJ+24jUu0Hqz08wkAACSaLC7m2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="366900223"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="366900223"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 14:13:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="727852971"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="727852971"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 20 Jul 2023 14:13:26 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qMaxV-0006WF-1t;
+        Thu, 20 Jul 2023 21:13:17 +0000
+Date:   Fri, 21 Jul 2023 05:12:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     oe-kbuild-all@lists.linux.dev, Alex Sierra <alex.sierra@amd.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Peter Xu <peterx@redhat.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table
+ scanning
+Message-ID: <202307210528.2qgK1vwi-lkp@intel.com>
+References: <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
 MIME-Version: 1.0
-References: <04C1E631-725C-47AD-9914-25D5CE04DFF4@gmail.com>
- <CANn89iKJWw7zUP-E_d=Yhaz=Qw0R3Ae7ULaGgrtsi1yf2pfpGg@mail.gmail.com> <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
-In-Reply-To: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 20 Jul 2023 23:11:34 +0200
-Message-ID: <CANn89iLqU=huOuCt2kXmrXf68TUU-N90aQnMykkYcZ+Arx9-aA@mail.gmail.com>
-Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        roman.gushchin@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 10:00=E2=80=AFPM Alan Huang <mmpgouride@gmail.com> =
-wrote:
->
->
-> > 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet <edumazet=
-@google.com> =E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang <mmpgouride@gmail.co=
-m> wrote:
-> >>
-> >> Hi,
-> >>
-> >> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of first =
-item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
-> >> and a related discussion [1].
-> >>
-> >> After reading the whole discussion, it seems like that ptr->field was =
-cached by gcc even with the deprecated
-> >> ACCESS_ONCE(), so my question is:
-> >>
-> >>        Is that a compiler bug? If so, has this bug been fixed today, t=
-en years later?
-> >>
-> >>        What about READ_ONCE(ptr->field)?
-> >
-> > Make sure sparse is happy.
->
-> It caused a problem without barrier(), and the deprecated ACCESS_ONCE() d=
-idn=E2=80=99t help:
->
->         https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
->
-> So, my real question is: With READ_ONCE(ptr->field), are there still some=
- unusual cases where gcc
-> decides not to reload ptr->field?
+Hi Michał,
 
-I can not really answer without seeing an actual patch...
+kernel test robot noticed the following build warnings:
 
-Why are you asking ? Are you tracking compiler bug fixes ?
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on linus/master v6.5-rc2 next-20230720]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
->
-> >
-> > Do you have a patch for review ?
->
-> Possibly next month. :)
->
-> >
-> >
-> >>
-> >>
-> >> [1] https://lore.kernel.org/all/1369699930.3301.494.camel@edumazet-gla=
-ptop/
-> >>
-> >> Thanks,
-> >> Alan
->
+url:    https://github.com/intel-lab-lkp/linux/commits/Micha-Miros-aw/Re-fs-proc-task_mmu-Implement-IOCTL-for-efficient-page-table-scanning/20230721-033050
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux%40rere.qmqm.pl
+patch subject: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
+config: mips-allyesconfig (https://download.01.org/0day-ci/archive/20230721/202307210528.2qgK1vwi-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230721/202307210528.2qgK1vwi-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307210528.2qgK1vwi-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   fs/proc/task_mmu.c: In function 'pagemap_scan_test_walk':
+   fs/proc/task_mmu.c:1921:13: error: implicit declaration of function 'userfaultfd_wp_async'; did you mean 'userfaultfd_wp'? [-Werror=implicit-function-declaration]
+    1921 |         if (userfaultfd_wp_async(vma) && userfaultfd_wp_use_markers(vma))
+         |             ^~~~~~~~~~~~~~~~~~~~
+         |             userfaultfd_wp
+   fs/proc/task_mmu.c: In function 'pagemap_scan_init_bounce_buffer':
+>> fs/proc/task_mmu.c:2290:22: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+    2290 |         p->vec_out = (void __user *)p->arg.vec;
+         |                      ^
+   fs/proc/task_mmu.c: At top level:
+   fs/proc/task_mmu.c:1967:13: warning: 'pagemap_scan_backout_range' defined but not used [-Wunused-function]
+    1967 | static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
+         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +2290 fs/proc/task_mmu.c
+
+  2264	
+  2265	static int pagemap_scan_init_bounce_buffer(struct pagemap_scan_private *p)
+  2266	{
+  2267		if (!p->arg.vec_len) {
+  2268			/*
+  2269			 * An arbitrary non-page-aligned sentinel value for
+  2270			 * pagemap_scan_push_range().
+  2271			 */
+  2272			p->cur_buf.start = p->cur_buf.end = ULLONG_MAX;
+  2273			return 0;
+  2274		}
+  2275	
+  2276		/*
+  2277		 * Allocate a smaller buffer to get output from inside the page
+  2278		 * walk functions and walk the range in PAGEMAP_WALK_SIZE chunks.
+  2279		 * The last range is always stored in p.cur_buf to allow coalescing
+  2280		 * consecutive ranges that have the same categories returned across
+  2281		 * walk_page_range() calls.
+  2282		 */
+  2283		p->vec_buf_len = min_t(size_t, PAGEMAP_WALK_SIZE >> PAGE_SHIFT,
+  2284				       p->arg.vec_len - 1);
+  2285		p->vec_buf = kmalloc_array(p->vec_buf_len, sizeof(*p->vec_buf),
+  2286					   GFP_KERNEL);
+  2287		if (!p->vec_buf)
+  2288			return -ENOMEM;
+  2289	
+> 2290		p->vec_out = (void __user *)p->arg.vec;
+  2291	
+  2292		return 0;
+  2293	}
+  2294	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
