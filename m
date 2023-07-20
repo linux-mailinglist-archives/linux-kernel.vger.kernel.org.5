@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F03475B7CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E2675B7D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbjGTTUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 15:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
+        id S230383AbjGTTVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 15:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjGTTUS (ORCPT
+        with ESMTP id S230215AbjGTTVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 15:20:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9534A171D
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:20:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2A278616B4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 19:20:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A1AAC433C8;
-        Thu, 20 Jul 2023 19:20:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689880816;
-        bh=7J8RBLCwafwPtaQ9gdKbvPgytbTGrbMuKVN30E0FCJ4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AZIEIranBXAghUEn8aWNlwC2xwxMfluBCSUNbcdXxYRcg3nDj46sDuwcKMohX1aod
-         21J0PdrL49BC2Q7HfjBPxNHU0+t2CV0TUS6V8sbEqwxOs7C5CzMhAoUmsSj9hbH/9X
-         ZLSS4Sk8qWZJ3JZWFWkCjTDUJWuPYB/g4glqK4iAHuelQwqey6AoePPkaKTqeTGRZ6
-         PEVkqiYqTunUgZFDc+6VzGegHiD07F3HiyV+w4JBWo9I6JXNCyaJat1WUzuAalKPEp
-         pOdqZ+5oI65b88Y2QGu3lETqDm9lOzDnKfT0OEfjW65H4fegIY+gRIPcbGGJuMzx/D
-         lsYoTVVCkkzgA==
-Date:   Thu, 20 Jul 2023 12:20:15 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC net-next v2 7/7] net: skbuff: always try to recycle
- PP pages directly when in softirq
-Message-ID: <20230720122015.1e7efc21@kernel.org>
-In-Reply-To: <b3884ff9-d903-948d-797a-1830a39b1e71@intel.com>
-References: <20230714170853.866018-1-aleksander.lobakin@intel.com>
-        <20230714170853.866018-10-aleksander.lobakin@intel.com>
-        <20230718174042.67c02449@kernel.org>
-        <d7cd1903-de0e-0fe3-eb15-0146b589c7b0@intel.com>
-        <20230719135150.4da2f0ff@kernel.org>
-        <48c1d70b-d4bd-04c0-ab46-d04eaeaf4af0@intel.com>
-        <20230720101231.7a5ff6cd@kernel.org>
-        <8e65c3d3-c628-2176-2fc2-a1bc675ad607@intel.com>
-        <20230720110027.4bd43ee7@kernel.org>
-        <988fc62d-2329-1560-983a-79ff5653a6a6@intel.com>
-        <b3884ff9-d903-948d-797a-1830a39b1e71@intel.com>
+        Thu, 20 Jul 2023 15:21:46 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09594171D
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:21:45 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7878e573827so52999139f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:21:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689880904; x=1690485704;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2FZ6SubRIeZ4k0ML1ha4iOHMnlI2c5uKQpXEuDc5R/0=;
+        b=A6SkHKCBcEZmDKQnyiNHkX1gL/BwiwSpSj3GTHbNNeZcqEc8ndS1Q3v7BSE8XPV10i
+         ZmtBYGPk/drb+NB9U66L1zbgHWNPPaTQPQgZ26Ep/cBYAixKQckkP3zA9cL7u9zSIn7V
+         IJibuObOY34z01S0N3p/Z2xVvv43KhdhVzXl/C5aGmJvxvwnEUB3S5ehIhoxsSkC+k8K
+         lhuZnWGHavjNrxUJ3dCaobjEG3tAsnGOCTDd5coUVzoTCnYuLe3XYAD36e0CMCpoW6o6
+         VOWUOQMBZubjrZmesYyeOPDI1gUDuKopru18nKMK09Tltcszudq8Hti49Bjjh0IcnCbB
+         FJDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689880904; x=1690485704;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2FZ6SubRIeZ4k0ML1ha4iOHMnlI2c5uKQpXEuDc5R/0=;
+        b=b0BcIpaGfT9snjrMw7Mn47ZHgDm/8sFVOBCe21+FBZZ4aobcukevvr7AbJR8MW7xVP
+         M52rPi4u/kM4Lty7PTKCMJXe/Aa1cuf6pcSWuOpSaoj2SUCoNmX0DQz4A0DteV4ed7Jx
+         OREkqTrodDwXT5uS2U9GnYYfqOwi3N8eZ2l/bFZEjkVbn67lVXMoqDZ5vfChxOck+PEC
+         d5p2apb+6gCeFSTwh/bO80IG6C07pnb7qTk9ZEAUbfy7024+OGcm52+LhoahqMYCyjtI
+         t1GfEjiPVNXH0XWHfUsExn/37dPAP8AR+9VCifNWe3WKvuJ4X9PIEv9hkSXWjpwe1595
+         kWaQ==
+X-Gm-Message-State: ABy/qLavlZh+wSIFyhpPPPwuKpLAFvK5RNrD0EAmv76YlH9j7jhxkxwK
+        2vVRSZdxcdEGSAZZud295vIdIRofCYFHAUwZDls7pY+v5CXg2Qlj
+X-Google-Smtp-Source: APBJJlGxEtg0om++OPbPp6XITjhWUGx5iJ2sJL4w7NeCt+/U0OI2O5WFKshSFtO9z9SGejOHXLmG0i0Shy9Ny97+9S0=
+X-Received: by 2002:a05:6e02:12c7:b0:348:7d73:20a8 with SMTP id
+ i7-20020a056e0212c700b003487d7320a8mr11306545ilm.1.1689880904399; Thu, 20 Jul
+ 2023 12:21:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <202307120814.vWPY6URk-lkp@intel.com>
+In-Reply-To: <202307120814.vWPY6URk-lkp@intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 20 Jul 2023 21:21:33 +0200
+Message-ID: <CACRpkdbYPAiOa4QU+PUxVjcOtkBT2O7fogh51VvSEbFPutH7ng@mail.gmail.com>
+Subject: Re: drivers/pinctrl/qcom/pinctrl-ipq5018.c:244:27: warning: unused
+ variable '_groups'
+To:     kernel test robot <lkp@intel.com>,
+        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Nitheesh Sekar <quic_nsekar@quicinc.com>,
+        Varadarajan Narayanan <quic_varada@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023 20:13:07 +0200 Alexander Lobakin wrote:
-> IOW, it reports we're in softirq no bloody matter if interrupts are
-> enabled or not. Either I did something wrong or the entire in_*irq()
-> family, including interrupt_context_level(), doesn't protect from
-> anything at all and doesn't work the way that most devs expect it to work?
-> 
-> (or was it just me? :D)
-> 
-> I guess the only way to be sure is to always check irqs_disabled() when
-> in_softirq() returns true.
+Hi Srirachan, Bjorn,
 
-We can as well check
-	(in_softirq() && !irqs_disabled() && !in_hardirq())
-?
+is this warning valid or something I should ignore?
 
-The interrupt_context_level() thing is fairly new, I think.
-Who knows what happens to it going forward...
+Yours,
+Linus Walleij
 
-> >> Right now page pool only supports BH and process contexts. IOW the
-> >> "else" branch of if (in_softirq()) in page pool is expecting to be
-> >> in process context.
-> >>
-> >> Supporting hard irq would mean we need to switch to _irqsave() locking.
-> >> That's likely way too costly.
-> >>
-> >> Or stash the freed pages away and free them lazily.
-> >>
-> >> Or add a lockdep warning and hope nobody will ever free a page-pool
-> >> backed skb from hard IRQ context :)  
-> > 
-> > I told you under the previous version that this function is not supposed
-> > to be called under hardirq context, so we don't need to check for it :D
-> > But I was assuming nobody would try to do that. Seems like not really
-> > (netcons) if you want to sanitize this...
-
-netcons or anyone who freed socket-less skbs from hardirq.
-Until pp recycling was added freeing an skb from hardirq was legal,
-AFAICT.
+On Wed, Jul 12, 2023 at 2:32=E2=80=AFAM kernel test robot <lkp@intel.com> w=
+rote:
+>
+> Hi Sricharan,
+>
+> FYI, the error/warning still remains.
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   3f01e9fed8454dcd89727016c3e5b2fbb8f8e50c
+> commit: 725d1c8916583f9c09e5f05e5a55dd47fdca61c1 pinctrl: qcom: Add IPQ50=
+18 pinctrl driver
+> date:   5 weeks ago
+> config: arm64-randconfig-r015-20230712 (https://download.01.org/0day-ci/a=
+rchive/20230712/202307120814.vWPY6URk-lkp@intel.com/config)
+> compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git =
+ae42196bc493ffe877a7e3dff8be32035dea4d07)
+> reproduce: (https://download.01.org/0day-ci/archive/20230712/202307120814=
+.vWPY6URk-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202307120814.vWPY6URk-lkp=
+@intel.com/
+>
+> All warnings (new ones prefixed by >>):
+>
+> >> drivers/pinctrl/qcom/pinctrl-ipq5018.c:244:27: warning: unused variabl=
+e '_groups' [-Wunused-const-variable]
+>    static const char * const _groups[] =3D {
+>                              ^
+>    1 warning generated.
+>
+>
+> vim +/_groups +244 drivers/pinctrl/qcom/pinctrl-ipq5018.c
+>
+>    243
+>  > 244  static const char * const _groups[] =3D {
+>    245          "gpio0", "gpio1", "gpio2", "gpio3", "gpio4", "gpio5", "gp=
+io6", "gpio7",
+>    246          "gpio8", "gpio9", "gpio10", "gpio11", "gpio12", "gpio13",=
+ "gpio14",
+>    247          "gpio15", "gpio16", "gpio17", "gpio18", "gpio19", "gpio20=
+", "gpio21",
+>    248          "gpio22", "gpio23", "gpio24", "gpio25", "gpio26", "gpio27=
+", "gpio28",
+>    249          "gpio29", "gpio30", "gpio31", "gpio32", "gpio33", "gpio34=
+", "gpio35",
+>    250          "gpio36", "gpio37", "gpio38", "gpio39", "gpio40", "gpio41=
+", "gpio42",
+>    251          "gpio43", "gpio44", "gpio45", "gpio46",
+>    252  };
+>    253
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
