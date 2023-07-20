@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2294C75B2F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EAB75B2FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbjGTPg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41988 "EHLO
+        id S232772AbjGTPgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232792AbjGTPgF (ORCPT
+        with ESMTP id S232803AbjGTPgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:36:05 -0400
-Received: from frasgout11.his.huawei.com (unknown [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D692D75;
-        Thu, 20 Jul 2023 08:35:48 -0700 (PDT)
+        Thu, 20 Jul 2023 11:36:16 -0400
+Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5E030EE;
+        Thu, 20 Jul 2023 08:36:01 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4R6Gh01dHcz9xqxP;
-        Thu, 20 Jul 2023 23:24:32 +0800 (CST)
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4R6Gf50KX0z9xGYG;
+        Thu, 20 Jul 2023 23:22:53 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwBHquXFU7lkGHDRBA--.21759S9;
-        Thu, 20 Jul 2023 16:35:10 +0100 (CET)
+        by APP1 (Coremail) with SMTP id LxC2BwBHquXFU7lkGHDRBA--.21759S10;
+        Thu, 20 Jul 2023 16:35:23 +0100 (CET)
 From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
 To:     dhowells@redhat.com, dwmw2@infradead.org,
         herbert@gondor.apana.org.au, davem@davemloft.net,
@@ -35,18 +35,18 @@ Cc:     linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
         antony@vennard.ch, konstantin@linuxfoundation.org,
         James.Bottomley@HansenPartnership.com,
         Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH v3 7/9] KEYS: asymmetric: Preload user asymmetric keys from a keyring blob
-Date:   Thu, 20 Jul 2023 17:32:43 +0200
-Message-Id: <20230720153247.3755856-8-roberto.sassu@huaweicloud.com>
+Subject: [RFC][PATCH v3 8/9] KEYS: Introduce load_uasym_keyring()
+Date:   Thu, 20 Jul 2023 17:32:44 +0200
+Message-Id: <20230720153247.3755856-9-roberto.sassu@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230720153247.3755856-1-roberto.sassu@huaweicloud.com>
 References: <20230720153247.3755856-1-roberto.sassu@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwBHquXFU7lkGHDRBA--.21759S9
-X-Coremail-Antispam: 1UD129KBjvJXoW3AF13Xr1fAFWxCw4Dury5CFg_yoW7XF4rpa
-        yrCrWrtFZ0ywn7C34FkF1Igw13CrW093y5Ka4Skw1Yv34qqF4kGrWIgr1rKry5Jr1kKayf
-        Z34q9w4UCr1ktrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: LxC2BwBHquXFU7lkGHDRBA--.21759S10
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF1DtrW5Ww17KFyUGF48JFb_yoWruw1fp3
+        y0kryrKr4vywn3G3yfCFyjgr43Cr1vkw4Yg3W3Cw15AF1DXrn8ZrsrKF1UKry5Wry5AryF
+        qryIvr4Skw1UtaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
         Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -60,7 +60,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3AF13Xr1fAFWxCw4Dury5CFg_yoW7XF4rpa
         AIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI
         42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z2
         80aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZo7tUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAEBF1jj4y-3QAAsd
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAEBF1jj5C8owAAs-
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_RDNS_DYNAMIC_FP,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
@@ -74,165 +74,145 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Provide a function to load user asymmetric keys from a keyring blob to the
-keyring supplied:
-
-        int preload_uasym_keys(const u8 *data, size_t data_len,
-                               struct key *keyring);
+Preload user asymmetric keys from 'uasym_keys.bin', placed in certs/ of the
+kernel source directory.
 
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- crypto/asymmetric_keys/Makefile            |   3 +-
- crypto/asymmetric_keys/uasym_key_preload.c | 102 +++++++++++++++++++++
- include/crypto/uasym_keys_sigs.h           |   9 ++
- 3 files changed, 113 insertions(+), 1 deletion(-)
- create mode 100644 crypto/asymmetric_keys/uasym_key_preload.c
+ certs/Kconfig               | 11 ++++++++++
+ certs/Makefile              |  7 +++++++
+ certs/system_certificates.S | 18 ++++++++++++++++
+ certs/system_keyring.c      | 41 +++++++++++++++++++++++++++++++++++--
+ 4 files changed, 75 insertions(+), 2 deletions(-)
 
-diff --git a/crypto/asymmetric_keys/Makefile b/crypto/asymmetric_keys/Makefile
-index 191b7fe8359..ffc6c7d6e65 100644
---- a/crypto/asymmetric_keys/Makefile
-+++ b/crypto/asymmetric_keys/Makefile
-@@ -82,4 +82,5 @@ $(obj)/mscode.asn1.o: $(obj)/mscode.asn1.c $(obj)/mscode.asn1.h
- #
- obj-$(CONFIG_UASYM_KEYS_SIGS) += uasym_keys_sigs.o
- uasym_keys_sigs-y := uasym_key_parser.o \
--		     uasym_sig_parser.o
-+		     uasym_sig_parser.o \
-+		     uasym_key_preload.o
-diff --git a/crypto/asymmetric_keys/uasym_key_preload.c b/crypto/asymmetric_keys/uasym_key_preload.c
-new file mode 100644
-index 00000000000..039dbf64378
---- /dev/null
-+++ b/crypto/asymmetric_keys/uasym_key_preload.c
-@@ -0,0 +1,102 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2011 Red Hat, Inc. All Rights Reserved.
-+ * Copyright (C) 2023 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Authors:
-+ *   David Howells <dhowells@redhat.com>
-+ *   Roberto Sassu <roberto.sassu@huawei.com>
-+ *
-+ * Load user asymmetric keys from a keyring blob.
-+ */
+diff --git a/certs/Kconfig b/certs/Kconfig
+index 1f109b07087..16bbf0f4bb6 100644
+--- a/certs/Kconfig
++++ b/certs/Kconfig
+@@ -138,4 +138,15 @@ config SYSTEM_BLACKLIST_AUTH_UPDATE
+ 	  keyring.  The PKCS#7 signature of the description is set in the key
+ 	  payload.  Blacklist keys cannot be removed.
+ 
++config UASYM_PRELOAD_PUBLIC_KEYS
++	bool "Preload user asymmetric keys"
++	depends on SYSTEM_TRUSTED_KEYRING
++	select UASYM_KEYS_SIGS
++	default n
++	help
++	  Load at boot time the user asymmetric keys from a reserved area
++	  (populated with the content of 'certs/uasym_keys.bin' provided at
++	  kernel build time), and add them to the built-in keyring. Invalid
++	  keys are ignored and the loading continues.
 +
-+#define pr_fmt(fmt) "UASYM PRELOAD: "fmt
-+#include <linux/module.h>
-+#include <linux/key.h>
-+#include <linux/err.h>
-+#include <linux/tlv_parser.h>
+ endmenu
+diff --git a/certs/Makefile b/certs/Makefile
+index 799ad7b9e68..2e5be6668a6 100644
+--- a/certs/Makefile
++++ b/certs/Makefile
+@@ -22,6 +22,13 @@ $(obj)/blacklist_hash_list: $(CONFIG_SYSTEM_BLACKLIST_HASH_LIST) FORCE
+ 
+ targets += blacklist_hash_list
+ 
++ifdef CONFIG_UASYM_PRELOAD_PUBLIC_KEYS
++ifeq ($(shell ls $(srctree)/certs/uasym_keys.bin 2> /dev/null), $(srctree)/certs/uasym_keys.bin)
++AFLAGS_system_certificates.o += -DHAVE_UASYM_KEYRING_BLOB
++$(obj)/system_certificates.o: $(srctree)/certs/uasym_keys.bin
++endif
++endif
 +
-+#include "uasym_parser.h"
+ quiet_cmd_extract_certs  = CERT    $@
+       cmd_extract_certs  = $(obj)/extract-cert "$(extract-cert-in)" $@
+ extract-cert-in = $(filter-out $(obj)/extract-cert, $(real-prereqs))
+diff --git a/certs/system_certificates.S b/certs/system_certificates.S
+index 003e25d4a17..67b7c5effb6 100644
+--- a/certs/system_certificates.S
++++ b/certs/system_certificates.S
+@@ -44,3 +44,21 @@ module_cert_size:
+ #else
+ 	.long __module_cert_end - __module_cert_start
+ #endif
++
++	.align 8
++	.globl uasym_keys
++uasym_keys:
++__uasym_key_list_start:
++#ifdef HAVE_UASYM_KEYRING_BLOB
++	.incbin "certs/uasym_keys.bin"
++#endif
++__uasym_key_list_end:
++
++	.align 8
++	.globl uasym_keys_size
++uasym_keys_size:
++#ifdef CONFIG_64BIT
++	.quad __uasym_key_list_end - __uasym_key_list_start
++#else
++	.long __uasym_key_list_end - __uasym_key_list_start
++#endif
+diff --git a/certs/system_keyring.c b/certs/system_keyring.c
+index dbee2e5b732..6035bd2f795 100644
+--- a/certs/system_keyring.c
++++ b/certs/system_keyring.c
+@@ -179,6 +179,31 @@ static __init int system_trusted_keyring_init(void)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_UASYM_PRELOAD_PUBLIC_KEYS
++extern __initconst const u8 uasym_keys[];
++extern __initconst const unsigned long uasym_keys_size;
 +
 +/**
-+ * create_uasym_key - Create a user asymmetric key
-+ * @data_start: Where the user asymmetric key starts in the blob
-+ * @data_end: Where the user asymmetric key ends in the blob
-+ * @keyring: The keyring to add the new key to
++ * load_uasym_keyring - Load user asymmetric keys from a keyring blob
 + *
-+ * Create a user asymmetric key from the supplied buffer.
++ * Load user asymmetric keys from a keyring blob. Halt the parsing if
++ * a parsing error is encountered. If parsing succeed, ignore invalid keys.
++ *
++ * Return: Zero on success or on failure (ignored).
 + */
-+static void __init create_uasym_key(const u8 *data_start, const u8 *data_end,
-+				    struct key *keyring)
++static __init int load_uasym_keyring(void)
 +{
-+	key_ref_t key;
++	pr_notice("Loading compiled-in user asymmetric keys\n");
 +
-+	key = key_create_or_update(make_key_ref(keyring, 1), "asymmetric", NULL,
-+				   data_start, data_end - data_start,
-+				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
-+				    KEY_USR_VIEW | KEY_USR_READ),
-+				   KEY_ALLOC_NOT_IN_QUOTA |
-+				   KEY_ALLOC_BUILT_IN |
-+				   KEY_ALLOC_BYPASS_RESTRICTION);
-+	if (IS_ERR(key)) {
-+		pr_notice("Ignoring user asymmetric key, error: %ld\n",
-+			  PTR_ERR(key));
-+		return;
-+	}
-+
-+	pr_notice("Loaded user asymmetric key '%s'\n",
-+		  key_ref_to_ptr(key)->description);
-+
-+	key_ref_put(key);
-+}
-+
-+/**
-+ * preload_uasym_keys - Load user asymmetric keys from a keyring blob
-+ * @data: The keyring blob containing the user asymmetric keys
-+ * @data_len: The size of the @data blob
-+ * @keyring: The keyring to add the new keys to
-+ *
-+ * Preload a pack of user asymmetric keys from a keyring blob.
-+ *
-+ * The callers should override the current creds if they want the keys to be
-+ * owned by someone other than the current process's owner. Keys will not be
-+ * accounted towards the owner's quota.
-+ *
-+ * This function may only be called whilst the kernel is booting.
-+ *
-+ * Return: Zero on success, a negative value otherwise.
-+ */
-+int __init preload_uasym_keys(const u8 *data, size_t data_len,
-+			      struct key *keyring)
-+{
-+	const u8 *data_ptr = data, *data_end = data + data_len;
-+	u64 data_type;
-+	u64 num_fields;
-+	u64 total_len;
-+	int ret;
-+
-+	kenter("");
-+
-+	while (data_ptr < data_end) {
-+		ret = tlv_parse_hdr(&data_ptr, &data_len, &data_type,
-+				    &num_fields, &total_len, data_types_str,
-+				    TYPE__LAST);
-+		if (ret < 0) {
-+			pr_notice("Unable to parse keyring blob, ret: %d\n",
-+				  ret);
-+			return ret;
-+		}
-+
-+		if (data_type != TYPE_KEY) {
-+			data_ptr += total_len;
-+			continue;
-+		}
-+
-+		create_uasym_key(data_ptr - sizeof(struct tlv_hdr),
-+				 data_ptr + total_len, keyring);
-+
-+		data_ptr += total_len;
-+	}
++	if (preload_uasym_keys(uasym_keys, uasym_keys_size,
++			       builtin_trusted_keys) < 0)
++		pr_err("Can't load user asymmetric keys\n");
 +
 +	return 0;
 +}
-diff --git a/include/crypto/uasym_keys_sigs.h b/include/crypto/uasym_keys_sigs.h
-index ac5bce6d081..a227d6d082e 100644
---- a/include/crypto/uasym_keys_sigs.h
-+++ b/include/crypto/uasym_keys_sigs.h
-@@ -29,6 +29,9 @@ int uasym_sig_get_digest(struct uasym_sig_message *uasym_sig, const u8 **buf,
- int uasym_sig_verify_message(struct uasym_sig_message *uasym_sig,
- 			     struct key *keyring);
- void uasym_sig_free_message(struct uasym_sig_message *uasym_sig);
++late_initcall(load_uasym_keyring);
++#endif /* CONFIG_UASYM_PRELOAD_PUBLIC_KEYS */
 +
-+int __init preload_uasym_keys(const u8 *data, size_t data_len,
-+			      struct key *keyring);
- #else
- static inline struct uasym_sig_message *
- uasym_sig_parse_message(const u8 *sig_data, size_t sig_len)
-@@ -68,5 +71,11 @@ static inline void uasym_sig_free_message(struct uasym_sig_message *uasym_sig)
+ /*
+  * Must be initialised before we try and load the keys into the keyring.
+  */
+@@ -186,13 +211,25 @@ device_initcall(system_trusted_keyring_init);
+ 
+ __init int load_module_cert(struct key *keyring)
  {
++	int ret;
++
+ 	if (!IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG))
+ 		return 0;
+ 
+ 	pr_notice("Loading compiled-in module X.509 certificates\n");
+ 
+-	return x509_load_certificate_list(system_certificate_list,
+-					  module_cert_size, keyring);
++	ret = x509_load_certificate_list(system_certificate_list,
++					 module_cert_size, keyring);
++#ifdef CONFIG_UASYM_PRELOAD_PUBLIC_KEYS
++	if (!ret) {
++		pr_notice("Loading compiled-in user asymmetric keys\n");
++
++		ret = preload_uasym_keys(uasym_keys, uasym_keys_size, keyring);
++		if (ret < 0)
++			pr_err("Can't load user asymmetric keys\n");
++	}
++#endif
++	return ret;
  }
  
-+static inline int __init preload_uasym_keys(const u8 *data, size_t data_len,
-+					    struct key *keyring)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- #endif /* CONFIG_UASYM_KEYS_SIGS */
- #endif /* _CRYPTO_UASYM_KEYS_SIGS_H */
+ /*
 -- 
 2.34.1
 
