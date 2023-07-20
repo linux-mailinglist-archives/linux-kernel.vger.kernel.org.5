@@ -2,146 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E799475B060
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE36075B06B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbjGTNuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32834 "EHLO
+        id S231572AbjGTNwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbjGTNuD (ORCPT
+        with ESMTP id S231536AbjGTNwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:50:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FF326B3;
-        Thu, 20 Jul 2023 06:50:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 20 Jul 2023 09:52:19 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9BC2701
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:52:11 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D54761ADA;
-        Thu, 20 Jul 2023 13:50:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84835C433C8;
-        Thu, 20 Jul 2023 13:49:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689860999;
-        bh=nEFwg6fbISW6I5JdM4+Aiiv7SRb3ZillJUpOlDVgGy4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kmWGzH+vbToIUE5yzzMCmBnwZe2Q/PRiqmc6oxcALqYG1XxrP3UebqY6d92GChnjH
-         mW08ScEd1/wI74wDdsb4TcKBmb4Uebu1dpL9nZmVDlYFrEjUDit2BSoRdg4dg4qJ76
-         uzUcYfzlApacO48te1v54vig8b1gsZtRlYHVvNMZyaiSv7ERy3lQ95JZ+S1/Sv7tNV
-         ckG7f4XAzcj5jkW6vcWDVCOl30xb3MzM4rUhtJC1syQCiDZE3K24j1NOVtnFKbtv4P
-         xEn2/HzhLaPd38cmZMzxc03uawgefGI6jyLoiUhpmHx3wwEfp7gO3qnRbMwJEqhHB9
-         OpxfxRvfxca2Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D155240516; Thu, 20 Jul 2023 10:49:56 -0300 (-03)
-Date:   Thu, 20 Jul 2023 10:49:56 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH 2/6] perf thread: Allow tools to register a thread->priv
- destructor
-Message-ID: <ZLk7hOvDsliOboEH@kernel.org>
-References: <20230719202951.534582-1-acme@kernel.org>
- <20230719202951.534582-3-acme@kernel.org>
- <CAP-5=fV3Er=Ek8=iE=bSGbEBmM56_PJffMWot1g_5Bh8B5hO7A@mail.gmail.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R6DdK64vkz4wyC;
+        Thu, 20 Jul 2023 23:52:05 +1000 (AEST)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sathvika Vasireddy <sv@linux.ibm.com>,
+        Naveen N Rao <naveen@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <cover.1689091394.git.christophe.leroy@csgroup.eu>
+References: <cover.1689091394.git.christophe.leroy@csgroup.eu>
+Subject: Re: (subset) [PATCH v4 00/15] powerpc/objtool: uaccess validation for PPC32 (v4)
+Message-Id: <168986105076.1117384.18255319220057556882.b4-ty@ellerman.id.au>
+Date:   Thu, 20 Jul 2023 23:50:50 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fV3Er=Ek8=iE=bSGbEBmM56_PJffMWot1g_5Bh8B5hO7A@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Jul 19, 2023 at 03:31:41PM -0700, Ian Rogers escreveu:
-> On Wed, Jul 19, 2023 at 1:30 PM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > From: Arnaldo Carvalho de Melo <acme@redhat.com>
-> >
-> > So that when thread__delete() runs it can be called and free stuff tools
-> > stashed into thread->priv, like 'perf trace' does and will use this
-> > new facility to plug some leaks.
-> >
-> > Cc: Adrian Hunter <adrian.hunter@intel.com>
-> > Cc: Ian Rogers <irogers@google.com>
-> > Cc: Jiri Olsa <jolsa@kernel.org>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > ---
-> >  tools/perf/util/thread.c | 11 +++++++++++
-> >  tools/perf/util/thread.h |  2 ++
-> >  2 files changed, 13 insertions(+)
-> >
-> > diff --git a/tools/perf/util/thread.c b/tools/perf/util/thread.c
-> > index 0b166404c5c365cf..35dd4e716e411da9 100644
-> > --- a/tools/perf/util/thread.c
-> > +++ b/tools/perf/util/thread.c
-> > @@ -80,6 +80,13 @@ struct thread *thread__new(pid_t pid, pid_t tid)
-> >         return NULL;
-> >  }
-> >
-> > +static void (*thread__priv_destructor)(void *priv);
-> > +
-> > +void thread__set_priv_destructor(void (*destructor)(void *priv))
-> > +{
+On Tue, 11 Jul 2023 18:08:26 +0200, Christophe Leroy wrote:
+> This series adds UACCESS validation for PPC32. It includes
+> a dozen of changes to objtool core.
 > 
-> Perhaps:
-> assert(thread__priv_destructor == NULL);
-
-I'll add that.
- 
-> To make it clear that there should never be >1 currently.
+> It applies on top of series "Cleanup/Optimise KUAP (v3)"
+> https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=363368&state=*
 > 
-> > +       thread__priv_destructor = destructor;
-> > +}
-> > +
-> >  void thread__delete(struct thread *thread)
-> >  {
-> >         struct namespaces *namespaces, *tmp_namespaces;
-> > @@ -112,6 +119,10 @@ void thread__delete(struct thread *thread)
-> >         exit_rwsem(thread__namespaces_lock(thread));
-> >         exit_rwsem(thread__comm_lock(thread));
-> >         thread__free_stitch_list(thread);
-> > +
-> > +       if (thread__priv_destructor)
-> > +               thread__priv_destructor(thread__priv(thread));
-> > +
-> >         RC_CHK_FREE(thread);
-> >  }
-> >
-> > diff --git a/tools/perf/util/thread.h b/tools/perf/util/thread.h
-> > index 9068a21ce0fa1b0f..e79225a0ea46b789 100644
-> > --- a/tools/perf/util/thread.h
-> > +++ b/tools/perf/util/thread.h
-> > @@ -71,6 +71,8 @@ struct thread *thread__new(pid_t pid, pid_t tid);
-> >  int thread__init_maps(struct thread *thread, struct machine *machine);
-> >  void thread__delete(struct thread *thread);
-> >
-> > +void thread__set_priv_destructor(void (*destructor)(void *priv));
-> > +
-> >  struct thread *thread__get(struct thread *thread);
-> >  void thread__put(struct thread *thread);
-> >
-> > --
-> > 2.41.0
-> >
+> It is almost mature, performs code analysis for all PPC32.
+> 
+> [...]
 
--- 
+Applied to powerpc/fixes.
 
-- Arnaldo
+[01/15] Revert "powerpc/bug: Provide better flexibility to WARN_ON/__WARN_FLAGS() with asm goto"
+        https://git.kernel.org/powerpc/c/b49e578b9314db051da0ad72bba24094193f9bd0
+
+cheers
