@@ -2,280 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D4175B347
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB9375B34B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232893AbjGTPnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
+        id S232885AbjGTPo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbjGTPnn (ORCPT
+        with ESMTP id S232876AbjGTPoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:43:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1E510A;
-        Thu, 20 Jul 2023 08:43:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B666561B59;
-        Thu, 20 Jul 2023 15:43:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E5DAC433C7;
-        Thu, 20 Jul 2023 15:43:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689867821;
-        bh=KUt565SRXpXnvkF8G6PZj4sOu4mf7685mCIq6zmz5II=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=R/Lz+L5jrr0VsbxbCCDU8OlGSWH4Vy1hyPyJHgkIrJWKe3h2GdGzzkZF/oUxQ6U/W
-         gOLaqEVOOmQQsfPZDGqmQmH1qPY0q0hIheAG349RSgrC9jH3pUCwV1LHO/r6NzJSZn
-         71+cnzTIgZxgNW9iZdT7aXHP+8Sb9jBKSSHxiB/TXaZegr6xaXTXnZBn+hFCUhnH1/
-         iyqDg6qwqw66EkkIFVsyJyNBpQrV3FKbKZFdBHzuCpRYDuDbjP4WNPUrSdIlgXoaAV
-         B9GY++Y+9Uwb2ZzULoHLJxEK8YFi/LART7BBUOwWxsEdrev5cVbJjD/B5FS5u4cReS
-         I73M0Qp0/dCZQ==
-Message-ID: <d666a76bd243d4299551381523698a47229df71b.camel@kernel.org>
-Subject: Re: [PATCH] nfsd: remove unsafe BUG_ON from set_change_info
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Boyang Xue <bxue@redhat.com>
-Date:   Thu, 20 Jul 2023 11:43:39 -0400
-In-Reply-To: <C4A9048C-C3C8-4C62-B68F-7170C6CDC5BE@oracle.com>
-References: <20230720-bz2223560-v1-1-edb4900043b8@kernel.org>
-         <4B067A0F-93E3-435A-A32B-B17BC07D4606@oracle.com>
-         <061f2b988de3da1dac32ecb3d8ac76319065b51d.camel@kernel.org>
-         <C4A9048C-C3C8-4C62-B68F-7170C6CDC5BE@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 20 Jul 2023 11:44:25 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2098.outbound.protection.outlook.com [40.107.237.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F955E52;
+        Thu, 20 Jul 2023 08:44:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ER1TryIeJgUXFcYn82Hg9rZtTnkut2zVwhBjIhXoFf6tcortqVAk8112oqErgZaI8e81wXBIQIl49Xiu10UJfGvv6VS2JwyR3bSWoN+m7wImBAcor8TT67xumR09jyNSKEy3U4pxKmnp02xlVD835QMevWlLgxKDSygOYunS17VGhOekLze73kmfiM6lUpiHkis4vx1aE88mweMl1Ng53Of410Z0zTLu/1B6cOxLL8rfGtjf/i42LiJyLLKxh8xxS5aIOgxWTqznyNBuWNJDpsG6rfj3xkvtsJ2DNZgzRN4ACp3q2ADpBQ7J7NNbH6Alr6uZwLIbHGQUO1mCgoK/PQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HyiW9oPCRFuXOHPQe91Z9Sy98IH++YAsVwchIRCU85s=;
+ b=MWL1Y20ZP1iBxofzVPCUvaqccTht+FrRYaNtyB7jGaS/lk+68gCdr8E6Zx1/XBilGJnZN+m3pLDApaHSAi2+rxnsP5mBKMhgsRGvu27XXBCCXi7t1aRrFmFBMNQK8cX+GxEUbRPzWzVho9btRQlnpbvd7N0FUsEus1SpXTDbraj2wEpNG3pA7Q4gGNvDtRSvXdD7fIzCPczkSQWGkEjhaKFUXCejvg1mPvWKUpr/vDHdR4+uHdlBwikaub0t0KsHxdVktKQSmolI5tdXG9OtHounYJSj59O4LbQO4Mrf1c6uO+qTqx0yz/beg8j5svWFlT8OXzY3i2VcmLOcJbhX8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HyiW9oPCRFuXOHPQe91Z9Sy98IH++YAsVwchIRCU85s=;
+ b=bVevilb4wi00BjVCB50XqqhUFG27a02Uyaw7d8E36m/+3CA8hajoi8aoIymQNkr0c1WatJtm2FMz5WKc8Iv/ED3ZhPTIlP8ljJjZDA81R88u6KZ1Y79KXaZioQWMPjY5snw+6MkAXzosz7A66/OqXleqNUgUwi9E0iQp6lWC4mk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by BY3PR13MB6016.namprd13.prod.outlook.com (2603:10b6:a03:3b2::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28; Thu, 20 Jul
+ 2023 15:44:09 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.025; Thu, 20 Jul 2023
+ 15:44:09 +0000
+Date:   Thu, 20 Jul 2023 16:44:01 +0100
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Markus Schneider-Pargmann <msp@baylibre.com>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Julien Panis <jpanis@baylibre.com>
+Subject: Re: [PATCH v5 01/12] can: m_can: Write transmit header and data in
+ one transaction
+Message-ID: <ZLlWQeJqkispLIV+@corigine.com>
+References: <20230718075708.958094-1-msp@baylibre.com>
+ <20230718075708.958094-2-msp@baylibre.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718075708.958094-2-msp@baylibre.com>
+X-ClientProxiedBy: LO4P123CA0397.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:189::6) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|BY3PR13MB6016:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8399fac9-2b43-4f3d-0578-08db89382868
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cOsLmZ/0CcCyS0EDZaCA+k7wGxJiR5PxN5zYyJ/JM7OT79v/waVE20/92Hk4M206daj3z7zll4DZ9qaXLW64b+64XFRBv8AXVui+V1zEa/J/bY/M9M+u8f1bOwnXHej1v8AVpQmhdhdqOCXRg3TkDh6g7YylZ8AD9PakDigqZW0UGGKqWS2p9INydONW9UK5x7UQCnyh6tedi9Jt7+0TWz5KPaoeFHSZ7zcinTNBRUsmvCpRNkiyXAhVBjJrqLM3UyByJgiJxTZg3YE0D3cie3QW24OiSSMt/qOwyEZEV9xO5LbLb847PD3aWnwYz4pccngHHjXk0uN6EUSxxgnd8nK2jp9oRkk+4l9gHNECaItYGFI29/SR8lrw5ocZqUoUMi9L8/Kvkfb+I3q3mz1rKonBjy5m2iIdhBZPOfCTX5nxXpLAN8iFUn3boy1ayDprCy7tsjWOPnJoRHvBxxG3YqoJDyPDNsgkfB4Y+136X0sHanehAflkeZrEoHojTbf4nSlyvcmadzlGkXo0bKxhHOLLSX2A+O9stA8UcNtDtAOGg8aNMwloI5ETmwKzSozI9773lfmvdO3cWrTDzhOZt8JO1y81+93yhzjgVxhGjwE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(396003)(39840400004)(366004)(136003)(376002)(451199021)(2906002)(66946007)(66556008)(66476007)(6916009)(4326008)(38100700002)(2616005)(55236004)(86362001)(186003)(6506007)(26005)(558084003)(36756003)(478600001)(6512007)(6486002)(6666004)(54906003)(7416002)(41300700001)(8676002)(8936002)(5660300002)(44832011)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?q6+utVtmbJ3KkS4lEx0kspBs7BtKjok2GdeXsjyZ+Qyhd0n3/yTe7I+prceg?=
+ =?us-ascii?Q?Z+bvkY7ieYfDEISe5BwMo9Zd+XPOZ59Xs6yoqlWprR9yPzFO3RmRC4Vzf1zx?=
+ =?us-ascii?Q?Wda+1hDnzjv5RTNUymqnuvQTi9BCwtHuHJgDzlFXsAb/yJeEfRatclXEbXPN?=
+ =?us-ascii?Q?4oGkizSLQ/1q44O0+rIdT2tI066ksfcS9jijVjX12no9Bdo+Spt0bK+5wuyA?=
+ =?us-ascii?Q?el7nTpF1+fPz4vlDa2SAK29QYwkFOgpcS+F5M+e1DBc8+P7XSZ/LSsCTKrQj?=
+ =?us-ascii?Q?1Oq1ICE2Wtes98wWeTabdvUcJr5gRcgbCMOxE7lW3vRoRS6FINCv183lxRJG?=
+ =?us-ascii?Q?8qqm6Ltn4USeGCQQ65NypgNUg/c8boa84SBYTTO81n7Nc7fmrj3tDFZ/QsHr?=
+ =?us-ascii?Q?Tnr2R2zn2hESo7sxxbKtuPPBDW6COtK0TvJi1Y8qdNJMHm6XxKssGqaknnb4?=
+ =?us-ascii?Q?0RrfYe/8B1zWs9d6DxsIrSM/y565Aik2M4c8/S0cJfLqafHhQNlO5Fc4P3F2?=
+ =?us-ascii?Q?HxBduU09Nl1zmO3wMuW6Td7ubygngxa2sZ9rnumpPVb7KyOVHaj31HSW+Qw+?=
+ =?us-ascii?Q?LSQQbLORMFaVELOFG2f3TlnQTFa+0PhhwYnE8o2hTvfl0JV9ggZeNd1TuzPB?=
+ =?us-ascii?Q?cd3Nbcz/xootJf9iaPLc+8iG+3QxOiS1KwOrAHNfeM/i0BO69+B3stoM78u7?=
+ =?us-ascii?Q?PAUxXEmL1DvHUWM/FfrArwW8J9YftyAvOLDigyVzmEpEuBTVuCYUfPQ5jAYl?=
+ =?us-ascii?Q?EtNmZxw+dvyWThbJhbBnJO+1hEIzt8AYE6kJJNvYkmHPt9OOQA9SyVlzVWce?=
+ =?us-ascii?Q?946GvUD4qhS7bMeL8sYuU4Eh5PEIsf7aUJPbj82DaD11VIOObBX0w5uK6vrR?=
+ =?us-ascii?Q?yi3bshy+KjafgDD5FhWSRaJMVI/XQjcR65f3pb7uuNRnRhd59G5ciiNWfevh?=
+ =?us-ascii?Q?5b0ArnrK/5RYZHk+mz2kxGM0ilFslCzIwrihN38nbBxG8jpj3MJBiZe8/73R?=
+ =?us-ascii?Q?N8wT5ZySxNuGiK0/FIJ0X9T94FTz8Iv4/jtLvRCsugywUfgaI85mJqLGDfgi?=
+ =?us-ascii?Q?jrb8x2b4iU1wpTc1K3LG6G4seE/bKuiuiU4nEJMYEPMCNg3nGQLKBBsJ3D3j?=
+ =?us-ascii?Q?MPzOGzcXEH7+wwz40ynXEDfkih4TG28DGk0I3ZqPmqjY2tSfwyB1QrqKfBOm?=
+ =?us-ascii?Q?yYgwazjH85xA+TfUb6zBqYRNaxGOpJrlW/6QfKRNYPp7dUesfhKGMirkai1M?=
+ =?us-ascii?Q?16JO96l4XOSJqSn9VtXO2g3lWuomiqN3d4nXzGgxJphuL4cqdcWa9kP5mbKY?=
+ =?us-ascii?Q?CKm6rqinJbXPSnOEkToBbk38YH2tSyJnTDIzuY0thCaPJ65yjcNCUfTiyd2G?=
+ =?us-ascii?Q?Bu3Bl1mMT2X5i3zD7tn6HWehHXTW/GWLRAspsDBGhhah35/vg/RnJYwVc+20?=
+ =?us-ascii?Q?LU7kn1VbvkKL7t5YW412UYWjKHX1Bdt30CF5KtemCL2QOpCEwXJFsDBwqPYY?=
+ =?us-ascii?Q?U/wahYvPcqF7T4hiY6fnUi2TzCp1RFiG8ZD/fc+hLJAeNv9nNLqTvOQYgi8N?=
+ =?us-ascii?Q?PzuziSbWxCpwzJccGo3SUdCTw/Pm/vEQ9npQ8fLSmztY8UHaP57iBtPrspFt?=
+ =?us-ascii?Q?cg=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8399fac9-2b43-4f3d-0578-08db89382868
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 15:44:09.3996
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0O/TCLXZDYa5dUPZCzv38aTB/eyQVHT3J5oFafi4sbLwZHLF7WdWXCMOAuIPFqbnyT69+GSd6oEyWDag0N1DrEY38w39flFEFmXFi8B5iVo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR13MB6016
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-07-20 at 15:37 +0000, Chuck Lever III wrote:
->=20
-> > On Jul 20, 2023, at 11:33 AM, Jeff Layton <jlayton@kernel.org> wrote:
-> >=20
-> > On Thu, 2023-07-20 at 15:15 +0000, Chuck Lever III wrote:
-> > >=20
-> > > > On Jul 20, 2023, at 10:59 AM, Jeff Layton <jlayton@kernel.org> wrot=
-e:
-> > > >=20
-> > > > At one time, nfsd would scrape inode information directly out of st=
-ruct
-> > > > inode in order to populate the change_info4. At that time, the BUG_=
-ON in
-> > > > set_change_info made some sense, since having it unset meant a codi=
-ng
-> > > > error.
-> > > >=20
-> > > > More recently, it calls vfs_getattr to get this information, which =
-can
-> > > > fail. If that fails, fh_pre_saved can end up not being set. While t=
-his
-> > > > situation is unfortunate, we don't need to crash the box.
-> > >=20
-> > > I'm always happy to get rid of a BUG_ON(). But I'm not sure even
-> > > a warning is necessary in this case. It's not likely that it's
-> > > a software bug or something that the server administrator can
-> > > do something about.
-> > >=20
-> > > Can you elaborate on why the vfs_getattr() might fail? Eg, how
-> > > was it failing in 2223560 ?
-> > >=20
-> >=20
-> > I'm fine with dropping the WARN_ON. You are correct that there is
-> > probably little the admin can do about it.
-> >=20
-> > vfs_getattr can fail for all sorts of reasons. It really depends on the
-> > underlying filesystem. In 2223560, I don't know for sure, but just prio=
-r
-> > to the oops, there were these messages in the log:
-> >=20
-> > [51935.482019] XFS (vda3): Filesystem has been shut down due to log err=
-or (0x2).=20
-> > [51935.482020] XFS (vda3): Please unmount the filesystem and rectify th=
-e problem(s).=20
-> > [51935.482550] vda3: writeback error on inode 25320400, offset 2097152,=
- sector 58684120=20
-> >=20
-> > My assumption was that the fs being shut down caused some VFS operation=
-s
-> > to start returning errors (including getattr) and that is why
-> > fh_pre_saved ultimately didn't get set.
->=20
-> I'm wondering if the operation should just fail in this case
-> rather than return a cobbled-up changeinfo4. Maybe for another
-> day.
->=20
+On Tue, Jul 18, 2023 at 09:56:57AM +0200, Markus Schneider-Pargmann wrote:
+> Combine header and data before writing to the transmit fifo to reduce
+> the overhead for peripheral chips.
+> 
+> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 
-If we issue a create or rename or something and it did happen, then we
-don't want to return an error just because we couldn't collect the info
-on it.
-
-We probably could abort the operation if collecting the pre-change info
-fails though.
-
-
->=20
-> > > > Move set_change_info to nfs4proc.c since all of the callers are the=
-re.
-> > > > Revise the condition for setting "atomic" to also check for
-> > > > fh_pre_saved. Drop the BUG_ON and make it a WARN_ON, and just have =
-it
-> > > > zero out both change_attr4s when this occurs.
-> > > >=20
-> > > > Link: https://bugzilla.redhat.com/show_bug.cgi?id=3D2223560
-> > > > Reported-by: Boyang Xue <bxue@redhat.com>
-> > >=20
-> > > checkpatch now wants
-> > >=20
-> > > Reported-by:
-> > > Closes:
-> > >=20
-> > > in that order.
-> > >=20
-> >=20
-> >=20
-> > Mmmmkay. So I assume the URL should go in the Closes: field then?
->=20
-> Yes, a bug link goes in the Closes: field.
->=20
->=20
-> > I'll take out the WARN_ON_ONCE and resend, once others have had a chanc=
-e
-> > to comment.
->=20
-> Don't miss the other comments below.
->=20
->=20
-> > Thanks!
-> >=20
-> > >=20
-> > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > > ---
-> > > > fs/nfsd/nfs4proc.c | 30 ++++++++++++++++++++++++++++++
-> > > > fs/nfsd/xdr4.h     | 11 -----------
-> > > > 2 files changed, 30 insertions(+), 11 deletions(-)
-> > > >=20
-> > > > diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-> > > > index d8e7a533f9d2..e6f406f27821 100644
-> > > > --- a/fs/nfsd/nfs4proc.c
-> > > > +++ b/fs/nfsd/nfs4proc.c
-> > > > @@ -380,6 +380,36 @@ nfsd4_create_file(struct svc_rqst *rqstp, stru=
-ct svc_fh *fhp,
-> > > > return status;
-> > > > }
-> > > >=20
-> > > > +/**
-> > > > + * set_change_info - set up the change_info4 for a reply
-> > > > + * @cinfo: pointer to nfsd4_change_info to be populated
-> > > > + * @fhp: pointer to svc_fh to use as source
-> > > > + *
-> > > > + * Many operations in NFSv4 require change_info4 in the reply. Thi=
-s function
-> > > > + * populates that from the info that we (should!) have already col=
-lected. In
-> > > > + * the event that we didn't get any pre-attrs, throw a warning and=
- just
-> > > > + * zero out both change_attr4 fields.
-> > > > + */
-> > > > +static void
-> > > > +set_change_info(struct nfsd4_change_info *cinfo, struct svc_fh *fh=
-p)
-> > > > +{
-> > > > + cinfo->atomic =3D (u32)(fhp->fh_pre_saved && fhp->fh_post_saved &=
-& !fhp->fh_no_atomic_attr);
-> > > > +
-> > > > + /*
-> > > > + * In the event that we couldn't fetch attributes from the
-> > > > + * server for some reason, just zero out the before and after
-> > >=20
-> > > "From the server"? Is it only likely to fail if the exported
-> > > filesystem is an NFS mount? Or did you mean "from the filesystem" ?
-> > >=20
-> > >=20
-> > > > + * change values, after throwing a warning.
-> > > > + */
-> > > > + if (WARN_ON_ONCE(!fhp->fh_pre_saved)) {
-> > >=20
-> > > Maybe you should clear ->atomic as well in this case.
-> > >=20
-> > >=20
-> > > > + cinfo->before_change =3D 0;
-> > > > + cinfo->after_change =3D 0;
-> > > > + return;
-> > > > + }
-> > > > +
-> > > > + cinfo->before_change =3D fhp->fh_pre_change;
-> > > > + cinfo->after_change =3D fhp->fh_post_change;
-> > > > +}
-> > > > +
-> > > > static __be32
-> > > > do_open_lookup(struct svc_rqst *rqstp, struct nfsd4_compound_state =
-*cstate, struct nfsd4_open *open, struct svc_fh **resfh)
-> > > > {
-> > > > diff --git a/fs/nfsd/xdr4.h b/fs/nfsd/xdr4.h
-> > > > index b2931fdf53be..9e67f63c5f4d 100644
-> > > > --- a/fs/nfsd/xdr4.h
-> > > > +++ b/fs/nfsd/xdr4.h
-> > > > @@ -775,17 +775,6 @@ void warn_on_nonidempotent_op(struct nfsd4_op =
-*op);
-> > > >=20
-> > > > #define NFS4_SVC_XDRSIZE sizeof(struct nfsd4_compoundargs)
-> > > >=20
-> > > > -static inline void
-> > > > -set_change_info(struct nfsd4_change_info *cinfo, struct svc_fh *fh=
-p)
-> > > > -{
-> > > > - BUG_ON(!fhp->fh_pre_saved);
-> > > > - cinfo->atomic =3D (u32)(fhp->fh_post_saved && !fhp->fh_no_atomic_=
-attr);
-> > > > -
-> > > > - cinfo->before_change =3D fhp->fh_pre_change;
-> > > > - cinfo->after_change =3D fhp->fh_post_change;
-> > > > -}
-> > > > -
-> > > > -
-> > > > bool nfsd4_mach_creds_match(struct nfs4_client *cl, struct svc_rqst=
- *rqstp);
-> > > > bool nfs4svc_decode_compoundargs(struct svc_rqst *rqstp, struct xdr=
-_stream *xdr);
-> > > > bool nfs4svc_encode_compoundres(struct svc_rqst *rqstp, struct xdr_=
-stream *xdr);
-> > > >=20
-> > > > ---
-> > > > base-commit: 070f391ca4d48e1750ee6108eb44f751a9e9448e
-> > > > change-id: 20230720-bz2223560-9c4690a8217b
-> > > >=20
-> > > > Best regards,
-> > > > --=20
-> > > > Jeff Layton <jlayton@kernel.org>
-> > > >=20
-> > >=20
-> > > --
-> > > Chuck Lever
-> > >=20
-> > >=20
-> >=20
-> > --=20
-> > Jeff Layton <jlayton@kernel.org>
->=20
->=20
-> --
-> Chuck Lever
->=20
->=20
-
---=20
-Jeff Layton <jlayton@kernel.org>
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
