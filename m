@@ -2,220 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2F875A7BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB3575A7BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbjGTHYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231551AbjGTHYB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231540AbjGTHYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 20 Jul 2023 03:24:01 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249E22118
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:24:00 -0700 (PDT)
-Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <m.felsch@pengutronix.de>)
-        id 1qMO0I-00086j-7R; Thu, 20 Jul 2023 09:23:14 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, mcoquelin.stm32@gmail.com
-Cc:     devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH net-next v3 2/2] net: stmmac: add support for phy-supply
-Date:   Thu, 20 Jul 2023 09:23:04 +0200
-Message-Id: <20230720072304.3358701-2-m.felsch@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230720072304.3358701-1-m.felsch@pengutronix.de>
-References: <20230720072304.3358701-1-m.felsch@pengutronix.de>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231518AbjGTHX5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Jul 2023 03:23:57 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E963C1FCD;
+        Thu, 20 Jul 2023 00:23:55 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R640W4psjzrRh8;
+        Thu, 20 Jul 2023 15:23:07 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 20 Jul 2023 15:23:52 +0800
+Subject: Re: [PATCH v2 2/7] perf evlist: Add evlist__findnew_tracking_event()
+ helper
+To:     Ian Rogers <irogers@google.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>,
+        <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
+        <james.clark@arm.com>, <tmricht@linux.ibm.com>,
+        <ak@linux.intel.com>, <anshuman.khandual@arm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
+References: <20230715032915.97146-1-yangjihong1@huawei.com>
+ <20230715032915.97146-3-yangjihong1@huawei.com>
+ <CAP-5=fVysKhUn1YsUr0NBU2kVBDgkoczO861XwK5VCtkeYSRJA@mail.gmail.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <993bd68c-c0ec-4960-d3b0-bd2dbda82402@huawei.com>
+Date:   Thu, 20 Jul 2023 15:23:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <CAP-5=fVysKhUn1YsUr0NBU2kVBDgkoczO861XwK5VCtkeYSRJA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::28
-X-SA-Exim-Mail-From: m.felsch@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add generic phy-supply handling support to control the phy regulator to
-avoid handling it within the glue code. Use the generic stmmac_platform
-code to register a possible phy-supply and the stmmac_main code to
-handle the power on/off.
+Hello,
 
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
----
-Changelog
-v3:
-- rebased onto net-next/main
-- fixed changelog style
+On 2023/7/20 0:44, Ian Rogers wrote:
+> On Fri, Jul 14, 2023 at 8:31 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>
+>> Currently, intel-bts, intel-pt, and arm-spe may add a dummy event for
+>> tracking to the evlist. We may need to search for the dummy event for
+>> some settings. Therefore, add evlist__findnew_tracking_event() helper.
+>>
+>> evlist__findnew_tracking_event() also deal with system_wide maps if
+>> system_wide is true.
+> 
+> I'm wondering if we can simplify the naming in the API, we have "dummy
+> event" which makes sense as we literally call the event "dummy",
+> "sideband" which refers to the kind of samples/events the dummy event
+> will record but "tracking" I think tends to get used as a verb rather
+> than a noun. So I think evlist__findnew_tracking_event should be
+> evlist__findnew_dummy_event.
+> 
+Uh, from the discussion that followed, it seems that there is no 
+consensus yet...
+If there is a clear consensus on whether to use "dummy event" or 
+"tracking event", I will change the name of the API.
 
-v2:
-- adapt stmmac_phy_power
-- move power-on/off into stmmac_main to handle WOL
-- adapt commit message
+I think sideband event is equivalent to tracking event (refer 
+evsel__config(), tracking events include task, mmap, mmap2, and comm 
+sideband events, which are all sideband).
 
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 58 ++++++++++++++++++-
- .../ethernet/stmicro/stmmac/stmmac_platform.c | 10 ++++
- include/linux/stmmac.h                        |  1 +
- 3 files changed, 68 insertions(+), 1 deletion(-)
+tracking event are instances of dummy event. For example, we create 
+another dummy event to record the text poke event of ksymbol (refer perf 
+record --kcore).
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index e7ca52f0d2f2d..6ffb03abddfd9 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -31,6 +31,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/prefetch.h>
- #include <linux/pinctrl/consumer.h>
-+#include <linux/regulator/consumer.h>
- #ifdef CONFIG_DEBUG_FS
- #include <linux/debugfs.h>
- #include <linux/seq_file.h>
-@@ -1128,6 +1129,55 @@ static void stmmac_check_pcs_mode(struct stmmac_priv *priv)
- 	}
- }
- 
-+/**
-+ * stmmac_phy_power - PHY regulator on/off
-+ * @priv: driver private structure
-+ * @enable: turn on the regulator if true else turn it off
-+ * Enable or disable the regulator powering the PHY.
-+ */
-+static int stmmac_phy_power(struct stmmac_priv *priv, bool enable)
-+{
-+	struct regulator *regulator = priv->plat->phy_regulator;
-+	struct device *dev = priv->device;
-+
-+	if (!regulator)
-+		return 0;
-+
-+	if (enable) {
-+		int ret;
-+
-+		ret = regulator_enable(regulator);
-+		if (ret)
-+			dev_err(dev, "Fail to enable regulator\n");
-+
-+		return ret;
-+	}
-+
-+	regulator_disable(regulator);
-+
-+	return 0;
-+}
-+
-+/**
-+ * stmmac_phy_power_on - PHY regulator on
-+ * @priv: driver private structure
-+ * Enable the PHY regulator
-+ */
-+static int stmmac_phy_power_on(struct stmmac_priv *priv)
-+{
-+	return stmmac_phy_power(priv, true);
-+}
-+
-+/**
-+ * stmmac_phy_power_off - PHY regulator off
-+ * @priv: driver private structure
-+ * Disable the PHY regulator
-+ */
-+static void stmmac_phy_power_off(struct stmmac_priv *priv)
-+{
-+	stmmac_phy_power(priv, false);
-+}
-+
- /**
-  * stmmac_init_phy - PHY initialization
-  * @dev: net device structure
-@@ -1253,7 +1303,8 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
- 		return PTR_ERR(phylink);
- 
- 	priv->phylink = phylink;
--	return 0;
-+
-+	return stmmac_phy_power_on(priv);
- }
- 
- static void stmmac_display_rx_rings(struct stmmac_priv *priv,
-@@ -7588,6 +7639,7 @@ void stmmac_dvr_remove(struct device *dev)
- 	if (priv->hw->pcs != STMMAC_PCS_TBI &&
- 	    priv->hw->pcs != STMMAC_PCS_RTBI)
- 		stmmac_mdio_unregister(ndev);
-+	stmmac_phy_power_off(priv);
- 	destroy_workqueue(priv->wq);
- 	mutex_destroy(&priv->lock);
- 	bitmap_free(priv->af_xdp_zc_qps);
-@@ -7651,6 +7703,8 @@ int stmmac_suspend(struct device *dev)
- 		if (device_may_wakeup(priv->device))
- 			phylink_speed_down(priv->phylink, false);
- 		phylink_suspend(priv->phylink, false);
-+		if (!priv->plat->use_phy_wol)
-+			stmmac_phy_power_off(priv);
- 	}
- 	rtnl_unlock();
- 
-@@ -7733,6 +7787,8 @@ int stmmac_resume(struct device *dev)
- 		priv->irq_wake = 0;
- 	} else {
- 		pinctrl_pm_select_default_state(priv->device);
-+		if (!priv->plat->use_phy_wol)
-+			stmmac_phy_power_on(priv);
- 		/* reset the phy so that it's ready */
- 		if (priv->mii)
- 			stmmac_mdio_reset(priv->mii);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 23d53ea04b24d..18988da4614cd 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -11,6 +11,7 @@
- #include <linux/device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/module.h>
- #include <linux/io.h>
- #include <linux/of.h>
-@@ -424,6 +425,15 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
- 	if (plat->interface < 0)
- 		plat->interface = plat->phy_interface;
- 
-+	/* Optional regulator for PHY */
-+	plat->phy_regulator = devm_regulator_get_optional(&pdev->dev, "phy");
-+	if (IS_ERR(plat->phy_regulator)) {
-+		if (PTR_ERR(plat->phy_regulator) == -EPROBE_DEFER)
-+			return ERR_CAST(plat->phy_regulator);
-+		dev_info(&pdev->dev, "No regulator found\n");
-+		plat->phy_regulator = NULL;
-+	}
-+
- 	/* Some wrapper drivers still rely on phy_node. Let's save it while
- 	 * they are not converted to phylink. */
- 	plat->phy_node = of_parse_phandle(np, "phy-handle", 0);
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index ef67dba775d04..b5d2d75de2759 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -222,6 +222,7 @@ struct plat_stmmacenet_data {
- 	int phy_addr;
- 	int interface;
- 	phy_interface_t phy_interface;
-+	struct regulator *phy_regulator;
- 	struct stmmac_mdio_bus_data *mdio_bus_data;
- 	struct device_node *phy_node;
- 	struct device_node *phylink_node;
--- 
-2.39.2
+An evlist contains only one tracking event, but can contain multiple 
+dummy events.
 
+Thanks,
+Yang
