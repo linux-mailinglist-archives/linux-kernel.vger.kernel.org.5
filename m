@@ -2,59 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5456175ACF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9942975ACF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbjGTL31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
+        id S230388AbjGTLaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjGTL30 (ORCPT
+        with ESMTP id S229709AbjGTLaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:29:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F464B7;
-        Thu, 20 Jul 2023 04:29:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BDA7561A32;
-        Thu, 20 Jul 2023 11:29:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C20ECC433C8;
-        Thu, 20 Jul 2023 11:29:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689852564;
-        bh=TTITfnpSbPlFq5r36NeY2UBi8pOPRA+E7+jXQ+8VJcI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Me9KG+0l8LRP1GpZVtKDY8zmdy7IjaD7KQa5NIqsbriFqY/nhtMNbN0/65Wk3Hqgo
-         a/A7SN2erpOkurmCXH/kaumvn+pg0gaIqkkZ6EF5WeJ0g/ozRKyDPVROurJmHCUfwO
-         GUCCtrE1lt0igoLa+TqDZCKYMnICMzH6k2NKqEfowixLUhcetID96i0mSJ3+OU2/2u
-         ZOfkIUmRmMsDoQvzVFBU9WCA4y4ekWdvprJpGS3j+Mlv7/13k5NiaOXbmlbCCpspHL
-         zHTfDNjT9WV4okmLeTD0cPgUNCFNdzDpDkDBUpUbjth7t4smlrZ6TLoQR9iSyZ8jo5
-         1s/7PMhd7y37g==
-Date:   Thu, 20 Jul 2023 13:29:21 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     David Gow <davidgow@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] drivers: base: Add basic devm tests for root
- devices
-Message-ID: <vfllifvyada5q6agv2jouzqvlcisdqvkv54vs32x3b6jku4aw4@qqqfsgv57mvt>
-References: <20230329-kunit-devm-inconsistencies-test-v2-0-19feb71e864b@kernel.org>
- <20230329-kunit-devm-inconsistencies-test-v2-1-19feb71e864b@kernel.org>
- <CABVgOSmUZw3CpzpduAjDx+eZCU5tm=5Pq8dyVt+d7oXb6-_h=Q@mail.gmail.com>
+        Thu, 20 Jul 2023 07:30:09 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B2622B7
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:30:08 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA0301FB;
+        Thu, 20 Jul 2023 04:30:51 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D5E803F6C4;
+        Thu, 20 Jul 2023 04:30:06 -0700 (PDT)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v3 0/3] Optimize large folio interaction with deferred split
+Date:   Thu, 20 Jul 2023 12:29:52 +0100
+Message-Id: <20230720112955.643283-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CABVgOSmUZw3CpzpduAjDx+eZCU5tm=5Pq8dyVt+d7oXb6-_h=Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,44 +45,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Hi All,
 
-On Wed, Jul 19, 2023 at 05:13:45PM +0800, David Gow wrote:
-> On Wed, 28 Jun 2023 at 17:49, Maxime Ripard <mripard@kernel.org> wrote:
-> >
-> > The root devices show some odd behaviours compared to regular "bus" dev=
-ices
-> > that have been probed through the usual mechanism, so let's create kunit
-> > tests to exercise those paths and odd cases.
-> >
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > ---
->=20
-> Reviewed-by: David Gow <davidgow@google.com>
+[Sending v3 to replace yesterday's v2 after Yu Zhou's feedback]
 
-Thanks!
+This is v3 of a small series in support of my work to enable the use of large
+folios for anonymous memory (known as "FLEXIBLE_THP" or "LARGE_ANON_FOLIO") [1].
+It first makes it possible to add large, non-pmd-mappable folios to the deferred
+split queue. Then it modifies zap_pte_range() to batch-remove spans of
+physically contiguous pages from the rmap, which means that in the common case,
+we elide the need to ever put the folio on the deferred split queue, thus
+reducing lock contention and improving performance.
 
-> There's definitely an argument that root devices are not supposed to
-> be like regular devices, and so devm_ managed resources aren't
-> supposed to work with them. Either way:
-> - It needs to be documented somewhere (and this test makes for good
-> documentation, IMO).
-> - It should be consistent: if devm_ isn't to be used with root
-> devices, it should fail everywhere, and if it is, it should work in
-> all the cases below.
->=20
-> So I'm all in favour of including this test and making root devices work.
+This becomes more visible once we have lots of large anonymous folios in the
+system, and Huang Ying has suggested solving this needs to be a prerequisit for
+merging the main FLEXIBLE_THP/LARGE_ANON_FOLIO work.
 
-I agree 100%. I've reworded the commit log a bit to make it clearer
-that's what we should strive for, and that this is what this patch is
-doing.
+The series applies on top of v6.5-rc2 and a branch is available at [2].
 
-> That being said, I am planning to send out a patchset adding a struct
-> kunit_device for use in tests, which will be attached to a "kunit"
-> bus. I think the combination of "fix devm_ with root devices" and
-> "don't recommend root devices as a 'fake' device for testing" is
-> probably the longer-term solution everyone can agree upon?
+I don't have a full test run with the latest versions of all the patches on top
+of the latest baseline, so not posting results formally. I can get these if
+people feel they are neccessary though. But anecdotally, for the kernel
+compilation workload, this series reduces kernel time by ~4% and reduces
+real-time by ~0.4%, compared with [1].
 
-Yeah, that sounds reasonable to me
 
-Maxime
+Changes since v2 [3]
+--------------------
+
+- patch 2:
+    - Reworked at Yu Zhou's request to reduce duplicated code.
+    - page_remove_rmap() now forwards to folio_remove_rmap_range() for the
+      !compound (PMD mapped) case.
+    - Both page_remove_rmap() and folio_remove_rmap_range() share common
+      epilogue via new helper function __remove_rmap_finish().
+    - As a result of the changes, I've removed the previous Reviewed-bys.
+
+- other 2 patches are unchanged.
+
+
+Changes since v1 [4]
+--------------------
+
+- patch 2: Modified doc comment for folio_remove_rmap_range()
+- patch 2: Hoisted _nr_pages_mapped manipulation out of page loop so its now
+  modified once per folio_remove_rmap_range() call.
+- patch 2: Added check that page range is fully contained by folio in
+  folio_remove_rmap_range()
+- patch 2: Fixed some nits raised by Huang, Ying for folio_remove_rmap_range()
+- patch 3: Support batch-zap of all anon pages, not just those in anon vmas
+- patch 3: Renamed various functions to make their use clear
+- patch 3: Various minor refactoring/cleanups
+- Added Reviewed-By tags - thanks!
+
+[1] https://lore.kernel.org/linux-mm/20230714160407.4142030-1-ryan.roberts@arm.com/
+[2] https://gitlab.arm.com/linux-arm/linux-rr/-/tree/features/granule_perf/deferredsplit-lkml_v3
+[3] https://lore.kernel.org/linux-mm/20230719135450.545227-1-ryan.roberts@arm.com/
+[4] https://lore.kernel.org/linux-mm/20230717143110.260162-1-ryan.roberts@arm.com/
+
+Thanks,
+Ryan
+
+
+Ryan Roberts (3):
+  mm: Allow deferred splitting of arbitrary large anon folios
+  mm: Implement folio_remove_rmap_range()
+  mm: Batch-zap large anonymous folio PTE mappings
+
+ include/linux/rmap.h |   2 +
+ mm/memory.c          | 120 +++++++++++++++++++++++++++++++++++++++++
+ mm/rmap.c            | 125 ++++++++++++++++++++++++++++++++-----------
+ 3 files changed, 217 insertions(+), 30 deletions(-)
+
+--
+2.25.1
+
