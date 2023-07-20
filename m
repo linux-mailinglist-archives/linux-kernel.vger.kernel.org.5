@@ -2,61 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9B475AA0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDE275A9B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbjGTI5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 04:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
+        id S231593AbjGTI4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 04:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbjGTIjs (ORCPT
+        with ESMTP id S230115AbjGTIiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 04:39:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7EE26AE
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:39:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689842340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2if8GUFmC1eD4optUaWK9NefEn7X4sNBFHPPoUxvNAg=;
-        b=JToTET4rn/4KJJ4UXAutdqcxLZ+6qLR9VHH4iwjEZ5MFJknE1oC4aUiSKu3s69QibVEiQU
-        uBu7yReOZxwVvBmlgxpvAFCf4jg2ZT+jpHFfjP5dDPYQ6etowKLocEH2IAQM6upDNgrfvb
-        wv6tk7HF0We/MZmqsaG1xkkAQRxzzaE=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-127-0nX04BiMMru-iCGC6jqJJQ-1; Thu, 20 Jul 2023 04:38:56 -0400
-X-MC-Unique: 0nX04BiMMru-iCGC6jqJJQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1FACB3803926;
-        Thu, 20 Jul 2023 08:38:56 +0000 (UTC)
-Received: from dell-per430-12.lab.eng.pek2.redhat.com (dell-per430-12.lab.eng.pek2.redhat.com [10.73.196.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D0D5EF6CD8;
-        Thu, 20 Jul 2023 08:38:51 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alvaro.karsz@solid-run.com, maxime.coquelin@redhat.com
-Subject: [PATCH net-next v4 2/2] virtio-net: add cond_resched() to the command waiting loop
-Date:   Thu, 20 Jul 2023 04:38:39 -0400
-Message-Id: <20230720083839.481487-3-jasowang@redhat.com>
-In-Reply-To: <20230720083839.481487-1-jasowang@redhat.com>
-References: <20230720083839.481487-1-jasowang@redhat.com>
+        Thu, 20 Jul 2023 04:38:52 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB3C26A5
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:38:50 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fa48b5dc2eso765698e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:38:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689842329; x=1690447129;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eVM18y+39lFosvdaYdIgO9ss377egsp/711hTC+KHKM=;
+        b=OC2rqh2/KW20vFwMQ8QkxQ1joh9qsdUk1wuP8bg3niTWrYZyQEj2YFqLFbO3osYtnT
+         AInHz0bOoWE3JU5cwwGQXKZBxaF0DFS+qzClpgRVn+AA7QplFjnJSrnUpjjYGjSQlfFj
+         XuFIWTn9KEwwQNzvgUOKIYvbzW7Jbx2c3ogNULVKteLn3hlxjirqNT2pROJqAuMRKEhX
+         w6NuGKjB+0OFs9p9i0d+sQw1P4O5a5kaWkfcUEoERBdGelx/yOAWsS4qmhDtUe/JmGCn
+         8Vm4G8coj7Y5bUtQtzW3Ml8ydX9hxbXmXhmy2RdAVO6svpMTI2df3qmaBfr+UQc26qII
+         67IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689842329; x=1690447129;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eVM18y+39lFosvdaYdIgO9ss377egsp/711hTC+KHKM=;
+        b=ilXz2o1622fe9rzeOKN1YG6V9S3D2Oy/iBltR/09KFEEVUYl8FwGl2n6evum9Seksz
+         rU78Dg6b5N2OS5ZBFfPIpTzqszN6CIJdrawtj6Iy7bf5Al2RkueadJwuz6v91buED0ib
+         aXvj+ntvWtNTjUNX5OZTQ2oLTvaVAQC4dRhxuE32uZuJ7zh4YjCoBjGbpdtth3TwDZrq
+         +jX+pD91OsajGRFMyq47I2Ja7c/sZsKHXJHz6Bf5/6HDgB6aQcYc4eEhYrkYpGbqvYkg
+         Xc9djtiVMlD/eFJ7vZZ7SDQzJ48pPb5N+YKpp4ZAC2TW2eRxSto7XTm6q4WXPELOOz27
+         Bv2A==
+X-Gm-Message-State: ABy/qLaAu0pFnzrn0ol2wH8/K6ygfL+KIyWfJdAQEa2m3Bee1SMU/2DO
+        1/O2k9al2hVBwsiZjwjuB9rCbw==
+X-Google-Smtp-Source: APBJJlGMhvGs0aCS+jIoKJ+MCRAgfO/gZIZOPr9mIlyK0ln5xdYeYInM1U4yeHyVi4w6zqEm2xuI4g==
+X-Received: by 2002:a05:6512:3085:b0:4f8:66a1:a31b with SMTP id z5-20020a056512308500b004f866a1a31bmr2497982lfd.30.1689842329272;
+        Thu, 20 Jul 2023 01:38:49 -0700 (PDT)
+Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
+        by smtp.gmail.com with ESMTPSA id d28-20020ac24c9c000000b004f84b36a24fsm90641lfl.51.2023.07.20.01.38.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 01:38:48 -0700 (PDT)
+Message-ID: <3ad34a1d-0b53-0e33-f587-454ec5dfe32e@linaro.org>
+Date:   Thu, 20 Jul 2023 10:38:48 +0200
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] arm64: dts: qcom: sc8180x-pmics: align LPG node name
+ with dtschema
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230720083500.73554-1-krzysztof.kozlowski@linaro.org>
+ <20230720083500.73554-4-krzysztof.kozlowski@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230720083500.73554-4-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,32 +116,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding cond_resched() to the command waiting loop for a better
-co-operation with the scheduler. This allows to give CPU a breath to
-run other task(workqueue) instead of busy looping when preemption is
-not allowed on a device whose CVQ might be slow.
+On 20.07.2023 10:35, Krzysztof Kozlowski wrote:
+> Bindings expect the LPG node name to be "pwm":
+> 
+>   sc8180x-lenovo-flex-5g.dtb: pmic@5: 'lpg' does not match any of the regexes:
+> 
+> Fixes: d3302290f59e ("arm64: dts: qcom: sc8180x: Add pmics")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/net/virtio_net.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 9f3b1d6ac33d..e7533f29b219 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2314,8 +2314,10 @@ static bool virtnet_send_command(struct virtnet_info *vi, u8 class, u8 cmd,
- 	 * into the hypervisor, so the request should be handled immediately.
- 	 */
- 	while (!virtqueue_get_buf(vi->cvq, &tmp) &&
--	       !virtqueue_is_broken(vi->cvq))
-+	       !virtqueue_is_broken(vi->cvq)) {
-+		cond_resched();
- 		cpu_relax();
-+	}
- 
- 	return vi->ctrl->status == VIRTIO_NET_OK;
- }
--- 
-2.39.3
-
+Konrad
