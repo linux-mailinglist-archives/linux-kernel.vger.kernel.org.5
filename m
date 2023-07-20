@@ -2,137 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E4175A576
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB09975A578
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbjGTFZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 01:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40472 "EHLO
+        id S229680AbjGTF0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 01:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGTFZ3 (ORCPT
+        with ESMTP id S229456AbjGTF0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 01:25:29 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76872110;
-        Wed, 19 Jul 2023 22:25:28 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id E1FBB6015E;
-        Thu, 20 Jul 2023 07:25:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1689830726; bh=ZAqMkp/DBdBOVwAIRGxyUnAmmHO14ggEbQ2+58ks12M=;
-        h=Date:From:Subject:To:Cc:From;
-        b=ndEDIfTFmAXE3038XelV1l6726OsL9C7du/DHTl8UMre6qLqYIUjeZYJAG6xOL/YO
-         V5oCy6RtbFczI8g28yaujW2CTSX3FuDMiS7JFaiWE1NHLwF9H2UQRJyTGaJhjaocrU
-         yizqoiCp8ZE3rEDknvq2W6G6PuDKU7oTTXGTqrHMdhUPqFtiCuvgcYd35vpdQ/KDsZ
-         s0RcTJktsbS+jlOpEAw/s28KwD9qZLZJwJMY3ktnj9WAxTc0jPqKQbEDHWqhnJjR+2
-         hPnidbECAl18gpfq3d67D3LhlLJUhljG8gIof5SOfOl7WpoZmAwaeLUeAm7Rp19+KL
-         dK2wCAVewnTIg==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id WAdvw5bmmGMH; Thu, 20 Jul 2023 07:25:24 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 0D65060157;
-        Thu, 20 Jul 2023 07:25:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1689830724; bh=ZAqMkp/DBdBOVwAIRGxyUnAmmHO14ggEbQ2+58ks12M=;
-        h=Date:From:Subject:To:Cc:From;
-        b=w07Z0lK/eFvU4p+LHAbjGiDrEQ034nxCqSeO5TSTzLA6kCSI2f4MwfoZA4CTdnTdZ
-         mWp/5/CO8SUl1Kf6hEEmyvFwpuMzLXKMK4AaicwU/Sh9wG+eDOkZjTaK0NbCc+HQCp
-         0j9GChGeejRNM/Xa4Pu8jkfNkVKwgH57nRvaFVjMTRDFnDIDsW2AQjho/kYFeeqopE
-         rpxSx3fZeo85de8FVk7CDlfK5mSpDzjKHhl86VsoFz8JzfOenjqDIW7PPC55YAaQHl
-         Y+/G8xVkqKhe9LinsNHR32+S6f7fVDwXfCgSZ2LP4ZhZW56UjbOnlo8vRyHwjqYIjj
-         g/0q7E4CgFuiA==
-Message-ID: <759fe934-2e43-e9ff-8946-4fd579c09b05@alu.unizg.hr>
-Date:   Thu, 20 Jul 2023 07:25:19 +0200
+        Thu, 20 Jul 2023 01:26:17 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE07B6;
+        Wed, 19 Jul 2023 22:26:15 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-579dfae6855so4907637b3.1;
+        Wed, 19 Jul 2023 22:26:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689830775; x=1690435575;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hCxDK9VUPIDMrMu5ej3bfQ9eGHY6r4R51jPQ7myjstE=;
+        b=U6Izhqpw692FvYENjOF4P81Id8HtA76Q8GXLE1AEZfZVV0v7bA6AYkbn70rCXgTisZ
+         jxfYKVjDPCRjHVHwffgeoFfKkqM3qYM0zhBXqGmD2IgjYLH8EG8svsghoN95rSYev4UO
+         ZHmJ6c4701FiMW3IjVQXgJ1KwQF+zfuJuEz9840B6gxZr15C8Re/WxkjZDujOgvSErCY
+         aOt0HU3SYwrwWph9ys631/Tab7Ldxy8ubWf4wB2wrgESeNki10pxliJFfU5m8g60mDj/
+         +zC4I8e+7TJ3X2R9UAqN3YG3dq4G6EnN2YUebzsWIaJU5gqSA1p7P1gh+ORFZU0U2DH/
+         pW9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689830775; x=1690435575;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hCxDK9VUPIDMrMu5ej3bfQ9eGHY6r4R51jPQ7myjstE=;
+        b=J77e1V1X1/b/4hZxVU9b7wlSKU5aPlzJCSSih9coEzSXHT9Omven9rPgEE8wFJ2BZg
+         GXZGsdvAT2zwTzWfy7ctlZwRVl1zwdThqpeELlTAHIgPDab8YXW/ljcgzTIilm4HmqFd
+         SnQv28rPXbL87xephx8RAerutxqE47mtIG4bJyfGDTA1jHo5mc9dKOPjp0vb6rGh+H40
+         fmCKnKzfXTCeJBSr5VN5JHsjw5xpJYvIVOHpfEPUfiN+mCLEfWhIpoK5f3x5bdtf+YDD
+         H6Rpk/nU3q8UlOFiQOhYdCk1ngph+fS8B1P/e0sfSD3+LbJ1nZB8ghE+kbKGEgRIe454
+         p46A==
+X-Gm-Message-State: ABy/qLZIMJxIrxiZm2CVmmSuuU2l6CmMJVXdbAb/73AuGfLKHtXbvSCE
+        WClF68qK8Ai+ExV2zIUUYL2dgRLyaXxW02gBmjY=
+X-Google-Smtp-Source: APBJJlGWVyvJw7CAZ8s9rVM4E5+H2on70fP2tQpiaVWhPmkxYVCZepfRhHCQVOrqc8aWAhoYRUws44ohPSittecYMSI=
+X-Received: by 2002:a81:8315:0:b0:579:f5e3:ad07 with SMTP id
+ t21-20020a818315000000b00579f5e3ad07mr5017768ywf.14.1689830774906; Wed, 19
+ Jul 2023 22:26:14 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Subject: [PROBLEM] seltests: net/forwarding/sch_ets.sh [HANG]
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230511040857.6094-1-weijiang.yang@intel.com>
+ <ZIufL7p/ZvxjXwK5@google.com> <147246fc-79a2-3bb5-f51f-93dfc1cffcc0@intel.com>
+ <ZIyiWr4sR+MqwmAo@google.com> <c438b5b1-b34d-3e77-d374-37053f4c14fa@intel.com>
+ <ZJYF7haMNRCbtLIh@google.com> <e44a9a1a-0826-dfa7-4bd9-a11e5790d162@intel.com>
+ <ZLg8ezG/XrZH+KGD@google.com> <20230719203658.GE3529734@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230719203658.GE3529734@hirez.programming.kicks-ass.net>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Thu, 20 Jul 2023 07:26:04 +0200
+Message-ID: <CAM9Jb+hkbUpTNy-jqf8tevKeEsQjhkpBtD5iESSoPsATVfA9tg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/21] Enable CET Virtualization
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Weijiang Yang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, rppt@kernel.org,
+        binbin.wu@linux.intel.com, rick.p.edgecombe@intel.com,
+        john.allen@amd.com, Chao Gao <chao.gao@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+> > My understanding is that PL[0-2]_SSP are used only on transitions to the
+> > corresponding privilege level from a *different* privilege level.  That means
+> > KVM should be able to utilize the user_return_msr framework to load the host
+> > values.  Though if Linux ever supports SSS, I'm guessing the core kernel will
+> > have some sort of mechanism to defer loading MSR_IA32_PL0_SSP until an exit to
+> > userspace, e.g. to avoid having to write PL0_SSP, which will presumably be
+> > per-task, on every context switch.
+> >
+> > But note my original wording: **If that's necessary**
+> >
+> > If nothing in the host ever consumes those MSRs, i.e. if SSS is NOT enabled in
+> > IA32_S_CET, then running host stuff with guest values should be ok.  KVM only
+> > needs to guarantee that it doesn't leak values between guests.  But that should
+> > Just Work, e.g. KVM should load the new vCPU's values if SHSTK is exposed to the
+> > guest, and intercept (to inject #GP) if SHSTK is not exposed to the guest.
+> >
+> > And regardless of what the mechanism ends up managing SSP MSRs, it should only
+> > ever touch PL0_SSP, because Linux never runs anything at CPL1 or CPL2, i.e. will
+> > never consume PL{1,2}_SSP.
+>
+> To clarify, Linux will only use SSS in FRED mode -- FRED removes CPL1,2.
 
-Using the same config for 6.5-rc2 on Ubuntu 22.04 LTS and 22.10, the execution
-stop at the exact same line on both boxes (os I reckon it is more than an
-accident):
+Trying to understand more what prevents SSS to enable in pre FRED, Is
+it better #CP exception
+handling with other nested exceptions?
 
-# selftests: net/forwarding: sch_ets.sh
-# TEST: ping vlan 10                                                  [ OK ]
-# TEST: ping vlan 11                                                  [ OK ]
-# TEST: ping vlan 12                                                  [ OK ]
-# Running in priomap mode
-# Testing ets bands 3 strict 3, streams 0 1
-# TEST: band 0                                                        [ OK ]
-# INFO: Expected ratio >95% Measured ratio 100.00
-# TEST: band 1                                                        [ OK ]
-# INFO: Expected ratio <5% Measured ratio 0
-# Testing ets bands 3 strict 3, streams 1 2
-# TEST: band 1                                                        [ OK ]
-# INFO: Expected ratio >95% Measured ratio 100.00
-# TEST: band 2                                                        [ OK ]
-# INFO: Expected ratio <5% Measured ratio 0
-# Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
-# TEST: band 0                                                        [ OK ]
-# INFO: Expected ratio >95% Measured ratio 100.00
-# TEST: band 1                                                        [ OK ]
-# INFO: Expected ratio <5% Measured ratio 0
-# Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 1 2
-# TEST: bands 1:2                                                     [ OK ]
-# INFO: Expected ratio 2.00 Measured ratio 1.99
-# Testing ets bands 3 quanta 3300 3300 3300, streams 0 1 2
-# TEST: bands 0:1                                                     [ OK ]
-# INFO: Expected ratio 1.00 Measured ratio .99
-# TEST: bands 0:2                                                     [ OK ]
-# INFO: Expected ratio 1.00 Measured ratio 1.00
-# Testing ets bands 3 quanta 5000 3500 1500, streams 0 1 2
-# TEST: bands 0:1                                                     [ OK ]
-# INFO: Expected ratio 1.42 Measured ratio 1.42
-# TEST: bands 0:2                                                     [ OK ]
-# INFO: Expected ratio 3.33 Measured ratio 3.33
-# Testing ets bands 3 quanta 5000 8000 1500, streams 0 1 2
-# TEST: bands 0:1                                                     [ OK ]
-# INFO: Expected ratio 1.60 Measured ratio 1.59
-# TEST: bands 0:2                                                     [ OK ]
-# INFO: Expected ratio 3.33 Measured ratio 3.33
-# Testing ets bands 2 quanta 5000 2500, streams 0 1
-# TEST: bands 0:1                                                     [ OK ]
-# INFO: Expected ratio 2.00 Measured ratio 1.99
-# Running in classifier mode
-# Testing ets bands 3 strict 3, streams 0 1
-# TEST: band 0                                                        [ OK ]
-# INFO: Expected ratio >95% Measured ratio 100.00
-# TEST: band 1                                                        [ OK ]
-# INFO: Expected ratio <5% Measured ratio 0
-# Testing ets bands 3 strict 3, streams 1 2
-# TEST: band 1                                                        [ OK ]
-# INFO: Expected ratio >95% Measured ratio 100.00
-# TEST: band 2                                                        [ OK ]
-# INFO: Expected ratio <5% Measured ratio 0
-# Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
+Won't same problems (to some extent) happen in user-mode shadow stack
+(and in case of guest, SSS inside VM)?
 
-I tried to run 'set -x' enabled version standalone, but that one finished
-correctly (?).
-
-It could be something previous scripts left, but right now I don't have a clue.
-I can attempt to rerun all tests with sch_ets.sh bash 'set -x' enabled later today.
-
-Best regards,
-Mirsad Todorovac
+Thanks,
+Pankaj
