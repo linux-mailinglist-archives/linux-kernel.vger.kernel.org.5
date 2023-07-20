@@ -2,188 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B369975A61E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD8475A622
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbjGTGPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59608 "EHLO
+        id S230031AbjGTGQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbjGTGP2 (ORCPT
+        with ESMTP id S229561AbjGTGQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:15:28 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721491BF2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:15:26 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fba74870abso646488e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:15:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689833725; x=1692425725;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M9fxsL8k8YdgPOdv48SC9Nmsg2LypY+WGWHD2QI6dI4=;
-        b=TjazXSZ/mUV4wGJU0KCYiC11Uw/a4eTT15H2sG8/TBGEoXDtPyYuQIBDnPPgq6DwXI
-         pG08Ism0wSEIeLGzpw6NYA+h5DeX6dtiWzxYKq6NCzyrlUhK3yGgAgCUR1NDZd72a3KD
-         1UEJh4zxLX6r6GjTCGaQpdJzeTQfBD3d4OcBawjWqzpL629NYzr7IEdR2ctPZm49rdCx
-         07ZJ54G43LKPpyNYJDhOD04efYKq7KLNf+HDWUthoT8Zkwc785fFotPDfkI68eUj5WEN
-         axYB77WBqSupOaAOcZLn+QMFl9l6niXIqyQbl1XX7xmH1E0CBVJecIhNene68UEaZDsB
-         FuBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689833725; x=1692425725;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M9fxsL8k8YdgPOdv48SC9Nmsg2LypY+WGWHD2QI6dI4=;
-        b=XtnrmrG65O8niRGMYcG8RNp57Pejbx9VN8CRI16cF/id138DFXXdNVqjLavAn1qBHi
-         Ab670mY5xgAJ0g6g7I/jWcNbXEBueyy460KelzqvdoFo1NZRFV39rmBqi0tRSYx/7UaM
-         zXSaGbr52f/UUWnxMg0BgENOExInU9/DTU5H10WyegyCrMtuI9XWFicsz6u4NXpMiUFy
-         eYln+pBT41EYrs0ZcRx2vd//okFY1FlWMbpLKhGmDtXb+CokQi7ThB3B7we0iAedGqqH
-         dR0VywOE94ulnUEnaMrMKT8TPcklRCVZg78wLwj4RR9vlbrWMR/N1Swj1YPiEYDxIR6C
-         GSXg==
-X-Gm-Message-State: ABy/qLYwQAVuNcmguAULB1ybEI7KUn1azcOrvlfroqXSzZtS4+2rEdA0
-        mYjzp7xhl8MuNCm1fxMmTu4rBQ==
-X-Google-Smtp-Source: APBJJlHszO1YbD5dV8Rn+jDt9WtRCRTXo3wgoJH/O5hHJHOegDkIT3+x0aDYMvZrOv2LNN8NtzpbAw==
-X-Received: by 2002:a05:6512:3191:b0:4f8:6627:7983 with SMTP id i17-20020a056512319100b004f866277983mr1827667lfe.5.1689833724641;
-        Wed, 19 Jul 2023 23:15:24 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id l14-20020a1c790e000000b003fbd04ecdc6sm3086939wme.5.2023.07.19.23.15.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 23:15:24 -0700 (PDT)
-Message-ID: <0ad5a223-d70f-deaa-6261-a2bd2b2af40d@linaro.org>
-Date:   Thu, 20 Jul 2023 08:15:21 +0200
+        Thu, 20 Jul 2023 02:16:24 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F8E1734;
+        Wed, 19 Jul 2023 23:16:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1689833774; x=1690438574; i=deller@gmx.de;
+ bh=Kjw2irROZgblodT7GrAJHMiu+Athn4WIlCQc+MmBJFk=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=Khj07uLafxC6/VVXXkBDAjAu7oB2EGZcI3RZB5LLkQ1wruAOXcLmV2/e+D4BSxfOFTIHc2Q
+ +j+2DZOExBgmFygHcj+X1Bx/hLP2JH8wpr+UMh0rN6yWZBDtKFhtSFC5GkK95xC1v1oUmB4yN
+ 1/JQhBFPKq1E+ukuWhZMtjPrBIkeHfX2y9EIe6sLPzKduhJ5c1y0+hbleJhh30vYPX7cIFekx
+ O4D8yjCBUchNyS+A0gMCANQeDW1NfDYTYxgQm8BJamxlLCSK6eRTraa/JIQYt7UvW7HT1vPHp
+ HOFQSLdWY7He6YBL8uLFWtdvjR6KBT38uiE1lMZZTjvGQoXOzr3w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.153.9]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N9MpY-1psUGY0o0i-015MvO; Thu, 20
+ Jul 2023 08:16:14 +0200
+Message-ID: <1d045caf-2d83-047d-654b-03609dd91226@gmx.de>
+Date:   Thu, 20 Jul 2023 08:16:13 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/2] ARM: dts: imx6q: Add Variscite MX6 Custom board
- support
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 1/7] vgacon: switch vgacon_scrolldelta() and
+ vgacon_restore_screen()
 Content-Language: en-US
-To:     James Hilliard <james.hilliard1@gmail.com>,
-        devicetree@vger.kernel.org
-Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marek Vasut <marex@denx.de>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Stefan Wahren <stefan.wahren@chargebyte.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Jesse Taube <mr.bossman075@gmail.com>,
-        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230719224141.3716815-1-james.hilliard1@gmail.com>
- <20230719224141.3716815-2-james.hilliard1@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230719224141.3716815-2-james.hilliard1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20230712085942.5064-1-jirislaby@kernel.org>
+ <20230712085942.5064-2-jirislaby@kernel.org>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <20230712085942.5064-2-jirislaby@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/YaYnmNmwmNBiWSeAkIditEiEjLVWWmnI18FP3ynD9r/fckEMQI
+ 4b/nP4E1xU52qYKfV8mXxZucwJGyJ1CO0/TqG59roNw7gJmnzD/+lxXMeJQQISqccF8u3Mo
+ Egq3e3eUY4/E8WhLyXOa58UDopMmHgsHgYy1ZRhuRx02tkB2eNUUqe0VkWgw0Cp8xEz1f/7
+ uQwASgZY4DUa4br5GrfIg==
+UI-OutboundReport: notjunk:1;M01:P0:veCzuI3kDCg=;fnRmKSxZXEjl/taCOx7paUHzly4
+ 6XIDPwcabiiLuhF8P9PH0QhJ2joy9vduzgs2TBQiObO6tMDmEpeyxoMK+3D0xNJisj9uzOPKy
+ nIpe0/ks4u5epwpY/INb08DS3by66ee73PqhUdzjtlX5giddyP8YE8AfvhcCTzGj8N2nwsLm0
+ Q34prT4RT9+z0tIVHsR32na/yCLqeFtIqXs4eO5/DBpCz21+FSOxjBlFssyVkTHcPRgKwXYPO
+ bd1YBu9PQL9oTrlUUVejFwtNv6TAIt+joOo9ANKe7wsfoq7CHHCu39Qna5whFwStbjCCwj2Ow
+ bKh33Vs/e/Va+/hBq8jN31WV7YhCu9vPWnaMdRp9xDTfvdyjwRRBvxkrnEHTlBzhkqOHn2N5A
+ 41Lm2fM0DbqgFBoeygWj7X2fPzmtNkYzRQuwNbl0q0lbQsYnVgd0GCM6vz8jFcr5egJ9TD0pV
+ d36IDEvKmbDcxauweuklHaoZeTPWkYBBpaY2rSpwXPAjFUEg/JZhPDhyY4Hzq1Gxh+g6zpYq9
+ BaXIdm1yhhEz/vcr+DAipEITQB6J5NPlpKJtWIAHhnKbr0FonuqZ8P05BsYZYTIQ1j+v8aho9
+ cULpRquSsxNDzjbtWvTv7qr9El2WO1qyiFAfrxOSXz5I2aWY9HPgNZJVKRYSpIcNPjxPTagXl
+ ZdPwWX5cOwJDBMVEkdsSvBZPSVHhy7MTJpCk3HyoQzTsVkZTBiqUrQR5J6hlOb+yBDViILNvt
+ YvgcU3kMNL1wyZIaRpjbKu+cKrOjVJuFUxeJIsssT1SifMuhrCCBAVh0A3ww+pVf5w3wN+iQd
+ KkN9/K4qyJZq8Mqfhl+Iol92FIb5qJRdAG2DQu0Mse7eaPKybkMLsXK6YbzOYHcUAIOmzMFMQ
+ SREHPu5bhH181wkGmmLEIP/6ZBSdKB4MBgix/EwCT5eAvoT4VfIYulomX40JHvAgKFPiYNx+3
+ XHk2ZA==
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2023 00:41, James Hilliard wrote:
-> This patch adds support for the Variscite MX6 SoM Carrier Board.
-> 
-> This Carrier-Board has the following :
-> - LVDS interface for the VLCD-CAP-GLD-LVDS 7" LCD 800 x 480 touch display
-> - HDMI Connector
-> - USB Host + USB OTG Connector
-> - 10/100/1000 Mbps Ethernet
-> - miniPCI-Express slot
-> - SD Card connector
-> - Audio Headphone/Line In jack connectors
-> - S-ATA
-> - On-board DMIC
-> - RS485 Header
-> - CAN bus header
-> - SPI header
-> - Camera Interfaces header
-> - OnBoard RTC with Coin Backup battery socket
-> - RS232 Debug Header (IDC10)
-> - RS232 DTE
-> 
-> Product Page : https://www.variscite.com/product/single-board-computers/var-mx6customboard
-> 
-> The dts file based on the ones provided by Variscite on their own
-> kernel, but adapted for mainline.
-> 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+On 7/12/23 10:59, Jiri Slaby (SUSE) wrote:
+> Switch vgacon_scrolldelta() and vgacon_restore_screen() positions, so
+> that the former is not needed to be forward-declared.
+>
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+
+Thanks Jiri !
+I've applied this series to the fbdev git tree.
+
+Helge
+
 > ---
->  .../devicetree/bindings/arm/fsl.yaml          |   1 +
-
-Please run scripts/checkpatch.pl and fix reported warnings. Some
-warnings can be ignored, but the code here looks like it needs a fix.
-Feel free to get in touch if the warning is not clear.
-
->  arch/arm/boot/dts/Makefile                    |   1 +
->  .../arm/boot/dts/imx6q-var-mx6customboard.dts | 279 ++++++++++++++++++
->  3 files changed, 281 insertions(+)
->  create mode 100644 arch/arm/boot/dts/imx6q-var-mx6customboard.dts
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index 15d411084065..0f583852de8a 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -298,6 +298,7 @@ properties:
->                - udoo,imx6q-udoo           # Udoo i.MX6 Quad Board
->                - uniwest,imx6q-evi         # Uniwest Evi
->                - variscite,dt6customboard
-> +              - variscite,mx6customboard
->                - wand,imx6q-wandboard      # Wandboard i.MX6 Quad Board
->                - ysoft,imx6q-yapp4-crux    # i.MX6 Quad Y Soft IOTA Crux board
->                - ysoft,imx6q-yapp4-pegasus # i.MX6 Quad Y Soft IOTA Pegasus board
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 59829fc90315..9cfc3d3e91ea 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -665,6 +665,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
->  	imx6q-udoo.dtb \
->  	imx6q-utilite-pro.dtb \
->  	imx6q-var-dt6customboard.dtb \
-> +	imx6q-var-mx6customboard.dtb \
->  	imx6q-vicut1.dtb \
->  	imx6q-wandboard.dtb \
->  	imx6q-wandboard-revb1.dtb \
-> diff --git a/arch/arm/boot/dts/imx6q-var-mx6customboard.dts b/arch/arm/boot/dts/imx6q-var-mx6customboard.dts
-> new file mode 100644
-> index 000000000000..66047dff11ec
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/imx6q-var-mx6customboard.dts
-> @@ -0,0 +1,279 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Support for Variscite MX6 Carrier-board
-> + *
-> + * Copyright 2016 Variscite, Ltd. All Rights Reserved
-> + * Copyright 2022 Bootlin
-> + */
+>   drivers/video/console/vgacon.c | 12 ++++++------
+>   1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgac=
+on.c
+> index e25ba523892e..fbed2862c317 100644
+> --- a/drivers/video/console/vgacon.c
+> +++ b/drivers/video/console/vgacon.c
+> @@ -142,12 +142,6 @@ static inline void vga_set_mem_top(struct vc_data *=
+c)
+>   	write_vga(12, (c->vc_visible_origin - vga_vram_base) / 2);
+>   }
+>
+> -static void vgacon_restore_screen(struct vc_data *c)
+> -{
+> -	if (c->vc_origin !=3D c->vc_visible_origin)
+> -		vgacon_scrolldelta(c, 0);
+> -}
+> -
+>   static void vgacon_scrolldelta(struct vc_data *c, int lines)
+>   {
+>   	vc_scrolldelta_helper(c, lines, vga_rolled_over, (void *)vga_vram_bas=
+e,
+> @@ -155,6 +149,12 @@ static void vgacon_scrolldelta(struct vc_data *c, i=
+nt lines)
+>   	vga_set_mem_top(c);
+>   }
+>
+> +static void vgacon_restore_screen(struct vc_data *c)
+> +{
+> +	if (c->vc_origin !=3D c->vc_visible_origin)
+> +		vgacon_scrolldelta(c, 0);
+> +}
 > +
-> +/dts-v1/;
-> +
-> +#include "imx6qdl-var-som.dtsi"
-> +#include <dt-bindings/pwm/pwm.h>
-> +
-> +/ {
-> +	model = "Variscite i.MX6 QUAD/DUAL VAR-SOM-MX6 Custom Board";
-> +	compatible = "variscite,mx6customboard", "fsl,imx6q";
-
-Where is the SoM compatible?
-
-Best regards,
-Krzysztof
+>   static const char *vgacon_startup(void)
+>   {
+>   	const char *display_desc =3D NULL;
 
