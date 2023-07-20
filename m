@@ -2,138 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B370475A712
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A0A75A715
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbjGTG73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36994 "EHLO
+        id S231407AbjGTG7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbjGTG71 (ORCPT
+        with ESMTP id S231266AbjGTG7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:59:27 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B8C12F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:59:25 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-307d58b3efbso346158f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:59:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689836364; x=1690441164;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pT1DoIojr0lvslKOunqTR4YXj4PFl+5LQJAMXq3nC5E=;
-        b=ZDbx6qAcN8P+a9zusWZTkSl9rouTQF/iSqEtve1lkFjxsrKdWPD6dMC2Umr3gK0sIm
-         nkzMw50TbmJwgcQIx++d1ggHjzr6+sA6GAKvbxlNWECwqbhFRvboEMDbjSOMt6CFznjJ
-         O36ADGX1UaNkxZWfL7VJnxC+Cw3dNijMi+5cHTLgKK8SiFsVriuYykuE2k1SMWR22XY6
-         5WxT4DDw/UrHFcXUA/TDL5yUwwgAoniALRtBlkd8RbObdZKNO0W+L2Z2Ac61fVFTAtPL
-         YHLVKQefTrzGZrXQCVxFRHfphf2SXdfAdIWaHdz9BRl6fVTzOf00WkysK5x98InR9zeP
-         FHQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689836364; x=1690441164;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pT1DoIojr0lvslKOunqTR4YXj4PFl+5LQJAMXq3nC5E=;
-        b=VCfyte8hmDz9fVzbh2p/TBNBTXuwTCW6anr5skFna15u9t6ZhrRiEUrunnSNHGtpwz
-         h/5mtUD4A9/OVkvHlfHxG5nKnH6hl5VJelcfSVZA4Oj1lvvjUKNreEeYJ0KG9U5/zs8z
-         tQGSGgI9h+eZnPuqchfnd5Os6gJo0HvCNuMSmglZpoeK1m7m0nmxGiOXXB0eQjMXHMDt
-         pkG+LZYmLJN5Zh1tlQrALG5UT3phys1cyXXDPTRj08To7HzIa1wM0NWfORNEuXdW9glX
-         We+GIMV05+7txlGmTbAcJhZ9hygI/hCCdcIzZtvkzZCmgkIhW7G675sderNquUf1UsEB
-         chlA==
-X-Gm-Message-State: ABy/qLZLujWOfNWRLymRgMjYHZXFxNP6pnC8A7twomsVyL4dzw3gWMJz
-        DtBBFqLBcRlIFmRR15BVO9+6a7RJ5HC4lsFGtlr+TQ==
-X-Google-Smtp-Source: APBJJlG41skPij9fp8nZyKeEoH9myLamnBgBOCZf3SxF3pb6Xp13yIhuN0hjhRkJju4WSDs1jm0RLUedZXc7rvYty9A=
-X-Received: by 2002:a05:6000:1c2:b0:30f:b7b4:3e55 with SMTP id
- t2-20020a05600001c200b0030fb7b43e55mr1436688wrx.19.1689836363671; Wed, 19 Jul
- 2023 23:59:23 -0700 (PDT)
+        Thu, 20 Jul 2023 02:59:33 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1575DCC;
+        Wed, 19 Jul 2023 23:59:29 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 21FB424E3BF;
+        Thu, 20 Jul 2023 14:59:27 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 20 Jul
+ 2023 14:59:27 +0800
+Received: from [192.168.125.127] (113.72.147.86) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 20 Jul
+ 2023 14:59:23 +0800
+Message-ID: <5e4d5920-f346-a6ae-8548-f70d9fa911fe@starfivetech.com>
+Date:   Thu, 20 Jul 2023 14:59:21 +0800
 MIME-Version: 1.0
-References: <20230714165508.94561-1-charlie@rivosinc.com> <20230714165508.94561-5-charlie@rivosinc.com>
-In-Reply-To: <20230714165508.94561-5-charlie@rivosinc.com>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Thu, 20 Jul 2023 08:59:12 +0200
-Message-ID: <CAHVXubgSLhsMdS3aFbSuPNf2d_FXhztnFtRnbjsMstH5coCHWA@mail.gmail.com>
-Subject: Re: [PATCH v6 4/4] RISC-V: mm: Document mmap changes
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        conor@kernel.org, paul.walmsley@sifive.com, palmer@rivosinc.com,
-        aou@eecs.berkeley.edu, anup@brainfault.org,
-        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v1 1/9] dt-bindings: PCI: Add PLDA XpressRICH PCIe host
+ common properties
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+References: <20230719102057.22329-1-minda.chen@starfivetech.com>
+ <20230719102057.22329-2-minda.chen@starfivetech.com>
+ <c1dea7c8-2bc4-a113-0d40-098228fe3860@linaro.org>
+From:   Minda Chen <minda.chen@starfivetech.com>
+In-Reply-To: <c1dea7c8-2bc4-a113-0d40-098228fe3860@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [113.72.147.86]
+X-ClientProxiedBy: EXCAS063.cuchost.com (172.16.6.23) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 6:56=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.c=
-om> wrote:
->
-> The behavior of mmap is modified with this patch series, so explain the
-> changes to the mmap hint address behavior.
->
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  Documentation/riscv/vm-layout.rst | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->
-> diff --git a/Documentation/riscv/vm-layout.rst b/Documentation/riscv/vm-l=
-ayout.rst
-> index 5462c84f4723..892412b91300 100644
-> --- a/Documentation/riscv/vm-layout.rst
-> +++ b/Documentation/riscv/vm-layout.rst
-> @@ -133,3 +133,25 @@ RISC-V Linux Kernel SV57
->     ffffffff00000000 |  -4     GB | ffffffff7fffffff |    2 GB | modules,=
- BPF
->     ffffffff80000000 |  -2     GB | ffffffffffffffff |    2 GB | kernel
->    __________________|____________|__________________|_________|_________=
-___________________________________________________
-> +
-> +
-> +Userspace VAs
-> +--------------------
-> +To maintain compatibility with software that relies on the VA space with=
- a
-> +maximum of 48 bits the kernel will, by default, return virtual addresses=
- to
-> +userspace from a 48-bit range (sv48). This default behavior is achieved =
-by
-> +passing 0 into the hint address parameter of mmap. On CPUs with an addre=
-ss space
-> +smaller than sv48, the CPU maximum supported address space will be the d=
-efault.
-> +
-> +Software can "opt-in" to receiving VAs from another VA space by providin=
-g
-> +a hint address to mmap. A call to mmap is guaranteed to return an addres=
-s
-> +that will not override the unset left-aligned bits in the hint address,
-> +unless there is no space left in the address space. If there is no space
-> +available in the requested address space, an address in the next smalles=
-t
-> +available address space will be returned.
-> +
-> +For example, in order to obtain 48-bit VA space, a hint address greater =
-than
-> +:code:`1 << 38` must be provided.
 
-Is this correct? Shouldn't the hint be strictly greater than the
-address space it targets? In patch 1, you state that "A hint address
-passed to mmap will cause the largest address space that fits entirely
-into the hint to be used", it seems contradictory to me.
 
-> Note that this is 38 due to sv39 userspace
-> +ending at :code:`1 << 38` and the addresses beyond this are reserved for=
- the
-> +kernel. Similarly, to obtain 57-bit VA space addresses, a hint address g=
-reater
-> +than or equal to :code:`1 << 47` must be provided.
-> --
-> 2.41.0
->
+On 2023/7/19 18:52, Krzysztof Kozlowski wrote:
+> On 19/07/2023 12:20, Minda Chen wrote:
+>> Add PLDA XpressRICH PCIe host common properties dt-binding doc.
+>> Microchip PolarFire PCIe host using PLDA IP.
+>> Extract properties from Microchip PolarFire PCIe host.
+>> 
+>> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+>> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+>> ---
+>>  .../pci/plda,xpressrich-pcie-common.yaml      | 72 +++++++++++++++++++
+>>  1 file changed, 72 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml
+> 
+> How is it related with existing plda,xpressrich3-axi?
+> 
+ yes, I just found plda,xpressrich3-axi. It is same IP in ARM juno soc. But it is firmware-initialized while microchip and starfive not.
+maybe I can rename this file to plda,xpressrich3-axi-common.yaml
+>> 
+>> diff --git a/Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml b/Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml
+>> new file mode 100644
+>> index 000000000000..3627a846c5d1
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/pci/plda,xpressrich-pcie-common.yaml
+>> @@ -0,0 +1,72 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/pci/plda,xpressrich-pcie-common.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: PLDA XpressRICH PCIe host common properties
+>> +
+>> +maintainers:
+>> +  - Daire McNamara <daire.mcnamara@microchip.com>
+>> +  - Minda Chen <minda.chen@starfivetech.com>
+>> +
+>> +description:
+>> +  Generic PLDA XpressRICH PCIe host common properties.
+>> +
+>> +select: false
+> 
+> This should not be needed.
+> 
+ok
+>> +
+>> +properties:
+>> +  reg:
+>> +    description:
+>> +      At least host IP register set and configuration space are
+> 
+> "At least" does not fit here since you do not allow anything else.
+> 
+I will delete "At least"
+>> +      required for normal controller work.
+>> +    maxItems: 2
+>> +
+>> +  reg-names:
+>> +    oneOf:
+>> +      - items:
+>> +          - const: cfg
+>> +          - const: apb
+>> +      - items:
+>> +          - const: host
+>> +          - const: cfg
+> 
+> Maybe keep similar order, so cfg followed by host?
+> 
+I will follow cfg, apb
+> Best regards,
+> Krzysztof
+> 
