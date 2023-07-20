@@ -2,109 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D19575B198
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799D775B1A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231860AbjGTOuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 10:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38690 "EHLO
+        id S232059AbjGTOuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 10:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbjGTOuC (ORCPT
+        with ESMTP id S232329AbjGTOuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 10:50:02 -0400
-Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4277CE60
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:49:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1689864598;
-        bh=Qcz15XReY65YdihFG7Jmx5oPpTHAUuD8Yllv8YH9M0o=;
-        h=From:To:Cc:Subject:Date;
-        b=IirFhtFdl9BNwuH0OPcCLSw+yozZo2YvicxzWqWW8sTU527DJB2LSwFZDJ0psxaGb
-         zEPucDoTdvsXxIAeUGqLhxTxtOlstE8wt++rNIErEbBGD3Xxzsj8lBTUaNol9LRTsb
-         sTNnauoFYXBJDO9zS51bSlv2mFhI9zFWZStKgOpk=
-Received: from linkpc.nju.edu.cn ([58.213.8.104])
-        by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-        id C771E6C3; Thu, 20 Jul 2023 22:49:55 +0800
-X-QQ-mid: xmsmtpt1689864595t13z8h5u9
-Message-ID: <tencent_C2D6865561F23A8141BB145149ACC682B408@qq.com>
-X-QQ-XMAILINFO: OZZSS56D9fAjSUXlQpXDAbkBcZjcNvgtboI9mD4CSVX2bJs8NHANQ2x1u1ELe7
-         WK13yV3eDNEGCOyR8j4mAsv9yzxVXJckkYuIPJ08gaDljfv6hWZiKCqPWDDqvatuKB923+558zAW
-         ebp2b5JUpQsOcbruVi9yPywy+RbH6kbZQX+Z3Xta8hfSCl0C3vd1Xsz+DJIVulP2UlHZ8QbCeITy
-         e/1JQoE7KwRIZngya5mTfliq8Lha98Yokh22td0b4fVt9Sivf6z3xfxCQbutmPAJ+KiXimLkgQxz
-         R5huVexGTmCKz4kSIs1L5cuOxiYfJlpalwaw8dyL7kpfkMG5SgUXdTKec69dEwXG39TJyhsPtzjf
-         co4X2hocYHOm7/Wyls27VgiWWp78e/lVIoccb12Q9+xR/PkhwaqXc0G6N06Cs28eNmIJmwTLtXhG
-         +d5usc+fisGdhWnu/c0lcIRolkrzVYMAJCZN6RDrXnxpPlqRw7hyfNt2ftWSY3S/K1Yn1sAUyZV0
-         r2P33px2RvOpEmoX3PZOd61W/AxFHNUk046MtIBt+1VwxrcnyFJhJ4FXWCY4+4eoC0dv1snN+ZCc
-         g5XQB21HXxGaSCnAifYrMjDyY0sKzci/v0qZRgOGRFhbciI7T4KT+cufSysDg4gnLe49M3ybeN2v
-         3LCvYmgjCDarE1mNDl4+kh3QPYfrVGJxi5xn2fYfe4CSaHOQg2y8W40t4mTVD+Qae9FC25gYysyQ
-         FUfw2xnIHpdrHqjdjbfEAfnY0M38tHiU1LJ/HSsqDOT0W5dHAoevnbqUDqkCN/gIp3T94ckZ87wc
-         whDh2UQM9hUmHNViQUtqMrej+SXeUqOAnidi8kYkX8lJNgxRl1q4UgckBo/wUEkxgoU173THyEa6
-         dCY/CjCVB0l72tXVQhEhxGNfJHwwRwo3SRR1vKjEn38tloekLkxKflBhfjymJEZA82KyB8qDbVyb
-         5Styfq46VPidF5EUBC8WJh14BmtZlx+HUHB6DGdRVY90HUnEjnhv6KIM+W9js3rj0HyIKQBKs=
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From:   Linke Li <lilinke99@foxmail.com>
-To:     linux-mm@kvack.org
-Cc:     mike.kravetz@oracle.com, muchun.song@linux.dev, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        dan.carpenter@linaro.org, Linke Li <lilinke99@gmail.com>
-Subject: [PATCH v3] hugetlbfs: Fix integer overflow check in hugetlbfs_file_mmap()
-Date:   Thu, 20 Jul 2023 22:49:52 +0800
-X-OQ-MSGID: <20230720144952.127328-1-lilinke99@foxmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 20 Jul 2023 10:50:11 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FF62706
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:50:08 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-4816078ab3cso645120e0c.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:50:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689864607; x=1690469407;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=44I4QTXSdpRlGQNX01aNu7Q8jYmgKrsVdvaz0FbrT9w=;
+        b=VHsv4k0q2otI210G2fx8UlqZVBouT1yhHPQeX4/iYKRduLbBfujemaFd84GC3ZVtWX
+         jIbCktQqByAp5iqMc/vfuiwpcDzR/b7VidjqvAa00eAxbSRDadKzFL7ftVkL0wpM8mY4
+         3nANvQf6LnRvO72e3X3PIZq6dwVKEuHJlUuToqWh59bGJFqRqqo0SosmrUxvzzRd1bBC
+         FBz8bvcUB7PznBNwhuRezNy3z5i/4TW+ggCxtW15DP+i0Lj50o4B9jSN9WUDe5Vyw8rc
+         EUeWyncBdaKXPsUBWXs360RXDU8t4kC/iicYJ16kjPZL2O0Kgs5iYg9GIm/a1AZfdPvo
+         1iNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689864607; x=1690469407;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=44I4QTXSdpRlGQNX01aNu7Q8jYmgKrsVdvaz0FbrT9w=;
+        b=LJlgSMin17KQCxcf594TgBjj14VbWAX45i2K1WDDoiCBOhQFnEa/dPTVickNol0VJx
+         ooMrFCF9e6QLhG82Nq+5+XhOq6A/ahBPSN22sc2yizwWnfveBMC9Yejg6H42om2ZoivB
+         ejZRpjxtmpLI6VgIDDYTFf0+7Whx5OnEYfCTj3fzopPlpGtiePar1An75kaYymUVlF1J
+         XeU+2iBY7kdkJwbdSSjb8JdfMIMVu6GI1JLcER4pZ7iqFLwkI38wz35CXXbj1vAvYh9J
+         wYmk1NPrX3HGiFmiX/ALVEtlKKAMNYSyvi6YoKTdcLDX059ejVpo/k5mYrHB87SZVZAQ
+         EnOw==
+X-Gm-Message-State: ABy/qLZFQiS36YKrVfTKOKgCKf+YyyKsoYiJxuL+6k1fzJhfBC8uBPEK
+        Py8cOHfKwFrd9uZ/ObwNwBHg3tj6d+D0W9BaDard5w==
+X-Google-Smtp-Source: APBJJlHcVbVjnQaUrT7V7jD6HpKLdUNhc+KcBHJVAgkGL82QQnDc268rPznkIAv5GUoMxsi+qdzT6lIi9u/QnbbIPgk=
+X-Received: by 2002:a05:6122:929:b0:481:5132:48c7 with SMTP id
+ j41-20020a056122092900b00481513248c7mr2136264vka.1.1689864607273; Thu, 20 Jul
+ 2023 07:50:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me> <20230605-ep93xx-v3-33-3d63a5f1103e@maquefel.me>
+In-Reply-To: <20230605-ep93xx-v3-33-3d63a5f1103e@maquefel.me>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 20 Jul 2023 16:49:56 +0200
+Message-ID: <CAMRc=McbD1w47GsfvY6p==jDiTQrwg96jFvVKO-9bPhNOBmapw@mail.gmail.com>
+Subject: Re: [PATCH v3 33/42] gpio: ep93xx: add DT support for gpio-ep93xx
+To:     nikita.shubin@maquefel.me
+Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Peters <mpeters@embeddedts.com>,
+        Kris Bahnsen <kris@embeddedts.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linke Li <lilinke99@gmail.com>
+On Thu, Jul 20, 2023 at 10:30=E2=80=AFAM Nikita Shubin via B4 Relay
+<devnull+nikita.shubin.maquefel.me@kernel.org> wrote:
+>
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+>
+> Add OF ID match table.
+>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> ---
+>  drivers/gpio/gpio-ep93xx.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
+> index 9a25bb0caf17..c4e272a8773d 100644
+> --- a/drivers/gpio/gpio-ep93xx.c
+> +++ b/drivers/gpio/gpio-ep93xx.c
+> @@ -360,9 +360,15 @@ static int ep93xx_gpio_probe(struct platform_device =
+*pdev)
+>         return devm_gpiochip_add_data(&pdev->dev, gc, egc);
+>  }
+>
+> +static const struct of_device_id ep93xx_gpio_match[] =3D {
+> +       { .compatible =3D "cirrus,ep9301-gpio" },
+> +       { /* sentinel */ }
+> +};
+> +
+>  static struct platform_driver ep93xx_gpio_driver =3D {
+>         .driver         =3D {
+>                 .name   =3D "gpio-ep93xx",
+> +               .of_match_table =3D ep93xx_gpio_match,
+>         },
+>         .probe          =3D ep93xx_gpio_probe,
+>  };
+>
+> --
+> 2.39.2
+>
 
-```
-	vma_len = (loff_t)(vma->vm_end - vma->vm_start);
-	len = vma_len + ((loff_t)vma->vm_pgoff << PAGE_SHIFT);
-	/* check for overflow */
-	if (len < vma_len)
-		return -EINVAL;
-```
-
-There is a signed integer overflow in the code, which is undefined
-behavior according to the C stacnard. Although this works, it's
-still a bit ugly and static checkers will complain.
-
-Using macro "check_add_overflow" to do the overflow check can
-effectively detect integer overflow and avoid any undefined behavior.
-
-Signed-off-by: Linke Li <lilinke99@gmail.com>
----
-v3: fix checkpatch warning and better description.
- fs/hugetlbfs/inode.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 7b17ccfa039d..326a8c0af5f6 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -154,10 +154,7 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (vma->vm_pgoff & (~huge_page_mask(h) >> PAGE_SHIFT))
- 		return -EINVAL;
- 
--	vma_len = (loff_t)(vma->vm_end - vma->vm_start);
--	len = vma_len + ((loff_t)vma->vm_pgoff << PAGE_SHIFT);
--	/* check for overflow */
--	if (len < vma_len)
-+	if (check_add_overflow(vma_len, (loff_t)vma->vm_pgoff << PAGE_SHIFT, &len))
- 		return -EINVAL;
- 
- 	inode_lock(inode);
--- 
-2.25.1
-
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
