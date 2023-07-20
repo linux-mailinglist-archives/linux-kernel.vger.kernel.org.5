@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C26E75A7C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C6D75A7CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbjGTH2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54370 "EHLO
+        id S231540AbjGTHaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGTH2i (ORCPT
+        with ESMTP id S231423AbjGTHaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:28:38 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51DD2107
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:28:37 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3159d75606dso351031f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:28:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689838116; x=1692430116;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XDAr6SeIqeudoRQHCph90+wHKBmBfV4FHrTuD9Domzc=;
-        b=biH/V0xIkYHa35gSz4fYP6fcPbJlKnk40UeOG3lvXapq0IH6GL07goyMcBtHs46M0N
-         8QN/wWBQMI/rBU3jBvQCB9RvDZkEzpn3YyJJLNaNrE4v3e1JJDu2PeFbPpOJuP3GedlC
-         Uj65AyamA+Z3wnNQrczKZCaAE1yoBnbrwnWoxvJaoGn8Hptn0q2nZEKgU0j2EVwS4mD0
-         vDEiNH7MbUGQxt9q8kPXnk79MNvpEBBzhRT+iiJgDUwvHaImTMsQye3Q1bP/g0gy4IGG
-         +y1cpqZkrwP+eQJDdg72bPVw18YjCI36o8hiZpfPkisJFliA4dR9uIubuuyRgx3J2an9
-         pIbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689838116; x=1692430116;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XDAr6SeIqeudoRQHCph90+wHKBmBfV4FHrTuD9Domzc=;
-        b=WTeD+5R7OmasRZHuhertoj8SgGpyRVDuepbBaNdJ1It/toJoFbO3IX3efRhwT9g7fW
-         jiKz9TlCFfzNuYOVfSxnbNLfI1SMi3ZRWKXsuyRKMBCiy14P45GICbiUFZsqyruG3IKB
-         C6ZIVy690sYPuib5OIiycA/nagM48Xo+gMRs1oQpWXy1GUYeCw2CgbwDo4LQJIx6Z1+r
-         mPF3spZ7GOTMTPQITT3UamBquGTQaJUkFOBhJYB3XUsG5CGaMGEuA69z1llXhMEcK8zu
-         AnZD8LURgMp6tvUQrMSvOKXPyNsJU3WZHE81PAV9/Mb0i5SM2wvIJvSlS/FyL7kugy9M
-         pCWw==
-X-Gm-Message-State: ABy/qLYrKBm67S0THprfs9P42l4DYmhDVvBrSWsvnNdPDMRsVPfECyK1
-        h7ckG/ZktDQPqlyqgkyNysdLcx2VsDJIxjEu69jjr9vkiVGgXQ==
-X-Google-Smtp-Source: APBJJlFs6dNUfd8h4TAD4VMTFNII7qpzNZDhCEY7jz8Ef6/esKw4D8dXqHBf+PSbusKdABOqR/eHHMnB4bS7YZE33UI=
-X-Received: by 2002:a5d:63ce:0:b0:316:fe45:1515 with SMTP id
- c14-20020a5d63ce000000b00316fe451515mr1561703wrw.21.1689838116032; Thu, 20
- Jul 2023 00:28:36 -0700 (PDT)
+        Thu, 20 Jul 2023 03:30:06 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A332690;
+        Thu, 20 Jul 2023 00:30:04 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36K4s4IK013732;
+        Thu, 20 Jul 2023 07:30:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=KEaE+4/eOq7glk/KsqipPr77qc4pl5hUgEF1k2vKie4=;
+ b=ZxdxKer+mkoo0Tht08K561+QmYACYMzugQNk1lI+2JDaVcdb2ZmG8tJ61ssQyROHHMfO
+ Y9Ai7xAyS4doaMJcs57KtanYaZMm1CIFf6Zr7Hg1Mugm5QFkDY8UPJ4dD3b7Qrr0bEGl
+ 0YeF5jjpe60j+skgUHVozlbyHTALluQmB1rSYnbY/iet3HHnyrnh9NYGccdQUdxKF6Vr
+ SxTzt+OEYvldDgG/5j70iyywB9IYJmfX8N8bWGcQ9tQCn+6nz+EocEvDzUSfpijG2Yf8
+ NisCjcQv5Dpqyul7fhAIzcMjc9wVh1I5Aoujm96OOdA0cVABEOmrWYiQ93+EeqRSt2P7 RQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rx728u408-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 07:30:00 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36K7Txjf002822
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 07:30:00 GMT
+Received: from harihk-linux.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 20 Jul 2023 00:29:55 -0700
+From:   Hariharan K <quic_harihk@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
+        <quic_kathirav@quicinc.com>, <quic_arajkuma@quicinc.com>,
+        <quic_anusha@quicinc.com>
+Subject: [PATCH 0/2] Add common RDP dtsi file for ipq5018
+Date:   Thu, 20 Jul 2023 12:59:36 +0530
+Message-ID: <20230720072938.31546-1-quic_harihk@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20230629182941.13045-1-dg573847474@gmail.com> <4fb34b91-13af-cfff-0118-0f263e0e0d27@broadcom.com>
- <07406ab9-fbb0-4f98-56b1-0c64b7e695e1@broadcom.com> <2e87058c-839b-5b28-62e1-896d1e49fb57@broadcom.com>
-In-Reply-To: <2e87058c-839b-5b28-62e1-896d1e49fb57@broadcom.com>
-From:   Chengfeng Ye <dg573847474@gmail.com>
-Date:   Thu, 20 Jul 2023 15:28:24 +0800
-Message-ID: <CAAo+4rVc5FXXRp0SnEBikAkRQuFPPKDK78ApF7qOUiottVdyAQ@mail.gmail.com>
-Subject: Re: [PATCH v3] misc: bcm_vk: Fix potential deadlock on &vk->ctx_lock
-To:     Scott Branden <scott.branden@broadcom.com>,
-        Ray Jui <ray.jui@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, desmond.yan@broadcom.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: uNrE66v2I9xcFd2uWXqVx3HqnZj-BMtm
+X-Proofpoint-ORIG-GUID: uNrE66v2I9xcFd2uWXqVx3HqnZj-BMtm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-20_02,2023-07-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ bulkscore=0 suspectscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxlogscore=420 impostorscore=0 spamscore=0 clxscore=1011 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307200062
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Works fine.  Corrected Acked-by and Tested-by below.
-> Tested-by: Desmond Yan <desmond.yan@broadcom.com>
-> Acked-by: Scott Branden <scott.branden@broadcom.com>
+Some interfaces are common across RDPs. Move the common
+nodes to ipq5018-rdp-common.dtsi.
+Also update the compatible in device tree binding
+to use model names instead of rdp numbers.
 
-Thanks much for your effort in reviewing and testing the patch.
+This series is based on the below series,
+https://lore.kernel.org/lkml/20230616101749.2083
+974-1-quic_srichara@quicinc.com/
 
-Best Regards,
-Chengfeng
+Hariharan K (2):
+  dt-bindings: arm: qcom: Update the compatible
+  arm64: dts: qcom: ipq5018: Add common RDP dtsi file
+
+ .../devicetree/bindings/arm/qcom.yaml         |  4 +--
+ .../boot/dts/qcom/ipq5018-rdp-common.dtsi     | 35 +++++++++++++++++++
+ .../arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts | 30 +++-------------
+ 3 files changed, 41 insertions(+), 28 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/ipq5018-rdp-common.dtsi
+
+-- 
+2.17.1
+
