@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D14175A617
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C44375A61C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbjGTGOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58824 "EHLO
+        id S230020AbjGTGPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:15:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229997AbjGTGOf (ORCPT
+        with ESMTP id S229451AbjGTGPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:14:35 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116C41BF7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:14:34 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R62TM1rDGzBRDsB
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:14:31 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689833671; x=1692425672; bh=w3v9O7PDvXx7Qe/e1kGiSv9Vyxz
-        Kb3Lhw+34HqlCzWg=; b=pWZ9WepDr5HDygFc4ZlRhrmzfQO7/P2trW0Mou/DkLf
-        //oO+6Wyt8JZvKPAjxEMpmi+o0uEyQBgm4YTJmH2iDUzHEKtbiSxKEN0NX9jTfZK
-        Blac5rHEGn4+FTwkgFEJbWrYbD3UmYfqUSFrlus8Icgp+Ej84HnF1dcBDAhnA9xh
-        3lvxrPRHfrXy5f2S1hLZtstSAatR6jV8G0SjYWyTav6/ifdmFT9h0BgEqH+T0Kg3
-        if0huvNL2/vt4HZ55FtN4zcyr+FPLu8hEXIOZxZWpDXX+HYgLmy6ihFEX//jh2nS
-        lXREFFjLvq7LRxYRMR0SRxN21szFkcLvI0m1IaFUjdw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id OnfLKYHwe-4K for <linux-kernel@vger.kernel.org>;
-        Thu, 20 Jul 2023 14:14:31 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R62TL6Sz5zBR1P6;
-        Thu, 20 Jul 2023 14:14:30 +0800 (CST)
+        Thu, 20 Jul 2023 02:15:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F1919B2;
+        Wed, 19 Jul 2023 23:15:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=z8bMcYL2sfItal6IPN1MaB7xzF8i69WDSnHwMDnwZ2A=; b=iCftUFPYgfzlWh7j3fpyVulRXo
+        ba4PcyoOflOzDAEsmAZv96NBFLZKtt9i6/HxH6cktJPdkgDWm8jJ5w8TquEBW3dYmxQNZxR8LOz3J
+        9kdB7IRUvPKYHLXTAAdhCQLz5Ux13wtOjtXuseNEDLVvqOQUB9kAXvC27L791ckcJS5Dqjh8laT8d
+        2fiuDjLMqnOxXvsCAhrFY0ClDR7ARN9aGZCw2wDvcHyJKEquXCzkLMb0CAxd8FG9Ug3vB29G1lkg7
+        6xUZG29bDDGCOhSfITFLVEYxZdZ0ZhpUYHRk/gef+6Hr2LP0+yeBijY5QVk/scwD3ASrcyZ67hLxE
+        9CKqaO5w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qMMvx-009uI8-1n;
+        Thu, 20 Jul 2023 06:14:41 +0000
+Date:   Wed, 19 Jul 2023 23:14:41 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     Sergei Shtepa <sergei.shtepa@veeam.com>, axboe@kernel.dk,
+        hch@infradead.org, corbet@lwn.net, snitzer@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+        willy@infradead.org, dlemoal@kernel.org, linux@weissschuh.net,
+        jack@suse.cz, ming.lei@redhat.com, linux-block@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Donald Buczek <buczek@molgen.mpg.de>,
+        "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH v5 02/11] block: Block Device Filtering Mechanism
+Message-ID: <ZLjQ0YfH7JyQyMyJ@infradead.org>
+References: <20230612135228.10702-1-sergei.shtepa@veeam.com>
+ <20230612135228.10702-3-sergei.shtepa@veeam.com>
+ <f935840e-12a7-c37b-183c-27e2d83990ea@huaweicloud.com>
+ <90f79cf3-86a2-02c0-1887-d3490f9848bb@veeam.com>
+ <d929eaa7-61d6-c4c4-aabc-0124c3693e10@huaweicloud.com>
 MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 14:14:30 +0800
-From:   hanyu001@208suo.com
-To:     James.Bottomley@HansenPartnership.com, deller@gmx.de
-Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] parisc: kernel:  "foo * bar" should be "foo *bar"
-In-Reply-To: <tencent_2E6F87E6BC1B92D422B02265685D90AFAD06@qq.com>
-References: <tencent_2E6F87E6BC1B92D422B02265685D90AFAD06@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <dbc24737ba923daee7d3b948cc028dc3@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d929eaa7-61d6-c4c4-aabc-0124c3693e10@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the checkpatch.pl error
+On Tue, Jul 18, 2023 at 09:37:33AM +0800, Yu Kuai wrote:
+> I haven't review blksnap code yet, but this sounds like a problem.
+> 
+> possible solutions I have in mind:
+> 
+> 1. Store blkfilter for each partition from bdev_disk_changed() before
+> delete_partition(), and add blkfilter back after add_partition().
+> 
+> 2. Store blkfilter from gendisk as a xarray, and protect it by
+> 'open_mutex' like 'part_tbl', block_device can keep the pointer to
+> reference blkfilter so that performance from fast path is ok, and the
+> lifetime of blkfiter can be managed separately.
 
-./arch/parisc/kernel/sys_parisc32.c:29: ERROR: "foo * bar" should be 
-"foo *bar"
-
-Signed-off-by: Yu Han <hanyu001@208suo.com>
----
-  arch/parisc/kernel/sys_parisc32.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/parisc/kernel/sys_parisc32.c 
-b/arch/parisc/kernel/sys_parisc32.c
-index 2a12a54..abe87d2 100644
---- a/arch/parisc/kernel/sys_parisc32.c
-+++ b/arch/parisc/kernel/sys_parisc32.c
-@@ -26,7 +26,7 @@ asmlinkage long sys32_unimplemented(int r26, int r25, 
-int r24, int r23,
-
-  asmlinkage long sys32_fanotify_mark(compat_int_t fanotify_fd, 
-compat_uint_t flags,
-      compat_uint_t mask0, compat_uint_t mask1, compat_int_t dfd,
--    const char  __user * pathname)
-+    const char  __user *pathname)
-  {
-      return sys_fanotify_mark(fanotify_fd, flags,
-              ((__u64)mask1 << 32) | mask0,
+The whole point of bdev_disk_changed is that the partitions might not
+be the same ones as before..
