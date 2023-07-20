@@ -2,71 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C2075B424
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174DC75B428
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbjGTQ0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
+        id S230474AbjGTQ1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbjGTQ0p (ORCPT
+        with ESMTP id S229703AbjGTQ1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:26:45 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3391114;
-        Thu, 20 Jul 2023 09:26:43 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbfcc6daa9so7987235e9.3;
-        Thu, 20 Jul 2023 09:26:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689870402; x=1690475202;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:to:from:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3MBatkB8B/7dmkT4jPYHcJtlNDAH8uob1P4AD84IQBw=;
-        b=kNKqgGmtprt4qVSwqwHfSKWodkj79lkZACHQcW+pBUqWcLuiLpZ/Lfuubuo/n0gTFr
-         XY9FH1XmRsoA7/3CANPSADWBTawkBFncc+N9G4zI1HxYeNfUxY3oVyyoiS7smgFQ7vAj
-         2izo2C6Is2xVjTTm2sS3XPY4ioPz7v/Y9h1GUZWfhydqsSJy6woyHwxXOqiDoE2TV7OR
-         JE/AeJm32yAWABs1siajP6FOvgGZOptfMOtepkaCFuNwfe73pqY8KLBcCO3p8d6zvXaK
-         78jHlijrvdXVXVCZji3kGU+TYTn5xaCP96TNg13U+gIuk06MJcPJBp2ZKssoGKLlm5yu
-         Wurw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689870402; x=1690475202;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3MBatkB8B/7dmkT4jPYHcJtlNDAH8uob1P4AD84IQBw=;
-        b=YYucT2ipe/hc1mhl5RJ1lqWSQSMRvBRluor78A5KpjHzhVKZCgAN42I3ZYaZH2QKee
-         jLikX+PZpbr73rnT2YZvVD/227eGn9fy1VNinYahnsLKxl/3uDQA4dfq3PcQtpgpnuM7
-         EUWIjqDy3K7/T7S7nbrq+28yTOOMMxNdweFtDbf+I1eT/0czsV5OJsiq3KGey8IAGi2c
-         2TX/3Dklq66IoUciMwjQR328w4JPcZVZ9H0mv8NM2xFgmoaOH9qTVDA3zA2sGLMvbcfF
-         OYA9DNS/T4XuCkRotKF6M1PJa3kdA8S5NMRpwz/GfcJjkgvksYkQyWhhY5N5jmFT6JtF
-         NvLA==
-X-Gm-Message-State: ABy/qLYaTMGTDhUXOwFTD3y+7LxR+/nQw6w43mVe14h+P2uMsdJ7zlkh
-        D8iDBfpwlu3l+HRklMOCzY0=
-X-Google-Smtp-Source: APBJJlE4NNXje+fLTPJ3D3Np2ydW4a+kn24RXNVE7EER6t80YS8KUag+iXNCYxs8aYJvK2neo9UQBw==
-X-Received: by 2002:a7b:c84c:0:b0:3fc:8a:7c08 with SMTP id c12-20020a7bc84c000000b003fc008a7c08mr4873507wml.35.1689870401973;
-        Thu, 20 Jul 2023 09:26:41 -0700 (PDT)
-Received: from debian ([89.238.191.199])
-        by smtp.gmail.com with ESMTPSA id u9-20020a05600c210900b003fbcdba1a52sm4294282wml.3.2023.07.20.09.26.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 09:26:41 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 18:26:27 +0200
-From:   Richard Gobert <richardbgobert@gmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, willemdebruijn.kernel@gmail.com,
-        dsahern@kernel.org, tom@herbertland.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gal@nvidia.com
-Subject: [PATCH v2 1/1] net: gro: fix misuse of CB in udp socket lookup
-Message-ID: <20230720162624.GA16428@debian>
-References: <20230720161322.GA16323@debian>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Thu, 20 Jul 2023 12:27:10 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2089.outbound.protection.outlook.com [40.107.13.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC4D1701;
+        Thu, 20 Jul 2023 09:27:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OFJtuslAUsSgMqvRHXT5TxKTi/lBl5Gx2g3qjHLDylm9wGNhUX/3v1bYSt5HVavYUcpB0zgQ4O5Tvm4BbDTAA3CCjaWZu2hN3H14KygdlrwKK9uHg87+sZXFdEXAuGK61GV3cxXCG/x8bwFRaSylbXKX+ca+mOSz37p6APOUJasmrFfk1Ex48QAZKI2Y8r2VSHja4jD05CR4SCAElD5i5UkmBZVH8SxAuamu0tEtoqBXWQCUT71Ze3JhNt+VFon21uzlzHTYngKS6u7u55oeWbAtkR5i7c9KEc4Zmx8wcAh5ffY89uZMB4F8PC0UbGZCHN35sLW178phDy16S90cWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aVDQuN8FbzH26I7P1amS7aeE+1RpzrewlVqm2JFjq5o=;
+ b=a+DesNlL4zOdsww34ZyhZwmlCrRDc4clkaZXO5EWQOWGKwpL2ya3rt26/mqkDZuiPiV/ItO1z+Hz66zhHtGfvERIzilXVVndU7ds5yl4oyz7bYbjMD59jvGdn1xof6VVMiz1G3HiaYnGfZR+td5YLKKgaUIsUWWX8vbJ3h9tJfKb/dPBod99smJAFhbrzVr81EWyMgceG4L1Sw6FiFI7L9UW9RX+oZyUt496p/Ygc6Wd4jVPgJYl+WQZk36RvpqwBFKYgkM4WqDaOWa8/pGgrTJVpoux0PRibMS6dx9Ads1LQl82J3sllN9SQllX4auAPmai11wMqtc3agghX5aADw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aVDQuN8FbzH26I7P1amS7aeE+1RpzrewlVqm2JFjq5o=;
+ b=BcFN/MG45l3jnguNy7cnf+wmNqk5ReRlhiECUz9Ksl9e05ZQEYK2ia1rcNGio3uPDEhUe+voLik8vAK6yU9CI2L3O9TAv+fuD7lNX0FYUPWgG0crYXGSYt+A17uoGptO6Y9FQn7KSLJZ5cYHR+VoX7CNPsgZAZMkGCLPatmu3TE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by PAXPR04MB9254.eurprd04.prod.outlook.com (2603:10a6:102:2bc::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Thu, 20 Jul
+ 2023 16:26:56 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::d0d5:3604:98da:20b1]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::d0d5:3604:98da:20b1%7]) with mapi id 15.20.6609.024; Thu, 20 Jul 2023
+ 16:26:56 +0000
+Date:   Thu, 20 Jul 2023 12:26:38 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        helgaas@kernel.org, imx@lists.linux.dev, bhelgaas@google.com,
+        devicetree@vger.kernel.org, gustavo.pimentel@synopsys.com,
+        kw@linux.com, leoyang.li@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, minghuan.lian@nxp.com,
+        mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
+        shawnguo@kernel.org, zhiqiang.hou@nxp.com
+Subject: Re: [PATCH v3 1/2] PCI: dwc: Implement general suspend/resume
+ functionality for L2/L3 transitions
+Message-ID: <ZLlgPprvtuDbGFVu@lizhi-Precision-Tower-5810>
+References: <20230419164118.596300-1-Frank.Li@nxp.com>
+ <20230717164526.GC35455@thinkpad>
+ <ZLWKI1lRqxejfUgK@lizhi-Precision-Tower-5810>
+ <20230718100400.GB4771@thinkpad>
+ <20230720142509.GB48270@thinkpad>
+ <ZLlGsM/D/b+udmAD@lizhi-Precision-Tower-5810>
+ <20230720160738.GC48270@thinkpad>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230720161322.GA16323@debian>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230720160738.GC48270@thinkpad>
+X-ClientProxiedBy: SJ0PR03CA0129.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::14) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PAXPR04MB9254:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0b6c4a8f-9bd0-4333-d222-08db893e2251
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VpJta6lrs7aPH3U4CQmelndlFD0eZhdYCKLHiLDmaovK+18nMPix23O6ggwYUZFwViXRUphxrZkqBov2YvXMonzrsrADqLZMpeFaUT+XBFVlytHlrpHenQi/br3HsNJWgvymM9ISNCPQASQe2Lwihrs4s+34c1MjzrNxl/I2c3cObflkrr2z57Jw/dbFbXCZ2b/dwDMTZWHyl/X/hQtNWt/UYyIV4b7kBG+N9SgriVfDefH0+5VMOQQHe9pWr3S9ZwHq3TMAoPgAiKMoUlGIxcWUHnFQ/ZLx8mxiBM3hAwpuf4e7jMf7uVyvnDTaxmiPXRwmyxcUrkRlUTQeGoG8W7df7DRz5Zr/s0640hYpdgwlVFSXtm9zrgjf8yIsAFP7j78yMkE/7e2D/nYXWDZSOHIweRgV/lLn0/2jHtYlVZmSqwBd/YMXTjOiTqhOndgI/6awLw3WNKogq4swdRGZygLPMIeXTqmzH7+UMwxMII6LdZV9RqU2p6xsHA23w8bBg22pbwv6zidLnceU2L4N7EAmM0nLAljYjTMWjJs9VKM2rAn1VqL44OGo1A5a4VyUg84sNNkz02E1NAT3Kb8Xvc9eWSWoL/IKRDwjBKGK0a5TFmEK1xpCxXalh3lGhKqq
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(4636009)(346002)(366004)(136003)(396003)(376002)(39860400002)(451199021)(41300700001)(26005)(186003)(6506007)(478600001)(66476007)(4326008)(66946007)(66556008)(6916009)(316002)(8676002)(8936002)(7416002)(5660300002)(6512007)(6486002)(9686003)(6666004)(52116002)(15650500001)(2906002)(83380400001)(38350700002)(38100700002)(33716001)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dGlZZmk3MlRMNDNPMXovaHZ6ejZoV0pHQzRzQzRCZml5MmZWMG1raHpic2NL?=
+ =?utf-8?B?dFZlNEdRcUN3NEY0TWUwandXZTh2Z0ovY2NHUTNSWlRLZy9YMTdtMFlqRHVJ?=
+ =?utf-8?B?dTZhOWdMT08reUsyajZWN0ZUejdwM25yRXRYeXdYUHcvQlpSL0VWV0JBUDFW?=
+ =?utf-8?B?UkhGSU1NZ01WNHExRmkxd25jc1JvRmoyL0k4SXpucmJRU1p4Ukh3VWk2ZFlK?=
+ =?utf-8?B?d0VtOHUvN3pHbDNKUDc1blNXY0dhcE1jRXBWTWZZZTRSTWtGUGw2WU40WUlW?=
+ =?utf-8?B?OC8xU291by9DQ0dSUXpQMk1CaWxJTTdPVWw4NHcrWUEyOVZoWldia1NTcHk0?=
+ =?utf-8?B?SE1jQkkzTFBjK2laM1pTUGJrWUsyWXNBckh5RUUvTUcrbytsM2NYMlBOMitQ?=
+ =?utf-8?B?dFR4ZlpTd2hJY0NVYUlwN0dGVHc0Mzd5TUk3RzZSZlNxdDd6ODZnS3lXdElj?=
+ =?utf-8?B?TVB1c0NRMUxzbERudVZ5NXRWNFBTOHdMLzMvVUtETmJLV0lJQ2p3NkhoR1Ru?=
+ =?utf-8?B?cHYzNGtHOHZqY1N6MTV2aktJUjQ5bklYTkpEajk3Z05Ia0F5cWVSVEdvQVl5?=
+ =?utf-8?B?cTAyWmpCMXlBa0tHR25qTWRVODJwUmZlZmhJNFArRG80aHp3LzhqazhQTXZS?=
+ =?utf-8?B?ZUt1TnVycDJtRG1iNmFwZVhub2dNKzdQTXRydmZuaW1UQXdKSTBEbFA5bG1N?=
+ =?utf-8?B?MHlZd3ZhTENOVnBsaERvVG9ueFFoenB2T2w0QXRZSGdxM3Z5L0tiR0pKVDdB?=
+ =?utf-8?B?cFQ4UzhMbVhnQjdOU2d1cENyNXBHVDIrN21LYTJ2OCtBMFhMS0NLQjR0UHQw?=
+ =?utf-8?B?b0w2ZmFyRG1KTDkvY1dkZTFFODhUYlBLZVE3NWJWeStTbXczTXkwR0JWMC9O?=
+ =?utf-8?B?MURRRTBvdHJNRnB2Sy9SRTVKenMyVlRXOGZnN1A0dWxYaUdSbnBJazN5L2Zx?=
+ =?utf-8?B?SHVjVUE2VzRBN2hlZWx0aGtzZ1hYd01EQ0d4WUQvaG9yTEwzemFrLzZUNVNp?=
+ =?utf-8?B?dVMzL2tRRzljSHVpS1Q4MS9sc054VWJkWEtDU25KVW5tNUc1Kzl1WndUanJa?=
+ =?utf-8?B?UkhiUjEvYm5yZnNldk8zVVArNXJnWUw4QllSeWp4VVpJdVlIRFJCZ3ZDNUV0?=
+ =?utf-8?B?RisycExLd2NkeVJhVmtUa1JNNGFFVm13ZHJEOHBmV29OeXFiMm9ZUWxNR1Vq?=
+ =?utf-8?B?czUrbUQ0bysrcnh6VFNRc2JySGZmNFJBVXpxTTkyYkR4ZkZlQnp3a2JpRG96?=
+ =?utf-8?B?MHBJdExmVko1NytPMDNjRTlCWXVVK3hoZ092UVJkZWVMM2dBbzJBbXc1THgv?=
+ =?utf-8?B?cGRlWFBmTCt5bjVJaHJVWUZBcmtiRGZYRkhvNE9MeWIzdXdlSk5nSHVjK2sy?=
+ =?utf-8?B?STNDeXQ0UDBWVXRiSDRMZ0t3MUVyYVNYd1dRRzYxa1BSZHl1ZzRvaTExbGk2?=
+ =?utf-8?B?dDU4MlNhZEhYZ0EzTmtla1NlQWs4NmRMcU9aZE5qVWJRV1NpMng3Q3NXYk1l?=
+ =?utf-8?B?WHB5dUJPQVVjcEJGaExZNkFzUlJ6OUJELzB4NDZWbjFKR0ZHUWFRcGU3RG91?=
+ =?utf-8?B?RXROcjlSeUM5b3VCT05MU1czMXhSdnBiaXd4b3pLdTAzMWlTbHRNQVdNa3Fw?=
+ =?utf-8?B?VTRGbld1OUtUSHVLLzIrdkxiM2RTSzZmVWtnenkxQkdEZ3V6RVZTbXAyN1g0?=
+ =?utf-8?B?NlRzVkpLQng2UEVLOTlOcXhOdkFDNnZFTTZhNHJzVHpvd0R2Q29uSzFQaTNa?=
+ =?utf-8?B?Ry9STDJkWGFzRFBmWldseVBaNUtiRG1ycEdXZ09Pc3pmYkJESXpYYnFhaFho?=
+ =?utf-8?B?L3R6dTVSUUk0OGNZbVdRUkRjVkFGeitvNmFIRXNVUHhEcHgwZlVZOWVxZ2hE?=
+ =?utf-8?B?OUNJalJoMjd2NkM5cGI4ZzFueVVqTVpLYnkwZXpHRUw4aHI1akZkV1pnckdw?=
+ =?utf-8?B?aG8ydTk0dnQ4KzhUNWttQ0wxcHpYYnU3YVU2c0VTa1lVMmRQV0FEN3ZQazZ2?=
+ =?utf-8?B?TitCWXVCQ1pONmV0eWFocCtxSGplRTFOTzBCTEQ2bkJoRGN5V1p6N2lhQUY1?=
+ =?utf-8?B?MWZhVVYrRzBUc1I0UzZBYy96WlRtcTNrYkNNNDlMRE1VSDhtOVVUNEx1L1dP?=
+ =?utf-8?Q?fgtRhXYWNSKB/PhITy/m6lghc?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b6c4a8f-9bd0-4333-d222-08db893e2251
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 16:26:56.1198
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QA1028+azEW2acbCISkCgfVJmhtKf6rkf4mNhBvLEXkFWGabu554ZsThvFskrlrbo8L2KFFii2rT2kOPsO65dQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9254
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,176 +136,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a misuse of IP{6}CB(skb) in GRO, while calling to
-`udp6_lib_lookup2` when handling udp tunnels. `udp6_lib_lookup2` fetch the
-device from CB. The fix changes it to fetch the device from `skb->dev`.
-l3mdev case requires special attention since it has a master and a slave
-device.
+On Thu, Jul 20, 2023 at 09:37:38PM +0530, Manivannan Sadhasivam wrote:
+> On Thu, Jul 20, 2023 at 10:37:36AM -0400, Frank Li wrote:
+> > On Thu, Jul 20, 2023 at 07:55:09PM +0530, Manivannan Sadhasivam wrote:
+> > > On Tue, Jul 18, 2023 at 03:34:26PM +0530, Manivannan Sadhasivam wrote:
+> > > > On Mon, Jul 17, 2023 at 02:36:19PM -0400, Frank Li wrote:
+> > > > > On Mon, Jul 17, 2023 at 10:15:26PM +0530, Manivannan Sadhasivam wrote:
+> > > > > > On Wed, Apr 19, 2023 at 12:41:17PM -0400, Frank Li wrote:
+> > > > > > > Introduced helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
+> > > > > > > Added API pme_turn_off and exit_from_l2 for managing L2/L3 state transitions.
+> > > > > > > 
+> > > > > > > Typical L2 entry workflow:
+> > > > > > > 
+> > > > > > > 1. Transmit PME turn off signal to PCI devices.
+> > > > > > > 2. Await link entering L2_IDLE state.
+> > > > > > 
+> > > > > > AFAIK, typical workflow is to wait for PME_To_Ack.
+> > > > > 
+> > > > > 1 Already wait for PME_to_ACK,  2, just wait for link actual enter L2.
+> > > > > I think PCI RC needs some time to set link enter L2 after get ACK from
+> > > > > PME.
+> > > > > 
+> > > 
+> > > One more comment. If you transition the device to L2/L3, then it can loose power
+> > > if Vaux was not provided. In that case, can all the devices work after resume?
+> > > Most notably NVMe?
+> > 
+> > I have not hardware to do such test, NVMe driver will reinit everything after
+> > resume if no L1.1\L1.2 support. If there are L1.1\L1.2, NVME expect it leave
+> > at L1.2 at suspend to get better resume latency.
+> > 
+> 
+> To be precise, NVMe driver will shutdown the device if there is no ASPM support
+> and keep it in low power mode otherwise (there are other cases as well but we do
+> not need to worry).
 
-Fixes: a6024562ffd7 ("udp: Add GRO functions to UDP socket")
-Reported-by: Gal Pressman <gal@nvidia.com>
-Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
----
- include/net/udp.h      |  2 ++
- net/ipv4/udp.c         | 28 ++++++++++++++++++++++++++--
- net/ipv4/udp_offload.c |  7 +++++--
- net/ipv6/udp.c         | 29 +++++++++++++++++++++++++++--
- net/ipv6/udp_offload.c |  7 +++++--
- 5 files changed, 65 insertions(+), 8 deletions(-)
+I supposed this should work. but I have not hardware to test it now. NMVE already
+sent shut down command to SSD, which can safely turn off. after resume, that most
+likely a cold reset.
 
-diff --git a/include/net/udp.h b/include/net/udp.h
-index 4d13424f8f72..48af1479882f 100644
---- a/include/net/udp.h
-+++ b/include/net/udp.h
-@@ -299,6 +299,7 @@ int udp_lib_getsockopt(struct sock *sk, int level, int optname,
- int udp_lib_setsockopt(struct sock *sk, int level, int optname,
- 		       sockptr_t optval, unsigned int optlen,
- 		       int (*push_pending_frames)(struct sock *));
-+void udp4_get_iif_sdif(const struct sk_buff *skb, int *iif, int *sdif);
- struct sock *udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport,
- 			     __be32 daddr, __be16 dport, int dif);
- struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport,
-@@ -310,6 +311,7 @@ struct sock *udp6_lib_lookup(struct net *net,
- 			     const struct in6_addr *saddr, __be16 sport,
- 			     const struct in6_addr *daddr, __be16 dport,
- 			     int dif);
-+void udp6_get_iif_sdif(const struct sk_buff *skb, int *iif, int *sdif);
- struct sock *__udp6_lib_lookup(struct net *net,
- 			       const struct in6_addr *saddr, __be16 sport,
- 			       const struct in6_addr *daddr, __be16 dport,
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 8c3ebd95f5b9..85eb9977db2c 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -550,15 +550,39 @@ static inline struct sock *__udp4_lib_lookup_skb(struct sk_buff *skb,
- 				 inet_sdif(skb), udptable, skb);
- }
- 
-+/* This function is the alternative to 'inet_iif' and 'inet_sdif'
-+ * functions in case we can not rely on fields of IPCB.
-+ *
-+ * The caller must verify skb_valid_dst(skb) is false and skb->dev is initialized.
-+ * The caller must hold the RCU read lock.
-+ */
-+inline void udp4_get_iif_sdif(const struct sk_buff *skb, int *iif, int *sdif)
-+{
-+	*iif = inet_iif(skb) ?: skb->dev->ifindex;
-+	*sdif = 0;
-+
-+#if IS_ENABLED(CONFIG_NET_L3_MASTER_DEV)
-+	if (netif_is_l3_slave(skb->dev)) {
-+		struct net_device *master = netdev_master_upper_dev_get_rcu(skb->dev);
-+
-+		*sdif = *iif;
-+		*iif = master ? master->ifindex : 0;
-+	}
-+#endif
-+}
-+
- struct sock *udp4_lib_lookup_skb(const struct sk_buff *skb,
- 				 __be16 sport, __be16 dport)
- {
- 	const struct iphdr *iph = ip_hdr(skb);
- 	struct net *net = dev_net(skb->dev);
-+	int iif, sdif;
-+
-+	udp4_get_iif_sdif(skb, &iif, &sdif);
- 
- 	return __udp4_lib_lookup(net, iph->saddr, sport,
--				 iph->daddr, dport, inet_iif(skb),
--				 inet_sdif(skb), net->ipv4.udp_table, NULL);
-+				 iph->daddr, dport, iif,
-+				 sdif, net->ipv4.udp_table, NULL);
- }
- 
- /* Must be called under rcu_read_lock().
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index 75aa4de5b731..70d760b271db 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -603,10 +603,13 @@ static struct sock *udp4_gro_lookup_skb(struct sk_buff *skb, __be16 sport,
- {
- 	const struct iphdr *iph = skb_gro_network_header(skb);
- 	struct net *net = dev_net(skb->dev);
-+	int iif, sdif;
-+
-+	udp4_get_iif_sdif(skb, &iif, &sdif);
- 
- 	return __udp4_lib_lookup(net, iph->saddr, sport,
--				 iph->daddr, dport, inet_iif(skb),
--				 inet_sdif(skb), net->ipv4.udp_table, NULL);
-+				 iph->daddr, dport, iif,
-+				 sdif, net->ipv4.udp_table, NULL);
- }
- 
- INDIRECT_CALLABLE_SCOPE
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index b7c972aa09a7..6dbcadc3bf8f 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -295,15 +295,40 @@ static struct sock *__udp6_lib_lookup_skb(struct sk_buff *skb,
- 				 inet6_sdif(skb), udptable, skb);
- }
- 
-+/* This function is the alternative to 'inet6_iif' and 'inet6_sdif'
-+ * functions in case we can not rely on fields of IP6CB.
-+ *
-+ * The caller must verify skb_valid_dst(skb) is false and skb->dev is initialized.
-+ * The caller must hold the RCU read lock.
-+ */
-+inline void udp6_get_iif_sdif(const struct sk_buff *skb, int *iif, int *sdif)
-+{
-+	/* using skb->dev->ifindex because skb_dst(skb) is not initialized */
-+	*iif = skb->dev->ifindex;
-+	*sdif = 0;
-+
-+#if IS_ENABLED(CONFIG_NET_L3_MASTER_DEV)
-+	if (netif_is_l3_slave(skb->dev)) {
-+		struct net_device *master = netdev_master_upper_dev_get_rcu(skb->dev);
-+
-+		*sdif = *iif;
-+		*iif = master ? master->ifindex : 0;
-+	}
-+#endif
-+}
-+
- struct sock *udp6_lib_lookup_skb(const struct sk_buff *skb,
- 				 __be16 sport, __be16 dport)
- {
- 	const struct ipv6hdr *iph = ipv6_hdr(skb);
- 	struct net *net = dev_net(skb->dev);
-+	int iif, sdif;
-+
-+	udp6_get_iif_sdif(skb, &iif, &sdif);
- 
- 	return __udp6_lib_lookup(net, &iph->saddr, sport,
--				 &iph->daddr, dport, inet6_iif(skb),
--				 inet6_sdif(skb), net->ipv4.udp_table, NULL);
-+				 &iph->daddr, dport, iif,
-+				 sdif, net->ipv4.udp_table, NULL);
- }
- 
- /* Must be called under rcu_read_lock().
-diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
-index ad3b8726873e..88191d79002e 100644
---- a/net/ipv6/udp_offload.c
-+++ b/net/ipv6/udp_offload.c
-@@ -119,10 +119,13 @@ static struct sock *udp6_gro_lookup_skb(struct sk_buff *skb, __be16 sport,
- {
- 	const struct ipv6hdr *iph = skb_gro_network_header(skb);
- 	struct net *net = dev_net(skb->dev);
-+	int iif, sdif;
-+
-+	udp6_get_iif_sdif(skb, &iif, &sdif);
- 
- 	return __udp6_lib_lookup(net, &iph->saddr, sport,
--				 &iph->daddr, dport, inet6_iif(skb),
--				 inet6_sdif(skb), net->ipv4.udp_table, NULL);
-+				 &iph->daddr, dport, iif,
-+				 sdif, net->ipv4.udp_table, NULL);
- }
- 
- INDIRECT_CALLABLE_SCOPE
--- 
-2.36.1
+> 
+> But here you are not checking for ASPM state in the suspend path, and just
+> forcing the link to be in L2/L3 (thereby D3Cold) even though NVMe driver may
+> expect it to be in low power state like ASPM/APST.
 
+This function is not called defaultly and need platform driver to call it as need.
+Actually, I think PCI framework should handle L1.2 and L2 case, some devices
+or user case want to L1.2 to get better resume latency, some devices want to
+L2 to get better power saving, which out of scope of this patches.
+
+This patch just handle L2 case, I remember L1.2 don't expect send PME at all.
+
+> 
+> So you should only put the link to L2/L3 if there is no ASPM support. Otherwise,
+> you'll ending up with bug reports when users connect NVMe to it.
+
+Platform should choose call or no call this function according to their
+user case. So far, I have not found a good mathod to let ASPM to affect
+suspend/resume. 
+
+> 
+> - Mani
+> 
+> > This API help remove duplicate codes and it can be improved gradually.
+> > 
+> > 
+> > > 
+> > > - Mani
+> > > 
+> > > 
+> > > -- 
+> > > மணிவண்ணன் சதாசிவம்
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
