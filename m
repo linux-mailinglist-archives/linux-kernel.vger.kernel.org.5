@@ -2,386 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D9875B1ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B673A75B1F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232385AbjGTPCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
+        id S232394AbjGTPD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232378AbjGTPCt (ORCPT
+        with ESMTP id S232387AbjGTPDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:02:49 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DD61BC8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:02:47 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51de9c2bc77so1229358a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:02:46 -0700 (PDT)
+        Thu, 20 Jul 2023 11:03:24 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F007BB
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:03:17 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-66c729f5618so778748b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:03:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689865365; x=1690470165;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rZMHAhZJfMyI76nyjQXcDJ+bg5dIcecauMorjTqTvYA=;
-        b=Kjc5gECLJBfxVpcBYPvi1lrzAwNPCQmbRqir5jEZdorwN3uWdQ+XAA9uDQFrGNyvDy
-         cG3eA+wnvzH6zhZypjNAGfCBMqij/VgWaFt8Qlb0D9wp8mRZ8GDpDMmYHipSvdZbQ15l
-         nwtflq0JFDtgNqdK3x18VefThnhoiawUzXJmpScxWAuDVPBcyMMly14kKMVK66/Q6l/b
-         0INDs2bLpYS743O1b8lngC9FQZlRcRfmbLhBzIoXNKgk2QWFHVpa1vK9iC0cFsHFozwR
-         9LdUd9BbvkV5uqHVt5e0THyJ6N2s6OA6uTtPkQEm08N1MKRPXGnplvz7fJZY4BTgRNx+
-         77SQ==
+        d=gmail.com; s=20221208; t=1689865397; x=1690470197;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wnxkxQ0PxkB3p5PqVcQ0DO2VgVD/sjfzmwcVTmlPiY8=;
+        b=M4J6bZ8ONXHBSU6thvDpIQmjNg8G4ztS1mfot8KtlnCyN44Ct2PTyAnku1hUIucr0Q
+         /ZppzYhm85PYp5W6lmXGhBB920k0uOstdxOpDt+F0hLuBMsK39d5TNC2VfNFp2vnztLc
+         L345C11D73guky6QcVA9UFHeHUWOt3U/bwI0eIdOuaJfEXJieVH2m2hGkeqfeJReQxnG
+         PBPejokm21juaN3pNtbsu+E+4B5AHJXrLatu2GCb2F2sDwXyXzGMPdVp3oNiNAhZoi4o
+         W+h+4JMBCFGfGr7C4UEmFm1NUR5ApiPpPnC5ZjQOwOyYWMS4XVkUxvKPzwQi2Cgo2eFo
+         viOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689865365; x=1690470165;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rZMHAhZJfMyI76nyjQXcDJ+bg5dIcecauMorjTqTvYA=;
-        b=XzmyufAWa8cvWJBe6GX4b2Cl8pcK5PSOpRZmbFUMTpH+A3xkyucMVvsjeSiri4Eg/E
-         EiDK9POPPBeuOacKWiXR0uFGnAnngC/2UZLisZ35ePNdJNvId5LxtTG3qFJ+xmdIlSH6
-         6WiTxzAxVAKe+hQcifl/jUbz++TV2ZoNbSn1YRudsspvq/pAb147sel71s5coxNYoRxS
-         Z/18s+SgkEWP1T97rk+8aIcyiCnW3vgyDHHZA1f6Ero6XKSArOHK3UzicHtSmQDPc0tj
-         dFban2bbuXIWQ9j1xl97fQQFOtvTNt3IHSi6K5p6FCHvU0+F+JFa9u+IxCTSh58R46uJ
-         Qhjg==
-X-Gm-Message-State: ABy/qLZk6L5Kb7cfb7eqXgEkLD0boITNWb5t5k6Qp/qLvNkx6m/aDgvq
-        1vZJOsF8gz2AzKOxPH8W+cPUz86BhYwoqFgv3SFoCw==
-X-Google-Smtp-Source: APBJJlGBVv9VguXLAcjPaX0ekezRQi7TRLmXtXCJfKEEPUYJNBckvdogT2TcVqeW9+2Lxg1JNnJgQcwd8lGak15R7Fw=
-X-Received: by 2002:aa7:d886:0:b0:51e:1837:d5be with SMTP id
- u6-20020aa7d886000000b0051e1837d5bemr5754625edq.24.1689865365323; Thu, 20 Jul
- 2023 08:02:45 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689865397; x=1690470197;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wnxkxQ0PxkB3p5PqVcQ0DO2VgVD/sjfzmwcVTmlPiY8=;
+        b=buNSlKzx7jZZqcx89tsCStxmK7QLzc5NfmjaUk9n1whxeQ8vutWxxbh24d+GVCYmA7
+         RzDXEUxMV2fuuzJeXqviTqjsElZ8rAmdMUPt5ZTPyUgeeBKPUgBvqqGNoLXsEdgHNCqq
+         Ixwz/yVDRfP2yhZVbHNBaRkD2u2IYjMvVmqd+OoawOQQG6YvhtSQXuedpS6Uv4qNiIqO
+         2emtWqj/gQn5RMTGkZRp1sNz9Eg6n+JAeeqWOexPRIr3vHv3ElaYecYkuQAjZ7/2NqcO
+         J2AnqgmGbwNZ9Opba0dS5f0uNjE9qthYl72B36UHG99R1te5g3sSOsVu5fIm33aZkFWW
+         QNVg==
+X-Gm-Message-State: ABy/qLayMwHlDSZtwBFcec5dDG5i3ajmHJlKsM8VZStKrJbmZEJcOlCP
+        Cx6bxuRlELU9entG9uZ+F88=
+X-Google-Smtp-Source: APBJJlFTnXIfwkObV5tkC7sG/dKujh/U0MICNOCQUwbHnRTM+AZNBdvfG6UeN1RMTA+c0Rk0X+hySg==
+X-Received: by 2002:a05:6a00:803:b0:668:82fe:16f1 with SMTP id m3-20020a056a00080300b0066882fe16f1mr7857465pfk.1.1689865395099;
+        Thu, 20 Jul 2023 08:03:15 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y10-20020aa7804a000000b006862af32fbesm1358280pfm.14.2023.07.20.08.03.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 08:03:14 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <d29552c2-f20c-cf68-76ae-e03a2cc7e0ba@roeck-us.net>
+Date:   Thu, 20 Jul 2023 08:03:13 -0700
 MIME-Version: 1.0
-References: <20230718134120.81199-1-aaron.lu@intel.com> <20230718134120.81199-4-aaron.lu@intel.com>
- <CAKfTPtAu33AN6=X82T=yOgm40S8OXi+sPcF0QyD-bYRPV=xPEg@mail.gmail.com>
- <20230719051826.GB84059@ziqianlu-dell> <20230719080105.GA90441@ziqianlu-dell>
- <CAKfTPtCnvOehfrz1OSW+rmkKW+28bdGw8fU+AvVrZTxkHibL_g@mail.gmail.com>
- <20230719132914.GA91858@ziqianlu-dell> <CAKfTPtAqpAo8Y9BdWZ-fmnyYgA8PEtFbObqWJxc-hs2Ktqkt3Q@mail.gmail.com>
- <20230720144233.GA185317@ziqianlu-dell>
-In-Reply-To: <20230720144233.GA185317@ziqianlu-dell>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 20 Jul 2023 17:02:32 +0200
-Message-ID: <CAKfTPtANqtEQjv2UThb5s0TPCS2adhC_14Gfv5ayAOva9Mib8g@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/4] sched/fair: delay update_tg_load_avg() for
- cfs_rq's removed load
-To:     Aaron Lu <aaron.lu@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Nitin Tekchandani <nitin.tekchandani@intel.com>,
-        Yu Chen <yu.c.chen@intel.com>,
-        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <ee59d128-413c-48ad-a3aa-d9d350c80042@roeck-us.net>
+ <336fc14e-f734-49ea-97ce-802f03fa4422@kadam.mountain>
+ <198c4edf-045c-8d85-1d5c-018378eeb490@roeck-us.net>
+ <055f2564-551d-4b5f-a6e3-d54ae104d5c9@sirena.org.uk>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: Traceback with CONFIG_REGMAP_KUNIT=y+CONFIG_DEBUG_ATOMIC_SLEEP=y
+In-Reply-To: <055f2564-551d-4b5f-a6e3-d54ae104d5c9@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023 at 16:42, Aaron Lu <aaron.lu@intel.com> wrote:
->
-> On Thu, Jul 20, 2023 at 03:10:30PM +0200, Vincent Guittot wrote:
-> > On Wed, 19 Jul 2023 at 15:29, Aaron Lu <aaron.lu@intel.com> wrote:
-> > >
-> > > On Wed, Jul 19, 2023 at 11:47:06AM +0200, Vincent Guittot wrote:
-> > > > On Wed, 19 Jul 2023 at 10:01, Aaron Lu <aaron.lu@intel.com> wrote:
-> > > > >
-> > > > > On Wed, Jul 19, 2023 at 01:18:26PM +0800, Aaron Lu wrote:
-> > > > > > Alternatively, I can remove some callsites of update_tg_load_avg() like
-> > > > > > you suggested below and only call update_tg_load_avg() when cfs_rq is
-> > > > > > decayed(really just decayed, not when it detected it has removed load
-> > > > > > pending or load propagated from its children). This way it would give us
-> > > > > > similar result as above(roughly once per ms).
-> > > > >
-> > > > > Something like this: (I think this is better since it removed those
-> > > > > unnecessary calls to update_tg_load_avg(), although it is inline but
-> > > > > still)
-> > > > >
-> > > > >
-> > > > > From bc749aaefa6bed36aa946921a4006b3dddb69b77 Mon Sep 17 00:00:00 2001
-> > > > > From: Aaron Lu <aaron.lu@intel.com>
-> > > > > Date: Wed, 19 Jul 2023 13:54:48 +0800
-> > > > > Subject: [PATCH] sched/fair: only update_tg_load_avg() when cfs_rq decayed
-> > > > >
-> > > > > ---
-> > > > >  kernel/sched/fair.c | 22 +++++++---------------
-> > > > >  1 file changed, 7 insertions(+), 15 deletions(-)
-> > > > >
-> > > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > > > index a80a73909dc2..7d5b7352b8b5 100644
-> > > > > --- a/kernel/sched/fair.c
-> > > > > +++ b/kernel/sched/fair.c
-> > > > > @@ -3913,16 +3913,16 @@ static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum
-> > > > >  }
-> > > > >
-> > > > >  /* Update task and its cfs_rq load average */
-> > > > > -static inline int propagate_entity_load_avg(struct sched_entity *se)
-> > > > > +static inline void propagate_entity_load_avg(struct sched_entity *se)
-> > > > >  {
-> > > > >         struct cfs_rq *cfs_rq, *gcfs_rq;
-> > > > >
-> > > > >         if (entity_is_task(se))
-> > > > > -               return 0;
-> > > > > +               return;
-> > > > >
-> > > > >         gcfs_rq = group_cfs_rq(se);
-> > > > >         if (!gcfs_rq->propagate)
-> > > > > -               return 0;
-> > > > > +               return;
-> > > > >
-> > > > >         gcfs_rq->propagate = 0;
-> > > > >
-> > > > > @@ -3936,8 +3936,6 @@ static inline int propagate_entity_load_avg(struct sched_entity *se)
-> > > > >
-> > > > >         trace_pelt_cfs_tp(cfs_rq);
-> > > > >         trace_pelt_se_tp(se);
-> > > > > -
-> > > > > -       return 1;
-> > > > >  }
-> > > > >
-> > > > >  /*
-> > > > > @@ -3974,9 +3972,8 @@ static inline bool skip_blocked_update(struct sched_entity *se)
-> > > > >
-> > > > >  static inline void update_tg_load_avg(struct cfs_rq *cfs_rq) {}
-> > > > >
-> > > > > -static inline int propagate_entity_load_avg(struct sched_entity *se)
-> > > > > +static inline void propagate_entity_load_avg(struct sched_entity *se)
-> > > > >  {
-> > > > > -       return 0;
-> > > > >  }
-> > > > >
-> > > > >  static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum) {}
-> > > > > @@ -4086,7 +4083,7 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
-> > > > >  {
-> > > > >         unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
-> > > > >         struct sched_avg *sa = &cfs_rq->avg;
-> > > > > -       int decayed = 0;
-> > > > > +       int decayed;
-> > > > >
-> > > > >         if (cfs_rq->removed.nr) {
-> > > > >                 unsigned long r;
-> > > > > @@ -4134,11 +4131,9 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
-> > > > >                  */
-> > > > >                 add_tg_cfs_propagate(cfs_rq,
-> > > > >                         -(long)(removed_runnable * divider) >> SCHED_CAPACITY_SHIFT);
-> > > > > -
-> > > > > -               decayed = 1;
-> > > > >         }
-> > > > >
-> > > > > -       decayed |= __update_load_avg_cfs_rq(now, cfs_rq);
-> > > > > +       decayed = __update_load_avg_cfs_rq(now, cfs_rq);
-> > > > >         u64_u32_store_copy(sa->last_update_time,
-> > > > >                            cfs_rq->last_update_time_copy,
-> > > > >                            sa->last_update_time);
-> > > > > @@ -4252,7 +4247,7 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
-> > > > >                 __update_load_avg_se(now, cfs_rq, se);
-> > > > >
-> > > > >         decayed  = update_cfs_rq_load_avg(now, cfs_rq);
-> > > > > -       decayed |= propagate_entity_load_avg(se);
-> > > > > +       propagate_entity_load_avg(se);
-> > > >
-> > > > but then you  also skip the call to cfs_rq_util_change()
-> > >
-> > > Ah right, I missed that, thanks for catching this.
-> > >
-> > > Updated:
-> > >
-> > > From 09a649f8111cfca656b7b735da975ef607b00956 Mon Sep 17 00:00:00 2001
-> > > From: Aaron Lu <aaron.lu@intel.com>
-> > > Date: Wed, 19 Jul 2023 13:54:48 +0800
-> > > Subject: [PATCH] sched/fair: only update_tg_load_avg() when cfs_rq decayed
-> > >
-> > > ---
-> > >  kernel/sched/fair.c | 17 ++++++-----------
-> > >  1 file changed, 6 insertions(+), 11 deletions(-)
-> > >
-> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > index a80a73909dc2..8d4b9e0a19b6 100644
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -4086,7 +4086,7 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
-> > >  {
-> > >         unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
-> > >         struct sched_avg *sa = &cfs_rq->avg;
-> > > -       int decayed = 0;
-> > > +       int decayed;
-> > >
-> > >         if (cfs_rq->removed.nr) {
-> > >                 unsigned long r;
-> > > @@ -4134,11 +4134,9 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
-> > >                  */
-> > >                 add_tg_cfs_propagate(cfs_rq,
-> > >                         -(long)(removed_runnable * divider) >> SCHED_CAPACITY_SHIFT);
-> > > -
-> > > -               decayed = 1;
-> >
-> > We need this to propagate the change in other place like cpufreq
->
-> Ah, I just made the same mistake again, sorry.
->
-> So there are three cases for a cfs_rq: load decayed, load removed and
-> load propagated. For all three cases, cfs_rq_util_change() needs to be
-> called and only for decayed, update_tg_load_avg() needs to be called.
->
-> I'll update the patch accordingly.
->
-> > >         }
-> > >
-> > > -       decayed |= __update_load_avg_cfs_rq(now, cfs_rq);
-> > > +       decayed = __update_load_avg_cfs_rq(now, cfs_rq);
-> > >         u64_u32_store_copy(sa->last_update_time,
-> > >                            cfs_rq->last_update_time_copy,
-> > >                            sa->last_update_time);
-> > > @@ -4242,7 +4240,7 @@ static void detach_entity_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
-> > >  static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
-> > >  {
-> > >         u64 now = cfs_rq_clock_pelt(cfs_rq);
-> > > -       int decayed;
-> > > +       int decayed, propagated;
-> > >
-> > >         /*
-> > >          * Track task load average for carrying it to new CPU after migrated, and
-> > > @@ -4252,7 +4250,7 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
-> > >                 __update_load_avg_se(now, cfs_rq, se);
-> > >
-> > >         decayed  = update_cfs_rq_load_avg(now, cfs_rq);
-> > > -       decayed |= propagate_entity_load_avg(se);
-> > > +       propagated = propagate_entity_load_avg(se);
-> > >
-> > >         if (!se->avg.last_update_time && (flags & DO_ATTACH)) {
-> > >
-> > > @@ -4264,19 +4262,16 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
-> > >                  * IOW we're enqueueing a task on a new CPU.
-> > >                  */
-> > >                 attach_entity_load_avg(cfs_rq, se);
-> > > -               update_tg_load_avg(cfs_rq);
-> > > -
-> > >         } else if (flags & DO_DETACH) {
-> > >                 /*
-> > >                  * DO_DETACH means we're here from dequeue_entity()
-> > >                  * and we are migrating task out of the CPU.
-> > >                  */
-> > >                 detach_entity_load_avg(cfs_rq, se);
-> > > -               update_tg_load_avg(cfs_rq);
-> > > -       } else if (decayed) {
-> > > +       } else if (decayed || propagated) {
-> > >                 cfs_rq_util_change(cfs_rq, 0);
-> > >
-> > > -               if (flags & UPDATE_TG)
-> > > +               if (decayed && (flags & UPDATE_TG))
-> >
-> > It would be simpler and more readable to clear UPDATE_TG or not set it
-> > from the beginning
->
-> Do you mean something like this?
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 8d4b9e0a19b6..084d63371355 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4249,7 +4249,7 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
->         if (se->avg.last_update_time && !(flags & SKIP_AGE_LOAD))
->                 __update_load_avg_se(now, cfs_rq, se);
->
-> -       decayed  = update_cfs_rq_load_avg(now, cfs_rq);
-> +       decayed  = update_cfs_rq_load_avg(now, cfs_rq) && (flags & UPDATE_TG);
->         propagated = propagate_entity_load_avg(se);
->
->         if (!se->avg.last_update_time && (flags & DO_ATTACH)) {
-> @@ -4271,7 +4271,7 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
->         } else if (decayed || propagated) {
->                 cfs_rq_util_change(cfs_rq, 0);
->
-> -               if (decayed && (flags & UPDATE_TG))
-> +               if (decayed)
->                         update_tg_load_avg(cfs_rq);
->         }
->  }
->
-> > IIUC, you rely on the fact that a decay happens every 1024 us of the
-> > cfs_rq_clock_pelt() which is scaled by frequency and cpu compute
-> > capacity. So you can end up with a cfs_rq_clock_pelt() that is far
-> > slower than real clock and the 1ms can easily be extended to dozens of
-> > ms
->
-> Thanks for the info. I'm not familiar with this clock scale part and will
-> need to take a closer look.
->
-> As you know, the intent is to make the unbound update to tg->load_avg
-> become bound for those wakeup migration heavy workloads and the way this
-> change does to achieve it is to remove the update to tg->load_avg on
-> attach and detach path, just leave the update on load decay path. And if
-> the current implementation makes load decay longer than 1024us, that
-> shouldn't be a problem for this change. I don't see an immediate problem
-> if update to tg->load_avg happens less often than once per ms but please
-> let me know if I missed something, thanks.
+On 7/20/23 07:31, Mark Brown wrote:
+> On Thu, Jul 20, 2023 at 07:26:54AM -0700, Guenter Roeck wrote:
+>> On 7/20/23 01:50, Dan Carpenter wrote:
+> 
+>>> +++ b/drivers/base/regmap/regcache-rbtree.c
+>>> @@ -187,7 +187,7 @@ static int regcache_rbtree_init(struct regmap *map)
+>>>    	int i;
+>>>    	int ret;
+>>> -	map->cache = kmalloc(sizeof *rbtree_ctx, GFP_KERNEL);
+>>> +	map->cache = kmalloc(sizeof *rbtree_ctx, map->alloc_flags);
+> 
+>> Yes, that might work as well (and after looking more deeply into the code
+>> I wondered why it wasn't used in the first place).
+> 
+>> Based on Mark's feedback I submitted
+>> https://lore.kernel.org/lkml/20230720032848.1306349-1-linux@roeck-us.net/
+>> Sorry, I forgot to copy you on that one.
+> 
+>> Mark, please let me know what you prefer.
+> 
+> They're both independently fine, but I wouldn't expect anything that's
+> running in atomic context to be actually using dynamic allocations.
 
-What was wrong with your proposal to limit the update inside
-update_tg_load_avg()  ? except maybe s/1000000/NSEC_PER_MSEC/ and
-computing delta after testing the time since last update
+Which one do you prefer ? As I mentioned in my second patch, there are
+two drivers which use fast_io together with REGCACHE_RBTREE and thus
+are likely affected by this problem. Dan's solution would cover that,
+while my current RFC patch would likely cause those drivers to fail.
+Plus, of course, they could get stuck if they actually end up trying to
+sleep while allocating memory.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index a80a73909dc2..e48fd0e6982d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3665,6 +3665,7 @@ static inline bool cfs_rq_is_decayed(struct
-cfs_rq *cfs_rq)
- static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
- {
-        long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
-+       u64 now = cfs_rq_clock_pelt(cfs_rq);
+Thanks,
+Guenter
 
-        /*
-         * No need to update load_avg for root_task_group as it is not used.
-@@ -3672,9 +3673,11 @@ static inline void update_tg_load_avg(struct
-cfs_rq *cfs_rq)
-        if (cfs_rq->tg == &root_task_group)
-                return;
-
--       if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
-+       if ((now - cfs_rq->last_update_tg_load_avg > 1000000) &&
-+           abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
-                atomic_long_add(delta, &cfs_rq->tg->load_avg);
-                cfs_rq->tg_load_avg_contrib = cfs_rq->avg.load_avg;
-+               cfs_rq->last_update_tg_load_avg = now;
-        }
- }
-
-
->
-> >
-> > >                         update_tg_load_avg(cfs_rq);
-> > >         }
-> > >  }
-> > > --
-> > > 2.41.0
-> > >
-> > >
-> > > > >
-> > > > >         if (!se->avg.last_update_time && (flags & DO_ATTACH)) {
-> > > > >
-> > > > > @@ -4264,15 +4259,12 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
-> > > > >                  * IOW we're enqueueing a task on a new CPU.
-> > > > >                  */
-> > > > >                 attach_entity_load_avg(cfs_rq, se);
-> > > > > -               update_tg_load_avg(cfs_rq);
-> > > > > -
-> > > > >         } else if (flags & DO_DETACH) {
-> > > > >                 /*
-> > > > >                  * DO_DETACH means we're here from dequeue_entity()
-> > > > >                  * and we are migrating task out of the CPU.
-> > > > >                  */
-> > > > >                 detach_entity_load_avg(cfs_rq, se);
-> > > > > -               update_tg_load_avg(cfs_rq);
-> > > > >         } else if (decayed) {
-> > > > >                 cfs_rq_util_change(cfs_rq, 0);
-> > > > >
-> > > > > --
-> > > > > 2.41.0
-> > > > >
