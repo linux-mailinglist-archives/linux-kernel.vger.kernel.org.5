@@ -2,43 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E70A775AB64
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B2D75AB61
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbjGTJtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47880 "EHLO
+        id S230364AbjGTJso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231383AbjGTJsK (ORCPT
+        with ESMTP id S231386AbjGTJsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 Jul 2023 05:48:10 -0400
-Received: from out-29.mta0.migadu.com (out-29.mta0.migadu.com [IPv6:2001:41d0:1004:224b::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4244C26B8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:47:12 -0700 (PDT)
+Received: from out-2.mta0.migadu.com (out-2.mta0.migadu.com [91.218.175.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF702704
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:47:16 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689846430;
+        t=1689846435;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=IWsEdoCST2RLmfVQaJhpZTZMKhLTaQ2FtZavGotVcwk=;
-        b=ArIuxhs1r2s5cqxco09D6B5rx6QvqHCe/RVtqG9xHgrhTTe3P6anSMkPsaV7TAdgKySdlp
-        wWKwzvzJ+s7pDJXcQzBeMdD0NKeQzvAnDXznzmeB3hiZ83Rv9teoKiC3fOZZWs4zp5LVrX
-        MA4XhAe/raHLdU4dPf7IHKLJ4hcdw4w=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dQrUdY1vRsj8E+dCm96975wE2JF9r7J+GLmQavXqC6U=;
+        b=ppP0xq24ptj/OlMY3SPOuHL6Ff4dQYJc12lo4pwlHFUru/0kT+yUO+nGANDCOXMijpY0zh
+        0xRV/YP9illwyEGWdRzcnR+C2a2oqd4/o3nAXfqCCcJ3QCVAM4J4lj3lf7TdGBwhgX25Kc
+        aqsmNNgQe9Mnd4K/gYhs9jp73e9/KfE=
 From:   chengming.zhou@linux.dev
 To:     axboe@kernel.dk, osandov@fb.com, ming.lei@redhat.com,
         kbusch@kernel.org, krisman@suse.de
 Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
         zhouchengming@bytedance.com
-Subject: [PATCH 0/6] sbitmap: fix offset hint wrap and some optimizations
-Date:   Thu, 20 Jul 2023 17:45:49 +0800
-Message-ID: <20230720094555.1397621-1-chengming.zhou@linux.dev>
+Subject: [PATCH 1/6] sbitmap: fix hint wrap in the failure case
+Date:   Thu, 20 Jul 2023 17:45:50 +0800
+Message-ID: <20230720094555.1397621-2-chengming.zhou@linux.dev>
+In-Reply-To: <20230720094555.1397621-1-chengming.zhou@linux.dev>
+References: <20230720094555.1397621-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,31 +51,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chengming Zhou <zhouchengming@bytedance.com>
 
-Hello,
+```
+hint = nr + 1;
+if (hint >= depth - 1)
+	hint = 0;
+```
 
-This series aim to fix and simplify the offset hint wrap logic, also
-include some minor optimizations.
+Now we wrap the hint to 0 in the failure case, but:
+1. hint == depth - 1, is actually an available offset hint, which
+   we shouldn't wrap hint to 0.
+2. In the strict round_robin non-wrap case, we shouldn't wrap at all.
 
-patch 01,02 fix offset hint wrap logic in strict round-robin mode.
+```
+wrap = wrap && hint;
+```
 
-patch 03,04 simplify the sbitmap_find_bit() code by removing wrap logic.
+We only need to check wrap based on the original hint ( > 0), don't need
+to recheck the new hint which maybe updated in the failure case.
+Also delete the mismatched comments by the way.
 
-patch 05,06 are two minor optimizations.
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ lib/sbitmap.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Thanks!
-
-Chengming Zhou (6):
-  sbitmap: fix hint wrap in the failure case
-  sbitmap: fix round-robin non-wrap find with hint > 0
-  sbitmap: don't loop twice in find_next_zero_bit()
-  sbitmap: remove offset wrap logic when finding bit in word
-  sbitmap: wake_index doesn't need to be atomic_t
-  sbitmap: check ws_active before check waitqueues
-
- include/linux/sbitmap.h |  2 +-
- lib/sbitmap.c           | 66 ++++++++++++++++++++---------------------
- 2 files changed, 33 insertions(+), 35 deletions(-)
-
+diff --git a/lib/sbitmap.c b/lib/sbitmap.c
+index eff4e42c425a..5ed6c2adf58e 100644
+--- a/lib/sbitmap.c
++++ b/lib/sbitmap.c
+@@ -144,12 +144,7 @@ static int __sbitmap_get_word(unsigned long *word, unsigned long depth,
+ 	while (1) {
+ 		nr = find_next_zero_bit(word, depth, hint);
+ 		if (unlikely(nr >= depth)) {
+-			/*
+-			 * We started with an offset, and we didn't reset the
+-			 * offset to 0 in a failure case, so start from 0 to
+-			 * exhaust the map.
+-			 */
+-			if (hint && wrap) {
++			if (wrap) {
+ 				hint = 0;
+ 				continue;
+ 			}
+@@ -160,8 +155,13 @@ static int __sbitmap_get_word(unsigned long *word, unsigned long depth,
+ 			break;
+ 
+ 		hint = nr + 1;
+-		if (hint >= depth - 1)
+-			hint = 0;
++		if (hint >= depth) {
++			if (wrap) {
++				hint = 0;
++				continue;
++			}
++			return -1;
++		}
+ 	}
+ 
+ 	return nr;
 -- 
 2.41.0
 
