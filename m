@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7551775AC90
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B23675ACAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbjGTLHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
+        id S230120AbjGTLPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGTLHf (ORCPT
+        with ESMTP id S230337AbjGTLPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:07:35 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EAB268F;
-        Thu, 20 Jul 2023 04:07:34 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R68vq66JMztRZQ;
-        Thu, 20 Jul 2023 19:04:23 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 20 Jul
- 2023 19:07:31 +0800
-Subject: Re: [PATCH net-next] page_pool: split types and declarations from
- page_pool.h
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-References: <20230719121339.63331-1-linyunsheng@huawei.com>
- <0838ed9e-8b5c-cc93-0175-9d6cbf695dda@intel.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <7e9c1276-9996-d9dd-c061-b1e66361c48b@huawei.com>
-Date:   Thu, 20 Jul 2023 19:07:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 20 Jul 2023 07:15:23 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E243826B1;
+        Thu, 20 Jul 2023 04:15:21 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9A5CC22C3E;
+        Thu, 20 Jul 2023 11:15:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1689851720;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=euYYOcjydwE/a+t2LH9+VI+ehKzPfjxqAhBdprEQVPk=;
+        b=ZuOD7XPA6kjXkPU2f35hkNVSj+s9SFqp5usIu5RTJyuLgd1DY9GnKV5h1qltfBzP1CJmWW
+        W38lv1Hmo/KYY0Ck3q1BwcaFg9T6H7PkXjPrsPw+SJGdfN+V/6pxyJO3HCHD2epjtlMVvU
+        RPKe/q2atRvRc8e3/R6B9DTCnZSxBH8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1689851720;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=euYYOcjydwE/a+t2LH9+VI+ehKzPfjxqAhBdprEQVPk=;
+        b=r1g7T6wsj4YgN8grOCor5BpRkV3/Fydkbg7nXg2Wr/uYSys/SbOZ67e1dzqqK0vmxjXLhR
+        re9e+DsY2bdaE5BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6E6DE133DD;
+        Thu, 20 Jul 2023 11:15:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id cBggGkgXuWTmfwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 20 Jul 2023 11:15:20 +0000
+Date:   Thu, 20 Jul 2023 13:08:40 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     wuyonggang001@208suo.com
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        terrelln@fb.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Modify format error
+Message-ID: <20230720110840.GV20457@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230717071645.45023-1-zhanglibing@cdjrlc.com>
+ <12728f5d0ca3c593da3b4f4017efd1e2@208suo.com>
 MIME-Version: 1.0
-In-Reply-To: <0838ed9e-8b5c-cc93-0175-9d6cbf695dda@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <12728f5d0ca3c593da3b4f4017efd1e2@208suo.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/20 0:42, Alexander Lobakin wrote:
+On Mon, Jul 17, 2023 at 03:19:04PM +0800, wuyonggang001@208suo.com wrote:
+> Fix the following checkpatch error(s):
+> ERROR: "foo* const bar" should be "foo * const bar"
+> ERROR: "foo* bar" should be "foo *bar"
 > 
-> BTW, what do you think: is it better to have those two includes in the
-> root include/net/ folder or do something like
-> 
-> include/net/page_pool/
->   * types.h
->   * <some meaningful name>.h (let's say driver.h)
-> 
-> like it's done e.g. for GPIO (see include/linux/gpio/)?
+> Signed-off-by: Yonggang Wu <wuyonggang001@208suo.com>
 
-It make more sense to add a new dir for page pool if there are
-more new headers added. As we are still keeping the page_pool.h
-mirroring include/linux/gpio.h, adding a new dir for only one
-header file only add another level of dir without abvious benefit.
-We can add a new dir for it if we turn out to be needing more header
-file for page pool in the future, does it make sense?
-
-> 
-> Thanks,
-> Olek
-> 
-> .
-> 
+Please don't send patches to btrfs that only fix problems reported by
+checkpatch and nothing else.  Thanks.
