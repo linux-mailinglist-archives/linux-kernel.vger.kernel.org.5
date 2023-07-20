@@ -2,123 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 464BD75B82D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4939F75B837
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbjGTTlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 15:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
+        id S231136AbjGTTm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 15:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjGTTlP (ORCPT
+        with ESMTP id S231143AbjGTTm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 15:41:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE8219BE;
-        Thu, 20 Jul 2023 12:41:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CD57E61C2F;
-        Thu, 20 Jul 2023 19:41:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B477C433C7;
-        Thu, 20 Jul 2023 19:41:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689882073;
-        bh=Tjl37HbgJReCne8I9oWLUfLMWMECxjVNTak6ZTPLD0k=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=lRLa1IQ2fIZXFzrU2LGJtKathN3AJ8fJkaqg5gRtECfS38ZteMIEE4cy7vCYCLa1C
-         909IPOW4fQ0PhUH7THSkWlqiJVpG1JRQValVj7jYN+CCvOsvldsUC5Ghu31NS8qPqT
-         a3jSc3h4GrV3Jx61+Qfr5ALLtkruufVQDLOTvraN7NQcpRlMY1x5mhgb3Bxwm/jHS2
-         Ed7YlxnTp/sGlPLYpkVQojT63Gpm9Rg/dB8VaRKg7S0+GJUotOmukuQaooWDGVgss9
-         p4spWm6L3uyhs+om/T20UtcdwMJbMcDDYNnKOfYS/SBeOCX4+vcETKAEk/Y6w0lR1m
-         uJWw5YOZlZnGw==
-Message-ID: <2c9f7a88-1a99-73ce-e924-0effef399719@kernel.org>
-Date:   Thu, 20 Jul 2023 22:41:05 +0300
+        Thu, 20 Jul 2023 15:42:26 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174792123
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:42:24 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-cefa8fe4cc2so1058535276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:42:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689882143; x=1690486943;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6uboV9zE5viSPMUN9jRcO0cjpaJKLGwKotI/bN04OyY=;
+        b=Is+h2NeaSzJfFfsZ98ro8BWc2npdTi8/mAPrWVvtpsxb716Whq2DsR1nkUJ5zX14Xz
+         79qaflwC3BG2VYXCeK0ijBZtmZDQ1AwFmwaxjZDd/vn/AKdit/VHpHHNt7ZvyrLIlMK1
+         rAvvaKIi1pdCGIE6T6PamxnnJ1xdepfGuegPYvjWZ/2v5uqSbyOmvOqKrH1HZMZxxQ9u
+         TipBUYHRAcaq7G2V/lDcSoviQy3dB4LjRa8c+TMTdx5eHkXHMxyv/6aRPA0MgnDthZDb
+         /qNXdFoMB9q33L3QYVfMXu7JSq0qiwBR5arRe8VeAjZhX1/RRVS46BZipMLM8QxKUS/8
+         /7lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689882143; x=1690486943;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6uboV9zE5viSPMUN9jRcO0cjpaJKLGwKotI/bN04OyY=;
+        b=D6HOLCsjWwO95aVg3uQGphs/A4xKS+r2JgDOdite5+GKZ2kSVN4F37iTR8wFCGNB+f
+         Fymy90Tzv7iOIwdPU44XMxUmVH/04Ixd0sk/Y0fOUc9E9D6srBvlaqK/onbJvoAmMxc0
+         a2OxFjCFVzii6Uztc5OsUqjazFZWKOqY3L9hs5EYpW5sz90e8l3w7pun03oCo8Er5Mec
+         qTte2MwoMEQzlOasYsoMerq76tWUjzKLr4GwKz7O+NSCPl1Gnytbt95SAs/H6lCa6USN
+         ixYWqx1zwhEREJ/vFQ/sco7uQRsgheYz/3l3EGVkqmkr0eV4uCeWgs+eOmctm1Y0U325
+         rEdw==
+X-Gm-Message-State: ABy/qLZN96QT7qrjzd5vBijxyxTLQBmF+tHO8XIs9QdZKUdMosZcL6Es
+        2Q7J9itiJnIISJedu1VDaa8NZV9x4fkAmw9L1S1eqw==
+X-Google-Smtp-Source: APBJJlE7cBabIqsDgOVse9OOZ6aTjmPoq/DJCfwfg6nCOEVEXRqRJUSYnSIJLuoYJ0UvKAptp1crbwCoFVPdkqeY7hY=
+X-Received: by 2002:a25:c50b:0:b0:cdd:6635:a1f8 with SMTP id
+ v11-20020a25c50b000000b00cdd6635a1f8mr5819173ybe.15.1689882143201; Thu, 20
+ Jul 2023 12:42:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [EXTERNAL] Re: [PATCH v10 2/2] net: ti: icssg-prueth: Add ICSSG
- ethernet driver
-Content-Language: en-US
-To:     Md Danish Anwar <a0501179@ti.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        MD Danish Anwar <danishanwar@ti.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
+References: <20230714174901.4062397-1-robh@kernel.org>
+In-Reply-To: <20230714174901.4062397-1-robh@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 20 Jul 2023 21:42:12 +0200
+Message-ID: <CACRpkdYe9b4ZpvYZqkcMq0Jjni_VD_75Zt5oKv4+v9f3pmJbVA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: Explicitly include correct DT includes
+To:     Rob Herring <robh@kernel.org>
+Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, nm@ti.com, srk@ti.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230719082755.3399424-1-danishanwar@ti.com>
- <20230719082755.3399424-3-danishanwar@ti.com>
- <20230719213543.0380e13e@kernel.org>
- <17cd1e70-73bc-78d5-7e9d-7b133d6f464b@ti.com>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <17cd1e70-73bc-78d5-7e9d-7b133d6f464b@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Chester Lin <clin@suse.com>, NXP S32 Linux Team <s32@nxp.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Tony Lindgren <tony@atomide.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>, soc@kernel.org,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Dvorkin Dmitry <dvorkin@tibbo.com>,
+        Wells Lu <wellslutw@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-oxnas@groups.io, linux-rockchip@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Danish,
+On Fri, Jul 14, 2023 at 7:49=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
+:
 
-On 20/07/2023 14:42, Md Danish Anwar wrote:
-> Hi Jakub,
-> 
-> On 20/07/23 10:05 am, Jakub Kicinski wrote:
->> The patch is too big to review.
->>
->> Please break it apart separating into individual features, targeting
->> around 10 patches in the series. That will make it easier for reviewers
->> to take a look at the features in which they have expertise.
->>
-> 
-> Sure Jakub. I will try to break this patch in multiple patches as below.
-> 
-> Patch 1: Introduce Firmware mapping for the driver (icss_switch_map.h)
-> 
-> Patch 2: Introduce mii helper APIs. (icssg_mii_rt.h and icssg_mii_cfg.h). This
-> patch will also introduce basic prueth and emac structures in icssg_prueth.h as
-> these structures will be used by the helper APIs.
-> 
-> Patch 3: Introduce firmware configuration and classification APIs.
-> (icssg_classifier.c, icssg_config.h and icssg_config.c)
-> 
-> Patch 4: Introduce APIs for ICSSG Queues (icssg_queues.c)
-> 
-> Patch 5: Introduce ICSSG Ethernet driver. (icssg_prueth.c and icssg_prueth.h)
-> This patch will enable the driver and basic functionality can work after this
-> patch. This patch will be using all the APIs introduced earlier. This patch
-> will also include Kconfig and Makefile changes.
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-DT binding documentation patch can come here.
+It still applied cleanly so I just applied it.
 
-> 
-> Patch 6: Enable standard statistics via ndo_get_stats64
-> 
-> Patch 7: Introduce ethtool ops for ICSSG
-> 
-> Patch 8: Introduce power management support (suspend / resume APIs)
-> 
+Thanks for attention to detail.
 
-<snip>
-
--- 
-cheers,
--roger
+Yours,
+Linus Walleij
