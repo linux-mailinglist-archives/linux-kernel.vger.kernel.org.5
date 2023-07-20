@@ -2,336 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B54975B3CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D150775B3D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbjGTQHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
+        id S231332AbjGTQIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjGTQHY (ORCPT
+        with ESMTP id S231861AbjGTQHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:07:24 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FECE47;
-        Thu, 20 Jul 2023 09:07:21 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 7E38460171;
-        Thu, 20 Jul 2023 18:07:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1689869228; bh=8hV6k4hJ/hPCHyUdlhZQjxzzgl5BuECH6T0mUmObz/A=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=00looCrQqz2H65GHYlx0abgubMpyVsyXyp8IA1zNRwsB0amyJp4cPTFbKgeWAVwRQ
-         a/dbt8V/55BEkBBkwDflqNa+ItbhgoiOtBCgYkg5ylb2NXvFOTjRp9dhtfMXUFjAYJ
-         sc6zv46T0thScF12thE3Daj7AXyKToqADPQiTWG7PAgoDATwHTO43rI4gH50vcmBQa
-         1g+6t/XIU8WMFAtR0yEcoTH+PcFcAoajKZqr50r6P+bBhx3GKTieiPcJADHgLZd+sR
-         KdxpZKOoTu6uF7BG0SuYcoJQPrQyZcCssHk6vZZkDIocx3iEruebI4TG58KIM/E1VP
-         c/9sXmZP6wR2g==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id DL_4EscF3azY; Thu, 20 Jul 2023 18:07:05 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 1AB616016E;
-        Thu, 20 Jul 2023 18:07:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1689869225; bh=8hV6k4hJ/hPCHyUdlhZQjxzzgl5BuECH6T0mUmObz/A=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=N45t8GTcMB6u4PW17PfN3VhDIMRi8lha73l/YKkRW4JePy1Oq3Z2JsCcWdGFiI3YM
-         vSakh+4ES7dj9PIa9ZWPWIskx79Cs3xMXGKnEJPJny8gYp/dP0NAcvFRmJqGY5Ev8Q
-         HOWlXTH4rGaf9Rp5Acg7uQSPbrMHOjpT613CZ5bEDZnaOFPz+G88SfQ9ZDRtIS7qmZ
-         LuHserd8HZqlRzu6fMycpON481vztwneyqHMXtH+g4DsWr0cu+BMZk9VJadtV5UiBS
-         5UoHMn/+x/QUC16UsCx5H98MqtMWTdAFkrvV9idd7RnlHLLupamS66ly/Zd1NcQQ4t
-         i+FxehVeD8e6Q==
-Message-ID: <580b9f28-7a68-e618-b2d5-b8663386aa12@alu.unizg.hr>
-Date:   Thu, 20 Jul 2023 18:07:00 +0200
+        Thu, 20 Jul 2023 12:07:55 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874921BEF;
+        Thu, 20 Jul 2023 09:07:43 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-668704a5b5bso841790b3a.0;
+        Thu, 20 Jul 2023 09:07:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689869262; x=1690474062;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FDlR75jCTWnutj2GqCkt5kjAmLZ3uaWEFiEojxMDrOA=;
+        b=GXaEZu3t4pzn71mFp69Of/QYBFraIdZR0yIlR4e3y+CSg61eWb/C+JUWIXDIW/WQQi
+         w1YGEi/ir6nGvTDCNLj7//wk2OXaUurXP3D8Ysiu55KxtOWlj3L4J6WN9S3GjBjCfzua
+         IXBLb7Q1ekV7FrKpMtRwxFQosIaReUr+x9bjvv1s5EJGi5Hy6QxqUlupVdk/qhnxh4L9
+         D2Y7HH/JdF7yX5GYscgv9IpSoGszQe7i5O2tD5wleYgLJzXgxukdDbTotFB1CCxoh9lD
+         TfjJjfEPuuDlcCjasdJBmtcMNgVbl7WlS8vxM3MfT0vuJ5F4w+ILpNlwDEj72ab/y47g
+         ulPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689869262; x=1690474062;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FDlR75jCTWnutj2GqCkt5kjAmLZ3uaWEFiEojxMDrOA=;
+        b=SK1IAHhKSrHddn4nTQQRt5Nn8zSTMCsGbQ9ddA3wP+pqrx1ERpHyP321vY65BYPk+A
+         h1o1oRrPb4PpQR8bxhWpcYQ74nRwFQ3W4SGMRbqLl1/zembLhvqwvZWDcu1eWLElyRNH
+         HJ2PwK4mRTsWwAUk4SieANgCLsXXWk6qETop359VOOBqduNvjxg4DwIvQTtSNZopQPHb
+         zkGGfBed8B4XyYsrOXfDxx0zO8+eScCCADyLFdb2HNtaNEvgVisOE3K8fFIOHQN9ctUJ
+         LVhIbEh6UWwrnmP40LApxEHYYC9XqW1jwtCJEcZOZoyOixrilCQehUuHSwAOEY++pVPe
+         lzhA==
+X-Gm-Message-State: ABy/qLYlKyRntCzgtFpWfH8VCg5pdiVVvfHKpeLwpRTc2MjFQRzAvvTu
+        Nk4x4jcdZoiLXmhlZS1tR4g=
+X-Google-Smtp-Source: APBJJlGsiSzauWOSKd4n1ByDIDYS8P/EIAsQheqzHj4aeeJVZn12STbjIByZE7ft/dmtqsa6x71MsA==
+X-Received: by 2002:a05:6a20:9383:b0:134:76f6:e9e2 with SMTP id x3-20020a056a20938300b0013476f6e9e2mr17240293pzh.58.1689869262478;
+        Thu, 20 Jul 2023 09:07:42 -0700 (PDT)
+Received: from linux.. (static.111.40.78.5.clients.your-server.de. [5.78.40.111])
+        by smtp.gmail.com with ESMTPSA id c21-20020aa781d5000000b006687b4f2044sm1348010pfn.164.2023.07.20.09.07.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 09:07:42 -0700 (PDT)
+From:   Binglei Wang <l3b2w1@gmail.com>
+X-Google-Original-From: Binglei Wang
+To:     robh+dt@kernel.org
+Cc:     frowand.list@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+        l3b2w1@gmail.com
+Subject: [PATCH] cma: check for memory region overlapping
+Date:   Fri, 21 Jul 2023 00:07:29 +0800
+Message-Id: <20230720160729.39324-1-l3b2w1@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PROBLEM] seltests: net/forwarding/sch_ets.sh [HANG]
-To:     Petr Machata <petrm@nvidia.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>
-References: <759fe934-2e43-e9ff-8946-4fd579c09b05@alu.unizg.hr>
- <87cz0m9a3n.fsf@nvidia.com>
-Content-Language: en-US
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <87cz0m9a3n.fsf@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 11:43, Petr Machata wrote:
-> 
-> Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr> writes:
-> 
->> Using the same config for 6.5-rc2 on Ubuntu 22.04 LTS and 22.10, the execution
->> stop at the exact same line on both boxes (os I reckon it is more than an
->> accident):
->>
->> # selftests: net/forwarding: sch_ets.sh
->> # TEST: ping vlan 10                                                  [ OK ]
->> # TEST: ping vlan 11                                                  [ OK ]
->> # TEST: ping vlan 12                                                  [ OK ]
->> # Running in priomap mode
->> # Testing ets bands 3 strict 3, streams 0 1
->> # TEST: band 0                                                        [ OK ]
->> # INFO: Expected ratio >95% Measured ratio 100.00
->> # TEST: band 1                                                        [ OK ]
->> # INFO: Expected ratio <5% Measured ratio 0
->> # Testing ets bands 3 strict 3, streams 1 2
->> # TEST: band 1                                                        [ OK ]
->> # INFO: Expected ratio >95% Measured ratio 100.00
->> # TEST: band 2                                                        [ OK ]
->> # INFO: Expected ratio <5% Measured ratio 0
->> # Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
->> # TEST: band 0                                                        [ OK ]
->> # INFO: Expected ratio >95% Measured ratio 100.00
->> # TEST: band 1                                                        [ OK ]
->> # INFO: Expected ratio <5% Measured ratio 0
->> # Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 1 2
->> # TEST: bands 1:2                                                     [ OK ]
->> # INFO: Expected ratio 2.00 Measured ratio 1.99
->> # Testing ets bands 3 quanta 3300 3300 3300, streams 0 1 2
->> # TEST: bands 0:1                                                     [ OK ]
->> # INFO: Expected ratio 1.00 Measured ratio .99
->> # TEST: bands 0:2                                                     [ OK ]
->> # INFO: Expected ratio 1.00 Measured ratio 1.00
->> # Testing ets bands 3 quanta 5000 3500 1500, streams 0 1 2
->> # TEST: bands 0:1                                                     [ OK ]
->> # INFO: Expected ratio 1.42 Measured ratio 1.42
->> # TEST: bands 0:2                                                     [ OK ]
->> # INFO: Expected ratio 3.33 Measured ratio 3.33
->> # Testing ets bands 3 quanta 5000 8000 1500, streams 0 1 2
->> # TEST: bands 0:1                                                     [ OK ]
->> # INFO: Expected ratio 1.60 Measured ratio 1.59
->> # TEST: bands 0:2                                                     [ OK ]
->> # INFO: Expected ratio 3.33 Measured ratio 3.33
->> # Testing ets bands 2 quanta 5000 2500, streams 0 1
->> # TEST: bands 0:1                                                     [ OK ]
->> # INFO: Expected ratio 2.00 Measured ratio 1.99
->> # Running in classifier mode
->> # Testing ets bands 3 strict 3, streams 0 1
->> # TEST: band 0                                                        [ OK ]
->> # INFO: Expected ratio >95% Measured ratio 100.00
->> # TEST: band 1                                                        [ OK ]
->> # INFO: Expected ratio <5% Measured ratio 0
->> # Testing ets bands 3 strict 3, streams 1 2
->> # TEST: band 1                                                        [ OK ]
->> # INFO: Expected ratio >95% Measured ratio 100.00
->> # TEST: band 2                                                        [ OK ]
->> # INFO: Expected ratio <5% Measured ratio 0
->> # Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
->>
->> I tried to run 'set -x' enabled version standalone, but that one finished
->> correctly (?).
->>
->> It could be something previous scripts left, but right now I don't have a clue.
->> I can attempt to rerun all tests with sch_ets.sh bash 'set -x' enabled later today.
-> 
-> If you run it standalone without set -x, does it finish as well?
+From: Binglei Wang <l3b2w1@gmail.com>
 
-Added that. Yes, standlone run finishes correctly, with or without 'set -x':
+Cma memory region editted carelessly in dts may overlap
+with kernel code/data memory region which is reserved by memblock
+during the early phase of system memory initialization.
 
-root@defiant:/home/marvin/linux/kernel/linux_torvalds/tools/testing/selftests/net/forwarding# ./sch_ets.sh
-TEST: ping vlan 10                                                  [ OK ]
-TEST: ping vlan 11                                                  [ OK ]
-TEST: ping vlan 12                                                  [ OK ]
-Running in priomap mode
-Testing ets bands 3 strict 3, streams 0 1
-TEST: band 0                                                        [ OK ]
-INFO: Expected ratio >95% Measured ratio 100.00
-TEST: band 1                                                        [ OK ]
-INFO: Expected ratio <5% Measured ratio 0
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 3 strict 3, streams 1 2
-TEST: band 1                                                        [ OK ]
-INFO: Expected ratio >95% Measured ratio 100.00
-TEST: band 2                                                        [ OK ]
-INFO: Expected ratio <5% Measured ratio 0
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
-TEST: band 0                                                        [ OK ]
-INFO: Expected ratio >95% Measured ratio 100.00
-TEST: band 1                                                        [ OK ]
-INFO: Expected ratio <5% Measured ratio 0
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 1 2
-TEST: bands 1:2                                                     [ OK ]
-INFO: Expected ratio 2.00 Measured ratio 1.99
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 3 quanta 3300 3300 3300, streams 0 1 2
-TEST: bands 0:1                                                     [ OK ]
-INFO: Expected ratio 1.00 Measured ratio 1.00
-TEST: bands 0:2                                                     [ OK ]
-INFO: Expected ratio 1.00 Measured ratio .99
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 3 quanta 5000 3500 1500, streams 0 1 2
-TEST: bands 0:1                                                     [ OK ]
-INFO: Expected ratio 1.42 Measured ratio 1.42
-TEST: bands 0:2                                                     [ OK ]
-INFO: Expected ratio 3.33 Measured ratio 3.33
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 3 quanta 5000 8000 1500, streams 0 1 2
-TEST: bands 0:1                                                     [ OK ]
-INFO: Expected ratio 1.60 Measured ratio 1.59
-TEST: bands 0:2                                                     [ OK ]
-INFO: Expected ratio 3.33 Measured ratio 3.33
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 2 quanta 5000 2500, streams 0 1
-TEST: bands 0:1                                                     [ OK ]
-INFO: Expected ratio 2.00 Measured ratio 1.99
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Running in classifier mode
-Testing ets bands 3 strict 3, streams 0 1
-TEST: band 0                                                        [ OK ]
-INFO: Expected ratio >95% Measured ratio 100.00
-TEST: band 1                                                        [ OK ]
-INFO: Expected ratio <5% Measured ratio 0
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 3 strict 3, streams 1 2
-TEST: band 1                                                        [ OK ]
-INFO: Expected ratio >95% Measured ratio 100.00
-TEST: band 2                                                        [ OK ]
-INFO: Expected ratio <5% Measured ratio 0
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
-TEST: band 0                                                        [ OK ]
-INFO: Expected ratio >95% Measured ratio 100.00
-TEST: band 1                                                        [ OK ]
-INFO: Expected ratio <5% Measured ratio 0
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 1 2
-TEST: bands 1:2                                                     [ OK ]
-INFO: Expected ratio 2.00 Measured ratio 1.99
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 3 quanta 3300 3300 3300, streams 0 1 2
-TEST: bands 0:1                                                     [ OK ]
-INFO: Expected ratio 1.00 Measured ratio .99
-TEST: bands 0:2                                                     [ OK ]
-INFO: Expected ratio 1.00 Measured ratio .99
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 3 quanta 5000 3500 1500, streams 0 1 2
-TEST: bands 0:1                                                     [ OK ]
-INFO: Expected ratio 1.42 Measured ratio 1.42
-TEST: bands 0:2                                                     [ OK ]
-INFO: Expected ratio 3.33 Measured ratio 3.33
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 3 quanta 5000 8000 1500, streams 0 1 2
-TEST: bands 0:1                                                     [ OK ]
-INFO: Expected ratio 1.60 Measured ratio 1.60
-TEST: bands 0:2                                                     [ OK ]
-INFO: Expected ratio 3.33 Measured ratio 3.33
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-Testing ets bands 2 quanta 5000 2500, streams 0 1
-TEST: bands 0:1                                                     [ OK ]
-INFO: Expected ratio 2.00 Measured ratio 2.00
-killing MZ
-killed MZ
-killing MZ
-killed MZ
-root@defiant:/home/marvin/linux/kernel/linux_torvalds/tools/testing/selftests/net/forwarding#
+Without checking overlap and cma area setup done,
+this region will be released to buddy system later.
 
-> That would imply that the reproducer needs to include the previous tests as
-> well.
+When memory usage under pressure, memory allocated from
+this region will collide with kernel code which is read-only.
+And the following writing to this region will trigger the panic
+of writing to read-only memory.
 
-This is entirely possible, as timeouts and CTRL+C events do not seem to be caught
-and the cleanup is not done ...
+So when rmem_cma_setup returns EBUSY, do not phys-free this region
+to memblock or else we end up with free the kernel code memory
+to buddy system.
 
-sch_ets_core.sh:	trap cleanup EXIT
+Signed-off-by: Binglei Wang <l3b2w1@gmail.com>
+---
+ drivers/of/of_reserved_mem.c | 3 ---
+ kernel/dma/contiguous.c      | 5 +++++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-Some tests time out even after settings:timeout=240, so IMHO this should be taken into account.
-
-Best regards,
-Mirsad Todorovac
-
-> It looks like the test is stuck in ets_test_mixed in classifier_mode.
-> A way to run just this test would be:
-> 
->      TESTS="classifier_mode ets_test_mixed" ./sch_ets.sh
-> 
-> Looking at the code, the only place that I can see that waits on
-> anything is the "{ kill %% && wait %%; } 2>/dev/null" line in
-> stop_traffic() (in lib.sh). Maybe something like this would let
-> us see if that's the case:
-> 
-> modified   tools/testing/selftests/net/forwarding/lib.sh
-> @@ -1468,8 +1470,10 @@ start_tcp_traffic()
->   
->   stop_traffic()
->   {
-> +	echo killing MZ
->   	# Suppress noise from killing mausezahn.
->   	{ kill %% && wait %%; } 2>/dev/null
-> +	echo killed MZ
->   }
+diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+index 7ec94cfcb..d62cc76ef 100644
+--- a/drivers/of/of_reserved_mem.c
++++ b/drivers/of/of_reserved_mem.c
+@@ -338,9 +338,6 @@ void __init fdt_init_reserved_mem(void)
+ 					rmem->name);
+ 				if (nomap)
+ 					memblock_clear_nomap(rmem->base, rmem->size);
+-				else
+-					memblock_phys_free(rmem->base,
+-							   rmem->size);
+ 			} else {
+ 				phys_addr_t end = rmem->base + rmem->size - 1;
+ 				bool reusable =
+diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
+index 6ea80ae42..a349f3e97 100644
+--- a/kernel/dma/contiguous.c
++++ b/kernel/dma/contiguous.c
+@@ -410,6 +410,11 @@ static int __init rmem_cma_setup(struct reserved_mem *rmem)
+ 		return -EBUSY;
+ 	}
+ 
++	if (memblock_is_region_reserved(rmem->base, rmem->size)) {
++		pr_info("Reserved memory: overlap with exsiting one\n");
++		return -EBUSY;
++	}
++
+ 	if (!of_get_flat_dt_prop(node, "reusable", NULL) ||
+ 	    of_get_flat_dt_prop(node, "no-map", NULL))
+ 		return -EINVAL;
+-- 
+2.34.1
 
