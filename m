@@ -2,45 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA39175A563
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E8275A55D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbjGTFLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 01:11:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36142 "EHLO
+        id S229746AbjGTFKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 01:10:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbjGTFK4 (ORCPT
+        with ESMTP id S229752AbjGTFKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 01:10:56 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 83EFB269E;
-        Wed, 19 Jul 2023 22:10:50 -0700 (PDT)
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 3CF7D80F7;
-        Thu, 20 Jul 2023 05:10:47 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-omap@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] serial: core: Fix serial core controller port name to show controller id
-Date:   Thu, 20 Jul 2023 08:10:16 +0300
-Message-ID: <20230720051021.14961-4-tony@atomide.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230720051021.14961-1-tony@atomide.com>
-References: <20230720051021.14961-1-tony@atomide.com>
+        Thu, 20 Jul 2023 01:10:40 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70005EC;
+        Wed, 19 Jul 2023 22:10:39 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36K3lMPT032502;
+        Thu, 20 Jul 2023 05:10:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=mf1zKhHwrRsaeegpLZNytRKQo0loCluldkLPQC3NHqs=;
+ b=jles9r46wR0ZDtQCxMK7LDmBsiHqWCA1iABxa8FyuoBSpKDPK5rpPUlt/jRZU63TLvcF
+ dTVN7rAXDX401eWdLxkE7NPLvHGIZ2QXgweq8GLyp84/XdxxBbgK+1BNJazRRMQ/JHxI
+ kEALG4vpZyfySthogrdAexD4MHepuuD8d8ITbWD+hzekzoLvmc7yu/v0tZh7gcn3MQCQ
+ HjYPCV8fl+tHqavlmucXvTrMxUpHs93kBPSOBMhuw33p6l48zJeW0gJOmn50vqOaHzGR
+ sFbN6PXrfsn4geUR0XEChlA88/6o0h/R+mBN2/IGJZyn0hWCjhiVR3Je0WtQVd3u/AVg BA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxg3v9p74-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 05:10:35 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36K5AYfF017630
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 05:10:34 GMT
+Received: from [10.216.4.242] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 19 Jul
+ 2023 22:10:30 -0700
+Message-ID: <fbb13c2d-6d60-0e51-c980-3e79a68a1931@quicinc.com>
+Date:   Thu, 20 Jul 2023 10:40:27 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH V2 1/2] arm64: dts: qcom: ipq9574: Add common RDP dtsi
+ file
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <quic_saahtoma@quicinc.com>
+References: <20230713105909.14209-1-quic_anusha@quicinc.com>
+ <20230713105909.14209-2-quic_anusha@quicinc.com>
+ <2bf7ac6e-eeba-a082-2b0e-4fc302bef70a@linaro.org>
+From:   Anusha Canchi <quic_anusha@quicinc.com>
+In-Reply-To: <2bf7ac6e-eeba-a082-2b0e-4fc302bef70a@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: _H7aTQ_TUUu7vFOpbTG404qqGGw4BPly
+X-Proofpoint-ORIG-GUID: _H7aTQ_TUUu7vFOpbTG404qqGGw4BPly
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-19_16,2023-07-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ suspectscore=0 clxscore=1015 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2307200041
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,97 +84,412 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are missing the serial core controller id for the serial core port
-name. Let's fix the issue for sane /sys/bus/serial-core/devices, and to
-avoid issues addressing serial ports later on.
 
-Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
-Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Closes: https://lore.kernel.org/linux-serial/20230719051613.46569-1-tony@atomide.com/T/#m0f358e91262f7f56198ba9d0a7100809e9e35cc5
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/tty/serial/serial_base_bus.c | 33 ++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
---- a/drivers/tty/serial/serial_base_bus.c
-+++ b/drivers/tty/serial/serial_base_bus.c
-@@ -19,6 +19,14 @@
- 
- static bool serial_base_initialized;
- 
-+static const struct device_type serial_ctrl_type = {
-+	.name = "ctrl",
-+};
-+
-+static const struct device_type serial_port_type = {
-+	.name = "port",
-+};
-+
- static int serial_base_match(struct device *dev, struct device_driver *drv)
- {
- 	int len = strlen(drv->name);
-@@ -48,7 +56,8 @@ static int serial_base_device_init(struct uart_port *port,
- 				   struct device *parent_dev,
- 				   const struct device_type *type,
- 				   void (*release)(struct device *dev),
--				   int id)
-+				   unsigned int ctrl_id,
-+				   unsigned int port_id)
- {
- 	device_initialize(dev);
- 	dev->type = type;
-@@ -61,13 +70,17 @@ static int serial_base_device_init(struct uart_port *port,
- 		return -EPROBE_DEFER;
- 	}
- 
--	return dev_set_name(dev, "%s.%s.%d", type->name, dev_name(port->dev), id);
-+	if (type == &serial_ctrl_type)
-+		return dev_set_name(dev, "%s.%s.%d", type->name,
-+				    dev_name(port->dev), ctrl_id);
-+	else if (type == &serial_port_type)
-+		return dev_set_name(dev, "%s.%s.%d.%d", type->name,
-+				    dev_name(port->dev), ctrl_id,
-+				    port_id);
-+	else
-+		return -EINVAL;
- }
- 
--static const struct device_type serial_ctrl_type = {
--	.name = "ctrl",
--};
--
- static void serial_base_ctrl_release(struct device *dev)
- {
- 	struct serial_ctrl_device *ctrl_dev = to_serial_base_ctrl_device(dev);
-@@ -96,7 +109,7 @@ struct serial_ctrl_device *serial_base_ctrl_add(struct uart_port *port,
- 	err = serial_base_device_init(port, &ctrl_dev->dev,
- 				      parent, &serial_ctrl_type,
- 				      serial_base_ctrl_release,
--				      port->ctrl_id);
-+				      port->ctrl_id, 0);
- 	if (err)
- 		goto err_put_device;
- 
-@@ -112,10 +125,6 @@ struct serial_ctrl_device *serial_base_ctrl_add(struct uart_port *port,
- 	return ERR_PTR(err);
- }
- 
--static const struct device_type serial_port_type = {
--	.name = "port",
--};
--
- static void serial_base_port_release(struct device *dev)
- {
- 	struct serial_port_device *port_dev = to_serial_base_port_device(dev);
-@@ -136,7 +145,7 @@ struct serial_port_device *serial_base_port_add(struct uart_port *port,
- 	err = serial_base_device_init(port, &port_dev->dev,
- 				      &ctrl_dev->dev, &serial_port_type,
- 				      serial_base_port_release,
--				      port->port_id);
-+				      port->ctrl_id, port->port_id);
- 	if (err)
- 		goto err_put_device;
- 
--- 
-2.41.0
+On 7/15/2023 7:28 PM, Konrad Dybcio wrote:
+> On 13.07.2023 12:59, Anusha Rao wrote:
+>> Add a dtsi file to include interfaces that are common
+>> across RDPs.
+>>
+>> Signed-off-by: Anusha Rao <quic_anusha@quicinc.com>
+>> ---
+> [...]
+>
+>>   		data-pins {
+>>   			pins = "gpio0", "gpio1", "gpio2",
+>> -			       "gpio3", "gpio6", "gpio7",
+>> -			       "gpio8", "gpio9";
+>> +				"gpio3", "gpio6", "gpio7",
+>> +				"gpio8", "gpio9";
+> This (and a similar one in the other file) change looks unrelated
+> and I think it makes the indentation worse :/
+Thanks, will fix this in next spin.
+
+Thanks,
+Anusha
+> Konrad
+>>   			function = "sdc_data";
+>>   			drive-strength = <8>;
+>>   			bias-pull-up;
+>> @@ -110,15 +60,4 @@
+>>   			bias-pull-down;
+>>   		};
+>>   	};
+>> -
+>> -	spi_0_pins: spi-0-state {
+>> -		pins = "gpio11", "gpio12", "gpio13", "gpio14";
+>> -		function = "blsp0_spi";
+>> -		drive-strength = <8>;
+>> -		bias-disable;
+>> -	};
+>> -};
+>> -
+>> -&xo_board_clk {
+>> -	clock-frequency = <24000000>;
+>>   };
+>> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
+>> index 877026ccc6e2..7685176f90ef 100644
+>> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
+>> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
+>> @@ -8,69 +8,11 @@
+>>   
+>>   /dts-v1/;
+>>   
+>> -#include "ipq9574.dtsi"
+>> +#include "ipq9574-rdp-common.dtsi"
+>>   
+>>   / {
+>>   	model = "Qualcomm Technologies, Inc. IPQ9574/AP-AL02-C7";
+>>   	compatible = "qcom,ipq9574-ap-al02-c7", "qcom,ipq9574";
+>> -
+>> -	aliases {
+>> -		serial0 = &blsp1_uart2;
+>> -	};
+>> -
+>> -	chosen {
+>> -		stdout-path = "serial0:115200n8";
+>> -	};
+>> -
+>> -	regulator_fixed_3p3: s3300 {
+>> -		compatible = "regulator-fixed";
+>> -		regulator-min-microvolt = <3300000>;
+>> -		regulator-max-microvolt = <3300000>;
+>> -		regulator-boot-on;
+>> -		regulator-always-on;
+>> -		regulator-name = "fixed_3p3";
+>> -	};
+>> -
+>> -	regulator_fixed_0p925: s0925 {
+>> -		compatible = "regulator-fixed";
+>> -		regulator-min-microvolt = <925000>;
+>> -		regulator-max-microvolt = <925000>;
+>> -		regulator-boot-on;
+>> -		regulator-always-on;
+>> -		regulator-name = "fixed_0p925";
+>> -	};
+>> -};
+>> -
+>> -&blsp1_uart2 {
+>> -	pinctrl-0 = <&uart2_pins>;
+>> -	pinctrl-names = "default";
+>> -	status = "okay";
+>> -};
+>> -
+>> -&rpm_requests {
+>> -	regulators {
+>> -		compatible = "qcom,rpm-mp5496-regulators";
+>> -
+>> -		ipq9574_s1: s1 {
+>> -		/*
+>> -		 * During kernel bootup, the SoC runs at 800MHz with 875mV set by the bootloaders.
+>> -		 * During regulator registration, kernel not knowing the initial voltage,
+>> -		 * considers it as zero and brings up the regulators with minimum supported voltage.
+>> -		 * Update the regulator-min-microvolt with SVS voltage of 725mV so that
+>> -		 * the regulators are brought up with 725mV which is sufficient for all the
+>> -		 * corner parts to operate at 800MHz
+>> -		 */
+>> -			regulator-min-microvolt = <725000>;
+>> -			regulator-max-microvolt = <1075000>;
+>> -		};
+>> -
+>> -		mp5496_l2: l2 {
+>> -			regulator-min-microvolt = <1800000>;
+>> -			regulator-max-microvolt = <1800000>;
+>> -			regulator-always-on;
+>> -			regulator-boot-on;
+>> -		};
+>> -	};
+>>   };
+>>   
+>>   &sdhc_1 {
+>> @@ -85,10 +27,6 @@
+>>   	status = "okay";
+>>   };
+>>   
+>> -&sleep_clk {
+>> -	clock-frequency = <32000>;
+>> -};
+>> -
+>>   &tlmm {
+>>   	sdc_default_state: sdc-default-state {
+>>   		clk-pins {
+>> @@ -107,8 +45,8 @@
+>>   
+>>   		data-pins {
+>>   			pins = "gpio0", "gpio1", "gpio2",
+>> -			       "gpio3", "gpio6", "gpio7",
+>> -			       "gpio8", "gpio9";
+>> +				"gpio3", "gpio6", "gpio7",
+>> +				"gpio8", "gpio9";
+>>   			function = "sdc_data";
+>>   			drive-strength = <8>;
+>>   			bias-pull-up;
+>> @@ -122,30 +60,3 @@
+>>   		};
+>>   	};
+>>   };
+>> -
+>> -&usb_0_dwc3 {
+>> -	dr_mode = "host";
+>> -};
+>> -
+>> -&usb_0_qmpphy {
+>> -	vdda-pll-supply = <&mp5496_l2>;
+>> -	vdda-phy-supply = <&regulator_fixed_0p925>;
+>> -
+>> -	status = "okay";
+>> -};
+>> -
+>> -&usb_0_qusbphy {
+>> -	vdd-supply = <&regulator_fixed_0p925>;
+>> -	vdda-pll-supply = <&mp5496_l2>;
+>> -	vdda-phy-dpdm-supply = <&regulator_fixed_3p3>;
+>> -
+>> -	status = "okay";
+>> -};
+>> -
+>> -&usb3 {
+>> -	status = "okay";
+>> -};
+>> -
+>> -&xo_board_clk {
+>> -	clock-frequency = <24000000>;
+>> -};
+>> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp449.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp449.dts
+>> index c8fa54e1a62c..d36d1078763e 100644
+>> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp449.dts
+>> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp449.dts
+>> @@ -8,73 +8,10 @@
+>>   
+>>   /dts-v1/;
+>>   
+>> -#include "ipq9574.dtsi"
+>> +#include "ipq9574-rdp-common.dtsi"
+>>   
+>>   / {
+>>   	model = "Qualcomm Technologies, Inc. IPQ9574/AP-AL02-C6";
+>>   	compatible = "qcom,ipq9574-ap-al02-c6", "qcom,ipq9574";
+>>   
+>> -	aliases {
+>> -		serial0 = &blsp1_uart2;
+>> -	};
+>> -
+>> -	chosen {
+>> -		stdout-path = "serial0:115200n8";
+>> -	};
+>> -};
+>> -
+>> -&blsp1_spi0 {
+>> -	pinctrl-0 = <&spi_0_pins>;
+>> -	pinctrl-names = "default";
+>> -	status = "okay";
+>> -
+>> -	flash@0 {
+>> -		compatible = "micron,n25q128a11", "jedec,spi-nor";
+>> -		reg = <0>;
+>> -		#address-cells = <1>;
+>> -		#size-cells = <1>;
+>> -		spi-max-frequency = <50000000>;
+>> -	};
+>> -};
+>> -
+>> -&blsp1_uart2 {
+>> -	pinctrl-0 = <&uart2_pins>;
+>> -	pinctrl-names = "default";
+>> -	status = "okay";
+>> -};
+>> -
+>> -&rpm_requests {
+>> -	regulators {
+>> -		compatible = "qcom,rpm-mp5496-regulators";
+>> -
+>> -		ipq9574_s1: s1 {
+>> -		/*
+>> -		 * During kernel bootup, the SoC runs at 800MHz with 875mV set by the bootloaders.
+>> -		 * During regulator registration, kernel not knowing the initial voltage,
+>> -		 * considers it as zero and brings up the regulators with minimum supported voltage.
+>> -		 * Update the regulator-min-microvolt with SVS voltage of 725mV so that
+>> -		 * the regulators are brought up with 725mV which is sufficient for all the
+>> -		 * corner parts to operate at 800MHz
+>> -		 */
+>> -			regulator-min-microvolt = <725000>;
+>> -			regulator-max-microvolt = <1075000>;
+>> -		};
+>> -	};
+>> -};
+>> -
+>> -&sleep_clk {
+>> -	clock-frequency = <32000>;
+>> -};
+>> -
+>> -&tlmm {
+>> -	spi_0_pins: spi-0-state {
+>> -		pins = "gpio11", "gpio12", "gpio13", "gpio14";
+>> -		function = "blsp0_spi";
+>> -		drive-strength = <8>;
+>> -		bias-disable;
+>> -	};
+>> -};
+>> -
+>> -&xo_board_clk {
+>> -	clock-frequency = <24000000>;
+>>   };
+>> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp453.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp453.dts
+>> index f01de6628c3b..c30c9fbedf26 100644
+>> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp453.dts
+>> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp453.dts
+>> @@ -8,73 +8,10 @@
+>>   
+>>   /dts-v1/;
+>>   
+>> -#include "ipq9574.dtsi"
+>> +#include "ipq9574-rdp-common.dtsi"
+>>   
+>>   / {
+>>   	model = "Qualcomm Technologies, Inc. IPQ9574/AP-AL02-C8";
+>>   	compatible = "qcom,ipq9574-ap-al02-c8", "qcom,ipq9574";
+>>   
+>> -	aliases {
+>> -		serial0 = &blsp1_uart2;
+>> -	};
+>> -
+>> -	chosen {
+>> -		stdout-path = "serial0:115200n8";
+>> -	};
+>> -};
+>> -
+>> -&blsp1_spi0 {
+>> -	pinctrl-0 = <&spi_0_pins>;
+>> -	pinctrl-names = "default";
+>> -	status = "okay";
+>> -
+>> -	flash@0 {
+>> -		compatible = "micron,n25q128a11", "jedec,spi-nor";
+>> -		reg = <0>;
+>> -		#address-cells = <1>;
+>> -		#size-cells = <1>;
+>> -		spi-max-frequency = <50000000>;
+>> -	};
+>> -};
+>> -
+>> -&blsp1_uart2 {
+>> -	pinctrl-0 = <&uart2_pins>;
+>> -	pinctrl-names = "default";
+>> -	status = "okay";
+>> -};
+>> -
+>> -&rpm_requests {
+>> -	regulators {
+>> -		compatible = "qcom,rpm-mp5496-regulators";
+>> -
+>> -		ipq9574_s1: s1 {
+>> -		/*
+>> -		 * During kernel bootup, the SoC runs at 800MHz with 875mV set by the bootloaders.
+>> -		 * During regulator registration, kernel not knowing the initial voltage,
+>> -		 * considers it as zero and brings up the regulators with minimum supported voltage.
+>> -		 * Update the regulator-min-microvolt with SVS voltage of 725mV so that
+>> -		 * the regulators are brought up with 725mV which is sufficient for all the
+>> -		 * corner parts to operate at 800MHz
+>> -		 */
+>> -			regulator-min-microvolt = <725000>;
+>> -			regulator-max-microvolt = <1075000>;
+>> -		};
+>> -	};
+>> -};
+>> -
+>> -&sleep_clk {
+>> -	clock-frequency = <32000>;
+>> -};
+>> -
+>> -&tlmm {
+>> -	spi_0_pins: spi-0-state {
+>> -		pins = "gpio11", "gpio12", "gpio13", "gpio14";
+>> -		function = "blsp0_spi";
+>> -		drive-strength = <8>;
+>> -		bias-disable;
+>> -	};
+>> -};
+>> -
+>> -&xo_board_clk {
+>> -	clock-frequency = <24000000>;
+>>   };
+>> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp454.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp454.dts
+>> index 6efae3426cb8..0dc382f5d5ec 100644
+>> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp454.dts
+>> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp454.dts
+>> @@ -8,73 +8,9 @@
+>>   
+>>   /dts-v1/;
+>>   
+>> -#include "ipq9574.dtsi"
+>> +#include "ipq9574-rdp-common.dtsi"
+>>   
+>>   / {
+>>   	model = "Qualcomm Technologies, Inc. IPQ9574/AP-AL02-C9";
+>>   	compatible = "qcom,ipq9574-ap-al02-c9", "qcom,ipq9574";
+>> -
+>> -	aliases {
+>> -		serial0 = &blsp1_uart2;
+>> -	};
+>> -
+>> -	chosen {
+>> -		stdout-path = "serial0:115200n8";
+>> -	};
+>> -};
+>> -
+>> -&blsp1_spi0 {
+>> -	pinctrl-0 = <&spi_0_pins>;
+>> -	pinctrl-names = "default";
+>> -	status = "okay";
+>> -
+>> -	flash@0 {
+>> -		compatible = "micron,n25q128a11", "jedec,spi-nor";
+>> -		reg = <0>;
+>> -		#address-cells = <1>;
+>> -		#size-cells = <1>;
+>> -		spi-max-frequency = <50000000>;
+>> -	};
+>> -};
+>> -
+>> -&blsp1_uart2 {
+>> -	pinctrl-0 = <&uart2_pins>;
+>> -	pinctrl-names = "default";
+>> -	status = "okay";
+>> -};
+>> -
+>> -&rpm_requests {
+>> -	regulators {
+>> -		compatible = "qcom,rpm-mp5496-regulators";
+>> -
+>> -		ipq9574_s1: s1 {
+>> -		/*
+>> -		 * During kernel bootup, the SoC runs at 800MHz with 875mV set by the bootloaders.
+>> -		 * During regulator registration, kernel not knowing the initial voltage,
+>> -		 * considers it as zero and brings up the regulators with minimum supported voltage.
+>> -		 * Update the regulator-min-microvolt with SVS voltage of 725mV so that
+>> -		 * the regulators are brought up with 725mV which is sufficient for all the
+>> -		 * corner parts to operate at 800MHz
+>> -		 */
+>> -			regulator-min-microvolt = <725000>;
+>> -			regulator-max-microvolt = <1075000>;
+>> -		};
+>> -	};
+>> -};
+>> -
+>> -&sleep_clk {
+>> -	clock-frequency = <32000>;
+>> -};
+>> -
+>> -&tlmm {
+>> -	spi_0_pins: spi-0-state {
+>> -		pins = "gpio11", "gpio12", "gpio13", "gpio14";
+>> -		function = "blsp0_spi";
+>> -		drive-strength = <8>;
+>> -		bias-disable;
+>> -	};
+>> -};
+>> -
+>> -&xo_board_clk {
+>> -	clock-frequency = <24000000>;
+>>   };
+
