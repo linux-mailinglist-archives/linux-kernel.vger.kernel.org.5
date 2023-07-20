@@ -2,58 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BD975A4AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF05175A4B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbjGTDOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 23:14:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40118 "EHLO
+        id S229838AbjGTDOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 23:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjGTDOM (ORCPT
+        with ESMTP id S229884AbjGTDOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 23:14:12 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F041A1BFC
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:14:11 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R5yTD43QCzBRDs0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:14:08 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689822848; x=1692414849; bh=DRHauRo+7WKP7Polxn7tiISl8C9
-        yARAZh5b+LzQT6j0=; b=HxPqYSWkVQx7g2r9GCop22zuIE11ZZ59PsdoOr29O8W
-        OHZhKZ34fsJbrV4NtNcaC73fQkk5+lY5hhklcDl+aAyxxxcaomlrmBArGw5VeqtL
-        AP/CNoiQ3axDS8ndqZVrXA+fGMZ9M8WgwxOgfaV4XC6KGpkKl0VJPwP6JCjjWydJ
-        fyqWbNc/0ijQZ0LiqdFpNZgHEqUxO7gJUH09nC23YhZF8klwF/+C6Fsz8+a+SMbo
-        8FBDgA70osIpWwj39rh0ongJCi5zAzOMe6onXM+oLHIN+3dr47jPx5KEft2hlJPL
-        hfKeBF1ZdFBb8pzDeAcnIUxvjJkpYF2pRy/ZNdGZSYw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 4rqnxsHeFyHc for <linux-kernel@vger.kernel.org>;
-        Thu, 20 Jul 2023 11:14:08 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R5yTD20yRzBR1P6;
-        Thu, 20 Jul 2023 11:14:08 +0800 (CST)
+        Wed, 19 Jul 2023 23:14:33 -0400
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93057211B
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:14:27 -0700 (PDT)
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-5668c477b8dso605943eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:14:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689822867; x=1690427667;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3dLS1fkmLNfQarBUbxDLjlgSZFQxrkiWfFAKGUoVwgg=;
+        b=PbGvZLL+dfPT6+qhT2e499z+z9Po2afILcVluIa3OQkuIQ7PpfRwDKRhcr7FHe/Hay
+         QqwjcOWXnIJlwXqTw9ozogxbj4RGbR0YTsxUoo1OqlCD3tWAbiATGs6L0iBJ2AIjGRj2
+         KmSfD1uH91dEITaMSDDSEeVXFEOw28lBWzmON6dGwR03aOL7Or3Bbf/RBHW/BVs8yxeE
+         bvEQ1BDsXXD+r/fPPPFCEmYE3tfRth+ba3OcnEK7z1Zsr2xwH2jiaUcvgoVgC6bWjjZu
+         1oEW6zHQ5MSgbybhLPdXX/MjHYEUcjNABCcAVYINWxinAE4+thUb0O1ww7/Qu+ECrBBm
+         O8UQ==
+X-Gm-Message-State: ABy/qLbLk8dQTfRmgvz1tmQGIHPLnU31rexOQRRZHFw1qhkA8Q8/tn53
+        eGyzsF00XqLmZCYR9OXXquoc8/xbBO+qNtyfnJUedazgkTh4
+X-Google-Smtp-Source: APBJJlFnA8rvYk9d/lGUaDr/IfIskxW4K8tYC6PqQDXp5UAdWWBsS51r9xWXOWnTExCP8AKfzol60XBIwVv36pGSqoDsUx8WPCbZ
 MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 11:14:08 +0800
-From:   sunran001@208suo.com
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] synclink_gt: add missing spaces after ','
-In-Reply-To: <20230720031306.1618-1-xujianghui@cdjrlc.com>
-References: <20230720031306.1618-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <12a55af5478fd079690f11f6871e986f@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+X-Received: by 2002:a05:6808:1149:b0:3a0:3d3c:1f03 with SMTP id
+ u9-20020a056808114900b003a03d3c1f03mr763746oiu.11.1689822866925; Wed, 19 Jul
+ 2023 20:14:26 -0700 (PDT)
+Date:   Wed, 19 Jul 2023 20:14:26 -0700
+In-Reply-To: <00000000000029729c05fe5c6f5c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b76f3a0600e28b22@google.com>
+Subject: Re: [syzbot] [xfs?] KASAN: slab-out-of-bounds Read in xlog_pack_data
+From:   syzbot <syzbot+b7854dc75e15ffc8c2ae@syzkaller.appspotmail.com>
+To:     david@fromorbit.com, dchinner@redhat.com, djwong@kernel.org,
+        hch@lst.de, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,26 +57,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing spaces to clear checkpatch errors.
+syzbot suspects this issue was fixed by commit:
 
-ERROR: space required after that ',' (ctx:VxV)
+commit f1e1765aad7de7a8b8102044fc6a44684bc36180
+Author: Dave Chinner <dchinner@redhat.com>
+Date:   Wed Jun 28 18:04:33 2023 +0000
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  include/linux/synclink.h | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
+    xfs: journal geometry is not properly bounds checked
 
-diff --git a/include/linux/synclink.h b/include/linux/synclink.h
-index f1405b1c71ba..a1d4b9ed4342 100644
---- a/include/linux/synclink.h
-+++ b/include/linux/synclink.h
-@@ -31,7 +31,7 @@ struct MGSL_PARAMS32 {
-  	unsigned char	stop_bits;
-  	unsigned char	parity;
-  };
--#define MGSL_IOCSPARAMS32 _IOW(MGSL_MAGIC_IOC,0,struct MGSL_PARAMS32)
--#define MGSL_IOCGPARAMS32 _IOR(MGSL_MAGIC_IOC,1,struct MGSL_PARAMS32)
-+#define MGSL_IOCSPARAMS32 _IOW(MGSL_MAGIC_IOC, 0, struct MGSL_PARAMS32)
-+#define MGSL_IOCGPARAMS32 _IOR(MGSL_MAGIC_IOC, 1, struct MGSL_PARAMS32)
-  #endif
-  #endif /* _SYNCLINK_H_ */
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13d43cc6a80000
+start commit:   fb054096aea0 Merge tag 'mm-hotfixes-stable-2023-06-12-12-2..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5bcee04c3b2a8237
+dashboard link: https://syzkaller.appspot.com/bug?extid=b7854dc75e15ffc8c2ae
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1482afc7280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1429c5e7280000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: xfs: journal geometry is not properly bounds checked
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
