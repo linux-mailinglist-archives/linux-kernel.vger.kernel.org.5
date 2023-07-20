@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EC675BB57
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EBC75BB58
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbjGTXx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 19:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51720 "EHLO
+        id S229776AbjGTXzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 19:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbjGTXxz (ORCPT
+        with ESMTP id S229450AbjGTXzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 19:53:55 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121EA1BD;
-        Thu, 20 Jul 2023 16:53:55 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-55b0e7efb1cso739802a12.1;
-        Thu, 20 Jul 2023 16:53:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689897234; x=1690502034;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3RMP66qaRBJbW0474zxX1l0UqgGjp6zSPKyUrb9K//Y=;
-        b=M0AWHWAUrZ5FjcoAlR5eBMNb3l0R1avJWZhP1n35/cJ95/RpCQ3g29wVvVJFSqL6yz
-         UtA9nkGHemd1aJyZWlQ96vt2bO9SBHCJp9sfol9iCjWikpu5Zpv5vJaYZPcD1axphMrK
-         tfDBkG2qD7jmxCanT1yuCyBd9zkW+M2MnjfG43tL8X7uNXqg1PSK3tp/thedbLnYnrYv
-         V/2mc5adkyw6QVx/+YIijFr8ZMcj5dcQ+gfAkzTpsCRM/6Pt/R3YGPg29WIfayEXaorj
-         QlriiGnr2KIUEp+PETj8G7oJwtPkvEGcp+qlIGD1ZiCb8skPq1SWjNb2BMhN6En35x/7
-         vZWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689897234; x=1690502034;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3RMP66qaRBJbW0474zxX1l0UqgGjp6zSPKyUrb9K//Y=;
-        b=iayfMlGNTayiBmAX47gwEe4oIGd2lh/D+i8XQY/5pHYIO4f/LfNG3UV7YBffomyXUj
-         ELLItBysWAuAE7xNVa6CuslzE/I4l2l92pkoivCDnX4PM4DXDAE64UHGN30gdwJuxpn0
-         Ywi38rAceV9NVBC63I9UluS5DS5kSvtXhZ/Wz4pyliM+a/xrRXmUt/SFDtkp22UR148I
-         t+rQp+kj/Hs15YhikwrkSeilmElEM9P/mOmufVkav/ImxkmXXZxcRbnYn97FfeIXjWRL
-         7fz37lqIdk4YUjbOiCzEEcDmaa6vliOYYLbffFB9pP2LDzic8sbOMrIRAMg0SyNur8JW
-         Vj6g==
-X-Gm-Message-State: ABy/qLZnPAz4E9mKY/hPo4edHOMv2TfYwyycXaXCCEH+1IQn0msV2Rw9
-        NevrgyTxk6u+4c+/Tmmh5tM=
-X-Google-Smtp-Source: APBJJlGp3KvCUTFdZf4bUcWWHxddaEd6K2u9j2XP3mI+MnUlmLsqQ6q0sEro9phivu4lr3cqrMy+2Q==
-X-Received: by 2002:a05:6a20:1d0:b0:12c:518:b8de with SMTP id 16-20020a056a2001d000b0012c0518b8demr360804pzz.17.1689897234393;
-        Thu, 20 Jul 2023 16:53:54 -0700 (PDT)
-Received: from localhost ([192.55.54.50])
-        by smtp.gmail.com with ESMTPSA id x28-20020aa793bc000000b00672401787c6sm1721245pff.109.2023.07.20.16.53.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 16:53:53 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 16:53:52 -0700
-From:   Isaku Yamahata <isaku.yamahata@gmail.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        seanjc@google.com, pbonzini@redhat.com, chao.gao@intel.com,
-        kai.huang@intel.com, David.Laight@ACULAB.COM,
-        robert.hu@linux.intel.com, guang.zeng@intel.com,
-        isaku.yamahata@gmail.com
-Subject: Re: [PATCH v10 2/9] KVM: x86: Add & use kvm_vcpu_is_legal_cr3() to
- check CR3's legality
-Message-ID: <20230720235352.GH25699@ls.amr.corp.intel.com>
-References: <20230719144131.29052-1-binbin.wu@linux.intel.com>
- <20230719144131.29052-3-binbin.wu@linux.intel.com>
+        Thu, 20 Jul 2023 19:55:19 -0400
+Received: from out-59.mta0.migadu.com (out-59.mta0.migadu.com [IPv6:2001:41d0:1004:224b::3b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB9A1BD
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 16:55:18 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 08:55:07 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1689897314;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qbChIIegeF8b7DBlkfq1kqpyVn4AFCoYXtz9ldaoy2E=;
+        b=ClcEmJFv+fA6sN063MX5EOZtHotpyMqcnkzqcAMohi+ZzAPQE62F+/bzrPAJCmZU7IeZLy
+        WSMSCuvrbdxh2gzY4uQwYfrUpz3qtciOZcG2iyfC0f2fnJ/AUwzu8fU/A5QDK2h1PgcwiP
+        66i1pM+Vc6CDcxmcDpRRnaA6dlxyo/I=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
+        shy828301@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] mm: memory-failure: add PageOffline() check
+Message-ID: <20230720235507.GA2069669@ik1-406-35019.vs.sakura.ne.jp>
+References: <20230715031729.2420338-1-linmiaohe@huawei.com>
+ <20230715031729.2420338-5-linmiaohe@huawei.com>
+ <20230720010953.GC1583723@ik1-406-35019.vs.sakura.ne.jp>
+ <0161d32a-79d8-912c-0981-496a15f3eebf@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230719144131.29052-3-binbin.wu@linux.intel.com>
+In-Reply-To: <0161d32a-79d8-912c-0981-496a15f3eebf@huawei.com>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 10:41:24PM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
+On Thu, Jul 20, 2023 at 04:42:04PM +0800, Miaohe Lin wrote:
+> On 2023/7/20 9:09, Naoya Horiguchi wrote:
+> > On Sat, Jul 15, 2023 at 11:17:29AM +0800, Miaohe Lin wrote:
+> >> Memory failure is not interested in logically offlined page. Skip this
+> >> type of pages.
+> >>
+> >> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> >> ---
+> >>  mm/memory-failure.c | 5 +++--
+> >>  1 file changed, 3 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> >> index 42e63b0ab5f7..ed79b69837de 100644
+> >> --- a/mm/memory-failure.c
+> >> +++ b/mm/memory-failure.c
+> >> @@ -1559,7 +1559,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
+> >>  	 * Here we are interested only in user-mapped pages, so skip any
+> >>  	 * other types of pages.
+> >>  	 */
+> >> -	if (PageReserved(p) || PageSlab(p) || PageTable(p))
+> >> +	if (PageReserved(p) || PageSlab(p) || PageTable(p) || PageOffline(p))
+> > 
+> > hwpoison_user_mappings() is called after some checks are done, so I'm not
+> > sure that it's the right place to check PageOffline().
+> 
+> hwpoison_user_mappings() is called after the "if (!PageLRU(p) && !PageWriteback(p))" check in memory_failure().
+> So the page can't also be PageReserved(p) or PageSlab(p) or PageTable(p) here? I think the check here just wants
+> to make things clear that only user-mapped pages are interested. Or am I miss something?
 
-> Add and use kvm_vcpu_is_legal_cr3() to check CR3's legality to provide
-> a clear distinction b/t CR3 and GPA checks. So that kvm_vcpu_is_legal_cr3()
-> can be adjusted according to new feature(s).
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
-> ---
->  arch/x86/kvm/cpuid.h      | 5 +++++
->  arch/x86/kvm/svm/nested.c | 4 ++--
->  arch/x86/kvm/vmx/nested.c | 4 ++--
->  arch/x86/kvm/x86.c        | 4 ++--
->  4 files changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-> index f61a2106ba90..8b26d946f3e3 100644
-> --- a/arch/x86/kvm/cpuid.h
-> +++ b/arch/x86/kvm/cpuid.h
-> @@ -283,4 +283,9 @@ static __always_inline bool guest_can_use(struct kvm_vcpu *vcpu,
->  	return vcpu->arch.governed_features.enabled & kvm_governed_feature_bit(x86_feature);
->  }
->  
-> +static inline bool kvm_vcpu_is_legal_cr3(struct kvm_vcpu *vcpu, unsigned long cr3)
-> +{
-> +	return kvm_vcpu_is_legal_gpa(vcpu, cr3);
-> +}
-> +
+No, you're right,
+So this "if (PageReserved(p) || PageSlab(p) || PageTable(p) || PageOffline(p))"
+can be considered as checking potential deviation.
+OK, so the patch is fine.
 
-The remaining user of kvm_vcpu_is_illegal_gpa() is one left.  Can we remove it
-by replacing !kvm_vcpu_is_legal_gpa()?
--- 
-Isaku Yamahata <isaku.yamahata@gmail.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
