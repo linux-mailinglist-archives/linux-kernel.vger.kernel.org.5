@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D57C675AE07
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B748775AE13
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbjGTMOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34922 "EHLO
+        id S231230AbjGTMQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 08:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230501AbjGTMOE (ORCPT
+        with ESMTP id S230057AbjGTMQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:14:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D637F211F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:13:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5846761A44
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:13:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57EA7C433CA;
-        Thu, 20 Jul 2023 12:13:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689855233;
-        bh=a4GPLMYyVzS5y8TygrO3q2wgNRTfQbvJNGpftM161B0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e0lj1F5exYr7W+a4Pg+cJY/U7sJLnj+aKJtHXgzOjlvPR7RSbrD9p+2xXU1cbPmEx
-         mJR0zbbAiGMJBmSvgsV0H/2STv6RqozhJSBQ9KEjY3SFdtDrLbk4KsLy4kXQ6Ch9qE
-         jXxU+iDSvlMlgZSdcxOLxV0VgMU1jz4ez8x2tqeC9tiYmVGufniJHteJn/yuXMhONf
-         6maCaaBXrQnlPwZsc8favuBqO+H2pD511hX0Ha909c5Wo9+hsTSHaWQaRnmThE3C0o
-         98Epqjt53Pde6e3eADZ6EK/6dlIy5uo8HPfQbX3UL3L2qJDErPlK8s0C0NIvUGfkOr
-         K1JTVPPnogBsg==
-From:   Will Deacon <will@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] arm64: vdso: Clear common make C=2 warnings
-Date:   Thu, 20 Jul 2023 13:13:47 +0100
-Message-Id: <168985010702.750748.12045685703267985757.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230713115831.777-1-thunder.leizhen@huawei.com>
-References: <20230713115831.777-1-thunder.leizhen@huawei.com>
+        Thu, 20 Jul 2023 08:16:03 -0400
+Received: from out-5.mta1.migadu.com (out-5.mta1.migadu.com [IPv6:2001:41d0:203:375::5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0391BC6
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:16:01 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1689855359;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1qUoKI3SbOAj4JugO0eFEKpo/XtZkaAZd4jHbDGRCXI=;
+        b=UYRVGSJeMWgVT/Cmj35t2ZweiX0f74MUBaOSw4MLtDmMy3IiuQrHv8RU4qRm/+sTXZG3zj
+        +eK1+VPGThdCpfSCGWbopKgw5Dw3dyzfnI+h4Dk0lnIiYvGH6rNedI6u3cchFohjzDfaRp
+        UtcGfRKuKFeW1oGmtQWsxdDyRcpHit4=
+From:   chengming.zhou@linux.dev
+To:     tj@kernel.org, josef@toxicpanda.com
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhouchengming@bytedance.com
+Subject: [PATCH] blk-iocost: skip empty flush bio in iocost
+Date:   Thu, 20 Jul 2023 20:14:41 +0800
+Message-ID: <20230720121441.1408522-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 19:58:31 +0800, Zhen Lei wrote:
-> make C=2 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- xxx.o
-> 
-> When I use the command above to do a 'make C=2' check on any object file,
-> the following warnings are always output:
-> 
->   CHECK   arch/arm64/kernel/vdso/vgettimeofday.c
-> arch/arm64/kernel/vdso/vgettimeofday.c:9:5: warning:
->  symbol '__kernel_clock_gettime' was not declared. Should it be static?
-> arch/arm64/kernel/vdso/vgettimeofday.c:15:5: warning:
->  symbol '__kernel_gettimeofday' was not declared. Should it be static?
-> arch/arm64/kernel/vdso/vgettimeofday.c:21:5: warning:
->  symbol '__kernel_clock_getres' was not declared. Should it be static?
-> 
-> [...]
+From: Chengming Zhou <zhouchengming@bytedance.com>
 
-Applied to arm64 (for-next/fixes), thanks!
+The flush bio may have data, may have no data (empty flush), we couldn't
+calculate cost for empty flush bio. So we'd better just skip it for now.
 
-[1/1] arm64: vdso: Clear common make C=2 warnings
-      https://git.kernel.org/arm64/c/71e06e1acecb
+Another side effect is that empty flush bio's bio_end_sector() is 0, cause
+iocg->cursor reset to 0, may break the cost calculation of other bios.
 
-Cheers,
+This isn't good enough, since flush bio still consume the device bandwidth,
+but flush request is special, can be merged randomly in the flush state
+machine, we don't know how to calculate cost for it for now.
+
+Its completion time also has flaws, which may include the pre-flush or
+post-flush completion time, but I don't know if we need to fix that and
+how to fix it.
+
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ block/blk-iocost.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index 6084a9519883..e735b3e9997c 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -2516,6 +2516,10 @@ static void calc_vtime_cost_builtin(struct bio *bio, struct ioc_gq *iocg,
+ 	u64 seek_pages = 0;
+ 	u64 cost = 0;
+ 
++	/* Can't calculate cost for empty bio */
++	if (!bio->bi_iter.bi_size)
++		goto out;
++
+ 	switch (bio_op(bio)) {
+ 	case REQ_OP_READ:
+ 		coef_seqio	= ioc->params.lcoefs[LCOEF_RSEQIO];
 -- 
-Will
+2.41.0
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
