@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E7B75AB88
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC67975AB8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbjGTJ4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
+        id S230386AbjGTJ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjGTJ42 (ORCPT
+        with ESMTP id S229653AbjGTJ5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:56:28 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8C213E
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:56:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0A75822B47;
-        Thu, 20 Jul 2023 09:56:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1689846985; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b/WAt2ko11CilJolgusZ/OdpYjV+EX3EkCvfXpZrr+s=;
-        b=rYM95cPglHk9jDNfuHASRTtJqM/HIqnacVgIXmHuxF4ODF6cin0kf8fTvWqt6glaITqfuy
-        7+RzwU9B0mJDUrMkqT64sKEfgPT1Dod0laGPnAG/mMbq2gCiy9Ke+G7gEGBRbVuz5RaeCw
-        yAuwOjCRnfVMyzo1MI8oU4a5/yqlvJ4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D4A08138EC;
-        Thu, 20 Jul 2023 09:56:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YmAUM8gEuWQIVQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 20 Jul 2023 09:56:24 +0000
-Date:   Thu, 20 Jul 2023 11:56:23 +0200
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Zheng Wang <zyytlz.wz@163.com>
-Cc:     shaggy@kernel.org, jfs-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, hackerzheng666@gmail.com,
-        1395428693sheep@gmail.com, alex000young@gmail.com,
-        security@kernel.org
-Subject: Re: [PATCH] fs/jfs: Add a mutex named txEnd_lmLogClose_mutex to
- prevent a race  condition between txEnd and lmLogClose functions
-Message-ID: <kyzmstq5dodvgpmd7rge3gtdikbbpauw6fide7vccgii4xtb6n@bwrwjsx4ylmx>
-References: <20230515095956.17898-1-zyytlz.wz@163.com>
+        Thu, 20 Jul 2023 05:57:32 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41366AA
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:57:31 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R67Qc4fh4zBRDsb
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 17:57:28 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689847048; x=1692439049; bh=Byn4fG+l3+wgeKB6vOCQHYXNjBM
+        M0bYlNp8Mj7rgedE=; b=gNGnKqORVcaZ1xhOD3iSAnNzJjbMIXOlcKoh7PINSa+
+        kbtTz9uIRK3pYRg1GE59N6qeZsC+ccyxrmCSHzuNWQkRmStGKyD30l8iGcTcGFeV
+        4VCUd18xxKgj2Yktt3j5ZjzbPAVto3ERX64k/iAGe9Wz7NYsyvVHdJf1qnkvuneX
+        VMMRLx6vHMoBXY4zDMhR/S1Fy1TxsURhGogCYmhEQLSYWrd92DthIcxum0Hhx1v8
+        CwVx+EQuO2R1mGCVAlz0G236YVGPTDanFMptXOE2E3ZW8kKCe9x6AF4qrBTqdW+c
+        IrC8ZN2Bo6ytbMaal7AFcI5FYbeNuaBnVH/fZOywaaA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id e8RRTPJV1VZK for <linux-kernel@vger.kernel.org>;
+        Thu, 20 Jul 2023 17:57:28 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R67Qc2pNPzBRDsS;
+        Thu, 20 Jul 2023 17:57:28 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jkju3j6sdz2snaei"
-Content-Disposition: inline
-In-Reply-To: <20230515095956.17898-1-zyytlz.wz@163.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Date:   Thu, 20 Jul 2023 17:57:28 +0800
+From:   sunran001@208suo.com
+To:     hare@suse.com, jejb@linux.ibm.com, martin.petersen@oracle.co
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: aic7xxx: avoid checkpatch error
+In-Reply-To: <20230720095619.3954-1-xujianghui@cdjrlc.com>
+References: <20230720095619.3954-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <4d48377ca4e62a71f89e4de6f80e6725@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ERROR: do not initialise statics to NULL
 
---jkju3j6sdz2snaei
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/scsi/aic7xxx/aic7xxx_osm.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Hello Zheng.
+diff --git a/drivers/scsi/aic7xxx/aic7xxx_osm.c 
+b/drivers/scsi/aic7xxx/aic7xxx_osm.c
+index d3b1082654d5..c062bf27b55a 100644
+--- a/drivers/scsi/aic7xxx/aic7xxx_osm.c
++++ b/drivers/scsi/aic7xxx/aic7xxx_osm.c
+@@ -124,7 +124,7 @@
+  #include "aic7xxx_inline.h"
+  #include <scsi/scsicam.h>
 
-On Mon, May 15, 2023 at 05:59:56PM +0800, Zheng Wang <zyytlz.wz@163.com> wr=
-ote:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> BUG: KASAN: slab-use-after-free in instrument_atomic_write include/linux/=
-instrumented.h:87 [inline]
-> BUG: KASAN: slab-use-after-free in clear_bit include/asm-generic/bitops/i=
-nstrumented-atomic.h:41 [inline]
-> BUG: KASAN: slab-use-after-free in txEnd+0x2a3/0x5a0 fs/jfs/jfs_txnmgr.c:=
-535
-> Write of size 8 at addr ffff888021bee840 by task jfsCommit/130
->=20
-> CPU: 3 PID: 130 Comm: jfsCommit Not tainted 6.3.0-rc7-pasta #1
+-static struct scsi_transport_template *ahc_linux_transport_template = 
+NULL;
++static struct scsi_transport_template *ahc_linux_transport_template;
 
-Is this still pertinent with the current mainline? (There were some
-changes to jfs.)
+  #include <linux/init.h>		/* __setup */
+  #include <linux/mm.h>		/* For fetching system memory size */
+@@ -325,7 +325,7 @@ static uint32_t aic7xxx_periodic_otag;
+  /*
+   * Module information and settable options.
+   */
+-static char *aic7xxx = NULL;
++static char *aic7xxx;
 
-> Through analysis, it was found that a race condition occurred between two
-> functions lmLogClose and txEnd, which were executed in different threads.
-> The possible sequence is as follows:
->=20
-> -------------------------------------------------------------------------
-> cpu1(free thread)        |        cpu2(use thread)
-> -------------------------------------------------------------------------
-> lmLogClose               |        txEnd
->                          |        log =3D JFS_SBI(tblk->sb)->log;
-> sbi->log =3D NULL;         |
-> kfree(log); [1] free log |
->                          |        clear_bit(log_FLUSH, &log->flag); [2] U=
-AF
-
-That looks sane to a by-passer.
-
-> Fix it by add a mutex lock between lmLogClose and txEnd:
-
-It doesn't feel right wrt "lock data, not code" heuristics.
-And when I apply that, it turns out there's already jfs_log_mutex.
-I'd suggest you explain more why a new lock is needed (if that's the
-preferred solutino).
-
-Thanks,
-Michal
-
---jkju3j6sdz2snaei
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZLkExgAKCRAGvrMr/1gc
-jgMiAQDiHc2GPqN8BEsMex2H34eKF9kt0wtLtDPBjnRrVmd8ygEA43Tu18sFH+MU
-p0UqiCSAchUq85Mzs0XfmVLFFOAmXAU=
-=Toyw
------END PGP SIGNATURE-----
-
---jkju3j6sdz2snaei--
+  MODULE_AUTHOR("Maintainer: Hannes Reinecke <hare@suse.de>");
+  MODULE_DESCRIPTION("Adaptec AIC77XX/78XX SCSI Host Bus Adapter 
+driver");
