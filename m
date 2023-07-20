@@ -2,150 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4939F75B837
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96ADE75B83B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbjGTTm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 15:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
+        id S231158AbjGTToA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 15:44:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbjGTTm0 (ORCPT
+        with ESMTP id S230034AbjGTTn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 15:42:26 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174792123
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:42:24 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-cefa8fe4cc2so1058535276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:42:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689882143; x=1690486943;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6uboV9zE5viSPMUN9jRcO0cjpaJKLGwKotI/bN04OyY=;
-        b=Is+h2NeaSzJfFfsZ98ro8BWc2npdTi8/mAPrWVvtpsxb716Whq2DsR1nkUJ5zX14Xz
-         79qaflwC3BG2VYXCeK0ijBZtmZDQ1AwFmwaxjZDd/vn/AKdit/VHpHHNt7ZvyrLIlMK1
-         rAvvaKIi1pdCGIE6T6PamxnnJ1xdepfGuegPYvjWZ/2v5uqSbyOmvOqKrH1HZMZxxQ9u
-         TipBUYHRAcaq7G2V/lDcSoviQy3dB4LjRa8c+TMTdx5eHkXHMxyv/6aRPA0MgnDthZDb
-         /qNXdFoMB9q33L3QYVfMXu7JSq0qiwBR5arRe8VeAjZhX1/RRVS46BZipMLM8QxKUS/8
-         /7lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689882143; x=1690486943;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6uboV9zE5viSPMUN9jRcO0cjpaJKLGwKotI/bN04OyY=;
-        b=D6HOLCsjWwO95aVg3uQGphs/A4xKS+r2JgDOdite5+GKZ2kSVN4F37iTR8wFCGNB+f
-         Fymy90Tzv7iOIwdPU44XMxUmVH/04Ixd0sk/Y0fOUc9E9D6srBvlaqK/onbJvoAmMxc0
-         a2OxFjCFVzii6Uztc5OsUqjazFZWKOqY3L9hs5EYpW5sz90e8l3w7pun03oCo8Er5Mec
-         qTte2MwoMEQzlOasYsoMerq76tWUjzKLr4GwKz7O+NSCPl1Gnytbt95SAs/H6lCa6USN
-         ixYWqx1zwhEREJ/vFQ/sco7uQRsgheYz/3l3EGVkqmkr0eV4uCeWgs+eOmctm1Y0U325
-         rEdw==
-X-Gm-Message-State: ABy/qLZN96QT7qrjzd5vBijxyxTLQBmF+tHO8XIs9QdZKUdMosZcL6Es
-        2Q7J9itiJnIISJedu1VDaa8NZV9x4fkAmw9L1S1eqw==
-X-Google-Smtp-Source: APBJJlE7cBabIqsDgOVse9OOZ6aTjmPoq/DJCfwfg6nCOEVEXRqRJUSYnSIJLuoYJ0UvKAptp1crbwCoFVPdkqeY7hY=
-X-Received: by 2002:a25:c50b:0:b0:cdd:6635:a1f8 with SMTP id
- v11-20020a25c50b000000b00cdd6635a1f8mr5819173ybe.15.1689882143201; Thu, 20
- Jul 2023 12:42:23 -0700 (PDT)
+        Thu, 20 Jul 2023 15:43:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650301733;
+        Thu, 20 Jul 2023 12:43:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DFC1861C31;
+        Thu, 20 Jul 2023 19:43:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 429B5C433C7;
+        Thu, 20 Jul 2023 19:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689882236;
+        bh=sCvPv521BIeMl03mgPnQ7eOaGG0Jr/Tf/dwmgsz/KEQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=bjDTli1prjox2jYYrPOJyqppo33kBj9TXnixuVuyNr7JdpI9zhtl2bLp5D8oHnfz+
+         s4RONI8jHDfV0ZTIqZsHpoi7OE0G21digr1n6hES4Q4m4ernCsPkrjdtpTMq1xhh3d
+         VJNsioF4JMdOFUWynItwGXdSCtNybfwzyE4fbbQPvsAXl3Vgfdcg9sqxsdspwAfed3
+         tAkKUPVQP6JDQHrO4PlKDdjyZYHxgW7VcHs8FVxkt4ZRUpYq8D0nZg78PJf/x6JZIZ
+         SG65jQjM8VO2T0xHJqkdaQ1xHebrGUhBoML2srO4ks2nQVZNPvrfOQMKPdNShC0EjE
+         nBS3MWcELRRYA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C536ACE03CF; Thu, 20 Jul 2023 12:43:55 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 12:43:55 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH rcu 5/5] checkpatch: Complain about unexpected uses of
+ RCU Tasks Trace
+Message-ID: <798959b0-b107-44c4-8262-075930ebfeaa@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
+ <20230717180454.1097714-5-paulmck@kernel.org>
+ <04e74fd214a01bee0fb5ac690730cb386536cced.camel@perches.com>
+ <8477fd32-38a5-4d66-8deb-a61b0e290df5@paulmck-laptop>
+ <589412dd594b7efc618728fe68ad6c86f3c60878.camel@perches.com>
 MIME-Version: 1.0
-References: <20230714174901.4062397-1-robh@kernel.org>
-In-Reply-To: <20230714174901.4062397-1-robh@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 20 Jul 2023 21:42:12 +0200
-Message-ID: <CACRpkdYe9b4ZpvYZqkcMq0Jjni_VD_75Zt5oKv4+v9f3pmJbVA@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: Explicitly include correct DT includes
-To:     Rob Herring <robh@kernel.org>
-Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Chester Lin <clin@suse.com>, NXP S32 Linux Team <s32@nxp.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Tony Lindgren <tony@atomide.com>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Daniel Mack <daniel@zonque.org>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>, soc@kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Dvorkin Dmitry <dvorkin@tibbo.com>,
-        Wells Lu <wellslutw@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-oxnas@groups.io, linux-rockchip@lists.infradead.org,
-        linux-omap@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <589412dd594b7efc618728fe68ad6c86f3c60878.camel@perches.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 7:49=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
+On Thu, Jul 20, 2023 at 12:29:42AM -0700, Joe Perches wrote:
+> On Mon, 2023-07-17 at 16:34 -0700, Paul E. McKenney wrote:
+> > On Mon, Jul 17, 2023 at 03:34:14PM -0700, Joe Perches wrote:
+> > > On Mon, 2023-07-17 at 11:04 -0700, Paul E. McKenney wrote:
+> > > > RCU Tasks Trace is quite specialized, having been created specifically
+> > > > for sleepable BPF programs.  Because it allows general blocking within
+> > > > readers, any new use of RCU Tasks Trace must take current use cases into
+> > > > account.  Therefore, update checkpatch.pl to complain about use of any of
+> > > > the RCU Tasks Trace API members outside of BPF and outside of RCU itself.
+> > > > 
+> > > > Cc: Andy Whitcroft <apw@canonical.com> (maintainer:CHECKPATCH)
+> > > > Cc: Joe Perches <joe@perches.com> (maintainer:CHECKPATCH)
+> > > > Cc: Dwaipayan Ray <dwaipayanray1@gmail.com> (reviewer:CHECKPATCH)
+> > > > Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > > > Cc: John Fastabend <john.fastabend@gmail.com>
+> > > > Cc: <bpf@vger.kernel.org>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > ---
+> > > >  scripts/checkpatch.pl | 18 ++++++++++++++++++
+> > > >  1 file changed, 18 insertions(+)
+> > > > 
+> > > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > > []
+> > > > @@ -7457,6 +7457,24 @@ sub process {
+> > > >  			}
+> > > >  		}
+> > > >  
+> > > > +# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
+> > > > +		if ($line =~ /\brcu_read_lock_trace\s*\(/ ||
+> > > > +		    $line =~ /\brcu_read_lock_trace_held\s*\(/ ||
+> > > > +		    $line =~ /\brcu_read_unlock_trace\s*\(/ ||
+> > > > +		    $line =~ /\bcall_rcu_tasks_trace\s*\(/ ||
+> > > > +		    $line =~ /\bsynchronize_rcu_tasks_trace\s*\(/ ||
+> > > > +		    $line =~ /\brcu_barrier_tasks_trace\s*\(/ ||
+> > > > +		    $line =~ /\brcu_request_urgent_qs_task\s*\(/) {
+> > > > +			if ($realfile !~ m@^kernel/bpf@ &&
+> > > > +			    $realfile !~ m@^include/linux/bpf@ &&
+> > > > +			    $realfile !~ m@^net/bpf@ &&
+> > > > +			    $realfile !~ m@^kernel/rcu@ &&
+> > > > +			    $realfile !~ m@^include/linux/rcu@) {
+> > > 
+> > > Functions and paths like these tend to be accreted.
+> > > 
+> > > Please use a variable or 2 like:
+> > > 
+> > > our $rcu_trace_funcs = qr{(?x:
+> > > 	rcu_read_lock_trace |
+> > > 	rcu_read_lock_trace_held |
+> > > 	rcu_read_unlock_trace |
+> > > 	call_rcu_tasks_trace |
+> > > 	synchronize_rcu_tasks_trace |
+> > > 	rcu_barrier_tasks_trace |
+> > > 	rcu_request_urgent_qs_task
+> > > )};
+> > > our $rcu_trace_paths = qr{(?x:
+> > > 	kernel/bfp/ |
+> 		^^
+> 	kernel/bfp/ |
+> 
+> (umm, oops...)
+> I think my original suggestion works better when I don't typo the path.
 
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Color me blind!  ;-)
 
-It still applied cleanly so I just applied it.
+That works much better, thank you!  I will update the patch on my
+next rebase.
 
-Thanks for attention to detail.
+							Thanx, Paul
 
-Yours,
-Linus Walleij
+> > > 	include/linux/bpf |
+> > > 	net/bpf/ |
+> > > 	kernel/rcu/ |
+> > > 	include/linux/rcu
+> > > )};
+> > 
+> > Like this?
+> > 
+> > # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
+> > 		our $rcu_trace_funcs = qr{(?x:
+> > 			rcu_read_lock_trace |
+> > 			rcu_read_lock_trace_held |
+> > 			rcu_read_unlock_trace |
+> > 			call_rcu_tasks_trace |
+> > 			synchronize_rcu_tasks_trace |
+> > 			rcu_barrier_tasks_trace |
+> > 			rcu_request_urgent_qs_task
+> > 		)};
+> > 		our $rcu_trace_paths = qr{(?x:
+> > 			kernel/bfp/ |
+> > 			include/linux/bpf |
+> > 			net/bpf/ |
+> > 			kernel/rcu/ |
+> > 			include/linux/rcu
+> > 		)};
+> > 		if ($line =~ /$rcu_trace_funcs/) {
+> > 			if ($realfile !~ m@^$rcu_trace_paths@) {
+> > 				WARN("RCU_TASKS_TRACE",
+> > 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
+> > 			}
+> > 		}
+> > 
+> > No, that is definitely wrong.  It has lost track of the list of pathnames,
+> > thus complaining about uses of those functions in files where their use
+> > is permitted.
+> > 
+> > But this seems to work:
+> > 
+> > # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
+> > 		our $rcu_trace_funcs = qr{(?x:
+> > 			rcu_read_lock_trace |
+> > 			rcu_read_lock_trace_held |
+> > 			rcu_read_unlock_trace |
+> > 			call_rcu_tasks_trace |
+> > 			synchronize_rcu_tasks_trace |
+> > 			rcu_barrier_tasks_trace |
+> > 			rcu_request_urgent_qs_task
+> > 		)};
+> > 		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
+> > 			if ($realfile !~ m@^kernel/bpf@ &&
+> > 			    $realfile !~ m@^include/linux/bpf@ &&
+> > 			    $realfile !~ m@^net/bpf@ &&
+> > 			    $realfile !~ m@^kernel/rcu@ &&
+> > 			    $realfile !~ m@^include/linux/rcu@) {
+> > 				WARN("RCU_TASKS_TRACE",
+> > 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
+> > 			}
+> > 		}
+> > 
+> > Maybe the "^" needs to be distributed into $rcu_trace_paths?
+> > 
+> > # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
+> > 		our $rcu_trace_funcs = qr{(?x:
+> > 			rcu_read_lock_trace |
+> > 			rcu_read_lock_trace_held |
+> > 			rcu_read_unlock_trace |
+> > 			call_rcu_tasks_trace |
+> > 			synchronize_rcu_tasks_trace |
+> > 			rcu_barrier_tasks_trace |
+> > 			rcu_request_urgent_qs_task
+> > 		)};
+> > 		our $rcu_trace_paths = qr{(?x:
+> > 			^kernel/bfp/ |
+> > 			^include/linux/bpf |
+> > 			^net/bpf/ |
+> > 			^kernel/rcu/ |
+> > 			^include/linux/rcu
+> > 		)};
+> > 		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
+> > 			if ($realfile !~ m@$rcu_trace_paths@) {
+> > 				WARN("RCU_TASKS_TRACE",
+> > 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
+> > 			}
+> > 		}
+> > 
+> > But no joy here, either.  Which is no surprise, given that perl is
+> > happy to distribute the "\b" and the "\s*\(" across the elements of
+> > $rcu_trace_funcs.  I tried a number of other variations, including
+> > inverting the "if" condition "(!(... =~ ...))", inverting the "if"
+> > condition via an empty "then" clause, replacing the "m@" with "/",
+> > replacing the "|" in the "qr{}" with "&", and a few others.
+> > 
+> > Again, listing the pathnames explicitly in the second "if" condition
+> > works just fine.
+> > 
+> > Help?
+> > 
+> > 							Thanx, Paul
+> 
