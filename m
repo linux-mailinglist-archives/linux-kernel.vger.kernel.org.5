@@ -2,135 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D04ED75B41B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F3F75B420
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbjGTQYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51190 "EHLO
+        id S230339AbjGTQZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbjGTQYo (ORCPT
+        with ESMTP id S230194AbjGTQZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:24:44 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8D2113
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:24:42 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-401e23045beso9065771cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:24:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1689870282; x=1690475082;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=s74T/DS0uEk+n6R0wwBy5aetjEjuSLERJS55RIwoaX4=;
-        b=IZzpQokKpB0UhARjk1C5AYsxhEoUwekbG1CIGPqpzF+J5EyUNV4fXvSh6ICM60s/l/
-         l3LTb+/4oHtXOm/axHhrDe9RYyjLFUcJp/fjdEfH3AfdarB9wYiD6qDHqXQIUGTULJjY
-         vw7yjUAGA6a1rzcc8PN64w16jP4JWgFnyix3oUPgbdJpcchORfcHKjhuGO7hDatwjMex
-         Tgoo3H3N3xNYsZnI1oMU+JFxWEkqso9+qil3xyi6Lze7Drl2ReIPDqQjSEa8jAMYviY/
-         z9eO+nZw1PsJ45lS/RFq6qSgkSD6Jl0gP4PD3UUJ8jAvUFV4u798afEKcJEM6QS2Vj9Y
-         5HwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689870282; x=1690475082;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s74T/DS0uEk+n6R0wwBy5aetjEjuSLERJS55RIwoaX4=;
-        b=DswfWCTb6L2+yaT2CzgjMx7DVEqOVhXtv13RY4RSZq13HGvlXRW8D7Bh/76QxQhkVn
-         tTwMJnYzqOnL9iG9KRLtSqAzj2qczTsw+we10avh5zGkMnnrIgm1o1/YYzJyQ9+gJscY
-         kC7beRTWJdbC2lPzISiv+AJl/78LeB+cJQUHERpeSbq+mh0PH9udKqpSRikZSnT35c2B
-         +6I/4RyQxmx1ReJHikvhNsSehXTld2IEPxCAKLs7NzpPn7Vpbc+QygDAYeX5P60MRuJG
-         7Hjcds71ypbYD5/6ZYvwnODJTJqf7c+3Mk0ONCDjLYXNxeLjPHX1Kn3sQ8tCIp0/f80j
-         vv3w==
-X-Gm-Message-State: ABy/qLYGQeJSewebk+hJByTLhResD5fyMmVlkPsFMg51vJqKf2FYZ+Kk
-        CyV6kB8nJ8eOQqf3BwAFWhzhew==
-X-Google-Smtp-Source: APBJJlFgEYqldxkiOjJHk0bAl/tukxpRZVH2RVuIZHt9j9/eVwHSR5HC6Q+XrizCrjEJ9XxT5shHCA==
-X-Received: by 2002:ac8:598d:0:b0:403:b4da:6e53 with SMTP id e13-20020ac8598d000000b00403b4da6e53mr3014943qte.44.1689870281860;
-        Thu, 20 Jul 2023 09:24:41 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-8f57-5681-ccd3-4a2e.res6.spectrum.com. [2603:7000:c01:2716:8f57:5681:ccd3:4a2e])
-        by smtp.gmail.com with ESMTPSA id s41-20020a05622a1aa900b00405447ee5e8sm457395qtc.55.2023.07.20.09.24.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 09:24:41 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 12:24:40 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Efly Young <yangyifei03@kuaishou.com>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH] mm:vmscan: fix inaccurate reclaim during proactive
- reclaim
-Message-ID: <20230720162440.GA1015794@cmpxchg.org>
-References: <20230720072708.55067-1-yangyifei03@kuaishou.com>
+        Thu, 20 Jul 2023 12:25:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFCF9E
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:25:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7844861A6D
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 16:25:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3442C433CD;
+        Thu, 20 Jul 2023 16:25:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689870346;
+        bh=e2loJuE/ZqGkDkAvmTjMFKYb1nNFlu5Zk7Uq4LKqs3k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D3aC6zTL+n3FzJVGA/KDjcpv5j9Cuw7yM8SijVK45May6Dy/gYCHzCkgQUrLoNL0N
+         75GyriGucZM+2PJSJ4U8/C535c5T/RdNo0MsKYUoGD8fs5v0a79M7aN3MYP3fl3FWf
+         PQ6WY/ediXDPQksW6rcqLv/XBSywTgj18AqBwQwVjiByVxuZiHRXjndGRDtHyVDfy6
+         O1ceM8q4TKDFQkXJ1D9E0wbwD+t4bKZqqtUWTZAZhND8G5wJ3duYhy2WYR4o7kds4H
+         RSlHZuPHuRWDozx8FEiMwAd7WawvsR+sfoVUppFFCGGOi+SHg+b8bg1IKI4cGUT9DA
+         UQQxwfXv/WpTA==
+Date:   Thu, 20 Jul 2023 19:25:22 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH] mm,memblock: reset memblock.reserved to system init
+ state to  prevent UAF
+Message-ID: <20230720162522.GO1901145@kernel.org>
+References: <20230719154137.732d8525@imladris.surriel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230720072708.55067-1-yangyifei03@kuaishou.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230719154137.732d8525@imladris.surriel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 03:27:08PM +0800, Efly Young wrote:
-> Before commit f53af4285d77 ("mm: vmscan: fix extreme overreclaim and
-> swap floods"), proactive reclaim will extreme overreclaim sometimes.
-> But proactive reclaim still inaccurate and some extent overreclaim.
+On Wed, Jul 19, 2023 at 03:41:37PM -0400, Rik van Riel wrote:
+> The memblock_discard function frees the memblock.reserved.regions
+> array, which is good.
 > 
-> Problematic case is easy to construct. Allocate lots of anonymous
-> memory (e.g., 20G) in a memcg, then swapping by writing memory.recalim
-> and there is a certain probability of overreclaim. For example, request
-> 1G by writing memory.reclaim will eventually reclaim 1.7G or other
-> values more than 1G.
+> However, if a subsequent memblock_free (or memblock_phys_free) comes
+> in later, from for example ima_free_kexec_buffer, that will result in
+> a use after free bug in memblock_isolate_range.
 > 
-> The reason is that reclaimer may have already reclaimed part of requested
-> memory in one loop, but before adjust sc->nr_to_reclaim in outer loop,
-> call shrink_lruvec() again will still follow the current sc->nr_to_reclaim
-> to work. It will eventually lead to overreclaim. In theory, the amount
-> of reclaimed would be in [request, 2 * request).
+> When running a kernel with CONFIG_KASAN enabled, this will cause a
+> kernel panic very early in boot. Without CONFIG_KASAN, there is
+> a chance that memblock_isolate_range might scribble on memory
+> that is now in use by somebody else.
 > 
-> Reclaimer usually tends to reclaim more than request. But either direct
-> or kswapd reclaim have much smaller nr_to_reclaim targets, so it is
-> less noticeable and not have much impact.
+> Avoid those issues by making sure that memblock_discard points
+> memblock.reserved.regions back at the static buffer.
 > 
-> Proactive reclaim can usually come in with a larger value, so the error
-> is difficult to ignore. Considering proactive reclaim is usually low
-> frequency, handle the batching into smaller chunks is a better approach.
-> 
-> Signed-off-by: Efly Young <yangyifei03@kuaishou.com>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> If memblock_discard is called while there is still memory
+> in the memblock.reserved type, that will print a warning
+> in memblock_remove_region.
 
-Hey, I didn't write the patch, you did :) Please change it to
+I'm going to apply this with the last paragraph rewritten as 
 
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-
-You can also add
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-
-[quoting remainder for new CCs]
-
+If memblock_free is called after memblock memory is discarded, that will
+print a warning in memblock_remove_region.
+ 
+> Signed-off-by: Rik van Riel <riel@surriel.com>
 > ---
->  mm/memcontrol.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  mm/memblock.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 4b27e24..d36cf88 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6741,8 +6741,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
->  			lru_add_drain_all();
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index 3feafea06ab2..068289a46903 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -374,6 +374,10 @@ void __init memblock_discard(void)
+>  			kfree(memblock.reserved.regions);
+>  		else
+>  			memblock_free_late(addr, size);
+> +		/* Reset to prevent UAF from stray frees. */
+> +		memblock.reserved.regions = memblock_reserved_init_regions;
+> +		memblock.reserved.cnt = 1;
+> +		memblock_remove_region(&memblock.reserved, 0);
+>  	}
 >  
->  		reclaimed = try_to_free_mem_cgroup_pages(memcg,
-> -						nr_to_reclaim - nr_reclaimed,
-> -						GFP_KERNEL, reclaim_options);
-> +					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
-> +					GFP_KERNEL, reclaim_options);
->  
->  		if (!reclaimed && !nr_retries--)
->  			return -EAGAIN;
+>  	if (memblock.memory.regions != memblock_memory_init_regions) {
 > -- 
-> 1.8.3.1
+> 2.34.1
+> 
+> 
+
+-- 
+Sincerely yours,
+Mike.
