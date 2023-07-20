@@ -2,131 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F01275AE86
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B1F75AE97
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjGTMgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
+        id S230322AbjGTMk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 08:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbjGTMgn (ORCPT
+        with ESMTP id S229628AbjGTMk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:36:43 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CA22126
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:36:42 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-98de21518fbso137341966b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:36:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689856601; x=1690461401;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TeWGw2gUiLPO/RS6979ifpmA5NC37xcO8V3RqV0p6sM=;
-        b=UEICAlJLJDp+3I3EqRBjOrINwFRMYbI9+BKYwQcOQA7bCQVNhmAeCQR8nzfGdmgVkb
-         Hx49390V+EBXAlE4CO0Tx0WpBbjHvqYICtv5F4KHyDxjwWgVHamv2WYNI+vzMmSC66gj
-         Q0DjCb/yuDugLZunCw2fnqGwi+FCEQTYKQZt/561zhfw04rMEElFCJabPBLk4paFKakQ
-         FHFcvWU8zENYfxWw1NcHl9FE8yaxLJBX6k88CifCRFoLYCDm/HzghVB9OsWg6DTkOA6x
-         YmLvjmCI68JoaV1JDlHPh0YRCN+6oQbOU49Cj00sCaaY8DZwx8DB82CK0C03uU6k8op3
-         QzsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689856601; x=1690461401;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TeWGw2gUiLPO/RS6979ifpmA5NC37xcO8V3RqV0p6sM=;
-        b=dBIDPma9nanP1RpkBR5g+PHL8Dp8qNEXZdJ75NZVCSDdcINdLfaznbT1MWFx3hlm8r
-         wFU1p9YAFYH/xAZa93DDUUHXLiBaNdmNxMiOU2TAbJ3ytY+KknADcY6LM3QrjF5v5LIc
-         sElo9hOteLyYf98E6fqfN6nXJXDZX8aWm8yiqOTgmJDhZ+oo14DPmqgTrvKA0rPlwnVe
-         /vU8yuvoj/4YBFLBKmk5R6lpXcvIpHBtIGG+7tKIqQjAw0HmR/mp7GGVef1iu50w+/cQ
-         8n/wmiEtNUkOHR/nyu5z/ysw1lh73EmMrFbxNR1HbWlkyFIAT1RFGHz4KmTlQHOs1vFJ
-         Scfw==
-X-Gm-Message-State: ABy/qLY+QCRh2i+GbaE/qlShlG8JfNczdMCdasRnLGKoNt0YHJwVqcFt
-        Y1cNd7jOkypvTFpoWfaRGcBA+g==
-X-Google-Smtp-Source: APBJJlFyWuz4RP3lpWwhWBFPBxHH+evG1aHzuSnSD11+X1U38hrobyh2hgqG/WfGnjR28zjpg4Omaw==
-X-Received: by 2002:a17:906:7a07:b0:99b:4668:865f with SMTP id d7-20020a1709067a0700b0099b4668865fmr3407023ejo.10.1689856601393;
-        Thu, 20 Jul 2023 05:36:41 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id n10-20020a170906164a00b00977cad140a8sm636723ejd.218.2023.07.20.05.36.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 05:36:40 -0700 (PDT)
-Message-ID: <f67d710c-bacc-8480-a918-db84b82885e1@linaro.org>
-Date:   Thu, 20 Jul 2023 14:36:38 +0200
+        Thu, 20 Jul 2023 08:40:26 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B91A2137;
+        Thu, 20 Jul 2023 05:40:22 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36K94mAl032672;
+        Thu, 20 Jul 2023 12:40:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=YysB9TeNdCNJSoyionbj0U3Aa3+Is2qgwJN5fXaFT7o=;
+ b=0r4hERFa9JOeC0djA4o3L1MelHdpe10X7rgpfz2Cp/43wHD8UrvlZENaK+P7+V5IPC9m
+ fVqPkwPRWUXN4FlVPwErwPYq+1pHIAfYUGNOGJpdGY1HrDgHG+gCJWmU0dK7xRYrAB/W
+ fa2tvlA2Z5hme+FD5YmNL+/sAskl7id/yBwVgfNpfYMO4GwBNGDjICX3jQuw3n0gcMdl
+ OTMOR8NU1A9/403yqBMLCuURLFDRy0tnUO63t+5ycWpI0oAUJqCo/u8TCGwv22S8RXNY
+ LRNswW5MtDc53KlQToFhuNH0C/fgicP3qV4rWM5I+pEyrG07hYBzmU/Bs2wDNDMiqFW4 aQ== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run8a9p00-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Jul 2023 12:40:09 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36KAf1ZC000777;
+        Thu, 20 Jul 2023 12:40:08 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw8mnhf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Jul 2023 12:40:08 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36KCe8f8017919;
+        Thu, 20 Jul 2023 12:40:08 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3ruhw8mngn-1;
+        Thu, 20 Jul 2023 12:40:07 +0000
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To:     Sui Jingfeng <suijingfeng@loongson.cn>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, harshit.m.mogalapalli@oracle.com
+Subject: [PATCH next] drm/loongson: Fix error handling in lsdc_pixel_pll_setup()
+Date:   Thu, 20 Jul 2023 05:39:50 -0700
+Message-ID: <20230720123950.543082-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/2] ARM: dts: imx6q: Add Variscite MX6 Custom board
- support
-Content-Language: en-US
-To:     James Hilliard <james.hilliard1@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marek Vasut <marex@denx.de>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Stefan Wahren <stefan.wahren@chargebyte.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Jesse Taube <mr.bossman075@gmail.com>,
-        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230719224141.3716815-1-james.hilliard1@gmail.com>
- <20230719224141.3716815-2-james.hilliard1@gmail.com>
- <0ad5a223-d70f-deaa-6261-a2bd2b2af40d@linaro.org>
- <CADvTj4qvXvuV=ASg5h4hPr8QG-NR48j6G36AZC5xHDdhLyjT7w@mail.gmail.com>
- <c70e397e-dee8-2155-9f0b-538e95bda2eb@linaro.org>
- <CADvTj4p72nh5umeSRw2OhjA5NyyZY_BkMhzJBn4Y2AHZHA3+dw@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CADvTj4p72nh5umeSRw2OhjA5NyyZY_BkMhzJBn4Y2AHZHA3+dw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-20_06,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307200106
+X-Proofpoint-ORIG-GUID: eG8Ucx40h9qnpY7ugnvGOs0VH_wx6f0Q
+X-Proofpoint-GUID: eG8Ucx40h9qnpY7ugnvGOs0VH_wx6f0Q
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2023 14:22, James Hilliard wrote:
->> Take a look at IMX8 Variscite SoMs.
-> 
-> Oh, I see what you mean now, so it looks like this is missing for the dart-mx6
-> device tree.
-> 
-> imx8mm-var-som.dtsi:    compatible = "variscite,var-som-mx8mm", "fsl,imx8mm";
-> imx8mm-var-som-symphony.dts:    compatible =
-> "variscite,var-som-mx8mm-symphony", "variscite,var-som-mx8mm",
-> "fsl,imx8mm";
-> 
-> imx6q-var-dt6customboard.dts:    compatible =
-> "variscite,dt6customboard", "fsl,imx6q";
-> 
-> So the DART-MX6 is missing a compatible along the lines of
-> "variscite,dart-imx6q"
-> for the dart SoM I guess?
+There are two problems in lsdc_pixel_pll_setup()
+1. If kzalloc() fails then call iounmap() to release the resources.
+2. Both kzalloc and ioremap doesnot return error pointers on failure, so
+   using IS_ERR_OR_NULL() checks is a bit confusing and not very right,
+   fix this by changing those to NULL checks instead.
 
-It's different topic whether it is worth to fix DART-MX6. In general it
-misses its compatible, but it might be not worth to fix.
+Fixes: f39db26c5428 ("drm: Add kms driver for loongson display controller")
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+This is found with static analysis with smacth and only compile tested.
+---
+ drivers/gpu/drm/loongson/lsdc_pixpll.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> 
-> And for VAR-SOM-MX6 I guess I should use something like
-> "variscite,var-som-imx6q"
-> for the SoM right?
-
-Yes.
-
-Best regards,
-Krzysztof
+diff --git a/drivers/gpu/drm/loongson/lsdc_pixpll.c b/drivers/gpu/drm/loongson/lsdc_pixpll.c
+index 04c15b4697e2..2609a2256da4 100644
+--- a/drivers/gpu/drm/loongson/lsdc_pixpll.c
++++ b/drivers/gpu/drm/loongson/lsdc_pixpll.c
+@@ -120,12 +120,14 @@ static int lsdc_pixel_pll_setup(struct lsdc_pixpll * const this)
+ 	struct lsdc_pixpll_parms *pparms;
+ 
+ 	this->mmio = ioremap(this->reg_base, this->reg_size);
+-	if (IS_ERR_OR_NULL(this->mmio))
++	if (!this->mmio)
+ 		return -ENOMEM;
+ 
+ 	pparms = kzalloc(sizeof(*pparms), GFP_KERNEL);
+-	if (IS_ERR_OR_NULL(pparms))
++	if (!pparms) {
++		iounmap(this->mmio);
+ 		return -ENOMEM;
++	}
+ 
+ 	pparms->ref_clock = LSDC_PLL_REF_CLK_KHZ;
+ 
+-- 
+2.39.3
 
