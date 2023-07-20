@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B2375A7A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551A975A7AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbjGTHTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
+        id S231360AbjGTHVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230042AbjGTHTg (ORCPT
+        with ESMTP id S230421AbjGTHU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:19:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7A72123
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:18:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689837531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bYGtszuU5wIRpPGldAIwvzXGaeXBUQT3e9Yc1Tmh1Tk=;
-        b=Z9pGKg/KsTeZ5EcdTMu2Fldfe2m7ybWbYmiCAbDbu4wtqbcf2MB2XL7G+f/6JuhdHO0zc6
-        xafnAB7qS3DtdhJdlHNLyqs+06YHO0Es8kWiyiz22U/96EYeiN9FxxhTr5iuJI9tLVi2l4
-        D97gnJo5AvnFSYesupbb0DiM/GRkG60=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-445--FLsBzn7PSCnXmqxXUzsqw-1; Thu, 20 Jul 2023 03:18:50 -0400
-X-MC-Unique: -FLsBzn7PSCnXmqxXUzsqw-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-767edbf73cbso13955585a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:18:50 -0700 (PDT)
+        Thu, 20 Jul 2023 03:20:56 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B38E19A4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:20:54 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3141c3a7547so357127f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:20:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689837652; x=1692429652;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2fbCfe+Jexyxfwxcv5jmJWYFscoFzXBWfr2MIt+Bdx0=;
+        b=PRW8dbua98J5/F75JrNUCJ+pUMEcV/dyaNVQwx+0rJuN4Vvwpp6nodcpUChTlV/ezo
+         dFZ9RCQEQQX46AAfsQgSbt5VBVgEB9YFc4YFd4k0KQHlESbbo9FcBKv8sLxw/G4mpPh6
+         q6yC5mK7cBO9sNu34Gqm+SpZiDmNF21Y5fYSiacwpNrPoDeJJxQl4FtdGuUb55AFplKG
+         At/ttEohUBDkLaSZuMS/sH2v8xxJ77wynntf40GPdKwNcn95C7KqbRxPgzAZOCp/h5Va
+         6F4Gjg0SVkbnAnwlYIzUIneuRsS//2pPiJDA5roXTVgWl6R+a0r03HcQYmkrKoxrlz/U
+         ALuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689837530; x=1690442330;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bYGtszuU5wIRpPGldAIwvzXGaeXBUQT3e9Yc1Tmh1Tk=;
-        b=Z2t9BRZSxOimwRqEHctyZUBWYCDqNo0/Yns6qNh6/vr02yinrUukEhcmoTkLb1IjFm
-         KgPIb2kzN4GcY83Gw8yT62OxafnwI9UtcupkfkGwDlFX5P+Y5XFlp6RBavY7+n6TV2xV
-         UCN7NJtGKNX8knVuGBhUMRqdANgA/5zJ9BJQkPZ+lq/AtesY4NzWSif7fEiCgfTItG5L
-         6NECIymGfyHb+/6A5XdI/rhuC3+wcyP9iXn9w3BABof5R3tc4mEg+A6AUkybp3DGMBK4
-         5D6tRl5iBG2wa6ZfmEpbL3nA2ycMlJixTJ6II7Iw5hEKFMCKGBDuaoh7GJVZVRGoUDY0
-         ae5A==
-X-Gm-Message-State: ABy/qLYIIxLVeuhqrMfTWRswgpjHmTF11Za/SUPkcW0RykirkZDBNVhS
-        n71LVNWZz31RPIcUvQm6QOJuDKK3F0hkUqAZbLDTaYE5HD8kJ3tBwf9KTiOub126xqG/yh2Qlxe
-        VkjjySWYDSz9mCaYARHW6YIAx
-X-Received: by 2002:a05:6214:762:b0:616:870c:96b8 with SMTP id f2-20020a056214076200b00616870c96b8mr17420018qvz.3.1689837530202;
-        Thu, 20 Jul 2023 00:18:50 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFNH0y5bvIQeSocI2GpS8aKw2ULselhDKyztO/OsqWZvlAvU9rCW8Bzkmb5n6WaEJyCUMCrhw==
-X-Received: by 2002:a05:6214:762:b0:616:870c:96b8 with SMTP id f2-20020a056214076200b00616870c96b8mr17419995qvz.3.1689837529948;
-        Thu, 20 Jul 2023 00:18:49 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-226-170.dyn.eolo.it. [146.241.226.170])
-        by smtp.gmail.com with ESMTPSA id n14-20020a0ce48e000000b0062b76c29978sm154802qvl.6.2023.07.20.00.18.46
+        d=1e100.net; s=20221208; t=1689837652; x=1692429652;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2fbCfe+Jexyxfwxcv5jmJWYFscoFzXBWfr2MIt+Bdx0=;
+        b=hv54Pd3IBbMDK6Zj3KyNz/Z5iBDrAR4S6JI4d+UHB7zyrR9fyYC0j5sw60gd0MLMF9
+         kG1CHNtSWiLUzADQjt+xym6aV7q2dXbvUSjDLRb+8daGUBmUYnbjHt8nIEcU5ROaFXVq
+         n9dZXGEv/KkUY3xKeesrL9ey+gnjzUK+ECcrYtwxs2jUc+C2/8ezyjLI0wXBZ7pNgPEA
+         kP/b7YJQoxzUvK8tolezYjQP4KC09QQgk7DUe4xRNGw2Crq/19XcPUdeod1q0y6wIVK+
+         yLb/H34WQmtz17ohUX6wMk2GirdBPc9WtoXdJgVPvQcTzBv9/X0LKE23D7SOGvmxT7AN
+         q1ig==
+X-Gm-Message-State: ABy/qLa11iXg7BsKXu+F8bZzz6/v9vxTUQ2bMJ+L/0StE1y3y80OT28S
+        FJtRatBehbQ+BggTV19VHsqbzQ==
+X-Google-Smtp-Source: APBJJlEKt/pVw48GgiNZDrcBVhhom8ZjwJ/RpQ4cRWBf6FTiaULsbPWBd5IeXXmMuch+RQsWF5iYrQ==
+X-Received: by 2002:adf:f248:0:b0:316:e249:c285 with SMTP id b8-20020adff248000000b00316e249c285mr1299138wrp.71.1689837652478;
+        Thu, 20 Jul 2023 00:20:52 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id v1-20020a5d6781000000b0031434c08bb7sm399767wru.105.2023.07.20.00.20.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 00:18:49 -0700 (PDT)
-Message-ID: <e6d1bf573d535612c2be1f45e7197affe92df639.camel@redhat.com>
-Subject: Re: [syzbot] [btrfs?] [netfilter?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS
- too low! (2)
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     Florian Westphal <fw@strlen.de>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        syzbot <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com>,
-        dsterba@suse.cz, bakmitopiacibubur@boga.indosterling.com,
-        clm@fb.com, davem@davemloft.net, dsahern@kernel.org,
-        dsterba@suse.com, gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        josef@toxicpanda.com, kadlec@netfilter.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux@armlinux.org.uk, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
-Date:   Thu, 20 Jul 2023 09:18:44 +0200
-In-Reply-To: <20230719203030.1296596a@kernel.org>
-References: <20230719170446.GR20457@twin.jikos.cz>
-         <00000000000042a3ac0600da1f69@google.com>
-         <CANp29Y4Dx3puutrowfZBzkHy1VpWHhQ6tZboBrwq_qNcFRrFGw@mail.gmail.com>
-         <20230719231207.GF32192@breakpoint.cc> <20230719203030.1296596a@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Thu, 20 Jul 2023 00:20:52 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [RESEND PATCH 1/2] arm64: dts: qcom: msm8994: fix duplicated @6c00000 reserved memory
+Date:   Thu, 20 Jul 2023 09:20:47 +0200
+Message-Id: <20230720072048.10093-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PLING_QUERY,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,34 +75,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-07-19 at 20:30 -0700, Jakub Kicinski wrote:
-> On Thu, 20 Jul 2023 01:12:07 +0200 Florian Westphal wrote:
-> > I don't see any netfilter involvement here.
-> >=20
-> > The repro just creates a massive amount of team devices.
-> >=20
-> > At the time it hits the LOCKDEP limits on my test vm it has
-> > created ~2k team devices, system load is at +14 because udev
-> > is also busy spawing hotplug scripts for the new devices.
-> >=20
-> > After reboot and suspending the running reproducer after about 1500
-> > devices (before hitting lockdep limits), followed by 'ip link del' for
-> > the team devices gets the lockdep entries down to ~8k (from 40k),
-> > which is in the range that it has on this VM after a fresh boot.
-> >=20
-> > So as far as I can see this workload is just pushing lockdep
-> > past what it can handle with the configured settings and is
-> > not triggering any actual bug.
->=20
-> The lockdep splat because of netdevice stacking is one of our top
-> reports from syzbot. Is anyone else feeling like we should add=20
-> an artificial but very high limit on netdev stacking? :(
+Reserved memory @6c00000 is defined in MSM8994 DTSI and few boards:
 
-We already have a similar limit for xmit: XMIT_RECURSION_LIMIT. I guess
-stacking more then such devices will be quite useless/non functional.
-We could use such value to limit the device stacking, too.
+  Warning (unique_unit_address_if_enabled): /reserved-memory/reserved@6c00000: duplicate unit-address (also used in node /reserved-memory/hole2@6c00000)
+  Warning (unique_unit_address_if_enabled): /reserved-memory/reserved@6c00000: duplicate unit-address (also used in node /reserved-memory/memory@6c00000)
 
-Cheers,
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts        | 1 +
+ arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi | 1 +
+ arch/arm64/boot/dts/qcom/msm8994.dtsi                    | 2 +-
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
-Paolo
+diff --git a/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts b/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
+index fcca1ba94da6..501e05efbef4 100644
+--- a/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
++++ b/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
+@@ -15,6 +15,7 @@
+ /delete-node/ &audio_mem;
+ /delete-node/ &mpss_mem;
+ /delete-node/ &peripheral_region;
++/delete-node/ &res_hyp_mem;
+ /delete-node/ &rmtfs_mem;
+ 
+ / {
+diff --git a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+index 2861bcdf87b7..cbc84459a5ae 100644
+--- a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+@@ -23,6 +23,7 @@
+ /delete-node/ &mba_mem;
+ /delete-node/ &mpss_mem;
+ /delete-node/ &peripheral_region;
++/delete-node/ &res_hyp_mem;
+ /delete-node/ &rmtfs_mem;
+ /delete-node/ &smem_mem;
+ 
+diff --git a/arch/arm64/boot/dts/qcom/msm8994.dtsi b/arch/arm64/boot/dts/qcom/msm8994.dtsi
+index c374fba5d8f9..4324bd2bfe76 100644
+--- a/arch/arm64/boot/dts/qcom/msm8994.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8994.dtsi
+@@ -281,7 +281,7 @@ adsp_mem: memory@c9400000 {
+ 			no-map;
+ 		};
+ 
+-		reserved@6c00000 {
++		res_hyp_mem: reserved@6c00000 {
+ 			reg = <0 0x06c00000 0 0x400000>;
+ 			no-map;
+ 		};
+-- 
+2.34.1
 
