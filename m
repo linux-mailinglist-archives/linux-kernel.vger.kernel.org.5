@@ -2,93 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F24C075A7A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B2375A7A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbjGTHSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49348 "EHLO
+        id S231175AbjGTHTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbjGTHSe (ORCPT
+        with ESMTP id S230042AbjGTHTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:18:34 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65D41998
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:18:31 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b9c5e07c1bso3292565ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:18:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689837511; x=1690442311;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j9GN3HyftBoKSOmVAm+Fkdt+TXRyhURYP74WueJdYkM=;
-        b=EKtxTElXQnD+NjS1xmtvsURoPkam7yZWt0UiQSlGyx6eFpFjZTHxNDUHMKWNGRPvkD
-         yfdfHIy9HvWS4HQZlH5yjir1JAr2tXphEeGfelSVPKeQSpOZuwlg+ubowqZhljoKyPF/
-         wct7IeputY2hV0GT9i83fiMcnNoyUWXmZZIlo=
+        Thu, 20 Jul 2023 03:19:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7A72123
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:18:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689837531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bYGtszuU5wIRpPGldAIwvzXGaeXBUQT3e9Yc1Tmh1Tk=;
+        b=Z9pGKg/KsTeZ5EcdTMu2Fldfe2m7ybWbYmiCAbDbu4wtqbcf2MB2XL7G+f/6JuhdHO0zc6
+        xafnAB7qS3DtdhJdlHNLyqs+06YHO0Es8kWiyiz22U/96EYeiN9FxxhTr5iuJI9tLVi2l4
+        D97gnJo5AvnFSYesupbb0DiM/GRkG60=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-445--FLsBzn7PSCnXmqxXUzsqw-1; Thu, 20 Jul 2023 03:18:50 -0400
+X-MC-Unique: -FLsBzn7PSCnXmqxXUzsqw-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-767edbf73cbso13955585a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:18:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689837511; x=1690442311;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j9GN3HyftBoKSOmVAm+Fkdt+TXRyhURYP74WueJdYkM=;
-        b=Fp5HWjkzxRKSTjec7C17RdmZtloavQUWdl8fhOsN0f5SWrBu7HRysFm7dHxiAL9TCK
-         wH/U2ygmtLpSCa0RAksfbJ6rs1vBIBP0/3M+yTRPfBkV7aHVogTJT79oNi0/8GkD1QTU
-         ppP6jEOf+CwzuuPL5nC8jMc5Jg1PMDyGKWyOHZPIN6xIK/myMXpM4jc7L1DoqNOppG+N
-         0NOB5QypWSXqH7td2ZCs9BGwz+25joAzz6OLipaOdomezvCUkXWT7eetiOxMjRAa3ttO
-         UtUcPkBYGQa9goFGOPp3OfqEsKRZ+Uet0ChfGFKB84qm3j+lQZNh4hVEsy8JGavM44AS
-         w9iQ==
-X-Gm-Message-State: ABy/qLZka14ZU461QeKK0lNb2GnqWu2CtIc0xVqlc/C16jBrK9bkmeFE
-        F2i1lacEGAmtNkTfS2c8BnnhVQ==
-X-Google-Smtp-Source: APBJJlHyFmZzX8iCbjVkSdMc+qY+0UhLZLbLGj1qifn2QYea//eu23FJGgw1q4e6QSAfQPTOW1B2ew==
-X-Received: by 2002:a17:902:ea94:b0:1b8:903d:8dd0 with SMTP id x20-20020a170902ea9400b001b8903d8dd0mr1472952plb.32.1689837511198;
-        Thu, 20 Jul 2023 00:18:31 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:648f:4ec7:23d9:d855])
-        by smtp.gmail.com with ESMTPSA id ba9-20020a170902720900b001b890009634sm509533plb.139.2023.07.20.00.18.29
+        d=1e100.net; s=20221208; t=1689837530; x=1690442330;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bYGtszuU5wIRpPGldAIwvzXGaeXBUQT3e9Yc1Tmh1Tk=;
+        b=Z2t9BRZSxOimwRqEHctyZUBWYCDqNo0/Yns6qNh6/vr02yinrUukEhcmoTkLb1IjFm
+         KgPIb2kzN4GcY83Gw8yT62OxafnwI9UtcupkfkGwDlFX5P+Y5XFlp6RBavY7+n6TV2xV
+         UCN7NJtGKNX8knVuGBhUMRqdANgA/5zJ9BJQkPZ+lq/AtesY4NzWSif7fEiCgfTItG5L
+         6NECIymGfyHb+/6A5XdI/rhuC3+wcyP9iXn9w3BABof5R3tc4mEg+A6AUkybp3DGMBK4
+         5D6tRl5iBG2wa6ZfmEpbL3nA2ycMlJixTJ6II7Iw5hEKFMCKGBDuaoh7GJVZVRGoUDY0
+         ae5A==
+X-Gm-Message-State: ABy/qLYIIxLVeuhqrMfTWRswgpjHmTF11Za/SUPkcW0RykirkZDBNVhS
+        n71LVNWZz31RPIcUvQm6QOJuDKK3F0hkUqAZbLDTaYE5HD8kJ3tBwf9KTiOub126xqG/yh2Qlxe
+        VkjjySWYDSz9mCaYARHW6YIAx
+X-Received: by 2002:a05:6214:762:b0:616:870c:96b8 with SMTP id f2-20020a056214076200b00616870c96b8mr17420018qvz.3.1689837530202;
+        Thu, 20 Jul 2023 00:18:50 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFNH0y5bvIQeSocI2GpS8aKw2ULselhDKyztO/OsqWZvlAvU9rCW8Bzkmb5n6WaEJyCUMCrhw==
+X-Received: by 2002:a05:6214:762:b0:616:870c:96b8 with SMTP id f2-20020a056214076200b00616870c96b8mr17419995qvz.3.1689837529948;
+        Thu, 20 Jul 2023 00:18:49 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-226-170.dyn.eolo.it. [146.241.226.170])
+        by smtp.gmail.com with ESMTPSA id n14-20020a0ce48e000000b0062b76c29978sm154802qvl.6.2023.07.20.00.18.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 00:18:30 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 16:18:26 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [RFC PATCH v2 00/21] mm/zsmalloc: Split zsdesc from struct page
-Message-ID: <20230720071826.GE955071@google.com>
-References: <20230713042037.980211-1-42.hyeyoo@gmail.com>
+        Thu, 20 Jul 2023 00:18:49 -0700 (PDT)
+Message-ID: <e6d1bf573d535612c2be1f45e7197affe92df639.camel@redhat.com>
+Subject: Re: [syzbot] [btrfs?] [netfilter?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS
+ too low! (2)
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     Florian Westphal <fw@strlen.de>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        syzbot <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com>,
+        dsterba@suse.cz, bakmitopiacibubur@boga.indosterling.com,
+        clm@fb.com, davem@davemloft.net, dsahern@kernel.org,
+        dsterba@suse.com, gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        josef@toxicpanda.com, kadlec@netfilter.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux@armlinux.org.uk, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
+Date:   Thu, 20 Jul 2023 09:18:44 +0200
+In-Reply-To: <20230719203030.1296596a@kernel.org>
+References: <20230719170446.GR20457@twin.jikos.cz>
+         <00000000000042a3ac0600da1f69@google.com>
+         <CANp29Y4Dx3puutrowfZBzkHy1VpWHhQ6tZboBrwq_qNcFRrFGw@mail.gmail.com>
+         <20230719231207.GF32192@breakpoint.cc> <20230719203030.1296596a@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230713042037.980211-1-42.hyeyoo@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PLING_QUERY,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/07/13 13:20), Hyeonggon Yoo wrote:
-> The purpose of this series is to define own memory descriptor for zsmalloc,
-> instead of re-using various fields of struct page. This is a part of the
-> effort to reduce the size of struct page to unsigned long and enable
-> dynamic allocation of memory descriptors.
-> 
-> While [1] outlines this ultimate objective, the current use of struct page
-> is highly dependent on its definition, making it challenging to separately
-> allocate memory descriptors.
+On Wed, 2023-07-19 at 20:30 -0700, Jakub Kicinski wrote:
+> On Thu, 20 Jul 2023 01:12:07 +0200 Florian Westphal wrote:
+> > I don't see any netfilter involvement here.
+> >=20
+> > The repro just creates a massive amount of team devices.
+> >=20
+> > At the time it hits the LOCKDEP limits on my test vm it has
+> > created ~2k team devices, system load is at +14 because udev
+> > is also busy spawing hotplug scripts for the new devices.
+> >=20
+> > After reboot and suspending the running reproducer after about 1500
+> > devices (before hitting lockdep limits), followed by 'ip link del' for
+> > the team devices gets the lockdep entries down to ~8k (from 40k),
+> > which is in the range that it has on this VM after a fresh boot.
+> >=20
+> > So as far as I can see this workload is just pushing lockdep
+> > past what it can handle with the configured settings and is
+> > not triggering any actual bug.
+>=20
+> The lockdep splat because of netdevice stacking is one of our top
+> reports from syzbot. Is anyone else feeling like we should add=20
+> an artificial but very high limit on netdev stacking? :(
 
-I glanced through the series and it all looks pretty straight forward to
-me. I'll have a closer look. And we definitely need Minchan to ACK it.
+We already have a similar limit for xmit: XMIT_RECURSION_LIMIT. I guess
+stacking more then such devices will be quite useless/non functional.
+We could use such value to limit the device stacking, too.
 
-> Therefore, this series introduces new descriptor for zsmalloc, called
-> zsdesc. It overlays struct page for now, but will eventually be allocated
-> independently in the future.
+Cheers,
 
-So I don't expect zsmalloc memory usage increase. On one hand for each
-physical page that zspage consists of we will allocate zsdesc (extra bytes),
-but at the same time struct page gets slimmer. So we should be even, or
-am I wrong?
+Paolo
+
