@@ -2,225 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2C175A82C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3ED75A833
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbjGTHuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
+        id S231764AbjGTHu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231766AbjGTHuM (ORCPT
+        with ESMTP id S231175AbjGTHu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:50:12 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232F52705
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:50:07 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-76ad842d12fso9285285a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:50:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1689839406; x=1692431406;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1eV0hd+WFxkT4H3WXsUaVe2R7jt2ve6HPlQS9R41YH8=;
-        b=GMs/HCIP1qIQD+C0/O/gB/J1mV3W27NJeZnaZ5ct7CMkxtJ42hJ5sc5CQwU2KmqAaP
-         xYtfz0h3E7kVwEZMgLEdfJmn1rlL6lsDFWVb1Nt4d+eZ23ZbaqsloiJtLcGlsTdFyS2+
-         dLISSt6UapZ/jspR1KRWMQF8IQGVYiIb/GcgZNlASOAQZqsoiamhHVhdBD/p8/rZ9wjJ
-         6iZWn4kZfa41Zq4lk+pbEl9EjyqBzh9t+4YYrEyX0hvZdRLVfOGgCNX43Z/A+4SdB6gN
-         fptWiw87/J6OzxDHnT0bNAr2GVT6mAhyyPZviejPL5rrVk7qi7blvbnZ5zUX90SICQpt
-         Ft9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689839406; x=1692431406;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1eV0hd+WFxkT4H3WXsUaVe2R7jt2ve6HPlQS9R41YH8=;
-        b=B6pV9mJv4BhswqAAUID/xIYKGD/RRP7dlxH2kNXYy0N7uFbiVl/YNg48ZKzwlsfTOm
-         nsRWTQult1ujYFOxv8J9sYnUAlmkchzVqRGClqvOiL5NPfr2uJ+TqQhe+Lzb/p7fcDPn
-         mISb9kCi9sPoknVkTDPUkk3pD6VyWo8ub1pgk/UlQ34AM6KDtamy4nUhBNHTe4XCsli4
-         xtHn6zJ1lUNxkQSIEsgjVL+RJlC2UVfRzSsb63hLvX+HGcR0kaQPuyuA/JIAJAMPYtq+
-         N7fQeRuDjjvxW1BVOk7arAQLVbn6OUk1KWzYinA0BYXY72xTNnoqmtoI3vLPXNTWE8aS
-         0Rkw==
-X-Gm-Message-State: ABy/qLbIan8tuKiKizTdlK7pem3t6q6RF/SPdHb6gyCcyO5kwiA09JJP
-        VHEpGbVj8/TLX3EYy3d1nXan+D+ROZkAKkl3Qum9rQ==
-X-Google-Smtp-Source: APBJJlHZ7+nL7ZExwQUqkq/QE+5lrH731HZ8YomUjxHw0d37eIOj1GlXZFiHFn2tchtU0Slk2bOO8iCclO8GhcgNYhk=
-X-Received: by 2002:a05:620a:8287:b0:768:14ee:2467 with SMTP id
- ox7-20020a05620a828700b0076814ee2467mr4610905qkn.66.1689839406157; Thu, 20
- Jul 2023 00:50:06 -0700 (PDT)
+        Thu, 20 Jul 2023 03:50:56 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2088.outbound.protection.outlook.com [40.107.20.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D03D2127;
+        Thu, 20 Jul 2023 00:50:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZfscpqY1KdaJzdpFg2dD51i28jejAchXsIy+B7o8qcJeAVmzEar0mG4A12BvQAAgNZ7e9A8xHxUxj92nSbg+3NLKkywVFCDFbT3FHBZdnUWWqZ2EELE5ycOaObrnsgkCC69kfJtIh6ujZvgE6jbucq847hyo5u+y5LwpxCWO/A7bmh+FI1+ZDzw2v0dkn2TjkudYi5QxVACzcyOwTcYMr8dBNe6sxmz9jyq4H6M8BQ+G2n2DxhUrJCf+J1wEPbbdSYCDcwjNl/skxG3GDk2y5sxAHByjPOsbogwNJ9AGhqYl04ZZNuMphlvVQ05gFJxp93cY+thxTdI9UJ+GioDXDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HBcNocvS8340hbmyzz2o4MXYDEF+Ix58Vshz2zyH2jw=;
+ b=e2KKveMuSWUOEKd6G9xCJz/Y2hH0z54GNzp8dkWilz94Du+mJ6Vk/u+IDO82cfLqh7N6VIaBsl3bQ+oO8t8LSzWNo6ECoWkAgPMUVDedgE9aydg1dl+DhQWeH6uWqpqFDYo8hB1N9cPsrklJQdn6IOA02OKs3v62KfE2ZwYHVsPuynLkKtL7iuWDsiLV6faqsYEiS/tWMiMll3iwF05Ita6R4C3GxC9HYO3DYcQFDigD0AjbYDj6kawgmcSBZF5M922j+uPactryYKc5iqfCksJ+50Z3KmVfYlYzr9Uy+w6C+B2V+soYeqvheDEToSPLamuJbvMoil4gVEAq08QE1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HBcNocvS8340hbmyzz2o4MXYDEF+Ix58Vshz2zyH2jw=;
+ b=IkOQhZayz756OBrmq/MoFYab8niD4srtICB0auuxkN8CS2+/LqDwb2j6sEcqoLcNvaofiFK9uHRhDg4OSglH865rn3MBc/t0bM1KrACc21Q+/kQlqNDz/WB56K21JaCbJsSOlRucLSwcWCLjcb8h/vT4NyEmISIO8zDxoC2SZcg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from DU0PR08MB9155.eurprd08.prod.outlook.com (2603:10a6:10:416::5)
+ by PAWPR08MB8957.eurprd08.prod.outlook.com (2603:10a6:102:33d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32; Thu, 20 Jul
+ 2023 07:50:52 +0000
+Received: from DU0PR08MB9155.eurprd08.prod.outlook.com
+ ([fe80::4fd7:91a9:a92b:295a]) by DU0PR08MB9155.eurprd08.prod.outlook.com
+ ([fe80::4fd7:91a9:a92b:295a%4]) with mapi id 15.20.6609.024; Thu, 20 Jul 2023
+ 07:50:52 +0000
+Message-ID: <0a503489-ae6f-3299-6d4e-f14350f1ecc0@wolfvision.net>
+Date:   Thu, 20 Jul 2023 09:50:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 2/2] arm64: dts: rockchip: rk3588s: Add USB3 host
+ controller
+Content-Language: en-US
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-rockchip@lists.infradead.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20230719174015.68153-1-sebastian.reichel@collabora.com>
+ <20230719174015.68153-3-sebastian.reichel@collabora.com>
+From:   Michael Riesch <michael.riesch@wolfvision.net>
+In-Reply-To: <20230719174015.68153-3-sebastian.reichel@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: ZR0P278CA0189.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:44::6) To DU0PR08MB9155.eurprd08.prod.outlook.com
+ (2603:10a6:10:416::5)
 MIME-Version: 1.0
-References: <20230719184155.59375-1-Naresh.Solanki@9elements.com>
- <20230719184155.59375-3-Naresh.Solanki@9elements.com> <3a11291ea550744fb50f0e6359d4d8780e1c583a.camel@intel.com>
-In-Reply-To: <3a11291ea550744fb50f0e6359d4d8780e1c583a.camel@intel.com>
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-Date:   Thu, 20 Jul 2023 13:19:55 +0530
-Message-ID: <CABqG17g0mABdYz+2k_PWUaUrJ8_tJki8Z5CHZsymk4bc2At3Sw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] hwmon: (peci/dimmtemp) Add Sapphire Rapids support
-To:     "Winiarska, Iwona" <iwona.winiarska@intel.com>
-Cc:     "linux@roeck-us.net" <linux@roeck-us.net>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "Rudolph, Patrick" <patrick.rudolph@9elements.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR08MB9155:EE_|PAWPR08MB8957:EE_
+X-MS-Office365-Filtering-Correlation-Id: 733e0582-ce7e-4da4-363a-08db88f60a60
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mYPdWxPJiEBs9u777/vAbeguhp13uafUzizQTGlBZNRnZ5OLKpOaGXq7bqoxLtqks1kd2urIU0zc7vkl4RkHGVQWUs5U1XpgfpSAhJUDa/Hrg/j9vP9zK47f/Zq4BGF8XmOzx8YZb56h/iyC6m9nJe/MsmFydLxM1eTS6ZxvDt6cfioBDVV65bWqhOkrSmfqLWe4T/txTV7QjsRDY9zQ/sf0KlpkYaHZ4APesKtyVGQWBMJ58jkPKGtBO8oedtk3rOnFxA1X6wvirsteccbStJVrAd7EkDgDkL6FeTV5D95eum74gWrnkPyStNHCwJKCwoZxhoUmqQmEQ62tmSoal8jc+/3dPjvGLucSQvSiNcBo5CfXWJwFx318scNDjsRdmG1N4GUSCPOFZYOd+j13VP+u/lq8pSsYSepro4PL+olXyJlnw9E/QC6Tgco/FW/XJ3hIgYolONbVvwVmiju17lqW0rwf15g9LB1V92GKvVinscP/aluNKyq+aT1g3q6/OSDqqZv55jZm9db8QJSlsQdXn8PMbA8odYX24r4JYLk1eYVLd/q+m6ZJ6VTfReh2AElcSgQRFPHcGTvpbEJbRkS6O3sLZK9jaj23CMHwjURsGZy3MCoSJejPX14UC8MkpE84DRNnvhh2PL5wKe5n9w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR08MB9155.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(366004)(39840400004)(346002)(396003)(376002)(451199021)(110136005)(54906003)(6486002)(478600001)(6666004)(2616005)(53546011)(38100700002)(6512007)(6506007)(2906002)(44832011)(4326008)(7416002)(5660300002)(8676002)(8936002)(66476007)(316002)(66946007)(66556008)(86362001)(36756003)(83380400001)(31696002)(186003)(41300700001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VUplWjZiS1hnOXFhRVR2d25QaGZCcVdsVUlPZHU1TnVZcUhqZmZKSldKeXhD?=
+ =?utf-8?B?MVV1RU5COGFwWDFsUjcxczN4M25uazJKb01NWjgvcFZ0VS9sbkNIcVVmVnB5?=
+ =?utf-8?B?cFdWUkFnVUNGWHkyVmFDdkNvNFF0ZEEvcE9SV3NWOG5iWm0xV2YwU2dSNTVT?=
+ =?utf-8?B?dElMNjhhOTExYzRqS3pvNkcwYnk3d2VKb094eEQrcFBKZEI4T1lCdGJtMVlT?=
+ =?utf-8?B?QmJFdFBqOXpnZWk5eHBSTDZMQi83TGp0QlhHRTM5SFNlL0tQeUZDdmV5WUpP?=
+ =?utf-8?B?aklJTFYya0haNWUrdVhIb3FJZzBBblBmM0J4VWtUc2c0S0lyR0N2OWRobGc5?=
+ =?utf-8?B?SmxiYmpVRC9SWDkwS2VWZ1JHdFAwYUNzMklUNTA4cE9hMXVtQzl1ekUvZHdQ?=
+ =?utf-8?B?bjFSVUN3bVJEa1pQemdLcFZQMlRIcU1NVy9VbnJkdGVsc1poVmxrSUVhcFRo?=
+ =?utf-8?B?a2pqMURCMk43S1FnaFF0eHdVNnUwUmsvdGdlVGhwaEloamhWZ1d5Q255MVhN?=
+ =?utf-8?B?MHB6S1F6SWd6S1d1UTR1a3lWOXd5eXZQUE1iOVNQYXZKVXREM2lCSEduM3FF?=
+ =?utf-8?B?VkpQaTFob2VaK0s2d3ZmMUJnYVpEaVFNbk9BMVQrSWJsWjdET0Z4VWdqRFEv?=
+ =?utf-8?B?Tm5vN0hHRkRzeDJ3aURDNWpEek56RFFNVDAwR1gyTG9WRFVDZ1VhV1F1VW4y?=
+ =?utf-8?B?cjBkTi9jVlUvNkFKekdjZVRIV253c05LRlBNZEhwRDJVOGZTTG5pQmJaZURO?=
+ =?utf-8?B?clhzMnJmQWRDTG9VM09Gd3M3by8yNEdyU1gwazRMemQ4U0E0d0FVbUpOQ0w3?=
+ =?utf-8?B?VVNvT0dESmdxMG1GZEpSbjhkMTY3T0pLNk4wcEk3WWl4Zi9hM0dRMzBHSTcz?=
+ =?utf-8?B?aDUzZ05RS1QydlEwM1B2VW44bDZCY2RXekJVTVZ6aURHc01QdURGcDhBMHZS?=
+ =?utf-8?B?N3NRUExJYmlZbEI4T2lFdGM4c0dRZ0gvK2REeGpmZS8yUzlnQnRVVFdPU25r?=
+ =?utf-8?B?UzF1Qnk2ZjdoRm1GbHZZV05sTThkNVRWaEJIYlFsWHhuWVRremJ2MG1KaWpo?=
+ =?utf-8?B?cDAwcGE0S2daMVcyTU5kQlExaDZ5NE80UGtkbGw4d21yNW1scWZTTlVnL0o4?=
+ =?utf-8?B?SkhqNk8xTWpUTjArM3h2RGhtSUxFbk1PL2xQZnF1Q2hsYTIxVStwNmtzb3Zn?=
+ =?utf-8?B?Vkhuby9takx6SUFxb05IVVFTaWd4NU1zM2dTYzZVYW1iQTBMRGtIT29IZWpS?=
+ =?utf-8?B?N1dUUVJ2R2REck91OUdHNkdOSEdoam9DZGhFZzJubWlrQ2wxZ21tbCtlZVIz?=
+ =?utf-8?B?ZDQ4S2FTM0lReGFlRmlHU2lOS083aWo5dWk0YTZoS3UycDR4Y1VmbFMzOFVD?=
+ =?utf-8?B?akZubTgyeDNnVXRMbnFRamo2QlkxSG9aVXhRZk05RUdJdnE3UFNZcGIveEdG?=
+ =?utf-8?B?cGJWTStLZGRjN3BScHd4bEl2L1AzNUd0YXdYZEpYMmdrcUpHRS8xdmJpK2R1?=
+ =?utf-8?B?SEp6NU9aWWdML1lsRm45RlI0Sk5nWkFwU1B0Rll4UVJPaVc2bERrSUpxa01l?=
+ =?utf-8?B?UTB0SXE2WTJWaVN6N0x5ODhaUXVvbnlWK01PcFRpa0hoUVVFYnZkN1pKQWls?=
+ =?utf-8?B?Z0VEd1dUb2h1aUdGVTRuMSs0Sm5vUHlHN2hCSFMvbGpjV2hPcEVRa0x0bXFl?=
+ =?utf-8?B?WDFkdmRGWXJoZ2Nqamc0VnVLUk0vS1NqaWZZUVpqMVpZTkdUVHJuTytyMFVF?=
+ =?utf-8?B?T1JYclgzekJaNUc3UVV1Sml0VysrSkxBbUhuTGlLM2V1eklnTTdrMFd5US8v?=
+ =?utf-8?B?Uzl6dUlFTWFHTlNMajRRbWw3SUQwQ3ZyMmdZVzBXV2JLNGFsSkczWU1semVY?=
+ =?utf-8?B?NUpWektxem5XUzMyTnMzbWgxeDluL0hKa2tqRzRYd2tqOFgwZm5QMzRQMXB3?=
+ =?utf-8?B?dC9CUkZOQm1MOFJyNURYLzFSVWNKd1RNR1MwblBvZXRKS0JGWTJIZHlONUow?=
+ =?utf-8?B?UVJ2dzJyeVQxZHhHbU5mZlZWYkJ6Q0ZUdEhNdHlacExFUmNQd1I2R1RpUjlI?=
+ =?utf-8?B?N3hiWDBLaFNCZWZ4YVVVU3QrQnFYb3EwL0F4MGxKelNGa3J3d1gwZFNBeDZo?=
+ =?utf-8?B?SE01aU9Ya2dwc1JOTXg5ckpXc2phemU4TkJ0ekNic1V4ZSt1SnJVTnZKNGpB?=
+ =?utf-8?B?WWtmWlRKR0dVODMwOC95Ni9JbnMvVVg0RWdVV3R5cFllSlNERGVXSlhCdzZJ?=
+ =?utf-8?B?SVl1cjl6dWo1WlUvaVhkT1BVYWNRPT0=?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 733e0582-ce7e-4da4-363a-08db88f60a60
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR08MB9155.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 07:50:52.1781
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y2XlsHccjvu6dCxoGN8BfViCkWCjt/G9EDiNxDs7BK9xtVbf+dtG1ztZ38W2l1SAwxaABeLVIegTNfRX7Q16tDDkVad1osishHOTs1YNlE4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR08MB8957
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Iwona,
+Hi Sebastian,
 
-On Thu, 20 Jul 2023 at 01:35, Winiarska, Iwona
-<iwona.winiarska@intel.com> wrote:
->
-> On Wed, 2023-07-19 at 20:41 +0200, Naresh Solanki wrote:
-> > From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> >
-> > This patch extends the functionality of the hwmon (peci/dimmtemp) to
-> > include support for Sapphire Rapids platform.
-> >
-> > Sapphire Rapids can accommodate up to 8 CPUs, each with 16 DIMMs. To
-> > accommodate this configuration, the maximum supported DIMM count is
-> > increased, and the corresponding Sapphire Rapids ID and threshold code
-> > are added.
-> >
-> > The patch has been tested on a 4S system with 64 DIMMs installed.
-> > Default thresholds are utilized for Sapphire Rapids, as accessing the
-> > threshold requires accessing the UBOX device on Uncore bus 0, which can
-> > only be achieved using MSR access. The non-PCI-compliant MMIO BARs are
-> > not available for this purpose.
-> >
-> > Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> > Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
-> > Acked-by: Guenter Roeck <linux@roeck-us.net>
-> > ---
-> > Changes in V3:
-> > - Update Acked-by in commit message.
-> > Changes in V2:
-> > - Update subject.
-> > ---
-> >  drivers/hwmon/peci/dimmtemp.c | 24 +++++++++++++++++++++++-
-> >  1 file changed, 23 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/hwmon/peci/dimmtemp.c b/drivers/hwmon/peci/dimmtemp.c
-> > index ed968401f93c..edafbfd66fef 100644
-> > --- a/drivers/hwmon/peci/dimmtemp.c
-> > +++ b/drivers/hwmon/peci/dimmtemp.c
-> > @@ -30,8 +30,10 @@
-> >  #define DIMM_IDX_MAX_ON_ICX    2
-> >  #define CHAN_RANK_MAX_ON_ICXD  4
-> >  #define DIMM_IDX_MAX_ON_ICXD   2
-> > +#define CHAN_RANK_MAX_ON_SPR   128
->
-> Where was this number taken from?
-> Single CPU has 8 channels (not 128), and dimmtemp hwmon binds to a single CPU.
->
-> > +#define DIMM_IDX_MAX_ON_SPR    2
-> >
-> > -#define CHAN_RANK_MAX          CHAN_RANK_MAX_ON_HSX
-> > +#define CHAN_RANK_MAX          CHAN_RANK_MAX_ON_SPR
->
-> Then - there's no need for changing the MAX value.
->
-> >  #define DIMM_IDX_MAX           DIMM_IDX_MAX_ON_HSX
-> >  #define DIMM_NUMS_MAX          (CHAN_RANK_MAX * DIMM_IDX_MAX)
-> >
-> > @@ -530,6 +532,15 @@ read_thresholds_icx(struct peci_dimmtemp *priv, int
-> > dimm_order, int chan_rank, u
-> >         return 0;
-> >  }
-> >
-> > +static int
-> > +read_thresholds_spr(struct peci_dimmtemp *priv, int dimm_order, int
-> > chan_rank, u32 *data)
-> > +{
-> > +       /* Use defaults */
-> > +       *data = (95 << 16) | (90 << 8);
-> > +
-> > +       return 0;
-> > +}
-> > +
->
-> Rather than hardcoding the defaults, it should be possible to compute it in a
-> similar way to ICX (and with that - commit message should be updated).
-> We're starting from 1e:00.2 instead of 13:00.2, and offsets within IMC start
-> from 0x219a8 with 0x8000 shift.
-> It would look like this (note - not tested on actual SPR):
-Thanks for the input. Will test & keep you posted.
+On 7/19/23 19:40, Sebastian Reichel wrote:
+> RK3588 has three USB3 controllers. One of them is host-only and uses
+> the naneng-combphy. The other two are dual-role and using a different
+> PHY that is not yet supported upstream.
+> 
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 29 +++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> index b9b509257aaa..416581dd3bb5 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> @@ -443,6 +443,35 @@ usb_host1_ohci: usb@fc8c0000 {
+>  		status = "disabled";
+>  	};
+>  
+> +	usbhost3_0: usb@fcd00000 {
 
-Regards,
-Naresh
->
-> static int
-> read_thresholds_spr(struct peci_dimmtemp *priv, int dimm_order, int chan_rank, u32 *data)
-> {
->         u32 reg_val;
->         u64 offset;
->         int ret;
->         u8 dev;
->
->         ret = peci_ep_pci_local_read(priv->peci_dev, 0, 30, 0, 2, 0xd4, &reg_val);
->         if (ret || !(reg_val & BIT(31)))
->                 return -ENODATA; /* Use default or previous value */
->
->         ret = peci_ep_pci_local_read(priv->peci_dev, 0, 30, 0, 2, 0xd0, &reg_val);
->         if (ret)
->                 return -ENODATA; /* Use default or previous value */
->
->         /*
->          * Device 26, Offset 219a8: IMC 0 channel 0 -> rank 0
->          * Device 26, Offset 299a8: IMC 0 channel 1 -> rank 1
->          * Device 27, Offset 219a8: IMC 1 channel 0 -> rank 2
->          * Device 27, Offset 299a8: IMC 1 channel 1 -> rank 3
->          * Device 28, Offset 219a8: IMC 2 channel 0 -> rank 4
->          * Device 28, Offset 299a8: IMC 2 channel 1 -> rank 5
->          * Device 29, Offset 219a8: IMC 3 channel 0 -> rank 6
->          * Device 29, Offset 299a8: IMC 3 channel 1 -> rank 7
->          */
->         dev = 26 + chan_rank / 2;
->         offset = 0x219a8 + dimm_order * 4 + (chan_rank % 2) * 0x8000;
->
->         ret = peci_mmio_read(priv->peci_dev, 0, GET_CPU_SEG(reg_val), GET_CPU_BUS(reg_val),
->                              dev, 0, offset, data);
->         if (ret)
->                 return ret;
->
->         return 0;
-> }
->
-> Thanks
-> -Iwona
->
-> >  static const struct dimm_info dimm_hsx = {
-> >         .chan_rank_max  = CHAN_RANK_MAX_ON_HSX,
-> >         .dimm_idx_max   = DIMM_IDX_MAX_ON_HSX,
-> > @@ -572,6 +583,13 @@ static const struct dimm_info dimm_icxd = {
-> >         .read_thresholds = &read_thresholds_icx,
-> >  };
-> >
-> > +static const struct dimm_info dimm_spr = {
-> > +       .chan_rank_max  = CHAN_RANK_MAX_ON_SPR,
-> > +       .dimm_idx_max   = DIMM_IDX_MAX_ON_SPR,
-> > +       .min_peci_revision = 0x40,
-> > +       .read_thresholds = &read_thresholds_spr,
-> > +};
-> > +
-> >  static const struct auxiliary_device_id peci_dimmtemp_ids[] = {
-> >         {
-> >                 .name = "peci_cpu.dimmtemp.hsx",
-> > @@ -597,6 +615,10 @@ static const struct auxiliary_device_id
-> > peci_dimmtemp_ids[] = {
-> >                 .name = "peci_cpu.dimmtemp.icxd",
-> >                 .driver_data = (kernel_ulong_t)&dimm_icxd,
-> >         },
-> > +       {
-> > +               .name = "peci_cpu.dimmtemp.spr",
-> > +               .driver_data = (kernel_ulong_t)&dimm_spr,
-> > +       },
-> >         { }
-> >  };
-> >  MODULE_DEVICE_TABLE(auxiliary, peci_dimmtemp_ids);
->
+I'd recommend aligning the handle names with rk356x.dtsi:
+
+usb_host{0,1,..}_{e,o,x}hci
+
+I saw that your USB2 series follows this convention already, so let's
+stick to it here as well.
+
+> +		compatible = "rockchip,rk3588-dwc3-host", "rockchip,rk3399-dwc3";
+> +		clocks = <&cru REF_CLK_USB3OTG2>, <&cru SUSPEND_CLK_USB3OTG2>,
+> +			 <&cru ACLK_USB3OTG2>, <&cru CLK_UTMI_OTG2>,
+> +			 <&cru PCLK_PHP_ROOT>, <&cru CLK_PIPEPHY2_PIPE_U3_G>;
+> +		clock-names = "ref", "suspend", "bus", "utmi", "php", "pipe";
+> +		ranges;
+> +		resets = <&cru SRST_A_USB3OTG2>;
+> +		reset-names = "usb3-host";
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		status = "disabled";
+> +
+> +		usbhost_dwc3_0: usb@fcd00000 {
+
+I had the impression that the embedded nodes were out of fashion and the
+preferred way was to have one node with the
+
+compatible = "rockchip,rk3568-dwc3", "snps,dwc3";
+
+Again, try to align it with rk356x.dtsi.
+
+Thanks and best regards,
+Michael
+
+> +			compatible = "snps,dwc3";
+> +			reg = <0x0 0xfcd00000 0x0 0x400000>;
+> +			interrupts = <GIC_SPI 222 IRQ_TYPE_LEVEL_HIGH 0>;
+> +			dr_mode = "host";
+> +			phys = <&combphy2_psu PHY_TYPE_USB3>;
+> +			phy-names = "usb3-phy";
+> +			phy_type = "utmi_wide";
+> +			snps,dis_enblslpm_quirk;
+> +			snps,dis-u2-freeclk-exists-quirk;
+> +			snps,dis-del-phy-power-chg-quirk;
+> +			snps,dis-tx-ipgap-linecheck-quirk;
+> +			snps,dis_rxdet_inp3_quirk;
+> +		};
+> +	};
+> +
+>  	sys_grf: syscon@fd58c000 {
+>  		compatible = "rockchip,rk3588-sys-grf", "syscon";
+>  		reg = <0x0 0xfd58c000 0x0 0x1000>;
