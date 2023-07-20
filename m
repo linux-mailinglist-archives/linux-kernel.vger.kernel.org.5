@@ -2,70 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5199775AAFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1157975AAEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbjGTJhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:37:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
+        id S229451AbjGTJe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230140AbjGTJgt (ORCPT
+        with ESMTP id S230245AbjGTJeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:36:49 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2228C3A8D;
-        Thu, 20 Jul 2023 02:32:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RZvdXjx1hZtcZSf74NvFvf8MQ6mexnlAJnPNEN00Cyo=; b=DKTvOeHtImBp0sx+QDcm4M4JsL
-        qsSH7Thf3bOAZW38uH+7ZGk+wggvENeAqtgEkqneCUryBAV60eSBqQAQFjBwVc37JLdR7zSULLWbF
-        9Y/7Jph8JzC9EpjTCGE1t/Jkris7QZt1pmKUndRam9oV4FcykVnINIbdkfUHbc2As82dvadGGUrDM
-        cLWcgSuHODpWt6eHikxFd4RWgMVeEMfbLmZsU5hO5ek+nsWjK5VCPcvLl4VVcXtPuiO74k3YixW3l
-        UqCRth0P1jmjFA2WpHeR9sAlifdsFwZmQKF1ijbxZClRfhWefrt8AsKrsraucwvRK9UBsnJopP40i
-        StxTQzYg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qMPxB-00FSy1-1K;
-        Thu, 20 Jul 2023 09:30:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+        Thu, 20 Jul 2023 05:34:09 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A794D4C23;
+        Thu, 20 Jul 2023 02:29:03 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 699A5300342;
-        Thu, 20 Jul 2023 11:28:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 44F092B32666E; Thu, 20 Jul 2023 11:28:07 +0200 (CEST)
-Date:   Thu, 20 Jul 2023 11:28:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Petr Mladek <pmladek@suse.com>, Brian Gerst <brgerst@gmail.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        alyssa.milburn@linux.intel.com, keescook@chromium.org,
-        joao@overdrivepizza.com, tim.c.chen@linux.intel.com,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] x86: Rewrite ret_from_fork() in C
-Message-ID: <20230720092807.GB3570477@hirez.programming.kicks-ass.net>
-References: <20230623225529.34590-1-brgerst@gmail.com>
- <20230623225529.34590-3-brgerst@gmail.com>
- <ZLf_Z5dCSm7zKDel@alley>
- <20230719200222.GD3529734@hirez.programming.kicks-ass.net>
- <20230719201538.GA3553016@hirez.programming.kicks-ass.net>
- <20230719205050.GG3529734@hirez.programming.kicks-ass.net>
- <20230719233111.kqafaqect4v2ehu6@treble>
- <20230720052208.GO4253@hirez.programming.kicks-ass.net>
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7EAC566003AE;
+        Thu, 20 Jul 2023 10:28:34 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689845315;
+        bh=/fmhkfXqLxYUE88SAwWdEzOCDwmhfmSVE7H3+k13wsQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=CAIkKnCCw++xNSk6DMeMVGTtR6LMHQ4LluzEJvw2CK00Wzo1+JkP2H0FhwccOgDc5
+         ZdbPuhbjQmlI++UJRcoD9LJYHOUsYizTGB14Xe9N8MMoktRVBbTc0TDrdKmgB16WH/
+         fzY23holXcJydzD+tq2bbCuYwVJDGsq3CgTP6T7KbjMaePjpip0Gnjryqb+BvqYuOb
+         2+flXGYL34ONytFH75GxR6+mqGzOMPX4V49hqv++uCWR5ilkyR7Us+61Qm+8+JQVzu
+         ajjOohlVC3rxZPVgYM5kw527tiWR5nBrmTBpohwfUWMbevC9oVEvzY4sl2uV/sCvwb
+         eH/v5iUL1G/TQ==
+Message-ID: <faf44774-624c-b29c-8661-60dc1f1a0457@collabora.com>
+Date:   Thu, 20 Jul 2023 11:28:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230720052208.GO4253@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3,2/3] drm/mediatek: dp: Add the audio packet flag to
+ mtk_dp_data struct
+Content-Language: en-US
+To:     Shuijing Li <shuijing.li@mediatek.com>, chunkuang.hu@kernel.org,
+        p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, matthias.bgg@gmail.com, jitao.shi@mediatek.com
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20230720082604.18618-1-shuijing.li@mediatek.com>
+ <20230720082604.18618-3-shuijing.li@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230720082604.18618-3-shuijing.li@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,32 +65,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 07:22:08AM +0200, Peter Zijlstra wrote:
-
-> > I'm not sure that would be worth the trouble / cleverness.  The hint is
-> > straightforward IMO.
+Il 20/07/23 10:26, Shuijing Li ha scritto:
+> The audio packet arrangement function is to only arrange audio.
+> packets into the Hblanking area. In order to align with the HW
+> default setting of mt8195, this function needs to be turned off.
 > 
-> I tried, it doesn't work, clearly I missed something.
+> Signed-off-by: Shuijing Li <shuijing.li@mediatek.com>
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
 
-FWIW, I tried the below. That should make user_mode() true for the
-kernel thread regset, and while the kernel did boot, it still fails the
-livepatch self-test.
-
-The difference seems to be that END_OF_STACK terminates it right there,
-while REGS thinks its a valid frame and only terminates on user_mode()
-when unwinding one more frame. The frame at REGS clearly isn't very
-sane.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
 
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 72015dba72ab..45a400b16b80 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -232,6 +232,7 @@ int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
- 		 * It does the same kernel frame setup to return to a kernel
- 		 * function that a kernel thread does.
- 		 */
-+		childregs->cs = 3;
- 		childregs->sp = 0;
- 		childregs->ip = 0;
- 		kthread_frame_init(frame, args->fn, args->fn_arg);
