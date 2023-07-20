@@ -2,51 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE4175AB78
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B69675AB05
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 11:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbjGTJwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 05:52:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50234 "EHLO
+        id S229838AbjGTJhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 05:37:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbjGTJwT (ORCPT
+        with ESMTP id S230473AbjGTJh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 05:52:19 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD4B4213
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:50:56 -0700 (PDT)
-Received: from kwepemm600020.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R66r90jwJz18LQR;
-        Thu, 20 Jul 2023 17:31:05 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 20 Jul 2023 17:31:49 +0800
-Message-ID: <a989179a-102a-d07d-aa80-0ff45d21a74a@huawei.com>
-Date:   Thu, 20 Jul 2023 17:31:48 +0800
+        Thu, 20 Jul 2023 05:37:27 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F24423B
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:32:39 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-992b27e1c55so101677466b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 02:32:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689845533; x=1692437533;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f958s3nbgdA1pG2lRmegO+5yorqgc7fcVF1TVclRI9Q=;
+        b=Ey/12QEbmzUl/2DVcC0OB5SpzRCy30QU8rbLwh9+LjC+DY0M/c3/qNYZ/wwvxgWxrv
+         X2GLMuMkSwulYRupWc/coQrMDIyStvYfpVYRWjfC7allpSir35oCUWhKXdCrcMA0f9HR
+         PKAVBDgaom/iifg8eTBTgkBC8M3uu4/O+JC5fpHFPDoyC+GMpn5BDeplmbDO5Q2MVjnj
+         aB3nmnKhE8CD9SMWHhMofijmZSKP7Zchx6quF8Va2XZcg+Fhxu6I8VSWr7RJ8meI9L1M
+         R3qFeYzA7eVyJvc6F5EYbNCPnhrCGxwiVdlpwyKcszjwBgzn7VtAhJB9eE/FKdzDRUdV
+         rcxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689845533; x=1692437533;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f958s3nbgdA1pG2lRmegO+5yorqgc7fcVF1TVclRI9Q=;
+        b=AxGJMttosTNQQ2RCLewTQD4UvNAqDV+vkGUKfcy9cBkvbpkRzFdiEwUA9KRKy/hmS7
+         2qSI7DznAPPj4GaUo0YOOGS2pJcuA7biZlGZonHD0udKzjhGzIfKiQdN+COOAoOg/M34
+         0agKIHu3xswNxGuZ5lXZqFMdUjPTL2pq8W3vauyvTZuPOQRDeziQ0QTd80pW0utgQG/c
+         FvOF4GLpCsMqB4SyXi+aTOdEx13eOOuMi5kEoY9yal8v5HNkTY4YZcx+HYXPJeeZnIdv
+         4RVIyuO0Zu2efKt9VJfpegADqhA0WULBEOy/ttCtBhYZ7DlP6MowOBKAdVrSHZreEMGG
+         a6qw==
+X-Gm-Message-State: ABy/qLYMqeH9LQNYDu7Sn9vxt8so2P8z6MySQzPBaHkgWm0ZXAYeL3PW
+        L5u38XDMKyMLDneI7R0mukSAXQ==
+X-Google-Smtp-Source: APBJJlFvCIbTWcgngamb8Fv+fhJlfdBadvLniriEcqyYa8TvvEG6ibZT5iGZvHIsAGbY/Wq3y/DzOQ==
+X-Received: by 2002:a17:906:3f0c:b0:997:e9a3:9c54 with SMTP id c12-20020a1709063f0c00b00997e9a39c54mr1856756ejj.0.1689845532785;
+        Thu, 20 Jul 2023 02:32:12 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id dt15-20020a170906b78f00b00991bba473e1sm430204ejb.3.2023.07.20.02.32.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 02:32:12 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] MAINTAINERS: samsung: Un-support cpuidle and clock drivers
+Date:   Thu, 20 Jul 2023 11:32:08 +0200
+Message-Id: <168984552539.79008.3332964661448587103.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230714050223.8327-1-krzysztof.kozlowski@linaro.org>
+References: <20230714050223.8327-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-From:   "zhangpeng (AS)" <zhangpeng362@huawei.com>
-Subject: Re: [PATCH v2 8/9] mm/page_io: convert count_swpout_vm_event() to
- take in a folio
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <sidhartha.kumar@oracle.com>, <akpm@linux-foundation.org>,
-        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
-References: <20230719095848.3422629-1-zhangpeng362@huawei.com>
- <20230719095848.3422629-9-zhangpeng362@huawei.com>
- <ZLfyDvSgFxkX6Z1Z@casper.infradead.org>
-Content-Language: en-US
-In-Reply-To: <ZLfyDvSgFxkX6Z1Z@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.160]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600020.china.huawei.com (7.193.23.147)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,24 +83,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/19 22:24, Matthew Wilcox wrote:
 
-> On Wed, Jul 19, 2023 at 05:58:47PM +0800, Peng Zhang wrote:
->> -static inline void count_swpout_vm_event(struct page *page)
->> +static inline void count_swpout_vm_event(struct folio *folio)
->>   {
->>   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->> -	if (unlikely(PageTransHuge(page)))
->> +	if (unlikely(folio_test_pmd_mappable(folio)))
->>   		count_vm_event(THP_SWPOUT);
->>   #endif
-> As I said in my earlier response, you don't need the ifdefs.  Check
-> the definition of folio_test_pmd_mappable.
+On Fri, 14 Jul 2023 07:02:23 +0200, Krzysztof Kozlowski wrote:
+> Since few years no one is really paid to support drivers for Samsung
+> Exynos SoC CPU idle and clock controllers.  Correct the status to keep
+> them as maintained.
+> 
+> 
 
-Sorry I forgot to delete the ifdefs. I'll fix it in a v3.
-Thanks.
+Applied, thanks!
 
+[1/1] MAINTAINERS: samsung: Un-support cpuidle and clock drivers
+      https://git.kernel.org/krzk/linux/c/edf049c708681b4defacc740e3b254a5daa90e5e
+
+Best regards,
 -- 
-Best Regards,
-Peng
-
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
