@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3523A75AE58
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B4575AE59
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbjGTM26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
+        id S231171AbjGTM3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 08:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjGTM2y (ORCPT
+        with ESMTP id S230281AbjGTM26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:28:54 -0400
+        Thu, 20 Jul 2023 08:28:58 -0400
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A500C2122
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:28:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9A92135
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:28:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689856133; x=1721392133;
+  t=1689856137; x=1721392137;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=oSb35rSSfZzXciHeR7XfbDeXQzhFQiHGeJe1U0x1DkU=;
-  b=nDH06bjU2vOM/DmIZqYaMBHIa9TeFrDPB8JhVomt8+lsebsu9Em2TG10
-   HxH+UcioQVCCdKY7JEfDq7uzHTzVgkjuGRRnoA8ME8V7YuwtNjWTV6hbz
-   p/ogk7oLIdWzn2GCXOo+5TU4YxFOaFMyv1T+QTehBcq+4a+1DoabaPY1V
-   DeLw3Se9vpgZozgpNxBI/V2TsczViEQRR42F/2ADnr3xFGCRs+FgmmO3/
-   i3qnmlp2XKXp8G2PC6+Qz96b60/+/rvrmKpRlWl7XkmB+MPVhvIqjnsl3
-   2h6xW03T1kFQr0gPo5HIUZ9/rV68sPhk60FonwdnF5CxC2cDy0/K4n6i5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="356677932"
+  bh=Ct+uL9V/Rc7tnRZgZAKb4rgrX0FhggxsItIZrGpJOi4=;
+  b=HQkGyYutT8qKsBmXjioFCPRqSb4C8WGWuZ2DBibErz6HHheiB9G8+U4U
+   JGoRC/o/arNsUvnQmzgOaC/j+JMlH10KdpTBhhZFV09Isb6hzkqAZwwhg
+   pQtKONfO7H0XhCIL6sZPwSc5wcxvKT2zj2DNcHgkb0QkGnQEQuS0FTth+
+   HFMJMvAO1Vs5zty0tHAIhHb2o47pr3jTzsOGHGtPMxKL5UIjzGzw/jzOO
+   iRecd8cST/aHUVHOVzTwiXjja5K7RlxP0fCwOw8B2FsVNOGFYNc/LACOy
+   oVYQwvT86qpLn9KSDy7ba7O0/P8fLeit8EimfYqnMbp1sgQ4+DBv0lB0I
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="356677956"
 X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="356677932"
+   d="scan'208";a="356677956"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 05:28:53 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 05:28:57 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="898255859"
+X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="898255871"
 X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="898255859"
+   d="scan'208";a="898255871"
 Received: from moorer9x-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.209.157.3])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 05:28:49 -0700
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 05:28:53 -0700
 From:   Kai Huang <kai.huang@intel.com>
 To:     peterz@infradead.org, kirill.shutemov@linux.intel.com,
         linux-kernel@vger.kernel.org
@@ -47,9 +47,9 @@ Cc:     dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
         pbonzini@redhat.com, isaku.yamahata@intel.com,
         sathyanarayanan.kuppuswamy@linux.intel.com,
         n.borisov.lkml@gmail.com, kai.huang@intel.com
-Subject: [PATCH v2 01/11] x86/tdx: Zero out the missing RSI in TDX_HYPERCALL macro
-Date:   Fri, 21 Jul 2023 00:28:04 +1200
-Message-ID: <81a99ecf3ea355d2b4e413b3d10c47e595373f28.1689855280.git.kai.huang@intel.com>
+Subject: [PATCH v2 02/11] x86/tdx: Skip saving output regs when SEAMCALL fails with VMFailInvalid
+Date:   Fri, 21 Jul 2023 00:28:05 +1200
+Message-ID: <a87cdb87489a533601fb42599275f6a8eb603b04.1689855280.git.kai.huang@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1689855280.git.kai.huang@intel.com>
 References: <cover.1689855280.git.kai.huang@intel.com>
@@ -66,42 +66,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the TDX_HYPERCALL asm, after the TDCALL instruction returns from the
-untrusted VMM, the registers that the TDX guest shares to the VMM need
-to be cleared to avoid speculative execution of VMM-provided values.
+If SEAMCALL fails with VMFailInvalid, the SEAM software (e.g., the TDX
+module) won't have chance to set any output register.  Skip saving the
+output registers to the structure in this case.
 
-RSI is specified in the bitmap of those registers, but it is missing
-when zeroing out those registers in the current TDX_HYPERCALL.
+Also, as '.Lno_output_struct' is the very last symbol before RET, rename
+it to '.Lout' to make it short.
 
-It was there when it was originally added in commit 752d13305c78
-("x86/tdx: Expand __tdx_hypercall() to handle more arguments"), but was
-later removed in commit 1e70c680375a ("x86/tdx: Do not corrupt
-frame-pointer in __tdx_hypercall()"), which was correct because %rsi is
-later restored in the "pop %rsi".  However a later commit 7a3a401874be
-("x86/tdx: Drop flags from __tdx_hypercall()") removed that "pop %rsi"
-but forgot to add the "xor %rsi, %rsi" back.
+Opportunistically make the asm directives unindented.
 
-Fix by adding it back.
-
-Fixes: 7a3a401874be ("x86/tdx: Drop flags from __tdx_hypercall()")
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Kai Huang <kai.huang@intel.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- arch/x86/coco/tdx/tdcall.S | 1 +
- 1 file changed, 1 insertion(+)
+
+v1 -> v2:
+ - A new patch to improve SEAMCALL VMFailInvalid failure, with v1 patch
+   "x86/tdx: Move FRAME_BEGIN/END to TDX_MODULE_CALL asm macro" merged.
+
+---
+ arch/x86/coco/tdx/tdcall.S      |  3 ---
+ arch/x86/virt/vmx/tdx/tdxcall.S | 29 ++++++++++++++++++++---------
+ 2 files changed, 20 insertions(+), 12 deletions(-)
 
 diff --git a/arch/x86/coco/tdx/tdcall.S b/arch/x86/coco/tdx/tdcall.S
-index b193c0a1d8db..2eca5f43734f 100644
+index 2eca5f43734f..e5d4b7d8ecd4 100644
 --- a/arch/x86/coco/tdx/tdcall.S
 +++ b/arch/x86/coco/tdx/tdcall.S
-@@ -195,6 +195,7 @@ SYM_FUNC_END(__tdx_module_call)
- 	xor %r10d, %r10d
- 	xor %r11d, %r11d
- 	xor %rdi,  %rdi
-+	xor %rsi,  %rsi
- 	xor %rdx,  %rdx
+@@ -78,10 +78,7 @@
+  * Return status of TDCALL via RAX.
+  */
+ SYM_FUNC_START(__tdx_module_call)
+-	FRAME_BEGIN
+ 	TDX_MODULE_CALL host=0
+-	FRAME_END
+-	RET
+ SYM_FUNC_END(__tdx_module_call)
  
- 	/* Restore callee-saved GPRs as mandated by the x86_64 ABI */
+ /*
+diff --git a/arch/x86/virt/vmx/tdx/tdxcall.S b/arch/x86/virt/vmx/tdx/tdxcall.S
+index 49a54356ae99..6bdf6e137953 100644
+--- a/arch/x86/virt/vmx/tdx/tdxcall.S
++++ b/arch/x86/virt/vmx/tdx/tdxcall.S
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #include <asm/asm-offsets.h>
++#include <asm/frame.h>
+ #include <asm/tdx.h>
+ 
+ /*
+@@ -18,6 +19,7 @@
+  *            TDX module.
+  */
+ .macro TDX_MODULE_CALL host:req
++	FRAME_BEGIN
+ 	/*
+ 	 * R12 will be used as temporary storage for struct tdx_module_output
+ 	 * pointer. Since R12-R15 registers are not used by TDCALL/SEAMCALL
+@@ -44,7 +46,7 @@
+ 	mov %rsi, %rcx
+ 	/* Leave input param 2 in RDX */
+ 
+-	.if \host
++.if \host
+ 	seamcall
+ 	/*
+ 	 * SEAMCALL instruction is essentially a VMExit from VMX root
+@@ -57,13 +59,10 @@
+ 	 * This value will never be used as actual SEAMCALL error code as
+ 	 * it is from the Reserved status code class.
+ 	 */
+-	jnc .Lno_vmfailinvalid
+-	mov $TDX_SEAMCALL_VMFAILINVALID, %rax
+-.Lno_vmfailinvalid:
+-
+-	.else
++	jc .Lseamcall_vmfailinvalid
++.else
+ 	tdcall
+-	.endif
++.endif
+ 
+ 	/*
+ 	 * Fetch output pointer from stack to R12 (It is used
+@@ -80,7 +79,7 @@
+ 	 * Other registers may contain details of the failure.
+ 	 */
+ 	test %r12, %r12
+-	jz .Lno_output_struct
++	jz .Lout
+ 
+ 	/* Copy result registers to output struct: */
+ 	movq %rcx, TDX_MODULE_rcx(%r12)
+@@ -90,7 +89,19 @@
+ 	movq %r10, TDX_MODULE_r10(%r12)
+ 	movq %r11, TDX_MODULE_r11(%r12)
+ 
+-.Lno_output_struct:
++.Lout:
+ 	/* Restore the state of R12 register */
+ 	pop %r12
++
++	FRAME_END
++	RET
++
++.if \host
++.Lseamcall_vmfailinvalid:
++	mov $TDX_SEAMCALL_VMFAILINVALID, %rax
++	/* pop the unused output pointer back to %r9 */
++	pop %r9
++	jmp .Lout
++.endif	/* \host */
++
+ .endm
 -- 
 2.41.0
 
