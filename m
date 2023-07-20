@@ -2,145 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6012275A81A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5729B75A81C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbjGTHpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:45:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33874 "EHLO
+        id S230042AbjGTHpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:45:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbjGTHo7 (ORCPT
+        with ESMTP id S231705AbjGTHpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:44:59 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2135.outbound.protection.outlook.com [40.107.21.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352412123
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:44:58 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FbN4kPaZqV7EWVFfg7/EBnSfbbyAXp4SXh1QQNsjhqFnrTQqey4lAynR4PTpWJ05W1Hf7+NbB60KCxCbc3/ux/jj+FLsbE82OXaFxopfN9tzQVMBUAKb/XLOdA3amviaxZwzK5dJyrVJoy54AAzULGw364yebezGdioXuOYMp5Pm78BokCz+ooWDL5VLNRK6jELYmyPBo3uNM92UpKYoOr3XuBZf/s2SMfzmlOOtI9+TuxeTUOygW4gkCe0gMeSEZAHjm2kmKQFQq9gO6CiR1heYo6+sB4kk/ee/NCEvrXJ7fPLRYUo1tCwfwAbfd/HNNZFH/l7DiFwYrhKXEqlLNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Qj1WLWOoIign0MMWZa7g9TsjqyyZ54ny6suhE0Vw5J8=;
- b=dnIxsuCNc7e5bNTN7Ro/53EtEiA13HOFal67BnrOBDNOfqLa6C37dTmvAK+wXOE8aw7cExIFMqThWB0fYaGyOg21UM9R154tQGUt2mCRkHWyi86/DYjQRk+ZjG6ZC2ZBXCQjimg0+4Wrd6JQIX5KMYBxi/5Api+2DEiYM1uO46aCGiEHLWzbauQUoxBmeC1fNIuWeviRlvirMo73TO/eNlk5/8ZV1jAVuyH7D54niZi2oXGBMk4Ow9wyEZSpdl7QzZwndmJ6bGxv6Dn3GFHyCfrPbp9TG70sr4g4qTDxglDNPipmQXjwCc+gGicFB343SCgE08MIRq4vOrh37nh6/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qj1WLWOoIign0MMWZa7g9TsjqyyZ54ny6suhE0Vw5J8=;
- b=CtTyQi95lWnJCfr3KEUCfIiHfQ9SFveJEJGzHnQQzdeznmw7qFt+waQ7ilPkaSE45Y3k9kyUTCZ2ZAyJILhF9mo6sJlavfBKlzU7VcMF+epY0awPovlt4mjGE4OQKE+XK8NgppayGXd4WJRHZzqlfWwQmp10cYJBCXcVkNrxWPA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kontron.de;
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
- by GV2PR10MB6646.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:b6::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Thu, 20 Jul
- 2023 07:44:53 +0000
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::95ae:6cb:e93:cce0]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::95ae:6cb:e93:cce0%6]) with mapi id 15.20.6609.025; Thu, 20 Jul 2023
- 07:44:53 +0000
-Message-ID: <6e3fc800-e4e7-cf27-7f04-ffc2ad273b8a@kontron.de>
-Date:   Thu, 20 Jul 2023 09:44:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4] drm: adv7511: Fix low refresh rate register for
- ADV7533/5
-Content-Language: en-US, de-DE
-To:     Alexandru Ardelean <alex@shruggie.ro>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     neil.armstrong@linaro.org, rfoss@kernel.org,
-        andrzej.hajda@intel.com, jonas@kwiboo.se, nuno.sa@analog.com,
-        Laurent.pinchart@ideasonboard.com, bogdan.togorean@analog.com
-References: <20190716131005.761-1-bogdan.togorean@analog.com>
- <20230719060143.63649-1-alex@shruggie.ro>
-From:   Frieder Schrempf <frieder.schrempf@kontron.de>
-In-Reply-To: <20230719060143.63649-1-alex@shruggie.ro>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BE1P281CA0084.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:78::11) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:102:263::10)
+        Thu, 20 Jul 2023 03:45:09 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5F7213D;
+        Thu, 20 Jul 2023 00:45:08 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id DD3F2660707E;
+        Thu, 20 Jul 2023 08:45:06 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689839107;
+        bh=rgSn9DWoFWUAm/Y0pTg4nWPsIDpMJSJrwWH1cSs9tnk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=gcAqBmgd+oAnAri/JPEFpV2Yyrt9NdM06QT3VWpsjqfzIBmhFoeUSpDVOdLeGbLNy
+         QGBh/cah2lyrLpxEP2bKq/WpLjFeMAyUt+Hki6f2m9MtX45P+YHdoG3G+5dG0OSnnw
+         VV/eseh1JZ2Ci5TBLMWHiSLuBKy049eXLCjzDM/VZrwtgymPPI+AMpXJ9xnufX7nVz
+         cypd0/SDfA9pSpuyzpUqhlAcuN4u6X+kCwDMnebdG60ktZ5DHkUD5mQyKnp0Oi3rx/
+         azPOPbxtlSsBoyRr+bzt8OroYDabKfpWhTDpBkRticKl1RjqRloXeDtbtAUAYKroaY
+         GrzmdnQxLuJ5A==
+Message-ID: <03449762-33b9-3e86-c65f-4bb9e0e917c6@collabora.com>
+Date:   Thu, 20 Jul 2023 09:45:05 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|GV2PR10MB6646:EE_
-X-MS-Office365-Filtering-Correlation-Id: f62242f2-d38b-4e3a-aadf-08db88f5347c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /XF/Sqj4bK12pQDoPv6adbRMaKIXohcUBgZIkuZyn4Zmg//ZnTivjKvNjZ848RyQ6+tHG3+NvE3p3t96xCdPDTJEdZby2I8FPDK+cBAqTF6jEOlUhnqBgRPho/AK6dfb5YbB7NTkfJbvnM3oXuvJqhFvyEfDhuyTx2BRDx1Qx6eyHTlWsLky1LoWmgZwqLiCmpquOOToPjYt4dXKQw6g0a3FdydamO9K8C1cLp9zsEZ6qaXmdXZ04ji2kTu16mfz4UEESev1hBJhwWxxGyhqECztyBN0FfzQf+4fO4dy7UuhcuKF6etQS3i4wf8IM+20lp9nH0T3tru9JB/JJLd8HjNVrYE3OLNO7LVHIhb89XyJ9012HpWKtBksyA6WtjojLx/i49sv0ndCLqTPpRKQh0vjLynyiDzlu1HKU8TrNC+TsdEQ2WE4ej5wst9vS9htEoDfyVaFvgYshLIX7uA5wqaz/Jz57vA7PSnhY3RR9FLZuFQEPVcJszRanzryO2KUB+eUXdcLuDstZL7bL7QN+n7qAmlXJGSVZJvdori2xwWMwC6z+IPhX5rvatEnNG7buFjARXtaM7+XFmqRn6L2AJZTW4qkHNd1cW+xT+OfxY2/Y80pRmOEkEacIPVLpYSHgaN44Mu8SagazlN4I3Y5UhZ43FdspvXt2s5cYRZHcLk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(39860400002)(376002)(396003)(346002)(451199021)(41300700001)(53546011)(6506007)(186003)(26005)(478600001)(31686004)(316002)(4326008)(66556008)(66476007)(66946007)(44832011)(8936002)(8676002)(7416002)(5660300002)(6666004)(6512007)(6486002)(2616005)(4744005)(2906002)(38100700002)(36756003)(31696002)(86362001)(16453003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QmRpc1U4dkptZm53dVIybmJRYTZNRUR4VklzSFRLWjlNM2lxNEFlbUdhZHFN?=
- =?utf-8?B?ZnFLSzZMdTN2NzhVaUhiZzRHWDdsZTJMN0VXRGoxNHd5aWNvMW1ic2lJL08v?=
- =?utf-8?B?OU02VTZOUnprS05yY1YzVUpVUlFzeDVSTEcvejFzNkRZZW1pbFNZVTdQRzBx?=
- =?utf-8?B?cWs1SFZESXhSSWN4ZFl5UVJUWkE2QldQZy9MZkV2OGpvdEZOQXBOUUJSSm9G?=
- =?utf-8?B?YnJGaWJ6QjBwck9DME9JaWU3YnVqSDFxSDFaTkp3M0YvQ0xmUVYzUFFscGJr?=
- =?utf-8?B?eThHTXdHbGE1V1NLbk9wMStDN2MxcEYzbGFoZy9LUDhqNG1ja0tXbUwzUHVY?=
- =?utf-8?B?VmJwKy8xNWVMOEhPRkhtMjdUQTFpU0huUnlyaGdXRWhkY0ZuU2lpcXB5MFc1?=
- =?utf-8?B?Q0NzUkc2MlliVmd0SmhtcmRHSnMwZDI3Z3E5TzkzcDIzTXZsZStZRXM1TXZO?=
- =?utf-8?B?eDRDYThPWWZaLys0dS9NTUoydklYVnhXbk9RVGlYMDZzNVFhY2FvZUVXbDg1?=
- =?utf-8?B?SzZsYjk5UlBwODNmRnJJTWZRMlRJSGJkTEx5MG1IQnI3NmpCN1o3eGw1STF1?=
- =?utf-8?B?Tk0vYXZTc3NDbFpmUzBnZlU5anVUN2FXSUFJaWMxSGVDZThWR2hodWpiS0JM?=
- =?utf-8?B?cUUrY0dIVEJDclo4bjNiSVNJcUVlWUk5dnFBQ0Jlc3YyNXNlZzlYQmlJRkFJ?=
- =?utf-8?B?S3RFNWwwZnp0YUNVNU9LT041SjY0VFdvNUpSdU5ITXJMRDZ4Sjk2dW9lWmQy?=
- =?utf-8?B?T3kxeUZiZHRxWXZwcFBtSjJsYUl0d3dDUXV3U0JBWnFiUm1jOWwzaEEwY1hm?=
- =?utf-8?B?QlcrRUJaYytJa3NVQjVENGs2bmNNZWYzc284M2Y5UmpqbFdGKzdYdUd6enlR?=
- =?utf-8?B?MGFjYndpT0dPOUcxeWNHdzk0M05OKzgwY0VrTjVLZ2RUc1FxQjlqNE90QkVU?=
- =?utf-8?B?QUlYSmtVWExaQ0c3bHY0OHFwZFEyQmFNNXJLVUhFTFAySWhTbnBTMG5zZm15?=
- =?utf-8?B?Y00xcHBWbno2RWRRV3NncVhiR1BaS2JnYU5PQ1oxRGExVS9Kc2IvaUZJRVZF?=
- =?utf-8?B?MUpSRUxYOUNoVk5SME1PWU9sSjJyZTFEcGd5UnpUMms0Vit0V1Z5TlNzcGM0?=
- =?utf-8?B?alk3dVVXTi9OUXgveThkZkFBazd2NGduUG1nSzlCc3Z1eXdBNXVqS2wxNUpP?=
- =?utf-8?B?TXB0UlJrL203YTlNeGpiSDBCRC91TkI0RlJzUUhpdzIzbTRJQUFkY1lCL21G?=
- =?utf-8?B?bW9pWkRTb3N0bWpaWU9oQThZbUtXUTNhQ2VVVWhzeHVVRjZMcENxMXF1Vy9D?=
- =?utf-8?B?QXdJU3lDNTRra1ltdjRybzZ4RWcrYlI2Y0RqdFl0Z1NGb2d5N056THd6L29i?=
- =?utf-8?B?RXU0dDFJT0NaY1FSKzY0L0hxSkJuYyt4VVZoM1VsV21vcEM3VGtaYmJMM2Ns?=
- =?utf-8?B?UHcyWDBFRGF3U1lvdUYxV0d1OVJLZWtoM2xVenJjcHNDY0JVVVhWWFg5NzBt?=
- =?utf-8?B?WVRMZTB5RUdkTkxZSUk5ZVlubjBzbHo1Si9uYW9kWlBacmlhMHloVEQzSXlp?=
- =?utf-8?B?OHhVUUlBSnZGTmNLNXJXYll1Ri80TnAvcDJpZlYzdUQ0TFc4d2hYWXBKREpr?=
- =?utf-8?B?cTJ0STY3Z2xWUmlFMHRVd0Qxaml6N1VTVWlXcklLb1dpaXhERVRpWW1jMVEz?=
- =?utf-8?B?VnNxVFlDMjhENlNHN2lkZElYa1pQMnhUS21TdnEyS3R5aVB6UTM5NE5idTNo?=
- =?utf-8?B?VmlGcWtsNVlIRjQ1ZW9pWVE5RmpjeFJDM2JIWnZoVTJ1VkFidWliYjJ4MXFk?=
- =?utf-8?B?eU9ialU3WUxmaVJ3YThVbUlPYWdNQXUrVnMyY0J3bXVmUzZTa01vQ3B2cE9V?=
- =?utf-8?B?M0oxWWVYUWhscHA0ZDlUaFl3eEw5MEpjZERzL3dsNndsblFhOVBKbFU3SFNv?=
- =?utf-8?B?dHV1RUFUak12Z2I3SnF6Z2lMZXJJTGtUNUFKdk1Xek9HSm5DS1R2QjBMd0NT?=
- =?utf-8?B?RVRoMThjbEFqaVNkR3NNQzFjN1l3MVQwRXU2V2VyR2Jwd0U0OW9iRnhMRVkr?=
- =?utf-8?B?cWRQR3BRcnp2bHVpNGxvczNYMWVvbkhNd3NkNVJra0tCNzlWazl4c0d1Sjgw?=
- =?utf-8?B?S2FhT3VoNDVDYmF0ODRIK3VlMFlIeXRHSlhFbWRMSm8vaHdtOURJb1Q3T0dF?=
- =?utf-8?B?TlE9PQ==?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: f62242f2-d38b-4e3a-aadf-08db88f5347c
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 07:44:53.3316
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vKw5JTCdm3Bjol2uA0DkWyvPaksTSkiSeje8TDTXmBGI+mMzUCI6+bhPzB0adAjEb3eJb4v33FqwT8dy+661K7WeMR2M25/osrAo4SfqNTg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR10MB6646
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RESEND PATCH v2] media: mtk-jpeg: Fix use after free bug due to
+ uncanceled work
+Content-Language: en-US
+To:     Zheng Wang <zyytlz.wz@163.com>, Kyrie.Wu@mediatek.com
+Cc:     bin.liu@mediatek.com, mchehab@kernel.org, matthias.bgg@gmail.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
+        security@kernel.org, hackerzheng666@gmail.com,
+        1395428693sheep@gmail.com, alex000young@gmail.com
+References: <20230707092414.866760-1-zyytlz.wz@163.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230707092414.866760-1-zyytlz.wz@163.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.07.23 08:01, Alexandru Ardelean wrote:
-> From: Bogdan Togorean <bogdan.togorean@analog.com>
+Il 07/07/23 11:24, Zheng Wang ha scritto:
+> In mtk_jpeg_probe, &jpeg->job_timeout_work is bound with
+> mtk_jpeg_job_timeout_work. Then mtk_jpeg_dec_device_run
+> and mtk_jpeg_enc_device_run may be called to start the
+> work.
+> If we remove the module which will call mtk_jpeg_remove
+> to make cleanup, there may be a unfinished work. The
+> possible sequence is as follows, which will cause a
+> typical UAF bug.
 > 
-> For ADV7533 and ADV7535 low refresh rate is selected using
-> bits [3:2] of 0x4a main register.
-> So depending on ADV model write 0xfb or 0x4a register.
+> Fix it by canceling the work before cleanup in the mtk_jpeg_remove
 > 
-> Fixes: 2437e7cd88e8 ("drm/bridge: adv7533: Initial support for ADV7533")
-> Reviewed-by: Robert Foss <rfoss@kernel.org>
-> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-> Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
-> Signed-off-by: Alexandru Ardelean <alex@shruggie.ro>
+> CPU0                  CPU1
+> 
+>                      |mtk_jpeg_job_timeout_work
+> mtk_jpeg_remove     |
+>    v4l2_m2m_release  |
+>      kfree(m2m_dev); |
+>                      |
+>                      | v4l2_m2m_get_curr_priv
+>                      |   m2m_dev->curr_ctx //use
+> Fixes: b2f0d2724ba4 ("[media] vcodec: mediatek: Add Mediatek JPEG Decoder Driver")
+> Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
 
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+
