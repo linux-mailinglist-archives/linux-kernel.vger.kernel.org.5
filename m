@@ -2,128 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F12A75ABE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1DD75ABE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbjGTKZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 06:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        id S231325AbjGTK1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 06:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231315AbjGTKZM (ORCPT
+        with ESMTP id S229570AbjGTK1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 06:25:12 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF0810D4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:25:11 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fdd14c1fbfso975017e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:25:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689848709; x=1690453509;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from:sender
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4ZEJjo1kzQSvDVQkBL4GlrzESVg5phFtB0BOvDLNf0Q=;
-        b=ecrAkg4qQhLI424S/0ir5Zx3XEnGrP9SQR4uF4SYHFsupjg/5+AnR8NBgLE4VChoIY
-         23KqPDXzGPS8Uxx0Zz40E3HeTwZ/vuAhi1TnW/kPp7hPILBWOp/oiqlX9DJC0Ha+fVKY
-         Plrg5leA3g4sh0bEsJy0mBuUgp7BFp9f7gnfB8kwYw0Xhu/hBftjaIlO9kX7VqsfjZfa
-         fkyFUkMogiZYyhOl4Z1S39mYMVf191KVtlhqDeMaVIACyhF//g9MehM8h+5z6cLu2UTP
-         Xzv+0BO4jFCuodMnY3Hfi/cQUJ3ISGnmgE5Gulf8Fc2Jskjt6JKx9dc6KSEu8Uhf+4KK
-         MD6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689848709; x=1690453509;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from:sender
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4ZEJjo1kzQSvDVQkBL4GlrzESVg5phFtB0BOvDLNf0Q=;
-        b=ZvO3/9BxM4B+TMv8i9wMKtYIDztO7BQpNY2M7HAdf5tYqlr7O8G4HGmVySWD5N7Wnl
-         keSK3PNGJkoBpsjSoqgMBru4o2RjIv7+GR7FE6ZSg8y/bJKg7IYVJ3CYMtceVSf6NCRw
-         NGE3wViIo76N5iYrhFH30hPOURWiom3CVce3Z7kRU8KIPyFKgr0TGQWHSIYwelSq1gbR
-         G0zrtxngJHdteEqzkva+xPW3gtVe71yAQIB5S2vYIxluKTRH1/UDFz19eaNyTmHE/Jcp
-         JbVhRnAilCBN/lBfQr9nbb4OgpZGvtalW/FmH2Z9fwTYwQhaNbXFVL1QwKgmtBhIHI6B
-         blRg==
-X-Gm-Message-State: ABy/qLamLiUasTfVYDeaYvVTWDr3tANIMzsLoDx6NYgNhw7FnsAjnicP
-        1BC68wmfRE4RdsF0c/MBCDrpT1XaWtXpYGfKCOo0zYEY
-X-Google-Smtp-Source: APBJJlHG5v4TuE/QtX8uGcx6+UqxprXMYyd89LjRKHPp7xU/5flM7ZkKlLVtzBAv5aOO+Fw+VG6TIH9E2tacKTkN3GU=
-X-Received: by 2002:a05:6512:31cc:b0:4f9:92c7:4026 with SMTP id
- j12-20020a05651231cc00b004f992c74026mr2294107lfe.1.1689848708880; Thu, 20 Jul
- 2023 03:25:08 -0700 (PDT)
+        Thu, 20 Jul 2023 06:27:19 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B77010D2;
+        Thu, 20 Jul 2023 03:27:16 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 52067120077;
+        Thu, 20 Jul 2023 13:27:13 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 52067120077
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1689848833;
+        bh=k1AxALUOUAa6dGA6SXUccWu1sfcnyFNB59uw2qoEQLo=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=fLGEqU8omiYKy0q7fpxdwxOhy8foodW/nUolQKNwZqIV+V7r7siAvRDKKaBspWk9Y
+         SWRWL6Biz3NK0O5j+G9AJJ3PFUKyTcKYvtes8znuAetkL/fWXWzAXwA5hpmM15C67m
+         D53/rGKc/1+y4AYCEmEc/LgfN7T7gNhmduy4cPNwqOb2SjIxpD5e2sK4R7dewPFSzG
+         myBUNk+3FVQ5SoYoO4hMDTZpFsqeGklPdgWer2yYqvsttrJSZPBTGLYuF1MyCKoUUM
+         eukiwI7r1+SHgeHK3Iv32N9XSjekjLLcwMQ6OnekWp+SwNtIBWL79VYvQlicJ1hToF
+         hSJsc1y7xg9tg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 20 Jul 2023 13:27:13 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
+ 2023 13:27:12 +0300
+Date:   Thu, 20 Jul 2023 13:27:12 +0300
+From:   Dmitry Rokosov <ddrokosov@sberdevices.ru>
+To:     Huqiang Qin <huqiang.qin@amlogic.com>
+CC:     <neil.armstrong@linaro.org>, <khilman@baylibre.com>,
+        <jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: Add gpio_intc node and pinctrl node for
+ Amlogic C3 SoCs
+Message-ID: <20230720102712.qrepf7nhj7wk474s@CAB-WSD-L081021>
+References: <20230720052054.3909902-1-huqiang.qin@amlogic.com>
 MIME-Version: 1.0
-References: <CAKZGPAOYPp3ANWfBWxcsT3TJdPt8jH-f2ZJzpin=UZ=-b_-QFg@mail.gmail.com>
-In-Reply-To: <CAKZGPAOYPp3ANWfBWxcsT3TJdPt8jH-f2ZJzpin=UZ=-b_-QFg@mail.gmail.com>
-Sender: getarunks@gmail.com
-X-Google-Sender-Delegation: getarunks@gmail.com
-From:   Arun KS <arunks.linux@gmail.com>
-Date:   Thu, 20 Jul 2023 15:54:56 +0530
-X-Google-Sender-Auth: QTokIRvnb7k_xs_burmWy6oAXnU
-Message-ID: <CAKZGPAOY9uxvSTuta+4a41=GGqTxus8YDcv54T7iAL9P-fj_+w@mail.gmail.com>
-Subject: Re: Question on sched_clock
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Arun KS <getarunks@gmail.com>, peterz@infradead.org,
-        pmladek@suse.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230720052054.3909902-1-huqiang.qin@amlogic.com>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178744 [Jul 20 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: DDRokosov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 524 524 9753033d6953787301affc41bead8ed49c47b39d, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, lists.infradead.org:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/07/20 09:21:00
+X-KSMG-LinksScanning: Clean, bases: 2023/07/20 08:06:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/20 06:46:00 #21646672
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CCing maintainers
+Hello Huqiang!
 
-On Wed, Jul 19, 2023 at 10:36=E2=80=AFAM Arun KS <arunks.linux@gmail.com> w=
-rote:
->
-> Hi,
->
-> Kernel=E2=80=99s printk uses local_clock() for timestamps and it is mappe=
-d to
-> sched_clock(). Two problems/requirements I see,
->
-> One, Kernel=E2=80=99s printk timestamps start from 0, I want to change th=
-is to
-> match with actual time since boot.
-> Two, sched_clock() doesn=E2=80=99t account for time spend in low power
-> state(suspend to ram)
->
-> Could workout patches to modify these behaviours and found working in
-> my system. But need to hear expert opinion on why this is not done in
-> the upstream.
->
-> diff --git a/kernel/time/sched_clock.c b/kernel/time/sched_clock.c
-> index 68d6c1190ac7..b63b2ded5727 100644
-> --- a/kernel/time/sched_clock.c
-> +++ b/kernel/time/sched_clock.c
-> @@ -190,7 +190,10 @@ sched_clock_register(u64 (*read)(void), int bits,
-> unsigned long rate)
->         /* Update epoch for new counter and update 'epoch_ns' from old co=
-unter*/
->         new_epoch =3D read();
->         cyc =3D cd.actual_read_sched_clock();
-> -       ns =3D rd.epoch_ns + cyc_to_ns((cyc - rd.epoch_cyc) &
-> rd.sched_clock_mask, rd.mult, rd.shift);
-> +       if (!cyc)
-> +               ns =3D cyc_to_ns(new_epoch, new_mult, new_shift)
-> +       else
-> +               ns =3D rd.epoch_ns + cyc_to_ns((cyc - rd.epoch_cyc) &
-> rd.sched_clock_mask, rd.mult, rd.shift);
->         cd.actual_read_sched_clock =3D read;
->
->         rd.read_sched_clock     =3D read;
->
-> @@ -287,7 +290,6 @@ void sched_clock_resume(void)
->  {
->         struct clock_read_data *rd =3D &cd.read_data[0];
->
-> -       rd->epoch_cyc =3D cd.actual_read_sched_clock();
->         hrtimer_start(&sched_clock_timer, cd.wrap_kt, HRTIMER_MODE_REL_HA=
-RD);
->         rd->read_sched_clock =3D cd.actual_read_sched_clock;
->  }
->
-> Regards,
-> Arun
+Thank you for the patchset!
+
+On Thu, Jul 20, 2023 at 01:20:54PM +0800, Huqiang Qin wrote:
+> Add gpio interrupt controller device and pinctrl device.
+> 
+> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
+> ---
+>  arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi | 25 +++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi b/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
+> index 60ad4f3eef9d..4ad9c042f85c 100644
+> --- a/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi
+> @@ -82,6 +82,31 @@ uart_b: serial@7a000 {
+>  				clock-names = "xtal", "pclk", "baud";
+>  			};
+>  
+> +			gpio_intc: interrupt-controller@4080 {
+> +				compatible = "amlogic,meson-gpio-intc",
+> +					     "amlogic,c3-gpio-intc";
+> +				reg = <0x0 0x4080 0x0 0x0020>;
+> +				interrupt-controller;
+> +				#interrupt-cells = <2>;
+> +				amlogic,channel-interrupts =
+> +					<10 11 12 13 14 15 16 17 18 19 20 21>;
+> +			};
+> +
+> +			periphs_pinctrl: pinctrl@4000 {
+
+Please sort dts nodes by reg offset in the one bus declaration.
+
+> +				compatible = "amlogic,c3-periphs-pinctrl";
+> +				#address-cells = <2>;
+> +				#size-cells = <2>;
+> +				ranges;
+> +
+> +				gpio: bank@4000 {
+> +					reg = <0x0 0x4000 0x0 0x004c>,
+> +					      <0x0 0x4100 0x0 0x01de>;
+> +					reg-names = "mux", "gpio";
+> +					gpio-controller;
+> +					#gpio-cells = <2>;
+> +					gpio-ranges = <&periphs_pinctrl 0 0 55>;
+> +				};
+> +			};
+>  		};
+>  	};
+>  };
+> -- 
+> 2.37.1
+> 
+> 
+> _______________________________________________
+> linux-amlogic mailing list
+> linux-amlogic@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+
+-- 
+Thank you,
+Dmitry
