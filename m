@@ -2,72 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6F975A92F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9F075A934
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbjGTI0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 04:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60612 "EHLO
+        id S229729AbjGTI0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 04:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbjGTI0F (ORCPT
+        with ESMTP id S231644AbjGTI0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 04:26:05 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BCD2684;
-        Thu, 20 Jul 2023 01:26:02 -0700 (PDT)
-X-UUID: 0e6b289826d711ee9cb5633481061a41-20230720
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=Qm5KdnmI2NQxAsRiyAJeJgT+IiS3U8R2/O6sl1QAf1E=;
-        b=aUSwjlLLoYd3oUL+Cu0MSVu8KhimAlGTkgUb9lt3+85K8gxjDDXhyij1MSZ/W7wYRC5+rXwAPsnTbJklDo7b+Ye+KHZDVwNk2PYYOWYrCoX1ZGiI68n1tanrbErF90XJBMiNrMX3RtLzLVKgWb9Iz1ND4x4snGsDkOLgNJWLG9o=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.28,REQID:312823a6-ac3b-4ee2-a799-abea6c9df06c,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:176cd25,CLOUDID:ef39d0dc-dc79-4898-9235-1134b97257a8,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 0e6b289826d711ee9cb5633481061a41-20230720
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
-        (envelope-from <shuijing.li@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 754139672; Thu, 20 Jul 2023 16:25:59 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 20 Jul 2023 16:25:56 +0800
-Received: from mszsdhlt06.gcn.mediatek.inc (10.16.6.206) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 20 Jul 2023 16:25:56 +0800
-From:   Shuijing Li <shuijing.li@mediatek.com>
-To:     <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <matthias.bgg@gmail.com>,
-        <angelogioacchino.delregno@collabora.com>, <jitao.shi@mediatek.com>
-CC:     <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Shuijing Li <shuijing.li@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v3,1/3] dt-bindings: display: mediatek: dp: Add compatible for MediaTek MT8188
-Date:   Thu, 20 Jul 2023 16:26:02 +0800
-Message-ID: <20230720082604.18618-2-shuijing.li@mediatek.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230720082604.18618-1-shuijing.li@mediatek.com>
-References: <20230720082604.18618-1-shuijing.li@mediatek.com>
+        Thu, 20 Jul 2023 04:26:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9C82D5D;
+        Thu, 20 Jul 2023 01:26:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E7A36192A;
+        Thu, 20 Jul 2023 08:26:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67FA3C433CA;
+        Thu, 20 Jul 2023 08:26:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689841577;
+        bh=8hXpYZiC5flMcBz6vQdYkhcT3AAczzerq09YWQX34Cs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hgwNTyWkIX9IAhNeqFtqPOGah7eaiV9bf+YbUC2Q2COcOrErULar1+CtssefQrxLM
+         CNJN8xf7glOlEBIZujkUMCpAwCBXxVeE0nlEGFTZrlnhyYG2rUox5DClgUbq+RgpE1
+         cOdm/3wDyvRrLzLz5OIdnHPKyU5ovFzeMvHrWRidr2dIdlAewobJlZg9QLmSCNqy4c
+         OG9Dxrvf5Lm2veAwozJtBEq9auoYsDwisSQMsyQlPm5HfYfEPueXe5JC+DI9h3mupQ
+         xCxnwOyehlTfgFtvwLCuFPwD8rFw/vwsNIl8yO0lfLba2v0qeYrXpAdT/AKKt4ZRlX
+         EPxhe9yDpIEdA==
+Date:   Thu, 20 Jul 2023 13:56:02 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>
+Cc:     quic_cang@quicinc.com, stanley.chu@mediatek.com,
+        bvanassche@acm.org, quic_asutoshd@quicinc.com, avri.altman@wdc.com,
+        martin.petersen@oracle.com, beanhuo@micron.com,
+        konrad.dybcio@linaro.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        andersson@kernel.org, jejb@linux.ibm.com,
+        linux-arm-msm@vger.kernel.org, quic_ziqichen@quicinc.com
+Subject: Re: [PATCH V2] scsi: ufs: ufs-qcom: Update UFS devfreq Parameters
+Message-ID: <20230720082602.GA4863@thinkpad>
+References: <20230716074907.12356-1-quic_nitirawa@quicinc.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+In-Reply-To: <20230716074907.12356-1-quic_nitirawa@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,33 +61,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dt-binding documentation of dp-tx for MediaTek MT8188 SoC.
+On Sun, Jul 16, 2023 at 01:19:07PM +0530, Nitin Rawat wrote:
+> To support the periodic polling mode without stop caused by CPU idle
+> state, enable delayed timer as default instead of deferrable timer
+> for qualcomm platforms.
 
-Signed-off-by: Shuijing Li <shuijing.li@mediatek.com>
-Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
-Changes in v2:
-add a mediatek,mt8188-edp-tx compatible per suggestion from the previous thread:
-https://lore.kernel.org/lkml/c4a4a900-c80d-b110-f10e-7fa2dae8b7b5@collabora.com/
----
- .../devicetree/bindings/display/mediatek/mediatek,dp.yaml       | 2 ++
- 1 file changed, 2 insertions(+)
+How about,
 
-diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,dp.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,dp.yaml
-index ff781f2174a0..2aef1eb32e11 100644
---- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dp.yaml
-+++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dp.yaml
-@@ -21,6 +21,8 @@ description: |
- properties:
-   compatible:
-     enum:
-+      - mediatek,mt8188-dp-tx
-+      - mediatek,mt8188-edp-tx
-       - mediatek,mt8195-dp-tx
-       - mediatek,mt8195-edp-tx
- 
+"Devfreq uses the default DEVFREQ_TIMER_DEFERRABLE mode which uses the deferred
+timer for scheduling the devfreq load monitor function. This causes the load
+monitoring to be done only with non-idle CPUs and not making use of the idle
+CPUs. Hence, use the DEVFREQ_TIMER_DELAYED mode which uses the delayed timer
+thereby making use of idle CPUs as well for load monitoring."
+
+> And change UFS devfreq downdifferential threshold to 65 for less
+> aggressive downscaling.
+> 
+
+This change needs to be done in a separate patch. Also please provide any
+benchmark if available to justify the patch.
+
+> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+> Signed-off-by: Asutosh Das <quic_asutoshd@quicinc.com>
+
+Your signed-off-by should come last, as you are the one sending this patch.
+
+- Mani
+
+> ---
+> 
+> Changes in v2:
+> - Realigned the commit text
+> 
+>  drivers/ufs/host/ufs-qcom.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index 82d02e7f3b4f..a15815c951ca 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -1388,8 +1388,9 @@ static void ufs_qcom_config_scaling_param(struct ufs_hba *hba,
+>  					struct devfreq_simple_ondemand_data *d)
+>  {
+>  	p->polling_ms = 60;
+> +	p->timer = DEVFREQ_TIMER_DELAYED;
+>  	d->upthreshold = 70;
+> -	d->downdifferential = 5;
+> +	d->downdifferential = 65;
+>  }
+>  #else
+>  static void ufs_qcom_config_scaling_param(struct ufs_hba *hba,
+> --
+> 2.17.1
+> 
+
 -- 
-2.40.1
-
+மணிவண்ணன் சதாசிவம்
