@@ -2,54 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73FFB75B239
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502B975B240
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbjGTPQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:16:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
+        id S231735AbjGTPRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232535AbjGTPQL (ORCPT
+        with ESMTP id S229828AbjGTPRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:16:11 -0400
-Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E257926B0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:16:09 -0700 (PDT)
-Received: from [IPV6:2a02:8428:2a4:1a01:6315:6ab5:10c2:f7af] (unknown [IPv6:2a02:8428:2a4:1a01:6315:6ab5:10c2:f7af])
-        (Authenticated sender: marc.w.gonzalez@free.fr)
-        by smtp4-g21.free.fr (Postfix) with ESMTPSA id 6CE5419F5C7;
-        Thu, 20 Jul 2023 17:16:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-        s=smtp-20201208; t=1689866167;
-        bh=MiHnnl6bhVPR1+ongnOWzT28HIpB4Cwd6ywFRv/O2ng=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=cReJTNfI8afAxFVwdZS8SvkwNPPASZaanU+1dSuC5OPQonckNbGKSH7dx3Rg1StLH
-         dCs0OlPhLufeRXP4qHf2/3iWBCgpsm41b0TuqHAntXueYakVWCIqVrqveUiPXSd44t
-         XXzJzLgnXDAXWwgc2fRcs1ReWhagacj/4C/1/cvpSu6QjOzXInPL0+hzqJ4R90n5Xw
-         Is6xepvLPkjyVGtL4P5cJwru8kkCMkw2M9t9naxZCoQXWDu75MNgy/sB6V/nkVcBg1
-         yKBcqiu/8pO4WaleCkd81ei+pgFXPLHbuwxZmUBE9UALEcH8DAsTmBiIcfS7kHB9c5
-         rx7GLEfniuLrA==
-Message-ID: <c5b0c16b-01df-9d74-aeec-30124f134a94@free.fr>
-Date:   Thu, 20 Jul 2023 17:16:03 +0200
+        Thu, 20 Jul 2023 11:17:43 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A2CB1B9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:17:41 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b96789d574so9981681fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:17:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689866260; x=1690471060;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KGJbFmy2Z+/kC4N0jPlXv0cAGkNm61uDIvplAYqC9dU=;
+        b=F9zASoBOUF5oxIlcLW9zXQHh52nuJLZ5qw5IZL7i4SM9WHz2dPV1vUZRuz3q3Y+Hhx
+         v2HTdCNspqien4sjD8VHWqRUVQ4fQqOr7zK9fJfTTNwzvq/AKJITq7SiR8bEyilZH9BB
+         B94GJik8/ZG9w1AsqXKrBH9Ktmoh/WfeauO4/IMRFFvQFqGJKHLKZKfDFDeq1z0c3uX6
+         6cnpukWhLSssrN5a6HDRwxOhN/6YRhBZhmnIMBjsu96RdHKCBcYTdJZAngbaV8NlEDXH
+         ySDlr8sVJXjjH4hIifTW78aJgX+2ItLUSXJbzz1uUeBa/UEBbl4snu4+SP9TFacqclNu
+         3ptg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689866260; x=1690471060;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KGJbFmy2Z+/kC4N0jPlXv0cAGkNm61uDIvplAYqC9dU=;
+        b=Z0JkFxa9nbnlasIfqAZo5xbeSDF6g04/VKeNyMOoGasUIrgh3M4lhwSRMzJ6/Qv1iZ
+         LzuhY7OaymBAV90dD3/Mr1paifn7dyXi+GYEGXhU9M/Q0cGfIyJ51PhPe+6JaWWRAYEt
+         S1ycWmhk7FJkjj1JF3zzscrYXwO0zaORbIqqmc1/O0YddWWahnRM/iQ+nq51Yyg9EvRV
+         ZMw/Jiec4B/0QgCNE0/3XugRzkqv+E0qoIzIGxX5kjUk9rM7ZxjujPCZ0SiEqfdSoJwu
+         bwX37wV+VhAvur0goP3Oitqfo5HJihJ+rdFkbeQbG018zversi3ArVuSwq3UZKxV8y0U
+         +xsg==
+X-Gm-Message-State: ABy/qLaHppnr/mB8lobDatuN+N9CyybLAWCCiuff8Js8rdILAkObkwuZ
+        d7ERFaK1FC1MGhWHVpDRvsWCSJlQKmoXA41jdhyLOg==
+X-Google-Smtp-Source: APBJJlEBe0CQjbSUBll9Vo/Jw2UbPo3HnZ0E3uk9dGhUVXSvidXk7j9k9ouvSgXbOrsL8VgxM3eBF7KwOsBNujkwy58=
+X-Received: by 2002:a2e:9b89:0:b0:2b6:e7d6:714d with SMTP id
+ z9-20020a2e9b89000000b002b6e7d6714dmr2973856lji.22.1689866259750; Thu, 20 Jul
+ 2023 08:17:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [patch 00/58] x86/apic: Decrapification and static calls
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20230717223049.327865981@linutronix.de>
- <502aa1d5-97a0-7787-1d9c-486f351fe9c5@free.fr>
- <20230720131316.GD3569127@hirez.programming.kicks-ass.net>
-Content-Language: en-US
-From:   Marc Gonzalez <marc.w.gonzalez@free.fr>
-In-Reply-To: <20230720131316.GD3569127@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+References: <20230711072053.2837327-1-geert+renesas@glider.be>
+In-Reply-To: <20230711072053.2837327-1-geert+renesas@glider.be>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 20 Jul 2023 17:17:27 +0200
+Message-ID: <CAMRc=Mef-J-WinQxphm+CU8u-PoBan1hPT2yLih4i-RFUDePBQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: mxc: Improve PM configuration
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,52 +71,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2023 15:13, Peter Zijlstra wrote:
-
-> On Thu, Jul 20, 2023 at 02:43:55PM +0200, Marc Gonzalez wrote:
+On Tue, Jul 11, 2023 at 9:20=E2=80=AFAM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
 >
->> # cat /proc/cpuinfo
->> processor       : 0
->> vendor_id       : GenuineIntel
->> cpu family      : 6
->> model           : 28
->> model name      : Intel(R) Atom(TM) CPU CE4150   @ 1.20GHz
->> stepping        : 10
->> microcode       : 0x106
->> cpu MHz         : 1199.885
->> cache size      : 512 KB
->> physical id     : 0
->> siblings        : 2
->> core id         : 0
->> cpu cores       : 1
->> apicid          : 0
->> initial apicid  : 0
->> fdiv_bug        : no
->> f00f_bug        : no
->> coma_bug        : no
->> fpu             : yes
->> fpu_exception   : yes
->> cpuid level     : 10
->> wp              : yes
->> flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe nx lm constant_tsc arch_perfmon pebs bts cpuid aperfmperf pni dtes64 monitor ds_cpl vmx tm2 ssse3 cx16 xtpr pdcm movbe lahf_lm tpr_shadow vnmi flexpriority vpid dtherm
->> vmx flags       : vnmi flexpriority tsc_offset vtpr vapic
->> bugs            :
->> bogomips        : 2400.76
->> clflush size    : 64
->> cache_alignment : 64
->> address sizes   : 32 bits physical, 48 bits virtual
-> 
-> But that's a 64bit chip, no? lm, cx16
+> If CONFIG_PM=3Dn (e.g. m68k/allmodconfig):
+>
+>     drivers/gpio/gpio-mxc.c:612:12: error: =E2=80=98mxc_gpio_runtime_resu=
+me=E2=80=99 defined but not used [-Werror=3Dunused-function]
+>       612 | static int mxc_gpio_runtime_resume(struct device *dev)
+>           |            ^~~~~~~~~~~~~~~~~~~~~~~
+>     drivers/gpio/gpio-mxc.c:602:12: error: =E2=80=98mxc_gpio_runtime_susp=
+end=E2=80=99 defined but not used [-Werror=3Dunused-function]
+>       602 | static int mxc_gpio_runtime_suspend(struct device *dev)
+>           |            ^~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Fix this by using the non-SET *_PM_OPS to configure the dev_pm_ops
+> callbacks, and by wrapping the driver.pm initializer insider pm_ptr().
+>
+> As NOIRQ_SYSTEM_SLEEP_PM_OPS() uses pm_sleep_ptr() internally, the
+> __maybe_unused annotations for the noirq callbacks are no longer needed,
+> and can be removed.
+>
+> Fixes: 3283d820dce649ad ("gpio: mxc: add runtime pm support")
+> Reported-by: noreply@ellerman.id.au
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/gpio/gpio-mxc.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-mxc.c b/drivers/gpio/gpio-mxc.c
+> index a9fb6bd9aa6f9645..a43df5d5006e62d3 100644
+> --- a/drivers/gpio/gpio-mxc.c
+> +++ b/drivers/gpio/gpio-mxc.c
+> @@ -623,7 +623,7 @@ static int mxc_gpio_runtime_resume(struct device *dev=
+)
+>         return 0;
+>  }
+>
+> -static int __maybe_unused mxc_gpio_noirq_suspend(struct device *dev)
+> +static int mxc_gpio_noirq_suspend(struct device *dev)
+>  {
+>         struct platform_device *pdev =3D to_platform_device(dev);
+>         struct mxc_gpio_port *port =3D platform_get_drvdata(pdev);
+> @@ -634,7 +634,7 @@ static int __maybe_unused mxc_gpio_noirq_suspend(stru=
+ct device *dev)
+>         return 0;
+>  }
+>
+> -static int __maybe_unused mxc_gpio_noirq_resume(struct device *dev)
+> +static int mxc_gpio_noirq_resume(struct device *dev)
+>  {
+>         struct platform_device *pdev =3D to_platform_device(dev);
+>         struct mxc_gpio_port *port =3D platform_get_drvdata(pdev);
+> @@ -647,8 +647,8 @@ static int __maybe_unused mxc_gpio_noirq_resume(struc=
+t device *dev)
+>  }
+>
+>  static const struct dev_pm_ops mxc_gpio_dev_pm_ops =3D {
+> -       SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(mxc_gpio_noirq_suspend, mxc_gpio_no=
+irq_resume)
+> -       SET_RUNTIME_PM_OPS(mxc_gpio_runtime_suspend, mxc_gpio_runtime_res=
+ume, NULL)
+> +       NOIRQ_SYSTEM_SLEEP_PM_OPS(mxc_gpio_noirq_suspend, mxc_gpio_noirq_=
+resume)
+> +       RUNTIME_PM_OPS(mxc_gpio_runtime_suspend, mxc_gpio_runtime_resume,=
+ NULL)
+>  };
+>
+>  static int mxc_gpio_syscore_suspend(void)
+> @@ -695,7 +695,7 @@ static struct platform_driver mxc_gpio_driver =3D {
+>                 .name   =3D "gpio-mxc",
+>                 .of_match_table =3D mxc_gpio_dt_ids,
+>                 .suppress_bind_attrs =3D true,
+> -               .pm =3D &mxc_gpio_dev_pm_ops,
+> +               .pm =3D pm_ptr(&mxc_gpio_dev_pm_ops),
+>         },
+>         .probe          =3D mxc_gpio_probe,
+>  };
+> --
+> 2.34.1
+>
 
-Hol'up. A 64b chip with 32b physical addresses?
-Only for the additional registers then?
+Applied, thanks!
 
-https://www.cpu-world.com/CPUs/Atom/Intel-Atom%20CE4150.html
-https://www.techpowerup.com/cpu-specs/atom-ce4150.c1440
-
-I'm 99% sure it's running a 32b kernel.
-Are you saying a 64b kernel would work?
-(Well, there are several binary blobs, so no way.)
-
-Regards
-
+Bart
