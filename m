@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E6F75B303
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BF275B30A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232858AbjGTPhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
+        id S232648AbjGTPhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232792AbjGTPgh (ORCPT
+        with ESMTP id S232759AbjGTPhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:36:37 -0400
+        Thu, 20 Jul 2023 11:37:02 -0400
 Received: from frasgout13.his.huawei.com (ecs-14-137-139-46.compute.hwclouds-dns.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2D52D53;
-        Thu, 20 Jul 2023 08:36:13 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4R6GhV51dvz9xyNl;
-        Thu, 20 Jul 2023 23:24:58 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9751326BA;
+        Thu, 20 Jul 2023 08:36:28 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4R6Ghp1D60z9xyNZ;
+        Thu, 20 Jul 2023 23:25:14 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwBHquXFU7lkGHDRBA--.21759S11;
-        Thu, 20 Jul 2023 16:35:35 +0100 (CET)
+        by APP1 (Coremail) with SMTP id LxC2BwBHquXFU7lkGHDRBA--.21759S12;
+        Thu, 20 Jul 2023 16:35:49 +0100 (CET)
 From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
 To:     dhowells@redhat.com, dwmw2@infradead.org,
         herbert@gondor.apana.org.au, davem@davemloft.net,
@@ -35,32 +35,32 @@ Cc:     linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
         antony@vennard.ch, konstantin@linuxfoundation.org,
         James.Bottomley@HansenPartnership.com,
         Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH v3 9/9] ima: Support non-PKCS#7 modsig types
-Date:   Thu, 20 Jul 2023 17:32:45 +0200
-Message-Id: <20230720153247.3755856-10-roberto.sassu@huaweicloud.com>
+Subject: [RFC][GNUPG][PATCH v3 1/2] Convert PGP keys to the user asymmetric keys format
+Date:   Thu, 20 Jul 2023 17:32:46 +0200
+Message-Id: <20230720153247.3755856-11-roberto.sassu@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230720153247.3755856-1-roberto.sassu@huaweicloud.com>
 References: <20230720153247.3755856-1-roberto.sassu@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwBHquXFU7lkGHDRBA--.21759S11
-X-Coremail-Antispam: 1UD129KBjvJXoW3JrW7uw4fWFykCw1ktF18Krg_yoW7Ww48p3
-        ZxuF1rCrZ8G3WxJFnYyw1aywnIkw15Gw15K3yjk3Z0yrnxZw1DGw1j9w1fZFy3K3yDWFWf
-        Jr4xXr4YkF1kXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBqb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E
-        14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I
-        80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCj
-        c4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28Icx
-        kI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
-        xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42
-        IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU13l1DUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAEBF1jj5C8owACs9
+X-CM-TRANSID: LxC2BwBHquXFU7lkGHDRBA--.21759S12
+X-Coremail-Antispam: 1UD129KBjvAXoWfJFyrJF4kCrW5Aw17tF1DZFb_yoW8GF45Jo
+        WfWa1rJrn8GF47Zws0gr17Xa47XrnagrZrJw4fArWDZayvyr15ta47Aa4fJ3y5Cr4fur43
+        XFyftrWSkr4xtFn3n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUYu7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
+        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF
+        0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
+        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxV
+        AFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x02
+        67AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrV
+        C2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE
+        7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20x
+        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
+        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIx
+        AIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI
+        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z2
+        80aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7IU13l1DUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAEBF1jj4y-4AAAsg
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_RDNS_DYNAMIC_FP,
         RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,
@@ -73,166 +73,537 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Add support for alternative signature formats through the newly introduced
-user asymmetric key signatures. The corresponding API is invoked if the
-signature type is not PKEY_ID_PKCS7. If the signature type is
-PKEY_ID_PKCS7, nothing changes, the existing API is still invoked.
+Introduce the new gpg command --conv-kernel, to convert PGP keys to the
+user asymmetric keys format.
+
+The --export command cannot be used, as it would not allow to convert
+signatures from a file.
 
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- security/integrity/ima/ima_modsig.c | 79 +++++++++++++++++++++--------
- 1 file changed, 59 insertions(+), 20 deletions(-)
+ configure.ac      |   7 ++
+ doc/gpg.texi      |   4 +
+ g10/Makefile.am   |   4 +
+ g10/conv-packet.c | 284 ++++++++++++++++++++++++++++++++++++++++++++++
+ g10/conv-packet.h |  37 ++++++
+ g10/gpg.c         |  15 ++-
+ g10/mainproc.c    |  17 ++-
+ g10/options.h     |   2 +
+ 8 files changed, 368 insertions(+), 2 deletions(-)
+ create mode 100644 g10/conv-packet.c
+ create mode 100644 g10/conv-packet.h
 
-diff --git a/security/integrity/ima/ima_modsig.c b/security/integrity/ima/ima_modsig.c
-index 3e7bee30080..7c96cb2613a 100644
---- a/security/integrity/ima/ima_modsig.c
-+++ b/security/integrity/ima/ima_modsig.c
-@@ -12,11 +12,14 @@
- #include <linux/module_signature.h>
- #include <keys/asymmetric-type.h>
- #include <crypto/pkcs7.h>
-+#include <crypto/uasym_keys_sigs.h>
+diff --git a/configure.ac b/configure.ac
+index fe7e821089b..6c867e6409e 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -105,6 +105,7 @@ have_libusb=no
+ have_libtss=no
+ have_system_resolver=no
+ gnupg_have_ldap="n/a"
++have_uasym_support=no
  
- #include "ima.h"
+ use_zip=yes
+ use_bzip2=yes
+@@ -1817,6 +1818,11 @@ if test x"$use_run_gnupg_user_socket" = x"yes"; then
+             [If defined try /run/gnupg/user before /run/user])
+ fi
  
- struct modsig {
- 	struct pkcs7_message *pkcs7_msg;
-+	struct uasym_sig_message *uasym_sig;
-+	u8 id_type;
++AC_CHECK_HEADERS([linux/uasym_parser.h], [have_uasym_support=yes], [])
++AM_CONDITIONAL([UASYM_KEYS_SIGS], [test "$have_uasym_support" = yes])
++if test "$have_uasym_support" = yes; then
++  CFLAGS="$CFLAGS -DUASYM_KEYS_SIGS"
++fi
  
- 	enum hash_algo hash_algo;
+ #
+ # Decide what to build
+@@ -2158,6 +2164,7 @@ echo "
+         TLS support:         $use_tls_library
+         TOFU support:        $use_tofu
+         Tor support:         $show_tor_support
++        Uasym support:       $have_uasym_support
+ "
+ if test "$have_libtss" != no -a -z "$TPMSERVER" -a -z "$SWTPM"; then
+ cat <<G10EOF
+diff --git a/doc/gpg.texi b/doc/gpg.texi
+index 6b584a91306..e4d6f0adc59 100644
+--- a/doc/gpg.texi
++++ b/doc/gpg.texi
+@@ -652,6 +652,10 @@ Set the TOFU policy for all the bindings associated with the specified
+ @pxref{trust-model-tofu}.  The @var{keys} may be specified either by their
+ fingerprint (preferred) or their keyid.
  
-@@ -28,8 +31,8 @@ struct modsig {
- 	 * This is what will go to the measurement list if the template requires
- 	 * storing the signature.
- 	 */
--	int raw_pkcs7_len;
--	u8 raw_pkcs7[];
-+	int raw_sig_len;
-+	u8 raw_sig[];
- };
- 
- /*
-@@ -57,27 +60,43 @@ int ima_read_modsig(enum ima_hooks func, const void *buf, loff_t buf_len,
- 	buf_len -= marker_len;
- 	sig = (const struct module_signature *)(p - sizeof(*sig));
- 
--	rc = mod_check_sig(sig, buf_len, func_tokens[func]);
--	if (rc)
--		return rc;
-+	if (sig->id_type == PKEY_ID_PKCS7) {
-+		rc = mod_check_sig(sig, buf_len, func_tokens[func]);
-+		if (rc)
-+			return rc;
-+	} else {
-+		/* Same as mod_check_sig() but skipping the id_type check. */
-+		if (sig->algo != 0 ||
-+		    sig->hash != 0 ||
-+		    sig->signer_len != 0 ||
-+		    sig->key_id_len != 0 ||
-+		    sig->__pad[0] != 0 ||
-+		    sig->__pad[1] != 0 ||
-+		    sig->__pad[2] != 0)
-+			return -EBADMSG;
-+	}
- 
- 	sig_len = be32_to_cpu(sig->sig_len);
- 	buf_len -= sig_len + sizeof(*sig);
- 
--	/* Allocate sig_len additional bytes to hold the raw PKCS#7 data. */
-+	/* Allocate sig_len additional bytes to hold the raw sig data. */
- 	hdr = kzalloc(sizeof(*hdr) + sig_len, GFP_KERNEL);
- 	if (!hdr)
- 		return -ENOMEM;
- 
--	hdr->pkcs7_msg = pkcs7_parse_message(buf + buf_len, sig_len);
--	if (IS_ERR(hdr->pkcs7_msg)) {
--		rc = PTR_ERR(hdr->pkcs7_msg);
-+	if (sig->id_type == PKEY_ID_PKCS7)
-+		hdr->pkcs7_msg = pkcs7_parse_message(buf + buf_len, sig_len);
-+	else
-+		hdr->uasym_sig = uasym_sig_parse_message(buf + buf_len, sig_len);
++@item --conv-kernel
++@opindex conv-kernel
++Convert PGP keys into a format understood by the Linux kernel.
 +
-+	if (IS_ERR(hdr->pkcs7_msg) || IS_ERR(hdr->uasym_sig)) {
- 		kfree(hdr);
- 		return rc;
+ @c @item --server
+ @c @opindex server
+ @c Run gpg in server mode.  This feature is not yet ready for use and
+diff --git a/g10/Makefile.am b/g10/Makefile.am
+index c5691f551b1..7e6f30dc0b5 100644
+--- a/g10/Makefile.am
++++ b/g10/Makefile.am
+@@ -130,6 +130,10 @@ common_source =  \
+ 	      objcache.c objcache.h \
+ 	      ecdh.c
+ 
++if UASYM_KEYS_SIGS
++common_source += conv-packet.c
++endif
++
+ gpg_sources = server.c          \
+ 	      $(common_source)	\
+ 	      pkclist.c 	\
+diff --git a/g10/conv-packet.c b/g10/conv-packet.c
+new file mode 100644
+index 00000000000..8f2fc40b980
+--- /dev/null
++++ b/g10/conv-packet.c
+@@ -0,0 +1,284 @@
++/* conv-packet.c - convert packets
++ * Copyright (C) 2023 Huawei Technologies Duesseldorf GmbH
++ *
++ * Author: Roberto Sassu <roberto.sassu@huawei.com>
++ *
++ * This file is part of GnuPG.
++ *
++ * GnuPG is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * GnuPG is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <https://www.gnu.org/licenses/>.
++ */
++
++#include <config.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <linux/types.h>
++#include <linux/tlv_parser.h>
++#include <linux/uasym_parser.h>
++#include <asm/byteorder.h>
++#include <linux/pub_key_info.h>
++
++#include "gpg.h"
++#include "../common/util.h"
++#include "packet.h"
++#include "conv-packet.h"
++#include "options.h"
++#include "../common/i18n.h"
++
++static estream_t listfp;
++
++static void init_output(void)
++{
++  if (!listfp)
++    {
++      listfp = es_stdout;
++
++      if (opt.outfile) {
++        listfp = es_fopen (opt.outfile, "wb");
++        if (!listfp) {
++          log_error(_("cannot open %s for writing\n"), opt.outfile);
++          exit(1);
++        }
++      }
++    }
++}
++
++/*
++ * Simple encoder primitives for ASN.1 BER/DER/CER
++ *
++ * Copyright (C) 2019 James.Bottomley@HansenPartnership.com
++ */
++static int asn1_encode_length(unsigned char *data, __u32 *data_len, __u32 len)
++{
++  if (len <= 0x7f) {
++    data[0] = len;
++    *data_len = 1;
++    return 0;
++  }
++
++  if (len <= 0xff) {
++    data[0] = 0x81;
++    data[1] = len & 0xff;
++    *data_len = 2;
++    return 0;
++  }
++
++  if (len <= 0xffff) {
++    data[0] = 0x82;
++    data[1] = (len >> 8) & 0xff;
++    data[2] = len & 0xff;
++    *data_len = 3;
++    return 0;
++  }
++
++  if (len > 0xffffff)
++    return -EINVAL;
++
++  data[0] = 0x83;
++  data[1] = (len >> 16) & 0xff;
++  data[2] = (len >> 8) & 0xff;
++  data[3] = len & 0xff;
++  *data_len = 4;
++
++  return 0;
++}
++
++static int mpis_to_asn1_sequence(gcry_mpi_t *pkey, int num_keys,
++                                 unsigned char **buffer, size_t *buffer_len)
++{
++  unsigned char asn1_key_len[PUBKEY_MAX_NSKEY][4];
++  unsigned char asn1_seq_len[4];
++  unsigned char *buffer_ptr;
++  __u32 asn1_key_len_len[PUBKEY_MAX_NSKEY];
++  __u32 asn1_seq_len_len;
++  __u32 asn1_seq_payload_len = 0;
++  size_t nbytes;
++  gpg_error_t err;
++  int ret, i;
++
++  for (i = 0, nbytes = 0; i < num_keys; i++) {
++    err = gcry_mpi_print (GCRYMPI_FMT_USG, NULL, 0, &nbytes, pkey[i]);
++    if (err)
++      return -EINVAL;
++
++    ret = asn1_encode_length(asn1_key_len[i], &asn1_key_len_len[i], nbytes);
++    if (ret < 0)
++      return ret;
++
++    asn1_seq_payload_len += 1 + asn1_key_len_len[i] + nbytes;
++  }
++
++  ret = asn1_encode_length(asn1_seq_len, &asn1_seq_len_len,
++                           asn1_seq_payload_len);
++  if (ret < 0)
++    return ret;
++
++  *buffer_len = 1 + asn1_seq_len_len + asn1_seq_payload_len;
++  *buffer = xmalloc_clear(*buffer_len);
++  if (!*buffer)
++    return -ENOMEM;
++
++  buffer_ptr = *buffer;
++
++  /* ASN1_SEQUENCE */
++  *buffer_ptr++ = 0x30;
++  memcpy(buffer_ptr, &asn1_seq_len, asn1_seq_len_len);
++  buffer_ptr += asn1_seq_len_len;
++
++  for (i = 0; i < num_keys; i++) {
++    /* ASN1_INTEGER */
++    *buffer_ptr++ = 0x02;
++    memcpy(buffer_ptr, &asn1_key_len[i], asn1_key_len_len[i]);
++    buffer_ptr += asn1_key_len_len[i];
++
++    err = gcry_mpi_print(GCRYMPI_FMT_USG, buffer_ptr,
++                         *buffer_len - (buffer_ptr - *buffer), &nbytes, pkey[i]);
++    if (err) {
++      xfree(*buffer);
++      return -EINVAL;
++    }
++
++    buffer_ptr += nbytes;
++  }
++
++  *buffer_len = buffer_ptr - *buffer;
++
++  return 0;
++}
++
++static int pgp_to_kernel_algo(int pgp_algorithm, gcry_mpi_t pkey, __u8 *algo)
++{
++  char *curve = NULL;
++  const char *name;
++  int ret = 0;
++
++  switch (pgp_algorithm) {
++  case PUBKEY_ALGO_RSA:
++  case PUBKEY_ALGO_RSA_S:
++    *algo = PKEY_ALGO_RSA;
++    break;
++  case PUBKEY_ALGO_ECDSA:
++    *algo = PKEY_ALGO_ECDSA;
++    if (!pkey)
++      break;
++
++    curve = openpgp_oid_to_str (pkey);
++    name = openpgp_oid_to_curve (curve, 0);
++    if (!strcmp(name, "nistp192"))
++      *algo = PKEY_ALGO_ECDSA_P192;
++    else if (!strcmp(name, "nistp256"))
++      *algo = PKEY_ALGO_ECDSA_P256;
++    else if (!strcmp(name, "nistp384"))
++      *algo = PKEY_ALGO_ECDSA_P384;
++    else
++      ret = -EOPNOTSUPP;
++    break;
++  default:
++    ret = -EOPNOTSUPP;
++    break;
++  }
++
++  xfree(curve);
++  return ret;
++}
++
++int write_kernel_key(PKT_public_key *pk)
++{
++  unsigned char *buffer = NULL;
++  size_t buffer_len = 0;
++  struct tlv_hdr hdr = { 0 };
++  struct tlv_entry e_algo = { 0 };
++  struct tlv_entry e_keyid = { 0 };
++  struct tlv_entry e_key_pub = { 0 };
++  struct tlv_entry e_key_desc = { 0 };
++  __u8 algo;
++  __u32 keyid[2], _keyid;
++  __u64 total_len = 0;
++  /* PGP: <keyid> */
++  char key_desc[4 + 1 + 8 + 1];
++  gpg_error_t err;
++  int ret = 0;
++
++  init_output();
++  keyid_from_pk (pk, keyid);
++
++  ret = pgp_to_kernel_algo(pk->pubkey_algo, pk->pkey[0], &algo);
++  if (ret < 0)
++    return ret;
++
++  /* algo */
++  e_algo.field = __cpu_to_be64(KEY_ALGO);
++  e_algo.length = __cpu_to_be64(sizeof(algo));
++  total_len += sizeof(e_algo) + sizeof(algo);
++
++  /* key id */
++  e_keyid.field = __cpu_to_be64(KEY_KID0);
++  e_keyid.length = __cpu_to_be64(sizeof(*pk->keyid) * 2);
++  total_len += sizeof(e_keyid) + sizeof(*pk->keyid) * 2;
++
++  /* key desc */
++  e_key_desc.field = __cpu_to_be64(KEY_DESC);
++  e_key_desc.length = __cpu_to_be64(sizeof(key_desc));
++  total_len += sizeof(e_key_desc) + sizeof(key_desc);
++
++  snprintf(key_desc, sizeof(key_desc), "PGP: %08x", pk->keyid[1]);
++
++  switch (pk->pubkey_algo) {
++  case PUBKEY_ALGO_RSA:
++  case PUBKEY_ALGO_RSA_S:
++    ret = mpis_to_asn1_sequence(pk->pkey, pubkey_get_npkey(pk->pubkey_algo),
++                                &buffer, &buffer_len);
++    break;
++  case PUBKEY_ALGO_ECDSA:
++    err = gcry_mpi_aprint(GCRYMPI_FMT_USG, &buffer, &buffer_len, pk->pkey[1]);
++    if (err)
++      ret = -EINVAL;
++    break;
++  default:
++    ret = -EOPNOTSUPP;
++    break;
++  }
++
++  if (ret < 0)
++    goto out;
++
++  /* key blob */
++  e_key_pub.field = __cpu_to_be64(KEY_PUB);
++  e_key_pub.length = __cpu_to_be64(buffer_len);
++  total_len += sizeof(e_key_pub) + buffer_len;
++
++  hdr.data_type = __cpu_to_be64(TYPE_KEY);
++  hdr.num_fields = __cpu_to_be64(4);
++  hdr.total_len = __cpu_to_be64(total_len);
++
++  es_write(listfp, &hdr, sizeof(hdr), NULL);
++
++  es_write(listfp, &e_algo, sizeof(e_algo), NULL);
++  es_write(listfp, &algo, sizeof(algo), NULL);
++
++  es_write(listfp, &e_keyid, sizeof(e_keyid), NULL);
++  _keyid = __cpu_to_be32(pk->keyid[0]);
++  es_write(listfp, &_keyid, sizeof(_keyid), NULL);
++  _keyid = __cpu_to_be32(pk->keyid[1]);
++  es_write(listfp, &_keyid, sizeof(_keyid), NULL);
++
++  es_write(listfp, &e_key_pub, sizeof(e_key_pub), NULL);
++  es_write(listfp, buffer, buffer_len, NULL);
++
++  es_write(listfp, &e_key_desc, sizeof(e_key_desc), NULL);
++  es_write(listfp, key_desc, sizeof(key_desc), NULL);
++out:
++  xfree(buffer);
++  return 0;
++}
+diff --git a/g10/conv-packet.h b/g10/conv-packet.h
+new file mode 100644
+index 00000000000..d35acb985fc
+--- /dev/null
++++ b/g10/conv-packet.h
+@@ -0,0 +1,37 @@
++/* conv-packet.h - header of conv-packet.c
++ * Copyright (C) 2023 Huawei Technologies Duesseldorf GmbH
++ *
++ * Author: Roberto Sassu <roberto.sassu@huawei.com>
++ *
++ * This file is part of GnuPG.
++ *
++ * GnuPG is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * GnuPG is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, see <https://www.gnu.org/licenses/>.
++ */
++
++#ifndef G10_CONV_PACKET_H
++#define G10_CONV_PACKET_H
++
++#include "../common/openpgpdefs.h"
++
++#ifdef UASYM_KEYS_SIGS
++int write_kernel_key(PKT_public_key *pk);
++#else
++static inline int write_kernel_key(PKT_public_key *pk)
++{
++   (void)pk;
++   return 0;
++}
++
++#endif /* UASYM_KEYS_SIGS */
++#endif /*G10_CONV_PACKET_H*/
+diff --git a/g10/gpg.c b/g10/gpg.c
+index 6e54aa7636c..410be8ab2ad 100644
+--- a/g10/gpg.c
++++ b/g10/gpg.c
+@@ -186,6 +186,7 @@ enum cmd_and_opt_values
+     aPasswd,
+     aServer,
+     aTOFUPolicy,
++    aConvKernel,
+ 
+     oMimemode,
+     oTextmode,
+@@ -583,6 +584,8 @@ static gpgrt_opt_t opts[] = {
+   ARGPARSE_c (aListSigs, "list-sig", "@"),   /* alias */
+   ARGPARSE_c (aCheckKeys, "check-sig", "@"), /* alias */
+   ARGPARSE_c (aShowKeys,  "show-key", "@"), /* alias */
++  ARGPARSE_c (aConvKernel, "conv-kernel",
++              N_("convert to Linux kernel uasym format")),
+ 
+ 
+ 
+@@ -2657,6 +2660,7 @@ main (int argc, char **argv)
+ 
+ 	  case aCheckKeys:
+ 	  case aListPackets:
++	  case aConvKernel:
+ 	  case aImport:
+ 	  case aFastImport:
+ 	  case aSendKeys:
+@@ -5381,6 +5385,12 @@ main (int argc, char **argv)
+           log_info (_("WARNING: no command supplied."
+                       "  Trying to guess what you mean ...\n"));
+         /*FALLTHRU*/
++      case aConvKernel:
++#ifndef UASYM_KEYS_SIGS
++        log_error(_("No support for user asymmetric keys and signatures\n"));
++        exit(1);
++#endif
++        /*FALLTHRU*/
+       case aListPackets:
+ 	if( argc > 1 )
+ 	    wrong_args("[filename]");
+@@ -5411,7 +5421,10 @@ main (int argc, char **argv)
+ 	    if( cmd == aListPackets ) {
+ 		opt.list_packets=1;
+ 		set_packet_list_mode(1);
+-	    }
++	    } else if( cmd == aConvKernel ) {
++		opt.list_packets=1;
++		opt.conv_kernel=1;
++            }
+ 	    rc = proc_packets (ctrl, NULL, a );
+ 	    if( rc )
+               {
+diff --git a/g10/mainproc.c b/g10/mainproc.c
+index 7dea4972894..edef9907127 100644
+--- a/g10/mainproc.c
++++ b/g10/mainproc.c
+@@ -496,6 +496,16 @@ proc_symkey_enc (CTX c, PACKET *pkt)
+   free_packet (pkt, NULL);
+ }
+ 
++static void
++proc_conv (PACKET *pkt)
++{
++  switch (pkt->pkttype)
++    {
++    case PKT_PUBLIC_KEY: write_kernel_key(pkt->pkt.public_key); break;
++    default: break;
++    }
++  free_packet(pkt, NULL);
++}
+ 
+ static void
+ proc_pubkey_enc (CTX c, PACKET *pkt)
+@@ -1652,7 +1662,7 @@ do_proc_packets (CTX c, iobuf_t a)
+           continue;
  	}
- 
--	memcpy(hdr->raw_pkcs7, buf + buf_len, sig_len);
--	hdr->raw_pkcs7_len = sig_len;
-+	memcpy(hdr->raw_sig, buf + buf_len, sig_len);
-+	hdr->raw_sig_len = sig_len;
-+	hdr->id_type = sig->id_type;
- 
- 	/* We don't know the hash algorithm yet. */
- 	hdr->hash_algo = HASH_ALGO__LAST;
-@@ -105,21 +124,38 @@ void ima_collect_modsig(struct modsig *modsig, const void *buf, loff_t size)
- 	 * Provide the file contents (minus the appended sig) so that the PKCS7
- 	 * code can calculate the file hash.
- 	 */
--	size -= modsig->raw_pkcs7_len + strlen(MODULE_SIG_STRING) +
-+	size -= modsig->raw_sig_len + strlen(MODULE_SIG_STRING) +
- 		sizeof(struct module_signature);
--	rc = pkcs7_supply_detached_data(modsig->pkcs7_msg, buf, size);
-+	if (modsig->id_type == PKEY_ID_PKCS7)
-+		rc = pkcs7_supply_detached_data(modsig->pkcs7_msg, buf, size);
-+	else
-+		rc = uasym_sig_supply_detached_data(modsig->uasym_sig, buf,
-+						    size);
- 	if (rc)
- 		return;
- 
- 	/* Ask the PKCS7 code to calculate the file hash. */
--	rc = pkcs7_get_digest(modsig->pkcs7_msg, &modsig->digest,
--			      &modsig->digest_size, &modsig->hash_algo);
-+	if (modsig->id_type == PKEY_ID_PKCS7)
-+		rc = pkcs7_get_digest(modsig->pkcs7_msg, &modsig->digest,
-+				      &modsig->digest_size, &modsig->hash_algo);
-+	else
-+		rc = uasym_sig_get_digest(modsig->uasym_sig, &modsig->digest,
-+					  &modsig->digest_size,
-+					  &modsig->hash_algo);
- }
- 
- int ima_modsig_verify(struct key *keyring, const struct modsig *modsig)
- {
--	return verify_pkcs7_message_sig(NULL, 0, modsig->pkcs7_msg, keyring,
--					VERIFYING_MODULE_SIGNATURE, NULL, NULL);
-+	if (modsig->id_type == PKEY_ID_PKCS7)
-+		return verify_pkcs7_message_sig(NULL, 0, modsig->pkcs7_msg,
-+						keyring,
-+						VERIFYING_MODULE_SIGNATURE,
-+						NULL, NULL);
-+	else
-+		return verify_uasym_sig_message(NULL, 0, modsig->uasym_sig,
-+						keyring,
-+						VERIFYING_MODULE_SIGNATURE,
-+						NULL, NULL);
- }
- 
- int ima_get_modsig_digest(const struct modsig *modsig, enum hash_algo *algo,
-@@ -135,8 +171,8 @@ int ima_get_modsig_digest(const struct modsig *modsig, enum hash_algo *algo,
- int ima_get_raw_modsig(const struct modsig *modsig, const void **data,
- 		       u32 *data_len)
- {
--	*data = &modsig->raw_pkcs7;
--	*data_len = modsig->raw_pkcs7_len;
-+	*data = &modsig->raw_sig;
-+	*data_len = modsig->raw_sig_len;
- 
- 	return 0;
- }
-@@ -146,6 +182,9 @@ void ima_free_modsig(struct modsig *modsig)
- 	if (!modsig)
- 		return;
- 
--	pkcs7_free_message(modsig->pkcs7_msg);
-+	if (modsig->id_type == PKEY_ID_PKCS7)
-+		pkcs7_free_message(modsig->pkcs7_msg);
-+	else
-+		uasym_sig_free_message(modsig->uasym_sig);
- 	kfree(modsig);
- }
+       newpkt = -1;
+-      if (opt.list_packets)
++      if (opt.list_packets && !opt.conv_kernel)
+         {
+           switch (pkt->pkttype)
+             {
+@@ -1665,6 +1675,11 @@ do_proc_packets (CTX c, iobuf_t a)
+             default: newpkt = 0; break;
+ 	    }
+ 	}
++      else if (opt.conv_kernel)
++        {
++            proc_conv(pkt);
++            newpkt = 0;
++        }
+       else if (c->sigs_only)
+         {
+           switch (pkt->pkttype)
+diff --git a/g10/options.h b/g10/options.h
+index 914c24849f2..08125481511 100644
+--- a/g10/options.h
++++ b/g10/options.h
+@@ -26,6 +26,7 @@
+ #include <stdint.h>
+ #include "main.h"
+ #include "packet.h"
++#include "conv-packet.h"
+ #include "tofu.h"
+ #include "../common/session-env.h"
+ #include "../common/compliance.h"
+@@ -91,6 +92,7 @@ struct
+   int list_sigs;   /* list signatures */
+   int no_armor;
+   int list_packets; /* Option --list-packets active.  */
++  int conv_kernel; /* Option --conv-kernel active.  */
+   int def_cipher_algo;
+   int force_mdc;
+   int disable_mdc;
 -- 
 2.34.1
 
