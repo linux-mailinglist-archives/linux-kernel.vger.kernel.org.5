@@ -2,98 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C65C75B25C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D903275B25F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbjGTPVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
+        id S232322AbjGTPWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231487AbjGTPVV (ORCPT
+        with ESMTP id S230220AbjGTPWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:21:21 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E552106;
-        Thu, 20 Jul 2023 08:21:19 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fb761efa7aso1511455e87.0;
-        Thu, 20 Jul 2023 08:21:19 -0700 (PDT)
+        Thu, 20 Jul 2023 11:22:07 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69371B9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:22:05 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-682eef7d752so201056b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:22:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689866478; x=1690471278;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mnTujjggntaI1TmQTK0d3ossyVsbJfJshYOQ8cji1+g=;
-        b=eYBY+0MqJpx4ADKrFOk20ov8zksVoswb1FqL1JkrQQJZQaZOVmbjDDRE5iv/ob6b2T
-         TdZWg67WnIqEawluTRPPIMqogMLvCN76xbJPFjb8HrLO/Kaa6A+3kf6Bg8WoTGY0AxbS
-         R1YAvfGwIRPkt/FuIXqwk8KQe1h7vT8q79SI481RZwXa+AqjKPFo5ZCCUlfHnACnBmI5
-         NPewOhfrPnjFMnsrsdnqrmIY6Cmi71opkivYrRbSsqkT0wLbc9pUtaPdvv6Lf3dYYRI3
-         b1mrv/1La9liZXsjVVVj2f/PMa6krpXBegrcHr71TmRRlmDYyfq4r4Z7MTEuYV4+tgZw
-         8StA==
+        d=mihalicyn.com; s=mihalicyn; t=1689866525; x=1690471325;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5jNhnR+ye5SEakvh+tGW6i8mQKb+NDXkkhU62vn/+c8=;
+        b=eh5OTxF8ssTPMy9eN4Nln0Kvg4S0wZoft2ke4YL3WqLJstWote7jOp6Dk/6M2Y7SeT
+         h3qS0ic62YlflNjqq/LynK9RdNAm/+ZFQE+zQgIB1HvRmIFLmjoawgRnl1wcEqKSGMWL
+         q10NL06sl+Bq7jAvh3LzDmky1K+DzgYHyu91Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689866478; x=1690471278;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mnTujjggntaI1TmQTK0d3ossyVsbJfJshYOQ8cji1+g=;
-        b=ataJXJTk4wRq8NzapUGVdmEcT9pfs/Melo8+rKePqM7kmuTG62j2EHM1LVrb7pDE9Z
-         DMG4WKg7/yi78QH79yyVhcBbZH2oW3fKFUgk+CKxde1tpvtWT5r3GFcFuhSGBZfJSasd
-         yTisHi7k4J6TF3gyS26NU0seWaSe79rQ0G0Od6+qHASGy9JRVkEw35nw5EHPKdKLO6nm
-         Wl22L+l4LodhAnG8GYaYiepT8yZclhUblxV6tYh5qsyHEEUJUdIjx6yCEBOFYYFiEyLH
-         btIc+pYvJ6BnPa+qeTfoYf1EvQN+d+uJ/aKQOoZ/5vNVvObjLmuKIAqmjWxAXTq/FIrO
-         gKHg==
-X-Gm-Message-State: ABy/qLbb/9JjGPjKikkHy0WEwHptJ3pCGzEfAnZjlXWuUsSnAb7Wf+Ac
-        tzKb3qJ8+MRwL1PMb9SB80s=
-X-Google-Smtp-Source: APBJJlEfv0/EHwJ7NV0K3JdyPsHFLdZdxhd9iuy4QjFGZdqWyjzfXmKeb9j6SF3A7f84ceZcyrxLRA==
-X-Received: by 2002:a05:6512:368c:b0:4fb:85ad:b6e2 with SMTP id d12-20020a056512368c00b004fb85adb6e2mr2176714lfs.50.1689866477781;
-        Thu, 20 Jul 2023 08:21:17 -0700 (PDT)
-Received: from [192.168.0.34] (031011148015.gdynia.vectranet.pl. [31.11.148.15])
-        by smtp.gmail.com with ESMTPSA id k24-20020ac24578000000b004fb7be56ff0sm246450lfm.292.2023.07.20.08.21.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 08:21:17 -0700 (PDT)
-Message-ID: <bc13797b-d3b1-ac3a-5c87-16ca42e99138@gmail.com>
-Date:   Thu, 20 Jul 2023 17:21:15 +0200
+        d=1e100.net; s=20221208; t=1689866525; x=1690471325;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5jNhnR+ye5SEakvh+tGW6i8mQKb+NDXkkhU62vn/+c8=;
+        b=E2IyiO8tUpSG6Y02zOT7lSkvKYJzJASL0b9gEqvM+GUdrCRG9UiOx6t/uoCr4Nw7eq
+         VTR+9riQTTJ5+P1qa8MxpQzgob7e+BDSIZqDbSVaCAQdjEIHBMRlp1vocEp6BSRiGy/H
+         KGDE8rVR+S8vo3SV0PiP/H21+0jJcs4xJP8pOrFp7FrujBjCMwY8ngqt8QGQ21BdmQ67
+         tQZeEy4qtZX4LLx+UPGSkq3KvvqI+2g5zFidvGyniKUkfZj7V39bQY5EIN75Fh55VNrE
+         z4llA5gcbnbmmzYT51kCAQRXGeBxohEH1V6qSWyvSnIBZPS2D7w2bwk+eBIT+XEL+ruR
+         gV0w==
+X-Gm-Message-State: ABy/qLZE1ge/B3nosL4FU6RQzgy8v27/XKlpBq+f0diPDoOHCNCX9DAP
+        cNchIv2miTKROEtLJZnf2tohOGK781aVsFM/5aJZ7M1pwFUYX/zHyktSjQkv
+X-Google-Smtp-Source: APBJJlE4X/A4ZMOioySFAnqd/G3ycv8NyoRPzE5yjcSpeiSNUnhUyl95syR+9ELPrn/tFVkseHIGaEyFiVMv0WVPSJY=
+X-Received: by 2002:a05:6a00:988:b0:686:2526:ee7d with SMTP id
+ u8-20020a056a00098800b006862526ee7dmr3493442pfg.0.1689866525264; Thu, 20 Jul
+ 2023 08:22:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: dts: samsung: fix Exynos4212 Tab3 makefile entries
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux Kernel Functional Testing <lkft@linaro.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-References: <20230720141537.188869-1-krzysztof.kozlowski@linaro.org>
-From:   Artur Weber <aweber.kernel@gmail.com>
-In-Reply-To: <20230720141537.188869-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <PH0PR11MB51269B6805230AB8ED209B14D332A@PH0PR11MB5126.namprd11.prod.outlook.com>
+ <20230720105042.64ea23f9@canb.auug.org.au> <20230719182439.7af84ccd@kernel.org>
+ <20230720130003.6137c50f@canb.auug.org.au> <PH0PR11MB5126763E5913574B8ED6BDE4D33EA@PH0PR11MB5126.namprd11.prod.outlook.com>
+ <20230719202435.636dcc3a@kernel.org> <20230720081430.1874b868@kernel.org>
+In-Reply-To: <20230720081430.1874b868@kernel.org>
+From:   Alexander Mikhalitsyn <alexander@mihalicyn.com>
+Date:   Thu, 20 Jul 2023 17:21:54 +0200
+Message-ID: <CAJqdLron07dGuchjmPZcD6xe5af+qpgNMThz5G8=tR7n4=fU1A@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the bluetooth tree
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Von Dentz, Luiz" <luiz.von.dentz@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Networking <netdev@vger.kernel.org>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.07.2023 16:15, Krzysztof Kozlowski wrote:
-> Makefile targets are DTB, not DTS.
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Closes: https://lore.kernel.org/linux-arm-kernel/CA+G9fYsfziBmQGQMGAKojhemCXssFyiNgk6aNjVXpJNNFh_5mg@mail.gmail.com/
-> Fixes: ee37a457af1d ("ARM: dts: exynos: Add Samsung Galaxy Tab 3 8.0 boards")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->   arch/arm/boot/dts/samsung/Makefile | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
+On Thu, Jul 20, 2023 at 5:14=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> On Wed, 19 Jul 2023 20:24:35 -0700 Jakub Kicinski wrote:
+> > On Thu, 20 Jul 2023 03:17:37 +0000 Von Dentz, Luiz wrote:
+> > > Sorry for not replying inline, outlook on android, we use scm_recv
+> > > not scm_recv_unix, so Id assume that change would return the initial
+> > > behavior, if it did not then it is not fixing anything.
+> >
+> > Ack, that's what it seems like to me as well.
+> >
+> > I fired up an allmodconfig build of linux-next. I should be able
+> > to get to the bottom of this in ~20min :)
+>
+> I kicked it off and forgot about it.
+> allmodconfig on 352ce39a8bbaec04 (next-20230719) builds just fine :S
 
-Reviewed-by: Artur Weber <aweber.kernel@gmail.com>
+Dear Jakub,
 
-Best regards
-Artur
+Thanks for checking!
+
+As I can see linux-next tree contains both patches:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/?h=
+=3Dnext-20230719&qt=3Dgrep&q=3DForward+credentials+to+monitor
+
+So, the fix is working, right?
+
+Kind regards,
+Alex
