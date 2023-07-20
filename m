@@ -2,83 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 744E275AC8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B3B75AC8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbjGTLFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        id S230039AbjGTLG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGTLFG (ORCPT
+        with ESMTP id S229476AbjGTLG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:05:06 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564FB268F;
-        Thu, 20 Jul 2023 04:05:05 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36KASIVh004024;
-        Thu, 20 Jul 2023 11:05:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=t/rC43SaN1aFaJyVR8FzDXCtjGfiom/DgT6LMZXPph8=;
- b=QU8OBGYea6vjQaVX5qfOnn9BZdz/IYR+AZ7JiZ7gstU+2N37jDiJ8OR9aUY8ww3NyDme
- J/XtnGult5YdMBOTmJQ+dM+OXw7nRJEHo1eFef6R+kNN4yUxqnUE6/7+Wh7S3xZ3g8RW
- iZpwxhoFo8CH4jt4QJFxWCbJOVNVH0gX9oGicLf1lq5qLt8Ykca1cIXFIis5eOMoybet
- BxVR4ZPzOhWLWJ/MVAUxWDxNc7zBdc4YuPrRyw1vjFMl3Yg/oYTHgNK2zHcO26yWXDt/
- bNagcb2RLsj0wPHkSPhCFnPj8YhGQYdYLd2dqEi/FK9UouV4ai6veUWVqyrRiHHOjfTO Ag== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxummrx6p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jul 2023 11:05:01 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36KB50nG027242
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jul 2023 11:05:00 GMT
-Received: from [10.201.197.30] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
- 2023 04:04:56 -0700
-Message-ID: <a826aaa8-d800-921a-f00e-7929946d9a63@quicinc.com>
-Date:   Thu, 20 Jul 2023 16:34:53 +0530
+        Thu, 20 Jul 2023 07:06:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC32268F
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:06:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BBC4061A22
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:06:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A048DC433C7;
+        Thu, 20 Jul 2023 11:06:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689851215;
+        bh=nW6GXJXezOzmxKL/mUK7YWV/NMfVem88eLoJC7XaP08=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QPXZJYsWPRAvaTWcfYGqmiW3vs3x0iPKKEk0GYNEYkOK9UkiAx7PPXWpWTOcy/s1A
+         VXQ83P7k1kHTDazNqO/cqTcpQsFZ5WUScA4oWzS+8BxC24/9btrTtVrdHlVKZkkCDw
+         30A2Lc98eVOYbxzfYhGr0e1y9UrNQ+kvWc4tsaFQTGL/M9BYXKswJiqyHHbRGPv85N
+         Tcr+qMlV8MGewzEAcxaQhdidO0xzio7+V+FCqc1nFPmrXUj6arfGHufFQlmI+F/LFs
+         ynBTcXbBL5tcoUA1Y5hXqg2MmmPzi8yAyKB4EOZTyTzuUUzONhNDTOB7jdZNhE2UWd
+         G402Q/7XNRXZw==
+Date:   Thu, 20 Jul 2023 13:06:51 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     suijingfeng <suijingfeng@loongson.cn>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [09/11] drm/vc4: tests: pv-muxing: Switch to managed locking init
+Message-ID: <ofn74ygkyt7ms4rfe47rebf6anqnkeorytedtvctavpqwepaqy@gct4abic4wpq>
+References: <20230710-kms-kunit-actions-rework-v1-9-722c58d72c72@kernel.org>
+ <c1184f26-ac80-8138-6501-de0609d16004@loongson.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Update the compatible
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
-        <quic_kathirav@quicinc.com>, <quic_arajkuma@quicinc.com>,
-        <quic_anusha@quicinc.com>
-References: <20230720072938.31546-1-quic_harihk@quicinc.com>
- <20230720072938.31546-2-quic_harihk@quicinc.com>
- <9283b320-5d77-350c-5312-90d56dfb922f@linaro.org>
-From:   Hariharan K <quic_harihk@quicinc.com>
-In-Reply-To: <9283b320-5d77-350c-5312-90d56dfb922f@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: gogel7oGAV50McmIsofbdRU4r4rgRY2f
-X-Proofpoint-GUID: gogel7oGAV50McmIsofbdRU4r4rgRY2f
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-20_04,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 lowpriorityscore=0
- clxscore=1011 adultscore=0 suspectscore=0 mlxscore=0 mlxlogscore=961
- malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307200092
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="i6yioejuufk34fo2"
+Content-Disposition: inline
+In-Reply-To: <c1184f26-ac80-8138-6501-de0609d16004@loongson.cn>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,59 +61,80 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--i6yioejuufk34fo2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 7/20/2023 2:12 PM, Krzysztof Kozlowski wrote:
-> On 20/07/2023 09:29, Hariharan K wrote:
->> Update the compatible in device tree binding to
->> use model names instead of rdp numbers for IPQ5018
->> platform.
->>
->> Signed-off-by: Hariharan K <quic_harihk@quicinc.com>
->> ---
->>   Documentation/devicetree/bindings/arm/qcom.yaml | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
->> index e94ce1e26fbf..922feb912594 100644
->> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
->> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
->> @@ -97,6 +97,7 @@ description: |
->>           ap-mi01.3
->>           ap-mi01.6
->>           ap-mi01.9
->> +        ap-mp03.5-c2
->>           cdp
->>           cp01-c1
->>           dragonboard
->> @@ -105,7 +106,6 @@ description: |
->>           hk10-c2
->>           idp
->>           liquid
->> -        rdp432-c2
->>           mtp
->>           qrd
->>           rb2
->> @@ -343,7 +343,7 @@ properties:
->>   
->>         - items:
->>             - enum:
->> -              - qcom,ipq5018-rdp432-c2
-> 
-> 
-> There is no such compatible. Don't send patches with wrong names and
-> before they got merged send a follow up.
-> 
-> Fix the original submission.
+On Tue, Jul 18, 2023 at 01:24:29AM +0800, suijingfeng wrote:
+> On 2023/7/10 15:47, Maxime Ripard wrote:
+> > The new helper to init the locking context allows to remove some
+> > boilerplate.
+> >=20
+> > Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> > ---
+> >   drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c | 42 ++++++++++++-----=
+---------
+> >   1 file changed, 19 insertions(+), 23 deletions(-)
+> >=20
+> > diff --git a/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c b/drivers/g=
+pu/drm/vc4/tests/vc4_test_pv_muxing.c
+> > index 776a7b01608f..ff1deaed0cab 100644
+> > --- a/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c
+> > +++ b/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c
+> > @@ -20,7 +20,6 @@
+> >   struct pv_muxing_priv {
+> >   	struct vc4_dev *vc4;
+> > -	struct drm_modeset_acquire_ctx ctx;
+> >   	struct drm_atomic_state *state;
+> >   };
+> > @@ -725,6 +724,7 @@ static void drm_vc4_test_pv_muxing_invalid(struct k=
+unit *test)
+> >   static int vc4_pv_muxing_test_init(struct kunit *test)
+> >   {
+> >   	const struct pv_muxing_param *params =3D test->param_value;
+> > +	struct drm_modeset_acquire_ctx *ctx;
+> >   	struct drm_atomic_state *state;
+> >   	struct pv_muxing_priv *priv;
+> >   	struct drm_device *drm;
+> > @@ -738,13 +738,14 @@ static int vc4_pv_muxing_test_init(struct kunit *=
+test)
+> >   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, vc4);
+> >   	priv->vc4 =3D vc4;
+> > -	drm_modeset_acquire_init(&priv->ctx, 0);
+> > +	ctx =3D drm_kunit_helper_acquire_ctx_alloc(test);
+>=20
+> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
+>=20
+> The pointer returned by drm_kunit_helper_acquire_ctx_alloc() function can=
+'t
+> be NULL,
+>=20
+> if ctx is NULL, the current kthread will be terminated by the
+> KUNIT_ASSERT_NOT_NULL() in the drm_kunit_helper_acquire_ctx_alloc().
+>=20
+> so only a PTR_ERR is possible, right?
+>=20
+> If so, probably invent a KUNIT_ASSERT_NOT_ERR() function to call is enoug=
+h.
+>=20
+> I'm fine with this patch, but I feel the checking if the ctx is NULL is
+> redundant.
 
-Sorry, this patch is in-correct. Names used in the original submission 
-are the right ones. Will drop this patch and also fix it in other 
-patches that i have posted.
+I guess, but we're still reference that pointer later on, so making sure
+that it's a valid pointer still makes sense.
 
-Best regards,
-Hariharan K
+Maxime
 
-> 
-> Best regards,
-> Krzysztof
-> 
+--i6yioejuufk34fo2
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZLkVSwAKCRDj7w1vZxhR
+xa9aAQDZyXaMtBF9l/m6WbuHQ7xXPN4u13bFG6gaQKEYJBXObQEAvvZ9chBq2mOw
++gey9Qa8fNru+HXpI0eQL4SLh5feZQo=
+=AI02
+-----END PGP SIGNATURE-----
+
+--i6yioejuufk34fo2--
