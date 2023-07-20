@@ -2,153 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 886D875B6DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA0A75B6E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbjGTScY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 14:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
+        id S232086AbjGTSfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 14:35:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbjGTScW (ORCPT
+        with ESMTP id S231422AbjGTSfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:32:22 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D4D1995;
-        Thu, 20 Jul 2023 11:32:11 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36KD9b9Q025897;
-        Thu, 20 Jul 2023 18:31:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=kGOlMFbCflD1d7VVfE/4020T6jW+U4T4eaCd1AlVqmA=;
- b=ha5Af8x0TKpSXLVreXkjdBtv5pujoKJE6jno1MPrr3Mma1yw4sT3/rd7k1JX1CsRM1ku
- H3Z8vUGzHtV5BHjquFyHEl3DJx/Y67K3QTqLByD8AF1R6Im+Wd0Z0s77/ZDHcNqtr0bt
- diuV14vMxPsz7V2d20K0LOVZ9cYP/L82jnoAd9hEpneCPE9Oe8y49o6ZwV2WwuVOX1V+
- 4XyLmFRweOLNBLxfM5dR4C/2hIt4CqAOGx21NNY5zudVwkS16WHMrG8vZ+ZGdjOxs45O
- B0kUViWW+w4KdyxXwr/xp7+304GspF4Sl6DrVRmGNyX65E2x9khh+ebZYZ1Zf/MB5bx/ AA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxummt2j7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jul 2023 18:31:58 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36KIVvIG004689
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jul 2023 18:31:57 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 20 Jul 2023 11:31:57 -0700
-Date:   Thu, 20 Jul 2023 11:31:56 -0700
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-To:     Akhil P Oommen <quic_akhilpo@quicinc.com>
-CC:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jordan Crouse <jorcrous@amazon.com>,
-        <freedreno@lists.freedesktop.org>, Sean Paul <sean@poorly.run>,
-        <linux-arm-msm@vger.kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        "Nathan Chancellor" <nathan@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        David Airlie <airlied@gmail.com>
-Subject: Re: [Freedreno] [PATCH] drm/msm: Check for the GPU IOMMU during bind
-Message-ID: <20230720183156.GA2667611@hu-bjorande-lv.qualcomm.com>
-References: <20230309222049.4180579-1-jorcrous@amazon.com>
- <d73f6733-e605-0cf8-7909-8cced6e3b70d@linaro.org>
- <20230707150307.vb4otu5e6hwoadyf@amazon.com>
- <cc153fa9-b9e0-f714-ce5b-1a4a0cb55cc7@linaro.org>
- <2xnvyjlwuxft2uk2pirlbvbrg7krcb4alz7yyna72g4t2qrrfm@qtawbelv3n4l>
+        Thu, 20 Jul 2023 14:35:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD96C196;
+        Thu, 20 Jul 2023 11:35:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B04361B5C;
+        Thu, 20 Jul 2023 18:35:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEC4EC433C7;
+        Thu, 20 Jul 2023 18:35:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689878106;
+        bh=81m5ZIcvfNL0FEFJ3Nuqam7BZthequgHa1BosBTrhVw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eR20BcHuZY0XWxQd8OtfDbxHXKUyGrqY6D71W9u8tdWPnfELSbHVV1tBRaP9lmxDg
+         tiMLZnjMzSW4HatYlHq00xWkjjIi73SBzYbDiDfowPta/b1gLCTzwbAJ3u+wrD+ZlG
+         Riuzp/GE5I3Bejkjezf/ewhZgeugbFtAT97csbHzTUTEFuHdRzCdutM5oUYK2IdTPH
+         4tDocR27uLB7HJjf7h1N1XMsTDpmH9d/DosiRegxbZdcndZnVQfMX32uAu6jSMInkt
+         lzuf3gvPWO8EnAdnWODZdOy9UK9ERf23QSDC8KbK54VPBqtojTS9xeMFOAJRK3wNd7
+         WC8KATBqWYxog==
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3a425ef874dso809230b6e.0;
+        Thu, 20 Jul 2023 11:35:06 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZgN20ek2KKvxx8qisxsOTh8m9oQrsFN2x+Kia567AcssBjyh0F
+        6EtSU9H7S04rbU+plIOi1vJ7YXP3MxRT+Xvh06A=
+X-Google-Smtp-Source: APBJJlHKVWn9kDYcjOUOHIW70le7sgGdHBkr9p1Ep42APR+8uWupNFlwMZpme2w+wFD7onPJrRcdfhAUjJJ/+Q0LkTw=
+X-Received: by 2002:a05:6808:19a9:b0:3a3:baf8:5b8a with SMTP id
+ bj41-20020a05680819a900b003a3baf85b8amr450324oib.13.1689878106023; Thu, 20
+ Jul 2023 11:35:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <2xnvyjlwuxft2uk2pirlbvbrg7krcb4alz7yyna72g4t2qrrfm@qtawbelv3n4l>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: O4gJFukcmhiEIgTWW-UQ3xNayDMVqJ6b
-X-Proofpoint-GUID: O4gJFukcmhiEIgTWW-UQ3xNayDMVqJ6b
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-20_10,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 lowpriorityscore=0
- clxscore=1011 adultscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307200155
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230718055235.1050223-1-ojeda@kernel.org> <CAK7LNAQ-hjW_19fjA+E-bQCrXcVPdN4-GvzAnEnYzna5KRVXew@mail.gmail.com>
+ <CANiq72kZjOGvRKoRxtgG=2DhJnMJK9TCQtTmeef_B=nLcLQD6g@mail.gmail.com>
+In-Reply-To: <CANiq72kZjOGvRKoRxtgG=2DhJnMJK9TCQtTmeef_B=nLcLQD6g@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 21 Jul 2023 03:34:29 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASqumGb0xvSa8n4Heasz9BKxgk4mvzNXsfFhZE1G+Bxbg@mail.gmail.com>
+Message-ID: <CAK7LNASqumGb0xvSa8n4Heasz9BKxgk4mvzNXsfFhZE1G+Bxbg@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: rust: avoid creating temporary files
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        linux-kbuild@vger.kernel.org, rust-for-linux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Raphael Nestler <raphael.nestler@gmail.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 10, 2023 at 03:20:44AM +0530, Akhil P Oommen wrote:
-> On Fri, Jul 07, 2023 at 08:27:18PM +0300, Dmitry Baryshkov wrote:
-> > 
-> > On 07/07/2023 18:03, Jordan Crouse wrote:
-> > > On Thu, Jul 06, 2023 at 09:55:13PM +0300, Dmitry Baryshkov wrote:
-> > > > 
-> > > > On 10/03/2023 00:20, Jordan Crouse wrote:
-> > > > > While booting with amd,imageon on a headless target the GPU probe was
-> > > > > failing with -ENOSPC in get_pages() from msm_gem.c.
-> > > > > 
-> > > > > Investigation showed that the driver was using the default 16MB VRAM
-> > > > > carveout because msm_use_mmu() was returning false since headless devices
-> > > > > use a dummy parent device. Avoid this by extending the existing is_a2xx
-> > > > > priv member to check the GPU IOMMU state on all platforms and use that
-> > > > > check in msm_use_mmu().
-> > > > > 
-> > > > > This works for memory allocations but it doesn't prevent the VRAM carveout
-> > > > > from being created because that happens before we have a chance to check
-> > > > > the GPU IOMMU state in adreno_bind.
-> > > > > 
-> > > > > There are a number of possible options to resolve this but none of them are
-> > > > > very clean. The easiest way is to likely specify vram=0 as module parameter
-> > > > > on headless devices so that the memory doesn't get wasted.
-> > > > 
-> > > > This patch was on my plate for quite a while, please excuse me for
-> > > > taking it so long.
-> > > 
-> > > No worries. I'm also chasing a bunch of other stuff too.
-> > > 
-> > > > I see the following problem with the current code. We have two different
-> > > > instances than can access memory: MDP/DPU and GPU. And each of them can
-> > > > either have or miss the MMU.
-> > > > 
-> > > > For some time I toyed with the idea of determining whether the allocated
-> > > > BO is going to be used by display or by GPU, but then I abandoned it. We
-> > > > can have display BOs being filled by GPU, so handling it this way would
-> > > > complicate things a lot.
-> > > > 
-> > > > This actually rings a tiny bell in my head with the idea of splitting
-> > > > the display and GPU parts to two different drivers, but I'm not sure
-> > > > what would be the overall impact.
-> > > 
-> > > As I now exclusively work on headless devices I would be 100% for this,
-> > > but I'm sure that our laptop friends might not agree :)
-> > 
-> > I do not know here. This is probably a question to Rob, as he better
-> > understands the interaction between GPU and display parts of the userspace.
-> 
-> I fully support this if it is feasible.
-> 
+On Fri, Jul 21, 2023 at 2:30=E2=80=AFAM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> On Thu, Jul 20, 2023 at 7:18=E2=80=AFPM Masahiro Yamada <masahiroy@kernel=
+.org> wrote:
+> >
+> > Applied to linux-kbuild/fixes. Thanks.
+> >
+> > I believe this is a fix, so I will include it
+> > in my next pull request.
+>
+> Thanks Masahiro! Yeah, it can be considered a fix. By the way, in case yo=
+u want:
+>
+>     Fixes: 2f7ab1267dc9 ("Kbuild: add Rust support")
 
-I second this.
 
-> In our architecture, display and GPU are completely independent subsystems.
-> Like Jordan mentioned, there are IOT products without display. And I wouldn't
-> be surprised if there is a product with just display and uses software rendering.
-> 
+Maybe, the following was a breakage.
 
-And we have SA8295P/SA8540P with two MDSS instances and one GPU.
 
-Regards,
-Bjorn
+commit 295d8398c67e314d99bb070f38883f83fe94a97a
+Author: Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat Jan 7 18:18:15 2023 +0900
+
+    kbuild: specify output names separately for each emission type from rus=
+tc
+
+
+
+
+Before that, rust_common_cmd had --out-dir.
+
+
+BTW, do we also need to fix scripts/Makefile.host
+in case the external module Makefile creates host programs?
+
+
+
+
+
+
+
+> I guess it can be also considered a feature (e.g. "supporting more
+> setups"), but having the temporaries created where they were was
+> unintentional.
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
