@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F79275AE51
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E62775AE4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbjGTM1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
+        id S229937AbjGTM1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 08:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbjGTM1T (ORCPT
+        with ESMTP id S229450AbjGTM1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:27:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE1F2118;
-        Thu, 20 Jul 2023 05:27:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 20 Jul 2023 08:27:18 -0400
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9282122
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:27:16 -0700 (PDT)
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ABB0F618F6;
-        Thu, 20 Jul 2023 12:27:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB6CAC433C8;
-        Thu, 20 Jul 2023 12:27:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689856036;
-        bh=rCw+psKLDBdl6kAXIJPY9IcEhZY5IxhHwvg4KUYy27Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BwiRNKVJdr15gmyYf87c5qkAeJKVgK0bUhpYNBH1JoM8PiqO/jE0lKC7Dha56w0BT
-         7O/vwi9WBffNUurAE/FZjy7XJUz2CFkFxvVB7vCi6Ru6h6KIU083RJOIryIfENkD1X
-         oTENDWIdJqSXUAPOfCcYOIf/NGXgzL/80xC+2m1uOmTieNUgd9F7ACJib/Zssmi7kJ
-         h8IWNcPMAhii51lmlhTmMjHATZ9KWJgeQ7ghBT/98FD0E6coqekAxPi+iTbkKn/6IH
-         LI7B5Qlh4ewNKw5JkkAM1YGH45chzb7Sy41C856SadZ3c4y6onctYse05VbAblsj7m
-         JvR4b6hrEFSTA==
-Date:   Thu, 20 Jul 2023 13:27:10 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        David Spickett <David.Spickett@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 1/3] arm64/fpsimd: Ensure SME storage is allocated after
- SVE VL changes
-Message-ID: <3ce4fc14-bd43-47e9-aa37-59bb3cd5d051@sirena.org.uk>
-References: <20230713-arm64-fix-sve-sme-vl-change-v1-0-129dd8611413@kernel.org>
- <20230713-arm64-fix-sve-sme-vl-change-v1-1-129dd8611413@kernel.org>
- <20230720105235.GD11034@willie-the-truck>
+        by bee.tesarici.cz (Postfix) with ESMTPSA id 5F1E0167B3D;
+        Thu, 20 Jul 2023 14:27:13 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+        t=1689856033; bh=Sy15tdSUh75Kyy0EKSX/r/RpOL8nRcOu9kVoTovs9Uo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FP+LjtMSc0sf3lDo+Te+5LTKxW+4HtUmYkgN/XmiJ+LTxwyoVKCOVISvr6qA1n54o
+         AZi5SA1NID+w81Ij7hZxzKW56ukZ7Vdn0ZMcpIv6kGywuXKOOCwd6f3hzOTQ6ZFmPz
+         Qf9ggxu+sA3uwa4mrapH6fESYG8zPK7NmVb/QMIMD0MFfty0POHqpn+8VyyOMyOZbC
+         9Gjm4ZQRBYpMZOz1YOkmBH/SJBIF1j5aOG8og2+upta5x7iq7eBFx2KL0xUMO9qqwb
+         1k48i2ObRWTs3PeK/P1mWnUNg3qCIIBrsvPGmDGy/T7jzMwqiqrIlXMfYvgYOKFRYZ
+         NOfXCITBF19sg==
+Date:   Thu, 20 Jul 2023 14:27:12 +0200
+From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Yajun Deng <yajun.deng@linux.dev>, corbet@lwn.net,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        catalin.marinas@arm.com, rdunlap@infradead.org,
+        peterz@infradead.org, rostedt@goodmis.org, kim.phillips@amd.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev, linux-mm@kvack.org
+Subject: Re: [PATCH v3] dma-contiguous: support numa CMA for specified node
+Message-ID: <20230720142712.295834d0@meshulam.tesarici.cz>
+In-Reply-To: <20230720115408.GA13114@lst.de>
+References: <20230720082517.GA7057@lst.de>
+        <20230712074758.1133272-1-yajun.deng@linux.dev>
+        <25942dafbc7f52488a30c807b6322109539442cf@linux.dev>
+        <20230720115408.GA13114@lst.de>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CyMXBdFoH12etnuE"
-Content-Disposition: inline
-In-Reply-To: <20230720105235.GD11034@willie-the-truck>
-X-Cookie: Ginger snap.
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,40 +62,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+V Thu, 20 Jul 2023 13:54:08 +0200
+Christoph Hellwig <hch@lst.de> naps=C3=A1no:
 
---CyMXBdFoH12etnuE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On Thu, Jul 20, 2023 at 08:47:37AM +0000, Yajun Deng wrote:
+> > It's based on linux-next tree.
+> >=20
+> > This patch should be after my other patch in linux-next tree.
+> > a960925a6b23("dma-contiguous: support per-numa CMA for all architecture=
+s"). =20
+>=20
+> Where did this land?
 
-On Thu, Jul 20, 2023 at 11:52:36AM +0100, Will Deacon wrote:
-> On Thu, Jul 13, 2023 at 09:06:04PM +0100, Mark Brown wrote:
+Well... in the linux-next tree:
 
-> > Since the ABI does not specify that changing the SVE vector length disturbs
-> > SME state, and since SVE code may not be aware of SME code in the process,
-> > we shouldn't simply discard any ZA state. Instead immediately reallocate
-> > the storage for SVE if SME is active, and disable SME if we change the SVE
-> > vector length while there is no SME state active.
+https://www.kernel.org/doc/man-pages/linux-next.html
 
-> What is the advantage of keep the old behaviour in this case? In other
-> words, if it's acceptable to reallocate the state when SME is active, why
-> not just reallocate in all cases?
+>  dma patches really should be going through the DMA tree..
 
-It was minimising the changes to the status quo given how attached
-people often are to these things.
+Indeed. The other patch was also sent to the iommu ML back in May. It's
+the thread where we were looking for Barry Song's current email address.
 
---CyMXBdFoH12etnuE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS5KB4ACgkQJNaLcl1U
-h9C+0gf/fQxZuh51kIYByTPW3QLeYr1gzvXo8eFWKQxVOYg96BpcLaqbrocw6ZLg
-E0VA1/CrGB56VUq99z4VY0JUrqFoupiFJE5M5MihIAUi/0PPH9LsvzvuXuIAnrK4
-CmqsOfSQTbsXhntG34dq3UkcK7VZlbK4iSZsaKig3BLtIWHBVJ1WvLpnxEkVu0Mv
-+qJM4GDgPeIXRKiMcxT6+Gd96Vza5VFUemOFSO9BGW5XzQE7Ix+NpT99XvE0MtwJ
-mTVS7V3g0F+19U08hExwfgrKS1ybUONPOqncDhwLdghsLFFOeW8WI1ttxw26afX8
-UO1YvtblScSAt6Aex+N4yBujBbHMaA==
-=NOme
------END PGP SIGNATURE-----
-
---CyMXBdFoH12etnuE--
+Petr T
