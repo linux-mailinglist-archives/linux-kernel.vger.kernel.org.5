@@ -2,59 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEAA75AA11
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550C875A9A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbjGTI6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 04:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38164 "EHLO
+        id S231517AbjGTI4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 04:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjGTIvy (ORCPT
+        with ESMTP id S231302AbjGTIxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 04:51:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D37269A
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:51:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D2FE6618E2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:51:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C40F0C433C8;
-        Thu, 20 Jul 2023 08:51:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689843112;
-        bh=HawccqGqyVlf764W/NOFn3COnr0ylEZsAjLXeXUl4aQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pbWXZhSuzuJWM8r1yz8zhjekJhaboxy/BPX6nwNFV2643Qbt9n8mtAKNGzTrfZuiu
-         hN8NjDFdh+mrP09j5lVx7/IWeEuS2hb+q/O0zwqiYev/WWOTdINVWjEjw6K2DjLqiO
-         56rZjuXdaX7wk2dBUp1bs7wxr8GhysTWWinE7MBirGzR/DUzfNMZuMk+SUsykppW9a
-         uwxECX3kUBuM02JNCVK+avI3+DwKZxfzDkIjgmjrTAZ7JcTBhfgD/keaEd0Gl+SazH
-         4hghknlyh6GStTdcGMP7+4QQW+EIUEPKUZCc1F5xkwCGVe/w4WF0RlKfUdRXSQ+vps
-         96f+fzGmXNJgQ==
-Date:   Thu, 20 Jul 2023 10:51:49 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 01/11] drm/tests: helpers: Switch to kunit actions
-Message-ID: <d4mumwtbm57kit3lucpa33cgwh6eleca5mysmnl7gkum5nbppg@3vjsmurh4cpe>
-References: <20230710-kms-kunit-actions-rework-v1-0-722c58d72c72@kernel.org>
- <20230710-kms-kunit-actions-rework-v1-1-722c58d72c72@kernel.org>
- <871qh3ivys.fsf@minerva.mail-host-address-is-not-set>
+        Thu, 20 Jul 2023 04:53:03 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8551A2686
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:52:59 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qMPP7-0004wa-5a; Thu, 20 Jul 2023 10:52:57 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qMPP6-000nEK-8n; Thu, 20 Jul 2023 10:52:56 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qMPP5-006JH7-Je; Thu, 20 Jul 2023 10:52:55 +0200
+Date:   Thu, 20 Jul 2023 10:52:53 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH] w1: ds2482: Switch back to use struct i2c_driver's
+ .probe()
+Message-ID: <20230720085253.arndjzqyhlbiioyy@pengutronix.de>
+References: <20230612072807.839689-1-u.kleine-koenig@pengutronix.de>
+ <6d76105f-daa1-1cd0-35b3-1727aa967bcc@linaro.org>
+ <20230613070237.srqd3sy2c3lp7u5p@pengutronix.de>
+ <dcc99c16-3807-1f81-03b8-86095f08258e@linaro.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="v5sjhm3u4teqa6wz"
+        protocol="application/pgp-signature"; boundary="52qxrbqmcewb3bwk"
 Content-Disposition: inline
-In-Reply-To: <871qh3ivys.fsf@minerva.mail-host-address-is-not-set>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <dcc99c16-3807-1f81-03b8-86095f08258e@linaro.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -62,116 +58,69 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---v5sjhm3u4teqa6wz
-Content-Type: text/plain; charset=us-ascii
+--52qxrbqmcewb3bwk
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Javier,
-
-Thanks for reviewing the series
-
-On Wed, Jul 19, 2023 at 08:42:51PM +0200, Javier Martinez Canillas wrote:
-> > diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/dr=
-m/tests/drm_kunit_helpers.c
-> > index 4df47071dc88..38211fea9ae6 100644
-> > --- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
-> > +++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
-> > @@ -35,8 +35,8 @@ static struct platform_driver fake_platform_driver =
-=3D {
-> >   * able to leverage the usual infrastructure and most notably the
-> >   * device-managed resources just like a "real" device.
-> >   *
-> > - * Callers need to make sure drm_kunit_helper_free_device() on the
-> > - * device when done.
-> > + * Resources will be cleaned up automatically, but the removal can be
-> > + * forced using @drm_kunit_helper_free_device.
-> >   *
-> >   * Returns:
-> >   * A pointer to the new device, or an ERR_PTR() otherwise.
-> > @@ -49,12 +49,31 @@ struct device *drm_kunit_helper_alloc_device(struct=
- kunit *test)
-> >  	ret =3D platform_driver_register(&fake_platform_driver);
-> >  	KUNIT_ASSERT_EQ(test, ret, 0);
-> > =20
-> > +	ret =3D kunit_add_action_or_reset(test,
-> > +					(kunit_action_t *)platform_driver_unregister,
-> > +					&fake_platform_driver);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> >  	pdev =3D platform_device_alloc(KUNIT_DEVICE_NAME, PLATFORM_DEVID_NONE=
-);
-> >  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, pdev);
-> > =20
-> > +	ret =3D kunit_add_action_or_reset(test,
-> > +					(kunit_action_t *)platform_device_put,
-> > +					pdev);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> >  	ret =3D platform_device_add(pdev);
-> >  	KUNIT_ASSERT_EQ(test, ret, 0);
-> > =20
-> > +	kunit_remove_action(test,
-> > +			    (kunit_action_t *)platform_device_put,
-> > +			    pdev);
-> > +
+On Tue, Jun 13, 2023 at 10:06:46AM +0200, Krzysztof Kozlowski wrote:
+> On 13/06/2023 09:02, Uwe Kleine-K=F6nig wrote:
+> > Hello Krzysztof,
+> >=20
+> > On Mon, Jun 12, 2023 at 10:10:30PM +0200, Krzysztof Kozlowski wrote:
+> >> On 12/06/2023 09:28, Uwe Kleine-K=F6nig wrote:
+> >>> After commit b8a1a4cd5a98 ("i2c: Provide a temporary .probe_new()
+> >>> call-back type"), all drivers being converted to .probe_new() and then
+> >>> commit 03c835f498b5 ("i2c: Switch .probe() to not take an id paramete=
+r")
+> >>> convert back to (the new) .probe() to be able to eventually drop
+> >>> .probe_new() from struct i2c_driver.
+> >>>
+> >>> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> >>> ---
+> >>>  drivers/w1/masters/ds2482.c | 2 +-
+> >>
+> >> Thank you for the patch.
+> >> It is too late in the cycle for me to pick it up. I will take it after
+> >> the merge window.
+> >=20
+> > This is one of only 19 patches that are still needed on top of what is
+> > currently in next before I can drop .probe_new() which I intended to
+> > tackle after the upcoming merge window. I expect that most of these 19
+> > patches will still be picked up and go into v6.5-rc1.
+> >=20
+> > Assuming there are only less than 10 patches remaining on top of
+> > v6.5-rc1, I intend to create a pull request for Wolfram with the
+> > remaining bits and a patch doing
 >=20
-> I understand that this action removal is because platform_device_put() is
-> not needed anymore after the platform_device_unregister() remove action is
-> registered since that already takes care of the platform_device_put().
-
-It's not so much that it's not needed after platform_device_unregister,
-but rather that once you've called paltform_device_add my understanding
-was that you didn't need it anymore.
-
-I can't find where I got that from though, so I might be wrong. It also
-looks like I could just use platform_device_del directly and not cancel
-platform_device_put which will make it more obvious.
-
-> But maybe add a comment to make more clear for someone who is not familiar
-> with these details of the platform core ?
+> Sure, go ahead:
 >=20
-> >  EXPORT_SYMBOL_GPL(drm_kunit_helper_alloc_device);
-> > @@ -70,8 +89,13 @@ void drm_kunit_helper_free_device(struct kunit *test=
-, struct device *dev)
-> >  {
-> >  	struct platform_device *pdev =3D to_platform_device(dev);
-> > =20
-> > -	platform_device_unregister(pdev);
-> > -	platform_driver_unregister(&fake_platform_driver);
-> > +	kunit_release_action(test,
-> > +			     (kunit_action_t *)platform_device_unregister,
-> > +			     pdev);
-> > +
-> > +	kunit_release_action(test,
-> > +			     (kunit_action_t *)platform_driver_unregister,
-> > +			     &fake_platform_driver);
-> >  }
-> >  EXPORT_SYMBOL_GPL(drm_kunit_helper_free_device);
-> >
->=20
-> I thought the point of using the kunit cleanup actions was that you could
-> just make the kunit framework handle the release of resources and not do
-> it manually?
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-You're right
+Thanks, but this didn't happen because I missed a few introductions of
+new .probe_new. My plan was rescheduled to one merge window later. So if
+you want to take this for v6.6-rc1 that would be great.
 
-> Can you just remove this function helper or is still needed in some cases?
+Best regards
+Uwe
 
-We still need it for the drmm execution test where we would force the
-removal of the device. All other tests at the moment shouldn't call it.
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-Maxime
-
---v5sjhm3u4teqa6wz
+--52qxrbqmcewb3bwk
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZLj1pQAKCRDj7w1vZxhR
-xTwiAQCj5aXu2IuAajHjVGN6or5R+COupohCAxVFuoNAD0BKPgEAk+7/v0U6jd6Z
-pigQPBFRpCbbgmbH/3/GtUnb1TFoPwc=
-=RE1j
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmS49eQACgkQj4D7WH0S
+/k7mDgf+Po0jJl8c+9wG4gRc7YWBQCc2/8LfXNwtomTQJWTxwfOYkKUBMgphk1H8
+JvKXc21seKdolajCS7VAgQZxdWBb/JWJd8HJj2Pir0W/4LqJ5nk/ev8OKigtuaoS
+IpGkl0uvWbVHJYT4FRcwrjSR3S0JNJIauiWQcokPDbbVMzYrJ/uPPvuIdjJhc79Q
+mm6sAuUPadrPUrrd6p5m/dTpfN7ZxOE7lXe31MDoC71Nq4pjNEX5zoNOqtuBvTka
+fuVDnWf1VDet4GdlmNSsYKFYA48pdkIm9c6NKIsEQl7rWiwro4FOD8DSGd42B/GR
+xmZwjanVhM/pStoaAsAmeN5YtZyjrg==
+=RvSl
 -----END PGP SIGNATURE-----
 
---v5sjhm3u4teqa6wz--
+--52qxrbqmcewb3bwk--
