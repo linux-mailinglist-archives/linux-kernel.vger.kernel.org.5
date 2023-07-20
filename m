@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C7E75AF42
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A8A75AF4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbjGTNKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35240 "EHLO
+        id S230487AbjGTNK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbjGTNKe (ORCPT
+        with ESMTP id S231713AbjGTNKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:10:34 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7412A269D
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:10:33 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-316f589549cso645395f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:10:33 -0700 (PDT)
+        Thu, 20 Jul 2023 09:10:51 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E85026B0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:10:43 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-51e5d9e20ecso1005358a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:10:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689858632; x=1690463432;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=csFhQ6XfWBL2F/LVnpr751g3gT4RNTtnYo/4zK0OLk0=;
-        b=AYUTrJHThtegFmXAf21FWbF8FkPLNfod8iIQR1PVenWxKes/7avxrVbGScXvzKy1CO
-         7fUbxVzyP8Y7w5wQ33shQE9B6SuVByq/xgGu2rFqG20d03w0+INBqau49dXUNpIQE9Jg
-         2jcz427S6KPPOVHeTohn9WzY7XSyPnwnDtpMr3nHuPlfOIMdUvvOLlny2o6kRDmRV0en
-         5NXLFAsWd2wcsHgjrCkPHm75FXpwMB/iQjMKRvdgRiTV4hEDo9DaFIAJUr8SsWI+yFmO
-         iVk7GAds1/JW8Ojz4KuI3JEXftTvnrwfqDSFv7NMd0FTQlXS37RUTR/syR78nlFOusu0
-         S7Iw==
+        d=linaro.org; s=google; t=1689858641; x=1690463441;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/vdjeypC9mI/FaLJo0Dvqdpeo8wqfa8neTmhylDJ/Os=;
+        b=HGjuEVbnioWE6ZoRIGoFxcz3Mb4cWJDj/yAJgoej0MO+Kxo2ql3Xz637b9cTb67Jg0
+         aYnTPW1oqFYDWC4yHoiySjlErvmdYSn4PmamqwAn+cwuTtnfJ5f5JpGmS1jk50CTFN3G
+         UrIyDfvbUjlN3vuuWk8CSZ7YY0/eBuFMHPS2EkKxVq+U0WpRyMYHzBMwSXOSnFi9CA5D
+         VNitUjTHZ9kl05qdotur75wBPeIBm5O22rGrtfagHcwCq3zvWMmFjrxQkUNawPMbNxwZ
+         oBUTFyZvrzAId2ez3S1jGAnPY3DzOflRSj13F4LX6HMsUdI41E6HsOjd1YdHU72XSnkJ
+         HpXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689858632; x=1690463432;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=csFhQ6XfWBL2F/LVnpr751g3gT4RNTtnYo/4zK0OLk0=;
-        b=Wy7UfCpgzlea/4vlWuJdlHFIKsKVJ0EpRIui+req2e2X6W/uvvwhRPUlY1obhXaBxs
-         RkCUer923TMLN2zTX9HLQOS5n+jipnFkm0q+uZkBnW1kDFaIXp+3x3cN7sMlzHSlWJwr
-         Qca+z9jnlora846j2awl+397kT6VJQHXnhIP99NOsYJbFtCULYdF65zU4UebSRi0/IYz
-         rhwyXUVs8w51ViGMW9tv96qH3ok4c9tWK09J28Mt7tjF8b55oQDJ2fCQlyupBGG1AoCd
-         D1MnyvE9CbwnTpAC5TEqz9WNFydQAW7fxUI/1ZX/m4Of9Ou48Amo94ap/7kQOdRs+YZ8
-         DfYA==
-X-Gm-Message-State: ABy/qLbsMlsG8qyu80hnkEY5Esa0BK850slk/8dHLt0AybgmM2swQU17
-        UpO1oC9fOQFxK5W0VRGF4sT/qA==
-X-Google-Smtp-Source: APBJJlHAQBN4QHX5GQzhjDPb1xmuMYdrMdIrZxUPkEN0IlJOj2W5MMz7ipLHhBJ3k2Q6Q703r7zH9w==
-X-Received: by 2002:adf:faca:0:b0:313:f5f8:a331 with SMTP id a10-20020adffaca000000b00313f5f8a331mr1555738wrs.34.1689858631923;
-        Thu, 20 Jul 2023 06:10:31 -0700 (PDT)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id a15-20020adfeecf000000b00311d8c2561bsm1317303wrp.60.2023.07.20.06.10.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 06:10:31 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 14:10:29 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Ying Liu <victor.liu@nxp.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lee@kernel.org" <lee@kernel.org>,
-        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
-        "deller@gmx.de" <deller@gmx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>
-Subject: Re: [PATCH] backlight: gpio_backlight: Drop output gpio direction
- check for initial power state
-Message-ID: <20230720131029.GB2525277@aspen.lan>
-References: <20230720061105.154821-1-victor.liu@nxp.com>
- <20230720112742.GA2525277@aspen.lan>
- <CAMRc=MfbWjWTdU4ToFMp_ZV6eGdRnjD--Y+qsN329TsLFGQYxg@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1689858641; x=1690463441;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/vdjeypC9mI/FaLJo0Dvqdpeo8wqfa8neTmhylDJ/Os=;
+        b=kEVqT8V8GWjbRjvv9/O9CqEkRFyskHYsuzuCjkXFg4lSew6RsCiDn08YdXFRmRta9G
+         9Bhc8XrIyomR5nIwUmlDhntXkrSJbCcOJo3Hfzoe2EDInuHFUhSVYKKKsbS/0GWj3w0M
+         q6gJazc27qPr13/RNWbPIlFMivDGq2zkrGT7/g0afnzVEwf0by/gNFPzn2Oux5Fz06fg
+         zpRYHiD4E40BoSUPhNp6R2Ovnp8+H5ic/FW5SelSivTeTgRKMQJPDe/S4WFvZwouoXfy
+         7fjO5RInwf8L0cfy3zuwh/3Nx95AJCMUL+XtWgg+czU/XEQRpIIf9Gqx4t7Xj26CrIyx
+         fkrQ==
+X-Gm-Message-State: ABy/qLb6iaK8ipp7kwFUAJ0JNGagVP5bzqm+LxIvl8EPp+IlwD821KJD
+        VVLEL/IJI4XirUdT4xdx++6y7OPuUtSzS238SPBiaA==
+X-Google-Smtp-Source: APBJJlFSXpV5rlzS7wwz7w8nkkspM2DSSS0cbgU9v9asjixKlLsLY7K8Hm0Jf0b7JKwVQXjeX9hc87WhvDYO2pjveVE=
+X-Received: by 2002:aa7:d384:0:b0:51e:309:2e11 with SMTP id
+ x4-20020aa7d384000000b0051e03092e11mr5184558edq.36.1689858641525; Thu, 20 Jul
+ 2023 06:10:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MfbWjWTdU4ToFMp_ZV6eGdRnjD--Y+qsN329TsLFGQYxg@mail.gmail.com>
+References: <20230718134120.81199-1-aaron.lu@intel.com> <20230718134120.81199-4-aaron.lu@intel.com>
+ <CAKfTPtAu33AN6=X82T=yOgm40S8OXi+sPcF0QyD-bYRPV=xPEg@mail.gmail.com>
+ <20230719051826.GB84059@ziqianlu-dell> <20230719080105.GA90441@ziqianlu-dell>
+ <CAKfTPtCnvOehfrz1OSW+rmkKW+28bdGw8fU+AvVrZTxkHibL_g@mail.gmail.com> <20230719132914.GA91858@ziqianlu-dell>
+In-Reply-To: <20230719132914.GA91858@ziqianlu-dell>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 20 Jul 2023 15:10:30 +0200
+Message-ID: <CAKfTPtAqpAo8Y9BdWZ-fmnyYgA8PEtFbObqWJxc-hs2Ktqkt3Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/4] sched/fair: delay update_tg_load_avg() for
+ cfs_rq's removed load
+To:     Aaron Lu <aaron.lu@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Nitin Tekchandani <nitin.tekchandani@intel.com>,
+        Yu Chen <yu.c.chen@intel.com>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -83,78 +82,222 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 02:56:32PM +0200, Bartosz Golaszewski wrote:
-> On Thu, Jul 20, 2023 at 1:27 PM Daniel Thompson
-> <daniel.thompson@linaro.org> wrote:
-> >
-> > On Thu, Jul 20, 2023 at 06:06:27AM +0000, Ying Liu wrote:
-> > > Bootloader may leave gpio direction as input and gpio value as logical low.
-> > > It hints that initial backlight power state should be FB_BLANK_POWERDOWN
-> > > since the gpio value is literally logical low.
-> >
-> > To be honest this probably "hints" that the bootloader simply didn't
-> > consider the backlight at all :-) . I'd rather the patch description
-> > focus on what circumstances lead to the current code making a bad
-> > decision. More like:
-> >
-> >   If the GPIO pin is in the input state but the backlight is currently
-> >   off due to default pull downs then ...
-> >
-> > > So, let's drop output gpio
-> > > direction check and only check gpio value to set the initial power state.
-> >
-> > This check was specifically added by Bartosz so I'd be interested in his
-> > opinion of this change (especially since he is now a GPIO maintainer)!
-> >
-> > What motivates (or motivated) the need to check the direction rather
-> > than just read that current logic level on the pin?
-> >
-> >
-> > Daniel.
-> > [I'm done but since Bartosz and Linus were not on copy of the original
-> > thread I've left the rest of the patch below as a convenience ;-) ]
-> >
+On Wed, 19 Jul 2023 at 15:29, Aaron Lu <aaron.lu@intel.com> wrote:
 >
-> This was done in commit: 706dc68102bc ("backlight: gpio: Explicitly
-> set the direction of the GPIO").
+> On Wed, Jul 19, 2023 at 11:47:06AM +0200, Vincent Guittot wrote:
+> > On Wed, 19 Jul 2023 at 10:01, Aaron Lu <aaron.lu@intel.com> wrote:
+> > >
+> > > On Wed, Jul 19, 2023 at 01:18:26PM +0800, Aaron Lu wrote:
+> > > > Alternatively, I can remove some callsites of update_tg_load_avg() like
+> > > > you suggested below and only call update_tg_load_avg() when cfs_rq is
+> > > > decayed(really just decayed, not when it detected it has removed load
+> > > > pending or load propagated from its children). This way it would give us
+> > > > similar result as above(roughly once per ms).
+> > >
+> > > Something like this: (I think this is better since it removed those
+> > > unnecessary calls to update_tg_load_avg(), although it is inline but
+> > > still)
+> > >
+> > >
+> > > From bc749aaefa6bed36aa946921a4006b3dddb69b77 Mon Sep 17 00:00:00 2001
+> > > From: Aaron Lu <aaron.lu@intel.com>
+> > > Date: Wed, 19 Jul 2023 13:54:48 +0800
+> > > Subject: [PATCH] sched/fair: only update_tg_load_avg() when cfs_rq decayed
+> > >
+> > > ---
+> > >  kernel/sched/fair.c | 22 +++++++---------------
+> > >  1 file changed, 7 insertions(+), 15 deletions(-)
+> > >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index a80a73909dc2..7d5b7352b8b5 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -3913,16 +3913,16 @@ static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum
+> > >  }
+> > >
+> > >  /* Update task and its cfs_rq load average */
+> > > -static inline int propagate_entity_load_avg(struct sched_entity *se)
+> > > +static inline void propagate_entity_load_avg(struct sched_entity *se)
+> > >  {
+> > >         struct cfs_rq *cfs_rq, *gcfs_rq;
+> > >
+> > >         if (entity_is_task(se))
+> > > -               return 0;
+> > > +               return;
+> > >
+> > >         gcfs_rq = group_cfs_rq(se);
+> > >         if (!gcfs_rq->propagate)
+> > > -               return 0;
+> > > +               return;
+> > >
+> > >         gcfs_rq->propagate = 0;
+> > >
+> > > @@ -3936,8 +3936,6 @@ static inline int propagate_entity_load_avg(struct sched_entity *se)
+> > >
+> > >         trace_pelt_cfs_tp(cfs_rq);
+> > >         trace_pelt_se_tp(se);
+> > > -
+> > > -       return 1;
+> > >  }
+> > >
+> > >  /*
+> > > @@ -3974,9 +3972,8 @@ static inline bool skip_blocked_update(struct sched_entity *se)
+> > >
+> > >  static inline void update_tg_load_avg(struct cfs_rq *cfs_rq) {}
+> > >
+> > > -static inline int propagate_entity_load_avg(struct sched_entity *se)
+> > > +static inline void propagate_entity_load_avg(struct sched_entity *se)
+> > >  {
+> > > -       return 0;
+> > >  }
+> > >
+> > >  static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum) {}
+> > > @@ -4086,7 +4083,7 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+> > >  {
+> > >         unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
+> > >         struct sched_avg *sa = &cfs_rq->avg;
+> > > -       int decayed = 0;
+> > > +       int decayed;
+> > >
+> > >         if (cfs_rq->removed.nr) {
+> > >                 unsigned long r;
+> > > @@ -4134,11 +4131,9 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+> > >                  */
+> > >                 add_tg_cfs_propagate(cfs_rq,
+> > >                         -(long)(removed_runnable * divider) >> SCHED_CAPACITY_SHIFT);
+> > > -
+> > > -               decayed = 1;
+> > >         }
+> > >
+> > > -       decayed |= __update_load_avg_cfs_rq(now, cfs_rq);
+> > > +       decayed = __update_load_avg_cfs_rq(now, cfs_rq);
+> > >         u64_u32_store_copy(sa->last_update_time,
+> > >                            cfs_rq->last_update_time_copy,
+> > >                            sa->last_update_time);
+> > > @@ -4252,7 +4247,7 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+> > >                 __update_load_avg_se(now, cfs_rq, se);
+> > >
+> > >         decayed  = update_cfs_rq_load_avg(now, cfs_rq);
+> > > -       decayed |= propagate_entity_load_avg(se);
+> > > +       propagate_entity_load_avg(se);
+> >
+> > but then you  also skip the call to cfs_rq_util_change()
 >
-> Let me quote myself from it:
+> Ah right, I missed that, thanks for catching this.
+>
+> Updated:
+>
+> From 09a649f8111cfca656b7b735da975ef607b00956 Mon Sep 17 00:00:00 2001
+> From: Aaron Lu <aaron.lu@intel.com>
+> Date: Wed, 19 Jul 2023 13:54:48 +0800
+> Subject: [PATCH] sched/fair: only update_tg_load_avg() when cfs_rq decayed
+>
+> ---
+>  kernel/sched/fair.c | 17 ++++++-----------
+>  1 file changed, 6 insertions(+), 11 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index a80a73909dc2..8d4b9e0a19b6 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4086,7 +4086,7 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+>  {
+>         unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
+>         struct sched_avg *sa = &cfs_rq->avg;
+> -       int decayed = 0;
+> +       int decayed;
+>
+>         if (cfs_rq->removed.nr) {
+>                 unsigned long r;
+> @@ -4134,11 +4134,9 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+>                  */
+>                 add_tg_cfs_propagate(cfs_rq,
+>                         -(long)(removed_runnable * divider) >> SCHED_CAPACITY_SHIFT);
+> -
+> -               decayed = 1;
+
+We need this to propagate the change in other place like cpufreq
+
+>         }
+>
+> -       decayed |= __update_load_avg_cfs_rq(now, cfs_rq);
+> +       decayed = __update_load_avg_cfs_rq(now, cfs_rq);
+>         u64_u32_store_copy(sa->last_update_time,
+>                            cfs_rq->last_update_time_copy,
+>                            sa->last_update_time);
+> @@ -4242,7 +4240,7 @@ static void detach_entity_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+>  static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+>  {
+>         u64 now = cfs_rq_clock_pelt(cfs_rq);
+> -       int decayed;
+> +       int decayed, propagated;
+>
+>         /*
+>          * Track task load average for carrying it to new CPU after migrated, and
+> @@ -4252,7 +4250,7 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+>                 __update_load_avg_se(now, cfs_rq, se);
+>
+>         decayed  = update_cfs_rq_load_avg(now, cfs_rq);
+> -       decayed |= propagate_entity_load_avg(se);
+> +       propagated = propagate_entity_load_avg(se);
+>
+>         if (!se->avg.last_update_time && (flags & DO_ATTACH)) {
+>
+> @@ -4264,19 +4262,16 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+>                  * IOW we're enqueueing a task on a new CPU.
+>                  */
+>                 attach_entity_load_avg(cfs_rq, se);
+> -               update_tg_load_avg(cfs_rq);
+> -
+>         } else if (flags & DO_DETACH) {
+>                 /*
+>                  * DO_DETACH means we're here from dequeue_entity()
+>                  * and we are migrating task out of the CPU.
+>                  */
+>                 detach_entity_load_avg(cfs_rq, se);
+> -               update_tg_load_avg(cfs_rq);
+> -       } else if (decayed) {
+> +       } else if (decayed || propagated) {
+>                 cfs_rq_util_change(cfs_rq, 0);
+>
+> -               if (flags & UPDATE_TG)
+> +               if (decayed && (flags & UPDATE_TG))
+
+It would be simpler and more readable to clear UPDATE_TG or not set it
+from the beginning
+
+IIUC, you rely on the fact that a decay happens every 1024 us of the
+cfs_rq_clock_pelt() which is scaled by frequency and cpu compute
+capacity. So you can end up with a cfs_rq_clock_pelt() that is far
+slower than real clock and the 1ms can easily be extended to dozens of
+ms
+
+>                         update_tg_load_avg(cfs_rq);
+>         }
+>  }
 > --
-> The GPIO backlight driver currently requests the line 'as is', without
-> actively setting its direction. This can lead to problems: if the line
-> is in input mode by default, we won't be able to drive it later when
-> updating the status and also reading its initial value doesn't make
-> sense for backlight setting.
-> --
-
-You are perhaps quoting the wrong bit here ;-). The currently proposed
-patch leaves the code to put the pin into output mode unmodified. However
-there was an extra line at the bottom of your commit message:
---
-Also: check the current direction and only read the value if it's output.
---
-
-This was the bit I wanted to check on, since the proposed patch
-literally reverses this!
-
-However...
-
-
-> I agree with Thomas that it's highly unlikely the bootloader "hints"
-> at any specific backlight settings. That being said, the change itself
-> looks correct to me. The other branch of that if will always unblank
-> the backlight if the GPIO is in input mode which may not be desirable.
-
-... if you're happy the proposed change is OK then I'm happy too!
-I came to the same conclusion after reviewing the GPIO code this morning,
-however I copied you in because I was worried I might have overlooked
-something.
-
-
-> I don't see any obvious problem with this change, just make sure the
-> commit message makes more sense.
-
-Agreed.
-
-
-Daniel.
+> 2.41.0
+>
+>
+> > >
+> > >         if (!se->avg.last_update_time && (flags & DO_ATTACH)) {
+> > >
+> > > @@ -4264,15 +4259,12 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+> > >                  * IOW we're enqueueing a task on a new CPU.
+> > >                  */
+> > >                 attach_entity_load_avg(cfs_rq, se);
+> > > -               update_tg_load_avg(cfs_rq);
+> > > -
+> > >         } else if (flags & DO_DETACH) {
+> > >                 /*
+> > >                  * DO_DETACH means we're here from dequeue_entity()
+> > >                  * and we are migrating task out of the CPU.
+> > >                  */
+> > >                 detach_entity_load_avg(cfs_rq, se);
+> > > -               update_tg_load_avg(cfs_rq);
+> > >         } else if (decayed) {
+> > >                 cfs_rq_util_change(cfs_rq, 0);
+> > >
+> > > --
+> > > 2.41.0
+> > >
