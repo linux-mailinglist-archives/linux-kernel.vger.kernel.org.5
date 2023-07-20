@@ -2,105 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 278A475B865
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD0F75B86E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 22:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbjGTT7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 15:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52630 "EHLO
+        id S231233AbjGTUA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 16:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjGTT7n (ORCPT
+        with ESMTP id S231177AbjGTUA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 15:59:43 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0891BE2;
-        Thu, 20 Jul 2023 12:59:39 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-666ecf9a081so1038090b3a.2;
-        Thu, 20 Jul 2023 12:59:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689883179; x=1690487979;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tpeVGMhDTTLTNxyLLa2NKiBDsv0lT8EhjxwFV8Gr564=;
-        b=EDWl9x9JvIOHXr/ppBs9v45am5RKoK6X0M5l44abzq0D1tr8D8PIkNwZeC/PqSi6WH
-         YD3n+GNQRZy8Gi+yCC205qQi85U+E1oUyb8+RvY/JE0aMdjfi6epzsirkOam66+9jB/m
-         99uSEzozms/v79GnfGNSXzCytVjnuX/RTCZk+xPaDB1GyaEHYuNCzL/WzDXXdwkAXcs5
-         f2AiluX6q+j/emZ4IwVLbwa3tT6JqKJCrJX/ESblrMBLO5r/lr4GAKz/OD2fglW8t1le
-         bWS6GchQrRTZ2Rzua3+4e5vDWdYHKGfITIh496bFSs13I2xEK3MjSbSkm1NZB5ARk4Tc
-         jsQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689883179; x=1690487979;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tpeVGMhDTTLTNxyLLa2NKiBDsv0lT8EhjxwFV8Gr564=;
-        b=d2KOszQuPpebBKdK/BjrLE3286mcJDayA0EwHAirATbJcmrf49oAjbawH0QJmxv/iN
-         XJ8mKXyJfnAZhYwo991SFXo5Bc/E4JXhM6Soq9pHxCygUjafHYiAbZsSoQAbb/PO38ox
-         jAFNEMdQDTL8F3HJUuBH/YcqY3//ILnx6/mNto7m5lPdMGyWYSQwmqR7qe0eHH+pW3mv
-         vzEYcj7GjcantrKn8bgig6W0PtmjyZY1mHcXMqyuElMS/Fop7mVEcepK6KENtcOMRuGK
-         bo1LE/+N4a4XIrpXbu9B39H2jibsrm6EPuT4iKeFUGKsanTABnLU60wkg0cQY7Ydko6u
-         5/7A==
-X-Gm-Message-State: ABy/qLYLi99bWn4lNfsPWKIF/TlBIO86WfSVzkxuGiy24rADA9YR/l77
-        VijaJXigUL6KrFLzZgbeHh0=
-X-Google-Smtp-Source: APBJJlHcLupOt7KHNIGlzbYgALPp13j7zdxBLtipHDt5sfyesKFDTOSyJc46zww2Hy8bSJ3qU2k+kA==
-X-Received: by 2002:a05:6a20:491:b0:137:2204:4ea6 with SMTP id 17-20020a056a20049100b0013722044ea6mr153159pzc.27.1689883178825;
-        Thu, 20 Jul 2023 12:59:38 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:fbd8])
-        by smtp.gmail.com with ESMTPSA id 22-20020aa79256000000b0068338b6667asm1528056pfp.212.2023.07.20.12.59.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 12:59:38 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 20 Jul 2023 09:59:37 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     chengming.zhou@linux.dev
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhouchengming@bytedance.com
-Subject: Re: [PATCH] blk-iocost: skip empty flush bio in iocost
-Message-ID: <ZLmSKdW5wTx0dAlz@slm.duckdns.org>
-References: <20230720121441.1408522-1-chengming.zhou@linux.dev>
+        Thu, 20 Jul 2023 16:00:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFBB270D
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 13:00:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7BE9161C36
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 20:00:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CFAAAC433CB;
+        Thu, 20 Jul 2023 20:00:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689883222;
+        bh=hI8Fmqr0ttPE2QGhKjWCiJYj6F0Ufd8KmtHO2g2k3ok=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=sHAeUz3OWQtRW31l8Etvc4TyALefATcwLb+C+tDcdKsVHE7skYeNWwqyxCjpD4Ha7
+         +n/BM/oNytEWQe4EOg8ZCNJADu6vcrqhR5YS/2RNrWbZYtJFRxAr6zHSiRlVSYf1RY
+         w9PlAzj2T+f6NA6KobHHgVXoxnUpHdCtoUJdz4qKrqkvePM4FTULibCjXcKaqHcu3P
+         iS27EWov3q81RT/cyhKaStSnRnJkNsOxXEe98P/yM+zHuDWGvQQ6Ywry+RitDzaMQa
+         pNYtL6ruNJddUhIaVBkC6MFDfI+pfrUeydbrQmu4HxEcJgUM/jw2uhEzgAtDGPLrvJ
+         rCJrg+r1jjduA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B3DF0E21EF5;
+        Thu, 20 Jul 2023 20:00:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230720121441.1408522-1-chengming.zhou@linux.dev>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: phy: prevent stale pointer dereference in phy_init()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168988322273.13634.6290441658966987818.git-patchwork-notify@kernel.org>
+Date:   Thu, 20 Jul 2023 20:00:22 +0000
+References: <20230720000231.1939689-1-vladimir.oltean@nxp.com>
+In-Reply-To: <20230720000231.1939689-1-vladimir.oltean@nxp.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, andrew@lunn.ch,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, f.fainelli@gmail.com,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 08:14:41PM +0800, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> The flush bio may have data, may have no data (empty flush), we couldn't
-> calculate cost for empty flush bio. So we'd better just skip it for now.
-> 
-> Another side effect is that empty flush bio's bio_end_sector() is 0, cause
-> iocg->cursor reset to 0, may break the cost calculation of other bios.
-> 
-> This isn't good enough, since flush bio still consume the device bandwidth,
-> but flush request is special, can be merged randomly in the flush state
-> machine, we don't know how to calculate cost for it for now.
-> 
-> Its completion time also has flaws, which may include the pre-flush or
-> post-flush completion time, but I don't know if we need to fix that and
-> how to fix it.
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Hello:
 
-It's unlikely that this will change behaviors in an observable way in most
-cases. That said, yeah, ignoring it in terms of cost calculation is likely
-the better thing to do.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Acked-by: Tejun Heo <tj@kernel.org>
+On Thu, 20 Jul 2023 03:02:31 +0300 you wrote:
+> mdio_bus_init() and phy_driver_register() both have error paths, and if
+> those are ever hit, ethtool will have a stale pointer to the
+> phy_ethtool_phy_ops stub structure, which references memory from a
+> module that failed to load (phylib).
+> 
+> It is probably hard to force an error in this code path even manually,
+> but the error teardown path of phy_init() should be the same as
+> phy_exit(), which is now simply not the case.
+> 
+> [...]
 
-Thanks.
+Here is the summary with links:
+  - [net] net: phy: prevent stale pointer dereference in phy_init()
+    https://git.kernel.org/netdev/net/c/1c613beaf877
 
+You are awesome, thank you!
 -- 
-tejun
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
