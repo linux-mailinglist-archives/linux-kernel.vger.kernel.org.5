@@ -2,87 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E7575B2DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9F875B2E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbjGTPfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
+        id S232716AbjGTPfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbjGTPfB (ORCPT
+        with ESMTP id S232673AbjGTPfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:35:01 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DAA7271C
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:34:57 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R6Gvw5RVRzBRDsw
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 23:34:52 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689867292; x=1692459293; bh=7SRXP5aYC5VI5N72WCnMWkFIrQ6
-        QJUDaQRwdLx6Vavo=; b=aZUkoxiqGI5Qcy7iC208+/iBwtp9x6T/73TvPz2QnFP
-        yIptaH6G9g9jrBm0WSIP9n65VxJzZGdjW0HWYemJ6okg5uV9TL28RISqgGEiUWqu
-        l4DW00VD1ca4Qn89o4qgnTs6fGpSTAlqapx1mb++FFoU29f8WmKtw7wPZVg1GTdV
-        bs7CCjzTgut54VnjFaIj7I9D74jnH63lC2+hlCF9IWs39LSqj8HSV9V1Cae6BhVD
-        I9EXwPFZg9rsiF+Mix0+VqEZ/l88p5h/QcfcDrgOG+YMhio/Gnq4V92kwNnHibiP
-        5KgA4qFIjsySvW6FzvUJpPqVuJLfvr/hVxiYPhzFKhw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 0oJLnVvvbO6D for <linux-kernel@vger.kernel.org>;
-        Thu, 20 Jul 2023 23:34:52 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R6Gvw3YG8zBHXgs;
-        Thu, 20 Jul 2023 23:34:52 +0800 (CST)
+        Thu, 20 Jul 2023 11:35:31 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB90B26B8
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:35:18 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-403ea0a50f7so8630191cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:35:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1689867318; x=1690472118;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1n+rFJmpt3qB6JDh31e2VoNgqrjqEMhcmnlZeysYmYE=;
+        b=4k9D+J7Kpdc0v2PabFm8Hmk1Rg0EfWw4RPCEG+efTc4WtuWKXjt/fnBhLoqCeZE2tu
+         ZJZgFzOafPl7KmThIItTT/LAYNvIuj4QKYPs3Y/WUaerPCDvtD8AbSYxdJBV6gq7erZ0
+         QkSqfy+6llSiQFqdoU+Kj0piE8M5QnD+2ORQ6bx9iEqn54wsDOFBvtj9QYGtnMZTZ8U7
+         KfVsmYYL0Ey+U08VcwemcoYSxU65LDlXnWhRO97b+vEfwHygN164fwsiag0Q4Bu72//P
+         +QQgOU1mJjt87DcTNtsI3PcXd+3/ZgW182eFDepQugrD6/ju3NE4lu6THcTcE7LkVK6j
+         uHUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689867318; x=1690472118;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1n+rFJmpt3qB6JDh31e2VoNgqrjqEMhcmnlZeysYmYE=;
+        b=DolpXNxHVRHbh3TsvaVLvFGXIieg5bqIn5aVsoYKwpvr2q/xdWtiwm2HKOfA4rQJnI
+         0I6Ab0ipr0bs5+RxEBR1UcqYo3o+Gg1jPGOySJlUqK0NgqAxSZp9d4yuEMnJc+sKURpb
+         F0k1wSWoOe4VxIeGvmBXfOKULf/G+1/CsYwMWZMsvf5fsMF9byyrbbjIz8qZ37xKI8mp
+         diWvljiC1wNJVtJLZDHF2iDK3/mmuPtoPJxz42QNgyQh4f/ugjty8pAMZjfmaK2t3uKT
+         qPu6PAZFnv4v3s1qtm3iNAI3M0YTP1fU0WwbKTplNSm1hAidlq4N8DueW7dFak4Y9L78
+         iH6Q==
+X-Gm-Message-State: ABy/qLaQdGoXAkqn5to/cWtwWQ//OnEmpieVBwIr3xMGsL3m38S0356A
+        3Yr3PuPIspGS1bVLJ+wQV4JBMg==
+X-Google-Smtp-Source: APBJJlHmfBUgJQ9Se08lJnq+G/rIdvG63OoRA/rvVvwg/oR7kPGHTKFIctM5V0m+lPCob+QaJys7Ow==
+X-Received: by 2002:a05:622a:15c7:b0:405:42e9:8a8e with SMTP id d7-20020a05622a15c700b0040542e98a8emr2557869qty.57.1689867317844;
+        Thu, 20 Jul 2023 08:35:17 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-8f57-5681-ccd3-4a2e.res6.spectrum.com. [2603:7000:c01:2716:8f57:5681:ccd3:4a2e])
+        by smtp.gmail.com with ESMTPSA id fg14-20020a05622a580e00b0040399fb5ef3sm443668qtb.0.2023.07.20.08.35.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 08:35:17 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 11:35:15 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "T.J. Mercier" <tjmercier@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
+Message-ID: <20230720153515.GA1003248@cmpxchg.org>
+References: <20230720070825.992023-1-yosryahmed@google.com>
 MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 23:34:52 +0800
-From:   pangzizhen001@208suo.com
-To:     terrelln@fb.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] zstd/decompress: Fix typos in comments
-In-Reply-To: <20230720153251.41120-1-wangjianli@cdjrlc.com>
-References: <20230720153251.41120-1-wangjianli@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <5704cc1d71fe90348a9e845c80fae7fe@208suo.com>
-X-Sender: pangzizhen001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720070825.992023-1-yosryahmed@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete duplicate word "the"
+On Thu, Jul 20, 2023 at 07:08:17AM +0000, Yosry Ahmed wrote:
+> This patch series implements the proposal in LSF/MM/BPF 2023 conference
+> for reducing offline/zombie memcgs by memory recharging [1]. The main
+> difference is that this series focuses on recharging and does not
+> include eviction of any memory charged to offline memcgs.
+> 
+> Two methods of recharging are proposed:
+> 
+> (a) Recharging of mapped folios.
+> 
+> When a memcg is offlined, queue an asynchronous worker that will walk
+> the lruvec of the offline memcg and try to recharge any mapped folios to
+> the memcg of one of the processes mapping the folio. The main assumption
+> is that a process mapping the folio is the "rightful" owner of the
+> memory.
+> 
+> Currently, this is only supported for evictable folios, as the
+> unevictable lru is imaginary and we cannot iterate the folios on it. A
+> separate proposal [2] was made to revive the unevictable lru, which
+> would allow recharging of unevictable folios.
+> 
+> (b) Deferred recharging of folios.
+> 
+> For folios that are unmapped, or mapped but we fail to recharge them
+> with (a), we rely on deferred recharging. Simply put, any time a folio
+> is accessed or dirtied by a userspace process, and that folio is charged
+> to an offline memcg, we will try to recharge it to the memcg of the
+> process accessing the folio. Again, we assume this process should be the
+> "rightful" owner of the memory. This is also done asynchronously to avoid
+> slowing down the data access path.
 
-Signed-off-by: Zizhen Pang <pangzizhen001@208suo.com>
----
-  lib/zstd/decompress/zstd_decompress_block.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+I'm super skeptical of this proposal.
 
-diff --git a/lib/zstd/decompress/zstd_decompress_block.c 
-b/lib/zstd/decompress/zstd_decompress_block.c
-index c1913b8e7c89..cd2e9acecd84 100644
---- a/lib/zstd/decompress/zstd_decompress_block.c
-+++ b/lib/zstd/decompress/zstd_decompress_block.c
-@@ -510,7 +510,7 @@ void ZSTD_buildFSETable_body(ZSTD_seqSymbol* dt,
-              }
-          }
-          /* Now we spread those positions across the table.
--         * The benefit of doing it in two stages is that we avoid the 
-the
-+         * The benefit of doing it in two stages is that we avoid the
-           * variable size inner loop, which caused lots of branch 
-misses.
-           * Now we can run through all the positions without any branch 
-misses.
-           * We unroll the loop twice, since that is what emperically 
-worked best.
+Recharging *might* be the most desirable semantics from a user pov,
+but only if it applies consistently to the whole memory footprint.
+There is no mention of slab allocations such as inodes, dentries,
+network buffers etc. which can be a significant part of a cgroup's
+footprint. These are currently reparented. I don't think doing one
+thing with half of the memory, and a totally different thing with the
+other half upon cgroup deletion is going to be acceptable semantics.
+
+It appears this also brings back the reliability issue that caused us
+to deprecate charge moving. The recharge path has trylocks, LRU
+isolation attempts, GFP_ATOMIC allocations. These introduce a variable
+error rate into the relocation process, which causes pages that should
+belong to the same domain to be scattered around all over the place.
+It also means that zombie pinning still exists, but it's now even more
+influenced by timing and race conditions, and so less predictable.
+
+There are two issues being conflated here:
+
+a) the problem of zombie cgroups, and
+
+b) who controls resources that outlive the control domain.
+
+For a), reparenting is still the most reasonable proposal. It's
+reliable for one, but it also fixes the problem fully within the
+established, user-facing semantics: resources that belong to a cgroup
+also hierarchically belong to all ancestral groups; if those resources
+outlive the last-level control domain, they continue to belong to the
+parents. This is how it works today, and this is how it continues to
+work with reparenting. The only difference is that those resources no
+longer pin a dead cgroup anymore, but instead are physically linked to
+the next online ancestor. Since dead cgroups have no effective control
+parameters anymore, this is semantically equivalent - it's just a more
+memory efficient implementation of the same exact thing.
+
+b) is a discussion totally separate from this. We can argue what we
+want this behavior to be, but I'd argue strongly that whatever we do
+here should apply to all resources managed by the controller equally.
+
+It could also be argued that if you don't want to lose control over a
+set of resources, then maybe don't delete their control domain while
+they are still alive and in use. For example, when restarting a
+workload, and the new instance is expected to have largely the same
+workingset, consider reusing the cgroup instead of making a new one.
+
+For the zombie problem, I think we should merge Muchun's patches
+ASAP. They've been proposed several times, they have Roman's reviews
+and acks, and they do not change user-facing semantics. There is no
+good reason not to merge them.
