@@ -2,248 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A063475B296
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95AA75B298
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232548AbjGTP3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
+        id S232006AbjGTPah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbjGTP3D (ORCPT
+        with ESMTP id S230366AbjGTPaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:29:03 -0400
-Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60B7270E
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:28:59 -0700 (PDT)
-Received: by mail-ed1-x54a.google.com with SMTP id 4fb4d7f45d1cf-51a595bc30dso1236318a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:28:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689866938; x=1690471738;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=d/u9EQyW+X21UxdbxspElMqoKZgJyUHYdK5EQ3Z7BOw=;
-        b=3Hwd44nZ28dd7XQpwbotYQrWBx55skJp3Gg5KtDbRpDdMOffpWdvgIzNW860/54HaT
-         Azxf/5by8rXcrok2m41Mqp1TMzDWRinsNR8PQskZDazzTs+Gp7tZqhBOc1yUUgTuJmRr
-         kksHZP3kh1tFtsq2GBDhXDOpYxYoVGwh08aplvBGp9TKQ48GqSDmZqAyZ2GTmAZhYpJ1
-         o2H8FoOGoPqkY2ao9JEaJJHSfeUSbfw+8DSGPm6uorPl8pnz36deNwerOjK72eTjgqXq
-         PVbSr14PujluBch8hecMx3je20sH5Q9iXokyshWyBaVVH59tY43OZqL9Vt46qTAXsIUY
-         M1Kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689866938; x=1690471738;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d/u9EQyW+X21UxdbxspElMqoKZgJyUHYdK5EQ3Z7BOw=;
-        b=i/apRflH7GBUxVWusztM43I/kb3wk+gb28PNJah3yic5lkqywl1V7+kA2+U8xH18Nh
-         nLib2rZ7TvxFASz7FcwAmVMjVFsm7AYyjk1fE7EG4kotX7iMGz92JM//SyEKPLIJnOeP
-         fMIGQ2NyrXRvyvjyrJiTQzwPgDXBDSmTJFw4aiZA9cicsmZUnStToQbxOrd3rWG5A1j4
-         7f8SdAk9PTKs5Jg3nAva7/w1bJhYZ4YHlHzvk6TtHV1ih9TydrDPDz4GjLuEPBhRq63Q
-         4GrDHTj9hQZpHBUVnjqy9mtmOV+hnhyrl2RUyt6MoF+2DFb525ZSWahot6jZAeRXm79d
-         MQVw==
-X-Gm-Message-State: ABy/qLarUcizh8uoUk6cxzkT13sgL7fm+tOz6IycH6A1nJykN22IVV+4
-        SSPPDYezSMbTM9SAUqW+r5IdKtkFiJgXFuA=
-X-Google-Smtp-Source: APBJJlHVWjVGueX9/R76s//0Z49bMtlWlMtdOLYEUW5lsDUqEawxcfhDALGNUuPtRnFpdXqSHdO1FkhKZsz5mhM=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a05:6402:e9c:b0:51e:3810:e3b1 with SMTP
- id h28-20020a0564020e9c00b0051e3810e3b1mr39802eda.1.1689866938115; Thu, 20
- Jul 2023 08:28:58 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 15:28:20 +0000
-In-Reply-To: <20230720152820.3566078-1-aliceryhl@google.com>
-Mime-Version: 1.0
-References: <20230720152820.3566078-1-aliceryhl@google.com>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230720152820.3566078-6-aliceryhl@google.com>
-Subject: [RFC PATCH v1 5/5] rust: file: add `DeferredFdCloser`
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        "=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 20 Jul 2023 11:30:35 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DE02706;
+        Thu, 20 Jul 2023 08:30:11 -0700 (PDT)
+X-QQ-mid: bizesmtp63t1689866981t599l9r8
+Received: from linux-lab-host.localdomain ( [119.123.130.39])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 20 Jul 2023 23:29:40 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: LE7C6P2vL8QHe4mvvHH0q96A0G++pPLR/aSG1lKbkXa0Wii3Y2PgYRO2VIj+i
+        K95p9gZzvt9OcNxb5oKKOkxnjzObylDjH10meNR4fus7qhBQgGMQ9Q1XCQiweJPQa/plE51
+        IHyUv22YYyH1AmWZefc2rWcZcxwUKzGYt4BYiJ5GMWvLjjRALlU6552euLerECa23mM63DE
+        5fDTEqLrLJMgAOnBdu1rQdaIM+tsB8d3HQEMxBaNl7ictefnj9tBEW2ojNPxJ4G5AQY05A2
+        MMCl6LyIdi8uepkpbO/5rATnluIGrEfjInDyZKGT/NOx3nYjSm487MUznpqWlcJ7TOEoetQ
+        NWS6d5rO6IxXgYStQMxIj5v65bf3q1QYKXvyFXpD2910T/GKoA=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 9125664167204295423
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     linux@weissschuh.net
+Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, w@1wt.eu
+Subject: [PATCH RFC 7/7] selftests/nolibc: proof of concept for TAP output
+Date:   Thu, 20 Jul 2023 23:29:40 +0800
+Message-Id: <20230720152940.7623-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230719-nolibc-ktap-tmp-v1-7-930bd0c52ff1@weissschuh.net>
+References: <20230719-nolibc-ktap-tmp-v1-7-930bd0c52ff1@weissschuh.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a new type called `DeferredFdCloser` that can be used to close
-files by their fd in a way that is safe even if the file is currently
-held using `fdget`.
+Hi, Thomas
 
-This is done by grabbing an extra refcount to the file and dropping it
-in a task work once we return to userspace.
+The result looks very similar and the change seems not that big, thanks.
 
-See comments on `binder_do_fd_close` and commit `80cd795630d65` for
-motivation.
+I have a generic question: do we need to compile nolibc-test.c
+independently or at least let users easily compile nolibc-test.c in the
+other places no just in kernel source code, for example, the other libcs
+may want to download and compile it directly.
 
-Signed-off-by: Alice Ryhl <aliceryhl@google.com>
----
-This is an implementation of `binder_deferred_fd_close` in Rust.
+The functions used in this change seems not many, is it able to provide
+our clones for them or only provide the clones when we compile them
+out-of-kernel.
 
-I think the fact that binder needs to close fds in this way raises the
-question of how we want the Rust APIs for closing files to look.
-Apparently, fdget is not just used in easily reviewable regions, but
-also around things like the ioctl syscall, meaning that all ioctls must
-abide by the fdget safety requirements.
+for example:
 
- rust/bindings/bindings_helper.h |  2 +
- rust/helpers.c                  |  7 +++
- rust/kernel/file.rs             | 80 ++++++++++++++++++++++++++++++++-
- 3 files changed, 88 insertions(+), 1 deletion(-)
+    #ifdef NOLIBC_TEST_IN_KERNEL
+    /* -DNOLIBC_TEST_IN_KERNEL from Makefile, for future compatibility */
+    #include "../kselftest.h"
+    #else
+    // our clones of the used functions, for standalone usage
+    #endif
 
-diff --git a/rust/kernel/file.rs b/rust/kernel/file.rs
-index 7281264cbaa1..9b1f4efdf7ac 100644
---- a/rust/kernel/file.rs
-+++ b/rust/kernel/file.rs
-@@ -11,7 +11,8 @@
-     error::{code::*, Error, Result},
-     types::{ARef, AlwaysRefCounted, Opaque},
- };
--use core::{marker::PhantomData, ptr};
-+use alloc::boxed::Box;
-+use core::{alloc::AllocError, marker::PhantomData, mem, ptr};
- 
- mod poll_table;
- pub use self::poll_table::{PollCondVar, PollTable};
-@@ -241,6 +242,83 @@ fn drop(&mut self) {
-     }
- }
- 
-+/// Helper used for closing file descriptors in a way that is safe even if the file is currently
-+/// held using `fdget`.
-+///
-+/// See comments on `binder_do_fd_close` and commit `80cd795630d65`.
-+pub struct DeferredFdCloser {
-+    inner: Box<DeferredFdCloserInner>,
-+}
-+
-+/// SAFETY: This just holds an allocation with no real content, so there's no safety issue with
-+/// moving it across threads.
-+unsafe impl Send for DeferredFdCloser {}
-+unsafe impl Sync for DeferredFdCloser {}
-+
-+#[repr(C)]
-+struct DeferredFdCloserInner {
-+    twork: mem::MaybeUninit<bindings::callback_head>,
-+    file: *mut bindings::file,
-+}
-+
-+impl DeferredFdCloser {
-+    /// Create a new `DeferredFdCloser`.
-+    pub fn new() -> Result<Self, AllocError> {
-+        Ok(Self {
-+            inner: Box::try_new(DeferredFdCloserInner {
-+                twork: mem::MaybeUninit::uninit(),
-+                file: core::ptr::null_mut(),
-+            })?,
-+        })
-+    }
-+
-+    /// Schedule a task work that closes the file descriptor when this task returns to userspace.
-+    pub fn close_fd(mut self, fd: u32) {
-+        let file = unsafe { bindings::close_fd_get_file(fd) };
-+        if !file.is_null() {
-+            self.inner.file = file;
-+
-+            // SAFETY: Since DeferredFdCloserInner is `#[repr(C)]`, casting the pointers gives a
-+            // pointer to the `twork` field.
-+            let inner = Box::into_raw(self.inner) as *mut bindings::callback_head;
-+
-+            // SAFETY: Getting a pointer to current is always safe.
-+            let current = unsafe { bindings::get_current() };
-+            // SAFETY: The `file` pointer points at a valid file.
-+            unsafe { bindings::get_file(file) };
-+            // SAFETY: Due to the above `get_file`, even if the current task holds an `fdget` to
-+            // this file right now, the refcount will not drop to zero until after it is released
-+            // with `fdput`. This is because when using `fdget`, you must always use `fdput` before
-+            // returning to userspace, and our task work runs after any `fdget` users have returned
-+            // to user space.
-+            //
-+            // Note: fl_owner_t is currently a void pointer.
-+            unsafe { bindings::filp_close(file, current as bindings::fl_owner_t) };
-+            // SAFETY: The `inner` pointer is compatible with the `do_close_fd` method.
-+            //
-+            // The call to `task_work_add` can't fail, because we are scheduling the task work to
-+            // the current task.
-+            unsafe {
-+                bindings::init_task_work(inner, Some(Self::do_close_fd));
-+                bindings::task_work_add(current, inner, bindings::task_work_notify_mode_TWA_RESUME);
-+            }
-+        } else {
-+            // Free the allocation.
-+            drop(self.inner);
-+        }
-+    }
-+
-+    unsafe extern "C" fn do_close_fd(inner: *mut bindings::callback_head) {
-+        // SAFETY: In `close_fd` we use this method together with a pointer that originates from a
-+        // `Box<DeferredFdCloserInner>`, and we have just been given ownership of that allocation.
-+        let inner = unsafe { Box::from_raw(inner as *mut DeferredFdCloserInner) };
-+        // SAFETY: This drops a refcount we acquired in `close_fd`.
-+        unsafe { bindings::fput(inner.file) };
-+        // Free the allocation.
-+        drop(inner);
-+    }
-+}
-+
- /// Represents the EBADF error code.
- ///
- /// Used for methods that can only fail with EBADF.
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index 7d83e1a7a362..6d0d044fa8cd 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -8,6 +8,7 @@
- 
- #include <linux/cred.h>
- #include <linux/errname.h>
-+#include <linux/fdtable.h>
- #include <linux/file.h>
- #include <linux/fs.h>
- #include <linux/poll.h>
-@@ -16,6 +17,7 @@
- #include <linux/refcount.h>
- #include <linux/wait.h>
- #include <linux/sched.h>
-+#include <linux/task_work.h>
- 
- /* `bindgen` gets confused at certain things. */
- const gfp_t BINDINGS_GFP_KERNEL = GFP_KERNEL;
-diff --git a/rust/helpers.c b/rust/helpers.c
-index e13a7da430b1..d147ec5bc0a3 100644
---- a/rust/helpers.c
-+++ b/rust/helpers.c
-@@ -31,6 +31,7 @@
- #include <linux/sched/signal.h>
- #include <linux/security.h>
- #include <linux/spinlock.h>
-+#include <linux/task_work.h>
- #include <linux/wait.h>
- 
- __noreturn void rust_helper_BUG(void)
-@@ -166,6 +167,12 @@ void rust_helper_security_cred_getsecid(const struct cred *c, u32 *secid)
- EXPORT_SYMBOL_GPL(rust_helper_security_cred_getsecid);
- #endif
- 
-+void rust_helper_init_task_work(struct callback_head *twork, task_work_func_t func)
-+{
-+	init_task_work(twork, func);
-+}
-+EXPORT_SYMBOL_GPL(rust_helper_init_task_work);
-+
- /*
-  * We use `bindgen`'s `--size_t-is-usize` option to bind the C `size_t` type
-  * as the Rust `usize` type, so we can use it in contexts where Rust
--- 
-2.41.0.255.g8b1d071c50-goog
+Best regards,
+Zhangjin
 
+> Dirty proof of concept to show how (K)TAP output can look and how it can
+> be used.
+> 
+> Currently test selection is not supported and for simplicity only the
+> startup tests are enabled.
+> 
+> Example output:
+> 
+> $ ./nolibc-test
+>  KTAP version 1
+>  1..15
+>  ok 1 argc = 1
+>  ok 2 argv_addr = <0x7ffdc66173a8>
+>  ok 3 argv_environ = <0x7ffdc66173a8>
+>  ok 4 argv_total = 1
+>  ok 5 argv0_addr = <0x7ffdc6618bca>
+>  ok 6 argv0_str = <0x7ffdc6618bca>
+>  ok 7 argv0_len = 13
+>  ok 8 environ_addr = <0x7ffdc66173b8>
+>  ok 9 environ_envp = <0x7ffdc66173b8>
+>  ok 10 environ_auxv = <0x7ffdc66173b8>
+>  ok 11 environ_total = 271
+>  ok 12 environ_HOME = <0x7ffdc6618cc7>
+>  ok 13 auxv_addr = <0x7ffdc66174c8>
+>  ok 14 auxv_AT_UID = 1000
+>  ok 15 auxv_AT_PAGESZ = 4096
+>  # Exiting with status 0
+>  # Totals: pass:15 fail:0 xfail:0 xpass:0 skip:0 error:0
+> 
+> $ ./libc-test
+>  KTAP version 1
+>  1..15
+>  ok 1 argc = 1
+>  ok 2 argv_addr = <0x7ffd5f3d43e8>
+>  ok 3 argv_environ = <0x7ffd5f3d43e8>
+>  ok 4 argv_total = 1
+>  ok 5 argv0_addr = <0x7ffd5f3d5bd0>
+>  ok 6 argv0_str = <0x7ffd5f3d5bd0>
+>  ok 7 argv0_len = 11
+>  ok 8 environ_addr = <0x7ffd5f3d43f8>
+>  ok 9 environ_envp = <0x7ffd5f3d43f8>
+>  ok 10 environ_auxv # SKIP test_auxv != (void *)-1
+>  ok 11 environ_total # SKIP test_auxv != (void *)-1
+>  ok 12 environ_HOME = <0x7ffd5f3d5ccb>
+>  ok 13 auxv_addr # SKIP test_auxv != (void *)-1
+>  ok 14 auxv_AT_UID = 1000
+>  ok 15 auxv_AT_PAGESZ = 4096
+>  # Exiting with status 0
+>  # Totals: pass:12 fail:0 xfail:0 xpass:0 skip:3 error:0
+> 
+> ./run-all-tests.sh | $SRC/tools/testing/kunit/kunit.py parse
+>  [23:47:26] ============================================================
+>  [23:47:26] ====================== (15 subtests) =======================
+>  [23:47:26] [PASSED] argc = 1
+>  [23:47:26] [PASSED] argv_addr = <0x7ffcac1b8bc8>
+>  [23:47:26] [PASSED] argv_environ = <0x7ffcac1b8bc8>
+>  [23:47:26] [PASSED] argv_total = 1
+>  [23:47:26] [PASSED] argv0_addr = <0x7ffcac1b9bd0>
+>  [23:47:26] [PASSED] argv0_str = <0x7ffcac1b9bd0>
+>  [23:47:26] [PASSED] argv0_len = 11
+>  [23:47:26] [PASSED] environ_addr = <0x7ffcac1b8bd8>
+>  [23:47:26] [PASSED] environ_envp = <0x7ffcac1b8bd8>
+>  [23:47:26] [SKIPPED] environ_auxv
+>  [23:47:26] [SKIPPED] environ_total
+>  [23:47:26] [PASSED] environ_HOME = <0x7ffcac1b9ccb>
+>  [23:47:26] [SKIPPED] auxv_addr
+>  [23:47:26] [PASSED] auxv_AT_UID = 1000
+>  [23:47:26] [PASSED] auxv_AT_PAGESZ = 4096
+>  [23:47:26] ====================== [PASSED] arm64 ======================
+>  [23:47:26] ====================== (15 subtests) =======================
+>  [23:47:26] [PASSED] argc = 1
+>  [23:47:26] [PASSED] argv_addr = <0x7ffdee178188>
+>  [23:47:26] [PASSED] argv_environ = <0x7ffdee178188>
+>  [23:47:26] [PASSED] argv_total = 1
+>  [23:47:26] [PASSED] argv0_addr = <0x7ffdee178bd0>
+>  [23:47:26] [PASSED] argv0_str = <0x7ffdee178bd0>
+>  [23:47:26] [PASSED] argv0_len = 11
+>  [23:47:26] [PASSED] environ_addr = <0x7ffdee178198>
+>  [23:47:26] [PASSED] environ_envp = <0x7ffdee178198>
+>  [23:47:26] [SKIPPED] environ_auxv
+>  [23:47:26] [SKIPPED] environ_total
+>  [23:47:26] [PASSED] environ_HOME = <0x7ffdee178ccb>
+>  [23:47:26] [SKIPPED] auxv_addr
+>  [23:47:26] [PASSED] auxv_AT_UID = 1000
+>  [23:47:26] [PASSED] auxv_AT_PAGESZ = 4096
+>  [23:47:26] ===================== [PASSED] x86_64 ======================
+>  [23:47:26] ====================== (15 subtests) =======================
+>  [23:47:26] [PASSED] argc = 1
+>  [23:47:26] [PASSED] argv_addr = <0x7ffc16bf3628>
+>  [23:47:26] [PASSED] argv_environ = <0x7ffc16bf3628>
+>  [23:47:26] [PASSED] argv_total = 1
+>  [23:47:26] [PASSED] argv0_addr = <0x7ffc16bf4bd0>
+>  [23:47:26] [PASSED] argv0_str = <0x7ffc16bf4bd0>
+>  [23:47:26] [PASSED] argv0_len = 11
+>  [23:47:26] [PASSED] environ_addr = <0x7ffc16bf3638>
+>  [23:47:26] [PASSED] environ_envp = <0x7ffc16bf3638>
+>  [23:47:26] [SKIPPED] environ_auxv
+>  [23:47:26] [SKIPPED] environ_total
+>  [23:47:26] [PASSED] environ_HOME = <0x7ffc16bf4ccb>
+>  [23:47:26] [SKIPPED] auxv_addr
+>  [23:47:26] [PASSED] auxv_AT_UID = 1000
+>  [23:47:26] [PASSED] auxv_AT_PAGESZ = 4096
+>  [23:47:26] ===================== [PASSED] riscv64 =====================
+>  [23:47:26] ============================================================
+>  [23:47:26] Testing complete. Ran 45 tests: passed: 36, skipped: 9
+> 
+> The output of kunit.py is colored after the test results.
+> 
+> Not-signed-off
+> ---
+>  tools/testing/selftests/nolibc/nolibc-test.c    | 121 ++++++++----------------
+>  tools/testing/selftests/nolibc/run-all-tests.sh |  22 +++++
+>  2 files changed, 63 insertions(+), 80 deletions(-)
+> 
