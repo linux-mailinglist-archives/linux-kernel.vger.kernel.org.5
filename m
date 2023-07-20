@@ -2,119 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C38975B1F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B0E75B1F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbjGTPD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbjGTPD4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232399AbjGTPD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 20 Jul 2023 11:03:56 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288E01BC6;
-        Thu, 20 Jul 2023 08:03:56 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-66872d4a141so592805b3a.1;
-        Thu, 20 Jul 2023 08:03:56 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232395AbjGTPDy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 Jul 2023 11:03:54 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40EC1BC6
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:03:52 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-314172bac25so731125f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:03:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689865435; x=1690470235;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689865431; x=1690470231;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=3r2QdODMt24JWTT3oaeZ32YYnCKvklyvwUm1SrldXO8=;
-        b=m+3jtebFSl/u6Q9KBLsw2Q9VS5OcZdC/k6SlxqN/lQ5bSyP29lk0BFfI21JluJyNpd
-         X3Fvcbj9EdyfbZcbNpJLToun699qXMAXGQSDr1P5zxjLy9C4aUTrKmxvnxV5QcuLO9C4
-         jIvm1VlRNOP5OdBlT6FVuOv7v5rEimyFj2Cf8OCUmJAsjWX0e9ncgV0WS7prUpSGfTv0
-         m3lfPGlarUtKey3LEf2HbAuGjwbLEl51qC5R6wyXkRj2/oi1KoXiBNKiVgitw5N2Kz0E
-         RSyNfc3MbrbTEi6dLldij/Ld5dk4xisKHuCFH6gBzMve04q7olL4QyK+Ts2Tj5UCwEv3
-         mA3w==
+        bh=yk0+OfIBVrjxdxyJzd6k7bKe62s4LYJUT+/V2wesyK4=;
+        b=HvrixRAIL67I2qRJlTd4cc4z9glJkuSXOv1aDPxuTIHyLZ5BSGbNepxqA3n9t43KgE
+         LBNT82RTszenAssbCx8M1uPIjpd0Ga+VOzLnq6OyFtAzpVQFfyqIHXafX3CHjQQEd+NS
+         VWcHimCa5DPA9BQDKkPGcgLs1H3rql+tVoNrRRc5mvp+uIQi1VNB+fldBjbuDabP6L+Y
+         8dYfAF9ew641dJCCXIANGFdLugHY2oxVXI2bFgK7ZyX3PbaFwNVP35RxC7uFNQ9jBQt1
+         UR5uKK+kQodIL8dGRKlnO40omGFnZ3LRz/tJ6pX+75Kh1+xxemuvvap0HTtLYhqILSpR
+         v0Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689865435; x=1690470235;
+        d=1e100.net; s=20221208; t=1689865431; x=1690470231;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3r2QdODMt24JWTT3oaeZ32YYnCKvklyvwUm1SrldXO8=;
-        b=OxmtM9TH6hrHVnD2YdvRg50T707Fqa0bZnVXZYm99yiwY0oe08v0YgQnKK44Xom/pr
-         Xv3KWxhwVqyxMlyLjczZ1Xo5RhBBhshFxIWL1IR1LCIaBwu0RI55v/jJYsBP4IW42zOK
-         vHB1S6sUwbPRz2wUXBu7FXE2FUaU09apswS3tORK51CD+czQnBUZYxCCHXDHufDmMqZl
-         OF7IVVIk0wVKbUYoZIslBvAtGUN6LkYHYmkK5V/wy7SXaBL8wAZzkgsLyPqyCZPW2lCa
-         j2qPBE5i4igM8amNFPr+zWTds4ct1BgNisRCepMR5qfZJN7k/hHujlPv0v0+GxJIrTV4
-         fHGQ==
-X-Gm-Message-State: ABy/qLYcJ43wL56O9AMGDaLVm6nS8Z0TS+rnH9qhfawOfr9CTuT7YigG
-        UZGsreaXqPvoa80LURgjiwQ=
-X-Google-Smtp-Source: APBJJlFVtJZKjyiighRxE5mEk35cM8Dd8dreqWkeoTf6MyBSM1enMxAspccBtb4/nTq1g/v5ZTUg6g==
-X-Received: by 2002:a05:6a00:cc7:b0:66a:5e6f:8b21 with SMTP id b7-20020a056a000cc700b0066a5e6f8b21mr6724779pfv.2.1689865435391;
-        Thu, 20 Jul 2023 08:03:55 -0700 (PDT)
-Received: from [192.168.1.12] (bb219-74-209-211.singnet.com.sg. [219.74.209.211])
-        by smtp.gmail.com with ESMTPSA id l24-20020a62be18000000b0064f7c56d8b7sm1239911pff.219.2023.07.20.08.03.50
+        bh=yk0+OfIBVrjxdxyJzd6k7bKe62s4LYJUT+/V2wesyK4=;
+        b=ALLIlRKyymKSAS6ZFJBRjTvAlXniRjXYS/ZQW0m0PibdXHYtZMCcnOd16elYvZtBIB
+         YijvMtY6mYdM6EDPN2jENgy0rfYc9t/IogLxFRpLbZPG3w0K5r74B7d7pPOF0dosMi3k
+         lpeidaR3nR0w03DoMDL2jzY/5v0vPgRCV/iIlzj54+97BuRjpX8ppOg3QZnucYjGRDJj
+         l0L02NqijVM7X5gauCX6/POgSYtjTj+TesU6a0HlAbotQiqKmMzVtSOWMG+aVBf9zwnv
+         /1zfbFF9VkzjPqrsjeDscxf/FNzJbmljKExk3mN7q+MdvAggQRaHBG57Oi2zxvqULRXC
+         Ko9A==
+X-Gm-Message-State: ABy/qLbJJR6uIvbS8J6zE+IxeaTlw0KNTi09gpcO9rGoK8gu++RWU4AC
+        Nj0ZYgLpLkmRF6i43VMxrH3plA==
+X-Google-Smtp-Source: APBJJlEnxpnc6Eg6VtavPczW2DTVI9oBNtJTq6mn0UUWeRqPv/nKBvuumDIPWZPdrtpXnWvrphAq/Q==
+X-Received: by 2002:a5d:4c4b:0:b0:314:1f1e:3a85 with SMTP id n11-20020a5d4c4b000000b003141f1e3a85mr2051958wrt.61.1689865430880;
+        Thu, 20 Jul 2023 08:03:50 -0700 (PDT)
+Received: from [10.1.3.59] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id n12-20020a5d6b8c000000b003143c6e09ccsm1589783wrx.16.2023.07.20.08.03.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 08:03:55 -0700 (PDT)
-Message-ID: <b86b4a28-29d0-ed2e-ab82-449d1652b10c@gmail.com>
-Date:   Thu, 20 Jul 2023 23:03:48 +0800
+        Thu, 20 Jul 2023 08:03:50 -0700 (PDT)
+Message-ID: <a3502c0b-d0e8-9166-b6b4-8f40650636c7@baylibre.com>
+Date:   Thu, 20 Jul 2023 17:03:49 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Add testcase for xdp
- attaching failure tracepoint
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6 10/11] drm/mediatek: dp: Add .wait_hpd_asserted() for
+ AUX bus
 Content-Language: en-US
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Yizhou Tang <tangyeechou@gmail.com>, kernel-patches-bot@fb.com,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-References: <20230719125232.92607-1-hffilwlqm@gmail.com>
- <20230719125232.92607-3-hffilwlqm@gmail.com>
- <CAADnVQKxGNNbn-OnQzrbcOfC6c_5tL0PSfZM0y8h_FJ0Pg=sDg@mail.gmail.com>
-From:   Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <CAADnVQKxGNNbn-OnQzrbcOfC6c_5tL0PSfZM0y8h_FJ0Pg=sDg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, chunkuang.hu@kernel.org
+Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
+        matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
+        wenst@chromium.org, nfraprado@collabora.com
+References: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
+ <20230717141438.274419-11-angelogioacchino.delregno@collabora.com>
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20230717141438.274419-11-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-
-On 2023/7/20 01:39, Alexei Starovoitov wrote:
-> On Wed, Jul 19, 2023 at 5:53 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
->> +       return 0;
->> +}
->> +
->> +/*
->> + * Reuse the XDP program in xdp_dummy.c.
->> + */
->> +
->> +char LICENSE[] SEC("license") = "GPL";
+On 17/07/2023 16:14, AngeloGioacchino Del Regno wrote:
+> In order to support usecases in which the panel regulator can be
+> switched on and off to save power, and usecases in which the panel
+> regulator is off at boot, add a .wait_hpd_asserted() callback for
+> the AUX bus: this will make sure to wait until the panel is fully
+> ready after power-on before trying to communicate with it.
 > 
-> Do you have a hidden char in the above?
-> git considers the last line to be part of the commit log instead
-> of part of the patchset and it fails CI.
+> Also, parse the eDP display capabilities in that callback, so that
+> we can also avoid using the .get_edid() callback from this bridge.
+> 
+> Since at this point the hpd machinery is performed in the new hpd
+> callback and the detection and edid reading are done outside of
+> this driver, assign the DRM_BRIDGE_OP_{DETECT, EDID, HPD} ops and
+> register the bridge unconditionally at probe time only if we are
+> probing full DisplayPort and not eDP while, for the latter, we
+> register the bridge in the .done_probing() callback and only if
+> the panel was found and triggered HPD.
 
-Sorry for it.
-
-I'll use ./scripts/checkpatch.pl to check it again to make sure no style
-issue, then resend this patchset.
-
-Thanks,
-Leon
+-- 
+Regards,
+Alexandre
