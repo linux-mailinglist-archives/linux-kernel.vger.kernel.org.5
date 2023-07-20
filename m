@@ -2,60 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C87BB75A4F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 06:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8766575A4E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjGTEA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 00:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
+        id S229758AbjGTDxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 23:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjGTEAY (ORCPT
+        with ESMTP id S229450AbjGTDxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 00:00:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAF21FFE
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 21:00:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CDBE861349
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:00:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 285EFC433C8;
-        Thu, 20 Jul 2023 04:00:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689825622;
-        bh=WW61fEJn5ley9K1VeZE4qAk6gC7/D9WN6n2QMTISo2g=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=KTGTYZoyh9kkafvx22Qw427otTcIOaectoEDbiZ2/mYm0sPOlXxJG5vANVMpoqr8s
-         Z/UjtLwfkJskzJy6gy1OWJzgRZmdp4PT+hVkkuRAja1HAxiuc1Tm0BNNYKU3WVzHOo
-         aNf4MalOznHSDao2pNIYBCUuXHOseG5YvbFPiHH7ADowczq3U1UyzmLdTdNSWTV45G
-         ZKybTABsCKsYcSLjE5M25ra3D+tLZHmCKXT+8GJdHvZpxyb1/blb7ZS4/5uNNJwj5Z
-         JkAOmG62hmAwhQDGhLw0qUIa7CKB94kJR8/eIn7dlvK/spCDJMj2ZL8HRTO77IfvKE
-         4ncWc1uPV2LIA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 025C2E22AE2;
-        Thu, 20 Jul 2023 04:00:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 19 Jul 2023 23:53:23 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CA51FD9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:53:22 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R5zLQ12M2z4f3mJ8
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:53:18 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP2 (Coremail) with SMTP id Syh0CgC3q+mtr7hk4qk0OQ--.49914S2;
+        Thu, 20 Jul 2023 11:53:19 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     shikemeng@huaweicloud.com
+Subject: [PATCH 0/2] Two minor cleanups for compaction
+Date:   Thu, 20 Jul 2023 19:53:48 +0800
+Message-Id: <20230720115351.2039431-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v5 0/2] net: stmmac: improve driver statistics
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168982562200.4243.13225573648147427598.git-patchwork-notify@kernel.org>
-Date:   Thu, 20 Jul 2023 04:00:22 +0000
-References: <20230717160630.1892-1-jszhang@kernel.org>
-In-Reply-To: <20230717160630.1892-1-jszhang@kernel.org>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, mcoquelin.stm32@gmail.com,
-        wens@csie.org, jernej.skrabec@gmail.com, samuel@sholland.org,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@lists.linux.dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-CM-TRANSID: Syh0CgC3q+mtr7hk4qk0OQ--.49914S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY27AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JF
+        v_Gryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AK
+        xVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aV
+        AFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x2
+        0xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18Mc
+        Ij6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l
+        F7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxh
+        VjvjDU0xZFpf9x0pRVc_3UUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,31 +57,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi all, this series contains two random cleanups for compaction.
+Patch 1 correct wrong comment in fast_isolate_freepages.
+Patch 2 avoid to call unneeded pageblock_end_pfn when no_set_skip_hint
+is set.
+Thanks!
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Kemeng Shi (2):
+  mm/compaction: correct comment of candidate pfn in
+    fast_isolate_freepages
+  mm/compaction: avoid unneeded pageblock_end_pfn when no_set_skip_hint
+    is set
 
-On Tue, 18 Jul 2023 00:06:28 +0800 you wrote:
-> improve the stmmac driver statistics:
-> 
-> 1. don't clear network driver statistics in .ndo_close() and
-> .ndo_open() cycle
-> 2. avoid some network driver statistics overflow on 32 bit platforms
-> 3. use per-queue statistics where necessary to remove frequent
-> cacheline ping pongs.
-> 
-> [...]
+ mm/compaction.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Here is the summary with links:
-  - [net-next,v5,1/2] net: stmmac: don't clear network statistics in .ndo_open()
-    https://git.kernel.org/netdev/net-next/c/2eb85b750512
-  - [net-next,v5,2/2] net: stmmac: use per-queue 64 bit statistics where necessary
-    https://git.kernel.org/netdev/net-next/c/133466c3bbe1
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.30.0
 
