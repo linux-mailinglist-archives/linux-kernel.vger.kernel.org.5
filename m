@@ -2,58 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C46FF75AD34
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A7175AD3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbjGTLkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
+        id S230006AbjGTLns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGTLkQ (ORCPT
+        with ESMTP id S230062AbjGTLnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:40:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9AB189;
-        Thu, 20 Jul 2023 04:40:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9AC8661A3F;
-        Thu, 20 Jul 2023 11:40:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9297AC433C9;
-        Thu, 20 Jul 2023 11:40:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689853214;
-        bh=sf+p0ULly/I8blnBXx05PUk4EXNbAItZNLpvWv1NFOw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KhKZODI0RVQzFfx8b/9CPiUlb7RoEuHXXczVpfA583EApxRZByeT1u69uKUrV+4EA
-         CD/h5Dz/G4+3kcH+XqHpA7rP2KoxLLeCGVGVKr6QedqSOhFbpXqkfNV95NsGl4teU4
-         Invz8JbJZs+d1ZAUcorQ+NbCwTiKhkb7sERQy/Z+S0yQcXm93Sen5G/h7ZnQKo9kyw
-         nyPG1YoN1SdX9Uo6Z3YkEqG5CTEBffTi8hbGOxnMcurAFnCjPQNGAc4/0mnZnAzAij
-         axRiE+/EojBXQdClkxdEOjVNBdETxe1CV8UaNshegltAUeCxW3JJ8jLXQ+BaBBuZmn
-         cXAvJQXAemHeQ==
-Date:   Thu, 20 Jul 2023 13:40:12 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     David Gow <davidgow@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] drivers: base: Add basic devm tests for platform
- devices
-Message-ID: <rlcesc2enzsbagn6uzu3fztda65lsytsgsrhgnau6knlhcudvk@qsodzahwizj3>
-References: <20230329-kunit-devm-inconsistencies-test-v2-0-19feb71e864b@kernel.org>
- <20230329-kunit-devm-inconsistencies-test-v2-2-19feb71e864b@kernel.org>
- <CABVgOS=-LCKpevBNO6SSBYXLAURa5AxXr34gOdt2xZSL+FwoXg@mail.gmail.com>
+        Thu, 20 Jul 2023 07:43:46 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243F31724;
+        Thu, 20 Jul 2023 04:43:44 -0700 (PDT)
+Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R69lY0w77zVjD4;
+        Thu, 20 Jul 2023 19:42:17 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 20 Jul 2023 19:43:41 +0800
+From:   Jie Hai <haijie1@huawei.com>
+To:     <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dmaengine: dmatest: fix timeout caused by kthread_stop
+Date:   Thu, 20 Jul 2023 19:41:02 +0800
+Message-ID: <20230720114102.51053-1-haijie1@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CABVgOS=-LCKpevBNO6SSBYXLAURa5AxXr34gOdt2xZSL+FwoXg@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemi500020.china.huawei.com (7.221.188.8)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,31 +46,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+The change introduced by commit a7c01fa93aeb ("signal: break
+out of wait loops on kthread_stop()") causes dmatest aborts
+any ongoing tests and possible failure on the tests. This patch
+use wait_event_timeout instead of wait_event_freezable_timeout
+to avoid interrupting ongoing tests by signal brought by
+kthread_stop().
 
-On Wed, Jul 19, 2023 at 05:13:50PM +0800, David Gow wrote:
-> On Wed, 28 Jun 2023 at 17:49, Maxime Ripard <mripard@kernel.org> wrote:
-> >
-> > Platform devices show some inconsistencies with how devm resources are
-> > released when the device has been probed and when it hasn't. Let's add a
-> > few tests to exercise thos paths and odd cases.
->=20
-> Nit: "these".
->=20
-> Also, it'd be nice to call out the case that fails explicitly in the
-> commit message here, so it's obvious what the "inconsistency" is.
+Signed-off-by: Jie Hai <haijie1@huawei.com>
+---
+ drivers/dma/dmatest.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I've reworded the commit message.
+diff --git a/drivers/dma/dmatest.c b/drivers/dma/dmatest.c
+index ffe621695e47..c06b8b16645a 100644
+--- a/drivers/dma/dmatest.c
++++ b/drivers/dma/dmatest.c
+@@ -827,7 +827,7 @@ static int dmatest_func(void *data)
+ 		} else {
+ 			dma_async_issue_pending(chan);
+ 
+-			wait_event_freezable_timeout(thread->done_wait,
++			ret = wait_event_timeout(thread->done_wait,
+ 					done->done,
+ 					msecs_to_jiffies(params->timeout));
+ 
+-- 
+2.33.0
 
-> >
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > ---
->=20
-> This looks good to me. I think this is, if anything, even more
-> obviously important than the root device issues, so we definitely need
-> to fix or document it.
->=20
-> Reviewed-by: David Gow <davidgow@google.com>
-
-Thanks!
-Maxime
