@@ -2,151 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB86575B555
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528D375B556
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbjGTRPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 13:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53606 "EHLO
+        id S231650AbjGTRPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 13:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbjGTRPh (ORCPT
+        with ESMTP id S231543AbjGTRPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 Jul 2023 13:15:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290C82135
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689873289;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6dS9MqSSp9voaLhT32kd9eEdqfQVkZ98uR/QeW4LDZE=;
-        b=eclkqvDz9q1qaMjKkGyQvso4GQILYgQD8P5j+y3kPAFGC5t1RXENR/0mivS2AlUiEUgQ4V
-        ML5tFNqJfCCxMBcMowl3Z0vdQz9cDw39Ypujkw4+5Fgx8PdzeRqvwali4fWa0lKY72l8Dy
-        0RpZOF34ObRvhXkwZashvIq63u0WUUk=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-460-9uQwqO2hPeeRhnAL8CVvZA-1; Thu, 20 Jul 2023 13:14:47 -0400
-X-MC-Unique: 9uQwqO2hPeeRhnAL8CVvZA-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fa979d0c32so5702055e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:14:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689873286; x=1690478086;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6dS9MqSSp9voaLhT32kd9eEdqfQVkZ98uR/QeW4LDZE=;
-        b=OxSSWETFgSVQ36cM6SsRMW1gR+2LGuz0DE51in25TdtuF4GhoQD4v2UgVbO/6cQQ14
-         ynV8nre0wKnS2UowPwoSZuilhq2feRnofKs8nUVnCje4ymN1WBNMxr4IdxiLkP/gB7Am
-         czappK+9V2jEjLIpp6mT84UTqfZNWiHMWjTGJhaPdf9xXHPrf29MBvUhr4xTIZggKw7C
-         fqIZ7ZQlEbDE7UMo9wxVJfAodshRI7W5EW64fg8bGI0BdeN63pvBQSowLe2VJlJnA/I4
-         +LRzwqu9iAEFceC+HZAAJ7KMgE5XA5EBU/SA1bnr/A+T9GHj/hYaDBbQs37fyyX6GZ8a
-         97ug==
-X-Gm-Message-State: ABy/qLaIjINjxsyZ/L3FVCR92k8NIMD//SeHVhurgLVnpGPOX7VZZQHa
-        xfIP0tVmw36RfGr3GzyUTG+r8zOUmdtl9Xb7TrQJKV213HP2TVG/oa2I2h9cG8QRDq9wZKRavkK
-        Ozf3L1anBMgSIbeGj+ok2+PxB
-X-Received: by 2002:a1c:4c13:0:b0:3fb:b1bf:7df3 with SMTP id z19-20020a1c4c13000000b003fbb1bf7df3mr2199604wmf.16.1689873286281;
-        Thu, 20 Jul 2023 10:14:46 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFAgJO3NxYviKlK+X6t6HgIiN+C/pcRVYIxatfLo7cgnANyyz1Ib3buESEGZUGAVckH6rGlPA==
-X-Received: by 2002:a1c:4c13:0:b0:3fb:b1bf:7df3 with SMTP id z19-20020a1c4c13000000b003fbb1bf7df3mr2199588wmf.16.1689873285921;
-        Thu, 20 Jul 2023 10:14:45 -0700 (PDT)
-Received: from redhat.com ([2.52.16.41])
-        by smtp.gmail.com with ESMTPSA id m24-20020a056000181800b003143ac73fd0sm1892991wrh.1.2023.07.20.10.14.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 10:14:45 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 13:14:41 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Feng Liu <feliu@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Bodong Wang <bodong@nvidia.com>,
-        Parav Pandit <parav@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
-Subject: Re: [PATCH v1] virtio-pci: Fix legacy device flag setting error in
- probe
-Message-ID: <20230720131423-mutt-send-email-mst@kernel.org>
-References: <20230719154550.79536-1-feliu@nvidia.com>
- <CACGkMEv1b698NcpZHxpDoNokWH0gEs07D2eYSAjsiF1efhxORw@mail.gmail.com>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E84B3;
+        Thu, 20 Jul 2023 10:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689873334; x=1721409334;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ajwiDjEM37bJTrbE3/73m8Y1Bz0d/plYeHBMuGcnQlQ=;
+  b=d28e0eJFv2m6nYUAwrkxafUzoaA2suayn+KUyDHNWFbBa8uIsxmxOiCU
+   kmQ6sIsus2yEzePtoimeR7pGi+QGjdw/MNh343/ZIJkTbwZSCuPcD65Va
+   XhJcP+OiiV+piIcQk2PCLYBW48o66H3m+BKl9pjAjBsLV8bCktnqNHwRE
+   1him/MQrE3waM+U7RmQmpA5UG5rp7JW4QlXoEzdMFQXksVFeqAcZCKz52
+   2j09QDKwYPBCuLH4y6YXC6vKo9eSP7ucGPCrYcn6SRX+awPybwltquqZL
+   NaZEnf4HWdzEAS8Q77TBhzgMbwzndcGQb/eH+PltWcodt++LEvd8m1oU3
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="346401618"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="346401618"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 10:15:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="727776415"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="727776415"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 20 Jul 2023 10:15:29 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qMXFM-0006JP-16;
+        Thu, 20 Jul 2023 17:15:25 +0000
+Date:   Fri, 21 Jul 2023 01:14:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kselftest@vger.kernel.org,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        =?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Gow <davidgow@google.com>, kunit-dev@googlegroups.com
+Subject: Re: [PATCH v2 01/11] drm/tests: helpers: Switch to kunit actions
+Message-ID: <202307210148.7gWzLOtn-lkp@intel.com>
+References: <20230720-kms-kunit-actions-rework-v2-1-175017bd56ab@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACGkMEv1b698NcpZHxpDoNokWH0gEs07D2eYSAjsiF1efhxORw@mail.gmail.com>
+In-Reply-To: <20230720-kms-kunit-actions-rework-v2-1-175017bd56ab@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 10:27:04AM +0800, Jason Wang wrote:
-> On Wed, Jul 19, 2023 at 11:46 PM Feng Liu <feliu@nvidia.com> wrote:
-> >
-> > The 'is_legacy' flag is used to differentiate between legacy vs modern
-> > device. Currently, it is based on the value of vp_dev->ldev.ioaddr.
-> > However, due to the shared memory of the union between struct
-> > virtio_pci_legacy_device and struct virtio_pci_modern_device, when
-> > virtio_pci_modern_probe modifies the content of struct
-> > virtio_pci_modern_device, it affects the content of struct
-> > virtio_pci_legacy_device, and ldev.ioaddr is no longer zero, causing
-> > the 'is_legacy' flag to be set as true. To resolve issue, when legacy
-> > device is probed, mark 'is_legacy' as true, when modern device is
-> > probed, keep 'is_legacy' as false.
-> >
-> > Fixes: 4f0fc22534e3 ("virtio_pci: Optimize virtio_pci_device structure size")
-> > Signed-off-by: Feng Liu <feliu@nvidia.com>
-> > Reviewed-by: Parav Pandit <parav@nvidia.com>
-> > Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-> > ---
-> >  drivers/virtio/virtio_pci_common.c | 2 --
-> >  drivers/virtio/virtio_pci_legacy.c | 1 +
-> >  2 files changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> > index a6c86f916dbd..c2524a7207cf 100644
-> > --- a/drivers/virtio/virtio_pci_common.c
-> > +++ b/drivers/virtio/virtio_pci_common.c
-> > @@ -557,8 +557,6 @@ static int virtio_pci_probe(struct pci_dev *pci_dev,
-> >
-> >         pci_set_master(pci_dev);
-> >
-> > -       vp_dev->is_legacy = vp_dev->ldev.ioaddr ? true : false;
-> > -
-> >         rc = register_virtio_device(&vp_dev->vdev);
-> >         reg_dev = vp_dev;
-> >         if (rc)
-> > diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-> > index 2257f1b3d8ae..d9cbb02b35a1 100644
-> > --- a/drivers/virtio/virtio_pci_legacy.c
-> > +++ b/drivers/virtio/virtio_pci_legacy.c
-> > @@ -223,6 +223,7 @@ int virtio_pci_legacy_probe(struct virtio_pci_device *vp_dev)
-> >         vp_dev->config_vector = vp_config_vector;
-> >         vp_dev->setup_vq = setup_vq;
-> >         vp_dev->del_vq = del_vq;
-> > +       vp_dev->is_legacy = true;
-> 
-> This seems break force_legacy for modern device:
-> 
->         if (force_legacy) {
->                 rc = virtio_pci_legacy_probe(vp_dev);
->                 /* Also try modern mode if we can't map BAR0 (no IO space). */
->                 if (rc == -ENODEV || rc == -ENOMEM)
->                         rc = virtio_pci_modern_probe(vp_dev);
-> 
-> Thanks
+Hi Maxime,
 
-don't see the breakage here - can you explain a bit more?
+kernel test robot noticed the following build warnings:
 
-> >
-> >         return 0;
-> >  }
-> > --
-> > 2.37.1 (Apple Git-137.1)
-> >
+[auto build test WARNING on c58c49dd89324b18a812762a2bfa5a0458e4f252]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Maxime-Ripard/drm-tests-helpers-Switch-to-kunit-actions/20230720-191901
+base:   c58c49dd89324b18a812762a2bfa5a0458e4f252
+patch link:    https://lore.kernel.org/r/20230720-kms-kunit-actions-rework-v2-1-175017bd56ab%40kernel.org
+patch subject: [PATCH v2 01/11] drm/tests: helpers: Switch to kunit actions
+config: arm64-randconfig-r022-20230720 (https://download.01.org/0day-ci/archive/20230721/202307210148.7gWzLOtn-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230721/202307210148.7gWzLOtn-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307210148.7gWzLOtn-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/gpu/drm/tests/drm_kunit_helpers.c:53:6: warning: cast from 'void (*)(struct platform_driver *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+      53 |                                         (kunit_action_t *)platform_driver_unregister,
+         |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/gpu/drm/tests/drm_kunit_helpers.c:61:6: warning: cast from 'void (*)(struct platform_device *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+      61 |                                         (kunit_action_t *)platform_device_put,
+         |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/tests/drm_kunit_helpers.c:69:6: warning: cast from 'void (*)(struct platform_device *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+      69 |                                         (kunit_action_t *)platform_device_del,
+         |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/tests/drm_kunit_helpers.c:89:9: warning: cast from 'void (*)(struct platform_device *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+      89 |                              (kunit_action_t *)platform_device_unregister,
+         |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/tests/drm_kunit_helpers.c:93:9: warning: cast from 'void (*)(struct platform_driver *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+      93 |                              (kunit_action_t *)platform_driver_unregister,
+         |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   5 warnings generated.
+
+
+vim +53 drivers/gpu/drm/tests/drm_kunit_helpers.c
+
+    28	
+    29	/**
+    30	 * drm_kunit_helper_alloc_device - Allocate a mock device for a KUnit test
+    31	 * @test: The test context object
+    32	 *
+    33	 * This allocates a fake struct &device to create a mock for a KUnit
+    34	 * test. The device will also be bound to a fake driver. It will thus be
+    35	 * able to leverage the usual infrastructure and most notably the
+    36	 * device-managed resources just like a "real" device.
+    37	 *
+    38	 * Resources will be cleaned up automatically, but the removal can be
+    39	 * forced using @drm_kunit_helper_free_device.
+    40	 *
+    41	 * Returns:
+    42	 * A pointer to the new device, or an ERR_PTR() otherwise.
+    43	 */
+    44	struct device *drm_kunit_helper_alloc_device(struct kunit *test)
+    45	{
+    46		struct platform_device *pdev;
+    47		int ret;
+    48	
+    49		ret = platform_driver_register(&fake_platform_driver);
+    50		KUNIT_ASSERT_EQ(test, ret, 0);
+    51	
+    52		ret = kunit_add_action_or_reset(test,
+  > 53						(kunit_action_t *)platform_driver_unregister,
+    54						&fake_platform_driver);
+    55		KUNIT_ASSERT_EQ(test, ret, 0);
+    56	
+    57		pdev = platform_device_alloc(KUNIT_DEVICE_NAME, PLATFORM_DEVID_NONE);
+    58		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, pdev);
+    59	
+    60		ret = kunit_add_action_or_reset(test,
+  > 61						(kunit_action_t *)platform_device_put,
+    62						pdev);
+    63		KUNIT_ASSERT_EQ(test, ret, 0);
+    64	
+    65		ret = platform_device_add(pdev);
+    66		KUNIT_ASSERT_EQ(test, ret, 0);
+    67	
+    68		ret = kunit_add_action_or_reset(test,
+    69						(kunit_action_t *)platform_device_del,
+    70						pdev);
+    71		KUNIT_ASSERT_EQ(test, ret, 0);
+    72	
+    73		return &pdev->dev;
+    74	}
+    75	EXPORT_SYMBOL_GPL(drm_kunit_helper_alloc_device);
+    76	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
