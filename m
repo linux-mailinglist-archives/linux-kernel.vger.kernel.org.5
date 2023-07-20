@@ -2,115 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 901DE75B538
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DC775B53A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbjGTRHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 13:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49230 "EHLO
+        id S231235AbjGTRJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 13:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjGTRHt (ORCPT
+        with ESMTP id S231138AbjGTRJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 13:07:49 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848A7193;
-        Thu, 20 Jul 2023 10:07:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1689872857;
-        bh=glW40uY0uFwX/9MnPDdB2OI8tCiPfxvzTv6gvs9+Orw=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=EQOWoZCSu3UjMQztHHrpJIOz6h+TL40/8jSm2Qr16lk9s4/ZN6Na7mNG/CbFE5g69
-         8tWicaM2WKEJSA9yHQOwf3xQ5IxTP3DDZTcta9XB6CRbsdaX/NH24B3vSt2uGnShP5
-         FI3Hmxt9L1Kx7yhKhRqYIER1pD+68CuuWMXomPBY=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id E4B69128648C;
-        Thu, 20 Jul 2023 13:07:37 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id ECnMdAaPFcSl; Thu, 20 Jul 2023 13:07:37 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1689872857;
-        bh=glW40uY0uFwX/9MnPDdB2OI8tCiPfxvzTv6gvs9+Orw=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=EQOWoZCSu3UjMQztHHrpJIOz6h+TL40/8jSm2Qr16lk9s4/ZN6Na7mNG/CbFE5g69
-         8tWicaM2WKEJSA9yHQOwf3xQ5IxTP3DDZTcta9XB6CRbsdaX/NH24B3vSt2uGnShP5
-         FI3Hmxt9L1Kx7yhKhRqYIER1pD+68CuuWMXomPBY=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
+        Thu, 20 Jul 2023 13:09:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754A6AA;
+        Thu, 20 Jul 2023 10:09:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 0410A1286255;
-        Thu, 20 Jul 2023 13:07:35 -0400 (EDT)
-Message-ID: <d67ac07c71097a4c97c8792c7c1fac9f4d5850dd.camel@HansenPartnership.com>
-Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     "Daniel P." =?ISO-8859-1?Q?Berrang=E9?= <berrange@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "bluca@debian.org" <bluca@debian.org>,
-        "lennart@poettering.net" <lennart@poettering.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Date:   Thu, 20 Jul 2023 13:07:34 -0400
-In-Reply-To: <FBDC67DD-856F-429B-8E91-B0CA8B0F24B9@oracle.com>
-References: <20230711154449.1378385-1-eesposit@redhat.com>
-         <ZK/9MlTh435FP5Ji@gambale.home> <ZLABozIRVGmwuIBf@gambale.home>
-         <ba2354dc63fd741d2d351b18d4312d0771c0935d.camel@HansenPartnership.com>
-         <ZLVyvAXwtemx1I6p@redhat.com>
-         <0aa647f719103e8620d7209cbde40f04a7334749.camel@HansenPartnership.com>
-         <FBDC67DD-856F-429B-8E91-B0CA8B0F24B9@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 04F0B61B54;
+        Thu, 20 Jul 2023 17:09:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 665B4C433C7;
+        Thu, 20 Jul 2023 17:09:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689872969;
+        bh=Hrcx6Pm4TTDsV1NJBZCewGpqN+gICfUVfLzVWI7VTvk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SsMVVFOHjT7S4PNsHRk02MBLl1FrgL/inwUsXdgK/+k42JIe7LyWK6EpPZ75hOdNq
+         lT/iNuMXIUiZuOPt7NOmnfVtRwKn51g3rq9rEtmpovDnzgeUGiXdOASCgTTPmt1A2P
+         G3le7neoP+qLYwtU9Vl9zFD4O6S1sQW580wRhcNcQfkvVU30g6pgQcO6zEfETdNLXd
+         ks5T1yQkUnBHotQFb6xns4kWw22LEVhWA50EonGd9RiHIUl7IrQpIHDDObO9x3Cgja
+         yrNyadHpHiwufGDEHKp07EtYGeEeeH3Eowxx5NMpSnRVJ44Mx3cbJC9YjGhl5+z/85
+         dSjZaghB7wE6A==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qMX9b-00Emp0-2b;
+        Thu, 20 Jul 2023 18:09:27 +0100
+Date:   Thu, 20 Jul 2023 18:09:26 +0100
+Message-ID: <86tttytsqh.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>, Fuad Tabba <tabba@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Reiji Watanabe <reijiw@google.com>, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v2] KVM: arm64: Fix hardware enable/disable flows for pKVM
+In-Reply-To: <20230719215725.799162-1-rananta@google.com>
+References: <20230719215725.799162-1-rananta@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, will@kernel.org, tabba@google.com, jingzhangos@google.com, coltonlewis@google.com, reijiw@google.com, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-07-20 at 16:46 +0000, Eric Snowberg wrote:
-> If a distro adds a SBAT section to either their UKI, or if kernel
-> SBAT enforcement is turned on from GRUB2 by default, there is one
-> piece missing that would need  to be handled by the mainline kernel
-> which is SBAT enforcement for kexec. This  would mean the revocations
-> SBAT protect against would need to be referenced  before doing the
-> signature validation in kexec. If this is not added, any distro that 
-> allows kexec really doesn’t have a SBAT protected kernel.
+On Wed, 19 Jul 2023 22:57:25 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
+> 
+> When running in protected mode, the hyp stub is disabled after pKVM is
+> initialized, meaning the host cannot enable/disable the hyp at
+> runtime. As such, kvm_arm_hardware_enabled is always 1 after
+> initialization, and kvm_arch_hardware_enable() never enables the vgic
+> maintenance irq or timer irqs.
+> 
+> Unconditionally enable/disable the vgic + timer irqs in the respective
+> calls, instead relying on the percpu bookkeeping in the generic code
+> to keep track of which cpus have the interrupts unmasked.
+> 
+> Fixes: 466d27e48d7c ("KVM: arm64: Simplify the CPUHP logic")
+> Reported-by: Oliver Upton <oliver.upton@linux.dev>
+> Suggested-by: Oliver Upton <oliver.upton@linux.dev>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  arch/arm64/kvm/arm.c | 14 ++++----------
+>  1 file changed, 4 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index c2c14059f6a8..010ebfa69650 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1867,14 +1867,10 @@ static void _kvm_arch_hardware_enable(void *discard)
+>  
+>  int kvm_arch_hardware_enable(void)
+>  {
+> -	int was_enabled = __this_cpu_read(kvm_arm_hardware_enabled);
+> -
+>  	_kvm_arch_hardware_enable(NULL);
+>  
+> -	if (!was_enabled) {
+> -		kvm_vgic_cpu_up();
+> -		kvm_timer_cpu_up();
+> -	}
+> +	kvm_vgic_cpu_up();
+> +	kvm_timer_cpu_up();
+>  
+>  	return 0;
+>  }
+> @@ -1889,10 +1885,8 @@ static void _kvm_arch_hardware_disable(void *discard)
+>  
+>  void kvm_arch_hardware_disable(void)
+>  {
+> -	if (__this_cpu_read(kvm_arm_hardware_enabled)) {
+> -		kvm_timer_cpu_down();
+> -		kvm_vgic_cpu_down();
+> -	}
+> +	kvm_timer_cpu_down();
+> +	kvm_vgic_cpu_down();
+>  
+>  	if (!is_protected_kvm_enabled())
+>  		_kvm_arch_hardware_disable(NULL);
 
-Um, actually, this is actually one of the misunderstandings of the
-whole thread: sbat is a revocation mechanism for protecting EFI boot
-security.  It's design is to prevent malicious actors exploiting buggy
-code to get into the EFI boot system before ExitBootServices is called
-and nothing more.  The kernel's intrusion into EFI boot security is
-tiny: it's basically the EFI stub up to ExitBootServices, so even if
-the kernel were to have an sbat number it would obviously be under the
-control of the maintainers of only that code (i.e. Ard) and it would
-only rev if we actually found a usable exploit in the efi stub.
+Note that this will likely conflict with the preemption disabling
+patch that is on its way to upstream. Otherwise:
 
-As far as kexec is concerned, ExitBootServices is long gone and nothing
-a future kexec'd kernel can do can alter that, so there's no EFI
-security benefit to making kexec sbat aware, and thus it seems there's
-no need to do anything about it for kexec.  Now if we're interested in
-sbat as a more general revocation mechanism, that might change, but I
-think sbat is too tightly designed for the problems of EFI variables to
-be more generally useful.
+Acked-by: Marc Zyngier <maz@kernel.org>
 
-James
+	M.
 
+-- 
+Without deviation from the norm, progress is not possible.
