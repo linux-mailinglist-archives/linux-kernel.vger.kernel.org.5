@@ -2,84 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D02FF75B5D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CCE75B5D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbjGTRmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 13:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
+        id S231641AbjGTRpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 13:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjGTRmo (ORCPT
+        with ESMTP id S229554AbjGTRpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 13:42:44 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB1E10FC
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:42:42 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5774335bb2aso12290637b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:42:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689874962; x=1690479762;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iw9BdfYVQgyQBoPjCHW6EH0Qre4wR7dPFluL4RxQ1xw=;
-        b=2jVkEC5ZNZt3+ope3Zw+2+jPrU866WnQrAjV/TY8OZQje6pWl+saEYBKFNuccW8rnc
-         r1/Yk6BLvlY9X38GX9Ui4/7Ip9tU7glLyYJNV//fOkmUQtXU/BfPzrDQSe1ygShGoKCT
-         bj3KUBZq5I6PvIBd6Lbaq/dNEUq4uIFfAIKLUlb6GEijoqQWK+90wfDQ9D9bmgMa44bu
-         qBXAg2LytvcKT75M6xVOcWs86NPY6FMtGs4KNnp9DZ0nmg2yfnrYE+0Jzi6Xm2Cuy1ra
-         GrJXDTydOsaN0vK7UoAd/Ribhl+KIsW8U6dWgngiHtuPVlZdZOmPhEryVjywyuNYhO7j
-         Q8Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689874962; x=1690479762;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iw9BdfYVQgyQBoPjCHW6EH0Qre4wR7dPFluL4RxQ1xw=;
-        b=Ej2g1kyIQgOEywzTJL3VuKzgtvNDlXqsw5oQ2kYc9UElXtlP/iwDJjgTTo9oTYWrtW
-         DWC57e1HbZfM4vuoBSPDoMZEsB+osxIRPCFrjOmzAQecypV2xhgDHTtge/PczDxlGyJ6
-         f0W8MGK58LqLevAqPYrhfssQMGN5o/GSTQBmR6iH9ZZMBYXN/S2McHD3YXtuGwlV128o
-         vjYEX09Ilaa1oXmm0z2Y1Wkib+GtwyZXVGFoLFf5WFK9BlkbDLDRmnhd3nCQsG+/Ko4p
-         Qe3BGOA/8A7AdkHhmp8Nw0YVjnoFzvDfllBbtXLwUVMQcbEhvfwCslC14XlHrTaWGpuV
-         S0fg==
-X-Gm-Message-State: ABy/qLafs5LqU1wHpI2xgOpbtOFR3e0iZ+8+omlABZCT8DrAnDLS1cuw
-        TGFHFeiDBelbJaouZvLI+XJhLQ==
-X-Google-Smtp-Source: APBJJlHLnaAjmEmO9ugYaut2lIUnqUML2b054gjF+qFo1fkVwZDIE15Oa8XWzPDep8MQf4t2wvwsmg==
-X-Received: by 2002:a0d:ef07:0:b0:56d:2c60:2f84 with SMTP id y7-20020a0def07000000b0056d2c602f84mr20144883ywe.46.1689874961710;
-        Thu, 20 Jul 2023 10:42:41 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id b7-20020a816707000000b0057a54615bf4sm340500ywc.55.2023.07.20.10.42.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 10:42:41 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 10:42:32 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Oleksandr Tymoshenko <ovt@google.com>
-cc:     Hugh Dickins <hughd@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] shmem: add support for user extended attributes
-In-Reply-To: <CACGj0CjD3NHumhRkDYiWh5YYbjcwh5sw_HqdoeafdsYxABUfZA@mail.gmail.com>
-Message-ID: <cfb2c75c-fbf4-1eb6-bba9-c3c13735f60@google.com>
-References: <20230720065430.2178136-1-ovt@google.com> <9b8d38f0-fd22-3f98-d070-16baf976ecb5@google.com> <CACGj0CjD3NHumhRkDYiWh5YYbjcwh5sw_HqdoeafdsYxABUfZA@mail.gmail.com>
+        Thu, 20 Jul 2023 13:45:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2881726;
+        Thu, 20 Jul 2023 10:45:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D2A9261B86;
+        Thu, 20 Jul 2023 17:45:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D634C433C7;
+        Thu, 20 Jul 2023 17:45:04 +0000 (UTC)
+Date:   Thu, 20 Jul 2023 13:45:01 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     wuyonggang001@208suo.com
+Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing: add missing spaces after ';'
+Message-ID: <20230720134501.01f9f1de@gandalf.local.home>
+In-Reply-To: <74685bd017411f96c8a846ebd5e3916a@208suo.com>
+References: <20230719064321.19047-1-xujianghui@cdjrlc.com>
+        <74685bd017411f96c8a846ebd5e3916a@208suo.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023, Oleksandr Tymoshenko wrote:
+On Thu, 20 Jul 2023 10:30:36 +0800
+wuyonggang001@208suo.com wrote:
 
-> Hi Hugh,
+> Remove spaces to clear checkpatch errors.
 > 
-> Could you share that patch?
+> ERROR: space required after that ';' (ctx:VxV)
 
-When I'm ready to, of course.
+PLEASE DO NOT RUN CHECKPATCH ON CURRENT CODE!!!!
 
-Hugh
+As the name suggests, checkpatch is for patches and not for existing code.
+It is used as a guideline tool to make clean patches. But checkpatch is
+*NOT* the rule of the kernel. There's lots of issues that checkpatch
+reports that can be ignored. That is decided when the patch is submitted,
+and SHOULD NOT be revisited once it has been accepted. Not to mention this
+particular error is silly.
+
+NACK!!!
+
+-- Steve
+
+> 
+> Signed-off-by: Yonggang Wu <wuyonggang001@208suo.com>
+> ---
+>   include/trace/stages/stage4_event_fields.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/trace/stages/stage4_event_fields.h 
+> b/include/trace/stages/stage4_event_fields.h
+> index b6f679ae21aa..9627e081a990 100644
+> --- a/include/trace/stages/stage4_event_fields.h
+> +++ b/include/trace/stages/stage4_event_fields.h
+> @@ -2,7 +2,7 @@
+> 
+>   /* Stage 4 definitions for creating trace events */
+> 
+> -#define ALIGN_STRUCTFIELD(type) ((int)(__alignof__(struct {type b;})))
+> +#define ALIGN_STRUCTFIELD(type) ((int)(__alignof__(struct {type b; })))
+> 
+>   #undef __field_ext
+>   #define __field_ext(_type, _item, _filter_type) {            \
+
