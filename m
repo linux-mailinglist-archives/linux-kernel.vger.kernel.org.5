@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFDE75A736
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD0175A738
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 09:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbjGTHGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 03:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39502 "EHLO
+        id S231514AbjGTHGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 03:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbjGTHGB (ORCPT
+        with ESMTP id S229592AbjGTHGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 03:06:01 -0400
-Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021792D4C
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:05:38 -0700 (PDT)
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.3ffe.de (Postfix) with ESMTPSA id CC0443D5;
-        Thu, 20 Jul 2023 09:05:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-        t=1689836715;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZuZ0IsGyRwuV/pG7ohuA1WOX4CqA3bP0jKsrGlL0cfM=;
-        b=SUVogaP+43ffhfTrNLFzMzHID7BYVfGb16nIG2mCAvEh9wVbH6PgNyQrIwWAq2SaxMe3bC
-        /XSoPJE/9y0WWQ6mBkWs65q+irhyjcenJtrJlXtcbBhSsF+TOuZxhay4CnZiy3w5xdnJ5Y
-        SPqXhI1mi3WWXZJd034cP5EXJPo+tRJgIiJYgaxepMoS4LLLV0auR8SVHbycUnDY5mNQkE
-        sqZ00JnEgk99ZHlO+AI7Kqvj1g2FzM1SLEnruBi1+y0P9pYWCT2Qf9H99XVlnh10V20WzL
-        9aEdXsgMcSg6lWl0tu7Tpay+l1HgnD+DUefPEZOfoWUNxbE0dqoHVSQpHJrF6A==
+        Thu, 20 Jul 2023 03:06:08 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7026E213D
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 00:05:56 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R63cZ4twYzBRDsN
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:05:50 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689836750; x=1692428751; bh=qrWNtrc5VN97OTDvxvlf/+l0vBs
+        nH6jqf6iPZAMxb/k=; b=kjhXejBi6GsJ6XUi9Q/sPq+ppv8O6rKmp0i2/BEdxT4
+        KAdNBs3KjlrinIK0qj3fC9IYcCQP7dbb2ABi0y7p74M5c+91JYry5yTi0XZrcL72
+        cFwKNTLfnTg4u0lMp6cH0rS/s8RkmWO46EE/53tiqmRan/4tuzYWegK0n5ppMfVp
+        Xi7VAK+W1iGa3gtIKPqrUhZtgWidxFWkkbP+Fy/l4MuvM0EkN5VVfda+cKbdQue/
+        xZCo29peYq8KDf0sxiYZlhFr2EODJCtQ4WJHBpZL00RNrZi7FBSWwjCp6B6+QQvX
+        /ip9mJDPM8Eze2/4/jofKUb3zwUeVM4YVXazMCpjoJQ==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 4vh2fpw4rea1 for <linux-kernel@vger.kernel.org>;
+        Thu, 20 Jul 2023 15:05:50 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R63cZ20L3zBRDsD;
+        Thu, 20 Jul 2023 15:05:50 +0800 (CST)
 MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 09:05:15 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Victor Lim <vlim@gigadevice.com>
-Cc:     tudor.ambarus@linaro.org, pratyush@kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        akumarma@amd.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, vikhyat.goyal@amd.com,
-        Victor Lim <vlim@gigadevice.com>
-Subject: Re: [PATCH V1 1/1] linux: drivers: mtd: spi-nor: gigadevice.c
-In-Reply-To: <20230720042834.12296-1-vlim@gigadevice.com>
-References: <20230720042834.12296-1-vlim@gigadevice.com>
-Message-ID: <62663146a51c2beac4eff48abe1f61f8@walle.cc>
-X-Sender: michael@walle.cc
+Date:   Thu, 20 Jul 2023 15:05:50 +0800
+From:   hanyu001@208suo.com
+To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] powernv: vas-trace: remove space after '('
+In-Reply-To: <tencent_17F68D4711DDD23ED72A9E0708C4549F540A@qq.com>
+References: <tencent_17F68D4711DDD23ED72A9E0708C4549F540A@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <28bb80fbf964a6c110b17ae1908e68de@208suo.com>
+X-Sender: hanyu001@208suo.com
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2023-07-20 06:28, schrieb Victor Lim:
-> Adding gigedevice new part numbers
-> 
-> Signed-off-by: Victor Lim <vlim@gigadevice.com>
+Fix below checkpatch errors:
 
-This is already v3 of this series. Please track and keep a change log.
+/platforms/powernv/vas-trace.h:ERROR:space prohibited after that open 
+parenthesis '('
+/platforms/powernv/vas-trace.h:ERROR:space prohibited after that open 
+parenthesis '('
+/platforms/powernv/vas-trace.h:ERROR:space prohibited after that open 
+parenthesis '('
 
-Your previous ones were here:
-https://lore.kernel.org/linux-mtd/20221204080000.4100-1-vlim@gigadevice.com/
-https://lore.kernel.org/linux-mtd/20221206111037.8999-1-vlim@gigadevice.com/
+Signed-off-by: Yu Han <hanyu001@208suo.com>
+---
+  arch/powerpc/platforms/powernv/vas-trace.h | 6 +++---
+  1 file changed, 3 insertions(+), 3 deletions(-)
 
-> ---
->  drivers/mtd/spi-nor/gigadevice.c | 79 ++++++++++++++++++++++++++++++++
->  1 file changed, 79 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/gigadevice.c 
-> b/drivers/mtd/spi-nor/gigadevice.c
-> index d57ddaf1525b..285fa42f2d97 100644
-> --- a/drivers/mtd/spi-nor/gigadevice.c
-> +++ b/drivers/mtd/spi-nor/gigadevice.c
-> @@ -67,6 +67,85 @@ static const struct flash_info 
-> gigadevice_nor_parts[] = {
->  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
->  		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
->  		.fixups = &gd25q256_fixups },
-> +/* adding these parts */
+diff --git a/arch/powerpc/platforms/powernv/vas-trace.h 
+b/arch/powerpc/platforms/powernv/vas-trace.h
+index ca2e08f2ddc0..64acc0dccca8 100644
+--- a/arch/powerpc/platforms/powernv/vas-trace.h
++++ b/arch/powerpc/platforms/powernv/vas-trace.h
+@@ -10,7 +10,7 @@
+  #include <linux/sched.h>
+  #include <asm/vas.h>
 
-Why this comment?
+-TRACE_EVENT(    vas_rx_win_open,
++TRACE_EVENT(vas_rx_win_open,
 
-> +	{ "gd25lx256e",  INFO(0xc86819, 0, 64 * 1024, 512,
-> +			      SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
-> +			      SPI_NOR_4B_OPCODES | SPI_NOR_OCTAL_DTR_READ |
-> +			      SPI_NOR_OCTAL_DTR_PP |
-> +			      SPI_NOR_IO_MODE_EN_VOLATILE)
-> +		.fixups = &gd25lx256e_fixups },
-> +	{"gd25b512", INFO(0xc8471A, 0, 64 * 1024, 1024,	SECT_4K |
-> +	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
+          TP_PROTO(struct task_struct *tsk,
+               int vasid,
+@@ -45,7 +45,7 @@ TRACE_EVENT(    vas_rx_win_open,
+              __entry->lnotify_tid)
+  );
 
-Did you even compile this? INFO() doesn't take 5 arguments.
-I'll stop here.
+-TRACE_EVENT(    vas_tx_win_open,
++TRACE_EVENT(vas_tx_win_open,
 
-If you decide to post another version. Please read through all
-the feedback you've got and esp. 
-Documentation/process/submitting-patches.rst
+          TP_PROTO(struct task_struct *tsk,
+               int vasid,
+@@ -77,7 +77,7 @@ TRACE_EVENT(    vas_tx_win_open,
+              __entry->lpid, __entry->pidr)
+  );
 
-Make it one patch per added part, don't include legacy flags if not 
-needed,
-include a test report and the dump of the SFDP tables.
+-TRACE_EVENT(    vas_paste_crb,
++TRACE_EVENT(vas_paste_crb,
 
-Thanks,
--michael
+          TP_PROTO(struct task_struct *tsk,
+              struct pnv_vas_window *win),
