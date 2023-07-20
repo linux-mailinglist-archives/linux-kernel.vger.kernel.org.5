@@ -2,49 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FC775AEA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5248775AEAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbjGTMoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
+        id S231434AbjGTMpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 08:45:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbjGTMoE (ORCPT
+        with ESMTP id S229703AbjGTMpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:44:04 -0400
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [IPv6:2a01:e0c:1:1599::11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894882135
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:44:02 -0700 (PDT)
-Received: from [IPV6:2a02:8428:2a4:1a01:13c1:e7e5:8148:776d] (unknown [IPv6:2a02:8428:2a4:1a01:13c1:e7e5:8148:776d])
-        (Authenticated sender: marc.w.gonzalez@free.fr)
-        by smtp2-g21.free.fr (Postfix) with ESMTPSA id 0846E2003DC;
-        Thu, 20 Jul 2023 14:43:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-        s=smtp-20201208; t=1689857039;
-        bh=AlcwNTJRG93OMRcFvpt4yL26C/7yWe+V9VE4KTS19tk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=oX7lG0Uw7wJvpGI8Wr5XAaUvZeCq4w3vApTZConWiQY7c56LAZZgpLqCs8pEgO6iH
-         +EVcM6TNew2eoatJ5pYqtC0BVyldRiOcWMYBXcfRcs8V/IoPGqoFH0lJqcUAo5CQKA
-         e9MK4jY1Ni2riTrKaU8R0GsBXl6rCJiiTQaPvXMR78c9OKHiIaZqN+hjPu1DcnxtmR
-         AGQd+OkCGqU2+i57alo+33IRpEtgy1QEzrKCK551Np916z8NlshjKwqyo1v1lUM6q/
-         C8YuhqwvMf5d49lRDjdo3Z4e2JPD87NRdMC9a/h1HLM0WQhvRyid9LOqPIWk4LUP5Y
-         ovqnN13BTh8ag==
-Message-ID: <502aa1d5-97a0-7787-1d9c-486f351fe9c5@free.fr>
-Date:   Thu, 20 Jul 2023 14:43:55 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [patch 00/58] x86/apic: Decrapification and static calls
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>
-References: <20230717223049.327865981@linutronix.de>
-Content-Language: en-US
-From:   Marc Gonzalez <marc.w.gonzalez@free.fr>
-In-Reply-To: <20230717223049.327865981@linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        Thu, 20 Jul 2023 08:45:00 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F0B2135;
+        Thu, 20 Jul 2023 05:44:59 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b8b318c5a7so5287605ad.3;
+        Thu, 20 Jul 2023 05:44:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689857099; x=1690461899;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tTrmxWcTD08nNFUROvbx6pQF30kzsq9RlWmPzoK93Ng=;
+        b=JtkZHqD0hre7Cag7gAu/8k8hgfgyWjbVm0BdafyETEKz89ZNaCOQx6wdWFNRIhMEYq
+         M6YufK1clFYno509HLSQ2sMD+kCDEGkRCZ+r0+w3Wnx4DaMSMK4AYk5JfuvO/ZfmnCSh
+         y7os7j8R3fPTognkzYrtMTaDo3gzml6tccZ40Y4Yeoz4jV63fccTx5CAzeI1le1SXu7C
+         mPVQQfk0cJEq4/P2NzDDwLqcNlISwVpQSfzV0wfvN/kcgZrPPAmf3sQIJEStu2pGR4fp
+         4gThIBR0nkQ+n4MtElr2XKuhLHZ225YhtmNChMQyeUMtjmdvl/o/jobiIW894dwWAj9J
+         mcSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689857099; x=1690461899;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tTrmxWcTD08nNFUROvbx6pQF30kzsq9RlWmPzoK93Ng=;
+        b=SvBYGr0pESMQic4ZFEFyMuALSRH0Tq4cdevolHoYIRFr/OV/JkT0O982ZZz9ny17Jr
+         qg+awWhXf+yamIOCceNkbPXEhAfEWjqaY9x43LujPYA+dGGRkW5TWycgHShr2KSGpIjq
+         Vd5Bl+UAtXtaL97FS61GxiRQfUIzJ/Y82lkfGXzY5qRjHdUXSfMrsixbeSIcQenam4df
+         nph1GbE51fj/JVa44FA6ph483khgLVHblWLc02j3E34DdoC1CPqmFPtl9VyFHGIrM34r
+         A+aXs2lhQs4EVQ6k61pMAHlcDuwIxPhrQEvfo+b/CsW6RlvY9ioFJN6L1gkWDnFtmgAt
+         FvzA==
+X-Gm-Message-State: ABy/qLabPcTh6cYmlb2bOPbBifi+GWOXcmEgGxTc7cYD2vH05PKecYre
+        Nk9XgI/qhwCqnvC0tSXMVDo=
+X-Google-Smtp-Source: APBJJlGDlYXcAmEmJZtvFfNg7DRXGzIritakBelFQZYwl/O8ijYFOyyFB15uqh0R1igEiETrjxJiXQ==
+X-Received: by 2002:a17:902:d38c:b0:1b8:66f6:87a3 with SMTP id e12-20020a170902d38c00b001b866f687a3mr19520605pld.52.1689857099258;
+        Thu, 20 Jul 2023 05:44:59 -0700 (PDT)
+Received: from dw-tp ([129.41.58.5])
+        by smtp.gmail.com with ESMTPSA id w3-20020a170902d70300b001b87bedcc6fsm1269778ply.93.2023.07.20.05.44.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 05:44:58 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 18:14:52 +0530
+Message-Id: <87edl2oipn.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        ojaswin@linux.ibm.com, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
+        libaokun1@huawei.com
+Subject: Re: [PATCH 2/4] ext4: fix BUG in ext4_mb_new_inode_pa() due to overflow
+In-Reply-To: <20230718131052.283350-3-libaokun1@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,85 +68,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/2023 01:14, Thomas Gleixner wrote:
+Baokun Li <libaokun1@huawei.com> writes:
 
-> Talking about those museums pieces and the related historic maze, I really
-> have to bring up the question again, whether we should finally kill support
-> for the museum CPUs and move on.
-> 
-> Ideally we remove 32bit support altogether. I know the answer... :(
+> When we calculate the end position of ext4_free_extent, this position may
+> be exactly where ext4_lblk_t (i.e. uint) overflows. For example, if
+> ac_g_ex.fe_logical is 4294965248 and ac_orig_goal_len is 2048, then the
+> computed end is 0x100000000, which is 0. If ac->ac_o_ex.fe_logical is not
+> the first case of adjusting the best extent, that is, new_bex_end > 0, the
+> following BUG_ON will be triggered:
 
-Hello Thomas,
+Nice spotting.
 
-For what it's worth, there are a few millions of these in the field:
-
-# cat /proc/cpuinfo
-processor	: 0
-vendor_id	: GenuineIntel
-cpu family	: 6
-model		: 28
-model name	: Intel(R) Atom(TM) CPU CE4150   @ 1.20GHz
-stepping	: 10
-microcode	: 0x106
-cpu MHz		: 1199.885
-cache size	: 512 KB
-physical id	: 0
-siblings	: 2
-core id		: 0
-cpu cores	: 1
-apicid		: 0
-initial apicid	: 0
-fdiv_bug	: no
-f00f_bug	: no
-coma_bug	: no
-fpu		: yes
-fpu_exception	: yes
-cpuid level	: 10
-wp		: yes
-flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe nx lm constant_tsc arch_perfmon pebs bts cpuid aperfmperf pni dtes64 monitor ds_cpl vmx tm2 ssse3 cx16 xtpr pdcm movbe lahf_lm tpr_shadow vnmi flexpriority vpid dtherm
-vmx flags	: vnmi flexpriority tsc_offset vtpr vapic
-bugs		:
-bogomips	: 2400.76
-clflush size	: 64
-cache_alignment	: 64
-address sizes	: 32 bits physical, 48 bits virtual
-power management:
-
-processor	: 1
-vendor_id	: GenuineIntel
-cpu family	: 6
-model		: 28
-model name	: Intel(R) Atom(TM) CPU CE4150   @ 1.20GHz
-stepping	: 10
-microcode	: 0x106
-cpu MHz		: 1200.188
-cache size	: 512 KB
-physical id	: 0
-siblings	: 2
-core id		: 0
-cpu cores	: 1
-apicid		: 1
-initial apicid	: 1
-fdiv_bug	: no
-f00f_bug	: no
-coma_bug	: no
-fpu		: yes
-fpu_exception	: yes
-cpuid level	: 10
-wp		: yes
-flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe nx lm constant_tsc arch_perfmon pebs bts cpuid aperfmperf pni dtes64 monitor ds_cpl tm2 ssse3 cx16 xtpr pdcm movbe lahf_lm dtherm
-bugs		:
-bogomips	: 2400.76
-clflush size	: 64
-cache_alignment	: 64
-address sizes	: 32 bits physical, 48 bits virtual
-power management:
+>
+> =========================================================
+> kernel BUG at fs/ext4/mballoc.c:5116!
+> invalid opcode: 0000 [#1] PREEMPT SMP PTI
+> CPU: 3 PID: 673 Comm: xfs_io Tainted: G E 6.5.0-rc1+ #279
+> RIP: 0010:ext4_mb_new_inode_pa+0xc5/0x430
+> Call Trace:
+>  <TASK>
+>  ext4_mb_use_best_found+0x203/0x2f0
+>  ext4_mb_try_best_found+0x163/0x240
+>  ext4_mb_regular_allocator+0x158/0x1550
+>  ext4_mb_new_blocks+0x86a/0xe10
+>  ext4_ext_map_blocks+0xb0c/0x13a0
+>  ext4_map_blocks+0x2cd/0x8f0
+>  ext4_iomap_begin+0x27b/0x400
+>  iomap_iter+0x222/0x3d0
+>  __iomap_dio_rw+0x243/0xcb0
+>  iomap_dio_rw+0x16/0x80
+> =========================================================
+>
+> A simple reproducer demonstrating the problem:
+>
+> 	mkfs.ext4 -F /dev/sda -b 4096 100M
+> 	mount /dev/sda /tmp/test
+> 	fallocate -l1M /tmp/test/tmp
+> 	fallocate -l10M /tmp/test/file
+> 	fallocate -i -o 1M -l16777203M /tmp/test/file
+> 	fsstress -d /tmp/test -l 0 -n 100000 -p 8 &
+> 	sleep 10 && killall -9 fsstress
+> 	rm -f /tmp/test/tmp
+> 	xfs_io -c "open -ad /tmp/test/file" -c "pwrite -S 0xff 0 8192"
 
 
-# uname -a
-Linux foo 5.15.42+ #182 SMP PREEMPT Mon Jul 17 09:41:27 UTC 2023 i686 GNU/Linux
+Could you please also add it into xfstests?
+I think it's a nice test which can check the boundary conditions for
+start and end of data types used in mballoc. I think it should even work
+if you don't do fsstress but instead just fallocate some remaining space
+in filesystem, so that when you open and try to write it to 0th offset,
+if automatically hits this error in ext4_mb_new_inode_pa().
 
-They will probably be running 6.1 in a few months.
+>
+> We declare new_bex_start and new_bex_end as correct types and use fex_end()
+> to avoid the problems caused by the ext4_lblk_t overflow above.
+>
+> Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>  fs/ext4/mballoc.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index eb7f5d35ef96..2090e5e7ba58 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -5076,8 +5076,8 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>  	pa = ac->ac_pa;
+>  
+>  	if (ac->ac_b_ex.fe_len < ac->ac_orig_goal_len) {
+> -		int new_bex_start;
+> -		int new_bex_end;
+> +		ext4_lblk_t new_bex_start;
+> +		loff_t new_bex_end;
+>  
+>  		/* we can't allocate as much as normalizer wants.
+>  		 * so, found space must get proper lstart
+> @@ -5096,8 +5096,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>  		 *    still cover original start
+>  		 * 3. Else, keep the best ex at start of original request.
+>  		 */
+> -		new_bex_end = ac->ac_g_ex.fe_logical +
+> -			EXT4_C2B(sbi, ac->ac_orig_goal_len);
+> +		new_bex_end = fex_end(sbi, &ac->ac_g_ex, &ac->ac_orig_goal_len);
+>  		new_bex_start = new_bex_end - EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
+>  		if (ac->ac_o_ex.fe_logical >= new_bex_start)
+>  			goto adjust_bex;
+> @@ -5117,8 +5116,8 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
+>  
+>  		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
+>  		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
+> -		BUG_ON(new_bex_end > (ac->ac_g_ex.fe_logical +
+> -				      EXT4_C2B(sbi, ac->ac_orig_goal_len)));
 
-Regards
+Ok so the right hand becomes 0 (because then end can go upto 1<<32 which
+will be 0 for unsigned int). And the left (new_bex_end) might be
+negative due to some operations above as I see it. 
+And comparing an int with unsigned int, it will promote new_bex_end to
+unsigned int which will make it's value too large and will hit the
+bug_on. 
 
+I would like to carefully review all such paths. I will soon review and
+get back.
+
+
+> +		BUG_ON(new_bex_end >
+> +			fex_end(sbi, &ac->ac_g_ex, &ac->ac_orig_goal_len));
+
+I am not sure whether using fex_end or pa_end is any helpful. 
+I think we can just typecast if needed and keep it simple rather
+than adding helpers functions for addition operation.
+(because of the fact that fex_end() can take a third parameter which
+sometimes you pass as NULL. Hence it doesn't look clean, IMO)
+
+>  	}
+>  
+>  	pa->pa_lstart = ac->ac_b_ex.fe_logical;
+> -- 
+> 2.31.1
+
+-ritesh
