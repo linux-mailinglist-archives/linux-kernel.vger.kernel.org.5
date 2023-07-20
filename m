@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEE675B882
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 22:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5EC75B887
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 22:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbjGTUG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 16:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
+        id S229683AbjGTUIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 16:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbjGTUG5 (ORCPT
+        with ESMTP id S230173AbjGTUIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 16:06:57 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453842118;
-        Thu, 20 Jul 2023 13:06:57 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b8b4749013so8939045ad.2;
-        Thu, 20 Jul 2023 13:06:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689883617; x=1690488417;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zRzMPL6a/BSNtiQ7PJzND7IfnG5RjjKshq+ayDJRwvE=;
-        b=kZIq9ybemRD+z70zrt95FXrBHFPHV9z/ZL6uhkUy+NMiMeb1ftSsvyQesVG3rung/8
-         StKvGhzKm87e0EmDAArGi/OpQRYaBX+ijkyxRDwREw4WO3X3HDnALsNzYZqcx5Sd6QOc
-         iWEVrUthWYQCvOKLAo3ODL8Pl9vUglt3E4qiHVwNbLXnFmj8aJCwpmZaaWZLoKn/mJiB
-         Ovi+Zy45y62uqB0h4m29zNjzHs7UitPpt+kYNHyLYVEIJAvO3JuTUzbjSB/BaEeodbnI
-         Zj/AeMIOXUGtWYEs/nE8rLZUXzAEfnHm7xpk1IuVAsdG5NsWCk5BwlL0fo+ioKeQuWY5
-         1yYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689883617; x=1690488417;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zRzMPL6a/BSNtiQ7PJzND7IfnG5RjjKshq+ayDJRwvE=;
-        b=GjcV4kZ+kivLH130KjDnCbB0IHe/Fppd1Hj1xcNKv6jxDaoRR3w46Ny3I91nbQ26yM
-         gIpshXPJRbZEbTFhqvMITiRSI6ndkaWJLFZN9GNZOpEwxcj9DiIGYKkuAJlA/zl6ZsHa
-         nNYSmIX2tYVU7Ph6vOluwxD5nIvYJtxdGHv1+Vc9DL+hxjBPS5Qe7G6ope2zPx2c0evE
-         wZlQdmZnXElKHrTkoqPXCVc9jfQcJnn25nhOPV0qoBDqHOJLEPoOPgaYf6o/trOHxt+1
-         7xOZ7Y2VJM9Rpcnnmm7Fl+bkubwm3I42MNdX2RkcQaWEDSR7mLWAp9+zzYWFkwT1KhLZ
-         ixlw==
-X-Gm-Message-State: ABy/qLbkrh8h+YmD5a+6wBDrsActp1MuL1HJCk2DKQc3I9BmxaUw2d+k
-        DvIb5dhYhYfGTfE9u5zXuzQ=
-X-Google-Smtp-Source: APBJJlHRyNzSlmZk1gO0I4KgaFJfKwcCiGrlMaE9Y6r8Y2/J8zvtUfOH8dB947pcEUNUBxJs0cIa6g==
-X-Received: by 2002:a17:903:22c4:b0:1b6:6b03:10cd with SMTP id y4-20020a17090322c400b001b66b0310cdmr4453plg.67.1689883616584;
-        Thu, 20 Jul 2023 13:06:56 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:fbd8])
-        by smtp.gmail.com with ESMTPSA id jh6-20020a170903328600b001aad714400asm1795608plb.229.2023.07.20.13.06.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 13:06:56 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 20 Jul 2023 10:06:54 -1000
-From:   'Tejun Heo' <tj@kernel.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Carlos Bilbao <carlos.bilbao@amd.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        amd <amd@localhost.localdomain>
-Subject: Re: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
-Message-ID: <ZLmT3mXuDlYY61w0@slm.duckdns.org>
-References: <20230717141852.153965-1-carlos.bilbao@amd.com>
- <ZLWNHuTGk0fy8pjE@slm.duckdns.org>
- <2b4540aadc3c4449a192aeed6211f232@AcuMS.aculab.com>
+        Thu, 20 Jul 2023 16:08:05 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA90ED;
+        Thu, 20 Jul 2023 13:08:04 -0700 (PDT)
+Received: from notapiano.myfiosgateway.com (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 134E86607090;
+        Thu, 20 Jul 2023 21:08:00 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689883683;
+        bh=q4fuY2sBxPima8ZJjGLmr5uxehT6OzQWdozbhPSZu+U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gGgk+y0lWDU7OZlur4njWxpvtgz8F37oiLPkhWxHa94nXWnBkfsmBcUQ7igmMplxt
+         oIYzYgPseJV4YazM7MPyfWHuk1gxRJTcJ8VvrZKN4K/rUcoj94z6Kr2+X7l/hgDSWY
+         kr1+GxlBcLIfWel5c4HAI0iiD1xGBCZcEY27Jyy1FQG5m3Wx2fxaewu5v8rvV1T+n+
+         dEpKpdI/FFJtAfHCj46UzJ2Q30esCp79qalPhv6eWZoRneXzKxPzBBhnoToW+a5WJg
+         ZcsKJvqtCTx+b0P1bHl+YSoQpwUS6OFGmamZVc85AECSE0wIwBcCdJSnwRR/trvouG
+         oLt54JiNIBomg==
+From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Tinghan Shen <tinghan.shen@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+Subject: [PATCH] arm64: dts: mediatek: mt8195: Set DSU PMU status to fail
+Date:   Thu, 20 Jul 2023 16:07:51 -0400
+Message-ID: <20230720200753.322133-1-nfraprado@collabora.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b4540aadc3c4449a192aeed6211f232@AcuMS.aculab.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 08:57:32AM +0000, David Laight wrote:
-> From: Tejun Heo
-> > Sent: 17 July 2023 19:49
-> > 
-> > On Mon, Jul 17, 2023 at 09:18:52AM -0500, Carlos Bilbao wrote:
-> > > From: amd <amd@localhost.localdomain>
-> > >
-> > > Fix two type mismatch errors encountered while compiling blk-iocost.c with
-> > > GCC version 13.1.1 that involved constant operator WEIGHT_ONE. Cast the
-> > > result of the division operation to (unsigned int) to match the expected
-> > > format specifier %u in two seq_printf invocations.
-> > 
-> > Can you detail the warnings? Was that on 32bit compiles?
-> 
-> The problem is caused by gcc 13 changing the types of the
-> constants inside an enum to be all the same.
-> 
-> The best fix is (probably) to replace all the enum used to
-> define unrelated constants with #defines.
+The DSU PMU allows monitoring performance events in the DSU cluster,
+which is done by configuring and reading back values from the DSU PMU
+system registers. However, for write-access to be allowed by ELs lower
+than EL3, the EL3 firmware needs to update the setting on the ACTLR3_EL3
+register, as it is disallowed by default.
 
-Yeah, but then you end up without any way to read that value from outside
-the kernel for BPF, drgn or any other tools which use debug info. That
-actually matters.
+That configuration is not done on the firmware used by the MT8195 SoC,
+as a consequence, booting a MT8195-based machine like
+mt8195-cherry-tomato-r2 with CONFIG_ARM_DSU_PMU enabled hangs the kernel
+just as it writes to the CLUSTERPMOVSCLR_EL1 register, since the
+instruction faults to EL3, and BL31 apparently just re-runs the
+instruction over and over.
 
-Thanks.
+Mark the DSU PMU node in the Devicetree with status "fail", as the
+machine doesn't have a suitable firmware to make use of it from the
+kernel, and allowing its driver to probe would hang the kernel.
 
+Fixes: 37f2582883be ("arm64: dts: Add mediatek SoC mt8195 and evaluation board")
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+
+---
+
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+index 5c670fce1e47..0705d9c3a6a7 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+@@ -313,6 +313,7 @@ dsu-pmu {
+ 		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		cpus = <&cpu0>, <&cpu1>, <&cpu2>, <&cpu3>,
+ 		       <&cpu4>, <&cpu5>, <&cpu6>, <&cpu7>;
++		status = "fail";
+ 	};
+ 
+ 	dmic_codec: dmic-codec {
 -- 
-tejun
+2.41.0
+
