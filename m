@@ -2,373 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9430775B1FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36B175B201
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbjGTPEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46616 "EHLO
+        id S232412AbjGTPGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232139AbjGTPEd (ORCPT
+        with ESMTP id S232004AbjGTPGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:04:33 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45577BB
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:04:31 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51d95aed33aso1208716a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689865470; x=1690470270;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7aSG/EqU9I5oy5fQXPoCvjc38F4/1Ha3I7wLiLMebnc=;
-        b=LXRHONLbIoaLxmq89NXaIJ4qaJYib7ePx6++u0uBdbGJMLkSeoqleivsbRF7ubTTVW
-         PvSD/HsKMM6LLAKUb+9xt/DXPfvo1J3XRWFbNXPIPAz7ea1NqIG6FQP9TyPtFWfZe5IX
-         FugLgbq0sc3jNxC0MH/RN70WkB9kJKD3yC3cMJGPAHSYeIR9yI4FF3AGo+jogzdCPf1G
-         WeMy9C2368W6iPUiDmb3SL3j7zcS+jU6rtAQv0T8EfRjzOMvspQhu0l9E1lhfSPJE7O/
-         KmKBKx3nCYLWeWrrU2FmqQwqI6jHk2ENRXd7AXYDhjzgajsiw+6Mb2GWFuPw5OBmjLnM
-         vhqA==
+        Thu, 20 Jul 2023 11:06:11 -0400
+Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF86BB
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:06:09 -0700 (PDT)
+Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6b9d3ce1a56so1509067a34.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:06:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689865470; x=1690470270;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7aSG/EqU9I5oy5fQXPoCvjc38F4/1Ha3I7wLiLMebnc=;
-        b=WU2soN/bsDHGv9XczUn4uNRPdfhhRGFOxuGoSMwLgL8cfU959OEq7Vz8H2D/RAWT/D
-         bQZ1FzCxcZmKTRHGxDNzZ9YvDdMPKbaMT0kiJ7HIaDnz/Yt8OtzNkoorKQgRNeutFeal
-         DwnBQYVHjm0+eFcD+IYeyR8U40D6wrYTYsV7qf2PpWSuETE3M8+uG/UxVgqyaznvanz8
-         IwzVDAQ/9+tDcWIL6tflyiH9Fnx1AMVVu8LKPRqei76O4MZmwnxwBswovTRPUN2t2J3c
-         AhsBKpjgFt8sr29MRgML2HGq+N8TS+l6njaSXrENbORGCW8LbMhHyYWhL0+KdQhn7PcQ
-         yc/A==
-X-Gm-Message-State: ABy/qLaNfUx2t0vZ4s5ApYPTtVajDM7Eht7aiFuFhNGeenJNiowcStfp
-        zMce7Gd392y/38W5Uxo5u4Od3dEQo06bcKq/TmG0yQ==
-X-Google-Smtp-Source: APBJJlH9lmghh4l44WkdwYIQOatd/BtNQnH7v3/47BBuIrYB8vIuRx0N0JLtAcVMJPw0tJYG2wCsfTPPsWyjjCtpyxM=
-X-Received: by 2002:aa7:d145:0:b0:51b:e4c7:410f with SMTP id
- r5-20020aa7d145000000b0051be4c7410fmr4710171edo.6.1689865469711; Thu, 20 Jul
- 2023 08:04:29 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689865568; x=1690470368;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dKVBvLPG0X3iK7tBptTq+Ag6ZQ3K/JZ4/J9b/33HYx0=;
+        b=lId0zpWACv4457Lvv12L4/cIOl5klcmjouCYg+A+U2i9/hHgpX/cTdN5T82Zpsyj74
+         3rws/WKZg0jDx0LoCtMUyOXFi19oqXQpXzNfncf8Q5yIvAA3LsUcaUuD0Y8Lrr/vG+Eg
+         dZ3NkN2qDsJPJgaxkHNnwBrmE5NEBZWAucbdteVrjjaZ1Mq5WTcw8mYqn6Gjm3hgLOxe
+         f9LJwKGB8br0CvWqqNBKTobx1rHqHIAFGxozjLXlco/wXximKPsrqXsNpJepCK+Ogc4Z
+         j/5B2Rx2RmIGmGD3gYluruXU0IBMHfVCB+H07qUBAxCJP9TJ6ppMTGpaH9f9HvjYHIG4
+         zEXQ==
+X-Gm-Message-State: ABy/qLYAn/ePU/mCGhVP9kvcEOUrtRLyc7HuEAsKydN10PlzHx7+EkOk
+        /8TCF111khZ7DtsNs+0HXVogPraXLiV+E5T+lRqJtL0nDGJ5
+X-Google-Smtp-Source: APBJJlHHXuaOTeRId5gNXQ+tDR5YOI1aFTzat+v+7c6DbDdGpzRv8lFcTImDAHbvoeovUaRkkJ4HcvnWlTExuo+hU3354885WXpm
 MIME-Version: 1.0
-References: <20230718134120.81199-1-aaron.lu@intel.com> <20230718134120.81199-4-aaron.lu@intel.com>
- <CAKfTPtAu33AN6=X82T=yOgm40S8OXi+sPcF0QyD-bYRPV=xPEg@mail.gmail.com>
- <20230719051826.GB84059@ziqianlu-dell> <20230719080105.GA90441@ziqianlu-dell>
- <CAKfTPtCnvOehfrz1OSW+rmkKW+28bdGw8fU+AvVrZTxkHibL_g@mail.gmail.com>
- <20230719132914.GA91858@ziqianlu-dell> <CAKfTPtAqpAo8Y9BdWZ-fmnyYgA8PEtFbObqWJxc-hs2Ktqkt3Q@mail.gmail.com>
- <20230720144233.GA185317@ziqianlu-dell>
-In-Reply-To: <20230720144233.GA185317@ziqianlu-dell>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 20 Jul 2023 17:04:18 +0200
-Message-ID: <CAKfTPtC+q5t+Kumyhq=vLhmx75VSimZPZ2U9qc6UQXwZVAZQ4w@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/4] sched/fair: delay update_tg_load_avg() for
- cfs_rq's removed load
-To:     Aaron Lu <aaron.lu@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Nitin Tekchandani <nitin.tekchandani@intel.com>,
-        Yu Chen <yu.c.chen@intel.com>,
-        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
+X-Received: by 2002:a9d:6503:0:b0:6b7:4ec4:cbb1 with SMTP id
+ i3-20020a9d6503000000b006b74ec4cbb1mr3697830otl.7.1689865568542; Thu, 20 Jul
+ 2023 08:06:08 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 08:06:08 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ee69e80600ec7cc7@google.com>
+Subject: [syzbot] [bpf?] WARNING: ODEBUG bug in tcx_uninstall
+From:   syzbot <syzbot+14736e249bce46091c18@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
+        song@kernel.org, syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023 at 16:42, Aaron Lu <aaron.lu@intel.com> wrote:
->
-> On Thu, Jul 20, 2023 at 03:10:30PM +0200, Vincent Guittot wrote:
-> > On Wed, 19 Jul 2023 at 15:29, Aaron Lu <aaron.lu@intel.com> wrote:
-> > >
-> > > On Wed, Jul 19, 2023 at 11:47:06AM +0200, Vincent Guittot wrote:
-> > > > On Wed, 19 Jul 2023 at 10:01, Aaron Lu <aaron.lu@intel.com> wrote:
-> > > > >
-> > > > > On Wed, Jul 19, 2023 at 01:18:26PM +0800, Aaron Lu wrote:
-> > > > > > Alternatively, I can remove some callsites of update_tg_load_avg() like
-> > > > > > you suggested below and only call update_tg_load_avg() when cfs_rq is
-> > > > > > decayed(really just decayed, not when it detected it has removed load
-> > > > > > pending or load propagated from its children). This way it would give us
-> > > > > > similar result as above(roughly once per ms).
-> > > > >
-> > > > > Something like this: (I think this is better since it removed those
-> > > > > unnecessary calls to update_tg_load_avg(), although it is inline but
-> > > > > still)
-> > > > >
-> > > > >
-> > > > > From bc749aaefa6bed36aa946921a4006b3dddb69b77 Mon Sep 17 00:00:00 2001
-> > > > > From: Aaron Lu <aaron.lu@intel.com>
-> > > > > Date: Wed, 19 Jul 2023 13:54:48 +0800
-> > > > > Subject: [PATCH] sched/fair: only update_tg_load_avg() when cfs_rq decayed
-> > > > >
-> > > > > ---
-> > > > >  kernel/sched/fair.c | 22 +++++++---------------
-> > > > >  1 file changed, 7 insertions(+), 15 deletions(-)
-> > > > >
-> > > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > > > index a80a73909dc2..7d5b7352b8b5 100644
-> > > > > --- a/kernel/sched/fair.c
-> > > > > +++ b/kernel/sched/fair.c
-> > > > > @@ -3913,16 +3913,16 @@ static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum
-> > > > >  }
-> > > > >
-> > > > >  /* Update task and its cfs_rq load average */
-> > > > > -static inline int propagate_entity_load_avg(struct sched_entity *se)
-> > > > > +static inline void propagate_entity_load_avg(struct sched_entity *se)
-> > > > >  {
-> > > > >         struct cfs_rq *cfs_rq, *gcfs_rq;
-> > > > >
-> > > > >         if (entity_is_task(se))
-> > > > > -               return 0;
-> > > > > +               return;
-> > > > >
-> > > > >         gcfs_rq = group_cfs_rq(se);
-> > > > >         if (!gcfs_rq->propagate)
-> > > > > -               return 0;
-> > > > > +               return;
-> > > > >
-> > > > >         gcfs_rq->propagate = 0;
-> > > > >
-> > > > > @@ -3936,8 +3936,6 @@ static inline int propagate_entity_load_avg(struct sched_entity *se)
-> > > > >
-> > > > >         trace_pelt_cfs_tp(cfs_rq);
-> > > > >         trace_pelt_se_tp(se);
-> > > > > -
-> > > > > -       return 1;
-> > > > >  }
-> > > > >
-> > > > >  /*
-> > > > > @@ -3974,9 +3972,8 @@ static inline bool skip_blocked_update(struct sched_entity *se)
-> > > > >
-> > > > >  static inline void update_tg_load_avg(struct cfs_rq *cfs_rq) {}
-> > > > >
-> > > > > -static inline int propagate_entity_load_avg(struct sched_entity *se)
-> > > > > +static inline void propagate_entity_load_avg(struct sched_entity *se)
-> > > > >  {
-> > > > > -       return 0;
-> > > > >  }
-> > > > >
-> > > > >  static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum) {}
-> > > > > @@ -4086,7 +4083,7 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
-> > > > >  {
-> > > > >         unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
-> > > > >         struct sched_avg *sa = &cfs_rq->avg;
-> > > > > -       int decayed = 0;
-> > > > > +       int decayed;
-> > > > >
-> > > > >         if (cfs_rq->removed.nr) {
-> > > > >                 unsigned long r;
-> > > > > @@ -4134,11 +4131,9 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
-> > > > >                  */
-> > > > >                 add_tg_cfs_propagate(cfs_rq,
-> > > > >                         -(long)(removed_runnable * divider) >> SCHED_CAPACITY_SHIFT);
-> > > > > -
-> > > > > -               decayed = 1;
-> > > > >         }
-> > > > >
-> > > > > -       decayed |= __update_load_avg_cfs_rq(now, cfs_rq);
-> > > > > +       decayed = __update_load_avg_cfs_rq(now, cfs_rq);
-> > > > >         u64_u32_store_copy(sa->last_update_time,
-> > > > >                            cfs_rq->last_update_time_copy,
-> > > > >                            sa->last_update_time);
-> > > > > @@ -4252,7 +4247,7 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
-> > > > >                 __update_load_avg_se(now, cfs_rq, se);
-> > > > >
-> > > > >         decayed  = update_cfs_rq_load_avg(now, cfs_rq);
-> > > > > -       decayed |= propagate_entity_load_avg(se);
-> > > > > +       propagate_entity_load_avg(se);
-> > > >
-> > > > but then you  also skip the call to cfs_rq_util_change()
-> > >
-> > > Ah right, I missed that, thanks for catching this.
-> > >
-> > > Updated:
-> > >
-> > > From 09a649f8111cfca656b7b735da975ef607b00956 Mon Sep 17 00:00:00 2001
-> > > From: Aaron Lu <aaron.lu@intel.com>
-> > > Date: Wed, 19 Jul 2023 13:54:48 +0800
-> > > Subject: [PATCH] sched/fair: only update_tg_load_avg() when cfs_rq decayed
-> > >
-> > > ---
-> > >  kernel/sched/fair.c | 17 ++++++-----------
-> > >  1 file changed, 6 insertions(+), 11 deletions(-)
-> > >
-> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > index a80a73909dc2..8d4b9e0a19b6 100644
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -4086,7 +4086,7 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
-> > >  {
-> > >         unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
-> > >         struct sched_avg *sa = &cfs_rq->avg;
-> > > -       int decayed = 0;
-> > > +       int decayed;
-> > >
-> > >         if (cfs_rq->removed.nr) {
-> > >                 unsigned long r;
-> > > @@ -4134,11 +4134,9 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
-> > >                  */
-> > >                 add_tg_cfs_propagate(cfs_rq,
-> > >                         -(long)(removed_runnable * divider) >> SCHED_CAPACITY_SHIFT);
-> > > -
-> > > -               decayed = 1;
-> >
-> > We need this to propagate the change in other place like cpufreq
->
-> Ah, I just made the same mistake again, sorry.
->
-> So there are three cases for a cfs_rq: load decayed, load removed and
-> load propagated. For all three cases, cfs_rq_util_change() needs to be
-> called and only for decayed, update_tg_load_avg() needs to be called.
->
-> I'll update the patch accordingly.
->
-> > >         }
-> > >
-> > > -       decayed |= __update_load_avg_cfs_rq(now, cfs_rq);
-> > > +       decayed = __update_load_avg_cfs_rq(now, cfs_rq);
-> > >         u64_u32_store_copy(sa->last_update_time,
-> > >                            cfs_rq->last_update_time_copy,
-> > >                            sa->last_update_time);
-> > > @@ -4242,7 +4240,7 @@ static void detach_entity_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
-> > >  static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
-> > >  {
-> > >         u64 now = cfs_rq_clock_pelt(cfs_rq);
-> > > -       int decayed;
-> > > +       int decayed, propagated;
-> > >
-> > >         /*
-> > >          * Track task load average for carrying it to new CPU after migrated, and
-> > > @@ -4252,7 +4250,7 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
-> > >                 __update_load_avg_se(now, cfs_rq, se);
-> > >
-> > >         decayed  = update_cfs_rq_load_avg(now, cfs_rq);
-> > > -       decayed |= propagate_entity_load_avg(se);
-> > > +       propagated = propagate_entity_load_avg(se);
-> > >
-> > >         if (!se->avg.last_update_time && (flags & DO_ATTACH)) {
-> > >
-> > > @@ -4264,19 +4262,16 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
-> > >                  * IOW we're enqueueing a task on a new CPU.
-> > >                  */
-> > >                 attach_entity_load_avg(cfs_rq, se);
-> > > -               update_tg_load_avg(cfs_rq);
-> > > -
-> > >         } else if (flags & DO_DETACH) {
-> > >                 /*
-> > >                  * DO_DETACH means we're here from dequeue_entity()
-> > >                  * and we are migrating task out of the CPU.
-> > >                  */
-> > >                 detach_entity_load_avg(cfs_rq, se);
-> > > -               update_tg_load_avg(cfs_rq);
-> > > -       } else if (decayed) {
-> > > +       } else if (decayed || propagated) {
-> > >                 cfs_rq_util_change(cfs_rq, 0);
-> > >
-> > > -               if (flags & UPDATE_TG)
-> > > +               if (decayed && (flags & UPDATE_TG))
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    03b123debcbc tcp: tcp_enter_quickack_mode() should be static
+git tree:       net-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=17ac9ffaa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=32e3dcc11fd0d297
+dashboard link: https://syzkaller.appspot.com/bug?extid=14736e249bce46091c18
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133f36c6a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a8e73aa80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/348462fb61fa/disk-03b123de.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/33375730f77f/vmlinux-03b123de.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b6882fbac041/bzImage-03b123de.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+14736e249bce46091c18@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+ODEBUG: activate active (active state 1) object: ffff88801529b000 object type: rcu_head hint: 0x0
+WARNING: CPU: 0 PID: 57 at lib/debugobjects.c:514 debug_print_object+0x19e/0x2a0 lib/debugobjects.c:514
+Modules linked in:
+CPU: 0 PID: 57 Comm: kworker/u4:4 Not tainted 6.5.0-rc1-syzkaller-00458-g03b123debcbc #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+Workqueue: netns cleanup_net
+RIP: 0010:debug_print_object+0x19e/0x2a0 lib/debugobjects.c:514
+Code: 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 49 48 8b 14 dd c0 20 c8 8a 41 56 4c 89 e6 48 c7 c7 20 14 c8 8a e8 b2 fa 28 fd <0f> 0b 58 83 05 5c 8b 87 0a 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e
+RSP: 0018:ffffc90001587828 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+RDX: ffff888016ee5940 RSI: ffffffff814d4986 RDI: 0000000000000001
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: ffffffff8ac81a80
+R13: ffffffff8a6df720 R14: 0000000000000000 R15: ffff88802a6b65c8
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000000c776000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ debug_object_activate+0x32b/0x490 lib/debugobjects.c:733
+ debug_rcu_head_queue kernel/rcu/rcu.h:226 [inline]
+ kvfree_call_rcu+0x30/0xbe0 kernel/rcu/tree.c:3359
+ tcx_entry_free include/net/tcx.h:96 [inline]
+ tcx_uninstall+0x2fd/0x630 kernel/bpf/tcx.c:115
+ dev_tcx_uninstall include/net/tcx.h:174 [inline]
+ unregister_netdevice_many_notify+0x5e7/0x1a20 net/core/dev.c:10899
+ ip6gre_exit_batch_net+0x3ea/0x580 net/ipv6/ip6_gre.c:1642
+ ops_exit_list+0x125/0x170 net/core/net_namespace.c:175
+ cleanup_net+0x505/0xb20 net/core/net_namespace.c:614
+ process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2597
+ worker_thread+0x687/0x1110 kernel/workqueue.c:2748
+ kthread+0x33a/0x430 kernel/kthread.c:389
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> >
-> > It would be simpler and more readable to clear UPDATE_TG or not set it
-> > from the beginning
->
-> Do you mean something like this?
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 8d4b9e0a19b6..084d63371355 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4249,7 +4249,7 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
->         if (se->avg.last_update_time && !(flags & SKIP_AGE_LOAD))
->                 __update_load_avg_se(now, cfs_rq, se);
->
-> -       decayed  = update_cfs_rq_load_avg(now, cfs_rq);
-> +       decayed  = update_cfs_rq_load_avg(now, cfs_rq) && (flags & UPDATE_TG);
->         propagated = propagate_entity_load_avg(se);
->
->         if (!se->avg.last_update_time && (flags & DO_ATTACH)) {
-> @@ -4271,7 +4271,7 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
->         } else if (decayed || propagated) {
->                 cfs_rq_util_change(cfs_rq, 0);
->
-> -               if (decayed && (flags & UPDATE_TG))
-> +               if (decayed)
->                         update_tg_load_avg(cfs_rq);
->         }
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-something like below:
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4252,6 +4252,8 @@ static inline void update_load_avg(struct cfs_rq
-*cfs_rq, struct sched_entity *s
-                __update_load_avg_se(now, cfs_rq, se);
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-        decayed  = update_cfs_rq_load_avg(now, cfs_rq);
-+       if (!decayed)
-+               flags &= ~UPDATE_TG;
-        decayed |= propagate_entity_load_avg(se);
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-        if (!se->avg.last_update_time && (flags & DO_ATTACH)) {
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
 
-
->  }
->
-> > IIUC, you rely on the fact that a decay happens every 1024 us of the
-> > cfs_rq_clock_pelt() which is scaled by frequency and cpu compute
-> > capacity. So you can end up with a cfs_rq_clock_pelt() that is far
-> > slower than real clock and the 1ms can easily be extended to dozens of
-> > ms
->
-> Thanks for the info. I'm not familiar with this clock scale part and will
-> need to take a closer look.
->
-> As you know, the intent is to make the unbound update to tg->load_avg
-> become bound for those wakeup migration heavy workloads and the way this
-> change does to achieve it is to remove the update to tg->load_avg on
-> attach and detach path, just leave the update on load decay path. And if
-> the current implementation makes load decay longer than 1024us, that
-> shouldn't be a problem for this change. I don't see an immediate problem
-> if update to tg->load_avg happens less often than once per ms but please
-> let me know if I missed something, thanks.
->
-> >
-> > >                         update_tg_load_avg(cfs_rq);
-> > >         }
-> > >  }
-> > > --
-> > > 2.41.0
-> > >
-> > >
-> > > > >
-> > > > >         if (!se->avg.last_update_time && (flags & DO_ATTACH)) {
-> > > > >
-> > > > > @@ -4264,15 +4259,12 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
-> > > > >                  * IOW we're enqueueing a task on a new CPU.
-> > > > >                  */
-> > > > >                 attach_entity_load_avg(cfs_rq, se);
-> > > > > -               update_tg_load_avg(cfs_rq);
-> > > > > -
-> > > > >         } else if (flags & DO_DETACH) {
-> > > > >                 /*
-> > > > >                  * DO_DETACH means we're here from dequeue_entity()
-> > > > >                  * and we are migrating task out of the CPU.
-> > > > >                  */
-> > > > >                 detach_entity_load_avg(cfs_rq, se);
-> > > > > -               update_tg_load_avg(cfs_rq);
-> > > > >         } else if (decayed) {
-> > > > >                 cfs_rq_util_change(cfs_rq, 0);
-> > > > >
-> > > > > --
-> > > > > 2.41.0
-> > > > >
+If you want to undo deduplication, reply with:
+#syz undup
