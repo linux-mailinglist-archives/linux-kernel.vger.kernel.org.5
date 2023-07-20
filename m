@@ -2,77 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8AB75B3AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E3975B3B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbjGTP7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
+        id S232700AbjGTQA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbjGTP7t (ORCPT
+        with ESMTP id S231426AbjGTQAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:59:49 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D898B3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:59:48 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fd18b1d924so7762425e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:59:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689868787; x=1690473587;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UcoTh2sPWLNGHJ3Cv2AGwq+IgylpFtXMhSdz8hYISoE=;
-        b=UmPa1+4v/9o9mWbgQ4+lTjHyeeBR6u7UK62B2H1gjePd9O4M5WG8vZ1+10En2Ioyht
-         DQukURnmcZUFBpmE1xXeoKbtLz+nZffiIBRaLXOd1l5bv875j7Y2Cdoj4I8fzGfFqrDv
-         y7CHlWO74e94RmAnpjS2RfG/G9ccZzWjI+6B64dprmx+qFwc7h/V8M/IplqFotElaQnO
-         5M2XhPFrSM2KpYSY6I0T9BB9XatgwC8EPBZQR2YXgGKjq7X/cl8whnHow22WHEU4iVPd
-         ww0CAnHyjJivEC8nxFwsV1d4w6mtiaUfK+RCeBZIBYJ55mk0+O16BrueLUcB92Eftq2v
-         CtyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689868787; x=1690473587;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UcoTh2sPWLNGHJ3Cv2AGwq+IgylpFtXMhSdz8hYISoE=;
-        b=N3O0n2o/EQ1MJ98Ji7JtAv95lMc+bfXPiuc3HYNysCIpadY3j0+cMK8LYbvA/wyvkk
-         6uUnb2+3kM+SjXh/Tot2bZCVd73espxDwq35hH3eozQfInHRrjucrmW9F56AV4VnvrrJ
-         5/6mQR5D1l5kV92Fm0IvRnmG0BeJ988L2qNzwhzgTXGwpQQY0mQ3TQqK8G4Do5O4uOWj
-         t1ke6H5PRKLxdc8K+k52oxUEE3++av+UFXrkBQohY6LFoAQ8Jl8/hUN9IxEPLZO3LE7I
-         gIXQW9vgHoFXzF0EqC3Ma5iBdduKUdfOsEI7bmNdN15QBFoqr0BpeTRQ7ImK9SNWepgV
-         T2eg==
-X-Gm-Message-State: ABy/qLZD9VM3UiDlzgEzf0jtvGj4p2Az9V3+P+Y6r9Qmyma8X+bC88Q0
-        JhqwMdYYNIKPA/wojGZhBudcnA==
-X-Google-Smtp-Source: APBJJlFJuKiSkpnQvuDgXExLT/wiie2rFVl7aKA4X/43U+4HxIZMk304KppNq+dx3eQW0WuzlLtphg==
-X-Received: by 2002:a5d:530b:0:b0:317:ee5:b657 with SMTP id e11-20020a5d530b000000b003170ee5b657mr2227731wrv.44.1689868786711;
-        Thu, 20 Jul 2023 08:59:46 -0700 (PDT)
-Received: from [10.1.3.131] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id j22-20020a5d6e56000000b003144b95e1ecsm1685245wrz.93.2023.07.20.08.59.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 08:59:46 -0700 (PDT)
-Message-ID: <89c36f34-5172-8a88-c389-0cd338458371@baylibre.com>
-Date:   Thu, 20 Jul 2023 17:59:45 +0200
+        Thu, 20 Jul 2023 12:00:25 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF49BCE;
+        Thu, 20 Jul 2023 09:00:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=V11+xyj3JzOnQEprdsM1XI5W3c+hh54wJgw0Bk25suE=; b=QG63nbQFGlzHgtHwh3WrtbNx7F
+        MUwBNdm4r22BBGbRq52zsyKJHPvd+oyrFmC4T6TcbhpTywuPxTC+ixkFjFGNuuKgL3VTPUMeUYHJr
+        CO5O+Xm4fSlwQ+mEfwwfzHI1bUzv7RllQz+qjEPrzMuzUcHBYoZxhx+nYtmnJCmsJqx0=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qMW4d-001ozN-AV; Thu, 20 Jul 2023 18:00:15 +0200
+Date:   Thu, 20 Jul 2023 18:00:15 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Samin Guo <samin.guo@starfivetech.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, Peter Geis <pgwipeout@gmail.com>,
+        Frank <Frank.Sae@motor-comm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Yanhong Wang <yanhong.wang@starfivetech.com>
+Subject: Re: [PATCH v5 1/2] dt-bindings: net: motorcomm: Add pad driver
+ strength cfg
+Message-ID: <0cd8b154-d255-4c16-b76d-9d3b036f3093@lunn.ch>
+References: <20230720111509.21843-1-samin.guo@starfivetech.com>
+ <20230720111509.21843-2-samin.guo@starfivetech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v6 05/11] drm/mediatek: dp: Move AUX_P0 setting to
- mtk_dp_initialize_aux_settings()
-Content-Language: en-US
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, chunkuang.hu@kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
-        matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
-        wenst@chromium.org, nfraprado@collabora.com
-References: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
- <20230717141438.274419-6-angelogioacchino.delregno@collabora.com>
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20230717141438.274419-6-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720111509.21843-2-samin.guo@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,13 +60,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+> +  motorcomm,rx-clk-drv-microamp:
+> +    description: |
+> +      drive strength of rx_clk rgmii pad.
+> +      The YT8531 RGMII LDO voltage supports 1.8V/3.3V, and the LDO voltage can
+> +      be configured with hardware pull-up resistors to match the SOC voltage
+> +      (usually 1.8V).
+> +      The software can read the registers to obtain the LDO voltage and configure
+> +      the legal drive strength(curren).
+> +      =====================================================
+> +      | voltage |        curren Available (uA)            |
 
-On 17/07/2023 16:14, AngeloGioacchino Del Regno wrote:
-> Move the register write to MTK_DP_AUX_P0_3690 to set the AUX reply mode
-> to function mtk_dp_initialize_aux_settings(), as this is effectively
-> part of the DPTX AUX setup sequence.
+current has a t.
 
--- 
-Regards,
-Alexandre
+> +      =====================================================
+> +      | voltage |        curren Available (uA)            |
+
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
