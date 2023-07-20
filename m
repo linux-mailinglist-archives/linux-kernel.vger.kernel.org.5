@@ -2,132 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 892E075A8FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B51475A901
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbjGTITv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 04:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57254 "EHLO
+        id S231246AbjGTIVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 04:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjGTITr (ORCPT
+        with ESMTP id S229719AbjGTIVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 04:19:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FFA8211F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:19:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A6794618F6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:19:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2BD2C433C7;
-        Thu, 20 Jul 2023 08:19:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689841186;
-        bh=LEYRH+AJ/QqdSK5qdoAlO00DoSaMelRgW8AFErE1MqE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tkGb3cahMC7LB2H4YhamM4rwXjT8oJnHeRpVVyueojgXJW2B0DxyZGpDIy8pCt/+0
-         DhLLw14nWEq8C8m4VR7xc2QLw/NFydVyQI8MqaVgwGoFNijBX3cWN1DMPqw5FwO/tn
-         iqic0Mu2YdC4Qh+ZadX0Nj95QGhMKrYm7cdfXoptZqJXQQtBcN4HEFH04Otehm0BFe
-         L9AOEAG38wLrpgt2rKv5z4hcgZU0acFJLnJuNCgK/xRREAYY75WURrHLnqgk5BQMnC
-         saimZORIo2QFx/q5sx7q+OlCtwEjQ0f1qvquAxirFrq3OP3HlBD6gtKki+R5wA8QtX
-         HZK43uGtPhlew==
-Date:   Thu, 20 Jul 2023 10:19:43 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     suijingfeng <suijingfeng@loongson.cn>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 00/11] drm: kunit: Switch to kunit actions
-Message-ID: <niypycsz25r4ywlxeula3cc3padis74hr5gbr2rjw4hrxag7my@f55p7c3unf7o>
-References: <20230710-kms-kunit-actions-rework-v1-0-722c58d72c72@kernel.org>
- <6a92cbb7-e98b-e93c-6e62-ceddd0dfbc06@loongson.cn>
+        Thu, 20 Jul 2023 04:21:07 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF4A211F
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:21:05 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36K67pGv019206;
+        Thu, 20 Jul 2023 03:20:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=l
+        IXeWRFoAvkoAcWGvrpEZcMSLQ0hI8rnZXavmjUTITo=; b=OPu1UHG+DZjx/w7JX
+        VHNM/ZSGep9jCcfJFbxRN+rjFcYKQNDZGjAsGKKujuFeVpjlWegy9y9Z8vvtMUjU
+        ZSHx05SEmfhqmXnWmlvC/lT/a61rElmpEu33e5ymvMaAzioUpr+5OLbVEEA5gfvQ
+        P3XUJoyNNRjPCC67xqqXTacFWH7jU5qAWyQPK6JfP8NxHKu1tRnauh2UrfOW5EJa
+        TixRNY12fPFUwlWzj+5IDpeRahy6oxtSCeghHnh5fFn1hSTOHyDLtvWnHoKrOv7G
+        ONuZv+9+G0bAU1E8X/zIN1mR3ch2V8rpIuqHfKbZTLH9OxrUZ+MYwn9Ekz9SgVvn
+        C4rPA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3rus62whkx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 Jul 2023 03:20:43 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
+ 2023 09:20:41 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Thu, 20 Jul 2023 09:20:41 +0100
+Received: from lon-bigdaddy.ad.cirrus.com (unknown [198.61.64.114])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D55E8458;
+        Thu, 20 Jul 2023 08:20:40 +0000 (UTC)
+From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To:     Takashi Iwai <tiwai@suse.com>
+CC:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: [PATCH 1/2] ALSA: hda/realtek: Fix generic fixup definition for cs35l41 amp
+Date:   Thu, 20 Jul 2023 09:20:21 +0100
+Message-ID: <20230720082022.13033-1-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7kqetfm2msju6b5l"
-Content-Disposition: inline
-In-Reply-To: <6a92cbb7-e98b-e93c-6e62-ceddd0dfbc06@loongson.cn>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: AGj644tg1-jiUD0g7dA1VttPMOhjA2OJ
+X-Proofpoint-ORIG-GUID: AGj644tg1-jiUD0g7dA1VttPMOhjA2OJ
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Generic fixup for CS35L41 amplifies should not have vendor specific
+chained fixup. For ThinkPad laptops with led issue, we can just add
+specific fixup.
 
---7kqetfm2msju6b5l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: a6ac60b36dade (ALSA: hda/realtek: Fix mute led issue on thinkpad with cs35l41 s-codec)
+Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+---
+ sound/pci/hda/patch_realtek.c | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
-Hi,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index e2f8b608de82..56cbf5b38d48 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7213,6 +7213,7 @@ enum {
+ 	ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN,
+ 	ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS,
+ 	ALC236_FIXUP_DELL_DUAL_CODECS,
++	ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI,
+ };
+ 
+ /* A special fixup for Lenovo C940 and Yoga Duet 7;
+@@ -9145,8 +9146,6 @@ static const struct hda_fixup alc269_fixups[] = {
+ 	[ALC287_FIXUP_CS35L41_I2C_2] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = cs35l41_fixup_i2c_two,
+-		.chained = true,
+-		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
+ 	},
+ 	[ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED] = {
+ 		.type = HDA_FIXUP_FUNC,
+@@ -9283,6 +9282,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	},
++	[ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cs35l41_fixup_i2c_two,
++		.chained = true,
++		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -9810,14 +9815,14 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x22be, "Thinkpad X1 Carbon 8th", ALC285_FIXUP_THINKPAD_HEADSET_JACK),
+ 	SND_PCI_QUIRK(0x17aa, 0x22c1, "Thinkpad P1 Gen 3", ALC285_FIXUP_THINKPAD_NO_BASS_SPK_HEADSET_JACK),
+ 	SND_PCI_QUIRK(0x17aa, 0x22c2, "Thinkpad X1 Extreme Gen 3", ALC285_FIXUP_THINKPAD_NO_BASS_SPK_HEADSET_JACK),
+-	SND_PCI_QUIRK(0x17aa, 0x22f1, "Thinkpad", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x17aa, 0x22f2, "Thinkpad", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x17aa, 0x22f3, "Thinkpad", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x17aa, 0x2316, "Thinkpad P1 Gen 6", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x17aa, 0x2317, "Thinkpad P1 Gen 6", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x17aa, 0x2318, "Thinkpad Z13 Gen2", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x17aa, 0x2319, "Thinkpad Z16 Gen2", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x17aa, 0x231a, "Thinkpad Z16 Gen2", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x17aa, 0x22f1, "Thinkpad", ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI),
++	SND_PCI_QUIRK(0x17aa, 0x22f2, "Thinkpad", ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI),
++	SND_PCI_QUIRK(0x17aa, 0x22f3, "Thinkpad", ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI),
++	SND_PCI_QUIRK(0x17aa, 0x2316, "Thinkpad P1 Gen 6", ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI),
++	SND_PCI_QUIRK(0x17aa, 0x2317, "Thinkpad P1 Gen 6", ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI),
++	SND_PCI_QUIRK(0x17aa, 0x2318, "Thinkpad Z13 Gen2", ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI),
++	SND_PCI_QUIRK(0x17aa, 0x2319, "Thinkpad Z16 Gen2", ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI),
++	SND_PCI_QUIRK(0x17aa, 0x231a, "Thinkpad Z16 Gen2", ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI),
+ 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
+ 	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
+-- 
+2.34.1
 
-On Mon, Jul 17, 2023 at 11:24:13PM +0800, suijingfeng wrote:
-> On 2023/7/10 15:47, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > Since v6.5-rc1, kunit gained a devm/drmm-like mechanism that makes tests
-> > resources much easier to cleanup.
-> >=20
-> > This series converts the existing tests to use those new actions were
-> > relevant.
->=20
-> Is the word 'were' here means that 'where' relevant ?
-
-Yes :)
-
-> Or it is means that it were relevant, after applied you patch it is not
-> relevant anymore ?
->=20
-> > Let me know what you think,
-> > Maxime
-> >=20
-> > Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> > ---
-> > Maxime Ripard (11):
-> >        drm/tests: helpers: Switch to kunit actions
-> >        drm/tests: client-modeset: Remove call to drm_kunit_helper_free_=
-device()
-> >        drm/tests: modes: Remove call to drm_kunit_helper_free_device()
-> >        drm/tests: probe-helper: Remove call to drm_kunit_helper_free_de=
-vice()
-> >        drm/tests: helpers: Create an helper to allocate a locking ctx
-> >        drm/tests: helpers: Create an helper to allocate an atomic state
->=20
-> a helper or an helper ?
->=20
-> Should this two patch be re-titled as following ?
->=20
-> I search it on the internet[1], mostly using a helper.
->=20
->=20
->       drm/tests: helpers: Create a helper to allocate a locking ctx
->       drm/tests: helpers: Create a helper to allocate an atomic state
->=20
-> [1] https://www.a-or-an.com/a_an/helper
->=20
-> Sorry about the noise if I'm wrong.
-
-You're right, I'll fix it
-
-Thanks!
-Maxime
-
---7kqetfm2msju6b5l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZLjuHwAKCRDj7w1vZxhR
-xVLCAQDoNdtlkn5fkt9mcb8tWL1g65x5JVr74/QUKDCaIFJE2QD+KS/NvTymDxRR
-OMve6TqPr0ZuQfx3+b4y1NYS9yX6cgc=
-=jZNm
------END PGP SIGNATURE-----
-
---7kqetfm2msju6b5l--
