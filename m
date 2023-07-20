@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D19C75AFAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA69A75AFA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbjGTNZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
+        id S231362AbjGTNZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:25:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbjGTNZr (ORCPT
+        with ESMTP id S231847AbjGTNZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:25:47 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC7E171E
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:25:46 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c4cda9d3823so652051276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:25:46 -0700 (PDT)
+        Thu, 20 Jul 2023 09:25:46 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780B410F5;
+        Thu, 20 Jul 2023 06:25:45 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-666e916b880so472599b3a.2;
+        Thu, 20 Jul 2023 06:25:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689859545; x=1690464345;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LA27fVNYB1otp+ClEEEzqSk28q42Bg4PAc0mA5TaGlo=;
-        b=52vDWbc5PpSlNPdhrV8abc74QuK4CTY94pbrnKg5SIK70W5MFiAlFBeC4hZny7JA1m
-         HZnDo22ZBKAA3EgnTp/qprqTcC+PkUP+dHN22mZ/hlDh2EqLxflfRka32OAhOeA7B4BW
-         gdfLNjfBFOY96pVwigY+G2FJWIx8KfWeZHtV4l6HrJGhPjYyLvOSZz0d8ehJEQp5HJIG
-         WK4/sKKKTCOl/6Cn6eeqK/0aJtNwiCLm9QMtZOuTX2nZ9TSIomx3kC5JjPWFz6UQCNwa
-         NkCJTurFAkMOrZtg+5+qeuAno2hwUzZpIMawITKCbhN+3/cHnBzmEG1NDGiAK00k3/oP
-         MkXw==
+        d=gmail.com; s=20221208; t=1689859545; x=1690464345;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aRRcMB5yAn+iRHKY8/2fsMAGDsr+Kvy2hWESkGb1AVk=;
+        b=PRO4wTIKxgQpBXlLrrq0svkM8pfOmbGBroQEN5aNJkru3Hr24zi44RN0ZNnXb3Wa95
+         l7DMkvUnYk7UrDIIBkvS4DQ9szJ+oDwdplymxme9JTroLHjuXQ7sMpJ+QicL8wJmsSF2
+         EO5ZzzggUXvgnvZHHk7olcPUIzQUXfwr3tK4U2A02pYTGxjXfNKToaS0+9VRYMPwKpg7
+         Qmht4JSSvnDsQjgX71P8SRTBhIGMFd2Ro2V1TOdD9bPNPq6Z92odplQ+rp+MvREdkqqW
+         Nif8hPZ1u4pB9V/fN7KaVJFn8sYfRUgHjENAWIedykwYir01uoUCqnt95r1ZISRxMeTv
+         JURQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1689859545; x=1690464345;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LA27fVNYB1otp+ClEEEzqSk28q42Bg4PAc0mA5TaGlo=;
-        b=hDeEhelmbbEiua6fP00F+VaEswY6HZxoRLqVbIZIGuKooLjcw7SgZYupTrEn0pu0Co
-         1DTc6FuEIXFM4azLPZ6a482axSjZdhdvXJS1kNeesQ3oqKz4jlEvLTNPmZPQoo2S6NGp
-         je9M9Am6+aTWa+Z/P1oqYVDaYN4TCa0g5MT5M5JTeObnGmJa/qHgMyCxdLSEsP6r1a4I
-         9nB/Kv0atZEecx7U9xChs5JKw17XM14VuGdQGoIJf2JRs10r13Heu7mn38WNqc+ZFMw0
-         ze3I3NM6l0UbpV350O0lMifncCEyUEExgnPLfB26LH/c7/O7/vAxGMYFaTqIFXzGJ2WE
-         UM4g==
-X-Gm-Message-State: ABy/qLb0EQwRRmZUKRM0a4mfPSskRUDpzh1fGYlYNRSVeVttw/PH5il8
-        WN0vCPSmefD2JBxVVvmRcH9IAoM/239gaBw=
-X-Google-Smtp-Source: APBJJlGbY3qEHV7ytj10aJNNjV4xWS/XBRDNCjDDMZcLJZfplc8pNfhTRMF5vbZbB+8NWCR+DjnlSnCM+yUs6X8=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a25:e616:0:b0:c1c:df23:44ee with SMTP id
- d22-20020a25e616000000b00c1cdf2344eemr47997ybh.0.1689859545678; Thu, 20 Jul
- 2023 06:25:45 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 13:25:40 +0000
-In-Reply-To: <20230719141918.543938-7-benno.lossin@proton.me>
-Mime-Version: 1.0
-References: <20230719141918.543938-7-benno.lossin@proton.me>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230720132540.3543838-1-aliceryhl@google.com>
-Subject: Re: [PATCH v2 06/12] rust: init: add `..Zeroable::zeroed()` syntax
- for zeroing all missing fields
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     benno.lossin@proton.me
-Cc:     alex.gaynor@gmail.com, aliceryhl@google.com,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
-        lina@asahilina.net, linux-kernel@vger.kernel.org, nmi@metaspace.dk,
-        ojeda@kernel.org, rust-for-linux@vger.kernel.org,
-        wedsonaf@gmail.com
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        h=content-transfer-encoding:in-reply-to:subject:from:references:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aRRcMB5yAn+iRHKY8/2fsMAGDsr+Kvy2hWESkGb1AVk=;
+        b=dhAJnazxt/iHmRV7rwLluNWb3Bvq/hAe99r7XZrQkKLbfm6Lr3uyj7gnqLgzew7ufZ
+         531izWUBQ4yIzQj6Q0ZETZdk7YT67OSn6gO9zS9FlW1LUWRvaEiB48YKh1iAN/2ZfYDZ
+         KEz0eU2aWLGyKslCtjTIepNs0jwkhVJZCg0Oj/nkcLk8TVscQ3fkWH5pNOJ6T2VA+5JC
+         NI0tzd5q33xlR5j8fgoOnuMS+T8JIckn99+vPS2m4MHrmYzbmsUapqIYn0DE+/eeJMrk
+         TlpvLUWQ07xkD4oHgQKwR6xJc1oBu+IKQjS4RTmANAVCFMtceTyeru20iB9AJvpuNRcs
+         FPYg==
+X-Gm-Message-State: ABy/qLa1yj56wX3XweGfZIHFFjn/qtE9tjr+L4gEBrS14g75imiRqcFH
+        +1Cfs8YsIrSHLfm7jRnzNZua9cUnH+M=
+X-Google-Smtp-Source: APBJJlF5Hfhep/S9A63bqIzn+5vfFywvccKs8h8DOsOPM75E+Y/oYOted0rNSbjDtU+T/CVzf2LrtQ==
+X-Received: by 2002:a05:6a20:6a0c:b0:12c:b10d:693d with SMTP id p12-20020a056a206a0c00b0012cb10d693dmr23992084pzk.6.1689859544799;
+        Thu, 20 Jul 2023 06:25:44 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h14-20020aa786ce000000b0063d44634d8csm1156882pfo.71.2023.07.20.06.25.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 06:25:44 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <3f5b8483-5a84-a41d-99b6-3c7a0c95b4e5@roeck-us.net>
+Date:   Thu, 20 Jul 2023 06:25:43 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Thomas R <seatommyboy@gmail.com>, jdelvare@suse.com,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b1a0bd3b-a32d-aff0-db4e-d9ba770e3a49@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: Driver for Nuvoton NCT6687D eSIO chip
+In-Reply-To: <b1a0bd3b-a32d-aff0-db4e-d9ba770e3a49@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Benno Lossin <benno.lossin@proton.me> writes:
-> Add the struct update syntax to the init macros, but only for
-> `..Zeroable::zeroed()`. Adding this at the end of the struct initializer
-> allows one to omit fields from the initializer, these fields will be
-> initialized with 0x00 set to every byte. Only types that implement the
-> `Zeroable` trait can utilize this.
+On 7/20/23 04:09, Thomas R wrote:
+> To whom it may concern,
 > 
-> Suggested-by: Asahi Lina <lina@asahilina.net>
-> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+> I am trying to submit a patch for driver Driver for Nuvoton NCT6687D eSIO chip under drivers/hwmon. This driver is confirmed to be working for motherboards series B550 and B650.
+> 
+> Credits for creating this driver should go to Frederic BOLTZ https://github.com/Fred78290/nct6687d
+> 
+> Attached is my patch
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 
-> +    (make_initializer:
-> +        @slot($slot:ident),
-> +        @type_name($t:ident),
-> +        @munch_fields(..Zeroable::zeroed() $(,)?),
-> +        @acc($($acc:tt)*),
-> +    ) => {
-> +        // Endpoint, nothing more to munch, create the initializer. Since the users specified
-> +        // `..Zeroable::zeroed()`, the slot will already have been zeroed and all field that have
-> +        // not been overwritten are thus zero and initialized. We still check that all fields are
-> +        // actually accessible by using the struct update syntax ourselves.
-> +        // Since we are in the `if false` branch, this will never get executed. We abuse `slot` to
-> +        // get the correct type inference here:
+This is not the way to submit patches into the Linux kernel.
 
-Didn't you just change it to a closure rather than an `if else`?
+Anyway, this is pretty much just taking the existing nct6683 driver,
+extending it with an additional ID for NCT6687 (0xd451), removing
+customer ID checks, and claiming new authorship. No, this is not how
+kernel development works. If those motherboards use an NCT6687 with
+ID 0xd451, or if the boards use a new customer ID, submit patches updating
+the existing driver. If there are other changes improving the existing
+driver, submit patches for it. I am not going to accept a second driver
+for the same chip.
 
-Regardless, I'm happy with this change.
-
-Alice
+Guenter
 
