@@ -2,165 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A413175A368
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 02:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E085D75A369
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 02:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjGTAZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 20:25:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56154 "EHLO
+        id S229786AbjGTAZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 20:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjGTAZ1 (ORCPT
+        with ESMTP id S229711AbjGTAZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 20:25:27 -0400
-Received: from out203-205-221-155.mail.qq.com (out203-205-221-155.mail.qq.com [203.205.221.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE261123
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 17:25:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1689812723;
-        bh=XDRuLIHkJfQQZemCigyLqfDZFz49CdHiP3pF+50Mh4Y=;
-        h=From:To:Cc:Subject:Date;
-        b=aM3mQ7HIau0bNNDGHkZNJ5A+inNsISE5aAmm2BmBcRyl5iLUB8tT4QUKJyyZCm1fV
-         9uhd8MKDJ4Cts5mYUWjV0M6F6mMJX6RnyEwmcApK/BLVfYvR833b0m4e5ecTbxswZJ
-         BdJ9AzK8RvS28IikHuBrYac9L+YcwYmF0hamScBA=
-Received: from localhost ([101.224.148.235])
-        by newxmesmtplogicsvrszc2-0.qq.com (NewEsmtp) with SMTP
-        id 5FB3E47E; Thu, 20 Jul 2023 08:23:59 +0800
-X-QQ-mid: xmsmtpt1689812639tblmroxam
-Message-ID: <tencent_B931BF1864B6AE8C674686ED9852ACFA0609@qq.com>
-X-QQ-XMAILINFO: OZZSS56D9fAjyoRLlB1WdJIvKEZ+uXLTVV6mobk6OIzYcsk9NcixTRI+09csj6
-         A6Yso/kzi3FrJfhROjQ3VF/tdNNQJf0/gMKVus8ZxYR3irBaDnNyINv8rziCQUriDNs3t38ZC31z
-         G9ovwpjDqNp9cp2eR/EeE3zEVziqloAzv3z4bSsh4aprnUjOWJpFFcG4qC/P21cRNX1P+ZiKx+m1
-         IlxhI2lJc20BuZKnUm6/wFDQnfNhFrH6Aq1RfJQJGMSmH+/5/C9DJVtU61l9xKRlmHvJ0FTvVqyJ
-         ek1ciGmIHfgINhAM2puKYK2ayzTy0QnRVdl3tGMnGp1JXL+hisra5Bh/OAux8w9sK6lEURusk52M
-         rzqtUisrZOIXwqzyjeHXh6V3wJ4IhhAzwQbqoZoFcsNt/WBYECzzOcGGRJF8hjT/GDT6GFCkj3SR
-         +zV71ZPMwBRZdmOLDJq14Ry4Kvh00/Fv1H8bN3eduUH0sEUGaDCKB4xbumOLti8An1OrqyXTi1vf
-         YL/b/4OeSOO1Ri+TCnl6QqgkllPIPYktfM6BVUBVgvw2xyWxeJzyvVdrN0aK682CqWmI0Qj8vvVf
-         alemCeYCVuUbETBDLwCOhv2JYvr5eIEgPIRv8ZR5Hfz733fY01jrKxbWQ7gn0eFjV7KRdzgKOtxI
-         M/yFOeUaX9CRKoeM7OLhZi6VxKsXkrBUPOwYcqqUxmysg+edwrTLmAGI6ZwcsZAMfGzbSmHQrjAk
-         KsVl7BRsxTrfx6oxAT/zOzQxGp1ZtHjuPcxjN49Wiv4xkMIY8ZvqCvQu9zGMyZ/VkBD+cucoJn4N
-         Uc81tG0T473Y13dDXyZWGTqKI0iU3JZnEJ4UExl9GcScjhvVArdnsPx7r2kPcERauwfTqm2zgxyK
-         taoEiAfO1PMlrSd8cqMtbgRbKzJJrK4FYVwzxaiLejsrKiHW7EjxKGofgZI+tz/XeY2lYCeRgqFw
-         rVSG/V7eFueGunGRujUJoaDcPr+bP+qbSm2MEWMexLG77UC1uC9g==
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From:   Woody Zhang <woodylab@foxmail.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Woody Zhang <woodylab@foxmail.com>
-Subject: [PATCH] riscv: add SBI SUSP extension support
-Date:   Thu, 20 Jul 2023 08:23:19 +0800
-X-OQ-MSGID: <20230720002318.2543822-1-woodylab@foxmail.com>
-X-Mailer: git-send-email 2.39.2
+        Wed, 19 Jul 2023 20:25:28 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50C4189;
+        Wed, 19 Jul 2023 17:25:26 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso2993841fa.1;
+        Wed, 19 Jul 2023 17:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689812725; x=1692404725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=li2otsaC5616U3PoldxbrJyvMyJtirPvLPzcb7XzgDo=;
+        b=KRfHvle0gTu+vDsYpGhqYMGor9eNo1pfkgz2/p4lV0KqOkXzjadxGXds5/SCEA0Imh
+         2ehLjZHtR6vkb0s8i032+rpEadlCs6ngL3UKH9qp8bN8M0YdrKVxifIpFWcV3DwHy8lZ
+         fxBX06LgGSy+pzqYKxfE0i3Tggvf7ZEGJRrEeht776rkEDSafNHtILHLQ0G2cl2Ltbed
+         4FsFu02ErLz/WzOBmddWecAQj68NseK2XgYjsujP1auMam85y/9y3fOq9r9HLiMZMjgq
+         sfjBpgvbDzzpEktqdKoJIvfW+FlqQaIRliJEakIJq1Wy4VIFlD8ZHNaGLGiRaCnPnB+U
+         z2mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689812725; x=1692404725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=li2otsaC5616U3PoldxbrJyvMyJtirPvLPzcb7XzgDo=;
+        b=KNP9yVU+tQd6SMKm7H9rZITgn6mTQpO2NzlrqXfLpzLjvuw2KWfZbz6vozD9iKABi1
+         SG08c/+Udb3va7SiR9STNS0QINlepA5s9um90k3jB8acOO/tF+wrPFlQMkS92aY0Mvso
+         O9LsMS3AR4YhNDa3JztJjHYZ9MCHRDHcVR6YyV7NXqN36n9nYq5kUAuw8yNwwu/rnkcv
+         DVzKr3vu4p+cfcmqdVYTMDqlsQidIJSXw3XymhuKn8q+B4q0aFwuWXe0T9ZNIAyK/M+O
+         xyjTlPWZw9HbQyqnhjcLBa20xTmTClQrH3nOvQLVNvyukUKQ9tGgQH9e6gK3gXZbpqyA
+         nLww==
+X-Gm-Message-State: ABy/qLYmwO/Ub6tG/4Cn7JaGHxx/lZ4V0OyaXpIiev3q6Za6L1CFOnet
+        NjvFv5G8uq+8Ia4YRA4wes3N1q2LoXjUJWpvJ+Y=
+X-Google-Smtp-Source: APBJJlFiFmD+8EIVY6xdyk2QMndYOHjM37tL3jvBlGS7uQBZ+8hL/SomF22OAZYWpMYt74kwza8ml259Zlhl3rZGbH0=
+X-Received: by 2002:a2e:b17a:0:b0:2b9:3491:c3d0 with SMTP id
+ a26-20020a2eb17a000000b002b93491c3d0mr906510ljm.52.1689812724544; Wed, 19 Jul
+ 2023 17:25:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+References: <20230718034337.23502-1-jlee@suse.com> <CABBYNZJ97UMyZ7yX1YAGbuU4XwNDdoFewKNwbd=51_L9aNrrCQ@mail.gmail.com>
+ <20230719154918.GJ14791@linux-l9pv.suse>
+In-Reply-To: <20230719154918.GJ14791@linux-l9pv.suse>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Wed, 19 Jul 2023 17:25:12 -0700
+Message-ID: <CABBYNZLKJTKwBeypHbwm1r2CnqY+S2pY6dLYri+Z-otEx-UQ6A@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: hci_event: Ignore NULL link key
+To:     joeyli <jlee@suse.com>
+Cc:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        linux-bluetooth@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RISC-V SBI spec 2.0 [1] introduces System Suspend Extension which can be
-used to suspend the platform via SBI firmware.
+Hi Joeyli,
 
-This patch can be tested on Qemu with recent OpenSBI with
-`system-suspend-test` enabled like [2] in DTB.
+On Wed, Jul 19, 2023 at 8:49=E2=80=AFAM joeyli <jlee@suse.com> wrote:
+>
+> Hi Luiz Augusto von Dentz,
+>
+> On Tue, Jul 18, 2023 at 10:22:26AM -0700, Luiz Augusto von Dentz wrote:
+> > Hi Chun-Yi,
+> >
+> > On Mon, Jul 17, 2023 at 8:43=E2=80=AFPM Lee, Chun-Yi <joeyli.kernel@gma=
+il.com> wrote:
+> > >
+> > > This change is used to relieve CVE-2020-26555. The description of the
+> > > CVE:
+> > >
+> > > Bluetooth legacy BR/EDR PIN code pairing in Bluetooth Core Specificat=
+ion
+> > > 1.0B through 5.2 may permit an unauthenticated nearby device to spoof
+> > > the BD_ADDR of the peer device to complete pairing without knowledge
+> > > of the PIN. [1]
+> >
+> > Btw, it is probably worth mentioning that in BR/EDR the key generation
+> > is actually handled in the controller, below HCI.
+> >
+>
+> Yes, the key generation be handled by link manager. I will mention it
+> in patch description.
+>
+> > > The detail of this attack is in IEEE paper:
+> > > BlueMirror: Reflections on Bluetooth Pairing and Provisioning Protoco=
+ls
+> > > [2]
+> > >
+> > > It's a reflection attack. Base on the paper, attacker can induce the
+> > > attacked target to generate null link key (zero key) without PIN code=
+.
+> > >
+> > > We can ignore null link key in the handler of "Link Key Notification
+> > > event" to relieve the attack. A similar implementation also shows in
+> > > btstack project. [3]
+> >
+> > Perhaps we could clarify this statement by stating that if we ignore
+> > the link key it means the stack will not consider the device is bonded
+> > and will not persist the link key, that said the controller will still
+> > consider it as paired, so I perhaps we should go one step forward and
+> > disconnect if we detect such a key is being used.
+> >
+>
+> I am new on bluetooth field. Did you mean like this patch? Sending
+> HCI_Disconnect when we found zero link key?
+>
+> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+> index ff0c331f53d6..3482031cbbb8 100644
+> --- a/net/bluetooth/hci_event.c
+> +++ b/net/bluetooth/hci_event.c
+> @@ -4698,6 +4700,15 @@ static void hci_link_key_notify_evt(struct hci_dev=
+ *hdev, void *data,
+>         if (!conn)
+>                 goto unlock;
+>
+> +       /* Ignore NULL link key against CVE-2020-26555 */
+> +       if (!memcmp(ev->link_key, ZERO_KEY, HCI_LINK_KEY_SIZE)) {
+> +               bt_dev_dbg(hdev, "Ignore NULL link key (ZERO KEY) for %pM=
+R", &ev->bdaddr);
+> +               hci_disconnect(conn, HCI_ERROR_AUTH_FAILURE);
+> +               hci_conn_drop(conn);
+> +               goto unlock;
+> +       }
 
-[1] https://github.com/riscv-non-isa/riscv-sbi-doc/blob/master/riscv-sbi.adoc
-[2] https://github.com/woodyzhang666/qemu/commit/e4a5120133c1dc354e6ac437ec1f870f6c0f6d05
+Yeah, something like that should do it, btw I hope you are testing
+these changes do actually work properly, even better if you could
+introduce a test into the likes of mgmt-tester to generate a ZERO_KEY
+so we are not caught by surprise if something doesn't quite work as
+expected, or some change cause a regression where this key is accepted
+again.
 
-Signed-off-by: Woody Zhang <woodylab@foxmail.com>
----
- arch/riscv/include/asm/sbi.h | 10 ++++++++++
- arch/riscv/kernel/sbi.c      | 26 ++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+>         hci_conn_hold(conn);
+>         conn->disc_timeout =3D HCI_DISCONN_TIMEOUT;
+>         hci_conn_drop(conn);
+>
+>
+> Is there anything I'm missing? Thanks a lot!
+>
+> > > v2:
+> > > - Used Link: tag instead of Closes:
+> > > - Used bt_dev_dbg instead of BT_DBG
+> > > - Added Fixes: tag
+> > >
+> > > Fixes: 55ed8ca10f35 ("Bluetooth: Implement link key handling for the =
+management interface")
+> > > Link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=3DCVE-2020-26555=
+ [1]
+> > > Link: https://ieeexplore.ieee.org/abstract/document/9474325/authors#a=
+uthors [2]
+> > > Link: https://github.com/bluekitchen/btstack/blob/master/src/hci.c#L3=
+722 [3]
+> > > Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+> > > ---
+> > >  net/bluetooth/hci_event.c | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >
+> > > diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+> > > index 95816a938cea..ff0c331f53d6 100644
+> > > --- a/net/bluetooth/hci_event.c
+> > > +++ b/net/bluetooth/hci_event.c
+> > > @@ -4684,6 +4684,12 @@ static void hci_link_key_notify_evt(struct hci=
+_dev *hdev, void *data,
+> > >         bool persistent;
+> > >         u8 pin_len =3D 0;
+> > >
+> > > +       /* Ignore NULL link key against CVE-2020-26555 */
+> > > +       if (!memcmp(ev->link_key, ZERO_KEY, HCI_LINK_KEY_SIZE)) {
+> > > +               bt_dev_dbg(hdev, "Ignore NULL link key (ZERO KEY) for=
+ %pMR", &ev->bdaddr);
+> > > +               return;
+> > > +       }
+> > > +
+> > >         bt_dev_dbg(hdev, "");
+> > >
+> > >         hci_dev_lock(hdev);
+> > > --
+> > > 2.35.3
+> > >
+>
+> Thanks a lot!
+> Joey Lee
 
-diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-index 5b4a1bf5f439..3b04016da671 100644
---- a/arch/riscv/include/asm/sbi.h
-+++ b/arch/riscv/include/asm/sbi.h
-@@ -30,6 +30,7 @@ enum sbi_ext_id {
- 	SBI_EXT_HSM = 0x48534D,
- 	SBI_EXT_SRST = 0x53525354,
- 	SBI_EXT_PMU = 0x504D55,
-+	SBI_EXT_SUSP = 0x53555350,
- 
- 	/* Experimentals extensions must lie within this range */
- 	SBI_EXT_EXPERIMENTAL_START = 0x08000000,
-@@ -236,6 +237,15 @@ enum sbi_pmu_ctr_type {
- /* Flags defined for counter stop function */
- #define SBI_PMU_STOP_FLAG_RESET (1 << 0)
- 
-+enum sbi_ext_susp_fid {
-+	SBI_EXT_SUSP_SYSTEM_SUSPEND = 0,
-+};
-+
-+/* SBI suspend sleep types */
-+enum sbi_susp_sleep_type {
-+	SBI_SUSP_SLEEP_TYPE_SUSPEND = 0x0,
-+};
-+
- #define SBI_SPEC_VERSION_DEFAULT	0x1
- #define SBI_SPEC_VERSION_MAJOR_SHIFT	24
- #define SBI_SPEC_VERSION_MAJOR_MASK	0x7f
-diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-index c672c8ba9a2a..9a68959f9f18 100644
---- a/arch/riscv/kernel/sbi.c
-+++ b/arch/riscv/kernel/sbi.c
-@@ -9,8 +9,10 @@
- #include <linux/init.h>
- #include <linux/pm.h>
- #include <linux/reboot.h>
-+#include <linux/suspend.h>
- #include <asm/sbi.h>
- #include <asm/smp.h>
-+#include <asm/suspend.h>
- 
- /* default SBI version is 0.1 */
- unsigned long sbi_spec_version __ro_after_init = SBI_SPEC_VERSION_DEFAULT;
-@@ -520,6 +522,26 @@ static void sbi_srst_power_off(void)
- 		       SBI_SRST_RESET_REASON_NONE);
- }
- 
-+static int sbi_system_suspend(unsigned long arg,
-+		unsigned long resume_entry, unsigned long context)
-+{
-+	struct sbiret ret = {0};
-+
-+	ret = sbi_ecall(SBI_EXT_SUSP, SBI_EXT_SUSP_SYSTEM_SUSPEND,
-+			SBI_SUSP_SLEEP_TYPE_SUSPEND, resume_entry, context, 0, 0, 0);
-+	return ret.error;
-+}
-+
-+static int sbi_system_suspend_enter(suspend_state_t state)
-+{
-+	return cpu_suspend(0, sbi_system_suspend);
-+}
-+
-+static const struct platform_suspend_ops sbi_suspend_ops = {
-+	.valid          = suspend_valid_only_mem,
-+	.enter          = sbi_system_suspend_enter,
-+};
-+
- /**
-  * sbi_probe_extension() - Check if an SBI extension ID is supported or not.
-  * @extid: The extension ID to be probed.
-@@ -624,6 +646,10 @@ void __init sbi_init(void)
- 			sbi_srst_reboot_nb.priority = 192;
- 			register_restart_handler(&sbi_srst_reboot_nb);
- 		}
-+		if (sbi_probe_extension(SBI_EXT_SUSP)) {
-+			pr_info("SBI SUSP extension detected\n");
-+			suspend_set_ops(&sbi_suspend_ops);
-+		}
- 	} else {
- 		__sbi_set_timer = __sbi_set_timer_v01;
- 		__sbi_send_ipi	= __sbi_send_ipi_v01;
--- 
-2.39.2
 
+
+--=20
+Luiz Augusto von Dentz
