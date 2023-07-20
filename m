@@ -2,302 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C2B75AEDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6976575AEE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbjGTMzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54492 "EHLO
+        id S229915AbjGTM5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 08:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbjGTMz1 (ORCPT
+        with ESMTP id S230018AbjGTM5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:55:27 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2066.outbound.protection.outlook.com [40.107.237.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8DE26B2;
-        Thu, 20 Jul 2023 05:55:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oR6ADlBSzHaiFZuMT8iCWBSDC+ooccLocm4PjbZvrNlNVeT5HQXrf6w0CeXODhWaqxa2tD9YjRvY4DWXwMJSsiTdmXq+MsJOPY4Y6gXmor85OWCLufASzzxPxYwPDedSfOGCwnssirIHzI3rY0tlblbWsbAna/ULLEkl5W4n8GPD31J1/gEhAWfeDlBJQQSojTyGLGAj09bqqCw9lJNAvcEchIkqYfRmIvM0P5YYpUZHOBDi686FudD5LOiN1l0OEdQCON7JBDz9K6VI4MLyO5c3fFue9xiA+Bs2+cqWIS6AqDPxbRoqcuO73R09CQZSdwJVkis5KRKoaGkd2c7qNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gpF5CU3R3oxAqvV9qnvtGlkZ4ET7rpxtO10T0fLl03s=;
- b=luqUZfZMX10eNfIQaUCG6t9Re3RmEaDd5D/D4r7BlsOOR/vMOkqEORg4Sivd2x80xc9/OWYsRrwvJkVUd2d/1w5/8SXRnniaGJKuv1Fij29IjY520gSebZVjCVMzwAsyYQhN57Ch8jSxqEN+uOxyUfUK+jOpN/VKTlBeTdGuyZvxaaMpff/D/napn+fM3ge+t15Eq6fJKCm0MTGZbMYOgVtPmC9MBOjQDvxItS1a27EwOG+p0r6L1I229F9LZELk0Q8dNezTIMgQrcAtZJhwVSQoU/Ri0Sm//OH4I520Bnhlqk18wWuFzgiDJzBkhEcD8KjPmWT6JagKMaYnyl3zJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gpF5CU3R3oxAqvV9qnvtGlkZ4ET7rpxtO10T0fLl03s=;
- b=3uYMQg107kt6AaK8hw/E328E3DwqyH+oRJh0dmYlKSY/wNStnl3wvdFF5Lm4gpEDvX6MG8iRgENdFa/lIlS7A+NGAOKLj7ePzwLEtX/jrwrUfgnSO/bkFzxpWHAIEEuuI9rz01K9+gDtoy3CgQ4xhe8/sw3QuKLkUSqlWaX2OXo=
-Received: from BN0PR03CA0035.namprd03.prod.outlook.com (2603:10b6:408:e7::10)
- by DM4PR12MB6399.namprd12.prod.outlook.com (2603:10b6:8:b7::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Thu, 20 Jul
- 2023 12:55:03 +0000
-Received: from BN8NAM11FT105.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:e7:cafe::84) by BN0PR03CA0035.outlook.office365.com
- (2603:10b6:408:e7::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28 via Frontend
- Transport; Thu, 20 Jul 2023 12:55:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT105.mail.protection.outlook.com (10.13.176.183) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6609.28 via Frontend Transport; Thu, 20 Jul 2023 12:55:03 +0000
-Received: from amd.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 20 Jul
- 2023 07:55:00 -0500
-From:   Muralidhara M K <muralimk@amd.com>
-To:     <linux-edac@vger.kernel.org>, <x86@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <bp@alien8.de>, <mingo@redhat.com>,
-        <mchehab@kernel.org>, <nchatrad@amd.com>, <yazen.ghannam@amd.com>,
-        Muralidhara M K <muralidhara.mk@amd.com>
-Subject: [PATCH 7/7] EDAC/amd64: Add Error address conversion for UMC
-Date:   Thu, 20 Jul 2023 12:54:25 +0000
-Message-ID: <20230720125425.3735538-8-muralimk@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230720125425.3735538-1-muralimk@amd.com>
-References: <20230720125425.3735538-1-muralimk@amd.com>
+        Thu, 20 Jul 2023 08:57:05 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0F7269E
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:56:44 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-48137084a66so333634e0c.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689857803; x=1690462603;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j1ZGppFUGoT15EF4YCw8tI150/zjcmWJj2k2NeFQg9w=;
+        b=es0BgeZaDaDOKqofQU0YHlAOa+KzCTxpREmCuxqWHQtEkfGhmDdxb7N5cUZJTGgMvx
+         xMw9eFq+UZ86AKpp5hN/YnRtAuHi/UOqxhNZEc+5zikZVHRPSyAO5roxPCpH6cCTJ47U
+         7iiH8DkYAsiIeyNfME+fDNAsOIVby8Xbooiw1MDp+iquFx23/TVerqTlvCw6AHD/gHf/
+         Za/chXdMetU6rmRSlu0Oaa8ls9PFUMxAcQCVN6p/0jR6wSL1LVUW2o5K0b2un+wGgrwK
+         r1LxlIcX/bB0QRy8XyTF2wz8b/0qcqfMtNSeSQrDqE6tEJqI3uns8+/tKYlWUfXj9YZT
+         C+rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689857803; x=1690462603;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j1ZGppFUGoT15EF4YCw8tI150/zjcmWJj2k2NeFQg9w=;
+        b=XymSc15/lkpIr4P6B98kx3WGOHMJnQsTUuI+O+QvmOTH19FVVpDG/wz4jNTTwqgfm2
+         jzG8BMgbkbagjSUw4T5madmNbPw/gWlPlbi7OBgerB1l9mkypO21Co5rBUD2SUXse71v
+         e5Tn/o2MiuWQAMSEY/2+WqvH3n4VGUBrAQF1ktrqFyt2YoWJj4tCPf0R5Dii+q83FSRw
+         WDKWSq+3n9PC8SmN2oNir5hH+J8hLUfMboXFvma9yh/6zWXR4C1PxK6mDiwN1id8htTC
+         +xmwHTxEEIASSYK2881iVVHqnG0UeZ9MSze5nu7GKcRJ3TX2MZD4NlFkI6H06UsZELVR
+         tzvA==
+X-Gm-Message-State: ABy/qLb58CXZ5ZPfZKOK1xc9ZUlXj2qqpDjIYa5G3Dee2l443dqJ51PH
+        OGt65pMdqJlVOtiFGCLfVn1PJcLInOoXWakRLF6/oQ==
+X-Google-Smtp-Source: APBJJlEee1o0YKvrMhtsL8MF+yRoXumnj5SDxTztT8XCVutkM3cq6ZpTzwL4P1daguUDMQI5ldv8Cm3SKluYLA9wjIc=
+X-Received: by 2002:a1f:cc86:0:b0:481:388e:b908 with SMTP id
+ c128-20020a1fcc86000000b00481388eb908mr5707827vkg.6.1689857803203; Thu, 20
+ Jul 2023 05:56:43 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230720061105.154821-1-victor.liu@nxp.com> <20230720112742.GA2525277@aspen.lan>
+In-Reply-To: <20230720112742.GA2525277@aspen.lan>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 20 Jul 2023 14:56:32 +0200
+Message-ID: <CAMRc=MfbWjWTdU4ToFMp_ZV6eGdRnjD--Y+qsN329TsLFGQYxg@mail.gmail.com>
+Subject: Re: [PATCH] backlight: gpio_backlight: Drop output gpio direction
+ check for initial power state
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Ying Liu <victor.liu@nxp.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lee@kernel.org" <lee@kernel.org>,
+        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
+        "deller@gmx.de" <deller@gmx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT105:EE_|DM4PR12MB6399:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0489295-1caf-4fb3-f7ab-08db892088ee
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DLsAR0bx0SiXg7wyOlZqqsbdn9aqetXOS78T4pnvPtm8BGgxA7vPoyr+3eOfWtnqX/qQezF9igQ7W1IEwX0F/3E16O513EoDGZ59TBeH7oO36lyHHWdxYt7lVERyAopPIiIrYrUjsOqUS+DQYDy37LTAkEe07hDP6+3n0HDyYnmtaKh/WH9B0ljBwooLzMEEpQykHAzDXGYAm1uhsUmtFTghEjHF/Iq7HryHqTa9cRnBAMm2iZaywYZAp3ALknczy2RZsAdqvLDHnn+I4qDN+3rP4Md55yXyy+oErxJLbdwNWoZEHqIZKpfNF6BwFikXHFP/Utf2y7WYYuNDnDxxpnuNnI8fk68gTOpfoe477D2HyN8vSakD3NNgbS0J1IjEWKlBt8ehSZyP3G+H+ioYFG6CX5z8tAJhLCNJ7V3oh8R6bP1F/UWdE4vvZw1VS28L9iAAlr4hTuXv6wr9+26VEAzfIwPyNSSD3MHLqNEpcLuCLSKtdi3DHTVCO9Ps5UwfxBxp8XOklUO9B9SGCIzWeaLcohuAl5cTYijE1YmypH+UVA31YJEmuUGh1QguU2n/MdPtpdsKvJnlDzVIbFWq1p7u3QeNM7cQCMH1/+yp4IxnAPtptd/Ro5gajjBNrS8ai0xBjCAQK4mi/0uZUt5QUhz4Tppo206JeiHTwlwMwvE8re2xfktzmbiGuR83GnMW1L+KW6A89LcyUKdYH817ZW6YVaMNV26o3fz/WCWK7XvszXmiJ8HgIpTXOF2rp+HGRZMjcxQajwP9qBOy86IEcg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(376002)(346002)(136003)(82310400008)(451199021)(40470700004)(46966006)(36840700001)(40480700001)(41300700001)(5660300002)(8676002)(8936002)(4326008)(40460700003)(110136005)(70206006)(54906003)(70586007)(316002)(82740400003)(356005)(81166007)(2906002)(6666004)(2616005)(36756003)(426003)(7696005)(1076003)(26005)(186003)(16526019)(336012)(47076005)(36860700001)(478600001)(83380400001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 12:55:03.1909
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0489295-1caf-4fb3-f7ab-08db892088ee
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT105.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6399
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muralidhara M K <muralidhara.mk@amd.com>
+On Thu, Jul 20, 2023 at 1:27=E2=80=AFPM Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Thu, Jul 20, 2023 at 06:06:27AM +0000, Ying Liu wrote:
+> > Bootloader may leave gpio direction as input and gpio value as logical =
+low.
+> > It hints that initial backlight power state should be FB_BLANK_POWERDOW=
+N
+> > since the gpio value is literally logical low.
+>
+> To be honest this probably "hints" that the bootloader simply didn't
+> consider the backlight at all :-) . I'd rather the patch description
+> focus on what circumstances lead to the current code making a bad
+> decision. More like:
+>
+>   If the GPIO pin is in the input state but the backlight is currently
+>   off due to default pull downs then ...
+>
+> > So, let's drop output gpio
+> > direction check and only check gpio value to set the initial power stat=
+e.
+>
+> This check was specifically added by Bartosz so I'd be interested in his
+> opinion of this change (especially since he is now a GPIO maintainer)!
+>
+> What motivates (or motivated) the need to check the direction rather
+> than just read that current logic level on the pin?
+>
+>
+> Daniel.
+> [I'm done but since Bartosz and Linus were not on copy of the original
+> thread I've left the rest of the patch below as a convenience ;-) ]
+>
 
-Reported MCA address is DRAM address which needs to be converted
-to normalized address before Data fabric address translation.
+This was done in commit: 706dc68102bc ("backlight: gpio: Explicitly
+set the direction of the GPIO").
 
-Some AMD systems have on-chip memory capable of OnDie ECC support.
-OnDie-ECC error address to MCA is a DRAM decoded address reported with
-a DRAM address (PC/SID/Bank/ROW/COL) instead of normalized address
-unlike MI200’s UMC ECC, as the implementation difference between
-HBM3 ODECC and HBM2 host ECC.
-Because OnDie-ECC address reporting is done in the back-end of UMC and
-it no longer has normalized address at that point.
-So software needs to convert the reported MCA Error Address back to
-normalized address.
+Let me quote myself from it:
 
-Signed-off-by: Muralidhara M K <muralidhara.mk@amd.com>
----
- drivers/edac/amd64_edac.c | 160 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 160 insertions(+)
+--
+The GPIO backlight driver currently requests the line 'as is', without
+actively setting its direction. This can lead to problems: if the line
+is in input mode by default, we won't be able to drive it later when
+updating the status and also reading its initial value doesn't make
+sense for backlight setting.
+--
 
-diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
-index 74b2b47cc22a..304d104c25d8 100644
---- a/drivers/edac/amd64_edac.c
-+++ b/drivers/edac/amd64_edac.c
-@@ -3076,6 +3076,159 @@ static void umc_get_err_info(struct mce *m, struct err_info *err)
- 	err->csrow = m->synd & 0x7;
- }
- 
-+static bool internal_bit_wise_xor(u32 inp)
-+{
-+	bool tmp = 0;
-+
-+	for (int i = 0; i < 32; i++)
-+		tmp = tmp ^ ((inp >> i) & 0x1);
-+
-+	return tmp;
-+}
-+
-+/* mapping of MCA error address to normalized address */
-+static const u8 umc_mca2na_mapping[] = {
-+	0,  5,  6,  8,  9,  14, 12, 13,
-+	10, 11, 15, 16, 17, 18, 19, 20,
-+	21, 22, 23, 24, 25, 26, 27, 28,
-+	7,  29, 30,
-+};
-+
-+/*
-+ * Read AMD PPR UMC::AddrHashBank and
-+ * UMC::CH::AddrHashPC/PC2 register fields
-+ */
-+static struct {
-+	u32 xor_enable	:1;
-+	u32 col_xor	:13;
-+	u32 row_xor	:18;
-+} addr_hash_pc, addr_hash_bank[4];
-+
-+static struct {
-+	u32 bank_xor	:6;
-+} addr_hash_pc2;
-+
-+/*
-+ * The location of bank, column and row are fixed.
-+ * location of column bit must be NA[5].
-+ * Row bits are always placed in a contiguous stretch of NA above the
-+ * column and bank bits.
-+ * Bits below the row bits can be either column or bank in any order,
-+ * with the exception that NA[5] must be a column bit.
-+ * Stack ID(SID) bits are placed in the MSB position of the NA.
-+ */
-+static int umc_ondie_addr_to_normaddr(u64 mca_addr, u16 nid)
-+{
-+	u32 bank[4], bank_hash[4], pc_hash;
-+	u32 col, row, rawbank = 0, pc;
-+	int i, temp = 0;
-+	u64 mca2na;
-+
-+	u32 gpu_umc_base = 0x90000;
-+
-+	/*
-+	 * the below calculation, trying to maps ondie error address
-+	 * to normalized address. logged ondie MCA address format is
-+	 * BEQ_MCA_RdDatAddr[27:0] =
-+	 *	{SID[1:0],PC[0],row[14:0],bank[3:0],col[4:0],1'b0}
-+	 * The conversion mappings are:
-+	 *
-+	 * Normalized location	  ondie MCA error Address
-+	 * ===================	  ======================
-+	 * NA[4]		  = 1'b0
-+	 * NA[5]	= col[0]  = BEQ_MCA_RdDatAddr[1]
-+	 * NA[6]	= col[1]  = BEQ_MCA_RdDatAddr[2]
-+	 * NA[8]	= col[2]  = BEQ_MCA_RdDatAddr[3]
-+	 * NA[9]	= col[3]  = BEQ_MCA_RdDatAddr[4]
-+	 * NA[14]	= col[4]  = BEQ_MCA_RdDatAddr[5]
-+	 * NA[12]	= bank[0] = BEQ_MCA_RdDatAddr[5]
-+	 * NA[13]	= bank[1] = BEQ_MCA_RdDatAddr[6]
-+	 * NA[10]	= bank[2] = BEQ_MCA_RdDatAddr[7]
-+	 * NA[11]	= bank[3] = BEQ_MCA_RdDatAddr[8]
-+	 *
-+	 * row low is 12 bit locations, low lsb bit starts from 10
-+	 * NA[15..26] = row[0..11]  = BEQ_MCA_RdDatAddr[10..21]
-+	 *
-+	 * row high is 2 bit locations, high lsb bit starts from 22
-+	 * NA[27..28] = row[12..13] = BEQ_MCA_RdDatAddr[22..23]
-+	 *
-+	 * NA[7]	= PC[0]   = BEQ_MCA_RdDatAddr[25]
-+	 * NA[29]	= sid[0]  = bank[4] = BEQ_MCA_RdDatAddr[26]
-+	 * NA[30]	= sid[1]  = bank[5] = BEQ_MCA_RdDatAddr[27]
-+	 * Basically, it calculates a locations to fit as shown in
-+	 * table umc_mca2na_mapping[].
-+	 *
-+	 * XORs need to be applied based on the hash settings below.
-+	 */
-+
-+	/* Calculate column and row */
-+	col = FIELD_GET(GENMASK(5, 1), mca_addr);
-+	row = FIELD_GET(GENMASK(23, 10), mca_addr);
-+
-+	/* Apply hashing on below banks for bank calculation */
-+	for (i = 0; i < 4; i++)
-+		bank_hash[i] = (mca_addr >> (6 + i)) & 0x1;
-+
-+	/* bank hash algorithm */
-+	for (i = 0; i < 4; i++) {
-+		/* Read AMD PPR UMC::AddrHashBank register*/
-+		if (!amd_smn_read(nid, gpu_umc_base + 0xC8 + (i * 4), &temp)) {
-+			addr_hash_bank[i].xor_enable = temp & 1;
-+			addr_hash_bank[i].col_xor = FIELD_GET(GENMASK(13, 1), temp);
-+			addr_hash_bank[i].row_xor = FIELD_GET(GENMASK(31, 14), temp);
-+			/* bank hash selection */
-+			bank[i] = bank_hash[i] ^ (addr_hash_bank[i].xor_enable &
-+				  (internal_bit_wise_xor(col & addr_hash_bank[i].col_xor) ^
-+				  internal_bit_wise_xor(row & addr_hash_bank[i].row_xor)));
-+		}
-+	}
-+
-+	/* To apply hash on pc bit */
-+	pc_hash = (mca_addr >> 25) & 0x1;
-+
-+	/* Read AMD PPR UMC::CH::AddrHashPC register */
-+	if (!amd_smn_read(nid, gpu_umc_base + 0xE0, &temp)) {
-+		addr_hash_pc.xor_enable = temp & 1;
-+		addr_hash_pc.col_xor = FIELD_GET(GENMASK(13, 1), temp);
-+		addr_hash_pc.row_xor = FIELD_GET(GENMASK(31, 14), temp);
-+	}
-+	/* Read AMD PPR UMC::CH::AddrHashPC2 register*/
-+	if (!amd_smn_read(nid, gpu_umc_base + 0xE4, &temp))
-+		addr_hash_pc2.bank_xor = FIELD_GET(GENMASK(5, 0), temp);
-+
-+	/* Calculate bank value from bank[0..3], bank[4] and bank[5] */
-+	for (i = 0; i < 4; i++)
-+		rawbank |= (bank[i] & 1) << i;
-+
-+	rawbank |= (mca_addr >> 22) & 0x30;
-+
-+	/* pseudochannel(pc) hash selection */
-+	pc = pc_hash ^ (addr_hash_pc.xor_enable &
-+		(internal_bit_wise_xor(col & addr_hash_pc.col_xor) ^
-+		internal_bit_wise_xor(row & addr_hash_pc.row_xor) ^
-+		internal_bit_wise_xor(rawbank & addr_hash_pc2.bank_xor)));
-+
-+	/* Mask b'25(pc_bit) and b'[9:6](bank) */
-+	mca_addr &= ~0x20003c0ULL;
-+
-+	for (i = 0; i < 4; i++)
-+		mca_addr |= (bank[i] << (6 + i));
-+
-+	 mca_addr |= (pc << 25);
-+
-+	/* NA[4..0] is fixed */
-+	mca2na = 0x0;
-+	/* convert mca error address to normalized address */
-+	for (i = 1; i < ARRAY_SIZE(umc_mca2na_mapping); i++)
-+		mca2na |= ((mca_addr >> i) & 0x1) << umc_mca2na_mapping[i];
-+
-+	mca_addr = mca2na;
-+	pr_emerg(HW_ERR "Error Addr: 0x%016llx\n", mca_addr);
-+	pr_emerg(HW_ERR "Error hit on Bank: %d Row: %d Column: %d\n", rawbank, row, col);
-+
-+	return mca_addr;
-+}
-+
- static void decode_umc_error(int node_id, struct mce *m)
- {
- 	u8 ecc_type = (m->status >> 45) & 0x3;
-@@ -3115,6 +3268,13 @@ static void decode_umc_error(int node_id, struct mce *m)
- 	pvt->ops->get_err_info(m, &err);
- 	df_inst_id = pvt->ops->get_inst_id(mci, pvt, &err);
- 
-+	/*
-+	 * The reported MCA address(Error Addr) is DRAM decoded address which needs to be
-+	 * converted to normalized address before DF address translation.
-+	 */
-+	if (pvt->fam == 0x19 && (pvt->model >= 0x90 && pvt->model <= 0x9f))
-+		m->addr = umc_ondie_addr_to_normaddr(m->addr, pvt->mc_node_id);
-+
- 	if (umc_normaddr_to_sysaddr(m->addr, pvt->mc_node_id, df_inst_id, &sys_addr)) {
- 		err.err_code = ERR_NORM_ADDR;
- 		goto log_error;
--- 
-2.25.1
+I agree with Thomas that it's highly unlikely the bootloader "hints"
+at any specific backlight settings. That being said, the change itself
+looks correct to me. The other branch of that if will always unblank
+the backlight if the GPIO is in input mode which may not be desirable.
+I don't see any obvious problem with this change, just make sure the
+commit message makes more sense.
 
+Bartosz
