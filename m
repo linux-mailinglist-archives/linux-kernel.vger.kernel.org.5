@@ -2,116 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AFE75ABF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D60675AC14
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbjGTKa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 06:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
+        id S231274AbjGTKds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 06:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjGTKaz (ORCPT
+        with ESMTP id S230219AbjGTKdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 06:30:55 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A63C10FC
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:30:54 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6687096c6ddso376158b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:30:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689849054; x=1690453854;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pX/Ty9NAcT9bYpPnRuDBO1Tp6SxCU3ljG9XRMY4bllE=;
-        b=YEjHygSXionVn78E3LIw9gY7VVbzoifbq/0xL4Hy8vefi+FIpQ/OrhbweiqbVZGW2t
-         a/Mk5zS1jQUvlYWJQNzdQVBXR2kp29aBK5Cv0JMhaSDLSoRkZcMiEyUixP9M3bo7RTdT
-         rVW633peGDgCzxJM7AGqjl6c13L5dRfNlenfMfRkoBeaKK/v59do4NNecBanveHVl0x2
-         WesSQ715grtexLTfZQe4aGPs/PWbPzqnv177lvc9ENtemsZkWkTUBgE/iB+806lMu8NI
-         Ad6FCd1eCaAgrUHr6GjtDkXJvxdbAXd4jyeV13pPEjL7cNtD3eI6lJprClc7LTszVzhp
-         iPiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689849054; x=1690453854;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pX/Ty9NAcT9bYpPnRuDBO1Tp6SxCU3ljG9XRMY4bllE=;
-        b=KLEFbLy8BIPzdFxITeQjDB54ICLvdne+fhrXbFFq1IjzypS3pk4/CgcAY2JA8rKWpi
-         meyYR9TkyDmsp47J+sDTS1/+W3wWusoHBma9TtmzuMn+dzEjsMNiWw+aJ4OT3T/HDJSe
-         NttmnLbvPFxYFvenuAO6UPrl/kj1VJUm22E5XTWpwWX5O3v9cuSaRTADMF1+0kAKyVBN
-         3k1ji4LwoZau2w/TFOko0qehIHphUe4bKHmMbwAxZvA9mtCt47nzaksnn6HvnY7gHnRX
-         tLDSV6M2vkIP6QVzFUvwat5EMYVXLZo+SPj9yJ0FkKQR81Oh1INvX74rDeT0vKm+gNY3
-         QEXA==
-X-Gm-Message-State: ABy/qLYvdKBffidSGJXyErG10acTAl/NZiXUmFcS/VFk+1IjLv2GTiji
-        wvLypGMMTAdLXffJj7c53/EphA==
-X-Google-Smtp-Source: APBJJlHQ3TBhJch4+9s7IdsXDe4mP52ispONeRhDFv3IHs7DNJoO/6dUpqV823L+edq5WpNkcQKRmA==
-X-Received: by 2002:a05:6a20:54a4:b0:12c:e3c8:8c7 with SMTP id i36-20020a056a2054a400b0012ce3c808c7mr19779825pzk.41.1689849053763;
-        Thu, 20 Jul 2023 03:30:53 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id m12-20020a170902768c00b001b8062c1db3sm977831pll.82.2023.07.20.03.30.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 03:30:52 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 16:00:50 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] cpufreq: Explicitly include correct DT includes
-Message-ID: <20230720103050.325y6n2zqiv5k5ku@vireshk-i7>
-References: <20230714174414.4054011-1-robh@kernel.org>
+        Thu, 20 Jul 2023 06:33:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F4B269F
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:33:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 27136619F9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:32:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 609E1C433C8;
+        Thu, 20 Jul 2023 10:32:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689849157;
+        bh=hFrIlBp2xDjwZI1051zDpKcH1l8BEytCOqnbkdhdX2U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WLqa6M1Kzj1KflXtE9wcQoLVHPaMDX2RSx/Fw8r4kbz+nbZ3dNdPp53OcrsdZOnfe
+         s9Vywjiz1qGVxnatND2unT5gE5dFxBQV8zzHnbpf9TvxWJRgwCjop8EfPzzv8xU5ar
+         7EC1KNqNa4MUOnq1c1DtpqC4/nN+pYPQISMJPHSEOLMqwbf0+N/2uHzE39QDCubwtF
+         uOWsOtuM20hQ5kAHUzupKHG2LAh1pUvDIboxh1obAZy0DZm8C+1BTb/hUkM4VUk0jS
+         ukrrssSaogtqCiS8b+YDiXV0zao+OxGaWUe3iDh63dT2cqHGQ7NFDnr7UgoifEWou3
+         HrGqc1I3qlPcQ==
+Date:   Thu, 20 Jul 2023 11:32:28 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Steven Price <steven.price@arm.com>,
+        SeongJae Park <sj@kernel.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Song Liu <song@kernel.org>,
+        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        regressions@leemhuis.info, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 12/32] mm/vmalloc: vmalloc_to_page() use
+ pte_offset_kernel()
+Message-ID: <20230720103227.GB11034@willie-the-truck>
+References: <c1c9a74a-bc5b-15ea-e5d2-8ec34bc921d@google.com>
+ <696386a-84f8-b33c-82e5-f865ed6eb39@google.com>
+ <42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk>
+ <901ae88d-ad0c-4e9d-b199-f1566cc62a00@lucifer.local>
+ <c2358f37-ebaa-44d1-b443-ff91bdedc00b@sirena.org.uk>
+ <977ddee4-35f0-fcd1-2fd-1c3057e7ea2a@google.com>
+ <fbb2b76c-bc5c-4d75-b8cd-37479de688d4@sirena.org.uk>
+ <b479b946-f052-eb75-295d-6fa7c2d8ce8e@google.com>
+ <591b5253-47f0-440c-84b6-7786ff59667d@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230714174414.4054011-1-robh@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <591b5253-47f0-440c-84b6-7786ff59667d@sirena.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-07-23, 11:44, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+On Tue, Jul 11, 2023 at 06:57:33PM +0100, Mark Brown wrote:
+> On Tue, Jul 11, 2023 at 09:13:18AM -0700, Hugh Dickins wrote:
+> > On Tue, 11 Jul 2023, Mark Brown wrote:
+> > > On Mon, Jul 10, 2023 at 09:34:42PM -0700, Hugh Dickins wrote:
+> > > 
+> > > > I suppose I should ask you to try reverting this 0d1c81edc61e alone
+> > > > from 6.5-rc1: the consistency of your bisection implies that it will
+> > > > "fix" the issues, and it is a commit which we could drop.  It makes
+> > > > me a little nervous, applying userspace-pagetable validation to kernel
+> > > > pagetables, so I don't want to drop it; and it would really be cargo-
+> > > > culting to drop it without understanding.  But we could drop it.
+> > > 
+> > > I did look at that, it doesn't revert cleanly by itself. ...
+> > 
+> > Right, that ptep_get() wrapper on the next line came in on top.
+> > The patch to revert just 0d1c81edc61e is this:
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/cpufreq/armada-37xx-cpufreq.c  | 4 +---
->  drivers/cpufreq/mediatek-cpufreq-hw.c  | 3 ++-
->  drivers/cpufreq/ppc_cbe_cpufreq.c      | 2 +-
->  drivers/cpufreq/ppc_cbe_cpufreq_pmi.c  | 1 -
->  drivers/cpufreq/qcom-cpufreq-nvmem.c   | 1 -
->  drivers/cpufreq/scpi-cpufreq.c         | 2 +-
->  drivers/cpufreq/sti-cpufreq.c          | 2 +-
->  drivers/cpufreq/ti-cpufreq.c           | 2 +-
->  drivers/cpufreq/vexpress-spc-cpufreq.c | 1 -
->  9 files changed, 7 insertions(+), 11 deletions(-)
+> Still investigating but I'm pretty convinced this is nothing to do with
+> your commit/series and is just common or garden memory corruption that
+> just happens to get tickled by your changes.  Sorry for the noise.
 
-Applied. Thanks.
+Did you get to the bottom of this? If not, do you have a reliable way to
+reproduce the problem? I don't like the sound of memory corruption :(
 
--- 
-viresh
+Will
