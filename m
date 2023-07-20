@@ -2,280 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 794B375A409
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 03:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BDA75A40B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 03:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbjGTBe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 21:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46602 "EHLO
+        id S229789AbjGTBfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 21:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjGTBez (ORCPT
+        with ESMTP id S229752AbjGTBfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 21:34:55 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FFD62106
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 18:34:54 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-57764a6bf8cso3354507b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 18:34:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689816893; x=1690421693;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i/BV8QhI2Yg0HLi9NdTgzIisR0+G5gj8nV7Uz8iT+f4=;
-        b=7BpcQLW36ZH5fze5m2CW64qezajREg2orxdNtunJAFZNK9Soj3VSEd1Cy1Hj0bWzOU
-         lH8xkw9qf172dJ1u0mR/4h1zfYVblHRU87ZM6ysa5HHWfN22BVeyoXTTQpT/vNwOB3os
-         0sAsw0C4ZCJyMbtN9qvJxsNTXWgv44m7I721tokPL4Ja9OLcjgbjgPwkIv5r5hqZpSYD
-         Yxa6mofNKH3PDgcq21aSw6KZhI06Y+JE5/7vjc6nrMOwkzG5e0LK6eZlLnpJfJPUVokv
-         PF+eQZvlbyVbe77iFYs2JjMIs/Iy4nq/q2gm5MFvFGTNq10wqJDHKYltwkBalfGgD9wg
-         t6gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689816893; x=1690421693;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i/BV8QhI2Yg0HLi9NdTgzIisR0+G5gj8nV7Uz8iT+f4=;
-        b=Xu3k2holIdyLT52CP8nhekYbCw63WmIdXWhuEO4vTpCaSsWUvvtDgaxgx9o6qGGvf+
-         Ru15tBrlKV+PwRYUMzQdO/xO707aDPkbnmbtYzuptrmF/crDkTZX7irXQeGjS8nE7dgo
-         lpzc1ox20pYY/3QyI307l1zUrXpqwH+DeD+ebV9bZPKhKOIXeMN3V8tT3Y696Eioxu6v
-         w6ZPohxGp3h1TogMVGZ30R7+N2wFfR88E1sz/bq4a3Poi5cQvCcAsn+wUt/BYvBE9wq1
-         kU5HfSvomsHfA+7y1oi4BvnYD9O2hUcqNzVPkrDctleiNk3QG1TzR5onfrMXS1sC1qis
-         LoPA==
-X-Gm-Message-State: ABy/qLbapzQoeDu07u5BECSGt6WpqsXPO0qKodVLicB1VEbG62539/QC
-        M2+025dJk5iODCcRVl5cMo5Ub7XoR58ePg2UdaOW+4el+D72q9I9jL4=
-X-Google-Smtp-Source: APBJJlFlK97JJPv1R+ptJjRZjdQ+0lWWDDmHsXoB1G/kVYpbWmwmp65vrqFWfnMSzidv3vR2GT5mIabA0FQ6WUPHl7Q=
-X-Received: by 2002:a81:4e8c:0:b0:57a:9384:4c13 with SMTP id
- c134-20020a814e8c000000b0057a93844c13mr4144906ywb.49.1689816893158; Wed, 19
- Jul 2023 18:34:53 -0700 (PDT)
+        Wed, 19 Jul 2023 21:35:04 -0400
+Received: from AUS01-ME3-obe.outbound.protection.outlook.com (mail-me3aus01olkn2180.outbound.protection.outlook.com [40.92.63.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A992109;
+        Wed, 19 Jul 2023 18:34:59 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VTQ7toHLwjv1Dsz33+/kFYmUAahXFXgQHj3GzLF9yqj1tilGzBFB7VyX6ZaKrVs/44axdv8QhUZI61GYFgJVVMRvucRvE5fDkg006yx8mKt2M+LzXBuOOSsaiXjuUrqXOKfVcaHXFEjB+QQYzzoMx8RShVemnbNCsDIcNuBii9Dj5wnSZE+DsuT1Q1QAuwoTSLVlnko/lmBuxdfEmlcN162nbnKpZRuWPSlOxK20M7xN7xaREuaO1+lt51vFbz2t7azD47d+F59bci0lGaUdNtmvv1OgMNI047+Dzzwcn79UbiECensOeqH8BqiXL3DTvbufuyChcnOfdnHO+6ePFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8BCCMGIvSp5kTq7MMn+EQWFVBF6a1f3qUFxS5cWi4ME=;
+ b=gKoZklQ9p5wOdqamZy+ZXyikJG6q4j5UC4m6zw6Ru+ThH7FTOd4Nk3ZgRc8M0ohnU54/DZD76j3PuNDuIBkp1E0y9Th/pYofkVnPPfUV1PJYwx+WvrSiwjx/R0c69X4SdIkux+2O4wuvK8+iDVa8C/AU+2epmYIgz1t9YvBDmqbIBfbkr1++ylOjYOu/ZoQrLhcXmHrzY7Krfuv3qFyvMNGzY7dx3tobgBPSJ3b827hLytTZkccb6kR/H6+U+s8/TmByeuZuWueKit+QnojdvFGGmBO8u509cpECBygPauJQw+QgxZqBE0PTHQGVcOwdWfS0uwkZ6E6Q5WYX7OllWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8BCCMGIvSp5kTq7MMn+EQWFVBF6a1f3qUFxS5cWi4ME=;
+ b=AeEwHqzTnWUglBhD41nHDC/CFFXRwMBsrhwzPx1xlBzdbtpoSqDSG7rybuPxyJhx7vZYnUIMn1rJkSXYpXVJQFE+2mmnheMG+pOIy09i23RNudf5cJF4GFQjk1yOqeT0tCJwnCSRabparLyBJ4IAQqm5J0bYAOO7MTV6IhFquAf98QDTtCU6Wyfr7ryPfd+tY6czKdcmBxtb7FT4r8fn+4P/t2e5dif6BnOyzH2tKJGIV11l/2y/8nhQwMobP3kP/7MSONc9qI5EOnwTDN51aokOtW6IZUl/FYX0bNcM82LF1ebZmuHz2rwh1LgHMeaBou1cUhacr+wO/yufzsVy8g==
+Received: from MEYP282MB2597.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:128::9)
+ by SY7P282MB4012.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:1ef::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Thu, 20 Jul
+ 2023 01:34:55 +0000
+Received: from MEYP282MB2597.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::f263:312b:1b6c:512b]) by MEYP282MB2597.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::f263:312b:1b6c:512b%5]) with mapi id 15.20.6609.024; Thu, 20 Jul 2023
+ 01:34:55 +0000
+From:   =?utf-8?B?4oCOIGRvbm1vcg==?= <donmor3000@hotmail.com>
+To:     "Markus.Elfring@web.de" <Markus.Elfring@web.de>,
+        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
+        "kernel@xen0n.name" <kernel@xen0n.name>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "jiaxun.yang@flygoat.com" <jiaxun.yang@flygoat.com>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "chenhuacai@loongson.cn" <chenhuacai@loongson.cn>,
+        "guoren@kernel.org" <guoren@kernel.org>,
+        "lixuefeng@loongson.cn" <lixuefeng@loongson.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "loongson-kernel@lists.loongnix.cn" 
+        <loongson-kernel@lists.loongnix.cn>
+Subject: Re: [PATCH v5] LoongArch: Fix CONFIG_CMDLINE_EXTEND and
+ CONFIG_CMDLINE_BOOTLOADER handling
+Thread-Topic: [PATCH v5] LoongArch: Fix CONFIG_CMDLINE_EXTEND and
+ CONFIG_CMDLINE_BOOTLOADER handling
+Thread-Index: AQHZuY1TS+nbXmX/tkirEP9agq0NVa/Ap7YAgAAIqYCAADREgIAA/QIA
+Date:   Thu, 20 Jul 2023 01:34:55 +0000
+Message-ID: <281c5d5e51488ce51497072c1e4304d71af141ec.camel@hotmail.com>
+References: <20230718153348.3340811-1-chenhuacai@loongson.cn>
+         <261edc6c-e339-faeb-3045-bfe6604d1aef@web.de>
+         <CAAhV-H5nNMmYZQXvoog85cgMUd+gM2QMaG3cUhYk_iGzjB=B4Q@mail.gmail.com>
+         <f9e7fb54-a76e-a9b0-1b9c-8c9251f4af20@xen0n.name>
+In-Reply-To: <f9e7fb54-a76e-a9b0-1b9c-8c9251f4af20@xen0n.name>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-tmn:  [RJ/WdeY2nv1zRrJiZFWwpr+klWzEbsvJIifjssMkilrGqHST8XKzEboFhPGhDAoG]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MEYP282MB2597:EE_|SY7P282MB4012:EE_
+x-ms-office365-filtering-correlation-id: 1ce16e8b-ffee-4b9c-5f1a-08db88c1856c
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: N0yAwI+XasAR8BMs81JriN2ZnXHOvEyaRlIOdxA05dg3ZPXUj/3yrcmbgcdQgmnhfNxXPGWe3IaCgF9X5fPd5zMXy9xhMw/vltoWdy177NE+fDI5Ok6F2EmqtrRbkaZ4ZLQyrKMy1Yeihm1Gos3W323c4eNZ2BG15Q6hXn03gKP6+4bANSppJGUbKoR2RcxU5IGavghmi3SFmLEw/4SoBDPjmi1ssHNJAwQm4I3hnoIShHbTSdXIjRoheU0nl3UNvEhBxCZBIqgqGzbTHEZOpSsOgYAG/JVMe59+wXq1o8WdQQr6Eq6/aj1GixINU6ywf7YQjmh/vPVW40FbuY9INv/TeYCeyzb4WyvPKg1spawv6GFBjF2sXUefCaDKQ9kuJa+a29eIk4G8BzbkQK7qAd0bdR4syqzfyY7ggKJ/rdeLNlUOyVWQcZX3QHoT+h+tnYdEQ2g0a/op7DhoMYe8VeAokmzFQq/xNIyQ1uJrVIeBBfCydZJgGEHRRfPWHftnfYj+pR59ZqJIM/q7al8Z/xqHzUazSvI1428uv5O2PhkqRNJRMIc/O4e0+vD3fr3t
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OE1melZ1Vk5zU3B2alIyaERkeXBGV3BXeXpnOW5NcTVOQnJZTlNpb25scmJr?=
+ =?utf-8?B?VlE1TFhxZGozdzQxYnc5SzE4MEd2bi9zSkptOTlOTDlhU252Q3MycXdTKzRh?=
+ =?utf-8?B?VFBuNW9BZVF0NTZyVHRYeEM4NklVWDlZaW9wVFNwRU9JUlBtRWh1ek1CWnM4?=
+ =?utf-8?B?aUNyZmJ6akRqNUNrMjFRTTJYVzN2MGhTWHZXeFJFRkJBVHVNVVc1QzN5U2k3?=
+ =?utf-8?B?RHpHMDUzUllRNHdFVUk4Y1JucFlQbk9VRG16cE5pbkVzSWhxVDNFRzdLKzho?=
+ =?utf-8?B?N2U1Tm5wM2ZNRktaRkNjcnpkUFRtL2g1bVpEWXRmNjJmWFREekp5UU0yenFp?=
+ =?utf-8?B?RnlHNEtjeWYzaGtYa0xvanJ0TW9YTS8xMUVLY1pXK01ueTAvVU1EenFlTzRi?=
+ =?utf-8?B?OHdjTHJ4MWJnRlNDRmtNVjZWcWtJbHlEcmIwNmdDQ2QyT0JVWDdIZG9yTVI0?=
+ =?utf-8?B?d3RrSGl3a2c4YUorYUI5ZXByb0JqaklMemxzN0Y0SlFieWhYdXlwZm1kMEdy?=
+ =?utf-8?B?S1NWUXZyWFVXNE1aekZ2RUYzeGxxMUJucDNaZkFENjNNdG5iVGJiMjNsMDAx?=
+ =?utf-8?B?Wi80dFVFMW55TE0xaWVsamE1bGpGT0JkQWNYQ1pJSVV0K01CaGFiWlNNd3pr?=
+ =?utf-8?B?SEQrSm01d1JHall1RnVxRytxbDRIWFhGR0J0SzlGWGhzT1FrMUxoK1VZV1Fk?=
+ =?utf-8?B?a0MvY3EzS1lod0ZXMS9yMFUvWjJKMXlnekJXRVhyNWkwaGNIZE9VRk1qcHli?=
+ =?utf-8?B?WWlhNnNuenE2Z1JOWFkvODBPbE0rQTJKR014QVUxcm1QcFppSzhqdXh4N0Iz?=
+ =?utf-8?B?WUhMNHEvMkcyK0JDdVNrTjFyQU1Kd3B4aDBPdUF5NTBaNG51KzBoQkpUcVRI?=
+ =?utf-8?B?OEhRY3c5d1NwS3o4TG83cnNTNGdKVXo4ZzF3WnIrak1VaHZDRzRyclVQcksy?=
+ =?utf-8?B?Tm16aGVjV04vaFlZYXZUZTVjVzU5NjlUaDBPRUNBMERHbWxRWDNXL052bThU?=
+ =?utf-8?B?Ujk1RnRPL0d5cXUvVEx4Z014czhPV1FNNVRrRzlGWFNlQzU3TC9UN1RnQm5k?=
+ =?utf-8?B?OGQ5YVBMY1ZzQk1QUTM2UExPYytkVFh2a29pVWhFRmxHTEhGMTE4V1N1YjJV?=
+ =?utf-8?B?N3pLS0cybjM3SkduOHJWTzhtc1gvV3h5MnZ2MHZaeTk4Y0NRcC82MTE1aURr?=
+ =?utf-8?B?Ty9OQVVEYjZkNHRxenhuZEtpMFI4R1VHK2xmQ0NhRktzREZKa3d0QmZsK2hF?=
+ =?utf-8?B?bklzNmJoSDdRRzhFdjJwWDU0NjdQR2JIUGV3ellaYUlVQnZnN0VNMEtGSytW?=
+ =?utf-8?B?cXVXVER1MUNzOFJ2LzNKTU9GTThjV0lFb3dDcmY4aHN4cndwNjNRWVhwWHBQ?=
+ =?utf-8?B?V043WENwYU15MzNaSGp3Ukdua284R2xKZVRaLzlwM2FWL2lFai8vcktUc0Jn?=
+ =?utf-8?B?d1ZJaFJ1MHpWS0g4bVNnbHoxS2M2NTVQMkM5T0U5QnY4QklwN0NzaXl4eFJF?=
+ =?utf-8?B?blFTQlQrVlJKMkQyazMrczZrRUMwZzZlVjltWkcrejA5UHlYT0tBaC9iNUZK?=
+ =?utf-8?B?WDlqNktLbDZsblgzdjZJeGl5L1REcnA4enU5RmMzVi9IQy9tR1krY09xdzVI?=
+ =?utf-8?B?MXFXdzZzaTAyUDFCZXlBdFhrZHRUdlh0WFVDTnRLY0Vaam8wc1ZvNGhHaWFY?=
+ =?utf-8?B?bXVMeTZ1TmlpWlZyNE4ydHRtcGNDOU10QlRQcG1yZ1VvMzNxRmNTK1hvUGRQ?=
+ =?utf-8?Q?i4OOk4nOx8hZMKCx78=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <26A1AA44CA688840B7906A82E4ECA709@AUSP282.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230718004942.113174-1-mike.kravetz@oracle.com> <20230718004942.113174-2-mike.kravetz@oracle.com>
-In-Reply-To: <20230718004942.113174-2-mike.kravetz@oracle.com>
-From:   Jiaqi Yan <jiaqiyan@google.com>
-Date:   Wed, 19 Jul 2023 18:34:40 -0700
-Message-ID: <CACw3F503YVxgX4AUDRKGg8CTOCGdZPw966xcgDuwWs2KYckb2g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] hugetlb: Do not clear hugetlb dtor until
- allocating vmemmap
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        James Houghton <jthoughton@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-746f3.templateTenant
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MEYP282MB2597.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ce16e8b-ffee-4b9c-5f1a-08db88c1856c
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2023 01:34:55.1161
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY7P282MB4012
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 5:50=E2=80=AFPM Mike Kravetz <mike.kravetz@oracle.c=
-om> wrote:
->
-> Freeing a hugetlb page and releasing base pages back to the underlying
-> allocator such as buddy or cma is performed in two steps:
-> - remove_hugetlb_folio() is called to remove the folio from hugetlb
->   lists, get a ref on the page and remove hugetlb destructor.  This
->   all must be done under the hugetlb lock.  After this call, the page
->   can be treated as a normal compound page or a collection of base
->   size pages.
-> - update_and_free_hugetlb_folio() is called to allocate vmemmap if
->   needed and the free routine of the underlying allocator is called
->   on the resulting page.  We can not hold the hugetlb lock here.
->
-> One issue with this scheme is that a memory error could occur between
-> these two steps.  In this case, the memory error handling code treats
-> the old hugetlb page as a normal compound page or collection of base
-> pages.  It will then try to SetPageHWPoison(page) on the page with an
-> error.  If the page with error is a tail page without vmemmap, a write
-> error will occur when trying to set the flag.
->
-> Address this issue by modifying remove_hugetlb_folio() and
-> update_and_free_hugetlb_folio() such that the hugetlb destructor is not
-> cleared until after allocating vmemmap.  Since clearing the destructor
-> requires holding the hugetlb lock, the clearing is done in
-> remove_hugetlb_folio() if the vmemmap is present.  This saves a
-> lock/unlock cycle.  Otherwise, destructor is cleared in
-> update_and_free_hugetlb_folio() after allocating vmemmap.
->
-> Note that this will leave hugetlb pages in a state where they are marked
-> free (by hugetlb specific page flag) and have a ref count.  This is not
-> a normal state.  The only code that would notice is the memory error
-> code, and it is set up to retry in such a case.
->
-> A subsequent patch will create a routine to do bulk processing of
-> vmemmap allocation.  This will eliminate a lock/unlock cycle for each
-> hugetlb page in the case where we are freeing a large number of pages.
->
-> Fixes: ad2fa3717b74 ("mm: hugetlb: alloc the vmemmap pages associated wit=
-h each HugeTLB page")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->  mm/hugetlb.c | 90 ++++++++++++++++++++++++++++++++++++++--------------
->  1 file changed, 66 insertions(+), 24 deletions(-)
->
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 64a3239b6407..4a910121a647 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1579,9 +1579,37 @@ static inline void destroy_compound_gigantic_folio=
-(struct folio *folio,
->                                                 unsigned int order) { }
->  #endif
->
-> +static inline void __clear_hugetlb_destructor(struct hstate *h,
-> +                                               struct folio *folio)
-> +{
-> +       lockdep_assert_held(&hugetlb_lock);
-> +
-> +       /*
-> +        * Very subtle
-> +        *
-> +        * For non-gigantic pages set the destructor to the normal compou=
-nd
-> +        * page dtor.  This is needed in case someone takes an additional
-> +        * temporary ref to the page, and freeing is delayed until they d=
-rop
-> +        * their reference.
-> +        *
-> +        * For gigantic pages set the destructor to the null dtor.  This
-> +        * destructor will never be called.  Before freeing the gigantic
-> +        * page destroy_compound_gigantic_folio will turn the folio into =
-a
-> +        * simple group of pages.  After this the destructor does not
-> +        * apply.
-> +        *
-> +        */
-> +       if (hstate_is_gigantic(h))
-> +               folio_set_compound_dtor(folio, NULL_COMPOUND_DTOR);
-> +       else
-> +               folio_set_compound_dtor(folio, COMPOUND_PAGE_DTOR);
-> +}
-> +
->  /*
-> - * Remove hugetlb folio from lists, and update dtor so that the folio ap=
-pears
-> - * as just a compound page.
-> + * Remove hugetlb folio from lists.
-> + * If vmemmap exists for the folio, update dtor so that the folio appear=
-s
-> + * as just a compound page.  Otherwise, wait until after allocating vmem=
-map
-> + * to update dtor.
->   *
->   * A reference is held on the folio, except in the case of demote.
->   *
-> @@ -1612,31 +1640,19 @@ static void __remove_hugetlb_folio(struct hstate =
-*h, struct folio *folio,
->         }
->
->         /*
-> -        * Very subtle
-> -        *
-> -        * For non-gigantic pages set the destructor to the normal compou=
-nd
-> -        * page dtor.  This is needed in case someone takes an additional
-> -        * temporary ref to the page, and freeing is delayed until they d=
-rop
-> -        * their reference.
-> -        *
-> -        * For gigantic pages set the destructor to the null dtor.  This
-> -        * destructor will never be called.  Before freeing the gigantic
-> -        * page destroy_compound_gigantic_folio will turn the folio into =
-a
-> -        * simple group of pages.  After this the destructor does not
-> -        * apply.
-> -        *
-> -        * This handles the case where more than one ref is held when and
-> -        * after update_and_free_hugetlb_folio is called.
-> -        *
-> -        * In the case of demote we do not ref count the page as it will =
-soon
-> -        * be turned into a page of smaller size.
-> +        * We can only clear the hugetlb destructor after allocating vmem=
-map
-> +        * pages.  Otherwise, someone (memory error handling) may try to =
-write
-> +        * to tail struct pages.
-> +        */
-> +       if (!folio_test_hugetlb_vmemmap_optimized(folio))
-> +               __clear_hugetlb_destructor(h, folio);
-> +
-> +        /*
-> +         * In the case of demote we do not ref count the page as it will=
- soon
-> +         * be turned into a page of smaller size.
->          */
->         if (!demote)
->                 folio_ref_unfreeze(folio, 1);
-> -       if (hstate_is_gigantic(h))
-> -               folio_set_compound_dtor(folio, NULL_COMPOUND_DTOR);
-> -       else
-> -               folio_set_compound_dtor(folio, COMPOUND_PAGE_DTOR);
->
->         h->nr_huge_pages--;
->         h->nr_huge_pages_node[nid]--;
-> @@ -1728,6 +1744,19 @@ static void __update_and_free_hugetlb_folio(struct=
- hstate *h,
->                 return;
->         }
->
-> +       /*
-> +        * If needed, clear hugetlb destructor under the hugetlb lock.
-> +        * This must be done AFTER allocating vmemmap pages in case there=
- is an
-> +        * attempt to write to tail struct pages as in memory poison.
-> +        * It must be done BEFORE PageHWPoison handling so that any subse=
-quent
-> +        * memory errors poison individual pages instead of head.
-> +        */
-> +       if (folio_test_hugetlb(folio)) {
-
-Thanks Mike, this definitely fixed the issue in v1, :)
-
-> +               spin_lock_irq(&hugetlb_lock);
-> +               __clear_hugetlb_destructor(h, folio);
-> +               spin_unlock_irq(&hugetlb_lock);
-> +       }
-> +
->         /*
->          * Move PageHWPoison flag from head page to the raw error pages,
->          * which makes any healthy subpages reusable.
-> @@ -3604,6 +3633,19 @@ static int demote_free_hugetlb_folio(struct hstate=
- *h, struct folio *folio)
->                 return rc;
->         }
->
-> +       /*
-> +        * The hugetlb destructor could still be set for this folio if vm=
-emmap
-> +        * was actually allocated above.  The ref count on all pages is 0=
-.
-> +        * Therefore, nobody should attempt access.  However, before dest=
-roying
-> +        * compound page below, clear the destructor. Unfortunately, this
-> +        * requires a lock/unlock cycle.
-> +        */
-> +       if (folio_test_hugetlb(folio)) {
-> +               spin_lock_irq(&hugetlb_lock);
-> +               __clear_hugetlb_destructor(h, folio);
-> +               spin_unlock_irq(&hugetlb_lock);
-> +       }
-> +
->         /*
->          * Use destroy_compound_hugetlb_folio_for_demote for all huge pag=
-e
->          * sizes as it will not ref count folios.
-> --
-> 2.41.0
->
+5ZyoIDIwMjMtMDctMTnmmJ/mnJ/kuInnmoQgMTg6MjkgKzA4MDDvvIxXQU5HIFh1ZXJ1aeWGmemB
+k++8mg0KPiBPbiAyMDIzLzcvMTkgMTU6MjIsIEh1YWNhaSBDaGVuIHdyb3RlOg0KPiA+IEhpLCBN
+YXJrdXMsDQo+ID4gDQo+ID4gT24gV2VkLCBKdWwgMTksIDIwMjMgYXQgMjo1MeKAr1BNIE1hcmt1
+cyBFbGZyaW5nIDxNYXJrdXMuRWxmcmluZ0B3ZWIuZGU+IHdyb3RlOg0KPiA+ID4gPiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDigKYsIHNvIHRoaXMg
+cGF0Y2ggYWRkDQo+ID4gPiA+IHNvbWUgY29kZSB0byBmaXggaXQuDQo+ID4gPiANCj4gPiA+IFdv
+dWxkIHlvdSBsaWtlIHRvIGF2b2lkIGEgdHlwbyBoZXJlPw0KPiA+ID4gDQo+ID4gPiBXaWxsIGFu
+eSBvdGhlciBpbXBlcmF0aXZlIGNoYW5nZSBkZXNjcmlwdGlvbiB2YXJpYW50IGJlY29tZSBtb3Jl
+IGhlbHBmdWw/DQo+ID4gVGhhbmsgeW91IGZvciBwb2ludGluZyB0aGlzIG91dCwgYnV0IHNpbmNl
+IFpoaWhvbmcgaXMgdGhlIG9yaWdpbmFsDQo+ID4gYXV0aG9yLCBJIGRvbid0IHdhbnQgdG8gY29t
+cGxldGVseSByZXdyaXRlIHRoZSBjb21taXQgbWVzc2FnZSwgc28ganVzdA0KPiA+IGZpeCB0aGUg
+dHlwby4uLg0KPiANCj4gQUZBSUNUIHRoZSBjb21taXQgbWVzc2FnZSBpcyB0b3RhbGx5IHVuaW5m
+b3JtYXRpdmUgZXZlbiBpZiAiYW4gDQo+IGltcGVyYXRpdmUgY2hhbmdlIGRlc2NyaXB0aW9uIiB3
+ZXJlIHVzZWQuIEl0IGJhc2ljYWxseToNCj4gDQo+IDEuIHJlcGVhdGVkIHRoZSBwYXRjaCB0aXRs
+ZSwNCj4gMi4gc3BlbnQgb25lIHNlbnRlbmNlIG9ubHkgZm9yIG1lbnRpb25pbmcgYSBmdW5jdGlv
+biBuYW1lIHdpdGhvdXQgZ2l2aW5nIA0KPiBhbnkgbW9yZSBpbmZvcm1hdGlvbiwNCj4gMy4gbWVu
+dGlvbmVkIHdoeSBzb21lIGNoYW5nZSB3YXMgbm90IG5lY2Vzc2FyeSBkdWUgdG8gc29tZSBvdGhl
+ciANCj4gZXhpc3RpbmcgY29kZSwgYnV0IG5vdCBleHBsaWNpdGx5IGNhbGxpbmcgdGhhdCBwYXJ0
+IG91dCwgdGhlbg0KPiA0LiBmaW5pc2hlZCB3aXRoIGEgc2VudGVuY2UgdGhhdCBib2lsZWQgZG93
+biB0byAid2Ugc2hvdWxkIGRvIHRoZSANCj4gc2ltaWxhciB0aGluZyIuDQo+IA0KPiBNeSB0YWtl
+Og0KPiANCj4gID4gU3ViamVjdDogRml4IENNRExJTkVfRVhURU5EIGFuZCBDTURMSU5FX0JPT1RM
+T0FERVIgb24gbm9uLUZEVCBzeXN0ZW1zDQo+ICA+DQo+ICA+IE9uIEZEVCBzeXN0ZW1zIHRoZXNl
+IGNvbW1hbmQgbGluZSBwcm9jZXNzaW5nIGFyZSBhbHJlYWR5IHRha2VuIGNhcmUgb2YNCj4gID4g
+YnkgZWFybHlfaW5pdF9kdF9zY2FuX2Nob3NlbigpLiBBZGQgc2ltaWxhciBoYW5kbGluZyB0byB0
+aGUgbm9uLUZEVA0KPiAgPiBjb2RlIHBhdGggdG8gYWxsb3cgdGhlc2UgY29uZmlnIG9wdGlvbnMg
+dG8gd29yayBmb3Igbm9uLUZEVCBib3hlcyB0b28uDQo+IA0KPiBXb3VsZCB0aGlzIHNvdW5kIGJl
+dHRlcj8NCj4gDQpYdWVydWkncyB0YWtlIGlzIGZpbmUuIERvIEkgbmVlZCB0byBtYWtlIGEgdjYg
+cGF0Y2g/DQoNCmRvbm1vcg0K
