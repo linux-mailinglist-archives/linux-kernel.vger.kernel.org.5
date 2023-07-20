@@ -2,128 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1D875A9BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C78E75AA43
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbjGTI5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 04:57:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36716 "EHLO
+        id S231542AbjGTI7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 04:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjGTIib (ORCPT
+        with ESMTP id S230046AbjGTIio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 04:38:31 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AE0268F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:38:30 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fba1288bbdso797890e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:38:30 -0700 (PDT)
+        Thu, 20 Jul 2023 04:38:44 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE43F269D;
+        Thu, 20 Jul 2023 01:38:43 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-6355e774d0aso4742086d6.1;
+        Thu, 20 Jul 2023 01:38:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689842308; x=1690447108;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YIsgoQLryW3CIqsgxGxKOqUpJ00VghrOuIzYj57GodM=;
-        b=YV0tUtW+HKdD1U40g4PhB67gb7DPNwFXJbBz+qknagXWrGrZLnaqFLVedBKNe9Pcvk
-         BADoA7lFS/dpyDH8KrEpIv1AGTZsYnswaoUqZfirLnUxVccYjXHwPuYUNlVsIfkVOwbB
-         YDII1udeDCb5DSOtVn2se0AwjbrGXv0QURiXQVhpv4j3P+d2ueVnZhtAGG07jWMvmEUZ
-         NvNWeV0xL6Bbepgc+86HQc0j05rdAUBFkzunJIOhYU1TKV4yRDErtqxqXx+my51xoa0a
-         VO1PnD/ukQNqMjNZZTIdjKfiMb3gh2QmTqHoKHKTV0AUEHPAZrN0Y454AXGY83Xdxg2y
-         bjMg==
+        d=gmail.com; s=20221208; t=1689842323; x=1690447123;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=98zoTQ5d78kRlUlSdOrNN6oeSCbtSit7Vz7DB8FGSlg=;
+        b=dbEqJ0dkZvIEDMAnoLM4eaPEPNk40OoPGiKL5dBvoqWgEDZifa+YNuzIV6Pex7WsSJ
+         jDwOH/420m52SQuCPD8eda+8fwtWXqnTw+Ia9C6dSgvpxvh0I2sCmGtC/OLrWnKYlXpC
+         S1Qd4DYZkyNPec9X6WtVBav6ESp3QRiOUSYPFWlqx6l1gdhI9KkxfsS1+a26MQz+Ju0p
+         tr212L8CuY4a9VKrceCAeK2vVQwjnTv80m7HlCeAdJE4pDKp/TBBMYI75KvSDaPxQyBg
+         NDW7H57CL+X+H6qX+j/IeZ6EB36+KvVDq4rRIb4yW8/4xGZLf5xO9dDTXXYF+1YmizM8
+         9lSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689842308; x=1690447108;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YIsgoQLryW3CIqsgxGxKOqUpJ00VghrOuIzYj57GodM=;
-        b=CQ7/EFhaJPHL00McHfKVLgVtbksN5NlthiiONPUNUZVb7KFIaqqy7NEK54TQZSKmDi
-         mnoKLdrzZIBfQ9yHvoW28jIJq6SF1SiCqlT5ugcnb9Rup7ww8G0kthsUyFB3z53S1PHS
-         6ZSIXZFzZs0uT0Gsl8AwAidDLQcv3R4gFs7TEFD0DnnikGIz5e30mcNlO8G6ePOPfuMf
-         Q5uHCiumoRSkXLB+lurvWSoqAo0PPhOy3RnqbwT1HbN6ev0Kr7sjHc2mmQRiyjVHBVya
-         oeUeIutkCxedH20fgfLs75GvV3ZRyzj4OHf/aHKpj2ggXWek2hXBZP2wxAP/7IWAJfdR
-         wSJw==
-X-Gm-Message-State: ABy/qLZWGvacsRm4hCvrZ5OI80XluqIr1CN2vpTunJ9+u8mZ+0CFXip9
-        JRfaQ8V4krRPdwz/eXXIPIMvRw==
-X-Google-Smtp-Source: APBJJlHM3K33hiiMAHlwSnZxgeJJy1FzEvBCQ9PgHKHhf56IRGQxVq1k4pKno0XiVnipXDdb6R12Yw==
-X-Received: by 2002:a05:6512:ac4:b0:4fd:d4b4:faba with SMTP id n4-20020a0565120ac400b004fdd4b4fabamr1840284lfu.51.1689842308512;
-        Thu, 20 Jul 2023 01:38:28 -0700 (PDT)
-Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
-        by smtp.gmail.com with ESMTPSA id d28-20020ac24c9c000000b004f84b36a24fsm90641lfl.51.2023.07.20.01.38.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 01:38:28 -0700 (PDT)
-Message-ID: <fb587e3f-5cca-1c56-594d-df89646a3ba8@linaro.org>
-Date:   Thu, 20 Jul 2023 10:38:27 +0200
+        d=1e100.net; s=20221208; t=1689842323; x=1690447123;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=98zoTQ5d78kRlUlSdOrNN6oeSCbtSit7Vz7DB8FGSlg=;
+        b=Zo+3QhxhjfIhfu+AqxmzdA7A8OMewPogIkA94UAe/rd8DmFlox0CRFylIB4DiqQiZe
+         KsEXkxQJ3e+5pOZVDmF5l46b6zw+NIK8SaxUO9QUMDta0TiWeWQ4Rw9nvYTWCetR35oc
+         k3Jvi4V3CWVrzDqDXLOYLkmPCNnJPXexo/BDaSjBsOb+ARyFnFDmRO8i1y51DQBfHxNd
+         3EXfzWAIJ98XxDTQ4tMPA07wsGb51EfS21849jWdyxyjV7wW1Fv0pz5+lWCDIgmW0wDe
+         0PNRdLL8M7iB07kFws2pekIpdZYVAFmxs2WgenVgbY4SKkBZ7/ih6X7+5OUz0rRfWVIB
+         WIWQ==
+X-Gm-Message-State: ABy/qLZsfBf4Cut5HvvY2DZAOl9ektmKYiglEGt6AREOG3cN4eCMQIce
+        CLJv1vrz/GNfsj4gT8jCYmENLPlgiq0ImpN4Joo=
+X-Google-Smtp-Source: APBJJlHq1SeqRhLXIpHON4RyHUs6qSukliilePjXfmKvZPx7KDuQwShLuCWSEUEaG6G6FNMM9sTuJ+cisl/9i4TpIFQ=
+X-Received: by 2002:a0c:d641:0:b0:637:3ca5:cc55 with SMTP id
+ e1-20020a0cd641000000b006373ca5cc55mr6802304qvj.41.1689842322750; Thu, 20 Jul
+ 2023 01:38:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] arm64: dts: qcom: sc8180x-pmics: align SPMI PMIC
- Power-on node name with dtschema
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230720083500.73554-1-krzysztof.kozlowski@linaro.org>
- <20230720083500.73554-3-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230720083500.73554-3-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230718011504.10947-1-wenchao.chen@unisoc.com>
+ <b4ef97ba-440a-2641-0811-bb05e630ccb1@intel.com> <CA+Da2qxOhK7Uc8_ONVgkR=3pTnTo7KgcJi-yS3Cv730+J0pAxA@mail.gmail.com>
+ <ff06bd46-bf43-d2dc-751f-47f41ccc1821@intel.com>
+In-Reply-To: <ff06bd46-bf43-d2dc-751f-47f41ccc1821@intel.com>
+From:   Wenchao Chen <wenchao.chen666@gmail.com>
+Date:   Thu, 20 Jul 2023 16:38:31 +0800
+Message-ID: <CA+Da2qx+mQ1N-7OnQh0ed6_diXgTadKMzJ+9rkqVZv0rhXYTFQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: core: Remove FW revision from CID check
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Wenchao Chen <wenchao.chen@unisoc.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhenxiong.lai@unisoc.com, chunyan.zhang@unisoc.com,
+        yuelin.tang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.07.2023 10:34, Krzysztof Kozlowski wrote:
-> Bindings expect the Power-on node name to be "pon":
-> 
->   sc8180x-lenovo-flex-5g.dtb: pmic@0: 'power-on@800' does not match any of the regexes:
-> 
-> Fixes: d3302290f59e ("arm64: dts: qcom: sc8180x: Add pmics")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Thu, Jul 20, 2023 at 2:45=E2=80=AFPM Adrian Hunter <adrian.hunter@intel.=
+com> wrote:
+>
+> On 19/07/23 05:46, Wenchao Chen wrote:
+> > On Tue, Jul 18, 2023 at 2:13=E2=80=AFPM Adrian Hunter <adrian.hunter@in=
+tel.com> wrote:
+> >>
+> >> On 18/07/23 04:15, Wenchao Chen wrote:
+> >>> When the card is reset, mmc_card_init() will check if this
+> >>> card is the previous card by comparing the CID.
+> >>>
+> >>> If the firmware is upgraded, the product version may change,
+> >>> so we remove the product version from the CID check.
+> >>
+> >> What is the use-case for this?  I would have thought it is safer
+> >> not to assume anything about the card after the firmware has been
+> >> upgraded.
+> >>
+> > Hi adrian
+> >     Understood, but we have case:
+> >     1.Before the firmware upgrade
+> >         [T5745@C0] mmc0 oldcard raw->cid[2]: 32691160, raw->cid[3]: d92=
+41800
+> >         PRV=3D69
+> >     2.After the firmware upgrade
+> >         [T5745@C0] mmc0 cid[2]: 32011160 cid[3]: d9241800
+> >         PRV=3D01
+> >     If the PRV is not excluded in the CID check, then the mmc
+> > initialization will fail after the mmc reset.
+> >     In addition, CRC is excluded because some controllers support
+> > SDHCI_QUIRK2_RSP_136_HAS_CRC.
+>
+> I do not know what others are doing in this regard, nor what
+> circumstances are leading to the re-initialization.
+>
+There is a way: reboot the machine, but we don't want to do that.
 
-Konrad
+When the firmware is upgraded, we need to complete the firmware
+update by reset card, and the card will be initialized by mmc_init_card
+after mmc reset.
+
+> Presumably a clean re-initialization could be done by
+> unbinding and rebinding the host controller.
+>
+Could you tell me how to do that?
+Thanks.
+
+> >
+> >>>
+> >>> Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+> >>> ---
+> >>>  drivers/mmc/core/mmc.c | 18 +++++++++++++++++-
+> >>>  1 file changed, 17 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+> >>> index 89cd48fcec79..32a73378d5c3 100644
+> >>> --- a/drivers/mmc/core/mmc.c
+> >>> +++ b/drivers/mmc/core/mmc.c
+> >>> @@ -32,6 +32,9 @@
+> >>>  #define MIN_CACHE_EN_TIMEOUT_MS 1600
+> >>>  #define CACHE_FLUSH_TIMEOUT_MS 30000 /* 30s */
+> >>>
+> >>> +#define MMC_CID_PRV_MASK GENMASK(23, 16)
+> >>> +#define MMC_CID_CRC_MASK GENMASK(7, 0)
+> >>> +
+> >>>  static const unsigned int tran_exp[] =3D {
+> >>>       10000,          100000,         1000000,        10000000,
+> >>>       0,              0,              0,              0
+> >>> @@ -126,6 +129,19 @@ static int mmc_decode_cid(struct mmc_card *card)
+> >>>       return 0;
+> >>>  }
+> >>>
+> >>> +static int mmc_check_cid(u32 *cid, u32 *raw_cid)
+> >>> +{
+> >>> +     /*
+> >>> +      * When comparing CID, we need to remove the product
+> >>> +      * version (Field PRV, offset 55:48) and CRC. Because
+> >>> +      * the product version will change when the firmware
+> >>> +      * is upgraded. Also, the new CRC is different.
+> >>> +      */
+> >>> +     return cid[0] !=3D raw_cid[0] || cid[1] !=3D raw_cid[1] ||
+> >>> +             (cid[2] & ~MMC_CID_PRV_MASK) !=3D (raw_cid[2] & ~MMC_CI=
+D_PRV_MASK) ||
+> >>> +             (cid[3] & ~MMC_CID_CRC_MASK) !=3D (raw_cid[3] & ~MMC_CI=
+D_CRC_MASK);
+> >>> +}
+> >>> +
+> >>>  static void mmc_set_erase_size(struct mmc_card *card)
+> >>>  {
+> >>>       if (card->ext_csd.erase_group_def & 1)
+> >>> @@ -1640,7 +1656,7 @@ static int mmc_init_card(struct mmc_host *host,=
+ u32 ocr,
+> >>>               goto err;
+> >>>
+> >>>       if (oldcard) {
+> >>> -             if (memcmp(cid, oldcard->raw_cid, sizeof(cid)) !=3D 0) =
+{
+> >>> +             if (mmc_check_cid(cid, oldcard->raw_cid)) {
+> >>>                       pr_debug("%s: Perhaps the card was replaced\n",
+> >>>                               mmc_hostname(host));
+> >>>                       err =3D -ENOENT;
+> >>
+>
