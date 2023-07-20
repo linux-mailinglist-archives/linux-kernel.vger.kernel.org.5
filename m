@@ -2,54 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9782D75A3B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 03:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 666FD75A3BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 03:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229452AbjGTBA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 21:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34978 "EHLO
+        id S229528AbjGTBFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 21:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGTBA0 (ORCPT
+        with ESMTP id S229450AbjGTBFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 21:00:26 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A029692;
-        Wed, 19 Jul 2023 18:00:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1689814824;
-        bh=LfUF9ZhH9pFwsiMhXc+/2cqBqLy7keH0umsg+6P4TXo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=T1Bu1+OvHepCre2l6Kv6kJ9sQaSAGxMsnPqeatADFAnWkScuEMXJoz6L+arMgNj4U
-         R20erCgI1MQ8dTMKL18WuMy37GmWpSFFcDQy0SdhM8hiP2MivEpwaNhgTLq9Xdam+c
-         0Y+k+I2owNnjrYtAg3ucbM9KTcRfZ40oFT7iB5WuF/Ldsl7e1szfbTJfkbq4rNruJ4
-         e7o3XKye3H2Issf7OZja1+MtR2u0quguR+Cr/9hW7IasSE4/neVA0WwgBxzwoDETE4
-         bXl24vYvfF6qQQa3AJ19qk3iDoEWKxc2CEIZqsTake2LzEnhPHBQzGnPzz/8BTwecJ
-         SS9O71NljDTjg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R5vVv6dLmz4wZn;
-        Thu, 20 Jul 2023 11:00:23 +1000 (AEST)
-Date:   Thu, 20 Jul 2023 11:00:21 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steve French <smfrench@gmail.com>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        Winston Wen <wentao@uniontech.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-modules@vger.kernel.org
-Subject: Re: linux-next: build failure after merge of the cifs tree
-Message-ID: <20230720110021.3f2f9457@canb.auug.org.au>
-In-Reply-To: <CAH2r5mugNKYBNXm7AuPFL=V=77Qkm3q6TtXCj-B0kugmpL0aYQ@mail.gmail.com>
-References: <20230720103540.0436273d@canb.auug.org.au>
-        <CAH2r5mugNKYBNXm7AuPFL=V=77Qkm3q6TtXCj-B0kugmpL0aYQ@mail.gmail.com>
+        Wed, 19 Jul 2023 21:05:21 -0400
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2CD1FCD
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 18:05:20 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VnnjpEl_1689815115;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VnnjpEl_1689815115)
+          by smtp.aliyun-inc.com;
+          Thu, 20 Jul 2023 09:05:16 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     alexander.deucher@amd.com
+Cc:     airlied@gmail.com, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] drm/amdgpu: Fix one kernel-doc comment
+Date:   Thu, 20 Jul 2023 09:05:14 +0800
+Message-Id: <20230720010514.54342-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/FIrPqV5zDJ.FH04/BPP=TU=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,45 +40,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/FIrPqV5zDJ.FH04/BPP=TU=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Use colon to separate parameter name from their specific meaning.
+silence the warning:
 
-Hi all,
+drivers/gpu/drm/amd/amdgpu/amdgpu_vm_pt.c:793: warning: Function parameter or member 'adev' not described in 'amdgpu_vm_pte_update_noretry_flags'
 
-On Wed, 19 Jul 2023 19:47:42 -0500 Steve French <smfrench@gmail.com> wrote:
->
-> Winston had an updated version of the patch - just replaced it with
-> his updated one which does a cast to (char *)
->=20
->           ses->local_nls =3D load_nls((char *)ctx->local_nls->charset);
->=20
-> But as he noted in an earlier email thread:
-> > Perhaps I should make a change to load_nls() to take a const char *
-> > instead of char *? If this make sense, I'll do it soon. =20
->=20
-> which is probably cleaner
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm_pt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-s/probably/definitely/  ;-)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm_pt.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm_pt.c
+index 83e1923f6775..96d601e209b8 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm_pt.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm_pt.c
+@@ -783,7 +783,7 @@ int amdgpu_vm_pde_update(struct amdgpu_vm_update_params *params,
+ /**
+  * amdgpu_vm_pte_update_noretry_flags - Update PTE no-retry flags
+  *
+- * @adev - amdgpu_device pointer
++ * @adev: amdgpu_device pointer
+  * @flags: pointer to PTE flags
+  *
+  * Update PTE no-retry flags when TF is enabled.
+-- 
+2.20.1.7.g153144c
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/FIrPqV5zDJ.FH04/BPP=TU=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS4hyYACgkQAVBC80lX
-0GxH8gf/Tx5aW0j6Mj4Q3aumRfNgl8nFIUfWng73joDDPna1bV9ck4lD2PaTbcgQ
-FhK9et4v/hkYfhjcmqern74/rlueEjpMa6+k1cf5Zrl8fzsWv8CirTJ7FfcPDJJP
-GjYf+jEyG6+V63RcOu97DriNKQ4CsIHto3LPvtygG2JCUqJWQ1YvetpiLo91iQFa
-CDweL6LLEteaUdwctceikPv9vNxcpo3+gR9pMjtxCu/VlIHviyduZ/mHEUZF1X7h
-Jwj3O+ikbpNZ5r4mxdruWp5C/0OXmSog1Yk04iZjOWzRFzb4jCBBgCFcsQKq6u0A
-TWL7fn9eL3QgP2vMPXxh2765MK/6wA==
-=oC+X
------END PGP SIGNATURE-----
-
---Sig_/FIrPqV5zDJ.FH04/BPP=TU=--
