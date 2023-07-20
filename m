@@ -2,94 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD8875B003
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F8475B008
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 15:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232062AbjGTNb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 09:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
+        id S232064AbjGTNbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 09:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbjGTNbI (ORCPT
+        with ESMTP id S231997AbjGTNbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 09:31:08 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD5130C7
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:30:28 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5704970148dso7844637b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:30:28 -0700 (PDT)
+        Thu, 20 Jul 2023 09:31:10 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E812D54;
+        Thu, 20 Jul 2023 06:30:30 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b8baa836a5so5705575ad.1;
+        Thu, 20 Jul 2023 06:30:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689859810; x=1690464610;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yjG54K9UMvND9YdSZpiieZAi2mI+0cYK9bWMBk2vtjA=;
-        b=X8llH09LLmS+Qw/lSrOllIHi+4dmRIBX/dXsgg6Lib23gGuPm28NtMAWavnDcRMqDW
-         Ade1jagBfeBBB6WvukKwd5cI+jaDOdbyXcTHZeW12bE44KI9ONgPxMAPpqKjS9OFyNQF
-         NVmUDiFEGvXOOmGkitR+UOruNdAs7lCfnvd3T+GF0oDCZQo2Oc9PYQ/+6cPUG7Tst4U1
-         eXOmKDxZ8B2M5NT8a+h11SM/RUh//iLmYJOsDLM3NeWZkHykJVAgwj0iu4YolCQA0ibd
-         Qaf7ZWuTQg66vr+cJLrkR2pEwo1u1jTEXsKQAcr0Xd8y3qF714UeyMTz3wM+DOtwG1pI
-         0h5g==
+        d=gmail.com; s=20221208; t=1689859821; x=1690464621;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=qIe8rMdwGK8O6waPW6ElMhYZtqXBgjIAped1KS+Lxj0=;
+        b=E36Ey4hpLP1aGERgJzQAv5oQWbjP2dfI/yJ9QSqsCcAZUQqYH2EJuPmluxVpniz94+
+         SqRDS4pEtomXHfRXODYYhAlZIxAatRHID9D88YI+tj+w3vKM5JieqRypSlSHOTbf2v95
+         PUlca0W45r887uApCqi/zn/yh3GyTCCrBBW1XguZKYFarRPPHvkGdKJALW7+s9TgEir3
+         pVPeDdLYxOZSMJ8v3iGIKvATJZHgcVErXIREn7/pOR3ivfvJWVHJWWTf1p+PnK9L0sBz
+         4nG3H7SIhmhoYiEqtjnis5Ppnyac+F2VaQ2UY7v0ygr32czvJ80e2mlstFNoj9axpszx
+         inAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689859810; x=1690464610;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yjG54K9UMvND9YdSZpiieZAi2mI+0cYK9bWMBk2vtjA=;
-        b=OvozoA2aMokWhW7AZCaAEB5TYe9+D9B+cOfqkzRxSkmv6IZhbAGWerRwQuoK+AiaHD
-         Rz6oy6PlEKSX45rK+ZrK75FDwDiH60lQrImaiWZkhBKGgMFeKEXjSKj8e1+v5QmNiiBF
-         7wK+lOGAgnjVaP/I3g5Zsp62HowAEw6POdhRIsMsCLm0TdhjRuZmJAed/ty0AToWo8Vf
-         yawmVsv7Su9xZZJ8mbD4kHPF2Vla4zfBYFvspG630EQsL1L1f4O/jKEqydpCh7Bs5r1L
-         LTW97fAxn/puDmg5eNAe/kkF73fHBNzo78SsGFD7Uyz195nfqDvSGpGqPI1CeG0TCEV3
-         4PIQ==
-X-Gm-Message-State: ABy/qLZGnP7YgaXYIAY3ODbTbLNg2nNkbOUQy2cUC5qgQd5hfTudC1iF
-        REEyddmfhRIgBBnYBl7VAX7RnwxJHQlorr4=
-X-Google-Smtp-Source: APBJJlHh8OTAMhUc+zd62yYjSroTZ83K3aOglIxna4ipPRiay62Nb2MGLCYg7ujuKQKtxT5uTxldXcvJkoo/iqo=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a81:410f:0:b0:562:837:122f with SMTP id
- o15-20020a81410f000000b005620837122fmr208475ywa.9.1689859810179; Thu, 20 Jul
- 2023 06:30:10 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 13:30:05 +0000
-In-Reply-To: <20230719141918.543938-9-benno.lossin@proton.me>
-Mime-Version: 1.0
-References: <20230719141918.543938-9-benno.lossin@proton.me>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230720133005.3545184-1-aliceryhl@google.com>
-Subject: Re: [PATCH v2 08/12] rust: init: add support for arbitrary paths in
- init macros
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     benno.lossin@proton.me
-Cc:     alex.gaynor@gmail.com, aliceryhl@google.com,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
-        lina@asahilina.net, linux-kernel@vger.kernel.org, nmi@metaspace.dk,
-        ojeda@kernel.org, rust-for-linux@vger.kernel.org,
-        wedsonaf@gmail.com
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689859821; x=1690464621;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qIe8rMdwGK8O6waPW6ElMhYZtqXBgjIAped1KS+Lxj0=;
+        b=EvNStNqhfvdCRycMNWSDldz9nJ/3UehP9f3BLfjWgQVHod1rlOEpbw+vjBfhCY3vpC
+         9jOTd/+KAo0+WXVPAtqt7PYYLCyanZ08SDuKC4qoVNLAuON+tcB3GG6O6wpKLPvfuF3c
+         fu7aMx97pSwD2QPx+fT4zIj9prUQCA32bNJvOsbcF4Z9XuKHoAX1TSBTf3Ln6rxnRn2t
+         5nO/1OI0mYcYlKu6lk1QQRdUjwF1XRXCzy3RCchjlQImLJUAJ3v/PYkBlLmRhf9SS5IU
+         Z2MRyD3tcPHkzJ9FBMcoQU855tYRxmwirM9TfurKKf91t1KNqX+1sHEiVubcpyA1xFLV
+         4nNQ==
+X-Gm-Message-State: ABy/qLZyt293PadNAyus3aBUo/Nf2dFdmQz4i+vw8Nv7LEqoq+qpump9
+        vHlgsurlu7/M4n6aYRds4KQ=
+X-Google-Smtp-Source: APBJJlFh1AyFX2+11T9yyn39CZ9ejJo7irpyerH5jDd4rJJqhGrNwsFMVrOCBzL5cXWCBiVM2usEnA==
+X-Received: by 2002:a17:903:191:b0:1b8:9b5e:65c8 with SMTP id z17-20020a170903019100b001b89b5e65c8mr25796578plg.4.1689859821611;
+        Thu, 20 Jul 2023 06:30:21 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d12-20020a170902728c00b001b86deba2f9sm1302975pll.284.2023.07.20.06.30.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 06:30:21 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <1d8cf4f5-3004-3af1-2735-03fde48d69c7@roeck-us.net>
+Date:   Thu, 20 Jul 2023 06:30:16 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 32/42] wdt: ts72xx: add DT support for ts72xx
+Content-Language: en-US
+To:     nikita.shubin@maquefel.me,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Peters <mpeters@embeddedTS.com>,
+        Kris Bahnsen <kris@embeddedTS.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-32-3d63a5f1103e@maquefel.me>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230605-ep93xx-v3-32-3d63a5f1103e@maquefel.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Benno Lossin <benno.lossin@proton.me> writes:
-> Previously only `ident` and generic types were supported in the
-> `{try_}{pin_}init!` macros. This patch allows arbitrary path fragments,
-> so for example `Foo::Bar` but also very complex paths such as
-> `<Foo as Baz>::Bar::<0, i32>`.
+On 7/20/23 04:29, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
 > 
-> Internally this is accomplished by using `path` fragments. Due to some
-> peculiar declarative macro limitations, we have to "forget" certain
-> additional parsing information in the token trees. This is achieved by
-> using the `paste!` proc macro. It does not actually modify the input,
-> since no `[< >]` will be present in the input, so it just strips the
-> information held by declarative macros. For example, if a declarative
-> macro takes `$t:path` as its input, it cannot sensibly propagate this to
-> a macro that takes `$($p:tt)*` as its input, since the `$t` token will
-> only be considered one `tt` token for the second macro. If we first pipe
-> the tokens through `paste!`, then it parses as expected.
+> Add OF ID match table.
 > 
-> Suggested-by: Asahi Lina <lina@asahilina.net>
-> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+> ---
+>   drivers/watchdog/ts72xx_wdt.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/watchdog/ts72xx_wdt.c b/drivers/watchdog/ts72xx_wdt.c
+> index 3d57670befe1..ac709dc31a65 100644
+> --- a/drivers/watchdog/ts72xx_wdt.c
+> +++ b/drivers/watchdog/ts72xx_wdt.c
+> @@ -12,6 +12,7 @@
+>    */
+>   
+>   #include <linux/platform_device.h>
+> +#include <linux/mod_devicetable.h>
+>   #include <linux/module.h>
+>   #include <linux/watchdog.h>
+>   #include <linux/io.h>
+> @@ -160,10 +161,17 @@ static int ts72xx_wdt_probe(struct platform_device *pdev)
+>   	return 0;
+>   }
+>   
+> +static const struct of_device_id ts72xx_wdt_of_ids[] = {
+> +	{ .compatible = "technologic,ts7200-wdt" },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, ts72xx_wdt_of_ids);
+> +
+>   static struct platform_driver ts72xx_wdt_driver = {
+>   	.probe		= ts72xx_wdt_probe,
+>   	.driver		= {
+>   		.name	= "ts72xx-wdt",
+> +		.of_match_table = ts72xx_wdt_of_ids,
+>   	},
+>   };
+>   
+> 
+
