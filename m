@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B0875A8DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F14175A8DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbjGTIOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 04:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        id S230148AbjGTIOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 04:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjGTIOJ (ORCPT
+        with ESMTP id S229553AbjGTION (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 04:14:09 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979D1172A
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:14:07 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fb863edcb6so745975e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:14:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689840846; x=1690445646;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pr6JMOyo8xBta00ZkqFzr6fzrP7XkXRaBSf7j7HlZ/U=;
-        b=GDSizF/B+ucio52p533XeQ4Nc4PlxzdgqFTMRTEk7FJ0ZVPf5VJ5jnJBugweo0Mv/W
-         HXgDYWFwoJidjd0gREojTYRKn/ZUr0iAqDyxnS0Yw3vqlD/r2/mq4rZM82aa/MMeluNU
-         on+u40mgtrds4Wt+dFZML8vAW/qGSWvn0pPwCi9Bdo0MRwJ5/Ow5Z6BDRKbxdF2oot4B
-         O2eB0dlggRtHAdTW2jtPFmKYwSfG+oixFJoHNeHmGHTZWFzJB0Ex5rN6xES0UiAaEu9/
-         LRWT6ZRV9IYh9JlJE29jLMwIkkJ004O8i5TZZKVLDAspg0RPavmqbKPIw4RG8kdcXhHN
-         JMWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689840846; x=1690445646;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pr6JMOyo8xBta00ZkqFzr6fzrP7XkXRaBSf7j7HlZ/U=;
-        b=kO4/58aJsHOB7+ZfLW+VKls18O999dKsOXWAOW503TYPlN/4kkjqLtqQbDJsJe+B73
-         lRIhkLSKLzJRhmTy3X3P3R/VICuLIaAQbV6Uz00cwnZLr/3irIN76Dt0YJ9fzqQ1oW+0
-         Us6vAXr46DyvFi4L2BaPjtRcFPI17Ke7+OXdqutydxyX2ZTGakwrfQo94Krbah2FKcWn
-         38Mlv6MIW9Pjax4rLhOJAo73wHHyU8Vtg1YWfoD7WLIEuTqhXSptd2xu7gAU+kHh88Ms
-         xun5TnTsaIhH49zmeGHATvSKXokNE3yPtY85qL/LbszBaCyxayinw1CAjz3SaU/5D5YV
-         K/BQ==
-X-Gm-Message-State: ABy/qLaNE9U6LfBx5uaqphlNTC83qtLJgu3dd6DnCYufLap7dDv9ap/l
-        v0fKD2CmJMdJvGvuGJT9H43jXYc+JnYkNMcZVA/0tA==
-X-Google-Smtp-Source: APBJJlHIHnf/Ou2r9HFtGQF5G94v8undXdV+GSETq1dizsussY5NL7ytInJm0wx9i23bhmmhfP5zdP/NtqqeqgalD88=
-X-Received: by 2002:ac2:5b05:0:b0:4fa:6d62:9219 with SMTP id
- v5-20020ac25b05000000b004fa6d629219mr1495448lfn.62.1689840845696; Thu, 20 Jul
- 2023 01:14:05 -0700 (PDT)
+        Thu, 20 Jul 2023 04:14:13 -0400
+Received: from bee.tesarici.cz (bee.tesarici.cz [IPv6:2a03:3b40:fe:2d4::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC00E172A;
+        Thu, 20 Jul 2023 01:14:12 -0700 (PDT)
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by bee.tesarici.cz (Postfix) with ESMTPSA id E0E67168C97;
+        Thu, 20 Jul 2023 10:14:10 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+        t=1689840851; bh=xrpHTACrVoZG7MNSm/D8K7vhd21yQrNcC9Y59ZeXRvs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=3dd5Pavmv3EXKNAnnR95EiSeSQ2THQUdM5wMjtCg0ChzLt/QUmCXzUOB/38fD8mLk
+         pyi6yZ1E36fc6dVkU4iROaJCHSNuoayo36vmhwrxilJg22KieWiuPFpNO9POe83OP6
+         w/LYkzTz/FO9CHthSROhqFP5h1/CyJay2rWag0Ojzfm4NKFwj+3ycKGyMFXaEpi1IM
+         F5e3mTJfOrAF5pYv5RQeB3Ub4VIXhxADABWKFfLAMIOjbP7zZIIzYOwdjf1R1742Ip
+         QjGS92dn0WHV1QT7i2g89YpdooKhVyiSAd2Atp3oB8tlSZc8NdlmEQYo5AhZATkk3W
+         hxtId0DxzzqfA==
+Date:   Thu, 20 Jul 2023 10:14:09 +0200
+From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Petr Tesarik <petrtesarik@huaweicloud.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        James Seo <james@equiv.tech>,
+        James Clark <james.clark@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "moderated list:XEN HYPERVISOR ARM" <xen-devel@lists.xenproject.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:XEN SWIOTLB SUBSYSTEM" <iommu@lists.linux.dev>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH v4 2/8] swiotlb: add documentation and rename
+ swiotlb_do_find_slots()
+Message-ID: <20230720101409.559a2a34@meshulam.tesarici.cz>
+In-Reply-To: <20230720080110.GA6358@lst.de>
+References: <cover.1689261692.git.petr.tesarik.ext@huawei.com>
+        <11826bfbc148771ab36d0b485558aa52cbdd204f.1689261692.git.petr.tesarik.ext@huawei.com>
+        <20230720063819.GB3842@lst.de>
+        <20230720095609.55b3a642@meshulam.tesarici.cz>
+        <20230720080110.GA6358@lst.de>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-References: <20230714165508.94561-1-charlie@rivosinc.com> <20230714165508.94561-2-charlie@rivosinc.com>
-In-Reply-To: <20230714165508.94561-2-charlie@rivosinc.com>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Thu, 20 Jul 2023 10:13:54 +0200
-Message-ID: <CAHVXubhpQGYvNdRnU8Obi-6h6okdXYUuo7WGeCU_LbscUbmgjg@mail.gmail.com>
-Subject: Re: [PATCH v6 1/4] RISC-V: mm: Restrict address space for sv39,sv48,sv57
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        conor@kernel.org, paul.walmsley@sifive.com, palmer@rivosinc.com,
-        aou@eecs.berkeley.edu, anup@brainfault.org,
-        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,180 +85,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 6:55=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.c=
-om> wrote:
->
-> Make sv48 the default address space for mmap as some applications
-> currently depend on this assumption. A hint address passed to mmap will
-> cause the largest address space that fits entirely into the hint to be
-> used. If the hint is less than or equal to 1<<38, an sv39 address will
-> be used. An exception is that if the hint address is 0, then a sv48
-> address will be used. After an address space is completely full, the next
-> smallest address space will be used.
->
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  arch/riscv/include/asm/elf.h       |  2 +-
->  arch/riscv/include/asm/pgtable.h   | 12 +++++++-
->  arch/riscv/include/asm/processor.h | 46 +++++++++++++++++++++++++-----
->  3 files changed, 51 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/elf.h b/arch/riscv/include/asm/elf.h
-> index c24280774caf..5d3368d5585c 100644
-> --- a/arch/riscv/include/asm/elf.h
-> +++ b/arch/riscv/include/asm/elf.h
-> @@ -49,7 +49,7 @@ extern bool compat_elf_check_arch(Elf32_Ehdr *hdr);
->   * the loader.  We need to make sure that it is out of the way of the pr=
-ogram
->   * that it will "exec", and that there is sufficient room for the brk.
->   */
-> -#define ELF_ET_DYN_BASE                ((TASK_SIZE / 3) * 2)
-> +#define ELF_ET_DYN_BASE                ((DEFAULT_MAP_WINDOW / 3) * 2)
->
->  #ifdef CONFIG_64BIT
->  #ifdef CONFIG_COMPAT
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pg=
-table.h
-> index 75970ee2bda2..e13f5872bfe9 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -63,12 +63,22 @@
->   * position vmemmap directly below the VMALLOC region.
->   */
->  #ifdef CONFIG_64BIT
-> +#define VA_BITS_SV39 39
-> +#define VA_BITS_SV48 48
-> +#define VA_BITS_SV57 57
-> +
-> +#define VA_USER_SV39 (UL(1) << (VA_BITS_SV39 - 1))
-> +#define VA_USER_SV48 (UL(1) << (VA_BITS_SV48 - 1))
-> +#define VA_USER_SV57 (UL(1) << (VA_BITS_SV57 - 1))
-> +
->  #define VA_BITS                (pgtable_l5_enabled ? \
-> -                               57 : (pgtable_l4_enabled ? 48 : 39))
-> +                               VA_BITS_SV57 : (pgtable_l4_enabled ? VA_B=
-ITS_SV48 : VA_BITS_SV39))
->  #else
->  #define VA_BITS                32
->  #endif
->
-> +#define MMAP_VA_BITS ((VA_BITS >=3D VA_BITS_SV48) ? VA_BITS_SV48 : VA_BI=
-TS)
-> +
->  #define VMEMMAP_SHIFT \
->         (VA_BITS - PAGE_SHIFT - 1 + STRUCT_PAGE_MAX_SHIFT)
->  #define VMEMMAP_SIZE   BIT(VMEMMAP_SHIFT)
-> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/=
-processor.h
-> index c950a8d9edef..14a5396eed3d 100644
-> --- a/arch/riscv/include/asm/processor.h
-> +++ b/arch/riscv/include/asm/processor.h
-> @@ -13,20 +13,52 @@
->
->  #include <asm/ptrace.h>
->
-> -/*
-> - * This decides where the kernel will search for a free chunk of vm
-> - * space during mmap's.
-> - */
-> -#define TASK_UNMAPPED_BASE     PAGE_ALIGN(TASK_SIZE / 3)
-> -
-> -#define STACK_TOP              TASK_SIZE
->  #ifdef CONFIG_64BIT
-> +#define DEFAULT_MAP_WINDOW     (UL(1) << (MMAP_VA_BITS - 1))
->  #define STACK_TOP_MAX          TASK_SIZE_64
-> +
-> +#define arch_get_mmap_end(addr, len, flags)    \
-> +({     \
-> +       unsigned long mmap_end; \
-> +       if ((addr) >=3D VA_USER_SV57)     \
-> +               mmap_end =3D STACK_TOP_MAX;       \
-> +       else if ((((addr) >=3D VA_USER_SV48)) && (VA_BITS >=3D VA_BITS_SV=
-48))       \
-> +               mmap_end =3D VA_USER_SV48;        \
-> +       else if ((addr) =3D=3D 0)   \
-> +               mmap_end =3D DEFAULT_MAP_WINDOW;  \
-> +       else    \
-> +               mmap_end =3D VA_USER_SV39;        \
-> +       mmap_end;       \
-> +})
+On Thu, 20 Jul 2023 10:01:10 +0200
+Christoph Hellwig <hch@lst.de> wrote:
 
-What about the following instead:
+> On Thu, Jul 20, 2023 at 09:56:09AM +0200, Petr Tesa=C5=99=C3=ADk wrote:
+> > On Thu, 20 Jul 2023 08:38:19 +0200
+> > Christoph Hellwig <hch@lst.de> wrote:
+> >  =20
+> > > On Thu, Jul 13, 2023 at 05:23:13PM +0200, Petr Tesarik wrote: =20
+> > > > From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> > > >=20
+> > > > Add some kernel-doc comments and move the existing documentation of=
+ struct
+> > > > io_tlb_slot to its correct location. The latter was forgotten in co=
+mmit
+> > > > 942a8186eb445 ("swiotlb: move struct io_tlb_slot to swiotlb.c").
+> > > >=20
+> > > > Use the opportunity to give swiotlb_do_find_slots() a more descript=
+ive
+> > > > name, which makes it clear how it differs from swiotlb_find_slots()=
+.   =20
+> > >=20
+> > > Please keep the swiotlb_ prefix.  Otherwise this looks good to me. =20
+> >=20
+> > Will do. Out of curiosity, why does it matter for a static (file-local)
+> > function? =20
+>=20
+> Because it makes looking at stack traces much easier.
 
-#define arch_get_mmap_end(addr, len, flags)    \
-({     \
-       unsigned long mmap_end; \
-       if ((addr) >=3D VA_USER_SV57) \
-          mmap_end =3D STACK_TOP_MAX; \ // Maybe a comment here that
-says it returns the max user address of the current mode, not obvious
-at first sight.
-       else \
-          mmap_end =3D DEFAULT_MAP_WINDOW; \
-       mmap_end; \
-})
+Got it. Thanks!
 
-The only corner case is when sv57 is active, then only a hint greater
-than VA_USER_SV57 can return a sv57 user address. Otherwise, we just
-need to return the default mmap end right?
-
-> +
-> +#define arch_get_mmap_base(addr, base) \
-> +({     \
-> +       unsigned long mmap_base;        \
-> +       if (((addr) >=3D VA_USER_SV57) && (VA_BITS >=3D VA_BITS_SV57))   =
-   \
-> +               mmap_base =3D (base) + (VA_USER_SV57 - DEFAULT_MAP_WINDOW=
-);       \
-> +       else if ((((addr) >=3D VA_USER_SV48)) && (VA_BITS >=3D VA_BITS_SV=
-48))       \
-> +               mmap_base =3D (base) + (VA_USER_SV48 - DEFAULT_MAP_WINDOW=
-);       \
-> +       else if ((addr) =3D=3D 0)   \
-> +               mmap_base =3D (base);     \
-> +       else    \
-> +               mmap_base =3D (base) + (VA_USER_SV39 - DEFAULT_MAP_WINDOW=
-);       \
-> +       mmap_base;      \
-> +})
-> +
-
-From arch_pick_mmap_layout()
-(https://elixir.bootlin.com/linux/latest/source/mm/util.c#L433), the
-"base" argument is:
-
-- either STACK_TOP in top-down (more or less some random offset)
-- or TASK_UNMAPPED_BASE in bottom-up (more or less some random offset)
-
-When bottom-up is the current mode, we should not change the base, so
-adding (VA_USER_SV57 - DEFAULT_MAP_WINDOW) in the first case is not
-right for me. When sv48 or sv57 are the active mode,
-DEFAULT_MAP_WINDOW is equal to VA_USER_SV48 right? So (VA_USER_SV48 -
-DEFAULT_MAP_WINDOW) is 0, so not useful. And for the last case, when
-the user asks for a sv39 address whereas the active mode is sv48 or
-sv57, then  (VA_USER_SV39 - DEFAULT_MAP_WINDOW) is negative and the
-base is smaller which is not correct.
-
-In the bottom-up case, we should preserve the base and I think that
-again, only sv57 is the corner case to deal with.
-
-
->  #else
-> +#define DEFAULT_MAP_WINDOW     TASK_SIZE
->  #define STACK_TOP_MAX          TASK_SIZE
->  #endif
->  #define STACK_ALIGN            16
->
-> +#define STACK_TOP              DEFAULT_MAP_WINDOW
-> +
-> +/*
-> + * This decides where the kernel will search for a free chunk of vm
-> + * space during mmap's.
-> + */
-> +#define TASK_UNMAPPED_BASE     PAGE_ALIGN(DEFAULT_MAP_WINDOW / 3)
-> +
->  #ifndef __ASSEMBLY__
->
->  struct task_struct;
-> --
-> 2.41.0
->
+Petr T
