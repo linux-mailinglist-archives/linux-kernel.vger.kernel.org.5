@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF3B75B5DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A9375B5E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbjGTRuJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 Jul 2023 13:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
+        id S231933AbjGTRur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 13:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbjGTRuH (ORCPT
+        with ESMTP id S231939AbjGTRuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 13:50:07 -0400
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C92268F;
-        Thu, 20 Jul 2023 10:50:06 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2b9363d069bso3077211fa.0;
-        Thu, 20 Jul 2023 10:50:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689875405; x=1690480205;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pGc1aqPPtyxg0PRnJa5Ahk+dl05+JvzfRAEGe6SQTJY=;
-        b=Azwcdj7sKxa5DljBJ5aTk8edf8LbCuAR/NlUevsriOQgLfNAvHza8qj8H+xdRTwozM
-         GXpc8B46+vYXcWWA56jPBMWvrZQkNJWj0pVcgC0Li2++5FCZyIC9htm75mPUPhXLxNzp
-         xAnne8/1prZ0WLnBCnIVAmjKpJ1WN83QAZo0gMrNBeaVMLQwxB1wxIduyZ6/+EQSxZNy
-         ANpUnAr/wwGQ+aT9RVpvxiRVRJzD1sT7KDytyWF+6JNtrplp2E4q8MiLM9U2Psj4+Xe0
-         Bp8ZT+wXXs0e2TmgMjRVRvmsVjTPpANNafgCB8bsqsjObMr+mqPgRKH71n2UvwqL5Y2m
-         V8NA==
-X-Gm-Message-State: ABy/qLZTWSwn8R9PU3CNp2sB6MnSUES/nQrS/3Wz6jXkFb5q9jmykfqw
-        /UzcCuPPA152z9mO+HsdMp4OEncCN9WhMRviVjUPUS21
-X-Google-Smtp-Source: APBJJlHkUcpdCZU8rW/oi+Dw2XYYmLzOWcSzH1QNey2QWQ8sTjMRKS8EKZ1x/GjD10wtpEpDFaHXZurNt9/PzdUmmOY=
-X-Received: by 2002:a2e:5455:0:b0:2b9:34b6:b47a with SMTP id
- y21-20020a2e5455000000b002b934b6b47amr2202129ljd.2.1689875405029; Thu, 20 Jul
- 2023 10:50:05 -0700 (PDT)
+        Thu, 20 Jul 2023 13:50:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7320268F;
+        Thu, 20 Jul 2023 10:50:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F9D661B95;
+        Thu, 20 Jul 2023 17:50:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29110C433C7;
+        Thu, 20 Jul 2023 17:50:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689875438;
+        bh=tA6jPNyslJC+LUacjwi2kvTq/6NHCcqxlljp7wunIe8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jK80v0ACTaeStmC6h4QNp1pZrzv0tbJx9pDdZTutOEZSz2o5PaUnz5Kcu7rhsAnhZ
+         CH112eu/lWtwN+YI1/fu8p2HLNVx1ex9Y5PfK75MzFEVV2tkMeum5SaE35yS7yoM5/
+         6C0yuU8Se2inio0BdvdVD5rjpF2PxM0LFbnmnPrQ=
+Date:   Thu, 20 Jul 2023 19:50:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Paul Barker <paul.barker.ct@bp.renesas.com>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.1 000/589] 6.1.39-rc3 review
+Message-ID: <2023072028-elevation-undead-bb94@gregkh>
+References: <20230717201547.359923764@linuxfoundation.org>
+ <9da5f8cb-5ed0-1854-0a0a-252794e01ce3@bp.renesas.com>
+ <9705c130-997d-6356-18bc-ee5ce5d8b325@roeck-us.net>
 MIME-Version: 1.0
-References: <20230713145741.30390-1-johan+linaro@kernel.org>
-In-Reply-To: <20230713145741.30390-1-johan+linaro@kernel.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 20 Jul 2023 19:49:54 +0200
-Message-ID: <CAJZ5v0gGPvvm-AyAb8QfZfkO5G4PL0T7NMHZ5xt_2KCC3wBB2A@mail.gmail.com>
-Subject: Re: [PATCH 0/3] PM / wakeirq: fix wake irq arming
-To:     Johan Hovold <johan+linaro@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Tony Lindgren <tony@atomide.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9705c130-997d-6356-18bc-ee5ce5d8b325@roeck-us.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 5:01â€¯PM Johan Hovold <johan+linaro@kernel.org> wrote:
->
-> When reviewing the Qualcomm serial-driver suspend implementation I
-> noticed the odd runtime PM state update which had snuck in. Turns out it
-> was added to work around a bug in PM core which prevented drivers not
-> implementing runtime PM from using dedicated wake irqs.
->
-> This series fixes the wake irq arming and drops the unused wake irq
-> enable helpers before dropping the bogus runtime PM state update in the
-> Qualcomm driver.
->
-> I suggest that Rafael takes all of these through his tree.
->
-> Johan
->
->
-> Johan Hovold (3):
->   PM / wakeirq: fix wake irq arming
->   PM / wakeirq: drop unused enable helpers
->   serial: qcom-geni: drop bogus runtime pm state update
+On Mon, Jul 17, 2023 at 03:50:06PM -0700, Guenter Roeck wrote:
+> On 7/17/23 15:39, Paul Barker wrote:
+> > Hi Greg,
+> > 
+> > On 17/07/2023 21:34, Greg Kroah-Hartman wrote:
+> > > This is the start of the stable review cycle for the 6.1.39 release.
+> > > There are 589 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Wed, 19 Jul 2023 20:14:46 +0000.
+> > > Anything received after that time might be too late.
+> > > 
+> > > The whole patch series can be found in one patch at:
+> > >     https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.39-rc3.gz
+> > > or in the git tree and branch at:
+> > >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> > > and the diffstat can be found below.
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > > 
+> > 
+> > Building i386_defconfig in my Yocto Project environment (with gcc 13) fails:
+> > 
+> > | /.../kernel/workqueue.c: In function 'get_work_pwq':
+> > | /.../kernel/workqueue.c:706:24: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+> > |   706 |                 return (void *)(data & WORK_STRUCT_WQ_DATA_MASK);
+> > |       |                        ^
+> > | /.../kernel/workqueue.c: In function 'get_work_pool':
+> > | /.../kernel/workqueue.c:734:25: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+> > |   734 |                 return ((struct pool_workqueue *)
+> > |       |                         ^
+> > | /.../kernel/workqueue.c: In function 'get_work_pool_id':
+> > | /.../kernel/workqueue.c:756:25: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+> > |   756 |                 return ((struct pool_workqueue *)
+> > |       |                         ^
+> > 
+> > Cherry-picking afa4bb778e48d79e4a642ed41e3b4e0de7489a6c from mainline fixes the build for me.
+> > 
+> 
+> That is not a new problem, though. I see the same problem with v6.1.38
+> and with v6.1 if I try to build with gcc 13.1.
 
-All applied and I'm inclined to push them as fixed for 6.5-rc, thanks!
+Thanks, now queued up.
+
+greg k-h
