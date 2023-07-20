@@ -2,63 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96ADE75B83B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFC675B83D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbjGTToA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 15:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47176 "EHLO
+        id S231166AbjGTTqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 15:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbjGTTn7 (ORCPT
+        with ESMTP id S229571AbjGTTqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 15:43:59 -0400
+        Thu, 20 Jul 2023 15:46:51 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650301733;
-        Thu, 20 Jul 2023 12:43:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE7D19BE
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:46:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DFC1861C31;
-        Thu, 20 Jul 2023 19:43:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 429B5C433C7;
-        Thu, 20 Jul 2023 19:43:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C058661C28
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 19:46:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABE4DC433C8;
+        Thu, 20 Jul 2023 19:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689882236;
-        bh=sCvPv521BIeMl03mgPnQ7eOaGG0Jr/Tf/dwmgsz/KEQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bjDTli1prjox2jYYrPOJyqppo33kBj9TXnixuVuyNr7JdpI9zhtl2bLp5D8oHnfz+
-         s4RONI8jHDfV0ZTIqZsHpoi7OE0G21digr1n6hES4Q4m4ernCsPkrjdtpTMq1xhh3d
-         VJNsioF4JMdOFUWynItwGXdSCtNybfwzyE4fbbQPvsAXl3Vgfdcg9sqxsdspwAfed3
-         tAkKUPVQP6JDQHrO4PlKDdjyZYHxgW7VcHs8FVxkt4ZRUpYq8D0nZg78PJf/x6JZIZ
-         SG65jQjM8VO2T0xHJqkdaQ1xHebrGUhBoML2srO4ks2nQVZNPvrfOQMKPdNShC0EjE
-         nBS3MWcELRRYA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C536ACE03CF; Thu, 20 Jul 2023 12:43:55 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 12:43:55 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH rcu 5/5] checkpatch: Complain about unexpected uses of
- RCU Tasks Trace
-Message-ID: <798959b0-b107-44c4-8262-075930ebfeaa@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
- <20230717180454.1097714-5-paulmck@kernel.org>
- <04e74fd214a01bee0fb5ac690730cb386536cced.camel@perches.com>
- <8477fd32-38a5-4d66-8deb-a61b0e290df5@paulmck-laptop>
- <589412dd594b7efc618728fe68ad6c86f3c60878.camel@perches.com>
+        s=k20201202; t=1689882409;
+        bh=u8Lr+3WeqKvD4svXmrwr31VT12gwAWyndJkuUoaFWe4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dgUAImpkQX2xyyBOB386xmAqsmG8JYcFPL94qeMMMyIzU+M7Bz7oO9cPYeYJVlHmn
+         en5+cHaudEko4aDipf061qdfcOutcy+GR57a88hjjE2MnoLvOndXX/cDxL7kbGxj+S
+         O3oOlp9cgL+f/YgyOqQsRQ38YRq2TXckOaK9lLyFQRyfWvCE/UBwYeQkLWuFACZsF6
+         ibTtRutI6YKw4nINr+L4k9m+xiPXdgVxcYYI331zVu9zfAQJblX0w2x/eTZ7OEqedG
+         rrsxCq5nr+6DsOePN8mX8gExOMrW/cHI8e79Ovq10GgKJmbXgzl1ION/quv3EFRAZW
+         XPwPl48H6ul0A==
+Date:   Thu, 20 Jul 2023 12:46:47 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC net-next v2 7/7] net: skbuff: always try to recycle
+ PP pages directly when in softirq
+Message-ID: <20230720124647.413363d5@kernel.org>
+In-Reply-To: <e542f6b5-4eea-5ac6-a034-47e9f92dbf7e@intel.com>
+References: <20230714170853.866018-1-aleksander.lobakin@intel.com>
+        <20230714170853.866018-10-aleksander.lobakin@intel.com>
+        <20230718174042.67c02449@kernel.org>
+        <d7cd1903-de0e-0fe3-eb15-0146b589c7b0@intel.com>
+        <20230719135150.4da2f0ff@kernel.org>
+        <48c1d70b-d4bd-04c0-ab46-d04eaeaf4af0@intel.com>
+        <20230720101231.7a5ff6cd@kernel.org>
+        <8e65c3d3-c628-2176-2fc2-a1bc675ad607@intel.com>
+        <20230720110027.4bd43ee7@kernel.org>
+        <988fc62d-2329-1560-983a-79ff5653a6a6@intel.com>
+        <b3884ff9-d903-948d-797a-1830a39b1e71@intel.com>
+        <20230720122015.1e7efc21@kernel.org>
+        <e542f6b5-4eea-5ac6-a034-47e9f92dbf7e@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <589412dd594b7efc618728fe68ad6c86f3c60878.camel@perches.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -69,173 +76,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 12:29:42AM -0700, Joe Perches wrote:
-> On Mon, 2023-07-17 at 16:34 -0700, Paul E. McKenney wrote:
-> > On Mon, Jul 17, 2023 at 03:34:14PM -0700, Joe Perches wrote:
-> > > On Mon, 2023-07-17 at 11:04 -0700, Paul E. McKenney wrote:
-> > > > RCU Tasks Trace is quite specialized, having been created specifically
-> > > > for sleepable BPF programs.  Because it allows general blocking within
-> > > > readers, any new use of RCU Tasks Trace must take current use cases into
-> > > > account.  Therefore, update checkpatch.pl to complain about use of any of
-> > > > the RCU Tasks Trace API members outside of BPF and outside of RCU itself.
-> > > > 
-> > > > Cc: Andy Whitcroft <apw@canonical.com> (maintainer:CHECKPATCH)
-> > > > Cc: Joe Perches <joe@perches.com> (maintainer:CHECKPATCH)
-> > > > Cc: Dwaipayan Ray <dwaipayanray1@gmail.com> (reviewer:CHECKPATCH)
-> > > > Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > > > Cc: John Fastabend <john.fastabend@gmail.com>
-> > > > Cc: <bpf@vger.kernel.org>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > ---
-> > > >  scripts/checkpatch.pl | 18 ++++++++++++++++++
-> > > >  1 file changed, 18 insertions(+)
-> > > > 
-> > > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > > []
-> > > > @@ -7457,6 +7457,24 @@ sub process {
-> > > >  			}
-> > > >  		}
-> > > >  
-> > > > +# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> > > > +		if ($line =~ /\brcu_read_lock_trace\s*\(/ ||
-> > > > +		    $line =~ /\brcu_read_lock_trace_held\s*\(/ ||
-> > > > +		    $line =~ /\brcu_read_unlock_trace\s*\(/ ||
-> > > > +		    $line =~ /\bcall_rcu_tasks_trace\s*\(/ ||
-> > > > +		    $line =~ /\bsynchronize_rcu_tasks_trace\s*\(/ ||
-> > > > +		    $line =~ /\brcu_barrier_tasks_trace\s*\(/ ||
-> > > > +		    $line =~ /\brcu_request_urgent_qs_task\s*\(/) {
-> > > > +			if ($realfile !~ m@^kernel/bpf@ &&
-> > > > +			    $realfile !~ m@^include/linux/bpf@ &&
-> > > > +			    $realfile !~ m@^net/bpf@ &&
-> > > > +			    $realfile !~ m@^kernel/rcu@ &&
-> > > > +			    $realfile !~ m@^include/linux/rcu@) {
-> > > 
-> > > Functions and paths like these tend to be accreted.
-> > > 
-> > > Please use a variable or 2 like:
-> > > 
-> > > our $rcu_trace_funcs = qr{(?x:
-> > > 	rcu_read_lock_trace |
-> > > 	rcu_read_lock_trace_held |
-> > > 	rcu_read_unlock_trace |
-> > > 	call_rcu_tasks_trace |
-> > > 	synchronize_rcu_tasks_trace |
-> > > 	rcu_barrier_tasks_trace |
-> > > 	rcu_request_urgent_qs_task
-> > > )};
-> > > our $rcu_trace_paths = qr{(?x:
-> > > 	kernel/bfp/ |
-> 		^^
-> 	kernel/bfp/ |
+On Thu, 20 Jul 2023 21:33:40 +0200 Alexander Lobakin wrote:
+> > We can as well check
+> > 	(in_softirq() && !irqs_disabled() && !in_hardirq())
+> > ?  
 > 
-> (umm, oops...)
-> I think my original suggestion works better when I don't typo the path.
-
-Color me blind!  ;-)
-
-That works much better, thank you!  I will update the patch on my
-next rebase.
-
-							Thanx, Paul
-
-> > > 	include/linux/bpf |
-> > > 	net/bpf/ |
-> > > 	kernel/rcu/ |
-> > > 	include/linux/rcu
-> > > )};
-> > 
-> > Like this?
-> > 
-> > # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> > 		our $rcu_trace_funcs = qr{(?x:
-> > 			rcu_read_lock_trace |
-> > 			rcu_read_lock_trace_held |
-> > 			rcu_read_unlock_trace |
-> > 			call_rcu_tasks_trace |
-> > 			synchronize_rcu_tasks_trace |
-> > 			rcu_barrier_tasks_trace |
-> > 			rcu_request_urgent_qs_task
-> > 		)};
-> > 		our $rcu_trace_paths = qr{(?x:
-> > 			kernel/bfp/ |
-> > 			include/linux/bpf |
-> > 			net/bpf/ |
-> > 			kernel/rcu/ |
-> > 			include/linux/rcu
-> > 		)};
-> > 		if ($line =~ /$rcu_trace_funcs/) {
-> > 			if ($realfile !~ m@^$rcu_trace_paths@) {
-> > 				WARN("RCU_TASKS_TRACE",
-> > 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-> > 			}
-> > 		}
-> > 
-> > No, that is definitely wrong.  It has lost track of the list of pathnames,
-> > thus complaining about uses of those functions in files where their use
-> > is permitted.
-> > 
-> > But this seems to work:
-> > 
-> > # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> > 		our $rcu_trace_funcs = qr{(?x:
-> > 			rcu_read_lock_trace |
-> > 			rcu_read_lock_trace_held |
-> > 			rcu_read_unlock_trace |
-> > 			call_rcu_tasks_trace |
-> > 			synchronize_rcu_tasks_trace |
-> > 			rcu_barrier_tasks_trace |
-> > 			rcu_request_urgent_qs_task
-> > 		)};
-> > 		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
-> > 			if ($realfile !~ m@^kernel/bpf@ &&
-> > 			    $realfile !~ m@^include/linux/bpf@ &&
-> > 			    $realfile !~ m@^net/bpf@ &&
-> > 			    $realfile !~ m@^kernel/rcu@ &&
-> > 			    $realfile !~ m@^include/linux/rcu@) {
-> > 				WARN("RCU_TASKS_TRACE",
-> > 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-> > 			}
-> > 		}
-> > 
-> > Maybe the "^" needs to be distributed into $rcu_trace_paths?
-> > 
-> > # Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
-> > 		our $rcu_trace_funcs = qr{(?x:
-> > 			rcu_read_lock_trace |
-> > 			rcu_read_lock_trace_held |
-> > 			rcu_read_unlock_trace |
-> > 			call_rcu_tasks_trace |
-> > 			synchronize_rcu_tasks_trace |
-> > 			rcu_barrier_tasks_trace |
-> > 			rcu_request_urgent_qs_task
-> > 		)};
-> > 		our $rcu_trace_paths = qr{(?x:
-> > 			^kernel/bfp/ |
-> > 			^include/linux/bpf |
-> > 			^net/bpf/ |
-> > 			^kernel/rcu/ |
-> > 			^include/linux/rcu
-> > 		)};
-> > 		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
-> > 			if ($realfile !~ m@$rcu_trace_paths@) {
-> > 				WARN("RCU_TASKS_TRACE",
-> > 				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
-> > 			}
-> > 		}
-> > 
-> > But no joy here, either.  Which is no surprise, given that perl is
-> > happy to distribute the "\b" and the "\s*\(" across the elements of
-> > $rcu_trace_funcs.  I tried a number of other variations, including
-> > inverting the "if" condition "(!(... =~ ...))", inverting the "if"
-> > condition via an empty "then" clause, replacing the "m@" with "/",
-> > replacing the "|" in the "qr{}" with "&", and a few others.
-> > 
-> > Again, listing the pathnames explicitly in the second "if" condition
-> > works just fine.
-> > 
-> > Help?
-> > 
-> > 							Thanx, Paul
+> Yes, something like that. Messy, but I see no other options...
 > 
+> So, I guess you want to add an assertion to make sure that we're *not*
+> in this:
+> 
+> in_hardirq() || irqs_disabled()
+> 
+> Does this mean that after it's added, my patch is sane? :p
+
+Well... it's acceptable. Make sure you add a good, informative
+but concise comment :)
+
+> > The interrupt_context_level() thing is fairly new, I think.
+> > Who knows what happens to it going forward...  
+> 
+> Well, it counts the number of active hard interrupts, but doesn't take
+> into account that if there are no hardirqs we can still disable them
+> manually. Meh.
+> Should I try to send a patch for it? :D
+
+Depends on how you like to send your time :)
+
+> > netcons or anyone who freed socket-less skbs from hardirq.
+> > Until pp recycling was added freeing an skb from hardirq was legal,
+> > AFAICT.  
+> 
+> I don't think so. Why do we have dev_kfree_skb_any() then? It checks for
+> 
+> in_hardirq() || irqs_disabled()
+> 
+> and if it's true, defers the skb to process it by backlog task.
+> "Regular" skb freeing functions don't do that. The _any() variant lives
+> here for a long time IIRC, so it's not something recent.
+
+Drivers (or any other users of dev_kfree_skb_any()) should be fine. 
+I'm only paranoid about some unknown bits of code which thought they
+can be clever and call kfree_skb() directly, as long as !skb->sk.
+
+But if you add the hard irq checks to your patch then you're strictly
+safer than the existing code. Hopefully the checks are not too
+expensive.
