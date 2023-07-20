@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4AE75A6DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6323375A6E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbjGTGsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58210 "EHLO
+        id S231222AbjGTGtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231447AbjGTGsK (ORCPT
+        with ESMTP id S230071AbjGTGtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:48:10 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8519810A
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:48:08 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5217bb5ae05so475235a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:48:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1689835687; x=1690440487;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YY8m5/XDAUcgHKbAHc0qRAbGRanXhW3GiGRR/skqG2g=;
-        b=bToRzJRlXY0VUn2QctmDXk+OuwTIG0h1pb7aqSD2bTZXmX5PW3qdNi9lrYF02VzM6v
-         xRIGX8K3Vb/NXJUd00YI6ntCZ9eSvvmAuq/qEn05qEJLjrwtQVDgIIAk4hzPAE2i+ptH
-         d7u5qUgh2cUvI4tc49Jmuc2tngAuHOP4G79IhOvJur38SYjXJnghkOLBhcf9GQh0AGog
-         TPfzl5gtGknX1co0U81Nut3sj+rbmL03Kz7I/2ql1asJ+GYUNaGcP51Agf9iIKlfE3fj
-         qgzS4tvSU264KPwRMxdpiVbjx3UEpJqAk5LjNlguVZGbIGPvy+ybz1Z9OUTtWHP8qT0X
-         Dxag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689835687; x=1690440487;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YY8m5/XDAUcgHKbAHc0qRAbGRanXhW3GiGRR/skqG2g=;
-        b=XXUlI2O37tXpgJ6vkYWNpRmcPu8wOwQVuHfXlUqAwM7LePFEtgSKfcS/nZfhvZhG+I
-         tkYccVlAuAT7tO0ijDDfqanv/TSCMknWUZ08+SWklEOuMK+Hr6Y59W+O6Dbc5ihxKc7z
-         7uDU0gtSjeIiM+yYNhnORn88r4bfnxEY3dPOMaeVd801iv+gPbVIYjdDWepKmAVEVKtH
-         hXPx1fJzMYlKW5DqzoNGDYFkhKnNe2yQlOGkQ8rDCgLMldUN/7DSHI0L5BXpqQj26qcN
-         r7UUyeTl99oxZ5SzSftIEQjEgfwIePGlZ9PjzERjbQXmJDhQBYazH8NZaOLRjogNM59q
-         mFTA==
-X-Gm-Message-State: ABy/qLY7jD7odUFfHTPjjXiONIdQz/7TuS58u8X7nhYJ2+vFQYgbUNLM
-        tlOwVOFE58SlMPzFrvRzWDvoUg==
-X-Google-Smtp-Source: APBJJlGP0/CbRA6tz6PlhVcCHbt6ilna6EIOtA8YnS/sjAkB+d44JIWZZ+NJJArT/iAPBOzXujloYg==
-X-Received: by 2002:a05:6402:1806:b0:521:aa4b:24f3 with SMTP id g6-20020a056402180600b00521aa4b24f3mr1193627edy.24.1689835686733;
-        Wed, 19 Jul 2023 23:48:06 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-748-2a9a-a2a6-1362.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:748:2a9a:a2a6:1362])
-        by smtp.gmail.com with ESMTPSA id f15-20020aa7d84f000000b0051de2455041sm303663eds.24.2023.07.19.23.48.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 23:48:06 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 08:48:04 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Woody Zhang <woodylab@foxmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
+        Thu, 20 Jul 2023 02:49:10 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A477110A;
+        Wed, 19 Jul 2023 23:49:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1689835748; x=1721371748;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GvA2a+7n8IaNZUhAWJDCYoLOe+H+gng2myj8Io9r+08=;
+  b=FwOl49Jto24tTo9R5q851F8dBZNEYFzefjRQ0/0nYJj+KMvx8S3U1/mA
+   m599QUGkoiXT40jifbb3+AylS/yjGcf53KANOLQcznDB4zgwo5xvgi9s/
+   6L3CsFfWGBXefPIOpHPbp9sieGgelCZVg1570qxnvYyy8AOQ1ox/7TbYz
+   ELR1xGPLt1LTL3dV9qC5lYK9FwUi3RJ6oAlTFEnGV7h4TSpItwLN9uTIG
+   nSBDabVFSGRyQ0suEqVrsjAZ1vDQ2zDxWE3LBl93+vQMM5wbUOQI5yrfy
+   EDmuLG/fBuD2A3BhMttWnPF7YTBhBDZZcbVBiDq3f0ios1IG/R9NBeqvB
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
+   d="asc'?scan'208";a="221271702"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Jul 2023 23:49:07 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 19 Jul 2023 23:49:01 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 19 Jul 2023 23:48:59 -0700
+Date:   Thu, 20 Jul 2023 07:48:26 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Changhuang Liang <changhuang.liang@starfivetech.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor@kernel.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: add SBI SUSP extension support
-Message-ID: <20230720064804.byexbnbknadets62@kamzik>
-References: <tencent_B931BF1864B6AE8C674686ED9852ACFA0609@qq.com>
- <20230720-speller-suffocate-29ee7cc0b1f6@wendy>
+        Walker Chen <walker.chen@starfivetech.com>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 0/4] Add JH7110 AON PMU support
+Message-ID: <20230720-egging-preheated-02752a588f59@wendy>
+References: <20230519060202.15296-1-changhuang.liang@starfivetech.com>
+ <7fe9bc9a-2bb1-6c5c-2ed5-1eee85b8f299@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ndB0Wq94O4LSYrXb"
 Content-Disposition: inline
-In-Reply-To: <20230720-speller-suffocate-29ee7cc0b1f6@wendy>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <7fe9bc9a-2bb1-6c5c-2ed5-1eee85b8f299@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,129 +71,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 07:31:42AM +0100, Conor Dooley wrote:
-> Hey Woody,
-> 
-> On Thu, Jul 20, 2023 at 08:23:19AM +0800, Woody Zhang wrote:
-> > RISC-V SBI spec 2.0 [1] introduces System Suspend Extension which can be
-> > used to suspend the platform via SBI firmware.
-> > 
-> > This patch can be tested on Qemu with recent OpenSBI with
-> > `system-suspend-test` enabled like [2] in DTB.
-> > 
-> > [1] https://github.com/riscv-non-isa/riscv-sbi-doc/blob/master/riscv-sbi.adoc
-> > [2] https://github.com/woodyzhang666/qemu/commit/e4a5120133c1dc354e6ac437ec1f870f6c0f6d05
-> > 
-> > Signed-off-by: Woody Zhang <woodylab@foxmail.com>
-> > ---
-> >  arch/riscv/include/asm/sbi.h | 10 ++++++++++
-> >  arch/riscv/kernel/sbi.c      | 26 ++++++++++++++++++++++++++
-> 
-> There's prior art here, that is seemingly more complete:
-> https://lore.kernel.org/all/20230118180338.6484-2-ajones@ventanamicro.com/
-> IIRC, the reason it is still in RFC status is that the 2.0 SBI spec is
-> not yet frozen, so this cannot be merged.
+--ndB0Wq94O4LSYrXb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yup, I'll repost with the RFC dropped as soon as 2.0 is frozen.
+On Thu, Jul 20, 2023 at 11:46:27AM +0800, Changhuang Liang wrote:
+> On 2023/5/19 14:01, Changhuang Liang wrote:
+> > This patchset adds aon power domain driver for the StarFive JH7110 SoC.
+> > It is used to turn on/off dphy rx/tx power switch. It also can use sysc=
+on
+> > operation. The series has been tested on the VisionFive 2 board.
+> >=20
+> > This patchset should be applied after the patchset [1]:
+> > [1] https://lore.kernel.org/all/20230512022036.97987-1-xingyu.wu@starfi=
+vetech.com/
+=20
+> Pll series is accepted, should I need to send a new version about this se=
+ries?
 
-Thanks,
-drew
-
-> 
-> Thanks,
-> Conor.
-> 
-> >  2 files changed, 36 insertions(+)
-> > 
-> > diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> > index 5b4a1bf5f439..3b04016da671 100644
-> > --- a/arch/riscv/include/asm/sbi.h
-> > +++ b/arch/riscv/include/asm/sbi.h
-> > @@ -30,6 +30,7 @@ enum sbi_ext_id {
-> >  	SBI_EXT_HSM = 0x48534D,
-> >  	SBI_EXT_SRST = 0x53525354,
-> >  	SBI_EXT_PMU = 0x504D55,
-> > +	SBI_EXT_SUSP = 0x53555350,
-> >  
-> >  	/* Experimentals extensions must lie within this range */
-> >  	SBI_EXT_EXPERIMENTAL_START = 0x08000000,
-> > @@ -236,6 +237,15 @@ enum sbi_pmu_ctr_type {
-> >  /* Flags defined for counter stop function */
-> >  #define SBI_PMU_STOP_FLAG_RESET (1 << 0)
-> >  
-> > +enum sbi_ext_susp_fid {
-> > +	SBI_EXT_SUSP_SYSTEM_SUSPEND = 0,
-> > +};
-> > +
-> > +/* SBI suspend sleep types */
-> > +enum sbi_susp_sleep_type {
-> > +	SBI_SUSP_SLEEP_TYPE_SUSPEND = 0x0,
-> > +};
-> > +
-> >  #define SBI_SPEC_VERSION_DEFAULT	0x1
-> >  #define SBI_SPEC_VERSION_MAJOR_SHIFT	24
-> >  #define SBI_SPEC_VERSION_MAJOR_MASK	0x7f
-> > diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> > index c672c8ba9a2a..9a68959f9f18 100644
-> > --- a/arch/riscv/kernel/sbi.c
-> > +++ b/arch/riscv/kernel/sbi.c
-> > @@ -9,8 +9,10 @@
-> >  #include <linux/init.h>
-> >  #include <linux/pm.h>
-> >  #include <linux/reboot.h>
-> > +#include <linux/suspend.h>
-> >  #include <asm/sbi.h>
-> >  #include <asm/smp.h>
-> > +#include <asm/suspend.h>
-> >  
-> >  /* default SBI version is 0.1 */
-> >  unsigned long sbi_spec_version __ro_after_init = SBI_SPEC_VERSION_DEFAULT;
-> > @@ -520,6 +522,26 @@ static void sbi_srst_power_off(void)
-> >  		       SBI_SRST_RESET_REASON_NONE);
-> >  }
-> >  
-> > +static int sbi_system_suspend(unsigned long arg,
-> > +		unsigned long resume_entry, unsigned long context)
-> > +{
-> > +	struct sbiret ret = {0};
-> > +
-> > +	ret = sbi_ecall(SBI_EXT_SUSP, SBI_EXT_SUSP_SYSTEM_SUSPEND,
-> > +			SBI_SUSP_SLEEP_TYPE_SUSPEND, resume_entry, context, 0, 0, 0);
-> > +	return ret.error;
-> > +}
-> > +
-> > +static int sbi_system_suspend_enter(suspend_state_t state)
-> > +{
-> > +	return cpu_suspend(0, sbi_system_suspend);
-> > +}
-> > +
-> > +static const struct platform_suspend_ops sbi_suspend_ops = {
-> > +	.valid          = suspend_valid_only_mem,
-> > +	.enter          = sbi_system_suspend_enter,
-> > +};
-> > +
-> >  /**
-> >   * sbi_probe_extension() - Check if an SBI extension ID is supported or not.
-> >   * @extid: The extension ID to be probed.
-> > @@ -624,6 +646,10 @@ void __init sbi_init(void)
-> >  			sbi_srst_reboot_nb.priority = 192;
-> >  			register_restart_handler(&sbi_srst_reboot_nb);
-> >  		}
-> > +		if (sbi_probe_extension(SBI_EXT_SUSP)) {
-> > +			pr_info("SBI SUSP extension detected\n");
-> > +			suspend_set_ops(&sbi_suspend_ops);
-> > +		}
-> >  	} else {
-> >  		__sbi_set_timer = __sbi_set_timer_v01;
-> >  		__sbi_send_ipi	= __sbi_send_ipi_v01;
-> > -- 
-> > 2.39.2
-> > 
+I don't think so, there were no changes requested here. Let me check.
 
 
 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+--ndB0Wq94O4LSYrXb
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLjYugAKCRB4tDGHoIJi
+0u2zAPwIPO8ScgeJoGf2C5V8jehHZbn7PWAwnUgwzUy6EtGXpwEAlbSanXyr45PU
+iF7FqiENoOWD67I/oCtJ0J0d1JvZAAY=
+=8iAf
+-----END PGP SIGNATURE-----
+
+--ndB0Wq94O4LSYrXb--
