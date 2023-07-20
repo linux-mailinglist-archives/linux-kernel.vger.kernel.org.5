@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE28D75AD08
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E4F75AD0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbjGTLdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
+        id S230117AbjGTLfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjGTLdP (ORCPT
+        with ESMTP id S229757AbjGTLfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:33:15 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAD2123
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:33:11 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbc77e76abso5319535e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:33:11 -0700 (PDT)
+        Thu, 20 Jul 2023 07:35:00 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01EF136
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:34:34 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1b852785a65so5281665ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:34:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689852790; x=1690457590;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=rJCba/mmTho9umzDbT239Fiu3jvHE4pY8on7mbmL+io=;
-        b=gOAoNxhfX2kYxNlNRaNZTxC0M/gWR4kmF43LJb1my6uLNnz0T6yN4T7qTovpJ7y7QK
-         brleXaPN5xTMr+5ePcHGcCp3L6OFExUzptNYN2WT8qQsECuUH3+ZOLS0cYwHziYFYdQJ
-         +0IXJZEjz8kdXelO34mcuiw2Fndl7fhbpFM40YvKyCjJuuBgUy4FjVjLV1Ew8Dvz613G
-         1y465Vx7t7R5YAZ++l5Cn4NSvCDBt1jq+oGbcIJsF1hnfB/SPTjfC8jDoRCzG9KGZjkF
-         /LObAB6OOZuF0Nhw8pFHqF1kjIFWaNumSrzKae8csgDO3+FF6fI5ywD+MOm6R9mxyl5V
-         WjVw==
+        d=bytedance.com; s=google; t=1689852874; x=1690457674;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0RmeowStXIEPULQOAaOWZp78vxjHDoSNjkADxM9sQfc=;
+        b=M0DrMvL74mRRIv17Hv8ig5J7sQWnEZTZf84dLaKCQsXxQtcIgMlfIxVoaUskKOWIQp
+         fc302CL33o59MSl/yZvbZ3cRlyAqQ9Kh0p54L4s336jjQljCzQbPmPNSghHWbn49o8Ql
+         nQIvdHMaKpDxF1KLMqkeUTAACQaYlmmEtxaIsbMJ5xyfdUTgLnJEACez6gA4w3gnEy1b
+         ILbyO3KvZmyrBsyIkE4hD01a9/9tAVPHEyBG1j5r2rIVFiUjio2hrkrjITfr0xQYaSJY
+         53iJT35RsFQW7KN5Czi4n0AEmfUDUCTM9PP9fUG9bs9UyQrpj0H+HtBmSr/2nv9oXdjM
+         EPaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689852790; x=1690457590;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1689852874; x=1690457674;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rJCba/mmTho9umzDbT239Fiu3jvHE4pY8on7mbmL+io=;
-        b=GDbCdfc96c3ZGrb78SUSRV+FM2wl7EF9YWLOpt6/YYzJQx3AOnE3BQzGSNsmSDSjtC
-         LalxT5U8N0yBi2TOT4Ft9tAFvSSazIsPzeDVDEZy/KFFhlXQBWLf/bcIWTDBekAzMHV+
-         4HbW47dIcWwQ/RNogK+bMRGHt/zDwFscXcJJrNU9TrG3DtFAPFv296qyp6PvI3TziSyo
-         z4upL6k/nuZoj73j9KhO6RYZ1TkPm0iar/HF4BuxQK5hUQVQudgcbN1nhayNcGJOXi42
-         khA0YOZPuniMCqQCR+8NmabcraTieoLpzRuNmnjZdCzZJza9dkwFilNjSHVV1aGbaCmJ
-         AMcA==
-X-Gm-Message-State: ABy/qLZ0eAHyCSkqh5DCVsTdCNUtd7jcykgmC7tLCfvieryI8owUfdZa
-        M0WZXxEMPiJMeT33DsWHEovHlw==
-X-Google-Smtp-Source: APBJJlFa9JHDqvo+V4hP6LGgTBGeu3mRUWETwG+/y+nC7BQ//IZ4vUBwkQgjujUC0RzHXAixD+Jf3w==
-X-Received: by 2002:a05:600c:219a:b0:3f7:e3dd:8a47 with SMTP id e26-20020a05600c219a00b003f7e3dd8a47mr3884194wme.11.1689852789922;
-        Thu, 20 Jul 2023 04:33:09 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id i13-20020a5d438d000000b003159d2dabbasm1070284wrq.94.2023.07.20.04.33.06
+        bh=0RmeowStXIEPULQOAaOWZp78vxjHDoSNjkADxM9sQfc=;
+        b=GiLATJPpuGjjDHBWzWZWOAhozYcaNQj1Jv9Ux1Wk3PSV5ErPf5dg1loxa8KlY6kTHc
+         kgFtq1WulmwC/DcW4SGq8bPwyIh2k1bDsXkj9/CirE0OU+dyz0+IEKipNOSgQl5mSKs2
+         q9ZFCzMQVE+JL7/BUL7N7kWWbeFjd+BgyUk6cuqMy0BKSOuQtFCrvIKm9yXONuJnXcFJ
+         jrbJyiZim9qSTXC1YqVIWLypciVBZ3oPkFtAE6NhHv5TdWypyzj/dqsYDRqfgpVuwPHL
+         9ppeiHLa216+B9rOUqVuphOaLx5UUBoouEItJhgJGPFZH/0Nlz+JR4UUi4F9uAbgDAIS
+         Irzw==
+X-Gm-Message-State: ABy/qLbHn3Mv8MKtpOBMUsFBvPaASp0n/Z4v71Yqs6ay1I6vBJ08bDwy
+        OMD2ZVsP/yV9vadVeKXpkfDZzw==
+X-Google-Smtp-Source: APBJJlEm8W4mnf+mF4gI7WktAlJnS5x7bFKZNwTAJEow8jjEkLt3J+3pVRZGBlItCxEzfFEMbMdYiQ==
+X-Received: by 2002:a17:902:ea04:b0:1b9:ea60:cd89 with SMTP id s4-20020a170902ea0400b001b9ea60cd89mr7763594plg.7.1689852874310;
+        Thu, 20 Jul 2023 04:34:34 -0700 (PDT)
+Received: from [10.4.72.29] ([139.177.225.238])
+        by smtp.gmail.com with ESMTPSA id j8-20020a170902da8800b001b891259eddsm1105151plx.197.2023.07.20.04.34.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 04:33:09 -0700 (PDT)
-Message-ID: <159e36d6-7806-0424-4e9c-2e07584450fc@linaro.org>
-Date:   Thu, 20 Jul 2023 13:33:06 +0200
+        Thu, 20 Jul 2023 04:34:33 -0700 (PDT)
+Message-ID: <be65ab74-8ee4-9ae5-f0ff-88c9fd2fbeb5@bytedance.com>
+Date:   Thu, 20 Jul 2023 19:34:20 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [v11 5/6] arm64: dts: Add ipq5018 SoC and rdp432-c2 board support
-To:     Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, ulf.hansson@linaro.org,
-        linus.walleij@linaro.org, catalin.marinas@arm.com, will@kernel.org,
-        p.zabel@pengutronix.de, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robimarko@gmail.com,
-        andy.shevchenko@gmail.com
-References: <20230616101749.2083974-1-quic_srichara@quicinc.com>
- <20230616101749.2083974-6-quic_srichara@quicinc.com>
- <53721566-2a85-76cb-a4cf-2819f08dfc85@linaro.org>
- <8e209cd1-aa52-b947-bffd-15931af58391@quicinc.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: Re: [PATCH RESEND net-next 1/2] net-memcg: Scopify the indicators
+ of sockmem pressure
 Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <8e209cd1-aa52-b947-bffd-15931af58391@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Eric Dumazet <edumazet@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Ahern <dsahern@kernel.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Breno Leitao <leitao@debian.org>,
+        David Howells <dhowells@redhat.com>,
+        Jason Xing <kernelxing@tencent.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <cgroups@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+References: <20230711124157.97169-1-wuyun.abel@bytedance.com>
+ <d114834c-2336-673f-f200-87fc6efb411f@bytedance.com>
+ <CANn89iLBLBO0CK-9r-eZiQL+h2bwTHL2nR6az5Az6W_-pBierw@mail.gmail.com>
+From:   Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <CANn89iLBLBO0CK-9r-eZiQL+h2bwTHL2nR6az5Az6W_-pBierw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2023 12:51, Sricharan Ramabadhran wrote:
->>>   arch/arm64/boot/dts/qcom/Makefile             |   1 +
->>>   .../arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts |  72 +++++
->>>   arch/arm64/boot/dts/qcom/ipq5018.dtsi         | 250 ++++++++++++++++++
->>>   3 files changed, 323 insertions(+)
->>>   create mode 100644 arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
->>>   create mode 100644 arch/arm64/boot/dts/qcom/ipq5018.dtsi
->>>
+On 7/20/23 4:57 PM, Eric Dumazet wrote:
+> On Thu, Jul 20, 2023 at 9:59 AM Abel Wu <wuyun.abel@bytedance.com> wrote:
 >>
->> NAK, please do not merge.
->>
->> It turns out there are some problems here (pointed out by Hariharan K).
+>> Gentle ping :)
 > 
->    The changes from Hariharan K to rename the dts compatibles is not
->    correct. So the compatibles/names in this series should be used.
->    Hariharan can fix his series and re-post.
+> I was hoping for some feedback from memcg experts.
 
-Thanks. Conflicting patches touching similar boards is however confusing
-me a bit...
+Me too :)
 
-Best regards,
-Krzysztof
+> 
+> You claim to fix a bug, please provide a Fixes: tag so that we can
+> involve original patch author.
 
+Sorry for missing that part, will be added in next version.
+
+Fixes: 8e8ae645249b ("mm: memcontrol: hook up vmpressure to socket 
+pressure")
+
+Thanks!
+	Abel
