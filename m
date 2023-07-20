@@ -2,135 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE0E75B5F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D51F75B5FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbjGTR4Z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 Jul 2023 13:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46702 "EHLO
+        id S229729AbjGTR6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 13:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjGTR4W (ORCPT
+        with ESMTP id S232011AbjGTR56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 13:56:22 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171171998;
-        Thu, 20 Jul 2023 10:56:21 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qMXsn-002CO9-HB; Thu, 20 Jul 2023 19:56:09 +0200
-Received: from p57bd98fd.dip0.t-ipconnect.de ([87.189.152.253] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qMXsn-003Zmq-8y; Thu, 20 Jul 2023 19:56:09 +0200
-Message-ID: <b93ff5ca1ecd40084cd7a18e8490bf4e421fd6b9.camel@physik.fu-berlin.de>
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     Viacheslav Dubeyko <slava@dubeyko.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        christian.brauner@ubuntu.com,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        ZhangPeng <zhangpeng362@huawei.com>,
-        linux-m68k@lists.linux-m68k.org,
-        debian-powerpc <debian-powerpc@lists.debian.org>
-Date:   Thu, 20 Jul 2023 19:56:08 +0200
-In-Reply-To: <ZLlvII/jMPTT32ef@casper.infradead.org>
-References: <000000000000dbce4e05f170f289@google.com>
-         <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
-         <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
-         <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
-         <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
-         <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
-         <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
-         <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
-         <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
-         <ZLlvII/jMPTT32ef@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Thu, 20 Jul 2023 13:57:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BB4270E;
+        Thu, 20 Jul 2023 10:57:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3FF4A61BB6;
+        Thu, 20 Jul 2023 17:57:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2150BC433C8;
+        Thu, 20 Jul 2023 17:57:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689875875;
+        bh=jwoVf1k/2DgnDdDINMgCGUjRiLmfJ+Q0tnPUMEak6D4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xq/zReWCoVx3iIsML8lwq7mmfwRhUgXMHizkUQ3yxJgG13uL36LEZeXE6gEMA58Xd
+         lL0VIFeIT6Oi/svxhwWo4qL5se6EiCV3J/qS9TCLKT9Y1pcgAAGasOitFv9ZrTDzBR
+         q96YBxWtmzCw8NVCC+uGg28SNkkMKVSHJoIU+QYc=
+Date:   Thu, 20 Jul 2023 19:57:53 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Cc:     snitzer@redhat.com, agk@redhat.com, corbet@lwn.net,
+        dm-devel@redhat.com, linux-arm-kernel@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        peter@korsgaard.com, snitzer@kernel.org, stable@vger.kernel.org,
+        yj.chiang@mediatek.com
+Subject: Re: [PATCH 5.15] dm init: add dm-mod.waitfor to wait for
+ asynchronously probed block devices
+Message-ID: <2023072033-hedge-buffing-8862@gregkh>
+References: <CAH6w=aztzhm3Sa-afN2Xk-7mp1BVtTKNXJ=JyXqJvm3wtEnd3Q@mail.gmail.com>
+ <20230717015728.12641-1-mark-pk.tsai@mediatek.com>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.152.253
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717015728.12641-1-mark-pk.tsai@mediatek.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Please ignore my previous mail which was CC'ed to the wrong list)
-
-Hello!
-
-On Thu, 2023-07-20 at 18:30 +0100, Matthew Wilcox wrote:
-> On Thu, Jul 20, 2023 at 05:27:57PM +0200, Dmitry Vyukov wrote:
-> > On Thu, 5 Jan 2023 at 17:45, Viacheslav Dubeyko <slava@dubeyko.com> wrote:
-> > > > On Wed, Jan 04, 2023 at 08:37:16PM -0800, Viacheslav Dubeyko wrote:
-> > > > > Also, as far as I can see, available volume in report (mount_0.gz) somehow corrupted already:
-> > > > 
-> > > > Syzbot generates deliberately-corrupted (aka fuzzed) filesystem images.
-> > > > So basically, you can't trust anything you read from the disc.
-> > > > 
-> > > 
-> > > If the volume has been deliberately corrupted, then no guarantee that file system
-> > > driver will behave nicely. Technically speaking, inode write operation should never
-> > > happened for corrupted volume because the corruption should be detected during
-> > > b-tree node initialization time. If we would like to achieve such nice state of HFS/HFS+
-> > > drivers, then it requires a lot of refactoring/implementation efforts. I am not sure that
-> > > it is worth to do because not so many guys really use HFS/HFS+ as the main file
-> > > system under Linux.
+On Mon, Jul 17, 2023 at 09:57:28AM +0800, Mark-PK Tsai wrote:
+> > On Sun, Jul 16, 2023, 11:16 AM Greg KH <gregkh@linuxfoundation.org> wrote:
 > > 
+> > > On Thu, Jul 13, 2023 at 01:58:37PM +0800, Mark-PK Tsai wrote:
+> > > > From: Peter Korsgaard <peter@korsgaard.com>
+> > > > 
+> > > > Just calling wait_for_device_probe() is not enough to ensure that
+> > > > asynchronously probed block devices are available (E.G. mmc, usb), so
+> > > > add a "dm-mod.waitfor=<device1>[,..,<deviceN>]" parameter to get
+> > > > dm-init to explicitly wait for specific block devices before
+> > > > initializing the tables with logic similar to the rootwait logic that
+> > > > was introduced with commit  cc1ed7542c8c ("init: wait for
+> > > > asynchronously scanned block devices").
+> > > > 
+> > > > E.G. with dm-verity on mmc using:
+> > > > dm-mod.waitfor="PARTLABEL=hash-a,PARTLABEL=root-a"
+> > > > 
+> > > > [    0.671671] device-mapper: init: waiting for all devices to be 
+> > > available before creating mapped devices
+> > > > [    0.671679] device-mapper: init: waiting for device PARTLABEL=hash-a 
+> > > ...
+> > > > [    0.710695] mmc0: new HS200 MMC card at address 0001
+> > > > [    0.711158] mmcblk0: mmc0:0001 004GA0 3.69 GiB
+> > > > [    0.715954] mmcblk0boot0: mmc0:0001 004GA0 partition 1 2.00 MiB
+> > > > [    0.722085] mmcblk0boot1: mmc0:0001 004GA0 partition 2 2.00 MiB
+> > > > [    0.728093] mmcblk0rpmb: mmc0:0001 004GA0 partition 3 512 KiB, 
+> > > chardev (249:0)
+> > > > [    0.738274]  mmcblk0: p1 p2 p3 p4 p5 p6 p7
+> > > > [    0.751282] device-mapper: init: waiting for device PARTLABEL=root-a 
+> > > ...
+> > > > [    0.751306] device-mapper: init: all devices available
+> > > > [    0.751683] device-mapper: verity: sha256 using implementation 
+> > > "sha256-generic"
+> > > > [    0.759344] device-mapper: ioctl: dm-0 (vroot) is ready
+> > > > [    0.766540] VFS: Mounted root (squashfs filesystem) readonly on 
+> > > device 254:0.
+> > > > 
+> > > > Signed-off-by: Peter Korsgaard <peter@korsgaard.com>
+> > > > Signed-off-by: Mike Snitzer <snitzer@kernel.org>
+> > > > Cc: stable@vger.kernel.org
+> > > > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+> > > > ---
+> > > >  .../admin-guide/device-mapper/dm-init.rst     |  8 +++++++
+> > > >  drivers/md/dm-init.c                          | 22 ++++++++++++++++++-
+> > > >  2 files changed, 29 insertions(+), 1 deletion(-)
+> > >
+> > > What is the git commit id of this change in Linus's tree?
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> > >
+> > >
 > > 
-> > Most popular distros will happily auto-mount HFS/HFS+ from anything
-> > inserted into USB (e.g. what one may think is a charger). This creates
-> > interesting security consequences for most Linux users.
-> > An image may also be corrupted non-deliberately, which will lead to
-> > random memory corruptions if the kernel trusts it blindly.
+> > Hey Greg,
+> > 
+> > This change shouldn't be backported to stable@. It is a feature, if
+> > Mark-PK feels they need it older kernels they need to carry the change
+> > in their own tree. Or at a minimum they need to explain why this
+> > change is warranted in stable@.
 > 
-> Then we should delete the HFS/HFS+ filesystems.  They're orphaned in
-> MAINTAINERS and if distros are going to do such a damnfool thing,
-> then we must stop them.
+> Thanks for your comment.
+> The reason why we think this should be backported to stable kernel is
+> that it actually fix the potential race condition when make block
+> device probe async in stable kernel.
+> And we'd like to fix this upstream rather than just take it in
+> our custom tree.
 
-Both HFS and HFS+ work perfectly fine. And if distributions or users are so
-sensitive about security, it's up to them to blacklist individual features
-in the kernel.
+Potential race condition, is this actually able to be hit in real life?
 
-Both HFS and HFS+ have been the default filesystem on MacOS for 30 years
-and I don't think it's justified to introduce such a hard compatibility
-breakage just because some people are worried about theoretical evil
-maid attacks.
+thanks,
 
-HFS/HFS+ mandatory if you want to boot Linux on a classic Mac or PowerMac
-and I don't think it's okay to break all these systems running Linux.
-
-Thanks,
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+greg k-h
