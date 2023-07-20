@@ -2,191 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA51175A6A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D3775A6A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbjGTGix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44448 "EHLO
+        id S230343AbjGTGi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbjGTGhd (ORCPT
+        with ESMTP id S231262AbjGTGhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:37:33 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A18830C8
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:37:06 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbb07e7155so57285e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:37:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689835023; x=1690439823;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=h0DQAnAkCXd/40OMDnCfLcf9ciA1+QTBirBHvszsTaQ=;
-        b=MM9sXLO+vxFRa15LFkiPhmQynC7dxXHg4twgeoBBPqjZxjETccpzwLOcaLP6+46m0R
-         ZAIj0+yR3H9lU+auYnClaOhXbNc58vPPUTr5WX1yzl7cIewIWUUSNS/MxNsAn0ys2R3Y
-         VLf3T78PtzzvdixEQQF4OYyL48szrRkhgLJbIUKOGxW2y+qe8rziPRhKOUUPw45IeAxj
-         K7VR4n0owLF5OOnsPFr6T4eXtKvxAXF/+TELzKMdRdxCA61P8KLm1CBv6OyMhZJcTDr7
-         W/V8QmKoGkkDfS5NJAzRwrv4RlI/XXY3Z7tjisHG+zrjBpCUv47SgodMZO6jfgDplA96
-         VgdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689835023; x=1690439823;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h0DQAnAkCXd/40OMDnCfLcf9ciA1+QTBirBHvszsTaQ=;
-        b=KOnLz7E4Yc8M44YHQZCu4lbxT6YtdDmK3iVtGPJb9aPbBASNgd9DvsMeoqrSRkzLmn
-         mFZVoZ1yhpontxbRiW7geRzNsuCakT/i6iTmNjakL3dJoF6SBaJB0Gqn0AWfLge0fUzt
-         3er/BWXjKioKUAj5pE4zNWNSTE1jzQPjUrszoub3Yeexvio7ZTrGmHlR3xlICShPWV9u
-         CZU2qYiPeJR88y7FapkSebaladg9F2Kz1R6d2Wx8Ty8Kn7Aay7Rggwr5OC6VnYkKv6pp
-         FnWPuryXHkENniS7uqvg/SkHVywqfQhuW+OJvrGLgHlwNCQjs9B+cOuUXGsGbPlAZPoq
-         2Ftg==
-X-Gm-Message-State: ABy/qLZXlYVVO38r2XVxPK65DkLbiwn3JBS15GoWpjeEann2aiZRU8/k
-        8eHzXhcXoDa8r31tx8HszzChkez+pxEXEAikQ8I3ow==
-X-Google-Smtp-Source: APBJJlGTSlrVE/gr4KIeqT8QyWmS6kcLOxDmjU1gJUjWwYFvKHdcIx19nsRmNeikpsxPHUazNuv96IyS/yfHvwFMVe0=
-X-Received: by 2002:a05:600c:3d9b:b0:3f1:6fe9:4a95 with SMTP id
- bi27-20020a05600c3d9b00b003f16fe94a95mr79110wmb.4.1689835023143; Wed, 19 Jul
- 2023 23:37:03 -0700 (PDT)
+        Thu, 20 Jul 2023 02:37:50 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2042.outbound.protection.outlook.com [40.107.244.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C9926A5;
+        Wed, 19 Jul 2023 23:37:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JhURs/R9nRSy7VNn74bCnYr/q42zwobtTL2rJW4Z0SNiQx12agVJ+odI98Q6/gGR4wRvLTDNIXmd8MrHXuxwsMNhdK4RaBLzPW7YWo/b/J67nWd3GQ1Fp3FgrvV2SdzmHW+KOtKeC5rkQrb0GlztrL1gYIbgxa0kNd722I1S+nfyw8ktKRmF+VAr/2VU2DCTwbmKoVkgwLFHjjHU7BAfEqqOt0mwsP5kmYipncWpWbq00jG1tLQFzVNRNk+ZwSndnSP04Hvh2BIn3QwtrxfPwu/kbG1OOX8INaN3HFeEQGWVz/Ne86E48ph3/fitGcAL5mku9PSre2LnwbZfXGNgUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VVWF5zbyWVg12xssMePudLgZn1Yg9tei5QOcmzcYHyc=;
+ b=OXTg6nUX6+9oj1FkLWaaLhXH0BNfODKdZ7OvZZr6U7tcSso9LtQs8C3rOE/5XzHP4T9h9qJX+QKRdVQL3HXtWYpFazeH4C8ilKtDKdOTXMiZvCLdROm/4VIKL08dP+rnO9W3DXPgaPYVXj62zqP3t7C2Vt1dIzueyUUy5IXrBXD8kcqVKDKhvJcXYxgNVEcX7rhU1HgKjZ803Z96YaxTaq9+gWcUIBDFuGkwxjAbQ+yI0i6WjaDeiK3onRQfMGTGhx9fHOMcVJV37pfFc+wb+yqUvgVHSybU9BOcIx62asZFHHBhjOiNLdY79GHJfiKWsTOX2Nyg1bleQhxAlC9fcQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VVWF5zbyWVg12xssMePudLgZn1Yg9tei5QOcmzcYHyc=;
+ b=V5UtG/MP1tJdw0RyRFZhf3si12vItwlcIyhHcAl8V/Ajiy3cA/EKNj5/WqTV8LX4vQFItug62rE4+8/KF99NpcnGa1TSygtAp/W6bMj7lmUoDyQR3v5uf3TVMMTZBMMpNrjrLUurEkDJCFQRXgcqeaIcuInmP5hiMDGVw8oMmS4=
+Received: from SN7PR12MB7201.namprd12.prod.outlook.com (2603:10b6:806:2a8::22)
+ by SJ2PR12MB8183.namprd12.prod.outlook.com (2603:10b6:a03:4f4::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.23; Thu, 20 Jul
+ 2023 06:37:04 +0000
+Received: from SN7PR12MB7201.namprd12.prod.outlook.com
+ ([fe80::2525:9c2a:5446:7605]) by SN7PR12MB7201.namprd12.prod.outlook.com
+ ([fe80::2525:9c2a:5446:7605%6]) with mapi id 15.20.6609.024; Thu, 20 Jul 2023
+ 06:37:04 +0000
+From:   "Havalige, Thippeswamy" <thippeswamy.havalige@amd.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Gogada, Bharat Kumar" <bharat.kumar.gogada@amd.com>,
+        "Simek, Michal" <michal.simek@amd.com>
+Subject: RE: [PATCH V5 3/3] PCI: xilinx-xdma: Add Xilinx XDMA Root Port driver
+Thread-Topic: [PATCH V5 3/3] PCI: xilinx-xdma: Add Xilinx XDMA Root Port
+ driver
+Thread-Index: AQHZqaL5jo83xIbcxUurUITknscIg6+j/xkAgB46QpA=
+Date:   Thu, 20 Jul 2023 06:37:03 +0000
+Message-ID: <SN7PR12MB7201A03526C04788709167A48B3EA@SN7PR12MB7201.namprd12.prod.outlook.com>
+References: <20230628092812.1592644-4-thippeswamy.havalige@amd.com>
+ <20230630231832.GA496495@bhelgaas>
+In-Reply-To: <20230630231832.GA496495@bhelgaas>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN7PR12MB7201:EE_|SJ2PR12MB8183:EE_
+x-ms-office365-filtering-correlation-id: bdb00cb4-7e31-47d9-2aef-08db88ebbb0b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: RYT40ZW2/i2+qFZIUA6pqnUF0QhHN8FzAPorTGJj9xAvt8P5KhpiPtLpbSVbhzbZ1y+ZIQYlpHQGCYTw2GcKnSjaoFpBJ1QO5h/jfs25QulFm6qwTBdsqDrWhN8p6Wni19WpuHETvTvPwOpfC4vygtQvxe9Sm8Cywc8Z88nrM9h9oN60WyxQ49yBYK51qGxueoB2A23x9i1xOKOaIjy2bRRFDNb6+Hkr2xReXNoMehhrPcd9PCrGfqO3zIqtA2ZDsk/Qfs7eQcugdu7kRpzTZCWQa883FNmCzn7hdnqdO0o04PwdUo3ZJ+JMNbhl2MP7i+ijRqvEEgkgHaGwxw0MhNOjwrVTz/XhzVtjZj5GIMjJ7/0RI2I8c5Afg7opgRM0U1AueFWGR71jKuA6DUu5ox0lHYzIkseGXhL+ANceqJ2vPTkEq+dwVNcdkRq5ODHCWsoeJADmVR705qhXU3GZctU61rkhH56vZgvspVTy6l6CaNiKB4WWALg4zL4f8aD7DsxC1dhgXAcM2MoR1ULIActLVfYRvvI4U/Y+X3DDF1oCTijAL0G6mNaYokFt25tUEwsI2yTHtr6rGk12lYnyrpfYevcjkgUrv3EIkVJVAr7u1ml8pPWmSvhnNA7t+NaRRXx6qpuOZlrWwafWV7CQyA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB7201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(346002)(396003)(376002)(39860400002)(136003)(451199021)(53546011)(6506007)(478600001)(54906003)(186003)(71200400001)(7696005)(66476007)(66556008)(6916009)(64756008)(66946007)(76116006)(4326008)(66446008)(83380400001)(9686003)(966005)(122000001)(38100700002)(5660300002)(52536014)(8676002)(33656002)(8936002)(38070700005)(316002)(2906002)(41300700001)(86362001)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vZfB7+u138dgoGtgADsL7IOkoH0XUuOlW+MLORHAK6pwxRR54Hv6dTNLyiqm?=
+ =?us-ascii?Q?BuysLfZvSLAMVuA0Us+myw1dmJoKk+GS8Hj0p2OyzzbBsB/w0WnXyghLBqnE?=
+ =?us-ascii?Q?WSJWDq3xx7gM79aHSjmDuI27LGW80H4eEeMLQOfK0HdrBEhYSacqZCtMtxVc?=
+ =?us-ascii?Q?QAAeC+VP7cf62QkKfPuQ0TDNhDGmAvk7GqgYsdciOAR3EFe5Ehn9vLbvmP7g?=
+ =?us-ascii?Q?cQPaFV1tT+zmi5Vc8UmcoevWFOrcg2FwrHbuG2biZAki7A+kZ336kvNy60fz?=
+ =?us-ascii?Q?q8k9kPwdThuJnY7NBjaIMiX2xS2eLUlR58EtPvd0wbjmxkvZXIZTZE0w1yTi?=
+ =?us-ascii?Q?PHTZ+sZkqev8u4BvTkR06yusaT8HbJHZMgpRQ5xeOn+0G35A6sztuZja8Ey2?=
+ =?us-ascii?Q?UPWwGWSDOyAU0cDZ1G5pb9iTWrSoTGZJF+w1TzSCMDM/71TM72E7TGc726nl?=
+ =?us-ascii?Q?nCLTXisNvIN5EPwpBF6IUCIEl2N+SghEYCOIreX5DIJH+OdVkhoIEXQCx73E?=
+ =?us-ascii?Q?jEPNFzigW4+xUph+hgfv1Yc9FlZCif5TNaR4HuC1JdXgSvpAVK+k54wjr/v+?=
+ =?us-ascii?Q?/kB/iXjlQS8axgU91R4JEsm3cvd4Y9iYMANhTJP+u6PIjoZLPpI/8mvR7Trk?=
+ =?us-ascii?Q?gHR5iTV2efeRlgQcadJ9mks6uJqjj+T5YhJ7aXRCqEl+Qdbm90o9N0mFqNeW?=
+ =?us-ascii?Q?PFqejVtePMhHEOdFrLhWcB7FUEVf5a8qytu0fTRFxoxZGKp+6BmaxWDYSwjj?=
+ =?us-ascii?Q?DmusKchJCgnx4JRh45VJep/FneQkvNz7ezfd5wmaR7nySv05RlFLjvaIqg1V?=
+ =?us-ascii?Q?+mH6UKqACJP8kdDyItvepiypVQiUhFesJ52gTzGDsMxYr9DYTImIpjYbvwsl?=
+ =?us-ascii?Q?w7HfdMoKIpIe++EJ/BcdrlKmWYiERYLvJEf6/k9jLSvLGk58G1zYOOAQZHf4?=
+ =?us-ascii?Q?5H22KxdFEMenqIVAB9dicqR1tu3t1pDV9x/sHJawF+6VA6vFCTny0YU81rjn?=
+ =?us-ascii?Q?WLhzzz+CW6uemnUh51vOmfAnY5tzfkoUmWf81YZw7u6wS+P19pFQSZDuvxeW?=
+ =?us-ascii?Q?qL5QGiRIfcyLwj/R43MwhPDFw7szDkQI+y4YQMf/ERQS3IWc3PQQr6lk1JQb?=
+ =?us-ascii?Q?SwTWhFWUPk3ZGObAXoPQAei/nJkO1Ch9P5qxQYxJMWA7a4oPUoBSyw3P96Ho?=
+ =?us-ascii?Q?pF7XGy6dEjur4pmR0y/ZCgoa8rTsTeUXeu/fCVICkbCA6A9LuZvt6/3ldETA?=
+ =?us-ascii?Q?pk/RJgZ4lpuEFIMiuxlDB1woPzRYkkv/oKUC4iRU9y3aaJ+PPK9+tgZxBGM0?=
+ =?us-ascii?Q?s5dcuyj+tPg0b9bbhpqx1BEqjpws2EnWcHO06DYK310dPzeEF9RQ5zGlZ5y/?=
+ =?us-ascii?Q?mqFEIKBG/KOmMXl2eBmcWAftNOf1zwKsRxFsd0EX64NMuROh1oAT17JzHUfu?=
+ =?us-ascii?Q?oYhWuffRTOLaz/pLPyHjtMPe9SDXbufkxNS/gTIcKaR02L2IxU4qhGEdXB2+?=
+ =?us-ascii?Q?xAdZpbT5gMXnLlJG/dh7pVsGIwDAUHFFxIvlVofkOZG2k4h2ylDT06ZwOCf9?=
+ =?us-ascii?Q?X2GH0VkFnhWjAddM+E+VFXRjxdfSZtS+MzV6gDyzPdlDN4YjX6KR+yd4Oo1V?=
+ =?us-ascii?Q?sS8pXtTKAbbl9wvIaUwtCuY=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20230718052752.1045248-1-ojeda@kernel.org> <20230718052752.1045248-7-ojeda@kernel.org>
- <CABVgOSnCY66C5wza-ZXb8c8UHg8ydbFv4U_7A14UU_gXeESKZg@mail.gmail.com> <CANiq72m08qGAa7k37A0rQNf7vvBc1o8JjSY8jNd+m2XzVOT9rw@mail.gmail.com>
-In-Reply-To: <CANiq72m08qGAa7k37A0rQNf7vvBc1o8JjSY8jNd+m2XzVOT9rw@mail.gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 20 Jul 2023 14:36:50 +0800
-Message-ID: <CABVgOSnL0Kiv1Mo6feCLYVq6bGUjxN3gUVrW4ZKD4Fh1wUhWrQ@mail.gmail.com>
-Subject: Re: [PATCH v2 6/7] rust: support running Rust documentation tests as
- KUnit ones
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <nmi@metaspace.dk>,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000004eae640600e56012"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB7201.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bdb00cb4-7e31-47d9-2aef-08db88ebbb0b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jul 2023 06:37:03.9228
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LFddcR/hyHcKTHs6gtp6kRXLeQJZ8Dw+jbkIIXl5NjGM0OlCQidQ219GDZ4qMJntG5b6/iAQFdeh7irzlSTBBw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8183
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000004eae640600e56012
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi Bjorn,
 
-On Tue, 18 Jul 2023 at 18:50, Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Tue, Jul 18, 2023 at 10:17=E2=80=AFAM David Gow <davidgow@google.com> =
-wrote:
-> >
-> > This is looking good and working well here.
-> >
-> > One super-minor thought below (the generated C file seems to be using
-> > 4-space indentation, not tabs), but it's not something that worries me
-> > enough to hold the patch up if there are no other issues.
->
-> Good eye! Of course, please feel free to change it when applying
-> (though from a quick grep I don't see "[ ... ]" comments in commits in
-> the KUnit tree). I am also happy to send a v3.
+> -----Original Message-----
+> From: Bjorn Helgaas <helgaas@kernel.org>
+> Sent: Saturday, July 1, 2023 4:49 AM
+> To: Havalige, Thippeswamy <thippeswamy.havalige@amd.com>
+> Cc: krzysztof.kozlowski@linaro.org; devicetree@vger.kernel.org; linux-
+> pci@vger.kernel.org; linux-kernel@vger.kernel.org; robh+dt@kernel.org;
+> bhelgaas@google.com; lorenzo.pieralisi@arm.com; linux-arm-
+> kernel@lists.infradead.org; Gogada, Bharat Kumar
+> <bharat.kumar.gogada@amd.com>; Simek, Michal
+> <michal.simek@amd.com>
+> Subject: Re: [PATCH V5 3/3] PCI: xilinx-xdma: Add Xilinx XDMA Root Port d=
+river
+>=20
+> On Wed, Jun 28, 2023 at 02:58:12PM +0530, Thippeswamy Havalige wrote:
+> > Add support for Xilinx XDMA Soft IP core as Root Port.
+> > ...
+>=20
+> > |Reported-by: kernel test robot <lkp@intel.com>
+> > |Reported-by: Dan Carpenter <error27@gmail.com>
+> > |Closes:
+> > |https://lore.kernel.org/r/202305261250.2cs1phTS-lkp@intel.com/
+>=20
+> Remove these.  I mentioned this before:
+> https://lore.kernel.org/r/ZHd/7AaLaGyr1jNA@bhelgaas
+- Agreed, I'll remove this in next patch
+> > + * struct pl_dma_pcie - PCIe port information
+> > + * @dev: Device pointer
+> > + * @reg_base: IO Mapped Register Base
+> > + * @irq: Interrupt number
+> > + * @cfg: Holds mappings of config space window
+> > + * @phys_reg_base: Physical address of reg base
+> > + * @intx_domain: Legacy IRQ domain pointer
+> > + * @pldma_domain: PL DMA IRQ domain pointer
+> > + * @resources: Bus Resources
+> > + * @msi: MSI information
+> > + * @irq_misc: Legacy and error interrupt number
+> > + * @intx_irq: legacy interrupt number
+> > + * @lock: lock protecting shared register access
+>=20
+> Capitalize the intx_irq and lock descriptions so they match the others.
+- Agreed, I'll fix it in the next patch
+> "Legacy and error interrupt number" and "legacy interrupt number"
+> sound like they overlap -- "legacy interrupt number" is part of both.
+> Is that an error?
+- Agreed, I'll modify this comment to legacy interrupt number. (This irq li=
+ne is for both legacy interrupts and error interrupt bits)
+> > +static bool xilinx_pl_dma_pcie_valid_device(struct pci_bus *bus,
+> > +unsigned int devfn) {
+> > +	struct pl_dma_pcie *port =3D bus->sysdata;
+> > +
+> > +	/* Check if link is up when trying to access downstream ports */
+> > +	if (!pci_is_root_bus(bus)) {
+> > +		/*
+> > +		 * If the link goes down after we check for link-up, we have a
+> problem:
+> > +		 * if a PIO request is initiated while link-down, the whole
+> controller
+> > +		 * hangs, and even after link comes up again, previous PIO
+> requests
+> > +		 * won't work, and a reset of the whole PCIe controller is
+> needed.
+> > +		 * Henceforth we need link-up check here to avoid sending
+> PIO request
+> > +		 * when link is down.
+>=20
+> Wrap this comment so it fits in 80 columns like the rest of the file.
+>=20
+> I think the comment was added because I pointed out that this is racy.
+> Obviously the comment doesn't *fix* the race, and it actually doesn't eve=
+n
+> describe the race.
+- Agreed, I'll add comments regarding race condition.
+> Even with the xilinx_pl_dma_pcie_link_up() check, this is racy because
+> xilinx_pl_dma_pcie_link_up() may tell you the link is up, but the link ma=
+y go
+> down before the driver attempts the config transaction.  THAT is the race=
+.
+>=20
+> If the controller hangs in that situation, that's a hardware defect, and =
+from
+> your comment, it sounds like it's unrecoverable.
+>=20
+> > +		 */
+> > +		if (!xilinx_pl_dma_pcie_link_up(port))
+> > +			return false;
+>=20
+> > +static int xilinx_pl_dma_pcie_intx_map(struct irq_domain *domain,
+> unsigned int irq,
+> > +				       irq_hw_number_t hwirq)
+>=20
+> Wrap to fit in 80 columns like the rest of the file.
+>=20
+> > +static struct irq_chip xilinx_msi_irq_chip =3D {
+> > +	.name =3D "pl_dma_pciepcie:msi",
+>=20
+> Why does this name have two copies of "pcie" in it?  This driver has four
+> irq_chip structs; maybe the names could be more similar?
+- Agreed, I'll modify all irq_chip names this in next patch=20
+Example:=20
+static struct irq_chip xilinx_msi_irq_chip =3D {
+	.name =3D "pl_dma:PCIe MSI",
 
-We merged this as-is, and I've sent out a fixup patch here:
-https://lore.kernel.org/linux-kselftest/20230720062939.2411889-1-davidgow@g=
-oogle.com/T/#u
+>   xilinx_leg_irq_chip			INTx
+>   xilinx_msi_irq_chip		 	pl_dma_pciepcie:msi
+>   xilinx_irq_chip			Xilinx MSI
+>   xilinx_pl_dma_pcie_event_irq_chip	RC-Event
+>=20
+> > +	/* Plug the INTx chained handler */
+> > +	irq_set_chained_handler_and_data(port->intx_irq,
+> > +					 xilinx_pl_dma_pcie_intx_flow, port);
+> > +
+> > +	/* Plug the main event chained handler */
+> > +	irq_set_chained_handler_and_data(port->irq,
+> > +					 xilinx_pl_dma_pcie_event_flow,
+> port);
+>=20
+> What's the reason for using chained IRQs?  Can this be done without them?=
+  I
+> don't claim to understand all the issues here, but it seems better to avo=
+id
+> chained IRQ handlers when possible:
+- As per the comments in this https://lkml.kernel.org/lkml/alpine.DEB.2.20.=
+1705232307330.2409@nanos/T/
+"It is fine to have chained interrupts when bootloader, device tree and ker=
+nel under control. Only if BIOS/UEFI comes into
+play the user is helpless against interrupt storm which will cause system t=
+o hangs."
 
-I wasn't able to find any issues with changing the indentation, but
-let me know if there's some tool which complains about seeing tabs in
-.rs files we need to worry about.
+We are using ARM embedded platform with Bootloader, Devicetree flow.
 
-Cheers,
--- David
-
---0000000000004eae640600e56012
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
-Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
-iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
-jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
-jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
-FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBR
-7uxK72Kly/LkbPNm+uVlj5zKQpD9oTbd6JQvXW4szzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA3MjAwNjM3MDNaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAYwiXcRd97k90mE4qwyjv
-EAxYBFkYQ3iHMxzLCbzKvpjW8QIndJKZ+qfOrrykuzETHxY1OzOZcjIKsLuufuJ5y1csB+91pSx0
-IMGYzEg/r8NywQMt/z+6WEcYXMHSxZpdFEqmtkiB8RpgPQ5yOUiAmBpMuWsfKMUn6cwqig9fnBG+
-8wENO5PIRxpXEO+bTu8knG9hSzB6bTysEzIcliHbrxoXNwLHqH/GyeoSToHRtTZK7zw6/CoRIwSF
-3vB0r6dvDtWiLuy/Pcy+bru3el/jTSH4dKwziU1E9h+7f72sfgRHWEBqarlZqforcNmBZqYDzU9a
-prQooET206aFHCGMig==
---0000000000004eae640600e56012--
+> https://lore.kernel.org/all/877csohcll.ffs@tglx/
+>=20
+> > +	/*set the Bridge enable bit */
+- Agreed, I ll modify it in next patch.
+> Space before "Set".  I mentioned this before at
+> https://lore.kernel.org/r/ZHd/7AaLaGyr1jNA@bhelgaas
+>=20
+> > +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +	if (!res) {
+> > +		dev_err(dev, "missing \"reg\" property\n");
+>=20
+> All your other error messages are capitalized.  Make this one match.
+>=20
+> > +	bridge->ops =3D (struct pci_ops *)&xilinx_pl_dma_pcie_ops.pci_ops;
+>=20
+> I don't think this cast is needed.
+-Agreed, will modify it in next patch.
+>=20
+> Bjorn
