@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A9375B5E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA28E75B5E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbjGTRur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 13:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
+        id S231956AbjGTRvS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 Jul 2023 13:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231939AbjGTRuo (ORCPT
+        with ESMTP id S229580AbjGTRvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 13:50:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7320268F;
-        Thu, 20 Jul 2023 10:50:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F9D661B95;
-        Thu, 20 Jul 2023 17:50:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29110C433C7;
-        Thu, 20 Jul 2023 17:50:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689875438;
-        bh=tA6jPNyslJC+LUacjwi2kvTq/6NHCcqxlljp7wunIe8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jK80v0ACTaeStmC6h4QNp1pZrzv0tbJx9pDdZTutOEZSz2o5PaUnz5Kcu7rhsAnhZ
-         CH112eu/lWtwN+YI1/fu8p2HLNVx1ex9Y5PfK75MzFEVV2tkMeum5SaE35yS7yoM5/
-         6C0yuU8Se2inio0BdvdVD5rjpF2PxM0LFbnmnPrQ=
-Date:   Thu, 20 Jul 2023 19:50:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Paul Barker <paul.barker.ct@bp.renesas.com>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 000/589] 6.1.39-rc3 review
-Message-ID: <2023072028-elevation-undead-bb94@gregkh>
-References: <20230717201547.359923764@linuxfoundation.org>
- <9da5f8cb-5ed0-1854-0a0a-252794e01ce3@bp.renesas.com>
- <9705c130-997d-6356-18bc-ee5ce5d8b325@roeck-us.net>
+        Thu, 20 Jul 2023 13:51:16 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6939C269D;
+        Thu, 20 Jul 2023 10:51:15 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qMXnc-002BO8-NB; Thu, 20 Jul 2023 19:50:48 +0200
+Received: from p57bd98fd.dip0.t-ipconnect.de ([87.189.152.253] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qMXnc-003YrW-FC; Thu, 20 Jul 2023 19:50:48 +0200
+Message-ID: <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Cc:     Viacheslav Dubeyko <slava@dubeyko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org,
+        debian-ports <debian-ports@lists.debian.org>
+Date:   Thu, 20 Jul 2023 19:50:47 +0200
+In-Reply-To: <ZLlvII/jMPTT32ef@casper.infradead.org>
+References: <000000000000dbce4e05f170f289@google.com>
+         <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
+         <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
+         <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
+         <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
+         <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
+         <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
+         <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
+         <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
+         <ZLlvII/jMPTT32ef@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9705c130-997d-6356-18bc-ee5ce5d8b325@roeck-us.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.152.253
+X-ZEDAT-Hint: PO
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 03:50:06PM -0700, Guenter Roeck wrote:
-> On 7/17/23 15:39, Paul Barker wrote:
-> > Hi Greg,
-> > 
-> > On 17/07/2023 21:34, Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 6.1.39 release.
-> > > There are 589 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
+Hello!
+
+On Thu, 2023-07-20 at 18:30 +0100, Matthew Wilcox wrote:
+> On Thu, Jul 20, 2023 at 05:27:57PM +0200, Dmitry Vyukov wrote:
+> > On Thu, 5 Jan 2023 at 17:45, Viacheslav Dubeyko <slava@dubeyko.com> wrote:
+> > > > On Wed, Jan 04, 2023 at 08:37:16PM -0800, Viacheslav Dubeyko wrote:
+> > > > > Also, as far as I can see, available volume in report (mount_0.gz) somehow corrupted already:
+> > > > 
+> > > > Syzbot generates deliberately-corrupted (aka fuzzed) filesystem images.
+> > > > So basically, you can't trust anything you read from the disc.
+> > > > 
 > > > 
-> > > Responses should be made by Wed, 19 Jul 2023 20:14:46 +0000.
-> > > Anything received after that time might be too late.
-> > > 
-> > > The whole patch series can be found in one patch at:
-> > >     https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.39-rc3.gz
-> > > or in the git tree and branch at:
-> > >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> > > and the diffstat can be found below.
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > > 
+> > > If the volume has been deliberately corrupted, then no guarantee that file system
+> > > driver will behave nicely. Technically speaking, inode write operation should never
+> > > happened for corrupted volume because the corruption should be detected during
+> > > b-tree node initialization time. If we would like to achieve such nice state of HFS/HFS+
+> > > drivers, then it requires a lot of refactoring/implementation efforts. I am not sure that
+> > > it is worth to do because not so many guys really use HFS/HFS+ as the main file
+> > > system under Linux.
 > > 
-> > Building i386_defconfig in my Yocto Project environment (with gcc 13) fails:
 > > 
-> > | /.../kernel/workqueue.c: In function 'get_work_pwq':
-> > | /.../kernel/workqueue.c:706:24: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
-> > |   706 |                 return (void *)(data & WORK_STRUCT_WQ_DATA_MASK);
-> > |       |                        ^
-> > | /.../kernel/workqueue.c: In function 'get_work_pool':
-> > | /.../kernel/workqueue.c:734:25: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
-> > |   734 |                 return ((struct pool_workqueue *)
-> > |       |                         ^
-> > | /.../kernel/workqueue.c: In function 'get_work_pool_id':
-> > | /.../kernel/workqueue.c:756:25: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
-> > |   756 |                 return ((struct pool_workqueue *)
-> > |       |                         ^
-> > 
-> > Cherry-picking afa4bb778e48d79e4a642ed41e3b4e0de7489a6c from mainline fixes the build for me.
-> > 
+> > Most popular distros will happily auto-mount HFS/HFS+ from anything
+> > inserted into USB (e.g. what one may think is a charger). This creates
+> > interesting security consequences for most Linux users.
+> > An image may also be corrupted non-deliberately, which will lead to
+> > random memory corruptions if the kernel trusts it blindly.
 > 
-> That is not a new problem, though. I see the same problem with v6.1.38
-> and with v6.1 if I try to build with gcc 13.1.
+> Then we should delete the HFS/HFS+ filesystems.  They're orphaned in
+> MAINTAINERS and if distros are going to do such a damnfool thing,
+> then we must stop them.
 
-Thanks, now queued up.
+Both HFS and HFS+ work perfectly fine. And if distributions or users are so
+sensitive about security, it's up to them to blacklist individual features
+in the kernel.
 
-greg k-h
+Both HFS and HFS+ have been the default filesystem on MacOS for 30 years
+and I don't think it's justified to introduce such a hard compatibility
+breakage just because some people are worried about theoretical evil
+maid attacks.
+
+HFS/HFS+ mandatory if you want to boot Linux on a classic Mac or PowerMac
+and I don't think it's okay to break all these systems running Linux.
+
+Thanks,
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
