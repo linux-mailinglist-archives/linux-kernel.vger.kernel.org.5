@@ -2,77 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 402F575B348
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D4175B347
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232901AbjGTPnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
+        id S232893AbjGTPnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232876AbjGTPno (ORCPT
+        with ESMTP id S232865AbjGTPnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:43:44 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A2BCE;
-        Thu, 20 Jul 2023 08:43:39 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 20 Jul 2023 11:43:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1E510A;
+        Thu, 20 Jul 2023 08:43:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B0B7121D0A;
-        Thu, 20 Jul 2023 15:43:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689867818; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GLVTadNi7bTXVBcDl/cwSrd8poc5Q5ydPWjUCcKc5wk=;
-        b=eJRtX3isUEhimDA7h39PUqquydaDqngRUihnC4pLF5TWgigz70fusjzeMThW78IxVbYwiU
-        YJoGwJJ5+mjlK+m2YTO8BnmMrB2G5ziZR5MbaoD2SkCY/17wzKqGkOF+4NCdlfWje3Gk8+
-        aTMrB6yb0YECd84dlUNcM23PJOYQMEg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689867818;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GLVTadNi7bTXVBcDl/cwSrd8poc5Q5ydPWjUCcKc5wk=;
-        b=ktMk4ZMaP9GIO2Gpo1XVnYvYGaAT4wXqHCOKZPZ86XAytEWDRXWZHzjo1D1Hn1MPwcBwpY
-        /kncyKAlASbIYYDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D1A7133DD;
-        Thu, 20 Jul 2023 15:43:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id /QiBDypWuWT5HwAAMHmgww
-        (envelope-from <hare@suse.de>); Thu, 20 Jul 2023 15:43:38 +0000
-Message-ID: <c31aa1f6-948a-b45e-eb9b-ed61f5efac06@suse.de>
-Date:   Thu, 20 Jul 2023 17:43:37 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B666561B59;
+        Thu, 20 Jul 2023 15:43:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E5DAC433C7;
+        Thu, 20 Jul 2023 15:43:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689867821;
+        bh=KUt565SRXpXnvkF8G6PZj4sOu4mf7685mCIq6zmz5II=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=R/Lz+L5jrr0VsbxbCCDU8OlGSWH4Vy1hyPyJHgkIrJWKe3h2GdGzzkZF/oUxQ6U/W
+         gOLaqEVOOmQQsfPZDGqmQmH1qPY0q0hIheAG349RSgrC9jH3pUCwV1LHO/r6NzJSZn
+         71+cnzTIgZxgNW9iZdT7aXHP+8Sb9jBKSSHxiB/TXaZegr6xaXTXnZBn+hFCUhnH1/
+         iyqDg6qwqw66EkkIFVsyJyNBpQrV3FKbKZFdBHzuCpRYDuDbjP4WNPUrSdIlgXoaAV
+         B9GY++Y+9Uwb2ZzULoHLJxEK8YFi/LART7BBUOwWxsEdrev5cVbJjD/B5FS5u4cReS
+         I73M0Qp0/dCZQ==
+Message-ID: <d666a76bd243d4299551381523698a47229df71b.camel@kernel.org>
+Subject: Re: [PATCH] nfsd: remove unsafe BUG_ON from set_change_info
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Boyang Xue <bxue@redhat.com>
+Date:   Thu, 20 Jul 2023 11:43:39 -0400
+In-Reply-To: <C4A9048C-C3C8-4C62-B68F-7170C6CDC5BE@oracle.com>
+References: <20230720-bz2223560-v1-1-edb4900043b8@kernel.org>
+         <4B067A0F-93E3-435A-A32B-B17BC07D4606@oracle.com>
+         <061f2b988de3da1dac32ecb3d8ac76319065b51d.camel@kernel.org>
+         <C4A9048C-C3C8-4C62-B68F-7170C6CDC5BE@oracle.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 1/6] fs: remove emergency_thaw_bdev
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20230720140452.63817-1-hch@lst.de>
- <20230720140452.63817-2-hch@lst.de>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20230720140452.63817-2-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,26 +62,220 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 16:04, Christoph Hellwig wrote:
-> Fold emergency_thaw_bdev into it's only caller, to prepare for buffer.c
-> to be built only when buffer_head support is enabled.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   fs/buffer.c   | 6 ------
->   fs/internal.h | 6 ------
->   fs/super.c    | 4 +++-
->   3 files changed, 3 insertions(+), 13 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+On Thu, 2023-07-20 at 15:37 +0000, Chuck Lever III wrote:
+>=20
+> > On Jul 20, 2023, at 11:33 AM, Jeff Layton <jlayton@kernel.org> wrote:
+> >=20
+> > On Thu, 2023-07-20 at 15:15 +0000, Chuck Lever III wrote:
+> > >=20
+> > > > On Jul 20, 2023, at 10:59 AM, Jeff Layton <jlayton@kernel.org> wrot=
+e:
+> > > >=20
+> > > > At one time, nfsd would scrape inode information directly out of st=
+ruct
+> > > > inode in order to populate the change_info4. At that time, the BUG_=
+ON in
+> > > > set_change_info made some sense, since having it unset meant a codi=
+ng
+> > > > error.
+> > > >=20
+> > > > More recently, it calls vfs_getattr to get this information, which =
+can
+> > > > fail. If that fails, fh_pre_saved can end up not being set. While t=
+his
+> > > > situation is unfortunate, we don't need to crash the box.
+> > >=20
+> > > I'm always happy to get rid of a BUG_ON(). But I'm not sure even
+> > > a warning is necessary in this case. It's not likely that it's
+> > > a software bug or something that the server administrator can
+> > > do something about.
+> > >=20
+> > > Can you elaborate on why the vfs_getattr() might fail? Eg, how
+> > > was it failing in 2223560 ?
+> > >=20
+> >=20
+> > I'm fine with dropping the WARN_ON. You are correct that there is
+> > probably little the admin can do about it.
+> >=20
+> > vfs_getattr can fail for all sorts of reasons. It really depends on the
+> > underlying filesystem. In 2223560, I don't know for sure, but just prio=
+r
+> > to the oops, there were these messages in the log:
+> >=20
+> > [51935.482019] XFS (vda3): Filesystem has been shut down due to log err=
+or (0x2).=20
+> > [51935.482020] XFS (vda3): Please unmount the filesystem and rectify th=
+e problem(s).=20
+> > [51935.482550] vda3: writeback error on inode 25320400, offset 2097152,=
+ sector 58684120=20
+> >=20
+> > My assumption was that the fs being shut down caused some VFS operation=
+s
+> > to start returning errors (including getattr) and that is why
+> > fh_pre_saved ultimately didn't get set.
+>=20
+> I'm wondering if the operation should just fail in this case
+> rather than return a cobbled-up changeinfo4. Maybe for another
+> day.
+>=20
 
-Cheers,
+If we issue a create or rename or something and it did happen, then we
+don't want to return an error just because we couldn't collect the info
+on it.
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
-Myers, Andrew McDonald, Martje Boudien Moerman
+We probably could abort the operation if collecting the pre-change info
+fails though.
 
+
+>=20
+> > > > Move set_change_info to nfs4proc.c since all of the callers are the=
+re.
+> > > > Revise the condition for setting "atomic" to also check for
+> > > > fh_pre_saved. Drop the BUG_ON and make it a WARN_ON, and just have =
+it
+> > > > zero out both change_attr4s when this occurs.
+> > > >=20
+> > > > Link: https://bugzilla.redhat.com/show_bug.cgi?id=3D2223560
+> > > > Reported-by: Boyang Xue <bxue@redhat.com>
+> > >=20
+> > > checkpatch now wants
+> > >=20
+> > > Reported-by:
+> > > Closes:
+> > >=20
+> > > in that order.
+> > >=20
+> >=20
+> >=20
+> > Mmmmkay. So I assume the URL should go in the Closes: field then?
+>=20
+> Yes, a bug link goes in the Closes: field.
+>=20
+>=20
+> > I'll take out the WARN_ON_ONCE and resend, once others have had a chanc=
+e
+> > to comment.
+>=20
+> Don't miss the other comments below.
+>=20
+>=20
+> > Thanks!
+> >=20
+> > >=20
+> > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > > ---
+> > > > fs/nfsd/nfs4proc.c | 30 ++++++++++++++++++++++++++++++
+> > > > fs/nfsd/xdr4.h     | 11 -----------
+> > > > 2 files changed, 30 insertions(+), 11 deletions(-)
+> > > >=20
+> > > > diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+> > > > index d8e7a533f9d2..e6f406f27821 100644
+> > > > --- a/fs/nfsd/nfs4proc.c
+> > > > +++ b/fs/nfsd/nfs4proc.c
+> > > > @@ -380,6 +380,36 @@ nfsd4_create_file(struct svc_rqst *rqstp, stru=
+ct svc_fh *fhp,
+> > > > return status;
+> > > > }
+> > > >=20
+> > > > +/**
+> > > > + * set_change_info - set up the change_info4 for a reply
+> > > > + * @cinfo: pointer to nfsd4_change_info to be populated
+> > > > + * @fhp: pointer to svc_fh to use as source
+> > > > + *
+> > > > + * Many operations in NFSv4 require change_info4 in the reply. Thi=
+s function
+> > > > + * populates that from the info that we (should!) have already col=
+lected. In
+> > > > + * the event that we didn't get any pre-attrs, throw a warning and=
+ just
+> > > > + * zero out both change_attr4 fields.
+> > > > + */
+> > > > +static void
+> > > > +set_change_info(struct nfsd4_change_info *cinfo, struct svc_fh *fh=
+p)
+> > > > +{
+> > > > + cinfo->atomic =3D (u32)(fhp->fh_pre_saved && fhp->fh_post_saved &=
+& !fhp->fh_no_atomic_attr);
+> > > > +
+> > > > + /*
+> > > > + * In the event that we couldn't fetch attributes from the
+> > > > + * server for some reason, just zero out the before and after
+> > >=20
+> > > "From the server"? Is it only likely to fail if the exported
+> > > filesystem is an NFS mount? Or did you mean "from the filesystem" ?
+> > >=20
+> > >=20
+> > > > + * change values, after throwing a warning.
+> > > > + */
+> > > > + if (WARN_ON_ONCE(!fhp->fh_pre_saved)) {
+> > >=20
+> > > Maybe you should clear ->atomic as well in this case.
+> > >=20
+> > >=20
+> > > > + cinfo->before_change =3D 0;
+> > > > + cinfo->after_change =3D 0;
+> > > > + return;
+> > > > + }
+> > > > +
+> > > > + cinfo->before_change =3D fhp->fh_pre_change;
+> > > > + cinfo->after_change =3D fhp->fh_post_change;
+> > > > +}
+> > > > +
+> > > > static __be32
+> > > > do_open_lookup(struct svc_rqst *rqstp, struct nfsd4_compound_state =
+*cstate, struct nfsd4_open *open, struct svc_fh **resfh)
+> > > > {
+> > > > diff --git a/fs/nfsd/xdr4.h b/fs/nfsd/xdr4.h
+> > > > index b2931fdf53be..9e67f63c5f4d 100644
+> > > > --- a/fs/nfsd/xdr4.h
+> > > > +++ b/fs/nfsd/xdr4.h
+> > > > @@ -775,17 +775,6 @@ void warn_on_nonidempotent_op(struct nfsd4_op =
+*op);
+> > > >=20
+> > > > #define NFS4_SVC_XDRSIZE sizeof(struct nfsd4_compoundargs)
+> > > >=20
+> > > > -static inline void
+> > > > -set_change_info(struct nfsd4_change_info *cinfo, struct svc_fh *fh=
+p)
+> > > > -{
+> > > > - BUG_ON(!fhp->fh_pre_saved);
+> > > > - cinfo->atomic =3D (u32)(fhp->fh_post_saved && !fhp->fh_no_atomic_=
+attr);
+> > > > -
+> > > > - cinfo->before_change =3D fhp->fh_pre_change;
+> > > > - cinfo->after_change =3D fhp->fh_post_change;
+> > > > -}
+> > > > -
+> > > > -
+> > > > bool nfsd4_mach_creds_match(struct nfs4_client *cl, struct svc_rqst=
+ *rqstp);
+> > > > bool nfs4svc_decode_compoundargs(struct svc_rqst *rqstp, struct xdr=
+_stream *xdr);
+> > > > bool nfs4svc_encode_compoundres(struct svc_rqst *rqstp, struct xdr_=
+stream *xdr);
+> > > >=20
+> > > > ---
+> > > > base-commit: 070f391ca4d48e1750ee6108eb44f751a9e9448e
+> > > > change-id: 20230720-bz2223560-9c4690a8217b
+> > > >=20
+> > > > Best regards,
+> > > > --=20
+> > > > Jeff Layton <jlayton@kernel.org>
+> > > >=20
+> > >=20
+> > > --
+> > > Chuck Lever
+> > >=20
+> > >=20
+> >=20
+> > --=20
+> > Jeff Layton <jlayton@kernel.org>
+>=20
+>=20
+> --
+> Chuck Lever
+>=20
+>=20
+
+--=20
+Jeff Layton <jlayton@kernel.org>
