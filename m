@@ -2,136 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD1975B1B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B19975B1B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbjGTOvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 10:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
+        id S232033AbjGTOv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 10:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbjGTOvW (ORCPT
+        with ESMTP id S229933AbjGTOvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 10:51:22 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FF826B2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:51:20 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-45a0ee1c411so324146e0c.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:51:20 -0700 (PDT)
+        Thu, 20 Jul 2023 10:51:24 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E7826BB;
+        Thu, 20 Jul 2023 07:51:21 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6b867acbf6dso1211217a34.0;
+        Thu, 20 Jul 2023 07:51:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689864679; x=1690469479;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/+O/muW1Nk3sbzumyk3oSyUNsgXn5aAFedNJT9XhjpY=;
-        b=qHklILRYK8e+9ECBbaFZ7M9L25U5jR9UnSBshRGFdRVHmqpzNlXreFLJxybGBGyMLA
-         JjOIhtWXcXsFXDkQWzdryG/qS0K+qMEB1GG285OY5nANiF5bBiiZqSfRjpAq4JN3qO/G
-         VE1wh3ub6GNTxKYli8B9etbv3Syi4YaZAm8ewJzKDcudPtWv+mpGQnUWLOEpUyVi77HA
-         L1nzjHd9LR1jd0d99mpisIGonQLildHSrZJKuMS/WToklyjf8Qvdn/zjfWDpMZSAG7cZ
-         /maT4QCA9HKlmwzmuyLH+08Sr6TprdvFrIAJ1FYorUt4VLFQyyL7VA770EhWjclKTvfj
-         KjvQ==
+        d=gmail.com; s=20221208; t=1689864680; x=1690469480;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=UhWP+ZeZ3WNU0D0D0pZXS3JRxCCkvCqQIqNPCWlWf2w=;
+        b=H1m2U0JQGCymlTl2yk/Iv8QpPFjyeOzAmgIKNKBNGdcqPGqZg1ncSc8yMkB1mTlWOM
+         9MW7wXECdI3wFeIlTxsO9S1M4TKGls6iOImTKuq0qG7SG42sHxWjag9BHYg/My2EtlZF
+         zguCQPrZQxPzU7DpTv2Zs+okeBB34iwpznElaCophc5BNunmlDXTAti60vMTkBWg47ob
+         6DcAbxUrnsUPZ0Lv2QemHtlVsS7Q3EelBzdFUCvfqJHvpvtM8p/rfLo2oi/we5+S78Yj
+         XjFR7BcHdrJeZKBlo2ILlFM4m32aBDgtCmITgytJfUtlwN2cb7pwfJzQ3Ctosl+/q8s2
+         ycZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689864679; x=1690469479;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/+O/muW1Nk3sbzumyk3oSyUNsgXn5aAFedNJT9XhjpY=;
-        b=BIs+K3oOh6hdOTWNQQRMoZK/sg9gJwRtgWMM0nPbJ5QAG9OZyqmD51F0Iu30WpLm8Z
-         mmp4z91XksO4q0Jev0Henr2TL+z6lercEixOv907BYDFIx78FQc8XMr0RxZwexqDea3T
-         f457VRwQs2NGLsr8FMnhTAWsY6t/1ZtDuP9yMwzPxXOuNc6gMriYKyMfOmi/8pnn0EXy
-         PEMKqrSrD/Kug1WXuAeSwii37SFMzzRsfVYvD5IfKDbqgPLZMhvJEb+WmODVY946/6oD
-         y76EbWdVhAtOnQBIQ7MeU4KweSVSF2tecYZKsBAbFFCGQxK/6EyjIfIhxN5IYRl9cjp2
-         hssg==
-X-Gm-Message-State: ABy/qLb0qfVYpGGLxD6IJxguOzgfHgY00J5epn9M6w0cgAjTg1MUUswF
-        FYus0IRkPb9VlqPKAQitt73I99Ho02jjb3P9/l3c5Q==
-X-Google-Smtp-Source: APBJJlHzLfxkreBCbbsehsgY/9oCLGFmqhlHHCGSC7psLizhDkF/J99lwZeHjlYsqKv5zg/EMj03GOKDYYgPtq4NGEY=
-X-Received: by 2002:a1f:3d44:0:b0:481:4092:99c with SMTP id
- k65-20020a1f3d44000000b004814092099cmr2773384vka.0.1689864676288; Thu, 20 Jul
- 2023 07:51:16 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689864680; x=1690469480;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UhWP+ZeZ3WNU0D0D0pZXS3JRxCCkvCqQIqNPCWlWf2w=;
+        b=UKGRzbY69FaCvE4zabsgeIIJOg0Gs2gdg/Nv+9sxzqxUlhBgOxa3KH2ncKfSsx4kFM
+         zmZI7NJ+V8sr5us2cMrJrampjem2TMMuDVJ6m7nkTxv9XveCCuR+w0WN4GkHj55GtbaH
+         uN8uz2FjkvzegUnLETD823RP0gcBESkoFM1wE2u9pBvQRDT0Q8/dOd28NR/AlLZa2glM
+         bnVskgDc/UUv7KO5YabSq7zvuQk6wlfTqLg9yuqtAP2+EtWDEbsY+om6GMgh7U7nUObw
+         QEFdS73yayjH5xN0QljigiH56+I6IJkjPPtslnIFMgvN3og3tO1+9U0LXUCfjfmZ5Gdm
+         Rqig==
+X-Gm-Message-State: ABy/qLaBso0DoeEfvqJG3/aqTiWwnDDRhCdGGlu3f6KWgHxZ6Qe5ukPS
+        i5tN7dlXjxWb9fkX/TVq1IQ=
+X-Google-Smtp-Source: APBJJlG+WfZqYu4hKfk+bE6i1jP3fyq4+mW1KjuU3mF4nEL4pfO3rBqApmJMMMO5xMKb4+5t7mR/9Q==
+X-Received: by 2002:a9d:68da:0:b0:6b7:564d:f368 with SMTP id i26-20020a9d68da000000b006b7564df368mr2342631oto.5.1689864680517;
+        Thu, 20 Jul 2023 07:51:20 -0700 (PDT)
+Received: from [192.168.1.119] ([216.130.59.33])
+        by smtp.gmail.com with ESMTPSA id s4-20020a056830148400b006b92509e76esm499039otq.32.2023.07.20.07.51.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 07:51:20 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Message-ID: <ff0cd6d9-b031-d1bd-a9ba-6c70f1f5db47@lwfinger.net>
+Date:   Thu, 20 Jul 2023 09:51:19 -0500
 MIME-Version: 1.0
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me> <20230605-ep93xx-v3-1-3d63a5f1103e@maquefel.me>
-In-Reply-To: <20230605-ep93xx-v3-1-3d63a5f1103e@maquefel.me>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 20 Jul 2023 16:51:05 +0200
-Message-ID: <CAMRc=MeXCLzwjPEap_OD7tA+xVsMOU1DNxMbxbZVPaWg4Xdr8w@mail.gmail.com>
-Subject: Re: [PATCH v3 01/42] gpio: ep93xx: split device in multiple
-To:     nikita.shubin@maquefel.me
-Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Lukasz Majewski <lukma@denx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Peters <mpeters@embeddedts.com>,
-        Kris Bahnsen <kris@embeddedts.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: Crash in VirtualBox virtual machines running kernel 6.5
+Content-Language: en-US
+To:     Kees Cook <kees@kernel.org>, Kees Cook <keescook@chromium.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+References: <ab3a70e9-60ed-0f13-e3d4-8866eaccc8c1@lwfinger.net>
+ <202307190823.086EFD42D9@keescook> <202307190835.752D710D@keescook>
+ <d29c7e51-deff-c82f-81d4-8322b0c28d22@lwfinger.net>
+ <DC28E9B9-0F7A-4CA5-9FA9-6A4AB5DCD9D5@kernel.org>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+In-Reply-To: <DC28E9B9-0F7A-4CA5-9FA9-6A4AB5DCD9D5@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 10:29=E2=80=AFAM Nikita Shubin via B4 Relay
-<devnull+nikita.shubin.maquefel.me@kernel.org> wrote:
->
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
->
-> This prepares ep93xx SOC gpio to convert into device tree driver:
-> - dropped banks and legacy defines
-> - split AB IRQ and make it shared
->
-> We are relying on IRQ number information A, B ports have single shared
-> IRQ, while F port have dedicated IRQ for each line.
->
-> Also we had to split single ep93xx platform_device into multiple, one
-> for each port, without this we can't do a full working transition from
-> legacy platform code into device tree capable. All GPIO_LOOKUP were
-> change to match new chip namings.
->
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
+On 7/19/23 17:37, Kees Cook wrote:
+> On July 19, 2023 2:24:52 PM PDT, Larry Finger <Larry.Finger@lwfinger.net> wrote:
+>> On 7/19/23 10:36, Kees Cook wrote:
+>>> Okay, please try:
+>>>
+>>> diff --git a/fs/vboxsf/shfl_hostintf.h b/fs/vboxsf/shfl_hostintf.h
+>>> index aca829062c12..902fe3224453 100644
+>>> --- a/fs/vboxsf/shfl_hostintf.h
+>>> +++ b/fs/vboxsf/shfl_hostintf.h
+>>> @@ -68,12 +68,11 @@ struct shfl_string {
+>>>      	/** UTF-8 or UTF-16 string. Nul terminated. */
+>>>    	union {
+>>> -		u8 utf8[2];
+>>> -		u16 utf16[1];
+>>> -		u16 ucs2[1]; /* misnomer, use utf16. */
+>>> +		DECLARE_FLEX_ARRAY(u8, utf8);
+>>> +		DECLARE_FLEX_ARRAY(u16, utf16);
+>>>    	} string;
+>>>    };
+>>> -VMMDEV_ASSERT_SIZE(shfl_string, 6);
+>>> +VMMDEV_ASSERT_SIZE(shfl_string, 4);
+>>>      /* The size of shfl_string w/o the string part. */
+>>>    #define SHFLSTRING_HEADER_SIZE  4
+>>>
+>>>
+>>> The size assert doesn't seem to be used anywhere else, but I can do a
+>>> more careful binary analysis later today...''
+>>
+>> Kees,
+>>
+>> The testing was harder than I expected. My standard kernel would not load the system disk on the VM, thus I had to build one using my distros configuration. It is really painful to wait for all those drivers to build, but I figured that might be faster than trying to find the incorrect parameter.
+>>
+>> I can finally report that vboxsf no longer generated a BUG. It is getting farther, but I am not done yet. It now generates a line that says "Unknown parameter tag" and then hangs. I have not tracked that down yet.
+>>
+>> I was not aware of the DECLARE_FLEX_ARRAY() macro. I had considered removing the union and creating a simple string[] declaration, but I do not mess with file systems, and decided to let the experts handle it.
+>>
+>> I will let you know what I find about that unknown parameter. It probably is coming from VirtualBox.
+> 
+> It's possible the size really needs to stay 6 bytes. In that case, try adding a "u8 legacy_padding[2]" to the union and restore the VMMDEV_ASSERT_SIZE?
 
-Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Kees,
+
+You win the prize. Adding the 2 bytes of padding restored operations.
+
+Thanks,
+
+Larry
+
