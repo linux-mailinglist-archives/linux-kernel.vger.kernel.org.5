@@ -2,291 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 403EC75A8E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC7E75A8EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbjGTIQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 04:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
+        id S230483AbjGTIQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 04:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjGTIQZ (ORCPT
+        with ESMTP id S229620AbjGTIQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 04:16:25 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AD72686
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:16:23 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31441bc0092so389920f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:16:23 -0700 (PDT)
+        Thu, 20 Jul 2023 04:16:45 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6F1268C
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:16:44 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fdddf92b05so338443e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:16:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689840981; x=1690445781;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DNGJaYEpeCAI7drQ8W8ZV+PTc4Zy8Ohv1zP8hIu3TR8=;
-        b=aZoe4sdItvYTIGvKmdBkwWvSm9XIortrvDEcFOv6U9T3bIJ8wJnc6+CdANOPnQrFGc
-         b0efaIB7KWoqmRTL3zp9zVjPLbqwS7QZ9OcJvAiEtHKiNyasiXXEHCx01wZ8w7V52ooO
-         VZOs8dgeSuhEJGHUnBfSMnTt2rJW17BNUCa9NOJL6VT5n8XjqhdAxgnCetbYFNQWPXHz
-         X7ja3ACB0l+HqW62c75Hq8g4y36DXolIpV9WqT1ww8yPETw0kowXqC4Jn7UiXdaKsC8B
-         140VXB7XUvRAbyNj5Wz6RlEpo38ImoCnfE2LhyY3zi5M+fexasEdd0sZlnkUE+60ARi4
-         ON0A==
+        d=linaro.org; s=google; t=1689841002; x=1690445802;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7XyOQDpJVVfm2vqrxvwzAIErygUb0oI9Levi9EQEtzU=;
+        b=pHd64Uh9HIqJaZloNuVrUQxpEVMxLthAeyouypZyuO7vZEQ9j5qgcCQi/Da3LcF/GT
+         SjXNfoJSC2/MtKWIkwM1RcmQGmHhm1Tf5nuOwIXcY5cI3xQYuyS3YWaiX01ILpXxxXYi
+         o9c/IIztqkY9xa9u9IDBHcST7vctOTEwJ6Ypw1uxGolpGtK5woINczQB4IKhsSTGXP7G
+         wLhHy5HCP7SLv+gaNwXPdAApaUgex2b3AYTHc3dfbdLutSCOylaNUoBFpW39qkLPOubW
+         piQuYeogZr/HhxSpjeldxyWMMLy4c44bqexXCkid2B008TnfNkA0WoUUgeJEFBiQL8bv
+         sLTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689840981; x=1690445781;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DNGJaYEpeCAI7drQ8W8ZV+PTc4Zy8Ohv1zP8hIu3TR8=;
-        b=X53kLNN7ltgzVCRcZsF6YNKp9XqSy/muOUBB0HwgTYBf66dBXXHxeTtXHBbIGKqOJq
-         qvJ/wBdtup+yWrswBl+4KMH6m2rTKP+06yWR7Exazqy0s102f5/KTGtrvNuyn/p+V859
-         MNo5ufuh06fMwHbADewZBCcb6MfI9YBwxGi+OHzBkW2bLM3OU+v638m3ZwkrFt+h7ezn
-         X2TCVX3j0JFwMc8tmBxu5N7l3g6gtB4E6tNghMpQK8bVT86kPL5z9PcR5PL5Ur9DOEMQ
-         Rq6DHWKYXOJgceqBPfdg6WnWNP2nZEdV8FjWeU/RL1aL0S6jxKmJD6QaoR9x09VUVg+P
-         HjcQ==
-X-Gm-Message-State: ABy/qLbT3of4Jtylp9bJlU5AX8NMMWJW1uQ6nkAt5pnpeX+NivXa4N2w
-        zMGCzqED+L6VR8Fj5JieaEA81q5uMaIjbvXO4tHI9g==
-X-Google-Smtp-Source: APBJJlE4/ypBCkAS4fa3ft8sr4uiIljwWG9xBqWF4OQP1QHzs9vglehTimqhRn43tcQfSYUsfosvfe6DQAVs529DSZc=
-X-Received: by 2002:a5d:456c:0:b0:316:f1a5:269f with SMTP id
- a12-20020a5d456c000000b00316f1a5269fmr1310004wrc.70.1689840981522; Thu, 20
- Jul 2023 01:16:21 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689841002; x=1690445802;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7XyOQDpJVVfm2vqrxvwzAIErygUb0oI9Levi9EQEtzU=;
+        b=ihthellAdMKbxVqFyee3RYzc4nK8ayaRbMPQtb6QJasZTQ1iavumnRVWbH2DgKB1Q4
+         nt1qJB8A12WKkEkUus7rOGN2WLtwZnqrf/E2SEPfp7yDHd8AHyf1l0lmhMN6OhDcYE8g
+         gO+I4kXSm3CAcY/tqyOa7DNahgAZwoh4pNZfVC7zhFsHPjcZqDk4lP2wQhPaGhBaeCxJ
+         SxnnyCl3oXRXce9dP6oQ+bQhnGua3IlmNNWDSyGEC0bvmRL9QUlvnsowRBn/3PSjO/rZ
+         PrkLKtxB3RZCixcLsxP/M+MCbBHQ/HKtlWN2D6/dm4PHSIJZZr/WmXn8Oqeb+d9HiQjs
+         0yFQ==
+X-Gm-Message-State: ABy/qLaGsWeFc8b3d8vvld/KLbZWmiF/SvV9jS2aHuuFWiqrzhnz0wkr
+        ZPABIA6CJZf7poV7OeTfdhIr+Q==
+X-Google-Smtp-Source: APBJJlHWu5+IPzKxrWZtiDlXrVbECYNzGFwtTOD5wxG+qhwNidLMw5No3bP69pTIx8i3gE2MUSH+Yg==
+X-Received: by 2002:a19:e016:0:b0:4f8:596a:4bb7 with SMTP id x22-20020a19e016000000b004f8596a4bb7mr1441271lfg.57.1689841002463;
+        Thu, 20 Jul 2023 01:16:42 -0700 (PDT)
+Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
+        by smtp.gmail.com with ESMTPSA id o4-20020a05651238a400b004fbbba57ca9sm83724lft.85.2023.07.20.01.16.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 01:16:42 -0700 (PDT)
+Message-ID: <6f26ab9d-cf92-e918-866c-daa68096ee08@linaro.org>
+Date:   Thu, 20 Jul 2023 10:16:40 +0200
 MIME-Version: 1.0
-References: <20230714165508.94561-1-charlie@rivosinc.com> <20230714165508.94561-3-charlie@rivosinc.com>
-In-Reply-To: <20230714165508.94561-3-charlie@rivosinc.com>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Thu, 20 Jul 2023 10:16:10 +0200
-Message-ID: <CAHVXubhT1ixqw03r+6XtPO-0V5ff7a4r4xf2zOqTMDg8xtY0UA@mail.gmail.com>
-Subject: Re: [PATCH v6 2/4] RISC-V: mm: Add tests for RISC-V mm
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        conor@kernel.org, paul.walmsley@sifive.com, palmer@rivosinc.com,
-        aou@eecs.berkeley.edu, anup@brainfault.org,
-        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: ipq5018: add support for the RDP415
+ variant
+Content-Language: en-US
+To:     Hariharan K <quic_harihk@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     quic_srichara@quicinc.com, quic_sjaganat@quicinc.com,
+        quic_kathirav@quicinc.com, quic_arajkuma@quicinc.com,
+        quic_anusha@quicinc.com
+References: <20230720074846.20350-1-quic_harihk@quicinc.com>
+ <20230720074846.20350-3-quic_harihk@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230720074846.20350-3-quic_harihk@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 6:55=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.c=
-om> wrote:
->
-> Add tests that enforce mmap hint address behavior. mmap should default
-> to sv48. mmap will provide an address at the highest address space that
-> can fit into the hint address, unless the hint address is less than sv39
-> and not 0, then it will return a sv39 address. In addition, ensure that
-> rlimit changes do not cause mmap to fail.
->
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+On 20.07.2023 09:48, Hariharan K wrote:
+> Add the initial device tree support for the Reference Design
+> Platform(RDP) 415 based on IPQ5018 family of SoC. This patch
+> carries the support for Console UART and eMMC.
+> 
+> Signed-off-by: Hariharan K <quic_harihk@quicinc.com>
 > ---
->  tools/testing/selftests/riscv/Makefile        |   2 +-
->  tools/testing/selftests/riscv/mm/.gitignore   |   1 +
->  tools/testing/selftests/riscv/mm/Makefile     |  21 +++
->  .../selftests/riscv/mm/testcases/mmap.c       | 133 ++++++++++++++++++
->  4 files changed, 156 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/riscv/mm/.gitignore
->  create mode 100644 tools/testing/selftests/riscv/mm/Makefile
->  create mode 100644 tools/testing/selftests/riscv/mm/testcases/mmap.c
->
-> diff --git a/tools/testing/selftests/riscv/Makefile b/tools/testing/selft=
-ests/riscv/Makefile
-> index 9dd629cc86aa..1b79da90396e 100644
-> --- a/tools/testing/selftests/riscv/Makefile
-> +++ b/tools/testing/selftests/riscv/Makefile
-> @@ -5,7 +5,7 @@
->  ARCH ?=3D $(shell uname -m 2>/dev/null || echo not)
->
->  ifneq (,$(filter $(ARCH),riscv))
-> -RISCV_SUBTARGETS ?=3D hwprobe vector
-> +RISCV_SUBTARGETS ?=3D hwprobe vector mm
->  else
->  RISCV_SUBTARGETS :=3D
->  endif
-> diff --git a/tools/testing/selftests/riscv/mm/.gitignore b/tools/testing/=
-selftests/riscv/mm/.gitignore
-> new file mode 100644
-> index 000000000000..9a6f303edcd3
-> --- /dev/null
-> +++ b/tools/testing/selftests/riscv/mm/.gitignore
-> @@ -0,0 +1 @@
-> +mmap
-> diff --git a/tools/testing/selftests/riscv/mm/Makefile b/tools/testing/se=
-lftests/riscv/mm/Makefile
-> new file mode 100644
-> index 000000000000..cf68e63e7495
-> --- /dev/null
-> +++ b/tools/testing/selftests/riscv/mm/Makefile
-> @@ -0,0 +1,21 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Originally tools/testing/selftests/arm64/signal
-> +
-> +# Additional include paths needed by kselftest.h and local headers
-> +CFLAGS +=3D -D_GNU_SOURCE -std=3Dgnu99 -I.
-> +
-> +SRCS :=3D $(filter-out testcases/testcases.c,$(wildcard testcases/*.c))
-> +PROGS :=3D $(patsubst %.c,%,$(SRCS))
-> +
-> +# Generated binaries to be installed by top KSFT script
-> +TEST_GEN_PROGS :=3D $(notdir $(PROGS))
-> +
-> +# Get Kernel headers installed and use them.
-> +
-> +# Including KSFT lib.mk here will also mangle the TEST_GEN_PROGS list
-> +# to account for any OUTPUT target-dirs optionally provided by
-> +# the toplevel makefile
-> +include ../../lib.mk
-> +
-> +$(TEST_GEN_PROGS): $(PROGS)
-> +       cp $(PROGS) $(OUTPUT)/
-> diff --git a/tools/testing/selftests/riscv/mm/testcases/mmap.c b/tools/te=
-sting/selftests/riscv/mm/testcases/mmap.c
-> new file mode 100644
-> index 000000000000..d8e751f7b8c9
-> --- /dev/null
-> +++ b/tools/testing/selftests/riscv/mm/testcases/mmap.c
-> @@ -0,0 +1,133 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include <sys/mman.h>
-> +#include <sys/resource.h>
-> +#include <sys/time.h>
-> +
-> +#include "../../kselftest_harness.h"
-> +struct addresses {
-> +       int *no_hint;
-> +       int *on_37_addr;
-> +       int *on_38_addr;
-> +       int *on_46_addr;
-> +       int *on_47_addr;
-> +       int *on_55_addr;
-> +       int *on_56_addr;
-> +};
-> +
-> +void do_mmaps(struct addresses *mmap_addresses)
-> +{
-> +       // Place all of the hint addresses on the boundaries of mmap
-> +       // sv39, sv48, sv57
-> +       // User addresses end at 1<<38, 1<<47, 1<<56 respectively
+[...]
 
-Doesn't checkpatch complain about those comments? Shouldn't you use /*
-*/ instead?
+> +
+> +&sdhc_1 {
+> +	pinctrl-0 = <&sdc_default_state>;
+> +	pinctrl-names = "default";
+> +	mmc-ddr-1_8v;
+> +	mmc-hs200-1_8v;
+> +	max-frequency = <192000000>;
+> +	bus-width = <4>;
+> +	status = "okay";
+Since some (but presumably not all) SKUs have SDHCI, you can define
+the plumbing for it in the common DTSI but only enable it on ones
+that do (or disable on those that don't)
 
-> +       void *on_37_bits =3D (void *)(1UL << 37);
-> +       void *on_38_bits =3D (void *)(1UL << 38);
-> +       void *on_46_bits =3D (void *)(1UL << 46);
-> +       void *on_47_bits =3D (void *)(1UL << 47);
-> +       void *on_55_bits =3D (void *)(1UL << 55);
-> +       void *on_56_bits =3D (void *)(1UL << 56);
-> +
-> +       int prot =3D PROT_READ | PROT_WRITE;
-> +       int flags =3D MAP_PRIVATE | MAP_ANONYMOUS;
-> +
-> +       mmap_addresses->no_hint =3D
-> +               mmap(NULL, 5 * sizeof(int), prot, flags, 0, 0);
-> +       mmap_addresses->on_37_addr =3D
-> +               mmap(on_37_bits, 5 * sizeof(int), prot, flags, 0, 0);
-> +       mmap_addresses->on_38_addr =3D
-> +               mmap(on_38_bits, 5 * sizeof(int), prot, flags, 0, 0);
-> +       mmap_addresses->on_46_addr =3D
-> +               mmap(on_46_bits, 5 * sizeof(int), prot, flags, 0, 0);
-> +       mmap_addresses->on_47_addr =3D
-> +               mmap(on_47_bits, 5 * sizeof(int), prot, flags, 0, 0);
-> +       mmap_addresses->on_55_addr =3D
-> +               mmap(on_55_bits, 5 * sizeof(int), prot, flags, 0, 0);
-> +       mmap_addresses->on_56_addr =3D
-> +               mmap(on_56_bits, 5 * sizeof(int), prot, flags, 0, 0);
-> +}
-> +
-> +TEST(default_rlimit)
-> +{
-> +// Only works on 64 bit
-> +#if __riscv_xlen =3D=3D 64
-> +       struct addresses mmap_addresses;
-> +
-> +       do_mmaps(&mmap_addresses);
-> +
-> +       EXPECT_NE(mmap_addresses.no_hint, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_37_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_38_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_46_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_47_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_55_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_56_addr, MAP_FAILED);
-> +
-> +       EXPECT_LT((unsigned long)mmap_addresses.no_hint, 1UL << 47);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_37_addr, 1UL << 38);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_38_addr, 1UL << 38);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_46_addr, 1UL << 38);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_47_addr, 1UL << 47);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_55_addr, 1UL << 47);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_56_addr, 1UL << 56);
-> +#endif
-> +}
-> +
-> +TEST(zero_rlimit)
-> +{
-> +// Only works on 64 bit
-> +#if __riscv_xlen =3D=3D 64
-> +       struct addresses mmap_addresses;
-> +       struct rlimit rlim_new =3D { .rlim_cur =3D 0, .rlim_max =3D RLIM_=
-INFINITY };
-> +
-> +       setrlimit(RLIMIT_STACK, &rlim_new);
-> +
-> +       do_mmaps(&mmap_addresses);
-> +
-> +       EXPECT_NE(mmap_addresses.no_hint, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_37_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_38_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_46_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_47_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_55_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_56_addr, MAP_FAILED);
-> +
-> +       EXPECT_LT((unsigned long)mmap_addresses.no_hint, 1UL << 47);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_37_addr, 1UL << 38);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_38_addr, 1UL << 38);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_46_addr, 1UL << 38);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_47_addr, 1UL << 47);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_55_addr, 1UL << 47);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_56_addr, 1UL << 56);
-> +#endif
-> +}
-> +
-> +TEST(infinite_rlimit)
-> +{
-> +// Only works on 64 bit
-> +#if __riscv_xlen =3D=3D 64
-> +       struct addresses mmap_addresses;
-> +       struct rlimit rlim_new =3D { .rlim_cur =3D RLIM_INFINITY,
-> +                                  .rlim_max =3D RLIM_INFINITY };
-> +
-> +       setrlimit(RLIMIT_STACK, &rlim_new);
-> +
-> +       do_mmaps(&mmap_addresses);
-> +
-> +       EXPECT_NE(mmap_addresses.no_hint, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_37_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_38_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_46_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_47_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_55_addr, MAP_FAILED);
-> +       EXPECT_NE(mmap_addresses.on_56_addr, MAP_FAILED);
-> +
-> +       EXPECT_LT((unsigned long)mmap_addresses.no_hint, 1UL << 47);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_37_addr, 1UL << 38);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_38_addr, 1UL << 38);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_46_addr, 1UL << 38);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_47_addr, 1UL << 47);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_55_addr, 1UL << 47);
-> +       EXPECT_LT((unsigned long)mmap_addresses.on_56_addr, 1UL << 56);
-> +#endif
-> +}
-> +
-> +TEST_HARNESS_MAIN
-> --
-> 2.41.0
->
+Konrad
