@@ -2,157 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C598D75A40E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 03:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2777075A411
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 03:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbjGTBhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 21:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        id S229930AbjGTBkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 21:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjGTBhS (ORCPT
+        with ESMTP id S229646AbjGTBj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 21:37:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85571FF3
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 18:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689816990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aqhqXOvnlSHG620dXl7PNKzQR1gdWAKECIiVIx/Zy2E=;
-        b=OCac8xIx8x7OovxD6n6WYnYaLll+BLqZSz/D5ZWi4E5MM2vJTFZddC2iSPbCSDG8brBgjr
-        uY6gvurmjqJcTB4hY3mCYP0b9dDQgrcCJgbxAYNDX4ssYYcih2Aw+LVsNoLN3BQ5TzP+ej
-        H7BlJIg0Qy0ShJ0eT+TiUqi2C87Gm4g=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-497-RxBLp1bXMQ-hsCJjTgfhvw-1; Wed, 19 Jul 2023 21:36:29 -0400
-X-MC-Unique: RxBLp1bXMQ-hsCJjTgfhvw-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-55c964d031aso183063a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 18:36:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689816988; x=1690421788;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aqhqXOvnlSHG620dXl7PNKzQR1gdWAKECIiVIx/Zy2E=;
-        b=AH4gaUSTkVTE9iwNNN8xJofQ5UK8T83EXYfszCS4zDi3cj8c/3+YRRiAyhKyIRrRdy
-         XtTtFzW10C0+7YCU5HsvM0qj0xEIM81EsUrfbd33EFDKUNcQdUjwRaZnEEGs9Nny+zXo
-         Idc7MYqfxzW01eH3Xss292/QY9d7AViE0KaYQa6yCieHuDSm+tMpOnsJFUgpNnfyOirO
-         Q9X0DaBlssxgPzOUA2qp5afRssMGzi58q5MK+4Q/TaKAvbwmiTvaNg81iF59hVf+4OMB
-         AdKAsBH/lqsquRv3W82SnAaD0Te/XGuDqihKTiX99gKIxdL8NJGy6y7pGednNpsmzH+4
-         TGIA==
-X-Gm-Message-State: ABy/qLZDfuNOVNzhApr5fk/I+pJenS5ob+/ipYVyAXjxTxCo2k+U8bg8
-        iAXru7zHUlNRdx0Cr0MRHCRfWsMXeEhuihVU3TsIrxwZyjvuXgFnWa3OuZZuMNrADj1OM+h/fxg
-        bKPWSwFE+auxLL7oQvxlhqIuO
-X-Received: by 2002:a05:6a20:8c19:b0:135:32b1:b03d with SMTP id j25-20020a056a208c1900b0013532b1b03dmr1081930pzh.42.1689816988408;
-        Wed, 19 Jul 2023 18:36:28 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGK/TMD30tNzaC0+Dilqw7kUqG82GxrXS6kz0f1yBZ8Eq8MvuFD2dyuTjnr8s3iHWuWEWg2uA==
-X-Received: by 2002:a05:6a20:8c19:b0:135:32b1:b03d with SMTP id j25-20020a056a208c1900b0013532b1b03dmr1081912pzh.42.1689816988058;
-        Wed, 19 Jul 2023 18:36:28 -0700 (PDT)
-Received: from [10.72.12.173] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id g6-20020aa78186000000b006783ee5df8asm3856430pfi.189.2023.07.19.18.36.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 18:36:27 -0700 (PDT)
-Message-ID: <694be793-7917-5498-67fb-fd0b57b5a3df@redhat.com>
-Date:   Thu, 20 Jul 2023 09:36:23 +0800
+        Wed, 19 Jul 2023 21:39:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9646E1739;
+        Wed, 19 Jul 2023 18:39:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 24F4F617DC;
+        Thu, 20 Jul 2023 01:39:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80135C433C7;
+        Thu, 20 Jul 2023 01:39:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689817196;
+        bh=s7nvsi/fR/DkOos7XUNnf4czEgsTZCalrOP+7ilrR20=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AMWE1PQzoNpizBsp86xzjvtm60TA8h1+7R2wrnSMm8cP+VhrpHCo5Qo/o1wpaYcGG
+         7Vss+9GH6KZuJATFLUW8qG94XgfgEYua7IBa4L6KfIUScgOwbADci25ZfOxFTvUq0W
+         7kz28MXJExKMnHXSknP22C5F4Zg4p6cQMfQV6NyzC79kd5F0IzRm/e9w5p+0ANXDJ0
+         FgUNQBKkkW+7BJlSEvOxrrRoyQ362VHauYtXMNPCQBEOurMmLml9sP12GFlRBR3UNP
+         neqJhDQ6BXGjHnOjkrIssvuAyeId5IaLYU1D1bHf38AI+rgPM3W1jthcfUt7o5WWlM
+         Fb/KX59KJagCQ==
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-51e429e1eabso244352a12.2;
+        Wed, 19 Jul 2023 18:39:56 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYQttqcG08gNhv9Yl21GGlQk0vkkVU9vd04fx2XWPh5Un+x7KdY
+        JKuamOu9iiheOcG8UnBkfKymAcc1q3L40rVCgVU=
+X-Google-Smtp-Source: APBJJlFIeK7vwGDOYJWQBumT0vZA08j+F+PIgl5t9pRISgHIG62HRsN1cOKE2vxtbVivLmWBrzkee4GQ/LkHpE4liuw=
+X-Received: by 2002:a05:6402:60a:b0:51e:357:3782 with SMTP id
+ n10-20020a056402060a00b0051e03573782mr3169355edv.9.1689817194776; Wed, 19 Jul
+ 2023 18:39:54 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] netfs: Fix errors in cache.h The following checkpatch
- errors are removed: ERROR: "foo* bar" should be "foo *bar" ERROR: "foo* bar"
- should be "foo *bar" ERROR: "foo* bar" should be "foo *bar" ERROR: "foo* bar"
- should be "foo *bar" ERROR: "foo* bar" should be "foo *bar"
-Content-Language: en-US
-To:     huzhi001@208suo.com, idryomov@gmail.com
-Cc:     jlayton@kernel.org, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <tencent_4A53697595E9D930D4AE5727D5913360DB0A@qq.com>
- <071ee91b1fade5bc4de45f3e33f45f5c@208suo.com>
-From:   Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <071ee91b1fade5bc4de45f3e33f45f5c@208suo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230718153348.3340811-1-chenhuacai@loongson.cn>
+ <261edc6c-e339-faeb-3045-bfe6604d1aef@web.de> <CAAhV-H5nNMmYZQXvoog85cgMUd+gM2QMaG3cUhYk_iGzjB=B4Q@mail.gmail.com>
+ <f9e7fb54-a76e-a9b0-1b9c-8c9251f4af20@xen0n.name> <281c5d5e51488ce51497072c1e4304d71af141ec.camel@hotmail.com>
+In-Reply-To: <281c5d5e51488ce51497072c1e4304d71af141ec.camel@hotmail.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Thu, 20 Jul 2023 09:39:41 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6JAsR+1jK6BsEfOqf=uee3kj2=Fj3LSW0oUfhSo-vYiQ@mail.gmail.com>
+Message-ID: <CAAhV-H6JAsR+1jK6BsEfOqf=uee3kj2=Fj3LSW0oUfhSo-vYiQ@mail.gmail.com>
+Subject: Re: [PATCH v5] LoongArch: Fix CONFIG_CMDLINE_EXTEND and
+ CONFIG_CMDLINE_BOOTLOADER handling
+To:     donmor <donmor3000@hotmail.com>
+Cc:     "Markus.Elfring@web.de" <Markus.Elfring@web.de>,
+        "kernel@xen0n.name" <kernel@xen0n.name>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "jiaxun.yang@flygoat.com" <jiaxun.yang@flygoat.com>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "chenhuacai@loongson.cn" <chenhuacai@loongson.cn>,
+        "guoren@kernel.org" <guoren@kernel.org>,
+        "lixuefeng@loongson.cn" <lixuefeng@loongson.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "loongson-kernel@lists.loongnix.cn" 
+        <loongson-kernel@lists.loongnix.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi ZhiHu
+On Thu, Jul 20, 2023 at 9:35=E2=80=AFAM =E2=80=8E donmor <donmor3000@hotmai=
+l.com> wrote:
+>
+> =E5=9C=A8 2023-07-19=E6=98=9F=E6=9C=9F=E4=B8=89=E7=9A=84 18:29 +0800=EF=
+=BC=8CWANG Xuerui=E5=86=99=E9=81=93=EF=BC=9A
+> > On 2023/7/19 15:22, Huacai Chen wrote:
+> > > Hi, Markus,
+> > >
+> > > On Wed, Jul 19, 2023 at 2:51=E2=80=AFPM Markus Elfring <Markus.Elfrin=
+g@web.de> wrote:
+> > > > >                                                    =E2=80=A6, so =
+this patch add
+> > > > > some code to fix it.
+> > > >
+> > > > Would you like to avoid a typo here?
+> > > >
+> > > > Will any other imperative change description variant become more he=
+lpful?
+> > > Thank you for pointing this out, but since Zhihong is the original
+> > > author, I don't want to completely rewrite the commit message, so jus=
+t
+> > > fix the typo...
+> >
+> > AFAICT the commit message is totally uninformative even if "an
+> > imperative change description" were used. It basically:
+> >
+> > 1. repeated the patch title,
+> > 2. spent one sentence only for mentioning a function name without givin=
+g
+> > any more information,
+> > 3. mentioned why some change was not necessary due to some other
+> > existing code, but not explicitly calling that part out, then
+> > 4. finished with a sentence that boiled down to "we should do the
+> > similar thing".
+> >
+> > My take:
+> >
+> >  > Subject: Fix CMDLINE_EXTEND and CMDLINE_BOOTLOADER on non-FDT system=
+s
+> >  >
+> >  > On FDT systems these command line processing are already taken care =
+of
+> >  > by early_init_dt_scan_chosen(). Add similar handling to the non-FDT
+> >  > code path to allow these config options to work for non-FDT boxes to=
+o.
+> >
+> > Would this sound better?
+> >
+> Xuerui's take is fine. Do I need to make a v6 patch?
+OK, if you have time please do that.
 
-This looks good to me.
-
-Could you restructure the patch title and commit comment ?
-
-Thanks
-
-- Xiubo
-
-
-On 7/19/23 19:10, huzhi001@208suo.com wrote:
-> Signed-off-by: ZhiHu <huzhi001@208suo.com>
-> ---
->  fs/ceph/cache.h | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+Huacai
 >
-> diff --git a/fs/ceph/cache.h b/fs/ceph/cache.h
-> index dc502daac49a..b9fb1d1b21a1 100644
-> --- a/fs/ceph/cache.h
-> +++ b/fs/ceph/cache.h
-> @@ -14,11 +14,11 @@
->  #ifdef CONFIG_CEPH_FSCACHE
->  #include <linux/fscache.h>
->
-> -int ceph_fscache_register_fs(struct ceph_fs_client* fsc, struct 
-> fs_context *fc);
-> -void ceph_fscache_unregister_fs(struct ceph_fs_client* fsc);
-> +int ceph_fscache_register_fs(struct ceph_fs_client *fsc, struct 
-> fs_context *fc);
-> +void ceph_fscache_unregister_fs(struct ceph_fs_client *fsc);
->
->  void ceph_fscache_register_inode_cookie(struct inode *inode);
-> -void ceph_fscache_unregister_inode_cookie(struct ceph_inode_info* ci);
-> +void ceph_fscache_unregister_inode_cookie(struct ceph_inode_info *ci);
->
->  void ceph_fscache_use_cookie(struct inode *inode, bool will_modify);
->  void ceph_fscache_unuse_cookie(struct inode *inode, bool update);
-> @@ -76,13 +76,13 @@ static inline void 
-> ceph_fscache_note_page_release(struct inode *inode)
->      fscache_note_page_release(ceph_fscache_cookie(ci));
->  }
->  #else /* CONFIG_CEPH_FSCACHE */
-> -static inline int ceph_fscache_register_fs(struct ceph_fs_client* fsc,
-> +static inline int ceph_fscache_register_fs(struct ceph_fs_client *fsc,
->                         struct fs_context *fc)
->  {
->      return 0;
->  }
->
-> -static inline void ceph_fscache_unregister_fs(struct ceph_fs_client* 
-> fsc)
-> +static inline void ceph_fscache_unregister_fs(struct ceph_fs_client 
-> *fsc)
->  {
->  }
->
-> @@ -90,7 +90,7 @@ static inline void 
-> ceph_fscache_register_inode_cookie(struct inode *inode)
->  {
->  }
->
-> -static inline void ceph_fscache_unregister_inode_cookie(struct 
-> ceph_inode_info* ci)
-> +static inline void ceph_fscache_unregister_inode_cookie(struct 
-> ceph_inode_info *ci)
->  {
->  }
->
-
+> donmor
