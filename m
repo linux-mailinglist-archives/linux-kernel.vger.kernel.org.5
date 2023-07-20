@@ -2,178 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B49275AE67
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7010175AE5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbjGTMa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41882 "EHLO
+        id S231167AbjGTM3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 08:29:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230499AbjGTMaM (ORCPT
+        with ESMTP id S230360AbjGTM3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:30:12 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094722690
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689856190; x=1721392190;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=u4VXKW00l9nuZjzaABoEM8JPyms2bsYwqjtZoFsNtLc=;
-  b=MEHojBK0zFkDLVZJND+HLmavDQjHCQmpLEDS+vn/vtmLW2HlHv12oN+v
-   dTBopyTJyf4Y6FKm/sOh2lsqqu83SF4RYwHik/NfMha5Vs+6yhXOtLKWR
-   THWt4SAmo2waYnYlrkxp53EGtM8CPSVw0olgxBe0yTU9o56RQwJPWWzle
-   3saDuqOwtxLJAzq64+L3LdZ++1n9p64MAsqchOR5KBNqh9tNpoFCNJ3O7
-   aCfg9P4FdIc0bVdfebDefmI+ut0ljYx06JBbCGiMndVJo0b3VGm31ops8
-   xYnHC4GNiB+PDNvr3R9iZBt/W0yAlrz00SpysjVqE3zaXG7Y6EInAdr+2
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="356678169"
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="356678169"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 05:29:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="898255995"
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="898255995"
-Received: from moorer9x-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.209.157.3])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 05:29:28 -0700
-From:   Kai Huang <kai.huang@intel.com>
-To:     peterz@infradead.org, kirill.shutemov@linux.intel.com,
-        linux-kernel@vger.kernel.org
-Cc:     dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
-        pbonzini@redhat.com, isaku.yamahata@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        n.borisov.lkml@gmail.com, kai.huang@intel.com
-Subject: [PATCH v2 11/11] x86/virt/tdx: Allow SEAMCALL to handle #UD and #GP
-Date:   Fri, 21 Jul 2023 00:28:14 +1200
-Message-ID: <ae144939f2f6aa30c9620f61e67953db9dd4400c.1689855280.git.kai.huang@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1689855280.git.kai.huang@intel.com>
-References: <cover.1689855280.git.kai.huang@intel.com>
+        Thu, 20 Jul 2023 08:29:05 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7BC26A9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:29:02 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51f7fb9a944so1027635a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689856141; x=1690460941;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qT08SpiUgGvZlb5GGVVX+9XlZeGdvNK6gZUUp4GQe4I=;
+        b=aJC4VDp7xASAEEOi8/qpOa/R8RvMG4+HI/RSw7nxnJW2UqXlWdTtvHDydnXQz/tBoD
+         xprc/1ABLfWeFOVN6ucWJNMxFY9pbJbOweaj4n7BYxHBnrbnyWhz/pH5bVCW2fol3sbj
+         YZlpRMRSKQqw+ykKGOy5AebhrgkVXAI+13dvKOChRpayrRE4ExwvLM8wHE4k3+2Bmr/H
+         FrOqa9txmUZzMzvcoCYS4tPOFr4IdO2xoJuDXFS0/mabdZWPtlcZ6pXk1oQvbtpSlCGU
+         upisJebK3IVg1a7p9rF6ysCaWssYnBziGBoZFqTeD91heliKNzWTcmQm1TtD9+acOCyl
+         NILw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689856141; x=1690460941;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qT08SpiUgGvZlb5GGVVX+9XlZeGdvNK6gZUUp4GQe4I=;
+        b=aPBcFB/xdcK0gncknj/KUX6Qe+Wb9PI7deHo9u9YpBxrkVFh0f7qHc7RWqgmf5Y6q7
+         uaJcK6b2pD6S1JeKwHmPd8oY9PyOAmkyV31Op6NxCR75d096r911WQvcjXILRg6gWLdu
+         /CQbjc4gl1GmUjWe3nCCI9Cik48/62t+LrHeZzX2rvcH3x+pWFoAIQ9ixzxxCqBuS5iX
+         0kGpyIq7bNQgQj53BuzIBLR4p+eXmCb7R6Lf+0IlnH+bQaxZSoPV94LVP3AyOktn4HGB
+         LVdNi8cu8Z1gN528GnelAWN/umR3TsROtHL+g3w7waQrNDrEhzQNan6G7TtmZ5iKzd98
+         7M+A==
+X-Gm-Message-State: ABy/qLYhP6V5+LSy3KxVEqa4ZSDqT1Pt8/sZPAbYd2aZ8kEJoOEepmsN
+        tjwfQzFD1RJnX2GJu3CYrb2rag==
+X-Google-Smtp-Source: APBJJlH9gN4lf1BG5Y8ta65Sfu3M9TLXppFnMOerf85WeJjxbXv1xrrpgEvY1a8kb0r+/RrnlMyfXQ==
+X-Received: by 2002:a17:906:cc:b0:974:1ef7:1e88 with SMTP id 12-20020a17090600cc00b009741ef71e88mr4941096eji.13.1689856140998;
+        Thu, 20 Jul 2023 05:29:00 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id o15-20020a17090611cf00b0098963eb0c3dsm645173eja.26.2023.07.20.05.28.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 05:29:00 -0700 (PDT)
+Message-ID: <490e5fe1-8eb8-8af4-c48a-646d3ab16d61@linaro.org>
+Date:   Thu, 20 Jul 2023 14:28:59 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] power: supply: max17042_battery: Do not use CONFIG_
+ prefix in regular C code
+To:     Przemyslaw <przemekchwiala@gmail.com>, hdegoede@redhat.com,
+        m.szyprowski@samsung.com, sebastian.krzyszkowiak@puri.sm,
+        kernel@puri.sm, sre@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lukas.bulwahn@gmail.com
+References: <20230720122528.154008-1-przemekchwiala@gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230720122528.154008-1-przemekchwiala@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the platform with the "partial write machine check" erratum, a kernel
-partial write to TDX private memory may cause unexpected machine check.
-It would be nice if the #MC handler could print additional information
-to show the #MC was TDX private memory error due to possible kernel bug.
+On 20/07/2023 14:25, Przemyslaw wrote:
+> From: przemoch <przemekchwiala@gmail.com>
 
-To do that, the machine check handler needs to use SEAMCALL to query
-page type of the error memory from the TDX module, because there's no
-existing infrastructure to track TDX private pages.
+Please use the same name in commit author and SoB.
 
-SEAMCALL instruction causes #UD if CPU isn't in VMX operation.  In #MC
-handler, it is legal that CPU isn't in VMX operation when making this
-SEAMCALL.  Extend the TDX_MODULE_CALL macro to handle #UD so the
-SEAMCALL can return error code instead of Oops in the #MC handler.
-Opportunistically handles #GP too since they share the same code.
+> 
+> Using CONFIG_ prefix for macros is not a good practice.
+> Use CONFIG_ prefix in Kconfig only.
+> 
+> Signed-off-by: Przemyslaw Chwiala <przemekchwiala@gmail.com>
 
-A bonus is when kernel mistakenly calls SEAMCALL when CPU isn't in VMX
-operation, or when TDX isn't enabled by the BIOS, or when the BIOS is
-buggy, the kernel can get a nicer error message rather than a less
-understandable Oops.
+Code is okay, so please send v2 with fixed author.
 
-This is basically based on Peter's code.
-
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Kai Huang <kai.huang@intel.com>
----
-
-v1 -> v2:
- - Skip saving output registers when SEAMCALL #UD/#GP
-
----
- arch/x86/include/asm/tdx.h      |  4 ++++
- arch/x86/virt/vmx/tdx/tdxcall.S | 19 +++++++++++++++++++
- 2 files changed, 23 insertions(+)
-
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index 942edc8e9ba8..a51ca2bcd289 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -8,6 +8,7 @@
- 
- #include <asm/errno.h>
- #include <asm/ptrace.h>
-+#include <asm/trapnr.h>
- #include <asm/shared/tdx.h>
- 
- /*
-@@ -20,6 +21,9 @@
- #define TDX_SW_ERROR			(TDX_ERROR | GENMASK_ULL(47, 40))
- #define TDX_SEAMCALL_VMFAILINVALID	(TDX_SW_ERROR | _UL(0xFFFF0000))
- 
-+#define TDX_SEAMCALL_GP			(TDX_SW_ERROR | X86_TRAP_GP)
-+#define TDX_SEAMCALL_UD			(TDX_SW_ERROR | X86_TRAP_UD)
-+
- #ifndef __ASSEMBLY__
- 
- /*
-diff --git a/arch/x86/virt/vmx/tdx/tdxcall.S b/arch/x86/virt/vmx/tdx/tdxcall.S
-index 3ed6d8b8d2a9..0eface625b59 100644
---- a/arch/x86/virt/vmx/tdx/tdxcall.S
-+++ b/arch/x86/virt/vmx/tdx/tdxcall.S
-@@ -1,6 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #include <asm/asm-offsets.h>
- #include <asm/frame.h>
-+#include <asm/asm.h>
- #include <asm/tdx.h>
- 
- /*
-@@ -85,6 +86,7 @@
- .endif	/* \saved */
- 
- .if \host
-+.Lseamcall\@:
- 	seamcall
- 	/*
- 	 * SEAMCALL instruction is essentially a VMExit from VMX root
-@@ -192,11 +194,28 @@
- .if \host
- .Lseamcall_vmfailinvalid\@:
- 	mov $TDX_SEAMCALL_VMFAILINVALID, %rax
-+	jmp .Lseamcall_fail\@
-+
-+.Lseamcall_trap\@:
-+	/*
-+	 * SEAMCALL caused #GP or #UD.  By reaching here %eax contains
-+	 * the trap number.  Convert the trap number to the TDX error
-+	 * code by setting TDX_SW_ERROR to the high 32-bits of %rax.
-+	 *
-+	 * Note cannot OR TDX_SW_ERROR directly to %rax as OR instruction
-+	 * only accepts 32-bit immediate at most.
-+	 */
-+	movq $TDX_SW_ERROR, %r12
-+	orq  %r12, %rax
-+
-+.Lseamcall_fail\@:
- .if \ret && \saved
- 	/* pop the unused structure pointer back to %rsi */
- 	popq %rsi
- .endif
- 	jmp .Lout\@
-+
-+	_ASM_EXTABLE_FAULT(.Lseamcall\@, .Lseamcall_trap\@)
- .endif	/* \host */
- 
- .endm
--- 
-2.41.0
+Best regards,
+Krzysztof
 
