@@ -2,124 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EE775B558
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0F675B56A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbjGTRPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 13:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
+        id S231685AbjGTRRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 13:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbjGTRPr (ORCPT
+        with ESMTP id S229526AbjGTRRR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 13:15:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E6C2722;
-        Thu, 20 Jul 2023 10:15:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9586B61B95;
-        Thu, 20 Jul 2023 17:15:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F475C433C7;
-        Thu, 20 Jul 2023 17:15:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689873344;
-        bh=LyEjOReqm///zWECKi0duSLe5uxlZvj/+/J2Zi7jsHA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sL/s3VafJREaE7x20o2K8a9Z3LOv2OM2HcoXVhBK9qI0R1qjvGS8K/Y2mL+ZRsF6w
-         xRmrWt3cFmbxHYKD6NP1ixR5Xs65XiCQfc9e5fRJu2Un7k+TxsWjjcBmagCXgLpiqh
-         m6WAkLfhc2UdeeDFQ1Ke/PMWuBj1CvZyO/y/yZC6KBBpga3GXbASo+pEChXw+FcM5V
-         QZRnEjTI3LASJkrliw9svrsT/VYthgg/dZEV9nJ9ugvJ1PN04B2sFQnYyUcx2ykZ/I
-         LySJU0WSvwd2yk3ZIKQQVwQzO7WUnX3ovoxZ8ErtsQG4xlRkN2sSp2BvgmEF19Rcp1
-         rb1Mlbih10qSQ==
-Date:   Thu, 20 Jul 2023 18:15:37 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     James Hilliard <james.hilliard1@gmail.com>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Thu, 20 Jul 2023 13:17:17 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C82CB3;
+        Thu, 20 Jul 2023 10:17:16 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-666edfc50deso756139b3a.0;
+        Thu, 20 Jul 2023 10:17:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689873435; x=1690478235;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=J0uAt1FpVvgdk69DWGVo/B/WilumnjHo3ckls2wQj2c=;
+        b=MK+qmNNORXwB0I5M1ECJrML+kKdViRer5kBwEH13jqFqWPrvH9qpVwD+NCq/1d018c
+         dmHLfc1tu6kO/ikoIBoIR1krTQBsGZ3+q9u5v3XSZyYbOkyC67YXvHVlcxgsQWsqZgtm
+         4SH2TD93EzA0VP1rFamx/Cxpixhc1xvinZAjcekhOe3ngbMxphygvDdsOviDfTtnsbmZ
+         umZ7UPenNo+uzSz1TkMIjeWQt9QLKY1ACnKSlpgNnzP7MRX/LNX+PoEOdVdbQQ+Lidiy
+         cOGFq119CJN/FS7RftR/9pmwUsBDbw0jIdcDb2SJf2KjVezldwj7jUFTSW8pAI6VW6KZ
+         ONLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689873435; x=1690478235;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J0uAt1FpVvgdk69DWGVo/B/WilumnjHo3ckls2wQj2c=;
+        b=SLm+b5tlr6idsm/Yh1OQVSEsFtlc4bsB3oIrbg7a6piuUQm/ZuPan8n2n9DoPkTLMu
+         wOouxBPgOKjtdycelh+Owyg+FDTD0XDr5FkceD9DjC2JO9ZGhEkYrn2RgXAIzMDXsPGf
+         1LYkpSfQ4zZ4qa5xSLiLDYP0dRKJZfvektyxQHUzLoAw9Qbkcx88gONRfKUEjNfWOov5
+         zF/IbP/LYpNHxyPMk3dvhisJ13icMpMyjE1vecx4ABbVH0H+VJGPWgs4YzcvcofaYH4U
+         OQMa9/VHWCtt1o/JRYPVylphSmNgbiBQ3tnl3FjdrUeiu+1sF1cbQbhq+/T36KjnLrHn
+         jaYg==
+X-Gm-Message-State: ABy/qLar+Z0aibssi6q/TIvf/KkwNyztO8QdBYkuDZzdKZQurFJJ8eFs
+        6fxfpq4tfyo3GsfUyGmvies=
+X-Google-Smtp-Source: APBJJlEkTI4A4ZrOCc+WXlC2nBipWy2JSRmd1c5HMwU8MruA6yjpC2qz2tfZemAEl4HUzSYjKYO5qQ==
+X-Received: by 2002:a05:6a00:24d1:b0:668:8ad5:778f with SMTP id d17-20020a056a0024d100b006688ad5778fmr10559001pfv.17.1689873434754;
+        Thu, 20 Jul 2023 10:17:14 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:e754:74d1:c368:67a2])
+        by smtp.gmail.com with ESMTPSA id h18-20020a62b412000000b00682a75a50e3sm1502944pfn.17.2023.07.20.10.17.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 10:17:14 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 10:17:09 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     nikita.shubin@maquefel.me
+Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marek Vasut <marex@denx.de>,
-        Stefan Wahren <stefan.wahren@chargebyte.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/4] dt-bindings: arm: fsl: Add VAR-SOM-MX6 SoM
-Message-ID: <20230720-subtype-pull-33f36b9ffd84@spud>
-References: <20230720131028.3730704-1-james.hilliard1@gmail.com>
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Peters <mpeters@embeddedts.com>,
+        Kris Bahnsen <kris@embeddedts.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v3 28/42] input: keypad: ep93xx: add DT support for
+ Cirrus EP93xx
+Message-ID: <ZLlsFTe2nvFw698l@google.com>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-28-3d63a5f1103e@maquefel.me>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="io+0YOnpQlmtEO/r"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230720131028.3730704-1-james.hilliard1@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230605-ep93xx-v3-28-3d63a5f1103e@maquefel.me>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 20, 2023 at 02:29:28PM +0300, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+> 
+> - drop flags, they were not used anyway
+> - add OF ID match table
+> - process "autorepeat", "debounce-delay-ms", prescale from device tree
+> - drop platform data usage and it's header
+> - keymap goes from device tree now on
+> 
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 
---io+0YOnpQlmtEO/r
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is awesome, thank you!
 
-On Thu, Jul 20, 2023 at 07:10:22AM -0600, James Hilliard wrote:
-> Add support for Variscite i.MX6Q VAR-SOM-MX6 SoM.
->=20
-> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+>  
+>  #include <linux/bits.h>
+>  #include <linux/module.h>
+> +#include <linux/of.h>
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Are you sure you need this? I think the only OF-specific structure that
+is being used is of_device_id, which comes from mod_devicetable.h that
+you include below.
 
-Thanks,
-Conor.
+Otherwise:
 
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentati=
-on/devicetree/bindings/arm/fsl.yaml
-> index 2510eaa8906d..a3ab78429799 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -298,6 +298,7 @@ properties:
->                - udoo,imx6q-udoo           # Udoo i.MX6 Quad Board
->                - uniwest,imx6q-evi         # Uniwest Evi
->                - variscite,dt6customboard
-> +              - variscite,var-som-imx6q   # i.MX6 Quad Variscite VAR-SOM=
--MX6 module
->                - wand,imx6q-wandboard      # Wandboard i.MX6 Quad Board
->                - ysoft,imx6q-yapp4-crux    # i.MX6 Quad Y Soft IOTA Crux =
-board
->                - ysoft,imx6q-yapp4-pegasus # i.MX6 Quad Y Soft IOTA Pegas=
-us board
-> --=20
-> 2.34.1
->=20
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
---io+0YOnpQlmtEO/r
-Content-Type: application/pgp-signature; name="signature.asc"
+Please feel free to merge with the rest of the series.
 
------BEGIN PGP SIGNATURE-----
+Thanks.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLlruQAKCRB4tDGHoIJi
-0nylAP4hJgOgH/8RnjJac+N3TPy68t17+OK+L/4XVdY1DqVV2AD8DKw2pPQnGYEd
-QaOKp9v3DWGEOlQqt2aLP/b3p3jRlQM=
-=OW2n
------END PGP SIGNATURE-----
-
---io+0YOnpQlmtEO/r--
+-- 
+Dmitry
