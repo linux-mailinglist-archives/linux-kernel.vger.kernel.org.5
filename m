@@ -2,123 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EAC375A9A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6103A75A9E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 10:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbjGTI4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 04:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
+        id S230297AbjGTI5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 04:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbjGTIk2 (ORCPT
+        with ESMTP id S229555AbjGTImJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 04:40:28 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2AC26BB
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:40:26 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fb77f21c63so775007e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689842425; x=1692434425;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ny1C6PeLQpN5ZLbijkdZaNqiK2k79yucQLdYgkrn53U=;
-        b=aFBG0SYMD/IRe3XLlCKozpprl92+XqJcF2MAka/KfMjKDReuzkcmJ2uf/ECoz8UlWn
-         4GK+/CelbnGjXhzyDqEYftoxP3JMTFm+GgKtfzA9uMq0mnkrzOLHjSSlCQ9V0pldYE2C
-         s4wANbiQ/hPAcT3bPHPmjAnviob6L3a11ysiSWojTbcX+DdXNInwqSAcTLO4psSrej9c
-         LkgtWKbcByQBqhcvLv8onn8g7DmEuSludNW870ExIa80eXkmDB7rOqNP0NobZkyz7OGB
-         WO1zzncZxcXb8HIYdAI+OOqfGtgmejvOnwzghYrBQJPDSWEGhgbMoCfs0SXTLI5O5QB9
-         Bjpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689842425; x=1692434425;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ny1C6PeLQpN5ZLbijkdZaNqiK2k79yucQLdYgkrn53U=;
-        b=i4YBrHW757FD4nAnUwiOBa5JFHKX3yVStAAbdNz9CAwQgco8ERtBKxrpLYrH4hmoo+
-         q70iqOT7v9TYgSOVQu0b4ZEXUPMpS5QvLPG577s0h0QERf9fJ+Q39hL8p9krzZg72kM9
-         6LU3pmaKoMrUPOpRrG+dg1dX04ut0ME1YAD1NDUdlb96+bNLoY/AIfHELo7KMTFcPrdS
-         uI21e7tMfRiK6YHVP37Bi52jViEu/g2GbLVjQHeIqfshRGifbcbS2qrnqP2xYraZPhYD
-         5HTJbCiHr8Y/XvoJOLAd23rcdymbXN/rREzhHPMPVRVhqJWItpcq5AZh5caxulTznuYY
-         mD4A==
-X-Gm-Message-State: ABy/qLb/pqz0QFPpepz6/zdlCUPfQVSOEh5z2ofr4+NWlBciBDi7uXVm
-        X0gfJ3rnTFjpsg4PRuhHe/AwWA==
-X-Google-Smtp-Source: APBJJlHQ0Qhh09L6OiUWIqkMakxji1+KahYOK1XPSil7Jw6cbkGwy8gUKJ1qyNUV+O8YbLMJpY1rXA==
-X-Received: by 2002:ac2:530e:0:b0:4fd:8976:5fc9 with SMTP id c14-20020ac2530e000000b004fd89765fc9mr1632271lfh.23.1689842424987;
-        Thu, 20 Jul 2023 01:40:24 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id f14-20020a7bcd0e000000b003fc01f7b415sm3370111wmj.39.2023.07.20.01.40.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 01:40:24 -0700 (PDT)
-Message-ID: <ca665afc-24af-4a9a-4bb1-a5421b2d6912@linaro.org>
-Date:   Thu, 20 Jul 2023 10:40:22 +0200
+        Thu, 20 Jul 2023 04:42:09 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D0626AC
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 01:42:08 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R65kl660XzrRnN;
+        Thu, 20 Jul 2023 16:41:19 +0800 (CST)
+Received: from [10.174.151.185] (10.174.151.185) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 20 Jul 2023 16:42:05 +0800
+Subject: Re: [PATCH 4/4] mm: memory-failure: add PageOffline() check
+To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
+CC:     <akpm@linux-foundation.org>, <naoya.horiguchi@nec.com>,
+        <shy828301@gmail.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230715031729.2420338-1-linmiaohe@huawei.com>
+ <20230715031729.2420338-5-linmiaohe@huawei.com>
+ <20230720010953.GC1583723@ik1-406-35019.vs.sakura.ne.jp>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <0161d32a-79d8-912c-0981-496a15f3eebf@huawei.com>
+Date:   Thu, 20 Jul 2023 16:42:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/4] Add support for PECI Nuvoton
+In-Reply-To: <20230720010953.GC1583723@ik1-406-35019.vs.sakura.ne.jp>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     "Winiarska, Iwona" <iwona.winiarska@intel.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "avifishman70@gmail.com" <avifishman70@gmail.com>,
-        "Fair, Benjamin" <benjaminfair@google.com>,
-        "tmaimon77@gmail.com" <tmaimon77@gmail.com>,
-        "yuenn@google.com" <yuenn@google.com>,
-        "venture@google.com" <venture@google.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-References: <20230719220853.1029316-1-iwona.winiarska@intel.com>
- <b0993a11-6589-2fcd-3487-2e6eb68e18e4@linaro.org>
- <9a400a1be13adb87002ae476839e235aea117060.camel@intel.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <9a400a1be13adb87002ae476839e235aea117060.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.151.185]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2023 10:00, Winiarska, Iwona wrote:
-> On Thu, 2023-07-20 at 08:17 +0200, Krzysztof Kozlowski wrote:
->> On 20/07/2023 00:08, Iwona Winiarska wrote:
->>> Hi!
->>>
->>> The series adds support for PECI on Nuvoton-based BMC boards.
->>> It is based on patches that were sent by Tomer Maimon from
->>> Nuvoton [1].
->>> Similar to Aspeed driver, unused (as in, default values were used in
->>> all of the available DTS files) vendor-specific properties were
->>> removed.
->>> If there is a use-case for such properties, they can be added in
->>> a separate series.
->>>
->>> Thank you Tomer for testing this series on Nuvoton hardware.
->>>
->>> Thanks
->>> -Iwona
->>>
->>> [1]
->>> https://lore.kernel.org/openbmc/CAP6Zq1jnbQ8k9VEyf9WgVq5DRrEzf5V6kaYP30S7g9BV9jKtaQ@mail.gmail.com/
->>>
+On 2023/7/20 9:09, Naoya Horiguchi wrote:
+> On Sat, Jul 15, 2023 at 11:17:29AM +0800, Miaohe Lin wrote:
+>> Memory failure is not interested in logically offlined page. Skip this
+>> type of pages.
 >>
->> This is not v1 but v3 or v4. Please provide proper changelog and versioning.
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  mm/memory-failure.c | 5 +++--
+>>  1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+>> index 42e63b0ab5f7..ed79b69837de 100644
+>> --- a/mm/memory-failure.c
+>> +++ b/mm/memory-failure.c
+>> @@ -1559,7 +1559,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
+>>  	 * Here we are interested only in user-mapped pages, so skip any
+>>  	 * other types of pages.
+>>  	 */
+>> -	if (PageReserved(p) || PageSlab(p) || PageTable(p))
+>> +	if (PageReserved(p) || PageSlab(p) || PageTable(p) || PageOffline(p))
 > 
-> This is the first submission - also known as v1 :)
-> Could you elaborate on why do you believe that this is v3 or v4?
+> hwpoison_user_mappings() is called after some checks are done, so I'm not
+> sure that it's the right place to check PageOffline().
 
-I had such impression because I saw it:
-https://lore.kernel.org/all/20230616193450.413366-2-iwona.winiarska@intel.com/
-https://lore.kernel.org/all/20230628090404.234965-2-tmaimon77@gmail.com/
+hwpoison_user_mappings() is called after the "if (!PageLRU(p) && !PageWriteback(p))" check in memory_failure().
+So the page can't also be PageReserved(p) or PageSlab(p) or PageTable(p) here? I think the check here just wants
+to make things clear that only user-mapped pages are interested. Or am I miss something?
 
-Best regards,
-Krzysztof
+Thanks Naoya.
+
 
