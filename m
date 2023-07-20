@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F90C75B324
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D72975B327
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232734AbjGTPkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45988 "EHLO
+        id S232749AbjGTPkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231651AbjGTPkU (ORCPT
+        with ESMTP id S232663AbjGTPkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:40:20 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92B3CE;
-        Thu, 20 Jul 2023 08:40:19 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51f90f713b2so1344412a12.1;
-        Thu, 20 Jul 2023 08:40:19 -0700 (PDT)
+        Thu, 20 Jul 2023 11:40:21 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C8F10A;
+        Thu, 20 Jul 2023 08:40:20 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51e57874bfdso1311840a12.0;
+        Thu, 20 Jul 2023 08:40:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689867618; x=1690472418;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6JI0piZU5sNjEYOXtdBH6ZjBT6nk63W7wJyW7LaZcAw=;
-        b=d220ek6DDrJpviwj2v3MvP4MDu1DRqLVXv7KbJKRsH9ksrVGRfjy8BteOLK2WGAEXU
-         gGJdaqAA+DfiKQjgmX7o/GpiiA1jjlsxxwUgKtL4/Wz+ToTaJRdcIimvBWc8kkJtAGQH
-         qlk0OWRRZMYIYVvP0wpgpGmGG43TuvpVVZT/+UgzoBTrbKV6yg1L7LCoakvBpg1LSOgP
-         98JMbdwhQ0VDFjpG5CKnIa2RUQizLtMkVIWZD8IhT6uEaIFJ+MawXN4/V1M67YelZGeV
-         ts0bCZt5hUr3Yr3TLBQqUuvzFGYTJQf53AHHJvjR6yr2OmD9OR049O44JFiDIVHFB2Wi
-         FIIA==
+        d=gmail.com; s=20221208; t=1689867619; x=1690472419;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tsbU8ooj7S9jmkq9hSAh/7F5SKUWz7tmOq8dW3PqPg4=;
+        b=UmBevlosBXQt3URK+UhcEuAllkolwtShCPzI9wum1M5f9RCts4jcmWJvruL1dz1tcz
+         pDWdwoZPW9yRMDm4kXzXvfiBW/pdAAOD0S8UBFGSbpqwmsGD9+UWyFSJMoc9xirFecHy
+         x2DCBNWJtNT1S9YYwkkXS+URXnsAcWXyQKOt2f27EnVk+SgdYKL2/p0pTelUL2p1b15r
+         4H+nmy1xpDsJi+AndutddZra13oKft5BuBVrcMG/h7FTDtZpq394TP/t51QoSGx1HChh
+         NQSdN6iZzWxqHCnob+Y0LOQfCIyzOvQhqhxwCwFRfvUe49JBwwa6BUKXtwN99ZayoBPf
+         qkaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689867618; x=1690472418;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6JI0piZU5sNjEYOXtdBH6ZjBT6nk63W7wJyW7LaZcAw=;
-        b=S1ZNi8gmwIolJ0H0x1tesUR7JcnVURD2yd6l5iu40uzxkx49OOsI/WLTrpXzTCEus7
-         K018eKOQFoYndpgsYyevaNgow0YDORYhlQDVrSzLGOJVXmdQSX744oNcuZ032OEV3OJn
-         FBW5Ap7MU20ZD1fygQO3yIj7ICr/pCwGeL6iEVEi6dRRpVfnP7WEFlMZDaVq7z74+XQp
-         sJ9qxuIvU4AexgZoCHH0gnxc9u5BEEvT5PLla+OvvjJOx9ozTKQ3K6SAYxgEBRJWh3uj
-         Dl8GMLV89XHJA9HjgK4eATnLXn/zselH2v7O4tK7duPH6u8qBd0QIAUcd7XtpR+Covbt
-         CtQQ==
-X-Gm-Message-State: ABy/qLYdB3sw6Zj5106gUJ9+c2pO2OgmMKTEQi5c6oibcrBoCP6on9y2
-        2mLLEX7PUB9hP6Kmm62rlgmShR35E680kA==
-X-Google-Smtp-Source: APBJJlE5f16VHOvYjpCJqnm4n99jMhq4cr3qZiNnRezHz9n5zHWVOF2ucs2oReoDIUaIDB77reDuhA==
-X-Received: by 2002:a17:906:113:b0:991:d5ad:f1a7 with SMTP id 19-20020a170906011300b00991d5adf1a7mr5646390eje.51.1689867618106;
+        d=1e100.net; s=20221208; t=1689867619; x=1690472419;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tsbU8ooj7S9jmkq9hSAh/7F5SKUWz7tmOq8dW3PqPg4=;
+        b=iizCelj1uaI/Wln1X9VOFPvFwoQpTYUIkBrY2QITGtvqQwRl2pN+Ym/DIh3Kw5N4FZ
+         DjKSkbJHB41usXaPWtjXF6mY9OvnJUC5rDCafsnVcv5kyfIxyrfnlsfOwZOz/yA+vXmb
+         iwIooU1LJWUXEIoWQT/Mczo3DKJ9qTozQFPivmx/7JX7qgUyD6BsA6KGD984LoWjCr+G
+         Ndpq20CIGBlvMJ8EcquI0bLNw/wmrbSuDWZI5broF64p7SS2KJVh3zeir46W5nP8+ejk
+         +GQSdyy51nIUhTNhRGbhYmxYiSA4bI/8J/3te73wg8fq3ZhlN+rg+pbV14fbWz9BhRla
+         lUjw==
+X-Gm-Message-State: ABy/qLbZx82qqDAfYbRf3VlVaUqiAcV9NVzoLOubQy/bwaGk7wFm+vgL
+        AesvNkiSJmJf7bwD8ruvS3g=
+X-Google-Smtp-Source: APBJJlG1eF/RIRoP5fphu9rSD3DYQvQeUp1+90MIA4aJ/g7EmkwB+jNJb+bppViQsPAz15sX59+hiA==
+X-Received: by 2002:a05:6402:2145:b0:51e:2a56:91d6 with SMTP id bq5-20020a056402214500b0051e2a5691d6mr2404109edb.19.1689867618600;
         Thu, 20 Jul 2023 08:40:18 -0700 (PDT)
 Received: from colla-nuc.fritz.box (host-95-237-109-246.retail.telecomitalia.it. [95.237.109.246])
-        by smtp.gmail.com with ESMTPSA id qx4-20020a170906fcc400b00987e2f84768sm869484ejb.0.2023.07.20.08.40.17
+        by smtp.gmail.com with ESMTPSA id n2-20020aa7c782000000b00521953ce6e0sm899882eds.93.2023.07.20.08.40.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 08:40:17 -0700 (PDT)
+        Thu, 20 Jul 2023 08:40:18 -0700 (PDT)
 Received: from colla-nuc.fritz.box (localhost [127.0.0.1])
-        by colla-nuc.fritz.box (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTP id 36KFeGIJ119642;
-        Thu, 20 Jul 2023 17:40:16 +0200
+        by colla-nuc.fritz.box (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTP id 36KFeHig119646;
+        Thu, 20 Jul 2023 17:40:17 +0200
 Received: (from colla@localhost)
-        by colla-nuc.fritz.box (8.15.2/8.15.2/Submit) id 36KFeGPf119641;
-        Thu, 20 Jul 2023 17:40:16 +0200
+        by colla-nuc.fritz.box (8.15.2/8.15.2/Submit) id 36KFeHtU119645;
+        Thu, 20 Jul 2023 17:40:17 +0200
 From:   Andrea Collamati <andrea.collamati@gmail.com>
 To:     Jonathan Cameron <jic23@kernel.org>,
         Lars-Peter Clausen <lars@metafoo.de>,
@@ -64,12 +65,13 @@ To:     Jonathan Cameron <jic23@kernel.org>,
         Andrea Collamati <andrea.collamati@gmail.com>
 Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: =?UTF-8?q?=5BPATCH=20v3=200/2=5D=20add=20MCP4728=20I2C=20DAC=20driver=E2=80=8B?=
-Date:   Thu, 20 Jul 2023 17:40:01 +0200
-Message-Id: <cover.1689857295.git.andrea.collamati@gmail.com>
+Subject: [PATCH v3 1/2] dt-bindings: iio: dac: add mcp4728.yaml
+Date:   Thu, 20 Jul 2023 17:40:02 +0200
+Message-Id: <9816cd272d19802ec6eeff0c7c29e85d4a0ade88.1689857295.git.andrea.collamati@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1689857295.git.andrea.collamati@gmail.com>
+References: <cover.1689857295.git.andrea.collamati@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -81,32 +83,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes v2->v3:
-- fix wrong i2c_device_id array indentation
-- removed double blank line in Kconfig
-- added description in dt-bindings
-- use uppercase letters for device name
+Add documentation for MCP4728
 
-Changes v1->v2:
-- fix mcp4728_remove prototype
-- improve indentation
-- various fixes suggested by checkscript.pl
-- removed unused of_device_id.data field
-- removed unuseful mcp4728_data.id field
-- various fixes suggested by dt_binding_check
-
-Andrea Collamati (2):
-  dt-bindings: iio: dac: add mcp4728.yaml
-  iio: add MCP4728 I2C DAC driver
-
- .../bindings/iio/dac/microchip,mcp4728.yaml   |  48 ++
- drivers/iio/dac/Kconfig                       |  11 +
- drivers/iio/dac/Makefile                      |   1 +
- drivers/iio/dac/mcp4728.c                     | 638 ++++++++++++++++++
- 4 files changed, 698 insertions(+)
+Signed-off-by: Andrea Collamati <andrea.collamati@gmail.com>
+---
+ .../bindings/iio/dac/microchip,mcp4728.yaml   | 48 +++++++++++++++++++
+ 1 file changed, 48 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/iio/dac/microchip,mcp4728.yaml
- create mode 100644 drivers/iio/dac/mcp4728.c
 
+diff --git a/Documentation/devicetree/bindings/iio/dac/microchip,mcp4728.yaml b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4728.yaml
+new file mode 100644
+index 000000000000..6fd9be076245
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4728.yaml
+@@ -0,0 +1,48 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/dac/microchip,mcp4728.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip MCP4728 DAC
++
++description:
++  MCP4728 is a quad channel, 12-bit voltage output
++  Digital-to-Analog Converter with non-volatile
++  memory and I2C compatible Serial Interface.
++  https://www.microchip.com/en-us/product/mcp4728
++
++maintainers:
++  - Andrea Collamati <andrea.collamati@gmail.com>
++
++properties:
++  compatible:
++    enum:
++      - microchip,mcp4728
++  reg:
++    maxItems: 1
++
++  vdd-supply:
++    description: |
++      Provides both power and acts as the reference supply on the MCP4728
++      when Internal Vref is not selected.
++
++required:
++  - compatible
++  - reg
++  - vdd-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        mcp4728@60 {
++            compatible = "microchip,mcp4728";
++            reg = <0x60>;
++            vdd-supply = <&vdac_vdd>;
++        };
++    };
 -- 
 2.34.1
 
