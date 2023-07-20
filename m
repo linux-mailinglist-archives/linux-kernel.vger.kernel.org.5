@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE4375B7CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F03475B7CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbjGTTTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 15:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33946 "EHLO
+        id S230360AbjGTTUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 15:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjGTTTT (ORCPT
+        with ESMTP id S229531AbjGTTUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 15:19:19 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CC51724
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:19:18 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5728df0a7d9so12827647b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:19:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689880757; x=1690485557;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=als7alM6wl4HPiHeVC1qkxagLYbhNVGTD2+M73cPKzc=;
-        b=c/2EGs3153+d36iIDKMBGGpJdLhaWp0J0+avlVYwQbipjDwrNg1CM/2Eel2ExzaWhz
-         gfKouqm1OWCjQMp9vFkSCmbBT0MtSL89ti6yWZrB+y0YX0FoC/p9Vovee3BmWb9NanvF
-         S0rcwvy/rc4nJTfc3tD+sUhAwFEleh+s8nvdrW3tm6CxOT0S1pFOl8FjlwRoMd8biDNE
-         kWUsooKupU9rS9tWAY4xuOMoIOYqtCKhlnlhjtapToc2UAjeZiF3du3bZ6yxKahsci8H
-         ctNwKE8/lSmxqrPEPKwmDBiZCAiN5BozfVb1sjllJw3h2wgJI/hm4KE6CmrrARY5dKCn
-         of8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689880757; x=1690485557;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=als7alM6wl4HPiHeVC1qkxagLYbhNVGTD2+M73cPKzc=;
-        b=krXpPZgZVLb8QKO3NIwKQ5jwiMPzCiXbirqeEU68BnRwvodc+JkHBf4d+VZ8Ki5dPT
-         gj1BDGBGMGvrHSGelJpGm6WnaFIOxbRANK+Srv8SCZwH0W+u0bZ34AuYR4JUPUMgjGDE
-         qIPlJgyrW1tKHyk2QJaUozlaG/6/bTNczy6QtP50xlvFSPywl4Z6pnaG/OgkZKR4n90Z
-         fQCDTZKEwFNw4dmaNvNB1VorJcGwjBCCWzOcuIYfwUiPgDmWCKrQbYvBdCe7PdFFb07W
-         WzUs+Z6n7BAQeQHudMcheuJWgxPswxbOlPbbIypNufNfdWFloTdWELa3hc4sL1Lcd0Cd
-         hnsQ==
-X-Gm-Message-State: ABy/qLZsZm0YU5luIfLQ/g7h1Xc4Q3CvSGfbx3vX6F99W5Mn0i0fbdy/
-        nFWz8UJXiWn66Kfah6ekQWrxC865HOrQN5e8Qtqchg==
-X-Google-Smtp-Source: APBJJlEKHsTY3J3aR/UfecQYYLRiOprm4ld8yB/fRlOfar6oxQEJ/1bIkz0iXkP5eRvlGd0WILMSfkBtBRsrnItYvCQ=
-X-Received: by 2002:a25:68cf:0:b0:cef:bc0b:11b with SMTP id
- d198-20020a2568cf000000b00cefbc0b011bmr5731048ybc.51.1689880757343; Thu, 20
- Jul 2023 12:19:17 -0700 (PDT)
+        Thu, 20 Jul 2023 15:20:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9534A171D
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:20:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2A278616B4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 19:20:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A1AAC433C8;
+        Thu, 20 Jul 2023 19:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689880816;
+        bh=7J8RBLCwafwPtaQ9gdKbvPgytbTGrbMuKVN30E0FCJ4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AZIEIranBXAghUEn8aWNlwC2xwxMfluBCSUNbcdXxYRcg3nDj46sDuwcKMohX1aod
+         21J0PdrL49BC2Q7HfjBPxNHU0+t2CV0TUS6V8sbEqwxOs7C5CzMhAoUmsSj9hbH/9X
+         ZLSS4Sk8qWZJ3JZWFWkCjTDUJWuPYB/g4glqK4iAHuelQwqey6AoePPkaKTqeTGRZ6
+         PEVkqiYqTunUgZFDc+6VzGegHiD07F3HiyV+w4JBWo9I6JXNCyaJat1WUzuAalKPEp
+         pOdqZ+5oI65b88Y2QGu3lETqDm9lOzDnKfT0OEfjW65H4fegIY+gRIPcbGGJuMzx/D
+         lsYoTVVCkkzgA==
+Date:   Thu, 20 Jul 2023 12:20:15 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC net-next v2 7/7] net: skbuff: always try to recycle
+ PP pages directly when in softirq
+Message-ID: <20230720122015.1e7efc21@kernel.org>
+In-Reply-To: <b3884ff9-d903-948d-797a-1830a39b1e71@intel.com>
+References: <20230714170853.866018-1-aleksander.lobakin@intel.com>
+        <20230714170853.866018-10-aleksander.lobakin@intel.com>
+        <20230718174042.67c02449@kernel.org>
+        <d7cd1903-de0e-0fe3-eb15-0146b589c7b0@intel.com>
+        <20230719135150.4da2f0ff@kernel.org>
+        <48c1d70b-d4bd-04c0-ab46-d04eaeaf4af0@intel.com>
+        <20230720101231.7a5ff6cd@kernel.org>
+        <8e65c3d3-c628-2176-2fc2-a1bc675ad607@intel.com>
+        <20230720110027.4bd43ee7@kernel.org>
+        <988fc62d-2329-1560-983a-79ff5653a6a6@intel.com>
+        <b3884ff9-d903-948d-797a-1830a39b1e71@intel.com>
 MIME-Version: 1.0
-References: <20230714081902.2621771-1-Naresh.Solanki@9elements.com>
-In-Reply-To: <20230714081902.2621771-1-Naresh.Solanki@9elements.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 20 Jul 2023 21:19:05 +0200
-Message-ID: <CACRpkdasmjUFZ6vnNe7HYoWgi2rSgX9uX9S9Szvb5r8ecr3vpA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: cypress,cy8c95x0: Add reset pin
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Naresh!
+On Thu, 20 Jul 2023 20:13:07 +0200 Alexander Lobakin wrote:
+> IOW, it reports we're in softirq no bloody matter if interrupts are
+> enabled or not. Either I did something wrong or the entire in_*irq()
+> family, including interrupt_context_level(), doesn't protect from
+> anything at all and doesn't work the way that most devs expect it to work?
+> 
+> (or was it just me? :D)
+> 
+> I guess the only way to be sure is to always check irqs_disabled() when
+> in_softirq() returns true.
 
-On Fri, Jul 14, 2023 at 10:19=E2=80=AFAM Naresh Solanki
-<naresh.solanki@9elements.com> wrote:
+We can as well check
+	(in_softirq() && !irqs_disabled() && !in_hardirq())
+?
 
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
->
-> This patch adds support for an optional reset pin.
->
-> The reset pin is used to bring the chip into a known state and has an
-> internal pull-down, allowing it to be left floating if not needed.
->
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+The interrupt_context_level() thing is fairly new, I think.
+Who knows what happens to it going forward...
 
-Both patches applied!
+> >> Right now page pool only supports BH and process contexts. IOW the
+> >> "else" branch of if (in_softirq()) in page pool is expecting to be
+> >> in process context.
+> >>
+> >> Supporting hard irq would mean we need to switch to _irqsave() locking.
+> >> That's likely way too costly.
+> >>
+> >> Or stash the freed pages away and free them lazily.
+> >>
+> >> Or add a lockdep warning and hope nobody will ever free a page-pool
+> >> backed skb from hard IRQ context :)  
+> > 
+> > I told you under the previous version that this function is not supposed
+> > to be called under hardirq context, so we don't need to check for it :D
+> > But I was assuming nobody would try to do that. Seems like not really
+> > (netcons) if you want to sanitize this...
 
-Yours,
-Linus Walleij
+netcons or anyone who freed socket-less skbs from hardirq.
+Until pp recycling was added freeing an skb from hardirq was legal,
+AFAICT.
