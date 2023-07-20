@@ -2,126 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB1575BA7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE81475BA81
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 00:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbjGTWU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 18:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
+        id S230080AbjGTWUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 18:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjGTWUR (ORCPT
+        with ESMTP id S230194AbjGTWUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 18:20:17 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD1942D7D;
-        Thu, 20 Jul 2023 15:19:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1689891580;
-        bh=qdbWIDnRmwX5ckyQEWL+ZpWxc5wfAxXFPHqB4zGGG2E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rHg9YJwDHoxFI7lXN60mcAYn33qzI4U/9USAv0OQh2KDCI3cmgGMDj/hCbJ8xnjat
-         Vha8JGwwKqgphyEbMr4OdUAScBsh54zoJhyh1dwduWtFodWosQJFf48mUzAYgDSyly
-         leIyHzZDyoEjVMvwLR16GMhM/BbD9WEFgdjd/29bWgLGMtF1LLtqEG9V91sUDECu1k
-         G/Lrh55gGib3e/fbvlaRLxHkZgt6qNrHNUf2P5OweBGiZKh+LXKv1BwuoezAVaMb6R
-         PJ9ZRVL+KdfHQ9NCN8fRNlA2D+stJGZUNa/cIQjlY9Y8wa/2aUMptMfaTIQpFr/aw0
-         1Yr3706w8uhqw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R6Rtz6xFwz4wyH;
-        Fri, 21 Jul 2023 08:19:39 +1000 (AEST)
-Date:   Fri, 21 Jul 2023 08:19:38 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alexander Mikhalitsyn <alexander@mihalicyn.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "Von Dentz, Luiz" <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Networking <netdev@vger.kernel.org>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>
-Subject: Re: linux-next: build failure after merge of the bluetooth tree
-Message-ID: <20230721081938.19ca4289@canb.auug.org.au>
-In-Reply-To: <CAJqdLron07dGuchjmPZcD6xe5af+qpgNMThz5G8=tR7n4=fU1A@mail.gmail.com>
-References: <PH0PR11MB51269B6805230AB8ED209B14D332A@PH0PR11MB5126.namprd11.prod.outlook.com>
-        <20230720105042.64ea23f9@canb.auug.org.au>
-        <20230719182439.7af84ccd@kernel.org>
-        <20230720130003.6137c50f@canb.auug.org.au>
-        <PH0PR11MB5126763E5913574B8ED6BDE4D33EA@PH0PR11MB5126.namprd11.prod.outlook.com>
-        <20230719202435.636dcc3a@kernel.org>
-        <20230720081430.1874b868@kernel.org>
-        <CAJqdLron07dGuchjmPZcD6xe5af+qpgNMThz5G8=tR7n4=fU1A@mail.gmail.com>
+        Thu, 20 Jul 2023 18:20:21 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A6530CB
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:19:54 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4f122ff663eso2025630e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:19:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689891582; x=1690496382;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YJ77mz9/Y8tKmxWlrpdrpwVl9KeSTko3I5zfeCIcNwg=;
+        b=H1RqqSEXpfmwWr9zsWu/sfrpqDnL43wUbxDjjRSWhO3qZO/Li0ShCRsO65l9hp4O+f
+         u109AdnYNfG5j+QRLGPfNdGg9nikEOTnFpHq/Bonu3MXHAqse0e/UfUh4MBsSqg5swNQ
+         Vz4+JZvSwjU0k6+IiYhiCciyvWKHT7sb3M+VciLQfE+xanUSDvzQBa7edH1DzGix6PLl
+         8Ok1Ccl7DujbOPeVpUC0AnYnPjZM4X+bpqtUDt54tpjrRfTbiVPCxVfrYp35EHqjpoLj
+         O3j9oEsm2qnBDcjMTM4iCPBlk0VE0W/whSiBEI8KHwoDF1fgfjyxUwGFC8FAKRkFnpfJ
+         hY8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689891582; x=1690496382;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YJ77mz9/Y8tKmxWlrpdrpwVl9KeSTko3I5zfeCIcNwg=;
+        b=M1JaFOU5Ss4eAV+J4oP86IF+fSRP0og1r/vhbVcMZUwz3S059uZ2N7t+CMzTz7MRS5
+         bljZ6q4uj0vpB8Sq0cdeHb0ELihmY58678kxe3MO6U/SYgG2oINdc9kQuPGlvzsCQby4
+         +/KvK0qLOZ+YPEYpqpTDs806HfMmF50GtIxjR++4NOXBsfrSlr+NnFFcwXTRQp07YiZA
+         7+TQjSgSRlCtNvZmhOXQNZWRygMd7MZsBMyFm+OyNCwzAFlGt07pSey8gWdTRTLqB3zj
+         oysvehnsqKPVlBWvNQnVjJCL6oCCPuMdZxEKY+R80g+0PIdXSPNp348xBfiDmZTXxYOL
+         LI/Q==
+X-Gm-Message-State: ABy/qLYslVw+dUYYfFJgwGQCkjFGMUp4DwQ0RpGol8sxuIkufe8JkRjI
+        CI1EmPpqyA/0T1G9r8v3ZJT3GA==
+X-Google-Smtp-Source: APBJJlHfe8khe0anpvKb7YQI01qEHZvwrEM7M95xdXi8sBLZb6EjvOpWLw5XJPSheev8ntU7DEC9qg==
+X-Received: by 2002:a05:6512:1050:b0:4fb:7381:4c69 with SMTP id c16-20020a056512105000b004fb73814c69mr38649lfb.28.1689891582542;
+        Thu, 20 Jul 2023 15:19:42 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id s3-20020a19ad43000000b004fbad09317csm403620lfd.189.2023.07.20.15.19.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 15:19:42 -0700 (PDT)
+Message-ID: <ed23b28a-d0ff-72c2-a5ee-d2f585b4ba3b@linaro.org>
+Date:   Fri, 21 Jul 2023 01:19:41 +0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VfHlyY9va_AYo3+=saPglHQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 5/5] drm/msm/dp: move of_dp_aux_populate_bus() to probe
+ for eDP
+Content-Language: en-GB
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Vinod Koul <vkoul@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sankeerth Billakanti <quic_sbillaka@quicinc.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>
+References: <1688773943-3887-1-git-send-email-quic_khsieh@quicinc.com>
+ <1688773943-3887-6-git-send-email-quic_khsieh@quicinc.com>
+ <0cac7c17-c822-927e-cc15-456b1423689c@linaro.org>
+ <2278c46c-cb2c-2842-ab20-e6a334fe002b@quicinc.com>
+ <CAA8EJpoJ4Tqew5oFSE44vnBrnO+nfizffLvHV3uwrvcvjZTk0A@mail.gmail.com>
+ <07fe061c-6d0e-b3b7-7126-a7b014aec478@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <07fe061c-6d0e-b3b7-7126-a7b014aec478@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VfHlyY9va_AYo3+=saPglHQ
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 20/07/2023 23:27, Kuogee Hsieh wrote:
+> 
+> On 7/10/2023 11:24 AM, Dmitry Baryshkov wrote:
+>> [Restored CC list]
+>>
+>> On Mon, 10 Jul 2023 at 20:08, Kuogee Hsieh <quic_khsieh@quicinc.com> 
+>> wrote:
+>>>
+>>> On 7/7/2023 5:32 PM, Dmitry Baryshkov wrote:
+>>>> On 08/07/2023 02:52, Kuogee Hsieh wrote:
+>>>>> Move of_dp_aux_populate_bus() to dp_display_probe() for eDP
+>>>>> from dp_display_bind() so that probe deferral cases can be
+>>>>> handled effectively
+>>>>>
+>>>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>>>>> ---
+>>>>>    drivers/gpu/drm/msm/dp/dp_aux.c     | 25 ++++++++++++
+>>>>>    drivers/gpu/drm/msm/dp/dp_display.c | 79
+>>>>> +++++++++++++++++++------------------
+>>>>>    2 files changed, 65 insertions(+), 39 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c
+>>>>> b/drivers/gpu/drm/msm/dp/dp_aux.c
+>>>>> index c592064..c1baffb 100644
+>>>>> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+>>>>> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+>>>>> @@ -505,6 +505,21 @@ void dp_aux_unregister(struct drm_dp_aux *dp_aux)
+>>>>>        drm_dp_aux_unregister(dp_aux);
+>>>>>    }
+>>>>>    +static int dp_wait_hpd_asserted(struct drm_dp_aux *dp_aux,
+>>>>> +                 unsigned long wait_us)
+>>>>> +{
+>>>>> +    int ret;
+>>>>> +    struct dp_aux_private *aux;
+>>>>> +
+>>>>> +    aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
+>>>>> +
+>>>>> +    pm_runtime_get_sync(aux->dev);
+>>>>> +    ret = dp_catalog_aux_wait_for_hpd_connect_state(aux->catalog);
+>>>>> +    pm_runtime_put_sync(aux->dev);
+>>>>> +
+>>>>> +    return ret;
+>>>>> +}
+>>>>> +
+>>>>>    struct drm_dp_aux *dp_aux_get(struct device *dev, struct dp_catalog
+>>>>> *catalog,
+>>>>>                      bool is_edp)
+>>>>>    {
+>>>>> @@ -528,6 +543,16 @@ struct drm_dp_aux *dp_aux_get(struct device
+>>>>> *dev, struct dp_catalog *catalog,
+>>>>>        aux->catalog = catalog;
+>>>>>        aux->retry_cnt = 0;
+>>>>>    +    /*
+>>>>> +     * Use the drm_dp_aux_init() to use the aux adapter
+>>>>> +     * before registering aux with the DRM device.
+>>>>> +     */
+>>>>> +    aux->dp_aux.name = "dpu_dp_aux";
+>>>>> +    aux->dp_aux.dev = dev;
+>>>>> +    aux->dp_aux.transfer = dp_aux_transfer;
+>>>>> +    aux->dp_aux.wait_hpd_asserted = dp_wait_hpd_asserted;
+>>>>> +    drm_dp_aux_init(&aux->dp_aux);
+>>>>> +
+>>>>>        return &aux->dp_aux;
+>>>>>    }
+>>>>>    diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
+>>>>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>>>>> index 185f1eb..7ed4bea 100644
+>>>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>>>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>>>>> @@ -302,10 +302,6 @@ static int dp_display_bind(struct device *dev,
+>>>>> struct device *master,
+>>>>>            goto end;
+>>>>>        }
+>>>>>    -    pm_runtime_enable(dev);
+>>>>> -    pm_runtime_set_autosuspend_delay(dev, 1000);
+>>>>> -    pm_runtime_use_autosuspend(dev);
+>>>>> -
+>>>>>        return 0;
+>>>>>    end:
+>>>>>        return rc;
+>>>>> @@ -322,8 +318,6 @@ static void dp_display_unbind(struct device *dev,
+>>>>> struct device *master,
+>>>>>          kthread_stop(dp->ev_tsk);
+>>>>>    -    of_dp_aux_depopulate_bus(dp->aux);
+>>>>> -
+>>>>>        dp_power_client_deinit(dp->power);
+>>>>>        dp_unregister_audio_driver(dev, dp->audio);
+>>>>>        dp_aux_unregister(dp->aux);
+>>>>> @@ -1245,6 +1239,29 @@ static const struct msm_dp_desc
+>>>>> *dp_display_get_desc(struct platform_device *pde
+>>>>>        return NULL;
+>>>>>    }
+>>>>>    +static void of_dp_aux_depopulate_bus_void(void *data)
+>>>>> +{
+>>>>> +    of_dp_aux_depopulate_bus(data);
+>>>>> +}
+>>>>> +
+>>>>> +static int dp_display_auxbus_emulation(struct dp_display_private *dp)
+>>>> Why is it called emulation?
+>>>>
+>>>>> +{
+>>>>> +    struct device *dev = &dp->pdev->dev;
+>>>>> +    struct device_node *aux_bus;
+>>>>> +    int ret = 0;
+>>>>> +
+>>>>> +    aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
+>>>>> +
+>>>>> +    if (aux_bus) {
+>>>>> +        ret = devm_of_dp_aux_populate_bus(dp->aux, NULL);
+>>>> And here you missed the whole point of why we have been asking for.
+>>>> Please add a sensible `done_probing' callback, which will call
+>>>> component_add(). This way the DP component will only be registered
+>>>> when the panel has been probed. Keeping us from the component binding
+>>>> retries and corresponding side effects.
+>>>>
+>>>>> +
+>>>>> +        devm_add_action_or_reset(dev, of_dp_aux_depopulate_bus_void,
+>>>>> +                     dp->aux);
+>>>> Useless, it's already handled by the devm_ part of the
+>>>> devm_of_dp_aux_populate_bus().
+>>>>
+>>>>> +    }
+>>>>> +
+>>>>> +    return ret;
+>>>>> +}
+>>>>> +
+>>>>>    static int dp_display_probe(struct platform_device *pdev)
+>>>>>    {
+>>>>>        int rc = 0;
+>>>>> @@ -1290,8 +1307,18 @@ static int dp_display_probe(struct
+>>>>> platform_device *pdev)
+>>>>>          platform_set_drvdata(pdev, &dp->dp_display);
+>>>>>    +    pm_runtime_enable(&pdev->dev);
+>>>>> +    pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
+>>>>> +    pm_runtime_use_autosuspend(&pdev->dev);
+>>>> Can we have this in probe right from the patch #2?
+>>> no, at patch#2, devm_of_dp_aux_populate_bus() is done ta bind timing.
+>>>
+>>> The device used by pm_runtime_get_sync() of generic_edp_panel_probe()
+>>> which is derived from devm_of_dp_aux_populate_bus() is different the
+>>> &pdev->dev here.
+>> Excuse me, I don't get your answer. In patch #2 you have added
+>> pm_runtime_enable() / etc to dp_display_bind().
+>> In this patch you are moving these calls to dp_display_probe(). I
+>> think that the latter is a better place for enabling runtime PM and as
+>> such I've asked you to squash this chunk into patch #2.
+>> Why isn't that going to work?
+>>
+>> If I'm not mistaken here, the panel's call to pm_runtime_get_sync()
+>> will wake up the panel and all the parent devices, including the DP.
+>> That's what I meant in my comment regarding PM calls in the patch #1.
+>> pm_runtime_get_sync() / resume() / etc. do not only increase the
+>> runtime PM count. They do other things to parent devices, linked
+>> devices, etc.
+> 
+> sorry for late response,
+> 
+> yes, pm_runtime_enable() at probe() is better and i did that original. 
+> but it is not work.
+> 
+> I found that,
+> 
+> 1) at dp_display_bind(), dev is mdss
 
-Hi Alexander,
+If the 'dev' is the issue, you can always use dp_display_private::pdev.
 
-On Thu, 20 Jul 2023 17:21:54 +0200 Alexander Mikhalitsyn <alexander@mihalic=
-yn.com> wrote:
->
-> On Thu, Jul 20, 2023 at 5:14=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> =
-wrote:
-> >
-> > On Wed, 19 Jul 2023 20:24:35 -0700 Jakub Kicinski wrote: =20
-> > > On Thu, 20 Jul 2023 03:17:37 +0000 Von Dentz, Luiz wrote: =20
-> > > > Sorry for not replying inline, outlook on android, we use scm_recv
-> > > > not scm_recv_unix, so Id assume that change would return the initial
-> > > > behavior, if it did not then it is not fixing anything. =20
-> > >
-> > > Ack, that's what it seems like to me as well.
-> > >
-> > > I fired up an allmodconfig build of linux-next. I should be able
-> > > to get to the bottom of this in ~20min :) =20
-> >
-> > I kicked it off and forgot about it.
-> > allmodconfig on 352ce39a8bbaec04 (next-20230719) builds just fine :S =20
->=20
-> Thanks for checking!
->=20
-> As I can see linux-next tree contains both patches:
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/?=
-h=3Dnext-20230719&qt=3Dgrep&q=3DForward+credentials+to+monitor
->=20
-> So, the fix is working, right?
+> 
+> 2) at probe() dev is dp
+> 
+> 3) pm_runtime_enable(dp's dev) and generic_edp_panel_probe() --> 
+> pm_runtime_get_sync(mdss's dev)
 
-I will remove the revert today.
+I might be missing something. Please describe, what exactly doesn't work.
 
-Thanks.
---=20
-Cheers,
-Stephen Rothwell
+> 
+> 
+> 
+>>>>> +
+>>>>>        dp_display_request_irq(dp);
+>>>>>    +    if (dp->dp_display.is_edp) {
+>>>>> +        rc = dp_display_auxbus_emulation(dp);
+>>>>> +        if (rc)
+>>>>> +            DRM_ERROR("eDP aux-bus emulation failed, rc=%d\n", rc);
+>>>>> +    }
+>>>>> +
+>>>>>        rc = component_add(&pdev->dev, &dp_display_comp_ops);
+>>>>>        if (rc) {
+>>>>>            DRM_ERROR("component add failed, rc=%d\n", rc);
+>>>>> @@ -1306,11 +1333,14 @@ static int dp_display_remove(struct
+>>>>> platform_device *pdev)
+>>>>>        struct dp_display_private *dp =
+>>>>> dev_get_dp_display_private(&pdev->dev);
+>>>>>          component_del(&pdev->dev, &dp_display_comp_ops);
+>>>>> -    dp_display_deinit_sub_modules(dp);
+>>>>> -
+>>>>>        platform_set_drvdata(pdev, NULL);
+>>>>> +
+>>>>> +    pm_runtime_dont_use_autosuspend(&pdev->dev);
+>>>>> +    pm_runtime_disable(&pdev->dev);
+>>>>>        pm_runtime_put_sync_suspend(&pdev->dev);
+>>>>>    +    dp_display_deinit_sub_modules(dp);
+>>>>> +
+>>>>>        return 0;
+>>>>>    }
+>>>>>    @@ -1514,31 +1544,10 @@ void msm_dp_debugfs_init(struct msm_dp
+>>>>> *dp_display, struct drm_minor *minor)
+>>>>>      static int dp_display_get_next_bridge(struct msm_dp *dp)
+>>>>>    {
+>>>>> -    int rc;
+>>>>> +    int rc = 0;
+>>>>>        struct dp_display_private *dp_priv;
+>>>>> -    struct device_node *aux_bus;
+>>>>> -    struct device *dev;
+>>>>>          dp_priv = container_of(dp, struct dp_display_private,
+>>>>> dp_display);
+>>>>> -    dev = &dp_priv->pdev->dev;
+>>>>> -    aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
+>>>>> -
+>>>>> -    if (aux_bus && dp->is_edp) {
+>>>>> -        /*
+>>>>> -         * The code below assumes that the panel will finish probing
+>>>>> -         * by the time devm_of_dp_aux_populate_ep_devices() returns.
+>>>>> -         * This isn't a great assumption since it will fail if the
+>>>>> -         * panel driver is probed asynchronously but is the best we
+>>>>> -         * can do without a bigger driver reorganization.
+>>>>> -         */
+>>>>> -        rc = of_dp_aux_populate_bus(dp_priv->aux, NULL);
+>>>>> -        of_node_put(aux_bus);
+>>>>> -        if (rc)
+>>>>> -            goto error;
+>>>>> -    } else if (dp->is_edp) {
+>>>>> -        DRM_ERROR("eDP aux_bus not found\n");
+>>>>> -        return -ENODEV;
+>>>>> -    }
+>>>>>          /*
+>>>>>         * External bridges are mandatory for eDP interfaces: one 
+>>>>> has to
+>>>>> @@ -1551,17 +1560,9 @@ static int dp_display_get_next_bridge(struct
+>>>>> msm_dp *dp)
+>>>>>        if (!dp->is_edp && rc == -ENODEV)
+>>>>>            return 0;
+>>>>>    -    if (!rc) {
+>>>>> +    if (!rc)
+>>>>>            dp->next_bridge = dp_priv->parser->next_bridge;
+>>>>> -        return 0;
+>>>>> -    }
+>>>>>    -error:
+>>>>> -    if (dp->is_edp) {
+>>>>> -        of_dp_aux_depopulate_bus(dp_priv->aux);
+>>>>> -        dp_display_host_phy_exit(dp_priv);
+>>>>> -        dp_display_host_deinit(dp_priv);
+>>>>> -    }
+>>>>>        return rc;
+>>>>>    }
+>>
+>>
 
---Sig_/VfHlyY9va_AYo3+=saPglHQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+-- 
+With best wishes
+Dmitry
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS5svoACgkQAVBC80lX
-0GzBTwf9FXVnrPPdIATHjsk6uX3felA1BTBpCVY2Ai/8hVsJtTJSRUXMbGkgYZoM
-2P2OLCkJssu59cj1HDO/Ql61DpzwOjJ2u1nIs64joBRoJSDuqlHvIfJNlnXopy+Z
-dEqZLwV3eQhUiC1lhiBr7FrgxA07ZjhlsDnk+Fj/jsZbVXpgXRAMitcI9txtAo/C
-sduQMSOsCH4orSvwseR/07cUAZm+pemUWkHPyTUDfepm96J+QjEC9+OYqpW6gQ6q
-bovm4guPJKWnj16YsiCtwLGYR2C+1eV3nVb+QR6IxUhgOsr7jsvL+7Zuw3/qdkHr
-VCuUJy18sKsyBqJDYaguZprmJ2fiVQ==
-=RWug
------END PGP SIGNATURE-----
-
---Sig_/VfHlyY9va_AYo3+=saPglHQ--
