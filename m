@@ -2,134 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 915FB75B92D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8997275B939
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 23:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjGTVEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 17:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
+        id S229942AbjGTVFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 17:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbjGTVD7 (ORCPT
+        with ESMTP id S229737AbjGTVFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 17:03:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C062727
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689886991;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QxbwNNsUJXE4WSdo9/9FQ7rzSbFKTC0HO55OeJQjfDA=;
-        b=NqLaU+V22HIVrqYv3Or3rQjJCdh8Z7MCI81/zhFnSuq2YlCLS+viepiZzLfhcpNGrps5FX
-        9BDzO7ABWgjYwqlrdSZr2LjNjos3HKY7HDEtZj6+8XgLgUIlWIWXZvtjNrMoqHSQaK68zj
-        raxDhZb7g4SjHEa1uhyJON1GJ0QqU3w=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-346-aFG9s8ChNMKrWhSuvy3bbw-1; Thu, 20 Jul 2023 17:03:07 -0400
-X-MC-Unique: aFG9s8ChNMKrWhSuvy3bbw-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b934194964so12814651fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 14:03:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689886986; x=1690491786;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QxbwNNsUJXE4WSdo9/9FQ7rzSbFKTC0HO55OeJQjfDA=;
-        b=kYJjswLTFUawvBAElrx30V1w+ALEr1TyrXIDWoK61VynZfYWL+2wJCS8jpN4JXVOCG
-         CW51DohUzr27/6n4WCP92hQywaT3nDSpp2DOymA52iTGC1/8ODJkBFk7a9yaIUnZCSiw
-         HP0IssOPzu9TcvGotStABn+GRa92JMUcrVwaHCe0cs2ChNYHg83061rE73Vc1nBAvKuG
-         ObblaEFefoEzOgmNfxVWuT8QCo/6ASbswfae8DvaCCQjd12/7eotqpU5ap8DSEvIHs7E
-         VqKTmaC+aSyJue4ffAmNJLBJhCn8BiUKVOp1M372CZykdluq0cAl8wdixiaOuZhbwaZz
-         ocNQ==
-X-Gm-Message-State: ABy/qLaM/i3IRwcWVwCZVQiRmUaQeypXMs+gPewrzxbW1eYCgtsiJ7FD
-        tdtRyHB14ycfUO6cuQV6Z7M1WTDNwZy6FZuIK0NtNs053Y1lnKI2yYIJ8yc2bVk0J8LmymCOWeC
-        y/351dP+/J0AvwRZxHqI3Hily
-X-Received: by 2002:a2e:9dcf:0:b0:2b6:dbc5:5ca4 with SMTP id x15-20020a2e9dcf000000b002b6dbc55ca4mr86345ljj.16.1689886985702;
-        Thu, 20 Jul 2023 14:03:05 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGkO9895VB0oEJzz7Mt1u7LjrPYNqoemBmNFeHR6tqktWs0kblZ6OrDWTCIs6FgX5K3EX736g==
-X-Received: by 2002:a2e:9dcf:0:b0:2b6:dbc5:5ca4 with SMTP id x15-20020a2e9dcf000000b002b6dbc55ca4mr86325ljj.16.1689886985355;
-        Thu, 20 Jul 2023 14:03:05 -0700 (PDT)
-Received: from redhat.com ([2.52.16.41])
-        by smtp.gmail.com with ESMTPSA id 9-20020a05600c248900b003fbb618f7adsm1982153wms.15.2023.07.20.14.03.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 14:03:04 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 17:02:58 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Shannon Nelson <shannon.nelson@amd.com>
-Cc:     Jason Wang <jasowang@redhat.com>, xuanzhuo@linux.alibaba.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, edumazet@google.com,
-        maxime.coquelin@redhat.com, kuba@kernel.org, pabeni@redhat.com,
-        davem@davemloft.net
-Subject: Re: [PATCH net-next v4 2/2] virtio-net: add cond_resched() to the
- command waiting loop
-Message-ID: <20230720170001-mutt-send-email-mst@kernel.org>
-References: <20230720083839.481487-1-jasowang@redhat.com>
- <20230720083839.481487-3-jasowang@redhat.com>
- <e4eb0162-d303-b17c-a71d-ca3929380b31@amd.com>
+        Thu, 20 Jul 2023 17:05:36 -0400
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020014.outbound.protection.outlook.com [52.101.61.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C52196;
+        Thu, 20 Jul 2023 14:05:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MBJQdU6CUPNCBfMaFzG8hysogsv94RbY3cbbblSVW8qSSGeYyIWHW+2YRfRKw5C4xIw3nCqe1jWM/i7vkp4LqmIif7w0IUQF2DDCHnBzxlFtrwO2pyFtgYS2XFCOPgd4kddy5Dn7jh1VZd6gS6dfaSsjpQHrMELokXDnmYWv42rc8n/9kym4QkwBxAlw2nHhzGGECjqewy/wH9/Lh7K4/f+RiD2RF9vwIdtfejcGZSKQP0NheCMQOTibIqZ12Dg1iNQSn75sda7lE/Pa+hhqozLJPi7OV4vy/ksaAPsglsHRrEnET2GH+baXyMuNyhoKE1bzWqR6ZRlbm3wgivgXPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2samRq9B+dMbI9687fQBJ9zkwc+sIZeOXsA7UR5tbRg=;
+ b=cusvvPtxLO0JD/6o2T7bl7659z+/y+VQO2mXTIFwYkbFI7I8bXn1UP4FQg/nvk41bPuDn7U/A+rsqKVDNfKReY2uNtUPNF5AQfgILIjgOED16a4PSU7g9Qikpx+5xlfQtMWBmGcXWycEyT1LLGMG70DUtg0aQiWphj1pkkcXz1EMx2Ba0d8Vuqsf8rfwHD9mNITLtWPVrnMpR8IAeKMJ6W9SYbyC9hMnvLSG6hH4H2fqXGbfYb+FTwLXa3RSroKkQTVSkbczGODHOgY2S07fUCzt3h5BEGDQWgkLu7DDCd5NwXJI8BoZSIcCb01nMnGi1lgCy3+6h3N/szxhmWfpsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2samRq9B+dMbI9687fQBJ9zkwc+sIZeOXsA7UR5tbRg=;
+ b=aXCJqJur/7tkRhnyTl8rQzByFgRLzaFnEG6GXBFZ40DB9Hcya4lRA4PWFtGGWJUBgt5qNf/PrgniBMDZVAl9RRbBGSBrRkfPCLoD2K5hw40Pt3Yr8HRjiRGrhJl/5QrxC3jAWLNGtcopoeLEYADqi4IUI35NmdmBKq0QDUX2OGQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from DM6PR21MB1370.namprd21.prod.outlook.com (2603:10b6:5:16b::28)
+ by IA1PR21MB3451.namprd21.prod.outlook.com (2603:10b6:208:3e0::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.7; Thu, 20 Jul
+ 2023 21:05:32 +0000
+Received: from DM6PR21MB1370.namprd21.prod.outlook.com
+ ([fe80::58ed:9fb:47a9:13df]) by DM6PR21MB1370.namprd21.prod.outlook.com
+ ([fe80::58ed:9fb:47a9:13df%7]) with mapi id 15.20.6631.011; Thu, 20 Jul 2023
+ 21:05:32 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     kys@microsoft.com, martin.petersen@oracle.com,
+        longli@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        jejb@linux.ibm.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
+Cc:     mikelley@microsoft.com, stable@vger.kernel.org
+Subject: [PATCH 1/1] scsi: storvsc: Limit max_sectors for virtual Fibre Channel devices
+Date:   Thu, 20 Jul 2023 14:05:02 -0700
+Message-Id: <1689887102-32806-1-git-send-email-mikelley@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: MW2PR2101CA0003.namprd21.prod.outlook.com
+ (2603:10b6:302:1::16) To DM6PR21MB1370.namprd21.prod.outlook.com
+ (2603:10b6:5:16b::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e4eb0162-d303-b17c-a71d-ca3929380b31@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR21MB1370:EE_|IA1PR21MB3451:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5085a2dd-466d-4208-999e-08db89650e1f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7jYckPg+y+/uRBDoh05muZKdSDRIAZVkW7xGUyCewle8zcLygpWdQEHsm/EIVptZcISEI357J4S2/zk2gRj7zQp1yRbAQrqVA08fUwpn/9jbG2nc/j0WmFKjZpzjFP7N1eZSIse6JbuUEYiJ2CxpuEtFDZ5PV6iWH/WxcMarQ/o2Z/KKPe6J6AKWPHxu6a0Jtkuja6Z00+N0a0YRG1/YOprLikG6SO3el6nicduWTNpQAQuo2Zeiu+mAEigOm115OegChsIAaZLj5bMvE6YmTMy5p/bHyTiNL9IzdSXnEFtuQLTvI0/Z4mW+LFFGgQ+dl0xfS5gR9K2R6im2uS5wHpynj/RoKlrJ0mjHJBFEp/fecl/brqSaGw8zOPgWVX7UyS7pLkPPBrrXLcfnf1WzEo3ZSEXFD/UJVzCOKOuZc9kW7Ey3UnkrAexhzUBCYnOZLqhRvHcXJcuiENSL8K1EmA6iujjcxJOXWasJIBejCBiYw3SVnBaCW+IXborZ2W2hsMnU3EX6qRPGFO5IkaB2/TJxQrRhepyRqTnglXSK8q9KoMEX7TN05Lu1sBv4T+zuA/YxEcJXEabAXwiqcvDx6C5ioKoa0r2cX/jFLHJhte2qi571IjWO0fBIj1qOdP2by7iT4mHfSdgz4l5tlNd+4r+iFc8c/m65ZbDl3x7EuTA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1370.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(376002)(366004)(396003)(346002)(451199021)(82960400001)(82950400001)(38350700002)(38100700002)(36756003)(86362001)(186003)(6506007)(8936002)(8676002)(6512007)(83380400001)(41300700001)(2616005)(5660300002)(2906002)(478600001)(52116002)(10290500003)(316002)(6666004)(6486002)(66556008)(66476007)(66946007)(26005)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wrBOTVNhFMYHjPtunNwotHARMdWg9vu5tV3Am0U1pn1jnVFc7ecxUP2KSkdj?=
+ =?us-ascii?Q?15W57b8QW9vq9deHO+Lr97AG8WLmApULNUu5dQjD8Ft18fVaEtBw+LJIumtB?=
+ =?us-ascii?Q?IloFSJjIlaEzO0UzkN3FhtIEChN7S+F/9UX5mme0EebU8Tv6t33PCFpPCooF?=
+ =?us-ascii?Q?Zn/vz/D5PjQLjtN/pKGq0WAsNavdf2eaOwFPR50Xbv8MhwCcKMOTsFgahz1/?=
+ =?us-ascii?Q?qyALOCAL/5YZbvi3RSRDA4KnwHmVuH4rWWn5us3a/pY3xDLdezh4UCo+EVDR?=
+ =?us-ascii?Q?6YbXr4Af05znvaJKnpLVBL9jo6D0ACm6IB38538mPoAaKl1/eDN5iV6t0gfU?=
+ =?us-ascii?Q?XCpmCWF2D3rDvRIvmm9g8qbwgLCIAIeF9Rv8Zzxi6ELCcOkesSuZ1rFrEFd8?=
+ =?us-ascii?Q?sMD/ear4y3O5A4sXpfhnGXFaxE91ye0p2kp+FNkP2G9/XsV1BlBwIVu28JQO?=
+ =?us-ascii?Q?kthu2mApt8NQhbdZSmCOdgYNTHASZkIXyvBAjDfhSL2I90Nc5TQVctHcoiMD?=
+ =?us-ascii?Q?vBT7X9qUS05a13+izLZdwkShz53pSIppRuYZdiRYIWyxKgU4GFP9MB0oOwmi?=
+ =?us-ascii?Q?r1NdkCl5tlPJiMOcPj+dZbU/zBvb762wElbCpZMG5ymusGZwea8P2oebCVGt?=
+ =?us-ascii?Q?ncOEPWDR+Njp5g1KMJQuoIzctmOHpBpFg/tvz45SVciKdEDuT/XAYmZpTK8m?=
+ =?us-ascii?Q?34GbX9EDQTicoM8c7UfQJyWsnlj4hNPIYZuNSGSXDYYXzAdH/M7LwQVBS4Ae?=
+ =?us-ascii?Q?1+WOuDXQygUiDnIH5m1YhmneO1vgC+/whackZ9ytgBpGcrki1b0mtgq/P93i?=
+ =?us-ascii?Q?jUNaKu6LLlbVR5Dw6mXh+JpkZJ1IVU+bRN7ve0whSg8RVW9JHpj5G4iPM89w?=
+ =?us-ascii?Q?u4n2Fq4xqi2NTc7eBeZISWm//wiPQ0aMzBaFeEQBRjr0jp4giaVsV0PUIqZ2?=
+ =?us-ascii?Q?ARIbdGpmt7FwlVXTtXjBG5YxfMTwx8CxhAcgSdIyap264pJ9AYSZQfRXfznE?=
+ =?us-ascii?Q?5PHkpsUtYdYZ/ee85LCk7y42WoIYipFFL1weXG1okTj9CvK1N+vLc3dk9pw5?=
+ =?us-ascii?Q?h9hrkPfLJiQki33Dokbruq4nE4mAHfdt22bmK3SAiqfzvnRZbhyMYT5it2TM?=
+ =?us-ascii?Q?eh9oZuxY7gCk/eoE04f1CGb8ltIauTh4kfODFLH2T+tDzP9nd+zoz/FIQaGU?=
+ =?us-ascii?Q?bBFtFIGEjn2GZmfK4YcRqNr2ixLvBQWsHwg6Peebg4XdzJh8jJRBjN4VnPgR?=
+ =?us-ascii?Q?ofBn3onRdvq9OvpSF9rsNQe3NaAUENdIoEDL0RZk5HiO/yNlSrQKkOgYekar?=
+ =?us-ascii?Q?olaFh7n0mS1Kf2kC8DegCV16Rb7NLPL2jyQK2ctUu9N3vMWLWedNtlywMwGf?=
+ =?us-ascii?Q?xF7xGiUCEHUgsrmhwHBpXL2GEU1SfUSACnJPykdymDGc+PlLLBwMFGfrnV7q?=
+ =?us-ascii?Q?nnpfFi/pXaBq+BbJvjvjWir3MvVB4RAjPJpiqEgsCIhcFAe6586n4D99o4il?=
+ =?us-ascii?Q?IpM9BYpOB4uoIyJKgc7umUUErNrc2x30MQhFhld3I2KbYzZrd5P1no3Ip6sV?=
+ =?us-ascii?Q?ZJCu62cquUSBF8jVXzitz6qC2MjmpANWkkSTCUYX?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5085a2dd-466d-4208-999e-08db89650e1f
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1370.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 21:05:32.6029
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wjRc3hcG6nXEwwBJ2EOXee+Dp0zpACum7GFtmQ+zGJOdAEd5VRv88tMoEijCcwPyFy3nmAMa55+4LY+n7/LhLg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR21MB3451
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 01:26:20PM -0700, Shannon Nelson wrote:
-> On 7/20/23 1:38 AM, Jason Wang wrote:
-> > 
-> > Adding cond_resched() to the command waiting loop for a better
-> > co-operation with the scheduler. This allows to give CPU a breath to
-> > run other task(workqueue) instead of busy looping when preemption is
-> > not allowed on a device whose CVQ might be slow.
-> > 
-> > Signed-off-by: Jason Wang <jasowang@redhat.com>
-> 
-> This still leaves hung processes, but at least it doesn't pin the CPU any
-> more.  Thanks.
-> Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
-> 
+The Hyper-V host is queried to get the max transfer size that it
+supports, and this value is used to set max_sectors for the synthetic
+SCSI controller.  However, this max transfer size may be too large
+for virtual Fibre Channel devices, which are limited to 512 Kbytes.
+If a larger transfer size is used with a vFC device, Hyper-V always
+returns an error, and storvsc logs a message like this where the SRB
+status and SCSI status are both zero:
 
-I'd like to see a full solution
-1- block until interrupt
-2- still handle surprise removal correctly by waking in that case
+hv_storvsc <GUID>: tag#197 cmd 0x8a status: scsi 0x0 srb 0x0 hv 0xc0000001
 
+Add logic to limit the max transfer size to 512 Kbytes for vFC devices.
 
+Fixes: 1d3e0980782f ("scsi: storvsc: Correct reporting of Hyper-V I/O size limits")
+Cc: stable@vger.kernel.org
+Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+---
+ drivers/scsi/storvsc_drv.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> > ---
-> >   drivers/net/virtio_net.c | 4 +++-
-> >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 9f3b1d6ac33d..e7533f29b219 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -2314,8 +2314,10 @@ static bool virtnet_send_command(struct virtnet_info *vi, u8 class, u8 cmd,
-> >           * into the hypervisor, so the request should be handled immediately.
-> >           */
-> >          while (!virtqueue_get_buf(vi->cvq, &tmp) &&
-> > -              !virtqueue_is_broken(vi->cvq))
-> > +              !virtqueue_is_broken(vi->cvq)) {
-> > +               cond_resched();
-> >                  cpu_relax();
-> > +       }
-> > 
-> >          return vi->ctrl->status == VIRTIO_NET_OK;
-> >   }
-> > --
-> > 2.39.3
-> > 
-> > _______________________________________________
-> > Virtualization mailing list
-> > Virtualization@lists.linux-foundation.org
-> > https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index 7f12d93..f282321 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -366,6 +366,7 @@ enum storvsc_request_type {
+ #define STORVSC_FC_MAX_LUNS_PER_TARGET			255
+ #define STORVSC_FC_MAX_TARGETS				128
+ #define STORVSC_FC_MAX_CHANNELS				8
++#define STORVSC_FC_MAX_XFER_SIZE			((u32)(512 * 1024))
+ 
+ #define STORVSC_IDE_MAX_LUNS_PER_TARGET			64
+ #define STORVSC_IDE_MAX_TARGETS				1
+@@ -2006,6 +2007,9 @@ static int storvsc_probe(struct hv_device *device,
+ 	 * protecting it from any weird value.
+ 	 */
+ 	max_xfer_bytes = round_down(stor_device->max_transfer_bytes, HV_HYP_PAGE_SIZE);
++	if (is_fc)
++		max_xfer_bytes = min(max_xfer_bytes, STORVSC_FC_MAX_XFER_SIZE);
++
+ 	/* max_hw_sectors_kb */
+ 	host->max_sectors = max_xfer_bytes >> 9;
+ 	/*
+-- 
+1.8.3.1
 
