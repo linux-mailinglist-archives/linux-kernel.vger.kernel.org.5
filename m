@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AB575B7F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5F175B7F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbjGTT1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 15:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
+        id S230360AbjGTT2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 15:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbjGTT1o (ORCPT
+        with ESMTP id S229690AbjGTT2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 15:27:44 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139A71737;
-        Thu, 20 Jul 2023 12:27:43 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbc12181b6so10269625e9.2;
-        Thu, 20 Jul 2023 12:27:43 -0700 (PDT)
+        Thu, 20 Jul 2023 15:28:33 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C89171D;
+        Thu, 20 Jul 2023 12:28:31 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-ccc462deca6so1088066276.0;
+        Thu, 20 Jul 2023 12:28:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689881261; x=1690486061;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LsXKzGCpPd/p0NpJWJyfXcpB0p1qO6kuAeJPo9pRHz8=;
-        b=FC2UDsB2l0hVoQPYI9EaVjbA1dBtyRq1speteEPE57yHsGt3UxpctS4msEZKbXfwYa
-         NI4IvIhKA8GDMEKf0FIquaU4W0aL0R0MsDs4uCZybjBDvvXDipxC90/in33+VqYj6yhw
-         5sMxUL7v7d7pIamQ8w/vkfZO8iynqMM4I/9gnglF7O2GnmftWESC6ad/MP9l0nD0xZZf
-         sZ5tLYeBGDPSP5/1d19bCRpOC3kvNgO2sqkTrR6uewg1Ee2tzLQaq5cEHhgBHaSS5syA
-         qvXLFEJShbWXu8YeFGzehFTVRRAHjMXKI/w/K6Fnx8WWvAdIcRN90rV4jZZY8ECyvClv
-         px+Q==
+        d=gmail.com; s=20221208; t=1689881311; x=1690486111;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kdN8o7AJTx4ZATKNIUy6cq4O3obHD+O4FpBvaPeeNBs=;
+        b=Gw9eQqRzINgLnQlR1OAcLm0s4xv3PRM9IQQTuTOs3vfoDQti8YZaQybqCpUz9PZyLJ
+         YKzaf6cxIPayhBM9MYu5OL2eNNzIVOIfkDY76CwVV7G6sOgH37XBvSbKs+cEcQIvm1Jb
+         UvF+52jNxhfdkAyfwFGGlDm0N2laruZFfOeBFXJUXgbRq9nVPshzAPCTXAoOtA9CZkwy
+         vyJH+bpbtVblvu43x3YNXH8CCGF9iGwkBV9jSKi72nacUOz4cPzAm6vBDeIo0lfI/L7l
+         1suntjO3PBXS+bPoa5gYCjW+w5osQt8tcuDtme++Ujb5t5oSaLkLpyeBDoFalts8pR1D
+         cx9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689881261; x=1690486061;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LsXKzGCpPd/p0NpJWJyfXcpB0p1qO6kuAeJPo9pRHz8=;
-        b=b1RIkzSeYXpdGVf2MUCP4GzHfjrN3KEj5NPMrtUhdbTWMOvKRSa7o8fyyWI7fBKqv9
-         HBQ+wY0Uzxqy9nhUgIVSdsUL8ZV7FkrNfXmfDI51mDkWZ/ZoGHjZi8+J4i3N46JtWEvt
-         pubedyfHsmG/qaEFoyPFQpaS8wq1mu5qiGnD5/NJiXgLz8WghWBfrvGD2pQkKxdal3Im
-         nrxkEi8IYJEY1kv/39nHOMiFVmazwrhJcr87zwG7wwwloWsyQgHgujrKq8R2fSonxxYW
-         V4r+emUfVBxUbMPZpfdeoDVgjXQSwMv8hvp6CW/1OhxMIRl1tiWR7lUKKrirQ/NkaI97
-         Yy9g==
-X-Gm-Message-State: ABy/qLaRoksxFaj9lNBU8638xdlOIgL6WcfeWG0Kbf3sGtzWtOy7qYaW
-        zl8i77IB1rJiZcfMNb74kxj9etld8kE=
-X-Google-Smtp-Source: APBJJlGdVw6ytJB75Am5CzETRLxhNN6VWlweZujl5l3wTTu1KxZUNbyIS+aAv6C6ZXbw45yPirJKmQ==
-X-Received: by 2002:a1c:7318:0:b0:3fc:a5:2c3a with SMTP id d24-20020a1c7318000000b003fc00a52c3amr2542995wmb.41.1689881261377;
-        Thu, 20 Jul 2023 12:27:41 -0700 (PDT)
-Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
-        by smtp.gmail.com with ESMTPSA id w9-20020adfd4c9000000b0031423a8f4f7sm2104079wrk.56.2023.07.20.12.27.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 12:27:41 -0700 (PDT)
-Message-ID: <9f50e6c7-5c85-f70f-a5fe-19923d28f770@gmail.com>
-Date:   Thu, 20 Jul 2023 21:27:39 +0200
+        d=1e100.net; s=20221208; t=1689881311; x=1690486111;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kdN8o7AJTx4ZATKNIUy6cq4O3obHD+O4FpBvaPeeNBs=;
+        b=YWtuTfeS4hx/wzJYU/HTYt6M1aS34RzrqeeKFyMcxxMgDhHtJQ182I+pFIaCe6ms7R
+         m7QMcGyeFN0eUmXE/UXrM7y/KWhs8rqHeDbwJOfXGNSINRm7HlCAde4aXPvN07TyTFXa
+         bLJb99Ukht5PVBf1xgOp+WcwMwlyqlK/yINt+ctaPsjUe5+glHK1EL+qiu8O9LQpAyX8
+         E+gLEwZgAVb/4uNfjMUJeKR2SsRahx3g3UydMVqPwfQW0wDh4USFso5Sr01ayZmnbgil
+         8Cer7cNO1xI3NmFc7E6z7lINJJohB8iukQ9A6HAFRdNIZ7BjcBIfjuJJXOr2ftENVLXV
+         ruyQ==
+X-Gm-Message-State: ABy/qLaj3KZNfotwEha58oaqXp+jLlz0Kl8KFdFwppcUq+5b/Bgc9Kab
+        x5WDLK2ZUo0w9Ynyq32cpe/TVZ+JQ3dWSv+BgmE=
+X-Google-Smtp-Source: APBJJlHGQI9NwyazTFrofqytPGXoMkCuinDMKCYH6DzuorpDpZgCO6qQGnkNna3kmYEdn+EHW9YFBkfnAyUjoTpPxkM=
+X-Received: by 2002:a25:4052:0:b0:cfd:58aa:b36e with SMTP id
+ n79-20020a254052000000b00cfd58aab36emr2782026yba.9.1689881311057; Thu, 20 Jul
+ 2023 12:28:31 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/4] firmware: qcom_scm: Add support for Qualcomm
- Secure Execution Environment SCM interface
-Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230528230351.168210-1-luzmaximilian@gmail.com>
- <20230528230351.168210-4-luzmaximilian@gmail.com>
- <ZJwjWoxm3GDkJ0cm@hovoldconsulting.com>
- <ZJwspnWhpOCJ88WP@hovoldconsulting.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-In-Reply-To: <ZJwspnWhpOCJ88WP@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20230718052752.1045248-1-ojeda@kernel.org> <ZLbTRZMjcFNAamit@boqun-archlinux>
+In-Reply-To: <ZLbTRZMjcFNAamit@boqun-archlinux>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 20 Jul 2023 21:28:20 +0200
+Message-ID: <CANiq72n5NOVxP37QFXDkOBZTzhGt6EREBruqUyhiqxGUrrC_CQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] KUnit integration for Rust doctests
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, David Gow <davidgow@google.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -85,39 +79,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/23 14:50, Johan Hovold wrote:
-> On Wed, Jun 28, 2023 at 02:11:07PM +0200, Johan Hovold wrote:
->> On Mon, May 29, 2023 at 01:03:50AM +0200, Maximilian Luz wrote:
-> 
->>> @@ -1496,6 +1903,12 @@ static int qcom_scm_probe(struct platform_device *pdev)
->>>   
->>>   	__get_convention();
->>>   
->>> +	ret = qcom_scm_qseecom_init();
->>> +	if (ret < 0) {
->>> +		__scm = NULL;
->>
->> So as I mentioned in my reply to 2/4, you can still have clients
->> registered here when you clear the __scm pointer which they rely on
->> after an error.
->>
->> Not sure how best to handle this, but perhaps registering a qseecom
->> platform device here and have it's driver probe defer until scm is
->> available would work?
->>
->> That way you could also separate out the qseecom implementation in a
->> separate file (driver) rather than having the ifdef above.
-> 
-> An alternative may be to just warn and continue if
-> qcom_scm_qseecom_init() fails. It should never return -EPROBE_DEFER
-> anyway, right?
+On Tue, Jul 18, 2023 at 8:00=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
+rote:
+>
+> I've applied the series and run the following command:
+>
+>         ./tools/testing/kunit/kunit.py run --make_options LLVM=3D1 --arch=
+ x86_64 --kconfig_add CONFIG_RUST=3Dy
+>
+> everything works as expected, and I also tried modifying one of the
+> `assert!` to trigger it, all looks good to me. Feel free to add:
+>
+> Tested-by: Boqun Feng <boqun.feng@gmail.com>
 
-You're correct. That would be the simplest option. Any error returned by
-qcom_scm_qseecom_init() comes from the client registration part
-(qseecom_client_register()) and is either -ENOMEM or whatever
-auxiliary_device_[init|add]() returns. As far as I can tell, the latter
-errors out either on invalid inputs or on OOM, so it should be completely
-fine to just warn about it failing.
+Thanks a lot for trying it, Boqun!
 
-Regards
-Max
+David/Shuah: I noticed this "Tested-by" tag is not in the applied
+commits. If you happen to rebase, it would be nice to pick it up.
+Thanks!
+
+Cheers,
+Miguel
