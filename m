@@ -2,67 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD9575B3F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88ED075B3FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbjGTQNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
+        id S229451AbjGTQQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGTQNs (ORCPT
+        with ESMTP id S229866AbjGTQPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:13:48 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E7A114;
-        Thu, 20 Jul 2023 09:13:47 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbc5d5742eso8626145e9.3;
-        Thu, 20 Jul 2023 09:13:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689869626; x=1690474426;
-        h=user-agent:content-disposition:mime-version:message-id:subject:to
-         :from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KT5zlUFLt+9ArlY0df84sUttPCw70QBkOyPQwBnF6co=;
-        b=oHa7mMa9P/+axKz8/wBwndBn2idcqf9865ECO1Cwbyboc/4T21mBVyI8Z9z+jJUip4
-         IK/2ADlZDTDyI+uTVrxosfkJW+mlEZwMnraDmi8h10mkhj4v8F71Dr0m01PfAEB4nDnT
-         SNGrsAyCroCQveWWC60g9tvPL1uqTqcauYPktSqU81QMjMWSUtO9enUvCBQL9lqK4PtS
-         YzZhO5qB0Sr61J9OueuS6o40OrQoI2TMzQO8RDXTyxXtSs3xOfPVCTtD5FrFrCUMYeLU
-         N9QCbLIXoyuWPbtIVDqkvucEeEsS8ukpHBHJZqncQGVC2G9wIoAgOyvmi9SeiQD+U8yM
-         yO8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689869626; x=1690474426;
-        h=user-agent:content-disposition:mime-version:message-id:subject:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KT5zlUFLt+9ArlY0df84sUttPCw70QBkOyPQwBnF6co=;
-        b=Cbx19XRT24XT/ch0+nmayIs4Hs6/n1K3SCwBsvGSkFQ/OGUeFHv05B5GyI9F45T44l
-         Bze6qwgrj7uIWRHt8fp2njihe0oRAtUBRQRJ3gi4RKRg99qT2oLvTru9c91tvvQ1PYgj
-         hy/IUDt/S3dWrX9LUiqCvCJXdOATegW67k1pud3MDZK0DttAyBQx4zuuN8ismWZzncBR
-         WXncUU4NKmwM3aKSbglOP4Ln58hEqibUCsVU6u37qcod1gzWji5fhe2aOT5lLEVkO4Mi
-         2lJnXgpx3wDIhxruFLoLCARAs27/G0Zss9zv5KU0XRKU7DuYsz8uZupRgBMU5W4RI4j2
-         n2rA==
-X-Gm-Message-State: ABy/qLYLiyMU4Cz2zlpP2jtXahGj2wfXixaX1hq//cqZQbVP4HlWfiC2
-        7ScP8W19PQkkLiANZqYZK0c=
-X-Google-Smtp-Source: APBJJlEOPjamw3iLzItS/JveqpR7gzliI3inH14pMlbOioIIKdB22wY1CaLIqJFAXTRRKNWOLqq7mg==
-X-Received: by 2002:adf:e404:0:b0:313:f4e2:901d with SMTP id g4-20020adfe404000000b00313f4e2901dmr2090525wrm.22.1689869625717;
-        Thu, 20 Jul 2023 09:13:45 -0700 (PDT)
-Received: from debian ([89.238.191.199])
-        by smtp.gmail.com with ESMTPSA id t15-20020a5d49cf000000b003143765e207sm1746892wrs.49.2023.07.20.09.13.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 09:13:45 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 18:13:29 +0200
-From:   Richard Gobert <richardbgobert@gmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, willemdebruijn.kernel@gmail.com,
-        dsahern@kernel.org, tom@herbertland.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gal@nvidia.com
-Subject: [PATCH v2 0/1] net: gro: fix misuse of CB in udp socket lookup
-Message-ID: <20230720161322.GA16323@debian>
+        Thu, 20 Jul 2023 12:15:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC57910D2;
+        Thu, 20 Jul 2023 09:15:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 506ED61B50;
+        Thu, 20 Jul 2023 16:15:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8DA7C433CB;
+        Thu, 20 Jul 2023 16:15:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689869750;
+        bh=TPAunApq8i+SUaaLwE46mDZ/trLDSerwE/ZkljV1r8k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZDJHFFIUC34apAn8IgrUn1PPm61Jv6ZFkvi0V9I53Tp94QK90+YfXJ54x3zJ/8TRA
+         tnwnPOJRItt/3M+BqVVgpWd0b5EgYrW0/OvuQ0KF1sLc385RNNH2mb5PkrcVwxRzF+
+         l3hCIku24/+eGUIu0YtJWYDGAm8mU1vKpRSjcAb5/6dwBW8kRPKs8EqdoldtRgZMA8
+         dUO67b/CVAZCWFVwWJBCphX5xU7hrsXm/lP0vo+z+qpi1XdC5esXBxZBNFq4H9+jDr
+         t5jibgRKeqheE2Kx09vOOM3yPQSocBYmpcSYbSIT+uVUhcRGOWlBUN/ybFRf32CcON
+         0cF5jtRCRd+CA==
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1b06777596cso733111fac.2;
+        Thu, 20 Jul 2023 09:15:50 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZ2A+jHbaqN2d9xKHUj5sRgcAV5snYjq3NiCeNO9l3L3I1SkBiH
+        91IAfYQTthIUAsfr5yMSLD+yRRaD1iqi1MYxqrw=
+X-Google-Smtp-Source: APBJJlEiaQlTKd5g+UpnfHBh261BQ2QMdQYb2zRGnMv3+Lbkdp8uqGz/KOt7wrsVyT+nkHnWNRjJ8u/LoPW3otkwhoY=
+X-Received: by 2002:a05:6870:3929:b0:1ba:989b:ca65 with SMTP id
+ b41-20020a056870392900b001ba989bca65mr2442801oap.19.1689869749868; Thu, 20
+ Jul 2023 09:15:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+References: <20230720134123.13148-1-lhenriques@suse.de>
+In-Reply-To: <20230720134123.13148-1-lhenriques@suse.de>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Thu, 20 Jul 2023 17:15:13 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4uqXttKMCucHH=tJDYkxOFuNRGR04ZSBD7eBMj4BE1iA@mail.gmail.com>
+Message-ID: <CAL3q7H4uqXttKMCucHH=tJDYkxOFuNRGR04ZSBD7eBMj4BE1iA@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: propagate error from function unpin_extent_cache()
+To:     =?UTF-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,67 +66,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GRO stack uses `udp_lib_lookup_skb` which relies on IP/IPv6 CB's info, and
-at the GRO stage, CB holds `napi_gro_cb` info. Specifically,
-`udp_lib_lookup_skb` tries to fetch `iff` and `flags` information from the
-CB, to find the relevant udp tunnel socket (GENEVE/VXLAN/..). Up until a
-patch I submitted recently [0], it worked merely by luck, due
-to the layouts of `napi_gro_cb` and IP6CB.
+On Thu, Jul 20, 2023 at 5:05=E2=80=AFPM Lu=C3=ADs Henriques <lhenriques@sus=
+e.de> wrote:
+>
+> Function unpin_extent_cache() doesn't propagate an error if the call to
+> lookup_extent_mapping() fails.  This patch adds an error return (EINVAL)
+> and simply logs it in the only caller.
+>
+> Signed-off-by: Lu=C3=ADs Henriques <lhenriques@suse.de>
+> ---
+> Hi!
+>
+> As per David and Johannes reviews, I'm now proposing a different approach=
+.
+> Note that I kept the WARN_ON() instead of replacing it by an ASSERT().  I=
+n
+> fact, I considered removing the WARN_ON() completely and simply return th=
+e
+> error if em->start !=3D start.  But I guess it may useful for debug.
+>
+> Changes since v1:
+> Instead of changing unpin_extent_cache() into a void function, make it
+> propage an error code instead.
+>
+>  fs/btrfs/extent_map.c | 4 +++-
+>  fs/btrfs/inode.c      | 8 ++++++--
+>  2 files changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+> index 0cdb3e86f29b..f4e7956edc05 100644
+> --- a/fs/btrfs/extent_map.c
+> +++ b/fs/btrfs/extent_map.c
+> @@ -304,8 +304,10 @@ int unpin_extent_cache(struct extent_map_tree *tree,=
+ u64 start, u64 len,
+>
+>         WARN_ON(!em || em->start !=3D start);
+>
+> -       if (!em)
+> +       if (!em) {
+> +               ret =3D -EINVAL;
+>                 goto out;
+> +       }
+>
+>         em->generation =3D gen;
+>         clear_bit(EXTENT_FLAG_PINNED, &em->flags);
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index dbbb67293e34..21eb66fcc0df 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -3273,8 +3273,12 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_=
+extent *ordered_extent)
+>                                                 ordered_extent->disk_num_=
+bytes);
+>                 }
+>         }
+> -       unpin_extent_cache(&inode->extent_tree, ordered_extent->file_offs=
+et,
+> -                          ordered_extent->num_bytes, trans->transid);
+> +
+> +       /* Proceed even if we fail to unpin extent from cache */
+> +       if (unpin_extent_cache(&inode->extent_tree, ordered_extent->file_=
+offset,
+> +                              ordered_extent->num_bytes, trans->transid)=
+ < 0)
+> +               btrfs_warn(fs_info, "failed to unpin extent from cache");
 
-AFAIU it worked because:
-`IP6CB(skb)->flags` is at offset 16 inside IP6CB:
- - Before the patch: `flags` was mapped to `flush`.
- - After the patch: `flags` was mapped to `data_offset`.
+Well, this is not very useful. It doesn't provide any more useful
+information than what we get from the WARN_ON() at
+unpin_extent_cache(), making the patch not useful.
 
-`IP6CB(skb)->iff` is at offset 0 inside IP6CB:
- - Before the patch: `iif` was mapped to `frag0`.
- - After the patch: `iif` was mapped to a union of `frag0` and `last`.
+This warning has actually happened a few times when running fstests
+that exercise relocation (not sure if it's gone and accidently fixed
+by something recently).
+But to make this more useful, I would place the message at
+unpin_extent_cache() with useful information such as:
 
-After my patch, on the receive phase, while `data_offset` is 40 (since IPv6
-header is 40 bytes), `inet_iif` calls `ipv6_l3mdev_skb`, which checks
-whether `IP6CB(skb)->flags`'s `IP6SKB_L3SLAVE` bit is on or off (in our
-case its off). If it is off, `inet_iif` returns `IP6CB(skb)->iif`, which is
-mapped to `napi_gro_cb->frag0`, making `inet_iif` return 0 most of the
-times. `inet_sdif` returns zero due to a similar reason caused by
-`data_offset` being equal to 40 (and less than 64).
+- inode number
+- id of the root the inode belongs to
+- the file offset (the start argument) and extent length (or end offset)
+- why the warning triggered: we didn't find the extent map or we found
+one with a different start offset
+- if we found an unexpected extent map, dump its flags (so we can see
+if it happens only with compressed or prealloc extents for e.g.) and
+other details (length/end offset for e.g.)
 
-On the other hand, the complete phase behaves differently.
-`data_offset` is usually greater than 64 and less than 128 so the
-`IP6SKB_L3SLAVE` flag is on.  Thus, `inet_sdif` returns `IP6CB(skb)->iif`,
-which is mapped to `last` which contains a pointer. This causes
-`udp_sk_bound_dev_eq` to fail, which leads to `udp6_lib_lookup2` failing
-and not returning a socket. This leads the receive phase of GRO
-to find the right socket, and on the complete phase, it fails to find it 
-and makes the throughput go down to nearly zero.
+Thanks.
 
-Before [0] `flags` was mapped to `flush`. `flush`'s possible
-values were 1 and 0, making `inet6_iff` always returning `skb->skb_iif` and
-`inet6_sdif` returning 0, and leading to `udp_sk_bound_dev_eq` returning
-true.
-
-A fix is to not rely on CB, and get `iff` and `sdif` using skb->dev. l3mdev
-case requires special attention since it has a master and a slave device.
-
-[0] https://lore.kernel.org/netdev/20230601160924.GA9194@debian/
-
-Changelog:
-
-v1 -> v2:
-  * make functions inline
-  * fix logical bug
-  * add a comment when we can use the new functions
-  * checkpatch fixes
-
-Richard Gobert (1):
-  net: gro: fix misuse of CB in udp socket lookup
-
- include/net/udp.h      |  2 ++
- net/ipv4/udp.c         | 28 ++++++++++++++++++++++++++--
- net/ipv4/udp_offload.c |  7 +++++--
- net/ipv6/udp.c         | 29 +++++++++++++++++++++++++++--
- net/ipv6/udp_offload.c |  7 +++++--
- 5 files changed, 65 insertions(+), 8 deletions(-)
-
--- 
-2.36.1
-
+> +
+>         if (ret < 0) {
+>                 btrfs_abort_transaction(trans, ret);
+>                 goto out;
