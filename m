@@ -2,124 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D60675AC14
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0581E75AC11
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 12:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbjGTKds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 06:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40116 "EHLO
+        id S229638AbjGTKdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 06:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbjGTKdk (ORCPT
+        with ESMTP id S231636AbjGTKc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 06:33:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F4B269F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:33:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 27136619F9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:32:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 609E1C433C8;
-        Thu, 20 Jul 2023 10:32:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689849157;
-        bh=hFrIlBp2xDjwZI1051zDpKcH1l8BEytCOqnbkdhdX2U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WLqa6M1Kzj1KflXtE9wcQoLVHPaMDX2RSx/Fw8r4kbz+nbZ3dNdPp53OcrsdZOnfe
-         s9Vywjiz1qGVxnatND2unT5gE5dFxBQV8zzHnbpf9TvxWJRgwCjop8EfPzzv8xU5ar
-         7EC1KNqNa4MUOnq1c1DtpqC4/nN+pYPQISMJPHSEOLMqwbf0+N/2uHzE39QDCubwtF
-         uOWsOtuM20hQ5kAHUzupKHG2LAh1pUvDIboxh1obAZy0DZm8C+1BTb/hUkM4VUk0jS
-         ukrrssSaogtqCiS8b+YDiXV0zao+OxGaWUe3iDh63dT2cqHGQ7NFDnr7UgoifEWou3
-         HrGqc1I3qlPcQ==
-Date:   Thu, 20 Jul 2023 11:32:28 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Steven Price <steven.price@arm.com>,
-        SeongJae Park <sj@kernel.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Song Liu <song@kernel.org>,
-        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        regressions@leemhuis.info, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 12/32] mm/vmalloc: vmalloc_to_page() use
- pte_offset_kernel()
-Message-ID: <20230720103227.GB11034@willie-the-truck>
-References: <c1c9a74a-bc5b-15ea-e5d2-8ec34bc921d@google.com>
- <696386a-84f8-b33c-82e5-f865ed6eb39@google.com>
- <42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk>
- <901ae88d-ad0c-4e9d-b199-f1566cc62a00@lucifer.local>
- <c2358f37-ebaa-44d1-b443-ff91bdedc00b@sirena.org.uk>
- <977ddee4-35f0-fcd1-2fd-1c3057e7ea2a@google.com>
- <fbb2b76c-bc5c-4d75-b8cd-37479de688d4@sirena.org.uk>
- <b479b946-f052-eb75-295d-6fa7c2d8ce8e@google.com>
- <591b5253-47f0-440c-84b6-7786ff59667d@sirena.org.uk>
+        Thu, 20 Jul 2023 06:32:58 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9FD2718
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:32:40 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-668711086f4so453276b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 03:32:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689849158; x=1690453958;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xKYUhMR1McdxFbQ4Jo6vuraMtMWIn8Z/zfmypgVmrcY=;
+        b=tsOv8B+/t6cC16KWe9C2LxhDAI52NK3+hCr2mhHy5psUUZT826eCwd0faElZmDomg0
+         0/Y+6a0X0EEP9f65G9w8lUZ4z1aJnul16vxYroSnBn3wp0JL6VoO/O4+YaAIlTZh7ykD
+         sKWBQlvf+BfY7AjSscbM+8n0s4UNALx9dAaJcpE+L7a3LJ6lgUCGJFAAITJ4SRbGpLui
+         yG/8PMQ5m5cUfX8a74aBl7ael2RjuPY8gZc1IGHKmtdSoLfDPfjqL8Mv7huSICRu2CBF
+         lQGvwGcwQXhtPUHuei6DelkyV1gyZGQQx+CBv3g/dLxOn8uWkiUMOhW4HCCrSLLejbOP
+         NFiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689849158; x=1690453958;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xKYUhMR1McdxFbQ4Jo6vuraMtMWIn8Z/zfmypgVmrcY=;
+        b=gg1sOJ54jvnqCg/Mts20kAiQBg0u21RLu+cIn/sMffBZEr2JSj8G28Juj8Qh7oCXjU
+         zznOsGgVECkUBpCnjTeTIk+xAx/R2zSYfv/XT13SG75hq34MC3M4p/2O8Qq0nmKWt48x
+         PyQXijjV4d4rLkM5qpiz9vTQYjiNXNTdyxq87DJtZ3wiPpBK6qHcfAYRJE2CfYPynZfk
+         fqaOhCcL/Z9+8SwDiYRX7VzyWiR52sAARnmg2W+JyMNSBlvXoZJox5+2NzrKD0LoZT95
+         XyLk8YfNIWKCyLxaDVe5AIc8k2FLx5dJgEhCiO4o+P/io4YhvTXZ4XC8AjZIccvVgLEl
+         abOg==
+X-Gm-Message-State: ABy/qLbBxexr5LXutOu84ab47SznxU/x17F2Albznx0sdsYSqO47GzKi
+        2l3sfhcMHgyjs0dD3KWAIWiwjw==
+X-Google-Smtp-Source: APBJJlFPGHydCjtzxTJZnytC6CyFKFv8hJWClYfqDJkKXIBvrrDMTEHas0e4QsNhT7++H33b2LhJ3g==
+X-Received: by 2002:a05:6a21:3291:b0:132:7d91:aadb with SMTP id yt17-20020a056a21329100b001327d91aadbmr6219794pzb.6.1689849157754;
+        Thu, 20 Jul 2023 03:32:37 -0700 (PDT)
+Received: from localhost ([122.172.87.195])
+        by smtp.gmail.com with ESMTPSA id m7-20020aa79007000000b006636c4f57a6sm861335pfo.27.2023.07.20.03.32.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 03:32:37 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 16:02:35 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Yangtao Li <frank.li@vivo.com>
+Cc:     Yangtao Li <tiny.windzz@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/19] cpufreq: sun50i: Convert to platform remove
+ callback returning void
+Message-ID: <20230720103235.ao3664ibqjksun5u@vireshk-i7>
+References: <20230712093322.37322-1-frank.li@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <591b5253-47f0-440c-84b6-7786ff59667d@sirena.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230712093322.37322-1-frank.li@vivo.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 06:57:33PM +0100, Mark Brown wrote:
-> On Tue, Jul 11, 2023 at 09:13:18AM -0700, Hugh Dickins wrote:
-> > On Tue, 11 Jul 2023, Mark Brown wrote:
-> > > On Mon, Jul 10, 2023 at 09:34:42PM -0700, Hugh Dickins wrote:
-> > > 
-> > > > I suppose I should ask you to try reverting this 0d1c81edc61e alone
-> > > > from 6.5-rc1: the consistency of your bisection implies that it will
-> > > > "fix" the issues, and it is a commit which we could drop.  It makes
-> > > > me a little nervous, applying userspace-pagetable validation to kernel
-> > > > pagetables, so I don't want to drop it; and it would really be cargo-
-> > > > culting to drop it without understanding.  But we could drop it.
-> > > 
-> > > I did look at that, it doesn't revert cleanly by itself. ...
-> > 
-> > Right, that ptep_get() wrapper on the next line came in on top.
-> > The patch to revert just 0d1c81edc61e is this:
+On 12-07-23, 17:33, Yangtao Li wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is (mostly) ignored
+> and this typically results in resource leaks. To improve here there is a
+> quest to make the remove callback return void. In the first step of this
+> quest all drivers are converted to .remove_new() which already returns
+> void.
 > 
-> Still investigating but I'm pretty convinced this is nothing to do with
-> your commit/series and is just common or garden memory corruption that
-> just happens to get tickled by your changes.  Sorry for the noise.
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+> 
+> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> ---
+>  drivers/cpufreq/sun50i-cpufreq-nvmem.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 
-Did you get to the bottom of this? If not, do you have a reliable way to
-reproduce the problem? I don't like the sound of memory corruption :(
+Applied all the patches. Thanks.
 
-Will
+-- 
+viresh
