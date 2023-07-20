@@ -2,150 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2672775B72C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF2E75B72E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbjGTSze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 14:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
+        id S229902AbjGTS4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 14:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjGTSzc (ORCPT
+        with ESMTP id S229633AbjGTSz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:55:32 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A00510FC;
-        Thu, 20 Jul 2023 11:55:30 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbc0609cd6so9323045e9.1;
-        Thu, 20 Jul 2023 11:55:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689879328; x=1690484128;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IHAsFL2xFeH6dIbXrH4rs7Rw43cZEw/nHrY87+X9P8w=;
-        b=M/Hy5wjGjpYdCaV1gWP14+9QhIcwCrD8LxTFGWxQ9ul9OqFRCJgsCnE6JYX5F7WU59
-         wd2vnPhXAgtwiIrwVMYDI1Bd4OLhJCqt24GjD9nZe9Osb3usOaiJ2sM+i5+45aUJx/U6
-         eXtBJxtsl8bEM6uK5+nugkR+J+ylFlG8UjcKGFbuJ5+rprMQ03DrpeVd/dlxG34JXHgd
-         5rJZQ4bw94XXZEtBSTcu3H3om53PeP+Jea+ODKn/rhLbKBRe4lYWuEGh8cIhdOlk+6JA
-         Vr+4OxxiM7OedgVNZ1grbr1fUoDkSzf6db7haCd1YK8vkHtl6/KZzOwzVaDCwzqAhpO8
-         MyWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689879328; x=1690484128;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IHAsFL2xFeH6dIbXrH4rs7Rw43cZEw/nHrY87+X9P8w=;
-        b=dObL9BeaisNkbgqcYuu42gh8qfasWSqXa7Cg5f9zotDQ0LbTZkm3MZfW0lgzvl86Yg
-         LYLw/s/9MCIJyU4U/gj6I+itT32JicXxjxakIJ6Sh8dvJfyrtmy6iI8wk0C5W80dIIco
-         ReiCOqZd2YzsMvEgpHr3t0irJfWjZ+/7EIPMqVcp9QNlc2RWeGP5BVMmdvHLrjbEoC2y
-         f/8v8PhRJZdVViWro+tppt2FOH3CJiZ7LcR8nfarg4AyJwSJXqYM7ZNVeSRuI2yUhzZS
-         XjOSaTgAcCoqoEQILXLUL86PI0S1ZxLkvEMAiNgVmPCi73iPvsKBGWHwsByD/p+d0MEd
-         HHpw==
-X-Gm-Message-State: ABy/qLYTstzJP2kWgD2a4guS8b5J+UYBauENe1T79Fl7yn1lt2sys3UL
-        OtNgS0KudPyDhJSP5OCFKaQ=
-X-Google-Smtp-Source: APBJJlGOeasb3e7RZk+f4OtzpsQtOBcpuUDgw8hLHWviGL9qQrid91/Lk+MdjyHWW52L3IRFkwJQ1g==
-X-Received: by 2002:a7b:c3cd:0:b0:3fc:f9c:a3e9 with SMTP id t13-20020a7bc3cd000000b003fc0f9ca3e9mr4965128wmj.37.1689879328401;
-        Thu, 20 Jul 2023 11:55:28 -0700 (PDT)
-Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
-        by smtp.gmail.com with ESMTPSA id d15-20020a5d644f000000b003143c06135bsm2056400wrw.50.2023.07.20.11.55.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 11:55:28 -0700 (PDT)
-Message-ID: <72c0359a-eda6-30ea-0ec0-b7e9b804b87b@gmail.com>
-Date:   Thu, 20 Jul 2023 20:55:26 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/4] firmware: qcom_scm: Clear scm pointer on probe
- failure
-Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230528230351.168210-1-luzmaximilian@gmail.com>
- <20230528230351.168210-3-luzmaximilian@gmail.com>
- <ZJwXgqmu_zpV46lu@hovoldconsulting.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-In-Reply-To: <ZJwXgqmu_zpV46lu@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Thu, 20 Jul 2023 14:55:58 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925151705
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:55:57 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 893063200124;
+        Thu, 20 Jul 2023 14:55:56 -0400 (EDT)
+Received: from imap47 ([10.202.2.97])
+  by compute5.internal (MEProxy); Thu, 20 Jul 2023 14:55:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=cc:cc:content-type:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1689879356; x=
+        1689965756; bh=VlXcKq8r5CvDv0CQjr1ifJgqgPG6o4lzBf7CAsOaYZM=; b=Z
+        9dpjKXFJx6E45rGhQTEV52gxvEbjHOelVthAwRJS6cG8c6GxcCx//r0a3GUSoHkX
+        yUqFaRRQS5dB8URGVRxLIXnel2gk2wqziQqQxDo6HPQ8Q3RXE2BxySHNO232FIuM
+        xtuHcPRuHzr6c1zkLDANxy7BBf5EdepwPtYuWnDdufESlLxbqykO3lLbrh25KgPJ
+        12j6mpjWOWbW9rhuayi20DR3wwdgsaRtcVIGSHqUzfyk8qVnQHI9Dc+uiXdJZt+5
+        wbMVlvUjJiGaMBBgXnNk+FkHVFLY5d8/9opd6DjF7QZb80Em+dYw3t8/OnQK9cU1
+        gnN1l8FLjEXiKm1SQaVVw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689879356; x=1689965756; bh=VlXcKq8r5CvDv
+        0CQjr1ifJgqgPG6o4lzBf7CAsOaYZM=; b=MR+lC1CyfZRZhHHseDJBYoY1Nowk+
+        rXvJx/agWc6q5w2QrSUUbh+EaZf6+V9ZJE/4SZWH1eKQXU80CeEgJr5QbX7hshww
+        a2UDx4PUy0oY5QGMUBvQskEhOUy9CkwPXFr5kEvLxtdsfBMbaCZfpDuxakvIX3pS
+        3hmhUkFCIYS3rzujR/Z29cZYoenR5IMHNcWenOnijNdtSoEtOH8DC2vO7DLc0B5k
+        gLL/8/UTdvsq3L1UYqD6jXId4D6CqEoDUt8unX/eAcAZXeGmWPijTUjOUJlU7fT5
+        PRMqllQ+ICabl2km7yJzEvUHEsuy0AWnZtfzCQOQWUPQ0Jls5gprQXrQw==
+X-ME-Sender: <xms:O4O5ZCKrcphA5Ki_6B6jEoHmSvxi1q-uf7-S6pajJ_UuTQHkybOH_A>
+    <xme:O4O5ZKKF4XXiXqve39sE0cVhw-95f1P5Yjbgg7Cq-uQUuTBbf9NLYI-re04SBf2A6
+    RqXwmVK6rtfWf9JS2M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedtgdduvdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfufhv
+    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
+    grthhtvghrnhepleevgfegffehvedtieevhfekheeftedtjeetudevieehveevieelgffh
+    ieevieeunecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomh
+    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:O4O5ZCvKzXNfZoowqJSQQMHfK6sTe80gSOgKTfWAg9JYIJFlcPQ58g>
+    <xmx:O4O5ZHYiySCowtqcO0lst1ko5KBkldl20bkaPEHAccB_zoHec0P6CQ>
+    <xmx:O4O5ZJZ0pf9JBp6lvzyztia23uQvRVlulcUQtISU_K5gTwZSEH8INw>
+    <xmx:PIO5ZIUREdiI16X5iWkZR3SqelLO0ht1PVeND3tlGGPkiTUGb7F8zw>
+Feedback-ID: i51094778:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id A139CA60077; Thu, 20 Jul 2023 14:55:55 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
+Mime-Version: 1.0
+Message-Id: <1e16e400-0dbb-4ba1-a0a5-2380b50fa60a@app.fastmail.com>
+In-Reply-To: <20230719223848.138363-1-minhuadotchen@gmail.com>
+References: <20230719223848.138363-1-minhuadotchen@gmail.com>
+Date:   Thu, 20 Jul 2023 20:55:34 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Min-Hua Chen" <minhuadotchen@gmail.com>,
+        "Hector Martin" <marcan@marcan.st>,
+        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>
+Cc:     asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soc: apple: apple-pmgr-pwrstate: mark apple_pmgr_reset_ops static
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First off, sorry again for the long delay and thanks for being patient
-with me (and for the review of course). I'm finally getting back to
-finding some time for Linux things again, so I think I've mostly settled
-in by now.
 
-On 6/28/23 13:20, Johan Hovold wrote:
-> On Mon, May 29, 2023 at 01:03:49AM +0200, Maximilian Luz wrote:
->> When setting-up the IRQ goes wrong, the __scm pointer currently remains
->> set even though we fail to probe the driver successfully. Due to this,
->> access to __scm may go wrong since associated resources (clocks, ...)
->> have been released. Therefore, clear the __scm pointer when setting-up
->> the IRQ fails.
->>
->> Fixes: 6bf325992236 ("firmware: qcom: scm: Add wait-queue handling logic")
->> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
->> ---
->>
->> Patch introduced in v4
->>
->> ---
->>   drivers/firmware/qcom_scm.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
->> index fde33acd46b7..d0070b833889 100644
->> --- a/drivers/firmware/qcom_scm.c
->> +++ b/drivers/firmware/qcom_scm.c
->> @@ -1488,8 +1488,10 @@ static int qcom_scm_probe(struct platform_device *pdev)
->>   	} else {
->>   		ret = devm_request_threaded_irq(__scm->dev, irq, NULL, qcom_scm_irq_handler,
->>   						IRQF_ONESHOT, "qcom-scm", __scm);
->> -		if (ret < 0)
->> +		if (ret < 0) {
->> +			__scm = NULL;
+
+On Thu, Jul 20, 2023, at 00:38, Min-Hua Chen wrote:
+> This patch fixes the following sparse warnings:
+>
+> drivers/soc/apple/apple-pmgr-pwrstate.c:180:32: sparse: warning: symbol 
+> 'apple_pmgr_reset_ops' was not declared. Should it be static?
+>
+> No functional change intended.
+>
+> Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
+> ---
+
+Acked-by: Sven Peter <sven@svenpeter.dev>
+
+
+Thanks,
+
+
+Sven
+
+>  drivers/soc/apple/apple-pmgr-pwrstate.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/soc/apple/apple-pmgr-pwrstate.c 
+> b/drivers/soc/apple/apple-pmgr-pwrstate.c
+> index d62a776c89a1..9467235110f4 100644
+> --- a/drivers/soc/apple/apple-pmgr-pwrstate.c
+> +++ b/drivers/soc/apple/apple-pmgr-pwrstate.c
+> @@ -177,7 +177,7 @@ static int apple_pmgr_reset_status(struct 
+> reset_controller_dev *rcdev, unsigned
+>  	return !!(reg & APPLE_PMGR_RESET);
+>  }
 > 
-> This looks fragile at best. Clients use qcom_scm_is_available() to see
-> if __scm is available and do not expect it to go away once it is live.
-
-Hmm, you're right. The whole situation is probably not ideal and that
-fix is really just a bad band-aid.
-
-> It looks like you can hold off on initialising __scm until you've
-> requested the interrupt, either by using IRQ_NOAUTOEN or fixing
-> qcom_scm_waitq_wakeup() so that it doesn't use __scm directly.
-> 
-> That would also take care of the previous branch which may also leave
-> __scm set after the structure itself has been released on errors.
-
-Agreed.
-
-> You'll have similar problems when registering qseecom which currently
-> depend on __scm being set, though. Clearing the pointer in that case is
-> clearly broken as you currently rely on devres for deregistering the aux
-> clients on errors (i.e. the clients using __scm are still registered
-> when you clear the pointer in patch 3/4).
-
-Oh right, I hadn't thought of that. I'll have to rework that.
-
->>   			return dev_err_probe(scm->dev, ret, "Failed to request qcom-scm irq\n");
->> +		}
->>   	}
->>   
->>   	__get_convention();
-> 
-> Johan
+> -const struct reset_control_ops apple_pmgr_reset_ops = {
+> +static const struct reset_control_ops apple_pmgr_reset_ops = {
+>  	.assert		= apple_pmgr_reset_assert,
+>  	.deassert	= apple_pmgr_reset_deassert,
+>  	.reset		= apple_pmgr_reset_reset,
+> -- 
+> 2.34.1
