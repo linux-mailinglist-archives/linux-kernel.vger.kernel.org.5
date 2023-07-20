@@ -2,57 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A3F75B277
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D881375B279
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbjGTPYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        id S232514AbjGTPZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbjGTPYl (ORCPT
+        with ESMTP id S231855AbjGTPYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:24:41 -0400
+        Thu, 20 Jul 2023 11:24:52 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9C22733;
-        Thu, 20 Jul 2023 08:24:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CAE6132
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:24:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D62261B50;
-        Thu, 20 Jul 2023 15:24:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B40D0C433C8;
-        Thu, 20 Jul 2023 15:24:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E9C3361B4A
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:24:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D78D0C433C7;
+        Thu, 20 Jul 2023 15:24:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689866665;
-        bh=4qHILuv6ipDyY0XKctnBYIH/GNE7VqG1uAq+Pe1kDX4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RVSrrQTiExkjw9pCikfC6vu5Vor5ZApsycq3OrfmXCD+DUAcfYiedj9L42C/w5Tny
-         9VaGVgrtZq675Nh+f5jd4RMXqy15SK7NdAbDvh141E2iDHtBRPtLhOaruAMp/NRwWx
-         r3ivMdQm3i7cuX/o1pBBO4rbKSN1PPX2k3HjcKsJ1wMjMlo/sObg3J12txvLmnXLWT
-         05fRFM+Aokw2qnQupkBtr6cyMrofDPGv4T77qZ3OMeXP9biFFAGgJaVQTFI+QVCLaD
-         ayL0PWhoFyGZ5F8eft+mFKpAsfI/Er1p94jrtJ1I0iHUSW9VInQ9LTmDPgA4WZHTxi
-         AThtFmKqxshcQ==
-Date:   Thu, 20 Jul 2023 20:54:21 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] arm64: dts: qcom: sc8180x-pmics: align SPMI PMIC
- Power-on node name with dtschema
-Message-ID: <ZLlRpcrMSRs2DoFj@matsya>
-References: <20230720083500.73554-1-krzysztof.kozlowski@linaro.org>
- <20230720083500.73554-3-krzysztof.kozlowski@linaro.org>
+        s=k20201202; t=1689866672;
+        bh=pjnKekjE71gAy7Zg6XstIv+bO3ieMLEzUP4PJ4z6uOE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g/D6JRa9WygFmgZkTLCrBiBZQahul/3Farf9/Mx+xxESjqX4WZNkrFL4aUJpyCXVr
+         xPOxRcDdSOTQ2mp89tl79bwSUCKq98cJVJbNZjfZ3eEcIkv7NI8o9Qph3Erjn0kMUZ
+         bwd5p/mNXN0dCU7OPM4Ooo3c0Of+EqoRfmoUKmGEUguHvcGSaU3Ek5AEW5cdTTreTJ
+         KYhJaxzvDd4adlLHthh9C6y26eCXH+s8CnAa8/lzBZ88t3Em36D7hovjmVySBovTmb
+         gZMxkl+suYqa7X8ldNjGY7JCNCzmkx+U/sE/vdKlt8aZBukg7q82PU9PmEzplXY+db
+         QHCm0tGXd4Qgw==
+Date:   Thu, 20 Jul 2023 08:24:31 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Wei Fang <wei.fang@nxp.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: fec: add XDP_TX feature support
+Message-ID: <20230720082431.5428050e@kernel.org>
+In-Reply-To: <AM5PR04MB3139D4C0F26B5768784B9CAF883EA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+References: <20230717103709.2629372-1-wei.fang@nxp.com>
+        <20230719204553.46856b29@kernel.org>
+        <AM5PR04MB3139D4C0F26B5768784B9CAF883EA@AM5PR04MB3139.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230720083500.73554-3-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -63,12 +68,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-07-23, 10:34, Krzysztof Kozlowski wrote:
-> Bindings expect the Power-on node name to be "pon":
+On Thu, 20 Jul 2023 07:06:05 +0000 Wei Fang wrote:
+> > Are you taking budget into account? When NAPI is called with budget of 0 we
+> > are *not* in napi / softirq context. You can't be processing any XDP tx under
+> > such conditions (it may be a netpoll call from IRQ context).  
 > 
->   sc8180x-lenovo-flex-5g.dtb: pmic@0: 'power-on@800' does not match any of the regexes:
+> Actually, the fec driver never takes the budget into account for cleaning up tx BD
+> ring. The budget is only valid for rx.
 
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-
--- 
-~Vinod
+I know, that's what I'm complaining about. XDP can only run in normal
+NAPI context, i.e. when NAPI is called with budget != 0. That works out
+without any changes on Rx, if budget is zero drivers already don't
+process Rx. But similar change must be done on Tx when adding XDP
+support. You can still process all normal skb packets on Tx when budget
+is 0 (in fact you should), but you _can't_ process any XDP Tx frame.
