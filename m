@@ -2,70 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E9A75B1C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A0975B1C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231739AbjGTOyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 10:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41700 "EHLO
+        id S232295AbjGTOyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 10:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjGTOyI (ORCPT
+        with ESMTP id S232242AbjGTOyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 10:54:08 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B11E60;
-        Thu, 20 Jul 2023 07:54:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689864846; x=1721400846;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=sHKUqdVr24phow31YhtFZABiwRr2DFpKSY1jczZqZxk=;
-  b=R3CLeoNxR1pWeGZ6lhUUnlD0wpf1aH2Kl3PINQJyKYJsQWxW7z7/BZsU
-   7O8FIFR/69VBjNshhWXDlWT9vwFquJC3bp7YxB9YhDMb0yD5ef0klpZyF
-   JbvQwejeUmrhrb2Y2yrycvF9rXcQ56BYf/Q7Z8LeZkpjA4GRE1gGD+eqh
-   CMd0LwJgHNvuUrkpceV6iFsHyjmDlW474AhVJoKpJcJGik6VpuPI8F35y
-   siqmAVxcDYDuGg5429Smk7k5nhYSHydvyDOo6oQ0iwoTo4YzE0kPkXr5o
-   bRiM5C/453tz0AUqMxEwXm3ia3Kyr8ot/ZSjmllNMDKiFZLto07ZXXp06
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="369433469"
-X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
-   d="scan'208";a="369433469"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 07:54:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="718430688"
-X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
-   d="scan'208";a="718430688"
-Received: from jiaqingz-mobl.ccr.corp.intel.com (HELO [10.93.4.236]) ([10.93.4.236])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 07:54:03 -0700
-Message-ID: <61bbb2e6-8c18-d2fc-ce1e-78d462ac1bba@linux.intel.com>
-Date:   Thu, 20 Jul 2023 22:54:01 +0800
+        Thu, 20 Jul 2023 10:54:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A391D26A5;
+        Thu, 20 Jul 2023 07:54:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CA45D61B3B;
+        Thu, 20 Jul 2023 14:54:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7964DC433C7;
+        Thu, 20 Jul 2023 14:54:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689864858;
+        bh=11YbwPwdOeBGa2/GdDUF/tahF2JXkraunLOEmLuGVCk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=GcrwD89xwB6XY94RCqx51TG0nCV5c143s4Wl90LC96IFjZiunJD6wTSxU1fqF2ND3
+         eupNZtyGOTw4g+Oiczp46tj5jAufMO+Lc/A/+KGMiYm6gCiQNuHB6qZLDAcOmNJD82
+         u79vKnZP5ts0Zew+nJubqaE408f+6yz2+gSumOVe8YEpZeA1JIUMMhCdvK6ANOcNYG
+         2P+XHXJiPC6nnYOxxE7Ubaf8BUXroI1yaEJUqbJNXbpZoc1YcYuF83A84Aw/xYToNA
+         XrT3LQAFmNrFq6QGMQeIvpSRWhd4TTUM/0iNGbCkV6BOIHazzf2l9OqR8HJ+iyxG+v
+         D5I6lo0wWjtaQ==
+Message-ID: <f541027cca189c42550136aab27b89889cd2fdd3.camel@kernel.org>
+Subject: Re: [PATCH v2] ext4: fix the time handling macros when ext4 is
+ using small inodes
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Hugh Dickins <hughd@google.com>
+Date:   Thu, 20 Jul 2023 10:54:16 -0400
+In-Reply-To: <20230720144807.GC5764@mit.edu>
+References: <20230719-ctime-v2-1-869825696d6d@kernel.org>
+         <20230720144807.GC5764@mit.edu>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/2] can: ems_pci: move ASIX AX99100 ids to pci_ids.h
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>,
-        support@ems-wuensche.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-can@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-References: <20230720102859.2985655-1-jiaqing.zhao@linux.intel.com>
- <20230720102859.2985655-3-jiaqing.zhao@linux.intel.com>
- <20230720-document-tingle-e5d555714021-mkl@pengutronix.de>
-Content-Language: en-US
-From:   Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
-In-Reply-To: <20230720-document-tingle-e5d555714021-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,31 +60,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-20 18:40, Marc Kleine-Budde wrote:
-> On 20.07.2023 10:28:59, Jiaqing Zhao wrote:
->> Move PCI Vendor and Device ID of ASIX AX99100 PCIe to Multi I/O
->> Controller to pci_ids.h for its serial and parallel port driver
->> support in subsequent patches.
-> 
-> Sorry, I haven't noticed the change in "include/linux/pci_ids.h", that
-> the other patches depend on. How to coordinate among the subsystems?
-> 
-> I don't mind taking the entire (v1) series with the Acks from the
-> tty/serial and parport maintainers, or give my Acked-by to upstream
-> via their trees.
+On Thu, 2023-07-20 at 10:48 -0400, Theodore Ts'o wrote:
+> On Wed, Jul 19, 2023 at 06:32:19AM -0400, Jeff Layton wrote:
+> > If ext4 is using small on-disk inodes, then it may not be able to store
+> > fine grained timestamps. It also can't store the i_crtime at all in tha=
+t
+> > case since that fully lives in the extended part of the inode.
+> >=20
+> > 979492850abd got the EXT4_EINODE_{GET,SET}_XTIME macros wrong, and woul=
+d
+> > still store the tv_sec field of the i_crtime into the raw_inode, even
+> > when they were small, corrupting adjacent memory.
+> >=20
+> > This fixes those macros to skip setting anything in the raw_inode if th=
+e
+> > tv_sec field doesn't fit, and to properly return a {0,0} timestamp when
+> > the raw_inode doesn't support it.
+> >=20
+> > Also, fix a bug in ctime handling during rename. It was updating the
+> > renamed inode's ctime twice rather than the old directory.
+> >=20
+> > Cc: Jan Kara <jack@suse.cz>
+> > Fixes: 979492850abd ("ext4: convert to ctime accessor functions")
+> > Reported-by: Hugh Dickins <hughd@google.com>
+> > Tested-by: Hugh Dickins <hughd@google.com>
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>=20
+> Acked-by: Theodore Ts'o <tytso@mit.edu>
+>=20
+> I assume this is will be applied to the vfs.ctime branch, yes?
+>=20
+>   	      	      	 	    	- Ted
 
-Add tty and parport maintainers to this thread.
-
-I'd like to ask other maintainers' opinion as I'm not sure which option
-is better and I had no similar experience before. 
- 
->> Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
->> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
->> ---
->>  drivers/net/can/sja1000/ems_pci.c | 6 +-----
->>  include/linux/pci_ids.h           | 4 ++++
->>  2 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> Marc
-> 
+Yes. Ideally it'll be folded into the ext4 patch there.
+--=20
+Jeff Layton <jlayton@kernel.org>
