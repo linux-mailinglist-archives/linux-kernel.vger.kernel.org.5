@@ -2,170 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B369475B50C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8AF75B511
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbjGTQya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44550 "EHLO
+        id S230468AbjGTQ5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbjGTQy1 (ORCPT
+        with ESMTP id S229750AbjGTQ5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:54:27 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD61173A;
-        Thu, 20 Jul 2023 09:54:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689872066; x=1721408066;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jsTm2UaW1yv/guIOUhcU4FeneLP0J9xCcYSp75A3fpc=;
-  b=GS1YICRgg4xY5E/dbmvHGHhv9BVSjUizoc/XMZAjl+tpmTftkKZyL7/0
-   zSsJciPqAAQTlfi2p/FZTGCYhvGsRUP1a/gp9yiDqBSL+C3xK2euv+67C
-   flY1Nw8Mb/i69t+71su4qxrfFwxsnUzuXos/Bro4+oeRi9ZRG2rX1sy4M
-   idTmdrCoDwF8e9c2yBs6ir3iN28/5f0iXpFb++8fl/Gz3ZhP/POVGjwbh
-   yxYU2tCwmCh3rEzL8WLaymPhkIzFuosNvVEYPe0zqmp2y6anyj+nYmDSL
-   31Z47TcQYs3NaMrJDm3WR/iljVD+g/mxhJ7mtca9AahXYdb9L8amoiPpg
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="430596138"
-X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
-   d="scan'208";a="430596138"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 09:54:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="759638874"
-X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
-   d="scan'208";a="759638874"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 20 Jul 2023 09:54:14 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qMWus-0006IH-0C;
-        Thu, 20 Jul 2023 16:54:14 +0000
-Date:   Fri, 21 Jul 2023 00:54:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Praveenkumar I <quic_ipkumar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, amitk@kernel.org,
-        thara.gopinath@gmail.com, rafael@kernel.org,
-        daniel.lezcano@linaro.org, rui.zhang@intel.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        quic_varada@quicinc.com
-Subject: Re: [PATCH v4 1/5] thermal/drivers/tsens: Add TSENS enable and
- calibration support for V2
-Message-ID: <202307210014.qNnx99K8-lkp@intel.com>
-References: <20230719104041.126718-2-quic_ipkumar@quicinc.com>
+        Thu, 20 Jul 2023 12:57:02 -0400
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE0392
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:57:01 -0700 (PDT)
+Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-799a451ca9cso430805241.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 09:57:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689872220; x=1690477020;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TZCX9yhI7AbKGy/HnG34aNNVUXchyn5dmI5801hBoFs=;
+        b=OFmwChsRfRqH9lASmE0v54HU6kpsRwivRWRyqB44btzy+zNV0jDMcoAocZMcp1FND+
+         cTyrMgIW3CLI8mL3wxSoWtBJ+tZl36pkDUnxy25Zov3bibz2ZRjelm2iUOHZ77rpItZh
+         UTDrKqVkVnHFItLO2tlUgwvou+HqhGBpvx8dEl3TpunBsGcTJKgzd2/burDS9oRfzK1r
+         ZoJRsjyKq+9MGqnwF/bALJxj6p/0RlAhxpa11+oAP43beOBRwV1f17nUgrNQOCy+qgnD
+         n9DGWXgd+4FDzMQi6Gqmz2rokhcWpYWXbzn8xMZj3GGenjzAcFNrG8KEk3e90QgjWF8e
+         iMqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689872220; x=1690477020;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TZCX9yhI7AbKGy/HnG34aNNVUXchyn5dmI5801hBoFs=;
+        b=OEAxcRFRm1UbfMGEq3xFZqy2rhER0ZheEOtXvh2sIOg4YucAqQvizUBlr+MYHirzPk
+         6uGYyCL5xXZLF4qgi8jwLEMN7ESxdm6Oqzl3E5xnD3o2wTbjKcpUd2Dxz6nBguPG+b3B
+         U4/9CQS9O5+mroQC7uyq6PI1iu746hHPSowDTXRBf8eQKJyHki1Ze0zk52gkQZPJZmAe
+         GIZkvXMaFC5CNXVz01VlO8XKjCBn28sBtFynaBhrE4Ukm9p2tLhCTcjWdviIy4wcylAt
+         ABCCzn/EKIDcFjyQ6ErMeFXCk0k+s8MCehJAFzvq7EdO8rj/T9OvNFsjqfrbtcPITYHD
+         ruHg==
+X-Gm-Message-State: ABy/qLbMA6PD71TkwE34JVAo595RkHM7j50oSR6VoV5doc+GyKmLJHA/
+        JfrL/9rMyN7tNCWoq5MUHDKjDQ==
+X-Google-Smtp-Source: APBJJlEsYqZ49Ny+WkiZxWE5TyzQv98GOGbTZwiNitn54WzBknEBplR1bvLxwQOCYwqiC5hsOLi/Kw==
+X-Received: by 2002:a67:b604:0:b0:43d:6660:581b with SMTP id d4-20020a67b604000000b0043d6660581bmr2252078vsm.5.1689872220064;
+        Thu, 20 Jul 2023 09:57:00 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id w136-20020a81498e000000b0056974f4019esm319055ywa.6.2023.07.20.09.56.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 09:56:59 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 09:56:51 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Oleksandr Tymoshenko <ovt@google.com>
+cc:     Jonathan Corbet <corbet@lwn.net>, Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] shmem: add support for user extended attributes
+In-Reply-To: <20230720065430.2178136-1-ovt@google.com>
+Message-ID: <9b8d38f0-fd22-3f98-d070-16baf976ecb5@google.com>
+References: <20230720065430.2178136-1-ovt@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230719104041.126718-2-quic_ipkumar@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Praveenkumar,
+On Thu, 20 Jul 2023, Oleksandr Tymoshenko wrote:
 
-kernel test robot noticed the following build errors:
+> User extended attributes are not enabled in tmpfs because
+> the size of the value is not limited and the memory allocated
+> for it is not counted against any limit. Malicious
+> non-privileged user can exhaust kernel memory by creating
+> user.* extended attribute with very large value.
+> 
+> There are still situations when enabling suport for extended
+> user attributes on tmpfs is required and the attack vector
+> is not applicable, for instance batch jobs with trusted binaries.
+> 
+> This patch introduces two mount options to enable/disable
+> support for user.* extended attributes on tmpfs:
+> 
+> user_xattr    enable support for user extended aatributes
+> nouser_xattr  disable support for user extended attributes
+> 
+> The default behavior of the filesystem is not changed.
+> 
+> Signed-off-by: Oleksandr Tymoshenko <ovt@google.com>
 
-[auto build test ERROR on rafael-pm/thermal]
-[also build test ERROR on robh/for-next linus/master v6.5-rc2 next-20230720]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks, but no.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Praveenkumar-I/thermal-drivers-tsens-Add-TSENS-enable-and-calibration-support-for-V2/20230719-184436
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git thermal
-patch link:    https://lore.kernel.org/r/20230719104041.126718-2-quic_ipkumar%40quicinc.com
-patch subject: [PATCH v4 1/5] thermal/drivers/tsens: Add TSENS enable and calibration support for V2
-config: arm-randconfig-r001-20230720 (https://download.01.org/0day-ci/archive/20230721/202307210014.qNnx99K8-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce: (https://download.01.org/0day-ci/archive/20230721/202307210014.qNnx99K8-lkp@intel.com/reproduce)
+This is not something we want mount options for:
+we just want to limit the memory usage of tmpfs user xattrs.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307210014.qNnx99K8-lkp@intel.com/
+I've had the patch to do that limiting (taking it out of the inode
+space already limited by nr_inodes) in my test tree for 2.5 years now:
+waiting to reach the top of the heap to pull together and submit.
 
-All errors (new ones prefixed by >>):
+Your sending this patch does help to raise the priority for my
+sending that patch: thank you; but I cannot promise when that will be.
 
->> drivers/thermal/qcom/tsens-v2.c:153:9: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                   val = FIELD_PREP(CONVERSION_SHIFT_MASK, V2_SHIFT_DEFAULT) |
-                         ^
-   1 error generated.
+(And the way mm/shmem.c is conflicted between vfs and mm trees
+is rather discouraging development there at the moment: I'm hoping
+it can be mostly wrested back into the mm tree in the next cycle.)
 
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for SM_GCC_8450
-   Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=y] && (ARM64 || COMPILE_TEST [=n])
-   Selected by [y]:
-   - SM_VIDEOCC_8450 [=y] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=y]
-   WARNING: unmet direct dependencies detected for SM_GCC_8550
-   Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=y] && (ARM64 || COMPILE_TEST [=n])
-   Selected by [y]:
-   - SM_GPUCC_8550 [=y] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=y]
+Hugh
 
-
-vim +/FIELD_PREP +153 drivers/thermal/qcom/tsens-v2.c
-
-   129	
-   130	static int tsens_v2_calibrate_sensor(struct device *dev, struct tsens_sensor *sensor,
-   131					     struct regmap *map,  u32 mode, u32 base0, u32 base1)
-   132	{
-   133		u32 slope, czero, val;
-   134		char name[8];
-   135		int ret;
-   136	
-   137		/* Read offset value */
-   138		ret = snprintf(name, sizeof(name), "s%d", sensor->hw_id);
-   139		if (ret < 0)
-   140			return ret;
-   141	
-   142		ret = nvmem_cell_read_variable_le_u32(dev, name, &sensor->offset);
-   143		if (ret)
-   144			return ret;
-   145	
-   146		/* Based on calib mode, program SHIFT, SLOPE and CZERO */
-   147		switch (mode) {
-   148		case TWO_PT_CALIB:
-   149			slope = (TWO_PT_SHIFTED_GAIN / (base1 - base0));
-   150	
-   151			czero = (base0 + sensor->offset - ((base1 - base0) / 3));
-   152	
- > 153			val = FIELD_PREP(CONVERSION_SHIFT_MASK, V2_SHIFT_DEFAULT) |
-   154			      FIELD_PREP(CONVERSION_SLOPE_MASK, slope) |
-   155			      FIELD_PREP(CONVERSION_CZERO_MASK, czero);
-   156	
-   157			fallthrough;
-   158		case ONE_PT_CALIB2:
-   159			czero = base0 + sensor->offset - ONE_PT_CZERO_CONST;
-   160	
-   161			val = FIELD_PREP(CONVERSION_SHIFT_MASK, V2_SHIFT_DEFAULT) |
-   162			      FIELD_PREP(CONVERSION_SLOPE_MASK, ONE_PT_SLOPE) |
-   163			      FIELD_PREP(CONVERSION_CZERO_MASK, czero);
-   164	
-   165			break;
-   166		default:
-   167			dev_dbg(dev, "calibrationless mode\n");
-   168	
-   169			val = FIELD_PREP(CONVERSION_SHIFT_MASK, V2_SHIFT_DEFAULT) |
-   170			      FIELD_PREP(CONVERSION_SLOPE_MASK, V2_SLOPE_DEFAULT) |
-   171			      FIELD_PREP(CONVERSION_CZERO_MASK, V2_CZERO_DEFAULT);
-   172		}
-   173	
-   174		regmap_write(map, SENSOR_CONVERSION(sensor->hw_id), val);
-   175	
-   176		return 0;
-   177	}
-   178	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  Documentation/filesystems/tmpfs.rst | 12 ++++++++
+>  include/linux/shmem_fs.h            |  1 +
+>  mm/shmem.c                          | 45 +++++++++++++++++++++++++++++
+>  3 files changed, 58 insertions(+)
+> 
+> diff --git a/Documentation/filesystems/tmpfs.rst b/Documentation/filesystems/tmpfs.rst
+> index f18f46be5c0c..5700ba72d095 100644
+> --- a/Documentation/filesystems/tmpfs.rst
+> +++ b/Documentation/filesystems/tmpfs.rst
+> @@ -215,6 +215,16 @@ will give you tmpfs instance on /mytmpfs which can allocate 10GB
+>  RAM/SWAP in 10240 inodes and it is only accessible by root.
+>  
+>  
+> +tmpfs, when compiled with CONFIG_TMPFS_XATTR, does not support
+> +Extended User Attributes for security reasons. The support can be
+> +enabled/disabled by two mount options:
+> +
+> +============  ===========================================
+> +user_xattr    Enable support for Extended User Attributes
+> +nouser_xattr  Disable upport for Extended User Attributes
+> +============  ===========================================
+> +
+> +
+>  :Author:
+>     Christoph Rohland <cr@sap.com>, 1.12.01
+>  :Updated:
+> @@ -223,3 +233,5 @@ RAM/SWAP in 10240 inodes and it is only accessible by root.
+>     KOSAKI Motohiro, 16 Mar 2010
+>  :Updated:
+>     Chris Down, 13 July 2020
+> +:Updated:
+> +   Oleksandr Tymoshenko, 19 July 2023
+> diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
+> index 9029abd29b1c..f06d18b9041c 100644
+> --- a/include/linux/shmem_fs.h
+> +++ b/include/linux/shmem_fs.h
+> @@ -53,6 +53,7 @@ struct shmem_sb_info {
+>  	spinlock_t shrinklist_lock;   /* Protects shrinklist */
+>  	struct list_head shrinklist;  /* List of shinkable inodes */
+>  	unsigned long shrinklist_len; /* Length of shrinklist */
+> +	bool user_xattr;	      /* user.* xattrs are allowed */
+>  };
+>  
+>  static inline struct shmem_inode_info *SHMEM_I(struct inode *inode)
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 2f2e0e618072..4f7d46d65494 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -85,6 +85,7 @@ static struct vfsmount *shm_mnt;
+>  
+>  #define BLOCKS_PER_PAGE  (PAGE_SIZE/512)
+>  #define VM_ACCT(size)    (PAGE_ALIGN(size) >> PAGE_SHIFT)
+> +#define TMPFS_USER_XATTR_INDEX 1
+>  
+>  /* Pretend that each entry is of this size in directory's i_size */
+>  #define BOGO_DIRENT_SIZE 20
+> @@ -116,11 +117,13 @@ struct shmem_options {
+>  	int huge;
+>  	int seen;
+>  	bool noswap;
+> +	bool user_xattr;
+>  #define SHMEM_SEEN_BLOCKS 1
+>  #define SHMEM_SEEN_INODES 2
+>  #define SHMEM_SEEN_HUGE 4
+>  #define SHMEM_SEEN_INUMS 8
+>  #define SHMEM_SEEN_NOSWAP 16
+> +#define SHMEM_SEEN_USER_XATTR 32
+>  };
+>  
+>  #ifdef CONFIG_TMPFS
+> @@ -3447,6 +3450,16 @@ static int shmem_xattr_handler_get(const struct xattr_handler *handler,
+>  				   const char *name, void *buffer, size_t size)
+>  {
+>  	struct shmem_inode_info *info = SHMEM_I(inode);
+> +	struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
+> +
+> +	switch (handler->flags) {
+> +	case TMPFS_USER_XATTR_INDEX:
+> +		if (!sbinfo->user_xattr)
+> +			return -EOPNOTSUPP;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+>  
+>  	name = xattr_full_name(handler, name);
+>  	return simple_xattr_get(&info->xattrs, name, buffer, size);
+> @@ -3459,8 +3472,18 @@ static int shmem_xattr_handler_set(const struct xattr_handler *handler,
+>  				   size_t size, int flags)
+>  {
+>  	struct shmem_inode_info *info = SHMEM_I(inode);
+> +	struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
+>  	int err;
+>  
+> +	switch (handler->flags) {
+> +	case TMPFS_USER_XATTR_INDEX:
+> +		if (!sbinfo->user_xattr)
+> +			return -EOPNOTSUPP;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+>  	name = xattr_full_name(handler, name);
+>  	err = simple_xattr_set(&info->xattrs, name, value, size, flags, NULL);
+>  	if (!err) {
+> @@ -3482,9 +3505,17 @@ static const struct xattr_handler shmem_trusted_xattr_handler = {
+>  	.set = shmem_xattr_handler_set,
+>  };
+>  
+> +static const struct xattr_handler shmem_user_xattr_handler = {
+> +	.prefix = XATTR_USER_PREFIX,
+> +	.flags = TMPFS_USER_XATTR_INDEX,
+> +	.get = shmem_xattr_handler_get,
+> +	.set = shmem_xattr_handler_set,
+> +};
+> +
+>  static const struct xattr_handler *shmem_xattr_handlers[] = {
+>  	&shmem_security_xattr_handler,
+>  	&shmem_trusted_xattr_handler,
+> +	&shmem_user_xattr_handler,
+>  	NULL
+>  };
+>  
+> @@ -3604,6 +3635,8 @@ enum shmem_param {
+>  	Opt_inode32,
+>  	Opt_inode64,
+>  	Opt_noswap,
+> +	Opt_user_xattr,
+> +	Opt_nouser_xattr,
+>  };
+>  
+>  static const struct constant_table shmem_param_enums_huge[] = {
+> @@ -3626,6 +3659,8 @@ const struct fs_parameter_spec shmem_fs_parameters[] = {
+>  	fsparam_flag  ("inode32",	Opt_inode32),
+>  	fsparam_flag  ("inode64",	Opt_inode64),
+>  	fsparam_flag  ("noswap",	Opt_noswap),
+> +	fsparam_flag  ("user_xattr",	Opt_user_xattr),
+> +	fsparam_flag  ("nouser_xattr",	Opt_nouser_xattr),
+>  	{}
+>  };
+>  
+> @@ -3717,6 +3752,14 @@ static int shmem_parse_one(struct fs_context *fc, struct fs_parameter *param)
+>  		ctx->noswap = true;
+>  		ctx->seen |= SHMEM_SEEN_NOSWAP;
+>  		break;
+> +	case Opt_user_xattr:
+> +		ctx->user_xattr = true;
+> +		ctx->seen |= SHMEM_SEEN_USER_XATTR;
+> +		break;
+> +	case Opt_nouser_xattr:
+> +		ctx->user_xattr = false;
+> +		ctx->seen |= SHMEM_SEEN_USER_XATTR;
+> +		break;
+>  	}
+>  	return 0;
+>  
+> @@ -3834,6 +3877,8 @@ static int shmem_reconfigure(struct fs_context *fc)
+>  		sbinfo->max_inodes  = ctx->inodes;
+>  		sbinfo->free_inodes = ctx->inodes - inodes;
+>  	}
+> +	if (ctx->seen & SHMEM_SEEN_USER_XATTR)
+> +		sbinfo->user_xattr = ctx->user_xattr;
+>  
+>  	/*
+>  	 * Preserve previous mempolicy unless mpol remount option was specified.
+> -- 
+> 2.41.0.255.g8b1d071c50-goog
+> 
+> 
