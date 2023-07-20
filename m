@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6892975A5D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210B075A5D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbjGTFo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 01:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
+        id S229503AbjGTFpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 01:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbjGTFo2 (ORCPT
+        with ESMTP id S229604AbjGTFof (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 01:44:28 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82ACA273B
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 22:43:28 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b8c81e36c0so2504455ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 22:43:28 -0700 (PDT)
+        Thu, 20 Jul 2023 01:44:35 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C850130F1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 22:43:31 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b8b4748fe4so2421445ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 22:43:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689831797; x=1690436597;
+        d=linaro.org; s=google; t=1689831805; x=1690436605;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=93rZVq+nQZbieDirfxMQeUUlun6XgrX6rWeshnX356E=;
-        b=MzIhYsChG4GLU0KYjhZWwm/1noH7leAPerLHt9hDa7n632irnyZY6W8R11Kf8ZS0XW
-         jD0T+VChMw4QKx6WxJM/A/NLLfw3CBzMbBTOYIPcMX61hyB8TvLoRbd5l4l3euD+H+lZ
-         Xs9DmiDWTKkfkEDi0qZ2bkYFLKhyKihhF+FI2yucuGgntFZrWyO+wRcHHy9zGxJkBJIl
-         HvJ8HH/HxXgAPBG8e7QQsUWPrD/XCYFlxVCTNCroKkLPCbgqgvh29U6ff0mIR7x3dyDw
-         ChN4dktnQyv5yXOoufAPXdRwrS419DzlI9bxT1Bd5zR/XcHCCdJEsIGsTBzctSgtk1SL
-         Ecdw==
+        bh=F4qF4m4CZ0J7MvKDZ7SuDqx2/4RIpDDKOilKu08KHM4=;
+        b=IyrHl2OL+ZaFltLDIVasngj2j1K+OZ+qa+3QXu79XWtVglM2cWkiGeKirVDN95uSIh
+         v8LLz6u0koidgBc6XA/UobhzQ2/Fy4zpfegH+qVo+7tcdbe8jTPxlugiZtaXWZtASDOt
+         kZT5/xRO69U70JpND6GldCzsYqsW4kCQhdZwNW2DRYEoxv+EmwCcUZqwX9B6LLdf/RmZ
+         YKpWGnqr5n/W08TVl4YBWGmElXYfqC4SDgOome0jUhTHdV5qy1AdxIoZnu/DSQHe/Vec
+         M3rIB3zRJE3lBlpkwgWNX3PyFhO7wCMNVINkCeadNTSDD+5VXHZItKNkM4nntMcxu23l
+         nDnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689831797; x=1690436597;
+        d=1e100.net; s=20221208; t=1689831805; x=1690436605;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=93rZVq+nQZbieDirfxMQeUUlun6XgrX6rWeshnX356E=;
-        b=B2WXBXwAfwYTVIBjChS1HlBRaEcElI3A5dTjDzd8qn6E9zZdB2BM+wKeV83O6JBHCM
-         DvIZRFLzi9nZttki63Yc22fmLkz19yjndVGwrAhFQVxwWxXxXADHDqJeTF0Nn80tL/XB
-         uOAbQfe+fjZSL6yHgNRgCKjHq7UhVbNXd5+fL0aMtnFwT88zgT1ruR4us3zDYtdaxG7f
-         hjtNqnnry+g1H2eyuJG97pCZraMinymVyBv0rMuBG4SN8sPm3MYgbJZTV8P848ML7C2o
-         c6T4h8Mrror9eeZxteIr0A0HoUMAj7l/Omn4W7k0sww77FwYiIZ/gcSVfe0m1ngCGdYm
-         c2Eg==
-X-Gm-Message-State: ABy/qLbLvbGI7PHyEarKCbfEw1G7bGckrHXQt27XM7Ex2bnPRncBRZ7j
-        eHvAEK1e9ggq+UI7tHaG1gGH
-X-Google-Smtp-Source: APBJJlG5iFdToW2qee+uHlZ3VICGz9vPK9xr5coHt1oYeKeXg86mG1bX6iFZw+OED8mrXCa8y2NHKA==
-X-Received: by 2002:a17:903:41c7:b0:1b8:a720:f513 with SMTP id u7-20020a17090341c700b001b8a720f513mr1025062ple.30.1689831797590;
-        Wed, 19 Jul 2023 22:43:17 -0700 (PDT)
+        bh=F4qF4m4CZ0J7MvKDZ7SuDqx2/4RIpDDKOilKu08KHM4=;
+        b=OZgvyX5dECiJ4PeBnj9FfN2v0cv1o3nMGFnojRHHlSSJXJucrjfD04PGsWksbnI/Up
+         Ao/SeD8d8YoqyTe3TQ7NJNNc5IUMMr+BJ3HHcYjtloRhfvEpT6jwuD5fc/j5yvx4UpIV
+         U14N+Hlu8JtbAVvtIqIxgMD1L6xExdsSXkzfL3Ruv56tLF4U8Ze4nDYwVEzG7O2pr9+B
+         DHkFbIsSaFMS7AULZkobTCBbalEbg9oPRgl9Kwww085IMllHcqnYM2qnuHpZKeLB+nKl
+         +1y0dkwT2AJRRPN2flqfXBK3OsM5yU/MTWAkXCC+S97CWlK8xPc92bj3GC9irlO8tW15
+         TlHQ==
+X-Gm-Message-State: ABy/qLZl0Jzrx0eqrlx+KDQT5AcKoZ2gML4qWDJeggpjYdj6rtmAREJQ
+        4LtqqAyIAcirLLGJ/ctX84yp
+X-Google-Smtp-Source: APBJJlH3D+p4R3kYiaf5ofKVmz6jSEu1z7fUOCxzuFzRG/QRgpY4X9zV5+Oe9oJNO8Ju2/+Rd7QbtA==
+X-Received: by 2002:a17:902:cecb:b0:1b8:b288:6274 with SMTP id d11-20020a170902cecb00b001b8b2886274mr4003427plg.18.1689831805211;
+        Wed, 19 Jul 2023 22:43:25 -0700 (PDT)
 Received: from localhost.localdomain ([117.206.119.70])
-        by smtp.gmail.com with ESMTPSA id r2-20020a170902be0200b001b85bb5fd77sm263367pls.119.2023.07.19.22.43.10
+        by smtp.gmail.com with ESMTPSA id r2-20020a170902be0200b001b85bb5fd77sm263367pls.119.2023.07.19.22.43.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 22:43:17 -0700 (PDT)
+        Wed, 19 Jul 2023 22:43:24 -0700 (PDT)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
         myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
@@ -67,9 +67,9 @@ Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
         bmasney@redhat.com, krzysztof.kozlowski@linaro.org,
         linux-kernel@vger.kernel.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 14/15] scsi: ufs: core: Add enums for UFS lanes
-Date:   Thu, 20 Jul 2023 11:10:59 +0530
-Message-Id: <20230720054100.9940-15-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 15/15] scsi: ufs: qcom: Add support for scaling interconnects
+Date:   Thu, 20 Jul 2023 11:11:00 +0530
+Message-Id: <20230720054100.9940-16-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230720054100.9940-1-manivannan.sadhasivam@linaro.org>
 References: <20230720054100.9940-1-manivannan.sadhasivam@linaro.org>
@@ -85,63 +85,253 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since there are enums available for UFS gears, let's add enums for lanes
-as well to maintain uniformity.
+Qcom SoCs require scaling the interconnect paths for proper working of the
+peripherals connected through interconnects. Even for accessing the UFS
+controller, someone should setup the interconnect paths. So far, the
+bootloaders used to setup the interconnect paths before booting linux as
+they need to access the UFS storage for things like fetching boot firmware.
+But with the advent of multi boot options, bootloader nowadays like in
+SA8540p SoC do not setup the interconnect paths at all.
 
+So trying to configure UFS in the absence of the interconnect path
+configuration, results in boot crash.
+
+To fix this issue and also to dynamically scale the interconnects (UFS-DDR
+and CPU-UFS), interconnect API support is added to the Qcom UFS driver.
+With this support, the interconnect paths are scaled dynamically based on
+the gear configuration.
+
+During the early stage of ufs_qcom_init(), ufs_qcom_icc_init() will setup
+the paths to max bandwidth to allow configuring the UFS registers. Touching
+the registers without configuring the icc paths would result in a crash.
+However, we don't really need to set max vote for the icc paths as any
+minimal vote would suffice. But the max value would allow initialization to
+be done faster. After init, the bandwidth will get updated using
+ufs_qcom_icc_update_bw() based on the gear and lane configuration.
+
+The bandwidth values defined in ufs_qcom_bw_table struct are taken from
+Qcom downstream vendor devicetree source and are calculated as per the
+UFS3.1 Spec, Section 6.4.1, HS Gear Rates. So it is fixed across platforms.
+
+Cc: Brian Masney <bmasney@redhat.com>
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/ufs/core/ufshcd.c        | 4 ++--
- drivers/ufs/host/ufshcd-pltfrm.c | 4 ++--
- include/ufs/unipro.h             | 6 ++++++
- 3 files changed, 10 insertions(+), 4 deletions(-)
+ drivers/ufs/host/ufs-qcom.c | 131 +++++++++++++++++++++++++++++++++++-
+ drivers/ufs/host/ufs-qcom.h |   3 +
+ 2 files changed, 133 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index 6207afac729d..4496a23eaa83 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -4447,8 +4447,8 @@ static void ufshcd_init_pwr_info(struct ufs_hba *hba)
- {
- 	hba->pwr_info.gear_rx = UFS_PWM_G1;
- 	hba->pwr_info.gear_tx = UFS_PWM_G1;
--	hba->pwr_info.lane_rx = 1;
--	hba->pwr_info.lane_tx = 1;
-+	hba->pwr_info.lane_rx = UFS_LANE_1;
-+	hba->pwr_info.lane_tx = UFS_LANE_1;
- 	hba->pwr_info.pwr_rx = SLOWAUTO_MODE;
- 	hba->pwr_info.pwr_tx = SLOWAUTO_MODE;
- 	hba->pwr_info.hs_rate = 0;
-diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
-index 068c22378c88..8d20cbb552aa 100644
---- a/drivers/ufs/host/ufshcd-pltfrm.c
-+++ b/drivers/ufs/host/ufshcd-pltfrm.c
-@@ -415,8 +415,8 @@ EXPORT_SYMBOL_GPL(ufshcd_get_pwr_dev_param);
- void ufshcd_init_pwr_dev_param(struct ufs_dev_params *dev_param)
- {
- 	*dev_param = (struct ufs_dev_params){
--		.tx_lanes = 2,
--		.rx_lanes = 2,
-+		.tx_lanes = UFS_LANE_2,
-+		.rx_lanes = UFS_LANE_2,
- 		.hs_rx_gear = UFS_HS_G3,
- 		.hs_tx_gear = UFS_HS_G3,
- 		.pwm_rx_gear = UFS_PWM_G4,
-diff --git a/include/ufs/unipro.h b/include/ufs/unipro.h
-index dc9dd1d23f0f..256eb3a43f54 100644
---- a/include/ufs/unipro.h
-+++ b/include/ufs/unipro.h
-@@ -230,6 +230,12 @@ enum ufs_hs_gear_tag {
- 	UFS_HS_G5		/* HS Gear 5 */
+diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+index 8d6fd4c3324f..2ab09d65f1f4 100644
+--- a/drivers/ufs/host/ufs-qcom.c
++++ b/drivers/ufs/host/ufs-qcom.c
+@@ -7,6 +7,7 @@
+ #include <linux/time.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
++#include <linux/interconnect.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+@@ -46,6 +47,49 @@ enum {
+ 	TSTBUS_MAX,
  };
  
-+enum ufs_lanes {
-+	UFS_LANE_DONT_CHANGE,	/* Don't change Lane */
-+	UFS_LANE_1,		/* Lane 1 (default for reset) */
-+	UFS_LANE_2,		/* Lane 2 */
++#define QCOM_UFS_MAX_GEAR 4
++#define QCOM_UFS_MAX_LANE 2
++
++enum {
++	MODE_MIN,
++	MODE_PWM,
++	MODE_HS_RA,
++	MODE_HS_RB,
++	MODE_MAX,
 +};
 +
- enum ufs_unipro_ver {
- 	UFS_UNIPRO_VER_RESERVED = 0,
- 	UFS_UNIPRO_VER_1_40 = 1, /* UniPro version 1.40 */
++struct __ufs_qcom_bw_table {
++	u32 mem_bw;
++	u32 cfg_bw;
++} ufs_qcom_bw_table[MODE_MAX + 1][QCOM_UFS_MAX_GEAR + 1][QCOM_UFS_MAX_LANE + 1] = {
++	[MODE_MIN][0][0]		   = { 0,		0 }, /* Bandwidth values in KB/s */
++	[MODE_PWM][UFS_PWM_G1][UFS_LANE_1] = { 922,		1000 },
++	[MODE_PWM][UFS_PWM_G2][UFS_LANE_1] = { 1844,		1000 },
++	[MODE_PWM][UFS_PWM_G3][UFS_LANE_1] = { 3688,		1000 },
++	[MODE_PWM][UFS_PWM_G4][UFS_LANE_1] = { 7376,		1000 },
++	[MODE_PWM][UFS_PWM_G1][UFS_LANE_2] = { 1844,		1000 },
++	[MODE_PWM][UFS_PWM_G2][UFS_LANE_2] = { 3688,		1000 },
++	[MODE_PWM][UFS_PWM_G3][UFS_LANE_2] = { 7376,		1000 },
++	[MODE_PWM][UFS_PWM_G4][UFS_LANE_2] = { 14752,		1000 },
++	[MODE_HS_RA][UFS_HS_G1][UFS_LANE_1] = { 127796,		1000 },
++	[MODE_HS_RA][UFS_HS_G2][UFS_LANE_1] = { 255591,		1000 },
++	[MODE_HS_RA][UFS_HS_G3][UFS_LANE_1] = { 1492582,	102400 },
++	[MODE_HS_RA][UFS_HS_G4][UFS_LANE_1] = { 2915200,	204800 },
++	[MODE_HS_RA][UFS_HS_G1][UFS_LANE_2] = { 255591,		1000 },
++	[MODE_HS_RA][UFS_HS_G2][UFS_LANE_2] = { 511181,		1000 },
++	[MODE_HS_RA][UFS_HS_G3][UFS_LANE_2] = { 1492582,	204800 },
++	[MODE_HS_RA][UFS_HS_G4][UFS_LANE_2] = { 2915200,	409600 },
++	[MODE_HS_RB][UFS_HS_G1][UFS_LANE_1] = { 149422,		1000 },
++	[MODE_HS_RB][UFS_HS_G2][UFS_LANE_1] = { 298189,		1000 },
++	[MODE_HS_RB][UFS_HS_G3][UFS_LANE_1] = { 1492582,	102400 },
++	[MODE_HS_RB][UFS_HS_G4][UFS_LANE_1] = { 2915200,	204800 },
++	[MODE_HS_RB][UFS_HS_G1][UFS_LANE_2] = { 298189,		1000 },
++	[MODE_HS_RB][UFS_HS_G2][UFS_LANE_2] = { 596378,		1000 },
++	[MODE_HS_RB][UFS_HS_G3][UFS_LANE_2] = { 1492582,	204800 },
++	[MODE_HS_RB][UFS_HS_G4][UFS_LANE_2] = { 2915200,	409600 },
++	[MODE_MAX][0][0]		    = { 7643136,	307200 },
++};
++
+ static struct ufs_qcom_host *ufs_qcom_hosts[MAX_UFS_QCOM_HOSTS];
+ 
+ static void ufs_qcom_get_default_testbus_cfg(struct ufs_qcom_host *host);
+@@ -789,6 +833,51 @@ static void ufs_qcom_dev_ref_clk_ctrl(struct ufs_qcom_host *host, bool enable)
+ 	}
+ }
+ 
++static int ufs_qcom_icc_set_bw(struct ufs_qcom_host *host, u32 mem_bw, u32 cfg_bw)
++{
++	struct device *dev = host->hba->dev;
++	int ret;
++
++	ret = icc_set_bw(host->icc_ddr, 0, mem_bw);
++	if (ret < 0) {
++		dev_err(dev, "failed to set bandwidth request: %d\n", ret);
++		return ret;
++	}
++
++	ret = icc_set_bw(host->icc_cpu, 0, cfg_bw);
++	if (ret < 0) {
++		dev_err(dev, "failed to set bandwidth request: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static struct __ufs_qcom_bw_table ufs_qcom_get_bw_table(struct ufs_qcom_host *host)
++{
++	struct ufs_pa_layer_attr *p = &host->dev_req_params;
++	int gear = max_t(u32, p->gear_rx, p->gear_tx);
++	int lane = max_t(u32, p->lane_rx, p->lane_tx);
++
++	if (ufshcd_is_hs_mode(p)) {
++		if (p->hs_rate == PA_HS_MODE_B)
++			return ufs_qcom_bw_table[MODE_HS_RB][gear][lane];
++		else
++			return ufs_qcom_bw_table[MODE_HS_RA][gear][lane];
++	} else {
++		return ufs_qcom_bw_table[MODE_PWM][gear][lane];
++	}
++}
++
++static int ufs_qcom_icc_update_bw(struct ufs_qcom_host *host)
++{
++	struct __ufs_qcom_bw_table bw_table;
++
++	bw_table = ufs_qcom_get_bw_table(host);
++
++	return ufs_qcom_icc_set_bw(host, bw_table.mem_bw, bw_table.cfg_bw);
++}
++
+ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
+ 				enum ufs_notify_change_status status,
+ 				struct ufs_pa_layer_attr *dev_max_params,
+@@ -852,6 +941,8 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
+ 		memcpy(&host->dev_req_params,
+ 				dev_req_params, sizeof(*dev_req_params));
+ 
++		ufs_qcom_icc_update_bw(host);
++
+ 		/* disable the device ref clock if entered PWM mode */
+ 		if (ufshcd_is_hs_mode(&hba->pwr_info) &&
+ 			!ufshcd_is_hs_mode(dev_req_params))
+@@ -981,7 +1072,9 @@ static int ufs_qcom_setup_clocks(struct ufs_hba *hba, bool on,
+ 
+ 	switch (status) {
+ 	case PRE_CHANGE:
+-		if (!on) {
++		if (on) {
++			ufs_qcom_icc_update_bw(host);
++		} else {
+ 			if (!ufs_qcom_is_link_active(hba)) {
+ 				/* disable device ref_clk */
+ 				ufs_qcom_dev_ref_clk_ctrl(host, false);
+@@ -993,6 +1086,9 @@ static int ufs_qcom_setup_clocks(struct ufs_hba *hba, bool on,
+ 			/* enable the device ref clock for HS mode*/
+ 			if (ufshcd_is_hs_mode(&hba->pwr_info))
+ 				ufs_qcom_dev_ref_clk_ctrl(host, true);
++		} else {
++			ufs_qcom_icc_set_bw(host, ufs_qcom_bw_table[MODE_MIN][0][0].mem_bw,
++					    ufs_qcom_bw_table[MODE_MIN][0][0].cfg_bw);
+ 		}
+ 		break;
+ 	}
+@@ -1031,6 +1127,34 @@ static const struct reset_control_ops ufs_qcom_reset_ops = {
+ 	.deassert = ufs_qcom_reset_deassert,
+ };
+ 
++static int ufs_qcom_icc_init(struct ufs_qcom_host *host)
++{
++	struct device *dev = host->hba->dev;
++	int ret;
++
++	host->icc_ddr = devm_of_icc_get(dev, "ufs-ddr");
++	if (IS_ERR(host->icc_ddr))
++		return dev_err_probe(dev, PTR_ERR(host->icc_ddr),
++				    "failed to acquire interconnect path\n");
++
++	host->icc_cpu = devm_of_icc_get(dev, "cpu-ufs");
++	if (IS_ERR(host->icc_cpu))
++		return dev_err_probe(dev, PTR_ERR(host->icc_cpu),
++				    "failed to acquire interconnect path\n");
++
++	/*
++	 * Set Maximum bandwidth vote before initializing the UFS controller and
++	 * device. Ideally, a minimal interconnect vote would suffice for the
++	 * initialization, but a max vote would allow faster initialization.
++	 */
++	ret = ufs_qcom_icc_set_bw(host, ufs_qcom_bw_table[MODE_MAX][0][0].mem_bw,
++				  ufs_qcom_bw_table[MODE_MAX][0][0].cfg_bw);
++	if (ret < 0)
++		return dev_err_probe(dev, ret, "failed to set bandwidth request\n");
++
++	return 0;
++}
++
+ /**
+  * ufs_qcom_init - bind phy with controller
+  * @hba: host controller instance
+@@ -1085,6 +1209,10 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+ 		}
+ 	}
+ 
++	err = ufs_qcom_icc_init(host);
++	if (err)
++		goto out_variant_clear;
++
+ 	host->device_reset = devm_gpiod_get_optional(dev, "reset",
+ 						     GPIOD_OUT_HIGH);
+ 	if (IS_ERR(host->device_reset)) {
+@@ -1282,6 +1410,7 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
+ 				    dev_req_params->pwr_rx,
+ 				    dev_req_params->hs_rate,
+ 				    false);
++		ufs_qcom_icc_update_bw(host);
+ 		ufshcd_uic_hibern8_exit(hba);
+ 	}
+ 
+diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
+index 6289ad5a42d0..dc27395ecba1 100644
+--- a/drivers/ufs/host/ufs-qcom.h
++++ b/drivers/ufs/host/ufs-qcom.h
+@@ -206,6 +206,9 @@ struct ufs_qcom_host {
+ 	struct clk *tx_l1_sync_clk;
+ 	bool is_lane_clks_enabled;
+ 
++	struct icc_path *icc_ddr;
++	struct icc_path *icc_cpu;
++
+ #ifdef CONFIG_SCSI_UFS_CRYPTO
+ 	struct qcom_ice *ice;
+ #endif
 -- 
 2.25.1
 
