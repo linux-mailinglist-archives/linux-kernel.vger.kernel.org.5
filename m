@@ -2,76 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 428C475B38E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7166575B393
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 17:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233018AbjGTPyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 11:54:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
+        id S233043AbjGTPy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 11:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233022AbjGTPyF (ORCPT
+        with ESMTP id S231953AbjGTPyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 11:54:05 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902F710D2;
-        Thu, 20 Jul 2023 08:53:55 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 20 Jul 2023 11:54:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FF219A4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 08:54:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 50DCD1F8AC;
-        Thu, 20 Jul 2023 15:53:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689868434; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AoIWfvcodiImdazBtF4GP+aiM7iZUlDUJHwoVwx2l0M=;
-        b=f+NQtXBWukxnOBTDhSu4fMxYZbJGWo2G92hXZqJKiip03vBFzW0tsuUtbAzkcra1ua0QrZ
-        ekgFv0gWb9JwZj2Ylfejs2aisDz77JLB5BtnaSwE0dXtRZBCTrRTWXVTYws5hZ18jkb5/t
-        Jus7bV+kZA5bV/x2bylo/OHVpL8yltg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689868434;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AoIWfvcodiImdazBtF4GP+aiM7iZUlDUJHwoVwx2l0M=;
-        b=/7gRpa2GQeDZgmtYTQRDFpsjs2y7Q3HMtLsVINALgujmycG22P+Fzu+ByJ1hn5i0xlMlB/
-        FZy8w6o8SwtSYADQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 63352133DD;
-        Thu, 20 Jul 2023 15:53:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iOCeFpFYuWRkJQAAMHmgww
-        (envelope-from <hare@suse.de>); Thu, 20 Jul 2023 15:53:53 +0000
-Message-ID: <80507f03-86b4-6406-5ab1-5687b6d12d93@suse.de>
-Date:   Thu, 20 Jul 2023 17:53:52 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 6/6] fs: add CONFIG_BUFFER_HEAD
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20230720140452.63817-1-hch@lst.de>
- <20230720140452.63817-7-hch@lst.de>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20230720140452.63817-7-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CF89261B77
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 15:54:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 33F59C433C7;
+        Thu, 20 Jul 2023 15:54:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689868466;
+        bh=j9tqD/4jMij/dArGDX5EgMqbjxDJgcuJJMwCmVuCpEU=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=nWjiEZCYwYMZYz0HlXf+5BpASyVzbZOBHSbHr7wTyBV8g9+XIZAPvs8xuAIuZw3yo
+         kWIr6EzEXUqEuEJNpsQrErcrrGt5wnbFe/u8oRQQiFfUoj0w70qtVWb9Jj0vNm9cuU
+         H1i29KClfaZkmCIRktW7yHPc2c1lvenNygsIE7nmrrWVkvOKOhV5Cw4IjVVDOJpa7h
+         caz04vVzxpuIDtK54VDi7C7pCmdc4IrUZUWKXEBpMro9DaPlVcsaQLIWAcKOOTkng5
+         7LTY9Yma6HrAzh/OLzsyDyEVYQHoFl6I7IedQKcurWCgi/ROCGhddWe/BqInPyfrMG
+         J/Jc7HCrakK5Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1FCC1E21EF5;
+        Thu, 20 Jul 2023 15:54:26 +0000 (UTC)
+Subject: Re: [GIT PULL] regulator fixes for v6.5-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20230720130535.4CCF7C433CA@smtp.kernel.org>
+References: <20230720130535.4CCF7C433CA@smtp.kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230720130535.4CCF7C433CA@smtp.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v6.5-rc1
+X-PR-Tracked-Commit-Id: 98e2dd5f7a8be5cb2501a897e96910393a49f0ff
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2922800a1803f6319e329bdbfd2962fd83eb5360
+Message-Id: <168986846611.27763.8061138860946889351.pr-tracker-bot@kernel.org>
+Date:   Thu, 20 Jul 2023 15:54:26 +0000
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,72 +63,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 16:04, Christoph Hellwig wrote:
-> Add a new config option that controls building the buffer_head code, and
-> select it from all file systems and stacking drivers that need it.
-> 
-> For the block device nodes and alternative iomap based buffered I/O path
-> is provided when buffer_head support is not enabled, and iomap needs a
-> little tweak to be able to compile out the buffer_head based code path.
-> 
-> Otherwise this is just Kconfig and ifdef changes.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   block/fops.c                 | 71 +++++++++++++++++++++++++++++++-----
->   drivers/md/Kconfig           |  1 +
->   fs/Kconfig                   |  4 ++
->   fs/Makefile                  |  2 +-
->   fs/adfs/Kconfig              |  1 +
->   fs/affs/Kconfig              |  1 +
->   fs/befs/Kconfig              |  1 +
->   fs/bfs/Kconfig               |  1 +
->   fs/efs/Kconfig               |  1 +
->   fs/exfat/Kconfig             |  1 +
->   fs/ext2/Kconfig              |  1 +
->   fs/ext4/Kconfig              |  1 +
->   fs/f2fs/Kconfig              |  1 +
->   fs/fat/Kconfig               |  1 +
->   fs/freevxfs/Kconfig          |  1 +
->   fs/gfs2/Kconfig              |  1 +
->   fs/hfs/Kconfig               |  1 +
->   fs/hfsplus/Kconfig           |  1 +
->   fs/hpfs/Kconfig              |  1 +
->   fs/iomap/buffered-io.c       | 12 ++++--
->   fs/isofs/Kconfig             |  1 +
->   fs/jfs/Kconfig               |  1 +
->   fs/minix/Kconfig             |  1 +
->   fs/nilfs2/Kconfig            |  1 +
->   fs/ntfs/Kconfig              |  1 +
->   fs/ntfs3/Kconfig             |  1 +
->   fs/ocfs2/Kconfig             |  1 +
->   fs/omfs/Kconfig              |  1 +
->   fs/qnx4/Kconfig              |  1 +
->   fs/qnx6/Kconfig              |  1 +
->   fs/reiserfs/Kconfig          |  1 +
->   fs/sysv/Kconfig              |  1 +
->   fs/udf/Kconfig               |  1 +
->   fs/ufs/Kconfig               |  1 +
->   include/linux/buffer_head.h  | 32 ++++++++--------
->   include/trace/events/block.h |  2 +
->   mm/migrate.c                 |  4 +-
->   37 files changed, 125 insertions(+), 32 deletions(-)
-> 
-Hmm.
+The pull request you sent on Thu, 20 Jul 2023 14:05:26 +0100:
 
-I actually have a patchset which _does_ allow for large I/O blocksizes 
-with buffer_heads. (And even ltp/fsx is happy on xfs...)
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v6.5-rc1
 
-Can we modify this to not have a compile-time option but rather a 
-setting somewhere? EG kernel option or flag in struct address_space?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2922800a1803f6319e329bdbfd2962fd83eb5360
 
-Cheers,
+Thank you!
 
-Hannes
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
-Myers, Andrew McDonald, Martje Boudien Moerman
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
