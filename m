@@ -2,117 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A9275B670
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C34C75B680
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbjGTSSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 14:18:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54570 "EHLO
+        id S231301AbjGTSTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 14:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjGTSSN (ORCPT
+        with ESMTP id S230179AbjGTSTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:18:13 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817F2186
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:18:11 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fcd615d7d6so1727266e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:18:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689877090; x=1690481890;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=senDNrwiWuOfYj59UEyFt3M9kP51QB4iG5+klPG4J54=;
-        b=OI5zj4YHHLybQ/wbTXCqfCeW6nL/OmL/1BSaDCSx+70qmKrqpykrxnASKJifClnp31
-         clTyA+nlJg2K9l/K/RZ9zzmYMIUPA3nxAcEjmHoYvcr9UaAZ8AaOwwc2eCFxHJ2x43jw
-         PPgVY+E3hIlj/X00Y1e7pAR/8EVrJoW2ddDip0lp3UHWbO6fx6k7lo3pML0X7ZUYXoEV
-         ZlWtHa949GPfBKKVrUORvOTDbI7u3y9RL9uaAAQTOW6y5fac/uBGk+AKhZRf0+sdcn4O
-         DP0j99r3rYOTb3+FtAF0Y9FShm9XoMPhlsMJRxzYoKs8ix6Kp2IlM97def1ghFuWSVQo
-         WzuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689877090; x=1690481890;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=senDNrwiWuOfYj59UEyFt3M9kP51QB4iG5+klPG4J54=;
-        b=aaB9Z29jLGL3LZWaehGVWdZQV2MpFusZBgxUMBtAuOKzwFoAMIXsVJNkp3iQTuiG2s
-         erfAjcSV4aggkx3KnO5lJ32VOegSb1ZxWXSgLH1MaHqlVzUzHK9MUpnpaPtp5e0atnrg
-         zJlJ8WcfXmIQ1Bl7YT7GmA49udIz75b9QKptD2teeLdV1D8RW1NNxflJONlyMMUmdxmZ
-         cB0iiG+QRm3WIq3zQ4KVKLNjEvxch+3wN3Vq9my6euz3rR+eaBrENb1bVHqtDK14wCU+
-         J4G5hd/ND+BNGpwcAJnAnlUMStzkyYKpuU9ABtNy055p6Uhq6ah8x2JCJpq7JjztXqCW
-         DsWg==
-X-Gm-Message-State: ABy/qLZ+g0tJbtnBNm4s2RxPXA7naZelqp45CJGtGodNeRVFBsCsohM+
-        6BKK7Yw0o4KJeNO2JbNQWelCRA==
-X-Google-Smtp-Source: APBJJlGDhYeesS8Lx1AU09YaIgeaoiY/8zxvo048oKaDmngZ+YDsTXe6d3n+0nDg7OB6M3efVQ1wRQ==
-X-Received: by 2002:ac2:44d8:0:b0:4f8:5885:61e with SMTP id d24-20020ac244d8000000b004f85885061emr2703446lfm.40.1689877089604;
-        Thu, 20 Jul 2023 11:18:09 -0700 (PDT)
-Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
-        by smtp.gmail.com with ESMTPSA id r29-20020ac25a5d000000b004fddac83416sm317540lfn.59.2023.07.20.11.18.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 11:18:09 -0700 (PDT)
-Message-ID: <aa57b538-607d-27f8-292f-06912440c6a4@linaro.org>
-Date:   Thu, 20 Jul 2023 20:18:06 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/2] Resolve MPM register space situation
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20230328-topic-msgram_mpm-v4-0-bae382dc0f92@linaro.org>
- <01907421-1003-1041-f1bd-ad11218527e1@linaro.org>
+        Thu, 20 Jul 2023 14:19:46 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0BD2D4A;
+        Thu, 20 Jul 2023 11:19:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689877175; x=1721413175;
+  h=message-id:date:subject:from:to:cc:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=KKMCYCzDYgAQWtJcWkTOSu/4dLuYklirnMqLgBTOVPk=;
+  b=V0ThYGgBwdfMzgLwh9rnogR5mc+b0AvObT7sYgfy8f9xkNFoVuMSwSHt
+   HsW70dAaUQZnlABpuLcrwhK1Xq6YSASlDDLNeRHJqY/zfEeR06fKC9oL7
+   lEXX607n2UT8GywYCid8rItttx2h8T7QNVNOn04Ex1QVhOwDXK4Crl9FD
+   VGkZwSjuSmfLQOZ8P8YK/ewUgNplkvaz5tS5NnamEwKJOIhn223fZtPAa
+   +d1z0zrgdlMqL1gMyWcj32yCrylucODakgipKKNd5dS8rO+VU7mZIsY5r
+   RCyrecc150yB1inEeJ2CnG9V0flR5CF2byoQjzUgQJF21nGM0cXy/mOna
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="369499504"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="369499504"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 11:19:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="718529349"
+X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
+   d="scan'208";a="718529349"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga007.jf.intel.com with ESMTP; 20 Jul 2023 11:19:33 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 20 Jul 2023 11:19:32 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 20 Jul 2023 11:19:33 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 20 Jul 2023 11:19:31 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZHZ2uOjI/bWnApJX43ntFx8CQqPXmsPzZKU113rZdYzVST0n+ypDUbuQCwtZJ01Y1KjJvGBx+r4dOS+uUHszACXpjCzIZ58H5qA9bzFqHgwHk0ZxsCHk6INPtF3T9LN5LOxxcuUpQKr2TQJ0v9K35xMLpScCgHFb7Do5Ds2bB5Hf10TXfbM4rSueF/vtJxc9YxAq0urur+KHWOgRzbrr6ldCtcYlDH6CHP4QigeTU71NLd0jOd2ZKSTRHu69HQD7nT7soprFhKYDgsVGK0zB7FhwrhdCYQMfOtJ5zx3PXdVwbhQKE3SpUgt9KJCHDnOH6DtJsaoa1t7tY3BduKsMqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lC3QgDpzpLnXPoqFWYt5oEYlS/8PeUPYjB/kmW7F03I=;
+ b=Lizc2F6yNzpkAQgh9NOPi1qdQjheOoq1pPtQjQVZhNQtYRklMjPry5yVN/gpk8ysmY0MjT7rs2hZ4OsBxLhcxwvjPaAX/zykQGmdw+idf7HUz0PwlCf73r/9qQTfCN8yyci2NB/w/0894iypFZrJNQYa5YQ5NQxPl1Q+AtNKNrONnnQqpJv93pZbiEtvxew7e4vf4b3OjxgFd83nCkcgPWHZ9+BpEU/5kjcfE1u0dKtWeok6gNFPyzBcmwMGVqqdUaAiXHr4TWT/T28P7y2x10a3Yu18KLj1fopd7p72FdhOqTyOwY4FNDTRrYJ6k4AriIondPW0f6GXJiXJQLNKuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by DM4PR11MB8201.namprd11.prod.outlook.com (2603:10b6:8:18a::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Thu, 20 Jul
+ 2023 18:19:28 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a%7]) with mapi id 15.20.6609.024; Thu, 20 Jul 2023
+ 18:19:28 +0000
+Message-ID: <77b0bd8a-0168-f7c1-9aa0-a40359d2f075@intel.com>
+Date:   Thu, 20 Jul 2023 20:18:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH net-next] page_pool: split types and declarations from
+ page_pool.h
 Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <01907421-1003-1041-f1bd-ad11218527e1@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        "Lorenzo Bianconi" <lorenzo@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        "Shayne Chen" <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        "Kalle Valo" <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+References: <20230719121339.63331-1-linyunsheng@huawei.com>
+ <0838ed9e-8b5c-cc93-0175-9d6cbf695dda@intel.com>
+In-Reply-To: <0838ed9e-8b5c-cc93-0175-9d6cbf695dda@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BE1P281CA0347.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:7d::19) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|DM4PR11MB8201:EE_
+X-MS-Office365-Filtering-Correlation-Id: 55e49f74-eed5-47ae-7f93-08db894dda90
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hRb+ZVc+dk9LuaMfHmdpFc3U9KrWv0FeXQDTEjsKhDjzWiIvXa5aDGs/Ngl4Vyz4RbQy0VPBOtAjAyLJl/Jyo4B9zFjduSDtk/dc1fE2S2DphiItlipQ5+yd7ZiCUr6pwHxdpYXOiHK9zCrbrUbUdp9bgKV/+RViyywwH7vyRzuxXcVQXEmRJwtfT8XMiRbgaZKMsfx4FbZPPRGYGbcJX9kn/MFxwEm1PPFx1pTuu+QerBKCkGjmQLhyvidrRNWRNisA+UF0GJ0Yy0y0FaskFuvQ/3azCNVNsGqe8WcJypO4f5RG/OC/z+Utr9TaE+l4LN4SUbISLsJeT37sdjY3Ijv7l6MoNujYW4K1GC7MGWSvgTGRETKzlPb1GQN697vguUILW+g8xKMVg8ecHlEb2xrXe47nlWYEa97iBwnsWai/fHpGqhpAnWkMHfdMcpglpGTUYYlTQD2CamPUVgKa8HFfuGtMBCj3eLd8uc8pMd1qqyVhFNuPrYAYa3z4tga7kYfrXotgDvyb2i3TRUy3FiCbNAackx6G/roR2EZMvxiOX3qHOba2tIrDwmOijX3BDU73UVQCaxsbC2S9BJsdKY8gdJxAdhvtYOmq16at254jcU7wKHD6lUcV3Nlsbr4mC3n2+b4zLXMCKHqhAovJeA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(346002)(376002)(366004)(396003)(136003)(451199021)(478600001)(2906002)(6512007)(86362001)(82960400001)(26005)(6506007)(2616005)(38100700002)(31696002)(5660300002)(7416002)(54906003)(66556008)(7406005)(36756003)(8676002)(6486002)(6666004)(66476007)(66946007)(6916009)(8936002)(316002)(4326008)(41300700001)(186003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TkNmSnNMbWJUUmg5aHlsN0dPcjZvT1diUXhEWjY3S1Q2VDBUeXZkSVYvTE4z?=
+ =?utf-8?B?T3p1NnlHZVdRYUIzeUp3SEpZWlpIakVUK2NOVUFqZkg5dFJOc1FMY0tWUHF3?=
+ =?utf-8?B?RkgvTXpZaDVFNzZzcnNaQ1k4eDMzRVJTc3NOTlJaVzkybUpwSzBBeVd5YVR4?=
+ =?utf-8?B?cVNuc3lLNmp1MytRZ3hsU2dsOWJGS2FiVE5HYUpHMGNmVDZ0eUFGYVJHRU9G?=
+ =?utf-8?B?T3FEaFErcitPWjU0UWFNRi9uL3lPU0lNN1oweUlMK08wVVR4TisyQS8rN0xj?=
+ =?utf-8?B?c1BoYWZ5MG5CNTljd2w4aGd6dnhCTEhZc3VMV2NRTjlXdDJVZUlNcitIREE1?=
+ =?utf-8?B?NWpOREdkZHZtR2RhNHR1dVROZyt2dTl6aHROSkNqanlrc1dQUTZ5clppdUwr?=
+ =?utf-8?B?K0ZsOXFLcVJqSUxydzFvRWNFTWRmbGR2RFVaUXpxaldYOWtvbldMWUFRR1lQ?=
+ =?utf-8?B?V3JxOHdyeTduNWhrcFVVM25YMFE2Zmx5LzZzNldCazRDZWRJNkZ4WktEbkhJ?=
+ =?utf-8?B?amQyNmJmaWswNkVGY3BNbkVIazBzVDhkblVQd3ZrUTdSVE5SZkNXRlAzUmhU?=
+ =?utf-8?B?TmUweWVrTklUVXBCTFd3aU0vZS9MbFZKRWJ4eUgzYTF5R3JhSDFSbUM0RXpG?=
+ =?utf-8?B?RFltaTRBSEFkWWdTbXFzMURjaG5rLzBTMlFIbFkwajZsTi9EdEZUK3lxYW05?=
+ =?utf-8?B?ZVZmWnZVdDhsNm5DMTRPamJ3RUorN3lQSGt6aEJVVUFHNDVvOFJhTldDcXFI?=
+ =?utf-8?B?VmYrUmlIMXE0T3Z0dytqUnM2SjRIOXhwRVJkeWZsejVQWE1rSTYyV1FvRXBM?=
+ =?utf-8?B?TEQyb25rVDlkZ1Jldkt2aGtIWHdUSlpJL0VVNDhvNXlaQTk2eldINmg5Y0Fp?=
+ =?utf-8?B?b25pWndMVmN0YmdTVnhPWjlLVDgyLzRRdm50MitUUGxUakpTR29qOGcwazNp?=
+ =?utf-8?B?WU8wL3RROTE1ZzBmeFBhcVNSbmpnS1BPK2xlMGt4MkFVdXl3YWJaWWN4UWp3?=
+ =?utf-8?B?T2UxTWR1VExjWkltQWVLSU9CbFhqdVRPRzJmbjVkU1dFQ3ZzYnExbWZ6dEc3?=
+ =?utf-8?B?TFBReEVIcTBTbm96UGx1ZjF4N0hPc0taQjVVL0ZYUkdMdVM1aEpTcE44bnUz?=
+ =?utf-8?B?cUk0QVhJOXg0SEc4TEJObEd1bWVYUHp5T2R2NmIrSE5zUUdyNGhsTS8rZnpM?=
+ =?utf-8?B?dXoyYlk5bWZVTU1XRGY4RS9LeG5hRUFQa1pleElPVlpld3h1eUJxWlFRaUti?=
+ =?utf-8?B?M1NUS0RFTnFDNkV2UDBRQ2x0RE4rcXBpcUVEMGVXaG4zc0xFTThPRkpJN3hI?=
+ =?utf-8?B?MmUyeTJDRmE3cFplaUh2d2txUzlZS05NZWh6WVN2Y3Q2OFRsNitBZnlScEUy?=
+ =?utf-8?B?MTUySWJvKzJDYUFMNGlmN3lmZ2F1UXhqUDc3dWlWZnR5azM4b1NxK0I4Ny9M?=
+ =?utf-8?B?SURmTlQ5bWZ3Uk5nRHJRUEtqWDhpRk1MVW0yL3dpRkVTOU40WkVjZHVyVlZK?=
+ =?utf-8?B?OXdQNmtEQXR4dTRHL1NpOEFlSW9sOVVkVGl2ZzVoTFNoSE1mS08yMEV0d1Ni?=
+ =?utf-8?B?RWJaT1A3bnFsV3RFTGlSS0NKMmZpU2tZNFQxYkY0djNwdk42WVZ6NzZVaW5W?=
+ =?utf-8?B?SVBBNGhMU3liTHZpWjVMMC9rYW5SRkgwWTlSTXhqU1c3NXJRZkI5RGJTbEVi?=
+ =?utf-8?B?eU12OUt1T1RFcE5wVWkyZ09lK3JiS0ErK1I5MFhhVlRXM3pLd204N20rcVY1?=
+ =?utf-8?B?OVdLeTVVeENHOFpJMnE1eWM3aHBGVG1Vb3BNMWR4d0FqMnpEbVlTWmVCRm5y?=
+ =?utf-8?B?MFJZaVZ4T1RFQnhGa3E4Wkczc2ZoVGhRWk0xUWFRWER5d3B4Tk93WkxYMTl2?=
+ =?utf-8?B?ZjhidWh4NFM0aGczNm1LMmI2eFA4djM2aE1GSllBakwzbER0VnNSMkFJWVd5?=
+ =?utf-8?B?Rzd4N083Y2M5VElnWGhXbFk2cnpQbG1EL2tEbnJCVG12L3VVZGxwVVRWVlI5?=
+ =?utf-8?B?UVdCcTFVVFl5V1JCTHhFZkNUQ2FJeUZBZ1UzME5qYTk3cUErT2dXZWI5OS93?=
+ =?utf-8?B?a3dTS3RnSnFPUGZxYWFWeCtLbi91S2cxeWd4RUt3ZStYV2E2alRLMDd1Smxk?=
+ =?utf-8?B?YVNYL1J5YUhhZzJMSVV5NEcwRHk5VGxjS2lmUVl6cFJiMTZVSFhWMTdIdll4?=
+ =?utf-8?B?NWc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55e49f74-eed5-47ae-7f93-08db894dda90
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 18:19:27.9197
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zAV6TQDCCyE7hmtUyPmYH7usq2TxYTTvEqJtktfa5xPcRwnL232Y0v70JP+sqbc9lUyMNJXUZxd1YCe3OMZZgSyBSRoLll/nHhAxQSz1Hqc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB8201
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -120,51 +190,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.07.2023 20:07, Dmitry Baryshkov wrote:
-> On 18/07/2023 15:19, Konrad Dybcio wrote:
->> v3 -> v4:
->> - Fix up indentation in the bindings patch
->> - Add an example glink-edge subnode to remoteproc-rpm (its bindings
->>    require that..)
->>
->> Link to v3: https://lore.kernel.org/r/20230328-topic-msgram_mpm-v3-0-2c72f27b4706@linaro.org
->>
->> v2 -> v3:
->> - Fix the example
->> - Pick up tags
->> - remove the outdated example from the cover letter, check bindings
->>    should you want to see one
->>
->> The bindings for the wrapper node used in the yaml example are merged
->> in qcom/for-next
->>
->> Link to v2: https://lore.kernel.org/r/20230328-topic-msgram_mpm-v2-0-e24a48e57f0d@linaro.org
->>
->> v1 -> v2:
->> - deprecate 'reg', make qcom,rpm-msg-ram required [1/2]
->> - Use devm_ioremap() [2/2]
->>
->> Link to v1: https://lore.kernel.org/r/20230328-topic-msgram_mpm-v1-0-1b788a5f5a33@linaro.org
->>
->> Depends on resolution of https://github.com/devicetree-org/dt-schema/issues/104
->>
->> The MPM (and some other things, irrelevant to this patchset) resides
->> (as far as the ARM cores are concerned, anyway) in a MMIO-mapped region
->> that's a portion of the RPM (low-power management core)'s RAM, known
->> as the RPM Message RAM. Representing this relation in the Device Tree
->> creates some challenges, as one would either have to treat a memory
->> region as a bus, map nodes in a way such that their reg-s would be
->> overlapping, or supply the nodes with a slice of that region.
->>
->> This series implements the third option, by adding a qcom,rpm-msg-ram
->> property, which has been used for some drivers poking into this region
->> before. Bindings ABI compatibility is preserved through keeping the
->> "normal" (a.k.a read the reg property and map that region) way of
->> passing the register space.
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+Date: Wed, 19 Jul 2023 18:42:17 +0200
+
+> From: Yunsheng Lin <linyunsheng@huawei.com>
+> Date: Wed, 19 Jul 2023 20:13:37 +0800
 > 
-> This almost bleeds to have some uniformity with qcom,rpm-stats (and with the boot stats). All these drivers provides us with the insight into the RPM memory.
-RPM master stats - yes, it should be moved under this node.
+>> Split types and pure function declarations from page_pool.h
+>> and add them in page_page_types.h, so that C sources can
+>> include page_pool.h and headers should generally only include
+>> page_pool_types.h as suggested by jakub.
+>>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+>> CC: Alexander Lobakin <aleksander.lobakin@intel.com>
+> Nice!
+> 
+> Let me take it into my tree, I assume it's safe to say it will be
+> accepted sooner than my patches :D
 
-The other stats - I don't yet know.
+FYI: it's already there (since yesterday), including your hybrid
+allocation series, so for the next revision you could take it from there
+to not rebase it one more time :)
+...except that seems like I have to rebase it once again now that you
+change the patch to add new folder as Jakub asked.
 
-Konrad
+(it's still the same iavf-pp-frag)
+
+> 
+> BTW, what do you think: is it better to have those two includes in the
+> root include/net/ folder or do something like
+> 
+> include/net/page_pool/
+>   * types.h
+>   * <some meaningful name>.h (let's say driver.h)
+> 
+> like it's done e.g. for GPIO (see include/linux/gpio/)?
+> 
+> Thanks,
+> Olek
+
+Thanks,
+Olek
