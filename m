@@ -2,143 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D79975B5F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE0E75B5F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbjGTR4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 13:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46416 "EHLO
+        id S231931AbjGTR4Z convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 Jul 2023 13:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjGTR4E (ORCPT
+        with ESMTP id S229729AbjGTR4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 13:56:04 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24010AA;
-        Thu, 20 Jul 2023 10:56:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689875763; x=1721411763;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iL50poPhWixSZw5c9wunh0Q5sHAL8gX8tQJ8vL5IFtI=;
-  b=DcXaQbPQ8wezVY257W0EI/LryGcm3TTL232c4qmfbXo5tsfJiCfLlAuW
-   ssn6dxCT4TazYaApkoGkfnwvRTrMNPRuvt+NdHtb70dmsVZABMSNLcCX4
-   tcc/Bj+4+7E4BpkXBkv4IEVE4njXxkLo5E9Sf5eilNMM6DZeWYy1IFZsI
-   z/76zM39UiTOvvVAP9rRvYfEY1dzahuCUbs6KfTR/XoJOu6nv68GuXF/3
-   gDi9JCJkTQOtuwNK748Av8XmgrGCrRQrmTG5dR6r2oDO8rcXvCXwwqRLT
-   CKDOGehQQU1FggPZhcs6SOPG1QJx7yMc50z36RQrmYPpjhaxGTLQ9qJok
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="351704674"
-X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
-   d="scan'208";a="351704674"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 10:56:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="789897110"
-X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
-   d="scan'208";a="789897110"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 20 Jul 2023 10:56:00 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qMXsK-0006LN-35;
-        Thu, 20 Jul 2023 17:55:51 +0000
-Date:   Fri, 21 Jul 2023 01:55:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     alina_yu@richtek.com, lgirdwood@gmail.com, broonie@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, alina_yu@richtek.com
-Subject: Re: [PATCH v4 2/2] regulator: rtq2208: Add Richtek RTQ2208 SubPMIC
- driver
-Message-ID: <202307210139.6iUpmzwe-lkp@intel.com>
-References: <1689758686-14409-3-git-send-email-alina_yu@richtek.com>
+        Thu, 20 Jul 2023 13:56:22 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171171998;
+        Thu, 20 Jul 2023 10:56:21 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qMXsn-002CO9-HB; Thu, 20 Jul 2023 19:56:09 +0200
+Received: from p57bd98fd.dip0.t-ipconnect.de ([87.189.152.253] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qMXsn-003Zmq-8y; Thu, 20 Jul 2023 19:56:09 +0200
+Message-ID: <b93ff5ca1ecd40084cd7a18e8490bf4e421fd6b9.camel@physik.fu-berlin.de>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Cc:     Viacheslav Dubeyko <slava@dubeyko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org,
+        debian-powerpc <debian-powerpc@lists.debian.org>
+Date:   Thu, 20 Jul 2023 19:56:08 +0200
+In-Reply-To: <ZLlvII/jMPTT32ef@casper.infradead.org>
+References: <000000000000dbce4e05f170f289@google.com>
+         <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
+         <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
+         <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
+         <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
+         <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
+         <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
+         <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
+         <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
+         <ZLlvII/jMPTT32ef@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1689758686-14409-3-git-send-email-alina_yu@richtek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.152.253
+X-ZEDAT-Hint: PO
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+(Please ignore my previous mail which was CC'ed to the wrong list)
 
-kernel test robot noticed the following build errors:
+Hello!
 
-[auto build test ERROR on broonie-regulator/for-next]
-[also build test ERROR on linus/master v6.5-rc2 next-20230720]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Thu, 2023-07-20 at 18:30 +0100, Matthew Wilcox wrote:
+> On Thu, Jul 20, 2023 at 05:27:57PM +0200, Dmitry Vyukov wrote:
+> > On Thu, 5 Jan 2023 at 17:45, Viacheslav Dubeyko <slava@dubeyko.com> wrote:
+> > > > On Wed, Jan 04, 2023 at 08:37:16PM -0800, Viacheslav Dubeyko wrote:
+> > > > > Also, as far as I can see, available volume in report (mount_0.gz) somehow corrupted already:
+> > > > 
+> > > > Syzbot generates deliberately-corrupted (aka fuzzed) filesystem images.
+> > > > So basically, you can't trust anything you read from the disc.
+> > > > 
+> > > 
+> > > If the volume has been deliberately corrupted, then no guarantee that file system
+> > > driver will behave nicely. Technically speaking, inode write operation should never
+> > > happened for corrupted volume because the corruption should be detected during
+> > > b-tree node initialization time. If we would like to achieve such nice state of HFS/HFS+
+> > > drivers, then it requires a lot of refactoring/implementation efforts. I am not sure that
+> > > it is worth to do because not so many guys really use HFS/HFS+ as the main file
+> > > system under Linux.
+> > 
+> > 
+> > Most popular distros will happily auto-mount HFS/HFS+ from anything
+> > inserted into USB (e.g. what one may think is a charger). This creates
+> > interesting security consequences for most Linux users.
+> > An image may also be corrupted non-deliberately, which will lead to
+> > random memory corruptions if the kernel trusts it blindly.
+> 
+> Then we should delete the HFS/HFS+ filesystems.  They're orphaned in
+> MAINTAINERS and if distros are going to do such a damnfool thing,
+> then we must stop them.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/alina_yu-richtek-com/regulator-dt-bindings-rtq2208-Add-Richtek-RTQ2208-SubPMIC/20230719-172722
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-patch link:    https://lore.kernel.org/r/1689758686-14409-3-git-send-email-alina_yu%40richtek.com
-patch subject: [PATCH v4 2/2] regulator: rtq2208: Add Richtek RTQ2208 SubPMIC driver
-config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20230721/202307210139.6iUpmzwe-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230721/202307210139.6iUpmzwe-lkp@intel.com/reproduce)
+Both HFS and HFS+ work perfectly fine. And if distributions or users are so
+sensitive about security, it's up to them to blacklist individual features
+in the kernel.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307210139.6iUpmzwe-lkp@intel.com/
+Both HFS and HFS+ have been the default filesystem on MacOS for 30 years
+and I don't think it's justified to introduce such a hard compatibility
+breakage just because some people are worried about theoretical evil
+maid attacks.
 
-All errors (new ones prefixed by >>):
+HFS/HFS+ mandatory if you want to boot Linux on a classic Mac or PowerMac
+and I don't think it's okay to break all these systems running Linux.
 
-   drivers/regulator/rtq2208-regulator.c: In function 'rtq2208_set_ramp_delay':
->> drivers/regulator/rtq2208-regulator.c:154:15: error: implicit declaration of function 'FIELD_PREP' [-Werror=implicit-function-declaration]
-     154 |         val = FIELD_PREP(RTQ2208_BUCK_RSPUP_MASK, sel) | FIELD_PREP(RTQ2208_BUCK_RSPDN_MASK, sel);
-         |               ^~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/FIELD_PREP +154 drivers/regulator/rtq2208-regulator.c
-
-   124	
-   125	static int rtq2208_set_ramp_delay(struct regulator_dev *rdev, int ramp_delay)
-   126	{
-   127		const struct regulator_desc *rdesc = rdev->desc;
-   128		unsigned int sel = 0, val;
-   129	
-   130		ramp_delay = max(ramp_delay, RTQ2208_RAMP_VALUE_MIN_uV);
-   131		ramp_delay = min(ramp_delay, RTQ2208_RAMP_VALUE_MAX_uV);
-   132	
-   133		ramp_delay /= RTQ2208_RAMP_VALUE_MIN_uV;
-   134	
-   135		/*
-   136		 * fls(ramp_delay) - 1: doing LSB shift, let it starts from 0
-   137		 *
-   138		 * RTQ2208_BUCK_RAMP_SEL_MASK - sel: doing descending order shifting.
-   139		 * Because the relation of seleltion and value is like that
-   140		 *
-   141		 * seletion: value
-   142		 * 000: 64mv
-   143		 * 001: 32mv
-   144		 * ...
-   145		 * 111: 0.5mv
-   146		 *
-   147		 * For example, if I would like to select 64mv, the fls(ramp_delay) - 1 will be 0b111,
-   148		 * and I need to use 0b111 - sel to do the shifting
-   149		 */
-   150	
-   151		sel = fls(ramp_delay) - 1;
-   152		sel = RTQ2208_BUCK_RAMP_SEL_MASK - sel;
-   153	
- > 154		val = FIELD_PREP(RTQ2208_BUCK_RSPUP_MASK, sel) | FIELD_PREP(RTQ2208_BUCK_RSPDN_MASK, sel);
-   155	
-   156		return regmap_update_bits(rdev->regmap, rdesc->ramp_reg,
-   157					  RTQ2208_BUCK_RSPUP_MASK | RTQ2208_BUCK_RSPDN_MASK, val);
-   158	}
-   159	
+Thanks,
+Adrian
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
