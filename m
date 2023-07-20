@@ -2,187 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C3875A6F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F2B75A6F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 08:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbjGTGv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 02:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
+        id S231285AbjGTGwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 02:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230064AbjGTGv2 (ORCPT
+        with ESMTP id S229687AbjGTGwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 02:51:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0CC8CC
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 23:51:26 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 08:51:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1689835884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=+e3NaiVnYWvRv2AtkgTippPR/87QBax0qgO1525r0Q0=;
-        b=cphfUMVT36g7vJykUb01HFodFi5uq5gZ8eJtbsPan8o8Ye21X7o4XKlyvKBTedjDRzYeZM
-        GfdzBn/oZ9vqoO6jSXfoMP4R3s/kcaB80ID31unJZ12CPQQDTkCWg7mf02EeZtjeYvWA9q
-        sleKutIXx8t4wR4X4FJUvt1TC6jXIOYGVvwNWjQxz7xTbMsEpZfuLtQgQA9bLKRxBUn4GF
-        oPdeskjLXOgTqa2yQAbitmPTii/w2ySRj9Ez7I5RK9Uq94LfvUWTQeP9q/D0nvdBSZGmPs
-        sXUD3wCpHYMIcIyWuOxkrRp8EScF+bi+6/HS5DCoJCq3b40HPPDEvDOPzRqF2A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1689835884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=+e3NaiVnYWvRv2AtkgTippPR/87QBax0qgO1525r0Q0=;
-        b=pRuWjc8hrYF8PRpwiDIM0PYz49D7sXKpOkyQTptlf5nMSxvftrWmJ05mieEKxfqvvoD9rY
-        HdNqs8+hsltz/RDQ==
-From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Subject: Stopping the tick on a fully loaded system
-Message-ID: <80956e8f-761e-b74-1c7a-3966f9e8d934@linutronix.de>
+        Thu, 20 Jul 2023 02:52:23 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C429E;
+        Wed, 19 Jul 2023 23:52:22 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 666CB67373; Thu, 20 Jul 2023 08:52:16 +0200 (CEST)
+Date:   Thu, 20 Jul 2023 08:52:16 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Petr Tesarik <petrtesarik@huaweicloud.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        James Seo <james@equiv.tech>,
+        James Clark <james.clark@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "moderated list:XEN HYPERVISOR ARM" <xen-devel@lists.xenproject.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:XEN SWIOTLB SUBSYSTEM" <iommu@lists.linux.dev>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, petr@tesarici.cz
+Subject: Re: [PATCH v4 0/8] Allow dynamic allocation of software IO TLB
+ bounce buffers
+Message-ID: <20230720065216.GB4395@lst.de>
+References: <cover.1689261692.git.petr.tesarik.ext@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1689261692.git.petr.tesarik.ext@huawei.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Just to add a highlevel comment here after I feel like I need a little
+more time to review the guts.
 
-during tests of the timer pull model, Gautham observed regressions under
-load. With the timer pull model in place, going idle is more expensive. My
-naive assumption, that a system which is fully loaded will not go idle was
-simply wrong. Under a fully loaded system (top shows ~1% idle), some CPUs
-go idle and stop the tick for several us and come back to work and this
-heavily repeats.
+I'm still pretty concerned about the extra list that needs to be
+consulted in is_swiotlb_buffer, but I can't really think of
+anything better.  Maybe an xarray has better cache characteristics,
+but that one requires even more allocations in the low-level dma map
+path.
 
-Peter and tglx helped me to track it down to find the reason: The governor
-which decides if the tick will be stopped only looks at the next timer but
-does not take into account how busy the system is. Here Peter pointed to
-the scheduler avg_idle value.
-
-Beside the existing avg_idle, I introduced really_avg_idle which is not
-limited to twice max_idle_balance_cost but also updated in
-ttwu_do_activate() when avg_idle is updated.
-
-With tracing, I was able to see that in the fully loaded case, 75%-80% of
-the idle periods have been shorter than the really_avg_idle value. (trace
-printk of really_avg_idle values directly at the begin of
-tick_nohz_next_event(); enabling sched_wakeup tracepoint; take the delta
-between the timestamps of the first and the latter as idle time).
-
-A generalized approach to prevent going idle, when the system is loaded,
-would be to add a check how busy the system is to tick_nohz_next_event().
-
-In my PoC (find it at the end) it's simply checked whether the
-really_avg_idle value is smaller than TICK_NSEC. It's not possible to use
-the existing avg_idle value as it is always smaller than TICK_NSEC on 250HZ
-systems. But there regressions occur under load and the standard deviation
-of the test results were in the same range as the regression (between 5 and
-10%).
-
-So I wanted to understand the avg_idle values and examined the distribution
-with different load scenarios. There my next naive assumption was, that
-under load mainly short values will be seen. This is true, when the system
-is halfway loaded (top shows ~50% idle). But when the system is fully
-loaded, the avg_idle values are no longer 'focused' on small values.
-
-Here I stopped and started to write the mail. I don't know the reason for
-the distribution under load and I also don't know if the idea of checking
-the system load in tick_nohz_next_event() is good or not. And last but not
-least, scheduler is a closed book for me...
-
-Thanks,
-
-	Anna-Maria
-
----8<---
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2307,6 +2307,7 @@ static inline bool owner_on_cpu(struct t
- 
- /* Returns effective CPU energy utilization, as seen by the scheduler */
- unsigned long sched_cpu_util(int cpu);
-+u64 sched_cpu_really_avg_idle(int cpu);
- #endif /* CONFIG_SMP */
- 
- #ifdef CONFIG_RSEQ
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3753,6 +3753,7 @@ ttwu_do_activate(struct rq *rq, struct t
- 		u64 max = 2*rq->max_idle_balance_cost;
- 
- 		update_avg(&rq->avg_idle, delta);
-+		update_avg(&rq->really_avg_idle, delta);
- 
- 		if (rq->avg_idle > max)
- 			rq->avg_idle = max;
-@@ -7455,6 +7456,12 @@ unsigned long sched_cpu_util(int cpu)
- {
- 	return effective_cpu_util(cpu, cpu_util_cfs(cpu), ENERGY_UTIL, NULL);
- }
-+
-+u64 sched_cpu_really_avg_idle(int cpu)
-+{
-+	struct rq *rq = cpu_rq(cpu);
-+	return rq->really_avg_idle;
-+}
- #endif /* CONFIG_SMP */
- 
- /**
-@@ -9988,6 +9995,7 @@ void __init sched_init(void)
- 		rq->online = 0;
- 		rq->idle_stamp = 0;
- 		rq->avg_idle = 2*sysctl_sched_migration_cost;
-+		rq->really_avg_idle = 2*sysctl_sched_migration_cost;
- 		rq->wake_stamp = jiffies;
- 		rq->wake_avg_idle = rq->avg_idle;
- 		rq->max_idle_balance_cost = sysctl_sched_migration_cost;
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1073,6 +1073,7 @@ struct rq {
- #endif
- 	u64			idle_stamp;
- 	u64			avg_idle;
-+	u64			really_avg_idle;
- 
- 	unsigned long		wake_stamp;
- 	u64			wake_avg_idle;
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -800,7 +800,7 @@ static inline bool local_timer_softirq_p
- 
- static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
- {
--	u64 basemono, next_tick, delta, expires;
-+	u64 basemono, next_tick, delta, expires, sched_avg_idle;
- 	unsigned long basejiff;
- 	unsigned int seq;
- 
-@@ -823,8 +823,11 @@ static ktime_t tick_nohz_next_event(stru
- 	 * minimal delta which brings us back to this place
- 	 * immediately. Lather, rinse and repeat...
- 	 */
--	if (rcu_needs_cpu() || arch_needs_cpu() ||
--	    irq_work_needs_cpu() || local_timer_softirq_pending()) {
-+	sched_avg_idle = sched_cpu_really_avg_idle(cpu);
-+	if (sched_avg_idle <= (u64)TICK_NSEC) {
-+		next_tick = basemono + sched_avg_idle;
-+	} else if (rcu_needs_cpu() || arch_needs_cpu() ||
-+		   irq_work_needs_cpu() || local_timer_softirq_pending()) {
- 		next_tick = basemono + TICK_NSEC;
- 	} else {
- 		/*
+One thing I'd like to see for the next version is to make the
+new growing code a config option at least for now.  It is a pretty
+big change of the existing swiotlb behavior, and I want people to opt
+into it conciously.  Maybe we can drop the option again after a few
+years once everything has settled.
