@@ -2,113 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0F675B56A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D434775B56E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbjGTRRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 13:17:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
+        id S229973AbjGTRSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 13:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjGTRRR (ORCPT
+        with ESMTP id S229526AbjGTRSe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 13:17:17 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C82CB3;
-        Thu, 20 Jul 2023 10:17:16 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-666edfc50deso756139b3a.0;
-        Thu, 20 Jul 2023 10:17:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689873435; x=1690478235;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=J0uAt1FpVvgdk69DWGVo/B/WilumnjHo3ckls2wQj2c=;
-        b=MK+qmNNORXwB0I5M1ECJrML+kKdViRer5kBwEH13jqFqWPrvH9qpVwD+NCq/1d018c
-         dmHLfc1tu6kO/ikoIBoIR1krTQBsGZ3+q9u5v3XSZyYbOkyC67YXvHVlcxgsQWsqZgtm
-         4SH2TD93EzA0VP1rFamx/Cxpixhc1xvinZAjcekhOe3ngbMxphygvDdsOviDfTtnsbmZ
-         umZ7UPenNo+uzSz1TkMIjeWQt9QLKY1ACnKSlpgNnzP7MRX/LNX+PoEOdVdbQQ+Lidiy
-         cOGFq119CJN/FS7RftR/9pmwUsBDbw0jIdcDb2SJf2KjVezldwj7jUFTSW8pAI6VW6KZ
-         ONLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689873435; x=1690478235;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J0uAt1FpVvgdk69DWGVo/B/WilumnjHo3ckls2wQj2c=;
-        b=SLm+b5tlr6idsm/Yh1OQVSEsFtlc4bsB3oIrbg7a6piuUQm/ZuPan8n2n9DoPkTLMu
-         wOouxBPgOKjtdycelh+Owyg+FDTD0XDr5FkceD9DjC2JO9ZGhEkYrn2RgXAIzMDXsPGf
-         1LYkpSfQ4zZ4qa5xSLiLDYP0dRKJZfvektyxQHUzLoAw9Qbkcx88gONRfKUEjNfWOov5
-         zF/IbP/LYpNHxyPMk3dvhisJ13icMpMyjE1vecx4ABbVH0H+VJGPWgs4YzcvcofaYH4U
-         OQMa9/VHWCtt1o/JRYPVylphSmNgbiBQ3tnl3FjdrUeiu+1sF1cbQbhq+/T36KjnLrHn
-         jaYg==
-X-Gm-Message-State: ABy/qLar+Z0aibssi6q/TIvf/KkwNyztO8QdBYkuDZzdKZQurFJJ8eFs
-        6fxfpq4tfyo3GsfUyGmvies=
-X-Google-Smtp-Source: APBJJlEkTI4A4ZrOCc+WXlC2nBipWy2JSRmd1c5HMwU8MruA6yjpC2qz2tfZemAEl4HUzSYjKYO5qQ==
-X-Received: by 2002:a05:6a00:24d1:b0:668:8ad5:778f with SMTP id d17-20020a056a0024d100b006688ad5778fmr10559001pfv.17.1689873434754;
-        Thu, 20 Jul 2023 10:17:14 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:e754:74d1:c368:67a2])
-        by smtp.gmail.com with ESMTPSA id h18-20020a62b412000000b00682a75a50e3sm1502944pfn.17.2023.07.20.10.17.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 10:17:14 -0700 (PDT)
-Date:   Thu, 20 Jul 2023 10:17:09 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     nikita.shubin@maquefel.me
-Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Lukasz Majewski <lukma@denx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Peters <mpeters@embeddedts.com>,
-        Kris Bahnsen <kris@embeddedts.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 28/42] input: keypad: ep93xx: add DT support for
- Cirrus EP93xx
-Message-ID: <ZLlsFTe2nvFw698l@google.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-28-3d63a5f1103e@maquefel.me>
+        Thu, 20 Jul 2023 13:18:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0457CC;
+        Thu, 20 Jul 2023 10:18:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FE9F61BA7;
+        Thu, 20 Jul 2023 17:18:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEE71C43397;
+        Thu, 20 Jul 2023 17:18:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689873512;
+        bh=F/C+gSA5qZQ2B3LD6hPsWWKc+LdUI/ORd3hYIi+2pCk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=G/aM/MIVcGavKF4lp/Kw/NvJHOYMkWcPmqmnfq2tTt4jUPEyUOqXto8dOZeP+Kmz4
+         jH9qq3XHoJhEIQqvmC91ylyW+5FNi3VT70Xb3Zn9eAVdiPdOzf8HTdjjy4JNTXOmW3
+         w6qIiXQnCzDYjOWHgZB+kSa60j+gYbHNoeIiA2zA/0pX+HuYmgPQ3ubl04UMDWM2fn
+         96JpcgohHgYDHdgG0sbjWO6GZy6BNpoWIZ+fKAXb4A0OoY7EtjtRc28JH0UxNvP4qc
+         VzQL3libBcNrfP7AcOUbYSEmpHgT2WdfhQ0pba5M3olycbtAVB8Sk8aTE2vIBO8NBN
+         PfztX40rKq2wQ==
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5634808e16eso727417eaf.2;
+        Thu, 20 Jul 2023 10:18:32 -0700 (PDT)
+X-Gm-Message-State: ABy/qLaUf4PgHtmhGJMx106rt4nOeVa5pA3NVtQjzUnjJ100twXgRJwi
+        NE3RdGhU65lTqaoYhBPSZQiIvjGKXtnoQS0Z8P0=
+X-Google-Smtp-Source: APBJJlEcVFHNbYhoO24bj9DeyyO+DlNSschkMud5gv9dgwfJtxiGAo0mniIt2fy3hzGZOCnveB++u9BFc+HyVXcQPbQ=
+X-Received: by 2002:a4a:5541:0:b0:566:efc4:e4fb with SMTP id
+ e62-20020a4a5541000000b00566efc4e4fbmr554052oob.4.1689873511842; Thu, 20 Jul
+ 2023 10:18:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230605-ep93xx-v3-28-3d63a5f1103e@maquefel.me>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+References: <20230718055235.1050223-1-ojeda@kernel.org>
+In-Reply-To: <20230718055235.1050223-1-ojeda@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 21 Jul 2023 02:17:55 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ-hjW_19fjA+E-bQCrXcVPdN4-GvzAnEnYzna5KRVXew@mail.gmail.com>
+Message-ID: <CAK7LNAQ-hjW_19fjA+E-bQCrXcVPdN4-GvzAnEnYzna5KRVXew@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: rust: avoid creating temporary files
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        linux-kbuild@vger.kernel.org, rust-for-linux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Raphael Nestler <raphael.nestler@gmail.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -117,35 +77,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 02:29:28PM +0300, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
-> 
-> - drop flags, they were not used anyway
-> - add OF ID match table
-> - process "autorepeat", "debounce-delay-ms", prescale from device tree
-> - drop platform data usage and it's header
-> - keymap goes from device tree now on
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+On Tue, Jul 18, 2023 at 2:52=E2=80=AFPM Miguel Ojeda <ojeda@kernel.org> wro=
+te:
+>
+> `rustc` outputs by default the temporary files (i.e. the ones saved
+> by `-Csave-temps`, such as `*.rcgu*` files) in the current working
+> directory when `-o` and `--out-dir` are not given (even if
+> `--emit=3Dx=3Dpath` is given, i.e. it does not use those for temporaries)=
+.
+>
+> Since out-of-tree modules are compiled from the `linux` tree,
+> `rustc` then tries to create them there, which may not be accessible.
+>
+> Thus pass `--out-dir` explicitly, even if it is just for the temporary
+> files.
+>
+> Reported-by: Raphael Nestler <raphael.nestler@gmail.com>
+> Closes: https://github.com/Rust-for-Linux/linux/issues/1015
+> Reported-by: Andrea Righi <andrea.righi@canonical.com>
+> Tested-by: Raphael Nestler <raphael.nestler@gmail.com>
+> Tested-by: Andrea Righi <andrea.righi@canonical.com>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> ---
 
-This is awesome, thank you!
 
->  
->  #include <linux/bits.h>
->  #include <linux/module.h>
-> +#include <linux/of.h>
 
-Are you sure you need this? I think the only OF-specific structure that
-is being used is of_device_id, which comes from mod_devicetable.h that
-you include below.
+Applied to linux-kbuild/fixes. Thanks.
 
-Otherwise:
+I believe this is a fix, so I will include it
+in my next pull request.
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Please feel free to merge with the rest of the series.
 
-Thanks.
 
--- 
-Dmitry
+
+>  scripts/Makefile.build | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index 6413342a03f4..82e3fb19fdaf 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -264,6 +264,9 @@ $(obj)/%.lst: $(src)/%.c FORCE
+>
+>  rust_allowed_features :=3D new_uninit
+>
+> +# `--out-dir` is required to avoid temporaries being created by `rustc` =
+in the
+> +# current working directory, which may be not accessible in the out-of-t=
+ree
+> +# modules case.
+>  rust_common_cmd =3D \
+>         RUST_MODFILE=3D$(modfile) $(RUSTC_OR_CLIPPY) $(rust_flags) \
+>         -Zallow-features=3D$(rust_allowed_features) \
+> @@ -272,7 +275,7 @@ rust_common_cmd =3D \
+>         --extern alloc --extern kernel \
+>         --crate-type rlib -L $(objtree)/rust/ \
+>         --crate-name $(basename $(notdir $@)) \
+> -       --emit=3Ddep-info=3D$(depfile)
+> +       --out-dir $(dir $@) --emit=3Ddep-info=3D$(depfile)
+>
+>  # `--emit=3Dobj`, `--emit=3Dasm` and `--emit=3Dllvm-ir` imply a single c=
+odegen unit
+>  # will be used. We explicitly request `-Ccodegen-units=3D1` in any case,=
+ and
+>
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> --
+> 2.41.0
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
