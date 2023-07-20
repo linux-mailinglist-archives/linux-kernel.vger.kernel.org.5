@@ -2,133 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CED75A4A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6031875A4CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjGTDLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 23:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
+        id S229897AbjGTDgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 23:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjGTDLj (ORCPT
+        with ESMTP id S229477AbjGTDgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 23:11:39 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DF11739
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689822697; x=1721358697;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=qMUt/Zn8Wqfs3BUxuYekUMjKWcdkYqvs0TeWUj7OU5A=;
-  b=JodIdIcMvCLk9dXWKRtjOPXVOdmt8skzCkICC4ZUrsYAoNl7eEQVbEJI
-   peM3CQyBGGD3dX92DI/MBo6GqW4rg2xFxYF/lk0gHY9saUZk9Ddj/aibT
-   XsxcuMojUwMjOYwBkBx9c79ObR1uoOSVhtnw+ThRJeR61aX5olyDrCHfe
-   eRiYWn5ckn7l/cPAlrlAt+xLrk5Qb5h/JlOv+pkGYtWzzTEmiOVX+lHB2
-   HGK7MN3He23A/3wxxfxi4mbZmc3wJNivcBoUdniOLWEfxrwvYnDJ87pva
-   NhnzGOQ1awqmSvfd8S0S+40nF06vMMKNJV6uZ28qJP8hUKHsIahnz++k5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="356584874"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="356584874"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 20:11:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="718218558"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="718218558"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 19 Jul 2023 20:11:34 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qMK4Z-0005jE-1M;
-        Thu, 20 Jul 2023 03:11:24 +0000
-Date:   Thu, 20 Jul 2023 11:10:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Varun Prakash <varun@chelsio.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>
-Subject: drivers/nvme/host/tcp.c:835:12: warning: stack frame size (2256)
- exceeds limit (2048) in 'nvme_tcp_recv_skb'
-Message-ID: <202307201141.PYWS6ird-lkp@intel.com>
+        Wed, 19 Jul 2023 23:36:11 -0400
+X-Greylist: delayed 1433 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 19 Jul 2023 20:36:09 PDT
+Received: from mailgate.ics.forth.gr (mailgate.ics.forth.gr [139.91.1.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B106EF0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:36:09 -0700 (PDT)
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 36K3CBBO026281
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 06:12:11 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+        q=dns/txt; i=@ics.forth.gr; t=1689822726; x=1692414726;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=zPjihqajCHYso2SYLygY80dfwyyJAXwUJ5bsc+egrmg=;
+        b=HoBvEI/eMiSilZXfZB6lzV1KKu9/yBE2zEk+Ou5yUNXOgugqprpDcNW58LLObfa+
+        MHGbasKVuf29H6iCCVipyi801yXAQZnIfrlAgsXigc5tRpJ6S72kYLXjoLieM9Qu
+        JRkIu1Omb6MXt4Gu0qRmztcu37kYgrodXfoWkUzn4ospda75K9BvgYHrU3nWjcfO
+        AYQlSx9O45PC89q+Kwyppg9LBHH2hlHfhsRGalBrqPIOELsbfkIXEMKIb/aNWCOY
+        +dCiKBPajwdgjIOl8pD7qSu7LInMJx/e6kxxUuQRHE/BaPmOBhXtEtdbWKa9vJlQ
+        Ba1bMQz9dYRzjsftr8dO6Q==;
+X-AuditID: 8b5b014d-a17eb70000002178-ba-64b8a606a7bd
+Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 6C.42.08568.606A8B46; Thu, 20 Jul 2023 06:12:06 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user: mick at ics.forth.gr
+Message-ID: <5b8fd18e-8dfa-96bf-cdd4-4498b1d15ab9@ics.forth.gr>
+Date:   Thu, 20 Jul 2023 06:11:58 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 06/11] RISC-V: drivers/iommu/riscv: Add command, fault,
+ page-req queues
+Content-Language: el-GR
+To:     Tomasz Jeznach <tjeznach@rivosinc.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Sebastien Boeuf <seb@rivosinc.com>, iommu@lists.linux.dev,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux@rivosinc.com
+References: <cover.1689792825.git.tjeznach@rivosinc.com>
+ <1fd79e5c53d9d6ed2264f60dd4261f293cc00472.1689792825.git.tjeznach@rivosinc.com>
+From:   Nick Kossifidis <mick@ics.forth.gr>
+In-Reply-To: <1fd79e5c53d9d6ed2264f60dd4261f293cc00472.1689792825.git.tjeznach@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsXSHT1dWZdt2Y4Ug8V9ChZbf89it5h16Tij
+        xa8vFhadszewW1zeNYfNYtvnFjaLDZdmMVq8vNzDbNE2i9/i4IcnrBaf51dYTF/1gtniy7J2
+        RouWO6YOfB5PDs5j8lgzbw2jx5uXL1k8Dnd8YffYtKqTzWPzknqPF5tnMnrcmBXhcan5OrvH
+        359bWTw+b5IL4I7isklJzcksSy3St0vgyrh1rYulYLtAxa31n1gaGGfydjFyckgImEhM+nyE
+        uYuRi0NI4CijxKM1c5khEpYSmz+9ZAGxeQXsJQ49mAwWZxFQlVj0YwMrRFxQ4uTMJ2A1ogLR
+        EtPuXQOzhQViJT50vGIDsZkFxCWOnP8NtkBE4BSjxK+JP8EcZoGLTBJrDq9jAqkSEuhilNh4
+        sRjEZhPQlJh/6SDYJE6BGInDf0+yQ0wyk+ja2sUIYctLbH87h3kCo8AsJIfMQrJwFpKWWUha
+        FjCyrGIUSCwz1stMLtZLyy8qydBLL9rECI42Rt8djLc3v9U7xMjEwXiIUYKDWUmE99HlbSlC
+        vCmJlVWpRfnxRaU5qcWHGKU5WJTEeU/YLkgWEkhPLEnNTk0tSC2CyTJxcEo1MDnVGJcJZHJu
+        i9zY3pqz90Kr9EPmXX32D3bG/j+itPvqnpCjSvnmn7+s5xa78tDoR+RjzUsn7n/IYnKpzkmu
+        Le99vuXwXMdVkTHyUv9ezd/BVXUhJETOeH/p6oeX7FxPVvi8aW0KUyv33XqO50C46AOhTzef
+        qe25ValRtHN9y1tta3WRft/HgV9sW57s69uw4PxH+YjJHl80ulzUipwiP+kcdN+/RdarJeZX
+        /p3ZNl+ncH3bfGzKajfDh/MyZaaw/nCP1gyzntWTbtn1foel8SeBplu//p1r04spFLniorDZ
+        zK/7htyMHDXRj1P3HMitspd/PZ1BdLLrh7drvA1cp54RMBTXVLzzYr26xofCY0osxRmJhlrM
+        RcWJAHKI+wclAwAA
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bfa3037d828050896ae52f6467b6ca2489ae6fb1
-commit: c2700d2886a87f83f31e0a301de1d2350b52c79b nvme-tcp: send H2CData PDUs based on MAXH2CDATA
-date:   1 year, 5 months ago
-config: riscv-randconfig-r042-20230720 (https://download.01.org/0day-ci/archive/20230720/202307201141.PYWS6ird-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230720/202307201141.PYWS6ird-lkp@intel.com/reproduce)
+Hello Tomasz,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307201141.PYWS6ird-lkp@intel.com/
+On 7/19/23 22:33, Tomasz Jeznach wrote:
+> Enables message or wire signal interrupts for PCIe and platforms devices.
+> 
 
-All warnings (new ones prefixed by >>):
+The description doesn't match the subject nor the patch content (we 
+don't jus enable interrupts, we also init the queues).
 
->> drivers/nvme/host/tcp.c:835:12: warning: stack frame size (2256) exceeds limit (2048) in 'nvme_tcp_recv_skb' [-Wframe-larger-than]
-     835 | static int nvme_tcp_recv_skb(read_descriptor_t *desc, struct sk_buff *skb,
-         |            ^
-   1 warning generated.
+> +	/* Parse Queue lengts */
+> +	ret = of_property_read_u32(pdev->dev.of_node, "cmdq_len", &iommu->cmdq_len);
+> +	if (!ret)
+> +		dev_info(dev, "command queue length set to %i\n", iommu->cmdq_len);
+> +
+> +	ret = of_property_read_u32(pdev->dev.of_node, "fltq_len", &iommu->fltq_len);
+> +	if (!ret)
+> +		dev_info(dev, "fault/event queue length set to %i\n", iommu->fltq_len);
+> +
+> +	ret = of_property_read_u32(pdev->dev.of_node, "priq_len", &iommu->priq_len);
+> +	if (!ret)
+> +		dev_info(dev, "page request queue length set to %i\n", iommu->priq_len);
+> +
+>   	dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+>   
+
+We need to add those to the device tree binding doc (or throw them away, 
+I thought it would be better to have them as part of the device 
+desciption than a module parameter).
 
 
-vim +/nvme_tcp_recv_skb +835 drivers/nvme/host/tcp.c
+> +static irqreturn_t riscv_iommu_priq_irq_check(int irq, void *data);
+> +static irqreturn_t riscv_iommu_priq_process(int irq, void *data);
+> +
 
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  834  
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03 @835  static int nvme_tcp_recv_skb(read_descriptor_t *desc, struct sk_buff *skb,
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  836  			     unsigned int offset, size_t len)
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  837  {
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  838  	struct nvme_tcp_queue *queue = desc->arg.data;
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  839  	size_t consumed = len;
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  840  	int result;
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  841  
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  842  	while (len) {
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  843  		switch (nvme_tcp_recv_state(queue)) {
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  844  		case NVME_TCP_RECV_PDU:
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  845  			result = nvme_tcp_recv_pdu(queue, skb, &offset, &len);
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  846  			break;
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  847  		case NVME_TCP_RECV_DATA:
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  848  			result = nvme_tcp_recv_data(queue, skb, &offset, &len);
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  849  			break;
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  850  		case NVME_TCP_RECV_DDGST:
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  851  			result = nvme_tcp_recv_ddgst(queue, skb, &offset, &len);
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  852  			break;
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  853  		default:
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  854  			result = -EFAULT;
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  855  		}
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  856  		if (result) {
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  857  			dev_err(queue->ctrl->ctrl.device,
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  858  				"receive failed:  %d\n", result);
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  859  			queue->rd_enabled = false;
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  860  			nvme_tcp_error_recovery(&queue->ctrl->ctrl);
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  861  			return result;
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  862  		}
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  863  	}
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  864  
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  865  	return consumed;
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  866  }
-3f2304f8c6d6ed Sagi Grimberg 2018-12-03  867  
+> +	case RISCV_IOMMU_PAGE_REQUEST_QUEUE:
+> +		q = &iommu->priq;
+> +		q->len = sizeof(struct riscv_iommu_pq_record);
+> +		count = iommu->priq_len;
+> +		irq = iommu->irq_priq;
+> +		irq_check = riscv_iommu_priq_irq_check;
+> +		irq_process = riscv_iommu_priq_process;
+> +		q->qbr = RISCV_IOMMU_REG_PQB;
+> +		q->qcr = RISCV_IOMMU_REG_PQCSR;
+> +		name = "priq";
+> +		break;
 
-:::::: The code at line 835 was first introduced by commit
-:::::: 3f2304f8c6d6ed97849057bd16fee99e434ca796 nvme-tcp: add NVMe over TCP host driver
 
-:::::: TO: Sagi Grimberg <sagi@lightbitslabs.com>
-:::::: CC: Christoph Hellwig <hch@lst.de>
+It makes more sense to add the code for the page request queue in the 
+patch that adds ATS/PRI support IMHO. This comment also applies to its 
+interrupt handlers below.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+> +static inline void riscv_iommu_cmd_inval_set_addr(struct riscv_iommu_command *cmd,
+> +						  u64 addr)
+> +{
+> +	cmd->dword0 |= RISCV_IOMMU_CMD_IOTINVAL_AV;
+> +	cmd->dword1 = addr;
+> +}
+> +
+
+This needs to be (addr >> 2) to match the spec, same as in the iofence 
+command.
+
+Regards,
+Nick
+
