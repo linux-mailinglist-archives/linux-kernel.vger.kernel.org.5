@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D1175A3EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 03:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F37C75A3F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 03:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbjGTB26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 21:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
+        id S229820AbjGTB3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 21:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjGTB24 (ORCPT
+        with ESMTP id S229823AbjGTB25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 21:28:56 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52372690;
-        Wed, 19 Jul 2023 18:28:33 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1b8ad9eede0so1919835ad.1;
-        Wed, 19 Jul 2023 18:28:33 -0700 (PDT)
+        Wed, 19 Jul 2023 21:28:57 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 436FF2686;
+        Wed, 19 Jul 2023 18:28:36 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b89114266dso2004995ad.0;
+        Wed, 19 Jul 2023 18:28:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689816513; x=1690421313;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RLL2tr+LIqX1NO/Pc6Wrphl4U7IYBQOy7XNovYEZclQ=;
-        b=GPSmmtDPWNsIkTZDwpeml90XUUsdUDNJLkiIu7LZuUkn/gywuhX58ThYa/svu0oz+z
-         sdV3nprLThqbBBFc/9TgUzZY45eDde3YlmYZCVhugTuH54XKHfTtB25pwNW/UK+p1YVa
-         vUsPO4qXqk+AjR/dy1+4roSJ26nLT587NiVZmEIBwTKVdDR8Ok27yR/vL4rjIZ1XhOH9
-         VICMuvFIiBRzoCT1XxLDTHogttTNCCQijGbXY3MHAcICmlVI5co1xBLJbbQTKdvOX9Ns
-         xox8heOEOr86J0ZD8mgwKXRyygJvK8gOZONSOxB8hi5qExMcwOLCngYs82t6BdYcEFxv
-         z3HA==
+        d=gmail.com; s=20221208; t=1689816516; x=1690421316;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PknmXnQirEOnubVOauabc0cJvIl8m6tNpWyxQZCD0N0=;
+        b=HlYK066kywXFDcqXfpN2MS//uTAgfYqt5W28/6QC2VM5BWYvB9bkuxwbgRlpf1fMew
+         Tm/pCbdMEnTe3tOBySqaUMHvkByNcNOlFFGdNmLrhU4bFI4TOTJGS2knR7XmWOHKbpoW
+         /I+38ci00HljLjTLHrsLSNgjGqduuZlVU25broSFKNElvothWFoMJ0GGG4N9GDbZa/Zl
+         nZGOHUmJPM8x9+tnsBOBKYEu8HcGaSGhp/4V5d/wjxEjYWzo8jZMH04YE/zRlgl3UbQc
+         vLFf+m/2YS5qKN7Nf8ri2iyYAeRf+BcDIcQidasUU4L9RVBAyNJoZIwQUS7dcD5JOiAr
+         rtWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689816513; x=1690421313;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RLL2tr+LIqX1NO/Pc6Wrphl4U7IYBQOy7XNovYEZclQ=;
-        b=eBp3nk9+WDYq73FLCHZz7EEdYNHHZGKoaVKpGDly4htA0JpOuMtEUsuQt/mlq5sqQ/
-         C8AtDXy7vkRq0RW/jxEHJW7+xoARGqfH2aEwjiK9QxF6U4qgsmTNWHv5o1lcQoSTWh5N
-         I3wSdZBfUeuk/YQTKpa7OFt43elDm7hoWkGPtA8AHh+Rztn+YMzYXsTmnGiGOGSZyo+N
-         OynVWDrVwW0AK1Sn6r3tVE74Hua5mP+LzLZZ1MDUqALZ8HW7ki7ubN5oMub8kOs4ejYJ
-         aF9DO5mIbPMz1nYAiGoMUvYVj2/E+bwvemcXkl1WAC3mWDSX/UKvY1otcY3ksW+jfJ4u
-         U+Jg==
-X-Gm-Message-State: ABy/qLb07EZqgzv4nZvdNY1I3Qp5bZsKgtSn2AD+27cHZDglJWsuKju9
-        B1Alx5lXr4Il4uXPDwF01GA=
-X-Google-Smtp-Source: APBJJlH7o+eExptczkCECKURCD9Em0bpUiO2dPHusBQmDrgRDRdwQxGXlsePstVPgqTqvEZNkiOSfg==
-X-Received: by 2002:a17:902:cecd:b0:1b2:1a79:147d with SMTP id d13-20020a170902cecd00b001b21a79147dmr2551275plg.2.1689816513179;
-        Wed, 19 Jul 2023 18:28:33 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689816516; x=1690421316;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PknmXnQirEOnubVOauabc0cJvIl8m6tNpWyxQZCD0N0=;
+        b=WkJSdyWosqbKiywAxNW8D+Um/hXQbrdoi2Et4ZyI2JCGNeY3TkGZ3Gfq3Qf9LyzyRl
+         7dbf3/mv5ERjoXwUjXvJOvumDVYT8KyziqzQGThSqOcTBhNgD2ZbuDx8jUDjKeCdtnXl
+         xFRtsFy0I0FoDqOian6fxdaOPC5r39wv+et0j3ZosWjIGliAIRzerHSnsK7GRIyap+44
+         sveOO4eMLAmTJFmlqzzcgQXqIxaWTrcWGIPqoqm9IRTW+CDOWSVzvFqubgndt7Fr0NKf
+         Rlxa6TE36se2lnXY01G4y/XNkBNL/QSYr+RL3TEdlDNHYkBK19b96p7S6zO48v5MTPMU
+         2ntw==
+X-Gm-Message-State: ABy/qLYK3u1EDOCMuVvX385zx2TDmQTgBvX+s6OL1cnrlwXD2vp9ZvHG
+        FqpwRViaC+dc06B9sqkQ8xTS4tikTfA=
+X-Google-Smtp-Source: APBJJlGSks9Rg5tIlI14bZPE81Pyz9Tcv/KMpi5HUYJgRIUzBSJhe/UXuN78EoamwuQ5FKB1bcIDJw==
+X-Received: by 2002:a17:902:e548:b0:1b8:b29e:b47b with SMTP id n8-20020a170902e54800b001b8b29eb47bmr5402474plf.44.1689816515718;
+        Wed, 19 Jul 2023 18:28:35 -0700 (PDT)
 Received: from a28aa0606c51.. (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id jc18-20020a17090325d200b001b1a2c14a4asm4673998plb.38.2023.07.19.18.28.30
+        by smtp.gmail.com with ESMTPSA id jc18-20020a17090325d200b001b1a2c14a4asm4673998plb.38.2023.07.19.18.28.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 18:28:32 -0700 (PDT)
+        Wed, 19 Jul 2023 18:28:35 -0700 (PDT)
 From:   Jacky Huang <ychuang570808@gmail.com>
 To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -57,10 +58,12 @@ Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         soc@kernel.org, mjchen@nuvoton.com, schung@nuvoton.com,
         Jacky Huang <ychuang3@nuvoton.com>
-Subject: [PATCH 0/3] Add support for nuvoton ma35d1 rtc controller
-Date:   Thu, 20 Jul 2023 01:28:23 +0000
-Message-Id: <20230720012826.430026-1-ychuang570808@gmail.com>
+Subject: [PATCH 1/3] dt-bindings: rtc: Document nuvoton ma35d1 rtc driver
+Date:   Thu, 20 Jul 2023 01:28:24 +0000
+Message-Id: <20230720012826.430026-2-ychuang570808@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230720012826.430026-1-ychuang570808@gmail.com>
+References: <20230720012826.430026-1-ychuang570808@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,32 +78,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jacky Huang <ychuang3@nuvoton.com>
 
-This patch series adds the rtc driver for the nuvoton ma35d1 ARMv8 SoC.
-It includes DT binding documentation, the ma35d1 rtc driver, and device
-tree updates.
+Add documentation to describe nuvoton ma35d1 rtc driver.
 
-The ma35d1 rtc controller provides real-time and calendar messaging
-capabilities. It supports programmable time tick and alarm match
-interrupts. The time and calendar messages are expressed in BCD format.
-
-This rtc driver has been tested on the ma35d1 som board with Linux 6.5-rc2.
-
-Jacky Huang (3):
-  dt-bindings: rtc: Document nuvoton ma35d1 rtc driver
-  arm64: dts: nuvoton: Add rtc for ma35d1
-  rtc: Add driver for nuvoton ma35d1 rtc controller
-
- .../bindings/rtc/nuvoton,ma35d1-rtc.yaml      |  45 +++
- .../boot/dts/nuvoton/ma35d1-iot-512m.dts      |   4 +
- .../boot/dts/nuvoton/ma35d1-som-256m.dts      |   4 +
- arch/arm64/boot/dts/nuvoton/ma35d1.dtsi       |   8 +
- drivers/rtc/Kconfig                           |  11 +
- drivers/rtc/Makefile                          |   1 +
- drivers/rtc/rtc-ma35d1.c                      | 371 ++++++++++++++++++
- 7 files changed, 444 insertions(+)
+Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
+---
+ .../bindings/rtc/nuvoton,ma35d1-rtc.yaml      | 45 +++++++++++++++++++
+ 1 file changed, 45 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
- create mode 100644 drivers/rtc/rtc-ma35d1.c
 
+diff --git a/Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml b/Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
+new file mode 100644
+index 000000000000..08c30f3018fb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
+@@ -0,0 +1,45 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/rtc/nuvoton,ma35d1-rtc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Nuvoton MA35D1 Read Time Clock
++
++maintainers:
++  - Min-Jen Chen <mjchen@nuvoton.com>
++
++properties:
++  compatible:
++    enum:
++      - nuvoton,ma35d1-rtc
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/nuvoton,ma35d1-clk.h>
++    rtc@40410000 {
++        compatible = "nuvoton,ma35d1-rtc";
++        reg = <0x40410000 0x200>;
++        interrupts = <GIC_SPI 5 IRQ_TYPE_EDGE_RISING>;
++        clocks = <&clk RTC_GATE>;
++    };
++
++...
 -- 
 2.34.1
 
