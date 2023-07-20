@@ -2,215 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3249B75B132
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017F975B136
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 16:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbjGTO07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 10:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56052 "EHLO
+        id S232238AbjGTO3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 10:29:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232209AbjGTO05 (ORCPT
+        with ESMTP id S231702AbjGTO3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 10:26:57 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C13E4C
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:26:56 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-66f3fc56ef4so1399384b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 07:26:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689863216; x=1690468016;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vp5sJi1VNBF59ULgvnJ54gBzbh9E9Vb82vPBW44lFSA=;
-        b=CnlucDUL495m/RDN6WTT07Ye9Vc2H8qKdI8wLj2zPThm3sWw3lx1E711cOmaOKnsJq
-         f92fdv+yXLjSHQ1jwszKQVHxNCZVXYi8V8g0uRuKR8iS2Y7Io1XlDd5LIZHBLQXzZ6c+
-         vSRt/AtL9bO0Ljrn3rO2osv96UopjvKE44jN1e6CXJhlzCuXhVx6SKmITTAcHfBV2MX9
-         t47dKutrr7MlyhwgOUWV2QHyhLchd2/coxnU0sBy6bjlgP5IXPIP34SgmtMKUViJdsM3
-         5K/WMPxRXekLEm31cAk702MGF/wD8Y+EQ/6h/oE8DRvTTUFHz2t+JcLUzQW6JpjDxAQJ
-         l/SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689863216; x=1690468016;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Vp5sJi1VNBF59ULgvnJ54gBzbh9E9Vb82vPBW44lFSA=;
-        b=cE9pUTiYl+9BJxjBMzWzTrlrwM6BBtWLOiwY5wsyteiJXrNpzVhwNp5510bZrU5NuY
-         a62JszjXKngf6T2ZrWrRL/+QWtW7haCC2ATuMUbmHkoCaFfGrhpJJP9cY1qYsoWD+ZVE
-         7aEC+DQO777+3obTZjN3dnhY5SI2hf1ZuDn1ADv1fpDimIKnbXBXANj21MFP1DGx83Y6
-         uM33tgldoIso/ffAfGIGtQm7yAaaGSGR9fKyu/HtbTgcz4Svi/mLY/4TrDi1Q0ZTftvO
-         t1kdIqbZekzLUq4mKw98gtyt5cpxAxpgnulXdUqOsLCi4t8tr7MGKCmtoQ3fPXt9uttA
-         YVQg==
-X-Gm-Message-State: ABy/qLZgtyRgq0SQ6kY6rVm/PtCdCOrbeTiPx48xALTqodaoNq7iKFKz
-        q5OtVZ2nvsiiak320masjjY=
-X-Google-Smtp-Source: APBJJlECpNHAOqz0R+xJ/EsDHCe2f1vLhprTzr6HtijnHTNrPIdwilRI6aTQtp+cjjVlU8giCr5/7w==
-X-Received: by 2002:a05:6a20:7486:b0:132:f926:5891 with SMTP id p6-20020a056a20748600b00132f9265891mr6902577pzd.4.1689863216196;
-        Thu, 20 Jul 2023 07:26:56 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t22-20020a62ea16000000b0066684d8115bsm1247151pfh.178.2023.07.20.07.26.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 07:26:55 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <198c4edf-045c-8d85-1d5c-018378eeb490@roeck-us.net>
-Date:   Thu, 20 Jul 2023 07:26:54 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Traceback with CONFIG_REGMAP_KUNIT=y+CONFIG_DEBUG_ATOMIC_SLEEP=y
-Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>,
+        Thu, 20 Jul 2023 10:29:03 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D231BF7;
+        Thu, 20 Jul 2023 07:29:02 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qMUds-0004Lw-39;
+        Thu, 20 Jul 2023 14:28:33 +0000
+Date:   Thu, 20 Jul 2023 15:28:23 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Jan Kara <jack@suse.cz>, Damien Le Moal <dlemoal@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>, Min Li <min15.li@samsung.com>,
+        Christian Loehle <CLoehle@hyperstone.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Yeqi Fu <asuk4.q@gmail.com>, Avri Altman <avri.altman@wdc.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ye Bin <yebin10@huawei.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <ee59d128-413c-48ad-a3aa-d9d350c80042@roeck-us.net>
- <336fc14e-f734-49ea-97ce-802f03fa4422@kadam.mountain>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <336fc14e-f734-49ea-97ce-802f03fa4422@kadam.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [RFC PATCH 3/6] block: add new genhd flag GENHD_FL_NO_NVMEM
+Message-ID: <ZLlEhxspjyMPl29b@makrotopia.org>
+References: <cover.1689802933.git.daniel@makrotopia.org>
+ <96510d925cb0ca1a3a132f8f8affd4bbdafd8fc9.1689802933.git.daniel@makrotopia.org>
+ <0592e021-237d-6d41-7faf-e5b93aefbeea@suse.de>
+ <ZLk6-aARrlAGenk3@makrotopia.org>
+ <f6256c2c-0fd5-764b-92ec-343b99e79c36@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f6256c2c-0fd5-764b-92ec-343b99e79c36@suse.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 01:50, Dan Carpenter wrote:
-> On Wed, Jul 19, 2023 at 03:37:54PM -0700, Guenter Roeck wrote:
->> Hi,
->>
->> when booting images with both CONFIG_REGMAP_KUNIT and
->> CONFIG_DEBUG_ATOMIC_SLEEP enabled, I get the following backtrace.
->>
->> [    4.994957]     # Subtest: regmap
->> [    4.995067]     1..14
->> [    4.995190]         KTAP version 1
->> [    4.995308]         # Subtest: basic_read_write
->> [    4.999402]         ok 1 none
->> [    5.003028]         ok 2 flat
->> [    5.005510] BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
->> [    5.005960] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 117, name: kunit_try_catch
->> [    5.006219] preempt_count: 1, expected: 0
->> [    5.006414] 1 lock held by kunit_try_catch/117:
->> [    5.006590]  #0: 833b9010 (regmap_kunit:86:(config)->lock){....}-{2:2}, at: regmap_lock_spinlock+0x14/0x1c
->> [    5.007493] irq event stamp: 162
->> [    5.007627] hardirqs last  enabled at (161): [<80786738>] crng_make_state+0x1a0/0x294
->> [    5.007871] hardirqs last disabled at (162): [<80c531ec>] _raw_spin_lock_irqsave+0x7c/0x80
->> [    5.008119] softirqs last  enabled at (0): [<801110ac>] copy_process+0x810/0x2138
->> [    5.008356] softirqs last disabled at (0): [<00000000>] 0x0
->> [    5.008688] CPU: 0 PID: 117 Comm: kunit_try_catch Tainted: G                 N 6.4.4-rc3-g0e8d2fdfb188 #1
->> [    5.009011] Hardware name: Generic DT based system
->> [    5.009277]  unwind_backtrace from show_stack+0x18/0x1c
->> [    5.009497]  show_stack from dump_stack_lvl+0x38/0x5c
->> [    5.009676]  dump_stack_lvl from __might_resched+0x188/0x2d0
->> [    5.009860]  __might_resched from __kmem_cache_alloc_node+0x1dc/0x25c
->> [    5.010061]  __kmem_cache_alloc_node from kmalloc_trace+0x30/0xc8
->> [    5.010254]  kmalloc_trace from regcache_rbtree_write+0x26c/0x468
->> [    5.010446]  regcache_rbtree_write from _regmap_write+0x88/0x140
->> [    5.010634]  _regmap_write from regmap_write+0x44/0x68
->> [    5.010803]  regmap_write from basic_read_write+0x8c/0x270
->> [    5.010980]  basic_read_write from kunit_try_run_case+0x48/0xa0
->> [    5.011170]  kunit_try_run_case from kunit_generic_run_threadfn_adapter+0x1c/0x28
->> [    5.011396]  kunit_generic_run_threadfn_adapter from kthread+0xf8/0x120
->> [    5.011603]  kthread from ret_from_fork+0x14/0x3c
->> [    5.011801] Exception stack(0x881a5fb0 to 0x881a5ff8)
->> [    5.012024] 5fa0:                                     00000000 00000000 00000000 00000000
->> [    5.012269] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
->> [    5.012502] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
->> [    5.014546]         ok 3 rbtree
->> [    5.018988]         ok 4 maple
->>
->> This isn't surprising given that the regmap code allocates rbcache nodes
->> with GFP_KERNEL and the regmap configuration results in using spinlock
->> to lock regmap accesses.
->>
->> I'll be happy to submit a patch to fix the problem, but I would need
->> some advice. I could
->>
->> - Update the unit test regmap configuration to avoid using
->>    spinlock as locking mechanism for rbtree tests.
->>    That would work, but fail to catch situations where this happens
->>    in the real world.
->> - Use a different method to allocate memory in regcache_rbtree_node_alloc().
->>    - Replace GFP_KERNEL with GFP_NOWAIT or GFP_KERNEL | __GFP_NOWARN (?)
->>      or something else, possibly only if gfpflags_allow_blocking() is false
+On Thu, Jul 20, 2023 at 04:03:22PM +0200, Hannes Reinecke wrote:
+> On 7/20/23 15:47, Daniel Golle wrote:
+> > On Thu, Jul 20, 2023 at 10:24:18AM +0200, Hannes Reinecke wrote:
+> > > On 7/20/23 00:03, Daniel Golle wrote:
+> > > > Add new flag to destinguish block devices which should not act as an
+> > > > NVMEM provider, such as for example an emulated block device on top of
+> > > > an MTD partition which already acts as an NVMEM provider itself.
+> > > > 
+> > > > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> > > > ---
+> > > >    include/linux/blkdev.h | 3 +++
+> > > >    1 file changed, 3 insertions(+)
+> > > > 
+> > > > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> > > > index 2f5371b8482c0..e853d1815be15 100644
+> > > > --- a/include/linux/blkdev.h
+> > > > +++ b/include/linux/blkdev.h
+> > > > @@ -80,11 +80,14 @@ struct partition_meta_info {
+> > > >     * ``GENHD_FL_NO_PART``: partition support is disabled.  The kernel will not
+> > > >     * scan for partitions from add_disk, and users can't add partitions manually.
+> > > >     *
+> > > > + * ``GENHD_FL_NO_NVMEM``: NVMEM emulation is disabled.  The kernel will not
+> > > > + * emulate an NVMEM device on top of this disk.
+> > > >     */
+> > > >    enum {
+> > > >    	GENHD_FL_REMOVABLE			= 1 << 0,
+> > > >    	GENHD_FL_HIDDEN				= 1 << 1,
+> > > >    	GENHD_FL_NO_PART			= 1 << 2,
+> > > > +	GENHD_FL_NO_NVMEM			= 1 << 3,
+> > > >    };
+> > > >    enum {
+> > > Please reverse this flag. Most of the devices will not have an NVMEM
+> > > partition, and we shouldn't require each and every driver to tag their
+> > > devices.
+> > > So please use GENHD_FL_NVMEM and only set this flag on devices which really
+> > > have an NVMEM partition.
+> > 
+> > The idea here was to exclude all those devices which already implement
+> > an NVMEM provider on a lower layer themselves, such as MTD.
+> > In this cases it would be ambigous if the OF node represents the
+> > NVMEM device registered by the MTD framework or if blk-nvmem should be
+> > used.
+> > 
+> Hmm; not sure if I follow.
+> In the end, it doesn't really matter whether you check for
+> GENHD_FL_NO_NVMEM or !GENHD_FL_NVMEM.
+> With the difference being that in the former case you have to
+> tag 99% of all existing block devices, and in the latter you
+> have to tag 1%.
+
+That's not exactly true. In the current case I only have to flag MTD
+(and UBI in future, I'm working on a UBI NVMEM provider as well) with
+GENHD_FL_NO_NVMEM, so a 'compatible = "nvmem-cells"' in the
+corresponding device tree node should not result in blk-nvmem creating
+an NVMEM device based on the (mtd/ubi)block device, simply because the
+MTD framework (and UBI in future) will already have created their own
+NVMEM device attached to the very same device tree node.
+
+In all other cases of block devices, the compatible string can be used
+to unambigously decide whether an NVMEM device should be created or
+not. blk-nvmem is opt-in, so unless the device is flagged by
+'compatible = "nvmem-cells"' it will not do anything.
+
+For all devices which anyway do not have any device tree representation
+it won't do anything (think: loop, nbd, ...), we would not need to opt
+them out using GENHD_FL_NO_NVMEM. Also all other drivers which do not
+already bring their own NVMEM implementation won't need GENHD_FL_NO_NVMEM,
+the absence of 'compatible = "nvmem-cells"' is enough to indicate that
+they should not be considered as NVMEM providers.
+
+The way you are suggesting will require that, in addition to selecting
+the targetted block device in device tree, the block driver will also
+have to set GENHD_FL_NVMEM. Hence we will need changes in MMC, NVMe
+and potentially also SATA disk drivers setting GENHD_FL_NVMEM when
+registering the disk.
+
 > 
-> __GFP_NOWARN is only about allocation failure, not sleeping.  I would
-> have thought it should be.
+> > In all other cases device tree can unambigously indicate whether a
+> > block device should serve as NVMEM provider (and right, most of them
+> > never will).
+> > 
+> > However, reversing the logic seems fine just as well.
 > 
-> diff --git a/drivers/base/regmap/regcache-rbtree.c b/drivers/base/regmap/regcache-rbtree.c
-> index fabf87058d80..d94e25120f2f 100644
-> --- a/drivers/base/regmap/regcache-rbtree.c
-> +++ b/drivers/base/regmap/regcache-rbtree.c
-> @@ -187,7 +187,7 @@ static int regcache_rbtree_init(struct regmap *map)
->   	int i;
->   	int ret;
->   
-> -	map->cache = kmalloc(sizeof *rbtree_ctx, GFP_KERNEL);
-> +	map->cache = kmalloc(sizeof *rbtree_ctx, map->alloc_flags);
+> Thanks. Please do.
 
-Yes, that might work as well (and after looking more deeply into the code
-I wondered why it wasn't used in the first place).
-
-Based on Mark's feedback I submitted
-https://lore.kernel.org/lkml/20230720032848.1306349-1-linux@roeck-us.net/
-Sorry, I forgot to copy you on that one.
-
-Mark, please let me know what you prefer.
-
-Thanks,
-Guenter
-
->   	if (!map->cache)
->   		return -ENOMEM;
->   
-> @@ -277,7 +277,7 @@ static int regcache_rbtree_insert_to_block(struct regmap *map,
->   
->   	blk = krealloc(rbnode->block,
->   		       blklen * map->cache_word_size,
-> -		       GFP_KERNEL);
-> +		       map->alloc_flags);
->   	if (!blk)
->   		return -ENOMEM;
->   
-> @@ -286,7 +286,7 @@ static int regcache_rbtree_insert_to_block(struct regmap *map,
->   	if (BITS_TO_LONGS(blklen) > BITS_TO_LONGS(rbnode->blklen)) {
->   		present = krealloc(rbnode->cache_present,
->   				   BITS_TO_LONGS(blklen) * sizeof(*present),
-> -				   GFP_KERNEL);
-> +				   map->alloc_flags);
->   		if (!present)
->   			return -ENOMEM;
->   
-> @@ -320,7 +320,7 @@ regcache_rbtree_node_alloc(struct regmap *map, unsigned int reg)
->   	const struct regmap_range *range;
->   	int i;
->   
-> -	rbnode = kzalloc(sizeof(*rbnode), GFP_KERNEL);
-> +	rbnode = kzalloc(sizeof(*rbnode), map->alloc_flags);
->   	if (!rbnode)
->   		return NULL;
->   
-> @@ -346,13 +346,13 @@ regcache_rbtree_node_alloc(struct regmap *map, unsigned int reg)
->   	}
->   
->   	rbnode->block = kmalloc_array(rbnode->blklen, map->cache_word_size,
-> -				      GFP_KERNEL);
-> +				      map->alloc_flags);
->   	if (!rbnode->block)
->   		goto err_free;
->   
->   	rbnode->cache_present = kcalloc(BITS_TO_LONGS(rbnode->blklen),
->   					sizeof(*rbnode->cache_present),
-> -					GFP_KERNEL);
-> +					map->alloc_flags);
->   	if (!rbnode->cache_present)
->   		goto err_free_block;
->   
-
+Either way is fine with me, just 99% vs. 1% is not the right argument
+in this case.
