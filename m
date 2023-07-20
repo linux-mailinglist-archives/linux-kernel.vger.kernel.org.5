@@ -2,230 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AED75B844
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FA275B840
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbjGTTsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 15:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
+        id S231169AbjGTTrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 15:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbjGTTrz (ORCPT
+        with ESMTP id S229552AbjGTTrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 15:47:55 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2079.outbound.protection.outlook.com [40.107.94.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196101BC1;
-        Thu, 20 Jul 2023 12:47:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KVW4vsVI/xUmjaCBpkqGOKDKVulA4Rr8aFJUv6snf98VcsOJ9+ELRgv8M7+mf63zfVraTvxevURe4NaCBQcnAIRKCmF5pp9jOJGYOQkgd4PaNwsRLvNIQoTSW4Tc5sR18yN5ayuKR0d5/6KVzUSOZBl4OIPbiLuHJReVLx+vd8V742igkEYbmLxkmym7YkXFsDGstCbbu8aB+pyebs/QWsFAVvPNocYwJpBQ+dDdTs1zv/C83X0wl8iok1D+4+44I4lnovoefKus/HYteDEz5UZRDLnKQDoVS52Q4BQ/S4s6NxWjCfM5YErOn4Fj59sYhYdl1A3gRv0sOUo1BajwGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pkcKh2u5enw7xFgbs4vv1vMUe4jKMjBKsFTlp0vPMXw=;
- b=hIkJ4QT3aB3QNlR3eD9YXAo+iD8hlWXfemDXyaSKk/sjqEVJhtCxtB28Si41YtKrZNsiSj5jJFtSIql7fl9f3d6rJgk3dxxD0cRNkNWzjqIMHBittEY0Crx26kH+io/YtHLPOQ8GPSgScK7mVfQGRSpoRGI/49OU3CDh3v0Pc+XiiuReDIyCRNh5hYB3/rFU9T5MRd+l+uAVQKCYmTnVsxbbP0qcnbKqMIA5xr4WIjb+r4qRCHcY1telwlmnZDtZ0h0bov5DyMasRUvRr3znAgCtirFH2fQiD3eSwkX9EStLQcKgvhIxTQMdYoOS1z4nWS72nQQW0LzQJKL8QpZoyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pkcKh2u5enw7xFgbs4vv1vMUe4jKMjBKsFTlp0vPMXw=;
- b=WpKRl8CR8xzE8WLkhEY6Q+S7UoW+3lObTyKL+lLkk5afthihHHzEqqbPJjAhbQbDU53DiQdeq/HIgPw5iY4hdQvZvj4KDtvYnzb6i5wGlL924nlSwn2q4WuYVy/kqPI1Y3UPNAz/HlOqyboHd3t9JjYE0JB7mJ6VhGa6pL8CfbE=
-Received: from DM6PR08CA0055.namprd08.prod.outlook.com (2603:10b6:5:1e0::29)
- by BL3PR12MB6642.namprd12.prod.outlook.com (2603:10b6:208:38e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33; Thu, 20 Jul
- 2023 19:47:51 +0000
-Received: from DM6NAM11FT034.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:1e0:cafe::93) by DM6PR08CA0055.outlook.office365.com
- (2603:10b6:5:1e0::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25 via Frontend
- Transport; Thu, 20 Jul 2023 19:47:50 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT034.mail.protection.outlook.com (10.13.173.47) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6609.28 via Frontend Transport; Thu, 20 Jul 2023 19:47:50 +0000
-Received: from fritz.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 20 Jul
- 2023 14:47:48 -0500
-From:   Kim Phillips <kim.phillips@amd.com>
-To:     <x86@kernel.org>
-CC:     Kim Phillips <kim.phillips@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Konrad Rzeszutek Wilk" <konrad.wilk@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Alexey Kardashevskiy <aik@amd.com>, <kvm@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-Subject: [PATCH] x86/cpu: Enable STIBP if Automatic IBRS is enabled
-Date:   Thu, 20 Jul 2023 14:47:27 -0500
-Message-ID: <20230720194727.67022-1-kim.phillips@amd.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 20 Jul 2023 15:47:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2F31733;
+        Thu, 20 Jul 2023 12:47:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 580E861C2A;
+        Thu, 20 Jul 2023 19:47:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9AE6C433C7;
+        Thu, 20 Jul 2023 19:47:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689882464;
+        bh=DwX1uNy6mTJOThmesJskJiO3f0zQ/UjEjsi7fYSoDeQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=F2VOzhGEq/ehzA3T7FojKe0nvvYABR7BaAGOIDRc3zB7kyFFHA8lK54shuPEhhkmw
+         LLp2y+fetfpkcgdK/tz0QUqF/4jkDeEX1t481gP22EiRadHc5WXu+y+q1onQqHz7hV
+         bD5RjIft73fv8JaYtIp2mg3gqI49YTajtIv63wdTs5yvSbwgUC+PVvXBmh4okXqURx
+         v07BYphbv8Om/rR6zc3kr6cAtnXbO+mNAHEDDD3JPDhHK/rdZPgkgjH53iAJw8UmrU
+         awqbn9sl31zZbzDDefvpkLFAzpxSWu/hqo2rrPE3rBjBE+F4GkngTyQmohYBEIy2/F
+         fi0bUPVPlLZAA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4B74ACE03CF; Thu, 20 Jul 2023 12:47:44 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 12:47:44 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
+        jslaby@suse.cz, rcu@vger.kernel.org
+Subject: Re: [BUG] Re: Linux 6.4.4
+Message-ID: <eb04b7d0-2f49-4e01-be09-9062d9f08404@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <2023071940-suspect-ominous-4a6a@gregkh>
+ <20230720132714.GA3726096@google.com>
+ <2b8fc10b-785e-48b9-9a38-5c1af81f9578@paulmck-laptop>
+ <CAEXW_YQO7OCdkXm_SBcPhAm8V8vMaF_5DQq7PbG9PZb7RFgA_g@mail.gmail.com>
+ <f18e165c-9196-4b41-a202-82cfd5ac7f8b@paulmck-laptop>
+ <8682b08c-347b-5547-60e0-013dcf1f8c93@joelfernandes.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT034:EE_|BL3PR12MB6642:EE_
-X-MS-Office365-Filtering-Correlation-Id: b7bff015-ab52-44fe-7893-08db895a3389
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VhfHClzs4RHBeiE2J9+8KlyX14MoDhVoZw76bPF/Kmk9ehPoVapVH8MplTC7XrDAwnHnoPS9qlSRPlHDJxsbFgExDqDHRLj2l6io0MpTUfJjTXZjVuHyAbGVhCCB9TXRkaa0HuDkLku1Ps/qrr9wmln/5nccFDpFHennEyCm1IeuqqdKzoFYmeAUV9X5D7HIE1DBt+7CTyBDWgyemFqxdj/RudKHOSh4kmYx3m2+Q/8jkpRqTGfSF3LKyI2IbJJl1rjiiDjKniSMRvfNSV6CVmN/ndztYSdoAub28ByMEEr9l1lwH92J7HV9kS/GmnLhAtzYSNUTS6T2qwhhLpcw6sRpy3lFpFswoJtH5JI9HIjyeefE71sL8oJrJj1yWag9xef+UzRdn9Wn+s83YN31k0QuwKbfZdP2GiiZdqpBfRUl4cZWsxIVeg5cthEw3kOe8IigFiL1FpjWlNBMogB3nQk4GAgqhnxJ9LqJBKeLcyVZumEC00cC4fCRnoirqfGjkqvyt3p7FDJ7Jxc655NK8Q5AGu8GRiGaOoMTs5sP0a62E5JaHfpSspKKsh4cJv/XKgNOH9ID7wLwsKBQGB5GYpD9oPEdIB49HqpEOKDDHvYSDuF/IMZSr3PmTr3bMAzyu2Uk2ngOM75+61p6L9gjsiut2/PHJX7V2A3AHmqfv2ThY5JGHXI4Z+LmEnpjSZLtMGeeqT+5Nn+eJgBBK0UGOrYVaDuJxojKCfUs9HdE+Qrf8qZkp2TJwj25x0Bj83lC
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(396003)(39860400002)(346002)(82310400008)(451199021)(36840700001)(46966006)(40470700004)(36756003)(40460700003)(2616005)(47076005)(426003)(2906002)(8936002)(8676002)(41300700001)(7416002)(44832011)(5660300002)(6916009)(4326008)(83380400001)(316002)(70206006)(70586007)(36860700001)(40480700001)(186003)(6666004)(7696005)(966005)(1076003)(336012)(26005)(16526019)(81166007)(356005)(54906003)(82740400003)(86362001)(478600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 19:47:50.6985
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7bff015-ab52-44fe-7893-08db895a3389
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT034.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6642
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <8682b08c-347b-5547-60e0-013dcf1f8c93@joelfernandes.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unlike Intel's Enhanced IBRS feature, AMD's Automatic IBRS does not
-provide protection to processes running at CPL3/user mode [1].
+On Thu, Jul 20, 2023 at 03:32:35PM -0400, Joel Fernandes wrote:
+> On 7/20/23 15:04, Paul E. McKenney wrote:
+> > On Thu, Jul 20, 2023 at 12:31:13PM -0400, Joel Fernandes wrote:
+> >> Hi Paul,
+> >>
+> >> On Thu, Jul 20, 2023 at 11:55 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >>>
+> >>> On Thu, Jul 20, 2023 at 01:27:14PM +0000, Joel Fernandes wrote:
+> [...]
+> >>>>
+> >>>> So likely RCU boosting is failing:
+> >>>>
+> >>>> The full TREE03 splat:
+> >>>> [   54.243588] ------------[ cut here ]------------
+> >>>> [   54.244547] rcu-torture: rcu_torture_boost started
+> [...]
+> >>>> [   54.300499] RIP: 0010:rcu_torture_stats_print+0x5b2/0x620
+> [...]
+> >>>> [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+> >>>>
+> >>>> However, if we are to believe the '9', it appears the object did made it
+> >>>> quite some till the end of the pipe array but not until the free pool.
+> >>>
+> >>> This is from this if/for statement, correct?
+> >>>
+> >>>                  stutter_waited = stutter_wait("rcu_torture_writer");
+> >>>                  if (stutter_waited &&
+> >>>                      !atomic_read(&rcu_fwd_cb_nodelay) &&
+> >>>                      !cur_ops->slow_gps &&
+> >>>                      !torture_must_stop() &&
+> >>>                      boot_ended)
+> >>>                          for (i = 0; i < ARRAY_SIZE(rcu_tortures); i++)
+> >>>                                  if (list_empty(&rcu_tortures[i].rtort_free) &&
+> >>>                                      rcu_access_pointer(rcu_torture_current) !=
+> >>>                                      &rcu_tortures[i]) {
+> >>>                                          tracing_off();
+> >>>                                          show_rcu_gp_kthreads();
+> >>>                                          WARN(1, "%s: rtort_pipe_count:
+> >>>                                          rcu_ftrace_dump(DUMP_ALL);
+> >>>                                  }
+> >>
+> >> Yes, that's right.
+> >>
+> >>> If so, this happens when there was a stutter wait, but RCU grace
+> >>> periods failed to clear out the backlog during the several seconds that
+> >>> rcutorture was forced idle.  This might be related to the RCU priority
+> >>> boosting failure, in which a preempted reader persisted across the
+> >>> stutter interval.
+> >>
+> >> When RCU is operating normally, shouldn't the check
+> >> "(list_empty(&rcu_tortures[i].rtort_free)" not run until the preempted
+> >> reader unblocks and exits its RCU read-side critical section?
+> >
+> > Yes, but not just "until", but rather "long after".  If RCU is doing
+> > grace periods correctly, an active reader on a given rcu_tortures[]
+> > element will prevent .rtort_pipe_count from exceeding the value 2.
+> 
+> Ah ok, so the rtort_pipe_count being 9 is a sign RCU isn't making progress
+> thus making it absent from the free list.
 
-Explicitly enable STIBP to protect against cross-thread CPL3
-branch target injections on systems with Automatic IBRS enabled.
+Yes, though RCU is -just- -barely- too slow, as one more grace period
+would have done it.
 
-Also update the relevant documentation.
+> > The element will not be put on a list until .rtort_pipe_count is equal
+> > to RCU_TORTURE_PIPE_LEN, which is 10.
+> >
+> > This warning usually appears when something is holding up the grace-period
+> > kthread.  Historically, this has included deadlocks, missed timers,
+> > and whatever else can prevent the grace-period kthread from running.
+> 
+> Makes sense.
+> 
+> >> One thing that confuses me, in the case of
+> >> "cur_ops->deferred_free(old_rp);" , the earlier do-while loop may exit
+> >> before the async callbacks can finish. So what prevents the
+> >> "(list_empty(&rcu_tortures[i].rtort_free)" check from happening before
+> >> grace periods happen? Thanks for any clarification.
+> >
+> > We only enter this code if the stutter_wait() actually waited, and by
+> > default this function will wait about five seconds.  Since the rcutorture
+> > testing goes idle during this time period (or is supposed to!), if things
+> > are working properly, knocking off ten grace periods during that time
+> > should be pretty much a given.
+> 
+> Sure, makes sense. And this is not Lazy-RCU so 5 seconds should be plenty
+> ;). I think I was subconsciously expecting an rcu_barrier() somewhere in the
+> code before those checks, but that's not needed as you pointed that the
+> stutter should be giving enough time for RCU to make progress.
 
-The first version of the original AutoIBRS patchseries enabled STIBP
-always-on, but it got dropped by mistake in v2 and on.
+And there might need to be a call_rcu_hurry() in there somewhere,
+now that you mention it.  Which would pretty much defeat any sort of
+lazy-RCU-callback testing in rcutorture, but testing of laziness might
+need to be separate anyway.
 
-[1] "AMD64 Architecture Programmer's Manual Volume 2: System Programming",
-    Pub. 24593, rev. 3.41, June 2023, Part 1, Section 3.1.7 "Extended
-    Feature Enable Register (EFER)" - accessible via Link.
+> So hmm, the count being 9 means that not enough RCU grace periods have
+> passed for the rcu_torture object in question thus keeping it always
+> allocated. The GP thread not getting CPU can do that indeed, or perhaps
+> something else stalling RCU like a preempted reader, length preemption
+> disabling on a CPU and so forth..  I'll try to collect a trace when it
+> happens.
 
-Reported-by: Tom Lendacky <thomas.lendacky@amd.com>
-Fixes: e7862eda309e ("x86/cpu: Support AMD Automatic IBRS")
-Link: https://bugzilla.kernel.org/attachment.cgi?id=304652
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-Cc: Borislav Petkov (AMD) <bp@alien8.de>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Joao Martins <joao.m.martins@oracle.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: David Woodhouse <dwmw@amazon.co.uk>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Alexey Kardashevskiy <aik@amd.com>
-Cc: kvm@vger.kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: x86@kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
----
- Documentation/admin-guide/hw-vuln/spectre.rst | 11 +++++++----
- arch/x86/kernel/cpu/bugs.c                    | 15 +++++++++------
- 2 files changed, 16 insertions(+), 10 deletions(-)
+Looking forward to seeing what you come up with!
 
-diff --git a/Documentation/admin-guide/hw-vuln/spectre.rst b/Documentation/admin-guide/hw-vuln/spectre.rst
-index 4d186f599d90..32a8893e5617 100644
---- a/Documentation/admin-guide/hw-vuln/spectre.rst
-+++ b/Documentation/admin-guide/hw-vuln/spectre.rst
-@@ -484,11 +484,14 @@ Spectre variant 2
- 
-    Systems which support enhanced IBRS (eIBRS) enable IBRS protection once at
-    boot, by setting the IBRS bit, and they're automatically protected against
--   Spectre v2 variant attacks, including cross-thread branch target injections
--   on SMT systems (STIBP). In other words, eIBRS enables STIBP too.
-+   Spectre v2 variant attacks.
- 
--   Legacy IBRS systems clear the IBRS bit on exit to userspace and
--   therefore explicitly enable STIBP for that
-+   On Intel's enhanced IBRS systems, this includes cross-thread branch target
-+   injections on SMT systems (STIBP). In other words, Intel eIBRS enables
-+   STIBP, too.
-+
-+   AMD Automatic IBRS does not protect userspace, and Legacy IBRS systems clear
-+   the IBRS bit on exit to userspace, therefore both explicitly enable STIBP.
- 
-    The retpoline mitigation is turned on by default on vulnerable
-    CPUs. It can be forced on or off by the administrator
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 9e2a91830f72..95507448e781 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -1150,19 +1150,21 @@ spectre_v2_user_select_mitigation(void)
- 	}
- 
- 	/*
--	 * If no STIBP, enhanced IBRS is enabled, or SMT impossible, STIBP
-+	 * If no STIBP, Intel enhanced IBRS is enabled, or SMT impossible, STIBP
- 	 * is not required.
- 	 *
--	 * Enhanced IBRS also protects against cross-thread branch target
-+	 * Intel's Enhanced IBRS also protects against cross-thread branch target
- 	 * injection in user-mode as the IBRS bit remains always set which
- 	 * implicitly enables cross-thread protections.  However, in legacy IBRS
- 	 * mode, the IBRS bit is set only on kernel entry and cleared on return
--	 * to userspace. This disables the implicit cross-thread protection,
--	 * so allow for STIBP to be selected in that case.
-+	 * to userspace.  AMD Automatic IBRS also does not protect userspace.
-+	 * These modes therefore disable the implicit cross-thread protection,
-+	 * so allow for STIBP to be selected in those cases.
- 	 */
- 	if (!boot_cpu_has(X86_FEATURE_STIBP) ||
- 	    !smt_possible ||
--	    spectre_v2_in_eibrs_mode(spectre_v2_enabled))
-+	    (spectre_v2_in_eibrs_mode(spectre_v2_enabled) &&
-+	     !boot_cpu_has(X86_FEATURE_AUTOIBRS)))
- 		return;
- 
- 	/*
-@@ -2294,7 +2296,8 @@ static ssize_t mmio_stale_data_show_state(char *buf)
- 
- static char *stibp_state(void)
- {
--	if (spectre_v2_in_eibrs_mode(spectre_v2_enabled))
-+	if (spectre_v2_in_eibrs_mode(spectre_v2_enabled) &&
-+	    !boot_cpu_has(X86_FEATURE_AUTOIBRS))
- 		return "";
- 
- 	switch (spectre_v2_user_stibp) {
--- 
-2.34.1
-
+							Thanx, Paul
