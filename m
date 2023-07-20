@@ -2,58 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEB675B4A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E8F75B4AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 18:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbjGTQjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 12:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
+        id S231889AbjGTQkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 12:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbjGTQjp (ORCPT
+        with ESMTP id S231342AbjGTQj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 12:39:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4315A2736;
-        Thu, 20 Jul 2023 09:39:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C224F61B8D;
-        Thu, 20 Jul 2023 16:38:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 643A1C433C9;
-        Thu, 20 Jul 2023 16:38:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689871138;
-        bh=2gME/jlBfFp+8xl95AKBlT8xPNpXAgidZPMiIKzm32Y=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Fb92fS5asKJzq6Mu5j24cHQoFdOXPSZ/ZUap5QSJsjG/1bou29cK0J4edyVTnPCor
-         aeW5PgvI/lVZiKEjyyd61uEIE/4fTiPifu2VETw7hYh3nVKL2eQtWRBmAlOi8VFVgp
-         D+xZsb6fSDIMZWWP5k8fGFpxmizV0gv2IDeyl9htBBwxgqthhs8RO6bppbtUJmZDtp
-         qkX1lLXiUiubi0nrCNH5m0hc7Fll3eGvF1wfLold/C/oTAyUz33c4+firN16khUIdr
-         5+0yP3WYRZGqgiVxPtki+TXwyZyN4lMUiRzh3t5tnO/0yTW1QLrsJA70N02hM8ctfM
-         L7xdZBds0Lhtw==
-Message-ID: <016b04630ce7e168cbaacb1a27bd95b966b8c64e.camel@kernel.org>
-Subject: Re: [PATCH] nfsd: remove unsafe BUG_ON from set_change_info
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Boyang Xue <bxue@redhat.com>
-Date:   Thu, 20 Jul 2023 12:38:56 -0400
-In-Reply-To: <C4A9048C-C3C8-4C62-B68F-7170C6CDC5BE@oracle.com>
-References: <20230720-bz2223560-v1-1-edb4900043b8@kernel.org>
-         <4B067A0F-93E3-435A-A32B-B17BC07D4606@oracle.com>
-         <061f2b988de3da1dac32ecb3d8ac76319065b51d.camel@kernel.org>
-         <C4A9048C-C3C8-4C62-B68F-7170C6CDC5BE@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 20 Jul 2023 12:39:57 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAE22106;
+        Thu, 20 Jul 2023 09:39:37 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51e5da802afso1370727a12.3;
+        Thu, 20 Jul 2023 09:39:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689871175; x=1690475975;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AEx6nUL4YZM5bantpgSzvZE+5jKhxmLmiP9voK482Gs=;
+        b=JtOkNZXisfBISFNljbWys1+mJJ9nauBq2uu8sBaOYpaGx03meu1bRyVPtZfQwRAYIX
+         bqwvGbvn5T4zbuoZdzbd11YwfhMMttB/JrR/4goX7zUSdfYAoEDCh8KnXZJFKCFQCErS
+         5ibDKWBhWisBth4PoAgaJ2JNJzODaNYx4GCtNZyzkSWdb9KUEnHqcyNMEgnt42rj55YE
+         mWqyebIcapcDsM5csWlq74shP9MJ2CoX0UN+i8YAiEe1wPnLH1DIhy0DgQt0GbY3A4Ks
+         cc2DpoeUXQYWrO/Yn+eEgoVAGFfSJ04Tkdf/guXY14U3GtqGcAr1ILnRaXRbtwYpvM5s
+         dIXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689871175; x=1690475975;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AEx6nUL4YZM5bantpgSzvZE+5jKhxmLmiP9voK482Gs=;
+        b=dnM+LdwraqSAGQDUm6VNZVEvuA2poNJLGiOMDvb3z7GLTtSMqo4kizwJDNv9Q5r20h
+         UF7AmZw7PJ+fqxDDmBTqpzox1fSBh/URKwzWEWMH9H9ERJDJWazAyjCOjbXu1F8cYPqS
+         Tlv1xvZ1ekRbw8b5CJdpNXJzEteZ3GsSeYI5HCUWici9v5WmVMsg9B9wMuwZo+0K/dB3
+         vvC7ENXbE92hcmZqGNoyxfF9zDzV40mwADoS+vKsxosJu2JnQ1gLcImFaY2E3FgVQzTj
+         NM1TNvjKyjFFBJbQvLODnlgJiX7bFMhItCd7L7PHVqq8Du0mDr74z4r+SLJGwPiwZ6fY
+         NcZw==
+X-Gm-Message-State: ABy/qLaFkoL/1CsC36qc2vA7mZXqvkSYrsk8eKLtfCnJsDftk7+1xL4M
+        IlRWfgWHlr4qEaXDbvqTeEIks6+Foro=
+X-Google-Smtp-Source: APBJJlHYCMNmMGqKYdtvfQsqdV5XYjoKIQGDNiCvPuXEhILZtCufK9sYXpxeyeaTcvWu7n4Qp1jIqg==
+X-Received: by 2002:aa7:d80f:0:b0:51e:cb4:2b40 with SMTP id v15-20020aa7d80f000000b0051e0cb42b40mr2416173edq.6.1689871175158;
+        Thu, 20 Jul 2023 09:39:35 -0700 (PDT)
+Received: from orome (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id b23-20020aa7df97000000b005219864c7cfsm975038edy.39.2023.07.20.09.39.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 09:39:34 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 18:39:32 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Mohan Kumar <mkumard@nvidia.com>
+Cc:     treding@nvidia.com, jonathanh@nvidia.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, spujar@nvidia.com
+Subject: Re: [PATCH] arm64: tegra: Add audio support for IGX Orin
+Message-ID: <ZLljRBBHl_3jsKGg@orome>
+References: <20230620155847.14598-1-mkumard@nvidia.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vLEOq6j5hPYuBGgG"
+Content-Disposition: inline
+In-Reply-To: <20230620155847.14598-1-mkumard@nvidia.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,71 +76,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-07-20 at 15:37 +0000, Chuck Lever III wrote:
->=20
-> > On Jul 20, 2023, at 11:33 AM, Jeff Layton <jlayton@kernel.org> wrote:
-> >=20
-> > On Thu, 2023-07-20 at 15:15 +0000, Chuck Lever III wrote:
-> > >=20
-> > > > On Jul 20, 2023, at 10:59 AM, Jeff Layton <jlayton@kernel.org> wrot=
-e:
-> > > >=20
-> > > > At one time, nfsd would scrape inode information directly out of st=
-ruct
-> > > > inode in order to populate the change_info4. At that time, the BUG_=
-ON in
-> > > > set_change_info made some sense, since having it unset meant a codi=
-ng
-> > > > error.
-> > > >=20
-> > > > More recently, it calls vfs_getattr to get this information, which =
-can
-> > > > fail. If that fails, fh_pre_saved can end up not being set. While t=
-his
-> > > > situation is unfortunate, we don't need to crash the box.
-> > >=20
-> > > I'm always happy to get rid of a BUG_ON(). But I'm not sure even
-> > > a warning is necessary in this case. It's not likely that it's
-> > > a software bug or something that the server administrator can
-> > > do something about.
-> > >=20
-> > > Can you elaborate on why the vfs_getattr() might fail? Eg, how
-> > > was it failing in 2223560 ?
-> > >=20
-> >=20
-> > I'm fine with dropping the WARN_ON. You are correct that there is
-> > probably little the admin can do about it.
-> >=20
-> > vfs_getattr can fail for all sorts of reasons. It really depends on the
-> > underlying filesystem. In 2223560, I don't know for sure, but just prio=
-r
-> > to the oops, there were these messages in the log:
-> >=20
-> > [51935.482019] XFS (vda3): Filesystem has been shut down due to log err=
-or (0x2).=20
-> > [51935.482020] XFS (vda3): Please unmount the filesystem and rectify th=
-e problem(s).=20
-> > [51935.482550] vda3: writeback error on inode 25320400, offset 2097152,=
- sector 58684120=20
-> >=20
-> > My assumption was that the fs being shut down caused some VFS operation=
-s
-> > to start returning errors (including getattr) and that is why
-> > fh_pre_saved ultimately didn't get set.
->=20
-> I'm wondering if the operation should just fail in this case
-> rather than return a cobbled-up changeinfo4. Maybe for another
-> day.
->=20
 
-Actually, this doesn't look too hard to do. We should be able to just
-unwind and return an error in all cases if collecting pre_op_attrs
-fails.
+--vLEOq6j5hPYuBGgG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The trickier bit is what to do if collecting post_op_attrs fails after
-collecting pre-op attrs and the operation itself succeeded. What should
-go into the after_change value? 0? Should we just copy the before_change
-value?
+On Tue, Jun 20, 2023 at 09:28:47PM +0530, Mohan Kumar wrote:
+> Add audio support for the NVIDIA IGX Orin development kit having P3701
+> module with P3740 carrier board.
+>=20
+> Move the common device-tree nodes to a new file tegra234-p3701.dtsi and
+> use this for Jetson AGX Orin and NVIDIA IGX Orin platforms
+>=20
+> Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
+> ---
+>  .../boot/dts/nvidia/tegra234-p3701-0000.dtsi  |    1 +
+>  .../boot/dts/nvidia/tegra234-p3701-0008.dtsi  |    1 +
+>  .../arm64/boot/dts/nvidia/tegra234-p3701.dtsi | 1991 ++++++++++++++++
+>  .../nvidia/tegra234-p3737-0000+p3701-0000.dts | 2009 -----------------
+>  .../boot/dts/nvidia/tegra234-p3737-0000.dtsi  |   41 +
+>  .../nvidia/tegra234-p3740-0002+p3701-0008.dts |   91 +-
+>  .../boot/dts/nvidia/tegra234-p3740-0002.dtsi  |   56 +
+>  7 files changed, 2176 insertions(+), 2014 deletions(-)
+>  create mode 100644 arch/arm64/boot/dts/nvidia/tegra234-p3701.dtsi
+[...]
+> diff --git a/arch/arm64/boot/dts/nvidia/tegra234-p3740-0002+p3701-0008.dt=
+s b/arch/arm64/boot/dts/nvidia/tegra234-p3740-0002+p3701-0008.dts
+> index 43d797e5544f..2b7856b303b4 100644
+> --- a/arch/arm64/boot/dts/nvidia/tegra234-p3740-0002+p3701-0008.dts
+> +++ b/arch/arm64/boot/dts/nvidia/tegra234-p3740-0002+p3701-0008.dts
+[...]
+> @@ -103,7 +99,7 @@
+>  		};
+> =20
+>  		hda@3510000 {
+> -			nvidia,model =3D "NVIDIA IGX HDA";
+> +			nvidia,model =3D "NVIDIA Jetson IGX Orin HDA";
+[...]
+> @@ -151,4 +147,89 @@
+[...]
+> +		label =3D "NVIDIA Jetson IGX Orin APE";
+[...]
 
---=20
-Jeff Layton <jlayton@kernel.org>
+The platform is called "NVIDIA IGX Orin Development Kit", so shouldn't
+these be "NVIDIA IGX Orin HDA" and "NVIDIA IGX Orin APE", respectively?
+
+Thierry
+
+--vLEOq6j5hPYuBGgG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS5Y0QACgkQ3SOs138+
+s6Fb6Q//XqMgA3W+sUybflSZbh5Kq41ThyM1yVl9KE0/v8+0uPwRwT7zGwXft/pB
+O6BFHvPaSCMQHQ2FKcTOVAnIp1bIRGWb8taI7W4zDI57KqWiJYrBk68sdj8HvrsY
+GZ/z5o1ethG5vkf+S4HxlLCjEsFqsStbzg21sMThMQb/Vwwr0YMBy9/3o+uVvSSe
+SEQJoki2ExzpTCX9VNPQL6xz9O289pgFXYpAbZ3AFtmVn1Yqpvlj9BvtnsZKQB46
+Q+dVQg965UOXYROYFirbh/ecj4zn4Eqi24pSZMv9QU4Peuiu7QDXUbBgTjXkzt5J
+2e2uHMNGhU6KC4/hgpNizSqN4ITN6WGwmgl77Bq9lD/K+Y0WRCiROvvt24Eh4dhY
+NTvtJXoorFlBD3fD+sJbUZyEXrJ0FYeFpC6vZX7XNW38sKizEn8XBOxYpqTuehva
+JZK++p6GEFNnMzJyGgmP/wnk3e/MsfQnrAENqZRkQshXqLgVSpJMl3MOwFDvn26f
+k8su8sr9hEF6SSQyuSsKddN9HLC8sSjfPpUZNHUbikQBGyQl2SSWoTCd12S0eX8/
+Bwmiek7riu4yx1xwHWzpXdXy4lAFrTuY+UHJvRJVvvufach+xyiwn+h9t7deEnMS
+Sv9vIdvTIA3GgK7jjSRdOh2ypc0NcsOJ3/5ivBWR27nGW0R9JJ0=
+=YtvD
+-----END PGP SIGNATURE-----
+
+--vLEOq6j5hPYuBGgG--
