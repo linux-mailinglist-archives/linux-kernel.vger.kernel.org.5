@@ -2,113 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3C475ADBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 14:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EF475ACA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbjGTMCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 08:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
+        id S229972AbjGTLOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbjGTMCp (ORCPT
+        with ESMTP id S229560AbjGTLOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 08:02:45 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE6310F5
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:02:43 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbab0d0b88so11822705e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 05:02:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689854562; x=1690459362;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4mVNLMpsr1KtXrPPiYyd6fMKyNfmqypKKGtmUwwbo1s=;
-        b=Ru776Nvt3yRM/Id4yJqBSMOIMMRox1ohJl228qwtuRlY7Z9Ds7hcbx++Eg/mZjULXg
-         Vlbo7Dj/QyrE0PKRKzeuGhFLqR0u0A8EoEKAd0VknDWIgk0dit+0/1KtPmxC24TROnEv
-         tIUiBEAQgDBTls6DjHiUaIuxj9sckC6VGVoYz7GlGO0UlXA6m9Bo1CkVTQFOVo6cviWb
-         wRagJAakNX8D54z2sgC0IiD8qxQBEg7iu9iDxdkqwzCZp1FASPAqFGq6mj0TCEZBL2wM
-         89ixhK3hHIptelHiMKP/rnC3AyTYgokdlou9nuoKkvrK6cGj1H8bHp7S4ZgJoNMfHCa9
-         7aCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689854562; x=1690459362;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4mVNLMpsr1KtXrPPiYyd6fMKyNfmqypKKGtmUwwbo1s=;
-        b=HW998UcQ/51L/ee5IMv85NeRN/2eXjT/tQXyanzQTy/zhCXhaq+rgjSlfcfUmuB29x
-         gWD8OE/PZ5f7LxGfeXkqlPuPZDQEv7jYx8UmnCqH7DkvH/mtatmaDVhrfEAMLIsAIewa
-         YSTCWud+vPiGLVOCz1VEL2paKUBXtsrLE09wMUhr8hzNaN4n3SdSFBMc9Y2sJ6fRsKuQ
-         xXGSYIOE3MX30XWiehrw1S9HqWbcrv6GpcR2w2KHJ/Fd7kHsq/gfbiYnBoR+a3Jl1Lq9
-         iBiYbe/4+SJuj8PKcNVyoAy8X/XHNb3HEaje2Tyj9tQ0No8Bs1yiu5KuAkWH3XQ0MCg4
-         YSpA==
-X-Gm-Message-State: ABy/qLYk2QVErThFszxnoszeiZJhY+lE6ukFLdW70SjZJ4SllQNmvbEd
-        dxgT1XbGq4tB/36d4/fHFvMimw==
-X-Google-Smtp-Source: APBJJlE5/EGARCmArGxUZUpUjd94gNv62IZomso69Wj7PlLRXdVNWS6mN9JA2NEzdednqnnEnvDfbQ==
-X-Received: by 2002:adf:f88d:0:b0:316:fc03:3c66 with SMTP id u13-20020adff88d000000b00316fc033c66mr2168789wrp.3.1689854562194;
-        Thu, 20 Jul 2023 05:02:42 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id t13-20020a05600001cd00b00316eb7770b8sm1164458wrx.5.2023.07.20.05.02.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 05:02:41 -0700 (PDT)
-Message-ID: <85d14351-9b5a-a488-c1c9-ac2f1e28eeef@linaro.org>
-Date:   Thu, 20 Jul 2023 14:02:40 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] dt-bindings: input: convert syna,rmi4 to DT schema
-Content-Language: en-US
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Vincent Huang <vincent.huang@tw.synaptics.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        Thu, 20 Jul 2023 07:14:37 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF7C269F
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:14:34 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4R697S4BBqz4f3lwd
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 19:14:28 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgBHr7IVF7lkt42ZOQ--.56940S2;
+        Thu, 20 Jul 2023 19:14:31 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-References: <20230720110008.133359-1-krzysztof.kozlowski@linaro.org>
- <ZLkYWL4wMhYLRTuL@zx2c4.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <ZLkYWL4wMhYLRTuL@zx2c4.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Cc:     shikemeng@huaweicloud.com
+Subject: [PATCH 1/2] mm/compaction: correct comment of candidate pfn in fast_isolate_freepages
+Date:   Fri, 21 Jul 2023 03:15:03 +0800
+Message-Id: <20230720191503.2044025-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBHr7IVF7lkt42ZOQ--.56940S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruFyxZF4fAr1xWryruw4rKrg_yoW3Jwc_JF
+        12kr1Yy3WYvFyxZFnIka1Sya4UKa95Zr1Igw4rW3yjka9YqFs5WF1DZr1fXanIqa9FgFnx
+        W3ykAF1qgF1akjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbxkFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28lY4IEw2IIxx
+        k0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK
+        6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
+        xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8v
+        x2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRE
+        SoGDUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2023 13:19, Jason A. Donenfeld wrote:
-> On Thu, Jul 20, 2023 at 01:00:08PM +0200, Krzysztof Kozlowski wrote:
->> Convert the bindings for Synaptics RMI4 bus and devices to DT schema.
->> Changes during conversion:
->> 1. Add reset-gpios already used in DTS and mentioned by RMI4
->>    specification.
->> 2. Do not require address/size cells, because without functions
->>    (children) they aren't really needed.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>
->> ---
->>
->> Jason, Matthias, Vincent,
->> I put your names as maintainers, because moderately recently you were
->> changing the driver. Let me know if this is okay or you prefer not to
->> maintain the hardware.
->  
-> I'm more of the occasional "why doesn't my new Thinkpad work?" sort of
-> drive-by RMI4-er, rather than an actual maintainer. I don't know a lot
-> about the protocol beyond what it takes to drag a laptop into behaving
-> right. So maybe best to leave me off the list.
+If no preferred one was not found, we will use candidate page with maximum
+pfn > min_pfn which is saved in high_pfn. Correct "minimum" to "maximum
+candidate" in comment.
 
-If you have hardware with it and you are interested in this device
-working, then it is good enough.  This is maintainership only of the
-bindings, not entire driver.
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+---
+ mm/compaction.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
-Krzysztof
+diff --git a/mm/compaction.c b/mm/compaction.c
+index eb1d3d9a422c..c0d8d08fc163 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1526,7 +1526,7 @@ static void fast_isolate_freepages(struct compact_control *cc)
+ 				break;
+ 		}
+ 
+-		/* Use a minimum pfn if a preferred one was not found */
++		/* Use a maximum candidate pfn if a preferred one was not found */
+ 		if (!page && high_pfn) {
+ 			page = pfn_to_page(high_pfn);
+ 
+-- 
+2.30.0
 
