@@ -2,233 +2,613 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C34C75B680
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD3175B677
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbjGTSTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 14:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55670 "EHLO
+        id S230060AbjGTSTK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 Jul 2023 14:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbjGTSTq (ORCPT
+        with ESMTP id S229727AbjGTSTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:19:46 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0BD2D4A;
-        Thu, 20 Jul 2023 11:19:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689877175; x=1721413175;
-  h=message-id:date:subject:from:to:cc:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=KKMCYCzDYgAQWtJcWkTOSu/4dLuYklirnMqLgBTOVPk=;
-  b=V0ThYGgBwdfMzgLwh9rnogR5mc+b0AvObT7sYgfy8f9xkNFoVuMSwSHt
-   HsW70dAaUQZnlABpuLcrwhK1Xq6YSASlDDLNeRHJqY/zfEeR06fKC9oL7
-   lEXX607n2UT8GywYCid8rItttx2h8T7QNVNOn04Ex1QVhOwDXK4Crl9FD
-   VGkZwSjuSmfLQOZ8P8YK/ewUgNplkvaz5tS5NnamEwKJOIhn223fZtPAa
-   +d1z0zrgdlMqL1gMyWcj32yCrylucODakgipKKNd5dS8rO+VU7mZIsY5r
-   RCyrecc150yB1inEeJ2CnG9V0flR5CF2byoQjzUgQJF21nGM0cXy/mOna
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="369499504"
-X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
-   d="scan'208";a="369499504"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 11:19:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="718529349"
-X-IronPort-AV: E=Sophos;i="6.01,219,1684825200"; 
-   d="scan'208";a="718529349"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga007.jf.intel.com with ESMTP; 20 Jul 2023 11:19:33 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 20 Jul 2023 11:19:32 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 20 Jul 2023 11:19:33 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 20 Jul 2023 11:19:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZHZ2uOjI/bWnApJX43ntFx8CQqPXmsPzZKU113rZdYzVST0n+ypDUbuQCwtZJ01Y1KjJvGBx+r4dOS+uUHszACXpjCzIZ58H5qA9bzFqHgwHk0ZxsCHk6INPtF3T9LN5LOxxcuUpQKr2TQJ0v9K35xMLpScCgHFb7Do5Ds2bB5Hf10TXfbM4rSueF/vtJxc9YxAq0urur+KHWOgRzbrr6ldCtcYlDH6CHP4QigeTU71NLd0jOd2ZKSTRHu69HQD7nT7soprFhKYDgsVGK0zB7FhwrhdCYQMfOtJ5zx3PXdVwbhQKE3SpUgt9KJCHDnOH6DtJsaoa1t7tY3BduKsMqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lC3QgDpzpLnXPoqFWYt5oEYlS/8PeUPYjB/kmW7F03I=;
- b=Lizc2F6yNzpkAQgh9NOPi1qdQjheOoq1pPtQjQVZhNQtYRklMjPry5yVN/gpk8ysmY0MjT7rs2hZ4OsBxLhcxwvjPaAX/zykQGmdw+idf7HUz0PwlCf73r/9qQTfCN8yyci2NB/w/0894iypFZrJNQYa5YQ5NQxPl1Q+AtNKNrONnnQqpJv93pZbiEtvxew7e4vf4b3OjxgFd83nCkcgPWHZ9+BpEU/5kjcfE1u0dKtWeok6gNFPyzBcmwMGVqqdUaAiXHr4TWT/T28P7y2x10a3Yu18KLj1fopd7p72FdhOqTyOwY4FNDTRrYJ6k4AriIondPW0f6GXJiXJQLNKuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by DM4PR11MB8201.namprd11.prod.outlook.com (2603:10b6:8:18a::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Thu, 20 Jul
- 2023 18:19:28 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::44ff:6a5:9aa4:124a]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::44ff:6a5:9aa4:124a%7]) with mapi id 15.20.6609.024; Thu, 20 Jul 2023
- 18:19:28 +0000
-Message-ID: <77b0bd8a-0168-f7c1-9aa0-a40359d2f075@intel.com>
-Date:   Thu, 20 Jul 2023 20:18:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH net-next] page_pool: split types and declarations from
- page_pool.h
-Content-Language: en-US
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        "Lorenzo Bianconi" <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        "Shayne Chen" <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        "Kalle Valo" <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-References: <20230719121339.63331-1-linyunsheng@huawei.com>
- <0838ed9e-8b5c-cc93-0175-9d6cbf695dda@intel.com>
-In-Reply-To: <0838ed9e-8b5c-cc93-0175-9d6cbf695dda@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BE1P281CA0347.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:7d::19) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
+        Thu, 20 Jul 2023 14:19:08 -0400
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CBD5135;
+        Thu, 20 Jul 2023 11:19:06 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-4fbf9e4c0d5so281504e87.1;
+        Thu, 20 Jul 2023 11:19:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689877144; x=1690481944;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wCRumtcHokLowYb9kUO3NkQ68Fh6SmscyOqPUFdz3Rg=;
+        b=Hix3kbnuC3AEXD4XKqrKiUy0LpfPYlDmA6umYcRrJOGeCaak3EuVkWDpNTY6q0EJqi
+         /v4UfLj6sVqIcBCahguMSYq4gIND7EAqQQNPhiJOUDDn1ElBRpCzHvyi4cr8kZv0gmF/
+         8nPb3G+pHGEQDzkqQjG1YMAn/tba7P7mSSMYIZnGVygsKb53Ql/Dx14OvB48MHzaowSC
+         xEG173eTKQJc7+Ymxdh0hXG2+oM6XgSYJBtwQdoC+d8NwGSGj+31MCM12fp6jc9Lyst1
+         rzP3qV9EVQXNVlnJFr/9BtY3GaI1Z9x2ENIBbl2rOoVNDTZo1aYi/yX6eCVhEaJeRDMY
+         ZOWw==
+X-Gm-Message-State: ABy/qLbjK2evbD5VWJJuSug5VurXGnKQ6gKXyeUj+jDumkLIRfXGah6U
+        3azgjDUdK1UCg7M4G5HV29qecHCTBBfCETjj0sE=
+X-Google-Smtp-Source: APBJJlEKpWaVZfwuSBgUXT3vtt8gLuAqtqi0CfK9tWksgQRUy38c4Jpp1DGhrlIQQhc8qFsCLmYQz+navAgMqAnlzE0=
+X-Received: by 2002:ac2:4c21:0:b0:4fd:d186:6603 with SMTP id
+ u1-20020ac24c21000000b004fdd1866603mr2353165lfq.0.1689877143830; Thu, 20 Jul
+ 2023 11:19:03 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|DM4PR11MB8201:EE_
-X-MS-Office365-Filtering-Correlation-Id: 55e49f74-eed5-47ae-7f93-08db894dda90
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hRb+ZVc+dk9LuaMfHmdpFc3U9KrWv0FeXQDTEjsKhDjzWiIvXa5aDGs/Ngl4Vyz4RbQy0VPBOtAjAyLJl/Jyo4B9zFjduSDtk/dc1fE2S2DphiItlipQ5+yd7ZiCUr6pwHxdpYXOiHK9zCrbrUbUdp9bgKV/+RViyywwH7vyRzuxXcVQXEmRJwtfT8XMiRbgaZKMsfx4FbZPPRGYGbcJX9kn/MFxwEm1PPFx1pTuu+QerBKCkGjmQLhyvidrRNWRNisA+UF0GJ0Yy0y0FaskFuvQ/3azCNVNsGqe8WcJypO4f5RG/OC/z+Utr9TaE+l4LN4SUbISLsJeT37sdjY3Ijv7l6MoNujYW4K1GC7MGWSvgTGRETKzlPb1GQN697vguUILW+g8xKMVg8ecHlEb2xrXe47nlWYEa97iBwnsWai/fHpGqhpAnWkMHfdMcpglpGTUYYlTQD2CamPUVgKa8HFfuGtMBCj3eLd8uc8pMd1qqyVhFNuPrYAYa3z4tga7kYfrXotgDvyb2i3TRUy3FiCbNAackx6G/roR2EZMvxiOX3qHOba2tIrDwmOijX3BDU73UVQCaxsbC2S9BJsdKY8gdJxAdhvtYOmq16at254jcU7wKHD6lUcV3Nlsbr4mC3n2+b4zLXMCKHqhAovJeA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(346002)(376002)(366004)(396003)(136003)(451199021)(478600001)(2906002)(6512007)(86362001)(82960400001)(26005)(6506007)(2616005)(38100700002)(31696002)(5660300002)(7416002)(54906003)(66556008)(7406005)(36756003)(8676002)(6486002)(6666004)(66476007)(66946007)(6916009)(8936002)(316002)(4326008)(41300700001)(186003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TkNmSnNMbWJUUmg5aHlsN0dPcjZvT1diUXhEWjY3S1Q2VDBUeXZkSVYvTE4z?=
- =?utf-8?B?T3p1NnlHZVdRYUIzeUp3SEpZWlpIakVUK2NOVUFqZkg5dFJOc1FMY0tWUHF3?=
- =?utf-8?B?RkgvTXpZaDVFNzZzcnNaQ1k4eDMzRVJTc3NOTlJaVzkybUpwSzBBeVd5YVR4?=
- =?utf-8?B?cVNuc3lLNmp1MytRZ3hsU2dsOWJGS2FiVE5HYUpHMGNmVDZ0eUFGYVJHRU9G?=
- =?utf-8?B?T3FEaFErcitPWjU0UWFNRi9uL3lPU0lNN1oweUlMK08wVVR4TisyQS8rN0xj?=
- =?utf-8?B?c1BoYWZ5MG5CNTljd2w4aGd6dnhCTEhZc3VMV2NRTjlXdDJVZUlNcitIREE1?=
- =?utf-8?B?NWpOREdkZHZtR2RhNHR1dVROZyt2dTl6aHROSkNqanlrc1dQUTZ5clppdUwr?=
- =?utf-8?B?K0ZsOXFLcVJqSUxydzFvRWNFTWRmbGR2RFVaUXpxaldYOWtvbldMWUFRR1lQ?=
- =?utf-8?B?V3JxOHdyeTduNWhrcFVVM25YMFE2Zmx5LzZzNldCazRDZWRJNkZ4WktEbkhJ?=
- =?utf-8?B?amQyNmJmaWswNkVGY3BNbkVIazBzVDhkblVQd3ZrUTdSVE5SZkNXRlAzUmhU?=
- =?utf-8?B?TmUweWVrTklUVXBCTFd3aU0vZS9MbFZKRWJ4eUgzYTF5R3JhSDFSbUM0RXpG?=
- =?utf-8?B?RFltaTRBSEFkWWdTbXFzMURjaG5rLzBTMlFIbFkwajZsTi9EdEZUK3lxYW05?=
- =?utf-8?B?ZVZmWnZVdDhsNm5DMTRPamJ3RUorN3lQSGt6aEJVVUFHNDVvOFJhTldDcXFI?=
- =?utf-8?B?VmYrUmlIMXE0T3Z0dytqUnM2SjRIOXhwRVJkeWZsejVQWE1rSTYyV1FvRXBM?=
- =?utf-8?B?TEQyb25rVDlkZ1Jldkt2aGtIWHdUSlpJL0VVNDhvNXlaQTk2eldINmg5Y0Fp?=
- =?utf-8?B?b25pWndMVmN0YmdTVnhPWjlLVDgyLzRRdm50MitUUGxUakpTR29qOGcwazNp?=
- =?utf-8?B?WU8wL3RROTE1ZzBmeFBhcVNSbmpnS1BPK2xlMGt4MkFVdXl3YWJaWWN4UWp3?=
- =?utf-8?B?T2UxTWR1VExjWkltQWVLSU9CbFhqdVRPRzJmbjVkU1dFQ3ZzYnExbWZ6dEc3?=
- =?utf-8?B?TFBReEVIcTBTbm96UGx1ZjF4N0hPc0taQjVVL0ZYUkdMdVM1aEpTcE44bnUz?=
- =?utf-8?B?cUk0QVhJOXg0SEc4TEJObEd1bWVYUHp5T2R2NmIrSE5zUUdyNGhsTS8rZnpM?=
- =?utf-8?B?dXoyYlk5bWZVTU1XRGY4RS9LeG5hRUFQa1pleElPVlpld3h1eUJxWlFRaUti?=
- =?utf-8?B?M1NUS0RFTnFDNkV2UDBRQ2x0RE4rcXBpcUVEMGVXaG4zc0xFTThPRkpJN3hI?=
- =?utf-8?B?MmUyeTJDRmE3cFplaUh2d2txUzlZS05NZWh6WVN2Y3Q2OFRsNitBZnlScEUy?=
- =?utf-8?B?MTUySWJvKzJDYUFMNGlmN3lmZ2F1UXhqUDc3dWlWZnR5azM4b1NxK0I4Ny9M?=
- =?utf-8?B?SURmTlQ5bWZ3Uk5nRHJRUEtqWDhpRk1MVW0yL3dpRkVTOU40WkVjZHVyVlZK?=
- =?utf-8?B?OXdQNmtEQXR4dTRHL1NpOEFlSW9sOVVkVGl2ZzVoTFNoSE1mS08yMEV0d1Ni?=
- =?utf-8?B?RWJaT1A3bnFsV3RFTGlSS0NKMmZpU2tZNFQxYkY0djNwdk42WVZ6NzZVaW5W?=
- =?utf-8?B?SVBBNGhMU3liTHZpWjVMMC9rYW5SRkgwWTlSTXhqU1c3NXJRZkI5RGJTbEVi?=
- =?utf-8?B?eU12OUt1T1RFcE5wVWkyZ09lK3JiS0ErK1I5MFhhVlRXM3pLd204N20rcVY1?=
- =?utf-8?B?OVdLeTVVeENHOFpJMnE1eWM3aHBGVG1Vb3BNMWR4d0FqMnpEbVlTWmVCRm5y?=
- =?utf-8?B?MFJZaVZ4T1RFQnhGa3E4Wkczc2ZoVGhRWk0xUWFRWER5d3B4Tk93WkxYMTl2?=
- =?utf-8?B?ZjhidWh4NFM0aGczNm1LMmI2eFA4djM2aE1GSllBakwzbER0VnNSMkFJWVd5?=
- =?utf-8?B?Rzd4N083Y2M5VElnWGhXbFk2cnpQbG1EL2tEbnJCVG12L3VVZGxwVVRWVlI5?=
- =?utf-8?B?UVdCcTFVVFl5V1JCTHhFZkNUQ2FJeUZBZ1UzME5qYTk3cUErT2dXZWI5OS93?=
- =?utf-8?B?a3dTS3RnSnFPUGZxYWFWeCtLbi91S2cxeWd4RUt3ZStYV2E2alRLMDd1Smxk?=
- =?utf-8?B?YVNYL1J5YUhhZzJMSVV5NEcwRHk5VGxjS2lmUVl6cFJiMTZVSFhWMTdIdll4?=
- =?utf-8?B?NWc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55e49f74-eed5-47ae-7f93-08db894dda90
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2023 18:19:27.9197
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zAV6TQDCCyE7hmtUyPmYH7usq2TxYTTvEqJtktfa5xPcRwnL232Y0v70JP+sqbc9lUyMNJXUZxd1YCe3OMZZgSyBSRoLll/nHhAxQSz1Hqc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB8201
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230113193006.1320379-1-bgeffon@google.com> <20230714175506.2797899-1-bgeffon@google.com>
+In-Reply-To: <20230714175506.2797899-1-bgeffon@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 20 Jul 2023 20:18:52 +0200
+Message-ID: <CAJZ5v0i-Gv3zDvF2ZsOXLgfoS6ZnaRbQcdpxOhgv7tg0PYR6NA@mail.gmail.com>
+Subject: Re: [PATCH v7] PM: hibernate: don't store zero pages in the image file.
+To:     Brian Geffon <bgeffon@google.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-Date: Wed, 19 Jul 2023 18:42:17 +0200
+On Fri, Jul 14, 2023 at 7:55 PM Brian Geffon <bgeffon@google.com> wrote:
+>
+> On ChromeOS we've observed a considerable number of in-use pages filled with
+> zeros. Today with hibernate it's entirely possible that saveable pages are just
+> zero filled. Since we're already copying pages word-by-word in do_copy_page it
+> becomes almost free to determine if a page was completely filled with zeros.
+>
+> This change introduces a new bitmap which will track these zero pages. If a page
+> is zero it will not be included in the saved image, instead to track these zero
+> pages in the image file we will introduce a new flag which we will set on the
+> packed PFN list. When reading back in the image file we will detect these zero
+> page PFNs and rebuild the zero page bitmap.
+>
+> When the image is being loaded through calls to write_next_page if we encounter
+> a zero page we will silently memset it to 0 and then continue on to the next
+> page. Given the implementation in snapshot_read_next/snapshot_write_next this
+> change  will be transparent to non-compressed/compressed and swsusp modes of
+> operation.
+>
+> To provide some concrete numbers from simple ad-hoc testing, on a device which
+> was lightly in use we saw that:
+>
+> PM: hibernation: Image created (964408 pages copied, 548304 zero pages)
+>
+> Of the approximately 6.2GB of saveable pages 2.2GB (36%) were just zero filled
+> and could be tracked entirely within the packed PFN list. The savings would
+> obviously be much lower for lzo compressed images, but even in the case of
+> compression not copying pages across to the compression threads will still
+> speed things up. It's also possible that we would see better overall compression
+> ratios as larger regions of "real data" would improve the compressibility.
+>
+> Finally, such an approach could dramatically improve swsusp performance
+> as each one of those zero pages requires a write syscall to reload, by
+> handling it as part of the packed PFN list we're able to fully avoid
+> that.
+>
+> Patch v6 -> v7:
+> - Fix a bug in image_loaded() not accounting for zero pages.
+>
+> Patch v5 -> v6:
+> - Correcting missed variable when changing types.
+>
+> Patch v4 -> v5:
+> - Addressed numerous style comments from Rafael J. Wysocki.
+>
+> Patch v3 -> v4:
+> - Suggestions from Matthias Kaehlcke:
+>  - Return number of copy pages from copy_data_pages
+>  - Use an explicit temporary bitmap while moving the zerm_bm
+>    to safe pages.
+>
+> Patch v2 -> v3:
+> - Use nr_zero_pages rather than walking each pfn to count.
+> - Make sure zero_bm is allocated in safe pages on resume.
+>  When reading in the pfn list and building the zero page bm
+>  we don't know which pages are unsafe yet so we will need to
+>  copy this bm to safe pages after the metadata has been read.
+>
+> Patch v1 -> v2:
+> - minor code mistake from rebasing corrected.
+>
+> Signed-off-by: Brian Geffon <bgeffon@google.com>
+> ---
+>  kernel/power/snapshot.c | 186 ++++++++++++++++++++++++++++++++--------
+>  1 file changed, 148 insertions(+), 38 deletions(-)
+>
+> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+> index cd8b7b35f1e8..1f2a052b56b8 100644
+> --- a/kernel/power/snapshot.c
+> +++ b/kernel/power/snapshot.c
+> @@ -404,6 +404,7 @@ struct bm_position {
+>         struct mem_zone_bm_rtree *zone;
+>         struct rtree_node *node;
+>         unsigned long node_pfn;
+> +       unsigned long cur_pfn;
+>         int node_bit;
+>  };
+>
+> @@ -589,6 +590,7 @@ static void memory_bm_position_reset(struct memory_bitmap *bm)
+>         bm->cur.node = list_entry(bm->cur.zone->leaves.next,
+>                                   struct rtree_node, list);
+>         bm->cur.node_pfn = 0;
+> +       bm->cur.cur_pfn = BM_END_OF_MAP;
+>         bm->cur.node_bit = 0;
+>  }
+>
+> @@ -799,6 +801,7 @@ static int memory_bm_find_bit(struct memory_bitmap *bm, unsigned long pfn,
+>         bm->cur.zone = zone;
+>         bm->cur.node = node;
+>         bm->cur.node_pfn = (pfn - zone->start_pfn) & ~BM_BLOCK_MASK;
+> +       bm->cur.cur_pfn = pfn;
+>
+>         /* Set return values */
+>         *addr = node->data;
+> @@ -850,6 +853,11 @@ static void memory_bm_clear_current(struct memory_bitmap *bm)
+>         clear_bit(bit, bm->cur.node->data);
+>  }
+>
+> +static unsigned long memory_bm_get_current(struct memory_bitmap *bm)
+> +{
+> +       return bm->cur.cur_pfn;
+> +}
+> +
+>  static int memory_bm_test_bit(struct memory_bitmap *bm, unsigned long pfn)
+>  {
+>         void *addr;
+> @@ -929,10 +937,12 @@ static unsigned long memory_bm_next_pfn(struct memory_bitmap *bm)
+>                 if (bit < bits) {
+>                         pfn = bm->cur.zone->start_pfn + bm->cur.node_pfn + bit;
+>                         bm->cur.node_bit = bit + 1;
+> +                       bm->cur.cur_pfn = pfn;
+>                         return pfn;
+>                 }
+>         } while (rtree_next_node(bm));
+>
+> +       bm->cur.cur_pfn = BM_END_OF_MAP;
+>         return BM_END_OF_MAP;
+>  }
+>
+> @@ -1371,14 +1381,18 @@ static unsigned int count_data_pages(void)
+>
+>  /*
+>   * This is needed, because copy_page and memcpy are not usable for copying
+> - * task structs.
+> + * task structs. Returns true if the page was filled with only zeros, otherwise false.
+>   */
+> -static inline void do_copy_page(long *dst, long *src)
+> +static inline bool do_copy_page(long *dst, long *src)
+>  {
+> +       long z = 0;
+>         int n;
+>
+> -       for (n = PAGE_SIZE / sizeof(long); n; n--)
+> +       for (n = PAGE_SIZE / sizeof(long); n; n--) {
+> +               z |= *src;
+>                 *dst++ = *src++;
+> +       }
+> +       return !z;
+>  }
+>
+>  /**
+> @@ -1387,17 +1401,20 @@ static inline void do_copy_page(long *dst, long *src)
+>   * Check if the page we are going to copy is marked as present in the kernel
+>   * page tables. This always is the case if CONFIG_DEBUG_PAGEALLOC or
+>   * CONFIG_ARCH_HAS_SET_DIRECT_MAP is not set. In that case kernel_page_present()
+> - * always returns 'true'.
+> + * always returns 'true'. Returns true if the page was entirely composed of zeros
+> + * otherwise it will return false.
+>   */
+> -static void safe_copy_page(void *dst, struct page *s_page)
+> +static bool safe_copy_page(void *dst, struct page *s_page)
+>  {
+> +       bool zeros_only;
+>         if (kernel_page_present(s_page)) {
+> -               do_copy_page(dst, page_address(s_page));
+> +               zeros_only = do_copy_page(dst, page_address(s_page));
+>         } else {
+>                 hibernate_map_page(s_page);
+> -               do_copy_page(dst, page_address(s_page));
+> +               zeros_only = do_copy_page(dst, page_address(s_page));
+>                 hibernate_unmap_page(s_page);
+>         }
+> +       return zeros_only;
+>  }
+>
+>  #ifdef CONFIG_HIGHMEM
+> @@ -1407,17 +1424,18 @@ static inline struct page *page_is_saveable(struct zone *zone, unsigned long pfn
+>                 saveable_highmem_page(zone, pfn) : saveable_page(zone, pfn);
+>  }
+>
+> -static void copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
+> +static bool copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
+>  {
+>         struct page *s_page, *d_page;
+>         void *src, *dst;
+> +       bool zeros_only;
+>
+>         s_page = pfn_to_page(src_pfn);
+>         d_page = pfn_to_page(dst_pfn);
+>         if (PageHighMem(s_page)) {
+>                 src = kmap_atomic(s_page);
+>                 dst = kmap_atomic(d_page);
+> -               do_copy_page(dst, src);
+> +               zeros_only = do_copy_page(dst, src);
+>                 kunmap_atomic(dst);
+>                 kunmap_atomic(src);
+>         } else {
+> @@ -1426,30 +1444,39 @@ static void copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
+>                          * The page pointed to by src may contain some kernel
+>                          * data modified by kmap_atomic()
+>                          */
+> -                       safe_copy_page(buffer, s_page);
+> +                       zeros_only = safe_copy_page(buffer, s_page);
+>                         dst = kmap_atomic(d_page);
+>                         copy_page(dst, buffer);
+>                         kunmap_atomic(dst);
+>                 } else {
+> -                       safe_copy_page(page_address(d_page), s_page);
+> +                       zeros_only = safe_copy_page(page_address(d_page), s_page);
+>                 }
+>         }
+> +       return zeros_only;
+>  }
+>  #else
+>  #define page_is_saveable(zone, pfn)    saveable_page(zone, pfn)
+>
+> -static inline void copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
+> +static inline int copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
+>  {
+> -       safe_copy_page(page_address(pfn_to_page(dst_pfn)),
+> +       return safe_copy_page(page_address(pfn_to_page(dst_pfn)),
+>                                 pfn_to_page(src_pfn));
+>  }
+>  #endif /* CONFIG_HIGHMEM */
+>
+> -static void copy_data_pages(struct memory_bitmap *copy_bm,
+> -                           struct memory_bitmap *orig_bm)
+> +/*
+> + * Copy data pages will copy all pages into pages pulled from the copy_bm.
+> + * If a page was entirely filled with zeros it will be marked in the zero_bm.
+> + *
+> + * Returns the number of pages copied.
+> + */
+> +static unsigned long copy_data_pages(struct memory_bitmap *copy_bm,
+> +                           struct memory_bitmap *orig_bm,
+> +                           struct memory_bitmap *zero_bm)
+>  {
+> +       unsigned long copied_pages = 0;
+>         struct zone *zone;
+> -       unsigned long pfn;
+> +       unsigned long pfn, copy_pfn;
+>
+>         for_each_populated_zone(zone) {
+>                 unsigned long max_zone_pfn;
+> @@ -1462,18 +1489,30 @@ static void copy_data_pages(struct memory_bitmap *copy_bm,
+>         }
+>         memory_bm_position_reset(orig_bm);
+>         memory_bm_position_reset(copy_bm);
+> +       copy_pfn = memory_bm_next_pfn(copy_bm);
+>         for(;;) {
+>                 pfn = memory_bm_next_pfn(orig_bm);
+>                 if (unlikely(pfn == BM_END_OF_MAP))
+>                         break;
+> -               copy_data_page(memory_bm_next_pfn(copy_bm), pfn);
+> +               if (copy_data_page(copy_pfn, pfn)) {
+> +                       memory_bm_set_bit(zero_bm, pfn);
+> +
+> +                       /* Use this copy_pfn for a page that is not full of zeros */
+> +                       continue;
+> +               }
+> +               copied_pages++;
+> +               copy_pfn = memory_bm_next_pfn(copy_bm);
+>         }
+> +       return copied_pages;
+>  }
+>
+>  /* Total number of image pages */
+>  static unsigned int nr_copy_pages;
+>  /* Number of pages needed for saving the original pfns of the image pages */
+>  static unsigned int nr_meta_pages;
+> +/* Number of zero pages */
+> +static unsigned int nr_zero_pages;
+> +
+>  /*
+>   * Numbers of normal and highmem page frames allocated for hibernation image
+>   * before suspending devices.
+> @@ -1494,6 +1533,9 @@ static struct memory_bitmap orig_bm;
+>   */
+>  static struct memory_bitmap copy_bm;
+>
+> +/* Memory bitmap which tracks which saveable pages were zero filled. */
+> +static struct memory_bitmap zero_bm;
+> +
+>  /**
+>   * swsusp_free - Free pages allocated for hibernation image.
+>   *
+> @@ -1538,6 +1580,7 @@ void swsusp_free(void)
+>  out:
+>         nr_copy_pages = 0;
+>         nr_meta_pages = 0;
+> +       nr_zero_pages = 0;
+>         restore_pblist = NULL;
+>         buffer = NULL;
+>         alloc_normal = 0;
+> @@ -1756,8 +1799,15 @@ int hibernate_preallocate_memory(void)
+>                 goto err_out;
+>         }
+>
+> +       error = memory_bm_create(&zero_bm, GFP_IMAGE, PG_ANY);
+> +       if (error) {
+> +               pr_err("Cannot allocate zero bitmap\n");
+> +               goto err_out;
+> +       }
+> +
+>         alloc_normal = 0;
+>         alloc_highmem = 0;
+> +       nr_zero_pages = 0;
+>
+>         /* Count the number of saveable data pages. */
+>         save_highmem = count_highmem_pages();
+> @@ -2037,19 +2087,19 @@ asmlinkage __visible int swsusp_save(void)
+>          * Kill them.
+>          */
+>         drain_local_pages(NULL);
+> -       copy_data_pages(&copy_bm, &orig_bm);
+> +       nr_copy_pages = copy_data_pages(&copy_bm, &orig_bm, &zero_bm);
+>
+>         /*
+>          * End of critical section. From now on, we can write to memory,
+>          * but we should not touch disk. This specially means we must _not_
+>          * touch swap space! Except we must write out our image of course.
+>          */
+> -
+>         nr_pages += nr_highmem;
+> -       nr_copy_pages = nr_pages;
+> +       /* We don't actually copy the zero pages */
+> +       nr_zero_pages = nr_pages - nr_copy_pages;
+>         nr_meta_pages = DIV_ROUND_UP(nr_pages * sizeof(long), PAGE_SIZE);
+>
+> -       pr_info("Image created (%d pages copied)\n", nr_pages);
+> +       pr_info("Image created (%d pages copied, %d zero pages)\n", nr_copy_pages, nr_zero_pages);
+>
+>         return 0;
+>  }
+> @@ -2094,15 +2144,22 @@ static int init_header(struct swsusp_info *info)
+>         return init_header_complete(info);
+>  }
+>
+> +#define ENCODED_PFN_ZERO_FLAG ((unsigned long)1 << (BITS_PER_LONG - 1))
+> +#define ENCODED_PFN_MASK (~ENCODED_PFN_ZERO_FLAG)
+> +
+>  /**
+>   * pack_pfns - Prepare PFNs for saving.
+>   * @bm: Memory bitmap.
+>   * @buf: Memory buffer to store the PFNs in.
+> + * @zero_bm: Memory bitmap containing PFNs of zero pages.
+>   *
+>   * PFNs corresponding to set bits in @bm are stored in the area of memory
+> - * pointed to by @buf (1 page at a time).
+> + * pointed to by @buf (1 page at a time). Pages which were filled with only
+> + * zeros will have the highest bit set in the packed format to distinguish
+> + * them from PFNs which will be contained in the image file.
+>   */
+> -static inline void pack_pfns(unsigned long *buf, struct memory_bitmap *bm)
+> +static inline void pack_pfns(unsigned long *buf, struct memory_bitmap *bm,
+> +               struct memory_bitmap *zero_bm)
+>  {
+>         int j;
+>
+> @@ -2110,6 +2167,8 @@ static inline void pack_pfns(unsigned long *buf, struct memory_bitmap *bm)
+>                 buf[j] = memory_bm_next_pfn(bm);
+>                 if (unlikely(buf[j] == BM_END_OF_MAP))
+>                         break;
+> +               if (memory_bm_test_bit(zero_bm, buf[j]))
+> +                       buf[j] |= ENCODED_PFN_ZERO_FLAG;
+>         }
+>  }
+>
+> @@ -2151,7 +2210,7 @@ int snapshot_read_next(struct snapshot_handle *handle)
+>                 memory_bm_position_reset(&copy_bm);
+>         } else if (handle->cur <= nr_meta_pages) {
+>                 clear_page(buffer);
+> -               pack_pfns(buffer, &orig_bm);
+> +               pack_pfns(buffer, &orig_bm, &zero_bm);
+>         } else {
+>                 struct page *page;
+>
+> @@ -2247,24 +2306,35 @@ static int load_header(struct swsusp_info *info)
+>   * unpack_orig_pfns - Set bits corresponding to given PFNs in a memory bitmap.
+>   * @bm: Memory bitmap.
+>   * @buf: Area of memory containing the PFNs.
+> + * @zero_bm: Memory bitmap with the zero PFNs marked.
+>   *
+>   * For each element of the array pointed to by @buf (1 page at a time), set the
+> - * corresponding bit in @bm.
+> + * corresponding bit in @bm. If the page was originally populated with only
+> + * zeros then a corresponding bit will also be set in @zero_bm.
+>   */
+> -static int unpack_orig_pfns(unsigned long *buf, struct memory_bitmap *bm)
+> +static int unpack_orig_pfns(unsigned long *buf, struct memory_bitmap *bm,
+> +               struct memory_bitmap *zero_bm)
+>  {
+> +       unsigned long decoded_pfn;
+> +        bool zero;
+>         int j;
+>
+>         for (j = 0; j < PAGE_SIZE / sizeof(long); j++) {
+>                 if (unlikely(buf[j] == BM_END_OF_MAP))
+>                         break;
+>
+> -               if (pfn_valid(buf[j]) && memory_bm_pfn_present(bm, buf[j])) {
+> -                       memory_bm_set_bit(bm, buf[j]);
+> +               zero = !!(buf[j] & ENCODED_PFN_ZERO_FLAG);
+> +               decoded_pfn = buf[j] & ENCODED_PFN_MASK;
+> +               if (pfn_valid(decoded_pfn) && memory_bm_pfn_present(bm, decoded_pfn)) {
+> +                       memory_bm_set_bit(bm, decoded_pfn);
+> +                       if (zero) {
+> +                               memory_bm_set_bit(zero_bm, decoded_pfn);
+> +                               nr_zero_pages++;
+> +                       }
+>                 } else {
+> -                       if (!pfn_valid(buf[j]))
+> +                       if (!pfn_valid(decoded_pfn))
+>                                 pr_err(FW_BUG "Memory map mismatch at 0x%llx after hibernation\n",
+> -                                      (unsigned long long)PFN_PHYS(buf[j]));
+> +                                      (unsigned long long)PFN_PHYS(decoded_pfn));
+>                         return -EFAULT;
+>                 }
+>         }
+> @@ -2486,6 +2556,7 @@ static inline void free_highmem_data(void) {}
+>   * prepare_image - Make room for loading hibernation image.
+>   * @new_bm: Uninitialized memory bitmap structure.
+>   * @bm: Memory bitmap with unsafe pages marked.
+> + * @zero_bm: Memory bitmap containing the zero pages.
+>   *
+>   * Use @bm to mark the pages that will be overwritten in the process of
+>   * restoring the system memory state from the suspend image ("unsafe" pages)
+> @@ -2496,10 +2567,15 @@ static inline void free_highmem_data(void) {}
+>   * pages will be used for just yet.  Instead, we mark them all as allocated and
+>   * create a lists of "safe" pages to be used later.  On systems with high
+>   * memory a list of "safe" highmem pages is created too.
+> + *
+> + * Because it was not known which pages were unsafe when @zero_bm was created,
+> + * make a copy of it and recreate it within safe pages.
+>   */
+> -static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm)
+> +static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm,
+> +               struct memory_bitmap *zero_bm)
+>  {
+>         unsigned int nr_pages, nr_highmem;
+> +       struct memory_bitmap tmp;
+>         struct linked_page *lp;
+>         int error;
+>
+> @@ -2516,6 +2592,24 @@ static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm)
+>
+>         duplicate_memory_bitmap(new_bm, bm);
+>         memory_bm_free(bm, PG_UNSAFE_KEEP);
+> +
+> +       /* Make a copy of zero_bm so it can be created in safe pages */
+> +       error = memory_bm_create(&tmp, GFP_ATOMIC, PG_ANY);
+> +       if (error)
+> +               goto Free;
+> +
+> +       duplicate_memory_bitmap(&tmp, zero_bm);
+> +       memory_bm_free(zero_bm, PG_UNSAFE_KEEP);
+> +
+> +       /* Recreate zero_bm in safe pages */
+> +       error = memory_bm_create(zero_bm, GFP_ATOMIC, PG_SAFE);
+> +       if (error)
+> +               goto Free;
+> +
+> +       duplicate_memory_bitmap(zero_bm, &tmp);
+> +       memory_bm_free(&tmp, PG_UNSAFE_KEEP);
+> +       /* At this point zero_bm is in safe pages and it can be used for restoring. */
+> +
+>         if (nr_highmem > 0) {
+>                 error = prepare_highmem_image(bm, &nr_highmem);
+>                 if (error)
+> @@ -2530,7 +2624,7 @@ static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm)
+>          *
+>          * nr_copy_pages cannot be less than allocated_unsafe_pages too.
+>          */
+> -       nr_pages = nr_copy_pages - nr_highmem - allocated_unsafe_pages;
+> +       nr_pages = (nr_zero_pages + nr_copy_pages) - nr_highmem - allocated_unsafe_pages;
+>         nr_pages = DIV_ROUND_UP(nr_pages, PBES_PER_LINKED_PAGE);
+>         while (nr_pages > 0) {
+>                 lp = get_image_page(GFP_ATOMIC, PG_SAFE);
+> @@ -2543,7 +2637,7 @@ static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm)
+>                 nr_pages--;
+>         }
+>         /* Preallocate memory for the image */
+> -       nr_pages = nr_copy_pages - nr_highmem - allocated_unsafe_pages;
+> +       nr_pages = (nr_zero_pages + nr_copy_pages) - nr_highmem - allocated_unsafe_pages;
+>         while (nr_pages > 0) {
+>                 lp = (struct linked_page *)get_zeroed_page(GFP_ATOMIC);
+>                 if (!lp) {
+> @@ -2631,8 +2725,9 @@ int snapshot_write_next(struct snapshot_handle *handle)
+>         static struct chain_allocator ca;
+>         int error = 0;
+>
+> +next:
+>         /* Check if we have already loaded the entire image */
+> -       if (handle->cur > 1 && handle->cur > nr_meta_pages + nr_copy_pages)
+> +       if (handle->cur > 1 && handle->cur > nr_meta_pages + nr_copy_pages + nr_zero_pages)
+>                 return 0;
+>
+>         handle->sync_read = 1;
+> @@ -2657,19 +2752,26 @@ int snapshot_write_next(struct snapshot_handle *handle)
+>                 if (error)
+>                         return error;
+>
+> +               error = memory_bm_create(&zero_bm, GFP_ATOMIC, PG_ANY);
+> +               if (error)
+> +                       return error;
+> +
+> +               nr_zero_pages = 0;
+> +
+>                 hibernate_restore_protection_begin();
+>         } else if (handle->cur <= nr_meta_pages + 1) {
+> -               error = unpack_orig_pfns(buffer, &copy_bm);
+> +               error = unpack_orig_pfns(buffer, &copy_bm, &zero_bm);
+>                 if (error)
+>                         return error;
+>
+>                 if (handle->cur == nr_meta_pages + 1) {
+> -                       error = prepare_image(&orig_bm, &copy_bm);
+> +                       error = prepare_image(&orig_bm, &copy_bm, &zero_bm);
+>                         if (error)
+>                                 return error;
+>
+>                         chain_init(&ca, GFP_ATOMIC, PG_SAFE);
+>                         memory_bm_position_reset(&orig_bm);
+> +                       memory_bm_position_reset(&zero_bm);
+>                         restore_pblist = NULL;
+>                         handle->buffer = get_buffer(&orig_bm, &ca);
+>                         handle->sync_read = 0;
+> @@ -2686,6 +2788,14 @@ int snapshot_write_next(struct snapshot_handle *handle)
+>                         handle->sync_read = 0;
+>         }
+>         handle->cur++;
+> +
+> +       /* Zero pages were not included in the image, memset it and move on. */
+> +       if ((handle->cur > (nr_meta_pages + 1)) &&
+> +                       memory_bm_test_bit(&zero_bm, memory_bm_get_current(&orig_bm))) {
+> +               memset(handle->buffer, 0, PAGE_SIZE);
+> +               goto next;
+> +       }
+> +
+>         return PAGE_SIZE;
+>  }
+>
+> @@ -2702,7 +2812,7 @@ void snapshot_write_finalize(struct snapshot_handle *handle)
+>         copy_last_highmem_page();
+>         hibernate_restore_protect_page(handle->buffer);
+>         /* Do that only if we have loaded the image entirely */
+> -       if (handle->cur > 1 && handle->cur > nr_meta_pages + nr_copy_pages) {
+> +       if (handle->cur > 1 && handle->cur > nr_meta_pages + nr_copy_pages + nr_zero_pages) {
+>                 memory_bm_recycle(&orig_bm);
+>                 free_highmem_data();
+>         }
+> @@ -2711,7 +2821,7 @@ void snapshot_write_finalize(struct snapshot_handle *handle)
+>  int snapshot_image_loaded(struct snapshot_handle *handle)
+>  {
+>         return !(!nr_copy_pages || !last_highmem_page_copied() ||
+> -                       handle->cur <= nr_meta_pages + nr_copy_pages);
+> +                       handle->cur <= nr_meta_pages + nr_copy_pages + nr_zero_pages);
+>  }
+>
+>  #ifdef CONFIG_HIGHMEM
+> --
 
-> From: Yunsheng Lin <linyunsheng@huawei.com>
-> Date: Wed, 19 Jul 2023 20:13:37 +0800
-> 
->> Split types and pure function declarations from page_pool.h
->> and add them in page_page_types.h, so that C sources can
->> include page_pool.h and headers should generally only include
->> page_pool_types.h as suggested by jakub.
->>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> Suggested-by: Jakub Kicinski <kuba@kernel.org>
->> CC: Alexander Lobakin <aleksander.lobakin@intel.com>
-> Nice!
-> 
-> Let me take it into my tree, I assume it's safe to say it will be
-> accepted sooner than my patches :D
-
-FYI: it's already there (since yesterday), including your hybrid
-allocation series, so for the next revision you could take it from there
-to not rebase it one more time :)
-...except that seems like I have to rebase it once again now that you
-change the patch to add new folder as Jakub asked.
-
-(it's still the same iavf-pp-frag)
-
-> 
-> BTW, what do you think: is it better to have those two includes in the
-> root include/net/ folder or do something like
-> 
-> include/net/page_pool/
->   * types.h
->   * <some meaningful name>.h (let's say driver.h)
-> 
-> like it's done e.g. for GPIO (see include/linux/gpio/)?
-> 
-> Thanks,
-> Olek
-
-Thanks,
-Olek
+Applied as 6.6 material with some minor adjustments, thanks!
