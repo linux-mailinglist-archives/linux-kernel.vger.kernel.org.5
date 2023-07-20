@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E85DB75A4C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0362F75A4C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 05:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbjGTD26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 Jul 2023 23:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
+        id S229899AbjGTDah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 Jul 2023 23:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjGTD2y (ORCPT
+        with ESMTP id S229451AbjGTDae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 Jul 2023 23:28:54 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F42231B9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:28:53 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5577004e21bso115123a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 19 Jul 2023 20:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689823733; x=1692415733;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L0oNMuifMnagYqKrM9m6tne2TXEDYzPsYeKHQDjncmo=;
-        b=M4HqC7jN8AZVdfqhxjxnS/wDHCfOln+PN29vS+/sLBxxp714NS48ojlUBY7qv1rfht
-         9UVzKpFmyW0hblPll1g+fVFC7iM2Vqz75okVG0ntCj9DnNl4x/sAwxXevZUGL62ntnnj
-         XKvGeQSxtP+o3Lkm6frKkX4WoxUfTaKNOxqTtic1eBR5RCLrDtUS0nzxr5qPFED25pDI
-         OrT/VxxHfn8UETIjYwLhYgtQ9uVASRH5JQ+00tPVEGd/0K4L4f5zoF6oacNS8LwVOlOo
-         uxAdy+vOQBu6QDvBOcuSyD9A/3aOdBuhfAmCJBcEvu/678B7QrksujMuAonWmxmwbXwT
-         Agrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689823733; x=1692415733;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=L0oNMuifMnagYqKrM9m6tne2TXEDYzPsYeKHQDjncmo=;
-        b=gNQ9lfi30D9Gzl5MMlLBQ/b0GgF0kifIjBaew+F2ehYtlhF5EGgl8FZJy5I5tQMhrn
-         48uqRjqsisNnb9hrMZfj5GNMmCUFzYR5LFM3RitPGwsx61tDBHumhslGRXWiFRg5Ev0s
-         c6Ir4whHn1lLa62wqq6pW5rtrp9JP5XtZ4KZ3wsU4FdO6x8WRylctaPKexUCMG+m8Tq+
-         Y6bbTBDq17TZBZct3Zr1bCYJ+OWZVstrk1sz3miH+Os3Jx9woK4QFL9Lo27SmRdfp2gO
-         Xc+k2Fj1McSOOcRgPurBppscru4MHqYYKhp+VnncVuYJWV3IFgiBS4P6hbmuDpQ5iure
-         ZMqQ==
-X-Gm-Message-State: ABy/qLZGKctTOdk9dBZyZyOPkUecz69rzjBT7mV3+LFXgYoWaRidGT1u
-        IyVpc7i9avvDztAUSbK4e4Y=
-X-Google-Smtp-Source: APBJJlEGrn/TAM66qTK48NqW1RYKdL+5mBzACHHGWOwLXN/4EyYY2xV2QMSTqyAncRjOTwW/ahm+/Q==
-X-Received: by 2002:a05:6a20:3d22:b0:133:5352:c7ac with SMTP id y34-20020a056a203d2200b001335352c7acmr8195018pzi.38.1689823733344;
-        Wed, 19 Jul 2023 20:28:53 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f3-20020a17090274c300b001b80b428d4bsm23225plt.67.2023.07.19.20.28.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 20:28:52 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: [RFC PATCH 2/2] regmap: Reject fast_io regmap configurations with RBTREE and MAPLE caches
-Date:   Wed, 19 Jul 2023 20:28:48 -0700
-Message-Id: <20230720032848.1306349-2-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230720032848.1306349-1-linux@roeck-us.net>
-References: <20230720032848.1306349-1-linux@roeck-us.net>
+        Wed, 19 Jul 2023 23:30:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CB41B9;
+        Wed, 19 Jul 2023 20:30:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B222F6126D;
+        Thu, 20 Jul 2023 03:30:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F35FC433C8;
+        Thu, 20 Jul 2023 03:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689823832;
+        bh=OnSRL/M/dbuk991nGBrfC0/pCCMwx2qMx5t/Th8WDY4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DLP0S+lHKonruVV95NGNwFLFr5aWNx45vINgAd1CVjDbI/PxvcmUv57niu5feAGkY
+         AWElUA7x+ISFrYGq/jkvkfn4q6t04zKRia/WReyo9T88T6CNd+m2heMlul2896iWth
+         JguL4emjfN7RreQNklhpOSKt4TGwUgNqssc7rhrAOqGdUy0Ixax1p0M54pRFVuyGwE
+         i7dgQlwm0YcCQHmSiMSik+TgPhgoWfrExGhO4xVhNqw1sBDlfaokr/47tixTw3D+mM
+         IrJc2AQzdNVRpO4QDu4TdwbOA4T2hESliP6LNvOgpqRdMk7YriQ3UqnC9d8w085jmB
+         EIvkZAqeEpKSg==
+Date:   Wed, 19 Jul 2023 20:30:30 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     Florian Westphal <fw@strlen.de>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        syzbot <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com>,
+        dsterba@suse.cz, bakmitopiacibubur@boga.indosterling.com,
+        clm@fb.com, davem@davemloft.net, dsahern@kernel.org,
+        dsterba@suse.com, gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        josef@toxicpanda.com, kadlec@netfilter.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux@armlinux.org.uk, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] [netfilter?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS
+ too low! (2)
+Message-ID: <20230719203030.1296596a@kernel.org>
+In-Reply-To: <20230719231207.GF32192@breakpoint.cc>
+References: <20230719170446.GR20457@twin.jikos.cz>
+        <00000000000042a3ac0600da1f69@google.com>
+        <CANp29Y4Dx3puutrowfZBzkHy1VpWHhQ6tZboBrwq_qNcFRrFGw@mail.gmail.com>
+        <20230719231207.GF32192@breakpoint.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PLING_QUERY,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-REGCACHE_RBTREE and REGCACHE_MAPLE dynamically allocate memory for regmap
-operations. This is incompatible with spinlock based locking which is used
-for fast_io operations. Reject affected configurations.
+On Thu, 20 Jul 2023 01:12:07 +0200 Florian Westphal wrote:
+> I don't see any netfilter involvement here.
+> 
+> The repro just creates a massive amount of team devices.
+> 
+> At the time it hits the LOCKDEP limits on my test vm it has
+> created ~2k team devices, system load is at +14 because udev
+> is also busy spawing hotplug scripts for the new devices.
+> 
+> After reboot and suspending the running reproducer after about 1500
+> devices (before hitting lockdep limits), followed by 'ip link del' for
+> the team devices gets the lockdep entries down to ~8k (from 40k),
+> which is in the range that it has on this VM after a fresh boot.
+> 
+> So as far as I can see this workload is just pushing lockdep
+> past what it can handle with the configured settings and is
+> not triggering any actual bug.
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-This seems prudent, given that accesses will be protected by spinlock
-but may allocate memory with GFP_KERNEL. Another option might be to use
-WARN_ON instead of rejecting the configuration to avoid hard regressions
-(and I think both drivers/net/ieee802154/mcr20a.c and
-sound/soc/codecs/sti-sas.c may be affected, though I can not test it).
-
- drivers/base/regmap/regmap.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 89a7f1c459c1..b4640285c0b9 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -777,6 +777,15 @@ struct regmap *__regmap_init(struct device *dev,
- 	} else {
- 		if ((bus && bus->fast_io) ||
- 		    config->fast_io) {
-+			/*
-+			 * fast_io is incompatible with REGCACHE_RBTREE and REGCACHE_MAPLE
-+			 * since both need to dynamically allocate memory.
-+			 */
-+			if (config->cache_type == REGCACHE_RBTREE ||
-+			    config->cache_type == REGCACHE_MAPLE) {
-+				ret = -EINVAL;
-+				goto err_name;
-+			}
- 			if (config->use_raw_spinlock) {
- 				raw_spin_lock_init(&map->raw_spinlock);
- 				map->lock = regmap_lock_raw_spinlock;
--- 
-2.39.2
-
+The lockdep splat because of netdevice stacking is one of our top
+reports from syzbot. Is anyone else feeling like we should add 
+an artificial but very high limit on netdev stacking? :(
