@@ -2,95 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B02D475B826
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 464BD75B82D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbjGTTjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 15:39:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
+        id S230198AbjGTTlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 15:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbjGTTjC (ORCPT
+        with ESMTP id S229488AbjGTTlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 15:39:02 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B242118
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:39:01 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6bb07d274feso708200a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:39:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689881940; x=1690486740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9+940zjds4bSCgKIfbB+4h4F9JhiabKtFHTSYiorpkM=;
-        b=xau+BeGnyS2usHyzCT7o9jXEktoyvjp12ixYPPNawQWUEIL8od5FVs5CDnn4V+m+14
-         03ETb6Yu9BgA0hg5yr1GbgpLd6Z/14Cw7l8DFTxwCO68I26BO45HQ2FXM9ZkY8OcoYMZ
-         sMvj+Ocq77RIpGaVwk8NRGvSixQYqx2bIAV1knjJfDOWUQD4fhY5tz5scW3HbkrUj42A
-         bpx4qQgEW8OKH/m8WPkpAJMXOKzhDjuxfeBQjL3HwabE6t2n1eannNNzhs2TxLwsk1NQ
-         Coxd4j4se52HFavrFh+adE+QB0HS8Gzd3om1nqCv0Rtfzrl8pJsHAnVaMXm8i84nj/vA
-         THeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689881940; x=1690486740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9+940zjds4bSCgKIfbB+4h4F9JhiabKtFHTSYiorpkM=;
-        b=AOyjBD8o3oaDYhOkxQuYjQAEKonX7s2Drl97JXZNR8/YDZ1QCBhU9jL6RodEweJ0zN
-         UOuTbFLq7pJ/I0+pcpz9B/QIwnUrPG9LvYRI7PUn7pAz/lASIi+39GEc5cyU6B7UjBVe
-         oizY8uT5jNvrN7HT8a0Tso/KJbsuhzK14iBdd7+zWMFr19gABDWcP9rvW21CivJPxEvw
-         /4PrFlHfzDDM9RzX+2kesmYXcoIdMyNgmVMly2TDPAE0Ru8L4FS5ZB/EsygAUQQbew83
-         f969nznw9f/HV5ZcYlHhpa8UTQgj501E3q87IP4TrgBMLv/b3zjQOMMKutaY5BUpNuMx
-         nZmw==
-X-Gm-Message-State: ABy/qLam04jM8h0xhTgXo70kxkBL4qux3RTbl+YjFdN78Y8HqajTTK9q
-        bmc+xRoi7cAvjTs8d58MmmDWFojclyzenzxyWlL05A==
-X-Google-Smtp-Source: APBJJlHxlB8o/cqiFOLqYhuTYMWBF3q2dKdZ0BspgF6BWNj8zk5Ho3Qo5xNlFK8k7e+JM/0rKSf9LuvJuG2y4pHZdaw=
-X-Received: by 2002:a05:6830:1d85:b0:6b9:6ffd:91e6 with SMTP id
- y5-20020a0568301d8500b006b96ffd91e6mr3881194oti.32.1689881940658; Thu, 20 Jul
- 2023 12:39:00 -0700 (PDT)
+        Thu, 20 Jul 2023 15:41:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE8219BE;
+        Thu, 20 Jul 2023 12:41:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CD57E61C2F;
+        Thu, 20 Jul 2023 19:41:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B477C433C7;
+        Thu, 20 Jul 2023 19:41:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689882073;
+        bh=Tjl37HbgJReCne8I9oWLUfLMWMECxjVNTak6ZTPLD0k=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lRLa1IQ2fIZXFzrU2LGJtKathN3AJ8fJkaqg5gRtECfS38ZteMIEE4cy7vCYCLa1C
+         909IPOW4fQ0PhUH7THSkWlqiJVpG1JRQValVj7jYN+CCvOsvldsUC5Ghu31NS8qPqT
+         a3jSc3h4GrV3Jx61+Qfr5ALLtkruufVQDLOTvraN7NQcpRlMY1x5mhgb3Bxwm/jHS2
+         Ed7YlxnTp/sGlPLYpkVQojT63Gpm9Rg/dB8VaRKg7S0+GJUotOmukuQaooWDGVgss9
+         p4spWm6L3uyhs+om/T20UtcdwMJbMcDDYNnKOfYS/SBeOCX4+vcETKAEk/Y6w0lR1m
+         uJWw5YOZlZnGw==
+Message-ID: <2c9f7a88-1a99-73ce-e924-0effef399719@kernel.org>
+Date:   Thu, 20 Jul 2023 22:41:05 +0300
 MIME-Version: 1.0
-References: <20230714-topic-lpass_lpi_cleanup-v1-0-dc18b5bd14f7@linaro.org>
-In-Reply-To: <20230714-topic-lpass_lpi_cleanup-v1-0-dc18b5bd14f7@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 20 Jul 2023 21:38:49 +0200
-Message-ID: <CACRpkdYBNOWC1NfBd6dXCFrP3zRK3kDeL_H=HyfFk=e1bko=eA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Clean up LPASS_LPI probe
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [EXTERNAL] Re: [PATCH v10 2/2] net: ti: icssg-prueth: Add ICSSG
+ ethernet driver
+Content-Language: en-US
+To:     Md Danish Anwar <a0501179@ti.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
         Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, nm@ti.com, srk@ti.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230719082755.3399424-1-danishanwar@ti.com>
+ <20230719082755.3399424-3-danishanwar@ti.com>
+ <20230719213543.0380e13e@kernel.org>
+ <17cd1e70-73bc-78d5-7e9d-7b133d6f464b@ti.com>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <17cd1e70-73bc-78d5-7e9d-7b133d6f464b@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 2:40=E2=80=AFPM Konrad Dybcio <konrad.dybcio@linaro=
-.org> wrote:
+Hi Danish,
 
-> Some SoCs (like SM6115 or SC7280 with various firmwares) expect a single
-> clock for the LPASS pinctrl.
->
-> This serires addresses that by simplifying the probe code and relying
-> on bindings to sanction the correct number of clocks. That allows us to
-> shoot down another downstream-ism.
->
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On 20/07/2023 14:42, Md Danish Anwar wrote:
+> Hi Jakub,
+> 
+> On 20/07/23 10:05 am, Jakub Kicinski wrote:
+>> The patch is too big to review.
+>>
+>> Please break it apart separating into individual features, targeting
+>> around 10 patches in the series. That will make it easier for reviewers
+>> to take a look at the features in which they have expertise.
+>>
+> 
+> Sure Jakub. I will try to break this patch in multiple patches as below.
+> 
+> Patch 1: Introduce Firmware mapping for the driver (icss_switch_map.h)
+> 
+> Patch 2: Introduce mii helper APIs. (icssg_mii_rt.h and icssg_mii_cfg.h). This
+> patch will also introduce basic prueth and emac structures in icssg_prueth.h as
+> these structures will be used by the helper APIs.
+> 
+> Patch 3: Introduce firmware configuration and classification APIs.
+> (icssg_classifier.c, icssg_config.h and icssg_config.c)
+> 
+> Patch 4: Introduce APIs for ICSSG Queues (icssg_queues.c)
+> 
+> Patch 5: Introduce ICSSG Ethernet driver. (icssg_prueth.c and icssg_prueth.h)
+> This patch will enable the driver and basic functionality can work after this
+> patch. This patch will be using all the APIs introduced earlier. This patch
+> will also include Kconfig and Makefile changes.
 
-Patch 1 & 2 applied to the pinctrl tree, please funnel patch 3 through
-the SoC tree.
+DT binding documentation patch can come here.
 
-Yours,
-Linus Walleij
+> 
+> Patch 6: Enable standard statistics via ndo_get_stats64
+> 
+> Patch 7: Introduce ethtool ops for ICSSG
+> 
+> Patch 8: Introduce power management support (suspend / resume APIs)
+> 
+
+<snip>
+
+-- 
+cheers,
+-roger
