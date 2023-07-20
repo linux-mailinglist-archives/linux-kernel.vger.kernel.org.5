@@ -2,141 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E2675B7D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7D975B7D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 21:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbjGTTVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 15:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
+        id S230388AbjGTTWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 15:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbjGTTVq (ORCPT
+        with ESMTP id S229981AbjGTTWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 15:21:46 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09594171D
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:21:45 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7878e573827so52999139f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:21:45 -0700 (PDT)
+        Thu, 20 Jul 2023 15:22:40 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C388D171D
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:22:39 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-401d1d967beso75941cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 12:22:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689880904; x=1690485704;
+        d=google.com; s=20221208; t=1689880959; x=1690485759;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2FZ6SubRIeZ4k0ML1ha4iOHMnlI2c5uKQpXEuDc5R/0=;
-        b=A6SkHKCBcEZmDKQnyiNHkX1gL/BwiwSpSj3GTHbNNeZcqEc8ndS1Q3v7BSE8XPV10i
-         ZmtBYGPk/drb+NB9U66L1zbgHWNPPaTQPQgZ26Ep/cBYAixKQckkP3zA9cL7u9zSIn7V
-         IJibuObOY34z01S0N3p/Z2xVvv43KhdhVzXl/C5aGmJvxvwnEUB3S5ehIhoxsSkC+k8K
-         lhuZnWGHavjNrxUJ3dCaobjEG3tAsnGOCTDd5coUVzoTCnYuLe3XYAD36e0CMCpoW6o6
-         VOWUOQMBZubjrZmesYyeOPDI1gUDuKopru18nKMK09Tltcszudq8Hti49Bjjh0IcnCbB
-         FJDg==
+        bh=IacBuQPmaTbg0zMPyJfZlxsv5lt3ViODtkIRDulzhHs=;
+        b=E/1t3ntk/ROfOq0NxRVzaZGOQmS0fbflKbT5fuUtIrEPWVe0msQz4PFZdmoKFgoT+K
+         4hdX+Vr+qjYB/H18OSNxVOeX+fnRWnwnauDd01Wdvzy07Ih88dpkXC17UPwwt3Uajxg+
+         OOCiBtSo+KvcPWxuzYHJ2+D9XcSMuhwBLf0RYWW5lwMyzGZIDyfdxoDNA9fygY0yW4Ky
+         oWbiHGY/k8ALT7xqHaZRqdYzMB49y9lH0cg5qejymAa01RK3tZpszbJvgZblNhFd9VdV
+         2/HdHxEKMGWwcg7BsBhlPoZKHTQc5W2hdO51RwBzDQJ6TOA7/+MNQu76+XIA+FMvOiVE
+         tQLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689880904; x=1690485704;
+        d=1e100.net; s=20221208; t=1689880959; x=1690485759;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2FZ6SubRIeZ4k0ML1ha4iOHMnlI2c5uKQpXEuDc5R/0=;
-        b=b0BcIpaGfT9snjrMw7Mn47ZHgDm/8sFVOBCe21+FBZZ4aobcukevvr7AbJR8MW7xVP
-         M52rPi4u/kM4Lty7PTKCMJXe/Aa1cuf6pcSWuOpSaoj2SUCoNmX0DQz4A0DteV4ed7Jx
-         OREkqTrodDwXT5uS2U9GnYYfqOwi3N8eZ2l/bFZEjkVbn67lVXMoqDZ5vfChxOck+PEC
-         d5p2apb+6gCeFSTwh/bO80IG6C07pnb7qTk9ZEAUbfy7024+OGcm52+LhoahqMYCyjtI
-         t1GfEjiPVNXH0XWHfUsExn/37dPAP8AR+9VCifNWe3WKvuJ4X9PIEv9hkSXWjpwe1595
-         kWaQ==
-X-Gm-Message-State: ABy/qLavlZh+wSIFyhpPPPwuKpLAFvK5RNrD0EAmv76YlH9j7jhxkxwK
-        2vVRSZdxcdEGSAZZud295vIdIRofCYFHAUwZDls7pY+v5CXg2Qlj
-X-Google-Smtp-Source: APBJJlGxEtg0om++OPbPp6XITjhWUGx5iJ2sJL4w7NeCt+/U0OI2O5WFKshSFtO9z9SGejOHXLmG0i0Shy9Ny97+9S0=
-X-Received: by 2002:a05:6e02:12c7:b0:348:7d73:20a8 with SMTP id
- i7-20020a056e0212c700b003487d7320a8mr11306545ilm.1.1689880904399; Thu, 20 Jul
- 2023 12:21:44 -0700 (PDT)
+        bh=IacBuQPmaTbg0zMPyJfZlxsv5lt3ViODtkIRDulzhHs=;
+        b=N+Xl6/ceQTo2EThsqYjX3skp8TkMUe7C/PJGSXu73sZV5H2kybo6VM3GeCLTHVSBhD
+         iWG5QCXoDOxohS6raTGJdTENcjXOVImJayfMVYOHrcoOXOisXJwdZalcmT7rFZxMDFLr
+         u89Q5c5oDrKQd9JNHowS730nB4yn5GLLeY7X0Hh3NvmjWhSYDLm/6h2X3t/XZMXiDMTp
+         FW/u3aPfSig0p/cF6sxHAFb80xiEPdDQ15LOBVlJUvGP3I9E4iwhMoY2E/Dg3a8PCfuW
+         PpasH6X1fjrvixI43yyggXWvtF8FlAhJBdLKZ+aBaQWb14paBGBRF2A0rACRrubY9NxW
+         ZjSA==
+X-Gm-Message-State: ABy/qLY7xW7orZU2IS08Igk4a8kZZ6/aPfnrqbbOK7e4PZQm+qpSCitj
+        9Fgf+Uu77x++lRnMkKhuMkfqQRdB15KGjf8qbN003Q==
+X-Google-Smtp-Source: APBJJlHr3QDZlQT/T2FTm6Y0rEg87Rb8pyQFJApkDLa5645mm6jQKvaBY3GDo3mFWO1c+f+tQBuX9l568tX79MbGhfU=
+X-Received: by 2002:a05:622a:14c7:b0:3f8:5b2:aef0 with SMTP id
+ u7-20020a05622a14c700b003f805b2aef0mr36407qtx.24.1689880958746; Thu, 20 Jul
+ 2023 12:22:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <202307120814.vWPY6URk-lkp@intel.com>
-In-Reply-To: <202307120814.vWPY6URk-lkp@intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 20 Jul 2023 21:21:33 +0200
-Message-ID: <CACRpkdbYPAiOa4QU+PUxVjcOtkBT2O7fogh51VvSEbFPutH7ng@mail.gmail.com>
-Subject: Re: drivers/pinctrl/qcom/pinctrl-ipq5018.c:244:27: warning: unused
- variable '_groups'
-To:     kernel test robot <lkp@intel.com>,
-        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Nitheesh Sekar <quic_nsekar@quicinc.com>,
-        Varadarajan Narayanan <quic_varada@quicinc.com>
+References: <04C1E631-725C-47AD-9914-25D5CE04DFF4@gmail.com>
+In-Reply-To: <04C1E631-725C-47AD-9914-25D5CE04DFF4@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 20 Jul 2023 21:22:27 +0200
+Message-ID: <CANn89iKJWw7zUP-E_d=Yhaz=Qw0R3Ae7ULaGgrtsi1yf2pfpGg@mail.gmail.com>
+Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        roman.gushchin@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srirachan, Bjorn,
-
-is this warning valid or something I should ignore?
-
-Yours,
-Linus Walleij
-
-On Wed, Jul 12, 2023 at 2:32=E2=80=AFAM kernel test robot <lkp@intel.com> w=
+On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang <mmpgouride@gmail.com> w=
 rote:
 >
-> Hi Sricharan,
+> Hi,
 >
-> FYI, the error/warning still remains.
+> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of first ite=
+m in hlist_nulls_for_each_entry_rcu=E2=80=9D)
+> and a related discussion [1].
 >
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t master
-> head:   3f01e9fed8454dcd89727016c3e5b2fbb8f8e50c
-> commit: 725d1c8916583f9c09e5f05e5a55dd47fdca61c1 pinctrl: qcom: Add IPQ50=
-18 pinctrl driver
-> date:   5 weeks ago
-> config: arm64-randconfig-r015-20230712 (https://download.01.org/0day-ci/a=
-rchive/20230712/202307120814.vWPY6URk-lkp@intel.com/config)
-> compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git =
-ae42196bc493ffe877a7e3dff8be32035dea4d07)
-> reproduce: (https://download.01.org/0day-ci/archive/20230712/202307120814=
-.vWPY6URk-lkp@intel.com/reproduce)
+> After reading the whole discussion, it seems like that ptr->field was cac=
+hed by gcc even with the deprecated
+> ACCESS_ONCE(), so my question is:
 >
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202307120814.vWPY6URk-lkp=
-@intel.com/
+>         Is that a compiler bug? If so, has this bug been fixed today, ten=
+ years later?
 >
-> All warnings (new ones prefixed by >>):
->
-> >> drivers/pinctrl/qcom/pinctrl-ipq5018.c:244:27: warning: unused variabl=
-e '_groups' [-Wunused-const-variable]
->    static const char * const _groups[] =3D {
->                              ^
->    1 warning generated.
+>         What about READ_ONCE(ptr->field)?
+
+Make sure sparse is happy.
+
+Do you have a patch for review ?
+
+
 >
 >
-> vim +/_groups +244 drivers/pinctrl/qcom/pinctrl-ipq5018.c
+> [1] https://lore.kernel.org/all/1369699930.3301.494.camel@edumazet-glapto=
+p/
 >
->    243
->  > 244  static const char * const _groups[] =3D {
->    245          "gpio0", "gpio1", "gpio2", "gpio3", "gpio4", "gpio5", "gp=
-io6", "gpio7",
->    246          "gpio8", "gpio9", "gpio10", "gpio11", "gpio12", "gpio13",=
- "gpio14",
->    247          "gpio15", "gpio16", "gpio17", "gpio18", "gpio19", "gpio20=
-", "gpio21",
->    248          "gpio22", "gpio23", "gpio24", "gpio25", "gpio26", "gpio27=
-", "gpio28",
->    249          "gpio29", "gpio30", "gpio31", "gpio32", "gpio33", "gpio34=
-", "gpio35",
->    250          "gpio36", "gpio37", "gpio38", "gpio39", "gpio40", "gpio41=
-", "gpio42",
->    251          "gpio43", "gpio44", "gpio45", "gpio46",
->    252  };
->    253
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+> Thanks,
+> Alan
