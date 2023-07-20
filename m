@@ -2,212 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5825E75A5A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB7375A5E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 07:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbjGTFnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 01:43:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
+        id S229674AbjGTFsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 01:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbjGTFm5 (ORCPT
+        with ESMTP id S229908AbjGTFr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 01:42:57 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9678726B3;
-        Wed, 19 Jul 2023 22:42:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689831730; x=1721367730;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=MxY21H5/SQdW3PMRwfr7m9ZIcvcF/tWof2ULeHHJEG4=;
-  b=YKC8vqx/oB4XCAsYzh3zHSWddC7knVSe2RaL3/oAAWvJ3TiJ49mXsJOt
-   eX8mId8USIQkCdvtksoBP8VdGM/Ua1Y98kfPW5cL8vLZkqaJja0Me2gZL
-   mMCPDpQQcUaeo/C9XlYa9qO//SuthiQ4F688ro+WxWPEq2Ezs5ynADJzo
-   A+uxVuCFI+Y4VFsz0lMzntTV6KXEZjldhFJ/8gZzbqpcdCBiGHqX6X470
-   QzeBQu0xbxE+1kpRTia59FVwb5aeqZ1yysG4L7+0MnGJuVIEMlCK0F4Q4
-   vvDLdNu+28FfNV5imgEjzr5zwRDSGNIXNzyPZxoVra3yO4tOdWhTJaEYP
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="351503998"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="351503998"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 22:42:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="814381643"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200"; 
-   d="scan'208";a="814381643"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.32.109])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 22:42:02 -0700
-Message-ID: <e1e94935-31b3-a567-44f7-739330548e7d@intel.com>
-Date:   Thu, 20 Jul 2023 08:41:59 +0300
+        Thu, 20 Jul 2023 01:47:58 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0D12107;
+        Wed, 19 Jul 2023 22:47:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1689832054; x=1690436854; i=deller@gmx.de;
+ bh=/Bb2ropaPWrZgW8ZarCptKpfd1MfwEElK6UW93fFvrc=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=WfyOvBHsvY9wPrwfDgQSvcR4FNoPoxygbPyCmizEK7zYHfBCHX/ygNP5ii+/zr8SqJmPTrT
+ JOLFlZc6HI08kvyVCfpmhaoKRhdWtpfS/Fo9GuGErc8L5r1UMduKTRMEVBumIt/Vg6j4ieS2E
+ wZapufWu8DfwURV466h1TVVN8jmvbxX54Px+ScCnCV27KYse602BTCcFsa7I27f61ZiJjtCKT
+ DXiYoNn76kvtDLys78yTqZAJPWvxu+SoMrfXxNPaSWp/IFY8WYjuu4UNe0cyND1OqzaOdtI2v
+ 4aPK6wVIittGMHvvGB5tJahKTOFJPbxuz8jGKKCDJV8DNr9jp5dw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.153.9]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M4s0t-1qOI3G3xPb-001xhq; Thu, 20
+ Jul 2023 07:47:34 +0200
+Message-ID: <898d9b03-bcaf-ec1b-2539-a290ab89aead@gmx.de>
+Date:   Thu, 20 Jul 2023 07:47:33 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v2 5/7] perf evlist: Skip dummy event sample_type check
- for evlist_config
+ Thunderbird/102.12.0
+Subject: Re: [PATCH][next][V2] video: fbdev: kyro: make some const read-only
+ arrays static and reduce type size
 Content-Language: en-US
-To:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, kan.liang@linux.intel.com,
-        james.clark@arm.com, tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20230715032915.97146-1-yangjihong1@huawei.com>
- <20230715032915.97146-6-yangjihong1@huawei.com>
- <5797e5a7-a85f-4f7c-1649-88f8f9ff7a6b@intel.com>
- <44645529-0ee6-fe69-bc03-fefbc6f73d4d@huawei.com>
- <c4b7fb70-7b2e-74e9-576f-33b29e8801cd@intel.com>
- <77ea9309-da6f-f7b9-a822-b371e0f832d3@huawei.com>
- <ab152551-5e65-c43d-2046-a096a28db913@intel.com>
- <ca64f76f-ccf4-3779-4090-6028b7ee7bef@huawei.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <ca64f76f-ccf4-3779-4090-6028b7ee7bef@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Colin Ian King <colin.i.king@gmail.com>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230712161123.465713-1-colin.i.king@gmail.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <20230712161123.465713-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:aHQQj7LTSb7/TMhWaW8kmCX5or1MajVcWBVOjVTCqa2/iVEBWWB
+ ZKoTtFQLazh7naWbeUqu+3kSKVneApDxvdCjob6T2ZkVAWk4yVEVDvSrtvQGbrxcTyzCcq7
+ nn02gWaOqeM4luhbwrEzbzDEndWlFclvegySS1HY8vo6zJFH2pAY/43g1Lfq15sefR5cIRP
+ Df/Ym7zzOafhHBvXhEiqg==
+UI-OutboundReport: notjunk:1;M01:P0:p8ORew802gw=;Q0cPP/rJgzxAAwmn3zeRXwRrHBO
+ iHJ8EDhhMnboXKsOHOO5IX7qBEqaeaPw2JgHheZLNnnlt/395oEvwTFWnwE+G3QNFYDvQtvYD
+ wK/R0UymqG1hDcp/0jKRBExnZud948+HJyCuwEcSq1Dip8bK+gf84LWSA8rzxuH25ViNs1T1M
+ iZWyJsFpDvKKCGWRpHIGwOwqSxcatvXdi94QOyvi5C2OSj7Uik5rIGRDj7BOi7v6SKiE/KJYg
+ tcsA6KHM/zyrSSzMBo7Iw739uEgOWGrVHKIS/qmfVJAQYjCLQfiHJEOATk+5+PHoXOXLs4KG/
+ RT9NZkYEARfA8pyGic5JCjtWOLdS2NkJqidBQs7hbCFSyDtiLweJgdVUhRiuGWI28RTpjuB3l
+ RkMIW1+VIbOod4u1LNCVn9+jB9QbK0iFvhjAlXzvOjvGqu2nz1W7YmoogDMpke6+DmGPMuzsP
+ ZMCyiqQphFBnpsgAkcqykuD19knHYQNwhvndp1TDqWekzTkHQod3K5ebmKFECvc7W5tu6A1UA
+ IyM4f0KGH7ye2wDD6W/IwAvdmoseK44o36urmxX+wPIDP3h09qIHJY0QzwyrJImFq5RcX3Lgl
+ 8X2ZmvSrNK+6UrafTXsi4ojfszOquBFFFrGEg9eIdxJvORY/EewqFwDtUAiyRfckM3tOZQYvz
+ NFZK7zf8tOFkCode5eUBACfpCESUpeRHOmX3GOuuBqFdlQZPNT+lCoqgZD6AhiZ72PmkSXQb2
+ /8VOjUXL8ELCvLHrhGJScPSokBlURw04zSBKwI0vMdB7pqkkLyjE97bAnN65zVVdqtxwnMwm0
+ lF+RDCxHrwBnN9nnxgJ4z13W+EBPwFO4J0OH2lvbq0l1sHgNMEX5nRL5R+bj/eNpkZTmt34FQ
+ HivdKnvZBciZ4kn/GopuIvzlkagfoJo4UotjuP5Jc7iAztUpXKQ4DBmguXpFmdyjBsZo9fYPF
+ 11aYeA==
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/23 14:32, Yang Jihong wrote:
-> Hello,
-> 
-> On 2023/7/18 18:29, Adrian Hunter wrote:
->> On 18/07/23 13:17, Yang Jihong wrote:
->>> Hello,
->>>
->>> On 2023/7/18 17:56, Adrian Hunter wrote:
->>>> On 18/07/23 12:30, Yang Jihong wrote:
->>>>> Hello,
->>>>>
->>>>> On 2023/7/17 22:41, Adrian Hunter wrote:
->>>>>> On 15/07/23 06:29, Yang Jihong wrote:
->>>>>>> The dummp event does not contain sampls data. Therefore, sample_type does
->>>>>>> not need to be checked.
->>>>>>>
->>>>>>> Currently, the sample id format of the actual sampling event may be changed
->>>>>>> after the dummy event is added.
->>>>>>>
->>>>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
->>>>>>> ---
->>>>>>>     tools/perf/util/record.c | 7 +++++++
->>>>>>>     1 file changed, 7 insertions(+)
->>>>>>>
->>>>>>> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
->>>>>>> index 9eb5c6a08999..0240be3b340f 100644
->>>>>>> --- a/tools/perf/util/record.c
->>>>>>> +++ b/tools/perf/util/record.c
->>>>>>> @@ -128,6 +128,13 @@ void evlist__config(struct evlist *evlist, struct record_opts *opts, struct call
->>>>>>>             evlist__for_each_entry(evlist, evsel) {
->>>>>>>                 if (evsel->core.attr.sample_type == first->core.attr.sample_type)
->>>>>>>                     continue;
->>>>>>> +
->>>>>>> +            /*
->>>>>>> +             * Skip the sample_type check for the dummy event
->>>>>>> +             * because it does not have any samples anyway.
->>>>>>> +             */
->>>>>>> +            if (evsel__is_dummy_event(evsel))
->>>>>>> +                continue;
->>>>>>
->>>>>> Sideband event records have "ID samples" so the sample type still matters.
->>>>>>
->>>>> Okay, will remove this patch in next version.
->>>>>
->>>>> Can I ask a little more about this?
->>>>>
->>>>> Use PERF_SAMPLE_IDENTIFICATION instead of PERF_SAMPLE_ID because for samples of type PERF_RECORD_SAMPLE, there may be different record formats due to different *sample_type* settings, so the fixed SAMPLE_ID  location mode PERF_SAMPLE_NAME is required here.
->>>>>
->>>>> However, for the sideband event, the samples of the PERF_RECORD_SAMPLE type is not recorded (only PERF_RECORD_MMAP, PERF_RECORD_COMM, and so on). Therefore, the "use sample identifier "check can be skipped here.
->>>>>
->>>>> That's my understanding of PERF_SAMPLE_IDENTIFICATION . If there is any error, please help to correct it.
->>>>>
->>>>> *Sideband event records have "ID samples" so the sample type still matters.*
->>>>>
->>>>> Does this mean that sideband will also record samples of type PERF_RECORD_SAMPLE? What exactly is the sampling data?
->>>>
->>>> No.  There are additional members as defined by struct sample_id for PERF_RECORD_MMAP:
->>>>
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/perf_event.h?h=v6.4#n872
->>>>
->>> I'm sorry, maybe my comments didn't make it clear.
->>> I mean, can we skip the "use_sample_identifier" check here?
->>>
->>> That is, set sample_type to *XXX|PERF_SAMPLE_ID* instead of *XXX|PERF_SAMPLE_IDENTIFICATION*
->>
->> In general, when there are different values of sample_type, the PERF_SAMPLE_ID is needed to determine which is which.
->> But PERF_SAMPLE_ID is not at a fixed position, so the sample_type is needed to find it.  That is why PERF_SAMPLE_IDENTIFIER is better.
->>
->> Why do want to change it?
-> 
-> Without this patch, we now add a system_wide tracking event and modify the sample_type of the  actual sample event.
-> 
-> For example, when we run:
->   # perf record -e cycles -C 0
-> 
-> 1. The default sample_type of the "cycles" is IP|TID|TIME|CPU|PERIOD.
-> 2. Then add a system_wide sideband event whose sample_type is IP|TID|TIME|CPU.
-> 3. The two sample_types are different.
-> 4. Therefore, the evlist__config adds a PERF_SAMPLE_IDENTIFICATION to both sample_types instead of PERF_SAMPLE_ID.
-> 
-> evlist__config {
->         ...
->          } else if (evlist->core.nr_entries > 1) {
->          // One is cycles and the other is sideband .
->                  struct evsel *first = evlist__first(evlist);
-> 
-> 
->                  evlist__for_each_entry(evlist, evsel) {
->                          if (evsel->core.attr.sample_type == first->core.attr.sample_type)
->                                  continue;
->                          use_sample_identifier = perf_can_sample_identifier();
->                          // the sample_type of cycles is different from that of sideband.
->                          // Therefore, use_sample_identifier is set to true.
->                          break;
->                  }
->                  sample_id = true;
->          }
-> 
-> 
->          if (sample_id) {
->                  evlist__for_each_entry(evlist, evsel)
->                          evsel__set_sample_id(evsel, use_sample_identifier);
->                          // both cycles and sideband set PERF_SAMPLE_IDENTIFICATION                         
->          }
->         ...
-> }
-> 
-> The comparison of the sideband event sample_type is skipped so that the sample_type of the original cycles is not changed.
-> 
-> It does not seem necessary to compare the sample_type of sidebband event. It is not an actual sample event, so I'd like to confirm that.
+On 7/12/23 18:11, Colin Ian King wrote:
+> Don't populate the const read-only arrays on the stack but instead
+> make them static const. Use smaller types to use less storage for
+> the arrays.  Also makes the object code a little smaller.
+>
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-It is necessary.  The sample type is used to parse ID samples
-that are part of e.g. MMAP events - refer perf_evsel__parse_id_sample()
+applied.
 
-We could teach perf to handle dummy events differently because they
-do not use all the sample_type bits (only the ones in perf_evsel__parse_id_sample())
-but that is probably not backward compatible.
+Thanks!
+Helge
 
-The only value in that would be to make it work without
-PERF_SAMPLE_ID or PERF_SAMPLE_IDENTIFIER because that would
-save 8-bytes per event record.
-
-Otherwise there is no benefit to prefer PERF_SAMPLE_ID over
-PERF_SAMPLE_IDENTIFIER except backward compatibility with
-some other tool that doesn't know about PERF_SAMPLE_IDENTIFIER.
-
-> 
-> If the change is as expected and necessary, then I'll remove the patch.
-> 
-> Thanks,
-> Yang
-> 
+> ---
+>
+> V2: Use smaller int types, kudos to Helge Deller for suggesting this
+>
+> ---
+>   drivers/video/fbdev/kyro/STG4000InitDevice.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/video/fbdev/kyro/STG4000InitDevice.c b/drivers/vide=
+o/fbdev/kyro/STG4000InitDevice.c
+> index edfa0a04854d..79886a246638 100644
+> --- a/drivers/video/fbdev/kyro/STG4000InitDevice.c
+> +++ b/drivers/video/fbdev/kyro/STG4000InitDevice.c
+> @@ -83,11 +83,11 @@ volatile u32 i,count=3D0; \
+>   static u32 InitSDRAMRegisters(volatile STG4000REG __iomem *pSTGReg,
+>   			      u32 dwSubSysID, u32 dwRevID)
+>   {
+> -	u32 adwSDRAMArgCfg0[] =3D { 0xa0, 0x80, 0xa0, 0xa0, 0xa0 };
+> -	u32 adwSDRAMCfg1[] =3D { 0x8732, 0x8732, 0xa732, 0xa732, 0x8732 };
+> -	u32 adwSDRAMCfg2[] =3D { 0x87d2, 0x87d2, 0xa7d2, 0x87d2, 0xa7d2 };
+> -	u32 adwSDRAMRsh[] =3D { 36, 39, 40 };
+> -	u32 adwChipSpeed[] =3D { 110, 120, 125 };
+> +	static const u8 adwSDRAMArgCfg0[] =3D { 0xa0, 0x80, 0xa0, 0xa0, 0xa0 }=
+;
+> +	static const u16 adwSDRAMCfg1[] =3D { 0x8732, 0x8732, 0xa732, 0xa732, =
+0x8732 };
+> +	static const u16 adwSDRAMCfg2[] =3D { 0x87d2, 0x87d2, 0xa7d2, 0x87d2, =
+0xa7d2 };
+> +	static const u8 adwSDRAMRsh[] =3D { 36, 39, 40 };
+> +	static const u8 adwChipSpeed[] =3D { 110, 120, 125 };
+>   	u32 dwMemTypeIdx;
+>   	u32 dwChipSpeedIdx;
+>
 
