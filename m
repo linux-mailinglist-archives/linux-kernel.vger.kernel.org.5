@@ -2,174 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 229C775B6C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FE175B6CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 20:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbjGTSaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 14:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35794 "EHLO
+        id S231341AbjGTSbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 14:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231971AbjGTSaQ (ORCPT
+        with ESMTP id S229918AbjGTSbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 14:30:16 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0FF196
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:30:14 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-262c42d3fafso804273a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:30:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689877814; x=1690482614;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mkhjk/nVBrnNuMjmXsk/jA6PNc5ly2hNBTN0yfAkH5Q=;
-        b=b2Pe1xIPWJCDsg6h66rbrpgxHYq51tgb/OXB6KHRNSesz35L8jVwo4n89JSY1WX6fm
-         DjqF1Jswmg201FhvUH6hGoWb7tW+wOCwbweIAthSeQeJF9/gVCCyIo9T2/aNCo0pGd2r
-         vtdxC6aEX1EVRLwItj22Rc+wxV8eX0D9IJ+2Yv2luBEw6+Z9zlMRws9UYFFv6awtnz8Y
-         Hv9Mf7tS/i1/SedIQnnFYzLK92Gh43NMMVcNzmOPKgYiZNIUNzuQgDwCxw1eq+96rQmM
-         o/dkQaKs5DT74ynoWMGRpONBSpXBPm1UJXtTK/7D5ay4Z8RROWam8WzsAYNhHZOwGwAK
-         X9bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689877814; x=1690482614;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mkhjk/nVBrnNuMjmXsk/jA6PNc5ly2hNBTN0yfAkH5Q=;
-        b=buDyNUohy3ZSL5j/kd9lEIYEikq7dciGRxAlqxoXLyHXVM4jTXVqJZKYSDvNXv1lUC
-         nn55JBTwB1rbuxJBL5CivV8gJRXAspVpZHp3/l69ZKZtKa9lZh9B1cZplE+mB/HrtZEU
-         HVr0Qyn9U+/RopAVV9m7GKG5roOLIApmIzF5pMh43uKVi2VuGq5olBlGf9eTZ4tDvyo+
-         5TaTLm5i7rmrJvOOA8QEFGxnQ+QTT9sVQsvD+V0VQJlcFLtBpXY+wlw0Upbz5JNasnL6
-         8xpiXA30A+vULr24xSZAjZVQ68pgoh3W7DHn9ug5Bkf2qGqvSUeUh1hT5hDf0bi4Y7gC
-         DIvA==
-X-Gm-Message-State: ABy/qLZsZRqpy8PgjqZZwPw/ESVs766DyZHumhWyRNok/hzmYZNC48nN
-        otHRKHVoBTlWWouozoojdt+KwjiG2q6ay4qIuOBHHg==
-X-Google-Smtp-Source: APBJJlGFbUizqz1vNI7vMUQ0ylZG3q2JJ4UhCTVRD6md7r3Rcjt9plOMw7o0JnLrKKGUNqRDannn0g50nIaGzfRduP0=
-X-Received: by 2002:a17:90a:c28c:b0:261:219b:13b3 with SMTP id
- f12-20020a17090ac28c00b00261219b13b3mr53612pjt.16.1689877814079; Thu, 20 Jul
- 2023 11:30:14 -0700 (PDT)
+        Thu, 20 Jul 2023 14:31:00 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3831E135;
+        Thu, 20 Jul 2023 11:30:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+        bh=TVc0DH5y5ZMGm3BerZTpK/u+XD4hMTin0vDBzxNt6yk=; b=k0wUa4Bc0gX81i186z/h55eQuL
+        vN2ed/onpM28iKxC4yEvpheHnOUG0NwZNNTD58Efa5NxWnv8JEi+GPkO0rBNzcOVbiOC0JDx4vExy
+        62BA0UYuhCnDDXCUAcHUFoby7XFd5M9jWSdS9lfREMafDc3OHhgbMYx7lejYTutJ2gFH9OAkhkD2q
+        Iex0W2rl79yFoa2zJp4tUDJuQY6KkxOA+6Q/NVHpzYBA8oL3jzUcj/YbCkwN9ejIWCcVMrHZOMy/e
+        oILegG1jfTpeFUg80y2sMHbIdrvmHw5WpoMbIiyPvoeDu0hQru9bMv/Xx+SN3p+prtgLGa3MNUuJw
+        4iYrGLKQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qMYQL-00Bu7e-1E;
+        Thu, 20 Jul 2023 18:30:49 +0000
+Date:   Thu, 20 Jul 2023 11:30:49 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Yu Zhao <yuzhao@google.com>, Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "T.J. Mercier" <tjmercier@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 7/8] memcg: add sysctl and config option to control
+ memory recharging
+Message-ID: <ZLl9WfMgZSeKtyX7@bombadil.infradead.org>
+References: <20230720070825.992023-1-yosryahmed@google.com>
+ <20230720070825.992023-8-yosryahmed@google.com>
+ <ZLl5XA25BIlYyngD@bombadil.infradead.org>
+ <CAJD7tkbsZ5rAn5nNUvhuN9uUb4qPcsGZ8pcwCHzbqbajXKP9=g@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1689792825.git.tjeznach@rivosinc.com> <610abe685f90870be52bc7c2ca45ab5235bd8eb4.1689792825.git.tjeznach@rivosinc.com>
- <c26d029e-dabc-9ad2-ed42-bb6ee276e3fb@kernel.org>
-In-Reply-To: <c26d029e-dabc-9ad2-ed42-bb6ee276e3fb@kernel.org>
-From:   Tomasz Jeznach <tjeznach@rivosinc.com>
-Date:   Thu, 20 Jul 2023 11:30:03 -0700
-Message-ID: <CAH2o1u6pMF3MN=oFBcs9kOf-nwnEYfD2Vv=89+DzUanV59R5dw@mail.gmail.com>
-Subject: Re: [PATCH 05/11] RISC-V: drivers/iommu/riscv: Add sysfs interface
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Sebastien Boeuf <seb@rivosinc.com>, iommu@lists.linux.dev,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@rivosinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkbsZ5rAn5nNUvhuN9uUb4qPcsGZ8pcwCHzbqbajXKP9=g@mail.gmail.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 11:38=E2=80=AFPM Krzysztof Kozlowski <krzk@kernel.o=
-rg> wrote:
->
-> On 19/07/2023 21:33, Tomasz Jeznach wrote:
-> > Enable sysfs debug / visibility interface providing restricted
-> > access to hardware registers.
->
-> Please use subject prefixes matching the subsystem. You can get them for
-> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-> your patch is touching.
->
-
-ack.
-
+On Thu, Jul 20, 2023 at 11:24:20AM -0700, Yosry Ahmed wrote:
+> On Thu, Jul 20, 2023 at 11:13 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
 > >
-> > Signed-off-by: Tomasz Jeznach <tjeznach@rivosinc.com>
-> > ---
-> >  drivers/iommu/riscv/Makefile      |   2 +-
-> >  drivers/iommu/riscv/iommu-sysfs.c | 183 ++++++++++++++++++++++++++++++
-> >  drivers/iommu/riscv/iommu.c       |   7 ++
-> >  drivers/iommu/riscv/iommu.h       |   2 +
-> >  4 files changed, 193 insertions(+), 1 deletion(-)
-> >  create mode 100644 drivers/iommu/riscv/iommu-sysfs.c
+> > On Thu, Jul 20, 2023 at 07:08:24AM +0000, Yosry Ahmed wrote:
+> > > Add a sysctl to enable/disable memory recharging for offline memcgs. Add
+> > > a config option to control whether or not it is enabled by default.
+> > >
+> > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > > ---
+> > >  include/linux/memcontrol.h |  2 ++
+> > >  kernel/sysctl.c            | 11 +++++++++++
+> > >  mm/Kconfig                 | 12 ++++++++++++
+> > >  mm/memcontrol.c            |  9 ++++++++-
+> > >  4 files changed, 33 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > > index 59b653d4a76e..ae9f09ee90cb 100644
+> > > --- a/include/linux/memcontrol.h
+> > > +++ b/include/linux/memcontrol.h
+> > > @@ -60,6 +60,8 @@ struct mem_cgroup_reclaim_cookie {
+> > >
+> > >  #ifdef CONFIG_MEMCG
+> > >
+> > > +extern int sysctl_recharge_offline_memcgs;
+> > > +
+> > >  #define MEM_CGROUP_ID_SHIFT  16
+> > >  #define MEM_CGROUP_ID_MAX    USHRT_MAX
+> > >
+> > > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> > > index 354a2d294f52..1735d1d95652 100644
+> > > --- a/kernel/sysctl.c
+> > > +++ b/kernel/sysctl.c
+> > > @@ -2249,6 +2249,17 @@ static struct ctl_table vm_table[] = {
+> > >               .extra2         = (void *)&mmap_rnd_compat_bits_max,
+> > >       },
+> > >  #endif
+> > > +#ifdef CONFIG_MEMCG
+> > > +     {
+> > > +             .procname       = "recharge_offline_memcgs",
+> > > +             .data           = &sysctl_recharge_offline_memcgs,
+> > > +             .maxlen         = sizeof(sysctl_recharge_offline_memcgs),
+> > > +             .mode           = 0644,
+> > > +             .proc_handler   = proc_dointvec_minmax,
+> > > +             .extra1         = SYSCTL_ZERO,
+> > > +             .extra2         = SYSCTL_ONE,
+> > > +     },
+> > > +#endif /* CONFIG_MEMCG */
+> > >       { }
+> > >  };
 > >
-> > diff --git a/drivers/iommu/riscv/Makefile b/drivers/iommu/riscv/Makefil=
-e
-> > index 38730c11e4a8..9523eb053cfc 100644
-> > --- a/drivers/iommu/riscv/Makefile
-> > +++ b/drivers/iommu/riscv/Makefile
-> > @@ -1 +1 @@
-> > -obj-$(CONFIG_RISCV_IOMMU) +=3D iommu.o iommu-pci.o iommu-platform.o
-> > \ No newline at end of file
-> > +obj-$(CONFIG_RISCV_IOMMU) +=3D iommu.o iommu-pci.o iommu-platform.o io=
-mmu-sysfs.o
-> > \ No newline at end of file
->
-> You have this error in multiple places.
->
+> > Please don't add any more sysctls to kernel/sysctl.c, git log that file
+> > for a series of cleanups which show how to use your own and why we have
+> > been doing that cleanup.
+> 
+> Thanks for pointing this out, I definitely missed it. Will do that in
+> the next version. I guess this will also reduce the reviewer churn if
+> I won't be touching kernel/sysctl.c?
 
-ack. next version will run through checkpatch.pl, should spot such problems=
-.
+Right, it means I don't have to care anymore about random sysctl knobs.
+Let people knob it all up.
 
-> > diff --git a/drivers/iommu/riscv/iommu-sysfs.c b/drivers/iommu/riscv/io=
-mmu-sysfs.c
-> > new file mode 100644
-> > index 000000000000..f038ea8445c5
-> > --- /dev/null
-> > +++ b/drivers/iommu/riscv/iommu-sysfs.c
-> > @@ -0,0 +1,183 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * IOMMU API for RISC-V architected Ziommu implementations.
-> > + *
-> > + * Copyright =C2=A9 2022-2023 Rivos Inc.
-> > + *
-> > + * Author: Tomasz Jeznach <tjeznach@rivosinc.com>
-> > + */
-> > +
-> > +#include <linux/module.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/compiler.h>
-> > +#include <linux/iommu.h>
-> > +#include <linux/platform_device.h>
-> > +#include <asm/page.h>
-> > +
-> > +#include "iommu.h"
-> > +
-> > +#define sysfs_dev_to_iommu(dev) \
-> > +     container_of(dev_get_drvdata(dev), struct riscv_iommu_device, iom=
-mu)
-> > +
-> > +static ssize_t address_show(struct device *dev,
-> > +                         struct device_attribute *attr, char *buf)
->
->
-> Where is the sysfs ABI documented?
->
-
-Sysfs for now is used only to expose selected IOMMU memory mapped
-registers, with complete documentation in the RISC-V IOMMU Arch Spec
-[1], and some comments in iommu-bits.h file.
-LMK If it would be better to put a dedicated file documenting those
-with the patch itself.
-
-
-[1] https://github.com/riscv-non-isa/riscv-iommu/releases/download/v1.0/ris=
-cv-iommu.pdf
-
->
-> Best regards,
-> Krzysztof
->
-
-regards,
-- Tomasz
+  Luis
