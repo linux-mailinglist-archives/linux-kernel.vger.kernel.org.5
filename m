@@ -2,113 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D18D675B546
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC82375B54A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 19:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbjGTRMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 13:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51740 "EHLO
+        id S231519AbjGTROM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 13:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjGTRMe (ORCPT
+        with ESMTP id S230290AbjGTROJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 13:12:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F58AA
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:12:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E79B61B8F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 17:12:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20CDEC433C8;
-        Thu, 20 Jul 2023 17:12:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689873152;
-        bh=zts5NGHn5WQO6o2e+6B3ydRceosp6xQJd00HqAw+IqY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MGgQOpn/VZvgDzWlCQN9LvoD1UVj9oGVDzUyA3BzkG8l0/DDAKaasuWhF+jmTBwMP
-         YgzWR2xlknaz/X5CbhkIIAM5GtDSv5WiO51OqlwYHFA+QIC8TjW6XF3Ikex7J3jVWm
-         C/tA19VEADT/7ZnAV49R+vV5cAlrVIxy8LYJAR7fC4vBDkOt8xj9FR+6Kgw9lieP1K
-         6kC2/2BmnR1sX2CVDRbpiAE8xFQV/Wpb99OWsgaSQ7hIzSi3i0EyMcecBdrEhost88
-         bmeThMTvqtp9uuZsy9MvD09bPob5spz9okpkSRP6yomR+frUdgyV/nBMdkW+sG53VN
-         zY8N1jsB/Qicg==
-Date:   Thu, 20 Jul 2023 10:12:31 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC net-next v2 7/7] net: skbuff: always try to recycle
- PP pages directly when in softirq
-Message-ID: <20230720101231.7a5ff6cd@kernel.org>
-In-Reply-To: <48c1d70b-d4bd-04c0-ab46-d04eaeaf4af0@intel.com>
-References: <20230714170853.866018-1-aleksander.lobakin@intel.com>
-        <20230714170853.866018-10-aleksander.lobakin@intel.com>
-        <20230718174042.67c02449@kernel.org>
-        <d7cd1903-de0e-0fe3-eb15-0146b589c7b0@intel.com>
-        <20230719135150.4da2f0ff@kernel.org>
-        <48c1d70b-d4bd-04c0-ab46-d04eaeaf4af0@intel.com>
+        Thu, 20 Jul 2023 13:14:09 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08101B3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:14:08 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fc075d9994so4495e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 10:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689873246; x=1690478046;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S4Y03rAkNqCt5Z1k6DcGBxBkwsMLJ+wU/AutVSSMAN8=;
+        b=PDGGXvYQRpL6m2UfvJe1nbfMDURy5iUxtugVbwOqWaSQPrLv1WC1AEPWglyrIz9LGw
+         S8iv7yjmYQXA/2/TAtpofD+zjk894+pxOEZeTjFcmighBWiJ02M/gC7SR2UuJLS4p4fX
+         KVIMDzrgQYVatzrZS3HF36WhjxFo3K47h6mJPDlE/x8SLxBByqPz1G/5r3ZTasVvNwNq
+         UmXv77aNDNthkmigNIEGLSI3Jpd9BD6CuCA18WuyMUk1KmEPN3OzgU71rOzEBpV24dB0
+         lvMZjfQZHY4GMdU2kCTAwSwCIIZDm1w0uRfRJn2Fw5cu/NHZ5M9Y/pQDRm4sO1DnQuvv
+         BZBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689873246; x=1690478046;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S4Y03rAkNqCt5Z1k6DcGBxBkwsMLJ+wU/AutVSSMAN8=;
+        b=T85A2tDHZk1pGYUkfkKz5gI4B40X4Nbed3n05naQsOMT16R97nrWsdrL7MA35MZ580
+         lEnU7wAtPEH8oidWb6osak/AoG/HPJocNILNY4iBjLAJEHdYMsJ2lRaJo1z7ZAvQK4xr
+         YjbnGiMbV4JzOwincVsQvsuU5HbFnypW3j1jwJrwq+hrrxzz/B7zyIe73EAfqBxh4yPB
+         pLJSkESnGI/kHrJQnPNNjWzVq9Fa58Yvhas4J/SCozE23WXdqyD7xq1hiyGP4hw5Udnw
+         P9AKHYi89ESenpltwT0kSmb0ClJfzfFDJfjbKrVEl2zpPTb9iqJRDEpMUKVqDVEMbcx6
+         h8TQ==
+X-Gm-Message-State: ABy/qLbzGZv4IUxKuZE1op/b5DBIB8DrZ3iMqmNb5yB4qz/uZWq7yD84
+        8TF4BbDF5/31Mjw67V1W1d47RzfBTWPINyNQo6grLw==
+X-Google-Smtp-Source: APBJJlGIi5rUga4ez2Y2JH9AiMsdM5lCMyHAYCWLLn5IWxGgU2OiKgJJXtsJeLKXMukAdYKMWWJkotIdruJmUwPiaFQ=
+X-Received: by 2002:a05:600c:3516:b0:3f4:fb7:48d4 with SMTP id
+ h22-20020a05600c351600b003f40fb748d4mr109817wmq.3.1689873246368; Thu, 20 Jul
+ 2023 10:14:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230720013249.199981-1-jannh@google.com> <CAJuCfpEs=jwaJEJQV9=Qo4h9JobrR1S=vETy1h8Q7TfS3eF_Qw@mail.gmail.com>
+In-Reply-To: <CAJuCfpEs=jwaJEJQV9=Qo4h9JobrR1S=vETy1h8Q7TfS3eF_Qw@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 20 Jul 2023 19:13:29 +0200
+Message-ID: <CAG48ez0MSS47TkrV47R9P7uXtOgrLW3_hK0Od263JZmBoiczVw@mail.gmail.com>
+Subject: Re: [PATCH] mm: Don't drop VMA locks in mm_drop_all_locks()
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023 18:46:02 +0200 Alexander Lobakin wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> Date: Wed, 19 Jul 2023 13:51:50 -0700
-> 
-> > On Wed, 19 Jul 2023 18:34:46 +0200 Alexander Lobakin wrote:  
->  [...]  
-> >>
-> >> If we're on the same CPU where the NAPI would run and in the same
-> >> context, i.e. softirq, in which the NAPI would run, what is the problem?
-> >> If there really is a good one, I can handle it here.  
-> > 
-> > #define SOFTIRQ_BITS		8
-> > #define SOFTIRQ_MASK		(__IRQ_MASK(SOFTIRQ_BITS) << SOFTIRQ_SHIFT)
-> > # define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
-> > #define in_softirq()		(softirq_count())  
-> 
-> I do remember those, don't worry :)
-> 
-> > I don't know what else to add beyond that and the earlier explanation.  
-> 
-> My question was "how can two things race on one CPU in one context if it
-> implies they won't ever happen simultaneously", but maybe my zero
-> knowledge of netcons hides something from me.
+On Thu, Jul 20, 2023 at 6:52=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+> On Wed, Jul 19, 2023 at 6:33=E2=80=AFPM Jann Horn <jannh@google.com> wrot=
+e:
+> >
+> > Despite its name, mm_drop_all_locks() does not drop _all_ locks; the mm=
+ap
+> > lock is held write-locked by the caller, and the caller is responsible =
+for
+> > dropping the mmap lock at a later point (which will also release the VM=
+A
+> > locks).
+> > Calling vma_end_write_all() here is dangerous because the caller might =
+have
+> > write-locked a VMA with the expectation that it will stay write-locked
+> > until the mmap_lock is released, as usual.
+> >
+> > This _almost_ becomes a problem in the following scenario:
+> >
+> > An anonymous VMA A and an SGX VMA B are mapped adjacent to each other.
+> > Userspace calls munmap() on a range starting at the start address of A =
+and
+> > ending in the middle of B.
+> >
+> > Hypothetical call graph with additional notes in brackets:
+> >
+> > do_vmi_align_munmap
+> >   [begin first for_each_vma_range loop]
+> >   vma_start_write [on VMA A]
+> >   vma_mark_detached [on VMA A]
+> >   __split_vma [on VMA B]
+> >     sgx_vma_open [=3D=3D new->vm_ops->open]
+> >       sgx_encl_mm_add
+> >         __mmu_notifier_register [luckily THIS CAN'T ACTUALLY HAPPEN]
+> >           mm_take_all_locks
+> >           mm_drop_all_locks
+> >             vma_end_write_all [drops VMA lock taken on VMA A before]
+> >   vma_start_write [on VMA B]
+> >   vma_mark_detached [on VMA B]
+> >   [end first for_each_vma_range loop]
+> >   vma_iter_clear_gfp [removes VMAs from maple tree]
+> >   mmap_write_downgrade
+> >   unmap_region
+> >   mmap_read_unlock
+> >
+> > In this hypothetical scenario, while do_vmi_align_munmap() thinks it st=
+ill
+> > holds a VMA write lock on VMA A, the VMA write lock has actually been
+> > invalidated inside __split_vma().
+> >
+> > The call from sgx_encl_mm_add() to __mmu_notifier_register() can't
+> > actually happen here, as far as I understand, because we are duplicatin=
+g an
+> > existing SGX VMA, but sgx_encl_mm_add() only calls
+> > __mmu_notifier_register() for the first SGX VMA created in a given proc=
+ess.
+> > So this could only happen in fork(), not on munmap().
+> > But in my view it is just pure luck that this can't happen.
+> >
+> > Also, we wouldn't actually have any bad consequences from this in
+> > do_vmi_align_munmap(), because by the time the bug drops the lock on VM=
+A A,
+> > we've already marked VMA A as detached, which makes it completely
+> > ineligible for any VMA-locked page faults.
+> > But again, that's just pure luck.
+> >
+> > So remove the vma_end_write_all(), so that VMA write locks are only eve=
+r
+> > released on mmap_write_unlock() or mmap_write_downgrade().
+>
+> Your logic makes sense to be. mm_drop_all_locks() unlocking all VMAs,
+> even the ones which were locked before mm_take_all_locks() seems
+> dangerous.
+> One concern I have is that mm_take_all_locks() and mm_drop_all_locks()
+> become asymmetric with this change: mm_take_all_locks() locks all VMAs
+> but mm_drop_all_locks() does not release them. I think there should be
+> an additional comment explaining this asymmetry.
+> Another side-effect which would be nice to document in a comment is
+> that when mm_take_all_locks() fails after it locked the VMAs, those
+> VMAs will stay locked until mmap_write_unlock/mmap_write_downgrade.
+> This happens because of failure mm_take_all_locks() jumps to perform
+> mm_drop_all_locks() and this will not unlock already locked VMAs.
+> Other than that LGTM. Thanks!
 
-One of them is in hardirq.
+But this is not specific to mm_drop_all_locks() at all, right? It's just
+fundamentally how per-VMA locks are used everywhere. Somewhere deep
+down in some call path, while the mmap lock is held in write mode, a
+VMA is marked as being written to, and then this marking persists
+until the mmap lock is dropped.
 
-> > AFAIK pages as allocated by page pool do not benefit from the usual
-> > KASAN / KMSAN checkers, so if we were to double-recycle a page once
-> > a day because of a netcons race - it's going to be a month long debug
-> > for those of us using Linux in production.  
-> 
-> if (!test_bit(&napi->state, NPSVC))
-
-if you have to the right check is !in_hardirq()
-
-> ? It would mean we're not netpolling.
-> Otherwise, if this still is not enough, I'do go back to my v1 approach
-> with having a NAPI flag, which would tell for sure we're good to go. I
-> got confused by your "wouldn't just checking for softirq be enough"! T.T
-> Joking :D
-
-I guess the problem I'm concerned about can already happen.
-I'll send a lockdep annotation shortly.
+If we want to clarify this, I guess some comments on
+vma_end_write_all() and vma_start_write() might help, but I think
+that's independent of this patch.
