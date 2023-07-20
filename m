@@ -2,42 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9942975ACF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA2375AD14
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 Jul 2023 13:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbjGTLaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 07:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37046 "EHLO
+        id S230442AbjGTLgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 07:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjGTLaJ (ORCPT
+        with ESMTP id S229848AbjGTLgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 07:30:09 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B2622B7
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:30:08 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA0301FB;
-        Thu, 20 Jul 2023 04:30:51 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D5E803F6C4;
-        Thu, 20 Jul 2023 04:30:06 -0700 (PDT)
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v3 0/3] Optimize large folio interaction with deferred split
-Date:   Thu, 20 Jul 2023 12:29:52 +0100
-Message-Id: <20230720112955.643283-1-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 20 Jul 2023 07:36:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6C4113
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 04:36:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 69EF361A04
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 11:36:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D01FC433C8;
+        Thu, 20 Jul 2023 11:36:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689852976;
+        bh=Z9BOyKoV8wDDHCwHKBuqNmTP8DWdJZf2Qr+rBuKVcsg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JXKUKRrrUvSTlEg4un3MoLajZjYiqo5Pau4mhRGx8f1uLJmSCO4S/dcX5VOShw/CW
+         Kx+UPMsnDaNji366Ls9D1np5T6QE6wqPPM/FMh6K7qBJQQdSDSr4JCoZz2yGrNlD7H
+         gruZBeA+tP45xSveoiouQN+th5pWMbbGFcbD+5vuO9RdnTdEgEW/LKRgvMrDtFzbQs
+         v3Hoyv0RF0J7vKJfkoyLIDR8BvhUttFWmOiy6w2J2XLIWespe80bYQJr80gXnFBBP+
+         SYky+oy7tW7tuvEumUe/FbcUZRH0rpLpnhjEjndB5zD32m5INsoR9u23GrIO3GUzkx
+         EoJiEYal4uixQ==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        syzbot+601018296973a481f302@syzkaller.appspotmail.com
+Subject: [PATCH] Revert "f2fs: fix to do sanity check on extent cache correctly"
+Date:   Thu, 20 Jul 2023 19:29:53 +0800
+Message-Id: <20230720112953.3764050-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,78 +54,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+syzbot reports a f2fs bug as below:
 
-[Sending v3 to replace yesterday's v2 after Yu Zhou's feedback]
+UBSAN: array-index-out-of-bounds in fs/f2fs/f2fs.h:3275:19
+index 1409 is out of range for type '__le32[923]' (aka 'unsigned int[923]')
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_out_of_bounds+0x11c/0x150 lib/ubsan.c:348
+ inline_data_addr fs/f2fs/f2fs.h:3275 [inline]
+ __recover_inline_status fs/f2fs/inode.c:113 [inline]
+ do_read_inode fs/f2fs/inode.c:480 [inline]
+ f2fs_iget+0x4730/0x48b0 fs/f2fs/inode.c:604
+ f2fs_fill_super+0x640e/0x80c0 fs/f2fs/super.c:4601
+ mount_bdev+0x276/0x3b0 fs/super.c:1391
+ legacy_get_tree+0xef/0x190 fs/fs_context.c:611
+ vfs_get_tree+0x8c/0x270 fs/super.c:1519
+ do_new_mount+0x28f/0xae0 fs/namespace.c:3335
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-This is v3 of a small series in support of my work to enable the use of large
-folios for anonymous memory (known as "FLEXIBLE_THP" or "LARGE_ANON_FOLIO") [1].
-It first makes it possible to add large, non-pmd-mappable folios to the deferred
-split queue. Then it modifies zap_pte_range() to batch-remove spans of
-physically contiguous pages from the rmap, which means that in the common case,
-we elide the need to ever put the folio on the deferred split queue, thus
-reducing lock contention and improving performance.
+The issue was bisected to:
 
-This becomes more visible once we have lots of large anonymous folios in the
-system, and Huang Ying has suggested solving this needs to be a prerequisit for
-merging the main FLEXIBLE_THP/LARGE_ANON_FOLIO work.
+commit d48a7b3a72f121655d95b5157c32c7d555e44c05
+Author: Chao Yu <chao@kernel.org>
+Date:   Mon Jan 9 03:49:20 2023 +0000
 
-The series applies on top of v6.5-rc2 and a branch is available at [2].
+    f2fs: fix to do sanity check on extent cache correctly
 
-I don't have a full test run with the latest versions of all the patches on top
-of the latest baseline, so not posting results formally. I can get these if
-people feel they are neccessary though. But anecdotally, for the kernel
-compilation workload, this series reduces kernel time by ~4% and reduces
-real-time by ~0.4%, compared with [1].
+The root cause is we applied both v1 and v2 of the patch, v2 is the right
+fix, so it needs to revert v1 in order to fix reported issue.
 
+v1:
+commit d48a7b3a72f1 ("f2fs: fix to do sanity check on extent cache correctly")
+https://lore.kernel.org/lkml/20230109034920.492914-1-chao@kernel.org/
 
-Changes since v2 [3]
---------------------
+v2:
+commit 269d11948100 ("f2fs: fix to do sanity check on extent cache correctly")
+https://lore.kernel.org/lkml/20230207134808.1827869-1-chao@kernel.org/
 
-- patch 2:
-    - Reworked at Yu Zhou's request to reduce duplicated code.
-    - page_remove_rmap() now forwards to folio_remove_rmap_range() for the
-      !compound (PMD mapped) case.
-    - Both page_remove_rmap() and folio_remove_rmap_range() share common
-      epilogue via new helper function __remove_rmap_finish().
-    - As a result of the changes, I've removed the previous Reviewed-bys.
+Reported-by: syzbot+601018296973a481f302@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/linux-f2fs-devel/000000000000fcf0690600e4d04d@google.com/
+Fixes: d48a7b3a72f1 ("f2fs: fix to do sanity check on extent cache correctly")
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+ fs/f2fs/inode.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-- other 2 patches are unchanged.
-
-
-Changes since v1 [4]
---------------------
-
-- patch 2: Modified doc comment for folio_remove_rmap_range()
-- patch 2: Hoisted _nr_pages_mapped manipulation out of page loop so its now
-  modified once per folio_remove_rmap_range() call.
-- patch 2: Added check that page range is fully contained by folio in
-  folio_remove_rmap_range()
-- patch 2: Fixed some nits raised by Huang, Ying for folio_remove_rmap_range()
-- patch 3: Support batch-zap of all anon pages, not just those in anon vmas
-- patch 3: Renamed various functions to make their use clear
-- patch 3: Various minor refactoring/cleanups
-- Added Reviewed-By tags - thanks!
-
-[1] https://lore.kernel.org/linux-mm/20230714160407.4142030-1-ryan.roberts@arm.com/
-[2] https://gitlab.arm.com/linux-arm/linux-rr/-/tree/features/granule_perf/deferredsplit-lkml_v3
-[3] https://lore.kernel.org/linux-mm/20230719135450.545227-1-ryan.roberts@arm.com/
-[4] https://lore.kernel.org/linux-mm/20230717143110.260162-1-ryan.roberts@arm.com/
-
-Thanks,
-Ryan
-
-
-Ryan Roberts (3):
-  mm: Allow deferred splitting of arbitrary large anon folios
-  mm: Implement folio_remove_rmap_range()
-  mm: Batch-zap large anonymous folio PTE mappings
-
- include/linux/rmap.h |   2 +
- mm/memory.c          | 120 +++++++++++++++++++++++++++++++++++++++++
- mm/rmap.c            | 125 ++++++++++++++++++++++++++++++++-----------
- 3 files changed, 217 insertions(+), 30 deletions(-)
-
---
-2.25.1
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index a73540d9a7ec..5c70297fd480 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -496,6 +496,12 @@ static int do_read_inode(struct inode *inode)
+ 		fi->i_inline_xattr_size = 0;
+ 	}
+ 
++	if (!sanity_check_inode(inode, node_page)) {
++		f2fs_put_page(node_page, 1);
++		f2fs_handle_error(sbi, ERROR_CORRUPTED_INODE);
++		return -EFSCORRUPTED;
++	}
++
+ 	/* check data exist */
+ 	if (f2fs_has_inline_data(inode) && !f2fs_exist_data(inode))
+ 		__recover_inline_status(inode, node_page);
+@@ -565,12 +571,6 @@ static int do_read_inode(struct inode *inode)
+ 	f2fs_init_read_extent_tree(inode, node_page);
+ 	f2fs_init_age_extent_tree(inode);
+ 
+-	if (!sanity_check_inode(inode, node_page)) {
+-		f2fs_put_page(node_page, 1);
+-		f2fs_handle_error(sbi, ERROR_CORRUPTED_INODE);
+-		return -EFSCORRUPTED;
+-	}
+-
+ 	if (!sanity_check_extent_cache(inode)) {
+ 		f2fs_put_page(node_page, 1);
+ 		f2fs_handle_error(sbi, ERROR_CORRUPTED_INODE);
+-- 
+2.40.1
 
