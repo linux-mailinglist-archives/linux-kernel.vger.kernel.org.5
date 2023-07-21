@@ -2,87 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE2675C1C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE9975C1C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbjGUIeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
+        id S230347AbjGUIfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbjGUIeC (ORCPT
+        with ESMTP id S229844AbjGUIe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:34:02 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111692D60
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:34:01 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R6jWn5jhKzBRRLC
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:33:57 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689928437; x=1692520438; bh=2GQrqP0A6vo5l/H7gdVYrs/ulVc
-        Sw7nNmu9MTpTLmQQ=; b=rxmCapbWAV38x3oZMmnleQNUN0gXf4VjL6y8UguMTD3
-        dql6h7g9GQqhoG2sqhICj9z33NAHWvf4k31EfABCj4dhgT4Lgwq5XnCq/1JuGjOa
-        QjLVW+SxP9udSUDMcKwACKQNARomvmKtMIcKUQ3nAdZrQXWryld3cKs2fYvavx3p
-        QrCsyQmwjHEWD7TXz9JQ7HqmZLXe+ztD7BGyYGaASvlBTsc/nCTsyMW3RbEhFpT/
-        x1dlr6QnySkwPFawmOCVz3fyzy2USyQuySP35kPQOB+6b8HqkOTjmtvCY84uBjye
-        QR491ulvRR8HtDLHPWaZRovw+VN7leeM9ozScfyF8DQ==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id pXnIcewwl5E7 for <linux-kernel@vger.kernel.org>;
-        Fri, 21 Jul 2023 16:33:57 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R6jWn4PmNzBJnMj;
-        Fri, 21 Jul 2023 16:33:57 +0800 (CST)
+        Fri, 21 Jul 2023 04:34:58 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAC7273E
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:34:31 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36L7C3TY012776;
+        Fri, 21 Jul 2023 03:34:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=4X5Vk5GzjGOeC6P
+        vbgtdeu+U2bY+ZOvoDw8i1UzpoY4=; b=qdw/l4urdIy5Rc9CFCJL018s2IiY4lL
+        E+lGszxaV51jy8xdOtJTAxswZupRQT1mornimEQZft28kr7bqqaGiJhEMhVTcVU3
+        /QmT6J1zQox2THnOZiOLOGeoYnNMaVIqfFpK/hj89Hj3354JqjWegWjgzlhTLwb7
+        Sw2eJSbqTNMtICQYSoRhE+DP5GJijsulZOlDiQdb+aJPna/wBjARAffzNsf3sztS
+        FsFm87fWIppIJcjriMB/uqzeyRYmLN9gKX+wIekRbwYDlgukeDMlpX8F9FDKyxK+
+        B3a1zUQNCTkRA+bfjV+Lf+8t5sTUj3Ap4Nt+cubOy1rTv9dvED+29Og==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3rus62xvn4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jul 2023 03:34:02 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 21 Jul
+ 2023 09:34:00 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Fri, 21 Jul 2023 09:34:00 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3E6143560;
+        Fri, 21 Jul 2023 08:34:00 +0000 (UTC)
+Date:   Fri, 21 Jul 2023 08:34:00 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <kuninori.morimoto.gx@renesas.com>,
+        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: wm8960: Add DAC filter characteristics selection
+Message-ID: <20230721083400.GK103419@ediswmail.ad.cirrus.com>
+References: <1689925948-21001-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Date:   Fri, 21 Jul 2023 16:33:57 +0800
-From:   hanyu001@208suo.com
-To:     daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] arm: mach-pxa: add require space after that ','
-In-Reply-To: <tencent_05B568A5C378391102ED44ADD539AC404F06@qq.com>
-References: <tencent_05B568A5C378391102ED44ADD539AC404F06@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <f57f7072cfaccc6aad71c2d29c4c21c7@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1689925948-21001-1-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: KKA1_9swrhuJ-ghUBfoWBjL1c7-345QA
+X-Proofpoint-ORIG-GUID: KKA1_9swrhuJ-ghUBfoWBjL1c7-345QA
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix below checkpatch errors:
+On Fri, Jul 21, 2023 at 03:52:28PM +0800, Shengjiu Wang wrote:
+> Support DAC filter characteristics selection: Normal mode
+> and Sloping stopband. Sloping stopband may have
+> better frequency response.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  sound/soc/codecs/wm8960.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+> index 366f5d769d6d..ff1355306b43 100644
+> --- a/sound/soc/codecs/wm8960.c
+> +++ b/sound/soc/codecs/wm8960.c
+> @@ -155,6 +155,7 @@ static const char *wm8960_adc_data_output_sel[] = {
+>  	"Left Data = Right ADC; Right Data = Left ADC",
+>  };
+>  static const char *wm8960_dmonomix[] = {"Stereo", "Mono"};
+> +static const char *wm8960_dacslope[] = {"Normal", "Sloping"};
+>  
+>  static const struct soc_enum wm8960_enum[] = {
+>  	SOC_ENUM_SINGLE(WM8960_DACCTL1, 5, 4, wm8960_polarity),
+> @@ -165,6 +166,7 @@ static const struct soc_enum wm8960_enum[] = {
+>  	SOC_ENUM_SINGLE(WM8960_ALC3, 8, 2, wm8960_alcmode),
+>  	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 2, 4, wm8960_adc_data_output_sel),
+>  	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 4, 2, wm8960_dmonomix),
+> +	SOC_ENUM_SINGLE(WM8960_DACCTL2, 1, 2, wm8960_dacslope),
+>  };
+>  
+>  static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
+> @@ -307,6 +309,7 @@ SOC_SINGLE_TLV("Right Output Mixer RINPUT3 Volume",
+>  
+>  SOC_ENUM("ADC Data Output Select", wm8960_enum[6]),
+>  SOC_ENUM("DAC Mono Mix", wm8960_enum[7]),
+> +SOC_ENUM("DAC filter characteristics", wm8960_enum[8]),
 
-./arch/arm/mach-pxa/generic.h:18: ERROR: space required after that ',' 
-(ctx:VxV)
-./arch/arm/mach-pxa/generic.h:18: ERROR: space required after that ',' 
-(ctx:VxV)
+Be nice to capitalise, to match the other controls but otherwise
+looks good to me:
 
-Signed-off-by: Yu Han <hanyu001@208suo.com>
----
-  arch/arm/mach-pxa/generic.h | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-diff --git a/arch/arm/mach-pxa/generic.h b/arch/arm/mach-pxa/generic.h
-index c9c2c46ecead..3775201229ab 100644
---- a/arch/arm/mach-pxa/generic.h
-+++ b/arch/arm/mach-pxa/generic.h
-@@ -15,7 +15,7 @@ extern void __init pxa_dt_irq_init(int (*fn)(struct 
-irq_data *,
-  extern void __init pxa_map_io(void);
-  extern void pxa_timer_init(void);
-
--#define SET_BANK(__nr,__start,__size) \
-+#define SET_BANK(__nr, __start, __size) \
-      mi->bank[__nr].start = (__start), \
-      mi->bank[__nr].size = (__size)
+Thanks,
+Charles
