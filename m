@@ -2,148 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8CF75C6CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2260575C6C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbjGUMTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 08:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
+        id S231452AbjGUMSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231489AbjGUMTK (ORCPT
+        with ESMTP id S231458AbjGUMSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:19:10 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FB72106;
-        Fri, 21 Jul 2023 05:19:09 -0700 (PDT)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LA40An006962;
-        Fri, 21 Jul 2023 14:19:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=selector1; bh=8jf3Y+n/y+JfiDeu+j5xacMWa2oOy4dEQ2WKqHh0NrY=;
- b=LPPdpl84ZSWsStOJML+beJ5qOPONAuo9qa9c9qsAo5lxU9+bzhcbL2DOglK9E13x3u1x
- lkIC50rKiKIHgZGUShhMrJU3sWaJRwLtIIPqXg8JI0FyPw1Uh4ySFE0J5tVfX0DJTQH9
- dAIXAHQfz/OW43kFCy9hCDhN46oVCiCgUfOuxTVZzhK2WjSaNqhAGk8cIipOOBA86W/G
- QvU5Oy6sFWOOQStSCxuD98hYGiTP0Zufohppfe/PLZk9D/SNKfG8cW8kn6E8SUyrWi7g
- WFZYveIARFjXLzhgjkiYokQx+VSCr4pEFsOfbc2yXMNCn2XXM6t87Yhp1Ruk/mhZ50Bh /g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ryqxjh0an-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 14:19:03 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4A87310002A;
-        Fri, 21 Jul 2023 14:19:03 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3F1BD22D17C;
-        Fri, 21 Jul 2023 14:19:03 +0200 (CEST)
-Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Fri, 21 Jul
- 2023 14:19:02 +0200
-Date:   Fri, 21 Jul 2023 14:18:54 +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-CC:     Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-        Sylvain Petinot <sylvain.petinot@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] media: i2c: st_mipid02: cascade s_stream call to the
- source subdev
-Message-ID: <20230721121854.GA1172642@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Hans Verkuil <hverkuil@xs4all.nl>,
-        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-        Sylvain Petinot <sylvain.petinot@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230711123211.794838-1-alain.volmat@foss.st.com>
- <20230711123211.794838-2-alain.volmat@foss.st.com>
- <cd0a1ec0-5ab9-dc14-b1ca-c990b062b3c5@xs4all.nl>
+        Fri, 21 Jul 2023 08:18:16 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2FF2D4A
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:18:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689941894; x=1721477894;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=zqexK72UypcBtCj4L1f3PyVVDVu5mCG7mlNisYVuzdA=;
+  b=DlH8zXJYz/SnXeOd1uuUML5gWYLYsTggq3KbS2P1WGmNzU6iER/ptkHZ
+   mlx3QTGKyGx/G7EZIH2J72zUqE26CMAsiHnpEPwF0GtrUsZAosmbyUk6Y
+   ilziQuoxi8UvFNyLUsaUrxjhE5WFQdcnb+Y7vnI7277cmES1fsfdV8lQ/
+   aI5rUKTB8+YBdghZ2JwQC1nRH17/lrZ41XuSKlE09GPdkipzd7rqZqXxI
+   7u5ax5MUZ8SYTLOb8pZWY1aJHxNnciVoFjrnkMTtvTXBjVjoQ1q29Yh2y
+   gtBj8VF3seGL+bIJ6gFhlHvPSCbO1n62WD0MD+8Zx2Nqtil+9UYtRUVyZ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="364473285"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="364473285"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 05:18:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="759941543"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="759941543"
+Received: from dhardfel-mobl1.ger.corp.intel.com (HELO [10.251.223.78]) ([10.251.223.78])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 05:18:09 -0700
+Message-ID: <672adbbe-c86d-868b-2892-8e58c7a0612f@linux.intel.com>
+Date:   Fri, 21 Jul 2023 15:19:27 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <cd0a1ec0-5ab9-dc14-b1ca-c990b062b3c5@xs4all.nl>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.129.178.213]
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-21_08,2023-07-20_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v2 0/9] sound: Use -EPROBE_DEFER instead of i915 module
+ loading.
+Content-Language: en-US
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        alsa-devel@alsa-project.org
+Cc:     sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+Hi Maarten,
 
-On Wed, Jul 19, 2023 at 12:26:37PM +0200, Hans Verkuil wrote:
-> On 11/07/2023 14:32, Alain Volmat wrote:
-> > Cascade the s_stream call to the source subdev whenever the bridge
-> > streaming is enable / disabled.
-> > 
-> > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> > ---
-> >  drivers/media/i2c/st-mipid02.c | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/drivers/media/i2c/st-mipid02.c b/drivers/media/i2c/st-mipid02.c
-> > index 906553a28676..703d2f06f552 100644
-> > --- a/drivers/media/i2c/st-mipid02.c
-> > +++ b/drivers/media/i2c/st-mipid02.c
-> > @@ -547,6 +547,13 @@ static int mipid02_stream_disable(struct mipid02_dev *bridge)
-> >  	struct i2c_client *client = bridge->i2c_client;
-> >  	int ret;
-> >  
-> > +	if (!bridge->s_subdev)
-> > +		goto error;
+On 19/07/2023 19:41, Maarten Lankhorst wrote:
+> Explicitly loading i915 becomes a problem when upstreaming the new intel driver
+> for Tiger Lake and higher graphics (xe). By loading i915, it doesn't wait for
+> driver load of xe, and will fail completely before it loads.
 > 
-> I'm getting this compiler warning:
+> -EPROBE_DEFER has to be returned before any device is created in probe(),
+> otherwise the removal of the device will cause EPROBE_DEFER to try again
+> in an infinite loop.
 > 
-> media-git/drivers/media/i2c/st-mipid02.c: In function 'mipid02_stream_disable':
-> media-git/drivers/media/i2c/st-mipid02.c:568:12: warning: 'ret' may be used uninitialized [-Wmaybe-uninitialized]
->   568 |         if (ret)
->       |            ^
-> media-git/drivers/media/i2c/st-mipid02.c:548:13: note: 'ret' was declared here
->   548 |         int ret;
->       |             ^~~
+> The conversion is done in gradual steps. First I add an argument to
+> snd_hdac_i915_init to allow for -EPROBE_DEFER so I can convert each driver
+> separately. Then I convert each driver to move snd_hdac_i915_init out of the
+> workqueue. Finally I drop the ability to choose modprobe behavior after the
+> last user is converted.
 > 
-> I'm dropping this series, waiting for a v2.
+> I suspect the avs and skylake drivers used snd_hdac_i915_init purely for the
+> modprobe, but I don't have the hardware to test if it can be safely removed.
+> It can still be done easily in a followup patch to simplify probing.
 
-Indeed, this was a real issue.  I added KCFLAGS=-Wmaybe-uninitialized
-in my build command line to spot thoses issues from now on.
+Apart from the few comments I had, this looks great and works OK on the
+machines I have tested (iow, no regression so far).
 
-v2 posted with the fix.
+Thank you for the work!
+-- 
+Péter
 
 > 
-> Regards,
+> ---
+> New since first version:
 > 
-> 	Hans
-
-Regards,
-Alain
+> - snd_hda_core.gpu_bind is added as a mechanism to force gpu binding,
+>   for testing. snd_hda_core.gpu_bind=0 forces waiting for GPU bind to
+>   off, snd_hda_core.gpu_bind=1 forces waiting for gpu bind. Default
+>   setting depends on whether kernel booted with nomodeset.
+> - Incorporated all feedback review.
 > 
-> > +
-> > +	ret = v4l2_subdev_call(bridge->s_subdev, video, s_stream, 0);
-> > +	if (ret)
-> > +		goto error;
-> > +
-> >  	/* Disable all lanes */
-> >  	ret = mipid02_write_reg(bridge, MIPID02_CLK_LANE_REG1, 0);
-> >  	if (ret)
-> > @@ -633,6 +640,10 @@ static int mipid02_stream_enable(struct mipid02_dev *bridge)
-> >  	if (ret)
-> >  		goto error;
-> >  
-> > +	ret = v4l2_subdev_call(bridge->s_subdev, video, s_stream, 1);
-> > +	if (ret)
-> > +		goto error;
-> > +
-> >  	return 0;
-> >  
-> >  error:
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: Cezary Rojewski <cezary.rojewski@intel.com>
+> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+> Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Daniel Baluta <daniel.baluta@nxp.com>
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: sound-open-firmware@alsa-project.org
+> 
+> Maarten Lankhorst (9):
+>   ALSA: hda/intel: Fix error handling in azx_probe()
+>   ALSA: hda/i915: Allow override of gpu binding.
+>   ALSA: hda/i915: Add an allow_modprobe argument to snd_hdac_i915_init
+>   ALSA: hda/i915: Allow xe as match for i915_component_master_match
+>   ASoC: Intel: avs: Move snd_hdac_i915_init to before probe_work.
+>   ASoC: Intel: Skylake: Move snd_hdac_i915_init to before probe_work.
+>   ALSA: hda/intel: Move snd_hdac_i915_init to before probe_work.
+>   ASoC: SOF: Intel: Remove deferred probe for SOF
+>   ALSA: hda/i915: Remove extra argument from snd_hdac_i915_init
+> 
+>  sound/hda/hdac_i915.c         | 25 ++++++++-------
+>  sound/pci/hda/hda_intel.c     | 60 ++++++++++++++++++-----------------
+>  sound/soc/intel/avs/core.c    | 13 +++++---
+>  sound/soc/intel/skylake/skl.c | 31 ++++++------------
+>  sound/soc/sof/Kconfig         | 19 -----------
+>  sound/soc/sof/core.c          | 38 ++--------------------
+>  sound/soc/sof/intel/Kconfig   |  1 -
+>  sound/soc/sof/intel/hda.c     | 32 +++++++++++--------
+>  sound/soc/sof/sof-pci-dev.c   |  3 +-
+>  sound/soc/sof/sof-priv.h      |  5 ---
+>  10 files changed, 85 insertions(+), 142 deletions(-)
 > 
