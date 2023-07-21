@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C983375D767
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104A075D76B
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbjGUWX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 18:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35458 "EHLO
+        id S230375AbjGUWXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 18:23:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbjGUWXZ (ORCPT
+        with ESMTP id S230239AbjGUWX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 18:23:25 -0400
-X-Greylist: delayed 385 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Jul 2023 15:23:16 PDT
-Received: from out-33.mta0.migadu.com (out-33.mta0.migadu.com [IPv6:2001:41d0:1004:224b::21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFD330DD
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:23:16 -0700 (PDT)
+        Fri, 21 Jul 2023 18:23:27 -0400
+Received: from out-44.mta1.migadu.com (out-44.mta1.migadu.com [IPv6:2001:41d0:203:375::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4008B3C03
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:23:18 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-        t=1689977820;
+        t=1689977827;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=g1Ehlui/zcIjjP1/gHDqt+MdaJf0yv94ClZD62kHOg8=;
-        b=JyMK3ClfIc8quJPdjOxg1ypAPste7MSbrwQ5ftLnGQdSLJhcFGtiBy28qlMh1+k6gcDKIY
-        UHNhfu/Kj/9HlP302JtWHQHetm/VDogr6bHcEkAPpitxEZuEco70n2JMDTwz2VJ2xFiOPQ
-        dJs920SP0QKOKC48832jHUmgY6sqlsDhZZ3FXgKws+rizcw4jbawahYG7uHuONwEjPLB15
-        4k4wY3JEnWDei0+sI7PZOXbCQTe0Sx4BhMOLCZQ8aXGaptAvNdQdo9Ndn23kNelKNWvAOk
-        iHZ13p9YvdFc4l5RVGbrm6f0d2aNQewX+lDk4p8DewzDdevDn+n1flyT3vQcKg==
+        bh=gyIMbXR0OMPT1XfXDY8rkRHULGyYtVbg/Gm0FnqZe2E=;
+        b=AWarFzCbMDr3V+FB5IMpmHCu4/bKtqmJHKflB6ecOCwKj8g9ppLPEcfmBz1Cs8u4yaag7v
+        1e3VSEHJZloDKB48cg9i7Q1ZCAWpNum+64+bFnBxzZwb4IoaCH7rnuAgtAKZCibRG0mV8O
+        V2FdUT0XsFd5hYPU237fRpc7AS8izdzk1HAGacUele2kU+35IiGP5O0ej/F4WYXof6q2pw
+        pZeh3PvbEhsZsh3UrCSifndCtbRW3Na1Pd2b/J+Wgz8wXg0WGy3jA5Dg9YFN3j9xaS4eJK
+        PR9WvWIVOj4ygevxAmOQEOmFQk6xjIflat/QcjnuFz7fou/KVXXk3wSaqks36g==
 From:   John Watts <contact@jookia.org>
 To:     linux-sunxi@lists.linux.dev
 Cc:     Wolfgang Grandegger <wg@grandegger.com>,
@@ -49,9 +48,9 @@ Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, John Watts <contact@jookia.org>
-Subject: [PATCH v2 3/4] can: sun4i_can: Add acceptance register quirk
-Date:   Sat, 22 Jul 2023 08:15:52 +1000
-Message-ID: <20230721221552.1973203-5-contact@jookia.org>
+Subject: [PATCH v2 4/4] can: sun4i_can: Add support for the Allwinner D1
+Date:   Sat, 22 Jul 2023 08:15:53 +1000
+Message-ID: <20230721221552.1973203-6-contact@jookia.org>
 In-Reply-To: <20230721221552.1973203-2-contact@jookia.org>
 References: <20230721221552.1973203-2-contact@jookia.org>
 MIME-Version: 1.0
@@ -67,71 +66,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Allwinner D1's CAN controllers have the ACPC and ACPM registers
-moved down. Compensate for this by adding an offset quirk for the
-acceptance registers.
+The controllers present in the D1 are extremely similar to the R40
+and require the same reset quirks, but An extra quirk is needed to support
+receiving packets.
 
 Signed-off-by: John Watts <contact@jookia.org>
 ---
- drivers/net/can/sun4i_can.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/net/can/Kconfig     |  4 ++--
+ drivers/net/can/sun4i_can.c | 12 +++++++++++-
+ 2 files changed, 13 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index a5c5036dfb94..e626de33e735 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -185,10 +185,10 @@ config CAN_SLCAN
+ 
+ config CAN_SUN4I
+ 	tristate "Allwinner A10 CAN controller"
+-	depends on MACH_SUN4I || MACH_SUN7I || COMPILE_TEST
++	depends on MACH_SUN4I || MACH_SUN7I || RISCV || COMPILE_TEST
+ 	help
+ 	  Say Y here if you want to use CAN controller found on Allwinner
+-	  A10/A20 SoCs.
++	  A10/A20/D1 SoCs.
+ 
+ 	  To compile this driver as a module, choose M here: the module will
+ 	  be called sun4i_can.
 diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
-index 0827830bbf28..1f90fe6dbb8b 100644
+index 1f90fe6dbb8b..c508a328e38d 100644
 --- a/drivers/net/can/sun4i_can.c
 +++ b/drivers/net/can/sun4i_can.c
-@@ -205,9 +205,11 @@
-  * struct sun4ican_quirks - Differences between SoC variants.
-  *
-  * @has_reset: SoC needs reset deasserted.
-+ * @acp_offset: Offset of ACPC and ACPM registers
-  */
- struct sun4ican_quirks {
- 	bool has_reset;
-+	int acp_offset;
+@@ -91,6 +91,8 @@
+ #define SUN4I_REG_BUF12_ADDR	0x0070	/* CAN Tx/Rx Buffer 12 */
+ #define SUN4I_REG_ACPC_ADDR	0x0040	/* CAN Acceptance Code 0 */
+ #define SUN4I_REG_ACPM_ADDR	0x0044	/* CAN Acceptance Mask 0 */
++#define SUN4I_REG_ACPC_ADDR_D1	0x0028	/* CAN Acceptance Code 0 on the D1 */
++#define SUN4I_REG_ACPM_ADDR_D1	0x002C	/* CAN Acceptance Mask 0 on the D1 */
+ #define SUN4I_REG_RBUF_RBACK_START_ADDR	0x0180	/* CAN transmit buffer start */
+ #define SUN4I_REG_RBUF_RBACK_END_ADDR	0x01b0	/* CAN transmit buffer end */
+ 
+@@ -779,6 +781,11 @@ static const struct sun4ican_quirks sun4ican_quirks_r40 = {
+ 	.acp_offset = 0,
  };
  
- struct sun4ican_priv {
-@@ -216,6 +218,7 @@ struct sun4ican_priv {
- 	struct clk *clk;
- 	struct reset_control *reset;
- 	spinlock_t cmdreg_lock;	/* lock for concurrent cmd register writes */
-+	int acp_offset;
- };
- 
- static const struct can_bittiming_const sun4ican_bittiming_const = {
-@@ -338,8 +341,8 @@ static int sun4i_can_start(struct net_device *dev)
- 	}
- 
- 	/* set filters - we accept all */
--	writel(0x00000000, priv->base + SUN4I_REG_ACPC_ADDR);
--	writel(0xFFFFFFFF, priv->base + SUN4I_REG_ACPM_ADDR);
-+	writel(0x00000000, priv->base + SUN4I_REG_ACPC_ADDR + priv->acp_offset);
-+	writel(0xFFFFFFFF, priv->base + SUN4I_REG_ACPM_ADDR + priv->acp_offset);
- 
- 	/* clear error counters and error code capture */
- 	writel(0, priv->base + SUN4I_REG_ERRC_ADDR);
-@@ -768,10 +771,12 @@ static const struct ethtool_ops sun4ican_ethtool_ops = {
- 
- static const struct sun4ican_quirks sun4ican_quirks_a10 = {
- 	.has_reset = false,
-+	.acp_offset = 0,
- };
- 
- static const struct sun4ican_quirks sun4ican_quirks_r40 = {
- 	.has_reset = true,
-+	.acp_offset = 0,
- };
- 
++static const struct sun4ican_quirks sun4ican_quirks_d1 = {
++	.has_reset = true,
++	.acp_offset = (SUN4I_REG_ACPC_ADDR_D1 - SUN4I_REG_ACPC_ADDR),
++};
++
  static const struct of_device_id sun4ican_of_match[] = {
-@@ -870,6 +875,7 @@ static int sun4ican_probe(struct platform_device *pdev)
- 	priv->base = addr;
- 	priv->clk = clk;
- 	priv->reset = reset;
-+	priv->acp_offset = quirks->acp_offset;
- 	spin_lock_init(&priv->cmdreg_lock);
- 
- 	platform_set_drvdata(pdev, dev);
+ 	{
+ 		.compatible = "allwinner,sun4i-a10-can",
+@@ -789,6 +796,9 @@ static const struct of_device_id sun4ican_of_match[] = {
+ 	}, {
+ 		.compatible = "allwinner,sun8i-r40-can",
+ 		.data = &sun4ican_quirks_r40
++	}, {
++		.compatible = "allwinner,sun20i-d1-can",
++		.data = &sun4ican_quirks_d1
+ 	}, {
+ 		/* sentinel */
+ 	},
+@@ -913,4 +923,4 @@ module_platform_driver(sun4i_can_driver);
+ MODULE_AUTHOR("Peter Chen <xingkongcp@gmail.com>");
+ MODULE_AUTHOR("Gerhard Bertelsmann <info@gerhard-bertelsmann.de>");
+ MODULE_LICENSE("Dual BSD/GPL");
+-MODULE_DESCRIPTION("CAN driver for Allwinner SoCs (A10/A20)");
++MODULE_DESCRIPTION("CAN driver for Allwinner SoCs (A10/A20/D1)");
 -- 
 2.41.0
 
