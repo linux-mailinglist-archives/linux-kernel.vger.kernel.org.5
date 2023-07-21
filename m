@@ -2,177 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F35E275BD7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 06:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABF775BD7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 06:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbjGUEm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 00:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49048 "EHLO
+        id S230232AbjGUErt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 00:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjGUEm4 (ORCPT
+        with ESMTP id S230112AbjGUErq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 00:42:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BBC10E5;
-        Thu, 20 Jul 2023 21:42:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A2A8F61083;
-        Fri, 21 Jul 2023 04:42:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3232C433C7;
-        Fri, 21 Jul 2023 04:42:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689914574;
-        bh=JF0Y6sohRAoq9IsPXejZVN/uvgFs0TOdJTkY2sOlxYE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rZiCzFUxEeXA8Jo7Yd+wrp9lgbS/8O03w/Oro7QIsGrWKMqPVvIZhKFlYwC3exVar
-         waZEgrnmoW63XKKQqe6K7JjsToA1uagznAoH2vchElZYBY35Zxj52bIOl5r3SoVl7F
-         0nt265dTsWVfZbUu4sU4pA88AlbfplBQOo1+ec9Vanh+6jxmmqKxaa7sZwWK6ekjNC
-         bzxQfc/2LRgNBYqto5plaAqbvFj7+naB/scCkjngytI4GCgb9UkLIZuSemtrRxlJJg
-         wTWUmB36BoMzAhWlamAq304/fsVvhr//iEdpp4/fhM5+/7XxPXCIQgTE2YIsz/wq2U
-         4Mh6HRoJ5WDbQ==
-Date:   Thu, 20 Jul 2023 21:42:52 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     palmer@dabbelt.com, paul.walmsley@sifive.com,
-        aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
-        davem@davemloft.net, conor.dooley@microchip.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, christoph.muellner@vrull.eu,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>,
-        Charalampos Mitrodimas <charalampos.mitrodimas@vrull.eu>
-Subject: Re: [PATCH v4 08/12] RISC-V: crypto: add a vector-crypto-accelerated
- SHA256 implementation
-Message-ID: <20230721044252.GB847@sol.localdomain>
-References: <20230711153743.1970625-1-heiko@sntech.de>
- <20230711153743.1970625-9-heiko@sntech.de>
+        Fri, 21 Jul 2023 00:47:46 -0400
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6FA1BEF;
+        Thu, 20 Jul 2023 21:47:43 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2b974031aeaso2749831fa.0;
+        Thu, 20 Jul 2023 21:47:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689914861; x=1690519661;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rzttnzwsCVtAaan/zl6CN7jlq5PQz6KDFquQEPaS+Bc=;
+        b=QayWFcX5HEggXhga4mcA6+c46JJvtHdG4RIsKp3ZTQKMsTEE2uIzs0JYwDkgKBBBfF
+         rshNsFM/9cW+3MBhbRYXsOduMC3XBWNhrQsAcTI3yCJGxVXBmA8W97P5OXnAJ9TY5kkT
+         NOU6ckeYkdhZSxbXGSidVdSd9TTKVxINbqEsIY96y+jzso+XoML4LlWDaVSs9AOgpoIc
+         ZQdulSjyGRMU6KtQpYy/26pRL8jbswQtgiRmQDvPgsqJmZuZ7mAOSBI5gy7k2VcRycO6
+         acrA7SFYNX9BHhhwCvAN6HA3nfyoA3moYsKW095Q9bK+B/MzVyKmD3auSa9ww6uL1q9J
+         8H2A==
+X-Gm-Message-State: ABy/qLbStMhfas9dvsuanRYGyl5zxCl8KSWkKYIamBMHzG6V90ow/mki
+        RVs+1od3ToCzgJF3NPD5ZtM=
+X-Google-Smtp-Source: APBJJlH/0GSArnoEoKgRfmDmBsIjxbEzLoj3aEeG5CEys0ce+HDI3lHaB12EuIDD4vDcOsVZT5C6xg==
+X-Received: by 2002:a2e:8684:0:b0:2b6:dd13:4f26 with SMTP id l4-20020a2e8684000000b002b6dd134f26mr721096lji.46.1689914861274;
+        Thu, 20 Jul 2023 21:47:41 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id bh17-20020a05600c3d1100b003fbb1ce274fsm15201953wmb.0.2023.07.20.21.47.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 21:47:40 -0700 (PDT)
+Message-ID: <748e8be1-d7e6-c0a3-b83b-a8475873cc4c@kernel.org>
+Date:   Fri, 21 Jul 2023 06:47:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230711153743.1970625-9-heiko@sntech.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] x86/microcode/AMD: Increase microcode PATCH_MAX_SIZE
+Content-Language: en-US
+To:     John Allen <john.allen@amd.com>, bp@alien8.de,
+        linux-kernel@vger.kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        x86@kernel.org, stable@vger.kernel.org
+References: <20230720202813.3269888-1-john.allen@amd.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20230720202813.3269888-1-john.allen@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 05:37:39PM +0200, Heiko Stuebner wrote:
-> diff --git a/arch/riscv/crypto/sha256-riscv64-glue.c b/arch/riscv/crypto/sha256-riscv64-glue.c
-> new file mode 100644
-> index 000000000000..1c9c88029f60
-> --- /dev/null
-> +++ b/arch/riscv/crypto/sha256-riscv64-glue.c
-> @@ -0,0 +1,115 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Linux/riscv64 port of the OpenSSL SHA256 implementation for RISCV64
-> + *
-> + * Copyright (C) 2022 VRULL GmbH
-> + * Author: Heiko Stuebner <heiko.stuebner@vrull.eu>
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/types.h>
-> +#include <asm/simd.h>
-> +#include <asm/vector.h>
-> +#include <crypto/internal/hash.h>
-> +#include <crypto/internal/simd.h>
-> +#include <crypto/sha2.h>
-> +#include <crypto/sha256_base.h>
-> +
-> +asmlinkage void sha256_block_data_order_zvbb_zvknha(u32 *digest, const void *data,
-> +					unsigned int num_blks);
-> +
-> +static void __sha256_block_data_order(struct sha256_state *sst, u8 const *src,
-> +				      int blocks)
-> +{
-> +	sha256_block_data_order_zvbb_zvknha(sst->state, src, blocks);
-> +}
+On 20. 07. 23, 22:28, John Allen wrote:
+> Future AMD cpus will have microcode patches that exceed the current
+> limit of three 4K pages. Increase substantially to avoid future size
+> increases.
 
-Having a double-underscored function wrap around a non-underscored one like this
-isn't conventional for Linux kernel code.  IIRC some of the other crypto code
-happens to do this, but it really is supposed to be the other way around.
+Hi,
 
-I think you should just declare the assembly function to take a 'struct
-sha256_state', with a comment mentioning that only the 'u32 state[8]' at the
-beginning is actually used.  That's what arch/x86/crypto/sha256_ssse3_glue.c
-does, for example.  Then, __sha256_block_data_order() would be unneeded.
+so with my current distro (openSUSE TW):
+$ zgrep NODES_SHIFT /proc/config.gz
+CONFIG_NODES_SHIFT=10
 
-> +static int riscv64_sha256_update(struct shash_desc *desc, const u8 *data,
-> +			 unsigned int len)
-> +{
-> +	if (crypto_simd_usable()) {
+This:
 
-crypto_simd_usable() uses may_use_simd() which isn't wired up for RISC-V, so it
-gets the default implementation of '!in_interrupt()'.  RISC-V does have
-may_use_vector() which looks like right thing.  I think RISC-V needs a header
-arch/riscv/include/asm/simd.h which defines may_use_simd() as a wrapper around
-may_use_vector().
+static u8 amd_ucode_patch[MAX_NUMNODES][PATCH_MAX_SIZE];
 
-> +		int ret;
-> +
-> +		kernel_rvv_begin();
-> +		ret = sha256_base_do_update(desc, data, len,
-> +					    __sha256_block_data_order);
-> +		kernel_rvv_end();
-> +		return ret;
-> +	} else {
-> +		sha256_update(shash_desc_ctx(desc), data, len);
-> +		return 0;
-> +	}
-> +}
-> +
-> +static int riscv64_sha256_finup(struct shash_desc *desc, const u8 *data,
-> +			unsigned int len, u8 *out)
-> +{
-> +	if (!crypto_simd_usable()) {
-> +		sha256_update(shash_desc_ctx(desc), data, len);
-> +		sha256_final(shash_desc_ctx(desc), out);
-> +		return 0;
-> +	}
+is now 32M instead of 12M. That is a complete waste on my _one_ node 
+system. Can we make amd_ucode_patch dynamic first, depending on 
+num_online_nodes()?
 
-Keep things consistent please.  riscv64_sha256_update() could use
-!crypto_simd_usable() and an early return too.
+> Signed-off-by: John Allen <john.allen@amd.com>
+> Cc: stable@vger.kernel.org
+> ---
+>   arch/x86/include/asm/microcode_amd.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/microcode_amd.h b/arch/x86/include/asm/microcode_amd.h
+> index e6662adf3af4..e3d5f5ae2f46 100644
+> --- a/arch/x86/include/asm/microcode_amd.h
+> +++ b/arch/x86/include/asm/microcode_amd.h
+> @@ -41,7 +41,7 @@ struct microcode_amd {
+>   	unsigned int			mpb[];
+>   };
+>   
+> -#define PATCH_MAX_SIZE (3 * PAGE_SIZE)
+> +#define PATCH_MAX_SIZE (8 * PAGE_SIZE)
+>   
+>   #ifdef CONFIG_MICROCODE_AMD
+>   extern void __init load_ucode_amd_bsp(unsigned int family);
 
-> +static int __init sha256_mod_init(void)
+thanks,
+-- 
+js
+suse labs
 
-riscv64_sha256_mod_init()
-
-> +{
-> +	/*
-> +	 * From the spec:
-> +	 * Zvknhb supports SHA-256 and SHA-512. Zvknha supports only SHA-256.
-> +	 */
-> +	if ((riscv_isa_extension_available(NULL, ZVKNHA) ||
-> +	     riscv_isa_extension_available(NULL, ZVKNHB)) &&
-> +	     riscv_isa_extension_available(NULL, ZVBB) &&
-> +	     riscv_vector_vlen() >= 128)
-> +
-> +		return crypto_register_shash(&sha256_alg);
-> +
-> +	return 0;
-> +}
-> +
-> +static void __exit sha256_mod_fini(void)
-
-riscv64_sha256_mod_exit()
-
-> +{
-> +	if ((riscv_isa_extension_available(NULL, ZVKNHA) ||
-> +	     riscv_isa_extension_available(NULL, ZVKNHB)) &&
-> +	     riscv_isa_extension_available(NULL, ZVBB) &&
-> +	     riscv_vector_vlen() >= 128)
-> +		crypto_unregister_shash(&sha256_alg);
-> +}
-
-If the needed CPU features aren't present, return -ENODEV from the module_init
-function instead of 0.  Then, the module_exit function can unconditionally
-unregister the algorithm.
-
-- Eric
