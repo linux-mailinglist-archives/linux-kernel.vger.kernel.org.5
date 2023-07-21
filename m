@@ -2,172 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED57975D554
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026F375D55A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbjGUUDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
+        id S230028AbjGUUJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:09:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGUUDl (ORCPT
+        with ESMTP id S229487AbjGUUJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:03:41 -0400
-Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529A1272C;
-        Fri, 21 Jul 2023 13:03:39 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 1D99E2B00169;
-        Fri, 21 Jul 2023 16:03:34 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 21 Jul 2023 16:03:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1689969813; x=1689977013; bh=UI
-        xSERX8/T0QhMA41PxgSILvKp1Mo/d3t7SIbHJ30FM=; b=t48KOEps/vCcAI7DxH
-        mMtvIueAxN1ZU4cTbiqPu1lCCyFdy83iX7cSuiW88Rc/iGJjZo5VKLVtSJkgKBYT
-        2gKdzkEb3EBc8wuTXV/RPO5XwcJDdYBURiqAp2yGU8j4c5Lz0ZVOHNUiZ6qCo1Xe
-        bL4QIktHu/2GuzJiUsP1sW9oV+CebNH3btNt8Fb4GGUBvuhEUSwKbjs+YceDLwqE
-        wDeWeXA0k85WM4qxv11pIJCRQvCK3Mf1XOJTWSffF1UU/cwoNotj8AAu/0iGrejI
-        CO0XX2ElBmcwyuAyuRP2xQp2YOpB4GnASkeQMgjoegqq3VaTi1ECshbJBuHLf5I+
-        VwUQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1689969813; x=1689977013; bh=UIxSERX8/T0Qh
-        MA41PxgSILvKp1Mo/d3t7SIbHJ30FM=; b=DNcO38MFDJ/BX9RI1DERnK7T82652
-        LbDTk23wYUgeUIg8cVJRj5kaUejXv3Jh5Q55I3tJdc1z2yqXswdlGgKQoWt3KXMy
-        ppdC7aA2v9w938C9T6DWUD3Nsjhvgs+oot/aFZ1DER+1kDTElPprs17OAxhJdBU5
-        9Ws2kh1VXJ21Kq3511b7+DEPf3+IAi/dslfY5laRlsNDZeDkgQUYPMrl1K8CWAiY
-        MtQ8zxzRbcuK9/nfdktUVlWEDWNzh8J4erjzK95sNoJHeS/fEV2W5N2l3e6ZSTP7
-        iLVAAp7K1EXrHnNjT4yTqNyCbBVnUrfIJ0OhrAEUxiI8D+atNWOE++Thw==
-X-ME-Sender: <xms:lOS6ZLi_yl2HEx8VNhPzXISbLHNDccRa4qdqkaEkYYHIFUaa0-Phvg>
-    <xme:lOS6ZIANKa0Fe-CWSCLV7KmOeogapQ3OxYmJp_BwMGaVpetH7KZG_ylvTtzP4eDD6
-    r0PfuKZu9bJb9mlIQ>
-X-ME-Received: <xmr:lOS6ZLEX_AV5j1TyvlUPDixKyvVcmK00XVk3ff_R1JBC1O1Ve_crbubbe2jzKae7x39MtdO2cN4AIyrEX_-c5TAR4XZYJRUAB9PY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgddufeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
-    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:lOS6ZISIrqP9DmogYZlfIhS1AHOz9ht7hAOJh8Ks8flYsHdgsw5Zrw>
-    <xmx:lOS6ZIx86g21Z66hxEaTtAlnF63MWXKQmyAOdUJ0C7bMkmbnigv8pA>
-    <xmx:lOS6ZO5rs1Ky-lE-zxOyYIYbqSeGOOlORer4lqBlLvtJ1yG8dJhUDg>
-    <xmx:leS6ZHi9AvtvYGlY_SOCwmEKnLe0DXKCdmvumiTkBNinwEt__yKEnX8ETLs>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 21 Jul 2023 16:03:30 -0400 (EDT)
-Date:   Fri, 21 Jul 2023 14:03:29 -0600
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     daniel@iogearbox.net, kadlec@netfilter.org, ast@kernel.org,
-        pablo@netfilter.org, kuba@kernel.org, davem@davemloft.net,
-        andrii@kernel.org, edumazet@google.com, pabeni@redhat.com,
-        alexei.starovoitov@gmail.com, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org, dsahern@kernel.org
-Subject: Re: [PATCH bpf-next v5 2/5] netfilter: bpf: Support
- BPF_F_NETFILTER_IP_DEFRAG in netfilter link
-Message-ID: <waoejzg2unjytkjflwvcff4z6wu2vlsji5neybrt4p5a3bn3ev@nznwevyfywvh>
-References: <cover.1689884827.git.dxu@dxuuu.xyz>
- <690a1b09db84547b0f0c73654df3f4950f1262b7.1689884827.git.dxu@dxuuu.xyz>
- <20230720231904.GA31372@breakpoint.cc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230720231904.GA31372@breakpoint.cc>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 16:09:27 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034EC358B;
+        Fri, 21 Jul 2023 13:09:27 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-666ecf9a081so2025122b3a.2;
+        Fri, 21 Jul 2023 13:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689970166; x=1690574966;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=glItj7+G0Uf+3TXCFD17x/kcBvbeMtBhJY/eSR1CNg8=;
+        b=F5SBeoRg0yQXOOTgi8JzCY7ajdswQJQM3//eXk6gOsCETEEw1MkcDLZD9DZApf7hoV
+         9n43fwmBtFCvM4PtEtYQW4gQfQHLn0ou+2ABvGCKSSxrFFxM/JVM7hN94LleB700NKhq
+         fySLbhbkmjIlOUpFI5EEMs0tL1JLbp+WGI+0k5axp8OArlIoLpDlqtoyIpyLtQ9xbBEX
+         ZJPji8OLVYhp66Htpwis0kkzzv2M+TbhS+YVt+jo01xM/+YQrjoAyKe0cGSpzloI4fM/
+         BXgmqbLF96a6FfDMSpokTwha2FyrkNRBUAA9ODRK3fBe8krjRf2CNz4YMZipZXMLhbmY
+         QQGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689970166; x=1690574966;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=glItj7+G0Uf+3TXCFD17x/kcBvbeMtBhJY/eSR1CNg8=;
+        b=dCz5iLkenDpL2C/oznl6b33Z8fb95J87aPVeCH9zkNHpV0Ba36/if6l1XQUBvnWnuS
+         CxLBLfo17Lihv2idgbGgZjDaCVN33wjgivExBfnvznn/R20YFbp48MRhQGyelCwkKr6I
+         oypqYxhkLfP7736cUiqZtS5aoxI3/wvXpor5N4J4x8OCnFxhpKiH/rU8X73t9t4Kzktv
+         OFIR+EImJ7IG6O6ZJmPt+ZFic9VSmpSxClojZ2f+pgBPc2oRf9mOeLDztnjWMSMVsqF7
+         VpWQFU+ysaeTFoVCbTf7garHOLGPdclpoFFbEYZtgcHfs7n2yQ6mCJ92o/bC9V8zsbkA
+         iUHg==
+X-Gm-Message-State: ABy/qLaXwB9llL5r6/3qH4i/evDKtoc1weYz1GUvbaqZklJjJzP/1Vt7
+        p+f9NUj25stgHZSHo7gd7N8=
+X-Google-Smtp-Source: APBJJlGKTX4UhpIb6FRkaYN/QI0HITHIvnGgmCBNIyTGFe0VXQ/Hj+tRjrMvpgLWCWTx/Ei8iUOssA==
+X-Received: by 2002:a05:6a20:429b:b0:133:21c3:115e with SMTP id o27-20020a056a20429b00b0013321c3115emr3787192pzj.48.1689970166387;
+        Fri, 21 Jul 2023 13:09:26 -0700 (PDT)
+Received: from [127.0.0.1] ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id z129-20020a633387000000b005633c9493d0sm3482557pgz.21.2023.07.21.13.09.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 Jul 2023 13:09:25 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
+Date:   Sat, 22 Jul 2023 04:08:15 +0800
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        rcu@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <ED9F14A2-533B-471E-9B79-F75CEEE9A216@gmail.com>
+References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
+ <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
+ <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+ <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
+To:     Joel Fernandes <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Eric Dumazet <edumazet@google.com>, roman.gushchin@linux.dev,
+        "David.Laight@aculab.com" <David.Laight@ACULAB.COM>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 01:19:04AM +0200, Florian Westphal wrote:
-> Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > +	const struct nf_defrag_hook __maybe_unused *hook;
-> > +
-> > +	switch (link->hook_ops.pf) {
-> > +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4)
-> > +	case NFPROTO_IPV4:
-> > +		hook = get_proto_defrag_hook(link, nf_defrag_v4_hook, "nf_defrag_ipv4");
-> > +		if (IS_ERR(hook))
-> > +			return PTR_ERR(hook);
-> > +
-> > +		link->defrag_hook = hook;
-> > +		return 0;
-> > +#endif
-> > +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
-> > +	case NFPROTO_IPV6:
-> > +		hook = get_proto_defrag_hook(link, nf_defrag_v6_hook, "nf_defrag_ipv6");
-> > +		if (IS_ERR(hook))
-> > +			return PTR_ERR(hook);
-> > +
-> > +		link->defrag_hook = hook;
-> > +		return 0;
-> > +#endif
-> > +	default:
-> > +		return -EAFNOSUPPORT;
-> > +	}
-> > +}
-> > +
-> > +static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
-> > +{
-> > +	const struct nf_defrag_hook *hook = link->defrag_hook;
-> > +
-> > +	if (!hook)
-> > +		return;
-> > +	hook->disable(link->net);
-> > +	module_put(hook->owner);
-> > +}
-> > +
-> >  static void bpf_nf_link_release(struct bpf_link *link)
-> >  {
-> >  	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
-> > @@ -37,6 +119,8 @@ static void bpf_nf_link_release(struct bpf_link *link)
-> >  	 */
-> >  	if (!cmpxchg(&nf_link->dead, 0, 1))
-> >  		nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
-> > +
-> > +	bpf_nf_disable_defrag(nf_link);
-> >  }
-> 
-> I suspect this needs to be within the cmpxchg() branch to avoid
-> multiple ->disable() calls.
 
-Ah, good catch.
+> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 =E4=B8=8B=E5=8D=8811:21=EF=BC=8CJoel =
+Fernandes <joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> On 7/21/23 10:27, Alan Huang wrote:
+>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 20:54=EF=BC=8CJoel Fernandes =
+<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>>=20
+>>>=20
+>>>=20
+>>>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> =
+wrote:
+>>>>=20
+>>>> =EF=BB=BF
+>>>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet =
+<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
+>>>>>=20
+>>>>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
+<mmpgouride@gmail.com> wrote:
+>>>>>>=20
+>>>>>> Hi,
+>>>>>>=20
+>>>>>> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of =
+first item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
+>>>>>> and a related discussion [1].
+>>>>>>=20
+>>>>>> After reading the whole discussion, it seems like that ptr->field =
+was cached by gcc even with the deprecated
+>>>>>> ACCESS_ONCE(), so my question is:
+>>>>>>=20
+>>>>>>      Is that a compiler bug? If so, has this bug been fixed =
+today, ten years later?
+>>>>>>=20
+>>>>>>      What about READ_ONCE(ptr->field)?
+>>>>>=20
+>>>>> Make sure sparse is happy.
+>>>>=20
+>>>> It caused a problem without barrier(), and the deprecated =
+ACCESS_ONCE() didn=E2=80=99t help:
+>>>>=20
+>>>>   https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
+>>>>=20
+>>>> So, my real question is: With READ_ONCE(ptr->field), are there =
+still some unusual cases where gcc
+>>>> decides not to reload ptr->field?
+>>>=20
+>>> I am a bit doubtful there will be strong (any?) interest in =
+replacing the barrier() with READ_ONCE() without any tangible reason, =
+regardless of whether a gcc issue was fixed.
+>>>=20
+>>> But hey, if you want to float the idea=E2=80=A6
+>> We already had the READ_ONCE() in rcu_deference_raw().
+>> The barrier() here makes me think we need write code like below:
+>> =09
+>> 	READ_ONCE(head->first);
+>> 	barrier();
+>> 	READ_ONCE(head->first);
+>> With READ_ONCE (or the deprecated ACCESS_ONCE),
+>> I don=E2=80=99t think a compiler should cache the value of =
+head->first.
+>=20
+>=20
+> Right, it shouldn't need to cache. To Eric's point it might be risky =
+to remove the barrier() and someone needs to explain that issue first =
+(or IMO there needs to be another tangible reason like performance etc). =
+Anyway, FWIW I wrote a simple program and I am not seeing the =
+head->first cached with the pattern you shared above:
+>=20
+> #include <stdlib.h>
+>=20
+> #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+> #define barrier() __asm__ __volatile__("": : :"memory")
+>=20
+> typedef struct list_head {
+>    int first;
+>    struct list_head *next;
+> } list_head;
+>=20
+> int main() {
+>    list_head *head =3D (list_head *)malloc(sizeof(list_head));
+>    head->first =3D 1;
+>    head->next =3D 0;
+>=20
+>    READ_ONCE(head->first);
+>    barrier();
+>    READ_ONCE(head->first);
+>=20
+>    free(head);
+>    return 0;
+> }
+>=20
+> On ARM 32-bit, 64-bit and x86_64, with -Os and then another experiment =
+with -O2 on new gcc versions.
 
-> 
-> > +	if (attr->link_create.netfilter.flags & BPF_F_NETFILTER_IP_DEFRAG) {
-> > +		err = bpf_nf_enable_defrag(link);
-> > +		if (err) {
-> > +			bpf_link_cleanup(&link_primer);
-> > +			return err;
-> > +		}
-> > +	}
-> > +
-> >  	err = nf_register_net_hook(net, &link->hook_ops);
-> >  	if (err) {
-> 		bpf_nf_disable_defrag(link);
+Well, when I change the code as below:
 
-Ack. Did not see that bpf_link_cleanup() sets link->prog to NULL which
-disables bpf_link_ops:release() on the release codepath.
+#include <stdlib.h>
 
-> 
-> Other than those nits this lgtm, thanks!
-> 
+#define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+#define barrier() __asm__ __volatile__("": : :"memory")
 
-Thanks for reviewing!
+typedef struct list_head {
+   struct list_head *next;
+   int first;					// difference here
+} list_head;
 
-Daniel
+int main() {
+   list_head *head =3D (list_head *)malloc(sizeof(list_head));
+   head->first =3D 1;
+   head->next =3D 0;
+
+   READ_ONCE(head->first);
+   READ_ONCE(head->first);
+
+   free(head);
+   return 0;
+}
+
+GCC 8, GCC 10, GCC 11 generate the following code (with -O2):
+
+main:
+        subq    $8, %rsp
+        movl    $16, %edi
+        call    malloc
+        movl    $1, 8(%rax)
+        movq    %rax, %rdi
+        call    free
+        xorl    %eax, %eax
+        addq    $8, %rsp
+        ret
+
+
+The READ_ONCE has been optimized away. The difference in the source code =
+is that I put ->first to the second member.
+
+That means, GCC 8, 10, 11 have the bug!
+
+
+
+
