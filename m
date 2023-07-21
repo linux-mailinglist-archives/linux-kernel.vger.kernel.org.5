@@ -2,138 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B40EE75C893
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3231175C8C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbjGUN41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 09:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
+        id S229983AbjGUN6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 09:58:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbjGUN4B (ORCPT
+        with ESMTP id S230180AbjGUN6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 09:56:01 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B71359F;
-        Fri, 21 Jul 2023 06:55:43 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9926623e367so319628766b.0;
-        Fri, 21 Jul 2023 06:55:43 -0700 (PDT)
+        Fri, 21 Jul 2023 09:58:49 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECE93A93
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 06:58:29 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fb5bcb9a28so3250940e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 06:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689947738; x=1690552538;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WUTml+j0BKcM+haAeIip69fhehsDqEFXRsZ2bgoeHNs=;
-        b=Z4SVq1N4Jb+zb+PMQ9MDYCPFL5uBWO5QOdXVfkLipaPjpJ7GjH3cn6h9O1MMQ994/U
-         QVS/wtFa2Zyn/JsTx36gX5MTFBUT6GA0O0YzjjVEDeFpNyMpRGezci3DsjRWBoKvNrua
-         y20KEkKqQpkMJFrZ+xjHT/wKZdgfXr6E7+5nr2ER7BdroAq6a64e8SzMkLcqKEdjUvRP
-         vT2xWw1C07MD1P06YCmnuby+TSJ8A5eA1Wdw7AIRM7hj9qa9luMTeYEw4wyajR/wAOIJ
-         Tg3E9LdNsMnt1V/QtdyOwbMXY2fitQUGsBKBy+wmxgkNnlRcJH0h68ZYDKnU8NeWk6lq
-         qsXA==
+        d=linaro.org; s=google; t=1689947907; x=1690552707;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Uoi5Y4jjgnWGfQC+MA3PSzDO/nJ69a0U86XqjtM9qm4=;
+        b=hovoUSXRq28HNft26oRNivk53rfhvkFzFlsE+3eJGaPu6W9o4Hh4e/ClQ4euEk52Lc
+         Ek5BSaAroh2dCUY6scEF0qTX6SJCRLeM3gAKGHAwhgN2TXx3tl8zBKhqZNypY/tWkFHc
+         oe7SRYPVtulOU518is+mkTPudusWNGrbXpmSCwGn9SIS+3Qdck423+6xju48zvzmYRLu
+         SrCXzGzyT5RKNGORyZpIV27gIbAKSA970kJAUEzrStzCaI6yIn2cD69S96IGPnLOrWz9
+         MC4iNZlM1SAONUv1Jf8RdW+s5o5HTVZUOtOFBP3reutBNZI02r+6aCCx7r231ZzUbq/y
+         Rnqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689947738; x=1690552538;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WUTml+j0BKcM+haAeIip69fhehsDqEFXRsZ2bgoeHNs=;
-        b=LMx//O3HxnUMAUUvKRRD/9BF5BYZc18W5hW0Q2gLg/GQmOptC8UTO2OHtxNlBmeOs3
-         Qg2VOLAlmrw/I711w/yzjoxU+YUaujxAqJzEMuBKSuipQfqHiQJZwQjwl3PZLNCbqhGo
-         KNS6lbYXBv/LG5NKvZaJ3bR+AG79C6inv9EB6Xqu3/HhO5sCrutq4PuDzPrt296UJGDl
-         fQJS/GbVBoCvrx8xoFZD3ptdm61BGAv/4+E3tCNMvmjT+hv5IYUyHLtdFwNCk1+a+JYG
-         LwaGjHaXNLwK7V6vL2MRfLhVC3AUo7HX8b5iAvOmKWBuA5kJ1IFgyPt30zAddm6Sn1ZL
-         +Geg==
-X-Gm-Message-State: ABy/qLbOAGT7KLQILEMAK0ivB9zQ9LlukDI4yrQLuUB/vJ4qVo6cw09B
-        eSN3GSsU8u263SFcGU/fz8Q=
-X-Google-Smtp-Source: APBJJlH12b3UgDv0tSheU2gyswihEDjvN9eEW2IOO0q9dK9Kc2Su63zlxtNb3lxNpVzJqyKhpLrlow==
-X-Received: by 2002:a17:906:7a01:b0:992:a0c7:8d2a with SMTP id d1-20020a1709067a0100b00992a0c78d2amr1828274ejo.54.1689947737589;
-        Fri, 21 Jul 2023 06:55:37 -0700 (PDT)
-Received: from orome (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id k9-20020a1709062a4900b0098748422178sm2226858eje.56.2023.07.21.06.55.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 06:55:37 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 15:55:35 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>
-Cc:     jckuo@nvidia.com, jonathanh@nvidia.com,
-        linux-phy@lists.infradead.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH -next] phy: Remove duplicated include in xusb.c
-Message-ID: <ZLqOV-ShmOKcldcZ@orome>
-References: <20230719003614.5506-1-yang.lee@linux.alibaba.com>
+        d=1e100.net; s=20221208; t=1689947907; x=1690552707;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uoi5Y4jjgnWGfQC+MA3PSzDO/nJ69a0U86XqjtM9qm4=;
+        b=Kc/lcX167MMxVNjUKF7Vj3/nGfmnEat8W11r0xlDfH4VnQhIvYPcY3m3yYkxPtbpP1
+         vzaTzN3D/v5uM2rPzPyJ8atbgenXrkzjID9sZe1kcf3zyt1FB+2azJXG2OHX1KkDfmfj
+         WsWKpyd7o58kMYgPwqHMUzhv08PWXXgyamkL+hQpC9x0UO5gX1+cRrPA5npgMrpoVFpO
+         /ap9alOb8jDsi8XL2g7EGuflLwoCq02Y8a9e6wDkeFqcq3hWVkQ3aY0jY1xNarGKBcZ5
+         2s8MtExGg5s9N4g0Eud9qk2fqMN3sLC918mPG3quGM9rx5CmEc+4p6t32G3EtmmJoiA+
+         6AJA==
+X-Gm-Message-State: ABy/qLZYFLhUGrNMA+fsdD/3T00BRq2RLMcv/JKQO4Xas8NnXv5oIyDy
+        WXX5LnENVse8A5iBpUmEmdMasA==
+X-Google-Smtp-Source: APBJJlFJQPGeO+dM+/CogGYGFX3IbIoIu/R+CmmEzNoP5XS6uM+gVvd5Uqi6hxrOAM8nRxnGkKL4wA==
+X-Received: by 2002:a05:6512:1095:b0:4f8:cd67:88e6 with SMTP id j21-20020a056512109500b004f8cd6788e6mr1382568lfg.44.1689947907244;
+        Fri, 21 Jul 2023 06:58:27 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id h15-20020aa7c94f000000b0051d890b2407sm2111001edt.81.2023.07.21.06.58.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 06:58:26 -0700 (PDT)
+Message-ID: <53c26a74-3374-cbc4-57cf-3b1cc0904300@linaro.org>
+Date:   Fri, 21 Jul 2023 15:58:22 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="aiG/Z8uoJevjxZrs"
-Content-Disposition: inline
-In-Reply-To: <20230719003614.5506-1-yang.lee@linux.alibaba.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 02/42] dt-bindings: clock: Add Cirrus EP93xx
+To:     nikita.shubin@maquefel.me,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Peters <mpeters@embeddedTS.com>,
+        Kris Bahnsen <kris@embeddedTS.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-2-3d63a5f1103e@maquefel.me>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230605-ep93xx-v3-2-3d63a5f1103e@maquefel.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---aiG/Z8uoJevjxZrs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jul 19, 2023 at 08:36:14AM +0800, Yang Li wrote:
-> ./drivers/phy/tegra/xusb.c: linux/platform_device.h is included more than=
- once.
->=20
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D5930
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+On 20/07/2023 13:29, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+> 
+> This adds device tree bindings for the Cirrus Logic EP93xx
+> clock block used in these SoCs.
+> 
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 > ---
->  drivers/phy/tegra/xusb.c | 1 -
->  1 file changed, 1 deletion(-)
+>  .../bindings/clock/cirrus,ep9301-clk.yaml          | 46 ++++++++++++++++++++++
+>  include/dt-bindings/clock/cirrus,ep93xx-clock.h    | 41 +++++++++++++++++++
+>  2 files changed, 87 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml b/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml
+> new file mode 100644
+> index 000000000000..111e016601fb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/cirrus,ep9301-clk.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Cirrus Logic ep93xx SoC's clock controller
+> +
+> +maintainers:
+> +  - Nikita Shubin <nikita.shubin@maquefel.me>
+> +  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: cirrus,ep9301-clk
+> +      - items:
+> +          - enum:
+> +              - cirrus,ep9302-clk
+> +              - cirrus,ep9307-clk
+> +              - cirrus,ep9312-clk
+> +              - cirrus,ep9315-clk
+> +          - const: cirrus,ep9301-clk
+> +
+> +  "#clock-cells":
+> +    const: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: reference clock
+> +
+> +required:
+> +  - compatible
+> +  - "#clock-cells"
+> +  - clocks
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    clock-controller {
+> +      compatible = "cirrus,ep9301-clk";
+> +      #clock-cells = <1>;
+> +      clocks = <&xtali>;
+> +    };
+> +...
+> diff --git a/include/dt-bindings/clock/cirrus,ep93xx-clock.h b/include/dt-bindings/clock/cirrus,ep93xx-clock.h
+> new file mode 100644
+> index 000000000000..3cd053c0fdea
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/cirrus,ep93xx-clock.h
 
-It's typical to list the maintainers on the "To:" line to increase the
-chances of them noticing. This is obviously correct, so:
+Keep the same filename as bindings file.
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Best regards,
+Krzysztof
 
->=20
-> diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
-> index ed30866e7647..142ebe0247cc 100644
-> --- a/drivers/phy/tegra/xusb.c
-> +++ b/drivers/phy/tegra/xusb.c
-> @@ -12,7 +12,6 @@
->  #include <linux/phy/phy.h>
->  #include <linux/phy/tegra/xusb.h>
->  #include <linux/platform_device.h>
-> -#include <linux/platform_device.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/reset.h>
->  #include <linux/slab.h>
-> --=20
-> 2.20.1.7.g153144c
->=20
-
---aiG/Z8uoJevjxZrs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS6jlUACgkQ3SOs138+
-s6EFLw//dG+cVN7R6it4gQ+baHeWZRJwGmi2xEyeqmjVhZ+9c99KL63rmtIhsL7x
-b1+Qz3xit8FltZdDIYd+CJrW//1cxzvtt0KKHTMg2+91D2DZVpC7DRIl8Nj/2L46
-q04tHomOlrQ1vxzOvKJSxKVTai9Xk2lABp2Tz4EtP7An42s4mKUYxF68nXVxESkN
-w6F4uf8xVhkqbvcPmcnms8sQeIs5C+DCx1wUIWF8ucKcF+PcOTs2xFftgeoivpdv
-s9OgAzvGg6+KSDp2Ngx8iIoDHZWMFoFMqi01fOvnzXtj2gxcFzIts/E4NCKG/yJz
-dZfSYlDAQ6/WmG+KHgqXVMMe/4u4FYIJI8KiLEtNvQjAH+lc9NxvhimBEMRoY2LY
-PjpCxYfNWCzxuY1Dzckb1UB0671gRsDDkcH09pJeiOumV2cKWuSErLMDbOzEVeT9
-gr9tzQ24D6Vzwdyu6zKzzKpFfIzrNAyW1FwrVtx+XsXsOJbNe62o2IXCTqXEUFf6
-rDRwPsDGYw7gPkGigoFokOzaU8pXIPSkGh1GaCOFwwzPY2eXR4PMC88xoJu4lYds
-7nTOHYURaPsA0YEW96iZAYQdPeAUXqze8ZI3hdWJrv6KX1idVacy+sKDcRVDo3ty
-w7nV2GydZ5JTeuVjiXHgjjYLp0FRQF6H2azbIGma7obEJaCfMQI=
-=fsKZ
------END PGP SIGNATURE-----
-
---aiG/Z8uoJevjxZrs--
