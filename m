@@ -2,92 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CDB75CA8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA0075CA93
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbjGUOuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33060 "EHLO
+        id S230345AbjGUOuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230243AbjGUOuL (ORCPT
+        with ESMTP id S229823AbjGUOui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:50:11 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E758121;
-        Fri, 21 Jul 2023 07:50:10 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-78362f57500so82639339f.3;
-        Fri, 21 Jul 2023 07:50:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689951009; x=1690555809;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6/8OU9nD+IEREkyQ5osWmr6BhwzoAr61328Brf7SVP4=;
-        b=epf/EKYEjv8/Tmn1kAa4qxASe+g+4XH5EcGPt6FatDi5YyhhHpxbn3uCNmAQo2fBnY
-         gFsJIuy0cgUZIkjzkoNs/rgs4vpWEIEb7+QRG+BmCMuy8pBHshd7tTZ+njl56vR5bphm
-         mvjiic2q8wIhpX+uQh4tE2GAEY+DQ+eUZkuugSabxdf75zXo5DfTuJ5y84H+Qpu38VSO
-         vJoRrKY03RmY/Uk8WX8hKQI0LvxZYsyyR+wQz4wtryl98KH3nZmEXM/IXJRZZ4wb8ccc
-         ctrUazfTlmkGS/dCgdabHOXJcoN22Q0xaMdxvkcflPJDzdwrXpxo0wJ7504HQdju9CY2
-         h90w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689951009; x=1690555809;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6/8OU9nD+IEREkyQ5osWmr6BhwzoAr61328Brf7SVP4=;
-        b=gabHZHxORODrs7+psVDbBUlTm80BVhtQmAOD7owp/Q18zX+4TTrYT5KwAxOZPVK/ii
-         zZwtzdIA9uF0i6v8Lcj/YYQlTmiqeF17/xBSHXO6xS6pFIV3vwEuCxQr8fPJqdMct3Vn
-         mdwWkJM35H2JwIQrVAji8f4AldV6QZAkz5IQPll9ztMlIom5QNDSgkpLOA+rwU5jTmez
-         FsahYFqALJWJN9O2rEtUkqFSnr5O281ZriKb51u0jAuPek4SPhpQTwO13IJiEtIZvAzB
-         RLPBeNAFmHEnukbil8xrqBCCWMslzy7c3DWW0uPSqVKkRh6O9s3hlXTthM9uGDhWJgFy
-         etEg==
-X-Gm-Message-State: ABy/qLYp5JBrT7vg+8cPJ0X7Pk80petQctMbduFwtayqVlqfeU6qMCff
-        Z0J7LY/WGhicyMxnEjcGHRtGXBQd0M+i1XWIIYc=
-X-Google-Smtp-Source: APBJJlEQMmH+GgzPxmVvqjhwqKJ85g0HrjwwfdmBSLQlmfbSR4x9YrjoNu3u0B2YULqVgNXIWHDdcAUbxc6M0pVA1cQ=
-X-Received: by 2002:a6b:f00a:0:b0:786:463b:2ceb with SMTP id
- w10-20020a6bf00a000000b00786463b2cebmr228899ioc.11.1689951009297; Fri, 21 Jul
- 2023 07:50:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230713101415.108875-6-usama.anjum@collabora.com>
- <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
- <e430ea5c-fbf2-9e23-626d-2e6ea63eba18@collabora.com>
-In-Reply-To: <e430ea5c-fbf2-9e23-626d-2e6ea63eba18@collabora.com>
-From:   Andrei Vagin <avagin@gmail.com>
-Date:   Fri, 21 Jul 2023 07:49:58 -0700
-Message-ID: <CANaxB-y6KhdKLHFCw-Vrz+fVkgdboCv7ZKyYGAs7VXA0aFuu8A@mail.gmail.com>
-Subject: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 21 Jul 2023 10:50:38 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F58F0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:50:37 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 431DE218A0;
+        Fri, 21 Jul 2023 14:50:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689951036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vCBDLdIX566wZPqhuE9j3nMUEKvAtwBa3Y1ipHMwwHM=;
+        b=ONVDuTkf/fZMUwAz/38SG08TVMvLgLI2o9TLB9RCx0OqPdvjp/AS3PD20nsVMAT1zHHfH+
+        r/gfRuRVN3YGakUqctsm3ZYPhZcROLfT5y1+zMIF9E77Bo8f87FeOy7K3b0yffgO9eu4Ye
+        AV6ydvb4Twf41cqrtoViHo6s6FpCYa4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689951036;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vCBDLdIX566wZPqhuE9j3nMUEKvAtwBa3Y1ipHMwwHM=;
+        b=7abz8qmX5hP+OmDH2enyXnwVkG2M8DYye3Tw4grfB2kjlYSD5GpQeTEnfoMQ8TWJUpwDtk
+        /sNi1yclVWJv5dAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A7C8134BA;
+        Fri, 21 Jul 2023 14:50:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 4H2WATybumQ2GQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 21 Jul 2023 14:50:36 +0000
+Date:   Fri, 21 Jul 2023 16:50:35 +0200
+Message-ID: <87bkg5z5c4.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     <broonie@kernel.org>, <tiwai@suse.com>, <perex@perex.cz>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+Subject: Re: [PATCH v5 00/11] ALSA: hda: Adding support for CS35L56 on HDA systems
+In-Reply-To: <20230721132120.5523-1-rf@opensource.cirrus.com>
+References: <20230721132120.5523-1-rf@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,33 +70,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 9:27=E2=80=AFPM Muhammad Usama Anjum
-<usama.anjum@collabora.com> wrote:
->
-> Thank you Micha=C5=82.
->
-> On 7/21/23 12:28=E2=80=AFAM, Micha=C5=82 Miros=C5=82aw wrote:
-> >   b. rename match "flags" to 'page categories' everywhere - this makes
-> >       it easier to differentiate the ioctl()s categorisation of pages
-> >       from struct page flags;
-> >   c. change {required + excluded} to {inverted + required}. This was
-> >       rejected before, but I'd like to illustrate the difference.
-> >       Old interface can be translated to the new by:
-> >               categories_inverted =3D excluded_mask
-> >               categories_mask =3D required_mask | excluded_mask
-> >               categories_anyof_mask =3D anyof_mask
-> >       The new way allows filtering by: A & (B | !C)
-> >               categories_inverted =3D C
-> >               categories_mask =3D A
-> >               categories_anyof_mask =3D B | C
-> Andrei and Danylo,
->
-> Are you okay with these masks? It were you two who had proposed these.
+On Fri, 21 Jul 2023 15:21:09 +0200,
+Richard Fitzgerald wrote:
+> 
+> This set of patches adds support for using the CS35L56 boosted smart
+> amplifier on HDA systems. In these systems the CS35L56 audio is
+> routed through a HDA-to-I2S bridge codec.
+> 
+> This doesn't include the changes to the Realtek driver to actually hook
+> up the CS35L56 driver, because we don't yet have the QUIRK IDs to
+> associate it with. But we want to publish the driver now so that it is
+> available for bringing up hardware with the CS35L56.
+> 
+> The first 9 patches are moving code out of the ASoC driver and into the
+> shared library so that it can be shared with the HDA driver.
+> 
+> Patch #10 fixes missing #includes in the HDA headers so that the CS35L56
+> driver doesn't have to #include headers that it doesn't use.
+> 
+> CHANGES SINCE V5
+> The series has been rebased onto commit df4167d658d4
+> ("ASoC: cs35l56: Patch soft registers to defaults"), which removes
+> cs35l56_reread_firmware_registers() and adds cs35l56_set_patch().
+> 
+> Changes are trivial so I have carried forward Mark's and Takashi's acks.
 
-I am okay.
+Mark, I suppose it's fine to take all of those to my sound.git tree?
 
->
->
-> --
-> BR,
-> Muhammad Usama Anjum
+
+Takashi
