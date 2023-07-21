@@ -2,92 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA5A75C4D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6357175C4D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbjGUKmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:42:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
+        id S230004AbjGUKlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:41:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbjGUKl5 (ORCPT
+        with ESMTP id S229655AbjGUKlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:41:57 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D314A1710;
-        Fri, 21 Jul 2023 03:41:55 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qMnZF-0001IB-0Q;
-        Fri, 21 Jul 2023 10:41:01 +0000
-Date:   Fri, 21 Jul 2023 11:40:51 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Jan Kara <jack@suse.cz>, Damien Le Moal <dlemoal@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>, Min Li <min15.li@samsung.com>,
-        Christian Loehle <CLoehle@hyperstone.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Yeqi Fu <asuk4.q@gmail.com>, Avri Altman <avri.altman@wdc.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ye Bin <yebin10@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH 6/6] block: implement NVMEM provider
-Message-ID: <ZLpgs-aZVHCQooi0@makrotopia.org>
-References: <cover.1689802933.git.daniel@makrotopia.org>
- <e5b709e15739dc0563e9497a2dbbe63050381db0.1689802933.git.daniel@makrotopia.org>
- <ZLjci5bHzTI+/Kxs@infradead.org>
- <ZLlaOB1sb8wSd7Aq@makrotopia.org>
- <ZLomKmNe+EhpjI1K@infradead.org>
+        Fri, 21 Jul 2023 06:41:42 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED621701
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:41:40 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fbaef9871cso2895544e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:41:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689936099; x=1690540899;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fdhi2NedOY3rPKrFENYE2Nl2LSqlJJTZXcd9Gne5I04=;
+        b=i0dHRxpu0kna0O9NCPmLzRXgf88kJo2ZgVSCbvTcaHo0mvuQItb/M1C6iAu7Md/gZx
+         KaXjyNUf302VW15XVbpy6EjR50AYuTV87PXUiCROKdnQp/wY2D7BtcEMk7/gdfnqY6C0
+         25k6OfooUTt6AV5HWp7VtRZztB3kwwmBsLSA/1S3Dk2c+a08XlZmCWii51hWtTmu+/O2
+         2PQqfKhS6jORVc11xZDYTGEj5k3FKXOebWIYS/kmo4/AdiYRT3w1QOK7R++f6N9ijv4I
+         rXbP3OHTPFtu+RAxG00rIl3uJyTYioqmUAlEf66E6PgoYhsrDKBysFVHd/sIX1eOlmTW
+         sYgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689936099; x=1690540899;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fdhi2NedOY3rPKrFENYE2Nl2LSqlJJTZXcd9Gne5I04=;
+        b=Di4pNjXkAyiz1EJvMBCfrqvdmziYeaRmzx/bVMxdiuDJcJsg1Gm1UAAYYAa5+imx1W
+         S2LuNIjDvvKot1xAAvgIIPvYMSEblnEYb800AknpJ7lqRh/da2/XBnELw9jGBBbLPCg6
+         UJoPtIWI08VoIp+NMTdM3LRY4PMZV1+lFQpcjruf8LiE+De0xuUXxK7l5NRF+57OW+Xf
+         cjxTRjXjwcFLyb8ri3geNljUO6sxweAJar/N9b/wl8N0rHbStLI66z+wqdLdZAGYDjCJ
+         tDEvJF3+G8EzDzzX/tzTEyaqJJ/0T1wEA/GKKSSu/fDXzDVNmV1cUlerjSuTL8q5OcZQ
+         XR8g==
+X-Gm-Message-State: ABy/qLaiUCSo4aDoMJ6W7MgQx80RrGIepiHNi6R+1a18Rz0/nWmt0HJ8
+        5VHgAquxg9sq+qTqYMV/0sbnlw==
+X-Google-Smtp-Source: APBJJlFQmFvK48oV49nMp/IbxPuefxmFnwY291qWfYvu5RzStg53uV3nZ6Q24KNkC6P/NA8VabpC3g==
+X-Received: by 2002:ac2:5e3a:0:b0:4f9:56b8:45de with SMTP id o26-20020ac25e3a000000b004f956b845demr977055lfg.38.1689936099113;
+        Fri, 21 Jul 2023 03:41:39 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id w6-20020a5d4b46000000b0031590317c26sm3806487wrs.61.2023.07.21.03.41.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 03:41:38 -0700 (PDT)
+Message-ID: <97756604-0d35-aaff-7d2b-2cf65c0b4623@linaro.org>
+Date:   Fri, 21 Jul 2023 12:41:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZLomKmNe+EhpjI1K@infradead.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6 1/3] dt-bindings: arm: fsl: Add VAR-SOM-MX6 SoM with
+ Custom Board
+To:     James Hilliard <james.hilliard1@gmail.com>,
+        devicetree@vger.kernel.org
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230721103350.3684483-1-james.hilliard1@gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230721103350.3684483-1-james.hilliard1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 11:31:06PM -0700, Christoph Hellwig wrote:
-> On Thu, Jul 20, 2023 at 05:02:32PM +0100, Daniel Golle wrote:
-> > On Thu, Jul 20, 2023 at 12:04:43AM -0700, Christoph Hellwig wrote:
-> > > The layering here is exactly the wrong way around.  This block device
-> > > as nvmem provide has not business sitting in the block layer and being
-> > > keyed ff the gendisk registration.  Instead you should create a new
-> > > nvmem backed that opens the block device as needed if it fits your
-> > > OF description without any changes to the core block layer.
-> > > 
-> > 
-> > Ok. I will use a class_interface instead.
+On 21/07/2023 12:33, James Hilliard wrote:
+> Add support for Variscite i.MX6Q VAR-SOM-MX6 SoM with Custom Board.
 > 
-> I'm not sure a class_interface makes much sense here.  Why does the
-> block layer even need to know about you using a device a nvmem provider?
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-It doesn't. But it has to notify the nvmem providing driver about the
-addition of new block devices. This is what I'm using class_interface
-for, simply to hook into .add_dev of the block_class.
+I asked to drop it, because patch changed significantly, so Conor should
+re-ack it.
 
-> As far as I can tell your provider should layer entirely above the
-> block layer and not have to be integrated with it.
+Anyway, it's third patch within 3 hours. Give people a chance to review
+your series. One patchset per day, usually.
 
-My approach using class_interface doesn't require any changes to be
-made to existing block code. However, it does use block_class. If
-you see any other good option to implement matching off and usage of
-block devices by in-kernel users, please let me know.
+> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> ---
+
+
+Best regards,
+Krzysztof
+
