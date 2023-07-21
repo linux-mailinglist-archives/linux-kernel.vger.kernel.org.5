@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5890575BCD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 05:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B1375BCD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 05:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbjGUDcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 23:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
+        id S230041AbjGUDcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 23:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjGUDcK (ORCPT
+        with ESMTP id S229553AbjGUDcv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 23:32:10 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916871726
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 20:32:09 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R6ZqW1LzmzBRDtM
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 11:32:07 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689910327; x=1692502328; bh=DgngVkhS4Y2EpAg4Rz03E9/o90m
-        U59SYiP+mSo3EkDk=; b=L92kgOZBjYxTAwTQMpz91K3P04x5FIHueeyz09mIhMH
-        H2DAXpE9oaPeNeswRrcoTz+sRb5TuyVYRLwC0seqzyIyizXUVkrbpsU2rzMcZefm
-        WhTozeLPQ+U31bhe+zPmc7JpPwAWTcCtCtwBFNlhDMHr67+SL6PKZhvtwIU3IN3o
-        UtzXYA9w1ilXdcIFpDyAvf1/MQBarZBawBr0xrIakCHU4aA71Htd5XN9M1zk8Ew4
-        r2i0U8JRSE5BN03n5JLjlTCCiXVCsSs5yBl2uUgwLvCN3k40ZVMVEDuxwqFsEBtJ
-        gMM9m3jHEAbnMamkMsm2PTREL/mgTaIllwNQg/qYA/g==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id xKi8Zvp4_Syj for <linux-kernel@vger.kernel.org>;
-        Fri, 21 Jul 2023 11:32:07 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R6ZqV5jSmzBRDrd;
-        Fri, 21 Jul 2023 11:32:06 +0800 (CST)
+        Thu, 20 Jul 2023 23:32:51 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE7D1BF7;
+        Thu, 20 Jul 2023 20:32:49 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VnsoRWg_1689910358;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VnsoRWg_1689910358)
+          by smtp.aliyun-inc.com;
+          Fri, 21 Jul 2023 11:32:45 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     paul@paul-moore.com
+Cc:     stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, bpf@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] selinux: Use NULL for pointers
+Date:   Fri, 21 Jul 2023 11:32:36 +0800
+Message-Id: <20230721033236.42689-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Date:   Fri, 21 Jul 2023 11:32:06 +0800
-From:   sunran001@208suo.com
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amdgpu: open brace '{' following struct go on the same
- line
-In-Reply-To: <20230721033048.4840-1-xujianghui@cdjrlc.com>
-References: <20230721033048.4840-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <d0906df99cdf6f76220e298bebaa5029@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: open brace '{' following struct go on the same line
+Replace integer constants with NULL.
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
+security/selinux/hooks.c:251:41: warning: Using plain integer as NULL pointer.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=5958
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
-  drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h | 3 +--
-  1 file changed, 1 insertion(+), 2 deletions(-)
+ security/selinux/hooks.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h 
-b/drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h
-index 52045ad59bed..eec816f0cbf9 100644
---- a/drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h
-+++ b/drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h
-@@ -24,8 +24,7 @@
-  #ifndef __AMDGPU_PM_H__
-  #define __AMDGPU_PM_H__
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 62072b63b19b..d0818a338fa8 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -248,7 +248,7 @@ static void ad_net_init_from_iif(struct common_audit_data *ad,
+ 				 struct lsm_network_audit *net,
+ 				 int ifindex, u16 family)
+ {
+-	__ad_net_init(ad, net, ifindex, 0, family);
++	__ad_net_init(ad, net, ifindex, NULL, family);
+ }
+ 
+ /*
+-- 
+2.20.1.7.g153144c
 
--struct cg_flag_name
--{
-+struct cg_flag_name {
-  	u64 flag;
-  	const char *name;
-  };
