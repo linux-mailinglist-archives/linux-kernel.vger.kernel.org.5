@@ -2,157 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC61375BDDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC7475BDDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbjGUFoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 01:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
+        id S229818AbjGUFpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 01:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbjGUFo2 (ORCPT
+        with ESMTP id S229862AbjGUFpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 01:44:28 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAE52D57;
-        Thu, 20 Jul 2023 22:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689918247; x=1721454247;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=Jg5yy++fce0mUJ6LU5bI9B/pMq+29/OVacRUkDiLINc=;
-  b=BStTaUiegGOS0xjs171YUrV2MI8JUIJnQYDk+gHfDyCSqWtoab5f/B5D
-   lvUVmThhYetQT2uWTwUVPvCRLSCv2De7R3bO/DCwpeqmuabsTDcS1b7Gm
-   gRhcRkvhD0OTxll4RYBQopliJ8YVvEKd/hYZEfQH7U2PYn2FRmpFt10u+
-   oFT1E/Vj/o1g6073jeqE2LgJI7HFw4Kuq21YzyHsTIVYNGzitpaKC+sGn
-   MfkI81T7EuIS06TfNuDwLng/7WVCoNepKvjzV1eaXoIkmyKiwmp41tarx
-   QMr4WqcFWScU4XVbo/RwY74HhrUZui6BCLsnmQl35544LVAT7dbnhL0i8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="347245374"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="347245374"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 22:44:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="898593070"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="898593070"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 20 Jul 2023 22:43:58 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qMivl-0006vZ-30;
-        Fri, 21 Jul 2023 05:43:57 +0000
-Date:   Fri, 21 Jul 2023 13:43:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Alex Sierra <alex.sierra@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrei Vagin <avagin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Peter Xu <peterx@redhat.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table
- scanning
-Message-ID: <202307211337.5dwCMeHb-lkp@intel.com>
-References: <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
+        Fri, 21 Jul 2023 01:45:16 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC6A2D7D;
+        Thu, 20 Jul 2023 22:44:56 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36L2TQCL030734;
+        Fri, 21 Jul 2023 05:44:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=tWQyB77/dwCu0mp01ODhCXMSuGLMGzqCW+s+RhFh+js=;
+ b=agYh6bJ0TfXac/gxwQQo1aF2wcFkPb6SYSZH1GEYhfpwdaV+tDiigSrLmuWHHWVU67E0
+ NXVGYxwgQwXs+PLbvswXmUN4Kbyg+PM4p901fHgPGu0TfL/uCdlWWZt7l1Zk0c6rjtCh
+ DhnDomZbTSnydSruruSS6FwjyLANaQqLvBCUWhuzjBifa57Ka6qt3l1E5XM19JTwJpTW
+ MeWNmYHX5YCiYVX43ItGVST4xAtKpXWa5rtD0zO8g4Wm9ZJXoXRBba5vKbU9qT9yMEQb
+ cXOalD29bhGqT3/8CXUB/Vq9QKyaBm2SRbEFBi1wxObnAsNRyPaNpsOBcYab4KxhAktH SA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxxqv2whb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jul 2023 05:44:52 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36L5io58017333
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jul 2023 05:44:50 GMT
+Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 20 Jul 2023 22:44:47 -0700
+Date:   Fri, 21 Jul 2023 11:14:43 +0530
+From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: power: qcom,rpmhpd: Add Generic RPMh PD
+ indexes
+Message-ID: <e77c39fe-b7cf-49b3-9260-ecf4872e8fdf@quicinc.com>
+References: <1689744162-9421-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1689744162-9421-2-git-send-email-quic_rohiagar@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1689744162-9421-2-git-send-email-quic_rohiagar@quicinc.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: UyuWoJP7idPVmTkzMHUC-I5XZpVZpUWc
+X-Proofpoint-GUID: UyuWoJP7idPVmTkzMHUC-I5XZpVZpUWc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-21_02,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 bulkscore=0 adultscore=0
+ impostorscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=740 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307210052
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michał,
+On Wed, Jul 19, 2023 at 10:52:41AM +0530, Rohit Agarwal wrote:
+> Add Generic RPMh Power Domain indexes that can be used
+> for all the Qualcomm SoC henceforth.
+> The power domain indexes of these bindings are based on compatibility
+> with current targets like SM8[2345]50 targets.
+> 
+> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+> Suggested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  include/dt-bindings/power/qcom,rpmhpd.h | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>  create mode 100644 include/dt-bindings/power/qcom,rpmhpd.h
+> 
+> diff --git a/include/dt-bindings/power/qcom,rpmhpd.h b/include/dt-bindings/power/qcom,rpmhpd.h
+> new file mode 100644
+> index 0000000..7c201a6
+> --- /dev/null
+> +++ b/include/dt-bindings/power/qcom,rpmhpd.h
+> @@ -0,0 +1,30 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+> +/*
+> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#ifndef _DT_BINDINGS_POWER_QCOM_RPMHPD_H
+> +#define _DT_BINDINGS_POWER_QCOM_RPMHPD_H
+> +
+> +/* Generic RPMH Power Domain Indexes */
+> +#define RPMHPD_CX               0
+> +#define RPMHPD_CX_AO		1
+> +#define RPMHPD_EBI		2
+> +#define RPMHPD_GFX		3
+> +#define RPMHPD_LCX		4
+> +#define RPMHPD_LMX		5
+> +#define RPMHPD_MMCX		6
+> +#define RPMHPD_MMCX_AO		7
+> +#define RPMHPD_MX		8
+> +#define RPMHPD_MX_AO		9
+> +#define RPMHPD_MXC		10
+> +#define RPMHPD_MXC_AO		11
+> +#define RPMHPD_MSS              12
+> +#define RPMHPD_NSP		13
+> +#define RPMHPD_NSP0             14
+> +#define RPMHPD_NSP1             15
+> +#define RPMHPD_QPHY             16
+> +#define RPMHPD_DDR              17
+> +#define RPMHPD_XO               18
+> +
+> +#endif
+> -- 
 
-kernel test robot noticed the following build errors:
+I see the PD performance levels (RPMH_REGULATOR_LEVEL_xxx) are still
+coming from qcom-rpmpd.h. Which means Socs with RPMh also need to
+include the older header for these definitions along with this newly
+created header. something to improve for the clarity sake?
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on linus/master v6.5-rc2 next-20230720]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Micha-Miros-aw/Re-fs-proc-task_mmu-Implement-IOCTL-for-efficient-page-table-scanning/20230721-033050
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux%40rere.qmqm.pl
-patch subject: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
-config: i386-randconfig-r022-20230720 (https://download.01.org/0day-ci/archive/20230721/202307211337.5dwCMeHb-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230721/202307211337.5dwCMeHb-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307211337.5dwCMeHb-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> fs/proc/task_mmu.c:1921:6: error: call to undeclared function 'userfaultfd_wp_async'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
-           if (userfaultfd_wp_async(vma) && userfaultfd_wp_use_markers(vma))
-               ^
->> fs/proc/task_mmu.c:2200:12: error: call to undeclared function 'uffd_wp_range'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
-           int err = uffd_wp_range(vma, addr, end - addr, true);
-                     ^
-   2 errors generated.
-
-
-vim +/userfaultfd_wp_async +1921 fs/proc/task_mmu.c
-
-  1913	
-  1914	static int pagemap_scan_test_walk(unsigned long start, unsigned long end,
-  1915					  struct mm_walk *walk)
-  1916	{
-  1917		struct pagemap_scan_private *p = walk->private;
-  1918		struct vm_area_struct *vma = walk->vma;
-  1919		unsigned long vma_category = 0;
-  1920	
-> 1921		if (userfaultfd_wp_async(vma) && userfaultfd_wp_use_markers(vma))
-  1922			vma_category |= PAGE_IS_WPASYNC;
-  1923		else if (p->arg.flags & PM_SCAN_CHECK_WPASYNC)
-  1924			return -EPERM;
-  1925	
-  1926		if (vma->vm_flags & VM_PFNMAP)
-  1927			return 1;
-  1928	
-  1929		if (!pagemap_scan_is_interesting_vma(vma_category, p))
-  1930			return 1;
-  1931	
-  1932		p->cur_vma_category = vma_category;
-  1933		return 0;
-  1934	}
-  1935	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Pavan
