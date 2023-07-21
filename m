@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4175375C08D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902A375C09B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbjGUH4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 03:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
+        id S231246AbjGUH7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 03:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjGUH4i (ORCPT
+        with ESMTP id S229914AbjGUH7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 03:56:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D529270A;
-        Fri, 21 Jul 2023 00:56:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 21 Jul 2023 03:59:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C7C2710;
+        Fri, 21 Jul 2023 00:59:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Nlw4/Z4Qos4HKINH1+acYEbUVYzFzh3QlKFg9k7JSog=; b=r5BWTa/VoWNG6OqLSTFt06vbOM
+        zqex4vbFUL/U0a3v1WWSjZ2vngYZ/e6RTM8AGHzjrl1pDRnyZhZ4IWFido2QjjCmOZAD6MNmoW7fn
+        DjfdhBvxh1CI8eVrmsQ+QB4h4pH2VT6vqGVAmspMkaPrzKziBx4ghai0A1BFxPi5EY+FTiBNQMC8B
+        9d8Vf6IQcjIeQJDoA+3knsl4O9S62/tKKuQQCm5VkzmZVlDCyMup+tlbtbaBMXYexoKhKD0NdHTse
+        fAO/jglCqOfRE26G67TZss3Rs1dx/3KD3TJ/9SNv7bZUZDOGuX91/+Kb7EB5pspPicarAupRVPnq6
+        Mg0pyz5A==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qMl2H-000uO8-Ru; Fri, 21 Jul 2023 07:58:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FCF36137B;
-        Fri, 21 Jul 2023 07:56:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB402C433C7;
-        Fri, 21 Jul 2023 07:56:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689926188;
-        bh=5CIitjjI5khTPF7RHT+gTh25uD/FQODAUJsQwUhQD5w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=svt1h8bTI05Eh8uMp29Ukd0mWqQ2hOFonGmcNeA9eCKIIKGkIgWhr43D7ndQR/ZBx
-         0agLf0SrMxcb1VUcZHyIXudI5yx2JNIIKF8DQm8n98Ja2/mUo2/pptnDYyEoOw0XxA
-         Z2RLAQfBrjyxK4xDB5Gw0mREQc9dMymipb0kvO/jxH7vUCe0tj7V0wmBPAlNqUQN9b
-         SCQ2oSLk/tzUYeb+XZ9pkIPIYNwvzZDe9IrHaFSjmqloE1FiK3YdMPm8WT3DpQQERa
-         IsRVi3jlAzbNEsncO2gNQz+e1HBEXQ+ejz6DYCkAjyj939dwI0uKHIIh1Amk8P3pm8
-         MRAEkH7AdawUg==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qMl07-0003Iw-1s;
-        Fri, 21 Jul 2023 09:56:36 +0200
-Date:   Fri, 21 Jul 2023 09:56:35 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, quic_harshq@quicinc.com,
-        ahalaney@redhat.com, quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v9 05/10] usb: dwc3: core: Refactor PHY logic to support
- Multiport Controller
-Message-ID: <ZLo6MwbuKNL5xtPE@hovoldconsulting.com>
-References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
- <20230621043628.21485-6-quic_kriskura@quicinc.com>
- <ZJrRe7HtMs0KbsCy@hovoldconsulting.com>
- <e3e0c4c8-1e91-caf1-c1c4-86203a7ecba0@quicinc.com>
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 714B3300095;
+        Fri, 21 Jul 2023 09:58:48 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 57F3E3154DF57; Fri, 21 Jul 2023 09:58:48 +0200 (CEST)
+Date:   Fri, 21 Jul 2023 09:58:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+Cc:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH 1/1] x86/hyperv: Disable IBT when hypercall page lacks
+ ENDBR instruction
+Message-ID: <20230721075848.GA3630545@hirez.programming.kicks-ass.net>
+References: <1689885237-32662-1-git-send-email-mikelley@microsoft.com>
+ <20230720211553.GA3615208@hirez.programming.kicks-ass.net>
+ <SN6PR2101MB16933FAC4E09E15D824EB2FDD73FA@SN6PR2101MB1693.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e3e0c4c8-1e91-caf1-c1c4-86203a7ecba0@quicinc.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <SN6PR2101MB16933FAC4E09E15D824EB2FDD73FA@SN6PR2101MB1693.namprd21.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,174 +71,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 03, 2023 at 12:26:26AM +0530, Krishna Kurapati PSSNV wrote:
-> On 6/27/2023 5:39 PM, Johan Hovold wrote:
-> > On Wed, Jun 21, 2023 at 10:06:23AM +0530, Krishna Kurapati wrote:
-> >> Currently the DWC3 driver supports only single port controller
-> >> which requires at most one HS and one SS PHY.
-> >>
-> >> But the DWC3 USB controller can be connected to multiple ports and
-> >> each port can have their own PHYs. Each port of the multiport
-> >> controller can either be HS+SS capable or HS only capable
-> >> Proper quantification of them is required to modify GUSB2PHYCFG
-> >> and GUSB3PIPECTL registers appropriately.
-> >>
-> >> Add support for detecting, obtaining and configuring phy's supported
-> >> by a multiport controller and limit the max number of ports
-> >> supported to 4.
-> >>
-> >> Signed-off-by: Harsh Agarwal <quic_harshq@quicinc.com>
-> >> [Krishna: Modifed logic for generic phy and rebased the patch]
-> >> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> > 
-> > As I already said:
-> > 
-> > 	If Harsh is the primary author you need to add a From: line at
-> > 	the beginning of the patch.
-> > 
-> > 	Either way, you need his SoB as well as your Co-developed-by tag.
-> > 
-> > 	All this is documented under Documentation/process/ somewhere.
-> > 
-> > The above is missing a From line and two Co-developed-by tags at least.
+On Fri, Jul 21, 2023 at 12:41:35AM +0000, Michael Kelley (LINUX) wrote:
 
->   I tried to follow the following commit:
+> > Other than that, this seems fairly straight forward. One thing I
+> > wondered about; wouldn't it be possible to re-write the indirect
+> > hypercall thingies to a direct call? I mean, once we have the hypercall
+> > page mapped, the address is known right?
 > 
-> 8030cb9a5568 ("soc: qcom: aoss: remove spurious IRQF_ONESHOT flags")
-> 
-> Let me know if that is not acceptable.
+> Yes, the address is known.  It does not change across things like
+> hibernation.  But the indirect call instruction is part of an inline assembly
+> sequence, so the call instructions that need re-writing are scattered
+> throughout the code. There's also the SEV-SNP case from the
+> latest version of Tianyu Lan's patch set [1] where vmmcall may be used
+> instead, based on your recent enhancement for nested ALTERNATIVE.
+> Re-writing seems like that's more complexity than warranted for a
+> mostly interim situation until the Hyper-V patch is available and
+> users install it.
 
-I don't see how that commit relevant to the discussion at hand.
+Well, we have a lot of infrastructure for this already. Specifically
+this is very like the paravirt patching.
 
-Please just fix your use of Signed-off-by and Co-developed-by tags that
-I've now pointed out repeatedly.
+Also, direct calls are both faster and have less speculation issues, so
+it might still be worth looking at.
 
-If you can't figure it out by yourself after the feedback I've already
-given you need to ask someone inside Qualcomm. You work for a huge
-company that should provide resources for training it's developers in
-basic process issues like this.
+The way to do something like this would be:
 
-> >> @@ -120,10 +120,11 @@ void dwc3_set_prtcap(struct dwc3 *dwc, u32 mode)
-> >>   static void __dwc3_set_mode(struct work_struct *work)
-> >>   {
-> >>   	struct dwc3 *dwc = work_to_dwc(work);
-> >> +	u32 desired_dr_role;
-> >>   	unsigned long flags;
-> >>   	int ret;
-> >>   	u32 reg;
-> >> -	u32 desired_dr_role;
-> > 
-> > This is an unrelated change. Just add int i at the end.
-> > 
-> I was trying to keep the reverse xmas order of variables.
 
-That's generally good, but you should not change unrelated code as part
-of this patch. It's fine to leave this as is for now.
+	asm volatile ("   ANNOTATE_RETPOLINE_SAFE	\n\t"
+		      "1: call *hv_hypercall_page	\n\t"
+		      ".pushsection .hv_call_sites	\n\t"
+		      ".long 1b - .			\n\t"
+		      ".popsection			\n\t");
 
-> >> +	int i;
-> >>   
-> >>   	mutex_lock(&dwc->mutex);
-> >>   	spin_lock_irqsave(&dwc->lock, flags);
-> > 
-> >> @@ -746,23 +779,34 @@ static int dwc3_phy_setup(struct dwc3 *dwc)
-> >>   static int dwc3_phy_init(struct dwc3 *dwc)
-> >>   {
-> >>   	int ret;
-> >> +	int i;
-> >> +	int j;
-> >>   
-> >>   	usb_phy_init(dwc->usb2_phy);
-> >>   	usb_phy_init(dwc->usb3_phy);
-> >>   
-> >> -	ret = phy_init(dwc->usb2_generic_phy);
-> >> -	if (ret < 0)
-> >> -		goto err_shutdown_usb3_phy;
-> >> +	for (i = 0; i < dwc->num_usb2_ports; i++) {
-> >> +		ret = phy_init(dwc->usb2_generic_phy[i]);
-> >> +		if (ret < 0)
-> >> +			goto err_exit_usb2_phy;
-> >> +	}
-> >>   
-> >> -	ret = phy_init(dwc->usb3_generic_phy);
-> >> -	if (ret < 0)
-> >> -		goto err_exit_usb2_phy;
-> >> +	for (i = 0; i < dwc->num_usb2_ports; i++) {
-> >> +		ret = phy_init(dwc->usb3_generic_phy[i]);
-> >> +		if (ret < 0)
-> >> +			goto err_exit_usb3_phy;
-> >> +	}
-> >>   
-> >>   	return 0;
-> >>   
-> >> +err_exit_usb3_phy:
-> >> +	for (j = i-1; j >= 0; j--)
-> > 
-> > Missing spaces around - here and below.
-> > 
-> >> +		phy_exit(dwc->usb3_generic_phy[j]);
-> >> +	i = dwc->num_usb2_ports;
-> >>   err_exit_usb2_phy:
-> >> -	phy_exit(dwc->usb2_generic_phy);
-> >> -err_shutdown_usb3_phy:
-> >> +	for (j = i-1; j >= 0; j--)
-> >> +		phy_exit(dwc->usb2_generic_phy[j]);
-> >> +
-> > 
-> > Again:
-> > 
-> > 	The above is probably better implemented as a *single* loop over
-> > 	num_usb2_ports where you enable each USB2 and USB3 PHY. On
-> > 	errors you use the loop index to disable the already enabled
-> > 	PHYs in reverse order below (after disabling the USB2 PHY if
-> > 	USB3 phy init fails).
-> > 
-> > with emphasis on "single" added.
-> > 
-> Oh, you mean something like this ?
-> 
-> for (loop over num_ports) {
-> 	ret = phy_init(dwc->usb3_generic_phy[i]);
-> 	if (ret != 0)
-> 		goto err_exit_phy;
-> 
-> 	ret = phy_init(dwc->usb2_generic_phy[i]);
-> 	if (ret != 0)
-> 		goto err_exit_phy;
-> }
-> 
-> err_exit_phy:
-> 	for (j = i-1; j >= 0; j--) {
-> 		phy_exit(dwc->usb3_generic_phy[j]);
-> 		phy_exit(dwc->usb2_generic_phy[j]);
-> 	}
 
-Yeah, something like that, but you need to disable the usb3[i] phy when
-usb2[2] init fail above (and I'd also keep the order of initialising
-usb2 before usb3).
+And then (see alternative.c for many other examples):
 
-> >>   	usb_phy_shutdown(dwc->usb3_phy);
-> >>   	usb_phy_shutdown(dwc->usb2_phy);
 
-> >> diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-> >> index 42fb17aa66fa..b2bab23ca22b 100644
-> >> --- a/drivers/usb/dwc3/core.h
-> >> +++ b/drivers/usb/dwc3/core.h
-> >> @@ -37,6 +37,9 @@
-> >>   #define XHCI_EXT_PORT_MINOR(x)	(((x) >> 16) & 0xff)
-> >>   #define XHCI_EXT_PORT_COUNT(x)	(((x) >> 8) & 0xff)
-> >>   
-> >> +/* Number of ports supported by a multiport controller */
-> >> +#define DWC3_MAX_PORTS 4
-> > 
-> > You did not answer my question about whether this was an arbitrary
-> > implementation limit (i.e. just reflecting the only currently supported
-> > multiport controller)?
-> > 
-> I mentioned in commit text that it is limited to 4. Are you referring to 
-> state the reason why I chose the value 4 ?
+patch_hypercalls()
+{
+	s32 *s;
 
-Yes, and to clarify whether this was an arbitrary limit you chose
-because it was all that was needed for the hw you care about, or if it's
-a more general limitation.
+	for (s = __hv_call_sites_begin; s < __hv_call_sites_end; s++) {
+		void *addr = (void *)s + *s;
+		struct insn insn;
 
-Johan
+		ret = insn_decode_kernel(&insn, addr);
+		if (WARN_ON_ONCE(ret < 0))
+			continue;
+
+		/*
+		 * indirect call: ff 15 disp32
+		 * direct call:   2e e8 disp32
+		 */
+		if (insn.length == 6 &&
+		    insn.opcode.bytes[0] == 0xFF &&
+		    X86_MODRM_REG(insn.modrm.bytes[0]) == 2) {
+
+			/* verify it was calling hy_hypercall_page */
+			if (WARN_ON_ONCE(addr + 6 + insn.displacement.value != &hv_hypercall_page))
+				continue;
+
+			/*
+			 * write a CS padded direct call -- assumes the
+			 * hypercall page is in the 2G immediate range
+			 * of the kernel text
+			 */
+			addr[0] = 0x2e; /* CS prefix */
+			addr[1] = CALL_INSN_OPCODE;
+			(s32 *)&Addr[2] = *hv_hypercall_page - (addr + 6);
+		}
+	}
+}
+
+
+See, easy :-)
