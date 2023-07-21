@@ -2,158 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F018375C520
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B112375C523
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbjGUK6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48878 "EHLO
+        id S231129AbjGUK6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231172AbjGUK57 (ORCPT
+        with ESMTP id S231204AbjGUK57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 21 Jul 2023 06:57:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1712171A
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:57:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689937033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JCcb9xtScqAyMOStlm7ewhQnyFA6r02pOvdu3ozJ8ms=;
-        b=CfDUw4n5j9Ub8zU/uGCccEihQ3s/RFlSzrHXicFgigg9iXRpcJsjAkzayq/qzqV7eXWNbF
-        TgYL2U0/RTkrjVJjgxihUYvvc8ehJ/QT0O8zUK7bCf7VwiS31imZHJUAZyB/kGNlg1HGkq
-        JyrMHOhm3ERua6VGu9U+jHpmsjE6Utg=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-149-AWmXckHRPs6d0bKhiSzxEQ-1; Fri, 21 Jul 2023 06:57:11 -0400
-X-MC-Unique: AWmXckHRPs6d0bKhiSzxEQ-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-98df34aa83aso336629966b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:57:11 -0700 (PDT)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B7B19B5
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:57:14 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fd18b1d924so14668735e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:57:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1689937033; x=1690541833;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=W98yB9onrt+L+sHrT9wYT0pOvj+Kg/EhmG2u0g1eta0=;
+        b=MsB8RTKpskKLNG1//7WGzsABffdV6qVkUUAhK6Ywm4NMbs6vjKggiHX9bAXFLwat2u
+         oheAxyR9KDrbjNucdbaEdDOWuV7UZeSOR+pRTV7jl89kBWsWH8ocFl1iwWozUWUMvPD+
+         yI+rihhR5ys2Q2iUsBfcad9zpGJ3w1T4/KFLxQR038OQC4a0lc8PxBpp8PWv9AYAxeJe
+         Q628ecEDM2ky7sVrr11PCIArbOTXe4ucLgGcZF1LybzDqsXhrrFu6lmiq6Exszc8nVK0
+         csGIBA0fyQz9G0jpUt97g0tWbOHCgl6hVtlGdTN3POvXIHypyhpdvCvE7tn1sH0FjC9u
+         850A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689937031; x=1690541831;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JCcb9xtScqAyMOStlm7ewhQnyFA6r02pOvdu3ozJ8ms=;
-        b=OkplTwV/IMuuOunuhW47nH951WO44F6SMLj1xqL256XhT55UTl7oMmD+SRHkDWJCtE
-         lCh6XyLAY4/MTkIwrMIcxEqoqs0RCsmhEjYicfBNlwtJDruOYjFqsYR9nDJl9O692WV6
-         qPMdvAYjxUGbJDWW+lVJsMxnnw+wY5B8sDs80xSngY00fzNLyuRqK2dfYQFms6cdqM1y
-         saYr6ZUXm4K0Asl0U3LADJNFucz/nKPbsvfQJCCcYka/fKARxaRdVUUUjJ++aewIcBk8
-         nnPjUEelH31u+NZC53L9FAZGPkgO2Caxa9OCicW0w1eAD1N78A4+kgcb5dDcvSlfLHHx
-         uoEg==
-X-Gm-Message-State: ABy/qLaISofupEwXqJLbmMDCXnubKV6AbhbnqAVcE0H7f6Ou8X1+dxJT
-        0Mhrn28NExoJJB0wGlecJvfHCJZigJuA6TQRgghlrvv8YxhdV31sfzgM0VJ2Qf4dzzohzc8H6N4
-        eZZPnM+WtJs57pRJSezmeBNWG
-X-Received: by 2002:a17:907:d8a:b0:991:d414:d889 with SMTP id go10-20020a1709070d8a00b00991d414d889mr8230224ejc.15.1689937030824;
-        Fri, 21 Jul 2023 03:57:10 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHG8R7IreJRTfdc0Wq/Yo7PIzOhZZy/jcnGLgxDY0N1OVv0CFUqys6sH346KYqEVj6MNTbrkQ==
-X-Received: by 2002:a17:907:d8a:b0:991:d414:d889 with SMTP id go10-20020a1709070d8a00b00991d414d889mr8230204ejc.15.1689937030548;
-        Fri, 21 Jul 2023 03:57:10 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id f21-20020a170906049500b0099364d9f0e9sm2025435eja.102.2023.07.21.03.57.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 03:57:09 -0700 (PDT)
-Message-ID: <0c033063-5d20-4522-87e2-80ad3cca3602@redhat.com>
-Date:   Fri, 21 Jul 2023 12:57:07 +0200
+        d=1e100.net; s=20221208; t=1689937033; x=1690541833;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W98yB9onrt+L+sHrT9wYT0pOvj+Kg/EhmG2u0g1eta0=;
+        b=dsaWMJqqiOSmjo3s28SDhNy4rI1C07NEFVB0/QZh3zkHIGVV0t098LWV1DsQBeqRY5
+         0KKXYUohTvpnZcDjlv5iqqB5l778OAGUbVOTxUVq+aTCAtOZ775Vuvr9mEMQOtdhnVUe
+         0sIWthMwpy3/KvBpK0RLj4ve14gz3NDmCXcEiy1EyBo0Xw1iltJP+c6IoLaBzoFppcuV
+         DTUNj9+flqW9tEkxkcxSJcLOEYjlZQdUiGiArRWl+8NvDXyZ0j1CdeMgFj8jf3Et/E3k
+         I7QVKFEZxfe8K9btYhHCeQ43ec2/qlTkRvsWB+pSf4XwuBxDsGlnAUftbTx2Q5zNjp3X
+         n8oA==
+X-Gm-Message-State: ABy/qLYmieUBct800iKg+cNuWrrlGCcwI/1KjzeJzim6zsR4WXZCWak4
+        Gri8NJmCpXKLXEzfOUulxOIO127NG1EXAGwSlz8=
+X-Google-Smtp-Source: APBJJlELd3pibdzXadazj+Ze9uIDI9J3Iim181nZv3Vh9OjEeCxgwyjBFuzU/S2BB/GyCoOY780jfA==
+X-Received: by 2002:adf:dbce:0:b0:314:fe8:94d8 with SMTP id e14-20020adfdbce000000b003140fe894d8mr1109281wrj.31.1689937033293;
+        Fri, 21 Jul 2023 03:57:13 -0700 (PDT)
+Received: from airbuntu (host86-163-217-97.range86-163.btcentralplus.com. [86.163.217.97])
+        by smtp.gmail.com with ESMTPSA id g5-20020a5d5545000000b0031437ec7ec1sm3906887wrw.2.2023.07.21.03.57.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 03:57:12 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 11:57:11 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] sched/fair: Fix impossible migrate_util scenario in
+ load balance
+Message-ID: <20230721105711.nzunqdtdaevmrgyg@airbuntu>
+References: <20230716014125.139577-1-qyousef@layalina.io>
+ <ZLaKFFjY6NWaJdOq@vingu-book>
+ <20230718161829.ws3vn3ufnod6kpxh@airbuntu>
+ <CAKfTPtA55NemHq0tZPuiEN=c3DRZWD-7jf7ZrKdHE9y9b_szZg@mail.gmail.com>
+ <20230718172522.s4gcfx3ppljwbks7@airbuntu>
+ <CAKfTPtA6s82qXWOSdd6eNu__z_HZe9U_F0+RcBJj=PVKT7go7A@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v11 08/29] KVM: Introduce per-page memory attributes
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20230718234512.1690985-1-seanjc@google.com>
- <20230718234512.1690985-9-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20230718234512.1690985-9-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtA6s82qXWOSdd6eNu__z_HZe9U_F0+RcBJj=PVKT7go7A@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/23 01:44, Sean Christopherson wrote:
-> From: Chao Peng <chao.p.peng@linux.intel.com>
-> 
-> In confidential computing usages, whether a page is private or shared is
-> necessary information for KVM to perform operations like page fault
-> handling, page zapping etc. There are other potential use cases for
-> per-page memory attributes, e.g. to make memory read-only (or no-exec,
-> or exec-only, etc.) without having to modify memslots.
-> 
-> Introduce two ioctls (advertised by KVM_CAP_MEMORY_ATTRIBUTES) to allow
-> userspace to operate on the per-page memory attributes.
->    - KVM_SET_MEMORY_ATTRIBUTES to set the per-page memory attributes to
->      a guest memory range.
->    - KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES to return the KVM supported
->      memory attributes.
-> 
-> Use an xarray to store the per-page attributes internally, with a naive,
-> not fully optimized implementation, i.e. prioritize correctness over
-> performance for the initial implementation.
-> 
-> Because setting memory attributes is roughly analogous to mprotect() on
-> memory that is mapped into the guest, zap existing mappings prior to
-> updating the memory attributes.  Opportunistically provide an arch hook
-> for the post-set path (needed to complete invalidation anyways) in
-> anticipation of x86 needing the hook to update metadata related to
-> determining whether or not a given gfn can be backed with various sizes
-> of hugepages.
-> 
-> It's possible that future usages may not require an invalidation, e.g.
-> if KVM ends up supporting RWX protections and userspace grants _more_
-> protections, but again opt for simplicity and punt optimizations to
-> if/when they are needed.
-> 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Link: https://lore.kernel.org/all/Y2WB48kD0J4VGynX@google.com
-> Cc: Fuad Tabba <tabba@google.com>
-> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
-> Co-developed-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On 07/20/23 14:31, Vincent Guittot wrote:
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+> I was trying to reproduce the behavior but I was failing until I
+> realized that this code path is used when the 2 groups are not sharing
+> their cache. Which topology do you use ? I thought that dynamiQ and
+> shares cache between all 8 cpus was the norm for arm64 embedded device
+> now
 
+Hmm good question. phantom domains didn't die which I think is what causing
+this. I can look if this is for a good reason or just historical artifact.
+
+> 
+> Also when you say "the little cluster capacity is very small nowadays
+> (around 200 or less)", it is the capacity of 1 core or the cluster ?
+
+I meant one core. So in my case all the littles were busy except for one that
+was mostly idle and never pulled a task from mid where two tasks were stuck on
+a CPU there. And the logs I have added were showing me that the env->imbalance
+was on 150+ range but the task we pull was in the 350+ range.
+
+I should have mentioned that I'm on 5.15 - sorry with Android it's hard to run
+mainline on products :( But this code as far as I can tell hasn't changed much.
+
+I can try to find something that runs mainline and reproduce there if you think
+my description of the problem is not clear or applicable.
+
+
+Thanks
+
+--
+Qais Yousef
