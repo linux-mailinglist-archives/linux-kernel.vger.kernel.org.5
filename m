@@ -2,161 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DBD75D17F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 20:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2489675D183
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 20:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbjGUSqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 14:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
+        id S231136AbjGUSsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 14:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGUSqm (ORCPT
+        with ESMTP id S230502AbjGUSs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 14:46:42 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2084.outbound.protection.outlook.com [40.107.237.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACCB19AD;
-        Fri, 21 Jul 2023 11:46:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FZUckInf85/TasFil2nxD3wIOFhSIqfuAVCwcb2ZCIsKUhXn8gtlx4+tXNRSYOljs9Md2iYc9BWN6QmzNeQxLGXP0BIu8UXLHfQ9uwnoNmANwH2KO0YEC6p71mHnqR96fEfh3jHtvwKmthVJBGijgCYCcMXDZ8+sPYkKAwdfz/FFe9PbXyWvHRh8ENaPfEgetyiy1iI2aFe5z/75HWvvw21+mw9BRyf6KaTjLKcsUOLH5S5upV0qNCt2Epzni3u4AdY4Uw8n/Ms8RoQlEAB9pD1GtFVeNPSvhU+hcgXyF78AuqWO+eimnK7OuRpNsRk5Fu7zQeznxMbR1ScxmQq0BQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vIYcMjMB89RrpnGUWuO9Bth+BVt5VDFDPmN0FhnTf6U=;
- b=jlgXBS9gwfxo+ZPrGHKMTaHSgYEz7XEBLabk9xhqx8SwLWuQK9/dAX8IuIIo7Sfi4JK3HrXbs+UDc5wkcKNBvp7KhM7mGaGgx1Ge87/hAKB9lbxzRlg/bKVruNr9V9lq1xRWK43JphynvHpqpxi5MUQkFetYCrkIMUpTNBBMKIoECLLGkUx+ZaTLPgi3PMajnMvimpE0HxywQbKXeva1S1mIbox/ohElFIZELL9BxLzHXMfsKVjxX7lGFr7vrnS1v8ILVpfGAcl9AxFPi7d3uUeTg0wBN2241t1Ypr65TnJfb08nuZ9T7ADG9s+4qt37orWUBIRgJwP8SNzxuEWhdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vIYcMjMB89RrpnGUWuO9Bth+BVt5VDFDPmN0FhnTf6U=;
- b=HfC0+oZw956QcssOksnyM4iV7TA0KQwShlHjL/brmX5ut5wqD9e/G511mEIgMxJftpYnsZ913RtBpx/lZHSR2FWUWt0qM2+xHdtV9Rl6rMJVv85g+DGlGX4Bgkj5yAgbL/EK9yho0WT9pTLKdgYyxtRHGyc6Kp+FuA9AvkgqABw5Xw+X73cSitaIZgzBUuCdaZh5RBaHg4pJRexmIpVKy7UzPdPFI3uLeJamrkZrveGqeskJ+aoWW8g86S6O9CZM8v1U/uViL/u6Jo0rVDsim9cfVtrukzpVGdKsurjv8o3uZXpOV6eiFDT8jkb5Kd55OajT2+di2V21qEmOLC5BLQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM4PR12MB7646.namprd12.prod.outlook.com (2603:10b6:8:106::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Fri, 21 Jul
- 2023 18:46:39 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6609.025; Fri, 21 Jul 2023
- 18:46:39 +0000
-Date:   Fri, 21 Jul 2023 15:46:37 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "leonro@nvidia.com" <leonro@nvidia.com>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "Xiao Yang (Fujitsu)" <yangx.jy@fujitsu.com>,
-        "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
-        "Yasunori Gotou (Fujitsu)" <y-goto@fujitsu.com>
-Subject: Re: [PATCH for-next v5 5/7] RDMA/rxe: Allow registering MRs for
- On-Demand Paging
-Message-ID: <ZLrSjWDjQLUuREqY@nvidia.com>
-References: <cover.1684397037.git.matsuda-daisuke@fujitsu.com>
- <7d8595c23e954e0fdc19b14e95da13ceef2adafd.1684397037.git.matsuda-daisuke@fujitsu.com>
- <ZIdFXfDu4IMKE+BQ@nvidia.com>
- <OS7PR01MB11804670384E92E0CAC2E5E32E539A@OS7PR01MB11804.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OS7PR01MB11804670384E92E0CAC2E5E32E539A@OS7PR01MB11804.jpnprd01.prod.outlook.com>
-X-ClientProxiedBy: SJ0PR03CA0227.namprd03.prod.outlook.com
- (2603:10b6:a03:39f::22) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Fri, 21 Jul 2023 14:48:29 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC49E30CA
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 11:48:27 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-98e011f45ffso327743966b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 11:48:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689965306; x=1690570106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tdq/W+QGmbFYjBwzec6GU8stgr9jLA3Mk5O05X2GOvY=;
+        b=muASEYnZmQZKBYoEZ0S4+U/aJoPH1HHib/qcQHHw3GxE+05UEBQofzyZMM6Atdd0Yg
+         iVLuraXsAfHkF8ldSyV7GfVUX31oAUm34s0teCQepYf7rLqtpiA01nCnVOn2tnrj5CMm
+         DUDokWhrZG8N240U4zghZjjxw/sQCIjjLknPmfGDFbpXzSUo2nvgHzuSyz/ChM3q8GBV
+         wN+s0L2B2DYK5k8ZNnOaM244w71qa8p2Y2ok7OcD0cAHzY4tiZj8X4C/GvGWN+udQars
+         ksS0fIcBPzTY8ecxgk9/+GpHK3lU5nZ1X/ZDddKSqb0cEmI0D8W+SPo2QIKCxHMQwhot
+         bxWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689965306; x=1690570106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tdq/W+QGmbFYjBwzec6GU8stgr9jLA3Mk5O05X2GOvY=;
+        b=giqCu3WKK9/XFRrGECvzK98xmehuXcgh2XRqyCsRTp2Dbpi24WSE895TUvrZnToAip
+         LgfEdFxtJJImyuYCMLKfXbwbN+X61OQqNdKaDG324uMfLUVJOdNUF7AafkyvHoM+5EvP
+         oBNTV9KnbMp7xt5iJa56sYdVfAbL555iqX/nQeSxVHlp3gHraqnQlzHW2p/AmPmJX9sd
+         etFy530WcLLAEgwq9pfU/BqlhzUM6qvV4IcjPsPol6bJ00xy0/f/pL05EAhkV0ds8GM3
+         RSEOKh+t0CCI7foEvciUvDz2KbYTF4rAKQcd0nf38dk6q5Czx2qgWiYASYMFvf3vTK0p
+         Fc/g==
+X-Gm-Message-State: ABy/qLaPmwhOm+hfO6XSAU8vFNzkAfH1eOmRJkvTeGF+tFxfDFdtXcN7
+        sNl1Js3c48XH1zLQfe0g39nVmcK+ydHzyDZcKlZXog==
+X-Google-Smtp-Source: APBJJlGonDSO5Pgyd78wlklAx5E2nmQGEM/OjC4MyYifHtkvMGDRyiZyaRq3AzCZntGuE6DWdJYmCOroguJM1d7muI4=
+X-Received: by 2002:a17:906:5190:b0:991:37d2:c9ea with SMTP id
+ y16-20020a170906519000b0099137d2c9eamr2384811ejk.6.1689965306141; Fri, 21 Jul
+ 2023 11:48:26 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB7646:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2d38d078-3457-46c5-9a62-08db8a1ad199
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WED5mJ7rTIucrpVIKEBioIAuDX2IULB+3zrnFfJ8dQZiQD4jZ29TV5ennDqVv29Lv2DMsrRojoVIxlEDghxk/6PBsMkAPQi5LEFIi8ONGVvMygyXntN11Ed9ZOxkBp38dbzvLSzcNVkv6iLXm7vn9SGK5HwQiknbIkOUroJMAvoPyihyOBBMyPyL4M9dnhLzPaDNvpvW9NoXG7mXeYmhExOv5nk/DgXR8fC5fcGWVYWUAohYm2b1sqkrjpFJ9tqhMokThS9/gX4TLUZkeYaoNziYADPTjKh6mO1T3TZqO5/A0dkt3DI+EpeQOKGFewHwKBCX3WgmOwxbUWtMGs7yrLSesjTPPbuvTjyP7aUW6ZFLtF11YkdF7DvHGdjT41cf5tm8SUbYJiK41JaRDGHyHVi00ZwrtZYdaraDl3phECw5HF7EwGdnPdVoEeWw4WKyvfgaJpfQEY5hffwREkdI3MUDvpd81dz5axzRTF3xZ3q8wbp/HLyoCd7YerdED3Ps7dbeDGFDqdAfJJbNDVRBjy99EIejoKThlBwq8oNuL/YDEgRIxAQkg8Jck5wwFhWD
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(136003)(39860400002)(376002)(346002)(451199021)(54906003)(66556008)(6486002)(478600001)(36756003)(6512007)(5660300002)(2616005)(186003)(6506007)(38100700002)(41300700001)(66476007)(66946007)(8676002)(4326008)(6916009)(316002)(26005)(8936002)(83380400001)(86362001)(53546011)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2V15vbVxMnBM3Hx360gEYVxcA72bWxdA073sE6KT8Ti0ZJHBpODGH8ksF/QN?=
- =?us-ascii?Q?MCNLsM+q4OpTyjnVonC9Rch5dAUHpI2eKnTHJItby44dOfRKJ2yOa72n/D8e?=
- =?us-ascii?Q?VnkTMXZqkRWbS2JcNYk63JPPR5ZT+wuhsAK1Sx3EX+kwZ0KJe9A7GWqMYkwG?=
- =?us-ascii?Q?sSaJI5g8+UhLkGo342slvKyoQyTaTAxWHno0O7ZD41lSoSyvZ3/TcFrdq8AJ?=
- =?us-ascii?Q?RJfN3mWBlQkDzCuoPQipv22hVwZdI8z52x4jSK4/LG/CeDJJ+yuC19ernsIL?=
- =?us-ascii?Q?yv8dZSmlgzevnDyICut9Nr1XYcclrRjpDBwXMpOOMT32QfZRNVqWknyRWME5?=
- =?us-ascii?Q?2yue+TNP1IC/DeT7Wq4uOB8Q9r4HKv3wtli0BHs/79ymD2JY2v9/dx8lynRO?=
- =?us-ascii?Q?WKSkKAtAavp5hCH+dESvJcg7C5wjep1vs4I6RwZ1CuXyJCqMF5FVYaEfO1Uz?=
- =?us-ascii?Q?z5+QlGF6HpG6IEmqPs9iRVRo+n+gJqr22vJwivJRzqGYPCvt7GNmqQNdlX33?=
- =?us-ascii?Q?NEt47APjt936+Yi+KW14S2/xjJI8qeZ6Hoo761UVugQbrVjBsMVNRMamiCdL?=
- =?us-ascii?Q?yo9fLK8DZ7bbeoc7DagY3BV7aXSpJhSn0/j6yBkKrz5nCMbiSjMk35TfVSv+?=
- =?us-ascii?Q?8vyEtbki3kzIOPY2niLAu3MjTP09xw8d/eolHCzGGT8mdBhPfGblt19BrF+P?=
- =?us-ascii?Q?d79tAkRDAg/qLLPIq3ZHRUjJwIibgW6xtJrNlfsxxS1lxHS6MHOsJkZLD6IF?=
- =?us-ascii?Q?tbmr8btRCgks2HD2kSYQsQFbeLGrzq9qlLupRwAoJ1otrTQg7KSnifrD0cLw?=
- =?us-ascii?Q?phM0az1dtUBPGiZUCMATR3fULqxt+vHCgGOao5CzW6fyQ7j22ItibLQKJ71i?=
- =?us-ascii?Q?k2fNb5F1ZuK3J39dY2aLGNNDny9lx2d/FFXuPXQMxmQ14h8RViR+ykce7lJt?=
- =?us-ascii?Q?g+a2fB+W2kX1sFwtr2rOY6VX8HZr9Q8co1dG/fAu8YiQ0HzWMgAiJBqWqbEB?=
- =?us-ascii?Q?1LfSgWpcDShMeXpHgzMNqHUof12kowgGfs1f6NMYmE/yh7AMMUvPDi8cKOBI?=
- =?us-ascii?Q?EdMNsGhItrGzuKHYXe6zBgutYRU7wAA+1DrzLisboH+kGTjcEXBg6yYMdD1d?=
- =?us-ascii?Q?ho3Wq7PyMmt+rD/LsRSpJb/E90I7alpuGoBBTBoF2NBB2PfmntnpuLC3uef+?=
- =?us-ascii?Q?AVIFP2lSzokOaiD3IlVELICm5ghEmwkyzd0RBq5oWPR6Ms5n+EYjwjkwz+HV?=
- =?us-ascii?Q?B6P305s6tbVXea3JXADY6mbvMffBSSTeMXRYhuwK3UplipZH6nd60CEVDn2u?=
- =?us-ascii?Q?74rDgdMjiLTBYw9AEdETDaxgF15IfiGpKfl+SlA5Z0/71fTctlu6dVjQrNN6?=
- =?us-ascii?Q?NurG7bTmHH6lLQHYqQfJY05/AV1kNoogYrYCE7SoOiQ9Fzrd1fRZQ3Yqxl7p?=
- =?us-ascii?Q?CbjLZaUvc/gE3bTS1GXYmIo1i9i4Zfr6BTjI3ceTloK9piDrqwMCqqtjvV0O?=
- =?us-ascii?Q?72s1T0zaoIEjuds7sBOZWxHoYeEEdEip2a43iM4rvw8PpDxwoWXsl4eWZ6IJ?=
- =?us-ascii?Q?AE5NngziJPt+JMDYfhtCxHR1Hz3axa84YsLvAJmJ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d38d078-3457-46c5-9a62-08db8a1ad199
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 18:46:39.5163
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1yIK1JRw6C/IYzWX6vm6eyHUWxviKauwYBk75Met7/81Y4aC6dWANwUfZ1GQgeST
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7646
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230720070825.992023-1-yosryahmed@google.com>
+ <20230720153515.GA1003248@cmpxchg.org> <ZLmRlTej8Tm82kXG@slm.duckdns.org>
+ <CAJD7tkYhu3g9u7HkUTFBtT3Q4edVZ2g1TWV1FDcyM9srrYCBLg@mail.gmail.com>
+ <ZLmxLUNdxMi5s2Kq@slm.duckdns.org> <CAJD7tkZKo_oSZ-mQc-knMELP8kiY1N7taQhdV6tPsqN0tg=gog@mail.gmail.com>
+ <ZLm1ptOYH6F8fGHT@slm.duckdns.org> <CAJD7tkbDxw-hqG8i85NhnjxmXFMbR5OaSW5dHDVYfdA=ZnPAEw@mail.gmail.com>
+ <ZLrN1BE42Tsybm6j@slm.duckdns.org>
+In-Reply-To: <ZLrN1BE42Tsybm6j@slm.duckdns.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 21 Jul 2023 11:47:49 -0700
+Message-ID: <CAJD7tkatz1JhKVj_iP9J0H7fPJnUSurZkCT1iJTJ=+qRen_nLQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "T.J. Mercier" <tjmercier@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 06:00:50AM +0000, Daisuke Matsuda (Fujitsu) wrote:
-> On Tue, June 13, 2023 1:19 AM Jason Gunthorpe wrote:
-> 
-> Sorry for my long silence.
-> I must spend most of my time for other works these days,
-> but I am still willing to complete this and subsequent works.
-> 
-> > 
-> > On Thu, May 18, 2023 at 05:21:50PM +0900, Daisuke Matsuda wrote:
-> > 
-> > > +static void rxe_mr_set_xarray(struct rxe_mr *mr, unsigned long start,
-> > > +			      unsigned long end, unsigned long *pfn_list)
-> > > +{
-> > > +	unsigned long lower, upper, idx;
-> > > +	struct page *page;
-> > > +
-> > > +	lower = rxe_mr_iova_to_index(mr, start);
-> > > +	upper = rxe_mr_iova_to_index(mr, end);
-> > > +
-> > > +	/* make pages visible in xarray. no sleep while taking the lock */
-> > > +	spin_lock(&mr->page_list.xa_lock);
-> > > +	for (idx = lower; idx <= upper; idx++) {
-> > > +		page = hmm_pfn_to_page(pfn_list[idx]);
-> > > +		__xa_store(&mr->page_list, idx, page, GFP_ATOMIC);
-> > 
-> > All of these loops can be performance improved a lot by using xas
-> > loops
-> 
-> Well, do you mean I should use 'xas_for_each()' here?
-> That is the same 'for-loop' after all, so performance may not be improved.
-> Additionally, the 'idx' value above must be counted separately in that case.
+On Fri, Jul 21, 2023 at 11:26=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Fri, Jul 21, 2023 at 11:15:21AM -0700, Yosry Ahmed wrote:
+> > On Thu, Jul 20, 2023 at 3:31=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote=
+:
+> > > memory at least in our case. The sharing across them comes down to th=
+ings
+> > > like some common library pages which don't really account for much th=
+ese
+> > > days.
+> >
+> > Keep in mind that even a single page charged to a memcg and used by
+> > another memcg is sufficient to result in a zombie memcg.
+>
+> I mean, yeah, that's a separate issue or rather a subset which isn't all
+> that controversial. That can be deterministically solved by reparenting t=
+o
+> the parent like how slab is handled. I think the "deterministic" part is
+> important here. As you said, even a single page can pin a dying cgroup.
 
-xa_store is O(n log(n)), xas_store()/xas_next() more like O(n) per
-store operation.
+There are serious flaws with reparenting that I mentioned above. We do
+it for kernel memory, but that's because we really have no other
+choice. Oftentimes the memory is not reclaimable and we cannot find an
+owner for it. This doesn't mean it's the right answer for user memory.
 
-Jason
+The semantics are new compared to normal charging (as opposed to
+recharging, as I explain below). There is an extra layer of
+indirection that we did not (as far as I know) measure the impact of.
+Parents end up with pages that they never used and we have no
+observability into where it came from. Most importantly, over time
+user memory will keep accumulating at the root, reducing the accuracy
+and usefulness of accounting, effectively an accounting leak and
+reduction of capacity. Memory that is not attributed to any user, aka
+system overhead.
+
+>
+> > > > Keep in mind that the environment is dynamic, workloads are constan=
+tly
+> > > > coming and going. Even if find the perfect nesting to appropriately
+> > > > scope resources, some rescheduling may render the hierarchy obsolet=
+e
+> > > > and require us to start over.
+> > >
+> > > Can you please go into more details on how much memory is shared for =
+what
+> > > across unrelated dynamic workloads? That sounds different from other =
+use
+> > > cases.
+> >
+> > I am trying to collect more information from our fleet, but the
+> > application restarting in a different cgroup is not what is happening
+> > in our case. It is not easy to find out exactly what is going on on
+>
+> This is the point that Johannes raised but I don't think the current
+> proposal would make things more deterministic. From what I can see, it
+> actually pushes it towards even less predictability. Currently, yeah, som=
+e
+> pages may end up in cgroups which aren't the majority user but it at leas=
+t
+> is clear how that would happen. The proposed change adds layers of
+> indeterministic behaviors on top. I don't think that's the direction we w=
+ant
+> to go.
+
+I believe recharging is being mis-framed here :)
+
+Recharging semantics are not new, it is a shortcut to a process that
+is already happening that is focused on offline memcgs. Let's take a
+step back.
+
+It is common practice (at least in my knowledge) to try to reclaim
+memory from a cgroup before deleting it (by lowering the limit or
+using memory.reclaim). Reclaim heuristics are biased towards
+reclaiming memory from offline cgroups. After the memory is reclaimed,
+if it is used again by a different process, it will be refaulted and
+charged again (aka recharged) to the new
+
+What recharging is doing is *not* anything new. It is effectively
+doing what reclaim + refault would do above, with an efficient
+shortcut. It avoids the unnecessary fault, avoids disrupting the
+workload that will access the memory after it is reclaimed, and cleans
+up zombie memcgs memory faster than reclaim would. Moreover, it works
+for memory that may not be reclaimable (e.g. because of lack of swap).
+
+All the indeterministic behaviors in recharging are exactly the
+indeterministic behaviors in reclaim. It is very similar. We iterate
+the lrus, try to isolate and lock folios, etc. This is what reclaim
+does. Recharging is basically lightweight reclaim + charging again (as
+opposed to fully reclaiming the memory then refaulting it).
+
+We are not introducing new indeterminism or charging semantics.
+Recharging does exactly what would happen when we reclaim zombie
+memory. It is just more efficient and accelerated.
+
+>
+> > machines and where the memory is coming from due to the
+> > indeterministic nature of charging. The goal of this proposal is to
+> > let the kernel handle leftover memory in zombie memcgs because it is
+> > not always obvious to userspace what's going on (like it's not obvious
+> > to me now where exactly is the sharing happening :) ).
+> >
+> > One thing to note is that in some cases, maybe a userspace bug or
+> > failed cleanup is a reason for the zombie memcgs. Ideally, this
+> > wouldn't happen, but it would be nice to have a fallback mechanism in
+> > the kernel if it does.
+>
+> I'm not disagreeing on that. Our handling of pages owned by dying cgroups
+> isn't great but I don't think the proposed change is an acceptable soluti=
+on.
+
+ I hope the above arguments change your mind :)
+
+>
+> Thanks.
+>
+> --
+> tejun
