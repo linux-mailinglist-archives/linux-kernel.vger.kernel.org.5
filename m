@@ -2,60 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DB475C344
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E8675C34F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbjGUJmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
+        id S231479AbjGUJnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbjGUJmT (ORCPT
+        with ESMTP id S231803AbjGUJm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:42:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1BC3ABD;
-        Fri, 21 Jul 2023 02:41:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D1B8B619B0;
-        Fri, 21 Jul 2023 09:41:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7342FC433C8;
-        Fri, 21 Jul 2023 09:41:46 +0000 (UTC)
-Message-ID: <48a07b61-edb6-1c2f-8299-14d346ab7b2e@xs4all.nl>
-Date:   Fri, 21 Jul 2023 11:41:44 +0200
+        Fri, 21 Jul 2023 05:42:58 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12B530ED
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:42:37 -0700 (PDT)
+Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id ED3C52F5E;
+        Fri, 21 Jul 2023 11:41:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1689932481;
+        bh=cNkl06QQHpvODOS+NcyjyJrtUpAGoum7uDoGdQ4v5oM=;
+        h=From:Date:Subject:To:Cc:From;
+        b=oG+GCAZvk/7E4PKI49WAqK0Txl/XPwdEHjLiMWDlLIc1YWJeQWPFnj8d3/MhRPywj
+         EqIIl8oc23WpAsnpNeO8IU3T7tJJAN9WU/bT2QB8z4JwgOrxlrTRUXrbYmVoi5f+EI
+         H+5gSOzbbrdPC9jw6DsPOY+O4X67pgRR0UqNGok0=
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Date:   Fri, 21 Jul 2023 12:41:49 +0300
+Subject: [PATCH] drm/bridge: Add debugfs print for bridge chains
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3] media: platform: mtk-mdp3: Fix resource leak in
- mdp_get_subsys_id() and mdp_comp_config()
-Content-Language: en-US
-To:     Lu Hongfei <luhongfei@vivo.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>, Sun Ke <sunke32@huawei.com>,
-        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
-        <linux-media@vger.kernel.org>,
-        "open list:ARM/Mediatek SoC support" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Cc:     opensource.kernel@vivo.com
-References: <20230613032734.34099-1-luhongfei@vivo.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230613032734.34099-1-luhongfei@vivo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230721-drm-bridge-chain-debugfs-v1-1-8614ff7e890d@ideasonboard.com>
+X-B4-Tracking: v=1; b=H4sIANxSumQC/x2MQQqAMAwEvyI5G2gjIvgV8WBtqjlYJUURxL8bP
+ A47Ow8UVuECffWA8iVF9mzg6wrmdcoLo0RjIEeN68hj1A2DSrTFBMkYOZxLKuhCmH1LlNpuArs
+ fyknuPz2M7/sB66l4eWoAAAA=
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Aradhya Bhatia <a-bhatia1@ti.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4407;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=cNkl06QQHpvODOS+NcyjyJrtUpAGoum7uDoGdQ4v5oM=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBkulL3/1oxZDXSy2KXI3/n4Ihjp95Gkuy5lrimi
+ SLm6s6nQmSJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZLpS9wAKCRD6PaqMvJYe
+ 9b/lD/4vm9Td3Avl7pKylPBLSvKEq6KJ/GlYvERTWzWXNl0eHg0VbaYyXDIAZOJyJBRtvFanKsW
+ B0DdiDHr3OdWAE+4NvAy4IyOQwrR121WYgfPPFuK9GdxCVoEaYmQW4EZ6yQ/iOxknT3vLEDWLr9
+ c3lxhkMst8jL5N7jkocg39agZ7V/UpiAzJm63WSjRMP6w9NaKBa6heFcipEBIexQKUoHnRmNPo6
+ pwx+xxL1kSDkQH2dhZ2/AdyExWQ6RVYMFRQbvNRFr6HFVtFBCWGY0R90z9stTeFyVhpV7qUGfo+
+ awF4JpAX7/uOY/cm+QYR7GNUPBocoWuuqQ7V9LZj4wEWVsJpFjovXeAuGNP9y5Y4hhMzXjmVBhL
+ cYWb16j0RwftAnQ273fH2VXWfn1zvtnhxYuUKDVcFhACdIvtzoXAATuH+CiI6LtmATS7nlCCx76
+ 31aonf3pWxb+cMQIvNQYy544LKYXk6JbehUGj09vZHH46tBnm8r2e6TPVGoMNkWdXTuTT+q5DSP
+ jH2Y8UFg3rdc8Fw/A26L/1eJXuUx4oG7Ad4MV9iODKU4r1Vb0Rel/o9Qh3mWGM25NJ1sSpmuNwK
+ I729ds+lxDQgRi/xP+CdyxiaH7EGvg6G8GCOer0Bywpnq4KVUdf2sre32Rg3LnWDnyDm866TYOi
+ LHAqvD7LEyxrwCg==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,78 +78,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lu Hongfei,
+DRM bridges are not visible to the userspace and it may not be
+immediately clear if the chain is somehow constructed incorrectly. I
+have had two separate instances of a bridge driver failing to do a
+drm_bridge_attach() call, resulting in the bridge connector not being
+part of the chain. In some situations this doesn't seem to cause issues,
+but it will if DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is used.
 
-On 13/06/2023 05:27, Lu Hongfei wrote:
-> Add a put_device() call for the release of the object
-> which was determined by a of_find_device_by_node() call
-> in mdp_get_subsys_id().
-> 
-> Add of_node_put() call for the release of the object
-> which was determined by a for_each_child_of_node() call
-> in mdp_comp_config().
+Add a debugfs file to print the bridge chains. For me, on this TI AM62
+based platform, I get the following output:
 
-After merging this patch from you into our media_stage tree:
+encoder[39]
+	bridge[0] type: 0, ops: 0x0
+	bridge[1] type: 0, ops: 0x0, OF: /bus@f0000/i2c@20000000/dsi@e:toshiba,tc358778
+	bridge[2] type: 0, ops: 0x3, OF: /bus@f0000/i2c@20010000/hdmi@48:lontium,lt8912b
+	bridge[3] type: 11, ops: 0x7, OF: /hdmi-connector:hdmi-connector
 
-https://patchwork.linuxtv.org/project/linux-media/patch/20230530101724.31412-1-luhongfei@vivo.com/
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+---
+ drivers/gpu/drm/drm_bridge.c  | 48 +++++++++++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/drm_debugfs.c |  3 +++
+ include/drm/drm_bridge.h      |  5 +++++
+ 3 files changed, 56 insertions(+)
 
-this v3 no longer applies. So I will need a v4, I'm afraid...
+diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+index c3d69af02e79..da3205aaed6b 100644
+--- a/drivers/gpu/drm/drm_bridge.c
++++ b/drivers/gpu/drm/drm_bridge.c
+@@ -27,8 +27,10 @@
+ #include <linux/mutex.h>
+ 
+ #include <drm/drm_atomic_state_helper.h>
++#include <drm/drm_debugfs.h>
+ #include <drm/drm_bridge.h>
+ #include <drm/drm_encoder.h>
++#include <drm/drm_file.h>
+ #include <drm/drm_of.h>
+ #include <drm/drm_print.h>
+ 
+@@ -1345,6 +1347,52 @@ struct drm_bridge *of_drm_find_bridge(struct device_node *np)
+ EXPORT_SYMBOL(of_drm_find_bridge);
+ #endif
+ 
++#ifdef CONFIG_DEBUG_FS
++static int drm_bridge_chains_info(struct seq_file *m, void *data)
++{
++	struct drm_debugfs_entry *entry = m->private;
++	struct drm_device *dev = entry->dev;
++	struct drm_printer p = drm_seq_file_printer(m);
++	struct drm_mode_config *config = &dev->mode_config;
++	struct drm_encoder *encoder;
++	unsigned int bridge_idx = 0;
++
++	list_for_each_entry(encoder, &config->encoder_list, head) {
++		struct drm_bridge *bridge;
++
++		drm_printf(&p, "encoder[%u]\n", encoder->base.id);
++
++		bridge = drm_bridge_chain_get_first_bridge(encoder);
++
++		while (bridge) {
++			drm_printf(&p, "\tbridge[%u] type: %u, ops: %#x",
++				   bridge_idx, bridge->type, bridge->ops);
++
++			if (bridge->of_node)
++				drm_printf(&p, ", OF: %pOFfc", bridge->of_node);
++
++			drm_printf(&p, "\n");
++
++			bridge_idx++;
++			bridge = drm_bridge_get_next_bridge(bridge);
++		}
++	}
++
++	return 0;
++}
++
++/* any use in debugfs files to dump individual planes/crtc/etc? */
++static const struct drm_debugfs_info drm_bridge_debugfs_list[] = {
++	{"bridge_chains", drm_bridge_chains_info, 0},
++};
++
++void drm_bridge_debugfs_init(struct drm_minor *minor)
++{
++	drm_debugfs_add_files(minor->dev, drm_bridge_debugfs_list,
++			      ARRAY_SIZE(drm_bridge_debugfs_list));
++}
++#endif
++
+ MODULE_AUTHOR("Ajay Kumar <ajaykumar.rs@samsung.com>");
+ MODULE_DESCRIPTION("DRM bridge infrastructure");
+ MODULE_LICENSE("GPL and additional rights");
+diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
+index c90dbcffa0dc..3e89559d68cd 100644
+--- a/drivers/gpu/drm/drm_debugfs.c
++++ b/drivers/gpu/drm/drm_debugfs.c
+@@ -31,6 +31,7 @@
+ 
+ #include <drm/drm_atomic.h>
+ #include <drm/drm_auth.h>
++#include <drm/drm_bridge.h>
+ #include <drm/drm_client.h>
+ #include <drm/drm_debugfs.h>
+ #include <drm/drm_device.h>
+@@ -272,6 +273,8 @@ int drm_debugfs_init(struct drm_minor *minor, int minor_id,
+ 
+ 	drm_debugfs_add_files(minor->dev, drm_debugfs_list, DRM_DEBUGFS_ENTRIES);
+ 
++	drm_bridge_debugfs_init(minor);
++
+ 	if (drm_drv_uses_atomic_modeset(dev)) {
+ 		drm_atomic_debugfs_init(minor);
+ 	}
+diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+index bf964cdfb330..60dbee6bd1e6 100644
+--- a/include/drm/drm_bridge.h
++++ b/include/drm/drm_bridge.h
+@@ -949,4 +949,9 @@ static inline struct drm_bridge *drmm_of_get_bridge(struct drm_device *drm,
+ }
+ #endif
+ 
++#ifdef CONFIG_DEBUG_FS
++struct drm_minor;
++void drm_bridge_debugfs_init(struct drm_minor *minor);
++#endif
++
+ #endif
 
-Regards,
+---
+base-commit: c7a472297169156252a50d76965eb36b081186e2
+change-id: 20230721-drm-bridge-chain-debugfs-0bbc1522f57a
 
-	Hans
-
-> 
-> Signed-off-by: Lu Hongfei <luhongfei@vivo.com>
-> ---
-> The previous version’s Subject was:
-> [PATCH v2] media: platform: mtk-mdp3: Fix resource leaks in mdp_get_subsys_id()
-> 
-> The modifications made compared to the previous version are as follows:
-> 1. Modified the patch subject
-> 2. Fix resource leak issue in mdp_comp_config()
-> 
->  drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-> index a605e80c7dc3..85c5f89f2ed2
-> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-> @@ -892,13 +892,16 @@ static int mdp_get_subsys_id(struct mdp_dev *mdp, struct device *dev,
->  	ret = cmdq_dev_get_client_reg(&comp_pdev->dev, &cmdq_reg, index);
->  	if (ret != 0) {
->  		dev_err(&comp_pdev->dev, "cmdq_dev_get_subsys fail!\n");
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto put_device;
->  	}
->  
->  	comp->subsys_id = cmdq_reg.subsys;
->  	dev_dbg(&comp_pdev->dev, "subsys id=%d\n", cmdq_reg.subsys);
->  
-> -	return 0;
-> +put_device:
-> +	put_device(&comp_pdev->dev);
-> +	return ret;
->  }
->  
->  static void __mdp_comp_init(struct mdp_dev *mdp, struct device_node *node,
-> @@ -1135,6 +1138,7 @@ int mdp_comp_config(struct mdp_dev *mdp)
->  		comp = mdp_comp_create(mdp, node, id);
->  		if (IS_ERR(comp)) {
->  			ret = PTR_ERR(comp);
-> +			of_node_put(node);
->  			goto err_init_comps;
->  		}
->  
-> @@ -1144,6 +1148,8 @@ int mdp_comp_config(struct mdp_dev *mdp)
->  		pm_runtime_enable(comp->comp_dev);
->  	}
->  
-> +	of_node_put(node);
-> +
->  	ret = mdp_comp_sub_create(mdp);
->  	if (ret)
->  		goto err_init_comps;
+Best regards,
+-- 
+Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
