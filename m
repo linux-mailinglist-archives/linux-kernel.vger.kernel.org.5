@@ -2,153 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C2F75CAE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B8375CAE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbjGUPFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
+        id S231668AbjGUPGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231608AbjGUPFx (ORCPT
+        with ESMTP id S231635AbjGUPGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:05:53 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C91030D2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:05:52 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6687446eaccso1800229b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:05:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689951951; x=1690556751;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=J9t01tW//Y6gnQbuHCuY82CsGI5YDsJjCU5CUuuUpoE=;
-        b=rXCT7zqYzdLCND5aqcr5GTp7x9G6pdO4FzrpiZ2KNLoeERbFMAsG1wAUwplKh61/7V
-         MK8P7RgwY0moT1kYsXl1rnf2cStBEAdP1qIbRF7VQ5wqWN6sz2f2bXFFhL23AajxUVEk
-         mTDumd5sm0KKHTWDfxPiWuVynPGUmOVXclguRTmODsW9oa1ga7e2RIeiWm6fTtP4bSlb
-         moCRNr6uDO8iarO1Y9GQV1kqxmQDExLbkMhIumBZf1JV4VC7z6oUIV9B8333vTTQdfwV
-         EHsUAY8biAJfqdKr0G+454NFq1Ez43lw2wlGRkzx1by/BxCObFGrmbyAj/IXOSWVfJzd
-         zyxg==
+        Fri, 21 Jul 2023 11:06:13 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9BF30EC
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:06:06 -0700 (PDT)
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 9A5033F120
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:06:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1689951964;
+        bh=kl/e4UOsgyTgpZR041CkgQMtj/G2F+aKue0ZM+n3D1I=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=JeCRC6XHDs/rMWvYfoM+siY6Di/fTK+g7xk0hjMauEAWkA0brkcjzwOeZaRxIKmO0
+         jLITM/2fh1hBbWZ8Qd4GcYFSHmDuxuA2xXGV8snw0CtxnJnH6ejs0fnArndpCFWcGo
+         pSwteitFjkPIoQDbCXEVeD7ZVWX5NKARWLRbnyikIwOej4jhT25LnyLm4oQHXvQfl8
+         h68p/uaWrx4zl2OdPre8trtaOype8HJg+fVDmRshdegoILuHlOXvvFXBzoPwOQrU7I
+         0sQhaZZYxCgoLP2qKctI83JyhCE7/W4lFcUFRdn6bmQ/bu6WsAEWM3G8BASVKj4A3T
+         vwacG+roqPNLg==
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-262f7a3bc80so1511513a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:06:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689951951; x=1690556751;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J9t01tW//Y6gnQbuHCuY82CsGI5YDsJjCU5CUuuUpoE=;
-        b=NV1KQoypej6gFH+Xm0RL31uEFnOUPcqlNoNn74JHdA071JsBTsRJU1ymYklhDUNCnC
-         Nltjea5XYXn8TvNCCxWdDTmuJ+khFpZpu8PAfpwTO0jUOGj6cxkJrmRiu488r1Ev9/oj
-         AaBY92F2Eye3dCB440+WD8FIouv69NVwkxe14DTvSbbqm3lC/Mo+pKr+E7o5v/e8YqvS
-         9Rr3izQvr8POthZcKe7SZBgURQ7oKatEQjJLVfxyJdmPJydE4Ein1otgzcktMczXN1fN
-         mFfNWPplGjUSPJUEtpOUIYH5a4rJQPvlP62M1ChD9MflDzFOMHmPZasiWz/aTkk8MGzy
-         yUqw==
-X-Gm-Message-State: ABy/qLZfHSx2nUZtfkr1TJ9ds8vyi4QB7qRRGPOQZ5UNNbfJP+ROX/PG
-        OOc+zLxub7DpNjzG0n8Xd2E=
-X-Google-Smtp-Source: APBJJlGLjfetE/RgN+oM5Re8ZUebhuRS7XfGImhqYtc42yxWtNTYlACvUxIP7Uy+l098LSbdbOM6XA==
-X-Received: by 2002:a05:6a00:2486:b0:682:37be:c9fe with SMTP id c6-20020a056a00248600b0068237bec9femr411699pfv.10.1689951951460;
-        Fri, 21 Jul 2023 08:05:51 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s15-20020a62e70f000000b0063d2dae6247sm3110766pfh.77.2023.07.21.08.05.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 08:05:50 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <e79bcf87-472d-f785-d4bc-d7c744b23781@roeck-us.net>
-Date:   Fri, 21 Jul 2023 08:05:49 -0700
+        d=1e100.net; s=20221208; t=1689951963; x=1690556763;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kl/e4UOsgyTgpZR041CkgQMtj/G2F+aKue0ZM+n3D1I=;
+        b=ikrIylbH06jwccZmjiXFMW5CZH1wKQjAtbuoUo05BXTOtp8q+xJJbL3QrrMs4yNRDD
+         5SAHqofdqJUFYnr7tasewjux2hNT1ML2ehdas+pD0BPAhLLpNc0YYPLRfPkwPxc99ZwI
+         x1bUWZvVfMMvsm9uIXBS+XvPtcYKOh4pmPTKZ2rfP+5QgAca8KxRAPhJHWrOPYqN/lzp
+         Rpbj5TOz5VrBAnEDAuD7p7c07d+nGwS5+5v2SwH0FMh+9B88T7s+cyg1GnS956/RoVtG
+         +kRpsFt3OFUOFQ73Pon2iIMEza2nD/fj7Xm/oA1387gq9FFUzZVDkCLWTusDm9jkgcag
+         iQtg==
+X-Gm-Message-State: ABy/qLZJTy1VsN6evxBEBCma+/Pl9cIC/SCmu9QuyfIrrYwwdOwKO+KD
+        DTVPadGMS28IERsWcwDYy9kCChzPWFBRTz6wjppb6v9/1ve/Qu3TB6c/J6rJQT5EtxUmBoQigw9
+        fMMUYUJrQPV0xR5JVDSIDDMCizw7AkibuR85ugmqRp1hNkoB0oj5tmlyEeA==
+X-Received: by 2002:a17:90b:3852:b0:263:41d2:4e2 with SMTP id nl18-20020a17090b385200b0026341d204e2mr1985847pjb.32.1689951963231;
+        Fri, 21 Jul 2023 08:06:03 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGQG+8sAZFcshpgpSEmzvsz19YGr20QEN6gLymdh7VMikSISNxL1N3LszadWnJqVhvZ1lNIBLfj/PJsI0BVVTQ=
+X-Received: by 2002:a17:90b:3852:b0:263:41d2:4e2 with SMTP id
+ nl18-20020a17090b385200b0026341d204e2mr1985815pjb.32.1689951962778; Fri, 21
+ Jul 2023 08:06:02 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 2/2] regmap: Reject fast_io regmap configurations with
- RBTREE and MAPLE caches
-Content-Language: en-US
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Andy Yan <andy.yan@rock-chips.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-References: <20230720032848.1306349-1-linux@roeck-us.net>
- <20230720032848.1306349-2-linux@roeck-us.net>
- <CGME20230721145342eucas1p12e658a54d36d985b2811e2c21f7810ee@eucas1p1.samsung.com>
- <c2bba4df-da1f-5666-89aa-28c6700575ca@samsung.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <c2bba4df-da1f-5666-89aa-28c6700575ca@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230719023223.2971481-1-kai.heng.feng@canonical.com> <CAJZ5v0g4ngM4Z_nvzMfdgsMjjjc2QXkr-ZGxZBzDufbrqO6Kvw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0g4ngM4Z_nvzMfdgsMjjjc2QXkr-ZGxZBzDufbrqO6Kvw@mail.gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 21 Jul 2023 23:05:51 +0800
+Message-ID: <CAAd53p5+3GOu9cCob2FiYEtSVCHEsJQi72PDkotK7FniwVpETg@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPI: video: Put ACPI video and its child devices to
+ D0 at boot
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     lenb@kernel.org, hdegoede@redhat.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/23 07:53, Marek Szyprowski wrote:
-> Hi,
-> 
-> On 20.07.2023 05:28, Guenter Roeck wrote:
->> REGCACHE_RBTREE and REGCACHE_MAPLE dynamically allocate memory for regmap
->> operations. This is incompatible with spinlock based locking which is used
->> for fast_io operations. Reject affected configurations.
->>
->> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
->> ---
->> This seems prudent, given that accesses will be protected by spinlock
->> but may allocate memory with GFP_KERNEL. Another option might be to use
->> WARN_ON instead of rejecting the configuration to avoid hard regressions
->> (and I think both drivers/net/ieee802154/mcr20a.c and
->> sound/soc/codecs/sti-sas.c may be affected, though I can not test it).
-> 
-> This patch, which landed in today's linux-next, breaks operation of the
-> RockChip's VOP2 DRM driver
-> (drivers/gpu/drm/rockchip/rockchip_drm_vop2.c). I'm not sure what is the
-> proper fix in this case. Should one change the cache type to REGCACHE_FLAT?
-> 
+On Fri, Jul 21, 2023 at 1:32=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.or=
+g> wrote:
+>
+> On Wed, Jul 19, 2023 at 4:33=E2=80=AFAM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+> >
+> > Screen brightness can only be changed once on some HP laptops.
+> >
+> > Vendor identified the root cause as Linux doesn't invoke _PS0 at boot
+> > for all ACPI devices:
+>
+> No, it doesn't and it won't.  For the reason why please see the
+> comment in acpi_bus_init_power().
 
-Ah, I missed regcache_init_mmio() when looking for affected drivers.
-This affects a larger number of drivers than I thought. In addition
-to the drivers mentioned above,
+Understood.
 
-  drivers/soc/qcom/icc-bwmon.c
-  sound/soc/bcm/bcm2835-i2s.c
-  sound/soc/codecs/jz4740.c
-  sound/soc/fsl/fsl_aud2htx.c
-  sound/soc/fsl/fsl_easrc.c
-  sound/soc/fsl/fsl_micfil.c
+>
+> BTW, missing _PSC for a device that has _PS0 violates Section 7.3.6.
+> _PSC (Power State Current) of the ACPI specification, so this is a
+> platform firmware problem.
 
-all use unsafe locking (spinlock with REGCACHE_RBTREE).
+This means most if not all platforms have this problem.
 
-Thanks,
-Guenter
+>
+> >     Scope (\_SB.PC00.GFX0)
+> >     {
+> >         Scope (DD1F)
+> >         {
+> >             Method (_PS0, 0, Serialized)  // _PS0: Power State 0
+> >             {
+> >                 If (CondRefOf (\_SB.PC00.LPCB.EC0.SSBC))
+> >                 {
+> >                     \_SB.PC00.LPCB.EC0.SSBC ()
+> >                 }
+> >             }
+> >             ...
+> >         }
+> >         ...
+> >     }
+> >
+> > The \_SB.PC00.GFX0.DD1F is the panel device, and its _PS0 needs to be
+> > executed to make the brightness control work properly.
+> >
+> > _PS0 doesn't get invoked for all ACPI devices because of commit
+> > 7cd8407d53ef ("ACPI / PM: Do not execute _PS0 for devices without _PSC
+> > during initialization"). For now use acpi_device_fix_up_power_extended(=
+)
+> > to put ACPI video and its child devices to D0 to workaround the issue.
+>
+> The above paragraph is misleading the reader into thinking that the
+> issue was introduced by a kernel change while the issue really is
+> there in the platform firmware and it is the missing _PSC.
+>
+> Blaming kernel changes for platform firmware defects is not really produc=
+tive.
 
-> 
->>    drivers/base/regmap/regmap.c | 9 +++++++++
->>    1 file changed, 9 insertions(+)
->>
->> diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
->> index 89a7f1c459c1..b4640285c0b9 100644
->> --- a/drivers/base/regmap/regmap.c
->> +++ b/drivers/base/regmap/regmap.c
->> @@ -777,6 +777,15 @@ struct regmap *__regmap_init(struct device *dev,
->>    	} else {
->>    		if ((bus && bus->fast_io) ||
->>    		    config->fast_io) {
->> +			/*
->> +			 * fast_io is incompatible with REGCACHE_RBTREE and REGCACHE_MAPLE
->> +			 * since both need to dynamically allocate memory.
->> +			 */
->> +			if (config->cache_type == REGCACHE_RBTREE ||
->> +			    config->cache_type == REGCACHE_MAPLE) {
->> +				ret = -EINVAL;
->> +				goto err_name;
->> +			}
->>    			if (config->use_raw_spinlock) {
->>    				raw_spin_lock_init(&map->raw_spinlock);
->>    				map->lock = regmap_lock_raw_spinlock;
-> 
-> Best regards
+Right, I'll reword the message and make it clear that it's firmware's issue=
+.
 
+>
+> So this really is a workaround for defective platform firmware on the
+> affected systems and it should be documented as such.
+
+Sure.
+
+>
+> > Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D217683
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v2:
+> >  - Wording
+> >  - Bugzilla
+> >  - Add comment
+> >
+> >  drivers/acpi/acpi_video.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
+> > index 62f4364e4460..bac614e9fe56 100644
+> > --- a/drivers/acpi/acpi_video.c
+> > +++ b/drivers/acpi/acpi_video.c
+> > @@ -2027,6 +2027,13 @@ static int acpi_video_bus_add(struct acpi_device=
+ *device)
+> >         if (error)
+> >                 goto err_put_video;
+> >
+> > +
+> > +       /*
+> > +        * Some HP laptops require ACPI video's child devices have _PS0
+> > +        * evaluated to have functional panel brightness control.
+>
+> So the comment should mention the platform firmware defect and it
+> shouldn't say "some" but explicitly identify the defective platforms.
+
+OK.
+
+>
+> > +        */
+> > +       acpi_device_fix_up_power_extended(device);
+> > +
+>
+> And the code change itself is simple enough, so it can be made as long
+> as it is fine with Hans.
+
+OK.
+
+
+Kai-Heng
+
+>
+> >         pr_info("%s [%s] (multi-head: %s  rom: %s  post: %s)\n",
+> >                ACPI_VIDEO_DEVICE_NAME, acpi_device_bid(device),
+> >                video->flags.multihead ? "yes" : "no",
+> > --
