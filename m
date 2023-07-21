@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 636C175D650
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 23:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8C975D656
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 23:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbjGUVQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 17:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
+        id S229668AbjGUVRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 17:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbjGUVQJ (ORCPT
+        with ESMTP id S229552AbjGUVRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 17:16:09 -0400
+        Fri, 21 Jul 2023 17:17:44 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6383AA8
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:15:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52715123
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:17:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689974086;
+        s=mimecast20190719; t=1689974222;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=AucQCy4EnWPkoso2uzU/nf9OwRCQs6NxgaktwWeEhXE=;
-        b=Km0dWAq2eh9IRm3XR0qCCHa/rWdYWTnJa1mLVwDuS8jjqqEcQWEqUad8hxo/KPM5Nv5bqH
-        HojGtsB0sDgHVdJ24lhamyZIwyKrTE0nn388GTOTmV9L18n+qvMJ4PTrAYbnStAtoMLjxi
-        jldqPHYg29rFZzXmw0dG1Gr3BcHHd3s=
+        bh=f2CksioBG3mjJvGCQonqr0ZBTYtGb80XcIh5ZZevVPE=;
+        b=WJZOWjc38hoqFBZpGRBQQ7aktWEQ1G09798JhDathnvZ1L0clGgEW/xx3eZTtNKWFF58P6
+        mw0lN5/frYknHzsSkpU4jIHUL5RDIEnig9Am2ZdFBWwtbl/VC0XDAR6xHfP4Ac2DiwsPyQ
+        NTWP/MEa/1gP5r2ohfGZiDxc1RkNjB0=
 Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
  [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-120-pwCmHa_KNyao11tcdCKG2Q-1; Fri, 21 Jul 2023 17:14:44 -0400
-X-MC-Unique: pwCmHa_KNyao11tcdCKG2Q-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-635eeb952b8so28395546d6.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:14:44 -0700 (PDT)
+ us-mta-360-AnRe21FcMPinzgSjJ20LJg-1; Fri, 21 Jul 2023 17:17:00 -0400
+X-MC-Unique: AnRe21FcMPinzgSjJ20LJg-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-63cd05c0415so28531066d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:17:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689974084; x=1690578884;
+        d=1e100.net; s=20221208; t=1689974220; x=1690579020;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AucQCy4EnWPkoso2uzU/nf9OwRCQs6NxgaktwWeEhXE=;
-        b=f8y666gyWGGlKTRN4cx0M+Lu+zHVrjdbVl2ZMRwld7OZgP88QivolbOwNJZiYmPG4G
-         6ot7RorgTK1o9h6XHwQGi1Rlfu4hmdRnx8wOXPM6siEkN43hbH3tkIDczmxSlptS4OWu
-         9amLa/nIcpkDPPLd/4Q8mjV/3dPz5RPRRN9LNyEIVfnZe0BVot2j9EU+KCiYpoeM4XYN
-         OWa6pn81kHB4BgtT1RiFiUl2Y3jg0Zxl1HFTdHpTAXE+mKLr3imnIVVa2FtcRMHiXOIr
-         l0FeNddlm65u35SivH39iIZW1C7NEK4LBr0i7dK7mh9CtiJruIul7FFP77tgxyb4wcpR
-         Mvug==
-X-Gm-Message-State: ABy/qLYIhmqEp23KdFOREwdOfVcs8KV52KNF7GiaB2ANeKJTH0Us2/TL
-        3hwiK1ZPHSG6MaR700xYKacPbnnbqdE3/Ax1+JjgP00XyRPgh6b1u6gq9NpgY3/eYP+UIcleIdj
-        c740QfoHga6zOur0lrCNV56sC
-X-Received: by 2002:a0c:f907:0:b0:5f4:5af6:1304 with SMTP id v7-20020a0cf907000000b005f45af61304mr1213659qvn.16.1689974084333;
-        Fri, 21 Jul 2023 14:14:44 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGVrQNjzF4DBXjYQf8nrO32CEZALTxhI79MrPwcX2lK9z4QDzLcWJNFd+xdC4Hmp+SIWIpFuA==
-X-Received: by 2002:a0c:f907:0:b0:5f4:5af6:1304 with SMTP id v7-20020a0cf907000000b005f45af61304mr1213645qvn.16.1689974084073;
-        Fri, 21 Jul 2023 14:14:44 -0700 (PDT)
+        bh=f2CksioBG3mjJvGCQonqr0ZBTYtGb80XcIh5ZZevVPE=;
+        b=CxlJ6DwUgi683IwOOjRoJaUZwxsA2Ig2p0bK2BBF1y3O3ArOiNTHmBPH1UciatbgiQ
+         q7FkGfls/Rkso+dTrlqhqKH7/xsTWtznVXzv+kYVokg3Ar/G+b77GP7oka4gaj5BnGZG
+         /K6DQxW0Q12fHMb4TKUItWKpt6V/HrG6bsaEr2vEI021oq2Hm8Ia6xiO69I1FR6c0dfg
+         iGcrdcKj26JZYj5yqFOz9RExRxEZiLOfXtVwQ6jaa1G5HfqL9sSCUNfqaoSSAoo/EgGy
+         oZDhOwht8C35uIIXQY/k/fbvLNfm0UjzMhkxSAYdByUy1L/suZH1sQAE3JtTGjCIVih5
+         AS7Q==
+X-Gm-Message-State: ABy/qLa2fLRV2fEQ0mUoD+94Dato8dNbM8IqwGaQa1YjEKT9gkj2Jm4u
+        RSfuIvV2K0zMsZpnd6PDBUpDqfFsBF3m3cW7AAo+nFR/PXxiOtIL91gj9hp3J1S4w2gd44XUJ2X
+        yF/GIph65/lnV/9/2IOUI9GUO
+X-Received: by 2002:a0c:ecd0:0:b0:636:10ce:5203 with SMTP id o16-20020a0cecd0000000b0063610ce5203mr1192001qvq.38.1689974220352;
+        Fri, 21 Jul 2023 14:17:00 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFi7MLn42ck7e1zCs2zr7hOu0xs9e+zv2wIO06MPZbmJ0CwqyqfAea4op3hSNeC6hTYu/bcmQ==
+X-Received: by 2002:a0c:ecd0:0:b0:636:10ce:5203 with SMTP id o16-20020a0cecd0000000b0063610ce5203mr1191990qvq.38.1689974220164;
+        Fri, 21 Jul 2023 14:17:00 -0700 (PDT)
 Received: from fedora ([2600:1700:1ff0:d0e0::17])
-        by smtp.gmail.com with ESMTPSA id m6-20020a0cdb86000000b0063c7037f85fsm1565490qvk.73.2023.07.21.14.14.43
+        by smtp.gmail.com with ESMTPSA id u4-20020a0cf1c4000000b006375f9fd170sm1578237qvl.34.2023.07.21.14.16.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 14:14:43 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 16:14:41 -0500
+        Fri, 21 Jul 2023 14:16:59 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 16:16:57 -0500
 From:   Andrew Halaney <ahalaney@redhat.com>
 To:     Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] soundwire: qcom: Log clk_get("iface") failures
-Message-ID: <ydy3ubtg75kzml23cowxpkmapoe2vlajm3r5sjglilffuhxr5q@t77ck5lknudy>
-References: <20230721164901.2155287-1-quic_bjorande@quicinc.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] ASoC: codecs: lpass: Log clk_get() failures
+Message-ID: <pwfv6pbyggvbrs45v52qb4hmjrmdr7ngclhxw2gvlz34xuto2d@pnw3tmk2imlr>
+References: <20230721165027.2155528-1-quic_bjorande@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230721164901.2155287-1-quic_bjorande@quicinc.com>
+In-Reply-To: <20230721165027.2155528-1-quic_bjorande@quicinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 09:49:01AM -0700, Bjorn Andersson wrote:
-> Failing to acquire the iface clock makes probing of the Qualcomm
-> SoundWire driver fail without providing any indication to the user. Make
-> the driver log the error to aid debugging system configuration issues.
+On Fri, Jul 21, 2023 at 09:50:27AM -0700, Bjorn Andersson wrote:
+> The LPASS macro drivers all acquire a number of clocks, but give no
+> indication when clk_get() fails, making it hard to identify and debug
+> system configuration issues.  Make these drivers provide useful debug
+> information when this happens.
 > 
 > Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
 Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-
-> ---
->  drivers/soundwire/qcom.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-> index 55be9f4b8d59..e51b1dfce82d 100644
-> --- a/drivers/soundwire/qcom.c
-> +++ b/drivers/soundwire/qcom.c
-> @@ -1550,7 +1550,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->  
->  	ctrl->hclk = devm_clk_get(dev, "iface");
->  	if (IS_ERR(ctrl->hclk)) {
-> -		ret = PTR_ERR(ctrl->hclk);
-> +		ret = dev_err_probe(dev, PTR_ERR(ctrl->hclk), "unable to get iface clock\n");
->  		goto err_init;
->  	}
->  
-> -- 
-> 2.25.1
-> 
 
