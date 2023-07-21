@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4DFE75BB79
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 02:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F15D75BB88
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 02:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbjGUAY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 20:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58170 "EHLO
+        id S229570AbjGUA2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 20:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGUAY4 (ORCPT
+        with ESMTP id S229500AbjGUA2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 20:24:56 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657C6269F;
-        Thu, 20 Jul 2023 17:24:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689899095; x=1721435095;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ltiTaZD8fvQLVG6G9aRkD/6VXMdG8iXlqJt3UX6SgNE=;
-  b=Ayb5PzP3AEmomlJ4PHrjBwwpK0ic33iTY4N0kra7IiP60RoFMcC+rtgt
-   QxVE4incv94DDetki0FhkD5OluO5pAf8FvzvZBoaNX1SYqoG8vTOpnIiW
-   3swj3gU0tIEdDdQE4NX2XVa/1rYaMN+HrfJBF9jCzaEnJ0nlDtWiAzf85
-   NvQf0HYbumYFWXikNgqdERnvJOhbDqh5isjxfVRaTim7IbY+szwZHfkwC
-   HSxVVIgrENJcTaH0/6u4QLhi6PzD4cHhMH4D40rEAk1nk8bIICxxNj3dy
-   1sQLzUT4eVlQ1gnl3sYhOtSGjK2HueIXlSzOh2YGVtXfCgJPLdrD8zdEv
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="365796452"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="365796452"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 17:24:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="971239414"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="971239414"
-Received: from tholtx-mobl.amr.corp.intel.com (HELO [10.209.39.44]) ([10.209.39.44])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 17:24:54 -0700
-Message-ID: <da0cfb1e-e347-f7f2-ac72-aec0ee0d867d@intel.com>
-Date:   Thu, 20 Jul 2023 17:24:53 -0700
+        Thu, 20 Jul 2023 20:28:46 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D312D71;
+        Thu, 20 Jul 2023 17:28:20 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6b9f3b57c4fso1083684a34.1;
+        Thu, 20 Jul 2023 17:28:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689899269; x=1690504069;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lnlM7bXY3igGuWTJwFezoqiRo91fGD1ITq/KKVdjdQg=;
+        b=OF2BWAb8Of84aZqVSe5kOiy5umpEJQ4Sacf+JLxzY6imPfN1O+snIH/QWsdV+yPZlj
+         e9Eq3WJr989aCEDVPCxqXXj4W9eeS7m1VDDcXn4qRm/HS4UOF95cRcZ6itEzV1z4mPyT
+         6H0G/H8usF3URbSDVAkvDI7vG8hotHN86H1xtH+pcEJ94eENpadvx6r0DBzA3gIoeum7
+         qEuksjcXk5GKbfjD4eV6IZTlnO7xgNwLr2X9aHdcNST/0QDo1Tkv0iT8DfGcpJ3+TsEG
+         1yNYm2dwMLKIiUxQWmfhlGPkEFn5Ww/PoWo8wB7NnPCGKX0yTmyAzxHm6ts9bNDvtcnQ
+         8yOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689899269; x=1690504069;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lnlM7bXY3igGuWTJwFezoqiRo91fGD1ITq/KKVdjdQg=;
+        b=LOByD5cUoNFHnHyMkAm6u/3vEzj23QpV0A+qXK0GOijaaeAjnmsBJy6lAJYmUDnSG7
+         YFb3xs72zZYsl6FQn5gaziU59Kowths9cIDkHibQgEBuebiR2a4OPcItfbadKKH8+FdX
+         5PcLhyMp0ptx36GykdUYprrQnqoski5bxyvUMsY0JU3iYnnkdbnlj//8qXiUycXdWmrO
+         4eV+zUDcqu/0IVnUA03MqzF3S9lrmTl1QxkrHafRwjlediCPrRS8KyQE02K/Ul47PZUU
+         oXIAWkRLkIAWXgIC2JjW3Dsoan2unY7C8oX8dCUFXlGPqDo+t/rVWFpdUF+4FhQcvWnT
+         +VLg==
+X-Gm-Message-State: ABy/qLb6ZTwiFQ/9T/KNN1unX6nITJ/iZaJBPkXhWLX0k3zhv+BoISbD
+        LixBC97HVZ6tQsrElHU2XlU=
+X-Google-Smtp-Source: APBJJlHUzP+ZHzljtTFXKrRrAU6CvEERwpEcD9VeUn9iVvieyjKnGF8Ns6X2b09K4ITukvbWkN+4rA==
+X-Received: by 2002:a05:6830:1409:b0:6b9:9b41:fbf6 with SMTP id v9-20020a056830140900b006b99b41fbf6mr454699otp.0.1689899269303;
+        Thu, 20 Jul 2023 17:27:49 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id l7-20020a9d7a87000000b006b9b6aea237sm939676otn.80.2023.07.20.17.27.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 17:27:48 -0700 (PDT)
+Message-ID: <d3aa8c48-9f47-cead-aaa7-3ea796b91810@gmail.com>
+Date:   Thu, 20 Jul 2023 21:27:45 -0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 0/4] selftests/sgx: Harden test enclave
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rust: doctests: Use tabs for indentation in generated C
+ code
 Content-Language: en-US
-To:     Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>, jarkko@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com
-References: <20230720221623.9530-1-jo.vanbulck@cs.kuleuven.be>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <20230720221623.9530-1-jo.vanbulck@cs.kuleuven.be>
-Content-Type: text/plain; charset=UTF-8
+To:     David Gow <davidgow@google.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230720062939.2411889-1-davidgow@google.com>
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20230720062939.2411889-1-davidgow@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 15:16, Jo Van Bulck wrote:
-> While I understand that the bare-metal Intel SGX selftest enclave is
-> certainly not intended as a full-featured independent production runtime,
-> it has been noted on this mailing list before that "people are likely to
-> copy this code for their own enclaves" and that it provides a "great
-> starting point if you want to do things from scratch" [1].
+On 7/20/23 03:29, David Gow wrote:
+> While Rust uses 4 spaces for indentation, we should use tabs in the
+> generated C code. This does result in some scary-looking tab characters
+> in a .rs file, but they're in a string literal, so shouldn't make
+> anything complain too much.
+> 
+> Fixes: a66d733da801 ("rust: support running Rust documentation tests as KUnit ones")
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+> [...]
+I find it weird to mix indentations in one file, but if it leaves a
+good result then I'll hold my tongue.
 
-I wholeheartedly agree with the desire to spin up enclaves without the
-overhead or complexity of the SDK.  I think I'm the one that asked for
-this test enclave in the first place.  There *IS* a gap here.  Those who
-care about SGX would be wise to close this gap in _some_ way.
-
-But I don't think the kernel should be the place this is done.  The
-kernel should not be hosting a real-world (userspace) SGX reference
-implementation.
-
-I'd fully support if you'd like to take the selftest code, fork it, and
-maintain it.  The SGX ecosystem would be better off if such a project
-existed.  If I can help here in some way like (trying to) release the
-SGX selftest under a different license, please let me know.
-
-The only patches I want for the kernel are to make the test enclave more
-*obviously* insecure.
-
-So, it's a NAK from me for this series.  I won't support merging this
-into the kernel.  But at the same time, I'm very sympathetic to your
-cause, and I do appreciate your effort here.
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
