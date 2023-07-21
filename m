@@ -2,61 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 043A175C254
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B7375C258
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbjGUJA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58292 "EHLO
+        id S230513AbjGUJCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbjGUJA0 (ORCPT
+        with ESMTP id S229711AbjGUJCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:00:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E192D7C;
-        Fri, 21 Jul 2023 02:00:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 21 Jul 2023 05:02:30 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80C62D4B;
+        Fri, 21 Jul 2023 02:02:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8815060FF6;
-        Fri, 21 Jul 2023 09:00:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B10A7C433C7;
-        Fri, 21 Jul 2023 09:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689930023;
-        bh=d3bFSUvWr91gVcXF7JJcReHEGVVreHj7SrkoR+T7hm0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=XOZIaQiQnHbhPctu9AlDlkS7QjUcCOCU1orAqt1ri+/gTjHWfJS7TwuTzKIMxVVbl
-         g9mmi01sJgDDRJvYXc1shitnF/aKUj9MEGNEsSogQKqsFuo0Y9VbCDa+lQ6EfHbyok
-         K+8xgB44fX6n02mjpGZWLhZsyBofN1qPL3QjAqsczeLz14ygS6W4DyI1QM462VITft
-         tqBHVf2rQIV3d7lzDDfFKMhTyUYEusi167cvrz6voQRfNeWQDUEN/iZgIiYvVmapB6
-         qXKbdHk9z40MemTQWle7l1B/69AWRwIUhsycGOYdExL662ImLFL664idAO3mIFHUQk
-         4DOHRzWqg3DnQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 91685E21EE0;
-        Fri, 21 Jul 2023 09:00:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 75DB921979;
+        Fri, 21 Jul 2023 09:02:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689930147; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qVcf7rz5f+9m6sax0l/1jeoGOzJiq/lgITLiq23Ep8I=;
+        b=YjgTeflsWpVpeDGeqjDN1A1y/XFatnIBbOINNpk6SnD8DIOWAXKO7ofjWUUm4XaMZA/fAZ
+        TFqUUrPK6Ug86vItsxn73no0E+JVPX1AScMXt8WsrUah+Z9YilK3lujTM8qjgQaKU8eKrH
+        R77iM7kuonJstc6Vo2izWW/uVyNEb7M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689930147;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qVcf7rz5f+9m6sax0l/1jeoGOzJiq/lgITLiq23Ep8I=;
+        b=Hi8StsxebSUS3i28sfFufYxpzMBJxd2okPmcyNY7kl6GnLDoWTLkV6rrBYCVZWS1XdVdU2
+        igjm8HkdwAcVwpDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E8E17134B0;
+        Fri, 21 Jul 2023 09:02:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id rsTANaJJumTeZAAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Fri, 21 Jul 2023 09:02:26 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id a18f298f;
+        Fri, 21 Jul 2023 09:02:24 +0000 (UTC)
+From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: propagate error from function
+ unpin_extent_cache()
+References: <20230720134123.13148-1-lhenriques@suse.de>
+        <CAL3q7H4uqXttKMCucHH=tJDYkxOFuNRGR04ZSBD7eBMj4BE1iA@mail.gmail.com>
+Date:   Fri, 21 Jul 2023 10:02:24 +0100
+In-Reply-To: <CAL3q7H4uqXttKMCucHH=tJDYkxOFuNRGR04ZSBD7eBMj4BE1iA@mail.gmail.com>
+        (Filipe Manana's message of "Thu, 20 Jul 2023 17:15:13 +0100")
+Message-ID: <874jlx1vtr.fsf@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PatchV4 0/4] octeontx2-pf: support Round Robin scheduling
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168993002358.14749.10687127850006488208.git-patchwork-notify@kernel.org>
-Date:   Fri, 21 Jul 2023 09:00:23 +0000
-References: <20230719110443.15310-1-hkelam@marvell.com>
-In-Reply-To: <20230719110443.15310-1-hkelam@marvell.com>
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net,
-        willemdebruijn.kernel@gmail.com, andrew@lunn.ch,
-        sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, sbhatta@marvell.com, naveenm@marvell.com,
-        edumazet@google.com, pabeni@redhat.com, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, maxtram95@gmail.com,
-        corbet@lwn.net, linux-doc@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,35 +79,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Filipe Manana <fdmanana@kernel.org> writes:
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+> On Thu, Jul 20, 2023 at 5:05=E2=80=AFPM Lu=C3=ADs Henriques <lhenriques@s=
+use.de> wrote:
+>>
+>> Function unpin_extent_cache() doesn't propagate an error if the call to
+>> lookup_extent_mapping() fails.  This patch adds an error return (EINVAL)
+>> and simply logs it in the only caller.
+>>
+>> Signed-off-by: Lu=C3=ADs Henriques <lhenriques@suse.de>
+>> ---
+>> Hi!
+>>
+>> As per David and Johannes reviews, I'm now proposing a different approac=
+h.
+>> Note that I kept the WARN_ON() instead of replacing it by an ASSERT().  =
+In
+>> fact, I considered removing the WARN_ON() completely and simply return t=
+he
+>> error if em->start !=3D start.  But I guess it may useful for debug.
+>>
+>> Changes since v1:
+>> Instead of changing unpin_extent_cache() into a void function, make it
+>> propage an error code instead.
+>>
+>>  fs/btrfs/extent_map.c | 4 +++-
+>>  fs/btrfs/inode.c      | 8 ++++++--
+>>  2 files changed, 9 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+>> index 0cdb3e86f29b..f4e7956edc05 100644
+>> --- a/fs/btrfs/extent_map.c
+>> +++ b/fs/btrfs/extent_map.c
+>> @@ -304,8 +304,10 @@ int unpin_extent_cache(struct extent_map_tree *tree=
+, u64 start, u64 len,
+>>
+>>         WARN_ON(!em || em->start !=3D start);
+>>
+>> -       if (!em)
+>> +       if (!em) {
+>> +               ret =3D -EINVAL;
+>>                 goto out;
+>> +       }
+>>
+>>         em->generation =3D gen;
+>>         clear_bit(EXTENT_FLAG_PINNED, &em->flags);
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index dbbb67293e34..21eb66fcc0df 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -3273,8 +3273,12 @@ int btrfs_finish_one_ordered(struct btrfs_ordered=
+_extent *ordered_extent)
+>>                                                 ordered_extent->disk_num=
+_bytes);
+>>                 }
+>>         }
+>> -       unpin_extent_cache(&inode->extent_tree, ordered_extent->file_off=
+set,
+>> -                          ordered_extent->num_bytes, trans->transid);
+>> +
+>> +       /* Proceed even if we fail to unpin extent from cache */
+>> +       if (unpin_extent_cache(&inode->extent_tree, ordered_extent->file=
+_offset,
+>> +                              ordered_extent->num_bytes, trans->transid=
+) < 0)
+>> +               btrfs_warn(fs_info, "failed to unpin extent from cache");
+>
+> Well, this is not very useful. It doesn't provide any more useful
+> information than what we get from the WARN_ON() at
+> unpin_extent_cache(), making the patch not useful.
+>
+> This warning has actually happened a few times when running fstests
+> that exercise relocation (not sure if it's gone and accidently fixed
+> by something recently).
 
-On Wed, 19 Jul 2023 16:34:39 +0530 you wrote:
-> octeontx2 and CN10K silicons support Round Robin scheduling. When multiple
-> traffic flows reach transmit level with the same priority, with Round Robin
-> scheduling traffic flow with the highest quantum value is picked. With this
-> support, the user can add multiple classes with the same priority and
-> different quantum in htb offload.
-> 
-> This series of patches adds support for the same.
-> 
-> [...]
+Oh! In that case replacing the WARN_ON() by an ASSERT() would have
+definitely be a bad idea.
 
-Here is the summary with links:
-  - [net-next,PatchV4,1/4] octeontx2-pf: implement transmit schedular allocation algorithm
-    https://git.kernel.org/netdev/net-next/c/f78dca691287
-  - [net-next,PatchV4,2/4] sch_htb: Allow HTB quantum parameter in offload mode
-    https://git.kernel.org/netdev/net-next/c/9fe63d5f1da9
-  - [net-next,PatchV4,3/4] octeontx2-pf: htb offload support for Round Robin scheduling
-    https://git.kernel.org/netdev/net-next/c/47a9656f168a
-  - [net-next,PatchV4,4/4] docs: octeontx2: extend documentation for Round Robin scheduling
-    https://git.kernel.org/netdev/net-next/c/6f71051ffbdb
+> But to make this more useful, I would place the message at
+> unpin_extent_cache() with useful information such as:
+>
+> - inode number
+> - id of the root the inode belongs to
+> - the file offset (the start argument) and extent length (or end offset)
+> - why the warning triggered: we didn't find the extent map or we found
+> one with a different start offset
+> - if we found an unexpected extent map, dump its flags (so we can see
+> if it happens only with compressed or prealloc extents for e.g.) and
+> other details (length/end offset for e.g.)
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thanks, Filipe.  This all makes sense.  And in this case I guess I should
+go back to the initial approach of changing the function to a void
+function, but adding all this useful information.
 
-
+Cheers,
+--=20
+Lu=C3=ADs
