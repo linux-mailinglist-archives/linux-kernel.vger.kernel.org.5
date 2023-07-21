@@ -2,137 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3ED75C929
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED4375C92E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbjGUOJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
+        id S229566AbjGUOKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:10:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231389AbjGUOI6 (ORCPT
+        with ESMTP id S229487AbjGUOKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:08:58 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07583AAD
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:08:44 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fbb281eec6so3277628e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:08:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689948523; x=1690553323;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QdCDvX2ENQQi+dpK3c6L7rSwh7ZxpQvyjeSTayf+l4A=;
-        b=mKpa85MjZm0wM2/mDCVf9XYQEXqHnC0zrrCUULJJt2k97Ivcladhym49AqIJy7+Cl6
-         M68rFARHi81TAQJXWEUS1FYzNXin0hZbhFEFSIzyz0akk/YVbt8GKI7i1JU6Wbhd2lqU
-         QOxvFaJcPysmvURITXByzqQERED004zQDaoA/oKyBTElV1S52Qd2ZHxnkLx+wr7VyRv3
-         Aw8GSkEJP3SExUtN/YZgkoBVcRyf5/bJ61snewbba4LU6Pe0oAAHNa6hFgRSvTV30hyz
-         TujMWvjygIWFj2lESeXLXp5/tCCPHd4jXPTfUK933o8JRD3N8BQjMsDSwwNVnhYuu5Vs
-         LxBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689948523; x=1690553323;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QdCDvX2ENQQi+dpK3c6L7rSwh7ZxpQvyjeSTayf+l4A=;
-        b=Ixpfy7yhICkVlfqMomVpTxXm52gaL7lZY0mBLnFPtf5ING7QvRqbBOECicmSV+ZzbI
-         s16tbMYLOcuSkd6glzMQIN2D2aTnQ5qMTnSXItFOMrQWMa2y+pQP4ZDu8lHSR3J7ljUP
-         Bcb+/Y7Y3XQQQANP99CTVQV6/HWvRxCbeQ2S9tckIeJFePXrj9Ylghc3w7H/jtXlrxad
-         +51OUX2l4X60Kpbw3NDhKLFCEsCEJuszx3zBCke6CNYtWdvBb4Slb4yJRWH4e342EywC
-         bsGNuZ69MkD72cEO2uqAauqx5pgBolHtI28awHi4VCPjPZWWSmETGyXlRE4Oy425KvD6
-         OAgQ==
-X-Gm-Message-State: ABy/qLY4NHLHD/gYrPONrTm2XEvB1o0EFtYoUV1xvNRNMlpj5vgtewIi
-        21+OkVBIrPqVQOQ7WdI4kkknQQ==
-X-Google-Smtp-Source: APBJJlGitP6YdoZI8bIFpNGAsIBqr0u+J3Lfy5UXxN6m18CjoA/M+91KX09TKjqALw4XfrZGY2rXuA==
-X-Received: by 2002:a05:6512:3054:b0:4fb:b11:c99e with SMTP id b20-20020a056512305400b004fb0b11c99emr1401012lfb.56.1689948522863;
-        Fri, 21 Jul 2023 07:08:42 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id r1-20020adfce81000000b0031128382ed0sm4321269wrn.83.2023.07.21.07.08.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 07:08:41 -0700 (PDT)
-Message-ID: <22521abf-db55-aec6-fb96-fdb585ef6132@linaro.org>
-Date:   Fri, 21 Jul 2023 16:08:36 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 12/42] dt-bindings: watchdog: Add Cirrus EP93x
-Content-Language: en-US
-To:     nikita.shubin@maquefel.me,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Lukasz Majewski <lukma@denx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Fri, 21 Jul 2023 10:10:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7170CE;
+        Fri, 21 Jul 2023 07:10:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6558E6195D;
+        Fri, 21 Jul 2023 14:10:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C39B4C433C7;
+        Fri, 21 Jul 2023 14:10:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689948603;
+        bh=mqpc+bgxfipMEEmdMi0c2/ZJlESRyidyP20iwu1ubiU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=mwXJ4tWAGVS1YQv279yKam6lNor4fbv+EyYgPE9RKEXpJy6cXNZvFlP/KKxzKOTcB
+         +lqGPmG2ffZZ0Efx0S0TqnBE8IaMzk2MnCLGRhRMBEWpOJudId0i07k3cmP/nZVUaq
+         SHQPI6oYI5J2Ttnh4Enh9amoPJh7ypEjFICnaRQdDw7U29St7RlFkhJ+D7ihhqnWOv
+         xJjOEA3EUwNJAeTjNQJuuLgeXIWPSt3vBhtsEYX+1h3uDFaCPOyDIo8LBS3B298nuq
+         TrABcFKxVgUZNpuCKIaTgVNCGRGx0+QB9sHGcYJxF9jYzQi65FyVdVCSm+wLi6c1Xq
+         S45vKWYuRh3Iw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5E67BCE097F; Fri, 21 Jul 2023 07:10:03 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 07:10:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Peters <mpeters@embeddedTS.com>,
-        Kris Bahnsen <kris@embeddedTS.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-12-3d63a5f1103e@maquefel.me>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230605-ep93xx-v3-12-3d63a5f1103e@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 16/20] rcu: Make RCU dynticks counter size
+ configurable
+Message-ID: <28d4abb7-8496-45ec-b270-ea2b6164537b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-17-vschneid@redhat.com>
+ <xhsmhjzutu18u.mognet@vschneid.remote.csb>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xhsmhjzutu18u.mognet@vschneid.remote.csb>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2023 13:29, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
+On Fri, Jul 21, 2023 at 09:17:53AM +0100, Valentin Schneider wrote:
+> On 20/07/23 17:30, Valentin Schneider wrote:
+> > index bdd7eadb33d8f..1ff2aab24e964 100644
+> > --- a/kernel/rcu/Kconfig
+> > +++ b/kernel/rcu/Kconfig
+> > @@ -332,4 +332,37 @@ config RCU_DOUBLE_CHECK_CB_TIME
+> >         Say Y here if you need tighter callback-limit enforcement.
+> >         Say N here if you are unsure.
+> >
+> > +config RCU_DYNTICKS_RANGE_BEGIN
+> > +	int
+> > +	depends on !RCU_EXPERT
+> > +	default 31 if !CONTEXT_TRACKING_WORK
 > 
-> This adds device tree bindings for the Cirrus Logic EP93xx
+> You'll note that this should be 30 really, because the lower *2* bits are
+> taken by the context state (CONTEXT_GUEST has a value of 3).
+> 
+> This highlights the fragile part of this: the Kconfig values are hardcoded,
+> but they depend on CT_STATE_SIZE, CONTEXT_MASK and CONTEXT_WORK_MAX. The
+> static_assert() will at least capture any misconfiguration, but having that
+> enforced by the actual Kconfig ranges would be less awkward.
+> 
+> Do we currently have a way of e.g. making a Kconfig file depend on and use
+> values generated by a C header?
 
-Every patch:
+Why not just have something like a boolean RCU_DYNTICKS_TORTURE Kconfig
+option and let the C code work out what the number of bits should be?
 
-Please do not use "This commit/patch", but imperative mood. See longer
-explanation here:
-https://elixir.bootlin.com/linux/v5.17.1/source/Documentation/process/submitting-patches.rst#L95
+I suppose that there might be a failure whose frequency depended on
+the number of bits, which might be an argument for keeping something
+like RCU_DYNTICKS_RANGE_BEGIN for fault isolation.  But still using
+RCU_DYNTICKS_TORTURE for normal testing.
 
+Thoughts?
 
-Best regards,
-Krzysztof
-
+							Thanx, Paul
