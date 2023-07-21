@@ -2,123 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD28875D59C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0375875D5A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbjGUUVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38862 "EHLO
+        id S231468AbjGUUYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbjGUUUy (ORCPT
+        with ESMTP id S231439AbjGUUYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:20:54 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04883AA2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:20:02 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c8f360a07a2so2266429276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:20:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689970783; x=1690575583;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=f1LNi9Sq5NIBXtzGJVGKttDHRo4VG7MGlit5nvyUtF0=;
-        b=lupqznqfPScgKgAlsl68k2HwQOWYVzqFz7+e39gz+UVj6wvvC+ma4BNLkDyLgMbDCr
-         sXcaIXufKIRqTjEo6kaASseH4LuovJPFo1FpnMySbHlymLZC8toxxIjvN2Aiw4ju6EAG
-         VaD/mWdhEO8ur/DDeO9tEnMiMm8VItIJH8OP+EP+LpWzQ/NrR5L8c8s2LMhTcLypPS2U
-         oBg+8IvkdXfhKuyTvHG3Xef0QbwUQ6ZzSvJM7Mo/H4jFrr/vFd5FgUJyl+qeE3dTtsH5
-         MY6DHfpkgF/82Qh+aTdBRtINfnVpzFGxerBDIxZVXvcHDxqf5FZ0G6Srcd0y+VCH+a4h
-         +9CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689970783; x=1690575583;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f1LNi9Sq5NIBXtzGJVGKttDHRo4VG7MGlit5nvyUtF0=;
-        b=UE9jJl4FmdRBt8lVAb8J0GqHbC9FtiPMgkofkW2dh9ugrklT4sy1td/iXtfna/RJT6
-         GjIIlvu9TU/QzVZjrCtQV0WWwWsJoW7OjVbg64Uo7lNcafxofTJSaV0iJOkiWCsKXyhA
-         ADcT2SYT6+W5mMeExzrQaeFzsPU9aB5cBZNbUReCOuQy7hk78nQuLe5Bh1zm/R6nZse5
-         9uZKmtqkXjtDI4Su8ShA6TvfBm3cUjhllE5bFq4ksGoXWvC+/sucbPauPpYaO6erEq/s
-         ladM1OwD4Q1SJck+Pc8pU8p6WCQPHvnF/rY4oqd15+oCeE/vtHSqruVikiHbLxfUzjLI
-         BR2w==
-X-Gm-Message-State: ABy/qLYiejwXCdiKng84QDxgOLtaZUQFWEEVF3pGVngPUNnd8ijDShwK
-        f4PlfqIVhNQARc8ZvT4EYh4LpbWwP4k=
-X-Google-Smtp-Source: APBJJlGqCihblJf1jaycZ9unQQ6pi+gVUILg04BI7aSdWb1kqkXeAsB0DrslgKJ6+cdV8k8Utd5kIZ2tJk4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a5b:bc2:0:b0:ce9:64b3:80dc with SMTP id
- c2-20020a5b0bc2000000b00ce964b380dcmr18891ybr.1.1689970783817; Fri, 21 Jul
- 2023 13:19:43 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 21 Jul 2023 13:18:59 -0700
-In-Reply-To: <20230721201859.2307736-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230721201859.2307736-1-seanjc@google.com>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230721201859.2307736-20-seanjc@google.com>
-Subject: [PATCH v4 19/19] KVM: VMX: Skip VMCLEAR logic during emergency
- reboots if CR4.VMXE=0
-From:   Sean Christopherson <seanjc@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Andrew Cooper <Andrew.Cooper3@citrix.com>,
-        Kai Huang <kai.huang@intel.com>, Chao Gao <chao.gao@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 16:24:30 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998CF3C3A;
+        Fri, 21 Jul 2023 13:24:00 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 16E5D320095B;
+        Fri, 21 Jul 2023 16:23:03 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 21 Jul 2023 16:23:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1689970982; x=1690057382; bh=qK4jETCPwl
+        HuZUy6Z7D6ph2KKy80jTJkS86PaPy+M2k=; b=Mwd7FNw1jZulDdy4QAGnqC0ea6
+        m/G8sexiL+8han3C77hisHdCHDNdYWJSUwQVDqjCDEzw3hKxVNXwVZdp9/QXTeV0
+        erDTFmCLKIyuEwioA7IE10wr4l1/mpjmyCZO31g93S3XNmRqE4aWhu5NAnUwUSnG
+        rpnDyrAP6ZQNUb84CoWA9O6Nj65znaWHR17JO6p/cmQf2LUaMpqrZrzOil+Eo6aM
+        cfR7bI3unWf+EfPHnBw9wQWjYeNhXRZIg/vl1ko4TWwi3+eL0vyyzrhHS3ulsd6X
+        qwohVpU6K6HLCIr7vFd9eXaxjxBZ9rrSdGu0UqIWuh85USVHWrQ/4Mz2VnBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689970982; x=1690057382; bh=qK4jETCPwlHuZ
+        Uy6Z7D6ph2KKy80jTJkS86PaPy+M2k=; b=nTHbZwehYvAsOEG0+arS2do0FDV4e
+        06UZU64VQesI3cbI7yoCd14Bf8Zo3SoAY/QkXJvPyJT9nVAFiWotio6EgrTzVQj3
+        X2tHHN7Sn9o9S4bAHuDSAyqIlgYefD417e+JyUgR62KRP1OO29nJE1zCb1ujUOjB
+        P49I97AtvVWKxtkNfhdBJUdToA3VSpoJ4y/E78T3WNVucPISaEJLDosc0AZBzPl2
+        FHpiH9dLfGFhdP6kQeM6XmnpUf5VOhyeOzyHdxdhIuBL/7NIt/Wj6myCsI3OrqTx
+        Y2kY9BLVWv3+mL9tw9ZeDAcFU9SGURx34elnNiCKCjKCqebZt99sAComQ==
+X-ME-Sender: <xms:Jum6ZDCclyWe9CdazcyRsD2k512N2SJqeAA0NeAHfnOfG6w3-BQ8pQ>
+    <xme:Jum6ZJi8FhyqbiKhcRG-EkMyHLWDlUBFJIVQqgI0ZsQnKtAvZhXnHB6oCIGglubV6
+    VACsq8qEv1iJkAd9Q>
+X-ME-Received: <xmr:Jum6ZOk0nwbagzNn8iXRP9nnm_zJA-0X6fjlOMWdvtx702VJTcGOuZP31t3yHR01MX_Ka-IXil1ONhpIVpgFxAQEGNlP4D_D08OMK2NCBSM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgddugedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefhvf
+    evufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
+    uhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepteeghffhiefgjedtvdetfe
+    ffgfetkeetudeitdekveeluddvjeeugefgtdefgeefnecuffhomhgrihhnpehivghtfhdr
+    ohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:Jum6ZFxJAvWJKwewgmgjMqILCWqeDBAGaH1oNj6mpwmG9cOdPe7uqg>
+    <xmx:Jum6ZISo9QRpiE8NNizh0csXfPvIGg2cckgOGAfHdgIRXXYL_Lbdrw>
+    <xmx:Jum6ZIb0lSTcs_7W02ifOCpyn5FPCTYVTOznXaZkamrZCzVFexjf2g>
+    <xmx:Jum6ZLEpGX4b-ImWApIBhlfkjFpG3JxQ1D2l7vThZbH8co_Q3kEdAw>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 21 Jul 2023 16:23:01 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     linux-kernel@vger.kernel.org, coreteam@netfilter.org,
+        netfilter-devel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        alexei.starovoitov@gmail.com, fw@strlen.de, daniel@iogearbox.net
+Cc:     dsahern@kernel.org
+Subject: [PATCH bpf-next v6 0/5] Support defragmenting IPv(4|6) packets in BPF
+Date:   Fri, 21 Jul 2023 14:22:44 -0600
+Message-ID: <cover.1689970773.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bail from vmx_emergency_disable() without processing the list of loaded
-VMCSes if CR4.VMXE=0, i.e. if the CPU can't be post-VMXON.  It should be
-impossible for the list to have entries if VMX is already disabled, and
-even if that invariant doesn't hold, VMCLEAR will #UD anyways, i.e.
-processing the list is pointless even if it somehow isn't empty.
+=== Context ===
 
-Assuming no existing KVM bugs, this should be a glorified nop.  The
-primary motivation for the change is to avoid having code that looks like
-it does VMCLEAR, but then skips VMXON, which is nonsensical.
+In the context of a middlebox, fragmented packets are tricky to handle.
+The full 5-tuple of a packet is often only available in the first
+fragment which makes enforcing consistent policy difficult. There are
+really only two stateless options, neither of which are very nice:
 
-Suggested-by: Kai Huang <kai.huang@intel.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/vmx/vmx.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+1. Enforce policy on first fragment and accept all subsequent fragments.
+   This works but may let in certain attacks or allow data exfiltration.
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 5d21931842a5..0ef5ede9cb7c 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -773,12 +773,20 @@ static void vmx_emergency_disable(void)
- 
- 	kvm_rebooting = true;
- 
-+	/*
-+	 * Note, CR4.VMXE can be _cleared_ in NMI context, but it can only be
-+	 * set in task context.  If this races with VMX is disabled by an NMI,
-+	 * VMCLEAR and VMXOFF may #UD, but KVM will eat those faults due to
-+	 * kvm_rebooting set.
-+	 */
-+	if (!(__read_cr4() & X86_CR4_VMXE))
-+		return;
-+
- 	list_for_each_entry(v, &per_cpu(loaded_vmcss_on_cpu, cpu),
- 			    loaded_vmcss_on_cpu_link)
- 		vmcs_clear(v->vmcs);
- 
--	if (__read_cr4() & X86_CR4_VMXE)
--		kvm_cpu_vmxoff();
-+	kvm_cpu_vmxoff();
- }
- 
- static void __loaded_vmcs_clear(void *arg)
+2. Enforce policy on first fragment and drop all subsequent fragments.
+   This does not really work b/c some protocols may rely on
+   fragmentation. For example, DNS may rely on oversized UDP packets for
+   large responses.
+
+So stateful tracking is the only sane option. RFC 8900 [0] calls this
+out as well in section 6.3:
+
+    Middleboxes [...] should process IP fragments in a manner that is
+    consistent with [RFC0791] and [RFC8200]. In many cases, middleboxes
+    must maintain state in order to achieve this goal.
+
+=== BPF related bits ===
+
+Policy has traditionally been enforced from XDP/TC hooks. Both hooks
+run before kernel reassembly facilities. However, with the new
+BPF_PROG_TYPE_NETFILTER, we can rather easily hook into existing
+netfilter reassembly infra.
+
+The basic idea is we bump a refcnt on the netfilter defrag module and
+then run the bpf prog after the defrag module runs. This allows bpf
+progs to transparently see full, reassembled packets. The nice thing
+about this is that progs don't have to carry around logic to detect
+fragments.
+
+=== Changelog ===
+
+Changes from v5:
+
+* Fix defrag disable codepaths
+
+Changes from v4:
+
+* Refactor module handling code to not sleep in rcu_read_lock()
+* Also unify the v4 and v6 hook structs so they can share codepaths
+* Fixed some checkpatch.pl formatting warnings
+
+Changes from v3:
+
+* Correctly initialize `addrlen` stack var for recvmsg()
+
+Changes from v2:
+
+* module_put() if ->enable() fails
+* Fix CI build errors
+
+Changes from v1:
+
+* Drop bpf_program__attach_netfilter() patches
+* static -> static const where appropriate
+* Fix callback assignment order during registration
+* Only request_module() if callbacks are missing
+* Fix retval when modprobe fails in userspace
+* Fix v6 defrag module name (nf_defrag_ipv6_hooks -> nf_defrag_ipv6)
+* Simplify priority checking code
+* Add warning if module doesn't assign callbacks in the future
+* Take refcnt on module while defrag link is active
+
+
+[0]: https://datatracker.ietf.org/doc/html/rfc8900
+
+
+Daniel Xu (5):
+  netfilter: defrag: Add glue hooks for enabling/disabling defrag
+  netfilter: bpf: Support BPF_F_NETFILTER_IP_DEFRAG in netfilter link
+  bpf: selftests: Support not connecting client socket
+  bpf: selftests: Support custom type and proto for client sockets
+  bpf: selftests: Add defrag selftests
+
+ include/linux/netfilter.h                     |  10 +
+ include/uapi/linux/bpf.h                      |   5 +
+ net/ipv4/netfilter/nf_defrag_ipv4.c           |  17 +-
+ net/ipv6/netfilter/nf_defrag_ipv6_hooks.c     |  11 +
+ net/netfilter/core.c                          |   6 +
+ net/netfilter/nf_bpf_link.c                   | 123 +++++++-
+ tools/include/uapi/linux/bpf.h                |   5 +
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../selftests/bpf/generate_udp_fragments.py   |  90 ++++++
+ .../selftests/bpf/ip_check_defrag_frags.h     |  57 ++++
+ tools/testing/selftests/bpf/network_helpers.c |  26 +-
+ tools/testing/selftests/bpf/network_helpers.h |   3 +
+ .../bpf/prog_tests/ip_check_defrag.c          | 283 ++++++++++++++++++
+ .../selftests/bpf/progs/ip_check_defrag.c     | 104 +++++++
+ 14 files changed, 718 insertions(+), 26 deletions(-)
+ create mode 100755 tools/testing/selftests/bpf/generate_udp_fragments.py
+ create mode 100644 tools/testing/selftests/bpf/ip_check_defrag_frags.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
+ create mode 100644 tools/testing/selftests/bpf/progs/ip_check_defrag.c
+
 -- 
-2.41.0.487.g6d72f3e995-goog
+2.41.0
 
