@@ -2,132 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A8475CAF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F57C75CAEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbjGUPIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
+        id S231689AbjGUPHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbjGUPIa (ORCPT
+        with ESMTP id S231680AbjGUPHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:08:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F98630DF
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689952062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2LT31EnQdwzSm3B5EwQJfjJehEaFosn84rDtB5FWxnI=;
-        b=P5yx8HPztZEBX1OWKcaXaQ0drqQzSG9VVDDbPaUye1C2YKsyj6u5kcF617aY3Nf2DALtDX
-        SmPXX1pULr9zrxwmnQ8Jzc76Jy6MKZgIRFixlUyfyPEY7pRKtc8K3CwwX3zYKtstL8bRUK
-        LDwtWpHmDuPrYx02+94AcMRLbk7G3rE=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-189-US-Xqgh-PAqTcg3VIVKXDw-1; Fri, 21 Jul 2023 11:07:32 -0400
-X-MC-Unique: US-Xqgh-PAqTcg3VIVKXDw-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-51e3713ce6eso3804126a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:07:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689952051; x=1690556851;
+        Fri, 21 Jul 2023 11:07:32 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37385272E
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:07:31 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bb119be881so14945175ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:07:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689952050; x=1690556850;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2LT31EnQdwzSm3B5EwQJfjJehEaFosn84rDtB5FWxnI=;
-        b=OWH+WGQZfDn6Ua2kd7M8d8XwAoC+t7spv33hENLTf7Xn+5KvWDek6fFnH0+rQTW9fE
-         cUlv5u/Gd55sMLKIdoGtXem8PMWbOTSfxp6cYeVFv2etsHSx8q5i4wPp6Xzuvw5MJBYx
-         Qv3S6N6Bl66Zb8+tQmJBEDHEJS1aNEt7/8jsx5YWsQVNT6GYbrOZM9Jvo+9KbAgFZ1kW
-         DbPz3/Na45ipnYm1qjraG2c2PzAajcwNT6Qtp79Kfa2wtSeclozl17h8Q8HzFQZs9IbB
-         H1IOvaC168MvcIy4O60d7nyq6KebHI+rsvCSZj7N4JooRCZGqm4ArOaO9XTZlU+zTo0W
-         vMYA==
-X-Gm-Message-State: ABy/qLbczQlL5uRu3gON8nAXsBh664pYO5+Bom0+cpeaQTbLMARXWejz
-        hYgsTzi0+L3PJpSJItGkJpJBG1czKpv3Xk1A0MlCmGfcld/+3x2peXeDmAFTST6qEf+SXcIhyfx
-        oEjlhlKwUhHfADtgPp8XBkdCm
-X-Received: by 2002:a05:6402:3596:b0:521:ae30:787d with SMTP id y22-20020a056402359600b00521ae30787dmr8297801edc.21.1689952051256;
-        Fri, 21 Jul 2023 08:07:31 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEmyaXBPPcDeACqrampuhZk7coBp7sKkHctpw4dd03JKW9PMu58s3JgUnfUUPbC+bjZ7T2rgQ==
-X-Received: by 2002:a05:6402:3596:b0:521:ae30:787d with SMTP id y22-20020a056402359600b00521ae30787dmr8297753edc.21.1689952050947;
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=U3ydrPiZouE89GGffikcepwvN6uL1WoSKBuPJRtgx+M=;
+        b=G7MS5T5GSki2Fb3anydrMEWUshpROHu8KywfFHjGd9Cy6sQBaxpy+PuD/HiVBVsDay
+         kuy4wrjDQv2+/l+lYgsW7dvzjicOjd+lWwDaXvqIc4cVGLlCIgiIrmSviVs6TGaTVq/a
+         sCcFcFK997BXHU6WN7mn1r1janIIVn0kUTdplvI831mKp4k54iigMxxNXYgnlXIlXp4e
+         sovjkEn9Vaf+WMJvILpmtOFmDfpkQIdchZXCGWbg2vXp9ZH7/q1Vdli1c/9P01dwXRED
+         b9NCZmtRjkxHtNkyUdFpNtX4FKNlU24oxk+dw1zuX5O/kdb+F0eJobt1WFNjW8bF6VXs
+         7rtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689952050; x=1690556850;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U3ydrPiZouE89GGffikcepwvN6uL1WoSKBuPJRtgx+M=;
+        b=X59hvpBJoxk3XlgBIrGfQ3WXymRJgOq6rt6yOaf8I2wxTczdC6dYw9m630xvshbqRI
+         +az+sIZQ2dItlYocDhDlJ4y046NQEdf+yV5SReyGfgnglwvOmOMfqZrdIK61jMQqn8yx
+         MktSbFB9MbgiR3QyQTMrcd2IK8UVzX4/0J2EN7VijASSJ8e+gOFnxDYVP4bMmQnH7C2i
+         JWUI5zgHW+Ydy9ZPGy9ZvzuOqk5LEsktqZH7vqRcR+9epfFjBsfpv5nV81zlGEiEGOg4
+         C3G/iFaEpm4yu4r3/U+JdPXWUiRjAcp/qE+ctlweDXJenD+F7X0QPXga/f4VX5RyyDLs
+         OpEA==
+X-Gm-Message-State: ABy/qLYW1fHMIZIRt05twCuru/pPjBRuuRicM16YK5msqKncqHzkrHTp
+        bie8iQf6U0wnizMbVT5JZj4=
+X-Google-Smtp-Source: APBJJlHudh4wzA65C2mvfuLrWs5wS7f3QSeF22ZcYPqbCqnkpAg5l6/x7pjcNudcamopOCVeNZ8Ccg==
+X-Received: by 2002:a17:902:d505:b0:1b6:76ee:190b with SMTP id b5-20020a170902d50500b001b676ee190bmr2409039plg.35.1689952050613;
         Fri, 21 Jul 2023 08:07:30 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id w10-20020aa7d28a000000b00521f4ee396fsm127596edq.12.2023.07.21.08.07.28
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c1-20020a170903234100b001b03a1a3151sm3647497plh.70.2023.07.21.08.07.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Fri, 21 Jul 2023 08:07:30 -0700 (PDT)
-Message-ID: <84a908ae-04c7-51c7-c9a8-119e1933a189@redhat.com>
-Date:   Fri, 21 Jul 2023 17:07:27 +0200
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <c9614ffb-7840-6a84-883d-ed4371d75c11@roeck-us.net>
+Date:   Fri, 21 Jul 2023 08:07:28 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v11 13/29] KVM: Add transparent hugepage support for
- dedicated guest memory
+Subject: Re: [RFC PATCH 2/2] regmap: Reject fast_io regmap configurations with
+ RBTREE and MAPLE caches
 Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20230718234512.1690985-1-seanjc@google.com>
- <20230718234512.1690985-14-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20230718234512.1690985-14-seanjc@google.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+References: <20230720032848.1306349-1-linux@roeck-us.net>
+ <20230720032848.1306349-2-linux@roeck-us.net>
+ <CGME20230721145342eucas1p12e658a54d36d985b2811e2c21f7810ee@eucas1p1.samsung.com>
+ <c2bba4df-da1f-5666-89aa-28c6700575ca@samsung.com>
+ <fe31bb86-40ec-4b77-9edd-eeaa61bb5e08@sirena.org.uk>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <fe31bb86-40ec-4b77-9edd-eeaa61bb5e08@sirena.org.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/23 01:44, Sean Christopherson wrote:
->   
-> @@ -413,6 +454,9 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args)
->   	u64 flags = args->flags;
->   	u64 valid_flags = 0;
->   
-> +	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE))
-> +		valid_flags |= KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
-> +
+On 7/21/23 08:03, Mark Brown wrote:
+> On Fri, Jul 21, 2023 at 04:53:42PM +0200, Marek Szyprowski wrote:
+> 
+>> This patch, which landed in today's linux-next, breaks operation of the
+>> RockChip's VOP2 DRM driver
+>> (drivers/gpu/drm/rockchip/rockchip_drm_vop2.c). I'm not sure what is the
+>> proper fix in this case. Should one change the cache type to REGCACHE_FLAT?
+> 
+> Actually Guenter and Dan have made the required updates to support this
+> so the warning will be gone soon (hopefully Dan will send his patch
+> properly shortly).
 
-I think it should be always allowed.  The outcome would just be "never 
-have a hugepage" if thp is not enabled in the kernel.
+Do you plan to revert this patch ? If not regmap_init() would still fail
+for the affected drivers, even after my and Dan's patches have been applied.
 
-Paolo
+Thanks,
+Guenter
 
