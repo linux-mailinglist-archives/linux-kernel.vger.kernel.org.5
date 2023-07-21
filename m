@@ -2,108 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A75D275C0B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08EC75C0BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbjGUIEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51122 "EHLO
+        id S231318AbjGUIE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbjGUIEL (ORCPT
+        with ESMTP id S230403AbjGUIE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:04:11 -0400
-Received: from nbd.name (nbd.name [46.4.11.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831E82706;
-        Fri, 21 Jul 2023 01:04:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-        s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=5aObg4Rh5qEJeJ8tTIo3XUeRpbH8XsDqwD/4y5QHoas=; b=ePWcXIwzt+RNEgOZKYQH8qXMiO
-        4KnaWZdeCy3jTxoOndr8CECc1s7RsE20nrWnYyEWsLK1Eoz3t6kNLKxugTA4+YRjIlGMIE6Fp2lKa
-        mq1kKxzsPU6Etd6cMHVyPiVEIIh8fMIOSWOTE1E4+22B8nb7SBKr9t2A9iFHBY67HgJU=;
-Received: from [217.114.218.24] (helo=nf.local)
-        by ds12 with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <nbd@nbd.name>)
-        id 1qMl78-003Cex-6Z; Fri, 21 Jul 2023 10:03:50 +0200
-Message-ID: <00a2f5ba-7f46-641c-2c0e-e8ecb1356df8@nbd.name>
-Date:   Fri, 21 Jul 2023 10:03:49 +0200
+        Fri, 21 Jul 2023 04:04:57 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F0130E8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:04:42 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fd18b1d924so13281785e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:04:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689926680; x=1690531480;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3RkqSVR+7llkTa6YTD6wpemPL/KILFkcOg74xryiQSs=;
+        b=yYp/ymTIoCgiOMSqQcTSUbLhKN+3wJRprAt/9Ydam8fY5N4+oa1X8r3ZDnkAde/yvn
+         UBblbGOR7tMPoLgSXr7hZOlL5n14nMx/0PGl3nbe8FA1XKRZXsR5ymMbm2FTQ7hobsnZ
+         wUWhFOIZLI3+vGDNsNMLKNBRIvN/1KjgiC4vVi0VuM2VV7IrNKMX4Y6MAOPhHKiP7Dhb
+         SxtaarmGxvILK7R+Gsj0QbHse9G65cLRH715B3DZ3ZPcayjclT02BjT2Goytot2kgWiw
+         vU7HGvR/3Dx+J9QhYZYXCADowI5ZI9NT3hyJ1w0P4PQUjN+pc7UgerTG3lsxv9g3uaB3
+         /R+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689926680; x=1690531480;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3RkqSVR+7llkTa6YTD6wpemPL/KILFkcOg74xryiQSs=;
+        b=ff/Da69fppDx7pxWxSMfh6oM04dU0+2XATyIBgUi3xqS5Yjey8Jfnsu2Czyruc0Mi1
+         izwhdPzQtDVvZ9F/eHrTo8kO3wMHX0iATk8+5fpnVcQshY0C1Lrij/Y4VoY4Prf+Yqyn
+         nyUPtwOhLLhcavP+h+7/l5IcBGF8tS9paib3OcO4zdZZKWQOJoYPi2WmchWseVV0eMUP
+         r3Vp6sLKJgWyXo+wEkqGXuzf0IX3eCBenmSii6+JBoa0UgzzpMP5Kqc4rvlnYiBZKM9h
+         kwDVkgxRSMyuglMfvz69VaAmJKU4wMOBMC2ReuJV/CTxBxm4Zq9PhetF8+awEkX7YNVd
+         AfoA==
+X-Gm-Message-State: ABy/qLaGo6o42UuMGti+S6wqXXXbG4m0GA4Hwf5UuEyWhpZutE28ty5u
+        9dgUsf64q7uDs72BRBuo8RVc8w==
+X-Google-Smtp-Source: APBJJlHDywLFcftzP3Pndyl8kQpYfNXrg4jp0JQi1bGgj6LuGck4OlNyhvFUKpMKKLUfqem+Mt7dbA==
+X-Received: by 2002:a05:600c:2214:b0:3fa:8db4:91ec with SMTP id z20-20020a05600c221400b003fa8db491ecmr757702wml.10.1689926680301;
+        Fri, 21 Jul 2023 01:04:40 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id i7-20020a05600c290700b003fbb06af219sm2823674wmd.32.2023.07.21.01.04.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 01:04:39 -0700 (PDT)
+Message-ID: <1cb6d3f9-7cab-b304-c3b7-49d6f1cd71ee@linaro.org>
+Date:   Fri, 21 Jul 2023 10:04:37 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mt76: mt7615: do not advertise 5 GHz on first phy of
- MT7615D (DBDC)
-To:     Paul Fertser <fercerpav@gmail.com>, linux-wireless@vger.kernel.org
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Rani Hod <rani.hod@gmail.com>,
-        stable@vger.kernel.org
-References: <20230605073408.8699-1-fercerpav@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V2 1/2] dt-bindings: reset: Updated binding for Versal-NET
+ reset driver
 Content-Language: en-US
-From:   Felix Fietkau <nbd@nbd.name>
-Autocrypt: addr=nbd@nbd.name; keydata=
- xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
- ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
- Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
- AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
- vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
- wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
- TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
- l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
- dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
- HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
- VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
- CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
- VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
- Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
- DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
- wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
- f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
- aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
- FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
- TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
- GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCeMncXpbbWNT2AtoAYICrKyX5R3iMAoMhw
- cL98efvrjdstUfTCP2pfetyN
-In-Reply-To: <20230605073408.8699-1-fercerpav@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Piyush Mehta <piyush.mehta@amd.com>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        p.zabel@pengutronix.de, michal.simek@amd.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        git@amd.com
+References: <20230721041119.4058430-1-piyush.mehta@amd.com>
+ <20230721041119.4058430-2-piyush.mehta@amd.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230721041119.4058430-2-piyush.mehta@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.06.23 09:34, Paul Fertser wrote:
-> On DBDC devices the first (internal) phy is only capable of using
-> 2.4 GHz band, and the 5 GHz band is exposed via a separate phy object,
-> so avoid the false advertising.
+On 21/07/2023 06:11, Piyush Mehta wrote:
+> Added dt-binding documentation for Versal NET platforms.
 > 
-> Reported-by: Rani Hod <rani.hod@gmail.com>
-> Closes: https://github.com/openwrt/openwrt/pull/12361
-> Fixes: 7660a1bd0c22 ("mt76: mt7615: register ext_phy if DBDC is detected")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Paul Fertser <fercerpav@gmail.com>
-Acked-by: Felix Fietkau <nbd@nbd.name>
+> Versal Net is a new AMD/Xilinx  SoC.
+> 
+> The SoC and its architecture is based on the Versal ACAP device.
+> The Versal Net  device includes more security features in the
+> platform management controller (PMC) and increases the number
+> of CPUs in the application processing unit (APU) and the
+> real-time processing unit (RPU).
+> 
+> Signed-off-by: Piyush Mehta <piyush.mehta@amd.com>
+> ---
 
-Jakub, could you please pick this one up for 6.5?
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Thanks,
+Best regards,
+Krzysztof
 
-- Felix
