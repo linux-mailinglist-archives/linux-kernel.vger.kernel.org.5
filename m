@@ -2,189 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD1175C707
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0EDF75C711
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbjGUMpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 08:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46420 "EHLO
+        id S230326AbjGUMqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbjGUMpL (ORCPT
+        with ESMTP id S229601AbjGUMql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:45:11 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2045.outbound.protection.outlook.com [40.107.7.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79A210CB
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:45:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HVLFFVGqgepj9fnd+xRxXjnYzNgDp2tqHvxJxRshvWiHMziw+qq6cksZ9JZoxjzDXgACnHQTnAG2G2aI5Q0x9b/ASC1mt/x2+RmyANcJGJtA4+IE74s3t0WJvC7qcL/820TMmoVyfOOInv9phDHPH/UO89pe4VvCv7Lp0JR8LFsykFuTKISUE1CUyQYF1055QluLwQKtZ0yqOSXoCxSvbrX0yWDV1GEPaDaE0K7ub7NphqT3waOJ13dgfM8KngDGRX59koQwpAOIbFHHU1cINkdgk+U/bXvm+llbrC+sBsj63lTNoVyqP5GaERDb0e4xAqoLGekYK400p9Uy9i1A4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vd3p91/7kWZoxq9hmlHH653KMLEf8Flo16kKp5jq/7k=;
- b=CbR3nQen6lP9sPmiAEguS707rCFhl+Pxo2TVblRqByZyzsl4vcHG5Lt5GTYXnL4lkTRCS+9L6KNbR9fHZRf1ilTLirMau5+ZdlmS2LdtWptn4FE1AEEUsvLf7UzOnHaPk09FlSgR0fD9ncylIwhsbnP8cB5E6SwCenk5GnQwo8RmXZ0ktLWD+y6P7lMgwRykSbUo6aDljlaOFJn1sqDln3f/1PEXW3YLe2KrLBybBex700aihVMQnESRxr7jdTxaq+TKqu9h7IlCFRyP5AFQbkZ0u8tlDTgZiQ4pMQ4jR4YcSi2Xoic4KiihlBB5SOeKnCRfFMnTsUuEUwtn3Irdhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vd3p91/7kWZoxq9hmlHH653KMLEf8Flo16kKp5jq/7k=;
- b=lFT/ohaHt13o5fKBx6D+9pPGEJt4miqI01VcbE7I8W6Jpzz0sUvzZUs2+CqXfBM42WL2JfFLXEa8h5MnuuPP5dP1lepP/MCkm7T9o7tKYljdx0cp2bBAF+shIz7FKCYFBxPN1YE9PI+Rfvog9LOvHMJU199WDVHXV0eJDONbNZQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9448.eurprd04.prod.outlook.com (2603:10a6:102:2b1::21)
- by DU2PR04MB8645.eurprd04.prod.outlook.com (2603:10a6:10:2dc::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Fri, 21 Jul
- 2023 12:45:06 +0000
-Received: from PAXPR04MB9448.eurprd04.prod.outlook.com
- ([fe80::3505:c499:96d4:1429]) by PAXPR04MB9448.eurprd04.prod.outlook.com
- ([fe80::3505:c499:96d4:1429%4]) with mapi id 15.20.6609.026; Fri, 21 Jul 2023
- 12:45:06 +0000
-From:   Sandor Yu <Sandor.yu@nxp.com>
-To:     andrzej.hajda@intel.com, neil.armstrong@linaro.org,
-        rfoss@kernel.org, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@gmail.com,
-        daniel@ffwll.ch, u.kleine-koenig@pengutronix.de,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Sandor.yu@nxp.com
-Subject: [PATCH] drm: bridge: dw_hdmi: Add cec suspend/resume functions
-Date:   Fri, 21 Jul 2023 20:44:15 +0800
-Message-Id: <20230721124415.1513223-1-Sandor.yu@nxp.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0172.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::28) To PAXPR04MB9448.eurprd04.prod.outlook.com
- (2603:10a6:102:2b1::21)
+        Fri, 21 Jul 2023 08:46:41 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9664F10CB
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:46:40 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b89600a37fso12208265ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:46:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689943600; x=1690548400;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6zQgah8l1vKz74ZiyPPiZTC9+SEnB68j607ayO7edRA=;
+        b=EkR48rlCylKbWRyFGflFdiqz4VIXbJ7CclwjpysY78JPhboowbWw+4rpIoQ9EOPWIY
+         fM6cR/amj4Tk3yZRF4YEaXw7CpzYUaKus3T13xcAwdlX27Kou9JDn07P9ziFxSikGvNP
+         otmr58g46bhRm2e/7nal98SnDUsxCdvk61luPL2Q2mgg0PdD3UZ7qL4L9088RabwNQZt
+         r28hrukJyebHETVTr3mYywphyQqEYyRRsbMiZBL4zMpV5TneC4icWDb0i/sOoPrECc7P
+         PKswr+06l25z8TAS31OVBm+SvsxK9nIltz1o4PQFp8vCO/cBUura6C8eJxFhmSU/8PVM
+         oFzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689943600; x=1690548400;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6zQgah8l1vKz74ZiyPPiZTC9+SEnB68j607ayO7edRA=;
+        b=craS0XqjhOfqc2O1V/w3mBNrD1Bv1HlpvuPbVR58H7GbTj1fvW8P4GOjsD8AlamB16
+         KByTEhfoBeS297W/qJSFzKovB+SR0yQN1YkZtoEBV7tAunc/jjxYyr/bjtttwZqcvdJp
+         YlFuaddV79sw3s91ekHgJFckvAyu/k6daObRWTEphNY6wydXjtkxIc/iSpINJEigxjUl
+         lQrMwFvIDSheeAtJrnDz0G3UhsKQZkJBoir6dEONfgiw8Thfvx2+00/zeOWWbjalWmCg
+         85AG+Qxb2pkzSOr0mNMlHEcZmxqA0UYscBsh9g/1XWiIkS9YKcYDV0GdATKMeuBLWSic
+         02Uw==
+X-Gm-Message-State: ABy/qLYinQTwuX6IPwcIn2nkE6RkJtNb4fO6ZTiU6P2Oh0tioRBxKv22
+        7ZLQMi5XU7tFzlg4fWiSRTGg
+X-Google-Smtp-Source: APBJJlF9JdPD5C4imn3/JC07LHYN8fPCwKjzTPD9OhuV0sgWEIRjyjoaQDYqpNMs1s4AwAldwbJb3g==
+X-Received: by 2002:a17:902:cec3:b0:1b8:59f0:c748 with SMTP id d3-20020a170902cec300b001b859f0c748mr1683432plg.2.1689943600114;
+        Fri, 21 Jul 2023 05:46:40 -0700 (PDT)
+Received: from localhost.localdomain ([117.206.118.181])
+        by smtp.gmail.com with ESMTPSA id 10-20020a170902c14a00b001bb3dac1577sm3385540plj.95.2023.07.21.05.45.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 05:46:11 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/2] OPP: Couple of smatch warning fixes
+Date:   Fri, 21 Jul 2023 18:15:41 +0530
+Message-Id: <20230721124543.63520-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9448:EE_|DU2PR04MB8645:EE_
-X-MS-Office365-Filtering-Correlation-Id: e76da41d-452a-4458-1d3c-08db89e84fa2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QencDHjLQZM27FGAHlL8E1FMcFbsm6SEJ1uuf9qJ66tD/YaAPoMxok692BZ99BYKtAYmBjB37KK9aurtMonAOIBHq4nUU52kHQ56gKuN+/LmOS0zwdk8mlNn1PJfbHnaY2gmmkB/CwPLvPLFfyRApc1WW4Blxc4i1u1mCwjWSfqD3grzOaETAkNeBzZXrR3lU/PBuNRCustc01gUrSBibRNRz00k2fZm/ykdVft0WDrFzLlCo0CM46hLGE8q+1ju4N85DhqqmcWYXZlgNITb6drkFhDfuwjfTn67j9hbpvXgs/ilZL2MERVJs2Gcju5ta2aYBnSFv9S+QfCyMLrMGT5bglh/aSj8FTy689sq2yN37B++IKSeNsBKRStHKjGRwswuCrehrV9/p+mHn+6fZuaiyyP4AEIokRJG8TRdONsgvigqtE/axkqgk5iFeGE3+ZtWTrm1VhPpuDjyd2SNIXetQQl29rZHlXKWsxmgwXhVuIrRcuNK4Y5gpqGsLWlzGJ28Hm41BdTxdxLOdbJLu8RmYHdxS61hZM36eNoOPLqC3w1RJnJnJkH9U5l/qpcvEA9uq57vMd+naEQ7En69Enj5as5mRJNYt936bqjuuWG9PeJx2Q6Pmj41R4XtNiTKhL4I24jBbQ6g90z0s8SziA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9448.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39860400002)(346002)(396003)(136003)(366004)(451199021)(921005)(86362001)(478600001)(8936002)(316002)(41300700001)(66556008)(66946007)(66476007)(8676002)(4326008)(186003)(7416002)(2906002)(1076003)(26005)(6506007)(83380400001)(15650500001)(38100700002)(38350700002)(2616005)(36756003)(52116002)(6486002)(6666004)(6512007)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vdLq/lB26jzQpU4XSFSA3Xeu4tfIwEdzZDPgKzDBKCr/4T0UwRGwLmBA+NS7?=
- =?us-ascii?Q?cTqUZMKyQAqx547uj1sI+w1NhG3CD+kaV3x0N9xhKGSZl7uymVha1T5hKsbs?=
- =?us-ascii?Q?nPoDa1mWAmnZaXRhXZ9AWC+tRq7Isd+s3zcg6GyCbFaNkAniAHoKYP4S2YO3?=
- =?us-ascii?Q?ipompYPMZXieJVKl6V0PLSfl4AfztZDBva2SdPJDHJKoNpMyKHHqcBDghdw3?=
- =?us-ascii?Q?yovJAk3NfsovRzpf6aD1JeRnReVO/EqBnNGdTnI9PC+otKQg/oxnSiLqHxDn?=
- =?us-ascii?Q?otfxp5Iz1p2guoH8X/m+JBIrnYvqs6KLJ+xIN3IHm2UQi/dR85+xKG7zhiRd?=
- =?us-ascii?Q?sXI9O9EPtiJtiNL+q0dtmf0LsOhsI6ovc3PuLc5/QcRZ5t3hFhQZ73d4CeDJ?=
- =?us-ascii?Q?jfz2Udm2wN7swfYownWsqa4H1eymrZFNJFeS9otmZjr7G1r3u0UjVdrA220m?=
- =?us-ascii?Q?XrIlor+Zc+F1hrLHc4mH6jb7Fn+vBWKPSLhiPdUDzErxlC4VpA44kB/xIsmm?=
- =?us-ascii?Q?WcLRNi9hNzAnlrrgu40fJ5P9q/UmpPlGBuZn7QO5LRfv1VHiJQkYFdAtOAbl?=
- =?us-ascii?Q?Dm/6jStQTVdqZnnUyZ937GZwg4bXaT5XzdydrSM1Sij1CirQI9ABP/ZP1y2f?=
- =?us-ascii?Q?tfPTW8HPDQYhRht5HsgRdMWy45XMAthz9gwvAeOo19Kuuqr/pn2d1PT6Ir6S?=
- =?us-ascii?Q?0/JPuAefQLx9nSI1FO7LyMCinMIkrFZyDSiVaUHKPQK4uG20NVHu/VRcVARc?=
- =?us-ascii?Q?Qgzz2iWzoXFs/iWDyA+BgACy7QjCPrO0BKzkYTwS+L722fOzIWCqGJQHY79l?=
- =?us-ascii?Q?eJgrsAkk955HnXWAOkEN6G5bOdBpxveePN8YedOt/kjTHpFvdZ6n2Ff/dSVZ?=
- =?us-ascii?Q?jQtVqa15XuaZFSoLPL1R38qGEwEXVEqg3s1+YmT0NCYgN1PMKzMlMnlc+EZ4?=
- =?us-ascii?Q?Z3GQxlnRIKwnr59KHYbmOyT8BnybOSfrJuoh6dRjXdYKFVbe8pvEGI7wSx6N?=
- =?us-ascii?Q?m/H4VzJNs3sXYO0kdBGIKUfFfKywxg5/qf6V68aFE8fpGQhF1WRbCbLRq09J?=
- =?us-ascii?Q?80OBjY6dhzt4gc/BRadsdvtlV9F35Fg4tqvdNmeITGvdUYPm4zEEPLH4jbaf?=
- =?us-ascii?Q?6tPwr+xiMaLe7ZFLT/u4f83fEMGT2Ia1YJb25Zq/jQy1l+FbmjrhQqPh/m1J?=
- =?us-ascii?Q?DT3TS1yhNNmj34F+P5cdQwYhm92Kiio3c7eJlGifacPhc66/3xxvTUK/ZPmt?=
- =?us-ascii?Q?palJvobU3erFNS8eRa04hWbbIdqt5dvsEz8sQmpGhdO3cV56hkPhUAAK2wk+?=
- =?us-ascii?Q?Wz1KiOqbO2hd4iUwmLElMG+SfPnXXOCwXq9PGgpu5wqlNjqhpA1NexZHy6Bn?=
- =?us-ascii?Q?x2GrgeAzJQFv9jq/t8ZPhy1t4ISx0Wy1RCmKICd38/1eAb2KXJPM9xFkhIcs?=
- =?us-ascii?Q?AVPq+aR6OYlFChN97zmwyyoK21MDc07XsjnM90Buco3fKp0A6/Gq+Vaymqt9?=
- =?us-ascii?Q?OgxVXEpZ8jTRXWjhBzvC7dZpU0vpwbceJK5nEmGK/tbTZIQUZ0ImOvyLXWP5?=
- =?us-ascii?Q?3mQi0i6yUCr7OOxrnbxvqU8AD5fRBBeTpnzIteRP?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e76da41d-452a-4458-1d3c-08db89e84fa2
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9448.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 12:45:06.6231
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4HAzXkBz8rM/EKZM6HwHhZj274gX/pg0ltSdzsO6lQf45vtleC37JUE9nPJszB3vQb54+jCkq/DFS7+FltelNw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8645
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CEC interrupt status/mask and logical address registers
-will be reset when device enter suspend.
-It will cause cec fail to work after device resume.
-Add CEC suspend/resume functions, reinitialize logical address registers
-and restore interrupt status/mask registers after resume.
+Hi Viresh,
 
-Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
----
- drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c | 37 +++++++++++++++++++
- 1 file changed, 37 insertions(+)
+This series has a couple of fixes spotted by smatch tool in the OPP core.
+This is on top of v6.5-rc1, so could be merged separately.
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
-index 9389ce526eb13..be21c11de1f2a 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.c
-@@ -62,6 +62,10 @@ struct dw_hdmi_cec {
- 	bool rx_done;
- 	struct cec_notifier *notify;
- 	int irq;
-+
-+	u8 regs_polarity;
-+	u8 regs_mask;
-+	u8 regs_mute_stat0;
- };
- 
- static void dw_hdmi_write(struct dw_hdmi_cec *cec, u8 val, int offset)
-@@ -304,11 +308,44 @@ static void dw_hdmi_cec_remove(struct platform_device *pdev)
- 	cec_unregister_adapter(cec->adap);
- }
- 
-+static int __maybe_unused dw_hdmi_cec_resume(struct device *dev)
-+{
-+	struct dw_hdmi_cec *cec = dev_get_drvdata(dev);
-+
-+	/* Restore logical address */
-+	dw_hdmi_write(cec, cec->addresses & 255, HDMI_CEC_ADDR_L);
-+	dw_hdmi_write(cec, cec->addresses >> 8, HDMI_CEC_ADDR_H);
-+
-+	/* Restore interrupt status/mask registers */
-+	dw_hdmi_write(cec, cec->regs_polarity, HDMI_CEC_POLARITY);
-+	dw_hdmi_write(cec, cec->regs_mask, HDMI_CEC_MASK);
-+	dw_hdmi_write(cec, cec->regs_mute_stat0, HDMI_IH_MUTE_CEC_STAT0);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused dw_hdmi_cec_suspend(struct device *dev)
-+{
-+	struct dw_hdmi_cec *cec = dev_get_drvdata(dev);
-+
-+	/* store interrupt status/mask registers */
-+	 cec->regs_polarity = dw_hdmi_read(cec, HDMI_CEC_POLARITY);
-+	 cec->regs_mask = dw_hdmi_read(cec, HDMI_CEC_MASK);
-+	 cec->regs_mute_stat0 = dw_hdmi_read(cec, HDMI_IH_MUTE_CEC_STAT0);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops dw_hdmi_cec_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(dw_hdmi_cec_suspend, dw_hdmi_cec_resume)
-+};
-+
- static struct platform_driver dw_hdmi_cec_driver = {
- 	.probe	= dw_hdmi_cec_probe,
- 	.remove_new = dw_hdmi_cec_remove,
- 	.driver = {
- 		.name = "dw-hdmi-cec",
-+		.pm = &dw_hdmi_cec_pm,
- 	},
- };
- module_platform_driver(dw_hdmi_cec_driver);
+- Mani
+
+Manivannan Sadhasivam (2):
+  OPP: Fix potential null ptr dereference in
+    dev_pm_opp_get_required_pstate()
+  OPP: Fix passing 0 to PTR_ERR in _opp_attach_genpd()
+
+ drivers/opp/core.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
 -- 
-2.34.1
+2.25.1
 
