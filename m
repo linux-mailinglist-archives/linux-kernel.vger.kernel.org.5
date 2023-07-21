@@ -2,127 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6729E75D526
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 21:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3CC75D529
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 21:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbjGUTiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 15:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
+        id S229944AbjGUTmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 15:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjGUTiT (ORCPT
+        with ESMTP id S229571AbjGUTmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 15:38:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5972686;
-        Fri, 21 Jul 2023 12:38:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Fri, 21 Jul 2023 15:42:47 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B741BDC;
+        Fri, 21 Jul 2023 12:42:44 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A7C9961D91;
-        Fri, 21 Jul 2023 19:38:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58870C433C8;
-        Fri, 21 Jul 2023 19:38:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689968297;
-        bh=vrWeO6d/WVUoBFUVjBSttPcQkFgnIMkGsqD8edgeIAU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZFDfk2oO14n3vGim7CN/Gix1y7oG04/CHCNAWSm6LbpwTZm6wPPxJjSb+vcNM85kz
-         SxvzBXVYmAJiVs2zRhPW9P7sE1YGpyr2FWim0PBBVjXxtDXzpEYQ+aSEB5z226Kxqr
-         6kz9U5OLBf5qGGrctna79TamcT9zCgGj3pmyUn7/+GxpEB5OObybUILS2RGZaG5to0
-         5vljAZBJDqgkLhTM4RPjYcwuAps13MP3pJI+S5EvqwA7BERhaQyxyosjxeQpvnGbzT
-         IsAiIbIYZsJs9cNpBxdETCKW4uUc+GncVMuZebxuJelWiCdYqZbn4ub3z89IPXHVOB
-         YTR7BEuCLvzYg==
-Received: (nullmailer pid 1688695 invoked by uid 1000);
-        Fri, 21 Jul 2023 19:38:15 -0000
-Date:   Fri, 21 Jul 2023 13:38:15 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        Mike Rapoport <rppt@kernel.org>, devicetree@vger.kernel.org,
-        x86@kernel.org, Juergen Gross <jgross@suse.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH] mm,ima,kexec: use memblock_free_late from
- ima_free_kexec_buffer
-Message-ID: <20230721193815.GA1679711-robh@kernel.org>
-References: <20230720101431.71640c8a@imladris.surriel.com>
+        by ms.lwn.net (Postfix) with ESMTPSA id 6D5B3733;
+        Fri, 21 Jul 2023 19:42:44 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6D5B3733
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1689968564; bh=RMbTZ6QAIEYXR0v3MGSWGDnizE4LNqSMYED2Lra8/TE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Nj5u7RR+5+DqOrN+Cor3wYXEbRuMfKrIIbZ/fmx5paaa5bOubyxaaNbRjdJtsZ9iw
+         nFpeNzD2Ckee3RsRds8wkMOj39coeP1qY3BjvKgW8Vuw8r1qhrEW58inkpr42XfUQA
+         MW3GI1rd4AQ4r+SjNAM4Xbp0zi+3a5xX8yXi9CdIUpUkIlStyl0Y+wGmvC8Sc2o0Wg
+         QW6gA5pVf44B4unSCUoVXJ7B2uo8KyTy7pZd8o+KI0vit/Q1pDr2YnhlTYyCakZk1p
+         0sthA6lVh5krR9JkQGYJApa6bjqDrMMyaxHDs6egBVPmOd4IMtsMV9BqVVKcJEyLEb
+         xVAfBSI9D/1Ig==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Hu Haowen <src.res.211@gmail.com>, gregkh@linuxfoundation.org
+Cc:     Hu Haowen <src.res.211@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs/zh_TW: remove the mailing list entry for zh_TW
+In-Reply-To: <20230720141846.1787-1-src.res.211@gmail.com>
+References: <20230720141846.1787-1-src.res.211@gmail.com>
+Date:   Fri, 21 Jul 2023 13:42:43 -0600
+Message-ID: <87fs5hdpak.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230720101431.71640c8a@imladris.surriel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 10:14:31AM -0400, Rik van Riel wrote:
-> The code calling ima_free_kexec_buffer runs long after the memblock
-> allocator has already been torn down, potentially resulting in a use
-> after free in memblock_isolate_range.
-> 
-> With KASAN or KFENCE, this use after free will result in a BUG
-> from the idle task, and a subsequent kernel panic.
-> 
-> Switch ima_free_kexec_buffer over to memblock_free_late to avoid
-> that issue.
-> 
-> Fixes: fee3ff99bc67 ("powerpc: Move arch independent ima kexec functions to drivers/of/kexec.c")
+Hu Haowen <src.res.211@gmail.com> writes:
 
-Fixes: b69a2afd5afc ("x86/kexec: Carry forward IMA measurement log on kexec")
-
-Acked-by: Rob Herring <robh@kernel.org>
-
-(I'm assuming someone else is taking this)
-
-> Cc: stable@kernel.org
-> Signed-off-by: Rik van Riel <riel@surriel.com>
-> Suggested-by: Mike Rappoport <rppt@kernel.org>
+> Due to some reasons the current mailing list will be revoked and new one
+> will replace it in the future, hence remove the entry from MAINTAINERS
+> ahead of time.
+>
+> Signed-off-by: Hu Haowen <src.res.211@gmail.com>
 > ---
->  arch/x86/kernel/setup.c | 8 ++------
->  drivers/of/kexec.c      | 3 ++-
->  2 files changed, 4 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index fd975a4a5200..aa0df37c1fe7 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -359,15 +359,11 @@ static void __init add_early_ima_buffer(u64 phys_addr)
->  #if defined(CONFIG_HAVE_IMA_KEXEC) && !defined(CONFIG_OF_FLATTREE)
->  int __init ima_free_kexec_buffer(void)
->  {
-> -	int rc;
-> -
->  	if (!ima_kexec_buffer_size)
->  		return -ENOENT;
+>  MAINTAINERS | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index a5c16bb92fe2..36e67c46a4a6 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -21707,7 +21707,6 @@ F:	kernel/trace/trace_sched_wakeup.c
 >  
-> -	rc = memblock_phys_free(ima_kexec_buffer_phys,
-> -				ima_kexec_buffer_size);
-> -	if (rc)
-> -		return rc;
-> +	memblock_free_late(ima_kexec_buffer_phys,
-> +			   ima_kexec_buffer_size);
->  
->  	ima_kexec_buffer_phys = 0;
->  	ima_kexec_buffer_size = 0;
-> diff --git a/drivers/of/kexec.c b/drivers/of/kexec.c
-> index f26d2ba8a371..68278340cecf 100644
-> --- a/drivers/of/kexec.c
-> +++ b/drivers/of/kexec.c
-> @@ -184,7 +184,8 @@ int __init ima_free_kexec_buffer(void)
->  	if (ret)
->  		return ret;
->  
-> -	return memblock_phys_free(addr, size);
-> +	memblock_free_late(addr, size);
-> +	return 0;
->  }
->  #endif
->  
-> -- 
-> 2.41.0
-> 
+>  TRADITIONAL CHINESE DOCUMENTATION
+>  M:	Hu Haowen <src.res.211@gmail.com>
+> -L:	linux-doc-tw-discuss@lists.sourceforge.net (moderated for non-subscribers)
+>  S:	Maintained
+>  W:	https://github.com/srcres258/linux-doc
+>  T:	git git://github.com/srcres258/linux-doc.git doc-zh-tw
+
+Applied, thanks.
+
+jon
