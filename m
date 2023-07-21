@@ -2,165 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B8A75C4A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F25975C4A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbjGUK1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
+        id S231511AbjGUK1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjGUK05 (ORCPT
+        with ESMTP id S229677AbjGUK1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:26:57 -0400
-Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EC7110
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:26:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
-        ; s=dkim1; h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From:
-        Sender:Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=4DKJJPARmxLKlgkNjc664F0ozs9IfyrogZCNq6AQT2o=; b=IAiuftl/MhC/5obEyxZ8NDXaAB
-        zyseibrSWp6S1KIwJvojMn38nd8vSI0UUiV+pBJOtFpQ9pRe91rfGsjiUvlKxQENpzttvxiQKQ9tS
-        R81mw/NKasBvV6sAVWNCNvi3pZ6bvgyYBa1Im5d4M7bpSK8MMEC/8Bq3YxAqCcV3KC5k0yy7PMp/z
-        hAIcKgvzmZMtUnR0K5Cba3wkTrLHCwONRt3ulKQN/wMVuAornbUyzbTjkby4SQvNBr1y4SQCgqy2h
-        ipu7ULSFgD7WyCgL1UEWEpV5/ScKMPpH8KAEs8EF7TzwASkvkRIq8es3q4K9p24mIhhvQVOjvtk5S
-        oFvMTO3Q==;
-Received: from [192.168.1.4] (port=63172 helo=SH-EX2013.helmholz.local)
-        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.96)
-        (envelope-from <Ante.Knezic@helmholz.de>)
-        id 1qMnLM-0004ef-08;
-        Fri, 21 Jul 2023 12:26:40 +0200
-Received: from linuxdev.helmholz.local (192.168.6.7) by
- SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Fri, 21 Jul 2023 12:26:39 +0200
-From:   Ante Knezic <ante.knezic@helmholz.de>
-To:     <netdev@vger.kernel.org>
-CC:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <olteanv@gmail.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <linux-kernel@vger.kernel.org>,
-        Ante Knezic <ante.knezic@helmholz.de>
-Subject: [PATCH net-next v3] net: dsa: mv88e6xxx: Add erratum 3.14 for 88E6390X and 88E6190X
-Date:   Fri, 21 Jul 2023 12:26:18 +0200
-Message-ID: <20230721102618.13408-1-ante.knezic@helmholz.de>
-X-Mailer: git-send-email 2.11.0
+        Fri, 21 Jul 2023 06:27:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704FCB4;
+        Fri, 21 Jul 2023 03:27:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ED1AE60B9B;
+        Fri, 21 Jul 2023 10:27:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 394E1C433C8;
+        Fri, 21 Jul 2023 10:27:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689935271;
+        bh=trc8rDm0x4iapbsu60Wv2djk+UWxWUQYIN5XQ8NON6U=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=XqnCpI6HAWSgf1Z5tkn45HPZO7yXqWSUSDteeF6T7u9zqrD5nlGgSk/+9+8t9bVuq
+         0Nzx0z79GR6T6/ziEWJWM/IZr4nEl0V96VTJp+RqzV3mmuLdsCzS2rEFoIAOELkS0J
+         B+TR6BJOuEtiJfLkx0tWQfvXPwRCZr5wRtbuoebkPlEwgaLiEBQ41jIJehw9IuzmDl
+         3JM6CHNrdqyN8MJGCYspWNB7MdbGSqw/zSr6bQM6Y45qxc60ZAAoydOzZaDkPj2NYv
+         TISao+zj7ppSgEqGx1hZsMzR/vMUnjeqo8eFNGnktjmwSPqBHMkxwjTAriILySqyFI
+         IRneC7QZovUrg==
+Message-ID: <b6b4b7888cf0a82ee7332be0f434aa749d029f92.camel@kernel.org>
+Subject: Re: [PATCH] nfsd: add a MODULE_DESCRIPTION
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Tom Talpey <tom@talpey.com>, Chuck Lever <cel@kernel.org>
+Cc:     NeilBrown <neilb@suse.de>, Jonathan Corbet <corbet@lwn.net>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 21 Jul 2023 06:27:49 -0400
+In-Reply-To: <f188db26-fb30-4f4b-8bf9-f975bd718605@talpey.com>
+References: <20230720133454.38695-1-jlayton@kernel.org>
+         <168989083691.11078.1519785551812636491@noble.neil.brown.name>
+         <ZLnDRd0iiU1z3Y+y@manet.1015granger.net>
+         <f188db26-fb30-4f4b-8bf9-f975bd718605@talpey.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.6.7]
-X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
- SH-EX2013.helmholz.local (192.168.1.4)
-X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes XAUI/RXAUI lane alignment errors.
-Issue causes dropped packets when trying to communicate over
-fiber via SERDES lanes of port 9 and 10.
-Errata document applies only to 88E6190X and 88E6390X devices.
-Requires poking in undocumented registers.
+On Thu, 2023-07-20 at 20:00 -0400, Tom Talpey wrote:
+> Personally I like Jeff's text. There's zero need to overthink this.
+>=20
 
-Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
----
-V3 : Rework to fit the new phylink_pcs infrastructure
-V2 : Rework as suggested by Andrew Lunn <andrew@lun.ch> 
- * make int lanes[] const 
- * reorder prod_nums
- * update commit message to indicate we are dealing with
-   undocumented Marvell registers and magic values
----
- drivers/net/dsa/mv88e6xxx/pcs-639x.c | 42 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+It's like this patch was tailor-made for bikeshedding. ;)
 
-diff --git a/drivers/net/dsa/mv88e6xxx/pcs-639x.c b/drivers/net/dsa/mv88e6xxx/pcs-639x.c
-index 98dd49dac421..50b14804c360 100644
---- a/drivers/net/dsa/mv88e6xxx/pcs-639x.c
-+++ b/drivers/net/dsa/mv88e6xxx/pcs-639x.c
-@@ -20,6 +20,7 @@ struct mv88e639x_pcs {
- 	struct mdio_device mdio;
- 	struct phylink_pcs sgmii_pcs;
- 	struct phylink_pcs xg_pcs;
-+	struct mv88e6xxx_chip *chip;
- 	bool supports_5g;
- 	phy_interface_t interface;
- 	unsigned int irq;
-@@ -205,13 +206,52 @@ static void mv88e639x_sgmii_pcs_pre_config(struct phylink_pcs *pcs,
- 	mv88e639x_sgmii_pcs_control_pwr(mpcs, false);
- }
- 
-+static int mv88e6390_erratum_3_14(struct mv88e639x_pcs *mpcs)
-+{
-+	const int lanes[] = { MV88E6390_PORT9_LANE0, MV88E6390_PORT9_LANE1,
-+		MV88E6390_PORT9_LANE2, MV88E6390_PORT9_LANE3,
-+		MV88E6390_PORT10_LANE0, MV88E6390_PORT10_LANE1,
-+		MV88E6390_PORT10_LANE2, MV88E6390_PORT10_LANE3 };
-+	struct mdio_device mdio;
-+	int err, i;
-+
-+	/* 88e6190x and 88e6390x errata 3.14:
-+	 * After chip reset, SERDES reconfiguration or SERDES core
-+	 * Software Reset, the SERDES lanes may not be properly aligned
-+	 * resulting in CRC errors
-+	 */
-+
-+	mdio.bus = mpcs->mdio.bus;
-+
-+	for (i = 0; i < ARRAY_SIZE(lanes); i++) {
-+		mdio.addr = lanes[i];
-+
-+		err = mdiodev_c45_write(&mdio, MDIO_MMD_PHYXS,
-+					0xf054, 0x400C);
-+		if (err)
-+			return err;
-+
-+		err = mdiodev_c45_write(&mdio, MDIO_MMD_PHYXS,
-+					0xf054, 0x4000);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- static int mv88e639x_sgmii_pcs_post_config(struct phylink_pcs *pcs,
- 					   phy_interface_t interface)
- {
- 	struct mv88e639x_pcs *mpcs = sgmii_pcs_to_mv88e639x_pcs(pcs);
-+	struct mv88e6xxx_chip *chip = mpcs->chip;
- 
- 	mv88e639x_sgmii_pcs_control_pwr(mpcs, true);
- 
-+	if (chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6190X ||
-+	    chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6390X)
-+		mv88e6390_erratum_3_14(mpcs);
-+
- 	return 0;
- }
- 
-@@ -523,6 +563,7 @@ static int mv88e6390_pcs_init(struct mv88e6xxx_chip *chip, int port)
- 	mpcs->sgmii_pcs.neg_mode = true;
- 	mpcs->xg_pcs.ops = &mv88e6390_xg_pcs_ops;
- 	mpcs->xg_pcs.neg_mode = true;
-+	mpcs->chip = chip;
- 
- 	err = mv88e639x_pcs_setup_irq(mpcs, chip, port);
- 	if (err)
-@@ -873,6 +914,7 @@ static int mv88e6393x_pcs_init(struct mv88e6xxx_chip *chip, int port)
- 	mpcs->xg_pcs.ops = &mv88e6393x_xg_pcs_ops;
- 	mpcs->xg_pcs.neg_mode = true;
- 	mpcs->supports_5g = true;
-+	mpcs->chip = chip;
- 
- 	err = mv88e6393x_erratum_4_6(mpcs);
- 	if (err)
--- 
-2.11.0
+Personally, I'm fine with any reasonable string here. My main concern
+was just to silence the warning.
 
+> Jul 20, 2023 7:30:34 PM Chuck Lever <cel@kernel.org>:
+>=20
+> > On Fri, Jul 21, 2023 at 08:07:16AM +1000, NeilBrown wrote:
+> > > On Thu, 20 Jul 2023, Jeff Layton wrote:
+> > > > I got this today from modpost:
+> > > >=20
+> > > > =A0=A0=A0 WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nfsd=
+/nfsd.o
+> > > >=20
+> > > > Add a module description.
+> > > >=20
+> > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > > ---
+> > > > fs/nfsd/nfsctl.c | 1 +
+> > > > 1 file changed, 1 insertion(+)
+> > > >=20
+> > > > diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
+> > > > index 1b8b1aab9a15..7070969a38b5 100644
+> > > > --- a/fs/nfsd/nfsctl.c
+> > > > +++ b/fs/nfsd/nfsctl.c
+> > > > @@ -1626,6 +1626,7 @@ static void __exit exit_nfsd(void)
+> > > > }
+> > > >=20
+> > > > MODULE_AUTHOR("Olaf Kirch <okir@monad.swb.de>");
+> > > > +MODULE_DESCRIPTION("The Linux kernel NFS server");
+> > >=20
+> > > Of 9176 MODULE_DESCRIPTIONs in Linux, 21 start with "The ".
+> > > Does having that word add anything useful?
+> > > Amusingly 129 end with a period.=A0 I wonder what Jon Corbet would pr=
+efer
+> > > :-)
+> >=20
+> > The Ohio State University has set a bad precedent.
+> >=20
+> > I think we can drop "The".
+> >=20
+> >=20
+> > > A few tell us what the module does.
+> > > "Measures" "Provides"....
+> > > Do we want "Implements" ??
+> >=20
+> > I don't find "Implements" to be either conventional or illuminating.
+> >=20
+> >=20
+> > > 232 start "Driver " and 214 are "Driver for"....
+> > > Should we have "Server for" ??
+> > >=20
+> > > 26 start "Linux" ... which seems a bit redundant
+> > > =A0 12 contain "for Linux".=A0 67 mention linux in some way.
+> > > 28 contain the word "kernel" - also redundant.
+> > > Only three (others) mention "Linux kernel"
+> >=20
+> > One of which is the new in-kernel SMB server, interestingly.
+> >=20
+> > I don't think "Linux kernel" or even "in-kernel" is needed here.
+> > Both should be obvious from the context.
+> >=20
+> >=20
+> > > drivers/pcmcia/cs.c:MODULE_DESCRIPTION("Linux Kernel Card Services");
+> > > fs/ksmbd/server.c:MODULE_DESCRIPTION("Linux kernel CIFS/SMB SERVER");
+> > > fs/orangefs/orangefs-mod.c:MODULE_DESCRIPTION("The Linux Kernel VFS i=
+nterface to ORANGEFS");
+> > >=20
+> > > hmmm..=A0 192 contain the word "module".=A0 Fortunately none say
+> > > =A0 "Linux kernel module for ..."
+> > > I would have found that to be a step too far.
+> > >=20
+> > > I'd like to suggest
+> > >=20
+> > > =A0 "Implements Server for NFS - v2, 3, v4.{0,1,2}"
+> > >=20
+> > > But that would require excessive #ifdef magic to get right.
+> >=20
+> > "Network File System server" works for me.
+> >=20
+> >=20
+> > > A small part of me wants to suggest:
+> > >=20
+> > > =A0=A0 "nfsd"
+> > >=20
+> > > but maybe I'm just in a whimsical mood today.
+> >=20
+> > I'm resisting the urge to add "RFCs 1813, 7530, 8881, et al."
+> > Whimsy, indeed. ;-)
+> >=20
+> >=20
+> > > NeilBrown
+> > >=20
+> > >=20
+> > > > MODULE_LICENSE("GPL");
+> > > > module_init(init_nfsd)
+> > > > module_exit(exit_nfsd)
+> > > > --=20
+> > > > 2.41.0
+> > > >=20
+> > > >=20
+> > >=20
+
+--=20
+Jeff Layton <jlayton@kernel.org>
