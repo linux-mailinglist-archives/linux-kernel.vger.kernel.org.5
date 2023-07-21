@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6F875C66B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77DE75C675
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbjGUMDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 08:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
+        id S230451AbjGUMEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbjGUMDm (ORCPT
+        with ESMTP id S229885AbjGUMEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:03:42 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91173A98
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:03:17 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fbea14700bso15189685e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:03:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689940995; x=1690545795;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0LfYJxT8/PQgOI8EMuv1dYvPO7R8GSgfQTCAsknpK04=;
-        b=W9dOJVxhBjvVomAhaW0PulNleqdkzk6xereHKsD3oXaTkxr1hd9dS3JIPkW2G7j3UF
-         TKHDxN/ONQVQK7DvY7NJIdQhBicgCADuL8Mhvwbyaz/C1toIw9LG8xvrt1sz4rphnDow
-         5Ky2V7Al3B/qtddK/pW7BMBrDKkzj4TYWml9Pbi1j2TPtBFOq6bFmWrDvscvaDffEVZ2
-         e5gypLalY1SqzdfDpKRC3jj4pA5aetZcT6gfqYu+hUiRb6zrz8Jf61nFaRvhU1VkR/cl
-         WBaelHocsGTIXau2pLRqC9VurkY4kCKiKr0q67zmlL2kRQBde0BPaMseXdSsqdfeSeTb
-         Ltcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689940995; x=1690545795;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0LfYJxT8/PQgOI8EMuv1dYvPO7R8GSgfQTCAsknpK04=;
-        b=gUMYpMAi0r1TY1pevqJz2tQOm0Jypg6JPW+x/2By1gC/TglRgMGzxFm+OfFjIancqS
-         X5xK/kq0ZvBZB4n0HDDoXob2qCDG7y2bodEnGMBfSQQ/lCxGfHL9GUYZEwInaOt4amNK
-         EhrzwYYu/XBW/E/bD+y2Q9hPNtztrbtPzQt/rA+P61SikfwDyweDJ7yRd02pR/NKzkeh
-         zz20cAo51kBG2cT33AoMCHWU8FvLd3cxIfQIepfK+0ZviaA/y/7YCr99FkXz8NmLWify
-         /TFH346hjPQ1m1ydNCHRxZ1l0yTmUc/wjZKOIteN/zYmTxeFchIRh6Q+YzSE4nGEPTyw
-         LbTA==
-X-Gm-Message-State: ABy/qLZbxqcnDFKyXYt1KTUyLPZqF7C1572qLaIr6xd9YlOKOIv2Uiax
-        0XBEQJve7dvnrc3t4Wqi+hQTZw==
-X-Google-Smtp-Source: APBJJlGDdfidTPWDPa/uOrnnpikMk+ASrNSwczpIAbJ9RJi9RZki0USHaGyB+TQB/WJZCrRm4wDfbg==
-X-Received: by 2002:a5d:4089:0:b0:315:93a1:c733 with SMTP id o9-20020a5d4089000000b0031593a1c733mr1154305wrp.20.1689940995332;
-        Fri, 21 Jul 2023 05:03:15 -0700 (PDT)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id o26-20020a5d58da000000b0030ae499da59sm3998420wrf.111.2023.07.21.05.03.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 05:03:14 -0700 (PDT)
-Message-ID: <ed87a08c-363f-600e-6853-1a6009eb3c99@baylibre.com>
-Date:   Fri, 21 Jul 2023 14:03:13 +0200
+        Fri, 21 Jul 2023 08:04:40 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651C13A94;
+        Fri, 21 Jul 2023 05:04:17 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36L9YEJh006034;
+        Fri, 21 Jul 2023 14:04:11 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=selector1;
+ bh=yMYPnlq3CX+IDIIWlWaS3qUmcJLHPYtyYe6d6EzMC/U=;
+ b=16U4ld99ILMHnT9772VvZEQEP4HamPG2eZE+s7Z1bGxFvlpzQ+kC1hrdcQRq5eiUoK9X
+ 6UdhZVl69O+3I0qtVaWXAW/3HcFDwfvluGlkYVLqkRw1gyh+qPb2tKLTaAp0N2UN7a/C
+ K1H8qk7sfuz3FsEuF9QLl0Cyl6fSVlHVaaKyYOx8e4BrK8e2QAEhivhh9Ti1NZibc5bs
+ gBO3dXFRwSCJO7FDctE7HjCbEPRBZYoFz9/Ac2N3fHe19MLHRXS8vaPoOUqXtzG0hnzv
+ 4t0Bs+5P06cyn80VSfy3R4rUuCRf9845X8nu530HPOD4DGtz6M5bBCX9mRVAq6FJ5/oy fA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ryqgms5gx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jul 2023 14:04:11 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C70D610003D;
+        Fri, 21 Jul 2023 14:04:10 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C0EF2229A68;
+        Fri, 21 Jul 2023 14:04:10 +0200 (CEST)
+Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Fri, 21 Jul
+ 2023 14:04:10 +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+        Sylvain Petinot <sylvain.petinot@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+CC:     Alain Volmat <alain.volmat@foss.st.com>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 1/2] media: i2c: st_mipid02: cascade s_stream call to the source subdev
+Date:   Fri, 21 Jul 2023 14:03:14 +0200
+Message-ID: <20230721120316.1172445-2-alain.volmat@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230721120316.1172445-1-alain.volmat@foss.st.com>
+References: <20230721120316.1172445-1-alain.volmat@foss.st.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/3] MediaTek DRM: Clean up CMDQ support and ifdefs
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, chunkuang.hu@kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
-        matthias.bgg@gmail.com, wenst@chromium.org,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-References: <20230623094931.117918-1-angelogioacchino.delregno@collabora.com>
- <6c71deca-112e-2ef6-9098-902bc4b92324@baylibre.com>
- <d5c9f1c8-6c05-7679-777a-aa6cec01a3f6@collabora.com>
-Content-Language: en-US
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <d5c9f1c8-6c05-7679-777a-aa6cec01a3f6@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.129.178.213]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-21_07,2023-07-20_01,2023-05-22_02
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,65 +72,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Cascade the s_stream call to the source subdev whenever the bridge
+streaming is enable / disabled.
 
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+v2: correct uninitialized ret variable in mipid02_stream_disable
 
-On 19/07/2023 09:41, AngeloGioacchino Del Regno wrote:
-> Il 23/06/23 14:49, Alexandre Mergnat ha scritto:
->>
->>
->> On 23/06/2023 11:49, AngeloGioacchino Del Regno wrote:
->>> This series changes MediaTek CMDQ support to use the mtk-cmdq-helper
->>> functions, removing duplicated cmdq setup code in mtk-drm and also
->>> removing all instances of `#if IS_REACHABLE(CONFIG_MTK_CMDQ)` while
->>> keeping compatibility with both CONFIG_MTK_CMDQ=n and =m/=y.
->>>
->>> This applies on top of [1] and [2].
->>>
->>> [1]:https://lore.kernel.org/lkml/20230524093412.92211-1-angelogioacchino.delregno@collabora.com
->>> [2]:https://lore.kernel.org/lkml/20230608084727.74403-1-angelogioacchino.delregno@collabora.com
->>
->> Hi Angelo,
->>
->> Can you provide a public branch to test it please ?
->> I tried to apply the dependencies but still have an issue with the 3rd 
->> one:
->>
->> https://lore.kernel.org/lkml/20230523104234.7849-1-angelogioacchino.delregno@collabora.com
->> OK
->>
->> https://lore.kernel.org/lkml/20230524093412.92211-1-angelogioacchino.delregno@collabora.com
->> OK
->>
->> https://lore.kernel.org/lkml/20230608084727.74403-1-angelogioacchino.delregno@collabora.com
->> KO
->>
->> Thanks
->>
-> 
-> Sorry for the very late reply; I've somehow lost this email in the 
-> haystack...
-> 
-> There you go:
-> https://gitlab.collabora.com/google/chromeos-kernel/-/commits/for-kernelci/
-> 
+ drivers/media/i2c/st-mipid02.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-Thanks Angelo,
-
-I build/boot your branch for the i350-evk board.
-
-I had to revert this commit from your branch:
-"15f12798e218 TODO: soc: mediatek: mtk-pm-domains: Support CPU Power 
-Domains"
-Because it conflict with the "soc: mediatek: MT8365 power support" serie 
-[3].
-
-Also, I change back the defconfig to be aligned with the v6.5-rc1
-
-After that, the board boot and drm/display seems working like a charm.
-
-[3]: 
-https://lore.kernel.org/linux-arm-kernel/20230713150414.891893-1-msp@baylibre.com/
-
+diff --git a/drivers/media/i2c/st-mipid02.c b/drivers/media/i2c/st-mipid02.c
+index 906553a28676..ee456bd4cf76 100644
+--- a/drivers/media/i2c/st-mipid02.c
++++ b/drivers/media/i2c/st-mipid02.c
+@@ -545,7 +545,14 @@ static int mipid02_configure_from_code(struct mipid02_dev *bridge)
+ static int mipid02_stream_disable(struct mipid02_dev *bridge)
+ {
+ 	struct i2c_client *client = bridge->i2c_client;
+-	int ret;
++	int ret = -EINVAL;
++
++	if (!bridge->s_subdev)
++		goto error;
++
++	ret = v4l2_subdev_call(bridge->s_subdev, video, s_stream, 0);
++	if (ret)
++		goto error;
+ 
+ 	/* Disable all lanes */
+ 	ret = mipid02_write_reg(bridge, MIPID02_CLK_LANE_REG1, 0);
+@@ -633,6 +640,10 @@ static int mipid02_stream_enable(struct mipid02_dev *bridge)
+ 	if (ret)
+ 		goto error;
+ 
++	ret = v4l2_subdev_call(bridge->s_subdev, video, s_stream, 1);
++	if (ret)
++		goto error;
++
+ 	return 0;
+ 
+ error:
 -- 
-Regards,
-Alexandre
+2.25.1
+
