@@ -2,118 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0843B75CAB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FA275CAB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbjGUOxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36488 "EHLO
+        id S231410AbjGUOyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbjGUOxu (ORCPT
+        with ESMTP id S231359AbjGUOyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:53:50 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F9A1722
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:53:46 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230721145343euoutp02a545625aef1840da70b2c55c0ddb8869~z6a8G9xSz1613516135euoutp02Q
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:53:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230721145343euoutp02a545625aef1840da70b2c55c0ddb8869~z6a8G9xSz1613516135euoutp02Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1689951223;
-        bh=Rrfb/5CKnXgwUVjftv6KwY1EDaIM4ynA7oZzfhedB9E=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=hn99Q7LOHpT7R1zLQTFNqIrozav5Yq376DDTNRBZhUHxoDYi9Mka0MXpVUWrUx9G7
-         Nl3vxwiVHY4n1ALfJhMLG9bZATxgG1GMsBpx211IDVmuJ/ktOagwEXPOozMQm8jKY3
-         QZkXBYe9RJPeNinxJa4VDbJ+lhbyDzslsoEioL/Q=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20230721145342eucas1p23fd6df809ed2412ff05863ff67460c74~z6a76U5mS1410514105eucas1p28;
-        Fri, 21 Jul 2023 14:53:42 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 01.90.11320.6FB9AB46; Fri, 21
-        Jul 2023 15:53:42 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20230721145342eucas1p12e658a54d36d985b2811e2c21f7810ee~z6a7pa41t2668226682eucas1p1-;
-        Fri, 21 Jul 2023 14:53:42 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230721145342eusmtrp123604735d480923a48c9203f4226e478~z6a7o17XY2368823688eusmtrp1Z;
-        Fri, 21 Jul 2023 14:53:42 +0000 (GMT)
-X-AuditID: cbfec7f4-993ff70000022c38-38-64ba9bf6ba2a
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id F6.99.10549.6FB9AB46; Fri, 21
-        Jul 2023 15:53:42 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230721145341eusmtip14705932957219d7009f3d7205e4c2852~z6a6_GjNt3038230382eusmtip1V;
-        Fri, 21 Jul 2023 14:53:41 +0000 (GMT)
-Message-ID: <c2bba4df-da1f-5666-89aa-28c6700575ca@samsung.com>
-Date:   Fri, 21 Jul 2023 16:53:42 +0200
+        Fri, 21 Jul 2023 10:54:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89BC3171A;
+        Fri, 21 Jul 2023 07:54:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1971561A0C;
+        Fri, 21 Jul 2023 14:54:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CC9DC433C7;
+        Fri, 21 Jul 2023 14:54:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689951284;
+        bh=t77fLoIms5dLMcLB46LECL7L1VO/tvMK+vqVQsPIqlg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Limk3R8EchtkBCsao2b105jV+o8O3QHoPjrNlWm6PRLne6awIRyhcA7igPYdD3r5g
+         N9fiF0odrupddTJaEA5pDPUxCP2QU31P0Nhe2vdU4zpsHRe5kf82XbGdR7rbPiJftI
+         shJBb6ZmRyc2R7c3PqBG8uXLvLMFob6xf4SYHm4MLUhxmPDtbuP5XP2kqKmU/qzTpy
+         rm/YxCJC+BA6V2D9t51a/UUL1zu9puYmdF5/U9qzItgspgSz9al952iytclsNH2m4T
+         nJrjyS5sTaTfjCIW3oxF5TckItn8oMBTYRFYQywe3SGTfclDqQnQ8Im374akGTk9Rn
+         FTPo1VqG35ICg==
+Date:   Fri, 21 Jul 2023 20:24:22 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Shawn Lin <shawn.lin@rock-chips.com>
+Cc:     Frank Li <Frank.li@nxp.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        helgaas@kernel.org, imx@lists.linux.dev, bhelgaas@google.com,
+        devicetree@vger.kernel.org, gustavo.pimentel@synopsys.com,
+        kw@linux.com, leoyang.li@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, minghuan.lian@nxp.com,
+        mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
+        shawnguo@kernel.org, zhiqiang.hou@nxp.com
+Subject: Re: [PATCH v3 1/2] PCI: dwc: Implement general suspend/resume
+ functionality for L2/L3 transitions
+Message-ID: <20230721145422.GC2536@thinkpad>
+References: <20230419164118.596300-1-Frank.Li@nxp.com>
+ <20230717164526.GC35455@thinkpad>
+ <ZLWKI1lRqxejfUgK@lizhi-Precision-Tower-5810>
+ <20230718100400.GB4771@thinkpad>
+ <20230720142509.GB48270@thinkpad>
+ <ZLlGsM/D/b+udmAD@lizhi-Precision-Tower-5810>
+ <20230720160738.GC48270@thinkpad>
+ <6f1eb449-5609-0b17-1323-0d114c38d969@rock-chips.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0)
-        Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 2/2] regmap: Reject fast_io regmap configurations
- with RBTREE and MAPLE caches
-Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>, Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Andy Yan <andy.yan@rock-chips.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20230720032848.1306349-2-linux@roeck-us.net>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGKsWRmVeSWpSXmKPExsWy7djPc7rfZu9KMbg1w9Si//xNRoupD5+w
-        WTQvXs9m8f/Ra1aLy7vmsFl8evCf2eLJwjNMFnO/TGW2+Lt9E4sDp8emVZ1sHvvnrmH32Lyk
-        3qP/r4HH31n7WTx2fm9g99h+bR6zx+dNcgEcUVw2Kak5mWWpRfp2CVwZM6+uYSx4z1ex4N4W
-        1gbG79xdjJwcEgImEksa5zN2MXJxCAmsYJR4unwhlPOFUeLEpgdsEM5nRokpN04yw7T0zG5g
-        gUgsZ5Q43v+DGcL5yCixfsI9FpAqXgE7id7tB8BsFgFVid+L25kg4oISJ2c+AYuLCqRK7Lg9
-        gRXEFhbIkLi07hQjiM0sIC5x68l8sHoRAXeJn18boeKTmCQe70oDsdkEDCW63naxgdicAlYS
-        BycdZIOokZfY/nYO2EESAv85JG71XmSCONtF4s/6ZVC2sMSr41vYIWwZidOTe1ggGtoZJRb8
-        vs8E4UxglGh4fosRospa4s65X0ArOIBWaEqs36UPEXaU2Df7HBNIWEKAT+LGW0GII/gkJm2b
-        zgwR5pXoaBOCqFaTmHV8HdzagxcuMU9gVJqFFCyzkLw/C8k7sxD2LmBkWcUonlpanJueWmyU
-        l1quV5yYW1yal66XnJ+7iRGYtE7/O/5lB+PyVx/1DjEycTAeYpTgYFYS4U1P35UixJuSWFmV
-        WpQfX1Sak1p8iFGag0VJnFfb9mSykEB6YklqdmpqQWoRTJaJg1OqgWn1p1/vBd/v3NZZfafW
-        XL460Uhj25/J03le2U1bsedToOSTgGpvYX/uoCuO3JpPeaPNjdau3xck8eZ3TFZlWER/kfm/
-        eQKL9tiIFZ8N2NJ9Kmj/loC6Up0vAccSlY78yz7iwlyqlnSt4E3ODZ87R3nfeasLXu5IWemk
-        4xtSveDfNdWX8YYGJWL2txO9XiWLcBe13JvUHdB86fxON8ttsm4ndzuxp3522iI4iTWeU+Hy
-        wkW81s8ruO5o8sUy32i37bZtVTc6Ipmh/zPlFuvuD5YfbJvXzIvy2TDPrXVNTujKG+eWizG+
-        P567uLrX7MSH35nuzPPsjp3LnxYRbOSnss70XXrh9bXvnKJeH2SLUGIpzkg01GIuKk4EAL/r
-        UCbJAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOIsWRmVeSWpSXmKPExsVy+t/xu7rfZu9KMbj8RNGi//xNRoupD5+w
-        WTQvXs9m8f/Ra1aLy7vmsFl8evCf2eLJwjNMFnO/TGW2+Lt9E4sDp8emVZ1sHvvnrmH32Lyk
-        3qP/r4HH31n7WTx2fm9g99h+bR6zx+dNcgEcUXo2RfmlJakKGfnFJbZK0YYWRnqGlhZ6RiaW
-        eobG5rFWRqZK+nY2Kak5mWWpRfp2CXoZM6+uYSx4z1ex4N4W1gbG79xdjJwcEgImEj2zG1hA
-        bCGBpYwS718yQcRlJE5Oa2CFsIUl/lzrYuti5AKqec8o0bJoMliCV8BOonf7AbBmFgFVid+L
-        25kg4oISJ2c+AYuLCqRK/GrYBVYvLJAh0fNtFZjNLCAucevJfLB6EQF3iZ9fGxlBFjALTGKS
-        uLd2EyvERZkSd/YtAxvEJmAo0fUW5ApODk4BK4mDkw6yQQwyk+ja2sUIYctLbH87h3kCo9As
-        JHfMQrJvFpKWWUhaFjCyrGIUSS0tzk3PLTbUK07MLS7NS9dLzs/dxAiM0W3Hfm7ewTjv1Ue9
-        Q4xMHIyHGCU4mJVEeNPTd6UI8aYkVlalFuXHF5XmpBYfYjQFBsZEZinR5HxgksgriTc0MzA1
-        NDGzNDC1NDNWEuf1LOhIFBJITyxJzU5NLUgtgulj4uCUamDi1P33yPW7bFp5/0mun42m7rox
-        VUsSQpa/vZJTkx3n2t6z8cSu2xum/vo5+6y67PvXvIfrZ7xmLMxg6phf155y7/OaRLY3k1aL
-        HH38aushntbX5UY/I3W6/z5Q/TjnwbUF4edn2qWe8hPQvDTby/7O9dmrTBvVZ39y1itvFupX
-        cTdqCdm/xiwoRnFmephkZMiUpov+3ArTPK+/zp6z4rA/Wzl/9wK1wyeO8fudqq5MUuFeseXo
-        HevZhbbXvXeev6/6TEx6a0zv+2zr1taK0BV2QbE+h6QsZ94pEv4tWXRnu3buDCPvmbKS280/
-        /j793F1//uJd2ntfrbrifldhOeOeC7+aBISX77qafXf9vPatSizFGYmGWsxFxYkAVrBfb1oD
-        AAA=
-X-CMS-MailID: 20230721145342eucas1p12e658a54d36d985b2811e2c21f7810ee
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20230721145342eucas1p12e658a54d36d985b2811e2c21f7810ee
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20230721145342eucas1p12e658a54d36d985b2811e2c21f7810ee
-References: <20230720032848.1306349-1-linux@roeck-us.net>
-        <20230720032848.1306349-2-linux@roeck-us.net>
-        <CGME20230721145342eucas1p12e658a54d36d985b2811e2c21f7810ee@eucas1p1.samsung.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6f1eb449-5609-0b17-1323-0d114c38d969@rock-chips.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -121,53 +72,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jul 21, 2023 at 10:09:18AM +0800, Shawn Lin wrote:
+> 
+> On 2023/7/21 0:07, Manivannan Sadhasivam wrote:
+> > On Thu, Jul 20, 2023 at 10:37:36AM -0400, Frank Li wrote:
+> > > On Thu, Jul 20, 2023 at 07:55:09PM +0530, Manivannan Sadhasivam wrote:
+> > > > On Tue, Jul 18, 2023 at 03:34:26PM +0530, Manivannan Sadhasivam wrote:
+> > > > > On Mon, Jul 17, 2023 at 02:36:19PM -0400, Frank Li wrote:
+> > > > > > On Mon, Jul 17, 2023 at 10:15:26PM +0530, Manivannan Sadhasivam wrote:
+> > > > > > > On Wed, Apr 19, 2023 at 12:41:17PM -0400, Frank Li wrote:
+> > > > > > > > Introduced helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
+> > > > > > > > Added API pme_turn_off and exit_from_l2 for managing L2/L3 state transitions.
+> > > > > > > > 
+> > > > > > > > Typical L2 entry workflow:
+> > > > > > > > 
+> > > > > > > > 1. Transmit PME turn off signal to PCI devices.
+> > > > > > > > 2. Await link entering L2_IDLE state.
+> > > > > > > 
+> > > > > > > AFAIK, typical workflow is to wait for PME_To_Ack.
+> > > > > > 
+> > > > > > 1 Already wait for PME_to_ACK,  2, just wait for link actual enter L2.
+> > > > > > I think PCI RC needs some time to set link enter L2 after get ACK from
+> > > > > > PME.
+> > > > > > 
+> > > > 
+> > > > One more comment. If you transition the device to L2/L3, then it can loose power
+> > > > if Vaux was not provided. In that case, can all the devices work after resume?
+> > > > Most notably NVMe?
+> > > 
+> > > I have not hardware to do such test, NVMe driver will reinit everything after
+> > > resume if no L1.1\L1.2 support. If there are L1.1\L1.2, NVME expect it leave
+> > > at L1.2 at suspend to get better resume latency.
+> > > 
+> > 
+> > To be precise, NVMe driver will shutdown the device if there is no ASPM support
+> > and keep it in low power mode otherwise (there are other cases as well but we do
+> > not need to worry).
+> > 
+> > But here you are not checking for ASPM state in the suspend path, and just
+> > forcing the link to be in L2/L3 (thereby D3Cold) even though NVMe driver may
+> > expect it to be in low power state like ASPM/APST.
+> > 
+> > So you should only put the link to L2/L3 if there is no ASPM support. Otherwise,
+> > you'll ending up with bug reports when users connect NVMe to it.
+> > 
+> 
+> 
+> At this topic, it's very interesting to look at
+> 
+> drivers/pci/controller/dwc/pcie-tegra194.c
+> 
+> 
+> static int tegra_pcie_dw_suspend_noirq(struct device *dev)
+> {
+>         struct tegra_pcie_dw *pcie = dev_get_drvdata(dev);
+> 
+>         if (!pcie->link_state)
+>                 return 0;
+> 
+>         tegra_pcie_downstream_dev_to_D0(pcie);
+>         tegra_pcie_dw_pme_turnoff(pcie);
+>         tegra_pcie_unconfig_controller(pcie);
+> 
+>         return 0;
+> }
+> 
+> It brings back all the downstream components to D0, as I assumed it was L0
+> indeed, before sending PME aiming to enter L2.
+> 
 
-On 20.07.2023 05:28, Guenter Roeck wrote:
-> REGCACHE_RBTREE and REGCACHE_MAPLE dynamically allocate memory for regmap
-> operations. This is incompatible with spinlock based locking which is used
-> for fast_io operations. Reject affected configurations.
->
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> This seems prudent, given that accesses will be protected by spinlock
-> but may allocate memory with GFP_KERNEL. Another option might be to use
-> WARN_ON instead of rejecting the configuration to avoid hard regressions
-> (and I think both drivers/net/ieee802154/mcr20a.c and
-> sound/soc/codecs/sti-sas.c may be affected, though I can not test it).
+The behavior is Tegra specific as mentioned in the comment in
+tegra_pcie_downstream_dev_to_D0():
 
-This patch, which landed in today's linux-next, breaks operation of the 
-RockChip's VOP2 DRM driver 
-(drivers/gpu/drm/rockchip/rockchip_drm_vop2.c). I'm not sure what is the 
-proper fix in this case. Should one change the cache type to REGCACHE_FLAT?
+        /*
+         * link doesn't go into L2 state with some of the endpoints with Tegra
+         * if they are not in D0 state. So, need to make sure that immediate
+         * downstream devices are in D0 state before sending PME_TurnOff to put
+         * link into L2 state.
+         * This is as per PCI Express Base r4.0 v1.0 September 27-2017,
+         * 5.2 Link State Power Management (Page #428).
+         */
 
+But I couldn't find the behavior documented in the spec as per the comment. Not
+sure if I'm reading it wrong!
 
->   drivers/base/regmap/regmap.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
->
-> diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-> index 89a7f1c459c1..b4640285c0b9 100644
-> --- a/drivers/base/regmap/regmap.c
-> +++ b/drivers/base/regmap/regmap.c
-> @@ -777,6 +777,15 @@ struct regmap *__regmap_init(struct device *dev,
->   	} else {
->   		if ((bus && bus->fast_io) ||
->   		    config->fast_io) {
-> +			/*
-> +			 * fast_io is incompatible with REGCACHE_RBTREE and REGCACHE_MAPLE
-> +			 * since both need to dynamically allocate memory.
-> +			 */
-> +			if (config->cache_type == REGCACHE_RBTREE ||
-> +			    config->cache_type == REGCACHE_MAPLE) {
-> +				ret = -EINVAL;
-> +				goto err_name;
-> +			}
->   			if (config->use_raw_spinlock) {
->   				raw_spin_lock_init(&map->raw_spinlock);
->   				map->lock = regmap_lock_raw_spinlock;
+Also, I can confirm from previous interations with the linux-nvme list that
+Tegra also faces the suspend issue with NVMe devices.
 
-Best regards
+- Mani
+
+- Mani
+
+> > - Mani
+> > 
+> > > This API help remove duplicate codes and it can be improved gradually.
+> > > 
+> > > 
+> > > > 
+> > > > - Mani
+> > > > 
+> > > > 
+> > > > -- 
+> > > > மணிவண்ணன் சதாசிவம்
+> > 
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+மணிவண்ணன் சதாசிவம்
