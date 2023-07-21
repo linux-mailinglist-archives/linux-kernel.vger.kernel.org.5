@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C940E75CE4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE5175CE4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbjGUQTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 12:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45702 "EHLO
+        id S231509AbjGUQTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 12:19:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232632AbjGUQTQ (ORCPT
+        with ESMTP id S230506AbjGUQTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 12:19:16 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E557F4694
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 09:17:51 -0700 (PDT)
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id BB58C3F18F
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:17:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1689956267;
-        bh=wgUHzoDXTjjtOlC3+rEyxVrID6ad/R99TbcI30d00dI=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=NlP/Nqqa+uxbUxjPE+afV1fHv/xPJeOktIFEi7waNL2W5oxDt6kL2gE1pKXlu4v/t
-         EitN/4kpfGU9k2VNJxJxbK489W3cxVokD/tXT9Zj9HoQkMOGou3IUnSEUcQCAneaqD
-         BNZpwIuW78j5V3bi66JqHnB298hCnm0z41x1lMbRqtaW/fLpJRB+LpLeqyT6a4YyKJ
-         /8ejGXvISaeiZmm3PuwDBHBgYHff3D5sSWkaFCwXj2poHjePE0IfHmZrN9qFELLdEW
-         3Ng5kQwarNVWiRX6fJfYaE8n9f0XspnO6AoCzCFuQjRyeF6HXJPNfFHxN5gQ9hpP24
-         LKzvCm4scKVkg==
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-403b0674ec8so24592931cf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 09:17:47 -0700 (PDT)
+        Fri, 21 Jul 2023 12:19:25 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4662835AC
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 09:18:10 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3141c3a7547so1659210f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 09:18:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689956288; x=1690561088;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sA2hRH6tfaw45jC8b+muVq/w9g9VDpgo6qGxGygAeH0=;
+        b=CNaUEWo8mfPYc0zH13AH7uE+VJ33ncwsDfdCgXuFzvC8SlNGdExg4bpxcTRa+TfV5d
+         3f8jlokXgLYla/K8kMKXsOqRLmHlmMWezK4yMk82QJ5hmbYV4Zm9LHPm4oBqx2V3ks9U
+         MuqSF6EN3h+7Iy5uRM7S7zOXJquE/PLH1X8lMBSSCMsFdxK49xpu+I8cwPVo4OvUWhuw
+         rE9qk/zyrkGBfbW6LY4j7kvVBMk9/6NC3iil7iwCZoz+X5GhD3r/9+JG1lXtvKnmvDKw
+         J5VBOdlp0lK6Ey3eQHN8md7m1243EbhpSfyMB0jHLGaLIfGonIDXdBvrOf/4dK+YVC65
+         ZY8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689956267; x=1690561067;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wgUHzoDXTjjtOlC3+rEyxVrID6ad/R99TbcI30d00dI=;
-        b=B4uyIWI8ctY8g97a07f1n5AkMDTrlYvydrCo7nslfiWRF+gLvHurljwiftmLWKc7M5
-         4nowI5InOzlOvRGG8ot3C40WW10pPpU4ZjJPAaB1WyNVnQW8vbMBslWDaEmko9yrfQcq
-         phA8s22ZHBbRq8oNjlK2krLoMdnqRLp8pFcyqBuMuzerdYwbAAQflquV5Pcg4tO5NfNn
-         0oR/6n0KZ/5eClp8xu9OGokEqI163UHP2W09zOnLfJBDr6LgUQA4MibDwcJhqGjHQcIx
-         td75Vqg+sU2mIRuw1d/mXNRM3aQfZfqZXj4RcmpyxTcwXk2TIyfbsqqRoy618TGr2TRx
-         99Zg==
-X-Gm-Message-State: ABy/qLYVADommWRrjlMxW5+mONQt57aOO6ZqfUrAkBKkI/ZpwD1tHo6w
-        Ih5farwoLfTL0XX/roiogo4JaDZHqGBhAs4IyFS+1ehIVjbS+TnwoZbaU9bW4TpUZqDnmQ4hNun
-        VNfMWtYfAVSoyCZeqKsi5pWUUccw7nrMDLvI6i5V8vlYfDblFx8VFFIHAtw==
-X-Received: by 2002:a05:622a:1a10:b0:405:464d:5bb0 with SMTP id f16-20020a05622a1a1000b00405464d5bb0mr631975qtb.32.1689956266708;
-        Fri, 21 Jul 2023 09:17:46 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFsCtZK/fs1CfxrSe/Xx436U1H1O2FZ1chxm9c/Euubsm64CDfYfu3uIBllDzWDiITFbRjGF/uMcbffo5sTip0=
-X-Received: by 2002:a05:622a:1a10:b0:405:464d:5bb0 with SMTP id
- f16-20020a05622a1a1000b00405464d5bb0mr631956qtb.32.1689956266458; Fri, 21 Jul
- 2023 09:17:46 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689956288; x=1690561088;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sA2hRH6tfaw45jC8b+muVq/w9g9VDpgo6qGxGygAeH0=;
+        b=DJXO0kvGLSBcUoCVOopGkB6+7djdXwTp8KAPMUUu1K6y0tnAi7nGx154mkQp/66Xdy
+         KdOxo1q5yJVan4y5FleSS8BGf03hiYoRlj2Y5vtI4F2tiFTDrJvcL4jWYpEFvDn7pyUk
+         uzef2Wnc8fJ5QMM4KNOAthUs6za7lobCgJGAvaJJaAD+NjU4vLDSiJosEEOZdAYs+2wa
+         qHwh7VfoNE3KNjZgBGtFJZuJNq/LzG1k63szm8RLgKfRAWYZqxJBX9p1gOnvhxjNDVkl
+         qmVFXjT1r6S1mQSQg9PPmP6suvl9IdRKsfQ7ZC4/707rNyTqAsN/O7HcAgAK5wAUvpft
+         T70w==
+X-Gm-Message-State: ABy/qLZ8Sx7pGqRc334S9M4hkvW/3SJumCgZAuj6W7wseUwANsMD67Zk
+        WIskUxFD6KN8bvwyLgPdI4VBoSM78B6vnMcNwdw=
+X-Google-Smtp-Source: APBJJlFeAtdiYRavePrg+Tz7Q8In1dPtMAHvPMuIL6njPICT0ZwKprhmWBq+pvu411ehMEOjv5G8kQ==
+X-Received: by 2002:a5d:5909:0:b0:313:f990:c631 with SMTP id v9-20020a5d5909000000b00313f990c631mr1736281wrd.44.1689956288564;
+        Fri, 21 Jul 2023 09:18:08 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id r9-20020adff709000000b002fb60c7995esm4679564wrp.8.2023.07.21.09.18.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 09:18:07 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 19:18:03 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [RFC PATCH 2/2] regmap: Reject fast_io regmap configurations
+ with RBTREE and MAPLE caches
+Message-ID: <e61ebbfd-98d2-4dad-98e7-67d81c0cc04e@kadam.mountain>
+References: <20230720032848.1306349-1-linux@roeck-us.net>
+ <20230720032848.1306349-2-linux@roeck-us.net>
+ <CGME20230721145342eucas1p12e658a54d36d985b2811e2c21f7810ee@eucas1p1.samsung.com>
+ <c2bba4df-da1f-5666-89aa-28c6700575ca@samsung.com>
+ <fe31bb86-40ec-4b77-9edd-eeaa61bb5e08@sirena.org.uk>
+ <c9614ffb-7840-6a84-883d-ed4371d75c11@roeck-us.net>
+ <205a83df-c67b-457f-a9bf-a9c6def4bb3e@sirena.org.uk>
+ <1c90db79-4a1a-d3cb-5250-f30cf6b5a90c@roeck-us.net>
 MIME-Version: 1.0
-References: <20230720140348.4716-1-CoelacanthusHex@gmail.com>
-In-Reply-To: <20230720140348.4716-1-CoelacanthusHex@gmail.com>
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Date:   Fri, 21 Jul 2023 18:17:30 +0200
-Message-ID: <CAJM55Z83u+aEVYAA0+9PEXK6hbre2=FS_=SDdxQ1uQN7L2PjkA@mail.gmail.com>
-Subject: Re: [PATCH v4] riscv: entry: set a0 = -ENOSYS only when syscall != -1
-To:     Celeste Liu <coelacanthushex@gmail.com>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andreas Schwab <schwab@suse.de>,
-        David Laight <David.Laight@aculab.com>,
-        Felix Yan <felixonmars@archlinux.org>,
-        Ruizhe Pan <c141028@gmail.com>,
-        Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1c90db79-4a1a-d3cb-5250-f30cf6b5a90c@roeck-us.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,91 +85,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023 at 16:05, Celeste Liu <coelacanthushex@gmail.com> wrote=
-:
->
-> When we test seccomp with 6.4 kernel, we found errno has wrong value.
-> If we deny NETLINK_AUDIT with EAFNOSUPPORT, after f0bddf50586d, we will
-> get ENOSYS instead. We got same result with commit 9c2598d43510 ("riscv: =
-entry:
-> Save a0 prior syscall_enter_from_user_mode()").
->
-> After analysing code, we think that regs->a0 =3D -ENOSYS should only be e=
-xecuted
-> when syscall !=3D -1 In __seccomp_filter, when seccomp rejected this sysc=
-all with
-> specified errno, they will set a0 to return number as syscall ABI, and th=
-en
-> return -1. This return number is finally pass as return number of
-> syscall_enter_from_user_mode, and then is compared with NR_syscalls after
-> converted to ulong (so it will be ULONG_MAX). The condition
-> syscall < NR_syscalls will always be false, so regs->a0 =3D -ENOSYS is al=
-ways
-> executed. It covered a0 set by seccomp, so we always get ENOSYS when matc=
-h
-> seccomp RET_ERRNO rule.
->
-> Fixes: f0bddf50586d ("riscv: entry: Convert to generic entry")
-> Reported-by: Felix Yan <felixonmars@archlinux.org>
-> Co-developed-by: Ruizhe Pan <c141028@gmail.com>
-> Signed-off-by: Ruizhe Pan <c141028@gmail.com>
-> Co-developed-by: Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-> Signed-off-by: Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-> Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
-> Tested-by: Felix Yan <felixonmars@archlinux.org>
+On Fri, Jul 21, 2023 at 09:01:03AM -0700, Guenter Roeck wrote:
 
-With this patch I can use groupmod, groupadd, usermod, useradd etc.
-inside systemd-nspawn again. Thanks!
-Tested-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> Dan, let me know if you don't have time to send a proper patch.
+> I have one based on your suggestion prepared that I could send out
+> if needed.
 
-> Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
-> Reviewed-by: Guo Ren <guoren@kernel.org>
-> ---
->
-> v3 -> v4: use long instead of ulong to reduce type cast and avoid
->           implementation-defined behavior, and make the judgment of sysca=
-ll
->           invalid more explicit
-> v2 -> v3: use if-statement instead of set default value,
->           clarify the type of syscall
-> v1 -> v2: added explanation on why always got ENOSYS
->
->  arch/riscv/kernel/traps.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-> index f910dfccbf5d2..729f79c97e2bf 100644
-> --- a/arch/riscv/kernel/traps.c
-> +++ b/arch/riscv/kernel/traps.c
-> @@ -297,7 +297,7 @@ asmlinkage __visible __trap_section void do_trap_brea=
-k(struct pt_regs *regs)
->  asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs =
-*regs)
->  {
->         if (user_mode(regs)) {
-> -               ulong syscall =3D regs->a7;
-> +               long syscall =3D regs->a7;
->
->                 regs->epc +=3D 4;
->                 regs->orig_a0 =3D regs->a0;
-> @@ -306,9 +306,9 @@ asmlinkage __visible __trap_section void do_trap_ecal=
-l_u(struct pt_regs *regs)
->
->                 syscall =3D syscall_enter_from_user_mode(regs, syscall);
->
-> -               if (syscall < NR_syscalls)
-> +               if (syscall >=3D 0 && syscall < NR_syscalls)
->                         syscall_handler(regs, syscall);
-> -               else
-> +               else if (syscall !=3D -1)
->                         regs->a0 =3D -ENOSYS;
->
->                 syscall_exit_to_user_mode(regs);
-> --
-> 2.41.0
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+I sent it but, aww crud, I forgot to CC you.  Really, get_maintainer.pl
+should add everyone from the tag section to the CC list...
+
+https://lore.kernel.org/all/58f12a07-5f4b-4a8f-ab84-0a42d1908cb9@moroto.mountain/
+
+regards,
+dan carpenter
+
