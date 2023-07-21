@@ -2,170 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF9B75CC20
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A2B75CC26
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbjGUPk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        id S231681AbjGUPlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbjGUPkY (ORCPT
+        with ESMTP id S230353AbjGUPlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:40:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D211BF7;
-        Fri, 21 Jul 2023 08:40:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B870761CAD;
-        Fri, 21 Jul 2023 15:40:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A232CC433CA;
-        Fri, 21 Jul 2023 15:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689954021;
-        bh=L/8ROPKn5FRlN87/a9hvfNMvi9wPkopmqeGrLx/LYvE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RbGHQxLzzcyM3GtLL7UE2QCJDHJhtvK+SwyVPMZgvQy5dGI1sdaVucZWNShHf0F8I
-         nm1ijlgOQkn2DVDlBEcowN0pKLflTtZAVH7TGmBfb0nuTt5JyiWmsGwgbC+iDQw4vJ
-         E79Y4YTLqARhR0XIZe+q66KZdBmIHFn3vqJpSRkc=
-Date:   Fri, 21 Jul 2023 17:40:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jirislaby@kernel.org, jringle@gridpoint.com,
-        tomasz.mon@camlingroup.com, l.perczak@camlintechnologies.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v7 5/9] serial: sc16is7xx: fix regression with GPIO
- configuration
-Message-ID: <2023072152-traffic-skype-8765@gregkh>
-References: <CAHp75VcWSVgA8LFLo0-b5TfKWdHb2GfLpXV-V3PZvthTv1Xc4A@mail.gmail.com>
- <20230620113312.882d8f0c7d5603b1c93f33fb@hugovil.com>
- <CAHp75VfGm6=ULW6kMjsg2OgB1z1T0YdmzvCTa3DFXXX-q_RnfA@mail.gmail.com>
- <20230620114209.fb5272ad8cf5c5e2895d68b1@hugovil.com>
- <CAHp75VcieuYqxWrO7rknx2ROYz=rnWnKV6s9eXZ5Zd1BKc6YMg@mail.gmail.com>
- <20230620121645.512b31a872306b43a276bbac@hugovil.com>
- <20230719144048.4f340b8aa0a29ab65a274273@hugovil.com>
- <2023071922-rigor-collage-804e@gregkh>
- <2023072040-clock-waltz-a5f2@gregkh>
- <20230721112517.38ab9a40cdf6a0eddf074615@hugovil.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230721112517.38ab9a40cdf6a0eddf074615@hugovil.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 11:41:47 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754E1E6F;
+        Fri, 21 Jul 2023 08:41:46 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 0E4933200065;
+        Fri, 21 Jul 2023 11:41:41 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Fri, 21 Jul 2023 11:41:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1689954101; x=1690040501; bh=6J
+        7BKGMI7owfks+x7fQJRcecsf8Hj64J7kF7tz1vUtc=; b=A5MleABLoFt1S/H1FX
+        lAd3hMYSivC47C1cOQ23II5KS7K3NFfO4Ta2hebV51rUfaWP5B+SqMe/ZZd1Tmus
+        nquyvl30YF60+WlzevuP1gHcb3jUUglS6LprAw/0g4gGhUTsS2GwVtNf8A8bKOzB
+        d7ycPKywidmMgZUxdZ9N6HlpVPSx8+Wa0C22mvMO6Anqi1izYc+t6S5Vo3ase3Hr
+        iEF3tWSf3pl7jSqEUX20yU5/Zp+htaDXu5vHagPp644pe8TYXpNl+2/lcSuuMWuT
+        R8QtU8GJAHn+rb7X9sDpYX/54RRWAeBd0XRZgrf+MFLNNvXqFJmNbSlcKGXFsWme
+        uLcA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689954101; x=1690040501; bh=6J7BKGMI7owfk
+        s+x7fQJRcecsf8Hj64J7kF7tz1vUtc=; b=KKFUI9USNjtZMK1UdjRiKOrASU2aB
+        UwohSbcZoSv0MovXUckWbly517ofaKs1zFVOJlQoRpKoNDE6n81yJy0HEW/Az56B
+        7Y7311UFyE/EypKG3NMS1Edd9ottFeawbysIwjTlyq9uufaAtKVWO2eLv4Iq4czx
+        1u2EBWFE1iKXplu1ETWoc33u0KtduzQssM1lns3atfH4SVDSIN9qshRYzIaq1xis
+        +WZhezXcgSr/PbyHJ5S8ZYMjMGnC+yh1ZmmX/tdfTa36ZAsrOBdV0LGRrx+RcaWV
+        4k3I+bwZmw6WubmuDLaF7LzwjFegAY7g/pmDITvpCrageJPvJ76kXzZNg==
+X-ME-Sender: <xms:NKe6ZFJ4883KwLyAS3MNwRODRbel1d6GgCQExW2GBXtZuh_1rsuOmg>
+    <xme:NKe6ZBIDUr56imC4GjQgSpH2jKn_3Dbt1-nZbnfg20GBL3tS5p4a9V08ocYnqsbeO
+    LKI9bvXRilH9PddYYk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgdekjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:NKe6ZNvSpR_w1_n2miOYV9s9Oy2ZpvME9VozPddNB-shifUX7c5Ipw>
+    <xmx:NKe6ZGb10gUS0FokO32Zwnmle5bg_T6t_hG7yVneWAJ5Z0KzLWlkYg>
+    <xmx:NKe6ZMbkl-16Z8wVJle4U2R1QnUqNbeTlAOBVl4K5_7JHlkcbP-alQ>
+    <xmx:Nae6ZMpiUann84kkg_MYKDy1mqCV6oeq0PtiXp_7ndx9EswpOi4tQQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D723FB60089; Fri, 21 Jul 2023 11:41:40 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
+Mime-Version: 1.0
+Message-Id: <2a1f8ae6-ed2b-4fe8-85af-df64e9c84794@app.fastmail.com>
+In-Reply-To: <20230721105744.022509272@infradead.org>
+References: <20230721102237.268073801@infradead.org>
+ <20230721105744.022509272@infradead.org>
+Date:   Fri, 21 Jul 2023 17:41:20 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Peter Zijlstra" <peterz@infradead.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Jens Axboe" <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, "Ingo Molnar" <mingo@redhat.com>,
+        "Darren Hart" <dvhart@infradead.org>, dave@stgolabs.net,
+        andrealmeid@igalia.com,
+        "Andrew Morton" <akpm@linux-foundation.org>, urezki@gmail.com,
+        "Christoph Hellwig" <hch@infradead.org>,
+        "Lorenzo Stoakes" <lstoakes@gmail.com>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, Linux-Arch <linux-arch@vger.kernel.org>,
+        malteskarupke@web.de
+Subject: Re: [PATCH v1 05/14] futex: Add sys_futex_wake()
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 11:25:17AM -0400, Hugo Villeneuve wrote:
-> On Thu, 20 Jul 2023 21:38:21 +0200
-> Greg KH <gregkh@linuxfoundation.org> wrote:
-> 
-> > On Wed, Jul 19, 2023 at 09:14:23PM +0200, Greg KH wrote:
-> > > On Wed, Jul 19, 2023 at 02:40:48PM -0400, Hugo Villeneuve wrote:
-> > > > On Tue, 20 Jun 2023 12:16:45 -0400
-> > > > Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > 
-> > > > > On Tue, 20 Jun 2023 18:45:51 +0300
-> > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > > 
-> > > > > > On Tue, Jun 20, 2023 at 6:42 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > > > > On Tue, 20 Jun 2023 18:35:48 +0300
-> > > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > > > > > On Tue, Jun 20, 2023 at 6:33 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > > > > > > On Tue, 20 Jun 2023 18:18:12 +0300
-> > > > > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > > > > > > > On Tue, Jun 20, 2023 at 5:08 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > > > > > > > > On Sun, 4 Jun 2023 22:31:04 +0300
-> > > > > > > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > > > 
-> > > > > > ...
-> > > > > > 
-> > > > > > > > > > > did you have a chance to look at V8 (sent two weks ago) which fixed all
-> > > > > > > > > > > of what we discussed?
-> > > > > > > > > >
-> > > > > > > > > > The patch 6 already has my tag, anything specific you want me to do?
-> > > > > > > > >
-> > > > > > > > > Hi Andy,
-> > > > > > > > > I forgot to remove your "Reviewed-by: Andy..." tag before sending V8
-> > > > > > > > > since there were some changes involved in patch 6 and I wanted you to
-> > > > > > > > > review them. Can you confirm if the changes are correct?
-> > > > > > > > >
-> > > > > > > > > I also added a new patch "remove obsolete out_thread label". It has no
-> > > > > > > > > real impact on the code generation itself, but maybe you can review and
-> > > > > > > > > confirm if tags are ok or not, based on commit message and also
-> > > > > > > > > additional commit message.
-> > > > > > > >
-> > > > > > > > Both are fine to me.
-> > > > > > >
-> > > > > > > Hi,
-> > > > > > > Ok, thank you for reviewing this.
-> > > > > > >
-> > > > > > > I guess now we are good to go with this series if the stable tags and
-> > > > > > > patches order are good after Greg's review?
-> > > > > > 
-> > > > > > Taking into account that we are at rc7, and even with Fixes tags in
-> > > > > > your series I think Greg might take this after v6.5-0rc1 is out. It's
-> > > > > > up to him how to proceed with that. Note, he usually has thousands of
-> > > > > > patches in backlog, you might need to respin it after the above
-> > > > > > mentioned rc1.
-> > > > > 
-> > > > > Ok, understood.
-> > > > > 
-> > > > > Let's wait then.
-> > > > 
-> > > > Hi Andy/Greg,
-> > > > we are now at v6.5-rc2 and I still do not see any of our patches in
-> > > > linus or gregkh_tty repos.
-> > > > 
-> > > > Is there something missing from my part (or someone else) to go forward
-> > > > with integrating these patches (v8) for v6.5?
-> > > 
-> > > My queue is huge right now, please be patient, I want to have them all
-> > > handled by the end of next week...
-> > > 
-> > > You can always help out by reviewing other patches on the mailing list
-> > > to reduce my review load.
-> > 
-> > Wait, no, this series was superseeded by v8, and in there you said you
-> > were going to send a new series.  So please, fix it up and send the
-> > updated version of the series, this one isn't going to be applied for
-> > obvious reasons.
-> 
-> Hi Greg,
-> I never said that I would resend another update for this current
-> serie (unless of course if it was to address a new comment). Re-reading
-> that email made me realise that it was maybe not perfectly clear the
-> way I wrote it.
-> 
-> What I said was that, once V8 was finally applied and
-> incorporated in the kernel, then I would send a completely new and
-> different serie to address issues/concerns/improvements/suggestions
-> noted during the review of this serie (example: conversion of bindings
-> to YAML and improve DTS node names, etc). We already agreed with some
-> maintainers (ex: Conor Dooley) that it was reasonnable to do so.
-> 
-> That is why I asked Andy if we were good to go with V8 and he
-> confirmed that, and that it was now up to you to integrate it if your
-> review was satisfactory.
-> 
-> Hope this clears things and we can integrate it soon.
+On Fri, Jul 21, 2023, at 12:22, Peter Zijlstra wrote:
+> --- a/arch/arm/tools/syscall.tbl
+> +++ b/arch/arm/tools/syscall.tbl
+> @@ -465,3 +465,4 @@
+>  449	common	futex_waitv			sys_futex_waitv
+>  450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+>  451	common	cachestat			sys_cachestat
+> +452	common	futex_wake			sys_futex_wake
 
-I don't have any of your series in my review queue at all, so please
-resend them.
+This clashes with __NR_fchmodat2 in linux-next, which also wants number 452.
 
-thanks,
+> --- a/arch/arm64/include/asm/unistd32.h
+> +++ b/arch/arm64/include/asm/unistd32.h
+> @@ -909,6 +909,8 @@ __SYSCALL(__NR_futex_waitv, sys_futex_wa
+>  __SYSCALL(__NR_set_mempolicy_home_node, sys_set_mempolicy_home_node)
+>  #define __NR_cachestat 451
+>  __SYSCALL(__NR_cachestat, sys_cachestat)
+> +#define __NR_futex_wake 452
+> +__SYSCALL(__NR_futex_wake, sys_futex_wake)
+> 
+>  /*
+>   * Please add new compat syscalls above this comment and update
 
-greg k-h
+Unfortunately, changing this file still requires updating __NR_compat_syscalls
+in arch/arm64/include/asm/unistd.h as well.
+
+> --- a/kernel/sys_ni.c
+> +++ b/kernel/sys_ni.c
+> @@ -87,6 +87,7 @@ COND_SYSCALL_COMPAT(set_robust_list);
+>  COND_SYSCALL(get_robust_list);
+>  COND_SYSCALL_COMPAT(get_robust_list);
+>  COND_SYSCALL(futex_waitv);
+> +COND_SYSCALL(futex_wake);
+>  COND_SYSCALL(kexec_load);
+>  COND_SYSCALL_COMPAT(kexec_load);
+>  COND_SYSCALL(init_module);
+
+This is fine for the moment, but I wonder if we should start making
+futex mandatory at some point. Right now, sparc32 with CONFIG_SMP
+cannot support futex because of the lack of atomics in early
+sparc processors, but sparc32 glibc actually requires futexes
+and consequently only works on uniprocessor machines, on sparc64
+compat mode, or on Leon3 with out of tree patches.
+
+      Arnd
