@@ -2,102 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AF175D06C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD50B75D06F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbjGUROL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 13:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60570 "EHLO
+        id S230128AbjGURO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 13:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjGUROJ (ORCPT
+        with ESMTP id S229942AbjGUROz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 13:14:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9B42D56;
-        Fri, 21 Jul 2023 10:14:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B64761D54;
-        Fri, 21 Jul 2023 17:14:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12DC1C433C7;
-        Fri, 21 Jul 2023 17:14:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689959646;
-        bh=TWLsMOZBMuHm+TWiIT8Y8l38aCgqHDrC5aBJ2bThEJE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aGdEfb2ftH8E/i0vC/ZB1JqEeUziZ7c42TRxjtFD5diiLKG0ju1uMBvh0lzrmhXDr
-         gHxr5rr5Quk35JiXsbBao2/5FiclQao7RNibu6eA1qA+VdstG+sL3/4Hpav5gJaEvz
-         8Lv0uQ7IqUumTxpDW7UxjH9xbA/l4eAbEVUlkGu+XhrGPpXIMGzDlTSdyIL4dBbChc
-         pmhav658j19fW0DX6bNMNBvrLVFOk2EHYXJOmX70K0z9BJe+8KQy3uNZemtsJaOv6T
-         U5fnajLJgrnvxyZY+EaEfkZnY6LCiTlCvjUX2qeTTifseIsLFzyASbhDOZKspLYax4
-         RpG1delajcQnA==
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v2] s390: use obj-y to descend into drivers/s390/
-Date:   Sat, 22 Jul 2023 02:13:58 +0900
-Message-Id: <20230721171358.3612099-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Fri, 21 Jul 2023 13:14:55 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62F52D4E
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:14:53 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b961822512so32793591fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:14:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689959692; x=1690564492;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9K5VHhZFEzQffhn522CBvGHgBcaIDvu9FEQtTEAlvh8=;
+        b=v9suOoHBlIk67EKDKPqWLhrvssc3VmdYen5EzwX5m/TcUyTOkr+Ok1N1Qaa2m2hhVU
+         dqHw3CQNBMJ741j1Q41aKPaQP8tzE+Ad/rNDqGHrMjkShpnw72khf+y+t5siZc4LowW8
+         oTLzbsiQo87tyS4+gTUmElWm6wi61LFe0O8IY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689959692; x=1690564492;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9K5VHhZFEzQffhn522CBvGHgBcaIDvu9FEQtTEAlvh8=;
+        b=Jm1Mt9NLAq7aVMVzNMrfpouHCU8NfC3mwQssUd/veHt/AP5sbGGOyv4KpqGd+WddfH
+         R9LMCYdrcar8pZZylVJCrzBGGojkSzo7LkGoThcl7o23JwkJ4PIdSESoUbUdvCoFBViw
+         3hrvrrIg1snHlw4nL9BcNRaVFw0onbgASTKIryqQNTmxxI6sTAsaPwbmO1I/UwZE5qdW
+         JDuxNRnRKuY0keZb1WbXrW0inNYd7dUJPCev1z4CpnPzDFZfr+I1nT5cdEvrWty5bqw/
+         xg22MoQ7XubbdJJcctK4O5MLzGig697/h29JXCO7C81Fsar1azjtmsuZI6IhRliIfl7o
+         0jgg==
+X-Gm-Message-State: ABy/qLbBNf6HWawmuUtn8ZHliwklShufgIJilhNI4OfLrByqC44rGpWd
+        YENXdZBGaUp2uZFKQrygSDxrEW4vndv3n1aSadTNnQ==
+X-Google-Smtp-Source: APBJJlFcu8j3/DkgCopyZdnnpMfBq1CbxSvKbDwtsMsSsOQpSDKDCSmQi43l3aGLy2W0gXu1smDknxyIQxjYzck0H0o=
+X-Received: by 2002:a05:651c:205:b0:2b5:9f54:e290 with SMTP id
+ y5-20020a05651c020500b002b59f54e290mr1980021ljn.0.1689959691909; Fri, 21 Jul
+ 2023 10:14:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
+ <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org> <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+ <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org> <962bb2b940e64e7da7b71d11b307defc@AcuMS.aculab.com>
+In-Reply-To: <962bb2b940e64e7da7b71d11b307defc@AcuMS.aculab.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 21 Jul 2023 13:14:40 -0400
+Message-ID: <CAEXW_YS_raHUrvVAFPpnhL2PRH0hkcqT=1hD+gQOg_cMLkGrjQ@mail.gmail.com>
+Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Alan Huang <mmpgouride@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The single build rule does not work with the drivers-y syntax. [1]
+On Fri, Jul 21, 2023 at 11:59=E2=80=AFAM David Laight <David.Laight@aculab.=
+com> wrote:
+>
+> ....
+> > Right, it shouldn't need to cache. To Eric's point it might be risky to=
+ remove
+> > the barrier() and someone needs to explain that issue first (or IMO the=
+re needs
+> > to be another tangible reason like performance etc). Anyway, FWIW I wro=
+te a
+> > simple program and I am not seeing the head->first cached with the patt=
+ern you
+> > shared above:
+> >
+> > #include <stdlib.h>
+> >
+> > #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+> > #define barrier() __asm__ __volatile__("": : :"memory")
+> >
+> > typedef struct list_head {
+> >      int first;
+> >      struct list_head *next;
+> > } list_head;
+> >
+> > int main() {
+> >      list_head *head =3D (list_head *)malloc(sizeof(list_head));
+> >      head->first =3D 1;
+> >      head->next =3D 0;
+> >
+> >      READ_ONCE(head->first);
+> >      barrier();
+> >      READ_ONCE(head->first);
+> >
+> >      free(head);
+> >      return 0;
+> > }
+>
+> You probably need to try harder to generate the error.
+> It probably has something to do code surrounding the
+> sk_nulls_for_each_rcu() in the ca065d0c^ version of udp.c.
+>
+> That patch removes the retry loop - and probably breaks udp receive.
+> The issue is that sockets can be moved between the 'hash2' chains
+> (eg by connect()) without being freed.
 
-Use the standard obj-y syntax. It moves the objects from drivers/s390/
-to slightly lower address, but fixes the reported issue.
+I was just replying to Alan's question on the behavior of READ_ONCE()
+since I myself recently got surprised by compiler optimizations
+related to it. I haven't looked into the actual UDP code.
 
-[1]: https://lore.kernel.org/linux-kbuild/d57ba55f-20a3-b836-783d-b49c8a161b6e@kernel.org/T/#m27f781ab60acadfed8a9e9642f30d5414a5e2df3
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Tested-by: Jiri Slaby <jirislaby@kernel.org>
----
-
-Changes in v2:
-  - rephase the commit log
-
- arch/s390/Makefile | 1 -
- drivers/Makefile   | 2 ++
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/s390/Makefile b/arch/s390/Makefile
-index 5ed242897b0d..a53a36ee0731 100644
---- a/arch/s390/Makefile
-+++ b/arch/s390/Makefile
-@@ -119,7 +119,6 @@ export KBUILD_CFLAGS_DECOMPRESSOR
- OBJCOPYFLAGS	:= -O binary
- 
- libs-y		+= arch/s390/lib/
--drivers-y	+= drivers/s390/
- 
- boot		:= arch/s390/boot
- syscalls	:= arch/s390/kernel/syscalls
-diff --git a/drivers/Makefile b/drivers/Makefile
-index 7241d80a7b29..a7459e77df37 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -195,3 +195,5 @@ obj-$(CONFIG_PECI)		+= peci/
- obj-$(CONFIG_HTE)		+= hte/
- obj-$(CONFIG_DRM_ACCEL)		+= accel/
- obj-$(CONFIG_CDX_BUS)		+= cdx/
-+
-+obj-$(CONFIG_S390)		+= s390/
--- 
-2.39.2
-
+ - Joel
