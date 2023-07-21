@@ -2,186 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD66875C960
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F7775C96F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbjGUOOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38670 "EHLO
+        id S231754AbjGUOOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231785AbjGUONw (ORCPT
+        with ESMTP id S231641AbjGUOOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:13:52 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD0330DA;
-        Fri, 21 Jul 2023 07:13:44 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-997c4107d62so286616366b.0;
-        Fri, 21 Jul 2023 07:13:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689948823; x=1690553623;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jTiZKWG+Cif6uSGkqVpSsZKmtuHMIC5BZBRXp3RaZY0=;
-        b=bSgkkzhG7An9AVoKrMumbL9xiXL380xIZJEvmrmx9U5srM+FpnU6DcxDMgm07mM13S
-         aJ5Shp3X2vMXjR7LimidZ7jIBh0VSrmUVHMIp/qymsNfJ+UuAa+kuh8JjfQ9YIIyEjkN
-         pUANto3pLHm7EJFSmodEypW4yQO45th4XEXHDTgV+nTSmFasovRamFUpw18jONRUL7V1
-         z19+OTH9uMgrSZEgiBUlP7c57WePcxTEn8bsEuLdB8msbWseXQm8tkIudZ40bLgpjSAh
-         Mf9vFF5kMUbeQmOCtDLMTtrlIDTbbzcM2vhoEe1Rtl4YD96AmuH165lnh4fp7pTBJ1+Q
-         Vowg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689948823; x=1690553623;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jTiZKWG+Cif6uSGkqVpSsZKmtuHMIC5BZBRXp3RaZY0=;
-        b=Z52KEp7IrdrSmNAhf7GlUNum+I2HIaMjUhMA2V31aBtwk5iS/NrRi+uszLg/OPjBWE
-         1UjE7ULygVFQFKiN+PNN+m1/hfsjTHgN89be0872M8kTopj5SeOSzVMHlj4I4SWBocAz
-         hxW7OOG4fxHb0KttUWJqOif+rl5CuvgW+/U1vXSZBXSuspzVFQB//oEJQLXzNhAsGKTH
-         3RSe8luDjNAk/AOZrG458X/Znw9Qr1Zimxdaoz7UIlaU3BKwvHIBVEQoE4YcR8pL8lbX
-         ja/PAZYmWoKhEEdZO/5x9aXgy3hZxJbaHJ8u5IQGEEus2U2+ScxaJqnfd+kAfF8X0e+7
-         Mc0Q==
-X-Gm-Message-State: ABy/qLbaKBFR90bFgb5U8nk46U8muuY80LSIjqN1GgE9wRh6LlXfINex
-        0IA7zlF3JwWJb/89xgRsDdc=
-X-Google-Smtp-Source: APBJJlENisEswjkwjMzFaJUMeB0ZRr5qmTZQOFikJvyqr9lFw+jEk4LumhWtwqhqMCkGqCil+5TJOw==
-X-Received: by 2002:a17:906:5386:b0:974:771e:6bf0 with SMTP id g6-20020a170906538600b00974771e6bf0mr1626532ejo.56.1689948822336;
-        Fri, 21 Jul 2023 07:13:42 -0700 (PDT)
-Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id mc13-20020a170906eb4d00b00988c0c175c6sm2213577ejb.189.2023.07.21.07.13.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 07:13:41 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 21 Jul 2023 16:13:39 +0200
-To:     Baoquan He <bhe@redhat.com>, Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v8 1/4] fs/proc/kcore: avoid bounce buffer for ktext data
-Message-ID: <ZLqSk0KgEiqn/9AA@krava>
-References: <cover.1679566220.git.lstoakes@gmail.com>
- <fd39b0bfa7edc76d360def7d034baaee71d90158.1679566220.git.lstoakes@gmail.com>
- <ZHc2fm+9daF6cgCE@krava>
- <ZLqMtcPXAA8g/4JI@MiWiFi-R3L-srv>
+        Fri, 21 Jul 2023 10:14:18 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5A32D45;
+        Fri, 21 Jul 2023 07:14:14 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="351909950"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="351909950"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 07:14:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="794968734"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="794968734"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Jul 2023 07:13:59 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andy@kernel.org>)
+        id 1qMqtH-007oK8-1x;
+        Fri, 21 Jul 2023 17:13:55 +0300
+Date:   Fri, 21 Jul 2023 17:13:55 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     nikita.shubin@maquefel.me
+Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Michael Peters <mpeters@embeddedts.com>,
+        Kris Bahnsen <kris@embeddedts.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v3 07/42] soc: Add SoC driver for Cirrus ep93xx
+Message-ID: <ZLqSo6B5cJXVRJS/@smile.fi.intel.com>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-7-3d63a5f1103e@maquefel.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZLqMtcPXAA8g/4JI@MiWiFi-R3L-srv>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <20230605-ep93xx-v3-7-3d63a5f1103e@maquefel.me>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 09:48:37PM +0800, Baoquan He wrote:
-> Hi Jiri,
+On Thu, Jul 20, 2023 at 02:29:07PM +0300, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
 > 
-> On 05/31/23 at 01:58pm, Jiri Olsa wrote:
-> > On Thu, Mar 23, 2023 at 10:15:16AM +0000, Lorenzo Stoakes wrote:
-> > > Commit df04abfd181a ("fs/proc/kcore.c: Add bounce buffer for ktext data")
-> > > introduced the use of a bounce buffer to retrieve kernel text data for
-> > > /proc/kcore in order to avoid failures arising from hardened user copies
-> > > enabled by CONFIG_HARDENED_USERCOPY in check_kernel_text_object().
-> > > 
-> > > We can avoid doing this if instead of copy_to_user() we use _copy_to_user()
-> > > which bypasses the hardening check. This is more efficient than using a
-> > > bounce buffer and simplifies the code.
-> > > 
-> > > We do so as part an overall effort to eliminate bounce buffer usage in the
-> > > function with an eye to converting it an iterator read.
-> > > 
-> > > Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> > > Reviewed-by: David Hildenbrand <david@redhat.com>
-> > 
-> > hi,
-> > sorry for late feedback, but looks like this one breaks reading
-> > /proc/kcore with objdump for me:
-> > 
-> >   # cat /proc/kallsyms | grep ksys_read
-> >   ffffffff8150ebc0 T ksys_read
-> >   # objdump -d  --start-address=0xffffffff8150ebc0 --stop-address=0xffffffff8150ebd0 /proc/kcore 
-> > 
-> >   /proc/kcore:     file format elf64-x86-64
-> > 
-> >   objdump: Reading section load1 failed because: Bad address
-> > 
-> > reverting this makes it work again
+> This adds an SoC driver for the ep93xx. Currently there
+> is only one thing not fitting into any other framework,
+> and that is the swlock setting.
 > 
-> I met this too when I executed below command to trigger a kcore reading.
-> I wanted to do a simple testing during system running and got this.
-> 
->   makedumpfile --mem-usage /proc/kcore
-> 
-> Later I tried your above objdump testing, it corrupted system too.
-> 
-> Is there any conclusion about this issue you reported? I could miss
-> things in the discussion or patch posting to fix this.
+> It's used for clock settings and restart.
 
-hi,
-thanks for your reply, I meant to ping on this again
+> +#include <linux/clk-provider.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/of.h>
+> +#include <linux/regmap.h>
+> +#include <linux/slab.h>
+> +#include <linux/sys_soc.h>
+> +#include <linux/soc/cirrus/ep93xx.h>
 
-AFAIK there was no answer yet.. I managed to cleanly revert the patch when
-I needed the functionality, then got sidetracked and forgot about this
+...
 
-I just re-tested and it's still failing for me, would be great to get it fixed
+> +#define EP93XX_SYSCON_SYSCFG_REV_MASK	0xf0000000
 
-Lorenzo, any idea?
+GENMASK() (you will need bits.h, and looking below you seem missed it anyway)
 
-thanks,
-jirka
+...
+
+> +	spin_lock_irqsave(&ep93xx_swlock, flags);
+> +
+> +	regmap_read(map, EP93XX_SYSCON_DEVCFG, &val);
+> +	val &= ~clear_bits;
+> +	val |= set_bits;
+> +	regmap_write(map, EP93XX_SYSCON_SWLOCK, EP93XX_SWLOCK_MAGICK);
+> +	regmap_write(map, EP93XX_SYSCON_DEVCFG, val);
+
+Is this sequence a must?
+I.o.w. can you first supply magic and then update devcfg?
+
+> +	spin_unlock_irqrestore(&ep93xx_swlock, flags);
+
+...
+
+> +void ep93xx_swlocked_update_bits(struct regmap *map, unsigned int reg,
+> +				 unsigned int mask, unsigned int val)
+> +{
+
+Same Q as above.
+
+> +}
+
+...
+
+> +	int rev = ep93xx_chip_revision(map);
+> +
+> +	switch (rev) {
+
+	switch(ep93xx_chip_revision(map))
+
+?
+
+> +	case EP93XX_CHIP_REV_D0:
+> +		return "D0";
+> +	case EP93XX_CHIP_REV_D1:
+> +		return "D1";
+> +	case EP93XX_CHIP_REV_E0:
+> +		return "E0";
+> +	case EP93XX_CHIP_REV_E1:
+> +		return "E1";
+> +	case EP93XX_CHIP_REV_E2:
+> +		return "E2";
+> +	default:
+> +		return "unknown";
+> +	}
+
+...
+
+> +static unsigned long __init calc_pll_rate(u64 rate, u32 config_word)
+> +{
+> +	rate *= ((config_word >> 11) & GENMASK(4, 0)) + 1;	/* X1FBD */
+> +	rate *= ((config_word >> 5) & GENMASK(5, 0)) + 1;	/* X2FBD */
+> +	do_div(rate, (config_word & GENMASK(4, 0)) + 1);	/* X2IPD */
+> +	rate >>= ((config_word >> 16) & 3);			/* PS */
+
+GENMASK()
+
+> +	return rate;
+> +}
+
+...
+
+> +	/* Multiplatform guard, only proceed on ep93xx */
+> +	if (!of_machine_is_compatible("cirrus,ep9301"))
+> +		return 0;
+
+Why?
+
+> +	map = syscon_regmap_lookup_by_compatible("cirrus,ep9301-syscon");
+> +	if (IS_ERR(map))
+> +		return PTR_ERR(map);
+
+Is this not enough?
+
+...
+
+> +	if (!(value & EP93XX_SYSCON_CLKSET1_NBYP1))
+> +		clk_pll1_rate = EP93XX_EXT_CLK_RATE;
+> +	else
+> +		clk_pll1_rate = calc_pll_rate(EP93XX_EXT_CLK_RATE, value);
+
+Positive conditionals in if-else are easier to be read.
+
+...
+
+> +	clk_f_div = fclk_divisors[(value >> 25) & 0x7];
+> +	clk_h_div = hclk_divisors[(value >> 20) & 0x7];
+> +	clk_p_div = pclk_divisors[(value >> 18) & 0x3];
+
+GENMASK() in all three?
+
+...
+
+> +	np = of_find_node_by_path("/");
+> +	of_property_read_string(np, "model", &machine);
+> +	if (machine)
+> +		attrs->machine = kstrdup(machine, GFP_KERNEL);
+
+No error check?
+
+> +	of_node_put(np);
+
+Looks like NIH of_flat_dt_get_machine_name(). Can you rather make use of it as
+it's done, e.g., here arch/riscv/kernel/setup.c:251?
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-> 
-> Thanks
-> Baoquan
-> 
-> > 
-> > 
-> > > ---
-> > >  fs/proc/kcore.c | 17 +++++------------
-> > >  1 file changed, 5 insertions(+), 12 deletions(-)
-> > > 
-> > > diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-> > > index 71157ee35c1a..556f310d6aa4 100644
-> > > --- a/fs/proc/kcore.c
-> > > +++ b/fs/proc/kcore.c
-> > > @@ -541,19 +541,12 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
-> > >  		case KCORE_VMEMMAP:
-> > >  		case KCORE_TEXT:
-> > >  			/*
-> > > -			 * Using bounce buffer to bypass the
-> > > -			 * hardened user copy kernel text checks.
-> > > +			 * We use _copy_to_user() to bypass usermode hardening
-> > > +			 * which would otherwise prevent this operation.
-> > >  			 */
-> > > -			if (copy_from_kernel_nofault(buf, (void *)start, tsz)) {
-> > > -				if (clear_user(buffer, tsz)) {
-> > > -					ret = -EFAULT;
-> > > -					goto out;
-> > > -				}
-> > > -			} else {
-> > > -				if (copy_to_user(buffer, buf, tsz)) {
-> > > -					ret = -EFAULT;
-> > > -					goto out;
-> > > -				}
-> > > +			if (_copy_to_user(buffer, (char *)start, tsz)) {
-> > > +				ret = -EFAULT;
-> > > +				goto out;
-> > >  			}
-> > >  			break;
-> > >  		default:
-> > > -- 
-> > > 2.39.2
-> > > 
-> > 
-> 
