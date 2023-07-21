@@ -2,157 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 467D475C0EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C13E75C100
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbjGUIKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56378 "EHLO
+        id S230368AbjGUIOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbjGUIKd (ORCPT
+        with ESMTP id S229729AbjGUIN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:10:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B11B2706;
-        Fri, 21 Jul 2023 01:10:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7142661713;
-        Fri, 21 Jul 2023 08:10:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44D74C43395;
-        Fri, 21 Jul 2023 08:10:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689927030;
-        bh=JltdfULPxWz8Dlw+w3aZFp6VjNTiHDJDfEr7o9YRNs4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=niUdYILFYdemwUU0w/emWHL8ztgfvInBdEat9aHRd7SwlIqHTIeGzYpF174Vi6V5L
-         n9CCNBAXoQ2aO/p0ys56jYcNJBD6A0PPXHRHEu6Na3ezoZgAEn+/JeHdqTZSyanaBC
-         dUuf/2m/ZbvUz1gulF37zc0XJIA9CtYOguQU0AqGBuXXOvoqXVDiWRio59rmzkGcAI
-         zD/SFytbZB0b9twHz38q/BkleTqEiW9Vfh0c0hb4pN5iqXVl62t7tY6CIX4odkkvzZ
-         laeC+dmsdiHQsF1Av48sXPL1cOfNCMnjzGcdDWli/IK9oQ1dD+A8AIRqZDqAmR8ie1
-         pkvdh3FvzASwA==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qMlDi-0003M5-2u;
-        Fri, 21 Jul 2023 10:10:38 +0200
-Date:   Fri, 21 Jul 2023 10:10:38 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, quic_harshq@quicinc.com,
-        ahalaney@redhat.com, quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v9 01/10] dt-bindings: usb: qcom,dwc3: Add bindings for
- SC8280 Multiport
-Message-ID: <ZLo9flzTCha5iU-K@hovoldconsulting.com>
-References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
- <20230621043628.21485-2-quic_kriskura@quicinc.com>
- <ZJrGG6FXWLacRLbg@hovoldconsulting.com>
- <ZJsCf3nYrikF7nZc@hovoldconsulting.com>
- <548e35a7-984d-a62f-ea4b-a5aeace8009a@quicinc.com>
+        Fri, 21 Jul 2023 04:13:58 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963782708;
+        Fri, 21 Jul 2023 01:13:57 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fdd14c1fbfso2675098e87.1;
+        Fri, 21 Jul 2023 01:13:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689927236; x=1690532036;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yYe6nFf1Fg/E2zN93SnKee2EKKNwvg4JPl5fMA3VVG8=;
+        b=qesp3CNk/Kaby1oOM+4Mfq2Dw+MTDE9+R2616ksyRNgIGwEtmGK1BIdEaKbbskkUHL
+         Bu9vP4+Fkg/BjxSA0ojTNEasmXIwAuip3gbNGlvx6Bn397scWpKoYNMrU0vqGLaoLawc
+         JhGjdODAjXvryKx8qTYD89yGRkVEAzhgDxgFyaTPk4miXmD/pqgATSR0xsURYK1Byyiv
+         SniAf8g7Fhr0wUmeggPLnnSLldpasghB9TPy7QUB0f7ZftXS+S2mUWFf2ClHkWnvymmc
+         cu5KohhVhCFSE8i6rMRwYyCDZgzk7+s3yCv1TbF1U3xK4Om45ajovEFDk2er23u1yRcl
+         uOtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689927236; x=1690532036;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yYe6nFf1Fg/E2zN93SnKee2EKKNwvg4JPl5fMA3VVG8=;
+        b=MIxSCepIW7twDNVBPwIjpMAdvqD1DiT/J3kUgoVfHOlOVXiA5YJsxIdfFaWHGJWAZ2
+         cPQigyzY5lb1/wVoorJOji+UoPpqp2DZJ+miYGkawMtlkH6sNkIRclJnZotHllw4VQSs
+         wSCIg3PzjOiBpMhnq3qpwtp4+H/kIdqAYemxrpIx+ozwuas53qVNSdHmTfm4d+n0P7di
+         ImAwsXuOCvrQR8wA1FD7+Hk4lZMPJ6FsqE6icipC9yW0WCzVmJFA95bxjyqTbLcOBSYR
+         ZjndhLmQE4fRcRPJEx5YrDazIAj0ZP7oQFg6eaLzm5k34U3ZC08i/7vneqsu5xeLQc78
+         WvNQ==
+X-Gm-Message-State: ABy/qLajqEV/ZyolAndh2NwHm9EyCBiCwcI8KR/7repfvyJmOiaU7rQ5
+        8GsruuOP2R9Oadm99WgxFzVXLC9K/XCcaw==
+X-Google-Smtp-Source: APBJJlFpTE1Yeu/FApmOfFcPQWS10aORSCq/Co/nDyHcgcgJzPdzVQ4G6l/1ZnZDxZ7BtGDFNqYSsA==
+X-Received: by 2002:ac2:4f13:0:b0:4f9:5711:2eb6 with SMTP id k19-20020ac24f13000000b004f957112eb6mr941058lfr.28.1689927235525;
+        Fri, 21 Jul 2023 01:13:55 -0700 (PDT)
+Received: from localhost.localdomain ([109.0.170.37])
+        by smtp.gmail.com with ESMTPSA id 19-20020a05600c229300b003fb40f5f553sm5677049wmf.31.2023.07.21.01.13.54
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 21 Jul 2023 01:13:55 -0700 (PDT)
+From:   Florent CARLI <fcarli@gmail.com>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Florent CARLI <fcarli@gmail.com>,
+        Yoann Congal <yoann.congal@smile.fr>
+Subject: [PATCH] watchdog: advantech_ec_wdt: fix Kconfig dependencies
+Date:   Fri, 21 Jul 2023 10:13:47 +0200
+Message-Id: <20230721081347.52069-1-fcarli@gmail.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <548e35a7-984d-a62f-ea4b-a5aeace8009a@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 03, 2023 at 12:41:59AM +0530, Krishna Kurapati PSSNV wrote:
-> On 6/27/2023 9:08 PM, Johan Hovold wrote:
-> > On Tue, Jun 27, 2023 at 01:20:59PM +0200, Johan Hovold wrote:
-> >> On Wed, Jun 21, 2023 at 10:06:19AM +0530, Krishna Kurapati wrote:
-> > 
-> >>> +          items:
-> >>> +            - const: dp1_hs_phy_irq
-> >>> +            - const: dm1_hs_phy_irq
-> >>> +            - const: dp2_hs_phy_irq
-> >>> +            - const: dm2_hs_phy_irq
-> >>> +            - const: dp3_hs_phy_irq
-> >>> +            - const: dm4_hs_phy_irq
-> >>> +            - const: dp4_hs_phy_irq
-> >>> +            - const: dm4_hs_phy_irq
-> >>> +            - const: ss1_phy_irq
-> >>> +            - const: ss2_phy_irq
-> >>> +            - const: pwr_event_1
-> >>> +            - const: pwr_event_2
-> >>> +            - const: pwr_event_3
-> >>> +            - const: pwr_event_4
-> >>
-> >> The naming here is inconsistent and interrupts should not have "_irq"
-> >> suffixes (even if some of the current ones do for historical reasons).
-> >>
-> >> I believe these should be named
-> >>
-> >> 	pwr_event_1
-> >> 	dp_hs_phy_1
-> >> 	dm_hs_phy_1
-> >> 	ss_phy_1
-> >>
-> >> 	pwr_event_2
-> >> 	dp_hs_phy_2
-> >> 	dm_hs_phy_2
-> >> 	ss_phy_2
-> >>
-> >> 	pwr_event_3
-> >> 	dp_hs_phy_3
-> >> 	dm_hs_phy_3
-> >>
-> >> 	pwr_event_4
-> >> 	dp_hs_phy_4
-> >> 	dm_hs_phy_4
-> >>
-> >> or similar and be grouped by port while using the the
-> >> qcom,sc8280xp-dwc ordering for the individual lines.
-> > 
-> > Perhaps the ordering you suggested is fine too, but I'd probably move
-> > the pwr_event ones first to match qcom,sc8280xp-dwc then, that is:
-> > 
-> >   	pwr_event_1
-> >   	pwr_event_2
-> >   	pwr_event_3
-> >   	pwr_event_4
-> >   	dp_hs_phy_1
-> >   	dm_hs_phy_1
-> >   	dp_hs_phy_2
-> >   	dm_hs_phy_2
-> >   	dp_hs_phy_3
-> >   	dm_hs_phy_3
-> >   	dp_hs_phy_4
-> >   	dm_hs_phy_4
-> >   	ss_phy_1
-> >   	ss_phy_2
-> > 
-> > so we have them grouped as pwr_event followed by HS and with SS last.
-> > 
-> >> Side note: Please note how the above interrupt properties can also be
-> >> used to infer the number of HS and SS ports.
+This driver uses the WATCHDOG_CORE framework and ISA_BUS_API.
+This commit has these dependencies correctly selected.
 
-> Can't we just cleanup all at once later ? Might not be a good idea for 
-> some properties in the file to have _irq and for some to not have it. I 
-> will modify the order though.
+Signed-off-by: Florent CARLI <fcarli@gmail.com>
+Co-authored-by: Yoann Congal <yoann.congal@smile.fr>
+---
+ drivers/watchdog/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-No, DT bindings generally need to be as correct as possible from the
-start as they form an ABI. So please drop the _irq suffix from all of
-the new indexed names.
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index ee97d89dfc11..2108283b438c 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -1075,6 +1075,8 @@ config ADVANTECH_WDT
+ config ADVANTECH_EC_WDT
+ 	tristate "Advantech Embedded Controller Watchdog Timer"
+ 	depends on X86
++	select ISA_BUS_API
++	select WATCHDOG_CORE
+ 	help
+ 		This driver supports Advantech products with ITE based Embedded Controller.
+ 		It does not support Advantech products with other ECs or without EC.
+-- 
+2.39.2 (Apple Git-143)
 
-Johan
