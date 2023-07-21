@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0AC75C578
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D655E75C579
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbjGULI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 07:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
+        id S231637AbjGULJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 07:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbjGULIE (ORCPT
+        with ESMTP id S231916AbjGULIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 07:08:04 -0400
+        Fri, 21 Jul 2023 07:08:06 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8D0449A
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 04:04:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A2730E2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 04:04:34 -0700 (PDT)
 Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
         by metis.ext.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <m.felsch@pengutronix.de>)
-        id 1qMnvK-0000Ly-Jj; Fri, 21 Jul 2023 13:03:50 +0200
+        id 1qMnvL-0000Ly-A7; Fri, 21 Jul 2023 13:03:51 +0200
 From:   Marco Felsch <m.felsch@pengutronix.de>
 To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
         pabeni@redhat.com, robh+dt@kernel.org,
@@ -28,10 +28,12 @@ To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
 Cc:     devicetree@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel@pengutronix.de,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH net-next v4 1/3] dt-bindings: net: snps,dwmac: add phy-supply support
-Date:   Fri, 21 Jul 2023 13:03:43 +0200
-Message-Id: <20230721110345.3925719-1-m.felsch@pengutronix.de>
+Subject: [PATCH net-next v4 2/3] net: stmmac: introduce small helper to check STMMAC_FLAG_USE_PHY_WOL
+Date:   Fri, 21 Jul 2023 13:03:44 +0200
+Message-Id: <20230721110345.3925719-2-m.felsch@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230721110345.3925719-1-m.felsch@pengutronix.de>
+References: <20230721110345.3925719-1-m.felsch@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::28
@@ -47,37 +49,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the common phy-supply property to be able to specify a phy
-regulator.
+Add a convenient helper to make it easier to check the
+STMMAC_FLAG_USE_PHY_WOL flag which is useful for the follow up commit.
 
 Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
 Changelog:
 v4:
-- no changes
-v3:
-- no changes
-v2
-- add ack-by
+- new patch
 
- Documentation/devicetree/bindings/net/snps,dwmac.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-index ddf9522a5dc23..847ecb82b37ee 100644
---- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-+++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-@@ -160,6 +160,9 @@ properties:
-       can be passive (no SW requirement), and requires that the MAC operate
-       in a different mode than the PHY in order to function.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index e7ca52f0d2f2d..add271ec8d801 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -6949,6 +6949,11 @@ static void stmmac_service_task(struct work_struct *work)
+ 	clear_bit(STMMAC_SERVICE_SCHED, &priv->state);
+ }
  
-+  phy-supply:
-+    description: PHY regulator
++static bool stmmac_use_phy_wol(struct stmmac_priv *priv)
++{
++	return priv->plat->flags & STMMAC_FLAG_USE_PHY_WOL;
++}
 +
-   snps,axi-config:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description:
+ /**
+  *  stmmac_hw_init - Init the MAC device
+  *  @priv: driver private structure
+@@ -6983,7 +6988,7 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
+ 		 */
+ 		priv->plat->enh_desc = priv->dma_cap.enh_desc;
+ 		priv->plat->pmt = priv->dma_cap.pmt_remote_wake_up &&
+-				!(priv->plat->flags & STMMAC_FLAG_USE_PHY_WOL);
++				!stmmac_use_phy_wol(priv);
+ 		priv->hw->pmt = priv->plat->pmt;
+ 		if (priv->dma_cap.hash_tb_sz) {
+ 			priv->hw->multicast_filter_bins =
 -- 
 2.39.2
 
