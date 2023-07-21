@@ -2,146 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B670B75BBEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 03:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D289B75BBFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 03:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbjGUBoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 21:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
+        id S229945AbjGUBqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 21:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGUBog (ORCPT
+        with ESMTP id S229924AbjGUBqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 21:44:36 -0400
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net (zg8tmja2lje4os4yms4ymjma.icoremail.net [206.189.21.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 99ED72106;
-        Thu, 20 Jul 2023 18:44:32 -0700 (PDT)
-Received: from localhost.localdomain (unknown [39.174.92.167])
-        by mail-app4 (Coremail) with SMTP id cS_KCgBHTQ3s4rlksajGCQ--.42906S4;
-        Fri, 21 Jul 2023 09:44:13 +0800 (CST)
-From:   Lin Ma <linma@zju.edu.cn>
-To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Lin Ma <linma@zju.edu.cn>
-Subject: [PATCH v1] xfrm: add NULL check in xfrm_update_ae_params
-Date:   Fri, 21 Jul 2023 09:44:11 +0800
-Message-Id: <20230721014411.2407082-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgBHTQ3s4rlksajGCQ--.42906S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZFyrGF1rGr1fWF4Dtr4fXwb_yoWrGF1UpF
-        W5Kw4jkr4rXr1UZr4UJr1aqr1jvF48ZF1DCr93Xr1FyFy5Grn5WFyUJ3yUurykArWDAFy7
-        J3W5tr18tw1YkaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
-        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-        14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 20 Jul 2023 21:46:04 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499413592;
+        Thu, 20 Jul 2023 18:45:40 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5E2B85C01A8;
+        Thu, 20 Jul 2023 21:45:39 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 20 Jul 2023 21:45:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689903939; x=1689990339; bh=iYynT4KhE74j+
+        dSXMjtfN0JZs/wjEjd9JxVM4ynGFAE=; b=snXEv978O7wJ+SWzOrOYXBJpCY1Ie
+        B7BnmXfkr0COvcfnfRvjPvrQ7k59wxUHAgyOV77x6Yvl3u1I+7hMa8XTUuAgbo92
+        3D89fQUfzL5YfpxaBzBik3Lf2ffm2REX9mKVdIpAJaF72okvSWcjSvRk+5QzUAN2
+        /B6CdJ2KB9adOss522i41brkFR5p9sBwDirIdr2HCAch4eSOP+rMvGL5SVsSetdg
+        pC/hep6ZedWP9lDoNlcTt5rgyuk3i45QMLqJ2v/ely4QjXoUieSdj95u5fbNcnx5
+        MrAjHSbAetlZUpbaniCZjZ64Nf202pz+6qJejPl9dWPoxuzmj1GMpaBVQ==
+X-ME-Sender: <xms:QuO5ZNustU4DVeD-BCLqAYCY-bR0iC3ezijc77pRU3arSE0Kn2utmA>
+    <xme:QuO5ZGd3gUjk7tZ-waGyWFWiffGLEyDyFU0sUCBGfW1s2GtmrR4x1mjS3ps5pNJyn
+    sXJmiADNdioE69Av5Y>
+X-ME-Received: <xmr:QuO5ZAy5uoy0BnvLS4XTVjvwSe8mIDCZJVvJlyeOOH6kZmMcG_jsZDljlm1RmsJgpQLeiUOjMZeQvl-Ihi440PwZA6g5j-qACcM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugdegkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
+    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:QuO5ZEP-tPH-elvLT55nGwyw2VHEld4pe7MgHr6-BI1uAKDt6YIj2w>
+    <xmx:QuO5ZN84iEL6Ez0u0iK7p1wggE-4XYwhGoz8TZ1qIaiJ5_p9lUGwyw>
+    <xmx:QuO5ZEUtkwcLmMsRWrDqvIWfFSNHs4xixctKB_4wtAUGQWhfGbZX9w>
+    <xmx:Q-O5ZMdeuptiP0K-a2hZRq8St-IrOfJ5fp5wNsruIjDam4qmfgMMuw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 20 Jul 2023 21:45:36 -0400 (EDT)
+Date:   Fri, 21 Jul 2023 11:45:39 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Dave Chinner <david@fromorbit.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org,
+        debian-ports <debian-ports@lists.debian.org>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+In-Reply-To: <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
+Message-ID: <23b19f18-13a3-1744-cdce-801cfa35a807@linux-m68k.org>
+References: <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com> <Y7bw7X1Y5KtmPF5s@casper.infradead.org> <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com> <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com> <ZLlvII/jMPTT32ef@casper.infradead.org>
+ <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de> <ZLl2Fq35Ya0cNbIm@casper.infradead.org> <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org> <ZLmzSEV6Wk+oRVoL@dread.disaster.area> <60b57ae9-ff49-de1d-d40d-172c9e6d43d5@linux-m68k.org>
+ <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Normally, x->replay_esn and x->preplay_esn should be allocated at
-xfrm_alloc_replay_state_esn(...) in xfrm_state_construct(..), hence the
-frm_update_ae_params(...) is okay to update them. However, the current
-impelementation of xfrm_new_ae(...) allows a malicious user to directly
-dereference a NULL pointer and crash the kernel like below.
+On Fri, 21 Jul 2023, Matthew Wilcox wrote:
 
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-PGD 8253067 P4D 8253067 PUD 8e0e067 PMD 0
-Oops: 0002 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 PID: 98 Comm: poc.npd Not tainted 6.4.0-rc7-00072-gdad9774deaf1 #8
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.o4
-RIP: 0010:memcpy_orig+0xad/0x140
-Code: e8 4c 89 5f e0 48 8d 7f e0 73 d2 83 c2 20 48 29 d6 48 29 d7 83 fa 10 72 34 4c 8b 06 4c 8b 4e 08 c
-RSP: 0018:ffff888008f57658 EFLAGS: 00000202
-RAX: 0000000000000000 RBX: ffff888008bd0000 RCX: ffffffff8238e571
-RDX: 0000000000000018 RSI: ffff888007f64844 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff888008f57818
-R13: ffff888007f64aa4 R14: 0000000000000000 R15: 0000000000000000
-FS:  00000000014013c0(0000) GS:ffff88806d600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 00000000054d8000 CR4: 00000000000006f0
-Call Trace:
- <TASK>
- ? __die+0x1f/0x70
- ? page_fault_oops+0x1e8/0x500
- ? __pfx_is_prefetch.constprop.0+0x10/0x10
- ? __pfx_page_fault_oops+0x10/0x10
- ? _raw_spin_unlock_irqrestore+0x11/0x40
- ? fixup_exception+0x36/0x460
- ? _raw_spin_unlock_irqrestore+0x11/0x40
- ? exc_page_fault+0x5e/0xc0
- ? asm_exc_page_fault+0x26/0x30
- ? xfrm_update_ae_params+0xd1/0x260
- ? memcpy_orig+0xad/0x140
- ? __pfx__raw_spin_lock_bh+0x10/0x10
- xfrm_update_ae_params+0xe7/0x260
- xfrm_new_ae+0x298/0x4e0
- ? __pfx_xfrm_new_ae+0x10/0x10
- xfrm_user_rcv_msg+0x25a/0x410
- ? __pfx_xfrm_user_rcv_msg+0x10/0x10
- ? __alloc_skb+0xcf/0x210
- ? stack_trace_save+0x90/0xd0
- ? filter_irq_stacks+0x1c/0x70
- ? __stack_depot_save+0x39/0x4e0
- ? __kasan_slab_free+0x10a/0x190
- ? kmem_cache_free+0x9c/0x340
- ? netlink_recvmsg+0x23c/0x660
- ? sock_recvmsg+0xeb/0xf0
- ? __sys_recvfrom+0x13c/0x1f0
- ? __x64_sys_recvfrom+0x71/0x90
- ? do_syscall_64+0x3f/0x90
- ? entry_SYSCALL_64_after_hwframe+0x72/0xdc
- ? copyout+0x3e/0x50
- netlink_rcv_skb+0xd6/0x210
- ? __pfx_xfrm_user_rcv_msg+0x10/0x10
- ? __pfx_netlink_rcv_skb+0x10/0x10
- ? __pfx_sock_has_perm+0x10/0x10
- ? mutex_lock+0x8d/0xe0
- ? __pfx_mutex_lock+0x10/0x10
- xfrm_netlink_rcv+0x44/0x50
- netlink_unicast+0x36f/0x4c0
- ? __pfx_netlink_unicast+0x10/0x10
- ? netlink_recvmsg+0x500/0x660
- netlink_sendmsg+0x3b7/0x700
+> On Fri, Jul 21, 2023 at 11:03:28AM +1000, Finn Thain wrote:
+> > On Fri, 21 Jul 2023, Dave Chinner wrote:
+> > 
+> > > > I suspect that this is one of those catch-22 situations: distros 
+> > > > are going to enable every feature under the sun. That doesn't mean 
+> > > > that anyone is actually _using_ them these days.
+> > 
+> > I think the value of filesystem code is not just a question of how 
+> > often it gets executed -- it's also about retaining access to the data 
+> > collected in archives, museums, galleries etc. that is inevitably held 
+> > in old formats.
+> 
+> That's an argument for adding support to tar, not for maintaining 
+> read/write support.
+> 
 
-This Null-ptr-deref bug is assigned CVE-2023-3772. And this commit
-adds additional NULL check in xfrm_update_ae_params to fix the NPD.
+I rather think it's an argument for collaboration between the interested 
+parties upstream (inluding tar developers). As I see it, the question is, 
+what kind of "upstream" is best for that?
 
-Fixes: d8647b79c3b7 ("xfrm: Add user interface for esn and big anti-replay windows")
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
- net/xfrm/xfrm_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > > We need to much more proactive about dropping support for 
+> > > unmaintained filesystems that nobody is ever fixing despite the 
+> > > constant stream of corruption- and deadlock- related bugs reported 
+> > > against them.
+> > 
+> > IMO, a stream of bug reports is not a reason to remove code (it's a 
+> > reason to revert some commits).
+> > 
+> > Anyway, that stream of bugs presumably flows from the unstable kernel 
+> > API, which is inherently high-maintenance. It seems that a stable API 
+> > could be more appropriate for any filesystem for which the on-disk 
+> > format is fixed (by old media, by unmaintained FLOSS implementations 
+> > or abandoned proprietary implementations).
+> 
+> You've misunderstood.  Google have decided to subject the entire kernel 
+> (including obsolete unmaintained filesystems) to stress tests that it's 
+> never had before.  IOW these bugs have been there since the code was 
+> merged.  There's nothing to back out.  There's no API change to blame. 
+> It's always been buggy and it's never mattered before.
+> 
 
-diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
-index c34a2a06ca94..bf2564967501 100644
---- a/net/xfrm/xfrm_user.c
-+++ b/net/xfrm/xfrm_user.c
-@@ -628,7 +628,7 @@ static void xfrm_update_ae_params(struct xfrm_state *x, struct nlattr **attrs,
- 	struct nlattr *rt = attrs[XFRMA_REPLAY_THRESH];
- 	struct nlattr *mt = attrs[XFRMA_MTIMER_THRESH];
- 
--	if (re) {
-+	if (re && x->replay_esn && x->preplay_esn) {
- 		struct xfrm_replay_state_esn *replay_esn;
- 		replay_esn = nla_data(re);
- 		memcpy(x->replay_esn, replay_esn,
--- 
-2.17.1
+I see. Thanks for providing that background.
 
+> It wouldn't be so bad if Google had also decided to fund people to fix 
+> those bugs, but no, they've decided to dump them on public mailing lists 
+> and berate developers into fixing them.
+> 
+
+Those bugs, if moved from kernel to userspace, would be less harmful, 
+right?
