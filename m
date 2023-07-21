@@ -2,106 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF7D75C3DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9343D75C3CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbjGUJ6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
+        id S230220AbjGUJ40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbjGUJ5x (ORCPT
+        with ESMTP id S229552AbjGUJ4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:57:53 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804883A86
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:57:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689933447; x=1721469447;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=bhA2Wac8b35OMVZeZH3cwBC9dodh2jsNgsqPsAZy4eI=;
-  b=FD36VlDkgq187Rh8Zzp7IHPRnrw0xdcEGwA6+q1Ofbjv+fyUBrtALq97
-   gzPzdMFVBoz/o2QmDuQKqHRQoZRuM4OYZNIvRDEPO4JDFdT8bcBSuo5YY
-   dHLTe/qGKuerNTOKjI+6WqERti+Hjh3y+wVB0RdqBahuvXYdSv1atOTJm
-   8eBWRy8tMWNYIMbll26VZj3GpJF+OTaTWNWSWJLw6qcS8mvsZ2SB+P4xE
-   yWilUFM+E1iqr2fQk8HjZJgFwREx73pUdyfhFJZtX2/C8mXGzzIWJndR8
-   5n69jY1VFND6aaWExf2bIwmdAzscGKmJ4wCr7+7nqMP89HqbmSGOdgidM
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="367023674"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="367023674"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 02:57:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="718762469"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="718762469"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 02:57:04 -0700
-Date:   Fri, 21 Jul 2023 12:53:43 +0300 (EEST)
-From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To:     Brent Lu <brent.lu@intel.com>
-cc:     Alsa-devel <alsa-devel@alsa-project.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
-        Yong Zhi <yong.zhi@intel.com>,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
-        Uday M Bhat <uday.m.bhat@intel.com>,
-        Terry Cheong <htcheong@chromium.org>,
-        Mac Chiang <mac.chiang@intel.com>,
-        "Dharageswari . R" <dharageswari.r@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 0/2] Intel: sof_rt5682: remove quirk flag
-In-Reply-To: <20230720092628.758834-1-brent.lu@intel.com>
-Message-ID: <alpine.DEB.2.22.394.2307211249190.3532114@eliteleevi.tm.intel.com>
-References: <20230720092628.758834-1-brent.lu@intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+        Fri, 21 Jul 2023 05:56:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CC630F1;
+        Fri, 21 Jul 2023 02:56:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6AADD60C6D;
+        Fri, 21 Jul 2023 09:55:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C06C433C9;
+        Fri, 21 Jul 2023 09:55:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689933351;
+        bh=ouwCwwWgI46JHzeM1cNQaQAbglYhC/bAsFmoa4/zjZs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=eoi/ytG/5rqYhqQM0rSN/CxEuZmFF89oXIz4ewJGf1ycE5X2Khg7FHZntKXrmNw+2
+         Zg9Py2tHG5QfwHEPbVDqeqkeHzcn+2lDabqdhXE/Gl1Nyc0LB4XYZ4UNSdjWsb6cnZ
+         5VPDGWgYToHGU0quZMhkjG0VS5ipOeZl9aj1psROUDuDfv++oSYnjtlUiLOenN19Ml
+         CtnybW6rsmW1c1ZIADtosGq4jxVsxB9qi4h2Oazk/ucf011KV6Nuv/PHRmHaMrMZKY
+         CLIa+/L4nvyIVYnf9mx8kdC0viipNKWSL3nwmT7Mp7KW9UiGV/Rh96SFkxIQ9cLcDt
+         lGTgYKT0+0gbQ==
+Message-ID: <81fb5c84-4586-9555-1c20-4ab9ec3a78d7@kernel.org>
+Date:   Fri, 21 Jul 2023 11:55:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 05/22] thermal/drivers/tegra: convert to use
+ devm_request*_irq_probe()
+Content-Language: en-US
+To:     Yangtao Li <frank.li@vivo.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Thierry Reding <treding@nvidia.com>, linux-pm@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230721094641.77189-1-frank.li@vivo.com>
+ <20230721094641.77189-5-frank.li@vivo.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <20230721094641.77189-5-frank.li@vivo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, 20 Jul 2023, Brent Lu wrote:
-
-> We add a helper funcion to detect amplifier number according to device instance
-> in ACPI table so the SOF_MAX98390_TWEETER_SPEAKER_PRESENT flag and a dmi quirk
-> for 4-amplifier configuration could be safely removed.
+On 21/07/2023 11:46, Yangtao Li wrote:
+> There are more than 700 calls to devm_request_threaded_irq method and
+> more than 1000 calls to devm_request_irq method. Most drivers only
+> request one interrupt resource, and these error messages are basically
+> the same. If error messages are printed everywhere, more than 2000 lines
+> of code can be saved by removing the msg in the driver.
 > 
-> Also refactory the max_98390_hw_params() function to use an array to handle the
-> TDM parameter.
+> And tglx point out that:
 > 
-> Amplifier number detection and TDM parameter are tested on two Chromebooks. One
-> with 2 MAX98390 and one with 4 MAX98390 amplifier.
+>   If we actually look at the call sites of
+>   devm_request_threaded_irq() then the vast majority of them print more or
+>   less lousy error messages. A quick grep/sed/awk/sort/uniq revealed
 > 
+>      519 messages total (there are probably more)
 > 
-> *** BLURB HERE ***
+>      352 unique messages
+> 
+>      323 unique messages after lower casing
+> 
+>          Those 323 are mostly just variants of the same patterns with
+>          slight modifications in formatting and information provided.
+> 
+>      186 of these messages do not deliver any useful information,
+>          e.g. "no irq", "
+> 
+>      The most useful one of all is: "could request wakeup irq: %d"
+> 
+>   So there is certainly an argument to be made that this particular
+>   function should print a well formatted and informative error message.
+> 
+>   It's not a general allocator like kmalloc(). It's specialized and in the
+>   vast majority of cases failing to request the interrupt causes the
+>   device probe to fail. So having proper and consistent information why
+>   the device cannot be used _is_ useful.
+> 
+> So convert to use devm_request*_irq_probe() API, which ensure that all
+> error handling branches print error information.
+> 
+> In this way, when this function fails, the upper-layer functions can
+> directly return an error code without missing debugging information.
+> Otherwise, the error message will be printed redundantly or missing.
 
-this looks like a nice cleanup, thanks Brent. For the series:
+You got comment - drop this huge text in every commit. Or squash all
+commits into one...
 
-Acked-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Best regards,
+Krzysztof
 
-Minor nit: some spelling erros in cover letter (funcion->function, 
-refactory->refactor, BLURB HERE left), but I think the intent 
-comes across.
-
-Br, Kai
