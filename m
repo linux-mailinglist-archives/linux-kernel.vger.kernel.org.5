@@ -2,170 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3990175CCD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58FC75CCE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbjGUP7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
+        id S232339AbjGUP74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:59:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjGUP7L (ORCPT
+        with ESMTP id S232336AbjGUP7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:59:11 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374EB2D47;
-        Fri, 21 Jul 2023 08:59:10 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b8ad9eede0so15758165ad.1;
-        Fri, 21 Jul 2023 08:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689955149; x=1690559949;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ouosyBPb4dn4HHlTnUJ4FSBNaoZUMLrSaPdnIDz9wuw=;
-        b=Vk2fCFGEwoEdn2x2gzgjtS58Pwt9U01pViJ4ZQYCxi/eRmX4AkBspvWDAHWVmDk7xN
-         n+2D8vXy2mZxQGdXrDv2lS+MrjZFIQcofY7Pwjw53TNZieLT5lObBGn5XVSRAVUv0ZTt
-         Q7xAz/7IeqOMHlruhDE/8h2+agVavciZ9JWsBxClyOMn9k/1eQP+XGEXs+ux+ch4eZdL
-         uubRSfULij8HcYuxURTHh3pZ5mjfXK6wVcDpXraubFagQEBcIulvXvb1ziBCjIJ60/4a
-         gDW7X02wmc08mJbmEFpiGPGUqpBD0w+sUK6REF8VIs6Rq7y8Xi8guYUAK4Dg24xTGZ9X
-         U2EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689955149; x=1690559949;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ouosyBPb4dn4HHlTnUJ4FSBNaoZUMLrSaPdnIDz9wuw=;
-        b=SaS8gCgfCM9AXyw/C5swX3zIfMiN1zDTlQ3B0D2GpE/JagxXbkUnaQEU7JDZSUkhwT
-         kpLZqmFW4Vxh4J93vEUDibe9zmLVhBKi7K5+9W0d2bO6E6SulxDm75rViD7w4CUhyJka
-         mhxKX4X++h+HeDcTZzWZGX/Srd3jegJsJFOo8lFXFvYljfOxUUn9hDGjxgpJKwg4CTZX
-         cIyz4VbZOcCVZlgrxI5DB/7RlO7f8nskdqeM6nvD4U0rb8VRdG8RuOoA8t69frjMf21t
-         ar6tB7ZnPlmpE9kHAYpQU+ec7b5bf4OaIQyPez0PC3TUNzMntyvQtB8puuCQkCTdQ9Py
-         Czmw==
-X-Gm-Message-State: ABy/qLY/6lLgqn8tyEJ/ncYm2SxtKF3W8j0eeH6OXSuKgcsxuRPjZTIH
-        jjrEjXPMR9mPLhCQoOEx4Rc=
-X-Google-Smtp-Source: APBJJlF3jZO0qcpAN4Y2IfbskrZlRgsTwwf5ilO35BnrANfcSEFNfCqrHVMg0flcOt/RvXSehhqNcg==
-X-Received: by 2002:a17:903:181:b0:1b8:6cae:3570 with SMTP id z1-20020a170903018100b001b86cae3570mr2580302plg.11.1689955149561;
-        Fri, 21 Jul 2023 08:59:09 -0700 (PDT)
-Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id n13-20020a170902e54d00b001b9be3b94d3sm3670309plf.140.2023.07.21.08.59.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 08:59:08 -0700 (PDT)
-Message-ID: <7549a014-4f5e-cf87-f07d-c4980ab44dc1@gmail.com>
-Date:   Fri, 21 Jul 2023 08:59:06 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [Enable Designware XGMAC VLAN Stripping Feature 2/2] net: stmmac:
- dwxgmac2: Add support for HW-accelerated VLAN Stripping
-Content-Language: en-US
-To:     "Ng, Boon Khai" <boon.khai.ng@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Boon@ecsmtp.png.intel.com" <Boon@ecsmtp.png.intel.com>,
-        "Khai@ecsmtp.png.intel.com" <Khai@ecsmtp.png.intel.com>,
-        boon.khai.ng@intel.com,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Fri, 21 Jul 2023 11:59:48 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4101359D
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:59:42 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-255-XYwML9_NPc6-LFPMycNl4g-1; Fri, 21 Jul 2023 16:59:40 +0100
+X-MC-Unique: XYwML9_NPc6-LFPMycNl4g-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 21 Jul
+ 2023 16:59:39 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 21 Jul 2023 16:59:38 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joel Fernandes' <joel@joelfernandes.org>,
+        Alan Huang <mmpgouride@gmail.com>
+CC:     Eric Dumazet <edumazet@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        "Tham, Mun Yew" <mun.yew.tham@intel.com>,
-        "Swee, Leong Ching" <leong.ching.swee@intel.com>,
-        "G Thomas, Rohan" <rohan.g.thomas@intel.com>,
-        Shevchenko Andriy <andriy.shevchenko@linux.intel.com>
-References: <20230721062617.9810-1-boon.khai.ng@intel.com>
- <20230721062617.9810-3-boon.khai.ng@intel.com>
- <cfba8fa4-47e5-7553-f40e-9e34b25d1405@kernel.org>
- <DM8PR11MB5751E5388AEFCFB80BCB483FC13FA@DM8PR11MB5751.namprd11.prod.outlook.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <DM8PR11MB5751E5388AEFCFB80BCB483FC13FA@DM8PR11MB5751.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>
+Subject: RE: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
+Thread-Topic: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
+Thread-Index: AQHZu+cDW9UBwZmf30GL9p6MGC4yBq/EWe3Q
+Date:   Fri, 21 Jul 2023 15:59:38 +0000
+Message-ID: <962bb2b940e64e7da7b71d11b307defc@AcuMS.aculab.com>
+References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
+ <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
+ <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+ <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
+In-Reply-To: <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Li4uLg0KPiBSaWdodCwgaXQgc2hvdWxkbid0IG5lZWQgdG8gY2FjaGUuIFRvIEVyaWMncyBwb2lu
+dCBpdCBtaWdodCBiZSByaXNreSB0byByZW1vdmUNCj4gdGhlIGJhcnJpZXIoKSBhbmQgc29tZW9u
+ZSBuZWVkcyB0byBleHBsYWluIHRoYXQgaXNzdWUgZmlyc3QgKG9yIElNTyB0aGVyZSBuZWVkcw0K
+PiB0byBiZSBhbm90aGVyIHRhbmdpYmxlIHJlYXNvbiBsaWtlIHBlcmZvcm1hbmNlIGV0YykuIEFu
+eXdheSwgRldJVyBJIHdyb3RlIGENCj4gc2ltcGxlIHByb2dyYW0gYW5kIEkgYW0gbm90IHNlZWlu
+ZyB0aGUgaGVhZC0+Zmlyc3QgY2FjaGVkIHdpdGggdGhlIHBhdHRlcm4geW91DQo+IHNoYXJlZCBh
+Ym92ZToNCj4gDQo+ICNpbmNsdWRlIDxzdGRsaWIuaD4NCj4gDQo+ICNkZWZpbmUgUkVBRF9PTkNF
+KHgpICgqKHZvbGF0aWxlIHR5cGVvZih4KSAqKSYoeCkpDQo+ICNkZWZpbmUgYmFycmllcigpIF9f
+YXNtX18gX192b2xhdGlsZV9fKCIiOiA6IDoibWVtb3J5IikNCj4gDQo+IHR5cGVkZWYgc3RydWN0
+IGxpc3RfaGVhZCB7DQo+ICAgICAgaW50IGZpcnN0Ow0KPiAgICAgIHN0cnVjdCBsaXN0X2hlYWQg
+Km5leHQ7DQo+IH0gbGlzdF9oZWFkOw0KPiANCj4gaW50IG1haW4oKSB7DQo+ICAgICAgbGlzdF9o
+ZWFkICpoZWFkID0gKGxpc3RfaGVhZCAqKW1hbGxvYyhzaXplb2YobGlzdF9oZWFkKSk7DQo+ICAg
+ICAgaGVhZC0+Zmlyc3QgPSAxOw0KPiAgICAgIGhlYWQtPm5leHQgPSAwOw0KPiANCj4gICAgICBS
+RUFEX09OQ0UoaGVhZC0+Zmlyc3QpOw0KPiAgICAgIGJhcnJpZXIoKTsNCj4gICAgICBSRUFEX09O
+Q0UoaGVhZC0+Zmlyc3QpOw0KPiANCj4gICAgICBmcmVlKGhlYWQpOw0KPiAgICAgIHJldHVybiAw
+Ow0KPiB9DQoNCllvdSBwcm9iYWJseSBuZWVkIHRvIHRyeSBoYXJkZXIgdG8gZ2VuZXJhdGUgdGhl
+IGVycm9yLg0KSXQgcHJvYmFibHkgaGFzIHNvbWV0aGluZyB0byBkbyBjb2RlIHN1cnJvdW5kaW5n
+IHRoZQ0Kc2tfbnVsbHNfZm9yX2VhY2hfcmN1KCkgaW4gdGhlIGNhMDY1ZDBjXiB2ZXJzaW9uIG9m
+IHVkcC5jLg0KDQpUaGF0IHBhdGNoIHJlbW92ZXMgdGhlIHJldHJ5IGxvb3AgLSBhbmQgcHJvYmFi
+bHkgYnJlYWtzIHVkcCByZWNlaXZlLg0KVGhlIGlzc3VlIGlzIHRoYXQgc29ja2V0cyBjYW4gYmUg
+bW92ZWQgYmV0d2VlbiB0aGUgJ2hhc2gyJyBjaGFpbnMNCihlZyBieSBjb25uZWN0KCkpIHdpdGhv
+dXQgYmVpbmcgZnJlZWQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNp
+ZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsN
+ClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-
-On 7/21/2023 8:30 AM, Ng, Boon Khai wrote:
->> -----Original Message-----
->> From: Krzysztof Kozlowski <krzk@kernel.org>
->> Sent: Friday, July 21, 2023 6:11 PM
->> To: Boon@ecsmtp.png.intel.com; Khai@ecsmtp.png.intel.com; "Ng
->> <boon.khai.ng"@intel.com; Giuseppe Cavallaro <peppe.cavallaro@st.com>;
->> Alexandre Torgue <alexandre.torgue@foss.st.com>; Jose Abreu
->> <joabreu@synopsys.com>; David S . Miller <davem@davemloft.net>; Eric
->> Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>;
->> Paolo Abeni <pabeni@redhat.com>; Maxime Coquelin
->> <mcoquelin.stm32@gmail.com>; netdev@vger.kernel.org; linux-stm32@st-
->> md-mailman.stormreply.com; linux-arm-kernel@lists.infradead.org; linux-
->> kernel@vger.kernel.org
->> Cc: Ng, Boon Khai <boon.khai.ng@intel.com>; Shevchenko, Andriy
->> <andriy.shevchenko@intel.com>; Tham, Mun Yew
->> <mun.yew.tham@intel.com>; Swee, Leong Ching
->> <leong.ching.swee@intel.com>; G Thomas, Rohan
->> <rohan.g.thomas@intel.com>; Shevchenko Andriy
->> <andriy.shevchenko@linux.intel.com>
->> Subject: Re: [Enable Designware XGMAC VLAN Stripping Feature 2/2] net:
->> stmmac: dwxgmac2: Add support for HW-accelerated VLAN Stripping
->>
->> On 21/07/2023 08:26, Boon@ecsmtp.png.intel.com wrote:
->>> From: Boon Khai Ng <boon.khai.ng@intel.com>
->>>
->>> Currently, VLAN tag stripping is done by software driver in
->>> stmmac_rx_vlan(). This patch is to Add support for VLAN tag stripping
->>> by the MAC hardware and MAC drivers to support it.
->>> This is done by adding rx_hw_vlan() and set_hw_vlan_mode() callbacks
->>> at stmmac_ops struct which are called from upper software layer.
->> ...
->>
->>>   	if (priv->dma_cap.vlhash) {
->>>   		ndev->features |= NETIF_F_HW_VLAN_CTAG_FILTER;
->>>   		ndev->features |= NETIF_F_HW_VLAN_STAG_FILTER; diff --
->> git
->>> a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
->>> b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
->>> index 23d53ea04b24..bd7f3326a44c 100644
->>> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
->>> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
->>> @@ -543,6 +543,12 @@ stmmac_probe_config_dt(struct platform_device
->> *pdev, u8 *mac)
->>>   			plat->flags |= STMMAC_FLAG_TSO_EN;
->>>   	}
->>>
->>> +	/* Rx VLAN HW Stripping */
->>> +	if (of_property_read_bool(np, "snps,rx-vlan-offload")) {
->>> +		dev_info(&pdev->dev, "RX VLAN HW Stripping\n");
->>
->> Why? Drop.
->>
-> 
-> This is an dts option export to dts for user to choose whether or not they
-> Want a Hardware stripping or a software stripping.
-> 
-> May I know what is the reason to drop this?
-
-Because the networking stack already exposes knobs for drivers to 
-advertise and control VLAN stripping/insertion on RX/TX using ethtool 
-and feature bits (NETIF_F_HW_VLAN_CTAG_RX, NETIF_F_HW_VLAN_CTAG_TX).
-
-What you are doing here is encode a policy as a Device Tree property 
-rather than describe whether the hardware supports a given feature and 
-this is frowned upon.
--- 
-Florian
