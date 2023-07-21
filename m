@@ -2,230 +2,690 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6F075D5B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7906975D5AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbjGUUZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44086 "EHLO
+        id S231576AbjGUUY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231550AbjGUUYu (ORCPT
+        with ESMTP id S231355AbjGUUYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:24:50 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949313C3C
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:24:27 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LEFxGv017479;
-        Fri, 21 Jul 2023 20:22:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-03-30;
- bh=NE78f/YXpz08BF6Qmfnunlk/cwIeJLJnTmW5hBK860o=;
- b=LpY/WrXqhhvNRAfg5lxhypl3qxVsm/M2PbkzWjZul0QopJT6KkJzD+qewa4ACh5ygPfp
- AUrhoCDA7ZFcyzLrtn+rIzdZ3E/VJ+B397bdpjsB63vs4dtYyYGXecwGpZ4KfxSkoxo5
- Ql8qFJnbr/WBSX5pvgJTeAfgoS1aNFpzhB9DYvS+q3lGKHNmqyFHR+tgMUru2+AvcIAo
- vqPqs7aSRY+9adDuqZJqjB0xRqXO4RQ/z4I8NAY1PdzJaL/hwF9Fv8HvyMncgQFn7M4V
- RmhY+vp7/tkAwG2flKLjoTsoJG24ouiZogZ5Pn0VxJxyIkOT99O/QUf3SlZvo5xBLlpN EQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run88vue0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Jul 2023 20:22:56 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36LISXQt007802;
-        Fri, 21 Jul 2023 20:22:55 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2175.outbound.protection.outlook.com [104.47.73.175])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhwa7pcf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Jul 2023 20:22:55 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G0GrF3PRXsJxYy3XaJXIGozf1m4uZcHLtPcrY+OM2NWUoHOW7cwOcGvupu+gFUlDz/5jJJNqGSBV2HXGsZw3zu6+lD2uHrupC6/zj3BbFKJCTFyMY8n2TI+J8EBiryuhknA6VwBqbVJzSwmcMDVshSfXoQdbq3gIS7yIzDXdnp7iE63EZHEpiijznQCNmV+G3Wr/XyBPQPBZGYU6jKiK4WnarNT+dlDniRgoIKOI8lN2fqteWSMCM8ZCfrRw38W0lyErz76DYH2A1f0D/291zcnHeCnuBKBY4XaVqC5Op7JEFIWp/w8jsrvfJ4/80dOnDjZCWeO4RTvZkr+KFHuKuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NE78f/YXpz08BF6Qmfnunlk/cwIeJLJnTmW5hBK860o=;
- b=gyTnYNlkJlJc8oSqNVbSAhty3fJSUKNSJ+JkVAlKdvom53yqaFc6QhMdUVQmpec0oXYeYmoe4Z7NPrCHwKt+T4Aqc91YB7xot0O4MoUHI/3EkN7QoaWkBLrCd+fPCyF/pZDOXVbjbob6Y79Dyhkqa+43gFcruGNlbaHC4Ibs1TMXTRHcQP6ByBvzecfGtsIhresulLKW1TT7TklMVzRNSjv0crxBtYUNDzBpehj1ixkr/FOOFEeaDVamCMy+OhGYWMXlz8ETr9cNzJfZ6fLMQDBF3e2haQjf0YSq1fOdg/SinsOgCc2Yn/NZm97jEBlC99uxhJMGKJo5kJsTXxYbRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NE78f/YXpz08BF6Qmfnunlk/cwIeJLJnTmW5hBK860o=;
- b=DbqzxvKiQ3Ri0Rjh9NPgZZypjFLV8pHg1TnjiumGXhFI4Ps8H9/YWcWaHTbT3X66K8hMS4EYz/OA1mXUaPMvFiEOIa7FnQICP4NXVINWhTFzUvx6TXdMrbBZcc33wTf9ZuLVmbL+hICiqgNbUX+0I8VNpvVdySxh/RjjPN8gRBU=
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by CH3PR10MB7435.namprd10.prod.outlook.com (2603:10b6:610:15c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Fri, 21 Jul
- 2023 20:22:52 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::dcb0:4077:f404:210c]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::dcb0:4077:f404:210c%4]) with mapi id 15.20.6609.026; Fri, 21 Jul 2023
- 20:22:52 +0000
-Date:   Fri, 21 Jul 2023 13:22:48 -0700
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, willy@infradead.org,
-        songmuchun@bytedance.com, david@redhat.com
-Subject: Re: [PATCH v2 1/1] mm/filemap: remove hugetlb special casing in
- filemap.c
-Message-ID: <20230721202248.GB5659@monkey>
-References: <20230710230450.110064-1-sidhartha.kumar@oracle.com>
- <20230710230450.110064-2-sidhartha.kumar@oracle.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230710230450.110064-2-sidhartha.kumar@oracle.com>
-X-ClientProxiedBy: MW4PR03CA0148.namprd03.prod.outlook.com
- (2603:10b6:303:8c::33) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+        Fri, 21 Jul 2023 16:24:40 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5654C3C0A;
+        Fri, 21 Jul 2023 13:24:12 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id BE81232009FB;
+        Fri, 21 Jul 2023 16:23:22 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 21 Jul 2023 16:23:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1689971002; x=
+        1690057402; bh=pHJ3WM/f5mvNC37sOGI/E//Q68KS1biWJ3itF/VHnw8=; b=O
+        uoJNnf34WwsAPkw6mzNQYULcBmjrFy+Z8mk2VtgWhc+4SNWq2O6IPTTRLDQ2eypz
+        G0udQScB4NziS22A90Xme1eYr10N7xp0QdI9dmV+G14GOtJtGLS/Q8kg2CzKWIa7
+        xPALvjwxjwf/3k73s+xNAJBwAehX1zG0m5OT8K1tLd+KzHAVi7VoGJgNyJt0nXZL
+        tdiCBVJpQsQCcMJJdELoDqu2VrEUI27PFIiLC8ExQeV75gYzm2t4RMsgdGHUTjY8
+        zyfYqrm0KEDwv+t+LUuretHVu9QKtEsJ61vaVvRuFUcA+Ykyxpn0DGpOA16LmWEe
+        r66/LlQQfwa6kJulnDvEA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1689971002; x=
+        1690057402; bh=pHJ3WM/f5mvNC37sOGI/E//Q68KS1biWJ3itF/VHnw8=; b=b
+        E5SmHQAyh7e+bL0itHK3jfU95pHx2k0IfcXCRApDYSfne3LdPBRBKBYRPOHN/OwN
+        zTRL6OPzFsiZst5S+6NyGk8xnP6S+Sz6H3NtJOcGRd9v018XYeRQd5qnNhSN4A1x
+        fajdJjm76KT/6IUjZsoLklLlfn26yWtMgRSOLWiOlRYvMx8BJAvImbrZCeDJ5rmV
+        tHyO9RY/OPNx3XUdpPee7l9eun/ztHXWhga84nZYFsA0yeUJj+0SNRPjIXtmFzeb
+        hza/tD3+geG9YLwrOxHmqTQIJ6CSP0B76WJuLgI1MLhU14ouZlDC6+LwFD5Adr13
+        X61UZez4EAn3F1TpwzIXw==
+X-ME-Sender: <xms:Oum6ZPxE9zD-S8cxf0E4dJ1AptyEpZ10V3Z8f0czt8aKGLmjU_Ooow>
+    <xme:Oum6ZHTjiGm5iMIZC-PZAoF-s_X_QDC2fbilI68Sw7NMUOR4kE8IijuUV89An6XiL
+    i4Rga06tqKGUopgrg>
+X-ME-Received: <xmr:Oum6ZJVo8yleJKjKhiPLw6p69h_EMHed-NX_7FyACnl9EumVU9JPwEcdyjx19IAvTFEGTyjh5hrZyEQzoWvXsv7mulFS7V-8dPJDOcP0Zd8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgddugeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
+    evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
+    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
+    dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
+    vgepudenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:Oum6ZJjR2HCDZH5Pga4oBSvBuRutdr1Ziax0MS3Z0w8XLz_KwA0yVA>
+    <xmx:Oum6ZBCSAx2L1d-S7cVCgCsEjsP0Ep94jMuXQHCaZYwviMv5Iai3FQ>
+    <xmx:Oum6ZCItZpdoP4yO8H24oVnGPmLjIYzaxnlJBQMyAnMnC06AI9Sd2Q>
+    <xmx:Oum6ZJ4n2X1C7Fv7HUbbhhHFdAJaBqRQcolco0_8Uics7l8e0VhaNw>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 21 Jul 2023 16:23:20 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     andrii@kernel.org, daniel@iogearbox.net, shuah@kernel.org,
+        ast@kernel.org, alexei.starovoitov@gmail.com, fw@strlen.de
+Cc:     mykolal@fb.com, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, dsahern@kernel.org
+Subject: [PATCH bpf-next v6 5/5] bpf: selftests: Add defrag selftests
+Date:   Fri, 21 Jul 2023 14:22:49 -0600
+Message-ID: <33e40fdfddf43be93f2cb259303f132f46750953.1689970773.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <cover.1689970773.git.dxu@dxuuu.xyz>
+References: <cover.1689970773.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4196:EE_|CH3PR10MB7435:EE_
-X-MS-Office365-Filtering-Correlation-Id: fe0af17e-c3f1-4d3f-fc68-08db8a284283
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sW6HV5DvXgADrElW3bVNffmr0QZImamNAPyTEmoMG8LrPTxLJ7AZpNoAdz0Z3jOCifGKRjvR8pWTDeNfCQsPkgVICaMNnwQmQ9yP5YX0gjd5hfvIaRhyTNhvPP/xo91PoJbp+rdB4JuGQNiDBmnedcLCTDr5iamoPI1e9cP2T7Zm90fEEl9tnyohu4Vtyg/HwRW25eVhK6x+mLm5akt6kkGGohgKc6dbjnkZ2n9FlR6H0xRXF6Iz5tpsqyq4uLUCmpifeM6bseam9kcIFhfUOj5fF9DZjzf9z/fHgBGaDayZqd1MOelqQ0BgngDPOZvEzN99GuPDqmvd9RtI6GQzmZjV+qh+Hi+RFLo7wEAunGAVOiJ9sWK/1g7Hjj5a39C+HbmaXZ+l07vV8iJGBDyPjYy8WWlA0ELEqHhw1eM5npvksls537VDCXVLVa/J7AhYE7oKQHfF8kYMFzuHcr/Nh/ejBZd6CaY4MfqTATCwZuYBQvw6hpI45pBRYNVOiorPJCjd0ZGF94YSYCSsFNyn4aRXzRnLDuLOFF90c8qK8GtxBxvEnUtEwitIF/ZYfy4n
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(396003)(366004)(136003)(376002)(346002)(39860400002)(451199021)(2906002)(83380400001)(33656002)(33716001)(86362001)(38100700002)(53546011)(6506007)(1076003)(9686003)(41300700001)(6486002)(66476007)(66946007)(6636002)(4326008)(66556008)(316002)(26005)(6512007)(186003)(6666004)(8936002)(8676002)(478600001)(6862004)(5660300002)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xf4Pmzz7tRgb2cZTOtdcdb2Cs/ApaGNcp0UxDcNiPfZquhqFQcPADW+sP4Nu?=
- =?us-ascii?Q?hSl5836zI1Ek4szuoReLeUWtUIRRJehToibA07lyXNeQswv0jzZei3UEL5BO?=
- =?us-ascii?Q?W1bQz6b6upjuNdXA4yT48cd0y356xcFZyVrzn6MvjeCZ+es6L0s4Cq455CzE?=
- =?us-ascii?Q?cfh9GUz/5zIw+aA/g+HteDVvroj+hou8xEVp3E3IaXnATbtOg6ciSpVqp0RR?=
- =?us-ascii?Q?7ypVLHy4JbxpXogrJJjd16VadiJefuQdzsXAnOvfurwSmsgaYZXWkNW2xOZE?=
- =?us-ascii?Q?U35f2KIJxBylat8VGZlB4eDCtgdlmcr8NQ5H0wM/yZeayPXlo+F9IBugszg7?=
- =?us-ascii?Q?D3aPnVW5LcYYAREyv39MIHY/AGh6ngx2kH/9qQuIlx3f2qdKIiALif6huy+g?=
- =?us-ascii?Q?KQEPcerPLygVp9xG9sHLqT4SuKJu8z1jLcoclFL3wpnFCfEcYoo/vUvB7diS?=
- =?us-ascii?Q?Lppk6JI4jodj/ctlMWO5URtLWmXyYJZjmSbTUCRD8dICdA+olOkKD8o5QRH3?=
- =?us-ascii?Q?RqNViJ+SBBulIvyPq7IQAx8iPxUaHl157wFOWIRdWIVBxyYPyxItjzfUcKEq?=
- =?us-ascii?Q?HwcGVy3O1tge7v1NrTxF9C0YIchzI2LIDamed6ABj3cqSr47DdDX9PB4SbqB?=
- =?us-ascii?Q?uI/OvjJLKy02QRpR2SsFdCUSwS0UFZV0z1l4O5UWgT/YPuTjFm6m3zKAWdnK?=
- =?us-ascii?Q?C7sltH+3xv4tx/lCIWjQ9BbvNn/KBHQy74xMDackHX9Dg1uHPCyJIHwyKAiH?=
- =?us-ascii?Q?S45TXQlV3rfqmRHz3odm5ceazch/5DLQ3YRie5bOIgKj+58PU/saA5+QP7nu?=
- =?us-ascii?Q?hfjS/NtVUphesbdPxoz9fcFjjOnlX/gfjvaMQypLs32mEgJf/PtX92ct2CsR?=
- =?us-ascii?Q?oVH0lONZl3koRscMEjiRxAN1lBRFZ8KZMBXRufbNHsjbyDm5flI+zqGqixA7?=
- =?us-ascii?Q?p8uUGNlR0wXHrVxsieoKpSYMUdL87Y4/IDtij0VAE6iSnBxB2bjUDVQ5l+1N?=
- =?us-ascii?Q?PEwE5lf6OGi7S88xHcqm9oCxVORCKguegROsU27F7a3cs3CEKVUBYnIlCiNi?=
- =?us-ascii?Q?g4krF5Si68Gzjv4SRimv2AxFlRz/LjsgG7ijHD1t6c/Jj9SZfxgiScty484q?=
- =?us-ascii?Q?kH9DwtLFhs8NQaA9R31BwVTtEGaKfZDRBA5+jYTXpzM/X0a/GxUH7aE/Ipm0?=
- =?us-ascii?Q?vDx5H60njEbqzSychBzPKVjjEGqcKZpU3NPA4/8lU2yz7SxjxtzIZdUCoI1w?=
- =?us-ascii?Q?xxaXbM2sTSzPI9nRKQq/2zYgStYNIHNottgMRIQHlJZd81RnKrRIRfXG8jvx?=
- =?us-ascii?Q?1Rdi9D8/EwZ8iRnEkEVBj491BElnBlX1uhNQR9PLK2l1LwjlMBm7K/2zRRK0?=
- =?us-ascii?Q?2yhD2EB3jHwpS6zb47PSK0j2fZS9yXEGXxb7b1+dNAS6nmtEN7681qkW4XS1?=
- =?us-ascii?Q?ikn2jQ2uPkmJfDRqOGPjeMvUkDezPPVUH+zk0VDgPCPx7UTmdzlLMWRwfY9c?=
- =?us-ascii?Q?dD0qP7DTr+vJpvRQuxCUGMhKUqehrVarxwmJy83oMsiNLE9ILJaV/EuQhjuB?=
- =?us-ascii?Q?IX7SkhIk9x/IK6ECm0swxBetPFEi5eCf+5LkEnQq?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?8zanmKqUeRz7dwWe64HM0HJhmrRnJC/mOd57HvC7y2CrZnzoFuTDH5ehahba?=
- =?us-ascii?Q?SH+AIoKvQSt0FR88IMFiEDhjJ3jn+0sK4PwmKveCrfGGFODmGNDUuWr48BME?=
- =?us-ascii?Q?vXAFQUhfdyTNk4XOXeT1d3TvreiXEcKYJ4m5MADa/e2tbzrifOmruhXA8g14?=
- =?us-ascii?Q?Q1bT8t93c/j+RqpcpTJ2RrJBwvQkKb9QKhSwcMclZ9QQZ+Rug/faTl2+oPGw?=
- =?us-ascii?Q?yqB0g6ta3f/wTgy4Js7Zhx1ScVYMyrvbq4ueFR1V7Umn3CfLhNMQMkwXUQTx?=
- =?us-ascii?Q?IvI/h5umARSiD+biqKRbg73ZCC5iU6bsRAb6H6GcxCt3TsFpKmPdicmY6yc6?=
- =?us-ascii?Q?FU7Q2KG3R2EqTSHVeUtNn7sWigBMvICht1xAMDwJaf+4h8MfJOQS4y/gR9Kr?=
- =?us-ascii?Q?f5dPxOyBF9G9ZkC2MterQhjKYvkcn/eS/wnz+WDKNDzA6uq+oISe1zqpfjse?=
- =?us-ascii?Q?UcfBQiniYLDomh4iHHMwdtZtygQFHTjyEnmIImEz63jQBU2Oi8dJangG4P9V?=
- =?us-ascii?Q?xVKkCvZT9pldZTcziJDNm7/7vI0IGFCCShJiDt3oWKWaeCve41+An9OTyTf1?=
- =?us-ascii?Q?/i5wl4fmY9DgCTmB5M0usGbemY5elveo5FJi0O9ZptQP/+mYgWXobkgzjldB?=
- =?us-ascii?Q?QPPeTMQrqBuZRc9hSqJda37QhscJmWAzw6EYsXYDH6Qahi9+EhFuok8Kxn4p?=
- =?us-ascii?Q?X+QwgZWx9H07lIw3rQLf+tp0m3cRDmlhAwPoYLgeCzXUx0B/74QttK5q+bLG?=
- =?us-ascii?Q?uC0oolgQjQK6SP0CsajQU3rbprjZ6IR0VITWEDFYl5JlqLH+R6TqcDXZPDgc?=
- =?us-ascii?Q?sPNT0o0ARljpqXiOBIO/W6JKUMHA2uvNAOQVsb8RpJ8wQX2tuiJ1sO++dkrS?=
- =?us-ascii?Q?QTZ14Q3xQP/JmvhvKelTGgzU2RY9jaPkbYo6bHhWP3o1FMIjKGtImLOfPfss?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe0af17e-c3f1-4d3f-fc68-08db8a284283
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 20:22:52.5989
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yhIKb0r03VrE/rjxfcsH4ayy3x8PO8SDzsSmE4gJZWmIggC2mWNDNCc6BLxipuZGRfypDv4R2hurHFfxCVGoSQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB7435
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-21_12,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
- spamscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307210179
-X-Proofpoint-GUID: MTCMWOAHAotSku4_y_DIlF5VwRDl_dEy
-X-Proofpoint-ORIG-GUID: MTCMWOAHAotSku4_y_DIlF5VwRDl_dEy
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/23 16:04, Sidhartha Kumar wrote:
-> Remove special cased hugetlb handling code within the page cache by
-> changing the granularity of each index to the base page size rather than
-> the huge page size. Adds new wrappers for hugetlb code to to interact with the
-> page cache which convert to a linear index.
-> 
-> Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-> ---
->  fs/hugetlbfs/inode.c    | 10 +++++-----
->  include/linux/hugetlb.h | 12 ++++++++++++
->  include/linux/pagemap.h | 26 ++------------------------
->  mm/filemap.c            | 36 +++++++++++-------------------------
->  mm/hugetlb.c            | 11 ++++++-----
->  5 files changed, 36 insertions(+), 59 deletions(-)
-> 
+These selftests tests 2 major scenarios: the BPF based defragmentation
+can successfully be done and that packet pointers are invalidated after
+calls to the kfunc. The logic is similar for both ipv4 and ipv6.
 
-I still want to see a better explanation of the performance impact of
-this change as previously stated.  However, I did take a closer look at
-the actual code changes and could not find any issues.  One suggestion
-noted below.
+In the first scenario, we create a UDP client and UDP echo server. The
+the server side is fairly straightforward: we attach the prog and simply
+echo back the message.
 
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index c2b807d37f852..d78c71dacf0d4 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -663,20 +663,20 @@ static void remove_inode_hugepages(struct inode *inode, loff_t lstart,
->  	struct hstate *h = hstate_inode(inode);
->  	struct address_space *mapping = &inode->i_data;
->  	const pgoff_t start = lstart >> huge_page_shift(h);
-> -	const pgoff_t end = lend >> huge_page_shift(h);
-> +	const pgoff_t end = lend >> PAGE_SHIFT;
+The on the client side, we send fragmented packets to and expect the
+reassembled message back from the server.
 
-The code is correct, but when looking at this it 'appears' wrong to have
-start and end in different size units.  start is only used in the statement:
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+---
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../selftests/bpf/generate_udp_fragments.py   |  90 ++++++
+ .../selftests/bpf/ip_check_defrag_frags.h     |  57 ++++
+ .../bpf/prog_tests/ip_check_defrag.c          | 283 ++++++++++++++++++
+ .../selftests/bpf/progs/ip_check_defrag.c     | 104 +++++++
+ 5 files changed, 536 insertions(+), 2 deletions(-)
+ create mode 100755 tools/testing/selftests/bpf/generate_udp_fragments.py
+ create mode 100644 tools/testing/selftests/bpf/ip_check_defrag_frags.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
+ create mode 100644 tools/testing/selftests/bpf/progs/ip_check_defrag.c
 
-	if (truncate_op)
-		(void)hugetlb_unreserve_pages(inode, start, LONG_MAX, freed);
-
-So, to avoid confusion it might be better getting rid of start and code the
-above as:
-
-	if (truncate_op)
-		(void)hugetlb_unreserve_pages(inode,
-					      lstart >> huge_page_shift(h),
-					      LONG_MAX, freed);
-
->  	struct folio_batch fbatch;
->  	pgoff_t next, index;
->  	int i, freed = 0;
->  	bool truncate_op = (lend == LLONG_MAX);
->  
->  	folio_batch_init(&fbatch);
-> -	next = start;
-> +	next = lstart >> PAGE_SHIFT;
->  	while (filemap_get_folios(mapping, &next, end - 1, &fbatch)) {
->  		for (i = 0; i < folio_batch_count(&fbatch); ++i) {
->  			struct folio *folio = fbatch.folios[i];
->  			u32 hash = 0;
->  
-> -			index = folio->index;
-> +			index = folio->index >> huge_page_order(h);
->  			hash = hugetlb_fault_mutex_hash(mapping, index);
->  			mutex_lock(&hugetlb_fault_mutex_table[hash]);
->  
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 882be03b179f..619df497fce5 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -565,8 +565,8 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
+ 			 network_helpers.c testing_helpers.c		\
+ 			 btf_helpers.c flow_dissector_load.h		\
+ 			 cap_helpers.c test_loader.c xsk.c disasm.c	\
+-			 json_writer.c unpriv_helpers.c
+-
++			 json_writer.c unpriv_helpers.c 		\
++			 ip_check_defrag_frags.h
+ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
+ 		       $(OUTPUT)/liburandom_read.so			\
+ 		       $(OUTPUT)/xdp_synproxy				\
+diff --git a/tools/testing/selftests/bpf/generate_udp_fragments.py b/tools/testing/selftests/bpf/generate_udp_fragments.py
+new file mode 100755
+index 000000000000..2b8a1187991c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/generate_udp_fragments.py
+@@ -0,0 +1,90 @@
++#!/bin/env python3
++# SPDX-License-Identifier: GPL-2.0
++
++"""
++This script helps generate fragmented UDP packets.
++
++While it is technically possible to dynamically generate
++fragmented packets in C, it is much harder to read and write
++said code. `scapy` is relatively industry standard and really
++easy to read / write.
++
++So we choose to write this script that generates a valid C
++header. Rerun script and commit generated file after any
++modifications.
++"""
++
++import argparse
++import os
++
++from scapy.all import *
++
++
++# These constants must stay in sync with `ip_check_defrag.c`
++VETH1_ADDR = "172.16.1.200"
++VETH0_ADDR6 = "fc00::100"
++VETH1_ADDR6 = "fc00::200"
++CLIENT_PORT = 48878
++SERVER_PORT = 48879
++MAGIC_MESSAGE = "THIS IS THE ORIGINAL MESSAGE, PLEASE REASSEMBLE ME"
++
++
++def print_header(f):
++    f.write("// SPDX-License-Identifier: GPL-2.0\n")
++    f.write("/* DO NOT EDIT -- this file is generated */\n")
++    f.write("\n")
++    f.write("#ifndef _IP_CHECK_DEFRAG_FRAGS_H\n")
++    f.write("#define _IP_CHECK_DEFRAG_FRAGS_H\n")
++    f.write("\n")
++    f.write("#include <stdint.h>\n")
++    f.write("\n")
++
++
++def print_frags(f, frags, v6):
++    for idx, frag in enumerate(frags):
++        # 10 bytes per line to keep width in check
++        chunks = [frag[i : i + 10] for i in range(0, len(frag), 10)]
++        chunks_fmted = [", ".join([str(hex(b)) for b in chunk]) for chunk in chunks]
++        suffix = "6" if v6 else ""
++
++        f.write(f"static uint8_t frag{suffix}_{idx}[] = {{\n")
++        for chunk in chunks_fmted:
++            f.write(f"\t{chunk},\n")
++        f.write(f"}};\n")
++
++
++def print_trailer(f):
++    f.write("\n")
++    f.write("#endif /* _IP_CHECK_DEFRAG_FRAGS_H */\n")
++
++
++def main(f):
++    # srcip of 0 is filled in by IP_HDRINCL
++    sip = "0.0.0.0"
++    sip6 = VETH0_ADDR6
++    dip = VETH1_ADDR
++    dip6 = VETH1_ADDR6
++    sport = CLIENT_PORT
++    dport = SERVER_PORT
++    payload = MAGIC_MESSAGE.encode()
++
++    # Disable UDPv4 checksums to keep code simpler
++    pkt = IP(src=sip,dst=dip) / UDP(sport=sport,dport=dport,chksum=0) / Raw(load=payload)
++    # UDPv6 requires a checksum
++    # Also pin the ipv6 fragment header ID, otherwise it's a random value
++    pkt6 = IPv6(src=sip6,dst=dip6) / IPv6ExtHdrFragment(id=0xBEEF) / UDP(sport=sport,dport=dport) / Raw(load=payload)
++
++    frags = [f.build() for f in pkt.fragment(24)]
++    frags6 = [f.build() for f in fragment6(pkt6, 72)]
++
++    print_header(f)
++    print_frags(f, frags, False)
++    print_frags(f, frags6, True)
++    print_trailer(f)
++
++
++if __name__ == "__main__":
++    dir = os.path.dirname(os.path.realpath(__file__))
++    header = f"{dir}/ip_check_defrag_frags.h"
++    with open(header, "w") as f:
++        main(f)
+diff --git a/tools/testing/selftests/bpf/ip_check_defrag_frags.h b/tools/testing/selftests/bpf/ip_check_defrag_frags.h
+new file mode 100644
+index 000000000000..70ab7e9fa22b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/ip_check_defrag_frags.h
+@@ -0,0 +1,57 @@
++// SPDX-License-Identifier: GPL-2.0
++/* DO NOT EDIT -- this file is generated */
++
++#ifndef _IP_CHECK_DEFRAG_FRAGS_H
++#define _IP_CHECK_DEFRAG_FRAGS_H
++
++#include <stdint.h>
++
++static uint8_t frag_0[] = {
++	0x45, 0x0, 0x0, 0x2c, 0x0, 0x1, 0x20, 0x0, 0x40, 0x11,
++	0xac, 0xe8, 0x0, 0x0, 0x0, 0x0, 0xac, 0x10, 0x1, 0xc8,
++	0xbe, 0xee, 0xbe, 0xef, 0x0, 0x3a, 0x0, 0x0, 0x54, 0x48,
++	0x49, 0x53, 0x20, 0x49, 0x53, 0x20, 0x54, 0x48, 0x45, 0x20,
++	0x4f, 0x52, 0x49, 0x47,
++};
++static uint8_t frag_1[] = {
++	0x45, 0x0, 0x0, 0x2c, 0x0, 0x1, 0x20, 0x3, 0x40, 0x11,
++	0xac, 0xe5, 0x0, 0x0, 0x0, 0x0, 0xac, 0x10, 0x1, 0xc8,
++	0x49, 0x4e, 0x41, 0x4c, 0x20, 0x4d, 0x45, 0x53, 0x53, 0x41,
++	0x47, 0x45, 0x2c, 0x20, 0x50, 0x4c, 0x45, 0x41, 0x53, 0x45,
++	0x20, 0x52, 0x45, 0x41,
++};
++static uint8_t frag_2[] = {
++	0x45, 0x0, 0x0, 0x1e, 0x0, 0x1, 0x0, 0x6, 0x40, 0x11,
++	0xcc, 0xf0, 0x0, 0x0, 0x0, 0x0, 0xac, 0x10, 0x1, 0xc8,
++	0x53, 0x53, 0x45, 0x4d, 0x42, 0x4c, 0x45, 0x20, 0x4d, 0x45,
++};
++static uint8_t frag6_0[] = {
++	0x60, 0x0, 0x0, 0x0, 0x0, 0x20, 0x2c, 0x40, 0xfc, 0x0,
++	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
++	0x0, 0x0, 0x1, 0x0, 0xfc, 0x0, 0x0, 0x0, 0x0, 0x0,
++	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2, 0x0,
++	0x11, 0x0, 0x0, 0x1, 0x0, 0x0, 0xbe, 0xef, 0xbe, 0xee,
++	0xbe, 0xef, 0x0, 0x3a, 0xd0, 0xf8, 0x54, 0x48, 0x49, 0x53,
++	0x20, 0x49, 0x53, 0x20, 0x54, 0x48, 0x45, 0x20, 0x4f, 0x52,
++	0x49, 0x47,
++};
++static uint8_t frag6_1[] = {
++	0x60, 0x0, 0x0, 0x0, 0x0, 0x20, 0x2c, 0x40, 0xfc, 0x0,
++	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
++	0x0, 0x0, 0x1, 0x0, 0xfc, 0x0, 0x0, 0x0, 0x0, 0x0,
++	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2, 0x0,
++	0x11, 0x0, 0x0, 0x19, 0x0, 0x0, 0xbe, 0xef, 0x49, 0x4e,
++	0x41, 0x4c, 0x20, 0x4d, 0x45, 0x53, 0x53, 0x41, 0x47, 0x45,
++	0x2c, 0x20, 0x50, 0x4c, 0x45, 0x41, 0x53, 0x45, 0x20, 0x52,
++	0x45, 0x41,
++};
++static uint8_t frag6_2[] = {
++	0x60, 0x0, 0x0, 0x0, 0x0, 0x12, 0x2c, 0x40, 0xfc, 0x0,
++	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
++	0x0, 0x0, 0x1, 0x0, 0xfc, 0x0, 0x0, 0x0, 0x0, 0x0,
++	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2, 0x0,
++	0x11, 0x0, 0x0, 0x30, 0x0, 0x0, 0xbe, 0xef, 0x53, 0x53,
++	0x45, 0x4d, 0x42, 0x4c, 0x45, 0x20, 0x4d, 0x45,
++};
++
++#endif /* _IP_CHECK_DEFRAG_FRAGS_H */
+diff --git a/tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c b/tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
+new file mode 100644
+index 000000000000..57c814f5f6a7
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
+@@ -0,0 +1,283 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++#include <net/if.h>
++#include <linux/netfilter.h>
++#include <network_helpers.h>
++#include "ip_check_defrag.skel.h"
++#include "ip_check_defrag_frags.h"
++
++/*
++ * This selftest spins up a client and an echo server, each in their own
++ * network namespace. The client will send a fragmented message to the server.
++ * The prog attached to the server will shoot down any fragments. Thus, if
++ * the server is able to correctly echo back the message to the client, we will
++ * have verified that netfilter is reassembling packets for us.
++ *
++ * Topology:
++ * =========
++ *           NS0         |         NS1
++ *                       |
++ *         client        |       server
++ *       ----------      |     ----------
++ *       |  veth0  | --------- |  veth1  |
++ *       ----------    peer    ----------
++ *                       |
++ *                       |       with bpf
++ */
++
++#define NS0		"defrag_ns0"
++#define NS1		"defrag_ns1"
++#define VETH0		"veth0"
++#define VETH1		"veth1"
++#define VETH0_ADDR	"172.16.1.100"
++#define VETH0_ADDR6	"fc00::100"
++/* The following constants must stay in sync with `generate_udp_fragments.py` */
++#define VETH1_ADDR	"172.16.1.200"
++#define VETH1_ADDR6	"fc00::200"
++#define CLIENT_PORT	48878
++#define SERVER_PORT	48879
++#define MAGIC_MESSAGE	"THIS IS THE ORIGINAL MESSAGE, PLEASE REASSEMBLE ME"
++
++static int setup_topology(bool ipv6)
++{
++	bool up;
++	int i;
++
++	SYS(fail, "ip netns add " NS0);
++	SYS(fail, "ip netns add " NS1);
++	SYS(fail, "ip link add " VETH0 " netns " NS0 " type veth peer name " VETH1 " netns " NS1);
++	if (ipv6) {
++		SYS(fail, "ip -6 -net " NS0 " addr add " VETH0_ADDR6 "/64 dev " VETH0 " nodad");
++		SYS(fail, "ip -6 -net " NS1 " addr add " VETH1_ADDR6 "/64 dev " VETH1 " nodad");
++	} else {
++		SYS(fail, "ip -net " NS0 " addr add " VETH0_ADDR "/24 dev " VETH0);
++		SYS(fail, "ip -net " NS1 " addr add " VETH1_ADDR "/24 dev " VETH1);
++	}
++	SYS(fail, "ip -net " NS0 " link set dev " VETH0 " up");
++	SYS(fail, "ip -net " NS1 " link set dev " VETH1 " up");
++
++	/* Wait for up to 5s for links to come up */
++	for (i = 0; i < 5; ++i) {
++		if (ipv6)
++			up = !system("ip netns exec " NS0 " ping -6 -c 1 -W 1 " VETH1_ADDR6 " &>/dev/null");
++		else
++			up = !system("ip netns exec " NS0 " ping -c 1 -W 1 " VETH1_ADDR " &>/dev/null");
++
++		if (up)
++			break;
++	}
++
++	return 0;
++fail:
++	return -1;
++}
++
++static void cleanup_topology(void)
++{
++	SYS_NOFAIL("test -f /var/run/netns/" NS0 " && ip netns delete " NS0);
++	SYS_NOFAIL("test -f /var/run/netns/" NS1 " && ip netns delete " NS1);
++}
++
++static int attach(struct ip_check_defrag *skel, bool ipv6)
++{
++	LIBBPF_OPTS(bpf_netfilter_opts, opts,
++		    .pf = ipv6 ? NFPROTO_IPV6 : NFPROTO_IPV4,
++		    .priority = 42,
++		    .flags = BPF_F_NETFILTER_IP_DEFRAG);
++	struct nstoken *nstoken;
++	int err = -1;
++
++	nstoken = open_netns(NS1);
++
++	skel->links.defrag = bpf_program__attach_netfilter(skel->progs.defrag, &opts);
++	if (!ASSERT_OK_PTR(skel->links.defrag, "program attach"))
++		goto out;
++
++	err = 0;
++out:
++	close_netns(nstoken);
++	return err;
++}
++
++static int send_frags(int client)
++{
++	struct sockaddr_storage saddr;
++	struct sockaddr *saddr_p;
++	socklen_t saddr_len;
++	int err;
++
++	saddr_p = (struct sockaddr *)&saddr;
++	err = make_sockaddr(AF_INET, VETH1_ADDR, SERVER_PORT, &saddr, &saddr_len);
++	if (!ASSERT_OK(err, "make_sockaddr"))
++		return -1;
++
++	err = sendto(client, frag_0, sizeof(frag_0), 0, saddr_p, saddr_len);
++	if (!ASSERT_GE(err, 0, "sendto frag_0"))
++		return -1;
++
++	err = sendto(client, frag_1, sizeof(frag_1), 0, saddr_p, saddr_len);
++	if (!ASSERT_GE(err, 0, "sendto frag_1"))
++		return -1;
++
++	err = sendto(client, frag_2, sizeof(frag_2), 0, saddr_p, saddr_len);
++	if (!ASSERT_GE(err, 0, "sendto frag_2"))
++		return -1;
++
++	return 0;
++}
++
++static int send_frags6(int client)
++{
++	struct sockaddr_storage saddr;
++	struct sockaddr *saddr_p;
++	socklen_t saddr_len;
++	int err;
++
++	saddr_p = (struct sockaddr *)&saddr;
++	/* Port needs to be set to 0 for raw ipv6 socket for some reason */
++	err = make_sockaddr(AF_INET6, VETH1_ADDR6, 0, &saddr, &saddr_len);
++	if (!ASSERT_OK(err, "make_sockaddr"))
++		return -1;
++
++	err = sendto(client, frag6_0, sizeof(frag6_0), 0, saddr_p, saddr_len);
++	if (!ASSERT_GE(err, 0, "sendto frag6_0"))
++		return -1;
++
++	err = sendto(client, frag6_1, sizeof(frag6_1), 0, saddr_p, saddr_len);
++	if (!ASSERT_GE(err, 0, "sendto frag6_1"))
++		return -1;
++
++	err = sendto(client, frag6_2, sizeof(frag6_2), 0, saddr_p, saddr_len);
++	if (!ASSERT_GE(err, 0, "sendto frag6_2"))
++		return -1;
++
++	return 0;
++}
++
++void test_bpf_ip_check_defrag_ok(bool ipv6)
++{
++	struct network_helper_opts rx_opts = {
++		.timeout_ms = 1000,
++		.noconnect = true,
++	};
++	struct network_helper_opts tx_ops = {
++		.timeout_ms = 1000,
++		.type = SOCK_RAW,
++		.proto = IPPROTO_RAW,
++		.noconnect = true,
++	};
++	struct sockaddr_storage caddr;
++	struct ip_check_defrag *skel;
++	struct nstoken *nstoken;
++	int client_tx_fd = -1;
++	int client_rx_fd = -1;
++	socklen_t caddr_len;
++	int srv_fd = -1;
++	char buf[1024];
++	int len, err;
++
++	skel = ip_check_defrag__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return;
++
++	if (!ASSERT_OK(setup_topology(ipv6), "setup_topology"))
++		goto out;
++
++	if (!ASSERT_OK(attach(skel, ipv6), "attach"))
++		goto out;
++
++	/* Start server in ns1 */
++	nstoken = open_netns(NS1);
++	if (!ASSERT_OK_PTR(nstoken, "setns ns1"))
++		goto out;
++	srv_fd = start_server(ipv6 ? AF_INET6 : AF_INET, SOCK_DGRAM, NULL, SERVER_PORT, 0);
++	close_netns(nstoken);
++	if (!ASSERT_GE(srv_fd, 0, "start_server"))
++		goto out;
++
++	/* Open tx raw socket in ns0 */
++	nstoken = open_netns(NS0);
++	if (!ASSERT_OK_PTR(nstoken, "setns ns0"))
++		goto out;
++	client_tx_fd = connect_to_fd_opts(srv_fd, &tx_ops);
++	close_netns(nstoken);
++	if (!ASSERT_GE(client_tx_fd, 0, "connect_to_fd_opts"))
++		goto out;
++
++	/* Open rx socket in ns0 */
++	nstoken = open_netns(NS0);
++	if (!ASSERT_OK_PTR(nstoken, "setns ns0"))
++		goto out;
++	client_rx_fd = connect_to_fd_opts(srv_fd, &rx_opts);
++	close_netns(nstoken);
++	if (!ASSERT_GE(client_rx_fd, 0, "connect_to_fd_opts"))
++		goto out;
++
++	/* Bind rx socket to a premeditated port */
++	memset(&caddr, 0, sizeof(caddr));
++	nstoken = open_netns(NS0);
++	if (!ASSERT_OK_PTR(nstoken, "setns ns0"))
++		goto out;
++	if (ipv6) {
++		struct sockaddr_in6 *c = (struct sockaddr_in6 *)&caddr;
++
++		c->sin6_family = AF_INET6;
++		inet_pton(AF_INET6, VETH0_ADDR6, &c->sin6_addr);
++		c->sin6_port = htons(CLIENT_PORT);
++		err = bind(client_rx_fd, (struct sockaddr *)c, sizeof(*c));
++	} else {
++		struct sockaddr_in *c = (struct sockaddr_in *)&caddr;
++
++		c->sin_family = AF_INET;
++		inet_pton(AF_INET, VETH0_ADDR, &c->sin_addr);
++		c->sin_port = htons(CLIENT_PORT);
++		err = bind(client_rx_fd, (struct sockaddr *)c, sizeof(*c));
++	}
++	close_netns(nstoken);
++	if (!ASSERT_OK(err, "bind"))
++		goto out;
++
++	/* Send message in fragments */
++	if (ipv6) {
++		if (!ASSERT_OK(send_frags6(client_tx_fd), "send_frags6"))
++			goto out;
++	} else {
++		if (!ASSERT_OK(send_frags(client_tx_fd), "send_frags"))
++			goto out;
++	}
++
++	if (!ASSERT_EQ(skel->bss->shootdowns, 0, "shootdowns"))
++		goto out;
++
++	/* Receive reassembled msg on server and echo back to client */
++	caddr_len = sizeof(caddr);
++	len = recvfrom(srv_fd, buf, sizeof(buf), 0, (struct sockaddr *)&caddr, &caddr_len);
++	if (!ASSERT_GE(len, 0, "server recvfrom"))
++		goto out;
++	len = sendto(srv_fd, buf, len, 0, (struct sockaddr *)&caddr, caddr_len);
++	if (!ASSERT_GE(len, 0, "server sendto"))
++		goto out;
++
++	/* Expect reassembed message to be echoed back */
++	len = recvfrom(client_rx_fd, buf, sizeof(buf), 0, NULL, NULL);
++	if (!ASSERT_EQ(len, sizeof(MAGIC_MESSAGE) - 1, "client short read"))
++		goto out;
++
++out:
++	if (client_rx_fd != -1)
++		close(client_rx_fd);
++	if (client_tx_fd != -1)
++		close(client_tx_fd);
++	if (srv_fd != -1)
++		close(srv_fd);
++	cleanup_topology();
++	ip_check_defrag__destroy(skel);
++}
++
++void test_bpf_ip_check_defrag(void)
++{
++	if (test__start_subtest("v4"))
++		test_bpf_ip_check_defrag_ok(false);
++	if (test__start_subtest("v6"))
++		test_bpf_ip_check_defrag_ok(true);
++}
+diff --git a/tools/testing/selftests/bpf/progs/ip_check_defrag.c b/tools/testing/selftests/bpf/progs/ip_check_defrag.c
+new file mode 100644
+index 000000000000..1c2b6c1616b0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/ip_check_defrag.c
+@@ -0,0 +1,104 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
++#include "bpf_tracing_net.h"
++
++#define NF_DROP			0
++#define NF_ACCEPT		1
++#define ETH_P_IP		0x0800
++#define ETH_P_IPV6		0x86DD
++#define IP_MF			0x2000
++#define IP_OFFSET		0x1FFF
++#define NEXTHDR_FRAGMENT	44
++
++extern int bpf_dynptr_from_skb(struct sk_buff *skb, __u64 flags,
++			      struct bpf_dynptr *ptr__uninit) __ksym;
++extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, uint32_t offset,
++			      void *buffer, uint32_t buffer__sz) __ksym;
++
++volatile int shootdowns = 0;
++
++static bool is_frag_v4(struct iphdr *iph)
++{
++	int offset;
++	int flags;
++
++	offset = bpf_ntohs(iph->frag_off);
++	flags = offset & ~IP_OFFSET;
++	offset &= IP_OFFSET;
++	offset <<= 3;
++
++	return (flags & IP_MF) || offset;
++}
++
++static bool is_frag_v6(struct ipv6hdr *ip6h)
++{
++	/* Simplifying assumption that there are no extension headers
++	 * between fixed header and fragmentation header. This assumption
++	 * is only valid in this test case. It saves us the hassle of
++	 * searching all potential extension headers.
++	 */
++	return ip6h->nexthdr == NEXTHDR_FRAGMENT;
++}
++
++static int handle_v4(struct sk_buff *skb)
++{
++	struct bpf_dynptr ptr;
++	u8 iph_buf[20] = {};
++	struct iphdr *iph;
++
++	if (bpf_dynptr_from_skb(skb, 0, &ptr))
++		return NF_DROP;
++
++	iph = bpf_dynptr_slice(&ptr, 0, iph_buf, sizeof(iph_buf));
++	if (!iph)
++		return NF_DROP;
++
++	/* Shootdown any frags */
++	if (is_frag_v4(iph)) {
++		shootdowns++;
++		return NF_DROP;
++	}
++
++	return NF_ACCEPT;
++}
++
++static int handle_v6(struct sk_buff *skb)
++{
++	struct bpf_dynptr ptr;
++	struct ipv6hdr *ip6h;
++	u8 ip6h_buf[40] = {};
++
++	if (bpf_dynptr_from_skb(skb, 0, &ptr))
++		return NF_DROP;
++
++	ip6h = bpf_dynptr_slice(&ptr, 0, ip6h_buf, sizeof(ip6h_buf));
++	if (!ip6h)
++		return NF_DROP;
++
++	/* Shootdown any frags */
++	if (is_frag_v6(ip6h)) {
++		shootdowns++;
++		return NF_DROP;
++	}
++
++	return NF_ACCEPT;
++}
++
++SEC("netfilter")
++int defrag(struct bpf_nf_ctx *ctx)
++{
++	struct sk_buff *skb = ctx->skb;
++
++	switch (bpf_ntohs(skb->protocol)) {
++	case ETH_P_IP:
++		return handle_v4(skb);
++	case ETH_P_IPV6:
++		return handle_v6(skb);
++	default:
++		return NF_ACCEPT;
++	}
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
-Mike Kravetz
+2.41.0
+
