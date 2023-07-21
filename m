@@ -2,104 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F6B75D003
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B582075D005
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbjGUQtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 12:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47420 "EHLO
+        id S229903AbjGUQuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 12:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjGUQtl (ORCPT
+        with ESMTP id S229571AbjGUQuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 12:49:41 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DB81FCB;
-        Fri, 21 Jul 2023 09:49:39 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LCtWmB015885;
-        Fri, 21 Jul 2023 16:49:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=BVIws1M4wjq3yv5C0HRVSWm08wZYWn34AD7twXGrqQ4=;
- b=azu1fJ5ATvfEB8vew6lTi+zC751LVjNF7fFsGfH7R6LqrvPkgjAUVP16FJjG8MSw6wdr
- M3eyJWkm45NZsB7epk0+XoVe3cBEqBYy4PVUQhUJ5H7fen2w7+ICfeWSRHc/p3b4/yVf
- lIk+pOVOeGg6Se+o4gTM3Hj5gF0yWVgElp5CaB85ht9HhhbOodV76KYuh7n2W0xLSRzy
- F4IOzFP1fsdG48gZw/zm1KCN3VUs4dTQb3iRsFwv8RDt9Nk803rxcr0KKh3IiAis4LFg
- k3O6Hxif0EdVuk2JTZRkPqJij0IhPDuTzySAx/IGu9GLyma+zd9qVjThcIBNwf7umW/e gA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ryhdy9npd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 16:49:24 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36LGn7Ab015423
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 16:49:07 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 21 Jul 2023 09:49:06 -0700
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>
-CC:     <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] soundwire: qcom: Log clk_get("iface") failures
-Date:   Fri, 21 Jul 2023 09:49:01 -0700
-Message-ID: <20230721164901.2155287-1-quic_bjorande@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 21 Jul 2023 12:50:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB68ED;
+        Fri, 21 Jul 2023 09:50:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D7BD61D4E;
+        Fri, 21 Jul 2023 16:50:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFCF4C433C9;
+        Fri, 21 Jul 2023 16:50:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689958214;
+        bh=mQU7Wkq/57BlFhaTQjhs2F0m+cSWKxeKpX063RD5X0s=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=c0pY93/OuIZ5yhMVy+tz+CqP3YaeAwh+x8IaN6ayJ3lzBmQPMx0vMlFMmC+TJJyiv
+         0qvL91SjQCJ3TV43jtUgPvu3nANN0FLRkb5umH9jAisuSPAar2i06cgT+VjGS9NGf4
+         Ut5SQ6tBB5FK41fcAJySiT0THk9LgtCA/OkUk6pUSCloGItP7EPKcc5+4IiFyszdkQ
+         14CkjjbuEGaW97LWFwqLvg+ks+rsk2LZk6lYn4+Qftz972iyQCf/0zSPiNk5HqZvBr
+         HPVBlr2dbsD9g5NdY7oz9QlWCDR963Df+XXr4w40KbrWu4TFgpDc2q3k+WzP+qeC0n
+         dU5iEAOuKqUPw==
+Message-ID: <38c7c0f4a7578fb9852e19d7c7b4bf3fadb2cc9b.camel@kernel.org>
+Subject: Re: [PATCH] nfsd: better conform to setfacl's method for setting
+ missing ACEs
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Andreas =?ISO-8859-1?Q?Gr=FCnbacher?= 
+        <andreas.gruenbacher@gmail.com>
+Cc:     Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 21 Jul 2023 12:50:12 -0400
+In-Reply-To: <CAHpGcM+JCXu6TVrt+-woHCRFTKD2Dr_x6Xp0n4fw9aJHScbbMw@mail.gmail.com>
+References: <20230721142642.45871-1-jlayton@kernel.org>
+         <CAHpGcM+JCXu6TVrt+-woHCRFTKD2Dr_x6Xp0n4fw9aJHScbbMw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 6ssB93ZsqB_symMR3J0sKHmRyvan4IYg
-X-Proofpoint-ORIG-GUID: 6ssB93ZsqB_symMR3J0sKHmRyvan4IYg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-21_10,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- spamscore=0 malwarescore=0 clxscore=1011 priorityscore=1501 adultscore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 lowpriorityscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307210147
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Failing to acquire the iface clock makes probing of the Qualcomm
-SoundWire driver fail without providing any indication to the user. Make
-the driver log the error to aid debugging system configuration issues.
+On Fri, 2023-07-21 at 18:29 +0200, Andreas Gr=FCnbacher wrote:
+> Am Fr., 21. Juli 2023 um 16:26 Uhr schrieb Jeff Layton <jlayton@kernel.or=
+g>:
+> > Andreas pointed out that the way we're setting missing ACEs doesn't
+> > quite conform to what setfacl does. Change it to better conform to
+> > how setfacl does this.
+>=20
+> Thanks, this looks reasonable.
+>=20
+> Andreas
+>=20
+> > Cc: Andreas Gr=FCnbacher <andreas.gruenbacher@gmail.com>
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  fs/nfsd/nfs4acl.c | 15 ++++++++-------
+> >  1 file changed, 8 insertions(+), 7 deletions(-)
+> >=20
+> > Chuck, it might be best to fold this into the original patch, if it
+> > looks ok.
+> >=20
+> > diff --git a/fs/nfsd/nfs4acl.c b/fs/nfsd/nfs4acl.c
+> > index 64e45551d1b6..9ec61bd0e11b 100644
+> > --- a/fs/nfsd/nfs4acl.c
+> > +++ b/fs/nfsd/nfs4acl.c
+> > @@ -742,14 +742,15 @@ static int nfs4_acl_nfsv4_to_posix(struct nfs4_ac=
+l *acl,
+> >          *  no owner, owning group, or others entry,  a  copy of  the  =
+ACL
+> >          *  owner, owning group, or others entry is added to the Defaul=
+t ACL."
+> >          *
+> > -        * If none of the requisite ACEs were set, and some explicit us=
+er or group
+> > -        * ACEs were, copy the requisite entries from the effective set=
+.
+> > +        * Copy any missing ACEs from the effective set.
+> >          */
+> > -       if (!default_acl_state.valid &&
+> > -           (default_acl_state.users->n || default_acl_state.groups->n)=
+) {
+> > -               default_acl_state.owner =3D effective_acl_state.owner;
+> > -               default_acl_state.group =3D effective_acl_state.group;
+> > -               default_acl_state.other =3D effective_acl_state.other;
+> > +       if (default_acl_state.users->n || default_acl_state.groups->n) =
+{
 
-Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
----
- drivers/soundwire/qcom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think we probably need to also do this if any "valid" bits are set.
+IOW, if we explicitly set a default entry only for OWNER@, we also need
+ACEs for group and other.
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 55be9f4b8d59..e51b1dfce82d 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -1550,7 +1550,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 
- 	ctrl->hclk = devm_clk_get(dev, "iface");
- 	if (IS_ERR(ctrl->hclk)) {
--		ret = PTR_ERR(ctrl->hclk);
-+		ret = dev_err_probe(dev, PTR_ERR(ctrl->hclk), "unable to get iface clock\n");
- 		goto err_init;
- 	}
- 
--- 
-2.25.1
+I'll send another revision in a bit. This time, I'll just resend an
+updated patch of the original instead of a patch on a patch.
 
+Sorry for the churn!
+
+> > +               if (!(default_acl_state.valid & ACL_USER_OBJ))
+> > +                       default_acl_state.owner =3D effective_acl_state=
+.owner;
+> > +               if (!(default_acl_state.valid & ACL_GROUP_OBJ))
+> > +                       default_acl_state.group =3D effective_acl_state=
+.group;
+> > +               if (!(default_acl_state.valid & ACL_OTHER))
+> > +                       default_acl_state.other =3D effective_acl_state=
+.other;
+> >         }
+> >=20
+> >         *pacl =3D posix_state_to_acl(&effective_acl_state, flags);
+> > --
+> > 2.41.0
+> >=20
+
+--=20
+Jeff Layton <jlayton@kernel.org>
