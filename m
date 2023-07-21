@@ -2,95 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E98575C6FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2C975C6FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbjGUMjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 08:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44488 "EHLO
+        id S230142AbjGUMkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbjGUMjP (ORCPT
+        with ESMTP id S229652AbjGUMka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:39:15 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD682D56;
-        Fri, 21 Jul 2023 05:39:14 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-98e39784a85so639315666b.1;
-        Fri, 21 Jul 2023 05:39:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689943153; x=1690547953;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eBWmRvJ6rLCVlUuynkQvN84w3Cg18aPij7FlE9/ewkI=;
-        b=jaWgysHHTe1WTU9VN0h8AWNgdnUjQ3OYgW3ldXcAtHzwjxmekhiNlCiX6nqs3vLbst
-         RWfDKxgbcWHIaaMm5Iz0sBlX1kl9yOS1zmEyfTxL0qE10ad2mgd2toamAKij/HrwUJGT
-         KS8fGEVUx4DZkezSBiRoAs96omH81uQlUNqcNjcdZrnlGgr0w1C0Mq/z4EeA4KPi9oYx
-         UV0u2PEtc7kV0z6pwgA/gThrlBpJfxH+gCnsz0d2sXlJyIQxuAIM5BagAV97+imj1Mhq
-         Irz4QZy7Q3kX1EweuyHSj6y+I51Zb3NWymG8mL/Db1A6QL+WlwLVUFEdnwNUGnbSL24g
-         oTvg==
+        Fri, 21 Jul 2023 08:40:30 -0400
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250E52D58;
+        Fri, 21 Jul 2023 05:40:29 -0700 (PDT)
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-c15a5ed884dso1742324276.2;
+        Fri, 21 Jul 2023 05:40:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689943153; x=1690547953;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eBWmRvJ6rLCVlUuynkQvN84w3Cg18aPij7FlE9/ewkI=;
-        b=Ao8OQSo2d8j1UiRd9wvCDmqRC9S0CRPSwiYCPh5tfbu/qgf9viZCKTbt7jL+HIjeNz
-         HmrfeRSxBFKqxyN8eIBRmOVVS27W6pAhJ0CW2EtwkkpwF4fe/PrF/DNIv8B+eQ9Jgsig
-         SWpp9N6NafKH/9tiKBrvfTjHffGujxkm3HiAHRgqAIE3onSCySPOrjwRlWcCZXQsALf4
-         u7soQ1ocal669F97hqhU3A9KCaMoXh8aEyfgV/IA1WZ/+0whf56GFOGAmJgBFEdtM8XC
-         Y8tkA4vPwezkkMQMmy5xUUc9Wk4M1YCVguYixwxHiWZsuN9dYMqLDTkthnYCtQZI9k3a
-         9OLQ==
-X-Gm-Message-State: ABy/qLYXUsvFs+j09NsWcbhxrF36Udr+pTDAl15C6LpZ+VHmlOy/CVzq
-        qDRlyD0LDVJ6FC2OhrWok1I=
-X-Google-Smtp-Source: APBJJlFtcgWByzXrBVspPGT3Sy6Zkt225GnJ2K2MZZegMOL1I2moz8jmLkp4pWDZdHK+qZTj9x1GzA==
-X-Received: by 2002:a17:906:30c5:b0:993:fb68:ed6c with SMTP id b5-20020a17090630c500b00993fb68ed6cmr1877710ejb.15.1689943153199;
-        Fri, 21 Jul 2023 05:39:13 -0700 (PDT)
-Received: from localhost (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id dk14-20020a170906f0ce00b009930308425csm2123640ejb.31.2023.07.21.05.39.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 05:39:12 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     claudiu.beznea@microchip.com, Guiting Shen <aarongt.shen@gmail.com>
-Cc:     u.kleine-koenig@pengutronix.de, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com,
-        linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] pwm: atmel: Enable clk when pwm already enabled in bootloader
-Date:   Fri, 21 Jul 2023 14:39:08 +0200
-Message-ID: <168994313438.2987087.16791169128100563867.b4-ty@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230716020652.18557-1-aarongt.shen@gmail.com>
-References: <20230716020652.18557-1-aarongt.shen@gmail.com>
+        d=1e100.net; s=20221208; t=1689943228; x=1690548028;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R1irb96IZdUaV+Zw6SqMt9u0coJjIQi+rgKDiQBXcb0=;
+        b=HaPpygDWTM3n/dlCd+2dRXQKm9H9c+F3g8mrWGjCWF5uEe2KXlkyCYisb2IgZySVwD
+         0pTYJptedQxoa65oGYZr2ipPcGLoAHDAAovLYRF0QPTHptY1xfk1vI63ok1WR+i4XVZC
+         xgJf34Gwm4UOWZRIMDsZ3uvYp//ieTXgrHPjjuu15TiytTTdzNZO4cgUy44Cbx5z4hZY
+         1miJC4Aqp9CSneKit/gsEReaRv+d6oSOaFK0rdKRydies4GR53UK9EzrBfVxiFDBXh/+
+         kgVkLqexZ+EimnC7V5PGhkj9viO3JaUoJPi+7Ni/0j/u3fwbt8srkrV33M8HFZSwgWbW
+         BPoA==
+X-Gm-Message-State: ABy/qLY7+QKIbWDac9n/BOw4LrLIkPutoY3IC6PHnfNKa+PQIwI7t1Cq
+        oAY6VaFyl4COn1iUbDfVA9XO79UfIgCyCg==
+X-Google-Smtp-Source: APBJJlFAJkSG1QFMXLgXtX+nbZeA0qsyFiIt4YcYbP3fpt8cKO6GGh8mARMY43dzbvQRSmzB2U16ig==
+X-Received: by 2002:a25:db91:0:b0:c4c:ec2c:3c95 with SMTP id g139-20020a25db91000000b00c4cec2c3c95mr1780013ybf.4.1689943228123;
+        Fri, 21 Jul 2023 05:40:28 -0700 (PDT)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
+        by smtp.gmail.com with ESMTPSA id 127-20020a250d85000000b00cb6bb265676sm757380ybn.13.2023.07.21.05.40.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 05:40:27 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-57688a146ecso21105217b3.2;
+        Fri, 21 Jul 2023 05:40:26 -0700 (PDT)
+X-Received: by 2002:a0d:c8c7:0:b0:573:4d8b:471f with SMTP id
+ k190-20020a0dc8c7000000b005734d8b471fmr1656720ywd.26.1689943226191; Fri, 21
+ Jul 2023 05:40:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230711154449.1378385-1-eesposit@redhat.com> <ZK/9MlTh435FP5Ji@gambale.home>
+ <ZLABozIRVGmwuIBf@gambale.home> <ba2354dc63fd741d2d351b18d4312d0771c0935d.camel@HansenPartnership.com>
+ <ZLVyvAXwtemx1I6p@redhat.com> <0aa647f719103e8620d7209cbde40f04a7334749.camel@HansenPartnership.com>
+ <FBDC67DD-856F-429B-8E91-B0CA8B0F24B9@oracle.com> <CAMw=ZnQ5pjwJZdX9kyib=vFd_c5_5_eUhV_mT5OcRPt693m=Yg@mail.gmail.com>
+ <635B383C-38A5-479E-80A6-358D5F90988B@oracle.com> <CAMw=ZnQtEwNFyZ-Gt6ODb9gp22KY1GimaSfW46N7o-S1Hkfp4A@mail.gmail.com>
+ <c2f451e0f8d72cf3183aff9cbaf23f135fc7b495.camel@HansenPartnership.com>
+In-Reply-To: <c2f451e0f8d72cf3183aff9cbaf23f135fc7b495.camel@HansenPartnership.com>
+From:   Luca Boccassi <bluca@debian.org>
+Date:   Fri, 21 Jul 2023 13:40:14 +0100
+X-Gmail-Original-Message-ID: <CAMw=ZnSHDYrLXoad=d_O_qAsurqv196z3Fc3VRAJXSsJNVXdPw@mail.gmail.com>
+Message-ID: <CAMw=ZnSHDYrLXoad=d_O_qAsurqv196z3Fc3VRAJXSsJNVXdPw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Eric Snowberg <eric.snowberg@oracle.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "lennart@poettering.net" <lennart@poettering.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Sun, 16 Jul 2023 10:06:52 +0800, Guiting Shen wrote:
-> The driver would never call clk_enable() if the PWM channel was already
-> enabled in bootloader which lead to dump the warning message "the PWM
-> clock already disabled" when turning off the PWM channel.
-> 
-> Add atmel_pwm_enable_clk_if_on() in probe function to enable clock if
-> the PWM channel was already enabled in bootloader.
-> 
+On Fri, 21 Jul 2023 at 12:24, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> On Fri, 2023-07-21 at 09:55 +0100, Luca Boccassi wrote:
+> > On Fri, 21 Jul 2023 at 02:49, Eric Snowberg
+> > <eric.snowberg@oracle.com> wrote:
+> > > > On Jul 20, 2023, at 1:16 PM, Luca Boccassi <bluca@debian.org>
+> > > > wrote:
+> > > > On Thu, 20 Jul 2023 at 18:11, Eric Snowberg
+> > > > <eric.snowberg@oracle.com> wrote:
 > [...]
+> > > > > I agree with James in the previous thread;  adding the SBAT
+> > > > > section to the kernel should be handled by the signing tools.
+> > > > > It really doesn't need to be included in the mainline kernel
+> > > > > code. I also agree with the sentiment that mainline and the
+> > > > > stable branches should not have SBAT versions attached
+> > > > > to them. These are things distros should be responsible for
+> > > > > including in their kernel if they want to have SBAT support.
+> > > >
+> > > > Why would 'signing tools' handle that? It's just a text-based PE
+> > > > section, it doesn't require access to private key materials to be
+> > > > handled, nor it has any relationship with signing.
+> > >
+> > > There is a relationship, the sbat information within the signed
+> > > file can be used for revocation in lieu of revoking the hash or
+> > > signing certificate at a later time.
+> >
+> > No, it is completely disjoint. In fact, the kernel doesn't even have
+> > to be signed at all, but it still _must_ have a .sbat section when it
+> > is used in a UKI.
+>
+> Just a minute, this is wrong.  I was talking to Peter after all of this
+> blew up about how we handle signed kernels with no sbat (since we need
+> that still to work for developers who sign their own kernels).  I
+> thought he was planning to require an sbat section for all EFI
+> binaries, but he says that's not true.  The current way shim does the
+> sbat check is that if the section doesn't exist the binary is processed
+> as having an empty sbat section (i.e. no sbat level checking will be
+> done because there's no named sbat level for anything and it will just
+> work) and they're planning to keep it that way so that a signed but no
+> sbat kernel will always "just work" without any special key handling in
+> shim.  So if we're planning to keep this no-sbat case in discrete
+> kernels, even when the shim verifier checks sbat, the UKI kernel will
+> need to work for this case as well.
 
-Applied, thanks!
-
-[1/1] pwm: atmel: Enable clk when pwm already enabled in bootloader
-      commit: 435ed5851458084b45f42df8689536d5f3d0e126
-
-Best regards,
--- 
-Thierry Reding <thierry.reding@gmail.com>
+Are you sure that's not just about local signing? IE, MoK vs embedded
+cert auth flow? As far as I know, the plan for the 3rd party CA flow
+is to eventually (very eventually) require it. I might have missed
+some development ofc.
