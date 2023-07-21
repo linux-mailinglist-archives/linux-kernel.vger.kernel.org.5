@@ -2,98 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B5275D7FB
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 01:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D57E75D7FE
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 01:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbjGUX4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 19:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
+        id S230227AbjGUX7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 19:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbjGUX4q (ORCPT
+        with ESMTP id S229533AbjGUX7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 19:56:46 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0652B30E1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:56:46 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b8a7734734so14363525ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:56:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689983805; x=1690588605;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=/0/Ys3eyilWPWK3MFX3CavmjPp16nyypaJP3VylXGoU=;
-        b=AozewlHZURPovNElQfoYDp0vUxJqneJqSpZ25EaH5FyAd+F6cPs+hMGzHxOByIMyyh
-         cR4vkzvcesyxfxZklzBFTQTHJDnA+yJQFcZVLfCq4J4NTQ54Dhz1GxFvCBQ3OpazhV2t
-         mSegV8J9RIDYTJTSxe1a/R9AdW0mwmzUwYjnECwhFQdQsvzipRK2PPsQOHcTNR2TuU2c
-         OAT/p71pi2JxgYVyi3xGPONi9yWumb2uFjAJlqpu99GgiMhGvGZdUHVW9615aMaMV6Hg
-         j2I0ZYUg4yYhysw5dsu3sD9dUF57v7H59Qf0FX55q7EB0U4nTm5c+T/MFN3AnMoClLaV
-         Zd5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689983805; x=1690588605;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/0/Ys3eyilWPWK3MFX3CavmjPp16nyypaJP3VylXGoU=;
-        b=iY5QnPzf2n9mYaxt6gC/j6X4LeEvY+D7KBRMmhcVG6MnvwoLbebsbpwf0h40r+B+XR
-         0Lz+6ETeMvQAQvlg+Mx8mtVMv+TLkryk2o6zNYgEc57DFJ89dpEtP2Kx6ghd0KLKOYsp
-         XH1WKcxaGGq5Kyq5h6bAUVXfkc8IbmHYKgnQ1/MbSRKHBfDhaWG3gDfMCJuQDDuj9kiM
-         go0pRV6RlZEsQQFhxLNzJWF3FN4SesloUPazJZY1qfAuTXQiRfz9BuTa4dF9NoAsy/wF
-         0RAwv0WQx2igK0X2d5Y4BcMCJ7Do4BISU0v3QRNCGTNa+NWT+aqUjIlXAyegxEBUrXVn
-         jM0g==
-X-Gm-Message-State: ABy/qLbaDHHOWoBu9SAkazZtneCR5738zBrO/ejqnBvyI9TSQaa4Tqzl
-        KgshwRBD6XI6IXp9Wxqi7p6I0P42uOc=
-X-Google-Smtp-Source: APBJJlF9re/QfEiwtTvrQ2bbtlEB4e6P4b3U+Tw4dcVSuQCMsevPuEn/b6qzORLgenNlpOoqeUsTqJReT68=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:32cd:b0:1a6:4ce8:3ed5 with SMTP id
- i13-20020a17090332cd00b001a64ce83ed5mr13087plr.4.1689983805595; Fri, 21 Jul
- 2023 16:56:45 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 21 Jul 2023 16:56:37 -0700
-In-Reply-To: <20230721235637.2345403-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230721235637.2345403-1-seanjc@google.com>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230721235637.2345403-3-seanjc@google.com>
-Subject: [PATCH 2/2] KVM: VMX: Use vmread_error() to report VM-Fail in "goto" path
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Su Hui <suhui@nfschina.com>
+        Fri, 21 Jul 2023 19:59:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43CA630ED;
+        Fri, 21 Jul 2023 16:59:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CCEF460DFD;
+        Fri, 21 Jul 2023 23:59:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F274C43397;
+        Fri, 21 Jul 2023 23:59:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689983961;
+        bh=nL7Uxf9LHyedJ5ptAy4FvNEgMCaUaf2n0tlV63dMa9k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RvnXTCVRk34PGdj+bQvssXz4LeOTC+DbWn8hWfk6WgWbWND9AtlpCfjopnv+euggV
+         vE8kYSRXU833jaRO2ZlxJl84gWNnom23X2yWT8z7pPD2isr9/cgLT/FiI0YyfHBR2p
+         NswU/R7uhIvd1bN1IOnsn1lR2/ymplpwRJORCDWP6s5EstIQ8QATgP5FiwDZC+bTXa
+         zjfC+yB1or+WAbbYrjtIFALfbB7s+sP2b60SaxjVSy9cWTNvPwqaEBLleB3iMNoUmB
+         fusZPNJxS0iDH1lHEf8HD+vhR1+3KbVEM0FhBiVGah/Ua0ghF+1SlR1GhDUy3RBfXJ
+         ViSBGV542tikg==
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-51e566b1774so3080420a12.1;
+        Fri, 21 Jul 2023 16:59:21 -0700 (PDT)
+X-Gm-Message-State: ABy/qLaQ5cz1cjR660oKFFlr7E0qZhbuuUeZyZNgM71Nr+1TvS3ZbeBG
+        iu33SvEXEXwNYrorYvaGwxf8ts/cwzsRkNX3Ncw=
+X-Google-Smtp-Source: APBJJlHBERULY9uAI2Af2Xh5LWL+8JllED/iDuB/6zed6hakhaHaL7B3C2jZUryHRlWbwy9LE0TlZntWen33Js4NvTg=
+X-Received: by 2002:a50:fc16:0:b0:51e:5cab:feb9 with SMTP id
+ i22-20020a50fc16000000b0051e5cabfeb9mr2715190edr.33.1689983959307; Fri, 21
+ Jul 2023 16:59:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230721145121.1854104-1-guoren@kernel.org> <5e5be2d4-c563-6beb-b5f5-df47edeebc83@ghiti.fr>
+ <CAJF2gTQMAVUtC6_ftEwp=EeYR_O7yzfGYmxwrqcO6+hn2J32bA@mail.gmail.com> <87bfcd33-9741-4d6c-8b7a-1d1ee2dce61b@ghiti.fr>
+In-Reply-To: <87bfcd33-9741-4d6c-8b7a-1d1ee2dce61b@ghiti.fr>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Fri, 21 Jul 2023 19:59:07 -0400
+X-Gmail-Original-Message-ID: <CAJF2gTT8JV5f4Fm1F-XgfAhNWNXJquVW8-uCK-b4Qy0xztrGLA@mail.gmail.com>
+Message-ID: <CAJF2gTT8JV5f4Fm1F-XgfAhNWNXJquVW8-uCK-b4Qy0xztrGLA@mail.gmail.com>
+Subject: Re: [PATCH] riscv: mm: Fixup spurious fault of kernel vaddr
+To:     Alexandre Ghiti <alex@ghiti.fr>
+Cc:     palmer@rivosinc.com, paul.walmsley@sifive.com, falcon@tinylab.org,
+        bjorn@kernel.org, conor.dooley@microchip.com,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use vmread_error() to report VM-Fail on VMREAD for the "asm goto" case,
-now that trampoline case has yet another wrapper around vmread_error() to
-play nice with instrumentation.
+On Fri, Jul 21, 2023 at 4:01=E2=80=AFPM Alexandre Ghiti <alex@ghiti.fr> wro=
+te:
+>
+>
+> On 21/07/2023 18:08, Guo Ren wrote:
+> > On Fri, Jul 21, 2023 at 11:19=E2=80=AFPM Alexandre Ghiti <alex@ghiti.fr=
+> wrote:
+> >>
+> >> On 21/07/2023 16:51, guoren@kernel.org wrote:
+> >>> From: Guo Ren <guoren@linux.alibaba.com>
+> >>>
+> >>> RISC-V specification permits the caching of PTEs whose V (Valid)
+> >>> bit is clear. Operating systems must be written to cope with this
+> >>> possibility, but implementers are reminded that eagerly caching
+> >>> invalid PTEs will reduce performance by causing additional page
+> >>> faults.
+> >>>
+> >>> So we must keep vmalloc_fault for the spurious page faults of kernel
+> >>> virtual address from an OoO machine.
+> >>>
+> >>> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> >>> Signed-off-by: Guo Ren <guoren@kernel.org>
+> >>> ---
+> >>>    arch/riscv/mm/fault.c | 3 +--
+> >>>    1 file changed, 1 insertion(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+> >>> index 85165fe438d8..f662c9eae7d4 100644
+> >>> --- a/arch/riscv/mm/fault.c
+> >>> +++ b/arch/riscv/mm/fault.c
+> >>> @@ -258,8 +258,7 @@ void handle_page_fault(struct pt_regs *regs)
+> >>>         * only copy the information from the master page table,
+> >>>         * nothing more.
+> >>>         */
+> >>> -     if ((!IS_ENABLED(CONFIG_MMU) || !IS_ENABLED(CONFIG_64BIT)) &&
+> >>> -         unlikely(addr >=3D VMALLOC_START && addr < VMALLOC_END)) {
+> >>> +     if (unlikely(addr >=3D TASK_SIZE)) {
+> >>>                vmalloc_fault(regs, code, addr);
+> >>>                return;
+> >>>        }
+> >>
+> >> Can you share what you are trying to fix here?
+> > We met a spurious page fault panic on an OoO machine.
+> >
+> > 1. The processor speculative execution brings the V=3D0 entries into th=
+e
+> > TLB in the kernel virtual address.
+> > 2. Linux kernel installs the kernel virtual address with the page, and =
+V=3D1
+> > 3. When kernel code access the kernel virtual address, it would raise
+> > a page fault as the V=3D0 entry in the tlb.
+> > 4. No vmalloc_fault, then panic.
+> >
+> >> I have a fix (that's currently running our CI) for commit 7d3332be011e
+> >> ("riscv: mm: Pre-allocate PGD entries for vmalloc/modules area") that
+> >> implements flush_cache_vmap() since we lost the vmalloc_fault.
+> > Could you share that patch?
+>
+>
+> Here we go:
+>
+>
+> Author: Alexandre Ghiti <alexghiti@rivosinc.com>
+> Date:   Fri Jul 21 08:43:44 2023 +0000
+>
+>      riscv: Implement flush_cache_vmap()
+>
+>      The RISC-V kernel needs a sfence.vma after a page table
+> modification: we
+>      used to rely on the vmalloc fault handling to emit an sfence.vma, bu=
+t
+>      commit 7d3332be011e ("riscv: mm: Pre-allocate PGD entries for
+>      vmalloc/modules area") got rid of this path for 64-bit kernels, so
+> now we
+>      need to explicitly emit a sfence.vma in flush_cache_vmap().
+>
+>      Note that we don't need to implement flush_cache_vunmap() as the
+> generic
+>      code should emit a flush tlb after unmapping a vmalloc region.
+>
+>      Fixes: 7d3332be011e ("riscv: mm: Pre-allocate PGD entries for
+> vmalloc/modules area")
+>      Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+>
+> diff --git a/arch/riscv/include/asm/cacheflush.h
+> b/arch/riscv/include/asm/cacheflush.h
+> index 8091b8bf4883..b93ffddf8a61 100644
+> --- a/arch/riscv/include/asm/cacheflush.h
+> +++ b/arch/riscv/include/asm/cacheflush.h
+> @@ -37,6 +37,10 @@ static inline void flush_dcache_page(struct page *page=
+)
+>   #define flush_icache_user_page(vma, pg, addr, len) \
+>          flush_icache_mm(vma->vm_mm, 0)
+>
+> +#ifdef CONFIG_64BIT
+> +#define flush_cache_vmap(start, end) flush_tlb_kernel_range(start, end)
+> +#endif
+I don't want that, and flush_tlb_kernel_range is flush_tlb_all. In
+addition, it would call IPI, which is a performance killer.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/vmx/vmx_ops.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+What's the problem of spurious fault replay? It only costs a
+local_tlb_flush with vaddr.
 
-diff --git a/arch/x86/kvm/vmx/vmx_ops.h b/arch/x86/kvm/vmx/vmx_ops.h
-index 5fa74779a37a..33af7b4c6eb4 100644
---- a/arch/x86/kvm/vmx/vmx_ops.h
-+++ b/arch/x86/kvm/vmx/vmx_ops.h
-@@ -108,8 +108,7 @@ static __always_inline unsigned long __vmcs_readl(unsigned long field)
- 
- do_fail:
- 	instrumentation_begin();
--	WARN_ONCE(1, KBUILD_MODNAME ": vmread failed: field=%lx\n", field);
--	pr_warn_ratelimited(KBUILD_MODNAME ": vmread failed: field=%lx\n", field);
-+	vmread_error(field);
- 	instrumentation_end();
- 	return 0;
- 
--- 
-2.41.0.487.g6d72f3e995-goog
+> +
+>   #ifndef CONFIG_SMP
+>
+>   #define flush_icache_all() local_flush_icache_all()
+>
+>
+> Let me know if that works for you!
+>
+>
+> >
+> >
 
+--
+Best Regards
+ Guo Ren
