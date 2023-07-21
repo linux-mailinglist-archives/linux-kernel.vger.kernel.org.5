@@ -2,73 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 456CB75C6BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D6475C6C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbjGUMQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 08:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
+        id S231437AbjGUMSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:18:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjGUMQn (ORCPT
+        with ESMTP id S231530AbjGUMSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:16:43 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3381722
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:16:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689941802; x=1721477802;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=WzLVA2z3z4Ky0rEoHYajFlgKmQlaun6+TT25viWnE/c=;
-  b=Stx2Klze4IXbu1QpOjZQD7x5JY65wxW3HQRurfodq5VJldcBNGBh+jug
-   omVVYaapKEMKrlCSTcLYmcSTYBOYsC5fWP3egCpMt2OIISwuADZQLoD1y
-   nQCdLEf6AOzi+oagypJPuq5g2BGjezNmXy6EJIqZMQrGPfl0Mx9yMfXot
-   6wph5XxCzr9Wt6xItFLf8X7LFrjOxA1eDc0zBqqwlxhCuIM21xgkZ2MNw
-   sydjp1YIgC221UruLJzsKL3icnD9oGZU0B4oeIkat7+JVwyFNEVk92YXw
-   aSmDtyVxxjybsGyZydujceRZZ2EswuuueGp/yQDtZ/txtxzFOWTIQJAmx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="364473041"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="364473041"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 05:16:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="759940914"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="759940914"
-Received: from dhardfel-mobl1.ger.corp.intel.com (HELO [10.251.223.78]) ([10.251.223.78])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 05:16:37 -0700
-Message-ID: <3fabdfd4-f6c5-c8e5-391f-baf8ff74210c@linux.intel.com>
-Date:   Fri, 21 Jul 2023 15:17:54 +0300
+        Fri, 21 Jul 2023 08:18:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1166172A;
+        Fri, 21 Jul 2023 05:18:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7D25B61A32;
+        Fri, 21 Jul 2023 12:18:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4006C433C8;
+        Fri, 21 Jul 2023 12:17:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689941879;
+        bh=rJi2DTN83RfAThWFtDygFnpUN4JOZdYbsP09b1MLD6o=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Bcy9AuDS9GdJtXMPCZTZcPJ0O+C6N6KFx0WHt2JTJnh1NtoToxaj2CSOsx+Mvfylj
+         eJamf0ktvE6eTbBkrM3aLd+TTEjTE4sT+/TVrwVPAUoY7ky+i/Tm+p03cR7QXEBfc+
+         MH1HiRIMVWCV8N9rOcY1diKYvc+tglaMAj9jK7LQqA6wofniN8UF1V2swN0yEM4ze9
+         RwWwcBiwI8MgUxKdHQBJfN/RDZqgHg6oct/Ls2Xh7CTa3rofEEXgPX4lWfAq9k4XkO
+         Vwcj9FSePL72HmS5aLTRd4aq/qPzedf3ZrDKwsr3ZpPvOuKR4PAHf0RPFwPgZAzlJ2
+         FwiT91RGvmdBw==
+Message-ID: <1de18a8bfa747d7949eb8afc93b66519538cc3f9.camel@kernel.org>
+Subject: Re: [PATCH v2 1/2] nfsd: handle failure to collect pre/post-op
+ attrs more sanely
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Chuck Lever <cel@kernel.org>, NeilBrown <neilb@suse.de>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Boyang Xue <bxue@redhat.com>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 21 Jul 2023 08:17:57 -0400
+In-Reply-To: <ZLm+w+aYVm59ctGq@manet.1015granger.net>
+References: <20230720-bz2223560-v2-0-070aaf2660b7@kernel.org>
+         <20230720-bz2223560-v2-1-070aaf2660b7@kernel.org>
+         <168988958067.11078.10143293324143654882@noble.neil.brown.name>
+         <ZLm+w+aYVm59ctGq@manet.1015granger.net>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v2 8/9] ASoC: SOF: Intel: Remove deferred probe for SOF
-Content-Language: en-US
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Matthew Auld <matthew.auld@intel.com>
-References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
- <20230719164141.228073-9-maarten.lankhorst@linux.intel.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230719164141.228073-9-maarten.lankhorst@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,292 +63,263 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2023-07-20 at 19:09 -0400, Chuck Lever wrote:
+> On Fri, Jul 21, 2023 at 07:46:20AM +1000, NeilBrown wrote:
+> > On Fri, 21 Jul 2023, Jeff Layton wrote:
+> > > Collecting pre_op_attrs can fail, in which case it's probably best to
+> > > fail the whole operation.
+> > >=20
+> > > Change fh_fill_{pre,post,both}_attrs to return __be32. For the pre an=
+d
+> > > both functions, have the callers check the return code and abort the
+> > > operation if it failed.
+> > >=20
+> > > If fh_fill_post_attrs fails, then it's too late to do anything about =
+it,
+> > > so most of those callers ignore the return value. If this happens, th=
+en
+> > > fh_post_saved will be false, which should cue the later stages to dea=
+l
+> > > with it.
+> > >=20
+> > > Suggested-by: Chuck Lever <chuck.lever@oracle.com>
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > ---
+> > >  fs/nfsd/nfs3proc.c |  4 +++-
+> > >  fs/nfsd/nfs4proc.c | 14 ++++++------
+> > >  fs/nfsd/nfsfh.c    | 26 ++++++++++++++---------
+> > >  fs/nfsd/nfsfh.h    |  6 +++---
+> > >  fs/nfsd/vfs.c      | 62 ++++++++++++++++++++++++++++++++++----------=
+----------
+> > >  5 files changed, 69 insertions(+), 43 deletions(-)
+> > >=20
+> > > diff --git a/fs/nfsd/nfs3proc.c b/fs/nfsd/nfs3proc.c
+> > > index fc8d5b7db9f8..268ef57751c4 100644
+> > > --- a/fs/nfsd/nfs3proc.c
+> > > +++ b/fs/nfsd/nfs3proc.c
+> > > @@ -307,7 +307,9 @@ nfsd3_create_file(struct svc_rqst *rqstp, struct =
+svc_fh *fhp,
+> > >  	if (!IS_POSIXACL(inode))
+> > >  		iap->ia_mode &=3D ~current_umask();
+> > > =20
+> > > -	fh_fill_pre_attrs(fhp);
+> > > +	status =3D fh_fill_pre_attrs(fhp);
+> > > +	if (status !=3D nfs_ok)
+> > > +		goto out;
+> > >  	host_err =3D vfs_create(&nop_mnt_idmap, inode, child, iap->ia_mode,=
+ true);
+> > >  	if (host_err < 0) {
+> > >  		status =3D nfserrno(host_err);
+> > > diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+> > > index d8e7a533f9d2..9285e1eab4d5 100644
+> > > --- a/fs/nfsd/nfs4proc.c
+> > > +++ b/fs/nfsd/nfs4proc.c
+> > > @@ -297,12 +297,12 @@ nfsd4_create_file(struct svc_rqst *rqstp, struc=
+t svc_fh *fhp,
+> > >  	}
+> > > =20
+> > >  	if (d_really_is_positive(child)) {
+> > > -		status =3D nfs_ok;
+> > > -
+> > >  		/* NFSv4 protocol requires change attributes even though
+> > >  		 * no change happened.
+> > >  		 */
+> > > -		fh_fill_both_attrs(fhp);
+> > > +		status =3D fh_fill_both_attrs(fhp);
+> > > +		if (status !=3D nfs_ok)
+> > > +			goto out;
+> > > =20
+> > >  		switch (open->op_createmode) {
+> > >  		case NFS4_CREATE_UNCHECKED:
+> > > @@ -345,7 +345,9 @@ nfsd4_create_file(struct svc_rqst *rqstp, struct =
+svc_fh *fhp,
+> > >  	if (!IS_POSIXACL(inode))
+> > >  		iap->ia_mode &=3D ~current_umask();
+> > > =20
+> > > -	fh_fill_pre_attrs(fhp);
+> > > +	status =3D fh_fill_pre_attrs(fhp);
+> > > +	if (status !=3D nfs_ok)
+> > > +		goto out;
+> > >  	status =3D nfsd4_vfs_create(fhp, child, open);
+> > >  	if (status !=3D nfs_ok)
+> > >  		goto out;
+> > > @@ -424,11 +426,11 @@ do_open_lookup(struct svc_rqst *rqstp, struct n=
+fsd4_compound_state *cstate, stru
+> > >  	} else {
+> > >  		status =3D nfsd_lookup(rqstp, current_fh,
+> > >  				     open->op_fname, open->op_fnamelen, *resfh);
+> > > -		if (!status)
+> > > +		if (status =3D=3D nfs_ok)
+> > >  			/* NFSv4 protocol requires change attributes even though
+> > >  			 * no change happened.
+> > >  			 */
+> > > -			fh_fill_both_attrs(current_fh);
+> > > +			status =3D fh_fill_both_attrs(current_fh);
+> > >  	}
+> > >  	if (status)
+> > >  		goto out;
+> > > diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
+> > > index c291389a1d71..f7e68a91e826 100644
+> > > --- a/fs/nfsd/nfsfh.c
+> > > +++ b/fs/nfsd/nfsfh.c
+> > > @@ -614,7 +614,7 @@ fh_update(struct svc_fh *fhp)
+> > >   * @fhp: file handle to be updated
+> > >   *
+> > >   */
+> > > -void fh_fill_pre_attrs(struct svc_fh *fhp)
+> > > +__be32 fh_fill_pre_attrs(struct svc_fh *fhp)
+> > >  {
+> > >  	bool v4 =3D (fhp->fh_maxsize =3D=3D NFS4_FHSIZE);
+> > >  	struct inode *inode;
+> > > @@ -622,12 +622,12 @@ void fh_fill_pre_attrs(struct svc_fh *fhp)
+> > >  	__be32 err;
+> > > =20
+> > >  	if (fhp->fh_no_wcc || fhp->fh_pre_saved)
+> > > -		return;
+> > > +		return nfs_ok;
+> > > =20
+> > >  	inode =3D d_inode(fhp->fh_dentry);
+> > >  	err =3D fh_getattr(fhp, &stat);
+> > >  	if (err)
+> > > -		return;
+> > > +		return err;
+> > > =20
+> > >  	if (v4)
+> > >  		fhp->fh_pre_change =3D nfsd4_change_attribute(&stat, inode);
+> > > @@ -636,6 +636,7 @@ void fh_fill_pre_attrs(struct svc_fh *fhp)
+> > >  	fhp->fh_pre_ctime =3D stat.ctime;
+> > >  	fhp->fh_pre_size  =3D stat.size;
+> > >  	fhp->fh_pre_saved =3D true;
+> > > +	return nfs_ok;
+> > >  }
+> > > =20
+> > >  /**
+> > > @@ -643,26 +644,27 @@ void fh_fill_pre_attrs(struct svc_fh *fhp)
+> > >   * @fhp: file handle to be updated
+> > >   *
+> > >   */
+> > > -void fh_fill_post_attrs(struct svc_fh *fhp)
+> > > +__be32 fh_fill_post_attrs(struct svc_fh *fhp)
+> > >  {
+> > >  	bool v4 =3D (fhp->fh_maxsize =3D=3D NFS4_FHSIZE);
+> > >  	struct inode *inode =3D d_inode(fhp->fh_dentry);
+> > >  	__be32 err;
+> > > =20
+> > >  	if (fhp->fh_no_wcc)
+> > > -		return;
+> > > +		return nfs_ok;
+> > > =20
+> > >  	if (fhp->fh_post_saved)
+> > >  		printk("nfsd: inode locked twice during operation.\n");
+> > > =20
+> > >  	err =3D fh_getattr(fhp, &fhp->fh_post_attr);
+> > >  	if (err)
+> > > -		return;
+> > > +		return err;
+> > > =20
+> > >  	fhp->fh_post_saved =3D true;
+> > >  	if (v4)
+> > >  		fhp->fh_post_change =3D
+> > >  			nfsd4_change_attribute(&fhp->fh_post_attr, inode);
+> > > +	return nfs_ok;
+> > >  }
+> > > =20
+> > >  /**
+> > > @@ -672,16 +674,20 @@ void fh_fill_post_attrs(struct svc_fh *fhp)
+> > >   * This is used when the directory wasn't changed, but wcc attribute=
+s
+> > >   * are needed anyway.
+> > >   */
+> > > -void fh_fill_both_attrs(struct svc_fh *fhp)
+> > > +__be32 fh_fill_both_attrs(struct svc_fh *fhp)
+> > >  {
+> > > -	fh_fill_post_attrs(fhp);
+> > > -	if (!fhp->fh_post_saved)
+> > > -		return;
+> > > +	__be32 err;
+> > > +
+> > > +	err =3D fh_fill_post_attrs(fhp);
+> > > +	if (err)
+> > > +		return err;
+> > > +
+> > >  	fhp->fh_pre_change =3D fhp->fh_post_change;
+> > >  	fhp->fh_pre_mtime =3D fhp->fh_post_attr.mtime;
+> > >  	fhp->fh_pre_ctime =3D fhp->fh_post_attr.ctime;
+> > >  	fhp->fh_pre_size =3D fhp->fh_post_attr.size;
+> > >  	fhp->fh_pre_saved =3D true;
+> > > +	return nfs_ok;
+> > >  }
+> > > =20
+> > >  /*
+> > > diff --git a/fs/nfsd/nfsfh.h b/fs/nfsd/nfsfh.h
+> > > index 4e0ecf0ae2cf..486803694acc 100644
+> > > --- a/fs/nfsd/nfsfh.h
+> > > +++ b/fs/nfsd/nfsfh.h
+> > > @@ -294,7 +294,7 @@ static inline void fh_clear_pre_post_attrs(struct=
+ svc_fh *fhp)
+> > >  }
+> > > =20
+> > >  u64 nfsd4_change_attribute(struct kstat *stat, struct inode *inode);
+> > > -extern void fh_fill_pre_attrs(struct svc_fh *fhp);
+> > > -extern void fh_fill_post_attrs(struct svc_fh *fhp);
+> > > -extern void fh_fill_both_attrs(struct svc_fh *fhp);
+> > > +__be32 fh_fill_pre_attrs(struct svc_fh *fhp);
+> > > +__be32 fh_fill_post_attrs(struct svc_fh *fhp);
+> > > +__be32 fh_fill_both_attrs(struct svc_fh *fhp);
+> > >  #endif /* _LINUX_NFSD_NFSFH_H */
+> > > diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
+> > > index 8a2321d19194..f200afd33630 100644
+> > > --- a/fs/nfsd/vfs.c
+> > > +++ b/fs/nfsd/vfs.c
+> > > @@ -1537,9 +1537,11 @@ nfsd_create(struct svc_rqst *rqstp, struct svc=
+_fh *fhp,
+> > >  	dput(dchild);
+> > >  	if (err)
+> > >  		goto out_unlock;
+> > > -	fh_fill_pre_attrs(fhp);
+> > > -	err =3D nfsd_create_locked(rqstp, fhp, attrs, type, rdev, resfhp);
+> > > -	fh_fill_post_attrs(fhp);
+> > > +	err =3D fh_fill_pre_attrs(fhp);
+> > > +	if (err =3D=3D nfs_ok) {
+> > > +		err =3D nfsd_create_locked(rqstp, fhp, attrs, type, rdev, resfhp);
+> > > +		fh_fill_post_attrs(fhp);
+> >=20
+> > Most error handling in nfsd is
+> > =20
+> >    if (err)
+> >        goto ....
+> >=20
+> > Here (and one other place I think) you have
+> >    if (not err)
+> >        do stuff;
+> >=20
+> > Do we want to be more consistent?
+>=20
+> Yes, unless being consistent makes this code unreadable. There
+> doesn't seem to be a reason to drop that convention here.
+>=20
 
+My usual test for this is to use gotos if unwinding errors is complex
+enough to warrant it, and to just use the second form if the code is
+fairly simple.
 
-On 19/07/2023 19:41, Maarten Lankhorst wrote:
-> This was only used to allow modprobing i915, by converting to the
-> -EPROBE_DEFER mechanism, it can be completely removed, and is in
-> fact counterproductive since -EPROBE_DEFER otherwise won't be
-> handled correctly.
-> 
-> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Acked-by: Matthew Auld <matthew.auld@intel.com>
-> Acked-by: Mark Brown <broonie@kernel.org>
-> ---
->  sound/soc/sof/Kconfig           | 19 -----------------
->  sound/soc/sof/core.c            | 38 ++-------------------------------
->  sound/soc/sof/intel/Kconfig     |  1 -
->  sound/soc/sof/intel/hda-codec.c |  2 +-
->  sound/soc/sof/intel/hda.c       | 32 ++++++++++++++++-----------
->  sound/soc/sof/sof-pci-dev.c     |  3 +--
->  sound/soc/sof/sof-priv.h        |  5 -----
->  7 files changed, 23 insertions(+), 77 deletions(-)
-> 
-> diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-> index 80361139a49ad..8ee39e5558062 100644
-> --- a/sound/soc/sof/Kconfig
-> +++ b/sound/soc/sof/Kconfig
-> @@ -82,17 +82,6 @@ config SND_SOC_SOF_DEVELOPER_SUPPORT
->  
->  if SND_SOC_SOF_DEVELOPER_SUPPORT
->  
-> -config SND_SOC_SOF_FORCE_PROBE_WORKQUEUE
-> -	bool "SOF force probe workqueue"
-> -	select SND_SOC_SOF_PROBE_WORK_QUEUE
-> -	help
-> -	  This option forces the use of a probe workqueue, which is only used
-> -	  when HDaudio is enabled due to module dependencies. Forcing this
-> -	  option is intended for debug only, but this should not add any
-> -	  functional issues in nominal cases.
-> -	  Say Y if you are involved in SOF development and need this option.
-> -	  If not, select N.
-> -
->  config SND_SOC_SOF_NOCODEC
->  	tristate
->  
-> @@ -271,14 +260,6 @@ config SND_SOC_SOF
->  	  module dependencies but since the module or built-in type is decided
->  	  at the top level it doesn't matter.
->  
-> -config SND_SOC_SOF_PROBE_WORK_QUEUE
-> -	bool
-> -	help
-> -	  This option is not user-selectable but automagically handled by
-> -	  'select' statements at a higher level.
-> -	  When selected, the probe is handled in two steps, for example to
-> -	  avoid lockdeps if request_module is used in the probe.
-> -
->  # Supported IPC versions
->  config SND_SOC_SOF_IPC3
->  	bool
-> diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-> index 30db685cc5f4b..cdf86dc4a8a87 100644
-> --- a/sound/soc/sof/core.c
-> +++ b/sound/soc/sof/core.c
-> @@ -191,7 +191,8 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
->  	/* probe the DSP hardware */
->  	ret = snd_sof_probe(sdev);
->  	if (ret < 0) {
-> -		dev_err(sdev->dev, "error: failed to probe DSP %d\n", ret);
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(sdev->dev, "error: failed to probe DSP %d\n", ret);
+But...if you want gotos everywhere, then so be it. I'll respin this.
 
-While at it, can you drop thee "error:" prefix from the print?
+>=20
+> > I'm in two minds about this and I
+> > don't dislike your patch.  But I noticed the inconsistency and thought =
+I
+> > should mention it.
+> >=20
+> > Also, should we put a __must_check annotation on fh_fill_pre_attrs() an=
+d
+> > ..post..?  Then I wouldn't have to manually check that you found and
+> > fixed all callers (which I haven't).
 
->  		goto probe_err;
->  	}
->  
-> @@ -309,8 +310,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
->  	if (plat_data->sof_probe_complete)
->  		plat_data->sof_probe_complete(sdev->dev);
->  
-> -	sdev->probe_completed = true;
-> -
->  	return 0;
->  
->  sof_machine_err:
-> @@ -336,19 +335,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
->  	return ret;
->  }
->  
-> -static void sof_probe_work(struct work_struct *work)
-> -{
-> -	struct snd_sof_dev *sdev =
-> -		container_of(work, struct snd_sof_dev, probe_work);
-> -	int ret;
-> -
-> -	ret = sof_probe_continue(sdev);
-> -	if (ret < 0) {
-> -		/* errors cannot be propagated, log */
-> -		dev_err(sdev->dev, "error: %s failed err: %d\n", __func__, ret);
-> -	}
-> -}
-> -
->  int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
->  {
->  	struct snd_sof_dev *sdev;
-> @@ -436,33 +422,16 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
->  
->  	sof_set_fw_state(sdev, SOF_FW_BOOT_NOT_STARTED);
->  
-> -	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)) {
-> -		INIT_WORK(&sdev->probe_work, sof_probe_work);
-> -		schedule_work(&sdev->probe_work);
-> -		return 0;
-> -	}
-> -
->  	return sof_probe_continue(sdev);
->  }
->  EXPORT_SYMBOL(snd_sof_device_probe);
->  
-> -bool snd_sof_device_probe_completed(struct device *dev)
-> -{
-> -	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-> -
-> -	return sdev->probe_completed;
-> -}
-> -EXPORT_SYMBOL(snd_sof_device_probe_completed);
-> -
->  int snd_sof_device_remove(struct device *dev)
->  {
->  	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
->  	struct snd_sof_pdata *pdata = sdev->pdata;
->  	int ret;
->  
-> -	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
-> -		cancel_work_sync(&sdev->probe_work);
-> -
->  	/*
->  	 * Unregister any registered client device first before IPC and debugfs
->  	 * to allow client drivers to be removed cleanly
-> @@ -501,9 +470,6 @@ int snd_sof_device_shutdown(struct device *dev)
->  {
->  	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
->  
-> -	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
-> -		cancel_work_sync(&sdev->probe_work);
-> -
->  	if (sdev->fw_state == SOF_FW_BOOT_COMPLETE) {
->  		sof_fw_trace_free(sdev);
->  		return snd_sof_shutdown(sdev);
-> diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-> index 69c1a370d3b61..d9e87a91670a3 100644
-> --- a/sound/soc/sof/intel/Kconfig
-> +++ b/sound/soc/sof/intel/Kconfig
-> @@ -293,7 +293,6 @@ config SND_SOC_SOF_HDA_LINK
->  config SND_SOC_SOF_HDA_AUDIO_CODEC
->  	bool "SOF support for HDAudio codecs"
->  	depends on SND_SOC_SOF_HDA_LINK
-> -	select SND_SOC_SOF_PROBE_WORK_QUEUE
->  	help
->  	  This adds support for HDAudio codecs with Sound Open Firmware
->  	  for Intel(R) platforms.
-> diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-> index f1fd5b44aaac9..344b61576c0e3 100644
-> --- a/sound/soc/sof/intel/hda-codec.c
-> +++ b/sound/soc/sof/intel/hda-codec.c
-> @@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
->  		return 0;
->  
->  	/* i915 exposes a HDA codec for HDMI audio */
-> -	ret = snd_hdac_i915_init(bus, true);
-> +	ret = snd_hdac_i915_init(bus, false);
->  	if (ret < 0)
->  		return ret;
->  
-> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-> index 64bebe1a72bbc..a8b7a68142c05 100644
-> --- a/sound/soc/sof/intel/hda.c
-> +++ b/sound/soc/sof/intel/hda.c
-> @@ -801,8 +801,11 @@ static int hda_init(struct snd_sof_dev *sdev)
->  
->  	/* init i915 and HDMI codecs */
->  	ret = hda_codec_i915_init(sdev);
-> -	if (ret < 0)
-> -		dev_warn(sdev->dev, "init of i915 and HDMI codec failed\n");
-> +	if (ret < 0) {
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_warn(sdev->dev, "init of i915 and HDMI codec failed: %i\n", ret);
-> +		return ret;
-> +	}
->  
->  	/* get controller capabilities */
->  	ret = hda_dsp_ctrl_get_caps(sdev);
-> @@ -1115,14 +1118,6 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
->  	sdev->pdata->hw_pdata = hdev;
->  	hdev->desc = chip;
->  
-> -	hdev->dmic_dev = platform_device_register_data(sdev->dev, "dmic-codec",
-> -						       PLATFORM_DEVID_NONE,
-> -						       NULL, 0);
-> -	if (IS_ERR(hdev->dmic_dev)) {
-> -		dev_err(sdev->dev, "error: failed to create DMIC device\n");
-> -		return PTR_ERR(hdev->dmic_dev);
-> -	}
-> -
->  	/*
->  	 * use position update IPC if either it is forced
->  	 * or we don't have other choice
-> @@ -1142,6 +1137,15 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
->  	if (ret < 0)
->  		goto hdac_bus_unmap;
->  
-> +	hdev->dmic_dev = platform_device_register_data(sdev->dev, "dmic-codec",
-> +						       PLATFORM_DEVID_NONE,
-> +						       NULL, 0);
-> +	if (IS_ERR(hdev->dmic_dev)) {
-> +		dev_err(sdev->dev, "error: failed to create DMIC device\n");
+Maybe for the "pre" and "both" ones. We would _not_ want to add
+__must_check for the post one, since most of the callers (correctly)
+ignore that return value.
 
-From here also, let's not add them back.
-
-> +		ret = PTR_ERR(hdev->dmic_dev);
-> +		goto hdac_exit;
-> +	}
-> +
->  	if (sdev->dspless_mode_selected)
->  		goto skip_dsp_setup;
->  
-> @@ -1150,7 +1154,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
->  	if (!sdev->bar[HDA_DSP_BAR]) {
->  		dev_err(sdev->dev, "error: ioremap error\n");
->  		ret = -ENXIO;
-> -		goto hdac_bus_unmap;
-> +		goto platform_unreg;
->  	}
->  
->  	sdev->mmio_bar = HDA_DSP_BAR;
-> @@ -1248,10 +1252,12 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
->  /* dsp_unmap: not currently used */
->  	if (!sdev->dspless_mode_selected)
->  		iounmap(sdev->bar[HDA_DSP_BAR]);
-> -hdac_bus_unmap:
-> +platform_unreg:
->  	platform_device_unregister(hdev->dmic_dev);
-> -	iounmap(bus->remap_addr);
-> +hdac_exit:
->  	hda_codec_i915_exit(sdev);
-> +hdac_bus_unmap:
-> +	iounmap(bus->remap_addr);
->  err:
->  	return ret;
->  }
-> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-> index f5ece43d0ec24..0fa424613082e 100644
-> --- a/sound/soc/sof/sof-pci-dev.c
-> +++ b/sound/soc/sof/sof-pci-dev.c
-> @@ -339,8 +339,7 @@ void sof_pci_remove(struct pci_dev *pci)
->  	snd_sof_device_remove(&pci->dev);
->  
->  	/* follow recommendation in pci-driver.c to increment usage counter */
-> -	if (snd_sof_device_probe_completed(&pci->dev) &&
-> -	    !(sof_pci_debug & SOF_PCI_DISABLE_PM_RUNTIME))
-> +	if (!(sof_pci_debug & SOF_PCI_DISABLE_PM_RUNTIME))
->  		pm_runtime_get_noresume(&pci->dev);
->  
->  	/* release pci regions and disable device */
-> diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-> index d4f6702e93dcb..71db636cfdccc 100644
-> --- a/sound/soc/sof/sof-priv.h
-> +++ b/sound/soc/sof/sof-priv.h
-> @@ -564,10 +564,6 @@ struct snd_sof_dev {
->  	enum sof_fw_state fw_state;
->  	bool first_boot;
->  
-> -	/* work queue in case the probe is implemented in two steps */
-> -	struct work_struct probe_work;
-> -	bool probe_completed;
-> -
->  	/* DSP HW differentiation */
->  	struct snd_sof_pdata *pdata;
->  
-> @@ -675,7 +671,6 @@ struct snd_sof_dev {
->  int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data);
->  int snd_sof_device_remove(struct device *dev);
->  int snd_sof_device_shutdown(struct device *dev);
-> -bool snd_sof_device_probe_completed(struct device *dev);
->  
->  int snd_sof_runtime_suspend(struct device *dev);
->  int snd_sof_runtime_resume(struct device *dev);
-
--- 
-Péter
+I'll=A0plan to roll that in.
+--=20
+Jeff Layton <jlayton@kernel.org>
