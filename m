@@ -2,107 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E4175D089
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3383775D096
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbjGURWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 13:22:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36498 "EHLO
+        id S231169AbjGURZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 13:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGURWj (ORCPT
+        with ESMTP id S229452AbjGURYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 13:22:39 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF85113;
-        Fri, 21 Jul 2023 10:22:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689960159; x=1721496159;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=us9CRrn80BeO09+83BBkmkXoBKksmGaBRjQFHkDWvhw=;
-  b=QnROFwH2hmPaY6l0lpYWBLBg5PxPqBbfXVK/U8JMQZSOfJC4Q8tGMnOT
-   GCrBtIUniNOnPpKgcl5uLXeoi/t9E1fffjrEToWJKNZRSVkH4BLk6TmS2
-   468snSWk0tp5lAfO3Hy7QZD+yDRqpCjQpD9NE9t/X5qXCh4gSnzPkISkm
-   +RgBk2f3xIklDDQNIypySj2bgGjjuQNdTTGu2aJPCrnDJma04WQmDaiFx
-   /LB7CGWmVJIaiVbXRX3af/ptfq2I80LibzbN3k8ao6KYzL9IzC3FKd4Ki
-   CHCmo5cnvwaCI9ecSisAmA5ITkWqpZKBYzusNRcOqw6HgdeIJXyMgTM9+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="397968049"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="397968049"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 10:22:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="898774970"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="898774970"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP; 21 Jul 2023 10:22:37 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qMtpr-00ELGI-1d;
-        Fri, 21 Jul 2023 20:22:35 +0300
-Date:   Fri, 21 Jul 2023 20:22:35 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nuno Sa <nuno.sa@analog.com>
-Subject: Re: [PATCH v2 1/8] iio: core: Add opaque_struct_size() helper and
- use it
-Message-ID: <ZLq+2+9q6To3uAkf@smile.fi.intel.com>
-References: <20230721170022.3461-1-andriy.shevchenko@linux.intel.com>
- <20230721170022.3461-2-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230721170022.3461-2-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 21 Jul 2023 13:24:55 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C7DE47;
+        Fri, 21 Jul 2023 10:24:54 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LDMaLI018765;
+        Fri, 21 Jul 2023 17:24:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=hoGiKXN9LLHxribbSg2vDjbqkf+ni+mrm6GlYquInYE=;
+ b=R8nEk/49X2oMrzMATsitOju+ZV+l+SembJIDszq5qg7ek/6Ai7fNZJeWRPsddUh3ixQ3
+ htA8zjuBP+Y3ojecu0UIQW3MuZZnuyN2p5XCsNi0mnxH9IKpdTfdpECVQZwPVBwF+GCb
+ Rsb4HHgnxoOs4BiW+B1DeTdBwjMuuZ6PPxyv69yPW4F/xO/HQH8R9Cp9ekqOiW+/pLL7
+ I3fzXHjbntYzrRWmDaLv5SKXhB12FTUfmOw6t3lyuuQz3AB9vEOT5jzOqur7ZDExka+X
+ gDrisOMAPyFfAMgpuRWxlEhUcFt/ct0Yo5AifF9MgPAc7uCKLej5kONnIzkP51vtUU9l TQ== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ryn5ysbk3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jul 2023 17:24:46 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 36LHOgSN023730;
+        Fri, 21 Jul 2023 17:24:42 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3rumhknep8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 21 Jul 2023 17:24:41 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36LHOfuJ023720;
+        Fri, 21 Jul 2023 17:24:41 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 36LHOfXd023702;
+        Fri, 21 Jul 2023 17:24:41 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
+        id 9C12832C9; Fri, 21 Jul 2023 22:54:40 +0530 (+0530)
+From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        konrad.dybcio@linaro.org, mani@kernel.org
+Cc:     quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        dmitry.baryshkov@linaro.org,
+        Mrinmay Sarkar <quic_msarkar@quicinc.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/4] arm64: qcom: sa8775p: add support for PCIe
+Date:   Fri, 21 Jul 2023 22:54:31 +0530
+Message-Id: <1689960276-29266-1-git-send-email-quic_msarkar@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 1j3k2xGQuIK1kfYnPTFcpxhXU9O8HWIy
+X-Proofpoint-GUID: 1j3k2xGQuIK1kfYnPTFcpxhXU9O8HWIy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-21_10,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ impostorscore=0 clxscore=1015 mlxscore=0 mlxlogscore=705
+ priorityscore=1501 malwarescore=0 lowpriorityscore=0 adultscore=0
+ phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307210151
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 08:00:15PM +0300, Andy Shevchenko wrote:
-> Introduce opaque_struct_size() helper, which may be moved
-> to overflow.h in the future, and use it in the IIO core.
+Update the relavent DT bindings for PCIe, add new config to the phy
+driver add pcie and phy nodes to the .dtsi file and enable then in 
+board .dts file for the sa8775p-ride platform.
 
-...
+v2 -> v3:
+- to align with dt-bindings rectified pcie default state
+- dropped PCIe PHY dt-bindings and PHY driver in this series as its
+  already applied [1]
+- To verify DTS against bindings for this series we required [2]
 
-> +#define opaque_struct_size(p, a, s)	({		\
-> +	size_t _psize = sizeof(*(p));			\
-> +	size_t _asize = ALIGN(_psize, (a));		\
-> +	size_t _ssize = s;				\
-> +	_ssize ? size_add(_asize, _ssize) : _psize;	\
-> +})
-> +
-> +#define opaque_struct_data(p, a)			\
-> +	((void *)(p) + ALIGN(sizeof(*(p)), (a)))
+[1] https://lore.kernel.org/all/168966092968.340315.2461852657981161685.b4-ty@kernel.org/
+[2] https://lore.kernel.org/all/20230719110344.19983-1-quic_shazhuss@quicinc.com/
 
-Hmm... This can potentially evaluate p twice.
+v1 -> v2:
+- correct indentationand sort compatible in qcom,pcie binding
+- correct clock name entry and sort compatible in pcie-phy binding
+- sort compatible and change commit message in qcom pcie driver
+- change offset name and sort compatible in qmp pcie phy driver
+- correct ranges property, added MSI, dma-coherent, cpu-pcie property
+  removed iommus property moved pinctrl and gpio property to board dts
+  and correct the allignment in pcie dtsi nodes
+- added pinctrl and gpio property in board dts
 
-Perhaps this variant is better:
+Mrinmay Sarkar (4):
+  dt-bindings: PCI: qcom: Add sa8775p compatible
+  PCI: qcom: Add support for sa8775p SoC
+  arm64: dts: qcom: sa8775p: Add pcie0 and pcie1 nodes
+  arm64: dts: qcom: sa8775p-ride: enable pcie nodes
 
-#define opaque_struct_data(p, a)	ALIGN((p) + 1, (a)))
-
-Besides, I don't think we should worry about @s evaluation in the main macro
-which may be simplified to
-
-#define opaque_struct_size(p, a, s)					\
-	((s) ? size_add(ALIGN(sizeof(*(p)), (a)), (s)) : sizeof(*(p)))
-
-Thoughts?
+ .../devicetree/bindings/pci/qcom,pcie.yaml         |  28 +++
+ arch/arm64/boot/dts/qcom/sa8775p-ride.dts          |  80 ++++++++
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi              | 204 ++++++++++++++++++++-
+ drivers/pci/controller/dwc/pcie-qcom.c             |   1 +
+ 4 files changed, 311 insertions(+), 2 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.7.4
 
