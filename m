@@ -2,144 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3053575C1CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FC075C1E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbjGUIfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45494 "EHLO
+        id S230383AbjGUIme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231454AbjGUIfQ (ORCPT
+        with ESMTP id S230393AbjGUImc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:35:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D152D7B;
-        Fri, 21 Jul 2023 01:35:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 40F2561880;
-        Fri, 21 Jul 2023 08:35:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EDD1C433C9;
-        Fri, 21 Jul 2023 08:35:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689928507;
-        bh=6LbigfYqXwFco4QzAjvVJNGTQFJ6Z80yZ4lA9uao7dY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IRJtIxEhfjoSTdAixbjssNlPaTcC4Be+VneENzRk4Nk1bSBm/gmfw+0EU7JoxMbQQ
-         bd87n4DieSa7VUMp+PaEzvzKUAPejRqvhfqOaUeGaxbHrc3IGfgtD+vftBorke6ull
-         z1s7E7lg6aBKEkKzdUnSI2zrwGRXTLOHO+GF6a4cDGxYYqoQ27W1H3IFo1Tn2T62Iu
-         ZX57tFlLQaSt1MdXwL5lgB2l5XvbBQROPp92GW/GTZN84m68LBomxoYm7gXupp3yIq
-         vYa6MFUT8SNaHV2qdYw90OYSnLZHH5G2CeFKtytWUDcJp7t7lQGMJ5VzLH7jCYbUJz
-         /W6uHoyOCwO2A==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qMlbX-0003Qc-2o;
-        Fri, 21 Jul 2023 10:35:15 +0200
-Date:   Fri, 21 Jul 2023 10:35:15 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        quic_jackp@quicinc.com, Wesley Cheng <quic_wcheng@quicinc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, quic_pkondeti@quicinc.com,
-        quic_ppratap@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v9 06/10] usb: dwc3: qcom: Add support to read IRQ's
- related to multiport
-Message-ID: <ZLpDQ0R1BjG8fJk8@hovoldconsulting.com>
-References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
- <20230621043628.21485-7-quic_kriskura@quicinc.com>
- <ZK6YrLMn9r39zEeB@hovoldconsulting.com>
- <ef29e520-7b9c-f581-e70a-250df80d3821@quicinc.com>
- <ZLEP6Ekh3unSTiCL@hovoldconsulting.com>
- <7c04ebd9-4def-87d6-0640-35fd0ccd20f5@quicinc.com>
- <9a304650-0360-5509-4922-0818e8e306f5@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Fri, 21 Jul 2023 04:42:32 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2081.outbound.protection.outlook.com [40.107.22.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC00F2D53;
+        Fri, 21 Jul 2023 01:42:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZqKYuhTP9I/bkvxjQ+dNN4np1FZJxk+xsia8XyrxmPmUC+PM+icaLi5o1oU9E8RMSM2z+xUA9ppcBtDkYqCVS2hQQHla0tEv5+BR1scNjPqQjGLkkaRX0UKrVyd+f2QGEAv8O+8Sf/bYOCBzrizl6FGbMroqpHaNpt7x8+PU1ZMflyfVKSH3vdir3oH+3+sSz6ulJdX9cKu2Hp6BtASWtaipv182pAeEAcO3Q7y+zNzSOYan7Sr1ye9yQxVdrNVEvUpVbBqu1JeNSIitPg/Vfj5mn7hqd6ckaLgX88F4D4A+CsOsgxyTim8VNv0Q4EaKDMkyj45BrXgrUyPj5+R5uA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/GcnfV2oz4KKVcHPmS8LiJ1uOBSQU21D0/b47/naXyw=;
+ b=KZ1kBeaqi6AI0WX9vt8JCtCbhpt+LKxnZH5x+cnzQMBAl9ZF7Vk6b1a/g/d8yYf8mBv57A2gXuhLwiKMn5/uMBN14F+oPhEI5Ho2onQR3E1EZDCJ2UQleqc4p8VuwYgzzS97KmrzcbcVDU66RfVH05D39zYEXsEfWqwXiL+nr5ifZdrBDyOGqfK2hgkr2B271J0UTM/2CyS7RlcekwKNZ+9vLyyKo1BJtwPOL8yq37V6dMMTBKFYdcjF2oTeH2WKwBH2XOvUpI1un3LyOz3iz5gFhDtfTgtuMgKEIol7nWnhWwuFCWgv9RIokiub1odsISYGBH/4W09TE77/+tuoPQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/GcnfV2oz4KKVcHPmS8LiJ1uOBSQU21D0/b47/naXyw=;
+ b=iZtYkzv8rslDIIsZEYljIZuPGydMn7AGQlwGOZrfhuj52ua7aTAOgGcPJV8ccTy0nihjfqwnyQwHMEJKTV5+qcZmvUOlw08rNNmIK8AMboPUAv2iOQNhx5kArsfArCRT5OZLEMzrteS7UpAu7GiwoOk0sEfwVu7mAp702xoaY/0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
+ by PAXPR04MB8831.eurprd04.prod.outlook.com (2603:10a6:102:20e::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28; Fri, 21 Jul
+ 2023 08:42:24 +0000
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6588.031; Fri, 21 Jul 2023
+ 08:42:24 +0000
+From:   Wei Fang <wei.fang@nxp.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shenwei.wang@nxp.com, xiaoning.wang@nxp.com,
+        netdev@vger.kernel.org
+Cc:     linux-imx@nxp.com, linux-kernel@vger.kernel.org
+Subject: [PATCH net] net: fec: avoid tx queue timeout when XDP is enabled
+Date:   Fri, 21 Jul 2023 16:35:59 +0800
+Message-Id: <20230721083559.2857312-1-wei.fang@nxp.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <9a304650-0360-5509-4922-0818e8e306f5@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: SI1PR02CA0022.apcprd02.prod.outlook.com
+ (2603:1096:4:1f4::16) To AM5PR04MB3139.eurprd04.prod.outlook.com
+ (2603:10a6:206:8::20)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM5PR04MB3139:EE_|PAXPR04MB8831:EE_
+X-MS-Office365-Filtering-Correlation-Id: b35553fc-0b43-427b-3d01-08db89c66750
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: edL8ImwN12enSrnm/l0Nfl0+yoyXGfpDb+U5XoHqSYjkAOUbU9uofvfE6qjkukJVYdngWCpOtWQlJwvAbgBxjDNt8jNEzYUQDCHu15ZUGHVetFaPRXRaz556tEJ2lzmD0Wm37+S6Ava3nehGN7edY4xQ1jhzSWFvAFPGLB8OtqMnC8cXvMXAVXUvLOna774w/qqLd9I0Yo+fAKfLroeOzCUdMWdznUR2ea36dRse4Ba4HZadPGC4sDh3OzoXdMHgtPEnju4KlCGwY06xvwB30ZN+A93T/Q6cARuJpRYXj08yIFKaLh9wdA7TQnPeSQjYs97VbFPUkki6vSbLRLwwRQzX5ww5peY0tpHd/0QNyhfTeVDy8pmQmYR8AwAFnP+uk0vtg2vNQjUGI+H0JG/h0dKrEo4p4rApfDLjnyKht1NeX1tvg1bGU6njjqUOy7q9XvFor+GhQ1eU6yznSRnAJEOsbewZuwutDpV4Qjc92tAJc2Pt10JNLKj1opBGt7f1cSu7yA1nxEistt9VsDTwQGeKnSHNmtdl0VZezbTsTS8dCWi3IklL1B4ZMvEZHghMAlqPl1oGtd0LO24Xva1t/IrnMJJmEynOgyKHHNRSG75hZp7H0xInU4yifX6mGd22
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(366004)(376002)(396003)(346002)(39860400002)(451199021)(38350700002)(38100700002)(478600001)(26005)(6486002)(52116002)(6666004)(6512007)(86362001)(1076003)(36756003)(186003)(6506007)(2906002)(44832011)(83380400001)(41300700001)(316002)(4326008)(8676002)(8936002)(5660300002)(66476007)(66556008)(66946007)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZqXSPP6rU9mxPFwUFTEDaXH8zno5bNq5NYeuExPzr/z9t+jXrYKS9n3I8wve?=
+ =?us-ascii?Q?q0+OzU9sH27BoUvG68mTF0LmnooTLtRliQw1G/0bfMGD3t6Y99pqHRcDAqVV?=
+ =?us-ascii?Q?oU5kuBEvF9YefFyCwwk0C2AVPjjabmG7ImJwujYpKbcC28Bt5wCyJ+pGc+/S?=
+ =?us-ascii?Q?Rl0vL4zF5j3fh4b/HlZAhs5gOFchwfVacF9UUD7fWgRlx7LsAmMLF9cHiWrE?=
+ =?us-ascii?Q?dCVnI7oZxcN80rPKq1+Xc500YQBM+ICXrrP7dx6PSIXn5YF+enCTR+eyqwhn?=
+ =?us-ascii?Q?M20wzrzfdiNohq1HMf+hjWPy+RM0PDSKUBxPR9Lg70Z2oa0qz75K9RdBovxl?=
+ =?us-ascii?Q?sWn90Dj7wrBZ9JwGlKtcnjWgWVVBfIcTj/qCTRNwa6H/etyOuTty9fj5Cqz9?=
+ =?us-ascii?Q?SKrhpV6V7iiUr9oaMOVVfcVW5zuLvkRyfzPawIY6/d3G9s8sUtQ24OvLj4TU?=
+ =?us-ascii?Q?fAnUCNZtimfJ0D+gZ09c2dtSbPbZ0pDrmJ8YX6YBQm8oumnTe4FLOdGeLZBf?=
+ =?us-ascii?Q?RFbj/CoON89eoXsAvikgBFIxA/BdXps/1CvL00B9F/0YbAWzjxr37qQ4kvRY?=
+ =?us-ascii?Q?DOQfZN4CSTfHAHyrjPak49rtiKWMSFdHFSQ8Buhmt7dj9VG8JgBAzNTudDPw?=
+ =?us-ascii?Q?SIEp/J1c0BHlhojhYik1Q+srid8KZM8gdVqYpPTueZxyPZ0wY9Bn7NqJk7On?=
+ =?us-ascii?Q?EnLy7EkmZEFxa/jRJ5VMeOjiioCJTbTWX+yiop0KFz4CCW9+Z1r1YxvXbHXS?=
+ =?us-ascii?Q?ZEv7pjLcturm+TuOJ7fk79wU0HdzDrCQx+6EtCXUMyFxgWrSIwJR/rBsi8vT?=
+ =?us-ascii?Q?U0M3A/4WT33/P6IFGPLx/hcfWoN2zwj/gQ83X+tdCqa5tSlRZAlalB9ji2bO?=
+ =?us-ascii?Q?XlsV5rMwxmKvPt54gW733SiUKjsNFXLYNg4XriVBlwpn/dWiSSxu+p6dWznZ?=
+ =?us-ascii?Q?XvGVEUOVwuLvh6us7AzcmOWGbSj975dfCHxxTObbIJvWxs0MpJqGktYYLpiG?=
+ =?us-ascii?Q?myq2d1tc/TZpJgjKxD6zgBqdEoELb3u2UGUWH4WYxFM9+OyEO4vTH1XZ+Y6k?=
+ =?us-ascii?Q?i2QEdMqpkR5n1UMDrYoI2Lhs6gA/oPw+MQoSheyzGMrtmw8OIVdahPQmx3qu?=
+ =?us-ascii?Q?f6oDNWlt1GjW1oj11/x6SI3L5BM68cvpxICw3USnH6ojPFdr+dLAk2XJdHkw?=
+ =?us-ascii?Q?GMudAm49c8LLBTNbs1U16DP4Rcf6sEiQf75LODqVV47o0c3WXqjhy1WYefUv?=
+ =?us-ascii?Q?FtyhiIHhokmZttbDtmR4ctWaZNkyt7nP7622KKlqUzzL5CWaxaMEjuJJX04Y?=
+ =?us-ascii?Q?w/iQwtrx5QYtOxEekMnoaETDQ9Yc4NdL1+OUq4W9Lm3O+/1MX/FQaagDaUp+?=
+ =?us-ascii?Q?+HGxls9tRNkPylh+QUfVvkbZDDU7idm0X0RMzP+la2Xzd8nBBD17mdRbYgnp?=
+ =?us-ascii?Q?iQIPVbjTSXBuAE9IPZ7sIYcG5rgp+2HYQLhLjZSBsE5CI2DMXKRlfLI8FEZE?=
+ =?us-ascii?Q?Ss0vRY1VvMBhQKfCCkUwBdbQ36ITODq9MuhgKdco9Q+h18xvAVTym0REcjTi?=
+ =?us-ascii?Q?LAGPSf8XZiVQDdAkaTY7RsDFKZE5CeocIMTkzrnJ?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b35553fc-0b43-427b-3d01-08db89c66750
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 08:42:24.1375
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XVhii2nsSnOZK83ic8X9aS6iJNOl8e6xmWMTQxZTcXl9ZCoKV5dKTNcWf64cY0pH2E8tYhl40ceh9YXfoWh88Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8831
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 16, 2023 at 12:31:05AM +0530, Krishna Kurapati PSSNV wrote:
-> On 7/14/2023 4:10 PM, Krishna Kurapati PSSNV wrote:
-> > On 7/14/2023 2:35 PM, Johan Hovold wrote:
+According to the implementation of XDP of FEC driver, the XDP path
+shares the transmit queues with the kernel network stack, so it is
+possible to lead to a tx timeout event when XDP uses the tx queue
+pretty much exclusively. And this event will cause the reset of the
+FEC hardware.
+To avoid timeout in this case, we use the txq_trans_cond_update()
+interface to update txq->trans_start to jiffies so that watchdog
+won't generate a transmit timeout warning.
 
-> >> I haven't had time to look at your latest replies yet, but as I already
-> >> said when reviewing v9, it seems you should be using a common helper for
-> >> non-mp and mp.
+Fixes: 6d6b39f180b8 ("net: fec: add initial XDP support")
+Signed-off-by: Wei Fang <wei.fang@nxp.com>
+---
+ drivers/net/ethernet/freescale/fec_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> >   The gist of my mail was to see if I can defer qcom probe when dwc3 
-> > probe fails/or doesn't happen on of_plat_pop (which is logical) so that 
-> > we can move setup_irq to after dwc3_register_core so that we know 
-> > whether we are MP capable or not. This would help us move all IRQ 
-> > reading into one function.
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index ec9e4bdb0c06..073d61619336 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -3916,6 +3916,8 @@ static int fec_enet_xdp_xmit(struct net_device *dev,
+ 
+ 	__netif_tx_lock(nq, cpu);
+ 
++	/* Avoid tx timeout as XDP shares the queue with kernel stack */
++	txq_trans_cond_update(nq);
+ 	for (i = 0; i < num_frames; i++) {
+ 		if (fec_enet_txq_xmit_frame(fep, txq, frames[i]) < 0)
+ 			break;
+-- 
+2.25.1
 
->   I see it is difficult to write a common helper. To do so, we need to 
-> know whether the device is MP capable or not in advance. And since it is 
-> not possible to know it before of_plat_pop is done, I see only few ways 
-> to do it:
-> 
-> 1. Based on qcom node compatible string, I can read whether the device 
-> is MP capable or not and get IRQ's accordingly.
-
-See, it's not impossible. You can also determine whether you have a
-multiport controller from looking at the interrupt names which are
-indexed and distinct for MP.
-
-> 2. Read the port_info in advance but it needs me to go through some DT 
-> props and try getting this info. Or read xhci regs like we are doing in 
-> core (which is not good). Also since some Dt props can be missing, is it 
-> difficult to get the MP capability info before of_plat_pop is done.
-
-That seem unnecessary currently, but long term we probably need to fix
-the design of this driver and defer some setup using callbacks that are
-called when the core driver probes. Perhaps now is the time to add such
-functionality.
-
-> 3. Remove IRQ handling completely. Just because the device has IRQ's 
-> present, I don't see a point in adding them to bindings, and because we 
-> added them to bindings, we are making a patch to read them (and since 
-> this is a little challenging, the whole of multiport series is blocked 
-> although I don't need wakeup support on these interrupts right away).
-
-Again, no. The devicetree binding should describe the hardware
-capabilities and that has nothing to do with whether you need this for
-you current project or not.
-
-> Can't we let the rest of the patches go through and let interrupt 
-> handling for 2nd, 3rd and 4rth ports be taken care later ? I am asking 
-> this because I want the rest of the patches which are in good shape now 
-> (after fixing the nits mentioned) to get merged atleast. I will make 
-> sure to add interrupt handling later in a different series once this is 
-> merged once I send v10.
-
-As I've explained in earlier mails, I don't think that is acceptable as
-you'd be dumping your technical debt on the community which will be left
-to clean up your mess.
-
-> Or if there is a simpler way to do it, I would be happy to take any 
-> suggestions and complete this missing part in this series itself.
-
-Using the 'compatible' or 'interrupt-names' properties seems like the
-easiest way to determine whether you have an MP controller or not.
-
-Johan
