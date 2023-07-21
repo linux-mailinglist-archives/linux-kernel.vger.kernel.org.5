@@ -2,197 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9339C75C8C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF9E75C8C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbjGUN7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 09:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
+        id S230041AbjGUN7U convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 Jul 2023 09:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbjGUN65 (ORCPT
+        with ESMTP id S231752AbjGUN7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 09:58:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8CE30CF;
-        Fri, 21 Jul 2023 06:58:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 24E7F61C0D;
-        Fri, 21 Jul 2023 13:58:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BFBCC433C7;
-        Fri, 21 Jul 2023 13:58:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689947916;
-        bh=/Ny6wQsPLHbvQBx9Z780jGJkDgPWxZ4onIIakHRTQ58=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Enzj7hi6ah4uCh7NE2wgsDDV+bjVwN49+kTQ11lmdGrCTFo0WY6IBWY8ckLZIwIP+
-         HWXzp3BPubMNT6s2dCSCLwjVEcxhsjKCiK2JobxicsdemZhkVja3DF8rSa7rLO3siK
-         4HuxYlNXLgQQmTFRBaPbsAZHH5R5iPmEGPfXYX/KGtroeWja0ztRV2MXofzfrTr82E
-         gNNmm8QoXTKf3n2ZRLgzZOH10hyOoi/ZXOiETSuBM5/9asJntuzT/WTtjgEhIpojRG
-         fHch4bTv9QrwwvftIoomfJWMhLmlTTIl9rSuGmku4A0s6ApEUuEDwf6hYhuLMxm5df
-         ENNrr1z2lWdAw==
-Date:   Fri, 21 Jul 2023 22:58:32 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH v2 9/9] Documentation: tracing: Update fprobe event
- example with BTF field
-Message-Id: <20230721225832.f4e47d8169840e63ebdc6561@kernel.org>
-In-Reply-To: <b65f6a0f-772c-162c-6669-ff1d545f375c@oracle.com>
-References: <168960739768.34107.15145201749042174448.stgit@devnote2>
-        <168960748753.34107.1941635032108706544.stgit@devnote2>
-        <b65f6a0f-772c-162c-6669-ff1d545f375c@oracle.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 09:59:07 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7094A3A84
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 06:58:56 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-27-tUZJkKfjPuSYNBamH4xjCA-1; Fri, 21 Jul 2023 14:58:54 +0100
+X-MC-Unique: tUZJkKfjPuSYNBamH4xjCA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 21 Jul
+ 2023 14:58:53 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 21 Jul 2023 14:58:52 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>
+CC:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: RE: [PATCH v1 1/1] ALSA: korg1212: Re-use sockptr_t and respective
+ APIs
+Thread-Topic: [PATCH v1 1/1] ALSA: korg1212: Re-use sockptr_t and respective
+ APIs
+Thread-Index: AQHZu8ALiLW3NE9rpEyBJunRSGnWfK/EPjVA
+Date:   Fri, 21 Jul 2023 13:58:52 +0000
+Message-ID: <b8e6f7ae1e684f85902cb3a787436bd9@AcuMS.aculab.com>
+References: <20230721100146.67293-1-andriy.shevchenko@linux.intel.com>
+ <878rb9h901.wl-tiwai@suse.de> <ZLphAJG4Tz8zLUSN@smile.fi.intel.com>
+In-Reply-To: <ZLphAJG4Tz8zLUSN@smile.fi.intel.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023 23:53:43 +0100
-Alan Maguire <alan.maguire@oracle.com> wrote:
-
-> On 17/07/2023 16:24, Masami Hiramatsu (Google) wrote:
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Update fprobe event example with BTF data structure field specification.
-> > 
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+From: Andy Shevchenko
+> Sent: 21 July 2023 11:42
 > 
-> One suggestion below, but
+> On Fri, Jul 21, 2023 at 12:08:46PM +0200, Takashi Iwai wrote:
+> > On Fri, 21 Jul 2023 12:01:46 +0200,
+> > Andy Shevchenko wrote:
+> > >
+> > > The sockptr_t (despite the naming) is a generic type to hold kernel
+> > > or user pointer and there are respective APIs to copy data to or
+> > > from it. Replace open coded variants in the driver by them.
+> >
+> > While I see the benefit, I feel this is very confusing.  If we use the
+> > API for a generic use, it should be renamed at first.
+> >
+> > Also, the current function actually follows the call pattern, and we
+> > know in the caller side whether it's called for a kernel pointer or a
+> > user pointer.  So, if any, the PCM core callbacks should be revised to
+> > use a generic pointer instead of fiddling in each driver side.
 > 
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> Any suggestion for the name?
+> And I believe for the bigger series the new callback should be added first.
 
-Thanks,
+It would also be better to replace the current sockptr_t with
+a structure that contains separate user and kernel addresses
+(instead of a union of the pointer types and a flag).
 
-> 
-> > ---
-> >  Changes in v2:
-> >   - Remove 'retval' and use '$retval'.
-> > ---
-> >  Documentation/trace/fprobetrace.rst |   50 ++++++++++++++++++++++-------------
-> >  1 file changed, 32 insertions(+), 18 deletions(-)
-> > 
-> > diff --git a/Documentation/trace/fprobetrace.rst b/Documentation/trace/fprobetrace.rst
-> > index 7297f9478459..e9e764fadf14 100644
-> > --- a/Documentation/trace/fprobetrace.rst
-> > +++ b/Documentation/trace/fprobetrace.rst
-> > @@ -79,9 +79,9 @@ automatically set by the given name. ::
-> >   f:fprobes/myprobe vfs_read count=count pos=pos
-> >  
-> >  It also chooses the fetch type from BTF information. For example, in the above
-> > -example, the ``count`` is unsigned long, and the ``pos`` is a pointer. Thus, both
-> > -are converted to 64bit unsigned long, but only ``pos`` has "%Lx" print-format as
-> > -below ::
-> > +example, the ``count`` is unsigned long, and the ``pos`` is a pointer. Thus,
-> > +both are converted to 64bit unsigned long, but only ``pos`` has "%Lx"
-> > +print-format as below ::
-> >  
-> >   # cat events/fprobes/myprobe/format
-> >   name: myprobe
-> > @@ -105,9 +105,33 @@ is expanded to all function arguments of the function or the tracepoint. ::
-> >   # cat dynamic_events
-> >   f:fprobes/myprobe vfs_read file=file buf=buf count=count pos=pos
-> >  
-> > -BTF also affects the ``$retval``. If user doesn't set any type, the retval type is
-> > -automatically picked from the BTF. If the function returns ``void``, ``$retval``
-> > -is rejected.
-> > +BTF also affects the ``$retval``. If user doesn't set any type, the retval
-> > +type is automatically picked from the BTF. If the function returns ``void``,
-> > +``$retval`` is rejected.
-> > +
-> > +You can access the data fields of a data structure using allow operator ``->``
-> > +(for pointer type) and dot operator ``.`` (for data structure type.)::
-> > +
-> > +# echo 't sched_switch preempt prev_pid=prev->pid next_pid=next->pid' >> dynamic_events
-> > +
-> 
-> Could you describe what field access combinations are supported here;
-> i.e. foo->bar[.baz]?
+The size of the structure wouldn't change and the code might
+even come out better.
 
-OK, I'll add below.
+There is also scope for adding a length and passing the structure
+by reference instead of by value.
 
-The field access operators, ``->`` and ``.`` can be combined for accessing deeper
-members and other stucture members pointed by the member. e.g. ``foo->bar.baz->qux``
-If there is non-name union member, you can directly access it as C does. For example::
+	David
 
- struct {
- 	union {
- 	int a;
- 	int b;
- 	};
- } *foo;
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-To access ``a`` and ``b``, use ``foo->a`` and ``foo->b`` in this case.
-
-Thank you,
-
-
-> 
-> > +This data field access is available for the return value via ``$retval``,
-> > +e.g. ``$retval->name``.
-> > +
-> > +For these BTF arguments and fields, ``:string`` and ``:ustring`` change the
-> > +behavior. If these are used for BTF argument or field, it checks whether
-> > +the BTF type of the argument or the data field is ``char *`` or ``char []``,
-> > +or not.  If not, it rejects applying the string types. Also, with the BTF
-> > +support, you don't need a memory dereference operator (``+0(PTR)``) for
-> > +accessing the string pointed by a ``PTR``. It automatically adds the memory
-> > +dereference operator according to the BTF type. e.g. ::
-> > +
-> > +# echo 't sched_switch prev->comm:string' >> dynamic_events
-> > +# echo 'f getname_flags%return $retval->name:string' >> dynamic_events
-> > +
-> > +The ``prev->comm`` is an embedded char array in the data structure, and
-> > +``$retval->name`` is a char pointer in the data structure. But in both
-> > +cases, you can use ``:string`` type to get the string.
-> > +
-> >  
-> >  Usage examples
-> >  --------------
-> > @@ -161,10 +185,10 @@ parameters. This means you can access any field values in the task
-> >  structure pointed by the ``prev`` and ``next`` arguments.
-> >  
-> >  For example, usually ``task_struct::start_time`` is not traced, but with this
-> > -traceprobe event, you can trace it as below.
-> > +traceprobe event, you can trace that field as below.
-> >  ::
-> >  
-> > -  # echo 't sched_switch comm=+1896(next):string start_time=+1728(next):u64' > dynamic_events
-> > +  # echo 't sched_switch comm=next->comm:string next->start_time' > dynamic_events
-> >    # head -n 20 trace | tail
-> >   #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-> >   #              | |         |   |||||     |         |
-> > @@ -176,13 +200,3 @@ traceprobe event, you can trace it as below.
-> >             <idle>-0       [000] d..3.  5606.690317: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
-> >        kworker/0:1-14      [000] d..3.  5606.690339: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="swapper/0" usage=2 start_time=0
-> >             <idle>-0       [000] d..3.  5606.692368: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
-> > -
-> > -Currently, to find the offset of a specific field in the data structure,
-> > -you need to build kernel with debuginfo and run `perf probe` command with
-> > -`-D` option. e.g.
-> > -::
-> > -
-> > - # perf probe -D "__probestub_sched_switch next->comm:string next->start_time"
-> > - p:probe/__probestub_sched_switch __probestub_sched_switch+0 comm=+1896(%cx):string start_time=+1728(%cx):u64
-> > -
-> > -And replace the ``%cx`` with the ``next``.
-> > 
-> > 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
