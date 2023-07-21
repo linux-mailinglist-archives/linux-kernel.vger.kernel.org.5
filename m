@@ -2,340 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CB175D7E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 01:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701A075D7E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 01:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbjGUX0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 19:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57344 "EHLO
+        id S229961AbjGUX3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 19:29:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjGUX0n (ORCPT
+        with ESMTP id S229518AbjGUX32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 19:26:43 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 420C21BE2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:26:42 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-ca3cc52ee62so2440831276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:26:42 -0700 (PDT)
+        Fri, 21 Jul 2023 19:29:28 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F551FDF;
+        Fri, 21 Jul 2023 16:29:27 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-3460815fde5so11995965ab.2;
+        Fri, 21 Jul 2023 16:29:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689982001; x=1690586801;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oUHZ776Bm2oIhw/I04pXo56/BBLF8A8d1FrFm8C5MeE=;
-        b=aOvY1nSYP6R+GYSR1MUsDUI7MDecIVTPHeBI1/wVE6wtXOInor6/w6wiInRKR7oZkY
-         Vb8+Ffr4fUWfndJZ3hV+O6k+OzkCf9LEy3win7geLhd0Me87AXSg2ZSFSv3maJ9QDWZ3
-         UxW6YOrgqr8LG5/nMZ+RxkBKWo3XLpJoix1iZXjtEiuLBfmZ4aaC9CiiVw4KUVFDPJaG
-         zYJp7Bs67aqlGIqKXFBgXwcDssebNiXKw+PVXgG2tzD43znxtvPiq6d3iLfJV4wCDRuB
-         LFpT6M/sDEmuDkym8GdDS0/2dkuJQmTKcwYuQDkIrEkUQihSce5t3yhglPUGsaOvp+9B
-         SZTQ==
+        d=gmail.com; s=20221208; t=1689982166; x=1690586966;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2HWGARuGkqEQdwec4wVxh4cga8KRSu+tscD+lku9ZUc=;
+        b=VLZ5o+l0fG8iK3OzCCTmVzkfQunTMneXN2K0omC8jPnvlkv5fcpAo0StcIQ1PHGsMS
+         gT1rcKNt4z1ruZNcaO9aEhAgk9xK+bLwmswUbr8+uKAqRRDR8kcBViKSG94d0/SyypFC
+         saVBYJ5HgZxNjBDfswsY0cJWkIl1YLrVlK4KXKQqzOIwjtZbmoYsKx1TSCEO2mR4sYqg
+         KgFg6q6UHOnOJJMTLzsv/a+iig/rjZ+qG+b4tub0nyx3eVtpPyZfPB3hqsDyPWnKxQXK
+         HUHI/OpWJTfuYgnaVxp820BwJX6P62JIbwt/wo8+BjDkueO7NJc87+isN9nxn3x6gMPT
+         rcPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689982001; x=1690586801;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oUHZ776Bm2oIhw/I04pXo56/BBLF8A8d1FrFm8C5MeE=;
-        b=ihz+XZQzAj9RGkoc9ohiEbLqJUzCfLAAgakmRR4LYIJhcjldB8Mh1NotFU9fqklU98
-         t8psZsmqA6pQXgh1u3hiFZA5Ch3G/H7gJ2CcsWx+RUtdDHrqJnE7eVzIevCeU/M1r18B
-         1HZREeYFFjtReS4wNjGXOlqlQcKbbts3Jl2GL6dAC2brEmw4l0+g9Fq9VTRTJXaxb0zG
-         KlG+fH98izZGGRkp0nR9LYQld6SGGy3ZMdrnTqmCOsbL6M74cQCqSMYEYkOSMOcMAZJF
-         ekiAXsPPTwGGeEiMxAPqjHxyZelogBOX/7uHMGYJ2H9/L7/bFHdTSbkRL6pzbte6HdNm
-         xVlA==
-X-Gm-Message-State: ABy/qLbLUVHyWwZ7i+4EQH8Tzf2iWFYdpoaEUTKC7UJgVN20AVvtZUYF
-        QqNy8wbeKvaR12jlJc9P96kxvYtIQ6aLfeRj5/yYig==
-X-Google-Smtp-Source: APBJJlEBbig5223U+bEbJ+O/ryTylSKExBz5kSKSWTn6s5aq5V/pn+8KrhupwJ7FMGKbLq7WVT6YVIl4zdepm1M1Hps=
-X-Received: by 2002:a25:b319:0:b0:cfd:64e4:a2ed with SMTP id
- l25-20020a25b319000000b00cfd64e4a2edmr3058397ybj.52.1689982001178; Fri, 21
- Jul 2023 16:26:41 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689982166; x=1690586966;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2HWGARuGkqEQdwec4wVxh4cga8KRSu+tscD+lku9ZUc=;
+        b=kHOPHrZTy612Bi81BsvsqSmkAPJTUsybxYeZjkMSoIBJroY8tsse6j02PP86rhEUQo
+         vhXKbr5yYFQOkMwYrL90eQLfSdD4nYugQuReTa8cxt/IrQNCgJL4e2iYtoun4q8cVWrt
+         SQp888XekWLTcZBX+e7PjI2rfv+AOC3cuTXgx0Y05sSMFHD1G4IJPB9xlLAD7saZgWS4
+         lQJVC0+uxhTG6NGIjMiMWltGIinFXSGHPT2S+oum9e8trptV2rg9gr+zF1RERYjfytCP
+         9mYT3/IfxwS5bRp7x7jBywCaEJDnySso2Bnq9T37sTlZwCXed+b5gyRnEkWHNYcV/tNB
+         oOwA==
+X-Gm-Message-State: ABy/qLaVxHWdhONDgHzV3OO6xtIkar7xVHaYIC8XWIYpLG8dhLjcq1AB
+        dq8FalK+h9WpyDlSlNo/rYI=
+X-Google-Smtp-Source: APBJJlGbUUfSCFEYZlRSb36o73TmUpSRq6UROhCUu0k4DBZOU/U5Pgop/szMukqykTsBvSEYFB6BtA==
+X-Received: by 2002:a05:6e02:5c3:b0:346:169a:bb4b with SMTP id l3-20020a056e0205c300b00346169abb4bmr1341246ils.4.1689982166564;
+        Fri, 21 Jul 2023 16:29:26 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id kb14-20020a170903338e00b001b9be79729csm4046487plb.165.2023.07.21.16.29.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 16:29:26 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <f268ae1d-f23b-8c3b-8e94-a7ef76fc4990@roeck-us.net>
+Date:   Fri, 21 Jul 2023 16:29:24 -0700
 MIME-Version: 1.0
-References: <20230721225107.942336-1-jannh@google.com>
-In-Reply-To: <20230721225107.942336-1-jannh@google.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 21 Jul 2023 16:26:27 -0700
-Message-ID: <CAJuCfpHHKFDgj0DELVPLyx+YRxW=EY+JWO5SJB9+OPjPE3K3vw@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: Fix memory ordering for mm_lock_seq and vm_lock_seq
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230626180746.943455203@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 5.15 00/96] 5.15.119-rc1 review
+In-Reply-To: <20230626180746.943455203@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 3:51=E2=80=AFPM Jann Horn <jannh@google.com> wrote:
->
-> mm->mm_lock_seq effectively functions as a read/write lock; therefore it
-> must be used with acquire/release semantics.
->
-> A specific example is the interaction between userfaultfd_register() and
-> lock_vma_under_rcu().
-> userfaultfd_register() does the following from the point where it changes
-> a VMA's flags to the point where concurrent readers are permitted again
-> (in a simple scenario where only a single private VMA is accessed and no
-> merging/splitting is involved):
->
-> userfaultfd_register
->   userfaultfd_set_vm_flags
->     vm_flags_reset
->       vma_start_write
->         down_write(&vma->vm_lock->lock)
->         vma->vm_lock_seq =3D mm_lock_seq [marks VMA as busy]
->         up_write(&vma->vm_lock->lock)
->       vm_flags_init
->         [sets VM_UFFD_* in __vm_flags]
->   vma->vm_userfaultfd_ctx.ctx =3D ctx
->   mmap_write_unlock
->     vma_end_write_all
->       WRITE_ONCE(mm->mm_lock_seq, mm->mm_lock_seq + 1) [unlocks VMA]
->
-> There are no memory barriers in between the __vm_flags update and the
-> mm->mm_lock_seq update that unlocks the VMA, so the unlock can be reorder=
-ed
-> to above the `vm_flags_init()` call, which means from the perspective of =
-a
-> concurrent reader, a VMA can be marked as a userfaultfd VMA while it is n=
-ot
-> VMA-locked. That's bad, we definitely need a store-release for the unlock
-> operation.
->
-> The non-atomic write to vma->vm_lock_seq in vma_start_write() is mostly
-> fine because all accesses to vma->vm_lock_seq that matter are always
-> protected by the VMA lock. There is a racy read in vma_start_read() thoug=
-h
-> that can tolerate false-positives, so we should be using WRITE_ONCE() to
-> keep things tidy and data-race-free (including for KCSAN).
->
-> On the other side, lock_vma_under_rcu() works as follows in the relevant
-> region for locking and userfaultfd check:
->
-> lock_vma_under_rcu
->   vma_start_read
->     vma->vm_lock_seq =3D=3D READ_ONCE(vma->vm_mm->mm_lock_seq) [early bai=
-lout]
->     down_read_trylock(&vma->vm_lock->lock)
->     vma->vm_lock_seq =3D=3D READ_ONCE(vma->vm_mm->mm_lock_seq) [main chec=
-k]
->   userfaultfd_armed
->     checks vma->vm_flags & __VM_UFFD_FLAGS
->
-> Here, the interesting aspect is how far down the mm->mm_lock_seq read
-> can be reordered - if this read is reordered down below the vma->vm_flags
-> access, this could cause lock_vma_under_rcu() to partly operate on
-> information that was read while the VMA was supposed to be locked.
-> To prevent this kind of downwards bleeding of the mm->mm_lock_seq read, w=
-e
-> need to read it with a load-acquire.
->
-> Some of the comment wording is based on suggestions by Suren.
->
-> BACKPORT WARNING: One of the functions changed by this patch (which I've
-> written against Linus' tree) is vma_try_start_write(), but this function
-> no longer exists in mm/mm-everything. I don't know whether the merged
-> version of this patch will be ordered before or after the patch that
-> removes vma_try_start_write(). If you're backporting this patch to a
-> tree with vma_try_start_write(), make sure this patch changes that
-> function.
->
-> Fixes: 5e31275cc997 ("mm: add per-VMA lock and helper functions to contro=
-l it")
-> Cc: stable@vger.kernel.org
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Signed-off-by: Jann Horn <jannh@google.com>
+Hi,
 
-Thanks for fixing the ordering and making the rules clear! I
-completely missed the reordering issue during vma unlocking.
+On 6/26/23 11:11, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.119 release.
+> There are 96 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 28 Jun 2023 18:07:23 +0000.
+> Anything received after that time might be too late.
+> 
+[ ... ]
+> Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+>      drm/amd/display: Add wrapper to call planes and stream update
+> 
+> Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+>      drm/amd/display: Use dc_update_planes_and_stream
+> 
+> Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+>      drm/amd/display: Add minimal pipe split transition state
+> 
 
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+Just as a heads-up, the above patches result in UI failures when booting
+chromeos-5.15 on a Stoney GPU. I don't know if that is because of other
+ChromeOS specific backports into chromeos-5.15, so there may be no problem
+with linux-5.15.y. I just wanted to report it in case others observe a
+similar problem. For reference, the warning traceback observed with
+chromeos-5.15 is attached below.
 
-> ---
->
-> Notes:
->     v2: made the comments much clearer based on off-list input from Suren
->
->  include/linux/mm.h        | 29 +++++++++++++++++++++++------
->  include/linux/mm_types.h  | 28 ++++++++++++++++++++++++++++
->  include/linux/mmap_lock.h | 10 ++++++++--
->  3 files changed, 59 insertions(+), 8 deletions(-)
->
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 2dd73e4f3d8e..406ab9ea818f 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -641,8 +641,14 @@ static inline void vma_numab_state_free(struct vm_ar=
-ea_struct *vma) {}
->   */
->  static inline bool vma_start_read(struct vm_area_struct *vma)
->  {
-> -       /* Check before locking. A race might cause false locked result. =
-*/
-> -       if (vma->vm_lock_seq =3D=3D READ_ONCE(vma->vm_mm->mm_lock_seq))
-> +       /*
-> +        * Check before locking. A race might cause false locked result.
-> +        * We can use READ_ONCE() for the mm_lock_seq here, and don't nee=
-d
-> +        * ACQUIRE semantics, because this is just a lockless check whose=
- result
-> +        * we don't rely on for anything - the mm_lock_seq read against w=
-hich we
-> +        * need ordering is below.
-> +        */
-> +       if (READ_ONCE(vma->vm_lock_seq) =3D=3D READ_ONCE(vma->vm_mm->mm_l=
-ock_seq))
->                 return false;
->
->         if (unlikely(down_read_trylock(&vma->vm_lock->lock) =3D=3D 0))
-> @@ -653,8 +659,13 @@ static inline bool vma_start_read(struct vm_area_str=
-uct *vma)
->          * False unlocked result is impossible because we modify and chec=
-k
->          * vma->vm_lock_seq under vma->vm_lock protection and mm->mm_lock=
-_seq
->          * modification invalidates all existing locks.
-> +        *
-> +        * We must use ACQUIRE semantics for the mm_lock_seq so that if w=
-e are
-> +        * racing with vma_end_write_all(), we only start reading from th=
-e VMA
-> +        * after it has been unlocked.
-> +        * This pairs with RELEASE semantics in vma_end_write_all().
->          */
-> -       if (unlikely(vma->vm_lock_seq =3D=3D READ_ONCE(vma->vm_mm->mm_loc=
-k_seq))) {
-> +       if (unlikely(vma->vm_lock_seq =3D=3D smp_load_acquire(&vma->vm_mm=
-->mm_lock_seq))) {
->                 up_read(&vma->vm_lock->lock);
->                 return false;
->         }
-> @@ -676,7 +687,7 @@ static bool __is_vma_write_locked(struct vm_area_stru=
-ct *vma, int *mm_lock_seq)
->          * current task is holding mmap_write_lock, both vma->vm_lock_seq=
- and
->          * mm->mm_lock_seq can't be concurrently modified.
->          */
-> -       *mm_lock_seq =3D READ_ONCE(vma->vm_mm->mm_lock_seq);
-> +       *mm_lock_seq =3D vma->vm_mm->mm_lock_seq;
->         return (vma->vm_lock_seq =3D=3D *mm_lock_seq);
->  }
->
-> @@ -688,7 +699,13 @@ static inline void vma_start_write(struct vm_area_st=
-ruct *vma)
->                 return;
->
->         down_write(&vma->vm_lock->lock);
-> -       vma->vm_lock_seq =3D mm_lock_seq;
-> +       /*
-> +        * We should use WRITE_ONCE() here because we can have concurrent=
- reads
-> +        * from the early lockless pessimistic check in vma_start_read().
-> +        * We don't really care about the correctness of that early check=
-, but
-> +        * we should use WRITE_ONCE() for cleanliness and to keep KCSAN h=
-appy.
-> +        */
-> +       WRITE_ONCE(vma->vm_lock_seq, mm_lock_seq);
->         up_write(&vma->vm_lock->lock);
->  }
->
-> @@ -702,7 +719,7 @@ static inline bool vma_try_start_write(struct vm_area=
-_struct *vma)
->         if (!down_write_trylock(&vma->vm_lock->lock))
->                 return false;
->
-> -       vma->vm_lock_seq =3D mm_lock_seq;
-> +       WRITE_ONCE(vma->vm_lock_seq, mm_lock_seq);
->         up_write(&vma->vm_lock->lock);
->         return true;
->  }
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index de10fc797c8e..5e74ce4a28cd 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -514,6 +514,20 @@ struct vm_area_struct {
->         };
->
->  #ifdef CONFIG_PER_VMA_LOCK
-> +       /*
-> +        * Can only be written (using WRITE_ONCE()) while holding both:
-> +        *  - mmap_lock (in write mode)
-> +        *  - vm_lock->lock (in write mode)
-> +        * Can be read reliably while holding one of:
-> +        *  - mmap_lock (in read or write mode)
-> +        *  - vm_lock->lock (in read or write mode)
-> +        * Can be read unreliably (using READ_ONCE()) for pessimistic bai=
-lout
-> +        * while holding nothing (except RCU to keep the VMA struct alloc=
-ated).
-> +        *
-> +        * This sequence counter is explicitly allowed to overflow; seque=
-nce
-> +        * counter reuse can only lead to occasional unnecessary use of t=
-he
-> +        * slowpath.
-> +        */
->         int vm_lock_seq;
->         struct vma_lock *vm_lock;
->
-> @@ -679,6 +693,20 @@ struct mm_struct {
->                                           * by mmlist_lock
->                                           */
->  #ifdef CONFIG_PER_VMA_LOCK
-> +               /*
-> +                * This field has lock-like semantics, meaning it is some=
-times
-> +                * accessed with ACQUIRE/RELEASE semantics.
-> +                * Roughly speaking, incrementing the sequence number is
-> +                * equivalent to releasing locks on VMAs; reading the seq=
-uence
-> +                * number can be part of taking a read lock on a VMA.
-> +                *
-> +                * Can be modified under write mmap_lock using RELEASE
-> +                * semantics.
-> +                * Can be read with no other protection when holding writ=
-e
-> +                * mmap_lock.
-> +                * Can be read with ACQUIRE semantics if not holding writ=
-e
-> +                * mmap_lock.
-> +                */
->                 int mm_lock_seq;
->  #endif
->
-> diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-> index aab8f1b28d26..e05e167dbd16 100644
-> --- a/include/linux/mmap_lock.h
-> +++ b/include/linux/mmap_lock.h
-> @@ -76,8 +76,14 @@ static inline void mmap_assert_write_locked(struct mm_=
-struct *mm)
->  static inline void vma_end_write_all(struct mm_struct *mm)
->  {
->         mmap_assert_write_locked(mm);
-> -       /* No races during update due to exclusive mmap_lock being held *=
-/
-> -       WRITE_ONCE(mm->mm_lock_seq, mm->mm_lock_seq + 1);
-> +       /*
-> +        * Nobody can concurrently modify mm->mm_lock_seq due to exclusiv=
-e
-> +        * mmap_lock being held.
-> +        * We need RELEASE semantics here to ensure that preceding stores=
- into
-> +        * the VMA take effect before we unlock it with this store.
-> +        * Pairs with ACQUIRE semantics in vma_start_read().
-> +        */
-> +       smp_store_release(&mm->mm_lock_seq, mm->mm_lock_seq + 1);
->  }
->  #else
->  static inline void vma_end_write_all(struct mm_struct *mm) {}
->
-> base-commit: d192f5382581d972c4ae1b4d72e0b59b34cadeb9
-> --
-> 2.41.0.487.g6d72f3e995-goog
->
+Reverting the above patches fixes the problem for us.
+
+Guenter
+
+---
+[   40.701227] ------------[ cut here ]------------
+[   40.701235] WARNING: CPU: 0 PID: 2026 at drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_aux.c:393 dce_aux_transfer_raw+0x54f/0x738 [amdgpu]
+[   40.701417] Modules linked in: xt_cgroup btusb joydev btrtl btintel btbcm xt_MASQUERADE uvcvideo videobuf2_vmalloc ax88179_178a usbnet videobuf2_memops mii videobuf2_v4l2 videobuf2_common rtw88_8821ce rtw88_8821c rtw88_pci rtw88_core psmouse fam15h_power k10temp mac80211 i2c_piix4 r8169 realtek snd_hda_codec_realtek snd_hda_codec_generic snd_hda_codec_hdmi ledtrig_audio snd_hda_intel snd_hda_codec snd_hwdep snd_hda_core ip6table_nat fuse cfg80211 bluetooth ecdh_generic ecc lzo_rle lzo_compress zram nls_iso8859_1 nls_cp437 vfat fat amdgpu drm_buddy gpu_sched drm_ttm_helper ttm hp_wmi drm_display_helper sparse_keymap platform_profile wmi_bmof cec video wmi backlight
+[   40.701477] CPU: 0 PID: 2026 Comm: fwupd Not tainted 5.15.120-20012-g13671c9741ee #1 498f2dc5e165de69fea5f8cdcc6c5b2a52bfbe44
+[   40.701484] Hardware name: HP HP Laptop 15-db0xxx/84AC, BIOS F.21 08/30/2019
+[   40.701487] RIP: 0010:dce_aux_transfer_raw+0x54f/0x738 [amdgpu]
+[   40.701622] Code: 70 18 48 c7 c2 73 d0 67 c0 e8 81 50 f1 ff 41 89 c4 0f ba e0 09 48 8b 4d b8 48 8b 55 88 b8 04 00 00 00 72 28 41 f6 c4 01 75 09 <0f> 0b b8 03 00 00 00 eb 19 b8 03 00 00 00 41 f6 c4 f0 75 0e b8 02
+[   40.701626] RSP: 0018:ffffb36901a5bbf8 EFLAGS: 00010246
+[   40.701630] RAX: 0000000000000004 RBX: ffff8f75c7e23a00 RCX: ffffb36901a5bc84
+[   40.701633] RDX: ffffb36901a5bc88 RSI: ffff8f75c2616580 RDI: ffff8f75c7a40000
+[   40.701636] RBP: ffffb36901a5bc70 R08: 0000000000000001 R09: 000000000000000a
+[   40.701639] R10: 000000000000ff00 R11: ffffffffc02bae29 R12: 0000000000000000
+[   40.701641] R13: 0000000000000000 R14: ffffb36901a5bd3f R15: 0000000000000000
+[   40.701644] FS:  00007afcd2d76780(0000) GS:ffff8f75cdc00000(0000) knlGS:0000000000000000
+[   40.701647] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   40.701650] CR2: 000025cd033e2000 CR3: 000000003dec2000 CR4: 00000000001506f0
+[   40.701653] Call Trace:
+[   40.701657]  <TASK>
+[   40.701661]  ? __warn+0xa3/0x131
+[   40.701670]  ? dce_aux_transfer_raw+0x54f/0x738 [amdgpu a9c22b8374912b6290fb299545c9bc23d10c4dee]
+[   40.701775]  ? report_bug+0x97/0xfa
+[   40.701783]  ? handle_bug+0x41/0x66
+[   40.701787]  ? exc_invalid_op+0x1b/0x4b
+[   40.701791]  ? asm_exc_invalid_op+0x16/0x20
+[   40.701795]  ? amdgpu_cgs_destroy_device+0xf/0xf [amdgpu a9c22b8374912b6290fb299545c9bc23d10c4dee]
+[   40.701895]  ? dce_aux_transfer_raw+0x54f/0x738 [amdgpu a9c22b8374912b6290fb299545c9bc23d10c4dee]
+[   40.701990]  ? dce_aux_transfer_raw+0x533/0x738 [amdgpu a9c22b8374912b6290fb299545c9bc23d10c4dee]
+[   40.702119]  dm_dp_aux_transfer+0xa1/0x127 [amdgpu a9c22b8374912b6290fb299545c9bc23d10c4dee]
+[   40.702255]  drm_dp_dpcd_access+0x8e/0x120 [drm_display_helper bafd2440f737065f4481ed31c70f27c5ee4cb409]
+[   40.702266]  drm_dp_dpcd_probe+0x46/0xfa [drm_display_helper bafd2440f737065f4481ed31c70f27c5ee4cb409]
+[   40.702273]  drm_dp_dpcd_read+0x5b/0x106 [drm_display_helper bafd2440f737065f4481ed31c70f27c5ee4cb409]
+[   40.702280]  auxdev_read_iter+0xe4/0x1a9 [drm_display_helper bafd2440f737065f4481ed31c70f27c5ee4cb409]
+[   40.702287]  vfs_read+0x1d2/0x32d
+[   40.702295]  __x64_sys_read+0x7c/0xe2
+[   40.702299]  do_syscall_64+0x53/0xa1
+[   40.702305]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+[   40.702310] RIP: 0033:0x7afcd2c8180a
+[   40.702315] Code: 55 48 89 e5 48 83 ec 20 48 89 55 e8 48 89 75 f0 89 7d f8 e8 28 96 f8 ff 48 8b 55 e8 48 8b 75 f0 41 89 c0 8b 7d f8 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 2e 44 89 c7 48 89 45 f8 e8 82 96 f8 ff 48 8b
+[   40.702318] RSP: 002b:00007ffc037fb090 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+[   40.702322] RAX: ffffffffffffffda RBX: 00007ffc037fb15c RCX: 00007afcd2c8180a
+[   40.702325] RDX: 0000000000000001 RSI: 00007ffc037fb15c RDI: 000000000000000e
+[   40.702328] RBP: 00007ffc037fb0b0 R08: 0000000000000000 R09: 00007ffc037fb1e8
+[   40.702330] R10: 97913fda310400e9 R11: 0000000000000246 R12: 00000000000004b0
+[   40.702333] R13: 0000000000000001 R14: 0000000000000001 R15: 000058833f394ba0
+[   40.702337]  </TASK>
+[   40.702339] ---[ end trace 45d9123147b37667 ]---
+[   40.707210] [drm] REG_WAIT timeout 10us * 240 tries - submit_channel_request line:222
+[   40.728925] [drm] REG_WAIT timeout 10us * 240 tries - submit_channel_request line:222
+[   40.737218] [drm] REG_WAIT timeout 10us * 240 tries - submit_channel_request line:222
+[   40.756655] [drm] REG_WAIT timeout 10us * 240 tries - submit_channel_request line:222
+[   40.760616] [drm] REG_WAIT timeout 10us * 240 tries - submit_channel_request line:222
+[   40.766107] ------------[ cut here ]------------
+
