@@ -2,141 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB0475CB93
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDDF75CB95
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbjGUPXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
+        id S231271AbjGUPXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232115AbjGUPXH (ORCPT
+        with ESMTP id S231391AbjGUPXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:23:07 -0400
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB47E3586;
-        Fri, 21 Jul 2023 08:22:42 -0700 (PDT)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-57045429f76so22851467b3.0;
-        Fri, 21 Jul 2023 08:22:42 -0700 (PDT)
+        Fri, 21 Jul 2023 11:23:16 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5683C35;
+        Fri, 21 Jul 2023 08:22:54 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6b9ed0831bcso1703911a34.0;
+        Fri, 21 Jul 2023 08:22:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689952974; x=1690557774;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sc/DTasP+qpzciCLfF1JlTQRXfUStyF2Qp67Z3I2zcE=;
+        b=mwNakMTygU7aeOlyMGN+1YRXfckEAaBjZjgrsxiGExbe1JtrAWqD07Qye6c9hqpqhS
+         NSvfGLEod46/FYQq+BwuOs10pt7FBKcScPwYNc1gpP2IynnNI8Oug1W4oRjPO1Q7VT/Y
+         qzCI5leeaCHf2iXugSrEa+TfozQZie+QYDxT7Qh5nLDHkaZe0XCUJvvL2+ZxvDrj2oGF
+         ijotZv1mRYKioa+esPC95sZ5tz4XnRunRYMqfOVzo0YiZTLoxiKmrABWm+cT+oeLe7dU
+         MKOSID+fJHIDH+uW2wNvxrRALEMUJaPLjChWlftPk7eV+SO77w8Wxu33Abumu2mVemXw
+         ol/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689952933; x=1690557733;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bRpZOSTRgUgs93CpnfRqLnXeS2bgmI9aOiNkeLEthD0=;
-        b=XQ7CpVXcAYdVCdo2OFMrd45xJEfSBe/FwYXkV3wY3/gWd18XyXUPQlux+CiXrLwp/1
-         iG00iJQ1m9dPHSBWILMLFxt75Q2gC9eBDrmrGugBHBw3zlj+Zc1OYqaYHUcd5hsRZ7ni
-         QfCHkkB7y+MiUZ0yQuPLPo57sc/mYfpYPgKu8tm/PCz98z4v10agxkYV0oeSSTS8Tg0+
-         lFCMNyOcakoi+bc0NXJEdiG/M15TrkpYz2EfGqrXXhE2WOcrHnzq6GN277KMguzXLXHP
-         veUlu1K0D6wxfyxxCK4uIeo8TA7SVLP3LALUHkm7yv0cDXhAnEs9P8zvWTWf0Nt14lip
-         JkgQ==
-X-Gm-Message-State: ABy/qLbKkVRh+jrJCPWGA+pX9XQTq06fTJ/wqRR50Fn8Fs0MFpgo6HM+
-        U5/bWX4JLATKenfkvABNBTRM0bwnyBG/BQ==
-X-Google-Smtp-Source: APBJJlHsCwFm8o3IiOOLqKl7iC10k/IuqmOifIN/ywy/oIUtmb0iATjnTkKpDcXbOt21ws1bIqKHrA==
-X-Received: by 2002:a0d:ff86:0:b0:577:2cac:cd4b with SMTP id p128-20020a0dff86000000b005772caccd4bmr482814ywf.7.1689952933290;
-        Fri, 21 Jul 2023 08:22:13 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id m74-20020a0dca4d000000b0056d2a19ad91sm924478ywd.103.2023.07.21.08.22.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 08:22:12 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5701eaf0d04so22523007b3.2;
-        Fri, 21 Jul 2023 08:22:12 -0700 (PDT)
-X-Received: by 2002:a81:4f44:0:b0:57a:5b6f:d41 with SMTP id
- d65-20020a814f44000000b0057a5b6f0d41mr358831ywb.42.1689952932202; Fri, 21 Jul
- 2023 08:22:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230711154449.1378385-1-eesposit@redhat.com> <ZK/9MlTh435FP5Ji@gambale.home>
- <ZLABozIRVGmwuIBf@gambale.home> <ba2354dc63fd741d2d351b18d4312d0771c0935d.camel@HansenPartnership.com>
- <ZLVyvAXwtemx1I6p@redhat.com> <0aa647f719103e8620d7209cbde40f04a7334749.camel@HansenPartnership.com>
- <FBDC67DD-856F-429B-8E91-B0CA8B0F24B9@oracle.com> <CAMw=ZnQ5pjwJZdX9kyib=vFd_c5_5_eUhV_mT5OcRPt693m=Yg@mail.gmail.com>
- <635B383C-38A5-479E-80A6-358D5F90988B@oracle.com> <CAMw=ZnQtEwNFyZ-Gt6ODb9gp22KY1GimaSfW46N7o-S1Hkfp4A@mail.gmail.com>
- <c2f451e0f8d72cf3183aff9cbaf23f135fc7b495.camel@HansenPartnership.com>
- <CAMw=ZnSHDYrLXoad=d_O_qAsurqv196z3Fc3VRAJXSsJNVXdPw@mail.gmail.com>
- <137ddc2957d43576afd37afb0bedab3ceea1f8d7.camel@HansenPartnership.com>
- <CAMw=ZnSPGp-jCAN+z_QdGJAgJv4=pgee_2oQ4oBqVqnye6813A@mail.gmail.com>
- <caec9522f981393e6fd0f8e36ff495781828406f.camel@HansenPartnership.com> <CAMw=ZnREBiwqP+wmUfBishtZ9eOiNsaicypvMqFMmEdV_g2gpg@mail.gmail.com>
-In-Reply-To: <CAMw=ZnREBiwqP+wmUfBishtZ9eOiNsaicypvMqFMmEdV_g2gpg@mail.gmail.com>
-From:   Luca Boccassi <bluca@debian.org>
-Date:   Fri, 21 Jul 2023 16:22:00 +0100
-X-Gmail-Original-Message-ID: <CAMw=ZnREf8L1hrGgFUMrcBJNf-7ZTs0hMNFMB_nNAvyV=Pe2Nw@mail.gmail.com>
-Message-ID: <CAMw=ZnREf8L1hrGgFUMrcBJNf-7ZTs0hMNFMB_nNAvyV=Pe2Nw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Eric Snowberg <eric.snowberg@oracle.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "lennart@poettering.net" <lennart@poettering.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689952974; x=1690557774;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sc/DTasP+qpzciCLfF1JlTQRXfUStyF2Qp67Z3I2zcE=;
+        b=ATMrs7YIeI8Esu5zuOuPywuZJK+2RVJHkqzh94ocRV9VwReKY1+ceIuMLcn1AVEdRt
+         ujDgAG0bVzeMG1DBgRI88cn8ADZ1ldnGQF/MGpJUx4sJS/EFduuBqaPt5iK9mkadEA11
+         2lj3OJ4b3jkBTyfYCHr/hs2gtdb3FmdSM/8eFGXP+TRSBHKO905vZqPCXNwBxhEyyePY
+         lpaWxolvj95CUFKY8ugeI1lLh0Tv3Xg3gRjNiinYj5KC60EcDBvwURXsA3Y7rxaJPsVk
+         bQImkzKGYdsWazGN08vQjL1p1su3xJLh2UxreEgNqA2nAgjiYAmMIC7JGgBtsuzbsAPb
+         gYyA==
+X-Gm-Message-State: ABy/qLbPFHDqGr1aLUUtOFCZe3gEJbYCGtc0Ukt48zMVEozecGFJ3zrF
+        tYuXo6JIUvXgrn15WqyyWsejOREgf0s=
+X-Google-Smtp-Source: APBJJlELpyaxYg1wg936x5ogzeyFoPXGq5hxdNV11us7uI9wcb5a/Zg9CQORzMhqmGM2od+F6//YSA==
+X-Received: by 2002:a05:6808:2897:b0:39c:475e:d78a with SMTP id eu23-20020a056808289700b0039c475ed78amr2307330oib.17.1689952973691;
+        Fri, 21 Jul 2023 08:22:53 -0700 (PDT)
+Received: from dw-tp ([49.207.232.207])
+        by smtp.gmail.com with ESMTPSA id 3-20020a17090a01c300b00263c8b33bcfsm2878401pjd.14.2023.07.21.08.22.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 08:22:52 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 20:52:49 +0530
+Message-Id: <87iladl25y.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     shikemeng@huaweicloud.com
+Subject: Re: [PATCH 01/10] ext4: correct grp validation in ext4_mb_good_group
+In-Reply-To: <20230721171007.2065423-2-shikemeng@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 at 16:14, Luca Boccassi <bluca@debian.org> wrote:
->
-> On Fri, 21 Jul 2023 at 14:34, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> >
-> > On Fri, 2023-07-21 at 14:10 +0100, Luca Boccassi wrote:
-> > > On Fri, 21 Jul 2023 at 14:01, James Bottomley
-> > > <James.Bottomley@hansenpartnership.com> wrote:
-> > [...]
-> > > > Well, my job is to be concerned about how individuals who want to
-> > > > own their own keys, either in MoK or db, participate in this, so I
-> > > > am mostly thinking about local signing.  Whatever we decide, there
-> > > > must be a local workflow pathway.
-> > >
-> > > Sure but for local signing via MoK that's obviously fine, as one gets
-> > > to keep the pieces. AFAIK it's a different flow in Shim whether
-> > > something is authorized by MoK, DB or the built-in cert, so having
-> > > different policies built-in for those different cases should be
-> > > doable. Actually at the moment even if Shim loads the image, if it
-> > > gets authorized by DB .sbat isn't checked at all.
-> >
-> > So let's be sure we mean the same thing here.  There is really no third
-> > party CA.  Microsoft gives the distributions a signing key to allow
-> > them to sign their version of shim.  Some distributions, like Red Hat,
-> > also embed their signing certificates in shim, so shim can distinguish
-> > between a RH key and another key added to MokList.  However, some
-> > distributions, like SUSE, insist that all signing keys be approved by
-> > the machine owner (so no embedded shim certs for non-enterprise) and
-> > their shim can't distinguish between SUSE keys and machine owner
-> > additions.  Given the variances in key handling, I think trying to
-> > distinguish between official and developer keys is a huge addition of
-> > complexity we don't need, so there has to be a workflow that functions
-> > for both and that workflow would seem to be allowing non-existent or
-> > empty sbat sections.  Official key holders  would *always* add sbat
-> > sections, so there's really no problem that needs a solution to be
-> > mandated here.
->
-> The certificate is called the "Microsoft Corporation UEFI CA 2011" ,
-> issued by the "Microsoft Corporation Third Party Marketplace Root". So
-> for short, we call it UEFI 3rd party CA :-)
-> Anyway, I wasn't aware that SUSE doesn't embed their cert in Shim,
-> we'll have to take that in consideration for sure.
+Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-Actually, a dev from SUSE's security just confirmed they embed their
-CA in Shim like every other distribution. Nobody seems to be aware of
-any example where a distribution relies exclusively on MoK - and
-that's understandable, as that would mean failing to boot by default
-on a new machine. Do you have any example/cases where that's actually
-happening? Outside development/local signing/etc.
+> Group corruption check will access memory of grp and will trigger kernel
+> crash if grp is NULL. So do NULL check before corruption check.
+>
+
+Fixes: 5354b2af3406 ("ext4: allow ext4_get_group_info() to fail")
+
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  fs/ext4/mballoc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 3ab37533349f..90ffabac100b 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2554,7 +2554,7 @@ static bool ext4_mb_good_group(struct ext4_allocation_context *ac,
+>  
+>  	BUG_ON(cr < CR_POWER2_ALIGNED || cr >= EXT4_MB_NUM_CRS);
+>  
+> -	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(grp) || !grp))
+> +	if (!grp || unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(grp)))
+
+maybe like below?
+      if (unlikely(!grp || EXT4_MB_GRP_BBITMAP_CORRUPT(grp)))
+
+-ritesh
+
+>  		return false;
+>  
+>  	free = grp->bb_free;
+> -- 
+> 2.30.0
