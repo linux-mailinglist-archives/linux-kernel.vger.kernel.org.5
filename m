@@ -2,290 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D090B75C211
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2255175C215
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbjGUIxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53578 "EHLO
+        id S231210AbjGUIyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbjGUIxk (ORCPT
+        with ESMTP id S231148AbjGUIx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:53:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF462D71
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:53:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Fri, 21 Jul 2023 04:53:58 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0370B3592;
+        Fri, 21 Jul 2023 01:53:50 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A51A617E5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:53:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49E96C433C7;
-        Fri, 21 Jul 2023 08:53:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689929617;
-        bh=WRzmHl06YjeTbeelD+mm6yKK/tRETpCC6HszXiCLP0c=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=oSYzKMMdUmcQWMFCoPcHkiRNu2t2yRu0iQi2juh6gtCmE8cN76NbGgzyMvlOvds4y
-         4j8he4BHfoWnMoWcj7VjtdT5ho4syp+47RMIxJ6D+TXw/pwxwj/LbsAGrwRdx+3T/h
-         iqhdmZidZKFtKj6WevQO1jKZCodyTKOiW8fdxGHO3O7bmSuTUHwLDN7iggHs1EhIFK
-         peIJLzs/HUxGMn3jo+Xr9zBKe1i2QZrNgeKHS8ejS2cRZLHAyExedg9FIfvcm5a9NH
-         rM1TePC6zhFU3yMZ1UmQob+MuTS9CH9YJkdbtosi0MlKjU1YBa67TTYFAj16lI1rnf
-         M8mJT3RIKtWhQ==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Pu Lehui <pulehui@huawei.com>, Pu Lehui <pulehui@huaweicloud.com>,
-        bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Guo Ren <guoren@kernel.org>, Song Shuai <suagrfillet@gmail.com>
-Subject: Re: [PATCH bpf] riscv, bpf: Adapt bpf trampoline to optimized riscv
- ftrace framework
-In-Reply-To: <b5977c5d-c434-7b4c-89f3-d575ee5d04e8@huawei.com>
-References: <20230715090137.2141358-1-pulehui@huaweicloud.com>
- <87lefdougi.fsf@all.your.base.are.belong.to.us>
- <63986ef9-10a4-bcef-369d-0bad28b192d1@huawei.com>
- <87o7k8udzj.fsf@all.your.base.are.belong.to.us>
- <b5977c5d-c434-7b4c-89f3-d575ee5d04e8@huawei.com>
-Date:   Fri, 21 Jul 2023 10:53:34 +0200
-Message-ID: <87o7k5fxwx.fsf@all.your.base.are.belong.to.us>
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6190D6606FD8;
+        Fri, 21 Jul 2023 09:53:48 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689929629;
+        bh=lfQjN+0bzeNpjfaFx7yJbIo4ezDGeSh0p2XNZ9xwwz4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=O600G5w7nJqUVqoros/i3dGBDw3jROy94Zwx+9aAzLkY5THYq7F/xjZwT3LclQTMP
+         jSwwdgzE2rmW8VN1rLo1/A3q77287WfMwv0n7EqFdPYocYP4sya9G0VjFTXItfBOOn
+         0guWDaMkG8xZtLRQMkYq/4Iy7zbMNDeQ9adbMB5qUBrDYeWqlgYw8lTrztFBntPP2b
+         rbXdpd9j1hnOE4/hQvfUDQMVpSx7MvOQny3wO6GHBh1CfzxDw/SYxKOLS/klq7Eyvn
+         DHV3fsoShCe4l5NEgwU0zZIPh1+Mib6mcOI9NehUk9hbpvZrxlkhivDtEkkauHk1/j
+         An2ZrpBhM76uw==
+Message-ID: <176141a9-bcf2-d91f-0447-7a2aabd4b602@collabora.com>
+Date:   Fri, 21 Jul 2023 10:53:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RESEND v2 7/7] arm64: dts: mediatek: mt6358: Merge
+ ldo_vcn33_* regulators
+Content-Language: en-US
+To:     Chen-Yu Tsai <wenst@chromium.org>, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230721082903.2038975-1-wenst@chromium.org>
+ <20230721082903.2038975-8-wenst@chromium.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230721082903.2038975-8-wenst@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pu Lehui <pulehui@huawei.com> writes:
+Il 21/07/23 10:28, Chen-Yu Tsai ha scritto:
+> The ldo_vcn33_bt and ldo_vcn33_wifi regulators are actually the same
+> regulator, having the same voltage setting and output pin. There are
+> simply two enable bits that are ORed together to enable the regulator.
+> 
+> Having two regulators representing the same output pin is misleading
+> from a design matching standpoint, and also error-prone in driver
+> implementations.
+> 
+> Now that the bindings have these two merged, merge them in the device
+> tree as well. Neither vcn33 regulators are referenced in upstream
+> device trees. As far as hardware designs go, none of the Chromebooks
+> using MT8183 w/ MT6358 use this output.
+> 
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 
-> On 2023/7/19 23:18, Bj=C3=B6rn T=C3=B6pel wrote:
->> Pu Lehui <pulehui@huawei.com> writes:
->>=20
->>> On 2023/7/19 4:06, Bj=C3=B6rn T=C3=B6pel wrote:
->>>> Pu Lehui <pulehui@huaweicloud.com> writes:
->>>>
->>>>> From: Pu Lehui <pulehui@huawei.com>
->>>>>
->>>>> Commit 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to
->>>>> half") optimizes the detour code size of kernel functions to half with
->>>>> T0 register and the upcoming DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv
->>>>> is based on this optimization, we need to adapt riscv bpf trampoline
->>>>> based on this. One thing to do is to reduce detour code size of bpf
->>>>> programs, and the second is to deal with the return address after the
->>>>> execution of bpf trampoline. Meanwhile, add more comments and rename
->>>>> some variables to make more sense. The related tests have passed.
->>>>>
->>>>> This adaptation needs to be merged before the upcoming
->>>>> DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv, otherwise it will crash due
->>>>> to a mismatch in the return address. So we target this modification to
->>>>> bpf tree and add fixes tag for locating.
->>>>
->>>> Thank you for working on this!
->>>>
->>>>> Fixes: 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to h=
-alf")
->>>>
->>>> This is not a fix. Nothing is broken. Only that this patch much come
->>>> before or as part of the ftrace series.
->>>
->>> Yep, it's really not a fix. I have no idea whether this patch target to
->>> bpf-next tree can be ahead of the ftrace series of riscv tree?
->>=20
->> For this patch, I'd say it's easier to take it via the RISC-V tree, IFF
->> the ftrace series is in for-next.
->>=20
->
-> alright, so let's make it target to riscv-tree to avoid that cracsh.
->
->> [...]
->>=20
->>>>> +#define DETOUR_NINSNS	2
->>>>
->>>> Better name? Maybe call this patchable function entry something? Also,
->>>
->>> How about RV_FENTRY_NINSNS?
->>=20
->> Sure. And more importantly that it's actually used in the places where
->> nops/skips are done.
->
-> the new one is suited up.
->
->>=20
->>>> to catch future breaks like this -- would it make sense to have a
->>>> static_assert() combined with something tied to
->>>> -fpatchable-function-entry=3D from arch/riscv/Makefile?
->>>
->>> It is very necessary, but it doesn't seem to be easy. I try to find GCC
->>> related functions, something like __builtin_xxx, but I can't find it so
->>> far. Also try to make it as a CONFIG_PATCHABLE_FUNCTION_ENTRY=3D4 in
->>> Makefile and then static_assert, but obviously it shouldn't be done.
->>> Maybe we can deal with this later when we have a solution?
->>=20
->> Ok!
->>=20
->> [...]
->>=20
->>>>> @@ -787,20 +762,19 @@ static int __arch_prepare_bpf_trampoline(struct=
- bpf_tramp_image *im,
->>>>>    	int i, ret, offset;
->>>>>    	int *branches_off =3D NULL;
->>>>>    	int stack_size =3D 0, nregs =3D m->nr_args;
->>>>> -	int retaddr_off, fp_off, retval_off, args_off;
->>>>> -	int nregs_off, ip_off, run_ctx_off, sreg_off;
->>>>> +	int fp_off, retval_off, args_off, nregs_off, ip_off, run_ctx_off, s=
-reg_off;
->>>>>    	struct bpf_tramp_links *fentry =3D &tlinks[BPF_TRAMP_FENTRY];
->>>>>    	struct bpf_tramp_links *fexit =3D &tlinks[BPF_TRAMP_FEXIT];
->>>>>    	struct bpf_tramp_links *fmod_ret =3D &tlinks[BPF_TRAMP_MODIFY_RET=
-URN];
->>>>>    	void *orig_call =3D func_addr;
->>>>> -	bool save_ret;
->>>>> +	bool save_retval, traced_ret;
->>>>>    	u32 insn;
->>>>>=20=20=20=20
->>>>>    	/* Generated trampoline stack layout:
->>>>>    	 *
->>>>>    	 * FP - 8	    [ RA of parent func	] return address of parent
->>>>>    	 *					  function
->>>>> -	 * FP - retaddr_off [ RA of traced func	] return address of traced
->>>>> +	 * FP - 16	    [ RA of traced func	] return address of
->>>>>    	traced
->>>>
->>>> BPF code uses frame pointers. Shouldn't the trampoline frame look like=
- a
->>>> regular frame [1], i.e. start with return address followed by previous
->>>> frame pointer?
->>>>
->>>
->>> oops, will fix it. Also we need to consider two types of trampoline
->>> stack layout, that is:
->>>
->>> * 1. trampoline called from function entry
->>> * --------------------------------------
->>> * FP + 8           [ RA of parent func ] return address of parent
->>> *                                        function
->>> * FP + 0           [ FP                ]
->>> *
->>> * FP - 8           [ RA of traced func ] return address of traced
->>> *                                        function
->>> * FP - 16          [ FP                ]
->>> * --------------------------------------
->>> *
->>> * 2. trampoline called directly
->>> * --------------------------------------
->>> * FP - 8           [ RA of caller func ] return address of caller
->>> *                                        function
->>> * FP - 16          [ FP                ]
->>> * --------------------------------------
->>=20
->> Hmm, could you expand a bit on this? The stack frame top 16B (8+8)
->> should follow what the psabi suggests, regardless of the call site?
->>=20
->
-> Maybe I've missed something important! Or maybe I'm misunderstanding=20
-> what you mean. But anyway there is something to show. In my perspective,=
-=20
-> we should construct a complete stack frame, otherwise one layer of stack=
-=20
-> will be lost in calltrace when enable CONFIG_FRAME_POINTER.
->
-> We can verify it by `echo 1 >=20
-> /sys/kernel/debug/tracing/options/stacktrace`, and the results as show=20
-> below:
->
-> 1. complete stack frame
-> * --------------------------------------
-> * FP + 8           [ RA of parent func ] return address of parent
-> *                                        function
-> * FP + 0           [ FP                ]
-> *
-> * FP - 8           [ RA of traced func ] return address of traced
-> *                                        function
-> * FP - 16          [ FP                ]
-> * --------------------------------------
-> the stacktrace is:
->
->   =3D> trace_event_raw_event_bpf_trace_printk
->   =3D> bpf_trace_printk
->   =3D> bpf_prog_ad7f62a5e7675635_bpf_prog
->   =3D> bpf_trampoline_6442536643
->   =3D> do_empty
->   =3D> meminfo_proc_show
->   =3D> seq_read_iter
->   =3D> proc_reg_read_iter
->   =3D> copy_splice_read
->   =3D> vfs_splice_read
->   =3D> splice_direct_to_actor
->   =3D> do_splice_direct
->   =3D> do_sendfile
->   =3D> sys_sendfile64
->   =3D> do_trap_ecall_u
->   =3D> ret_from_exception
->
-> 2. omit one FP
-> * --------------------------------------
-> * FP + 0           [ RA of parent func ] return address of parent
-> *                                        function
-> * FP - 8           [ RA of traced func ] return address of traced
-> *                                        function
-> * FP - 16          [ FP                ]
-> * --------------------------------------
-> the stacktrace is:
->
->   =3D> trace_event_raw_event_bpf_trace_printk
->   =3D> bpf_trace_printk
->   =3D> bpf_prog_ad7f62a5e7675635_bpf_prog
->   =3D> bpf_trampoline_6442491529
->   =3D> do_empty
->   =3D> seq_read_iter
->   =3D> proc_reg_read_iter
->   =3D> copy_splice_read
->   =3D> vfs_splice_read
->   =3D> splice_direct_to_actor
->   =3D> do_splice_direct
->   =3D> do_sendfile
->   =3D> sys_sendfile64
->   =3D> do_trap_ecall_u
->   =3D> ret_from_exception
->
-> it lost the layer of 'meminfo_proc_show'.
-
-(Lehui was friendly enough to explain the details for me offlist.)
-
-Aha, now I get what you mean! When we're getting into the trampoline
-from the fentry-side, an additional stack frame needs to be
-created. Otherwise, the unwinding will be incorrect.
-
-So (for the rest of the readers ;-)), the BPF trampoline can be called
-from:
-
-A. A tracing point of view; Here, we're calling into the trampoline via
-   the fentry/patchable entry. In this scenario, an additional stack
-   frame needs to be constructed for proper unwinding.
-
-B. For kfuncs. Here, the call into the trampoline is just a "regular
-   call", and no additional stack frame is needed.
-
-@Guo @Song Is the RISC-V ftrace code creating an additional stack frame,
-or is the stack unwinding incorrect when the fentry is patched?
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
 
-Thanks for clearing it up for me, Lehui!
-
-
-Bj=C3=B6rn
