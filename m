@@ -2,237 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C71275D733
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDA375D73A
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbjGUWKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 18:10:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57970 "EHLO
+        id S229785AbjGUWPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 18:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjGUWKH (ORCPT
+        with ESMTP id S229552AbjGUWO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 18:10:07 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3046E30CD;
-        Fri, 21 Jul 2023 15:10:06 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1b89b75dc1cso23701265ad.1;
-        Fri, 21 Jul 2023 15:10:06 -0700 (PDT)
+        Fri, 21 Jul 2023 18:14:59 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4452733;
+        Fri, 21 Jul 2023 15:14:52 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-66869feb7d1so1551393b3a.3;
+        Fri, 21 Jul 2023 15:14:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689977405; x=1690582205;
+        d=gmail.com; s=20221208; t=1689977692; x=1690582492;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pXQ5hDMKSWJDU9uqg2X9Wkd9h1kRn35yH0M0crdOhaU=;
-        b=g34ViM1CXFJPjCYZoKRcJrdpHZi+9UkPqbaSslBQDt30H1ol90S1y7sP+EI+VkhEqe
-         18DiNo4SpRI8WiSidQCHSqPnJIGNnOwbTmq6Ob3KL+rkcAD11d2wegnYOly2amk5Vvto
-         7SlRhZzsmUlufw2r8InjywH+CylaNw7F2Hp1SNTR0cQagcF58DrzIZh6MCkLYmDtIRBm
-         UztzuAOetSgbSLvMmVudfly+FkMNw9V5Y+70EnEjaeRi1lEVXmDFhc5OqUU08xkMcW6t
-         OqGAEnZiI3WqJnS6ieUSPdyOVFJqIZMrY414wlsr8GEhx96NTIoXZUcU4I34Dbh3/ZA+
-         WxSQ==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dXrwI0f7BDKHLGwATVJjnhmJ48tgd3+2nr9dmXSF18o=;
+        b=r3cG7lOFcoYQwf+fNGpD139Z1Covyp+2lo5zJD5XnTAf8/K2pT9/dUBD2deat8FKKY
+         npfSKBeTWt4RQmlwADclDm3Xd4QSNgj7U/QuvE7Vkq1WJcsnq0VH2IZGR/0WuWD7+4su
+         kiKtRxjosdCNcaRgSFvEgYafPhLPyLWkrbkuBDotW3bpA9q1EiSVmA2iZ4tTSqwy+x1V
+         KiHpqELnKXUa/gYZKJKU3S/5o+DJixx9URsj4dgQ1EG8f6aW6uYrKfS/sYl7EHM94Nbo
+         9uTZv8JxLxGV3Og6f1YzX10gR7qDoVLgNvBQMuU3LzHEcL3qr43+/kFZWh+cmYCbyOpe
+         7O6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689977405; x=1690582205;
+        d=1e100.net; s=20221208; t=1689977692; x=1690582492;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pXQ5hDMKSWJDU9uqg2X9Wkd9h1kRn35yH0M0crdOhaU=;
-        b=kJ0IE52EV9ugsh5WPUVZKloypA3e3GaR/nJepzBFMcC6O3yqALw3xcR7tO7GE4a6Yz
-         gKryTiTQj0X+XAO6AHCZrrh7p7fs2ERJtr3NtJnD9O0FvYme8IreGYAyCO9soW9xNvkM
-         8lopZUJolViQ71azVdH2yIDXBd043uH4xE6IidePZ1nAlYxtc2bTq+KvsVnRFZrpeLga
-         J8FB15A3npzI/Kn0HbzBAdF2jgmQaEupJ3sgFSS6MIdkB/q7LCKeP7mk+WwPUzy3IuXu
-         cx4Ws38Sr4gWLhouUO0T25dlbgflP/OYCVFaI4TFFRADFPjObilEA2IVx/pyWJmW6JjT
-         l9Cg==
-X-Gm-Message-State: ABy/qLZlXOzBEZD05z8kkQZmM9sW9KkwshTjfZP0F3h7kqXBpvYpZYIm
-        6NOShRElIm+4Y7WnkxE9Lc3ydNpiFEM=
-X-Google-Smtp-Source: APBJJlFjOQrNWEdeJ3ZK7t3BaS3rsRqc8CzmhyHq1gA1ZSjNMfqMGZIsMVfa5c94GdV1mPbQrcYyew==
-X-Received: by 2002:a17:902:f690:b0:1b8:8682:62fb with SMTP id l16-20020a170902f69000b001b8868262fbmr5966360plg.4.1689977405457;
-        Fri, 21 Jul 2023 15:10:05 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:fd88:dbb:fc42:8207])
-        by smtp.gmail.com with ESMTPSA id e15-20020a17090301cf00b001b9de67285dsm3996910plh.156.2023.07.21.15.10.04
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dXrwI0f7BDKHLGwATVJjnhmJ48tgd3+2nr9dmXSF18o=;
+        b=D/7tth+tmsD5JN1pZIcTyelmW+o+8VgwQkPGFa0paVZyiwyQHuE2kXPNzQhOmuHdGc
+         KlwBq/w9OQfKdNmSLC7neaCcdWEl5wMVAcW6lmDzma5oKH5/yNvtqZiD2r8yXRqfglMW
+         dSfp9x/c/xzOPOU4WCpXa7UTMTYx5ynioUlQi6HAYKGzh6f8r6Otz1hLUmrh8haaaRru
+         oblvqijWF6HGXWKgTQIRWu3Tj8WmAintCWkEJ7nyTGY9OS1TAoiRAEToNHsSfUF4JyvD
+         /Bzhar88YA3Mzs6cVb9RA3kdSZwv0FRmeteHVtdcupbXQt9TGmzh1teeYdUFq8IVY3LF
+         mQFQ==
+X-Gm-Message-State: ABy/qLZYrXHCxR4LuR4n0RbYyDunaWMto7QZ3MAm58YWR1HqB5cSD3d3
+        negMAdVgHmqY+A8Qqm8qD7w=
+X-Google-Smtp-Source: APBJJlHoNi2MjEt7qTibhO+ffZRb9Yn/LK9ofBG7ZxnPqOG9HkkZfu+1e7w3xEKaYag4IjlOOLyZaw==
+X-Received: by 2002:a05:6a00:80e:b0:67a:31b7:456c with SMTP id m14-20020a056a00080e00b0067a31b7456cmr1390223pfk.9.1689977691056;
+        Fri, 21 Jul 2023 15:14:51 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:fbd8])
+        by smtp.gmail.com with ESMTPSA id d134-20020a63368c000000b0055be951145csm3613018pga.36.2023.07.21.15.14.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 15:10:05 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 15:10:02 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Andreas Helbech Kleist <andreaskleist@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] Input: exc3000 - Simplify probe()
-Message-ID: <ZLsCOj1t4JvG3SEp@google.com>
-References: <20230717131756.240645-1-biju.das.jz@bp.renesas.com>
- <20230717131756.240645-2-biju.das.jz@bp.renesas.com>
- <ZLVlIPHdmEGdG5D1@google.com>
- <OS0PR01MB592264ADC86061AB003048DD863BA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <66228ad3-c087-418c-925f-b9fd4a60fb16@sirena.org.uk>
- <ZLWIPPAfeR1+KbeH@google.com>
- <OS0PR01MB59225D8CF3E96808DD776A8E863BA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <ZLbbslBiIQXFWpmN@google.com>
- <TYCPR01MB593346FBBA320260A290EAFD8639A@TYCPR01MB5933.jpnprd01.prod.outlook.com>
+        Fri, 21 Jul 2023 15:14:50 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 21 Jul 2023 12:14:49 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?iso-8859-1?Q?St=E9phane?= Marchesin <marcheu@chromium.org>,
+        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Subject: Re: [PATCH 08/17] drm/cgroup: Track DRM clients per cgroup
+Message-ID: <ZLsDWcwTL9aE0-5h@slm.duckdns.org>
+References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
+ <20230712114605.519432-9-tvrtko.ursulin@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <TYCPR01MB593346FBBA320260A290EAFD8639A@TYCPR01MB5933.jpnprd01.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230712114605.519432-9-tvrtko.ursulin@linux.intel.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 06:43:47AM +0000, Biju Das wrote:
-> Hi Dmitry Torokhov,
-> 
-> Thanks for the feedback.
-> 
-> > Subject: Re: [PATCH v2 1/2] Input: exc3000 - Simplify probe()
-> > 
-> > On Mon, Jul 17, 2023 at 06:45:27PM +0000, Biju Das wrote:
-> > > Hi Dmitry,
-> > >
-> > > > Subject: Re: [PATCH v2 1/2] Input: exc3000 - Simplify probe()
-> > > >
-> > > > On Mon, Jul 17, 2023 at 07:15:50PM +0100, Mark Brown wrote:
-> > > > > On Mon, Jul 17, 2023 at 04:35:02PM +0000, Biju Das wrote:
-> > > > >
-> > > > > > The .device_get_match_data callbacks are missing for I2C and SPI
-> > > > > > bus
-> > > > subsystems.
-> > > > > > Can you please throw some lights on this?
-> > > > >
-> > > > > It's the first time I've ever heard of that callback, I don't know
-> > > > > why whoever added it wouldn't have done those buses in particular
-> > > > > or if it just didn't happen.  Try adding it and if it works send
-> > the patches?
-> > > >
-> > > > I think there is a disconnect. Right now device_get_match_data
-> > > > callbacks are part of fwnode_operations. I was proposing to add
-> > > > another optional device_get_match_data callback to 'struct bus_type'
-> > > > to allow individual buses control how match data is handled, before
-> > > > (or after) jumping into the fwnode-backed device_get_match_data
-> > callbacks.
-> > >
-> > > That is what implemented here [1] and [2] right?
-> 
-> [1] https://elixir.bootlin.com/linux/v6.5-rc2/source/drivers/spi/spi.c#L364
-> 
-> [2] https://elixir.bootlin.com/linux/v6.5-rc2/source/drivers/i2c/i2c-core-base.c#L117
-> 
-> > >
-> > >
-> > > First it check for fwnode-backed device_get_match_data callbacks and
-> > > Fallback is bus-type based match.
-> > >
-> > > Looks like you are proposing to unify [1] and [2] and you want the
-> > > logic to be other way around. ie, first bus-type match, then
-> > > fwnode-backed callbacks?
-> > >
-> > 
-> > I do not have a strong preference for the ordering, i.e. I think it is
-> > perfectly fine to do the generic fwnode-based lookup and if there is no
-> > match have bus method called as a fallback, 
-> 
-> That involves a bit of work.
-> 
-> const void *device_get_match_data(const struct device *dev);
-> 
-> const struct i2c_device_id *i2c_match_id(const struct i2c_device_id *id,
-> 					 const struct i2c_client *client);
-> 
-> const struct spi_device_id *spi_get_device_id(const struct spi_device *sdev);
-> 
-> Basically, the bus-client driver(such as exc3000) needs to pass struct device
-> and device_get_match_data after generic fwnode-based lookup,
-> needs to find the bus type based on struct device and call a new generic 
-> void* bus_get_match_data(void*) callback, so that each bus interface
-> can do a match.
+Hello,
 
-Yes, something like this (which does not seem that involved to me...):
+On Wed, Jul 12, 2023 at 12:45:56PM +0100, Tvrtko Ursulin wrote:
+> +void drmcgroup_client_migrate(struct drm_file *file_priv)
+> +{
+> +	struct drm_cgroup_state *src, *dst;
+> +	struct cgroup_subsys_state *old;
+> +
+> +	mutex_lock(&drmcg_mutex);
+> +
+> +	old = file_priv->__css;
+> +	src = css_to_drmcs(old);
+> +	dst = css_to_drmcs(task_get_css(current, drm_cgrp_id));
+> +
+> +	if (src != dst) {
+> +		file_priv->__css = &dst->css; /* Keeps the reference. */
+> +		list_move_tail(&file_priv->clink, &dst->clients);
+> +	}
+> +
+> +	mutex_unlock(&drmcg_mutex);
+> +
+> +	css_put(old);
+> +}
+> +EXPORT_SYMBOL_GPL(drmcgroup_client_migrate);
 
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index 8c40abed7852..cc0bf7bb6f3a 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -1277,7 +1277,13 @@ EXPORT_SYMBOL(fwnode_graph_parse_endpoint);
- 
- const void *device_get_match_data(const struct device *dev)
- {
--	return fwnode_call_ptr_op(dev_fwnode(dev), device_get_match_data, dev);
-+	const void *data;
-+
-+	data = fwnode_call_ptr_op(dev_fwnode(dev), device_get_match_data, dev);
-+	if (!data && dev->bus && dev->bus->get_match_data)
-+		data = dev->bus->get_match_data(dev);
-+
-+	return data;
- }
- EXPORT_SYMBOL_GPL(device_get_match_data);
- 
-diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-index 60746652fd52..5fe47bc491a6 100644
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -114,6 +114,26 @@ const struct i2c_device_id *i2c_match_id(const struct i2c_device_id *id,
- }
- EXPORT_SYMBOL_GPL(i2c_match_id);
- 
-+static const void *i2c_device_get_match_data(const struct device *dev)
-+{
-+	const struct i2c_client *client = to_i2c_client(dev);
-+	const struct i2c_driver *driver;
-+	const struct i2c_device_id *match;
-+
-+	if (!dev->driver)
-+		return NULL;
-+
-+	driver = to_i2c_driver(dev->driver);
-+	if (!driver)
-+		return NULL;
-+
-+	match = i2c_match_id(driver->id_table, client);
-+	if (!match)
-+		return NULL;
-+
-+	return (const void *)match->driver_data;
-+}
-+
- const void *i2c_get_match_data(const struct i2c_client *client)
- {
- 	struct i2c_driver *driver = to_i2c_driver(client->dev.driver);
-@@ -695,6 +715,7 @@ struct bus_type i2c_bus_type = {
- 	.probe		= i2c_device_probe,
- 	.remove		= i2c_device_remove,
- 	.shutdown	= i2c_device_shutdown,
-+	.get_match_data	= i2c_device_get_match_data,
- };
- EXPORT_SYMBOL_GPL(i2c_bus_type);
- 
-diff --git a/include/linux/device/bus.h b/include/linux/device/bus.h
-index ae10c4322754..3f2cba28a1af 100644
---- a/include/linux/device/bus.h
-+++ b/include/linux/device/bus.h
-@@ -102,6 +102,8 @@ struct bus_type {
- 	int (*dma_configure)(struct device *dev);
- 	void (*dma_cleanup)(struct device *dev);
- 
-+	const void *(*get_match_data)(const struct device *dev);
-+
- 	const struct dev_pm_ops *pm;
- 
- 	const struct iommu_ops *iommu_ops;
+So, you're implicitly migrating the fd to the latest ioctl user on the first
+access. While this may work for state-less control like usage time. This
+likely will cause problem if you later want to add stateful control for
+memory consumption. e.g. What happens if the new destination doesn't have
+enough budget to accommodate the fd's usage? Let's say we allow over-commit
+with follow-up reclaim or oom kill actions, if so, can we guarantee that all
+memory ownership for can always be updated? If not, what happens after
+failure?
 
+If DRM needs to transfer fd ownership with resources attached to it, it
+likely would be a good idea to make that an explicit operation so that the
+attempt can be verified and failed if necessary.
 
 Thanks.
 
 -- 
-Dmitry
+tejun
