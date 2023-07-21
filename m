@@ -2,224 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D98FF75C8F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1206E75C8FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbjGUOEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:04:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        id S231216AbjGUOFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbjGUOEp (ORCPT
+        with ESMTP id S229904AbjGUOFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:04:45 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379292736
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:04:41 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbfcc6daa9so16401505e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:04:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689948279; x=1690553079;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=i0hqft4rLykA1Qm+aWWngJrri1KXMWVHpmrflE+PpLU=;
-        b=KzPxa8KXQz5MfDDt2Hr8NCdHH7Er0bPAv4YoqoUulZL1A8MaW/bte3T3bZOaEAFzNk
-         w7TwDzBzdkd+MfZmcsSfoFDYZqgPdOWH/zIlJq+LLZ1Vbj5su7wnHbzRpJr6idQpOQkD
-         TMXdIAYABzBME16eyIKHrRCF5J5lYTJRHp+a5ylZ/xWp0yyhZkyrV1z8RjyxGweXTwcx
-         qKx+GVxwZG1dv3OUuLAHhBNV793Wvoh6bVToxBmIU9Z2bWRRFxoY/A80A3Rs1rQFoqlE
-         ykdC2iiTvU9r5XMzHOiUfLIC8odjwnJLl1L7bI4Sv0CIkQSSatzOfTp3PslQcKdZ00Fw
-         hnLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689948279; x=1690553079;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i0hqft4rLykA1Qm+aWWngJrri1KXMWVHpmrflE+PpLU=;
-        b=cz1v6QQjsNckwlEnVxJKhYEETDTwBpIvNZrsuMEVg8qdHOTc+T8NfVpKo8Kwi3G3Vk
-         sG0mlRxNkDsYf3z8qG1dnmyiW78knfjYVdqRB0i5bsSFZBMUBJmq3Y7+ayn8qRf0HJwI
-         N/7I3Mt5D4VoV6mFp32owvvku9+Ffy6ofUYHgwCyMhlF5ovtV7XoG078177HuuyDWBNP
-         RgwVUUW5mAcQcusU0wRs3y6TkNK4Dkcg52jsIDnmXbO0o45cBfy305Pr6D1oYfoBeEmE
-         +IeDMt6dT+C1PaW7t90GPEDzC8h+4c4tqhZ7yzI6h1fWidO1itK70ekhLbaGeHqSe/ib
-         Xgmg==
-X-Gm-Message-State: ABy/qLa/PrQSsO+uwpPuJscm7Dz8QaN5Qd0I7ASfob/0qI56Gswfokim
-        YnoWXLG+bUqDGQkx6btK/P0png==
-X-Google-Smtp-Source: APBJJlEsMYe5JQ+pU4AezELFYdRQHmI7TefsDs6cDm78/h68oOlcICdvW129lDjtJ/t6VHgFfG467Q==
-X-Received: by 2002:adf:fc03:0:b0:314:1634:491e with SMTP id i3-20020adffc03000000b003141634491emr1269926wrr.20.1689948279591;
-        Fri, 21 Jul 2023 07:04:39 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id x8-20020a1c7c08000000b003f90b9b2c31sm6142028wmc.28.2023.07.21.07.04.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 07:04:38 -0700 (PDT)
-Message-ID: <5603264e-2efe-48ce-b025-797501f29fde@linaro.org>
-Date:   Fri, 21 Jul 2023 16:04:34 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 06/42] dt-bindings: soc: Add Cirrus EP93xx
+        Fri, 21 Jul 2023 10:05:09 -0400
+Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021023.outbound.protection.outlook.com [52.101.57.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786111BE2;
+        Fri, 21 Jul 2023 07:05:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MRDAiy7kZ3P/r03FS/3dm8PfIe+2wr6jFg104yOzpWEZGpTxt3SKw0SjYkvlkKM3487OkkvL514CLO2dHHQnU4MGPTTCdS/4+TCNzraoFx9Qd3NyZ+e30vFV2T+a6d5FnHeINetuOxFNldKi3hJeEaLt8mVPclA+nfvmapp0/+I2TGH+NiowEzbBMnQc/COrrAcbi6dm37DpJxOlkhQQWU7aQtyF789jhkR6BmhYHNli/JgczGA+1jtwRc4phtL/w/qnA0FnS76SwLUmqlDmYi6MQ7rMav5i6lWnNdoW+7vTW63naa+/au7/c///b3Rwjx9MpYORTnMs+2jCBJzwoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y5ZspRoWDL4NP1n/zoSVzPkthz51DoKre0LACDeASco=;
+ b=XUUQMMA49JJqh7rrp3b7Aqr0+2tvQx+d6vHNwUe88WifDf63+iDLqMrjBwrj5l/hLqOU//MSEIjUFf+Qm6ew3iD7/RkRr661zI8pwsu/rwTINvikkmBn36NmxIsYybLZHf1TC5PaCtfztZONaNTEOnmH5VGlLARCJbkB/L4ajHqfrVQGeWm/XqP0lb8baH8K8nK9dRuxsyWLJYxuVz5o2ew3pSA7DKls70pXPM4SCebtvgkfe9yYeKRvqXS3tfHDlDlb4tj6LMSCQOdtP6qnr/OpJylItp2MlH+2fb9z7Rar/seTfRm8bT8mCkAWz1p54Gvo7FOoj0JYLAJL94YTTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y5ZspRoWDL4NP1n/zoSVzPkthz51DoKre0LACDeASco=;
+ b=MJ1dr9nDs1x6kpxex9aIS2mT9hviAvoJVyXB95ah65B6y4zqof2b8uc1H9J2CiIOmY6/LrcktSIu6mmpuKDNuEbMhfOlm6ptl6apK6DvWeJa1sZTI6QsQ5nQznJT4CawxsvolAUr7wsFuw4yBcUY+5zpVDlEVtQdwAizLkOBfp0=
+Received: from BYAPR21MB1688.namprd21.prod.outlook.com (2603:10b6:a02:bf::26)
+ by DM6PR21MB1401.namprd21.prod.outlook.com (2603:10b6:5:22d::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.16; Fri, 21 Jul
+ 2023 14:05:02 +0000
+Received: from BYAPR21MB1688.namprd21.prod.outlook.com
+ ([fe80::c164:97f6:174e:4136]) by BYAPR21MB1688.namprd21.prod.outlook.com
+ ([fe80::c164:97f6:174e:4136%4]) with mapi id 15.20.6631.014; Fri, 21 Jul 2023
+ 14:05:03 +0000
+From:   "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH 1/1] x86/hyperv: Disable IBT when hypercall page lacks
+ ENDBR instruction
+Thread-Topic: [PATCH 1/1] x86/hyperv: Disable IBT when hypercall page lacks
+ ENDBR instruction
+Thread-Index: AQHZu0mXUyEtW9eyqkWnVGF605KOSq/DKCeAgAAzncCAAOUgwA==
+Date:   Fri, 21 Jul 2023 14:05:03 +0000
+Message-ID: <BYAPR21MB16889A4BD21DA1F8357008FFD73FA@BYAPR21MB1688.namprd21.prod.outlook.com>
+References: <1689885237-32662-1-git-send-email-mikelley@microsoft.com>
+ <20230720211553.GA3615208@hirez.programming.kicks-ass.net>
+ <SN6PR2101MB16933FAC4E09E15D824EB2FDD73FA@SN6PR2101MB1693.namprd21.prod.outlook.com>
+In-Reply-To: <SN6PR2101MB16933FAC4E09E15D824EB2FDD73FA@SN6PR2101MB1693.namprd21.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     nikita.shubin@maquefel.me,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Lukasz Majewski <lukma@denx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Peters <mpeters@embeddedTS.com>,
-        Kris Bahnsen <kris@embeddedTS.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-6-3d63a5f1103e@maquefel.me>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230605-ep93xx-v3-6-3d63a5f1103e@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b52301eb-604c-44e1-bf56-29beb984d9b4;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-21T00:20:36Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BYAPR21MB1688:EE_|DM6PR21MB1401:EE_
+x-ms-office365-filtering-correlation-id: 931836d6-fb9e-487b-1c2b-08db89f37b1f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8ZJKKzfeXplfQJ6MtICO6dJBg/1ovAmMkfHZDvMofli6JG3JDMvNjVJte/98J0ir3ZxHxGtwrHOYMmvhz2AibrqoTcNt0RgsdAuK5IO7aub+Xajg+oUxAM8FLdjr4S2b6GwNsEzUPbPvRCRi7e0HzyDnYsE9gGpi6Z8YqeATloB8mFbHnIj0Wg5CVxZRM/KFZk8C0wN9I4LVPjCJapvD7gHEvbzYcbCMucS/ge98Ae3JimajgDj/EL/a1uueoOUQslj7F6Gv1cXZPGGdvGAFSJQm+/TX8h4erYfsMovIMUJ/5k0CA6Gmjnwclr9Yp5JqDC9ZEDWrfIXPNGjfr4+pE+E1NtpVp0417LtPf4PjK2HmamAOP88c+JUDeNSOxAE8LCfbEaKe/J6DB8VCax6yqjOb1tpW6amYU4AuukCzKS/QGIUCppxD9J1HcadH/1M5tmGwCAFop60i7xm/7peAK/KdAvRhZSXCIJZnJxhCid8qJuv+ur0+oI1uy9mjlK22lmXKI+RSAocxmnpb3UnyFJPzydaX11ETIw0sMeG4AKiumPwyDBjWCA+nyS4RTs9c7uDKEAJ3nqidT45kw/xL9Uu1+wRzZEXxGFC9/PYgAyBa602iBsI7eXpv37ah9jqsaYJ4BS3VzBK1QCz57CHvRf8dka+Xw+TE/zUja1PT0mQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1688.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(136003)(366004)(346002)(376002)(451199021)(66476007)(64756008)(66556008)(66946007)(76116006)(4326008)(66446008)(55016003)(38100700002)(122000001)(86362001)(9686003)(26005)(186003)(6506007)(38070700005)(83380400001)(82960400001)(82950400001)(478600001)(71200400001)(33656002)(110136005)(54906003)(10290500003)(7696005)(8990500004)(7416002)(2906002)(5660300002)(8936002)(52536014)(41300700001)(8676002)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0DKlTgVTNv0Lou0ZzO7w/ZYI27n9NnNv+HOTs9E8VB+rnZ2cascY7aaifoel?=
+ =?us-ascii?Q?FmQOJ+6m29b6qh+8JW7YWOle6i/827kfzrmmnBDhLjvmupauv33InFsX8D3m?=
+ =?us-ascii?Q?MTE8r1rFigULUCYUBpH/9eSuuy1xE4aFldGPtgpNiufocDg/uxbIeJ/iTnZm?=
+ =?us-ascii?Q?l1LlLZP3UqP/vDzkVtm1+bLjDpBVoz9yx5VDrdxvTfxAi5s/2dvSM0L1tGCz?=
+ =?us-ascii?Q?be9upJYtQKcww3lKfBQaSE8cFJ8hejUCsUhoXmB9ph6+j+dI/sfsxmzb2wsF?=
+ =?us-ascii?Q?tHk6qhV6vQusMpNIGGIzwk1vb9LfKJSQywnRYwWmLGhtp3r4I1pTEUhUt/2X?=
+ =?us-ascii?Q?pTtkpUfEkbUfL9OeGnTYcod+CYdLxSlrBM/R5n7P7SLjD0ORl9dyJY+FNcfz?=
+ =?us-ascii?Q?+RspKWQwnvz/oQIRLfwhUMPK7iJ5AzaVu+yvkg+5UhIe7KugqGCeUQj95zYj?=
+ =?us-ascii?Q?C7daJj9ew9hdQrx/fh2rsX6kmzuOgsOnaiviTjKlNAnBqL00/Rh2AHOSqmBM?=
+ =?us-ascii?Q?2mRMvECTncekj+eSP+Nsyx/KUFpTObfNmh7mCfWcyK/bj+/lsWJr4+VitBao?=
+ =?us-ascii?Q?FUmZWLVWy/O5bGDLg4F8gLw4xe379oea+jL/nBXaryzADUA+93PRxJU5TrDS?=
+ =?us-ascii?Q?LQjjmOc3bnjDYq/xtUiQimeUDzM7LeZb8lsIO/D28TwkuwZJQGOU1IH8Vg+Q?=
+ =?us-ascii?Q?RGwbJOY8/WnYwpAFjuHUrE2bXt7+Ze6isrWpFG/FHVlYzGx7WDkFTLyYwenR?=
+ =?us-ascii?Q?30WMiSK7cYjZGjTo1HDbbprEiQPk2dDyxShoZEXR7T99ki1vCc3iKu8M2nRS?=
+ =?us-ascii?Q?96sBFrsN3KtqePT9EP8fsrz28hm2k4U4zJyWpXqJ+XTN73+9RBKL2Aq4eJ5X?=
+ =?us-ascii?Q?wXio5kah4G0FWo4EKFeP+NyV17+czlwSi67wGOOzWnG217P6Sc1bFEr95z0g?=
+ =?us-ascii?Q?Ocw5/zImw6cWUnrnaqTh0bHuJFaoT+nAyU6skv/SJEaHHYGHovFZzBlt2zDU?=
+ =?us-ascii?Q?/ACbr1xLzk0f7vyTOslNjCF4oofM4eBjuBa51HwP34TGFvHTrBAugYjRz75j?=
+ =?us-ascii?Q?GBFwUCk7iW+4LwWJmdffmYoAe6sqOuKCflVgy4BqZc3cjDotjTCTo5iwKwiI?=
+ =?us-ascii?Q?exUNR94eNjQFQpGRI87XVfoUTRnaifad6nplpj4RGIk0pP7aO8BLXTP/xmPg?=
+ =?us-ascii?Q?mMk1TUkD4+mi1CJOvbJCxQEZ7a/nwuUN6NXn7XTGaHdw7fmeLgEIm8Xb6Pn1?=
+ =?us-ascii?Q?NFQPc/tzxTwsbmHNNGa6Mv7tG8ciCN/mOkDunyGYw+SX4BtvcArsb4dClOTF?=
+ =?us-ascii?Q?w+v/2YvMVGZDGkKjsOnNy/08acxTlxtdobFsCq/V2oiCIFDoRBs0027x/0TJ?=
+ =?us-ascii?Q?LF7wUZaHpBPiA7czcFY4+r1IgHYnECVLBKybBSLxueQxtxU/i64cLqM9NIkD?=
+ =?us-ascii?Q?g10dOrCYKswVCiFkBDYsO4wl/ChcjKZCkWDyCBPX5f4Ep4nd0nlRq62vM/m/?=
+ =?us-ascii?Q?2DEesWobyF+b0pXJ0U8RhlEbODBECaw4gVqj2TUfJ8sgI1867hKVex/Xhngi?=
+ =?us-ascii?Q?1mGnyUs1p7pW/hJITAT/VvhofrXd0AbUXze1EEZysYJ8zw2JxQ6SiZwsMhkn?=
+ =?us-ascii?Q?tQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1688.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 931836d6-fb9e-487b-1c2b-08db89f37b1f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2023 14:05:03.8294
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AtpUg6UVzvgtbJo+bOYY5YtG4qoHPqRUcorVxdvAuMfvcgh5qCP2obIIX4kgRqFNTvtCqKb1hBYslivuCANYd++WmSf7vTQEwEoi8tj6qs4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR21MB1401
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2023 13:29, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
-> 
-> This adds device tree bindings for the Cirrus Logic EP93xx.
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
->  .../bindings/arm/cirrus/ep9301-syscon.yaml         | 59 ++++++++++++++++++++++
+From: Michael Kelley (LINUX) <mikelley@microsoft.com> Sent: Thursday, July =
+20, 2023 5:42 PM
+>=20
+> From: Peter Zijlstra <peterz@infradead.org> Sent: Thursday, July 20, 2023=
+ 2:16 PM
+> >
+> > > @@ -472,6 +473,26 @@ void __init hyperv_init(void)
+> > >  	}
+> > >
+> > >  	/*
+> > > +	 * Some versions of Hyper-V that provide IBT in guest VMs have a bu=
+g
+> > > +	 * in that there's no ENDBR64 instruction at the entry to the
+> > > +	 * hypercall page. Because hypercalls are invoked via an indirect c=
+all
+> > > +	 * to the hypercall page, all hypercall attempts fail when IBT is
+> > > +	 * enabled, and Linux panics. For such buggy versions, disable IBT.
+> > > +	 *
+> > > +	 * Fixed versions of Hyper-V always provide ENDBR64 on the hypercal=
+l
+> > > +	 * page, so if future Linux kernel versions enable IBT for 32-bit
+> > > +	 * builds, additional hypercall page hackery will be required here
+> > > +	 * to provide an ENDBR32.
+> > > +	 */
+> > > +#ifdef CONFIG_X86_KERNEL_IBT
+> > > +	if (cpu_feature_enabled(X86_FEATURE_IBT) &&
+> > > +	    *(u32 *)hv_hypercall_pg !=3D gen_endbr()) {
+> > > +		setup_clear_cpu_cap(X86_FEATURE_IBT);
+> > > +		pr_info("Hyper-V: Disabling IBT because of Hyper-V bug\n");
+> > > +	}
+> > > +#endif
+> >
+> > pr_warn() perhaps?
+>=20
+> I wanted pr_info() so there's an immediate way to check for this
+> case in the dmesg output if a user complains about IBT not being
+> enabled when he expects it.   In some sense, the message is temporary
+> because once the Hyper-V patch is available and users install it,
+> the message will go away.  The pipeline for the Hyper-V patch is a
+> bit long, so availability is at least several months away.  This Linux
+> workaround will be available much faster.  Once it is picked up on
+> stable branches, we will avoid the situations like we saw where
+> someone upgraded Fedora 38 from a 6.2 to a 6.3 kernel, and the 6.3
+> kernel wouldn't boot because it has kernel IBT enabled.
+>=20
 
-syscon goes to soc directory. Also, please add vendor prefix to the
-filenames.
+I realized in the middle of the night that my reply was nonsense. :-(
+pr_warn() makes the message visible when pr_info() might not.  I'm
+happy to change to pr_warn().
 
->  .../devicetree/bindings/arm/cirrus/ep9301.yaml     | 39 ++++++++++++++
->  2 files changed, 98 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/cirrus/ep9301-syscon.yaml b/Documentation/devicetree/bindings/arm/cirrus/ep9301-syscon.yaml
-> new file mode 100644
-> index 000000000000..77fbe1f006fd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/cirrus/ep9301-syscon.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/arm/cirrus/ep9301-syscon.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cirrus Logic EP93xx Platforms System Controller
-> +
-> +maintainers:
-> +  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> +  - Nikita Shubin <nikita.shubin@maquefel.me>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - cirrus,ep9302-syscon
-> +              - cirrus,ep9307-syscon
-> +              - cirrus,ep9312-syscon
-> +              - cirrus,ep9315-syscon
-> +          - const: cirrus,ep9301-syscon
-> +          - const: syscon
-> +          - const: simple-mfd
-> +      - items:
-> +          - const: cirrus,ep9301-syscon
-> +          - const: syscon
-> +          - const: simple-mfd
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  reboot:
-> +    type: object
-> +    properties:
-> +      compatible:
-> +        const: cirrus,ep9301-reboot
-
-Patch introducing it should be before this one. Also, do not use
-different styles for your child nodes. Your other nodes use $ref.
-
-> +
-> +  clock-controller:
-> +    type: object
-> +    $ref: ../../clock/cirrus,ep9301-clk.yaml
-
-Absolute path, so /schemas/clock/cirrus.....
-
-> +
-> +  pinctrl:
-> +    type: object
-> +    $ref: ../../pinctrl/cirrus,ep9301-pinctrl.yaml
-
-Ditto
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    syscon@80930000 {
-> +      compatible = "cirrus,ep9301-syscon",
-> +                   "syscon", "simple-mfd";
-> +      reg = <0x80930000 0x1000>;
-
-Incomplete example.
-
-> +    };
-> diff --git a/Documentation/devicetree/bindings/arm/cirrus/ep9301.yaml b/Documentation/devicetree/bindings/arm/cirrus/ep9301.yaml
-> new file mode 100644
-> index 000000000000..6087784e93fb
-> --- /dev/null
-
-
-Best regards,
-Krzysztof
-
+Michael
