@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE9975C1C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765DE75C1C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbjGUIfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
+        id S231418AbjGUIeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjGUIe6 (ORCPT
+        with ESMTP id S231586AbjGUIeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:34:58 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAC7273E
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:34:31 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36L7C3TY012776;
-        Fri, 21 Jul 2023 03:34:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=PODMain02222019; bh=4X5Vk5GzjGOeC6P
-        vbgtdeu+U2bY+ZOvoDw8i1UzpoY4=; b=qdw/l4urdIy5Rc9CFCJL018s2IiY4lL
-        E+lGszxaV51jy8xdOtJTAxswZupRQT1mornimEQZft28kr7bqqaGiJhEMhVTcVU3
-        /QmT6J1zQox2THnOZiOLOGeoYnNMaVIqfFpK/hj89Hj3354JqjWegWjgzlhTLwb7
-        Sw2eJSbqTNMtICQYSoRhE+DP5GJijsulZOlDiQdb+aJPna/wBjARAffzNsf3sztS
-        FsFm87fWIppIJcjriMB/uqzeyRYmLN9gKX+wIekRbwYDlgukeDMlpX8F9FDKyxK+
-        B3a1zUQNCTkRA+bfjV+Lf+8t5sTUj3Ap4Nt+cubOy1rTv9dvED+29Og==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3rus62xvn4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 03:34:02 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 21 Jul
- 2023 09:34:00 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Fri, 21 Jul 2023 09:34:00 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3E6143560;
-        Fri, 21 Jul 2023 08:34:00 +0000 (UTC)
-Date:   Fri, 21 Jul 2023 08:34:00 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <kuninori.morimoto.gx@renesas.com>,
-        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ASoC: wm8960: Add DAC filter characteristics selection
-Message-ID: <20230721083400.GK103419@ediswmail.ad.cirrus.com>
-References: <1689925948-21001-1-git-send-email-shengjiu.wang@nxp.com>
+        Fri, 21 Jul 2023 04:34:17 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CCB30C3;
+        Fri, 21 Jul 2023 01:34:09 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbc6ab5ff5so13908695e9.1;
+        Fri, 21 Jul 2023 01:34:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689928447; x=1690533247;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RQAwCIhJQKqcYnCuAcDKHJfPf6lVhwCI1dubWC+OCok=;
+        b=bI8ei4FEb7bBSYhgsSPUywSQ5XnjsSSLQavY2q4fPr0JNWgvaSPcOqpC4iZZU1Ufxj
+         tabL7NbtBO0sB9n3dQhtMdnV2w2RSMAlyjoVlNQKVGKR/8u/YAZaTYVOhlL1dzHRXEBS
+         ZZxahZO16cB5m22uYkiMg8ynUf0UjrIMFRX9WeMWc1x1sGYdtMRVM42cVKpxcTTjpMaz
+         IAW2ZQakzTNWqkEic3LjVB9LFq4OJuL4Kqr7NxFRnvTvuslucDEXgeSNEA0jL2HYbjCs
+         i4zcL6ZniALVTd01sBfCV8D1mUMZ8pfDcU6d0aG1vXIOB11PtXZ3rhLQSn1EHrZws9Jf
+         zjsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689928447; x=1690533247;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RQAwCIhJQKqcYnCuAcDKHJfPf6lVhwCI1dubWC+OCok=;
+        b=MgiQc3td1unY+ECRocM0JKCWSv+WkfJ2A1Ago52/wWQsACzj8QXLmaHP9iivzXdF98
+         8A9BWhW3ZNDAZuZ8iM9rKoiu/Rnve+SHSlQ/AoiMIeqOpWStvjuYRJftt3I5yg78Eebb
+         RBhin+yD7KCet/FBErbDDdtksPHJTXKCm9cy7wUlCrWgxfpL8pDQemosq0z0KLM/r2Ux
+         CJTl5monKz/5ZMNjpiG+6ybbO259xKWEnV3eWSE0Bjfp96F/ubxsht76B03I11uSuDTG
+         5DE1We87N/2gv3oXvu29xQS355ty0rYZ6tYwe5glxii0HASJl+oGnPNYI+CzHYllcWUD
+         dWFg==
+X-Gm-Message-State: ABy/qLZ4Arl/he/pYnVz1HTliFLBjRcTEkeuVeJyEoEnQx7xGng9VHfo
+        aKEFzG65+u/41Q305ji4ZdgblNbnn+o=
+X-Google-Smtp-Source: APBJJlGcaMnbd/zNvCFSLkP92ZxlT0y98wOs124UuYYj8d+gm7hhYqcbODGqa+5VJFa6n61iNzjo6A==
+X-Received: by 2002:a05:600c:2802:b0:3fb:c462:1833 with SMTP id m2-20020a05600c280200b003fbc4621833mr872759wmb.30.1689928446942;
+        Fri, 21 Jul 2023 01:34:06 -0700 (PDT)
+Received: from gmail.com (1F2EF292.nat.pool.telekom.hu. [31.46.242.146])
+        by smtp.gmail.com with ESMTPSA id m11-20020a05600c280b00b003fa968e9c27sm5615351wmb.9.2023.07.21.01.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 01:34:06 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 21 Jul 2023 10:34:04 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        Kees Cook <keescook@chromium.org>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        John Allen <john.allen@amd.com>, x86@kernel.org
+Subject: Re: [tip: x86/shstk] mm: Don't allow write GUPs to shadow stack
+ memory
+Message-ID: <ZLpC/IbswCA0yUHD@gmail.com>
+References: <168980685456.28540.8149705038742119504.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1689925948-21001-1-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: KKA1_9swrhuJ-ghUBfoWBjL1c7-345QA
-X-Proofpoint-ORIG-GUID: KKA1_9swrhuJ-ghUBfoWBjL1c7-345QA
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <168980685456.28540.8149705038742119504.tip-bot2@tip-bot2>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 03:52:28PM +0800, Shengjiu Wang wrote:
-> Support DAC filter characteristics selection: Normal mode
-> and Sloping stopband. Sloping stopband may have
-> better frequency response.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  sound/soc/codecs/wm8960.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-> index 366f5d769d6d..ff1355306b43 100644
-> --- a/sound/soc/codecs/wm8960.c
-> +++ b/sound/soc/codecs/wm8960.c
-> @@ -155,6 +155,7 @@ static const char *wm8960_adc_data_output_sel[] = {
->  	"Left Data = Right ADC; Right Data = Left ADC",
->  };
->  static const char *wm8960_dmonomix[] = {"Stereo", "Mono"};
-> +static const char *wm8960_dacslope[] = {"Normal", "Sloping"};
->  
->  static const struct soc_enum wm8960_enum[] = {
->  	SOC_ENUM_SINGLE(WM8960_DACCTL1, 5, 4, wm8960_polarity),
-> @@ -165,6 +166,7 @@ static const struct soc_enum wm8960_enum[] = {
->  	SOC_ENUM_SINGLE(WM8960_ALC3, 8, 2, wm8960_alcmode),
->  	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 2, 4, wm8960_adc_data_output_sel),
->  	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 4, 2, wm8960_dmonomix),
-> +	SOC_ENUM_SINGLE(WM8960_DACCTL2, 1, 2, wm8960_dacslope),
->  };
->  
->  static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
-> @@ -307,6 +309,7 @@ SOC_SINGLE_TLV("Right Output Mixer RINPUT3 Volume",
->  
->  SOC_ENUM("ADC Data Output Select", wm8960_enum[6]),
->  SOC_ENUM("DAC Mono Mix", wm8960_enum[7]),
-> +SOC_ENUM("DAC filter characteristics", wm8960_enum[8]),
 
-Be nice to capitalise, to match the other controls but otherwise
-looks good to me:
+* tip-bot2 for Rick Edgecombe <tip-bot2@linutronix.de> wrote:
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> The following commit has been merged into the x86/shstk branch of tip:
+> 
+> Commit-ID:     7c8f82db8acb9f0935703c0d96cda552bbf91ff2
+> Gitweb:        https://git.kernel.org/tip/7c8f82db8acb9f0935703c0d96cda552bbf91ff2
+> Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
+> AuthorDate:    Mon, 12 Jun 2023 17:10:48 -07:00
+> Committer:     Rick Edgecombe <rick.p.edgecombe@intel.com>
+> CommitterDate: Tue, 11 Jul 2023 14:12:47 -07:00
+> 
+> mm: Don't allow write GUPs to shadow stack memory
+
+JFYI, this commit was the last user of writable_file_mapping_allowed(), 
+which breaks the x86-defconfig build:
+
+  mm/gup.c:1015:13: error: ‘writable_file_mapping_allowed’ defined but not used [-Werror=unused-function]
+
+There's also a now orphan reference to writable_file_mapping_allowed() in 
+the comment of folio_fast_pin_allowed().
 
 Thanks,
-Charles
+
+	Ingo
