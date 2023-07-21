@@ -2,128 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDA375D73A
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F166275D76A
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbjGUWPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 18:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
+        id S230289AbjGUWXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 18:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjGUWO7 (ORCPT
+        with ESMTP id S230242AbjGUWX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 18:14:59 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4452733;
-        Fri, 21 Jul 2023 15:14:52 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-66869feb7d1so1551393b3a.3;
-        Fri, 21 Jul 2023 15:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689977692; x=1690582492;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dXrwI0f7BDKHLGwATVJjnhmJ48tgd3+2nr9dmXSF18o=;
-        b=r3cG7lOFcoYQwf+fNGpD139Z1Covyp+2lo5zJD5XnTAf8/K2pT9/dUBD2deat8FKKY
-         npfSKBeTWt4RQmlwADclDm3Xd4QSNgj7U/QuvE7Vkq1WJcsnq0VH2IZGR/0WuWD7+4su
-         kiKtRxjosdCNcaRgSFvEgYafPhLPyLWkrbkuBDotW3bpA9q1EiSVmA2iZ4tTSqwy+x1V
-         KiHpqELnKXUa/gYZKJKU3S/5o+DJixx9URsj4dgQ1EG8f6aW6uYrKfS/sYl7EHM94Nbo
-         9uTZv8JxLxGV3Og6f1YzX10gR7qDoVLgNvBQMuU3LzHEcL3qr43+/kFZWh+cmYCbyOpe
-         7O6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689977692; x=1690582492;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dXrwI0f7BDKHLGwATVJjnhmJ48tgd3+2nr9dmXSF18o=;
-        b=D/7tth+tmsD5JN1pZIcTyelmW+o+8VgwQkPGFa0paVZyiwyQHuE2kXPNzQhOmuHdGc
-         KlwBq/w9OQfKdNmSLC7neaCcdWEl5wMVAcW6lmDzma5oKH5/yNvtqZiD2r8yXRqfglMW
-         dSfp9x/c/xzOPOU4WCpXa7UTMTYx5ynioUlQi6HAYKGzh6f8r6Otz1hLUmrh8haaaRru
-         oblvqijWF6HGXWKgTQIRWu3Tj8WmAintCWkEJ7nyTGY9OS1TAoiRAEToNHsSfUF4JyvD
-         /Bzhar88YA3Mzs6cVb9RA3kdSZwv0FRmeteHVtdcupbXQt9TGmzh1teeYdUFq8IVY3LF
-         mQFQ==
-X-Gm-Message-State: ABy/qLZYrXHCxR4LuR4n0RbYyDunaWMto7QZ3MAm58YWR1HqB5cSD3d3
-        negMAdVgHmqY+A8Qqm8qD7w=
-X-Google-Smtp-Source: APBJJlHoNi2MjEt7qTibhO+ffZRb9Yn/LK9ofBG7ZxnPqOG9HkkZfu+1e7w3xEKaYag4IjlOOLyZaw==
-X-Received: by 2002:a05:6a00:80e:b0:67a:31b7:456c with SMTP id m14-20020a056a00080e00b0067a31b7456cmr1390223pfk.9.1689977691056;
-        Fri, 21 Jul 2023 15:14:51 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:fbd8])
-        by smtp.gmail.com with ESMTPSA id d134-20020a63368c000000b0055be951145csm3613018pga.36.2023.07.21.15.14.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 15:14:50 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 21 Jul 2023 12:14:49 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        =?iso-8859-1?Q?St=E9phane?= Marchesin <marcheu@chromium.org>,
-        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Brian Welty <brian.welty@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-Subject: Re: [PATCH 08/17] drm/cgroup: Track DRM clients per cgroup
-Message-ID: <ZLsDWcwTL9aE0-5h@slm.duckdns.org>
-References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
- <20230712114605.519432-9-tvrtko.ursulin@linux.intel.com>
+        Fri, 21 Jul 2023 18:23:27 -0400
+X-Greylist: delayed 394 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Jul 2023 15:23:17 PDT
+Received: from out-53.mta1.migadu.com (out-53.mta1.migadu.com [IPv6:2001:41d0:203:375::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D991B30ED
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:23:17 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+        t=1689977799;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=SGOT/l6CA2g1AAdldYA0RXmYrJ8ccwGw6CVVK+w5BCA=;
+        b=VLdIbyfiarCZNCB0QlGxH273eSht0Yq8c8LmI3LDTUsl1VYdq+uOx1lz43tZRA8ERNOt9U
+        yQE1SKMu2JAEAm51KsOLPPLUlM53OvVtECwynDB97Wm9cl4c9dYK3SId57lMAJC107p8jj
+        x70KJmniOy1xmL1PXrPQt+03j+xfzjTLPDOwfpa96KiJ0RfqjhSxWczv6Sxn+YnNObhQ04
+        +uFiu8BSWoEegNqTDmtgTSwGBMF3mMw8sjojvKJb+x3tis+ZERqMcFMJaY0j8lnlmCVrJa
+        yBIyGkDKSbPxLjD5Btmia3l7tFY5kZ++eQuTUIBbyZmTDIzcPuBLXpUyMkrBVA==
+From:   John Watts <contact@jookia.org>
+To:     linux-sunxi@lists.linux.dev
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, John Watts <contact@jookia.org>
+Subject: [PATCH v2 0/4] Add support for Allwinner D1 CAN controllers
+Date:   Sat, 22 Jul 2023 08:15:49 +1000
+Message-ID: <20230721221552.1973203-2-contact@jookia.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230712114605.519432-9-tvrtko.ursulin@linux.intel.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This patch series adds support for the Allwinner D1 CAN controllers.
+It requires adding a new device tree compatible and driver support to
+work around some hardware quirks.
 
-On Wed, Jul 12, 2023 at 12:45:56PM +0100, Tvrtko Ursulin wrote:
-> +void drmcgroup_client_migrate(struct drm_file *file_priv)
-> +{
-> +	struct drm_cgroup_state *src, *dst;
-> +	struct cgroup_subsys_state *old;
-> +
-> +	mutex_lock(&drmcg_mutex);
-> +
-> +	old = file_priv->__css;
-> +	src = css_to_drmcs(old);
-> +	dst = css_to_drmcs(task_get_css(current, drm_cgrp_id));
-> +
-> +	if (src != dst) {
-> +		file_priv->__css = &dst->css; /* Keeps the reference. */
-> +		list_move_tail(&file_priv->clink, &dst->clients);
-> +	}
-> +
-> +	mutex_unlock(&drmcg_mutex);
-> +
-> +	css_put(old);
-> +}
-> +EXPORT_SYMBOL_GPL(drmcgroup_client_migrate);
+This has been tested on the Mango Pi MQ Dual running a T113 and a Lichee
+Panel 86 running a D1.
 
-So, you're implicitly migrating the fd to the latest ioctl user on the first
-access. While this may work for state-less control like usage time. This
-likely will cause problem if you later want to add stateful control for
-memory consumption. e.g. What happens if the new destination doesn't have
-enough budget to accommodate the fd's usage? Let's say we allow over-commit
-with follow-up reclaim or oom kill actions, if so, can we guarantee that all
-memory ownership for can always be updated? If not, what happens after
-failure?
+Changes in v2:
+- Re-ordered patches to work with bisecting
+- Fixed device tree label underscores
+- Fixed email headers
 
-If DRM needs to transfer fd ownership with resources attached to it, it
-likely would be a good idea to make that an explicit operation so that the
-attempt can be verified and failed if necessary.
+John Watts (4):
+  dt-bindings: net: can: Add support for Allwinner D1 CAN controller
+  riscv: dts: allwinner: d1: Add CAN controller nodes
+  can: sun4i_can: Add acceptance register quirk
+  can: sun4i_can: Add support for the Allwinner D1
 
-Thanks.
+ .../net/can/allwinner,sun4i-a10-can.yaml      |  6 ++--
+ .../boot/dts/allwinner/sunxi-d1s-t113.dtsi    | 30 +++++++++++++++++++
+ drivers/net/can/Kconfig                       |  4 +--
+ drivers/net/can/sun4i_can.c                   | 22 ++++++++++++--
+ 4 files changed, 55 insertions(+), 7 deletions(-)
 
 -- 
-tejun
+2.41.0
+
