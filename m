@@ -2,160 +2,364 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2D775D7A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311DE75D784
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbjGUWpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 18:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45032 "EHLO
+        id S229477AbjGUWaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 18:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjGUWpG (ORCPT
+        with ESMTP id S229646AbjGUWaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 18:45:06 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2085.outbound.protection.outlook.com [40.107.220.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD1E3A87;
-        Fri, 21 Jul 2023 15:45:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L3YG4P+ie5s+MA5obd301VeX2R5UrhW65VejXh3iAypsJ/n8VuWAj2OcMXCvr4/EtlWL1Rk1mfB9B1fT8Oso6uLLKGCi71ws6OgVW31hywWNBVsOZI/80Hfx2VKjJYilzIfuL0LYcRb1RjgoMc+snjQPcHVdV6CaQDyLNWGTf1+7gT3SDiZolrrQOfR4S5TzfD27HpvPjWwft95rARZkKE1eH6765zLAnQGX5EYL/vnvMl30EhT+D30fzEinLYXP6IDQxo39OQ0EDXyIuA2vBgTuJAnFbCjGU1F4GA0hH4tA+HCKpg8IiTZ9oQhVWpq3jVKCk8w/YtpJreaUC+iFEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=m8dqrqydUEGlT2w7zxYJgh6QbIcxdk7QY4zCo2W7MKQ=;
- b=UYJHIUXQi/EmkARcZ7otxbIWRZ+pQYNUNQdG2i1g59S4sWyVYdYnnSJoXarCNHnH99p2VvX0eYEdJQKrGekIsraapW0NXHOuQ4fHWwU3biFgGJ+Mr2jOR9uFrMEUJhAINohOrQmzd1ISG5lAiJ0Wohvma5Lny/6FtQjfXi8SmbVMzzxnAN83w2X90/ZIhf5FrQeGItvqPneAfGyuTUpXHv6uiWlX2jMEOslYP20N+RKDwYJyMIIjQkdZ29dlh/m8hKnu1dP2ieCaeDXY54QVF4xS4PTK0AltSEdWYB7KmC9mmhFsxqxRaSF1ogMqRG03vHSOrTsYrkT3RI/MjG+X0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m8dqrqydUEGlT2w7zxYJgh6QbIcxdk7QY4zCo2W7MKQ=;
- b=3TCexgYzTiA0QbOqKHypob9EE2NFoLNqPQeQsTje5BZFeKxhpxezgBfSnIDK4XeGOfjgtjvP5Ck01AIKc2ZbTcqz4DtN2w9/hCDtduu+KQvWzSsR4tK4Qb3FczdcbhnLo9sXAsLfxthLXFLaRjYXMTXJNcl5C9PRaw/tJwMKiXY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
- by DS0PR12MB7534.namprd12.prod.outlook.com (2603:10b6:8:139::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Fri, 21 Jul
- 2023 22:45:03 +0000
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::1352:c7fd:4b4b:cc18]) by BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::1352:c7fd:4b4b:cc18%7]) with mapi id 15.20.6609.026; Fri, 21 Jul 2023
- 22:45:03 +0000
-Message-ID: <d64f5a02-68cf-2978-c523-094c458aa866@amd.com>
-Date:   Fri, 21 Jul 2023 17:29:24 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH] tg3: fix array subscript out of bounds compilation error
-Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Kuniyuki Iwashima <kuniyu@amazon.com>, davem@davemloft.net,
-        edumazet@google.com, linux-kernel@vger.kernel.org,
-        mchan@broadcom.com, netdev@vger.kernel.org, pabeni@redhat.com,
-        prashant@broadcom.com, siva.kallam@broadcom.com
-References: <20230717143443.163732-1-carlos.bilbao@amd.com>
- <20230717192403.96187-1-kuniyu@amazon.com>
- <c196f8f9-3d2c-27c6-6807-75a6e6e4d5a5@amd.com>
- <20230718195414.4c6f359f@kernel.org>
-From:   Carlos Bilbao <carlos.bilbao@amd.com>
-In-Reply-To: <20230718195414.4c6f359f@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SN7P222CA0024.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:124::20) To BL1PR12MB5874.namprd12.prod.outlook.com
- (2603:10b6:208:396::17)
+        Fri, 21 Jul 2023 18:30:03 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F983580;
+        Fri, 21 Jul 2023 15:30:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=C8fEyR6DUQfXgOM0p1YiWdaEkdPVBpeQx8+D3HYE7dc=; b=jNi9sTf2xFFKdj+nwpGqo1nlP+
+        C+V6PqmcLnvmDzrC0QyG6qPQPSS5EkdbEvCptj0lgfhAx5balaA2lbyag/POrp5U3/zWs6VnvNS3D
+        3b0e6ISi0uuv7uu5mLeops9zoycBKBJfTs37rmLvJBncdmYEJLnZzz6r0wbXuz+FhgHY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qMydB-001uQp-EJ; Sat, 22 Jul 2023 00:29:49 +0200
+Date:   Sat, 22 Jul 2023 00:29:49 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     nick.hawkins@hpe.com
+Cc:     verdun@hpe.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 4/5] net: hpe: Add GXP UMAC Driver
+Message-ID: <2eb21dff-d650-43b6-a29d-b15598b1f87d@lunn.ch>
+References: <20230721212044.59666-1-nick.hawkins@hpe.com>
+ <20230721212044.59666-5-nick.hawkins@hpe.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5874:EE_|DS0PR12MB7534:EE_
-X-MS-Office365-Filtering-Correlation-Id: 64fed5fd-ad48-45ca-2225-08db8a3c1f42
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: w/wQyxjo5xiPGkvjRZJCog0dujIL18vB2rSUG60sA4NQEIUVaRZHBvnh44gPS3Uq7BCergbsgAfiKvTjrPxK3kFnZpI9mxsm1+3RxmamnTamsXZk9pEj9Y5ohEzvBqRL3e4SnOnwTj59yAat22RrNTlqz9PCxLOY2eITHVVJC9BJQTk0LCRJNqzuRbMckEC1vexJRjEsCPDEvc1N/KTukV75a/Myz+DFNDznPV6Y4tjtwSl9hqNWkXqV9XMBuR2UYTa8VNLIeTUnr6T41y1YjfCNjZhxtAxi2PqtptfzfTui7tca/AK7L52W50X8cc5SHqxB1aBkSmVXmh8SPJrmARO8qfL5E8Y8K/N68keEGcb+PHiBnIcSe3C+sd2TIa6im8Gnf89z4QfC2H2Fd9vW4On2vIF+5FK6xlphkdQEtF8Wo2JUyDfC8ZzR4f4vLDlzbVSQrw2SBqvA08bATuovLBFlWjE7Ir0HcACR1sGdyPQzZ6+uZvoM7Mtt+YOlvclCyJ1bfUn1lySqw/yDLpvOIcsFRynFFearQz/dFzCw9f6JyXt9RUprP1MciefTmdfYUOf+TqCBMb7Fr6ZUu4n0xnUXxhTNhmZietOns8o5Zt1KPNpvoWHbnRYeFiqTWIpiJCqEyvBs8nnI/ysvdbcnIg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5874.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(396003)(376002)(346002)(39860400002)(451199021)(4744005)(41300700001)(316002)(7416002)(44832011)(5660300002)(8936002)(8676002)(2906002)(36756003)(31696002)(86362001)(478600001)(186003)(6666004)(2616005)(31686004)(53546011)(6506007)(6486002)(6512007)(38100700002)(66476007)(66946007)(4326008)(83380400001)(6916009)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Uk4zWmg2QkRZNFNHV09MTzA1b3JLcDBjSVFSU1hXN3IwektYbjdUNjdNeFBa?=
- =?utf-8?B?bCtDUWNlbllWTWVWT2JkVklUc1VZVGlqQXlWRGNxNFhuR0txTmN5U0JlcGNq?=
- =?utf-8?B?Q1FveVZmSG5Tc01sZVRPWlZOeTNlb1R2bm45TjJOKzhuUEY0MlUvMXlaZHZj?=
- =?utf-8?B?K0x1ZnRIWTU4RDZmRHA4S21VUjFIMHMwckVLMVlPODZZQWZsQ2lDODI2V1dr?=
- =?utf-8?B?QmtOT1A3TjA2OERNUHJtZFU4SnVNejgrajRlaG5Vek5KN2RlT0s4R1FyNSto?=
- =?utf-8?B?c1lUWXNxSTZBRnl2Q3N3TG5sWXo5ZWhkKzlldTRwc1BtYmZvUWo1YkcwVXFL?=
- =?utf-8?B?bkxGU3BrTFJwZ0dCdHR0VEZFTXQ2NEJ3M09wU0VLbUNJbk9Fd1VDZ0ExeDcw?=
- =?utf-8?B?Q1ZFaFdhTE1IUlptTlR5NmtHMTNqclVkV2NVMWs2eWk4ejcxc2o5RkpudmNK?=
- =?utf-8?B?N0R5YkNJMmFwT3F6WG92R1JoM2RiQnVXSGV1TTdlYis0SS9uaFp6cWJKSmFH?=
- =?utf-8?B?K3g5V0J4bmgwMkVzUDRVQXEvZk9nLzNDSW9KOGYvNkVZYkdRVGM0amxUK0xL?=
- =?utf-8?B?amt1TUs5S0IrTmFVUXBvRGw1eHFxMmFudkRLaHFQUzBvOGpOTUdvRVhFS2lq?=
- =?utf-8?B?UkRtK1FOcUNYdjNBaDhTREdDeGJZMkw0SVBYNDBVenlDTXJadGNndjZBNXFS?=
- =?utf-8?B?VGJDNE9xOFhVWUpBU2JLTDZRZ29aQ2hOQ1RGVmhkNTFOb2piZ0pqWWdxMXNY?=
- =?utf-8?B?TUU2RldGUFJTbkppT25NTXh6c3h4TGNWVUR6Und5SWt1Z0twY3UzbEVVT3hE?=
- =?utf-8?B?Q3Y2TUJzY3RSdVBMZk1vYkFtWldWTDNoY0hOMVc3dnN2anFEM3A4d3lIZjZ4?=
- =?utf-8?B?Vy91Nm04RlNNTGxhaGJvek55SmpRRDR3MHQwaE5ibUgyWEFXMHlOL1Zva1lQ?=
- =?utf-8?B?RGhEQjhKUm9pbWU5UVFzSjlNeGh6T1g0QjQ0MFdNaGc0bWM1a0J4YUVyRURw?=
- =?utf-8?B?STR2OVVzUnI5cVdFVEpaWTJZZUx4VXFwWTdFMGx5ckNEekhadVo0dE1ycS9H?=
- =?utf-8?B?bTF1WXJ4YWx1bHQzZHdrc3QwckpDOXpSdGtqeUQybTdkS1RnNUptWjVkcnBJ?=
- =?utf-8?B?RURPUHVtVE9pU3hQakl6a01tc25DMG1mS3VFckxkOFQrdHJzL2xzMG9sSjdM?=
- =?utf-8?B?Wjlka04rSWZXSmRyR3JhOTdRUEMway9mWkNLcXoyUHU4dUR4S29Nb0JWSGo0?=
- =?utf-8?B?OFYyVndkWUpYUnpsc3p2K2hHdTVZR2w5R2J2eGxBbGhJM2dIbjRmdVo3WUNT?=
- =?utf-8?B?SG53bVdjcUpNaXozck1lbzVPc1lNVXRGMHg5RCs5KzkxNnA2Zk5uZ1o2N04z?=
- =?utf-8?B?Z296bDRUSjJVWGd0MGJnTTkzTG9NOHdOQ1lBSUUyUVRNNnJrUnRjWldOWlVa?=
- =?utf-8?B?VDQ5enFuZVM0aWdieG9sUHB3Qm00RDAwNlArZEdhalNYOElubjY5cisrR1Ix?=
- =?utf-8?B?eUFkZm9qdDB5SW5BcEJCaGo4SjJSSUJid2IwUldtUG0wZWpwN3FRV1E0RTJu?=
- =?utf-8?B?UlZ4cjNaeExoYWtsWlhMZHQyUkFKaWhucVo0d3U4M1NEc3phR1hSbHQ4cnY0?=
- =?utf-8?B?aVN6Q2tiVjJhZTlLK1RQUFlnQ2I0MlNpZ2lKOURwTjJrVkhVSGlFK2pMR2sz?=
- =?utf-8?B?RTNoK244ZExSOGw0T0N4c1JFRkwxY0JHOU9BS0ZzK2NyWTFLbWZ3MGxKVlZC?=
- =?utf-8?B?bTBVRW05RlpiRkRLeVNnb3h6SGpnT1htbWNxaHRFYjRjRXlva2NFMVJBTHpB?=
- =?utf-8?B?QVRzb2V6UlpGOGtJOU44MzdLMGFqbnBGTVhmVlM3TE5EOGRFTldncDc4OGlD?=
- =?utf-8?B?emR2bU45WHhPV1RBcDVpd3lWczhWakFadVhXYkd5Zy9CZjF2MEFDcERkR0k0?=
- =?utf-8?B?bGRPUGovRWNLVWdhOTJIeGpPYkdmVDN1Nm05dHhkNk1OVElKNUp6TTZKbWI0?=
- =?utf-8?B?RFEweDdjNUJlQi9INWJXdy9jeFE4d09sOS93YS9hN0o2bDNhMndYK0c3aFAx?=
- =?utf-8?B?TDkzUmI2NFhObVF2b0hpRU1HY1NNL29iTlVKc3pnTnl6bnYxYzNhWG1XZXh0?=
- =?utf-8?B?ZHR6b25ONEtZZ0EvcHJsb3ZMdHprYjZMS1cxaXloUlhRKzVXd0RhT05UV3J6?=
- =?utf-8?Q?ioIaW4SkvsaNGnarLe1PTjIq94qmHvwDqGFQbxe0e6Jk?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64fed5fd-ad48-45ca-2225-08db8a3c1f42
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5874.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 22:45:03.1580
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ONKPlswKSheHFF3k9C2qKW1iKvoeSLkbPpo72sC3uDJBFGmLyWpOSCSHoKDV8cw3kuLV9uiIjlbc1A8DDCNddA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7534
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721212044.59666-5-nick.hawkins@hpe.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/18/23 9:54 PM, Jakub Kicinski wrote:
-> On Tue, 18 Jul 2023 10:52:39 -0500 Carlos Bilbao wrote:
->>>> Fix encountered compilation error in tg3.c where an array subscript was  
->>>
->>> What is the error ?  
->>
->> drivers/net/ethernet/broadcom/tg3.c: In function ‘tg3_init_one’:
-> 
-> What compiler are you using? Any extra flags?
+> +#define PHY_88E1514_COPPER_CONTROL_REG		0
+> +#define PHY_88E1514_PAGE_ADDRESS		22
+> +
+> +#define PHY_88E1514_GENERAL_CONTROL_REG1	20
 
-GCC version 13.1.1. No special flags.
+This looks wrong. A MAC driver should never access the PHY directly.
 
-> 
-> I remember seeing this warning too, but I can't repro it now (gcc 13.1;
-> clang 16).
-> 
->>>> above the array bounds of 'struct tg3_napi[5]'. Add an additional check in
->>>> the for loop to ensure that it does not exceed the bounds of
->>>> 'struct tg3_napi' (defined by TG3_IRQ_MAX_VECS).
->>>>
->>>> Reviewed-By: Carlos Bilbao <carlos.bilbao@amd.com>
-> 
-> We need a sign-off tag
+> +
+> +#define DRV_MODULE_NAME		"gxp-umac"
+> +#define DRV_MODULE_VERSION	"0.1"
 
-Apologies, Signed-off-By: Carlos Bilbao <carlos.bilbao@amd.com>
+Versions are pointless. Please remove.
 
-Thanks,
-Carlos
+> +
+> +#define NUMBER_OF_PORTS 2
+> +#define EXTERNAL_PORT 1
+> +#define INTERNAL_PORT 0
+> +
+> +struct umac_priv {
+> +	void __iomem *base;
+> +	int irq;
+> +	struct platform_device *pdev;
+> +	struct umac_tx_descs *tx_descs;
+> +	struct umac_rx_descs *rx_descs;
+> +	dma_addr_t tx_descs_dma_addr;
+> +	dma_addr_t rx_descs_dma_addr;
+> +	unsigned int tx_cur;
+> +	unsigned int tx_done;
+> +	unsigned int rx_cur;
+> +	struct napi_struct napi;
+> +	struct net_device *ndev;
+> +	struct phy_device *phy_dev;
+> +	struct phy_device *int_phy_dev;
+> +	struct ncsi_dev *ncsidev;
+> +	bool use_ncsi;
+> +};
+> +
+> +static void umac_get_drvinfo(struct net_device *ndev,
+> +			     struct ethtool_drvinfo *info)
+> +{
+> +	strscpy(info->driver, DRV_MODULE_NAME, sizeof(info->driver));
+> +	strscpy(info->version, DRV_MODULE_VERSION, sizeof(info->version));
+
+If you leave the version empty, you get the kernel version, and i
+think hash. That is actually meaningful.
+
+> +static int umac_get_link_ksettings(struct net_device *ndev,
+> +				   struct ethtool_link_ksettings *cmd)
+> +{
+> +	phy_ethtool_ksettings_get(ndev->phydev, cmd);
+> +	return 0;
+
+return whatever phy_ethtool_ksettings_get() returns.
+
+phy_ethtool_get_link_ksettings() is better here. You then don't even
+need a function, you can reference it directly.
+
+> +}
+> +
+> +static int umac_set_link_ksettings(struct net_device *ndev,
+> +				   const struct ethtool_link_ksettings *cmd)
+> +{
+> +	return phy_ethtool_ksettings_set(ndev->phydev, cmd);
+
+phy_ethtool_set_link_ksettings().
+
+> +static int umac_nway_reset(struct net_device *ndev)
+> +{
+> +	return genphy_restart_aneg(ndev->phydev);
+
+You locking is broken here. Use phy_ethtool_nway_reset()
+
+> +static u32 umac_get_link(struct net_device *ndev)
+> +{
+> +	int err;
+> +
+> +	err = genphy_update_link(ndev->phydev);
+> +	if (err)
+> +		return ethtool_op_get_link(ndev);
+> +
+> +	return ndev->phydev->link;
+> +}
+
+You have something really wrong if you are doing this.
+
+> +static int umac_ioctl(struct net_device *ndev, struct ifreq *ifr, int cmd)
+> +{
+> +	if (!netif_running(ndev))
+> +		return -EINVAL;
+> +
+> +	if (!ndev->phydev)
+> +		return -ENODEV;
+> +
+> +	return phy_mii_ioctl(ndev->phydev, ifr, cmd);
+> +}
+
+> +static int umac_int_phy_init(struct umac_priv *umac)
+> +{
+> +	struct phy_device *phy_dev = umac->int_phy_dev;
+> +	unsigned int value;
+> +
+> +	value = phy_read(phy_dev, 0);
+> +	if (value & 0x4000)
+> +		pr_info("Internal PHY loopback is enabled - clearing\n");
+
+The MAC driver never access the PHY directly.
+
+What is putting it into loopback? The bootloader?
+
+> +
+> +	value &= ~0x4000; /* disable loopback */
+> +	phy_write(phy_dev, 0, value);
+> +
+> +	value = phy_read(phy_dev, 0);
+> +	value |= 0x1000; /* set aneg enable */
+> +	value |= 0x8000; /* SW reset */
+> +	phy_write(phy_dev, 0, value);
+> +
+> +	do {
+> +		value = phy_read(phy_dev, 0);
+> +	} while (value & 0x8000);
+
+phy_start() will do this for you.
+
+> +static int umac_phy_fixup(struct phy_device *phy_dev)
+> +{
+> +	unsigned int value;
+> +
+> +	/* set phy mode to SGMII to copper */
+> +	/* set page to 18 by writing 18 to register 22 */
+> +	phy_write(phy_dev, PHY_88E1514_PAGE_ADDRESS, 18);
+> +	value = phy_read(phy_dev, PHY_88E1514_GENERAL_CONTROL_REG1);
+> +	value &= ~0x07;
+> +	value |= 0x01;
+> +	phy_write(phy_dev, PHY_88E1514_GENERAL_CONTROL_REG1, value);
+> +
+> +	/* perform mode reset by setting bit 15 in general_control_reg1 */
+> +	phy_write(phy_dev, PHY_88E1514_GENERAL_CONTROL_REG1, value | 0x8000);
+> +
+> +	do {
+> +		value = phy_read(phy_dev, PHY_88E1514_GENERAL_CONTROL_REG1);
+> +	} while (value & 0x8000);
+> +
+> +	/* after setting the mode, must perform a SW reset */
+> +	phy_write(phy_dev, PHY_88E1514_PAGE_ADDRESS, 0); /* set page to 0 */
+> +
+> +	value = phy_read(phy_dev, PHY_88E1514_COPPER_CONTROL_REG);
+> +	value |= 0x8000;
+> +	phy_write(phy_dev, PHY_88E1514_COPPER_CONTROL_REG, value);
+> +
+> +	do {
+> +		value = phy_read(phy_dev, PHY_88E1514_COPPER_CONTROL_REG);
+> +	} while (value & 0x8000);
+
+Please extend the PHY driver to do this. You can pass SGMII as the
+interface, and have the PHY driver act on it.
+
+> +static int umac_init_hw(struct net_device *ndev)
+> +{
+> +	if (umac->use_ncsi) {
+> +		/* set correct tx clock */
+> +		value &= UMAC_CFG_TX_CLK_EN;
+> +		value &= ~UMAC_CFG_GTX_CLK_EN;
+> +		value &= ~UMAC_CFG_GIGABIT_MODE; /* RMII mode */
+> +		value |= UMAC_CFG_FULL_DUPLEX; /* full duplex */
+> +	} else {
+> +		if (ndev->phydev->duplex)
+> +			value |= UMAC_CFG_FULL_DUPLEX;
+> +		else
+> +			value &= ~UMAC_CFG_FULL_DUPLEX;
+> +
+> +		if (ndev->phydev->speed == SPEED_1000) {
+
+The MAC driver should only access phydev members inside the
+adjust_link callback. Outside of that, these members can in
+inconsistent.
+
+> +static int umac_open(struct net_device *ndev)
+> +{
+
+...
+
+> +	netdev_info(ndev, "%s is OPENED\n", ndev->name);
+
+Please don't spam the kernel log.
+
+> +static int umac_init_mac_address(struct net_device *ndev)
+> +{
+> +	struct umac_priv *umac = netdev_priv(ndev);
+> +	struct platform_device *pdev = umac->pdev;
+> +	char addr[ETH_ALEN];
+> +	int err;
+> +
+> +	err = of_get_mac_address(pdev->dev.of_node, addr);
+> +	if (err)
+> +		netdev_err(ndev, "Failed to get address from device-tree: %d\n",
+> +			   err);
+> +
+> +	if (is_valid_ether_addr(addr)) {
+> +		dev_addr_set(ndev, addr);
+> +		netdev_info(ndev,
+> +			    "Read MAC address %pM from DTB\n", ndev->dev_addr);
+
+netdev_dbg()
+
+> +static void umac_adjust_link(struct net_device *ndev)
+> +{
+> +	struct umac_priv *umac = netdev_priv(ndev);
+> +	int value;
+> +
+> +	if (ndev->phydev->link) {
+> +		/* disable both clock */
+> +		value = readl(umac->base + UMAC_CONFIG_STATUS);
+> +		value &= 0xfffff9ff;
+> +		writel(value, umac->base + UMAC_CONFIG_STATUS);
+> +		udelay(2);
+> +
+> +		if (ndev->phydev->duplex)
+> +			value |= UMAC_CFG_FULL_DUPLEX;
+> +		else
+> +			value &= ~UMAC_CFG_FULL_DUPLEX;
+> +
+> +		switch (ndev->phydev->speed) {
+> +		case SPEED_1000:
+> +			value &= ~UMAC_CFG_TX_CLK_EN;
+> +			value |= UMAC_CFG_GTX_CLK_EN;
+> +			value |= UMAC_CFG_GIGABIT_MODE;
+> +			break;
+> +		case SPEED_100:
+> +			value |= UMAC_CFG_TX_CLK_EN;
+> +			value &= ~UMAC_CFG_GTX_CLK_EN;
+> +			value &= ~UMAC_CFG_GIGABIT_MODE;
+> +			break;
+> +		}
+> +		/* update duplex and gigabit_mode to umac */
+> +		writel(value, umac->base + UMAC_CONFIG_STATUS);
+> +		udelay(2);
+> +
+> +		netif_carrier_on(ndev);
+
+phylib will do this for you.
+
+> +static int umac_setup_phy(struct net_device *ndev)
+> +{
+> +	struct umac_priv *umac = netdev_priv(ndev);
+> +	struct platform_device *pdev = umac->pdev;
+> +	struct device_node *phy_handle;
+> +	phy_interface_t interface;
+> +	struct device_node *eth_ports_np;
+> +	struct device_node *port_np;
+> +	int ret;
+> +	int err;
+> +	int i;
+> +
+> +	/* Get child node ethernet-ports. */
+> +	eth_ports_np = of_get_child_by_name(pdev->dev.of_node, "ethernet-ports");
+> +	if (!eth_ports_np) {
+> +		dev_err(&pdev->dev, "No ethernet-ports child node found!\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	for (i = 0; i < NUMBER_OF_PORTS; i++) {
+> +		/* Get port@i of node ethernet-ports */
+> +		port_np = gxp_umac_get_eth_child_node(eth_ports_np, i);
+> +		if (!port_np)
+> +			break;
+> +
+> +		if (i == INTERNAL_PORT) {
+> +			phy_handle = of_parse_phandle(port_np, "phy-handle", 0);
+> +			if (phy_handle) {
+> +				umac->int_phy_dev = of_phy_find_device(phy_handle);
+> +				if (!umac->int_phy_dev)
+> +					return -ENODEV;
+> +
+> +				umac_int_phy_init(umac);
+> +			} else {
+> +				return dev_err_probe(&pdev->dev, PTR_ERR(phy_handle),
+> +						     "Failed to map phy-handle for port %d", i);
+> +			}
+> +		}
+> +
+> +		if (i == EXTERNAL_PORT) {
+> +			phy_handle = of_parse_phandle(port_np, "phy-handle", 0);
+> +			if (phy_handle) {
+> +				/* register the phy board fixup */
+> +				ret = phy_register_fixup_for_uid(0x01410dd1, 0xffffffff,
+> +								 umac_phy_fixup);
+> +				if (ret)
+> +					dev_err(&pdev->dev, "cannot register phy board fixup\n");
+> +
+> +				err = of_get_phy_mode(phy_handle, &interface);
+> +				if (err)
+> +					interface = PHY_INTERFACE_MODE_NA;
+> +
+> +				umac->phy_dev = of_phy_connect(ndev, phy_handle,
+> +							       &umac_adjust_link,
+> +							       0, interface);
+> +
+> +				if (!umac->phy_dev)
+> +					return -ENODEV;
+
+It looks like you MAC does not support 10Mbps. At some point you need
+to remove the two link modes using phy_remove_link_mode().
+
+> +
+> +				/* If the specified phy-handle has a fixed-link declaration, use the
+> +				 * fixed-link properties to set the configuration for the PHY
+
+This is wrong. Look at other MAC drivers using fixed-link.
+
+     Andrew
