@@ -2,83 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6C575BF18
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 08:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC87075BF2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbjGUGtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 02:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41058 "EHLO
+        id S229991AbjGUHAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 03:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjGUGtB (ORCPT
+        with ESMTP id S229457AbjGUHAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 02:49:01 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B8A10CB
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 23:49:00 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-4036bd4fff1so234301cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 23:49:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689922139; x=1690526939;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hQfAD+gRLI1T8q/mSuX9jGerjy3VlrCpnWiJnxkvDK4=;
-        b=PBzSzI5mVQ/5a0fwR+VlN0WqFzdvb24sVzYk0n0+bTqCQzQa9csh0dy4gS5kXQHp67
-         MKkKSATVkGuzPY8qn5m2u/mvcGKjB4Zb9JlMp5FnzaHu4U4cZWIzwxZE3KBC5rwVRw1h
-         NFTU4/E23Ju1Ci29D+suAsxxBZ4CJjUwd8JeyIvkj2ygeqjLKbZItldXD4pimtOnoixo
-         y/FQhaHi6M2Hx0EG8StuDOSL+U/do7x+li8NJL5T/gTt8cy4HrxEbuw1cgMQAQxB9Fmr
-         Az8pr28i8zXNh3NpIkNyfTJyunXmH8cvN/hRRSE+b0NiDvK19xOaxRzqZQnC7gCIlE9m
-         nAjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689922139; x=1690526939;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hQfAD+gRLI1T8q/mSuX9jGerjy3VlrCpnWiJnxkvDK4=;
-        b=ijNj6WmV3jGe+aDUW31dvjovtixpt6dNW2QLe1j3kF7srxXhYOZzrrHFgRbmN41T1P
-         Mjk+42Iedl8U0Aifaw8qMQ1EuRnmP7pMoQXaVMcx7MT6cPfrS4U1KtFB0YHneM2iJINv
-         QY5/IsnSak0NbhbMpS9ialoYvAzN36Ds7cv0YYCOp0He1b1vFSIUZttDSZdlCL1ihQhL
-         bfvTgaXnvO0kcezitCuYMwakDJGFQ79JpFH/Jdq53PajnVw8K4aDj2In/DS3Srvo5hZ7
-         RLPts607/wlUM3oqm/HtbWDmxH6u6IwONH/mENHGxGLUx2SHfRT/JD9mNwwzk84YsjA4
-         nrmQ==
-X-Gm-Message-State: ABy/qLYkn/eOwfUZ+7qZKjA8AA1BHFd28tRa1+IUD5/8xiOUHPHFu6g+
-        yrVam5JIS3VVaZozvlshFmeQ+LRb4qg+850aorUTqg==
-X-Google-Smtp-Source: APBJJlEld3XqjQTnMeJZ2GV04gPcS+P8zcQ/fL27WUjm6UoEiTkHArYFvXo8lTGeifb9JjvEN7kHAFibO6MUi3PDPZI=
-X-Received: by 2002:ac8:5716:0:b0:3ef:302c:319e with SMTP id
- 22-20020ac85716000000b003ef302c319emr186241qtw.8.1689922139427; Thu, 20 Jul
- 2023 23:48:59 -0700 (PDT)
+        Fri, 21 Jul 2023 03:00:21 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92F32719
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 00:00:19 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R6gFG1llgzBRDtW
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:51:14 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689922274; x=1692514275; bh=qgoRVZJ5UPM8I4JL2ASPKtZbKEH
+        PPt1Pqb5QUXsg76g=; b=zUPwB8WllMvdQeGR1ge5ZfgOSAqC8f1hoLyXiBllzhc
+        71RZQjtTGGGB7u5nn2viBD9sBZDnncmTDMaZZGwLwQ6YWBU/OnofVZsGCqC+Nqt9
+        kJdv+KSoiuOlt1WqpYJ3ZFlrx6THuGoggvUA54nPCpO71dFiaRyPPF+WCAYN8i7m
+        WjfPAP5wA+1jRdF0SXvEX2c/YB2sMvysuZxFWT2ORAZWaWnZ0A2DKjP85mcwWK/5
+        4+oc+/BnZd/edkNozU2yA1uQtO0OqNVBVvtevZ/mbg/fERtbYWbFIs0ML9PASdVu
+        RYkwITXKGxg5D1foN58Ip7HKLJezaXVRAFghuqIOujA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id YxI4UvXxbAjL for <linux-kernel@vger.kernel.org>;
+        Fri, 21 Jul 2023 14:51:14 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R6gFF5gh4zBRDrN;
+        Fri, 21 Jul 2023 14:51:13 +0800 (CST)
 MIME-Version: 1.0
-References: <20230621063825.268890-1-mshavit@google.com> <20230621063825.268890-8-mshavit@google.com>
- <ZK9cyDaFkAKc1SvJ@Asurada-Nvidia>
-In-Reply-To: <ZK9cyDaFkAKc1SvJ@Asurada-Nvidia>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Fri, 21 Jul 2023 14:48:23 +0800
-Message-ID: <CAKHBV27FbpJHoPC5_8mCYHmhEbCaCE7st_-qzPv0uQYSH3RC9g@mail.gmail.com>
-Subject: Re: [PATCH v4 07/13] iommu/arm-smmu-v3: Keep track of attached ssids
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>, jean-philippe@linaro.org,
-        jgg@nvidia.com, baolu.lu@linux.intel.com,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+Date:   Fri, 21 Jul 2023 06:51:13 +0000
+From:   sunran001@208suo.com
+To:     airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: [PATCH] drm/radeon: ERROR: "foo * bar" should be "foo *bar"
+In-Reply-To: <696ea9a46762e16d993f8fc4bf26fb7f@208suo.com>
+References: <20230721060919.5133-1-xujianghui@cdjrlc.com>
+ <696ea9a46762e16d993f8fc4bf26fb7f@208suo.com>
+User-Agent: Roundcube Webmail
+Message-ID: <d6f31f5ef758427e95a31892ff153f8c@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> And since we have a group of subdomains that are simply indexed
-> by ssids, perhaps we can add an xarray to store a subdomain ptr
-> along with an ssid, replacing the list?
+Fix two occurrences of the checkpatch.pl error:
+ERROR: "foo * bar" should be "foo *bar"
 
-Hmmmm, I think the only place where we search through the list for a
-specific SSID is during remove_dev_pasid. We mostly use the list to
-iterate over  all the masters/ssids that this domain is attached to.
-I'm not sure if moving to an xarray to optimize the remove_dev_pasid
-call is worth it (at the cost of iterations which IIUC would become N
-log(N))
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/gpu/drm/radeon/atom.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/radeon/atom.c 
+b/drivers/gpu/drm/radeon/atom.c
+index 11a1940bb26d..93acb0e42bd6 100644
+--- a/drivers/gpu/drm/radeon/atom.c
++++ b/drivers/gpu/drm/radeon/atom.c
+@@ -68,8 +68,8 @@ typedef struct {
+  } atom_exec_context;
+
+  int atom_debug = 0;
+-static int atom_execute_table_locked(struct atom_context *ctx, int 
+index, uint32_t * params);
+-int atom_execute_table(struct atom_context *ctx, int index, uint32_t * 
+params);
++static int atom_execute_table_locked(struct atom_context *ctx, int 
+index, uint32_t *params);
++int atom_execute_table(struct atom_context *ctx, int index, uint32_t 
+*params);
+
+  static uint32_t atom_arg_mask[8] = {
+  	0xFFFFFFFF, 0x0000FFFF, 0x00FFFF00, 0xFFFF0000,
