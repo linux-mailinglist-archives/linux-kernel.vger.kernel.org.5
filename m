@@ -2,170 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC95675BC49
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 04:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A6D75BC4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 04:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbjGUC3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 22:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
+        id S229883AbjGUCbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 22:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGUC3g (ORCPT
+        with ESMTP id S229451AbjGUCbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 22:29:36 -0400
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2070.outbound.protection.outlook.com [40.107.104.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D292211B;
-        Thu, 20 Jul 2023 19:29:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RqoTofNi/pHtiFfAzL9XObcDJw1RKRLq0IHdiCdOAuGdNLLlLP7JxXStlZjDJfXTdpe/DaC4znLkxkdrEBLj7g6UNmBbajL0DjraNdmVBZ38P2UzezwPnIVRnYuXuEq7i1ephmsJmhzdA9aCv1YEr5zg8TE3ES+xE148/9ftdTnxGmPv+fMYxS0GO24EehKBvq1eKtcoyTEed/xiwakNaQPQlMnSovSPKLGoPWx54wgMbqL8ssTPYIXFSxh4yfk74JX8ZMxFQqFNowrtg3LaigdC5i+XM4UiWte110263k5udfXvsUc3Skxy+lYe7IVNHGfbAHop03dwd/VZAtUt7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s3PAz9W7TXU2dbhrLwoQgOy0XNaU2+950N5P25J8VBI=;
- b=nt0WDvpK3hw8RNie5mJ38c8X7KF0pc1aEmcuUXhFlfaTsoZ/pJX1VCma7V9up0IIjdz2HqX+91vr2Flazs0GqSN7QYwEKJyGn8RoYVUgkQNVELlivSMV3SKMYInJwYppRmusCTnclS+6J4/s8FENDdi3vkTNHNX+MwZcb73jj00j0DJRWZnFAm8rXnD8IKHqT++MPZEYcB3mCjw8xu9IGspdvY7fxlvsl+Tl9JJIukcaG+uhf9pPl9v/ybxbYLFlL88ldRQ0ediHAm8D8nDL1gp7IMpT0ouc+OQj7gB0kb1wJwXvkJ0nl0C7qSTOhcVWljMPr7NH+cSwRPXjBlgq6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s3PAz9W7TXU2dbhrLwoQgOy0XNaU2+950N5P25J8VBI=;
- b=eL3MsWr5TrEtwb5PDOiiQPd7lnpWruRiZdFd0i6rF4DdImK3YevX380hQy1DuAcf9w5k72Y07YWgBIDBjZyQx3m9kxcoJVqbZORb14kNUctF6wyPeQI26rqodCsxNoMc3wmt0oZxQfCYkPMEU/ctZKmwd7kHDtOxtMeJmRbqQr4=
-Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
- by AS8PR04MB7928.eurprd04.prod.outlook.com (2603:10a6:20b:2af::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Fri, 21 Jul
- 2023 02:29:31 +0000
-Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
- ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
- ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6588.031; Fri, 21 Jul 2023
- 02:29:31 +0000
-From:   Wei Fang <wei.fang@nxp.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [PATCH net-next] net: fec: add XDP_TX feature support
-Thread-Topic: [PATCH net-next] net: fec: add XDP_TX feature support
-Thread-Index: AQHZuJuObnt/EH25Q0eb312+ucAGVK/CCCaAgAAiAvCAAKEwgIAArLsg
-Date:   Fri, 21 Jul 2023 02:29:30 +0000
-Message-ID: <AM5PR04MB313958BDA681DA11B5A9FC0B883FA@AM5PR04MB3139.eurprd04.prod.outlook.com>
-References: <20230717103709.2629372-1-wei.fang@nxp.com>
-        <20230719204553.46856b29@kernel.org>
-        <AM5PR04MB3139D4C0F26B5768784B9CAF883EA@AM5PR04MB3139.eurprd04.prod.outlook.com>
- <20230720082431.5428050e@kernel.org>
-In-Reply-To: <20230720082431.5428050e@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM5PR04MB3139:EE_|AS8PR04MB7928:EE_
-x-ms-office365-filtering-correlation-id: 0a51745d-0dd6-41ae-096d-08db89925060
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: X+VEgtApIzABHpY3Hxn/BoR0GGvHYx4+gxnYDqOICgoe8Uqa9Ta+VZqa8KgvjrdQxfiZwezJSQBqe3On8rP/syrt1rzwENjS1StIdmd8W9VWBe5zsApDfFRHgn5JznUKC4FKbNlc5Pq9CmxTJeKAiNqn+4BaWE+H4nCpF9FRP/SCAtEOoi0fWIV6l6ZeMPaGGaPpc66nsZrtLykOaCTOCRdp5hMsTjkzc6OcFRQE3Z/krg0HCDdz6k5PZTkj27uctBAeeRMbfHg1WJbLI1so8vUx0kne6/NQ42aFw3J29pTp/Rd18HTD30lMCS5z1e0LiSZUrodl+s8GqBagvTX89iUUaqmGJN1E2k66L///8+2dV3gvtcjNfB5/cXe8nDnYFnigcMTJ6I18fmmvSnzh83a0l+lBYtU4N87PrNWpJGlcunkewODVAD9dTHPpqTwwfBu2ybPSvTl9Cp87q3hwY31dgZu/wi5aSIDuVDKSW3Qhnu0hRAUANvjcLMuIVHfLSqIumMQR6T4/OZl0jz/AOpFSOb/ij8o8SDCT9YijeMECpSRl6NpPJMOXOGlQSnmdCybqMG+DaO2r3NkYCi5FNIB6wK6YuzVxTnPTSUFOAJQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(346002)(136003)(39860400002)(366004)(451199021)(2906002)(83380400001)(38070700005)(86362001)(33656002)(122000001)(38100700002)(55016003)(41300700001)(6506007)(53546011)(9686003)(966005)(66446008)(66476007)(76116006)(66556008)(66946007)(6916009)(316002)(71200400001)(4326008)(64756008)(7696005)(186003)(26005)(7416002)(8936002)(8676002)(478600001)(54906003)(5660300002)(44832011)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?MUNmcWZhVFM2Y29vSmdvRnA4UEVMTiswRm5ZQ1pYQ0V6dURTZVFjSmlCeXls?=
- =?gb2312?B?bDJSQlArYU5XNzhHTXNvWE12a280ZlRkbGhpK1lqV0dIQnVMYmdKZmE0YmFW?=
- =?gb2312?B?VHd5MEY3d2dZdW56YjJtZlhxYVdHTFJuUWxEMGs4Qmh3VDJCZG1pcmg1VVBu?=
- =?gb2312?B?a2FmM3V0Y3RnYy92azhzV0JYK0dNb2ZQOTJqaXVGKzJNWHRlQ2lzQlM0bDZP?=
- =?gb2312?B?b1Rna2lCN2ppR1BlaXVYRjR4UHRkZjU0d3VTUm84NnZlS2xWdFgyQ1J3YS92?=
- =?gb2312?B?eUkweUZ0MGVTVDNjRXJYRWpXczVYekw3b29kYTRMVE9EdkMyVW5ybVpnNHQ5?=
- =?gb2312?B?V0cvRjZDRUtkb1o5VVhJSzIvYkJHMFQxdTZTN1RhTzJKQllwZGYrSFpQbmZS?=
- =?gb2312?B?aENzeGU0UlhYTDJiV0NycnNERUszY0hiY0xPMytxeXlqS0VnUm9ZSmdoc0Ja?=
- =?gb2312?B?RDJFQ1d0YjFXTW5SanV0ODl2ZXZNYzBYU01WN0hHaWtuL2I1UzRWZjI5UW5T?=
- =?gb2312?B?UjRkL1ErMGpwTWNLVXdmR0NuV2kyblJSaUs4MDlxTVdDRnAyL1ZRZTQvOTA2?=
- =?gb2312?B?bGRNU1hmWXpDckVmWUptYWk4ekZGNTFlMWNQVjRmQm5IbExmK2NDd0JrT3c4?=
- =?gb2312?B?cFlTZEFxdmZNU2FDTHRhcGZ2d3pDcjNBNi9aUTZtZHJWQys1QlVVTXg5Smtq?=
- =?gb2312?B?ZnBoMmhNNmdDTWVYYVZUWlQwSVVVRUE1VUVwVHowcXhSSHBic1lWYXpVbU84?=
- =?gb2312?B?c3lkZGVRZkk2TUVBMXlMTXp4eng2TkFaa1VKdks4YmkwdGZWbGI2NHM2dFA5?=
- =?gb2312?B?ODFCSkZYSDJPeGFwMjFweFNlb0phNlUvUXhpaHl4L3orb0NWZ1k2OXE2UFpq?=
- =?gb2312?B?OUh5UEhHZm83ZHBBWlE0ekRjSzZCQ0hjUldFVjhLbmxzcVNzQjEzSTBLWUhY?=
- =?gb2312?B?VkFyRGFPb2ppL3QvWGdIeTZiNVdmRUkwcG92a3pzd05aY1Q4UjAwQVJud1R0?=
- =?gb2312?B?eGkyMndCVU1OZFNFT2JlMGp3c0xuTG1RMTdGMWdjMW9HbzMzTElXcmNtZ1Z6?=
- =?gb2312?B?TVhDWTZnQmcxamRKK21KVkxlNllEeGsxd1ZqVDRPTE13aFRUejZhNll6RFJI?=
- =?gb2312?B?cHIrSWFEMkxEcFJoQzdIbWJjUENqMTF6L2Y5SzFObVZSVzFUcWZhdXJDVm9V?=
- =?gb2312?B?N1hqUlVlaXUyVWZPZ1FvRFd1TWh3UzM3ZDFuaGxPMSs2dkdwM0gwelkxWUtk?=
- =?gb2312?B?MnYrN2V6YXBkVzQxbktDd0hhaXRHTEFqTTl4dU9hbEZGQ2VyeC9pRk9CS1J2?=
- =?gb2312?B?VVU0TnFxblNPZnlYTUh6cERFWml2TUVXN0tJWFBFOTdFMm9HUkdFRmxiSnNX?=
- =?gb2312?B?dXBYclZxQUFqZ0p5dnVpSU1FRjZtaG5rTEZ4dm5hbUo0SVkwUzN2MUlNZng0?=
- =?gb2312?B?Rm1jaFV4bEdSUmxJclBGenNEOHc4NTdnRlFXcVZUSHlKNkliOHc3WURFRk41?=
- =?gb2312?B?ejVOMW9tWDVoRFNFYjFxdEJQRHR2ejVLQUhHUFFGd0Q5Mi9UVzRVVThtTnF6?=
- =?gb2312?B?MlhRZjRtcC9qcmhUZDBvV1llWW5BQUVGOFBrOFJRRWxRWDJxZzRCdEgrWHo0?=
- =?gb2312?B?Rm1XSFFROTY5c2F1amFFOVR6eXhGaHNreEM2Tk92ekNuRk8rYkhwd1BqMm90?=
- =?gb2312?B?a1hqS2puUWMzTGJwYWV5V2MzeGpFYldyaDhOUmpvaXoyVXplTVIvVGtmZG50?=
- =?gb2312?B?WUplRTE1NUVuMFU4RUpqR0U3L3RvaWs3VlZtYkRuSFc4bXN5N3RDaHVmMUtl?=
- =?gb2312?B?Z1FObEdadEhBUnRncEFTZTlWekZZMFE2UWt1czVEM1ZiV3hpZi9aZmI4S2lT?=
- =?gb2312?B?ZVFSblV6c1dWbkN6QUJ1YS9SSmxseG8yMnJ1RnVraEdJSDdPYW85RHdDUHZB?=
- =?gb2312?B?RkNFK2l4ZlZxSnhVbjcrc3BiSXFkRy9DWFZvWE84V3VPN0JZVWlvNXRVSklQ?=
- =?gb2312?B?OXZmZlZJeFJmZkhGeWRZajJnTzIzMUExMnhNeUJuKzgvM1lYTWE4VVd4cnFJ?=
- =?gb2312?B?d1dWL3JWdXpvN2V2REVPbmt4cmp5Y1NjMjdzN3F1OFVBT2pWQkhrSWJVeGNK?=
- =?gb2312?Q?ud2o=3D?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Thu, 20 Jul 2023 22:31:04 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBAD211B
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 19:31:02 -0700 (PDT)
+Received: from kwepemm600020.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R6YS44vNHz18LQp;
+        Fri, 21 Jul 2023 10:30:12 +0800 (CST)
+Received: from [10.174.179.160] (10.174.179.160) by
+ kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 21 Jul 2023 10:30:57 +0800
+Message-ID: <fc955d9b-c9f0-47b5-063a-b82c52550fe9@huawei.com>
+Date:   Fri, 21 Jul 2023 10:30:57 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a51745d-0dd6-41ae-096d-08db89925060
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2023 02:29:30.9484
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: d5fonZRMkp6fPC3RxmreVsPf+o0mPjSYkrxuuTny4+4EhInfj08MXViR5LfSww1eEDwallgjIkpYemK/JE6RNQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7928
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v3 09/10] mm/page_io: convert count_swpout_vm_event() to
+ take in a folio
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <willy@infradead.org>
+CC:     <llvm@lists.linux.dev>, <oe-kbuild-all@lists.linux.dev>,
+        <hch@infradead.org>, <sidhartha.kumar@oracle.com>,
+        <akpm@linux-foundation.org>, <wangkefeng.wang@huawei.com>,
+        <sunnanyong@huawei.com>
+References: <20230720130147.4071649-10-zhangpeng362@huawei.com>
+ <202307210951.NCdscoSS-lkp@intel.com>
+From:   "zhangpeng (AS)" <zhangpeng362@huawei.com>
+In-Reply-To: <202307210951.NCdscoSS-lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.160]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600020.china.huawei.com (7.193.23.147)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKYWt1YiBLaWNpbnNraSA8a3Vi
-YUBrZXJuZWwub3JnPg0KPiBTZW50OiAyMDIzxOo31MIyMMjVIDIzOjI1DQo+IFRvOiBXZWkgRmFu
-ZyA8d2VpLmZhbmdAbnhwLmNvbT4NCj4gQ2M6IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IGVkdW1hemV0
-QGdvb2dsZS5jb207IHBhYmVuaUByZWRoYXQuY29tOw0KPiBhc3RAa2VybmVsLm9yZzsgZGFuaWVs
-QGlvZ2VhcmJveC5uZXQ7IGhhd2tAa2VybmVsLm9yZzsNCj4gam9obi5mYXN0YWJlbmRAZ21haWwu
-Y29tOyBDbGFyayBXYW5nIDx4aWFvbmluZy53YW5nQG54cC5jb20+OyBTaGVud2VpDQo+IFdhbmcg
-PHNoZW53ZWkud2FuZ0BueHAuY29tPjsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgZGwtbGludXgt
-aW14DQo+IDxsaW51eC1pbXhAbnhwLmNvbT47IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7
-IGJwZkB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCBuZXQtbmV4dF0gbmV0
-OiBmZWM6IGFkZCBYRFBfVFggZmVhdHVyZSBzdXBwb3J0DQo+IA0KPiBPbiBUaHUsIDIwIEp1bCAy
-MDIzIDA3OjA2OjA1ICswMDAwIFdlaSBGYW5nIHdyb3RlOg0KPiA+ID4gQXJlIHlvdSB0YWtpbmcg
-YnVkZ2V0IGludG8gYWNjb3VudD8gV2hlbiBOQVBJIGlzIGNhbGxlZCB3aXRoIGJ1ZGdldA0KPiA+
-ID4gb2YgMCB3ZSBhcmUgKm5vdCogaW4gbmFwaSAvIHNvZnRpcnEgY29udGV4dC4gWW91IGNhbid0
-IGJlIHByb2Nlc3NpbmcNCj4gPiA+IGFueSBYRFAgdHggdW5kZXIgc3VjaCBjb25kaXRpb25zIChp
-dCBtYXkgYmUgYSBuZXRwb2xsIGNhbGwgZnJvbSBJUlENCj4gY29udGV4dCkuDQo+ID4NCj4gPiBB
-Y3R1YWxseSwgdGhlIGZlYyBkcml2ZXIgbmV2ZXIgdGFrZXMgdGhlIGJ1ZGdldCBpbnRvIGFjY291
-bnQgZm9yDQo+ID4gY2xlYW5pbmcgdXAgdHggQkQgcmluZy4gVGhlIGJ1ZGdldCBpcyBvbmx5IHZh
-bGlkIGZvciByeC4NCj4gDQo+IEkga25vdywgdGhhdCdzIHdoYXQgSSdtIGNvbXBsYWluaW5nIGFi
-b3V0LiBYRFAgY2FuIG9ubHkgcnVuIGluIG5vcm1hbCBOQVBJDQo+IGNvbnRleHQsIGkuZS4gd2hl
-biBOQVBJIGlzIGNhbGxlZCB3aXRoIGJ1ZGdldCAhPSAwLiBUaGF0IHdvcmtzIG91dCB3aXRob3V0
-IGFueQ0KPiBjaGFuZ2VzIG9uIFJ4LCBpZiBidWRnZXQgaXMgemVybyBkcml2ZXJzIGFscmVhZHkg
-ZG9uJ3QgcHJvY2VzcyBSeC4gQnV0IHNpbWlsYXINCj4gY2hhbmdlIG11c3QgYmUgZG9uZSBvbiBU
-eCB3aGVuIGFkZGluZyBYRFAgc3VwcG9ydC4gWW91IGNhbiBzdGlsbCBwcm9jZXNzIGFsbA0KPiBu
-b3JtYWwgc2tiIHBhY2tldHMgb24gVHggd2hlbiBidWRnZXQgaXMgMCAoaW4gZmFjdCB5b3Ugc2hv
-dWxkKSwgYnV0IHlvdQ0KPiBfY2FuJ3RfIHByb2Nlc3MgYW55IFhEUCBUeCBmcmFtZS4NClNvcnJ5
-LCBJIGRpZCBub3QgcmVhbGl6ZSB0aGF0IHdlIGNhbiBub3QgcHJvY2VzcyBhbnkgdHggWERQIHBh
-Y2tldCBpZiB0aGUgImJ1ZGdldCINCmlzIDAuIEkgbm90aWNlZCB5b3VyIGxhdGVzdCBjbGFyaWZp
-Y2F0aW9uIFsxXSBpbiBuYXBpLnJzdCwgSSBiZWxpZXZlIGl0IHdpbGwgaGVscCBtYW55DQpwZW9w
-bGUgYXZvaWQgdGhpcyBwcm9ibGVtIGxpa2UgbWUuIFRoYW5rIHlvdSB2ZXJ5IG11Y2guDQpbMV06
-IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL25ldGRldi8yMDIzMDcyMDE2MTMyMy4yMDI1Mzc5LTEt
-a3ViYUBrZXJuZWwub3JnL1QvDQoNCg==
+On 2023/7/21 9:31, kernel test robot wrote:
+
+> Hi Peng,
+>
+> kernel test robot noticed the following build errors:
+>
+> [auto build test ERROR on akpm-mm/mm-everything]
+> [also build test ERROR on axboe-block/for-next linus/master v6.5-rc2 next-20230720]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Peng-Zhang/mm-page_io-remove-unneeded-ClearPageUptodate/20230720-210515
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+> patch link:    https://lore.kernel.org/r/20230720130147.4071649-10-zhangpeng362%40huawei.com
+> patch subject: [PATCH v3 09/10] mm/page_io: convert count_swpout_vm_event() to take in a folio
+> config: um-randconfig-r003-20230720 (https://download.01.org/0day-ci/archive/20230721/202307210951.NCdscoSS-lkp@intel.com/config)
+> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> reproduce: (https://download.01.org/0day-ci/archive/20230721/202307210951.NCdscoSS-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202307210951.NCdscoSS-lkp@intel.com/
+>
+> All errors (new ones prefixed by >>):
+>
+>     In file included from mm/page_io.c:15:
+>     In file included from include/linux/kernel_stat.h:9:
+>     In file included from include/linux/interrupt.h:11:
+>     In file included from include/linux/hardirq.h:11:
+>     In file included from arch/um/include/asm/hardirq.h:5:
+>     In file included from include/asm-generic/hardirq.h:17:
+>     In file included from include/linux/irq.h:20:
+>     In file included from include/linux/io.h:13:
+>     In file included from arch/um/include/asm/io.h:24:
+>     include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>       547 |         val = __raw_readb(PCI_IOBASE + addr);
+>           |                           ~~~~~~~~~~ ^
+>     include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>       560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+>           |                                                         ~~~~~~~~~~ ^
+>     include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+>        37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+>           |                                                   ^
+>     In file included from mm/page_io.c:15:
+>     In file included from include/linux/kernel_stat.h:9:
+>     In file included from include/linux/interrupt.h:11:
+>     In file included from include/linux/hardirq.h:11:
+>     In file included from arch/um/include/asm/hardirq.h:5:
+>     In file included from include/asm-generic/hardirq.h:17:
+>     In file included from include/linux/irq.h:20:
+>     In file included from include/linux/io.h:13:
+>     In file included from arch/um/include/asm/io.h:24:
+>     include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>       573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+>           |                                                         ~~~~~~~~~~ ^
+>     include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+>        35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+>           |                                                   ^
+>     In file included from mm/page_io.c:15:
+>     In file included from include/linux/kernel_stat.h:9:
+>     In file included from include/linux/interrupt.h:11:
+>     In file included from include/linux/hardirq.h:11:
+>     In file included from arch/um/include/asm/hardirq.h:5:
+>     In file included from include/asm-generic/hardirq.h:17:
+>     In file included from include/linux/irq.h:20:
+>     In file included from include/linux/io.h:13:
+>     In file included from arch/um/include/asm/io.h:24:
+>     include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>       584 |         __raw_writeb(value, PCI_IOBASE + addr);
+>           |                             ~~~~~~~~~~ ^
+>     include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>       594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+>           |                                                       ~~~~~~~~~~ ^
+>     include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>       604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+>           |                                                       ~~~~~~~~~~ ^
+>     include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>       692 |         readsb(PCI_IOBASE + addr, buffer, count);
+>           |                ~~~~~~~~~~ ^
+>     include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>       700 |         readsw(PCI_IOBASE + addr, buffer, count);
+>           |                ~~~~~~~~~~ ^
+>     include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>       708 |         readsl(PCI_IOBASE + addr, buffer, count);
+>           |                ~~~~~~~~~~ ^
+>     include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>       717 |         writesb(PCI_IOBASE + addr, buffer, count);
+>           |                 ~~~~~~~~~~ ^
+>     include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>       726 |         writesw(PCI_IOBASE + addr, buffer, count);
+>           |                 ~~~~~~~~~~ ^
+>     include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+>       735 |         writesl(PCI_IOBASE + addr, buffer, count);
+>           |                 ~~~~~~~~~~ ^
+>>> mm/page_io.c:211:18: error: use of undeclared identifier 'THP_SWPOUT'; did you mean 'PSWPOUT'?
+>       211 |                 count_vm_event(THP_SWPOUT);
+>           |                                ^~~~~~~~~~
+>           |                                PSWPOUT
+>     include/linux/vm_event_item.h:32:47: note: 'PSWPOUT' declared here
+>        32 | enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+>           |                                               ^
+>     12 warnings and 1 error generated.
+
+I will fix it in the next version. Thanks.
+
+>
+> vim +211 mm/page_io.c
+>
+> 2f772e6cadf8ad Seth Jennings 2013-04-29  207
+> c40c44eb86eb74 ZhangPeng     2023-07-20  208  static inline void count_swpout_vm_event(struct folio *folio)
+> 225311a46411c3 Huang Ying    2017-09-06  209  {
+> c40c44eb86eb74 ZhangPeng     2023-07-20  210  	if (unlikely(folio_test_pmd_mappable(folio)))
+> 225311a46411c3 Huang Ying    2017-09-06 @211  		count_vm_event(THP_SWPOUT);
+> c40c44eb86eb74 ZhangPeng     2023-07-20  212  	count_vm_events(PSWPOUT, folio_nr_pages(folio));
+> 225311a46411c3 Huang Ying    2017-09-06  213  }
+> 225311a46411c3 Huang Ying    2017-09-06  214
+>
+-- 
+Best Regards,
+Peng
+
