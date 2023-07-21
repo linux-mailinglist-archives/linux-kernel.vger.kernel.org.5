@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE7B75C507
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC4E75C510
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbjGUKv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46420 "EHLO
+        id S230137AbjGUKyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjGUKv0 (ORCPT
+        with ESMTP id S229476AbjGUKyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:51:26 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6B7E6F;
-        Fri, 21 Jul 2023 03:51:24 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-992e22c09edso257279866b.2;
-        Fri, 21 Jul 2023 03:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689936683; x=1690541483;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=GXarL5+Q/EKBjLS/p+OLGJM4uvh5VwiYGlmzc+O3HZ4=;
-        b=desLjfO+CSScMBmxGQim93le7NgAU59DJSjqee+19mooevM3+xsylSY2FbXwcpbmUj
-         BSLHzHgTVeCCov0Pk+4fya82oiY8E3OkjDUZwxLSLnvjPYTeAg4as0SkpsFZq8BJr7Ce
-         TDr7mIoZNQBp/bhzmjaspLc50r+jLYQdCcg/uokOWcsc5Mg8OgRCwbLNYy1pj2m3OlOv
-         NHt4Hd6g6Of05B56+yg5cXJ340U54XBo7CKIct0ergvNIgKPyy97YoMNgIwX2HyZeoym
-         zihLXSUD7EgE2xey3KGESedigybMYvl1T+boN/lyaWvxqexX8uYqxh3oUQGVCLrkoeVu
-         04eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689936683; x=1690541483;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GXarL5+Q/EKBjLS/p+OLGJM4uvh5VwiYGlmzc+O3HZ4=;
-        b=cCvet4EDkXETIm+jEBHiYiMmkYiHnuTqkjxB1JKo62W8mcM0cQvQxGFUsz51FIuILQ
-         xCMQoKs8++ZOYsmdsOzKugexPdxl5IKhoNXWmEeXz5TleM4HUbd0fIkbNkBhWDRSIgD+
-         fEbItAEMiK7pNYasDlWcghvBJbrayElzbB9U2JgiYmbLtfocDnuum1w8e9kJgvRoVfL8
-         Ksa178JamfoGGjUyuNxPQKYI/RjRwAOUd2ZxKpdxWxnaVhcGHGlEDaz/s0LeFE0BQ/XM
-         oRKgizIuqEBeX7A9nD4qk7de8YO5xYBre407SrG4TsL5YhWlUrt1G0I3PRfOraVSZFbY
-         jELg==
-X-Gm-Message-State: ABy/qLZFyETJAkyWmObXqiNjOhwXeYILdAasj/Oxxhrz6f3ma2gmQTd2
-        AE767NlEBTtBaKRjZrQ1+kFqtuVumbhr7FNB
-X-Google-Smtp-Source: APBJJlEycbVotMEd4RmH6gZnzZtJa/DSk1uPuT0bJq+OhISX4MnUGqtts3NwrWqAUgWqvtWuIxncFg==
-X-Received: by 2002:a17:906:3147:b0:994:1844:c7d1 with SMTP id e7-20020a170906314700b009941844c7d1mr1353840eje.13.1689936683044;
-        Fri, 21 Jul 2023 03:51:23 -0700 (PDT)
-Received: from ?IPv6:2003:f6:ef05:8700:f946:69a3:7954:9ee0? (p200300f6ef058700f94669a379549ee0.dip0.t-ipconnect.de. [2003:f6:ef05:8700:f946:69a3:7954:9ee0])
-        by smtp.gmail.com with ESMTPSA id dk14-20020a170906f0ce00b009930308425csm2002667ejb.31.2023.07.21.03.51.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 03:51:22 -0700 (PDT)
-Message-ID: <f565b705ba6656ae1c8b34740aa176ccfe260f60.camel@gmail.com>
-Subject: Re: [PATCH v1 3/8] iio: core: Switch to krealloc_array()
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Date:   Fri, 21 Jul 2023 12:53:53 +0200
-In-Reply-To: <ZLpaeHlJujd8l0DS@smile.fi.intel.com>
-References: <20230720205324.58702-1-andriy.shevchenko@linux.intel.com>
-         <20230720205324.58702-4-andriy.shevchenko@linux.intel.com>
-         <65dbc603062018e1cd968caf983512c2cb2039e5.camel@gmail.com>
-         <ZLpaeHlJujd8l0DS@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.48.4 
+        Fri, 21 Jul 2023 06:54:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F78171A;
+        Fri, 21 Jul 2023 03:54:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DFD22619BA;
+        Fri, 21 Jul 2023 10:54:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1711AC433C8;
+        Fri, 21 Jul 2023 10:54:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689936882;
+        bh=P93rQLt+HbT+haMc2bru+0/BFEl6sR0r4+uZfisc2mU=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=js9LRL8BYtSeSsiAGLiLTDDfDPpCKPqL1KLUgbQX/A1WRYTEqa8mTGuxe4UOm86Cl
+         HD4NWCgGvwbVqsCLU5V0/znaqqcmboX9J9ubnV8C274sbysgmw0Lktq/pvAPfBhjt9
+         lgeI2QP/vFmYexeHAHw8QwWPPIk6PFlgWPGYGFTf9bEzhDiikRx5+5NnK2aU3Hgb8W
+         zxHa4JbMyEnak1R6F93bwxM+9R89l/L6Xlk/KrwGnw8zlDsBEF+7QR6uW6HqHDpY3E
+         VLHt0Eb38FqriAOKSv/naBEUSwAwFMwuAlnQPae93WwsFhUPkRq5i9/D/JooU1kf4i
+         EhmbiGw53T67w==
+From:   Mark Brown <broonie@kernel.org>
+To:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, CTLIN0@nuvoton.com
+In-Reply-To: <20230719124752.248898-1-francesco@dolcini.it>
+References: <20230719124752.248898-1-francesco@dolcini.it>
+Subject: Re: [PATCH v1 0/2] ASoC: dt-bindings: nau8822: minor updates
+Message-Id: <168993687980.20527.4752913856777924592.b4-ty@kernel.org>
+Date:   Fri, 21 Jul 2023 11:54:39 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIzLTA3LTIxIGF0IDEzOjE0ICswMzAwLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6
-Cj4gT24gRnJpLCBKdWwgMjEsIDIwMjMgYXQgMDk6NTk6MzdBTSArMDIwMCwgTnVubyBTw6Egd3Jv
-dGU6Cj4gPiBPbiBUaHUsIDIwMjMtMDctMjAgYXQgMjM6NTMgKzAzMDAsIEFuZHkgU2hldmNoZW5r
-byB3cm90ZToKPiAKPiAuLi4KPiAKPiA+ID4gK8KgwqDCoMKgwqDCoMKgc3RydWN0IGF0dHJpYnV0
-ZSAqKmF0dHJzLCAqKmF0dHIsICpjbGsgPSBOVUxMOwo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgc3Ry
-dWN0IGlpb19kZXZfYXR0ciAqcDsKPiA+ID4gLcKgwqDCoMKgwqDCoMKgc3RydWN0IGF0dHJpYnV0
-ZSAqKmF0dHIsICpjbGsgPSBOVUxMOwo+ID4gPiDCoAo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgLyog
-Rmlyc3QgY291bnQgZWxlbWVudHMgaW4gYW55IGV4aXN0aW5nIGdyb3VwICovCj4gPiA+IC3CoMKg
-wqDCoMKgwqDCoGlmIChpbmRpb19kZXYtPmluZm8tPmF0dHJzKSB7Cj4gPiA+IC3CoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqBhdHRyID0gaW5kaW9fZGV2LT5pbmZvLT5hdHRycy0+YXR0cnM7
-Cj4gPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB3aGlsZSAoKmF0dHIrKyAhPSBO
-VUxMKQo+ID4gPiArwqDCoMKgwqDCoMKgwqBhdHRycyA9IGluZGlvX2Rldi0+aW5mby0+YXR0cnMg
-PyBpbmRpb19kZXYtPmluZm8tPmF0dHJzLT5hdHRycyA6Cj4gPiA+IE5VTEw7Cj4gPiA+ICvCoMKg
-wqDCoMKgwqDCoGlmIChhdHRycykgewo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgZm9yIChhdHRyID0gYXR0cnM7ICphdHRyOyBhdHRyKyspCj4gPiA+IMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGF0dHJjb3VudF9vcmlnKys7Cj4gCj4g
-PiBub3QgcmVhbGx5IHJlbGF0ZWQgd2l0aCB0aGUgY2hhbmdlLi4uIG1heWJlIGp1c3QgbWVudGlv
-biBpdCBpbiB0aGUgY29tbWl0Pwo+IAo+IEhtbS4uLiBJdCdzIHJlbGF0ZWQgdG8gbWFrZSBrcmVh
-bGxvY19hcnJheSgpIHRvIHdvcmsgYXMgZXhwZWN0ZWQuCj4gCgpIbW0sIEkgdGhpbmsgaXQncyBh
-cmd1YWJsZSA6KS4gd2hpbGUoKSAtPiBmb3IoKSBpdCdzIG5vdCByZWFsbHkgbmVlZGVkIHVubGVz
-cwpJJ20gbWlzc2luZyBzb21ldGhpbmcuIFlvdSBjb3VsZCBldmVuIGluaXRpYWxpemUgJ2F0dHJz
-JyB0byBOVUxMIGF0IGRlY2xhcmF0aW9uCmFuZCBrZWVwIHRoZSBhYm92ZSBkaWZmIG1pbmltdW0u
-CgpUaGF0IHNhaWQsIEkgYWN0dWFsbHkgcHJlZmVyIHRoaXMgc3R5bGUgKGV2ZW4gdGhvdWdoIHNv
-bWUgcGVvcGxlIGRvbid0IGxpa2UgbXVjaAp0aGUgdGVybmFyeSBvcGVyYXRvcikuCgo+ID4gPiDC
-oMKgwqDCoMKgwqDCoMKgfQo+IAo+IC4uLgo+IAo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgaWlvX2Rl
-dl9vcGFxdWUtPmNoYW5fYXR0cl9ncm91cC5hdHRycyA9Cj4gPiA+IC3CoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqBrY2FsbG9jKGF0dHJjb3VudCArIDEsCj4gPiA+IC3CoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc2l6ZW9mKGlpb19kZXZfb3BhcXVlLT5j
-aGFuX2F0dHJfZ3JvdXAuYXR0cnNbMF0pLAo+ID4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoEdGUF9LRVJORUwpOwo+ID4gPiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKga3JlYWxsb2NfYXJyYXkoYXR0cnMsIGF0dHJjb3VudCArIDEsIHNpemVv
-ZigqYXR0cnMpLAo+ID4gPiBHRlBfS0VSTkVMKTsKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoGlmIChp
-aW9fZGV2X29wYXF1ZS0+Y2hhbl9hdHRyX2dyb3VwLmF0dHJzID09IE5VTEwpIHsKPiA+IAo+ID4g
-c2luY2UgeW91J3JlIGhlcmUgYW5kIHlvdSBhbHNvIGFscmVhZHkgZGlkIHNvbWUgc3R5bGUgY2xl
-YW51cHMgYWJvdmUsIG1heWJlCj4gPiBjaGFuZ2UgaXQgdG8gJ2lmICghaWlvX2Rldl9vcGFxdWUt
-PmNoYW5fYXR0cl9ncm91cC5hdHRycyknPwo+IAo+IEkgZG9uJ3QgdGhpbmsgaXQncyByZWxhdGVk
-IChidXQgeW91IGNhbiB0ZWxsIHRoYXQgdGhpcyBjaGVjayByZWxhdGVkIHRvCj4gdGhlIGFsbG9j
-YXRvciwgYW5kIHNpbmNlIHdlIHRvdWNoIGl0LCB3ZSBtYXkgdG91Y2ggdGhpcyksIGlmIEpvbmF0
-aGFuCj4gd2FudHMgdGhpcywgSSBkZWZpbml0ZWx5IGRvLgoKRmFpciBlbm91Z2guLi4KCgotIE51
-bm8gU8OhCg==
+On Wed, 19 Jul 2023 14:47:50 +0200, Francesco Dolcini wrote:
+> Minor updates to NAU8822 DT bindings:
+>  - Add #sound-dai-cells
+>  - Add MCLK
+> 
+> Francesco Dolcini (2):
+>   ASoC: dt-bindings: nau8822: Add #sound-dai-cells
+>   ASoC: dt-bindings: nau8822: Add MCLK clock
+> 
+> [...]
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/2] ASoC: dt-bindings: nau8822: Add #sound-dai-cells
+      commit: e8c213ca026d3cadbc306885ad1b37efab02c218
+[2/2] ASoC: dt-bindings: nau8822: Add MCLK clock
+      commit: c214131f492083025e33354430d5b420add88b5e
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
