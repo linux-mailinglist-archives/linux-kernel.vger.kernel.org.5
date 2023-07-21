@@ -2,240 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A5675D5DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0405175D5E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbjGUUlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
+        id S229808AbjGUUmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjGUUlG (ORCPT
+        with ESMTP id S229529AbjGUUmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:41:06 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913851701;
-        Fri, 21 Jul 2023 13:41:05 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-66c729f5618so2078405b3a.1;
-        Fri, 21 Jul 2023 13:41:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689972065; x=1690576865;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ImLa8ONPpTHPAqO8VYbOK8F9i8X8tlHTl//QuM3zPjY=;
-        b=Vx9Fhnsyrc3oK9hp3v+HvctHzLuvOhBQOG57yfvo8QmcBf1ykueWkegXjq+lMq7mZt
-         pSRP03jrH5rz7uFt0Q/BxCnYZQ100wUHxNxK/+9EnEwiKfi9ZiO4Eh+zJuESAXOVQSwt
-         x3xuWUQ1idgOhq+gqmXTfEDQ/xNvxSHPQ8EnIu3CgSDWWCHG2TnvKjXNuuOctf8umtNl
-         vxecj5cLDJzgrnZx6jxfMX1dOKArXxdYrnDfqoKY0Z20vJ1oKqvymx0x0Yy1hd+zTb3c
-         y84O7Up3AfgXI+znt87sOvJN9NmA06VT9tP4hPskwtQCL2s6ddn6m1/3jCXFhKgE5NWC
-         ej0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689972065; x=1690576865;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ImLa8ONPpTHPAqO8VYbOK8F9i8X8tlHTl//QuM3zPjY=;
-        b=LvfO+y2sRFmVgTRN74k0Dj83gc528E5K2Mt6i6UwtDqDTtHqgqhWnOqVY0UkQ9mU84
-         WecauATVGKVD3ZosUirfHlpCg5ycmSXgrMt44HwuQJzBTfqnzNLioN4VAhhF9xpX38LQ
-         iLdNog6BF5wKBd7Uilxry0JYZ7ujY1S7hJxfVb+T5BPcT0MIog7dATQXFdSv/RtoXrcz
-         FtxIuGkSyUrv2ZWv5wO3B1CCE7xCD3R1yAQn/52FZeK6rKnQoXgc2Lnoyijsdl/kYep1
-         JU6hX5jjyIm4LvUAwlYX5CZh8tl/NmZUmcAMh2B9LVpVuJ+VDEU0wpnUMxBz3B6QMIYa
-         idCw==
-X-Gm-Message-State: ABy/qLbEbFhi0l50is2mQlMt1vBY6dlppq50mh8UkXghS0qmHs5yjQSM
-        Zt1794X2mvkwSWxjDMRjw4M=
-X-Google-Smtp-Source: APBJJlFjj7wrah+iAxO7FPtB7Aeqe2vy+dOdV3YVJqt1HZIx3VaBthd8GAObCojao144Xz7I8HBj6g==
-X-Received: by 2002:a05:6a20:7fa3:b0:12b:6898:2986 with SMTP id d35-20020a056a207fa300b0012b68982986mr4077347pzj.1.1689972064969;
-        Fri, 21 Jul 2023 13:41:04 -0700 (PDT)
-Received: from [127.0.0.1] ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id p5-20020a63ab05000000b00563590be25esm3508415pgf.29.2023.07.21.13.41.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Jul 2023 13:41:04 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <ED9F14A2-533B-471E-9B79-F75CEEE9A216@gmail.com>
-Date:   Sat, 22 Jul 2023 04:40:56 +0800
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        rcu@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <ED5C700E-0C63-41E5-8A46-F7BC93B2FD42@gmail.com>
-References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
- <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
- <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
- <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
- <ED9F14A2-533B-471E-9B79-F75CEEE9A216@gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Eric Dumazet <edumazet@google.com>, roman.gushchin@linux.dev,
-        "David.Laight@aculab.com" <David.Laight@ACULAB.COM>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Fri, 21 Jul 2023 16:42:06 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E9F1701;
+        Fri, 21 Jul 2023 13:42:03 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id AF65B6016E;
+        Fri, 21 Jul 2023 22:42:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1689972121; bh=/pCD6r+uWcgcbJBvv+RMNGX/VP1LIRf/EeVfdY2/j1o=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Vqu5UNXAfIwgm8ozV8tHlhsazqGY5uO6gEvoXlq/ul0j+JUBcXbNwwYcz6aJVCrbf
+         0jsOTngqR8Snc0jE9FEXda9HgiivVDDUiSlqjtM+3KKtJsclJR8yuS6OQgAzmkNaqs
+         KyJRasdre8cPvcaGFN7ZosriKhnVdMjzCZgcvxpvZEcvOKSWddrcZn0k56+FKWtPkg
+         TfnIL173OwsTuSCNFhLaptXCWGHVCXouGqtdRcKHRzcCPQ+YALDrtGmI3JCI5POxJu
+         BqwmGmy+zhpoDId1a9wE/fQcAiYA59waKd22gltZrFdbW+jJXVavNJ0NElzGw2zZfq
+         sgSyqZgoIDkUw==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Mdi3nLcEsURb; Fri, 21 Jul 2023 22:41:59 +0200 (CEST)
+Received: from [192.168.1.6] (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id 962106015F;
+        Fri, 21 Jul 2023 22:41:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1689972118; bh=/pCD6r+uWcgcbJBvv+RMNGX/VP1LIRf/EeVfdY2/j1o=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Qb0LDjYU7y18cTc45hC9yGsaDmroUgyA0RyDOxkDDshIqABCO7ZCNQtq4eZ02t/Mn
+         sl7zjOhMbSeKBnj+olDywfOatnzDruBOhh18pRw18PfXcxdpqRR/ReWdOCcczGSuV9
+         zdrVqym5fU3qxJ+CYuTwfiEGsVxN5b1RI5aPSUqMPX8DdWh6P0Ub1CU4COm0soAog2
+         yJZrm6vCNK2QK1DnQVSa2XHsGZsV4X3HYcQiZ304sVTC9+fJ9edEnmksLXDeLmEcts
+         lKEPU3hMlPmMeeKrgkbMZQ3mOX/nDLsFwJh/6eRCI9IsnkvIByCHsg3VI+l140JO0P
+         xtFCSoCOYN6Ig==
+Message-ID: <486499a2-68ca-8327-0dec-c534ee1e65f3@alu.unizg.hr>
+Date:   Fri, 21 Jul 2023 22:41:30 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PROBLEM] selftests: net/forwarding/*.sh: 'Command line is not
+ complete. Try option "help"'
+Content-Language: en-US
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        petrm@nvidia.com
+References: <856d454e-f83c-20cf-e166-6dc06cbc1543@alu.unizg.hr>
+ <ZLY9yiaVwCGy5H3R@shredder>
+ <8d149f8c-818e-d141-a0ce-a6bae606bc22@alu.unizg.hr>
+ <1c2a2d56-95a0-72f8-23a0-1e186e6443a2@alu.unizg.hr>
+ <ZLfeJzFJ1HEeooZR@shredder>
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <ZLfeJzFJ1HEeooZR@shredder>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/19/23 14:59, Ido Schimmel wrote:
+> On Tue, Jul 18, 2023 at 08:39:33PM +0200, Mirsad Todorovac wrote:
+>> There is also a gotcha here: you do not delete all veths:
+>>
+>> root@defiant:# ip link show
+>> 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+>>      link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+>> 2: enp16s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+>>      link/ether 9c:6b:00:01:fb:80 brd ff:ff:ff:ff:ff:ff
+>> root@defiant:# ./bridge_igmp.sh
+> 
+> [...]
+> 
+>> root@defiant:# ip link show
+>> 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+>>      link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+>> 2: enp16s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+>>      link/ether 9c:6b:00:01:fb:80 brd ff:ff:ff:ff:ff:ff
+>> 3: veth1@veth0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether b6:46:e6:4c:e4:00 brd ff:ff:ff:ff:ff:ff
+>> 4: veth0@veth1: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether 2e:ff:7f:8a:6b:d4 brd ff:ff:ff:ff:ff:ff
+>> 5: veth3@veth2: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether ba:33:37:81:dc:5b brd ff:ff:ff:ff:ff:ff
+>> 6: veth2@veth3: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether f2:fd:0a:9b:94:17 brd ff:ff:ff:ff:ff:ff
+>> root@defiant:#
+> 
+> These tests can be run with veth pairs or with loop backed physical
+> ports. We can't delete the latter and I don't see a clean way to delete
+> the veth pairs.
+> 
+> The following patch [1] changes the default to not create interfaces so
+> that by default these tests will be skipped [2]. Those who care about
+> running the tests can create a forwarding.config file (using
+> forwarding.config.sample as an example) and either create the veth pairs
+> themselves or opt-in for the interfaces to be created automatically
+> (setting NETIF_CREATE=yes), but not deleted.
+> 
+> [1]
+> diff --git a/tools/testing/selftests/net/forwarding/forwarding.config.sample b/tools/testing/selftests/net/forwarding/forwarding.config.sample
+> index 4a546509de90..b72f08dfd491 100644
+> --- a/tools/testing/selftests/net/forwarding/forwarding.config.sample
+> +++ b/tools/testing/selftests/net/forwarding/forwarding.config.sample
+> @@ -36,8 +36,9 @@ PAUSE_ON_FAIL=no
+>   PAUSE_ON_CLEANUP=no
+>   # Type of network interface to create
+>   NETIF_TYPE=veth
+> -# Whether to create virtual interfaces (veth) or not
+> -NETIF_CREATE=yes
+> +# Whether to create virtual interfaces (veth) or not. Created interfaces are
+> +# not automatically deleted
+> +NETIF_CREATE=no
+>   # Timeout (in seconds) before ping exits regardless of how many packets have
+>   # been sent or received
+>   PING_TIMEOUT=5
+> diff --git a/tools/testing/selftests/net/forwarding/lib.sh b/tools/testing/selftests/net/forwarding/lib.sh
+> index 9ddb68dd6a08..1b1bc634c63e 100755
+> --- a/tools/testing/selftests/net/forwarding/lib.sh
+> +++ b/tools/testing/selftests/net/forwarding/lib.sh
+> @@ -17,7 +17,7 @@ WAIT_TIME=${WAIT_TIME:=5}
+>   PAUSE_ON_FAIL=${PAUSE_ON_FAIL:=no}
+>   PAUSE_ON_CLEANUP=${PAUSE_ON_CLEANUP:=no}
+>   NETIF_TYPE=${NETIF_TYPE:=veth}
+> -NETIF_CREATE=${NETIF_CREATE:=yes}
+> +NETIF_CREATE=${NETIF_CREATE:=no}
+>   MCD=${MCD:=smcrouted}
+>   MC_CLI=${MC_CLI:=smcroutectl}
+>   PING_COUNT=${PING_COUNT:=10}
+> 
+> [2]
+> # ./bridge_igmp.sh
+> SKIP: could not find all required interfaces
 
-> 2023=E5=B9=B47=E6=9C=8822=E6=97=A5 =E4=B8=8A=E5=8D=884:08=EF=BC=8CAlan =
-Huang <mmpgouride@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
->=20
->=20
->> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 =E4=B8=8B=E5=8D=8811:21=EF=BC=8CJoel=
- Fernandes <joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
->>=20
->> On 7/21/23 10:27, Alan Huang wrote:
->>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 20:54=EF=BC=8CJoel Fernandes =
-<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
->>>>=20
->>>>=20
->>>>=20
->>>>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> =
-wrote:
->>>>>=20
->>>>> =EF=BB=BF
->>>>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet =
-<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
->>>>>>=20
->>>>>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
-<mmpgouride@gmail.com> wrote:
->>>>>>>=20
->>>>>>> Hi,
->>>>>>>=20
->>>>>>> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of =
-first item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
->>>>>>> and a related discussion [1].
->>>>>>>=20
->>>>>>> After reading the whole discussion, it seems like that =
-ptr->field was cached by gcc even with the deprecated
->>>>>>> ACCESS_ONCE(), so my question is:
->>>>>>>=20
->>>>>>>     Is that a compiler bug? If so, has this bug been fixed =
-today, ten years later?
->>>>>>>=20
->>>>>>>     What about READ_ONCE(ptr->field)?
->>>>>>=20
->>>>>> Make sure sparse is happy.
->>>>>=20
->>>>> It caused a problem without barrier(), and the deprecated =
-ACCESS_ONCE() didn=E2=80=99t help:
->>>>>=20
->>>>>  https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
->>>>>=20
->>>>> So, my real question is: With READ_ONCE(ptr->field), are there =
-still some unusual cases where gcc
->>>>> decides not to reload ptr->field?
->>>>=20
->>>> I am a bit doubtful there will be strong (any?) interest in =
-replacing the barrier() with READ_ONCE() without any tangible reason, =
-regardless of whether a gcc issue was fixed.
->>>>=20
->>>> But hey, if you want to float the idea=E2=80=A6
->>> We already had the READ_ONCE() in rcu_deference_raw().
->>> The barrier() here makes me think we need write code like below:
->>> =09
->>> 	READ_ONCE(head->first);
->>> 	barrier();
->>> 	READ_ONCE(head->first);
->>> With READ_ONCE (or the deprecated ACCESS_ONCE),
->>> I don=E2=80=99t think a compiler should cache the value of =
-head->first.
->>=20
->>=20
->> Right, it shouldn't need to cache. To Eric's point it might be risky =
-to remove the barrier() and someone needs to explain that issue first =
-(or IMO there needs to be another tangible reason like performance etc). =
-Anyway, FWIW I wrote a simple program and I am not seeing the =
-head->first cached with the pattern you shared above:
->>=20
->> #include <stdlib.h>
->>=20
->> #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
->> #define barrier() __asm__ __volatile__("": : :"memory")
->>=20
->> typedef struct list_head {
->>   int first;
->>   struct list_head *next;
->> } list_head;
->>=20
->> int main() {
->>   list_head *head =3D (list_head *)malloc(sizeof(list_head));
->>   head->first =3D 1;
->>   head->next =3D 0;
->>=20
->>   READ_ONCE(head->first);
->>   barrier();
->>   READ_ONCE(head->first);
->>=20
->>   free(head);
->>   return 0;
->> }
->>=20
->> On ARM 32-bit, 64-bit and x86_64, with -Os and then another =
-experiment with -O2 on new gcc versions.
->=20
-> Well, when I change the code as below:
->=20
-> #include <stdlib.h>
->=20
-> #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
-> #define barrier() __asm__ __volatile__("": : :"memory")
->=20
-> typedef struct list_head {
->   struct list_head *next;
->   int first;					// difference here
-> } list_head;
->=20
-> int main() {
->   list_head *head =3D (list_head *)malloc(sizeof(list_head));
->   head->first =3D 1;
->   head->next =3D 0;
->=20
->   READ_ONCE(head->first);
->   READ_ONCE(head->first);
->=20
->   free(head);
->   return 0;
-> }
->=20
-> GCC 8, GCC 10, GCC 11 generate the following code (with -O2):
->=20
-> main:
->        subq    $8, %rsp
->        movl    $16, %edi
->        call    malloc
->        movl    $1, 8(%rax)
->        movq    %rax, %rdi
->        call    free
->        xorl    %eax, %eax
->        addq    $8, %rsp
->        ret
->=20
->=20
-> The READ_ONCE has been optimized away. The difference in the source =
-code is that I put ->first to the second member.
->=20
-> That means, GCC 8, 10, 11 have the bug!
->=20
->=20
+Hi, Ido,
 
-Found a related discussion:
+Please would you consider making a formal patch, so the vanilla 'make kselftest'
+run would have some sensible defaults?
 
-	https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D102714
+I am really interested in the network stack working right, though I really do
+not have much opportunities testing like high speed links and bonded eth adapters :-(
 
-Looks like GCC 10, 11 have been backported, not sure whether GCC 8 has =
-been backported.
+Maybe that'll come :-/
 
-So, I have the following questions:
-
-Given that some people might not update their GCC, do they need to be =
-notified?
-
-Do we need to CC Linus?
-
-
+Kind regards,
+Mirsad
