@@ -2,175 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A0B75C078
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7579275C07E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbjGUHyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 03:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        id S230286AbjGUHzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 03:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbjGUHyA (ORCPT
+        with ESMTP id S229610AbjGUHzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 03:54:00 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50FA2D7D
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 00:53:50 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5216569f9e3so2315889a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 00:53:50 -0700 (PDT)
+        Fri, 21 Jul 2023 03:55:13 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A203F19B6;
+        Fri, 21 Jul 2023 00:55:11 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-666eb03457cso1120159b3a.1;
+        Fri, 21 Jul 2023 00:55:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689926029; x=1690530829;
+        d=gmail.com; s=20221208; t=1689926110; x=1690530910;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=tEygh4c+HqxN74BgXq8Y1kfIxuqyz4efWO8eqzPzYks=;
-        b=fBac3ap+iIZ5MwFfu4qTR52LVb+3L+GbxZS0jhoKvit/O6n/nYU3TPOvCqdwNED9Wz
-         gdAkwg2LmQnSVQ/QZpThBvWEUcXJIXRvino9kzIMnKUTiueyURedoc1fOHY3BO0w9IAe
-         IpaMr5bpoAU7PHMsaotH6zob4ogrhipQ4eyWqSLFDzIZK4EIBor0eXOxyo6D+fjzu8s1
-         PWdZhL2EVedkIxK/NXUc2JxvU4nGs09tjp8ZpJMeYdjGhgzq2ZyutKqp75UUIkm/lj0z
-         yZo63VySV5QE0UyZXQCDcyshPMTMJOgSqesclet8ZKgwi2AhYAuPeEDo/ecwCEhjP83Q
-         y9EA==
+        bh=5xW1jRQSZihGEtMJPZeQmnAS3v2SxkbZcL5e7ETIR+0=;
+        b=i87Mf0HStvpFjpfG/RzgKDWpiKNE7zgQ3mdRwkTLfdHvA7yZRr64WZYhO7GfciUaE8
+         Bn5RYK0RaQ1sE324Kp1NVHg2DU4tv5jkmJGfNtX38GHFyhGkLvRhMu7ivVtFNr+c4kVw
+         E+uHgn1wPatvF9Dw3HQ8W+axpB29bnCE1myI20FARQ51yshgE+3g1Uht270Kkh9MdrDJ
+         cUY8oY2CYqGyzGrSerfWHSa8vDRRfzWgC39jzZjoBNioFkJjoACePKNI0amKkpQBc9bn
+         rZPBaKfEda4J/hoWEZMVOtJRjvpKq2KJmUovHK8RVU1HhKWDgTJNDoUsx6jXNK+1Ogwo
+         glgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689926029; x=1690530829;
+        d=1e100.net; s=20221208; t=1689926110; x=1690530910;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tEygh4c+HqxN74BgXq8Y1kfIxuqyz4efWO8eqzPzYks=;
-        b=E64LhNzDYp0k+JU2VZ8H1qtc2mu3dyOTWDF/QTYRmeZQGcfu1mkuxcns+8Slv6eZ0b
-         N8JpkJ65jCjsQ79gmHd6L+POiPEpkSn6/WwPtGOwu/Ydcqr406QjE4U0UPGsC6CXxJGa
-         EMuq0nVEzcP1m0gvdjCMsnkAn2ivdzVHsD9016QihhJM1D+j/3gmZO+A9nhyEQOWXaHk
-         IQov57QK2iKEohSE5YQgNZeyPaWp7XjvzxRK3pp4gm3sabXwmJxc3xyjeZH3S3qzEw8Z
-         +gLvVnAlUiRCW6t0JF7qS6zZ2o9MloZnHCyHUwRLl18e18hrPjrC5dhC3kbNa/YXpmdl
-         f/mw==
-X-Gm-Message-State: ABy/qLbteXzfTFMuTclXEe2Lz1CrfetXVIMVzZ7UYNfLwy8ptKNuT7x2
-        HigMnFoaJr4q0dZfbn2s78cHUg==
-X-Google-Smtp-Source: APBJJlG70ubi7PfFJ83R0SjvKKHGbb3LLJDfj8I88GeD6ZT48ozVs6lSrCK3Pq8XKEvVEn6OlGguEA==
-X-Received: by 2002:a05:6402:549:b0:51e:ebd:9f5b with SMTP id i9-20020a056402054900b0051e0ebd9f5bmr1000093edx.36.1689926028989;
-        Fri, 21 Jul 2023 00:53:48 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id s11-20020aa7cb0b000000b0051def9be785sm1741132edt.85.2023.07.21.00.53.46
+        bh=5xW1jRQSZihGEtMJPZeQmnAS3v2SxkbZcL5e7ETIR+0=;
+        b=NwlBVoER8KVU1KM4nuPlimAUEPaJ9cUBgVJJdl2CuAGZZrikLg/M6vclOKPxeV26K1
+         Fq9YNT9o0z545ofsUltmypQmmGkGkkTg5SuWPaOtXgT25TIkuRHqKvTjs2Wy+YjZzKph
+         MbJ7heTYRl3PqprBuf+CkQ01uHvDyBZl2KL3aAQrCCCfU6ze07Dl/ZqBENxcmX5x0Hsc
+         MFjtO6396wpZTDvlPxfewfvwsNrUXxkisk9+Dkhc9Ohi9QFQ4DTnH9K+SOHnmY0CbaWN
+         WDzg5DPlbQnIEprVy0DWdrHiJy0xjOK94wp8yHlmrv6Vhn36UGBiPi0cuWLbWnwmVqoe
+         eMUA==
+X-Gm-Message-State: ABy/qLa7r3WHyR53zhkSXwVhawkEKDxEv6xTaiwJNKrt9KSSG4x1iRX3
+        A9isTj0lBzupNU5ObGCG/Oc=
+X-Google-Smtp-Source: APBJJlFF4Iz9CsoLhkHQ2KETwbX5uXeLZIrl23phg9ovDuqpAxWBDtOWbXu5KHlKpF9x+RGF+XoQXw==
+X-Received: by 2002:a05:6a20:96d3:b0:133:b0d5:b3fc with SMTP id hq19-20020a056a2096d300b00133b0d5b3fcmr954086pzc.7.1689926110426;
+        Fri, 21 Jul 2023 00:55:10 -0700 (PDT)
+Received: from [172.19.1.47] (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id c2-20020a170902d90200b001b9ff5aa2e7sm2755789plz.239.2023.07.21.00.55.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 00:53:48 -0700 (PDT)
-Message-ID: <3b4eaf27-5e6e-f3d0-24fa-01d5c059c2f5@linaro.org>
-Date:   Fri, 21 Jul 2023 09:53:46 +0200
+        Fri, 21 Jul 2023 00:55:10 -0700 (PDT)
+Message-ID: <e2d76107-5b25-c3ce-8741-50b0f0498284@gmail.com>
+Date:   Fri, 21 Jul 2023 15:55:07 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v4 4/4] ARM: dts: imx6q: Add Variscite MX6 Custom board
- support
+Subject: Re: [PATCH 1/3] dt-bindings: rtc: Document nuvoton ma35d1 rtc driver
 Content-Language: en-US
-To:     James Hilliard <james.hilliard1@gmail.com>,
-        devicetree@vger.kernel.org
-Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marek Vasut <marex@denx.de>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Stefan Wahren <stefan.wahren@chargebyte.com>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230721073626.3673429-1-james.hilliard1@gmail.com>
- <20230721073626.3673429-4-james.hilliard1@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230721073626.3673429-4-james.hilliard1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        soc@kernel.org, mjchen@nuvoton.com, schung@nuvoton.com,
+        Jacky Huang <ychuang3@nuvoton.com>
+References: <20230720012826.430026-1-ychuang570808@gmail.com>
+ <20230720012826.430026-2-ychuang570808@gmail.com>
+ <7889ef36-90ee-222b-fe67-ab4e127d1df6@linaro.org>
+From:   Jacky Huang <ychuang570808@gmail.com>
+In-Reply-To: <7889ef36-90ee-222b-fe67-ab4e127d1df6@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/2023 09:36, James Hilliard wrote:
-> This patch adds support for the Variscite MX6 SoM Carrier Board.
-> 
-> This Carrier-Board has the following :
-> - LVDS interface for the VLCD-CAP-GLD-LVDS 7" LCD 800 x 480 touch display
-> - HDMI Connector
-> - USB Host + USB OTG Connector
-> - 10/100/1000 Mbps Ethernet
-> - miniPCI-Express slot
-> - SD Card connector
-> - Audio Headphone/Line In jack connectors
-> - S-ATA
-> - On-board DMIC
-> - RS485 Header
-> - CAN bus header
-> - SPI header
-> - Camera Interfaces header
-> - OnBoard RTC with Coin Backup battery socket
-> - RS232 Debug Header (IDC10)
-> - RS232 DTE
-> 
-> Product Page : https://www.variscite.com/product/single-board-computers/var-mx6customboard
-> 
-> The dts file based on the ones provided by Variscite on their own
-> kernel, but adapted for mainline.
-> 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> ---
->  arch/arm/boot/dts/nxp/imx/Makefile            |   1 +
->  .../dts/nxp/imx/imx6q-var-mx6customboard.dts  | 280 ++++++++++++++++++
->  2 files changed, 281 insertions(+)
->  create mode 100644 arch/arm/boot/dts/nxp/imx/imx6q-var-mx6customboard.dts
-> 
-> diff --git a/arch/arm/boot/dts/nxp/imx/Makefile b/arch/arm/boot/dts/nxp/imx/Makefile
-> index 3629e343d322..258ec0e5b712 100644
-> --- a/arch/arm/boot/dts/nxp/imx/Makefile
-> +++ b/arch/arm/boot/dts/nxp/imx/Makefile
-> @@ -244,6 +244,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
->  	imx6q-udoo.dtb \
->  	imx6q-utilite-pro.dtb \
->  	imx6q-var-dt6customboard.dtb \
-> +	imx6q-var-mx6customboard.dtb \
->  	imx6q-vicut1.dtb \
->  	imx6q-wandboard.dtb \
->  	imx6q-wandboard-revb1.dtb \
-> diff --git a/arch/arm/boot/dts/nxp/imx/imx6q-var-mx6customboard.dts b/arch/arm/boot/dts/nxp/imx/imx6q-var-mx6customboard.dts
-> new file mode 100644
-> index 000000000000..3ca3662fd0d3
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/nxp/imx/imx6q-var-mx6customboard.dts
-> @@ -0,0 +1,280 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Support for Variscite MX6 Carrier-board
-> + *
-> + * Copyright 2016 Variscite, Ltd. All Rights Reserved
-> + * Copyright 2022 Bootlin
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "imx6qdl-var-som.dtsi"
-> +#include <dt-bindings/pwm/pwm.h>
-> +
-> +/ {
-> +	model = "Variscite i.MX6 QUAD/DUAL VAR-SOM-MX6 Custom Board";
-> +	compatible = "variscite,mx6customboard", "variscite,var-som-imx6q", "fsl,imx6q";
 
-This is not what you said in the bindings. And you did not test it.
 
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
+On 2023/7/20 下午 02:10, Krzysztof Kozlowski wrote:
+> On 20/07/2023 03:28, Jacky Huang wrote:
+>> From: Jacky Huang <ychuang3@nuvoton.com>
+>>
+>> Add documentation to describe nuvoton ma35d1 rtc driver.
+>>
+>> Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
+>> ---
+>>   .../bindings/rtc/nuvoton,ma35d1-rtc.yaml      | 45 +++++++++++++++++++
+>>   1 file changed, 45 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml b/Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
+>> new file mode 100644
+>> index 000000000000..08c30f3018fb
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
+>> @@ -0,0 +1,45 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/rtc/nuvoton,ma35d1-rtc.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Nuvoton MA35D1 Read Time Clock
+>> +
+>> +maintainers:
+>> +  - Min-Jen Chen <mjchen@nuvoton.com>
+>> +
+> Missing ref to rtc.yaml.
+>
+>
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - nuvoton,ma35d1-rtc
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - interrupts
+>> +  - clocks
+>> +
+>> +additionalProperties: false
+> And then use unevaluatedProperties: false instead.
+>
+>
+> Best regards,
+> Krzysztof
+>
 
-Best regards,
-Krzysztof
+Thank you for the advice.
+I will fix these two issues in the next version.
+
+
+Best Regards,
+Jacky Huang
 
