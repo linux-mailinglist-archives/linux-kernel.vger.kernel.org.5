@@ -2,91 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3098A75BBA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 02:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEA075BBAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 03:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbjGUAxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 20:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41352 "EHLO
+        id S229625AbjGUBDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 21:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjGUAxe (ORCPT
+        with ESMTP id S229452AbjGUBDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 20:53:34 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0533812F;
-        Thu, 20 Jul 2023 17:53:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=BD2W8Y2agjpRpPZrce6cxuYdaWScA3QklSu6LaAl/3o=; b=D5RXmzWOprDt+Gy+G8y0x29uqj
-        108WzMJPp9LK1CWBxFOYMyseBFGUlM/yWOLaff/IvmYEumZ4HCV6em505BeXehhXgcwDRSKFePuiI
-        bH3VTbcAp0ok1XjrX2WJK+XmdiE9bz9Nd/IcHl+eKFjdyRJa9Mc0BVY/p8FJIi8ij7b0atF3E6ik2
-        nDuJyRcCbqiQsBYxHVAOcInSCWSsfGabRwulZ3RY1QqBuxdo7zkyprY/EufwmHTTe1uBg6N2e0zEH
-        mjz+2SefPFZCR8G9W8U0Qvr0UwWA89QbDERLKHxzqfvR411Ub6B0oCWFdWIi+l8+NwcWfEOgCrcMF
-        wpOJwOBA==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qMeOg-000GDT-Bm; Fri, 21 Jul 2023 02:53:30 +0200
-Received: from [123.243.13.99] (helo=192-168-1-114.tpgi.com.au)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qMeOf-000S0D-It; Fri, 21 Jul 2023 02:53:29 +0200
-Subject: Re: [syzbot] [net?] WARNING: ODEBUG bug in ingress_destroy
-To:     syzbot <syzbot+bdcf141f362ef83335cf@syzkaller.appspotmail.com>,
-        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        jhs@mojatatu.com, jiri@resnulli.us, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
-        xiyou.wangcong@gmail.com
-References: <0000000000004386940600eca80d@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ee358056-266a-426d-5dc9-de6df2542752@iogearbox.net>
-Date:   Fri, 21 Jul 2023 02:53:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Thu, 20 Jul 2023 21:03:38 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EE5E75;
+        Thu, 20 Jul 2023 18:03:36 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id E369A5C00F4;
+        Thu, 20 Jul 2023 21:03:32 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 20 Jul 2023 21:03:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689901412; x=1689987812; bh=R4ZNGlYIzZjqT
+        Kdh2uUCCHfXsCMNde46ZsMLHyedF/I=; b=X26iwK3gCgmCENMCp/fW1ETWcUzEN
+        9rwLuq4E33Zo0dhDnC7nZvOCLnw3oA8kr5MhSLJ14LNMtTJlvQdeKciQl4R51mU5
+        OjD/BSnJTKaA3e102aHkf3HKi/xD/nWE1sQP9GaWV0hJhSKdElBPI77oiLieA6/0
+        oUKi90TVMJ92HpZCZ4gDOHLzl4q9Llaqfl1yiulga84go00d47fg1yFWgL8XpwSU
+        uykfbLG4c3SPEQHR2Ok/FuAN8NS7ns+9n9zY3uJDEugcaSMXhmiarDaaTGrpc/zk
+        6qmwkuQde+Fbb2VlewWSj5CSduAOjRvxdeh1f1dw/dXeSZewpMzlPx0ZQ==
+X-ME-Sender: <xms:Y9m5ZGHNOoPPua24wf3PLjWeqBKhGbD6w-EXyXG4S4mIXfmXrDQCLA>
+    <xme:Y9m5ZHW08G_fqzzf_tgovXDG75WXjrgEu0O5q7UGK87e4pdRgyUXWxVOPv9MTDT-f
+    asRWFtr3_UfWk1iaj0>
+X-ME-Received: <xmr:Y9m5ZAJM2rR108cHi7m_ZNBXxKOC9XnYVTYVJqiDN2Yshfklo7A1tuTHLvno_jI22YOksrWqhHaG3VzYXsHrVAHI4p5-5Zj4nAc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugdegtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
+    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:Y9m5ZAGV9zNsA0Any4YXWN_FkYsDjNdxtMDTcKEak1pr8k919uB9Gw>
+    <xmx:Y9m5ZMUbeQcAD8DiPfJCEmJCM5XliXdkI8-s22DZsIy8t0WU5oyMqw>
+    <xmx:Y9m5ZDNtBu6POEckDdHBDiXddmUZ3bZAjb_xeDcA6x27a3lxZ1f6ig>
+    <xmx:ZNm5ZBW_oA0e1oLVnvgtebv0un27mG3J3J5_-FLNFNF-i_wfWoD8Pw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 20 Jul 2023 21:03:28 -0400 (EDT)
+Date:   Fri, 21 Jul 2023 11:03:28 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Dave Chinner <david@fromorbit.com>
+cc:     Jeff Layton <jlayton@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org,
+        debian-ports <debian-ports@lists.debian.org>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+In-Reply-To: <ZLmzSEV6Wk+oRVoL@dread.disaster.area>
+Message-ID: <60b57ae9-ff49-de1d-d40d-172c9e6d43d5@linux-m68k.org>
+References: <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com> <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com> <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com> <Y7bw7X1Y5KtmPF5s@casper.infradead.org> <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
+ <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com> <ZLlvII/jMPTT32ef@casper.infradead.org> <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de> <ZLl2Fq35Ya0cNbIm@casper.infradead.org> <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org>
+ <ZLmzSEV6Wk+oRVoL@dread.disaster.area>
 MIME-Version: 1.0
-In-Reply-To: <0000000000004386940600eca80d@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26975/Thu Jul 20 09:29:20 2023)
-X-Spam-Status: No, score=0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 5:18 PM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    03b123debcbc tcp: tcp_enter_quickack_mode() should be static
-> git tree:       net-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=168e1baaa80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=32e3dcc11fd0d297
-> dashboard link: https://syzkaller.appspot.com/bug?extid=bdcf141f362ef83335cf
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10bf2bf4a80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12741e9aa80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/348462fb61fa/disk-03b123de.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/33375730f77f/vmlinux-03b123de.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/b6882fbac041/bzImage-03b123de.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+bdcf141f362ef83335cf@syzkaller.appspotmail.com
+On Fri, 21 Jul 2023, Dave Chinner wrote:
 
-Same here, will take a look. Thanks!
+> > I suspect that this is one of those catch-22 situations: distros are 
+> > going to enable every feature under the sun. That doesn't mean that 
+> > anyone is actually _using_ them these days.
+
+I think the value of filesystem code is not just a question of how often 
+it gets executed -- it's also about retaining access to the data collected 
+in archives, museums, galleries etc. that is inevitably held in old 
+formats.
+
+> 
+> We need to much more proactive about dropping support for unmaintained 
+> filesystems that nobody is ever fixing despite the constant stream of 
+> corruption- and deadlock- related bugs reported against them.
+> 
+
+IMO, a stream of bug reports is not a reason to remove code (it's a reason 
+to revert some commits).
+
+Anyway, that stream of bugs presumably flows from the unstable kernel API, 
+which is inherently high-maintenance. It seems that a stable API could be 
+more appropriate for any filesystem for which the on-disk format is fixed 
+(by old media, by unmaintained FLOSS implementations or abandoned 
+proprietary implementations).
+
+Being in userspace, I suppose FUSE could be a stable API though I imagine 
+it's not ideal in the sense that migrating kernel code there would be 
+difficult. Maybe userspace NFS 4 would be a better fit? (I've no idea, I'm 
+out of my depth in /fs...)
+
+Ideally, kernel-to-userspace code migration would be done with automatic 
+program transformation -- otherwise it would become another stream of 
+bugs.
