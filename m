@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4D075C71B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE3975C720
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbjGUMrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 08:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47578 "EHLO
+        id S230517AbjGUMsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbjGUMr0 (ORCPT
+        with ESMTP id S229957AbjGUMsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:47:26 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C3B3A84
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:47:13 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b8ad907ba4so11519585ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689943633; x=1690548433;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d4/eRoqwSAGdi8LJemKHI/V1OYM9+swXufBrZM0hUXk=;
-        b=yFN3/VyHs01yi924BoKQA3rrgUaD/Hl40Ot0j1gpDRx8j29mKVke8EQvqAdLCaQK4M
-         6f/l8ErfCvpGw5LQz/pZ3hjukF7r4W5iVON++Vf79UYo0WmTMnAYbYiGEycqWmdA12ex
-         TciPBsADja5tXbs8y9Uz4bmZ6M34xoiPNRlaF/Wyhku9Dpx5XcuSndO5MIyTelSDWo7m
-         spITXGKc6NN1OMKi7e+1/XE78Lstba3baS5pBazCY6r8aa2wCN3jPKZMNhWZo3GnhTCf
-         QNhdJWhkXOmC7Cpyj8PoynwM48Px4H3uYHPxtug+Cc/QpumNbJ52USlirX5bijsDp2Bn
-         jpBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689943633; x=1690548433;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d4/eRoqwSAGdi8LJemKHI/V1OYM9+swXufBrZM0hUXk=;
-        b=ceFDLzazaNMqQXP/IB7aulBTQtZ5xreG9RHTQ2Ik/8rJdXDBoVBrNSVsb5O1vkOE6S
-         Sb06FqSHhYheGgtFAT/GVjfE4wK/H7/CZ7slxkOYJMm1HbhIEhjPPxhe0SIpGj4YHhHC
-         4h7ypdCd3fpBjBSLDet1I2bjaHsy89Ud2PKDagTSiHmEqrtO5Gnrdm3pfwKE1K77HL6O
-         12cHSuKquu1PmDIIjxHHIbZn8yBvBf/2N13sn+NyY9Wvg1MRBCbX/D5FWy2T91yt6RkM
-         jMsvawUzmgirD9cO9bkkAEvGMAELL5KSxGpmuuWs8C8Z9IRLC6urYIYLM+OpMwu7nKXH
-         hicQ==
-X-Gm-Message-State: ABy/qLYJ+6Qb5ZQp5GTLVAkIHjUPflAoiryHseqHS7eIyUxBviGTG1ay
-        POut+thG1/O85671m4m+ghqzC/SLJEH0jPxxBg==
-X-Google-Smtp-Source: APBJJlEVBYU2bNbC3uokjbALDALmMS2/XNNHqv6ry6lL/rTHYP0iAZpZI/LXnzDkoB4IkkGjt0gAsA==
-X-Received: by 2002:a17:903:110c:b0:1b8:525a:f685 with SMTP id n12-20020a170903110c00b001b8525af685mr1631050plh.37.1689943633295;
-        Fri, 21 Jul 2023 05:47:13 -0700 (PDT)
-Received: from localhost.localdomain ([117.206.118.181])
-        by smtp.gmail.com with ESMTPSA id ix7-20020a170902f80700b001b8b2fb52d4sm3369828plb.203.2023.07.21.05.47.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 05:47:11 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 2/2] OPP: Fix passing 0 to PTR_ERR in _opp_attach_genpd()
-Date:   Fri, 21 Jul 2023 18:16:34 +0530
-Message-Id: <20230721124634.63612-3-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230721124634.63612-1-manivannan.sadhasivam@linaro.org>
-References: <20230721124634.63612-1-manivannan.sadhasivam@linaro.org>
+        Fri, 21 Jul 2023 08:48:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F832D56;
+        Fri, 21 Jul 2023 05:48:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E71C5619EB;
+        Fri, 21 Jul 2023 12:48:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44B1BC433C8;
+        Fri, 21 Jul 2023 12:48:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689943699;
+        bh=l5FOiFabwBLgQP9O9x3g50FQNGXz9ZF8gT0TyJn7fTo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=aemxEATTCJhgwHUAgG/0mx1SxEUKbKNDmHHoMhGmIsEjqr0Bk/sLd4gkIg5sh/uvO
+         ctpdUSiOaAGiAacyWt50GIUoYY2FghsiYb2BAMFeVF3HOUQGGflc7wK63bKHfNOiDp
+         /7ubwBvwN0Vt4eUhHH1+wztDLpY4Ea2+z9l6qSGLn4xzN6hVVL0Ukz+z3wcpAoE4fo
+         9q3DQKE5yXhfEGhgOmumWvDw3/Ex0WCdqkGQh8wuZSA5BRHGlQPZ8NaeOUU90MS2bE
+         Vr+kDAehHsgzRMLrw23xGxQnPBMjCqn/1PMbIhcJnwMqFCT0IyNQHSbLEKucIMu9eF
+         LbPzKCFHjk1dQ==
+Message-ID: <11c799a6cb0bf073dda77f592d70d809fca9b030.camel@kernel.org>
+Subject: Re: [PATCH v2 0/2] nfsd: sanely handle inabilty to fetch pre/post
+ attributes
+From:   Jeff Layton <jlayton@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Boyang Xue <bxue@redhat.com>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 21 Jul 2023 08:48:16 -0400
+In-Reply-To: <168988936713.11078.5407820394334916284@noble.neil.brown.name>
+References: <20230720-bz2223560-v2-0-070aaf2660b7@kernel.org>
+         <168988936713.11078.5407820394334916284@noble.neil.brown.name>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If dev_pm_domain_attach_by_name() returns NULL, then 0 will be passed to
-PTR_ERR() as reported by the smatch warning below:
+On Fri, 2023-07-21 at 07:42 +1000, NeilBrown wrote:
+> On Fri, 21 Jul 2023, Jeff Layton wrote:
+> > Boyang reported tripping the BUG_ON in set_change_info. While we
+> > couldn't confirm it, one way this could happen would be for nfsd_lookup
+> > to succeed and then for fh_fill_both_attrs to fail.
+> >=20
+> > This patchset attempts to (sanely) fix this, usually by aborting the
+> > operation if fetching the pre attributes fails. Post-op attribute fetch
+> > handling is more difficult to deal with however since we've already don=
+e
+> > the operation, so this has it just fudge the change_info4 if that
+> > occurs.
+>=20
+> I think both v3 and v4 allow a reply that says "the operation was a
+> success but there are no post-op attrs".  With v4 you can say "there is
+> no change-attr, but here are some other attrs".  I think.
+>=20
 
-drivers/opp/core.c:2456 _opp_attach_genpd() warn: passing zero to 'PTR_ERR'
+v3 has this ability:
 
-Fix it by checking for the non-NULL virt_dev pointer before passing it to
-PTR_ERR. Otherwise return -ENODEV.
+      union pre_op_attr switch (bool attributes_follow) {
+      case TRUE:
+           wcc_attr  attributes;
+      case FALSE:
+           void;
+      };
 
-Fixes: 4ea9496cbc95 ("opp: Fix error check in dev_pm_opp_attach_genpd()")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/opp/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+...we can just set the attributes_follow flag to false there in that
+case.
 
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 98633ccd170a..ae359ed6a161 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -2377,7 +2377,7 @@ static int _opp_attach_genpd(struct opp_table *opp_table, struct device *dev,
- 
- 		virt_dev = dev_pm_domain_attach_by_name(dev, *name);
- 		if (IS_ERR_OR_NULL(virt_dev)) {
--			ret = PTR_ERR(virt_dev) ? : -ENODEV;
-+			ret = virt_dev ? PTR_ERR(virt_dev) : -ENODEV;
- 			dev_err(dev, "Couldn't attach to pm_domain: %d\n", ret);
- 			goto err;
- 		}
--- 
-2.25.1
+That's not possible with v4, AFAICT. Several of the *4resok structures
+contain a change_info4, which just looks like this:
 
+struct change_info4 {
+        bool            atomic;
+        changeid4       before;
+        changeid4       after;
+};
+
+We can set "atomic" to false (and this patch does that in this
+situation), but I don't believe there is any alternative to the change
+attribute. If the underlying fs doesn't support native change attrs, the
+server is expected to fake one up somehow (usually from the ctime).
+
+We could (in principle) allow the operation to proceed on v3 even if
+fh_fill_pre_attrs fails, but I don't think we can do the same thing with
+v4. That said, if getattr is failing then it's somewhat likely that
+other operations will fail too, so aborting the operation in this
+situation doesn't seem too onerous.
+
+--=20
+Jeff Layton <jlayton@kernel.org>
