@@ -2,101 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD5E75BE05
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC65575BDFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbjGUFvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 01:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36250 "EHLO
+        id S230018AbjGUFv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 01:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbjGUFvO (ORCPT
+        with ESMTP id S229566AbjGUFu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 01:51:14 -0400
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3869E358B;
-        Thu, 20 Jul 2023 22:50:23 -0700 (PDT)
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36L4vQBf022133;
-        Thu, 20 Jul 2023 22:49:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        PPS06212021; bh=Y7PvSi6Jz/OCrGdAUcZr7M636MU29kh116d0H+MDGEA=; b=
-        I/d6EqMCqjTlA3ovVY1WGqsspYwCRtaZhLkhDBq8WSwd0vGxGzQu9lO5CUI3tF1m
-        BxiJAJJmgH2wV3SFz4SID/lf6dftuaM5Fmf8v1JUgtHYcicH13ht1o9l+AR7zsOh
-        JkveqU1yZt962/Zi3X8xFRBqEGAOlaGEJQuhLF1vapFwjFr8vhyxKPz0f/x1eADz
-        PRl0NqCivIJgf8Ydg/SEcR4FP2pNeT+LmjA2+oFFK/clrWSBSB+oVGlG1AyJdyrr
-        nWOz2uDgcb4sdgEZdf2z5Wqlm8nSNTYrOR84ZrSbic2QxaaTdVj9n23Oj1rCMzSI
-        df7/qKoCVbgm9llOAcfisA==
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3rutyew7nm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 20 Jul 2023 22:49:51 -0700 (PDT)
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 20 Jul 2023 22:49:50 -0700
-Received: from pek-lpd-ccm6.wrs.com (147.11.1.11) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 20 Jul 2023 22:49:48 -0700
-From:   <xiongwei.song@windriver.com>
-To:     <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-        <corbet@lwn.net>
-CC:     <cgroups@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] docs: cgroup-v1: fix typo
-Date:   Fri, 21 Jul 2023 13:49:38 +0800
-Message-ID: <20230721054938.1666475-2-xiongwei.song@windriver.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230721054938.1666475-1-xiongwei.song@windriver.com>
-References: <20230721054938.1666475-1-xiongwei.song@windriver.com>
+        Fri, 21 Jul 2023 01:50:58 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02BA30D4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 22:50:06 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qMj1Z-0000q2-5G; Fri, 21 Jul 2023 07:49:57 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qMj1Y-000zrK-4u; Fri, 21 Jul 2023 07:49:56 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qMj1X-006Xi5-De; Fri, 21 Jul 2023 07:49:55 +0200
+Date:   Fri, 21 Jul 2023 07:49:55 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Guiting Shen <aarongt.shen@gmail.com>,
+        claudiu.beznea@microchip.com, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com,
+        linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6] pwm: atmel: Enable clk when pwm already enabled in
+ bootloader
+Message-ID: <20230721054955.4rzcgawqjeunlnm4@pengutronix.de>
+References: <20230716020652.18557-1-aarongt.shen@gmail.com>
+ <ZLlO3vGr-ECdnmKA@orome>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: aX545k4kvfVlBYJA-4_x8SnITXLLpFMz
-X-Proofpoint-GUID: aX545k4kvfVlBYJA-4_x8SnITXLLpFMz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-21_02,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- bulkscore=0 lowpriorityscore=0 impostorscore=0 phishscore=0 spamscore=0
- priorityscore=1501 clxscore=1015 mlxlogscore=635 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2306200000
- definitions=main-2307210052
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ossejx6vs65qbsem"
+Content-Disposition: inline
+In-Reply-To: <ZLlO3vGr-ECdnmKA@orome>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongwei Song <xiongwei.song@windriver.com>
 
-"listers" -> "listeners"
+--ossejx6vs65qbsem
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
----
- Documentation/admin-guide/cgroup-v1/memory.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Jul 20, 2023 at 05:12:30PM +0200, Thierry Reding wrote:
+> On Sun, Jul 16, 2023 at 10:06:52AM +0800, Guiting Shen wrote:
+> > +static int atmel_pwm_enable_clk_if_on(struct atmel_pwm_chip *atmel_pwm=
+, bool on)
+> > +{
+> > +	unsigned int i, cnt =3D 0;
+> > +	int ret =3D 0;
+> > +	u32 sr;
+> > +
+> > +	sr =3D atmel_pwm_readl(atmel_pwm, PWM_SR) & PWM_SR_ALL_CH_MASK;
+> > +	if (!sr)
+> > +		return 0;
+> > +
+> > +	cnt =3D bitmap_weight((unsigned long *)&sr, atmel_pwm->chip.npwm);
+>=20
+> Tiny nit here: not sure if that cast is safe to do. You've got a 32-bit
+> variable, but if you cast &sr to unsigned long * on a 64-bit machine it
+> would cause hweight64() to get called and that would then read 64 bits
+> from a 32-bit variable. This probably works most of the time because we
+> don't read any of the upper bits, but it is strictly an illegal access
+> and could be unaligned as well.
 
-diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-index dcb65b49bb22..1f239fa938c2 100644
---- a/Documentation/admin-guide/cgroup-v1/memory.rst
-+++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -909,7 +909,7 @@ experiences some pressure. In this situation, only group C will receive the
- notification, i.e. groups A and B will not receive it. This is done to avoid
- excessive "broadcasting" of messages, which disturbs the system and which is
- especially bad if we are low on memory or thrashing. Group B, will receive
--notification only if there are no event listers for group C.
-+notification only if there are no event listeners for group C.
- 
- There are three optional modes that specify different propagation behavior:
- 
--- 
-2.25.1
+While relevance of BE systems ceases slowly, such a machine would
+evaluate the wrong bits.
+=20
+> Should we just turn sr into an unsigned long to be safe here?
 
+yes please.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ossejx6vs65qbsem
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmS6HIMACgkQj4D7WH0S
+/k6Hogf+KbFJk1P7JeO7yfCVB9HeoT4GjLWtIGQjHaDYde5xPAg8nxba5De/Y+NP
+lYh2+005hnYNkIoV9+fG8s/4eE5yAceqRbcj2e+EgUhFERASFZ5q5d7bCq7mxDIg
+eq+wpjipWb2+zRoVXZqtAjga/GlKUtYBaorsG5MfO8ggC4ij31PUxR6XPOIzKT6U
+6B34omkgtZpJcY9f4vCAADJ/oUvcte2IYtf8qHmtIgSAbfwFoTV0E/2wWRh/evOl
+zzSRhoGRpXpiELleCq00X03DDeSfrR9r/FfjpzFczK5F9F703iMjshpGrVwg/vlJ
+zKHRQpngH2iJHVoV3WBe5ixA8nMA+A==
+=7YlN
+-----END PGP SIGNATURE-----
+
+--ossejx6vs65qbsem--
