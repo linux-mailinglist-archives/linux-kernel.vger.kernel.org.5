@@ -2,159 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC13875BF50
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118DF75BF54
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbjGUHFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 03:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46000 "EHLO
+        id S230211AbjGUHHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 03:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbjGUHF3 (ORCPT
+        with ESMTP id S229994AbjGUHHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 03:05:29 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B69B2D5E;
-        Fri, 21 Jul 2023 00:05:27 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1b055510c9dso1064877fac.0;
-        Fri, 21 Jul 2023 00:05:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689923126; x=1690527926;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dGiBUXJPYa+l+8GYQxJIryvnr+KvjRwSf83wrJAg5Is=;
-        b=Fjxr/aNfHLPAMW9scqY4G2sbGFV7TorpzmMwcCd6IJdpx6xBiJC7++J3cI3/+T8EgD
-         fv1MEZ6lGvQ/diZzTFVsqFEusP3sKf8cC3oMHePFy2ZzcfAESfoe2Azgb9jjeWlVU6j9
-         3GCAr65gefr83R+XMSa0RiKaz38ph2vuUe2jpNNWpTlL1wXFAu8OsuNEN6TphFB0zT4H
-         utE23+KXbWY8tU3aJlkVRG9m+51srOlZCxZa5fSFeg7SYy2F7Dq1bqwUutJDLet+rWwR
-         t8alhs5MBjTnHrXsOzhyEEr9KP/1xcx27j1jnip6v3Vld3vgK8HIL9LWicJdrBehtbGf
-         22Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689923126; x=1690527926;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dGiBUXJPYa+l+8GYQxJIryvnr+KvjRwSf83wrJAg5Is=;
-        b=SzS8d36FC8I+hNqz9yKAvVppjY7es0Ax8sBD0m49/Fp6bwzoRspPnlXADtVG10cm69
-         jB1Mv+1oQyhmLI8VjwQi0PBCj4iPnemHoV1ZAXxcQyIc8XjtX3Av/zKaET2ae1Q9pNGV
-         zy0K6FVGr+ouPMmZfBC7o4IAyQk2KEedtAozxJt8RBQscUQvnpkP1B6KlypW+lmzAiYA
-         tONRsGeUPP0xEh5PhauTmZdkRPrDHeLARVR64ZgC7ZnD6I9uJQZPpAIPZEjKt5tikzCM
-         WAkwDdcDtfPH5tE0QM4g9bk/uyEXsiCxmfsPpKvQPicDLhf9M9YJN4BKfRYefsAGnG0j
-         +MPw==
-X-Gm-Message-State: ABy/qLadjCnY5kh9+a64Vbg9ohR2PiflAV8gStOe4hvT0QDbpf5LZKvH
-        5QSX1Jf9EhOkAdHMt+glitDb8d3XyDpFjcTeDpw=
-X-Google-Smtp-Source: APBJJlGaBkFXs/FWq49wlomxOGLilMvY+Ep6vG7Ho6jhpuwpiE65jHx00PaLpOpEBm6f1gt9YBPI4ROdg1UNlWmOrpI=
-X-Received: by 2002:a05:6870:5b8a:b0:1b0:454b:1c3d with SMTP id
- em10-20020a0568705b8a00b001b0454b1c3dmr941253oab.36.1689923125767; Fri, 21
- Jul 2023 00:05:25 -0700 (PDT)
+        Fri, 21 Jul 2023 03:07:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501F7273E;
+        Fri, 21 Jul 2023 00:07:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DF59B61335;
+        Fri, 21 Jul 2023 07:07:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB2ACC433C7;
+        Fri, 21 Jul 2023 07:07:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689923234;
+        bh=eCotvYZ2SM3G2SSTM9Brh//9hAvs6Vg3USkUmu4uk8M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wPpm7X7z5vkJU2m7cWaN7JniQK1QDrOhAp5FgYgx0h6NxJ7NJtKYUqkNw3t1VHH0e
+         UXDPEwwX1fYaGMMdddiF0PQ8Zpp17Os5Ay7wORN3yuWNZhiyWtvh36GutcZ4/tEhJ4
+         3E7edBHQx7fStUbY5hruttkGTDrzYFdGJzkEthbg=
+Date:   Fri, 21 Jul 2023 09:06:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] serial: core: Controller id cannot be negative
+Message-ID: <2023072109-fidelity-modular-4074@gregkh>
+References: <20230720051021.14961-1-tony@atomide.com>
+ <20230720051021.14961-2-tony@atomide.com>
+ <2023072022-country-replace-68ca@gregkh>
+ <20230721054326.GO5194@atomide.com>
+ <2023072144-splurge-debate-e681@gregkh>
+ <20230721061523.GP5194@atomide.com>
+ <20230721065701.GQ5194@atomide.com>
 MIME-Version: 1.0
-References: <20230720131028.3730704-1-james.hilliard1@gmail.com>
- <20230720131028.3730704-2-james.hilliard1@gmail.com> <CAOMZO5BPadhvTux-YMRZtZS=QaQhk9z+h7COk7_5S4gaqeE2eQ@mail.gmail.com>
-In-Reply-To: <CAOMZO5BPadhvTux-YMRZtZS=QaQhk9z+h7COk7_5S4gaqeE2eQ@mail.gmail.com>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Fri, 21 Jul 2023 01:05:13 -0600
-Message-ID: <CADvTj4rrodFreH4gsYC0fW94e=+Z7m6N_2HoQDEbkc=VVKyOfw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] ARM: dts: imx6qdl: Add Variscite VAR-SOM-MX6 SoM support
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marek Vasut <marex@denx.de>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Stefan Wahren <stefan.wahren@chargebyte.com>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721065701.GQ5194@atomide.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 7:27=E2=80=AFAM Fabio Estevam <festevam@gmail.com> =
-wrote:
->
-> On Thu, Jul 20, 2023 at 10:10=E2=80=AFAM James Hilliard
-> <james.hilliard1@gmail.com> wrote:
->
-> > +       reg_audio: regulator-audio {
-> > +               compatible =3D "regulator-fixed";
-> > +               regulator-name =3D "tlv320aic3x-supply";
-> > +               enable-active-high;
->
-> enable-active-high should only be used when there is a corresponding
-> gpio property.
->
-> > +&ecspi3 {
-> > +       fsl,spi-num-chipselects =3D <1>;
-> > +       pinctrl-names =3D "default";
-> > +       pinctrl-0 =3D <&pinctrl_ecspi3>;
-> > +       cs-gpios =3D <&gpio4 24 GPIO_ACTIVE_HIGH>;
->
-> This should be ACTIVE_LOW instead.
->
-> > +       status =3D "okay";
-> > +};
-> > +
-> > +&fec {
-> > +       pinctrl-names =3D "default";
-> > +       pinctrl-0 =3D <&pinctrl_enet>;
-> > +       phy-mode =3D "rgmii";
-> > +       phy-reset-gpios =3D <&gpio1 25 GPIO_ACTIVE_LOW>;
->
-> This is a deprecated property.
->
-> The recommendation is to add a mdio node with:
->
-> reset-gpios =3D <&gpio1 25 GPIO_ACTIVE_LOW>;
-> reset-assert-us =3D <10000>;
->
-> Is this an Atheros AR8031 PHY. If so, please check imx6qdl-sabresd.dtsi.
+On Fri, Jul 21, 2023 at 09:57:01AM +0300, Tony Lindgren wrote:
+> * Tony Lindgren <tony@atomide.com> [230721 06:19]:
+> > Looks like linux-serial not getting added is caused by MAINTAINERS
+> > not listing serial_base_bus.c, serial_ctrl.c and serial_port.c. This
+> > causes get_maintainer.pl to not show linux-serial for a patch touching
+> > serial_base_bus.c.. And this will causes git send-email to not pick up
+> > linux-serial.. I'll send a patch for MAINTAINERS file too.
+> 
+> And the TTY LAYER is missing the list entries.. Does something like below
+> make sense to you guys to include lkml and linux-serial for TTY LAYER?
+> 
+> Regards,
+> 
+> Tony
+> 
+> 8< ---------------------
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -21628,11 +21628,17 @@ F:	Documentation/translations/zh_TW/
+>  TTY LAYER
+>  M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>  M:	Jiri Slaby <jirislaby@kernel.org>
+> +L:	linux-kernel@vger.kernel.org
+> +L:	linux-serial@vger.kernel.org
+>  S:	Supported
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git
+>  F:	Documentation/driver-api/serial/
+>  F:	drivers/tty/
+> +F:	drivers/tty/serial/serial_base.h
+> +F:	drivers/tty/serial/serial_base_bus.c
+>  F:	drivers/tty/serial/serial_core.c
+> +F:	drivers/tty/serial/serial_ctrl.c
+> +F:	drivers/tty/serial/serial_port.c
+>  F:	include/linux/selection.h
+>  F:	include/linux/serial.h
+>  F:	include/linux/serial_core.h
+> -- 
+> 2.41.0
 
-Hmm, the datasheet appears to indicate it uses a KSZ9031RN ethernet phy.
+Seems sane to me, I've always wondered why some serial patches didn't
+end up on the linux-serial list.
 
-Would that be a different configuration vs the Atheros AR8031 PHY?
+thanks,
 
->
-> > +&ssi2 {
-> > +       fsl,mode =3D "i2s-slave";
->
-> This is unused, drop it.
->
-> Please check commit ece1e4999 606 ("ASoC: fsl_ssi: Remove unneeded
-> 'i2s-slave' property")
->
-> > +&usdhc3 {
-> > +       pinctrl-names =3D "default", "state_100mhz", "state_200mhz";
-> > +       pinctrl-0 =3D <&pinctrl_usdhc3>;
-> > +       pinctrl-1 =3D <&pinctrl_usdhc3_100mhz>;
-> > +       pinctrl-2 =3D <&pinctrl_usdhc3_200mhz>;
-> > +       bus-width =3D <4>;
-> > +       vmmc-supply =3D <&reg_wl18xx_vmmc>;
-> > +       non-removable;
-> > +       wakeup-source;
-> > +       keep-power-in-suspend;
-> > +       cap-power-off-card;
-> > +       #address-cells =3D <1>;
-> > +       #size-cells =3D <0>;
-> > +       status =3D "okay";
-> > +
-> > +       wifi: wifi@0 {
-> > +               compatible =3D "ti,wl1835";
-> > +               reg =3D <2>;
->
-> @0 and reg =3D <2> do not match.
+greg k-h
