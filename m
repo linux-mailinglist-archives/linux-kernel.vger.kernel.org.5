@@ -2,214 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E8675C34F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C5475C34E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231479AbjGUJnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55192 "EHLO
+        id S231444AbjGUJnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231803AbjGUJm6 (ORCPT
+        with ESMTP id S231522AbjGUJmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:42:58 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12B530ED
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:42:37 -0700 (PDT)
-Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id ED3C52F5E;
-        Fri, 21 Jul 2023 11:41:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1689932481;
-        bh=cNkl06QQHpvODOS+NcyjyJrtUpAGoum7uDoGdQ4v5oM=;
-        h=From:Date:Subject:To:Cc:From;
-        b=oG+GCAZvk/7E4PKI49WAqK0Txl/XPwdEHjLiMWDlLIc1YWJeQWPFnj8d3/MhRPywj
-         EqIIl8oc23WpAsnpNeO8IU3T7tJJAN9WU/bT2QB8z4JwgOrxlrTRUXrbYmVoi5f+EI
-         H+5gSOzbbrdPC9jw6DsPOY+O4X67pgRR0UqNGok0=
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Fri, 21 Jul 2023 12:41:49 +0300
-Subject: [PATCH] drm/bridge: Add debugfs print for bridge chains
+        Fri, 21 Jul 2023 05:42:52 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77C335B0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:42:29 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6686a05bc66so1234615b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689932529; x=1690537329;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IFcU7/ffJj4GpqTDJrXsJdgjnuOhtBeWbIDJjevNDPU=;
+        b=hiqCACW2e6ToVhtF/uGbndLMELQTUVszaKBSFRTyxHpLpZWPVTlffOehyOxsrk91e/
+         zp2RgL/2DLad18tMqmIMWvSSwonUi5XvydaEaGjZA7GuFnusqAphYfg9qVnjYuR+AR9w
+         Y2bTY/rACSniqAgu2PwGuAtmYeeusYUwnyxcaimdcRhux+6Y2ce8u4ai83/TEod5z0v5
+         m/esqcISu4CTa64qDKf90ooAXLrz+22Njc3B3AZlINViptNVeGBwJQgRoxfdV1lX4EmL
+         W5/MYUQP+m5KHhCHguV5BEPdG/N/1oL+HG/l2fzkwVcbiBFZLa9b31YA46HmosANomkQ
+         GwLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689932529; x=1690537329;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IFcU7/ffJj4GpqTDJrXsJdgjnuOhtBeWbIDJjevNDPU=;
+        b=VVnQMzTrINvqdLcGVws6ItoN9bUlcbokiFJaHOjxJYfwoSFhLFM6XHNoey4j06N/6e
+         HjM9RFSweCbTXCQsY3SqffKNkkyKNrGn8qh+Uspm1tfQZte0OSwwEihL81g0LsCP7Jw2
+         S+5wQX8KkpqumFb5C25UZm+OwJ+L/nqqOj+vGxbL3a2/kL6M8U6RNJ6DVQzjw7UydweJ
+         ZVPHA3JiITD4/Yid1Ym1u9/9h4yxjn9dqeJW2Tvsgd+s70EE93wyJzgNmhzPQS9/Sn/x
+         iSMewtZK+C8qS+cQTRSWCYSFaypaIvTIlXwaUuik2uXm+Gv0svY7ULKNrKATCTlKPhfM
+         iwhQ==
+X-Gm-Message-State: ABy/qLZI+9C7kvuEvLJSJ8MnNI3wY08qdL15//0l00Y5W3IECg94Rwfd
+        eUnz9oB3iq75vjFvkvW86YZsgA==
+X-Google-Smtp-Source: APBJJlHkH7Uv7pWn/MP4FMrAIT/Cc7VTogZMZvc6nxyeSZL/vi3Feh7E3jJubjRUzodKuGKTOER0ag==
+X-Received: by 2002:a05:6a20:841e:b0:11f:6dc:4f38 with SMTP id c30-20020a056a20841e00b0011f06dc4f38mr1573730pzd.55.1689932529270;
+        Fri, 21 Jul 2023 02:42:09 -0700 (PDT)
+Received: from localhost ([122.172.87.195])
+        by smtp.gmail.com with ESMTPSA id e3-20020a170902b78300b001b88af04175sm2997093pls.41.2023.07.21.02.42.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 02:42:08 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 15:12:06 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com, andersson@kernel.org,
+        konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
+        quic_nitirawa@quicinc.com, quic_narepall@quicinc.com,
+        quic_bhaskarv@quicinc.com, quic_richardp@quicinc.com,
+        quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
+        bmasney@redhat.com, krzysztof.kozlowski@linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/15] UFS: Add OPP and interconnect support
+Message-ID: <20230721094206.dfgnn73kmzzj6rtw@vireshk-i7>
+References: <20230720054100.9940-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230721-drm-bridge-chain-debugfs-v1-1-8614ff7e890d@ideasonboard.com>
-X-B4-Tracking: v=1; b=H4sIANxSumQC/x2MQQqAMAwEvyI5G2gjIvgV8WBtqjlYJUURxL8bP
- A47Ow8UVuECffWA8iVF9mzg6wrmdcoLo0RjIEeN68hj1A2DSrTFBMkYOZxLKuhCmH1LlNpuArs
- fyknuPz2M7/sB66l4eWoAAAA=
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        Aradhya Bhatia <a-bhatia1@ti.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4407;
- i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=cNkl06QQHpvODOS+NcyjyJrtUpAGoum7uDoGdQ4v5oM=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBkulL3/1oxZDXSy2KXI3/n4Ihjp95Gkuy5lrimi
- SLm6s6nQmSJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZLpS9wAKCRD6PaqMvJYe
- 9b/lD/4vm9Td3Avl7pKylPBLSvKEq6KJ/GlYvERTWzWXNl0eHg0VbaYyXDIAZOJyJBRtvFanKsW
- B0DdiDHr3OdWAE+4NvAy4IyOQwrR121WYgfPPFuK9GdxCVoEaYmQW4EZ6yQ/iOxknT3vLEDWLr9
- c3lxhkMst8jL5N7jkocg39agZ7V/UpiAzJm63WSjRMP6w9NaKBa6heFcipEBIexQKUoHnRmNPo6
- pwx+xxL1kSDkQH2dhZ2/AdyExWQ6RVYMFRQbvNRFr6HFVtFBCWGY0R90z9stTeFyVhpV7qUGfo+
- awF4JpAX7/uOY/cm+QYR7GNUPBocoWuuqQ7V9LZj4wEWVsJpFjovXeAuGNP9y5Y4hhMzXjmVBhL
- cYWb16j0RwftAnQ273fH2VXWfn1zvtnhxYuUKDVcFhACdIvtzoXAATuH+CiI6LtmATS7nlCCx76
- 31aonf3pWxb+cMQIvNQYy544LKYXk6JbehUGj09vZHH46tBnm8r2e6TPVGoMNkWdXTuTT+q5DSP
- jH2Y8UFg3rdc8Fw/A26L/1eJXuUx4oG7Ad4MV9iODKU4r1Vb0Rel/o9Qh3mWGM25NJ1sSpmuNwK
- I729ds+lxDQgRi/xP+CdyxiaH7EGvg6G8GCOer0Bywpnq4KVUdf2sre32Rg3LnWDnyDm866TYOi
- LHAqvD7LEyxrwCg==
-X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
- fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720054100.9940-1-manivannan.sadhasivam@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DRM bridges are not visible to the userspace and it may not be
-immediately clear if the chain is somehow constructed incorrectly. I
-have had two separate instances of a bridge driver failing to do a
-drm_bridge_attach() call, resulting in the bridge connector not being
-part of the chain. In some situations this doesn't seem to cause issues,
-but it will if DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is used.
+On 20-07-23, 11:10, Manivannan Sadhasivam wrote:
+> Hi,
+> 
+> This series adds OPP (Operating Points) support to UFSHCD driver and
+> interconnect support to Qcom UFS driver.
+> 
+> Motivation behind adding OPP support is to scale both clocks as well as
+> regulators/performance state dynamically. Currently, UFSHCD just scales
+> clock frequency during runtime with the help of "freq-table-hz" property
+> defined in devicetree. With the addition of OPP tables in devicetree (as
+> done for Qcom SDM845 and SM8250 SoCs in this series) UFSHCD can now scale
+> both clocks and performance state of power domain which helps in power
+> saving.
+> 
+> For the addition of OPP support to UFSHCD, there are changes required to
+> the OPP framework and devfreq drivers which are also added in this series.
+> 
+> Finally, interconnect support is added to Qcom UFS driver for scaling the
+> interconnect path dynamically. This is required to avoid boot crash in
+> recent SoCs and also to save power during runtime. More information is
+> available in patch 13/13.
 
-Add a debugfs file to print the bridge chains. For me, on this TI AM62
-based platform, I get the following output:
+Hi Mani,
 
-encoder[39]
-	bridge[0] type: 0, ops: 0x0
-	bridge[1] type: 0, ops: 0x0, OF: /bus@f0000/i2c@20000000/dsi@e:toshiba,tc358778
-	bridge[2] type: 0, ops: 0x3, OF: /bus@f0000/i2c@20010000/hdmi@48:lontium,lt8912b
-	bridge[3] type: 11, ops: 0x7, OF: /hdmi-connector:hdmi-connector
+I have picked the OPP related patches from here (apart from DT one)
+and sent them separately in a series, along with few changes from me.
+Also pushed them in my linux-next branch.
 
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
----
- drivers/gpu/drm/drm_bridge.c  | 48 +++++++++++++++++++++++++++++++++++++++++++
- drivers/gpu/drm/drm_debugfs.c |  3 +++
- include/drm/drm_bridge.h      |  5 +++++
- 3 files changed, 56 insertions(+)
+Thanks.
 
-diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-index c3d69af02e79..da3205aaed6b 100644
---- a/drivers/gpu/drm/drm_bridge.c
-+++ b/drivers/gpu/drm/drm_bridge.c
-@@ -27,8 +27,10 @@
- #include <linux/mutex.h>
- 
- #include <drm/drm_atomic_state_helper.h>
-+#include <drm/drm_debugfs.h>
- #include <drm/drm_bridge.h>
- #include <drm/drm_encoder.h>
-+#include <drm/drm_file.h>
- #include <drm/drm_of.h>
- #include <drm/drm_print.h>
- 
-@@ -1345,6 +1347,52 @@ struct drm_bridge *of_drm_find_bridge(struct device_node *np)
- EXPORT_SYMBOL(of_drm_find_bridge);
- #endif
- 
-+#ifdef CONFIG_DEBUG_FS
-+static int drm_bridge_chains_info(struct seq_file *m, void *data)
-+{
-+	struct drm_debugfs_entry *entry = m->private;
-+	struct drm_device *dev = entry->dev;
-+	struct drm_printer p = drm_seq_file_printer(m);
-+	struct drm_mode_config *config = &dev->mode_config;
-+	struct drm_encoder *encoder;
-+	unsigned int bridge_idx = 0;
-+
-+	list_for_each_entry(encoder, &config->encoder_list, head) {
-+		struct drm_bridge *bridge;
-+
-+		drm_printf(&p, "encoder[%u]\n", encoder->base.id);
-+
-+		bridge = drm_bridge_chain_get_first_bridge(encoder);
-+
-+		while (bridge) {
-+			drm_printf(&p, "\tbridge[%u] type: %u, ops: %#x",
-+				   bridge_idx, bridge->type, bridge->ops);
-+
-+			if (bridge->of_node)
-+				drm_printf(&p, ", OF: %pOFfc", bridge->of_node);
-+
-+			drm_printf(&p, "\n");
-+
-+			bridge_idx++;
-+			bridge = drm_bridge_get_next_bridge(bridge);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/* any use in debugfs files to dump individual planes/crtc/etc? */
-+static const struct drm_debugfs_info drm_bridge_debugfs_list[] = {
-+	{"bridge_chains", drm_bridge_chains_info, 0},
-+};
-+
-+void drm_bridge_debugfs_init(struct drm_minor *minor)
-+{
-+	drm_debugfs_add_files(minor->dev, drm_bridge_debugfs_list,
-+			      ARRAY_SIZE(drm_bridge_debugfs_list));
-+}
-+#endif
-+
- MODULE_AUTHOR("Ajay Kumar <ajaykumar.rs@samsung.com>");
- MODULE_DESCRIPTION("DRM bridge infrastructure");
- MODULE_LICENSE("GPL and additional rights");
-diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-index c90dbcffa0dc..3e89559d68cd 100644
---- a/drivers/gpu/drm/drm_debugfs.c
-+++ b/drivers/gpu/drm/drm_debugfs.c
-@@ -31,6 +31,7 @@
- 
- #include <drm/drm_atomic.h>
- #include <drm/drm_auth.h>
-+#include <drm/drm_bridge.h>
- #include <drm/drm_client.h>
- #include <drm/drm_debugfs.h>
- #include <drm/drm_device.h>
-@@ -272,6 +273,8 @@ int drm_debugfs_init(struct drm_minor *minor, int minor_id,
- 
- 	drm_debugfs_add_files(minor->dev, drm_debugfs_list, DRM_DEBUGFS_ENTRIES);
- 
-+	drm_bridge_debugfs_init(minor);
-+
- 	if (drm_drv_uses_atomic_modeset(dev)) {
- 		drm_atomic_debugfs_init(minor);
- 	}
-diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
-index bf964cdfb330..60dbee6bd1e6 100644
---- a/include/drm/drm_bridge.h
-+++ b/include/drm/drm_bridge.h
-@@ -949,4 +949,9 @@ static inline struct drm_bridge *drmm_of_get_bridge(struct drm_device *drm,
- }
- #endif
- 
-+#ifdef CONFIG_DEBUG_FS
-+struct drm_minor;
-+void drm_bridge_debugfs_init(struct drm_minor *minor);
-+#endif
-+
- #endif
-
----
-base-commit: c7a472297169156252a50d76965eb36b081186e2
-change-id: 20230721-drm-bridge-chain-debugfs-0bbc1522f57a
-
-Best regards,
 -- 
-Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-
+viresh
