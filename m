@@ -2,169 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B23C75BC9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 04:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699D075BC9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 04:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbjGUC6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 22:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48452 "EHLO
+        id S229804AbjGUC7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 22:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjGUC6H (ORCPT
+        with ESMTP id S229487AbjGUC67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 22:58:07 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EDDA2690;
-        Thu, 20 Jul 2023 19:58:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689908286; x=1721444286;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=kAfnjUsMkeVOvOzOihPjEhY2+hkQ8lG+O+rh2M9hN3I=;
-  b=H9rmotCwT4ckzQWswhxn4Ib6CiDiPsJiNXD7UGG0w1dk6JNMKwnaMQtz
-   zmY8JadwDEYag8h1JCh7xZD5/2XHr+3L2U0dAT3UqUyGEjMAhf9ypk2ah
-   7pAql0yy3QDyhmZ2KaYJixiGH0t5ecCxhAf6fh5vWkwEqNn9FQLMNiLt7
-   3wiET+S8XA+75TV97domAi/mCbW/NfWvIJ3qpmKxOGiDUgqoXyrqzHKe8
-   w9D2du8wYQLtqsfve/0HSF3HHOWHgVWZMx9D3IGszljnzFOeccsGS4vNX
-   qvbRxW/b6IcOVKgJAVm1XCk0eYfgSuAg9YQ5L4T8bmGfwtZWxZEsRvCKt
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="365817081"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="365817081"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 19:58:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="898560727"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="898560727"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 20 Jul 2023 19:57:57 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qMgKz-0006nV-0O;
-        Fri, 21 Jul 2023 02:57:54 +0000
-Date:   Fri, 21 Jul 2023 10:56:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     oe-kbuild-all@lists.linux.dev, Alex Sierra <alex.sierra@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrei Vagin <avagin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Peter Xu <peterx@redhat.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table
- scanning
-Message-ID: <202307211030.2CJH6TkM-lkp@intel.com>
-References: <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
+        Thu, 20 Jul 2023 22:58:59 -0400
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0441FED
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 19:58:57 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=kenan.liu@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Vnsjqm-_1689908330;
+Received: from B-P0CJMD6R-2140.local(mailfrom:Kenan.Liu@linux.alibaba.com fp:SMTPD_---0Vnsjqm-_1689908330)
+          by smtp.aliyun-inc.com;
+          Fri, 21 Jul 2023 10:58:51 +0800
+Subject: Re: [RFC PATCH 0/2] Adjust CFS loadbalance to adapt QEMU CPU
+ topology.
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, luoben@linux.alibaba.com,
+        linux-kernel@vger.kernel.org
+References: <1689842053-5291-1-git-send-email-Kenan.Liu@linux.alibaba.com>
+ <20230720085032.GB3569127@hirez.programming.kicks-ass.net>
+From:   "Kenan.Liu" <Kenan.Liu@linux.alibaba.com>
+Message-ID: <6a70900a-649f-3a4d-2e47-61648bc95666@linux.alibaba.com>
+Date:   Fri, 21 Jul 2023 10:58:50 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20230720085032.GB3569127@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michał,
+Hi Peter, thanks for your attention,
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on linus/master v6.5-rc2 next-20230720]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Micha-Miros-aw/Re-fs-proc-task_mmu-Implement-IOCTL-for-efficient-page-table-scanning/20230721-033050
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux%40rere.qmqm.pl
-patch subject: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
-config: arc-randconfig-r035-20230720 (https://download.01.org/0day-ci/archive/20230721/202307211030.2CJH6TkM-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230721/202307211030.2CJH6TkM-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307211030.2CJH6TkM-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   fs/proc/task_mmu.c: In function 'pagemap_scan_test_walk':
-   fs/proc/task_mmu.c:1921:13: error: implicit declaration of function 'userfaultfd_wp_async'; did you mean 'userfaultfd_wp'? [-Werror=implicit-function-declaration]
-    1921 |         if (userfaultfd_wp_async(vma) && userfaultfd_wp_use_markers(vma))
-         |             ^~~~~~~~~~~~~~~~~~~~
-         |             userfaultfd_wp
-   fs/proc/task_mmu.c: In function 'pagemap_scan_pte_hole':
->> fs/proc/task_mmu.c:2200:19: error: implicit declaration of function 'uffd_wp_range' [-Werror=implicit-function-declaration]
-    2200 |         int err = uffd_wp_range(vma, addr, end - addr, true);
-         |                   ^~~~~~~~~~~~~
-   fs/proc/task_mmu.c: In function 'pagemap_scan_init_bounce_buffer':
-   fs/proc/task_mmu.c:2290:22: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-    2290 |         p->vec_out = (void __user *)p->arg.vec;
-         |                      ^
-   fs/proc/task_mmu.c: At top level:
-   fs/proc/task_mmu.c:1967:13: warning: 'pagemap_scan_backout_range' defined but not used [-Wunused-function]
-    1967 | static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
-         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+please refer to my answer to your question inline:
 
 
-vim +/uffd_wp_range +2200 fs/proc/task_mmu.c
+在 2023/7/20 下午4:50, Peter Zijlstra 写道:
+> On Thu, Jul 20, 2023 at 04:34:11PM +0800, Kenan.Liu wrote:
+>> From: "Kenan.Liu" <Kenan.Liu@linux.alibaba.com>
+>>
+>> Multithreading workloads in VM with Qemu may encounter an unexpected
+>> phenomenon: one hyperthread of a physical core is busy while its sibling
+>> is idle. Such as:
+> Is this with vCPU pinning? Without that, guest topology makes no sense
+> what so ever.
 
-  2182	
-  2183	static int pagemap_scan_pte_hole(unsigned long addr, unsigned long end,
-  2184					 int depth, struct mm_walk *walk)
-  2185	{
-  2186		struct pagemap_scan_private *p = walk->private;
-  2187		struct vm_area_struct *vma = walk->vma;
-  2188		int ret;
-  2189	
-  2190		if (!vma || !pagemap_scan_is_interesting_page(p->cur_vma_category, p))
-  2191			return 0;
-  2192	
-  2193		ret = pagemap_scan_output(p->cur_vma_category, p, addr, &end);
-  2194		if (addr == end)
-  2195			return ret;
-  2196	
-  2197		if (~p->arg.flags & PM_SCAN_WP_MATCHING)
-  2198			return ret;
-  2199	
-> 2200		int err = uffd_wp_range(vma, addr, end - addr, true);
-  2201		if (err < 0)
-  2202			ret = err;
-  2203	
-  2204		return ret;
-  2205	}
-  2206	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+vCPU is pinned on host and the imbalance phenomenon we observed is inside
+VM, not for the vCPU threads on host.
+
+
+>> The main reason is that hyperthread index is consecutive in qemu native x86 CPU
+>> model which is different from the physical topology.
+> I'm sorry, what? That doesn't make sense. SMT enumeration is all over
+> the place for Intel, but some actually do have (n,n+1) SMT. On AMD it's
+> always (n,n+1) IIRC.
+>
+>> As the current kernel scheduler
+>> implementation, hyperthread with an even ID number will be picked up in a much
+>> higher probability during load-balancing and load-deploying.
+> How so?
+
+
+The SMT topology in qemu native x86 CPU model is (0,1),…,(n,n+1),…,
+but nomarlly seen SMT topo in physical machine is like (0,n),(1,n+1),…,
+n means the total core number of the machine.
+
+The imbalance happens when the number of runnable threads is less
+than the number of hyperthreads, select_idle_core() would be called
+to decide which cpu be selected to run the waken-up task.
+
+select_idle_core() will return the checked cpu number if the whole
+core is idle. On the contrary, if any one HT of the core is busy,
+select_idle_core() would clear the whole core out from cpumask and
+check the next core.
+
+select_idle_core():
+     …
+     if (idle)
+         return core;
+
+     cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
+     return -1;
+
+In this manner, except the very beginning of for_each_cpu_wrap() loop,
+HT with even ID number is always be checked at first, and be returned
+to the caller if the whole core is idle, so the odd indexed HT almost
+has no chance to be selected.
+
+select_idle_cpu():
+     …
+     for_each_cpu_wrap(cpu, cpus, target + 1) {
+         if (has_idle_core) {
+             i = select_idle_core(p, cpu, cpus, &idle_cpu);
+
+And this will NOT happen when the SMT topo is (0,n),(1,n+1),…, because
+when the loop starts from the bottom half of SMT number, HTs with larger
+number will be checked first, when it starts from the top half, their
+siblings with smaller number take the first place of inner core searching.
+
+
+>
+>> This RFC targets to solve the problem by adjusting CFS loabalance policy:
+>> 1. Explore CPU topology and adjust CFS loadbalance policy when we found machine
+>> with qemu native CPU topology.
+>> 2. Export a procfs to control the traverse length when select idle cpu.
+>>
+>> Kenan.Liu (2):
+>>    sched/fair: Adjust CFS loadbalance for machine with qemu native CPU
+>>      topology.
+>>    sched/fair: Export a param to control the traverse len when select
+>>      idle cpu.
+> NAK, qemu can either provide a fake topology to the guest using normal
+> x86 means (MADT/CPUID) or do some paravirt topology setup, but this is
+> quite insane.
+Thanks,
+
+Kenan.Liu
