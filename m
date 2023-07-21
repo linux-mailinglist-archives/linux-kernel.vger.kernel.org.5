@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6470F75BBBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 03:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D18075BBBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 03:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjGUBMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 21:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44572 "EHLO
+        id S229729AbjGUBOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 21:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjGUBMi (ORCPT
+        with ESMTP id S229488AbjGUBOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 21:12:38 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B03271C;
-        Thu, 20 Jul 2023 18:12:37 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id BD5868178;
-        Fri, 21 Jul 2023 09:12:35 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 21 Jul
- 2023 09:12:35 +0800
-Received: from [192.168.125.127] (113.72.147.86) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 21 Jul
- 2023 09:12:34 +0800
-Message-ID: <e4668a72-b180-0b54-bf58-69b43ae0b529@starfivetech.com>
-Date:   Fri, 21 Jul 2023 09:12:33 +0800
+        Thu, 20 Jul 2023 21:14:30 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C80CC
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 18:14:28 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R6Wmb4l70zBRDt5
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 09:14:23 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689902063; x=1692494064; bh=4GBqDFrt1FMfDd6HMrt3eR5rmJe
+        B74SGP0SN71oVcpI=; b=1Dy5cVJekOXn66SldozBuzHJVOZrTe9Cw/8E7mbh47b
+        0r3RodRbc4uzGg+BSa5n2fP9BbEVx9Tm78vA1X/8t23xrwSQyHu7+YN30VKq51Vj
+        uKGL7SdOwruBbn2ubwCzTPcnmQWeUbxmFZywkieMvOi5HUQbqbVLWEow8R+Y8XOx
+        7Hip5HhuKBGtf4tS7uAGqC039A1hPxZeJCX07KPl8i759FcBatSNkHrAz7ulPHle
+        V4dYYwETJCJ5QqqMhzXVS9CWWJh+86RG4lsEryKOGpzunxauhIi0vl1rRwIY8MXZ
+        3b2n4TjLuOyv9R3/L1DHjdDTaGLzzftweNcHkXE4f8w==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Fsa7ey6Yln53 for <linux-kernel@vger.kernel.org>;
+        Fri, 21 Jul 2023 09:14:23 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R6Wmb2LKTzBRDsm;
+        Fri, 21 Jul 2023 09:14:23 +0800 (CST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v1 4/9] PCI: microchip: Move PCIe driver to PLDA directory
-Content-Language: en-US
-To:     Conor Dooley <conor.dooley@microchip.com>
-CC:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20230719102057.22329-1-minda.chen@starfivetech.com>
- <20230719102057.22329-5-minda.chen@starfivetech.com>
- <20230720-exception-spectator-b48ecb9d4c39@wendy>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <20230720-exception-spectator-b48ecb9d4c39@wendy>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 21 Jul 2023 09:14:19 +0800
+From:   sunran001@208suo.com
+To:     nm@ti.com, kristo@kernel.org, ssantosh@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: [PATCH] clk: keystone: sci-clk: fix application of sizeof to pointer
+In-Reply-To: <20230721011303.4303-1-xujianghui@cdjrlc.com>
+References: <20230721011303.4303-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <8cfd376d48d63670882b8079c411d605@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.147.86]
-X-ClientProxiedBy: EXCAS065.cuchost.com (172.16.6.25) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+./drivers/clk/keystone/sci-clk.c:390:8-14: ERROR: application of sizeof
+to pointer
 
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/clk/keystone/sci-clk.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 2023/7/20 20:26, Conor Dooley wrote:
-> Hey Minda,
-> 
-> On Wed, Jul 19, 2023 at 06:20:52PM +0800, Minda Chen wrote:
->> Move Microchip specific platform codes to PLDA directory.
->> Including clock init, interrupt event handle and platform
->> init codes.
->> 
->> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-> 
-> Something else that I noticed, looking at what is not in the diff here,
-> but is everything under the "/* PCIe Controller Phy Regs */" comment
-> that remains in the microchip driver not also common to the plda IP?
-> 
-> Thanks,
-> Conor.
-I changed it to "PCIe Controller Reg" in patch8 ... It looks not the Phy register..
-Maybe I don't change it. And I will squash this patch with patch3.
+diff --git a/drivers/clk/keystone/sci-clk.c 
+b/drivers/clk/keystone/sci-clk.c
+index 6c1df4f11536..2c68c1e09d1f 100644
+--- a/drivers/clk/keystone/sci-clk.c
++++ b/drivers/clk/keystone/sci-clk.c
+@@ -389,7 +389,7 @@ static struct clk_hw *sci_clk_get(struct 
+of_phandle_args *clkspec, void *data)
+  	key.clk_id = clkspec->args[1];
+
+  	clk = bsearch(&key, provider->clocks, provider->num_clocks,
+-		      sizeof(clk), _cmp_sci_clk);
++		      sizeof(**clk), _cmp_sci_clk);
+
+  	if (!clk)
+  		return ERR_PTR(-ENODEV);
