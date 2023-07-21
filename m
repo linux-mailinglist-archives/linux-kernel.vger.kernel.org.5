@@ -2,188 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E39E575C2FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6277575C2D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbjGUJYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45942 "EHLO
+        id S231750AbjGUJVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjGUJX6 (ORCPT
+        with ESMTP id S231653AbjGUJU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:23:58 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3225B30E3;
-        Fri, 21 Jul 2023 02:23:27 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R6kbB3BTtzVjlx;
-        Fri, 21 Jul 2023 17:21:58 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 21 Jul 2023 17:23:24 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v4 for-next] RDMA/core: Get IB width and speed from netdev
-Date:   Fri, 21 Jul 2023 17:20:52 +0800
-Message-ID: <20230721092052.2090449-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
+        Fri, 21 Jul 2023 05:20:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BAD2D57;
+        Fri, 21 Jul 2023 02:20:57 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 09:20:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1689931255;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lnSn0ECivsr7eEcD2ltZgdffvBPmL6Z4J6rcVRb2slo=;
+        b=qFa3SmpnufMsfmk97ue4xwhxkkjwhLhWoBDYGFS50GhnIdz5i0OS/jFBdDyovnm5wzxDgq
+        MSzVXMcL/RiIhg2jh5yeam/uXOX/NQ0pclZUbNWMC8m4yADjfBtlbbqRJZlQDNSjciIuNt
+        0g2QOtEF5Pk9YE/0p1lADltzh0SVDo1YNL95QeHiPMTDEgm6ggiVBxxTFCJttz1I7xW511
+        zdHjErwgwymDUQtb5osrw6R+72MyHfYUIAGCVSo6CiEeU4ImJhhWBymlgmtweCUlXn520d
+        H+vH/tfJTNKmznTilyTWUf7RvJXeC0JfG5dfvVtZSOU/Jf0yRd/zyRrDeHsTHQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1689931255;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lnSn0ECivsr7eEcD2ltZgdffvBPmL6Z4J6rcVRb2slo=;
+        b=jEsxa6cHpQgPde3U7UwP5rO4fNg9DuTc4UbcZJBARNeT49ovoMX4N0P9cOhAiBgXPGPHAo
+        XVW9r0VY2oD5dwDg==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86: Fix kthread unwind
+Cc:     Petr Mladek <pmladek@suse.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230719201538.GA3553016@hirez.programming.kicks-ass.net>
+References: <20230719201538.GA3553016@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <168993125450.28540.2663691700893492367.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haoyue Xu <xuhaoyue1@hisilicon.com>
+The following commit has been merged into the x86/urgent branch of tip:
 
-Previously, there was no way to query the number of lanes for a network
-card, so the same netdev_speed would result in a fixed pair of width and
-speed. As network card specifications become more diverse, such fixed
-mode is no longer suitable, so a method is needed to obtain the correct
-width and speed based on the number of lanes.
+Commit-ID:     2e7e5bbb1c3c8d502edeb5c0670eac4995134b6f
+Gitweb:        https://git.kernel.org/tip/2e7e5bbb1c3c8d502edeb5c0670eac4995134b6f
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Wed, 19 Jul 2023 22:15:38 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 20 Jul 2023 23:03:50 +02:00
 
-This patch retrieves netdev lanes and speed from net_device and
-translates them to IB width and speed.
+x86: Fix kthread unwind
 
-Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
-Signed-off-by: Luoyouming <luoyouming@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+The rewrite of ret_from_form() misplaced an unwind hint which caused
+all kthread stack unwinds to be marked unreliable, breaking
+livepatching.
+
+Restore the annotation and add a comment to explain the how and why of
+things.
+
+Fixes: 3aec4ecb3d1f ("x86: Rewrite ret_from_fork() in C")
+Reported-by: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Petr Mladek <pmladek@suse.com>
+Link: https://lkml.kernel.org/r/20230719201538.GA3553016@hirez.programming.kicks-ass.net
 ---
- drivers/infiniband/core/verbs.c | 100 +++++++++++++++++++++++++-------
- 1 file changed, 79 insertions(+), 21 deletions(-)
+ arch/x86/entry/entry_64.S | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index b99b3cc283b6..25367bd6dd97 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1880,6 +1880,80 @@ int ib_modify_qp_with_udata(struct ib_qp *ib_qp, struct ib_qp_attr *attr,
- }
- EXPORT_SYMBOL(ib_modify_qp_with_udata);
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index 91f6818..43606de 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -285,7 +285,15 @@ SYM_FUNC_END(__switch_to_asm)
+  */
+ .pushsection .text, "ax"
+ SYM_CODE_START(ret_from_fork_asm)
+-	UNWIND_HINT_REGS
++	/*
++	 * This is the start of the kernel stack; even through there's a
++	 * register set at the top, the regset isn't necessarily coherent
++	 * (consider kthreads) and one cannot unwind further.
++	 *
++	 * This ensures stack unwinds of kernel threads terminate in a known
++	 * good state.
++	 */
++	UNWIND_HINT_END_OF_STACK
+ 	ANNOTATE_NOENDBR // copy_thread
+ 	CALL_DEPTH_ACCOUNT
  
-+static void ib_get_width_and_speed(u32 netdev_speed, u32 lanes,
-+				   u16 *speed, u8 *width)
-+{
-+	if (!lanes) {
-+		if (netdev_speed <= SPEED_1000) {
-+			*width = IB_WIDTH_1X;
-+			*speed = IB_SPEED_SDR;
-+		} else if (netdev_speed <= SPEED_10000) {
-+			*width = IB_WIDTH_1X;
-+			*speed = IB_SPEED_FDR10;
-+		} else if (netdev_speed <= SPEED_20000) {
-+			*width = IB_WIDTH_4X;
-+			*speed = IB_SPEED_DDR;
-+		} else if (netdev_speed <= SPEED_25000) {
-+			*width = IB_WIDTH_1X;
-+			*speed = IB_SPEED_EDR;
-+		} else if (netdev_speed <= SPEED_40000) {
-+			*width = IB_WIDTH_4X;
-+			*speed = IB_SPEED_FDR10;
-+		} else {
-+			*width = IB_WIDTH_4X;
-+			*speed = IB_SPEED_EDR;
-+		}
-+
-+		return;
-+	}
-+
-+	switch (lanes) {
-+	case 1:
-+		*width = IB_WIDTH_1X;
-+		break;
-+	case 2:
-+		*width = IB_WIDTH_2X;
-+		break;
-+	case 4:
-+		*width = IB_WIDTH_4X;
-+		break;
-+	case 8:
-+		*width = IB_WIDTH_8X;
-+		break;
-+	case 12:
-+		*width = IB_WIDTH_12X;
-+		break;
-+	default:
-+		*width = IB_WIDTH_1X;
-+	}
-+
-+	switch (netdev_speed / lanes) {
-+	case SPEED_2500:
-+		*speed = IB_SPEED_SDR;
-+		break;
-+	case SPEED_5000:
-+		*speed = IB_SPEED_DDR;
-+		break;
-+	case SPEED_10000:
-+		*speed = IB_SPEED_FDR10;
-+		break;
-+	case SPEED_14000:
-+		*speed = IB_SPEED_FDR;
-+		break;
-+	case SPEED_25000:
-+		*speed = IB_SPEED_EDR;
-+		break;
-+	case SPEED_50000:
-+		*speed = IB_SPEED_HDR;
-+		break;
-+	case SPEED_100000:
-+		*speed = IB_SPEED_NDR;
-+		break;
-+	default:
-+		*speed = IB_SPEED_SDR;
-+	}
-+}
-+
- int ib_get_eth_speed(struct ib_device *dev, u32 port_num, u16 *speed, u8 *width)
- {
- 	int rc;
-@@ -1904,29 +1978,13 @@ int ib_get_eth_speed(struct ib_device *dev, u32 port_num, u16 *speed, u8 *width)
- 		netdev_speed = lksettings.base.speed;
- 	} else {
- 		netdev_speed = SPEED_1000;
--		pr_warn("%s speed is unknown, defaulting to %u\n", netdev->name,
--			netdev_speed);
-+		if (rc)
-+			pr_warn("%s speed is unknown, defaulting to %u\n",
-+				netdev->name, netdev_speed);
- 	}
+@@ -295,6 +303,12 @@ SYM_CODE_START(ret_from_fork_asm)
+ 	movq	%r12, %rcx		/* fn_arg */
+ 	call	ret_from_fork
  
--	if (netdev_speed <= SPEED_1000) {
--		*width = IB_WIDTH_1X;
--		*speed = IB_SPEED_SDR;
--	} else if (netdev_speed <= SPEED_10000) {
--		*width = IB_WIDTH_1X;
--		*speed = IB_SPEED_FDR10;
--	} else if (netdev_speed <= SPEED_20000) {
--		*width = IB_WIDTH_4X;
--		*speed = IB_SPEED_DDR;
--	} else if (netdev_speed <= SPEED_25000) {
--		*width = IB_WIDTH_1X;
--		*speed = IB_SPEED_EDR;
--	} else if (netdev_speed <= SPEED_40000) {
--		*width = IB_WIDTH_4X;
--		*speed = IB_SPEED_FDR10;
--	} else {
--		*width = IB_WIDTH_4X;
--		*speed = IB_SPEED_EDR;
--	}
-+	ib_get_width_and_speed(netdev_speed, lksettings.lanes,
-+			       speed, width);
- 
- 	return 0;
- }
--- 
-2.30.0
-
++	/*
++	 * Set the stack state to what is expected for the target function
++	 * -- at this point the register set should be a valid user set
++	 * and unwind should work normally.
++	 */
++	UNWIND_HINT_REGS
+ 	jmp	swapgs_restore_regs_and_return_to_usermode
+ SYM_CODE_END(ret_from_fork_asm)
+ .popsection
