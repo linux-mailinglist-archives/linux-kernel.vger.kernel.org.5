@@ -2,197 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3231175C8C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9339C75C8C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbjGUN6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 09:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55700 "EHLO
+        id S231683AbjGUN7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 09:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbjGUN6t (ORCPT
+        with ESMTP id S231631AbjGUN65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 09:58:49 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECE93A93
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 06:58:29 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fb5bcb9a28so3250940e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 06:58:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689947907; x=1690552707;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Uoi5Y4jjgnWGfQC+MA3PSzDO/nJ69a0U86XqjtM9qm4=;
-        b=hovoUSXRq28HNft26oRNivk53rfhvkFzFlsE+3eJGaPu6W9o4Hh4e/ClQ4euEk52Lc
-         Ek5BSaAroh2dCUY6scEF0qTX6SJCRLeM3gAKGHAwhgN2TXx3tl8zBKhqZNypY/tWkFHc
-         oe7SRYPVtulOU518is+mkTPudusWNGrbXpmSCwGn9SIS+3Qdck423+6xju48zvzmYRLu
-         SrCXzGzyT5RKNGORyZpIV27gIbAKSA970kJAUEzrStzCaI6yIn2cD69S96IGPnLOrWz9
-         MC4iNZlM1SAONUv1Jf8RdW+s5o5HTVZUOtOFBP3reutBNZI02r+6aCCx7r231ZzUbq/y
-         Rnqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689947907; x=1690552707;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uoi5Y4jjgnWGfQC+MA3PSzDO/nJ69a0U86XqjtM9qm4=;
-        b=Kc/lcX167MMxVNjUKF7Vj3/nGfmnEat8W11r0xlDfH4VnQhIvYPcY3m3yYkxPtbpP1
-         vzaTzN3D/v5uM2rPzPyJ8atbgenXrkzjID9sZe1kcf3zyt1FB+2azJXG2OHX1KkDfmfj
-         WsWKpyd7o58kMYgPwqHMUzhv08PWXXgyamkL+hQpC9x0UO5gX1+cRrPA5npgMrpoVFpO
-         /ap9alOb8jDsi8XL2g7EGuflLwoCq02Y8a9e6wDkeFqcq3hWVkQ3aY0jY1xNarGKBcZ5
-         2s8MtExGg5s9N4g0Eud9qk2fqMN3sLC918mPG3quGM9rx5CmEc+4p6t32G3EtmmJoiA+
-         6AJA==
-X-Gm-Message-State: ABy/qLZYFLhUGrNMA+fsdD/3T00BRq2RLMcv/JKQO4Xas8NnXv5oIyDy
-        WXX5LnENVse8A5iBpUmEmdMasA==
-X-Google-Smtp-Source: APBJJlFJQPGeO+dM+/CogGYGFX3IbIoIu/R+CmmEzNoP5XS6uM+gVvd5Uqi6hxrOAM8nRxnGkKL4wA==
-X-Received: by 2002:a05:6512:1095:b0:4f8:cd67:88e6 with SMTP id j21-20020a056512109500b004f8cd6788e6mr1382568lfg.44.1689947907244;
-        Fri, 21 Jul 2023 06:58:27 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id h15-20020aa7c94f000000b0051d890b2407sm2111001edt.81.2023.07.21.06.58.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 06:58:26 -0700 (PDT)
-Message-ID: <53c26a74-3374-cbc4-57cf-3b1cc0904300@linaro.org>
-Date:   Fri, 21 Jul 2023 15:58:22 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 02/42] dt-bindings: clock: Add Cirrus EP93xx
-To:     nikita.shubin@maquefel.me,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Lukasz Majewski <lukma@denx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Peters <mpeters@embeddedTS.com>,
-        Kris Bahnsen <kris@embeddedTS.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-2-3d63a5f1103e@maquefel.me>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230605-ep93xx-v3-2-3d63a5f1103e@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
+        Fri, 21 Jul 2023 09:58:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8CE30CF;
+        Fri, 21 Jul 2023 06:58:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 24E7F61C0D;
+        Fri, 21 Jul 2023 13:58:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BFBCC433C7;
+        Fri, 21 Jul 2023 13:58:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689947916;
+        bh=/Ny6wQsPLHbvQBx9Z780jGJkDgPWxZ4onIIakHRTQ58=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Enzj7hi6ah4uCh7NE2wgsDDV+bjVwN49+kTQ11lmdGrCTFo0WY6IBWY8ckLZIwIP+
+         HWXzp3BPubMNT6s2dCSCLwjVEcxhsjKCiK2JobxicsdemZhkVja3DF8rSa7rLO3siK
+         4HuxYlNXLgQQmTFRBaPbsAZHH5R5iPmEGPfXYX/KGtroeWja0ztRV2MXofzfrTr82E
+         gNNmm8QoXTKf3n2ZRLgzZOH10hyOoi/ZXOiETSuBM5/9asJntuzT/WTtjgEhIpojRG
+         fHch4bTv9QrwwvftIoomfJWMhLmlTTIl9rSuGmku4A0s6ApEUuEDwf6hYhuLMxm5df
+         ENNrr1z2lWdAw==
+Date:   Fri, 21 Jul 2023 22:58:32 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH v2 9/9] Documentation: tracing: Update fprobe event
+ example with BTF field
+Message-Id: <20230721225832.f4e47d8169840e63ebdc6561@kernel.org>
+In-Reply-To: <b65f6a0f-772c-162c-6669-ff1d545f375c@oracle.com>
+References: <168960739768.34107.15145201749042174448.stgit@devnote2>
+        <168960748753.34107.1941635032108706544.stgit@devnote2>
+        <b65f6a0f-772c-162c-6669-ff1d545f375c@oracle.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2023 13:29, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
-> 
-> This adds device tree bindings for the Cirrus Logic EP93xx
-> clock block used in these SoCs.
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
->  .../bindings/clock/cirrus,ep9301-clk.yaml          | 46 ++++++++++++++++++++++
->  include/dt-bindings/clock/cirrus,ep93xx-clock.h    | 41 +++++++++++++++++++
->  2 files changed, 87 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml b/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml
-> new file mode 100644
-> index 000000000000..111e016601fb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml
-> @@ -0,0 +1,46 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/cirrus,ep9301-clk.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cirrus Logic ep93xx SoC's clock controller
-> +
-> +maintainers:
-> +  - Nikita Shubin <nikita.shubin@maquefel.me>
-> +  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: cirrus,ep9301-clk
-> +      - items:
-> +          - enum:
-> +              - cirrus,ep9302-clk
-> +              - cirrus,ep9307-clk
-> +              - cirrus,ep9312-clk
-> +              - cirrus,ep9315-clk
-> +          - const: cirrus,ep9301-clk
-> +
-> +  "#clock-cells":
-> +    const: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: reference clock
-> +
-> +required:
-> +  - compatible
-> +  - "#clock-cells"
-> +  - clocks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    clock-controller {
-> +      compatible = "cirrus,ep9301-clk";
-> +      #clock-cells = <1>;
-> +      clocks = <&xtali>;
-> +    };
-> +...
-> diff --git a/include/dt-bindings/clock/cirrus,ep93xx-clock.h b/include/dt-bindings/clock/cirrus,ep93xx-clock.h
-> new file mode 100644
-> index 000000000000..3cd053c0fdea
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/cirrus,ep93xx-clock.h
+On Thu, 20 Jul 2023 23:53:43 +0100
+Alan Maguire <alan.maguire@oracle.com> wrote:
 
-Keep the same filename as bindings file.
+> On 17/07/2023 16:24, Masami Hiramatsu (Google) wrote:
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Update fprobe event example with BTF data structure field specification.
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> One suggestion below, but
+> 
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 
-Best regards,
-Krzysztof
+Thanks,
 
+> 
+> > ---
+> >  Changes in v2:
+> >   - Remove 'retval' and use '$retval'.
+> > ---
+> >  Documentation/trace/fprobetrace.rst |   50 ++++++++++++++++++++++-------------
+> >  1 file changed, 32 insertions(+), 18 deletions(-)
+> > 
+> > diff --git a/Documentation/trace/fprobetrace.rst b/Documentation/trace/fprobetrace.rst
+> > index 7297f9478459..e9e764fadf14 100644
+> > --- a/Documentation/trace/fprobetrace.rst
+> > +++ b/Documentation/trace/fprobetrace.rst
+> > @@ -79,9 +79,9 @@ automatically set by the given name. ::
+> >   f:fprobes/myprobe vfs_read count=count pos=pos
+> >  
+> >  It also chooses the fetch type from BTF information. For example, in the above
+> > -example, the ``count`` is unsigned long, and the ``pos`` is a pointer. Thus, both
+> > -are converted to 64bit unsigned long, but only ``pos`` has "%Lx" print-format as
+> > -below ::
+> > +example, the ``count`` is unsigned long, and the ``pos`` is a pointer. Thus,
+> > +both are converted to 64bit unsigned long, but only ``pos`` has "%Lx"
+> > +print-format as below ::
+> >  
+> >   # cat events/fprobes/myprobe/format
+> >   name: myprobe
+> > @@ -105,9 +105,33 @@ is expanded to all function arguments of the function or the tracepoint. ::
+> >   # cat dynamic_events
+> >   f:fprobes/myprobe vfs_read file=file buf=buf count=count pos=pos
+> >  
+> > -BTF also affects the ``$retval``. If user doesn't set any type, the retval type is
+> > -automatically picked from the BTF. If the function returns ``void``, ``$retval``
+> > -is rejected.
+> > +BTF also affects the ``$retval``. If user doesn't set any type, the retval
+> > +type is automatically picked from the BTF. If the function returns ``void``,
+> > +``$retval`` is rejected.
+> > +
+> > +You can access the data fields of a data structure using allow operator ``->``
+> > +(for pointer type) and dot operator ``.`` (for data structure type.)::
+> > +
+> > +# echo 't sched_switch preempt prev_pid=prev->pid next_pid=next->pid' >> dynamic_events
+> > +
+> 
+> Could you describe what field access combinations are supported here;
+> i.e. foo->bar[.baz]?
+
+OK, I'll add below.
+
+The field access operators, ``->`` and ``.`` can be combined for accessing deeper
+members and other stucture members pointed by the member. e.g. ``foo->bar.baz->qux``
+If there is non-name union member, you can directly access it as C does. For example::
+
+ struct {
+ 	union {
+ 	int a;
+ 	int b;
+ 	};
+ } *foo;
+
+To access ``a`` and ``b``, use ``foo->a`` and ``foo->b`` in this case.
+
+Thank you,
+
+
+> 
+> > +This data field access is available for the return value via ``$retval``,
+> > +e.g. ``$retval->name``.
+> > +
+> > +For these BTF arguments and fields, ``:string`` and ``:ustring`` change the
+> > +behavior. If these are used for BTF argument or field, it checks whether
+> > +the BTF type of the argument or the data field is ``char *`` or ``char []``,
+> > +or not.  If not, it rejects applying the string types. Also, with the BTF
+> > +support, you don't need a memory dereference operator (``+0(PTR)``) for
+> > +accessing the string pointed by a ``PTR``. It automatically adds the memory
+> > +dereference operator according to the BTF type. e.g. ::
+> > +
+> > +# echo 't sched_switch prev->comm:string' >> dynamic_events
+> > +# echo 'f getname_flags%return $retval->name:string' >> dynamic_events
+> > +
+> > +The ``prev->comm`` is an embedded char array in the data structure, and
+> > +``$retval->name`` is a char pointer in the data structure. But in both
+> > +cases, you can use ``:string`` type to get the string.
+> > +
+> >  
+> >  Usage examples
+> >  --------------
+> > @@ -161,10 +185,10 @@ parameters. This means you can access any field values in the task
+> >  structure pointed by the ``prev`` and ``next`` arguments.
+> >  
+> >  For example, usually ``task_struct::start_time`` is not traced, but with this
+> > -traceprobe event, you can trace it as below.
+> > +traceprobe event, you can trace that field as below.
+> >  ::
+> >  
+> > -  # echo 't sched_switch comm=+1896(next):string start_time=+1728(next):u64' > dynamic_events
+> > +  # echo 't sched_switch comm=next->comm:string next->start_time' > dynamic_events
+> >    # head -n 20 trace | tail
+> >   #           TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
+> >   #              | |         |   |||||     |         |
+> > @@ -176,13 +200,3 @@ traceprobe event, you can trace it as below.
+> >             <idle>-0       [000] d..3.  5606.690317: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
+> >        kworker/0:1-14      [000] d..3.  5606.690339: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="swapper/0" usage=2 start_time=0
+> >             <idle>-0       [000] d..3.  5606.692368: sched_switch: (__probestub_sched_switch+0x4/0x10) comm="kworker/0:1" usage=1 start_time=137000000
+> > -
+> > -Currently, to find the offset of a specific field in the data structure,
+> > -you need to build kernel with debuginfo and run `perf probe` command with
+> > -`-D` option. e.g.
+> > -::
+> > -
+> > - # perf probe -D "__probestub_sched_switch next->comm:string next->start_time"
+> > - p:probe/__probestub_sched_switch __probestub_sched_switch+0 comm=+1896(%cx):string start_time=+1728(%cx):u64
+> > -
+> > -And replace the ``%cx`` with the ``next``.
+> > 
+> > 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
