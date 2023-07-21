@@ -2,324 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D6475C6C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8CF75C6CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbjGUMSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 08:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
+        id S231487AbjGUMTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231530AbjGUMSC (ORCPT
+        with ESMTP id S231489AbjGUMTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:18:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1166172A;
-        Fri, 21 Jul 2023 05:18:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7D25B61A32;
-        Fri, 21 Jul 2023 12:18:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4006C433C8;
-        Fri, 21 Jul 2023 12:17:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689941879;
-        bh=rJi2DTN83RfAThWFtDygFnpUN4JOZdYbsP09b1MLD6o=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Bcy9AuDS9GdJtXMPCZTZcPJ0O+C6N6KFx0WHt2JTJnh1NtoToxaj2CSOsx+Mvfylj
-         eJamf0ktvE6eTbBkrM3aLd+TTEjTE4sT+/TVrwVPAUoY7ky+i/Tm+p03cR7QXEBfc+
-         MH1HiRIMVWCV8N9rOcY1diKYvc+tglaMAj9jK7LQqA6wofniN8UF1V2swN0yEM4ze9
-         RwWwcBiwI8MgUxKdHQBJfN/RDZqgHg6oct/Ls2Xh7CTa3rofEEXgPX4lWfAq9k4XkO
-         Vwcj9FSePL72HmS5aLTRd4aq/qPzedf3ZrDKwsr3ZpPvOuKR4PAHf0RPFwPgZAzlJ2
-         FwiT91RGvmdBw==
-Message-ID: <1de18a8bfa747d7949eb8afc93b66519538cc3f9.camel@kernel.org>
-Subject: Re: [PATCH v2 1/2] nfsd: handle failure to collect pre/post-op
- attrs more sanely
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Chuck Lever <cel@kernel.org>, NeilBrown <neilb@suse.de>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Boyang Xue <bxue@redhat.com>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 21 Jul 2023 08:17:57 -0400
-In-Reply-To: <ZLm+w+aYVm59ctGq@manet.1015granger.net>
-References: <20230720-bz2223560-v2-0-070aaf2660b7@kernel.org>
-         <20230720-bz2223560-v2-1-070aaf2660b7@kernel.org>
-         <168988958067.11078.10143293324143654882@noble.neil.brown.name>
-         <ZLm+w+aYVm59ctGq@manet.1015granger.net>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 21 Jul 2023 08:19:10 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FB72106;
+        Fri, 21 Jul 2023 05:19:09 -0700 (PDT)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LA40An006962;
+        Fri, 21 Jul 2023 14:19:04 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=selector1; bh=8jf3Y+n/y+JfiDeu+j5xacMWa2oOy4dEQ2WKqHh0NrY=;
+ b=LPPdpl84ZSWsStOJML+beJ5qOPONAuo9qa9c9qsAo5lxU9+bzhcbL2DOglK9E13x3u1x
+ lkIC50rKiKIHgZGUShhMrJU3sWaJRwLtIIPqXg8JI0FyPw1Uh4ySFE0J5tVfX0DJTQH9
+ dAIXAHQfz/OW43kFCy9hCDhN46oVCiCgUfOuxTVZzhK2WjSaNqhAGk8cIipOOBA86W/G
+ QvU5Oy6sFWOOQStSCxuD98hYGiTP0Zufohppfe/PLZk9D/SNKfG8cW8kn6E8SUyrWi7g
+ WFZYveIARFjXLzhgjkiYokQx+VSCr4pEFsOfbc2yXMNCn2XXM6t87Yhp1Ruk/mhZ50Bh /g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ryqxjh0an-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jul 2023 14:19:03 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4A87310002A;
+        Fri, 21 Jul 2023 14:19:03 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3F1BD22D17C;
+        Fri, 21 Jul 2023 14:19:03 +0200 (CEST)
+Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Fri, 21 Jul
+ 2023 14:19:02 +0200
+Date:   Fri, 21 Jul 2023 14:18:54 +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+CC:     Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+        Sylvain Petinot <sylvain.petinot@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] media: i2c: st_mipid02: cascade s_stream call to the
+ source subdev
+Message-ID: <20230721121854.GA1172642@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Hans Verkuil <hverkuil@xs4all.nl>,
+        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+        Sylvain Petinot <sylvain.petinot@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230711123211.794838-1-alain.volmat@foss.st.com>
+ <20230711123211.794838-2-alain.volmat@foss.st.com>
+ <cd0a1ec0-5ab9-dc14-b1ca-c990b062b3c5@xs4all.nl>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <cd0a1ec0-5ab9-dc14-b1ca-c990b062b3c5@xs4all.nl>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.129.178.213]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-21_08,2023-07-20_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-07-20 at 19:09 -0400, Chuck Lever wrote:
-> On Fri, Jul 21, 2023 at 07:46:20AM +1000, NeilBrown wrote:
-> > On Fri, 21 Jul 2023, Jeff Layton wrote:
-> > > Collecting pre_op_attrs can fail, in which case it's probably best to
-> > > fail the whole operation.
-> > >=20
-> > > Change fh_fill_{pre,post,both}_attrs to return __be32. For the pre an=
-d
-> > > both functions, have the callers check the return code and abort the
-> > > operation if it failed.
-> > >=20
-> > > If fh_fill_post_attrs fails, then it's too late to do anything about =
-it,
-> > > so most of those callers ignore the return value. If this happens, th=
-en
-> > > fh_post_saved will be false, which should cue the later stages to dea=
-l
-> > > with it.
-> > >=20
-> > > Suggested-by: Chuck Lever <chuck.lever@oracle.com>
-> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > ---
-> > >  fs/nfsd/nfs3proc.c |  4 +++-
-> > >  fs/nfsd/nfs4proc.c | 14 ++++++------
-> > >  fs/nfsd/nfsfh.c    | 26 ++++++++++++++---------
-> > >  fs/nfsd/nfsfh.h    |  6 +++---
-> > >  fs/nfsd/vfs.c      | 62 ++++++++++++++++++++++++++++++++++----------=
-----------
-> > >  5 files changed, 69 insertions(+), 43 deletions(-)
-> > >=20
-> > > diff --git a/fs/nfsd/nfs3proc.c b/fs/nfsd/nfs3proc.c
-> > > index fc8d5b7db9f8..268ef57751c4 100644
-> > > --- a/fs/nfsd/nfs3proc.c
-> > > +++ b/fs/nfsd/nfs3proc.c
-> > > @@ -307,7 +307,9 @@ nfsd3_create_file(struct svc_rqst *rqstp, struct =
-svc_fh *fhp,
-> > >  	if (!IS_POSIXACL(inode))
-> > >  		iap->ia_mode &=3D ~current_umask();
-> > > =20
-> > > -	fh_fill_pre_attrs(fhp);
-> > > +	status =3D fh_fill_pre_attrs(fhp);
-> > > +	if (status !=3D nfs_ok)
-> > > +		goto out;
-> > >  	host_err =3D vfs_create(&nop_mnt_idmap, inode, child, iap->ia_mode,=
- true);
-> > >  	if (host_err < 0) {
-> > >  		status =3D nfserrno(host_err);
-> > > diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-> > > index d8e7a533f9d2..9285e1eab4d5 100644
-> > > --- a/fs/nfsd/nfs4proc.c
-> > > +++ b/fs/nfsd/nfs4proc.c
-> > > @@ -297,12 +297,12 @@ nfsd4_create_file(struct svc_rqst *rqstp, struc=
-t svc_fh *fhp,
-> > >  	}
-> > > =20
-> > >  	if (d_really_is_positive(child)) {
-> > > -		status =3D nfs_ok;
-> > > -
-> > >  		/* NFSv4 protocol requires change attributes even though
-> > >  		 * no change happened.
-> > >  		 */
-> > > -		fh_fill_both_attrs(fhp);
-> > > +		status =3D fh_fill_both_attrs(fhp);
-> > > +		if (status !=3D nfs_ok)
-> > > +			goto out;
-> > > =20
-> > >  		switch (open->op_createmode) {
-> > >  		case NFS4_CREATE_UNCHECKED:
-> > > @@ -345,7 +345,9 @@ nfsd4_create_file(struct svc_rqst *rqstp, struct =
-svc_fh *fhp,
-> > >  	if (!IS_POSIXACL(inode))
-> > >  		iap->ia_mode &=3D ~current_umask();
-> > > =20
-> > > -	fh_fill_pre_attrs(fhp);
-> > > +	status =3D fh_fill_pre_attrs(fhp);
-> > > +	if (status !=3D nfs_ok)
-> > > +		goto out;
-> > >  	status =3D nfsd4_vfs_create(fhp, child, open);
-> > >  	if (status !=3D nfs_ok)
-> > >  		goto out;
-> > > @@ -424,11 +426,11 @@ do_open_lookup(struct svc_rqst *rqstp, struct n=
-fsd4_compound_state *cstate, stru
-> > >  	} else {
-> > >  		status =3D nfsd_lookup(rqstp, current_fh,
-> > >  				     open->op_fname, open->op_fnamelen, *resfh);
-> > > -		if (!status)
-> > > +		if (status =3D=3D nfs_ok)
-> > >  			/* NFSv4 protocol requires change attributes even though
-> > >  			 * no change happened.
-> > >  			 */
-> > > -			fh_fill_both_attrs(current_fh);
-> > > +			status =3D fh_fill_both_attrs(current_fh);
-> > >  	}
-> > >  	if (status)
-> > >  		goto out;
-> > > diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
-> > > index c291389a1d71..f7e68a91e826 100644
-> > > --- a/fs/nfsd/nfsfh.c
-> > > +++ b/fs/nfsd/nfsfh.c
-> > > @@ -614,7 +614,7 @@ fh_update(struct svc_fh *fhp)
-> > >   * @fhp: file handle to be updated
-> > >   *
-> > >   */
-> > > -void fh_fill_pre_attrs(struct svc_fh *fhp)
-> > > +__be32 fh_fill_pre_attrs(struct svc_fh *fhp)
-> > >  {
-> > >  	bool v4 =3D (fhp->fh_maxsize =3D=3D NFS4_FHSIZE);
-> > >  	struct inode *inode;
-> > > @@ -622,12 +622,12 @@ void fh_fill_pre_attrs(struct svc_fh *fhp)
-> > >  	__be32 err;
-> > > =20
-> > >  	if (fhp->fh_no_wcc || fhp->fh_pre_saved)
-> > > -		return;
-> > > +		return nfs_ok;
-> > > =20
-> > >  	inode =3D d_inode(fhp->fh_dentry);
-> > >  	err =3D fh_getattr(fhp, &stat);
-> > >  	if (err)
-> > > -		return;
-> > > +		return err;
-> > > =20
-> > >  	if (v4)
-> > >  		fhp->fh_pre_change =3D nfsd4_change_attribute(&stat, inode);
-> > > @@ -636,6 +636,7 @@ void fh_fill_pre_attrs(struct svc_fh *fhp)
-> > >  	fhp->fh_pre_ctime =3D stat.ctime;
-> > >  	fhp->fh_pre_size  =3D stat.size;
-> > >  	fhp->fh_pre_saved =3D true;
-> > > +	return nfs_ok;
-> > >  }
-> > > =20
-> > >  /**
-> > > @@ -643,26 +644,27 @@ void fh_fill_pre_attrs(struct svc_fh *fhp)
-> > >   * @fhp: file handle to be updated
-> > >   *
-> > >   */
-> > > -void fh_fill_post_attrs(struct svc_fh *fhp)
-> > > +__be32 fh_fill_post_attrs(struct svc_fh *fhp)
-> > >  {
-> > >  	bool v4 =3D (fhp->fh_maxsize =3D=3D NFS4_FHSIZE);
-> > >  	struct inode *inode =3D d_inode(fhp->fh_dentry);
-> > >  	__be32 err;
-> > > =20
-> > >  	if (fhp->fh_no_wcc)
-> > > -		return;
-> > > +		return nfs_ok;
-> > > =20
-> > >  	if (fhp->fh_post_saved)
-> > >  		printk("nfsd: inode locked twice during operation.\n");
-> > > =20
-> > >  	err =3D fh_getattr(fhp, &fhp->fh_post_attr);
-> > >  	if (err)
-> > > -		return;
-> > > +		return err;
-> > > =20
-> > >  	fhp->fh_post_saved =3D true;
-> > >  	if (v4)
-> > >  		fhp->fh_post_change =3D
-> > >  			nfsd4_change_attribute(&fhp->fh_post_attr, inode);
-> > > +	return nfs_ok;
-> > >  }
-> > > =20
-> > >  /**
-> > > @@ -672,16 +674,20 @@ void fh_fill_post_attrs(struct svc_fh *fhp)
-> > >   * This is used when the directory wasn't changed, but wcc attribute=
-s
-> > >   * are needed anyway.
-> > >   */
-> > > -void fh_fill_both_attrs(struct svc_fh *fhp)
-> > > +__be32 fh_fill_both_attrs(struct svc_fh *fhp)
-> > >  {
-> > > -	fh_fill_post_attrs(fhp);
-> > > -	if (!fhp->fh_post_saved)
-> > > -		return;
-> > > +	__be32 err;
-> > > +
-> > > +	err =3D fh_fill_post_attrs(fhp);
-> > > +	if (err)
-> > > +		return err;
-> > > +
-> > >  	fhp->fh_pre_change =3D fhp->fh_post_change;
-> > >  	fhp->fh_pre_mtime =3D fhp->fh_post_attr.mtime;
-> > >  	fhp->fh_pre_ctime =3D fhp->fh_post_attr.ctime;
-> > >  	fhp->fh_pre_size =3D fhp->fh_post_attr.size;
-> > >  	fhp->fh_pre_saved =3D true;
-> > > +	return nfs_ok;
-> > >  }
-> > > =20
-> > >  /*
-> > > diff --git a/fs/nfsd/nfsfh.h b/fs/nfsd/nfsfh.h
-> > > index 4e0ecf0ae2cf..486803694acc 100644
-> > > --- a/fs/nfsd/nfsfh.h
-> > > +++ b/fs/nfsd/nfsfh.h
-> > > @@ -294,7 +294,7 @@ static inline void fh_clear_pre_post_attrs(struct=
- svc_fh *fhp)
-> > >  }
-> > > =20
-> > >  u64 nfsd4_change_attribute(struct kstat *stat, struct inode *inode);
-> > > -extern void fh_fill_pre_attrs(struct svc_fh *fhp);
-> > > -extern void fh_fill_post_attrs(struct svc_fh *fhp);
-> > > -extern void fh_fill_both_attrs(struct svc_fh *fhp);
-> > > +__be32 fh_fill_pre_attrs(struct svc_fh *fhp);
-> > > +__be32 fh_fill_post_attrs(struct svc_fh *fhp);
-> > > +__be32 fh_fill_both_attrs(struct svc_fh *fhp);
-> > >  #endif /* _LINUX_NFSD_NFSFH_H */
-> > > diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
-> > > index 8a2321d19194..f200afd33630 100644
-> > > --- a/fs/nfsd/vfs.c
-> > > +++ b/fs/nfsd/vfs.c
-> > > @@ -1537,9 +1537,11 @@ nfsd_create(struct svc_rqst *rqstp, struct svc=
-_fh *fhp,
-> > >  	dput(dchild);
-> > >  	if (err)
-> > >  		goto out_unlock;
-> > > -	fh_fill_pre_attrs(fhp);
-> > > -	err =3D nfsd_create_locked(rqstp, fhp, attrs, type, rdev, resfhp);
-> > > -	fh_fill_post_attrs(fhp);
-> > > +	err =3D fh_fill_pre_attrs(fhp);
-> > > +	if (err =3D=3D nfs_ok) {
-> > > +		err =3D nfsd_create_locked(rqstp, fhp, attrs, type, rdev, resfhp);
-> > > +		fh_fill_post_attrs(fhp);
-> >=20
-> > Most error handling in nfsd is
-> > =20
-> >    if (err)
-> >        goto ....
-> >=20
-> > Here (and one other place I think) you have
-> >    if (not err)
-> >        do stuff;
-> >=20
-> > Do we want to be more consistent?
->=20
-> Yes, unless being consistent makes this code unreadable. There
-> doesn't seem to be a reason to drop that convention here.
->=20
+Hi Hans,
 
-My usual test for this is to use gotos if unwinding errors is complex
-enough to warrant it, and to just use the second form if the code is
-fairly simple.
+On Wed, Jul 19, 2023 at 12:26:37PM +0200, Hans Verkuil wrote:
+> On 11/07/2023 14:32, Alain Volmat wrote:
+> > Cascade the s_stream call to the source subdev whenever the bridge
+> > streaming is enable / disabled.
+> > 
+> > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> > ---
+> >  drivers/media/i2c/st-mipid02.c | 11 +++++++++++
+> >  1 file changed, 11 insertions(+)
+> > 
+> > diff --git a/drivers/media/i2c/st-mipid02.c b/drivers/media/i2c/st-mipid02.c
+> > index 906553a28676..703d2f06f552 100644
+> > --- a/drivers/media/i2c/st-mipid02.c
+> > +++ b/drivers/media/i2c/st-mipid02.c
+> > @@ -547,6 +547,13 @@ static int mipid02_stream_disable(struct mipid02_dev *bridge)
+> >  	struct i2c_client *client = bridge->i2c_client;
+> >  	int ret;
+> >  
+> > +	if (!bridge->s_subdev)
+> > +		goto error;
+> 
+> I'm getting this compiler warning:
+> 
+> media-git/drivers/media/i2c/st-mipid02.c: In function 'mipid02_stream_disable':
+> media-git/drivers/media/i2c/st-mipid02.c:568:12: warning: 'ret' may be used uninitialized [-Wmaybe-uninitialized]
+>   568 |         if (ret)
+>       |            ^
+> media-git/drivers/media/i2c/st-mipid02.c:548:13: note: 'ret' was declared here
+>   548 |         int ret;
+>       |             ^~~
+> 
+> I'm dropping this series, waiting for a v2.
 
-But...if you want gotos everywhere, then so be it. I'll respin this.
+Indeed, this was a real issue.  I added KCFLAGS=-Wmaybe-uninitialized
+in my build command line to spot thoses issues from now on.
 
->=20
-> > I'm in two minds about this and I
-> > don't dislike your patch.  But I noticed the inconsistency and thought =
-I
-> > should mention it.
-> >=20
-> > Also, should we put a __must_check annotation on fh_fill_pre_attrs() an=
-d
-> > ..post..?  Then I wouldn't have to manually check that you found and
-> > fixed all callers (which I haven't).
+v2 posted with the fix.
 
-Maybe for the "pre" and "both" ones. We would _not_ want to add
-__must_check for the post one, since most of the callers (correctly)
-ignore that return value.
+> 
+> Regards,
+> 
+> 	Hans
 
-I'll=A0plan to roll that in.
---=20
-Jeff Layton <jlayton@kernel.org>
+Regards,
+Alain
+> 
+> > +
+> > +	ret = v4l2_subdev_call(bridge->s_subdev, video, s_stream, 0);
+> > +	if (ret)
+> > +		goto error;
+> > +
+> >  	/* Disable all lanes */
+> >  	ret = mipid02_write_reg(bridge, MIPID02_CLK_LANE_REG1, 0);
+> >  	if (ret)
+> > @@ -633,6 +640,10 @@ static int mipid02_stream_enable(struct mipid02_dev *bridge)
+> >  	if (ret)
+> >  		goto error;
+> >  
+> > +	ret = v4l2_subdev_call(bridge->s_subdev, video, s_stream, 1);
+> > +	if (ret)
+> > +		goto error;
+> > +
+> >  	return 0;
+> >  
+> >  error:
+> 
