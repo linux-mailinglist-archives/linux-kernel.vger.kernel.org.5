@@ -2,64 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EEC75D6B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 23:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CB875D6B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 23:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjGUVnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 17:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
+        id S230117AbjGUVnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 17:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjGUVnE (ORCPT
+        with ESMTP id S230403AbjGUVnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 17:43:04 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBB22D7E;
-        Fri, 21 Jul 2023 14:43:04 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 21 Jul 2023 17:43:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F703A86;
+        Fri, 21 Jul 2023 14:43:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id E92C7733;
-        Fri, 21 Jul 2023 21:43:02 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E92C7733
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1689975783; bh=SNG0zXp+EBUeGzjNMD43Y/EOQIkrzPIn9fZTujaSg8I=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=FB2NkZC9/T9a1V6o7j6wJvmT7l/v2QuYAttIMkvp8mspnSX/86EWl9dCLqq+ubVf6
-         qWnvusYrTc2PvFziP4FY2SNViWSWP0wI0NdGzxtIwXr0m3yn/3IyrVmjJ7aGPwh9AV
-         5YpQpo9qIxxwt5AwOIW/Ma9pXq6mr/RVVRE1YmN3WCoNyjR9UDB2XUmEhuRlgHBXI1
-         i8E43wk46C/iPPaEnJnxugZAEx2pnZb2tvGHg5TJb2+tpu632p9VpExz6amF+wc3Di
-         vF1u5rEwys6UxxVPg7djNObFiG8uexjEZVT/YB0hazt7YfC8YelSifYGYkV+f4ySDW
-         mCYHnx0BKEDlA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Carlos Bilbao <carlos.bilbao@amd.com>, ojeda@kernel.org
-Cc:     jani.nikula@linux.intel.com, rdunlap@infradead.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        konstantin@linuxfoundation.org, rust-for-linux@vger.kernel.org,
-        Carlos Bilbao <carlos.bilbao@amd.com>
-Subject: Re: [PATCH v8 0/2] docs: Integrate rustdoc into Rust documentation
-In-Reply-To: <87mszqfbfg.fsf@meer.lwn.net>
-References: <20230718151534.4067460-1-carlos.bilbao@amd.com>
- <87mszqfbfg.fsf@meer.lwn.net>
-Date:   Fri, 21 Jul 2023 15:43:02 -0600
-Message-ID: <87jzutaql5.fsf@meer.lwn.net>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A61B861D9E;
+        Fri, 21 Jul 2023 21:43:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08A65C433C7;
+        Fri, 21 Jul 2023 21:43:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689975828;
+        bh=5OypTY92vR4ii5FD5NdPd22+sYnRdWN6NGC5ng0U2No=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=M5aI52EmmH2dyMkJeZpuhvn8b99Z/c8eBlHhZ5LvSz78tdVK0EZ71qcGTjKnzn3Aq
+         q1fyq+kMuzFhs6RFP3XxjLKR8hq74R8mErvhlLqTFb75jlzSlqezJfSMKPbtupxJd/
+         bQG1QhoCrxYdkiinZ/DcCnhRtHtIRWsvsn8rZQnYD2xTRzWTZRZkXd88gKHrOjMSCF
+         YjClnzwVtOnutwjPKVegC/DsEMjiN0jFxQ/c1PS5CMTWkm8nILsVNUasLhxLeCqQiG
+         J9uXtOmqgSDiYd1su4l+aJYiI15JssKHAmMfHBttVlcgzvN9ZevOMN9JE+I7qY6HG1
+         9jtQZoTyvuZNg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 8C580CE09E0; Fri, 21 Jul 2023 14:43:47 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 14:43:47 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Levi Yun <ppbuk5246@gmail.com>
+Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, osh@joshtriplett.org, boqun.feng@gmail.com,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: remove unnecessary check cpu_no_qs.norm on
+ rcu_report_qs_rdp
+Message-ID: <05e98227-77f4-4918-8f8e-2170a158e350@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230721121534.44328-1-ppbuk5246@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721121534.44328-1-ppbuk5246@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jonathan Corbet <corbet@lwn.net> writes:
+On Fri, Jul 21, 2023 at 01:15:33PM +0100, Levi Yun wrote:
+> Wherever rcu_report_qs_rdp is called, cpu_no_qs.norm value is false.
+> Therefore, Remove unnecessary check in rcu_report_qs_rdp.
+> 
+> Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
 
-> Other than that one bit of strangeness, I think this is about ready to
-> be applied.
+Why not start with something like this?
 
-...and I've just gone ahead and done that - thanks for doing this and
-sticking with it!
+	if (!WARN_ON_ONCE(!rdp->cpu_no_qs.b.norm) ||
+	    rdp->gp_seq != rnp->gp_seq || rdp->gpwrap) {
 
-jon
+Except that rcu_report_qs_rdp() is invoked with interrupts enabled,
+which means that there is some possibility of state changes up to the
+raw_spin_lock_irqsave_rcu_node(rnp, flags) statement.
+
+So, did you check whether RCU's interrupt paths change this state?
+
+						Thanx, Paul
+
+> ---
+>  kernel/rcu/tree.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 1449cb69a0e0..d840596e9903 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1962,8 +1962,7 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+>  	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
+>  	rnp = rdp->mynode;
+>  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> -	if (rdp->cpu_no_qs.b.norm || rdp->gp_seq != rnp->gp_seq ||
+> -	    rdp->gpwrap) {
+> +	if (rdp->gp_seq != rnp->gp_seq || rdp->gpwrap) {
+> 
+>  		/*
+>  		 * The grace period in which this quiescent state was
+> --
+> 2.37.2
