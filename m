@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F40F75C33F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358E575C340
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbjGUJly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53940 "EHLO
+        id S231401AbjGUJl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbjGUJln (ORCPT
+        with ESMTP id S231168AbjGUJlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:41:43 -0400
+        Fri, 21 Jul 2023 05:41:46 -0400
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3032F35AF
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:41:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D1630F1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:41:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689932492; x=1721468492;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=H304vXECtyRsfk6v2x0l77glnv4jXjPUELnt58/Aiuk=;
-  b=lo0szhqcHjsMP8+UCN31TfNCpyBJOOBKdCB247nJv/fMwmiYrVMgr9/l
-   SzzFD/o9WgQGVsSrCPsv5Iha9MsidRYI0Q1n7E399CFVYXkUhNZpotbjK
-   hI/vA9H1Z0JlrES761DH1JRWntRsbMyf7/lscmD31/WGK5oSXQZisNaIx
-   Dh6Gms6cV4T+JwccSa7hJSjRwAU9wS2Kb89E/SFFp+e9I04JR/Qa+wQdC
-   KY7Nq+cuLFqjmA58kaRxIBRMms3xweSpjnVd/hytRNs8ygftwdisPzycb
-   Y8A8MByNRwv7RIYHsJD5aVK39BFpot2aTP4Kcv1QKeZZFF6GqzVhJ3sUD
+  t=1689932495; x=1721468495;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=AU+Bax7o8AGRnodMI5F/Lc+z+q2VSKWl4dvqmzGnJLE=;
+  b=iZMfpCQs0IQzGDYY5PTn/Emw2jQjTzz9N9j8O1n1BgCpio0lOgQuzTMb
+   JcodfBT+obN1a6x7YdnLkPGE5i++HaYfnNJFkk+x4FMt7O++IK6lbMFvJ
+   xjQDL1N88rp5CrhoxucYfqHme/NBv3CDcNw7gAz3WgDN8mg+WphcxbBGs
+   kp3aPxjCLUTno9S8J0Ha/+NpRwWHFtrYWVHoknrX3TiERjat8lKofER/L
+   j/Fl6EWOZcUaoJ8d53fWbQ50PlekX9tCdvhsj5Q64K6JnqPLUe1/uxBPD
+   ACx1p6aEIF06uFHdmGy+wh5amNrNtusHFU3rE03AOsfYpWPaKuoRRCe9B
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="397874271"
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="397874321"
 X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="397874271"
+   d="scan'208";a="397874321"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 02:40:35 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 02:40:49 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="898660994"
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="898661109"
 X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="898660994"
+   d="scan'208";a="898661109"
 Received: from fyin-dev.sh.intel.com ([10.239.159.32])
-  by orsmga005.jf.intel.com with ESMTP; 21 Jul 2023 02:40:32 -0700
+  by orsmga005.jf.intel.com with ESMTP; 21 Jul 2023 02:40:46 -0700
 From:   Yin Fengwei <fengwei.yin@intel.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         akpm@linux-foundation.org, minchan@kernel.org, yuzhao@google.com,
         willy@infradead.org, david@redhat.com, ryan.roberts@arm.com,
         shy828301@gmail.com
 Cc:     fengwei.yin@intel.com
-Subject: [RFC PATCH v2 0/4] fix large folio for madvise_cold_or_pageout()
-Date:   Fri, 21 Jul 2023 17:40:39 +0800
-Message-Id: <20230721094043.2506691-1-fengwei.yin@intel.com>
+Subject: [RFC PATCH v2 1/4] madvise: not use mapcount() against large folio for sharing check
+Date:   Fri, 21 Jul 2023 17:40:40 +0800
+Message-Id: <20230721094043.2506691-2-fengwei.yin@intel.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230721094043.2506691-1-fengwei.yin@intel.com>
+References: <20230721094043.2506691-1-fengwei.yin@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -62,54 +64,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current madvise_cold_or_pageout_pte_range() has two problems to deal
-with large folio:
-  - Using folio_mapcount() with large folio prevent large folio from
-    picking up.
-  - always try to split large folio to normal 4K page.
+The commit
+07e8c82b5eff ("madvise: convert madvise_cold_or_pageout_pte_range() to
+use folios") replaced the page_mapcount() with folio_mapcount() to
+check whether the folio is shared by other mapping.
 
-Try to address these two problems by:
-  - Use folio_estimated_sharers() with large folio. With assumption that
-    the estimated result of whether the large folio is shared or not is
-    enough here.
+But it's not correct for large folio. folio_mapcount() returns the
+total mapcount of large folio which is not suitable to detect whether
+the folio is shared.
 
-  - If the large folio is in the range, don't split it. Leave to page
-    reclaim as page reclaim can support swap large folio out as whole in
-    the future.
+Use folio_estimated_sharers() which returns a estimated number of
+shares. That means it's not 100% correct. But it should be OK for
+madvise case here.
 
-  - Only split the large folio if it crosses the boundaries of the
-    range. If folio splitting fails, just skip the folio as madvise allows
-    some pages in the range are ignored.
+Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
+---
+ mm/madvise.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Patch1 uses folio_estimated_sharers() to replace folio_mapcount().
-Patch2 uses API pmdp_clear_flush_young_notify() to clear A bit of page
-       table. It also notifies the mm subscripter about the A bit clearing.
-Patch3 introduce help function to check whether the folio crosses range
-       boundary.
-Patch4 avoid splitting large folio if folio is in the range.
-
-Changes from V1:
-  - Split patch1 out as Yu's suggestion
-  - Split patch2 out as Yu's suggestion
-  - Handle cold case correctly (cold operation was broken in V1 patch)
-  - rebase the patchset to latest mm-unstable
-
-Testing done:
-  - mm selftest without new regression.
-
-V1's link:
-https://lore.kernel.org/linux-mm/20230713150558.200545-1-fengwei.yin@intel.com/
-
-Yin Fengwei (4):
-  madvise: not use mapcount() against large folio for sharing check
-  madvise: Use notify-able API to clear and flush page table entries
-  mm: add functions folio_in_range() and folio_within_vma()
-  madvise: avoid trying to split large folio always in cold_pageout
-
- mm/internal.h |  42 ++++++++++++++++
- mm/madvise.c  | 136 +++++++++++++++++++++++++++++++-------------------
- 2 files changed, 127 insertions(+), 51 deletions(-)
-
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 38382a5d1e39..f12933ebcc24 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -383,7 +383,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+ 		folio = pfn_folio(pmd_pfn(orig_pmd));
+ 
+ 		/* Do not interfere with other mappings of this folio */
+-		if (folio_mapcount(folio) != 1)
++		if (folio_estimated_sharers(folio) != 1)
+ 			goto huge_unlock;
+ 
+ 		if (pageout_anon_only_filter && !folio_test_anon(folio))
+@@ -459,7 +459,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+ 		if (folio_test_large(folio)) {
+ 			int err;
+ 
+-			if (folio_mapcount(folio) != 1)
++			if (folio_estimated_sharers(folio) != 1)
+ 				break;
+ 			if (pageout_anon_only_filter && !folio_test_anon(folio))
+ 				break;
+@@ -682,7 +682,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+ 		if (folio_test_large(folio)) {
+ 			int err;
+ 
+-			if (folio_mapcount(folio) != 1)
++			if (folio_estimated_sharers(folio) != 1)
+ 				break;
+ 			if (!folio_trylock(folio))
+ 				break;
 -- 
 2.39.2
 
