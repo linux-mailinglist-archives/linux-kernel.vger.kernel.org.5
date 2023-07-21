@@ -2,128 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0B275CD31
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2B175CD3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbjGUQIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 12:08:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
+        id S232446AbjGUQJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 12:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbjGUQIw (ORCPT
+        with ESMTP id S232344AbjGUQJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 12:08:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886EB2D50;
-        Fri, 21 Jul 2023 09:08:51 -0700 (PDT)
+        Fri, 21 Jul 2023 12:09:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712E22D50;
+        Fri, 21 Jul 2023 09:09:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2434261D22;
-        Fri, 21 Jul 2023 16:08:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C445C433CB;
-        Fri, 21 Jul 2023 16:08:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 018EF61D2F;
+        Fri, 21 Jul 2023 16:09:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 689E4C433CD;
+        Fri, 21 Jul 2023 16:09:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689955730;
-        bh=aFVATYbnHbXl+l/aXY946VlByUUM/RJ2gC+IwOCTwNw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tzdHW6zWPwp4AgsuyQ5HxWoNFyI7xT0WtDW/oT93THjgq9F1kGpoUHW6PHgpX/Dbv
-         cHrGuupwj2nmxqlceLkgfOIK4mjW5sQXt6ZsDOj7xZhptco1KtiUCNLTikflDgoW4S
-         xtmCvfJofarYh4i3g7YUHeTGSlasGWyKrnhBuCDC+3q95a1OtsEhiDXCYBpAJK/9Z2
-         pZ67cgiULI8dFMNzALoJ0pbgoyLtw3c1sjpGkDlC/vi/+ZhY28dwd0p29UAoQE7wSw
-         YAmhntfEm/bbOrRYIrdGbFg1AuIBjwKO+/hS0/s8LRAISAU3oSAs+CAWrBn47JTYl4
-         Au1gehkWyrvaw==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-992f15c36fcso331908366b.3;
-        Fri, 21 Jul 2023 09:08:50 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZy4I+o5DxZp4VlvCZXgIAEOaO4nx4Exc9rKmLx94A2//z13oov
-        LUiyU1ibPaFQxabI+0dyWmt4NjUSVqpQnTp8trg=
-X-Google-Smtp-Source: APBJJlFzx8ZYFFr2o+NPKH3p58vjaLT9QNxTJBi8tIkxzVzR9iKmIT333myWzMMGD/LRl9RKizHNRUsBu66ZOvoJM5M=
-X-Received: by 2002:a17:906:100c:b0:99b:518a:9de with SMTP id
- 12-20020a170906100c00b0099b518a09demr1982530ejm.42.1689955728742; Fri, 21 Jul
- 2023 09:08:48 -0700 (PDT)
+        s=k20201202; t=1689955754;
+        bh=BlEi7p0BDMKhiEwXg1jOq/zD4Xedk5tjgloH9k5cDxI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=OFTQ6DuOnqrG6CVGHgozLdOfqNJoDAb4DdM10deIzFIcuAksLBrn/okq4ws1Ur9lw
+         vnsF0PAylGPOwrvzqd8MD7OI6RQvWiDFcruohc1T27dsQlVcsq24OAk01Uc8ndiK4V
+         53gusbrsSeE7IS4F3aXX11DrNumr93rNPkzbgk6BqkWkpecmtxIc1RCSwyiRuReBW/
+         IcFeyllltS2xScVQstI79rpDOfa4H6ZPHQWUsAuDPJvk1Dq9LsQE2p69D0x+BcaX1W
+         VlHj29+EmuuFk1Q1AOo/Ojy8Ijv1Fva0Kmm6Sj3z4ngf26Cy0NypimaJ5plEn9OvV7
+         JbudTDJwiSXEQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0571ACE092F; Fri, 21 Jul 2023 09:09:14 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 09:09:13 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 16/20] rcu: Make RCU dynticks counter size
+ configurable
+Message-ID: <ac2ec330-191e-43e6-817d-ca4a22207d98@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-17-vschneid@redhat.com>
+ <xhsmhjzutu18u.mognet@vschneid.remote.csb>
+ <28d4abb7-8496-45ec-b270-ea2b6164537b@paulmck-laptop>
+ <xhsmhbkg5ti91.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-References: <20230721145121.1854104-1-guoren@kernel.org> <5e5be2d4-c563-6beb-b5f5-df47edeebc83@ghiti.fr>
-In-Reply-To: <5e5be2d4-c563-6beb-b5f5-df47edeebc83@ghiti.fr>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sat, 22 Jul 2023 00:08:36 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQMAVUtC6_ftEwp=EeYR_O7yzfGYmxwrqcO6+hn2J32bA@mail.gmail.com>
-Message-ID: <CAJF2gTQMAVUtC6_ftEwp=EeYR_O7yzfGYmxwrqcO6+hn2J32bA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: mm: Fixup spurious fault of kernel vaddr
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     palmer@rivosinc.com, paul.walmsley@sifive.com, falcon@tinylab.org,
-        bjorn@kernel.org, conor.dooley@microchip.com,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xhsmhbkg5ti91.mognet@vschneid.remote.csb>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 11:19=E2=80=AFPM Alexandre Ghiti <alex@ghiti.fr> wr=
-ote:
->
->
-> On 21/07/2023 16:51, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
+On Fri, Jul 21, 2023 at 04:08:10PM +0100, Valentin Schneider wrote:
+> On 21/07/23 07:10, Paul E. McKenney wrote:
+> > On Fri, Jul 21, 2023 at 09:17:53AM +0100, Valentin Schneider wrote:
+> >> On 20/07/23 17:30, Valentin Schneider wrote:
+> >> > index bdd7eadb33d8f..1ff2aab24e964 100644
+> >> > --- a/kernel/rcu/Kconfig
+> >> > +++ b/kernel/rcu/Kconfig
+> >> > @@ -332,4 +332,37 @@ config RCU_DOUBLE_CHECK_CB_TIME
+> >> >         Say Y here if you need tighter callback-limit enforcement.
+> >> >         Say N here if you are unsure.
+> >> >
+> >> > +config RCU_DYNTICKS_RANGE_BEGIN
+> >> > +	int
+> >> > +	depends on !RCU_EXPERT
+> >> > +	default 31 if !CONTEXT_TRACKING_WORK
+> >>
+> >> You'll note that this should be 30 really, because the lower *2* bits are
+> >> taken by the context state (CONTEXT_GUEST has a value of 3).
+> >>
+> >> This highlights the fragile part of this: the Kconfig values are hardcoded,
+> >> but they depend on CT_STATE_SIZE, CONTEXT_MASK and CONTEXT_WORK_MAX. The
+> >> static_assert() will at least capture any misconfiguration, but having that
+> >> enforced by the actual Kconfig ranges would be less awkward.
+> >>
+> >> Do we currently have a way of e.g. making a Kconfig file depend on and use
+> >> values generated by a C header?
 > >
-> > RISC-V specification permits the caching of PTEs whose V (Valid)
-> > bit is clear. Operating systems must be written to cope with this
-> > possibility, but implementers are reminded that eagerly caching
-> > invalid PTEs will reduce performance by causing additional page
-> > faults.
+> > Why not just have something like a boolean RCU_DYNTICKS_TORTURE Kconfig
+> > option and let the C code work out what the number of bits should be?
 > >
-> > So we must keep vmalloc_fault for the spurious page faults of kernel
-> > virtual address from an OoO machine.
+> > I suppose that there might be a failure whose frequency depended on
+> > the number of bits, which might be an argument for keeping something
+> > like RCU_DYNTICKS_RANGE_BEGIN for fault isolation.  But still using
+> > RCU_DYNTICKS_TORTURE for normal testing.
 > >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > ---
-> >   arch/riscv/mm/fault.c | 3 +--
-> >   1 file changed, 1 insertion(+), 2 deletions(-)
+> > Thoughts?
 > >
-> > diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
-> > index 85165fe438d8..f662c9eae7d4 100644
-> > --- a/arch/riscv/mm/fault.c
-> > +++ b/arch/riscv/mm/fault.c
-> > @@ -258,8 +258,7 @@ void handle_page_fault(struct pt_regs *regs)
-> >        * only copy the information from the master page table,
-> >        * nothing more.
-> >        */
-> > -     if ((!IS_ENABLED(CONFIG_MMU) || !IS_ENABLED(CONFIG_64BIT)) &&
-> > -         unlikely(addr >=3D VMALLOC_START && addr < VMALLOC_END)) {
-> > +     if (unlikely(addr >=3D TASK_SIZE)) {
-> >               vmalloc_fault(regs, code, addr);
-> >               return;
-> >       }
->
->
-> Can you share what you are trying to fix here?
-We met a spurious page fault panic on an OoO machine.
+> 
+> AFAICT if we run tests with the minimum possible width, then intermediate
+> values shouldn't have much value.
+> 
+> Your RCU_DYNTICKS_TORTURE suggestion sounds like a saner option than what I
+> came up with, as we can let the context tracking code figure out the widths
+> itself and not expose any of that to Kconfig.
 
-1. The processor speculative execution brings the V=3D0 entries into the
-TLB in the kernel virtual address.
-2. Linux kernel installs the kernel virtual address with the page, and V=3D=
-1
-3. When kernel code access the kernel virtual address, it would raise
-a page fault as the V=3D0 entry in the tlb.
-4. No vmalloc_fault, then panic.
+Agreed.  If a need for variable numbers of bits ever does arise, we can
+worry about it at that time.  And then we would have more information
+on what a variable-bit facility should look like.
 
->
-> I have a fix (that's currently running our CI) for commit 7d3332be011e
-> ("riscv: mm: Pre-allocate PGD entries for vmalloc/modules area") that
-> implements flush_cache_vmap() since we lost the vmalloc_fault.
-Could you share that patch?
-
->
-
-
---=20
-Best Regards
- Guo Ren
+							Thanx, Paul
