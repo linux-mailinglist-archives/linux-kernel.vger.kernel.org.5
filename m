@@ -2,107 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8586A75D5E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E5B75D5E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbjGUUmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
+        id S230118AbjGUUoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjGUUmT (ORCPT
+        with ESMTP id S229529AbjGUUoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:42:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D386330D6
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:42:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5228061DA0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 20:42:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AACFC433C7;
-        Fri, 21 Jul 2023 20:42:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689972135;
-        bh=mF5hO4cnwx7N31AkSxnv7cO0zNt07otNtqJAFumdlE0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=eKjjfhikUtSgz9IY1Im/x92qqghAZ+amTqT6cStSSg0vRWwf399UbiMjxveCUBz54
-         6kXVIYY19sq2q0BExt6lyaKUG1j35X8LNwXHzcouFW7ET2PgcC8+wl/uR3beuea/nf
-         Qdyp7UiKi0vnnk5+3RCRNl+7WknYZkNJ60JaOClQKYiZDOeE8NsYkBcXmAs3PD4R4O
-         cVqK7lWoaxuMB8T1tPRqedTVbzrjgQ21+387A2qV0j13TN4cJBrbxI7P7XhN1Zmuh5
-         xB3P1bMj/p+gx4P+/+Z2d60iiDXjtNZRZsiMID4j+E64e3DWTRNucqm7iaRpPaXzwt
-         u2qQm8fZibvvw==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Pu Lehui <pulehui@huaweicloud.com>,
-        linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Guo Ren <guoren@kernel.org>,
-        Song Shuai <suagrfillet@gmail.com>,
-        Pu Lehui <pulehui@huawei.com>,
-        Pu Lehui <pulehui@huaweicloud.com>
-Subject: Re: [PATCH v2] riscv, bpf: Adapt bpf trampoline to optimized riscv
- ftrace framework
-In-Reply-To: <20230721100627.2630326-1-pulehui@huaweicloud.com>
-References: <20230721100627.2630326-1-pulehui@huaweicloud.com>
-Date:   Fri, 21 Jul 2023 22:42:12 +0200
-Message-ID: <87sf9hgfob.fsf@all.your.base.are.belong.to.us>
+        Fri, 21 Jul 2023 16:44:12 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC7830E4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:44:11 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a479e7a37dso1638187b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:44:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1689972250; x=1690577050;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tEshZgxJu/wBZMZ7+AtLkJHqS7609jEJDv2p0gloftc=;
+        b=5hAajZX29mBiOPuUXN0gJdiJQTDXp7oyiK0PE9JoornRTaNyZJhhteqbrpVFU4f4bZ
+         y8xH5CKnTiuIM+YS5OgrMUAx3smz9SHvL3Rv1rnrG/LRq6Z2II71YIH/nCzn5j93rMkn
+         yhgVintKzHo7qPI4NNFEw8rtKqkoGY/AhPnczh5A9ORL9epMzWr8anD9S3h/9cNfPTUM
+         Zem1aR1Xb4PsxWQKl54wYJyP63CTDJCfWZRcmPf98zGrIn1LAQp0Dk/qExa5bdvCnve/
+         7o+H9RD2hsD+yb/3hwpSOSsg9CGV3bE7ORPPUWBaCqgs0YbD7db5MS1AJ9FT6jy6lLOS
+         ktjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689972250; x=1690577050;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tEshZgxJu/wBZMZ7+AtLkJHqS7609jEJDv2p0gloftc=;
+        b=GjRPHGunIGnWJqdx5s+8rPTT/gEgWu/PnYCZuPxiwVkSv0jKK/qS+UUKHOIpRE8Bln
+         ZN4G55DCqvBcVT/c/jS/buutO+JRkHiXY8baMwNE/yYoiHAamBqByqx/jqVyjdQ15dP9
+         tCpIyp9R+T4JS7MDCqYTZO2HN4nE7g/NuZOdMRcnXQOWJnApLO5TA41QCNko5KOWRbY4
+         /9OyDKvcR0AfVY5l4LWtt6bVuP4JOR2SGPKguWoqHuCUX3uQnH0EfSfwtpxNbCI7qz5p
+         mzMYWIT7Rvfg0DPSi86XwlL1NOdVxIQDulbjwO4h88+icjaU2Ic9VyBP3HcQZeluHf6j
+         SCJA==
+X-Gm-Message-State: ABy/qLbYlLnRSmERaCUQxa41UmBZnSlUKmQzyMazsLuUQ+cMuYPwoiD/
+        gXcEci5ig7hzeJG8uagPxlvEhQ==
+X-Google-Smtp-Source: APBJJlG4GXig7mMHEXbirSicRuSY4RYWbqogZZ+blZKS+lSMdFHQr1pfJPo47Q8YnRrqHa7PZ2cGxQ==
+X-Received: by 2002:a54:4d06:0:b0:3a3:6ae3:bd9 with SMTP id v6-20020a544d06000000b003a36ae30bd9mr3284589oix.55.1689972250682;
+        Fri, 21 Jul 2023 13:44:10 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-8f57-5681-ccd3-4a2e.res6.spectrum.com. [2603:7000:c01:2716:8f57:5681:ccd3:4a2e])
+        by smtp.gmail.com with ESMTPSA id h15-20020a0cab0f000000b0063707f03e2bsm1564056qvb.19.2023.07.21.13.44.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 13:44:10 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 16:44:08 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "T.J. Mercier" <tjmercier@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
+Message-ID: <20230721204408.GA1033322@cmpxchg.org>
+References: <20230720070825.992023-1-yosryahmed@google.com>
+ <20230720153515.GA1003248@cmpxchg.org>
+ <ZLmRlTej8Tm82kXG@slm.duckdns.org>
+ <CAJD7tkYhu3g9u7HkUTFBtT3Q4edVZ2g1TWV1FDcyM9srrYCBLg@mail.gmail.com>
+ <ZLmxLUNdxMi5s2Kq@slm.duckdns.org>
+ <CAJD7tkZKo_oSZ-mQc-knMELP8kiY1N7taQhdV6tPsqN0tg=gog@mail.gmail.com>
+ <ZLm1ptOYH6F8fGHT@slm.duckdns.org>
+ <CAJD7tkbDxw-hqG8i85NhnjxmXFMbR5OaSW5dHDVYfdA=ZnPAEw@mail.gmail.com>
+ <ZLrN1BE42Tsybm6j@slm.duckdns.org>
+ <CAJD7tkatz1JhKVj_iP9J0H7fPJnUSurZkCT1iJTJ=+qRen_nLQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkatz1JhKVj_iP9J0H7fPJnUSurZkCT1iJTJ=+qRen_nLQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pu Lehui <pulehui@huaweicloud.com> writes:
+On Fri, Jul 21, 2023 at 11:47:49AM -0700, Yosry Ahmed wrote:
+> On Fri, Jul 21, 2023 at 11:26 AM Tejun Heo <tj@kernel.org> wrote:
+> >
+> > Hello,
+> >
+> > On Fri, Jul 21, 2023 at 11:15:21AM -0700, Yosry Ahmed wrote:
+> > > On Thu, Jul 20, 2023 at 3:31 PM Tejun Heo <tj@kernel.org> wrote:
+> > > > memory at least in our case. The sharing across them comes down to things
+> > > > like some common library pages which don't really account for much these
+> > > > days.
+> > >
+> > > Keep in mind that even a single page charged to a memcg and used by
+> > > another memcg is sufficient to result in a zombie memcg.
+> >
+> > I mean, yeah, that's a separate issue or rather a subset which isn't all
+> > that controversial. That can be deterministically solved by reparenting to
+> > the parent like how slab is handled. I think the "deterministic" part is
+> > important here. As you said, even a single page can pin a dying cgroup.
+> 
+> There are serious flaws with reparenting that I mentioned above. We do
+> it for kernel memory, but that's because we really have no other
+> choice. Oftentimes the memory is not reclaimable and we cannot find an
+> owner for it. This doesn't mean it's the right answer for user memory.
+> 
+> The semantics are new compared to normal charging (as opposed to
+> recharging, as I explain below). There is an extra layer of
+> indirection that we did not (as far as I know) measure the impact of.
+> Parents end up with pages that they never used and we have no
+> observability into where it came from. Most importantly, over time
+> user memory will keep accumulating at the root, reducing the accuracy
+> and usefulness of accounting, effectively an accounting leak and
+> reduction of capacity. Memory that is not attributed to any user, aka
+> system overhead.
 
-> From: Pu Lehui <pulehui@huawei.com>
->
-> Commit 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to
-> half") optimizes the detour code size of kernel functions to half with
-> T0 register and the upcoming DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv
-> is based on this optimization, we need to adapt riscv bpf trampoline
-> based on this. One thing to do is to reduce detour code size of bpf
-> programs, and the second is to deal with the return address after the
-> execution of bpf trampoline. Meanwhile, we need to construct the frame
-> of parent function, otherwise we will miss one layer when unwinding.
-> The related tests have passed.
->
-> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+Reparenting has been the behavior since the first iteration of cgroups
+in the kernel. The initial implementation would loop over the LRUs and
+reparent pages synchronously during rmdir. This had some locking
+issues, so we switched to the current implementation of just leaving
+the zombie memcg behind but neutralizing its controls.
 
-I'll do a proper review later (still on vacation), but I ran the
-test_progs BPF selftest with the ftrace series [1] with this patch on
-top.
+Thanks to Roman's objcg abstraction, we can now go back to the old
+implementation of directly moving pages up to avoid the zombies.
 
-81 more tests pass with [1] plus this patch, which is great!
+However, these were pure implementation changes. The user-visible
+semantics never varied: when you delete a cgroup, any leftover
+resources are subject to control by the remaining parent cgroups.
+Don't remove control domains if you still need to control resources.
+But none of this is new or would change in any way! Neutralizing
+controls of a zombie cgroup results in the same behavior and
+accounting as linking the pages to the parent cgroup's LRU!
 
-Pre-patches [2], post-patches [3].
+The only thing that's new is the zombie cgroups. We can fix that by
+effectively going back to the earlier implementation, but thanks to
+objcg without the locking problems.
 
-Feel free to add:
-Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
-
-
-Bj=C3=B6rn
-
-
-[1] https://lore.kernel.org/linux-riscv/20230627111612.761164-1-suagrfillet=
-@gmail.com/
-[2] http://ix.io/4B9e
-[3] http://ix.io/4B9f
-
+I just wanted to address this, because your description/framing of
+reparenting strikes me as quite wrong.
