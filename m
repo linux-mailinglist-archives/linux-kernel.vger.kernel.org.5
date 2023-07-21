@@ -2,64 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E29C475C2BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FD875C2C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbjGUJPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
+        id S231693AbjGUJQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbjGUJPl (ORCPT
+        with ESMTP id S229924AbjGUJQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:15:41 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A76830C1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=fpQ0C0yK77AMt6tXTuim5bxXTIW3hXHiPvuLtdx9U7Q=; b=BotTGZDRAvsuRWd712okFAAfMG
-        x945I8UehwJBNbN0aZBdDoTYEIH9RQC9jei9qodV0sJ066AsVFuQXL+XkTiq+u45EeAyOyQR6lUvq
-        sEBFFUBaOKe26e8ClRxuiybr5CD/TMkwWGIBWIHDE7vX0ZTH9awdXVl9amEJeofUD/VOPDGW31lZh
-        vuTpScMF5TzEWm90y77TvPzsbWYIw4QGa3vQrC+cOxMpHoQLCAIspkqB7PoZHsXs313Oin5HueBC8
-        dyym/ArLc8KEgjPnTpKyDk1WIHFK/G/m4ChM0eA9BOTW+cgX6s1YRwDHcqzfSlicfr66EyTvqasje
-        ZxO/d35g==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qMmCX-00HXUy-1i;
-        Fri, 21 Jul 2023 09:15:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Fri, 21 Jul 2023 05:16:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB55E2D7E;
+        Fri, 21 Jul 2023 02:16:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2E26230020C;
-        Fri, 21 Jul 2023 11:13:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1757D30A5FDF2; Fri, 21 Jul 2023 11:13:29 +0200 (CEST)
-Date:   Fri, 21 Jul 2023 11:13:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     "Kenan.Liu" <Kenan.Liu@linux.alibaba.com>, mingo@redhat.com,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, luoben@linux.alibaba.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] Adjust CFS loadbalance to adapt QEMU CPU
- topology.
-Message-ID: <20230721091328.GE3630545@hirez.programming.kicks-ass.net>
-References: <1689842053-5291-1-git-send-email-Kenan.Liu@linux.alibaba.com>
- <20230720085032.GB3569127@hirez.programming.kicks-ass.net>
- <6a70900a-649f-3a4d-2e47-61648bc95666@linux.alibaba.com>
- <CAKfTPtCmBL6aq9CaPvmhcyvGZtu=98crDyaHXRdwQxjyGtcDkQ@mail.gmail.com>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 83E056188A;
+        Fri, 21 Jul 2023 09:16:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 112C9C433C9;
+        Fri, 21 Jul 2023 09:16:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689931008;
+        bh=7Nr2A3s+7x1dmfoTrYBQ8x3KxtQ72YCiKrx22ldOFGU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sFHdka10pBwiuXAvP+N2q3HaSlqy5pN61gGLufjyM0xxLslEgcNBdiuZEpnntHmRv
+         r/GJuGteKUpWiltxbrt1Tilc83yguiN198hkM3992vCWmZY8wbRVItBWn+ls3moF5g
+         hTDqsEoZIU81elyflfK9zmItNgyWfse9s0c69zUk+HcpSngGAFOhYGtRST79pLj9DN
+         yJe5/EHzfrxA3ziLf6f5QVC02gc3eBXSmyoqr9hurp0DfLePKV20MuJyZf7QBAQdRh
+         ePuC3JJKTbigOA/xzLZ3pHeqATi/uj2fYH4ygVKaSiRLG0I9tYpYpBIm69R3ohWdmv
+         wldvuiAufGPKg==
+Date:   Fri, 21 Jul 2023 10:16:41 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Guo Samin <samin.guo@starfivetech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Yanhong Wang <yanhong.wang@starfivetech.com>,
+        Tommaso Merciai <tomm.merciai@gmail.com>
+Subject: Re: [PATCH v1 0/2] Add ethernet nodes for StarFive JH7110 SoC
+Message-ID: <20230721-passive-smoked-d02c88721754@spud>
+References: <20230714104521.18751-1-samin.guo@starfivetech.com>
+ <20230720-cardstock-annoying-27b3b19e980a@spud>
+ <42beaf41-947e-f585-5ec1-f1710830e556@starfivetech.com>
+ <A0012BE7-8947-49C8-8697-1F879EE7B0B7@kernel.org>
+ <ce3e0ffb-abcd-2392-8767-db460bce4b4b@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="nLLwIQv8s4nvN5n3"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKfTPtCmBL6aq9CaPvmhcyvGZtu=98crDyaHXRdwQxjyGtcDkQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+In-Reply-To: <ce3e0ffb-abcd-2392-8767-db460bce4b4b@starfivetech.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,52 +80,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 10:33:44AM +0200, Vincent Guittot wrote:
-> On Fri, 21 Jul 2023 at 04:59, Kenan.Liu <Kenan.Liu@linux.alibaba.com> wrote:
 
-> > The SMT topology in qemu native x86 CPU model is (0,1),…,(n,n+1),…,
-> > but nomarlly seen SMT topo in physical machine is like (0,n),(1,n+1),…,
-> > n means the total core number of the machine.
-> >
-> > The imbalance happens when the number of runnable threads is less
-> > than the number of hyperthreads, select_idle_core() would be called
-> > to decide which cpu be selected to run the waken-up task.
-> >
-> > select_idle_core() will return the checked cpu number if the whole
-> > core is idle. On the contrary, if any one HT of the core is busy,
-> > select_idle_core() would clear the whole core out from cpumask and
-> > check the next core.
-> >
-> > select_idle_core():
-> >      …
-> >      if (idle)
-> >          return core;
-> >
-> >      cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
-> >      return -1;
-> >
-> > In this manner, except the very beginning of for_each_cpu_wrap() loop,
-> > HT with even ID number is always be checked at first, and be returned
-> > to the caller if the whole core is idle, so the odd indexed HT almost
-> > has no chance to be selected.
-> >
-> > select_idle_cpu():
-> >      …
-> >      for_each_cpu_wrap(cpu, cpus, target + 1) {
-> >          if (has_idle_core) {
-> >              i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> >
-> > And this will NOT happen when the SMT topo is (0,n),(1,n+1),…, because
-> > when the loop starts from the bottom half of SMT number, HTs with larger
-> > number will be checked first, when it starts from the top half, their
-> > siblings with smaller number take the first place of inner core searching.
-> 
-> But why is it a problem ? Your system is almost idle and 1 HT per core
-> is used. Who cares to select evenly one HT or the other as long as we
-> select an idle core in priority ?
+--nLLwIQv8s4nvN5n3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Right, why is this a problem? Hyperthreads are supposed to be symmetric,
-it doesn't matter which of the two are active, the important thing is to
-only have one active if we can.
+On Fri, Jul 21, 2023 at 03:27:33PM +0800, Guo Samin wrote:
 
-(Unlike Power7, they have asymmetric SMT)
+> -------- =E5=8E=9F=E5=A7=8B=E4=BF=A1=E6=81=AF --------
+> =E4=B8=BB=E9=A2=98: Re: [PATCH v1 0/2] Add ethernet nodes for StarFive JH=
+7110 SoC
+> From: Conor Dooley <conor@kernel.org>
+
+> =E6=94=B6=E4=BB=B6=E4=BA=BA: Guo Samin <samin.guo@starfivetech.com>, Rob =
+Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@l=
+inaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palme=
+r@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Hal Feng <hal.feng@starf=
+ivetech.com>, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org=
+, devicetree@vger.kernel.org, netdev@vger.kernel.org
+> =E6=97=A5=E6=9C=9F: 2023/7/21
+
+btw, please try and remove this stuff from your mails.
+
+> > On 21 July 2023 03:09:19 IST, Guo Samin <samin.guo@starfivetech.com> wr=
+ote:
+
+> >> There is a question about the configuration of phy that I would like t=
+o consult you.
+> >>
+> >> Latest on motorcomm PHY V5[1]: Follow Rob Herring's advice
+> >> motorcomm,rx-xxx-driver-strength Changed to motorcomm,rx-xxx-drv-micro=
+amp .
+> >> V5 has already received a reviewed-by from Andrew Lunn, and it should =
+not change again.
+> >>
+> >> Should I submit another pacthes based on riscv-dt-for-next?=20
+> >=20
+> > Huh, dtbs_check passed for these patches,
+> > I didn't realise changes to the motorcomm stuff
+> > were a dep. for this. I'll take a look later.
+
+> After discussing with HAL, I have prepared the code and considered adding=
+ the following patch to=20
+> Motorcomm's patchsetes v6. (To fix some spelling errors in v5[1])
+> which will then send patches based on linux-next. What do you think? @And=
+rew @Conor
+
+I think you are better off just sending the dts patch to me, adding a
+dts patch that will not apply to net-next to your motorcomm driver series
+will only really cause problems for the netdev patchwork automation.
+
+> [1] https://patchwork.kernel.org/project/netdevbpf/cover/20230720111509.2=
+1843-1-samin.guo@starfivetech.com
+
+I meant to ack this yesterday, but it wasn't in my dt-binding review
+queue. I'll go do that now.
+
+--nLLwIQv8s4nvN5n3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLpM+QAKCRB4tDGHoIJi
+0sgZAQD0dSzvCgT6QBV4QteZEHj8xk6HSmskaiafKuzZBSHOCAEA91aMVNeLutXk
++GHuhA9YiiDTsg4DYMZ+HD318oah9Q0=
+=SUU7
+-----END PGP SIGNATURE-----
+
+--nLLwIQv8s4nvN5n3--
