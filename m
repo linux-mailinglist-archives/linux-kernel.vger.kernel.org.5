@@ -2,240 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0040775BC97
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 04:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B23C75BC9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 04:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjGUCy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 22:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        id S229756AbjGUC6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 22:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjGUCyZ (ORCPT
+        with ESMTP id S229684AbjGUC6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 22:54:25 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF93BE6F;
-        Thu, 20 Jul 2023 19:54:22 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R6Yz065h4zrRqn;
-        Fri, 21 Jul 2023 10:53:32 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 21 Jul 2023 10:54:19 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v3 for-rc 2/2] RDMA/hns: Remove VF extend configuration
-Date:   Fri, 21 Jul 2023 10:51:46 +0800
-Message-ID: <20230721025146.450831-3-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230721025146.450831-1-huangjunxian6@hisilicon.com>
-References: <20230721025146.450831-1-huangjunxian6@hisilicon.com>
+        Thu, 20 Jul 2023 22:58:07 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EDDA2690;
+        Thu, 20 Jul 2023 19:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689908286; x=1721444286;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=kAfnjUsMkeVOvOzOihPjEhY2+hkQ8lG+O+rh2M9hN3I=;
+  b=H9rmotCwT4ckzQWswhxn4Ib6CiDiPsJiNXD7UGG0w1dk6JNMKwnaMQtz
+   zmY8JadwDEYag8h1JCh7xZD5/2XHr+3L2U0dAT3UqUyGEjMAhf9ypk2ah
+   7pAql0yy3QDyhmZ2KaYJixiGH0t5ecCxhAf6fh5vWkwEqNn9FQLMNiLt7
+   3wiET+S8XA+75TV97domAi/mCbW/NfWvIJ3qpmKxOGiDUgqoXyrqzHKe8
+   w9D2du8wYQLtqsfve/0HSF3HHOWHgVWZMx9D3IGszljnzFOeccsGS4vNX
+   qvbRxW/b6IcOVKgJAVm1XCk0eYfgSuAg9YQ5L4T8bmGfwtZWxZEsRvCKt
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="365817081"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="365817081"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jul 2023 19:58:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="898560727"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="898560727"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 20 Jul 2023 19:57:57 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qMgKz-0006nV-0O;
+        Fri, 21 Jul 2023 02:57:54 +0000
+Date:   Fri, 21 Jul 2023 10:56:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     oe-kbuild-all@lists.linux.dev, Alex Sierra <alex.sierra@amd.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Peter Xu <peterx@redhat.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table
+ scanning
+Message-ID: <202307211030.2CJH6TkM-lkp@intel.com>
+References: <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove VF extend configuration since the relative registers are
-configured in firmware currently.
+Hi Michał,
 
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  1 -
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 84 +++------------------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  | 10 ---
- 3 files changed, 10 insertions(+), 85 deletions(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 84239b907de2..6084c1649000 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -714,7 +714,6 @@ struct hns_roce_caps {
- 	u32		max_rq_sg;
- 	u32		rsv0;
- 	u32		num_qps;
--	u32		num_pi_qps;
- 	u32		reserved_qps;
- 	u32		num_srqs;
- 	u32		max_wqes;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index fb3ce4af22b5..c4b92d8bd98a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1698,29 +1698,6 @@ static int load_func_res_caps(struct hns_roce_dev *hr_dev, bool is_vf)
- 	return 0;
- }
- 
--static int load_ext_cfg_caps(struct hns_roce_dev *hr_dev, bool is_vf)
--{
--	struct hns_roce_cmq_desc desc;
--	struct hns_roce_cmq_req *req = (struct hns_roce_cmq_req *)desc.data;
--	struct hns_roce_caps *caps = &hr_dev->caps;
--	u32 func_num, qp_num;
--	int ret;
--
--	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_EXT_CFG, true);
--	ret = hns_roce_cmq_send(hr_dev, &desc, 1);
--	if (ret)
--		return ret;
--
--	func_num = is_vf ? 1 : max_t(u32, 1, hr_dev->func_num);
--	qp_num = hr_reg_read(req, EXT_CFG_QP_PI_NUM) / func_num;
--	caps->num_pi_qps = round_down(qp_num, HNS_ROCE_QP_BANK_NUM);
--
--	qp_num = hr_reg_read(req, EXT_CFG_QP_NUM) / func_num;
--	caps->num_qps = round_down(qp_num, HNS_ROCE_QP_BANK_NUM);
--
--	return 0;
--}
--
- static int load_pf_timer_res_caps(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_cmq_desc desc;
-@@ -1741,50 +1718,37 @@ static int load_pf_timer_res_caps(struct hns_roce_dev *hr_dev)
- 	return 0;
- }
- 
--static int query_func_resource_caps(struct hns_roce_dev *hr_dev, bool is_vf)
-+static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
- {
- 	struct device *dev = hr_dev->dev;
- 	int ret;
- 
--	ret = load_func_res_caps(hr_dev, is_vf);
-+	ret = load_func_res_caps(hr_dev, false);
- 	if (ret) {
--		dev_err(dev, "failed to load res caps, ret = %d (%s).\n", ret,
--			is_vf ? "vf" : "pf");
-+		dev_err(dev, "failed to load pf res caps, ret = %d.\n", ret);
- 		return ret;
- 	}
- 
--	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
--		ret = load_ext_cfg_caps(hr_dev, is_vf);
--		if (ret)
--			dev_err(dev, "failed to load ext cfg, ret = %d (%s).\n",
--				ret, is_vf ? "vf" : "pf");
--	}
-+	ret = load_pf_timer_res_caps(hr_dev);
-+	if (ret)
-+		dev_err(dev, "failed to load pf timer resource, ret = %d.\n",
-+			ret);
- 
- 	return ret;
- }
- 
--static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
-+static int hns_roce_query_vf_resource(struct hns_roce_dev *hr_dev)
- {
- 	struct device *dev = hr_dev->dev;
- 	int ret;
- 
--	ret = query_func_resource_caps(hr_dev, false);
-+	ret = load_func_res_caps(hr_dev, true);
- 	if (ret)
--		return ret;
--
--	ret = load_pf_timer_res_caps(hr_dev);
--	if (ret)
--		dev_err(dev, "failed to load pf timer resource, ret = %d.\n",
--			ret);
-+		dev_err(dev, "failed to load vf res caps, ret = %d.\n", ret);
- 
- 	return ret;
- }
- 
--static int hns_roce_query_vf_resource(struct hns_roce_dev *hr_dev)
--{
--	return query_func_resource_caps(hr_dev, true);
--}
--
- static int __hns_roce_set_vf_switch_param(struct hns_roce_dev *hr_dev,
- 					  u32 vf_id)
- {
-@@ -1867,24 +1831,6 @@ static int config_vf_hem_resource(struct hns_roce_dev *hr_dev, int vf_id)
- 	return hns_roce_cmq_send(hr_dev, desc, 2);
- }
- 
--static int config_vf_ext_resource(struct hns_roce_dev *hr_dev, u32 vf_id)
--{
--	struct hns_roce_cmq_desc desc;
--	struct hns_roce_cmq_req *req = (struct hns_roce_cmq_req *)desc.data;
--	struct hns_roce_caps *caps = &hr_dev->caps;
--
--	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_EXT_CFG, false);
--
--	hr_reg_write(req, EXT_CFG_VF_ID, vf_id);
--
--	hr_reg_write(req, EXT_CFG_QP_PI_NUM, caps->num_pi_qps);
--	hr_reg_write(req, EXT_CFG_QP_PI_IDX, vf_id * caps->num_pi_qps);
--	hr_reg_write(req, EXT_CFG_QP_NUM, caps->num_qps);
--	hr_reg_write(req, EXT_CFG_QP_IDX, vf_id * caps->num_qps);
--
--	return hns_roce_cmq_send(hr_dev, &desc, 1);
--}
--
- static int hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev)
- {
- 	u32 func_num = max_t(u32, 1, hr_dev->func_num);
-@@ -1899,16 +1845,6 @@ static int hns_roce_alloc_vf_resource(struct hns_roce_dev *hr_dev)
- 				vf_id, ret);
- 			return ret;
- 		}
--
--		if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
--			ret = config_vf_ext_resource(hr_dev, vf_id);
--			if (ret) {
--				dev_err(hr_dev->dev,
--					"failed to config vf-%u ext res, ret = %d.\n",
--					vf_id, ret);
--				return ret;
--			}
--		}
- 	}
- 
- 	return 0;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 2b87f0cf06ec..d9693f6cc802 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -219,7 +219,6 @@ enum hns_roce_opcode_type {
- 	HNS_ROCE_OPC_QUERY_VF_RES			= 0x850e,
- 	HNS_ROCE_OPC_CFG_GMV_TBL			= 0x850f,
- 	HNS_ROCE_OPC_CFG_GMV_BT				= 0x8510,
--	HNS_ROCE_OPC_EXT_CFG				= 0x8512,
- 	HNS_ROCE_QUERY_RAM_ECC				= 0x8513,
- 	HNS_SWITCH_PARAMETER_CFG			= 0x1033,
- };
-@@ -956,15 +955,6 @@ struct hns_roce_func_clear {
- #define HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_INTERVAL	40
- #define HNS_ROCE_V2_READ_FUNC_CLEAR_FLAG_FAIL_WAIT	20
- 
--/* Fields of HNS_ROCE_OPC_EXT_CFG */
--#define EXT_CFG_VF_ID CMQ_REQ_FIELD_LOC(31, 0)
--#define EXT_CFG_QP_PI_IDX CMQ_REQ_FIELD_LOC(45, 32)
--#define EXT_CFG_QP_PI_NUM CMQ_REQ_FIELD_LOC(63, 48)
--#define EXT_CFG_QP_NUM CMQ_REQ_FIELD_LOC(87, 64)
--#define EXT_CFG_QP_IDX CMQ_REQ_FIELD_LOC(119, 96)
--#define EXT_CFG_LLM_IDX CMQ_REQ_FIELD_LOC(139, 128)
--#define EXT_CFG_LLM_NUM CMQ_REQ_FIELD_LOC(156, 144)
--
- #define CFG_LLM_A_BA_L CMQ_REQ_FIELD_LOC(31, 0)
- #define CFG_LLM_A_BA_H CMQ_REQ_FIELD_LOC(63, 32)
- #define CFG_LLM_A_DEPTH CMQ_REQ_FIELD_LOC(76, 64)
+[auto build test ERROR on akpm-mm/mm-everything]
+[also build test ERROR on linus/master v6.5-rc2 next-20230720]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Micha-Miros-aw/Re-fs-proc-task_mmu-Implement-IOCTL-for-efficient-page-table-scanning/20230721-033050
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux%40rere.qmqm.pl
+patch subject: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
+config: arc-randconfig-r035-20230720 (https://download.01.org/0day-ci/archive/20230721/202307211030.2CJH6TkM-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230721/202307211030.2CJH6TkM-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307211030.2CJH6TkM-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   fs/proc/task_mmu.c: In function 'pagemap_scan_test_walk':
+   fs/proc/task_mmu.c:1921:13: error: implicit declaration of function 'userfaultfd_wp_async'; did you mean 'userfaultfd_wp'? [-Werror=implicit-function-declaration]
+    1921 |         if (userfaultfd_wp_async(vma) && userfaultfd_wp_use_markers(vma))
+         |             ^~~~~~~~~~~~~~~~~~~~
+         |             userfaultfd_wp
+   fs/proc/task_mmu.c: In function 'pagemap_scan_pte_hole':
+>> fs/proc/task_mmu.c:2200:19: error: implicit declaration of function 'uffd_wp_range' [-Werror=implicit-function-declaration]
+    2200 |         int err = uffd_wp_range(vma, addr, end - addr, true);
+         |                   ^~~~~~~~~~~~~
+   fs/proc/task_mmu.c: In function 'pagemap_scan_init_bounce_buffer':
+   fs/proc/task_mmu.c:2290:22: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+    2290 |         p->vec_out = (void __user *)p->arg.vec;
+         |                      ^
+   fs/proc/task_mmu.c: At top level:
+   fs/proc/task_mmu.c:1967:13: warning: 'pagemap_scan_backout_range' defined but not used [-Wunused-function]
+    1967 | static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
+         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/uffd_wp_range +2200 fs/proc/task_mmu.c
+
+  2182	
+  2183	static int pagemap_scan_pte_hole(unsigned long addr, unsigned long end,
+  2184					 int depth, struct mm_walk *walk)
+  2185	{
+  2186		struct pagemap_scan_private *p = walk->private;
+  2187		struct vm_area_struct *vma = walk->vma;
+  2188		int ret;
+  2189	
+  2190		if (!vma || !pagemap_scan_is_interesting_page(p->cur_vma_category, p))
+  2191			return 0;
+  2192	
+  2193		ret = pagemap_scan_output(p->cur_vma_category, p, addr, &end);
+  2194		if (addr == end)
+  2195			return ret;
+  2196	
+  2197		if (~p->arg.flags & PM_SCAN_WP_MATCHING)
+  2198			return ret;
+  2199	
+> 2200		int err = uffd_wp_range(vma, addr, end - addr, true);
+  2201		if (err < 0)
+  2202			ret = err;
+  2203	
+  2204		return ret;
+  2205	}
+  2206	
+
 -- 
-2.30.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
