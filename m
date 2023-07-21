@@ -2,105 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A3875D5F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D228275D601
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbjGUUsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56222 "EHLO
+        id S230054AbjGUUw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjGUUsj (ORCPT
+        with ESMTP id S229941AbjGUUwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:48:39 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC4130E2;
-        Fri, 21 Jul 2023 13:48:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=pPiT0nNC4yMJYFJN2WXxCYRGy4DbhNU+d1P34vtAgyk=; b=FWmeRKS65dQdZHKeV7ZDq8W7Zw
-        zIyV0iqawLDivnEwU1jfsv9A/8JBw9ibISpUZju7SR/zTwOClyAxgPJ4kBrbCUVhcvkJjQVSWnVzn
-        A6uPFQvwM88H6feTfA4iJTyj9nzdEHF5j7EvrkvgYueQ6ldjMowTu3HrroOhBK26KmQ5hxfExInc0
-        ExvIxWju8aNE6o2lBrnhwXwE1cztXIJzrURGDXxZZmcSp9NOgpFuOquqTN3OLkAPPakb9jGKPuRkS
-        Dn9T3LCpM8z87Vgxzkm6LvrWpnZLxF7/mbZS/EwgM8PlCdPwGzBNwMxrNa8tKS+oBKeLdfex8YA1i
-        ZJxDl8Pw==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qMx3E-00F5Cu-2a;
-        Fri, 21 Jul 2023 20:48:36 +0000
-Message-ID: <db709099-a2aa-c03f-61bb-6130adfd6f4a@infradead.org>
-Date:   Fri, 21 Jul 2023 13:48:34 -0700
+        Fri, 21 Jul 2023 16:52:53 -0400
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010CC30E2;
+        Fri, 21 Jul 2023 13:52:51 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 9CF717DB;
+        Fri, 21 Jul 2023 20:52:51 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 9CF717DB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1689972771; bh=/pW3hEGyg79PkXdVD5J7I9kJxt4z0s0b8Oz2Xi41fcg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=FuosDovDFfQUGlzt7vLWAoKhJSFJPCqglJQ88AGCay/dnExvK3fbueKPAq4MxpxUh
+         532G8LMpEV2pqgW309UmxHBdj1HrVtyGg++sMKK5+IQz13qOuSs8YZ3GneDpdqbWbC
+         pqYoXZ/gjC2UvhyzgxVcSOvSna7HKSAd4EZjI7ui5892XtE+MqgeLcsHReLNoc+w9D
+         SjUc+AkD4HKPcr0A0eAYWfenzpzs8/1DNpVGf0FsGM+aTqrwMGXub+cATd36alZ1kv
+         RS18kv8qS1nUe1VqJmAh1UsSrj4smd2xiZmxqQivGdJtEP+i7b8t2hOAX+8c6E1qj5
+         mlm9ns9qxs6GA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] Docs: kernel-parameters: sort arm64 entries
+In-Reply-To: <20230715235105.17966-1-rdunlap@infradead.org>
+References: <20230715235105.17966-1-rdunlap@infradead.org>
+Date:   Fri, 21 Jul 2023 14:52:50 -0600
+Message-ID: <87cz0lc7h9.fsf@meer.lwn.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 6/8] iio: core: Fix issues and style of the comments
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Nuno Sa <nuno.sa@analog.com>
-References: <20230721170022.3461-1-andriy.shevchenko@linux.intel.com>
- <20230721170022.3461-7-andriy.shevchenko@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230721170022.3461-7-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Randy Dunlap <rdunlap@infradead.org> writes:
 
-
-On 7/21/23 10:00, Andy Shevchenko wrote:
-> The `scripts/kernel-doc -v -none -Wall` reports several issues
-> with the kernel doc in IIO core C file. Update the comments
-> accordingly.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+> Put the arm64 kernel-parameters entries into alphabetical order.
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
 > ---
->  drivers/iio/industrialio-core.c | 57 +++++++++++++++++++++------------
->  1 file changed, 37 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 66cea23df7e0..a9b9804097ab 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
+>  Documentation/admin-guide/kernel-parameters.txt |   12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 
-> @@ -594,7 +608,7 @@ EXPORT_SYMBOL_GPL(iio_show_mount_matrix);
->   * If device is assigned no mounting matrix property, a default 3x3 identity
->   * matrix will be filled in.
->   *
-> - * Return: 0 if success, or a negative error code on failure.
-> + * Returns: 0 if success, or a negative error code on failure.
->   */
->  int iio_read_mount_matrix(struct device *dev, struct iio_mount_matrix *matrix)
->  {
+Applied, thanks.
 
-> @@ -1750,7 +1767,7 @@ static int iio_chrdev_open(struct inode *inode, struct file *filp)
->   * @inode:	Inode structure pointer for the char device
->   * @filp:	File structure pointer for the char device
->   *
-> - * Return: 0 for successful release
-> + * Returns: 0 for successful release.
->   */
-
-As documented in Documentation/doc-guide/kernel-doc.rst:
-  The return value, if any, should be described in a dedicated section
-  named ``Return``.
-
-However, as you (and I) have found, "Returns:" also works as a section name.
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
--- 
-~Randy
+jon
