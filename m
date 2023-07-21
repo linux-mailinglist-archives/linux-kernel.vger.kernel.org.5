@@ -2,59 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 611AF75BBE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 03:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B670B75BBEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 03:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbjGUBmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 21:42:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
+        id S229877AbjGUBoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 21:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGUBmH (ORCPT
+        with ESMTP id S229450AbjGUBog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 21:42:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801EE2106;
-        Thu, 20 Jul 2023 18:42:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 13D3461CD3;
-        Fri, 21 Jul 2023 01:42:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 458C4C433C9;
-        Fri, 21 Jul 2023 01:42:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689903725;
-        bh=dw1xMty5sUx55lKWIHCKf4qU6fRTTDgNxFDurgYRD1o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LTGUIWNwZCt1pvkrukTY07XnEQ3xswAAwgdRew4atcUyeBGtLAvFf5Umec9wZj+AI
-         JdPeGtUCroBGjn0H/wVOegulnEJOYmNBACd1LCKdDO3sf8z+Ag/79dQhp2bt194Qvk
-         g2G2A+JNUE6yNltck6xY/Dj2RORG584hKY3IghbWUoThzBjUtzjLGR00BCLycUD42Z
-         jm4lqjPX5e3D+SiQMc5RQTWLhvt/3gDo2q8LbHYqgFt6nOkEdESWgRV7AFga1HufWR
-         6vhlgA/YSc959/OcEykI0a6cgsJ4/rKmb68/tS+knEIwFuRXjH56we7ZwINrbxJdNS
-         ++IxAlVxujtGQ==
-Date:   Fri, 21 Jul 2023 10:42:00 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH v2 8/9] selftests/ftrace: Add BTF fields access
- testcases
-Message-Id: <20230721104200.92655ae661532475134cf004@kernel.org>
-In-Reply-To: <18605821-d4f1-c8e2-74eb-a91fc06d53b7@oracle.com>
-References: <168960739768.34107.15145201749042174448.stgit@devnote2>
-        <168960747750.34107.6104527579648222887.stgit@devnote2>
-        <18605821-d4f1-c8e2-74eb-a91fc06d53b7@oracle.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Thu, 20 Jul 2023 21:44:36 -0400
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net (zg8tmja2lje4os4yms4ymjma.icoremail.net [206.189.21.223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 99ED72106;
+        Thu, 20 Jul 2023 18:44:32 -0700 (PDT)
+Received: from localhost.localdomain (unknown [39.174.92.167])
+        by mail-app4 (Coremail) with SMTP id cS_KCgBHTQ3s4rlksajGCQ--.42906S4;
+        Fri, 21 Jul 2023 09:44:13 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH v1] xfrm: add NULL check in xfrm_update_ae_params
+Date:   Fri, 21 Jul 2023 09:44:11 +0800
+Message-Id: <20230721014411.2407082-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgBHTQ3s4rlksajGCQ--.42906S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZFyrGF1rGr1fWF4Dtr4fXwb_yoWrGF1UpF
+        W5Kw4jkr4rXr1UZr4UJr1aqr1jvF48ZF1DCr93Xr1FyFy5Grn5WFyUJ3yUurykArWDAFy7
+        J3W5tr18tw1YkaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+        14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,97 +54,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 00:00:32 +0100
-Alan Maguire <alan.maguire@oracle.com> wrote:
+Normally, x->replay_esn and x->preplay_esn should be allocated at
+xfrm_alloc_replay_state_esn(...) in xfrm_state_construct(..), hence the
+frm_update_ae_params(...) is okay to update them. However, the current
+impelementation of xfrm_new_ae(...) allows a malicious user to directly
+dereference a NULL pointer and crash the kernel like below.
 
-> 
-> On 17/07/2023 16:24, Masami Hiramatsu (Google) wrote:
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Add test cases for accessing the data structure fields using BTF info.
-> > This includes the field access from parameters and retval, and accessing
-> > string information.
-> > 
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> One suggestion below, but
-> 
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+PGD 8253067 P4D 8253067 PUD 8e0e067 PMD 0
+Oops: 0002 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 PID: 98 Comm: poc.npd Not tainted 6.4.0-rc7-00072-gdad9774deaf1 #8
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.o4
+RIP: 0010:memcpy_orig+0xad/0x140
+Code: e8 4c 89 5f e0 48 8d 7f e0 73 d2 83 c2 20 48 29 d6 48 29 d7 83 fa 10 72 34 4c 8b 06 4c 8b 4e 08 c
+RSP: 0018:ffff888008f57658 EFLAGS: 00000202
+RAX: 0000000000000000 RBX: ffff888008bd0000 RCX: ffffffff8238e571
+RDX: 0000000000000018 RSI: ffff888007f64844 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff888008f57818
+R13: ffff888007f64aa4 R14: 0000000000000000 R15: 0000000000000000
+FS:  00000000014013c0(0000) GS:ffff88806d600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 00000000054d8000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ ? __die+0x1f/0x70
+ ? page_fault_oops+0x1e8/0x500
+ ? __pfx_is_prefetch.constprop.0+0x10/0x10
+ ? __pfx_page_fault_oops+0x10/0x10
+ ? _raw_spin_unlock_irqrestore+0x11/0x40
+ ? fixup_exception+0x36/0x460
+ ? _raw_spin_unlock_irqrestore+0x11/0x40
+ ? exc_page_fault+0x5e/0xc0
+ ? asm_exc_page_fault+0x26/0x30
+ ? xfrm_update_ae_params+0xd1/0x260
+ ? memcpy_orig+0xad/0x140
+ ? __pfx__raw_spin_lock_bh+0x10/0x10
+ xfrm_update_ae_params+0xe7/0x260
+ xfrm_new_ae+0x298/0x4e0
+ ? __pfx_xfrm_new_ae+0x10/0x10
+ xfrm_user_rcv_msg+0x25a/0x410
+ ? __pfx_xfrm_user_rcv_msg+0x10/0x10
+ ? __alloc_skb+0xcf/0x210
+ ? stack_trace_save+0x90/0xd0
+ ? filter_irq_stacks+0x1c/0x70
+ ? __stack_depot_save+0x39/0x4e0
+ ? __kasan_slab_free+0x10a/0x190
+ ? kmem_cache_free+0x9c/0x340
+ ? netlink_recvmsg+0x23c/0x660
+ ? sock_recvmsg+0xeb/0xf0
+ ? __sys_recvfrom+0x13c/0x1f0
+ ? __x64_sys_recvfrom+0x71/0x90
+ ? do_syscall_64+0x3f/0x90
+ ? entry_SYSCALL_64_after_hwframe+0x72/0xdc
+ ? copyout+0x3e/0x50
+ netlink_rcv_skb+0xd6/0x210
+ ? __pfx_xfrm_user_rcv_msg+0x10/0x10
+ ? __pfx_netlink_rcv_skb+0x10/0x10
+ ? __pfx_sock_has_perm+0x10/0x10
+ ? mutex_lock+0x8d/0xe0
+ ? __pfx_mutex_lock+0x10/0x10
+ xfrm_netlink_rcv+0x44/0x50
+ netlink_unicast+0x36f/0x4c0
+ ? __pfx_netlink_unicast+0x10/0x10
+ ? netlink_recvmsg+0x500/0x660
+ netlink_sendmsg+0x3b7/0x700
 
-Thanks
+This Null-ptr-deref bug is assigned CVE-2023-3772. And this commit
+adds additional NULL check in xfrm_update_ae_params to fix the NPD.
 
-> 
-> > ---
-> > Changes in v2:
-> >  - Use '$retval' instead of 'retval'.
-> >  - Add a test that use both '$retval' and '$arg1' for fprobe.
-> > ---
-> >  .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |   11 +++++++++++
-> >  .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 ++++
-> >  2 files changed, 15 insertions(+)
-> > 
-> > diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
-> > index b89de1771655..93b94468967b 100644
-> > --- a/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
-> > +++ b/tools/testing/selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc
-> > @@ -21,6 +21,8 @@ echo 0 > events/enable
-> >  echo > dynamic_events
-> >  
-> >  TP=kfree
-> > +TP2=kmem_cache_alloc
-> > +TP3=getname_flags
-> >  
-> >  if [ "$FPROBES" ] ; then
-> >  echo "f:fpevent $TP object" >> dynamic_events
-> > @@ -33,6 +35,7 @@ echo > dynamic_events
-> >  
-> >  echo "f:fpevent $TP "'$arg1' >> dynamic_events
-> >  grep -q "fpevent.*object=object" dynamic_events
-> > +
-> >  echo > dynamic_events
-> >  
-> >  echo "f:fpevent $TP "'$arg*' >> dynamic_events
-> > @@ -45,6 +48,14 @@ fi
-> >  
-> >  echo > dynamic_events
-> >  
-> > +echo "t:tpevent $TP2 name=s->name:string" >> dynamic_events
-> > +echo "f:fpevent ${TP3}%return path=\$retval->name:string" >> dynamic_events
-> > +
-> 
-> could we test a numeric value like kmem_cache_alloc object size?
-> also if combos of -> and . are allowed, would be good to test one of
-> those too.
+Fixes: d8647b79c3b7 ("xfrm: Add user interface for esn and big anti-replay windows")
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+ net/xfrm/xfrm_user.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-OK, that's a good point! I'll add it.
-
-> 
-> > +grep -q "tpevent.*name=s->name:string" dynamic_events
-> > +grep -q "fpevent.*path=\$retval->name:string" dynamic_events
-> > +
-> > +echo > dynamic_events
-> > +
-> >  if [ "$KPROBES" ] ; then
-> >  echo "p:kpevent $TP object" >> dynamic_events
-> >  grep -q "kpevent.*object=object" dynamic_events
-> > diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-> > index 72563b2e0812..49758f77c923 100644
-> > --- a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-> > +++ b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-> > @@ -103,6 +103,10 @@ check_error 'f vfs_read%return ^$arg*'		# NOFENTRY_ARGS
-> >  check_error 'f vfs_read ^hoge'			# NO_BTFARG
-> >  check_error 'f kfree ^$arg10'			# NO_BTFARG (exceed the number of parameters)
-> >  check_error 'f kfree%return ^$retval'		# NO_RETVAL
-> > +check_error 'f vfs_read%return $retval->^foo'	# NO_PTR_STRCT
-> > +check_error 'f vfs_read file->^foo'		# NO_BTF_FIELD
-> > +check_error 'f vfs_read file^-.foo'		# BAD_HYPHEN
-> > +check_error 'f vfs_read ^file:string'		# BAD_TYPE4STR
-> >  else
-> >  check_error 'f vfs_read ^$arg*'			# NOSUP_BTFARG
-> >  check_error 't kfree ^$arg*'			# NOSUP_BTFARG
-> > 
-> > 
-
-
+diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
+index c34a2a06ca94..bf2564967501 100644
+--- a/net/xfrm/xfrm_user.c
++++ b/net/xfrm/xfrm_user.c
+@@ -628,7 +628,7 @@ static void xfrm_update_ae_params(struct xfrm_state *x, struct nlattr **attrs,
+ 	struct nlattr *rt = attrs[XFRMA_REPLAY_THRESH];
+ 	struct nlattr *mt = attrs[XFRMA_MTIMER_THRESH];
+ 
+-	if (re) {
++	if (re && x->replay_esn && x->preplay_esn) {
+ 		struct xfrm_replay_state_esn *replay_esn;
+ 		replay_esn = nla_data(re);
+ 		memcpy(x->replay_esn, replay_esn,
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.17.1
+
