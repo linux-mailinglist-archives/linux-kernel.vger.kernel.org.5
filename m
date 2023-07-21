@@ -2,155 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F1775C49D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B0375C4A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbjGUKZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
+        id S231591AbjGUK0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231617AbjGUKYs (ORCPT
+        with ESMTP id S231573AbjGUK0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:24:48 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4024730F2;
-        Fri, 21 Jul 2023 03:24:23 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 2745A100006;
-        Fri, 21 Jul 2023 13:24:22 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 2745A100006
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1689935062;
-        bh=tFCW/uaLj61ag756MfONvhXmQcmfZ0nLYjbhS1U4p1g=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=PaVcMPqScfXEAVZrFPlKf0lqQQndn2hUC5BTeY795uAnVKnxDjDNKAEG5Gwv6gV4L
-         Ssz2b2fhMwUeKYemdRfcGBDvZN9kB6TWbtAjW+LUscKV7WYnlSXt5t5W7VrCDr06TW
-         yHcFjfACklRNPoqkHWV3MieRedCACHtaq5XFKcpVp6fhsSd2iOt4S94BvDWb5SOG5L
-         reO5+WiPu1XJfu8H8LSt0P8k+AYBy9IaOu9wJa2NaNzTKcKyRM5/wWlpk2n1Fw7m78
-         4u62lnRiTF+eZZz3LboFi5Vus0RdCzwVSrCIKEMgMOSi+PznvGXi23jEqxphcBoTkm
-         gqq33is7CILdg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Fri, 21 Jul 2023 13:24:21 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 21 Jul 2023 13:24:21 +0300
-From:   George Stark <gnstark@sberdevices.ru>
-To:     <jic23@kernel.org>, <lars@metafoo.de>, <neil.armstrong@linaro.org>,
-        <khilman@baylibre.com>, <jbrunet@baylibre.com>,
-        <martin.blumenstingl@googlemail.com>,
-        <andriy.shevchenko@linux.intel.com>, <nuno.sa@analog.com>,
-        <gnstark@sberdevices.ru>
-CC:     <linux-iio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-amlogic@lists.infradead.org>, <kernel@sberdevices.ru>
-Subject: [PATCH v2 0/2] iio: adc: meson: fix core clock enable/disable moment
-Date:   Fri, 21 Jul 2023 13:23:07 +0300
-Message-ID: <20230721102413.255726-1-gnstark@sberdevices.ru>
-X-Mailer: git-send-email 2.41.0
+        Fri, 21 Jul 2023 06:26:39 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C220B110
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:26:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689935195; x=1721471195;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=3la85cW8/KmPX/dcr+1vrlAz048TD7nuQ3LGUmKvcgY=;
+  b=j1+YUq2LPho4nrLGXxng4EoR63KcTL5syNtDIgNc1tu7VCfd0hbyZduQ
+   gSUONHn7d1o+JCAHrYEXJ89JlmZZ0AeN4G3Zi2PFrdkhiBoVX6tITPfKg
+   oLWCU7sTTAzdjld2V6JYvTvIKyKpvCn4yAm3Xii69g6y4OyO/IFrBJXq0
+   YUNcXDF0LKAtKewUhux++X7lxK8a/u3xyZzzTw+PS8RMO24Wnt8LXsb5b
+   /2aI6p7VrnFv0wHUMGkUKzer1SbKzHOk3gUqkIk7LgMUriKx8ZMGPRbDd
+   +cyhl2oPM7/riHealI7eapSihH0egwscnu6LkH14BBSnu/B+AWpQYiDzx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="369664217"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="369664217"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 03:26:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="971398246"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="971398246"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 03:26:33 -0700
+Date:   Fri, 21 Jul 2023 13:23:07 +0300 (EEST)
+From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To:     Racinglee <cydiaimpactor2003@gmail.com>
+cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux ALSA Development <alsa-devel@alsa-project.org>
+Subject: Re: 6.4 and higher causes audio distortion
+In-Reply-To: <CAL4Djy3KeD51LtT0bT2aRe9S_uwMiAfa-X=V2SfdnYt-MYp5ng@mail.gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2307211322100.3532114@eliteleevi.tm.intel.com>
+References: <3ee79b53-5c1b-1542-ceea-e51141e3ab74@gmail.com> <CAL4Djy3KeD51LtT0bT2aRe9S_uwMiAfa-X=V2SfdnYt-MYp5ng@mail.gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178775 [Jul 21 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: GNStark@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;www.spinics.net:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/07/21 08:11:00
-X-KSMG-LinksScanning: Clean, bases: 2023/07/21 08:13:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/21 05:36:00 #21651174
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="-318106570-2107917860-1689934996=:3532114"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is a part of effort to support meson a1 SoC and make meson saradc driver
-independent from vendor boot code initialization in common.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Core clock (passed to adc module thru dts) is supposed to be responsible for entier module
-and should be on before accessing modules' regs.
+---318106570-2107917860-1689934996=:3532114
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-I've made experiments and here are the results:
+Hi,
 
-on odroid-c1 (meson8) adc regs became readonly with core clock off:
-# disable clock (HHI_GCLK_MPEG0 bit 10)
-devmem 0xc1104140 32 0xBFFA72FF
-devmem 0xc110868C
-0xE3A851FF
-devmem 0xc110868C 32 0xE3A85100
-devmem 0xc110868C
-0xE3A851FF
-# enable clock
-devmem 0xc1104140 32 0xBFFA76FF
- devmem 0xc110868C
-0xE3A851FF
-devmem 0xc110868C 32 0xE3A85100
-devmem 0xc110868C
-0xE3A85100
 
-on vim3 (a311d) adc regs became readonly with core clock off:
-# disable adc core clock:
-devmem 0xff80004C 32 0xFFFFFEFF
-# the adc register become readonly:
-devmem 0xff80902c
-0x002C2002
-devmem 0xff80902c 32 0x002C2000
-devmem 0xff80902c
-0x002C2002
+On Wed, 19 Jul 2023, Racinglee wrote:
 
-on a1 adc registers are none-readable-writeable when adc core clock is off:
-devmem 0xfe002c2c
-0x00002003
-# disable clock
-devmem 0xfe00081c 32 0xFFFF9FFF
-devmem 0xfe002c2c
-0x00000000
-# enable clock
-devmem 0xfe00081c 32 0xFFFFFFFF
-devmem 0xfe002c2c
-0x00002003
+> On Sat, Jul 15, 2023 at 3:56 AM Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+> > I notice a regression report on Bugzilla [1]. Quoting from it:
+> >
+> > > I have a Lenovo ThinkPad X1 Yoga Gen 7 running Arch Linux. Linux 6.4 
+> > > and higher, cause audio distortion. Sometimes, this occurs to the 
+> > > point that nearly nothing is discernible. This carries over to wired 
+> > > headphones. The issue occurs on the entire mainline 6.4.x kernel 
+> > > series and also the 6.4.3 stable and 6.5 RC1 kernel, which are the 
+> > > latest at the time of writing. The issue occurs on both the Arch 
+> > > distributed kernels, and the mainline kernels.
+[...]
+> Updating regzbot after newer findings and determinations about the
+> possible culprit commit
+> 
+> #regzbot title: 6.4 and higher causes audio distortion
+> 
+> #regzbot introduced: v6.4-rc1..1bf83fa6654c
+> https://bugzilla.kernel.org/show_bug.cgi?id=217673#c5
+> 
 
-Changelog:
+thank you, filed a bug to SOF based on the bisect results:
+https://github.com/thesofproject/linux/issues/4482
 
-v1->v2:
-patch 'iio: adc: meson: improve error logging at probe stage'
-	- add fixes tag, previous version [1]
-	- move to devm_clk_get_enabled
-	- return enable/disable core clock calls to suspend \ resume callbacks
-	but did it at the last step and the first step respectively
-
-patch 'iio: adc: meson: improve error logging at probe stage'
-	patch was added to address Jonathan's comment
-
-[1] https://www.spinics.net/lists/linux-iio/msg80369.html
-
-George Stark (2):
-  iio: adc: meson: fix core clock enable/disable moment
-  iio: adc: meson: improve error logging at probe stage
-
- drivers/iio/adc/meson_saradc.c | 39 +++++++++++++++++++---------------
- 1 file changed, 22 insertions(+), 17 deletions(-)
-
--- 
-2.38.4
-
+Br, Kai
+---318106570-2107917860-1689934996=:3532114--
