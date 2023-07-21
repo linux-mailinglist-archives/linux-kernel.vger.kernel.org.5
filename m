@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFD675C81A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108F975C81C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbjGUNqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 09:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
+        id S231205AbjGUNqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 09:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjGUNqB (ORCPT
+        with ESMTP id S229642AbjGUNqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 09:46:01 -0400
+        Fri, 21 Jul 2023 09:46:04 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E961731;
-        Fri, 21 Jul 2023 06:46:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD70D1731;
+        Fri, 21 Jul 2023 06:46:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8EB0161B2A;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 61C5661B30;
+        Fri, 21 Jul 2023 13:46:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 664BAC433CC;
         Fri, 21 Jul 2023 13:45:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0543C433C7;
-        Fri, 21 Jul 2023 13:45:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689947159;
-        bh=Y+KzTs8+PzyDlj+I4KwGMIMgwXWbHAbN6snUeh5qmNk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=L67onQyS74Pnfx6UGTk/eusNu4C0c3ZMB7dzcL7H6aH+EVteGl0lC4CtSQf2HwlAD
-         uYFTBSIZLHDmSuIhmTyG4X/KJ2SeHzUOzt1BpFTnckdLLUrhuFaKVgxeVuZjDzz1Yt
-         8GEzbIOpuGO0iDL5Q8LMMJDDsDJj6l3YJKscOl4vUWoaVBEZgYtZLHor3zWpaQIDIA
-         umxkNhBUuECZ5M8wnVguwZEEtTk4G/TvQyjFgYxxYqdbdVA35T75Dd90x3d2LOTeta
-         eyxwL8AwKtwyxcmwl6BSbqK8gqN4ZyX2ARGuvQZ3exThwtgm5S6W/uyIcMiykB02xK
-         8fsn32/MXR5Sg==
+        s=k20201202; t=1689947160;
+        bh=7/8un7O0KbffM2Qk+6DZGKZkr/Uh/KXBMa5+rJ58feo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ry7vFJvp9lNVxfPbd1yKD9O3pf/xY0X8oj/sjYZZxkZOGwXmmCsHFnCs2sh9wZ75W
+         al6oCVkkwa41ZHvej0bfpAPg8v9tHWPGQS8k/qaGlIv/RIZu/3HbRNcF1orKpgrH3z
+         O51xW4dpN38f4BWnSRX+njUmECTN2RHeKwX26op1OWPfq38aLZVag4JwnI4w/zhwGZ
+         WnLJiYcs9F2UW69HNMM4+/VKenS2ysU3bNSsASrWYcZZMXAPmD6oGIGaVjOrld9ASH
+         lv9i2JWgWqSmMAhxk3k50WYI93Q4xQWaLkMEq7TOh4BXrUOEMHzrNTg4DRayDrUW5Y
+         sGSS3QEu8D9TQ==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     Richard Weinberger <richard@nod.at>,
         Anton Ivanov <anton.ivanov@cambridgegreys.com>,
@@ -40,15 +40,13 @@ To:     Richard Weinberger <richard@nod.at>,
         linux-um@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
         Jiri Slaby <jirislaby@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Subject: [PATCH 1/2] UML: hard-code the result of 'uname -s'
-Date:   Fri, 21 Jul 2023 22:45:47 +0900
-Message-Id: <20230721134548.3438376-1-masahiroy@kernel.org>
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 2/2] UML: use obj-y to descend into arch/um/*/
+Date:   Fri, 21 Jul 2023 22:45:48 +0900
+Message-Id: <20230721134548.3438376-2-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230721134548.3438376-1-masahiroy@kernel.org>
+References: <20230721134548.3438376-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -61,68 +59,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We rely on 'uname -s' returning 'Linux' as there are arch/um/os-Linux/
-and arch/x86/um/os-Linux/, but no other os-*/ directories.
+I like to use obj-y in as many places as possible.
 
-Supporting a non-Linux host is unlikely to happen.
+Change the core-y to obj-y. It fixes the single build issue. [1]
 
-Let's hard-code 'Linux'.
+[1]: https://lore.kernel.org/linux-kbuild/d57ba55f-20a3-b836-783d-b49c8a161b6e@kernel.org/T/#m7bc402e1e038f00ebcf2e92ed7fcb8a52fc1ea44
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/um/Makefile     | 7 +++----
- arch/x86/um/Makefile | 2 +-
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ arch/um/Kbuild   | 2 ++
+ arch/um/Makefile | 4 ----
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
+diff --git a/arch/um/Kbuild b/arch/um/Kbuild
+index a4e40e534e6a..6cf0c1e5927b 100644
+--- a/arch/um/Kbuild
++++ b/arch/um/Kbuild
+@@ -1 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++
++obj-y += kernel/ drivers/ os-Linux/
 diff --git a/arch/um/Makefile b/arch/um/Makefile
-index da4d5256af2f..1735a562453d 100644
+index 1735a562453d..82f05f250634 100644
 --- a/arch/um/Makefile
 +++ b/arch/um/Makefile
-@@ -18,14 +18,13 @@ else
- endif
- 
- ARCH_DIR := arch/um
--OS := $(shell uname -s)
- # We require bash because the vmlinux link and loader script cpp use bash
+@@ -22,10 +22,6 @@ ARCH_DIR := arch/um
  # features.
  SHELL := /bin/bash
  
- core-y			+= $(ARCH_DIR)/kernel/		\
- 			   $(ARCH_DIR)/drivers/		\
--			   $(ARCH_DIR)/os-$(OS)/
-+			   $(ARCH_DIR)/os-Linux/
- 
+-core-y			+= $(ARCH_DIR)/kernel/		\
+-			   $(ARCH_DIR)/drivers/		\
+-			   $(ARCH_DIR)/os-Linux/
+-
  MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/shared/skas
  
-@@ -78,7 +77,7 @@ USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
- 		-idirafter $(objtree)/include -D__KERNEL__ -D__UM_HOST__
- 
- #This will adjust *FLAGS accordingly to the platform.
--include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
-+include $(srctree)/$(ARCH_DIR)/Makefile-os-Linux
- 
- KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
- 		   -I$(srctree)/$(HOST_DIR)/include/uapi \
-@@ -155,4 +154,4 @@ archclean:
- 	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
- 		-o -name '*.gcov' \) -type f -print | xargs rm -f
- 
--export HEADER_ARCH SUBARCH USER_CFLAGS CFLAGS_NO_HARDENING OS DEV_NULL_PATH
-+export HEADER_ARCH SUBARCH USER_CFLAGS CFLAGS_NO_HARDENING DEV_NULL_PATH
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index ee89f6bb9242..e207e6748aa2 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -13,7 +13,7 @@ obj-y = bugs_$(BITS).o delay.o fault.o ldt.o \
- 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
- 	stub_$(BITS).o stub_segv.o \
- 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
--	mem_$(BITS).o subarch.o os-$(OS)/
-+	mem_$(BITS).o subarch.o os-Linux/
- 
- ifeq ($(CONFIG_X86_32),y)
- 
+ HEADER_ARCH 	:= $(SUBARCH)
 -- 
 2.39.2
 
