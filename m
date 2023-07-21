@@ -2,100 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A43E675C829
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E0375C82F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbjGUNqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 09:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
+        id S230027AbjGUNtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 09:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjGUNqu (ORCPT
+        with ESMTP id S229536AbjGUNte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 09:46:50 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBD41986;
-        Fri, 21 Jul 2023 06:46:48 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="433255150"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="433255150"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 06:46:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="728103153"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="728103153"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP; 21 Jul 2023 06:46:34 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andy@kernel.org>)
-        id 1qMqSj-006s0v-2p;
-        Fri, 21 Jul 2023 16:46:29 +0300
-Date:   Fri, 21 Jul 2023 16:46:29 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Kris Bahnsen <kris@embeddedts.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lukasz Majewski <lukma@denx.de>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Peters <mpeters@embeddedts.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        Nikita Shubin via B4 Relay 
-        <devnull+nikita.shubin.maquefel.me@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sebastian Reichel <sre@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>, soc@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 03/42] clk: ep93xx: add DT support for Cirrus EP93xx
-Message-ID: <ZLqMNU6XtTEO2a1R@smile.fi.intel.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-3-3d63a5f1103e@maquefel.me>
- <3fcb760c101c5f7081235290362f5c02.sboyd@kernel.org>
+        Fri, 21 Jul 2023 09:49:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C117C273C
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 06:48:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689947328;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+59IsCifznfcjfYMwQ8rMA4IccTRHGWrePtCutftbmo=;
+        b=bLbUYlsY+AYSL6VYXzrOPuIaLzX+b9qBtPKznadw9YrS8/zx+EaRGhPj5aWAIUTEgMv3zC
+        7na/Xhi0rfDcyvZadppId7fuGZfJrsa0fEg9dEO3UQm5B763BYUvjwKT2GS6vfbuzsZs+s
+        7to7YyocaWe2evawTHATWIVUpq1Hr6k=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-512-_7G0T2gjOm2_EVha-4a6RQ-1; Fri, 21 Jul 2023 09:48:42 -0400
+X-MC-Unique: _7G0T2gjOm2_EVha-4a6RQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 092A93815EEE;
+        Fri, 21 Jul 2023 13:48:42 +0000 (UTC)
+Received: from localhost (ovpn-12-18.pek2.redhat.com [10.72.12.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1FE16492B03;
+        Fri, 21 Jul 2023 13:48:40 +0000 (UTC)
+Date:   Fri, 21 Jul 2023 21:48:37 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v8 1/4] fs/proc/kcore: avoid bounce buffer for ktext data
+Message-ID: <ZLqMtcPXAA8g/4JI@MiWiFi-R3L-srv>
+References: <cover.1679566220.git.lstoakes@gmail.com>
+ <fd39b0bfa7edc76d360def7d034baaee71d90158.1679566220.git.lstoakes@gmail.com>
+ <ZHc2fm+9daF6cgCE@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3fcb760c101c5f7081235290362f5c02.sboyd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <ZHc2fm+9daF6cgCE@krava>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -103,23 +70,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 04:27:45PM -0700, Stephen Boyd wrote:
-> Quoting Nikita Shubin via B4 Relay (2023-07-20 04:29:03)
+Hi Jiri,
 
-...
-
-> > +static bool is_best(unsigned long rate, unsigned long now,
-> > +                    unsigned long best)
-> > +{
-> > +       return abs(rate - now) < abs(rate - best);
+On 05/31/23 at 01:58pm, Jiri Olsa wrote:
+> On Thu, Mar 23, 2023 at 10:15:16AM +0000, Lorenzo Stoakes wrote:
+> > Commit df04abfd181a ("fs/proc/kcore.c: Add bounce buffer for ktext data")
+> > introduced the use of a bounce buffer to retrieve kernel text data for
+> > /proc/kcore in order to avoid failures arising from hardened user copies
+> > enabled by CONFIG_HARDENED_USERCOPY in check_kernel_text_object().
+> > 
+> > We can avoid doing this if instead of copy_to_user() we use _copy_to_user()
+> > which bypasses the hardening check. This is more efficient than using a
+> > bounce buffer and simplifies the code.
+> > 
+> > We do so as part an overall effort to eliminate bounce buffer usage in the
+> > function with an eye to converting it an iterator read.
+> > 
+> > Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> > Reviewed-by: David Hildenbrand <david@redhat.com>
 > 
-> Another case where we need abs_diff() so that it doesn't get confused
-> when trying to do signed comparison.
+> hi,
+> sorry for late feedback, but looks like this one breaks reading
+> /proc/kcore with objdump for me:
+> 
+>   # cat /proc/kallsyms | grep ksys_read
+>   ffffffff8150ebc0 T ksys_read
+>   # objdump -d  --start-address=0xffffffff8150ebc0 --stop-address=0xffffffff8150ebd0 /proc/kcore 
+> 
+>   /proc/kcore:     file format elf64-x86-64
+> 
+>   objdump: Reading section load1 failed because: Bad address
+> 
+> reverting this makes it work again
 
-Here you are: Message-Id: <20230721134235.15517-1-andriy.shevchenko@linux.intel.com>
+I met this too when I executed below command to trigger a kcore reading.
+I wanted to do a simple testing during system running and got this.
 
--- 
-With Best Regards,
-Andy Shevchenko
+  makedumpfile --mem-usage /proc/kcore
 
+Later I tried your above objdump testing, it corrupted system too.
+
+Is there any conclusion about this issue you reported? I could miss
+things in the discussion or patch posting to fix this.
+
+Thanks
+Baoquan
+
+> 
+> 
+> > ---
+> >  fs/proc/kcore.c | 17 +++++------------
+> >  1 file changed, 5 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+> > index 71157ee35c1a..556f310d6aa4 100644
+> > --- a/fs/proc/kcore.c
+> > +++ b/fs/proc/kcore.c
+> > @@ -541,19 +541,12 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+> >  		case KCORE_VMEMMAP:
+> >  		case KCORE_TEXT:
+> >  			/*
+> > -			 * Using bounce buffer to bypass the
+> > -			 * hardened user copy kernel text checks.
+> > +			 * We use _copy_to_user() to bypass usermode hardening
+> > +			 * which would otherwise prevent this operation.
+> >  			 */
+> > -			if (copy_from_kernel_nofault(buf, (void *)start, tsz)) {
+> > -				if (clear_user(buffer, tsz)) {
+> > -					ret = -EFAULT;
+> > -					goto out;
+> > -				}
+> > -			} else {
+> > -				if (copy_to_user(buffer, buf, tsz)) {
+> > -					ret = -EFAULT;
+> > -					goto out;
+> > -				}
+> > +			if (_copy_to_user(buffer, (char *)start, tsz)) {
+> > +				ret = -EFAULT;
+> > +				goto out;
+> >  			}
+> >  			break;
+> >  		default:
+> > -- 
+> > 2.39.2
+> > 
+> 
 
