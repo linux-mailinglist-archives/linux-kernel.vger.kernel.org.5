@@ -2,690 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7906975D5AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B91675D59F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231576AbjGUUY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38978 "EHLO
+        id S230475AbjGUUYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:24:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231355AbjGUUYk (ORCPT
+        with ESMTP id S231490AbjGUUYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:24:40 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5654C3C0A;
-        Fri, 21 Jul 2023 13:24:12 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id BE81232009FB;
-        Fri, 21 Jul 2023 16:23:22 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 21 Jul 2023 16:23:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1689971002; x=
-        1690057402; bh=pHJ3WM/f5mvNC37sOGI/E//Q68KS1biWJ3itF/VHnw8=; b=O
-        uoJNnf34WwsAPkw6mzNQYULcBmjrFy+Z8mk2VtgWhc+4SNWq2O6IPTTRLDQ2eypz
-        G0udQScB4NziS22A90Xme1eYr10N7xp0QdI9dmV+G14GOtJtGLS/Q8kg2CzKWIa7
-        xPALvjwxjwf/3k73s+xNAJBwAehX1zG0m5OT8K1tLd+KzHAVi7VoGJgNyJt0nXZL
-        tdiCBVJpQsQCcMJJdELoDqu2VrEUI27PFIiLC8ExQeV75gYzm2t4RMsgdGHUTjY8
-        zyfYqrm0KEDwv+t+LUuretHVu9QKtEsJ61vaVvRuFUcA+Ykyxpn0DGpOA16LmWEe
-        r66/LlQQfwa6kJulnDvEA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1689971002; x=
-        1690057402; bh=pHJ3WM/f5mvNC37sOGI/E//Q68KS1biWJ3itF/VHnw8=; b=b
-        E5SmHQAyh7e+bL0itHK3jfU95pHx2k0IfcXCRApDYSfne3LdPBRBKBYRPOHN/OwN
-        zTRL6OPzFsiZst5S+6NyGk8xnP6S+Sz6H3NtJOcGRd9v018XYeRQd5qnNhSN4A1x
-        fajdJjm76KT/6IUjZsoLklLlfn26yWtMgRSOLWiOlRYvMx8BJAvImbrZCeDJ5rmV
-        tHyO9RY/OPNx3XUdpPee7l9eun/ztHXWhga84nZYFsA0yeUJj+0SNRPjIXtmFzeb
-        hza/tD3+geG9YLwrOxHmqTQIJ6CSP0B76WJuLgI1MLhU14ouZlDC6+LwFD5Adr13
-        X61UZez4EAn3F1TpwzIXw==
-X-ME-Sender: <xms:Oum6ZPxE9zD-S8cxf0E4dJ1AptyEpZ10V3Z8f0czt8aKGLmjU_Ooow>
-    <xme:Oum6ZHTjiGm5iMIZC-PZAoF-s_X_QDC2fbilI68Sw7NMUOR4kE8IijuUV89An6XiL
-    i4Rga06tqKGUopgrg>
-X-ME-Received: <xmr:Oum6ZJVo8yleJKjKhiPLw6p69h_EMHed-NX_7FyACnl9EumVU9JPwEcdyjx19IAvTFEGTyjh5hrZyEQzoWvXsv7mulFS7V-8dPJDOcP0Zd8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgddugeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
-    dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
-    vgepudenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:Oum6ZJjR2HCDZH5Pga4oBSvBuRutdr1Ziax0MS3Z0w8XLz_KwA0yVA>
-    <xmx:Oum6ZBCSAx2L1d-S7cVCgCsEjsP0Ep94jMuXQHCaZYwviMv5Iai3FQ>
-    <xmx:Oum6ZCItZpdoP4yO8H24oVnGPmLjIYzaxnlJBQMyAnMnC06AI9Sd2Q>
-    <xmx:Oum6ZJ4n2X1C7Fv7HUbbhhHFdAJaBqRQcolco0_8Uics7l8e0VhaNw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 21 Jul 2023 16:23:20 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     andrii@kernel.org, daniel@iogearbox.net, shuah@kernel.org,
-        ast@kernel.org, alexei.starovoitov@gmail.com, fw@strlen.de
-Cc:     mykolal@fb.com, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, dsahern@kernel.org
-Subject: [PATCH bpf-next v6 5/5] bpf: selftests: Add defrag selftests
-Date:   Fri, 21 Jul 2023 14:22:49 -0600
-Message-ID: <33e40fdfddf43be93f2cb259303f132f46750953.1689970773.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1689970773.git.dxu@dxuuu.xyz>
-References: <cover.1689970773.git.dxu@dxuuu.xyz>
+        Fri, 21 Jul 2023 16:24:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419CC4237
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:23:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B7ECF61D90
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 20:23:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04969C433C8;
+        Fri, 21 Jul 2023 20:23:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689970994;
+        bh=00ScIKblmd6B1m55jqznsMsbWq6usgdv4+dS4DY1PbI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eQ5BMA4quGnhmdF+HgU4o2GLuOM1uGFIpYPXANLR6wNNTideXTNpLkB6fIz4IjWVc
+         2KAdwn3SLZr2ZDoJ4LrrFTb6ybtydSXEiXAtMEJX6X/4MDUFgRh9yLXm5EOGLZd7AI
+         TwtH/BP8NLU3sssScWYxPBfkoIEVAw6ziTFkft0m2Kzr1y+6teHwe1ugLT/vIBx2Gm
+         bVxhRFVoFr+z98nmPMSOK9ASGTCYkHOPtYCrRGWWOwU2ahVur9U3x27C/V8YfBcaOl
+         RunvPCSGx6/JDe6D3qOsZgmgv+qrbn0OQc72Uy+Uh983iW9jNE2wLJhv1eZqiMZ4fX
+         sHMnnGoZdr2Eg==
+Date:   Fri, 21 Jul 2023 13:23:12 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     Daejun Park <daejun7.park@samsung.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: do not issue small discard commands
+ during checkpoint
+Message-ID: <ZLrpMAaOkmrKQFv+@google.com>
+References: <ZInmkgjDnAUD5Nk0@google.com>
+ <50d5fa8c-4fe9-8a03-be78-0b5383e55b62@kernel.org>
+ <ZKP6EJ5dZ4f4wScp@google.com>
+ <65143701-4c19-ab66-1500-abd1162639cd@kernel.org>
+ <ZKWovWZDiHjMavtB@google.com>
+ <cadfb8d7-f5d0-a3ec-cafb-a0c06ad7d290@kernel.org>
+ <ZK2FT9CUjxXvQ2K5@google.com>
+ <330c96f7-fbad-dd17-6368-f1378b3b5375@kernel.org>
+ <ZK7M6EkLkV8UbqUl@google.com>
+ <87acf602-1587-0615-909d-6e60c66c3cda@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87acf602-1587-0615-909d-6e60c66c3cda@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These selftests tests 2 major scenarios: the BPF based defragmentation
-can successfully be done and that packet pointers are invalidated after
-calls to the kfunc. The logic is similar for both ipv4 and ipv6.
+On 07/13, Chao Yu wrote:
+> On 2023/7/12 23:55, Jaegeuk Kim wrote:
+> > On 07/12, Chao Yu wrote:
+> > > On 2023/7/12 0:37, Jaegeuk Kim wrote:
+> > > > On 07/06, Chao Yu wrote:
+> > > > > On 2023/7/6 1:30, Jaegeuk Kim wrote:
+> > > > > > On 07/04, Chao Yu wrote:
+> > > > > > > On 2023/7/4 18:53, Jaegeuk Kim wrote:
+> > > > > > > > On 07/03, Chao Yu wrote:
+> > > > > > > > > On 2023/6/15 0:10, Jaegeuk Kim wrote:
+> > > > > > > > > > If there're huge # of small discards, this will increase checkpoint latency
+> > > > > > > > > > insanely. Let's issue small discards only by trim.
+> > > > > > > > > > 
+> > > > > > > > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > > > > > > > > > ---
+> > > > > > > > > > 
+> > > > > > > > > >       Change log from v1:
+> > > > > > > > > >        - move the skip logic to avoid dangling objects
+> > > > > > > > > > 
+> > > > > > > > > >       fs/f2fs/segment.c | 2 +-
+> > > > > > > > > >       1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > > > > > > 
+> > > > > > > > > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> > > > > > > > > > index 8c7af8b4fc47..0457d620011f 100644
+> > > > > > > > > > --- a/fs/f2fs/segment.c
+> > > > > > > > > > +++ b/fs/f2fs/segment.c
+> > > > > > > > > > @@ -2193,7 +2193,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+> > > > > > > > > >       			len = next_pos - cur_pos;
+> > > > > > > > > >       			if (f2fs_sb_has_blkzoned(sbi) ||
+> > > > > > > > > > -			    (force && len < cpc->trim_minlen))
+> > > > > > > > > > +					!force || len < cpc->trim_minlen)
+> > > > > > > > > >       				goto skip;
+> > > > > > > > > 
+> > > > > > > > > Sorry for late reply.
+> > > > > > > > > 
+> > > > > > > > > We have a configuration for such case, what do you think of setting
+> > > > > > > > > max_small_discards to zero? otherwise, w/ above change, max_small_discards
+> > > > > > > > > logic may be broken?
+> > > > > > > > > 
+> > > > > > > > > What:           /sys/fs/f2fs/<disk>/max_small_discards
+> > > > > > > > > Date:           November 2013
+> > > > > > > > > Contact:        "Jaegeuk Kim" <jaegeuk.kim@samsung.com>
+> > > > > > > > > Description:    Controls the issue rate of discard commands that consist of small
+> > > > > > > > >                     blocks less than 2MB. The candidates to be discarded are cached until
+> > > > > > > > >                     checkpoint is triggered, and issued during the checkpoint.
+> > > > > > > > >                     By default, it is disabled with 0.
+> > > > > > > > > 
+> > > > > > > > > Or, if we prefer to disable small_discards by default, what about below change:
+> > > > > > > > 
+> > > > > > > > I think small_discards is fine, but need to avoid long checkpoint latency only.
+> > > > > > > 
+> > > > > > > I didn't get you, do you mean we can still issue small discard by
+> > > > > > > fstrim, so small_discards functionality is fine?
+> > > > > > 
+> > > > > > You got the point.
+> > > > > 
+> > > > > Well, actually, what I mean is max_small_discards sysfs entry's functionality
+> > > > > is broken. Now, the entry can not be used to control number of small discards
+> > > > > committed by checkpoint.
+> > > > 
+> > > > Could you descrbie this problem first?
+> > > 
+> > > Oh, alright, actually, I've described this problem literally, but maybe it's not
+> > > clear, let me give some examples as below:
+> > > 
+> > > echo 0 > /sys/fs/f2fs/vdb/max_small_discards
+> > > xfs_io -f /mnt/f2fs/file -c "pwrite 0 2m" -c "fsync"
+> > > xfs_io /mnt/f2fs/file -c "fpunch 0 4k"
+> > > sync
+> > > cat /proc/fs/f2fs/vdb/discard_plist_info |head -2
+> > > 
+> > > echo 100 > /sys/fs/f2fs/vdb/max_small_discards
+> > > rm /mnt/f2fs/file
+> > > xfs_io -f /mnt/f2fs/file -c "pwrite 0 2m" -c "fsync"
+> > > xfs_io /mnt/f2fs/file -c "fpunch 0 4k"
+> > > sync
+> > > cat /proc/fs/f2fs/vdb/discard_plist_info |head -2
+> > > 
+> > > Before the patch:
+> > > 
+> > > Discard pend list(Show diacrd_cmd count on each entry, .:not exist):
+> > >    0         .       .       .       .       .       .       .       .
+> > > 
+> > > Discard pend list(Show diacrd_cmd count on each entry, .:not exist):
+> > >    0         3       1       .       .       .       .       .       .
+> > > 
+> > > After the patch:
+> > > Discard pend list(Show diacrd_cmd count on each entry, .:not exist):
+> > >    0         .       .       .       .       .       .       .       .
+> > > 
+> > > Discard pend list(Show diacrd_cmd count on each entry, .:not exist):
+> > >    0         .       .       .       .       .       .       .       .
+> > > 
+> > > So, now max_small_discards can not be used to control small discard number
+> > > cached by checkpoint.
+> 
+> Let me explain more:
+> 
+> Previously, we have two mechanisms to cache & submit small discards:
+> 
+> a) set max small discard number in /sys/fs/f2fs/vdb/max_small_discards, and checkpoint
+> will cache small discard candidates w/ configured maximum number.
+> 
+> b) call FITRIM ioctl, also, checkpoint in f2fs_trim_fs() will cache small discard
+> candidates w/ configured discard granularity, but w/o limitation of number. FSTRIM
+> interface is asynchronized, so it won't submit discard directly.
+> 
+> Finally, discard thread will submit them in background periodically.
+> 
+> So what I mean is the mechanism a) is broken, since no matter how we configure the
+> sysfs entry /sys/fs/f2fs/vdb/max_small_discards, checkpoint will not cache small
+> discard candidates any more.
 
-In the first scenario, we create a UDP client and UDP echo server. The
-the server side is fairly straightforward: we attach the prog and simply
-echo back the message.
+Ok, it seems what I encountered before was adding this small discard even
+after issuing it by checkpoint. Thoughts?
 
-The on the client side, we send fragmented packets to and expect the
-reassembled message back from the server.
+node=0], cp [data=0, node=0, meta=0], app [read=0 (direct=0, buffered=0), mapped=0], compr(buffered=0, mapped=0)], fs [data=0, (gc_data=0, cdata=0), node=0, meta=0]
+ f2fs_discard-25-752     [003] .....  9744.173085: f2fs_iostat_latency: dev = (254,51), iotype [peak lat.(ms)/avg lat.(ms)/count], rd_data [0/0/0], rd_node [0/0/0], rd_meta [0/0/0], wr_sync_data [0/0/0], wr_sync_node [0/0/0], wr_sync_meta [0/0/0], wr_async_data [0/0/0], wr_async_node [0/0/0], wr_async_meta [0/0/0]
+ f2fs_discard-25-752     [003] .....  9744.173089: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c0c6, blklen = 0x1
+ f2fs_discard-25-752     [003] .....  9744.173111: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c0ca, blklen = 0x1
+ f2fs_discard-25-752     [003] .....  9744.173126: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c116, blklen = 0x1
+ f2fs_discard-25-752     [003] .....  9744.173140: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c121, blklen = 0x1
+ f2fs_discard-25-752     [003] .....  9744.173154: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c15b, blklen = 0x1
+ f2fs_discard-25-752     [003] .....  9744.173169: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c16e, blklen = 0x1
+ f2fs_discard-25-752     [003] .....  9744.173183: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c181, blklen = 0x1
+ f2fs_discard-25-752     [004] .....  9744.175272: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c0a9, blklen = 0x1
+ f2fs_discard-25-752     [004] .....  9744.175345: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c0c6, blklen = 0x1
+ f2fs_discard-25-752     [004] .....  9744.175348: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c0ca, blklen = 0x1
+ f2fs_discard-25-752     [004] .....  9744.175352: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c116, blklen = 0x1
+ f2fs_discard-25-752     [004] .....  9744.175354: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c121, blklen = 0x1
+ f2fs_discard-25-752     [004] .....  9744.175360: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c15b, blklen = 0x1
+ f2fs_discard-25-752     [004] .....  9744.175362: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c16e, blklen = 0x1
+ f2fs_discard-25-752     [004] .....  9744.175367: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c181, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.228775: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c197, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.228950: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c1ad, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.228965: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c1b1, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.228994: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c1b3, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.229006: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c27a, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.229017: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c2a3, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.229028: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c2ab, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.229041: f2fs_issue_discard: dev = (254,51), blkstart = 0x18c304, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.230811: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c197, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.230926: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c1ad, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.230929: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c1b1, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.230932: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c1b3, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.230940: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c27a, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.230945: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c2a3, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.230947: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c2ab, blklen = 0x1
+ f2fs_discard-25-752     [002] .....  9744.230952: f2fs_remove_discard: dev = (254,51), blkstart = 0x18c304, blklen = 0x1
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/testing/selftests/bpf/Makefile          |   4 +-
- .../selftests/bpf/generate_udp_fragments.py   |  90 ++++++
- .../selftests/bpf/ip_check_defrag_frags.h     |  57 ++++
- .../bpf/prog_tests/ip_check_defrag.c          | 283 ++++++++++++++++++
- .../selftests/bpf/progs/ip_check_defrag.c     | 104 +++++++
- 5 files changed, 536 insertions(+), 2 deletions(-)
- create mode 100755 tools/testing/selftests/bpf/generate_udp_fragments.py
- create mode 100644 tools/testing/selftests/bpf/ip_check_defrag_frags.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
- create mode 100644 tools/testing/selftests/bpf/progs/ip_check_defrag.c
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 882be03b179f..619df497fce5 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -565,8 +565,8 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
- 			 network_helpers.c testing_helpers.c		\
- 			 btf_helpers.c flow_dissector_load.h		\
- 			 cap_helpers.c test_loader.c xsk.c disasm.c	\
--			 json_writer.c unpriv_helpers.c
--
-+			 json_writer.c unpriv_helpers.c 		\
-+			 ip_check_defrag_frags.h
- TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
- 		       $(OUTPUT)/liburandom_read.so			\
- 		       $(OUTPUT)/xdp_synproxy				\
-diff --git a/tools/testing/selftests/bpf/generate_udp_fragments.py b/tools/testing/selftests/bpf/generate_udp_fragments.py
-new file mode 100755
-index 000000000000..2b8a1187991c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/generate_udp_fragments.py
-@@ -0,0 +1,90 @@
-+#!/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+"""
-+This script helps generate fragmented UDP packets.
-+
-+While it is technically possible to dynamically generate
-+fragmented packets in C, it is much harder to read and write
-+said code. `scapy` is relatively industry standard and really
-+easy to read / write.
-+
-+So we choose to write this script that generates a valid C
-+header. Rerun script and commit generated file after any
-+modifications.
-+"""
-+
-+import argparse
-+import os
-+
-+from scapy.all import *
-+
-+
-+# These constants must stay in sync with `ip_check_defrag.c`
-+VETH1_ADDR = "172.16.1.200"
-+VETH0_ADDR6 = "fc00::100"
-+VETH1_ADDR6 = "fc00::200"
-+CLIENT_PORT = 48878
-+SERVER_PORT = 48879
-+MAGIC_MESSAGE = "THIS IS THE ORIGINAL MESSAGE, PLEASE REASSEMBLE ME"
-+
-+
-+def print_header(f):
-+    f.write("// SPDX-License-Identifier: GPL-2.0\n")
-+    f.write("/* DO NOT EDIT -- this file is generated */\n")
-+    f.write("\n")
-+    f.write("#ifndef _IP_CHECK_DEFRAG_FRAGS_H\n")
-+    f.write("#define _IP_CHECK_DEFRAG_FRAGS_H\n")
-+    f.write("\n")
-+    f.write("#include <stdint.h>\n")
-+    f.write("\n")
-+
-+
-+def print_frags(f, frags, v6):
-+    for idx, frag in enumerate(frags):
-+        # 10 bytes per line to keep width in check
-+        chunks = [frag[i : i + 10] for i in range(0, len(frag), 10)]
-+        chunks_fmted = [", ".join([str(hex(b)) for b in chunk]) for chunk in chunks]
-+        suffix = "6" if v6 else ""
-+
-+        f.write(f"static uint8_t frag{suffix}_{idx}[] = {{\n")
-+        for chunk in chunks_fmted:
-+            f.write(f"\t{chunk},\n")
-+        f.write(f"}};\n")
-+
-+
-+def print_trailer(f):
-+    f.write("\n")
-+    f.write("#endif /* _IP_CHECK_DEFRAG_FRAGS_H */\n")
-+
-+
-+def main(f):
-+    # srcip of 0 is filled in by IP_HDRINCL
-+    sip = "0.0.0.0"
-+    sip6 = VETH0_ADDR6
-+    dip = VETH1_ADDR
-+    dip6 = VETH1_ADDR6
-+    sport = CLIENT_PORT
-+    dport = SERVER_PORT
-+    payload = MAGIC_MESSAGE.encode()
-+
-+    # Disable UDPv4 checksums to keep code simpler
-+    pkt = IP(src=sip,dst=dip) / UDP(sport=sport,dport=dport,chksum=0) / Raw(load=payload)
-+    # UDPv6 requires a checksum
-+    # Also pin the ipv6 fragment header ID, otherwise it's a random value
-+    pkt6 = IPv6(src=sip6,dst=dip6) / IPv6ExtHdrFragment(id=0xBEEF) / UDP(sport=sport,dport=dport) / Raw(load=payload)
-+
-+    frags = [f.build() for f in pkt.fragment(24)]
-+    frags6 = [f.build() for f in fragment6(pkt6, 72)]
-+
-+    print_header(f)
-+    print_frags(f, frags, False)
-+    print_frags(f, frags6, True)
-+    print_trailer(f)
-+
-+
-+if __name__ == "__main__":
-+    dir = os.path.dirname(os.path.realpath(__file__))
-+    header = f"{dir}/ip_check_defrag_frags.h"
-+    with open(header, "w") as f:
-+        main(f)
-diff --git a/tools/testing/selftests/bpf/ip_check_defrag_frags.h b/tools/testing/selftests/bpf/ip_check_defrag_frags.h
-new file mode 100644
-index 000000000000..70ab7e9fa22b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/ip_check_defrag_frags.h
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* DO NOT EDIT -- this file is generated */
-+
-+#ifndef _IP_CHECK_DEFRAG_FRAGS_H
-+#define _IP_CHECK_DEFRAG_FRAGS_H
-+
-+#include <stdint.h>
-+
-+static uint8_t frag_0[] = {
-+	0x45, 0x0, 0x0, 0x2c, 0x0, 0x1, 0x20, 0x0, 0x40, 0x11,
-+	0xac, 0xe8, 0x0, 0x0, 0x0, 0x0, 0xac, 0x10, 0x1, 0xc8,
-+	0xbe, 0xee, 0xbe, 0xef, 0x0, 0x3a, 0x0, 0x0, 0x54, 0x48,
-+	0x49, 0x53, 0x20, 0x49, 0x53, 0x20, 0x54, 0x48, 0x45, 0x20,
-+	0x4f, 0x52, 0x49, 0x47,
-+};
-+static uint8_t frag_1[] = {
-+	0x45, 0x0, 0x0, 0x2c, 0x0, 0x1, 0x20, 0x3, 0x40, 0x11,
-+	0xac, 0xe5, 0x0, 0x0, 0x0, 0x0, 0xac, 0x10, 0x1, 0xc8,
-+	0x49, 0x4e, 0x41, 0x4c, 0x20, 0x4d, 0x45, 0x53, 0x53, 0x41,
-+	0x47, 0x45, 0x2c, 0x20, 0x50, 0x4c, 0x45, 0x41, 0x53, 0x45,
-+	0x20, 0x52, 0x45, 0x41,
-+};
-+static uint8_t frag_2[] = {
-+	0x45, 0x0, 0x0, 0x1e, 0x0, 0x1, 0x0, 0x6, 0x40, 0x11,
-+	0xcc, 0xf0, 0x0, 0x0, 0x0, 0x0, 0xac, 0x10, 0x1, 0xc8,
-+	0x53, 0x53, 0x45, 0x4d, 0x42, 0x4c, 0x45, 0x20, 0x4d, 0x45,
-+};
-+static uint8_t frag6_0[] = {
-+	0x60, 0x0, 0x0, 0x0, 0x0, 0x20, 0x2c, 0x40, 0xfc, 0x0,
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x1, 0x0, 0xfc, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2, 0x0,
-+	0x11, 0x0, 0x0, 0x1, 0x0, 0x0, 0xbe, 0xef, 0xbe, 0xee,
-+	0xbe, 0xef, 0x0, 0x3a, 0xd0, 0xf8, 0x54, 0x48, 0x49, 0x53,
-+	0x20, 0x49, 0x53, 0x20, 0x54, 0x48, 0x45, 0x20, 0x4f, 0x52,
-+	0x49, 0x47,
-+};
-+static uint8_t frag6_1[] = {
-+	0x60, 0x0, 0x0, 0x0, 0x0, 0x20, 0x2c, 0x40, 0xfc, 0x0,
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x1, 0x0, 0xfc, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2, 0x0,
-+	0x11, 0x0, 0x0, 0x19, 0x0, 0x0, 0xbe, 0xef, 0x49, 0x4e,
-+	0x41, 0x4c, 0x20, 0x4d, 0x45, 0x53, 0x53, 0x41, 0x47, 0x45,
-+	0x2c, 0x20, 0x50, 0x4c, 0x45, 0x41, 0x53, 0x45, 0x20, 0x52,
-+	0x45, 0x41,
-+};
-+static uint8_t frag6_2[] = {
-+	0x60, 0x0, 0x0, 0x0, 0x0, 0x12, 0x2c, 0x40, 0xfc, 0x0,
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x1, 0x0, 0xfc, 0x0, 0x0, 0x0, 0x0, 0x0,
-+	0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2, 0x0,
-+	0x11, 0x0, 0x0, 0x30, 0x0, 0x0, 0xbe, 0xef, 0x53, 0x53,
-+	0x45, 0x4d, 0x42, 0x4c, 0x45, 0x20, 0x4d, 0x45,
-+};
-+
-+#endif /* _IP_CHECK_DEFRAG_FRAGS_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c b/tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
-new file mode 100644
-index 000000000000..57c814f5f6a7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
-@@ -0,0 +1,283 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <net/if.h>
-+#include <linux/netfilter.h>
-+#include <network_helpers.h>
-+#include "ip_check_defrag.skel.h"
-+#include "ip_check_defrag_frags.h"
-+
-+/*
-+ * This selftest spins up a client and an echo server, each in their own
-+ * network namespace. The client will send a fragmented message to the server.
-+ * The prog attached to the server will shoot down any fragments. Thus, if
-+ * the server is able to correctly echo back the message to the client, we will
-+ * have verified that netfilter is reassembling packets for us.
-+ *
-+ * Topology:
-+ * =========
-+ *           NS0         |         NS1
-+ *                       |
-+ *         client        |       server
-+ *       ----------      |     ----------
-+ *       |  veth0  | --------- |  veth1  |
-+ *       ----------    peer    ----------
-+ *                       |
-+ *                       |       with bpf
-+ */
-+
-+#define NS0		"defrag_ns0"
-+#define NS1		"defrag_ns1"
-+#define VETH0		"veth0"
-+#define VETH1		"veth1"
-+#define VETH0_ADDR	"172.16.1.100"
-+#define VETH0_ADDR6	"fc00::100"
-+/* The following constants must stay in sync with `generate_udp_fragments.py` */
-+#define VETH1_ADDR	"172.16.1.200"
-+#define VETH1_ADDR6	"fc00::200"
-+#define CLIENT_PORT	48878
-+#define SERVER_PORT	48879
-+#define MAGIC_MESSAGE	"THIS IS THE ORIGINAL MESSAGE, PLEASE REASSEMBLE ME"
-+
-+static int setup_topology(bool ipv6)
-+{
-+	bool up;
-+	int i;
-+
-+	SYS(fail, "ip netns add " NS0);
-+	SYS(fail, "ip netns add " NS1);
-+	SYS(fail, "ip link add " VETH0 " netns " NS0 " type veth peer name " VETH1 " netns " NS1);
-+	if (ipv6) {
-+		SYS(fail, "ip -6 -net " NS0 " addr add " VETH0_ADDR6 "/64 dev " VETH0 " nodad");
-+		SYS(fail, "ip -6 -net " NS1 " addr add " VETH1_ADDR6 "/64 dev " VETH1 " nodad");
-+	} else {
-+		SYS(fail, "ip -net " NS0 " addr add " VETH0_ADDR "/24 dev " VETH0);
-+		SYS(fail, "ip -net " NS1 " addr add " VETH1_ADDR "/24 dev " VETH1);
-+	}
-+	SYS(fail, "ip -net " NS0 " link set dev " VETH0 " up");
-+	SYS(fail, "ip -net " NS1 " link set dev " VETH1 " up");
-+
-+	/* Wait for up to 5s for links to come up */
-+	for (i = 0; i < 5; ++i) {
-+		if (ipv6)
-+			up = !system("ip netns exec " NS0 " ping -6 -c 1 -W 1 " VETH1_ADDR6 " &>/dev/null");
-+		else
-+			up = !system("ip netns exec " NS0 " ping -c 1 -W 1 " VETH1_ADDR " &>/dev/null");
-+
-+		if (up)
-+			break;
-+	}
-+
-+	return 0;
-+fail:
-+	return -1;
-+}
-+
-+static void cleanup_topology(void)
-+{
-+	SYS_NOFAIL("test -f /var/run/netns/" NS0 " && ip netns delete " NS0);
-+	SYS_NOFAIL("test -f /var/run/netns/" NS1 " && ip netns delete " NS1);
-+}
-+
-+static int attach(struct ip_check_defrag *skel, bool ipv6)
-+{
-+	LIBBPF_OPTS(bpf_netfilter_opts, opts,
-+		    .pf = ipv6 ? NFPROTO_IPV6 : NFPROTO_IPV4,
-+		    .priority = 42,
-+		    .flags = BPF_F_NETFILTER_IP_DEFRAG);
-+	struct nstoken *nstoken;
-+	int err = -1;
-+
-+	nstoken = open_netns(NS1);
-+
-+	skel->links.defrag = bpf_program__attach_netfilter(skel->progs.defrag, &opts);
-+	if (!ASSERT_OK_PTR(skel->links.defrag, "program attach"))
-+		goto out;
-+
-+	err = 0;
-+out:
-+	close_netns(nstoken);
-+	return err;
-+}
-+
-+static int send_frags(int client)
-+{
-+	struct sockaddr_storage saddr;
-+	struct sockaddr *saddr_p;
-+	socklen_t saddr_len;
-+	int err;
-+
-+	saddr_p = (struct sockaddr *)&saddr;
-+	err = make_sockaddr(AF_INET, VETH1_ADDR, SERVER_PORT, &saddr, &saddr_len);
-+	if (!ASSERT_OK(err, "make_sockaddr"))
-+		return -1;
-+
-+	err = sendto(client, frag_0, sizeof(frag_0), 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto frag_0"))
-+		return -1;
-+
-+	err = sendto(client, frag_1, sizeof(frag_1), 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto frag_1"))
-+		return -1;
-+
-+	err = sendto(client, frag_2, sizeof(frag_2), 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto frag_2"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int send_frags6(int client)
-+{
-+	struct sockaddr_storage saddr;
-+	struct sockaddr *saddr_p;
-+	socklen_t saddr_len;
-+	int err;
-+
-+	saddr_p = (struct sockaddr *)&saddr;
-+	/* Port needs to be set to 0 for raw ipv6 socket for some reason */
-+	err = make_sockaddr(AF_INET6, VETH1_ADDR6, 0, &saddr, &saddr_len);
-+	if (!ASSERT_OK(err, "make_sockaddr"))
-+		return -1;
-+
-+	err = sendto(client, frag6_0, sizeof(frag6_0), 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto frag6_0"))
-+		return -1;
-+
-+	err = sendto(client, frag6_1, sizeof(frag6_1), 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto frag6_1"))
-+		return -1;
-+
-+	err = sendto(client, frag6_2, sizeof(frag6_2), 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto frag6_2"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+void test_bpf_ip_check_defrag_ok(bool ipv6)
-+{
-+	struct network_helper_opts rx_opts = {
-+		.timeout_ms = 1000,
-+		.noconnect = true,
-+	};
-+	struct network_helper_opts tx_ops = {
-+		.timeout_ms = 1000,
-+		.type = SOCK_RAW,
-+		.proto = IPPROTO_RAW,
-+		.noconnect = true,
-+	};
-+	struct sockaddr_storage caddr;
-+	struct ip_check_defrag *skel;
-+	struct nstoken *nstoken;
-+	int client_tx_fd = -1;
-+	int client_rx_fd = -1;
-+	socklen_t caddr_len;
-+	int srv_fd = -1;
-+	char buf[1024];
-+	int len, err;
-+
-+	skel = ip_check_defrag__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	if (!ASSERT_OK(setup_topology(ipv6), "setup_topology"))
-+		goto out;
-+
-+	if (!ASSERT_OK(attach(skel, ipv6), "attach"))
-+		goto out;
-+
-+	/* Start server in ns1 */
-+	nstoken = open_netns(NS1);
-+	if (!ASSERT_OK_PTR(nstoken, "setns ns1"))
-+		goto out;
-+	srv_fd = start_server(ipv6 ? AF_INET6 : AF_INET, SOCK_DGRAM, NULL, SERVER_PORT, 0);
-+	close_netns(nstoken);
-+	if (!ASSERT_GE(srv_fd, 0, "start_server"))
-+		goto out;
-+
-+	/* Open tx raw socket in ns0 */
-+	nstoken = open_netns(NS0);
-+	if (!ASSERT_OK_PTR(nstoken, "setns ns0"))
-+		goto out;
-+	client_tx_fd = connect_to_fd_opts(srv_fd, &tx_ops);
-+	close_netns(nstoken);
-+	if (!ASSERT_GE(client_tx_fd, 0, "connect_to_fd_opts"))
-+		goto out;
-+
-+	/* Open rx socket in ns0 */
-+	nstoken = open_netns(NS0);
-+	if (!ASSERT_OK_PTR(nstoken, "setns ns0"))
-+		goto out;
-+	client_rx_fd = connect_to_fd_opts(srv_fd, &rx_opts);
-+	close_netns(nstoken);
-+	if (!ASSERT_GE(client_rx_fd, 0, "connect_to_fd_opts"))
-+		goto out;
-+
-+	/* Bind rx socket to a premeditated port */
-+	memset(&caddr, 0, sizeof(caddr));
-+	nstoken = open_netns(NS0);
-+	if (!ASSERT_OK_PTR(nstoken, "setns ns0"))
-+		goto out;
-+	if (ipv6) {
-+		struct sockaddr_in6 *c = (struct sockaddr_in6 *)&caddr;
-+
-+		c->sin6_family = AF_INET6;
-+		inet_pton(AF_INET6, VETH0_ADDR6, &c->sin6_addr);
-+		c->sin6_port = htons(CLIENT_PORT);
-+		err = bind(client_rx_fd, (struct sockaddr *)c, sizeof(*c));
-+	} else {
-+		struct sockaddr_in *c = (struct sockaddr_in *)&caddr;
-+
-+		c->sin_family = AF_INET;
-+		inet_pton(AF_INET, VETH0_ADDR, &c->sin_addr);
-+		c->sin_port = htons(CLIENT_PORT);
-+		err = bind(client_rx_fd, (struct sockaddr *)c, sizeof(*c));
-+	}
-+	close_netns(nstoken);
-+	if (!ASSERT_OK(err, "bind"))
-+		goto out;
-+
-+	/* Send message in fragments */
-+	if (ipv6) {
-+		if (!ASSERT_OK(send_frags6(client_tx_fd), "send_frags6"))
-+			goto out;
-+	} else {
-+		if (!ASSERT_OK(send_frags(client_tx_fd), "send_frags"))
-+			goto out;
-+	}
-+
-+	if (!ASSERT_EQ(skel->bss->shootdowns, 0, "shootdowns"))
-+		goto out;
-+
-+	/* Receive reassembled msg on server and echo back to client */
-+	caddr_len = sizeof(caddr);
-+	len = recvfrom(srv_fd, buf, sizeof(buf), 0, (struct sockaddr *)&caddr, &caddr_len);
-+	if (!ASSERT_GE(len, 0, "server recvfrom"))
-+		goto out;
-+	len = sendto(srv_fd, buf, len, 0, (struct sockaddr *)&caddr, caddr_len);
-+	if (!ASSERT_GE(len, 0, "server sendto"))
-+		goto out;
-+
-+	/* Expect reassembed message to be echoed back */
-+	len = recvfrom(client_rx_fd, buf, sizeof(buf), 0, NULL, NULL);
-+	if (!ASSERT_EQ(len, sizeof(MAGIC_MESSAGE) - 1, "client short read"))
-+		goto out;
-+
-+out:
-+	if (client_rx_fd != -1)
-+		close(client_rx_fd);
-+	if (client_tx_fd != -1)
-+		close(client_tx_fd);
-+	if (srv_fd != -1)
-+		close(srv_fd);
-+	cleanup_topology();
-+	ip_check_defrag__destroy(skel);
-+}
-+
-+void test_bpf_ip_check_defrag(void)
-+{
-+	if (test__start_subtest("v4"))
-+		test_bpf_ip_check_defrag_ok(false);
-+	if (test__start_subtest("v6"))
-+		test_bpf_ip_check_defrag_ok(true);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/ip_check_defrag.c b/tools/testing/selftests/bpf/progs/ip_check_defrag.c
-new file mode 100644
-index 000000000000..1c2b6c1616b0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/ip_check_defrag.c
-@@ -0,0 +1,104 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+#include "bpf_tracing_net.h"
-+
-+#define NF_DROP			0
-+#define NF_ACCEPT		1
-+#define ETH_P_IP		0x0800
-+#define ETH_P_IPV6		0x86DD
-+#define IP_MF			0x2000
-+#define IP_OFFSET		0x1FFF
-+#define NEXTHDR_FRAGMENT	44
-+
-+extern int bpf_dynptr_from_skb(struct sk_buff *skb, __u64 flags,
-+			      struct bpf_dynptr *ptr__uninit) __ksym;
-+extern void *bpf_dynptr_slice(const struct bpf_dynptr *ptr, uint32_t offset,
-+			      void *buffer, uint32_t buffer__sz) __ksym;
-+
-+volatile int shootdowns = 0;
-+
-+static bool is_frag_v4(struct iphdr *iph)
-+{
-+	int offset;
-+	int flags;
-+
-+	offset = bpf_ntohs(iph->frag_off);
-+	flags = offset & ~IP_OFFSET;
-+	offset &= IP_OFFSET;
-+	offset <<= 3;
-+
-+	return (flags & IP_MF) || offset;
-+}
-+
-+static bool is_frag_v6(struct ipv6hdr *ip6h)
-+{
-+	/* Simplifying assumption that there are no extension headers
-+	 * between fixed header and fragmentation header. This assumption
-+	 * is only valid in this test case. It saves us the hassle of
-+	 * searching all potential extension headers.
-+	 */
-+	return ip6h->nexthdr == NEXTHDR_FRAGMENT;
-+}
-+
-+static int handle_v4(struct sk_buff *skb)
-+{
-+	struct bpf_dynptr ptr;
-+	u8 iph_buf[20] = {};
-+	struct iphdr *iph;
-+
-+	if (bpf_dynptr_from_skb(skb, 0, &ptr))
-+		return NF_DROP;
-+
-+	iph = bpf_dynptr_slice(&ptr, 0, iph_buf, sizeof(iph_buf));
-+	if (!iph)
-+		return NF_DROP;
-+
-+	/* Shootdown any frags */
-+	if (is_frag_v4(iph)) {
-+		shootdowns++;
-+		return NF_DROP;
-+	}
-+
-+	return NF_ACCEPT;
-+}
-+
-+static int handle_v6(struct sk_buff *skb)
-+{
-+	struct bpf_dynptr ptr;
-+	struct ipv6hdr *ip6h;
-+	u8 ip6h_buf[40] = {};
-+
-+	if (bpf_dynptr_from_skb(skb, 0, &ptr))
-+		return NF_DROP;
-+
-+	ip6h = bpf_dynptr_slice(&ptr, 0, ip6h_buf, sizeof(ip6h_buf));
-+	if (!ip6h)
-+		return NF_DROP;
-+
-+	/* Shootdown any frags */
-+	if (is_frag_v6(ip6h)) {
-+		shootdowns++;
-+		return NF_DROP;
-+	}
-+
-+	return NF_ACCEPT;
-+}
-+
-+SEC("netfilter")
-+int defrag(struct bpf_nf_ctx *ctx)
-+{
-+	struct sk_buff *skb = ctx->skb;
-+
-+	switch (bpf_ntohs(skb->protocol)) {
-+	case ETH_P_IP:
-+		return handle_v4(skb);
-+	case ETH_P_IPV6:
-+		return handle_v6(skb);
-+	default:
-+		return NF_ACCEPT;
-+	}
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.41.0
-
+> 
+> So, it needs to fix max_small_discards sysfs functionality? or just drop the
+> functionality?
+> 
+> > 
+> > Since we do not submit small discards anymore during checkpoint. Why not relying
+> > on the discard thread to issue them?
+> 
+> Sorry, I'm not sure I get your point, do you mean max_small_discards functionality
+> is obsoleted, so it recommended to use fstrim to cache & submit small discards?
+> 
+> Let me know, if I'm missing something or misunderstanding the point.
+> 
+> Thanks,
+> 
+> > 
+> > > 
+> > > Thanks,
+> > > 
+> > > > 
+> > > > > 
+> > > > > I think there is another way to achieve "avoid long checkpoint latency caused
+> > > > > by committing huge # of small discards", the way is we can set max_small_discards
+> > > > > to small value or zero, w/ such configuration, it will take checkpoint much less
+> > > > > time or no time to committing small discard due to below control logic:
+> > > > > 
+> > > > > f2fs_flush_sit_entries()
+> > > > > {
+> > > > > ...
+> > > > > 			if (!(cpc->reason & CP_DISCARD)) {
+> > > > > 				cpc->trim_start = segno;
+> > > > > 				add_discard_addrs(sbi, cpc, false);
+> > > > > 			}
+> > > > > ...
+> > > > > }
+> > > > > 
+> > > > > add_discard_addrs()
+> > > > > {
+> > > > > ...
+> > > > > 	while (force || SM_I(sbi)->dcc_info->nr_discards <=
+> > > > > 				SM_I(sbi)->dcc_info->max_discards) {
+> > > > > 
+> > > > > It will break the loop once nr_discards is larger than max_discards, if
+> > > > > max_discards is set to zero, checkpoint won't take time to handle small discards.
+> > > > > 
+> > > > > ...
+> > > > > 		if (!de) {
+> > > > > 			de = f2fs_kmem_cache_alloc(discard_entry_slab,
+> > > > > 						GFP_F2FS_ZERO, true, NULL);
+> > > > > 			de->start_blkaddr = START_BLOCK(sbi, cpc->trim_start);
+> > > > > 			list_add_tail(&de->list, head);
+> > > > > 		}
+> > > > > ...
+> > > > > 	}
+> > > > > ...
+> > > > > 
+> > > > > Thanks,
+> > > > > 
+> > > > > > 
+> > > > > > > 
+> > > > > > > Thanks,
+> > > > > > > 
+> > > > > > > > 
+> > > > > > > > > 
+> > > > > > > > >     From eb89d9b56e817e3046d7fa17165b12416f09d456 Mon Sep 17 00:00:00 2001
+> > > > > > > > > From: Chao Yu <chao@kernel.org>
+> > > > > > > > > Date: Mon, 3 Jul 2023 09:06:53 +0800
+> > > > > > > > > Subject: [PATCH] Revert "f2fs: enable small discard by default"
+> > > > > > > > > 
+> > > > > > > > > This reverts commit d618ebaf0aa83d175658aea5291e0c459d471d39 in order
+> > > > > > > > > to disable small discard by default, so that if there're huge number of
+> > > > > > > > > small discards, it will decrease checkpoint's latency obviously.
+> > > > > > > > > 
+> > > > > > > > > Also, this patch reverts 9ac00e7cef10 ("f2fs: do not issue small discard
+> > > > > > > > > commands during checkpoint"), due to it breaks small discard feature which
+> > > > > > > > > may be configured via sysfs entry max_small_discards.
+> > > > > > > > > 
+> > > > > > > > > Fixes: 9ac00e7cef10 ("f2fs: do not issue small discard commands during checkpoint")
+> > > > > > > > > Signed-off-by: Chao Yu <chao@kernel.org>
+> > > > > > > > > ---
+> > > > > > > > >      fs/f2fs/segment.c | 4 ++--
+> > > > > > > > >      1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > > > > > 
+> > > > > > > > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> > > > > > > > > index 14c822e5c9c9..0a313368f18b 100644
+> > > > > > > > > --- a/fs/f2fs/segment.c
+> > > > > > > > > +++ b/fs/f2fs/segment.c
+> > > > > > > > > @@ -2193,7 +2193,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+> > > > > > > > >      			len = next_pos - cur_pos;
+> > > > > > > > > 
+> > > > > > > > >      			if (f2fs_sb_has_blkzoned(sbi) ||
+> > > > > > > > > -					!force || len < cpc->trim_minlen)
+> > > > > > > > > +			    (force && len < cpc->trim_minlen))
+> > > > > > > > >      				goto skip;
+> > > > > > > > > 
+> > > > > > > > >      			f2fs_issue_discard(sbi, entry->start_blkaddr + cur_pos,
+> > > > > > > > > @@ -2269,7 +2269,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
+> > > > > > > > >      	atomic_set(&dcc->queued_discard, 0);
+> > > > > > > > >      	atomic_set(&dcc->discard_cmd_cnt, 0);
+> > > > > > > > >      	dcc->nr_discards = 0;
+> > > > > > > > > -	dcc->max_discards = MAIN_SEGS(sbi) << sbi->log_blocks_per_seg;
+> > > > > > > > > +	dcc->max_discards = 0;
+> > > > > > > > >      	dcc->max_discard_request = DEF_MAX_DISCARD_REQUEST;
+> > > > > > > > >      	dcc->min_discard_issue_time = DEF_MIN_DISCARD_ISSUE_TIME;
+> > > > > > > > >      	dcc->mid_discard_issue_time = DEF_MID_DISCARD_ISSUE_TIME;
+> > > > > > > > > -- 
+> > > > > > > > > 2.40.1
+> > > > > > > > > 
+> > > > > > > > > 
+> > > > > > > > > 
+> > > > > > > > > >       			f2fs_issue_discard(sbi, entry->start_blkaddr + cur_pos,
