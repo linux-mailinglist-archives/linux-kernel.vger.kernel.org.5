@@ -2,135 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7E975CC52
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF46E75CC57
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbjGUPqK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 Jul 2023 11:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46956 "EHLO
+        id S232225AbjGUPq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:46:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232203AbjGUPqI (ORCPT
+        with ESMTP id S232203AbjGUPq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:46:08 -0400
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980F719A1;
-        Fri, 21 Jul 2023 08:46:06 -0700 (PDT)
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-99b76201110so502266b.1;
-        Fri, 21 Jul 2023 08:46:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689954365; x=1690559165;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pGvIa/xbSavlOQUbfsNYc+o6CuZLv/AsmDlHcyaG6tw=;
-        b=Gvq6IP9GOoJYRGHk3sOKVCakNsxMyHcp7XCRi0EVA3T7Dsus9MMDuTotAWNRd9jsuv
-         XC5ZhiFwe7MRdtNJwQkanZg03sXYkLoMWR1a6vG5Ru+exb+cdJGjmb9x6ZSEB1tXLICO
-         i+SpjgorYyy98OiutSqUEuBIt9Wnje1fA1Q0mu5jrRRndYNgbHgEztg+FytXW3OlSqnF
-         Zen8GxjfDguPNZmBsjadIJYL32FKykIM/uC3vwPLw6LbcHLnuXGOIvMm9EnDG7JPGS48
-         ev4JyhBJND/RBwL6gt4XDVhJcG0M2nuUywj4tbw+2SjPI24dN//ZjFJTNoc/PxrEi6Bq
-         kwKw==
-X-Gm-Message-State: ABy/qLYVktjbDNEcX3/czt0Nko2UTdCY2+uqbBznyFzFzRiWifwlKZqm
-        FA7KjCUZdBW3DreXvMoXeFVWSEp3lY6eePum31w=
-X-Google-Smtp-Source: APBJJlHA7wRpEujJotjk7wbsJSyzNtc5iS9PhfO2eienfXnd1i5ITFRJeWo2qI/yIye/Zs4LgU98cLvGh5eW6ejlzos=
-X-Received: by 2002:a17:906:518e:b0:974:5480:6270 with SMTP id
- y14-20020a170906518e00b0097454806270mr1724059ejk.0.1689954364736; Fri, 21 Jul
- 2023 08:46:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230721152143.3108017-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20230721152143.3108017-1-kai.heng.feng@canonical.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 21 Jul 2023 17:45:53 +0200
-Message-ID: <CAJZ5v0j=ohJ_oUpCY-F_joty9qq3Mz2Bigqa3dHaFaWP2k6ONQ@mail.gmail.com>
-Subject: Re: [PATCH v3] ACPI: video: Put ACPI video and its child devices to
- D0 at boot
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, hdegoede@redhat.com
-Cc:     rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 11:46:26 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BCA719A1;
+        Fri, 21 Jul 2023 08:46:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Content-Type:Mime-Version:
+        References:In-Reply-To:Message-Id:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=caZK6tlKMYDjoChjRf3/YaaMhrXB3cGT2x0pWytJ9sA=; b=o9FFDc2yKHFeISWdWqyCokcLZ2
+        bCCUlg0EsXpHj1uDWCUvVKG9caQqncWHkwq83P8u+Yb/pieL8aWi7cEPOB/9GOIXPgFMc3vnR2zIb
+        CgNXI06O8QAH1LiS7BEKxx4MGT5vruKUXuVEl76olNxD01fiKGfaJohZNRYIxfzWNzWQ=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:54554 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qMsKb-0002l2-OU; Fri, 21 Jul 2023 11:46:15 -0400
+Date:   Fri, 21 Jul 2023 11:46:12 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jirislaby@kernel.org, jringle@gridpoint.com,
+        tomasz.mon@camlingroup.com, l.perczak@camlintechnologies.com,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        stable@vger.kernel.org
+Message-Id: <20230721114612.e1b4fa2398f2915aef08c0b1@hugovil.com>
+In-Reply-To: <2023072152-traffic-skype-8765@gregkh>
+References: <CAHp75VcWSVgA8LFLo0-b5TfKWdHb2GfLpXV-V3PZvthTv1Xc4A@mail.gmail.com>
+        <20230620113312.882d8f0c7d5603b1c93f33fb@hugovil.com>
+        <CAHp75VfGm6=ULW6kMjsg2OgB1z1T0YdmzvCTa3DFXXX-q_RnfA@mail.gmail.com>
+        <20230620114209.fb5272ad8cf5c5e2895d68b1@hugovil.com>
+        <CAHp75VcieuYqxWrO7rknx2ROYz=rnWnKV6s9eXZ5Zd1BKc6YMg@mail.gmail.com>
+        <20230620121645.512b31a872306b43a276bbac@hugovil.com>
+        <20230719144048.4f340b8aa0a29ab65a274273@hugovil.com>
+        <2023071922-rigor-collage-804e@gregkh>
+        <2023072040-clock-waltz-a5f2@gregkh>
+        <20230721112517.38ab9a40cdf6a0eddf074615@hugovil.com>
+        <2023072152-traffic-skype-8765@gregkh>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v7 5/9] serial: sc16is7xx: fix regression with GPIO
+ configuration
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the update!
+On Fri, 21 Jul 2023 17:40:18 +0200
+Greg KH <gregkh@linuxfoundation.org> wrote:
 
-On Fri, Jul 21, 2023 at 5:22 PM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> Screen brightness can only be changed once on HP ZBook Fury 16 G10.
->
-> Vendor identified the root cause as Linux doesn't invoke _PS0 at boot
-> for all ACPI devices:
->
->     Scope (\_SB.PC00.GFX0)
->     {
->         Scope (DD1F)
->         {
->             Method (_PS0, 0, Serialized)  // _PS0: Power State 0
->             {
->                 If (CondRefOf (\_SB.PC00.LPCB.EC0.SSBC))
->                 {
->                     \_SB.PC00.LPCB.EC0.SSBC ()
->                 }
->             }
->             ...
->         }
->         ...
->     }
->
-> The \_SB.PC00.GFX0.DD1F is the panel device, and its _PS0 needs to be
-> executed to make the brightness control work properly.
->
-> _PS0 doesn't get invoked for this device because _PSC is missing,
-> which violates ACPI spec 6.3, section 7.3.6. Commit 7cd8407d53ef
-> ("ACPI / PM: Do not execute _PS0 for devices without _PSC during
-> initialization") tried to workaround missing _PSC on defective
-> firmwares, but got reverted because of regression.
->
-> So the safest approach is to use acpi_device_fix_up_power_extended() to
-> put ACPI video and its child devices to D0 to workaround the issue.
->
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217683
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> On Fri, Jul 21, 2023 at 11:25:17AM -0400, Hugo Villeneuve wrote:
+> > On Thu, 20 Jul 2023 21:38:21 +0200
+> > Greg KH <gregkh@linuxfoundation.org> wrote:
+> > 
+> > > On Wed, Jul 19, 2023 at 09:14:23PM +0200, Greg KH wrote:
+> > > > On Wed, Jul 19, 2023 at 02:40:48PM -0400, Hugo Villeneuve wrote:
+> > > > > On Tue, 20 Jun 2023 12:16:45 -0400
+> > > > > Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > > > > 
+> > > > > > On Tue, 20 Jun 2023 18:45:51 +0300
+> > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > > 
+> > > > > > > On Tue, Jun 20, 2023 at 6:42 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > > > > > > > On Tue, 20 Jun 2023 18:35:48 +0300
+> > > > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > > > > > On Tue, Jun 20, 2023 at 6:33 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > > > > > > > > > On Tue, 20 Jun 2023 18:18:12 +0300
+> > > > > > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > > > > > > > On Tue, Jun 20, 2023 at 5:08 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > > > > > > > > > > > On Sun, 4 Jun 2023 22:31:04 +0300
+> > > > > > > > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > > > 
+> > > > > > > ...
+> > > > > > > 
+> > > > > > > > > > > > did you have a chance to look at V8 (sent two weks ago) which fixed all
+> > > > > > > > > > > > of what we discussed?
+> > > > > > > > > > >
+> > > > > > > > > > > The patch 6 already has my tag, anything specific you want me to do?
+> > > > > > > > > >
+> > > > > > > > > > Hi Andy,
+> > > > > > > > > > I forgot to remove your "Reviewed-by: Andy..." tag before sending V8
+> > > > > > > > > > since there were some changes involved in patch 6 and I wanted you to
+> > > > > > > > > > review them. Can you confirm if the changes are correct?
+> > > > > > > > > >
+> > > > > > > > > > I also added a new patch "remove obsolete out_thread label". It has no
+> > > > > > > > > > real impact on the code generation itself, but maybe you can review and
+> > > > > > > > > > confirm if tags are ok or not, based on commit message and also
+> > > > > > > > > > additional commit message.
+> > > > > > > > >
+> > > > > > > > > Both are fine to me.
+> > > > > > > >
+> > > > > > > > Hi,
+> > > > > > > > Ok, thank you for reviewing this.
+> > > > > > > >
+> > > > > > > > I guess now we are good to go with this series if the stable tags and
+> > > > > > > > patches order are good after Greg's review?
+> > > > > > > 
+> > > > > > > Taking into account that we are at rc7, and even with Fixes tags in
+> > > > > > > your series I think Greg might take this after v6.5-0rc1 is out. It's
+> > > > > > > up to him how to proceed with that. Note, he usually has thousands of
+> > > > > > > patches in backlog, you might need to respin it after the above
+> > > > > > > mentioned rc1.
+> > > > > > 
+> > > > > > Ok, understood.
+> > > > > > 
+> > > > > > Let's wait then.
+> > > > > 
+> > > > > Hi Andy/Greg,
+> > > > > we are now at v6.5-rc2 and I still do not see any of our patches in
+> > > > > linus or gregkh_tty repos.
+> > > > > 
+> > > > > Is there something missing from my part (or someone else) to go forward
+> > > > > with integrating these patches (v8) for v6.5?
+> > > > 
+> > > > My queue is huge right now, please be patient, I want to have them all
+> > > > handled by the end of next week...
+> > > > 
+> > > > You can always help out by reviewing other patches on the mailing list
+> > > > to reduce my review load.
+> > > 
+> > > Wait, no, this series was superseeded by v8, and in there you said you
+> > > were going to send a new series.  So please, fix it up and send the
+> > > updated version of the series, this one isn't going to be applied for
+> > > obvious reasons.
+> > 
+> > Hi Greg,
+> > I never said that I would resend another update for this current
+> > serie (unless of course if it was to address a new comment). Re-reading
+> > that email made me realise that it was maybe not perfectly clear the
+> > way I wrote it.
+> > 
+> > What I said was that, once V8 was finally applied and
+> > incorporated in the kernel, then I would send a completely new and
+> > different serie to address issues/concerns/improvements/suggestions
+> > noted during the review of this serie (example: conversion of bindings
+> > to YAML and improve DTS node names, etc). We already agreed with some
+> > maintainers (ex: Conor Dooley) that it was reasonnable to do so.
+> > 
+> > That is why I asked Andy if we were good to go with V8 and he
+> > confirmed that, and that it was now up to you to integrate it if your
+> > review was satisfactory.
+> > 
+> > Hope this clears things and we can integrate it soon.
+> 
+> I don't have any of your series in my review queue at all, so please
+> resend them.
 
-Hans, what do you think?
+OK, I will resend V8 then.
 
-> ---
-> v3:
->  - Wording change to make it clear it's a firmware issue.
->  - Specify the device name in comment.
->
-> v2:
->  - Wording
->  - Bugzilla
->  - Add comment
->
->  drivers/acpi/acpi_video.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
-> index 62f4364e4460..1732780a672b 100644
-> --- a/drivers/acpi/acpi_video.c
-> +++ b/drivers/acpi/acpi_video.c
-> @@ -2027,6 +2027,12 @@ static int acpi_video_bus_add(struct acpi_device *device)
->         if (error)
->                 goto err_put_video;
->
-> +       /*
-> +        * HP ZBook Fury 16 G10 requires ACPI video's child devices have _PS0
-> +        * evaluated to have functional panel brightness control.
-> +        */
-> +       acpi_device_fix_up_power_extended(device);
-> +
->         pr_info("%s [%s] (multi-head: %s  rom: %s  post: %s)\n",
->                ACPI_VIDEO_DEVICE_NAME, acpi_device_bid(device),
->                video->flags.multihead ? "yes" : "no",
-> --
-> 2.34.1
->
+Hugo.
