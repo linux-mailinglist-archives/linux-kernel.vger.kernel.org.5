@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 388EB75C106
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5741775C10F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbjGUIOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
+        id S231441AbjGUIPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231435AbjGUIOQ (ORCPT
+        with ESMTP id S231435AbjGUIPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:14:16 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07D52710;
-        Fri, 21 Jul 2023 01:14:10 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id AA0ED3200FA5;
-        Fri, 21 Jul 2023 04:14:04 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 21 Jul 2023 04:14:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1689927244; x=1690013644; bh=FUNFJj6urWuhz
-        j/ULPd7dgB790ZiEm9pAM63aZfvl0o=; b=K+rMc5OSCr1Fh3xdtUlGdyEGp1ONI
-        51AJM7rHQtcPDLtX+kJ6dtJJb+OZ5//ie4+jgpfhPd2tNJruDPl3+eEPHvmFD1ye
-        4Jb/J120LU917i5czkrEOBtvJtmoP6YWY5AggOG930AFqj2FrrXcZ/QWbx/zbGhb
-        PZY7UmtLp9n1vsTgl/DpXwt4ICVD+veAS/haXKLYa0q5n4/a1ZfwwnxQ8xOgKm30
-        Z6urvnxBg9uTdpQ0kpWJHWUotlTyCmMxFR5rkEXm7b8y+XCwHVtHzIZvPHLLTYor
-        S+KRdPKxBmDyGziWoDh0avzv1jkwzeT49W/KC6xVFmpQE7uOHeLVNM+MA==
-X-ME-Sender: <xms:Sj66ZI4F8NgCrze5lhIwlHzi5NMbZbeIZqw_KSRu13s5Nn5hqNhJXw>
-    <xme:Sj66ZJ4NDo5Q0y3xQ3AuRoG4ogzkOiD8WaAtZHPy_2-RSWBMlDP6W5GyHRUPjDrM6
-    HILsYFMDDzF1H_J4N0>
-X-ME-Received: <xmr:Sj66ZHcYQKXwb_YyFY0VD3xU2FuJeSvcQPaXd1SjdCmJIDc4V_YsFNU8tHVpAaCQS1twWam2aqYIKtQscAtEVSZYHAXhlX-iRvc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugdduvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:Sj66ZNLA3PZvnZRISS7E-fLyDcxI_6eAde9TLWcINqoNSp_6jQZ8OA>
-    <xmx:Sj66ZMKJFovsSlFYj5Nru_Vl1m0g_K6AnNPnk4Z4S1pajlaTwYfqJg>
-    <xmx:Sj66ZOyPGzQXVDqieXB6gCz0R50dxZa--GnH7pbdOITulJ6lYcXQig>
-    <xmx:TD66ZJ6YMrryZtwMv3xMiDBUj0eFoeqVL_FjWu87hcrOvPjcbNy_yw>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 21 Jul 2023 04:14:01 -0400 (EDT)
-Date:   Fri, 21 Jul 2023 18:14:04 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Dave Chinner <david@fromorbit.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        christian.brauner@ubuntu.com,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        ZhangPeng <zhangpeng362@huawei.com>,
-        linux-m68k@lists.linux-m68k.org,
-        debian-ports <debian-ports@lists.debian.org>
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-In-Reply-To: <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
-Message-ID: <3eca2dab-df70-9d91-52a1-af779e3c2e04@linux-m68k.org>
-References: <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com> <Y7bw7X1Y5KtmPF5s@casper.infradead.org> <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com> <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com> <ZLlvII/jMPTT32ef@casper.infradead.org>
- <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de> <ZLl2Fq35Ya0cNbIm@casper.infradead.org> <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org> <ZLmzSEV6Wk+oRVoL@dread.disaster.area> <60b57ae9-ff49-de1d-d40d-172c9e6d43d5@linux-m68k.org>
- <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
+        Fri, 21 Jul 2023 04:15:01 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02485272D
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:15:00 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-440bb9bad3cso680445137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:14:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689927299; x=1690532099;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2PU0a9VuD0AqZ7LLCF0XhwtJkP2bxDSGXNRofV50mGY=;
+        b=TTXUft0VE9EI+2NHbHh36+FLkJiAXUGzc5JeTg1MRU2/+hAY8Tp+Rde0Xz44B/cVzp
+         BdQL3i8ZzqSy5SvzLqCqDEigrbpKpDFcJqH5qVXXQdPnSSuum3aDX48yhAgLbuhooPDr
+         NYRKFgdBJEswNg9iKQ0Lw0nCexdyVbBzefEAs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689927299; x=1690532099;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2PU0a9VuD0AqZ7LLCF0XhwtJkP2bxDSGXNRofV50mGY=;
+        b=eISH/HVdVKSGbdmVuQcNw0fOMhCBqXcG4vK9FGH/UvcsePAOYITQQW+LVc/DZfNba6
+         ymBg8ulRXMtuCy+PAwDamHfvHDWqsf2OjaZZe+c/5p7im0sDOqrzamwmY7iQATB0ZpWk
+         AYRV6rJnadRs/YqVYK/tBwfikduyh2NIHdSQvpYG6j6HWN8IX4PPRc5obsFg6Yr4ZD9I
+         vOycWYZfO2o0MyG74P2PjDTAvIPjYsP6Y5j0CPbYuodLDqOAmVkrpGoKlXXAIIB3Ufu7
+         tC9yn48Ww2QsTAD95RE1dpuXvK0jRd34xDX7yC3ewNiq+eEc9KMczXOEk6F4T9VRUKxj
+         ajCg==
+X-Gm-Message-State: ABy/qLacQ5s5yWzBlqDoD4a7V3copgYTYnng74eaUBJoEl9WcVDF6FrC
+        G8kRGpPdpCuQ3CEzGkYGa1f0q0SWSo3bK0CgY8k34A==
+X-Google-Smtp-Source: APBJJlECUvJBjbKPxeyxhugDWCa/+ZcACmwgOgioxcqGIfgnTdRb8nXyKKwshtlfcwhbKhOt4HSOz3rq6GuBw1C9KU8=
+X-Received: by 2002:a67:fa4d:0:b0:445:bd3:5b3a with SMTP id
+ j13-20020a67fa4d000000b004450bd35b3amr417073vsq.4.1689927299149; Fri, 21 Jul
+ 2023 01:14:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230721080751.2012318-1-wenst@chromium.org>
+In-Reply-To: <20230721080751.2012318-1-wenst@chromium.org>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Fri, 21 Jul 2023 16:14:48 +0800
+Message-ID: <CAGXv+5HndYc3eXVBwy=hvsZpTQb-cSgMmDds-Cnjhn0Z461i1g@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] regulator: mt6358: Remove bogus regulators and improvements
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023, Matthew Wilcox wrote:
+On Fri, Jul 21, 2023 at 4:08=E2=80=AFPM Chen-Yu Tsai <wenst@chromium.org> w=
+rote:
+>
+> Hi,
+>
+> This is v2 of the remainder of the MT6358 regulator driver cleanup
+> and improvement series. v1 can be found here [1].
+>
+> Changes since v1:
+> - Merged patches dropped
+> - Added patch to move VCN33 regulator status sync after ID check
+> - Added patch to fix VCN33 sync fail error message
+> - Added patch to add missing register definitions
+>
+> Various discrepancies were found while preparing to upstream MT8186
+> device trees, which utilize the MT6366 PMIC, that is also covered by
+> this driver.
+>
+> Patch 1 should either go through the mfd tree and an immutable branch
+> created for the regulator tree to consume, or given an Ack, merged
+> directly through the regulator tree.
 
-> 
-> You've misunderstood.  Google have decided to subject the entire kernel 
-> (including obsolete unmaintained filesystems) to stress tests that it's 
-> never had before.  IOW these bugs have been there since the code was 
-> merged.  There's nothing to back out.  There's no API change to blame. 
-> It's always been buggy and it's never mattered before.
-> 
+Please ignore this thread. I forgot to add Lee to the recipients.
+I will resend later.
 
-I'm not blaming the unstable API for the bugs, I'm blaming it for the 
-workload. A stable API (like a userspace API) decreases the likelihood 
-that overloaded maintainers have to orphan a filesystem implementation. 
+
+ChenYu
