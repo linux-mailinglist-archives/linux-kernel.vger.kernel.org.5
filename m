@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 457DA75C88A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C3875C88E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbjGUNz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 09:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51256 "EHLO
+        id S231776AbjGUN4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 09:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231573AbjGUNzu (ORCPT
+        with ESMTP id S231591AbjGUNzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 09:55:50 -0400
+        Fri, 21 Jul 2023 09:55:52 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBA630D4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 06:55:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1A930E4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 06:55:34 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1qMqb3-0005Rr-W2; Fri, 21 Jul 2023 15:55:06 +0200
+        id 1qMqb3-0005Rw-W3; Fri, 21 Jul 2023 15:55:06 +0200
 Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
         (envelope-from <ore@pengutronix.de>)
-        id 1qMqb1-00150Y-AA; Fri, 21 Jul 2023 15:55:03 +0200
+        id 1qMqb1-00150n-Og; Fri, 21 Jul 2023 15:55:03 +0200
 Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
         (envelope-from <ore@pengutronix.de>)
-        id 1qMqb0-0068zO-21;
+        id 1qMqb0-0068zY-25;
         Fri, 21 Jul 2023 15:55:02 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     "David S. Miller" <davem@davemloft.net>,
@@ -46,9 +46,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
         UNGLinuxDriver@microchip.com,
         "Russell King (Oracle)" <linux@armlinux.org.uk>,
         devicetree@vger.kernel.org
-Subject: [PATCH net-next v2 4/6] net: dsa: microchip: ksz9477: add Wake on PHY event support
-Date:   Fri, 21 Jul 2023 15:54:59 +0200
-Message-Id: <20230721135501.1464455-5-o.rempel@pengutronix.de>
+Subject: [PATCH net-next v2 5/6] net: dsa: microchip: use wakeup-source DT property to enable PME output
+Date:   Fri, 21 Jul 2023 15:55:00 +0200
+Message-Id: <20230721135501.1464455-6-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230721135501.1464455-1-o.rempel@pengutronix.de>
 References: <20230721135501.1464455-1-o.rempel@pengutronix.de>
@@ -67,57 +67,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KSZ9477 family of switches supports multiple PHY events:
-- wake on Link Up
-- wake on Energy Detect.
-Since current UAPI can't differentiate between this PHY events, map all of them
-to WAKE_PHY.
+KSZ switches with WoL support signals wake event over PME pin. If this
+pin is attached to some external PMIC or System Controller can't be
+described as GPIO, the only way to describe it in the devicetree is to
+use wakeup-source property. So, add support for this property and enable
+PME switch output if this property is present.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- drivers/net/dsa/microchip/ksz9477.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/dsa/microchip/ksz9477.c    | 3 +++
+ drivers/net/dsa/microchip/ksz_common.c | 3 +++
+ drivers/net/dsa/microchip/ksz_common.h | 1 +
+ 3 files changed, 7 insertions(+)
 
 diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-index d14fcc98ec1e0..e3143b95a8ec9 100644
+index e3143b95a8ec9..69909241b1f44 100644
 --- a/drivers/net/dsa/microchip/ksz9477.c
 +++ b/drivers/net/dsa/microchip/ksz9477.c
-@@ -88,7 +88,7 @@ void ksz9477_get_wol(struct ksz_device *dev, int port,
- 	if (!(pme_conf & PME_ENABLE))
- 		return;
+@@ -1208,6 +1208,9 @@ int ksz9477_setup(struct dsa_switch *ds)
+ 	/* enable global MIB counter freeze function */
+ 	ksz_cfg(dev, REG_SW_MAC_CTRL_6, SW_MIB_COUNTER_FREEZE, true);
  
--	wol->supported = WAKE_MAGIC;
-+	wol->supported = WAKE_PHY | WAKE_MAGIC;
- 
- 	ret = ksz_pread8(dev, port, REG_PORT_PME_CTRL, &pme_ctrl);
- 	if (ret)
-@@ -96,6 +96,8 @@ void ksz9477_get_wol(struct ksz_device *dev, int port,
- 
- 	if (pme_ctrl & PME_WOL_MAGICPKT)
- 		wol->wolopts |= WAKE_MAGIC;
-+	if (pme_ctrl & (PME_WOL_LINKUP | PME_WOL_ENERGY))
-+		wol->wolopts |= WAKE_PHY;
++	if (dev->wakeup_source)
++		ksz_write8(dev, REG_SW_PME_CTRL, PME_ENABLE);
++
+ 	return 0;
  }
  
- int ksz9477_set_wol(struct ksz_device *dev, int port,
-@@ -104,7 +106,7 @@ int ksz9477_set_wol(struct ksz_device *dev, int port,
- 	u8 pme_conf, pme_ctrl = 0;
- 	int ret;
+diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
+index 6adc2c6537a31..a7b298838932c 100644
+--- a/drivers/net/dsa/microchip/ksz_common.c
++++ b/drivers/net/dsa/microchip/ksz_common.c
+@@ -3715,6 +3715,9 @@ int ksz_switch_register(struct ksz_device *dev)
+ 			dev_err(dev->dev, "inconsistent synclko settings\n");
+ 			return -EINVAL;
+ 		}
++
++		dev->wakeup_source = of_property_read_bool(dev->dev->of_node,
++							   "wakeup-source");
+ 	}
  
--	if (wol->wolopts & ~WAKE_MAGIC)
-+	if (wol->wolopts & ~(WAKE_PHY | WAKE_MAGIC))
- 		return -EINVAL;
+ 	ret = dsa_register_switch(dev->ds);
+diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
+index 6dca488fbc5f2..589f8b582a415 100644
+--- a/drivers/net/dsa/microchip/ksz_common.h
++++ b/drivers/net/dsa/microchip/ksz_common.h
+@@ -158,6 +158,7 @@ struct ksz_device {
+ 	phy_interface_t compat_interface;
+ 	bool synclko_125;
+ 	bool synclko_disable;
++	bool wakeup_source;
  
- 	ret = ksz_read8(dev, REG_SW_PME_CTRL, &pme_conf);
-@@ -120,6 +122,8 @@ int ksz9477_set_wol(struct ksz_device *dev, int port,
+ 	struct vlan_table *vlan_cache;
  
- 	if (wol->wolopts & WAKE_MAGIC)
- 		pme_ctrl |= PME_WOL_MAGICPKT;
-+	if (wol->wolopts & WAKE_PHY)
-+		pme_ctrl |= PME_WOL_LINKUP | PME_WOL_ENERGY;
- 
- 	return ksz_pwrite8(dev, port, REG_PORT_PME_CTRL, pme_ctrl);
- }
 -- 
 2.39.2
 
