@@ -2,231 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D3F75CCE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3990175CCD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbjGUP7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
+        id S231708AbjGUP7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbjGUP7O (ORCPT
+        with ESMTP id S229746AbjGUP7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:59:14 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014492D47;
-        Fri, 21 Jul 2023 08:59:12 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="397947175"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="397947175"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 08:59:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="1055599368"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="1055599368"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP; 21 Jul 2023 08:58:59 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andy@kernel.org>)
-        id 1qMsWt-00BQxg-0w;
-        Fri, 21 Jul 2023 18:58:55 +0300
-Date:   Fri, 21 Jul 2023 18:58:55 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     nikita.shubin@maquefel.me
-Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Lukasz Majewski <lukma@denx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        Fri, 21 Jul 2023 11:59:11 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374EB2D47;
+        Fri, 21 Jul 2023 08:59:10 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b8ad9eede0so15758165ad.1;
+        Fri, 21 Jul 2023 08:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689955149; x=1690559949;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ouosyBPb4dn4HHlTnUJ4FSBNaoZUMLrSaPdnIDz9wuw=;
+        b=Vk2fCFGEwoEdn2x2gzgjtS58Pwt9U01pViJ4ZQYCxi/eRmX4AkBspvWDAHWVmDk7xN
+         n+2D8vXy2mZxQGdXrDv2lS+MrjZFIQcofY7Pwjw53TNZieLT5lObBGn5XVSRAVUv0ZTt
+         Q7xAz/7IeqOMHlruhDE/8h2+agVavciZ9JWsBxClyOMn9k/1eQP+XGEXs+ux+ch4eZdL
+         uubRSfULij8HcYuxURTHh3pZ5mjfXK6wVcDpXraubFagQEBcIulvXvb1ziBCjIJ60/4a
+         gDW7X02wmc08mJbmEFpiGPGUqpBD0w+sUK6REF8VIs6Rq7y8Xi8guYUAK4Dg24xTGZ9X
+         U2EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689955149; x=1690559949;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ouosyBPb4dn4HHlTnUJ4FSBNaoZUMLrSaPdnIDz9wuw=;
+        b=SaS8gCgfCM9AXyw/C5swX3zIfMiN1zDTlQ3B0D2GpE/JagxXbkUnaQEU7JDZSUkhwT
+         kpLZqmFW4Vxh4J93vEUDibe9zmLVhBKi7K5+9W0d2bO6E6SulxDm75rViD7w4CUhyJka
+         mhxKX4X++h+HeDcTZzWZGX/Srd3jegJsJFOo8lFXFvYljfOxUUn9hDGjxgpJKwg4CTZX
+         cIyz4VbZOcCVZlgrxI5DB/7RlO7f8nskdqeM6nvD4U0rb8VRdG8RuOoA8t69frjMf21t
+         ar6tB7ZnPlmpE9kHAYpQU+ec7b5bf4OaIQyPez0PC3TUNzMntyvQtB8puuCQkCTdQ9Py
+         Czmw==
+X-Gm-Message-State: ABy/qLY/6lLgqn8tyEJ/ncYm2SxtKF3W8j0eeH6OXSuKgcsxuRPjZTIH
+        jjrEjXPMR9mPLhCQoOEx4Rc=
+X-Google-Smtp-Source: APBJJlF3jZO0qcpAN4Y2IfbskrZlRgsTwwf5ilO35BnrANfcSEFNfCqrHVMg0flcOt/RvXSehhqNcg==
+X-Received: by 2002:a17:903:181:b0:1b8:6cae:3570 with SMTP id z1-20020a170903018100b001b86cae3570mr2580302plg.11.1689955149561;
+        Fri, 21 Jul 2023 08:59:09 -0700 (PDT)
+Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
+        by smtp.gmail.com with ESMTPSA id n13-20020a170902e54d00b001b9be3b94d3sm3670309plf.140.2023.07.21.08.59.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 08:59:08 -0700 (PDT)
+Message-ID: <7549a014-4f5e-cf87-f07d-c4980ab44dc1@gmail.com>
+Date:   Fri, 21 Jul 2023 08:59:06 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [Enable Designware XGMAC VLAN Stripping Feature 2/2] net: stmmac:
+ dwxgmac2: Add support for HW-accelerated VLAN Stripping
+Content-Language: en-US
+To:     "Ng, Boon Khai" <boon.khai.ng@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Boon@ecsmtp.png.intel.com" <Boon@ecsmtp.png.intel.com>,
+        "Khai@ecsmtp.png.intel.com" <Khai@ecsmtp.png.intel.com>,
+        boon.khai.ng@intel.com,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Michael Peters <mpeters@embeddedts.com>,
-        Kris Bahnsen <kris@embeddedts.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 09/42] clocksource: ep93xx: Add driver for Cirrus
- Logic EP93xx
-Message-ID: <ZLqrPw933NOv1J8v@smile.fi.intel.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-9-3d63a5f1103e@maquefel.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230605-ep93xx-v3-9-3d63a5f1103e@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "Tham, Mun Yew" <mun.yew.tham@intel.com>,
+        "Swee, Leong Ching" <leong.ching.swee@intel.com>,
+        "G Thomas, Rohan" <rohan.g.thomas@intel.com>,
+        Shevchenko Andriy <andriy.shevchenko@linux.intel.com>
+References: <20230721062617.9810-1-boon.khai.ng@intel.com>
+ <20230721062617.9810-3-boon.khai.ng@intel.com>
+ <cfba8fa4-47e5-7553-f40e-9e34b25d1405@kernel.org>
+ <DM8PR11MB5751E5388AEFCFB80BCB483FC13FA@DM8PR11MB5751.namprd11.prod.outlook.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <DM8PR11MB5751E5388AEFCFB80BCB483FC13FA@DM8PR11MB5751.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 02:29:09PM +0300, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
+
+
+On 7/21/2023 8:30 AM, Ng, Boon Khai wrote:
+>> -----Original Message-----
+>> From: Krzysztof Kozlowski <krzk@kernel.org>
+>> Sent: Friday, July 21, 2023 6:11 PM
+>> To: Boon@ecsmtp.png.intel.com; Khai@ecsmtp.png.intel.com; "Ng
+>> <boon.khai.ng"@intel.com; Giuseppe Cavallaro <peppe.cavallaro@st.com>;
+>> Alexandre Torgue <alexandre.torgue@foss.st.com>; Jose Abreu
+>> <joabreu@synopsys.com>; David S . Miller <davem@davemloft.net>; Eric
+>> Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>;
+>> Paolo Abeni <pabeni@redhat.com>; Maxime Coquelin
+>> <mcoquelin.stm32@gmail.com>; netdev@vger.kernel.org; linux-stm32@st-
+>> md-mailman.stormreply.com; linux-arm-kernel@lists.infradead.org; linux-
+>> kernel@vger.kernel.org
+>> Cc: Ng, Boon Khai <boon.khai.ng@intel.com>; Shevchenko, Andriy
+>> <andriy.shevchenko@intel.com>; Tham, Mun Yew
+>> <mun.yew.tham@intel.com>; Swee, Leong Ching
+>> <leong.ching.swee@intel.com>; G Thomas, Rohan
+>> <rohan.g.thomas@intel.com>; Shevchenko Andriy
+>> <andriy.shevchenko@linux.intel.com>
+>> Subject: Re: [Enable Designware XGMAC VLAN Stripping Feature 2/2] net:
+>> stmmac: dwxgmac2: Add support for HW-accelerated VLAN Stripping
+>>
+>> On 21/07/2023 08:26, Boon@ecsmtp.png.intel.com wrote:
+>>> From: Boon Khai Ng <boon.khai.ng@intel.com>
+>>>
+>>> Currently, VLAN tag stripping is done by software driver in
+>>> stmmac_rx_vlan(). This patch is to Add support for VLAN tag stripping
+>>> by the MAC hardware and MAC drivers to support it.
+>>> This is done by adding rx_hw_vlan() and set_hw_vlan_mode() callbacks
+>>> at stmmac_ops struct which are called from upper software layer.
+>> ...
+>>
+>>>   	if (priv->dma_cap.vlhash) {
+>>>   		ndev->features |= NETIF_F_HW_VLAN_CTAG_FILTER;
+>>>   		ndev->features |= NETIF_F_HW_VLAN_STAG_FILTER; diff --
+>> git
+>>> a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+>>> b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+>>> index 23d53ea04b24..bd7f3326a44c 100644
+>>> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+>>> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+>>> @@ -543,6 +543,12 @@ stmmac_probe_config_dt(struct platform_device
+>> *pdev, u8 *mac)
+>>>   			plat->flags |= STMMAC_FLAG_TSO_EN;
+>>>   	}
+>>>
+>>> +	/* Rx VLAN HW Stripping */
+>>> +	if (of_property_read_bool(np, "snps,rx-vlan-offload")) {
+>>> +		dev_info(&pdev->dev, "RX VLAN HW Stripping\n");
+>>
+>> Why? Drop.
+>>
 > 
-> This us a rewrite of EP93xx timer driver in
-> arch/arm/mach-ep93xx/timer-ep93xx.c trying to do everything
-> the device tree way:
+> This is an dts option export to dts for user to choose whether or not they
+> Want a Hardware stripping or a software stripping.
 > 
-> - Make every IO-access relative to a base address and dynamic
->   so we can do a dynamic ioremap and get going.
-> - Find register range and interrupt from the device tree.
+> May I know what is the reason to drop this?
 
-...
+Because the networking stack already exposes knobs for drivers to 
+advertise and control VLAN stripping/insertion on RX/TX using ethtool 
+and feature bits (NETIF_F_HW_VLAN_CTAG_RX, NETIF_F_HW_VLAN_CTAG_TX).
 
-+ bits.h
-
-> +#include <linux/clockchips.h>
-> +#include <linux/clocksource.h>
-> +#include <linux/init.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/io-64-nonatomic-lo-hi.h>
-> +#include <linux/irq.h>
-> +#include <linux/kernel.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/sched_clock.h>
-
-...
-
-> +/*************************************************************************
-
-Won't you marc it as a DOC: section?
-
-> + * Timer handling for EP93xx
-> + *************************************************************************
-> + * The ep93xx has four internal timers.  Timers 1, 2 (both 16 bit) and
-> + * 3 (32 bit) count down at 508 kHz, are self-reloading, and can generate
-> + * an interrupt on underflow.  Timer 4 (40 bit) counts down at 983.04 kHz,
-> + * is free-running, and can't generate interrupts.
-> + *
-> + * The 508 kHz timers are ideal for use for the timer interrupt, as the
-> + * most common values of HZ divide 508 kHz nicely.  We pick the 32 bit
-> + * timer (timer 3) to get as long sleep intervals as possible when using
-> + * CONFIG_NO_HZ.
-> + *
-> + * The higher clock rate of timer 4 makes it a better choice than the
-> + * other timers for use as clock source and for sched_clock(), providing
-> + * a stable 40 bit time base.
-> + *************************************************************************
-> + */
-
-...
-
-> +/*
-> + * This read-only register contains the low word of the time stamp debug timer
-> + * ( Timer4). When this register is read, the high byte of the Timer4 counter is
-
-One too many spaces.
-
-> + * saved in the Timer4ValueHigh register.
-> + */
-
-...
-
-> +static irqreturn_t ep93xx_timer_interrupt(int irq, void *dev_id)
-> +{
-> +	struct ep93xx_tcu *tcu = ep93xx_tcu;
-> +	struct clock_event_device *evt = dev_id;
-> +
-> +	/* Writing any value clears the timer interrupt */
-> +	writel(1, tcu->base + EP93XX_TIMER3_CLEAR);
-
-Would 0 suffice?
-
-> +	evt->event_handler(evt);
-> +
-> +	return IRQ_HANDLED;
-> +}
-
-...
-
-> +static int __init ep93xx_timer_of_init(struct device_node *np)
-> +{
-> +	int irq;
-> +	unsigned long flags = IRQF_TIMER | IRQF_IRQPOLL;
-> +	struct ep93xx_tcu *tcu;
-> +	int ret;
-> +
-> +	tcu = kzalloc(sizeof(*tcu), GFP_KERNEL);
-> +	if (!tcu)
-> +		return -ENOMEM;
-> +
-> +	tcu->base = of_iomap(np, 0);
-
-fwnode_iomap()?
-See below why it might make sense.
-
-> +	if (!tcu->base) {
-
-> +		pr_err("Can't remap registers\n");
-
-First of all, you may utilize pr_fmt().
-Second, you may add %pOF for better user experience.
-
-> +		ret = -ENXIO;
-> +		goto out_free;
-> +	}
-
-> +	irq = irq_of_parse_and_map(np, 0);
-
-fwnode_irq_get() which is better in terms of error handling.
-
-> +	if (irq == 0)
-> +		irq = -EINVAL;
-> +	if (irq < 0) {
-
-> +		pr_err("EP93XX Timer Can't parse IRQ %d", irq);
-
-As per above.
-
-> +		goto out_free;
-> +	}
-
-...
-
-> +}
-
+What you are doing here is encode a policy as a Device Tree property 
+rather than describe whether the hardware supports a given feature and 
+this is frowned upon.
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Florian
