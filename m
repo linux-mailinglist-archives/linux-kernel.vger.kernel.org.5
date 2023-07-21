@@ -2,143 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 486F775C380
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209C175C3B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231945AbjGUJst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:48:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59740 "EHLO
+        id S231157AbjGUJwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231814AbjGUJsT (ORCPT
+        with ESMTP id S231893AbjGUJwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:48:19 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060581715
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:47:43 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbd200d354so46195e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:47:42 -0700 (PDT)
+        Fri, 21 Jul 2023 05:52:31 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BB1448C;
+        Fri, 21 Jul 2023 02:51:16 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-345f3e28082so8373645ab.1;
+        Fri, 21 Jul 2023 02:51:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689932852; x=1690537652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZqfvFf9xIhxpdVCPq68g9SUDSB4UZpj++bvp7P1BZ+M=;
-        b=Rs/QeoKiPi4hI3mKDDNyqjtTECFzRbRAtgkIYuyw9ixHJOdVio+yxrf83nTF2gAyxw
-         Mn4U/4XE+ibLUJDVjxPPj9JzuzYCCUvpVPWBl5wNuxQ1hKHQm1ZNkrkTsco3hNPy1vVL
-         ecFupbNxTVnUOhNwTHoy0AniHF48zdL+AMtMBoAV1WW8IjNXSdlXlpqjrhlWhBLyhbPj
-         ssih0eyEjDhq69ySJTRp9wCOBj9Yku6JWLRZ7zjf9w0pl34VBADWz1KM4Fx+cEvC/sH+
-         +W7OcPzbeDxTPEw/wJN4K44HaBM0iD8XNU6lXuR+iT/X1pyXnLdyIEUSzeyKvkuVcrlz
-         ItfQ==
+        d=gmail.com; s=20221208; t=1689933040; x=1690537840;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+9qY/4YNMX7T5IBO1l2v1VxcveD25SPwYvfEqD6ycRk=;
+        b=ag22LELc6lYBRYTXuz6K67yb+k0Q5/HtvEdrUsQVlE9e+UVh9yONwwuEyNME9OFNbd
+         g9b445WTWC2PzHWBxw0EElNOoH0KQ5ZFTgdJR2WWNbOSmwhL+2Ay0iNc6fZa1ZlW21K4
+         UOSmnFx/FemnzdtiZjx0FRgNn182YVcRh8S+i/2txajypxFRhLuMnqR4I59TggYWdWHG
+         6vfeoprYDCY/SbESKBYkRcErVr/SrsfZu8FY7G6IypUkyFeB9/EkrpJLlZnbY2zFlO6M
+         4dlUo1UTT0QlumW6VJylbNeLt4guVjHPNSzNYfHMBgkn8uOpJiTOwmDUCujzvO4w5HlC
+         W7gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689932852; x=1690537652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZqfvFf9xIhxpdVCPq68g9SUDSB4UZpj++bvp7P1BZ+M=;
-        b=iXl6ZL7k6WvX9ebfiF1JOYjmgC+aFbe1M3BAVIS7d0Pdg2lCxe9jUA+OHJTPIfqvxo
-         JVbcLBrhndWRu6OVIBLq/mhfdALb4nr5S9Ni8QkyE7XtddG/1bkX5gDKdaLQXLEs0DZz
-         vOcyz7xPt/PXP0cq1qwjE9K65imRUE6w+iM6oLgRYXYltJMu37AAoY5L085VXEE5clEg
-         jk7vt9pKrT1XnKG5dbSqjf3ZG0vAUHkZUQ0G9uTa03t02Gs1kQ3oom3kAobnJr2PcIDW
-         EI8WvXP1/+BhqkojSTgrnMM5qZTjrezPmGcpSAELHzL0/Oy0kwvh2XpLHbgYKhOYrorx
-         N9Gg==
-X-Gm-Message-State: ABy/qLaqoqPA3gDD+TX+37c5nopyrO5hS5p+4MlcGKtMVeIAdAloa4g2
-        UNx7RtaKsmsYh/VRMxfY36IgG3DWpE7VAuCIvzAbaA==
-X-Google-Smtp-Source: APBJJlHsTNBMf/W59rloGf70oxm11BF5D1J5sg1xVvbOIBYTaXaLWanJ/vxpttr+FKfAALI+vCr16+8yKjCvMFsXcE8=
-X-Received: by 2002:a05:600c:1e08:b0:3f4:2736:b5eb with SMTP id
- ay8-20020a05600c1e0800b003f42736b5ebmr59334wmb.1.1689932852605; Fri, 21 Jul
- 2023 02:47:32 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689933040; x=1690537840;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+9qY/4YNMX7T5IBO1l2v1VxcveD25SPwYvfEqD6ycRk=;
+        b=kmznAewFMCHxLT8owiaEBrd0JBAgNv3c18m5lU//jrcPCLGjM541eUz3NPoOu/HRn7
+         d0+41lJQ1JIEuY/RIcM9T9HdrEpgWhTNKlhpWFpHYzIvuP7/DPek6wl66EyVWT/6FtFz
+         XcuFnY8ntMexSRkIKNAWJVmQ+6Ar+dFcwQhU0DSnLwzoB/m+b+FrGhDjcUf91NZDuI1U
+         rktr00x/NOVajByQLXlfif+9QZhvpCvXtZanHd+4n2gnCyby5JyhUNse/XwY+mTstHus
+         FUz5ORRSxcewDXtQBELlpzNLExrdQeKeWePArRhzTTTwMyZDbMKsFB9NRz/hb+AO94IV
+         c4ng==
+X-Gm-Message-State: ABy/qLZwE8V2i9TAQqtvfpEleHhKuDlo3g9TWGWEwlCqcm37UctGtjt/
+        BnOVFZ+2v31Ici/WFwrGSoYhu7N7JLKGyg==
+X-Google-Smtp-Source: APBJJlEm1wKaC88YcB7I4I4NwttPeXDAILugKUYWcw1MGlrFoQabm0MgSJi4JHiPnDBbdyVrA2MnCg==
+X-Received: by 2002:a05:6e02:1ca3:b0:348:8152:95d4 with SMTP id x3-20020a056e021ca300b00348815295d4mr1973922ill.26.1689933039967;
+        Fri, 21 Jul 2023 02:50:39 -0700 (PDT)
+Received: from james-x399.localdomain (71-218-225-212.hlrn.qwest.net. [71.218.225.212])
+        by smtp.gmail.com with ESMTPSA id t8-20020a056e02010800b00348ac48e127sm787066ilm.33.2023.07.21.02.50.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 02:50:39 -0700 (PDT)
+From:   James Hilliard <james.hilliard1@gmail.com>
+To:     devicetree@vger.kernel.org
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v5 1/4] dt-bindings: arm: fsl: Add VAR-SOM-MX6 SoM
+Date:   Fri, 21 Jul 2023 03:49:57 -0600
+Message-Id: <20230721095003.3681484-1-james.hilliard1@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <000000000000c11ed40600e994b1@google.com> <000000000000d96eec0600fbea8f@google.com>
-In-Reply-To: <000000000000d96eec0600fbea8f@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Fri, 21 Jul 2023 11:47:20 +0200
-Message-ID: <CANp29Y7Sgbfa5u-wSe1rTJiyKQb7d1GWcnTm+GZBvTcYdjvx-g@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] general protection fault in ep_poll_callback
-To:     syzbot <syzbot+c2b68bdf76e442836443@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, brauner@kernel.org, bvanassche@acm.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu, viro@zeniv.linux.org.uk,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 11:30=E2=80=AFAM syzbot
-<syzbot+c2b68bdf76e442836443@syzkaller.appspotmail.com> wrote:
->
-> syzbot has bisected this issue to:
->
-> commit a0b0fd53e1e67639b303b15939b9c653dbe7a8c4
-> Author: Bart Van Assche <bvanassche@acm.org>
-> Date:   Thu Feb 14 23:00:46 2019 +0000
->
->     locking/lockdep: Free lock classes that are no longer in use
+Add support for Variscite i.MX6Q VAR-SOM-MX6 SoM.
 
-No, that doesn't seem like a real cause commit.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+---
+ Documentation/devicetree/bindings/arm/fsl.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D16c0c84ea8=
-0000
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 2510eaa8906d..da486c4a4ecf 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -385,6 +385,11 @@ properties:
+           - const: toradex,apalis_imx6q
+           - const: fsl,imx6q
+ 
++      - description: i.MX6Q Variscite VAR-SOM-MX6 Boards
++        items:
++          - const: variscite,var-som-imx6q
++          - const: fsl,imx6q
++
+       - description: TQ-Systems TQMa6Q SoM (variant A) on MBa6x
+         items:
+           - const: tq,imx6q-mba6x-a
+-- 
+2.34.1
 
-The reproducer actually causes a lot of different crashes, which
-apparently confused the bisector.
-
-run #0: crashed: general protection fault in ext4_finish_bio
-run #1: crashed: general protection fault in ext4_finish_bio
-run #2: crashed: KASAN: wild-memory-access Read in force_sig_info_to_task
-run #3: crashed: KASAN: wild-memory-access Read in force_sig_info_to_task
-run #4: crashed: BUG: unable to handle kernel paging request in __run_timer=
-s
-run #5: crashed: BUG: unable to handle kernel paging request in __run_timer=
-s
-run #6: crashed: general protection fault in mac80211_hwsim_netlink_notify
-run #7: crashed: general protection fault in mac80211_hwsim_netlink_notify
-run #8: crashed: general protection fault in __run_timers
-run #9: crashed: general protection fault in __run_timers
-run #10: crashed: KASAN: wild-memory-access Read in process_one_work
-run #11: crashed: KASAN: wild-memory-access Read in process_one_work
-run #12: crashed: general protection fault in timerqueue_del
-run #13: crashed: general protection fault in timerqueue_del
-run #14: crashed: kernel BUG in corrupted
-run #15: crashed: kernel BUG in corrupted
-run #16: crashed: general protection fault in mm_update_next_owner
-run #17: crashed: general protection fault in mm_update_next_owner
-
-Isn't it a sign of a severe memory corruption caused by the reproducer?
-
-
-> start commit:   bfa3037d8280 Merge tag 'fuse-update-6.5' of git://git.ker=
-n..
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D15c0c84ea8=
-0000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D11c0c84ea8000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D27e33fd2346a5=
-4b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dc2b68bdf76e4428=
-36443
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D111c904ea80=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D116b0faaa8000=
-0
->
-> Reported-by: syzbot+c2b68bdf76e442836443@syzkaller.appspotmail.com
-> Fixes: a0b0fd53e1e6 ("locking/lockdep: Free lock classes that are no long=
-er in use")
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
