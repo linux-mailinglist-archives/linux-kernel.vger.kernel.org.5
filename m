@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF4575D0FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1451875D0FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbjGUR6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 13:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54388 "EHLO
+        id S230248AbjGUR6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 13:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbjGUR54 (ORCPT
+        with ESMTP id S229707AbjGUR63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 13:57:56 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E85C6;
-        Fri, 21 Jul 2023 10:57:54 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b895a06484so14394525ad.1;
-        Fri, 21 Jul 2023 10:57:54 -0700 (PDT)
+        Fri, 21 Jul 2023 13:58:29 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4B610D2;
+        Fri, 21 Jul 2023 10:58:28 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b8b318c5a7so16397125ad.3;
+        Fri, 21 Jul 2023 10:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689962274; x=1690567074;
+        d=gmail.com; s=20221208; t=1689962308; x=1690567108;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1iO7RitBOAvlss62RnOLeCZxiLAYet/53XRH4CXtEs4=;
-        b=fk4/QypjmdJuNtT/XSQWq/OThPpb77MUTgvjBRHxD67xldmYNpy05v9T7YgvHEuWpu
-         5XSBpOP2GIiov7r5bX3Rg6Kgr4vrF+8fjfT9AOGylJnNkgOc5Xgt+0Y49umgAjBKO57d
-         KUP1zzqcOlzK6NvMAV5ZIJtodzkL8o34rYAVspbmWUhyuClhOqtyKu1nGveTXz6K90+g
-         jX+KqSJX+biMbMChx4zDgFUQCy4UQekEGECC/1NbmGGKVJMATiSkLhnc3appKRGck5Bh
-         lShpqU/fob8LI/leRGhFrUEYyncbJG7sJJK3n6gM35OHAPTiORBV4W71XBBREX1VP+r1
-         TQoA==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MMbeZmEn/swkwXIwhi1G20TJgN07f15MbpFEH7XJldc=;
+        b=MZVVaJCSJBESRhr44VQl7fRqn1vS0H3bwcrQB8k9au2IGSxCbBIJeZSaUnZyczg1We
+         ceJ9z12LH/pQVCq1gfMKMxVNw7QDr2/EXK8ksWcab4fIbflvH0CYdK4JEUz/lg8UTisF
+         tiFLFaTAAy7ddvrVD1Xqb9inzgg5zxAhJ1Rwdmsll7XFF4uPTNd7GoqahY5GwCzcn3YS
+         aZacoedWo8fACF6ntfMjyh8skU5gM0mWEwz7hkKZ6PCEs/JjzBIfybibTCnf4qmVmc0j
+         0kuSq7AMF4GPNJhMro4tyVSsGyhkHMxNIkFkobQs8pnD2Cz9a3TgWpX2od2nUd7LGafq
+         Fjdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689962274; x=1690567074;
+        d=1e100.net; s=20221208; t=1689962308; x=1690567108;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1iO7RitBOAvlss62RnOLeCZxiLAYet/53XRH4CXtEs4=;
-        b=HToXT/VA+R5b0uiraAWwqJuyt2n2cnrR7xkdIvSSRKwCdC5h6L5pUN2SZPXWgmoZXC
-         fZSDIGMMUNhLhKt0FQyVfMY6iELyvl3Pf09IudIzxEC6czFUchs0r7B8hcPpfbbdyzXD
-         FTnDvP9TWGoUsEiPSppSq5C33Cty/jK+qPmZ5iCdADcGfTg8RqirZk1BNcg7r4FLmv9h
-         dR5Xlxj1e0EK+Q+nHTg6Gbjvs+MGpDJ1kSqa38fZCn2t9HgqwghpJOxZSpFCwJXFGRow
-         C2FPApZq740wAtq/BeKjiV0qmkf26CuPtwByg/1H6Rm3JTCx+hn1vLOI4/iI9G1dS2Bh
-         GIMA==
-X-Gm-Message-State: ABy/qLYZqmiV5obNO0OajFDQrwJmEm3yQa9Ne3GM7qFAuKYf5lCtBlEJ
-        Vv8AIHbQUukS5L6Ed1Dznbo=
-X-Google-Smtp-Source: APBJJlFUPIfP7vFuoI3K/1bdSxhM2cFG5kRveW1S9UN81JkNqXXy0YSoReJYH22GNJYJDueBR29WrQ==
-X-Received: by 2002:a17:902:7c8a:b0:1b8:3cb8:7926 with SMTP id y10-20020a1709027c8a00b001b83cb87926mr2178182pll.23.1689962274096;
-        Fri, 21 Jul 2023 10:57:54 -0700 (PDT)
-Received: from yoga ([2400:1f00:13:cde2:d588:8109:e86b:839c])
-        by smtp.gmail.com with ESMTPSA id l2-20020a170902f68200b001b89536974bsm3787696plg.202.2023.07.21.10.57.49
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MMbeZmEn/swkwXIwhi1G20TJgN07f15MbpFEH7XJldc=;
+        b=Df+MQqL/ERd+4KhdfzTHylvQj4Pi3MUjKPrEgnB/ZSO0T4uv+ouj25BfAOCqdsGPhc
+         yCf7didZNdkS73ylSPuInLXXLGSyH7KzSq80bEOXLFqx6VtVCStXAFdL7WRUTZjLVrPs
+         /cbPj0oAzjuqq8oazIlZxLedMjpyQwcDsn9Z0f4K89SmS123jd8J70tgQ69d+2vLTNij
+         qUHMjlGhL2mmOuzyHVb2GitKYdhw3UzHAhUGBuioCPULzcwKWF38sWkNJ6NI0mIo7kYY
+         p4ZtN60Ihj89tnTvKSqyFvobTRX662iqDQ45xDgvPhcuWYBsQ+0InLv3OPgBQhfL9a79
+         SYTA==
+X-Gm-Message-State: ABy/qLaZV4I0Hh4rWn3L4/BGUgpHAePx3y73IJIy9f++qdKo+2ryy5WG
+        r/3L+tcMh29wkWf6N7+ODf4=
+X-Google-Smtp-Source: APBJJlFZOxA85hb2alsHxftA/O54YBS4xLQYPlm4wLRgmBlKtHl4K87dLtCcuzdTj3L5ZeuP44pv6A==
+X-Received: by 2002:a17:902:d512:b0:1b6:c229:c350 with SMTP id b18-20020a170902d51200b001b6c229c350mr3400923plg.18.1689962308024;
+        Fri, 21 Jul 2023 10:58:28 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:fbd8])
+        by smtp.gmail.com with ESMTPSA id e13-20020a17090301cd00b001b83dc8649dsm3767352plh.250.2023.07.21.10.58.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 10:57:53 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 23:27:46 +0530
-From:   Anup Sharma <anupnewsmail@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Anup Sharma <anupnewsmail@gmail.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 7/8] perf scripts python: Add command execution for perf
- gecko script
-Message-ID: <cbf03cda175ea3dd2c6cd87bd3f12d803446cb95.1689961706.git.anupnewsmail@gmail.com>
-References: <cover.1689961706.git.anupnewsmail@gmail.com>
+        Fri, 21 Jul 2023 10:58:27 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 21 Jul 2023 07:58:26 -1000
+From:   'Tejun Heo' <tj@kernel.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Carlos Bilbao <carlos.bilbao@amd.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        amd <amd@localhost.localdomain>
+Subject: Re: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
+Message-ID: <ZLrHQgIb8jnm5biX@slm.duckdns.org>
+References: <20230717141852.153965-1-carlos.bilbao@amd.com>
+ <ZLWNHuTGk0fy8pjE@slm.duckdns.org>
+ <2b4540aadc3c4449a192aeed6211f232@AcuMS.aculab.com>
+ <ZLmT3mXuDlYY61w0@slm.duckdns.org>
+ <fd89f72848da4569a19ec8a1ac9ec94e@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1689961706.git.anupnewsmail@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <fd89f72848da4569a19ec8a1ac9ec94e@AcuMS.aculab.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This will enable the execution of perf-gecko.py script
-using record and report commands in perf script.
-And this will be also reflected at "perf script -l" command.
+Hello,
 
-For Example:
-    perf script record perf-gecko
-    perf script report perf-gecko
+On Fri, Jul 21, 2023 at 08:05:59AM +0000, David Laight wrote:
+> In any case it is enough to split the enum.
+> If you really need unrelated constants to be defined in an enum
+> them maybe use a separate enum for each.
+> Using (on one line):
+> 	enum { name = constant };
 
-Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
----
- tools/perf/scripts/python/bin/perf-gecko-record | 2 ++
- tools/perf/scripts/python/bin/perf-gecko-report | 3 +++
- 2 files changed, 5 insertions(+)
- create mode 100644 tools/perf/scripts/python/bin/perf-gecko-record
- create mode 100644 tools/perf/scripts/python/bin/perf-gecko-report
+Yeah, I'm hoping it won't come down to that. Hopefully, we can limp along
+like this until we can always assume the new behavior. Right now, the
+problem is that both gcc<13 and gcc=13 have to supported when the two assign
+different types to the same enum definitions.
 
-diff --git a/tools/perf/scripts/python/bin/perf-gecko-record b/tools/perf/scripts/python/bin/perf-gecko-record
-new file mode 100644
-index 000000000000..7df5a19c0163
---- /dev/null
-+++ b/tools/perf/scripts/python/bin/perf-gecko-record
-@@ -0,0 +1,2 @@
-+#!/bin/bash
-+perf record -g "$@"
-diff --git a/tools/perf/scripts/python/bin/perf-gecko-report b/tools/perf/scripts/python/bin/perf-gecko-report
-new file mode 100644
-index 000000000000..6781313dc862
---- /dev/null
-+++ b/tools/perf/scripts/python/bin/perf-gecko-report
-@@ -0,0 +1,3 @@
-+#!/bin/bash
-+# description: create firefox gecko profile json format from perf.data
-+perf script -s "$PERF_EXEC_PATH"/scripts/python/perf-gecko.py -- "$@"
+Thanks.
+
 -- 
-2.34.1
-
+tejun
