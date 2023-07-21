@@ -2,141 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C9575D0C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B762C75D0C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbjGURlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 13:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45878 "EHLO
+        id S229457AbjGURlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 13:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbjGURlT (ORCPT
+        with ESMTP id S229981AbjGURlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 21 Jul 2023 13:41:19 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F5430DD
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:41:16 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-cf4cb742715so2061951276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:41:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689961276; x=1690566076;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0EsEuc6ZrLkBpjfXrbTj3wl8CGw2RCGPAyUMK4WwkjA=;
-        b=DoHzE6IB/gTaLmkueM9yb30EUG6tzOb2A5AXrz9PQw1Ifq3ks790NG9A8kHnulrV92
-         RNCrZzNkmPOc83fANNDf5nXf1wPVFL2y5FNAhz+fPjDVllxc5Oizeq9OoCoSO3jrCWPO
-         Fdo3zuU1ITNzecPSKDNY0XL2xmTCfJibF/rCjlkemXFUh+Sr371B5TqkScdP+lHN0Bsv
-         l8bJ71cW4eJgHOkXZEVFnapIkfHWHqvRivBGgXBk81wx3rhHxJzYdjltDTwHbRDPypPU
-         FqCvfBjArc5TGgWA7G3s9Jm2aOIc06rnT78obfljmzEALSkpFg35cZZdMznfZTRdtzpx
-         x88Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689961276; x=1690566076;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0EsEuc6ZrLkBpjfXrbTj3wl8CGw2RCGPAyUMK4WwkjA=;
-        b=A1ctc5xkkM1d8o3dxrQcs38YIJrjfytkjr1l9qC0jaMpzys/C0G/BONw9kG+/506tt
-         P2zHtMSI8i7x1Qp0i4U5KbYaE3FyGO3UKB5XV8Ajduo3HkSBlD15FfvGZ6I0P9QRPZ43
-         3d1Z+ehx3PWT7hNvf7qzQR1TrmQvckx0fqkNVaBKpsoRmfWiMEl3Xyk9Vob9dsUiOvQS
-         Sde5YocTW+uVqZaesa+fXPIgJPKk0XQDnlr0gpTQgSeIXclzOQwba9Wloxra4v0Fh3Cv
-         zCnHPu7pZy+cKMOPcln8hxVRnOv0QOzNr7bbgrwTOeglz5ZDP0orX/op7rs6K+I+AJDo
-         QMvA==
-X-Gm-Message-State: ABy/qLbqNp37fwW39MpMiZHHMKRKHZA7Yvxb1TjhnJpi/7j47B78BK06
-        g8m53OW3+Ta2g/k7RH0FYDwS0fn87vw=
-X-Google-Smtp-Source: APBJJlFxyzDv1jxbiR1ec3ea79Hb3YohAr96lgMadcKGyfL8Br8SJoCJpXRoXSNCjiu8EtZhgF/6XBpHBow=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:4f41:0:b0:cb6:6c22:d0f8 with SMTP id
- d62-20020a254f41000000b00cb66c22d0f8mr17638ybb.4.1689961276130; Fri, 21 Jul
- 2023 10:41:16 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 10:41:14 -0700
-In-Reply-To: <6118063e-5c91-acc4-129f-3bacc19f25ce@redhat.com>
-Mime-Version: 1.0
-References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-10-seanjc@google.com>
- <6118063e-5c91-acc4-129f-3bacc19f25ce@redhat.com>
-Message-ID: <ZLrDOljnluTrt+l+@google.com>
-Subject: Re: [RFC PATCH v11 09/29] KVM: x86: Disallow hugepages when memory
- attributes are mixed
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A8630E3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:41:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BA7961CC7
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 17:41:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A3A8C433C8;
+        Fri, 21 Jul 2023 17:41:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689961276;
+        bh=BWBwuKB6vj2J9nDq33aoGvQFcBzxuUoRkTa9PWqpsaM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=mHb8aBh/eT8/8EV9VMng21t/5kL24Qw9Q/sh1xGYX/C0TtIf9g2lzKLNOME1GkXwK
+         EYDFP6GUa3a/4v8HmmzAcMSfXyIZ+y2KovHUFwEiueKAjHWyFb0g8klT1tLofo8ejZ
+         bPFKcdWLnTewLF2GqJlxo+wPvB3mfbQlROLv/zYJkGTbwTlyEqNk0wTzmwDDn7Y6xa
+         YZm/EKXbYa+cD9Qdl+rcHFlnAZyM6jzZRYDCbRjzl9QiP6bhTlHc3MuXQpFyNfzMCJ
+         zcacreo5iT/waZ85XCpNcRPoeY8/iYqXukVTwgtoPfYUj4VXRN5264Tykh2XCcG0PP
+         WoqczmjZF9EtA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+In-Reply-To: <20230719-regcache-async-rbtree-v1-1-b03d30cf1daf@kernel.org>
+References: <20230719-regcache-async-rbtree-v1-1-b03d30cf1daf@kernel.org>
+Subject: Re: [PATCH] regcache: Push async I/O request down into the rbtree
+ cache
+Message-Id: <168996127502.147835.89756829909209379.b4-ty@kernel.org>
+Date:   Fri, 21 Jul 2023 18:41:15 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023, Paolo Bonzini wrote:
-> On 7/19/23 01:44, Sean Christopherson wrote:
-> > +static bool range_has_attrs(struct kvm *kvm, gfn_t start, gfn_t end,
-> > +			    unsigned long attrs)
-> > +{
-> > +	XA_STATE(xas, &kvm->mem_attr_array, start);
-> > +	unsigned long index;
-> > +	bool has_attrs;
-> > +	void *entry;
-> > +
-> > +	rcu_read_lock();
-> > +
-> > +	if (!attrs) {
-> > +		has_attrs = !xas_find(&xas, end);
-> > +		goto out;
-> > +	}
-> > +
-> > +	has_attrs = true;
-> > +	for (index = start; index < end; index++) {
-> > +		do {
-> > +			entry = xas_next(&xas);
-> > +		} while (xas_retry(&xas, entry));
-> > +
-> > +		if (xas.xa_index != index || xa_to_value(entry) != attrs) {
-> > +			has_attrs = false;
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +out:
-> > +	rcu_read_unlock();
-> > +	return has_attrs;
-> > +}
-> > +
+On Wed, 19 Jul 2023 00:30:40 +0100, Mark Brown wrote:
+> Currently the regcache core unconditionally enables async I/O for all cache
+> types, causing problems for the maple tree cache which dynamically allocates
+> the buffers used to write registers to the device since async requires the
+> buffers to be kept around until the I/O has been completed.
 > 
-> Can you move this function to virt/kvm/kvm_main.c?
+> This use of async I/O is mainly for the rbtree cache which stores data in
+> a format directly usable for regmap_raw_write(), though there is a special
+> case for single register writes which would also have allowed it to be used
+> with the flat cache. It is a bit of a landmine for other caches since it
+> implicitly converts sync operations to async, and with modern hardware it
+> is not clear that async I/O is actually a performance win as shown by the
+> performance work David Jander did with SPI. In multi core systems the cost
+> of managing concurrency ends up swamping the performance benefit and almost
+> all modern systems are multi core.
+> 
+> [...]
 
-Ah, yeah, that's a good idea.
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+
+Thanks!
+
+[1/1] regcache: Push async I/O request down into the rbtree cache
+      commit: b460a52257b1f5299ca70b7d1bb32442d3ce7bf6
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
