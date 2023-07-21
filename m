@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A03675C58B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E8975C59B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbjGULL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 07:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
+        id S229644AbjGULMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 07:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231273AbjGULLI (ORCPT
+        with ESMTP id S231181AbjGULMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 07:11:08 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F673586;
-        Fri, 21 Jul 2023 04:10:28 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qMo0O-0001P2-1P;
-        Fri, 21 Jul 2023 11:09:04 +0000
-Date:   Fri, 21 Jul 2023 12:08:56 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Jan Kara <jack@suse.cz>, Damien Le Moal <dlemoal@kernel.org>,
-        Min Li <min15.li@samsung.com>,
-        Christian Loehle <CLoehle@hyperstone.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Yeqi Fu <asuk4.q@gmail.com>, Avri Altman <avri.altman@wdc.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ye Bin <yebin10@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH 0/6] nvmem: add block device NVMEM provider
-Message-ID: <ZLpnSK8sfZnEkcgj@makrotopia.org>
-References: <cover.1689802933.git.daniel@makrotopia.org>
- <ZLpCscTMc8h16Tyd@ovpn-8-26.pek2.redhat.com>
+        Fri, 21 Jul 2023 07:12:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE36358B;
+        Fri, 21 Jul 2023 04:11:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C34E61961;
+        Fri, 21 Jul 2023 11:10:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32F86C433CA;
+        Fri, 21 Jul 2023 11:10:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689937805;
+        bh=doH7QBRGiTSMgWAl8lnHKFFkVmk48+gAH6oH3iUKSSk=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=TeAAwkPYEkdHeLK0jHxq6rhHVazN/1TU7+62HrOkZfmqnl2lsKp3jBdYSSSx3x6Uh
+         m15wh0fBK+D8y/YNmxsYmZbhKqahbucNApMvstvBdluZ1jjMWp3xqUeOWKIgMVPmHn
+         /VuGq9YznORGspLjh+kXxyfS4zeYzoKVtb1T9v+EMRd8I2SJaIjLsOOItDHDp9Cyov
+         wYV0qE0CJlIdZ8XcBcTBG8nm4qUcKUew8YQR8u4OhZVhYtwIvL0eJ9oMTZrVXaEyEP
+         IgzxkYYIZv+2ogIMyEQdmY0HIQJr2qb68R+SiKTahVIeZdt05ZiiBl8mp33tp2Ti/M
+         bLI+aH7ty9Iag==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     linux-wireless@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: Closing down the wireless trees for a summer break?
+References: <87y1kncuh4.fsf@kernel.org>
+Date:   Fri, 21 Jul 2023 14:10:02 +0300
+In-Reply-To: <87y1kncuh4.fsf@kernel.org> (Kalle Valo's message of "Tue, 13 Jun
+        2023 17:22:47 +0300")
+Message-ID: <87sf9h1px1.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZLpCscTMc8h16Tyd@ovpn-8-26.pek2.redhat.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 04:32:49PM +0800, Ming Lei wrote:
-> On Wed, Jul 19, 2023 at 11:01:14PM +0100, Daniel Golle wrote:
-> > On embedded devices using an eMMC it is common that one or more (hw/sw)
-> > partitions on the eMMC are used to store MAC addresses and Wi-Fi
-> > calibration EEPROM data.
-> > 
-> > Implement an NVMEM provider backed by block devices as typically the
-> > NVMEM framework is used to have kernel drivers read and use binary data
-> > from EEPROMs, efuses, flash memory (MTD), ...
-> > 
-> > In order to be able to reference hardware partitions on an eMMC, add code
-> > to bind each hardware partition to a specific firmware subnode.
-> > 
-> > This series is meant to open the discussion on how exactly the device tree
-> > schema for block devices and partitions may look like, and even if using
-> > the block layer to back the NVMEM device is at all the way to go -- to me
-> > it seemed to be a good solution because it will be reuable e.g. for NVMe.
-> 
-> Just wondering why you don't use request_firmware() in drivers which consume
-> the data, then the logic can be moved out of kernel, and you needn't to deal
-> with device tree & block device.
+Kalle Valo <kvalo@kernel.org> writes:
 
-The thing is: Why should the OS need to know about how to read
-calibration to be fed into a wireless driver on a specific
-hardware/firmware?
+> Me and Johannes are planning to take a longer break from upstream this
+> summer. To keep things simple my suggestion is that we would official
+> close wireless and wireless-next trees from June 23rd to August 14th
+> (approximately).
+>
+> During that time urgent fixes would need go directly to the net tree.
+> Patches can keep flowing to the wireless list but the the net
+> maintainers will follow the list and they'll just apply them to the
+> net tree directly.
 
-Or even worse: The MAC address of the main Ethernet interface? What if
-for one of many possible reasons the extraction script in userland gets
-broken and you would need to recover the system via SSH (because it's a
-router or switch and doesn't even have any local console)?
+A change of plans, I'm actually back already now and have opened both
+wireless and wireless-next trees. I will go back offline at some point
+but hopefully Johannes will be back by then.
 
-Having information about the location of firmware artifacts be supplied
-by the firmware (via device tree) seems to be the natural choice, and
-also how it is done for devices booting off NOR or NAND flash by using
-the NVMEM framework. Why should eMMC be the exception?
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-> 
-> Or Android doesn't support udev and initrd?
-
-Yes, sure, but then the OS ROM needs to know about and handle a lot of
-very device-specific details in userland and if (unlike Android) the
-same OS ROM should run on many devices that would mean it will have to
-ship all of them in a huge initrd or root filesystem.
-
-Also using userspace mechanics to acquire things as basic as a MAC
-address seems overly complex and much more fragile than having the
-firmware instruct the kernel via device tree to do so.
-
-Hence, within the OpenWrt project, we've been working for years now to
-push for Device Tree and lately for use of the NVMEM framework, exactly
-to **reduce** the amount of hardware-specific knowledge in userland and
-get rid of shell scripts acting as hotplug handlers for firmware
-requests and such.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
