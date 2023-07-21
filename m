@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2260575C6C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93CD75C6C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbjGUMSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 08:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
+        id S231458AbjGUMTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbjGUMSQ (ORCPT
+        with ESMTP id S229605AbjGUMTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:18:16 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2FF2D4A
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:18:13 -0700 (PDT)
+        Fri, 21 Jul 2023 08:19:04 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA482106
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:19:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689941894; x=1721477894;
+  t=1689941942; x=1721477942;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=zqexK72UypcBtCj4L1f3PyVVDVu5mCG7mlNisYVuzdA=;
-  b=DlH8zXJYz/SnXeOd1uuUML5gWYLYsTggq3KbS2P1WGmNzU6iER/ptkHZ
-   mlx3QTGKyGx/G7EZIH2J72zUqE26CMAsiHnpEPwF0GtrUsZAosmbyUk6Y
-   ilziQuoxi8UvFNyLUsaUrxjhE5WFQdcnb+Y7vnI7277cmES1fsfdV8lQ/
-   aI5rUKTB8+YBdghZ2JwQC1nRH17/lrZ41XuSKlE09GPdkipzd7rqZqXxI
-   7u5ax5MUZ8SYTLOb8pZWY1aJHxNnciVoFjrnkMTtvTXBjVjoQ1q29Yh2y
-   gtBj8VF3seGL+bIJ6gFhlHvPSCbO1n62WD0MD+8Zx2Nqtil+9UYtRUVyZ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="364473285"
+  bh=7j7LwynwL0LMQz3oB6ergd8/nVuyEdhPBGRLEJP6bP0=;
+  b=UnuwfQ/7+lM4+Nq+xo6muGKiBAiVk9ZAk8ZdpblZq2DZKqr8QseBwy1T
+   xZyb8uQQPWDh3nNBsabiY8e+//aIaXamGTplAFVGA9OtmUlWPB/WOmibl
+   w3D3ZZ6ZsHAyMaEUeKJLVLMFezNVgGouJfWGFQ9ZWxC4LuA/dD3qjEXO9
+   ubEa76DXv30x4ByaANigH70RKyFWwm1ubuCD3qLno6UBjib8Ci5glyjnB
+   9clGTndJTcSkHe0WLQYk8uSS+wTnhsPdzn2KEKI6CFlUaoORaJSZk+ZQA
+   5QVYlY8L0Ak8eD4zetxjjVkFu1tQTQJNCut6wwRBGOy+M7DOEJSmChPbX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="356999013"
 X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="364473285"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 05:18:13 -0700
+   d="scan'208";a="356999013"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 05:19:02 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="759941543"
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="675028754"
 X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="759941543"
+   d="scan'208";a="675028754"
 Received: from dhardfel-mobl1.ger.corp.intel.com (HELO [10.251.223.78]) ([10.251.223.78])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 05:18:09 -0700
-Message-ID: <672adbbe-c86d-868b-2892-8e58c7a0612f@linux.intel.com>
-Date:   Fri, 21 Jul 2023 15:19:27 +0300
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 05:18:39 -0700
+Message-ID: <9b285ede-eaeb-40a2-086d-30cf74185784@linux.intel.com>
+Date:   Fri, 21 Jul 2023 15:19:53 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v2 0/9] sound: Use -EPROBE_DEFER instead of i915 module
- loading.
+Subject: Re: [PATCH v2 2/9] ALSA: hda/i915: Allow override of gpu binding.
 Content-Language: en-US
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         alsa-devel@alsa-project.org
@@ -61,93 +60,76 @@ Cc:     sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
         Mark Brown <broonie@kernel.org>,
         Daniel Baluta <daniel.baluta@nxp.com>
 References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+ <20230719164141.228073-3-maarten.lankhorst@linux.intel.com>
 From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+In-Reply-To: <20230719164141.228073-3-maarten.lankhorst@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maarten,
+
 
 On 19/07/2023 19:41, Maarten Lankhorst wrote:
-> Explicitly loading i915 becomes a problem when upstreaming the new intel driver
-> for Tiger Lake and higher graphics (xe). By loading i915, it doesn't wait for
-> driver load of xe, and will fail completely before it loads.
+> Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports
+> video_firmware_drivers_only(). This can be used as a first
+> approximation on whether i915 will be available. It's safe to use as
+> this is only built when CONFIG_SND_HDA_I915 is selected by CONFIG_I915.
 > 
-> -EPROBE_DEFER has to be returned before any device is created in probe(),
-> otherwise the removal of the device will cause EPROBE_DEFER to try again
-> in an infinite loop.
+> It's not completely fool proof, as you can boot with "nomodeset
+> i915.modeset=1" to make i915 load regardless, or use
+> "i915.force_probe=!*" to never load i915, but the common case of
+> booting with nomodeset to disable all GPU drivers this will work as
+> intended.
 > 
-> The conversion is done in gradual steps. First I add an argument to
-> snd_hdac_i915_init to allow for -EPROBE_DEFER so I can convert each driver
-> separately. Then I convert each driver to move snd_hdac_i915_init out of the
-> workqueue. Finally I drop the ability to choose modprobe behavior after the
-> last user is converted.
-> 
-> I suspect the avs and skylake drivers used snd_hdac_i915_init purely for the
-> modprobe, but I don't have the hardware to test if it can be safely removed.
-> It can still be done easily in a followup patch to simplify probing.
+> Because of this, we add an extra module parameter,
+> snd_hda_core.gpu_bind that can be used to signal users intent.
+> -1 follows nomodeset, 0 disables binding, 1 forces wait/-EPROBE_DEFER
+> on binding.
 
-Apart from the few comments I had, this looks great and works OK on the
-machines I have tested (iow, no regression so far).
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-Thank you for the work!
+> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> ---
+>  sound/hda/hdac_i915.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+> index 161a9711cd63e..c32709fa4115f 100644
+> --- a/sound/hda/hdac_i915.c
+> +++ b/sound/hda/hdac_i915.c
+> @@ -11,6 +11,13 @@
+>  #include <sound/hda_i915.h>
+>  #include <sound/hda_register.h>
+>  
+> +#include <video/nomodeset.h>
+> +
+> +static int gpu_bind = -1;
+> +module_param(gpu_bind, int, 0644);
+> +MODULE_PARM_DESC(gpu_bind, "Whether to bind sound component to GPU "
+> +			   "(1=always, 0=never, -1=on nomodeset(default))");
+> +
+>  #define IS_HSW_CONTROLLER(pci) (((pci)->device == 0x0a0c) || \
+>  				((pci)->device == 0x0c0c) || \
+>  				((pci)->device == 0x0d0c) || \
+> @@ -121,6 +128,9 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
+>  {
+>  	struct pci_dev *display_dev = NULL;
+>  
+> +	if (!gpu_bind || (gpu_bind < 0 && video_firmware_drivers_only()))
+> +		return false;
+> +
+>  	for_each_pci_dev(display_dev) {
+>  		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
+>  		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
+
 -- 
 Péter
-
-> 
-> ---
-> New since first version:
-> 
-> - snd_hda_core.gpu_bind is added as a mechanism to force gpu binding,
->   for testing. snd_hda_core.gpu_bind=0 forces waiting for GPU bind to
->   off, snd_hda_core.gpu_bind=1 forces waiting for gpu bind. Default
->   setting depends on whether kernel booted with nomodeset.
-> - Incorporated all feedback review.
-> 
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: Cezary Rojewski <cezary.rojewski@intel.com>
-> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-> Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Daniel Baluta <daniel.baluta@nxp.com>
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: sound-open-firmware@alsa-project.org
-> 
-> Maarten Lankhorst (9):
->   ALSA: hda/intel: Fix error handling in azx_probe()
->   ALSA: hda/i915: Allow override of gpu binding.
->   ALSA: hda/i915: Add an allow_modprobe argument to snd_hdac_i915_init
->   ALSA: hda/i915: Allow xe as match for i915_component_master_match
->   ASoC: Intel: avs: Move snd_hdac_i915_init to before probe_work.
->   ASoC: Intel: Skylake: Move snd_hdac_i915_init to before probe_work.
->   ALSA: hda/intel: Move snd_hdac_i915_init to before probe_work.
->   ASoC: SOF: Intel: Remove deferred probe for SOF
->   ALSA: hda/i915: Remove extra argument from snd_hdac_i915_init
-> 
->  sound/hda/hdac_i915.c         | 25 ++++++++-------
->  sound/pci/hda/hda_intel.c     | 60 ++++++++++++++++++-----------------
->  sound/soc/intel/avs/core.c    | 13 +++++---
->  sound/soc/intel/skylake/skl.c | 31 ++++++------------
->  sound/soc/sof/Kconfig         | 19 -----------
->  sound/soc/sof/core.c          | 38 ++--------------------
->  sound/soc/sof/intel/Kconfig   |  1 -
->  sound/soc/sof/intel/hda.c     | 32 +++++++++++--------
->  sound/soc/sof/sof-pci-dev.c   |  3 +-
->  sound/soc/sof/sof-priv.h      |  5 ---
->  10 files changed, 85 insertions(+), 142 deletions(-)
-> 
