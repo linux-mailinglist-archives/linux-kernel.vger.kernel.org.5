@@ -2,71 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F9975CB19
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2421C75CB51
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjGUPLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
+        id S230085AbjGUPSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbjGUPLX (ORCPT
+        with ESMTP id S229536AbjGUPSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:11:23 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7542733;
-        Fri, 21 Jul 2023 08:10:50 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="433276971"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="433276971"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 08:10:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="814992250"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="814992250"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by FMSMGA003.fm.intel.com with ESMTP; 21 Jul 2023 08:10:34 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andy@kernel.org>)
-        id 1qMrm5-009lZN-0J;
-        Fri, 21 Jul 2023 18:10:33 +0300
-Date:   Fri, 21 Jul 2023 18:10:32 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Andrei Coardos <aboutphysycs@gmail.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        angelogioacchino.delregno@collabora.com, matthias.bgg@gmail.com,
-        brgl@bgdev.pl, linus.walleij@linaro.org,
-        Alexandru Ardelean <alex@shruggie.ro>
-Subject: Re: [PATCH] gpio: mt7621: remove unnecessary call to
- platfrom_set_drvdata()
-Message-ID: <ZLqf6P22HC0Dd4G5@smile.fi.intel.com>
-References: <20230721130838.26616-1-aboutphysycs@gmail.com>
+        Fri, 21 Jul 2023 11:18:14 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA17B30DB;
+        Fri, 21 Jul 2023 08:18:12 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id eb916d3108774ad8; Fri, 21 Jul 2023 17:18:10 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 703C6661901;
+        Fri, 21 Jul 2023 17:18:10 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH v2 8/8] ACPI: thermal: Drop unnecessary thermal zone callbacks
+Date:   Fri, 21 Jul 2023 17:10:34 +0200
+Message-ID: <2178456.Icojqenx9y@kreacher>
+In-Reply-To: <5710197.DvuYhMxLoT@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <5710197.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230721130838.26616-1-aboutphysycs@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgdekvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgt
+ phhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 04:08:38PM +0300, Andrei Coardos wrote:
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver.
-> Also, the private data is defined in this driver, so there is no risk of
-> it being accessed outside of this driver file.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Reviewed-by: Andy Shevchenko <andy@kernel.org>
+Drop the .get_trip_type(), .get_trip_temp() and .get_crit_temp() thermal
+zone callbacks that are not necessary any more from the ACPI thermal
+driver along with the corresponding callback functions.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/thermal.c |  115 -------------------------------------------------
+ 1 file changed, 115 deletions(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -465,118 +465,6 @@ static int thermal_get_temp(struct therm
+ 	return 0;
+ }
+ 
+-static int thermal_get_trip_type(struct thermal_zone_device *thermal,
+-				 int trip, enum thermal_trip_type *type)
+-{
+-	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
+-	int i;
+-
+-	if (!tz || trip < 0)
+-		return -EINVAL;
+-
+-	if (tz->trips.critical.valid) {
+-		if (!trip) {
+-			*type = THERMAL_TRIP_CRITICAL;
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	if (tz->trips.hot.valid) {
+-		if (!trip) {
+-			*type = THERMAL_TRIP_HOT;
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	if (tz->trips.passive.valid) {
+-		if (!trip) {
+-			*type = THERMAL_TRIP_PASSIVE;
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid; i++) {
+-		if (!trip) {
+-			*type = THERMAL_TRIP_ACTIVE;
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+-static int thermal_get_trip_temp(struct thermal_zone_device *thermal,
+-				 int trip, int *temp)
+-{
+-	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
+-	int i;
+-
+-	if (!tz || trip < 0)
+-		return -EINVAL;
+-
+-	if (tz->trips.critical.valid) {
+-		if (!trip) {
+-			*temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.critical.temperature,
+-					tz->kelvin_offset);
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	if (tz->trips.hot.valid) {
+-		if (!trip) {
+-			*temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.hot.temperature,
+-					tz->kelvin_offset);
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	if (tz->trips.passive.valid) {
+-		if (!trip) {
+-			*temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.passive.temperature,
+-					tz->kelvin_offset);
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE &&
+-		tz->trips.active[i].valid; i++) {
+-		if (!trip) {
+-			*temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.active[i].temperature,
+-					tz->kelvin_offset);
+-			return 0;
+-		}
+-		trip--;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+-static int thermal_get_crit_temp(struct thermal_zone_device *thermal,
+-				int *temperature)
+-{
+-	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
+-
+-	if (tz->trips.critical.valid) {
+-		*temperature = deci_kelvin_to_millicelsius_with_offset(
+-					tz->trips.critical.temperature,
+-					tz->kelvin_offset);
+-		return 0;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+ static struct thermal_trip *acpi_thermal_get_trip(struct acpi_thermal *tz,
+ 						  int trip_index)
+ {
+@@ -781,9 +669,6 @@ static struct thermal_zone_device_ops ac
+ 	.bind = acpi_thermal_bind_cooling_device,
+ 	.unbind	= acpi_thermal_unbind_cooling_device,
+ 	.get_temp = thermal_get_temp,
+-	.get_trip_type = thermal_get_trip_type,
+-	.get_trip_temp = thermal_get_trip_temp,
+-	.get_crit_temp = thermal_get_crit_temp,
+ 	.get_trend = thermal_get_trend,
+ 	.hot = acpi_thermal_zone_device_hot,
+ 	.critical = acpi_thermal_zone_device_critical,
+
+
 
 
