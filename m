@@ -2,131 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD3375CB3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D7C75CB3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbjGUPPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
+        id S230490AbjGUPPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:15:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231514AbjGUPP0 (ORCPT
+        with ESMTP id S231857AbjGUPPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:15:26 -0400
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A333A8E;
-        Fri, 21 Jul 2023 08:15:02 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-579de633419so24002097b3.3;
-        Fri, 21 Jul 2023 08:15:02 -0700 (PDT)
+        Fri, 21 Jul 2023 11:15:16 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C2F2733;
+        Fri, 21 Jul 2023 08:14:54 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fcd615d7d6so3314354e87.3;
+        Fri, 21 Jul 2023 08:14:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689952489; x=1690557289;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iInWzg4Aa37bAKJaNWT3bREiveHBzs5+RriIq+gc+lc=;
+        b=Qc9w+qM2LK7YpY+WDNtPCnIK3VFn/Icb98FXoofzbjUF6GhqHu40VZ/zJ4RmZzjJ24
+         SdvCZ7Ig2a+VgOy5tHK5Ms8MndvOacEiSZOqwK2ybvMPHfA5cssapzYFNcqFzKaEucF8
+         d+QfSsmnL0r3DlflL6qmQxouoRkvbDI5pQxkdqbRMzsreDGXb+FpYT2T3IuUMwLhOcE2
+         /d87AUfmYcw37MsVvV8r4OJm8Y2NCsfIIvY02h7BThXnSCLVb5Qfz/fE2vRdB79JErNb
+         zNTncv5nJe/c/b4LbKdbxeriFOXsxanzzm7qoXAL4qVEqbZ13lJ3m3zDpF2EEZ/FIFGT
+         WPFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689952497; x=1690557297;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4gls07TAhrPZDEI4R+VJXoEx/0hW6Rvn6uyBj2nqCeY=;
-        b=NW5qYZcPNvZXlNlR758095l1tu8OHkcj6s8W2Z6gjWMSXXmULAnuut6ALZuOMfmzkf
-         ftajB7kbfMXNDzMcXaGdGPETYKCNi7gC48J8+M1+LBmn+D4hqL/uQVFCKAKKozneSsBK
-         Fcic569dJvzL9ac04VDw+1bNaQ/TQxAxCx1FqnuGuIrILPOba8MsFIT8JHjmYuTA7bIH
-         2VY09VYH+KYOwgrXrkVG+YcLXbaFUMvQ6p/ZnynpWc3VrUUM9YMuQO3i1R0VAvijZhdr
-         P1MN1x7gr+mHyZLG+S75w9lLrkMZ1o3UJE1AraVjuwMo68+co9z+BxH8mUz8ftu/TDBp
-         X+uw==
-X-Gm-Message-State: ABy/qLacF9cNjOBSW7ZvuEmBl8pBXaxps416D5EvVS/jdWydwmwTNNeM
-        8OlJMT2r18xFwLU0InYjNl0+UxKPls79iQ==
-X-Google-Smtp-Source: APBJJlFlhHzwBcSDQGhQ4UbAVH9YCayglWpwu3m4gYU8WeRht/E9l1vklBkgvckA+079WbsKMcr+GQ==
-X-Received: by 2002:a0d:d844:0:b0:577:3b66:5fa with SMTP id a65-20020a0dd844000000b005773b6605famr376626ywe.42.1689952496898;
-        Fri, 21 Jul 2023 08:14:56 -0700 (PDT)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id h184-20020a0dc5c1000000b0057736c436f1sm918540ywd.141.2023.07.21.08.14.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 08:14:56 -0700 (PDT)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-583a8596e2aso3316627b3.1;
-        Fri, 21 Jul 2023 08:14:56 -0700 (PDT)
-X-Received: by 2002:a0d:ddd4:0:b0:577:2cac:cd49 with SMTP id
- g203-20020a0dddd4000000b005772caccd49mr420491ywe.1.1689952496259; Fri, 21 Jul
- 2023 08:14:56 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689952489; x=1690557289;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iInWzg4Aa37bAKJaNWT3bREiveHBzs5+RriIq+gc+lc=;
+        b=NUbt/gk2DC0McqxlYfvUuJOnDS1VsIlBrEz6CjWO6K1dQjPdkaY124T+WafU6Y3zbJ
+         UlZvIxfyUF28qYfvt9mTRSdNSECKVgYYaZuAz7D9oC3xq7IirLvjwhlrjEpGzpYRlyR8
+         f0VZw+XoGTjlq9Fspwf/m3zTBTM6c/QC5lT51FN+T18W0PE8QZzrOV5EESUG3589jKFG
+         uHx+bTnlBa8ptHP+D6+uniiGNgnXHj5Gn4+m6GpZk59m89Cow5Ody/5/7b7qJ2HhgL69
+         t2UO4dvIzCzHeeid690V/Yls9wJHru5brYqRSZ63M4bLWIgrXR8KfUWuMskJBCX17p4j
+         GyWw==
+X-Gm-Message-State: ABy/qLbI74HZYcZA3X4BUxz+IYOyPvtZir2Jn6o7bNc/mig/oupMSFci
+        g/rxFuyPLzS7HlE3aZbFQOprZXQYxQ8=
+X-Google-Smtp-Source: APBJJlGh0FZwd4kB6nvlAofXkj84MuWqZA0k4+R+PRVca34RmuYNsFTmOB/feQJ1iNWdY1WWAR5r9w==
+X-Received: by 2002:a05:6512:3154:b0:4fb:8fe3:9266 with SMTP id s20-20020a056512315400b004fb8fe39266mr1371631lfi.0.1689952489300;
+        Fri, 21 Jul 2023 08:14:49 -0700 (PDT)
+Received: from orome (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id d2-20020a50fb02000000b0051e28d315a2sm2240569edq.78.2023.07.21.08.14.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 08:14:48 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 17:14:46 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Michal Simek <michal.simek@amd.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] firmware: Explicitly include correct DT includes
+Message-ID: <ZLqg5g5cmx8gX9E1@orome>
+References: <20230714174438.4054854-1-robh@kernel.org>
 MIME-Version: 1.0
-References: <20230711154449.1378385-1-eesposit@redhat.com> <ZK/9MlTh435FP5Ji@gambale.home>
- <ZLABozIRVGmwuIBf@gambale.home> <ba2354dc63fd741d2d351b18d4312d0771c0935d.camel@HansenPartnership.com>
- <ZLVyvAXwtemx1I6p@redhat.com> <0aa647f719103e8620d7209cbde40f04a7334749.camel@HansenPartnership.com>
- <FBDC67DD-856F-429B-8E91-B0CA8B0F24B9@oracle.com> <CAMw=ZnQ5pjwJZdX9kyib=vFd_c5_5_eUhV_mT5OcRPt693m=Yg@mail.gmail.com>
- <635B383C-38A5-479E-80A6-358D5F90988B@oracle.com> <CAMw=ZnQtEwNFyZ-Gt6ODb9gp22KY1GimaSfW46N7o-S1Hkfp4A@mail.gmail.com>
- <c2f451e0f8d72cf3183aff9cbaf23f135fc7b495.camel@HansenPartnership.com>
- <CAMw=ZnSHDYrLXoad=d_O_qAsurqv196z3Fc3VRAJXSsJNVXdPw@mail.gmail.com>
- <137ddc2957d43576afd37afb0bedab3ceea1f8d7.camel@HansenPartnership.com>
- <CAMw=ZnSPGp-jCAN+z_QdGJAgJv4=pgee_2oQ4oBqVqnye6813A@mail.gmail.com> <caec9522f981393e6fd0f8e36ff495781828406f.camel@HansenPartnership.com>
-In-Reply-To: <caec9522f981393e6fd0f8e36ff495781828406f.camel@HansenPartnership.com>
-From:   Luca Boccassi <bluca@debian.org>
-Date:   Fri, 21 Jul 2023 16:14:43 +0100
-X-Gmail-Original-Message-ID: <CAMw=ZnREBiwqP+wmUfBishtZ9eOiNsaicypvMqFMmEdV_g2gpg@mail.gmail.com>
-Message-ID: <CAMw=ZnREBiwqP+wmUfBishtZ9eOiNsaicypvMqFMmEdV_g2gpg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Eric Snowberg <eric.snowberg@oracle.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "lennart@poettering.net" <lennart@poettering.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pZkSdwRWU+4W2YBg"
+Content-Disposition: inline
+In-Reply-To: <20230714174438.4054854-1-robh@kernel.org>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 at 14:34, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> On Fri, 2023-07-21 at 14:10 +0100, Luca Boccassi wrote:
-> > On Fri, 21 Jul 2023 at 14:01, James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
-> [...]
-> > > Well, my job is to be concerned about how individuals who want to
-> > > own their own keys, either in MoK or db, participate in this, so I
-> > > am mostly thinking about local signing.  Whatever we decide, there
-> > > must be a local workflow pathway.
-> >
-> > Sure but for local signing via MoK that's obviously fine, as one gets
-> > to keep the pieces. AFAIK it's a different flow in Shim whether
-> > something is authorized by MoK, DB or the built-in cert, so having
-> > different policies built-in for those different cases should be
-> > doable. Actually at the moment even if Shim loads the image, if it
-> > gets authorized by DB .sbat isn't checked at all.
->
-> So let's be sure we mean the same thing here.  There is really no third
-> party CA.  Microsoft gives the distributions a signing key to allow
-> them to sign their version of shim.  Some distributions, like Red Hat,
-> also embed their signing certificates in shim, so shim can distinguish
-> between a RH key and another key added to MokList.  However, some
-> distributions, like SUSE, insist that all signing keys be approved by
-> the machine owner (so no embedded shim certs for non-enterprise) and
-> their shim can't distinguish between SUSE keys and machine owner
-> additions.  Given the variances in key handling, I think trying to
-> distinguish between official and developer keys is a huge addition of
-> complexity we don't need, so there has to be a workflow that functions
-> for both and that workflow would seem to be allowing non-existent or
-> empty sbat sections.  Official key holders  would *always* add sbat
-> sections, so there's really no problem that needs a solution to be
-> mandated here.
 
-The certificate is called the "Microsoft Corporation UEFI CA 2011" ,
-issued by the "Microsoft Corporation Third Party Marketplace Root". So
-for short, we call it UEFI 3rd party CA :-)
-Anyway, I wasn't aware that SUSE doesn't embed their cert in Shim,
-we'll have to take that in consideration for sure.
+--pZkSdwRWU+4W2YBg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Jul 14, 2023 at 11:44:37AM -0600, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  drivers/firmware/arm_scmi/driver.c | 4 ++--
+>  drivers/firmware/imx/imx-dsp.c     | 1 -
+>  drivers/firmware/imx/imx-scu-irq.c | 1 +
+>  drivers/firmware/imx/imx-scu.c     | 1 +
+>  drivers/firmware/mtk-adsp-ipc.c    | 1 -
+>  drivers/firmware/raspberrypi.c     | 1 +
+>  drivers/firmware/scpi_pm_domain.c  | 3 ++-
+>  drivers/firmware/stratix10-rsu.c   | 1 -
+>  drivers/firmware/tegra/bpmp.c      | 3 +--
+>  drivers/firmware/xilinx/zynqmp.c   | 1 +
+>  10 files changed, 9 insertions(+), 8 deletions(-)
+
+Not sure about the other maintainers, but I usually pick up
+firmware/tegra patches up through the Tegra tree and then they
+ultimately go through ARM SoC.
+
+Arnd, Olof, does it make sense for you guys to pick this up directly?
+
+Thierry
+
+--pZkSdwRWU+4W2YBg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS6oOYACgkQ3SOs138+
+s6G8XRAArwU2xjyoHeBc/G3KsTP4njY3K49dPk0+F+Cvpdb0ZrZHV0g7+S8cvJTA
+J0ludetXwP0bhB0TYIoTEzMbJUIk9n7Lz4Y8LKWfKPNxQCp/IxRyac2O/gUaLFLL
+8mUdi+yudTE9C7ur0utsrLqYr0XFlVf7MesTILteNiuSwynfaMR9Lf0eWO4iHHwO
+dZiqJ8BJafMh9RYS+A1phmVMSg3S8fj9XGP0L/c7UhrH/7eY1qKJKfzbB1eUUDHV
+Mb5Yhz909tafjnmxMB32ZgbjfGKczKwJh7aoQqZHeVWkwk3BG7UlhM7WAchsdHNN
+NFQwXOBI42fmLQY7TeUN8TIds23X9LcxVH42iyze2xU/Vh/ypqu/6+OTsDSxnGMJ
+Pbv7dEYG961lscfL2hUiKi9/2hnJQc8oBtfyQ68GKei4Ahmi7EAm5b16pi0GvEm0
+YzCOghyrBkts+jPKPbhw4puYMlXa8S77h3tCM9j5S0i78TS6TSv4KeGjsD0ZJQeJ
+qR9enoY89rtP7LPZ8zrORanG1HX3zqBGubiBy+5Ta41cZCNGRu0HUYQPl6tHHDrm
+ziwX7+oCzr5BIoJZzLehl1Cs12QRTwoSzDC4M/BC3hWibyq7gi3wI1vLLr7uZkbo
+coe6QabcbFkT9/+Ssaz2n0J983DpnISyMeaUp27ADlhEZ0+aYm4=
+=hMKr
+-----END PGP SIGNATURE-----
+
+--pZkSdwRWU+4W2YBg--
