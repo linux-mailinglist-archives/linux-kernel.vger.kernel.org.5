@@ -2,142 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7405E75BF8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8584E75BF7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbjGUHWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 03:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52652 "EHLO
+        id S229492AbjGUHWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 03:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjGUHWd (ORCPT
+        with ESMTP id S229534AbjGUHV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 03:22:33 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6B3E730D2;
-        Fri, 21 Jul 2023 00:22:25 -0700 (PDT)
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id E612D807E;
-        Fri, 21 Jul 2023 07:22:22 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: [PATCH v3 3/3] serial: core: Fix serial core controller port name to show controller id
-Date:   Fri, 21 Jul 2023 10:21:42 +0300
-Message-ID: <20230721072147.59121-4-tony@atomide.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230721072147.59121-1-tony@atomide.com>
-References: <20230721072147.59121-1-tony@atomide.com>
-MIME-Version: 1.0
+        Fri, 21 Jul 2023 03:21:58 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E8BE53
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 00:21:56 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 814AD1FE9C;
+        Fri, 21 Jul 2023 07:21:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689924114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Q+2rN5MCK3o3RRzLElw23yXxLGukXbYY8wCAZZEQQ1c=;
+        b=y3KtpnV3WTSJX6HnCWRWJonz7aIeNdkzZeHXKF/8IBdiskKWAFWjFak6AK2SRqc1LSXsRa
+        HGup59mbm6KycgY+RWT5KulDhCBW9t+F3YAi+sClyesJD0hyhogkvLfUlfO5C/Oqou8UiN
+        hOlf3t2Q/m/dZXCIcLdnQ0/nq4C8Jm0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689924114;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Q+2rN5MCK3o3RRzLElw23yXxLGukXbYY8wCAZZEQQ1c=;
+        b=TNPumxsYc7psHrOAB3kEuHBg52re52Hup6bx6p51QSs14AoARvlYxvXwgKaNxhRf9SgV8g
+        pJDrQ4Oy/eDusKAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5FB21134BA;
+        Fri, 21 Jul 2023 07:21:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id FViWFhIyumTDMAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 21 Jul 2023 07:21:54 +0000
+Date:   Fri, 21 Jul 2023 09:21:53 +0200
+Message-ID: <871qh1ivam.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 6.5-rc3
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are missing the serial core controller id for the serial core port
-name. Let's fix the issue for sane /sys/bus/serial-core/devices, and to
-avoid issues addressing serial ports later on.
+Linus,
 
-Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
-Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+please pull sound fixes for v6.5-rc3 from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.5-rc3
+
+The topmost commit is 5f69c65e07b99ceb113d304fe31e0c653eb1c4bc
+
+----------------------------------------------------------------
+
+sound fixes for 6.5-rc3
+
+A pile of fixes that have been gathered since the previous PR.
+Most of changes are device-specific, and nothing looks too scary.
+
+- A memory leak fix in ALSA sequencer code in 6.5-rc
+- Many fixes for ASoC Qualcomm CODEC drivers, covering SoundWire probe
+  problems
+- A series of ASoC AMD fixes
+- A few fixes and cleanups of selftest stuff
+- HD-audio codec fixes and quirks for Clevo, HP, Lenovo, Dell
+
+----------------------------------------------------------------
+
+Christoffer Sandberg (1):
+      ALSA: hda/realtek: Add quirk for Clevo NS70AU
+
+Colin Ian King (1):
+      selftests: ALSA: Fix fclose on an already fclosed file pointer
+
+Dan Carpenter (1):
+      ASoC: SOF: ipc3-dtrace: uninitialized data in dfsentry_trace_filter_write()
+
+Derek Fang (1):
+      ASoC: rt5640: Fix the issue of speaker noise
+
+Fabio Estevam (1):
+      ASoC: fsl_sai: Revert "ASoC: fsl_sai: Enable MCTL_MCLK_EN bit for master mode"
+
+Geert Uytterhoeven (1):
+      ASoC: codecs: SND_SOC_WCD934X should select REGMAP_IRQ
+
+Johan Hovold (15):
+      ASoC: codecs: wcd938x: fix codec initialisation race
+      ASoC: codecs: wcd938x: fix mbhc impedance loglevel
+      ASoC: codecs: wcd938x: drop inline keywords
+      ASoC: codecs: wcd938x: use dev_printk() for impedance logging
+      ASoC: codecs: wcd934x: demote impedance printk
+      ASoC: codecs: wcd934x: drop inline keywords
+      ASoC: codecs: wcd938x: fix soundwire initialisation race
+      ASoC: codecs: wcd938x: fix missing mbhc init error handling
+      ASoC: qdsp6: audioreach: fix topology probe deferral
+      ASoC: codecs: wcd938x: fix missing clsh ctrl error handling
+      ASoC: codecs: wcd938x: fix resource leaks on component remove
+      ASoC: codecs: wcd934x: fix resource leaks on component remove
+      ASoC: codecs: wcd-mbhc-v2: fix resource leaks on component remove
+      ASoC: topology: suppress probe deferral errors
+      ASoC: core: suppress probe deferral errors
+
+Kailang Yang (1):
+      ALSA: hda/realtek - remove 3k pull low procedure
+
+Luka Guzenko (1):
+      ALSA: hda/realtek: Enable Mute LED on HP Laptop 15s-eq2xxx
+
+Mario Limonciello (1):
+      ASoC: amd: ps: Fix extraneous error messages
+
+Martin Povi¹er (1):
+      MAINTAINERS: Redo addition of ssm3515 to APPLE SOUND
+
+Mastan Katragadda (1):
+      ASoC: SOF: amd: add revision check for sending sha dma completion command
+
+Matthias Reichl (1):
+      ASoC: hdmi-codec: fix channel info for compressed formats
+
+Matus Gajdos (1):
+      ASoC: fsl_sai: Disable bit clock with transmitter
+
+Nathan Chancellor (1):
+      ASoC: cs35l45: Select REGMAP_IRQ
+
+Rob Herring (1):
+      ASoC: dt-bindings: audio-graph-card2: Drop incomplete example
+
+Rohit kumar (1):
+      ASoC: dt-bindings: Update maintainer email id
+
+Sameer Pujar (1):
+      ASoC: rt5640: Fix sleep in atomic context
+
+Sheetal (2):
+      ASoC: tegra: Fix AMX byte map
+      ASoC: tegra: Fix ADX byte map
+
+Shuming Fan (1):
+      ASoC: rt5645: check return value after reading device id
+
+Srinivas Kandagatla (4):
+      ASoC: qdsp6: q6apm: use dai link pcm id as pcm device number
+      ASoC: qcom: q6afe-dai: fix Display Port Playback stream name
+      ASoC: codecs: wcd938x: fix dB range for HPHL and HPHR
+      ASoC: qcom: q6apm: do not close GPR port before closing graph
+
+Takashi Iwai (2):
+      ALSA: seq: Fix memory leak at error path in snd_seq_create_port()
+      selftests: ALSA: Add test-pcmtest-driver to .gitignore
+
+Thomas Petazzoni (1):
+      ASoC: cs42l51: fix driver to properly autoload with automatic module loading
+
+Uwe Kleine-König (2):
+      ALSA: pcmtest: Convert to platform remove callback returning void
+      ALSA: pcmtest: Don't use static storage to track per device data
+
+Vijendar Mukunda (6):
+      ASoC: amd: ps: add comments for DMA irq bits mapping
+      ASoC: amd: ps: add fix for dma irq mask for rx streams for SDW0 instance
+      ASoC: amd: ps: fix for position register set for AUDIO0 RX stream
+      ASoC: amd: ps: add comments for DMA register mapping
+      ASoC: amd: ps: fix byte count return value for invalid SoundWire manager instance
+      ASoC: amd: acp: fix for invalid dai id handling in acp_get_byte_count()
+
+Vitaly Rodionov (2):
+      ALSA: hda/realtek: Fix generic fixup definition for cs35l41 amp
+      ALSA: hda/realtek: Add support for DELL Oasis 13/14/16 laptops
+
 ---
- drivers/tty/serial/serial_base_bus.c | 33 ++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 12 deletions(-)
+ .../bindings/sound/audio-graph-card2.yaml          | 20 +----
+ .../bindings/sound/google,sc7180-trogdor.yaml      |  2 +-
+ .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  2 +-
+ MAINTAINERS                                        |  2 +
+ sound/core/seq/seq_ports.c                         |  1 +
+ sound/drivers/pcmtest.c                            | 12 +--
+ sound/pci/hda/patch_realtek.c                      | 62 +++++++++++---
+ sound/soc/amd/acp/amd.h                            |  7 +-
+ sound/soc/amd/ps/acp63.h                           | 22 ++++-
+ sound/soc/amd/ps/pci-ps.c                          |  4 +-
+ sound/soc/amd/ps/ps-sdw-dma.c                      | 16 +++-
+ sound/soc/codecs/Kconfig                           |  2 +
+ sound/soc/codecs/cs42l51-i2c.c                     |  6 ++
+ sound/soc/codecs/cs42l51.c                         |  7 --
+ sound/soc/codecs/cs42l51.h                         |  1 -
+ sound/soc/codecs/rt5640.c                          | 13 +--
+ sound/soc/codecs/rt5645.c                          |  6 +-
+ sound/soc/codecs/wcd-mbhc-v2.c                     | 57 +++++++++----
+ sound/soc/codecs/wcd934x.c                         | 20 ++++-
+ sound/soc/codecs/wcd938x.c                         | 99 ++++++++++++++++++----
+ sound/soc/fsl/fsl_sai.c                            |  8 +-
+ sound/soc/fsl/fsl_sai.h                            |  1 +
+ sound/soc/qcom/qdsp6/q6afe-dai.c                   |  2 +-
+ sound/soc/qcom/qdsp6/q6apm-dai.c                   |  1 +
+ sound/soc/qcom/qdsp6/q6apm.c                       |  7 +-
+ sound/soc/qcom/qdsp6/topology.c                    |  4 +-
+ sound/soc/soc-core.c                               |  6 +-
+ sound/soc/soc-topology.c                           | 10 ++-
+ sound/soc/sof/amd/acp.c                            | 10 ++-
+ sound/soc/sof/ipc3-dtrace.c                        |  9 +-
+ sound/soc/tegra/tegra210_adx.c                     | 34 +++++---
+ sound/soc/tegra/tegra210_amx.c                     | 40 +++++----
+ tools/testing/selftests/alsa/.gitignore            |  1 +
+ tools/testing/selftests/alsa/test-pcmtest-driver.c |  4 +-
+ 34 files changed, 342 insertions(+), 156 deletions(-)
 
-diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
---- a/drivers/tty/serial/serial_base_bus.c
-+++ b/drivers/tty/serial/serial_base_bus.c
-@@ -19,6 +19,14 @@
- 
- static bool serial_base_initialized;
- 
-+static const struct device_type serial_ctrl_type = {
-+	.name = "ctrl",
-+};
-+
-+static const struct device_type serial_port_type = {
-+	.name = "port",
-+};
-+
- static int serial_base_match(struct device *dev, struct device_driver *drv)
- {
- 	int len = strlen(drv->name);
-@@ -48,7 +56,8 @@ static int serial_base_device_init(struct uart_port *port,
- 				   struct device *parent_dev,
- 				   const struct device_type *type,
- 				   void (*release)(struct device *dev),
--				   int id)
-+				   unsigned int ctrl_id,
-+				   unsigned int port_id)
- {
- 	device_initialize(dev);
- 	dev->type = type;
-@@ -61,13 +70,17 @@ static int serial_base_device_init(struct uart_port *port,
- 		return -EPROBE_DEFER;
- 	}
- 
--	return dev_set_name(dev, "%s.%s.%d", type->name, dev_name(port->dev), id);
-+	if (type == &serial_ctrl_type)
-+		return dev_set_name(dev, "%s.%s.%d", type->name,
-+				    dev_name(port->dev), ctrl_id);
-+	else if (type == &serial_port_type)
-+		return dev_set_name(dev, "%s.%s.%d.%d", type->name,
-+				    dev_name(port->dev), ctrl_id,
-+				    port_id);
-+	else
-+		return -EINVAL;
- }
- 
--static const struct device_type serial_ctrl_type = {
--	.name = "ctrl",
--};
--
- static void serial_base_ctrl_release(struct device *dev)
- {
- 	struct serial_ctrl_device *ctrl_dev = to_serial_base_ctrl_device(dev);
-@@ -96,7 +109,7 @@ struct serial_ctrl_device *serial_base_ctrl_add(struct uart_port *port,
- 	err = serial_base_device_init(port, &ctrl_dev->dev,
- 				      parent, &serial_ctrl_type,
- 				      serial_base_ctrl_release,
--				      port->ctrl_id);
-+				      port->ctrl_id, 0);
- 	if (err)
- 		goto err_put_device;
- 
-@@ -112,10 +125,6 @@ struct serial_ctrl_device *serial_base_ctrl_add(struct uart_port *port,
- 	return ERR_PTR(err);
- }
- 
--static const struct device_type serial_port_type = {
--	.name = "port",
--};
--
- static void serial_base_port_release(struct device *dev)
- {
- 	struct serial_port_device *port_dev = to_serial_base_port_device(dev);
-@@ -136,7 +145,7 @@ struct serial_port_device *serial_base_port_add(struct uart_port *port,
- 	err = serial_base_device_init(port, &port_dev->dev,
- 				      &ctrl_dev->dev, &serial_port_type,
- 				      serial_base_port_release,
--				      port->port_id);
-+				      port->ctrl_id, port->port_id);
- 	if (err)
- 		goto err_put_device;
- 
--- 
-2.41.0
