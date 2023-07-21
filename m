@@ -2,61 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2986575C515
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A799B75C51A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbjGUKy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
+        id S229771AbjGUK4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbjGUKyv (ORCPT
+        with ESMTP id S229926AbjGUKz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:54:51 -0400
+        Fri, 21 Jul 2023 06:55:56 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FD71BC0;
-        Fri, 21 Jul 2023 03:54:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544AA213B;
+        Fri, 21 Jul 2023 03:55:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AECF7619BD;
-        Fri, 21 Jul 2023 10:54:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 137D2C433CA;
-        Fri, 21 Jul 2023 10:54:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DB8D7619B0;
+        Fri, 21 Jul 2023 10:55:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7169DC433C7;
+        Fri, 21 Jul 2023 10:55:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689936887;
-        bh=GqMqpNt1ykUMAT67xmcy7JW79ykixqQxUJAP3ZLHy7Y=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=H6oKC7RnJUObIQkeWee7W1FwQF/unFVJ6PUyFra3PektbsEnuWJpN3aIT9DWNHkAT
-         HE61fRsuAA1DFbxHzjKcjJ/h78pRhYedwbtyGa76cBciYQ2n6ha6+D6cLzHwxnUaBM
-         ZRZyjXTaOE5a6XwmVuIH6118nrz8wHNPz8Z4eFXwv9ezB4rZ6/IZWeR+MYfU6p6CDU
-         SI88R/eecOlzLiyiFlMiFIGTUMJ9vB9PNDSMyzwwHHgtaOxOldFtQ270YXykzba6XA
-         wNKxzYr8KKPPG0SyUzrzEyxL4M2+Qwg7hdhpNGKaKICjDQAQ8bJ74tiTG9zD46Ykcy
-         DM/Wg0FHwNwtg==
+        s=k20201202; t=1689936954;
+        bh=YZ1JW5PrKwfiqr7ouES5fNN9Q4lLq0d4ETJKvBFZCdc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f3vGx3rtkuxjZSXI6FTC1RQKIdZZogDJMzAUFoZcWaV2Z+EN0PHHRhnO36vCyzp8v
+         4LQGE3yZWcHuWrmlpiJLc5d0cw19NIPUzbQDfSWYBMWyI9po/0I8A5mZnfHuHkOdB8
+         VU3fE6XtJOfEMvlWWOjqBbT6ePtHJCGDWGmYVu3GuNwaa86HX1Ty+hMs6dmUYoPg8s
+         Jqmrf5wpbRFXbGe9nqpZM8vLlPPI8GFw3B+lP+Z4ajzsNmYXHC0ytC3+TnIHwkr2gj
+         4Ao/IFDoFCGurb2ritXzIZ8gQ+vM8u6YEuN8Nl1AYS0k+JMWyRC1e9uUaqOKpx9C0t
+         xkKmrqKvT28Yg==
+Date:   Fri, 21 Jul 2023 11:55:49 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?q?Otto_Pfl=C3=BCger?= <otto.pflueger@abscue.de>
-In-Reply-To: <20230718-pm8916-mclk-v1-0-4b4a58b4240a@gerhold.net>
-References: <20230718-pm8916-mclk-v1-0-4b4a58b4240a@gerhold.net>
-Subject: Re: (subset) [PATCH 0/6] ASoC: codecs: msm8916-wcd-analog: Cleanup
- DT bindings
-Message-Id: <168993688478.20527.15549284339710004321.b4-ty@kernel.org>
-Date:   Fri, 21 Jul 2023 11:54:44 +0100
+To:     =?utf-8?B?5p2c5pWP5p2w?= <duminjie@vivo.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        "open list:FREESCALE DSPI DRIVER" <linux-spi@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:PTP HARDWARE CLOCK SUPPORT" <netdev@vger.kernel.org>,
+        "opensource.kernel" <opensource.kernel@vivo.com>
+Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= v1] spi:
+ fsl-dspi: Use dev_err_probe() in dspi_request_dma()
+Message-ID: <3ac9a83c-4f5a-4914-a1ae-5d8eb5d32ce6@sirena.org.uk>
+References: <20230719071239.4736-1-duminjie@vivo.com>
+ <dd60d083-6ffe-4d74-8c5b-588a62303b34@sirena.org.uk>
+ <SG2PR06MB5288FB4E5CB1FD5E0FB6D18BAE3FA@SG2PR06MB5288.apcprd06.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/Cxyek033qdK/8Yu"
+Content-Disposition: inline
+In-Reply-To: <SG2PR06MB5288FB4E5CB1FD5E0FB6D18BAE3FA@SG2PR06MB5288.apcprd06.prod.outlook.com>
+X-Cookie: Do, or do not
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -67,46 +64,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 13:40:12 +0200, Stephan Gerhold wrote:
-> Drop the redundant reg-names and mclk from the PM8916 analog codec.
-> Having the mclk on the analog codec is incorrect because only the
-> digital codec consumes it directly.
-> 
-> 
 
-Applied to
+--/Cxyek033qdK/8Yu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Fri, Jul 21, 2023 at 02:54:26AM +0000, =E6=9D=9C=E6=95=8F=E6=9D=B0 wrote:
+> You said:
 
-Thanks!
+> > The indentation on the second line is messed up here, it's far too inde=
+nted.
 
-[1/6] ASoC: dt-bindings: pm8916-analog-codec: Fix misleading example
-      commit: 944b5c7146fbd0a68f501d9a8a87c3fc5767a3de
-[2/6] ASoC: dt-bindings: pm8916-analog-codec: Drop pointless reg-names
-      commit: dfc491e55255a96b2d43cdb74db10d4222890769
-[3/6] ASoC: dt-bindings: pm8916-analog-codec: Drop invalid mclk
-      commit: 469c6d9cd1cfb468f01a15f940272504a6b5d083
-[4/6] ASoC: codecs: msm8916-wcd-analog: Drop invalid mclk
-      commit: 97f29c1a6143762626f4f9bd9fc2f8a2282b9dcd
-[5/6] ASoC: codecs: msm8916-wcd-analog: Properly handle probe errors
-      commit: 5c0f9652da47061ed3f7815c1dfeb205c545ce54
+> Could you tell me what is the specification for indentation?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Documentation/process/coding-style.rst and more generally things should
+look like the nearby code.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--/Cxyek033qdK/8Yu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-----BEGIN PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS6ZDQACgkQJNaLcl1U
+h9D8GAf9HiMXdGv8S4xPOcLaUXzbKC7InZlIaJ9YVyyFx21E/mNRqszdVbN9PCuL
+kvOvggjtVBUrfI+ou4Xe72MlsbbglvS2cw43OSw4I8xu26Q7V80XTvrXYhMbgrNj
+YRUdL1c94n8FSVdLY9xrNLCBM8+w6OyPYiNZXNI0OYK68gaYxCwpifHLayO04/yO
+G2x5CnsOOT9IwEGfeAIAvbOZaEuOftq0v7bmRhVy7+nAu56SAoOLg7wcn8B6c+6I
+dv+5ZReUG3XmZGyjXZXgbBXTHvPnvjrDU6UlLq0h1AMaxtqFzzARWtzULOkIQPty
+M3/b6iYTv2ck5EQsN1YsOttuBmq4IA==
+=A2xd
+-----END PGP SIGNATURE-----
 
-Thanks,
-Mark
-
+--/Cxyek033qdK/8Yu--
