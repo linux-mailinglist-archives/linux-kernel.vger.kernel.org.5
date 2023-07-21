@@ -2,106 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B0375C4A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDE075C49E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbjGUK0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
+        id S232084AbjGUKZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231573AbjGUK0j (ORCPT
+        with ESMTP id S231942AbjGUKYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:26:39 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C220B110
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:26:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689935195; x=1721471195;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=3la85cW8/KmPX/dcr+1vrlAz048TD7nuQ3LGUmKvcgY=;
-  b=j1+YUq2LPho4nrLGXxng4EoR63KcTL5syNtDIgNc1tu7VCfd0hbyZduQ
-   gSUONHn7d1o+JCAHrYEXJ89JlmZZ0AeN4G3Zi2PFrdkhiBoVX6tITPfKg
-   oLWCU7sTTAzdjld2V6JYvTvIKyKpvCn4yAm3Xii69g6y4OyO/IFrBJXq0
-   YUNcXDF0LKAtKewUhux++X7lxK8a/u3xyZzzTw+PS8RMO24Wnt8LXsb5b
-   /2aI6p7VrnFv0wHUMGkUKzer1SbKzHOk3gUqkIk7LgMUriKx8ZMGPRbDd
-   +cyhl2oPM7/riHealI7eapSihH0egwscnu6LkH14BBSnu/B+AWpQYiDzx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="369664217"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="369664217"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 03:26:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="971398246"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="971398246"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 03:26:33 -0700
-Date:   Fri, 21 Jul 2023 13:23:07 +0300 (EEST)
-From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To:     Racinglee <cydiaimpactor2003@gmail.com>
-cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux ALSA Development <alsa-devel@alsa-project.org>
-Subject: Re: 6.4 and higher causes audio distortion
-In-Reply-To: <CAL4Djy3KeD51LtT0bT2aRe9S_uwMiAfa-X=V2SfdnYt-MYp5ng@mail.gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2307211322100.3532114@eliteleevi.tm.intel.com>
-References: <3ee79b53-5c1b-1542-ceea-e51141e3ab74@gmail.com> <CAL4Djy3KeD51LtT0bT2aRe9S_uwMiAfa-X=V2SfdnYt-MYp5ng@mail.gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+        Fri, 21 Jul 2023 06:24:47 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408E030F4;
+        Fri, 21 Jul 2023 03:24:23 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 4C7E410000A;
+        Fri, 21 Jul 2023 13:24:22 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4C7E410000A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1689935062;
+        bh=9mw2Wb+AWetG2JTsZ9sUVojagjBQMLaPFTi87H+EDmQ=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=g9mABSiWFjEp8htrmVKmqIBBJ/ZEodPr1wU+43tAX5hTobZWMgKTHXiVT+Q4kX0I/
+         IXOY0KxObc7ohUjjO4PZMErRIxdmCOoxmxwPvTyfONhUM6SsdGo2gwfCuVDiMIx71q
+         hfyDLomGoSKpK1FIrTDS6FDngM+DVEnKnNajUVm/aZvNSRgiojCzJo2uf5RlAUjxjU
+         QrYZ0uwTgtr1N9dpCJY0K9bfTM7Lgp999YFRUKCjRNLf5OSLs5ToU9rqpmYAD9DUTJ
+         vZ4q+Lizy/ddGwp+H9hL0fIb6rV9kB30d/3cfyLIWiv7nerkH/MZDHnzHVF5cmZG98
+         Dq9YI5g3QW4xQ==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Fri, 21 Jul 2023 13:24:22 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 21 Jul 2023 13:24:21 +0300
+From:   George Stark <gnstark@sberdevices.ru>
+To:     <jic23@kernel.org>, <lars@metafoo.de>, <neil.armstrong@linaro.org>,
+        <khilman@baylibre.com>, <jbrunet@baylibre.com>,
+        <martin.blumenstingl@googlemail.com>,
+        <andriy.shevchenko@linux.intel.com>, <nuno.sa@analog.com>,
+        <gnstark@sberdevices.ru>
+CC:     <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>, <kernel@sberdevices.ru>
+Subject: [PATCH v2 1/2] iio: adc: meson: fix core clock enable/disable moment
+Date:   Fri, 21 Jul 2023 13:23:08 +0300
+Message-ID: <20230721102413.255726-2-gnstark@sberdevices.ru>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230721102413.255726-1-gnstark@sberdevices.ru>
+References: <20230721102413.255726-1-gnstark@sberdevices.ru>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-318106570-2107917860-1689934996=:3532114"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178775 [Jul 21 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: GNStark@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/21 05:36:00 #21651174
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Enable core clock at probe stage and disable it at remove stage.
+Core clock is responsible for turning on/off the entire SoC module so
+it should be on before the first module register is touched and be off
+at very last moment.
 
----318106570-2107917860-1689934996=:3532114
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Fixes: 3adbf3427330 ("iio: adc: add a driver for the SAR ADC found in Amlogic Meson SoCs")
+Signed-off-by: George Stark <gnstark@sberdevices.ru>
+---
+ drivers/iio/adc/meson_saradc.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-Hi,
+diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
+index 2ee12f3ad312..8397a5347f32 100644
+--- a/drivers/iio/adc/meson_saradc.c
++++ b/drivers/iio/adc/meson_saradc.c
+@@ -1055,12 +1055,6 @@ static int meson_sar_adc_hw_enable(struct iio_dev *indio_dev)
+ 		goto err_vref;
+ 	}
+ 
+-	ret = clk_prepare_enable(priv->core_clk);
+-	if (ret) {
+-		dev_err(dev, "failed to enable core clk\n");
+-		goto err_core_clk;
+-	}
+-
+ 	regval = FIELD_PREP(MESON_SAR_ADC_REG0_FIFO_CNT_IRQ_MASK, 1);
+ 	regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG0,
+ 			   MESON_SAR_ADC_REG0_FIFO_CNT_IRQ_MASK, regval);
+@@ -1087,8 +1081,6 @@ static int meson_sar_adc_hw_enable(struct iio_dev *indio_dev)
+ 	regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG3,
+ 			   MESON_SAR_ADC_REG3_ADC_EN, 0);
+ 	meson_sar_adc_set_bandgap(indio_dev, false);
+-	clk_disable_unprepare(priv->core_clk);
+-err_core_clk:
+ 	regulator_disable(priv->vref);
+ err_vref:
+ 	meson_sar_adc_unlock(indio_dev);
+@@ -1116,8 +1108,6 @@ static void meson_sar_adc_hw_disable(struct iio_dev *indio_dev)
+ 
+ 	meson_sar_adc_set_bandgap(indio_dev, false);
+ 
+-	clk_disable_unprepare(priv->core_clk);
+-
+ 	regulator_disable(priv->vref);
+ 
+ 	if (!ret)
+@@ -1379,7 +1369,7 @@ static int meson_sar_adc_probe(struct platform_device *pdev)
+ 	if (IS_ERR(priv->clkin))
+ 		return dev_err_probe(dev, PTR_ERR(priv->clkin), "failed to get clkin\n");
+ 
+-	priv->core_clk = devm_clk_get(dev, "core");
++	priv->core_clk = devm_clk_get_enabled(dev, "core");
+ 	if (IS_ERR(priv->core_clk))
+ 		return dev_err_probe(dev, PTR_ERR(priv->core_clk), "failed to get core clk\n");
+ 
+@@ -1462,15 +1452,26 @@ static int meson_sar_adc_remove(struct platform_device *pdev)
+ static int meson_sar_adc_suspend(struct device *dev)
+ {
+ 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
++	struct meson_sar_adc_priv *priv = iio_priv(indio_dev);
+ 
+ 	meson_sar_adc_hw_disable(indio_dev);
+ 
++	clk_disable_unprepare(priv->core_clk);
++
+ 	return 0;
+ }
+ 
+ static int meson_sar_adc_resume(struct device *dev)
+ {
+ 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
++	struct meson_sar_adc_priv *priv = iio_priv(indio_dev);
++	int ret;
++
++	ret = clk_prepare_enable(priv->core_clk);
++	if (ret) {
++		dev_err(dev, "failed to enable core clk\n");
++		return ret;
++	}
+ 
+ 	return meson_sar_adc_hw_enable(indio_dev);
+ }
+-- 
+2.38.4
 
-
-On Wed, 19 Jul 2023, Racinglee wrote:
-
-> On Sat, Jul 15, 2023 at 3:56 AM Bagas Sanjaya <bagasdotme@gmail.com> wrote:
-> > I notice a regression report on Bugzilla [1]. Quoting from it:
-> >
-> > > I have a Lenovo ThinkPad X1 Yoga Gen 7 running Arch Linux. Linux 6.4 
-> > > and higher, cause audio distortion. Sometimes, this occurs to the 
-> > > point that nearly nothing is discernible. This carries over to wired 
-> > > headphones. The issue occurs on the entire mainline 6.4.x kernel 
-> > > series and also the 6.4.3 stable and 6.5 RC1 kernel, which are the 
-> > > latest at the time of writing. The issue occurs on both the Arch 
-> > > distributed kernels, and the mainline kernels.
-[...]
-> Updating regzbot after newer findings and determinations about the
-> possible culprit commit
-> 
-> #regzbot title: 6.4 and higher causes audio distortion
-> 
-> #regzbot introduced: v6.4-rc1..1bf83fa6654c
-> https://bugzilla.kernel.org/show_bug.cgi?id=217673#c5
-> 
-
-thank you, filed a bug to SOF based on the bisect results:
-https://github.com/thesofproject/linux/issues/4482
-
-Br, Kai
----318106570-2107917860-1689934996=:3532114--
