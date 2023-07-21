@@ -2,118 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B62275CC88
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2864D75CC77
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbjGUPuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
+        id S232279AbjGUPuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232288AbjGUPua (ORCPT
+        with ESMTP id S232265AbjGUPuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:50:30 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9D93A9F;
-        Fri, 21 Jul 2023 08:50:20 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id B987D3200991;
-        Fri, 21 Jul 2023 11:50:17 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Fri, 21 Jul 2023 11:50:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1689954617; x=1690041017; bh=y5
-        4uRtwGDGLZ7GqFD8k0STYKrRWoOfjzVI0Vx/9N7dk=; b=nmtvSspkC3uTez9C5F
-        gHx6BkI71eZke/2pCOmXoo9R+nw834+h68niYapL2YcDYZTV7v4cwTRmyZcdXOcY
-        KrQuqSGezKIqEhB4A6fStMmqm0v8xqhAh0mLAs0z0q//J0WnUfI0oVN2XbxIcZ/H
-        hhDV76NAFZvzmI7D3oG2Br+pfFjDnbTtLO3TEaGkUhNWVndiZc3r/oAXR69KjxwY
-        Jx2BZTyH1FxBVPsICvOAp+qZ0g4Sne3q2nZ574aC9G571kABlAT+sZGZzR3aXoyM
-        20BEmVZmNL1WK2xtGN32J7On7Ox6AWbOsaVTRU0lAd6H8wBEoN9p3TJ7rNK9ycy8
-        vHrw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1689954617; x=1690041017; bh=y54uRtwGDGLZ7
-        GqFD8k0STYKrRWoOfjzVI0Vx/9N7dk=; b=bGsTsXOCon+ZBCXtUCj/eDlR9j61u
-        rHJIfPhr5/ybw5vUU9zKOEO/b//GxNqMOsco4UDG1G9RaYhSetOH1ano73x5qkIj
-        cteH4C9VBo260gomlOkA9uIQppC9Yd0VTylUBNpvQI+VTuId6UClbiHnkcX6Epk7
-        tDYgaptF6WWBKZPuk+yRz40MVcbaFg4GBO+5rTqeamdYzBXuUMoDeOX5fQkFiB4z
-        bIKT2x7pF6kBCoTCFUZNUq5LZeLNDvZ1l66oF7l3PKh1naMmUxqpncZtWO732gaM
-        CDsElA6lr8zbAklFstzeZc8xOL5gLDOC2ZhCRLIgWdDieUCPyulBC0oDw==
-X-ME-Sender: <xms:Oam6ZBBX6io6V7cIVIQik9cm1u34HV5Z-hRCE5nDKB1fPVO6PqgMeg>
-    <xme:Oam6ZPiNtTq1Vk5ngSAUhy-XGwwPN7YhGZLoTTyPljUqepsNMNU1pFBJ1aCP_nR_s
-    rLi5fYTp3ERafCw_XQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgdekkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:Oam6ZMma2gQ28KGq2DnaCyR8KIJZ_Jw_ieq6NH5x9hHOB6L2QVd5CQ>
-    <xmx:Oam6ZLzpU7wX92qUDFb0TMzqzbddSpNZN6fxUo5j_cf-P9ethYLNuQ>
-    <xmx:Oam6ZGQxTVFWibPvd-XNNEmK70GRtPNYNJ2oHnAZK0yfstMITyO8oQ>
-    <xmx:Oam6ZADgHZNctbChEFxSLf4tIv2Y2EWNf99CrGan2ATgDbEXUiGZ-Q>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 01364B6008D; Fri, 21 Jul 2023 11:50:16 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
-Mime-Version: 1.0
-Message-Id: <59ba1179-d166-4bae-b7b6-c1084471192e@app.fastmail.com>
-In-Reply-To: <20230721102237.268073801@infradead.org>
-References: <20230721102237.268073801@infradead.org>
-Date:   Fri, 21 Jul 2023 17:49:56 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Peter Zijlstra" <peterz@infradead.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Jens Axboe" <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, "Ingo Molnar" <mingo@redhat.com>,
-        "Darren Hart" <dvhart@infradead.org>, dave@stgolabs.net,
-        andrealmeid@igalia.com,
-        "Andrew Morton" <akpm@linux-foundation.org>, urezki@gmail.com,
-        "Christoph Hellwig" <hch@infradead.org>,
-        "Lorenzo Stoakes" <lstoakes@gmail.com>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, Linux-Arch <linux-arch@vger.kernel.org>,
-        malteskarupke@web.de
-Subject: Re: [PATCH v1 00/14] futex: More futex2 bits
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 11:50:02 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AD69B171B;
+        Fri, 21 Jul 2023 08:50:00 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A97292F4;
+        Fri, 21 Jul 2023 08:50:43 -0700 (PDT)
+Received: from e129166.arm.com (unknown [10.57.0.79])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7F6EE3F738;
+        Fri, 21 Jul 2023 08:49:57 -0700 (PDT)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        rafael@kernel.org
+Cc:     lukasz.luba@arm.com, dietmar.eggemann@arm.com, rui.zhang@intel.com,
+        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        len.brown@intel.com, pavel@ucw.cz, Pierre.Gondois@arm.com,
+        ionela.voinescu@arm.com, mhiramat@kernel.org
+Subject: [PATCH v3 00/12] Introduce runtime modifiable Energy Model
+Date:   Fri, 21 Jul 2023 16:50:10 +0100
+Message-Id: <20230721155022.2339982-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023, at 12:22, Peter Zijlstra wrote:
-> Hi,
->
-> New version of the futex2 patches. These are actually tested and appear to work
-> as expected.
->
-> I'm hoping to get at least the first 3 patches merged such that Jens can base
-> the io_uring futex patches on them.
->
->
-> Changes since v0:
->  - switched over to 'unsigned long' for values (Arnd)
->  - unshare vmalloc_huge() (Willy)
->  - added wait/requeue syscalls
->  - fixed NUMA to support sparse nodemask
->  - added FUTEX2_n vs FUTEX2_NUMA check to ensure
->    the node_id fits in the futex
->  - added selftests
->  - fixed a ton of silly bugs
+Hi all,
 
-The changes look good to me, and the ABI should be fine without
-special compat handler now. I sent a couple of minor comments, but
-nothing important.
+This patch set adds a new feature which allows to modify Energy Model (EM)
+power values at runtime. It will allow to better reflect power model of
+a recent SoCs and silicon. Different characteristics of the power usage
+can be leveraged and thus better decisions made during task placement in EAS.
 
-     Arnd
+It's part of feature set know as Dynamic Energy Model. It has been presented
+and discussed recently at OSPM2023 [3]. This patch set implements the 1st
+improvement for the EM.
+
+The concepts:
+1. The CPU power usage can vary due to the workload that it's running or due
+to the temperature of the SoC. The same workload can use more power when the
+temperature of the silicon has increased (e.g. due to hot GPU or ISP).
+In such situation or EM can be adjusted and reflect the fact of increased
+power usage. That power increase is due to a factor called static power
+(sometimes called simply: leakage). The CPUs in recent SoCs are different.
+We have heterogeneous SoCs with 3 (or even 4) different microarchitectures.
+They are also built differently with High Performance (HP) cells or
+Low Power (LP) cells. They are affected by the temperature increase
+differently: HP cells have bigger leakage. The SW model can leverage that
+knowledge.
+2. It is also possible to change the EM to better reflect the currently
+running workload. Usually the EM is derived from some average power values
+taken from experiments with benchmark (e.g. Dhrystone). The model derived
+from such scenario might not represent properly the workloads usually running
+on the device. Therefore, runtime modification of the EM allows to switch to
+a different model, when there is a need.
+3. The EM can be adjusted after boot, when all the modules are loaded and
+more information about the SoC is available e.g. chip binning. This would help
+to better reflect the silicon characteristics. Thus, this EM modification
+API allows it now. It wasn't possible in the past and the EM had to be
+'set in stone'.
+
+Some design details:
+The internal mechanisms for the memory allocation are handled internally in the 
+EM. Kernel modules can just call the new API to update the EM data and the 
+new memory would be provided and owned by the EM. The EM memory is used by
+EAS, which impacts those design decisions. The EM writers are protected by
+a mutex. This new runtime modified EM table is protected using RCU mechanism,
+which fits the current EAS hot path (which already uses RCU read lock).
+The unregister API handles only non-CPU (e.g. GPU, ISP) devices and uses the
+same mutex as EM modifiers to make sure the memory is safely freed.
+
+More detailed explanation and background can be found in presentations
+during LPC2022 [1][2] or in the documentation patches.
+
+The time cost to update EM for 11 OPPs can be found here [6]. It's roughly
+1.5us per 1 OPP while doing this on Little CPU at max frequency (1.8GHz).
+
+Changelog:
+v3
+- adjusted inline comments for structure doc (Dietmar)
+- extended patch header with infromation that only EAS will use the feature
+  and it was driving the design (Dietmar)
+- changed patch header and put shorter comment (Dietmar)
+- moved the 'refactoring' patch that adds 'default_table' before the
+  introduction of runtime modifiable feature as sugested by Dietmar in 
+  numerous patches v2
+- merged documentation patches into one
+- added more explenation about the 2 tables design into the Doc (Dietmar)
+- removed the CPPC+EM patch for runtime modification
+- removed the trace patch, since the trace point would be added after a while
+- renamed 'tmp' to 'runtime_table' variable in the unregister function,
+  to better highlight the memory pointer checks (it is possible after
+  moving the 'default_table' earlier)
+- and added '__rcu' in the unregister function which should calm down
+  the test bot warning
+- renamed 'create' to 'refactor' in the patch header (Dietmar)
+v2 [5]:
+- solved build warning of unused variable in patch 13/17 when EM is
+  not compiled in, e.g. on Intel platform for this cpufreq_cooling
+- re-based on top of v6.4-rc1
+v1:
+- implementation can be found here [4]
+
+Regards,
+Lukasz Luba
+
+[1] https://lpc.events/event/16/contributions/1341/attachments/955/1873/Dynamic_Energy_Model_to_handle_leakage_power.pdf
+[2] https://lpc.events/event/16/contributions/1194/attachments/1114/2139/LPC2022_Energy_model_accuracy.pdf
+[3] https://www.youtube.com/watch?v=2C-5uikSbtM&list=PL0fKordpLTjKsBOUcZqnzlHShri4YBL1H
+[4] https://lore.kernel.org/lkml/20230314103357.26010-1-lukasz.luba@arm.com/
+[5] https://lore.kernel.org/lkml/20230512095743.3393563-1-lukasz.luba@arm.com/
+[6] https://lore.kernel.org/lkml/57a5dc82-f2c9-5190-e3fa-702b2eb2de5e@arm.com/
+
+
+Lukasz Luba (12):
+  PM: EM: Refactor em_cpufreq_update_efficiencies() arguments
+  PM: EM: Find first CPU online while updating OPP efficiency
+  PM: EM: Refactor em_pd_get_efficient_state() to be more flexible
+  PM: EM: Refactor a new function em_compute_costs()
+  PM: EM: Check if the get_cost() callback is present in
+    em_compute_costs()
+  PM: EM: Refactor struct em_perf_domain and add default_table
+  PM: EM: Add update_power() callback for runtime modifications
+  PM: EM: Introduce runtime modifiable table
+  PM: EM: Add RCU mechanism which safely cleans the old data
+  PM: EM: Add runtime update interface to modify EM power
+  PM: EM: Use runtime modified EM for CPUs energy estimation in EAS
+  Documentation: EM: Update with runtime modification design
+
+ Documentation/power/energy-model.rst | 150 +++++++++++++-
+ drivers/powercap/dtpm_cpu.c          |  27 ++-
+ drivers/powercap/dtpm_devfreq.c      |  23 ++-
+ drivers/thermal/cpufreq_cooling.c    |  23 ++-
+ drivers/thermal/devfreq_cooling.c    |  23 ++-
+ include/linux/energy_model.h         |  85 ++++++--
+ kernel/power/energy_model.c          | 288 +++++++++++++++++++++++----
+ 7 files changed, 525 insertions(+), 94 deletions(-)
+
+-- 
+2.25.1
+
