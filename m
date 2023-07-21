@@ -2,130 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C712775D5EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C236275D5F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbjGUUrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
+        id S230217AbjGUUsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjGUUri (ORCPT
+        with ESMTP id S229529AbjGUUsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:47:38 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F8B30E2;
-        Fri, 21 Jul 2023 13:47:37 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 02D0A733;
-        Fri, 21 Jul 2023 20:47:36 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 02D0A733
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1689972457; bh=uooNNHsnavtZDFWMnhrK7qfIkdzRUtt/iYGfwA0MW60=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=q5E12EouGHqAxrE/YXKVPqx/ucr3m21SL8SWzG99/mguvQ0EHTDbwSgcck7cWeBJs
-         NTH4XtLvQ3eJqaL33fcNC71w99DHsM9BzlEm0QbzaNHfcjkGrZBC7LBcqdjqE5vfd8
-         +BCf1KA5/cc2l12aNMFqAx4i2gjOZmuLeXawjVzZQUy1JW3amntPUKcJhYvCemAx+3
-         RzZzIrbhZ5Dk2RKmQusAJ6wJwxWZyzL5xrtDRmAm1qwY+tBilPdusDsLXF2ijOHcAq
-         OlqeATWzhuDpNgv6nCa08FWqDEbVLCzpmq6FzwkxiHziOZ26yKkkXAkuLpz43soneI
-         T/Ll/5J+pxwRQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Hu Haowen <src.res.211@gmail.com>, dan.j.williams@intel.com,
-        dave.jiang@intel.com, Jonathan.Cameron@huawei.com,
-        hdegoede@redhat.com
-Cc:     Hu Haowen <src.res.211@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH] docs: ABI: sysfs-bus-nvdimm: correct indentations
-In-Reply-To: <20230716161443.1375-1-src.res.211@gmail.com>
-References: <20230716161443.1375-1-src.res.211@gmail.com>
-Date:   Fri, 21 Jul 2023 14:47:35 -0600
-Message-ID: <87h6pxc7q0.fsf@meer.lwn.net>
+        Fri, 21 Jul 2023 16:48:13 -0400
+Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5108A1715
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:48:12 -0700 (PDT)
+Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6b9d34de264so4902707a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:48:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689972491; x=1690577291;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8qTOg30Pyyd8rsEqqzfnKH2ivlCUarSSwgeMcDgQLn0=;
+        b=JeFla3LjDCsdSGmVjedgM32ITytnA/Jk5Hzentsq8bg5gTx/JegHt3C5uNE/UzbeP3
+         N6mRXyvKR1aK0fqlnUV3pPT6Q0W5XYSATYDnBnZ8yIhxdPCciJgB75ezGvv2LKq5/MFu
+         PrXjrOxdGdjKeH8w+CBdwOO5b1KqGkB/axr9kVeKohlfJWjbcWSptMPXm3plqhcTYwVj
+         KetOp8BPW2+eI3jvwIipiv2+2RLo5h3ffavftU2VARVharfQioIWXa7vFjqXHuU6uasL
+         c6skIToWJjyZzmIPewU9bEpf/LcJM8RZ6fIhrdwQjVJ8ZKHuWbDO4FMJH+57FxjHnUgl
+         lEDw==
+X-Gm-Message-State: ABy/qLZykRMTpSrwiQn7d40SSaVRFRyym3cq+KDy/yEIRjACPQr8QPEn
+        OPTQLSQ2ZjqPT9QOxWjypKyRWrYkrexRCkjWo7C/FLSz9HxP
+X-Google-Smtp-Source: APBJJlElBQGXVCLZabwgLaEmLzMHQYKFHWenz4onzfkqO/Quvh8RT0SkcxsUzr4MJ14kIrJG99OR+w3TcFKHqjGUEqFpJ3LCHfkw
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6830:118:b0:6b9:a90e:f515 with SMTP id
+ i24-20020a056830011800b006b9a90ef515mr1450617otp.3.1689972491743; Fri, 21 Jul
+ 2023 13:48:11 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 13:48:11 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000cf7de0601056232@google.com>
+Subject: [syzbot] [gfs2?] kernel panic: hung_task: blocked tasks (2)
+From:   syzbot <syzbot+607aa822c60b2e75b269@syzkaller.appspotmail.com>
+To:     cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hu Haowen <src.res.211@gmail.com> writes:
+Hello,
 
-> The identations from line 1 to 4 within sysfs-bus-nvdimm were wrongly
-> incompatible with the indentations of the following contents. Hence
-> correct them.
->
-> Discovered when I was executing "make htmldocs" and received the
-> following stderr output:
->
->     /<... root dir ...>/Documentation/ABI/testing/sysfs-bus-nvdimm:11: WARNING: Unexpected indentation.
->
-> Signed-off-by: Hu Haowen <src.res.211@gmail.com>
-> ---
->  Documentation/ABI/testing/sysfs-bus-nvdimm | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/Documentation/ABI/testing/sysfs-bus-nvdimm b/Documentation/ABI/testing/sysfs-bus-nvdimm
-> index de8c5a59c77f..8d048f8e3c39 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-nvdimm
-> +++ b/Documentation/ABI/testing/sysfs-bus-nvdimm
-> @@ -1,7 +1,7 @@
-> -What:          nvdimm
-> -Date:          July 2020
-> -KernelVersion: 5.8
-> -Contact:       Dan Williams <dan.j.williams@intel.com>
-> +What:           nvdimm
-> +Date:           July 2020
-> +KernelVersion:  5.8
-> +Contact:        Dan Williams <dan.j.williams@intel.com>
->  Description:
+syzbot found the following issue on:
 
-There's only one little problem ... that's not where the error was, so
-this change doesn't actually make the warning go away.
+HEAD commit:    fdf0eaf11452 Linux 6.5-rc2
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1797783aa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=27e33fd2346a54b
+dashboard link: https://syzkaller.appspot.com/bug?extid=607aa822c60b2e75b269
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11322fb6a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17687f1aa80000
 
-I've committed the following instead.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0ac950f24d26/disk-fdf0eaf1.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/666fcbcfa05d/vmlinux-fdf0eaf1.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5bbe73baa630/bzImage-fdf0eaf1.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/85821d156573/mount_0.gz
 
-Thanks,
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+607aa822c60b2e75b269@syzkaller.appspotmail.com
 
-jon
+Kernel panic - not syncing: hung_task: blocked tasks
+CPU: 0 PID: 27 Comm: khungtaskd Not tainted 6.5.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ panic+0x6a4/0x750 kernel/panic.c:340
+ check_hung_uninterruptible_tasks kernel/hung_task.c:226 [inline]
+ watchdog+0xcf2/0x11b0 kernel/hung_task.c:379
+ kthread+0x33a/0x430 kernel/kthread.c:389
+ ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:296
+RIP: 0000:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 0000000000000000
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-docs: ABI: fix an RST error in sysfs-bus-nvdimm
 
-The literal blocks in this file lacked the necessary blank line at the top,
-causing Sphinx to complain:
-
-  /Documentation/ABI/testing/sysfs-bus-nvdimm:11: WARNING: Unexpected indentation.
-
-Add the lines it's longing for and bring about a bit of warning peace.
-
-Reported-by: Hu Haowen <src.res.211@gmail.com>
-Signed-off-by: Jonathan Corbet <corbet@lwn.net>
 ---
- Documentation/ABI/testing/sysfs-bus-nvdimm | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-nvdimm b/Documentation/ABI/testing/sysfs-bus-nvdimm
-index de8c5a59c77f..64eb8f4c6a41 100644
---- a/Documentation/ABI/testing/sysfs-bus-nvdimm
-+++ b/Documentation/ABI/testing/sysfs-bus-nvdimm
-@@ -18,10 +18,12 @@ Description:	(RO) Attribute group to describe the magic bits
- 		Each attribute under this group defines a bit range of the
- 		perf_event_attr.config. Supported attribute is listed
- 		below::
-+
- 		  event  = "config:0-4"  - event ID
- 
- 		For example::
--			ctl_res_cnt = "event=0x1"
-+
-+		  ctl_res_cnt = "event=0x1"
- 
- What:           /sys/bus/event_source/devices/nmemX/events
- Date:           February 2022
--- 
-2.41.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
