@@ -2,185 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1206E75C8FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951CD75C8FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbjGUOFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60246 "EHLO
+        id S231153AbjGUOHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbjGUOFJ (ORCPT
+        with ESMTP id S229801AbjGUOHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:05:09 -0400
-Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021023.outbound.protection.outlook.com [52.101.57.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786111BE2;
-        Fri, 21 Jul 2023 07:05:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MRDAiy7kZ3P/r03FS/3dm8PfIe+2wr6jFg104yOzpWEZGpTxt3SKw0SjYkvlkKM3487OkkvL514CLO2dHHQnU4MGPTTCdS/4+TCNzraoFx9Qd3NyZ+e30vFV2T+a6d5FnHeINetuOxFNldKi3hJeEaLt8mVPclA+nfvmapp0/+I2TGH+NiowEzbBMnQc/COrrAcbi6dm37DpJxOlkhQQWU7aQtyF789jhkR6BmhYHNli/JgczGA+1jtwRc4phtL/w/qnA0FnS76SwLUmqlDmYi6MQ7rMav5i6lWnNdoW+7vTW63naa+/au7/c///b3Rwjx9MpYORTnMs+2jCBJzwoQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y5ZspRoWDL4NP1n/zoSVzPkthz51DoKre0LACDeASco=;
- b=XUUQMMA49JJqh7rrp3b7Aqr0+2tvQx+d6vHNwUe88WifDf63+iDLqMrjBwrj5l/hLqOU//MSEIjUFf+Qm6ew3iD7/RkRr661zI8pwsu/rwTINvikkmBn36NmxIsYybLZHf1TC5PaCtfztZONaNTEOnmH5VGlLARCJbkB/L4ajHqfrVQGeWm/XqP0lb8baH8K8nK9dRuxsyWLJYxuVz5o2ew3pSA7DKls70pXPM4SCebtvgkfe9yYeKRvqXS3tfHDlDlb4tj6LMSCQOdtP6qnr/OpJylItp2MlH+2fb9z7Rar/seTfRm8bT8mCkAWz1p54Gvo7FOoj0JYLAJL94YTTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y5ZspRoWDL4NP1n/zoSVzPkthz51DoKre0LACDeASco=;
- b=MJ1dr9nDs1x6kpxex9aIS2mT9hviAvoJVyXB95ah65B6y4zqof2b8uc1H9J2CiIOmY6/LrcktSIu6mmpuKDNuEbMhfOlm6ptl6apK6DvWeJa1sZTI6QsQ5nQznJT4CawxsvolAUr7wsFuw4yBcUY+5zpVDlEVtQdwAizLkOBfp0=
-Received: from BYAPR21MB1688.namprd21.prod.outlook.com (2603:10b6:a02:bf::26)
- by DM6PR21MB1401.namprd21.prod.outlook.com (2603:10b6:5:22d::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.16; Fri, 21 Jul
- 2023 14:05:02 +0000
-Received: from BYAPR21MB1688.namprd21.prod.outlook.com
- ([fe80::c164:97f6:174e:4136]) by BYAPR21MB1688.namprd21.prod.outlook.com
- ([fe80::c164:97f6:174e:4136%4]) with mapi id 15.20.6631.014; Fri, 21 Jul 2023
- 14:05:03 +0000
-From:   "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH 1/1] x86/hyperv: Disable IBT when hypercall page lacks
- ENDBR instruction
-Thread-Topic: [PATCH 1/1] x86/hyperv: Disable IBT when hypercall page lacks
- ENDBR instruction
-Thread-Index: AQHZu0mXUyEtW9eyqkWnVGF605KOSq/DKCeAgAAzncCAAOUgwA==
-Date:   Fri, 21 Jul 2023 14:05:03 +0000
-Message-ID: <BYAPR21MB16889A4BD21DA1F8357008FFD73FA@BYAPR21MB1688.namprd21.prod.outlook.com>
-References: <1689885237-32662-1-git-send-email-mikelley@microsoft.com>
- <20230720211553.GA3615208@hirez.programming.kicks-ass.net>
- <SN6PR2101MB16933FAC4E09E15D824EB2FDD73FA@SN6PR2101MB1693.namprd21.prod.outlook.com>
-In-Reply-To: <SN6PR2101MB16933FAC4E09E15D824EB2FDD73FA@SN6PR2101MB1693.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b52301eb-604c-44e1-bf56-29beb984d9b4;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-21T00:20:36Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BYAPR21MB1688:EE_|DM6PR21MB1401:EE_
-x-ms-office365-filtering-correlation-id: 931836d6-fb9e-487b-1c2b-08db89f37b1f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8ZJKKzfeXplfQJ6MtICO6dJBg/1ovAmMkfHZDvMofli6JG3JDMvNjVJte/98J0ir3ZxHxGtwrHOYMmvhz2AibrqoTcNt0RgsdAuK5IO7aub+Xajg+oUxAM8FLdjr4S2b6GwNsEzUPbPvRCRi7e0HzyDnYsE9gGpi6Z8YqeATloB8mFbHnIj0Wg5CVxZRM/KFZk8C0wN9I4LVPjCJapvD7gHEvbzYcbCMucS/ge98Ae3JimajgDj/EL/a1uueoOUQslj7F6Gv1cXZPGGdvGAFSJQm+/TX8h4erYfsMovIMUJ/5k0CA6Gmjnwclr9Yp5JqDC9ZEDWrfIXPNGjfr4+pE+E1NtpVp0417LtPf4PjK2HmamAOP88c+JUDeNSOxAE8LCfbEaKe/J6DB8VCax6yqjOb1tpW6amYU4AuukCzKS/QGIUCppxD9J1HcadH/1M5tmGwCAFop60i7xm/7peAK/KdAvRhZSXCIJZnJxhCid8qJuv+ur0+oI1uy9mjlK22lmXKI+RSAocxmnpb3UnyFJPzydaX11ETIw0sMeG4AKiumPwyDBjWCA+nyS4RTs9c7uDKEAJ3nqidT45kw/xL9Uu1+wRzZEXxGFC9/PYgAyBa602iBsI7eXpv37ah9jqsaYJ4BS3VzBK1QCz57CHvRf8dka+Xw+TE/zUja1PT0mQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1688.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(136003)(366004)(346002)(376002)(451199021)(66476007)(64756008)(66556008)(66946007)(76116006)(4326008)(66446008)(55016003)(38100700002)(122000001)(86362001)(9686003)(26005)(186003)(6506007)(38070700005)(83380400001)(82960400001)(82950400001)(478600001)(71200400001)(33656002)(110136005)(54906003)(10290500003)(7696005)(8990500004)(7416002)(2906002)(5660300002)(8936002)(52536014)(41300700001)(8676002)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0DKlTgVTNv0Lou0ZzO7w/ZYI27n9NnNv+HOTs9E8VB+rnZ2cascY7aaifoel?=
- =?us-ascii?Q?FmQOJ+6m29b6qh+8JW7YWOle6i/827kfzrmmnBDhLjvmupauv33InFsX8D3m?=
- =?us-ascii?Q?MTE8r1rFigULUCYUBpH/9eSuuy1xE4aFldGPtgpNiufocDg/uxbIeJ/iTnZm?=
- =?us-ascii?Q?l1LlLZP3UqP/vDzkVtm1+bLjDpBVoz9yx5VDrdxvTfxAi5s/2dvSM0L1tGCz?=
- =?us-ascii?Q?be9upJYtQKcww3lKfBQaSE8cFJ8hejUCsUhoXmB9ph6+j+dI/sfsxmzb2wsF?=
- =?us-ascii?Q?tHk6qhV6vQusMpNIGGIzwk1vb9LfKJSQywnRYwWmLGhtp3r4I1pTEUhUt/2X?=
- =?us-ascii?Q?pTtkpUfEkbUfL9OeGnTYcod+CYdLxSlrBM/R5n7P7SLjD0ORl9dyJY+FNcfz?=
- =?us-ascii?Q?+RspKWQwnvz/oQIRLfwhUMPK7iJ5AzaVu+yvkg+5UhIe7KugqGCeUQj95zYj?=
- =?us-ascii?Q?C7daJj9ew9hdQrx/fh2rsX6kmzuOgsOnaiviTjKlNAnBqL00/Rh2AHOSqmBM?=
- =?us-ascii?Q?2mRMvECTncekj+eSP+Nsyx/KUFpTObfNmh7mCfWcyK/bj+/lsWJr4+VitBao?=
- =?us-ascii?Q?FUmZWLVWy/O5bGDLg4F8gLw4xe379oea+jL/nBXaryzADUA+93PRxJU5TrDS?=
- =?us-ascii?Q?LQjjmOc3bnjDYq/xtUiQimeUDzM7LeZb8lsIO/D28TwkuwZJQGOU1IH8Vg+Q?=
- =?us-ascii?Q?RGwbJOY8/WnYwpAFjuHUrE2bXt7+Ze6isrWpFG/FHVlYzGx7WDkFTLyYwenR?=
- =?us-ascii?Q?30WMiSK7cYjZGjTo1HDbbprEiQPk2dDyxShoZEXR7T99ki1vCc3iKu8M2nRS?=
- =?us-ascii?Q?96sBFrsN3KtqePT9EP8fsrz28hm2k4U4zJyWpXqJ+XTN73+9RBKL2Aq4eJ5X?=
- =?us-ascii?Q?wXio5kah4G0FWo4EKFeP+NyV17+czlwSi67wGOOzWnG217P6Sc1bFEr95z0g?=
- =?us-ascii?Q?Ocw5/zImw6cWUnrnaqTh0bHuJFaoT+nAyU6skv/SJEaHHYGHovFZzBlt2zDU?=
- =?us-ascii?Q?/ACbr1xLzk0f7vyTOslNjCF4oofM4eBjuBa51HwP34TGFvHTrBAugYjRz75j?=
- =?us-ascii?Q?GBFwUCk7iW+4LwWJmdffmYoAe6sqOuKCflVgy4BqZc3cjDotjTCTo5iwKwiI?=
- =?us-ascii?Q?exUNR94eNjQFQpGRI87XVfoUTRnaifad6nplpj4RGIk0pP7aO8BLXTP/xmPg?=
- =?us-ascii?Q?mMk1TUkD4+mi1CJOvbJCxQEZ7a/nwuUN6NXn7XTGaHdw7fmeLgEIm8Xb6Pn1?=
- =?us-ascii?Q?NFQPc/tzxTwsbmHNNGa6Mv7tG8ciCN/mOkDunyGYw+SX4BtvcArsb4dClOTF?=
- =?us-ascii?Q?w+v/2YvMVGZDGkKjsOnNy/08acxTlxtdobFsCq/V2oiCIFDoRBs0027x/0TJ?=
- =?us-ascii?Q?LF7wUZaHpBPiA7czcFY4+r1IgHYnECVLBKybBSLxueQxtxU/i64cLqM9NIkD?=
- =?us-ascii?Q?g10dOrCYKswVCiFkBDYsO4wl/ChcjKZCkWDyCBPX5f4Ep4nd0nlRq62vM/m/?=
- =?us-ascii?Q?2DEesWobyF+b0pXJ0U8RhlEbODBECaw4gVqj2TUfJ8sgI1867hKVex/Xhngi?=
- =?us-ascii?Q?1mGnyUs1p7pW/hJITAT/VvhofrXd0AbUXze1EEZysYJ8zw2JxQ6SiZwsMhkn?=
- =?us-ascii?Q?tQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 21 Jul 2023 10:07:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5B3FD;
+        Fri, 21 Jul 2023 07:07:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5506061B68;
+        Fri, 21 Jul 2023 14:07:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3E85C433C9;
+        Fri, 21 Jul 2023 14:07:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689948432;
+        bh=bTZdyxvTtZgnsZIW0qXy4zcErrTkNn0mTmm4UjRN+Vs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=qESCCl0+iQuLHfyRueHqahM4vVWNdMg3ivuHV7vx8jYnR+7wPhZY8zxBCOR+/Q7B+
+         2IPqxdHva9fDbtK4KqaE5essvLqJZfMMdcrOaEJ3xhA3+GEUDjErJQc6WDsvXH9Xlm
+         O6YzicfTK43iABbFokQ3yq+4TDo36v7PF4hQja1WkvfmXc0aNeDxLQ9vOWQRnGz6oj
+         iqngu9qEVKyMUnuFoOVpmT/28R7PGzE/wwLhLFdaUMMrBB2UKzWO32+2kb4cjenWuF
+         m1LGc9DZmuhDAnlSnF/QuDXgHZ1aW7hzcn+NKl/cPSU3dCp6K2wLYJ+cXIlglx9lqg
+         Rr41b98rrUu8A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 503BDCE097F; Fri, 21 Jul 2023 07:07:12 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 07:07:12 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 17/20] rcutorture: Add a test config to torture
+ test low RCU_DYNTICKS width
+Message-ID: <7d2fdbb7-e574-40e8-8561-40a3873abc88@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-18-vschneid@redhat.com>
+ <24b55289-1c35-41cc-9ad3-baa957f1c9cb@paulmck-laptop>
+ <5143d0a9-bc02-4b9a-8613-2383bfdee35c@paulmck-laptop>
+ <xhsmhmszpu24i.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1688.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 931836d6-fb9e-487b-1c2b-08db89f37b1f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2023 14:05:03.8294
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AtpUg6UVzvgtbJo+bOYY5YtG4qoHPqRUcorVxdvAuMfvcgh5qCP2obIIX4kgRqFNTvtCqKb1hBYslivuCANYd++WmSf7vTQEwEoi8tj6qs4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR21MB1401
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <xhsmhmszpu24i.mognet@vschneid.remote.csb>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Kelley (LINUX) <mikelley@microsoft.com> Sent: Thursday, July =
-20, 2023 5:42 PM
->=20
-> From: Peter Zijlstra <peterz@infradead.org> Sent: Thursday, July 20, 2023=
- 2:16 PM
+On Fri, Jul 21, 2023 at 08:58:53AM +0100, Valentin Schneider wrote:
+> On 20/07/23 21:00, Paul E. McKenney wrote:
+> > On Thu, Jul 20, 2023 at 12:53:05PM -0700, Paul E. McKenney wrote:
+> >> On Thu, Jul 20, 2023 at 05:30:53PM +0100, Valentin Schneider wrote:
+> >> > diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE11 b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
+> >> > new file mode 100644
+> >> > index 0000000000000..aa7274efd9819
+> >> > --- /dev/null
+> >> > +++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE11
+> >> > @@ -0,0 +1,19 @@
+> >> > +CONFIG_SMP=y
+> >> > +CONFIG_NR_CPUS=8
+> >> > +CONFIG_PREEMPT_NONE=n
+> >> > +CONFIG_PREEMPT_VOLUNTARY=y
+> >> > +CONFIG_PREEMPT=n
+> >> > +CONFIG_PREEMPT_DYNAMIC=n
+> >> > +#CHECK#CONFIG_TREE_RCU=y
+> >> > +CONFIG_HZ_PERIODIC=n
+> >> > +CONFIG_NO_HZ_IDLE=n
+> >> > +CONFIG_NO_HZ_FULL=y
+> >> > +CONFIG_RCU_TRACE=y
+> >> > +CONFIG_RCU_FANOUT=4
+> >> > +CONFIG_RCU_FANOUT_LEAF=3
+> >> > +CONFIG_DEBUG_LOCK_ALLOC=n
+> >> > +CONFIG_DEBUG_OBJECTS_RCU_HEAD=n
+> >> > +CONFIG_RCU_EXPERT=y
+> >> > +CONFIG_RCU_EQS_DEBUG=y
+> >> > +CONFIG_RCU_LAZY=y
+> >> > +CONFIG_RCU_DYNTICKS_BITS=2
+> >>
+> >> Why not just add this last line to the existing TREE04 scenario?
+> >> That would ensure that it gets tested regularly without extending the
+> >> time required to run a full set of rcutorture tests.
 > >
-> > > @@ -472,6 +473,26 @@ void __init hyperv_init(void)
-> > >  	}
-> > >
-> > >  	/*
-> > > +	 * Some versions of Hyper-V that provide IBT in guest VMs have a bu=
-g
-> > > +	 * in that there's no ENDBR64 instruction at the entry to the
-> > > +	 * hypercall page. Because hypercalls are invoked via an indirect c=
-all
-> > > +	 * to the hypercall page, all hypercall attempts fail when IBT is
-> > > +	 * enabled, and Linux panics. For such buggy versions, disable IBT.
-> > > +	 *
-> > > +	 * Fixed versions of Hyper-V always provide ENDBR64 on the hypercal=
-l
-> > > +	 * page, so if future Linux kernel versions enable IBT for 32-bit
-> > > +	 * builds, additional hypercall page hackery will be required here
-> > > +	 * to provide an ENDBR32.
-> > > +	 */
-> > > +#ifdef CONFIG_X86_KERNEL_IBT
-> > > +	if (cpu_feature_enabled(X86_FEATURE_IBT) &&
-> > > +	    *(u32 *)hv_hypercall_pg !=3D gen_endbr()) {
-> > > +		setup_clear_cpu_cap(X86_FEATURE_IBT);
-> > > +		pr_info("Hyper-V: Disabling IBT because of Hyper-V bug\n");
-> > > +	}
-> > > +#endif
-> >
-> > pr_warn() perhaps?
->=20
-> I wanted pr_info() so there's an immediate way to check for this
-> case in the dmesg output if a user complains about IBT not being
-> enabled when he expects it.   In some sense, the message is temporary
-> because once the Hyper-V patch is available and users install it,
-> the message will go away.  The pipeline for the Hyper-V patch is a
-> bit long, so availability is at least several months away.  This Linux
-> workaround will be available much faster.  Once it is picked up on
-> stable branches, we will avoid the situations like we saw where
-> someone upgraded Fedora 38 from a 6.2 to a 6.3 kernel, and the 6.3
-> kernel wouldn't boot because it has kernel IBT enabled.
->=20
+> > Please see below for the version of this patch that I am running overnight
+> > tests with.  Does this one work for you?
+> 
+> Yep that's fine with me. I only went with a separate test file as wasn't
+> sure how new test options should be handled (merged into existing tests vs
+> new tests created), and didn't want to negatively impact TREE04 or
+> TREE06. If merging into TREE04 is preferred, then I'll do just that and
+> carry this path moving forwards.
 
-I realized in the middle of the night that my reply was nonsense. :-(
-pr_warn() makes the message visible when pr_info() might not.  I'm
-happy to change to pr_warn().
+Things worked fine for this one-hour-per-scenario test run on my laptop,
+except for the CONFIG_SMP=n runs, which all got build errors like the
+following.
 
-Michael
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+In file included from ./include/linux/container_of.h:5,
+                 from ./include/linux/list.h:5,
+                 from ./include/linux/swait.h:5,
+                 from ./include/linux/completion.h:12,
+                 from ./include/linux/crypto.h:15,
+                 from arch/x86/kernel/asm-offsets.c:9:
+./include/linux/context_tracking_state.h:56:61: error: ‘struct context_tracking’ has no member named ‘state’
+   56 | #define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * BITS_PER_BYTE)
+      |                                                             ^~
+./include/linux/build_bug.h:78:56: note: in definition of macro ‘__static_assert’
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+./include/linux/context_tracking_state.h:73:1: note: in expansion of macro ‘static_assert’
+   73 | static_assert((CONTEXT_STATE_END + 1 - CONTEXT_STATE_START) +
+      | ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:61:29: note: in expansion of macro ‘CT_STATE_SIZE’
+   61 | #define RCU_DYNTICKS_START (CT_STATE_SIZE - CONFIG_RCU_DYNTICKS_BITS)
+      |                             ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:70:29: note: in expansion of macro ‘RCU_DYNTICKS_START’
+   70 | #define CONTEXT_WORK_END   (RCU_DYNTICKS_START - 1)
+      |                             ^~~~~~~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:74:16: note: in expansion of macro ‘CONTEXT_WORK_END’
+   74 |               (CONTEXT_WORK_END  + 1 - CONTEXT_WORK_START) +
+      |                ^~~~~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:56:61: error: ‘struct context_tracking’ has no member named ‘state’
+   56 | #define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * BITS_PER_BYTE)
+      |                                                             ^~
+./include/linux/build_bug.h:78:56: note: in definition of macro ‘__static_assert’
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+./include/linux/context_tracking_state.h:73:1: note: in expansion of macro ‘static_assert’
+   73 | static_assert((CONTEXT_STATE_END + 1 - CONTEXT_STATE_START) +
+      | ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:62:29: note: in expansion of macro ‘CT_STATE_SIZE’
+   62 | #define RCU_DYNTICKS_END   (CT_STATE_SIZE - 1)
+      |                             ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:75:16: note: in expansion of macro ‘RCU_DYNTICKS_END’
+   75 |               (RCU_DYNTICKS_END  + 1 - RCU_DYNTICKS_START) ==
+      |                ^~~~~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:56:61: error: ‘struct context_tracking’ has no member named ‘state’
+   56 | #define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * BITS_PER_BYTE)
+      |                                                             ^~
+./include/linux/build_bug.h:78:56: note: in definition of macro ‘__static_assert’
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+./include/linux/context_tracking_state.h:73:1: note: in expansion of macro ‘static_assert’
+   73 | static_assert((CONTEXT_STATE_END + 1 - CONTEXT_STATE_START) +
+      | ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:61:29: note: in expansion of macro ‘CT_STATE_SIZE’
+   61 | #define RCU_DYNTICKS_START (CT_STATE_SIZE - CONFIG_RCU_DYNTICKS_BITS)
+      |                             ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:75:40: note: in expansion of macro ‘RCU_DYNTICKS_START’
+   75 |               (RCU_DYNTICKS_END  + 1 - RCU_DYNTICKS_START) ==
+      |                                        ^~~~~~~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:56:61: error: ‘struct context_tracking’ has no member named ‘state’
+   56 | #define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * BITS_PER_BYTE)
+      |                                                             ^~
+./include/linux/build_bug.h:78:56: note: in definition of macro ‘__static_assert’
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+./include/linux/context_tracking_state.h:73:1: note: in expansion of macro ‘static_assert’
+   73 | static_assert((CONTEXT_STATE_END + 1 - CONTEXT_STATE_START) +
+      | ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:76:15: note: in expansion of macro ‘CT_STATE_SIZE’
+   76 |               CT_STATE_SIZE);
+      |               ^~~~~~~~~~~~~
+./include/linux/context_tracking_state.h:73:15: error: expression in static assertion is not an integer
+   73 | static_assert((CONTEXT_STATE_END + 1 - CONTEXT_STATE_START) +
+      |               ^
+./include/linux/build_bug.h:78:56: note: in definition of macro ‘__static_assert’
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+./include/linux/context_tracking_state.h:73:1: note: in expansion of macro ‘static_assert’
+   73 | static_assert((CONTEXT_STATE_END + 1 - CONTEXT_STATE_START) +
+      | ^~~~~~~~~~~~~
+make[2]: *** [scripts/Makefile.build:116: arch/x86/kernel/asm-offsets.s] Error 1
+make[1]: *** [/home/git/linux-rcu-1/Makefile:1275: prepare0] Error 2
+make[1]: *** Waiting for unfinished jobs....
+  LD      /home/git/linux-rcu-1/tools/objtool/objtool-in.o
+  LINK    /home/git/linux-rcu-1/tools/objtool/objtool
+make: *** [Makefile:234: __sub-make] Error 2
