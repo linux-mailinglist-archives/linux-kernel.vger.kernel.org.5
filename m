@@ -2,182 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 845CE75C5C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E25175C5C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229451AbjGULSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 07:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
+        id S229779AbjGULVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 07:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbjGULSN (ORCPT
+        with ESMTP id S229569AbjGULVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 07:18:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205E61715;
-        Fri, 21 Jul 2023 04:18:12 -0700 (PDT)
+        Fri, 21 Jul 2023 07:21:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20F61715
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 04:21:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 768BC61A32;
-        Fri, 21 Jul 2023 11:18:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 961CAC433CA;
-        Fri, 21 Jul 2023 11:18:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3A4C16108F
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 11:21:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9653AC433C7;
+        Fri, 21 Jul 2023 11:21:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689938290;
-        bh=+1pRznIJZVGaXfyHrneWrC6bYAtsOlit/tS0KrtG2yM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZkemUooeRUEBMXoT+eZuwXtiItz8nm/fDLuhMM6XoA0+EU916wGv+BgIRm9/xgMuX
-         SHioymbBApSyxanIRzsRJlh1H1xIrmrEecxMCb2eiIpMa2MDza+a4Lq7s8MEmglIDe
-         ez4c8dEMJ4yU8fNNE27hJRQDS67tU5s8hkkkchIZQ2TJUr2H0Pp5kPNTLBrZ7BE1tE
-         XtM4lvoh9Le7pYU5tDl1ZWsi1wmd04lf2V4ROGk/Ku3L6+VkMgVjYdls3FN1H/kiR2
-         xtTShhij+hbZh33BcJIHIG5mmO1W021HSeM9yzvPFkgCtgYQYflWAvK86K6XkJEDCq
-         e88ULpSvyQglQ==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-4fcd615d7d6so2891849e87.3;
-        Fri, 21 Jul 2023 04:18:10 -0700 (PDT)
-X-Gm-Message-State: ABy/qLb6/q4WRjT4XwdfpkRnqdmVnGhq3BwMzyUEwNPjp3RI6y+k+JvW
-        V37nq1skh4rnl+G7VU76euusfgRNlpu94+0Gjsk=
-X-Google-Smtp-Source: APBJJlGgzNV4bS4ZImEmRoMMfW0jhmUui+8qThAJBRzr+dpV1Qj1REJCRGaubl5KmDySuU4gh04KMBTQZciuHQWvik4=
-X-Received: by 2002:a05:6512:6d4:b0:4f9:58ed:7bba with SMTP id
- u20-20020a05651206d400b004f958ed7bbamr1221034lff.16.1689938288556; Fri, 21
- Jul 2023 04:18:08 -0700 (PDT)
+        s=k20201202; t=1689938466;
+        bh=BzBxawFQt5qhrvYcwhomchR2CqahWS/ymIYjhFBgoqg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XsjvvGPpndF9yS3zP1iCeDpNZe+YlaD4Fu+pMZdGApEacI6HEiT8oezvPD51NEBB0
+         q/4GqelFAXi5yTUMmT4AWwJBF2Y8EpmR799S8I3hmPZKSX1/2lPd9xfQzWm2Mq6fap
+         hEELWiiOsbffDoGOx0cClUBH6q7EKI22E++bbcjJoQxf8Kpk2ReRo+h4nQHoGNj3+x
+         T3q2EVBgKkQ2oGT6/FLcyKIRInUGqFMwSFULPS7z+WUMgFqD67qW8Y83NCyd1cBdIb
+         kKLPEBUxR1h8NQlFU+/2vVnpiPCbzKndDpo8FLvRkGHhqd9Uejmq6rwYO2FfCrQJZW
+         9rDoyzfh8AYvg==
+Date:   Fri, 21 Jul 2023 14:20:09 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Ross Zwisler <zwisler@google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: collision between ZONE_MOVABLE and memblock allocations
+Message-ID: <20230721112009.GP1901145@kernel.org>
+References: <20230718220106.GA3117638@google.com>
+ <20230719054434.GG1901145@kernel.org>
+ <20230719222604.GB3528218@google.com>
 MIME-Version: 1.0
-References: <20230718125847.3869700-1-ardb@kernel.org> <20230718125847.3869700-21-ardb@kernel.org>
- <ZLpoDumeF/+xax/V@corigine.com>
-In-Reply-To: <ZLpoDumeF/+xax/V@corigine.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 21 Jul 2023 13:17:57 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE4BFjracdzsM87Kq40t683RnT4VXEZjU0d0gRVwso=vA@mail.gmail.com>
-Message-ID: <CAMj1kXE4BFjracdzsM87Kq40t683RnT4VXEZjU0d0gRVwso=vA@mail.gmail.com>
-Subject: Re: [RFC PATCH 20/21] crypto: deflate - implement acomp API directly
-To:     Simon Horman <simon.horman@corigine.com>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Haren Myneni <haren@us.ibm.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        qat-linux@intel.com, linuxppc-dev@lists.ozlabs.org,
-        linux-mtd@lists.infradead.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719222604.GB3528218@google.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 at 13:12, Simon Horman <simon.horman@corigine.com> wrote:
->
-> On Tue, Jul 18, 2023 at 02:58:46PM +0200, Ard Biesheuvel wrote:
->
-> ...
->
-> > -static int deflate_comp_init(struct deflate_ctx *ctx)
-> > +static int deflate_process(struct acomp_req *req, struct z_stream_s *stream,
-> > +                        int (*process)(struct z_stream_s *, int))
-> >  {
-> > -     int ret = 0;
-> > -     struct z_stream_s *stream = &ctx->comp_stream;
-> > +     unsigned int slen = req->slen;
-> > +     unsigned int dlen = req->dlen;
-> > +     struct scatter_walk src, dst;
-> > +     unsigned int scur, dcur;
-> > +     int ret;
-> >
-> > -     stream->workspace = vzalloc(zlib_deflate_workspacesize(
-> > -                             -DEFLATE_DEF_WINBITS, DEFLATE_DEF_MEMLEVEL));
-> > -     if (!stream->workspace) {
-> > -             ret = -ENOMEM;
-> > -             goto out;
-> > -     }
-> > +     stream->avail_in = stream->avail_out = 0;
-> > +
-> > +     scatterwalk_start(&src, req->src);
-> > +     scatterwalk_start(&dst, req->dst);
-> > +
-> > +     scur = dcur = 0;
-> > +
-> > +     do {
-> > +             if (stream->avail_in == 0) {
-> > +                     if (scur) {
-> > +                             slen -= scur;
-> > +
-> > +                             scatterwalk_unmap(stream->next_in - scur);
-> > +                             scatterwalk_advance(&src, scur);
-> > +                             scatterwalk_done(&src, 0, slen);
-> > +                     }
-> > +
-> > +                     scur = scatterwalk_clamp(&src, slen);
-> > +                     if (scur) {
-> > +                             stream->next_in = scatterwalk_map(&src);
-> > +                             stream->avail_in = scur;
-> > +                     }
-> > +             }
-> > +
-> > +             if (stream->avail_out == 0) {
-> > +                     if (dcur) {
-> > +                             dlen -= dcur;
-> > +
-> > +                             scatterwalk_unmap(stream->next_out - dcur);
-> > +                             scatterwalk_advance(&dst, dcur);
-> > +                             scatterwalk_done(&dst, 1, dlen);
-> > +                     }
-> > +
-> > +                     dcur = scatterwalk_clamp(&dst, dlen);
-> > +                     if (!dcur)
-> > +                             break;
->
-> Hi Ard,
->
-> I'm unsure if this can happen. But if this break occurs in the first
-> iteration of this do loop, then ret will be used uninitialised below.
->
-> Smatch noticed this.
->
+On Wed, Jul 19, 2023 at 04:26:04PM -0600, Ross Zwisler wrote:
+> On Wed, Jul 19, 2023 at 08:44:34AM +0300, Mike Rapoport wrote:
+> > 3. Switch memblock to use bottom up allocations. Historically memblock
+> > allocated memory from the top to avoid corrupting the kernel image and to
+> > avoid exhausting precious ZONE_DMA. I believe we can use bottom-up
+> > allocations with lower limit of memblock allocations set to 16M.
+> > 
+> > With the hack below no memblock allocations will end up in ZONE_MOVABLE:
+> 
+> Yep, I've confirmed that for my use cases at least this does the trick, thank
+> you!  I had thought about moving the memblock allocations, but had no idea it
+> was (basically) already supported and thought it'd be much riskier than just
+> adjusting where ZONE_MOVABLE lived.
+> 
+> Is there a reason for this to not be a real option for users, maybe per a
+> kernel config knob or something?  I'm happy to explore other options in this
+> thread, but this is doing the trick so far.
 
-Thanks.
+I think we can make x86 always use bottom up.
 
-This should not happen - it would mean req->dlen == 0, which is
-rejected before this function is even called.
+To do this properly we'd need to set lower limit for memblock allocations
+to MAX_DMA32_PFN and allow fallback below it so that early allocations
+won't eat memory from ZONE_DMA32.
 
-Whether or not it might ever happen in practice is a different matter,
-of course, so I should probably initialize 'ret' to something sane.
+Aside from x86 boot being fragile in general I don't see why this wouldn't
+work.
 
-
-
-> > +
-> > +                     stream->next_out = scatterwalk_map(&dst);
-> > +                     stream->avail_out = dcur;
-> > +             }
-> > +
-> > +             ret = process(stream, (slen == scur) ? Z_FINISH : Z_SYNC_FLUSH);
-> > +     } while (ret == Z_OK);
-> > +
-> > +     if (scur)
-> > +             scatterwalk_unmap(stream->next_in - scur);
-> > +     if (dcur)
-> > +             scatterwalk_unmap(stream->next_out - dcur);
-> > +
-> > +     if (ret != Z_STREAM_END)
-> > +             return -EINVAL;
-> > +
-> > +     req->dlen = stream->total_out;
-> > +     return 0;
-> > +}
->
-> ...
+-- 
+Sincerely yours,
+Mike.
