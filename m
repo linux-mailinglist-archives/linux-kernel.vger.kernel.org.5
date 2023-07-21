@@ -2,255 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D76D75D44E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 21:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99A275D105
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 20:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbjGUTTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 15:19:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40678 "EHLO
+        id S229492AbjGUSD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 14:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232052AbjGUTTi (ORCPT
+        with ESMTP id S229576AbjGUSD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 15:19:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C4E13A90;
-        Fri, 21 Jul 2023 12:19:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A843861D6D;
-        Fri, 21 Jul 2023 19:19:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F65FC433C7;
-        Fri, 21 Jul 2023 19:19:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689967173;
-        bh=VknH39d+fypFBtbpKy9Ks9499orhFKGibNkjywSPOo8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TwfHAh4dqdvIDSnWyOrbWr4scVHbxbgthT5ieOlaqy9DMKSJDh/azXW9+8q7icfQb
-         wvRcfGgYIhspri592yY+F/y5s6+jXjcl2RfEEwIIjIoC9fx8IpiP6x9A/DEmqpzAWA
-         aLcNZXU3sch42MqttSnd6swrBUacSkcUR6j6I6js=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, Moritz Duge <MoritzDuge@kolahilft.de>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Torsten Krah <krah.tm@gmail.com>,
-        Paul Schyska <pschyska@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Inki Dae <inki.dae@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-tegra@vger.kernel.org, alexandru.gagniuc@hp.com,
-        Mario Limonciello <mario.limonciello@amd.com>
-Subject: [PATCH 6.1 069/223] drm/client: Send hotplug event after registering a client
-Date:   Fri, 21 Jul 2023 18:05:22 +0200
-Message-ID: <20230721160523.804204932@linuxfoundation.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230721160520.865493356@linuxfoundation.org>
-References: <20230721160520.865493356@linuxfoundation.org>
-User-Agent: quilt/0.67
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Fri, 21 Jul 2023 14:03:26 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870C52737;
+        Fri, 21 Jul 2023 11:03:25 -0700 (PDT)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LEGEi2003849;
+        Fri, 21 Jul 2023 16:32:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : from : to : cc : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=HWByv861nrO9TNW0942R7zYddd561p62PJx4QHCHXGg=;
+ b=Pal3m49b8LQgtMDXANE3zfs9T+RuAOTTFqOoZTXp1guvu5ap9H1IRfzhrpTFwS2pQ9DZ
+ SG8jYIr+Z0Ud9SnHWM6YVkBKElm3iTT0msJ3GwMBgtA5R4fHJqb4VjDD3+hZb3NMYO8c
+ StVlluvA8l4tKhyZfgQf1iglJZviumCSfvx9gkRwvL3p9VdyPk09lnefbEVpPc6zcLSd
+ y57l4v+757OpDvcD3WAe6j1zDL7AWxnZyUbNf77GexaMSVCwQB9TxihIMiW/wSttTlcI
+ XQNZHZVkEEHYTpXJMfko6AMLd4gnn6lPw97xiPjdWhezok237pv+bT21EBKvGNlOKqTz lw== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run8a4cex-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Jul 2023 16:32:25 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36LF4XQL019175;
+        Fri, 21 Jul 2023 16:32:24 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhwap5j1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Jul 2023 16:32:24 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IUO+9VvoJDvnNjmGcMdKMKiQwkxtLLvxODQNQNY1NZr8cOWcfU07gC9aUg6reNfQlDE+JHa2a1/XVQ8YiT9s87khgpkZQRdvKe3+qjCUiSEH5qEuahwqGGjy4c30Nx5Q4i8+Khh7x+nNDTHxWrBpOTKvk3slYpphL9z+m/np9Y12xay/uKfc0OLse12R9LqVGeBoqejQRpaNH2Z77W9bApgDLKEkH6mlIh2unglfXMs+FSNPn1ivdJjNzMa8jPDvGB4OYn/D5lNiy1Uv+TWfXB78AcIHUHuzUV4D+rlq/CoTYI9r5I5LMqRlAZ6Zei7mtn0aBPn844ueD2ufOdJOJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HWByv861nrO9TNW0942R7zYddd561p62PJx4QHCHXGg=;
+ b=HmWbHQiHqwndnVhU3DqWep3ciw9MUCN1T7qCGCgxa0Ehp61pj98VnVxaAtdcpxeWOj2dh55icqZQi3iSr+nCymom+3SmufuRbsxq8/1Rj2BKHLofcDv5s2a4IQQPCoWHQNGQ17BVVBCMoJ8ELCj4m/fgo9u+YJjxqSw6NgNIov1ep06au8NBQbDt57oHAMr4gYwJmhjNE8fny++cK/tN67MKUKGc7SN/27uHjzJKA87NQmIk0TPI3YzFAMH6XTrHJJXXArkwaAIkqu2FRyqjNFGVro5junCBbqeqgN6gT93+J0+5hlyldK0pOIOQKPSQ4jd29MnNbL/aSS2toeUJJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HWByv861nrO9TNW0942R7zYddd561p62PJx4QHCHXGg=;
+ b=Kf7w1hol3l5moWN4spACHE9n/WdH/YS+A1/Bb0TtO2mt9vM10780ck1/F8PzUBL+U03d7Ket9RR8N2QG4WvM1c59+f8brpwEvPZ/nDdKaWcYd6+QRyiXHxke1B2j68nqs5iwNCwTN8T9RemBjqqjCHbFWhz0+lk8xlT2h0bR2YI=
+Received: from CO1PR10MB4531.namprd10.prod.outlook.com (2603:10b6:303:6c::22)
+ by CH0PR10MB5372.namprd10.prod.outlook.com (2603:10b6:610:c2::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28; Fri, 21 Jul
+ 2023 16:32:20 +0000
+Received: from CO1PR10MB4531.namprd10.prod.outlook.com
+ ([fe80::a7b5:113e:6f8c:5028]) by CO1PR10MB4531.namprd10.prod.outlook.com
+ ([fe80::a7b5:113e:6f8c:5028%4]) with mapi id 15.20.6609.026; Fri, 21 Jul 2023
+ 16:32:19 +0000
+Message-ID: <6d2811f5-a5ee-a49d-012d-b519b2c6ee26@oracle.com>
+Date:   Fri, 21 Jul 2023 11:32:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v25 01/10] drivers/base: refactor cpu.c to use
+ .is_visible()
+Content-Language: en-US
+From:   Eric DeVolder <eric.devolder@oracle.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, david@redhat.com, osalvador@suse.de,
+        corbet@lwn.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, bhe@redhat.com,
+        ebiederm@xmission.com, kexec@lists.infradead.org, hpa@zytor.com,
+        rafael@kernel.org, vgoyal@redhat.com, dyoung@redhat.com,
+        lf32.dev@gmail.com, akpm@linux-foundation.org,
+        naveen.n.rao@linux.vnet.ibm.com, zohar@linux.ibm.com,
+        bhelgaas@google.com, vbabka@suse.cz, tiwai@suse.de,
+        seanjc@google.com, linux@weissschuh.net, vschneid@redhat.com,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        sourabhjain@linux.ibm.com, konrad.wilk@oracle.com,
+        boris.ostrovsky@oracle.com
+References: <20230629192119.6613-1-eric.devolder@oracle.com>
+ <20230629192119.6613-2-eric.devolder@oracle.com>
+ <2023070342-human-spill-a62c@gregkh>
+ <31c1393d-4285-0032-7675-737737d21f71@oracle.com>
+In-Reply-To: <31c1393d-4285-0032-7675-737737d21f71@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SN4PR0501CA0014.namprd05.prod.outlook.com
+ (2603:10b6:803:40::27) To CO1PR10MB4531.namprd10.prod.outlook.com
+ (2603:10b6:303:6c::22)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4531:EE_|CH0PR10MB5372:EE_
+X-MS-Office365-Filtering-Correlation-Id: c4d612bd-de1b-4301-0c4f-08db8a080db2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8TODz/Y7IhLbcGTSkFU1VVYW+SrdKOEO/9iXm4JNPb6m8XOlMycWrzw95Z4U5CwU71zjBcYObcKzYiY01mQERq5H1gkORaXQu+sehsN6FxI1vYfZp5NJnBGTfQ1/AGC6ioa1t5LrQr3s+M4TWti5tjSCF0/euoudiVmkqQeyDiH37IDAdeTXUB5PTb1oIH2wU3ziTm6781VmhLxOnhfuEjz+hRKsB65YBuIrMFQlGvO64RUda3EDkDjfI8iRLlq66oUpRNPVoMyeKY40JwVIrf9t1Ejs2BqavvZQay2LICDCRGUNvvNgrlfkS8wED81/ICW55YrrDHk+ADofR4bDbc3vNRskGV5Pfn7WR6wQh3mFmkOHihKI0WPFpM1KqU2e6tcoONF81clifsJLipxzzjDvmsDPTOKRcXzrHId3eCeg5LGQB69STqpvXT1CsBs13bR5DkEmnI5WetbrozuRzMl/Wvbv0kRxlg+5LYTptSfJ2No2iCvqv+EgWAY8V/telEMub57QLFKnIgS/oMqxOckM2kXeTCGKNg5rQyNbHdPGet5MpSh0WO9zeKrOejwYadyTUfjU46a2yh+XsF1mMDoVK+H5FQ3Mh4noiQ5cK1gcopk0IiS5tKwz4HMvBcocUKm5Ma5epEGYyqOxFNGSFh2co5kccqQGGnk5DNcScbxxRzEfpvj4kmG6pBo9SskW
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4531.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(396003)(346002)(366004)(39860400002)(136003)(451199021)(6666004)(6512007)(107886003)(6916009)(316002)(4326008)(6486002)(186003)(26005)(31686004)(53546011)(6506007)(41300700001)(478600001)(5660300002)(8936002)(7416002)(7406005)(8676002)(66946007)(66476007)(66556008)(2906002)(2616005)(83380400001)(38100700002)(31696002)(36756003)(86362001)(142923001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aHBjTFR0T05XK1d3cG4vT0RwQUtkYlFKQWlRQnZUK1lSaE9ROWhtSk5SYVFn?=
+ =?utf-8?B?RjIxamRPSjQ5ajNJaEtXdlNrd2REdENJS21WUWFMaTVQb1hnaTQvVytvOXVW?=
+ =?utf-8?B?ZmN1SUZuZWZnUitsNHJCZ044RStkUjVmdy80OEVXMjNkV3A3aHZhNWcwSnU4?=
+ =?utf-8?B?N1hITHkxM3JCOVA4ei9sSXN4bzdTWlhWclRmME5sbXZ2OGRNNlpNWU0zWFpD?=
+ =?utf-8?B?KytqMXhvNEE0Um5heVBqSG8zZGtoVlloSlordmJ0WlNtaXR6NnBXQ0x4N3BB?=
+ =?utf-8?B?ZTN2dlpObnpJT1FxN1N1OUpDa0lBSkViTXdpVFc1YjF6MjFreEFsYU5ZaE44?=
+ =?utf-8?B?TmtuMytOLzZiUmZ0aVJpTFBlclBobDVDejJQdUJmU1U0Z0RpM3N1Vkp3Slp6?=
+ =?utf-8?B?aGNSZEdwWUx3QWJCQjhDM01pN3FqMmxZRTdCTUFXakVUbHpYNlJyWkt1MC9K?=
+ =?utf-8?B?YU96L1ZHcnVFZ3QyTmc3K3d0akVuci9BWmdKN2I4UEUxTnNGdnlZL3ZXbTE1?=
+ =?utf-8?B?T3I3T0h3UllTNWQwVTNYU2tQaEpLeVprdlhIa3ZsZlhYV0lueU5RLzVoWTMx?=
+ =?utf-8?B?ZHk3ZXdwL0RSaHluNUw4cy9mRE5CbXhxTHhENExpRHBOdHZQYlBFVFBjSm5m?=
+ =?utf-8?B?SkZFZDJkUXRLR0JkM0NZbVB2Vit5K0lxUktSNkhETVg3MFVTaElpR3NZNEt6?=
+ =?utf-8?B?VnB5bm9aTjBEL2dSdVRzSG10YTRaKzR1bzQwUm1xQkhVVFQvMzIvd0xYZ3U4?=
+ =?utf-8?B?L2pwbjZDYVhVenU3L1BtUUk2ai94ZzNzM3BoYjBHVGl1ZGNtbkwrZ2xlazAy?=
+ =?utf-8?B?TklWS216STI1MWFuUndOSjVrRFl6RFNVa2FmSXlYdVhQaWVBSTdwa2h1YjhO?=
+ =?utf-8?B?NjlhUyt4NE9xeDBlZWtGckE4UTU0eVc0WDdVcEVhcTRDczRMbkM5d0RvdWJy?=
+ =?utf-8?B?b3luU05WLzlKM21ldEpYOWlHUERhR0lTMXRpRFh0enl4L0UxOS9yVTdqdW9m?=
+ =?utf-8?B?T2krWmNTaE15RGtkT3VQeW9EUEU5TzB2cU1YRzVDNlVGNEV3cWRzTXh0SDQ2?=
+ =?utf-8?B?OVJtVWMxWVZnY2xONUtZU0RZTVBmWUdic1FndU54Z05oSHZVZmdidkd1SjNK?=
+ =?utf-8?B?ZFRnVEFERnRHUmtQUWZqNDNqdXc5dzFHMVViY0xMNXpnVU5wNk5qMGF3Lytt?=
+ =?utf-8?B?NEc1VFFxK0MyUWJWTFNGOUlLeHFRQmlwOTNFaEd6dkhGc2l3MXVGcGc0blhD?=
+ =?utf-8?B?ZWIrR3NSM0M0b29nU3MyaVZHc2xtYWxuVkY1algwL2ovM2dLN1FCRTRHanVX?=
+ =?utf-8?B?NXdjTS9jRmU2ekxGNExBRHZRTDc2Nmh4elFsT05IeW5nTHRQcVUxdlhjck9Z?=
+ =?utf-8?B?QXFJODdFT25ubFhhazFkSkRGT2FkV3BSOENRc2pzM1Zyd0NENExtV1YwYWRr?=
+ =?utf-8?B?UmZSV2hPK042ZkRleU1sWnk0T1NmcS9GSCtuZTRIeVFxcFZjTkF2WEhVMEpj?=
+ =?utf-8?B?SVhIcmhvb0VCY01tOGVQakV4MlZrVU9pN0pmak8rTjd6cFZkaTAwR3JTMlcz?=
+ =?utf-8?B?anRpMENrWTNBL2t0SEZ0SVBUZTJrV1dWQVlCUHl2dHVlbTEyNFdiY1VvOGUz?=
+ =?utf-8?B?RTYrTnZSRVZpZWdiWkxBVjlyYWI2eTdDOVVTb0xIY0kwQU1LVkNYZEMrSzhK?=
+ =?utf-8?B?MHJrU0F3QVpieGFBNE0rYXdVNS9jZlZtYVVrSVVTWUFsWGVYaG56WnpiZ2No?=
+ =?utf-8?B?dnozM0h3YkpBVzRhaUlZdWZ6UG96R1JIWTQxd3VXWk1INGVzaEsxcy9WeGNr?=
+ =?utf-8?B?YnVhcldCKzN0UzVUMzFucGZoT29NVFE2b2dja3lFUUc1aGVoRm5RSWx0ZjAv?=
+ =?utf-8?B?UG9QRHVCOEpDL3A3dUg2OHQyeUk4Y1c3MGsrQjB1d0wrTEdvWHRTa3BtWVhr?=
+ =?utf-8?B?TUoyc0hpbWtWZ0hhMmk2VXAvWTczYWJPK3o3dGwraXpGdHVEalVzYXVwYW9L?=
+ =?utf-8?B?VFI1Y1VUQkJJc2lrTFJKcVZVd1N6cVRIT3piajlqdHZpUUxDVDVMK0I0OVQr?=
+ =?utf-8?B?R1Q4aVdGcVlkY1FMeVJzV1lOSk1MQ1BkdXpYM2NNR0dmYUlkTVhOdTV6dm9L?=
+ =?utf-8?Q?1/9K2ZqaQ+JbImu/oLP3Yj6mL?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?ZHNEZGxBeEdidm1qVTMzYUpJaWJBdXpXd0tua1JIUXRPLzZNelB1ZFhteFpJ?=
+ =?utf-8?B?ZnZMaXE2RVBnWnRJdDlMMWlBV1k2YjFvdmZjRHNITkxvQWxxTUhjeFBQamlE?=
+ =?utf-8?B?bERVWXRHbWpWNmROaEhSc0ZoQVpLQjZoR0hreHA4RnZPVWRLNkR6L0tMSGxs?=
+ =?utf-8?B?blBQRHNSbFZnZlFCMnF2NWxxb1BGZjIvUmpQcnozR3JKMkg3Ly9DYW9zcVNm?=
+ =?utf-8?B?MXR2dmVOMXl3bTdqV3UySG0zUUc0VGtHM3E5TkJsOXl5eGM1VTd0SWNMeDA4?=
+ =?utf-8?B?c2o5UnAxeENmYk9wRHBveVpyRDRVVC95M1dDRU1xU0kva2dMN05LVzl1VGRF?=
+ =?utf-8?B?SUQ5bXFpYlJEdktlNWt5WVJDNkQ0Q3JwaWZteWhrb2k5NGZaRnJrc3JWeFB0?=
+ =?utf-8?B?QW9YOFNKd2dCSnFwVm03VlVtU0tjVjBJWlRTWjdaVWlqNFkzb0tqa2ZyRDV6?=
+ =?utf-8?B?cW9YbW14Q1hPVVFmTXFxU0E2cGZOZVd0b0gyd29tNlpKcWk3ZUxRRTBPR2JU?=
+ =?utf-8?B?dmZDK2ZYWGYrM1RIMkdBaUloMGljMHNrMktyTGhpcFN4KzVmRTRyaFBZSlFj?=
+ =?utf-8?B?SVFzQkdDenFYbzRjSWF6d1BEOHppUEZySWVkbTlyZ2ZlUitQN1lONjl1dERU?=
+ =?utf-8?B?dDlIR1NoUFhnTTltODhDLytGcXNZemRpdEhSamZDcnNmQmE0ZEsyZytGSHZ2?=
+ =?utf-8?B?T2t5TjFHQnJYbWdWakd0MUdxRTUrRll5Q016NTR4UGNUNkF2NWtiWUFsdW5v?=
+ =?utf-8?B?SnVkOHdMYkpQc3gwRTVVbWFibDR2M2w4WWZrWEpsRktmWWVnUXpEKzZOVGw1?=
+ =?utf-8?B?bm9MeVRSb1pPeTJlUW9BeWJOaWMrQ0RRVHUvRk1Jenhxb0VQTGVsT0kzTnN3?=
+ =?utf-8?B?QzhBTzFEbFNsUUJYdXV4UXFYL05nYjZmN3RLUVMydmZiaHRDTGhQaU5FTFRO?=
+ =?utf-8?B?YWdKYjMzN2ZKdmtNK0NTRXNaTnh6a293Ym5JRkNHU25pREUyWjBWWEpXcFV3?=
+ =?utf-8?B?Q2dPNUxpK0IxOUVIM0VybzVwNkN6RVU1N29GT3Bkd1lma2J0UWVab2l3aTRO?=
+ =?utf-8?B?UlJPUGJac01xMHdpd2JGS0d0QTNHV1VEY0Y3ZGFKUGM5MC82TjM0ZURYVHMz?=
+ =?utf-8?B?NDV2VEpaNVhBZ1BLSUJ4QTArMEkxdkJTSGdjbHVXWGozUTJGUlFvY05QR1Yw?=
+ =?utf-8?B?VFpVSEJTUG9UTnA4MjFiRXFSQ25mM1Rhb0ZXZk9uNGVialR2dk4vNXJPS2R5?=
+ =?utf-8?B?WkV5eUlkWkVZUGI5VGtJNDBFbllnVjBncjFiK3ZQRHRPcTVqQitIVmxVYW51?=
+ =?utf-8?B?ZU1kSlRjL3Q1QTM5dFR3RkRyWFpqcVRlbFU1MGQyL1RLRm5QWURHdXNUYXBy?=
+ =?utf-8?B?aWhuVDRBQU1IZnNFc1VqWDJYUkQwMkhhNVpzTXdmc0JOL1pPcWo5dlhrczYz?=
+ =?utf-8?B?S3JSL3p6ajJhTlZoMW84VWNlNlJiNDJGUmNkR0JWRHJJQ2lMUmtxT3B2b09E?=
+ =?utf-8?B?cnQ5SW5oS3c4ejQyUU9nQVNMSUNvREE5YU5GUVVDeTVvd2ZJR2h5YmZMS1Bw?=
+ =?utf-8?B?eUowVmp0TnI4WTc2bkFoSzF4RUFqeEI5SFR4VTNzU3dTVGZKZ3luR3V6eVZ4?=
+ =?utf-8?B?ZlFOdXVsK2doZ0QyelhmNFpmZTUxSGlVTG1YK1VRcWRMbzBQZE9TcnZjZnpV?=
+ =?utf-8?B?cmhSYS8rdDNxT3hrTlFjWGlGU0xpKzVreTFrQ2UxcjRHL0h3OXprYVFtV1Fr?=
+ =?utf-8?B?VG9KQnZLbm9uc3BhdDM4bCtIc3FrN3p5UktsVW5ISEF5WlJBbUFaRUFqaWZN?=
+ =?utf-8?B?VFgxci9XV0trV0Z5cW5ud3BQT1lFM3IwWFJLUXN2c2FIZ054TEwvQm1nakdk?=
+ =?utf-8?B?UCsyckJmbkgrN1AzR1Axb2dvakJFbUpNQ1RLYlQ2b0dtYUdnbmhsRHFoMFFN?=
+ =?utf-8?Q?s9hIgSyooKY=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c4d612bd-de1b-4301-0c4f-08db8a080db2
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4531.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 16:32:19.9204
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Vrkqtzd8gw/+TZwoecQdOLAzxpVMT6DAdxS0xYtZH3s0fWEyU/lhlwQBbhLhKESSOx1ODAD6hhZI4W7C3XO3Pt9LyssjjODQHRC4qV7gsD8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5372
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-21_10,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxscore=0 adultscore=0 spamscore=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307210144
+X-Proofpoint-ORIG-GUID: _navfhUWneorfAxf2PDAnqus4TK6YeeJ
+X-Proofpoint-GUID: _navfhUWneorfAxf2PDAnqus4TK6YeeJ
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Zimmermann <tzimmermann@suse.de>
-
-commit 27655b9bb9f0d9c32b8de8bec649b676898c52d5 upstream.
-
-Generate a hotplug event after registering a client to allow the
-client to configure its display. Remove the hotplug calls from the
-existing clients for fbdev emulation. This change fixes a concurrency
-bug between registering a client and receiving events from the DRM
-core. The bug is present in the fbdev emulation of all drivers.
-
-The fbdev emulation currently generates a hotplug event before
-registering the client to the device. For each new output, the DRM
-core sends an additional hotplug event to each registered client.
-
-If the DRM core detects first output between sending the artificial
-hotplug and registering the device, the output's hotplug event gets
-lost. If this is the first output, the fbdev console display remains
-dark. This has been observed with amdgpu and fbdev-generic.
-
-Fix this by adding hotplug generation directly to the client's
-register helper drm_client_register(). Registering the client and
-receiving events are serialized by struct drm_device.clientlist_mutex.
-So an output is either configured by the initial hotplug event, or
-the client has already been registered.
-
-The bug was originally added in commit 6e3f17ee73f7 ("drm/fb-helper:
-generic: Call drm_client_add() after setup is done"), in which adding
-a client and receiving a hotplug event switched order. It was hidden,
-as most hardware and drivers have at least on static output configured.
-Other drivers didn't use the internal DRM client or still had struct
-drm_mode_config_funcs.output_poll_changed set. That callback handled
-hotplug events as well. After not setting the callback in amdgpu in
-commit 0e3172bac3f4 ("drm/amdgpu: Don't set struct
-drm_driver.output_poll_changed"), amdgpu did not show a framebuffer
-console if output events got lost. The bug got copy-pasted from
-fbdev-generic into the other fbdev emulation.
-
-Reported-by: Moritz Duge <MoritzDuge@kolahilft.de>
-Closes: https://gitlab.freedesktop.org/drm/amd/-/issues/2649
-Fixes: 6e3f17ee73f7 ("drm/fb-helper: generic: Call drm_client_add() after setup is done")
-Fixes: 8ab59da26bc0 ("drm/fb-helper: Move generic fbdev emulation into separate source file")
-Fixes: b79fe9abd58b ("drm/fbdev-dma: Implement fbdev emulation for GEM DMA helpers")
-Fixes: 63c381552f69 ("drm/armada: Implement fbdev emulation as in-kernel client")
-Fixes: 49953b70e7d3 ("drm/exynos: Implement fbdev emulation as in-kernel client")
-Fixes: 8f1aaccb04b7 ("drm/gma500: Implement client-based fbdev emulation")
-Fixes: 940b869c2f2f ("drm/msm: Implement fbdev emulation as in-kernel client")
-Fixes: 9e69bcd88e45 ("drm/omapdrm: Implement fbdev emulation as in-kernel client")
-Fixes: e317a69fe891 ("drm/radeon: Implement client-based fbdev emulation")
-Fixes: 71ec16f45ef8 ("drm/tegra: Implement fbdev emulation as in-kernel client")
-Fixes: 0e3172bac3f4 ("drm/amdgpu: Don't set struct drm_driver.output_poll_changed")
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Tested-by: Moritz Duge <MoritzDuge@kolahilft.de>
-Tested-by: Torsten Krah <krah.tm@gmail.com>
-Tested-by: Paul Schyska <pschyska@gmail.com>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: David Airlie <airlied@gmail.com>
-Cc: Noralf Trønnes <noralf@tronnes.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Javier Martinez Canillas <javierm@redhat.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Inki Dae <inki.dae@samsung.com>
-Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Cc: Rob Clark <robdclark@gmail.com>
-Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Mikko Perttunen <mperttunen@nvidia.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-samsung-soc@vger.kernel.org
-Cc: linux-arm-msm@vger.kernel.org
-Cc: freedreno@lists.freedesktop.org
-Cc: amd-gfx@lists.freedesktop.org
-Cc: linux-tegra@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: <stable@vger.kernel.org> # v5.2+
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> # msm
-Link: https://patchwork.freedesktop.org/patch/msgid/20230710091029.27503-1-tzimmermann@suse.de
-(cherry picked from commit 27655b9bb9f0d9c32b8de8bec649b676898c52d5)
-[ Dropped changes to drivers/gpu/drm/armada/armada_fbdev.c as
-  174c3c38e3a2 drm/armada: Initialize fbdev DRM client
-  was introduced in 6.5-rc1.
-
-  Dropped changes to exynos, msm, omapdrm, radeon, tegra drivers
-  as missing code these commits introduced:
-
-  99286486d674 drm/exynos: Initialize fbdev DRM client
-  841ef552b141 drm/msm: Initialize fbdev DRM client
-  9e69bcd88e45 drm/omapdrm: Implement fbdev emulation as in-kernel client
-  e317a69fe891 drm/radeon: Implement client-based fbdev emulation
-  9b926bcf2636 drm/radeon: Only build fbdev if DRM_FBDEV_EMULATION is set
-  25dda38e0b07 drm/tegra: Initialize fbdev DRM client
-  8f1aaccb04b7 drm/gma500: Implement client-based fbdev emulation
-  b79fe9abd58b drm/fbdev-dma: Implement fbdev emulation for GEM DMA helpers
-
-  Move code for drm-fbdev-generic.c to matching file in 6.1.y because
-  these commits haven't happened in 6.1.y.
-  8ab59da26bc0 drm/fb-helper: Move generic fbdev emulation into separate source file
-  b9c93f4ec737 drm/fbdev-generic: Rename symbols ]
-Cc: alexandru.gagniuc@hp.com
-Link: https://lore.kernel.org/stable/SJ0PR84MB20882EEA1ABB36F60E845E378F5AA@SJ0PR84MB2088.NAMPRD84.PROD.OUTLOOK.COM/
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/gpu/drm/drm_client.c    |   21 +++++++++++++++++++++
- drivers/gpu/drm/drm_fb_helper.c |    4 ----
- 2 files changed, 21 insertions(+), 4 deletions(-)
-
---- a/drivers/gpu/drm/drm_client.c
-+++ b/drivers/gpu/drm/drm_client.c
-@@ -122,13 +122,34 @@ EXPORT_SYMBOL(drm_client_init);
-  * drm_client_register() it is no longer permissible to call drm_client_release()
-  * directly (outside the unregister callback), instead cleanup will happen
-  * automatically on driver unload.
-+ *
-+ * Registering a client generates a hotplug event that allows the client
-+ * to set up its display from pre-existing outputs. The client must have
-+ * initialized its state to able to handle the hotplug event successfully.
-  */
- void drm_client_register(struct drm_client_dev *client)
- {
- 	struct drm_device *dev = client->dev;
-+	int ret;
- 
- 	mutex_lock(&dev->clientlist_mutex);
- 	list_add(&client->list, &dev->clientlist);
-+
-+	if (client->funcs && client->funcs->hotplug) {
-+		/*
-+		 * Perform an initial hotplug event to pick up the
-+		 * display configuration for the client. This step
-+		 * has to be performed *after* registering the client
-+		 * in the list of clients, or a concurrent hotplug
-+		 * event might be lost; leaving the display off.
-+		 *
-+		 * Hold the clientlist_mutex as for a regular hotplug
-+		 * event.
-+		 */
-+		ret = client->funcs->hotplug(client);
-+		if (ret)
-+			drm_dbg_kms(dev, "client hotplug ret=%d\n", ret);
-+	}
- 	mutex_unlock(&dev->clientlist_mutex);
- }
- EXPORT_SYMBOL(drm_client_register);
---- a/drivers/gpu/drm/drm_fb_helper.c
-+++ b/drivers/gpu/drm/drm_fb_helper.c
-@@ -2634,10 +2634,6 @@ void drm_fbdev_generic_setup(struct drm_
- 		preferred_bpp = 32;
- 	fb_helper->preferred_bpp = preferred_bpp;
- 
--	ret = drm_fbdev_client_hotplug(&fb_helper->client);
--	if (ret)
--		drm_dbg_kms(dev, "client hotplug ret=%d\n", ret);
--
- 	drm_client_register(&fb_helper->client);
- }
- EXPORT_SYMBOL(drm_fbdev_generic_setup);
 
 
+On 7/3/23 11:53, Eric DeVolder wrote:
+> 
+> 
+> On 7/3/23 08:05, Greg KH wrote:
+>> On Thu, Jun 29, 2023 at 03:21:10PM -0400, Eric DeVolder wrote:
+>>>   - the function body of the callback functions are now wrapped with
+>>>     IS_ENABLED(); as the callback function must exist now that the
+>>>     attribute is always compiled-in (though not necessarily visible).
+>>
+>> Why do you need to do this last thing?  Is it a code savings goal?  Or
+>> something else?  The file will not be present in the system if the
+>> option is not enabled, so it should be safe to not do this unless you
+>> feel it's necessary for some reason?
+> 
+> To accommodate the request, all DEVICE_ATTR() must be unconditionally present in this file. The 
+> DEVICE_ATTR() requires the .show() callback. As the callback is referenced from a data structure, 
+> the callback has to be present for link. All the callbacks for these attributes are in this file.
+> 
+> I have two basic choices for gutting the function body if the config feature is not enabled. I can 
+> either use #ifdef or IS_ENABLED(). Thomas has made it clear I need to use IS_ENABLED(). I can 
+> certainly use #ifdef (which is what I did in v24).
+> 
+>>
+>> Not doing this would make the diff easier to read :)
+> 
+> I agree this is messy. I'm not really sure what this request/effort achieves as these attributes are 
+> not strongly related (unlike cacheinfo) and the way the file was before results in less code.
+> 
+> At any rate, please indicate if you'd rather I use #ifdef.
+> Thanks for your time!
+> eric
+> 
+>>
+>> thanks,
+>>
+>> greg k-h
+
+Hi Greg,
+I was wondering if you might weigh-in so that I can proceed.
+
+I think there are three options on the table:
+- use #ifdef to comment out these function bodies, which keeps the diff much more readable
+- use IS_ENABLED() as Thomas has requested I do, but makes the diff more difficult to read
+- remove this refactor altogether, perhaps post-poning until after this crash hotplug series merges, 
+as this refactor is largely unrelated to crash hotplug.
+
+Thank you for your time on this topic!
+eric
