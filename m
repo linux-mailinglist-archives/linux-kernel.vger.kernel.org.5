@@ -2,110 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B112375C523
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937A075C525
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbjGUK6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
+        id S231231AbjGUK6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231204AbjGUK57 (ORCPT
+        with ESMTP id S231249AbjGUK6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:57:59 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B7B19B5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:57:14 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fd18b1d924so14668735e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:57:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1689937033; x=1690541833;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W98yB9onrt+L+sHrT9wYT0pOvj+Kg/EhmG2u0g1eta0=;
-        b=MsB8RTKpskKLNG1//7WGzsABffdV6qVkUUAhK6Ywm4NMbs6vjKggiHX9bAXFLwat2u
-         oheAxyR9KDrbjNucdbaEdDOWuV7UZeSOR+pRTV7jl89kBWsWH8ocFl1iwWozUWUMvPD+
-         yI+rihhR5ys2Q2iUsBfcad9zpGJ3w1T4/KFLxQR038OQC4a0lc8PxBpp8PWv9AYAxeJe
-         Q628ecEDM2ky7sVrr11PCIArbOTXe4ucLgGcZF1LybzDqsXhrrFu6lmiq6Exszc8nVK0
-         csGIBA0fyQz9G0jpUt97g0tWbOHCgl6hVtlGdTN3POvXIHypyhpdvCvE7tn1sH0FjC9u
-         850A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689937033; x=1690541833;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W98yB9onrt+L+sHrT9wYT0pOvj+Kg/EhmG2u0g1eta0=;
-        b=dsaWMJqqiOSmjo3s28SDhNy4rI1C07NEFVB0/QZh3zkHIGVV0t098LWV1DsQBeqRY5
-         0KKXYUohTvpnZcDjlv5iqqB5l778OAGUbVOTxUVq+aTCAtOZ775Vuvr9mEMQOtdhnVUe
-         0sIWthMwpy3/KvBpK0RLj4ve14gz3NDmCXcEiy1EyBo0Xw1iltJP+c6IoLaBzoFppcuV
-         DTUNj9+flqW9tEkxkcxSJcLOEYjlZQdUiGiArRWl+8NvDXyZ0j1CdeMgFj8jf3Et/E3k
-         I7QVKFEZxfe8K9btYhHCeQ43ec2/qlTkRvsWB+pSf4XwuBxDsGlnAUftbTx2Q5zNjp3X
-         n8oA==
-X-Gm-Message-State: ABy/qLYmieUBct800iKg+cNuWrrlGCcwI/1KjzeJzim6zsR4WXZCWak4
-        Gri8NJmCpXKLXEzfOUulxOIO127NG1EXAGwSlz8=
-X-Google-Smtp-Source: APBJJlELd3pibdzXadazj+Ze9uIDI9J3Iim181nZv3Vh9OjEeCxgwyjBFuzU/S2BB/GyCoOY780jfA==
-X-Received: by 2002:adf:dbce:0:b0:314:fe8:94d8 with SMTP id e14-20020adfdbce000000b003140fe894d8mr1109281wrj.31.1689937033293;
-        Fri, 21 Jul 2023 03:57:13 -0700 (PDT)
-Received: from airbuntu (host86-163-217-97.range86-163.btcentralplus.com. [86.163.217.97])
-        by smtp.gmail.com with ESMTPSA id g5-20020a5d5545000000b0031437ec7ec1sm3906887wrw.2.2023.07.21.03.57.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 03:57:12 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 11:57:11 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] sched/fair: Fix impossible migrate_util scenario in
- load balance
-Message-ID: <20230721105711.nzunqdtdaevmrgyg@airbuntu>
-References: <20230716014125.139577-1-qyousef@layalina.io>
- <ZLaKFFjY6NWaJdOq@vingu-book>
- <20230718161829.ws3vn3ufnod6kpxh@airbuntu>
- <CAKfTPtA55NemHq0tZPuiEN=c3DRZWD-7jf7ZrKdHE9y9b_szZg@mail.gmail.com>
- <20230718172522.s4gcfx3ppljwbks7@airbuntu>
- <CAKfTPtA6s82qXWOSdd6eNu__z_HZe9U_F0+RcBJj=PVKT7go7A@mail.gmail.com>
+        Fri, 21 Jul 2023 06:58:00 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3EEBE1FE1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:57:26 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A1912F4;
+        Fri, 21 Jul 2023 03:58:09 -0700 (PDT)
+Received: from [10.57.64.194] (unknown [10.57.64.194])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CD993F738;
+        Fri, 21 Jul 2023 03:57:23 -0700 (PDT)
+Message-ID: <cbdf2289-bd5c-a882-3181-591bd765e9ec@arm.com>
+Date:   Fri, 21 Jul 2023 11:57:22 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtA6s82qXWOSdd6eNu__z_HZe9U_F0+RcBJj=PVKT7go7A@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v3 3/4] mm: FLEXIBLE_THP for improved performance
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20230714160407.4142030-1-ryan.roberts@arm.com>
+ <20230714161733.4144503-3-ryan.roberts@arm.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20230714161733.4144503-3-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/20/23 14:31, Vincent Guittot wrote:
-
-> I was trying to reproduce the behavior but I was failing until I
-> realized that this code path is used when the 2 groups are not sharing
-> their cache. Which topology do you use ? I thought that dynamiQ and
-> shares cache between all 8 cpus was the norm for arm64 embedded device
-> now
-
-Hmm good question. phantom domains didn't die which I think is what causing
-this. I can look if this is for a good reason or just historical artifact.
-
+On 14/07/2023 17:17, Ryan Roberts wrote:
+> Introduce FLEXIBLE_THP feature, which allows anonymous memory to be
+> allocated in large folios of a determined order. All pages of the large
+> folio are pte-mapped during the same page fault, significantly reducing
+> the number of page faults. The number of per-page operations (e.g. ref
+> counting, rmap management lru list management) are also significantly
+> reduced since those ops now become per-folio.
 > 
-> Also when you say "the little cluster capacity is very small nowadays
-> (around 200 or less)", it is the capacity of 1 core or the cluster ?
+> The new behaviour is hidden behind the new FLEXIBLE_THP Kconfig, which
+> defaults to disabled for now; The long term aim is for this to defaut to
+> enabled, but there are some risks around internal fragmentation that
+> need to be better understood first.
+> 
+> When enabled, the folio order is determined as such: For a vma, process
+> or system that has explicitly disabled THP, we continue to allocate
+> order-0. THP is most likely disabled to avoid any possible internal
+> fragmentation so we honour that request.
+> 
+> Otherwise, the return value of arch_wants_pte_order() is used. For vmas
+> that have not explicitly opted-in to use transparent hugepages (e.g.
+> where thp=madvise and the vma does not have MADV_HUGEPAGE), then
+> arch_wants_pte_order() is limited by the new cmdline parameter,
+> `flexthp_unhinted_max`. This allows for a performance boost without
+> requiring any explicit opt-in from the workload while allowing the
+> sysadmin to tune between performance and internal fragmentation.
+> 
+> arch_wants_pte_order() can be overridden by the architecture if desired.
+> Some architectures (e.g. arm64) can coalsece TLB entries if a contiguous
+> set of ptes map physically contigious, naturally aligned memory, so this
+> mechanism allows the architecture to optimize as required.
+> 
+> If the preferred order can't be used (e.g. because the folio would
+> breach the bounds of the vma, or because ptes in the region are already
+> mapped) then we fall back to a suitable lower order; first
+> PAGE_ALLOC_COSTLY_ORDER, then order-0.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 
-I meant one core. So in my case all the littles were busy except for one that
-was mostly idle and never pulled a task from mid where two tasks were stuck on
-a CPU there. And the logs I have added were showing me that the env->imbalance
-was on 150+ range but the task we pull was in the 350+ range.
+...
 
-I should have mentioned that I'm on 5.15 - sorry with Android it's hard to run
-mainline on products :( But this code as far as I can tell hasn't changed much.
+> +
+>  /*
+>   * We enter with non-exclusive mmap_lock (to exclude vma changes,
+>   * but allow concurrent faults), and pte mapped but not yet locked.
+> @@ -4057,11 +4199,14 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>   */
+>  static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>  {
+> +	int i = 0;
+> +	int nr_pages = 1;
+>  	bool uffd_wp = vmf_orig_pte_uffd_wp(vmf);
+>  	struct vm_area_struct *vma = vmf->vma;
+>  	struct folio *folio;
+>  	vm_fault_t ret = 0;
+>  	pte_t entry;
+> +	unsigned long addr;
+>  
+>  	/* File mapping without ->vm_ops ? */
+>  	if (vma->vm_flags & VM_SHARED)
+> @@ -4101,10 +4246,15 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>  	/* Allocate our own private page. */
+>  	if (unlikely(anon_vma_prepare(vma)))
+>  		goto oom;
+> -	folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
+> +	ret = alloc_anon_folio(vmf, &folio);
+> +	if (unlikely(ret == -EAGAIN))
+> +		return 0;
+>  	if (!folio)
+>  		goto oom;
+>  
+> +	nr_pages = folio_nr_pages(folio);
+> +	addr = ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
+> +
+>  	if (mem_cgroup_charge(folio, vma->vm_mm, GFP_KERNEL))
+>  		goto oom_free_page;
+>  	folio_throttle_swaprate(folio, GFP_KERNEL);
+> @@ -4116,17 +4266,12 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>  	 */
+>  	__folio_mark_uptodate(folio);
+>  
+> -	entry = mk_pte(&folio->page, vma->vm_page_prot);
+> -	entry = pte_sw_mkyoung(entry);
+> -	if (vma->vm_flags & VM_WRITE)
+> -		entry = pte_mkwrite(pte_mkdirty(entry));
+> -
+> -	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
+> -			&vmf->ptl);
+> +	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, addr, &vmf->ptl);
+>  	if (!vmf->pte)
+>  		goto release;
+> -	if (vmf_pte_changed(vmf)) {
+> -		update_mmu_tlb(vma, vmf->address, vmf->pte);
+> +	if (vmf_pte_range_changed(vmf, nr_pages)) {
+> +		for (i = 0; i < nr_pages; i++)
+> +			update_mmu_tlb(vma, addr + PAGE_SIZE * i, vmf->pte + i);
+>  		goto release;
+>  	}
+>  
+> @@ -4141,16 +4286,24 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>  		return handle_userfault(vmf, VM_UFFD_MISSING);
+>  	}
+>  
+> -	inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
+> -	folio_add_new_anon_rmap(folio, vma, vmf->address);
+> +	folio_ref_add(folio, nr_pages - 1);
+> +	add_mm_counter(vma->vm_mm, MM_ANONPAGES, nr_pages);
+> +	folio_add_new_anon_rmap(folio, vma, addr);
+>  	folio_add_lru_vma(folio, vma);
+> +
+> +	for (i = 0; i < nr_pages; i++) {
+> +		entry = mk_pte(folio_page(folio, i), vma->vm_page_prot);
+> +		entry = pte_sw_mkyoung(entry);
+> +		if (vma->vm_flags & VM_WRITE)
+> +			entry = pte_mkwrite(pte_mkdirty(entry));
+>  setpte:
+> -	if (uffd_wp)
+> -		entry = pte_mkuffd_wp(entry);
+> -	set_pte_at(vma->vm_mm, vmf->address, vmf->pte, entry);
+> +		if (uffd_wp)
+> +			entry = pte_mkuffd_wp(entry);
+> +		set_pte_at(vma->vm_mm, addr + PAGE_SIZE * i, vmf->pte + i, entry);
 
-I can try to find something that runs mainline and reproduce there if you think
-my description of the problem is not clear or applicable.
+I've just spotted a bug here for the case where we arrive via goto setpte; in
+this case, addr is not initialized. This crept in during the refactoring and I
+have no idea how this could possibly have not fallen over in a heap when
+executed. Sorry about that. I'm fixing in v4.
 
+>  
+> -	/* No need to invalidate - it was non-present before */
+> -	update_mmu_cache(vma, vmf->address, vmf->pte);
+> +		/* No need to invalidate - it was non-present before */
+> +		update_mmu_cache(vma, addr + PAGE_SIZE * i, vmf->pte + i);
+> +	}
+>  unlock:
+>  	if (vmf->pte)
+>  		pte_unmap_unlock(vmf->pte, vmf->ptl);
 
-Thanks
-
---
-Qais Yousef
