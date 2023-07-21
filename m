@@ -2,51 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B460C75C2B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E29C475C2BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbjGUJNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
+        id S231672AbjGUJPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjGUJNl (ORCPT
+        with ESMTP id S231180AbjGUJPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:13:41 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47EA30E2;
-        Fri, 21 Jul 2023 02:13:16 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R6kNC2nwXzrRrv;
-        Fri, 21 Jul 2023 17:12:27 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 21 Jul 2023 17:13:13 +0800
-Message-ID: <c9cde644-f757-2d72-6ac6-d5cfb1e43da5@huawei.com>
-Date:   Fri, 21 Jul 2023 17:13:13 +0800
+        Fri, 21 Jul 2023 05:15:41 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A76830C1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:15:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=fpQ0C0yK77AMt6tXTuim5bxXTIW3hXHiPvuLtdx9U7Q=; b=BotTGZDRAvsuRWd712okFAAfMG
+        x945I8UehwJBNbN0aZBdDoTYEIH9RQC9jei9qodV0sJ066AsVFuQXL+XkTiq+u45EeAyOyQR6lUvq
+        sEBFFUBaOKe26e8ClRxuiybr5CD/TMkwWGIBWIHDE7vX0ZTH9awdXVl9amEJeofUD/VOPDGW31lZh
+        vuTpScMF5TzEWm90y77TvPzsbWYIw4QGa3vQrC+cOxMpHoQLCAIspkqB7PoZHsXs313Oin5HueBC8
+        dyym/ArLc8KEgjPnTpKyDk1WIHFK/G/m4ChM0eA9BOTW+cgX6s1YRwDHcqzfSlicfr66EyTvqasje
+        ZxO/d35g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qMmCX-00HXUy-1i;
+        Fri, 21 Jul 2023 09:15:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2E26230020C;
+        Fri, 21 Jul 2023 11:13:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1757D30A5FDF2; Fri, 21 Jul 2023 11:13:29 +0200 (CEST)
+Date:   Fri, 21 Jul 2023 11:13:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     "Kenan.Liu" <Kenan.Liu@linux.alibaba.com>, mingo@redhat.com,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, luoben@linux.alibaba.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] Adjust CFS loadbalance to adapt QEMU CPU
+ topology.
+Message-ID: <20230721091328.GE3630545@hirez.programming.kicks-ass.net>
+References: <1689842053-5291-1-git-send-email-Kenan.Liu@linux.alibaba.com>
+ <20230720085032.GB3569127@hirez.programming.kicks-ass.net>
+ <6a70900a-649f-3a4d-2e47-61648bc95666@linux.alibaba.com>
+ <CAKfTPtCmBL6aq9CaPvmhcyvGZtu=98crDyaHXRdwQxjyGtcDkQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH 2/4] ext4: fix BUG in ext4_mb_new_inode_pa() due to
- overflow
-Content-Language: en-US
-To:     <tytso@mit.edu>, "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        <linux-ext4@vger.kernel.org>
-CC:     <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <ojaswin@linux.ibm.com>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>
-References: <87lef9lljt.fsf@doe.com>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <87lef9lljt.fsf@doe.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <CAKfTPtCmBL6aq9CaPvmhcyvGZtu=98crDyaHXRdwQxjyGtcDkQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,172 +67,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/21 16:24, Ritesh Harjani (IBM) wrote:
-> Baokun Li <libaokun1@huawei.com> writes:
->
->> On 2023/7/21 3:30, Ritesh Harjani (IBM) wrote:
->>>>> I would like to carefully review all such paths. I will soon review and
->>>>> get back.
->>>> Okay, thank you very much for your careful review.
->>>> The 2nd and 3rd cases of adjusting the best extent are impossible to
->>>> overflow,
->>>> so only the first case is converted here.
->>> I noticed them too during review. I think it would be safe to make the
->>> changes in other two places as well such that in future we never
->>> trip over such overlooked overflow bugs.
->>>
->>>>>> +		BUG_ON(new_bex_end >
->>>>>> +			fex_end(sbi, &ac->ac_g_ex, &ac->ac_orig_goal_len));
->>>>> I am not sure whether using fex_end or pa_end is any helpful.
->>>>> I think we can just typecast if needed and keep it simple rather
->>>>> than adding helpers functions for addition operation.
->>>>> (because of the fact that fex_end() can take a third parameter which
->>>>> sometimes you pass as NULL. Hence it doesn't look clean, IMO)
->>>> I added the helper functions here for two reasons:
->>>> 1. restricting the type of the return value.
->>>> 2. This avoids the ugly line breaks in most cases.
->>>>
->>>> The fex_end() indeed doesn't look as clean as the pa_end(), because we
->>>> might use
->>>> the start of the free extent plus some other length to get a new end,
->>>> like right in
->>>> ext4_mb_new_inode_pa(), which makes me have to add another extra length
->>>> argument, but I think it's worth it, and even with the addition of a
->>>> parameter
->>>> that will probably be unused, it still looks a lot shorter than the
->>>> original code.
->>> IMO, we don't need pa_end() and fex_end() at all. In several places in
->>> ext4 we always have taken care by directly typecasting to avoid
->>> overflows. Also it reads much simpler rather to typecast in place than
->>> having a helper function which is also not very elegant due to a third
->>> parameter. Hence I think we should drop those helpers.
->> I still think helper is useful, but my previous thinking is problematic.
->> I shouldn't
->> make fex_end() adapt to ext4_mb_new_inode_pa(), but should make
->> ext4_mb_new_inode_pa() adapt to fex_end(). After dropping the third argument
->> of fex_end(), modify the ext4_mb_new_inode_pa() function as follows:
-> No. I think we are overly complicating it by doing this. IMHO we don't need
-> fex_end and pa_end at all here. With fex_end, pa_end, we are passing pointers,
-> updating it's members before and after sending it to these functions,
-> dereferencing them within those helpers.
->
-> e.g. with your change it will look like
-> <snip>
-> 		struct ext4_free_extent ex = {
-> 			.fe_logical = ac->ac_g_ex.fe_logical;
-> 			.fe_len = ac->ac_orig_goal_len;
-> 		}
->
->          loff_t orig_goal_end = fex_end(sbi, &ex);
-> 		ex.fe_len = ac->ac_b_ex.fe_len;
-> 		ex.fe_logical = orig_goal_end - EXT4_C2B(sbi, ex.fe_len);
-> 		if (ac->ac_o_ex.fe_logical >= ex.fe_logical)
-> 			goto adjust_bex;
-> </snip>
->
-> In above snip we introduced ex variable, updated it with
-> orig_goal_len, then called fex_end() to get orig_goal_end, then we again
-> updated ex.fe_len, but this time we didn't call fex_end instead we
-> needed it for getting ex.fe_logical. All of this is not needed at all.
->
-> e.g. we should use just use (loff_t) wherever it was missed in the code.
-> <snip>
-> 		ext4_lblk_t new_bex_start;
-> 		loff_t new_bex_end;
->
-> 		new_bex_end = (loff_t)ac->ac_g_ex.fe_logical +
-> 			EXT4_C2B(sbi, ac->ac_orig_goal_len);
-> 		new_bex_start = new_bex_end - EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
-> 		if (ac->ac_o_ex.fe_logical >= new_bex_start)
-> 			goto adjust_bex;
-> </snip>
->
->
-> In this we just update (loff_t) and it reads better in my opinion then
-> using ex, fex_end() etc.
->
-> In my opinion we should simply drop the helpers. It should be obvious
-> that while calculating logical end block for an inode in ext4 by doing
-> lstart + len, we should use loff_t.
-> Since it can be 1 more than the last block which a u32 can hold.
-> So wherever such calculations are made we should ensure the data
-> type of left hand operand should be loff_t and we should typecast the
-> right hand side operands such that there should not be any overflow
-> happening. We do at several places in ext4 already (also while doing
-> left-shifting (loff_t)map.m_lblk).
->
-> Doing this with helpers, IMO is not useful as we also saw above.
+On Fri, Jul 21, 2023 at 10:33:44AM +0200, Vincent Guittot wrote:
+> On Fri, 21 Jul 2023 at 04:59, Kenan.Liu <Kenan.Liu@linux.alibaba.com> wrote:
 
-I still think it is necessary to add a helper to make the code more concise.
+> > The SMT topology in qemu native x86 CPU model is (0,1),…,(n,n+1),…,
+> > but nomarlly seen SMT topo in physical machine is like (0,n),(1,n+1),…,
+> > n means the total core number of the machine.
+> >
+> > The imbalance happens when the number of runnable threads is less
+> > than the number of hyperthreads, select_idle_core() would be called
+> > to decide which cpu be selected to run the waken-up task.
+> >
+> > select_idle_core() will return the checked cpu number if the whole
+> > core is idle. On the contrary, if any one HT of the core is busy,
+> > select_idle_core() would clear the whole core out from cpumask and
+> > check the next core.
+> >
+> > select_idle_core():
+> >      …
+> >      if (idle)
+> >          return core;
+> >
+> >      cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
+> >      return -1;
+> >
+> > In this manner, except the very beginning of for_each_cpu_wrap() loop,
+> > HT with even ID number is always be checked at first, and be returned
+> > to the caller if the whole core is idle, so the odd indexed HT almost
+> > has no chance to be selected.
+> >
+> > select_idle_cpu():
+> >      …
+> >      for_each_cpu_wrap(cpu, cpus, target + 1) {
+> >          if (has_idle_core) {
+> >              i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> >
+> > And this will NOT happen when the SMT topo is (0,n),(1,n+1),…, because
+> > when the loop starts from the bottom half of SMT number, HTs with larger
+> > number will be checked first, when it starts from the top half, their
+> > siblings with smaller number take the first place of inner core searching.
+> 
+> But why is it a problem ? Your system is almost idle and 1 HT per core
+> is used. Who cares to select evenly one HT or the other as long as we
+> select an idle core in priority ?
 
+Right, why is this a problem? Hyperthreads are supposed to be symmetric,
+it doesn't matter which of the two are active, the important thing is to
+only have one active if we can.
 
-Ted, do you think the fex_end() helper function is needed here?
-
-I think we might need your advice to end this discussion. 😅
-
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index a2475b8c9fb5..7492ba9062f4 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -5072,8 +5072,11 @@ ext4_mb_new_inode_pa(struct
->> ext4_allocation_context *ac)
->>           pa = ac->ac_pa;
->>
->>           if (ac->ac_b_ex.fe_len < ac->ac_orig_goal_len) {
->> -               int new_bex_start;
->> -               int new_bex_end;
->> +               struct ext4_free_extent ex = {
->> +                       .fe_logical = ac->ac_g_ex.fe_logical;
->> +                       .fe_len = ac->ac_orig_goal_len;
->> +               }
->> +               loff_t orig_goal_end = fex_end(sbi, &ex);
->>
->>                   /* we can't allocate as much as normalizer wants.
->>                    * so, found space must get proper lstart
->> @@ -5092,29 +5095,23 @@ ext4_mb_new_inode_pa(struct
->> ext4_allocation_context *ac)
->>                    *    still cover original start
->>                    * 3. Else, keep the best ex at start of original request.
->>                    */
->> -               new_bex_end = ac->ac_g_ex.fe_logical +
->> -                       EXT4_C2B(sbi, ac->ac_orig_goal_len);
->> -               new_bex_start = new_bex_end - EXT4_C2B(sbi,
->> ac->ac_b_ex.fe_len);
->> -               if (ac->ac_o_ex.fe_logical >= new_bex_start)
->> -                       goto adjust_bex;
->> +               ex.fe_len = ac->ac_b_ex.fe_len;
->>
->> -               new_bex_start = ac->ac_g_ex.fe_logical;
->> -               new_bex_end =
->> -                       new_bex_start + EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
->> -               if (ac->ac_o_ex.fe_logical < new_bex_end)
->> +               ex.fe_logical = orig_goal_end - EXT4_C2B(sbi, ex.fe_len);
->> +               if (ac->ac_o_ex.fe_logical >= ex.fe_logical)
->>                           goto adjust_bex;
->>
->> -               new_bex_start = ac->ac_o_ex.fe_logical;
->> -               new_bex_end =
->> -                       new_bex_start + EXT4_C2B(sbi, ac->ac_b_ex.fe_len);
->> +               ex.fe_logical = ac->ac_g_ex.fe_logical;
->> +               if (ac->ac_o_ex.fe_logical < fex_end(sbi, &ex))
->> +                       goto adjust_bex;
->>
->> +               ex.fe_logical = ac->ac_o_ex.fe_logical;
->>    adjust_bex:
->> -               ac->ac_b_ex.fe_logical = new_bex_start;
->> +               ac->ac_b_ex.fe_logical = ex.fe_logical;
->>
->>                   BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
->>                   BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
->> -               BUG_ON(new_bex_end > (ac->ac_g_ex.fe_logical +
->> -                                     EXT4_C2B(sbi, ac->ac_orig_goal_len)));
->> +               BUG_ON(fex_end(sbi, &ex) > orig_goal_end);
->>           }
->>
->>           pa->pa_lstart = ac->ac_b_ex.fe_logical;
-Thanks!
--- 
-With Best Regards,
-Baokun Li
-.
+(Unlike Power7, they have asymmetric SMT)
