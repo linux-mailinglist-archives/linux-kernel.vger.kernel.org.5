@@ -2,141 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4108A75C11A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA7E75C11D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbjGUIQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59446 "EHLO
+        id S231461AbjGUIQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjGUIQc (ORCPT
+        with ESMTP id S231442AbjGUIQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:16:32 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C002E2708
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:16:30 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R6j7b6KppzBRRLF
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:16:27 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689927387; x=1692519388; bh=3kX8ehbe2xlWt10B+oMBvKX9tRH
-        gA1MMC1mFKxCLQTU=; b=nHEPFvxd7OmcH1hmcgYRFhsxwmOZqhybUJwqaW9pkHk
-        iusQwS6bSgSJmQyzwx+xlGrz1MhrPvDeyg88n8V2ycuJaeCMUv35zIZcwp9TzTXU
-        W3mWlhaLQ9c8nHLAVuSEjflPepKwysSdJl7ndl+HhhX1WVXL7PP6scf9EgHjMdN7
-        Mo6V6gqcxT8Y1k6oTg7NStt0SXVdjO9bTOpqaCq/f5nPQRpcrylfOWbBH3ecNhIi
-        lEs6HEt3hPV9rqMlpiYctqFVQs9iigeTYnEQYdY7dBPm0r4gzFr9nmjHp8I4BsSE
-        Jx0U62sEcsu5J8By2f8ZhfaFpZNzf6/cWoL3HHk2JRQ==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 2UQb01KlfqBp for <linux-kernel@vger.kernel.org>;
-        Fri, 21 Jul 2023 16:16:27 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R6j7b1wZczBJk55;
-        Fri, 21 Jul 2023 16:16:27 +0800 (CST)
+        Fri, 21 Jul 2023 04:16:53 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786A32719;
+        Fri, 21 Jul 2023 01:16:49 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 043796606FD8;
+        Fri, 21 Jul 2023 09:16:46 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689927407;
+        bh=Da4LQlPmUJ4jB9lCBAB/poUxMFWGV22f2vqy6CM2uCE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=TWzxKl8DzdNWcaEdkKBN9YU/bWg4LM3NKyQoQwTqZN6NVP5JIFMmOTo4ECDoU+EGp
+         exRttprdTpB/Q+mSz+jxxxOOLt6MyPTrWiAzf7HlFXGBtCAQ7VL4RsO/jU7C5/zI/9
+         bg2fYR1XyKACcVpe52w3hJv1c48xjh/hweGexcD67T7kjYWWA94iZZ570dpAjZC6SX
+         aTvDKDPufBOrsw+8EaDLLjwqCb8ILKdE69DBcAlFGNvKhT9YkutltakDfd2G3MVmrM
+         5wfLvwe0Uf9HgOwTuR+Vb/4laLbWQwbGXqjDt1iNKg3+hE+FP4r2j5kUZH6G9RoeJ3
+         b0cdkL7yx8jIQ==
+Message-ID: <8bb1a42d-2809-04a9-dcdd-45fc91ea1bde@collabora.com>
+Date:   Fri, 21 Jul 2023 10:16:44 +0200
 MIME-Version: 1.0
-Date:   Fri, 21 Jul 2023 08:16:27 +0000
-From:   sunran001@208suo.com
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/acpi/boot: "foo * bar" should be "foo *bar"
-In-Reply-To: <20230721081515.5836-1-xujianghui@cdjrlc.com>
-References: <20230721081515.5836-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <687638423c7d6f729c26b6dceca4520e@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] arm64: dts: mediatek: mt8195: Set DSU PMU status to fail
+To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     kernel@collabora.com, Chen-Yu Tsai <wenst@chromium.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Tinghan Shen <tinghan.shen@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+References: <20230720200753.322133-1-nfraprado@collabora.com>
+Content-Language: en-US
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230720200753.322133-1-nfraprado@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: "foo * bar" should be "foo *bar"
+Il 20/07/23 22:07, Nícolas F. R. A. Prado ha scritto:
+> The DSU PMU allows monitoring performance events in the DSU cluster,
+> which is done by configuring and reading back values from the DSU PMU
+> system registers. However, for write-access to be allowed by ELs lower
+> than EL3, the EL3 firmware needs to update the setting on the ACTLR3_EL3
+> register, as it is disallowed by default.
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  arch/x86/kernel/acpi/boot.c | 12 ++++++------
-  1 file changed, 6 insertions(+), 6 deletions(-)
+Typo: ACTLR_EL2, ACTLR_EL3 bit 12 must be set if SCR.NS is 1;
+ACTLR_EL3 bit 12 must be set if SCR.NS is 0.
 
-diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-index 21b542a6866c..457f1f6622d0 100644
---- a/arch/x86/kernel/acpi/boot.c
-+++ b/arch/x86/kernel/acpi/boot.c
-@@ -254,7 +254,7 @@ acpi_parse_x2apic(union acpi_subtable_headers 
-*header, const unsigned long end)
-  }
+On MT8195 Chromebooks, SCR.NS is 1 - hence ACTLR_EL2/EL3 must have BIT(12) set,
+but at least ACTLR_EL2 doesn't have it set.
 
-  static int __init
--acpi_parse_lapic(union acpi_subtable_headers * header, const unsigned 
-long end)
-+acpi_parse_lapic(union acpi_subtable_headers *header, const unsigned 
-long end)
-  {
-  	struct acpi_madt_local_apic *processor = NULL;
+I haven't verified EL3, but that doesn't matter, since both need to be set.
 
-@@ -307,7 +307,7 @@ acpi_parse_sapic(union acpi_subtable_headers 
-*header, const unsigned long end)
-  }
+> 
+> That configuration is not done on the firmware used by the MT8195 SoC,
+> as a consequence, booting a MT8195-based machine like
+> mt8195-cherry-tomato-r2 with CONFIG_ARM_DSU_PMU enabled hangs the kernel
+> just as it writes to the CLUSTERPMOVSCLR_EL1 register, since the
+> instruction faults to EL3, and BL31 apparently just re-runs the
+> instruction over and over.
 
-  static int __init
--acpi_parse_lapic_addr_ovr(union acpi_subtable_headers * header,
-+acpi_parse_lapic_addr_ovr(union acpi_subtable_headers *header,
-  			  const unsigned long end)
-  {
-  	struct acpi_madt_local_apic_override *lapic_addr_ovr = NULL;
-@@ -344,7 +344,7 @@ acpi_parse_x2apic_nmi(union acpi_subtable_headers 
-*header,
-  }
+...at least for this SoC, TF-A's BL31 fault handler loops over the same
+instruction forever, hanging the AP...
 
-  static int __init
--acpi_parse_lapic_nmi(union acpi_subtable_headers * header, const 
-unsigned long end)
-+acpi_parse_lapic_nmi(union acpi_subtable_headers *header, const 
-unsigned long end)
-  {
-  	struct acpi_madt_local_apic_nmi *lapic_nmi = NULL;
+Regards,
+Angelo
 
-@@ -517,7 +517,7 @@ static int __init mp_register_ioapic_irq(u8 bus_irq, 
-u8 polarity,
-  }
+> 
+> Mark the DSU PMU node in the Devicetree with status "fail", as the
+> machine doesn't have a suitable firmware to make use of it from the
+> kernel, and allowing its driver to probe would hang the kernel.
+> 
+> Fixes: 37f2582883be ("arm64: dts: Add mediatek SoC mt8195 and evaluation board")
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> 
+> ---
+> 
+>   arch/arm64/boot/dts/mediatek/mt8195.dtsi | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+> index 5c670fce1e47..0705d9c3a6a7 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+> @@ -313,6 +313,7 @@ dsu-pmu {
+>   		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH 0>;
+>   		cpus = <&cpu0>, <&cpu1>, <&cpu2>, <&cpu3>,
+>   		       <&cpu4>, <&cpu5>, <&cpu6>, <&cpu7>;
+> +		status = "fail";
+>   	};
+>   
+>   	dmic_codec: dmic-codec {
 
-  static int __init
--acpi_parse_ioapic(union acpi_subtable_headers * header, const unsigned 
-long end)
-+acpi_parse_ioapic(union acpi_subtable_headers *header, const unsigned 
-long end)
-  {
-  	struct acpi_madt_io_apic *ioapic = NULL;
-  	struct ioapic_domain_cfg cfg = {
-@@ -576,7 +576,7 @@ static void __init acpi_sci_ioapic_setup(u8 bus_irq, 
-u16 polarity, u16 trigger,
-  }
 
-  static int __init
--acpi_parse_int_src_ovr(union acpi_subtable_headers * header,
-+acpi_parse_int_src_ovr(union acpi_subtable_headers *header,
-  		       const unsigned long end)
-  {
-  	struct acpi_madt_interrupt_override *intsrc = NULL;
-@@ -618,7 +618,7 @@ acpi_parse_int_src_ovr(union acpi_subtable_headers * 
-header,
-  }
-
-  static int __init
--acpi_parse_nmi_src(union acpi_subtable_headers * header, const unsigned 
-long end)
-+acpi_parse_nmi_src(union acpi_subtable_headers *header, const unsigned 
-long end)
-  {
-  	struct acpi_madt_nmi_source *nmi_src = NULL;
