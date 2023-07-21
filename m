@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E51675BEF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 08:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE3875BEF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 08:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230456AbjGUGeY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 Jul 2023 02:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33802 "EHLO
+        id S230497AbjGUGew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 02:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjGUGeW (ORCPT
+        with ESMTP id S231147AbjGUGep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 02:34:22 -0400
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D293113
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 23:34:21 -0700 (PDT)
-Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay04.hostedemail.com (Postfix) with ESMTP id 212F31A01AC;
-        Fri, 21 Jul 2023 06:34:19 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 8F1902002A;
-        Fri, 21 Jul 2023 06:34:16 +0000 (UTC)
-Message-ID: <a88dd19ab97721a2db228bb070c8eb5d80751e7f.camel@perches.com>
-Subject: Re: [PATCH] staging: rtl8712: Remove redundant braces in if
- statements
-From:   Joe Perches <joe@perches.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>,
-        Sergey Rozhnov <rozhnov.sergey.89@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Thu, 20 Jul 2023 23:34:15 -0700
-In-Reply-To: <5db3658a-2594-45db-b76a-4aa40950ebd5@kadam.mountain>
-References: <ZLnoBYlsTiLixTah@terra>
-         <5db3658a-2594-45db-b76a-4aa40950ebd5@kadam.mountain>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 21 Jul 2023 02:34:45 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550822719
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 23:34:42 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R6ft72qT8zBRDtY
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:34:39 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689921279; x=1692513280; bh=r92ntZahQbmDCf0JiTXJwPOJu5M
+        CPbYJWcWzgZtza0I=; b=htzDzupy1Rfy25l8jaWfoDmZqaeZJYgCnWfTvsNQx+z
+        Rfv2XRFAC7KkAdWqwi5sHhSSj0X6lW77Rq0QfrNYZTzAW/la7g/x2n3ijEqNeVqw
+        mpGzT/tPVMSKNq2o4f9PrJnHQjDrTzyizqeNLHLwBg2+toDammKwXcVVXeYGAeGq
+        6zLOJTQjDqBaYCmeeNmslzQPGZKn3q0GjodBlZRh+iWkwBlOHag2fhQj37xcV4gH
+        5/MbvY3V3sE2o2h/v8cqfm2DkYJmIFq1raPMQQHuytKEIJSmsnocUbupunZk+L/1
+        YqKKOB4V/cZVo03Xn6FxXd4nRj3vuVUXz6HPyOkuuFA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id xnb9HdE_EG1g for <linux-kernel@vger.kernel.org>;
+        Fri, 21 Jul 2023 14:34:39 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R6ft707nLzBRDtJ;
+        Fri, 21 Jul 2023 14:34:38 +0800 (CST)
 MIME-Version: 1.0
-X-Stat-Signature: jebz3epcsf9qtfjzh1ci8to5zgfgctrt
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 8F1902002A
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=no autolearn_force=no version=3.4.6
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/cYZrM9qud1+CJ9uYELx9Wwcsx1KW9qbM=
-X-HE-Tag: 1689921256-336439
-X-HE-Meta: U2FsdGVkX1/NIZSI6DZ9EHeHXbXRxlFRw3oTjkbrF6eBvzwMBk5Ztc3/ehMDZbFxwc9ymlx0U7PDBEPOBknEYV2E2G53eqtKB0Thfa1YK+TGeYxtQs8YBSOkrnk/KtgWQiNmbIPBKJcGeWRUhYQAyaeSrikJi6nkBR7jdd990uYlk8Z6Yih961j3Pqa+FrhCRgrNUoj0Gu3fEHjK0jbYfhVpgsjZkvqALbbb9wwzcm1Yw9UkaPLBh/F2Ui85TSazJVdHEJJFcQRhN+uzpAu1T6Kxq1Q9OQoHTMLm9W7M0tzoJceH3ITCgu6eDP5ZuHpl
+Date:   Fri, 21 Jul 2023 14:34:38 +0800
+From:   hanyu001@208suo.com
+To:     stf_xl@wp.pl, helmut.schaa@googlemail.com, kvalo@kernel.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: wireless: ralink: rt2x00: "foo* bar" should be "foo
+ *bar"
+In-Reply-To: <tencent_316424AFC531C5F050C0203FDBA08E84F907@qq.com>
+References: <tencent_316424AFC531C5F050C0203FDBA08E84F907@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <18520fa625b8a901314c65bb8e557091@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-21 at 09:01 +0300, Dan Carpenter wrote:
-> On Fri, Jul 21, 2023 at 06:05:57AM +0400, Sergey Rozhnov wrote:
-> > Extract masked value to improve readability, apply fix suggested by checkpatch.
-> > ---
-> 
-> I like the new format, but you need to run checkpatch on your patches.
-> 
+Fix checkpatch warnings:
 
-True, but this does only 1 of 2 very similar functions.
-Ideally both would be done at the same time.
+./drivers/net/wireless/ralink/rt2x00/rt2x00.h:386: ERROR: "foo* bar" 
+should be "foo *bar"
+./drivers/net/wireless/ralink/rt2x00/rt2x00.h:513: ERROR: "foo* bar" 
+should be "foo *bar"
 
-My preference would be to remove the int i and just
-dereference rate similar to:
+Signed-off-by: Yu Han <hanyu001@208suo.com>
+---
+  drivers/net/wireless/ralink/rt2x00/rt2x00.h | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-uint r8712_is_cckrates_included(u8 *rate)
-{
-	while (*rate) {
-		u8 r = *rate & 0x7f;
+diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00.h 
+b/drivers/net/wireless/ralink/rt2x00/rt2x00.h
+index 07a6a5a..c883d7f 100644
+--- a/drivers/net/wireless/ralink/rt2x00/rt2x00.h
++++ b/drivers/net/wireless/ralink/rt2x00/rt2x00.h
+@@ -383,7 +383,7 @@ struct rt2x00_intf {
+      atomic_t seqno;
+  };
 
-		if (r == 2 || r == 4 || r == 11 || r == 22)
-			return true;
-		rate++;
-	}
+-static inline struct rt2x00_intf* vif_to_intf(struct ieee80211_vif 
+*vif)
++static inline struct rt2x00_intf *vif_to_intf(struct ieee80211_vif 
+*vif)
+  {
+      return (struct rt2x00_intf *)vif->drv_priv;
+  }
+@@ -510,7 +510,7 @@ struct rt2x00_sta {
+      int wcid;
+  };
 
-	return false;
-}
-
-uint r8712_is_cckratesonly_included(u8 *rate)
-{
-	while (*rate) {
-		u8 r = *rate & 0x7f;
-
-		if (r != 2 && r != 4 && r != 11  && r != 22)
-			return false;
-		rate++;
-	}
-
-	return true;
-}
-
-though the existing cckratesonly_included function
-seemingly returns an incorrect true if the rate array
-is empty.
-
-
+-static inline struct rt2x00_sta* sta_to_rt2x00_sta(struct ieee80211_sta 
+*sta)
++static inline struct rt2x00_sta *sta_to_rt2x00_sta(struct ieee80211_sta 
+*sta)
+  {
+      return (struct rt2x00_sta *)sta->drv_priv;
+  }
