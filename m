@@ -2,189 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C1375CB45
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD3375CB3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbjGUPQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50928 "EHLO
+        id S231872AbjGUPPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbjGUPQE (ORCPT
+        with ESMTP id S231514AbjGUPP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:16:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563E13588
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:14:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689952481;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BrJmJjnrV3+4TK5GKS3+EEIdaYEFXLT6GE196jD6rfg=;
-        b=GSAqMAqtw8bpBMNQ/k37eLgiQyRDBCbx6G6eDU2JBW5XMIuPMqmZ9CK1hzDmIEm4K9I89S
-        x+6iWzOwOORx713vDZJYJAufEimfVtbRD6KgcpfybD2fEsNsqwre9NNAqWla4KErsciL+C
-        IsdfXAvM0svvQnCfDLOtZsPxDf3zcyM=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-74-xy-aYvYGNYidLl71gnR-PQ-1; Fri, 21 Jul 2023 11:14:36 -0400
-X-MC-Unique: xy-aYvYGNYidLl71gnR-PQ-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-4fb7d06a7e6so2074811e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:14:36 -0700 (PDT)
+        Fri, 21 Jul 2023 11:15:26 -0400
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A333A8E;
+        Fri, 21 Jul 2023 08:15:02 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-579de633419so24002097b3.3;
+        Fri, 21 Jul 2023 08:15:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689952475; x=1690557275;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BrJmJjnrV3+4TK5GKS3+EEIdaYEFXLT6GE196jD6rfg=;
-        b=KydqdYLdpII85fmw3ox8VCCiZCO+Zn5n2l7QX80IORu7j88yQPQNw318lFQkOL9qit
-         0m8kzuW8us2EiqPlJtgvT5qyY3yY2Mq7G8gqEv1l4lmv2FtKUZeuJdMc/2bwVuEOtZzj
-         fkiYmwkOu7Yz2vFPNAEni9kgh+OPWXDGa3WnPeTqIaPt+z7xO8oHO2ESJg7VZu9frWY3
-         NAlHYxBDPvEdt5R4gItYWhn4epDUkOAcL+3kcMxZJ6G7EUaDzAjr/1RX+lZujnub/xao
-         dbEcV1gMRq8/pgyl1rZrymt/+33sbQ7LqcZEcaXy5EsZ3nle1P10tU5A6pKJ26JJqNLc
-         eyIQ==
-X-Gm-Message-State: ABy/qLayO1Jb6Cs39/+Mu1iwJu5BB3cGkkikGW0pg1vAhotmizk7qCA8
-        YsfKX1SAyH1A1g0+ZiQrBnxZpQLMYwAO6jl/0FEswwbsP9xf+GNNZc95DJ7WfS4uuK4X5fdkgNc
-        yS1O8ga0Zi8ag5NgC33ANH4df
-X-Received: by 2002:a05:6512:1150:b0:4f8:661f:60a4 with SMTP id m16-20020a056512115000b004f8661f60a4mr1702785lfg.41.1689952475234;
-        Fri, 21 Jul 2023 08:14:35 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEY792MHWkKnplUr0Vx4lx09FEkAsdfsZuVIi7WtMfQ0gFs1YquUiOv8dJt4JtZPtFNMSuP/g==
-X-Received: by 2002:a05:6512:1150:b0:4f8:661f:60a4 with SMTP id m16-20020a056512115000b004f8661f60a4mr1702736lfg.41.1689952474795;
-        Fri, 21 Jul 2023 08:14:34 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id l23-20020a056402345700b00521d2cf5f3bsm2224721edc.96.2023.07.21.08.14.32
+        d=1e100.net; s=20221208; t=1689952497; x=1690557297;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4gls07TAhrPZDEI4R+VJXoEx/0hW6Rvn6uyBj2nqCeY=;
+        b=NW5qYZcPNvZXlNlR758095l1tu8OHkcj6s8W2Z6gjWMSXXmULAnuut6ALZuOMfmzkf
+         ftajB7kbfMXNDzMcXaGdGPETYKCNi7gC48J8+M1+LBmn+D4hqL/uQVFCKAKKozneSsBK
+         Fcic569dJvzL9ac04VDw+1bNaQ/TQxAxCx1FqnuGuIrILPOba8MsFIT8JHjmYuTA7bIH
+         2VY09VYH+KYOwgrXrkVG+YcLXbaFUMvQ6p/ZnynpWc3VrUUM9YMuQO3i1R0VAvijZhdr
+         P1MN1x7gr+mHyZLG+S75w9lLrkMZ1o3UJE1AraVjuwMo68+co9z+BxH8mUz8ftu/TDBp
+         X+uw==
+X-Gm-Message-State: ABy/qLacF9cNjOBSW7ZvuEmBl8pBXaxps416D5EvVS/jdWydwmwTNNeM
+        8OlJMT2r18xFwLU0InYjNl0+UxKPls79iQ==
+X-Google-Smtp-Source: APBJJlFlhHzwBcSDQGhQ4UbAVH9YCayglWpwu3m4gYU8WeRht/E9l1vklBkgvckA+079WbsKMcr+GQ==
+X-Received: by 2002:a0d:d844:0:b0:577:3b66:5fa with SMTP id a65-20020a0dd844000000b005773b6605famr376626ywe.42.1689952496898;
+        Fri, 21 Jul 2023 08:14:56 -0700 (PDT)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id h184-20020a0dc5c1000000b0057736c436f1sm918540ywd.141.2023.07.21.08.14.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 08:14:34 -0700 (PDT)
-Message-ID: <75f13a8a-132f-99ee-d3c6-24a12f2f23d5@redhat.com>
-Date:   Fri, 21 Jul 2023 17:14:31 +0200
+        Fri, 21 Jul 2023 08:14:56 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-583a8596e2aso3316627b3.1;
+        Fri, 21 Jul 2023 08:14:56 -0700 (PDT)
+X-Received: by 2002:a0d:ddd4:0:b0:577:2cac:cd49 with SMTP id
+ g203-20020a0dddd4000000b005772caccd49mr420491ywe.1.1689952496259; Fri, 21 Jul
+ 2023 08:14:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v11 18/29] KVM: selftests: Drop unused
- kvm_userspace_memory_region_find() helper
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+References: <20230711154449.1378385-1-eesposit@redhat.com> <ZK/9MlTh435FP5Ji@gambale.home>
+ <ZLABozIRVGmwuIBf@gambale.home> <ba2354dc63fd741d2d351b18d4312d0771c0935d.camel@HansenPartnership.com>
+ <ZLVyvAXwtemx1I6p@redhat.com> <0aa647f719103e8620d7209cbde40f04a7334749.camel@HansenPartnership.com>
+ <FBDC67DD-856F-429B-8E91-B0CA8B0F24B9@oracle.com> <CAMw=ZnQ5pjwJZdX9kyib=vFd_c5_5_eUhV_mT5OcRPt693m=Yg@mail.gmail.com>
+ <635B383C-38A5-479E-80A6-358D5F90988B@oracle.com> <CAMw=ZnQtEwNFyZ-Gt6ODb9gp22KY1GimaSfW46N7o-S1Hkfp4A@mail.gmail.com>
+ <c2f451e0f8d72cf3183aff9cbaf23f135fc7b495.camel@HansenPartnership.com>
+ <CAMw=ZnSHDYrLXoad=d_O_qAsurqv196z3Fc3VRAJXSsJNVXdPw@mail.gmail.com>
+ <137ddc2957d43576afd37afb0bedab3ceea1f8d7.camel@HansenPartnership.com>
+ <CAMw=ZnSPGp-jCAN+z_QdGJAgJv4=pgee_2oQ4oBqVqnye6813A@mail.gmail.com> <caec9522f981393e6fd0f8e36ff495781828406f.camel@HansenPartnership.com>
+In-Reply-To: <caec9522f981393e6fd0f8e36ff495781828406f.camel@HansenPartnership.com>
+From:   Luca Boccassi <bluca@debian.org>
+Date:   Fri, 21 Jul 2023 16:14:43 +0100
+X-Gmail-Original-Message-ID: <CAMw=ZnREBiwqP+wmUfBishtZ9eOiNsaicypvMqFMmEdV_g2gpg@mail.gmail.com>
+Message-ID: <CAMw=ZnREBiwqP+wmUfBishtZ9eOiNsaicypvMqFMmEdV_g2gpg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Eric Snowberg <eric.snowberg@oracle.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "lennart@poettering.net" <lennart@poettering.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20230718234512.1690985-1-seanjc@google.com>
- <20230718234512.1690985-19-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20230718234512.1690985-19-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/23 01:45, Sean Christopherson wrote:
-> Drop kvm_userspace_memory_region_find(), it's unused and a terrible API
-> (probably why it's unused).  If anything outside of kvm_util.c needs to
-> get at the memslot, userspace_mem_region_find() can be exposed to give
-> others full access to all memory region/slot information.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   .../selftests/kvm/include/kvm_util_base.h     |  4 ---
->   tools/testing/selftests/kvm/lib/kvm_util.c    | 29 -------------------
->   2 files changed, 33 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
-> index 07732a157ccd..6aeb008dd668 100644
-> --- a/tools/testing/selftests/kvm/include/kvm_util_base.h
-> +++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-> @@ -753,10 +753,6 @@ vm_adjust_num_guest_pages(enum vm_guest_mode mode, unsigned int num_guest_pages)
->   	return n;
->   }
->   
-> -struct kvm_userspace_memory_region *
-> -kvm_userspace_memory_region_find(struct kvm_vm *vm, uint64_t start,
-> -				 uint64_t end);
-> -
->   #define sync_global_to_guest(vm, g) ({				\
->   	typeof(g) *_p = addr_gva2hva(vm, (vm_vaddr_t)&(g));	\
->   	memcpy(_p, &(g), sizeof(g));				\
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index 9741a7ff6380..45d21e052db0 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -586,35 +586,6 @@ userspace_mem_region_find(struct kvm_vm *vm, uint64_t start, uint64_t end)
->   	return NULL;
->   }
->   
-> -/*
-> - * KVM Userspace Memory Region Find
-> - *
-> - * Input Args:
-> - *   vm - Virtual Machine
-> - *   start - Starting VM physical address
-> - *   end - Ending VM physical address, inclusive.
-> - *
-> - * Output Args: None
-> - *
-> - * Return:
-> - *   Pointer to overlapping region, NULL if no such region.
-> - *
-> - * Public interface to userspace_mem_region_find. Allows tests to look up
-> - * the memslot datastructure for a given range of guest physical memory.
-> - */
-> -struct kvm_userspace_memory_region *
-> -kvm_userspace_memory_region_find(struct kvm_vm *vm, uint64_t start,
-> -				 uint64_t end)
-> -{
-> -	struct userspace_mem_region *region;
-> -
-> -	region = userspace_mem_region_find(vm, start, end);
-> -	if (!region)
-> -		return NULL;
-> -
-> -	return &region->region;
-> -}
-> -
->   __weak void vcpu_arch_free(struct kvm_vcpu *vcpu)
->   {
->   
+On Fri, 21 Jul 2023 at 14:34, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> On Fri, 2023-07-21 at 14:10 +0100, Luca Boccassi wrote:
+> > On Fri, 21 Jul 2023 at 14:01, James Bottomley
+> > <James.Bottomley@hansenpartnership.com> wrote:
+> [...]
+> > > Well, my job is to be concerned about how individuals who want to
+> > > own their own keys, either in MoK or db, participate in this, so I
+> > > am mostly thinking about local signing.  Whatever we decide, there
+> > > must be a local workflow pathway.
+> >
+> > Sure but for local signing via MoK that's obviously fine, as one gets
+> > to keep the pieces. AFAIK it's a different flow in Shim whether
+> > something is authorized by MoK, DB or the built-in cert, so having
+> > different policies built-in for those different cases should be
+> > doable. Actually at the moment even if Shim loads the image, if it
+> > gets authorized by DB .sbat isn't checked at all.
+>
+> So let's be sure we mean the same thing here.  There is really no third
+> party CA.  Microsoft gives the distributions a signing key to allow
+> them to sign their version of shim.  Some distributions, like Red Hat,
+> also embed their signing certificates in shim, so shim can distinguish
+> between a RH key and another key added to MokList.  However, some
+> distributions, like SUSE, insist that all signing keys be approved by
+> the machine owner (so no embedded shim certs for non-enterprise) and
+> their shim can't distinguish between SUSE keys and machine owner
+> additions.  Given the variances in key handling, I think trying to
+> distinguish between official and developer keys is a huge addition of
+> complexity we don't need, so there has to be a workflow that functions
+> for both and that workflow would seem to be allowing non-existent or
+> empty sbat sections.  Official key holders  would *always* add sbat
+> sections, so there's really no problem that needs a solution to be
+> mandated here.
 
-Will queue this.
-
-Paolo
-
+The certificate is called the "Microsoft Corporation UEFI CA 2011" ,
+issued by the "Microsoft Corporation Third Party Marketplace Root". So
+for short, we call it UEFI 3rd party CA :-)
+Anyway, I wasn't aware that SUSE doesn't embed their cert in Shim,
+we'll have to take that in consideration for sure.
