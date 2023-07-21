@@ -2,159 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A6875BCC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 05:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D16D75BCD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 05:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbjGUD11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 23:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
+        id S230006AbjGUDax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 23:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjGUD1Z (ORCPT
+        with ESMTP id S229824AbjGUDav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 23:27:25 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C083C272C
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 20:27:22 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R6Zjy5p3XzBRDtB
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 11:27:18 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689910038; x=1692502039; bh=GFS1RVSDskw7M+0vgWeM0LHygVB
-        jO70fllpv2LJSd1k=; b=yXTCfkw3FIFTiJtmRfrphb0qpChmyyT/UXr6szwaRcb
-        WVS+Q8RHbxpbJekhbcZ1KN6CQWuxSsgnSC2b7EqNgAQH3SxMKHkbj6fX1jChqBJu
-        pdQfshkyvOqhGCSAeW2LMgOnwG+dLrx751wIAtkrCAdF7Ta5d7Z6IVgUnp4/MK+2
-        Ssxb0citSIEOjRE/2wDu23VOF3aLIX5COjb/C8I5SAJOIzhcynSV5hJmvlyVMg+8
-        mJmCu/+lhQ+vlnbo8ZkAqtO88E+WjTqKkpXz+LCEXDO1hqz9Bc2geYo2bnvrD9OV
-        zK1gYQUKgUr1hXs5EIjU1CQPLKA4F3UqJywU0uO1ckA==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Ktf03sXYHmYt for <linux-kernel@vger.kernel.org>;
-        Fri, 21 Jul 2023 11:27:18 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R6Zjy2tzYzBRDrd;
-        Fri, 21 Jul 2023 11:27:18 +0800 (CST)
+        Thu, 20 Jul 2023 23:30:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341CF272E;
+        Thu, 20 Jul 2023 20:30:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BB55D604AD;
+        Fri, 21 Jul 2023 03:30:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B17CC433CA;
+        Fri, 21 Jul 2023 03:30:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689910244;
+        bh=P3Y0G8/zzL+Nhngt7XtAvkZnhEiGjeTZy9ZP98jV8+c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TaKDXTTI0MEadIT8proVhhnPM/KEjCQ9oUz0S5kAB/Lnlw2hpfi+3PwCV15q9zXB9
+         JeYB1j01UxMrZi4l/2+x29bBaMCmKIPJqnToeUKjYKa7IQnoWob8FkhgKRc0VK4x6h
+         xXY2hltxIS+KstWggXPV+oEobwJYpakq0MiHYIb0ApnlC3Q9lq5mlbPPEOACInsw3L
+         DuKedrqfIvxer1OvzGfbCYf1eGtP949HQNnlLJ6mSUkeV2MVxqVgjl6zLuKg4qCur4
+         4e+SOwI85PcpmBrLXcF/jehA84NS/EPPRi/vWj8e66QFOsVwROWyDXAwranCht09Wn
+         2lI3BVbnE/0PQ==
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-564e4656fecso975386eaf.0;
+        Thu, 20 Jul 2023 20:30:44 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYb8j3daAZ/GPe5WRH4gAJV6kSk5xz/YU7EtwVW7a1/6Vb4wh2X
+        Mic4h5OY5RIZSiMyaDeJhAvzWLSz6enrQWG9AV4=
+X-Google-Smtp-Source: APBJJlEbukEvjQ2n/VPRmQTsiDSn1rOtzwNlK20fmI6AD+8Ik06WmpFrbwE3agD/3iKtnFrfOfMCDsb7Ni807E5NnxQ=
+X-Received: by 2002:a4a:344a:0:b0:566:efc9:1464 with SMTP id
+ n10-20020a4a344a000000b00566efc91464mr767853oof.0.1689910243449; Thu, 20 Jul
+ 2023 20:30:43 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Fri, 21 Jul 2023 11:27:18 +0800
-From:   sunran001@208suo.com
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd/pm: open brace '{' following struct go on the same
- line
-In-Reply-To: <20230721032537.4727-1-xujianghui@cdjrlc.com>
-References: <20230721032537.4727-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <9bb658b64109e1e60afdf82906ae3e03@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <e7292802-e517-6469-6fbd-a4d30887c99b@gmail.com>
+In-Reply-To: <e7292802-e517-6469-6fbd-a4d30887c99b@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 21 Jul 2023 12:30:07 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATehP+0Woq6yVkB_NdvsmCLX3g04j-h22T9qy-GbWQ3_w@mail.gmail.com>
+Message-ID: <CAK7LNATehP+0Woq6yVkB_NdvsmCLX3g04j-h22T9qy-GbWQ3_w@mail.gmail.com>
+Subject: Re: 6.4.4 breaks module-free builds of Debian kernel packages
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Sasha Levin <sashal@kernel.org>,
+        Brian Lindholm <brian_lindholm@users.sourceforge.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Stable <stable@vger.kernel.org>,
+        Linux Kernel Build System <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: open brace '{' following struct go on the same line
+On Fri, Jul 21, 2023 at 12:19=E2=80=AFPM Bagas Sanjaya <bagasdotme@gmail.co=
+m> wrote:
+>
+> Hi,
+>
+> I notice a regression report on Bugzilla [1]. Quoting from it:
+>
+> > I'm on AMD64 with Debian testing (trixie), where I build my own kernels=
+ (with CONFIG_MODULES unset) using "make bindeb-pkg". The build proceeds th=
+rough 99% of the process, but fails here:
+> >
+> > Kernel: arch/x86/boot/bzImage is ready  (#2)
+> > make -f ./Makefile ARCH=3Dx86     KERNELRELEASE=3D6.4.4-i5 intdeb-pkg
+> > sh ./scripts/package/builddeb
+> > ***
+> > *** The present kernel configuration has modules disabled.
+> > *** To use the module feature, please run "make menuconfig" etc.
+> > *** to enable CONFIG_MODULES.
+> > ***
+> > make[5]: *** [Makefile:1969: modules_install] Error 1
+> > make[4]: *** [scripts/Makefile.package:150: intdeb-pkg] Error 2
+> > make[3]: *** [Makefile:1657: intdeb-pkg] Error 2
+> > make[2]: *** [debian/rules:16: binary-arch] Error 2
+> > dpkg-buildpackage: error: debian/rules binary subprocess returned exit =
+status 2
+> > make[1]: *** [scripts/Makefile.package:139: bindeb-pkg] Error 2
+> > make: *** [Makefile:1657: bindeb-pkg] Error 2
+> >
+> > 6.3.13 contained the same error, but I "fixed" that by moving to 6.4.3.=
+  But alas, 6.4.4 now has the same issue.
+> >
+> > I worked around the issue by changing "exit 1" to "exit 0" in the main =
+Makefile (at "modules module_install", per the attached patch), but I don't=
+ know if this is a true fix or something that simply happens to work for my=
+ particular configuration.
+>
+> See Bugzilla for the full thread and attached patch that ignores the erro=
+r.
+>
+> Josh: It looks like this regression is caused by a commit of yours
+> (and also 1240dabe8d58b4). Would you like to take a look on it?
+>
+> Anyway, I'm adding this regression to be tracked by regzbot:
+>
+> #regzbot introduced: 4243afdb932677 https://bugzilla.kernel.org/show_bug.=
+cgi?id=3D217689
+> #regzbot title: always doing modules_install breaks CONFIG_MODULES=3Dn bu=
+ilds
+>
+> Thanks.
+>
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D217689
+>
+> --
+> An old man doll... just what I always wanted! - Clara
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  .../gpu/drm/amd/pm/inc/smu_v13_0_0_pptable.h  | 21 +++++++------------
-  1 file changed, 7 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/inc/smu_v13_0_0_pptable.h 
-b/drivers/gpu/drm/amd/pm/inc/smu_v13_0_0_pptable.h
-index 1dc7a065a6d4..251ed011b3b0 100644
---- a/drivers/gpu/drm/amd/pm/inc/smu_v13_0_0_pptable.h
-+++ b/drivers/gpu/drm/amd/pm/inc/smu_v13_0_0_pptable.h
-@@ -41,8 +41,7 @@
-  #define SMU_13_0_0_PP_OVERDRIVE_VERSION 0x83        // OverDrive 8 
-Table Version 0.2
-  #define SMU_13_0_0_PP_POWERSAVINGCLOCK_VERSION 0x01 // Power Saving 
-Clock Table Version 1.00
 
--enum SMU_13_0_0_ODFEATURE_CAP
--{
-+enum SMU_13_0_0_ODFEATURE_CAP {
-      SMU_13_0_0_ODCAP_GFXCLK_LIMITS = 0,
-      SMU_13_0_0_ODCAP_UCLK_LIMITS,
-      SMU_13_0_0_ODCAP_POWER_LIMIT,
-@@ -62,8 +61,7 @@ enum SMU_13_0_0_ODFEATURE_CAP
-      SMU_13_0_0_ODCAP_COUNT,
-  };
 
--enum SMU_13_0_0_ODFEATURE_ID
--{
-+enum SMU_13_0_0_ODFEATURE_ID {
-      SMU_13_0_0_ODFEATURE_GFXCLK_LIMITS           = 1 << 
-SMU_13_0_0_ODCAP_GFXCLK_LIMITS,           //GFXCLK Limit feature
-      SMU_13_0_0_ODFEATURE_UCLK_LIMITS             = 1 << 
-SMU_13_0_0_ODCAP_UCLK_LIMITS,             //UCLK Limit feature
-      SMU_13_0_0_ODFEATURE_POWER_LIMIT             = 1 << 
-SMU_13_0_0_ODCAP_POWER_LIMIT,             //Power Limit feature
-@@ -85,8 +83,7 @@ enum SMU_13_0_0_ODFEATURE_ID
+The following commit must be back-ported.
 
-  #define SMU_13_0_0_MAX_ODFEATURE 32 //Maximum Number of OD Features
 
--enum SMU_13_0_0_ODSETTING_ID
--{
-+enum SMU_13_0_0_ODSETTING_ID {
-      SMU_13_0_0_ODSETTING_GFXCLKFMAX = 0,
-      SMU_13_0_0_ODSETTING_GFXCLKFMIN,
-      SMU_13_0_0_ODSETTING_UCLKFMIN,
-@@ -123,8 +120,7 @@ enum SMU_13_0_0_ODSETTING_ID
-  };
-  #define SMU_13_0_0_MAX_ODSETTING 64 //Maximum Number of ODSettings
 
--enum SMU_13_0_0_PWRMODE_SETTING
--{
-+enum SMU_13_0_0_PWRMODE_SETTING {
-      SMU_13_0_0_PMSETTING_POWER_LIMIT_QUIET = 0,
-      SMU_13_0_0_PMSETTING_POWER_LIMIT_BALANCE,
-      SMU_13_0_0_PMSETTING_POWER_LIMIT_TURBO,
-@@ -144,8 +140,7 @@ enum SMU_13_0_0_PWRMODE_SETTING
-  };
-  #define SMU_13_0_0_MAX_PMSETTING 32 //Maximum Number of PowerMode 
-Settings
+commit 8ae071fc216a25f4f797f33c56857f4dd6b4408e
+Author: Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu Jun 15 20:17:43 2023 +0900
 
--struct smu_13_0_0_overdrive_table
--{
-+struct smu_13_0_0_overdrive_table {
-      uint8_t revision;                             //Revision = 
-SMU_13_0_0_PP_OVERDRIVE_VERSION
-      uint8_t reserve[3];                           //Zero filled field 
-reserved for future use
-      uint32_t feature_count;                       //Total number of 
-supported features
-@@ -156,8 +151,7 @@ struct smu_13_0_0_overdrive_table
-      int16_t pm_setting[SMU_13_0_0_MAX_PMSETTING]; //Optimized power 
-mode feature settings
-  };
+    kbuild: make modules_install copy modules.builtin(.modinfo)
 
--enum SMU_13_0_0_PPCLOCK_ID
--{
-+enum SMU_13_0_0_PPCLOCK_ID {
-      SMU_13_0_0_PPCLOCK_GFXCLK = 0,
-      SMU_13_0_0_PPCLOCK_SOCCLK,
-      SMU_13_0_0_PPCLOCK_UCLK,
-@@ -175,8 +169,7 @@ enum SMU_13_0_0_PPCLOCK_ID
-  };
-  #define SMU_13_0_0_MAX_PPCLOCK 16 //Maximum Number of PP Clocks
 
--struct smu_13_0_0_powerplay_table
--{
-+struct smu_13_0_0_powerplay_table {
-      struct atom_common_table_header header; //For SMU13, 
-header.format_revision = 15, header.content_revision = 0
-      uint8_t table_revision;                 //For SMU13, table_revision 
-= 2
-      uint8_t padding;
+
+
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
