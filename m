@@ -2,118 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 492A875D795
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E56A75D79C
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229579AbjGUWhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 18:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
+        id S230321AbjGUWk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 18:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbjGUWhQ (ORCPT
+        with ESMTP id S230031AbjGUWkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 18:37:16 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8C53A8C
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:37:14 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58378ae25bfso25024927b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:37:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689979033; x=1690583833;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nb2s/VVy5vEUTAq5dFAiQTgXU9RDEXhEPes4mc/LgaE=;
-        b=hrnZx3bQTbAYbnZBbI23Btu4RUwP0QbpLJBgafmTuZQTWWdqjy6qmocK+eAwwcxsYP
-         IJ5OcEGMQ0ZxJ8xGPp7nhAvW1orYdk6aPUb2klwpOm9t8sVVeYbZElO3aUY7ln7UZR6H
-         K/rnzg1O+9xEJO4ZV2GHYtq9xPGElvC5PKdHH6KLqy7qbfkdMelBTwPBySWMlss2tDMK
-         9RhIMG5wuOba8ReovgRtw1d1mJi6byKm6rb1EajIXUK71ea32K93XWu8f/093LZBTz85
-         poWUEnh3I0h+V20ryx8r5FnL0DC+3B2yixtnsHDQMr/AQqPPK7OgZqiqA5tUKl+mEIG7
-         YEyQ==
+        Fri, 21 Jul 2023 18:40:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7E835B1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:39:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689979175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=djeVFkwc7o11bqagTdpCOjfKwmcqowaFNZyoMjR9tzs=;
+        b=STOtfBz6xAoS1ZwLnT9bsI6Ip9aS1NxHDC5MsOToM3cqyVi1vL541XR51nu/mNUUjRjml0
+        3dC+tYwQ8YlwSOpclDwZ/qz35afG+DgLg/hL1fEZMTxmBOoZyr4U27XfNNASv0TFswnFxA
+        FdmpHv7wr4OR2q3K5dHoOrRjDQ6R/P4=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-216-5SRaz3e6O7q1ZiRNv4SI2Q-1; Fri, 21 Jul 2023 18:39:33 -0400
+X-MC-Unique: 5SRaz3e6O7q1ZiRNv4SI2Q-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fa8cd898e0so14671105e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:39:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689979033; x=1690583833;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nb2s/VVy5vEUTAq5dFAiQTgXU9RDEXhEPes4mc/LgaE=;
-        b=fGuUqFub+ek7fDL+1+baroeRxaABsTUe8CEgySERW989uSb3TiZfp2ypVjI1QVFTSp
-         I3Oex5iMOgaqTJer9rYR4xbyhle3P5iYOON0McKwT75c9ng9x/KibFkBfHoFZG0BuQK6
-         +JGgm8BQTP1j+4LfcUwnEJl2iWynobRqLZNlZPsT5tZjWmfVSVfm0B3Nj+24MPpChXte
-         dktIdCz5eO3gxudndNH0JRZwmcgKn2Msrn6a5dWsbRe6duhl62nZOaimXUYfSTgeDJg2
-         gu5Mvmd0J+74jwvdAaI5jAvV51cRYCVyKjVfjDVqQT3nKGaNzWa2+pZGpAPVwyCPchjV
-         v5BA==
-X-Gm-Message-State: ABy/qLZgapzYESmK8eOWgtzP95lwLkIy1GzgvmD55es8NBHqvdP05Xmi
-        QhwQYpBxHV7Y2awyinXVHmHh5elUqwU=
-X-Google-Smtp-Source: APBJJlF9/qI5AuU2qayHl35iJ1tMcnwLxcDahs8C4ipF5LJ8Rjje1k32sYbKXzUUCtzE/5INK/CAd8UeuAI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:102f:b0:c22:38c2:43de with SMTP id
- x15-20020a056902102f00b00c2238c243demr23100ybt.11.1689979033628; Fri, 21 Jul
- 2023 15:37:13 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 21 Jul 2023 15:37:11 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230721223711.2334426-1-seanjc@google.com>
-Subject: [PATCH] KVM: x86/mmu: Guard against collision with KVM-defined PFERR_IMPLICIT_ACCESS
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689979172; x=1690583972;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=djeVFkwc7o11bqagTdpCOjfKwmcqowaFNZyoMjR9tzs=;
+        b=l02oohllfsrnYu2id8grvhX++zVuKoO4qj4tVaN2MQubVsU0x781BSBwAoLvO58nTg
+         UhRm7gYM3ikSgxaLJyM43uI5G1DOznVu+ykkB1epZu2XrxRxE3QVwnlNExGAIH7WBQJM
+         f+ZUwlZOVneeeZlYR3H8ee1r1Dcs2KEWSieWozjGMvK+cN6FvnbIfSH6GRLT7RclUP+6
+         q1KyMjmmIgQn1W7EW1S22IawPfN/w3LkpuplokTQg06+2J+Ik6S356/nt2SzCq79elKg
+         Hk7xlNeeqaIhcvy1oLhrc/aRcOTow1vrLDYak1z8FrznT8mL7p7w7QABwRFPfR4+lmFr
+         OKww==
+X-Gm-Message-State: ABy/qLZg85ycypCLtxgvQ/vpXCxKAXr0TiX7hCNJWZd4PMV8htj8/HhL
+        1J9Qv2OS4V2pBqingxg5Cd9KUNqPxz7K7Lwo1XdvoPduMWEmKoDiW36YnudE9GnGzyye6jR53FM
+        f+a0OpcIh+Vr4V02/gA7ZSiKZ
+X-Received: by 2002:a5d:688a:0:b0:313:e591:94ec with SMTP id h10-20020a5d688a000000b00313e59194ecmr2492210wru.67.1689979172737;
+        Fri, 21 Jul 2023 15:39:32 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFU19gbuGBPfn5GFP+ZJOAcjjr+4pjs4xq8gM4c2hidS9MPYgB6irSpOLn1E2i5bapMMgOciw==
+X-Received: by 2002:a5d:688a:0:b0:313:e591:94ec with SMTP id h10-20020a5d688a000000b00313e59194ecmr2492200wru.67.1689979172460;
+        Fri, 21 Jul 2023 15:39:32 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id q17-20020adff511000000b0031272fced4dsm5316385wro.52.2023.07.21.15.39.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 15:39:31 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 1/8] drm/ssd130x: Fix pitch calculation in
+ ssd130x_fb_blit_rect()
+In-Reply-To: <874jm69631.fsf@minerva.mail-host-address-is-not-set>
+References: <cover.1689252746.git.geert@linux-m68k.org>
+ <54deec2ec533e90544faa8c60a0c2518c58f3e9c.1689252746.git.geert@linux-m68k.org>
+ <87r0pau99o.fsf@minerva.mail-host-address-is-not-set>
+ <CAMuHMdVAXPqjSNGMrZQ2g8FNNL4f7PbdoUCi17g9YOdoqmjFpQ@mail.gmail.com>
+ <874jm69631.fsf@minerva.mail-host-address-is-not-set>
+Date:   Sat, 22 Jul 2023 00:39:30 +0200
+Message-ID: <87v8ecubx9.fsf@minerva.mail-host-address-is-not-set>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an assertion in kvm_mmu_page_fault() to ensure the error code provided
-by hardware doesn't conflict with KVM's software-defined IMPLICIT_ACCESS
-flag.  In the unlikely scenario that future hardware starts using bit 48
-for a hardware-defined flag, preserving the bit could result in KVM
-incorrectly interpreting the unknown flag as KVM's IMPLICIT_ACCESS flag.
+Javier Martinez Canillas <javierm@redhat.com> writes:
 
-WARN so that any such conflict can be surfaced to KVM developers and
-resolved, but otherwise ignore the bit as KVM can't possibly rely on a
-flag it knows nothing about.
+Hello Geert,
 
-Fixes: 4f4aa80e3b88 ("KVM: X86: Handle implicit supervisor access with SMAP")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+>
 
-Note, Isaku already posted an RFC version of this, but that doesn't have
-Isaku's SoB, so I'm taking the easy (for me) route so that this can land
-sooner than later.
+[...]
 
-https://lore.kernel.org/all/0d71b1cdd5d901478cbfd421b4b0071cce44e16a.1689893403.git.isaku.yamahata@intel.com
+>>
+>> My point is that the 8 as used here is related to the number of bits per pixel,
+>> not to the page height.  The page height might also be impacted by the
+>> number of bits per pixel, but that is orthogonal.
+>>
+>
+> Ah, I see what you mean. Yes, you are right. We can later add a
+> different variable when adding support for controllers using R4.
+>
+> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+>
 
- arch/x86/kvm/mmu/mmu.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Pushed to drm-misc (drm-misc-next) since this fix is independent of the
+rest of the patches. Thanks!
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index ec169f5c7dce..ef554fe9f477 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5742,6 +5742,17 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
- 	int r, emulation_type = EMULTYPE_PF;
- 	bool direct = vcpu->arch.mmu->root_role.direct;
- 
-+	/*
-+	 * IMPLICIT_ACCESS is a KVM-defined flag used to correctly perform SMAP
-+	 * checks when emulating instructions that triggers implicit access.
-+	 * WARN if hardware generates a fault with an error code that collides
-+	 * with the KVM-defined value.  Clear the flag and continue on, i.e.
-+	 * don't terminate the VM, as KVM can't possibly be relying on a flag
-+	 * that KVM doesn't know about.
-+	 */
-+	if (WARN_ON_ONCE(error_code & PFERR_IMPLICIT_ACCESS))
-+		error_code &= ~PFERR_IMPLICIT_ACCESS;
-+
- 	if (WARN_ON(!VALID_PAGE(vcpu->arch.mmu->root.hpa)))
- 		return RET_PF_RETRY;
- 
-
-base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
 -- 
-2.41.0.487.g6d72f3e995-goog
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
