@@ -2,524 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCA575C48C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DCD75C495
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbjGUKWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56536 "EHLO
+        id S231423AbjGUKYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbjGUKWX (ORCPT
+        with ESMTP id S232117AbjGUKXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:22:23 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECC11BC6
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:22:04 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9338e4695so26228931fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:22:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1689934922; x=1690539722;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XxVmtQm/ZVv5K9DrQOwOkHFTyBtIAYOXtvCWxUgjA74=;
-        b=VYCNg3MWqBhV0rrnZ4eCqGKkdraSAGGfKAHtHrw1d1kk/fxMIQnRbFcNqZXCnRzhcc
-         NFj8DvTJki85TS09fL+eXJnAp+q+eFJx6WCvJPjv++epMe4yZ7JWbSa3UWnR4PgnOrfP
-         4TEtNDNfkJLFdogZZFTlwlUWzkWiJH2TS67aSMzR/ySgkhXRvs89z+oCy7eZumBazAxK
-         l+o9a1UPCA9itUhpDMk5uk9CCvVwwjBnRDoWCyW9678ahsiNV+TKOz16es0ufmY2zINp
-         ZyhyM3lK6rnPFBhujMMpbCX1F1xQFZ0ZUd4FMUgeBklLf6LbH93bzZMWbVo8QL0XLGCt
-         mJ6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689934922; x=1690539722;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XxVmtQm/ZVv5K9DrQOwOkHFTyBtIAYOXtvCWxUgjA74=;
-        b=ChIxHw1xNybZSjd1qEL8XpR6TDOeWdkZ/kURBn5yYn3+yLmfDO6MjQPslPFeRiHE9/
-         23bVe6/UXnGVhXUOZSbXK1WxGwXuF7M7BwY8gLsUf9plXnzltHyR7ZWt1UJlqDy4ELWJ
-         krreyf8tm/TllV85lAdHQeK7cIdvRLSR3Pv6yGhPwN15FA2UDvc6VpBTa9dMjcjxguXK
-         CqCY89YpSN5h7J8IBZirCaXlbr7BRf2pZt5UujWfWqy6EhzYQlXhQ7P7Wp/ORU9CnbSI
-         RmcpiSHopGAk2R4xI5olaYyICZRlsXnJ3lmu0mUuf8KIl4RPpYuJnycuPGWU0SZcO0E4
-         d5TA==
-X-Gm-Message-State: ABy/qLYlOiev+SH1YTPkeZFjvm1Onw5ny9NSf4EtKmSF4jOukLPsh5ea
-        WBc9uqw5n7OBHh+aWe3q8GZYVYwUMkyJ8UBjIpTG9KCP5B832OR/y6Q=
-X-Google-Smtp-Source: APBJJlEnfn2CyQE7RRECV1eet0UG+/RZjeI7wBnNU19WbWWj7JWS74AIW1DnxGzdG5eMrvNjAD0WdNJ6C4yr2hli6h8=
-X-Received: by 2002:a2e:9650:0:b0:2b6:e536:a2a9 with SMTP id
- z16-20020a2e9650000000b002b6e536a2a9mr1425579ljh.47.1689934921889; Fri, 21
- Jul 2023 03:22:01 -0700 (PDT)
+        Fri, 21 Jul 2023 06:23:01 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0952111;
+        Fri, 21 Jul 2023 03:22:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689934968; x=1721470968;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=derG0ivFUHLq35EytOjB2Wu+2bFsxhB9mi6RKe1vViA=;
+  b=Qs+mz6k7frqhISqnk+j0exJdenVmRk4L5vI5LrPOjJT7iGpX6hAqbDXh
+   O675LszYXzgX7xqsGotDSuKjIDIhBxrV+p8vQCzYGmgGNr5bsAgxPO3G/
+   5EZ2x0+cK5Gp1hJy7W1lxo7mwjwDKRb9+uNXUew5tE2s67DOLOaH/J2qU
+   zvHm9WuDLa6GFBkiME1NnaM24+871TuPxsKouIKyHdewXEO0pX0UvJmu2
+   VjO4JXVNFrc9r9S9rWcaVHPCqqUdLPT+2bCGlq7igmrd38pzC4Tp4Ae0g
+   OvEK5MB2W6XHv4GVAP+H9E7hnr+ueZMjoYvGEdMmGw8ElcZ+KUKduTPxW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="367027297"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="367027297"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 03:22:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="794917469"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="794917469"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Jul 2023 03:22:37 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qMnHP-00HQtw-2v;
+        Fri, 21 Jul 2023 13:22:35 +0300
+Date:   Fri, 21 Jul 2023 13:22:35 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] kstrtox: Remove strtobool()
+Message-ID: <ZLpca1bjEFP1qKnR@smile.fi.intel.com>
+References: <23d2ea6b90579207e87cc1bf64fc4eed1ed9f173.1689885328.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-References: <20230720135125.21240-1-eric.lin@sifive.com> <20230720135125.21240-2-eric.lin@sifive.com>
- <168986442455.2635362.6562546888592020035.robh@kernel.org>
-In-Reply-To: <168986442455.2635362.6562546888592020035.robh@kernel.org>
-From:   Eric Lin <eric.lin@sifive.com>
-Date:   Fri, 21 Jul 2023 18:21:50 +0800
-Message-ID: <CAPqJEFrcX08cjbmaRBtr5-vgeOmkknTDbx0-xG+0JO+qdhDCQg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: riscv: sifive: Add SiFive Private L2
- cache controller
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <23d2ea6b90579207e87cc1bf64fc4eed1ed9f173.1689885328.git.christophe.jaillet@wanadoo.fr>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Thu, Jul 20, 2023 at 10:40:35PM +0200, Christophe JAILLET wrote:
+> The conversion from strtobool() to kstrtobool() is completed.
+> So strtobool() can now be removed.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> Unless I missed something, the last strtobool() calls have been removed
+> from -next just 1 or 2 days ago.
+> 
+> So it is maybe good to wait a few days or weeks to apply this patch in
+> order not to break something somewhere.
+> 
+> For now, see if build-bots agree with me :)
 
-On Thu, Jul 20, 2023 at 10:47=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
-e:
->
->
-> On Thu, 20 Jul 2023 21:51:19 +0800, Eric Lin wrote:
-> > This add YAML DT binding documentation for SiFive Private L2
-> > cache controller
-> >
-> > Signed-off-by: Eric Lin <eric.lin@sifive.com>
-> > Reviewed-by: Zong Li <zong.li@sifive.com>
-> > Reviewed-by: Nick Hu <nick.hu@sifive.com>
-> > ---
-> >  .../bindings/cache/sifive,pl2cache.yaml       | 62 +++++++++++++++++++
-> >  1 file changed, 62 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/cache/sifive,pl2c=
-ache.yaml
-> >
->
-> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-ache/sifive,ccache0.example.dtb: cache-controller@2010000: compatible:0: 's=
-ifive,pl2cache1' was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-ache/sifive,ccache0.example.dtb: cache-controller@2010000: 'interrupts', 'm=
-emory-region' do not match any of the regexes: 'pinctrl-[0-9]+'
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/o=
-pp/opp-v2-kryo-cpu.example.dtb: l2-cache: compatible:0: 'sifive,pl2cache1' =
-was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/o=
-pp/opp-v2-kryo-cpu.example.dtb: l2-cache: compatible: ['cache'] is too shor=
-t
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/o=
-pp/opp-v2-kryo-cpu.example.dtb: l2-cache: 'cache-block-size' is a required =
-property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/o=
-pp/opp-v2-kryo-cpu.example.dtb: l2-cache: 'cache-sets' is a required proper=
-ty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/o=
-pp/opp-v2-kryo-cpu.example.dtb: l2-cache: 'cache-size' is a required proper=
-ty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/o=
-pp/opp-v2-kryo-cpu.example.dtb: l2-cache: 'reg' is a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/o=
-pp/opp-v2-kryo-cpu.example.dtb: l2-cache: compatible:0: 'sifive,pl2cache1' =
-was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/o=
-pp/opp-v2-kryo-cpu.example.dtb: l2-cache: compatible: ['cache'] is too shor=
-t
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/o=
-pp/opp-v2-kryo-cpu.example.dtb: l2-cache: 'cache-block-size' is a required =
-property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/o=
-pp/opp-v2-kryo-cpu.example.dtb: l2-cache: 'cache-sets' is a required proper=
-ty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/o=
-pp/opp-v2-kryo-cpu.example.dtb: l2-cache: 'cache-size' is a required proper=
-ty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/o=
-pp/opp-v2-kryo-cpu.example.dtb: l2-cache: 'reg' is a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l2-cache: compatible:0: 'sifive=
-,pl2cache1' was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l2-cache: compatible: ['cache']=
- is too short
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l2-cache: 'cache-block-size' is=
- a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l2-cache: 'cache-sets' is a req=
-uired property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l2-cache: 'cache-size' is a req=
-uired property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l2-cache: 'reg' is a required p=
-roperty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l2-cache: 'l3-cache' does not m=
-atch any of the regexes: 'pinctrl-[0-9]+'
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l3-cache: compatible:0: 'sifive=
-,pl2cache1' was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l3-cache: compatible: ['cache']=
- is too short
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l3-cache: 'cache-block-size' is=
- a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l3-cache: 'cache-sets' is a req=
-uired property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l3-cache: 'cache-size' is a req=
-uired property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/t=
-hermal/thermal-cooling-devices.example.dtb: l3-cache: 'reg' is a required p=
-roperty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible:0: 'sifive,pl2cach=
-e1' was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible: ['cache'] is too =
-short
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-block-size' is a requi=
-red property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-sets' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-size' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'reg' is a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'l3-cache' does not match any=
- of the regexes: 'pinctrl-[0-9]+'
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l3-cache: compatible:0: 'sifive,pl2cach=
-e1' was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l3-cache: compatible: ['cache'] is too =
-short
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l3-cache: 'cache-block-size' is a requi=
-red property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l3-cache: 'cache-sets' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l3-cache: 'cache-size' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l3-cache: 'reg' is a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible:0: 'sifive,pl2cach=
-e1' was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible: ['cache'] is too =
-short
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-block-size' is a requi=
-red property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-sets' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-size' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'reg' is a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible:0: 'sifive,pl2cach=
-e1' was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible: ['cache'] is too =
-short
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-block-size' is a requi=
-red property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-sets' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-size' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'reg' is a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible:0: 'sifive,pl2cach=
-e1' was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible: ['cache'] is too =
-short
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-block-size' is a requi=
-red property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-sets' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-size' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'reg' is a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible:0: 'sifive,pl2cach=
-e1' was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible: ['cache'] is too =
-short
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-block-size' is a requi=
-red property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-sets' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-size' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'reg' is a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible:0: 'sifive,pl2cach=
-e1' was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible: ['cache'] is too =
-short
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-block-size' is a requi=
-red property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-sets' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-size' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'reg' is a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible:0: 'sifive,pl2cach=
-e1' was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible: ['cache'] is too =
-short
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-block-size' is a requi=
-red property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-sets' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-size' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'reg' is a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible:0: 'sifive,pl2cach=
-e1' was expected
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: compatible: ['cache'] is too =
-short
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-block-size' is a requi=
-red property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-sets' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'cache-size' is a required pr=
-operty
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/c=
-pufreq/cpufreq-qcom-hw.example.dtb: l2-cache: 'reg' is a required property
->         from schema $id: http://devicetree.org/schemas/cache/sifive,pl2ca=
-che.yaml#
->
-> doc reference errors (make refcheckdocs):
->
-> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/202307=
-20135125.21240-2-eric.lin@sifive.com
->
-> The base for the series is generally the latest rc1. A different dependen=
-cy
-> should be noted in *this* patch.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit after running the above command yourself. Note
-> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-> your schema. However, it must be unset to test all examples with your sch=
-ema.
->
+> get_maintainer.pl is of now help here, so adding just Andrew Morton, and
+> Andy Shevchenko (who splitted out this file from kernel.h)
 
-Sorry for the errors. I forgot to run `make dt_binding_check`.
-I'll fix it in the next version. Thanks for the review.
+Kees Cook from recent times.
 
-Best regards,
-Eric Lin
+As this is about Linux Next, you need to talk to Torvalds to apply this before
+v6.6-rc1.
+
+Code wise it's good, feel free to add:
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
