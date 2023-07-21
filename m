@@ -2,100 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8191575CCD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D3F75CCE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbjGUP6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        id S232255AbjGUP7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232348AbjGUP6B (ORCPT
+        with ESMTP id S231893AbjGUP7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:58:01 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679601BD
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:58:00 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1baf05702c4so1590401fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:58:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689955079; x=1690559879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AZeUxWgbZbQOOu9zXQEd/H5BFiiNhJpxf25MCPQVsN8=;
-        b=MUMpaDMWH5he4qGhTVt7ozEMWcR7DMqcNO6xs7rfA48c7LYr9BpeQdWzSiscdSq/hc
-         EvrPAIhe9fAewXoibGXavDXBGIDA2kU2VFfETITSld9Uc/iCHNUAvy9f1gXuv9TJoCuZ
-         QaoWRLlfkycCNCA64SVz80bBILvNczGOxPSNA4gnKqoWrC3kiJAwPRRovB/200jupVrH
-         ibtU3wwjszBsW7HymyuwDOW04KioZzANfyYSVpYN1aG4+06Dga+5UbQdJwDHLf38Uo8t
-         kLySeB/lILj2pdpZmQlUNsQjOOuxJ/VSZU7iuAvV/HVpo08golw6nXTIwwjiRLkA9feM
-         NrDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689955079; x=1690559879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AZeUxWgbZbQOOu9zXQEd/H5BFiiNhJpxf25MCPQVsN8=;
-        b=P0xu1ypBfpKFD/DtT3AZPmOqqh8RkPV2W2R+qvA6COQyd/oGeuwbpSqKK1TKFna/yI
-         goNIJU+Q4V6eBi+7RTfv++HwyZ8sVOh1JZzor4/uTguX6+aWitnIyn1FZB/BFHqgG1V9
-         ykZgbnlskkDCYGiMqWcCTm3gmBvCau674pbIYe27KUlQAcfR+RBfROFO3MjFwrq9tCYU
-         94NVrhuGy+dq0eohAqXA+kNLMNhjnYNl8xGo4i7oYi/BXaVp/eOjSCg5/lGIAaLTz4yz
-         J6z+n63cE3XjICf5+K6YVafWlR/3iwa79n9/yyvsWMVIvxGC9O+aGiz6SUVk5uNDj4l7
-         2OWA==
-X-Gm-Message-State: ABy/qLYDqPvgkPVqjeCjugHds66EFrByUsH//uwCTu4VEajAG9gIwPNM
-        wwZ0bZGLQD6Ryyn57Lw9lArHIid0BgJ/Lt9IVAs=
-X-Google-Smtp-Source: APBJJlH444C8IPtwpejKuE6GYLqPtYKQIDgpO4RYWXSo+9vxTzDLITTa4MyNdiFO8dR1GpO8+vWqmwKb/wVp0tgirGE=
-X-Received: by 2002:a05:6870:eaa3:b0:1b0:b15:245 with SMTP id
- s35-20020a056870eaa300b001b00b150245mr2852819oap.16.1689955079677; Fri, 21
- Jul 2023 08:57:59 -0700 (PDT)
+        Fri, 21 Jul 2023 11:59:14 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014492D47;
+        Fri, 21 Jul 2023 08:59:12 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="397947175"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="397947175"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 08:59:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="1055599368"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="1055599368"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP; 21 Jul 2023 08:58:59 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andy@kernel.org>)
+        id 1qMsWt-00BQxg-0w;
+        Fri, 21 Jul 2023 18:58:55 +0300
+Date:   Fri, 21 Jul 2023 18:58:55 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     nikita.shubin@maquefel.me
+Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Michael Peters <mpeters@embeddedts.com>,
+        Kris Bahnsen <kris@embeddedts.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v3 09/42] clocksource: ep93xx: Add driver for Cirrus
+ Logic EP93xx
+Message-ID: <ZLqrPw933NOv1J8v@smile.fi.intel.com>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-9-3d63a5f1103e@maquefel.me>
 MIME-Version: 1.0
-References: <20230721033048.4840-1-xujianghui@cdjrlc.com> <d0906df99cdf6f76220e298bebaa5029@208suo.com>
-In-Reply-To: <d0906df99cdf6f76220e298bebaa5029@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 21 Jul 2023 11:57:48 -0400
-Message-ID: <CADnq5_P0hQbv81OnSjp7_RS92yOMzuNQfJZf_DKY7K_viSz5Vw@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: open brace '{' following struct go on the
- same line
-To:     sunran001@208suo.com
-Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230605-ep93xx-v3-9-3d63a5f1103e@maquefel.me>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Thu, Jul 20, 2023 at 02:29:09PM +0300, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+> 
+> This us a rewrite of EP93xx timer driver in
+> arch/arm/mach-ep93xx/timer-ep93xx.c trying to do everything
+> the device tree way:
+> 
+> - Make every IO-access relative to a base address and dynamic
+>   so we can do a dynamic ioremap and get going.
+> - Find register range and interrupt from the device tree.
 
-Alex
+...
 
-On Thu, Jul 20, 2023 at 11:32=E2=80=AFPM <sunran001@208suo.com> wrote:
->
-> ERROR: open brace '{' following struct go on the same line
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->   drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h
-> b/drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h
-> index 52045ad59bed..eec816f0cbf9 100644
-> --- a/drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h
-> +++ b/drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h
-> @@ -24,8 +24,7 @@
->   #ifndef __AMDGPU_PM_H__
->   #define __AMDGPU_PM_H__
->
-> -struct cg_flag_name
-> -{
-> +struct cg_flag_name {
->         u64 flag;
->         const char *name;
->   };
++ bits.h
+
+> +#include <linux/clockchips.h>
+> +#include <linux/clocksource.h>
+> +#include <linux/init.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/io-64-nonatomic-lo-hi.h>
+> +#include <linux/irq.h>
+> +#include <linux/kernel.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_irq.h>
+> +#include <linux/sched_clock.h>
+
+...
+
+> +/*************************************************************************
+
+Won't you marc it as a DOC: section?
+
+> + * Timer handling for EP93xx
+> + *************************************************************************
+> + * The ep93xx has four internal timers.  Timers 1, 2 (both 16 bit) and
+> + * 3 (32 bit) count down at 508 kHz, are self-reloading, and can generate
+> + * an interrupt on underflow.  Timer 4 (40 bit) counts down at 983.04 kHz,
+> + * is free-running, and can't generate interrupts.
+> + *
+> + * The 508 kHz timers are ideal for use for the timer interrupt, as the
+> + * most common values of HZ divide 508 kHz nicely.  We pick the 32 bit
+> + * timer (timer 3) to get as long sleep intervals as possible when using
+> + * CONFIG_NO_HZ.
+> + *
+> + * The higher clock rate of timer 4 makes it a better choice than the
+> + * other timers for use as clock source and for sched_clock(), providing
+> + * a stable 40 bit time base.
+> + *************************************************************************
+> + */
+
+...
+
+> +/*
+> + * This read-only register contains the low word of the time stamp debug timer
+> + * ( Timer4). When this register is read, the high byte of the Timer4 counter is
+
+One too many spaces.
+
+> + * saved in the Timer4ValueHigh register.
+> + */
+
+...
+
+> +static irqreturn_t ep93xx_timer_interrupt(int irq, void *dev_id)
+> +{
+> +	struct ep93xx_tcu *tcu = ep93xx_tcu;
+> +	struct clock_event_device *evt = dev_id;
+> +
+> +	/* Writing any value clears the timer interrupt */
+> +	writel(1, tcu->base + EP93XX_TIMER3_CLEAR);
+
+Would 0 suffice?
+
+> +	evt->event_handler(evt);
+> +
+> +	return IRQ_HANDLED;
+> +}
+
+...
+
+> +static int __init ep93xx_timer_of_init(struct device_node *np)
+> +{
+> +	int irq;
+> +	unsigned long flags = IRQF_TIMER | IRQF_IRQPOLL;
+> +	struct ep93xx_tcu *tcu;
+> +	int ret;
+> +
+> +	tcu = kzalloc(sizeof(*tcu), GFP_KERNEL);
+> +	if (!tcu)
+> +		return -ENOMEM;
+> +
+> +	tcu->base = of_iomap(np, 0);
+
+fwnode_iomap()?
+See below why it might make sense.
+
+> +	if (!tcu->base) {
+
+> +		pr_err("Can't remap registers\n");
+
+First of all, you may utilize pr_fmt().
+Second, you may add %pOF for better user experience.
+
+> +		ret = -ENXIO;
+> +		goto out_free;
+> +	}
+
+> +	irq = irq_of_parse_and_map(np, 0);
+
+fwnode_irq_get() which is better in terms of error handling.
+
+> +	if (irq == 0)
+> +		irq = -EINVAL;
+> +	if (irq < 0) {
+
+> +		pr_err("EP93XX Timer Can't parse IRQ %d", irq);
+
+As per above.
+
+> +		goto out_free;
+> +	}
+
+...
+
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
