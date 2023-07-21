@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0551575BC85
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 04:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FD075BC87
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 04:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbjGUCmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 22:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
+        id S229949AbjGUCmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 22:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjGUCmG (ORCPT
+        with ESMTP id S229687AbjGUCmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 22:42:06 -0400
+        Thu, 20 Jul 2023 22:42:07 -0400
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D443E272C;
-        Thu, 20 Jul 2023 19:42:01 -0700 (PDT)
-X-UUID: 25a7fc2c277011eeb20a276fd37b9834-20230721
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44BF272E;
+        Thu, 20 Jul 2023 19:42:02 -0700 (PDT)
+X-UUID: 2614bf56277011eeb20a276fd37b9834-20230721
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=YSHFsVlW2pGdDULRNUTFKCM8MDeN2kOhN9DuZnncjA8=;
-        b=iXzGvPz4y3TTokFpRigAwvZtuwS8sRR3QHetstnNOfyUo/tdf7L016LUcOAbLuRT5MIzChPOSRP97gj6rNDUmhqsfKOtub8V0OrwPQjnkJSHTOpFdipKCXf9aVX0OgJ+xZRXDECyg3+jyHKFFfXBOnfVathYXpuj2uH5dKo7R0M=;
+        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=kAspR0wWeZoliaIV3QvLm4BZEi5TVS59OMJhYgToGBY=;
+        b=Ym0WX0ZxrWefhrFOd6i1aWOCpo3aBHqpFoGNOCdtBn+Eiyjw5nqJQIEQC32FW92oNfzXdneC/DPLGJtc2ykUDO9oI7WVzwf/2WoypOXbEbMq84ylxa03jHbhekmtF25zYA/DWc9c1joe1r9UrFPDzeqr/EDwnE9a1x9CGI9VUk0=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.28,REQID:72b78da8-fa86-4113-840d-a3cf3bdb40a2,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:176cd25,CLOUDID:c411de87-44fb-401c-8de7-6a5572f1f5d5,B
+X-CID-O-INFO: VERSION:1.1.28,REQID:f57ffa9c-080b-4eee-9b69-f6d09d75165b,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:176cd25,CLOUDID:7c8df44c-06c1-468b-847d-5b62d44dbb9b,B
         ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
         RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
         DKR:0,DKP:0
 X-CID-BVR: 0
 X-CID-BAS: 0,_,0,_
 X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 25a7fc2c277011eeb20a276fd37b9834-20230721
+X-UUID: 2614bf56277011eeb20a276fd37b9834-20230721
 Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
         (envelope-from <tinghan.shen@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1856706030; Fri, 21 Jul 2023 10:41:51 +0800
+        with ESMTP id 751393263; Fri, 21 Jul 2023 10:41:52 +0800
 Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 21 Jul 2023 10:41:50 +0800
+ 15.2.1118.26; Fri, 21 Jul 2023 10:41:51 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 21 Jul 2023 10:41:50 +0800
+ 15.2.1118.26 via Frontend Transport; Fri, 21 Jul 2023 10:41:51 +0800
 From:   Tinghan Shen <tinghan.shen@mediatek.com>
 To:     Bjorn Andersson <andersson@kernel.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
@@ -57,9 +57,9 @@ CC:     <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v15 07/13] remoteproc: mediatek: Probe SCP cluster on multi-core SCP
-Date:   Fri, 21 Jul 2023 10:41:26 +0800
-Message-ID: <20230721024132.6548-8-tinghan.shen@mediatek.com>
+Subject: [PATCH v15 08/13] remoteproc: mediatek: Remove dependency of MT8195 SCP L2TCM power control on dual-core SCP
+Date:   Fri, 21 Jul 2023 10:41:27 +0800
+Message-ID: <20230721024132.6548-9-tinghan.shen@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20230721024132.6548-1-tinghan.shen@mediatek.com>
 References: <20230721024132.6548-1-tinghan.shen@mediatek.com>
@@ -77,197 +77,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The difference of single-core SCP and multi-core SCP device tree is
-the presence of child device nodes described SCP cores. The SCP
-driver populates the platform device and checks the child nodes
-to identify whether it's a single-core SCP or a multi-core SCP.
+Previously, SCP core 0 controlled the power of L2TCM and dictated that
+SCP core 1 could only boot after SCP core 0. To address this constraint,
+extracted the power control flow of L2TCM and made it shared
+between both cores, enabling support of arbitrary boot order.
 
-Add the remoteproc instances of multi-core SCP to the SCP cluster list.
-When the SCP driver is removed, it cleanup resources by walking
-through the cluster list.
+The flow for controlling L2TCM power has been incorporated into the
+mt8195_scp_before_load() and mt8195_scp_stop() APIs, which are
+respectively invoked during the rproc->ops->start() and
+rproc->ops->stop() operations. These APIs effectively serve the same
+purpose as the rproc prepare()/unprepare() APIs."
 
 Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/remoteproc/mtk_scp.c | 118 +++++++++++++++++++++++++++++++++--
- 1 file changed, 113 insertions(+), 5 deletions(-)
+ drivers/remoteproc/mtk_common.h |  3 ++
+ drivers/remoteproc/mtk_scp.c    | 71 ++++++++++++++++++++++++++-------
+ 2 files changed, 59 insertions(+), 15 deletions(-)
 
+diff --git a/drivers/remoteproc/mtk_common.h b/drivers/remoteproc/mtk_common.h
+index 1438159ae736..fea05bbba9aa 100644
+--- a/drivers/remoteproc/mtk_common.h
++++ b/drivers/remoteproc/mtk_common.h
+@@ -106,6 +106,9 @@ struct mtk_scp_of_cluster {
+ 	size_t l1tcm_size;
+ 	phys_addr_t l1tcm_phys;
+ 	struct list_head mtk_scp_list;
++	/* Prevent concurrent operations of this structure and L2TCM power control. */
++	struct mutex cluster_lock;
++	u32 l2tcm_refcnt;
+ };
+ 
+ struct mtk_scp {
 diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
-index d67dcabdab9e..34095a461e15 100644
+index 34095a461e15..c624f9c3db17 100644
 --- a/drivers/remoteproc/mtk_scp.c
 +++ b/drivers/remoteproc/mtk_scp.c
-@@ -855,7 +855,8 @@ static void scp_remove_rpmsg_subdev(struct mtk_scp *scp)
- }
- 
- static struct mtk_scp *scp_rproc_init(struct platform_device *pdev,
--				      struct mtk_scp_of_cluster *scp_cluster)
-+				      struct mtk_scp_of_cluster *scp_cluster,
-+				      const struct mtk_scp_of_data *of_data)
- {
- 	struct device *dev = &pdev->dev;
- 	struct device_node *np = dev->of_node;
-@@ -878,7 +879,7 @@ static struct mtk_scp *scp_rproc_init(struct platform_device *pdev,
- 	scp = rproc->priv;
- 	scp->rproc = rproc;
- 	scp->dev = dev;
--	scp->data = of_device_get_match_data(dev);
-+	scp->data = of_data;
- 	scp->cluster = scp_cluster;
- 	platform_set_drvdata(pdev, scp);
- 
-@@ -951,15 +952,15 @@ static void scp_free(struct mtk_scp *scp)
- 	mutex_destroy(&scp->send_lock);
- }
- 
--static int scp_cluster_init(struct platform_device *pdev,
--			    struct mtk_scp_of_cluster *scp_cluster)
-+static int scp_add_single_core(struct platform_device *pdev,
-+			       struct mtk_scp_of_cluster *scp_cluster)
- {
- 	struct device *dev = &pdev->dev;
- 	struct list_head *scp_list = &scp_cluster->mtk_scp_list;
- 	struct mtk_scp *scp;
- 	int ret;
- 
--	scp = scp_rproc_init(pdev, scp_cluster);
-+	scp = scp_rproc_init(pdev, scp_cluster, of_device_get_match_data(dev));
- 	if (IS_ERR(scp))
- 		return PTR_ERR(scp);
- 
-@@ -975,6 +976,102 @@ static int scp_cluster_init(struct platform_device *pdev,
+@@ -454,19 +454,37 @@ static int mt8192_scp_before_load(struct mtk_scp *scp)
  	return 0;
  }
  
-+static int scp_add_multi_core(struct platform_device *pdev,
-+			      struct mtk_scp_of_cluster *scp_cluster)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev_of_node(dev);
-+	struct platform_device *cpdev;
-+	struct device_node *child;
-+	struct list_head *scp_list = &scp_cluster->mtk_scp_list;
-+	const struct mtk_scp_of_data **cluster_of_data;
-+	struct mtk_scp *scp, *temp;
-+	int core_id = 0;
-+	int ret;
+-static int mt8195_scp_before_load(struct mtk_scp *scp)
++static int mt8195_scp_l2tcm_on(struct mtk_scp *scp)
+ {
+-	/* clear SPM interrupt, SCP2SPM_IPC_CLR */
+-	writel(0xff, scp->cluster->reg_base + MT8192_SCP2SPM_IPC_CLR);
++	struct mtk_scp_of_cluster *scp_cluster = scp->cluster;
 +
-+	cluster_of_data = (const struct mtk_scp_of_data **)of_device_get_match_data(dev);
++	mutex_lock(&scp_cluster->cluster_lock);
 +
-+	for_each_available_child_of_node(np, child) {
-+		if (!cluster_of_data[core_id]) {
-+			ret = -EINVAL;
-+			dev_err(dev, "Not support core %d\n", core_id);
-+			of_node_put(child);
-+			goto init_fail;
-+		}
++	if (scp_cluster->l2tcm_refcnt == 0) {
++		/* clear SPM interrupt, SCP2SPM_IPC_CLR */
++		writel(0xff, scp->cluster->reg_base + MT8192_SCP2SPM_IPC_CLR);
 +
-+		cpdev = of_find_device_by_node(child);
-+		if (!cpdev) {
-+			ret = -ENODEV;
-+			dev_err(dev, "Not found platform device for core %d\n", core_id);
-+			of_node_put(child);
-+			goto init_fail;
-+		}
-+
-+		scp = scp_rproc_init(cpdev, scp_cluster, cluster_of_data[core_id]);
-+		put_device(&cpdev->dev);
-+		if (IS_ERR(scp)) {
-+			ret = PTR_ERR(scp);
-+			dev_err(dev, "Failed to initialize core %d rproc\n", core_id);
-+			of_node_put(child);
-+			goto init_fail;
-+		}
-+
-+		ret = rproc_add(scp->rproc);
-+		if (ret) {
-+			dev_err(dev, "Failed to add rproc of core %d\n", core_id);
-+			of_node_put(child);
-+			scp_free(scp);
-+			goto init_fail;
-+		}
-+
-+		list_add_tail(&scp->elem, scp_list);
-+		core_id++;
++		/* Power on L2TCM */
++		scp_sram_power_on(scp->cluster->reg_base + MT8192_L2TCM_SRAM_PD_0, 0);
++		scp_sram_power_on(scp->cluster->reg_base + MT8192_L2TCM_SRAM_PD_1, 0);
++		scp_sram_power_on(scp->cluster->reg_base + MT8192_L2TCM_SRAM_PD_2, 0);
++		scp_sram_power_on(scp->cluster->reg_base + MT8192_L1TCM_SRAM_PDN,
++				  MT8195_L1TCM_SRAM_PDN_RESERVED_RSI_BITS);
 +	}
 +
-+	platform_set_drvdata(pdev, list_first_entry(scp_list, struct mtk_scp, elem));
++	scp_cluster->l2tcm_refcnt += 1;
+ 
++	mutex_unlock(&scp_cluster->cluster_lock);
 +
 +	return 0;
++}
 +
-+init_fail:
-+	list_for_each_entry_safe_reverse(scp, temp, scp_list, elem) {
-+		list_del(&scp->elem);
-+		rproc_del(scp->rproc);
-+		scp_free(scp);
++static int mt8195_scp_before_load(struct mtk_scp *scp)
++{
+ 	writel(1, scp->cluster->reg_base + MT8192_CORE0_SW_RSTN_SET);
+ 
+-	/* enable SRAM clock */
+-	scp_sram_power_on(scp->cluster->reg_base + MT8192_L2TCM_SRAM_PD_0, 0);
+-	scp_sram_power_on(scp->cluster->reg_base + MT8192_L2TCM_SRAM_PD_1, 0);
+-	scp_sram_power_on(scp->cluster->reg_base + MT8192_L2TCM_SRAM_PD_2, 0);
+-	scp_sram_power_on(scp->cluster->reg_base + MT8192_L1TCM_SRAM_PDN,
+-			  MT8195_L1TCM_SRAM_PDN_RESERVED_RSI_BITS);
++	mt8195_scp_l2tcm_on(scp);
++
+ 	scp_sram_power_on(scp->cluster->reg_base + MT8192_CPU0_SRAM_PD, 0);
+ 
+ 	/* enable MPU for all memory regions */
+@@ -479,6 +497,8 @@ static int mt8195_scp_c1_before_load(struct mtk_scp *scp)
+ {
+ 	scp->data->scp_reset_assert(scp);
+ 
++	mt8195_scp_l2tcm_on(scp);
++
+ 	scp_sram_power_on(scp->cluster->reg_base + MT8195_CPU1_SRAM_PD, 0);
+ 
+ 	/* enable MPU for all memory regions */
+@@ -645,14 +665,31 @@ static void mt8192_scp_stop(struct mtk_scp *scp)
+ 	writel(0, scp->cluster->reg_base + MT8192_CORE0_WDT_CFG);
+ }
+ 
++static void mt8195_scp_l2tcm_off(struct mtk_scp *scp)
++{
++	struct mtk_scp_of_cluster *scp_cluster = scp->cluster;
++
++	mutex_lock(&scp_cluster->cluster_lock);
++
++	if (scp_cluster->l2tcm_refcnt > 0)
++		scp_cluster->l2tcm_refcnt -= 1;
++
++	if (scp_cluster->l2tcm_refcnt == 0) {
++		/* Power off L2TCM */
++		scp_sram_power_off(scp->cluster->reg_base + MT8192_L2TCM_SRAM_PD_0, 0);
++		scp_sram_power_off(scp->cluster->reg_base + MT8192_L2TCM_SRAM_PD_1, 0);
++		scp_sram_power_off(scp->cluster->reg_base + MT8192_L2TCM_SRAM_PD_2, 0);
++		scp_sram_power_off(scp->cluster->reg_base + MT8192_L1TCM_SRAM_PDN,
++				   MT8195_L1TCM_SRAM_PDN_RESERVED_RSI_BITS);
 +	}
 +
-+	return ret;
++	mutex_unlock(&scp_cluster->cluster_lock);
 +}
 +
-+static int scp_is_single_core(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev_of_node(dev);
-+	struct device_node *child;
-+
-+	child = of_get_next_available_child(np, NULL);
-+	if (!child)
-+		return dev_err_probe(dev, -ENODEV, "No child node\n");
-+
-+	of_node_put(child);
-+	return of_node_name_eq(child, "cros-ec-rpmsg");
-+}
-+
-+static int scp_cluster_init(struct platform_device *pdev, struct mtk_scp_of_cluster *scp_cluster)
-+{
-+	int ret;
-+
-+	ret = scp_is_single_core(pdev);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ret)
-+		ret = scp_add_single_core(pdev, scp_cluster);
-+	else
-+		ret = scp_add_multi_core(pdev, scp_cluster);
-+
-+	return ret;
-+}
-+
- static int scp_probe(struct platform_device *pdev)
+ static void mt8195_scp_stop(struct mtk_scp *scp)
  {
- 	struct device *dev = &pdev->dev;
-@@ -1007,6 +1104,10 @@ static int scp_probe(struct platform_device *pdev)
+-	/* Disable SRAM clock */
+-	scp_sram_power_off(scp->cluster->reg_base + MT8192_L2TCM_SRAM_PD_0, 0);
+-	scp_sram_power_off(scp->cluster->reg_base + MT8192_L2TCM_SRAM_PD_1, 0);
+-	scp_sram_power_off(scp->cluster->reg_base + MT8192_L2TCM_SRAM_PD_2, 0);
+-	scp_sram_power_off(scp->cluster->reg_base + MT8192_L1TCM_SRAM_PDN,
+-			   MT8195_L1TCM_SRAM_PDN_RESERVED_RSI_BITS);
++	mt8195_scp_l2tcm_off(scp);
++
+ 	scp_sram_power_off(scp->cluster->reg_base + MT8192_CPU0_SRAM_PD, 0);
+ 
+ 	/* Disable SCP watchdog */
+@@ -661,6 +698,8 @@ static void mt8195_scp_stop(struct mtk_scp *scp)
+ 
+ static void mt8195_scp_c1_stop(struct mtk_scp *scp)
+ {
++	mt8195_scp_l2tcm_off(scp);
++
+ 	/* Power off CPU SRAM */
+ 	scp_sram_power_off(scp->cluster->reg_base + MT8195_CPU1_SRAM_PD, 0);
+ 
+@@ -1103,6 +1142,7 @@ static int scp_probe(struct platform_device *pdev)
+ 	}
  
  	INIT_LIST_HEAD(&scp_cluster->mtk_scp_list);
++	mutex_init(&scp_cluster->cluster_lock);
  
-+	ret = devm_of_platform_populate(dev);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to populate platform devices\n");
-+
- 	ret = scp_cluster_init(pdev, scp_cluster);
+ 	ret = devm_of_platform_populate(dev);
  	if (ret)
- 		return ret;
-@@ -1101,12 +1202,19 @@ static const struct mtk_scp_of_data mt8195_of_data_c1 = {
- 	.host_to_scp_int_bit = MT8195_CORE1_HOST_IPC_INT_BIT,
- };
+@@ -1126,6 +1166,7 @@ static void scp_remove(struct platform_device *pdev)
+ 		rproc_del(scp->rproc);
+ 		scp_free(scp);
+ 	}
++	mutex_destroy(&scp_cluster->cluster_lock);
+ }
  
-+static const struct mtk_scp_of_data *mt8195_of_data_cores[] = {
-+	&mt8195_of_data,
-+	&mt8195_of_data_c1,
-+	NULL
-+};
-+
- static const struct of_device_id mtk_scp_of_match[] = {
- 	{ .compatible = "mediatek,mt8183-scp", .data = &mt8183_of_data },
- 	{ .compatible = "mediatek,mt8186-scp", .data = &mt8186_of_data },
- 	{ .compatible = "mediatek,mt8188-scp", .data = &mt8188_of_data },
- 	{ .compatible = "mediatek,mt8192-scp", .data = &mt8192_of_data },
- 	{ .compatible = "mediatek,mt8195-scp", .data = &mt8195_of_data },
-+	{ .compatible = "mediatek,mt8195-scp-dual", .data = &mt8195_of_data_cores },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_scp_of_match);
+ static const struct mtk_scp_of_data mt8183_of_data = {
 -- 
 2.18.0
 
