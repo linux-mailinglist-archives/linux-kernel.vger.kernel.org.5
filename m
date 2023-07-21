@@ -2,55 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C36875C5E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B2375C5E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjGULaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 07:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
+        id S230345AbjGULba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 07:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbjGULah (ORCPT
+        with ESMTP id S229730AbjGULb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 07:30:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D232130;
-        Fri, 21 Jul 2023 04:30:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oA1lxdsbmT9V9XvedsigbR9WiAzyb4kIzMarXuWjEc8=; b=FwmhjFFfOemzZVZmnCXr5qCVmg
-        8jzApzjNE80tpxQmXVsbXhAEmiEScBaQiDRNAHeiuyJmDXAdf+URnxip8XoAz3rvRur67PKeykDGb
-        A1wK8JMCHOnSPmMtXEZzJ0VKAKXqaSi9oEN6r5FBN9RnxWtU5DeR+suOlbLvhODYBIGFDjcLNML1p
-        2bs8695ayW/rYwjvU7dv4bbxIjo+0zTIA1fwESx9jqF8c6aZWVEwePNz5U5tryYZqsW36Ob3g9SDQ
-        y4zqJfSGkY2Es2dY8rvmmNE6GQ0xTOvRc7z73VBi1uDBgQnJnxCq3gB5jmF1jV9PswoQoOb9Odt6J
-        MZTUCD7g==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qMoLA-0013wq-5k; Fri, 21 Jul 2023 11:30:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AB1F2300095;
-        Fri, 21 Jul 2023 13:30:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 78B3426455813; Fri, 21 Jul 2023 13:30:31 +0200 (CEST)
-Date:   Fri, 21 Jul 2023 13:30:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andres@anarazel.de
-Subject: Re: [PATCH 06/10] io_uring: add support for futex wake and wait
-Message-ID: <20230721113031.GG3630545@hirez.programming.kicks-ass.net>
-References: <20230720221858.135240-1-axboe@kernel.dk>
- <20230720221858.135240-7-axboe@kernel.dk>
+        Fri, 21 Jul 2023 07:31:28 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E1CE0;
+        Fri, 21 Jul 2023 04:31:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689939087; x=1721475087;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=9/ut5UjQKUswKVul7iirnPDvZhjc6d3idO3CXe5FhlI=;
+  b=Jaz3kR8KLez68W2bwvTWaixZQyviLl/N747RJfXh1N/iYK3mKJgnnvJm
+   m3HMTanwlxE6MtsPiC8DYTqrVEm+oyKYllFVrXbMrWt+7nOa0E57hfFZp
+   Zdi85doAtzTSD7x5KNHp/ideh9J/CuHx6o0V4DURo+nShYqkxJmpjDgGR
+   nBj2wPo+gplpPgGCP3Fsbheud78QWE6fzn2cLAOj6Cp19d5bKcBEYwwUq
+   /mH9+f9n4rUiCwVQ6l1pkw1jVaPXersUCKlJI35V4u5sdbQqD4DzCsk1n
+   GMTwNseIsD3ayh69Pba8ynaPjku+Z0evHvenOhbgQedRQ4eDfxAmTTqAZ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="433230705"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="433230705"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 04:31:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="838521376"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="838521376"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Jul 2023 04:31:25 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qMoM0-002DKi-02;
+        Fri, 21 Jul 2023 14:31:24 +0300
+Date:   Fri, 21 Jul 2023 14:31:23 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v1 3/8] iio: core: Switch to krealloc_array()
+Message-ID: <ZLpsi8tiq4J/CUxx@smile.fi.intel.com>
+References: <20230720205324.58702-1-andriy.shevchenko@linux.intel.com>
+ <20230720205324.58702-4-andriy.shevchenko@linux.intel.com>
+ <65dbc603062018e1cd968caf983512c2cb2039e5.camel@gmail.com>
+ <ZLpaeHlJujd8l0DS@smile.fi.intel.com>
+ <f565b705ba6656ae1c8b34740aa176ccfe260f60.camel@gmail.com>
+ <ZLpr5KmYNlXkgBFb@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230720221858.135240-7-axboe@kernel.dk>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZLpr5KmYNlXkgBFb@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,120 +73,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 04:18:54PM -0600, Jens Axboe wrote:
+On Fri, Jul 21, 2023 at 02:28:36PM +0300, Andy Shevchenko wrote:
+> On Fri, Jul 21, 2023 at 12:53:53PM +0200, Nuno Sá wrote:
+> > On Fri, 2023-07-21 at 13:14 +0300, Andy Shevchenko wrote:
+> > > On Fri, Jul 21, 2023 at 09:59:37AM +0200, Nuno Sá wrote:
+> > > > On Thu, 2023-07-20 at 23:53 +0300, Andy Shevchenko wrote:
 
+...
 
-> +struct io_futex {
-> +	struct file	*file;
-> +	u32 __user	*uaddr;
-> +	unsigned int	futex_val;
-> +	unsigned int	futex_flags;
-> +	unsigned int	futex_mask;
-> +};
+> > > > > +       struct attribute **attrs, **attr, *clk = NULL;
+> > > > >         struct iio_dev_attr *p;
+> > > > > -       struct attribute **attr, *clk = NULL;
+> > > > >  
+> > > > >         /* First count elements in any existing group */
+> > > > > -       if (indio_dev->info->attrs) {
+> > > > > -               attr = indio_dev->info->attrs->attrs;
+> > > > > -               while (*attr++ != NULL)
+> > > > > +       attrs = indio_dev->info->attrs ? indio_dev->info->attrs->attrs :
+> > > > > NULL;
+> > > > > +       if (attrs) {
+> > > > > +               for (attr = attrs; *attr; attr++)
+> > > > >                         attrcount_orig++;
+> > > 
+> > > > not really related with the change... maybe just mention it in the commit?
+> > > 
+> > > Hmm... It's related to make krealloc_array() to work as expected.
+> > > 
+> > 
+> > Hmm, I think it's arguable :). while() -> for() it's not really needed unless
+> > I'm missing something. You could even initialize 'attrs' to NULL at declaration
+> > and keep the above diff minimum.
+> 
+> I'm not a fan of the assignments in the declarations when it potentially can be
+> disrupted by a chunk of code and reading the code itself may be harder due to
+> an interruption for checking the initial value. Hence, having
+> 
+> +	attr = attrs;
+>  	while (... != NULL)
+> 
+> seems enough to be replaced with one liner for-loop.
 
-So in the futex patches I just posted I went with 'unsigned long'
-(syscall) or 'u64' (data structures) for the futex, such that, on 64bit
-platforms, we might support 64bit futexes in the future (I still need to
-audit the whole futex internals and convert u32 to unsigned long in
-order to enable that).
+Note that attrs is reused later, so the above assignment makes it cleaner that
+some value is assigned to it. With the original code it's not so obvious.
 
-So would something like:
+> > That said, I actually prefer this style (even though some people don't like much
+> > the ternary operator).
+> 
+> Thanks!
+> 
+> > > > >         }
 
-struct io_futex {
-	struct file	*file;
-	void __user	*uaddr;
-	u64		futex_val;
-	u64		futex_mask;
-	u32		futex_flags;
-};
-
-work to match the futex2 syscalls?
-
-
-
-> +int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
-> +{
-> +	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
-> +
-> +	if (unlikely(sqe->fd || sqe->addr2 || sqe->buf_index || sqe->addr3))
-> +		return -EINVAL;
-> +
-> +	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
-> +	iof->futex_val = READ_ONCE(sqe->len);
-> +	iof->futex_mask = READ_ONCE(sqe->file_index);
-> +	iof->futex_flags = READ_ONCE(sqe->futex_flags);
-
-sqe->addr,		u64
-sqe->len,		u32
-sqe->file_index,	u32
-sqe->futex_flags,	u32
-
-> +	if (iof->futex_flags & FUTEX_CMD_MASK)
-
-		FUTEX2_MASK
-
-(which would need lifting from syscall.c to kernel/futex/futex.h I
-suppose)
-
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-
-> diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-> index 36f9c73082de..3bd2d765f593 100644
-> --- a/include/uapi/linux/io_uring.h
-> +++ b/include/uapi/linux/io_uring.h
-> @@ -65,6 +65,7 @@ struct io_uring_sqe {
->  		__u32		xattr_flags;
->  		__u32		msg_ring_flags;
->  		__u32		uring_cmd_flags;
-> +		__u32		futex_flags;
->  	};
->  	__u64	user_data;	/* data to be passed back at completion time */
->  	/* pack this to avoid bogus arm OABI complaints */
-
-Perhaps extend it like so?
-
-
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 08720c7bd92f..c1d28bf64d11 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -35,6 +35,7 @@ struct io_uring_sqe {
- 	union {
- 		__u64	off;	/* offset into file */
- 		__u64	addr2;
-+		__u64	futex_val;
- 		struct {
- 			__u32	cmd_op;
- 			__u32	__pad1;
-@@ -65,6 +66,7 @@ struct io_uring_sqe {
- 		__u32		xattr_flags;
- 		__u32		msg_ring_flags;
- 		__u32		uring_cmd_flags;
-+		__u32		futex_flags;
- 	};
- 	__u64	user_data;	/* data to be passed back at completion time */
- 	/* pack this to avoid bogus arm OABI complaints */
-@@ -87,6 +89,7 @@ struct io_uring_sqe {
- 	union {
- 		struct {
- 			__u64	addr3;
-+			__u64	futex_mask;
- 			__u64	__pad2[1];
- 		};
- 		/*
-
-
-So that we can write something roughtly like:
-
-	iof->uaddr = sqe->addr;
-	iof->val   = sqe->futex_val;
-	iof->mask  = sqe->futex_mask;
-	iof->flags = sqe->futex_flags;
-
-	if (iof->flags & ~FUTEX2_MASK)
-		return -EINVAL;
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
