@@ -2,121 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E7675D4C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 21:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1961475D4E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 21:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbjGUTYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 15:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
+        id S232279AbjGUTZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 15:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbjGUTYg (ORCPT
+        with ESMTP id S232251AbjGUTZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 15:24:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199EF189;
-        Fri, 21 Jul 2023 12:24:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A974361D7F;
-        Fri, 21 Jul 2023 19:24:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DF55C433CD;
-        Fri, 21 Jul 2023 19:24:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689967474;
-        bh=ZMDz7Ao/mXqDoOt9YqdyFYlyKXkJ8dwXgYd8bgtxMgY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dIfxhb+OVuk0F9idwdU1Nqp2ZJSc3V7WLb+EHXnU6XQPkYG9q40hu0yDpXbB2TsuU
-         bdAuA9f2LNjpYwymZvN1pi/xM0mGLO2l5qF7FzHBiKEoMDfz+64mgsjFj4fsE3RFxK
-         bSj+so11TE5+uDa40Yva/x1RPFStJ/BmxZ1Kzsz3dB9bLjk2pdPL4vI0TbKCaORAdF
-         5a30QkKOfedXkVA/oKRqnWcH9JNt+z7HNVVjIqvXNyAfphZ9VyW5zn5wzb0K7Fw823
-         vvgJj2UW829OlZxlD0DxCyuSDioG2kgNQRryeccV/INrjA5QkKEQgskCeGevIZ7XZ2
-         2fGurbgnWu8+g==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2b6f943383eso33941701fa.2;
-        Fri, 21 Jul 2023 12:24:34 -0700 (PDT)
-X-Gm-Message-State: ABy/qLYtvXbsYWWSxH4hny9KFMyDYXp9+lJwinVvzmaWvq79AWZqbeRO
-        CdlnfmajUAEhZ15HD1is5iX3E77nPewMz8byuQ==
-X-Google-Smtp-Source: APBJJlHWu7RNKa6G4OWcajuKR+v/9mO3Q4f3e14g7ypnqu1POSVv0p6PFkMlKa+yzKC3DRRdjku8L6M8Rt1M6Sw9RSQ=
-X-Received: by 2002:a2e:b70e:0:b0:2b4:45bc:7bd with SMTP id
- j14-20020a2eb70e000000b002b445bc07bdmr2350137ljo.4.1689967472029; Fri, 21 Jul
- 2023 12:24:32 -0700 (PDT)
+        Fri, 21 Jul 2023 15:25:52 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1441AE75
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 12:25:51 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-262ff3a4659so1325072a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 12:25:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1689967550; x=1690572350;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MMsZNxLO6ied/G62NsNmuJtbpPqA/ZDXuniKdHv3YB4=;
+        b=XQzjypm8qf/fouvehrBkEZjx7rraTNYkUvdCKXn1r1gfZnRnhcrrwzmNXN35Uu7gzI
+         8oZahINtXmo9uCfjOT5mfF9tPFqadYED4ml2Rvg4gr4OGGmk2vfi6ALPhCVFDbYVbCVR
+         bizj8weYssavNq2IYvHIenQVmt+p9+kOYvZhgrRMHxTk+VUEpNpnyoTxavBUyIHeBvaf
+         qo1QRc6+YoA80RoGKZsLsD7vsvUGziFJq2u5Wn3UEGI6GwRgyCcJvjby4g2TfS0YmrN7
+         IaJoLwJh5sfemxuaaNtQypWoArXN7KcGOCwTG4BZdi4RfD5EEjDf6oZVJxfS3TMV68DT
+         4znQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689967550; x=1690572350;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MMsZNxLO6ied/G62NsNmuJtbpPqA/ZDXuniKdHv3YB4=;
+        b=gxh8Rdar4KwN8RRIgmJgKoSBzg+Fy4Nnw7RyN/AKr2mewRCW5Mr8TyWI0zbET2kn1y
+         gEhDHKe+zX3qX5ZzPDabysNi94PJx/S/7Le9W1Nq1p33neXRrfKkullQ2KicWUJvmhyN
+         5F3Z4GFb72NNl/djyAamcMht6zTONie75c3Bg1DXjlKAjWMwnEJY4aEsnuiukyAc086l
+         V2mdxfn57FZHcicfycewDGO/Eum/f046wUXiamHPRvNLqQXzv1G/Btyjo5gf8eneJovZ
+         tWzlq05zMikpx7yNve2ma17WUJN+d+bpfHEglXK8f6ShjkydMeS15KYVZNwJrLyFFqqU
+         qlzA==
+X-Gm-Message-State: ABy/qLZca+tSBvd2fd3RKjgyfjUOZvxb2IuZAkVFLmw1zdEPz9rIKSmh
+        8KSOaI99Og/1bXSVloyEC6PNtg==
+X-Google-Smtp-Source: APBJJlEp8s38SXROq49pagsC5pVvuYXs5UAkGBJHAYanGZ9PMcBXp3bCvAhBUtgXgds2MFlgz7aUow==
+X-Received: by 2002:a17:90b:2308:b0:262:f06d:c0fc with SMTP id mt8-20020a17090b230800b00262f06dc0fcmr2530695pjb.7.1689967550531;
+        Fri, 21 Jul 2023 12:25:50 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id d5-20020a17090a8d8500b0025bd4db25f0sm2845416pjo.53.2023.07.21.12.25.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 12:25:49 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qMvl5-003ID1-Uq;
+        Fri, 21 Jul 2023 16:25:47 -0300
+Date:   Fri, 21 Jul 2023 16:25:47 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     akpm@linux-foundation.org, ajd@linux.ibm.com,
+        catalin.marinas@arm.com, fbarrat@linux.ibm.com,
+        iommu@lists.linux.dev, jhubbard@nvidia.com, kevin.tian@intel.com,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
+        nicolinc@nvidia.com, npiggin@gmail.com, robin.murphy@arm.com,
+        seanjc@google.com, will@kernel.org, x86@kernel.org,
+        zhi.wang.linux@gmail.com, sj@kernel.org
+Subject: Re: [PATCH v3 1/5] arm64/smmu: Use TLBI ASID when invalidating
+ entire range
+Message-ID: <ZLrbu6vk6x7l6xwJ@ziepe.ca>
+References: <cover.b24362332ec6099bc8db4e8e06a67545c653291d.1689842332.git-series.apopple@nvidia.com>
+ <082390057ec33969c81d49d35aa3024d7082b0bd.1689842332.git-series.apopple@nvidia.com>
 MIME-Version: 1.0
-References: <20230721161840.1393996-1-hugo@hugovil.com> <20230721161840.1393996-7-hugo@hugovil.com>
-In-Reply-To: <20230721161840.1393996-7-hugo@hugovil.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 21 Jul 2023 13:24:19 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJpdhtnZ8FcM7kGWnM+iuDs1fWiCVgf413evbw-o8TZGQ@mail.gmail.com>
-Message-ID: <CAL_JsqJpdhtnZ8FcM7kGWnM+iuDs1fWiCVgf413evbw-o8TZGQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v8 06/10] serial: sc16is7xx: fix regression with
- GPIO configuration
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     gregkh@linuxfoundation.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
-        isaac.true@canonical.com, jesse.sung@canonical.com,
-        tomasz.mon@camlingroup.com, l.perczak@camlintechnologies.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Lech Perczak <lech.perczak@camlingroup.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <082390057ec33969c81d49d35aa3024d7082b0bd.1689842332.git-series.apopple@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 10:19=E2=80=AFAM Hugo Villeneuve <hugo@hugovil.com>=
- wrote:
->
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
->
-> Commit 679875d1d880 ("sc16is7xx: Separate GPIOs from modem control lines"=
-)
-> and commit 21144bab4f11 ("sc16is7xx: Handle modem status lines")
-> changed the function of the GPIOs pins to act as modem control
-> lines without any possibility of selecting GPIO function.
+On Thu, Jul 20, 2023 at 06:39:23PM +1000, Alistair Popple wrote:
+> The ARM SMMU has a specific command for invalidating the TLB for an
+> entire ASID. Currently this is used for the IO_PGTABLE API but not for
+> ATS when called from the MMU notifier.
+> 
+> The current implementation of notifiers does not attempt to invalidate
+> such a large address range, instead walking each VMA and invalidating
+> each range individually during mmap removal. However in future SMMU
+> TLB invalidations are going to be sent as part of the normal
+> flush_tlb_*() kernel calls. To better deal with that add handling to
+> use TLBI ASID when invalidating the entire address space.
+> 
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> ---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c | 16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
 
-Requiring a new DT property is not fixing a kernel regression. You
-should be returning the kernel to original behavior and then have a
-new DT property for new behavior.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-> As a consequence, applications that depends on GPIO lines configured
-> by default as GPIO pins no longer work as expected.
->
-> Also, the change to select modem control lines function was done only
-> for channel A of dual UART variants (752/762). This was not documented
-> in the log message.
->
-> Allow to specify GPIO or modem control line function in the device
-> tree, and for each of the ports (A or B).
->
-> Do so by using the new device-tree property named
-> "modem-control-line-ports" (property added in separate patch).
-
-That's not the name in the patch.
-
-> When registering GPIO chip controller, mask-out GPIO pins declared as
-> modem control lines according to this new "modem-control-line-ports"
-> DT property.
->
-> Boards that need to have GPIOS configured as modem control lines
-> should add that property to their device tree. Here is a list of
-> boards using the sc16is7xx driver in their device tree and that may
-> need to be modified:
->     arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts
->     mips/boot/dts/ingenic/cu1830-neo.dts
->     mips/boot/dts/ingenic/cu1000-neo.dts
-
-Then again, if no one cares about those boards needing a change then
-it can be okay.
-
-
-Rob
+Jason
