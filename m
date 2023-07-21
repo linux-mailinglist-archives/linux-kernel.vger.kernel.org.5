@@ -2,162 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B2F75C4EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B15675C4F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbjGUKpk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 Jul 2023 06:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        id S229891AbjGUKrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbjGUKp0 (ORCPT
+        with ESMTP id S229493AbjGUKr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:45:26 -0400
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27491BF7;
-        Fri, 21 Jul 2023 03:45:24 -0700 (PDT)
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-50d897af77bso497219a12.1;
-        Fri, 21 Jul 2023 03:45:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689936322; x=1690541122;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z8wJTVBT/3WAHQa2wXEwIaaZ8k9MULWPoI7qp0kxJXk=;
-        b=e0mpR9DFb9ATh70/nKk94PUoRWgJVO6XM58MtwzQnWKh5MbI9nI4yXQXqPASbtUzsf
-         fYUqarw9QHN+OT72u9QUFP0BMrg5oQ1LJxSG/dznr0gwKRpY/CMB/EbvdoIPXyfZotkq
-         fvkS2lV/14AQK7xSVP6mumZkmsDzRXhnqSPCNL6GhEw1hEbrJt/8FJwHctOzm8fb79vL
-         8SI+divs3kv2AWjYVm+E+99YGfpAIUc5QiUU/kyz4VGPwgbsVsaUHWxjbe7JCI/cqbyQ
-         OHdByEwAcZfDqOCzuAEb+BjK31HYRWNqCNUBBWdY8CuXbvj/bAX5EHlxgV0h2AjQqfxz
-         CKmQ==
-X-Gm-Message-State: ABy/qLZ9iuAT8QIBaNPJ6dMpoD2ty9YkWEMs1HYXh9vuMBZ/Zl6sDrLw
-        SlL+zLBtqYpTqanEJl9FRUx9/wkZNshnBaVox9U=
-X-Google-Smtp-Source: APBJJlGTR98Wg1niPHUvEdRwLJkWx6ZLHdL0iuuk2pM2B7Twjw+C+B41NYMrkfG5Gog1cpc6MO+7IsZMPQ5Z62zq098=
-X-Received: by 2002:a05:6402:4304:b0:51d:9a92:24f0 with SMTP id
- m4-20020a056402430400b0051d9a9224f0mr1557619edc.4.1689936322410; Fri, 21 Jul
- 2023 03:45:22 -0700 (PDT)
+        Fri, 21 Jul 2023 06:47:29 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965AB1701;
+        Fri, 21 Jul 2023 03:47:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689936448; x=1721472448;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lqUeKJjFv2Sxri0zg/OC/DAKL78i5iZqhBI02xpLRko=;
+  b=b1gQmxJK0t5qLXwInz2z1vsdJy6AAum1O7lL2lvyHs1DN9MMjcWJh3Ie
+   XiQIolmGnSCp8dS7AHZSNibxy1hVJ/i0RigeqX+3TY4Dchg79d7tNOVZt
+   1zI0mxUUEvbdid5OKYkKK/OjvF3ZXRsYUUBweuFEO96HogAYXug1jV1FM
+   yXeHCATd/WIUfaKFRwUCN6MxORHdPgsDhMt0bhcAg+lXz7IRDf3PKuGMb
+   /1av+6I8NpXxKDEkf4L4OUG5eZRRZANszRY6PuFLljdeBGha5N7Pqp/NZ
+   HY/81IGWCW7Y7bnlpdITKo1unVMFC5S6MTvObMTBR5MjdcpzxEDN4ncJ0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="365884912"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="365884912"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 03:47:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="724827627"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="724827627"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orsmga002.jf.intel.com with ESMTP; 21 Jul 2023 03:47:13 -0700
+Date:   Fri, 21 Jul 2023 18:45:26 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFC PATCH v11 01/29] KVM: Wrap kvm_gfn_range.pte in a
+ per-action union
+Message-ID: <ZLphxpSTL9Fpn1ye@yilunxu-OptiPlex-7050>
+References: <20230718234512.1690985-1-seanjc@google.com>
+ <20230718234512.1690985-2-seanjc@google.com>
+ <ZLolA2U83tP75Qdd@yzhao56-desk.sh.intel.com>
 MIME-Version: 1.0
-References: <20230721094641.77189-1-frank.li@vivo.com> <20230721094641.77189-2-frank.li@vivo.com>
-In-Reply-To: <20230721094641.77189-2-frank.li@vivo.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 21 Jul 2023 12:45:11 +0200
-Message-ID: <CAJZ5v0iB5arngPxxduafyZ+hbxqTRLXm_5iwNoEcQcqVyCdCYw@mail.gmail.com>
-Subject: Re: [PATCH v5 02/22] thermal/drivers/sun8i: convert to use devm_request*_irq_probe()
-To:     Yangtao Li <frank.li@vivo.com>
-Cc:     Vasily Khoruzhick <anarsoul@gmail.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLolA2U83tP75Qdd@yzhao56-desk.sh.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 11:47 AM Yangtao Li <frank.li@vivo.com> wrote:
->
-> There are more than 700 calls to devm_request_threaded_irq method and
-> more than 1000 calls to devm_request_irq method. Most drivers only
-> request one interrupt resource, and these error messages are basically
-> the same. If error messages are printed everywhere, more than 2000 lines
-> of code can be saved by removing the msg in the driver.
->
-> And tglx point out that:
->
->   If we actually look at the call sites of
->   devm_request_threaded_irq() then the vast majority of them print more or
->   less lousy error messages. A quick grep/sed/awk/sort/uniq revealed
->
->      519 messages total (there are probably more)
->
->      352 unique messages
->
->      323 unique messages after lower casing
->
->          Those 323 are mostly just variants of the same patterns with
->          slight modifications in formatting and information provided.
->
->      186 of these messages do not deliver any useful information,
->          e.g. "no irq", "
->
->      The most useful one of all is: "could request wakeup irq: %d"
->
->   So there is certainly an argument to be made that this particular
->   function should print a well formatted and informative error message.
->
->   It's not a general allocator like kmalloc(). It's specialized and in the
->   vast majority of cases failing to request the interrupt causes the
->   device probe to fail. So having proper and consistent information why
->   the device cannot be used _is_ useful.
->
-> So convert to use devm_request*_irq_probe() API, which ensure that all
-> error handling branches print error information.
->
-> In this way, when this function fails, the upper-layer functions can
-> directly return an error code without missing debugging information.
-> Otherwise, the error message will be printed redundantly or missing.
->
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
-> Cc: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-> Cc: AngeloGioacchino Del Regno  <angelogioacchino.delregno@collabora.com>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+On 2023-07-21 at 14:26:11 +0800, Yan Zhao wrote:
+> On Tue, Jul 18, 2023 at 04:44:44PM -0700, Sean Christopherson wrote:
+> 
+> May I know why KVM now needs to register to callback .change_pte()?
 
-It is not clear to me what the purpose of sending these patches is.
+I can see the original purpose is to "setting a pte in the shadow page
+table directly, instead of flushing the shadow page table entry and then
+getting vmexit to set it"[1].
 
-Because the devm_request_threaded_irq_probe() definition is not there
-in the current -rc kernels AFAICS, it looks like they are sent in
-order to collect tags from people.  If so, there should be a cover
-letter making that clear.
+IIUC, KVM is expected to directly make the new pte present for new
+pages in this callback, like for COW.
 
-As it stands, it is also unclear how you want them to be merged.
+> As also commented in kvm_mmu_notifier_change_pte(), .change_pte() must be
+> surrounded by .invalidate_range_{start,end}().
+> 
+> While kvm_mmu_notifier_invalidate_range_start() has called kvm_unmap_gfn_range()
+> to zap all leaf SPTEs, and page fault path will not install new SPTEs
+> successfully before kvm_mmu_notifier_invalidate_range_end(),
+> kvm_set_spte_gfn() should not be able to find any shadow present leaf entries to
+> update PFN.
 
-Moreover, sending the series without patch [01/22] to linux-pm has not
-been helpful.
+I also failed to figure out how the kvm_set_spte_gfn() could pass
+several !is_shadow_present_pte(iter.old_spte) check then write the new
+pte.
 
-Thanks!
 
-> ---
->  drivers/thermal/sun8i_thermal.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
-> index 195f3c5d0b38..a952804ff993 100644
-> --- a/drivers/thermal/sun8i_thermal.c
-> +++ b/drivers/thermal/sun8i_thermal.c
-> @@ -512,9 +512,9 @@ static int sun8i_ths_probe(struct platform_device *pdev)
->          * registered yet, we deffer the registration of the interrupt to
->          * the end.
->          */
-> -       ret = devm_request_threaded_irq(dev, irq, NULL,
-> -                                       sun8i_irq_thread,
-> -                                       IRQF_ONESHOT, "ths", tmdev);
-> +       ret = devm_request_threaded_irq_probe(dev, irq, NULL,
-> +                                             sun8i_irq_thread,
-> +                                             IRQF_ONESHOT, "ths", tmdev, NULL);
->         if (ret)
->                 return ret;
->
-> --
-> 2.39.0
->
+[1] https://lore.kernel.org/all/200909222039.n8MKd4TL002696@imap1.linux-foundation.org/
+
+Thanks,
+Yilun
+
+> 
+> Or could we just delete completely
+> "kvm_handle_hva_range(mn, address, address + 1, pte, kvm_set_spte_gfn);"
+> from kvm_mmu_notifier_change_pte() ?
