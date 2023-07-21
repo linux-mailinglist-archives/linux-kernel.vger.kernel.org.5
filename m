@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA3075C6CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC6375C6DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjGUMUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 08:20:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40254 "EHLO
+        id S230341AbjGUM0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjGUMUu (ORCPT
+        with ESMTP id S229601AbjGUM0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:20:50 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFDC172A;
-        Fri, 21 Jul 2023 05:20:48 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51f7fb9a944so2631216a12.3;
-        Fri, 21 Jul 2023 05:20:48 -0700 (PDT)
+        Fri, 21 Jul 2023 08:26:08 -0400
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A141E172A;
+        Fri, 21 Jul 2023 05:26:07 -0700 (PDT)
+Received: by mail-vk1-xa31.google.com with SMTP id 71dfb90a1353d-483ad06a37aso2028535e0c.1;
+        Fri, 21 Jul 2023 05:26:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689942047; x=1690546847;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1689942367; x=1690547167;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GhutenQMqQXRKvlycCuev0WyjWyoJHPkw6hmgTsPeaU=;
-        b=bzBI9LhEsvYKVapzRLbcZ4+OQHAOroIvvBL6jwI/E0l9G33N01mIX5iwX+nPmDaALm
-         qY1kpqgjGacFeDuIkKaY4b8VEbv86y4PLN79Ng3rzjeRB+PPbj5ezxVE50SzNt60iiUp
-         0tQvXk5uSdMQrrRejEAhrh4BmdNl+xxkFA3jWsUH2fEOLt7ZVV0ZxaO+R02CSZ0Q0SFn
-         H0ag8UENgWLzKZuHXHBiJ1g6OJ3gP/KTR5P17SgLjOTKsC+8SDeB9WYsLNou15xeaMS+
-         UD4VSTxFM9nzEMc3AwhZsyjeSNTRHIiBKnLg2b1TuJQYdVfXswIadCXuY8XQtlQOkvrm
-         PWpw==
+        bh=xluE36BD8mVrNVro8WajFgh+qTA9z/PcVNAY+dwKLfA=;
+        b=pIf6X1un4jqkN/qzNs5aHSjweGBRD9IFIwqtxIPEstPA6ZdTcBuaEoa9mC5zDfaM7b
+         l8sr9ke9PPXbllJ2MxN8dg3/1MY4m06w/joAgtrIpKSLR57LqTrBgw4ciuLIisHk2HGO
+         hEYbzHnQPK/h9LYy6bkznftE7raGK/UgST3pj5IZH14DvQWVGpZ2Zpu6M+56mIxG7kiq
+         HkIM8kOkfdwLbFroSYfMkWzM0Nk6AvlIYuzrBT3lH02RDspACz4fwd4rLrwd/FR1hjm3
+         xpyNJNGtUqoqK+w/ggeSF1yyC0cNqg96t5BOsxHSC5G/aduDul6FtWrptMl3k/5IA/Xm
+         RSXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689942047; x=1690546847;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689942367; x=1690547167;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GhutenQMqQXRKvlycCuev0WyjWyoJHPkw6hmgTsPeaU=;
-        b=etRZqyDG3w2+2kPBAghT+k7PGJNMm24FR6YvucSqPGkOjRIZsgO8iZFiCRtcHKvQ8H
-         CL8EXNsV4PL/a+JIGBsSGLX0cE6inFinJTokwBNidUih6wA6KJUq49Xz94aOPo1fSNcI
-         /JzhHceeDkqHXX0rRXWo5sioqiuf30zBvMgD1mf4HU9zVd2W5XtqPPIqfwB6hET41KFq
-         0uFGhRpHv8AS1B5BCvbZivkF5tIkAb1QLagKRU/Bo3KfZug0rHYI6KkbL184n/fFkMOx
-         hGu/jhSG60U/tFtI8Lquazr3wf18ydUe0n1ASuv87yLy+p6v/JCYljfb1K+vgA1NSqcp
-         Z9Mg==
-X-Gm-Message-State: ABy/qLbZrfVSUtAmRuneYI7AIRhljXwK/PUIrx6155LXToBIS6MmpRt0
-        I5dUjd7ssbm4+FzM8hYL/98=
-X-Google-Smtp-Source: APBJJlGQAAFcby9zYkQelrjbstvhZTVwHFKUPWV90xlctOVdzmio0HgLdbFiI8HMbn5+O3IOKV/jwQ==
-X-Received: by 2002:a05:6402:887:b0:51d:d2b9:54a0 with SMTP id e7-20020a056402088700b0051dd2b954a0mr1385265edy.2.1689942046817;
-        Fri, 21 Jul 2023 05:20:46 -0700 (PDT)
-Received: from orome (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id l23-20020a056402345700b00521d2cf5f3bsm2040009edc.96.2023.07.21.05.20.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 05:20:46 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 14:20:44 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Lee Jones <lee@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH] mfd: rz-mtu3: link time dependencies
-Message-ID: <ZLp4HPwcDxcKHAwj@orome>
-References: <20230719090430.1925182-1-arnd@kernel.org>
- <ZLlMAZPzEmSlzlbV@orome>
- <20230721080055.GB1908841@google.com>
+        bh=xluE36BD8mVrNVro8WajFgh+qTA9z/PcVNAY+dwKLfA=;
+        b=aM5z7te2lyp5aRWeIraIS8wb9AqyFPBUeVCinn2Z86bddSc98lVNQnpt0lHBhxTle2
+         tlGgtRhmi0eNK4z999IVamonz3uwsF4m7pxUXQhAE/R3mI5V9ZjWQIQ9V6geIICF0veb
+         cLiOm0LkdVuQEsWqRe90tp1H63LoiH45VqrVgy5aFeX8HbfcBLjJ8C1I2cHjSExB3Gp7
+         dr9Ht1bK9upVBI5aOzrBlDta/hOfc+hsnOYQEwS9TZ2dfXOSnoTJy/sqEqj7bGenCcO5
+         W3+JcUo/mVx0XpRPES/LLyuqJVl7LTo9r6wicnDjPwulfOcIzYxFoPzPriBODr/iKZdH
+         fclg==
+X-Gm-Message-State: ABy/qLacQN833Z93pi+kMumfm/g8jwEdsZw/kwhJij4iz6sTimbh3n0y
+        y1dWfoHEYTLVhnrosbQgyPr/eWZ7NypvWMIOamk=
+X-Google-Smtp-Source: APBJJlFSFie+d/eOgAkf4EVoTC3bSAOyfbKhUcbE7hyw5UwumUJ67EQf6xLnDr2X7mdMRCp3uIl4YEbZlZDFiPsbEMA=
+X-Received: by 2002:a05:6122:656:b0:477:4872:7f9d with SMTP id
+ h22-20020a056122065600b0047748727f9dmr2310534vkp.4.1689942366532; Fri, 21 Jul
+ 2023 05:26:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+OUlY8rAj1w6C2U+"
-Content-Disposition: inline
-In-Reply-To: <20230721080055.GB1908841@google.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
+References: <20230720124026.356603-1-viteosen@gmail.com> <5b9ceb0e-b7e4-d4b3-461e-c70f4a01fa5e@linaro.org>
+In-Reply-To: <5b9ceb0e-b7e4-d4b3-461e-c70f4a01fa5e@linaro.org>
+From:   Viktar Simanenka <viteosen@gmail.com>
+Date:   Fri, 21 Jul 2023 15:25:54 +0300
+Message-ID: <CAFQqR8-O+w-RQnLUSvyL-4h78pJ1cSr67Chce03+tLCTYP7YWg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: display: add bindings for pcd8544 displays
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,90 +73,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 21, 2023 at 11:42=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 20/07/2023 14:40, Viktar Simanenka wrote:
+> > +allOf:
+> > +  - $ref: panel/panel-common.yaml#
+>
+> This is not a panel, is it?
 
---+OUlY8rAj1w6C2U+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jul 21, 2023 at 09:00:55AM +0100, Lee Jones wrote:
-> On Thu, 20 Jul 2023, Thierry Reding wrote:
->=20
-> > On Wed, Jul 19, 2023 at 11:02:23AM +0200, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >=20
-> > > The new set of drivers for RZ/G2L MTU3a tries to enable compile-testi=
-ng the
-> > > individual client drivers even when the MFD portion is disabled but g=
-ets it
-> > > wrong, causing a link failure when the core is in a loadable module b=
-ut the
-> > > other drivers are built-in:
-> > >=20
-> > > x86_64-linux-ld: drivers/pwm/pwm-rz-mtu3.o: in function `rz_mtu3_pwm_=
-apply':
-> > > pwm-rz-mtu3.c:(.text+0x4bf): undefined reference to `rz_mtu3_8bit_ch_=
-write'
-> > > x86_64-linux-ld: pwm-rz-mtu3.c:(.text+0x509): undefined reference to =
-`rz_mtu3_disable'
-> > >=20
-> > > arm-linux-gnueabi-ld: drivers/counter/rz-mtu3-cnt.o: in function `rz_=
-mtu3_cascade_counts_enable_get':
-> > > rz-mtu3-cnt.c:(.text+0xbec): undefined reference to `rz_mtu3_shared_r=
-eg_read'
-> > >=20
-> > > It seems better not to add the extra complexity here but instead just=
- use
-> > > a normal hard dependency, so remove the #else portion in the header a=
-long
-> > > with the "|| COMPILE_TEST". This could also be fixed by having slight=
-ly more
-> > > elaborate Kconfig dependencies or using the cursed 'IS_REACHABLE()' h=
-elper,
-> > > but in practice it's already possible to compile-test all these drive=
-rs
-> > > by enabling the mtd portion.
-> > >=20
-> > > Fixes: 254d3a727421c ("pwm: Add Renesas RZ/G2L MTU3a PWM driver")
-> > > Fixes: 0be8907359df4 ("counter: Add Renesas RZ/G2L MTU3a counter driv=
-er")
-> > > Fixes: 654c293e1687b ("mfd: Add Renesas RZ/G2L MTU3a core driver")
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > > ---
-> > >  drivers/counter/Kconfig     |  2 +-
-> > >  drivers/pwm/Kconfig         |  2 +-
-> > >  include/linux/mfd/rz-mtu3.h | 66 -----------------------------------=
---
-> > >  3 files changed, 2 insertions(+), 68 deletions(-)
-> >=20
-> > Assuming that Lee will pick this up:
-> >=20
-> > Acked-by: Thierry Reding <thierry.reding@gmail.com>
->=20
-> Happy to.  Can you do without a pull-request?
-
-Yeah, I don't think a PR will be necessary.
-
-Thierry
-
---+OUlY8rAj1w6C2U+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmS6eBkACgkQ3SOs138+
-s6GBrhAAngOgSPqJgj9r/xBFsagBuifgLM/cGHmnJ6s8YfMI06dUmw1qxd6EvDE3
-RpmEKA0NceA9lB17XZyH5kyaoowHumWgQA+sG5CzhwPnWnCywo3spfBZf7k4EZH2
-3BNIUDt4Ix+06pdkNKd7QVPqUU6Vr/vXc/kfqs78E4IdA3C6oj8duLK3ex/sk2ih
-f+cHedeIujBVONaBj/Pz6q9x6iBTpCh4QAhVoGSMwBjyIVJ6g9cVuxKi9BoVcJ/D
-4eIOsp6HSxF/DB9YfnS4dRQ16eGZTqtImkLDg9EjRWBNCvtKwrBVwq3rXdKniiyl
-v1aXjCvZpMJqY6OqAKNoBBKpHIb2SYjR2r+TmyYN9OOkhp7xnfuHDcpi4A+HTOaS
-tzoLrVNDeyrmtP72syZ7C750EP6QDrCihmKy9MOJWEq6H8yX4EetwDOyX3WHLfMJ
-dyA78V3E8aLHmoBplf2m5WpB0zMzLw8uewlFtNY0yCFW1L3OZcA09skMInHokh82
-/kJY1TnAdhNIs03KMxFu++wTymv4F3rD0FJyDFmKIWBRiijuMh7qQfstd4rVOybg
-uGDiyNOzM+pPHqdA5e7ldNgSJar3pPaw7Q6qeVRUvxiL2lE4F6Cfe7TO7HyUFtZF
-UJ84byyhi9v4vpvt7PJ0ui2q7Ly5TXqM9olgWuYSshvxi2zQxFY=
-=fYsf
------END PGP SIGNATURE-----
-
---+OUlY8rAj1w6C2U+--
+I can't clearly tell the difference between LCD display and panel.
+I've added panel-common because of 'backlight' and 'reset-gpios'
+properties. I've looked at 'sitronix,st7735r.yaml',
+'ilitek,ili9486.yaml' as examples. SPI controlled LCD displays, but in
+color.
+In fact 'reset-gpios' is already in my yaml. I might just add the
+'backlight' property explicitly and remove this dependency. Should I?
