@@ -2,104 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E1C75C9DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B622475C9F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbjGUOYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
+        id S231128AbjGUOZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbjGUOYk (ORCPT
+        with ESMTP id S230475AbjGUOZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:24:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6143630C4;
-        Fri, 21 Jul 2023 07:24:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E9F9461CD4;
-        Fri, 21 Jul 2023 14:24:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D97CDC433CB;
-        Fri, 21 Jul 2023 14:24:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689949476;
-        bh=f5CmuKxpJu9jR+oixBzVmJVKyjN2Z5YWoED2/Oqe//8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JGgQ/hDou9SKGtlP/OvopQ6cIKkLxeRwlf02RcsRiUj6Hx7Hpm/YVg9dyxwGboy9X
-         01nmDjExuidnMQQlZ41rLyyK4dSrbo4RQ/GJQYzKqK36AIewcUCkzct5UtgC87U3RK
-         CTD5tseiGBR6IoyoOn0WMc1Bqj+pawVctnpJp3ui0HzwkIJdib2mydJYbhOf3rrYS3
-         /zhwvXN1LssqjfFrqXKseCy3MmbFHU4/djIn9sjdI2G4c2eYvCOJemRES5ry1bkRoq
-         KcPTomxYUs2rw3LqEc2wzwzv/pwJO6bQlYENadqB3ME3eIB5NC8ZjtrLWjIRHDyRgr
-         2IKqlCN0zsZpA==
-Received: (nullmailer pid 1079108 invoked by uid 1000);
-        Fri, 21 Jul 2023 14:24:33 -0000
-Date:   Fri, 21 Jul 2023 08:24:33 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, peppe.cavallaro@st.com,
-        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        mcoquelin.stm32@gmail.com, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next v4 1/3] dt-bindings: net: snps,dwmac: add
- phy-supply support
-Message-ID: <20230721142433.GA1012219-robh@kernel.org>
-References: <20230721110345.3925719-1-m.felsch@pengutronix.de>
+        Fri, 21 Jul 2023 10:25:19 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829FF30F1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:25:11 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbc5d5742bso17690355e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:25:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689949510; x=1690554310;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nsB9IpIa7yRoJhopQrOjvBc0s3b3yy++co3a2B1PcYw=;
+        b=qIJ3m7pumTVMjEg+kn7UzsmtHcvDLZMe1tywd8h4kIEFsV1IUMrLWSP7L1Gefi6ja3
+         JBnA+rcRqypgsH7goHOUSHZMKZ550EJ6VKVD5dUqYgKEkPNc0iL/P3ucMWjqHbEFD/T0
+         wpz6/3MqeieB5gRPCUiu4XZk3Zcu+o+NiGcka0anh/l9hHDrOL+VgYR/KE3ZF2zZOnUD
+         MAb1XtMCn/3lpC4gapmNe+wJJXmYQVNJ5+2pOFPrvODAU/4zuO7v13RiM6wLSxsILcjv
+         9HuP4O5p+Mpx4YbyqytkaZCphFp9jaYoEi2g4JOc8CmYsngHzwdRUEDe9eA+ql9xnfQE
+         Ybww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689949510; x=1690554310;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nsB9IpIa7yRoJhopQrOjvBc0s3b3yy++co3a2B1PcYw=;
+        b=Ft5JzNEK9KeO3z7sHQjRLkegAQZtMrdl1fau/R4HcNF/J2CAevVgTtKarKDYX7XM/A
+         oBVc4JQNPTz7xezrxH5wfxFArE1Dll1GKDC7sQIWBh7HYOS2VpTTiloVTZmN6didH12+
+         XIBi4uydVvqwZd1tpKC3gmSh+TwgbhITp/1RjF/DSsTgStjbwXc7l5xJMN8mXr//0bkP
+         aaCmHCTkHrc05xVpi7OWMaF5e6AwE4g+xeXSzn9zsmTjd/18+udsJcnWYLVEQzURwIEO
+         kQnPlGVoJdADohJ9A0OipYXrXGvcyyaOV+CNjDNW/vAhodCZeCVLQWL7naMVBY6hf4g/
+         BPtw==
+X-Gm-Message-State: ABy/qLbb1lmbVEMKltmnMvltxg32zgwlLITBikfsFllSAEkV1hQFuc0P
+        Lh79U5nUDMsZzLa54W75QldWNw==
+X-Google-Smtp-Source: APBJJlHgaQ/Hte4XJbr1gx4ukptPaEvJZwQtCDry0efXozCJTjG5+/5hX3FKNFwXVDpSO/L62wwYsQ==
+X-Received: by 2002:a1c:4b0e:0:b0:3fb:a576:3212 with SMTP id y14-20020a1c4b0e000000b003fba5763212mr1443887wma.39.1689949509998;
+        Fri, 21 Jul 2023 07:25:09 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id q9-20020adff789000000b003142439c7bcsm4349281wrp.80.2023.07.21.07.25.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 07:25:09 -0700 (PDT)
+Message-ID: <4313820e-9ddf-0a34-0cca-e356a4314c61@linaro.org>
+Date:   Fri, 21 Jul 2023 16:25:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230721110345.3925719-1-m.felsch@pengutronix.de>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 00/42] ep93xx device tree conversion
+Content-Language: en-US
+To:     nikita.shubin@maquefel.me,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Peters <mpeters@embeddedTS.com>,
+        Kris Bahnsen <kris@embeddedTS.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 01:03:43PM +0200, Marco Felsch wrote:
-> Document the common phy-supply property to be able to specify a phy
-> regulator.
-
-What common property? I don't see any such property in 
-ethernet-controller.yaml.
-
+On 20/07/2023 13:29, Nikita Shubin via B4 Relay wrote:
+> This series aims to convert ep93xx from platform to full device tree support.
 > 
-> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-> Changelog:
-> v4:
-> - no changes
-> v3:
-> - no changes
-> v2
-> - add ack-by
+> The main goal is to receive ACK's to take it via Arnd's arm-soc branch.
 > 
->  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> index ddf9522a5dc23..847ecb82b37ee 100644
-> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> @@ -160,6 +160,9 @@ properties:
->        can be passive (no SW requirement), and requires that the MAC operate
->        in a different mode than the PHY in order to function.
->  
-> +  phy-supply:
-> +    description: PHY regulator
 
-Is this for an serdes, sgmii, etc. type phy or ethernet phy? Either way, 
-this property belongs in the PHY's node because it is the PHY that has 
-supply connection. I'm guessing you put this here for the latter case 
-because ethernet PHYs on MDIO are "discoverable" except for the small 
-problem that powering them on is not discoverable. 
+This approach makes patchset trickier to review with absolutely huge
+Cc-list and inter-dependencies. I don't think this is correct approach.
+This should be split per subsystem whenever possible.
 
-Rob
+Expect more grunts and complains from 50-other people you Cc-ed.
+
+Best regards,
+Krzysztof
+
