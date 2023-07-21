@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D04675D16B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 20:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9029E75D171
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 20:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjGUScc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 14:32:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
+        id S229897AbjGUShr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 14:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjGUSca (ORCPT
+        with ESMTP id S229451AbjGUShp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 14:32:30 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768063586;
-        Fri, 21 Jul 2023 11:32:28 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LDeMA2026210;
-        Fri, 21 Jul 2023 18:32:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=Dyjhnp1h/Yy8khQjX4JZ9P0lfXo0r8U3Drgt6bQPJgs=;
- b=mYNa38TVl1taz5r6Yh0i0OZZnMuYc4/m7XA/apOLVSSdskdrMhFldfO9GpYbdvEzWBwJ
- IOeoIb+bv906po63Y9jyIerHmsEaoEBqWOBuC6xUkdAkvDIy6JIJQ4GYSSqb1rAfsXt8
- Sla9ITKvmv19kLFrY4HtbFKdZC/v3hQfS3tav1WkbVqqKqELJqH9ZrOaVrTNr91XiHk2
- zXlOTUO4J+cBR9h5vAdBtBoUksQFj5jn1XJJr3CDvl/tGZaRccJL2De8KAj80DUPX+Ck
- 6mcwZ4jNx6wU6KLPd9tdATEYBrtNm1hgDztK0YC/pRZkBPI67wmh6cftuQOS2uPX2w/G ug== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ryn5ysfuq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 18:32:21 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36LIWKnV012162
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 18:32:20 GMT
-Received: from jhugo-lnx.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 21 Jul 2023 11:32:19 -0700
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-To:     <dri-devel@lists.freedesktop.org>
-CC:     <ogabbay@kernel.org>, <jacek.lawrynowicz@linux.intel.com>,
-        <stanislaw.gruszka@linux.intel.com>, <quic_carlv@quicinc.com>,
-        <quic_ajitpals@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>
-Subject: [PATCH] accel/qaic: Fix slicing memory leak
-Date:   Fri, 21 Jul 2023 12:32:01 -0600
-Message-ID: <20230721183201.11001-1-quic_jhugo@quicinc.com>
-X-Mailer: git-send-email 2.40.1
+        Fri, 21 Jul 2023 14:37:45 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559EA30C8;
+        Fri, 21 Jul 2023 11:37:44 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1b8bd586086so16844175ad.2;
+        Fri, 21 Jul 2023 11:37:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689964664; x=1690569464;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N41yylWGWk71mjRvficRYzreADvXSZZyopesyI5c/L0=;
+        b=ItOwTjjykBhLM1ay/9YyR+ZsbNhldD2jAOoNzfbst+7UcSlEKQCo6wgI31GHcZeW5R
+         3u0X0YBFTisbwOojTVKXdzM7F+Rx1Y9364uz8fMYZNm87AKf3UYKBpIsvOiCE4OWkK6A
+         1oisXWXlNX5C/J1KbqxucVShx30LOG6J8VI+Ew8aK112TPju3avalwMqCkGvLiFRDdiW
+         CHL/JxOmQjrzXyilHzB8i95MrJ+vr02J8B7ht9/pjcvP7VzcDiApl6uDuhK/edX+TNRv
+         PKt2iZeYacNw6dPGnXG7rtYR9NbLC/t2sk/pa6s9Kt19umFNLhu15dbB5ziqjivdTEqF
+         +QnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689964664; x=1690569464;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N41yylWGWk71mjRvficRYzreADvXSZZyopesyI5c/L0=;
+        b=jQyw9eOc9IxfE5bJrHWmjclA+qydVOH8UYHFujJyxyiJtf29HU+dxWLjXFcwCN7cER
+         aLYObzdsolhxO+HyY3Z4mTBYQgit5VeX90Q56vbVTqDU5Qgdf5lnksh+aRckEC3qJ82S
+         yLu2n7978g3yt+yf1IbU3Wd+P+RrUa12wXnS3j/rQQzJnT/qulzyLaxpc6NVgZ2q/l45
+         3JuU02ZrANyUJhW5WM/iTGFy5OlsBjsiqBEvY5JAKsA64sC5m6/9+wyyiPiI9qLSAGlG
+         Vd6B0B9amUdNlH0WYYdpRTlbKyKwWr9ofMYIOdBXBnJHOMNzgJhvjm/YtJ98YQO1a6dI
+         OSlQ==
+X-Gm-Message-State: ABy/qLagP20upHv9BdmAJfYO2jgU/cvNtgM84zIwSoT9ESLyTbRbLGk5
+        ncFJ7NeMHyJDS8j0bI+1fqo=
+X-Google-Smtp-Source: APBJJlFK6CZrZMkCL+nsu5Sg8SMHY9EMPqQvH9QY2wSeL9Dj4fDuQCzK/6dXQPmDjxKEXsIxINu5mA==
+X-Received: by 2002:a17:902:e74a:b0:1b8:9b1d:9e24 with SMTP id p10-20020a170902e74a00b001b89b1d9e24mr3276832plf.22.1689964663568;
+        Fri, 21 Jul 2023 11:37:43 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:fbd8])
+        by smtp.gmail.com with ESMTPSA id h7-20020a170902f7c700b001b8528da516sm3842958plw.116.2023.07.21.11.37.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 11:37:43 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 21 Jul 2023 08:37:41 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     torvalds@linux-foundation.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        joshdon@google.com, brho@google.com, pjt@google.com,
+        derkling@google.com, haoluo@google.com, dvernet@meta.com,
+        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@meta.com
+Subject: Re: [PATCHSET v4] sched: Implement BPF extensible scheduler class
+Message-ID: <ZLrQdTvzbmi5XFeq@slm.duckdns.org>
+References: <20230711011412.100319-1-tj@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: aKgtYbZ806sIHK2tvMLhp6CJ_qd6QNYc
-X-Proofpoint-GUID: aKgtYbZ806sIHK2tvMLhp6CJ_qd6QNYc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-21_10,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- impostorscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
- priorityscore=1501 malwarescore=0 lowpriorityscore=0 adultscore=0
- phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307210162
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230711011412.100319-1-tj@kernel.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,32 +82,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
+Hello,
 
-Slicing configuration data from user is stored in a temporary buffer
-which should be freed unconditionally.
+It's been more than half a year since the initial posting of the patchset
+and we are now at the fourth iteration. There have been some reviews around
+specifics (should be all addressed now except for the ones Andrea raised on
+this iteration) but none at high level. There also were some in-person and
+off-list discussions. Some, I believe, are addressed by the cover letter but
+it'd be nonetheless useful to delve into them on-list.
 
-Fixes: ff13be830333 ("accel/qaic: Add datapath")
-Signed-off-by: Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
-Reviewed-by: Carl Vanderlip <quic_carlv@quicinc.com>
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
----
- drivers/accel/qaic/qaic_data.c | 1 +
- 1 file changed, 1 insertion(+)
+On our side, we've been diligently experimenting. A lot of our earlier
+experiments were focused on improving work conservation which led to the CFS
+shared runqueue patchset that David Vernet is currently working on. The
+workqueue experiments which led to PeterZ's SIS_NODE patch was also informed
+by the same work conservation experiments. We also played with soft affinity
+which is inspired by Julia's nest scheduler. Another thing we recently
+learned was that at least for our web workload, L1/2 locality doesn't matter
+much. This is an area of on-going experiments.
 
-diff --git a/drivers/accel/qaic/qaic_data.c b/drivers/accel/qaic/qaic_data.c
-index e9a1cb779b30..6b6d981a71be 100644
---- a/drivers/accel/qaic/qaic_data.c
-+++ b/drivers/accel/qaic/qaic_data.c
-@@ -1021,6 +1021,7 @@ int qaic_attach_slice_bo_ioctl(struct drm_device *dev, void *data, struct drm_fi
- 	bo->dbc = dbc;
- 	srcu_read_unlock(&dbc->ch_lock, rcu_id);
- 	drm_gem_object_put(obj);
-+	kfree(slice_ent);
- 	srcu_read_unlock(&qdev->dev_lock, qdev_rcu_id);
- 	srcu_read_unlock(&usr->qddev_lock, usr_rcu_id);
- 
--- 
-2.40.1
+We are comfortable with the current API. Everything we tried fit pretty
+well. It will continue to evolve but sched_ext now seems mature enough for
+initial inclusion. I suppose lack of response doesn't indicate tacit
+agreement from everyone, so what are you guys all thinking?
 
+Thanks.
+
+--
+tejun
