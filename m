@@ -2,57 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D22E75CB1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABAC75CB20
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbjGUPM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
+        id S231650AbjGUPMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbjGUPMW (ORCPT
+        with ESMTP id S231555AbjGUPMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:12:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397353A86;
-        Fri, 21 Jul 2023 08:11:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AE04861CE8;
-        Fri, 21 Jul 2023 15:11:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8B21C433C8;
-        Fri, 21 Jul 2023 15:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689952302;
-        bh=R0NhFhytJ7ntKMBnmoZsaLDFPS7OOg0XwxgrSgryfZs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IaY/CC9CHcS0AKIP12EvojQB3JHtnnHgSo6sS6QBUtZq/2bcEF/2S2QFUJdksYy5p
-         /gBv+ubGoXqxgeNnfCYkon4nZV13JjnP10+m8w3tYLnUzWo3at4qcoE8XkKL+SvfwA
-         mTwKzbFbkaBvVc8NOWhRgKHGPy450gaygZFm0xwmuUv+djG9zOjZ2CdY2Y5slc8C1Q
-         PIBg59QZy0jRH94b6jAg67YEwOjULAhlj2iXshb0/PxIOV2aGW9mywMRDsK5hN1pvm
-         nXGwvQdeTyTEkXdcr+6eAXhpw5nBLWkeNcoebRRz8KQ60P7/Zsb7e44V/vYiX7/Dqz
-         PXfL5fldCah9w==
-Date:   Fri, 21 Jul 2023 11:11:40 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Rob Barnes <robbarnes@google.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Tzung-Bi Shih <tzungbi@kernel.org>, bleung@chromium.org,
-        chrome-platform@lists.linux.dev
-Subject: Re: [PATCH AUTOSEL 6.4 01/12] platform/chrome: cros_ec: Report EC
- panic as uevent
-Message-ID: <ZLqgLDwKN+KngEAf@sashalap>
-References: <20230702195057.1787686-1-sashal@kernel.org>
- <CA+ASDXMZ_ZnJfpsY-8ZRByiox8HCSZeY08MvGSpznLYBtVR1bw@mail.gmail.com>
+        Fri, 21 Jul 2023 11:12:34 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9575930F4;
+        Fri, 21 Jul 2023 08:12:11 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9928abc11deso317339166b.1;
+        Fri, 21 Jul 2023 08:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689952330; x=1690557130;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CaKS1aD7IoFOrXnNJ4icapfiW6dnXTER+KoIo2KHsbQ=;
+        b=dPIb2H2FZIRxmaNC4W5CaoxSP8PStHhdhcUhC0UnxaYNxBaXHPxwfpheJKZ3U5LonV
+         JVEtw0RPpPchS1BjP0l+Wj55c4xm+gebKmhixQIw2xw/5GBP2K7DQfNvkAfKXXT+KwLW
+         3K7ekPFDqdvepPCtvf4WhZ6Fq9WHdLL4/NxS70fFouf5aUf+0bJxvbCbSzDuMOLMjnd3
+         4vzf9Kvj/MttmZ0sCUz2jEcVCzUnvQP+XgDecVoyx0skoA1uINZ4uOlRyqxa8Dgz/I9r
+         1xZ7DB3fSV9ZXCqLzvHOS3tvhJ75o3e+k6Yj5XOU5b6HEnD9knzKC7vB41OEHMbzVmy9
+         LSrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689952330; x=1690557130;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CaKS1aD7IoFOrXnNJ4icapfiW6dnXTER+KoIo2KHsbQ=;
+        b=haqlszG1bpoUsG4Lj8gd4gx/5NrbWp97OAeX89Vn3wt/8Gth2PXxJW78zfnPB4hhY7
+         FOeq4NDSNxn60r/HqejEzdWFnbe0+28Iwz4Jkv1+U5cSFKxEK5YL/yClY3fWxhCSTGPn
+         dLTt3NoUGkxWwH4TI9yacpapMGfd5wglDVSvJuxOfOGIwdc+YoR8xmTOunkGYOVMoE0F
+         C1Z8tEEtv7P/tr3NHSSEbd+jjglC6c4GsVkHQA6vZq2EZriyZ/jCnAyzNrPf86wYoDYw
+         FuqH3QBA1W2REuXed8uBPF2QYSPKEnf4poDGq0QfrZ7fURuo93PQUL8E1AwFN1qXNEIZ
+         4qCg==
+X-Gm-Message-State: ABy/qLbkz5JXMFImt3/io07X2mIoH61QfyiuLGtLBUa6hAo7W6NFQ3sG
+        2SNBZqqbbw+Wwoep4p0jgAI=
+X-Google-Smtp-Source: APBJJlFld+DydcCi6ZvBkZ+DQvENukTKHVqvbLr5LEs29mLwFRkT6JWBN6f9dOBReir+LPEgbsDZsg==
+X-Received: by 2002:a17:906:1046:b0:991:cd1f:e67a with SMTP id j6-20020a170906104600b00991cd1fe67amr2025979ejj.29.1689952329642;
+        Fri, 21 Jul 2023 08:12:09 -0700 (PDT)
+Received: from localhost (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id se10-20020a170906ce4a00b0098dfec235ccsm2288772ejb.47.2023.07.21.08.12.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 08:12:09 -0700 (PDT)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soc: tegra: Explicitly include correct DT includes
+Date:   Fri, 21 Jul 2023 17:12:07 +0200
+Message-ID: <168995231096.3654475.2956844024664587013.b4-ty@nvidia.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230714175155.4068413-1-robh@kernel.org>
+References: <20230714175155.4068413-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+ASDXMZ_ZnJfpsY-8ZRByiox8HCSZeY08MvGSpznLYBtVR1bw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,33 +75,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 10, 2023 at 03:46:21PM -0700, Brian Norris wrote:
->On Sun, Jul 2, 2023 at 12:51 PM Sasha Levin <sashal@kernel.org> wrote:
->>
->> From: Rob Barnes <robbarnes@google.com>
->>
->> [ Upstream commit 2cbf475a04b2ae3d722bbe41742e5d874a027fc3 ]
->>
->> Create a uevent when an EC panic is detected. This will allow udev rules
->> to trigger when a panic occurs. For example, a udev rule could be added to
->> capture an EC coredump. This approach avoids the need to stuff all the
->> processing into the driver.
->>
->> Signed-off-by: Rob Barnes <robbarnes@google.com>
->> Reviewed-by: Prashant Malani <pmalani@chromium.org>
->> Signed-off-by: Tzung-Bi Shih <tzungbi@kernel.org>
->> Link: https://lore.kernel.org/r/20230509232624.3120347-1-robbarnes@google.com
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  drivers/platform/chrome/cros_ec_lpc.c | 3 +++
->>  1 file changed, 3 insertions(+)
->
->What sorcery determined this was a valid for-linux-stable patch? It's
->a new feature, and definitely not a for-stable candidate. Please
->remove this from the queue.
+From: Thierry Reding <treding@nvidia.com>
 
-Dropped, thanks.
 
+On Fri, 14 Jul 2023 11:51:54 -0600, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+> 
+> [...]
+
+Applied, thanks!
+
+[1/1] soc: tegra: Explicitly include correct DT includes
+      commit: 564dadfca01ffdb53cd1eeb0abe70ff6ac890f39
+
+Best regards,
 -- 
-Thanks,
-Sasha
+Thierry Reding <treding@nvidia.com>
