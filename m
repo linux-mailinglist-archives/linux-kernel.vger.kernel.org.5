@@ -2,212 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1B975CB56
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4183775CAFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbjGUPSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52956 "EHLO
+        id S231774AbjGUPJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjGUPSP (ORCPT
+        with ESMTP id S231826AbjGUPJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:18:15 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F35930DD;
-        Fri, 21 Jul 2023 08:18:13 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 0a38bb1b8a5a6388; Fri, 21 Jul 2023 17:18:11 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 32225661901;
-        Fri, 21 Jul 2023 17:18:11 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH v2 7/8] ACPI: thermal: Rework thermal_get_trend()
-Date:   Fri, 21 Jul 2023 17:08:48 +0200
-Message-ID: <1849104.atdPhlSkOF@kreacher>
-In-Reply-To: <5710197.DvuYhMxLoT@kreacher>
-References: <13318886.uLZWGnKmhe@kreacher> <5710197.DvuYhMxLoT@kreacher>
+        Fri, 21 Jul 2023 11:09:06 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 436DC30C8;
+        Fri, 21 Jul 2023 08:09:05 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="433276670"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="433276670"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 08:09:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="814991639"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="814991639"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP; 21 Jul 2023 08:09:01 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andy@kernel.org>)
+        id 1qMrkZ-009iAE-0s;
+        Fri, 21 Jul 2023 18:08:59 +0300
+Date:   Fri, 21 Jul 2023 18:08:59 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] lib/string_helpers: Use passed in GFP_ flags
+Message-ID: <ZLqfizx5Xi9fOF6z@smile.fi.intel.com>
+References: <df051844-0a73-4cf9-9719-a6001f1c9d5c@moroto.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgdekvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgt
- phhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <df051844-0a73-4cf9-9719-a6001f1c9d5c@moroto.mountain>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, Jul 21, 2023 at 05:57:00PM +0300, Dan Carpenter wrote:
+> This patch doesn't affect runtime because all the callers pass GFP_KERNEL
+> as the allocation flags.  However, it should use the passed in "gfp" as
+> the allocation flags.
 
-Rework the ACPI thermal driver's .get_trend() callback function,
-thermal_get_trend(), to use trip point data stored in the generic
-trip structures instead of calling thermal_get_trip_type() and
-thermal_get_trip_temp().
+Please, Cc Kees Cook as he stepped in as a maintainer of this in particular.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
 
-v1 -> v2:
-   * Do not acquire thermal_check_lock in thermal_get_trend() (lockdep
-     would complain about this, because it is hold around thermal zone
-     locking and .get_trend() runs under the thermal zone lock).  The
-     thermal zone locking added in the previous patches is sufficient
-     to protect this code.
-   * Check trips against invalid temperature values.
-   * Return an error for trips other than passive and active.
+> Fixes: 0ee931c4e31a ("mm: treewide: remove GFP_TEMPORARY allocation flag")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> ---
+>  lib/string_helpers.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/lib/string_helpers.c b/lib/string_helpers.c
+> index d3b1dd718daf..be517c25737d 100644
+> --- a/lib/string_helpers.c
+> +++ b/lib/string_helpers.c
+> @@ -668,7 +668,7 @@ char *kstrdup_quotable_cmdline(struct task_struct *task, gfp_t gfp)
+>  	char *buffer, *quoted;
+>  	int i, res;
+>  
+> -	buffer = kmalloc(PAGE_SIZE, GFP_KERNEL);
+> +	buffer = kmalloc(PAGE_SIZE, gfp);
+>  	if (!buffer)
+>  		return NULL;
+>  
+> @@ -704,7 +704,7 @@ char *kstrdup_quotable_file(struct file *file, gfp_t gfp)
+>  		return kstrdup("<unknown>", gfp);
+>  
+>  	/* We add 11 spaces for ' (deleted)' to be appended */
+> -	temp = kmalloc(PATH_MAX + 11, GFP_KERNEL);
+> +	temp = kmalloc(PATH_MAX + 11, gfp);
+>  	if (!temp)
+>  		return kstrdup("<no_memory>", gfp);
+>  
+> -- 
+> 2.39.2
+> 
 
----
- drivers/acpi/thermal.c |  106 ++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 78 insertions(+), 28 deletions(-)
-
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -577,47 +577,97 @@ static int thermal_get_crit_temp(struct
- 	return -EINVAL;
- }
- 
--static int thermal_get_trend(struct thermal_zone_device *thermal,
--			     int trip, enum thermal_trend *trend)
-+static struct thermal_trip *acpi_thermal_get_trip(struct acpi_thermal *tz,
-+						  int trip_index)
- {
--	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
--	enum thermal_trip_type type;
-+	struct thermal_trip *trip;
- 	int i;
- 
--	if (thermal_get_trip_type(thermal, trip, &type))
--		return -EINVAL;
-+	if (!tz || trip_index < 0)
-+		return NULL;
- 
--	if (type == THERMAL_TRIP_ACTIVE) {
--		int trip_temp;
--		int temp = deci_kelvin_to_millicelsius_with_offset(
--					tz->temperature, tz->kelvin_offset);
--		if (thermal_get_trip_temp(thermal, trip, &trip_temp))
--			return -EINVAL;
-+	trip = tz->trips.critical.trip_ref.trip;
-+	if (trip) {
-+		if (!trip_index)
-+			return trip;
- 
--		if (temp > trip_temp) {
--			*trend = THERMAL_TREND_RAISING;
--			return 0;
--		} else {
--			/* Fall back on default trend */
--			return -EINVAL;
-+		trip_index--;
-+	}
-+
-+	trip = tz->trips.hot.trip_ref.trip;
-+	if (trip) {
-+		if (!trip_index)
-+			return trip;
-+
-+		trip_index--;
-+	}
-+
-+	trip = tz->trips.passive.trip_ref.trip;
-+	if (trip) {
-+		if (!trip_index)
-+			return trip;
-+
-+		trip_index--;
-+	}
-+
-+	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
-+		trip = tz->trips.active[i].trip_ref.trip;
-+		if (trip) {
-+			if (!trip_index)
-+				return trip;
-+
-+			trip_index--;
- 		}
- 	}
- 
-+	return NULL;
-+}
-+
-+static int thermal_get_trend(struct thermal_zone_device *thermal,
-+			     int trip_index, enum thermal_trend *trend)
-+{
-+	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
-+	struct thermal_trip *trip;
-+	long t;
-+
-+	trip = acpi_thermal_get_trip(tz, trip_index);
-+	if (!trip || trip->temperature == THERMAL_TEMP_INVALID)
-+		return -EINVAL;
-+
- 	/*
- 	 * tz->temperature has already been updated by generic thermal layer,
--	 * before this callback being invoked
-+	 * before this callback being invoked.
- 	 */
--	i = tz->trips.passive.tc1 * (tz->temperature - tz->last_temperature) +
--	    tz->trips.passive.tc2 * (tz->temperature - tz->trips.passive.temperature);
-+	switch (trip->type) {
-+	case THERMAL_TRIP_PASSIVE:
-+		t = tz->trips.passive.tc1 * (tz->temperature -
-+						tz->last_temperature) +
-+			tz->trips.passive.tc2 * (tz->temperature -
-+						tz->trips.passive.temperature);
-+		if (t > 0)
-+			*trend = THERMAL_TREND_RAISING;
-+		else if (t < 0)
-+			*trend = THERMAL_TREND_DROPPING;
-+		else
-+			*trend = THERMAL_TREND_STABLE;
-+
-+		return 0;
-+
-+	case THERMAL_TRIP_ACTIVE:
-+		t = deci_kelvin_to_millicelsius_with_offset(tz->temperature,
-+							    tz->kelvin_offset);
-+		if (t > trip->temperature) {
-+			*trend = THERMAL_TREND_RAISING;
-+			return 0;
-+		}
- 
--	if (i > 0)
--		*trend = THERMAL_TREND_RAISING;
--	else if (i < 0)
--		*trend = THERMAL_TREND_DROPPING;
--	else
--		*trend = THERMAL_TREND_STABLE;
-+		fallthrough;
- 
--	return 0;
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
- }
- 
- static void acpi_thermal_zone_device_hot(struct thermal_zone_device *thermal)
-
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
