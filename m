@@ -2,287 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B3F75C2A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB5B75C2A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbjGUJLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
+        id S231441AbjGUJLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231580AbjGUJLk (ORCPT
+        with ESMTP id S231304AbjGUJLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:11:40 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73251359B;
-        Fri, 21 Jul 2023 02:11:17 -0700 (PDT)
-Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R6kK72bNTz18MJ8;
-        Fri, 21 Jul 2023 17:09:47 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 21 Jul 2023 17:10:32 +0800
-Message-ID: <0d5195c1-779c-ef2d-7bb9-e3ce570d4e92@huawei.com>
-Date:   Fri, 21 Jul 2023 17:10:31 +0800
+        Fri, 21 Jul 2023 05:11:41 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C21D35A7;
+        Fri, 21 Jul 2023 02:11:20 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-977e0fbd742so268965066b.2;
+        Fri, 21 Jul 2023 02:11:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689930679; x=1690535479;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VM3KGadjDOYHGZ48CafeghyP+SvOLq0YqUvtd5Ztz2M=;
+        b=Ywzlu3+6SQgXc6CxnRdfrOev1LvalA/Mzdak59xCHnJpYFrR7trnuUUuNGI1LWo6p4
+         rkCNo5xMLr3CsWYWWvQGWs+udNN10OImgWhIq6wmRU1TINy++ynyL0JbIa1BcmeRdk1K
+         TRsPwZp/K2v6pXUFlicQ7sW7QmxuCY+irJceospNhpG5zaptQN7lZiikzzmodPJj87ix
+         03CVJE3M/xdwma4oSc5X3XEFyKFV+bP4w9BW5h1iDzkN9pgcSdR4IUr4SCQYHakpfKXU
+         uMb8jdDEA1mBG8qajnD88uvmzVnLCmGKa9Z+r+p7M3NYLpAJN5JJu2XUdogU7oYbkNV9
+         JUug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689930679; x=1690535479;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VM3KGadjDOYHGZ48CafeghyP+SvOLq0YqUvtd5Ztz2M=;
+        b=cYoWWXe4rKSdEkySSdCA2FuHu8jx5u+2K1/G6hNOn12yeC740/O2UxLBMbVKtp98wr
+         Ly6x8wh51eFW2Nr5RKcLIXerBU65uC/ryhOhvJ5iNSEEZ0zVeCnEH4ikl2SPJlK0teti
+         1BmhQC+CPPTNLywrtFeAmtWDctMDHho8XPn3mHgjQze82bHbsvgGJp1eZZlHWI4Os/1P
+         ugtpqrJOTWeeEzSMBodFIahFc8PI2NIEj8Ed6Mc6Sm/HCZHuxWRd/4MJ3xzuLyPlZWKq
+         5b1LH7Jtb4N0H5xaDTDn0ZC52rJ4sMA8x8eqxCo9MENNhJHlR1Ko3gRF2fY3xXgGANmD
+         A2Rg==
+X-Gm-Message-State: ABy/qLargsJATG2nI4XHM+PX8A/+k3EnWdYBwNF+t/rvMqK4Rotx0pTB
+        O+RBrWnCxbuBKbiHIRp+AKvX2QtI1VamM1mzxl4=
+X-Google-Smtp-Source: APBJJlG23C9IQ8C77apuuCpxCvPq7IQ3XI4qgYHy56Nc3u0wfmova7/RDtmPGqd0Fia+p0KcdtIUzY/HD9E5C/4nMG8=
+X-Received: by 2002:a17:906:328f:b0:993:f611:7c95 with SMTP id
+ 15-20020a170906328f00b00993f6117c95mr1123747ejw.39.1689930678523; Fri, 21 Jul
+ 2023 02:11:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH bpf] riscv, bpf: Adapt bpf trampoline to optimized riscv
- ftrace framework
-Content-Language: en-US
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Pu Lehui <pulehui@huaweicloud.com>, <bpf@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Guo Ren <guoren@kernel.org>, Song Shuai <suagrfillet@gmail.com>
-References: <20230715090137.2141358-1-pulehui@huaweicloud.com>
- <87lefdougi.fsf@all.your.base.are.belong.to.us>
- <63986ef9-10a4-bcef-369d-0bad28b192d1@huawei.com>
- <87o7k8udzj.fsf@all.your.base.are.belong.to.us>
- <b5977c5d-c434-7b4c-89f3-d575ee5d04e8@huawei.com>
- <87o7k5fxwx.fsf@all.your.base.are.belong.to.us>
-From:   Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <87o7k5fxwx.fsf@all.your.base.are.belong.to.us>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500020.china.huawei.com (7.221.188.8)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230721090332.1528569-1-victor.liu@nxp.com>
+In-Reply-To: <20230721090332.1528569-1-victor.liu@nxp.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 21 Jul 2023 12:10:42 +0300
+Message-ID: <CAHp75Vd3e66G1jWnrXX7jgcP3bQ5m91Z=Sd=e8hHF4nr39wJXQ@mail.gmail.com>
+Subject: Re: [PATCH v3] backlight: gpio_backlight: Drop output gpio direction
+ check for initial power state
+To:     Ying Liu <victor.liu@nxp.com>
+Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lee@kernel.org" <lee@kernel.org>,
+        "daniel.thompson@linaro.org" <daniel.thompson@linaro.org>,
+        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
+        "deller@gmx.de" <deller@gmx.de>,
+        "andy@kernel.org" <andy@kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "brgl@bgdev.pl" <brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 21, 2023 at 11:58=E2=80=AFAM Ying Liu <victor.liu@nxp.com> wrot=
+e:
+>
+> If gpio pin is in input state but backlight is currently off due to
 
+GPIO
 
-On 2023/7/21 16:53, Björn Töpel wrote:
-> Pu Lehui <pulehui@huawei.com> writes:
-> 
->> On 2023/7/19 23:18, Björn Töpel wrote:
->>> Pu Lehui <pulehui@huawei.com> writes:
->>>
->>>> On 2023/7/19 4:06, Björn Töpel wrote:
->>>>> Pu Lehui <pulehui@huaweicloud.com> writes:
->>>>>
->>>>>> From: Pu Lehui <pulehui@huawei.com>
->>>>>>
->>>>>> Commit 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to
->>>>>> half") optimizes the detour code size of kernel functions to half with
->>>>>> T0 register and the upcoming DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv
->>>>>> is based on this optimization, we need to adapt riscv bpf trampoline
->>>>>> based on this. One thing to do is to reduce detour code size of bpf
->>>>>> programs, and the second is to deal with the return address after the
->>>>>> execution of bpf trampoline. Meanwhile, add more comments and rename
->>>>>> some variables to make more sense. The related tests have passed.
->>>>>>
->>>>>> This adaptation needs to be merged before the upcoming
->>>>>> DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv, otherwise it will crash due
->>>>>> to a mismatch in the return address. So we target this modification to
->>>>>> bpf tree and add fixes tag for locating.
->>>>>
->>>>> Thank you for working on this!
->>>>>
->>>>>> Fixes: 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to half")
->>>>>
->>>>> This is not a fix. Nothing is broken. Only that this patch much come
->>>>> before or as part of the ftrace series.
->>>>
->>>> Yep, it's really not a fix. I have no idea whether this patch target to
->>>> bpf-next tree can be ahead of the ftrace series of riscv tree?
->>>
->>> For this patch, I'd say it's easier to take it via the RISC-V tree, IFF
->>> the ftrace series is in for-next.
->>>
->>
->> alright, so let's make it target to riscv-tree to avoid that cracsh.
->>
->>> [...]
->>>
->>>>>> +#define DETOUR_NINSNS	2
->>>>>
->>>>> Better name? Maybe call this patchable function entry something? Also,
->>>>
->>>> How about RV_FENTRY_NINSNS?
->>>
->>> Sure. And more importantly that it's actually used in the places where
->>> nops/skips are done.
->>
->> the new one is suited up.
->>
->>>
->>>>> to catch future breaks like this -- would it make sense to have a
->>>>> static_assert() combined with something tied to
->>>>> -fpatchable-function-entry= from arch/riscv/Makefile?
->>>>
->>>> It is very necessary, but it doesn't seem to be easy. I try to find GCC
->>>> related functions, something like __builtin_xxx, but I can't find it so
->>>> far. Also try to make it as a CONFIG_PATCHABLE_FUNCTION_ENTRY=4 in
->>>> Makefile and then static_assert, but obviously it shouldn't be done.
->>>> Maybe we can deal with this later when we have a solution?
->>>
->>> Ok!
->>>
->>> [...]
->>>
->>>>>> @@ -787,20 +762,19 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
->>>>>>     	int i, ret, offset;
->>>>>>     	int *branches_off = NULL;
->>>>>>     	int stack_size = 0, nregs = m->nr_args;
->>>>>> -	int retaddr_off, fp_off, retval_off, args_off;
->>>>>> -	int nregs_off, ip_off, run_ctx_off, sreg_off;
->>>>>> +	int fp_off, retval_off, args_off, nregs_off, ip_off, run_ctx_off, sreg_off;
->>>>>>     	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
->>>>>>     	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
->>>>>>     	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
->>>>>>     	void *orig_call = func_addr;
->>>>>> -	bool save_ret;
->>>>>> +	bool save_retval, traced_ret;
->>>>>>     	u32 insn;
->>>>>>     
->>>>>>     	/* Generated trampoline stack layout:
->>>>>>     	 *
->>>>>>     	 * FP - 8	    [ RA of parent func	] return address of parent
->>>>>>     	 *					  function
->>>>>> -	 * FP - retaddr_off [ RA of traced func	] return address of traced
->>>>>> +	 * FP - 16	    [ RA of traced func	] return address of
->>>>>>     	traced
->>>>>
->>>>> BPF code uses frame pointers. Shouldn't the trampoline frame look like a
->>>>> regular frame [1], i.e. start with return address followed by previous
->>>>> frame pointer?
->>>>>
->>>>
->>>> oops, will fix it. Also we need to consider two types of trampoline
->>>> stack layout, that is:
->>>>
->>>> * 1. trampoline called from function entry
->>>> * --------------------------------------
->>>> * FP + 8           [ RA of parent func ] return address of parent
->>>> *                                        function
->>>> * FP + 0           [ FP                ]
->>>> *
->>>> * FP - 8           [ RA of traced func ] return address of traced
->>>> *                                        function
->>>> * FP - 16          [ FP                ]
->>>> * --------------------------------------
->>>> *
->>>> * 2. trampoline called directly
->>>> * --------------------------------------
->>>> * FP - 8           [ RA of caller func ] return address of caller
->>>> *                                        function
->>>> * FP - 16          [ FP                ]
->>>> * --------------------------------------
->>>
->>> Hmm, could you expand a bit on this? The stack frame top 16B (8+8)
->>> should follow what the psabi suggests, regardless of the call site?
->>>
->>
->> Maybe I've missed something important! Or maybe I'm misunderstanding
->> what you mean. But anyway there is something to show. In my perspective,
->> we should construct a complete stack frame, otherwise one layer of stack
->> will be lost in calltrace when enable CONFIG_FRAME_POINTER.
->>
->> We can verify it by `echo 1 >
->> /sys/kernel/debug/tracing/options/stacktrace`, and the results as show
->> below:
->>
->> 1. complete stack frame
->> * --------------------------------------
->> * FP + 8           [ RA of parent func ] return address of parent
->> *                                        function
->> * FP + 0           [ FP                ]
->> *
->> * FP - 8           [ RA of traced func ] return address of traced
->> *                                        function
->> * FP - 16          [ FP                ]
->> * --------------------------------------
->> the stacktrace is:
->>
->>    => trace_event_raw_event_bpf_trace_printk
->>    => bpf_trace_printk
->>    => bpf_prog_ad7f62a5e7675635_bpf_prog
->>    => bpf_trampoline_6442536643
->>    => do_empty
->>    => meminfo_proc_show
->>    => seq_read_iter
->>    => proc_reg_read_iter
->>    => copy_splice_read
->>    => vfs_splice_read
->>    => splice_direct_to_actor
->>    => do_splice_direct
->>    => do_sendfile
->>    => sys_sendfile64
->>    => do_trap_ecall_u
->>    => ret_from_exception
->>
->> 2. omit one FP
->> * --------------------------------------
->> * FP + 0           [ RA of parent func ] return address of parent
->> *                                        function
->> * FP - 8           [ RA of traced func ] return address of traced
->> *                                        function
->> * FP - 16          [ FP                ]
->> * --------------------------------------
->> the stacktrace is:
->>
->>    => trace_event_raw_event_bpf_trace_printk
->>    => bpf_trace_printk
->>    => bpf_prog_ad7f62a5e7675635_bpf_prog
->>    => bpf_trampoline_6442491529
->>    => do_empty
->>    => seq_read_iter
->>    => proc_reg_read_iter
->>    => copy_splice_read
->>    => vfs_splice_read
->>    => splice_direct_to_actor
->>    => do_splice_direct
->>    => do_sendfile
->>    => sys_sendfile64
->>    => do_trap_ecall_u
->>    => ret_from_exception
->>
->> it lost the layer of 'meminfo_proc_show'.
-> 
-> (Lehui was friendly enough to explain the details for me offlist.)
-> 
-> Aha, now I get what you mean! When we're getting into the trampoline
-> from the fentry-side, an additional stack frame needs to be
-> created. Otherwise, the unwinding will be incorrect.
-> 
-> So (for the rest of the readers ;-)), the BPF trampoline can be called
-> from:
-> 
-> A. A tracing point of view; Here, we're calling into the trampoline via
->     the fentry/patchable entry. In this scenario, an additional stack
->     frame needs to be constructed for proper unwinding.
-> 
-> B. For kfuncs. Here, the call into the trampoline is just a "regular
->     call", and no additional stack frame is needed.
-> 
-> @Guo @Song Is the RISC-V ftrace code creating an additional stack frame,
-> or is the stack unwinding incorrect when the fentry is patched?
-> 
-> 
-> Thanks for clearing it up for me, Lehui!
-> 
+> default pull downs, then initial power state is set to FB_BLANK_UNBLANK
+> in DT boot mode with phandle link and the backlight is effectively
+> turned on in gpio_backlight_probe(), which is undesirable according to
+> patch description of commit ec665b756e6f ("backlight: gpio-backlight:
+> Correct initial power state handling").
+>
+> Quote:
 
-It's my honor, will keep push riscv-bpf.
+> ---
+> If in DT boot we have phandle link then leave the GPIO in a state which t=
+he
+> bootloader left it and let the user of the backlight to configure it furt=
+her.
+> ---
 
-> 
-> Björn
+Just use ---8<--- or drop these completely, as your (commit message of
+the) patch is broken now.
+
+>
+> So, let's drop output gpio direction check and only check gpio value to s=
+et
+
+GPIO
+GPIO
+
+> the initial power state.
+>
+> Fixes: 706dc68102bc ("backlight: gpio: Explicitly set the direction of th=
+e GPIO")
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+
+--=20
+With Best Regards,
+Andy Shevchenko
