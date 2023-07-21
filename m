@@ -2,164 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 448AF75BBB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 03:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C0275BBB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 03:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjGUBJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 21:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43690 "EHLO
+        id S229863AbjGUBLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 21:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjGUBJk (ORCPT
+        with ESMTP id S229457AbjGUBLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 21:09:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D70E75;
-        Thu, 20 Jul 2023 18:09:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D1DB961CE4;
-        Fri, 21 Jul 2023 01:09:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65BB8C433C7;
-        Fri, 21 Jul 2023 01:09:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689901778;
-        bh=/8oyoPLz85rY3rKdG/0bkXtNnDYYoJy6cS+Fc2EF9Fw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=H1Kcc4cJl9ZNDC42pfT4pgfkH2WYKNP1xitzz4/h5+gbRWOhoQynLo8x1u2tlO/tn
-         FZRgLoMturKh3QCcc8kZTx8coFNYt/YnwjbvBkTTGNTfduhOdII0UFFCxh0xBbDcmf
-         VOjT/u4hHlCfHaqFZZaKuTWaEEq7hQYtY+rfyGV/qHYnDEJXy/b4oCzb/0/z04JKzU
-         XtLkAgAM3BfHTe/lq1l7BZqmjs+bWot8N8duO19kwCvHxfZNvglciSHDt7xg7n4EC+
-         K+T0mMDEIalbW+15M16oPMIix20N3QsRCxfayJUsyzOzo64nJ67ozdttsUpnXkN3i3
-         pVqX0XGXjFbIA==
-Date:   Fri, 21 Jul 2023 10:09:31 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Nick Alcock <nick.alcock@oracle.com>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Alessandro Carminati <alessandro.carminati@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Viktor Malik <vmalik@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-kbuild@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <eugene.loh@oracle.com>,
-        <kris.van.hees@oracle.com>, <live-patching@vger.kernel.org>
-Subject: Re: [PATCH v2] scripts/link-vmlinux.sh: Add alias to duplicate
- symbols for kallsyms
-Message-Id: <20230721100931.b366ecfbeb09cba01c73d47a@kernel.org>
-In-Reply-To: <87wmyu7n5t.fsf@esperi.org.uk>
-References: <ZLVxUQiC5iF+xTPQ@bombadil.infradead.org>
-        <20230714150326.1152359-1-alessandro.carminati@gmail.com>
-        <20230717105240.3d986331@gandalf.local.home>
-        <874jm088ah.fsf@esperi.org.uk>
-        <6edbfe7b-aec4-2b3c-2f85-42e418ab3d99@intel.com>
-        <87wmyu7n5t.fsf@esperi.org.uk>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 20 Jul 2023 21:11:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E00AE75;
+        Thu, 20 Jul 2023 18:11:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=V/2ey4BODOXs91gbtdZpWPHT0tSIRcVvtYaAB1e+t1E=; b=sbQP7GJscgBh2rBDtbFD9fpXdP
+        HGdwrVE1r6B1hEcnWCmthYiWJ2HQuipu7uGlmdNqcwbzHGwEBxk54wmBMm0kiACUpj2KU6iqtpzNI
+        islNcmDeV4uhhlRXWDqpfkNd5eLEL1CGm8cuGEB/PWPQVJHwa3cJFnRarnINSMGWnyqjk+K40ybTG
+        lILPHDraNqfTM4ZCqRbxOExKUMhDw/zZJaZE6ywu5NvI5q9OAPROufGiP89IsOyv9hvb3wClXXn5U
+        QEjTmufDD8TIlvAf6+8O/20xfHkV6EpauP/Tv9D2IWOHXaRSsSf9R9T9Bzap+83cjnIhlen2ND9NP
+        TUpCWz0A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qMefw-000cgY-0k; Fri, 21 Jul 2023 01:11:20 +0000
+Date:   Fri, 21 Jul 2023 02:11:19 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org,
+        debian-ports <debian-ports@lists.debian.org>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+Message-ID: <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
+References: <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
+ <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
+ <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
+ <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
+ <ZLlvII/jMPTT32ef@casper.infradead.org>
+ <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de>
+ <ZLl2Fq35Ya0cNbIm@casper.infradead.org>
+ <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org>
+ <ZLmzSEV6Wk+oRVoL@dread.disaster.area>
+ <60b57ae9-ff49-de1d-d40d-172c9e6d43d5@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <60b57ae9-ff49-de1d-d40d-172c9e6d43d5@linux-m68k.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023 14:00:46 +0100
-Nick Alcock <nick.alcock@oracle.com> wrote:
-
-> On 19 Jul 2023, Alexander Lobakin verbalised:
+On Fri, Jul 21, 2023 at 11:03:28AM +1000, Finn Thain wrote:
+> On Fri, 21 Jul 2023, Dave Chinner wrote:
 > 
-> > From: Nick Alcock <nick.alcock@oracle.com>
-> > Date: Wed, 19 Jul 2023 12:12:06 +0100
-> >>> Yes, please coordinate with Nick and review each other's work, now we
-> >>> have two separate efforts with different reasons but hopefully we'll
-> >
-> > Three efforts[0] :D Mine went unnoticed unfortunately, so I switched to
-> > other projects then.
+> > > I suspect that this is one of those catch-22 situations: distros are 
+> > > going to enable every feature under the sun. That doesn't mean that 
+> > > anyone is actually _using_ them these days.
 > 
-> It's odd, nobody seems to have noticed these until recently and now
-> suddenly people are crawling out of the woodwork wanting unique
-> addresses :) maybe the ambiguous ones are just getting commonplace
-> enough that they're biting people more often?
+> I think the value of filesystem code is not just a question of how often 
+> it gets executed -- it's also about retaining access to the data collected 
+> in archives, museums, galleries etc. that is inevitably held in old 
+> formats.
 
-Usually, the ambiguous symbols are used as internal functions and
-are easily changed by kernel update. Thus it is only used for debugging.
-On the other hand, exposed symbols are considered as more stable (It's
-not really that stable.) so users tend to use that.
+That's an argument for adding support to tar, not for maintaining
+read/write support.
 
-BTW, note that `perf probe` and kprobe-events already supported that by
-'_text+OFFSET' style to point those functions (`perf probe` convert the
-given 'function@file-path' place to '_text+OFFSET' using DWARF and ELF).
-BPF doesn't because it only supports "function name". (I'm not sure how
-Dtrace support it)
-
-If we really consider to improve BPF trace to trace such internal functions,
-I think you should consider to reuse perf-probe's code to find actual
-address and convert it to '_text+OFFSET' style to specify the probe point.
-
-I think this still useful if user can identify the traced symbol from the
-source code line, easily without DWARF analysis. And BPF also need to
-support "SYMBOL+OFFSET" style probe points.
-
+> > We need to much more proactive about dropping support for unmaintained 
+> > filesystems that nobody is ever fixing despite the constant stream of 
+> > corruption- and deadlock- related bugs reported against them.
 > 
-> > My idea was to give relative path from the kernel root to the objfile,
-> > as we have a good bunch of non-unique "filename + symbol name" pairs.
+> IMO, a stream of bug reports is not a reason to remove code (it's a reason 
+> to revert some commits).
 > 
-> I considered that, but unfortunately that has two problems to a raging
-> perfectionist like me:
-> 
->  - the objfile probably won't exist except if you're actually doing
->    kernel development, since kernel build trees are big enough that a
->    lot of people delete them after building or ship kernels to other
->    machines: if someone else built your kernel (overwhelmingly common
->    among non-kernel-devs) the objfiles are sure to be absent. (But an
->    option to not truncate the names when you know they won't be absent
->    might be a good idea, though this pushes space requirements up by
->    hundreds of kilobytes so it should probably be off by default.)
+> Anyway, that stream of bugs presumably flows from the unstable kernel API, 
+> which is inherently high-maintenance. It seems that a stable API could be 
+> more appropriate for any filesystem for which the on-disk format is fixed 
+> (by old media, by unmaintained FLOSS implementations or abandoned 
+> proprietary implementations).
 
-As I said, these internal symbol tracing is usually only for debugging
-the kernel. So I think this is not so problematic.
+You've misunderstood.  Google have decided to subject the entire kernel
+(including obsolete unmaintained filesystems) to stress tests that it's
+never had before.  IOW these bugs have been there since the code was
+merged.  There's nothing to back out.  There's no API change to blame.
+It's always been buggy and it's never mattered before.
 
-Thank you,
+It wouldn't be so bad if Google had also decided to fund people to fix
+those bugs, but no, they've decided to dump them on public mailing lists
+and berate developers into fixing them.
 
-> 
->  - even giving a path to the kernel module on disk (much lower
->    resolution and vulnerable to ambiguity again) is unreliable because
->    there's absolutely no guarantee that any given process can see any of
->    them: they might be in a different fs namespace or the modules might
->    only be present in an initramfs (hell, I even know setups which
->    *compile* the modules needed for rootfs mounting in the initramfs!
->    Yes this is borderline insane, yes it happens). More commonly, they
->    might be compressed using any of a number of compressors, changing
->    the name, and the kernel has no idea which compressor might have been
->    used (not unless you want it to go and look, and, well, wandering
->    around over the fs hunting down .ko.* files from kernelspace to get
->    their names right is *not* my idea of a good time! It's hard enough
->    to get that right from userspace, honestly, even with kmod helping.)
-> 
->    The most you could do would be to provide a key you could use with
->    kmod to dig the real modules out from userspace. Partial names are as
->    good as anything for that :)
-> 
-> So all the objfile names are, when it comes down to it, is names with no
-> intrinsic meaning: even if they're filenames of some kind, tools can't
-> rely on being able to access those files. (For my most common use case,
-> using a tracer on an enterprise-built production kernel, they'd almost
-> never be able to.)
-> 
-> So you might as well treat the objfile names as arbitrary string keys
-> that might be a memory-jogger for humans, which means you can chop
-> boring bits off them to save space :)
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
