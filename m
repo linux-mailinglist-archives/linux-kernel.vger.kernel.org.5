@@ -2,89 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6357175C4D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3478975C4DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbjGUKlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
+        id S230376AbjGUKmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjGUKlm (ORCPT
+        with ESMTP id S230468AbjGUKmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:41:42 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED621701
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:41:40 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fbaef9871cso2895544e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:41:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689936099; x=1690540899;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fdhi2NedOY3rPKrFENYE2Nl2LSqlJJTZXcd9Gne5I04=;
-        b=i0dHRxpu0kna0O9NCPmLzRXgf88kJo2ZgVSCbvTcaHo0mvuQItb/M1C6iAu7Md/gZx
-         KaXjyNUf302VW15XVbpy6EjR50AYuTV87PXUiCROKdnQp/wY2D7BtcEMk7/gdfnqY6C0
-         25k6OfooUTt6AV5HWp7VtRZztB3kwwmBsLSA/1S3Dk2c+a08XlZmCWii51hWtTmu+/O2
-         2PQqfKhS6jORVc11xZDYTGEj5k3FKXOebWIYS/kmo4/AdiYRT3w1QOK7R++f6N9ijv4I
-         rXbP3OHTPFtu+RAxG00rIl3uJyTYioqmUAlEf66E6PgoYhsrDKBysFVHd/sIX1eOlmTW
-         sYgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689936099; x=1690540899;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fdhi2NedOY3rPKrFENYE2Nl2LSqlJJTZXcd9Gne5I04=;
-        b=Di4pNjXkAyiz1EJvMBCfrqvdmziYeaRmzx/bVMxdiuDJcJsg1Gm1UAAYYAa5+imx1W
-         S2LuNIjDvvKot1xAAvgIIPvYMSEblnEYb800AknpJ7lqRh/da2/XBnELw9jGBBbLPCg6
-         UJoPtIWI08VoIp+NMTdM3LRY4PMZV1+lFQpcjruf8LiE+De0xuUXxK7l5NRF+57OW+Xf
-         cjxTRjXjwcFLyb8ri3geNljUO6sxweAJar/N9b/wl8N0rHbStLI66z+wqdLdZAGYDjCJ
-         tDEvJF3+G8EzDzzX/tzTEyaqJJ/0T1wEA/GKKSSu/fDXzDVNmV1cUlerjSuTL8q5OcZQ
-         XR8g==
-X-Gm-Message-State: ABy/qLaiUCSo4aDoMJ6W7MgQx80RrGIepiHNi6R+1a18Rz0/nWmt0HJ8
-        5VHgAquxg9sq+qTqYMV/0sbnlw==
-X-Google-Smtp-Source: APBJJlFQmFvK48oV49nMp/IbxPuefxmFnwY291qWfYvu5RzStg53uV3nZ6Q24KNkC6P/NA8VabpC3g==
-X-Received: by 2002:ac2:5e3a:0:b0:4f9:56b8:45de with SMTP id o26-20020ac25e3a000000b004f956b845demr977055lfg.38.1689936099113;
-        Fri, 21 Jul 2023 03:41:39 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id w6-20020a5d4b46000000b0031590317c26sm3806487wrs.61.2023.07.21.03.41.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 03:41:38 -0700 (PDT)
-Message-ID: <97756604-0d35-aaff-7d2b-2cf65c0b4623@linaro.org>
-Date:   Fri, 21 Jul 2023 12:41:35 +0200
+        Fri, 21 Jul 2023 06:42:15 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF5D19A6
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:42:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689936132; x=1721472132;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YJlPOuKgHIq7wccQKnt6l+jd6D94pZUedrcfoFEHae4=;
+  b=WhOo9qKxuBRCjv+r2zMOTKU7JyjTUg+o3oQZzdurw+l1BtyXdyVCXysH
+   h4YRQd+Js5obOgRNsChtD8jQiQQzIdPjcQvm2r/IiR6hv1s5oraaMr1OS
+   /528DMkdHIMQrkhqvB/8HmFZFD07hp7WlD9EiKYc9ZmN5Y9Kr3nChgJkE
+   JvsVRnUywRBqN/hE5vD/JJvin24w4e7Z87wtQTUIpGzLPVIyCRz6x6EXm
+   vvfzyPcphYREXjnGIA9ACi7nOFTCLm/GTcvgPfOT+afCsi7Qxbm5r6FFP
+   l2wsgqexmvr0CU4I+NEffrqQ0A9bob0HB9EJKt1Fb7IpUZVsGI4vE48Nz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="367031883"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="367031883"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 03:42:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="838510268"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="838510268"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Jul 2023 03:42:10 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qMnaK-000WQ3-2e;
+        Fri, 21 Jul 2023 13:42:08 +0300
+Date:   Fri, 21 Jul 2023 13:42:08 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v1 1/1] ALSA: korg1212: Re-use sockptr_t and respective
+ APIs
+Message-ID: <ZLphAJG4Tz8zLUSN@smile.fi.intel.com>
+References: <20230721100146.67293-1-andriy.shevchenko@linux.intel.com>
+ <878rb9h901.wl-tiwai@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v6 1/3] dt-bindings: arm: fsl: Add VAR-SOM-MX6 SoM with
- Custom Board
-To:     James Hilliard <james.hilliard1@gmail.com>,
-        devicetree@vger.kernel.org
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marek Vasut <marex@denx.de>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Stefan Wahren <stefan.wahren@chargebyte.com>,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230721103350.3684483-1-james.hilliard1@gmail.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230721103350.3684483-1-james.hilliard1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878rb9h901.wl-tiwai@suse.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,21 +70,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/2023 12:33, James Hilliard wrote:
-> Add support for Variscite i.MX6Q VAR-SOM-MX6 SoM with Custom Board.
+On Fri, Jul 21, 2023 at 12:08:46PM +0200, Takashi Iwai wrote:
+> On Fri, 21 Jul 2023 12:01:46 +0200,
+> Andy Shevchenko wrote:
+> > 
+> > The sockptr_t (despite the naming) is a generic type to hold kernel
+> > or user pointer and there are respective APIs to copy data to or
+> > from it. Replace open coded variants in the driver by them.
 > 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> While I see the benefit, I feel this is very confusing.  If we use the
+> API for a generic use, it should be renamed at first.
+> 
+> Also, the current function actually follows the call pattern, and we
+> know in the caller side whether it's called for a kernel pointer or a
+> user pointer.  So, if any, the PCM core callbacks should be revised to
+> use a generic pointer instead of fiddling in each driver side.
 
-I asked to drop it, because patch changed significantly, so Conor should
-re-ack it.
+Any suggestion for the name?
+And I believe for the bigger series the new callback should be added first.
 
-Anyway, it's third patch within 3 hours. Give people a chance to review
-your series. One patchset per day, usually.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> ---
-
-
-Best regards,
-Krzysztof
 
