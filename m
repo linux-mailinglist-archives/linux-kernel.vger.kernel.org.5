@@ -2,82 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E12C075D060
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A1375D062
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbjGURKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 13:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59186 "EHLO
+        id S229907AbjGURLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 13:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjGURKw (ORCPT
+        with ESMTP id S229633AbjGURLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 13:10:52 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1C010C3;
-        Fri, 21 Jul 2023 10:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1689959448; x=1690564248; i=rwarsow@gmx.de;
- bh=1Yn5PYR+qi93SYdXj+ktO/6J1mUQKrGIuxJAgYEDHzM=;
- h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
- b=R/azHfoiQxe4EOxUUHNIE2xWk7UYHxPhPdsxxr4sSPc5Cs2FPGuBiqg0L9avfNiojXD3L4u
- ubymZfThcpeFC8aCjB/qOogZqtMazbNsn/mrUU4h/Q1OzHAOpfikotSt/mw3dIYSeiBfnh34p
- 5rzSTj3VP3Q8E7kx+Eb8qTB6q5YO0n0k1OpimUn69XHdVMDDEwWKEfIkAoQn+enSVQrofD+KH
- JUrfweahFKPXCMDZQToSitVJcMZiecODXELKU2nbcTFBhO6yo9ksfeqQ70eWg2M9QJKIeD1dO
- Uvy5wtN0T9fGUUHoBwUNZ/uWoiP4kQV6G5SnKQ3Yr1DR921GoHbg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.100.20] ([46.142.34.130]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MNswE-1qXwHY1buy-00OEMm; Fri, 21
- Jul 2023 19:10:48 +0200
-Message-ID: <d9035b3c-ad44-f4dd-976a-0b612cfa9dd4@gmx.de>
-Date:   Fri, 21 Jul 2023 19:10:47 +0200
+        Fri, 21 Jul 2023 13:11:11 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2376A1710;
+        Fri, 21 Jul 2023 10:11:07 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 17:11:04 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1689959465;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vi6cCicNwWyAB5LUQqwwsECz3OgXnLAG3wsxIu9BQfc=;
+        b=ae6Kr3A701kX8L/iXG/2GCRc7slZW36BFBPMpV/Qxf5mDI/Y3wSXMos0OXYYWLtx7Lpr+o
+        yBR6zjsmgSf0cbrxoEMxIKWcDxTS6StYPWAP0S9pDkMqX+XPN8g6jSB8aBj1sr7cnsRztY
+        l1ITNaJKvvwcVI6RPROxSH+dnzHZQ4DEDB6+Z1nMqlsFEoPzBVS06rcdQLPFOukZvL6ZYo
+        oWlUPYLs+UXpr6UT7kZp5lnWrFqjFujP8RfzQ2GW70plA2FAA4/vFdR71HYzqmMuz50cdD
+        fSWON0v6Sp0pZy5TNWnuikOXALYFrQqFtHU+zOjCUk7z/DYKXUQK/h/GIMSl4A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1689959465;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vi6cCicNwWyAB5LUQqwwsECz3OgXnLAG3wsxIu9BQfc=;
+        b=oX5LeEzkMKLOYxW+2u/emjsoXV+jOLDkM3sVAwkXSAv9vsPyS3MKzqcDlAQn28IJ8rj29S
+        ybSxJBDH0HC7OEDw==
+From:   "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Prevent duplicate error records
+Cc:     "Borislav Petkov (AMD)" <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Aristeu Rozanski <aris@ruivo.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230515143225.GC4090740@cathedrallabs.org>
+References: <20230515143225.GC4090740@cathedrallabs.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Ronald Warsow <rwarsow@gmx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Language: de-DE, en-US
-Subject: Re: [PATCH 6.4 000/292] 6.4.5-rc1 review
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <168995946413.28540.2865986697159776163.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:0bDbVDHZ9uoyb1vsEcMy9o9WtXj4X3hb3EA7i5GPTSfSncwr0e5
- rT1rRUH2fMI5MFCHMZYE8dIkTimKqXr2Y7oSJRqqtNM81vAzNQc/UWplwzIoeBgecFqNn91
- zjcsOw5jfaDIUOKMF9PUyn6zLUf8Cq4xJo5zKlXwedxGDwY7tDdM+j8bK/7o9Sjl/9s+mMa
- Y+DDKBn+SjHVdt5ScptnA==
-UI-OutboundReport: notjunk:1;M01:P0:CGwMCBC9Zi8=;mZx9ksxvMdWfXEqEPz1AoXtwp8C
- R6gHgdcmUNgILJkYczR9zsgE3Bk+7yFK2YkwjeD1GDYnX+FAqzAIekJqion9aHm5RZQYklukH
- 8zbG5gvv0mn1ZTKhEJnHKvoVl8fRlgAOncAxkHg+tRPJE1/rdxgnCoNYYtVnuL2XClbIuOciT
- dJFrTizMa5D/LTk/lPugt9k2uQbbu45daKVWVex7gu6MnRTlpS53i7PfCnJQQMu2kx/OxPrYw
- hcjlmU3cnTIWNAa8TQzVFDOMi1Ng8/FbR/x1sUnFZKj2Gga7WVth3Pg9dPSulkD6jyccuI8/2
- 4A5Mlw7ZdoybWYwiH8Yc2NFa+/CqAd2A1sfbB+9RmRIsgPdBYCJpIHM2j5YwkFk41hsWifrUU
- ZZBlMQVgn32qqyfQPkxzWWNqBV4CadwrrzKVCLIC5cKKa8USwxN0LiF4OftyP80A8qTrspYT9
- XGVbvtZ7GBltI6lRxEN9XSTtEQsdiX2dlYowIKDYjVlD30ScJfUSW5gZOqT+b19sFeBjT13aI
- 6G27accvSIZW3E/v+GCFuZP+Pzn1AkHvSVclefAwRa4P85NE3VTrq8A/3sfoo17LQN3xaE/+h
- wGCLDYdTJP5/itqHn72qHAVO6Fhk/KvX35/csdxgwLxrARAI7I9lwZz6cT88bGaPic9gMGMyW
- lE/A4RaL5sfhAQrHvRHM5LRLkyGscWbx8yb7R+orE2WuyAJYVXOfW2gD8OyQs3d8l3Z6YsRcN
- aY/QiwKKQ+J6Ar+O7pnRXWqh4u8LyDZNQ5vv1dnQ57a3rzf4b3/d3UcviaSJgAX5GE+lsm2rf
- U9RmXcG1h84bkijBPiZKrANJk5uBvLNcSHjma96Fm/scLaMOeSilHFZnqNLM7nFwPiWa96YFh
- QktSJn6z5bcOb5EIwNPHOB9Y3GOyOrEzG09FUPruDfbni4H9OZyMFl3p3EBSfLxCrhgPbBYZq
- sQratw==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
+The following commit has been merged into the ras/core branch of tip:
 
-6.4.5-rc1
+Commit-ID:     c3629dd7e67d6ec5705d33b0de0d142c972fe573
+Gitweb:        https://git.kernel.org/tip/c3629dd7e67d6ec5705d33b0de0d142c972fe573
+Author:        Borislav Petkov (AMD) <bp@alien8.de>
+AuthorDate:    Wed, 19 Jul 2023 14:19:50 +02:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Fri, 21 Jul 2023 18:55:46 +02:00
 
-compiles, boots and runs here on x86_64
-(Intel Rocket Lake, i5-11400)
+x86/mce: Prevent duplicate error records
 
-Thanks
+A legitimate use case of the MCA infrastructure is to have the firmware
+log all uncorrectable errors and also, have the OS see all correctable
+errors.
 
-Tested-by: Ronald Warsow <rwarsow@gmx.de>
+The uncorrectable, UCNA errors are usually configured to be reported
+through an SMI. CMCI, which is the correctable error reporting
+interrupt, uses SMI too and having both enabled, leads to unnecessary
+overhead.
 
+So what ends up happening is, people disable CMCI in the wild and leave
+on only the UCNA SMI.
+
+When CMCI is disabled, the MCA infrastructure resorts to polling the MCA
+banks. If a MCA MSR is shared between the logical threads, one error
+ends up getting logged multiple times as the polling runs on every
+logical thread.
+
+Therefore, introduce locking on the Intel side of the polling routine to
+prevent such duplicate error records from appearing.
+
+Based on a patch by Aristeu Rozanski <aris@ruivo.org>.
+
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Tested-by: Tony Luck <tony.luck@intel.com>
+Acked-by: Aristeu Rozanski <aris@ruivo.org>
+Link: https://lore.kernel.org/r/20230515143225.GC4090740@cathedrallabs.org
+---
+ arch/x86/kernel/cpu/mce/core.c     |  9 ++++++++-
+ arch/x86/kernel/cpu/mce/intel.c    | 19 ++++++++++++++++++-
+ arch/x86/kernel/cpu/mce/internal.h |  1 +
+ 3 files changed, 27 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 89e2aab..b8ad5a5 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1608,6 +1608,13 @@ static void __start_timer(struct timer_list *t, unsigned long interval)
+ 	local_irq_restore(flags);
+ }
+ 
++static void mc_poll_banks_default(void)
++{
++	machine_check_poll(0, this_cpu_ptr(&mce_poll_banks));
++}
++
++void (*mc_poll_banks)(void) = mc_poll_banks_default;
++
+ static void mce_timer_fn(struct timer_list *t)
+ {
+ 	struct timer_list *cpu_t = this_cpu_ptr(&mce_timer);
+@@ -1618,7 +1625,7 @@ static void mce_timer_fn(struct timer_list *t)
+ 	iv = __this_cpu_read(mce_next_interval);
+ 
+ 	if (mce_available(this_cpu_ptr(&cpu_info))) {
+-		machine_check_poll(0, this_cpu_ptr(&mce_poll_banks));
++		mc_poll_banks();
+ 
+ 		if (mce_intel_cmci_poll()) {
+ 			iv = mce_adjust_timer(iv);
+diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
+index 95275a5..f532355 100644
+--- a/arch/x86/kernel/cpu/mce/intel.c
++++ b/arch/x86/kernel/cpu/mce/intel.c
+@@ -56,6 +56,13 @@ static DEFINE_PER_CPU(int, cmci_backoff_cnt);
+  */
+ static DEFINE_RAW_SPINLOCK(cmci_discover_lock);
+ 
++/*
++ * On systems that do support CMCI but it's disabled, polling for MCEs can
++ * cause the same event to be reported multiple times because IA32_MCi_STATUS
++ * is shared by the same package.
++ */
++static DEFINE_SPINLOCK(cmci_poll_lock);
++
+ #define CMCI_THRESHOLD		1
+ #define CMCI_POLL_INTERVAL	(30 * HZ)
+ #define CMCI_STORM_INTERVAL	(HZ)
+@@ -426,12 +433,22 @@ void cmci_disable_bank(int bank)
+ 	raw_spin_unlock_irqrestore(&cmci_discover_lock, flags);
+ }
+ 
++/* Bank polling function when CMCI is disabled. */
++static void cmci_mc_poll_banks(void)
++{
++	spin_lock(&cmci_poll_lock);
++	machine_check_poll(0, this_cpu_ptr(&mce_poll_banks));
++	spin_unlock(&cmci_poll_lock);
++}
++
+ void intel_init_cmci(void)
+ {
+ 	int banks;
+ 
+-	if (!cmci_supported(&banks))
++	if (!cmci_supported(&banks)) {
++		mc_poll_banks = cmci_mc_poll_banks;
+ 		return;
++	}
+ 
+ 	mce_threshold_vector = intel_threshold_interrupt;
+ 	cmci_discover(banks);
+diff --git a/arch/x86/kernel/cpu/mce/internal.h b/arch/x86/kernel/cpu/mce/internal.h
+index d2412ce..ed4a71c 100644
+--- a/arch/x86/kernel/cpu/mce/internal.h
++++ b/arch/x86/kernel/cpu/mce/internal.h
+@@ -274,4 +274,5 @@ static __always_inline u32 mca_msr_reg(int bank, enum mca_msr reg)
+ 	return 0;
+ }
+ 
++extern void (*mc_poll_banks)(void);
+ #endif /* __X86_MCE_INTERNAL_H__ */
