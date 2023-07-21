@@ -2,114 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CF675CC4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7E975CC52
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbjGUPp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:45:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
+        id S231839AbjGUPqK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 Jul 2023 11:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbjGUPp4 (ORCPT
+        with ESMTP id S232203AbjGUPqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:45:56 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36D5171B;
-        Fri, 21 Jul 2023 08:45:55 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b89600a37fso13503825ad.2;
-        Fri, 21 Jul 2023 08:45:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689954355; x=1690559155;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=H8EVjmEF1PC6BFutgsm7sY/zDflhdcRqTFA4NcPqT9Y=;
-        b=ZoMPoD1///6JXtY5UlkEA5f/UptjI9MSZi9re4nRDRiN6ZNu9q4yLLrkOcZMzJLNlG
-         NIF6Fr8C32HjdW4blfTOaECkuPzoKAmwd51pqbkDhWyMPFxE57w5wv9B5Nmkp3dFiHXE
-         vZ91oJXyHRBExgVwK+1ko3ZuXGyR+mbUl47M41UMOUYe8dxJWnBheybdUTnvS5SiOJHV
-         1zOBrDlawuzhpddxLYhTgNb0D0zmJqlDcBBGQSaYKoW8hXFaPpDzgs6abVTiVdVeT5Kr
-         IKZxP59ES0ve9neJoB0itBJS7WJ8JUqVYMVxyjCk2GJ6KgEoysRNyvq1H+Dqlp+lSk+f
-         V76Q==
+        Fri, 21 Jul 2023 11:46:08 -0400
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980F719A1;
+        Fri, 21 Jul 2023 08:46:06 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-99b76201110so502266b.1;
+        Fri, 21 Jul 2023 08:46:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689954355; x=1690559155;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H8EVjmEF1PC6BFutgsm7sY/zDflhdcRqTFA4NcPqT9Y=;
-        b=Nv3JtM+P2lVk8ewa+tlxI8BCmalakxY/HYv/jJNmo4tjIWUGZTVDVjtrdsKJAEfdxS
-         W9EJu46lwNelSn788+Q51RsxZrGPk7M7QEN1Jz0K5Vok7aKAw/6i8zNeU147qVV32j8W
-         cpwWPRC4C+FtITLdGgQ+kCUV5sp2/73FeeQNS8ERuELabBmN3yJ0RpD3HHMrlnBG30Sn
-         QEf8vtj6moHdKUYuSb1rYTZp3RVIo9PdB3l/xuz2HV7IlLs3DyEov/3L3lF3Ee/w8xuy
-         tKfuJzCtWjy4YjXS28nllIh4ajxynwJaaICMSHR4+okXY00mt2AQDuPYsnsqQhylM8mm
-         fLCQ==
-X-Gm-Message-State: ABy/qLaUxkesLrGFwdDqBbHr8hcJZ71DTDHD4aGUpYt+cODtJdP+39eU
-        4KSDyANS3ZR4e6tA+3UdnT4KE1xhCfE=
-X-Google-Smtp-Source: APBJJlF2P6idsYUhytjzrZgXRjvCIBZIPKZpcVUNrzTnvKvd7JJf4aQdomf8o0m57HvADmrw6czSeg==
-X-Received: by 2002:a17:902:c946:b0:1b8:78e:7c1 with SMTP id i6-20020a170902c94600b001b8078e07c1mr2254014pla.51.1689954355459;
-        Fri, 21 Jul 2023 08:45:55 -0700 (PDT)
-Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id x15-20020a1709027c0f00b001bb4f9d86ebsm3682297pll.23.2023.07.21.08.45.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 08:45:54 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 21:15:51 +0530
-Message-Id: <87y1j9jmj4.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     shikemeng@huaweicloud.com
-Subject: Re: [PATCH 08/10] ext4: return found group directly in ext4_mb_choose_next_group_goal_fast
-In-Reply-To: <20230721171007.2065423-9-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689954365; x=1690559165;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pGvIa/xbSavlOQUbfsNYc+o6CuZLv/AsmDlHcyaG6tw=;
+        b=Gvq6IP9GOoJYRGHk3sOKVCakNsxMyHcp7XCRi0EVA3T7Dsus9MMDuTotAWNRd9jsuv
+         XC5ZhiFwe7MRdtNJwQkanZg03sXYkLoMWR1a6vG5Ru+exb+cdJGjmb9x6ZSEB1tXLICO
+         i+SpjgorYyy98OiutSqUEuBIt9Wnje1fA1Q0mu5jrRRndYNgbHgEztg+FytXW3OlSqnF
+         Zen8GxjfDguPNZmBsjadIJYL32FKykIM/uC3vwPLw6LbcHLnuXGOIvMm9EnDG7JPGS48
+         ev4JyhBJND/RBwL6gt4XDVhJcG0M2nuUywj4tbw+2SjPI24dN//ZjFJTNoc/PxrEi6Bq
+         kwKw==
+X-Gm-Message-State: ABy/qLYVktjbDNEcX3/czt0Nko2UTdCY2+uqbBznyFzFzRiWifwlKZqm
+        FA7KjCUZdBW3DreXvMoXeFVWSEp3lY6eePum31w=
+X-Google-Smtp-Source: APBJJlHA7wRpEujJotjk7wbsJSyzNtc5iS9PhfO2eienfXnd1i5ITFRJeWo2qI/yIye/Zs4LgU98cLvGh5eW6ejlzos=
+X-Received: by 2002:a17:906:518e:b0:974:5480:6270 with SMTP id
+ y14-20020a170906518e00b0097454806270mr1724059ejk.0.1689954364736; Fri, 21 Jul
+ 2023 08:46:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230721152143.3108017-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20230721152143.3108017-1-kai.heng.feng@canonical.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 21 Jul 2023 17:45:53 +0200
+Message-ID: <CAJZ5v0j=ohJ_oUpCY-F_joty9qq3Mz2Bigqa3dHaFaWP2k6ONQ@mail.gmail.com>
+Subject: Re: [PATCH v3] ACPI: video: Put ACPI video and its child devices to
+ D0 at boot
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, hdegoede@redhat.com
+Cc:     rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
+Thanks for the update!
 
-> Return good group when it's found in loop to remove futher check if good
-> group is found after loop.
+On Fri, Jul 21, 2023 at 5:22 PM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
 >
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> Screen brightness can only be changed once on HP ZBook Fury 16 G10.
+>
+> Vendor identified the root cause as Linux doesn't invoke _PS0 at boot
+> for all ACPI devices:
+>
+>     Scope (\_SB.PC00.GFX0)
+>     {
+>         Scope (DD1F)
+>         {
+>             Method (_PS0, 0, Serialized)  // _PS0: Power State 0
+>             {
+>                 If (CondRefOf (\_SB.PC00.LPCB.EC0.SSBC))
+>                 {
+>                     \_SB.PC00.LPCB.EC0.SSBC ()
+>                 }
+>             }
+>             ...
+>         }
+>         ...
+>     }
+>
+> The \_SB.PC00.GFX0.DD1F is the panel device, and its _PS0 needs to be
+> executed to make the brightness control work properly.
+>
+> _PS0 doesn't get invoked for this device because _PSC is missing,
+> which violates ACPI spec 6.3, section 7.3.6. Commit 7cd8407d53ef
+> ("ACPI / PM: Do not execute _PS0 for devices without _PSC during
+> initialization") tried to workaround missing _PSC on defective
+> firmwares, but got reverted because of regression.
+>
+> So the safest approach is to use acpi_device_fix_up_power_extended() to
+> put ACPI video and its child devices to D0 to workaround the issue.
+>
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217683
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+
+Hans, what do you think?
+
 > ---
->  fs/ext4/mballoc.c | 14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
-
-
-Looks good to me, feel free to add: 
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
--ritesh
-
+> v3:
+>  - Wording change to make it clear it's a firmware issue.
+>  - Specify the device name in comment.
 >
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 412d335583fe..6f8e804905d5 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -960,16 +960,14 @@ static void ext4_mb_choose_next_group_goal_fast(struct ext4_allocation_context *
->  	for (i = mb_avg_fragment_size_order(ac->ac_sb, ac->ac_g_ex.fe_len);
->  	     i < MB_NUM_ORDERS(ac->ac_sb); i++) {
->  		grp = ext4_mb_find_good_group_avg_frag_lists(ac, i);
-> -		if (grp)
-> -			break;
-> +		if (grp) {
-> +			*group = grp->bb_group;
-> +			ac->ac_flags |= EXT4_MB_CR_GOAL_LEN_FAST_OPTIMIZED;
-> +			return;
-> +		}
->  	}
->  
-> -	if (grp) {
-> -		*group = grp->bb_group;
-> -		ac->ac_flags |= EXT4_MB_CR_GOAL_LEN_FAST_OPTIMIZED;
-> -	} else {
-> -		*new_cr = CR_BEST_AVAIL_LEN;
-> -	}
-> +	*new_cr = CR_BEST_AVAIL_LEN;
->  }
->  
->  /*
-> -- 
-> 2.30.0
+> v2:
+>  - Wording
+>  - Bugzilla
+>  - Add comment
+>
+>  drivers/acpi/acpi_video.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
+> index 62f4364e4460..1732780a672b 100644
+> --- a/drivers/acpi/acpi_video.c
+> +++ b/drivers/acpi/acpi_video.c
+> @@ -2027,6 +2027,12 @@ static int acpi_video_bus_add(struct acpi_device *device)
+>         if (error)
+>                 goto err_put_video;
+>
+> +       /*
+> +        * HP ZBook Fury 16 G10 requires ACPI video's child devices have _PS0
+> +        * evaluated to have functional panel brightness control.
+> +        */
+> +       acpi_device_fix_up_power_extended(device);
+> +
+>         pr_info("%s [%s] (multi-head: %s  rom: %s  post: %s)\n",
+>                ACPI_VIDEO_DEVICE_NAME, acpi_device_bid(device),
+>                video->flags.multihead ? "yes" : "no",
+> --
+> 2.34.1
+>
