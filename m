@@ -2,185 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B342B75BFB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E7075BFBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbjGUH1w convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 Jul 2023 03:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55094 "EHLO
+        id S230122AbjGUHak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 03:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjGUH1u (ORCPT
+        with ESMTP id S229783AbjGUHai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 03:27:50 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC64189;
-        Fri, 21 Jul 2023 00:27:47 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 3FD3C24DD54;
-        Fri, 21 Jul 2023 15:27:38 +0800 (CST)
-Received: from EXMBX062.cuchost.com (172.16.6.62) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 21 Jul
- 2023 15:27:36 +0800
-Received: from [192.168.120.43] (171.223.208.138) by EXMBX062.cuchost.com
- (172.16.6.62) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 21 Jul
- 2023 15:27:34 +0800
-Message-ID: <ce3e0ffb-abcd-2392-8767-db460bce4b4b@starfivetech.com>
-Date:   Fri, 21 Jul 2023 15:27:33 +0800
+        Fri, 21 Jul 2023 03:30:38 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3273610F5
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 00:30:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689924637; x=1721460637;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=i/ZKMMFr+QksEJlbZ/iNDpPO/13trm3BPAAGJEwTLq8=;
+  b=dF37p8rCVcis3OvINcKOoNu2eNM2lzWYfOIXkom32Sz0bKq8Gep9Of+i
+   QJ51aWjjD/3jy0N+t5k1iT0Sks/xDn9GG+c/AZgtm4Sqjw1HkjqiKgSZo
+   mvN5VJtK0GY8f0X7D59YtlzVP24QgGiMXglMIOI5M4Du9J3Dm4LF/G3Ce
+   o2Z7PAJnMWQHNPEkItTPIwM2Mjev6foCkI4ZPYbvg/JeoUJ3QmFYkSDh9
+   13dPx7u9JMxYSUQvdCKk5IpF+yvDsGcQrNmYwMIWvniZ69Ql4dP00FuAU
+   Ap4pTMSeb2Umk4bV+rxuz0TZt/E7kMCtnThAbyFFGMX1/OhFJ6PdBlMsq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="366996806"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="366996806"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 00:30:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="724765726"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="724765726"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 00:30:32 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Michal Hocko <mhocko@suse.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [RFC 2/2] mm: alloc/free depth based PCP high auto-tuning
+References: <20230710065325.290366-3-ying.huang@intel.com>
+        <ZK060sMG0GfC5gUS@dhcp22.suse.cz>
+        <20230712090526.thk2l7sbdcdsllfi@techsingularity.net>
+        <871qhcdwa1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <20230714140710.5xbesq6xguhcbyvi@techsingularity.net>
+        <87pm4qdhk4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <20230717135017.7ro76lsaninbazvf@techsingularity.net>
+        <87lefeca2z.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <20230718123428.jcy4avtjg3rhuh7i@techsingularity.net>
+        <87mszsbfx7.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <20230719090518.67g7hascnfcly6hk@techsingularity.net>
+Date:   Fri, 21 Jul 2023 15:28:43 +0800
+In-Reply-To: <20230719090518.67g7hascnfcly6hk@techsingularity.net> (Mel
+        Gorman's message of "Wed, 19 Jul 2023 10:05:18 +0100")
+Message-ID: <87fs5h7mfo.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v1 0/2] Add ethernet nodes for StarFive JH7110 SoC
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Conor Dooley <conor.dooley@microchip.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Yanhong Wang <yanhong.wang@starfivetech.com>,
-        Tommaso Merciai <tomm.merciai@gmail.com>
-References: <20230714104521.18751-1-samin.guo@starfivetech.com>
- <20230720-cardstock-annoying-27b3b19e980a@spud>
- <42beaf41-947e-f585-5ec1-f1710830e556@starfivetech.com>
- <A0012BE7-8947-49C8-8697-1F879EE7B0B7@kernel.org>
-From:   Guo Samin <samin.guo@starfivetech.com>
-In-Reply-To: <A0012BE7-8947-49C8-8697-1F879EE7B0B7@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [171.223.208.138]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX062.cuchost.com
- (172.16.6.62)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Mel Gorman <mgorman@techsingularity.net> writes:
 
-
--------- 原始信息 --------
-主题: Re: [PATCH v1 0/2] Add ethernet nodes for StarFive JH7110 SoC
-From: Conor Dooley <conor@kernel.org>
-收件人: Guo Samin <samin.guo@starfivetech.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Hal Feng <hal.feng@starfivetech.com>, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, netdev@vger.kernel.org
-日期: 2023/7/21
-
-> 
-> 
-> On 21 July 2023 03:09:19 IST, Guo Samin <samin.guo@starfivetech.com> wrote:
->>
->>
->> -------- 原始信息 --------
->> 主题: Re: [PATCH v1 0/2] Add ethernet nodes for StarFive JH7110 SoC
->> From: Conor Dooley <conor@kernel.org>
->> 收件人: Conor Dooley <conor@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Hal Feng <hal.feng@starfivetech.com>, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, netdev@vger.kernel.org, Samin Guo <samin.guo@starfivetech.com>
->> 日期: 2023/7/21
->>
->>> From: Conor Dooley <conor.dooley@microchip.com>
->>>
->>> On Fri, 14 Jul 2023 18:45:19 +0800, Samin Guo wrote:
->>>> This series adds ethernet nodes for StarFive JH7110 RISC-V SoC,
->>>> and has been tested on StarFive VisionFive-2 v1.2A and v1.3B SBC boards.
->>>>
->>>> The first patch adds ethernet nodes for jh7110 SoC, the second patch
->>>> adds ethernet nodes for visionfive 2 SBCs.
->>>>
->>>> This series relies on xingyu's syscon patch[1].
->>>> For more information and support, you can visit RVspace wiki[2].
->>>>
->>>> [...]
->>>
->>> Applied to riscv-dt-for-next, thanks!
->>>
->>> [1/2] riscv: dts: starfive: jh7110: Add ethernet device nodes
->>>       https://git.kernel.org/conor/c/1ff166c97972
->>> [2/2] riscv: dts: starfive: visionfive 2: Add configuration of gmac and phy
->>>       https://git.kernel.org/conor/c/b15a73c358d1
->>>
->>> Thanks,
->>> Conor.
->>
->>
->> Hi Conor，
->>
->> Thank you so much！ 
->>
->> There is a question about the configuration of phy that I would like to consult you.
->>
->> Latest on motorcomm PHY V5[1]: Follow Rob Herring's advice
->> motorcomm,rx-xxx-driver-strength Changed to motorcomm,rx-xxx-drv-microamp .
->> V5 has already received a reviewed-by from Andrew Lunn, and it should not change again.
->>
->> Should I submit another pacthes based on riscv-dt-for-next? 
-> 
-> Huh, dtbs_check passed for these patches,
-> I didn't realise changes to the motorcomm stuff
-> were a dep. for this. I'll take a look later.
+> On Wed, Jul 19, 2023 at 01:59:00PM +0800, Huang, Ying wrote:
+>> > The big remaaining corner case to watch out for is where the sum
+>> > of the boosted pcp->high exceeds the low watermark.  If that should ever
+>> > happen then potentially a premature OOM happens because the watermarks
+>> > are fine so no reclaim is active but no pages are available. It may even
+>> > be the case that the sum of pcp->high should not exceed *min* as that
+>> > corner case means that processes may prematurely enter direct reclaim
+>> > (not as bad as OOM but still bad).
+>> 
+>> Sorry, I don't understand this.  When pages are moved from buddy to PCP,
+>> zone NR_FREE_PAGES will be decreased in rmqueue_bulk().  That is, pages
+>> in PCP will be counted as used instead of free.  And, in
+>> zone_watermark_ok*() and zone_watermark_fast(), zone NR_FREE_PAGES is
+>> used to check watermark.  So, if my understanding were correct, if the
+>> number of pages in PCP is larger than low/min watermark, we can still
+>> trigger reclaim.  Whether is my understanding correct?
+>> 
 >
-Hi Conor,
+> You're right, I didn't check the timing of the accounting and all that
+> occurred to me was "the timing of when watermarks trigger kswapd or
+> direct reclaim may change as a result of PCP adaptive resizing". Even
+> though I got the timing wrong, the shape of the problem just changes.
+> I suspect that excessively large PCP high relative to the watermarks may
+> mean that reclaim happens prematurely if too many pages are pinned by PCP
+> pages as the zone free pages approaches the watermark.
 
-Thanks for taking the time to follow this.
+Yes.  I think so too.  In addition to reclaim, falling back to remote
+NUMA node may happen prematurely too.
 
-After discussing with HAL, I have prepared the code and considered adding the following patch to 
-Motorcomm's patchsetes v6. (To fix some spelling errors in v5[1])
-which will then send patches based on linux-next. What do you think? @Andrew @Conor
+> While disabling the adaptive resizing during reclaim will limit the
+> worst of the problem, it may still be the case that kswapd is woken
+> early simply because there are enough CPUs pinning pages in PCP
+> lists. Similarly, depending on the size of pcp->high and the gap
+> between the watermarks, it's possible for direct reclaim to happen
+> prematurely. I could still be wrong because I'm not thinking the
+> problem through fully, examining the code or thinking about the
+> implementation. It's simply worth keeping in mind the impact elevated
+> PCP high values has on the timing of watermarks failing. If it's
+> complex enough, it may be necessary to have a separate patch dealing
+> with the impact of elevated pcp->high on watermarks.
 
-[1] https://patchwork.kernel.org/project/netdevbpf/cover/20230720111509.21843-1-samin.guo@starfivetech.com
+Sure.  I will keep this in mind.  We may need to check zone watermark
+when tuning pcp->high and free some pages from PCP before falling back
+to other node or reclaiming.
 
-
-
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.3b.dts
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.3b.dts
-@@ -28,8 +28,8 @@
-        motorcomm,tx-clk-adj-enabled;
-        motorcomm,tx-clk-100-inverted;
-        motorcomm,tx-clk-1000-inverted;
--       motorcomm,rx-clk-driver-strength = <3970>;
--       motorcomm,rx-data-driver-strength = <2910>;
-+       motorcomm,rx-clk-drv-microamp = <3970>;
-+       motorcomm,rx-data-drv-microamp = <2910>;
-        rx-internal-delay-ps = <1500>;
-        tx-internal-delay-ps = <1500>;
- };
-@@ -37,8 +37,8 @@
- &phy1 {
-        motorcomm,tx-clk-adj-enabled;
-        motorcomm,tx-clk-100-inverted;
--       motorcomm,rx-clk-driver-strength = <3970>;
--       motorcomm,rx-data-driver-strength = <2910>;
-+       motorcomm,rx-clk-drv-microamp = <3970>;
-+       motorcomm,rx-data-drv-microamp = <2910>;
-        rx-internal-delay-ps = <300>;
-        tx-internal-delay-ps = <0>;
- };
-
-
-Best regards,
-Samin
-
->>
->> [1] https://patchwork.kernel.org/project/netdevbpf/cover/20230720111509.21843-1-samin.guo@starfivetech.com
->>
->>
->> Best regards,
->> Samin
-
+--
+Best Regards,
+Huang, Ying
