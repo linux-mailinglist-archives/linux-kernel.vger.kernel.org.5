@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C189075C716
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D1F75C673
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbjGUMrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 08:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47176 "EHLO
+        id S231293AbjGUMEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230436AbjGUMrA (ORCPT
+        with ESMTP id S231264AbjGUMEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:47:00 -0400
-X-Greylist: delayed 127754 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Jul 2023 05:46:56 PDT
-Received: from mailsenadoer.gob.ar (mailsenadoer.gob.ar [190.183.215.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B406A2D56;
-        Fri, 21 Jul 2023 05:46:56 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mailsenadoer.gob.ar (Postfix) with ESMTP id 8607613E70F2;
-        Wed, 19 Jul 2023 20:22:23 -0300 (-03)
-Received: from mailsenadoer.gob.ar ([127.0.0.1])
-        by localhost (mailsenadoer.gob.ar [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id yEZnGTSqF8zs; Wed, 19 Jul 2023 20:22:23 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mailsenadoer.gob.ar (Postfix) with ESMTP id 6657D13E71AA;
-        Wed, 19 Jul 2023 20:20:22 -0300 (-03)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mailsenadoer.gob.ar 6657D13E71AA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailsenadoer.gob.ar;
-        s=dkimmailsenadoer; t=1689808822;
-        bh=Aor/WLwl4h5zbhGzya8ajVmHiT+79UPpoXAPFDddDh4=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=Y+H7bn1uKPFHClAzE6Rt3a9iEGfFIglZ3gKlxUR530Vk+kqkhRCCzKDtTXf9LNwh3
-         hvb/0+LNPFxb7aqfN7tODIwuw8KQLnxoelzZtNX36OmHOGk4L4Hbp7yQn+FcicXdC8
-         yTnd7Hp6+V3kXSO4X/O9MxU/X/QnVOlpxo83p1NIMul+PvP8kqSDAfJYNSGo0aG2C3
-         ooZZNxmODlzrhHp0mNc96bOSQHVGZ2SmtWPx86Kkt6a4/uFo1Ci/cvvOx837ZhklWh
-         bE5T2l3Q6b3oxektzZiEXp22W3rxoBL6VaLugIjxbXGB//hhF0jUBmtuXJuulk+OBH
-         wX6zoaDDBIiKg==
-X-Virus-Scanned: amavisd-new at mailsenadoer.gob.ar
-Received: from mailsenadoer.gob.ar ([127.0.0.1])
-        by localhost (mailsenadoer.gob.ar [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id U_25FNL1zjpd; Wed, 19 Jul 2023 20:20:22 -0300 (-03)
-Received: from [192.168.0.37] (unknown [41.216.203.66])
-        by mailsenadoer.gob.ar (Postfix) with ESMTPSA id 2FB2113E6E6C;
-        Wed, 19 Jul 2023 20:18:13 -0300 (-03)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 21 Jul 2023 08:04:39 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E653F3A92;
+        Fri, 21 Jul 2023 05:04:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689941056; x=1721477056;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=4uv9zD1JJrwXe0E9I+ej0cnkJSwI8eyQL9t7kRDmIDo=;
+  b=JrMHGcYdzpNM9PLduB1h5Sn+FLeqPXacQsvIBFPFH4chBjg+pDfZ6ksl
+   GGvwSFeQ0lavCreYuva2h76uzqR6rVFmtXQpbfiwcnkevVEVJXERBKjpG
+   KP9Nf/0N812B8pS90yjPIoJzqX79cMVYFwO7zKGZdvNoMCG5ZyVgVBXGM
+   96Ho/79J6m0IhJndRgtx7iaoNjKAkejuoGLPdPaSkHuvQ4gyn3pMPtDEq
+   yvbPmIQrDPaqDGeQvH2NNMl1jLvf5lB9F+C9uO179RPXiN4jIsw7rWIrz
+   t+Gt0ZtZCul+y749XaCYxYrMveKYlVMmXTNXG7X5tGzDv5Tlg/YhUIqSR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="356995884"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="356995884"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 05:02:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="675019242"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="675019242"
+Received: from b4969161e530.jf.intel.com ([10.165.56.46])
+  by orsmga003.jf.intel.com with ESMTP; 21 Jul 2023 05:02:31 -0700
+From:   Haitao Huang <haitao.huang@linux.intel.com>
+To:     tj@kernel.org
+Cc:     cgroups@vger.kernel.org, dave.hansen@linux.intel.com,
+        haitao.huang@linux.intel.com, hannes@cmpxchg.org,
+        jarkko@kernel.org, kai.huang@intel.com, kristen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        lizefan.x@bytedance.com, reinette.chatre@intel.com,
+        vipinsh@google.com, zhiquan1.li@intel.com
+Subject: [PATCH] cgroup/misc: Store atomic64_t reads to u64
+Date:   Fri, 21 Jul 2023 05:02:31 -0700
+Message-Id: <20230721120231.13916-1-haitao.huang@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <ZLcXmvDKheCRYOjG@slm.duckdns.org>
+References: 
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?b?RHVsZcW+aXTDoSB6cHLDoXZhOyDigqwgMiwwMDAsMDAwJzAwIEVVUg==?=
-To:     Recipients <santacruz@mailsenadoer.gob.ar>
-From:   "Pan Richard Wahl" <santacruz@mailsenadoer.gob.ar>
-Date:   Wed, 19 Jul 2023 16:18:04 -0700
-Reply-To: info@wahlfoundation.org
-Message-Id: <20230719231814.2FB2113E6E6C@mailsenadoer.gob.ar>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-        RCVD_IN_MSPIKE_L5,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drah=C3=BD pr=C3=ADteli,
+Change 'new_usage' type to u64 so it can be compared with unsigned 'max'
+and 'capacity' properly even if the value crosses the signed boundary.
 
-Jsem pan Richard Wahl, mega v=C3=ADtez 533 milionu $ v jackpotu Mega Millio=
-ns. Daruji 5 n=C3=A1hodne vybran=C3=BDm lidem. Pokud obdr=C5=BE=C3=ADte ten=
-to e-mail, byl v=C3=A1=C5=A1 e-mail vybr=C3=A1n po roztocen=C3=AD koule. Ve=
-t=C5=A1inu sv=C3=A9ho majetku jsem rozdal rade charitativn=C3=ADch organiza=
-c=C3=AD a organizac=C3=AD. Dobrovolne jsem se rozhodl venovat v=C3=A1m c=C3=
-=A1stku =E2=82=AC 2,000,000'00 EUR jako jednomu z 5 vybran=C3=BDch, abych s=
-i overil sv=C3=A9 v=C3=BDhry prostrednictv=C3=ADm n=C3=AD=C5=BEe uveden=C3=
-=A9 str=C3=A1nky YouTube.
+Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+---
+ kernel/cgroup/misc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-VID=C3=8DTE ME ZDE https://www.youtube.com/watch?v=3Dtne02ExNDrw
+diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+index abbe9aa5cdd1..79a3717a5803 100644
+--- a/kernel/cgroup/misc.c
++++ b/kernel/cgroup/misc.c
+@@ -142,7 +142,7 @@ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg, u64 amount)
+ 	struct misc_cg *i, *j;
+ 	int ret;
+ 	struct misc_res *res;
+-	s64 new_usage;
++	u64 new_usage;
+ 
+ 	if (!(valid_type(type) && cg && READ_ONCE(misc_res_capacity[type])))
+ 		return -EINVAL;
 
-TOTO JE V=C3=81=C5=A0 DAROVAC=C3=8D K=C3=93D: [DFDW43034RW2023]
+base-commit: 32bf85c60ca3584a7ba3bef19da2779b73b2e7d6
+-- 
+2.25.1
 
-Odpovezte na tento e-mail a uvedte k=C3=B3d daru: info@wahlfoundation.org
-
-Douf=C3=A1m, =C5=BEe v=C3=A1m a va=C5=A1=C3=AD rodine udel=C3=A1m radost.
-
-Pozdravy,
-Pan Richard Wahl
