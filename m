@@ -2,129 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A31A75CCA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2406975CCB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbjGUPwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
+        id S231304AbjGUPyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232307AbjGUPvy (ORCPT
+        with ESMTP id S230340AbjGUPxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:51:54 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D83E4204;
-        Fri, 21 Jul 2023 08:51:30 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LEUFWS027381;
-        Fri, 21 Jul 2023 15:50:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=wgnGZHbIoJ+Tel2Emd5h8/25wCwNLdaLGk5yznKHd3w=;
- b=NzBwJRVanLMvvClAzMWoLAf6bfOTURdpO1caceiPvWqyt/q20wHf64fWcqvJTM5Zlx62
- 6BBmcZj5gpRLaE1IdIVFKzt/Tm/1sno4qzxUXNewl2x17Og0vs+VoiI2NdeTEgznDKMr
- ueWHGxt7qLuL4jzg60A/+bc1o6tU4Cu4U5e0QphDXGDiXFFtyr1/caPYYzXX+bdptoeO
- BGCfVfRzLyA8Uzq7X32+knCOV9BEutpaeUlQRj+W1AT855ij4zcGmJ3AEK+vIk37gpb+
- pt+j4/Dc7KQt0FqOH10anRT8HI/1nKrrQuetCfNiseYJdObkVLIK0ytUnvpqWgaLtYa+ LQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ryksesawg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 15:50:41 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36LFoemt002019
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 15:50:40 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 21 Jul
- 2023 08:50:39 -0700
-Message-ID: <43afe706-5765-a8e7-2bbe-d9b21ec7a06e@quicinc.com>
-Date:   Fri, 21 Jul 2023 09:50:32 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH 09/11] arm64: dts: qcom: msm8998: Remove AGGRE2 clock from
- SLPI
+        Fri, 21 Jul 2023 11:53:55 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B21E3C2F;
+        Fri, 21 Jul 2023 08:53:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689954809; x=1721490809;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=yodEFnGZlGujUkKv50OWn70ICwYXjxcUSTuqqxjBSPQ=;
+  b=EpiSBS6p5uaXZXZ7JNB+OxmEW4+4Lcfjd3o7/GpjgPMsieTp73PxtrLx
+   lZWbWxZaO6DYVb1T9f43KsbsVb9FDbJyeDfkP7eh5ifpPZViTsIF3zY8r
+   Ud162rziCIWMcXnSG6MB5zEKCvroqz86gAaxSTz6vnlkPV5O1TV66i6Kj
+   Jo/dspUq2Ev5KKrk/bG2nWlid7SGNna0/FI2pzmtirAyCscIqKwbUhorg
+   JbtNBkwVYamxl3Cov/zQoXziLBKjeAZHdh5vpnLnA42rHIvrsJp37y9nq
+   Wh5nbKsu5SswTkVzEecgMdxMcibifI9OOS8cPBFwmXfCepMZOEo2PQwTE
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="357044447"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="357044447"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 08:53:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="702098205"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="702098205"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga006.jf.intel.com with ESMTP; 21 Jul 2023 08:52:54 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 21 Jul 2023 08:52:34 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 21 Jul 2023 08:52:32 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Fri, 21 Jul 2023 08:52:32 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.46) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Fri, 21 Jul 2023 08:52:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aXDRvqv3zqWf9Gq+CMZintAusnTJ12PvbEMZ7nYzzutGh+7y1crXyykCkjg/0GgYoBcBfGoSrV02MuyJgtRbBtc2U5CEJPaQAW6+PhMcoZkgIAvDitAC//3jssvHvhJuYYMB7BXss7edyMGcR0MTraYEy8/iutYMNPIsgtKRj9a2AP3O9gIP+TFLhDVUkvZ13HW+ZQ55OC+vvk7zDf1g0m1rthFPxxhmY9iffy9fFFm7oJkqAsz8Wee+yY1TTht/hVhu9LJnxd9F28burlqLU6ZAD1vZzdIzh7u37GWyIbNZ6yn5rltqptGfYjw0QWgTZgf8jGaun5jdAFLFPHa6Ug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=c8II4X3lXtucyX1Ab5YifNEecvgN9WvjLx5z709Kj/Q=;
+ b=O7sMmPU6tyay/SRICzEHZMCi0sDZ+1dhAPC5HhSzH9nzDLljR3hL77DzcJhTDrOiQkQQ2lcpOCbGSCNKiHSlclfg0Bz124A1fiQbBiNF+OHEseGn5PQhxSdSxqT/3wytZsyP0m+b+6biRRw56iHwVDIfq+Deci5J9T9WbtzNE66KTFw+V995bp+L69JkYQd6Niqo53fPGmPJ3TMNFkxVpNqsRR0klksOUgV1y95GVQ8vKsJ9oobv5i0wzJJR0m9EFxVa53lQBZTZqhn/LsfgF+jWo6UsE1gQmE/fnjHqbnnankb50LVi+KBQTwWmWZ0TQESTm8dfchKo1QC+nmYMYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by IA1PR11MB7753.namprd11.prod.outlook.com (2603:10b6:208:421::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28; Fri, 21 Jul
+ 2023 15:52:29 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a%7]) with mapi id 15.20.6609.026; Fri, 21 Jul 2023
+ 15:52:29 +0000
+Message-ID: <ccb728be-832c-be93-2023-6a5c78c53e6a@intel.com>
+Date:   Fri, 21 Jul 2023 17:51:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH net-next] page_pool: split types and declarations from
+ page_pool.h
 Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>
-CC:     Marijn Suijten <marijn.suijten@somainline.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230721-topic-rpm_clk_cleanup-v1-0-cf6cd5c621d5@linaro.org>
- <20230721-topic-rpm_clk_cleanup-v1-9-cf6cd5c621d5@linaro.org>
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <20230721-topic-rpm_clk_cleanup-v1-9-cf6cd5c621d5@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>
+CC:     <davem@davemloft.net>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        "Subbaraya Sundeep" <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        "Saeed Mahameed" <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+References: <20230719121339.63331-1-linyunsheng@huawei.com>
+ <0838ed9e-8b5c-cc93-0175-9d6cbf695dda@intel.com>
+ <7e9c1276-9996-d9dd-c061-b1e66361c48b@huawei.com>
+ <20230720092247.279d65f3@kernel.org>
+ <f5d40062-bb0d-055b-8c02-912cfd020aca@huawei.com>
+ <20230721075615.118acad4@kernel.org>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <20230721075615.118acad4@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: eSgD9s2AiCToG3pVyk6vRnuqxeuYDYTR
-X-Proofpoint-ORIG-GUID: eSgD9s2AiCToG3pVyk6vRnuqxeuYDYTR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-21_10,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- lowpriorityscore=0 suspectscore=0 malwarescore=0 phishscore=0
- mlxlogscore=947 mlxscore=0 spamscore=0 adultscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307210141
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: FR2P281CA0030.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::17) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|IA1PR11MB7753:EE_
+X-MS-Office365-Filtering-Correlation-Id: 877191d8-17b6-43a3-da7a-08db8a027cc3
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XamEHMGU00iU/GPWT5YFUps00A2dD8Cn6ssZpbZ196PpVCPYdDROlQyUfi1Nx4gYV73O72uKJrARYa/xww1fv6CaVoCD/qH14bKnp4agOzcUB8e74bEfYG2b53KLDzOz22i9adK1/BsiP0uBv68r4pJiKGhB3K/tQXEwbo2FG0uT97KZ/GQwb7cTwl2l8sui5JmUaHpJiXRUK9P9MgGJ5rMXWuoEwNn+9PvQ1fFw5AFFuP334CBHPp2K+tTt5YSuR4UCrXMQ5YRoNDC7sWc4q+xs3eqUXlx1Vr6FV/vDk/feOWydYjJ7PleY0H+0avBoT5c3wx9atHFiFFFFhEiiOrG8kGYy+QZSeTew7SnaAnNjsYGOWWwVLDI/cAzl+3s/aUAZGAp/J50ineXwHLhFnMZrkFfBwcZu7NzJ0BjDfcnrt3FHOIrTpeKN6r1K2qla1aG/RX9ocRjaoAX+aA1yN1PvHeH8uD/L8jisfTTi2A5Xd4vP/AJM0AJxtQJOb3ov3mfL8hr2m7AMIjZB7mjN051oOJpX3EN56EwFD5aGfAasuP7hkgh39H0Q57aQ9/dPXTIDjICMs7gscUb4HnXnKXawp4ydHdr3Hry0OklWKGLzq4pnEBGDu/TRP9YVnXGRbbAnzNZQgVl0S/kGSxpKWw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(396003)(346002)(39860400002)(366004)(136003)(451199021)(316002)(4326008)(66946007)(66556008)(66476007)(38100700002)(6512007)(6666004)(6486002)(31696002)(86362001)(110136005)(54906003)(478600001)(4744005)(2906002)(82960400001)(36756003)(41300700001)(2616005)(31686004)(5660300002)(8936002)(8676002)(7406005)(7416002)(186003)(6506007)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aHVVKyswcFVqZTFYWlFpeGxNNDhRdzNUWGh1Tm5reVM4bnZsbmh5QnFpMTdD?=
+ =?utf-8?B?NnFXaVhtTU4welJDanRqS1lxVmRWTHhCRGJpdWN3QlpjYS9Tamxkdm9adGtV?=
+ =?utf-8?B?Kyt5OE52NS95TWdrNFQ3TmFVSllsaEdLOEcwL0NWc1FDQWpLRzdSZUdXZENB?=
+ =?utf-8?B?Um9jMDZCNEt2N2YyRG50SWFHV1Zid3hFLy9uUVFUZ2l0Tmx1SUpQV2lFcEwz?=
+ =?utf-8?B?WEZ5NGZ0V05XMm5KOVNWbTd5Vk5lTVFDeE5ZdHlDL09pemUrYzVOWjQrVEx6?=
+ =?utf-8?B?RmlQOXBVRVdlanV1WC9wb0ZYOFdZaWIwQjNUeEhFYmx6ZFM2a2lpb3ByR1ht?=
+ =?utf-8?B?SnhzZG5hVVJJckFVZ01ENnpma1hNQmsrdjdNeUo3S1haSXVqNzBwMTZuZTFT?=
+ =?utf-8?B?aTFwMlEwVWxUMnpSRDhvN1NJWnNJRldjL01iZlRVeDNCeUNPY01TZnZ5WVQr?=
+ =?utf-8?B?MDMzaEZzREljTi9xeGowaDVlQ2cvb3B0R3RFVjBxcTlyYkZHTjlodUUvbThj?=
+ =?utf-8?B?R3M4dTJVamVIaXFCV1hCR3dhdFNMaW5NY2xmR0lSTE9nWEFpbVpKMnprWXQx?=
+ =?utf-8?B?ZDk3cWt1RmhVdXYwdkpaRysxT0tTaDdleThOb3Zoak9CMFFURnc2MlV5L1RW?=
+ =?utf-8?B?RTl3WkNmMXU0TmFOZGttY1hvbmRHWEt1eHhnaThjT3daVW9WbVQrRlduN1p4?=
+ =?utf-8?B?bldXK2dBcmI5QUNVSWtwQi9TV09zdExWUTlZVlhhbmVyUjVHaHZkaHVBWE8x?=
+ =?utf-8?B?c29pQW1tNS84UnZaZ0pGUGZlamROMFBJRStnYXowSHIrb21mWHdZUTcrM3dL?=
+ =?utf-8?B?QUVkdWNNN1FjbWZ3RWM0OVdGUFNEKzNiZFc5UlhXRGdSUDdNWndiVHpvNGVO?=
+ =?utf-8?B?R25adnVHN2orbjRvREhYMXRwQk1QOG1BTzh2YnFNRXhDRXZLcmJ6LzZTUFM0?=
+ =?utf-8?B?U0RsdWM3NnNYWGVkQzJ3TmcxYzVEQkcvMUovR0thcS9OZkFZU291SWF4YWxx?=
+ =?utf-8?B?N1I1M0g0VGlnTkI2VGtjWHhHN2dOVW5qcGNBZWJsa1lYT2RVL2ExczQxYWpJ?=
+ =?utf-8?B?T0RoTWx5OXRBMFBuZkUxU3g5QUFoMjFPbFRTSHgza0JPcHozVWI4bHhtemx6?=
+ =?utf-8?B?V0VvbG1iWUc5WjREcWU0R0N1OERXTlF0d2g5Z3lKMldiME9ucmJOOGRwYk44?=
+ =?utf-8?B?NXkrVUl5QTZUMENLbFVlSDV3REZDbjhBcDNYbjkyT0tPeWkxUUJOWmp6clhC?=
+ =?utf-8?B?WmtsamQrSTU0R2tRbmJ5dHlBMkNwU244VGppNmdFN0dSUDZ0ckVVZzE4OHVL?=
+ =?utf-8?B?bTdVQXR0RzRBb09FSG1HL0wwOFM0V1draGo4VmJ6c1FCbHE1VmpxbFNmYjUy?=
+ =?utf-8?B?azUxdGUzVjdvdDRuZSsvZ1VFa1B5UlFiUXNKMXFXZHVUZTAyNU01c1FhWjBS?=
+ =?utf-8?B?NGQ3RjFLNHdKZ1ZxTk1wMWNRT3gwSmFTd1VqblBxT2dub01SUU1Ia09kaFlX?=
+ =?utf-8?B?MEorQzhjWWVoRjBmd1VVY0FoV0oySFhlRUlBZmNhOVNmRE9UVXkra2k1c09R?=
+ =?utf-8?B?MG4rOEkxQ3EySlhrc0dJaGRZcmc1NWRvUFYvdW9rdGlWcklsRllhOUdwMVBC?=
+ =?utf-8?B?Y1FUdyt0WFNZUWlaRGs2cUwzMFhSbldHWEpYVzVVZGx1UXhYdlF6SU8wRUl3?=
+ =?utf-8?B?R0lpQ0lZdkUvTHpaSjcvTWNSaGk4MGdJVkcxWlE4YlhlQ0NIcmNaKytUc2NT?=
+ =?utf-8?B?Sm1LUWJxdkZYZEd1dXZqOHh4L1htYlBHbHZvSUtwSmdCVFQwUDFoTzE3N0dR?=
+ =?utf-8?B?Y2NBWk94VDJPOS9iQUVOZFBLdG5rUnR3eGpwNUduRHRpTVlKalFvUnhqeU1P?=
+ =?utf-8?B?S2NnRTRwbzFDRzB4RGc4RFhJdFowNG0xSE1NZ0FuN1JwU3hSRTVnY1RyblQ0?=
+ =?utf-8?B?OUsrQUN1cXk1NkNNZFpwVDF6eExEU1ZWRURPa3hRcHJjNkc1MHVseVBKaE5s?=
+ =?utf-8?B?QzIwZG5XVVVKTG9LbkI5d2o3QjI4Y0MrYWpUTjFIRXhrUTBBdDYzaStFRktD?=
+ =?utf-8?B?THgyWHByWXVlejJ6T3B6a2x6RDZrOWlwYm9ISm50cDNhMm0rTGJMTGQyckZo?=
+ =?utf-8?B?NmNCR01WdVdXenY2V3pDTkJyVTdLbksxZHMxSVZ2RWIxRWpXbmFVQU5BRUZy?=
+ =?utf-8?Q?jfS/Wu7l8cVrvA12V3G+/xU=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 877191d8-17b6-43a3-da7a-08db8a027cc3
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 15:52:29.4137
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /A49SaXnk3GU/Yu80RSbZeqviZRJdnXylGu+uisQVR18MEazOjLB+ypkLKEQ+co/nqw+8925MRxabIz8NNaZbQpP98eij353NFMst3VW7HY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7753
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/2023 9:36 AM, Konrad Dybcio wrote:
-> The AGGRE2 clock is a clock for the entire AGGRE2 bus, managed from
-> within the interconnect driver. Attaching it to SLPI was a total hack.
-> Get rid of it.
+From: Jakub Kicinski <kuba@kernel.org>
+Date: Fri, 21 Jul 2023 07:56:15 -0700
 
-Nit - why do we care what driver manages the clock?  DT describes 
-hardware...
-
-The entire SLPI block hangs off the AGGRE2 bus, so that bus needs to be 
-on for the SLPI.  I agree that AGGRE2 is really an interconnect device 
-and SLPI should be a consumer of that, but we don't have 8998 
-interconnects defined yet.  Seems like this hack is still needed.
-
+> On Fri, 21 Jul 2023 19:12:25 +0800 Yunsheng Lin wrote:
+>> Just to be clear, include/net/page_pool.h is still there, we are not
+>> putting page_pool.h in include/net/page_pool/ and renaming it to
+>> something else, right? As there is no that kind of uniformity in
+>> include/net/* as far as I can see.
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->   arch/arm64/boot/dts/qcom/msm8998.dtsi | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
+> Like many things the uniformity is a plan which mostly exists in my head
+> at this stage :) But it is somewhat inspired by include/linux/sched.*
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-> index 360fe3edcc08..547c3f9654a6 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-> @@ -1599,9 +1599,8 @@ remoteproc_slpi: remoteproc@5800000 {
->   
->   			px-supply = <&vreg_lvs2a_1p8>;
->   
-> -			clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
-> -				 <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
-> -			clock-names = "xo", "aggre2";
-> +			clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>;
-> +			clock-names = "xo";
->   
->   			memory-region = <&slpi_mem>;
->   
+>> More specificly, yon means the below, right?
+>> include/net/page_pool.h
+>> include/net/page_pool/types.h
 > 
+> Yes.
 
+What I meant is
+
+include/net/page_pool/types.h
+include/net/page_pool/driver.h
+
+I'm not insisting, just to be clear :)
+
+Thanks,
+Olek
