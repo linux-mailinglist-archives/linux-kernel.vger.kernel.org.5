@@ -2,117 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3D875D514
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 21:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5514D75D519
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 21:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbjGUTdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 15:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
+        id S229591AbjGUTfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 15:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbjGUTdw (ORCPT
+        with ESMTP id S229899AbjGUTfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 15:33:52 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA983AAA
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 12:33:30 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbea14700bso19273115e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 12:33:30 -0700 (PDT)
+        Fri, 21 Jul 2023 15:35:41 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FCBE68
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 12:35:39 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b8b4749013so17045315ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 12:35:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1689968009; x=1690572809;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fiIakR7GGY0mh3xcC7+ZeZTllDxNHTtdgGxePeuDbpQ=;
-        b=kRGqTQoCPabrXfO1wZyS7kBgRGkabGALr22fhj6MeGD1xSGW98aIz17mPsvFGtDEQD
-         hhCoXnztbvQiPovVS9LmH2FsSSIfdcNpMhsriHt/ojklXOQXdG3mPAxjphbgh24HvYn0
-         ulypILvK3/IcgBW/YIhS/KcpnlZ5WloZO0+QiL3/OcKFfzaUfs3hc3C6pxARckozAbKl
-         /7NJbPIirjQqZK5iKCgkmD15KHZJagBc7j2qlisFh+meMe/GhPcpXqeSXjx1Hkc7cBpL
-         x+e1DqQHPESMZnh4ql8HrJAK67hwjE4y//nSsEjcS/iMvR/TLLXaKcdC7yPVMxDKWThn
-         zq1Q==
+        d=ziepe.ca; s=google; t=1689968139; x=1690572939;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zzRV4jT/UtNnsNIK2YvG3L4X5UH72+69TP4OaQhmPt4=;
+        b=JfMGnrE+g4/SdXqp/ILAdh8OXvsFjfzKETJHY+EhlewfKhrwUZ7RoTSzKYzg/yardc
+         q8Kxwh36Uh0alOQRzLpTJiv+muY/pM/0QMO13VqRNd6mSkBAuzE8Y6Vf1Vo8IF8VaYFm
+         ZM5I8a2BhNFvQNAEAJURcgSp2m2m3PC2Yx+Rwz8AdVzrHJ2A+N9Y24PPf8Vh2DLA9J7a
+         ys5PbTXsComhwHn7A1jDs56BwRrB4QZzXdF2e88pkpT0JViBziznq2TDlyxDGepnE2RY
+         LEfZFIh6ZBKtXl8gzi+XeNAIQCBJA3i3bAy6V+Bidl2HemJcbdaJ9FaBpp3xBvsdlW4l
+         zL3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689968009; x=1690572809;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fiIakR7GGY0mh3xcC7+ZeZTllDxNHTtdgGxePeuDbpQ=;
-        b=Xx1uihuZpgi/NEpJYofjeQdEPQyhS8NVRalP0Y8Yye468irVmoAnDJxowwGmzzbXng
-         /LX7U6qqm4g2t2kOplbpVgjqu+hwrpdmKgpMb9pLiOzLKRUP5+kSfIlQYlRIFgz7KCU4
-         bAc9aMqgb7dH0cDVZGa25P0N0qOMaeZvp1usjyAmIdFUggM4CxvrYtCiakr59PZZ1Pdr
-         Z3ehDM34hF6M5YbpBDrJrO2Fgs/GKJ0FIDBqvYrkKAZn18C9/9Df6iw06gbvEruy/0Sh
-         nbIl65qOTJ4lgd9STM4zN+W2sX/5CO5CMq+eV711TRICkzGCxtZsNI560pow6l4TpLb8
-         9aJQ==
-X-Gm-Message-State: ABy/qLZoso0jE81F0cTKAwxogHcfew//D8RkIMUrrECpWuJ2rj96dfHh
-        SNrHVlVmHxnX+KMfUSs6ZPFpEjBn7FETzV95QlA=
-X-Google-Smtp-Source: APBJJlEUIOe8JHpY836fs80K7GJobdy0OYgrT0dK/Px9YG+gTHTC2vuayMZ9Qy+gnh8dnzbKbrtb3w==
-X-Received: by 2002:a05:600c:2907:b0:3fc:1bd:95a6 with SMTP id i7-20020a05600c290700b003fc01bd95a6mr2096561wmd.31.1689968008942;
-        Fri, 21 Jul 2023 12:33:28 -0700 (PDT)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id h18-20020a5d5492000000b003142e438e8csm5001211wrv.26.2023.07.21.12.33.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 12:33:28 -0700 (PDT)
-Message-ID: <d5157187-16fa-62c8-9098-04f644aacf14@arista.com>
-Date:   Fri, 21 Jul 2023 20:33:26 +0100
+        d=1e100.net; s=20221208; t=1689968139; x=1690572939;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zzRV4jT/UtNnsNIK2YvG3L4X5UH72+69TP4OaQhmPt4=;
+        b=KqS6pGa7cMbnonozucxX4ZXlGtCSZgfHNmOQrSZ3+ERvJhIfe9bQXRZd3fmIe2r11c
+         U9wQMHOgdVW7QoaGTjUN0umwNW6OcOY0tqvedRzNzkIzJJEAwtYAvyCnBWWfKKvDm15T
+         h7tTmrskHV9QV5DQHVqI6L4xOukChhFUnrUgbpR259bUfDr7PSt62Ien+TJgGZRvFrYw
+         5YZhwChDUVI1SSCPE+VRQlaElpOAJQD0E0wOA/NWqnySw8he7zeUWFlWnSgso0drRRwz
+         M5DON7amTMXwTJbm65Cix619e/ECfI8PrVLDM7OrX4rHCOZ1kKT1z8SpsIdxTJKpSfRK
+         pA/A==
+X-Gm-Message-State: ABy/qLYbb+vlaVsPj7THHSi4ewXu5Njwy2XaFh+AHUoP/5jMllSsYsv9
+        XMqOBIKGWObcIOiFxyA+su/FqA==
+X-Google-Smtp-Source: APBJJlErhC+VIXfffdNPDZMSDd2lEyokEWsGZ4siE0VrJXPYSeMfFCGzQlYHv6H7Qp1LgMkojZxgOQ==
+X-Received: by 2002:a17:903:120f:b0:1b8:4b87:20dc with SMTP id l15-20020a170903120f00b001b84b8720dcmr2955939plh.37.1689968139289;
+        Fri, 21 Jul 2023 12:35:39 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id p15-20020a170902e74f00b0019ee045a2b3sm3836250plf.308.2023.07.21.12.35.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 12:35:38 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qMvub-003IJe-Bf;
+        Fri, 21 Jul 2023 16:35:37 -0300
+Date:   Fri, 21 Jul 2023 16:35:37 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] iommu: Prevent RESV_DIRECT devices from blocking
+ domains
+Message-ID: <ZLreCUIJoo1TfmVz@ziepe.ca>
+References: <20230713043248.41315-1-baolu.lu@linux.intel.com>
+ <20230713043248.41315-2-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v8.1 net-next 00/23] net/tcp: Add TCP-AO support
-Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>
-Cc:     Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Bob Gilligan <gilligan@arista.com>,
-        Dan Carpenter <error27@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Donald Cassidy <dcassidy@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        "Gaillardetz, Dominik" <dgaillar@ciena.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Ivan Delalande <colona@arista.com>,
-        Leonard Crestez <cdleonard@gmail.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        "Tetreault, Francois" <ftetreau@ciena.com>, netdev@vger.kernel.org,
-        Steen Hegelund <Steen.Hegelund@microchip.com>
-References: <20230721161916.542667-1-dima@arista.com>
- <e35c16d2-c86c-8df2-8312-c8ab254d221a@kernel.org>
- <CANn89iLQhCu=daXAtMJDFGQ9mRCd99b=bR=nN5qw4un8DQ1tSQ@mail.gmail.com>
-From:   Dmitry Safonov <dima@arista.com>
-In-Reply-To: <CANn89iLQhCu=daXAtMJDFGQ9mRCd99b=bR=nN5qw4un8DQ1tSQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230713043248.41315-2-baolu.lu@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/23 19:18, Eric Dumazet wrote:
-> On Fri, Jul 21, 2023 at 8:12 PM David Ahern <dsahern@kernel.org> wrote:
->>
->> On 7/21/23 10:18 AM, Dmitry Safonov wrote:
->>> Hi,
->>>
-[..]
->>
->> For the set:
->> Acked-by: David Ahern <dsahern@kernel.org>
+On Thu, Jul 13, 2023 at 12:32:47PM +0800, Lu Baolu wrote:
+> The IOMMU_RESV_DIRECT flag indicates that a memory region must be mapped
+> 1:1 at all times. This means that the region must always be accessible to
+> the device, even if the device is attached to a blocking domain. This is
+> equal to saying that IOMMU_RESV_DIRECT flag prevents devices from being
+> attached to blocking domains.
 > 
-> I will have to review this series, of course, if bots are happy.
+> This also implies that devices that implement RESV_DIRECT regions will be
+> prevented from being assigned to user space since taking the DMA ownership
+> immediately switches to a blocking domain.
+> 
+> The rule of preventing devices with the IOMMU_RESV_DIRECT regions from
+> being assigned to user space has existed in the Intel IOMMU driver for
+> a long time. Now, this rule is being lifted up to a general core rule,
+> as other architectures like AMD and ARM also have RMRR-like reserved
+> regions. This has been discussed in the community mailing list and refer
+> to below link for more details.
+> 
+> Other places using unmanaged domains for kernel DMA must follow the
+> iommu_get_resv_regions() and setup IOMMU_RESV_DIRECT - we do not restrict
+> them in the core code.
+> 
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Link: https://lore.kernel.org/linux-iommu/BN9PR11MB5276E84229B5BD952D78E9598C639@BN9PR11MB5276.namprd11.prod.outlook.com
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  include/linux/iommu.h |  2 ++
+>  drivers/iommu/iommu.c | 37 +++++++++++++++++++++++++++----------
+>  2 files changed, 29 insertions(+), 10 deletions(-)
 
-Thanks David, Eric!
-I appreciate both Acks and potential reviews.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Thanks,
-             Dmitry
-
+Jason
