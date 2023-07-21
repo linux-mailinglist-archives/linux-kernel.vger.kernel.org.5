@@ -2,235 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E9B75CF5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0290875CF62
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjGUQbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 12:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
+        id S231279AbjGUQca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 12:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbjGUQav (ORCPT
+        with ESMTP id S231261AbjGUQcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 12:30:51 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF1D4697;
-        Fri, 21 Jul 2023 09:28:58 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="346665433"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="346665433"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 09:27:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="1055606811"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="1055606811"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP; 21 Jul 2023 09:27:41 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andy@kernel.org>)
-        id 1qMsyf-00CQg1-0P;
-        Fri, 21 Jul 2023 19:27:37 +0300
-Date:   Fri, 21 Jul 2023 19:27:36 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     nikita.shubin@maquefel.me
-Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Lukasz Majewski <lukma@denx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        Fri, 21 Jul 2023 12:32:11 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6788C3C29;
+        Fri, 21 Jul 2023 09:30:39 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-76754b9eac0so202518885a.0;
+        Fri, 21 Jul 2023 09:30:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689956975; x=1690561775;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MCj4f/yqTqvC1Zfh8gaP5TMsrhfBrc1W+dHH5Na+xwg=;
+        b=eDb8MvRcZ/ocaVOutwcjpC5W4QiIwzu61K6N4KTRKQxemrXBslXIrFHPzy9QHwUOT4
+         oqEVnYiBTiOeQL3oTSP6HjI61ObacNFcuRHsBPyiY10CTMvqPTRkfNc6A1vKb7cFS4CZ
+         ZWbRE/4bD5XV/Gn8TtSdUvqqlnQaRT7cDGf471jedUvmQArXrwHLbKAVxVFZHPTn284s
+         A4RhG4ViLjX8n3dITdM7IX3NqvmwUOQKam3NHOHqBrqGdMxGq69SUvzrJjsCpcTiiSiZ
+         7UFUkRGE3Bd2exW8+j0HbNagrf42KBAuyfTWZHdNfz9WNz6NqeTv101RvGTu4GkB6luv
+         ulQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689956975; x=1690561775;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MCj4f/yqTqvC1Zfh8gaP5TMsrhfBrc1W+dHH5Na+xwg=;
+        b=dwPviXBmvyv9WfmFY867Js/WfRb10DXlWtEmEK0CXOGDOdYpkyls++pqoSAKdyn/BE
+         xDaSjokT4joNHjELdw07zeuI75CiGupo7TRhRDRShLnmf9dRA0RQ8f84na2oLTdz3ZdL
+         imbaXAcl9wxScJYb0qXfwVFYcxfn4DQ4nlerbnfl/PveybsRz+SXhuPaoFelDFt27otZ
+         AjViZB0et6VWDdS/7tjEo2ONh/pk3umNfaIIu0xzeB7hi9i9I/S4TJNu9WliYGRgJCAG
+         XoD2KRWfpInf8RFGeu6tuG1//uyjFh+c3pXEoK9q6lAsDb9PWXUH3H4zrpFPdzLD+6gp
+         sZIQ==
+X-Gm-Message-State: ABy/qLZwRIIkLdUocbvJK1ECGp0ckHJLM2Je4lJCZFcWUKvz2LSJssYb
+        tw2d4jfJmnpWavGQb2FrZEY=
+X-Google-Smtp-Source: APBJJlEyWH2COTt0xU4de216+mzXeZPVL+8ty6G4n2U6Ab92rUovUUNSjJ0zaAZ73WBRseqgDOAZsg==
+X-Received: by 2002:a05:620a:2545:b0:769:542:b3fd with SMTP id s5-20020a05620a254500b007690542b3fdmr504663qko.8.1689956975345;
+        Fri, 21 Jul 2023 09:29:35 -0700 (PDT)
+Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
+        by smtp.gmail.com with ESMTPSA id i27-20020a05620a075b00b00765a7843382sm1201448qki.74.2023.07.21.09.29.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 09:29:34 -0700 (PDT)
+Message-ID: <4dbc07fa-e446-8694-3371-fa2d0432fbc6@gmail.com>
+Date:   Fri, 21 Jul 2023 09:29:30 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [Enable Designware XGMAC VLAN Stripping Feature 2/2] net: stmmac:
+ dwxgmac2: Add support for HW-accelerated VLAN Stripping
+Content-Language: en-US
+To:     "Ng, Boon Khai" <boon.khai.ng@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Boon@ecsmtp.png.intel.com" <Boon@ecsmtp.png.intel.com>,
+        "Khai@ecsmtp.png.intel.com" <Khai@ecsmtp.png.intel.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Michael Peters <mpeters@embeddedts.com>,
-        Kris Bahnsen <kris@embeddedts.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 24/42] mtd: nand: add support for ts72xx
-Message-ID: <ZLqx+Osn3gcHjUph@smile.fi.intel.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-24-3d63a5f1103e@maquefel.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230605-ep93xx-v3-24-3d63a5f1103e@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "Tham, Mun Yew" <mun.yew.tham@intel.com>,
+        "Swee, Leong Ching" <leong.ching.swee@intel.com>,
+        "G Thomas, Rohan" <rohan.g.thomas@intel.com>,
+        Shevchenko Andriy <andriy.shevchenko@linux.intel.com>
+References: <20230721062617.9810-1-boon.khai.ng@intel.com>
+ <20230721062617.9810-3-boon.khai.ng@intel.com>
+ <cfba8fa4-47e5-7553-f40e-9e34b25d1405@kernel.org>
+ <DM8PR11MB5751E5388AEFCFB80BCB483FC13FA@DM8PR11MB5751.namprd11.prod.outlook.com>
+ <7549a014-4f5e-cf87-f07d-c4980ab44dc1@gmail.com>
+ <DM8PR11MB5751B68955275006A16E1C75C13FA@DM8PR11MB5751.namprd11.prod.outlook.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <DM8PR11MB5751B68955275006A16E1C75C13FA@DM8PR11MB5751.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 02:29:24PM +0300, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
+
+
+On 7/21/2023 9:12 AM, Ng, Boon Khai wrote:
+>> -----Original Message-----
+>> From: Florian Fainelli <f.fainelli@gmail.com>
+>> Sent: Friday, July 21, 2023 11:59 PM
+>> To: Ng, Boon Khai <boon.khai.ng@intel.com>; Krzysztof Kozlowski
+>> <krzk@kernel.org>; Boon@ecsmtp.png.intel.com; Khai@ecsmtp.png.intel.com;
+>> Ng, Boon Khai <boon.khai.ng@intel.com>; Giuseppe Cavallaro
+>> <peppe.cavallaro@st.com>; Alexandre Torgue <alexandre.torgue@foss.st.com>;
+>> Jose Abreu <joabreu@synopsys.com>; David S . Miller <davem@davemloft.net>;
+>> Eric Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>;
+>> Paolo Abeni <pabeni@redhat.com>; Maxime Coquelin
+>> <mcoquelin.stm32@gmail.com>; netdev@vger.kernel.org; linux-stm32@st-md-
+>> mailman.stormreply.com; linux-arm-kernel@lists.infradead.org; linux-
+>> kernel@vger.kernel.org
+>> Cc: Shevchenko, Andriy <andriy.shevchenko@intel.com>; Tham, Mun Yew
+>> <mun.yew.tham@intel.com>; Swee, Leong Ching
+>> <leong.ching.swee@intel.com>; G Thomas, Rohan
+>> <rohan.g.thomas@intel.com>; Shevchenko Andriy
+>> <andriy.shevchenko@linux.intel.com>
+>> Subject: Re: [Enable Designware XGMAC VLAN Stripping Feature 2/2] net:
+>> stmmac: dwxgmac2: Add support for HW-accelerated VLAN Stripping
+>>
+>>
+>>
+>> On 7/21/2023 8:30 AM, Ng, Boon Khai wrote:
+>>>> -----Original Message-----
+>>>> From: Krzysztof Kozlowski <krzk@kernel.org>
+>>>> Sent: Friday, July 21, 2023 6:11 PM
+>>>> To: Boon@ecsmtp.png.intel.com; Khai@ecsmtp.png.intel.com; "Ng
+>>>> <boon.khai.ng"@intel.com; Giuseppe Cavallaro
+>>>> <peppe.cavallaro@st.com>; Alexandre Torgue
+>>>> <alexandre.torgue@foss.st.com>; Jose Abreu <joabreu@synopsys.com>;
+>>>> David S . Miller <davem@davemloft.net>; Eric Dumazet
+>>>> <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
+>>>> <pabeni@redhat.com>; Maxime Coquelin <mcoquelin.stm32@gmail.com>;
+>>>> netdev@vger.kernel.org; linux-stm32@st- md-mailman.stormreply.com;
+>>>> linux-arm-kernel@lists.infradead.org; linux- kernel@vger.kernel.org
+>>>> Cc: Ng, Boon Khai <boon.khai.ng@intel.com>; Shevchenko, Andriy
+>>>> <andriy.shevchenko@intel.com>; Tham, Mun Yew
+>>>> <mun.yew.tham@intel.com>; Swee, Leong Ching
+>>>> <leong.ching.swee@intel.com>; G Thomas, Rohan
+>>>> <rohan.g.thomas@intel.com>; Shevchenko Andriy
+>>>> <andriy.shevchenko@linux.intel.com>
+>>>> Subject: Re: [Enable Designware XGMAC VLAN Stripping Feature 2/2] net:
+>>>> stmmac: dwxgmac2: Add support for HW-accelerated VLAN Stripping
+>>>>
+>>>> On 21/07/2023 08:26, Boon@ecsmtp.png.intel.com wrote:
+>>>>> From: Boon Khai Ng <boon.khai.ng@intel.com>
+>>>>>
+>>>>> Currently, VLAN tag stripping is done by software driver in
+>>>>> stmmac_rx_vlan(). This patch is to Add support for VLAN tag
+>>>>> stripping by the MAC hardware and MAC drivers to support it.
+>>>>> This is done by adding rx_hw_vlan() and set_hw_vlan_mode() callbacks
+>>>>> at stmmac_ops struct which are called from upper software layer.
+>>>> ...
+>>>>
+>>>>>    	if (priv->dma_cap.vlhash) {
+>>>>>    		ndev->features |= NETIF_F_HW_VLAN_CTAG_FILTER;
+>>>>>    		ndev->features |= NETIF_F_HW_VLAN_STAG_FILTER; diff --
+>>>> git
+>>>>> a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+>>>>> b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+>>>>> index 23d53ea04b24..bd7f3326a44c 100644
+>>>>> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+>>>>> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+>>>>> @@ -543,6 +543,12 @@ stmmac_probe_config_dt(struct platform_device
+>>>> *pdev, u8 *mac)
+>>>>>    			plat->flags |= STMMAC_FLAG_TSO_EN;
+>>>>>    	}
+>>>>>
+>>>>> +	/* Rx VLAN HW Stripping */
+>>>>> +	if (of_property_read_bool(np, "snps,rx-vlan-offload")) {
+>>>>> +		dev_info(&pdev->dev, "RX VLAN HW Stripping\n");
+>>>>
+>>>> Why? Drop.
+>>>>
+>>>
+>>> This is an dts option export to dts for user to choose whether or not
+>>> they Want a Hardware stripping or a software stripping.
+>>>
+>>> May I know what is the reason to drop this?
+>>
+>> Because the networking stack already exposes knobs for drivers to advertise and
+>> control VLAN stripping/insertion on RX/TX using ethtool and feature bits
+>> (NETIF_F_HW_VLAN_CTAG_RX, NETIF_F_HW_VLAN_CTAG_TX).
+>>
 > 
-> Technologic Systems has it's own nand controller implementation in CPLD.
+> Hi Florian,
+> 
+> Understood, but how does user choose to have the default option
+> either hardware strip or software strip, when the device just boot up?
 
-...
+You need the hardware to advertise it and decide as a maintainer of that 
+driver whether it makes sense to have one or the other behavior by default.
 
-+ bits.h
+> 
+> I don’t think ethool can "remember" the setting once the device get rebooted?
 
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
+If by "device" you mean a system that incorporates a XGMAC core, then I 
+suppose that is true, though you could have some user-space logic that 
+does remember the various ethtool options and re-applies them as soon as 
+the device is made available to user-space, this would not be too far 
+fetched.
 
-...
+> Any other suggestion of doing it other than using the dts method?
 
-> +static int ts72xx_nand_attach_chip(struct nand_chip *chip)
-> +{
-> +	switch (chip->ecc.engine_type) {
-> +	case NAND_ECC_ENGINE_TYPE_SOFT:
-> +		if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
-> +			chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
-> +		break;
-> +	case NAND_ECC_ENGINE_TYPE_ON_HOST:
-> +		return -EINVAL;
-> +	default:
-
-> +		break;
-
-Here it will return 0, is it a problem?
-
-> +	}
-> +
-> +	return 0;
-> +}
-
-...
-
-> +static int ts72xx_nand_probe(struct platform_device *pdev)
-> +{
-> +	struct ts72xx_nand_data *data;
-> +	struct device_node *child;
-> +	struct mtd_info *mtd;
-> +	int err;
-
-> +	/* Allocate memory for the device structure (and zero it) */
-
-Useless comment.
-
-> +	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->controller.ops = &ts72xx_nand_ops;
-> +	nand_controller_init(&data->controller);
-> +	data->chip.controller = &data->controller;
-> +
-> +	data->io_base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(data->io_base))
-> +		return PTR_ERR(data->io_base);
-> +
-> +	child = of_get_next_child(pdev->dev.of_node, NULL);
-
-Why not using device property API from day 1?
-
-	fwnode_get_next_child_node()
-
-> +	if (!child)
-> +		return dev_err_probe(&pdev->dev, -ENXIO,
-> +				"ts72xx controller node should have exactly one child\n");
-
-From now on you leak the reference count in error path.
-
-> +	nand_set_flash_node(&data->chip, child);
-> +	mtd = nand_to_mtd(&data->chip);
-> +	mtd->dev.parent = &pdev->dev;
-> +
-> +	data->chip.legacy.IO_ADDR_R = data->io_base;
-> +	data->chip.legacy.IO_ADDR_W = data->io_base;
-> +	data->chip.legacy.cmd_ctrl = ts72xx_nand_hwcontrol;
-> +	data->chip.legacy.dev_ready = ts72xx_nand_device_ready;
-> +
-> +	platform_set_drvdata(pdev, data);
-> +
-> +	/*
-> +	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
-> +	 * Set ->engine_type before registering the NAND devices in order to
-> +	 * provide a driver specific default value.
-> +	 */
-> +	data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
-> +
-> +	/* Scan to find existence of the device */
-> +	err = nand_scan(&data->chip, 1);
-> +	if (err)
-> +		return err;
-> +
-> +	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
-> +	if (err) {
-> +		nand_cleanup(&data->chip);
-
-> +		return err;
-> +	}
-> +
-> +	return 0;
-
-
-These 4 lines can be simply
-
-	return err;
-
-but see above.
-
-> +}
-
-...
-
-> +static void ts72xx_nand_remove(struct platform_device *pdev)
-> +{
-> +	struct ts72xx_nand_data *data = platform_get_drvdata(pdev);
-> +	struct nand_chip *chip = &data->chip;
-> +	int ret;
-> +
-> +	ret = mtd_device_unregister(nand_to_mtd(chip));
-
-> +	WARN_ON(ret);
-
-Why?!  Is it like this in other MTD drivers?
-
-> +	nand_cleanup(chip);
-> +}
-
+Let me ask you this question: what are you trying to solve by making 
+this configurable? HW stripping should always be more efficient, should 
+not it, if so, what would be the reasons for not enabling that by 
+default? If not, then leave it off and let users enable it if they feel 
+like they want it.
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Florian
