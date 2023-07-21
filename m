@@ -2,139 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A2B75CC26
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A59375CC2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbjGUPlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
+        id S231340AbjGUPmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230353AbjGUPlr (ORCPT
+        with ESMTP id S231997AbjGUPmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:41:47 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754E1E6F;
-        Fri, 21 Jul 2023 08:41:46 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 0E4933200065;
-        Fri, 21 Jul 2023 11:41:41 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Fri, 21 Jul 2023 11:41:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1689954101; x=1690040501; bh=6J
-        7BKGMI7owfks+x7fQJRcecsf8Hj64J7kF7tz1vUtc=; b=A5MleABLoFt1S/H1FX
-        lAd3hMYSivC47C1cOQ23II5KS7K3NFfO4Ta2hebV51rUfaWP5B+SqMe/ZZd1Tmus
-        nquyvl30YF60+WlzevuP1gHcb3jUUglS6LprAw/0g4gGhUTsS2GwVtNf8A8bKOzB
-        d7ycPKywidmMgZUxdZ9N6HlpVPSx8+Wa0C22mvMO6Anqi1izYc+t6S5Vo3ase3Hr
-        iEF3tWSf3pl7jSqEUX20yU5/Zp+htaDXu5vHagPp644pe8TYXpNl+2/lcSuuMWuT
-        R8QtU8GJAHn+rb7X9sDpYX/54RRWAeBd0XRZgrf+MFLNNvXqFJmNbSlcKGXFsWme
-        uLcA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1689954101; x=1690040501; bh=6J7BKGMI7owfk
-        s+x7fQJRcecsf8Hj64J7kF7tz1vUtc=; b=KKFUI9USNjtZMK1UdjRiKOrASU2aB
-        UwohSbcZoSv0MovXUckWbly517ofaKs1zFVOJlQoRpKoNDE6n81yJy0HEW/Az56B
-        7Y7311UFyE/EypKG3NMS1Edd9ottFeawbysIwjTlyq9uufaAtKVWO2eLv4Iq4czx
-        1u2EBWFE1iKXplu1ETWoc33u0KtduzQssM1lns3atfH4SVDSIN9qshRYzIaq1xis
-        +WZhezXcgSr/PbyHJ5S8ZYMjMGnC+yh1ZmmX/tdfTa36ZAsrOBdV0LGRrx+RcaWV
-        4k3I+bwZmw6WubmuDLaF7LzwjFegAY7g/pmDITvpCrageJPvJ76kXzZNg==
-X-ME-Sender: <xms:NKe6ZFJ4883KwLyAS3MNwRODRbel1d6GgCQExW2GBXtZuh_1rsuOmg>
-    <xme:NKe6ZBIDUr56imC4GjQgSpH2jKn_3Dbt1-nZbnfg20GBL3tS5p4a9V08ocYnqsbeO
-    LKI9bvXRilH9PddYYk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgdekjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:NKe6ZNvSpR_w1_n2miOYV9s9Oy2ZpvME9VozPddNB-shifUX7c5Ipw>
-    <xmx:NKe6ZGb10gUS0FokO32Zwnmle5bg_T6t_hG7yVneWAJ5Z0KzLWlkYg>
-    <xmx:NKe6ZMbkl-16Z8wVJle4U2R1QnUqNbeTlAOBVl4K5_7JHlkcbP-alQ>
-    <xmx:Nae6ZMpiUann84kkg_MYKDy1mqCV6oeq0PtiXp_7ndx9EswpOi4tQQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D723FB60089; Fri, 21 Jul 2023 11:41:40 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
-Mime-Version: 1.0
-Message-Id: <2a1f8ae6-ed2b-4fe8-85af-df64e9c84794@app.fastmail.com>
-In-Reply-To: <20230721105744.022509272@infradead.org>
-References: <20230721102237.268073801@infradead.org>
- <20230721105744.022509272@infradead.org>
-Date:   Fri, 21 Jul 2023 17:41:20 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Peter Zijlstra" <peterz@infradead.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Jens Axboe" <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, "Ingo Molnar" <mingo@redhat.com>,
-        "Darren Hart" <dvhart@infradead.org>, dave@stgolabs.net,
-        andrealmeid@igalia.com,
-        "Andrew Morton" <akpm@linux-foundation.org>, urezki@gmail.com,
-        "Christoph Hellwig" <hch@infradead.org>,
-        "Lorenzo Stoakes" <lstoakes@gmail.com>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, Linux-Arch <linux-arch@vger.kernel.org>,
-        malteskarupke@web.de
-Subject: Re: [PATCH v1 05/14] futex: Add sys_futex_wake()
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 11:42:03 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAE719A1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:42:02 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-346317895e7so2542205ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1689954121; x=1690558921;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QmE20XygINkFooGZCRYhmyeP1CJB0Q7rBQUncn12dzc=;
+        b=fntMBIkkna4sH2FFnDW4WcmTJp0xd4jcYTxYtA+hatoUhkv0/crYIowIEji/QPa+Oj
+         uAR0cBvS2EuK4QGQfPfsl7kQ0WokezMaJ3QCrdgXv1bzKwLR2K0GmX5ZSOi+Kjm6iolI
+         mCfBoAp4FnldGun4T0ANsv3Xyk25+T0+o6RbW8Pin9MRLGL7fpNybD14RaDooOfHoRrN
+         r+uPv9X6JxZhFxfg+l7lecWStktExVTX0fQsm92+qKfyxNY05POR5E/hJkctRixB/4Ix
+         dTfetZ3g7Mh1K4jlqLozckMPskQBv+ZNKQdRFfjuW/uAsircCIJT9r0TsXCA9Nl+3gUd
+         sPYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689954121; x=1690558921;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QmE20XygINkFooGZCRYhmyeP1CJB0Q7rBQUncn12dzc=;
+        b=FlemWKMbG6RTy+m226mWFWxV3qs95kzYHkw0Uk/rEZkT3lfq/QqUfF6lTrzD9AAsNP
+         brIiESlv/1QQmFKoNMBh2UiKKisPnY60PHDU8+IWIE29LvYxeUg2JfqO4eK9LCqsesS5
+         CBUynPMzH6I/adzc1p5MgLi71hAIL9h3dw2qvY7vO9vwTYPcDG+H4eNP0uIyIGGcNMhZ
+         qSa/rRGs3BJsoVlf/7Ue+cXFQzvSuVg8IskOSlIhzN91G0LUiAqCgoKDAK3pN0jZ6TD7
+         qywj7s+d/OIqhazyAwzJcb9v1jurnKK1mQ/Bal91wcYc9nbBNMbldA99L6Q3LV0WPqPQ
+         PMJw==
+X-Gm-Message-State: ABy/qLajKMoahO7WH7ioxOGpLzLV+PRawf4vesoCkZ0Hsb2l3O+4xZM+
+        bR+JjtdNNQLxBNSWnPnGSFpNiA==
+X-Google-Smtp-Source: APBJJlE0rgR3hwgj21uTskJVG1R/lx3ngz4QGmAVE9MTa3kec+I1yAq7k9dYV/hZTYol+qztlb0sYw==
+X-Received: by 2002:a92:d44c:0:b0:345:a3d0:f0d4 with SMTP id r12-20020a92d44c000000b00345a3d0f0d4mr2183115ilm.3.1689954121634;
+        Fri, 21 Jul 2023 08:42:01 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id q11-20020a056e02078b00b0032afe23820bsm1029860ils.17.2023.07.21.08.42.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 08:42:01 -0700 (PDT)
+Message-ID: <1ad6ebe8-2f6b-6765-ccbf-4e931bc34351@kernel.dk>
+Date:   Fri, 21 Jul 2023 09:42:00 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 0/2] io_uring: Fix io_uring mmap() by using
+ architecture-provided get_unmapped_area()
+Content-Language: en-US
+To:     Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, linux-ia64@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>, linux-parisc@vger.kernel.org
+References: <20230721152432.196382-1-deller@gmx.de>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230721152432.196382-1-deller@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023, at 12:22, Peter Zijlstra wrote:
-> --- a/arch/arm/tools/syscall.tbl
-> +++ b/arch/arm/tools/syscall.tbl
-> @@ -465,3 +465,4 @@
->  449	common	futex_waitv			sys_futex_waitv
->  450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
->  451	common	cachestat			sys_cachestat
-> +452	common	futex_wake			sys_futex_wake
-
-This clashes with __NR_fchmodat2 in linux-next, which also wants number 452.
-
-> --- a/arch/arm64/include/asm/unistd32.h
-> +++ b/arch/arm64/include/asm/unistd32.h
-> @@ -909,6 +909,8 @@ __SYSCALL(__NR_futex_waitv, sys_futex_wa
->  __SYSCALL(__NR_set_mempolicy_home_node, sys_set_mempolicy_home_node)
->  #define __NR_cachestat 451
->  __SYSCALL(__NR_cachestat, sys_cachestat)
-> +#define __NR_futex_wake 452
-> +__SYSCALL(__NR_futex_wake, sys_futex_wake)
+On 7/21/23 9:24?AM, Helge Deller wrote:
+> Fix io_uring on IA64 (and x86-32?) which was broken since commit
+> d808459b2e31 ("io_uring: Adjust mapping wrt architecture aliasing
+> requirements").
+> The fix is to switch back to the get_unmapped_area() which is provided by
+> each architecture.
 > 
->  /*
->   * Please add new compat syscalls above this comment and update
+> Patch 1 switches io_uring back to use per-arch get_unmapped_area().
+> Patch 2 (for IA64) is an independend cleanup.
 
-Unfortunately, changing this file still requires updating __NR_compat_syscalls
-in arch/arm64/include/asm/unistd.h as well.
+Let's get this queued up - I marked it for stable as well, for 6.4.
+Thanks for taking care of this!
 
-> --- a/kernel/sys_ni.c
-> +++ b/kernel/sys_ni.c
-> @@ -87,6 +87,7 @@ COND_SYSCALL_COMPAT(set_robust_list);
->  COND_SYSCALL(get_robust_list);
->  COND_SYSCALL_COMPAT(get_robust_list);
->  COND_SYSCALL(futex_waitv);
-> +COND_SYSCALL(futex_wake);
->  COND_SYSCALL(kexec_load);
->  COND_SYSCALL_COMPAT(kexec_load);
->  COND_SYSCALL(init_module);
+-- 
+Jens Axboe
 
-This is fine for the moment, but I wonder if we should start making
-futex mandatory at some point. Right now, sparc32 with CONFIG_SMP
-cannot support futex because of the lack of atomics in early
-sparc processors, but sparc32 glibc actually requires futexes
-and consequently only works on uniprocessor machines, on sparc64
-compat mode, or on Leon3 with out of tree patches.
-
-      Arnd
