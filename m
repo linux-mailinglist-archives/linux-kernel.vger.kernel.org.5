@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA09375C40E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4A575C417
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbjGUKKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47820 "EHLO
+        id S230201AbjGUKLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbjGUKKH (ORCPT
+        with ESMTP id S229622AbjGUKLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:10:07 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBBE2733;
-        Fri, 21 Jul 2023 03:10:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689934204; x=1721470204;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=t1QQKVzhlJ1Xn/AfZeblXQvq1hOA27QUiTChIE7xeCo=;
-  b=TooINJqD6Bkp2PwWoxtikKPQsF/rbivq44e+dSzys90eqThu8Daj/Qva
-   WY45/ni9n6r/XQXPMvxL1dcC2b9bSlmE/Xmtkxtiw9IMzuctvGay6qGtd
-   lP67ZqvbV0UJzcHuE9oje2gkJ4sNgK6nvQtzTwEG/k5tRSMHp4O/A82pi
-   HbSedwYOg3TnTLMu+ib+XcERtB53xwQXTOVjypIPaZoejEMAHub8eDX08
-   IySCXuyeCFXsf4cl8JTyn89LVdP135OBpollcrwlOmib2uEIPO677Sq5P
-   fiXrY0Qla9z8uD2q+WwmNo0a8rM0+lfXKIXC3r8YhV4wj8o9SJZXynRwO
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="369661785"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="369661785"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 03:09:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="814889517"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="814889517"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by FMSMGA003.fm.intel.com with ESMTP; 21 Jul 2023 03:09:47 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qMn4z-00Gyya-0x;
-        Fri, 21 Jul 2023 13:09:45 +0300
-Date:   Fri, 21 Jul 2023 13:09:45 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] serial: core: Controller id cannot be negative
-Message-ID: <ZLpZabV4FRgtXGL8@smile.fi.intel.com>
-References: <20230720051021.14961-1-tony@atomide.com>
- <20230720051021.14961-2-tony@atomide.com>
- <2023072022-country-replace-68ca@gregkh>
- <20230721054326.GO5194@atomide.com>
- <2023072144-splurge-debate-e681@gregkh>
- <20230721061523.GP5194@atomide.com>
- <20230721065701.GQ5194@atomide.com>
- <2023072109-fidelity-modular-4074@gregkh>
- <20230721071753.GR5194@atomide.com>
+        Fri, 21 Jul 2023 06:11:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C682171A
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:11:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C11ED60C6D
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:11:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD37CC433C7;
+        Fri, 21 Jul 2023 10:11:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689934272;
+        bh=Og6dYNFo6r+p40Vl2/CzNSsEFtjuUHHzY564GTompQY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=otyAwT+2Krh0ZKKvuVWmoB3cUAxYd687ztyhGeY+sW7VKv6tqDWNFK+mC0SZhWcoW
+         O08eM2Ao9kD5RruBvgiaYE60ltVXVKTUABV2w9Pm+uluM/YQ64oJUHQZXx59sN5wXH
+         FXSGvIAXcjHXRi4+eQ3023Mk5fodqrSz0iVaT3PINkm43MBcloQHn3WplT4dfVAssc
+         YgZTYJPP9BqE9Oa2ZAnH0l5OWCVb1ZxTo1RU/kLcY8qxTqQviC2u3Vu9o+VRZ5ME3K
+         s9i+bwY+nQkgM7UxjVg2vGZeGGVWUhNcfoOaprxvBZxDoZhpfu/ixOcex5kkNP8o/O
+         AR3o4zSeA+6xQ==
+Message-ID: <e552cea3-abbb-93e3-4167-aebe979aac6b@kernel.org>
+Date:   Fri, 21 Jul 2023 12:10:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230721071753.GR5194@atomide.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [Enable Designware XGMAC VLAN Stripping Feature 1/2] dt-bindings:
+ net: snps,dwmac: Add description for rx-vlan-offload
+Content-Language: en-US
+To:     Boon@ecsmtp.png.intel.com, Khai@ecsmtp.png.intel.com,
+        "Ng <boon.khai.ng"@intel.com,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Boon Khai Ng <boon.khai.ng@intel.com>,
+        Shevchenko Andriy <andriy.shevchenko@intel.com>,
+        Mun Yew Tham <mun.yew.tham@intel.com>,
+        Leong Ching Swee <leong.ching.swee@intel.com>,
+        G Thomas Rohan <rohan.g.thomas@intel.com>,
+        Shevchenko Andriy <andriy.shevchenko@linux.intel.com>
+References: <20230721062617.9810-1-boon.khai.ng@intel.com>
+ <20230721062617.9810-2-boon.khai.ng@intel.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <20230721062617.9810-2-boon.khai.ng@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 10:17:53AM +0300, Tony Lindgren wrote:
-> * Greg Kroah-Hartman <gregkh@linuxfoundation.org> [230721 07:07]:
+On 21/07/2023 08:26, Boon@ecsmtp.png.intel.com wrote:
+> From: Boon Khai Ng <boon.khai.ng@intel.com>
+> 
+> This patch is to add the dts setting for the MAC controller on
+> synopsys 10G Ethernet MAC which allow the 10G MAC to turn on
+> hardware accelerated VLAN stripping. Once the hardware accelerated
+> VLAN stripping is turn on, the VLAN tag will be stripped by the
 
-...
+Subject prefix is totally bogus.
 
-> Also I noticed that using git send-email --cc-cover does
-> not work for the cover letter.. It tries to use the first patch that
-> is the cover letter or something like that. I'm going back to my custom
-> email scripts for now rather than try to have git handle things
-> automagically.
 
-I have my script [1] that shows good enough results to send patches.
-I suggest give it a try :-)
+> 10G Ethernet MAC.
+> 
+> Signed-off-by: Boon Khai Ng <boon.khai.ng@intel.com>
+> Reviewed-by: Shevchenko Andriy <andriy.shevchenko@linux.intel.com>
 
-[1]: https://github.com/andy-shev/home-bin-tools/blob/master/ge2maintainer.sh
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
 
--- 
-With Best Regards,
-Andy Shevchenko
+You missed at least DT list (maybe more), so this won't be tested by
+automated tooling. Performing review on untested code might be a waste
+of time, thus I will skip this patch entirely till you follow the
+process allowing the patch to be tested.
 
+Please kindly resend and include all necessary To/Cc entries.
+
+Best regards,
+Krzysztof
 
