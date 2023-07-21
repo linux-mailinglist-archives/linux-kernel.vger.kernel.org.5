@@ -2,127 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C236275D5F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A3875D5F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbjGUUsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
+        id S230260AbjGUUsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjGUUsN (ORCPT
+        with ESMTP id S229529AbjGUUsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:48:13 -0400
-Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5108A1715
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:48:12 -0700 (PDT)
-Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6b9d34de264so4902707a34.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:48:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689972491; x=1690577291;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8qTOg30Pyyd8rsEqqzfnKH2ivlCUarSSwgeMcDgQLn0=;
-        b=JeFla3LjDCsdSGmVjedgM32ITytnA/Jk5Hzentsq8bg5gTx/JegHt3C5uNE/UzbeP3
-         N6mRXyvKR1aK0fqlnUV3pPT6Q0W5XYSATYDnBnZ8yIhxdPCciJgB75ezGvv2LKq5/MFu
-         PrXjrOxdGdjKeH8w+CBdwOO5b1KqGkB/axr9kVeKohlfJWjbcWSptMPXm3plqhcTYwVj
-         KetOp8BPW2+eI3jvwIipiv2+2RLo5h3ffavftU2VARVharfQioIWXa7vFjqXHuU6uasL
-         c6skIToWJjyZzmIPewU9bEpf/LcJM8RZ6fIhrdwQjVJ8ZKHuWbDO4FMJH+57FxjHnUgl
-         lEDw==
-X-Gm-Message-State: ABy/qLZykRMTpSrwiQn7d40SSaVRFRyym3cq+KDy/yEIRjACPQr8QPEn
-        OPTQLSQ2ZjqPT9QOxWjypKyRWrYkrexRCkjWo7C/FLSz9HxP
-X-Google-Smtp-Source: APBJJlElBQGXVCLZabwgLaEmLzMHQYKFHWenz4onzfkqO/Quvh8RT0SkcxsUzr4MJ14kIrJG99OR+w3TcFKHqjGUEqFpJ3LCHfkw
+        Fri, 21 Jul 2023 16:48:39 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC4130E2;
+        Fri, 21 Jul 2023 13:48:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=pPiT0nNC4yMJYFJN2WXxCYRGy4DbhNU+d1P34vtAgyk=; b=FWmeRKS65dQdZHKeV7ZDq8W7Zw
+        zIyV0iqawLDivnEwU1jfsv9A/8JBw9ibISpUZju7SR/zTwOClyAxgPJ4kBrbCUVhcvkJjQVSWnVzn
+        A6uPFQvwM88H6feTfA4iJTyj9nzdEHF5j7EvrkvgYueQ6ldjMowTu3HrroOhBK26KmQ5hxfExInc0
+        ExvIxWju8aNE6o2lBrnhwXwE1cztXIJzrURGDXxZZmcSp9NOgpFuOquqTN3OLkAPPakb9jGKPuRkS
+        Dn9T3LCpM8z87Vgxzkm6LvrWpnZLxF7/mbZS/EwgM8PlCdPwGzBNwMxrNa8tKS+oBKeLdfex8YA1i
+        ZJxDl8Pw==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qMx3E-00F5Cu-2a;
+        Fri, 21 Jul 2023 20:48:36 +0000
+Message-ID: <db709099-a2aa-c03f-61bb-6130adfd6f4a@infradead.org>
+Date:   Fri, 21 Jul 2023 13:48:34 -0700
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:118:b0:6b9:a90e:f515 with SMTP id
- i24-20020a056830011800b006b9a90ef515mr1450617otp.3.1689972491743; Fri, 21 Jul
- 2023 13:48:11 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 13:48:11 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000cf7de0601056232@google.com>
-Subject: [syzbot] [gfs2?] kernel panic: hung_task: blocked tasks (2)
-From:   syzbot <syzbot+607aa822c60b2e75b269@syzkaller.appspotmail.com>
-To:     cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 6/8] iio: core: Fix issues and style of the comments
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Nuno Sa <nuno.sa@analog.com>
+References: <20230721170022.3461-1-andriy.shevchenko@linux.intel.com>
+ <20230721170022.3461-7-andriy.shevchenko@linux.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230721170022.3461-7-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    fdf0eaf11452 Linux 6.5-rc2
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1797783aa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=27e33fd2346a54b
-dashboard link: https://syzkaller.appspot.com/bug?extid=607aa822c60b2e75b269
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11322fb6a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17687f1aa80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0ac950f24d26/disk-fdf0eaf1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/666fcbcfa05d/vmlinux-fdf0eaf1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5bbe73baa630/bzImage-fdf0eaf1.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/85821d156573/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+607aa822c60b2e75b269@syzkaller.appspotmail.com
-
-Kernel panic - not syncing: hung_task: blocked tasks
-CPU: 0 PID: 27 Comm: khungtaskd Not tainted 6.5.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- panic+0x6a4/0x750 kernel/panic.c:340
- check_hung_uninterruptible_tasks kernel/hung_task.c:226 [inline]
- watchdog+0xcf2/0x11b0 kernel/hung_task.c:379
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:296
-RIP: 0000:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 0000000000000000
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 7/21/23 10:00, Andy Shevchenko wrote:
+> The `scripts/kernel-doc -v -none -Wall` reports several issues
+> with the kernel doc in IIO core C file. Update the comments
+> accordingly.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+> ---
+>  drivers/iio/industrialio-core.c | 57 +++++++++++++++++++++------------
+>  1 file changed, 37 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index 66cea23df7e0..a9b9804097ab 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> @@ -594,7 +608,7 @@ EXPORT_SYMBOL_GPL(iio_show_mount_matrix);
+>   * If device is assigned no mounting matrix property, a default 3x3 identity
+>   * matrix will be filled in.
+>   *
+> - * Return: 0 if success, or a negative error code on failure.
+> + * Returns: 0 if success, or a negative error code on failure.
+>   */
+>  int iio_read_mount_matrix(struct device *dev, struct iio_mount_matrix *matrix)
+>  {
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+> @@ -1750,7 +1767,7 @@ static int iio_chrdev_open(struct inode *inode, struct file *filp)
+>   * @inode:	Inode structure pointer for the char device
+>   * @filp:	File structure pointer for the char device
+>   *
+> - * Return: 0 for successful release
+> + * Returns: 0 for successful release.
+>   */
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+As documented in Documentation/doc-guide/kernel-doc.rst:
+  The return value, if any, should be described in a dedicated section
+  named ``Return``.
 
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+However, as you (and I) have found, "Returns:" also works as a section name.
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks.
+-- 
+~Randy
