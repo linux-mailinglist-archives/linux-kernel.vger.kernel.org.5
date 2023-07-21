@@ -2,185 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D11C75BDA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD2A75BDA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbjGUFNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 01:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53968 "EHLO
+        id S229674AbjGUFNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 01:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGUFNA (ORCPT
+        with ESMTP id S229450AbjGUFNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 01:13:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550C4CC;
-        Thu, 20 Jul 2023 22:12:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DF11260C8E;
-        Fri, 21 Jul 2023 05:12:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD864C433C7;
-        Fri, 21 Jul 2023 05:12:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689916375;
-        bh=WPeEnFdfCBLOPdp6eea7RsY9spio4gTJNjv/KaXILgM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HY5vQyF/dWt+90AINhxoO3ErLd9GcWTIakKly9JVxzWJ0C6zfFvrIe/DE0hJVGBOp
-         7wo6mQMj5x6B/ugcgr7Zb/sjR7+TbGiTkbgErOblnvpEyXzD3AjkAvwRUDKcxw4bhP
-         dpLezp7X3XoDMiejvCbms8dE37rmLI+6+4hyTKs6DkqtaHDO9AN7VGVe8h0ZEzxp6v
-         xQOjGmBsK/kATw1PlXfYOwlccNMrV4DbHIRncc2slu4yfgYp8hvo1qBwWCxOK5Gema
-         NN+N+GgT8Ls8JpZoAc/KiG7MbT58VMSK9Ax6zpR6fJBVi9lCojHOjKzCetqaXpPQmH
-         CGXcVEq1Nwm0w==
-Date:   Thu, 20 Jul 2023 22:12:53 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     palmer@dabbelt.com, paul.walmsley@sifive.com,
-        aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
-        davem@davemloft.net, conor.dooley@microchip.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, christoph.muellner@vrull.eu,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>
-Subject: Re: [PATCH v4 00/12] RISC-V: support some cryptography accelerations
-Message-ID: <20230721051253.GC847@sol.localdomain>
-References: <20230711153743.1970625-1-heiko@sntech.de>
+        Fri, 21 Jul 2023 01:13:46 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E263CB4;
+        Thu, 20 Jul 2023 22:13:44 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36L4bBvI006336;
+        Fri, 21 Jul 2023 05:13:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=KYLJP5AG2VApLjYrHCbXG/wciGhoNgiTStD7XpR2XMk=;
+ b=N+WOJPggPbcv1wuzNr2iKIZoZRHcsjGpjQPWQnPaKRRlihTiDuc4PcAxY1z93YFRqJS4
+ R3Hf2Yk7Eobc23228ie4nJobzipPV/sxNx3phFsHbc4vdf8RBp131Hpjn7byw98ae+85
+ 8EesYFDX/9CbJuqFxnBf67W6v0ExSnOtTWVhaeOvQQHLAjlzQUq2lZhdzVfYq9zZxWEk
+ iHolIlAtES6II05ixvpNjCDbjDUBuHM7HDll9F4cetW2M6PuOUHVxiFnkwy+gEA1INXk
+ K8T8ttxWm/2I9RWE/6wfDvQRMShUn3Gvub4FNGDVXVKNIVxExllpdxUpebCPHh2cuXFm Tw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ryfyf0cde-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jul 2023 05:13:39 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36L5DcTu006302
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jul 2023 05:13:38 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
+ 2023 22:13:37 -0700
+Message-ID: <c8002897-c642-fcde-a7e1-da2959d40abe@quicinc.com>
+Date:   Thu, 20 Jul 2023 23:13:37 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230711153743.1970625-1-heiko@sntech.de>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH] mhi: host: Add tme supported image download functionality
+Content-Language: en-US
+To:     Qiang Yu <quic_qianyu@quicinc.com>, <mani@kernel.org>
+CC:     <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
+        <quic_mrana@quicinc.com>
+References: <1689907189-21844-1-git-send-email-quic_qianyu@quicinc.com>
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <1689907189-21844-1-git-send-email-quic_qianyu@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: WMd-kBRu7JrKhQIwYE-hSF0LZ0mswLoh
+X-Proofpoint-ORIG-GUID: WMd-kBRu7JrKhQIwYE-hSF0LZ0mswLoh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-21_01,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ mlxscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 clxscore=1011 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307210047
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+On 7/20/2023 8:39 PM, Qiang Yu wrote:
+> Add tme supported image related flag which makes decision in terms of how
+> FBC image based AMSS image is being downloaded with connected endpoint.
+> FBC image is having 2 image combine: SBL image + AMSS image.
+> 1. FBC image download using legacy image format:
+> - SBL image: 512KB of FBC image is downloaded using BHI.
+> - AMSS image: full FBC image is downloaded using BHIe.
+> 2. FBC image download using TME supported image format:
+> - SBL image: 512 KB of FBC image is downloaded using BHI.
+> - AMSS image: 512 KB onward FBC image is downloaded using BHIe.
+> There is no change for SBL image download. Although AMSS image start
+> address is end address of SBL image while using TME supported image format.
 
-On Tue, Jul 11, 2023 at 05:37:31PM +0200, Heiko Stuebner wrote:
-> From: Heiko Stuebner <heiko.stuebner@vrull.eu>
-> 
-> This series provides cryptographic implementations using the vector
-> crypto extensions.
-> 
-> v13 of the vector patchset dropped the patches for in-kernel usage of
-> vector instructions, I picked the ones from v12 over into this series
-> for now.
-> 
-> My basic goal was to not re-invent cryptographic code, so the heavy
-> lifting is done by those perl-asm scripts used in openssl and the perl
-> code used here-in stems from code that is targetted at openssl [0] and is
-> unmodified from there to limit needed review effort.
-> 
-> With a matching qemu (there are patches for vector-crypto flying around)
-> the in-kernel crypto-selftests (also the extended ones) are very happy
-> so far.
-> 
-> 
-> changes in v4:
-> - split off from scalar crypto patches but base on top of them
-> - adapt to pending openssl code [0] using the now frozen vector crypto
->   extensions - with all its changes
->   [0] https://github.com/openssl/openssl/pull/20149
-> 
-> changes in v3:
-> - rebase on top of 6.3-rc2
-> - rebase on top of vector-v14 patchset
-> - add the missing Co-developed-by mentions to showcase
->   the people that did the actual openSSL crypto code
-> 
-> changes in v2:
-> - rebased on 6.2 + zbb series, so don't include already
->   applied changes anymore
-> - refresh code picked from openssl as that side matures
-> - more algorithms (SHA512, AES, SM3, SM4)
-> 
-> Greentime Hu (2):
->   riscv: Add support for kernel mode vector
->   riscv: Add vector extension XOR implementation
-> 
-> Heiko Stuebner (10):
->   RISC-V: add helper function to read the vector VLEN
->   RISC-V: add vector crypto extension detection
->   RISC-V: crypto: update perl include with helpers for vector (crypto)
->     instructions
->   RISC-V: crypto: add Zvbb+Zvbc accelerated GCM GHASH implementation
->   RISC-V: crypto: add Zvkg accelerated GCM GHASH implementation
->   RISC-V: crypto: add a vector-crypto-accelerated SHA256 implementation
->   RISC-V: crypto: add a vector-crypto-accelerated SHA512 implementation
->   RISC-V: crypto: add Zvkned accelerated AES encryption implementation
->   RISC-V: crypto: add Zvksed accelerated SM4 encryption implementation
->   RISC-V: crypto: add Zvksh accelerated SM3 hash implementation
-> 
->  arch/riscv/crypto/Kconfig                     |  68 ++-
->  arch/riscv/crypto/Makefile                    |  44 +-
->  arch/riscv/crypto/aes-riscv-glue.c            | 168 ++++++
->  arch/riscv/crypto/aes-riscv64-zvkned.pl       | 530 ++++++++++++++++++
->  arch/riscv/crypto/ghash-riscv64-glue.c        | 245 ++++++++
->  arch/riscv/crypto/ghash-riscv64-zvbb-zvbc.pl  | 380 +++++++++++++
->  arch/riscv/crypto/ghash-riscv64-zvkg.pl       | 168 ++++++
->  arch/riscv/crypto/riscv.pm                    | 433 +++++++++++++-
->  arch/riscv/crypto/sha256-riscv64-glue.c       | 115 ++++
->  .../crypto/sha256-riscv64-zvbb-zvknha.pl      | 314 +++++++++++
->  arch/riscv/crypto/sha512-riscv64-glue.c       | 106 ++++
->  .../crypto/sha512-riscv64-zvbb-zvknhb.pl      | 377 +++++++++++++
->  arch/riscv/crypto/sm3-riscv64-glue.c          | 112 ++++
->  arch/riscv/crypto/sm3-riscv64-zvksh.pl        | 225 ++++++++
->  arch/riscv/crypto/sm4-riscv64-glue.c          | 162 ++++++
->  arch/riscv/crypto/sm4-riscv64-zvksed.pl       | 300 ++++++++++
->  arch/riscv/include/asm/hwcap.h                |   9 +
->  arch/riscv/include/asm/vector.h               |  28 +
->  arch/riscv/include/asm/xor.h                  |  82 +++
->  arch/riscv/kernel/Makefile                    |   1 +
->  arch/riscv/kernel/cpu.c                       |   8 +
->  arch/riscv/kernel/cpufeature.c                |  50 ++
->  arch/riscv/kernel/kernel_mode_vector.c        | 132 +++++
->  arch/riscv/lib/Makefile                       |   1 +
->  arch/riscv/lib/xor.S                          |  81 +++
->  25 files changed, 4136 insertions(+), 3 deletions(-)
->  create mode 100644 arch/riscv/crypto/aes-riscv-glue.c
->  create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned.pl
->  create mode 100644 arch/riscv/crypto/ghash-riscv64-zvbb-zvbc.pl
->  create mode 100644 arch/riscv/crypto/ghash-riscv64-zvkg.pl
->  create mode 100644 arch/riscv/crypto/sha256-riscv64-glue.c
->  create mode 100644 arch/riscv/crypto/sha256-riscv64-zvbb-zvknha.pl
->  create mode 100644 arch/riscv/crypto/sha512-riscv64-glue.c
->  create mode 100644 arch/riscv/crypto/sha512-riscv64-zvbb-zvknhb.pl
->  create mode 100644 arch/riscv/crypto/sm3-riscv64-glue.c
->  create mode 100644 arch/riscv/crypto/sm3-riscv64-zvksh.pl
->  create mode 100644 arch/riscv/crypto/sm4-riscv64-glue.c
->  create mode 100644 arch/riscv/crypto/sm4-riscv64-zvksed.pl
->  create mode 100644 arch/riscv/include/asm/xor.h
->  create mode 100644 arch/riscv/kernel/kernel_mode_vector.c
->  create mode 100644 arch/riscv/lib/xor.S
-> 
+I know what TME is, but in the context of this patch, it doesn't seem 
+like relevant information.  "tme" is just a name for this mode, but it 
+is not very descriptive.  Also, I suspect that this mode is not 
+intrinsically related to the TME hardware on the endpoint, it just 
+happens to be used on targets where TME is present.
 
-Thanks for working on this patchset!  I'm glad to see that you and others are
-working on this and the code in OpenSSL.  And thanks for running all the kernel
-crypto self-tests and verifying that they pass.
+Is there something else we can call this?
 
-I'm still a bit worried about there being two competing sets of crypto
-extensions for RISC-V: scalar and vector.
+> 
+> Signed-off-by: Mayank Rana <quic_mrana@quicinc.com>
+> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
 
-However the vector crypto extensions are moving forwards (they were recently
-frozen), from what I've heard are being implemented in CPUs, and based on this
-patchset implementations of most algorithms are ready already.
+This doesn't make sense.  This patch is from you, which makes you the 
+author.  But Mayank's SOB is listed first, which means he is the author. 
+  Those two facts conflict.
 
-So I'm wondering: do you still think that it's valuable to continue with your
-other patchset that adds GHASH acceleration using the scalar extensions (which
-this patchset is still based on)?  
+Did Mayank author this and you are just submitting it on his behalf, or 
+did the two of you co-author this?
 
-I'm wondering if we should be 100% focused on the vector extensions for now to
-avoid fragmentation of effort.
+> ---
+>   drivers/bus/mhi/host/boot.c | 24 +++++++++++++++++-------
+>   include/linux/mhi.h         |  2 ++
+>   2 files changed, 19 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/host/boot.c b/drivers/bus/mhi/host/boot.c
+> index d2a19b07..563b011 100644
+> --- a/drivers/bus/mhi/host/boot.c
+> +++ b/drivers/bus/mhi/host/boot.c
+> @@ -365,12 +365,13 @@ int mhi_alloc_bhie_table(struct mhi_controller *mhi_cntrl,
+>   }
+>   
+>   static void mhi_firmware_copy(struct mhi_controller *mhi_cntrl,
+> -			      const struct firmware *firmware,
+> +			      const u8 *image_buf,
+> +			      size_t img_size,
+>   			      struct image_info *img_info)
+>   {
+> -	size_t remainder = firmware->size;
+> +	size_t remainder = img_size;
+>   	size_t to_cpy;
+> -	const u8 *buf = firmware->data;
+> +	const u8 *buf = image_buf;
+>   	struct mhi_buf *mhi_buf = img_info->mhi_buf;
+>   	struct bhi_vec_entry *bhi_vec = img_info->bhi_vec;
+>   
+> @@ -395,8 +396,9 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+>   	const char *fw_name;
+>   	void *buf;
+>   	dma_addr_t dma_addr;
+> -	size_t size;
+> +	size_t size, img_size;
+>   	int i, ret;
+> +	const u8 *img_buf;
+>   
+>   	if (MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)) {
+>   		dev_err(dev, "Device MHI is not in valid state\n");
+> @@ -478,15 +480,23 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+>   	 * device transitioning into MHI READY state
+>   	 */
+>   	if (mhi_cntrl->fbc_download) {
+> -		ret = mhi_alloc_bhie_table(mhi_cntrl, &mhi_cntrl->fbc_image,
+> -					   firmware->size);
+> +		img_size = firmware->size;
+> +		img_buf = firmware->data;
+> +		dev_dbg(dev, "tme_supported_image:%s\n",
+> +				(mhi_cntrl->tme_supported_image ? "True" : "False"));
+> +		if (mhi_cntrl->tme_supported_image) {
+> +			img_buf = firmware->data + mhi_cntrl->sbl_size;
+> +			img_size = img_size - mhi_cntrl->sbl_size;
+> +		}
+> +
+> +		ret = mhi_alloc_bhie_table(mhi_cntrl, &mhi_cntrl->fbc_image, img_size);
+>   		if (ret) {
+>   			release_firmware(firmware);
+>   			goto error_fw_load;
+>   		}
+>   
+>   		/* Load the firmware into BHIE vec table */
+> -		mhi_firmware_copy(mhi_cntrl, firmware, mhi_cntrl->fbc_image);
+> +		mhi_firmware_copy(mhi_cntrl, img_buf, img_size, mhi_cntrl->fbc_image);
+>   	}
+>   
+>   	release_firmware(firmware);
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index f6de4b6..5f46dc9 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -306,6 +306,7 @@ struct mhi_controller_config {
+>    * @reg_len: Length of the MHI MMIO region (required)
+>    * @fbc_image: Points to firmware image buffer
+>    * @rddm_image: Points to RAM dump buffer
+> + * @tme_supported_image: Flag to make decision about firmware download start address (optional)
+>    * @mhi_chan: Points to the channel configuration table
+>    * @lpm_chans: List of channels that require LPM notifications
+>    * @irq: base irq # to request (required)
+> @@ -391,6 +392,7 @@ struct mhi_controller {
+>   	size_t reg_len;
+>   	struct image_info *fbc_image;
+>   	struct image_info *rddm_image;
+> +	bool tme_supported_image;
 
-It's just not super clear to me what is driving the scalar crypto support right
-now.  Maybe embedded systems?  Maybe it was just a mistep, perhaps due to being
-started before the CPU even had a vector unit?  I don't know.  If you do indeed
-have a strong reason for it, then you can go ahead -- I just wanted to make sure
-we don't end up doing twice as much work unnecessarily.
+A bool in the middle of several pointers?  Surely that makes the pahole 
+output rather sad?  A lot of work went into the organization of this 
+structure.
 
-- Eric
+>   	struct mhi_chan *mhi_chan;
+>   	struct list_head lpm_chans;
+>   	int *irq;
+
