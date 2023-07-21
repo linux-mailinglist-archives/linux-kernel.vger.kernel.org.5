@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5641875CCC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D87AB75CCC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbjGUPzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56054 "EHLO
+        id S231743AbjGUP4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbjGUPzk (ORCPT
+        with ESMTP id S231411AbjGUP4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:55:40 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B9C35A0;
-        Fri, 21 Jul 2023 08:55:23 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6862842a028so1405319b3a.0;
-        Fri, 21 Jul 2023 08:55:23 -0700 (PDT)
+        Fri, 21 Jul 2023 11:56:01 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200A63A90
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:55:48 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1b0719dd966so1611496fac.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:55:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689954923; x=1690559723;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1689954947; x=1690559747;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=F9Nkz09J0OWI8g55rIWxy1NKC5S7asE7sS8B85Det4w=;
-        b=Tuv9oN/LT9x0NGtgdwqfgzNpbSMdVfxcVtV2YUFxa5Lnf7p0nkDaGoMM0CHpt/4rlb
-         c5rQ1zZyK5Tar0Q2eTbyuKQFZAcXfMwZEnIFXeFQ9OSEXLvYNzcPAcrCp5+NohdmF9PX
-         5UJdxpqzSEpbqsBN6Vt1opak5tnVfFqfms0JbBvu5xDIGxR0fBAcR5N0GMmHwHFYMkXw
-         zxJwds8Rdvcv5MfF7W4sGuArBm4OUYiejAdhd7pKJ1IGZ+n0A1ZUmiCJ/q3dVM4/y1kz
-         Lmg93CxUIpdD2+gMb1SQZGmJQLy3vmAaCjITR4AeKMmJ3bC6BpDBvdq9Sx0Wsc5KupGd
-         gLyg==
+        bh=tl0eTAwzZMqhrxk94X5w3ULTemUp7A7rZI7DezrgeA0=;
+        b=kmuAo33/+EOAbBUeF2mJvFIvjHiyGDFqgVkxovydnyB+xcalD42PZFUywMTVcGNa8t
+         5u4fevWpKgGGQiezFXTQkf7jwfFC0llQlpMIwAIQKM/BPDfdf20BfJkXkXGfurQ4gqAx
+         eiB0ljF43D5RmbBCizRa98SBKdhu0Il0FmJyzjX9EqMDxuvjvX2XddKQzWI6bxZraYXr
+         ffvqZ3CyBL2oRQ9Ut+ahEuZgU2oh5GtpQ3/nFq4l1IlFaYgG4+JADAloi03ppBV/aAu3
+         V1YZkFNO0TOnqwjf42Y+u61M4BM7CDldqMPhfQvtZn9QTvjfgzGaiPk2EziUpvYK2OWh
+         epGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689954923; x=1690559723;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689954947; x=1690559747;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=F9Nkz09J0OWI8g55rIWxy1NKC5S7asE7sS8B85Det4w=;
-        b=G/7222/oYsEzMKPO5PX/6CulUYZql34oGBsrgqvLyjQgTlLJGY7aK2vPIlAJyWIA7J
-         oSh3UylvpNb+bq4QINcKg2Oew6BFceeqRsSeISa05QrRJnxy7fOGOjoFhM77qUrf59K9
-         BEcxVo0k5A5D/tGcO/89ZllSLmJLWkcDIzv2yVDwBRZ+y2SR2Pm2amVDYj6pqtTIFT7e
-         1HMQYZI9JFL6UZGOU0LJLwSQTdREo4LzobltBpNvantZm+PkV7QUB4wFu3s4Gpqa30It
-         7uBELQeKFPhTXmVb2duxXo00aIbTD643QZPSPevgk3tcEb00Y5S6G4ZRmDD4htdNmy4w
-         O7Ew==
-X-Gm-Message-State: ABy/qLaSPGPkYccr3uFVJ8d+EwW9Rm+PdPcfYMXs7KMbfqjf8HzD7enB
-        EuqLInL9QJaWjmfONmdFELc=
-X-Google-Smtp-Source: APBJJlFPtxydAoiHWHkJISTHNoF9Jsw9EbnmsgBFnnI9ZibNZVSsa6Iv55dcnAUzUA0ld3ftX4P6pw==
-X-Received: by 2002:a05:6a00:b45:b0:676:20f8:be41 with SMTP id p5-20020a056a000b4500b0067620f8be41mr484404pfo.16.1689954923244;
-        Fri, 21 Jul 2023 08:55:23 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id y8-20020a62b508000000b00663b712bfbdsm3145756pfe.57.2023.07.21.08.55.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Jul 2023 08:55:22 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <fedf0448966b44d5b9146508265874fd@AcuMS.aculab.com>
-Date:   Fri, 21 Jul 2023 23:55:07 +0800
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>
+        bh=tl0eTAwzZMqhrxk94X5w3ULTemUp7A7rZI7DezrgeA0=;
+        b=c/Ts7nP5XIVjLgx6V9Mjtaqy2pTeHv2SMIF8+da5xY5GIKnwXaEx0ZECEzXkZNvP5R
+         5/xL7oqwXfM8GLQ5TE/HBKZxH202NcIBDCrgGF3DqDOQacnqxfLRSQfDIotfPkPZKeuO
+         s6Sph9B1Mq/Uf6XlwpqaqAGRjasoNP/B4xidBOPldmQ2KnOaSCUJ8hx7LcTbUWWgdc+y
+         Nx2HOB+SSfNVgOTziJeww4Y5FSyICONvzlW4iwbCmktTCd0tqJJzDPhtByHu9YNeZZhE
+         Co7nPNrbuKgwHSVUUgiGW3e6N8TQuOvYQj9zubKxR+yCWzjBn30qUoJPl0G6ze5TwKV3
+         w9lA==
+X-Gm-Message-State: ABy/qLbeI/NN+tErAWtlwXoZvHw4SlYYjdlJhrOf0cYYXe4V8keYeFWh
+        lbvyfCtv/w0BWYsDQtn/BKAw+lk9YzSto2PJssc=
+X-Google-Smtp-Source: APBJJlGM5h3R4hILd/o0pnv8AxWx2WjHbhsf+MePdcnfu8LONxoSi8vOo0ew6VGAU3e747yKPBDUS4PpIeBWd1GtK0c=
+X-Received: by 2002:a05:6870:7389:b0:1b0:89e4:e26b with SMTP id
+ z9-20020a056870738900b001b089e4e26bmr2799810oam.48.1689954947629; Fri, 21 Jul
+ 2023 08:55:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230721012635.4552-1-xujianghui@cdjrlc.com> <f9f0077b8f91d858777e9ad2db972db8@208suo.com>
+In-Reply-To: <f9f0077b8f91d858777e9ad2db972db8@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 21 Jul 2023 11:55:36 -0400
+Message-ID: <CADnq5_O6HO70hXuoahwcnN6q0e1YbW8kLZbFT0uV=YeLPZwnmg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd: open brace '{' following struct go on the same line
+To:     sunran001@208suo.com
+Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <FA8E8B15-A0B4-4EE1-B01E-FB1532103E17@gmail.com>
-References: <04C1E631-725C-47AD-9914-25D5CE04DFF4@gmail.com>
- <fedf0448966b44d5b9146508265874fd@AcuMS.aculab.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -79,38 +70,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 20, 2023 at 9:31=E2=80=AFPM <sunran001@208suo.com> wrote:
+>
+> Fix the checkpatch error as open brace '{' following struct should
+> go on the same line.
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
 
-> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 19:51=EF=BC=8CDavid Laight =
-<David.Laight@ACULAB.COM> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> From: Alan Huang
->> Sent: 20 July 2023 19:54
->>=20
->> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of first =
-item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
->> and a related discussion [1].
->=20
-> Hmmm... that was all about the retry loop in ipv4/udp.c
->=20
-> AFAICT that retry got deleted by ca065d0c.
->=20
-> That also changes the list from hlist_nulls_xxx to hlist_xxx.
-> (I'm not sure of the difference)
->=20
-> This might be why we're seeing unexpected 'port unreachable' messages?
->=20
-> Quite why that has just started happening is another issue.
-> Most of the UDP sockets we create aren't 'connected' so I don't
-> believe they get moved between hash chains - just deleted.
-> The deletion should leave the hash chain intact.
+git am didn't seem to like the patch, but I was able to apply it
+cleanly manually with no fuzz.  Not sure what's up, but I've applied
+it.
 
-Thanks for the information! :)
+Alex
 
->=20
-> David
->=20
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, =
-MK1 1PT, UK
-> Registration No: 1397386 (Wales)
 
+> ---
+>   drivers/gpu/drm/amd/include/yellow_carp_offset.h | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/include/yellow_carp_offset.h
+> b/drivers/gpu/drm/amd/include/yellow_carp_offset.h
+> index 0fea6a746611..a2c8dca2425e 100644
+> --- a/drivers/gpu/drm/amd/include/yellow_carp_offset.h
+> +++ b/drivers/gpu/drm/amd/include/yellow_carp_offset.h
+> @@ -7,13 +7,11 @@
+>   #define MAX_SEGMENT                                         6
+>
+>
+> -struct IP_BASE_INSTANCE
+> -{
+> +struct IP_BASE_INSTANCE {
+>       unsigned int segment[MAX_SEGMENT];
+>   } __maybe_unused;
+>
+> -struct IP_BASE
+> -{
+> +struct IP_BASE {
+>       struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
+>   } __maybe_unused;
