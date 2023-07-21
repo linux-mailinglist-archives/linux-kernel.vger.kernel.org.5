@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E89E75CA09
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B0975CA0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbjGUO32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
+        id S229651AbjGUObe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbjGUO3U (ORCPT
+        with ESMTP id S231502AbjGUObb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:29:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC61E68;
-        Fri, 21 Jul 2023 07:29:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 103B161CDE;
-        Fri, 21 Jul 2023 14:29:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B311BC433C7;
-        Fri, 21 Jul 2023 14:29:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689949758;
-        bh=n5CM7X3lN74+RyydF842JksyHcy3Wi22/2HsBm0XHug=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=eM1PESOg5xMGMQaVB7l97rvozA/NGL2jli8sDbORbMwaqJIc6jMzUKBHHQx1EtFo6
-         hQYvt5GWeXmG30IRgrSon1Sm6paEtGn+f6yXdEFm94zvOATHfyXgCjhLbWQQxBE9jX
-         37O+FAD8F7ki2cs7Rr8q7O+YIFkp70M+hTt20XPf8frZWCl7C9a9Ykey18y3adYpH8
-         jiD9Dy1UtpZgCgOUTqKI5HfoKtXdA40K8vlfzE6pGqMiaOb/7/U+5GvaaNfaqyfBzA
-         cUVAv2zhkS2B/6AYbgwaa4nrAPJlw0cN4/pye1F54VZyglzxOP/PPhtlG8AKWrPZk0
-         br8pnq5BTD5uw==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Fri, 21 Jul 2023 10:29:11 -0400
-Subject: [PATCH v3 2/2] nfsd: remove unsafe BUG_ON from set_change_info
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230721-bz2223560-v3-2-bb57e302bab7@kernel.org>
-References: <20230721-bz2223560-v3-0-bb57e302bab7@kernel.org>
-In-Reply-To: <20230721-bz2223560-v3-0-bb57e302bab7@kernel.org>
-To:     Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeff Layton <jlayton@kernel.org>, Boyang Xue <bxue@redhat.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3480; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=n5CM7X3lN74+RyydF842JksyHcy3Wi22/2HsBm0XHug=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBkupY7P/EQhQx0cLkz0dwczVoxvUEnc6+CSgZzW
- j0jrAvv4kqJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZLqWOwAKCRAADmhBGVaC
- FUOGD/9WfQyqmzYlBzNM3CcAxjJYoeQATI72bqz1Ro3NcJ5P+eoaNx+m6LMcI6NTk6xekuBTxKX
- TdOQ5smFiBBfDYSDYom7MJyH8qGTzDmR6EeuiW0xTBTHvfLd4CjHDpjgWtDHHjCwPs8OrJ7bJzu
- 27Yo7rfyEleWB8/utCZWiYoXMpqH04ndieR5A5WUWOCxUuQ1SXOTSdYCXpUuUGGX/JKB+fEAgYs
- 26g3mgxSP3T8UbDy9ykAarejEZGjqTjUshvUCY4cpvYqkN6Bsn2TQE9UM8mDsS3KibXtQ8pJHPF
- loL64gwt+CkbUJoUVbkuh2YpKCHbxvFBoeTOre3K66x6SkfpcYFDUlxzLrScoeMnvaF+PhZiP5q
- s8eyGupKvZNHOlqwlAEs/sVZchc7vAkwAPRdjofl78+s+S45LupZLUO5+t//fMjJqG28ldAtkd6
- KSIVkIzmzqjyq/t8yPLJfW2WXOBcsd05gklfTsyufDYua4vrpBFaVNiBjThjvGj+2sVMMCqE6L8
- ufnyA1PgCaeckHttJyTUMaMWSc7ami+h31JRyFfDpjgADX9K3FM4in5hTxk116MJVFO8v0fOwJd
- 5MVQJhpcZV1+Fsi9LemvWr7K8D4KuhhEKPxgMv9fgdsN+IO5DY7S2QF6uxB0pZhIKypCCQjdL9E
- eqTHmjMjfVY8YRA==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Fri, 21 Jul 2023 10:31:31 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98B92D51;
+        Fri, 21 Jul 2023 07:31:29 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5577900c06bso1358243a12.2;
+        Fri, 21 Jul 2023 07:31:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689949889; x=1690554689;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nq7yoJPxdCpRcPNPemoFiyQn39JZwO5mSUTsStV/p0s=;
+        b=HmWJMVpBx+a8gA5lztX8VEHw8K7zNgC8/Kx97dGfQSuyT2eB/oSiGX9rIagVyAx8x5
+         0gne7LKRZKARdM7mJKC4eobhCD11Z/D2weZS2whTOaGvamJpm1CuEjlBbG9xwkK+uGZS
+         wQ6/wsiUnQZ3kZLdXfzf2tbvD0+yC4Fo1jqrNd4PsUPu/SSfeEe9qIUDeAN1aR3kew7L
+         lpBsZJTWt0gxveBbpKFBNel5BIRCEIBId+Hs13i1cphFCB7x44vdIkoG2/s2VZuuGs0r
+         CMc2dJUq1FptUXFJkjInRYPNqFvoU08wAEssjlE1ekbb9Ko9xSr5rXrUqmuvIypyTtIe
+         mnvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689949889; x=1690554689;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nq7yoJPxdCpRcPNPemoFiyQn39JZwO5mSUTsStV/p0s=;
+        b=A0kCDqX6QSSNb1aaGovghfaFpbWR7t9QXkqyyry0XYj4gWF6krwYiXZoMrOG011orm
+         FtgcjCrUt0Dgw6H3zL9JsZDNS1OeWf/xmREEi3NYNjmn0Of/7sr3l97Bqcdf7wZs1NyY
+         7dqUO7MlH/GmVDBzc5PA0tApzSASV47y7P4Gy+CUvEemfKuCgvgLh/7DPbUqTh64WtzK
+         tcrRpKhPYAk17tem5Ck7SScwnVwjIZTNk9GUG6I32msGnX+PcuUaeWIsFcsoIFPR1oUF
+         yti1N3U42eOc2V28j7vCuuGmJ0Mdila8b8e+3pRCkhZLRQG2PB/IsZEiifnlgDNCH/jv
+         m/Uw==
+X-Gm-Message-State: ABy/qLZ6mWtNRb7zlONUsjveiN0azrTCNhbwXa1+X5+Qe6C4U2y1N5L0
+        ougKS++11CXabCYsdDpjVpc=
+X-Google-Smtp-Source: APBJJlEzpiHUM3fh6dGeDvxYMh6dMlRTyHCd9VOnRyIic7rI7vv4UcmDLFSqSJosST7EZq8t6YtqmA==
+X-Received: by 2002:a17:90a:a65:b0:263:62ae:37aa with SMTP id o92-20020a17090a0a6500b0026362ae37aamr1920718pjo.47.1689949889223;
+        Fri, 21 Jul 2023 07:31:29 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id w1-20020a17090a6b8100b00265cdfa3628sm4607007pjj.6.2023.07.21.07.31.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 Jul 2023 07:31:28 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <CANn89iLqU=huOuCt2kXmrXf68TUU-N90aQnMykkYcZ+Arx9-aA@mail.gmail.com>
+Date:   Fri, 21 Jul 2023 22:31:13 +0800
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        roman.gushchin@linux.dev
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <EDE1C0AE-B479-49F9-995D-DA9CC1A6EA57@gmail.com>
+References: <04C1E631-725C-47AD-9914-25D5CE04DFF4@gmail.com>
+ <CANn89iKJWw7zUP-E_d=Yhaz=Qw0R3Ae7ULaGgrtsi1yf2pfpGg@mail.gmail.com>
+ <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
+ <CANn89iLqU=huOuCt2kXmrXf68TUU-N90aQnMykkYcZ+Arx9-aA@mail.gmail.com>
+To:     Eric Dumazet <edumazet@google.com>
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,94 +78,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At one time, nfsd would scrape inode information directly out of struct
-inode in order to populate the change_info4. At that time, the BUG_ON in
-set_change_info made some sense, since having it unset meant a coding
-error.
 
-More recently, it calls vfs_getattr to get this information, which can
-fail. If that fails, fh_pre_saved can end up not being set. While this
-situation is unfortunate, we don't need to crash the box.
+> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 05:11=EF=BC=8CEric Dumazet =
+<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> On Thu, Jul 20, 2023 at 10:00=E2=80=AFPM Alan Huang =
+<mmpgouride@gmail.com> wrote:
+>>=20
+>>=20
+>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet =
+<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
+>>>=20
+>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
+<mmpgouride@gmail.com> wrote:
+>>>>=20
+>>>> Hi,
+>>>>=20
+>>>> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of =
+first item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
+>>>> and a related discussion [1].
+>>>>=20
+>>>> After reading the whole discussion, it seems like that ptr->field =
+was cached by gcc even with the deprecated
+>>>> ACCESS_ONCE(), so my question is:
+>>>>=20
+>>>>       Is that a compiler bug? If so, has this bug been fixed today, =
+ten years later?
+>>>>=20
+>>>>       What about READ_ONCE(ptr->field)?
+>>>=20
+>>> Make sure sparse is happy.
+>>=20
+>> It caused a problem without barrier(), and the deprecated =
+ACCESS_ONCE() didn=E2=80=99t help:
+>>=20
+>>        https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
+>>=20
+>> So, my real question is: With READ_ONCE(ptr->field), are there still =
+some unusual cases where gcc
+>> decides not to reload ptr->field?
+>=20
+> I can not really answer without seeing an actual patch...
 
-Move set_change_info to nfs4proc.c since all of the callers are there.
-Revise the condition for setting "atomic" to also check for
-fh_pre_saved. Drop the BUG_ON and and just have it zero out both
-change_attr4s when this occurs.
+The content of the potential patch:
 
-Reported-by: Boyang Xue <bxue@redhat.com>
-Closes: https://bugzilla.redhat.com/show_bug.cgi?id=2223560
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/nfsd/nfs4proc.c | 32 ++++++++++++++++++++++++++++++++
- fs/nfsd/xdr4.h     | 11 -----------
- 2 files changed, 32 insertions(+), 11 deletions(-)
+diff --git a/include/linux/rculist_nulls.h =
+b/include/linux/rculist_nulls.h
+index 89186c499dd4..bcd39670f359 100644
+--- a/include/linux/rculist_nulls.h
++++ b/include/linux/rculist_nulls.h
+@@ -158,15 +158,9 @@ static inline void hlist_nulls_add_fake(struct =
+hlist_nulls_node *n)
+  * @pos:       the &struct hlist_nulls_node to use as a loop cursor.
+  * @head:      the head of the list.
+  * @member:    the name of the hlist_nulls_node within the struct.
+- *
+- * The barrier() is needed to make sure compiler doesn't cache first =
+element [1],
+- * as this loop can be restarted [2]
+- * [1] Documentation/memory-barriers.txt around line 1533
+- * [2] Documentation/RCU/rculist_nulls.rst around line 146
+  */
+ #define hlist_nulls_for_each_entry_rcu(tpos, pos, head, member)         =
+               \
+-       for (({barrier();}),                                             =
+       \
+-            pos =3D rcu_dereference_raw(hlist_nulls_first_rcu(head));   =
+         \
++       for (pos =3D rcu_dereference_raw(hlist_nulls_first_rcu(head));   =
+         \
+                (!is_a_nulls(pos)) &&                                    =
+       \
+                ({ tpos =3D hlist_nulls_entry(pos, typeof(*tpos), =
+member); 1; }); \
+                pos =3D rcu_dereference_raw(hlist_nulls_next_rcu(pos)))
+@@ -180,8 +174,7 @@ static inline void hlist_nulls_add_fake(struct =
+hlist_nulls_node *n)
+  * @member:    the name of the hlist_nulls_node within the struct.
+  */
+ #define hlist_nulls_for_each_entry_safe(tpos, pos, head, member)        =
+       \
+-       for (({barrier();}),                                             =
+       \
+-            pos =3D rcu_dereference_raw(hlist_nulls_first_rcu(head));   =
+         \
++       for (pos =3D rcu_dereference_raw(hlist_nulls_first_rcu(head));   =
+         \
+                (!is_a_nulls(pos)) &&                                    =
+       \
+                ({ tpos =3D hlist_nulls_entry(pos, typeof(*tpos), =
+member);        \
+                   pos =3D =
+rcu_dereference_raw(hlist_nulls_next_rcu(pos)); 1; });)
 
-diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-index 9285e1eab4d5..3f6710c9c5c9 100644
---- a/fs/nfsd/nfs4proc.c
-+++ b/fs/nfsd/nfs4proc.c
-@@ -382,6 +382,38 @@ nfsd4_create_file(struct svc_rqst *rqstp, struct svc_fh *fhp,
- 	return status;
- }
- 
-+/**
-+ * set_change_info - set up the change_info4 for a reply
-+ * @cinfo: pointer to nfsd4_change_info to be populated
-+ * @fhp: pointer to svc_fh to use as source
-+ *
-+ * Many operations in NFSv4 require change_info4 in the reply. This function
-+ * populates that from the info that we (should!) have already collected. In
-+ * the event that we didn't get any pre-attrs, just zero out both.
-+ */
-+static void
-+set_change_info(struct nfsd4_change_info *cinfo, struct svc_fh *fhp)
-+{
-+	cinfo->atomic = (u32)(fhp->fh_pre_saved && fhp->fh_post_saved && !fhp->fh_no_atomic_attr);
-+	cinfo->before_change = fhp->fh_pre_change;
-+	cinfo->after_change = fhp->fh_post_change;
-+
-+	/*
-+	 * If fetching the pre-change attributes failed, then we should
-+	 * have already failed the whole operation. We could have still
-+	 * failed to fetch post-change attributes however.
-+	 *
-+	 * If we didn't get post-op attrs, just zero-out the after
-+	 * field since we don't know what it should be. If the pre_saved
-+	 * field isn't set for some reason, throw warning and just copy
-+	 * whatever is in the after field.
-+	 */
-+	if (WARN_ON_ONCE(!fhp->fh_pre_saved))
-+		cinfo->before_change = 0;
-+	if (!fhp->fh_post_saved)
-+		cinfo->after_change = 0;
-+}
-+
- static __be32
- do_open_lookup(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate, struct nfsd4_open *open, struct svc_fh **resfh)
- {
-diff --git a/fs/nfsd/xdr4.h b/fs/nfsd/xdr4.h
-index b2931fdf53be..9e67f63c5f4d 100644
---- a/fs/nfsd/xdr4.h
-+++ b/fs/nfsd/xdr4.h
-@@ -775,17 +775,6 @@ void warn_on_nonidempotent_op(struct nfsd4_op *op);
- 
- #define NFS4_SVC_XDRSIZE		sizeof(struct nfsd4_compoundargs)
- 
--static inline void
--set_change_info(struct nfsd4_change_info *cinfo, struct svc_fh *fhp)
--{
--	BUG_ON(!fhp->fh_pre_saved);
--	cinfo->atomic = (u32)(fhp->fh_post_saved && !fhp->fh_no_atomic_attr);
--
--	cinfo->before_change = fhp->fh_pre_change;
--	cinfo->after_change = fhp->fh_post_change;
--}
--
--
- bool nfsd4_mach_creds_match(struct nfs4_client *cl, struct svc_rqst *rqstp);
- bool nfs4svc_decode_compoundargs(struct svc_rqst *rqstp, struct xdr_stream *xdr);
- bool nfs4svc_encode_compoundres(struct svc_rqst *rqstp, struct xdr_stream *xdr);
 
--- 
-2.41.0
+>=20
+> Why are you asking ? Are you tracking compiler bug fixes ?
+
+The barrier() here makes me confused.
+=20
+If we really need that, do we need:
+
+	READ_ONCE(head->first);
+	barrier();
+	READ_ONCE(head->first);
+
+?
+
+>=20
+>>=20
+>>>=20
+>>> Do you have a patch for review ?
+>>=20
+>> Possibly next month. :)
+>>=20
+>>>=20
+>>>=20
+>>>>=20
+>>>>=20
+>>>> [1] =
+https://lore.kernel.org/all/1369699930.3301.494.camel@edumazet-glaptop/
+>>>>=20
+>>>> Thanks,
+>>>> Alan
+
 
