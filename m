@@ -2,99 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 108F975C81C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43E675C829
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbjGUNqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 09:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
+        id S231273AbjGUNqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 09:46:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjGUNqE (ORCPT
+        with ESMTP id S229642AbjGUNqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 09:46:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD70D1731;
-        Fri, 21 Jul 2023 06:46:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 61C5661B30;
-        Fri, 21 Jul 2023 13:46:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 664BAC433CC;
-        Fri, 21 Jul 2023 13:45:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689947160;
-        bh=7/8un7O0KbffM2Qk+6DZGKZkr/Uh/KXBMa5+rJ58feo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ry7vFJvp9lNVxfPbd1yKD9O3pf/xY0X8oj/sjYZZxkZOGwXmmCsHFnCs2sh9wZ75W
-         al6oCVkkwa41ZHvej0bfpAPg8v9tHWPGQS8k/qaGlIv/RIZu/3HbRNcF1orKpgrH3z
-         O51xW4dpN38f4BWnSRX+njUmECTN2RHeKwX26op1OWPfq38aLZVag4JwnI4w/zhwGZ
-         WnLJiYcs9F2UW69HNMM4+/VKenS2ysU3bNSsASrWYcZZMXAPmD6oGIGaVjOrld9ASH
-         lv9i2JWgWqSmMAhxk3k50WYI93Q4xQWaLkMEq7TOh4BXrUOEMHzrNTg4DRayDrUW5Y
-         sGSS3QEu8D9TQ==
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 2/2] UML: use obj-y to descend into arch/um/*/
-Date:   Fri, 21 Jul 2023 22:45:48 +0900
-Message-Id: <20230721134548.3438376-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230721134548.3438376-1-masahiroy@kernel.org>
-References: <20230721134548.3438376-1-masahiroy@kernel.org>
+        Fri, 21 Jul 2023 09:46:50 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBD41986;
+        Fri, 21 Jul 2023 06:46:48 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="433255150"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="433255150"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 06:46:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="728103153"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="728103153"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP; 21 Jul 2023 06:46:34 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andy@kernel.org>)
+        id 1qMqSj-006s0v-2p;
+        Fri, 21 Jul 2023 16:46:29 +0300
+Date:   Fri, 21 Jul 2023 16:46:29 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kris Bahnsen <kris@embeddedts.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lukasz Majewski <lukma@denx.de>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Peters <mpeters@embeddedts.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Nikita Shubin via B4 Relay 
+        <devnull+nikita.shubin.maquefel.me@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sebastian Reichel <sre@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>, soc@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v3 03/42] clk: ep93xx: add DT support for Cirrus EP93xx
+Message-ID: <ZLqMNU6XtTEO2a1R@smile.fi.intel.com>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-3-3d63a5f1103e@maquefel.me>
+ <3fcb760c101c5f7081235290362f5c02.sboyd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3fcb760c101c5f7081235290362f5c02.sboyd@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I like to use obj-y in as many places as possible.
+On Thu, Jul 20, 2023 at 04:27:45PM -0700, Stephen Boyd wrote:
+> Quoting Nikita Shubin via B4 Relay (2023-07-20 04:29:03)
 
-Change the core-y to obj-y. It fixes the single build issue. [1]
+...
 
-[1]: https://lore.kernel.org/linux-kbuild/d57ba55f-20a3-b836-783d-b49c8a161b6e@kernel.org/T/#m7bc402e1e038f00ebcf2e92ed7fcb8a52fc1ea44
+> > +static bool is_best(unsigned long rate, unsigned long now,
+> > +                    unsigned long best)
+> > +{
+> > +       return abs(rate - now) < abs(rate - best);
+> 
+> Another case where we need abs_diff() so that it doesn't get confused
+> when trying to do signed comparison.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Here you are: Message-Id: <20230721134235.15517-1-andriy.shevchenko@linux.intel.com>
 
- arch/um/Kbuild   | 2 ++
- arch/um/Makefile | 4 ----
- 2 files changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/arch/um/Kbuild b/arch/um/Kbuild
-index a4e40e534e6a..6cf0c1e5927b 100644
---- a/arch/um/Kbuild
-+++ b/arch/um/Kbuild
-@@ -1 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+
-+obj-y += kernel/ drivers/ os-Linux/
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 1735a562453d..82f05f250634 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -22,10 +22,6 @@ ARCH_DIR := arch/um
- # features.
- SHELL := /bin/bash
- 
--core-y			+= $(ARCH_DIR)/kernel/		\
--			   $(ARCH_DIR)/drivers/		\
--			   $(ARCH_DIR)/os-Linux/
--
- MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/shared/skas
- 
- HEADER_ARCH 	:= $(SUBARCH)
 -- 
-2.39.2
+With Best Regards,
+Andy Shevchenko
+
 
