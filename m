@@ -2,208 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2489675D183
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 20:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0799675D18D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 20:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbjGUSsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 14:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43894 "EHLO
+        id S231158AbjGUSuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 14:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230502AbjGUSs3 (ORCPT
+        with ESMTP id S230149AbjGUSuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 14:48:29 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC49E30CA
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 11:48:27 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-98e011f45ffso327743966b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 11:48:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689965306; x=1690570106;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tdq/W+QGmbFYjBwzec6GU8stgr9jLA3Mk5O05X2GOvY=;
-        b=muASEYnZmQZKBYoEZ0S4+U/aJoPH1HHib/qcQHHw3GxE+05UEBQofzyZMM6Atdd0Yg
-         iVLuraXsAfHkF8ldSyV7GfVUX31oAUm34s0teCQepYf7rLqtpiA01nCnVOn2tnrj5CMm
-         DUDokWhrZG8N240U4zghZjjxw/sQCIjjLknPmfGDFbpXzSUo2nvgHzuSyz/ChM3q8GBV
-         wN+s0L2B2DYK5k8ZNnOaM244w71qa8p2Y2ok7OcD0cAHzY4tiZj8X4C/GvGWN+udQars
-         ksS0fIcBPzTY8ecxgk9/+GpHK3lU5nZ1X/ZDddKSqb0cEmI0D8W+SPo2QIKCxHMQwhot
-         bxWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689965306; x=1690570106;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tdq/W+QGmbFYjBwzec6GU8stgr9jLA3Mk5O05X2GOvY=;
-        b=giqCu3WKK9/XFRrGECvzK98xmehuXcgh2XRqyCsRTp2Dbpi24WSE895TUvrZnToAip
-         LgfEdFxtJJImyuYCMLKfXbwbN+X61OQqNdKaDG324uMfLUVJOdNUF7AafkyvHoM+5EvP
-         oBNTV9KnbMp7xt5iJa56sYdVfAbL555iqX/nQeSxVHlp3gHraqnQlzHW2p/AmPmJX9sd
-         etFy530WcLLAEgwq9pfU/BqlhzUM6qvV4IcjPsPol6bJ00xy0/f/pL05EAhkV0ds8GM3
-         RSEOKh+t0CCI7foEvciUvDz2KbYTF4rAKQcd0nf38dk6q5Czx2qgWiYASYMFvf3vTK0p
-         Fc/g==
-X-Gm-Message-State: ABy/qLaPmwhOm+hfO6XSAU8vFNzkAfH1eOmRJkvTeGF+tFxfDFdtXcN7
-        sNl1Js3c48XH1zLQfe0g39nVmcK+ydHzyDZcKlZXog==
-X-Google-Smtp-Source: APBJJlGonDSO5Pgyd78wlklAx5E2nmQGEM/OjC4MyYifHtkvMGDRyiZyaRq3AzCZntGuE6DWdJYmCOroguJM1d7muI4=
-X-Received: by 2002:a17:906:5190:b0:991:37d2:c9ea with SMTP id
- y16-20020a170906519000b0099137d2c9eamr2384811ejk.6.1689965306141; Fri, 21 Jul
- 2023 11:48:26 -0700 (PDT)
+        Fri, 21 Jul 2023 14:50:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3035530DB;
+        Fri, 21 Jul 2023 11:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dRVad3AdlNBuQFcE3VkpuVa4kjKo5sqvv2omBkEJAhk=; b=RICVyA8m/ElTSsoZyZAcWPzqpg
+        NltaEFXLBwX3vHwLI8klmtRcEBIV3YKouDLDORAqNIIca4Jyb7P7ZytuVs60AnkRxThqqNXX3aMrS
+        T71Jkwq5a4R3HNeABMHrJpHykLhSKEb/BA4ARSsvSppepe++3Bxo8eSKqMxPwFwKGpQlCCWTtYFF5
+        viu65DcntLnT/dEbnzS6xpQccS2ndNSkPwMXNg4RSvo0YvShFkHqt1JsKXgDn0utjMIr5tUSBy5ts
+        OtU6jkC+cU94Ype7/Ju+8qEf67NRDJGjpQHtCZGY2ikiKJvWqbca01VreLYPpygwpGNlkFA95B8HD
+        j4GodREg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qMvCD-001N7w-8w; Fri, 21 Jul 2023 18:49:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 47790300095;
+        Fri, 21 Jul 2023 20:49:44 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 27EBD3157E621; Fri, 21 Jul 2023 20:49:44 +0200 (CEST)
+Date:   Fri, 21 Jul 2023 20:49:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+Cc:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH 1/1] x86/hyperv: Disable IBT when hypercall page lacks
+ ENDBR instruction
+Message-ID: <20230721184944.GP4253@hirez.programming.kicks-ass.net>
+References: <1689885237-32662-1-git-send-email-mikelley@microsoft.com>
+ <20230720211553.GA3615208@hirez.programming.kicks-ass.net>
+ <SN6PR2101MB16933FAC4E09E15D824EB2FDD73FA@SN6PR2101MB1693.namprd21.prod.outlook.com>
+ <20230721075848.GA3630545@hirez.programming.kicks-ass.net>
+ <BYAPR21MB168878CCD076762A1EA58635D73FA@BYAPR21MB1688.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-References: <20230720070825.992023-1-yosryahmed@google.com>
- <20230720153515.GA1003248@cmpxchg.org> <ZLmRlTej8Tm82kXG@slm.duckdns.org>
- <CAJD7tkYhu3g9u7HkUTFBtT3Q4edVZ2g1TWV1FDcyM9srrYCBLg@mail.gmail.com>
- <ZLmxLUNdxMi5s2Kq@slm.duckdns.org> <CAJD7tkZKo_oSZ-mQc-knMELP8kiY1N7taQhdV6tPsqN0tg=gog@mail.gmail.com>
- <ZLm1ptOYH6F8fGHT@slm.duckdns.org> <CAJD7tkbDxw-hqG8i85NhnjxmXFMbR5OaSW5dHDVYfdA=ZnPAEw@mail.gmail.com>
- <ZLrN1BE42Tsybm6j@slm.duckdns.org>
-In-Reply-To: <ZLrN1BE42Tsybm6j@slm.duckdns.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 21 Jul 2023 11:47:49 -0700
-Message-ID: <CAJD7tkatz1JhKVj_iP9J0H7fPJnUSurZkCT1iJTJ=+qRen_nLQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "T.J. Mercier" <tjmercier@google.com>,
-        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR21MB168878CCD076762A1EA58635D73FA@BYAPR21MB1688.namprd21.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 11:26=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Fri, Jul 21, 2023 at 11:15:21AM -0700, Yosry Ahmed wrote:
-> > On Thu, Jul 20, 2023 at 3:31=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote=
-:
-> > > memory at least in our case. The sharing across them comes down to th=
-ings
-> > > like some common library pages which don't really account for much th=
-ese
-> > > days.
-> >
-> > Keep in mind that even a single page charged to a memcg and used by
-> > another memcg is sufficient to result in a zombie memcg.
->
-> I mean, yeah, that's a separate issue or rather a subset which isn't all
-> that controversial. That can be deterministically solved by reparenting t=
-o
-> the parent like how slab is handled. I think the "deterministic" part is
-> important here. As you said, even a single page can pin a dying cgroup.
+On Fri, Jul 21, 2023 at 02:00:35PM +0000, Michael Kelley (LINUX) wrote:
 
-There are serious flaws with reparenting that I mentioned above. We do
-it for kernel memory, but that's because we really have no other
-choice. Oftentimes the memory is not reclaimable and we cannot find an
-owner for it. This doesn't mean it's the right answer for user memory.
+> > Well, we have a lot of infrastructure for this already. Specifically
+> > this is very like the paravirt patching.
+> > 
+> > Also, direct calls are both faster and have less speculation issues, so
+> > it might still be worth looking at.
+> > 
+> > The way to do something like this would be:
+> > 
+> > 
+> > 	asm volatile ("   ANNOTATE_RETPOLINE_SAFE	\n\t"
+> > 		      "1: call *hv_hypercall_page	\n\t"
+> > 		      ".pushsection .hv_call_sites	\n\t"
+> > 		      ".long 1b - .			\n\t"
+> > 		      ".popsection			\n\t");
+> > 
+> > 
+> > And then (see alternative.c for many other examples):
+> > 
+> > 
+> > patch_hypercalls()
+> > {
+> > 	s32 *s;
+> > 
+> > 	for (s = __hv_call_sites_begin; s < __hv_call_sites_end; s++) {
+> > 		void *addr = (void *)s + *s;
+> > 		struct insn insn;
+> > 
+> > 		ret = insn_decode_kernel(&insn, addr);
+> > 		if (WARN_ON_ONCE(ret < 0))
+> > 			continue;
+> > 
+> > 		/*
+> > 		 * indirect call: ff 15 disp32
+> > 		 * direct call:   2e e8 disp32
+> > 		 */
+> > 		if (insn.length == 6 &&
+> > 		    insn.opcode.bytes[0] == 0xFF &&
+> > 		    X86_MODRM_REG(insn.modrm.bytes[0]) == 2) {
+> > 
+> > 			/* verify it was calling hy_hypercall_page */
+> > 			if (WARN_ON_ONCE(addr + 6 + insn.displacement.value != &hv_hypercall_page))
+> > 				continue;
+> > 
+> > 			/*
+> > 			 * write a CS padded direct call -- assumes the
+> > 			 * hypercall page is in the 2G immediate range
+> > 			 * of the kernel text
+> 
+> Probably not true -- the hypercall page has a vmalloc address.
 
-The semantics are new compared to normal charging (as opposed to
-recharging, as I explain below). There is an extra layer of
-indirection that we did not (as far as I know) measure the impact of.
-Parents end up with pages that they never used and we have no
-observability into where it came from. Most importantly, over time
-user memory will keep accumulating at the root, reducing the accuracy
-and usefulness of accounting, effectively an accounting leak and
-reduction of capacity. Memory that is not attributed to any user, aka
-system overhead.
+See module_alloc(), that uses vmalloc but constrains the address to stay
+within the 2G immediate address limit.
 
->
-> > > > Keep in mind that the environment is dynamic, workloads are constan=
-tly
-> > > > coming and going. Even if find the perfect nesting to appropriately
-> > > > scope resources, some rescheduling may render the hierarchy obsolet=
-e
-> > > > and require us to start over.
-> > >
-> > > Can you please go into more details on how much memory is shared for =
-what
-> > > across unrelated dynamic workloads? That sounds different from other =
-use
-> > > cases.
-> >
-> > I am trying to collect more information from our fleet, but the
-> > application restarting in a different cgroup is not what is happening
-> > in our case. It is not easy to find out exactly what is going on on
->
-> This is the point that Johannes raised but I don't think the current
-> proposal would make things more deterministic. From what I can see, it
-> actually pushes it towards even less predictability. Currently, yeah, som=
-e
-> pages may end up in cgroups which aren't the majority user but it at leas=
-t
-> is clear how that would happen. The proposed change adds layers of
-> indeterministic behaviors on top. I don't think that's the direction we w=
-ant
-> to go.
+> > 			 */
+> > 			addr[0] = 0x2e; /* CS prefix */
+> > 			addr[1] = CALL_INSN_OPCODE;
+> > 			(s32 *)&Addr[2] = *hv_hypercall_page - (addr + 6);
+			*(s32 *)...
+> > 		}
+> > 	}
+> > }
+> > 
+> > 
+> > See, easy :-)
+> 
+> OK, worth looking into.  This is a corner of the Linux kernel code that
+> I've never looked at before.  I appreciate the pointers.
 
-I believe recharging is being mis-framed here :)
+No problem, I've been doing too much of this the past few years :-)
 
-Recharging semantics are not new, it is a shortcut to a process that
-is already happening that is focused on offline memcgs. Let's take a
-step back.
+> Hypercall sites also exist in loadable modules, so would need to hook
+> into module_finalize() as well.  Processing a new section type looks
+> straightforward.
 
-It is common practice (at least in my knowledge) to try to reclaim
-memory from a cgroup before deleting it (by lowering the limit or
-using memory.reclaim). Reclaim heuristics are biased towards
-reclaiming memory from offline cgroups. After the memory is reclaimed,
-if it is used again by a different process, it will be refaulted and
-charged again (aka recharged) to the new
+Yep,
 
-What recharging is doing is *not* anything new. It is effectively
-doing what reclaim + refault would do above, with an efficient
-shortcut. It avoids the unnecessary fault, avoids disrupting the
-workload that will access the memory after it is reclaimed, and cleans
-up zombie memcgs memory faster than reclaim would. Moreover, it works
-for memory that may not be reclaimable (e.g. because of lack of swap).
+> But altogether, this feels like more change than should go as a bug
+> fix to be backported to stable kernels.  It's something to look at for a
+> future kernel release.
 
-All the indeterministic behaviors in recharging are exactly the
-indeterministic behaviors in reclaim. It is very similar. We iterate
-the lrus, try to isolate and lock folios, etc. This is what reclaim
-does. Recharging is basically lightweight reclaim + charging again (as
-opposed to fully reclaiming the memory then refaulting it).
-
-We are not introducing new indeterminism or charging semantics.
-Recharging does exactly what would happen when we reclaim zombie
-memory. It is just more efficient and accelerated.
-
->
-> > machines and where the memory is coming from due to the
-> > indeterministic nature of charging. The goal of this proposal is to
-> > let the kernel handle leftover memory in zombie memcgs because it is
-> > not always obvious to userspace what's going on (like it's not obvious
-> > to me now where exactly is the sharing happening :) ).
-> >
-> > One thing to note is that in some cases, maybe a userspace bug or
-> > failed cleanup is a reason for the zombie memcgs. Ideally, this
-> > wouldn't happen, but it would be nice to have a fallback mechanism in
-> > the kernel if it does.
->
-> I'm not disagreeing on that. Our handling of pages owned by dying cgroups
-> isn't great but I don't think the proposed change is an acceptable soluti=
-on.
-
- I hope the above arguments change your mind :)
-
->
-> Thanks.
->
-> --
-> tejun
+Agreed!
