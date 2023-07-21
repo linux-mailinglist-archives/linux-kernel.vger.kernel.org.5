@@ -2,82 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A1175D552
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED57975D554
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbjGUUCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
+        id S230090AbjGUUDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjGUUCH (ORCPT
+        with ESMTP id S229476AbjGUUDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:02:07 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC14272C;
-        Fri, 21 Jul 2023 13:02:07 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id D8FCF7DB;
-        Fri, 21 Jul 2023 20:02:06 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net D8FCF7DB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1689969727; bh=fNbzLj8Rpoub4yqE/rqNeDgF89u+Mjo2vuixfVH7F/A=;
-        h=From:To:Subject:In-Reply-To:References:Date:From;
-        b=UcRk7NgU9/MNCJGo6Nys+zJk8WsvlTrfWr9lsXPI0RYHxZ+i4zBKqwP4XmAxLr+Du
-         c/Qeik5yHsDSXlZhJ/tMp4TWr2QOmm28Y91pp2dnNfckll7cyCIQlU8efyYZY7efMh
-         6NoGebPhGnBwby6JJ5IFVAqFp7i1c+2+K48wfQDH7N4+4KweTfc4oCf/GmUz3aceW3
-         +S+NPLo3hYo/wRRHs4fYD47SqPhvxf8ItXIGKnhXNBmBEoado14D/jxJKTNwU7MUlF
-         cZHbS0p/yZedapsAzqMwZEuZvhq7cUPeatOt1qMXsQJZUOoEUeCdG935k+rMk/39NV
-         TiSxuq+V7c5hA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Costa Shulyupin <costa.shul@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, Alex Shi <alexs@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Costa Shulyupin <costa.shul@redhat.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Wu XiangCheng <bobwxc@email.cn>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:LOONGARCH" <loongarch@lists.linux.dev>
-Subject: Re: [PATCH v3] docs: move loongarch under arch
-In-Reply-To: <20230717192456.453124-1-costa.shul@redhat.com>
-References: <87edl6wr9p.fsf@meer.lwn.net>
- <20230717192456.453124-1-costa.shul@redhat.com>
-Date:   Fri, 21 Jul 2023 14:02:06 -0600
-Message-ID: <87tttxc9tt.fsf@meer.lwn.net>
+        Fri, 21 Jul 2023 16:03:41 -0400
+Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529A1272C;
+        Fri, 21 Jul 2023 13:03:39 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 1D99E2B00169;
+        Fri, 21 Jul 2023 16:03:34 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 21 Jul 2023 16:03:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1689969813; x=1689977013; bh=UI
+        xSERX8/T0QhMA41PxgSILvKp1Mo/d3t7SIbHJ30FM=; b=t48KOEps/vCcAI7DxH
+        mMtvIueAxN1ZU4cTbiqPu1lCCyFdy83iX7cSuiW88Rc/iGJjZo5VKLVtSJkgKBYT
+        2gKdzkEb3EBc8wuTXV/RPO5XwcJDdYBURiqAp2yGU8j4c5Lz0ZVOHNUiZ6qCo1Xe
+        bL4QIktHu/2GuzJiUsP1sW9oV+CebNH3btNt8Fb4GGUBvuhEUSwKbjs+YceDLwqE
+        wDeWeXA0k85WM4qxv11pIJCRQvCK3Mf1XOJTWSffF1UU/cwoNotj8AAu/0iGrejI
+        CO0XX2ElBmcwyuAyuRP2xQp2YOpB4GnASkeQMgjoegqq3VaTi1ECshbJBuHLf5I+
+        VwUQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689969813; x=1689977013; bh=UIxSERX8/T0Qh
+        MA41PxgSILvKp1Mo/d3t7SIbHJ30FM=; b=DNcO38MFDJ/BX9RI1DERnK7T82652
+        LbDTk23wYUgeUIg8cVJRj5kaUejXv3Jh5Q55I3tJdc1z2yqXswdlGgKQoWt3KXMy
+        ppdC7aA2v9w938C9T6DWUD3Nsjhvgs+oot/aFZ1DER+1kDTElPprs17OAxhJdBU5
+        9Ws2kh1VXJ21Kq3511b7+DEPf3+IAi/dslfY5laRlsNDZeDkgQUYPMrl1K8CWAiY
+        MtQ8zxzRbcuK9/nfdktUVlWEDWNzh8J4erjzK95sNoJHeS/fEV2W5N2l3e6ZSTP7
+        iLVAAp7K1EXrHnNjT4yTqNyCbBVnUrfIJ0OhrAEUxiI8D+atNWOE++Thw==
+X-ME-Sender: <xms:lOS6ZLi_yl2HEx8VNhPzXISbLHNDccRa4qdqkaEkYYHIFUaa0-Phvg>
+    <xme:lOS6ZIANKa0Fe-CWSCLV7KmOeogapQ3OxYmJp_BwMGaVpetH7KZG_ylvTtzP4eDD6
+    r0PfuKZu9bJb9mlIQ>
+X-ME-Received: <xmr:lOS6ZLEX_AV5j1TyvlUPDixKyvVcmK00XVk3ff_R1JBC1O1Ve_crbubbe2jzKae7x39MtdO2cN4AIyrEX_-c5TAR4XZYJRUAB9PY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgddufeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
+    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:lOS6ZISIrqP9DmogYZlfIhS1AHOz9ht7hAOJh8Ks8flYsHdgsw5Zrw>
+    <xmx:lOS6ZIx86g21Z66hxEaTtAlnF63MWXKQmyAOdUJ0C7bMkmbnigv8pA>
+    <xmx:lOS6ZO5rs1Ky-lE-zxOyYIYbqSeGOOlORer4lqBlLvtJ1yG8dJhUDg>
+    <xmx:leS6ZHi9AvtvYGlY_SOCwmEKnLe0DXKCdmvumiTkBNinwEt__yKEnX8ETLs>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 21 Jul 2023 16:03:30 -0400 (EDT)
+Date:   Fri, 21 Jul 2023 14:03:29 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     daniel@iogearbox.net, kadlec@netfilter.org, ast@kernel.org,
+        pablo@netfilter.org, kuba@kernel.org, davem@davemloft.net,
+        andrii@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        alexei.starovoitov@gmail.com, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org, dsahern@kernel.org
+Subject: Re: [PATCH bpf-next v5 2/5] netfilter: bpf: Support
+ BPF_F_NETFILTER_IP_DEFRAG in netfilter link
+Message-ID: <waoejzg2unjytkjflwvcff4z6wu2vlsji5neybrt4p5a3bn3ev@nznwevyfywvh>
+References: <cover.1689884827.git.dxu@dxuuu.xyz>
+ <690a1b09db84547b0f0c73654df3f4950f1262b7.1689884827.git.dxu@dxuuu.xyz>
+ <20230720231904.GA31372@breakpoint.cc>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720231904.GA31372@breakpoint.cc>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Costa Shulyupin <costa.shul@redhat.com> writes:
+On Fri, Jul 21, 2023 at 01:19:04AM +0200, Florian Westphal wrote:
+> Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > +	const struct nf_defrag_hook __maybe_unused *hook;
+> > +
+> > +	switch (link->hook_ops.pf) {
+> > +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4)
+> > +	case NFPROTO_IPV4:
+> > +		hook = get_proto_defrag_hook(link, nf_defrag_v4_hook, "nf_defrag_ipv4");
+> > +		if (IS_ERR(hook))
+> > +			return PTR_ERR(hook);
+> > +
+> > +		link->defrag_hook = hook;
+> > +		return 0;
+> > +#endif
+> > +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+> > +	case NFPROTO_IPV6:
+> > +		hook = get_proto_defrag_hook(link, nf_defrag_v6_hook, "nf_defrag_ipv6");
+> > +		if (IS_ERR(hook))
+> > +			return PTR_ERR(hook);
+> > +
+> > +		link->defrag_hook = hook;
+> > +		return 0;
+> > +#endif
+> > +	default:
+> > +		return -EAFNOSUPPORT;
+> > +	}
+> > +}
+> > +
+> > +static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
+> > +{
+> > +	const struct nf_defrag_hook *hook = link->defrag_hook;
+> > +
+> > +	if (!hook)
+> > +		return;
+> > +	hook->disable(link->net);
+> > +	module_put(hook->owner);
+> > +}
+> > +
+> >  static void bpf_nf_link_release(struct bpf_link *link)
+> >  {
+> >  	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
+> > @@ -37,6 +119,8 @@ static void bpf_nf_link_release(struct bpf_link *link)
+> >  	 */
+> >  	if (!cmpxchg(&nf_link->dead, 0, 1))
+> >  		nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
+> > +
+> > +	bpf_nf_disable_defrag(nf_link);
+> >  }
+> 
+> I suspect this needs to be within the cmpxchg() branch to avoid
+> multiple ->disable() calls.
 
-> and fix all in-tree references.
->
-> Architecture-specific documentation is being moved into Documentation/arch/
-> as a way of cleaning up the top-level documentation directory and making
-> the docs hierarchy more closely match the source hierarchy.
->
-> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
->
+Ah, good catch.
 
-This, I think, is ready to apply, but I sure would like an ack from the
-loongarch maintainers.  As it stands, please let me know if you object,
-otherwise I'll apply this in the near future.
+> 
+> > +	if (attr->link_create.netfilter.flags & BPF_F_NETFILTER_IP_DEFRAG) {
+> > +		err = bpf_nf_enable_defrag(link);
+> > +		if (err) {
+> > +			bpf_link_cleanup(&link_primer);
+> > +			return err;
+> > +		}
+> > +	}
+> > +
+> >  	err = nf_register_net_hook(net, &link->hook_ops);
+> >  	if (err) {
+> 		bpf_nf_disable_defrag(link);
 
-Thanks,
+Ack. Did not see that bpf_link_cleanup() sets link->prog to NULL which
+disables bpf_link_ops:release() on the release codepath.
 
-jon
+> 
+> Other than those nits this lgtm, thanks!
+> 
+
+Thanks for reviewing!
+
+Daniel
