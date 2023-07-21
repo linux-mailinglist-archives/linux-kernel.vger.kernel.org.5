@@ -2,280 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7B875BB5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 01:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 167B175BB60
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 02:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbjGTX5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 19:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53014 "EHLO
+        id S229597AbjGUAAg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 Jul 2023 20:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGTX5W (ORCPT
+        with ESMTP id S229633AbjGUAAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 19:57:22 -0400
-Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DD61BD;
-        Thu, 20 Jul 2023 16:57:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-        ; s=bytemarkmx; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=V6eQj3Stvw9JMFxFsglz9ybjRapsl+7ELiZ+AG8aRE0=; b=dCU1y3gNhfSU6AZqE4g92nrIvh
-        7DE6NlIck3IXdBNR128wblStaFAOFQar40GjIIw/akunkRYMw8g+FLYQeHkwlDtUGsPcHF2yfx27s
-        dmZFIqpluTWwSd+XOU/9yJFPchrXE6kwwfMbTGGeP6Pv9suowE4L6pi8kZHXM1jLLTkaiUlXq/pbT
-        fvsycLhGkN4mgsq0bzpKdL2BhO5UY8GEhCg4YqxETWUNuyhX1zehrssfNhRWYedC2PhkEjAHB5vDF
-        60MZSFMc9IkD7JQY/yAo256MbF4m8HIBvmxlvNvpf3Q0JJBBJP0Eghqg47WDl2q8R24XVatDeHGIP
-        QIVvDR/Q==;
-Received: from dg by mx.treblig.org with local (Exim 4.94.2)
-        (envelope-from <dg@treblig.org>)
-        id 1qMdW1-002S1e-HF; Thu, 20 Jul 2023 23:57:01 +0000
-Date:   Thu, 20 Jul 2023 23:57:01 +0000
-From:   "Dr. David Alan Gilbert" <linux@treblig.org>
-To:     Tom Talpey <tom@talpey.com>
-Cc:     Dave Kleikamp <dave.kleikamp@oracle.com>,
-        Steve French <smfrench@gmail.com>, linkinjeon@kernel.org,
-        shaggy@kernel.org, linux-cifs@vger.kernel.org,
-        krisman@collabora.com, jfs-discussion@lists.sourceforge.net,
+        Thu, 20 Jul 2023 20:00:34 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2069.outbound.protection.outlook.com [40.107.94.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0831D1BD;
+        Thu, 20 Jul 2023 17:00:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KEV25wx45S3q+ge5mUkMHeORb9Q9kk6HBSC+zEW3yyQbDWpxad6iuq8Iqh9otRL9q+GA2oqvcTI5WdPMPjjXn0c8K43cq7fHc3cqiBvU+N/7bqpvyVGmwk+jX+wiBPdFUfbEUYts1takp0UUlSUUelFVnSwGEWcmX6jXxbeuqS/yk/W+DIMzMgJVRWCCgNNjKhKzJRniYGAEBhAHQLnC+zdtLoQln1dziAfJkNxOkDHoAEmjrYcN21jL3WozTq8Yld7oRYcMdAq6RTFNzY1XP8GqvD3f1lApEw72ADbGHw5au2KPFm7wA4wuFIbhbCuMr3wGLriti6Z6cQwurXLE9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dzoR7f25cZSt4qhZUFesS+NRj4SNAAFPcfj3DDI+s7Y=;
+ b=egx/nReQmscb4tRImkC2dDqDByiMBEP6xr1JpWnEiE+fMPg/wFf12DJyXML3t4oU6tJhMvzySnCRV4sCE9tLtdKj9GCp3KFqu/Pd6J9mQR8zcdkosfD+nhmZCkNnaNk3ybjTdxE3SeNvLqD9Xpr6e3K3cSSCE2wTjBtlBAAFe89OplfTECWUSieWskhkOdZtykFxCzP1durvOi/CP7a5IqWVONtq9PNDOa2fyQJdo2rA2nIs+DUYgvFunDHKqp83umY4ezcq1nZSwObOiKKGTHTzTNMaPN2YOCEdsQ4M890/Qzu0/y+VIUgR4W2vwFfzUJVOUK9KUt1a7xv+PMl2DA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
+ dkim=pass header.d=talpey.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=talpey.com;
+Received: from SN6PR01MB4445.prod.exchangelabs.com (2603:10b6:805:e2::33) by
+ PH0PR01MB7460.prod.exchangelabs.com (2603:10b6:510:f3::8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6609.25; Fri, 21 Jul 2023 00:00:29 +0000
+Received: from SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::c64a:16aa:9c44:fe2b]) by SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::c64a:16aa:9c44:fe2b%7]) with mapi id 15.20.6588.031; Fri, 21 Jul 2023
+ 00:00:29 +0000
+Date:   Thu, 20 Jul 2023 20:00:26 -0400 (EDT)
+From:   Tom Talpey <tom@talpey.com>
+To:     Chuck Lever <cel@kernel.org>
+Cc:     NeilBrown <neilb@suse.de>, Jeff Layton <jlayton@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, linux-nfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] dedupe smb unicode files
-Message-ID: <ZLnJzUynpTBvZGtA@gallifrey>
-References: <20230628232417.120844-1-linux@treblig.org>
- <ZK80mu/YbHLEABAB@gallifrey>
- <CAH2r5mvrhr52hXFv87O9O=Qw45AXRXr0NQAsTk4Wj-6s19-2bA@mail.gmail.com>
- <CAH2r5mss4RsEF1b6gJo8LFWsN9-YBSEP6GV7axsNhX7ihj5CqA@mail.gmail.com>
- <ZLhchajZaWEVM6D7@gallifrey>
- <79bbb44c-f3b1-5c5c-1ad4-bcaab0069666@oracle.com>
- <d1f7fbe9-8fe2-e3e3-d6ff-1544204202ff@talpey.com>
+Message-ID: <f188db26-fb30-4f4b-8bf9-f975bd718605@talpey.com>
+In-Reply-To: <ZLnDRd0iiU1z3Y+y@manet.1015granger.net>
+References: <20230720133454.38695-1-jlayton@kernel.org> <168989083691.11078.1519785551812636491@noble.neil.brown.name> <ZLnDRd0iiU1z3Y+y@manet.1015granger.net>
+Subject: Re: [PATCH] nfsd: add a MODULE_DESCRIPTION
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Correlation-ID: <f188db26-fb30-4f4b-8bf9-f975bd718605@talpey.com>
+X-ClientProxiedBy: MN2PR19CA0042.namprd19.prod.outlook.com
+ (2603:10b6:208:19b::19) To SN6PR01MB4445.prod.exchangelabs.com
+ (2603:10b6:805:e2::33)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d1f7fbe9-8fe2-e3e3-d6ff-1544204202ff@talpey.com>
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
-X-Uptime: 23:37:09 up 14 days,  9:08,  1 user,  load average: 0.00, 0.00, 0.00
-User-Agent: Mutt/2.0.5 (2021-01-21)
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR01MB4445:EE_|PH0PR01MB7460:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4306ecf6-8b30-4d2b-492e-08db897d7df2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gx4SSuzEp23Mz0sTto3Uk5+B/CgT9iEOYw21b+6wFYZ3NoEj5tAYpZ20oMSYH246cRE4RFsNutu1+3u8Utz52PMeuK0czd+oWHVkKE4g54vvYhr9mm+IvAVv/MO4iPZJdURttZEZb6awVgboFqhC8Z6WDI23obdRrcGl26uI3Aa4BxTK1ODayPhsCCquPji2rBdtobWZ8qnjbD31tvyh3iVuAiEUuRyy3pWYA8QUvoxQ3rSJSImqblA2iC1KJMGlN/FJ0hjOIVxr//v5uhMF6WUSfNi5resQMLh0QA0+kBo1UNZ9l1Ixv5klaRcsW54t8SCEw+sF08qKcQfN8op2oLgzhUlRInPXlAfiN806/iiV1BUH9NTcYucm54HnIanYnCLdbZej9X9LAXtsrO/85PKTU42H82IztxK0Vo8oziFo3eW1BApHrTkrdprEATNfxk/Uzo9GUb/ftIKkc1Hznv9Oh2w08qcU1KJ0OCpDse9BWPFREGUL2CepK1Xt5fGRC6IvxWWUlF8TLQs+kOYCMM+QMSIJe3SLasXo6vM76CxquHtbNi9dhU1hKDe7zT6E0ERqaRgmL6GpS6IQjgzcuGhCFCJBmOU6bWuqA+FXLf+rzpZQ6kKzaNgvJ+MeCx9s
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR01MB4445.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(39830400003)(396003)(366004)(376002)(346002)(136003)(451199021)(2906002)(83380400001)(2616005)(86362001)(36756003)(31696002)(38100700002)(38350700002)(41300700001)(6506007)(6486002)(52116002)(66476007)(66556008)(66946007)(6916009)(316002)(4326008)(186003)(26005)(6666004)(6512007)(8936002)(8676002)(478600001)(54906003)(5660300002)(31686004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TWZjWk5sNnFXVjBKK2w3YmxJQ3BzM0loS1d4S2pHKzdUV21HU3RxU05QMjI2?=
+ =?utf-8?B?SFpiaWhyUGVqU1lYeFVTYVgyclpOQmFTNTQ1R3FZT2FWc0tZN0RZbUZ1eUhm?=
+ =?utf-8?B?TjNnc1ZOYndjakJXbW5tQk9VWEx2SGkyN0xodVB5d3NqeEVsek9kK0wrMXJ2?=
+ =?utf-8?B?azJ0WnlaWjFRWkVqRTBBMEpIemNHY2paTDVvOVphRUN6bTFicVlYT05lSmlx?=
+ =?utf-8?B?WEVLMU5xd084dUZNaVRveWdhNDRReGpvQTREcElmdGxFVXRUWnI2KzRzRjdG?=
+ =?utf-8?B?MldlN2FVU1hhVnM1VXFFN1BzMDZUSlFuOTlVQUhUM0dnQ2lDWDhtbkNqZS8w?=
+ =?utf-8?B?T29sdmhHTVI0Y21ZNHV6eDFGdHI0MzlmWmxnSURKWU10R25tSDAyM2NlbUc0?=
+ =?utf-8?B?cUUweXZnYWdEYVVqb1YxeWgvTWJKTVBJMjg3RE5DU0N1R2ZDRTdNbGhIY0NF?=
+ =?utf-8?B?ZmF1Z2t2dnRnb0NwM2g1VmdaZEZQVU43bDFwYWFxRW9lV0F6Q0x6S3RmMHZQ?=
+ =?utf-8?B?UHZnZ1RjUVNpQWRuQmxZTmllWlgySDhDQzZJa1VzcHk5d25yU2RzRWNhZTU1?=
+ =?utf-8?B?WEEzQ2pyVE5xQW8rdG8vNzdZaUV0cTJhZzN4UFdCRTY4KzlWRWNJTHhzRlJB?=
+ =?utf-8?B?eTRhZUp5MDF0VzVsblRhNVJBVzVYWHdGVFltb3luVmxxZlpSOTRSekswVmpv?=
+ =?utf-8?B?a3ZTOFR3VWo3cVk0Q1d1LzVmeUoxVUY5VXZlL0tuM3BZa0NxaDVEdmpwajB1?=
+ =?utf-8?B?ZFdWRDdHN0lvUDgwM0VRVWhNTERjNHFoOFBqY2hlZWFZdlY5OWlYTFNBVWZR?=
+ =?utf-8?B?aTdOZjhnQWZFZFFZTG1vU1EyUWlQUi9qV1ZOdTZBL1hIam5vU0tkM1VucFds?=
+ =?utf-8?B?SFFSTHFtR3oveVhaR3Z6U1pXd1lRTFZ1ZTBEcCtQUWhaWG0xbHU3K3d6bE9F?=
+ =?utf-8?B?TXRVNjlZVDRMSFNRSnFLb292Q2dNVC9QNnhVWC9IUEprYXZyUTZRNWkrZ1FU?=
+ =?utf-8?B?eVlyMlJHbWpjRTVCY1VRYXRNMFN2elpYOFA2NXZOUVEvdDdZd0lJVmUyaGJO?=
+ =?utf-8?B?eEpUR2NZb3BUamFnd3BEdWdYOThhbDdubWhmMzUrVytrbUJrRE14anFGN2Ft?=
+ =?utf-8?B?YTRnL1lnWkVkcWthNDhNQWJHMUdZVzE3OW9TaFVSajFPQWU0RFVZellEZXVL?=
+ =?utf-8?B?TDBZeURJWDRZSUMySWpQRkE2Ri9LOVZXQTNqWXhOSkNwbEZLN2hpU3B6aS9W?=
+ =?utf-8?B?dUovcEpLSm41WXRUS1pOOTJQc3M0MEdwK1RIQkFIaDJwZlVCWmZEeURTVEV3?=
+ =?utf-8?B?eGo4aVZkSUV3OGdZK0syWHlGNjh3U1VTTEc0QVBLcklPTnZ6SFhFZ2Uwb1FI?=
+ =?utf-8?B?aHFGQzZra0NYYlZaQ2d3YzNQUFlCK0tNbVZjZEhrWTlGUGhobDdyN05Td2E5?=
+ =?utf-8?B?VzdLRjkwT2ZKdERYR1dYTG5kV2ZlYmhteUFKLzMxNmlTeHJheW1uZkY3eFls?=
+ =?utf-8?B?enhDa2oyRmpOS1RzcG1sdEthUUFERE5UdTE1MEhTTzRqZUZxVTM3VW41S0FH?=
+ =?utf-8?B?UG4yaW83c0JGMGNmS2NiM2VZbk1wVGhsQy9QaVBkc1ZGeVFMa24xT0lYdjRV?=
+ =?utf-8?B?ZTJxQnB4U1hzZU81elBicmFPamVnQndUUy8vMml6SHBMcUFCUHJwR1hNSk9k?=
+ =?utf-8?B?UDJMNGFtSGdFaDhrV0ZBazYvRmlWc2ZPN1F4NWliZGtSZ2YxQzk5d2RxN3J5?=
+ =?utf-8?B?cUVmK0FQb3FRbVdyK0NLRjFwcDRTcXM5QWw0Z0NtQmJwOCtwaGxONm1ubHF5?=
+ =?utf-8?B?MUdXYlc5emlnekF4WmZlMEZPWC9XUUdTTHB4N2Q2UnJTVDR4djNtZnYrMVVU?=
+ =?utf-8?B?Y1N3TlYzZ01SYmpEdFJCcWxNY2ZuN05kK1YxYWxsTmZJUStCTitiSWpwYTE4?=
+ =?utf-8?B?STZFb1N6YVMvRlBPeCtydDU0T2RKMmYrbDN6N2pPVmxkNHJSRUoyUmQ3dXZ3?=
+ =?utf-8?B?TDBPT20wRDJyT0dXMzZmR3QxQUFqVGtuTXZObnluWktXUFl4cUV0M29hZ3I3?=
+ =?utf-8?B?UXN2NFFoODRPUDk4bnNWVEFtZm94UXg4K2gyWVRkSmxCOE8wb1RISWMrZTUz?=
+ =?utf-8?Q?J3L+Xv46qwjb4fWdJkl2DQ8nd?=
+X-OriginatorOrg: talpey.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4306ecf6-8b30-4d2b-492e-08db897d7df2
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR01MB4445.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 00:00:29.1176
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CBGkOQhmuYo2R/iZXqwAGJiZH2XMznrTJSOS/Ft+Pcu9t6nNpD+emYI0ufIIxnuv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB7460
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Tom Talpey (tom@talpey.com) wrote:
-> On 7/19/2023 6:06 PM, Dave Kleikamp wrote:
-> > On 7/19/23 4:58PM, Dr. David Alan Gilbert wrote:
-> > > * Steve French (smfrench@gmail.com) wrote:
-> > > > The related question is which tree to send it from, if no problems
-> > > > reported (presumably mine since it mostly affect cifs.ko and ksmbd.ko,
-> > > > and because there hasn't been activity in fs/nls for years)
-> > > 
-> > > That was my hope, given that ~half of the patches are directly on that
-> > > code, and it's the only very active tree this touches as far as I can
-> > > tell.
-> > > 
-> > > > On Wed, Jul 19, 2023 at 12:56 PM Steve French
-> > > > <smfrench@gmail.com> wrote:
-> > > > > 
-> > > > > No objections to this on my part.  If Shaggy is ok with the JFS
-> > > > > change, we could target it for 6.6-rc1 if it tests out ok
-> > 
-> > For the series:
-> > Reviewed-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-> > 
-> > Steve,
-> > Feel free to pull in even the 4th patch into your tree with my consent.
-> > Or if you're more comfortable, I could submit it after yours hits
-> > mainline.
-> > 
-> > Shaggy
-> 
-> The changes look good to me but there is one quirk with the
-> copyrights and SPDX in patch 2.
-> 
-> In the new fs/nls/nls_ucs2_utils.c, the SPDX line changes from
-> a "/* ... */" form to "// ...", which may be a proper update, but
-> then partway down, adds the same SPDX in "/* ... */ form. These
-> should at least be consistent.
-> 
-> > +++ b/fs/nls/nls_ucs2_utils.c
-> > @@ -1,19 +1,25 @@
-> > -/* SPDX-License-Identifier: GPL-2.0-or-later */
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> 
-> vs
-> 
-> > +++ b/fs/nls/nls_ucs2_utils.h
-> > @@ -0,0 +1,297 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-or-later */
+Personally I like Jeff's text. There's zero need to overthink this.
 
-Yeh that's an easy fix - so that's just the fact the .h has
-the older /* where I'd fixed up the .c ?
+Jul 20, 2023 7:30:34 PM Chuck Lever <cel@kernel.org>:
 
-> Second, the copyright in fs/nls/nls_ucs2_utils.c is a bit of
-> a mash-up (adding 2009 especially).
+> On Fri, Jul 21, 2023 at 08:07:16AM +1000, NeilBrown wrote:
+>> On Thu, 20 Jul 2023, Jeff Layton wrote:
+>>> I got this today from modpost:
+>>> 
+>>>     WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nfsd/nfsd.o
+>>> 
+>>> Add a module description.
+>>> 
+>>> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>>> ---
+>>> fs/nfsd/nfsctl.c | 1 +
+>>> 1 file changed, 1 insertion(+)
+>>> 
+>>> diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
+>>> index 1b8b1aab9a15..7070969a38b5 100644
+>>> --- a/fs/nfsd/nfsctl.c
+>>> +++ b/fs/nfsd/nfsctl.c
+>>> @@ -1626,6 +1626,7 @@ static void __exit exit_nfsd(void)
+>>> }
+>>> 
+>>> MODULE_AUTHOR("Olaf Kirch <okir@monad.swb.de>");
+>>> +MODULE_DESCRIPTION("The Linux kernel NFS server");
+>> 
+>> Of 9176 MODULE_DESCRIPTIONs in Linux, 21 start with "The ".
+>> Does having that word add anything useful?
+>> Amusingly 129 end with a period.  I wonder what Jon Corbet would prefer
+>> :-)
 > 
-> I think it's better to keep the exact text of both copyrights,
-> perhaps with a note as to which files had them previously, and
-> adding some new note/blank line to separate the recent contributions
-> from Namjae and you from the ancient history.
-
-How about the following;
-
- * This file has taken chunks from a few other files
- * smb/server/uniupr.h had the declaration:
- *
- *   Some of the source code in this file came from fs/cifs/uniupr.h
- *   Copyright (c) International Business Machines  Corp., 2000,2002
- *
- * fs/smb/server/unicode.c had the declaration:
- *
- *   Some of the source code in this file came from fs/cifs/cifs_unicode.c
- *
- *   Copyright (c) International Business Machines  Corp., 2000,2009
- *   Modified by Steve French (sfrench@us.ibm.com)
- *   Modified by Namjae Jeon (linkinjeon@kernel.org)
- *
-
-I haven't added the extra line above Namjae's line, since it's now
-a straight copy from the unicode.c entry.
-I'm not particularly fussed about adding my own line unless you think
-it's needed; git keeps better history!
-
-> > +++ b/fs/nls/nls_ucs2_utils.c
-> > ...
-> > - *   Some of the source code in this file came from fs/cifs/uniupr.h
-> > - *   Copyright (c) International Business Machines  Corp., 2000,2002
-> > - *
-> > - * uniupr.h - Unicode compressed case ranges
-> > + *   Some of the source code in this file came from fs/cifs/cifs_unicode.c
-> > + *   via fs/smb/unicode.c and fs/smb/uniupr.h and fs/cifs/uniupr.h
-> > + *   Copyright (c) International Business Machines  Corp., 2000,2002,2009
-> > + *   Modified by Steve French (sfrench@us.ibm.com)
-> > + *   Modified by Namjae Jeon (linkinjeon@kernel.org)
-> > + *   Modified by Dr. David Alan Gilbert <linux@treblig.org>
+> The Ohio State University has set a bad precedent.
 > 
-> Apart from considering these:
+> I think we can drop "The".
 > 
-> Reviewed-by: Tom Talpey <tom@talpey.com>
-
-Thanks!
-
-Dave
-
-> Nice work!
 > 
-> > > 
-> > > Thanks.
-> > > 
-> > > Dave
-> > > 
-> > > > > On Wed, Jul 12, 2023 at 6:28 PM Dr. David Alan Gilbert
-> > > > > <dave@treblig.org> wrote:
-> > > > > > 
-> > > > > > * linux@treblig.org (linux@treblig.org) wrote:
-> > > > > > > From: "Dr. David Alan Gilbert" <linux@treblig.org>
-> > > > > > > 
-> > > > > > > The smb client and server code have (mostly) duplicated code
-> > > > > > > for unicode manipulation, in particular upper case handling.
-> > > > > > > 
-> > > > > > > Flatten this lot into shared code.
-> > > > > > 
-> > > > > > Gentle two week ping on this please.
-> > > > > > 
-> > > > > > Dave
-> > > > > > 
-> > > > > > (Apologies to the 3 of you who already got a copy of this ping,
-> > > > > > recent due to a missing header ',' )
-> > > > > > 
-> > > > > > > There's some code that's slightly different between the two, and
-> > > > > > > I've not attempted to share that - this should be strictly a no
-> > > > > > > behaviour change set.
-> > > > > > > 
-> > > > > > > In addition, the same tables and code are shared in jfs, however
-> > > > > > > there's very little testing available for the unicode in there,
-> > > > > > > so just share the raw data tables.
-> > > > > > > 
-> > > > > > > I suspect there's more UCS-2 code that can be shared, in the NLS code
-> > > > > > > and in the UCS-2 code used by the EFI interfaces.
-> > > > > > > 
-> > > > > > > Lightly tested with a module and a monolithic build,
-> > > > > > > and just mounting
-> > > > > > > itself.
-> > > > > > > 
-> > > > > > > This dupe was found using PMD:
-> > > > > > >    https://pmd.github.io/pmd/pmd_userdocs_cpd.html
-> > > > > > > 
-> > > > > > > Dave
-> > > > > > > 
-> > > > > > > Version 2
-> > > > > > >    Moved the shared code to fs/nls after v1 feedback.
-> > > > > > >    Renamed shared tables from Smb to Nls prefix
-> > > > > > >    Move UniStrcat as well
-> > > > > > >    Share the JFS tables
-> > > > > > > 
-> > > > > > > Dr. David Alan Gilbert (4):
-> > > > > > >    fs/smb: Remove unicode 'lower' tables
-> > > > > > >    fs/smb: Swing unicode common code from smb->NLS
-> > > > > > >    fs/smb/client: Use common code in client
-> > > > > > >    fs/jfs: Use common ucs2 upper case table
-> > > > > > > 
-> > > > > > >   fs/jfs/Kconfig               |   1 +
-> > > > > > >   fs/jfs/Makefile              |   2 +-
-> > > > > > >   fs/jfs/jfs_unicode.h         |  17 +-
-> > > > > > >   fs/jfs/jfs_uniupr.c          | 121 -------------
-> > > > > > >   fs/nls/Kconfig               |   8 +
-> > > > > > >   fs/nls/Makefile              |   1 +
-> > > > > > >   fs/nls/nls_ucs2_data.h       |  15 ++
-> > > > > > >   fs/nls/nls_ucs2_utils.c      | 144 +++++++++++++++
-> > > > > > >   fs/nls/nls_ucs2_utils.h      | 285 ++++++++++++++++++++++++++++++
-> > > > > > >   fs/smb/client/Kconfig        |   1 +
-> > > > > > >   fs/smb/client/cifs_unicode.c |   1 -
-> > > > > > >   fs/smb/client/cifs_unicode.h | 330
-> > > > > > > +----------------------------------
-> > > > > > >   fs/smb/client/cifs_uniupr.h  | 239 -------------------------
-> > > > > > >   fs/smb/server/Kconfig        |   1 +
-> > > > > > >   fs/smb/server/unicode.c      |   1 -
-> > > > > > >   fs/smb/server/unicode.h      | 325
-> > > > > > > +---------------------------------
-> > > > > > >   fs/smb/server/uniupr.h       | 268 ----------------------------
-> > > > > > >   17 files changed, 467 insertions(+), 1293 deletions(-)
-> > > > > > >   delete mode 100644 fs/jfs/jfs_uniupr.c
-> > > > > > >   create mode 100644 fs/nls/nls_ucs2_data.h
-> > > > > > >   create mode 100644 fs/nls/nls_ucs2_utils.c
-> > > > > > >   create mode 100644 fs/nls/nls_ucs2_utils.h
-> > > > > > >   delete mode 100644 fs/smb/client/cifs_uniupr.h
-> > > > > > >   delete mode 100644 fs/smb/server/uniupr.h
-> > > > > > > 
-> > > > > > > -- 
-> > > > > > > 2.41.0
-> > > > > > > 
-> > > > > > -- 
-> > > > > >   -----Open up your eyes, open up your mind, open up your code -------
-> > > > > > / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \
-> > > > > > \        dave @ treblig.org |                               | In Hex /
-> > > > > >   \ _________________________|_____ http://www.treblig.org   |_______/
-> > > > > 
-> > > > > 
-> > > > > 
-> > > > > -- 
-> > > > > Thanks,
-> > > > > 
-> > > > > Steve
-> > > > 
-> > > > 
-> > > > 
-> > > > -- 
-> > > > Thanks,
-> > > > 
-> > > > Steve
-> > 
--- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+>> A few tell us what the module does.
+>> "Measures" "Provides"....
+>> Do we want "Implements" ??
+> 
+> I don't find "Implements" to be either conventional or illuminating.
+> 
+> 
+>> 232 start "Driver " and 214 are "Driver for"....
+>> Should we have "Server for" ??
+>> 
+>> 26 start "Linux" ... which seems a bit redundant
+>>   12 contain "for Linux".  67 mention linux in some way.
+>> 28 contain the word "kernel" - also redundant.
+>> Only three (others) mention "Linux kernel"
+> 
+> One of which is the new in-kernel SMB server, interestingly.
+> 
+> I don't think "Linux kernel" or even "in-kernel" is needed here.
+> Both should be obvious from the context.
+> 
+> 
+>> drivers/pcmcia/cs.c:MODULE_DESCRIPTION("Linux Kernel Card Services");
+>> fs/ksmbd/server.c:MODULE_DESCRIPTION("Linux kernel CIFS/SMB SERVER");
+>> fs/orangefs/orangefs-mod.c:MODULE_DESCRIPTION("The Linux Kernel VFS interface to ORANGEFS");
+>> 
+>> hmmm..  192 contain the word "module".  Fortunately none say
+>>   "Linux kernel module for ..."
+>> I would have found that to be a step too far.
+>> 
+>> I'd like to suggest
+>> 
+>>   "Implements Server for NFS - v2, 3, v4.{0,1,2}"
+>> 
+>> But that would require excessive #ifdef magic to get right.
+> 
+> "Network File System server" works for me.
+> 
+> 
+>> A small part of me wants to suggest:
+>> 
+>>    "nfsd"
+>> 
+>> but maybe I'm just in a whimsical mood today.
+> 
+> I'm resisting the urge to add "RFCs 1813, 7530, 8881, et al."
+> Whimsy, indeed. ;-)
+> 
+> 
+>> NeilBrown
+>> 
+>> 
+>>> MODULE_LICENSE("GPL");
+>>> module_init(init_nfsd)
+>>> module_exit(exit_nfsd)
+>>> -- 
+>>> 2.41.0
+>>> 
+>>> 
+>> 
