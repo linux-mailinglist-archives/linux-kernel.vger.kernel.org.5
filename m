@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBF975C800
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A9175C80A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbjGUNjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 09:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
+        id S231365AbjGUNlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 09:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231365AbjGUNjd (ORCPT
+        with ESMTP id S229898AbjGUNlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 09:39:33 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD9FD1BDC
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 06:39:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689946771; x=1721482771;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=NkUrPuisbIFulQyMWqUtCvT40Kfi6q+a3Q6zjh8r0po=;
-  b=dx+HoGA5urIbfoBvEOG7q+RX3QvrM94/r9bABHNudN1ZHwMnjWlkZeN9
-   DtCo3PPBm2DiKTSU0iDTWT958tLB42FJTpUEdKfUBtIhf0y9l/8GEqvMH
-   TBkxk4AGeoykOSR+vrnSVh0QUflZDLrq2JPTbWye1QspcGLaGJ7nP2L8S
-   fFIYEyO5IdsX2t/y/d0/gNF8f10BonT1FDuoN8jk4RvzMNoQ93uKpQuZE
-   Q0YiKnXkPODs1vMkNzEw0HZ14yNWwHfAAvFYU3nFxxafWv9vFGHElbDEQ
-   Kld/LwJf9swyxcYzTea040tUFi1qiW+do9QF+93dLxz8yifnuV5pUus0p
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="453399308"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="453399308"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 06:39:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="754461242"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="754461242"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 21 Jul 2023 06:39:29 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id AC796370; Fri, 21 Jul 2023 16:39:36 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Herve Codina <herve.codina@bootlin.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v1 1/1] minmax: Fix header inclusions
-Date:   Fri, 21 Jul 2023 16:39:32 +0300
-Message-Id: <20230721133932.12679-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Fri, 21 Jul 2023 09:41:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FEB1722;
+        Fri, 21 Jul 2023 06:41:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5658F61B18;
+        Fri, 21 Jul 2023 13:41:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C25DC433C7;
+        Fri, 21 Jul 2023 13:41:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689946877;
+        bh=hsP9Oos0WjKR1Uc0WBZ0FXpKTzVBPfutUi/3ykfZOgk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=V9wiwFcd2muWD1xxfOwWvTMgOYs6Pk8wrzrYta8Zn2tGwJKcVb7W+XVZ3jT696ZlQ
+         zzjIFkJU5V3ADCW0E95NQ8agicseWIFXngaWXFcVPoRK2hvGOYcgI+ovck7nq9RzK0
+         /2r8hFknL9bvJ9/UWrZE3UNquo7AXvfLsEtbA2ZL+SZfKcABjjjciYBlSOib03ELGt
+         Bzq0a2X6D1PNZEHW1nzOxvateb6LksWKmM+yXvwUTARW4GFk6fQ3VVm773oBJsAPmO
+         tjC1GQLPSBGDfY+gq6D7+TEN2hroF182Fi5oBLVCA2RI7eQ2XR1BKScb+bpASSEJOz
+         Cxl2WzDbVgMJw==
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH] s390: use obj-y to descend into drivers/s390/
+Date:   Fri, 21 Jul 2023 22:41:07 +0900
+Message-Id: <20230721134107.3437947-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BUILD_BUG_ON*() are defined in build_bug.h.
-It also provides __UNIQUE_ID() that is defined
-in the compiler.h.
+I like to use obj-y in as many places as possible.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Change the drivers-y to obj-y. It moves the objects from drivers/s390/
+to slightly lower address, but fixes the single build issue. [1]
+
+[1]: https://lore.kernel.org/linux-kbuild/d57ba55f-20a3-b836-783d-b49c8a161b6e@kernel.org/T/#m27f781ab60acadfed8a9e9642f30d5414a5e2df3
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Tested-by: Jiri Slaby <jirislaby@kernel.org>
 ---
- include/linux/minmax.h | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 798c6963909f..049480235e53 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -2,6 +2,7 @@
- #ifndef _LINUX_MINMAX_H
- #define _LINUX_MINMAX_H
+ arch/s390/Makefile | 1 -
+ drivers/Makefile   | 2 ++
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/s390/Makefile b/arch/s390/Makefile
+index 5ed242897b0d..a53a36ee0731 100644
+--- a/arch/s390/Makefile
++++ b/arch/s390/Makefile
+@@ -119,7 +119,6 @@ export KBUILD_CFLAGS_DECOMPRESSOR
+ OBJCOPYFLAGS	:= -O binary
  
-+#include <linux/build_bug.h>
- #include <linux/const.h>
+ libs-y		+= arch/s390/lib/
+-drivers-y	+= drivers/s390/
  
- /*
+ boot		:= arch/s390/boot
+ syscalls	:= arch/s390/kernel/syscalls
+diff --git a/drivers/Makefile b/drivers/Makefile
+index 7241d80a7b29..a7459e77df37 100644
+--- a/drivers/Makefile
++++ b/drivers/Makefile
+@@ -195,3 +195,5 @@ obj-$(CONFIG_PECI)		+= peci/
+ obj-$(CONFIG_HTE)		+= hte/
+ obj-$(CONFIG_DRM_ACCEL)		+= accel/
+ obj-$(CONFIG_CDX_BUS)		+= cdx/
++
++obj-$(CONFIG_S390)		+= s390/
 -- 
-2.40.0.1.gaa8946217a0b
+2.39.2
 
