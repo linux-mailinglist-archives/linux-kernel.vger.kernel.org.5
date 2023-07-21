@@ -2,70 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 733F175CB84
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2078E75CB8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231656AbjGUPVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:21:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54282 "EHLO
+        id S232019AbjGUPWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231325AbjGUPVe (ORCPT
+        with ESMTP id S230479AbjGUPWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:21:34 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F904228
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:20:56 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5774335bb2aso24237807b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:20:56 -0700 (PDT)
+        Fri, 21 Jul 2023 11:22:00 -0400
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30A63A8E
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:21:35 -0700 (PDT)
+Received: by mail-vk1-xa32.google.com with SMTP id 71dfb90a1353d-48147a5f0c0so725270e0c.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:21:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689952828; x=1690557628;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BkukvvKdCrDQOFgIYreW11T9Rq9G1ZMbiEGMQtKJyG8=;
-        b=e5kf0veFl/aobo/tJRQsav5pgDTz4PtmrUYkfINVokLF6Mt2pJYt9ls5Z+QTMDUpDB
-         sD0raHqPRuYgXgERfy8zJ4EALIfO2eOR+94V18pCVkUHe/atb6/XEwntzs9OHPvwbo5M
-         j5KWYp6mZlDJ6PwIZFT+En4r34NBjzAnmTs5dVby3/HErxaoeoWpL1fl5Wmfg2uYY0io
-         vurBiTXH2OMc/jeYxPZKBh7ZkrcT66D3KB6PrKbrDwxirVpnb+h+y880sMvfr7y3WTOi
-         fBgZxJjHUjZXJNtCXFtzr3Ffca9UZMMY0LBFspX375MPOl0WrcwzDgOWAdVKDC3hEhkE
-         /dAw==
+        d=joelfernandes.org; s=google; t=1689952888; x=1690557688;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kCexeoAq5WFou5O/MRG2hFsQoOlYTuihLodnFL02nHg=;
+        b=RoI4XoW6aSQvP9Q8TIXeE+OOEjdFRCDb5vCkv39l0cVz+nN1XkGHe+kfutsTKJD3Yn
+         K9EA33tFVnX6nMGiNfLaqLq6BPH9onR1FfYwtc61aWR58Y4ISItozVXJBpmwVx0WKbke
+         kWA4KBDXbV2hUWcpwHyqaT/eOfar/9gB9G85I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689952828; x=1690557628;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BkukvvKdCrDQOFgIYreW11T9Rq9G1ZMbiEGMQtKJyG8=;
-        b=b8eCH1skusnmn57O5OBE6pCodjhcCty4AjdG4cROtN7Xnz0NlvLaRPeGwf15WxzpTl
-         mLHp7MGZNRVuk7Z2oeRvveuPbtvoUJStM9JKdb6vI7U6Ii/3RIUwScMCm1cVnU+8ajvy
-         hQK1U926kbVfmddtNp9+qHXDeqdBoZ+Dvl1/S7hTMGeZj8/KT+7NHmYP0C/RQxCXkxPw
-         jl25bUeo9D8M5/Sr51LOq9uiXhxYGLYscLdzbuM8+k4fmaW8//BrkxVr8Y4zfOOCHVBx
-         kmvhm5rCGe+MCTbuwi2LksIcPR3N9WAmxYVVuhqTJ4K+UpQZQE9TnLrR1iuh8buFgl8a
-         IjDQ==
-X-Gm-Message-State: ABy/qLb6LRqDHrwTKc3d1ygHG+A39V7GKVVybxUW/SJ56/UC0UXwmg5O
-        Bspz3pG9xBCf+KmsjplcNTPaVniRVn02YvDvJvrrHQ==
-X-Google-Smtp-Source: APBJJlFnc3KURsezFV4I7qr9IwPHnppofn+Q98ueID6M1Y3aQ2O4i/zWi1zZR+RkQ5OuO1Lm7f5+ob4jVZaMkDvDAVQ=
-X-Received: by 2002:a25:d384:0:b0:c80:f701:7467 with SMTP id
- e126-20020a25d384000000b00c80f7017467mr2010871ybf.45.1689952828466; Fri, 21
- Jul 2023 08:20:28 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689952888; x=1690557688;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kCexeoAq5WFou5O/MRG2hFsQoOlYTuihLodnFL02nHg=;
+        b=B+WgOwXUaM4QvdfieEOf6zk1e+6jsZROzeDYaar6erHABmsWxb43wxl6Say0MP/QyE
+         9Jk4/KrUvbUkfW8WRtPA2SA7ZNqSNtsIQmoEsUXjd2ty37sMrrJLq6CsXiMe+6SBxexG
+         r9VoNhH8xLRKFISZvJwaxmUENC+YHVcXD9eMLDeiJlnYHKo6v7JqnRf6CuOy1UENmanv
+         J0XDuM+7doWNpQ5/rDA8leynrlRHUnVIDlJFPHPnp5/mQ1bCSo2Sk2Quphjn71IEkjnX
+         m+s4Ii8tE8BDMMsP49BA+gIpSlw8IkiYz1naRzpz7jRJoURTmzrfYlEpbyntVytFZdy9
+         Bt/w==
+X-Gm-Message-State: ABy/qLZByoJHXZZBaTZsqKrxJEtU/STJuRhEt/YtKMLNV8EGUEdN/Ikm
+        X3VMYhv1bSOzyJ7i/ZKUTEnMoymm9duaYZzLyik=
+X-Google-Smtp-Source: APBJJlFf1VC+mAzw0+PKkMHibS0p4yDHmiPMsps0CguK5DiWnKA7KpFGtyoPE7ky4Z9ArKM/pexs2Q==
+X-Received: by 2002:a67:f244:0:b0:443:6792:38a with SMTP id y4-20020a67f244000000b004436792038amr208591vsm.34.1689952888401;
+        Fri, 21 Jul 2023 08:21:28 -0700 (PDT)
+Received: from [192.168.0.140] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id k30-20020a0cb25e000000b0063cdcd5699csm517512qve.118.2023.07.21.08.21.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 08:21:27 -0700 (PDT)
+Message-ID: <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
+Date:   Fri, 21 Jul 2023 11:21:26 -0400
 MIME-Version: 1.0
-References: <20230713141738.23970-1-ulf.hansson@linaro.org>
- <20230713141738.23970-11-ulf.hansson@linaro.org> <ZLf4c7ejFBJLH7iN@e120937-lin>
-In-Reply-To: <ZLf4c7ejFBJLH7iN@e120937-lin>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 21 Jul 2023 17:19:51 +0200
-Message-ID: <CAPDyKFr3ann52GAtOLfnLSGgsdF+EZBNz_apNo_OHzrQ-Hg55Q@mail.gmail.com>
-Subject: Re: [PATCH v2 10/11] firmware: arm_scmi: Add the SCMI performance domain
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
+Content-Language: en-US
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, rcu@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>, roman.gushchin@linux.dev
+References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
+ <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
+ <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,176 +75,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cristian,
+On 7/21/23 10:27, Alan Huang wrote:
+> 
+>> 2023年7月21日 20:54，Joel Fernandes <joel@joelfernandes.org> 写道：
+>>
+>>
+>>
+>>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> wrote:
+>>>
+>>> ﻿
+>>>> 2023年7月21日 03:22，Eric Dumazet <edumazet@google.com> 写道：
+>>>>
+>>>>> On Thu, Jul 20, 2023 at 8:54 PM Alan Huang <mmpgouride@gmail.com> wrote:
+>>>>>
+>>>>> Hi,
+>>>>>
+>>>>> I noticed a commit c87a124a5d5e(“net: force a reload of first item in hlist_nulls_for_each_entry_rcu”)
+>>>>> and a related discussion [1].
+>>>>>
+>>>>> After reading the whole discussion, it seems like that ptr->field was cached by gcc even with the deprecated
+>>>>> ACCESS_ONCE(), so my question is:
+>>>>>
+>>>>>       Is that a compiler bug? If so, has this bug been fixed today, ten years later?
+>>>>>
+>>>>>       What about READ_ONCE(ptr->field)?
+>>>>
+>>>> Make sure sparse is happy.
+>>>
+>>> It caused a problem without barrier(), and the deprecated ACCESS_ONCE() didn’t help:
+>>>
+>>>    https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
+>>>
+>>> So, my real question is: With READ_ONCE(ptr->field), are there still some unusual cases where gcc
+>>> decides not to reload ptr->field?
+>>
+>> I am a bit doubtful there will be strong (any?) interest in replacing the barrier() with READ_ONCE() without any tangible reason, regardless of whether a gcc issue was fixed.
+>>
+>> But hey, if you want to float the idea…
+> 
+> We already had the READ_ONCE() in rcu_deference_raw().
+> 
+> The barrier() here makes me think we need write code like below:
+> 	
+> 	READ_ONCE(head->first);
+> 	barrier();
+> 	READ_ONCE(head->first);
+> 
+> With READ_ONCE (or the deprecated ACCESS_ONCE),
+> I don’t think a compiler should cache the value of head->first.
 
-On Wed, 19 Jul 2023 at 16:51, Cristian Marussi <cristian.marussi@arm.com> wrote:
->
-> On Thu, Jul 13, 2023 at 04:17:37PM +0200, Ulf Hansson wrote:
-> > To enable support for performance scaling (DVFS) for generic devices with
-> > the SCMI performance protocol, let's add an SCMI performance domain. This
-> > is being modelled as a genpd provider, with support for performance scaling
-> > through genpd's ->set_performance_state() callback.
-> >
-> > Note that, this adds the initial support that allows consumer drivers for
-> > attached devices, to vote for a new performance state via calling the
-> > dev_pm_genpd_set_performance_state(). However, this should be avoided as
-> > it's in most cases preferred to use the OPP library to vote for a new OPP
-> > instead. The support using the OPP library isn't part of this change, but
-> > needs to be implemented from subsequent changes.
-> >
->
-> Hi Ulf,
->
-> a couple of remarks down below.
->
-> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > ---
-> >
-> > Changes in v2:
-> >       - Converted to use the new ->domain_info_get() callback.
-> >
-> > ---
-> >  drivers/firmware/arm_scmi/Kconfig            |  12 ++
-> >  drivers/firmware/arm_scmi/Makefile           |   1 +
-> >  drivers/firmware/arm_scmi/scmi_perf_domain.c | 155 +++++++++++++++++++
-> >  3 files changed, 168 insertions(+)
-> >  create mode 100644 drivers/firmware/arm_scmi/scmi_perf_domain.c
->
-> [snip]
->
-> > +static int scmi_perf_domain_probe(struct scmi_device *sdev)
-> > +{
-> > +     struct device *dev = &sdev->dev;
-> > +     const struct scmi_handle *handle = sdev->handle;
-> > +     const struct scmi_perf_proto_ops *perf_ops;
-> > +     struct scmi_protocol_handle *ph;
-> > +     struct scmi_perf_domain *scmi_pd;
-> > +     struct genpd_onecell_data *scmi_pd_data;
-> > +     struct generic_pm_domain **domains;
-> > +     int num_domains, i, ret = 0;
-> > +     u32 perf_level;
-> > +
-> > +     if (!handle)
-> > +             return -ENODEV;
-> > +
-> > +     /* The OF node must specify us as a power-domain provider. */
-> > +     if (!of_find_property(dev->of_node, "#power-domain-cells", NULL))
-> > +             return 0;
-> > +
-> > +     perf_ops = handle->devm_protocol_get(sdev, SCMI_PROTOCOL_PERF, &ph);
-> > +     if (IS_ERR(perf_ops))
-> > +             return PTR_ERR(perf_ops);
-> > +
-> > +     num_domains = perf_ops->num_domains_get(ph);
-> > +     if (num_domains < 0) {
-> > +             dev_warn(dev, "Failed with %d when getting num perf domains\n",
-> > +                      num_domains);
-> > +             return num_domains;
-> > +     } else if (!num_domains) {
-> > +             return 0;
-> > +     }
-> > +
-> > +     scmi_pd = devm_kcalloc(dev, num_domains, sizeof(*scmi_pd), GFP_KERNEL);
-> > +     if (!scmi_pd)
-> > +             return -ENOMEM;
-> > +
-> > +     scmi_pd_data = devm_kzalloc(dev, sizeof(*scmi_pd_data), GFP_KERNEL);
-> > +     if (!scmi_pd_data)
-> > +             return -ENOMEM;
-> > +
-> > +     domains = devm_kcalloc(dev, num_domains, sizeof(*domains), GFP_KERNEL);
-> > +     if (!domains)
-> > +             return -ENOMEM;
-> > +
-> > +     for (i = 0; i < num_domains; i++, scmi_pd++) {
-> > +             scmi_pd->info = perf_ops->domain_info_get(ph, i);
->
-> So here you are grabbing all the performance domains exposed by the
-> platform via PERF protocol and then a few lines down below you are
-> registering them with pm_genpd_init(), but the list of domains obtained
-> from the platform will contain NOT only devices but also CPUs possibly,
-> already managed by the SCMI CPUFreq driver.
 
-Correct.
+Right, it shouldn't need to cache. To Eric's point it might be risky to remove 
+the barrier() and someone needs to explain that issue first (or IMO there needs 
+to be another tangible reason like performance etc). Anyway, FWIW I wrote a 
+simple program and I am not seeing the head->first cached with the pattern you 
+shared above:
 
->
-> In fact the SCMI CPUFreq driver, on his side, takes care to pick only
-> domains that are bound in the DT to a CPU (via scmi_cpu_domain_id DT
-> parsing) but here you are registering all domains with GenPD upfront.
+#include <stdlib.h>
 
-Right, genpds are acting as providers, which need to be registered
-upfront to allow consumer devices to be attached when they get probed.
+#define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
+#define barrier() __asm__ __volatile__("": : :"memory")
 
-This isn't specific to this case, but how the genpd infrastructure is
-working per design.
+typedef struct list_head {
+     int first;
+     struct list_head *next;
+} list_head;
 
->
-> Is it not possible that, once registered, GenPD can decide, at some point
-> in the future, to try act on some of these domains associated with a CPU ?
-> (like Clock framework does at the end of boot trying to disable unused
->  clocks...not familiar with internals of GenPD, though)
+int main() {
+     list_head *head = (list_head *)malloc(sizeof(list_head));
+     head->first = 1;
+     head->next = 0;
 
-The "magic" that exists in genpd is to save/restore the performance
-state at genpd_runtime_suspend|resume().
+     READ_ONCE(head->first);
+     barrier();
+     READ_ONCE(head->first);
 
-That means the consumer device needs to be attached and runtime PM
-enabled, otherwise genpd will just leave the performance level
-unchanged. In other words, the control is entirely at the consumer
-driver (scmi cpufreq driver).
+     free(head);
+     return 0;
+}
 
->
-> > +             scmi_pd->domain_id = i;
-> > +             scmi_pd->perf_ops = perf_ops;
-> > +             scmi_pd->ph = ph;
-> > +             scmi_pd->genpd.name = scmi_pd->info->name;
-> > +             scmi_pd->genpd.flags = GENPD_FLAG_OPP_TABLE_FW;
-> > +             scmi_pd->genpd.set_performance_state = scmi_pd_set_perf_state;
-> > +
-> > +             ret = perf_ops->level_get(ph, i, &perf_level, false);
-> > +             if (ret) {
-> > +                     dev_dbg(dev, "Failed to get perf level for %s",
-> > +                              scmi_pd->genpd.name);
-> > +                     perf_level = 0;
-> > +             }
-> > +
-> > +             /* Let the perf level indicate the power-state too. */
-> > +             ret = pm_genpd_init(&scmi_pd->genpd, NULL, perf_level == 0);
->
-> In SCMI world PERF levels should have nothing to do with the Power
-> state of a domain: you have the POWER protocol for that, so you should
-> not assume that perf level 0 means OFF, but you can use the POWER protocol
-> operation .state_get() to lookup the power state. (and you can grab both
-> perf and power ops from the same driver)
+On ARM 32-bit, 64-bit and x86_64, with -Os and then another experiment with -O2 
+on new gcc versions.
 
-Well, I think this may be SCMI FW implementation specific, but
-honestly I don't know exactly what the spec says about this. In any
-case, I don't think it's a good idea to mix this with the POWER
-domain, as that's something that is entirely different. We have no
-clue of those relationships (domain IDs).
-
-My main idea behind this, is just to give the genpd internals a
-reasonably defined value for its power state.
-
->
-> The tricky part would be to match the PERF domain at hand with the
-> related POWER domain to query the state for, I suppose.
->
-> Indeed, recently, while looking at SCMI v3.2 PERF evolutions, I was
-> tempted to just start rejecting any level_set() or set_freq() request
-> for ZERO since they really can be abused to power off a domain. (if the
-> platform complies...)
-
-I didn't know that this was against the spec, but in a way what you
-say, seems reasonable.
-
->
-> Apologize if I missed something about how GenPD behaviour...
-
-Np, thanks a lot for reviewing! Much appreciated!
-
->
-> Thanks,
-> Cristian
-
-Kind regards
-Uffe
