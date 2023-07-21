@@ -2,43 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CD875C50B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E16175C50E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbjGUKxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46978 "EHLO
+        id S230181AbjGUKxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjGUKxi (ORCPT
+        with ESMTP id S230137AbjGUKxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:53:38 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 969FB1719;
-        Fri, 21 Jul 2023 03:53:36 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 4800892009C; Fri, 21 Jul 2023 12:53:34 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 418B292009B;
-        Fri, 21 Jul 2023 11:53:34 +0100 (BST)
-Date:   Fri, 21 Jul 2023 11:53:34 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Huacai Chen <chenhuacai@kernel.org>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jan-Benedict Glaw <jbglaw@lug-owl.de>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] MIPS: Fix build issues from the introduction of
- `need-compiler'
-In-Reply-To: <CAAhV-H7K2qM35GuGV+B2p=N_f30i98KazvwVNCuvvG9fYfrghw@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.2307211149070.17594@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2307180025120.62448@angie.orcam.me.uk> <CAAhV-H4ewzWuZRe0RX+j2x2R_fROVExHuogWNaWBmFA=Tgb=Og@mail.gmail.com> <alpine.DEB.2.21.2307191621450.58367@angie.orcam.me.uk>
- <CAAhV-H7K2qM35GuGV+B2p=N_f30i98KazvwVNCuvvG9fYfrghw@mail.gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Fri, 21 Jul 2023 06:53:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB26D19B5;
+        Fri, 21 Jul 2023 03:53:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 64678618AC;
+        Fri, 21 Jul 2023 10:53:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA831C433CB;
+        Fri, 21 Jul 2023 10:53:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689936822;
+        bh=PUu1mRQt3T22zjX88DmuovtcHn+0glC3+quGyZC83uw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=iWwH+0qrZTgn46bC3FBmWidk6FqLq7fL6TEUvVYiP0rlMFSAw6sf0nRko5NPjx2zV
+         iNCKN5ymoXXSHrFVWhN5ilgGWOXV+f0DNGCPSoyTPEQpJeSLc4R51o/7LGtEopngVL
+         hJgY/hIm0hhHCK/BL8ahFhjqmWpCrzG6d5Fl6hIlhSRVZ/7gdzkYwQtsY5s8kd8jlc
+         QStGzTB8UWYPZzA7DpUaSQ2L5vlrZ2Ek0qhmskvr6PCBoNTJWvBukpdtnPRLBFwDYO
+         7y5WutezWDd2LsITnKKQSS31aL3uvchLMk8k2JuMkodYkpFsl8pbu1xjsQaKfOlvDC
+         2q3+V6aJmbvUg==
+From:   Will Deacon <will@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Shuah Khan <shuah@kernel.org>, Mark Brown <broonie@kernel.org>
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        David Spickett <David.Spickett@arm.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] arm64/fpsimd: Fix use after free in SME when changing SVE VL
+Date:   Fri, 21 Jul 2023 11:53:37 +0100
+Message-Id: <168993427004.3198018.6269673577220774335.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230720-arm64-fix-sve-sme-vl-change-v2-0-8eea06b82d57@kernel.org>
+References: <20230720-arm64-fix-sve-sme-vl-change-v2-0-8eea06b82d57@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,25 +60,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huacai,
+On Thu, 20 Jul 2023 19:38:57 +0100, Mark Brown wrote:
+> This series fixes an issue which David Spickett found where if we change
+> the SVE VL while SME is in use we can end up attempting to save state to
+> an unallocated buffer and adds testing coverage for that plus a bit more
+> coverage of VL changes, just for paranioa.
+> 
+> 
 
-> >  Secondly:
-> >
-> > cflags-$(CONFIG_CC_IS_GCC) += -march=loongson3a
-> > cflags-$(CONFIG_CC_IS_CLANG) += -march=mips64r2
-> >
-> > document compiler peculiarities.  Does Clang support, or intend to,
-> > `-march=loongson3a'?  If so, what version can we expect this stuff in?
-> > GCC has had it since 4.6 or Y2010, which is pretty long ago.
-> GCC support loongson3a/mips64r2, Clang only support mips64r2. If we use
-> $(call cc-option,-march=loongson3a,-march=mips64r2)
-> both GCC and Clang can work and we don't need to care about the compiler.
+Applied first patch to arm64 (for-next/fixes), thanks!
 
- This may well be a change we desire, but it has to be made and reviewed 
-on its own rather than being buried within a set of unrelated changes.  
-Then the rationale has to be given in the change description and a comment 
-put in code explaining that it's not the usual case of old/new compiler, 
-so that we can catch it later and remove should Clang developers decide to 
-include `-march=loongson3a' support and our version requirements catch up.
+[1/3] arm64/fpsimd: Ensure SME storage is allocated after SVE VL changes
+      https://git.kernel.org/arm64/c/d4d5be94a878
 
-  Maciej
+I'll look at the selftests stuff for 6.6 when I get to that (probably
+next week).
+
+Cheers,
+-- 
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
