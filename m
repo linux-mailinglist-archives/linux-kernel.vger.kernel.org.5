@@ -2,288 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E96475CEFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4532775CEF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbjGUQ0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 12:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51346 "EHLO
+        id S232979AbjGUQ0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 12:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232795AbjGUQ0J (ORCPT
+        with ESMTP id S232912AbjGUQ0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 12:26:09 -0400
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on20611.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe16::611])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B643ABB;
-        Fri, 21 Jul 2023 09:23:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h4qFMjjrEohpdNqoQxdUo2UESp/oxNtsnILoxSWRGTcTaxp/lHeh9QqQ0MqDlmWxjx5UktA+jvjtOfrAzzf8N4TaRDPMHmekAYNGOTMQXwM+vZG1FYnc/RmzIJIIOsI72Lb8sn8WV982TdieGozchZYPayQQHwikSKipiaJywpC+tzscW3r+RUKO03KxI3kg0DBBCidmvJ1+NPrujIcvg5mUVV3QE/BYL+89pTPrRpafalemVpj8gv9Rtpu5W7w8AgNHHMeYuj+n3f5i6paOnkPLs+9stmBDSxRwfliFtzhXJw2dpCrN8fyjrpeBX+pBKZW7vYxeE1DDDZ9mObHCPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+AXxNZYV5AqcMSbwWRmxRv3/GZrtwZ/ftRzRZwL2mGE=;
- b=hFoR7TmEFVnNhxMa4G0UcUAXJPh7s51xEeKJ2tcQpe6X00YU7gPClWwyBaTmUyyuT+i0AcmiNFoxG9kMSZ/Vga/f1sikb8FZ15y9JRCFJtJcM1jDsYS3pYr4Myg0NgxGM/wJMJl3xdanroFlzOEnRE4JliAUII7aPyH8iUyxZ8ZPLSP3Xw+K6zhdtsWlhPULghmWErL0a6PSI+CZRUdtoxfMVN1vrimvKSpO1CDS1rDbiq5OH7SVxc2aXBbrfEaIKDJppA7poagqmwdxwVtXd/I4R8L7tBZR+Str1EjHgdYX/ogs7SMilEePmVkAX/fctXvi07sdB4D987jv9VAerA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+AXxNZYV5AqcMSbwWRmxRv3/GZrtwZ/ftRzRZwL2mGE=;
- b=bD1/0/WiX1ccTPIa54gIlcPnk8qgwUT33c2gPP2Sj2mi31PqIZA5bwI0p0vjwo/FHaCEu5kv16bPY7t5TAqxL1D5QCLFE+2Rk2o6vkW0kFtgaICMmlEfNjIFhox2c+3+zcV89VTePYD+itKPeRAhOahtBxVsYOmAOT6sOUj7pVM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by PA4PR04MB7680.eurprd04.prod.outlook.com (2603:10a6:102:f3::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28; Fri, 21 Jul
- 2023 16:21:54 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::d0d5:3604:98da:20b1]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::d0d5:3604:98da:20b1%7]) with mapi id 15.20.6609.026; Fri, 21 Jul 2023
- 16:21:54 +0000
-Date:   Fri, 21 Jul 2023 12:21:38 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Shawn Lin <shawn.lin@rock-chips.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        helgaas@kernel.org, imx@lists.linux.dev, bhelgaas@google.com,
-        devicetree@vger.kernel.org, gustavo.pimentel@synopsys.com,
-        kw@linux.com, leoyang.li@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, minghuan.lian@nxp.com,
-        mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
-        shawnguo@kernel.org, zhiqiang.hou@nxp.com
-Subject: Re: [PATCH v3 1/2] PCI: dwc: Implement general suspend/resume
- functionality for L2/L3 transitions
-Message-ID: <ZLqwkvoOszggGhLK@lizhi-Precision-Tower-5810>
-References: <20230419164118.596300-1-Frank.Li@nxp.com>
- <20230717164526.GC35455@thinkpad>
- <ZLWKI1lRqxejfUgK@lizhi-Precision-Tower-5810>
- <20230718100400.GB4771@thinkpad>
- <20230720142509.GB48270@thinkpad>
- <ZLlGsM/D/b+udmAD@lizhi-Precision-Tower-5810>
- <20230720160738.GC48270@thinkpad>
- <6f1eb449-5609-0b17-1323-0d114c38d969@rock-chips.com>
- <ZLqRwxmQr0jrhS3M@lizhi-Precision-Tower-5810>
- <20230721160755.GD2536@thinkpad>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230721160755.GD2536@thinkpad>
-X-ClientProxiedBy: SJ0PR05CA0100.namprd05.prod.outlook.com
- (2603:10b6:a03:334::15) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Fri, 21 Jul 2023 12:26:03 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8850049D9
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 09:22:57 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-76731802203so199695985a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 09:22:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1689956527; x=1690561327;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=anzVo3hUJH+3skT2M/ifsBnOhDsDvDLiIiPxAeMTDlI=;
+        b=UVkVCLfTxdvk+X9SJNoWdJCrc4GrRB+WZ5aBs26E/0CXNIZWTKsoSzYVWaJ2zxdFvr
+         B4TPaZxrJR1memEr3mA6PZGU5JKlrBOerZP9QLL7cG43qHxQC4pc7hh8qj7kMr1R60JA
+         kCRyfT1BJlm7xhlYgDDDM19sHmPB/vI+UkgoNNQaVNfQASPx9jZVH6/0YT4DLSSxL/cP
+         VOyancBt0vq5/dz2wDg7feCYFBsp2gl0uVSltBvxj5AYHZvtoZ9F2tVbVceIg7Yky1Mj
+         9EztgHZdtUq/U60BXIjtX0EBy0tMYXnL4RbR3kHJ+QmMG9jntcqRGJi5uT79Q4N8DLmA
+         FSgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689956527; x=1690561327;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=anzVo3hUJH+3skT2M/ifsBnOhDsDvDLiIiPxAeMTDlI=;
+        b=IwCLiXhDkLHE5Ykbg++1H43802g2Mt65az50JiucKWA4lCsGbtsrvngKT33WUCQyWv
+         jfexjP6woQBdC+/MAz38XjZF8OFYJ1+RAUy00095NxMeyvgS9WzEiKAfVHzcGTpdR8Te
+         OzA4nnHu2VC+iWtw43Hj2CYBa5/yt98YafxSA2Dz76QZVaTCeO3Jvyvl4o9dBBgIrNR8
+         QL+7PEtT8dcHRJsSVcYK3x+Qa/EWw2947yKaJVqwEK2znEPhHuulppcjKZtukhy3JHSr
+         FrMReunfCRR6DYRNdX2moABa1jIPoPJbDrdsMgA2p24RR4ZVUR/haQyJY1GWXH5113rJ
+         FTOw==
+X-Gm-Message-State: ABy/qLYTyWlj6iA2HZ6CX7W8/Mmh71u7OvF8r9rwYS2rkvWC+TrJToc7
+        JUjptGXDWEJQj4VjYrSHvagy7g==
+X-Google-Smtp-Source: APBJJlGZiYvgAnJnYzwVz2Q+FjRLwQE0OkdKGdNFx0kh+h8pHjGDnNPXWk/P8IsRz0VuMA6PmAbPhw==
+X-Received: by 2002:a05:620a:4141:b0:767:915a:ccf6 with SMTP id k1-20020a05620a414100b00767915accf6mr584247qko.65.1689956526723;
+        Fri, 21 Jul 2023 09:22:06 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:10:580::7a9])
+        by smtp.gmail.com with ESMTPSA id r29-20020a05620a03dd00b00767f00a9c67sm1200195qkm.95.2023.07.21.09.22.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 09:22:06 -0700 (PDT)
+Message-ID: <801aaaaaa77f28c6fc8f1bcb46b4410f663ec97e.camel@ndufresne.ca>
+Subject: Re: [PATCH 1/2] [RESEND] media: v4l2-mem2mem: allow device run
+ without buf
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Hsia-Jun Li <Randy.Li@synaptics.com>,
+        Tomasz Figa <tfiga@chromium.org>
+Cc:     linux-media@vger.kernel.org, ayaka@soulik.info,
+        hans.verkuil@cisco.com, mchehab@kernel.org,
+        laurent.pinchart@ideasonboard.com, hiroh@chromium.org,
+        hverkuil@xs4all.nl, linux-kernel@vger.kernel.org,
+        Sebastian Fricke <sebastian.fricke@collabora.com>
+Date:   Fri, 21 Jul 2023 12:22:05 -0400
+In-Reply-To: <452a4d48-fd73-d539-25f6-ded6bc6212bc@synaptics.com>
+References: <20230704040044.681850-1-randy.li@synaptics.com>
+         <20230704040044.681850-2-randy.li@synaptics.com>
+         <20452e233a9a4b39b58139081d818d3b1454105a.camel@ndufresne.ca>
+         <20230712093129.pdcbvlxd5zphwr5m@chromium.org>
+         <17ca8c5ee31ac8e48bb2ac7f89f6bae84816c893.camel@ndufresne.ca>
+         <452a4d48-fd73-d539-25f6-ded6bc6212bc@synaptics.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PA4PR04MB7680:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3f19a52a-aa1f-47df-5c30-08db8a0698bb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: J3ymwkhE4h37F6XG8ZWsEOZvI0PDYU6EP041EuvS//FTJeBfW/dgnJqtlwLigEbIMwxTQO38QZpAxv4sIJlpeXfwtcxp1bVafzGmzT3tM7t+k4WKXrSn3UajNftlPG+goHXusCryC+NwXrABkNMqTeLZL6Bny4E/IwE16dfgocKZLkrdEc/QG/KJ7uXS/7T9r5feG434LxvRD/n+DmgAstGOKGGUHusavZvRlWt8Zf4plqOTbc0lmDqdL3P/R1wNl6NwjTzzIZEcSzWWofENXfG90G53gXz4fl/URNOwjK6o3Y/n2pzmztUKDVxNYUIIAvUubuDaBFWzGuKum4mBPeHlmkOdZy83474UdxAXTxoBvT5mHI8MLoPZHs1q8p7sQ9CPPNdqTkJ8JiypGQBkyqQYiA7Yvvo3zMLhoCa9PV9yTndbqF0dzPM0wSNBL/uDFeJq75HfcRwZko1ARqR6Vy5ASB1pbjKP66PyjHJDGGJ7zMB256G34MQ6MYlWDr4qF5bMLcAofrvP9Wwnru3kxI74narFaFqcJvhnlPW3gyEmhoF6ALIH6fO+hLEJ0re82RzUqoxp9r0hf+iMtC0Pwgenbha+YlTZdovpKb5OuXyRwdI8aoca6wsCPc+Yf9A7
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(4636009)(396003)(346002)(376002)(366004)(39860400002)(136003)(451199021)(6506007)(53546011)(15650500001)(186003)(26005)(478600001)(5660300002)(33716001)(41300700001)(316002)(6916009)(4326008)(54906003)(66556008)(66476007)(66946007)(8936002)(8676002)(7416002)(38350700002)(38100700002)(52116002)(9686003)(6512007)(6666004)(6486002)(86362001)(2906002)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MnUzbCtxZHN1L3dZejY0NkVJTFVKSTZnT2lTWStab1FvdWNwTUpwUlZPWms4?=
- =?utf-8?B?WHpLZHFIVTJ3M3dTNG8yRXlyWXVzV1J4Ryt2akJzMUk1ME9NcWFsWWNjTE81?=
- =?utf-8?B?enlnbm96SVFHTDU2OXA0blQ5UVVnTmg5Z0x6TUJ6amYxUHhsQ1N6UUJSZWxw?=
- =?utf-8?B?OWwzT0FLcFFDQnJTa1VVY1dYdFhUNDY4V1pwZlAySittc1NHY2ZyZWMzYWZP?=
- =?utf-8?B?R0dWRmVZalBVakpnWGdVaVUwaWNNaGZlMFFZQXRQaXpXZUwraWdFelhndEsv?=
- =?utf-8?B?R2dObEJ6ZGNjL3krR0hLc0hhK3VmYXRtR2RBdWlDa01tb05VYVNqejU4amZ5?=
- =?utf-8?B?ZThva1lsMXRjYjBTZTlWbm9RSDRoRERmYnJYeEx5bXhOdGY5QnVoT0lEbW45?=
- =?utf-8?B?RHBNdTRwN3BoMlluU3NPTE1xZGNWeDJKdS9GdGtLMXRhb2VqbHNVM215d2Z4?=
- =?utf-8?B?VFlveVc5bzlkYTlYMHZscXpTL2UwSlhZMmxqTUx2blQ4ci9KS1huNlRmQ2g3?=
- =?utf-8?B?eStBQ1BYZHJnRE04eVpYMXdPbm9WeEZlNndwdG13bnBFUk9ydEp2RlNLdlZz?=
- =?utf-8?B?REp5SDRDRDM3RmZTZnZ2RmN0VXVyQzVUOS9YL1owM01FUmU4QXZ3TlRHeGxU?=
- =?utf-8?B?b0c0NzFvU3hWNlV3dUw2OEdvVGlSMmxuN1krZ05mOU5Rd3JGdTduVytVdEFX?=
- =?utf-8?B?OTk0aWpRcHpCZnRjMXVkSXAwM3hzaCtUOWUzOUNXTHBGbHVueUh1TFJLY0VN?=
- =?utf-8?B?cnRXRmRKbldlamFPTlRyd1hsdnhhdFNjVnRWUlgyNlVld21FZmtMd0Y0QnhS?=
- =?utf-8?B?eHhMaHNWSHlaa0FxaVE3dkd6aCs2QTU0K3R5TkNNNzQzQ0Y1WHRTT1E3S3hu?=
- =?utf-8?B?VldYMkdCVkdrME54V2dZbS9BUkJ1U2dVcmpMcXlGalQ0bEhlWFZvZmlQaTFS?=
- =?utf-8?B?RFZWcUtVVWh0UEFiNFBDdUYwSmdhZFhTcEM4UGtZRXhnc3RIejM2aHJoWWVt?=
- =?utf-8?B?aGpsbGZpVFVIYi9FUXErUjJxU0k4WllZVmthY05TS2x5bkc2bk5jT1pyblZS?=
- =?utf-8?B?b3VXUk15eWR1VDFERVN3L1FxLzIyTDhOcTV6MUplNDJ4TDhRUVJTQi9CZEN6?=
- =?utf-8?B?dm51SERSMEZpVXBVYjh6TSt4cXVndHprdUtDYTM5TStMY2hObkF6REdtaXVm?=
- =?utf-8?B?MDhuSXRXYmJ3M3p3TWJRL3BHM1RXRUMwWU5PaWhPY2p3QWlQMFF0K1gvdlVi?=
- =?utf-8?B?OTc4dTBXOGhQRnV6QzNEOEIwSEE2SnRHMFhJNUR5SklnYTNCVyt0TmcybXVN?=
- =?utf-8?B?T0R3ZE5LekF6MTY1OTZvOUttdXVzWnFuOTQ3N09IRkVQUWIwRytPNktZc0Ns?=
- =?utf-8?B?aW5nUjVGY3c1bDdhUnVDeTJyTis1aVVFTlZQWklUbDZOV2tHaTV5NlZubFc4?=
- =?utf-8?B?ZDdOeTFWUFJiNTdlVVMzQ3MrQXNuZlk2enNIOWgrZnQwUUk5WDBhVmJGcWh6?=
- =?utf-8?B?Z29NeDk0Rm1DeEVhZEZaNFZqMEZnaURiUndBeEdMNjN2U1VDdkxlbUVSS3hk?=
- =?utf-8?B?cHZzNHFpRmZHeTNQN2xCZ0J0SFo1RVFpVCtUNzZWcWtpd1BMaEQ3QzVTOFBJ?=
- =?utf-8?B?YzBjTEV0V1JpQlBuc3V5bzZxbnovZmdCS0l2YVJzY3ZRWjUwdmtTRGdLQ255?=
- =?utf-8?B?ektlb3lJY1doaVZkb2NsZHdWeW9yblhKZHFOVEhtZFR2VXpvQUU3ckFrWmVr?=
- =?utf-8?B?K0hEMW92SGU3QXAzUEd1YXBXWCtycFE2c1dIeWM0UlRsRkRhMm41REsxLzNo?=
- =?utf-8?B?aUZqdy90TEp0M0F3YzJDMzF0Z1RhS0I1SURKekJNQlh3anZ4eGtKV0drVm9C?=
- =?utf-8?B?MkdpT0JIVFhYeVVZNng1dGdqUjBiV1FXWFZPSUlPS2l1SHpLbU0zVUxDMmo0?=
- =?utf-8?B?Y1JDRGl1SUhPcDBrWllpODlHOGhiZHFaVzNlbmt6Y3RFQkczYmt5alhZSTdS?=
- =?utf-8?B?amlSaXNiaWJNaXB2YTNDVDZkaDcybHhOM3JJaVRLcXowTnRwNjc4bmE0dEtv?=
- =?utf-8?B?ZTBIQ2VOdlhnS01pRE9HNXhJR081c2s0SXRwaTI2d1lpT2V2dVRua2hGbTM1?=
- =?utf-8?Q?o6tE=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f19a52a-aa1f-47df-5c30-08db8a0698bb
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 16:21:54.2916
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qr4EuJUjo8HFWmGeZzHNPzWA5BP6bARLWw7XD3Wxn6pbNXWy4PSEBMC2wNb1UYREprWYT7OM9ubeENi1+im2LA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7680
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 09:37:55PM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Jul 21, 2023 at 10:10:11AM -0400, Frank Li wrote:
-> > On Fri, Jul 21, 2023 at 10:09:18AM +0800, Shawn Lin wrote:
-> > > 
-> > > On 2023/7/21 0:07, Manivannan Sadhasivam wrote:
-> > > > On Thu, Jul 20, 2023 at 10:37:36AM -0400, Frank Li wrote:
-> > > > > On Thu, Jul 20, 2023 at 07:55:09PM +0530, Manivannan Sadhasivam wrote:
-> > > > > > On Tue, Jul 18, 2023 at 03:34:26PM +0530, Manivannan Sadhasivam wrote:
-> > > > > > > On Mon, Jul 17, 2023 at 02:36:19PM -0400, Frank Li wrote:
-> > > > > > > > On Mon, Jul 17, 2023 at 10:15:26PM +0530, Manivannan Sadhasivam wrote:
-> > > > > > > > > On Wed, Apr 19, 2023 at 12:41:17PM -0400, Frank Li wrote:
-> > > > > > > > > > Introduced helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
-> > > > > > > > > > Added API pme_turn_off and exit_from_l2 for managing L2/L3 state transitions.
-> > > > > > > > > > 
-> > > > > > > > > > Typical L2 entry workflow:
-> > > > > > > > > > 
-> > > > > > > > > > 1. Transmit PME turn off signal to PCI devices.
-> > > > > > > > > > 2. Await link entering L2_IDLE state.
-> > > > > > > > > 
-> > > > > > > > > AFAIK, typical workflow is to wait for PME_To_Ack.
-> > > > > > > > 
-> > > > > > > > 1 Already wait for PME_to_ACK,  2, just wait for link actual enter L2.
-> > > > > > > > I think PCI RC needs some time to set link enter L2 after get ACK from
-> > > > > > > > PME.
-> > > > > > > > 
-> > > > > > 
-> > > > > > One more comment. If you transition the device to L2/L3, then it can loose power
-> > > > > > if Vaux was not provided. In that case, can all the devices work after resume?
-> > > > > > Most notably NVMe?
-> > > > > 
-> > > > > I have not hardware to do such test, NVMe driver will reinit everything after
-> > > > > resume if no L1.1\L1.2 support. If there are L1.1\L1.2, NVME expect it leave
-> > > > > at L1.2 at suspend to get better resume latency.
-> > > > > 
-> > > > 
-> > > > To be precise, NVMe driver will shutdown the device if there is no ASPM support
-> > > > and keep it in low power mode otherwise (there are other cases as well but we do
-> > > > not need to worry).
-> > > > 
-> > > > But here you are not checking for ASPM state in the suspend path, and just
-> > > > forcing the link to be in L2/L3 (thereby D3Cold) even though NVMe driver may
-> > > > expect it to be in low power state like ASPM/APST.
-> > > > 
-> > > > So you should only put the link to L2/L3 if there is no ASPM support. Otherwise,
-> > > > you'll ending up with bug reports when users connect NVMe to it.
-> > > > 
-> > > 
-> > > 
-> > > At this topic, it's very interesting to look at
-> > > 
-> > > drivers/pci/controller/dwc/pcie-tegra194.c
-> > > 
-> > > 
-> > > static int tegra_pcie_dw_suspend_noirq(struct device *dev)
-> > > {
-> > >         struct tegra_pcie_dw *pcie = dev_get_drvdata(dev);
-> > > 
-> > >         if (!pcie->link_state)
-> > >                 return 0;
-> > > 
-> > >         tegra_pcie_downstream_dev_to_D0(pcie);
-> > >         tegra_pcie_dw_pme_turnoff(pcie);
-> > >         tegra_pcie_unconfig_controller(pcie);
-> > > 
-> > >         return 0;
-> > > }
-> > > 
-> > > It brings back all the downstream components to D0, as I assumed it was L0
-> > > indeed, before sending PME aiming to enter L2.
-> > 
-> > If current state is L1.1 or L1.2, hardware can auto enter to D0\L0 when
-> > there are any PCI bus activity, include PME. I supposed
-> > tegra_pcie_downstream_dev_to_D0() just make sure come back from L2/L3,
-> > which may enter by runtime PM previously, or other reason.
-> > 
-> > NVME ASPM problem is (at least when I debug at other platform about 1 year
-> > ago): 
-> > 
-> >     1. NVME will not release MSI interrupt during suspsend.
-> >     2. PCI controler enter L2 at suspned_noirq();
-> >     3. CPU hot plug try to down second core (CORE1, CORE2, ...)
-> >     4. GIC try to disable MSI irq by write config space.
-> 
-> Just for the record, this will only happen during deep sleep (s2ram) where the
-> CPUs are powered down (including the boot CPU).
-> 
-> >     5. panic here because config space can't be access at L2.
-> > 
-> > I suposed tegra should have problem when ASPM enable with NVME devices.
-> > 
-> 
-> NVMe suspend issue has several faces:
-> 
-> If NVMe is powered down during suspend, it will result in considerable power
-> savings. But at the same time, the suspend should not happen too frequently as
-> it may deteriorate the lifetime of the device. Most of the recent NVMe devices
-> have 2M power cycles (only).
-> 
-> We can workaround the above lifetime issue by powering down the device only
-> during s2ram. It will work great for Laptop use cases if s2ram is supported.
-> Unfortunately, not all Laptops support s2ram though. And if the device is
-> powered down during s2idle, it will hit the above life time issue when it is
-> used in Android platforms such as Tablets (even future mobile phones?) which
-> doesn't support s2ram.
-> 
-> So I'm thinking of the following options to address the issue(s):
-> 
-> 1. Modify the NVMe driver to power down the device during s2ram (the driver can
-> use the global pm_suspend_target_state flag to detect the suspend state) and use
-> the same logic to put the link into L2/L3 state in the PCIe controller drivers.
-> For s2idle, maintain both the device and link in low power states.
-> 
-> 2. Get the power management decision from the userspace and use that to decide
-> the power down logic in s2idle for both NVMe and PCIe drivers. This will ensure
-> that the NVMe device will be powered down in suitable usecases like Laptop
-> without s2ram and kept in low power states for Android platforms. But this is
-> quite an involved task and I don't know if it is possible at all.
-> 
-> I'm just dumping my thoughts here. And I plan to intiate a discussion with NVMe/
-> power folks soon. Maybe during Plumbers?
+Le vendredi 21 juillet 2023 =C3=A0 16:56 +0800, Hsia-Jun Li a =C3=A9crit=C2=
+=A0:
+>=20
+> On 7/17/23 22:00, Nicolas Dufresne wrote:
+> > CAUTION: Email originated externally, do not click links or open attach=
+ments unless you recognize the sender and know the content is safe.
+> >=20
+> >=20
+> > Le mercredi 12 juillet 2023 =C3=A0 09:31 +0000, Tomasz Figa a =C3=A9cri=
+t :
+> > > On Fri, Jul 07, 2023 at 03:14:23PM -0400, Nicolas Dufresne wrote:
+> > > > Hi Randy,
+> > > >=20
+> > > > Le mardi 04 juillet 2023 =C3=A0 12:00 +0800, Hsia-Jun Li a =C3=A9cr=
+it :
+> > > > > From: Randy Li <ayaka@soulik.info>
+> > > > >=20
+> > > > > For the decoder supports Dynamic Resolution Change,
+> > > > > we don't need to allocate any CAPTURE or graphics buffer
+> > > > > for them at inital CAPTURE setup step.
+> > > > >=20
+> > > > > We need to make the device run or we can't get those
+> > > > > metadata.
+> > > > >=20
+> > > > > Signed-off-by: Randy Li <ayaka@soulik.info>
+> > > > > ---
+> > > > >   drivers/media/v4l2-core/v4l2-mem2mem.c | 5 +++--
+> > > > >   1 file changed, 3 insertions(+), 2 deletions(-)
+> > > > >=20
+> > > > > diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/med=
+ia/v4l2-core/v4l2-mem2mem.c
+> > > > > index 0cc30397fbad..c771aba42015 100644
+> > > > > --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
+> > > > > +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+> > > > > @@ -301,8 +301,9 @@ static void __v4l2_m2m_try_queue(struct v4l2_=
+m2m_dev *m2m_dev,
+> > > > >=20
+> > > > >    dprintk("Trying to schedule a job for m2m_ctx: %p\n", m2m_ctx)=
+;
+> > > > >=20
+> > > > > - if (!m2m_ctx->out_q_ctx.q.streaming
+> > > > > -     || !m2m_ctx->cap_q_ctx.q.streaming) {
+> > > > > + if (!(m2m_ctx->out_q_ctx.q.streaming || m2m_ctx->out_q_ctx.buff=
+ered)
+> > > > > +     || !(m2m_ctx->cap_q_ctx.q.streaming
+> > > > > +          || m2m_ctx->cap_q_ctx.buffered)) {
+> > > >=20
+> > > > I have a two atches with similar goals in my wave5 tree. It will be=
+ easier to
+> > > > upstream with an actual user, though, I'm probably a month or two a=
+way from
+> > > > submitting this driver again.
+> > > >=20
+> > > > https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__gitlab.colla=
+bora.com_chipsnmedia_kernel_-2D_commit_ac59eafd5076c4deb3bfe1fb85b3b776586e=
+f3eb&d=3DDwIFaQ&c=3D7dfBJ8cXbWjhc0BhImu8wVIoUFmBzj1s88r8EGyM0UY&r=3DP4xb2_7=
+biqBxD4LGGPrSV6j-jf3C3xlR7PXU-mLTeZE&m=3D9eWwqueFnh1yZHTW11j-syNVQvema7iBzN=
+QeX1GKUQwXZ9pm6V4HDL_R2tIYKoOw&s=3DEz5AyEYFIAJmC_k00IPO_ImzVdLZjr_veRq1bN4R=
+SNg&e=3D
+> > > > https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__gitlab.colla=
+bora.com_chipsnmedia_kernel_-2D_commit_5de4fbe0abb20b8e8d862b654f93e3efeb1e=
+f251&d=3DDwIFaQ&c=3D7dfBJ8cXbWjhc0BhImu8wVIoUFmBzj1s88r8EGyM0UY&r=3DP4xb2_7=
+biqBxD4LGGPrSV6j-jf3C3xlR7PXU-mLTeZE&m=3D9eWwqueFnh1yZHTW11j-syNVQvema7iBzN=
+QeX1GKUQwXZ9pm6V4HDL_R2tIYKoOw&s=3DtM81gjNe-bTjpjmidZ1sAhiodMh6npcVJNOhMCi1=
+mPo&e=3D
+> > > >=20
+> > >=20
+> > > While I'm not going to NAK this series or those 2 patches if you send
+> > > them, I'm not really convinced that adding more and more complexity t=
+o
+> > > the mem2mem helpers is a good idea, especially since all of those see=
+m
+> > > to be only needed by stateful video decoders.
+> > >=20
+> > > The mem2mem framework started as a set of helpers to eliminate boiler
+> > > plate from simple drivers that always get 1 CAPTURE and 1 OUTPUT buff=
+er,
+> > > run 1 processing job on them and then return both of the to the users=
+pace
+> > > and I think it should stay like this.
+> >=20
+> > Its a bit late to try and bring that argument. It should have been rais=
+ed couple
+> > of years ago (before I even started helping with these CODEC). Now that=
+ all the
+> > newly written stately decoders uses this framework, it is logical to ke=
+ep
+> > reducing the boiler plate for these too. In my opinion, the job_ready()
+> > callback, should have been a lot more flexible from the start. And allo=
+wing
+> > driver to make it more powerful does not really add that much complexit=
+y.
+> >=20
+> > Speaking of complexity, driving the output manually (outside of the job
+> > workqueue) during sequence initialization is a way more complex and ris=
+ky then
+> > this. Finally, sticking with 1:1 pattern means encoder, detilers, image
+> > enhancement reducing framerate, etc. would all be unwelcome to use this=
+. Which
+> > in short, means no one should even use this.
+> >=20
+> I think those things are m2m, but it would be hard to present in current=
+=20
+> m2m framework:
+> 1. N:1 compositor(It may be implemented as a loop running 2:1 compositor)=
+.
 
-Yes, it is big work. Anyway, if DWC can use common suspend/resume function,
-it will be easy to be updated when a better policy applied at future.
+Correct, only SRC/DST/BG type of blitters can be supported for compositing,
+which is quite limiting. Currently there is no way to make an N:1 M2M, as M=
+2M
+instances are implemented at the video node layer, and not at the MC layer.=
+ This
+is a entirely new subject and API design space to tackle (same goes for 1:N=
+,
+like multi scalers, svc decoders etc.).
 
-Frank Li
+> 2. AV1 film gain
 
-> 
-> - Mani
-> 
-> > Frank
-> > > 
-> > > > - Mani
-> > > > 
-> > > > > This API help remove duplicate codes and it can be improved gradually.
-> > > > > 
-> > > > > 
-> > > > > > 
-> > > > > > - Mani
-> > > > > > 
-> > > > > > 
-> > > > > > -- 
-> > > > > > மணிவண்ணன் சதாசிவம்
-> > > > 
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
+For AV1/HEVC film grain, it is handle similar to inline converters and scal=
+ers.
+The driver secretly allocate the reference frames, and post process into th=
+e
+user visible buffers. It breaks some assumption made by most protected memo=
+ry
+setup though, as not all allocation is user driven, meaning the decoder nee=
+ds to
+know if its secure or not. Secure memory is a also another API design space=
+ to
+tackle.
+
+> 3. HDR with dynamic meta data to SDR
+
+True, but easy to design around the stateless model. I'm not worried for th=
+ese.
+
+>=20
+> The video things fix for m2m model could be just a little less complex=
+=20
+> than ISP or camera pipeline. The only difference is just ISP won't have=
+=20
+> multiple contexts running at the same time.
+
+I thought that having the kernel schedule ISP reprocessing jobs (which requ=
+ires
+instances) would be nice. But this can only be solved after we have solved =
+the
+N:N use cases of m2m (with multiple instances).
+
+> If we could design a model for the video encoder I think we could solve=
+=20
+> the most of problems.
+> A video encoder would have:
+> 1. input graphics buffer
+> 2. reconstruction graphics buffer
+> 3. motion vector cache buffer(optional)
+> 4. coded bitstream output
+> 5. encoding statistic report
+> > >=20
+> > > I think we're strongly in need of a stateful video decoder framework =
+that
+> > > would actually address the exact problems that those have rather than
+> > > bending something that wasn't designed with them in mind to work arou=
+nd the
+> > > differences.
+> >=20
+> > The bend is already there, of course I'd be happy to help with any new
+> > framework. Specially on modern stateless, were there is a need to do be=
+tter
+> > scheduling.
+> I didn't know the schedule problem about stateless codec, are they=20
+> supposed to be in the job queue when the buffers that DPB requests are=
+=20
+> own by the driver and its registers are prepared except the trigger bit?
+
+On RK3588 at least, decoder scheduling is going to be complex. There is an =
+even
+number of cores, but when you need to decode 8K, you have to pair two cores
+(there is a specific set of cores that are to be paired with). We need a de=
+cent
+scheduling logic to ensure we don't starve 8K decoding session when there i=
+s
+multiple smaller resolution session on-going.
+
+On MTK, the entropy decoding (LAT) and the reconstruction (CORE) is split. =
+MTK
+vcodec is using multiple workqueues to move jobs around, which is clearly
+expensive. Also, the life time of a job is not exactly easy to manage.
+
+On RPi HEVC (not upstream yet, but being worked on), the entropy decoding a=
+nd
+reconstruction is done one the same core, but remains 2 concurrent operatio=
+n.
+Does not impose a complex scheduling issue, but it raised the need for a wa=
+y to
+fully utilize such HW.
+
+This is just some examples of complexity for which the current framework is=
+ not
+that helpful (even though, its not impossible either).
+
+>   Just ping me if you have some effort starting, I don't currently
+> > have a budget or bandwidth to write new drivers or port existing driver=
+s them on
+> > a newly written framework.
+> >=20
+> > Nicolas
+> >=20
+> >=20
+> > [...]
+>=20
+
