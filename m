@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F166275D76A
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C6175D769
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbjGUWXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 18:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
+        id S230252AbjGUWX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 18:23:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbjGUWX1 (ORCPT
+        with ESMTP id S230171AbjGUWX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 18:23:27 -0400
-X-Greylist: delayed 394 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Jul 2023 15:23:17 PDT
-Received: from out-53.mta1.migadu.com (out-53.mta1.migadu.com [IPv6:2001:41d0:203:375::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D991B30ED
+        Fri, 21 Jul 2023 18:23:26 -0400
+Received: from out-10.mta0.migadu.com (out-10.mta0.migadu.com [91.218.175.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAEF3AB8
         for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:23:17 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-        t=1689977799;
+        t=1689977807;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=SGOT/l6CA2g1AAdldYA0RXmYrJ8ccwGw6CVVK+w5BCA=;
-        b=VLdIbyfiarCZNCB0QlGxH273eSht0Yq8c8LmI3LDTUsl1VYdq+uOx1lz43tZRA8ERNOt9U
-        yQE1SKMu2JAEAm51KsOLPPLUlM53OvVtECwynDB97Wm9cl4c9dYK3SId57lMAJC107p8jj
-        x70KJmniOy1xmL1PXrPQt+03j+xfzjTLPDOwfpa96KiJ0RfqjhSxWczv6Sxn+YnNObhQ04
-        +uFiu8BSWoEegNqTDmtgTSwGBMF3mMw8sjojvKJb+x3tis+ZERqMcFMJaY0j8lnlmCVrJa
-        yBIyGkDKSbPxLjD5Btmia3l7tFY5kZ++eQuTUIBbyZmTDIzcPuBLXpUyMkrBVA==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wiQgZ4Wm6yEDAcXzCVAc5MydP04eah8gErZxesi/BMI=;
+        b=h1WWdtgAFYH6OTid6DgJ/kiMQnM+F7MkjMrv6GPWbln+iLdcheLmGVdwBIVOOISf0XTySI
+        +1fzFfEeL3UgMrOD4m45O+r+Gg8wfM9V+QdPjmU2ct5YJnpjqbyiRIAPjPU8sZQ5WviVyt
+        OSv6a78m625Yv9CDsJvl1O0yE6Yyu/+vkjUhiT10oZE3TZz0LBfQf43xPQJH3YVXv+jOyn
+        c+n+EvgjDheGV5fayu/lnvqio57hk86rTGJzakwlfh4WwYsXjEB9ZTlUxmfOw6lMAqVwEB
+        EiPUS4TUY+TvZwfp4XxaxECEuUA60Ns6GL8FZqrUcgm+mTa+IIbhlN4yXvMZYA==
 From:   John Watts <contact@jookia.org>
 To:     linux-sunxi@lists.linux.dev
 Cc:     Wolfgang Grandegger <wg@grandegger.com>,
@@ -48,9 +48,11 @@ Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, John Watts <contact@jookia.org>
-Subject: [PATCH v2 0/4] Add support for Allwinner D1 CAN controllers
-Date:   Sat, 22 Jul 2023 08:15:49 +1000
-Message-ID: <20230721221552.1973203-2-contact@jookia.org>
+Subject: [PATCH v2 1/4] dt-bindings: net: can: Add support for Allwinner D1 CAN controller
+Date:   Sat, 22 Jul 2023 08:15:50 +1000
+Message-ID: <20230721221552.1973203-3-contact@jookia.org>
+In-Reply-To: <20230721221552.1973203-2-contact@jookia.org>
+References: <20230721221552.1973203-2-contact@jookia.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -64,30 +66,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds support for the Allwinner D1 CAN controllers.
-It requires adding a new device tree compatible and driver support to
-work around some hardware quirks.
+The Allwinner D1 has two CAN controllers, both a variant of the R40
+controller. Unfortunately the registers for the D1 controllers are
+moved around enough to be incompatible and require a new compatible.
 
-This has been tested on the Mango Pi MQ Dual running a T113 and a Lichee
-Panel 86 running a D1.
+Introduce the "allwinner,sun20i-d1-can" compatible to support this.
 
-Changes in v2:
-- Re-ordered patches to work with bisecting
-- Fixed device tree label underscores
-- Fixed email headers
+Signed-off-by: John Watts <contact@jookia.org>
+---
+ .../bindings/net/can/allwinner,sun4i-a10-can.yaml           | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-John Watts (4):
-  dt-bindings: net: can: Add support for Allwinner D1 CAN controller
-  riscv: dts: allwinner: d1: Add CAN controller nodes
-  can: sun4i_can: Add acceptance register quirk
-  can: sun4i_can: Add support for the Allwinner D1
-
- .../net/can/allwinner,sun4i-a10-can.yaml      |  6 ++--
- .../boot/dts/allwinner/sunxi-d1s-t113.dtsi    | 30 +++++++++++++++++++
- drivers/net/can/Kconfig                       |  4 +--
- drivers/net/can/sun4i_can.c                   | 22 ++++++++++++--
- 4 files changed, 55 insertions(+), 7 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml b/Documentation/devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml
+index 9c494957a07a..e42ea28d6ab4 100644
+--- a/Documentation/devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml
++++ b/Documentation/devicetree/bindings/net/can/allwinner,sun4i-a10-can.yaml
+@@ -21,6 +21,7 @@ properties:
+           - const: allwinner,sun4i-a10-can
+       - const: allwinner,sun4i-a10-can
+       - const: allwinner,sun8i-r40-can
++      - const: allwinner,sun20i-d1-can
+ 
+   reg:
+     maxItems: 1
+@@ -37,8 +38,9 @@ properties:
+ if:
+   properties:
+     compatible:
+-      contains:
+-        const: allwinner,sun8i-r40-can
++      enum:
++        - allwinner,sun8i-r40-can
++        - allwinner,sun20i-d1-can
+ 
+ then:
+   required:
 -- 
 2.41.0
 
