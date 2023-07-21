@@ -2,51 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2421C75CB51
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D22E75CB1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbjGUPSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52950 "EHLO
+        id S231696AbjGUPM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjGUPSO (ORCPT
+        with ESMTP id S231691AbjGUPMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:18:14 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA17B30DB;
-        Fri, 21 Jul 2023 08:18:12 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id eb916d3108774ad8; Fri, 21 Jul 2023 17:18:10 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
+        Fri, 21 Jul 2023 11:12:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397353A86;
+        Fri, 21 Jul 2023 08:11:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 703C6661901;
-        Fri, 21 Jul 2023 17:18:10 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH v2 8/8] ACPI: thermal: Drop unnecessary thermal zone callbacks
-Date:   Fri, 21 Jul 2023 17:10:34 +0200
-Message-ID: <2178456.Icojqenx9y@kreacher>
-In-Reply-To: <5710197.DvuYhMxLoT@kreacher>
-References: <13318886.uLZWGnKmhe@kreacher> <5710197.DvuYhMxLoT@kreacher>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AE04861CE8;
+        Fri, 21 Jul 2023 15:11:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8B21C433C8;
+        Fri, 21 Jul 2023 15:11:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689952302;
+        bh=R0NhFhytJ7ntKMBnmoZsaLDFPS7OOg0XwxgrSgryfZs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IaY/CC9CHcS0AKIP12EvojQB3JHtnnHgSo6sS6QBUtZq/2bcEF/2S2QFUJdksYy5p
+         /gBv+ubGoXqxgeNnfCYkon4nZV13JjnP10+m8w3tYLnUzWo3at4qcoE8XkKL+SvfwA
+         mTwKzbFbkaBvVc8NOWhRgKHGPy450gaygZFm0xwmuUv+djG9zOjZ2CdY2Y5slc8C1Q
+         PIBg59QZy0jRH94b6jAg67YEwOjULAhlj2iXshb0/PxIOV2aGW9mywMRDsK5hN1pvm
+         nXGwvQdeTyTEkXdcr+6eAXhpw5nBLWkeNcoebRRz8KQ60P7/Zsb7e44V/vYiX7/Dqz
+         PXfL5fldCah9w==
+Date:   Fri, 21 Jul 2023 11:11:40 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Rob Barnes <robbarnes@google.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Tzung-Bi Shih <tzungbi@kernel.org>, bleung@chromium.org,
+        chrome-platform@lists.linux.dev
+Subject: Re: [PATCH AUTOSEL 6.4 01/12] platform/chrome: cros_ec: Report EC
+ panic as uevent
+Message-ID: <ZLqgLDwKN+KngEAf@sashalap>
+References: <20230702195057.1787686-1-sashal@kernel.org>
+ <CA+ASDXMZ_ZnJfpsY-8ZRByiox8HCSZeY08MvGSpznLYBtVR1bw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgdekvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgt
- phhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+ASDXMZ_ZnJfpsY-8ZRByiox8HCSZeY08MvGSpznLYBtVR1bw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,151 +61,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, Jul 10, 2023 at 03:46:21PM -0700, Brian Norris wrote:
+>On Sun, Jul 2, 2023 at 12:51 PM Sasha Levin <sashal@kernel.org> wrote:
+>>
+>> From: Rob Barnes <robbarnes@google.com>
+>>
+>> [ Upstream commit 2cbf475a04b2ae3d722bbe41742e5d874a027fc3 ]
+>>
+>> Create a uevent when an EC panic is detected. This will allow udev rules
+>> to trigger when a panic occurs. For example, a udev rule could be added to
+>> capture an EC coredump. This approach avoids the need to stuff all the
+>> processing into the driver.
+>>
+>> Signed-off-by: Rob Barnes <robbarnes@google.com>
+>> Reviewed-by: Prashant Malani <pmalani@chromium.org>
+>> Signed-off-by: Tzung-Bi Shih <tzungbi@kernel.org>
+>> Link: https://lore.kernel.org/r/20230509232624.3120347-1-robbarnes@google.com
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> ---
+>>  drivers/platform/chrome/cros_ec_lpc.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>
+>What sorcery determined this was a valid for-linux-stable patch? It's
+>a new feature, and definitely not a for-stable candidate. Please
+>remove this from the queue.
 
-Drop the .get_trip_type(), .get_trip_temp() and .get_crit_temp() thermal
-zone callbacks that are not necessary any more from the ACPI thermal
-driver along with the corresponding callback functions.
+Dropped, thanks.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/thermal.c |  115 -------------------------------------------------
- 1 file changed, 115 deletions(-)
-
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -465,118 +465,6 @@ static int thermal_get_temp(struct therm
- 	return 0;
- }
- 
--static int thermal_get_trip_type(struct thermal_zone_device *thermal,
--				 int trip, enum thermal_trip_type *type)
--{
--	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
--	int i;
--
--	if (!tz || trip < 0)
--		return -EINVAL;
--
--	if (tz->trips.critical.valid) {
--		if (!trip) {
--			*type = THERMAL_TRIP_CRITICAL;
--			return 0;
--		}
--		trip--;
--	}
--
--	if (tz->trips.hot.valid) {
--		if (!trip) {
--			*type = THERMAL_TRIP_HOT;
--			return 0;
--		}
--		trip--;
--	}
--
--	if (tz->trips.passive.valid) {
--		if (!trip) {
--			*type = THERMAL_TRIP_PASSIVE;
--			return 0;
--		}
--		trip--;
--	}
--
--	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid; i++) {
--		if (!trip) {
--			*type = THERMAL_TRIP_ACTIVE;
--			return 0;
--		}
--		trip--;
--	}
--
--	return -EINVAL;
--}
--
--static int thermal_get_trip_temp(struct thermal_zone_device *thermal,
--				 int trip, int *temp)
--{
--	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
--	int i;
--
--	if (!tz || trip < 0)
--		return -EINVAL;
--
--	if (tz->trips.critical.valid) {
--		if (!trip) {
--			*temp = deci_kelvin_to_millicelsius_with_offset(
--					tz->trips.critical.temperature,
--					tz->kelvin_offset);
--			return 0;
--		}
--		trip--;
--	}
--
--	if (tz->trips.hot.valid) {
--		if (!trip) {
--			*temp = deci_kelvin_to_millicelsius_with_offset(
--					tz->trips.hot.temperature,
--					tz->kelvin_offset);
--			return 0;
--		}
--		trip--;
--	}
--
--	if (tz->trips.passive.valid) {
--		if (!trip) {
--			*temp = deci_kelvin_to_millicelsius_with_offset(
--					tz->trips.passive.temperature,
--					tz->kelvin_offset);
--			return 0;
--		}
--		trip--;
--	}
--
--	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE &&
--		tz->trips.active[i].valid; i++) {
--		if (!trip) {
--			*temp = deci_kelvin_to_millicelsius_with_offset(
--					tz->trips.active[i].temperature,
--					tz->kelvin_offset);
--			return 0;
--		}
--		trip--;
--	}
--
--	return -EINVAL;
--}
--
--static int thermal_get_crit_temp(struct thermal_zone_device *thermal,
--				int *temperature)
--{
--	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
--
--	if (tz->trips.critical.valid) {
--		*temperature = deci_kelvin_to_millicelsius_with_offset(
--					tz->trips.critical.temperature,
--					tz->kelvin_offset);
--		return 0;
--	}
--
--	return -EINVAL;
--}
--
- static struct thermal_trip *acpi_thermal_get_trip(struct acpi_thermal *tz,
- 						  int trip_index)
- {
-@@ -781,9 +669,6 @@ static struct thermal_zone_device_ops ac
- 	.bind = acpi_thermal_bind_cooling_device,
- 	.unbind	= acpi_thermal_unbind_cooling_device,
- 	.get_temp = thermal_get_temp,
--	.get_trip_type = thermal_get_trip_type,
--	.get_trip_temp = thermal_get_trip_temp,
--	.get_crit_temp = thermal_get_crit_temp,
- 	.get_trend = thermal_get_trend,
- 	.hot = acpi_thermal_zone_device_hot,
- 	.critical = acpi_thermal_zone_device_critical,
-
-
-
-
+-- 
+Thanks,
+Sasha
