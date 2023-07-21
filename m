@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE90675D58D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2999375D594
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbjGUUUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
+        id S231517AbjGUUUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbjGUUTx (ORCPT
+        with ESMTP id S231460AbjGUUUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:19:53 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2223C0F
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:19:30 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-cbcffb18afeso2290121276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:19:30 -0700 (PDT)
+        Fri, 21 Jul 2023 16:20:07 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F303935AB
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:19:31 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-583a89cccf6so6221507b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:19:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689970769; x=1690575569;
+        d=google.com; s=20221208; t=1689970770; x=1690575570;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=crVRYHKBiix+9k25sqJYwYQ0PSqShcL9j1oDpcsA6Dw=;
-        b=RBMLDqiHzxUqzpaXDgFLDPjpgSNfDoJR5XmTJs6L39FY207ornlD4wCggqqn+VPvnX
-         obC6S0TQlHfM4bAlkMqGJoQfHMjSkF5rRIvGYLw0fKnXaYAG4jlkOuczjYzK20mkYAdj
-         2YUb2v/3KZQC34lVsFniXRfYO+rQiS7vKyeoW2e8jLhiydA8oIrl9Lk83BpOAAzGHwsS
-         yQz2W/AOA95nN24PfMg8quSvL9++qNmgUOm8rU4FPZqMM/ZKEf4dQ+KjsJIEJm7VODr3
-         hN10+m9kznfjnNbZSm7xnVwZJq9pQnA6bgdEHbuu2VCvgb2oKlx6c+qOmdjYfoKCXoAa
-         vzwQ==
+        bh=mHJaGcmVZZrx5eJzID4aSbivNsbcbnHCRBUFTHr46UU=;
+        b=xFjEUGb0YeU1GuqO6TMYTw4S8pE3wSKHfAnKkjt80FS5sXpKILObv/a3O3ewHWsGTO
+         /uzvI4F2rqO1kbuzWSa4MliHY9cF1H/Ac9QzYVtv+NpjhbtyPfoNrV+E8v7WZNB/bFw6
+         ZQ7omF8dzvvNGZgQWyEPIyPC2w4JP9kZNJKLQfZrbxFODjZi5nLgku8ikRETSpBGVBoX
+         oTGOuajDeuXcYaiGo4yFKLgo/FiyRHoPoBqYGCiHsyTHKlkUVEYlJTNm2xlmLZ2ST0En
+         IL9sBALfri08BXauA1hERqbg4OfcffWRTJh4RjhdbbAEe8+cFgFJdJ8ifVoxgauGAZCM
+         iuuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689970769; x=1690575569;
+        d=1e100.net; s=20221208; t=1689970770; x=1690575570;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=crVRYHKBiix+9k25sqJYwYQ0PSqShcL9j1oDpcsA6Dw=;
-        b=CPKSZsjCld4Q0qE63aXH/2q91ntZg5q+Uj8EtdLI6rSWV7rKUx8R6zUCNIpKdCUu+Q
-         shuCBuwvM8YNumZ0OMpPJI1oKQ+5WoUCNQzdea4cfssc0hofbA5Peb2VShm6bYcflRsS
-         //7UvyDGbsOFaQZ7zT1+SMh1RwzjrvJKHiFGtmLxNYC/4BFxst4LBSy9v+c9N1Rr7uo9
-         nVWZ2w1rotvUtoQxQkR2YgGhQgKwPvwQduU4znBf6iWW1m8B/SwpLD3gFIzfGzj7W/mF
-         JMf0ryDl0VgHWJZBSiDzoglLjfUURwU/9/n7zo0dAC0omuE3KbNkYklQI50Ml0B/GDFm
-         NGFQ==
-X-Gm-Message-State: ABy/qLYQLkWN19viOfmaHB3I4+UgnPmmMNq4x7nkvgdcVsjvwXgNRGl2
-        YvAOEuYZE4/e3K53x9JRv2Yy/P2PDJY=
-X-Google-Smtp-Source: APBJJlE6O9VWoBAfPXKasyFdCqfa4t7wQIuYDKMRbknWhJoZeoUSwoDVta8TzLzKwebv41u+QzA8IEe4eCk=
+        bh=mHJaGcmVZZrx5eJzID4aSbivNsbcbnHCRBUFTHr46UU=;
+        b=ED78eCYn1HC4WemdjwIID/SpOYjC/blCWapItl7GwlWNsPSc/PA5B7uy+Y9DlqevML
+         Vu1zrE214JxqP0XuX74JzyJn8cKWuJY0UWCbUw72Y+/V01eUeJjFJsrsPJW3BmdlFMN9
+         fdULHlq/gS2sppiLmdbaLWotEpU5jkhiNPAdXmRVgcMC4uVOO+ZGnRvnoALvhiyXKiJo
+         e8OoLNGy/cTq02lwZTroGI1+jMQErpy8OY5MvsxFlJS69EgfJ5m8XyucFT+gQllfnD1+
+         2NaBVSNcD4eulUMxiGesAOfn7aCkKKvoHYN72hs/8fbjqXmoVEaS0ZUzuPyFLjhXSFGZ
+         j+hw==
+X-Gm-Message-State: ABy/qLb/I5X3HLYwgLdok7rAspfbQfQKvf1/wnD58tHii4TlH6DExC5V
+        FNTVhfE+h7hA2uFC3i0pt5L0qcjXxQ4=
+X-Google-Smtp-Source: APBJJlGF70SDbq3ZEJP5RArk6dyLbOvKEAdAx8uwY/2QO3SFNPIUp6BScgv9kfKmHPsrEaR+kwKTcLne1bo=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:188b:0:b0:cab:e42c:876b with SMTP id
- 133-20020a25188b000000b00cabe42c876bmr18130yby.3.1689970768563; Fri, 21 Jul
- 2023 13:19:28 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a81:ac15:0:b0:55d:d5b1:c2bd with SMTP id
+ k21-20020a81ac15000000b0055dd5b1c2bdmr9808ywh.8.1689970770756; Fri, 21 Jul
+ 2023 13:19:30 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 21 Jul 2023 13:18:52 -0700
+Date:   Fri, 21 Jul 2023 13:18:53 -0700
 In-Reply-To: <20230721201859.2307736-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230721201859.2307736-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230721201859.2307736-13-seanjc@google.com>
-Subject: [PATCH v4 12/19] x86/virt: Drop unnecessary check on extended CPUID
- level in cpu_has_svm()
+Message-ID: <20230721201859.2307736-14-seanjc@google.com>
+Subject: [PATCH v4 13/19] x86/virt: KVM: Open code cpu_has_svm() into kvm_is_svm_supported()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -69,43 +68,90 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the explicit check on the extended CPUID level in cpu_has_svm(), the
-kernel's cached CPUID info will leave the entire SVM leaf unset if said
-leaf is not supported by hardware.  Prior to using cached information,
-the check was needed to avoid false positives due to Intel's rather crazy
-CPUID behavior of returning the values of the maximum supported leaf if
-the specified leaf is unsupported.
+Fold the guts of cpu_has_svm() into kvm_is_svm_supported(), its sole
+remaining user.
 
-Fixes: 682a8108872f ("x86/kvm/svm: Simplify cpu_has_svm()")
+No functional change intended.
+
+Reviewed-by: Kai Huang <kai.huang@intel.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/include/asm/virtext.h | 6 ------
- 1 file changed, 6 deletions(-)
+ arch/x86/include/asm/virtext.h | 28 ----------------------------
+ arch/x86/kvm/svm/svm.c         | 11 ++++++++---
+ 2 files changed, 8 insertions(+), 31 deletions(-)
 
 diff --git a/arch/x86/include/asm/virtext.h b/arch/x86/include/asm/virtext.h
-index a27801f2bc71..be50c414efe4 100644
+index be50c414efe4..632575e257d8 100644
 --- a/arch/x86/include/asm/virtext.h
 +++ b/arch/x86/include/asm/virtext.h
-@@ -39,12 +39,6 @@ static inline int cpu_has_svm(const char **msg)
- 		return 0;
- 	}
- 
--	if (boot_cpu_data.extended_cpuid_level < SVM_CPUID_FUNC) {
+@@ -22,35 +22,7 @@
+ /*
+  * SVM functions:
+  */
+-
+-/** Check if the CPU has SVM support
+- *
+- * You can use the 'msg' arg to get a message describing the problem,
+- * if the function returns zero. Simply pass NULL if you are not interested
+- * on the messages; gcc should take care of not generating code for
+- * the messages on this case.
+- */
+-static inline int cpu_has_svm(const char **msg)
+-{
+-	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD &&
+-	    boot_cpu_data.x86_vendor != X86_VENDOR_HYGON) {
 -		if (msg)
--			*msg = "can't execute cpuid_8000000a";
+-			*msg = "not amd or hygon";
 -		return 0;
 -	}
 -
- 	if (!boot_cpu_has(X86_FEATURE_SVM)) {
- 		if (msg)
- 			*msg = "svm not available";
+-	if (!boot_cpu_has(X86_FEATURE_SVM)) {
+-		if (msg)
+-			*msg = "svm not available";
+-		return 0;
+-	}
+-	return 1;
+-}
+-
+-
+ /** Disable SVM on the current CPU
+- *
+- * You should call this only if cpu_has_svm() returned true.
+  */
+ static inline void cpu_svm_disable(void)
+ {
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 1ae9c2c7eacb..ff6c769aafb2 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -521,11 +521,16 @@ static void svm_init_osvw(struct kvm_vcpu *vcpu)
+ static bool kvm_is_svm_supported(void)
+ {
+ 	int cpu = raw_smp_processor_id();
+-	const char *msg;
+ 	u64 vm_cr;
+ 
+-	if (!cpu_has_svm(&msg)) {
+-		pr_err("SVM not supported by CPU %d, %s\n", cpu, msg);
++	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD &&
++	    boot_cpu_data.x86_vendor != X86_VENDOR_HYGON) {
++		pr_err("CPU %d isn't AMD or Hygon\n", cpu);
++		return false;
++	}
++
++	if (!boot_cpu_has(X86_FEATURE_SVM)) {
++		pr_err("SVM not supported by CPU %d\n", cpu);
+ 		return false;
+ 	}
+ 
 -- 
 2.41.0.487.g6d72f3e995-goog
 
