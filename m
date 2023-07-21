@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D22675C3CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C56A75C3D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbjGUJ4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38466 "EHLO
+        id S229628AbjGUJ4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbjGUJ40 (ORCPT
+        with ESMTP id S231264AbjGUJ4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:56:26 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A02359A;
-        Fri, 21 Jul 2023 02:56:04 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 8E2A824DE03;
-        Fri, 21 Jul 2023 17:55:53 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 21 Jul
- 2023 17:55:53 +0800
-Received: from [192.168.125.127] (113.72.147.86) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 21 Jul
- 2023 17:55:52 +0800
-Message-ID: <8e8a987e-f596-31b3-dfbf-69c285a1dfb1@starfivetech.com>
-Date:   Fri, 21 Jul 2023 17:55:50 +0800
+        Fri, 21 Jul 2023 05:56:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4088121;
+        Fri, 21 Jul 2023 02:56:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4781E60BA6;
+        Fri, 21 Jul 2023 09:56:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 095B1C433C7;
+        Fri, 21 Jul 2023 09:56:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689933376;
+        bh=/WdXMHKbWxwyonEVRclo0wLd91kkKVfAZMKPPE1jeUQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=kqgIdhxD0V6qeJTloLa+fbYxziiERFNhfbcPxY5cRO6Hxi9NM+7N3FgcqbPSNl/7S
+         2cxoAyHyGNcND7SEwtEWXPqjHtP46bx+rMZ4EK3EfMJX0+rfIKg8oIHGvId7YMdeXS
+         2+pwtTiFoYP2lYixvTd8+Hd5k/+ljLraA7eWTN+IkhwoyMWsOmfbQpYlQniZhOTAPO
+         wGlR8ENzUKqVs5qsnS+Ljb9jCMeKq+OjkbrMK/k8CAt3MBk29qYMFs4Pdld03vUmmM
+         oKTzgQshn8+/XgXfDHHs41ZNbxpm1sBOJY2TGiQ8+iLIJWFZrD0MUjDTPTzdLu/XVF
+         CrbpKAhJdIjtA==
+Message-ID: <fff3d307-485a-c271-1781-becbd18ec2c7@kernel.org>
+Date:   Fri, 21 Jul 2023 11:56:08 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v1 0/9] Refactoring Microchip PolarFire PCIe driver
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 14/22] drivers/thermal/rcar_gen3_thermal: convert to
+ use devm_request*_irq_probe()
 Content-Language: en-US
-To:     Conor Dooley <conor.dooley@microchip.com>
-CC:     Bjorn Helgaas <helgaas@kernel.org>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20230719152626.GA502469@bhelgaas>
- <52ebc991-0e73-8df4-61b2-32989ab4e62c@starfivetech.com>
- <20230720-unkempt-bath-9d320d55577c@wendy>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <20230720-unkempt-bath-9d320d55577c@wendy>
-Content-Type: text/plain; charset="UTF-8"
+To:     Yangtao Li <frank.li@vivo.com>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230721094641.77189-1-frank.li@vivo.com>
+ <20230721094641.77189-14-frank.li@vivo.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <20230721094641.77189-14-frank.li@vivo.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.147.86]
-X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,25 +71,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/7/20 20:12, Conor Dooley wrote:
-> On Thu, Jul 20, 2023 at 10:15:51AM +0800, Minda Chen wrote:
->> On 2023/7/19 23:26, Bjorn Helgaas wrote:
->> > On Wed, Jul 19, 2023 at 06:20:48PM +0800, Minda Chen wrote:
+On 21/07/2023 11:46, Yangtao Li wrote:
+> There are more than 700 calls to devm_request_threaded_irq method and
+> more than 1000 calls to devm_request_irq method. Most drivers only
+> request one interrupt resource, and these error messages are basically
+> the same. If error messages are printed everywhere, more than 2000 lines
+> of code can be saved by removing the msg in the driver.
 > 
->> >> This patchset is base on v6.5-rc1
->> > 
->> > Doesn't quite apply cleanly for me:
->> > 
->> I am sorry, The driver need stg clk and syscon driver, which are have't be merge to main line.
->> mainly dts is(patch9) rejected, Must apply this series patch first. (I forget add this link in cover letter)
->> https://patchwork.kernel.org/project/linux-riscv/cover/20230712092007.31013-1-xingyu.wu@starfivetech.com/
->> and this syscon patch 
->> https://patchwork.kernel.org/project/linux-riscv/patch/20230717023040.78860-7-xingyu.wu@starfivetech.com/
-> 
-> You could detach the dts patch from the series & send it independently once
-> everything it depends on is in place. I'm going to pick up both of the
-> patches you've linked for v6.6 in the next day or two.
-Thanks very much. I have considered removing the dts patch. But I think Maintainers
-also review the dts patch. So I add this.....
+
+All your subject prefixes are totally mixed up.
+
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
+
+Best regards,
+Krzysztof
+
