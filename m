@@ -2,121 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC90775C5E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C36875C5E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbjGULbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 07:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
+        id S230308AbjGULaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 07:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGULbC (ORCPT
+        with ESMTP id S230290AbjGULah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 07:31:02 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B92E0;
-        Fri, 21 Jul 2023 04:31:01 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qMoKx-0001XQ-0A;
-        Fri, 21 Jul 2023 11:30:19 +0000
-Date:   Fri, 21 Jul 2023 12:30:10 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Jan Kara <jack@suse.cz>, Damien Le Moal <dlemoal@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>, Min Li <min15.li@samsung.com>,
-        Christian Loehle <CLoehle@hyperstone.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Yeqi Fu <asuk4.q@gmail.com>, Avri Altman <avri.altman@wdc.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ye Bin <yebin10@huawei.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH 6/6] block: implement NVMEM provider
-Message-ID: <ZLpsQg3tDj2gEelv@makrotopia.org>
-References: <cover.1689802933.git.daniel@makrotopia.org>
- <e5b709e15739dc0563e9497a2dbbe63050381db0.1689802933.git.daniel@makrotopia.org>
- <ZLjci5bHzTI+/Kxs@infradead.org>
- <ZLlaOB1sb8wSd7Aq@makrotopia.org>
- <ZLomKmNe+EhpjI1K@infradead.org>
- <ZLpgs-aZVHCQooi0@makrotopia.org>
- <2023072128-shadow-system-1903@gregkh>
+        Fri, 21 Jul 2023 07:30:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D232130;
+        Fri, 21 Jul 2023 04:30:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oA1lxdsbmT9V9XvedsigbR9WiAzyb4kIzMarXuWjEc8=; b=FwmhjFFfOemzZVZmnCXr5qCVmg
+        8jzApzjNE80tpxQmXVsbXhAEmiEScBaQiDRNAHeiuyJmDXAdf+URnxip8XoAz3rvRur67PKeykDGb
+        A1wK8JMCHOnSPmMtXEZzJ0VKAKXqaSi9oEN6r5FBN9RnxWtU5DeR+suOlbLvhODYBIGFDjcLNML1p
+        2bs8695ayW/rYwjvU7dv4bbxIjo+0zTIA1fwESx9jqF8c6aZWVEwePNz5U5tryYZqsW36Ob3g9SDQ
+        y4zqJfSGkY2Es2dY8rvmmNE6GQ0xTOvRc7z73VBi1uDBgQnJnxCq3gB5jmF1jV9PswoQoOb9Odt6J
+        MZTUCD7g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qMoLA-0013wq-5k; Fri, 21 Jul 2023 11:30:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AB1F2300095;
+        Fri, 21 Jul 2023 13:30:31 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 78B3426455813; Fri, 21 Jul 2023 13:30:31 +0200 (CEST)
+Date:   Fri, 21 Jul 2023 13:30:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andres@anarazel.de
+Subject: Re: [PATCH 06/10] io_uring: add support for futex wake and wait
+Message-ID: <20230721113031.GG3630545@hirez.programming.kicks-ass.net>
+References: <20230720221858.135240-1-axboe@kernel.dk>
+ <20230720221858.135240-7-axboe@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2023072128-shadow-system-1903@gregkh>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230720221858.135240-7-axboe@kernel.dk>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 01:11:40PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Jul 21, 2023 at 11:40:51AM +0100, Daniel Golle wrote:
-> > On Thu, Jul 20, 2023 at 11:31:06PM -0700, Christoph Hellwig wrote:
-> > > On Thu, Jul 20, 2023 at 05:02:32PM +0100, Daniel Golle wrote:
-> > > > On Thu, Jul 20, 2023 at 12:04:43AM -0700, Christoph Hellwig wrote:
-> > > > > The layering here is exactly the wrong way around.  This block device
-> > > > > as nvmem provide has not business sitting in the block layer and being
-> > > > > keyed ff the gendisk registration.  Instead you should create a new
-> > > > > nvmem backed that opens the block device as needed if it fits your
-> > > > > OF description without any changes to the core block layer.
-> > > > > 
-> > > > 
-> > > > Ok. I will use a class_interface instead.
-> > > 
-> > > I'm not sure a class_interface makes much sense here.  Why does the
-> > > block layer even need to know about you using a device a nvmem provider?
-> > 
-> > It doesn't. But it has to notify the nvmem providing driver about the
-> > addition of new block devices. This is what I'm using class_interface
-> > for, simply to hook into .add_dev of the block_class.
-> 
-> Why is this single type of block device special to require this, yet all
-> others do not?  Encoding this into the block layer feels like a huge
-> layering violation to me, why not do it how all other block drivers do
-> it instead?
+On Thu, Jul 20, 2023 at 04:18:54PM -0600, Jens Axboe wrote:
 
-I was thinkng of this as a generic solution in no way tied to one specific
-type of block device. *Any* internal block device which can be used to
-boot from should also be usable as NVMEM provider imho.
-Just like all MTD devices also act as NVMEM providers (just in case of
-block devices I'd make that opt-in via device tree).
 
-> 
-> > > As far as I can tell your provider should layer entirely above the
-> > > block layer and not have to be integrated with it.
-> > 
-> > My approach using class_interface doesn't require any changes to be
-> > made to existing block code. However, it does use block_class. If
-> > you see any other good option to implement matching off and usage of
-> > block devices by in-kernel users, please let me know.
-> 
-> Do not use block_class, again, that should only be for the block core to
-> touch.  Individual block drivers should never be poking around in it.
+> +struct io_futex {
+> +	struct file	*file;
+> +	u32 __user	*uaddr;
+> +	unsigned int	futex_val;
+> +	unsigned int	futex_flags;
+> +	unsigned int	futex_mask;
+> +};
 
-Do I have any other options to coldplug and be notified about newly
-added block devices, so the block-device-consuming driver can know
-about them?
-This is not a rhetoric question, I've been looking for other ways
-and haven't found anything better than class_find_device or
-class_interface. Using those also prevents blk-nvmem to be built as
-a module, so I'd really like to find alternatives.
-E.g. for MTD we got struct mtd_notifier and register_mtd_user().
+So in the futex patches I just posted I went with 'unsigned long'
+(syscall) or 'u64' (data structures) for the futex, such that, on 64bit
+platforms, we might support 64bit futexes in the future (I still need to
+audit the whole futex internals and convert u32 to unsigned long in
+order to enable that).
+
+So would something like:
+
+struct io_futex {
+	struct file	*file;
+	void __user	*uaddr;
+	u64		futex_val;
+	u64		futex_mask;
+	u32		futex_flags;
+};
+
+work to match the futex2 syscalls?
+
+
+
+> +int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+> +{
+> +	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
+> +
+> +	if (unlikely(sqe->fd || sqe->addr2 || sqe->buf_index || sqe->addr3))
+> +		return -EINVAL;
+> +
+> +	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
+> +	iof->futex_val = READ_ONCE(sqe->len);
+> +	iof->futex_mask = READ_ONCE(sqe->file_index);
+> +	iof->futex_flags = READ_ONCE(sqe->futex_flags);
+
+sqe->addr,		u64
+sqe->len,		u32
+sqe->file_index,	u32
+sqe->futex_flags,	u32
+
+> +	if (iof->futex_flags & FUTEX_CMD_MASK)
+
+		FUTEX2_MASK
+
+(which would need lifting from syscall.c to kernel/futex/futex.h I
+suppose)
+
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+
+> diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
+> index 36f9c73082de..3bd2d765f593 100644
+> --- a/include/uapi/linux/io_uring.h
+> +++ b/include/uapi/linux/io_uring.h
+> @@ -65,6 +65,7 @@ struct io_uring_sqe {
+>  		__u32		xattr_flags;
+>  		__u32		msg_ring_flags;
+>  		__u32		uring_cmd_flags;
+> +		__u32		futex_flags;
+>  	};
+>  	__u64	user_data;	/* data to be passed back at completion time */
+>  	/* pack this to avoid bogus arm OABI complaints */
+
+Perhaps extend it like so?
+
+
+diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
+index 08720c7bd92f..c1d28bf64d11 100644
+--- a/include/uapi/linux/io_uring.h
++++ b/include/uapi/linux/io_uring.h
+@@ -35,6 +35,7 @@ struct io_uring_sqe {
+ 	union {
+ 		__u64	off;	/* offset into file */
+ 		__u64	addr2;
++		__u64	futex_val;
+ 		struct {
+ 			__u32	cmd_op;
+ 			__u32	__pad1;
+@@ -65,6 +66,7 @@ struct io_uring_sqe {
+ 		__u32		xattr_flags;
+ 		__u32		msg_ring_flags;
+ 		__u32		uring_cmd_flags;
++		__u32		futex_flags;
+ 	};
+ 	__u64	user_data;	/* data to be passed back at completion time */
+ 	/* pack this to avoid bogus arm OABI complaints */
+@@ -87,6 +89,7 @@ struct io_uring_sqe {
+ 	union {
+ 		struct {
+ 			__u64	addr3;
++			__u64	futex_mask;
+ 			__u64	__pad2[1];
+ 		};
+ 		/*
+
+
+So that we can write something roughtly like:
+
+	iof->uaddr = sqe->addr;
+	iof->val   = sqe->futex_val;
+	iof->mask  = sqe->futex_mask;
+	iof->flags = sqe->futex_flags;
+
+	if (iof->flags & ~FUTEX2_MASK)
+		return -EINVAL;
+
+
