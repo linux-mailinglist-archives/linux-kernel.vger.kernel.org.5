@@ -2,285 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2243C75C5CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B75075C5CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjGULWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 07:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        id S230104AbjGULYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 07:24:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbjGULWM (ORCPT
+        with ESMTP id S229570AbjGULYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 07:22:12 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA601996
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 04:22:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689938530; x=1721474530;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=57KU9BS+4WtXtGFaL6wZCWV3ud+hpdZFulKGMvMZrP8=;
-  b=gL88cQoecLwSmwrCuQ7mE4asKvCWtfWcyqDSoq4umvrJc9M6f2JUygMO
-   WjReyVtZybeBhThVFEowQ08TCOX5vcn6RtpILjvyTnt3CMeRw1ZjzCA9c
-   4zW+M7K2O5gYVpjjdZAJKCtoacgJGA7hK2SLuKerq2kTLxI8T5B8xXA9P
-   UtsMTZ/L7qin0NsKHpcvqQLzDGcojTfbu/dciEmmKxC8SkHUou5Mzmgq/
-   ueS1Ug+8VIjwlsLgH2t8+KN+JSw4Lk3ZimoxLfo4VZI5ONggHmARLQbpi
-   NmzUx5Gwj9EFJ6h0Vaqe7Rj7JUB1JH0OAu8duN1hScnonUEdJVLtGURi5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="433229016"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="433229016"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 04:22:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="971411749"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="971411749"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP; 21 Jul 2023 04:22:07 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qMoCz-001tP1-1g;
-        Fri, 21 Jul 2023 14:22:05 +0300
-Date:   Fri, 21 Jul 2023 14:22:05 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
-        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org
-Subject: Re: [PATCH v4 3/5] arm64: mte: implement CONFIG_ARM64_MTE_COMP
-Message-ID: <ZLpqXXLLj4vL/xaT@smile.fi.intel.com>
-References: <20230720173956.3674987-1-glider@google.com>
- <20230720173956.3674987-4-glider@google.com>
+        Fri, 21 Jul 2023 07:24:05 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BD61996;
+        Fri, 21 Jul 2023 04:24:03 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4R6nHz1YkXz9Y;
+        Fri, 21 Jul 2023 13:23:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1689938641; bh=j/X061yCw8drCgFUEg0h7paSe6s1YapbaEBD2OSntFQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LJyTeBu8uJPQkMaKM5NpV7ZMi4wHexD8QVE7fiCnYdYJt/jzbIYti8YVcrmeCHOFi
+         o3XD11MllRl7CJtnt06Vm2IiX+KJ3dMr+h5nk2KVLeRuBrSzn3QyEjDq9yTIs0QL0+
+         EU67+n8vFEWF6Ko25Vp56l0hmAr4B1LxPsjW0NJRSXa5Q1GsVG0ZWH8f09nA8cgJgh
+         pjPq6YMM2Vb2AICTOfrGjM+1i7xiLerhqRKaePVNhFXb/oJAd2h2zBmXjL0fjX2ygQ
+         5N8mDVBZGRFeO80hPc9GCrVSoETCk6cZo1nReLD+7kc8aLJbeTJczyH592r/MmTucM
+         oVkHo615RfpDA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Fri, 21 Jul 2023 13:23:57 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <emmir@google.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table
+ scanning
+Message-ID: <ZLpqzcyo2ZMXwtm4@qmqm.qmqm.pl>
+References: <20230713101415.108875-6-usama.anjum@collabora.com>
+ <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
+ <7eedf953-7cf6-c342-8fa8-b7626d69ab63@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230720173956.3674987-4-glider@google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7eedf953-7cf6-c342-8fa8-b7626d69ab63@collabora.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 07:39:54PM +0200, Alexander Potapenko wrote:
-> The config implements the algorithm compressing memory tags for ARM MTE
-> during swapping.
+On Fri, Jul 21, 2023 at 03:48:22PM +0500, Muhammad Usama Anjum wrote:
+> On 7/21/23 12:28 AM, Michał Mirosław wrote:
+> > This is a massaged version of patch by Muhammad Usama Anjum [1]
+> > to illustrate my review comments and hopefully push the implementation
+> > efforts closer to conclusion. The changes are:
+> Thank you so much for this effort. I also want to reach conclusion. I'll
+> agree with all the changes which don't affect me. But some requirements
+> aren't being fulfilled with this current design.
 > 
-> The algorithm is based on RLE and specifically targets 128-byte buffers
-> of tags corresponding to a single page. In the common case a buffer
-> can be compressed into 63 bits, making it possible to store it without
-> additional memory allocation.
-
-...
-
-> +Programming Interface
-> +=====================
-> +
-> + .. kernel-doc:: arch/arm64/mm/mtecomp.c
-
-:export:
-
-> +
-
-Is it dangling trailing blank line? Drop it.
-
-...
-
-> +#include <linux/bitmap.h>
-
-> +#include <linux/bitops.h>
-
-This is guaranteed to be included by bitmap.h.
-
-> +#include <linux/export.h>
-> +#include <linux/gfp.h>
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +#include <linux/string.h>
-> +#include <linux/types.h>
-
-...
-
-> +/*
-> + * Sizes of compressed values. These depend on MTE_TAG_SIZE and
-
-of the
-
-> + * MTE_GRANULES_PER_PAGE.
-> + */
-
-...
-
-> +	u8 prev_tag = tags[0] / 16; /* First tag in the array. */
-> +	unsigned int cur_idx = 0, i, j;
-> +	u8 cur_tag;
-
-
-> +	out_tags[0] = prev_tag;
-
-out_tags[cur_idx] ?
-
-> +	for (i = 0; i < MTE_PAGE_TAG_STORAGE; i++) {
-> +		for (j = 0; j < 2; j++) {
-> +			cur_tag = j ? (tags[i] % 16) : (tags[i] / 16);
-> +			if (cur_tag == prev_tag) {
-> +				out_sizes[cur_idx]++;
-
-> +			} else {
-> +				cur_idx++;
-> +				prev_tag = cur_tag;
-> +				out_tags[cur_idx] = prev_tag;
-> +				out_sizes[cur_idx] = 1;
-
-Looking more at this I think there is still a room for improvement. I can't
-come up right now with a proposal (lunch time :-), but I would look into
-
-	do {
-		...
-	} while (i < MTE_...);
-
-approach.
-
-> +			}
-> +		}
-> +	}
-
-...
-
-> +static size_t mte_size_to_ranges(size_t size)
-> +{
-> +	size_t largest_bits;
-
-> +	size_t ret = 0;
-
-Redundant assignment. Please, check again all of them.
-
-> +
-> +	largest_bits = (size == 8) ? MTE_BITS_PER_LARGEST_IDX_INLINE :
-> +				     MTE_BITS_PER_LARGEST_IDX;
-> +	ret = (size * 8 + MTE_BITS_PER_SIZE - largest_bits) /
-
-Hmm... I thought that we moved BYTES_TO_BITS() to the generic header...
-Okay, never mind.
-
-> +	      (MTE_BITS_PER_TAG + MTE_BITS_PER_SIZE);
-> +	return ret;
-
-	return (...) / ...;
-
-> +}
-
-...
-
-> +static size_t mte_alloc_size(unsigned int num_ranges)
-> +{
-> +	size_t sizes[4] = { 8, 16, 32, 64 };
-
-Hooray! And now it's not needed anymore...
-
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(sizes); i++) {
-
-...as sizes[i] is equivalent of (8 << i).
-
-> +		if (num_ranges <= mte_size_to_ranges(sizes[i]))
-> +			return sizes[i];
-> +	}
-> +	return 128;
-> +}
-
-> +}
-
-...
-
-> +/**
-> + * mte_compress() - compress the given tag array.
-> + * @tags: 128-byte array to read the tags from.
-> + *
-> + * Compresses the tags and returns a 64-bit opaque handle pointing to the
-> + * tag storage. May allocate memory, which is freed by @mte_release_handle().
-
-+ blank line here.
-
-> + * Returns: 64-bit tag storage handle.
-> + */
-
-...
-
-> +	/*
-> +	 * mte_compress_to_buf() only initializes the bits that mte_decompress()
-> +	 * will read. But when the tags are stored in the handle itself, it must
-> +	 * have all its bits initialized.
-> +	 */
-> +	unsigned long result = 0;
-
-	// Actually it's interesting how it's supposed to work on 32-bit
-	// builds...
-	DECLARE_BITMAP(result, BITS_PER_LONG);
-
-and then
-
-	bitmap_zero();
-
-?
-
-...
-
-> +static unsigned long mte_bitmap_read(const unsigned long *bitmap,
-> +				     unsigned long *pos, unsigned long bits)
-> +{
-> +	unsigned long result;
-> +
-> +	result = bitmap_read(bitmap, *pos, bits);
-> +	*pos += bits;
-> +	return result;
-
-	unsigned long start = *pos;
-
-	*pos += bits;
-	return bitmap_read(bitmap, start, bits);
-
-> +}
-
-...
-
-> +	unsigned short r_sizes[46], sum = 0;
-
-See below.
-
-...
-
-It's cleaner and more robust to have
-
-	sum = 0;
-
-here.
-
-> +	for (i = 0; i < max_ranges; i++) {
-> +		if (i == largest_idx)
-> +			continue;
-> +		r_sizes[i] =
-> +			mte_bitmap_read(bitmap, &bit_pos, MTE_BITS_PER_SIZE);
-> +		if (!r_sizes[i]) {
-> +			max_ranges = i;
-> +			break;
-> +		}
-> +		sum += r_sizes[i];
-> +	}
-> +	if (sum >= 256)
-> +		return false;
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> > 
+> > 1. the API:
+[...]
+> >   b. rename match "flags" to 'page categories' everywhere - this makes
+> > 	it easier to differentiate the ioctl()s categorisation of pages
+> > 	from struct page flags;
+> I've no problem with it.
+> 
+> #define PAGE_IS_WPASYNC		(1 << 0)
+> #define PAGE_IS_WRITTEN		(1 << 1)
+> You have another new flag PAGE_IS_WPASYNC. But there is no application of
+> PAGE_IS_WPASYNC. We must not add a flag which don't have any user.
+
+Please see below.
+
+> >   c. change {required + excluded} to {inverted + required}. This was
+> > 	rejected before, but I'd like to illustrate the difference.
+> > 	Old interface can be translated to the new by:
+> > 		categories_inverted = excluded_mask
+> > 		categories_mask = required_mask | excluded_mask
+> > 		categories_anyof_mask = anyof_mask
+> > 	The new way allows filtering by: A & (B | !C)
+> > 		categories_inverted = C
+> > 		categories_mask = A
+> > 		categories_anyof_mask = B | C
+> I'm still unable to get the idea of inverted masks. IIRC Andei had also not
+> supported/accepted this masking scheme. But I'll be okay with it if he
+> supports this masking.
+
+Please note that the masks are not inverted -- the values are. Masks
+select which categories you want to filter on, and category_inverted
+invert the meaning of a match (match 0 instead of 1).
+
+> >   d. change the ioctl to be a SCAN with optional WP. Addressing the
+> > 	original use-case, GetWriteWatch() can be implemented as:
+> As I've mentioned several times previously (without the name of
+> ResetWriteWatch()) that we need exclusive WP without GET. This could be
+> implemented with UFFDIO_WRITEPROTECT. But when we use UFFDIO_WRITEPROTECT,
+> we hit some special case and performance is very slow. So with UFFD WP
+> expert, Peter Xu we have decided to put exclusive WP in this IOCTL for
+> implementation of ResetWriteWatch().
+> 
+> A lot of simplification of the patch is made possible because of not
+> keeping exclusive WP. (You have also written some quality code, more better.)
+> > 
+> > 		memset(&args, 0, sizeof(args));
+> > 		args.start = lpBaseAddress;
+> > 		args.end = lpBaseAddress + dwRegionSize;
+> > 		args.max_pages = *lpdwCount;
+> > 		*lpdwGranularity = PAGE_SIZE;
+> > 		args.flags = PM_SCAN_CHECK_WPASYNC;
+> > 		if (dwFlags & WRITE_WATCH_FLAG_RESET)
+> > 			args.flags |= PM_SCAN_WP_MATCHED;
+> > 		args.categories_mask = PAGE_IS_WRITTEN;
+> > 		args.return_mask = PAGE_IS_WRITTEN;
+
+For ResetWriteWatch() you would:
+
+args.flags = PM_SCAN_WP_MATCHING;
+args.categories_mask = PAGE_IS_WPASYNC | PAGE_IS_WRITTEN;
+args.return_mask = 0;
+
+Or (if you want to error out if the range doesn't have WP enabled):
+
+args.flags = PM_SCAN_WP_MATCHING | PM_SCAN_CHECK_WPASYNC;
+args.categories_mask = PAGE_IS_WRITTEN;
+args.return_mask = 0;
+
+(PM_SCAN_CHECK_WPASYNC is effectively adding PAGE_IS_WPASYNC to the
+required categories.)
+
+[...]
+
+> > 2. the implementation:
+> >   a. gather the page-categorising and write-protecting code in one place;
+> Agreed.
+> 
+> >   b. optimization: add whole-vma skipping for WP usecase;
+> I don't know who can benefit from it. Do you have any user in mind? When
+> the user come of this optimization, this can be added later.
+
+This is for users of WP that want to ignore WP for non-registered ranges
+instead of erroring out on them. (I anticipate CRIU to use this.)
+
+> >   c. extracted output limiting code to pagemap_scan_output();
+> If user passes half THP, current code wouldn't split huge page and WP the
+> whole THP. We would loose the dirty state of other half huge page. This is
+> bug. consoliding the output limiting code looks optimal, but we'll need to
+> same limiting code to detect if full THP hasn't been passed in case of THP
+> and HugeTLB.
+
+For THP indeed - the code should check `end != start + HPAGE_SIZE`
+instead of `ret == -ENOSPC`.
+
+For HugeTLB there is a check that returns EINVAL when trying to WP
+a partial page. I think I didn't change that part.
+
+> >   d. extracted range coalescing to pagemap_scan_push_range();
+> My old pagemap_scan_output has become pagemap_scan_push_range().
+
+Indeed. I did first push the max_pages check in, hence the 'extracting'
+later.
+
+> >   e. extracted THP entry handling to pagemap_scan_thp_entry();
+> Good. But I didn't found value in seperating it just like other historic
+> pagemap code.
+
+This is to avoid having to much indentation and long functions that do
+many things at once.
+
+> >   f. added a shortcut for non-WP hugetlb scan; avoids conditional
+> > 	locking;
+> Yeah, some if conditions have been removed. But overall did couple of calls
+> to is_interesting and scan_output functions instead of just one.
+
+Yes, there are now two pairs instead of one. I see that I haven't pushed
+the is_interesting calls into scan_output. This is now trivial:
+	if (!interesting...) {
+		*end = start;
+		return 0;
+	}
+and could save some typing (but would need a different name for
+scan_output as it would do filter & output), but I'm not sure about
+readability.
+
+Best Regards
+Michał Mirosław
