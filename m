@@ -2,127 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE3775BDCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C35875BDD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbjGUFju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 01:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
+        id S229736AbjGUFm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 01:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjGUFjr (ORCPT
+        with ESMTP id S229529AbjGUFm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 01:39:47 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272301BC1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 22:39:45 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-56372a369d3so751184a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 22:39:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1689917984; x=1690522784;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MET1FtsHEOQSbfBm9BNtYvB0Q268yaadYjHQUlEH8ew=;
-        b=rC8YrmePH9OhK6bW8pKMi8wPd5o4X85CUBjfQ064A0pBxm4il19yyhoB95JnpechbJ
-         S/2pHJfFJU1/KmaJnY8boi/gAdqJz71xx2Pmiec9SEH4UrF71z+pctasdpxBM5Jvtjsk
-         9cmJS2goGsvTSOoyEQDWC4ow+eQGy2m2KDYUaUH2FkibXnhYKdFAWbbcmnUXDVpfwTt2
-         +dKkbKjO4OqXrMpt2OCNevlBQ565oJsstTonckAPrH29AudHcVs0je5qudw76WCiqE0P
-         DGQ5PgjYyKsMeyAomhJsSFPMfvHhR2xI3otpcN6mLYnKa5l+Tuv/hsPUSiCUGH6P9MUI
-         s9Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689917984; x=1690522784;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MET1FtsHEOQSbfBm9BNtYvB0Q268yaadYjHQUlEH8ew=;
-        b=aNq3ZshndJbyY2h18xngrLNhMQ6XkTGpFIccSJLiCJaHc3HzPHPEg8lvCZlCBAtjkW
-         6HwKKiYYeoYG265AT+8t7VDH78WySQ5OqNMPS+uC03Xm54osHZgyPC25HzpPrEtV6Qo9
-         VTtYLyOVJhmmD36/CCjjH1vEOlLxwoTSyw8r1h4fEnLS7R/68DmbCZCndYeINmp8IX5f
-         q99FjaGnGi9DS0Q/kE1lani0BzQQg3sRd6o5Zm9H4yl1CfLU8+OplSh6Gk1V912yDdfD
-         qgkBpxNX3xHjGZlViPpuQ6KpN/XVeyY/NtOcj07dDEIhs9r6rrRlxGI+CQcF40Deiwsv
-         jiPw==
-X-Gm-Message-State: ABy/qLZM+gNi8SSLn24FUMhfPbww01m9yIRy5AMSpbyNT+m3X7yD0vZR
-        ZJfBh1X8ZUe+HF/0xOGOJj77wQ==
-X-Google-Smtp-Source: APBJJlGT0YJwrdWz/rSHkii66QghHlD0aHdPrXJ236lAMeGLNoUIb+iZTRE0SUMVKzkLuh34MCWwVw==
-X-Received: by 2002:a05:6a21:33a7:b0:12f:c61e:7cac with SMTP id yy39-20020a056a2133a700b0012fc61e7cacmr947830pzb.31.1689917984627;
-        Thu, 20 Jul 2023 22:39:44 -0700 (PDT)
-Received: from localhost.localdomain ([82.78.167.79])
-        by smtp.gmail.com with ESMTPSA id s26-20020a63a31a000000b0055c178a8df1sm2157857pge.94.2023.07.20.22.39.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 22:39:44 -0700 (PDT)
-From:   Claudiu Beznea <claudiu.beznea@tuxon.dev>
-To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, cristian.birsan@microchip.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Subject: [PATCH] ARM: dts: at91: remove duplicated entries
-Date:   Fri, 21 Jul 2023 08:39:18 +0300
-Message-Id: <20230721053918.33944-1-claudiu.beznea@tuxon.dev>
-X-Mailer: git-send-email 2.39.2
+        Fri, 21 Jul 2023 01:42:56 -0400
+Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4F71711;
+        Thu, 20 Jul 2023 22:42:53 -0700 (PDT)
+Received: from in01.mta.xmission.com ([166.70.13.51]:53604)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qMiuc-004rM4-GD; Thu, 20 Jul 2023 23:42:46 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:56814 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qMiub-00FWv4-7X; Thu, 20 Jul 2023 23:42:45 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Viacheslav Dubeyko <slava@dubeyko.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org
+References: <000000000000dbce4e05f170f289@google.com>
+        <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
+        <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
+        <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
+        <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
+        <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
+        <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
+        <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
+        <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
+Date:   Fri, 21 Jul 2023 00:40:26 -0500
+In-Reply-To: <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
+        (Dmitry Vyukov's message of "Thu, 20 Jul 2023 17:27:57 +0200")
+Message-ID: <87y1j9ddpx.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM14,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-XM-SPF: eid=1qMiub-00FWv4-7X;;;mid=<87y1j9ddpx.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX19b4haWTJRkCzfHy8zsGBgQylRh8f4gAnE=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Dmitry Vyukov <dvyukov@google.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 518 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 12 (2.3%), b_tie_ro: 10 (2.0%), parse: 1.33
+        (0.3%), extract_message_metadata: 15 (2.9%), get_uri_detail_list: 2.2
+        (0.4%), tests_pri_-2000: 10 (1.9%), tests_pri_-1000: 2.9 (0.6%),
+        tests_pri_-950: 1.24 (0.2%), tests_pri_-900: 1.03 (0.2%),
+        tests_pri_-200: 0.85 (0.2%), tests_pri_-100: 3.8 (0.7%),
+        tests_pri_-90: 79 (15.3%), check_bayes: 77 (14.8%), b_tokenize: 16
+        (3.1%), b_tok_get_all: 12 (2.2%), b_comp_prob: 4.7 (0.9%),
+        b_tok_touch_all: 39 (7.6%), b_finish: 1.86 (0.4%), tests_pri_0: 309
+        (59.7%), check_dkim_signature: 0.78 (0.2%), check_dkim_adsp: 2.9
+        (0.6%), poll_dns_idle: 59 (11.5%), tests_pri_10: 2.4 (0.5%),
+        tests_pri_500: 74 (14.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove duplicated DTC_FLAGS_<board> := -@ entries which intends to enable
-the building of device tree overlays.
-Commit 724ba6751532 ("ARM: dts: Move .dts files to vendor sub-directories")
-added those entries at the beginning of file w/o removing the already
-available entries spread though file.
+Dmitry Vyukov <dvyukov@google.com> writes:
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
----
- arch/arm/boot/dts/microchip/Makefile | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+> On Thu, 5 Jan 2023 at 17:45, Viacheslav Dubeyko <slava@dubeyko.com> wrote:
+>> > On Wed, Jan 04, 2023 at 08:37:16PM -0800, Viacheslav Dubeyko wrote:
+>> >> Also, as far as I can see, available volume in report (mount_0.gz) somehow corrupted already:
+>> >
+>> > Syzbot generates deliberately-corrupted (aka fuzzed) filesystem images.
+>> > So basically, you can't trust anything you read from the disc.
+>> >
+>>
+>> If the volume has been deliberately corrupted, then no guarantee that file system
+>> driver will behave nicely. Technically speaking, inode write operation should never
+>> happened for corrupted volume because the corruption should be detected during
+>> b-tree node initialization time. If we would like to achieve such nice state of HFS/HFS+
+>> drivers, then it requires a lot of refactoring/implementation efforts. I am not sure that
+>> it is worth to do because not so many guys really use HFS/HFS+ as the main file
+>> system under Linux.
+>
+>
+> Most popular distros will happily auto-mount HFS/HFS+ from anything
+> inserted into USB (e.g. what one may think is a charger). This creates
+> interesting security consequences for most Linux users.
+> An image may also be corrupted non-deliberately, which will lead to
+> random memory corruptions if the kernel trusts it blindly.
 
-diff --git a/arch/arm/boot/dts/microchip/Makefile b/arch/arm/boot/dts/microchip/Makefile
-index 0f5193d05a31..31e03747cdf4 100644
---- a/arch/arm/boot/dts/microchip/Makefile
-+++ b/arch/arm/boot/dts/microchip/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
-+# Enables support for device-tree overlays
- DTC_FLAGS_at91-sam9x60_curiosity := -@
- DTC_FLAGS_at91-sam9x60ek := -@
- DTC_FLAGS_at91-sama5d27_som1_ek := -@
-@@ -54,21 +55,9 @@ dtb-$(CONFIG_SOC_AT91SAM9) += \
- 	at91sam9g35ek.dtb \
- 	at91sam9x25ek.dtb \
- 	at91sam9x35ek.dtb
--# Enables support for device-tree overlays
--DTC_FLAGS_at91-sam9x60_curiosity := -@
--DTC_FLAGS_at91-sam9x60ek := -@
- dtb-$(CONFIG_SOC_SAM9X60) += \
- 	at91-sam9x60_curiosity.dtb \
- 	at91-sam9x60ek.dtb
--# Enables support for device-tree overlays
--DTC_FLAGS_at91-sama5d27_som1_ek := -@
--DTC_FLAGS_at91-sama5d27_wlsom1_ek := -@
--DTC_FLAGS_at91-sama5d2_icp := -@
--DTC_FLAGS_at91-sama5d2_ptc_ek := -@
--DTC_FLAGS_at91-sama5d2_xplained := -@
--DTC_FLAGS_at91-sama5d3_eds := -@
--DTC_FLAGS_at91-sama5d3_xplained := -@
--DTC_FLAGS_at91-sama5d4_xplained := -@
- dtb-$(CONFIG_SOC_SAM_V7) += \
- 	at91-kizbox2-2.dtb \
- 	at91-kizbox3-hs.dtb \
-@@ -95,8 +84,6 @@ dtb-$(CONFIG_SOC_SAM_V7) += \
- 	at91-sama5d4_xplained.dtb \
- 	at91-sama5d4ek.dtb \
- 	at91-vinco.dtb
--# Enables support for device-tree overlays
--DTC_FLAGS_at91-sama7g5ek := -@
- dtb-$(CONFIG_SOC_SAMA7G5) += \
- 	at91-sama7g5ek.dtb
- 
--- 
-2.39.2
+I am going to point out that there are no known linux filesystems
+that are safe to mount when someone has written a deliberately
+corrupted filesystem on a usb stick.
+
+Some filesystems like ext4 make a best effort to fix bugs of this sort
+as they are discovered but unless something has changed since last I
+looked no one makes the effort to ensure that it is 100% safe to mount
+any possible corrupted version of any Linux filesystem.
+
+If there is any filesystem in Linux that is safe to automount from
+an untrusted USB stick I really would like to hear about it.  We could
+allow mounting them in unprivileged user namespaces and give all kinds
+of interesting capabilities to our users.
+
+As it is I respectfully suggest that if there is a security issue it is
+the userspace code that automounts any filesystem on an untrusted USB
+stick.
+
+Eric
+
+
+
 
