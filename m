@@ -2,225 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C521575C57A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B531F75C580
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbjGULJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 07:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
+        id S231851AbjGULJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 07:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbjGULIF (ORCPT
+        with ESMTP id S231874AbjGULID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 07:08:05 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DEC449D
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 04:04:33 -0700 (PDT)
-Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <m.felsch@pengutronix.de>)
-        id 1qMnvM-0000Ly-0H; Fri, 21 Jul 2023 13:03:52 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, mcoquelin.stm32@gmail.com
-Cc:     devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH net-next v4 3/3] net: stmmac: add support for phy-supply
-Date:   Fri, 21 Jul 2023 13:03:45 +0200
-Message-Id: <20230721110345.3925719-3-m.felsch@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230721110345.3925719-1-m.felsch@pengutronix.de>
-References: <20230721110345.3925719-1-m.felsch@pengutronix.de>
+        Fri, 21 Jul 2023 07:08:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E5D30E6;
+        Fri, 21 Jul 2023 04:04:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 859B1619D9;
+        Fri, 21 Jul 2023 11:04:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A693C433C8;
+        Fri, 21 Jul 2023 11:04:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689937471;
+        bh=kLm2U5Pu52hMweuu3JvWp8RIyfl+fqT5TzNBsbBd25s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=shPjxjQ5wh01SrsoFazMqcBR5iqM2AIV0qD4B/HKYJJToU2dCiKnberYbH0U5d+qk
+         cUKnz2ERJRFo/ZMCV+Uj+8g7R+lHMMJZl1QeFsLddUu3qeBVBwQ8snFMQKjCbLdyCB
+         cFEiD2vSZjAQ6+0HZHqmUIBXfBYCcRoDu1Nbc+p8=
+Date:   Fri, 21 Jul 2023 13:04:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dingyan Li <18500469033@163.com>
+Cc:     stern@rowland.harvard.edu, sebastian.reichel@collabora.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: add usbfs ioctl to get specific superspeedplus rates
+Message-ID: <2023072105-lethargic-saddling-ad97@gregkh>
+References: <20230721084039.9728-1-18500469033@163.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::28
-X-SA-Exim-Mail-From: m.felsch@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721084039.9728-1-18500469033@163.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add generic phy-supply handling support to control the phy regulator to
-avoid handling it within the glue code. Use the generic stmmac_platform
-code to register a possible phy-supply and the stmmac_main code to
-handle the power on/off.
+On Fri, Jul 21, 2023 at 04:40:39PM +0800, Dingyan Li wrote:
+> The usbfs interface does not provide any way to get specific
+> superspeedplus rate, like Gen2x1, Gen1x2 or Gen2x2. Current
+> API include an USBDEVFS_GET_SPEED ioctl, but it can only return
+> general superspeedplus speed instead of any specific rates.
+> Therefore we can't tell whether it's a Gen2x2(20Gbps) device.
+> 
+> This patch introduce a new ioctl USBDEVFS_GET_SSP_RATE to fix
+> it. Similar information is already available via sysfs, it's
+> good to add it for usbfs too.
+> 
+> Signed-off-by: Dingyan Li <18500469033@163.com>
+> ---
+>  drivers/usb/core/devio.c          | 3 +++
+>  include/uapi/linux/usbdevice_fs.h | 1 +
+>  2 files changed, 4 insertions(+)
+> 
+> diff --git a/drivers/usb/core/devio.c b/drivers/usb/core/devio.c
+> index 1a16a8bdea60..2f57eb163360 100644
+> --- a/drivers/usb/core/devio.c
+> +++ b/drivers/usb/core/devio.c
+> @@ -2783,6 +2783,9 @@ static long usbdev_do_ioctl(struct file *file, unsigned int cmd,
+>  	case USBDEVFS_GET_SPEED:
+>  		ret = ps->dev->speed;
+>  		break;
+> +	case USBDEVFS_GET_SSP_RATE:
+> +		ret = ps->dev->ssp_rate;
+> +		break;
 
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
----
-Changelog
-v4:
-- fix use_phy_wol
-- v3-link: https://lore.kernel.org/lkml/20230720072304.3358701-1-m.felsch@pengutronix.de
+Shouldn't this new ioctl be documented somewhere?  What are the valid
+values it can return?  What if it in't a superspeed device?  Who is
+going to use this?
 
-v3:
-- rebased onto net-next/main
-- fixed changelog style
-- v2-link: https://lore.kernel.org/lkml/20230718132049.3028341-1-m.felsch@pengutronix.de
+And we have traditionally only been adding new information like this to
+sysfs, which was not around when usbfs was created.  Why not just use
+that instead?  Are you wanting to see all of the sysfs-provided
+information in usbfs also?
 
-v2:
-- adapt stmmac_phy_power
-- move power-on/off into stmmac_main to handle WOL
-- adapt commit message
-- v1-link: https://lore.kernel.org/lkml/20230717164307.2868264-1-m.felsch@pengutronix.de
+thanks,
 
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 58 ++++++++++++++++++-
- .../ethernet/stmicro/stmmac/stmmac_platform.c | 10 ++++
- include/linux/stmmac.h                        |  1 +
- 3 files changed, 68 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index add271ec8d801..9ec8964ab3582 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -31,6 +31,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/prefetch.h>
- #include <linux/pinctrl/consumer.h>
-+#include <linux/regulator/consumer.h>
- #ifdef CONFIG_DEBUG_FS
- #include <linux/debugfs.h>
- #include <linux/seq_file.h>
-@@ -1128,6 +1129,55 @@ static void stmmac_check_pcs_mode(struct stmmac_priv *priv)
- 	}
- }
- 
-+/**
-+ * stmmac_phy_power - PHY regulator on/off
-+ * @priv: driver private structure
-+ * @enable: turn on the regulator if true else turn it off
-+ * Enable or disable the regulator powering the PHY.
-+ */
-+static int stmmac_phy_power(struct stmmac_priv *priv, bool enable)
-+{
-+	struct regulator *regulator = priv->plat->phy_regulator;
-+	struct device *dev = priv->device;
-+
-+	if (!regulator)
-+		return 0;
-+
-+	if (enable) {
-+		int ret;
-+
-+		ret = regulator_enable(regulator);
-+		if (ret)
-+			dev_err(dev, "Fail to enable regulator\n");
-+
-+		return ret;
-+	}
-+
-+	regulator_disable(regulator);
-+
-+	return 0;
-+}
-+
-+/**
-+ * stmmac_phy_power_on - PHY regulator on
-+ * @priv: driver private structure
-+ * Enable the PHY regulator
-+ */
-+static int stmmac_phy_power_on(struct stmmac_priv *priv)
-+{
-+	return stmmac_phy_power(priv, true);
-+}
-+
-+/**
-+ * stmmac_phy_power_off - PHY regulator off
-+ * @priv: driver private structure
-+ * Disable the PHY regulator
-+ */
-+static void stmmac_phy_power_off(struct stmmac_priv *priv)
-+{
-+	stmmac_phy_power(priv, false);
-+}
-+
- /**
-  * stmmac_init_phy - PHY initialization
-  * @dev: net device structure
-@@ -1253,7 +1303,8 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
- 		return PTR_ERR(phylink);
- 
- 	priv->phylink = phylink;
--	return 0;
-+
-+	return stmmac_phy_power_on(priv);
- }
- 
- static void stmmac_display_rx_rings(struct stmmac_priv *priv,
-@@ -7593,6 +7644,7 @@ void stmmac_dvr_remove(struct device *dev)
- 	if (priv->hw->pcs != STMMAC_PCS_TBI &&
- 	    priv->hw->pcs != STMMAC_PCS_RTBI)
- 		stmmac_mdio_unregister(ndev);
-+	stmmac_phy_power_off(priv);
- 	destroy_workqueue(priv->wq);
- 	mutex_destroy(&priv->lock);
- 	bitmap_free(priv->af_xdp_zc_qps);
-@@ -7656,6 +7708,8 @@ int stmmac_suspend(struct device *dev)
- 		if (device_may_wakeup(priv->device))
- 			phylink_speed_down(priv->phylink, false);
- 		phylink_suspend(priv->phylink, false);
-+		if (!stmmac_use_phy_wol(priv))
-+			stmmac_phy_power_off(priv);
- 	}
- 	rtnl_unlock();
- 
-@@ -7738,6 +7792,8 @@ int stmmac_resume(struct device *dev)
- 		priv->irq_wake = 0;
- 	} else {
- 		pinctrl_pm_select_default_state(priv->device);
-+		if (!stmmac_use_phy_wol(priv))
-+			stmmac_phy_power_on(priv);
- 		/* reset the phy so that it's ready */
- 		if (priv->mii)
- 			stmmac_mdio_reset(priv->mii);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 23d53ea04b24d..18988da4614cd 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -11,6 +11,7 @@
- #include <linux/device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/module.h>
- #include <linux/io.h>
- #include <linux/of.h>
-@@ -424,6 +425,15 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
- 	if (plat->interface < 0)
- 		plat->interface = plat->phy_interface;
- 
-+	/* Optional regulator for PHY */
-+	plat->phy_regulator = devm_regulator_get_optional(&pdev->dev, "phy");
-+	if (IS_ERR(plat->phy_regulator)) {
-+		if (PTR_ERR(plat->phy_regulator) == -EPROBE_DEFER)
-+			return ERR_CAST(plat->phy_regulator);
-+		dev_info(&pdev->dev, "No regulator found\n");
-+		plat->phy_regulator = NULL;
-+	}
-+
- 	/* Some wrapper drivers still rely on phy_node. Let's save it while
- 	 * they are not converted to phylink. */
- 	plat->phy_node = of_parse_phandle(np, "phy-handle", 0);
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index ef67dba775d04..b5d2d75de2759 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -222,6 +222,7 @@ struct plat_stmmacenet_data {
- 	int phy_addr;
- 	int interface;
- 	phy_interface_t phy_interface;
-+	struct regulator *phy_regulator;
- 	struct stmmac_mdio_bus_data *mdio_bus_data;
- 	struct device_node *phy_node;
- 	struct device_node *phylink_node;
--- 
-2.39.2
-
+greg k-h
