@@ -2,122 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E69A75C272
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D2C75C27B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbjGUJGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60686 "EHLO
+        id S229872AbjGUJH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbjGUJGh (ORCPT
+        with ESMTP id S230317AbjGUJH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:06:37 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C05730C1;
-        Fri, 21 Jul 2023 02:06:34 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36KLMVun001996;
-        Fri, 21 Jul 2023 09:06:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-03-30; bh=YB3+L26ub9a+qZKv1httf41gShc8qMgp1o2GqmrvXwk=;
- b=lIQUlM5s4RByMw5LwdenicUoeV5Pivu1dSJrUYYzF3ZbHgYRIMp884wwwnJy09x6UlSx
- 8OAbACFNP5HYpmkp9eSA6+fPCTopbPqe4Ba7HjnIxf/Ka98ebFKhaLk3FSXOmulfFMyg
- uJofxcwK8MA5VV5vp4ep5uVDoP5QUUYMML2TzArQkp11O2knTHV0+9vWu7RqB7uRd5ul
- RJHONygHmw5uzZmQ9JqzQFXaduY7ma3SmwQPHPDJCb2xN6mP/BFeOQeQr+tnwMPfOIlI
- i5adqE1VLT+IGzPZrrlECNLzRu3oEysOa8ZpsPdtMmwHFX4AXuNkP28ydzlXuRMx0zWL Nw== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run773huq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Jul 2023 09:06:05 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36L84IH4000832;
-        Fri, 21 Jul 2023 09:06:04 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw9snxx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Jul 2023 09:06:04 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36L963fv036820;
-        Fri, 21 Jul 2023 09:06:03 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3ruhw9snvk-1;
-        Fri, 21 Jul 2023 09:06:03 +0000
-From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Rob Herring <robh@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-        David Yang <mmyangfl@gmail.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Pengcheng Li <lpc.li@hisilicon.com>,
-        Jiancheng Xue <xuejiancheng@hisilicon.com>,
-        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     dan.carpenter@linaro.org, christophe.jaillet@wanadoo.fr,
-        julia.lawall@inria.fr, kernel-janitors@vger.kernel.org,
-        error27@gmail.com
-Subject: [PATCH] phy: hisilicon: Fix an out of bounds check in hisi_inno_phy_probe()
-Date:   Fri, 21 Jul 2023 02:05:55 -0700
-Message-ID: <20230721090558.3588613-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 21 Jul 2023 05:07:28 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98AED2D7F;
+        Fri, 21 Jul 2023 02:07:26 -0700 (PDT)
+Received: from dggpeml100024.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R6kBk5PNsztR9d;
+        Fri, 21 Jul 2023 17:04:14 +0800 (CST)
+Received: from hulk-vt.huawei.com (10.67.174.26) by
+ dggpeml100024.china.huawei.com (7.185.36.115) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 21 Jul 2023 17:07:23 +0800
+From:   Xiu Jianfeng <xiujianfeng@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>, <irogers@google.com>,
+        <adrian.hunter@intel.com>, <mcgrof@kernel.org>,
+        <keescook@chromium.org>, <yzaikin@google.com>
+CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <xiujianfeng@huawei.com>
+Subject: [PATCH -next] perf/core: Rename perf_proc_update_handler for readability
+Date:   Fri, 21 Jul 2023 09:06:07 +0000
+Message-ID: <20230721090607.172002-1-xiujianfeng@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-21_05,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307210081
-X-Proofpoint-GUID: MsdSk9BPopQYkgz-7sX5dUtYzmn80bqo
-X-Proofpoint-ORIG-GUID: MsdSk9BPopQYkgz-7sX5dUtYzmn80bqo
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.26]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml100024.china.huawei.com (7.185.36.115)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The size of array 'priv->ports[]' is INNO_PHY_PORT_NUM.
+Just like other sysctl handlers of perf, rename it to
+perf_event_max_sample_rate_handler, minor readability improvement.
 
-In the for loop, 'i' is used as the index for array 'priv->ports[]'
-with a check (i > INNO_PHY_PORT_NUM) which indicates that
-INNO_PHY_PORT_NUM is allowed value for 'i' in the same loop.
-
-This > comparison needs to be changed to >=, otherwise it potentially leads
-to an out of bounds write on the next iteration through the loop
-
-Fixes: ba8b0ee81fbb ("phy: add inno-usb2-phy driver for hi3798cv200 SoC")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 ---
-This is purely based on static analysis, only compile tested.
+ include/linux/perf_event.h | 2 +-
+ kernel/events/core.c       | 4 ++--
+ kernel/sysctl.c            | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-Inspired based on a patch from Christophe Jaillet:
-https://lore.kernel.org/all/cd01cba1c7eda58bdabaae174c78c067325803d2.1689803636.git.christophe.jaillet@wanadoo.fr/
----
- drivers/phy/hisilicon/phy-hisi-inno-usb2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/phy/hisilicon/phy-hisi-inno-usb2.c b/drivers/phy/hisilicon/phy-hisi-inno-usb2.c
-index 498afd81696b..c138cd4807d6 100644
---- a/drivers/phy/hisilicon/phy-hisi-inno-usb2.c
-+++ b/drivers/phy/hisilicon/phy-hisi-inno-usb2.c
-@@ -185,7 +185,7 @@ static int hisi_inno_phy_probe(struct platform_device *pdev)
- 		phy_set_drvdata(phy, &priv->ports[i]);
- 		i++;
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 2166a69e3bf2..681cb44249c4 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1556,7 +1556,7 @@ extern int sysctl_perf_cpu_time_max_percent;
  
--		if (i > INNO_PHY_PORT_NUM) {
-+		if (i >= INNO_PHY_PORT_NUM) {
- 			dev_warn(dev, "Support %d ports in maximum\n", i);
- 			of_node_put(child);
- 			break;
+ extern void perf_sample_event_took(u64 sample_len_ns);
+ 
+-int perf_proc_update_handler(struct ctl_table *table, int write,
++int perf_event_max_sample_rate_handler(struct ctl_table *table, int write,
+ 		void *buffer, size_t *lenp, loff_t *ppos);
+ int perf_cpu_time_max_percent_handler(struct ctl_table *table, int write,
+ 		void *buffer, size_t *lenp, loff_t *ppos);
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 6fd9272eec6e..8db4c5f6328f 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -449,8 +449,8 @@ static void update_perf_cpu_limits(void)
+ 
+ static bool perf_rotate_context(struct perf_cpu_pmu_context *cpc);
+ 
+-int perf_proc_update_handler(struct ctl_table *table, int write,
+-		void *buffer, size_t *lenp, loff_t *ppos)
++int perf_event_max_sample_rate_handler(struct ctl_table *table, int write,
++				       void *buffer, size_t *lenp, loff_t *ppos)
+ {
+ 	int ret;
+ 	int perf_cpu = sysctl_perf_cpu_time_max_percent;
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 354a2d294f52..2b6585751891 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -1983,7 +1983,7 @@ static struct ctl_table kern_table[] = {
+ 		.data		= &sysctl_perf_event_sample_rate,
+ 		.maxlen		= sizeof(sysctl_perf_event_sample_rate),
+ 		.mode		= 0644,
+-		.proc_handler	= perf_proc_update_handler,
++		.proc_handler	= perf_event_max_sample_rate_handler,
+ 		.extra1		= SYSCTL_ONE,
+ 	},
+ 	{
 -- 
-2.39.3
+2.34.1
 
