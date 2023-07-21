@@ -2,98 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AEFE75D0C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABE175D0D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbjGURlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 13:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
+        id S229834AbjGURnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 13:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbjGURla (ORCPT
+        with ESMTP id S230088AbjGURnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 13:41:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BB030D1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:41:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2EC4561D76
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 17:41:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89BA1C433C7;
-        Fri, 21 Jul 2023 17:41:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689961280;
-        bh=AseNTTO1fNzLwHCUFZunwFpmEDAVElunA65MkuhBqpQ=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ZBG3st0HCf/9jk1jqEKFgQo7RwciU5pVzUiYsT7CXkMspKlW132pBa//y87m+vl2W
-         cyla7r9KeId5pvY6bOwaye4Dq2VDGA8kx4vwqpYHnS3pnbmTOqfo7m3MMJPUrw9gU0
-         9uEmVdGFmNzfsR6gRYwA1B216YNkMOimixEWIQT5XKbg5vDhR//7K0BHtZqR9lvGTm
-         52Fs2Jna/v8cUWvz3xojb4ypDoEtvMazHh+bRfcznAku+XqXnfyUJhpX+LWuzRIV5S
-         yaPLsR9vJbFxN8JUeUHQ4GGzIFLicd0XuVTiNvLrvCRRbpZafIAbBL4noeD6n5B2h9
-         cHSn9pTEGfV2g==
-From:   Mark Brown <broonie@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-In-Reply-To: <20230721-regmap-enable-kmalloc-v1-1-f78287e794d3@kernel.org>
-References: <20230721-regmap-enable-kmalloc-v1-1-f78287e794d3@kernel.org>
-Subject: Re: [PATCH] regmap: Remove dynamic allocation warnings for rbtree
- and maple
-Message-Id: <168996127928.147835.16755202438819557381.b4-ty@kernel.org>
-Date:   Fri, 21 Jul 2023 18:41:19 +0100
-MIME-Version: 1.0
+        Fri, 21 Jul 2023 13:43:05 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DAD3580
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:43:00 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d064a458dd5so363001276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689961380; x=1690566180;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7DBmD+NWofmGocm5Vnh+WkykM6ONviwwjpnheMJOIK8=;
+        b=Kleh8QpsTsNUhesVcFKaorRemH2b7oCPrjs/EZvvDbSIhnU646cwazqZifDUNyxi+Q
+         5JqV9CUAW8QaG2YIfQCin1qnHve1MgXICSxbyDPLV8MjQRP2Kpasi9pL5sbB8O7UYjBa
+         jgRp3U3UDnkkD6e19TR7wMGjHPVEilwKuPvhlll1BPS6C8DVpWehyFU2WczctGneBM1v
+         8h/JnmhFLy8tlfXVq6NzVrFmSK26MkEiOaRidvtVK6eqi9qhd/VP0gDfCAxADqhE52gi
+         5Uc2vJ9HkSFyp91F1M5r9W96Us+3KtG0sWvhTTO0jFsQ1GbEx81tOU6Kjmmi3SIi/0Fk
+         yy7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689961380; x=1690566180;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7DBmD+NWofmGocm5Vnh+WkykM6ONviwwjpnheMJOIK8=;
+        b=dPjcM8xDf6w8XDWXVK5cNJRHoWFl4pTN7r2s5pJmRCXLgzBp5n9zFuzK6L6mjW/qrD
+         TcJ9LWvfjs00+iBwoMEKHXsJKkaG7FnqrgNk5HmBF2OFiLhe3xwsRh3dTGnot37BEoSc
+         fWmAQUN+yCYSZDGfUnCYt1fQbMR9knhzM+XDD/nIjbPy0Y7OZnNXuhFHdNjljQtVM7iA
+         /Pmveh/5MbH3VasP6AI+dGlrG+f03uyLXpiAY53uX1Xp/dBKJqKoqh6xrqo+6WwGFbCS
+         +TMpp0B2TFT8C9tcy2A+WrwkRsscOKuR5gdZEWtXvxwz90NbBCWCXs0AIONihfT0eg/l
+         1/1A==
+X-Gm-Message-State: ABy/qLYz14EjVRKIT4cJJAK9yTjCuoFqVUKyBlKOy7thpReM4PcMRMIv
+        JvtXt+tIEhrShIJ7j058b59XskG60Rw=
+X-Google-Smtp-Source: APBJJlE/aF1pYHHKoAMy1+E4aY5+aL4FeQDb+p2ML0zhZVvr/Ah+OV80Lx1tRjSoeSb0qOhWhlHbRbztBVY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:10cd:b0:c1c:df23:44ee with SMTP id
+ w13-20020a05690210cd00b00c1cdf2344eemr19665ybu.0.1689961379855; Fri, 21 Jul
+ 2023 10:42:59 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 10:42:58 -0700
+In-Reply-To: <29baac45-7736-a28c-3b2d-2a6e45171b8b@intel.com>
+Mime-Version: 1.0
+References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-13-seanjc@google.com>
+ <fdc155f5-041b-a1b1-15aa-8f970180a13a@intel.com> <29baac45-7736-a28c-3b2d-2a6e45171b8b@intel.com>
+Message-ID: <ZLrDopLH+3vN8rE6@google.com>
+Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 17:31:36 +0100, Mark Brown wrote:
-> Thanks to Dan and Guenter's very prompt updates of the rbtree and maple
-> caches to support GPF_ATOMIC allocations and since the update shook out
-> a bunch of users at least some of whom have been suitably careful about
-> ensuring that the cache is prepoulated so there are no dynamic
-> allocations after init let's revert the warnings.
-> 
-> 
-> [...]
+On Fri, Jul 21, 2023, Xiaoyao Li wrote:
+> On 7/21/2023 11:05 PM, Xiaoyao Li wrote:
+> > On 7/19/2023 7:44 AM, Sean Christopherson wrote:
+> > > @@ -6255,12 +6298,17 @@ int kvm_init(unsigned vcpu_size, unsigned
+> > > vcpu_align, struct module *module)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (r)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto err_async=
+_pf;
+> > > +=C2=A0=C2=A0=C2=A0 r =3D kvm_gmem_init();
+> > > +=C2=A0=C2=A0=C2=A0 if (r)
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto err_gmem;
+> > > +
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_chardev_ops.owner =3D module;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_preempt_ops.sched_in =3D kvm_sched=
+_in;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_preempt_ops.sched_out =3D kvm_sche=
+d_out;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_init_debug();
+> > > +=C2=A0=C2=A0=C2=A0 kvm_gmem_init();
+> >=20
+> > why kvm_gmem_init() needs to be called again? by mistake?
+>=20
+> I'm sure it's a mistake.
 
-Applied to
+Yeah, definitely a bug.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+> I'm testing the gmem QEMU with this series. SW_PROTECTED_VM gets stuck in=
+ a
+> loop in early OVMF code due to two shared page of OVMF get zapped and
+> re-mapped infinitely. Removing the second call of kvm_gmem_init() can sol=
+ve
+> the issue, though I'm not sure about the reason.
 
-Thanks!
-
-[1/1] regmap: Remove dynamic allocation warnings for rbtree and maple
-      commit: e02a4ccbeced64aa10f4e99683c721ec43e993c1
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Not worth investigating unless you want to satiate your curiosity :-)
