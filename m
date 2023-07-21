@@ -2,139 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B393675CA10
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2004075CA13
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbjGUOc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50994 "EHLO
+        id S231488AbjGUOdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjGUOc0 (ORCPT
+        with ESMTP id S231788AbjGUOdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:32:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F892D56;
-        Fri, 21 Jul 2023 07:32:25 -0700 (PDT)
+        Fri, 21 Jul 2023 10:33:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EEAE68;
+        Fri, 21 Jul 2023 07:33:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 588A761B27;
-        Fri, 21 Jul 2023 14:32:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECBCCC433C8;
-        Fri, 21 Jul 2023 14:32:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 55BB061C5B;
+        Fri, 21 Jul 2023 14:33:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A077DC433C9;
+        Fri, 21 Jul 2023 14:33:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689949944;
-        bh=I+Szsk39PJsQ9rBjntkMFEeaQ2Uou8mYStFXkpPodnQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=t8c62hEL00dKY9g1WQo6gimsW3dDBw7KmddXLWbL/3YIY9UWNQcBrcuOlBQk0Q886
-         xZl/m9G96MNUZlEt15j5QmX+ENAkl7+AcXD8Zwhc6L8lAAMyWoYNA15jWVaMnuwzGu
-         /e2O2InmcgM9I3bC7BVKFUPkl4C8IYFpRV0gi2oniXBUmfGebKu/vZsvOs0KYltM8i
-         h/SFtEbgrYP5/9iZhvoTynjsPOjJllrc7qvw6zcj4tQ/RgspFvVloDFhP93D3nEnHi
-         X75rAfyWCANdP4V3u4d+Mll7vFrQllJO5PN+uVR0PDNZ9W5bV7aO7bHGcVSsg+LWUY
-         u8eKLqKF1ZvLg==
-Date:   Fri, 21 Jul 2023 23:32:19 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCHES/RFC 1/5] perf bench uprobe + BPF skel
-Message-Id: <20230721233219.9105d8e48d67e5eda3797e4e@kernel.org>
-In-Reply-To: <20230719204910.539044-1-acme@kernel.org>
-References: <20230719204910.539044-1-acme@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        s=k20201202; t=1689949986;
+        bh=9YgoooZ1+5ex0bT6wHIjCPICCL0FV+SDivmd0dBm1Yg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bymN+Iy39Hk04ez4RfAMumeKdmq9Wbus0j/aDF2biw6x+HBfPs7RncrNXgo92dbB1
+         irqAjHtE44GXEowvyDSgO9oM/chPKotX9XrizhZbejy8RHIl/TXuigoHoDUyOyusVF
+         zRgHzAJOgvnV7jtxHfp7wjYQjEaQW1cP90UUEccm++gpymgsewlyo4JTJACYHKwUZL
+         8UDOm4ic94yqxJS5+qtvuSYsCCCnV5qIMEiJouh1BiikrAmIDr3cllyX1VqqGe4DUd
+         8qQmu7xOKVRfXJvLfYdTJe2NgYtLgGYsmSxE7m810re6mzoV1RUuaRwQHtVYX4v3Xg
+         EINKEe8TrapNg==
+Received: (nullmailer pid 1099660 invoked by uid 1000);
+        Fri, 21 Jul 2023 14:33:04 -0000
+Date:   Fri, 21 Jul 2023 08:33:04 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 08/11] dt-bindings: firmware: arm,scmi: Extend
+ bindings for protocol@13
+Message-ID: <20230721143304.GA1092306-robh@kernel.org>
+References: <20230713141738.23970-1-ulf.hansson@linaro.org>
+ <20230713141738.23970-9-ulf.hansson@linaro.org>
+ <20230719151716.qhobfnclrjf4yqkg@bogus>
+ <CAPDyKFpjMWOAbV+b2DcxDWqvRDQCbSC6Ti+KGGPWJoC4Ghp7=w@mail.gmail.com>
+ <20230721115535.mx46dg56pxjnzbuv@bogus>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721115535.mx46dg56pxjnzbuv@bogus>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Jul 2023 17:49:05 -0300
-Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+On Fri, Jul 21, 2023 at 12:55:35PM +0100, Sudeep Holla wrote:
+> On Fri, Jul 21, 2023 at 01:42:43PM +0200, Ulf Hansson wrote:
+> > On Wed, 19 Jul 2023 at 17:17, Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > >
+> > > On Thu, Jul 13, 2023 at 04:17:35PM +0200, Ulf Hansson wrote:
+> > > > The protocol@13 node is describing the performance scaling option for the
+> > > > ARM SCMI interface, as a clock provider. This is unnecessary limiting, as
+> > > > performance scaling is in many cases not limited to switching a clock's
+> > > > frequency.
+> > > >
+> > > > Therefore, let's extend the binding so the interface can be modelled as a
+> > > > generic performance domaintoo. The common way to describe this, is to use
+> > > > the "power-domain" DT bindings, so let's use that.
+> > > >
+> > >
+> > > One thing I forgot to ask earlier is how we can manage different domain IDs
+> > > for perf and power domains which is the case with current SCMI platforms as
+> > > the spec never mandated or can ever mandate the perf and power domains IDs
+> > > to match. They need not be same anyways.
+> > 
+> > Based upon what you describe above, I have modelled the perf-domain
+> > and the power-domain as two separate power-domain providers.
+> > 
+> > A consumer device being hooked up to both domains, would specify the
+> > domain IDs in the second power-domain-cell, along the lines of the
+> > below. Then we would use power-domain-names to specify what each
+> > power-domain represents.
+> > 
+> > power-domains = <&scmi_pd 2>, <&scmi_dvfs 4>;
+> > power-domain-names = "power", "perf";
+> >
+> > I hope this makes it clearer!?
+> 
+> Yes it make is clear definitely, but it does change the definition of the
+> generic binding of the "power-domains" property now. I am interesting in
+> the feedback from the binding maintainers with respect to that. Or is it
+> already present ? IIUC, the ones supported already are generally both
+> power and performance providers. May be it doesn't matter much, just
+> wanted to explicit ask and confirm those details.
 
-> Hi,
-> 
-> 	This adds a 'perf bench' to test the overhead of uprobes + BPF
-> programs, for now just a few simple tests, but I plan to make it
-> possible to specify the functions to attach the uprobe + BPF, other BPF
-> operations dealing with maps, etc.
-> 
-> 	This is how it looks like now:
-> 
->   [root@five ~]# perf bench uprobe all
->   # Running uprobe/baseline benchmark...
->   # Executed 1,000 usleep(1000) calls
->        Total time: 1,053,963 usecs
->   
->    1,053.963 usecs/op
->   
->   # Running uprobe/empty benchmark...
->   # Executed 1,000 usleep(1000) calls
->        Total time: 1,056,293 usecs +2,330 to baseline
->   
->    1,056.293 usecs/op 2.330 usecs/op to baseline
->   
->   # Running uprobe/trace_printk benchmark...
->   # Executed 1,000 usleep(1000) calls
->        Total time: 1,056,977 usecs +3,014 to baseline +684 to previous
->   
->    1,056.977 usecs/op 3.014 usecs/op to baseline 0.684 usecs/op to previous
->   
->   [root@five ~]
+I commented on v1.
 
-Looks great! maybe we can also make kprobes benchmark too (but it depends
-on optimization and ftrace-based...)
+Looks like abuse of "power-domains" to me, but nothing new really. 
+Please define when to use a power domain vs. a perf domain and don't 
+leave it up to the whims of the platform. Maybe perf domains was a 
+mistake and they should be deprecated?
 
-Thank you,
-
-> 
-> I put it here:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=perf-bench-uprobe
-> 
->   git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf-bench-uprobe
-> 
-> Further ideas, problems?
-> 
-> - Arnaldo
-> 
-> 
-> 
-> Arnaldo Carvalho de Melo (5):
->   perf bench uprobe: Add benchmark to test uprobe overhead
->   perf bench uprobe: Print diff to baseline
->   perf bench uprobe: Show diff to previous
->   perf bench uprobe empty: Add entry attaching an empty BPF program
->   perf bench uprobe trace_printk: Add entry attaching an BPF program that does a trace_printk
-> 
->  tools/perf/Documentation/perf-bench.txt     |   3 +
->  tools/perf/Makefile.perf                    |   1 +
->  tools/perf/bench/Build                      |   1 +
->  tools/perf/bench/bench.h                    |   3 +
->  tools/perf/bench/uprobe.c                   | 198 ++++++++++++++++++++
->  tools/perf/builtin-bench.c                  |   8 +
->  tools/perf/util/bpf_skel/bench_uprobe.bpf.c |  23 +++
->  7 files changed, 237 insertions(+)
->  create mode 100644 tools/perf/bench/uprobe.c
->  create mode 100644 tools/perf/util/bpf_skel/bench_uprobe.bpf.c
-> 
-> -- 
-> 2.41.0
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Rob
