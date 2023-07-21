@@ -2,202 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A4175CF0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F64775CEDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232995AbjGUQ04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 12:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
+        id S232838AbjGUQZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 12:25:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232605AbjGUQ02 (ORCPT
+        with ESMTP id S232832AbjGUQZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 12:26:28 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D090F46A1;
-        Fri, 21 Jul 2023 09:23:24 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="453435610"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="453435610"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 09:21:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="848870377"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="848870377"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP; 21 Jul 2023 09:21:03 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andy@kernel.org>)
-        id 1qMssF-00CCBV-0a;
-        Fri, 21 Jul 2023 19:20:59 +0300
-Date:   Fri, 21 Jul 2023 19:20:58 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     nikita.shubin@maquefel.me
-Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Lukasz Majewski <lukma@denx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Michael Peters <mpeters@embeddedts.com>,
-        Kris Bahnsen <kris@embeddedts.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 22/42] dma: cirrus: add DT support for Cirrus EP93xx
-Message-ID: <ZLqwajir6kFLgbcm@smile.fi.intel.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-22-3d63a5f1103e@maquefel.me>
+        Fri, 21 Jul 2023 12:25:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB233C39;
+        Fri, 21 Jul 2023 09:21:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B90F961D49;
+        Fri, 21 Jul 2023 16:21:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50604C433AB;
+        Fri, 21 Jul 2023 16:21:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689956477;
+        bh=F6bDusVIkRQdT8rB0VHM/lnIzxF5wE08IHrmwLpQ7MA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RTD3jlKtptAtk6QuH0xo18U0VQcO3QM9TYL31eLsx55Y2SPmfO2Q3K/ItMVxkpP+I
+         9tSOkmwq9BaGnku33mHrKEoTnK+04KNgIY6fKWfcKylbD31WjTewCEWIQCuOfEgBqa
+         kGV0zpJ2zRwkPhpVvV5U6iWp43s1TDdxgalVHjhjnK+x2MSQ+N1cGIpz4Op1PvXXKy
+         xEwz2DL3joPqIynPCAm/vetFKvqBicG6ArbHgkKwp1uCI/yYaf9uF6pvIsgJzrm2gQ
+         kwq25CTcNNzztL9Jv5Yw8FQZUlnQjwwhxiFjEwWpptX/V0m5m5cU+cHQBQzQ9RaE7a
+         zqDwaPICmeipA==
+Received: (nullmailer pid 1341419 invoked by uid 1000);
+        Fri, 21 Jul 2023 16:21:14 -0000
+Date:   Fri, 21 Jul 2023 10:21:14 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Binglei Wang <l3b2w1@gmail.com>
+Cc:     frowand.list@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev
+Subject: Re: [PATCH] cma: check for memory region overlapping
+Message-ID: <20230721162114.GA1321524-robh@kernel.org>
+References: <20230720160729.39324-1-l3b2w1@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230605-ep93xx-v3-22-3d63a5f1103e@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230720160729.39324-1-l3b2w1@gmail.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 02:29:22PM +0300, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
+On Fri, Jul 21, 2023 at 12:07:29AM +0800, Binglei Wang wrote:
+> From: Binglei Wang <l3b2w1@gmail.com>
 > 
-> - drop subsys_initcall code
-> - add OF ID match table with data
-> - add of_probe for device tree
+> Cma memory region editted carelessly in dts may overlap
+> with kernel code/data memory region which is reserved by memblock
+> during the early phase of system memory initialization.
 
-...
+Is your goal for the kernel to function with this careless editing or 
+warn enough to fix the DT?
 
-> +#include <linux/of_device.h>
+What if other regions overlap with the kernel? Wouldn't we have the same 
+problem? 
 
-Why?
+> 
+> Without checking overlap and cma area setup done,
+> this region will be released to buddy system later.
+> 
+> When memory usage under pressure, memory allocated from
+> this region will collide with kernel code which is read-only.
+> And the following writing to this region will trigger the panic
+> of writing to read-only memory.
+> 
+> So when rmem_cma_setup returns EBUSY, do not phys-free this region
+> to memblock or else we end up with free the kernel code memory
+> to buddy system.
+> 
+> Signed-off-by: Binglei Wang <l3b2w1@gmail.com>
+> ---
+>  drivers/of/of_reserved_mem.c | 3 ---
+>  kernel/dma/contiguous.c      | 5 +++++
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+> index 7ec94cfcb..d62cc76ef 100644
+> --- a/drivers/of/of_reserved_mem.c
+> +++ b/drivers/of/of_reserved_mem.c
+> @@ -338,9 +338,6 @@ void __init fdt_init_reserved_mem(void)
+>  					rmem->name);
+>  				if (nomap)
+>  					memblock_clear_nomap(rmem->base, rmem->size);
+> -				else
+> -					memblock_phys_free(rmem->base,
+> -							   rmem->size);
 
-...
+I don't understand this change. Seems like perhaps someone would want 
+the free here?
 
-> +#ifdef CONFIG_OF
+>  			} else {
+>  				phys_addr_t end = rmem->base + rmem->size - 1;
+>  				bool reusable =
+> diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
+> index 6ea80ae42..a349f3e97 100644
+> --- a/kernel/dma/contiguous.c
+> +++ b/kernel/dma/contiguous.c
+> @@ -410,6 +410,11 @@ static int __init rmem_cma_setup(struct reserved_mem *rmem)
+>  		return -EBUSY;
 
-Why this ugly ifdeffery?
+Here we return EBUSY if we are using cmdline params. In that case, isn't 
+freeing the DT CMA area the right thing to do?
 
-...
 
-> +	data = of_device_get_match_data(&pdev->dev);
-
-device_get_match_data()
-
-> +	if (!data)
-> +		return ERR_PTR(dev_err_probe(&pdev->dev, -ENODEV, "No device match found\n"));
-
-...
-
-> +	edma = devm_kzalloc(&pdev->dev,
-> +					  struct_size(edma, channels, data->num_channels),
-> +				      GFP_KERNEL);
-
-Something wrong with indentation. Not the first time, please check all your
-patches for this kind of issues.
-
-> +		return ERR_PTR(-ENOMEM);
-
-...
-
-> +		edmac->regs = devm_platform_ioremap_resource(pdev, i);
-
-No check?
-
-> +		edmac->irq = platform_get_irq(pdev, i);
-
-No check?
-
-> +		edmac->edma = edma;
+>  	}
+>  
+> +	if (memblock_is_region_reserved(rmem->base, rmem->size)) {
+> +		pr_info("Reserved memory: overlap with exsiting one\n");
+> +		return -EBUSY;
+> +	}
 > +
-> +		edmac->clk = of_clk_get(np, i);
-
-> +
-
-Redundant blank line.
-
-Why one of devm_clk_get*() can't be called?
-
-> +		if (IS_ERR(edmac->clk)) {
-> +			dev_warn(&pdev->dev, "failed to get clock\n");
-> +			continue;
-> +		}
-
-...
-
-> +	if (platform_get_device_id(pdev))
-> +		edma = ep93xx_init_from_pdata(pdev);
-> +	else
-> +		edma = ep93xx_dma_of_probe(pdev);
-
-> +
-
-Unneeded blank line.
-
-> +	if (!edma)
-> +		return PTR_ERR(edma);
-
-...
-
-> --- a/include/linux/platform_data/dma-ep93xx.h
-> +++ b/include/linux/platform_data/dma-ep93xx.h
-
->  #include <linux/types.h>
->  #include <linux/dmaengine.h>
->  #include <linux/dma-mapping.h>
-
-> +#include <linux/of.h>
-
-property.h.
-
-...
-
-> +	if (of_device_is_compatible(dev_of_node(chan->device->dev), "cirrus,ep9301-dma-m2p"))
-> +		return true;
-> +
-
-device_is_compatible()
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>  	if (!of_get_flat_dt_prop(node, "reusable", NULL) ||
+>  	    of_get_flat_dt_prop(node, "no-map", NULL))
+>  		return -EINVAL;
+> -- 
+> 2.34.1
+> 
