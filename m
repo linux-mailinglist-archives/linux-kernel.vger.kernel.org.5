@@ -2,134 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3005075C5D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E06B75C5D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbjGULYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 07:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
+        id S230228AbjGULZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 07:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjGULYe (ORCPT
+        with ESMTP id S229552AbjGULZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 07:24:34 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BF71996;
-        Fri, 21 Jul 2023 04:24:32 -0700 (PDT)
+        Fri, 21 Jul 2023 07:25:08 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A24F1998
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 04:25:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1689938671;
-        bh=Su+fAd/hk2qW820IuX6Kbh5m9vCkDqFgFh+fW7xlJnI=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=sLru+sKOeepl9SHV0S+eEuHY5xha7KEjhBnbIa0GU5qgNLgb9emZQzI+CZjleUlO+
-         bXj2meMc0fJMKvcU+aICK+4j0V4sXGt2hKTSphy1YS3dpAZZC+qWImhwjVxFBmi2Bv
-         Mi9DhqTtN/DG2CsHkexR6YeiKE2fwz7xHm3tRiGc=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id F0EF512868AE;
-        Fri, 21 Jul 2023 07:24:31 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id 14wxoYoKcqs8; Fri, 21 Jul 2023 07:24:31 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1689938671;
-        bh=Su+fAd/hk2qW820IuX6Kbh5m9vCkDqFgFh+fW7xlJnI=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=sLru+sKOeepl9SHV0S+eEuHY5xha7KEjhBnbIa0GU5qgNLgb9emZQzI+CZjleUlO+
-         bXj2meMc0fJMKvcU+aICK+4j0V4sXGt2hKTSphy1YS3dpAZZC+qWImhwjVxFBmi2Bv
-         Mi9DhqTtN/DG2CsHkexR6YeiKE2fwz7xHm3tRiGc=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 1A4511286497;
-        Fri, 21 Jul 2023 07:24:30 -0400 (EDT)
-Message-ID: <c2f451e0f8d72cf3183aff9cbaf23f135fc7b495.camel@HansenPartnership.com>
-Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Luca Boccassi <bluca@debian.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        "Daniel P." =?ISO-8859-1?Q?Berrang=E9?= <berrange@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "lennart@poettering.net" <lennart@poettering.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Date:   Fri, 21 Jul 2023 07:24:28 -0400
-In-Reply-To: <CAMw=ZnQtEwNFyZ-Gt6ODb9gp22KY1GimaSfW46N7o-S1Hkfp4A@mail.gmail.com>
-References: <20230711154449.1378385-1-eesposit@redhat.com>
-         <ZK/9MlTh435FP5Ji@gambale.home> <ZLABozIRVGmwuIBf@gambale.home>
-         <ba2354dc63fd741d2d351b18d4312d0771c0935d.camel@HansenPartnership.com>
-         <ZLVyvAXwtemx1I6p@redhat.com>
-         <0aa647f719103e8620d7209cbde40f04a7334749.camel@HansenPartnership.com>
-         <FBDC67DD-856F-429B-8E91-B0CA8B0F24B9@oracle.com>
-         <CAMw=ZnQ5pjwJZdX9kyib=vFd_c5_5_eUhV_mT5OcRPt693m=Yg@mail.gmail.com>
-         <635B383C-38A5-479E-80A6-358D5F90988B@oracle.com>
-         <CAMw=ZnQtEwNFyZ-Gt6ODb9gp22KY1GimaSfW46N7o-S1Hkfp4A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689938707; x=1721474707;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fX+P+Vn6+9w3G4Oh7llREegNj9wGkwnxSWXtt3ditgI=;
+  b=EAJw6Bcqu4kB6hXIoBnX1dcABgG32mhOs3WEhZioapPDkbBVCsGlTP7y
+   hsouVlCRQksJmOB/199JauL6ZMKMX0JGcEz2S/udzTpfSqdcD/anKwZGB
+   P9Xhzg9qAM/aj8ne3jaXMriARk9DUKTvr9ZHmS99BLzqbJOAQVxqBAVV9
+   R/gJDGlsp+tzTnYDXLK/i+l9K+wLpy+VkC3EGqJjwO+PV3Lk8+Blc08Xx
+   djmegfcsH0nl/F+JRwi1y7tfPEoELQEnaAz5TLp+B0ZxC7S+eCj/IxfNx
+   7QJnrGki2syOYcMySLBQIxL6o/Lv0kiYSJ/J+PfZrb5jSvU4ooJ8bmRvD
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="433229586"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="433229586"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 04:25:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="838519744"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="838519744"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Jul 2023 04:25:03 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qMoFq-001zoV-04;
+        Fri, 21 Jul 2023 14:25:02 +0300
+Date:   Fri, 21 Jul 2023 14:25:01 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
+        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org
+Subject: Re: [PATCH v4 4/5] arm64: mte: add a test for MTE tags compression
+Message-ID: <ZLprDcPQYdY0ytpc@smile.fi.intel.com>
+References: <20230720173956.3674987-1-glider@google.com>
+ <20230720173956.3674987-5-glider@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720173956.3674987-5-glider@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-21 at 09:55 +0100, Luca Boccassi wrote:
-> On Fri, 21 Jul 2023 at 02:49, Eric Snowberg
-> <eric.snowberg@oracle.com> wrote:
-> > > On Jul 20, 2023, at 1:16 PM, Luca Boccassi <bluca@debian.org>
-> > > wrote:
-> > > On Thu, 20 Jul 2023 at 18:11, Eric Snowberg
-> > > <eric.snowberg@oracle.com> wrote:
-[...]
-> > > > I agree with James in the previous thread;  adding the SBAT
-> > > > section to the kernel should be handled by the signing tools.
-> > > > It really doesn't need to be included in the mainline kernel
-> > > > code. I also agree with the sentiment that mainline and the
-> > > > stable branches should not have SBAT versions attached
-> > > > to them. These are things distros should be responsible for
-> > > > including in their kernel if they want to have SBAT support.
-> > > 
-> > > Why would 'signing tools' handle that? It's just a text-based PE
-> > > section, it doesn't require access to private key materials to be
-> > > handled, nor it has any relationship with signing.
-> > 
-> > There is a relationship, the sbat information within the signed
-> > file can be used for revocation in lieu of revoking the hash or
-> > signing certificate at a later time.
-> 
-> No, it is completely disjoint. In fact, the kernel doesn't even have
-> to be signed at all, but it still _must_ have a .sbat section when it
-> is used in a UKI.
+On Thu, Jul 20, 2023 at 07:39:55PM +0200, Alexander Potapenko wrote:
+> Ensure that tag sequences containing alternating values are compressed
+> to buffers of expected size and correctly decompressed afterwards.
 
-Just a minute, this is wrong.  I was talking to Peter after all of this
-blew up about how we handle signed kernels with no sbat (since we need
-that still to work for developers who sign their own kernels).  I
-thought he was planning to require an sbat section for all EFI
-binaries, but he says that's not true.  The current way shim does the
-sbat check is that if the section doesn't exist the binary is processed
-as having an empty sbat section (i.e. no sbat level checking will be
-done because there's no named sbat level for anything and it will just
-work) and they're planning to keep it that way so that a signed but no
-sbat kernel will always "just work" without any special key handling in
-shim.  So if we're planning to keep this no-sbat case in discrete
-kernels, even when the shim verifier checks sbat, the UKI kernel will
-need to work for this case as well.
+...
 
-James
+> +#include <linux/bits.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include <linux/string.h>
+
+> +#include <kunit/test.h>
+
+Keep this in a separate group outside of linux/*.
+
+> +#include <linux/types.h>
+> +
+> +#include <asm/mtecomp.h>
+
+...
+
+> +/* Functions exported from mtecomp.c for this test. */
+> +void mte_tags_to_ranges(u8 *tags, u8 *out_tags, unsigned short *out_sizes,
+> +			size_t *out_len);
+> +void mte_ranges_to_tags(u8 *r_tags, unsigned short *r_sizes, size_t r_len,
+> +			u8 *tags);
+
+This is interesting. Have you run `make W=1` on this code?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
