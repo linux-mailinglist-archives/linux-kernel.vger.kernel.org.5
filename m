@@ -2,171 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B705475D04D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D4875D055
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbjGURDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 13:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
+        id S229887AbjGURGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 13:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbjGURDg (ORCPT
+        with ESMTP id S229708AbjGURGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 13:03:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72B72D58;
-        Fri, 21 Jul 2023 10:03:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6458461D62;
-        Fri, 21 Jul 2023 17:03:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0AF7C433CD;
-        Fri, 21 Jul 2023 17:03:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689959013;
-        bh=5JLpzCIcP8GrNwfhf6Q72RzlXws33EqGiwwug49sJZY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LNfbQodAtZzeDkyOfQdMDBi50Gyas+DIpOQ7sDqTE9htpf+PdR+tg8C5psq8brz2Q
-         ZuE5TLeIX5LqqVmKYiW5E15BKgUXKzMKtGnrN1vm0dhwDIDEOzo4MskCU1OIQ1u1c6
-         pjQFiz8VBbChK6sZR+/VOjLmX9+0w0zGSwW7VhJ0iS9URHUB+ePLikv4AhAhvvMfQs
-         mtA0o2O+S2/xYsqzqk1xXSnHMuX/4/1b12Q04/g2C0DhxlNesWeEMYniTspe+4c4kU
-         epDK9hUG7br2gkaesFngSq0KFEyhuUbAFfqKcMY+dKSURwZ50Z3psEMlry4k/dVlsB
-         KvgFHNUFAACOw==
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-56347da4a50so1361597eaf.2;
-        Fri, 21 Jul 2023 10:03:33 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZMH+RCyZU4J+EpI3zOC2+EJbAQUpOxPRUj8AJ4Cy4+UEOPDt0S
-        Lozv1AVjlM4xNpDFvqW+1cCAAK8hNjU8/0j1H6c=
-X-Google-Smtp-Source: APBJJlHkxE2hRMjRtwdE1wEe7yvoUrAsmGMiIkRnfMseS4U8D4zRxUXkhZI4fB5CzBs8Cs+kWawoSCgf4omuzIkWWv4=
-X-Received: by 2002:a4a:7544:0:b0:563:625b:e02e with SMTP id
- g4-20020a4a7544000000b00563625be02emr1873643oof.9.1689959013011; Fri, 21 Jul
- 2023 10:03:33 -0700 (PDT)
+        Fri, 21 Jul 2023 13:06:08 -0400
+Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB51210CB
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:06:03 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id MtZlqv15ZztjnMtZlqN0fo; Fri, 21 Jul 2023 19:06:01 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1689959161;
+        bh=SofxeuaexXoVGK42MZB8nd198xjokjbrrVTRA9SKYtw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=lOexLpZVe1t6hR6kg1Cur8dITSWx7YvByn1H9i2JqkPO6f/6TkvNWHYczWmTe2itl
+         O1qUievB28yOYaowg0E52YBjiJo6kTkXrMHtunnpU/Ol4y5z06bp6yrhWaMI126EGS
+         pjpI7sw7DiOY15XwZ3ddO971kzEmGpNi31DdkEmSCuTgwI9uvXBdYmcbktK+03ClqH
+         zjDrcqmhmCFaWMoO+/8QtG61RWTsUFRhPybVAyqDT+9MCwWcUYxBS6XmlsV1/Ljo0t
+         L3ZU7DNtLfFkX+hitNTfLkb29wjWcAM2yNYFJpiosRyK2/lFEW/85BPaAn9Jdokznd
+         rxyEk0JPrpvkQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 21 Jul 2023 19:06:01 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <4fcb0507-d483-e49c-be9e-389d96187fc5@wanadoo.fr>
+Date:   Fri, 21 Jul 2023 19:05:57 +0200
 MIME-Version: 1.0
-References: <20230721150147.11720-2-palmer@rivosinc.com>
-In-Reply-To: <20230721150147.11720-2-palmer@rivosinc.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 22 Jul 2023 02:02:56 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATF9pxJc0nU3NPnX_PFJr7gF6Baras548ULkO8XE98_VQ@mail.gmail.com>
-Message-ID: <CAK7LNATF9pxJc0nU3NPnX_PFJr7gF6Baras548ULkO8XE98_VQ@mail.gmail.com>
-Subject: Re: [PATCH] modpost, kallsyms: Treat add '$'-prefixed symbols as
- mapping symbols
-To:     Palmer Dabbelt <palmer@rivosinc.com>
-Cc:     wangkefeng.wang@huawei.com, mcgrof@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, nicolas@fjasle.eu,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] lib/string_helpers: Use passed in GFP_ flags
+To:     Andy Shevchenko <andy@kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <df051844-0a73-4cf9-9719-a6001f1c9d5c@moroto.mountain>
+ <ZLqfizx5Xi9fOF6z@smile.fi.intel.com>
+Content-Language: fr, en-US
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <ZLqfizx5Xi9fOF6z@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 12:20=E2=80=AFAM Palmer Dabbelt <palmer@rivosinc.co=
-m> wrote:
->
-> Trying to restrict the '$'-prefix change to RISC-V caused some fallout,
-> so let's just treat all those symbols as special.
->
-> Fixes: c05780ef3c1 ("module: Ignore RISC-V mapping symbols too")
-> Link: https://lore.kernel.org/all/20230712015747.77263-1-wangkefeng.wang@=
-huawei.com/
-> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+Le 21/07/2023 à 17:08, Andy Shevchenko a écrit :
+> On Fri, Jul 21, 2023 at 05:57:00PM +0300, Dan Carpenter wrote:
+>> This patch doesn't affect runtime because all the callers pass GFP_KERNEL
+>> as the allocation flags.  However, it should use the passed in "gfp" as
+>> the allocation flags.
+> 
+> Please, Cc Kees Cook as he stepped in as a maintainer of this in particular.
+> 
+> Reviewed-by: Andy Shevchenko <andy@kernel.org>
 
+Hi,
+just for the records, see [1].
+Another approach was proposed by Michal Hocko in [2].
 
-Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+CJ
 
+[1]: 
+https://lore.kernel.org/all/1ec96b6e4f2e35599931d7516c6938c4a8845bf0.1642337606.git.christophe.jaillet@wanadoo.fr/
 
-> ---
-> It wasn't clear if we should just revert the original patch and spin a
-> new one, but looks like this is in at least some trees so I sent a
-> follow-on patch -- at least this way I can make coffee before forgetting
-> to send it ;)
-> ---
->  include/linux/module_symbol.h | 16 ++--------------
->  kernel/module/kallsyms.c      |  2 +-
->  scripts/mod/modpost.c         |  2 +-
->  3 files changed, 4 insertions(+), 16 deletions(-)
->
-> diff --git a/include/linux/module_symbol.h b/include/linux/module_symbol.=
-h
-> index 5b799942b243..1269543d0634 100644
-> --- a/include/linux/module_symbol.h
-> +++ b/include/linux/module_symbol.h
-> @@ -3,25 +3,13 @@
->  #define _LINUX_MODULE_SYMBOL_H
->
->  /* This ignores the intensely annoying "mapping symbols" found in ELF fi=
-les. */
-> -static inline int is_mapping_symbol(const char *str, int is_riscv)
-> +static inline int is_mapping_symbol(const char *str)
->  {
->         if (str[0] =3D=3D '.' && str[1] =3D=3D 'L')
->                 return true;
->         if (str[0] =3D=3D 'L' && str[1] =3D=3D '0')
->                 return true;
-> -       /*
-> -        * RISC-V defines various special symbols that start with "$".  T=
-he
-> -        * mapping symbols, which exist to differentiate between incompat=
-ible
-> -        * instruction encodings when disassembling, show up all over the=
- place
-> -        * and are generally not meant to be treated like other symbols. =
- So
-> -        * just ignore any of the special symbols.
-> -        */
-> -       if (is_riscv)
-> -               return str[0] =3D=3D '$';
-> -
-> -       return str[0] =3D=3D '$' &&
-> -              (str[1] =3D=3D 'a' || str[1] =3D=3D 'd' || str[1] =3D=3D '=
-t' || str[1] =3D=3D 'x')
-> -              && (str[2] =3D=3D '\0' || str[2] =3D=3D '.');
-> +       return str[0] =3D=3D '$';
->  }
->
->  #endif /* _LINUX_MODULE_SYMBOL_H */
-> diff --git a/kernel/module/kallsyms.c b/kernel/module/kallsyms.c
-> index 78a1ffc399d9..ef73ae7c8909 100644
-> --- a/kernel/module/kallsyms.c
-> +++ b/kernel/module/kallsyms.c
-> @@ -289,7 +289,7 @@ static const char *find_kallsyms_symbol(struct module=
- *mod,
->                  * and inserted at a whim.
->                  */
->                 if (*kallsyms_symbol_name(kallsyms, i) =3D=3D '\0' ||
-> -                   is_mapping_symbol(kallsyms_symbol_name(kallsyms, i), =
-IS_ENABLED(CONFIG_RISCV)))
-> +                   is_mapping_symbol(kallsyms_symbol_name(kallsyms, i)))
->                         continue;
->
->                 if (thisval <=3D addr && thisval > bestval) {
-> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> index 7c71429d6502..b29b29707f10 100644
-> --- a/scripts/mod/modpost.c
-> +++ b/scripts/mod/modpost.c
-> @@ -1052,7 +1052,7 @@ static inline int is_valid_name(struct elf_info *el=
-f, Elf_Sym *sym)
->
->         if (!name || !strlen(name))
->                 return 0;
-> -       return !is_mapping_symbol(name, elf->hdr->e_machine =3D=3D EM_RIS=
-CV);
-> +       return !is_mapping_symbol(name);
->  }
->
->  /* Look up the nearest symbol based on the section and the address */
-> --
-> 2.41.0
->
+[2]: https://lore.kernel.org/all/YeWOd2G69LyR3PVZ@dhcp22.suse.cz/
 
+> 
+>> Fixes: 0ee931c4e31a ("mm: treewide: remove GFP_TEMPORARY allocation flag")
+>> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+>> ---
+>>   lib/string_helpers.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/lib/string_helpers.c b/lib/string_helpers.c
+>> index d3b1dd718daf..be517c25737d 100644
+>> --- a/lib/string_helpers.c
+>> +++ b/lib/string_helpers.c
+>> @@ -668,7 +668,7 @@ char *kstrdup_quotable_cmdline(struct task_struct *task, gfp_t gfp)
+>>   	char *buffer, *quoted;
+>>   	int i, res;
+>>   
+>> -	buffer = kmalloc(PAGE_SIZE, GFP_KERNEL);
+>> +	buffer = kmalloc(PAGE_SIZE, gfp);
+>>   	if (!buffer)
+>>   		return NULL;
+>>   
+>> @@ -704,7 +704,7 @@ char *kstrdup_quotable_file(struct file *file, gfp_t gfp)
+>>   		return kstrdup("<unknown>", gfp);
+>>   
+>>   	/* We add 11 spaces for ' (deleted)' to be appended */
+>> -	temp = kmalloc(PATH_MAX + 11, GFP_KERNEL);
+>> +	temp = kmalloc(PATH_MAX + 11, gfp);
+>>   	if (!temp)
+>>   		return kstrdup("<no_memory>", gfp);
+>>   
+>> -- 
+>> 2.39.2
+>>
+> 
 
---=20
-Best Regards
-Masahiro Yamada
