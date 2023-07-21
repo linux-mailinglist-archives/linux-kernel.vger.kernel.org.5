@@ -2,172 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B339775D6AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 23:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB99875D6B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 23:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230309AbjGUVj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 17:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50634 "EHLO
+        id S229609AbjGUVki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 17:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjGUVjy (ORCPT
+        with ESMTP id S229592AbjGUVkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 17:39:54 -0400
-Received: from smtp.smtpout.orange.fr (smtp-29.smtpout.orange.fr [80.12.242.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A58272D
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:39:52 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id Mxqmq5keRulAmMxqmqA5x4; Fri, 21 Jul 2023 23:39:50 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1689975590;
-        bh=+AI3+XsUJI+ulF08I406IDbECh2Ii2X/RJj/A5FZuTo=;
-        h=Date:Subject:To:References:From:In-Reply-To;
-        b=LPXWIPHiJfZKAb1Aiz4HQrkMhAa1jNbjXrfkxxrPpnnXhkK9QKbc3DTltOhIHc3BU
-         Offx+DFuN9pwJM81Ie9Nhufi7RDelWRMJ260rHjnXSngCS19h6Rg9ZCNJBFaLFGdT0
-         ET0IJlPORPM7THSVv5+CmKznQYOBewPXjOFDLpD2hHBgiCKfZ4u5cLtRuHhqMRPd3/
-         Iy2B6Bv7RZu6NUkKHi4Fk0Eit0trLJgUCbY4ibuRl1YTqVipcgqod/VHmbpmZPSv19
-         pSAij0uQjbXU1NMoYm2X7a1rRYPT+pTN8YYIvKbNqldgvlSuW+QWpn7oVTGrqVICCP
-         Dph9gUBF9Veog==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 21 Jul 2023 23:39:50 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <d53ae62c-b5e3-d543-d7e9-93cd59d43415@wanadoo.fr>
-Date:   Fri, 21 Jul 2023 23:39:47 +0200
+        Fri, 21 Jul 2023 17:40:37 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BDE3A85
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:40:35 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5774335bb2aso28872127b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:40:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1689975634; x=1690580434;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1l7ane1OFS+DsoXNZ3U+AZ4KjgV57iMuNiejIQehSc4=;
+        b=FSYL0es3zGYgPSbiIbE7QW63J5pU/Pp1sjBqc2fV7aNAMjPq8/ibss0ZDcKuCz0WIG
+         W/pDwheI4n0hlntSOBzbMjuRyUCHn6J1UpZM0i7jacmbpZVhwD+bwXYSZzGaFwphlXxq
+         mHOmwpGrQGKTdhU5PkDumCCubMwIFJBn7X46RallzhPKlwFEfXGUV4lHshAGTEFnJPAZ
+         7DpFyuDA12HPI8B8H1kFrbriPMQOIB6Fx6+2ImvM21lGje2l0zK5WEF6BdLcO2mfIzUl
+         lwkWo19C1XELSkBimTW40s1NN/p5NVBEuw68hDplm+NuuKpleUFzO7ma6Wphsn1x+N4c
+         jxPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689975634; x=1690580434;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1l7ane1OFS+DsoXNZ3U+AZ4KjgV57iMuNiejIQehSc4=;
+        b=GTvuPWoY2Vq/AmxkMh9VaOWDrJzItwaqB9MvaEAveCXnu9Tn4KrFG77ZmhIcQGwAql
+         xfCD/J8JnfuSSqlJ7ZPKMhFFzGaJj+JORdyG2B+UyDUYZnUP4pZx0+Dtttm4EhWpUbqs
+         bFg0U3pJXx87fPOn8SgMCN//QEoKQAZCW/U44qy4MIp4K0XF+DkrKEdn7+MXjgh3owji
+         zjF2xIOOsPM9M3AVRz1bsshqL13GzejEqfHcMytEEse2MQftHZCxKQdZADhZ3S61ywrG
+         sA/66Md+mbgSzjCXxaF5HULwUho8HCwB8wlED+quh7GVS9+e3Kp4MzrTbLGSIVoAUQyy
+         +T1w==
+X-Gm-Message-State: ABy/qLZU81u+z/Zu4/YL62+whmQNr/wUzFL3IeQwY24k5xXhlgvdD93q
+        QN0Os+1sft6BiEQ+C/hkGD9nYl43vtIxGVf1fS4A
+X-Google-Smtp-Source: APBJJlE7LB25GxeesqatrOlBcbG6723uMfnR2JDVAgGbF3gS9RIs3WyGqLCBTpgzBVkejDj4mmTAPOgV3lme6IdNwMQ=
+X-Received: by 2002:a0d:ddd4:0:b0:577:2cac:cd49 with SMTP id
+ g203-20020a0dddd4000000b005772caccd49mr1343753ywe.1.1689975634601; Fri, 21
+ Jul 2023 14:40:34 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 2/5] net: hpe: Add GXP UMAC MDIO
-Content-Language: fr
-To:     nick.hawkins@hpe.com, verdun@hpe.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Newsgroups: gmane.linux.network,gmane.linux.drivers.devicetree,gmane.linux.kernel
-References: <20230721212044.59666-1-nick.hawkins@hpe.com>
- <20230721212044.59666-3-nick.hawkins@hpe.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20230721212044.59666-3-nick.hawkins@hpe.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230629195535.2590-1-casey@schaufler-ca.com> <20230629195535.2590-3-casey@schaufler-ca.com>
+ <9b09c571-9288-73e1-18c5-9023b909a5d9@digikod.net> <b711f8b4-f624-bb2b-1caf-90c674245135@schaufler-ca.com>
+In-Reply-To: <b711f8b4-f624-bb2b-1caf-90c674245135@schaufler-ca.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 21 Jul 2023 17:40:23 -0400
+Message-ID: <CAHC9VhRY1_tdLVnFGK4ZxRDEs+JKJWD3VR+iHrcrm9Psmbowtg@mail.gmail.com>
+Subject: Re: [PATCH v12 02/11] LSM: Maintain a table of LSM attribute data
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        linux-security-module@vger.kernel.org, jmorris@namei.org,
+        serge@hallyn.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 21/07/2023 à 23:20, nick.hawkins@hpe.com a écrit :
-> From: Nick Hawkins <nick.hawkins@hpe.com>
-> 
-> The GXP contains two Universal Ethernet MACs that can be
-> connected externally to several physical devices. From an external
-> interface perspective the BMC provides two SERDES interface connections
-> capable of either SGMII or 1000Base-X operation. The BMC also provides
-> a RMII interface for sideband connections to external Ethernet controllers.
-> 
-> The primary MAC (umac0) can be mapped to either SGMII/1000-BaseX
-> SERDES interface.  The secondary MAC (umac1) can be mapped to only
-> the second SGMII/1000-Base X Serdes interface or it can be mapped for
-> RMII sideband.
-> 
-> The MDIO(mdio0) interface from the primary MAC (umac0) is used for
-> external PHY status and configuration. The MDIO(mdio1) interface from
-> the secondary MAC (umac1) is routed to the SGMII/100Base-X IP blocks
-> on the two SERDES interface connections.
-> 
-> Signed-off-by: Nick Hawkins <nick.hawkins@hpe.com>
-> ---
+On Fri, Jul 14, 2023 at 3:42=E2=80=AFPM Casey Schaufler <casey@schaufler-ca=
+.com> wrote:
+> On 7/11/2023 8:35 AM, Micka=C3=ABl Sala=C3=BCn wrote:
+> > On 29/06/2023 21:55, Casey Schaufler wrote:
+> >> As LSMs are registered add their lsm_id pointers to a table.
+> >> This will be used later for attribute reporting.
+> >>
+> >> Determine the number of possible security modules based on
+> >> their respective CONFIG options. This allows the number to be
+> >> known at build time. This allows data structures and tables
+> >> to use the constant.
+> >>
+> >> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> >> Reviewed-by: Kees Cook <keescook@chromium.org>
+> >> Reviewed-by: Serge Hallyn <serge@hallyn.com>
+> >> ---
+> >>   include/linux/security.h |  2 ++
+> >>   security/security.c      | 37 +++++++++++++++++++++++++++++++++++++
+> >>   2 files changed, 39 insertions(+)
 
-[...]
+...
 
-> +static int umac_mdio_probe(struct platform_device *pdev)
-> +{
-> +	struct resource *res;
-> +	struct mii_bus *bus;
-> +	struct umac_mdio_priv *umac_mdio;
-> +
-> +	int ret;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "fail to get resource\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	bus = devm_mdiobus_alloc_size(&pdev->dev,
-> +				      sizeof(struct umac_mdio_priv));
-> +	if (!bus) {
-> +		dev_err(&pdev->dev, "failed to alloc mii bus\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	snprintf(bus->id, MII_BUS_ID_SIZE, "%s", dev_name(&pdev->dev));
-> +
-> +	bus->name	= dev_name(&pdev->dev);
-> +	bus->read	= umac_mdio_read,
-> +	bus->write	= umac_mdio_write,
-> +	bus->parent	= &pdev->dev;
-> +	umac_mdio = bus->priv;
-> +	umac_mdio->base = devm_ioremap_resource(&pdev->dev, res);
-> +	if (!umac_mdio->base) {
-> +		dev_err(&pdev->dev, "failed to do ioremap\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	platform_set_drvdata(pdev, umac_mdio);
-> +
-> +	ret = of_mdiobus_register(bus, pdev->dev.of_node);
+> >> diff --git a/security/security.c b/security/security.c
+> >> index e56714ef045a..5a699e47478b 100644
+> >> --- a/security/security.c
+> >> +++ b/security/security.c
+> >> @@ -521,6 +546,18 @@ void __init security_add_hooks(struct
+> >> security_hook_list *hooks, int count,
+> >>   {
+> >>       int i;
+> >>   +    /*
+> >> +     * A security module may call security_add_hooks() more
+> >> +     * than once during initialization, and LSM initialization
+> >> +     * is serialized. Landlock is one such case.
+> >> +     * Look at the previous entry, if there is one, for duplication.
+> >> +     */
+> >> +    if (lsm_active_cnt =3D=3D 0 || lsm_idlist[lsm_active_cnt - 1] !=
+=3D
+> >> lsmid) {
+> >
+> > Isn't it possible to have interleaved security_add_hooks() calls?
+>
+> The initialization is serial and interleaving isn't possible.
+>
+> >> +        if (lsm_active_cnt >=3D LSM_CONFIG_COUNT)
+> >> +            panic("%s Too many LSMs registered.\n", __func__);
+> >
+> > I'm not sure we should panic, but from a security point of view it is
+> > critical enough=E2=80=A6
+>
+> It's possible this should be a BUG() instance, but the panic() more
+> closely resembles what's nearby in the code.
 
-devm_of_mdiobus_register()?
+I think the panic() call is okay.  If something is so horribly broken
+that we hit this case we have little option but to panic the system as
+booting with the LSM controls busted in such a way is very not good.
 
-This makes the platform_set_drvdata() just above and umac_mdio_remove() 
-useless.
+There are probably those that would object to the above statement, but
+those people aren't likely to be building a kernel with any LSMs in
+the first place.
 
-CJ
-
-> +
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "Cannot register MDIO bus (%d)\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int umac_mdio_remove(struct platform_device *pdev)
-> +{
-> +	struct mii_bus *bus = platform_get_drvdata(pdev);
-> +
-> +	if (bus)
-> +		mdiobus_unregister(bus);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id umac_mdio_of_matches[] = {
-> +	{ .compatible = "hpe,gxp-umac-mdio", },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, umac_mdio_of_matches);
-> +
-> +static struct platform_driver umac_driver = {
-> +	.driver	= {
-> +		.name    = "gxp-umac-mdio",
-> +		.of_match_table = of_match_ptr(umac_mdio_of_matches),
-> +	},
-> +	.probe   = umac_mdio_probe,
-> +	.remove  = umac_mdio_remove,
-> +};
-> +
-> +module_platform_driver(umac_driver);
-> +
-> +MODULE_AUTHOR("Nick Hawkins <nick.hawkins@hpe.com>");
-> +MODULE_DESCRIPTION("HPE GXP UMAC MDIO driver");
-> +MODULE_LICENSE("GPL");
-
+--=20
+paul-moore.com
