@@ -2,128 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8435875C309
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A11175C30B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbjGUJ2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:28:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
+        id S230223AbjGUJ3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjGUJ2X (ORCPT
+        with ESMTP id S229518AbjGUJ3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:28:23 -0400
-Received: from out-15.mta0.migadu.com (out-15.mta0.migadu.com [91.218.175.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20F22726
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:28:21 -0700 (PDT)
-Message-ID: <14b868d1-6a61-ea32-abb9-05cdfa335a12@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689931699;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4tqHQUfFTh5hROY1Q1qzq1Tm60ss8WJh3oYAR/+AsFM=;
-        b=p4x2jCjixugQfyAoXSB7mUja8QN+LyCkx9XSqq/4Zl3qtR9R7lbJQ3mbkB5yfSzl5R5Eze
-        MMz4OY16ZHws6ipP5TZ4nt14Xigdajh5X/ElPxy/y7ruNbq4YXk3b86VyVywPLe30+CFiE
-        9SVFZeq0Vk8ynXGg3KjP2mn/fHOR2XU=
-Date:   Fri, 21 Jul 2023 17:28:11 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH] binder: fix memory leak in binder_init()
+        Fri, 21 Jul 2023 05:29:08 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2083.outbound.protection.outlook.com [40.107.13.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35222D57;
+        Fri, 21 Jul 2023 02:29:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KInPFhvR99mj+41BEW/urRa6Wmx35rwYb2pi40nqX64m+nYLEmwIZtxGrXI2YQ6sTDVN8D7c4ydfmQ3l9LPiPvki4z1HRXeHsFGrHVXMjBRQ7phBjgYbDqroLj2DnAEpBFwbrLQ/RZXNdoabTRQUpUIhJ3pNsqaMQERekMVAtFzu7VSEQnXOIYezJMD/reICtPar7tTf5CEw4OzLDAv7UdpJIjgZthCgFZwmCRzDfbxs8qXVqYzw4uO0bdC+N4l49upj52ZHCWfd/FIJvg0R+q4ChaxwZlzl0qLy4w/wTiGbkcnQW4F8VWAp9EPKqFyr803OvASniHNYRoO2AWV98Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=u82CGcEKOLENHGQR12gi3yhE30P65VMkTWUyQlisuH4=;
+ b=WkvtufiC0al3j0wy0tk10s4062VAa3s/0dRbFYaGv2YKSfVTiCxRF/tN6iqYXbRz14MYwSka4SCxkJ2r1rR0VPQkY4pLVDGz0g1Bbfq1qabxlZO7Rjqborn6NiZbmBPCNGSezoLQYbfbq2Ih5Mw6ElP2M4NS+dk+G1ye0CpLq8AMCMpAazXeFyNadfKYa8Ypf7hn9/J8jV80ADpgI+mE4w/Ltwdqc5Sqb/8+mPBPUdPmlr2VpiIWSxPgft2ECOc9qwlKd1z3+QwmyvQ1g6u4BUjy/veBM8GwmZY8MB9rKS9dcKJYHM0exfu+TYG3i4qaMv5ARApjGs1GknRKLLn4bw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u82CGcEKOLENHGQR12gi3yhE30P65VMkTWUyQlisuH4=;
+ b=cpBuwZRu7UBr0JSc3J2yYm4c07e6ACvM7pzw5vXBuTmin4TpFhOJFEntkubNVF6WxYQII+s6uT7j+6r41OQd1RZob+V44PNZnSOAPPdevEHB4Qk4njNJaZVWzDRfpHqUxuibHZjQ/FyPLrpLUp1fQm3MsQTX9YDSfXLl6zNFNAE=
+Received: from AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
+ by DB9PR04MB9913.eurprd04.prod.outlook.com (2603:10a6:10:4c4::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Fri, 21 Jul
+ 2023 09:29:04 +0000
+Received: from AM7PR04MB7046.eurprd04.prod.outlook.com
+ ([fe80::9018:e395:332c:e24b]) by AM7PR04MB7046.eurprd04.prod.outlook.com
+ ([fe80::9018:e395:332c:e24b%4]) with mapi id 15.20.6609.022; Fri, 21 Jul 2023
+ 09:29:03 +0000
+From:   Ying Liu <victor.liu@nxp.com>
+To:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "lee@kernel.org" <lee@kernel.org>,
+        "daniel.thompson@linaro.org" <daniel.thompson@linaro.org>,
+        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
+        "deller@gmx.de" <deller@gmx.de>,
+        "andy@kernel.org" <andy@kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "brgl@bgdev.pl" <brgl@bgdev.pl>
+Subject: [PATCH v4] backlight: gpio_backlight: Drop output GPIO direction
+ check for initial power state
+Thread-Topic: [PATCH v4] backlight: gpio_backlight: Drop output GPIO direction
+ check for initial power state
+Thread-Index: Adm7tcocHnotirQkKUSANe2HiNXlhw==
+Date:   Fri, 21 Jul 2023 09:29:03 +0000
+Message-ID: <20230721093342.1532531-1-victor.liu@nxp.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     gregkh@linuxfoundation.org, Carlos Llamas <cmllamas@google.com>
-Cc:     arve@android.com, tkjos@android.com, maco@android.com,
-        joel@joelfernandes.org, brauner@kernel.org, surenb@google.com,
-        linux-kernel@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
-References: <20230625154937.64316-1-qi.zheng@linux.dev>
- <ZJhoXDpX0tOWI01M@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <ZJhoXDpX0tOWI01M@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: SG2PR02CA0011.apcprd02.prod.outlook.com
+ (2603:1096:3:17::23) To AM7PR04MB7046.eurprd04.prod.outlook.com
+ (2603:10a6:20b:113::22)
+x-mailer: git-send-email 2.37.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM7PR04MB7046:EE_|DB9PR04MB9913:EE_
+x-ms-office365-filtering-correlation-id: f140bde6-7aa0-4b07-033d-08db89ccec9b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JVwrT/qzocuvjMTgznUVPKcWOq/I0mVGixVOaSTdqOJuhuRmXq4mMiT5yc/sexzkVrdCSp5aru6ib9ra3mili03PHQ5jLquyA3cTC98TL9MDMJcah74XFzbzESwWawZ/HztZ+t6mvgVnqo0iCK4eK0Krf8D9omLbH8NXKym0TwinfSR1jshcLf58TTrrM1roqN2hkeOlZLmd4aliwFSUDpdONz203pRieZrIQ6vMPwkEuRKNMTaQRQscM9pB83uZ9ridjQZRFyiEWLIR22xq78IhyS7aNh+1pILZNUrVOWl2cNU0t7MMPi6tknkYTluQjXuZEAdKNYD0h0LMcqdCdJ8NCmDiHhH2iEQiwoSM8QC2WVLgB5MYOIqQLtUaoEnRqWDCfl9Q6MsG+/xBtUeWtsF4BhpbOY4fC1xhvlKE/e5Vnba+uX48hnIUmOhY6ZDSa2a6U5b1+X2a12lx2d7fCNTbSnMHwZWAQXbcBhoOstxiIwuYxQP8kkgY+WnZEqws1I76FwyzP0HES9bHFOcYWdop7CqFzsMplaaFEujNEFwH+D6MsE/A5Rm92HRPKsGNvLgBFo5il9uLV4ubIjGwZ/VZ7uho1+OvIDFgOEEMg/ZLBeeRemhhh0CDKsDgtgQA
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(366004)(396003)(376002)(39860400002)(346002)(451199021)(71200400001)(54906003)(478600001)(6512007)(6486002)(52116002)(110136005)(186003)(2906002)(6506007)(4326008)(26005)(1076003)(7416002)(8936002)(64756008)(5660300002)(66446008)(8676002)(66946007)(66476007)(66556008)(122000001)(38350700002)(38100700002)(316002)(41300700001)(36756003)(83380400001)(2616005)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?Ve0rljVe9ah7VMkBaUNXJ69I9CldkIjBWZGlI8XenYctkjEHkDqU1d0hnW?=
+ =?iso-8859-1?Q?xitTUL58IKSJoj9+l6BntGaMTxU6l5e9Ti79eDAHV4GgoOcHFIxXn5YGgf?=
+ =?iso-8859-1?Q?7Sk8/FF+55Iialoz5flA8EGKj+oBrY1D8vE3l0lbl/nHSRxzQq6eTTfY3o?=
+ =?iso-8859-1?Q?QkcarP9ZKurQOWg5Kz+bY60FPU5wiNNBgZg4I65VS+ZGe1GGY3A4QwfPNn?=
+ =?iso-8859-1?Q?iReweLPbclaMGR9hWgd24qf92Fdbo4Kw0Dwy61lAeLh5m3QK15hizRjsZG?=
+ =?iso-8859-1?Q?plr81m+nZIz8A4jgi805J4+7Bum6AbVW8lzrPqNHoGFNx4oL1Vjo+8zxbB?=
+ =?iso-8859-1?Q?t1A1qDCkrR25FYazh96MdCl0V+KhLhhCf72NPngJOPK81R7fmtezkG6cIO?=
+ =?iso-8859-1?Q?QxxacWkncxZcAPqKcPaeuKxzM08EuSRvm91T2NE0rGHV/5XZBOhiBIV9kG?=
+ =?iso-8859-1?Q?eZiBmum2hRMo9juB20MPCy5vLB1yEyamJUO6BYUg79H8Tb55d+CZMjcdYK?=
+ =?iso-8859-1?Q?AannJPmn32PqK7f3i9chCfqHHHFYe3lpRM2RcNzoAxkZSGn3l7j2jn6U92?=
+ =?iso-8859-1?Q?n/OnHye6MzQ2RdU6eJEDV2F1oKcMmYGcQ/GBXrHKg929IN2bI11zmNkDFa?=
+ =?iso-8859-1?Q?ZRUbNPufJc1HWN4BxBXUbRakfFjHFUjQu9SmIwpAVlBTXTC6jbBv6/X3hN?=
+ =?iso-8859-1?Q?GIJEUNzYzRfrq8RKb3puaKiTQafhyl7FV1kFZ2lg+TloXFonXJwadyrLOK?=
+ =?iso-8859-1?Q?yX2Swp5UJFeohT0qXwklg6sqkh4I0smGDgLru2IY7SjueORIrgVdVAiqsj?=
+ =?iso-8859-1?Q?/XJkNPGFmhgZtk3VfQq3Rhka316VU6sUMARXt6LBRLIWhJf+HLAC2O6u7d?=
+ =?iso-8859-1?Q?tQ1flV9KPkKqopH+KefvL4TgnTq55q0eqPOUfITvAqqbY+Nu/i1ZzShrgE?=
+ =?iso-8859-1?Q?XAn47J5NDdIDS8/1qiVInrMEoOD/YOxqqlFNZW4iJoZ9+sEnD+eoCbH+JX?=
+ =?iso-8859-1?Q?zZnY+9NelA+9ac8KqCp2u9FGhR2tFx/n1mkZObP5QRGJr9MGOwGeNvS0RO?=
+ =?iso-8859-1?Q?clYcVP3d1Q3Wt6KTj9EE0td5kAJfkknO9tkaIDA4JwhcZj7Ue/7r75GxLT?=
+ =?iso-8859-1?Q?J5Nn4jmizafYQ3zRsC6p9+YpUw79moYfEexDiyPb6MMmBUtYtNg/6Qn48N?=
+ =?iso-8859-1?Q?bDac57O3TtaUh7EggJdey5kyJQn+r1AbHgN4qz0zlYnGK/mfq/XszFlYgQ?=
+ =?iso-8859-1?Q?qJBmR6d0/Dy9Wb2HCW+WRoPIy9ZRwIoWNlMJe7CwCObllKVfIxHDlwyeqY?=
+ =?iso-8859-1?Q?wYl0nnS8GSo/L4gXAsnKORtpetmDUFRTD/nnkatqCZ3OZn0HjVvHy53qQz?=
+ =?iso-8859-1?Q?YlvMgGA+06XlOlj0RhfckXah6Zc9/nuOcrvfVnY31EavIHwH0xy3mwVv5u?=
+ =?iso-8859-1?Q?UwV7Y4P2yd9FMFVJiY8usuR5BGA7GNKQCcWY4DjwUxd4fqlaH2Kh+EYK2K?=
+ =?iso-8859-1?Q?gIEZ6G5mfF7MrXrbFzsuYBhwL7cniEh2AkRKEfMQnp7jKSmXbuxYrSTmj8?=
+ =?iso-8859-1?Q?pAoZ7xzlDO6VEbEaxbbqmyz8NtIQ79kAaPpwSi/9Puk4OnrPWih/D/26Fi?=
+ =?iso-8859-1?Q?WLy2A5EV4/zWzCA3eIJRmCds1CfsCr7NGV?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7046.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f140bde6-7aa0-4b07-033d-08db89ccec9b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2023 09:29:03.8931
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Rxlq5poUZSqFDaIec/zOaXvK0aC3/tPvRr4E2mgCQiXjXENfRbkcnTWyYWJOPbHrbSCrsiNdB5C41msK6atX0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9913
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If GPIO pin is in input state but backlight is currently off due to
+default pull downs, then initial power state is set to FB_BLANK_UNBLANK
+in DT boot mode with phandle link and the backlight is effectively
+turned on in gpio_backlight_probe(), which is undesirable according to
+patch description of commit ec665b756e6f ("backlight: gpio-backlight:
+Correct initial power state handling").
 
+Quote:
+---8<---
+If in DT boot we have phandle link then leave the GPIO in a state which the
+bootloader left it and let the user of the backlight to configure it furthe=
+r.
+---8<---
 
-On 2023/6/26 00:16, Carlos Llamas wrote:
-> On Sun, Jun 25, 2023 at 03:49:37PM +0000, Qi Zheng wrote:
->> From: Qi Zheng <zhengqi.arch@bytedance.com>
->>
->> In binder_init(), the destruction of binder_alloc_shrinker_init() is not
->> performed in the wrong path, which will cause memory leaks. So this commit
->> introduces binder_alloc_shrinker_exit() and calls it in the wrong path to
->> fix that.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   drivers/android/binder.c       | 1 +
->>   drivers/android/binder_alloc.c | 6 ++++++
->>   drivers/android/binder_alloc.h | 1 +
->>   3 files changed, 8 insertions(+)
->>
->> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
->> index 486c8271cab7..d720f93d8b19 100644
->> --- a/drivers/android/binder.c
->> +++ b/drivers/android/binder.c
->> @@ -6617,6 +6617,7 @@ static int __init binder_init(void)
->>   
->>   err_alloc_device_names_failed:
->>   	debugfs_remove_recursive(binder_debugfs_dir_entry_root);
->> +	binder_alloc_shrinker_exit();
->>   
->>   	return ret;
->>   }
->> diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
->> index 662a2a2e2e84..e3db8297095a 100644
->> --- a/drivers/android/binder_alloc.c
->> +++ b/drivers/android/binder_alloc.c
->> @@ -1087,6 +1087,12 @@ int binder_alloc_shrinker_init(void)
->>   	return ret;
->>   }
->>   
->> +void binder_alloc_shrinker_exit(void)
->> +{
->> +	unregister_shrinker(&binder_shrinker);
->> +	list_lru_destroy(&binder_alloc_lru);
->> +}
->> +
->>   /**
->>    * check_buffer() - verify that buffer/offset is safe to access
->>    * @alloc: binder_alloc for this proc
->> diff --git a/drivers/android/binder_alloc.h b/drivers/android/binder_alloc.h
->> index 138d1d5af9ce..dc1e2b01dd64 100644
->> --- a/drivers/android/binder_alloc.h
->> +++ b/drivers/android/binder_alloc.h
->> @@ -129,6 +129,7 @@ extern struct binder_buffer *binder_alloc_new_buf(struct binder_alloc *alloc,
->>   						  int pid);
->>   extern void binder_alloc_init(struct binder_alloc *alloc);
->>   extern int binder_alloc_shrinker_init(void);
->> +extern void binder_alloc_shrinker_exit(void);
->>   extern void binder_alloc_vma_close(struct binder_alloc *alloc);
->>   extern struct binder_buffer *
->>   binder_alloc_prepare_to_free(struct binder_alloc *alloc,
->> -- 
->> 2.30.2
->>
-> 
-> Thanks for the fix Qi Zheng.
-> 
-> Acked-by: Carlos Llamas <cmllamas@google.com>
+So, let's drop output GPIO direction check and only check GPIO value to set
+the initial power state.
 
-Hi Greg,
+Fixes: 706dc68102bc ("backlight: gpio: Explicitly set the direction of the =
+GPIO")
+Signed-off-by: Liu Ying <victor.liu@nxp.com>
+---
+v3->v4:
+* Capitalize words 'gpio' in patch description. (Andy)
+* Capitalize word 'gpio' in patch title.
+* Quote appropriately in patch description. (Andy)
 
-Can this patch be merged? The Fixes tag is:
+v2->v3:
+* Add Fixes tag. (Daniel)
 
-Fixes: f2517eb76f1f ("android: binder: Add global lru shrinker to binder")
+v1->v2:
+* Improve patch description. (Daniel, Bartosz, Andy)
 
-Thanks,
-Qi
+ drivers/video/backlight/gpio_backlight.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/video/backlight/gpio_backlight.c b/drivers/video/backl=
+ight/gpio_backlight.c
+index 6f78d928f054..38c46936fdcd 100644
+--- a/drivers/video/backlight/gpio_backlight.c
++++ b/drivers/video/backlight/gpio_backlight.c
+@@ -87,8 +87,7 @@ static int gpio_backlight_probe(struct platform_device *p=
+dev)
+ 		/* Not booted with device tree or no phandle link to the node */
+ 		bl->props.power =3D def_value ? FB_BLANK_UNBLANK
+ 					    : FB_BLANK_POWERDOWN;
+-	else if (gpiod_get_direction(gbl->gpiod) =3D=3D 0 &&
+-		 gpiod_get_value_cansleep(gbl->gpiod) =3D=3D 0)
++	else if (gpiod_get_value_cansleep(gbl->gpiod) =3D=3D 0)
+ 		bl->props.power =3D FB_BLANK_POWERDOWN;
+ 	else
+ 		bl->props.power =3D FB_BLANK_UNBLANK;
+--=20
+2.37.1
+
