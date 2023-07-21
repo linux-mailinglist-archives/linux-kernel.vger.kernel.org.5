@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4787975C1BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE2675C1C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbjGUId4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
+        id S231462AbjGUIeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjGUIdy (ORCPT
+        with ESMTP id S230394AbjGUIeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:33:54 -0400
+        Fri, 21 Jul 2023 04:34:02 -0400
 Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D5C272E
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:33:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111692D60
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:34:01 -0700 (PDT)
 Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R6jWc73bQzBRRLC
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:33:48 +0800 (CST)
+        by mail.208.org (Postfix) with ESMTP id 4R6jWn5jhKzBRRLC
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:33:57 +0800 (CST)
 Authentication-Results: mail.208.org (amavisd-new); dkim=pass
         reason="pass (just generated, assumed good)" header.d=208.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
         content-transfer-encoding:content-type:message-id:user-agent
         :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689928428; x=1692520429; bh=2WtIbZPCnUuMSZagvUZ9HX3LoWK
-        aD79EVzrQKVZC4Hg=; b=F2t8VW6OUmdUT16dArguUasONnp0UsprTKVhNNdo3+B
-        NQkYh60VMmgkV1p19hQW4CgquRhw8m36yHlci56NpdYgP7s/4hhAjwN4QZ5Gi54J
-        TYNIHjBDNTUmeOtCUDUVBtq2Um2PmHiJvQDVW6Hoshh9pdCAs5Ju6yClDAV8HmqX
-        nkClPIWBYLYdFUyUDFv4ecNVEv6I5NGUD1zgAHzxXl/yWjKgvNEsnpxM/Ro9ATdN
-        6G5pXc3OdKKxrfuPMZfg72m1XiN+d5Qpx7OMeswBzci/+tE39yOIDfA1M7eq3uaz
-        uaX/eCtJm+y/nf1ZqASaZ2oXsA+7QOVcZnzG1lrScjg==
+        dkim; t=1689928437; x=1692520438; bh=2GQrqP0A6vo5l/H7gdVYrs/ulVc
+        Sw7nNmu9MTpTLmQQ=; b=rxmCapbWAV38x3oZMmnleQNUN0gXf4VjL6y8UguMTD3
+        dql6h7g9GQqhoG2sqhICj9z33NAHWvf4k31EfABCj4dhgT4Lgwq5XnCq/1JuGjOa
+        QjLVW+SxP9udSUDMcKwACKQNARomvmKtMIcKUQ3nAdZrQXWryld3cKs2fYvavx3p
+        QrCsyQmwjHEWD7TXz9JQ7HqmZLXe+ztD7BGyYGaASvlBTsc/nCTsyMW3RbEhFpT/
+        x1dlr6QnySkwPFawmOCVz3fyzy2USyQuySP35kPQOB+6b8HqkOTjmtvCY84uBjye
+        QR491ulvRR8HtDLHPWaZRovw+VN7leeM9ozScfyF8DQ==
 X-Virus-Scanned: amavisd-new at mail.208.org
 Received: from mail.208.org ([127.0.0.1])
         by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id mN2tT62Qes8s for <linux-kernel@vger.kernel.org>;
-        Fri, 21 Jul 2023 16:33:48 +0800 (CST)
+        with ESMTP id pXnIcewwl5E7 for <linux-kernel@vger.kernel.org>;
+        Fri, 21 Jul 2023 16:33:57 +0800 (CST)
 Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R6jWc4yQbzBJnMj;
-        Fri, 21 Jul 2023 16:33:48 +0800 (CST)
+        by mail.208.org (Postfix) with ESMTPSA id 4R6jWn4PmNzBJnMj;
+        Fri, 21 Jul 2023 16:33:57 +0800 (CST)
 MIME-Version: 1.0
-Date:   Fri, 21 Jul 2023 08:33:48 +0000
-From:   sunran001@208suo.com
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org
+Date:   Fri, 21 Jul 2023 16:33:57 +0800
+From:   hanyu001@208suo.com
+To:     daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/apic/msi: space required before the open parenthesis '('
-In-Reply-To: <20230721083213.6036-1-xujianghui@cdjrlc.com>
-References: <20230721083213.6036-1-xujianghui@cdjrlc.com>
+Subject: [PATCH] arm: mach-pxa: add require space after that ','
+In-Reply-To: <tencent_05B568A5C378391102ED44ADD539AC404F06@qq.com>
+References: <tencent_05B568A5C378391102ED44ADD539AC404F06@qq.com>
 User-Agent: Roundcube Webmail
-Message-ID: <1e0ccf1c75db4c62a22487b2e4a7d5c7@208suo.com>
-X-Sender: sunran001@208suo.com
+Message-ID: <f57f7072cfaccc6aad71c2d29c4c21c7@208suo.com>
+X-Sender: hanyu001@208suo.com
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
@@ -62,24 +61,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: space required before the open parenthesis '('
+Fix below checkpatch errors:
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
+./arch/arm/mach-pxa/generic.h:18: ERROR: space required after that ',' 
+(ctx:VxV)
+./arch/arm/mach-pxa/generic.h:18: ERROR: space required after that ',' 
+(ctx:VxV)
+
+Signed-off-by: Yu Han <hanyu001@208suo.com>
 ---
-  arch/x86/kernel/apic/msi.c | 2 +-
+  arch/arm/mach-pxa/generic.h | 2 +-
   1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/apic/msi.c b/arch/x86/kernel/apic/msi.c
-index 35d5b8fb18ef..cd565f253dcd 100644
---- a/arch/x86/kernel/apic/msi.c
-+++ b/arch/x86/kernel/apic/msi.c
-@@ -227,7 +227,7 @@ static bool x86_init_dev_msi_info(struct device 
-*dev, struct irq_domain *domain,
-  	}
+diff --git a/arch/arm/mach-pxa/generic.h b/arch/arm/mach-pxa/generic.h
+index c9c2c46ecead..3775201229ab 100644
+--- a/arch/arm/mach-pxa/generic.h
++++ b/arch/arm/mach-pxa/generic.h
+@@ -15,7 +15,7 @@ extern void __init pxa_dt_irq_init(int (*fn)(struct 
+irq_data *,
+  extern void __init pxa_map_io(void);
+  extern void pxa_timer_init(void);
 
-  	/* Is the target supported? */
--	switch(info->bus_token) {
-+	switch (info->bus_token) {
-  	case DOMAIN_BUS_PCI_DEVICE_MSI:
-  	case DOMAIN_BUS_PCI_DEVICE_MSIX:
-  		break;
+-#define SET_BANK(__nr,__start,__size) \
++#define SET_BANK(__nr, __start, __size) \
+      mi->bank[__nr].start = (__start), \
+      mi->bank[__nr].size = (__size)
