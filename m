@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5783D75C9D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FD975C9D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbjGUOXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
+        id S230161AbjGUOYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbjGUOXW (ORCPT
+        with ESMTP id S229990AbjGUOYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:23:22 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255CF1BD;
-        Fri, 21 Jul 2023 07:23:22 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LE6VuN001098;
-        Fri, 21 Jul 2023 14:23:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=LHzbAf4p3hknDSQFHMo0HLS4YDqB1wYdsh71y9Uf2x8=;
- b=EFBEIMdi4jLgY0lExoehWOhmEq7k2WeXXsZHPEH4YveOMdo6MzWBJ3BdprXKYNOJmOce
- vylwYypHP6qdhVUa41Xp9ki5VtNBX/OjmGReRlPSni65mCrMnRYjwfzLdkQyjBOw+C/O
- mYE93+bseWQcEEUannxldTRZn01MSeOr2p4+ZMcxzr6nv5T/ZU2M0JfAMRvJ+8aHW7vu
- xhPU9oET9ZKwHuJIY5HcpTUiT2FAUJzBRaLR+oEM0j2hFbI7xE0JyzRbh1MGQuSYtEas
- meSAgryILFbnAcKLJxN9Uldv8/zeFHkIdL3ChVCjfzvVtt0gAssMrQdPMJY+4Whp0W1X iQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ryc7gdd7h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 14:23:21 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36LE824c010329;
-        Fri, 21 Jul 2023 14:23:21 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ryc7gdd76-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 14:23:21 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36LCg61i008046;
-        Fri, 21 Jul 2023 14:23:20 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rv80jmt5u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 14:23:20 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36LENHiF44302868
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Jul 2023 14:23:17 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 42DB220040;
-        Fri, 21 Jul 2023 14:23:17 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8751120043;
-        Fri, 21 Jul 2023 14:23:16 +0000 (GMT)
-Received: from [9.171.55.243] (unknown [9.171.55.243])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 21 Jul 2023 14:23:16 +0000 (GMT)
-Message-ID: <6dc411a6-95fc-0eb2-e8de-5c141292ea62@linux.ibm.com>
-Date:   Fri, 21 Jul 2023 16:23:16 +0200
+        Fri, 21 Jul 2023 10:24:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69072359A;
+        Fri, 21 Jul 2023 07:23:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C63CE61CD9;
+        Fri, 21 Jul 2023 14:23:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BEBEC43397;
+        Fri, 21 Jul 2023 14:23:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689949433;
+        bh=5wGTb0drngr+Lzxv45DNkN6bYmApLSYYtgrk0pW7lkA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fP3jpEn90tqFuB+suABWmOg8xE9Fr2vs92rBw9sjkmEkSX5LxGPAw0VABNgwvBseU
+         aNeLsaOL0j96OQc1MVNO5vW1ZHr2f6Bz+n8o2Du3EaFcQqAc26E0FPo+h1JRhp4GbZ
+         8Fd92e71MSXlwZYE43VWJD7p8zwgZVCZrnb9b+cj2NYdwyguQ7bl33sx1c7fQHmZnM
+         zUpPt7/Dl+8jmWOHVNdHA+EXdvyi0G9BbG3K/AyzRK7pOcQSeuUadXPxmIl3xFpCNY
+         DpphF7DthInWtK+EuXxEDC5Gkfns1jkeITvzfJPIubY4OyWaDXWtp5Bm98MkhOHL/q
+         aQ73K8zHZzceg==
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3a4062577c0so1989511b6e.0;
+        Fri, 21 Jul 2023 07:23:53 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYLxYp23h4BRmPRg0VouND3aWydKIOO4buXNmVxJGehGpHUP4bg
+        3yCjZneeVO6KP5H29ufVZNv9bjE9sdDD3PTR8Bo=
+X-Google-Smtp-Source: APBJJlHuD7qjQP5P8W7jgjwerNr7egFlBZQzzLp4UrYP8ot2cXJV0C5GpmgUm0g+J8owwW7uod6gXEHxuvI+aCg2S/w=
+X-Received: by 2002:a05:6808:2191:b0:3a1:bced:9e83 with SMTP id
+ be17-20020a056808219100b003a1bced9e83mr2400757oib.5.1689949432197; Fri, 21
+ Jul 2023 07:23:52 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 5/6] KVM: s390: interrupt: Fix single-stepping ISKE
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Freimann <jfreimann@redhat.com>
-References: <20230721120046.2262291-1-iii@linux.ibm.com>
- <20230721120046.2262291-6-iii@linux.ibm.com>
-Content-Language: en-US
-From:   Christian Borntraeger <borntraeger@linux.ibm.com>
-In-Reply-To: <20230721120046.2262291-6-iii@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: _TmKtxLSgvwOrUNQcX9My4iKmrl4PVxn
-X-Proofpoint-ORIG-GUID: 860VH0J45EDEm7hypxFlcxaKa5MzhO6e
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-21_08,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 mlxlogscore=782 malwarescore=0 priorityscore=1501
- suspectscore=0 adultscore=0 mlxscore=0 spamscore=0 clxscore=1015
- impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307210127
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20230711153743.1970625-1-heiko@sntech.de> <20230711153743.1970625-11-heiko@sntech.de>
+ <20230721054036.GD847@sol.localdomain> <CAMj1kXFqs9v1Ao1RQRXiccKEMhXpy9O=Ng8TQ--vdOkTz5Yc5Q@mail.gmail.com>
+In-Reply-To: <CAMj1kXFqs9v1Ao1RQRXiccKEMhXpy9O=Ng8TQ--vdOkTz5Yc5Q@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 21 Jul 2023 16:23:38 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHWZH=pmp2oMYfgWDgDyThb0vmey-L4qYdcZDRZvWxJWw@mail.gmail.com>
+Message-ID: <CAMj1kXHWZH=pmp2oMYfgWDgDyThb0vmey-L4qYdcZDRZvWxJWw@mail.gmail.com>
+Subject: Re: [PATCH v4 10/12] RISC-V: crypto: add Zvkned accelerated AES
+ encryption implementation
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        christoph.muellner@vrull.eu,
+        Heiko Stuebner <heiko.stuebner@vrull.eu>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,38 +70,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 21 Jul 2023 at 13:39, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Fri, 21 Jul 2023 at 07:40, Eric Biggers <ebiggers@kernel.org> wrote:
+> >
+> > On Tue, Jul 11, 2023 at 05:37:41PM +0200, Heiko Stuebner wrote:
+> ...
+> > > +static int riscv64_aes_setkey_zvkned(struct crypto_tfm *tfm, const u8 *key,
+> > > +                      unsigned int keylen)
+> > > +{
+> > > +     struct riscv_aes_ctx *ctx = crypto_tfm_ctx(tfm);
+> > > +     int ret;
+> > > +
+> > > +     ctx->keylen = keylen;
+> > > +
+> > > +     if (keylen == 16 || keylen == 32) {
+> > > +             kernel_rvv_begin();
+> > > +             ret = rv64i_zvkned_set_encrypt_key(key, keylen * 8, &ctx->enc_key);
+> > > +             if (ret != 1) {
+> > > +                     kernel_rvv_end();
+> > > +                     return -EINVAL;
+> > > +             }
+> > > +
+> > > +             ret = rv64i_zvkned_set_decrypt_key(key, keylen * 8, &ctx->dec_key);
+>
+> The asm suggests that the encryption and decryption key schedules are
+> the same, and the decryption algorithm does not implement the
+> Equivalent Inverse Cipher, but simply iterates over they key schedule
+> in reverse order. This makes much more sense for instruction based
+> AES, so it doesn't surprise me but it does mean you can just drop this
+> part, and pass enc_key everywhere.
+>
+> > > +             kernel_rvv_end();
+> > > +             if (ret != 1)
+> > > +                     return -EINVAL;
+> > > +     }
+> > > +
+> > > +     ret = crypto_cipher_setkey(ctx->fallback, key, keylen);
+> > > +
+> > > +     return ret ? -EINVAL : 0;
+> > > +}
+> >
+> > It's a bit annoying that RISC-V doesn't support AES-192, though also not
+> > particularly surprising, seeing as AES-192 is almost never used.  (Intel's Key
+> > Locker, for example, is another recent CPU feature that doesn't support
+> > AES-192.)  IMO the issue here is really with the kernel crypto API -- it should
+> > treat AES-128, AES-192, and AES-256 as separate algorithms so that
+> > implementations aren't forced to support all three key sizes...
+> >
+>
+> Why is this a fundamental limitation? AES-192 uses the same AES block
+> size and round structure, the only difference is the number of rounds
+> and how the round keys are calculated.
+>
+> Creating the key schedule should never be performance critical, so if
+> the lack of AES-192 support is due to a limitation in the key schedule
+> generation instructions, I'd suggest to avoid those if possible and
+> just use the generic library code to derive the key schedule. If that
+> works, I'm pretty sure AES-192 support is just a matter of
+> implementing a 12-round variant modeled after the existing 10/14 round
+> ones.
 
+This seems to work:
+https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=riscv-crypto
 
-Am 21.07.23 um 13:57 schrieb Ilya Leoshkevich:
-> kvm_s390_skey_check_enable() does not emulate any instructions, rather,
-> it clears CPUSTAT_KSS and arranges for ISKE to run again. Therefore,
-> skip the PER check and let ISKE run happen. Otherwise a debugger will
-> see two single-step events on the same ISKE.
-
-The same would be true for all instruction triggering a keyless mode exit,
-like SSKE, RRBE but also LPSWE with a keyed PSW, no?
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-
-Reviewed-by: Christian Borntraeger <borntraeger@linux.ibm.com>
-> ---
->   arch/s390/kvm/intercept.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/s390/kvm/intercept.c b/arch/s390/kvm/intercept.c
-> index d2f7940c5d03..8793cec066a6 100644
-> --- a/arch/s390/kvm/intercept.c
-> +++ b/arch/s390/kvm/intercept.c
-> @@ -630,8 +630,7 @@ int kvm_handle_sie_intercept(struct kvm_vcpu *vcpu)
->   		rc = handle_partial_execution(vcpu);
->   		break;
->   	case ICPT_KSS:
-> -		rc = kvm_s390_skey_check_enable(vcpu);
-> -		break;
-
-maybe add a comment here: /* Instruction will be redriven, skip the PER check */
-> +		return kvm_s390_skey_check_enable(vcpu);
-
->   	case ICPT_MCHKREQ:
->   	case ICPT_INT_ENABLE:
->   		/*
+Feel free to incorporate/squash any of those changes into your series.
