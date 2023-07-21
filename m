@@ -2,110 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B3475CA67
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3BFC75CA68
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjGUOny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
+        id S230362AbjGUOoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjGUOnx (ORCPT
+        with ESMTP id S231502AbjGUOoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:43:53 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010A52D7B
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:43:50 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7835bbeb6a0so26771639f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:43:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1689950630; x=1690555430;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AGagDaV4SNGT+G9QzKe3AoeV3zePvRGigYH1wE4qBpg=;
-        b=rNyPGkL0cldwJzahvsfPlhOETt7OO2/r2GDIJHOICXK+fhO2BslCOLNzD3PjTcCYfQ
-         9ZEdrqpnWoCqYCfPBvWpqOx5naImNzxifRUd4tJHn+FEunZDkvAVdOhbLLeYVbaYDZ42
-         s7WwLkzb00kY6cIMFJEnYYesyMP0ZLGxDM6SvpyyjpfI6mMJM2lrRC6AgpuyrIEXMwCq
-         g4QKt/OqAs/aZ29sMtPSajpTl1Dg7g+uoR1v1vDlIPX94F2l4TJ4wYJegwuILOvBYWV9
-         1hpDn1EZudVvvmMjAfXG9RDmLSKj5EKQVgu0nI5jgYFDCFJGI/kmTbwGUI9Kxe7vzL/O
-         a3MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689950630; x=1690555430;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AGagDaV4SNGT+G9QzKe3AoeV3zePvRGigYH1wE4qBpg=;
-        b=X9rFy8md//r7cTaoA7d4JBPIj3Qv8dBVOYXsDCfoK93hdSKmO2Wzrv1w3ZPlevVjqe
-         CosKcEUVstFV7wGub5suvewrkafhQ1Z+wD6oJejihCgSU8V9kQtI5TElDvnxW5q5/2QC
-         hfOChgxvA6JOSaps3c9KqfFmu1UW50BqXLP+yrTgo7Alpsj65gQOws5xkici5ERAN0aX
-         wungk3+g+CFUkVwSr42Ka1X5Gzc2TIGd5aPkzw2J8a2TiiMzo+EQpu0nCctYrJkk2COb
-         hsoykmYQv33Ez/3kgAEA+S+lywN7SJ6YAJnCzRFtXjXXpoSHRJKJ0m+BkvVIaQMo8JmO
-         Swgg==
-X-Gm-Message-State: ABy/qLYNUq/1Ua9sD25bHwcpcBDnviVg5hkvukT1QJ7W8di8XsSnLn8B
-        y1avBISkwbcohMqckCov8Yk6Mwq+HB4u8wsXwwg=
-X-Google-Smtp-Source: APBJJlFg1lZKeS5s9FBguKfMTQwnZSZ0mEoi+qTZJmM6twjyGAQdlNnKzAxD5+hNeosbtw0Z5b2iNw==
-X-Received: by 2002:a05:6602:480b:b0:780:d6ef:160 with SMTP id ed11-20020a056602480b00b00780d6ef0160mr2212021iob.1.1689950630361;
-        Fri, 21 Jul 2023 07:43:50 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id e5-20020a02a505000000b0042bc199556dsm1087959jam.21.2023.07.21.07.43.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 07:43:49 -0700 (PDT)
-Message-ID: <d95bfb98-8d76-f0fd-6283-efc01d0cc015@kernel.dk>
-Date:   Fri, 21 Jul 2023 08:43:48 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 06/10] io_uring: add support for futex wake and wait
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andres@anarazel.de
-References: <20230720221858.135240-1-axboe@kernel.dk>
- <20230720221858.135240-7-axboe@kernel.dk>
- <20230721113031.GG3630545@hirez.programming.kicks-ass.net>
- <20230721113718.GA3638458@hirez.programming.kicks-ass.net>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230721113718.GA3638458@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
+        Fri, 21 Jul 2023 10:44:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F11F30C4;
+        Fri, 21 Jul 2023 07:44:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AF63461CB8;
+        Fri, 21 Jul 2023 14:44:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 653C2C433C8;
+        Fri, 21 Jul 2023 14:43:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689950642;
+        bh=TEmnsWmXJDUs/JVBHZ1mm0YYVwodKZrB/M5+cGLFQSQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ff2bfvQPYK3WN0eWpu7T2UKzfeJr2bzFGQxDpiQZ0fRjVznK3erjY1q6B8hxx4lYh
+         LeyACy60yUzdqJgjVOnnf/niMMTsCoylFMJK6VfdeAqVd0VdaDFhZjGIemImOXUM7l
+         dzmm4Tjnus4jMwVOgh93PSTcp+7seP7+2STiwsm83AmBDMHpY98BCu+U/Qn8XhUFRG
+         BgVz1rsPOA44KAG2xm+efmIwoh2FPUdtVAaxg/UwpFObnM1grgnh8dIL1ORaVMPISX
+         qp3G0XpELX7LA1f2H5DPbyIMl+oe9QIvdRH9wYT/doahGagoWYXANv10wgrygEQn62
+         rC9dubqze14Nw==
+Date:   Fri, 21 Jul 2023 23:43:55 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andre Fredette <anfredet@redhat.com>,
+        Dave Tucker <datucker@redhat.com>,
+        Derek Barbosa <debarbos@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH 2/5] perf bench uprobe: Print diff to baseline
+Message-Id: <20230721234355.b0a7ae245a2010d4a5c08a52@kernel.org>
+In-Reply-To: <20230719204910.539044-3-acme@kernel.org>
+References: <20230719204910.539044-1-acme@kernel.org>
+        <20230719204910.539044-3-acme@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/23 5:37?AM, Peter Zijlstra wrote:
-> On Fri, Jul 21, 2023 at 01:30:31PM +0200, Peter Zijlstra wrote:
-> 
-> Sorry, I was too quick..
-> 
-> 	iof->uaddr = sqe->addr;
-> 	iof->val   = sqe->futex_val;
-> 	iof->mask  = sqe->futex_mask;
-> 	flags      = sqe->futex_flags;
-> 
-> 	if (flags & ~FUTEX2_MASK)
-> 		return -EINVAL;
-> 
-> 	iof->flags = futex2_to_flags(flags);
-> 	if (!futex_flags_valid(iof->flags))
-> 		return -EINVAL;
-> 
-> 	if (!futex_validate_input(iof->flags, iof->val) ||
-> 	    !futex_validate_input(iof->flags, iof->mask))
-> 		return -EINVAL
+On Wed, 19 Jul 2023 17:49:07 -0300
+Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 
-Something like that should work, with some variable names fixed up. I
-just went with 'addr' for the futex address, addr2 for the value, and
-addr3 for the mask.
+> From: Arnaldo Carvalho de Melo <acme@redhat.com>
+> 
+> This is just prep work to show the diff to the unmodified workload.
 
-Rebased on top of your first 4 updated patches, and added a single patch
-that moves FUTEX2_MASK, will run some testing to validate it's all still
-sane.
+Looks good to me, just one comment below.
+
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+> 
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Andre Fredette <anfredet@redhat.com>
+> Cc: Clark Williams <williams@redhat.com>
+> Cc: Dave Tucker <datucker@redhat.com>
+> Cc: Derek Barbosa <debarbos@redhat.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> ---
+>  tools/perf/bench/uprobe.c | 27 ++++++++++++++++++++++++---
+>  1 file changed, 24 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/bench/uprobe.c b/tools/perf/bench/uprobe.c
+> index 707174220a76701f..60e7c43298d8cf56 100644
+> --- a/tools/perf/bench/uprobe.c
+> +++ b/tools/perf/bench/uprobe.c
+> @@ -34,6 +34,29 @@ static const char * const bench_uprobe_usage[] = {
+>  	NULL
+>  };
+>  
+> +static int bench_uprobe_format__default_fprintf(const char *name, const char *unit, u64 diff, FILE *fp)
+> +{
+> +	static u64 baseline;
+> +	s64 diff_to_baseline = diff - baseline;
+> +	int printed = fprintf(fp, "# Executed %'d %s calls\n", loops, name);
+> +
+> +	printed += fprintf(fp, " %14s: %'" PRIu64 " %ss", "Total time", diff, unit);
+> +
+> +	if (baseline)
+> +		printed += fprintf(fp, " %s%'" PRId64 " to baseline", diff_to_baseline > 0 ? "+" : "", diff_to_baseline);
+> +
+> +	printed += fprintf(fp, "\n\n %'.3f %ss/op", (double)diff / (double)loops, unit);
+
+Just a nit, do we need to repeat (double) cast on the denominator side too?
+
+> +
+> +	if (baseline)
+> +		printed += fprintf(fp, " %'.3f %ss/op to baseline", (double)diff_to_baseline / (double)loops, unit);
+> +	else
+> +		baseline = diff;
+> +
+> +	fputc('\n', fp);
+> +
+> +	return printed + 1;
+> +}
+> +
+>  static int bench_uprobe(int argc, const char **argv)
+>  {
+>  	const char *name = "usleep(1000)", *unit = "usec";
+> @@ -56,9 +79,7 @@ static int bench_uprobe(int argc, const char **argv)
+>  
+>  	switch (bench_format) {
+>  	case BENCH_FORMAT_DEFAULT:
+> -		printf("# Executed %'d %s calls\n", loops, name);
+> -		printf(" %14s: %'" PRIu64 " %ss\n\n", "Total time", diff, unit);
+> -		printf(" %'.3f %ss/op\n", (double)diff / (double)loops, unit);
+> +		bench_uprobe_format__default_fprintf(name, unit, diff, stdout);
+>  		break;
+>  
+>  	case BENCH_FORMAT_SIMPLE:
+> -- 
+> 2.41.0
+> 
+
 
 -- 
-Jens Axboe
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
