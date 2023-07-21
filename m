@@ -2,73 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C3775D51C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 21:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6729E75D526
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 21:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbjGUTgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 15:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
+        id S231180AbjGUTiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 15:38:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjGUTg3 (ORCPT
+        with ESMTP id S229666AbjGUTiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 15:36:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFE71715;
-        Fri, 21 Jul 2023 12:36:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-        bh=aHk9rd9AUE2gc3/xbDzbaMmyUHyYtCgU4AX8wh2Umso=; b=F+D/QjKe6pPtGBvURNrxNRYDUB
-        wjOpFUEleMgjf9lgxcn46aTbZjSbgTkfFBU2i3ve1wv+MHjXM25GNt9rhqcugEpLcNm27NBuKQEdO
-        QG1mWP+Wxi1N9+HgYsPy+k+jv/DsZ+F5jsYo9ooq7CDNS62LcaNmu2uMRHyp5uyR0nlV/fyvFXb0s
-        iq84uJdVW+fkQgIyQD5GF+YPLNPwIuVB53f/UcHthholS+lz0aDC0MUGUKwZ1tLlWpxTVGGXF+B2x
-        ilHxWHrQBn5ZV4HdxaR42aZI4mPRe151Mc0ehfxwo6qObQ9d+pZx4fXN5GsUnlYcPqrAjED1UfCgk
-        MKXJi2bg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qMvvD-00EyBM-2T;
-        Fri, 21 Jul 2023 19:36:15 +0000
-Date:   Fri, 21 Jul 2023 12:36:15 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>, wangkefeng.wang@huawei.com,
-        nathan@kernel.org, ndesaulniers@google.com, nicolas@fjasle.eu,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH] modpost, kallsyms: Treat add '$'-prefixed symbols as
- mapping symbols
-Message-ID: <ZLreL/9W28qSbhB3@bombadil.infradead.org>
-References: <20230721150147.11720-2-palmer@rivosinc.com>
- <CAK7LNATF9pxJc0nU3NPnX_PFJr7gF6Baras548ULkO8XE98_VQ@mail.gmail.com>
+        Fri, 21 Jul 2023 15:38:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5972686;
+        Fri, 21 Jul 2023 12:38:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A7C9961D91;
+        Fri, 21 Jul 2023 19:38:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58870C433C8;
+        Fri, 21 Jul 2023 19:38:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689968297;
+        bh=vrWeO6d/WVUoBFUVjBSttPcQkFgnIMkGsqD8edgeIAU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZFDfk2oO14n3vGim7CN/Gix1y7oG04/CHCNAWSm6LbpwTZm6wPPxJjSb+vcNM85kz
+         SxvzBXVYmAJiVs2zRhPW9P7sE1YGpyr2FWim0PBBVjXxtDXzpEYQ+aSEB5z226Kxqr
+         6kz9U5OLBf5qGGrctna79TamcT9zCgGj3pmyUn7/+GxpEB5OObybUILS2RGZaG5to0
+         5vljAZBJDqgkLhTM4RPjYcwuAps13MP3pJI+S5EvqwA7BERhaQyxyosjxeQpvnGbzT
+         IsAiIbIYZsJs9cNpBxdETCKW4uUc+GncVMuZebxuJelWiCdYqZbn4ub3z89IPXHVOB
+         YTR7BEuCLvzYg==
+Received: (nullmailer pid 1688695 invoked by uid 1000);
+        Fri, 21 Jul 2023 19:38:15 -0000
+Date:   Fri, 21 Jul 2023 13:38:15 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        Mike Rapoport <rppt@kernel.org>, devicetree@vger.kernel.org,
+        x86@kernel.org, Juergen Gross <jgross@suse.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH] mm,ima,kexec: use memblock_free_late from
+ ima_free_kexec_buffer
+Message-ID: <20230721193815.GA1679711-robh@kernel.org>
+References: <20230720101431.71640c8a@imladris.surriel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNATF9pxJc0nU3NPnX_PFJr7gF6Baras548ULkO8XE98_VQ@mail.gmail.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230720101431.71640c8a@imladris.surriel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 02:02:56AM +0900, Masahiro Yamada wrote:
-> On Sat, Jul 22, 2023 at 12:20 AM Palmer Dabbelt <palmer@rivosinc.com> wrote:
-> >
-> > Trying to restrict the '$'-prefix change to RISC-V caused some fallout,
-> > so let's just treat all those symbols as special.
-> >
-> > Fixes: c05780ef3c1 ("module: Ignore RISC-V mapping symbols too")
-> > Link: https://lore.kernel.org/all/20230712015747.77263-1-wangkefeng.wang@huawei.com/
-> > Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+On Thu, Jul 20, 2023 at 10:14:31AM -0400, Rik van Riel wrote:
+> The code calling ima_free_kexec_buffer runs long after the memblock
+> allocator has already been torn down, potentially resulting in a use
+> after free in memblock_isolate_range.
 > 
+> With KASAN or KFENCE, this use after free will result in a BUG
+> from the idle task, and a subsequent kernel panic.
 > 
-> Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+> Switch ima_free_kexec_buffer over to memblock_free_late to avoid
+> that issue.
+> 
+> Fixes: fee3ff99bc67 ("powerpc: Move arch independent ima kexec functions to drivers/of/kexec.c")
 
-Patch applied and pushed, thanks!
+Fixes: b69a2afd5afc ("x86/kexec: Carry forward IMA measurement log on kexec")
 
-  Luis
+Acked-by: Rob Herring <robh@kernel.org>
+
+(I'm assuming someone else is taking this)
+
+> Cc: stable@kernel.org
+> Signed-off-by: Rik van Riel <riel@surriel.com>
+> Suggested-by: Mike Rappoport <rppt@kernel.org>
+> ---
+>  arch/x86/kernel/setup.c | 8 ++------
+>  drivers/of/kexec.c      | 3 ++-
+>  2 files changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index fd975a4a5200..aa0df37c1fe7 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -359,15 +359,11 @@ static void __init add_early_ima_buffer(u64 phys_addr)
+>  #if defined(CONFIG_HAVE_IMA_KEXEC) && !defined(CONFIG_OF_FLATTREE)
+>  int __init ima_free_kexec_buffer(void)
+>  {
+> -	int rc;
+> -
+>  	if (!ima_kexec_buffer_size)
+>  		return -ENOENT;
+>  
+> -	rc = memblock_phys_free(ima_kexec_buffer_phys,
+> -				ima_kexec_buffer_size);
+> -	if (rc)
+> -		return rc;
+> +	memblock_free_late(ima_kexec_buffer_phys,
+> +			   ima_kexec_buffer_size);
+>  
+>  	ima_kexec_buffer_phys = 0;
+>  	ima_kexec_buffer_size = 0;
+> diff --git a/drivers/of/kexec.c b/drivers/of/kexec.c
+> index f26d2ba8a371..68278340cecf 100644
+> --- a/drivers/of/kexec.c
+> +++ b/drivers/of/kexec.c
+> @@ -184,7 +184,8 @@ int __init ima_free_kexec_buffer(void)
+>  	if (ret)
+>  		return ret;
+>  
+> -	return memblock_phys_free(addr, size);
+> +	memblock_free_late(addr, size);
+> +	return 0;
+>  }
+>  #endif
+>  
+> -- 
+> 2.41.0
+> 
