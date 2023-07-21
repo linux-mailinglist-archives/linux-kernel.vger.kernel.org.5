@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 918E375BCCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 05:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5890575BCD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 05:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbjGUDa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 23:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
+        id S229877AbjGUDcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 23:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjGUDaZ (ORCPT
+        with ESMTP id S229553AbjGUDcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 23:30:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985B01726;
-        Thu, 20 Jul 2023 20:30:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 349666010E;
-        Fri, 21 Jul 2023 03:30:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 84A23C433CA;
-        Fri, 21 Jul 2023 03:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689910223;
-        bh=UAskOFtaZ+TaZ2/xO+ZiGvJ2EWkR0CxM8zJi0SrkADU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=agwpxmdPttVsCQyM7MND/000TMAOFOo7V5oRqxEaVolkfsLcPH4CnRf7z1bCSk2kC
-         Qfe1cngTCpiH+Y0Pr/IHoktM6seCA7KPLjTrbaD+m9gi7m9AiPOnVOIoyNab3HpMHv
-         IrkGK3xz9riRF5qffNGkuUGFvCuj3QHDBn8c4jEGc/j3E0aR0OftNk3SwsKf7uhGfe
-         KSEE1BlbK/kTzRSsZHXJ1vuDdXcJK6LDBwLxy/7/WJ/ZjEUH+MMpHbIjATWmjQJur3
-         ER9ND27Ow3EJET4FqRTNNbpYv89AuGO7iLVVzmZCrqmJnmxK0qCGJ+YtWyYx6zffkJ
-         e9uHa6uhdUUng==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 65A00C595C5;
-        Fri, 21 Jul 2023 03:30:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 20 Jul 2023 23:32:10 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916871726
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 20:32:09 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R6ZqW1LzmzBRDtM
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 11:32:07 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689910327; x=1692502328; bh=DgngVkhS4Y2EpAg4Rz03E9/o90m
+        U59SYiP+mSo3EkDk=; b=L92kgOZBjYxTAwTQMpz91K3P04x5FIHueeyz09mIhMH
+        H2DAXpE9oaPeNeswRrcoTz+sRb5TuyVYRLwC0seqzyIyizXUVkrbpsU2rzMcZefm
+        WhTozeLPQ+U31bhe+zPmc7JpPwAWTcCtCtwBFNlhDMHr67+SL6PKZhvtwIU3IN3o
+        UtzXYA9w1ilXdcIFpDyAvf1/MQBarZBawBr0xrIakCHU4aA71Htd5XN9M1zk8Ew4
+        r2i0U8JRSE5BN03n5JLjlTCCiXVCsSs5yBl2uUgwLvCN3k40ZVMVEDuxwqFsEBtJ
+        gMM9m3jHEAbnMamkMsm2PTREL/mgTaIllwNQg/qYA/g==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id xKi8Zvp4_Syj for <linux-kernel@vger.kernel.org>;
+        Fri, 21 Jul 2023 11:32:07 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R6ZqV5jSmzBRDrd;
+        Fri, 21 Jul 2023 11:32:06 +0800 (CST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/4] nexthop: Refactor and fix nexthop selection
- for multipath routes
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <168991022341.12176.7087140976082292516.git-patchwork-notify@kernel.org>
-Date:   Fri, 21 Jul 2023 03:30:23 +0000
-References: <20230719-nh_select-v2-0-04383e89f868@nvidia.com>
-In-Reply-To: <20230719-nh_select-v2-0-04383e89f868@nvidia.com>
-To:     Benjamin Poirier <bpoirier@nvidia.com>
-Cc:     dsahern@kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, idosch@nvidia.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Fri, 21 Jul 2023 11:32:06 +0800
+From:   sunran001@208suo.com
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amdgpu: open brace '{' following struct go on the same
+ line
+In-Reply-To: <20230721033048.4840-1-xujianghui@cdjrlc.com>
+References: <20230721033048.4840-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <d0906df99cdf6f76220e298bebaa5029@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+ERROR: open brace '{' following struct go on the same line
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h | 3 +--
+  1 file changed, 1 insertion(+), 2 deletions(-)
 
-On Wed, 19 Jul 2023 13:57:06 +0000 you wrote:
-> In order to select a nexthop for multipath routes, fib_select_multipath()
-> is used with legacy nexthops and nexthop_select_path_hthr() is used with
-> nexthop objects. Those two functions perform a validity test on the
-> neighbor related to each nexthop but their logic is structured differently.
-> This causes a divergence in behavior and nexthop_select_path_hthr() may
-> return a nexthop that failed the neighbor validity test even if there was
-> one that passed.
-> 
-> [...]
+diff --git a/drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h 
+b/drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h
+index 52045ad59bed..eec816f0cbf9 100644
+--- a/drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h
++++ b/drivers/gpu/drm/amd/pm/inc/amdgpu_pm.h
+@@ -24,8 +24,7 @@
+  #ifndef __AMDGPU_PM_H__
+  #define __AMDGPU_PM_H__
 
-Here is the summary with links:
-  - [net-next,v2,1/4] nexthop: Factor out hash threshold fdb nexthop selection
-    https://git.kernel.org/netdev/net-next/c/eedd47a6ec9f
-  - [net-next,v2,2/4] nexthop: Factor out neighbor validity check
-    https://git.kernel.org/netdev/net-next/c/4bb5239b4334
-  - [net-next,v2,3/4] nexthop: Do not return invalid nexthop object during multipath selection
-    https://git.kernel.org/netdev/net-next/c/75f5f04c7bd2
-  - [net-next,v2,4/4] selftests: net: Add test cases for nexthop groups with invalid neighbors
-    https://git.kernel.org/netdev/net-next/c/c7e95bbda822
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+-struct cg_flag_name
+-{
++struct cg_flag_name {
+  	u64 flag;
+  	const char *name;
+  };
