@@ -2,128 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF0875C2D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39E575C2FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbjGUJTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42580 "EHLO
+        id S231150AbjGUJYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231653AbjGUJTq (ORCPT
+        with ESMTP id S229699AbjGUJX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:19:46 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2114.outbound.protection.outlook.com [40.107.244.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89BF52D57;
-        Fri, 21 Jul 2023 02:19:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W8nz8m4RzIn141E1jaS3oVscW+uUeXNUPw+0lcGBCmC/OQr2IsDm5Vf5ZP8oHnWVCsVx+7QdHUB278BajwQnd4hKTEOcGZfk/hRQnV0hBoASa+hrch4/RXkjL6toJioM18sEsE2hguZ+jTYw1GxVuT8sP//35H+D8dZcRRgVNfq18B6rUpnmzEPTjLXMa19VgoevyHyaCtz5ob3pYqzSHEV4qUiEOihOTSfEI0Z6bKlRJWdVx8KlDO0ze6bK0JDuTN27ltjkcxh3CAxNrsbTgYtuV1zvtXOwTPjKTQZFKr/9V8AymOeZV4iKXCkzgmRfRpkGAki0YLlmyOjiMkxtTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bnHdnJA4XQaA9IMf1HPhfnDRaO72TfI59C7nqv1tKJQ=;
- b=EZ/fgm/fvLPiXp6mT4+o8TAYgsyoG2jXc5wDqObDzqI8ENIFxpDaWafCsC5zq+Mq/tByMfbWWVlLYkaSKSdahjWZ9+brkX8S0mPOW+1QcCC1J37fsN9q+2NytgpJaBEipMxKynwETtScOltcxmuYhjbt7Pzca2IyWDBiftJG+v/Hx8mklKHxjmcImfWsngJKIiwP7gyRMhJUbSNvKrHt2R9R9Ji7g3oQMFK0XbLLk/pKcMVDerHqoU1kG4Orw07IoZKqnpaf92iVGIYDRCqPrbSi8bH6M8k53O8ytvtXAvP+JUTMqrpPDenUGp1jVpmSm1bFidit8jgh9FTpy0S8pA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bnHdnJA4XQaA9IMf1HPhfnDRaO72TfI59C7nqv1tKJQ=;
- b=BzY/xEMFCuDAKdAEQbDgWecpLkLo30leD41IdYlKPwgmgOsAWEZtHqD6QOMUAUqfIqJq2DvCq5l/XzSIlyv9uyCZAeOzdNAJN4vrMNtlKBHHoDrvpVBrz0a/Je1/Pb/dSdqJvV0OJPZhwKxDaDqAQ+uvs3VHrEaeJkd26/jkA0o=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by CH3PR13MB6337.namprd13.prod.outlook.com (2603:10b6:610:196::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Fri, 21 Jul
- 2023 09:19:41 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.025; Fri, 21 Jul 2023
- 09:19:41 +0000
-Date:   Fri, 21 Jul 2023 10:19:32 +0100
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Haren Myneni <haren@us.ibm.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        qat-linux@intel.com, linuxppc-dev@lists.ozlabs.org,
-        linux-mtd@lists.infradead.org, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH 07/21] ubifs: Migrate to acomp compression API
-Message-ID: <ZLpNpLIx5BUW97sr@corigine.com>
-References: <20230718125847.3869700-1-ardb@kernel.org>
- <20230718125847.3869700-8-ardb@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718125847.3869700-8-ardb@kernel.org>
-X-ClientProxiedBy: LO4P123CA0184.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:1a4::9) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+        Fri, 21 Jul 2023 05:23:58 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3225B30E3;
+        Fri, 21 Jul 2023 02:23:27 -0700 (PDT)
+Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R6kbB3BTtzVjlx;
+        Fri, 21 Jul 2023 17:21:58 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 21 Jul 2023 17:23:24 +0800
+From:   Junxian Huang <huangjunxian6@hisilicon.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH v4 for-next] RDMA/core: Get IB width and speed from netdev
+Date:   Fri, 21 Jul 2023 17:20:52 +0800
+Message-ID: <20230721092052.2090449-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|CH3PR13MB6337:EE_
-X-MS-Office365-Filtering-Correlation-Id: 95dbfdd0-e082-4970-b490-08db89cb9d0e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hjS921l3Dg331FPXuA5pYBbdj3LpORrd525wbo/IrVUqrBbK1ABYkGZYC1CoEwWW4l8ZgsGmvP3vEhdLgt+bJ2ARzN+RfWBduEfTe7tf2RUFCwncNqugPstIe3yURdB0kVkPISvJoHVvxb4VFyyYf1D9xKNhBns8r84b+I04Tmz4+ICKpfXtRX2fMCtoj7wvCVRh8A0thMGHTODFo2te4gu0LMWSMan9kC6mLKOz7lrX2hb0Y/WMdvezfjCpIRcbfis1AKeK0XXogHR9XewExrTWz3GBco3OGVtLhUu2t74UULhAqgpP/035XaurYm/HBQNRilLlUr+AosmwpYi51yZ9kQ8JTTbd0/I8gIA+9/O6HI8rNjTnyb2bUp3i/vnn6cRzeZvL65wNInluArsvWB77ZuWKpXEMHzcYHY1GVIT+0xmWvxcg80h+b4dBb1b66B4vcVX/zeMmu+WQkXELC0wagOhLRvJ6Fk5FgntxPYX4Q4754eygHCv+8oBqZCzzcHZ3P/PPCZcvx/Nv/NeqOVP+/UNGtzfc7kSepQJCR9+S2h3oJI2yN8GdmhXHbWkaTCsmYvKf/rAlh9CEy/lj6pYskZJqmgcmesJj07sobGY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39840400004)(366004)(136003)(396003)(451199021)(36756003)(54906003)(478600001)(66946007)(66476007)(86362001)(66556008)(26005)(4326008)(6916009)(6506007)(55236004)(6486002)(6666004)(6512007)(8676002)(8936002)(44832011)(5660300002)(2906002)(41300700001)(7416002)(316002)(38100700002)(186003)(2616005)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JkHHdRGilrrfvnSV4ip+Xe0QbwgIDIA+BvsesGFcix9jczbiQMVuYNdL1Ar5?=
- =?us-ascii?Q?1Io+BTvwVSi2u/JIcCR95J1OFs3X7knzJtn1qrEEhERojl7ne2ED7ELJ6daF?=
- =?us-ascii?Q?nNv6CgF/ipeCcqytIfoQ3H36g0fi1/l5G472mGkE6WIAA57IpFkK3S19RokT?=
- =?us-ascii?Q?8NUXVlG8LhZvStZrW8i84zj0XDD2dNYxbrX7eAmj0nJqabtLlEPBe2coqriN?=
- =?us-ascii?Q?Oa5ThNgHjcBvDeml5ebqKgmkfmpBFU1lK6vXGIH0d15FDnKxIi8cQXR05bkY?=
- =?us-ascii?Q?FlNyc06D0ZG+b1YedelMWCG4lA0XWKmUPqyxoefLmjXeAFVo3U0PzPVE7PJs?=
- =?us-ascii?Q?Fko/N4b2Qz+K487i0Becl99RXEYOFkLeZ3C7Q632RZYMFNcT0P64+EHeTrAh?=
- =?us-ascii?Q?auAFq7nl6U29n95csMGjbaUnkHz5ZNUmcAR0/4rIIQYJSfDpm+3JuzLL5Mpn?=
- =?us-ascii?Q?Ol/GXJIl5HbVFd1Htmf/5oW1QbjYn9yznaL2jcf8+bEds+w8FciayRnf1Wza?=
- =?us-ascii?Q?2Szo0qDYNUdQMY2wy/FCdHtD8H6PLq5nOL3DIE/YZH43ozxdi+8PqDNK+Q7f?=
- =?us-ascii?Q?YAB7Vdl2FMB0BK/deg0w0jN0T5izEef/w9p7e8fEIuu3Ly9+KkCXYW9bl1fF?=
- =?us-ascii?Q?hUXhjrpIKm3D4jkCVfX4iZoIIbMrdVn+au8DzKhYi0Qz/eVKeluhB/6WnmPQ?=
- =?us-ascii?Q?W9NCk0gVwCM70babUjZJQhE3WU05Gbij78L1sYiurtwKMjo+F/CVMK6gY9Ac?=
- =?us-ascii?Q?1d1x4BTa+UyDJq7rd584KYWPyjrCMgrUGXgOoCGh8oQYHOH5WS1YYmres7/A?=
- =?us-ascii?Q?GlJEyJWFCXq3IZ72krkloj/lD8DhTwggrTf5DfGLsqVcpwPnUTidmOaGDO9K?=
- =?us-ascii?Q?RgYOiGnQIn/ovCCHp+kz4qEOSOQQxIuDhwlcVOsHGbPEzS8DCQid4gZUREen?=
- =?us-ascii?Q?bQp5CYmWuUdEpo8bi3CDoTJj26CV52LzwccGkuCfrmW0xlelvRf1dZyQvs2N?=
- =?us-ascii?Q?QYal3IT5Z8fILmPpI6XLve6QujR5IExClKYZ1Z1rMkLyvO7QJv7Fpy6t7zno?=
- =?us-ascii?Q?VrY+eudOeckRCtUezdPF3Zz1gPZ274udurhaCx7sx7Ph6ERHEzVDLpC3oNGE?=
- =?us-ascii?Q?5FSV7Vzzn69WbtytCjCeqhu0DduIsZFfw5Ym7W+oVZuarjV7EncI1/iAYjh1?=
- =?us-ascii?Q?W4K6NwdP0CYrItIOL8So4S5eSQxR3ZXmhAXDeEVGAWKMDG0CPmpS/M+X6PKN?=
- =?us-ascii?Q?Ur9zVMlO1z9t+SZxAUmZ7reKutN5jkJ/Mn4d47oo2RFRlDGeg7koAEm5tOCO?=
- =?us-ascii?Q?MipYAs8jxvoif+UPWAfb5jG5wfa9UQTyzoBC+hmAxJqkxsHMjsAPrKaVQH5p?=
- =?us-ascii?Q?xhMQ/JD90873apxeh+Urb4JpgW1PmZy9wslWQYLPpHWJbzB6kgZrbpTFLne5?=
- =?us-ascii?Q?tlOc75BZnz/fwmrschUN1d8HPTs3+zhyIZEOjvQW7aVYbhZHwU9KiEZG8FQf?=
- =?us-ascii?Q?qb85MKER+nuyLQMsoXryqLqGFs+jUp+dGR0dJD11VzA5NCFB+SZxFJeVKOON?=
- =?us-ascii?Q?8mWXSgJz3Ca7F1oNWfyHWoQT0SoP3lh18TQkJSS+E1ZWqCDqW5CM44F2ywxC?=
- =?us-ascii?Q?rg=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95dbfdd0-e082-4970-b490-08db89cb9d0e
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 09:19:41.2973
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NTFAcLu2R1HiYxA8wGM8vAAv3d8qKyECBLxxWCMwbrbcSehwkWF5gIa+HtQmm0/X4yUgy/9D5zuRmAPu9kFR3FsXCRYNYPjWVr0EUJ0AaP4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR13MB6337
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,80 +46,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 02:58:33PM +0200, Ard Biesheuvel wrote:
-> UBIFS is one of the remaining users of the obsolete 'comp' compression
-> API exposed by the crypto subsystem. Given that it operates strictly on
-> contiguous buffers that are either entirely in lowmem or covered by a
-> single page, the conversion to the acomp API is quite straight-forward.
-> 
-> Only synchronous acomp implementations are considered at the moment, and
-> whether or not a future conversion to permit asynchronous ones too will
-> be worth the effort remains to be seen.
-> 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+From: Haoyue Xu <xuhaoyue1@hisilicon.com>
 
-...
+Previously, there was no way to query the number of lanes for a network
+card, so the same netdev_speed would result in a fixed pair of width and
+speed. As network card specifications become more diverse, such fixed
+mode is no longer suitable, so a method is needed to obtain the correct
+width and speed based on the number of lanes.
 
-> @@ -197,11 +205,24 @@ int ubifs_decompress(const struct ubifs_info *c, const void *in_buf,
->  static int __init compr_init(struct ubifs_compressor *compr)
->  {
->  	if (compr->capi_name) {
-> -		compr->cc = crypto_alloc_comp(compr->capi_name, 0, 0);
-> +		long ret;
-> +
-> +		compr->cc = crypto_alloc_acomp(compr->capi_name, 0,
-> +					       CRYPTO_ALG_ASYNC);
->  		if (IS_ERR(compr->cc)) {
-> +			ret = PTR_ERR(compr->cc);
-> +		} else {
-> +			compr->req = acomp_request_alloc(compr->cc);
-> +			if (!compr->req) {
-> +				crypto_free_acomp(compr->cc);
-> +				ret = -ENOMEM;
-> +			}
-> +		}
+This patch retrieves netdev lanes and speed from net_device and
+translates them to IB width and speed.
 
-Hi Ard,
+Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
+Signed-off-by: Luoyouming <luoyouming@huawei.com>
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+---
+ drivers/infiniband/core/verbs.c | 100 +++++++++++++++++++++++++-------
+ 1 file changed, 79 insertions(+), 21 deletions(-)
 
-clang-16 W=1 and Smatch flag that ret may not always be initialised here.
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index b99b3cc283b6..25367bd6dd97 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -1880,6 +1880,80 @@ int ib_modify_qp_with_udata(struct ib_qp *ib_qp, struct ib_qp_attr *attr,
+ }
+ EXPORT_SYMBOL(ib_modify_qp_with_udata);
+ 
++static void ib_get_width_and_speed(u32 netdev_speed, u32 lanes,
++				   u16 *speed, u8 *width)
++{
++	if (!lanes) {
++		if (netdev_speed <= SPEED_1000) {
++			*width = IB_WIDTH_1X;
++			*speed = IB_SPEED_SDR;
++		} else if (netdev_speed <= SPEED_10000) {
++			*width = IB_WIDTH_1X;
++			*speed = IB_SPEED_FDR10;
++		} else if (netdev_speed <= SPEED_20000) {
++			*width = IB_WIDTH_4X;
++			*speed = IB_SPEED_DDR;
++		} else if (netdev_speed <= SPEED_25000) {
++			*width = IB_WIDTH_1X;
++			*speed = IB_SPEED_EDR;
++		} else if (netdev_speed <= SPEED_40000) {
++			*width = IB_WIDTH_4X;
++			*speed = IB_SPEED_FDR10;
++		} else {
++			*width = IB_WIDTH_4X;
++			*speed = IB_SPEED_EDR;
++		}
++
++		return;
++	}
++
++	switch (lanes) {
++	case 1:
++		*width = IB_WIDTH_1X;
++		break;
++	case 2:
++		*width = IB_WIDTH_2X;
++		break;
++	case 4:
++		*width = IB_WIDTH_4X;
++		break;
++	case 8:
++		*width = IB_WIDTH_8X;
++		break;
++	case 12:
++		*width = IB_WIDTH_12X;
++		break;
++	default:
++		*width = IB_WIDTH_1X;
++	}
++
++	switch (netdev_speed / lanes) {
++	case SPEED_2500:
++		*speed = IB_SPEED_SDR;
++		break;
++	case SPEED_5000:
++		*speed = IB_SPEED_DDR;
++		break;
++	case SPEED_10000:
++		*speed = IB_SPEED_FDR10;
++		break;
++	case SPEED_14000:
++		*speed = IB_SPEED_FDR;
++		break;
++	case SPEED_25000:
++		*speed = IB_SPEED_EDR;
++		break;
++	case SPEED_50000:
++		*speed = IB_SPEED_HDR;
++		break;
++	case SPEED_100000:
++		*speed = IB_SPEED_NDR;
++		break;
++	default:
++		*speed = IB_SPEED_SDR;
++	}
++}
++
+ int ib_get_eth_speed(struct ib_device *dev, u32 port_num, u16 *speed, u8 *width)
+ {
+ 	int rc;
+@@ -1904,29 +1978,13 @@ int ib_get_eth_speed(struct ib_device *dev, u32 port_num, u16 *speed, u8 *width)
+ 		netdev_speed = lksettings.base.speed;
+ 	} else {
+ 		netdev_speed = SPEED_1000;
+-		pr_warn("%s speed is unknown, defaulting to %u\n", netdev->name,
+-			netdev_speed);
++		if (rc)
++			pr_warn("%s speed is unknown, defaulting to %u\n",
++				netdev->name, netdev_speed);
+ 	}
+ 
+-	if (netdev_speed <= SPEED_1000) {
+-		*width = IB_WIDTH_1X;
+-		*speed = IB_SPEED_SDR;
+-	} else if (netdev_speed <= SPEED_10000) {
+-		*width = IB_WIDTH_1X;
+-		*speed = IB_SPEED_FDR10;
+-	} else if (netdev_speed <= SPEED_20000) {
+-		*width = IB_WIDTH_4X;
+-		*speed = IB_SPEED_DDR;
+-	} else if (netdev_speed <= SPEED_25000) {
+-		*width = IB_WIDTH_1X;
+-		*speed = IB_SPEED_EDR;
+-	} else if (netdev_speed <= SPEED_40000) {
+-		*width = IB_WIDTH_4X;
+-		*speed = IB_SPEED_FDR10;
+-	} else {
+-		*width = IB_WIDTH_4X;
+-		*speed = IB_SPEED_EDR;
+-	}
++	ib_get_width_and_speed(netdev_speed, lksettings.lanes,
++			       speed, width);
+ 
+ 	return 0;
+ }
+-- 
+2.30.0
 
-> +
-> +		if (ret) {
->  			pr_err("UBIFS error (pid %d): cannot initialize compressor %s, error %ld",
-> -			       current->pid, compr->name, PTR_ERR(compr->cc));
-> -			return PTR_ERR(compr->cc);
-> +			       current->pid, compr->name, ret);
-> +			return ret;
->  		}
->  	}
->  
-
-...
-
-> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-> index 4c36044140e7eba9..2225de5b8ef50f71 100644
-> --- a/fs/ubifs/ubifs.h
-> +++ b/fs/ubifs/ubifs.h
-> @@ -32,6 +32,7 @@
->  #include <crypto/hash_info.h>
->  #include <crypto/hash.h>
->  #include <crypto/algapi.h>
-> +#include <crypto/acompress.h>
->  
->  #include <linux/fscrypt.h>
->  
-> @@ -849,7 +850,8 @@ struct ubifs_node_range {
->   */
->  struct ubifs_compressor {
->  	int compr_type;
-> -	struct crypto_comp *cc;
-> +	struct crypto_acomp *cc;
-> +	struct acomp_req *req;
-
-Please consider adding @req to the kernel doc for this structure.
-
->  	struct mutex *comp_mutex;
->  	struct mutex *decomp_mutex;
->  	const char *name;
-
-...
