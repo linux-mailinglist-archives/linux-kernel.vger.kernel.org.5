@@ -2,163 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F36F75D58E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0108775D575
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbjGUUUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
+        id S230450AbjGUUTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231373AbjGUUTy (ORCPT
+        with ESMTP id S229711AbjGUUTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:19:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139C53C3C
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:18:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689970689;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0RGmyz1YClWe5oeSPHTFZ5N1VM0OIPODLNu2thu5Rsg=;
-        b=PIFP2qGwfJw4x7usSEJwHYwdHCznEkv5psN3BB2InSI6fjNfDCisrKt3k/C7KIBKxTQdai
-        dVBTMUNyVOH2Hn1WDpTxN0HFM2rDRwwoH7Og2LRKLmcCwWqBq30ytWvQgFhgbJ2mEjqdeZ
-        X3vR4/gGTyAZdG0B8IMj5+VFrYTQZ2A=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-473-W1m1jmxPN9eDPWD0u3VPmg-1; Fri, 21 Jul 2023 16:18:08 -0400
-X-MC-Unique: W1m1jmxPN9eDPWD0u3VPmg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3CD16101A528;
-        Fri, 21 Jul 2023 20:18:07 +0000 (UTC)
-Received: from [10.39.208.41] (unknown [10.39.208.41])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 218531121314;
-        Fri, 21 Jul 2023 20:18:04 +0000 (UTC)
-Message-ID: <e3490755-35ac-89b4-b0fa-b63720a9a5c9@redhat.com>
-Date:   Fri, 21 Jul 2023 22:18:03 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH net-next v4 2/2] virtio-net: add cond_resched() to the
- command waiting loop
-Content-Language: en-US
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Shannon Nelson <shannon.nelson@amd.com>,
-        Jason Wang <jasowang@redhat.com>, xuanzhuo@linux.alibaba.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, davem@davemloft.net
-References: <20230720083839.481487-1-jasowang@redhat.com>
- <20230720083839.481487-3-jasowang@redhat.com>
- <e4eb0162-d303-b17c-a71d-ca3929380b31@amd.com>
- <20230720170001-mutt-send-email-mst@kernel.org>
- <263a5ad7-1189-3be3-70de-c38a685bebe0@redhat.com>
- <20230721104445-mutt-send-email-mst@kernel.org>
- <6278a4aa-8901-b0e3-342f-5753a4bf32af@redhat.com>
- <20230721110925-mutt-send-email-mst@kernel.org>
-From:   Maxime Coquelin <maxime.coquelin@redhat.com>
-In-Reply-To: <20230721110925-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 16:19:16 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F536359B
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:19:04 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c4f27858e4eso2632983276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689970743; x=1690575543;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rLZ3+zgUAeppnqgY3n6NxTe9LV814vORREjktc5U/Sw=;
+        b=hCkJqAtatAST2xTcK9UF+vly76nRQ59L6L1wCKwbjhtj7w4tNGhHjPBovelEM2+gK5
+         lxg4bB9LV+ax71npRTttA7ak1EpyyL8oqv8ER274jfu5H+tSGhzdtdAMP/jUzTun9FhX
+         xqmozPodAe2V1GPggNtO9OU4tel859UGjBVFVOXeBKO7viKomIxtFIkMGEMzRVhN9bx8
+         fmGiP67UFWdVuLym+YVIi+CRQEiL+xOfzhtec91jVP/W7oszjr+kqOCgnkNwD4rOm8Ar
+         6BIkm9IWEaQ+i9nqsAGhRwAurvTHhIw3HgXS2QWQC0S8On8G1FlGlOoIHD1+S7zHoMUE
+         Oumg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689970743; x=1690575543;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rLZ3+zgUAeppnqgY3n6NxTe9LV814vORREjktc5U/Sw=;
+        b=jaoR72dh1T9GXSawCbwLHFkkB5zLkAv1ClwEnmksw2bHuQ2r94IA6BWyD+F+3wuAbE
+         An4AYYcpI/VqiyF2K/Z3pET/uqXNRUiZRNrNu8Rg2EXRQtf/twLjCbnUSRmegl34W0oj
+         oeZ+pPm8v0yx+EtZd/2Cu6O5QDYwyaK02hsV9wWw7LWpmlI0mtngWumlNBqlQTw8t0PY
+         fJH4edz2ttJk79lBmPCB93Zy3MxsCwviq68Yv26orc1ogNJ7FIWM77SANO7lB5nESjTg
+         R+6iGCaGtrbwf2vjdJDvRw7+zcllbpeZmai8conQh9PSEwzSe8/pUx0eG6gujc2rFwN0
+         cjGg==
+X-Gm-Message-State: ABy/qLYWr4X2PKUXkRFkpSrrdGhXnThPyNIunFyTetVv7aN/TTLEvH9a
+        VMgpsrvqpsD9SfJyh2tL+7W0JZn+LjM=
+X-Google-Smtp-Source: APBJJlEMevAHotcBOZHYg9Sd6IaWSXrnx1OUggrP2dlEo2/7poLQt+F7AoxS9ZkZBN8T5H6DPt0gBycHwUE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:100f:b0:cf2:ad45:2084 with SMTP id
+ w15-20020a056902100f00b00cf2ad452084mr17704ybt.12.1689970743354; Fri, 21 Jul
+ 2023 13:19:03 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 21 Jul 2023 13:18:40 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230721201859.2307736-1-seanjc@google.com>
+Subject: [PATCH v4 00/19] x86/reboot: KVM: Clean up "emergency" virt code
+From:   Sean Christopherson <seanjc@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Andrew Cooper <Andrew.Cooper3@citrix.com>,
+        Kai Huang <kai.huang@intel.com>, Chao Gao <chao.gao@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If there are no objections, my plan is to take this through the KVM tree
+for 6.6.
+
+Instead of having the reboot code blindly try to disable virtualization
+during an emergency, use the existing callback into KVM to disable virt
+as "needed".  In quotes because KVM still somewhat blindly attempts to
+disable virt, e.g. if KVM is loaded but doesn't have active VMs and thus
+hasn't enabled hardware.  That could theoretically be "fixed", but due to
+the callback being invoked from NMI context, I'm not convinced it would
+be worth the complexity.  E.g. false positives would still be possible,
+and KVM would have to play games with the per-CPU hardware_enabled flag
+to ensure there are no false negatives.
+
+The callback is currently used only to VMCLEAR the per-CPU list of VMCSes,
+but not using the callback to disable virt isn't intentional.  Arguably, a
+callback should have been used in the initial "disable virt" code added by
+commit d176720d34c7 ("x86: disable VMX on all CPUs on reboot").  And the
+kexec logic added (much later) by commit f23d1f4a1160 ("x86/kexec: VMCLEAR
+VMCSs loaded on all cpus if necessary") simply missed the opportunity to
+use the callback for all virtualization needs.
+
+Once KVM handles disabling virt, move all of the helpers provided by
+virtext.h into KVM proper.
+
+There's one outlier patch, "Make KVM_AMD depend on CPU_SUP_AMD or
+CPU_SUP_HYGON", that I included here because it felt weird to pull in the
+"must be AMD or Hygon" check without KVM demanding that at build time.
+
+v4: 
+ - Collect reviews. [Kai]
+ - Skip VMCLEAR during reboot if CR4.VMXE=0. [Kai]
+ - Call out that disabling virtualization iff there's a callback also
+   avoids an unnecessary NMI shootdown. [Kai]
+ - Move "Disable virtualization during reboot iff callback is
+   registered" patch after "Hoist "disable virt" helpers above \"emergency
+   reboot\"" patch to fix an intermediate build error.
+
+v3:
+ - https://lore.kernel.org/all/20230512235026.808058-1-seanjc@google.com
+ - Massage changelogs to avoid talking about out-of-tree hypervisors. [Kai]
+ - Move #ifdef "KVM" addition later. [Kai]
+
+v2:
+ - https://lore.kernel.org/all/20230310214232.806108-1-seanjc@google.com
+ - Disable task migration when probing basic SVM and VMX support to avoid
+   logging misleading info (wrong CPU) if probing fails.
+
+v1: https://lore.kernel.org/all/20221201232655.290720-1-seanjc@google.com
+
+Sean Christopherson (19):
+  x86/reboot: VMCLEAR active VMCSes before emergency reboot
+  x86/reboot: Harden virtualization hooks for emergency reboot
+  x86/reboot: KVM: Handle VMXOFF in KVM's reboot callback
+  x86/reboot: KVM: Disable SVM during reboot via virt/KVM reboot
+    callback
+  x86/reboot: Assert that IRQs are disabled when turning off
+    virtualization
+  x86/reboot: Hoist "disable virt" helpers above "emergency reboot" path
+  x86/reboot: Disable virtualization during reboot iff callback is
+    registered
+  x86/reboot: Expose VMCS crash hooks if and only if KVM_{INTEL,AMD} is
+    enabled
+  x86/virt: KVM: Open code cpu_has_vmx() in KVM VMX
+  x86/virt: KVM: Move VMXOFF helpers into KVM VMX
+  KVM: SVM: Make KVM_AMD depend on CPU_SUP_AMD or CPU_SUP_HYGON
+  x86/virt: Drop unnecessary check on extended CPUID level in
+    cpu_has_svm()
+  x86/virt: KVM: Open code cpu_has_svm() into kvm_is_svm_supported()
+  KVM: SVM: Check that the current CPU supports SVM in
+    kvm_is_svm_supported()
+  KVM: VMX: Ensure CPU is stable when probing basic VMX support
+  x86/virt: KVM: Move "disable SVM" helper into KVM SVM
+  KVM: x86: Force kvm_rebooting=true during emergency reboot/crash
+  KVM: SVM: Use "standard" stgi() helper when disabling SVM
+  KVM: VMX: Skip VMCLEAR logic during emergency reboots if CR4.VMXE=0
+
+ arch/x86/include/asm/kexec.h   |   2 -
+ arch/x86/include/asm/reboot.h  |   7 ++
+ arch/x86/include/asm/virtext.h | 154 ---------------------------------
+ arch/x86/kernel/crash.c        |  31 -------
+ arch/x86/kernel/reboot.c       |  66 ++++++++++----
+ arch/x86/kvm/Kconfig           |   2 +-
+ arch/x86/kvm/svm/svm.c         |  71 ++++++++++++---
+ arch/x86/kvm/vmx/vmx.c         |  76 ++++++++++++----
+ 8 files changed, 176 insertions(+), 233 deletions(-)
+ delete mode 100644 arch/x86/include/asm/virtext.h
 
 
-On 7/21/23 17:10, Michael S. Tsirkin wrote:
-> On Fri, Jul 21, 2023 at 04:58:04PM +0200, Maxime Coquelin wrote:
->>
->>
->> On 7/21/23 16:45, Michael S. Tsirkin wrote:
->>> On Fri, Jul 21, 2023 at 04:37:00PM +0200, Maxime Coquelin wrote:
->>>>
->>>>
->>>> On 7/20/23 23:02, Michael S. Tsirkin wrote:
->>>>> On Thu, Jul 20, 2023 at 01:26:20PM -0700, Shannon Nelson wrote:
->>>>>> On 7/20/23 1:38 AM, Jason Wang wrote:
->>>>>>>
->>>>>>> Adding cond_resched() to the command waiting loop for a better
->>>>>>> co-operation with the scheduler. This allows to give CPU a breath to
->>>>>>> run other task(workqueue) instead of busy looping when preemption is
->>>>>>> not allowed on a device whose CVQ might be slow.
->>>>>>>
->>>>>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
->>>>>>
->>>>>> This still leaves hung processes, but at least it doesn't pin the CPU any
->>>>>> more.  Thanks.
->>>>>> Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
->>>>>>
->>>>>
->>>>> I'd like to see a full solution
->>>>> 1- block until interrupt
->>>>
->>>> Would it make sense to also have a timeout?
->>>> And when timeout expires, set FAILED bit in device status?
->>>
->>> virtio spec does not set any limits on the timing of vq
->>> processing.
->>
->> Indeed, but I thought the driver could decide it is too long for it.
->>
->> The issue is we keep waiting with rtnl locked, it can quickly make the
->> system unusable.
-> 
-> if this is a problem we should find a way not to keep rtnl
-> locked indefinitely.
-
- From the tests I have done, I think it is. With OVS, a reconfiguration 
-is performed when the VDUSE device is added, and when a MLX5 device is
-in the same bridge, it ends up doing an ioctl() that tries to take the
-rtnl lock. In this configuration, it is not possible to kill OVS because
-it is stuck trying to acquire rtnl lock for mlx5 that is held by virtio-
-net.
-
-> 
->>>>> 2- still handle surprise removal correctly by waking in that case
->>>>>
->>>>>
->>>>>
->>>>>>> ---
->>>>>>>      drivers/net/virtio_net.c | 4 +++-
->>>>>>>      1 file changed, 3 insertions(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->>>>>>> index 9f3b1d6ac33d..e7533f29b219 100644
->>>>>>> --- a/drivers/net/virtio_net.c
->>>>>>> +++ b/drivers/net/virtio_net.c
->>>>>>> @@ -2314,8 +2314,10 @@ static bool virtnet_send_command(struct virtnet_info *vi, u8 class, u8 cmd,
->>>>>>>              * into the hypervisor, so the request should be handled immediately.
->>>>>>>              */
->>>>>>>             while (!virtqueue_get_buf(vi->cvq, &tmp) &&
->>>>>>> -              !virtqueue_is_broken(vi->cvq))
->>>>>>> +              !virtqueue_is_broken(vi->cvq)) {
->>>>>>> +               cond_resched();
->>>>>>>                     cpu_relax();
->>>>>>> +       }
->>>>>>>
->>>>>>>             return vi->ctrl->status == VIRTIO_NET_OK;
->>>>>>>      }
->>>>>>> --
->>>>>>> 2.39.3
->>>>>>>
->>>>>>> _______________________________________________
->>>>>>> Virtualization mailing list
->>>>>>> Virtualization@lists.linux-foundation.org
->>>>>>> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
->>>>>
->>>
-> 
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
+-- 
+2.41.0.487.g6d72f3e995-goog
 
