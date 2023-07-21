@@ -2,179 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FA275CAB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F287875CAB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbjGUOyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:54:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36978 "EHLO
+        id S230291AbjGUOyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbjGUOyr (ORCPT
+        with ESMTP id S229805AbjGUOyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:54:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89BC3171A;
-        Fri, 21 Jul 2023 07:54:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1971561A0C;
-        Fri, 21 Jul 2023 14:54:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CC9DC433C7;
-        Fri, 21 Jul 2023 14:54:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689951284;
-        bh=t77fLoIms5dLMcLB46LECL7L1VO/tvMK+vqVQsPIqlg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Limk3R8EchtkBCsao2b105jV+o8O3QHoPjrNlWm6PRLne6awIRyhcA7igPYdD3r5g
-         N9fiF0odrupddTJaEA5pDPUxCP2QU31P0Nhe2vdU4zpsHRe5kf82XbGdR7rbPiJftI
-         shJBb6ZmRyc2R7c3PqBG8uXLvLMFob6xf4SYHm4MLUhxmPDtbuP5XP2kqKmU/qzTpy
-         rm/YxCJC+BA6V2D9t51a/UUL1zu9puYmdF5/U9qzItgspgSz9al952iytclsNH2m4T
-         nJrjyS5sTaTfjCIW3oxF5TckItn8oMBTYRFYQywe3SGTfclDqQnQ8Im374akGTk9Rn
-         FTPo1VqG35ICg==
-Date:   Fri, 21 Jul 2023 20:24:22 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Shawn Lin <shawn.lin@rock-chips.com>
-Cc:     Frank Li <Frank.li@nxp.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        helgaas@kernel.org, imx@lists.linux.dev, bhelgaas@google.com,
-        devicetree@vger.kernel.org, gustavo.pimentel@synopsys.com,
-        kw@linux.com, leoyang.li@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, minghuan.lian@nxp.com,
-        mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
-        shawnguo@kernel.org, zhiqiang.hou@nxp.com
-Subject: Re: [PATCH v3 1/2] PCI: dwc: Implement general suspend/resume
- functionality for L2/L3 transitions
-Message-ID: <20230721145422.GC2536@thinkpad>
-References: <20230419164118.596300-1-Frank.Li@nxp.com>
- <20230717164526.GC35455@thinkpad>
- <ZLWKI1lRqxejfUgK@lizhi-Precision-Tower-5810>
- <20230718100400.GB4771@thinkpad>
- <20230720142509.GB48270@thinkpad>
- <ZLlGsM/D/b+udmAD@lizhi-Precision-Tower-5810>
- <20230720160738.GC48270@thinkpad>
- <6f1eb449-5609-0b17-1323-0d114c38d969@rock-chips.com>
+        Fri, 21 Jul 2023 10:54:36 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7AB121;
+        Fri, 21 Jul 2023 07:54:35 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b74310566cso30586561fa.2;
+        Fri, 21 Jul 2023 07:54:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689951273; x=1690556073;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=p18D6PEGwHZfci/zN2/shTnhQCgmj3XJsAK+DBdady0=;
+        b=LeZFMEyzNH2rUW5qlERk7OHgFC4JT7udCzLCdY8GulHU5guy0npYZDiRCcOlRH7oP1
+         l3BcHD1cIrS5rEKu0r9mpTC0MZgBI9hmeo8YHgV/6Hh7Oy4bf/vx481R7C59OB9ysc39
+         M6BuL5EmX+VeB+BgvayuBP5BGnbTVYVDYNOzrRyRwoSab2wh/iC9B6+/OMEYtiqSDAGk
+         h+B2DXX5K0hjEKuuJRed/wTkjb5Dw/jXM3sXVJVJj1zhOQCJIfgeXxfwfxjsefqBq2je
+         QxBGEDt2wlS6Hoz1KnVaymJsD1UOP6HL7lwMPki+9BPGwAciU5zX2Rnqmkblx5DX2awW
+         tg6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689951273; x=1690556073;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p18D6PEGwHZfci/zN2/shTnhQCgmj3XJsAK+DBdady0=;
+        b=jeGkWADlUond2CuQoXG50xPR50vmvtwDO7OuAIR2T/AdUr0ZLTODmMwQSJr5XzRKTg
+         jDMik3G906T4yCoi+isBjKc2MNlIA+FENid9JErVY/D5PLvCuqFz+hX2JMXSDNxS9Hrd
+         tvUv9cBLjLI3ZB2BSZTGmzdrDexAMZDPPVbveAfKiVk9bQvtnzVPsCfY2CY4iq0ETXA3
+         0TQE+ehED+QyID1Q8bQ89k8ahqcn8c4L/p7Swk8ae4gsxAR8V7um4T9WibhUNQ/NpFQc
+         OYRPQZoSS48Cu/hB+YvuUdEaQ1XdqxOCxCaPi0yVcukpFH0JoUZ5Rx4SZHygCElUYwrW
+         5IRg==
+X-Gm-Message-State: ABy/qLaV9kqx84YTjqFiLzDHvcVn+f7Rb69u7jho7+KLedf4wd8++Vt8
+        +Qmk168H12VzBtn5jMSuDg0=
+X-Google-Smtp-Source: APBJJlEVSQIHS57WY/7masMQAjH951ZCqyx4T5TCZWNHS5UBtWWegZfR2Duqzr2C8ATT77X2h3Mr0g==
+X-Received: by 2002:a2e:8810:0:b0:2b6:a057:8098 with SMTP id x16-20020a2e8810000000b002b6a0578098mr1745920ljh.0.1689951273335;
+        Fri, 21 Jul 2023 07:54:33 -0700 (PDT)
+Received: from localhost ([95.214.234.139])
+        by smtp.gmail.com with ESMTPSA id l12-20020a05651c10cc00b002b6b60c14besm968554ljn.29.2023.07.21.07.54.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 07:54:32 -0700 (PDT)
+From:   Maxim Mikityanskiy <maxtram95@gmail.com>
+To:     "Lee, Chun-Yi" <jlee@suse.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>
+Cc:     Matthew Garrett <matthew.garrett@nebula.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxim Mikityanskiy <maxtram95@gmail.com>
+Subject: [PATCH] platform/x86: msi-laptop: Fix rfkill out-of-sync on MSI Wind U100
+Date:   Fri, 21 Jul 2023 17:54:23 +0300
+Message-ID: <20230721145423.161057-1-maxtram95@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6f1eb449-5609-0b17-1323-0d114c38d969@rock-chips.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 10:09:18AM +0800, Shawn Lin wrote:
-> 
-> On 2023/7/21 0:07, Manivannan Sadhasivam wrote:
-> > On Thu, Jul 20, 2023 at 10:37:36AM -0400, Frank Li wrote:
-> > > On Thu, Jul 20, 2023 at 07:55:09PM +0530, Manivannan Sadhasivam wrote:
-> > > > On Tue, Jul 18, 2023 at 03:34:26PM +0530, Manivannan Sadhasivam wrote:
-> > > > > On Mon, Jul 17, 2023 at 02:36:19PM -0400, Frank Li wrote:
-> > > > > > On Mon, Jul 17, 2023 at 10:15:26PM +0530, Manivannan Sadhasivam wrote:
-> > > > > > > On Wed, Apr 19, 2023 at 12:41:17PM -0400, Frank Li wrote:
-> > > > > > > > Introduced helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
-> > > > > > > > Added API pme_turn_off and exit_from_l2 for managing L2/L3 state transitions.
-> > > > > > > > 
-> > > > > > > > Typical L2 entry workflow:
-> > > > > > > > 
-> > > > > > > > 1. Transmit PME turn off signal to PCI devices.
-> > > > > > > > 2. Await link entering L2_IDLE state.
-> > > > > > > 
-> > > > > > > AFAIK, typical workflow is to wait for PME_To_Ack.
-> > > > > > 
-> > > > > > 1 Already wait for PME_to_ACK,  2, just wait for link actual enter L2.
-> > > > > > I think PCI RC needs some time to set link enter L2 after get ACK from
-> > > > > > PME.
-> > > > > > 
-> > > > 
-> > > > One more comment. If you transition the device to L2/L3, then it can loose power
-> > > > if Vaux was not provided. In that case, can all the devices work after resume?
-> > > > Most notably NVMe?
-> > > 
-> > > I have not hardware to do such test, NVMe driver will reinit everything after
-> > > resume if no L1.1\L1.2 support. If there are L1.1\L1.2, NVME expect it leave
-> > > at L1.2 at suspend to get better resume latency.
-> > > 
-> > 
-> > To be precise, NVMe driver will shutdown the device if there is no ASPM support
-> > and keep it in low power mode otherwise (there are other cases as well but we do
-> > not need to worry).
-> > 
-> > But here you are not checking for ASPM state in the suspend path, and just
-> > forcing the link to be in L2/L3 (thereby D3Cold) even though NVMe driver may
-> > expect it to be in low power state like ASPM/APST.
-> > 
-> > So you should only put the link to L2/L3 if there is no ASPM support. Otherwise,
-> > you'll ending up with bug reports when users connect NVMe to it.
-> > 
-> 
-> 
-> At this topic, it's very interesting to look at
-> 
-> drivers/pci/controller/dwc/pcie-tegra194.c
-> 
-> 
-> static int tegra_pcie_dw_suspend_noirq(struct device *dev)
-> {
->         struct tegra_pcie_dw *pcie = dev_get_drvdata(dev);
-> 
->         if (!pcie->link_state)
->                 return 0;
-> 
->         tegra_pcie_downstream_dev_to_D0(pcie);
->         tegra_pcie_dw_pme_turnoff(pcie);
->         tegra_pcie_unconfig_controller(pcie);
-> 
->         return 0;
-> }
-> 
-> It brings back all the downstream components to D0, as I assumed it was L0
-> indeed, before sending PME aiming to enter L2.
-> 
+Only the HW rfkill state is toggled on laptops with quirks->ec_read_only
+(so far only MSI Wind U90/U100). There are, however, a few issues with
+the implementation:
 
-The behavior is Tegra specific as mentioned in the comment in
-tegra_pcie_downstream_dev_to_D0():
+1. The initial HW state is always unblocked, regardless of the actual
+   state on boot, because msi_init_rfkill only sets the SW state,
+   regardless of ec_read_only.
 
-        /*
-         * link doesn't go into L2 state with some of the endpoints with Tegra
-         * if they are not in D0 state. So, need to make sure that immediate
-         * downstream devices are in D0 state before sending PME_TurnOff to put
-         * link into L2 state.
-         * This is as per PCI Express Base r4.0 v1.0 September 27-2017,
-         * 5.2 Link State Power Management (Page #428).
-         */
+2. The initial SW state corresponds to the actual state on boot, but it
+   can't be changed afterwards, because set_device_state returns
+   -EOPNOTSUPP. It confuses the userspace, making Wi-Fi and/or Bluetooth
+   unusable if it was blocked on boot, and breaking the airplane mode if
+   the rfkill was unblocked on boot.
 
-But I couldn't find the behavior documented in the spec as per the comment. Not
-sure if I'm reading it wrong!
+Address the above issues by properly initializing the HW state on
+ec_read_only laptops and by allowing the userspace to toggle the SW
+state. Don't set the SW state ourselves and let the userspace fully
+control it. Toggling the SW state is a no-op, however, it allows the
+userspace to properly toggle the airplane mode. The actual SW radio
+disablement is handled by the corresponding rtl818x_pci and btusb
+drivers that have their own rfkills.
 
-Also, I can confirm from previous interations with the linux-nvme list that
-Tegra also faces the suspend issue with NVMe devices.
+Tested on MSI Wind U100 Plus, BIOS ver 1.0G, EC ver 130.
 
-- Mani
+Fixes: 0816392b97d4 ("msi-laptop: merge quirk tables to one")
+Fixes: 0de6575ad0a8 ("msi-laptop: Add MSI Wind U90/U100 support")
+Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+---
+ drivers/platform/x86/msi-laptop.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-- Mani
-
-> > - Mani
-> > 
-> > > This API help remove duplicate codes and it can be improved gradually.
-> > > 
-> > > 
-> > > > 
-> > > > - Mani
-> > > > 
-> > > > 
-> > > > -- 
-> > > > மணிவண்ணன் சதாசிவம்
-> > 
-
+diff --git a/drivers/platform/x86/msi-laptop.c b/drivers/platform/x86/msi-laptop.c
+index 6b18ec543ac3..f4c6c36e05a5 100644
+--- a/drivers/platform/x86/msi-laptop.c
++++ b/drivers/platform/x86/msi-laptop.c
+@@ -208,7 +208,7 @@ static ssize_t set_device_state(const char *buf, size_t count, u8 mask)
+ 		return -EINVAL;
+ 
+ 	if (quirks->ec_read_only)
+-		return -EOPNOTSUPP;
++		return 0;
+ 
+ 	/* read current device state */
+ 	result = ec_read(MSI_STANDARD_EC_COMMAND_ADDRESS, &rdata);
+@@ -838,15 +838,15 @@ static bool msi_laptop_i8042_filter(unsigned char data, unsigned char str,
+ static void msi_init_rfkill(struct work_struct *ignored)
+ {
+ 	if (rfk_wlan) {
+-		rfkill_set_sw_state(rfk_wlan, !wlan_s);
++		msi_rfkill_set_state(rfk_wlan, !wlan_s);
+ 		rfkill_wlan_set(NULL, !wlan_s);
+ 	}
+ 	if (rfk_bluetooth) {
+-		rfkill_set_sw_state(rfk_bluetooth, !bluetooth_s);
++		msi_rfkill_set_state(rfk_bluetooth, !bluetooth_s);
+ 		rfkill_bluetooth_set(NULL, !bluetooth_s);
+ 	}
+ 	if (rfk_threeg) {
+-		rfkill_set_sw_state(rfk_threeg, !threeg_s);
++		msi_rfkill_set_state(rfk_threeg, !threeg_s);
+ 		rfkill_threeg_set(NULL, !threeg_s);
+ 	}
+ }
 -- 
-மணிவண்ணன் சதாசிவம்
+2.41.0
+
