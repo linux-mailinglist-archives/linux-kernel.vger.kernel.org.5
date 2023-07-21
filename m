@@ -2,170 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA92675CF4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E9B75CF5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbjGUQav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 12:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
+        id S229891AbjGUQbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 12:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjGUQac (ORCPT
+        with ESMTP id S232748AbjGUQav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 12:30:32 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E895B4696;
-        Fri, 21 Jul 2023 09:28:34 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-345f1e0abf9so10807355ab.3;
-        Fri, 21 Jul 2023 09:28:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689956842; x=1690561642;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=S3AT9u4QYD/Wmgzx+LQ7tGvuXiSmv6bkSA1iGoHjJQg=;
-        b=fjH568Cn0Ae9taITeR/wmXP/KuAtqs93r4wHiEC6pwWin6wWHFPOXIw/PR+zggpgFU
-         jFKBIHSIIp3HsAT9zDFuUaJEDtLZ61t7kN8pI3gjRxE6jZtpCIVtF1nYAwjMIt4oBaqm
-         UpJOGMIl7+2/ppouWfwKTrdn2ijafiTZJ/Q1KkfFN9okCvhfuBm027ZuVSNqJAM6nHtv
-         PEmpFDNJqAHWd2Wf8TzM8uWtCMGIbKalXy7FFPd+asTpKa6nbdFhNlYHgabDEVBqrMIN
-         9ZnQAia5FnrGzd5rNZSQbHM8GrIbkCj+5Ee4R/wVfVf2HSwqcBNGiRhSPQMDifdBjTXU
-         Mteg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689956842; x=1690561642;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S3AT9u4QYD/Wmgzx+LQ7tGvuXiSmv6bkSA1iGoHjJQg=;
-        b=FG1CNtBO+7hs0e7mN6/NFWXaV7JbmZcHJUorqbwlA+QaG+wnrM9bT93mIaZflOV8zS
-         ugNU2j7yrUMJV0T+oW6EMTNZIb9OepWyZ1xfyYaHVsTW75TKbnYrJsnNJT9d5awFuTw6
-         UDT1RRaVdQ2Hzo2ZjvH2Qnsm27PfvyoK/ZCIJ7fbJFBYA0UMIrsgJlFkvbEAFlIjLceO
-         /4nryqAd5Hr4E6+yKooQXXp3oyuw8t4G15uNianHv330AJ+QrV1rWCVZZXyZw3fIAp2D
-         N9NL25/usTh4WX8Qg6StAviv7lxrQUPlgZcA5tGF8ofTwT+SMscDsfdQFIS6j6EFwhAH
-         5dvw==
-X-Gm-Message-State: ABy/qLZB1zIbqnWc1CnLcJtHo4HySdhfSWsBhzdr2x6LPpm9pDd5byue
-        0KmG6+q9Ou78M8x0IIZCMKs=
-X-Google-Smtp-Source: APBJJlHADgT0H57/m/leaU87Jo7QnmAE3rRRESunjxsKp1ybjsdfDtYMXEUUYSVjIiYJ9goc0GO2oQ==
-X-Received: by 2002:a92:c245:0:b0:348:7d72:48cf with SMTP id k5-20020a92c245000000b003487d7248cfmr520290ilo.17.1689956842190;
-        Fri, 21 Jul 2023 09:27:22 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l8-20020a922908000000b003460b697bc0sm1058482ilg.59.2023.07.21.09.27.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 09:27:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 21 Jul 2023 09:27:20 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Dimitris Papastamos <dp@opensource.wolfsonmicro.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] regmap: rbtree: Use alloc_flags for memory allocations
-Message-ID: <dbe99062-6e35-44b1-9e33-5ebc0fed9e6d@roeck-us.net>
-References: <58f12a07-5f4b-4a8f-ab84-0a42d1908cb9@moroto.mountain>
+        Fri, 21 Jul 2023 12:30:51 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF1D4697;
+        Fri, 21 Jul 2023 09:28:58 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="346665433"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="346665433"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 09:27:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="1055606811"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="1055606811"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP; 21 Jul 2023 09:27:41 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andy@kernel.org>)
+        id 1qMsyf-00CQg1-0P;
+        Fri, 21 Jul 2023 19:27:37 +0300
+Date:   Fri, 21 Jul 2023 19:27:36 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     nikita.shubin@maquefel.me
+Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Lukasz Majewski <lukma@denx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Michael Peters <mpeters@embeddedts.com>,
+        Kris Bahnsen <kris@embeddedts.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v3 24/42] mtd: nand: add support for ts72xx
+Message-ID: <ZLqx+Osn3gcHjUph@smile.fi.intel.com>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-24-3d63a5f1103e@maquefel.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <58f12a07-5f4b-4a8f-ab84-0a42d1908cb9@moroto.mountain>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230605-ep93xx-v3-24-3d63a5f1103e@maquefel.me>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 05:55:33PM +0300, Dan Carpenter wrote:
-> The kunit tests discovered a sleeping in atomic bug.  The allocations
-> in the regcache-rbtree code should use the map->alloc_flags instead of
-> GFP_KERNEL.
+On Thu, Jul 20, 2023 at 02:29:24PM +0300, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
 > 
-> [    5.005510] BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
-> [    5.005960] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 117, name: kunit_try_catch
-> [    5.006219] preempt_count: 1, expected: 0
-> [    5.006414] 1 lock held by kunit_try_catch/117:
-> [    5.006590]  #0: 833b9010 (regmap_kunit:86:(config)->lock){....}-{2:2}, at: regmap_lock_spinlock+0x14/0x1c
-> [    5.007493] irq event stamp: 162
-> [    5.007627] hardirqs last  enabled at (161): [<80786738>] crng_make_state+0x1a0/0x294
-> [    5.007871] hardirqs last disabled at (162): [<80c531ec>] _raw_spin_lock_irqsave+0x7c/0x80
-> [    5.008119] softirqs last  enabled at (0): [<801110ac>] copy_process+0x810/0x2138
-> [    5.008356] softirqs last disabled at (0): [<00000000>] 0x0
-> [    5.008688] CPU: 0 PID: 117 Comm: kunit_try_catch Tainted: G                 N 6.4.4-rc3-g0e8d2fdfb188 #1
-> [    5.009011] Hardware name: Generic DT based system
-> [    5.009277]  unwind_backtrace from show_stack+0x18/0x1c
-> [    5.009497]  show_stack from dump_stack_lvl+0x38/0x5c
-> [    5.009676]  dump_stack_lvl from __might_resched+0x188/0x2d0
-> [    5.009860]  __might_resched from __kmem_cache_alloc_node+0x1dc/0x25c
-> [    5.010061]  __kmem_cache_alloc_node from kmalloc_trace+0x30/0xc8
-> [    5.010254]  kmalloc_trace from regcache_rbtree_write+0x26c/0x468
-> [    5.010446]  regcache_rbtree_write from _regmap_write+0x88/0x140
-> [    5.010634]  _regmap_write from regmap_write+0x44/0x68
-> [    5.010803]  regmap_write from basic_read_write+0x8c/0x270
-> [    5.010980]  basic_read_write from kunit_try_run_case+0x48/0xa0
-> 
-> Fixes: 28644c809f44 ("regmap: Add the rbtree cache support")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Closes: https://lore.kernel.org/all/ee59d128-413c-48ad-a3aa-d9d350c80042@roeck-us.net/
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Technologic Systems has it's own nand controller implementation in CPLD.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+...
 
-> ---
-> This patch is similar to what I sent earlier, but I changed
-> regcache_rbtree_init() back to using GFP_KERNEL.
-> 
->  drivers/base/regmap/regcache-rbtree.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/base/regmap/regcache-rbtree.c b/drivers/base/regmap/regcache-rbtree.c
-> index fabf87058d80..ae6b8788d5f3 100644
-> --- a/drivers/base/regmap/regcache-rbtree.c
-> +++ b/drivers/base/regmap/regcache-rbtree.c
-> @@ -277,7 +277,7 @@ static int regcache_rbtree_insert_to_block(struct regmap *map,
->  
->  	blk = krealloc(rbnode->block,
->  		       blklen * map->cache_word_size,
-> -		       GFP_KERNEL);
-> +		       map->alloc_flags);
->  	if (!blk)
->  		return -ENOMEM;
->  
-> @@ -286,7 +286,7 @@ static int regcache_rbtree_insert_to_block(struct regmap *map,
->  	if (BITS_TO_LONGS(blklen) > BITS_TO_LONGS(rbnode->blklen)) {
->  		present = krealloc(rbnode->cache_present,
->  				   BITS_TO_LONGS(blklen) * sizeof(*present),
-> -				   GFP_KERNEL);
-> +				   map->alloc_flags);
->  		if (!present)
->  			return -ENOMEM;
->  
-> @@ -320,7 +320,7 @@ regcache_rbtree_node_alloc(struct regmap *map, unsigned int reg)
->  	const struct regmap_range *range;
->  	int i;
->  
-> -	rbnode = kzalloc(sizeof(*rbnode), GFP_KERNEL);
-> +	rbnode = kzalloc(sizeof(*rbnode), map->alloc_flags);
->  	if (!rbnode)
->  		return NULL;
->  
-> @@ -346,13 +346,13 @@ regcache_rbtree_node_alloc(struct regmap *map, unsigned int reg)
->  	}
->  
->  	rbnode->block = kmalloc_array(rbnode->blklen, map->cache_word_size,
-> -				      GFP_KERNEL);
-> +				      map->alloc_flags);
->  	if (!rbnode->block)
->  		goto err_free;
->  
->  	rbnode->cache_present = kcalloc(BITS_TO_LONGS(rbnode->blklen),
->  					sizeof(*rbnode->cache_present),
-> -					GFP_KERNEL);
-> +					map->alloc_flags);
->  	if (!rbnode->cache_present)
->  		goto err_free_block;
->  
-> -- 
-> 2.39.2
-> 
++ bits.h
+
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+
+...
+
+> +static int ts72xx_nand_attach_chip(struct nand_chip *chip)
+> +{
+> +	switch (chip->ecc.engine_type) {
+> +	case NAND_ECC_ENGINE_TYPE_SOFT:
+> +		if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
+> +			chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
+> +		break;
+> +	case NAND_ECC_ENGINE_TYPE_ON_HOST:
+> +		return -EINVAL;
+> +	default:
+
+> +		break;
+
+Here it will return 0, is it a problem?
+
+> +	}
+> +
+> +	return 0;
+> +}
+
+...
+
+> +static int ts72xx_nand_probe(struct platform_device *pdev)
+> +{
+> +	struct ts72xx_nand_data *data;
+> +	struct device_node *child;
+> +	struct mtd_info *mtd;
+> +	int err;
+
+> +	/* Allocate memory for the device structure (and zero it) */
+
+Useless comment.
+
+> +	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	data->controller.ops = &ts72xx_nand_ops;
+> +	nand_controller_init(&data->controller);
+> +	data->chip.controller = &data->controller;
+> +
+> +	data->io_base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(data->io_base))
+> +		return PTR_ERR(data->io_base);
+> +
+> +	child = of_get_next_child(pdev->dev.of_node, NULL);
+
+Why not using device property API from day 1?
+
+	fwnode_get_next_child_node()
+
+> +	if (!child)
+> +		return dev_err_probe(&pdev->dev, -ENXIO,
+> +				"ts72xx controller node should have exactly one child\n");
+
+From now on you leak the reference count in error path.
+
+> +	nand_set_flash_node(&data->chip, child);
+> +	mtd = nand_to_mtd(&data->chip);
+> +	mtd->dev.parent = &pdev->dev;
+> +
+> +	data->chip.legacy.IO_ADDR_R = data->io_base;
+> +	data->chip.legacy.IO_ADDR_W = data->io_base;
+> +	data->chip.legacy.cmd_ctrl = ts72xx_nand_hwcontrol;
+> +	data->chip.legacy.dev_ready = ts72xx_nand_device_ready;
+> +
+> +	platform_set_drvdata(pdev, data);
+> +
+> +	/*
+> +	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
+> +	 * Set ->engine_type before registering the NAND devices in order to
+> +	 * provide a driver specific default value.
+> +	 */
+> +	data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+> +
+> +	/* Scan to find existence of the device */
+> +	err = nand_scan(&data->chip, 1);
+> +	if (err)
+> +		return err;
+> +
+> +	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
+> +	if (err) {
+> +		nand_cleanup(&data->chip);
+
+> +		return err;
+> +	}
+> +
+> +	return 0;
+
+
+These 4 lines can be simply
+
+	return err;
+
+but see above.
+
+> +}
+
+...
+
+> +static void ts72xx_nand_remove(struct platform_device *pdev)
+> +{
+> +	struct ts72xx_nand_data *data = platform_get_drvdata(pdev);
+> +	struct nand_chip *chip = &data->chip;
+> +	int ret;
+> +
+> +	ret = mtd_device_unregister(nand_to_mtd(chip));
+
+> +	WARN_ON(ret);
+
+Why?!  Is it like this in other MTD drivers?
+
+> +	nand_cleanup(chip);
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
