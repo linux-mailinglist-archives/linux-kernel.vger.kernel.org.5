@@ -2,61 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC6D75CBAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FAE675CBAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbjGUP0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
+        id S231747AbjGUP0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbjGUP0K (ORCPT
+        with ESMTP id S231723AbjGUP0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:26:10 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71C512F;
-        Fri, 21 Jul 2023 08:26:04 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-5607cdb0959so1127091eaf.2;
-        Fri, 21 Jul 2023 08:26:04 -0700 (PDT)
+        Fri, 21 Jul 2023 11:26:33 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9270C12F
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:26:31 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b962c226ceso30402551fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:26:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689953164; x=1690557964;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2XADGzXDE1Cmqc9k3erzJdoJdm6r5SA4QUqxQVr/X6c=;
-        b=iKPRwnvs9sqCriXOw/HdWzzJ6w5MYPPuTn/ZViObaPe5zoVBNcUA394quv1FTU8IZA
-         uu87NSHHwQ58Mzsz6a1RSavv6W00W2rwo5yt0OY0tcaaBXheCvltY30m/ycBNotVplUV
-         CH6m1p+CbotMkZqG01VoSCFvAb8TQe7beRK81Xhk2GagSSz1QzX8SpWLNfnBXCGT3Bsn
-         dXANoI57rj75kbUs9BF1IdbH9GoVSTf8vU409IHK2jdM5lGUXi0D7TS3k5oDRKqp0Xkb
-         +1PpdI6SRXhc7Qk0/oAZ2p8AWVmyp9HgkvQoKtTRne4ZgIdkxXsjfmyGFEHvtuUWNe59
-         XA3w==
+        d=gmail.com; s=20221208; t=1689953190; x=1690557990;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fMIayNAPm5Eq4SXAKjBrCInKrs0jRqX2GjfiDnlxWN4=;
+        b=hQtE/A7M+hTh+uZ0Y9RabnX8vSZeLjk89MctwS6+uGSQkI9dy9Wsa+zFf2KPP5z7q+
+         AEMd41uxsDekcnl5Mw7owOWURG61Uk5IlaUJ2l+aGRErJLdz2SAccAkJfzt95Pe4YlK7
+         eXW2lui6RBvZxGKNgLMScqdRLcr44nWCOwVSRE/CJSvS/ptueYoC5EjyuNt6FeX1DwHS
+         05irp/zk8Bf0RhSRQq+/7WBFlHmwlEplZnF2p8cCTJbWN2tKLYJ+Vr6Y2uYNT1A6TLFQ
+         PPxAXhGB/03QhzT7Ln186eYeRGGkDkmMGLgmWWzJ4ePfzCJNyOHYcogBvRvz6xXtj0lZ
+         /g0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689953164; x=1690557964;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2XADGzXDE1Cmqc9k3erzJdoJdm6r5SA4QUqxQVr/X6c=;
-        b=ML1bEyQLyjJx/ZoBmHpftWvGreUi70GpG0ULtRJM3yCWVhqp3hWzYN/uWGfPuFKQj1
-         A6Dup7O/Yjn2IcgxHJFPk8Rq8hvzfkI0pUWodwvz0mllfoDsxNJbITAKjsmzjKSlWf+I
-         hjtTDxhnr1/Bwc5eWjl8rOfnVoBwPOpBkFM0usl8CTgb2ZprB20ti80tmAhxNFaVBBhM
-         p5XIOG4cKOdQkrfV3u9qI5B397oqWq6xm9GxUeUELVzyyOw4tLL831JzU0/pY9d5kchi
-         DvmUtfkx/3v/366e+vh7uWfu6VlOw2Whcswuf5Gkt4/7fTnqj3iMZC3V6wFUKVw84EaF
-         Dohg==
-X-Gm-Message-State: ABy/qLZejKGPcQNAN7md0x6JG20RbHhPtOp4HBeCyKFaQpl9Mjwi9Eh5
-        0GVjhepM2hbfLndKtXEyAbE=
-X-Google-Smtp-Source: APBJJlFXGIAfsDoT/WoZZltvCYh3AlJifi4lbFeTodR9/ZlSsyKgDUUepmSm1K23OQAJrb4qZ9EwzQ==
-X-Received: by 2002:a05:6808:1819:b0:3a1:f135:6a49 with SMTP id bh25-20020a056808181900b003a1f1356a49mr2925509oib.29.1689953164061;
-        Fri, 21 Jul 2023 08:26:04 -0700 (PDT)
-Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id l6-20020a17090a850600b002635db431a0sm2688201pjn.45.2023.07.21.08.26.01
+        d=1e100.net; s=20221208; t=1689953190; x=1690557990;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fMIayNAPm5Eq4SXAKjBrCInKrs0jRqX2GjfiDnlxWN4=;
+        b=RpwmcK8tgbGpUfDdvYO4o0dfdvNvd3GV4I66PCMC39/8LgeFV5Ru0geqWpC+I3P0Mg
+         WBPdMcYrGxDoFH8E9FcY9s3i/P6k3Iw7WMbDqATxCfM2egIa76dAJxeDYpXhxlCXNGUu
+         fUSkxUIVSi7XNA5mk1cQ2MYHJLadPYcs+cknlM388Ctxyq/X+9kKaLqcseICKuZLMGZw
+         7Q2BM7ucAdy+lorTaU8foIfNzYJM0Ukp4w+iUGUnI2qKyrSdNchybBxeDN8lMh0BALY0
+         pddEp/n/ivb3MpBXXhHtXz8CHNx7h/FLXr0CelrK1jIwOpGFz36Ewy0f9rFrHF/GoILh
+         w7IQ==
+X-Gm-Message-State: ABy/qLY7YROFTmObmu9mobwmqr/XX4ba4cPnAFi+vL6J9BVV+RwpUz6m
+        KZdz95O1ZbxAF4YgFRYteVMPjCHE7g8=
+X-Google-Smtp-Source: APBJJlFY8cE+d5Zmbt+CfairHYcAgwXnk8vlZJKnuEQC65G1Rp1R/9ud5veEhcEu1VBZ5mjcrp5OFA==
+X-Received: by 2002:a2e:83cd:0:b0:2b6:efa0:7c36 with SMTP id s13-20020a2e83cd000000b002b6efa07c36mr1666103ljh.21.1689953189379;
+        Fri, 21 Jul 2023 08:26:29 -0700 (PDT)
+Received: from localhost (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id k19-20020a1709061c1300b00982d0563b11sm2287461ejg.197.2023.07.21.08.26.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 08:26:03 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 20:56:00 +0530
-Message-Id: <87fs5hl20n.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     shikemeng@huaweicloud.com
-Subject: Re: [PATCH 02/10] ext4: avoid potential data overflow in next_linear_group
-In-Reply-To: <20230721171007.2065423-3-shikemeng@huaweicloud.com>
+        Fri, 21 Jul 2023 08:26:28 -0700 (PDT)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Nishanth Menon <nm@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Yangtao Li <frank.li@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: (subset) [PATCH 1/6] soc: ti: omap-prm: Use devm_platform_get_and_ioremap_resource()
+Date:   Fri, 21 Jul 2023 17:26:27 +0200
+Message-ID: <168995317239.3656133.18010329002771216313.b4-ty@nvidia.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230705122644.32236-1-frank.li@vivo.com>
+References: <20230705122644.32236-1-frank.li@vivo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -67,41 +74,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
-
-> ngroups is ext4_group_t (unsigned int) while next_linear_group treat it
-> in int. If ngroups is bigger than max number described by int, it will
-> be treat as a negative number. Then "return group + 1 >= ngroups ? 0 :
-> group + 1;" may keep returning 0.
-> Switch int to ext4_group_t in next_linear_group to fix the overflow.
->
-
-Fixes: 196e402adf2e ("ext4: improve cr 0 / cr 1 group scanning")
-
-With that feel free to add: 
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+From: Thierry Reding <treding@nvidia.com>
 
 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 90ffabac100b..33ee3991f62c 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -1081,8 +1081,9 @@ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
->   * Return next linear group for allocation. If linear traversal should not be
->   * performed, this function just returns the same group
->   */
-> -static int
-> -next_linear_group(struct ext4_allocation_context *ac, int group, int ngroups)
-> +static ext4_group_t
-> +next_linear_group(struct ext4_allocation_context *ac, ext4_group_t group,
-> +		  ext4_group_t ngroups)
->  {
->  	if (!should_optimize_scan(ac))
->  		goto inc_and_return;
-> -- 
-> 2.30.0
+On Wed, 05 Jul 2023 20:26:39 +0800, Yangtao Li wrote:
+> Convert platform_get_resource(), devm_ioremap_resource() to a single
+> call to devm_platform_get_and_ioremap_resource(), as this is exactly
+> what this function does.
+> 
+> 
+
+Applied, thanks!
+
+[2/6] soc/tegra: fuse: Use devm_platform_get_and_ioremap_resource()
+      commit: 6674c9808048f28f979fc4c57994d936d477d3ed
+
+Best regards,
+-- 
+Thierry Reding <treding@nvidia.com>
