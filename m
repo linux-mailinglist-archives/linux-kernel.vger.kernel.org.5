@@ -2,92 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A52775C25A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C6B75C260
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbjGUJD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59396 "EHLO
+        id S231181AbjGUJEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjGUJD5 (ORCPT
+        with ESMTP id S229554AbjGUJEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:03:57 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACEE2D7D
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:03:54 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R6kBF4fR5zBRSTx
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 17:03:49 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689930229; x=1692522230; bh=cSCFQw9hjDMj+m8XhrzSaZr3Xb5
-        zOIMnO6//5pRzzUI=; b=SL4/VJC/YYJ5jJy/p/43OSr3VVt5H44t7KQd323F+5C
-        LJwFbfBGpj2hLfeaeeKrrHLFPHUZ7shmrrN98x02ZUyS06ePbdtrr4l9kuyThyzb
-        mppTInvQe/OPpyAlbHrSkATN0BMZx/S8+mNRcVI670J21nAqpgKsS1ajBexq58TV
-        0gYaHFXSoCWdPvl6soWFbvB3mUbtP+TNkFu8HZSAHspOSCQP+NcGC/2dPpjCA/qL
-        0vAy/9R6GeQTG3Wyr9gXWQZzVz7cPb64xrLNOtgf6VOi/mxy5NZ4iN9mh5ibfKHh
-        uZmTnXJBDeerD1FmpQFDmPvfGmScTk56IchGX6/nzCg==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id a03nskruB0IP for <linux-kernel@vger.kernel.org>;
-        Fri, 21 Jul 2023 17:03:49 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R6kBF1qXNzBJnMj;
-        Fri, 21 Jul 2023 17:03:49 +0800 (CST)
+        Fri, 21 Jul 2023 05:04:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C65E2D7D
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:04:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689930239;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UkppB3amY8e+ZFUORFAPfGoR63QBz1mTawh0tzwUFzU=;
+        b=O8MyMoF45NBwXSE6kctyCSIKBfnc7IQ2a8lNaDwA2PtarXlJlzCNaY3/0w6c/ZMA7m1JX9
+        RbQHkfBKACUWu+gP+VX20Y6M1uqXSBAcVHCmVsBIalv5Bpe1/7PYz9T6HbqZaoT0J38Ltu
+        vAdbbwm7YdROkJy/+rpCsSixGQqzDHM=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-119-ELsWK779PtWyCR9fXKX4iQ-1; Fri, 21 Jul 2023 05:03:55 -0400
+X-MC-Unique: ELsWK779PtWyCR9fXKX4iQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-993c24f3246so206746766b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:03:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689930235; x=1690535035;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UkppB3amY8e+ZFUORFAPfGoR63QBz1mTawh0tzwUFzU=;
+        b=PE89SocLhC1nVR1b/KeP7YrYEPG9MEuiZfzR6Y2xCMJLD5loY9jphxorHEdkJBA7RM
+         7vhrt15asDYnpjNoKWbh64V51PfguW2LyHL7Z2b5nCIqI0qoQvhSrgh3xI2dy6O8a+Ex
+         9foVI0xLyNFC8JVy3tiLgf8YMTs8PI8yBwkMBJDHPrNFnLx6OB6R2QdKkPpP3EZZjNcD
+         6SzZHE2RrWumKB0n/GqAwz91cGRkuz9zg0sS26RA/6QrHBE4cCN7mRVhNStRYjpMOaGi
+         LObml1lfXpaz9bVkuQ6CyEPdO0g4WafoUlBHg8/LCu54LJQgd/RVuf9Kk383vuZkkQEf
+         NcGg==
+X-Gm-Message-State: ABy/qLbhfqTJ3I0wV6EJSLL6/r17zAgxb1MkQKWU/4iKCXHFgigzR00q
+        bmmK0sRMYn+KeJXWg4mhOuDJUe671Am8IgclZ1KyRz8dTQBSBtMrgrEJDRVvsyBUhgcPOyD0Ilt
+        cYN+Bd2P8CvlUw4CKd47KFa6c
+X-Received: by 2002:a17:907:6d8c:b0:98d:abd4:4000 with SMTP id sb12-20020a1709076d8c00b0098dabd44000mr7889133ejc.35.1689930234801;
+        Fri, 21 Jul 2023 02:03:54 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGH6YzYN7wVD16W6bBWRZvka9R57MaW1yVsDxFFu0qfog7UhF1jWQDyj4gC4NTPLd7VWeWUJA==
+X-Received: by 2002:a17:907:6d8c:b0:98d:abd4:4000 with SMTP id sb12-20020a1709076d8c00b0098dabd44000mr7889108ejc.35.1689930234273;
+        Fri, 21 Jul 2023 02:03:54 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
+        by smtp.googlemail.com with ESMTPSA id rv7-20020a17090710c700b00993a9a951fasm1915159ejb.11.2023.07.21.02.03.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 02:03:53 -0700 (PDT)
+Message-ID: <47c5f57c-a191-1983-b4ef-6e0c59c0c446@redhat.com>
+Date:   Fri, 21 Jul 2023 11:03:51 +0200
 MIME-Version: 1.0
-Date:   Fri, 21 Jul 2023 09:03:49 +0000
-From:   sunran001@208suo.com
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/ioapic: do not use assignment in if condition
-In-Reply-To: <20230721090248.6331-1-xujianghui@cdjrlc.com>
-References: <20230721090248.6331-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <f42427601560dee3e611a6145b6c3b8b@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH v11 06/29] KVM: Introduce KVM_SET_USER_MEMORY_REGION2
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20230718234512.1690985-1-seanjc@google.com>
+ <20230718234512.1690985-7-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20230718234512.1690985-7-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following checkpatch errors:
+On 7/19/23 01:44, Sean Christopherson wrote:
+> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/x86.c       |  2 +-
+>   include/linux/kvm_host.h |  4 ++--
+>   include/uapi/linux/kvm.h | 13 +++++++++++++
+>   virt/kvm/kvm_main.c      | 38 ++++++++++++++++++++++++++++++--------
+>   4 files changed, 46 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index a6b9bea62fb8..92e77afd3ffd 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -12420,7 +12420,7 @@ void __user * __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
+>   	}
+>   
+>   	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+> -		struct kvm_userspace_memory_region m;
+> +		struct kvm_userspace_memory_region2 m;
+>   
+>   		m.slot = id | (i << 16);
+>   		m.flags = 0;
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index d2d3e083ec7f..e9ca49d451f3 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -1130,9 +1130,9 @@ enum kvm_mr_change {
+>   };
+>   
+>   int kvm_set_memory_region(struct kvm *kvm,
+> -			  const struct kvm_userspace_memory_region *mem);
+> +			  const struct kvm_userspace_memory_region2 *mem);
+>   int __kvm_set_memory_region(struct kvm *kvm,
+> -			    const struct kvm_userspace_memory_region *mem);
+> +			    const struct kvm_userspace_memory_region2 *mem);
+>   void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot);
+>   void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen);
+>   int kvm_arch_prepare_memory_region(struct kvm *kvm,
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index f089ab290978..4d4b3de8ac55 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -95,6 +95,16 @@ struct kvm_userspace_memory_region {
+>   	__u64 userspace_addr; /* start of the userspace allocated memory */
+>   };
+>   
+> +/* for KVM_SET_USER_MEMORY_REGION2 */
+> +struct kvm_userspace_memory_region2 {
+> +	__u32 slot;
+> +	__u32 flags;
+> +	__u64 guest_phys_addr;
+> +	__u64 memory_size;
+> +	__u64 userspace_addr;
+> +	__u64 pad[16];
+> +};
+> +
+>   /*
+>    * The bit 0 ~ bit 15 of kvm_userspace_memory_region::flags are visible for
+>    * userspace, other bits are reserved for kvm internal use which are defined
+> @@ -1192,6 +1202,7 @@ struct kvm_ppc_resize_hpt {
+>   #define KVM_CAP_COUNTER_OFFSET 227
+>   #define KVM_CAP_ARM_EAGER_SPLIT_CHUNK_SIZE 228
+>   #define KVM_CAP_ARM_SUPPORTED_BLOCK_SIZES 229
+> +#define KVM_CAP_USER_MEMORY2 230
+>   
+>   #ifdef KVM_CAP_IRQ_ROUTING
+>   
+> @@ -1466,6 +1477,8 @@ struct kvm_vfio_spapr_tce {
+>   					struct kvm_userspace_memory_region)
+>   #define KVM_SET_TSS_ADDR          _IO(KVMIO,   0x47)
+>   #define KVM_SET_IDENTITY_MAP_ADDR _IOW(KVMIO,  0x48, __u64)
+> +#define KVM_SET_USER_MEMORY_REGION2 _IOW(KVMIO, 0x49, \
+> +					 struct kvm_userspace_memory_region2)
+>   
+>   /* enable ucontrol for s390 */
+>   struct kvm_s390_ucas_mapping {
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 53346bc2902a..c14adf93daec 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -1549,7 +1549,7 @@ static void kvm_replace_memslot(struct kvm *kvm,
+>   	}
+>   }
+>   
+> -static int check_memory_region_flags(const struct kvm_userspace_memory_region *mem)
+> +static int check_memory_region_flags(const struct kvm_userspace_memory_region2 *mem)
+>   {
+>   	u32 valid_flags = KVM_MEM_LOG_DIRTY_PAGES;
+>   
+> @@ -1951,7 +1951,7 @@ static bool kvm_check_memslot_overlap(struct kvm_memslots *slots, int id,
+>    * Must be called holding kvm->slots_lock for write.
+>    */
+>   int __kvm_set_memory_region(struct kvm *kvm,
+> -			    const struct kvm_userspace_memory_region *mem)
+> +			    const struct kvm_userspace_memory_region2 *mem)
+>   {
+>   	struct kvm_memory_slot *old, *new;
+>   	struct kvm_memslots *slots;
+> @@ -2055,7 +2055,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
+>   EXPORT_SYMBOL_GPL(__kvm_set_memory_region);
+>   
+>   int kvm_set_memory_region(struct kvm *kvm,
+> -			  const struct kvm_userspace_memory_region *mem)
+> +			  const struct kvm_userspace_memory_region2 *mem)
+>   {
+>   	int r;
+>   
+> @@ -2067,7 +2067,7 @@ int kvm_set_memory_region(struct kvm *kvm,
+>   EXPORT_SYMBOL_GPL(kvm_set_memory_region);
+>   
+>   static int kvm_vm_ioctl_set_memory_region(struct kvm *kvm,
+> -					  struct kvm_userspace_memory_region *mem)
+> +					  struct kvm_userspace_memory_region2 *mem)
+>   {
+>   	if ((u16)mem->slot >= KVM_USER_MEM_SLOTS)
+>   		return -EINVAL;
+> @@ -4514,6 +4514,7 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
+>   {
+>   	switch (arg) {
+>   	case KVM_CAP_USER_MEMORY:
+> +	case KVM_CAP_USER_MEMORY2:
+>   	case KVM_CAP_DESTROY_MEMORY_REGION_WORKS:
+>   	case KVM_CAP_JOIN_MEMORY_REGIONS_WORKS:
+>   	case KVM_CAP_INTERNAL_ERROR_DATA:
+> @@ -4757,6 +4758,14 @@ static int kvm_vm_ioctl_get_stats_fd(struct kvm *kvm)
+>   	return fd;
+>   }
+>   
+> +#define SANITY_CHECK_MEM_REGION_FIELD(field)					\
+> +do {										\
+> +	BUILD_BUG_ON(offsetof(struct kvm_userspace_memory_region, field) !=		\
+> +		     offsetof(struct kvm_userspace_memory_region2, field));	\
+> +	BUILD_BUG_ON(sizeof_field(struct kvm_userspace_memory_region, field) !=		\
+> +		     sizeof_field(struct kvm_userspace_memory_region2, field));	\
+> +} while (0)
+> +
+>   static long kvm_vm_ioctl(struct file *filp,
+>   			   unsigned int ioctl, unsigned long arg)
+>   {
+> @@ -4779,15 +4788,28 @@ static long kvm_vm_ioctl(struct file *filp,
+>   		r = kvm_vm_ioctl_enable_cap_generic(kvm, &cap);
+>   		break;
+>   	}
+> +	case KVM_SET_USER_MEMORY_REGION2:
+>   	case KVM_SET_USER_MEMORY_REGION: {
+> -		struct kvm_userspace_memory_region kvm_userspace_mem;
+> +		struct kvm_userspace_memory_region2 mem;
+> +		unsigned long size;
+> +
+> +		if (ioctl == KVM_SET_USER_MEMORY_REGION)
+> +			size = sizeof(struct kvm_userspace_memory_region);
+> +		else
+> +			size = sizeof(struct kvm_userspace_memory_region2);
+> +
+> +		/* Ensure the common parts of the two structs are identical. */
+> +		SANITY_CHECK_MEM_REGION_FIELD(slot);
+> +		SANITY_CHECK_MEM_REGION_FIELD(flags);
+> +		SANITY_CHECK_MEM_REGION_FIELD(guest_phys_addr);
+> +		SANITY_CHECK_MEM_REGION_FIELD(memory_size);
+> +		SANITY_CHECK_MEM_REGION_FIELD(userspace_addr);
+>   
+>   		r = -EFAULT;
+> -		if (copy_from_user(&kvm_userspace_mem, argp,
+> -						sizeof(kvm_userspace_mem)))
+> +		if (copy_from_user(&mem, argp, size))
+>   			goto out;
+>   
+> -		r = kvm_vm_ioctl_set_memory_region(kvm, &kvm_userspace_mem);
+> +		r = kvm_vm_ioctl_set_memory_region(kvm, &mem);
+>   		break;
+>   	}
+>   	case KVM_GET_DIRTY_LOG: {
 
-ERROR: do not use assignment in if condition
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  arch/x86/kernel/apic/io_apic.c | 7 +++++--
-  1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/apic/io_apic.c 
-b/arch/x86/kernel/apic/io_apic.c
-index 4241dc243aa8..be32b085d37e 100644
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -1058,8 +1058,11 @@ static int mp_map_pin_to_irq(u32 gsi, int idx, 
-int ioapic, int pin,
-  		if (legacy)
-  			irq = alloc_isa_irq_from_domain(domain, irq,
-  							ioapic, pin, &tmp);
--		else if ((irq = irq_find_mapping(domain, pin)) == 0)
--			irq = alloc_irq_from_domain(domain, ioapic, gsi, &tmp);
-+		else {
-+			irq = irq_find_mapping(domain, pin);
-+			if (irq == 0)
-+				irq = alloc_irq_from_domain(domain, ioapic, gsi, &tmp);
-+		}
-  		else if (!mp_check_pin_attr(irq, &tmp))
-  			irq = -EBUSY;
-  		if (irq >= 0) {
