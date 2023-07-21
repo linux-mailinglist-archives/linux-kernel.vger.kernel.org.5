@@ -2,80 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7579275C07E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB89775C083
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjGUHzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 03:55:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
+        id S230133AbjGUHz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 03:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjGUHzN (ORCPT
+        with ESMTP id S229576AbjGUHz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 03:55:13 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A203F19B6;
-        Fri, 21 Jul 2023 00:55:11 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-666eb03457cso1120159b3a.1;
-        Fri, 21 Jul 2023 00:55:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689926110; x=1690530910;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5xW1jRQSZihGEtMJPZeQmnAS3v2SxkbZcL5e7ETIR+0=;
-        b=i87Mf0HStvpFjpfG/RzgKDWpiKNE7zgQ3mdRwkTLfdHvA7yZRr64WZYhO7GfciUaE8
-         Bn5RYK0RaQ1sE324Kp1NVHg2DU4tv5jkmJGfNtX38GHFyhGkLvRhMu7ivVtFNr+c4kVw
-         E+uHgn1wPatvF9Dw3HQ8W+axpB29bnCE1myI20FARQ51yshgE+3g1Uht270Kkh9MdrDJ
-         cUY8oY2CYqGyzGrSerfWHSa8vDRRfzWgC39jzZjoBNioFkJjoACePKNI0amKkpQBc9bn
-         rZPBaKfEda4J/hoWEZMVOtJRjvpKq2KJmUovHK8RVU1HhKWDgTJNDoUsx6jXNK+1Ogwo
-         glgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689926110; x=1690530910;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5xW1jRQSZihGEtMJPZeQmnAS3v2SxkbZcL5e7ETIR+0=;
-        b=NwlBVoER8KVU1KM4nuPlimAUEPaJ9cUBgVJJdl2CuAGZZrikLg/M6vclOKPxeV26K1
-         Fq9YNT9o0z545ofsUltmypQmmGkGkkTg5SuWPaOtXgT25TIkuRHqKvTjs2Wy+YjZzKph
-         MbJ7heTYRl3PqprBuf+CkQ01uHvDyBZl2KL3aAQrCCCfU6ze07Dl/ZqBENxcmX5x0Hsc
-         MFjtO6396wpZTDvlPxfewfvwsNrUXxkisk9+Dkhc9Ohi9QFQ4DTnH9K+SOHnmY0CbaWN
-         WDzg5DPlbQnIEprVy0DWdrHiJy0xjOK94wp8yHlmrv6Vhn36UGBiPi0cuWLbWnwmVqoe
-         eMUA==
-X-Gm-Message-State: ABy/qLa7r3WHyR53zhkSXwVhawkEKDxEv6xTaiwJNKrt9KSSG4x1iRX3
-        A9isTj0lBzupNU5ObGCG/Oc=
-X-Google-Smtp-Source: APBJJlFF4Iz9CsoLhkHQ2KETwbX5uXeLZIrl23phg9ovDuqpAxWBDtOWbXu5KHlKpF9x+RGF+XoQXw==
-X-Received: by 2002:a05:6a20:96d3:b0:133:b0d5:b3fc with SMTP id hq19-20020a056a2096d300b00133b0d5b3fcmr954086pzc.7.1689926110426;
-        Fri, 21 Jul 2023 00:55:10 -0700 (PDT)
-Received: from [172.19.1.47] (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id c2-20020a170902d90200b001b9ff5aa2e7sm2755789plz.239.2023.07.21.00.55.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 00:55:10 -0700 (PDT)
-Message-ID: <e2d76107-5b25-c3ce-8741-50b0f0498284@gmail.com>
-Date:   Fri, 21 Jul 2023 15:55:07 +0800
+        Fri, 21 Jul 2023 03:55:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7096E0;
+        Fri, 21 Jul 2023 00:55:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C8E161575;
+        Fri, 21 Jul 2023 07:55:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DD3DC433CB;
+        Fri, 21 Jul 2023 07:55:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689926154;
+        bh=W/RkNM0LA5FIGb1qUz9Yr77W0ObcTph4orlH2jwmqyY=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=e+57HDZHTD0q/GUnjCakwBVBoc+qFkkhXjO3myoKj8mt7VlEBpr9veGJJlqhtofYN
+         XXs3rdUG5Xy1EHVmlcSlCkVGihhAoOitrpKUDcaxJyYxkm0EhtmHKgL4KYnbFCHvCz
+         bMhhDAJ5E1GCToR+vFk0vHL99MPim78UiOvv2Evt/FwRtDhd8xRjfl3gijXBA3b4mn
+         vUZjAXPshYhaWLWl49u6IsZmhMnDjnrk6MoH4WN5UipTsX7WmXd5RSCny7arzN4429
+         TBsm4TuZ1cANfF+00lhIH5cQ1ZGSxtkqL035SfvTvnW3Bnk1ZAUWUtPNXqJFqIB6V1
+         zVeBLZfaVOwfQ==
+From:   Lee Jones <lee@kernel.org>
+To:     broonie@kernel.org, lee@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linus.walleij@linaro.org,
+        vkoul@kernel.org, Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     robh+dt@kernel.org, conor+dt@kernel.org, lgirdwood@gmail.com,
+        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+        pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230619095623.1987742-5-ckeepax@opensource.cirrus.com>
+References: <20230619095623.1987742-1-ckeepax@opensource.cirrus.com>
+ <20230619095623.1987742-5-ckeepax@opensource.cirrus.com>
+Subject: Re: (subset) [PATCH v5 4/6] pinctrl: cs42l43: Add support for the
+ cs42l43
+Message-Id: <168992615117.1924396.3669045288825154363.b4-ty@kernel.org>
+Date:   Fri, 21 Jul 2023 08:55:51 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] dt-bindings: rtc: Document nuvoton ma35d1 rtc driver
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        soc@kernel.org, mjchen@nuvoton.com, schung@nuvoton.com,
-        Jacky Huang <ychuang3@nuvoton.com>
-References: <20230720012826.430026-1-ychuang570808@gmail.com>
- <20230720012826.430026-2-ychuang570808@gmail.com>
- <7889ef36-90ee-222b-fe67-ab4e127d1df6@linaro.org>
-From:   Jacky Huang <ychuang570808@gmail.com>
-In-Reply-To: <7889ef36-90ee-222b-fe67-ab4e127d1df6@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,72 +64,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 19 Jun 2023 10:56:21 +0100, Charles Keepax wrote:
+> The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
+> (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
+> for portable applications. It provides a high dynamic range, stereo
+> DAC for headphone output, two integrated Class D amplifiers for
+> loudspeakers, and two ADCs for wired headset microphone input or
+> stereo line input. PDM inputs are provided for digital microphones.
+> 
+> [...]
 
+Applied, thanks!
 
-On 2023/7/20 下午 02:10, Krzysztof Kozlowski wrote:
-> On 20/07/2023 03:28, Jacky Huang wrote:
->> From: Jacky Huang <ychuang3@nuvoton.com>
->>
->> Add documentation to describe nuvoton ma35d1 rtc driver.
->>
->> Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
->> ---
->>   .../bindings/rtc/nuvoton,ma35d1-rtc.yaml      | 45 +++++++++++++++++++
->>   1 file changed, 45 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml b/Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
->> new file mode 100644
->> index 000000000000..08c30f3018fb
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
->> @@ -0,0 +1,45 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/rtc/nuvoton,ma35d1-rtc.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Nuvoton MA35D1 Read Time Clock
->> +
->> +maintainers:
->> +  - Min-Jen Chen <mjchen@nuvoton.com>
->> +
-> Missing ref to rtc.yaml.
->
->
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - nuvoton,ma35d1-rtc
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +  - clocks
->> +
->> +additionalProperties: false
-> And then use unevaluatedProperties: false instead.
->
->
-> Best regards,
-> Krzysztof
->
+[4/6] pinctrl: cs42l43: Add support for the cs42l43
+      commit: 85f034dd7ff0a66aded653cc91dbc406fba7cf1a
 
-Thank you for the advice.
-I will fix these two issues in the next version.
-
-
-Best Regards,
-Jacky Huang
+--
+Lee Jones [李琼斯]
 
