@@ -2,127 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED6275C404
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BCC75C40C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbjGUKGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        id S231454AbjGUKJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:09:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231223AbjGUKGE (ORCPT
+        with ESMTP id S230249AbjGUKJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:06:04 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149DAB7;
-        Fri, 21 Jul 2023 03:06:03 -0700 (PDT)
+        Fri, 21 Jul 2023 06:09:48 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8D72706
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 03:09:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689933963; x=1721469963;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xwcGg3ySjrKkjK/u5gq0+w18B/u62vuaII+nleYZ4b0=;
-  b=WdNWkxprAR9xjQof60ZCiP+YMEegrL7XQe8jmSLNvRgSitDO7a8N4wqC
-   BLUngPJ4NOkPeaWc+uaIStX+wXoWR+qpgvDw3tcoSjdVF46jtPywlq6lI
-   Ea9u5ERdj/ysjUk/aQwnWUm9n7wI+uUaGFS65DO+NwfeGJpWmCefQhJRN
-   oBiXnxWkpFkXmvMMSRONSSMOeZnYlcyIr6n++4cAcbWHV8plgyFSoB5yH
-   PqZ5upaw7gc5iLWQ+BiQjJ3usgMI9Im+ZNrwZW7TLZN/uLgMRTFxd+cvs
-   W8VMPue5bk730uxlYOtdjm0F9Au0KEzTTZAaOvfaMl4uF61GYGZ1Dj0ni
+  t=1689934186; x=1721470186;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=zfD3fxGaaJVbEP0Mg/47kMaERmFrmee6teDl/NH72f4=;
+  b=WhmLVa1Wn74YakXDpficloEjO5O8PHMkIUtPr7Rc6oG1NFjjzDfB2ef3
+   IQEYJRSZ7bn1bVIYB1rkVI2WQK+f6cFQxrOvRP9xOOWv3xQPYFIC7Iydf
+   wvu28aa1vL5ElU65Pgfkt3aITDQ4r+FAHbh+51ikahW/O2w3Qxk7UNH9x
+   IzGG0trxHRTBFkKc/SeJFrIJStUiD8uzuyeGQj2h/HrsslVxnnvxKTCZP
+   +vytraq4pf1z3SE0W5NCC37GjhtZP59Fi+oQ0i7ztDwhgS1VNEaoiT2QF
+   WRV/89m0/lhUkhhBO7fkDWRA2EFN+Mro2pvAsv1pibIj3a63PvKBSCj+z
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="367025011"
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="346581194"
 X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="367025011"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 03:06:02 -0700
+   d="scan'208";a="346581194"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 03:09:46 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="718767951"
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="674991008"
 X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="718767951"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 21 Jul 2023 03:05:55 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qMn1B-00GqHL-1x;
-        Fri, 21 Jul 2023 13:05:49 +0300
-Date:   Fri, 21 Jul 2023 13:05:49 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-omap@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: core: Add sysfs links for serial core port
- instances for ttys
-Message-ID: <ZLpYfZDplupNQHnb@smile.fi.intel.com>
-References: <20230719051613.46569-1-tony@atomide.com>
- <ZLd1uCKoGMBruwiN@smile.fi.intel.com>
- <20230719054321.GJ5194@atomide.com>
- <ZLfsVU7uiA3IReHU@smile.fi.intel.com>
- <20230720041319.GM5194@atomide.com>
+   d="scan'208";a="674991008"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 03:09:41 -0700
+Date:   Fri, 21 Jul 2023 13:06:21 +0300 (EEST)
+From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+cc:     Alsa-devel <alsa-devel@alsa-project.org>,
+        sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Subject: Re: [PATCH v2 0/9] sound: Use -EPROBE_DEFER instead of i915 module
+ loading.
+In-Reply-To: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+Message-ID: <alpine.DEB.2.22.394.2307211300270.3532114@eliteleevi.tm.intel.com>
+References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230720041319.GM5194@atomide.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 07:13:19AM +0300, Tony Lindgren wrote:
-> * Andy Shevchenko <andriy.shevchenko@intel.com> [230719 13:59]:
-> > On Wed, Jul 19, 2023 at 08:43:21AM +0300, Tony Lindgren wrote:
-> > > * Andy Shevchenko <andriy.shevchenko@intel.com> [230719 05:34]:
-> > > > On Wed, Jul 19, 2023 at 08:16:11AM +0300, Tony Lindgren wrote:
+Hi,
 
-...
+On Wed, 19 Jul 2023, Maarten Lankhorst wrote:
 
-> > > > > And with this, we can add /dev/serial/by-id symlinks to the serial port
-> > > > > device instances so we can start using serial core port addressing in
-> > > > > addition to the legacy ttyS naming.
-> > > > > 
-> > > > > The naming we can use is dev_name:0.0 where 0.0 are the serial core
-> > > > > controller id and port id, so for the ttyS0 example above the naming
-> > > > > would be 00:04.0:0.0.
-> > > > 
-> > > > This is interesting idea. But any hint why it can be useful?
-> > > 
-> > > If you have lots of serial ports and we are stuck with adding aliases
-> > > for the ports in the dts files where the ttyS naming and ordering does
-> > > not really help or may not necessarily make sense if the ports are on
-> > > different buses or domains. With CONFIG_SERIAL_8250_RUNTIME_UARTS=4,
-> > > the ttyS naming is only needed for the legacy ports really.
-> > 
-> > I see. Does it fix the long standing issue with ttyS enumeration (on x86
-> > at least) when depending on the presence of the legacy ports the HSUART
-> > (high speed) can preempt the legacy placeholders (ttyS0..ttyS3)?
-> >
-> > To me sounds like it may very well do fix it and I would be glad to see that
-> > in the commit message (as selling point) and in documentation.
+> Explicitly loading i915 becomes a problem when upstreaming the new intel driver
+> for Tiger Lake and higher graphics (xe). By loading i915, it doesn't wait for
+> driver load of xe, and will fail completely before it loads.
 > 
-> It won't affect how ttyS0..ttyS3 get assigned, but it helps finding your
-> HSUART instance with DEVNAME:0.0 style addressing. So you don't need to
-> care what ttyS number the port has. If you have such a test case maybe give
-> it a try.
+> -EPROBE_DEFER has to be returned before any device is created in probe(),
+> otherwise the removal of the device will cause EPROBE_DEFER to try again
+> in an infinite loop.
 
-Exactly, the problem (currently) is, that depending on the BIOS settings
-the kernel can't use the same command line and this is quite a PITA for
-our customers!
+thanks, series looks good to me now. We'll need to adopt the new gpu_bind
+parameter in a number of CI systems (where we test without i915/xe), but 
+this looks perfectly doable.
+  
+I'll give my 
 
-As far as we can specify hardware (path) to the console, it will be so
-cool and hopefully solves this very long standing issue.
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
--- 
-With Best Regards,
-Andy Shevchenko
+... for the hdac_i915.c changes. For AVS and SOF, I'd ask for some 
+more review time to allow Cezary, Pierre et al to weigh in. I don't
+personally recall e.g. where we've used CONFIG_SOF_FORCE_PROBE_WORKQUEUE
+and do we have grounds to keep it even if workqueue is no longer set
+for HDA codec support.
 
-
+Br, Kai
