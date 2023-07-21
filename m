@@ -2,150 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F9075C5F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A91475C5FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbjGULj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 07:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
+        id S230072AbjGULju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 07:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjGULjY (ORCPT
+        with ESMTP id S229536AbjGULjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 07:39:24 -0400
+        Fri, 21 Jul 2023 07:39:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFEC2130;
-        Fri, 21 Jul 2023 04:39:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E602D75;
+        Fri, 21 Jul 2023 04:39:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BF116195D;
-        Fri, 21 Jul 2023 11:39:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 021E2C433C8;
-        Fri, 21 Jul 2023 11:39:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689939561;
-        bh=PMNh2QFy+gw37kYrRWosLj1slA/IC/7XBzvdMwf52B4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eqx2QmBQR+y2S043or4uUfKmBOjKkAmdOcHbqjtBnd/3stvhl36OkglbVW17JgX/g
-         1y+ZwDLnRh2Wfc9UD6HFSBbyCFUR0FDsQNd/SerHhQpQ+2d+K0BzUTjq3IJ0lw4RNt
-         GmfrZWmklx1RQKj44L1bK0Szg3dKZb1pEkQ7xekQ=
-Date:   Fri, 21 Jul 2023 13:39:18 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Jan Kara <jack@suse.cz>, Damien Le Moal <dlemoal@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>, Min Li <min15.li@samsung.com>,
-        Christian Loehle <CLoehle@hyperstone.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Yeqi Fu <asuk4.q@gmail.com>, Avri Altman <avri.altman@wdc.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ye Bin <yebin10@huawei.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH 6/6] block: implement NVMEM provider
-Message-ID: <2023072106-partly-thank-8657@gregkh>
-References: <cover.1689802933.git.daniel@makrotopia.org>
- <e5b709e15739dc0563e9497a2dbbe63050381db0.1689802933.git.daniel@makrotopia.org>
- <ZLjci5bHzTI+/Kxs@infradead.org>
- <ZLlaOB1sb8wSd7Aq@makrotopia.org>
- <ZLomKmNe+EhpjI1K@infradead.org>
- <ZLpgs-aZVHCQooi0@makrotopia.org>
- <2023072128-shadow-system-1903@gregkh>
- <ZLpsQg3tDj2gEelv@makrotopia.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 258D961A32;
+        Fri, 21 Jul 2023 11:39:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 466C6C43391;
+        Fri, 21 Jul 2023 11:39:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689939584;
+        bh=ixcyPI+tRpHz9AI3BMtu2lOFnZGfsu9wB3fa27jasCs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=byMPQs+WrmgchWqISNjIN7asmtO1iXkgIlVIsv+Xdnz7Qc7VZQTXRaVacoAwAgZSw
+         tXdHLLnn3dYw907IDn39Ql4ucmZlH1ZCmKTJBXSAMM7PeinD2wFawWwbXD/de+S5UY
+         bcfFAu7M4bGRTV1Sbbdp2XqXc1YRP+HBIe5U8v7TxJBTXdiqLxSY/rVIk79bjzCevH
+         ib6tGgNhWifxjtPh88ZOE7Yxxo6uJlAZpZQXQyKwuUgX1aNTX+MbErMDd03vJYlp0T
+         CRtKYI6c8dWrhuymV5H6f4tXPr1XgrpxoCQsvLND3iPHpwCVeQ5pEYhRwcKq6rRDql
+         37fyiury4Mk1Q==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-4fbf1f6c771so2950108e87.1;
+        Fri, 21 Jul 2023 04:39:44 -0700 (PDT)
+X-Gm-Message-State: ABy/qLa2xFQKt/NfslRj/w6O1L7eKmU8KfYamNk8oVIqZTrqHfp39VWq
+        RhMM7OswcLXKudd6LNNH0FrKA4Wp1x+9ZGqmo6I=
+X-Google-Smtp-Source: APBJJlFezRKIZgJimN3FDD+tyYMlmqo8uIRe1cDw4B8uo9Xt83FU0WZLGjAZLyP+5rUYx5qfU75Xll2qGWNV8aOTYXo=
+X-Received: by 2002:a05:6512:4022:b0:4fd:d016:c2dd with SMTP id
+ br34-20020a056512402200b004fdd016c2ddmr1315548lfb.12.1689939582014; Fri, 21
+ Jul 2023 04:39:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZLpsQg3tDj2gEelv@makrotopia.org>
+References: <20230711153743.1970625-1-heiko@sntech.de> <20230711153743.1970625-11-heiko@sntech.de>
+ <20230721054036.GD847@sol.localdomain>
+In-Reply-To: <20230721054036.GD847@sol.localdomain>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 21 Jul 2023 13:39:30 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFqs9v1Ao1RQRXiccKEMhXpy9O=Ng8TQ--vdOkTz5Yc5Q@mail.gmail.com>
+Message-ID: <CAMj1kXFqs9v1Ao1RQRXiccKEMhXpy9O=Ng8TQ--vdOkTz5Yc5Q@mail.gmail.com>
+Subject: Re: [PATCH v4 10/12] RISC-V: crypto: add Zvkned accelerated AES
+ encryption implementation
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        christoph.muellner@vrull.eu,
+        Heiko Stuebner <heiko.stuebner@vrull.eu>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 12:30:10PM +0100, Daniel Golle wrote:
-> On Fri, Jul 21, 2023 at 01:11:40PM +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Jul 21, 2023 at 11:40:51AM +0100, Daniel Golle wrote:
-> > > On Thu, Jul 20, 2023 at 11:31:06PM -0700, Christoph Hellwig wrote:
-> > > > On Thu, Jul 20, 2023 at 05:02:32PM +0100, Daniel Golle wrote:
-> > > > > On Thu, Jul 20, 2023 at 12:04:43AM -0700, Christoph Hellwig wrote:
-> > > > > > The layering here is exactly the wrong way around.  This block device
-> > > > > > as nvmem provide has not business sitting in the block layer and being
-> > > > > > keyed ff the gendisk registration.  Instead you should create a new
-> > > > > > nvmem backed that opens the block device as needed if it fits your
-> > > > > > OF description without any changes to the core block layer.
-> > > > > > 
-> > > > > 
-> > > > > Ok. I will use a class_interface instead.
-> > > > 
-> > > > I'm not sure a class_interface makes much sense here.  Why does the
-> > > > block layer even need to know about you using a device a nvmem provider?
-> > > 
-> > > It doesn't. But it has to notify the nvmem providing driver about the
-> > > addition of new block devices. This is what I'm using class_interface
-> > > for, simply to hook into .add_dev of the block_class.
-> > 
-> > Why is this single type of block device special to require this, yet all
-> > others do not?  Encoding this into the block layer feels like a huge
-> > layering violation to me, why not do it how all other block drivers do
-> > it instead?
-> 
-> I was thinkng of this as a generic solution in no way tied to one specific
-> type of block device. *Any* internal block device which can be used to
-> boot from should also be usable as NVMEM provider imho.
+On Fri, 21 Jul 2023 at 07:40, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Tue, Jul 11, 2023 at 05:37:41PM +0200, Heiko Stuebner wrote:
+...
+> > +static int riscv64_aes_setkey_zvkned(struct crypto_tfm *tfm, const u8 *key,
+> > +                      unsigned int keylen)
+> > +{
+> > +     struct riscv_aes_ctx *ctx = crypto_tfm_ctx(tfm);
+> > +     int ret;
+> > +
+> > +     ctx->keylen = keylen;
+> > +
+> > +     if (keylen == 16 || keylen == 32) {
+> > +             kernel_rvv_begin();
+> > +             ret = rv64i_zvkned_set_encrypt_key(key, keylen * 8, &ctx->enc_key);
+> > +             if (ret != 1) {
+> > +                     kernel_rvv_end();
+> > +                     return -EINVAL;
+> > +             }
+> > +
+> > +             ret = rv64i_zvkned_set_decrypt_key(key, keylen * 8, &ctx->dec_key);
 
-Define "internal" :)
+The asm suggests that the encryption and decryption key schedules are
+the same, and the decryption algorithm does not implement the
+Equivalent Inverse Cipher, but simply iterates over they key schedule
+in reverse order. This makes much more sense for instruction based
+AES, so it doesn't surprise me but it does mean you can just drop this
+part, and pass enc_key everywhere.
 
-And that's all up to the boot process in userspace, the kernel doesn't
-care about this.
+> > +             kernel_rvv_end();
+> > +             if (ret != 1)
+> > +                     return -EINVAL;
+> > +     }
+> > +
+> > +     ret = crypto_cipher_setkey(ctx->fallback, key, keylen);
+> > +
+> > +     return ret ? -EINVAL : 0;
+> > +}
+>
+> It's a bit annoying that RISC-V doesn't support AES-192, though also not
+> particularly surprising, seeing as AES-192 is almost never used.  (Intel's Key
+> Locker, for example, is another recent CPU feature that doesn't support
+> AES-192.)  IMO the issue here is really with the kernel crypto API -- it should
+> treat AES-128, AES-192, and AES-256 as separate algorithms so that
+> implementations aren't forced to support all three key sizes...
+>
 
-> > > > As far as I can tell your provider should layer entirely above the
-> > > > block layer and not have to be integrated with it.
-> > > 
-> > > My approach using class_interface doesn't require any changes to be
-> > > made to existing block code. However, it does use block_class. If
-> > > you see any other good option to implement matching off and usage of
-> > > block devices by in-kernel users, please let me know.
-> > 
-> > Do not use block_class, again, that should only be for the block core to
-> > touch.  Individual block drivers should never be poking around in it.
-> 
-> Do I have any other options to coldplug and be notified about newly
-> added block devices, so the block-device-consuming driver can know
-> about them?
+Why is this a fundamental limitation? AES-192 uses the same AES block
+size and round structure, the only difference is the number of rounds
+and how the round keys are calculated.
 
-What other options do you need?
-
-> This is not a rhetoric question, I've been looking for other ways
-> and haven't found anything better than class_find_device or
-> class_interface.
-
-Never use that, sorry, that's not for a driver to touch.
-
-> Using those also prevents blk-nvmem to be built as
-> a module, so I'd really like to find alternatives.
-> E.g. for MTD we got struct mtd_notifier and register_mtd_user().
-
-Your storage/hardware driver should be the thing that "finds block
-devices" and registers them with the block class core, right?  After
-that, what matters?
-
-confused,
-
-greg k-h
+Creating the key schedule should never be performance critical, so if
+the lack of AES-192 support is due to a limitation in the key schedule
+generation instructions, I'd suggest to avoid those if possible and
+just use the generic library code to derive the key schedule. If that
+works, I'm pretty sure AES-192 support is just a matter of
+implementing a 12-round variant modeled after the existing 10/14 round
+ones.
