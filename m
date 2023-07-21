@@ -2,318 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 439B275CC75
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EDA75CC7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbjGUPuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49920 "EHLO
+        id S232322AbjGUPuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231730AbjGUPuC (ORCPT
+        with ESMTP id S232291AbjGUPuP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:50:02 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7564C19B2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:49:59 -0700 (PDT)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 53E5E1EC058A;
-        Fri, 21 Jul 2023 17:49:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1689954597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=t2iBqcFQK3WF1S1lGxZqN4L+GMbnomAE4xFn+tKb1vI=;
-        b=VebH7nIVqnjFrrIA5z7jrTtPPBHN2E+WYMyrvJNe5Q05T43YCgVHTyD5sxlqRFNX2BDdhy
-        ADZoqEwXvyZjwLVC2bIKVy6Fbk8CNbvSNSvvHn+m1vK3pjyzI2VvvWCi0oqLLHtcMRBfJR
-        Uibu79PKqAb/nQs5iDga1QEdn9vX9uE=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WUTeEKfPPN9w; Fri, 21 Jul 2023 15:49:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1689954593; bh=t2iBqcFQK3WF1S1lGxZqN4L+GMbnomAE4xFn+tKb1vI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bgZcf5KLr7ujNybeqRAmZLF4xHUDi6MrADFBTgUowu0grtE/BDueMkVV3jmcl1IDS
-         eIGeMToT4HaayHzcwlPTStrWE7eMbjDT3qE5KWR5iFhvJhFPz0IL+9rLyR9M9zeTnE
-         sIF2z4OMKwB1OYsx6x1/oBewtebvtUcwrxd9A16umY7f+p3eKjBhiP5LbcWehqXoxc
-         Ha/KN7rJtESwlbucvwc25nByfKmSyt3Fp3I/Z9hwxG6/Sguk23NrIRT6hqcThOz11K
-         gSsQlBDB7PNCH77fmTjtTwGoo88MocV9e2O8FhxAOGaCxWJO6mL85iyw+ZNqW4N5JJ
-         K4OqsGH/XQH0SBbhbOzzqCAr7Pyr1vfYAfgHz5cnlYgHq05MMaL6FRFLzZLITFHJeO
-         nyw9f12PnqEvMKSKI61IYBE/UGYS0q3ogef8izCPGMLqDdYUHVRfALEZXWSp85zbCV
-         n3lY505MsE3jlc1OQ7K+UIRK7p8rWToH3Of9SQY16KECScbjTibDr21KJRPCgx2KFb
-         CjC+zOXioVIolks9uTuQbJBeTC8ZxC54qDZ4kMKpiBYVKDprSFoJp9qGvXk1wG2khv
-         6nsiwIGPKeCIoueHbHOi5yCUVMsaEh6CaB7AEH4VFbpGc33puthcIU1ANHCT2IfbyU
-         /vgjRFLK7+lnO8APHD4LOLJM=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6FA6C40E0185;
-        Fri, 21 Jul 2023 15:49:47 +0000 (UTC)
-Date:   Fri, 21 Jul 2023 17:49:42 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     John Allen <john.allen@amd.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, x86@kernel.org
-Subject: Re: [PATCH] x86/microcode/AMD: Increase microcode PATCH_MAX_SIZE
-Message-ID: <20230721154942.GBZLqpFkZoWn1Um+bq@fat_crate.local>
-References: <20230720202813.3269888-1-john.allen@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Fri, 21 Jul 2023 11:50:15 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2129.outbound.protection.outlook.com [40.107.220.129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C095B2D71;
+        Fri, 21 Jul 2023 08:50:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kRNKKOVnMNodoPrgT6pcQ3jn4mIi6n1l0loyUQnzGD6UQq2t/MOljVwfyKI6bOwSDbjunz3Qlw71PnFBPAh/87rD8sNekZeIMkoMBWt/v9krk64A5x+KPhWIX2UMQFeMoWk20WG6JldyvNZVNgNkdrkN7dn8jc3DtWgRz+7FtW6ANt24lGfTX7if4rGF4AxTPlBAcsqiKUrYiWAfvhvGtSRmsHBaMy/ehQw+jWRqLIO59ujsiU3+jkJnvN0hyzkGffo+rBuj/immHiIr5erDk9unzg5yxvU3gAi1Q0Y7lBx5LIJ/KNXBQiTP464c1SFlSbXlLx9dX8siHxje53EXEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DeohQXrzNj+BBBjb7sAkY3moi2hie3MSLERuAT9PHqg=;
+ b=D8Wg4F19d0WHiEsYv0qQ7LMStuSpx7Fu/NFiLOwemd7JK6++CAFc/BQM5rBvxm7AeplVqPPCAVmueQ7K8da+WcBlMj7+x0QWn+2Lunqr0vJg93kbvq5Sja8kCOJZit0iHDPNzavHQ8VfLhJQ7EI/rzlqLul1kwfpGI1gDF3XgLba5c1Obcn1twQM8bZFVRgZddO4xvvDYDo/SVvWtGGxztbK4q8ruDgA9JsEWCRIVqmiZy7U5FTXUSqelB2rhBJ+a2Kp5UE679HC7v7rBr72j+4BkIpeHE7WbNjobNdZ4nQ9fSRKj6OxCXw3ak6ptI4yxVEbsrz1ebAgyMqimUjWwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DeohQXrzNj+BBBjb7sAkY3moi2hie3MSLERuAT9PHqg=;
+ b=OCJalKCR9pH1yAAnsqXKkp2ag1lHk7HYDTjezdg2fnO3uVi9HD5QOuLB+BMR3aVsVXhfNt9BsnMdZA/zSwTUplLUDd61S3sU9MUTdpStgTuI1N1P376dVDtncloxS5zDe6/V3yUd1uzlbkOZDWNDhocPF5fV+KAkF/uWimcLbXk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by BY3PR13MB4947.namprd13.prod.outlook.com (2603:10b6:a03:357::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28; Fri, 21 Jul
+ 2023 15:50:05 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.025; Fri, 21 Jul 2023
+ 15:50:05 +0000
+Date:   Fri, 21 Jul 2023 16:49:55 +0100
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Suman Ghosh <sumang@marvell.com>
+Cc:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+        hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lcherian@marvell.com,
+        jerinj@marvell.com
+Subject: Re: [net-next PATCH V4] octeontx2-af: Install TC filter rules in
+ hardware based on priority
+Message-ID: <ZLqpIzpHMUiQcstf@corigine.com>
+References: <20230721043925.2627806-1-sumang@marvell.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230720202813.3269888-1-john.allen@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230721043925.2627806-1-sumang@marvell.com>
+X-ClientProxiedBy: LO4P265CA0168.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:312::11) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|BY3PR13MB4947:EE_
+X-MS-Office365-Filtering-Correlation-Id: da152793-76f1-44d1-5bb3-08db8a0226d8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PKSyORUN+2QDc/k+CXs5JDXsPqnHVts4QYnLud8zXsEzOoJSAO1T/jwy7AWHA1ziUjQPvPQ0Z3iyRVyBOtlfzcrDXOlnJcyDIWap0BzLbqtTt+ETtR6ASmu2AYb0gYUNzEI2OwLT9KY56FwFnayjG+zUBf++OHmdIKxSaY8fb+azQRLtcnUnZATjfqwKG1KUk7wBM328nH+vPvaDRdxljAHR7agsQ6A+r4vxceWy5s+YmEF32BkX0iN1D9MkGO0ASgo1L7p0xIHzc0pX/8cCHDdRcYK9bfjvvq37vTKdKisX0eSg67efKgCOIU2hG9V/CZ7TWHOI6Ges2rRLwB6e0oRLrxPiEOZNSb8IIhj5b7fORn1XhFRb86RROThfpEJ8BbPyJ71Fs7q+iCq8DPi4y264zRcRjcW08XEzvWhZUS5nJYzKfT2CllsIorkZQi3o4+a2PktbQbLoU3gpMGC1Th6AuM7d3VVkES9bs52KlXvHzjIAUYRbqNpVUY+Yr/bpFHpkcHpJQFupj03KQvkFez5b7oUqa3QaeNNXwS71he58pIPFSfvwi31IPPZsK0sPkzrSx+WqLvGWC4a0L8odpYRjsGNt9Ih8uYWa7ZDG3iI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(396003)(376002)(136003)(346002)(39840400004)(451199021)(6512007)(38100700002)(83380400001)(6506007)(55236004)(186003)(2616005)(26005)(7416002)(44832011)(5660300002)(4744005)(41300700001)(8676002)(8936002)(36756003)(2906002)(6486002)(66476007)(6666004)(6916009)(66946007)(66556008)(4326008)(316002)(478600001)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WEtN8kYxqXWEGDbmJ65+SjeD/dGAl2FraEK1eDudhzw7pmCK7Z5LpXvWcfTL?=
+ =?us-ascii?Q?jwriE4fOvy+ixz1P36kkWrYL9xpthiffd9sNYeBg1ObmJ2PO8Z3YMFVGtB1O?=
+ =?us-ascii?Q?XOpHYpWm9qiIAoheeiPdGRHX3GcjswEWwXCauX+UADFXURwmcI0omJIq7jvV?=
+ =?us-ascii?Q?0kYGQWktT3Hnuuyap3r00iz7jCu+wJmeYCysV6d8TBAlFVC2trGJMCnciwed?=
+ =?us-ascii?Q?v/aUUJjhvF7bV79aJN4eyWBv6+zDc1zS6WcLZZW/IMLDbkIZpSE1nhce6uX0?=
+ =?us-ascii?Q?wshV+JTWqJ3Z/w/Xo1sSVUtzotK83iPX/+xNKvPdPeAQyJ/4vcTLsz4Dd+k7?=
+ =?us-ascii?Q?TMzH6/Zz74Z8zUp+ZNPRluTyMaejzV7/VXqZ+am2oSDm4XU4YDcS253acB8a?=
+ =?us-ascii?Q?MOTwGgpJEj7/qy1cbsU3PXzdkq5gAzv6puiwFaZYLu8aGsSVzrTZTEei9ZZK?=
+ =?us-ascii?Q?hhSCFTzTVqBBl8RoT2ECqZKsYo81r1EmFhzd0Ao7N6ZLr8R5nJYH7IkW9Nx0?=
+ =?us-ascii?Q?lkUe0/TsVc2V2zZV/dV/PhAtZV4QRwAdAzH4DF3e9EWOgKg/AJiDQb3UKlXa?=
+ =?us-ascii?Q?ai6T21foeQIY+wsFNth5icwnHdwLlCVqU7XtgFqGH32ilA1BaBIkWg8osg4y?=
+ =?us-ascii?Q?/Ufgs2/x+r26r7BgcBJiIPMgINMrh8s/7wRlInbC4vWraGRCcX/NPAyOf+li?=
+ =?us-ascii?Q?yOACoDmNxbjT+VbdKofB7Nn5lV1ZqpW3HiDcSF9ra81LeJH0cRFFEe9l6APZ?=
+ =?us-ascii?Q?heLpXPWaeuFMJsmXE9stgCMZe2kshvlsEC9y27mWQqarvK0ZADlUJ56OSMEv?=
+ =?us-ascii?Q?+/DtjvcieVXFuTpQ+N78gQssoBOOyGh7DBGLDv9W2Gg0B/ZQ7ZqMzYx4VU82?=
+ =?us-ascii?Q?5OiO9S1TEIbhtYMMBpWuxq427d+vaS2MjGy1blWFEz1CugHt37R2F3FB+rEH?=
+ =?us-ascii?Q?tmg0mnjL3N3X0C0Rxe/pyl9fbTVTvSm5Xjs1tAZvmeUFUMOU3C3sfRR+G0IM?=
+ =?us-ascii?Q?Zn6Y88yMErSK1YXFVM8kXKSfgvTrXv+Qtk6csJXmMk/4yaxprhQTkb1evu1Z?=
+ =?us-ascii?Q?1l9qs9p7zzOThVoOG/4fZViv5GIzzFbsRPN7W/IVvLMggUYpFeyCz72gqq2Q?=
+ =?us-ascii?Q?jl/nYU0S2qNUfsNNIzjTc7EvjLf6hVnfeTXyH+g6XC9+Kp0HLuFlXCWoAJfj?=
+ =?us-ascii?Q?78IGgirbndBqXQz67KNEOm4q2h4aE2WLxs0tzmvwnnAKvnZugfiS+PJqX7VB?=
+ =?us-ascii?Q?EHzQ6pK7jZTDrrnDRSTNVlgBHQhMDo3RdQOcdhrnJ5d3ZaEYYdQPBLmiyLwz?=
+ =?us-ascii?Q?9PR8fKwM3WJS4MpZK+Nf960koTbgymWqNYnG/1YAnmnP6ZqpsZwyem9XOq9G?=
+ =?us-ascii?Q?Z44fp8go1+Qe3UbOD0w1t8fzZUxOQjOe/+X+z7R38wmf+zAi/4xkpc2qErkF?=
+ =?us-ascii?Q?VN1WJH1q4dzsP7cIXfUY0c4rrCT2moGdvXLUls0S7l5/4OWtNhW1vrMaV3dk?=
+ =?us-ascii?Q?3pnouLRCw6MePiuBHZ5EvXlFge8aaXwJbfpSoipdM4dh7Qm31JwtYXFqkB30?=
+ =?us-ascii?Q?LBgs0kM4MXkf4F5aJ/LK7S+qugizWy6Ao9+oFewQGNqmMF3WciUsi26VCNkN?=
+ =?us-ascii?Q?qg=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da152793-76f1-44d1-5bb3-08db8a0226d8
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 15:50:05.1763
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aehjnnwzKQM6dJHnZF++0f3Q0c/oVbvRS+sc5oEQMaKpeJkW4QlmlVzr6Cy3ngVpHoJnuyBRqhiUVTP3oOchbSYJIvMJVTw7tiNkowkr77k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR13MB4947
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove stable@.
+On Fri, Jul 21, 2023 at 10:09:25AM +0530, Suman Ghosh wrote:
+> As of today, hardware does not support installing tc filter
+> rules based on priority. This patch adds support to install
+> the hardware rules based on priority. The final hardware rules
+> will not be dependent on rule installation order, it will be strictly
+> priority based, same as software.
+> 
+> Signed-off-by: Suman Ghosh <sumang@marvell.com>
 
-This below seems to work here on a couple of machines.
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
 
-Can you run it too pls to confirm?
-
-Thx.
-
----
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
-Date: Wed, 7 Jun 2023 21:01:06 +0200
-Subject: [PATCH] x86/microcode/AMD: Rip out static buffers
-
-Load straight from the containers (initrd or builtin, for example).
-There's no need to cache the patch per node.
-
-This even simplifies the code a bit with the opportunity for more
-cleanups later.
-
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
----
- arch/x86/include/asm/microcode_amd.h |  6 +-
- arch/x86/kernel/cpu/microcode/amd.c  | 91 +++++++++-------------------
- arch/x86/kernel/cpu/microcode/core.c |  4 +-
- 3 files changed, 31 insertions(+), 70 deletions(-)
-
-diff --git a/arch/x86/include/asm/microcode_amd.h b/arch/x86/include/asm/microcode_amd.h
-index e6662adf3af4..a995b7685223 100644
---- a/arch/x86/include/asm/microcode_amd.h
-+++ b/arch/x86/include/asm/microcode_amd.h
-@@ -44,13 +44,11 @@ struct microcode_amd {
- #define PATCH_MAX_SIZE (3 * PAGE_SIZE)
- 
- #ifdef CONFIG_MICROCODE_AMD
--extern void __init load_ucode_amd_bsp(unsigned int family);
--extern void load_ucode_amd_ap(unsigned int family);
-+extern void load_ucode_amd_early(unsigned int cpuid_1_eax);
- extern int __init save_microcode_in_initrd_amd(unsigned int family);
- void reload_ucode_amd(unsigned int cpu);
- #else
--static inline void __init load_ucode_amd_bsp(unsigned int family) {}
--static inline void load_ucode_amd_ap(unsigned int family) {}
-+static inline void load_ucode_amd_early(unsigned int cpuid_1_eax) {}
- static inline int __init
- save_microcode_in_initrd_amd(unsigned int family) { return -EINVAL; }
- static inline void reload_ucode_amd(unsigned int cpu) {}
-diff --git a/arch/x86/kernel/cpu/microcode/amd.c b/arch/x86/kernel/cpu/microcode/amd.c
-index 87208e46f7ed..a28b103256ff 100644
---- a/arch/x86/kernel/cpu/microcode/amd.c
-+++ b/arch/x86/kernel/cpu/microcode/amd.c
-@@ -56,9 +56,6 @@ struct cont_desc {
- 
- static u32 ucode_new_rev;
- 
--/* One blob per node. */
--static u8 amd_ucode_patch[MAX_NUMNODES][PATCH_MAX_SIZE];
--
- /*
-  * Microcode patch container file is prepended to the initrd in cpio
-  * format. See Documentation/arch/x86/microcode.rst
-@@ -415,20 +412,17 @@ static int __apply_microcode_amd(struct microcode_amd *mc)
-  *
-  * Returns true if container found (sets @desc), false otherwise.
-  */
--static bool early_apply_microcode(u32 cpuid_1_eax, void *ucode, size_t size, bool save_patch)
-+static bool early_apply_microcode(u32 cpuid_1_eax, void *ucode, size_t size)
- {
- 	struct cont_desc desc = { 0 };
--	u8 (*patch)[PATCH_MAX_SIZE];
- 	struct microcode_amd *mc;
- 	u32 rev, dummy, *new_rev;
- 	bool ret = false;
- 
- #ifdef CONFIG_X86_32
- 	new_rev = (u32 *)__pa_nodebug(&ucode_new_rev);
--	patch	= (u8 (*)[PATCH_MAX_SIZE])__pa_nodebug(&amd_ucode_patch);
- #else
- 	new_rev = &ucode_new_rev;
--	patch	= &amd_ucode_patch[0];
- #endif
- 
- 	desc.cpuid_1_eax = cpuid_1_eax;
-@@ -452,9 +446,6 @@ static bool early_apply_microcode(u32 cpuid_1_eax, void *ucode, size_t size, boo
- 	if (!__apply_microcode_amd(mc)) {
- 		*new_rev = mc->hdr.patch_id;
- 		ret      = true;
--
--		if (save_patch)
--			memcpy(patch, mc, min_t(u32, desc.psize, PATCH_MAX_SIZE));
- 	}
- 
- 	return ret;
-@@ -507,7 +498,7 @@ static void find_blobs_in_containers(unsigned int cpuid_1_eax, struct cpio_data
- 	*ret = cp;
- }
- 
--void __init load_ucode_amd_bsp(unsigned int cpuid_1_eax)
-+static void apply_ucode_from_containers(unsigned int cpuid_1_eax)
- {
- 	struct cpio_data cp = { };
- 
-@@ -515,42 +506,12 @@ void __init load_ucode_amd_bsp(unsigned int cpuid_1_eax)
- 	if (!(cp.data && cp.size))
- 		return;
- 
--	early_apply_microcode(cpuid_1_eax, cp.data, cp.size, true);
-+	early_apply_microcode(cpuid_1_eax, cp.data, cp.size);
- }
- 
--void load_ucode_amd_ap(unsigned int cpuid_1_eax)
-+void load_ucode_amd_early(unsigned int cpuid_1_eax)
- {
--	struct microcode_amd *mc;
--	struct cpio_data cp;
--	u32 *new_rev, rev, dummy;
--
--	if (IS_ENABLED(CONFIG_X86_32)) {
--		mc	= (struct microcode_amd *)__pa_nodebug(amd_ucode_patch);
--		new_rev = (u32 *)__pa_nodebug(&ucode_new_rev);
--	} else {
--		mc	= (struct microcode_amd *)amd_ucode_patch;
--		new_rev = &ucode_new_rev;
--	}
--
--	native_rdmsr(MSR_AMD64_PATCH_LEVEL, rev, dummy);
--
--	/*
--	 * Check whether a new patch has been saved already. Also, allow application of
--	 * the same revision in order to pick up SMT-thread-specific configuration even
--	 * if the sibling SMT thread already has an up-to-date revision.
--	 */
--	if (*new_rev && rev <= mc->hdr.patch_id) {
--		if (!__apply_microcode_amd(mc)) {
--			*new_rev = mc->hdr.patch_id;
--			return;
--		}
--	}
--
--	find_blobs_in_containers(cpuid_1_eax, &cp);
--	if (!(cp.data && cp.size))
--		return;
--
--	early_apply_microcode(cpuid_1_eax, cp.data, cp.size, false);
-+	return apply_ucode_from_containers(cpuid_1_eax);
- }
- 
- static enum ucode_state load_microcode_amd(u8 family, const u8 *data, size_t size);
-@@ -578,23 +539,6 @@ int __init save_microcode_in_initrd_amd(unsigned int cpuid_1_eax)
- 	return 0;
- }
- 
--void reload_ucode_amd(unsigned int cpu)
--{
--	u32 rev, dummy __always_unused;
--	struct microcode_amd *mc;
--
--	mc = (struct microcode_amd *)amd_ucode_patch[cpu_to_node(cpu)];
--
--	rdmsr(MSR_AMD64_PATCH_LEVEL, rev, dummy);
--
--	if (rev < mc->hdr.patch_id) {
--		if (!__apply_microcode_amd(mc)) {
--			ucode_new_rev = mc->hdr.patch_id;
--			pr_info("reload patch_level=0x%08x\n", ucode_new_rev);
--		}
--	}
--}
--
- /*
-  * a small, trivial cache of per-family ucode patches
-  */
-@@ -655,6 +599,28 @@ static struct ucode_patch *find_patch(unsigned int cpu)
- 	return cache_find_patch(equiv_id);
- }
- 
-+void reload_ucode_amd(unsigned int cpu)
-+{
-+	u32 rev, dummy __always_unused;
-+	struct microcode_amd *mc;
-+	struct ucode_patch *p;
-+
-+	p = find_patch(cpu);
-+	if (!p)
-+		return;
-+
-+	mc = p->data;
-+
-+	rdmsr(MSR_AMD64_PATCH_LEVEL, rev, dummy);
-+
-+	if (rev < mc->hdr.patch_id) {
-+		if (!__apply_microcode_amd(mc)) {
-+			ucode_new_rev = mc->hdr.patch_id;
-+			pr_info("reload patch_level=0x%08x\n", ucode_new_rev);
-+		}
-+	}
-+}
-+
- static int collect_cpu_info_amd(int cpu, struct cpu_signature *csig)
- {
- 	struct cpuinfo_x86 *c = &cpu_data(cpu);
-@@ -875,9 +841,6 @@ static enum ucode_state load_microcode_amd(u8 family, const u8 *data, size_t siz
- 			continue;
- 
- 		ret = UCODE_NEW;
--
--		memset(&amd_ucode_patch[nid], 0, PATCH_MAX_SIZE);
--		memcpy(&amd_ucode_patch[nid], p->data, min_t(u32, p->size, PATCH_MAX_SIZE));
- 	}
- 
- 	return ret;
-diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
-index 3afcf3de0dd4..192adf5f948e 100644
---- a/arch/x86/kernel/cpu/microcode/core.c
-+++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -172,7 +172,7 @@ void __init load_ucode_bsp(void)
- 	if (intel)
- 		load_ucode_intel_bsp();
- 	else
--		load_ucode_amd_bsp(cpuid_1_eax);
-+		load_ucode_amd_early(cpuid_1_eax);
- }
- 
- static bool check_loader_disabled_ap(void)
-@@ -200,7 +200,7 @@ void load_ucode_ap(void)
- 		break;
- 	case X86_VENDOR_AMD:
- 		if (x86_family(cpuid_1_eax) >= 0x10)
--			load_ucode_amd_ap(cpuid_1_eax);
-+			load_ucode_amd_early(cpuid_1_eax);
- 		break;
- 	default:
- 		break;
--- 
-2.41.0
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
