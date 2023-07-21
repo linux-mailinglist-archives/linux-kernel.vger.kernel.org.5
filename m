@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A2275D0E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C8175D0E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjGURul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 13:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
+        id S229896AbjGURvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 13:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGURuh (ORCPT
+        with ESMTP id S229452AbjGURvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 13:50:37 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA81235B8;
-        Fri, 21 Jul 2023 10:50:34 -0700 (PDT)
-Received: from [192.168.10.12] (unknown [39.45.151.35])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 866C4660709D;
-        Fri, 21 Jul 2023 18:50:24 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689961833;
-        bh=y6jiMwQXaB7lq5JCcvxY7bZh62L+Sweg8TFuFVnYw9w=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=Ji/upaSmBd4YbiiEWfbQP/dEVfxtlpgGFIaZ6XcnwdLm7m1k33y4MdPK3pCg0KZta
-         NyOdjK7D/DXTb9RPq6NVt/u4dySnsMRnypIEmTdSejlfEZqX7gcamyNy+AVdRik6IN
-         36cLPhDIms69apBUgyjlUUMeeJpHyNCDIFCUIqDjyguG5B/vhFXzO8qzzMlSZ5C8KR
-         ancNTba3aST7O2BosfgnVf8CpvghxuLUM73ydJA5WhRA6ZYvGBpF7Q47YrpxvPCKwl
-         aaV0dUIKrkoASRCTBmWRWYdPeeGC+BWL9aA+Mq/5XknndbTbc6clIbewrGLKuHif5J
-         OsgH6P6vd5Njg==
-Message-ID: <382f4435-2088-08ce-20e9-bc1a15050861@collabora.com>
-Date:   Fri, 21 Jul 2023 22:50:19 +0500
+        Fri, 21 Jul 2023 13:51:13 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BC73580;
+        Fri, 21 Jul 2023 10:51:10 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-668711086f4so1505876b3a.1;
+        Fri, 21 Jul 2023 10:51:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689961870; x=1690566670;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Xpz1j0ViON/79H2hi1Eb1uXwApxUrfNApf/6cdh9gVs=;
+        b=c38Cqeoo94sWHycPlXorn1b2IPOWpnBg3h+QpBzO7AaekTWgGxN8lRdRl/Ab2XEU40
+         meBodYoL2nOUb3kwj+dHewh4qq1Q9FLtLZE82HzzYD3TsexYtaxEhwKw/xBYH2qVMfxS
+         uj5elBlVTSIfM2SdfB5rbuUUT7Fx/mMt7ZyyLpTsWByNFJBDlD2kDUadTRMn9WwCK0EE
+         H0OaqUOz81Qp31ePNwAknTFxc47XI+iyXxRj0SSuERcr0O1d6S6D1E1Gy+HWdopylbJ8
+         GHR5epNhagfo8IW2lQoxweE7qMHG1ahKcJvykwMrodSDIfrFQxAU83B+BA6ZqqEn9hC5
+         Yngg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689961870; x=1690566670;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xpz1j0ViON/79H2hi1Eb1uXwApxUrfNApf/6cdh9gVs=;
+        b=SdGNvv7+hLxk1h2IEkNFbrBN4KyGt1jJoRjhEO7YX4frwQ/mPL3PvDSQ/fYk5HPMiK
+         MBZYUWFdUuycjlkRwp5aXxuhQvQMzgcagUVT2U2lUMKtHM+a5bjFCI3JWIJiiVYOlM9i
+         lKRfmGstuRNKesaCkLbUw7LymwefrOasuVT85E/UujVL3Yi3GkIlYSeAYvJiuqL+EvhN
+         YMdadJw33KQVGER5taEoIlRZ09xI8yRRb2909G739Us/DNGu6FrHi17KVK5s4iX2+MOR
+         twn9fL4EDKyixArh1mdW7HDPCj4ChE1Y5p34IQzMuqR4PB274Y6wtDVCMXBjvQsrjpDT
+         wBZQ==
+X-Gm-Message-State: ABy/qLYhoWV8zieggYhLMiHMuO5EfZktfWv7zl21LmBdo6P/52xxENhh
+        GFrzWxFXI+2yrb+ZZkOtWPg=
+X-Google-Smtp-Source: APBJJlFyRRRr9DW6Q6e9XUtTfgm9f8cMnHFp/DhAiEmIxrd4jlqg45OayAjc7h4RSnT2JNJyaXuGrw==
+X-Received: by 2002:a05:6a20:394f:b0:10b:764b:a942 with SMTP id r15-20020a056a20394f00b0010b764ba942mr4627422pzg.11.1689961869947;
+        Fri, 21 Jul 2023 10:51:09 -0700 (PDT)
+Received: from yoga ([2400:1f00:13:cde2:d588:8109:e86b:839c])
+        by smtp.gmail.com with ESMTPSA id y6-20020a63b506000000b005348af1b84csm3346092pge.74.2023.07.21.10.51.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 10:51:09 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 23:21:00 +0530
+From:   Anup Sharma <anupnewsmail@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Anup Sharma <anupnewsmail@gmail.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/8] Add support for Firefox's gecko profile format
+Message-ID: <cover.1689961706.git.anupnewsmail@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: fs/proc/task_mmu: Implement IOCTL for efficient page table
- scanning
-Content-Language: en-US
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-References: <20230713101415.108875-6-usama.anjum@collabora.com>
- <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
- <7eedf953-7cf6-c342-8fa8-b7626d69ab63@collabora.com>
- <ZLpqzcyo2ZMXwtm4@qmqm.qmqm.pl>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <ZLpqzcyo2ZMXwtm4@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,162 +76,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/23 4:23 PM, Michał Mirosław wrote:
-> On Fri, Jul 21, 2023 at 03:48:22PM +0500, Muhammad Usama Anjum wrote:
->> On 7/21/23 12:28 AM, Michał Mirosław wrote:
->>> This is a massaged version of patch by Muhammad Usama Anjum [1]
->>> to illustrate my review comments and hopefully push the implementation
->>> efforts closer to conclusion. The changes are:
->> Thank you so much for this effort. I also want to reach conclusion. I'll
->> agree with all the changes which don't affect me. But some requirements
->> aren't being fulfilled with this current design.
->>
->>>
->>> 1. the API:
-> [...]
->>>   b. rename match "flags" to 'page categories' everywhere - this makes
->>> 	it easier to differentiate the ioctl()s categorisation of pages
->>> 	from struct page flags;
->> I've no problem with it.
->>
->> #define PAGE_IS_WPASYNC		(1 << 0)
->> #define PAGE_IS_WRITTEN		(1 << 1)
->> You have another new flag PAGE_IS_WPASYNC. But there is no application of
->> PAGE_IS_WPASYNC. We must not add a flag which don't have any user.
-> 
-> Please see below.
-> 
->>>   c. change {required + excluded} to {inverted + required}. This was
->>> 	rejected before, but I'd like to illustrate the difference.
->>> 	Old interface can be translated to the new by:
->>> 		categories_inverted = excluded_mask
->>> 		categories_mask = required_mask | excluded_mask
->>> 		categories_anyof_mask = anyof_mask
->>> 	The new way allows filtering by: A & (B | !C)
->>> 		categories_inverted = C
->>> 		categories_mask = A
->>> 		categories_anyof_mask = B | C
->> I'm still unable to get the idea of inverted masks. IIRC Andei had also not
->> supported/accepted this masking scheme. But I'll be okay with it if he
->> supports this masking.
-> 
-> Please note that the masks are not inverted -- the values are. Masks
-> select which categories you want to filter on, and category_inverted
-> invert the meaning of a match (match 0 instead of 1).
-> 
->>>   d. change the ioctl to be a SCAN with optional WP. Addressing the
->>> 	original use-case, GetWriteWatch() can be implemented as:
->> As I've mentioned several times previously (without the name of
->> ResetWriteWatch()) that we need exclusive WP without GET. This could be
->> implemented with UFFDIO_WRITEPROTECT. But when we use UFFDIO_WRITEPROTECT,
->> we hit some special case and performance is very slow. So with UFFD WP
->> expert, Peter Xu we have decided to put exclusive WP in this IOCTL for
->> implementation of ResetWriteWatch().
->>
->> A lot of simplification of the patch is made possible because of not
->> keeping exclusive WP. (You have also written some quality code, more better.)
->>>
->>> 		memset(&args, 0, sizeof(args));
->>> 		args.start = lpBaseAddress;
->>> 		args.end = lpBaseAddress + dwRegionSize;
->>> 		args.max_pages = *lpdwCount;
->>> 		*lpdwGranularity = PAGE_SIZE;
->>> 		args.flags = PM_SCAN_CHECK_WPASYNC;
->>> 		if (dwFlags & WRITE_WATCH_FLAG_RESET)
->>> 			args.flags |= PM_SCAN_WP_MATCHED;
->>> 		args.categories_mask = PAGE_IS_WRITTEN;
->>> 		args.return_mask = PAGE_IS_WRITTEN;
-> 
-> For ResetWriteWatch() you would:
-> 
-> args.flags = PM_SCAN_WP_MATCHING;
-> args.categories_mask = PAGE_IS_WPASYNC | PAGE_IS_WRITTEN;
-> args.return_mask = 0;
-> 
-> Or (if you want to error out if the range doesn't have WP enabled):
-> 
-> args.flags = PM_SCAN_WP_MATCHING | PM_SCAN_CHECK_WPASYNC;
-> args.categories_mask = PAGE_IS_WRITTEN;
-> args.return_mask = 0;
-> 
-> (PM_SCAN_CHECK_WPASYNC is effectively adding PAGE_IS_WPASYNC to the
-> required categories.)
-Right. But we don't want to perform GET in case of ResetWriteWatch(). It'll
-be wasted effort to perform GET as well when we don't care about the dirty
-status of the pages.
+This patch series adds support for Firefox's gecko profile format.
+The format is documented here [1].
 
+I have incorporated several changes based on feedback from the
+previous version of the patch.
 
-> 
-> [...]
-> 
->>> 2. the implementation:
->>>   a. gather the page-categorising and write-protecting code in one place;
->> Agreed.
->>
->>>   b. optimization: add whole-vma skipping for WP usecase;
->> I don't know who can benefit from it. Do you have any user in mind? When
->> the user come of this optimization, this can be added later.
-> 
-> This is for users of WP that want to ignore WP for non-registered ranges
-> instead of erroring out on them. (I anticipate CRIU to use this.)
-> 
->>>   c. extracted output limiting code to pagemap_scan_output();
->> If user passes half THP, current code wouldn't split huge page and WP the
->> whole THP. We would loose the dirty state of other half huge page. This is
->> bug. consoliding the output limiting code looks optimal, but we'll need to
->> same limiting code to detect if full THP hasn't been passed in case of THP
->> and HugeTLB.
-> 
-> For THP indeed - the code should check `end != start + HPAGE_SIZE`
-> instead of `ret == -ENOSPC`.
-Yeah, this need to be fixed.
+Changes in v5:
+- Reorganized the patch series to ensure that each patch works independently.
+- Renamed the file to perf-gecko.py.
+- Added command exection support for the script. The script can now be
+  executed as "perf script report perf-gecko > output.json."
+- Simplified the usage information; previously it was "perf script
+  perf-gecko.py > output.json," now it is "perf script report
+  perf-gecko > output.json."
+- Merged the test and command execution patches into this series,
+  which were previously in a separate series.
 
-> 
-> For HugeTLB there is a check that returns EINVAL when trying to WP
-> a partial page. I think I didn't change that part.
-> 
->>>   d. extracted range coalescing to pagemap_scan_push_range();
->> My old pagemap_scan_output has become pagemap_scan_push_range().
-> 
-> Indeed. I did first push the max_pages check in, hence the 'extracting'
-> later.
-> 
->>>   e. extracted THP entry handling to pagemap_scan_thp_entry();
->> Good. But I didn't found value in seperating it just like other historic
->> pagemap code.
-> 
-> This is to avoid having to much indentation and long functions that do
-> many things at once.
-> 
->>>   f. added a shortcut for non-WP hugetlb scan; avoids conditional
->>> 	locking;
->> Yeah, some if conditions have been removed. But overall did couple of calls
->> to is_interesting and scan_output functions instead of just one.
-> 
-> Yes, there are now two pairs instead of one. I see that I haven't pushed
-> the is_interesting calls into scan_output. This is now trivial:
-> 	if (!interesting...) {
-> 		*end = start;
-> 		return 0;
-> 	}
-This can be the 3rd thing to fix.
+Committer Testing:
+- Tested with a perf.data file generated for single and multiple cpu
+  cores enabled.
+- Uploaded the stdout into profiler.firefox.com and verified the
+  output.
+- Verified the output with the output generated by the existing
+  script as mentioned here [2].
 
-Is it possible for you to fix the above mentioned 3 things and send the
-patch for my testing:
-1 Make GET optional
-2 Detect partial THP WP operation and split
-3 Optimization of moving this interesting logic to output() function
+Method:
+- perf record -F 99 -a -g -- sleep 5
+- perf script report perf-gecko > output.json
+- upload output.json to profiler.firefox.com
 
-Please let me know if you cannot make the above fixes. I'll mix my patch
-version and your patch and fix these things up.
+[1] https://github.com/firefox-devtools/profiler/blob/main/docs-developer/gecko-profile-format.md
+[2] https://perf.wiki.kernel.org/index.php/Tutorial#Firefox_Profiler
 
-> and could save some typing (but would need a different name for
-> scan_output as it would do filter & output), but I'm not sure about
-> readability.
-> 
-> Best Regards
-> Michał Mirosław
+Anup Sharma (8):
+  perf scripts python: Add initial script file with usage information
+  perf scripts python: Extact necessary information from process event
+  perf scripts python: Add classes and conversion functions
+  perf scripts python: Add trace end processing and PRODUCT and
+    CATEGORIES information
+  perf scripts python: Implement add sample function and thread
+    processing
+  perf scripts python: Implement add sample function and thread
+    processing
+  perf scripts python: Add command execution for firefox gecko converter
+    script
+  perf test: Add support for testing firefox gecko converter script
+
+ .../perf/scripts/python/bin/perf-gecko-record |   2 +
+ .../perf/scripts/python/bin/perf-gecko-report |   3 +
+ tools/perf/scripts/python/perf-gecko.py       | 339 ++++++++++++++++++
+ tools/perf/tests/shell/test_perf_gecko.sh     | 188 ++++++++++
+ 4 files changed, 532 insertions(+)
+ create mode 100644 tools/perf/scripts/python/bin/perf-gecko-record
+ create mode 100644 tools/perf/scripts/python/bin/perf-gecko-report
+ create mode 100644 tools/perf/scripts/python/perf-gecko.py
+ create mode 100755 tools/perf/tests/shell/test_perf_gecko.sh
 
 -- 
-BR,
-Muhammad Usama Anjum
+2.34.1
+
