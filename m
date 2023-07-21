@@ -2,64 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE3375D7E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 01:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D693D75D7E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 01:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbjGUXip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 19:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58872 "EHLO
+        id S230151AbjGUXjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 19:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbjGUXio (ORCPT
+        with ESMTP id S230107AbjGUXjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 19:38:44 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4228D1B6
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:38:43 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c926075a50cso6075567276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:38:43 -0700 (PDT)
+        Fri, 21 Jul 2023 19:39:07 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3B930FF
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:39:02 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1b9de3e7fb1so14360425ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:39:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689982722; x=1690587522;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7oI2k+n70r09++ymnvAIa7Gl6vaz4ByDtPCwimW7Q90=;
-        b=7d2WPgTOR161B95SSw69r7f+ijCvihtTNkLyDXwhknhcNvG4wFvEktHMAq7jt4OHEm
-         a3e/VqagtHMG34iCPhuDyLhcuLMUwQ+ifw2gjSQjnhogyjHu/FI+nODzi2OoomWJhu2A
-         9jsM16yblubZxqV5CF/Eis8Njtr+hy0EjuT8w7svSYzu6q8wePkRu0h9rMQf26EwIin6
-         1Te2vN0ulcLxjqFjlngUBmIFjM2PkO9fZTXmDZtnkmCBsgdN2fMEsSy/UGtd5VVDVTAK
-         m49iaey4dLHD8rUeVTsLKM4flB0RDLAiEdM9DfKUUReLU7MXwIlMoBmaxf8XkCAebF5P
-         xL2A==
+        d=google.com; s=20221208; t=1689982742; x=1690587542;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:reply-to:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Wxpv5d1dbsB02EOhCUS+N+V6wGKp/ft8bZjDfblFWp0=;
+        b=6+6p+4MOaxtK+Vf0JT9BKKWNZe6ldV4PUn79DslXbhsuAlyt7oSr3ljHaBNqTMv/3U
+         pYZnh3PAlttxfjDl+RD724I/kb1Y3dkipnAzFQkVQDSPVpwSIzsApj4QdWTp5IwI26Nk
+         MPN7sVU5WP6DRFcOhNs1zZia5HJRTrEBZZn6ARyBCrrAkekkkBkYzCqTgdssFDglhcA3
+         xLRY767xHR9Gcm9mtNArlQdI7cH+MfPCp/I9POthmYWAWRDwyAav3e+nWrTearkc04Bw
+         FKgtKGOc7FGX2LW/5ndrexkCl4pAJC8EWXVvT2StRb6J5+CFrEuwuuxQlAR8ijc+81aE
+         3ndg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689982722; x=1690587522;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7oI2k+n70r09++ymnvAIa7Gl6vaz4ByDtPCwimW7Q90=;
-        b=R/jpg4A/zn+dM15JtrG1uy4+pUooddO6YVBKvVFXm7rQcaMUl6jHDbW4FQvZsKUWvr
-         7HgxIq+T269ai5byxHns1pvA9PQkN6AbTAWWu8pBlspf7n42nCCU56m1GUtm+b5rEiSA
-         1k92Fz/38LyozAOhtztcLcC0o11OT2aHSaNVlgF5CzeJgYxVINaMXSEkw+jrHHkx3dHU
-         I68ssKAA+4UKpcg/xdJVQjbJJrgU/V6LqImka5m0pwULXj047IZXi9rzqlGt2LlRw1WS
-         GnPA1q7aeoL7mWy2Y1gttOpwy9a1KIhy15xPAZ+2uMREgulpUJl35qevwW5rnjEYxZBm
-         MOng==
-X-Gm-Message-State: ABy/qLbLZdkm3/1L9nqj97lU1iQMJjWu02fkmHoimokA1qtvjxf0xDqh
-        iDijLfqDDahJXjkaA9Sw1jAlHkL5HsU=
-X-Google-Smtp-Source: APBJJlFDs5FHNs5v+9qnY6bXeicf3eDutpz6ueu60Qhp8gCv6VpW/IJ7YNk3G+Pic8BM3apO9vN7wvtGcoA=
+        d=1e100.net; s=20221208; t=1689982742; x=1690587542;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:reply-to:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Wxpv5d1dbsB02EOhCUS+N+V6wGKp/ft8bZjDfblFWp0=;
+        b=gdLGGd/UEZ0c0nk8+khCOl47+nPXa1R7+XK0o+3u2E81RB2bsiEB1QU9pDIWe4nIXX
+         nsZIfRyteTpg7lrQop8GhHujvGQcK7LiYhmjFCgSA/Ba8yqpv8cgxJIli/qIsXYiSqfJ
+         tGxzxtc3iynCTd0HeNm/rTfY56pNti/YSz80uFIGH8y54b0mRsuSmWz7HBl5I7RkfvcV
+         N8inuOVV2FgG++RtZyKLNvHBZHbw9lwNvvrXEiskHyjzYiiioMikS+2kMVcw6nEID0Ce
+         WON8a9WzgpkbPttxCEBiAwpEJCfy3nDNDUZO5m6gDy4f1IjL8HBMosqvL/tpUnoCU7nA
+         Z49A==
+X-Gm-Message-State: ABy/qLYuQ6sEurUgHM9oKTpKqXP0lNiqScwu5ArtTcngAK5YBRAnkn+t
+        PG/E/q4IP6fuw83fCVN0yHhb6s8c6o4=
+X-Google-Smtp-Source: APBJJlG1X+RELTKU0r2yW84zpiRaZzYEGvAZUim/uaTx2J52QSwSORgoGNZiIt5eRccKpiTbTQzOmzFGG9o=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:c9c3:0:b0:d00:f564:509b with SMTP id
- z186-20020a25c9c3000000b00d00f564509bmr36019ybf.1.1689982722574; Fri, 21 Jul
- 2023 16:38:42 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 16:38:41 -0700
-In-Reply-To: <202307211945.TSPcyOhh-lkp@intel.com>
+ (user=seanjc job=sendgmr) by 2002:a17:902:f683:b0:1ba:ff36:e0d7 with SMTP id
+ l3-20020a170902f68300b001baff36e0d7mr13847plg.12.1689982741675; Fri, 21 Jul
+ 2023 16:39:01 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 21 Jul 2023 16:38:58 -0700
 Mime-Version: 1.0
-References: <202307211945.TSPcyOhh-lkp@intel.com>
-Message-ID: <ZLsXAdjFuKLpd3ig@google.com>
-Subject: Re: arch/powerpc/kvm/e500mc.c:95:15: error: invalid instruction
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230721233858.2343941-1-seanjc@google.com>
+Subject: [PATCH] KVM: VMX: Drop manual TLB flush when migrating vmcs.APIC_ACCESS_ADDR
 From:   Sean Christopherson <seanjc@google.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="us-ascii"
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Jim Mattson <jmattson@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,28 +72,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023, kernel test robot wrote:
-> Hi Sean,
-> 
-> FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   f7e3a1bafdea735050dfde00523cf505dc7fd309
-> commit: e83ca8cfa286c9fc78b585b0e66df7f542bcbcf2 KVM: PPC: booke: Mark three local functions "static"
-> date:   4 months ago
-> config: powerpc-randconfig-r001-20230721 (https://download.01.org/0day-ci/archive/20230721/202307211945.TSPcyOhh-lkp@intel.com/config)
-> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-> reproduce: (https://download.01.org/0day-ci/archive/20230721/202307211945.TSPcyOhh-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202307211945.TSPcyOhh-lkp@intel.com/
-> 
-> All errors (new ones prefixed by >>):
-> 
-> >> arch/powerpc/kvm/e500mc.c:95:15: error: invalid instruction
->       95 |         asm volatile("tlbilxlpid");
+Remove the superfluous flush of the current TLB in VMX's handling of
+migration of the APIC-access page, as a full TLB flush on all vCPUs will
+have already been performed in response to kvm_unmap_gfn_range() *if*
+there were SPTEs pointing at the APIC-access page.  And if there were no
+valid SPTEs, then there can't possibly be TLB entries to flush.
 
-I assume this is a binutils bug?  I ran into a similar problem on PPC a while
-back where I couldn't cross-compile even relatively basic PPC code.
+The extra flush was added by commit fb6c81984313 ("kvm: vmx: Flush TLB
+when the APIC-access address changes"), with the justification of "because
+the SDM says so".  The SDM said, and still says:
+
+ As detailed in Section xx.x.x, an access to the APIC-access page might
+ not cause an APIC-access VM exit if software does not properly invalidate
+ information that may be cached from the EPT paging structures. If EPT was
+ in use on a logical processor at one time with EPTP X, it is recommended
+ that software use the INVEPT instruction with the =E2=80=9Csingle-context=
+=E2=80=9D INVEPT
+ type and with EPTP X in the INVEPT descriptor before a VM entry on the
+ same logical processor that enables EPT with EPTP X and either (a) the
+ "virtualize APIC accesses" VM- execution control was changed from 0 to 1;
+ or (b) the value of the APIC-access address was changed.
+
+But the "recommendation" for (b) is predicated on there actually being
+a valid EPT translation *and* possible TLB entries for the GPA (or guest
+VA when using shadow paging).  It's possible that a different vCPU has
+established a mapping for the new page, but the current vCPU can't have
+entered the guest, i.e. can't have created a TLB entry, between flushing
+the old mappings and changing its vmcs.APIC_ACCESS_ADDR.
+
+kvm_unmap_gfn_range() waits for all vCPUs to ack KVM_REQ_APIC_PAGE_RELOAD,
+and then flushes remote TLBs (which may or may not also pend a request).
+Thus the vCPU is guaranteed to update vmcs.APIC_ACCESS_ADDR before
+re-entering the guest and before it can possibly create new TLB entries.
+
+In other words, KVM does flush in this case, it just does so earlier
+on while handling the page migration.
+
+Note, VMX also flushes if the vCPU is migrated to a new pCPU, i.e. if
+the vCPU is migrated to a pCPU that entered the guest for a different
+vCPU.
+
+Suggested-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+Cc: Jim Mattson <jmattson@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/vmx/vmx.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 0ecf4be2c6af..3f868826db7d 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6767,8 +6767,10 @@ static void vmx_set_apic_access_page_addr(struct kvm=
+_vcpu *vcpu)
+ 	vmcs_write64(APIC_ACCESS_ADDR, pfn_to_hpa(pfn));
+ 	read_unlock(&vcpu->kvm->mmu_lock);
+=20
+-	vmx_flush_tlb_current(vcpu);
+-
++	/*
++	 * No need for a manual TLB flush at this point, KVM has already done a
++	 * flush if there were SPTEs pointing at the previous page.
++	 */
+ out:
+ 	/*
+ 	 * Do not pin apic access page in memory, the MMU notifier
+
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
+--=20
+2.41.0.487.g6d72f3e995-goog
+
