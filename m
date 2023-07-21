@@ -2,127 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9750175BDCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE3775BDCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbjGUFhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 01:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59602 "EHLO
+        id S229814AbjGUFju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 01:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjGUFhM (ORCPT
+        with ESMTP id S229592AbjGUFjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 01:37:12 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517FB1BC1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 22:37:11 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fbca8935bfso12978435e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 22:37:11 -0700 (PDT)
+        Fri, 21 Jul 2023 01:39:47 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272301BC1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 22:39:45 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-56372a369d3so751184a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 22:39:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689917830; x=1690522630;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vX/JkYsTJ988R/jCJEP3BfL7G/1slMZU41YSurteI2o=;
-        b=cRa+TxE5YsEqvBdKD5o7cITaabLFv6sjdy6P6XfGu8K/hmOCOfl70qGcRIwYPv5c7Q
-         t8k+5TNSqPwr5k0C4Kq7aF6a3XvJ24z1Eh8s0wo/HpkRQf3xO58UqcJD1mn3XM6QZFGR
-         u+W/lqKUM+ne+jyeXsBHnnf8qWpgFgoxo4trX85idDJ+j/MtiA60gevN4ajdbHSXBBp3
-         nOMsDtAm/npF8oqBGE4SHQDIQeHkxicP3tnUmGk5Mb3J+1kbEaYWJBSj2EJpIoRppjPr
-         rIfDnSqmtOD+YFuxLOYfhJ1st5S3wOX8RqWHa0BcSxhpNcSO/vYJqhraZeT8Yri3yn+u
-         TJng==
+        d=tuxon.dev; s=google; t=1689917984; x=1690522784;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MET1FtsHEOQSbfBm9BNtYvB0Q268yaadYjHQUlEH8ew=;
+        b=rC8YrmePH9OhK6bW8pKMi8wPd5o4X85CUBjfQ064A0pBxm4il19yyhoB95JnpechbJ
+         S/2pHJfFJU1/KmaJnY8boi/gAdqJz71xx2Pmiec9SEH4UrF71z+pctasdpxBM5Jvtjsk
+         9cmJS2goGsvTSOoyEQDWC4ow+eQGy2m2KDYUaUH2FkibXnhYKdFAWbbcmnUXDVpfwTt2
+         +dKkbKjO4OqXrMpt2OCNevlBQ565oJsstTonckAPrH29AudHcVs0je5qudw76WCiqE0P
+         DGQ5PgjYyKsMeyAomhJsSFPMfvHhR2xI3otpcN6mLYnKa5l+Tuv/hsPUSiCUGH6P9MUI
+         s9Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689917830; x=1690522630;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vX/JkYsTJ988R/jCJEP3BfL7G/1slMZU41YSurteI2o=;
-        b=OCfyTLS6LJo7tVvgD3rCmtRszYZsYvDPoY/Bp2nIGver2nRfbQLMcuN5IAxmOkY4PF
-         ioBT5By78G/nbzcJASw3OoKMFlls/ClUg4ElhyUwc2nxxNtrfk80HFmdiMjkmjW6kIAt
-         Y0/3Nn5zIf1QFBdvtoz8JvemMM6Nh9IFIWIFFnLnpXA+aoHY4QKcp0fiETuLW3xV7J0X
-         GqgAgk1bEGNYDf0/mp8AlnHv8WAX1HQOnqUViz7XUUBXxu7jhjzn3lXKWm85XvNjExpi
-         bgAUVeMSirtetiN/zsGbVMFv0afEzioLWkRAaH8CmwiYzXKoLTlze0EKZ7cQ+iet8wK+
-         DTtg==
-X-Gm-Message-State: ABy/qLbFuhFw8pLdvnAmdKUPNcYKX7uuzpRzQVZWzqOaJas/e3Lt1c+o
-        NKrmn+7EgBF/AOETJMi5XULSaw==
-X-Google-Smtp-Source: APBJJlHuuEtVJXP90otgD42oqbE5kUntVWwp5lSVN+QyO4G3yrhO6MftAcWJefiLMXZjXf/Ea8z+Vg==
-X-Received: by 2002:a7b:c401:0:b0:3fb:bc4a:46ad with SMTP id k1-20020a7bc401000000b003fbbc4a46admr497865wmi.9.1689917829691;
-        Thu, 20 Jul 2023 22:37:09 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id 19-20020a05600c229300b003fb40f5f553sm5409400wmf.31.2023.07.20.22.37.05
+        d=1e100.net; s=20221208; t=1689917984; x=1690522784;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MET1FtsHEOQSbfBm9BNtYvB0Q268yaadYjHQUlEH8ew=;
+        b=aNq3ZshndJbyY2h18xngrLNhMQ6XkTGpFIccSJLiCJaHc3HzPHPEg8lvCZlCBAtjkW
+         6HwKKiYYeoYG265AT+8t7VDH78WySQ5OqNMPS+uC03Xm54osHZgyPC25HzpPrEtV6Qo9
+         VTtYLyOVJhmmD36/CCjjH1vEOlLxwoTSyw8r1h4fEnLS7R/68DmbCZCndYeINmp8IX5f
+         q99FjaGnGi9DS0Q/kE1lani0BzQQg3sRd6o5Zm9H4yl1CfLU8+OplSh6Gk1V912yDdfD
+         qgkBpxNX3xHjGZlViPpuQ6KpN/XVeyY/NtOcj07dDEIhs9r6rrRlxGI+CQcF40Deiwsv
+         jiPw==
+X-Gm-Message-State: ABy/qLZM+gNi8SSLn24FUMhfPbww01m9yIRy5AMSpbyNT+m3X7yD0vZR
+        ZJfBh1X8ZUe+HF/0xOGOJj77wQ==
+X-Google-Smtp-Source: APBJJlGT0YJwrdWz/rSHkii66QghHlD0aHdPrXJ236lAMeGLNoUIb+iZTRE0SUMVKzkLuh34MCWwVw==
+X-Received: by 2002:a05:6a21:33a7:b0:12f:c61e:7cac with SMTP id yy39-20020a056a2133a700b0012fc61e7cacmr947830pzb.31.1689917984627;
+        Thu, 20 Jul 2023 22:39:44 -0700 (PDT)
+Received: from localhost.localdomain ([82.78.167.79])
+        by smtp.gmail.com with ESMTPSA id s26-20020a63a31a000000b0055c178a8df1sm2157857pge.94.2023.07.20.22.39.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 22:37:06 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 08:37:02 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-mtd@lists.infradead.org, Julia Lawall <Julia.Lawall@lip6.fr>,
-        Harshit Mogalapalli <harshit.m.mogalapalli@gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: fsl_upm: Fix an off-by one test in
- fun_exec_op()
-Message-ID: <604b0c70-01cf-4cbc-b387-8c709c972fef@kadam.mountain>
-References: <cd01cba1c7eda58bdabaae174c78c067325803d2.1689803636.git.christophe.jaillet@wanadoo.fr>
- <6f3c9139-cf68-4761-af06-462a72bda978@kadam.mountain>
- <03c69172-b85f-d9c2-6fd4-33f3ad149142@wanadoo.fr>
+        Thu, 20 Jul 2023 22:39:44 -0700 (PDT)
+From:   Claudiu Beznea <claudiu.beznea@tuxon.dev>
+To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, cristian.birsan@microchip.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Subject: [PATCH] ARM: dts: at91: remove duplicated entries
+Date:   Fri, 21 Jul 2023 08:39:18 +0300
+Message-Id: <20230721053918.33944-1-claudiu.beznea@tuxon.dev>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <03c69172-b85f-d9c2-6fd4-33f3ad149142@wanadoo.fr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM14,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 08:27:28PM +0200, Christophe JAILLET wrote:
-> Le 20/07/2023 à 09:04, Dan Carpenter a écrit :
-> > On Wed, Jul 19, 2023 at 11:55:01PM +0200, Christophe JAILLET wrote:
-> > > 'op-cs' is copied in 'fun->mchip_number' which is used to access the
-> > > 'mchip_offsets' and the 'rnb_gpio' arrays.
-> > > These arrays have NAND_MAX_CHIPS elements, so the index must be below this
-> > > limit.
-> > > 
-> > > Fix the sanity check in order to avoid the NAND_MAX_CHIPS value. This
-> > > would lead to out-of-bound accesses.
-> > > 
-> > > Fixes: 54309d657767 ("mtd: rawnand: fsl_upm: Implement exec_op()")
-> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > ---
-> > 
-> > Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > 
-> > Good eye.  I'm assuming you did something like this:
-> > 
-> > #!/bin/bash
-> > 
-> > FILE=$1
-> > WORDS=$(cat $FILE | perl -ne 'if ($_ =~ /\[([\w_]+)\];/) { print "$1\n" }' | sort -u)
-> > for i in $WORDS ; do
-> >      grep -Hn " > $i" $FILE
-> > done
-> > 
-> > regards,
-> > dan carpenter
-> > 
-> 
-> I did with the help of a coccinelle script.
-> (which can certainly be improved, so adding Julia in cc: :) )
+Remove duplicated DTC_FLAGS_<board> := -@ entries which intends to enable
+the building of device tree overlays.
+Commit 724ba6751532 ("ARM: dts: Move .dts files to vendor sub-directories")
+added those entries at the beginning of file w/o removing the already
+available entries spread though file.
 
-Harshit and I were mucking with this about yesterday.  He made
-Coccinelle script as well.
+Signed-off-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+---
+ arch/arm/boot/dts/microchip/Makefile | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
 
-We found three bugs in max9286_parse_dt(), hisi_inno_phy_probe() and
-jent_testing_store().  Only the one in hisi_inno_phy_probe() is real
-life bad because the others do an out of bounds check followed by a
-mask.
-
-regards,
-dan carpenter
+diff --git a/arch/arm/boot/dts/microchip/Makefile b/arch/arm/boot/dts/microchip/Makefile
+index 0f5193d05a31..31e03747cdf4 100644
+--- a/arch/arm/boot/dts/microchip/Makefile
++++ b/arch/arm/boot/dts/microchip/Makefile
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
++# Enables support for device-tree overlays
+ DTC_FLAGS_at91-sam9x60_curiosity := -@
+ DTC_FLAGS_at91-sam9x60ek := -@
+ DTC_FLAGS_at91-sama5d27_som1_ek := -@
+@@ -54,21 +55,9 @@ dtb-$(CONFIG_SOC_AT91SAM9) += \
+ 	at91sam9g35ek.dtb \
+ 	at91sam9x25ek.dtb \
+ 	at91sam9x35ek.dtb
+-# Enables support for device-tree overlays
+-DTC_FLAGS_at91-sam9x60_curiosity := -@
+-DTC_FLAGS_at91-sam9x60ek := -@
+ dtb-$(CONFIG_SOC_SAM9X60) += \
+ 	at91-sam9x60_curiosity.dtb \
+ 	at91-sam9x60ek.dtb
+-# Enables support for device-tree overlays
+-DTC_FLAGS_at91-sama5d27_som1_ek := -@
+-DTC_FLAGS_at91-sama5d27_wlsom1_ek := -@
+-DTC_FLAGS_at91-sama5d2_icp := -@
+-DTC_FLAGS_at91-sama5d2_ptc_ek := -@
+-DTC_FLAGS_at91-sama5d2_xplained := -@
+-DTC_FLAGS_at91-sama5d3_eds := -@
+-DTC_FLAGS_at91-sama5d3_xplained := -@
+-DTC_FLAGS_at91-sama5d4_xplained := -@
+ dtb-$(CONFIG_SOC_SAM_V7) += \
+ 	at91-kizbox2-2.dtb \
+ 	at91-kizbox3-hs.dtb \
+@@ -95,8 +84,6 @@ dtb-$(CONFIG_SOC_SAM_V7) += \
+ 	at91-sama5d4_xplained.dtb \
+ 	at91-sama5d4ek.dtb \
+ 	at91-vinco.dtb
+-# Enables support for device-tree overlays
+-DTC_FLAGS_at91-sama7g5ek := -@
+ dtb-$(CONFIG_SOC_SAMA7G5) += \
+ 	at91-sama7g5ek.dtb
+ 
+-- 
+2.39.2
 
