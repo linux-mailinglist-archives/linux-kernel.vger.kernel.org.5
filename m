@@ -2,83 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B3375D0B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F4175D0BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbjGURaj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 Jul 2023 13:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42634 "EHLO
+        id S229737AbjGURjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 13:39:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231213AbjGURaV (ORCPT
+        with ESMTP id S229477AbjGURju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 13:30:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0873A8E;
-        Fri, 21 Jul 2023 10:30:10 -0700 (PDT)
+        Fri, 21 Jul 2023 13:39:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7CD30D0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:39:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 076E961D6D;
-        Fri, 21 Jul 2023 17:30:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCE68C433C7;
-        Fri, 21 Jul 2023 17:30:05 +0000 (UTC)
-Date:   Fri, 21 Jul 2023 13:30:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Ajay Kaher <akaher@vmware.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        Ching-lin Yu <chinglinyu@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-trace-kernel@vger.kernel.org" 
-        <linux-trace-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        "er.ajay.kaher@gmail.com" <er.ajay.kaher@gmail.com>,
-        "srivatsa@csail.mit.edu" <srivatsa@csail.mit.edu>,
-        Tapas Kundu <tkundu@vmware.com>,
-        Vasavi Sirnapalli <vsirnapalli@vmware.com>
-Subject: Re: [PATCH v4 00/10] tracing: introducing eventfs
-Message-ID: <20230721133000.763cd3c3@gandalf.local.home>
-In-Reply-To: <66DACCE8-1C57-4A30-8ACF-D88179CA6381@vmware.com>
-References: <1689248004-8158-1-git-send-email-akaher@vmware.com>
-        <20230714185824.62556254@gandalf.local.home>
-        <883F9774-3E76-4346-9988-2788FAF0D55E@vmware.com>
-        <20230718094005.32516161@gandalf.local.home>
-        <2CD72098-08E2-4CAA-B74D-D8C44D318117@vmware.com>
-        <20230719102310.552d3356@gandalf.local.home>
-        <899D0823-A1B2-4A6F-A5BA-0D707F41C3D4@vmware.com>
-        <20230719144046.746af82e@gandalf.local.home>
-        <20230721084839.4a97a595@gandalf.local.home>
-        <20230721091947.0df9fd73@gandalf.local.home>
-        <66DACCE8-1C57-4A30-8ACF-D88179CA6381@vmware.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4D37F61D68
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 17:39:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF8E5C433C7;
+        Fri, 21 Jul 2023 17:39:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689961188;
+        bh=Lu+lThu4uKJv2G55IYuDpWtO5Bx+ozp9Lhj2x/GKyrk=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=vQEn/cMO0paaJuV+lPDh/qo79ovaaJcFUVXs5mR2CWpYdjKvgur8qAipAXVzWV8DP
+         1K6kOg+0HTfgNwoZ3K8yTY5io0FgsPGSY5bHllFD02UkkJMGP5awCalOCiAhECecjx
+         FQXf6bxUsEIDGEcFBais2djdT9827v5G/4j9XDfavnpw9PrfoMDsCv1Bg3GJ0tf+52
+         10iWkn4xH71po5+IZ43Kyj9VlrFurx3wLb5C0Y6uV+4vgDhRwQsMuYrH1AG1XjIRAt
+         4n95HF4oJDt92LzDec+NnXUFkp4K640+B5RYm6g2QoXS342qpPGFWfYCAewJVTwkRH
+         Q6RwHKDzZRYPg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 41726CE092F; Fri, 21 Jul 2023 10:39:48 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 10:39:48 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Willy Tarreau <w@1wt.eu>, Shuah Khan <skhan@linuxfoundation.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
+        linux-kernel@vger.kernel.org
+Subject: Upcoming nolibc pull request for the next merge window
+Message-ID: <7afafb6c-9664-44a1-bc8f-d20239db1dd5@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 17:17:24 +0000
-Nadav Amit <namit@vmware.com> wrote:
+Hello, Linus!
 
-> [ And â€œbool" is clearer type for is_freed. ]
+This is just to let you know that Willy and I are adding co-maintainers
+for nolibc.  Shuah Khan will join me as administrative maintainer,
+and will be sending the pull request to you for the next merge window.
 
-Oh, and to answer why I didn't use bool. I want to make sure that it
-doesn't use just part of the other elements in the union. If the compiler
-decides to use one byte for the bool (which it is perfectly valid to do
-so), and it happens to map over a zero of the other elements in the union,
-then it will give a false negative.
+Similarly, Thomas Weißschuh will be joining Willy as technical maintainer
+for nolibc.  With luck, this won't affect you, but in case you come across
+a nolibc issue, please reach out to Thomas as well as Willy, Shuah,
+and myself.  There will of course be an update to the MAINTAINERS file
+in the near future, but just to let you know in the meantime.
 
-By using unsigned long, it will be guaranteed to contain some content.
-
--- Steve
+							Thanx, Paul
