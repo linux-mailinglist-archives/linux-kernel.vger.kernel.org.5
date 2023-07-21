@@ -2,232 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A691875C7A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74E575C7A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230474AbjGUNV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 09:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60168 "EHLO
+        id S231488AbjGUNWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 09:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbjGUNVn (ORCPT
+        with ESMTP id S231218AbjGUNWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 09:21:43 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A023A99;
-        Fri, 21 Jul 2023 06:21:12 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36LDKcoe067589;
-        Fri, 21 Jul 2023 08:20:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1689945638;
-        bh=pZDURQKtcBx1w8wrYyx1ZyTb+OFUyAyb4ftIUwDqyfI=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=VLF+RYGECuxa5pbiZMrOpjqp3a1dMA7SpZLDFlpSJdKlTPERPhBoq2L6iQVnZqysW
-         sVfErvfqHXgZ2HOGTjlGHawuBxcxy7KZfvEiEIvrf085EYGUvxo9aZV+ew2Zj3oLyl
-         AgkJDkV6NG5U+Yh4s0zl5wi5DN+TauH/FhFRGx/o=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36LDKcDr022862
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 21 Jul 2023 08:20:38 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 21
- Jul 2023 08:20:38 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 21 Jul 2023 08:20:38 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36LDKb56024714;
-        Fri, 21 Jul 2023 08:20:37 -0500
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <afd@ti.com>,
-        <krzysztof.kozlowski+dt@linaro.org>
-CC:     <kristo@kernel.org>, <robh+dt@kernel.org>, <conor+dt@kernel.org>,
-        <rogerq@kernel.org>, <s-vadapalli@ti.com>, <a-bhatia1@ti.com>,
-        <r-ravikumar@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <j-choudhary@ti.com>
-Subject: [PATCH v6 5/5] arm64: dts: ti: k3-j784s4-evm: Enable DisplayPort-0
-Date:   Fri, 21 Jul 2023 18:50:29 +0530
-Message-ID: <20230721132029.123881-6-j-choudhary@ti.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230721132029.123881-1-j-choudhary@ti.com>
-References: <20230721132029.123881-1-j-choudhary@ti.com>
+        Fri, 21 Jul 2023 09:22:17 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2E83A87
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 06:21:42 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36L5i7DV017256;
+        Fri, 21 Jul 2023 08:21:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=S
+        ras6w/5Pr5D4kJH/bAiUrfrDmtF07M5UZBHB6Cobro=; b=TCui+azW+AqYraJY4
+        j6d1ZwkdaM7PMgxz4NsPuXxg7KQfmgSk71q4MC3cU3bo9SefvZxCL0b+mBfNmOb7
+        Ff9O4Wy0qiIXTxiB9WflHEK7Q97YehrL/0BItUl3bPKx6GmPZpLX+HUrzErHEyxH
+        vK3pVogaSuw3PvJGy8IGh6p0mRz3YBIe16r7WK21MT9oWz/GdP39oET6YhBTzonS
+        kXE2rXoWc9Bqs9yiYl+5VcQMD0OTmTwRpLYMulk9onLr602wNm3Tb4ZjIVZwJeMm
+        xKBBAcs2XCMkr9Kkx9mB2IZTWWp6ZIztHGhdE9W+XcemGduYsXJSdKNUOhti9ye8
+        cWNPA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3rus6gyj2r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jul 2023 08:21:24 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 21 Jul
+ 2023 14:21:23 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Fri, 21 Jul 2023 14:21:23 +0100
+Received: from work-debian.ad.cirrus.com (unknown [198.61.64.172])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0CF2146B;
+        Fri, 21 Jul 2023 13:21:23 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>, <tiwai@suse.com>
+CC:     <perex@perex.cz>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v5 00/11] ALSA: hda: Adding support for CS35L56 on HDA systems
+Date:   Fri, 21 Jul 2023 14:21:09 +0100
+Message-ID: <20230721132120.5523-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-ORIG-GUID: HXrFS9q7grFIGNA6t1h9R1RCJh0569vT
+X-Proofpoint-GUID: HXrFS9q7grFIGNA6t1h9R1RCJh0569vT
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rahul T R <r-ravikumar@ti.com>
+This set of patches adds support for using the CS35L56 boosted smart
+amplifier on HDA systems. In these systems the CS35L56 audio is
+routed through a HDA-to-I2S bridge codec.
 
-Enable display for J784S4 EVM.
+This doesn't include the changes to the Realtek driver to actually hook
+up the CS35L56 driver, because we don't yet have the QUIRK IDs to
+associate it with. But we want to publish the driver now so that it is
+available for bringing up hardware with the CS35L56.
 
-Add assigned clocks for DSS, DT node for DisplayPort PHY and pinmux for
-DP HPD. Add the clock frequency for serdes_refclk.
+The first 9 patches are moving code out of the ASoC driver and into the
+shared library so that it can be shared with the HDA driver.
 
-Add the endpoint nodes to describe connection from:
-DSS => MHDP => DisplayPort connector.
+Patch #10 fixes missing #includes in the HDA headers so that the CS35L56
+driver doesn't have to #include headers that it doesn't use.
 
-Also add the GPIO expander-4 node and pinmux for main_i2c4 which is
-required for controlling DP power. Set status for all required nodes
-for DP-0 as "okay".
+CHANGES SINCE V5
+The series has been rebased onto commit df4167d658d4
+("ASoC: cs35l56: Patch soft registers to defaults"), which removes
+cs35l56_reread_firmware_registers() and adds cs35l56_set_patch().
 
-Signed-off-by: Rahul T R <r-ravikumar@ti.com>
-[j-choudhary@ti.com: move all the changes together to enable DP-0 in EVM]
-Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
----
- arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 117 +++++++++++++++++++++++
- 1 file changed, 117 insertions(+)
+Changes are trivial so I have carried forward Mark's and Takashi's acks.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-index 1e2a26ac9c65..12d032b41bf0 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-@@ -249,6 +249,28 @@ vdd_sd_dv: regulator-TLV71033 {
- 		states = <1800000 0x0>,
- 			 <3300000 0x1>;
- 	};
-+
-+	dp0_pwr_3v3: regulator-dp0-prw {
-+		compatible = "regulator-fixed";
-+		regulator-name = "dp0-pwr";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&exp4 0 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	dp0: dp0-connector {
-+		compatible = "dp-connector";
-+		label = "DP0";
-+		type = "full-size";
-+		dp-pwr-supply = <&dp0_pwr_3v3>;
-+
-+		port {
-+			dp0_connector_in: endpoint {
-+				remote-endpoint = <&dp0_out>;
-+			};
-+		};
-+	};
- };
- 
- &main_pmx0 {
-@@ -310,6 +332,19 @@ vdd_sd_dv_pins_default: vdd-sd-dv-default-pins {
- 			J784S4_IOPAD(0x020, PIN_INPUT, 7) /* (AJ35) MCAN15_RX.GPIO0_8 */
- 		>;
- 	};
-+
-+	dp0_pins_default: dp0-pins-default {
-+		pinctrl-single,pins = <
-+			J784S4_IOPAD(0x0cc, PIN_INPUT, 12) /* (AM37) SPI0_CS0.DP0_HPD */
-+		>;
-+	};
-+
-+	main_i2c4_pins_default: main-i2c4-pins-default {
-+		pinctrl-single,pins = <
-+			J784S4_IOPAD(0x014, PIN_INPUT_PULLUP, 8) /* (AG33) MCAN14_TX.I2C4_SCL */
-+			J784S4_IOPAD(0x010, PIN_INPUT_PULLUP, 8) /* (AH33) MCAN13_RX.I2C4_SDA */
-+		>;
-+	};
- };
- 
- &wkup_pmx2 {
-@@ -875,3 +910,85 @@ &main_cpsw1_port1 {
- 	phy-mode = "rgmii-rxid";
- 	phy-handle = <&main_phy0>;
- };
-+
-+&serdes_refclk {
-+	status = "okay";
-+	clock-frequency = <100000000>;
-+};
-+
-+&dss {
-+	status = "okay";
-+	assigned-clocks = <&k3_clks 218 2>,
-+			  <&k3_clks 218 5>,
-+			  <&k3_clks 218 14>,
-+			  <&k3_clks 218 18>;
-+	assigned-clock-parents = <&k3_clks 218 3>,
-+				 <&k3_clks 218 7>,
-+				 <&k3_clks 218 16>,
-+				 <&k3_clks 218 22>;
-+};
-+
-+&serdes_wiz4 {
-+	status = "okay";
-+};
-+
-+&serdes4 {
-+	status = "okay";
-+	serdes4_dp_link: phy@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <4>;
-+		#phy-cells = <0>;
-+		cdns,phy-type = <PHY_TYPE_DP>;
-+		resets = <&serdes_wiz4 1>, <&serdes_wiz4 2>,
-+			 <&serdes_wiz4 3>, <&serdes_wiz4 4>;
-+	};
-+};
-+
-+&mhdp {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&dp0_pins_default>;
-+	phys = <&serdes4_dp_link>;
-+	phy-names = "dpphy";
-+};
-+
-+&dss_ports {
-+	port {
-+		dpi0_out: endpoint {
-+			remote-endpoint = <&dp0_in>;
-+		};
-+	};
-+};
-+
-+&main_i2c4 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_i2c4_pins_default>;
-+	clock-frequency = <400000>;
-+
-+	exp4: gpio@20 {
-+		compatible = "ti,tca6408";
-+		reg = <0x20>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+};
-+
-+&dp0_ports {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	port@0 {
-+		reg = <0>;
-+		dp0_in: endpoint {
-+			remote-endpoint = <&dpi0_out>;
-+		};
-+	};
-+
-+	port@4 {
-+		reg = <4>;
-+		dp0_out: endpoint {
-+			remote-endpoint = <&dp0_connector_in>;
-+		};
-+	};
-+};
+Patch 01:
+- Also changes cs35l56_set_patch() argument to new struct cs35l56_base.
+
+Patch 11:
+- Remove call to cs35l56_reread_firmware_registers()
+- Add call to cs35l56_set_patch() in cs35l56_hda_common_probe()
+- Do not add mute_hook to struct hda_component. This was for use with
+  CS8409 as an HDA bridge, but production systems will use Realtek,
+  which has its own mute control.
+- Use strscpy() instead of strcpy() in cs35l56_hda_mixer_info()
+- Fix missing word in Kconfig option title
+
+Richard Fitzgerald (4):
+  ASoC: cs35l56: Move runtime suspend/resume to shared library
+  ASoC: cs35l56: Move cs_dsp init into shared library
+  ASoC: cs35l56: Move part of cs35l56_init() to shared library
+  ALSA: hda: Fix missing header dependencies
+
+Simon Trimmer (7):
+  ASoC: cs35l56: Move shared data into a common data structure
+  ASoC: cs35l56: Make cs35l56_system_reset() code more generic
+  ASoC: cs35l56: Convert utility functions to use common data structure
+  ASoC: cs35l56: Move utility functions to shared file
+  ASoC: cs35l56: Make common function for control port wait
+  ASoC: cs35l56: Make a common function to shutdown the DSP
+  ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier
+
+ include/sound/cs35l56.h           |  29 +-
+ sound/pci/hda/Kconfig             |  31 +
+ sound/pci/hda/Makefile            |   6 +
+ sound/pci/hda/cs35l56_hda.c       | 995 ++++++++++++++++++++++++++++++
+ sound/pci/hda/cs35l56_hda.h       |  48 ++
+ sound/pci/hda/cs35l56_hda_i2c.c   |  69 +++
+ sound/pci/hda/cs35l56_hda_spi.c   |  68 ++
+ sound/pci/hda/hda_auto_parser.h   |   2 +
+ sound/pci/hda/hda_generic.h       |   3 +
+ sound/soc/codecs/cs35l56-i2c.c    |  14 +-
+ sound/soc/codecs/cs35l56-sdw.c    |  72 +--
+ sound/soc/codecs/cs35l56-shared.c | 458 +++++++++++++-
+ sound/soc/codecs/cs35l56-spi.c    |  10 +-
+ sound/soc/codecs/cs35l56.c        | 648 ++++---------------
+ sound/soc/codecs/cs35l56.h        |  15 +-
+ 15 files changed, 1877 insertions(+), 591 deletions(-)
+ create mode 100644 sound/pci/hda/cs35l56_hda.c
+ create mode 100644 sound/pci/hda/cs35l56_hda.h
+ create mode 100644 sound/pci/hda/cs35l56_hda_i2c.c
+ create mode 100644 sound/pci/hda/cs35l56_hda_spi.c
+
 -- 
-2.25.1
+2.30.2
 
