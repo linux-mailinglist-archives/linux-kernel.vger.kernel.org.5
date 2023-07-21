@@ -2,97 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C0675C1DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF30D75C1E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbjGUImH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
+        id S230348AbjGUImY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:42:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjGUImF (ORCPT
+        with ESMTP id S230286AbjGUImW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:42:05 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1E48B273A;
-        Fri, 21 Jul 2023 01:41:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=45nbv
-        SIDFTeptEDezMNw4kfndw/BNytulwYrUeJEA1g=; b=PiPx8QPjzY3W+RXyCqQoC
-        fiTXqkngyWpZGcbFJovC4PUtX+guIckxPEcaDWL45Sy2MGzTGuq1eOIBXzdoUSnz
-        Vv7JnaxoUHhz6WGLHaayCkqagub99TGH1MXh6J01KnFA1WtWmKtyYUzjazf58vwy
-        olPinapVIxN+WfZ+cVgyGM=
-Received: from sc9-mailhost2.vmware.com (unknown [114.253.21.2])
-        by zwqz-smtp-mta-g1-4 (Coremail) with SMTP id _____wCXHEKcRLpk9jqAAw--.11481S2;
-        Fri, 21 Jul 2023 16:41:01 +0800 (CST)
-From:   Dingyan Li <18500469033@163.com>
-To:     gregkh@linuxfoundation.org, stern@rowland.harvard.edu,
-        sebastian.reichel@collabora.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] USB: add usbfs ioctl to get specific superspeedplus rates
-Date:   Fri, 21 Jul 2023 16:40:39 +0800
-Message-Id: <20230721084039.9728-1-18500469033@163.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 21 Jul 2023 04:42:22 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD192D60
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:42:17 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fbf1f6c771so2678700e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:42:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689928936; x=1690533736;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=W6TNcuJ6KKeyZP2Qc4jlyhOYba3uwyITx3koQ5jSwOo=;
+        b=HXARkpRe+Woy704jzyCB1PGGko82xLt9OG7PhRKVf+T/dDXg/HTeom6C04EO5/KTSg
+         uYLQjum3/vFCHKVQR/H42P89Zp/H7rCobL+opuva5lCb6QODJZtrBr5CReJQt3lPWrD5
+         lLWX+0+ZvOmqlBw/qvFGk1Id30q4dTNFPr6hEvPjGk3QZkp0Py47WpAKQ/l2ewGR7MOu
+         gkxtsCSWZ9TYYIe4Z421Q1FxfjHKeyD8G2RorBxM+RSGqU/auqsWMhmL0AYVhcKUBZzC
+         dcBGpsNMQ6LpJ6pPfof+QKchRCWK+Gt7CtMGjuIK8PfhnA9t39mQspBKhPJumjSVwNJr
+         1p1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689928936; x=1690533736;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=W6TNcuJ6KKeyZP2Qc4jlyhOYba3uwyITx3koQ5jSwOo=;
+        b=ZqNK0rNhRPJk5sW2pD33lhRBqE8B8Hbk03bINTo+cdlceApcSi3Yz2zW8PUFRYmhIm
+         kx1lVXW+J0D0MgnCp1pEVVjC1lJv8bA+gB0VJ2nAa8I0QLZmsNJryStrz3rKiWJgN/Yr
+         pnoWzEctYDAYkVZhLYHjwqO8VESw6rf3Af/bd6wrWwUNyxQTVP/Kiz8zLbuZzeO1zaJX
+         MI4Nn/9jvMHKlB/VCo5lLe50NaS5JtLZ4bXXdjsw07Gi/U1QZPlHf1ssz9tkTl3B6Ylr
+         SgMMGZv3PNUd/3aWOymW4AhQxXYkI93GjXE2g6PSbDerKRWnH838sFhhN46BW5dWs4uX
+         /Lgw==
+X-Gm-Message-State: ABy/qLaZNuBZsM9xWWo6fglNEFbB5AOKcC3mwmEMFzWPl6PYpSIyAahq
+        fQD++xdjcOdOADaCiyuGv4mJ6g==
+X-Google-Smtp-Source: APBJJlGKtETxxAKILcgSa+Bf4sk10TjgrNYisDXsNrKRx2MGlhPI/YEZW67N87KY8IC80WmfTGivlQ==
+X-Received: by 2002:ac2:5225:0:b0:4f8:711b:18b0 with SMTP id i5-20020ac25225000000b004f8711b18b0mr866706lfl.3.1689928935769;
+        Fri, 21 Jul 2023 01:42:15 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id d15-20020a5d644f000000b003143c06135bsm3570899wrw.50.2023.07.21.01.42.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 01:42:15 -0700 (PDT)
+Message-ID: <5b9ceb0e-b7e4-d4b3-461e-c70f4a01fa5e@linaro.org>
+Date:   Fri, 21 Jul 2023 10:42:13 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wCXHEKcRLpk9jqAAw--.11481S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Cr47Cr15JrWUZr4DtF18Zrb_yoW8WFyxpF
-        4kAFy8JFWkWF4S9r18Cay8u3W5WwsxKay5K3429wn09FW3t34ruF1rAry5Cr95Ar4jyr17
-        tasxZ34Yg3yxCrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jhrcfUUUUU=
-X-Originating-IP: [114.253.21.2]
-X-CM-SenderInfo: jprykiiquwmiitt6il2tof0z/xtbBUR6zy1aEE9sfTwAAs9
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FROM_LOCAL_DIGITS,FROM_LOCAL_HEX,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 1/2] dt-bindings: display: add bindings for pcd8544
+ displays
+Content-Language: en-US
+To:     Viktar Simanenka <viteosen@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230720124026.356603-1-viteosen@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230720124026.356603-1-viteosen@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The usbfs interface does not provide any way to get specific
-superspeedplus rate, like Gen2x1, Gen1x2 or Gen2x2. Current
-API include an USBDEVFS_GET_SPEED ioctl, but it can only return
-general superspeedplus speed instead of any specific rates.
-Therefore we can't tell whether it's a Gen2x2(20Gbps) device.
+On 20/07/2023 14:40, Viktar Simanenka wrote:
+> Add device tree binding documentation for PCD8544 LCD display controller.
+> 
+> Signed-off-by: Viktar Simanenka <viteosen@gmail.com>
+> ---
+> v3:add a little more description to the exposed vendor properties
+>    add commit message finally
+> v2 link: https://lore.kernel.org/linux-devicetree/20230719154450.620410-1-viteosen@gmail.com/
+> 
+>  .../bindings/display/nxp,pcd8544.yaml         | 95 +++++++++++++++++++
+>  1 file changed, 95 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/nxp,pcd8544.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/nxp,pcd8544.yaml b/Documentation/devicetree/bindings/display/nxp,pcd8544.yaml
+> new file mode 100644
+> index 000000000000..bacdeff9776e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/nxp,pcd8544.yaml
+> @@ -0,0 +1,95 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/nxp,pcd8544.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Philips Semiconductors PCD8544 LCD Display Controller
+> +
+> +maintainers:
+> +  - Viktar Simanenka <viteosen@gmail.com>
+> +
+> +description: |
+> +  Philips Semiconductors PCD8544 LCD Display Controller with SPI control bus.
+> +  Designed to drive a graphic display of 48 rows and 84 columns,
+> +  such as Nokia 5110/3310 LCDs.
+> +
+> +allOf:
+> +  - $ref: panel/panel-common.yaml#
 
-This patch introduce a new ioctl USBDEVFS_GET_SSP_RATE to fix
-it. Similar information is already available via sysfs, it's
-good to add it for usbfs too.
+This is not a panel, is it?
 
-Signed-off-by: Dingyan Li <18500469033@163.com>
----
- drivers/usb/core/devio.c          | 3 +++
- include/uapi/linux/usbdevice_fs.h | 1 +
- 2 files changed, 4 insertions(+)
+> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> +
 
-diff --git a/drivers/usb/core/devio.c b/drivers/usb/core/devio.c
-index 1a16a8bdea60..2f57eb163360 100644
---- a/drivers/usb/core/devio.c
-+++ b/drivers/usb/core/devio.c
-@@ -2783,6 +2783,9 @@ static long usbdev_do_ioctl(struct file *file, unsigned int cmd,
- 	case USBDEVFS_GET_SPEED:
- 		ret = ps->dev->speed;
- 		break;
-+	case USBDEVFS_GET_SSP_RATE:
-+		ret = ps->dev->ssp_rate;
-+		break;
- 	case USBDEVFS_FORBID_SUSPEND:
- 		ret = proc_forbid_suspend(ps);
- 		break;
-diff --git a/include/uapi/linux/usbdevice_fs.h b/include/uapi/linux/usbdevice_fs.h
-index 74a84e02422a..f5522e910329 100644
---- a/include/uapi/linux/usbdevice_fs.h
-+++ b/include/uapi/linux/usbdevice_fs.h
-@@ -227,5 +227,6 @@ struct usbdevfs_streams {
- #define USBDEVFS_FORBID_SUSPEND    _IO('U', 33)
- #define USBDEVFS_ALLOW_SUSPEND     _IO('U', 34)
- #define USBDEVFS_WAIT_FOR_RESUME   _IO('U', 35)
-+#define USBDEVFS_GET_SSP_RATE      _IO('U', 36)
- 
- #endif /* _UAPI_LINUX_USBDEVICE_FS_H */
--- 
-2.25.1
+Best regards,
+Krzysztof
 
