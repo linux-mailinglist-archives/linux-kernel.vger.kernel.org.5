@@ -2,72 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4CB75C00A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD7D75C00F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbjGUHnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 03:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35868 "EHLO
+        id S231222AbjGUHob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 03:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbjGUHm5 (ORCPT
+        with ESMTP id S231179AbjGUHo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 03:42:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9746C273D;
-        Fri, 21 Jul 2023 00:42:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F2395610A6;
-        Fri, 21 Jul 2023 07:42:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 281CAC433C7;
-        Fri, 21 Jul 2023 07:42:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689925369;
-        bh=T4FJvDy9MkTw/qZktOip/VIoJ8vZ68JXARk3IFi5TeE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F5eRPMsF18CLkDAvMwcz44y0+muivNABdQoDv57UA1bvb4WEQJH+VW5EyRPL3LTAG
-         giC81RLaygveRtb50U43+Twj/5CbJF4cOOXp9D6myAib8Fl61savpy+spaSOEDZCsR
-         Z1OBe/9o5gPn8tWTvc8fgMULT+mGZZ/m3ll054/z4Wwm3KSxW7j5Xlw0VeOkikH3Z5
-         EhqsqQ3jRA4k5eIqvgoJiB43U4UynuX07sxfP4WBkOQiP6fI32TZB0MUUT75LHMsis
-         61WEGpIkt7RmNDfmCwFFJUAY4CQsraC9OHnT8Ni7MW4fBC4nLhXIw8r25AzGjvikuy
-         2zzA0qWBW67bw==
-Date:   Fri, 21 Jul 2023 15:42:46 +0800
-From:   Tzung-Bi Shih <tzungbi@kernel.org>
-To:     Rob Barnes <robbarnes@google.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Benson Leung <bleung@google.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the chrome-platform tree
-Message-ID: <ZLo29pYwDhKBLM2S@google.com>
-References: <20230720124611.45b25256@canb.auug.org.au>
- <ZLi/gg2HLgwt5JR3@google.com>
- <CA+Dqm31A6GNOpXB00X0aRd5TOpDgRAuTNh0Ce5YKm5EN+15gyg@mail.gmail.com>
+        Fri, 21 Jul 2023 03:44:28 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2127A2D6D
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 00:44:26 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R6hQT0VkLz4f3jJH
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:44:17 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP2 (Coremail) with SMTP id Syh0CgBnDetMN7pktBOOOQ--.2147S2;
+        Fri, 21 Jul 2023 15:44:14 +0800 (CST)
+Subject: Re: [PATCH 1/2] mm/compaction: correct comment of candidate pfn in
+ fast_isolate_freepages
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Baolin Wang <baolin.wang@linux.alibaba.com>
+References: <20230720115351.2039431-1-shikemeng@huaweicloud.com>
+ <20230720115351.2039431-2-shikemeng@huaweicloud.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <c9c8aa27-d1e0-3123-6767-31e94be89b91@huaweicloud.com>
+Date:   Fri, 21 Jul 2023 15:44:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+Dqm31A6GNOpXB00X0aRd5TOpDgRAuTNh0Ce5YKm5EN+15gyg@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230720115351.2039431-2-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: Syh0CgBnDetMN7pktBOOOQ--.2147S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Aw4rur1kZr18Ar15Gw4kJFb_yoW8JF4kpF
+        4DAa1UXwnrJa48Ca47Aa17ua47Xws3tF18Grs3G3yrAanag3s7u3s2qF45ur92vr9Yk3y2
+        vrZ2gF1Ut3yUZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 09:32:11AM -0600, Rob Barnes wrote:
-> The patch to fix this issue was submitted here:
-> https://lore.kernel.org/lkml/221b9a4a-275f-80a4-bba6-fb13a3beec0a@roeck-us.net/T/
-> 
-> However, it's looking unlikely that it will be accepted. So I think we
-> should revert a6edd5f5d9cc for now. Let me know if I need to submit a
-> revert patch?
+Hi Baolin, I try to resend a new v2 patchset, the patch 1 is still
+missing. Here is the patch 1 in old version and I find it in lore
+archive of lore.kernel.org with link [1].
+It's likely that patch 1 is denied by linux-mm.kvack.org but accepted
+by linux-kernel@vger.kernel.org. Is anyone know how to submit issue of
+linux-mm.kvack.org, please let know. Thanks!
 
-No, you don't need to send a revert patch.  I'll remove it from the queue
-if the symbol can't get exported for now.
+[1] https://lore.kernel.org/all/20230720115351.2039431-2-shikemeng@huaweicloud.com/
+
+on 7/20/2023 7:53 PM, Kemeng Shi wrote:
+> If no preferred one was not found, we will use candidate page with maximum
+> pfn > min_pfn which is saved in high_pfn. Correct "minimum" to "maximum
+> candidate" in comment.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  mm/compaction.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index eb1d3d9a422c..c0d8d08fc163 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1526,7 +1526,7 @@ static void fast_isolate_freepages(struct compact_control *cc)
+>  				break;
+>  		}
+>  
+> -		/* Use a minimum pfn if a preferred one was not found */
+> +		/* Use a maximum candidate pfn if a preferred one was not found */
+>  		if (!page && high_pfn) {
+>  			page = pfn_to_page(high_pfn);
+>  
+> 
+
+-- 
+Best wishes
+Kemeng Shi
+
