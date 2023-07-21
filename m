@@ -2,95 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC3375C0E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467D475C0EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbjGUIJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
+        id S231383AbjGUIKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbjGUIJY (ORCPT
+        with ESMTP id S230100AbjGUIKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:09:24 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D478270A
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:09:03 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R6hyz08MHzBRDtd
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:08:59 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689926938; x=1692518939; bh=WO9OesZJO0OZ3dsby1KjHp/40kA
-        D6UC7sDZL2hJgxPc=; b=p0gIqxroMQbD1Utj1eUX2BjWiJti+USbKUbMZkijnWM
-        9tctpkViEDJ0IHc4RH9qMF2bOiPRE00KhjXXsjWEb0w5CzqK08Oa97KNk1DotJ30
-        kZeXGeCpkP/AudHL3OeKd2HGNWALhGrA4DY3IabK9tMsGFoARbL0psJSo7uP5bzp
-        EwIODa/bzkMe7JwkH6m013ag81waP0erILZoFJVZl0M538S2ABNxjIB9sjiOqZQg
-        D/EG0hagQzArr5XLrQxXWDgTn46P3N46Z4pGGUUhU04cWQ2v0eqHVDv30JX+co2M
-        6gKfpKW/gjY/AScM+WIHIGKfc7CqEoBFW57wRfnqeBg==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id TI6c0U1uA2HH for <linux-kernel@vger.kernel.org>;
-        Fri, 21 Jul 2023 16:08:58 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R6hyy4ctCzBRDs4;
-        Fri, 21 Jul 2023 16:08:58 +0800 (CST)
+        Fri, 21 Jul 2023 04:10:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B11B2706;
+        Fri, 21 Jul 2023 01:10:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7142661713;
+        Fri, 21 Jul 2023 08:10:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44D74C43395;
+        Fri, 21 Jul 2023 08:10:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689927030;
+        bh=JltdfULPxWz8Dlw+w3aZFp6VjNTiHDJDfEr7o9YRNs4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=niUdYILFYdemwUU0w/emWHL8ztgfvInBdEat9aHRd7SwlIqHTIeGzYpF174Vi6V5L
+         n9CCNBAXoQ2aO/p0ys56jYcNJBD6A0PPXHRHEu6Na3ezoZgAEn+/JeHdqTZSyanaBC
+         dUuf/2m/ZbvUz1gulF37zc0XJIA9CtYOguQU0AqGBuXXOvoqXVDiWRio59rmzkGcAI
+         zD/SFytbZB0b9twHz38q/BkleTqEiW9Vfh0c0hb4pN5iqXVl62t7tY6CIX4odkkvzZ
+         laeC+dmsdiHQsF1Av48sXPL1cOfNCMnjzGcdDWli/IK9oQ1dD+A8AIRqZDqAmR8ie1
+         pkvdh3FvzASwA==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qMlDi-0003M5-2u;
+        Fri, 21 Jul 2023 10:10:38 +0200
+Date:   Fri, 21 Jul 2023 10:10:38 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com, quic_harshq@quicinc.com,
+        ahalaney@redhat.com, quic_shazhuss@quicinc.com
+Subject: Re: [PATCH v9 01/10] dt-bindings: usb: qcom,dwc3: Add bindings for
+ SC8280 Multiport
+Message-ID: <ZLo9flzTCha5iU-K@hovoldconsulting.com>
+References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
+ <20230621043628.21485-2-quic_kriskura@quicinc.com>
+ <ZJrGG6FXWLacRLbg@hovoldconsulting.com>
+ <ZJsCf3nYrikF7nZc@hovoldconsulting.com>
+ <548e35a7-984d-a62f-ea4b-a5aeace8009a@quicinc.com>
 MIME-Version: 1.0
-Date:   Fri, 21 Jul 2023 08:08:58 +0000
-From:   sunran001@208suo.com
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/head: "foo * bar" should be "foo *bar"
-In-Reply-To: <20230721080703.5724-1-xujianghui@cdjrlc.com>
-References: <20230721080703.5724-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <f7ca9b619b85ea1c2a07a045197f92bd@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <548e35a7-984d-a62f-ea4b-a5aeace8009a@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: "foo * bar" should be "foo *bar"
+On Mon, Jul 03, 2023 at 12:41:59AM +0530, Krishna Kurapati PSSNV wrote:
+> On 6/27/2023 9:08 PM, Johan Hovold wrote:
+> > On Tue, Jun 27, 2023 at 01:20:59PM +0200, Johan Hovold wrote:
+> >> On Wed, Jun 21, 2023 at 10:06:19AM +0530, Krishna Kurapati wrote:
+> > 
+> >>> +          items:
+> >>> +            - const: dp1_hs_phy_irq
+> >>> +            - const: dm1_hs_phy_irq
+> >>> +            - const: dp2_hs_phy_irq
+> >>> +            - const: dm2_hs_phy_irq
+> >>> +            - const: dp3_hs_phy_irq
+> >>> +            - const: dm4_hs_phy_irq
+> >>> +            - const: dp4_hs_phy_irq
+> >>> +            - const: dm4_hs_phy_irq
+> >>> +            - const: ss1_phy_irq
+> >>> +            - const: ss2_phy_irq
+> >>> +            - const: pwr_event_1
+> >>> +            - const: pwr_event_2
+> >>> +            - const: pwr_event_3
+> >>> +            - const: pwr_event_4
+> >>
+> >> The naming here is inconsistent and interrupts should not have "_irq"
+> >> suffixes (even if some of the current ones do for historical reasons).
+> >>
+> >> I believe these should be named
+> >>
+> >> 	pwr_event_1
+> >> 	dp_hs_phy_1
+> >> 	dm_hs_phy_1
+> >> 	ss_phy_1
+> >>
+> >> 	pwr_event_2
+> >> 	dp_hs_phy_2
+> >> 	dm_hs_phy_2
+> >> 	ss_phy_2
+> >>
+> >> 	pwr_event_3
+> >> 	dp_hs_phy_3
+> >> 	dm_hs_phy_3
+> >>
+> >> 	pwr_event_4
+> >> 	dp_hs_phy_4
+> >> 	dm_hs_phy_4
+> >>
+> >> or similar and be grouped by port while using the the
+> >> qcom,sc8280xp-dwc ordering for the individual lines.
+> > 
+> > Perhaps the ordering you suggested is fine too, but I'd probably move
+> > the pwr_event ones first to match qcom,sc8280xp-dwc then, that is:
+> > 
+> >   	pwr_event_1
+> >   	pwr_event_2
+> >   	pwr_event_3
+> >   	pwr_event_4
+> >   	dp_hs_phy_1
+> >   	dm_hs_phy_1
+> >   	dp_hs_phy_2
+> >   	dm_hs_phy_2
+> >   	dp_hs_phy_3
+> >   	dm_hs_phy_3
+> >   	dp_hs_phy_4
+> >   	dm_hs_phy_4
+> >   	ss_phy_1
+> >   	ss_phy_2
+> > 
+> > so we have them grouped as pwr_event followed by HS and with SS last.
+> > 
+> >> Side note: Please note how the above interrupt properties can also be
+> >> used to infer the number of HS and SS ports.
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  arch/x86/kernel/head64.c | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
+> Can't we just cleanup all at once later ? Might not be a good idea for 
+> some properties in the file to have _irq and for some to not have it. I 
+> will modify the order though.
 
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index 49f7629b17f7..20d35bfd70af 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -445,7 +445,7 @@ static unsigned long get_cmd_line_ptr(void)
+No, DT bindings generally need to be as correct as possible from the
+start as they form an ABI. So please drop the _irq suffix from all of
+the new indexed names.
 
-  static void __init copy_bootdata(char *real_mode_data)
-  {
--	char * command_line;
-+	char *command_line;
-  	unsigned long cmd_line_ptr;
-
-  	/*
-@@ -471,7 +471,7 @@ static void __init copy_bootdata(char 
-*real_mode_data)
-  	sme_unmap_bootdata(real_mode_data);
-  }
-
--asmlinkage __visible void __init __noreturn x86_64_start_kernel(char * 
-real_mode_data)
-+asmlinkage __visible void __init __noreturn x86_64_start_kernel(char 
-*real_mode_data)
-  {
-  	/*
-  	 * Build-time sanity checks on the kernel image and module
+Johan
