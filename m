@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2812375D79F
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7015375D7A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbjGUWnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 18:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43616 "EHLO
+        id S230479AbjGUWnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 18:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjGUWnl (ORCPT
+        with ESMTP id S230454AbjGUWnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 18:43:41 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F8B3A86
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:43:40 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c386ccab562so2291707276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:43:40 -0700 (PDT)
+        Fri, 21 Jul 2023 18:43:43 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184BC3A86
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:43:42 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b89e3715acso14187345ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:43:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689979420; x=1690584220;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k+6O0YIMwG1cwBx+yYV4PQs65NLJ69q60H268QBXqI0=;
-        b=hmJMFyMKavzdB4iyndVgPr3+n37+SAXDovr5+nwV08bJvHRSThf7MgLO5tdEtXSw1f
-         XerzxiovVN3R3vbNCqIs1AMT3AOBNTdS4HAaKfLSdFOBTA38exP9T8k6/7ptO1WlonGU
-         BOcWk42elFAzngve5Kof4BIfMYRPoZenXrRT+vQUnl4Uf748v/GhfP3men3MTLu6DmSc
-         LxigsC514xYQheWPgEZQwWHwvGhRWgriUmOGC9KudeqiG0XyR8RPORBSkK0wwOQmrgOf
-         So/EdWTFLymWYtNDT48BlqeFFsMeY9Q7SUJosljJ9DlATtDenzYWqmZEZx1ltL/aT3z1
-         vU+A==
+        d=google.com; s=20221208; t=1689979421; x=1690584221;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=EqN+mkVwiz0JYePPsvbJE9Of00MhnNzfwNJUrTtqx34=;
+        b=uPbc6qjTF+37bLOVeLN5oBf/3QUeWpvQQj3Os3hzKIn+9w+stgDfD/wRvHH6vvS1vz
+         Jdb1/CGaRKexplycNPtMGXN+Tg/RyJbt630Xs8IeS3SMFNv5PCsghbo+kYJFygNjCFpF
+         sVNhgSsW83NY1COiSao1pWUPh1AtIrckRNYwIAGc+050XIyJvUElwzdbPqwTGeusV0wO
+         MmoVQyd6hZXWLdmSuWxhFzejY1yhd7tNiH5rpZy3iuO0rqNdjsPMj90Dn4Tac+hSKGnn
+         8AHG8NIUVhg6+9rueuzf1vrfPuAWZzW4D3IejKxilXlQAwYf9OjIQqNCdXkMDdc9uB2Q
+         IB8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689979420; x=1690584220;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k+6O0YIMwG1cwBx+yYV4PQs65NLJ69q60H268QBXqI0=;
-        b=HXxIsSp0oR4HFW5sNZIRoVIMoYyadNP3EtYnL42VPEEF0KxNyeTV1NBvsNNCHWo/m8
-         kHNErJjh3MJg9a6u08ihP/IL1yvrxaXNc7vmY13oxPCdX5+WI7LB9CSLeL768IbdK2cI
-         5X8Oo9ZXaJisUG0kwZnxsywGzEiu3Z1NRQLDv+lrLrxJ0ZUMoD09mA82ce72uSFHXTrJ
-         NS6VmfOhGnZNIc+wK81kwFn3v4x87PwLGYx+K911FS3nyuLuxZ0mKTDSvhKNIuf2iRuZ
-         Szm69ue9v1sA9LyYBMP5aYt9ccZwr9Hy3ZwgrZl8bgIs3T+kgbcrcQ2SrtD/oWuYakpm
-         vNnw==
-X-Gm-Message-State: ABy/qLZaKiYKEMnWUKFtISN0hUVBbsYGxrmihdcHNlJIg/CDdZXMhJB7
-        673qUruVoH67bL0UhF0KbAsOnzp8hew=
-X-Google-Smtp-Source: APBJJlH4nH1apLt9lOCybEoth1zmYiXMKQfwt/TGh1u8/BUf6F1PQtJ0c2/w8q0sUs7E+P7quD6OQImNAds=
+        d=1e100.net; s=20221208; t=1689979421; x=1690584221;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EqN+mkVwiz0JYePPsvbJE9Of00MhnNzfwNJUrTtqx34=;
+        b=dW69igaIjmICSUFNCKQ+z5NFWJs4uG9eRy1nrwqbkjomzP+ibc1aIsGdjyDQXKZOeg
+         6PMpCXyq0h9Z7sR9aSALBnK/3YL0tSiZz/QAo8gzRDBEYQL3AaBFD3l2hSJ27UVDy0LE
+         otQdEZG9dWhnDeuGv7MAY9jlUl6Vysk0+O2jlqdD22ZJmiBUEb0sqGox13i/Kq9bNafH
+         SFgibSHTPTxjM9q8T9MR0Qrot2+3AIaKkKrrq6oHbkbjUR80YmcQBMZqP5bhk/K7mcmp
+         x9+R+fmqOrTAy3ILmc9twWB6PGHWvF/DShnstM7Joftrn2VLlz6kC57YRWuxjc4wTOQB
+         BMeQ==
+X-Gm-Message-State: ABy/qLZTuGL7qc3P9K0vuAdonxv+vaHxE4FJDkM6bDDnPNhCkaI/zwOw
+        QAWnUyvwXwwMrnpIq84Kz6CKTDje33Q=
+X-Google-Smtp-Source: APBJJlGxj6qSv326g8m5rQzyp+BHE+VykBcM7ioa5QFILiq54tA6coBcY4UbtZwO/j7CN0cMbdg2fYkn1PA=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:24a:b0:cea:fb07:7629 with SMTP id
- k10-20020a056902024a00b00ceafb077629mr22978ybs.10.1689979419845; Fri, 21 Jul
- 2023 15:43:39 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:903:32cd:b0:1a6:4ce8:3ed5 with SMTP id
+ i13-20020a17090332cd00b001a64ce83ed5mr12524plr.4.1689979421568; Fri, 21 Jul
+ 2023 15:43:41 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 21 Jul 2023 15:43:35 -0700
+Date:   Fri, 21 Jul 2023 15:43:36 -0700
+In-Reply-To: <20230721224337.2335137-1-seanjc@google.com>
 Mime-Version: 1.0
+References: <20230721224337.2335137-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230721224337.2335137-1-seanjc@google.com>
-Subject: [PATCH 0/2] KVM: x86: Acquire SRCU in fastpath handler
+Message-ID: <20230721224337.2335137-2-seanjc@google.com>
+Subject: [PATCH 1/2] KVM: x86: Acquire SRCU read lock when handling fastpath
+ MSR writes
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -70,32 +74,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acquire SRCU for read when handling fastpath MSR writes so that side
-effects like
+Temporarily acquire kvm->srcu for read when potentially emulating WRMSR in
+the VM-Exit fastpath handler, as several of the common helpers used during
+emulation expect the caller to provide SRCU protection.  E.g. if the guest
+is counting instructions retired, KVM will query the PMU event filter when
+stepping over the WRMSR.
 
-Note, the PMU case could (and should) also be fixed by making the PMU
-filter code smarter, e.g. by snapshotting which PMC events need to be
-emulated, thus avoiding the filter lookup entirely.  But acquiring SRCU
-is relatively cheap, and this isn't the first bug of this nature.
+  dump_stack+0x85/0xdf
+  lockdep_rcu_suspicious+0x109/0x120
+  pmc_event_is_allowed+0x165/0x170
+  kvm_pmu_trigger_event+0xa5/0x190
+  handle_fastpath_set_msr_irqoff+0xca/0x1e0
+  svm_vcpu_run+0x5c3/0x7b0 [kvm_amd]
+  vcpu_enter_guest+0x2108/0x2580
 
-Which is a perfect segue into patch 2, which reverts a hack-a-fix to
-fudge around SVM needing to do the front half of emulation when skipping
-the WRMSR.
+Alternatively, check_pmu_event_filter() could acquire kvm->srcu, but this
+isn't the first bug of this nature, e.g. see commit 5c30e8101e8d ("KVM:
+SVM: Skip WRMSR fastpath on VM-Exit if next RIP isn't valid").  Providing
+protection for the entirety of WRMSR emulation will allow reverting the
+aforementioned commit, and will avoid having to play whack-a-mole when new
+uses of SRCU-protected structures are inevitably added in common emulation
+helpers.
 
-Note #2, the fastpath also doesn't honor the MSR filter for TSC_DEADLINE.
-That's a problem for another day.
+Fixes: dfdeda67ea2d ("KVM: x86/pmu: Prevent the PMU from counting disallowed events")
+Reported-by: Greg Thelen <gthelen@google.com>
+Reported-by: Aaron Lewis <aaronlewis@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/x86.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Sean Christopherson (2):
-  KVM: x86: Acquire SRCU read lock when handling fastpath MSR writes
-  Revert "KVM: SVM: Skip WRMSR fastpath on VM-Exit if next RIP isn't
-    valid"
-
- arch/x86/kvm/svm/svm.c | 10 ++--------
- arch/x86/kvm/x86.c     |  4 ++++
- 2 files changed, 6 insertions(+), 8 deletions(-)
-
-
-base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index a6b9bea62fb8..8c073a4af484 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -2172,6 +2172,8 @@ fastpath_t handle_fastpath_set_msr_irqoff(struct kvm_vcpu *vcpu)
+ 	u64 data;
+ 	fastpath_t ret = EXIT_FASTPATH_NONE;
+ 
++	kvm_vcpu_srcu_read_lock(vcpu);
++
+ 	switch (msr) {
+ 	case APIC_BASE_MSR + (APIC_ICR >> 4):
+ 		data = kvm_read_edx_eax(vcpu);
+@@ -2194,6 +2196,8 @@ fastpath_t handle_fastpath_set_msr_irqoff(struct kvm_vcpu *vcpu)
+ 	if (ret != EXIT_FASTPATH_NONE)
+ 		trace_kvm_msr_write(msr, data);
+ 
++	kvm_vcpu_srcu_read_unlock(vcpu);
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(handle_fastpath_set_msr_irqoff);
 -- 
 2.41.0.487.g6d72f3e995-goog
 
