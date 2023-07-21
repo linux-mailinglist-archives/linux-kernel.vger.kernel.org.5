@@ -2,83 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4586075BC1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 04:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0022D75BC53
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 04:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbjGUCH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 22:07:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
+        id S230085AbjGUCe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 22:34:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbjGUCH1 (ORCPT
+        with ESMTP id S229637AbjGUCey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 22:07:27 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B96271E;
-        Thu, 20 Jul 2023 19:07:26 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36L154we024025;
-        Fri, 21 Jul 2023 02:07:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=2LIetupMAQJQnMu0hUDiPUgD3wAu9tzAiyhRlJLpumA=;
- b=V6P279rqKTb0nLRFFphReWVu8V1cq/atP4Wp5Ifx33o9XfsG6M9pUkIBqC5XJ6pmpINF
- uEcKZ10MQUmTz+NZJ7yq44sqGPvkp39upU/FQ5BY4jnMzK3k7X8hwwLsPwcFALwW6mdB
- OrUA6UvRl2J+GpQ+QVdQIL+PXR2Rz0Hjyc5+std/RvBOWGEHiZ2SmuU1FIdRDJ3JsiBd
- KgmgknSp9Xvhl0O04MD5WhQCrbrm/DsmAKwH1dTK99KQBW/ojjdJMCr5Vp+2ylCZM0lw
- Emf0nDw7shT4wuQPFWGrfvPwuLp8ZDC+sTJnQiZLnruT4OkYFqrqUuxOq4bOufND8Cqm Qw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rxpyquav0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 02:07:22 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36L27LWJ003884
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 02:07:21 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
- 2023 19:07:17 -0700
-Message-ID: <5f070181-96cc-b8be-810f-f9ec8e55fbce@quicinc.com>
-Date:   Fri, 21 Jul 2023 10:07:15 +0800
+        Thu, 20 Jul 2023 22:34:54 -0400
+X-Greylist: delayed 896 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 20 Jul 2023 19:34:52 PDT
+Received: from mail-m11876.qiye.163.com (mail-m11876.qiye.163.com [115.236.118.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F40D211B;
+        Thu, 20 Jul 2023 19:34:52 -0700 (PDT)
+Received: from [172.16.12.69] (unknown [58.22.7.114])
+        by mail-m11876.qiye.163.com (Hmail) with ESMTPA id B6C3D3C0985;
+        Fri, 21 Jul 2023 10:09:18 +0800 (CST)
+Message-ID: <6f1eb449-5609-0b17-1323-0d114c38d969@rock-chips.com>
+Date:   Fri, 21 Jul 2023 10:09:18 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] arm64: dts: qcom: Add base SM4450 QRD DTS
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC:     <quic_tsoni@quicinc.com>, <quic_shashim@quicinc.com>,
-        <quic_kaushalk@quicinc.com>, <quic_tdas@quicinc.com>,
-        <quic_tingweiz@quicinc.com>, <quic_aiquny@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230719100135.21325-1-quic_tengfan@quicinc.com>
- <20230719100135.21325-3-quic_tengfan@quicinc.com>
- <484822a3-939f-599d-434c-38f7a560a015@linaro.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <484822a3-939f-599d-434c-38f7a560a015@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     shawn.lin@rock-chips.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        helgaas@kernel.org, imx@lists.linux.dev, bhelgaas@google.com,
+        devicetree@vger.kernel.org, gustavo.pimentel@synopsys.com,
+        kw@linux.com, leoyang.li@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, minghuan.lian@nxp.com,
+        mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
+        shawnguo@kernel.org, zhiqiang.hou@nxp.com
+Subject: Re: [PATCH v3 1/2] PCI: dwc: Implement general suspend/resume
+ functionality for L2/L3 transitions
+Content-Language: en-GB
+To:     Manivannan Sadhasivam <mani@kernel.org>,
+        Frank Li <Frank.li@nxp.com>
+References: <20230419164118.596300-1-Frank.Li@nxp.com>
+ <20230717164526.GC35455@thinkpad>
+ <ZLWKI1lRqxejfUgK@lizhi-Precision-Tower-5810>
+ <20230718100400.GB4771@thinkpad> <20230720142509.GB48270@thinkpad>
+ <ZLlGsM/D/b+udmAD@lizhi-Precision-Tower-5810>
+ <20230720160738.GC48270@thinkpad>
+From:   Shawn Lin <shawn.lin@rock-chips.com>
+In-Reply-To: <20230720160738.GC48270@thinkpad>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Y4MPLe3WJ41zINT5WSPwepOL8WwCxHqN
-X-Proofpoint-ORIG-GUID: Y4MPLe3WJ41zINT5WSPwepOL8WwCxHqN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-20_12,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=726 malwarescore=0 phishscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 bulkscore=0 spamscore=0 priorityscore=1501
- suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307210017
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGRoZTVYaS0xOTE4YSEtDH0pVEwETFh
+        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSkpLSEpMVUpLS1VLWQ
+        Y+
+X-HM-Tid: 0a89763569f62eb2kusnb6c3d3c0985
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OSI6Hzo4FD1NSAJCORIRQk5C
+        OUkKCTxVSlVKTUNCQktOSE5CQ0NCVTMWGhIXVQgTGgwVVRcSFTsJFBgQVhgTEgsIVRgUFkVZV1kS
+        C1lBWU5DVUlJVUxVSkpPWVdZCAFZQU5PQ0w3Bg++
+X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -86,65 +69,81 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-在 7/19/2023 6:17 PM, Dmitry Baryshkov 写道:
-> On 19/07/2023 13:01, Tengfei Fan wrote:
->> Add DTS for Qualcomm QRD platform which uses SM4450 SoC.
+On 2023/7/21 0:07, Manivannan Sadhasivam wrote:
+> On Thu, Jul 20, 2023 at 10:37:36AM -0400, Frank Li wrote:
+>> On Thu, Jul 20, 2023 at 07:55:09PM +0530, Manivannan Sadhasivam wrote:
+>>> On Tue, Jul 18, 2023 at 03:34:26PM +0530, Manivannan Sadhasivam wrote:
+>>>> On Mon, Jul 17, 2023 at 02:36:19PM -0400, Frank Li wrote:
+>>>>> On Mon, Jul 17, 2023 at 10:15:26PM +0530, Manivannan Sadhasivam wrote:
+>>>>>> On Wed, Apr 19, 2023 at 12:41:17PM -0400, Frank Li wrote:
+>>>>>>> Introduced helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
+>>>>>>> Added API pme_turn_off and exit_from_l2 for managing L2/L3 state transitions.
+>>>>>>>
+>>>>>>> Typical L2 entry workflow:
+>>>>>>>
+>>>>>>> 1. Transmit PME turn off signal to PCI devices.
+>>>>>>> 2. Await link entering L2_IDLE state.
+>>>>>>
+>>>>>> AFAIK, typical workflow is to wait for PME_To_Ack.
+>>>>>
+>>>>> 1 Already wait for PME_to_ACK,  2, just wait for link actual enter L2.
+>>>>> I think PCI RC needs some time to set link enter L2 after get ACK from
+>>>>> PME.
+>>>>>
+>>>
+>>> One more comment. If you transition the device to L2/L3, then it can loose power
+>>> if Vaux was not provided. In that case, can all the devices work after resume?
+>>> Most notably NVMe?
 >>
->> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/Makefile       |  1 +
->>   arch/arm64/boot/dts/qcom/sm4450-qrd.dts | 18 ++++++++++++++++++
->>   2 files changed, 19 insertions(+)
->>   create mode 100644 arch/arm64/boot/dts/qcom/sm4450-qrd.dts
+>> I have not hardware to do such test, NVMe driver will reinit everything after
+>> resume if no L1.1\L1.2 support. If there are L1.1\L1.2, NVME expect it leave
+>> at L1.2 at suspend to get better resume latency.
 >>
->> diff --git a/arch/arm64/boot/dts/qcom/Makefile 
->> b/arch/arm64/boot/dts/qcom/Makefile
->> index 337abc4ceb17..a0cfd37e674b 100644
->> --- a/arch/arm64/boot/dts/qcom/Makefile
->> +++ b/arch/arm64/boot/dts/qcom/Makefile
->> @@ -215,3 +215,4 @@ dtb-$(CONFIG_ARCH_QCOM)    += 
->> sm8450-sony-xperia-nagara-pdx223.dtb
->>   dtb-$(CONFIG_ARCH_QCOM)    += sm8450-sony-xperia-nagara-pdx224.dtb
->>   dtb-$(CONFIG_ARCH_QCOM)    += sm8550-mtp.dtb
->>   dtb-$(CONFIG_ARCH_QCOM)    += sm8550-qrd.dtb
->> +dtb-$(CONFIG_ARCH_QCOM)    += sm4450-qrd.dtb
 > 
-> You guess, this should be sorted.
-sure, will resorted.
+> To be precise, NVMe driver will shutdown the device if there is no ASPM support
+> and keep it in low power mode otherwise (there are other cases as well but we do
+> not need to worry).
 > 
->> diff --git a/arch/arm64/boot/dts/qcom/sm4450-qrd.dts 
->> b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
->> new file mode 100644
->> index 000000000000..851a6761a6ea
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
->> @@ -0,0 +1,18 @@
->> +// SPDX-License-Identifier: BSD-3-Clause
->> +/*
->> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights 
->> reserved.
->> + */
->> +
->> +/dts-v1/;
->> +
->> +#include "sm4450.dtsi"
->> +/ {
->> +    model = "Qualcomm Technologies, Inc. SM4450 QRD";
->> +    compatible = "qcom,sm4450-qrd", "qcom,sm4450";
->> +
->> +    aliases { };
->> +
->> +    chosen {
->> +        bootargs = " ";
+> But here you are not checking for ASPM state in the suspend path, and just
+> forcing the link to be in L2/L3 (thereby D3Cold) even though NVMe driver may
+> expect it to be in low power state like ASPM/APST.
 > 
-> Do you need this?
-V2 patch will remove bootargs = " ".
-> 
->> +    };
->> +};
+> So you should only put the link to L2/L3 if there is no ASPM support. Otherwise,
+> you'll ending up with bug reports when users connect NVMe to it.
 > 
 
--- 
-Thx and BRs,
-Tengfei Fan
+
+At this topic, it's very interesting to look at
+
+drivers/pci/controller/dwc/pcie-tegra194.c
+
+
+static int tegra_pcie_dw_suspend_noirq(struct device *dev)
+{
+         struct tegra_pcie_dw *pcie = dev_get_drvdata(dev);
+
+         if (!pcie->link_state)
+                 return 0;
+
+         tegra_pcie_downstream_dev_to_D0(pcie);
+         tegra_pcie_dw_pme_turnoff(pcie);
+         tegra_pcie_unconfig_controller(pcie);
+
+         return 0;
+}
+
+It brings back all the downstream components to D0, as I assumed it was 
+L0 indeed, before sending PME aiming to enter L2.
+
+> - Mani
+> 
+>> This API help remove duplicate codes and it can be improved gradually.
+>>
+>>
+>>>
+>>> - Mani
+>>>
+>>>
+>>> -- 
+>>> மணிவண்ணன் சதாசிவம்
+> 
