@@ -2,81 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4100475C312
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D029775C318
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbjGUJak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:30:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
+        id S230297AbjGUJcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjGUJai (ORCPT
+        with ESMTP id S229557AbjGUJcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:30:38 -0400
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86442D7E
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:30:37 -0700 (PDT)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3a4511fed86so4117683b6e.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:30:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689931837; x=1690536637;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fYejIZlDiZxhZWChNwFaBtexUzMMfkDxTXb2Y1FEkHg=;
-        b=aeUmJmsbUivKTZYMp8brMhN8RKjB0mBJl2fnRPmIWFV8cvE8i0AE585eVLynkpCveD
-         y1OxFVeTmq6CtRl6taQVw7zo06SjyD4wUqTQhjvQjDBBY8RYiAgTi4RuDmG7lhEvXHOb
-         m1o15bcZjERE3r3S5VFIFDe+b27Z0ExZGsjKVJ50Ah+89jFrBfoPhMpa5l7PgCKWumpW
-         Re1o8HFrq4ekDPjeKNdwl+DnvpquKJ1GznnnxAi1KwFbTvmKdmTm/PL+3e9RIRpFC93N
-         62NTsQGNrzDl7SuczxE8CVm0lKwyi/oSqCPRAtaVHGrvKVtfKDdBS7QkbqtY7Eyd2AzE
-         OXKA==
-X-Gm-Message-State: ABy/qLZKwWhNassxRk5whU7HhkZtDbt0NqfcnsA/bo3Kl7lVSUBh/coe
-        ophdjPpZL4keQ3iwYuKWc5IEh/VfL53AWohAGoXfSh6bbI4A
-X-Google-Smtp-Source: APBJJlFDohVTJfAd1FYWPW8XraQSiXjvwSpHJQgmUPh6MBS1fvzkU8eFzD4PzIFZjbfULEH/Pdyc6aYvqovHckTC/eNLCF0q9OOW
+        Fri, 21 Jul 2023 05:32:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E54C2726;
+        Fri, 21 Jul 2023 02:32:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 32A08618F6;
+        Fri, 21 Jul 2023 09:32:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86B70C433C8;
+        Fri, 21 Jul 2023 09:32:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689931966;
+        bh=YnSBdEfhfwyPTob8o+YeKHNKwCLCsg52ACNTrnl53hs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H0ylFNrTrB4uesmyrEKXEGkYMSZ2f8t8VdDglN/EMmvrD/imb5jEYlbzLKDabH5+k
+         sLUEs8LJMtB+j46r8tEMB8Dfjd6mrSWcoqSc3f79PGXKZPDRUH75FK4d1BZYK1KJ2C
+         vBO3bMEfuXUXaX6V4jmpgPv2maqFOAUQtpRbjBHNEU/Gz4m0c6S4czZd/XeowoVLWq
+         eoC3LGOjDKMXYyU74PYhZvIGjUavrYSVMdTjIt+zHIIRJBIe8yVnf1VaoN4oIJPjxM
+         ULEbUdd/8oX5q+2LaEZwAkuZcxzWL/i6KX/pzAgBekvwUVWvD9fpiML3QrIZIUhzjM
+         lCLdDM34zBPCg==
+Date:   Fri, 21 Jul 2023 10:32:41 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v8 0/9] Add STG/ISP/VOUT clock and reset drivers for
+ StarFive JH7110
+Message-ID: <20230721-copier-mystify-311b6367f5f8@spud>
+References: <20230713113902.56519-1-xingyu.wu@starfivetech.com>
+ <20230720-enjoyment-gestation-adb8baa9aaf1@spud>
+ <8794c997-f371-70f8-2462-a6c677e7308c@starfivetech.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1b0b:b0:3a0:3d3c:1f03 with SMTP id
- bx11-20020a0568081b0b00b003a03d3c1f03mr3750837oib.11.1689931837171; Fri, 21
- Jul 2023 02:30:37 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 02:30:37 -0700
-In-Reply-To: <000000000000c11ed40600e994b1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d96eec0600fbea8f@google.com>
-Subject: Re: [syzbot] [ext4?] general protection fault in ep_poll_callback
-From:   syzbot <syzbot+c2b68bdf76e442836443@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, brauner@kernel.org, bvanassche@acm.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Da+Ai98mJJBdPIk8"
+Content-Disposition: inline
+In-Reply-To: <8794c997-f371-70f8-2462-a6c677e7308c@starfivetech.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
 
-commit a0b0fd53e1e67639b303b15939b9c653dbe7a8c4
-Author: Bart Van Assche <bvanassche@acm.org>
-Date:   Thu Feb 14 23:00:46 2019 +0000
+--Da+Ai98mJJBdPIk8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-    locking/lockdep: Free lock classes that are no longer in use
+On Fri, Jul 21, 2023 at 02:41:56PM +0800, Xingyu Wu wrote:
+> On 2023/7/21 0:32, Conor Dooley wrote:
+> > On Thu, Jul 13, 2023 at 07:38:53PM +0800, Xingyu Wu wrote:
+> >> This patch serises are base on the basic JH7110 SYSCRG/AONCRG
+> >> drivers and add new partial clock drivers and reset supports
+> >> about System-Top-Group(STG), Image-Signal-Process(ISP)
+> >> and Video-Output(VOUT) for the StarFive JH7110 RISC-V SoC. These
+> >> clocks and resets could be used by DMA, VIN and Display modules.
+> >>=20
+> >> Patches 1 and 2 are about the System-Top-Group clock and reset
+> >> generator(STGCRG) part. The first patch adds docunmentation to
+> >> describe STG bindings, and the second patch adds clock driver to
+> >> support STG clocks and resets as auxiliary device for JH7110.
+> >>=20
+> >> Patches 3 and 4 are about the Image-Signal-Process clock and reset
+> >> gennerator(ISPCRG) part. The first patch adds docunmentation to
+> >> describe ISP bindings, and the second patch adds clock driver to
+> >> support ISP clocks and resets as auxiliary device for JH7110.
+> >> And ISP clocks should power on and enable the SYSCRG clocks first
+> >> before registering.
+> >>=20
+> >> Patches 5 and 6 are about the Video-Output clock and reset
+> >> generator(VOUTCRG) part. The first patch adds docunmentation to
+> >> describe VOUT bindings, and the second patch adds clock driver to
+> >> support VOUT clocks and resets as auxiliary device for JH7110.
+> >> And VOUT clocks also should power on and enable the SYSCRG clocks
+> >> first before registering.
+> >>=20
+> >> Patch 7 adds struct members to support STG/ISP/VOUT resets.
+>=20
+> BTW, I found this patch is not in the linux-next or clk-next.
+> These STG/ISP/VOUT CRG drivers are 'incomplete' without this resets patch.
+> I don't know what your plans about this patch and I'm just curious on it.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16c0c84ea80000
-start commit:   bfa3037d8280 Merge tag 'fuse-update-6.5' of git://git.kern..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15c0c84ea80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11c0c84ea80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=27e33fd2346a54b
-dashboard link: https://syzkaller.appspot.com/bug?extid=c2b68bdf76e442836443
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111c904ea80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=116b0faaa80000
+Oh. I mistakenly thought that this was a standalone reset controller
+patch that Philipp could take, but now I see it depends on the=20
+dt-binding headers added by this series.
+Maybe you could resend it by itself, and Stephen could pick it into
+clk-next?
 
-Reported-by: syzbot+c2b68bdf76e442836443@syzkaller.appspotmail.com
-Fixes: a0b0fd53e1e6 ("locking/lockdep: Free lock classes that are no longer in use")
+Sorry about that,
+Conor.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+--Da+Ai98mJJBdPIk8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLpQuQAKCRB4tDGHoIJi
+0pbJAQCJbQjvdBO4XPzRbydiA7oYCEaxC4D8InDZePLnMiemSAD+N05Kkic2KDd1
+lVLWaU/WspQV+L72HjM//dmvcHQd/g0=
+=Orl3
+-----END PGP SIGNATURE-----
+
+--Da+Ai98mJJBdPIk8--
