@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6903C75D0A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F5675D0A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 19:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjGUR0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 13:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
+        id S229462AbjGUR1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 13:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231338AbjGUR0q (ORCPT
+        with ESMTP id S230228AbjGUR04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 13:26:46 -0400
-Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE3F30F0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:26:08 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id MtsuqfxG71d2aMtsuqAyD5; Fri, 21 Jul 2023 19:25:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1689960345;
-        bh=S0Q94L8t1F+wYZ+no5Ur/HtGB5I8fAPeAwIMg1DRGMg=;
-        h=From:To:Cc:Subject:Date;
-        b=GCQyWz5OgPbCw535Ns8tGqCkWOjzPWjvRJfIyEwCgTlQ6hZVa+cUjesHZcBpLkYQm
-         IiKoNBx+KpiCP9aSZjSK06yWkqqsDACFYqUDzyIy4Uw8VwJ+rjoQLpmYzMQzjubx9P
-         2zD5DkdOjH5PiuG9AP+uy2wNBvivtVDa8gwTz+xbsBQoPdTxjnAOKVUTQwQKvSoC77
-         pDtw5QR01L1CiEZWV6G1T7vcZV7VAvw6JKrcJ3ZKQ2lidBlXYiv/6d6RslZsqOccwy
-         Gsv6p9WVvjExhv93ZxnhEN7QaToEz8nl3CRtTyOZWirOWOwU3P+g2Y5E9JwS2hy8kp
-         Fvk/eSbpDSxiw==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 21 Jul 2023 19:25:45 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] regmap: Fix the type used for a bitmap pointer
-Date:   Fri, 21 Jul 2023 19:25:43 +0200
-Message-Id: <5600df5003d23da10efcfafbda97ca55776d0d29.1689960321.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Fri, 21 Jul 2023 13:26:56 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 01D3A35A1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 10:26:22 -0700 (PDT)
+Received: (qmail 1762664 invoked by uid 1000); 21 Jul 2023 13:26:22 -0400
+Date:   Fri, 21 Jul 2023 13:26:22 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Dingyan Li <18500469033@163.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        sebastian.reichel@collabora.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: Re: [PATCH] USB: add usbfs ioctl to get specific
+ superspeedplus rates
+Message-ID: <71130307-1c5c-468b-b876-799c434002cc@rowland.harvard.edu>
+References: <20230721084039.9728-1-18500469033@163.com>
+ <2023072105-lethargic-saddling-ad97@gregkh>
+ <130b453c.5c8f.1897872ce54.Coremail.18500469033@163.com>
+ <2023072159-carol-underfeed-43eb@gregkh>
+ <25f05926.7e4c.189791ece3b.Coremail.18500469033@163.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <25f05926.7e4c.189791ece3b.Coremail.18500469033@163.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bitmaps should be defined as 'unsigned long', not 'long'.
-Fix the type of 'cache_present' is the 'struct regcache_rbtree_node'.
+On Fri, Jul 21, 2023 at 11:43:29PM +0800, Dingyan Li wrote:
+> Okay, got it. The motivation should come from real-world needs.
+> 
+> Just like I mentioned above, currently in libusb ioctl USBDEVFS_GET_SPEED
+> is still used, especially where sysfs is not supported. My original idea
+> was exactly trying to add this new ioctl into libusb. So in order to get 20Gbps
+> speed, we need extra information. The basic workflow is like below:
+> 
+> // This is pretty much how libusb does it, get 10Gbps at most
+> ret = ioctl(USBDEVFS_GET_SPEED)
+> if (ret == USB_SPEED_SUPER_PLUS) then
+>     speed = 10Gbps
+>     // With this new ioctl, we can get 20Gbps now
+>     ret = ioctl(USBDEVFS_GET_SSP_RATE)
+>     if (ret == USB_SSP_GEN_2x2)
+>         speed = 20Gbps
+> 
+> libusb can be a good place to document the usage of this new ioctl if similar patch
+> can be accepted into it. And I can't think of other real-world users now. Of course,
+> like you've explained, it seems quite unnecessary when sysfs is supported.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-No differences in the generated code with gcc 12.1.0.
----
- drivers/base/regmap/regcache-rbtree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+For what it's worth, many of the other ioctls in usbfs are documented 
+(very incompletely) in Documentation/driver-api/usb/usb.rst.  That's 
+probably the best place to add any documentation for new APIs.
 
-diff --git a/drivers/base/regmap/regcache-rbtree.c b/drivers/base/regmap/regcache-rbtree.c
-index fabf87058d80..4056c9d32ffa 100644
---- a/drivers/base/regmap/regcache-rbtree.c
-+++ b/drivers/base/regmap/regcache-rbtree.c
-@@ -22,7 +22,7 @@ struct regcache_rbtree_node {
- 	/* block of adjacent registers */
- 	void *block;
- 	/* Which registers are present */
--	long *cache_present;
-+	unsigned long *cache_present;
- 	/* base register handled by this block */
- 	unsigned int base_reg;
- 	/* number of registers available in the block */
--- 
-2.34.1
-
+Alan Stern
