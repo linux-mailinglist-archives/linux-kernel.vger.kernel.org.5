@@ -2,138 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C9475CB69
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DB975CB5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232049AbjGUPUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
+        id S231944AbjGUPTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbjGUPTY (ORCPT
+        with ESMTP id S231945AbjGUPTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:19:24 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB7635B3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:18:57 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36LDls9j007648;
-        Fri, 21 Jul 2023 10:18:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        PODMain02222019; bh=SouSdl0krn87qnxGImLLbDeHt3AjI3/2rWOxCps/3Ts=; b=
-        JBFOT77wvEyGBul+425Mr/5xNGlG+DEJ++A7/7isthKS5IWFyaxzst5nbvSS1ZkA
-        klW3kVCHrqg5Z/3ee9RQgHIgRXvXuQ2mnxzQ2qvp6ydSXJwvSvT43e5gdfNDextI
-        g+MKooWfwGyg5G8yNj0vDWM73H4+yG4cqgwrwqlkieKZ3o9+ouE2XoEDsqoKLDqD
-        OpDVoRK2ZvCthoGqeLtIvgSi4CxObJsGTnAZDJNf2pSiy8OaSyI6zaZHyW1ELec4
-        h6vIkPF+ACx6hRQJN+vdgjmQDyZTDXMsY4ZI93vum1b1kO0coXK4BEy2bvIk5rFc
-        vnSJLhXnJHVqWG17l28j8g==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3rus62y8g9-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 10:18:32 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 21 Jul
- 2023 16:18:28 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Fri, 21 Jul 2023 16:18:28 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.219])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 43FA13572;
-        Fri, 21 Jul 2023 15:18:28 +0000 (UTC)
-From:   Stefan Binding <sbinding@opensource.cirrus.com>
-To:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH v2 11/11] ALSA: hda: cs35l41: Ensure amp is only unmuted during playback
-Date:   Fri, 21 Jul 2023 16:18:16 +0100
-Message-ID: <20230721151816.2080453-12-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230721151816.2080453-1-sbinding@opensource.cirrus.com>
-References: <20230721151816.2080453-1-sbinding@opensource.cirrus.com>
+        Fri, 21 Jul 2023 11:19:10 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF6D4233
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:18:44 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id F04451F894;
+        Fri, 21 Jul 2023 15:18:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689952722; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Z0mPuy3cG9Y6IXQ+G8D791fr6VEZjBe9UP8cC9gcgA=;
+        b=DRK2oberLGzEyjqYUYKwGqCw7mNLzR2URnEP7OR//8G+OPTD5zbTZn3eFaQxL/rNL3V+R4
+        Kg95ijUGqNrIxaO6LhDlBaPfD+uHu1Bw+Bm4r0wARyHJRUUXczjpmd/LXMABDwvMN/q162
+        W5ePN2ibZ3ArkARLW475IqArM1BBdoU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689952722;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Z0mPuy3cG9Y6IXQ+G8D791fr6VEZjBe9UP8cC9gcgA=;
+        b=EZkUmcSNUuZDtTynIumho0CFnGAxPHDf6uz+eUETmyoelXtzJMwwaVJ+yoC0JyoVh4OU/5
+        QOoymRfsVXUA6vBw==
+Received: from suse.de (mgorman.udp.ovpn2.nue.suse.de [10.163.43.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 1C59E2C142;
+        Fri, 21 Jul 2023 15:18:41 +0000 (UTC)
+Date:   Fri, 21 Jul 2023 16:18:34 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Raghavendra K T <raghavendra.kt@amd.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>, rppt@kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bharata B Rao <bharata@amd.com>,
+        Aithal Srikanth <sraithal@amd.com>,
+        kernel test robot <oliver.sang@intel.com>
+Subject: Re: [RFC PATCH V3 1/1] sched/numa: Fix disjoint set vma scan
+ regression
+Message-ID: <20230721151834.yaymi6emrppl3mzl@suse.de>
+References: <cover.1685506205.git.raghavendra.kt@amd.com>
+ <8581ca937d4064b3cd138845d5bd418580d177da.1685506205.git.raghavendra.kt@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: GPi2fnfKoH70Rkb5qb8qmAL5rrPBZ-02
-X-Proofpoint-ORIG-GUID: GPi2fnfKoH70Rkb5qb8qmAL5rrPBZ-02
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <8581ca937d4064b3cd138845d5bd418580d177da.1685506205.git.raghavendra.kt@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently we only mute after playback has finished, and unmute
-prior to setting global enable. To prevent any possible pops
-and clicks, mute at probe, and then only unmute after global
-enable is set.
+On Wed, May 31, 2023 at 09:55:26AM +0530, Raghavendra K T wrote:
+>  With the numa scan enhancements [1], only the threads which had previously
+> accessed vma are allowed to scan.
+> 
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/cs35l41_hda.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+I know it's very late to be reading this properly for the first time.  It's a
+brief review as it's late but I'm not 100% convinced by the patch as-is.
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 175378cdf9dfa..98feb5ccd5866 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -58,8 +58,6 @@ static const struct reg_sequence cs35l41_hda_config[] = {
- 	{ CS35L41_DSP1_RX3_SRC,         0x00000018 }, // DSP1RX3 SRC = VMON
- 	{ CS35L41_DSP1_RX4_SRC,         0x00000019 }, // DSP1RX4 SRC = IMON
- 	{ CS35L41_DSP1_RX5_SRC,         0x00000020 }, // DSP1RX5 SRC = ERRVOL
--	{ CS35L41_AMP_DIG_VOL_CTRL,	0x00008000 }, // AMP_HPF_PCM_EN = 1, AMP_VOL_PCM  0.0 dB
--	{ CS35L41_AMP_GAIN_CTRL,	0x00000084 }, // AMP_GAIN_PCM 4.5 dB
- };
- 
- static const struct reg_sequence cs35l41_hda_config_dsp[] = {
-@@ -82,6 +80,14 @@ static const struct reg_sequence cs35l41_hda_config_dsp[] = {
- 	{ CS35L41_DSP1_RX3_SRC,         0x00000018 }, // DSP1RX3 SRC = VMON
- 	{ CS35L41_DSP1_RX4_SRC,         0x00000019 }, // DSP1RX4 SRC = IMON
- 	{ CS35L41_DSP1_RX5_SRC,         0x00000029 }, // DSP1RX5 SRC = VBSTMON
-+};
-+
-+static const struct reg_sequence cs35l41_hda_unmute[] = {
-+	{ CS35L41_AMP_DIG_VOL_CTRL,	0x00008000 }, // AMP_HPF_PCM_EN = 1, AMP_VOL_PCM  0.0 dB
-+	{ CS35L41_AMP_GAIN_CTRL,	0x00000084 }, // AMP_GAIN_PCM 4.5 dB
-+};
-+
-+static const struct reg_sequence cs35l41_hda_unmute_dsp[] = {
- 	{ CS35L41_AMP_DIG_VOL_CTRL,	0x00008000 }, // AMP_HPF_PCM_EN = 1, AMP_VOL_PCM  0.0 dB
- 	{ CS35L41_AMP_GAIN_CTRL,	0x00000233 }, // AMP_GAIN_PCM = 17.5dB AMP_GAIN_PDM = 19.5dB
- };
-@@ -522,6 +528,13 @@ static void cs35l41_hda_play_done(struct device *dev)
- 
- 	cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 1, NULL,
- 			      cs35l41->firmware_running);
-+	if (cs35l41->firmware_running) {
-+		regmap_multi_reg_write(reg, cs35l41_hda_unmute_dsp,
-+				       ARRAY_SIZE(cs35l41_hda_unmute_dsp));
-+	} else {
-+		regmap_multi_reg_write(reg, cs35l41_hda_unmute,
-+				       ARRAY_SIZE(cs35l41_hda_unmute));
-+	}
- }
- 
- static void cs35l41_hda_pause_start(struct device *dev)
-@@ -1616,6 +1629,11 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
- 	if (ret)
- 		goto err;
- 
-+	ret = regmap_multi_reg_write(cs35l41->regmap, cs35l41_hda_mute,
-+				     ARRAY_SIZE(cs35l41_hda_mute));
-+	if (ret)
-+		goto err;
-+
- 	INIT_WORK(&cs35l41->fw_load_work, cs35l41_fw_load_work);
- 	mutex_init(&cs35l41->fw_mutex);
- 
+To start off -- reference the specific commit e.g. Since commit fc137c0ddab2
+("sched/numa: enhance vma scanning logic")...
+
+> While this had improved significant system time overhead, there were corner
+> cases, which genuinely need some relaxation. For e.g.,
+> 
+> 1) Concern raised by PeterZ, where if there are N partition sets of vmas
+> belonging to tasks, then unfairness in allowing these threads to scan could
+> potentially amplify the side effect of some of the vmas being left
+> unscanned.
+> 
+
+This needs a much better description as there is too much guesswork
+required to figure out what problem is being solved. You may be referring
+to an issue where a VMA not accessed for a long time may be skipped for
+scanning indefinitely. You could also be referring to an issue where a
+highly active thread always traps the NUMA hinting fault first and other
+tasks never pass the vma_is_accessed test. It also could be the case that
+due to a malloc implementation behaviour that the thread using a particular
+VMA changes and it's not detected. It's simply not clear how the VMAs are
+partitioned or what exactly is unfair. I certainly can guess a number of
+reasons why a patch like this is necessary but in a years time, it'll be
+hard to be certain about the original intent.
+
+> 2) Below reports of LKP numa01 benchmark regression.
+> 
+> Currently this is handled by allowing first two scanning unconditional
+> as indicated by mm->numa_scan_seq. This is imprecise since for some
+> benchmark vma scanning might itself start at numa_scan_seq > 2.
+> 
+
+Well, it's also not useful in many cases. There is nothing special about
+the first two scans other than they happen early in the lifetime of the
+process. A major change in phase behaviour that occurs after 2 scans
+could miss the new access pattern.
+
+> Solution:
+> Allow unconditional scanning of vmas of tasks depending on vma size. This
+> is achieved by maintaining a per vma scan counter, where
+> 
+> f(allowed_to_scan) = f(scan_counter <  vma_size / scan_size)
+> 
+
+This is a vague description as well and does not mention that the
+scan_counter resets and the code does not appear to match the equation.
+It's also a bit arbitrary that unconditional scanning occurs for every task
+after the scan_count passes a threshold. The timing of when this occurs may
+vary and all threads sharing the address space may conduct the scanning
+which may be overkill. It should only be necessary for at least one task
+to unconditionally mark the VMA for hinting, no? I'm generally a bit wary
+that the time it takes to detect a VMA needs unconditonal scanning depends
+on the size as due to VMA-merging, it may be non-deterministic when a VMA
+gets scanned and there may be run-to-run variance to the timing of threads
+allocating address space.
+
+> Result:
+> numa01_THREAD_ALLOC result on 6.4.0-rc2 (that has numascan enhancement)
+>                 	base-numascan	base		base+fix
+> real    		1m1.507s	1m23.259s	1m2.632s
+> user    		213m51.336s	251m46.363s	220m35.528s
+> sys     		3m3.397s	0m12.492s	2m41.393s
+> 
+> numa_hit 		5615517		4560123		4963875
+> numa_local 		5615505		4560024		4963700
+> numa_other 		12		99		175
+> numa_pte_updates 	1822797		493		1559111
+> numa_hint_faults 	1307113		523		1469031
+> numa_hint_faults_local 	612617		488		884829
+> numa_pages_migrated 	694370		35		584202
+> 
+
+It's not clear what these kernels are. Is base-numascan a 6.4-rc2 kernel
+with at least commit fc137c0ddab2 ("sched/numa: enhance vma scanning
+logic") reverted?
+
+The numa_[hint|local|other] stats are not helpful. They are updated on
+the allocation side and not related to actual behaviour.
+
+As I'm unsure what the kernels are, I'm not sure how interesting it is
+that the pte update stats and number of faults trapped are very different
+for base to base+fix. Sure enough, the overall runtime is lower so it's
+*probably* good but not sure as it may be also the case that disabling NUMA
+balancing would be faster again given the nature of this particular test :P
+
+The testing is a little thin and I'd worry slightly that this patch is
+very specific to this particular workload.
+
+> Summary: Regression in base is recovered by allowing scanning as required.
+> 
+> [1] https://lore.kernel.org/lkml/cover.1677672277.git.raghavendra.kt@amd.com/T/#t
+> 
+> Fixes: fc137c0ddab2 ("sched/numa: enhance vma scanning logic")
+> regression.
+
+Fixes may be a bit overkill as this patch is more of an enhancement than
+something that justifies a backport to -stable but I don't feel strongly
+about it.
+
+> Reported-by: Aithal Srikanth <sraithal@amd.com>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/lkml/db995c11-08ba-9abf-812f-01407f70a5d4@amd.com/T/
+> Signed-off-by: Raghavendra K T <raghavendra.kt@amd.com>
+> ---
+>  include/linux/mm_types.h |  1 +
+>  kernel/sched/fair.c      | 31 ++++++++++++++++++++++++-------
+>  2 files changed, 25 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 306a3d1a0fa6..992e460a713e 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -479,6 +479,7 @@ struct vma_numab_state {
+>  	unsigned long next_scan;
+>  	unsigned long next_pid_reset;
+>  	unsigned long access_pids[2];
+> +	unsigned int scan_counter;
+>  };
+
+Vague name as it's not counting and gets reset. It might have been clearer
+to name is something like scan_selective with an initial value related to
+the VMA size that decrements. When it hits 0, the scan is forced *once*
+for the unlucky task. The suggested name is also bad, I'm terrible at
+naming but "counter" gives no hints either.
+
+>  
+>  /*
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 373ff5f55884..4e71fb58085b 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -2931,17 +2931,30 @@ static void reset_ptenuma_scan(struct task_struct *p)
+>  static bool vma_is_accessed(struct vm_area_struct *vma)
+>  {
+>  	unsigned long pids;
+> +	unsigned int vma_size;
+> +	unsigned int scan_threshold;
+> +	unsigned int scan_size;
+> +
+> +	pids = vma->numab_state->access_pids[0] | vma->numab_state->access_pids[1];
+> +
+> +	if (test_bit(hash_32(current->pid, ilog2(BITS_PER_LONG)), &pids))
+> +		return true;
+> +
+> +	scan_size = READ_ONCE(sysctl_numa_balancing_scan_size);
+> +	/* vma size in MB */
+> +	vma_size = (vma->vm_end - vma->vm_start) >> 20;
+> +
+> +	/* Total scans needed to cover VMA */
+> +	scan_threshold = vma_size / scan_size;
+> +
+>  	/*
+> -	 * Allow unconditional access first two times, so that all the (pages)
+> -	 * of VMAs get prot_none fault introduced irrespective of accesses.
+> +	 * Allow the scanning of half of disjoint set's VMA to induce
+> +	 * prot_none fault irrespective of accesses.
+>  	 * This is also done to avoid any side effect of task scanning
+>  	 * amplifying the unfairness of disjoint set of VMAs' access.
+>  	 */
+
+Much better description is required. It's not stated how the VMAs are
+disjoint. For example, they all belong to the same address space so from that
+perspective they are not disjoint. Clarify that it's related to accesses
+at the very least or be clear on how a set of VMAs can be disjoint. Also,
+it's not half the total VMAs or some other critieria either, it's related
+to scanning events. There is a lot of guesswork involved here.
+
+> -	if (READ_ONCE(current->mm->numa_scan_seq) < 2)
+> -		return true;
+> -
+> -	pids = vma->numab_state->access_pids[0] | vma->numab_state->access_pids[1];
+> -	return test_bit(hash_32(current->pid, ilog2(BITS_PER_LONG)), &pids);
+> +	scan_threshold = 1 + (scan_threshold >> 1);
+> +	return (vma->numab_state->scan_counter < scan_threshold);
+>  }
+>  
+>  #define VMA_PID_RESET_PERIOD (4 * sysctl_numa_balancing_scan_delay)
+> @@ -3058,6 +3071,8 @@ static void task_numa_work(struct callback_head *work)
+>  			/* Reset happens after 4 times scan delay of scan start */
+>  			vma->numab_state->next_pid_reset =  vma->numab_state->next_scan +
+>  				msecs_to_jiffies(VMA_PID_RESET_PERIOD);
+> +
+> +			vma->numab_state->scan_counter = 0;
+>  		}
+>  
+>  		/*
+> @@ -3084,6 +3099,8 @@ static void task_numa_work(struct callback_head *work)
+>  			vma->numab_state->access_pids[1] = 0;
+>  		}
+>  
+> +		vma->numab_state->scan_counter++;
+> +
+>  		do {
+>  			start = max(start, vma->vm_start);
+>  			end = ALIGN(start + (pages << PAGE_SHIFT), HPAGE_SIZE);
+
+This has a potential timing issue as only tasks that accessed the VMA
+update the counter. A task could create a VMA, access is heavily in an
+init phase and then go completely idle waiting on other tasks to complete
+(e.g. parallelised load that uses a single thread to setup the data and then
+creates worker threads to process that data). As there is no guarantee other
+tasks would trap a fault, the access bits would never be set, the counter
+never increments and the VMA is ignored forever. It's late on a Friday so
+maybe I'm wrong but it looks like this could have weird corner cases.
+
+The counter should at least increase if the VMA could have been scanned
+except the access bits were not set with the caveat that it may incur
+excessive cache misses.
+
 -- 
-2.34.1
-
+Mel Gorman
+SUSE Labs
