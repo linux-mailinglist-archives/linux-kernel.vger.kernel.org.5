@@ -2,176 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B61A875CB01
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1B975CB56
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbjGUPJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44544 "EHLO
+        id S231881AbjGUPSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231830AbjGUPJI (ORCPT
+        with ESMTP id S230041AbjGUPSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:09:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8AE30F4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:08:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689952096;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SD81e7NZBdmvFs/0moOEoRHsNzw2ypppSDOfYt+K9oA=;
-        b=HwZSLzxi0P1oAdGrffqa8WSat0EVVskjrWXXVBpZ8+doOSiy6LZnGhz0tGpLx9EuROcd+x
-        HbqZeBdo/ARZ+i1IfjwKh5Xu4Wzj20gsYUL/ulclIRpCYM9j8D2YOfVSOOuErRfbLmutU+
-        +7cbCnryJszXJUl5lmN+702Ri+DIMYs=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-562-WR2i1kEmMKGI6YynXlxdew-1; Fri, 21 Jul 2023 11:08:15 -0400
-X-MC-Unique: WR2i1kEmMKGI6YynXlxdew-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fbe4cecd66so10678355e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:08:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689952094; x=1690556894;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SD81e7NZBdmvFs/0moOEoRHsNzw2ypppSDOfYt+K9oA=;
-        b=elP0/rtueCvGZ6y7u9M6D3iK86nISZYHvpvgNUdaMHRCYi8NFj2lQYMym36qWPJeNn
-         4phcoUUi8HNE/dZIuxwWBj7gs/qB3zqrRNrkt5GmXrLUwx02kzvrENUxeld6YjXGwxXD
-         Rdg7cEywt6sJxaMuLqNj/4w0/p3eNoS5PpnnwxrV/h2rXehUel61FOmGUCsxqp16FRDT
-         M4YUXab1VaFqw+nbO1LK1H+wxUk7jsBdJ5qJNM2qE+YglWydEesK5BHBau3PApCVUitS
-         g7PlBwjNDxyl4004xXOAbuhEc/NEuzduJMcHG4aSXWUms7JXudb1S6yfNWPhVLsjI+nK
-         HHaQ==
-X-Gm-Message-State: ABy/qLYLervGIkkbfrR3KMO2lN47YrxinNk6CWK7WyvhnW6VeztliZxU
-        +NI5P1o5dTvek2lrdq+h3LqAquWhAGLsbnLfOkYSR3EcgEeRlKDwzHHe6mlsVWE3aN2OIRR82z0
-        meXgv+g2NhDyfmQliYYMBQARD
-X-Received: by 2002:a7b:c455:0:b0:3fc:627:ea31 with SMTP id l21-20020a7bc455000000b003fc0627ea31mr1714690wmi.38.1689952094111;
-        Fri, 21 Jul 2023 08:08:14 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlF9fiPWFBcIAw2j2QV4lTYmt4mtAVTwBGD8BbL2O21cgVm0IYBel5tSTfnfWuFcEvQp7qgXww==
-X-Received: by 2002:a7b:c455:0:b0:3fc:627:ea31 with SMTP id l21-20020a7bc455000000b003fc0627ea31mr1714619wmi.38.1689952093765;
-        Fri, 21 Jul 2023 08:08:13 -0700 (PDT)
-Received: from vschneid.remote.csb ([149.12.7.81])
-        by smtp.gmail.com with ESMTPSA id q7-20020a5d5747000000b0031434936f0dsm4459951wrw.68.2023.07.21.08.08.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 08:08:12 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 16/20] rcu: Make RCU dynticks counter size
- configurable
-In-Reply-To: <28d4abb7-8496-45ec-b270-ea2b6164537b@paulmck-laptop>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-17-vschneid@redhat.com>
- <xhsmhjzutu18u.mognet@vschneid.remote.csb>
- <28d4abb7-8496-45ec-b270-ea2b6164537b@paulmck-laptop>
-Date:   Fri, 21 Jul 2023 16:08:10 +0100
-Message-ID: <xhsmhbkg5ti91.mognet@vschneid.remote.csb>
+        Fri, 21 Jul 2023 11:18:15 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F35930DD;
+        Fri, 21 Jul 2023 08:18:13 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 0a38bb1b8a5a6388; Fri, 21 Jul 2023 17:18:11 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 32225661901;
+        Fri, 21 Jul 2023 17:18:11 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH v2 7/8] ACPI: thermal: Rework thermal_get_trend()
+Date:   Fri, 21 Jul 2023 17:08:48 +0200
+Message-ID: <1849104.atdPhlSkOF@kreacher>
+In-Reply-To: <5710197.DvuYhMxLoT@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <5710197.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgdekvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgt
+ phhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/23 07:10, Paul E. McKenney wrote:
-> On Fri, Jul 21, 2023 at 09:17:53AM +0100, Valentin Schneider wrote:
->> On 20/07/23 17:30, Valentin Schneider wrote:
->> > index bdd7eadb33d8f..1ff2aab24e964 100644
->> > --- a/kernel/rcu/Kconfig
->> > +++ b/kernel/rcu/Kconfig
->> > @@ -332,4 +332,37 @@ config RCU_DOUBLE_CHECK_CB_TIME
->> >         Say Y here if you need tighter callback-limit enforcement.
->> >         Say N here if you are unsure.
->> >
->> > +config RCU_DYNTICKS_RANGE_BEGIN
->> > +	int
->> > +	depends on !RCU_EXPERT
->> > +	default 31 if !CONTEXT_TRACKING_WORK
->>
->> You'll note that this should be 30 really, because the lower *2* bits are
->> taken by the context state (CONTEXT_GUEST has a value of 3).
->>
->> This highlights the fragile part of this: the Kconfig values are hardcoded,
->> but they depend on CT_STATE_SIZE, CONTEXT_MASK and CONTEXT_WORK_MAX. The
->> static_assert() will at least capture any misconfiguration, but having that
->> enforced by the actual Kconfig ranges would be less awkward.
->>
->> Do we currently have a way of e.g. making a Kconfig file depend on and use
->> values generated by a C header?
->
-> Why not just have something like a boolean RCU_DYNTICKS_TORTURE Kconfig
-> option and let the C code work out what the number of bits should be?
->
-> I suppose that there might be a failure whose frequency depended on
-> the number of bits, which might be an argument for keeping something
-> like RCU_DYNTICKS_RANGE_BEGIN for fault isolation.  But still using
-> RCU_DYNTICKS_TORTURE for normal testing.
->
-> Thoughts?
->
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-AFAICT if we run tests with the minimum possible width, then intermediate
-values shouldn't have much value.
+Rework the ACPI thermal driver's .get_trend() callback function,
+thermal_get_trend(), to use trip point data stored in the generic
+trip structures instead of calling thermal_get_trip_type() and
+thermal_get_trip_temp().
 
-Your RCU_DYNTICKS_TORTURE suggestion sounds like a saner option than what I
-came up with, as we can let the context tracking code figure out the widths
-itself and not expose any of that to Kconfig.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
->                                                       Thanx, Paul
+v1 -> v2:
+   * Do not acquire thermal_check_lock in thermal_get_trend() (lockdep
+     would complain about this, because it is hold around thermal zone
+     locking and .get_trend() runs under the thermal zone lock).  The
+     thermal zone locking added in the previous patches is sufficient
+     to protect this code.
+   * Check trips against invalid temperature values.
+   * Return an error for trips other than passive and active.
+
+---
+ drivers/acpi/thermal.c |  106 ++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 78 insertions(+), 28 deletions(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -577,47 +577,97 @@ static int thermal_get_crit_temp(struct
+ 	return -EINVAL;
+ }
+ 
+-static int thermal_get_trend(struct thermal_zone_device *thermal,
+-			     int trip, enum thermal_trend *trend)
++static struct thermal_trip *acpi_thermal_get_trip(struct acpi_thermal *tz,
++						  int trip_index)
+ {
+-	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
+-	enum thermal_trip_type type;
++	struct thermal_trip *trip;
+ 	int i;
+ 
+-	if (thermal_get_trip_type(thermal, trip, &type))
+-		return -EINVAL;
++	if (!tz || trip_index < 0)
++		return NULL;
+ 
+-	if (type == THERMAL_TRIP_ACTIVE) {
+-		int trip_temp;
+-		int temp = deci_kelvin_to_millicelsius_with_offset(
+-					tz->temperature, tz->kelvin_offset);
+-		if (thermal_get_trip_temp(thermal, trip, &trip_temp))
+-			return -EINVAL;
++	trip = tz->trips.critical.trip_ref.trip;
++	if (trip) {
++		if (!trip_index)
++			return trip;
+ 
+-		if (temp > trip_temp) {
+-			*trend = THERMAL_TREND_RAISING;
+-			return 0;
+-		} else {
+-			/* Fall back on default trend */
+-			return -EINVAL;
++		trip_index--;
++	}
++
++	trip = tz->trips.hot.trip_ref.trip;
++	if (trip) {
++		if (!trip_index)
++			return trip;
++
++		trip_index--;
++	}
++
++	trip = tz->trips.passive.trip_ref.trip;
++	if (trip) {
++		if (!trip_index)
++			return trip;
++
++		trip_index--;
++	}
++
++	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
++		trip = tz->trips.active[i].trip_ref.trip;
++		if (trip) {
++			if (!trip_index)
++				return trip;
++
++			trip_index--;
+ 		}
+ 	}
+ 
++	return NULL;
++}
++
++static int thermal_get_trend(struct thermal_zone_device *thermal,
++			     int trip_index, enum thermal_trend *trend)
++{
++	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
++	struct thermal_trip *trip;
++	long t;
++
++	trip = acpi_thermal_get_trip(tz, trip_index);
++	if (!trip || trip->temperature == THERMAL_TEMP_INVALID)
++		return -EINVAL;
++
+ 	/*
+ 	 * tz->temperature has already been updated by generic thermal layer,
+-	 * before this callback being invoked
++	 * before this callback being invoked.
+ 	 */
+-	i = tz->trips.passive.tc1 * (tz->temperature - tz->last_temperature) +
+-	    tz->trips.passive.tc2 * (tz->temperature - tz->trips.passive.temperature);
++	switch (trip->type) {
++	case THERMAL_TRIP_PASSIVE:
++		t = tz->trips.passive.tc1 * (tz->temperature -
++						tz->last_temperature) +
++			tz->trips.passive.tc2 * (tz->temperature -
++						tz->trips.passive.temperature);
++		if (t > 0)
++			*trend = THERMAL_TREND_RAISING;
++		else if (t < 0)
++			*trend = THERMAL_TREND_DROPPING;
++		else
++			*trend = THERMAL_TREND_STABLE;
++
++		return 0;
++
++	case THERMAL_TRIP_ACTIVE:
++		t = deci_kelvin_to_millicelsius_with_offset(tz->temperature,
++							    tz->kelvin_offset);
++		if (t > trip->temperature) {
++			*trend = THERMAL_TREND_RAISING;
++			return 0;
++		}
+ 
+-	if (i > 0)
+-		*trend = THERMAL_TREND_RAISING;
+-	else if (i < 0)
+-		*trend = THERMAL_TREND_DROPPING;
+-	else
+-		*trend = THERMAL_TREND_STABLE;
++		fallthrough;
+ 
+-	return 0;
++	default:
++		break;
++	}
++
++	return -EINVAL;
+ }
+ 
+ static void acpi_thermal_zone_device_hot(struct thermal_zone_device *thermal)
+
+
 
