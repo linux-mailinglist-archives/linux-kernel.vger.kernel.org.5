@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C517C75D67A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 23:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C326A75D66B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 23:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbjGUVYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 17:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
+        id S229992AbjGUVXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 17:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjGUVYn (ORCPT
+        with ESMTP id S229904AbjGUVXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 17:24:43 -0400
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B6130D0;
-        Fri, 21 Jul 2023 14:24:42 -0700 (PDT)
-Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LJ1s2Y031028;
-        Fri, 21 Jul 2023 21:24:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : subject :
- date : message-id : in-reply-to : references; s=pps0720;
- bh=3qFbs7ny735Se8n+zekA1xfETEDp1cFK+SaOIyzWAhg=;
- b=Bkb1a2zCHDwf/8Exym+IiFrKI87IrgZAEuW7hE4+2qRcwQOrj2wG6YMBxaTW7hrqihLr
- 2ZB6wcWkdqhMfDDrE758r8lKXq0ZhdlLKX9xhwg0bYBlv6cXcQkRxOh4+MfyuCQWCpFN
- WLGkS3e4DuyHnqh3nnoY5zjoQr6iO6/JefPzWBLyv7lj4xao2XcchcOecBQwmG2D2RKJ
- YSsC/5DUyKBuu3oF5+oaZZbxSm4Cv8qNudxH4aKAHNL+DI+c08KUizSnFjeFnvxYxecD
- YGMGIIGhYh1W9ocorfQuxHrTu3AsooZ1H+RhQqLpdq3qGVeOF84YZvCty6Z3CChuTyRC GQ== 
-Received: from p1lg14878.it.hpe.com (p1lg14878.it.hpe.com [16.230.97.204])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3ryacpbwwt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 21:24:30 +0000
-Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14878.it.hpe.com (Postfix) with ESMTPS id E604AD2D2;
-        Fri, 21 Jul 2023 21:24:29 +0000 (UTC)
-Received: from hpe.com (unknown [16.231.227.36])
-        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id 41FEA809FDC;
-        Fri, 21 Jul 2023 21:24:29 +0000 (UTC)
-From:   nick.hawkins@hpe.com
-To:     verdun@hpe.com, nick.hawkins@hpe.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 5/5] MAINTAINERS: HPE: Add GXP UMAC Networking Files
-Date:   Fri, 21 Jul 2023 16:20:44 -0500
-Message-Id: <20230721212044.59666-6-nick.hawkins@hpe.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230721212044.59666-1-nick.hawkins@hpe.com>
-References: <20230721212044.59666-1-nick.hawkins@hpe.com>
-X-Proofpoint-ORIG-GUID: OcWqRi7nCqDrzVPQvsG7gQUKHY1vudSp
-X-Proofpoint-GUID: OcWqRi7nCqDrzVPQvsG7gQUKHY1vudSp
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-21_12,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- spamscore=0 malwarescore=0 adultscore=0 phishscore=0 mlxlogscore=932
- impostorscore=0 suspectscore=0 clxscore=1015 lowpriorityscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307210189
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        Fri, 21 Jul 2023 17:23:04 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62F630D0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:22:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689974579; x=1721510579;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+l8avb+Up5dj5lQ+lm2WQ7/323A6EvT04ucY7c/xtj4=;
+  b=WFcKCsllOiPcB96o7YVHXQmkifZvumvpDtkv/hOy9TcvNieHMalMitbs
+   LP9iIQ/iG29HyajZpEChtXhTsjXnk16ztp2+KHJfhIem6BSYZWN17j/qR
+   JztS8NHpj4a6MpS46D/GxYmSIKWfFj5mRR7W184wDwcG1iVE1aEgmEoEP
+   qIEkM7gOqiDpPdI2JJ9JX7kLlTYhMaVezGcQuviupm0J1Zvm0PLKtHdkL
+   4epSAVOHemt+9kay5SklKWWtxQzen8333E8ELdm3/b09xMX/EGRIVO1G7
+   vTV3tP5HeNj2I+jvA3f94ZGo2MHrOCKv46Q7XYAgbOLkCE9fwbdYbKWq0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="357116635"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="357116635"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 14:22:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="702166598"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="702166598"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 21 Jul 2023 14:22:55 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qMxa9-0007fl-00;
+        Fri, 21 Jul 2023 21:22:39 +0000
+Date:   Sat, 22 Jul 2023 05:22:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     thunder.leizhen@huaweicloud.com, Dave Young <dyoung@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Zhen Lei <thunder.leizhen@huawei.com>
+Subject: Re: [PATCH 1/3] arm64: kdump: Allocate crash low memory in the
+ bottom-up direction
+Message-ID: <202307220500.1I73fZ5Z-lkp@intel.com>
+References: <20230721081726.882-2-thunder.leizhen@huaweicloud.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721081726.882-2-thunder.leizhen@huaweicloud.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,36 +73,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Hawkins <nick.hawkins@hpe.com>
+Hi,
 
-List the files added for supporting the UMAC networking on GXP.
+kernel test robot noticed the following build errors:
 
-Signed-off-by: Nick Hawkins <nick.hawkins@hpe.com>
----
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
+[auto build test ERROR on arm64/for-next/core]
+[also build test ERROR on linus/master v6.5-rc2 next-20230721]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 27ef11624748..4f1c3fa27f7f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2243,6 +2243,8 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/arm/hpe,gxp.yaml
- F:	Documentation/devicetree/bindings/hwmon/hpe,gxp-fan-ctrl.yaml
- F:	Documentation/devicetree/bindings/i2c/hpe,gxp-i2c.yaml
-+F:	Documentation/devicetree/bindings/net/hpe,gxp-umac-mdio.yaml
-+F:	Documentation/devicetree/bindings/net/hpe,gxp-umac.yaml
- F:	Documentation/devicetree/bindings/spi/hpe,gxp-spifi.yaml
- F:	Documentation/devicetree/bindings/timer/hpe,gxp-timer.yaml
- F:	Documentation/hwmon/gxp-fan-ctrl.rst
-@@ -2252,6 +2254,7 @@ F:	arch/arm/mach-hpe/
- F:	drivers/clocksource/timer-gxp.c
- F:	drivers/hwmon/gxp-fan-ctrl.c
- F:	drivers/i2c/busses/i2c-gxp.c
-+F:	drivers/net/ethernet/hpe/
- F:	drivers/spi/spi-gxp.c
- F:	drivers/watchdog/gxp-wdt.c
- 
+url:    https://github.com/intel-lab-lkp/linux/commits/thunder-leizhen-huaweicloud-com/arm64-kdump-Allocate-crash-low-memory-in-the-bottom-up-direction/20230721-162312
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+patch link:    https://lore.kernel.org/r/20230721081726.882-2-thunder.leizhen%40huaweicloud.com
+patch subject: [PATCH 1/3] arm64: kdump: Allocate crash low memory in the bottom-up direction
+config: arm64-allnoconfig (https://download.01.org/0day-ci/archive/20230722/202307220500.1I73fZ5Z-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230722/202307220500.1I73fZ5Z-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307220500.1I73fZ5Z-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   aarch64-linux-ld: arch/arm64/mm/init.o: in function `late_reserve_crashkernel':
+>> init.c:(.init.text+0x58): undefined reference to `crashk_res'
+   aarch64-linux-ld: arch/arm64/mm/init.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `crashk_res' which may bind externally can not be used when making a shared object; recompile with -fPIC
+   init.c:(.init.text+0x58): dangerous relocation: unsupported relocation
+>> aarch64-linux-ld: init.c:(.init.text+0x5c): undefined reference to `crashk_res'
+>> aarch64-linux-ld: init.c:(.init.text+0x88): undefined reference to `crashk_low_res'
+   aarch64-linux-ld: arch/arm64/mm/init.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `crashk_low_res' which may bind externally can not be used when making a shared object; recompile with -fPIC
+   init.c:(.init.text+0x88): dangerous relocation: unsupported relocation
+   aarch64-linux-ld: init.c:(.init.text+0x90): undefined reference to `crashk_res'
+   aarch64-linux-ld: init.c:(.init.text+0x9c): undefined reference to `crashk_low_res'
+   aarch64-linux-ld: init.c:(.init.text+0xd0): undefined reference to `crashk_res'
+   aarch64-linux-ld: init.c:(.init.text+0x13c): undefined reference to `crashk_res'
+   aarch64-linux-ld: init.c:(.init.text+0x150): undefined reference to `crashk_res'
+   aarch64-linux-ld: init.c:(.init.text+0x18c): undefined reference to `crashk_low_res'
+   aarch64-linux-ld: init.c:(.init.text+0x1b0): undefined reference to `crashk_low_res'
+   aarch64-linux-ld: init.c:(.init.text+0x204): undefined reference to `crashk_low_res'
+   aarch64-linux-ld: init.c:(.init.text+0x234): undefined reference to `crashk_low_res'
+   aarch64-linux-ld: init.c:(.init.text+0x248): undefined reference to `crashk_low_res'
+   aarch64-linux-ld: arch/arm64/mm/init.o:init.c:(.init.text+0x25c): more undefined references to `crashk_low_res' follow
+
 -- 
-2.17.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
