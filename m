@@ -2,140 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 617DC75BF4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC13875BF50
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbjGUHFH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 Jul 2023 03:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
+        id S230090AbjGUHFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 03:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbjGUHFD (ORCPT
+        with ESMTP id S230088AbjGUHF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 03:05:03 -0400
-Received: from frasgout12.his.huawei.com (ecs-14-137-139-154.compute.hwclouds-dns.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9757A270B;
-        Fri, 21 Jul 2023 00:05:01 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4R6gFz4FnMz9xtVW;
-        Fri, 21 Jul 2023 14:51:51 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwAn3ELoLbpkla7NBA--.21454S2;
-        Fri, 21 Jul 2023 08:04:22 +0100 (CET)
-Message-ID: <21cd4127cee2d920ffab7576e9a6359ec0988b8d.camel@huaweicloud.com>
-Subject: Re: [RFC][PATCH v3 0/9] KEYS: Introduce user asymmetric keys and
- signatures
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>, dhowells@redhat.com,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com
-Cc:     linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, pbrobinson@gmail.com,
-        zbyszek@in.waw.pl, wiktor@metacode.biz,
-        devel@lists.sequoia-pgp.org, gnupg-devel@gnupg.org,
-        ebiggers@kernel.org, Jason@zx2c4.com, mail@maciej.szmigiero.name,
-        antony@vennard.ch, konstantin@linuxfoundation.org,
-        James.Bottomley@HansenPartnership.com,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Fri, 21 Jul 2023 09:04:04 +0200
-In-Reply-To: <CU76KX3XPZN9.V9GU2ZZKVKO@suppilovahvero>
-References: <20230720153247.3755856-1-roberto.sassu@huaweicloud.com>
-         <CU76KX3XPZN9.V9GU2ZZKVKO@suppilovahvero>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Fri, 21 Jul 2023 03:05:29 -0400
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B69B2D5E;
+        Fri, 21 Jul 2023 00:05:27 -0700 (PDT)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1b055510c9dso1064877fac.0;
+        Fri, 21 Jul 2023 00:05:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689923126; x=1690527926;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dGiBUXJPYa+l+8GYQxJIryvnr+KvjRwSf83wrJAg5Is=;
+        b=Fjxr/aNfHLPAMW9scqY4G2sbGFV7TorpzmMwcCd6IJdpx6xBiJC7++J3cI3/+T8EgD
+         fv1MEZ6lGvQ/diZzTFVsqFEusP3sKf8cC3oMHePFy2ZzcfAESfoe2Azgb9jjeWlVU6j9
+         3GCAr65gefr83R+XMSa0RiKaz38ph2vuUe2jpNNWpTlL1wXFAu8OsuNEN6TphFB0zT4H
+         utE23+KXbWY8tU3aJlkVRG9m+51srOlZCxZa5fSFeg7SYy2F7Dq1bqwUutJDLet+rWwR
+         t8alhs5MBjTnHrXsOzhyEEr9KP/1xcx27j1jnip6v3Vld3vgK8HIL9LWicJdrBehtbGf
+         22Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689923126; x=1690527926;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dGiBUXJPYa+l+8GYQxJIryvnr+KvjRwSf83wrJAg5Is=;
+        b=SzS8d36FC8I+hNqz9yKAvVppjY7es0Ax8sBD0m49/Fp6bwzoRspPnlXADtVG10cm69
+         jB1Mv+1oQyhmLI8VjwQi0PBCj4iPnemHoV1ZAXxcQyIc8XjtX3Av/zKaET2ae1Q9pNGV
+         zy0K6FVGr+ouPMmZfBC7o4IAyQk2KEedtAozxJt8RBQscUQvnpkP1B6KlypW+lmzAiYA
+         tONRsGeUPP0xEh5PhauTmZdkRPrDHeLARVR64ZgC7ZnD6I9uJQZPpAIPZEjKt5tikzCM
+         WAkwDdcDtfPH5tE0QM4g9bk/uyEXsiCxmfsPpKvQPicDLhf9M9YJN4BKfRYefsAGnG0j
+         +MPw==
+X-Gm-Message-State: ABy/qLadjCnY5kh9+a64Vbg9ohR2PiflAV8gStOe4hvT0QDbpf5LZKvH
+        5QSX1Jf9EhOkAdHMt+glitDb8d3XyDpFjcTeDpw=
+X-Google-Smtp-Source: APBJJlGaBkFXs/FWq49wlomxOGLilMvY+Ep6vG7Ho6jhpuwpiE65jHx00PaLpOpEBm6f1gt9YBPI4ROdg1UNlWmOrpI=
+X-Received: by 2002:a05:6870:5b8a:b0:1b0:454b:1c3d with SMTP id
+ em10-20020a0568705b8a00b001b0454b1c3dmr941253oab.36.1689923125767; Fri, 21
+ Jul 2023 00:05:25 -0700 (PDT)
 MIME-Version: 1.0
-X-CM-TRANSID: GxC2BwAn3ELoLbpkla7NBA--.21454S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF47Zry8XF1DXF48KFWrGrg_yoW8uF13pa
-        yrKr93GFyktw1fAr9rJw4qy3y5Cwn3Jw45G3s8t3yFvw4YgFyIvryfK3WYgFZ0kws3Wryj
-        vrW3Wry7Xa98Z3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAFBF1jj5DBXwAAs-
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_RDNS_DYNAMIC_FP,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20230720131028.3730704-1-james.hilliard1@gmail.com>
+ <20230720131028.3730704-2-james.hilliard1@gmail.com> <CAOMZO5BPadhvTux-YMRZtZS=QaQhk9z+h7COk7_5S4gaqeE2eQ@mail.gmail.com>
+In-Reply-To: <CAOMZO5BPadhvTux-YMRZtZS=QaQhk9z+h7COk7_5S4gaqeE2eQ@mail.gmail.com>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Fri, 21 Jul 2023 01:05:13 -0600
+Message-ID: <CADvTj4rrodFreH4gsYC0fW94e=+Z7m6N_2HoQDEbkc=VVKyOfw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] ARM: dts: imx6qdl: Add Variscite VAR-SOM-MX6 SoM support
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     devicetree@vger.kernel.org,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-07-20 at 20:38 +0300, Jarkko Sakkinen wrote:
-> On Thu Jul 20, 2023 at 6:32 PM EEST, Roberto Sassu wrote:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > 
-> > Define a new TLV-based format for keys and signatures, aiming to store and
-> 
-> "type-length-value (TLV) based"
+On Thu, Jul 20, 2023 at 7:27=E2=80=AFAM Fabio Estevam <festevam@gmail.com> =
+wrote:
+>
+> On Thu, Jul 20, 2023 at 10:10=E2=80=AFAM James Hilliard
+> <james.hilliard1@gmail.com> wrote:
+>
+> > +       reg_audio: regulator-audio {
+> > +               compatible =3D "regulator-fixed";
+> > +               regulator-name =3D "tlv320aic3x-supply";
+> > +               enable-active-high;
+>
+> enable-active-high should only be used when there is a corresponding
+> gpio property.
+>
+> > +&ecspi3 {
+> > +       fsl,spi-num-chipselects =3D <1>;
+> > +       pinctrl-names =3D "default";
+> > +       pinctrl-0 =3D <&pinctrl_ecspi3>;
+> > +       cs-gpios =3D <&gpio4 24 GPIO_ACTIVE_HIGH>;
+>
+> This should be ACTIVE_LOW instead.
+>
+> > +       status =3D "okay";
+> > +};
+> > +
+> > +&fec {
+> > +       pinctrl-names =3D "default";
+> > +       pinctrl-0 =3D <&pinctrl_enet>;
+> > +       phy-mode =3D "rgmii";
+> > +       phy-reset-gpios =3D <&gpio1 25 GPIO_ACTIVE_LOW>;
+>
+> This is a deprecated property.
+>
+> The recommendation is to add a mdio node with:
+>
+> reset-gpios =3D <&gpio1 25 GPIO_ACTIVE_LOW>;
+> reset-assert-us =3D <10000>;
+>
+> Is this an Atheros AR8031 PHY. If so, please check imx6qdl-sabresd.dtsi.
 
-Ok.
+Hmm, the datasheet appears to indicate it uses a KSZ9031RN ethernet phy.
 
-> > use in the kernel the crypto material from other unsupported formats
-> > (e.g. PGP).
-> 
-> Where's the motivation part and where is this defined?
+Would that be a different configuration vs the Atheros AR8031 PHY?
 
-Ah, thanks for the reminder. Will add it in the next version.
-
-The motivations are:
-
-- Avoid adding complex parsers in the kernel that might introduce
-  vulnerabilities
-- Avoid adding support for key and signature formats that some consider
-  weak
-
-That was basically the summary of the review of my attempt to add
-support for PGP keys and signatures in the kernel.
-
-This patch set adds support for only one format, which other formats
-are converted from.
-
-This is useful for the mere extraction of crypto material, and use it
-with the kernel crypto API.
-
-If there is a trust relationships between the original keys, converting
-keys would lose the ability to verify that trust relationship.
-
-
-Example
-
-Suppose that there is a PGP key in the built-in keyring, and that
-signed another PGP key.
-
-If I want to add the second PGP key to the secondary keyring, I would
-have to verify the signature of that key with the first key.
-
-But the signature is on a PGP packet, so if the kernel verifies that
-signature it would have also to ensure that the public key extracted
-from the signed packet is the same as the converted key.
-
-Originally I thought that we could do the conversion in a fully
-isolated user space process (trustworthy User Mode Driver), so that
-there is the guarantee that the key has not been modified during the
-conversion. However, since it is difficult to achieve perfect
-isolation, that approach has been put on hold.
-
-So, at the moment, verifying trust with user asymmetric keys is not
-possible, but this is not a problem with my use case, as a Linux
-distributions can embed in the kernel all their (converted) public keys
-directly usable for signature verification.
-
-Thanks
-
-Roberto
-
+>
+> > +&ssi2 {
+> > +       fsl,mode =3D "i2s-slave";
+>
+> This is unused, drop it.
+>
+> Please check commit ece1e4999 606 ("ASoC: fsl_ssi: Remove unneeded
+> 'i2s-slave' property")
+>
+> > +&usdhc3 {
+> > +       pinctrl-names =3D "default", "state_100mhz", "state_200mhz";
+> > +       pinctrl-0 =3D <&pinctrl_usdhc3>;
+> > +       pinctrl-1 =3D <&pinctrl_usdhc3_100mhz>;
+> > +       pinctrl-2 =3D <&pinctrl_usdhc3_200mhz>;
+> > +       bus-width =3D <4>;
+> > +       vmmc-supply =3D <&reg_wl18xx_vmmc>;
+> > +       non-removable;
+> > +       wakeup-source;
+> > +       keep-power-in-suspend;
+> > +       cap-power-off-card;
+> > +       #address-cells =3D <1>;
+> > +       #size-cells =3D <0>;
+> > +       status =3D "okay";
+> > +
+> > +       wifi: wifi@0 {
+> > +               compatible =3D "ti,wl1835";
+> > +               reg =3D <2>;
+>
+> @0 and reg =3D <2> do not match.
