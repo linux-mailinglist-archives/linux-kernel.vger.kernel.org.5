@@ -2,138 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F7975BD89
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 06:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B97A75BD85
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 06:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbjGUExf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 00:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
+        id S229685AbjGUExG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 00:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjGUExc (ORCPT
+        with ESMTP id S229553AbjGUExF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 00:53:32 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C50B272C;
-        Thu, 20 Jul 2023 21:53:24 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36L4qwGr081690;
-        Thu, 20 Jul 2023 23:52:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1689915178;
-        bh=TJB0W8uMKkqeSiZJdeJ9vBNC463NlZcRNM7y5mRiSUA=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=UB9G2KGJR4bewLFkwJPxog4MvcNVgTiY5aS8SCtv/xGgc5HbRJut9yKXtA9hM5Zy7
-         0r1dUSs2xTEN0XiLEGu+DwfVqoMK/NWBMAeOSG91xcvf/InbH68Id85/looHpprFmy
-         47nkEnk7kpEoPRYoNw7Xfv3trNxZtvZ/C4ROqk8Y=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36L4qwQv106168
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 20 Jul 2023 23:52:58 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 20
- Jul 2023 23:52:58 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 20 Jul 2023 23:52:58 -0500
-Received: from [172.24.227.217] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36L4qqfd066510;
-        Thu, 20 Jul 2023 23:52:52 -0500
-Message-ID: <4f793128-815c-dadd-f5d6-cb2603d2bee9@ti.com>
-Date:   Fri, 21 Jul 2023 10:22:51 +0530
+        Fri, 21 Jul 2023 00:53:05 -0400
+Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14D1E75
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 21:53:03 -0700 (PDT)
+Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-565dd317fe8so2991653eaf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 21:53:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689915183; x=1690519983;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Js2Upn+zwZw4WcaAO+zbiZwV46tZ4B6/iX71dX2fu/w=;
+        b=O9XXnkUeLGDclQRKaz8h9A/2sZ5YJ4d1xetpexS/MYCGjeGaiBsVAzoRLRk+ZGfCI0
+         jYhwoZMJGmSoPWJhsKZ38bgnFwBMwimZ92MxAnAkP6CGXSiL/a0MyAVlrSmnUPeARDxG
+         cG5yMcQCUkxjSjSIHDg3jM7290UPtRUO+e3KkqRPaJPtF/cMaxsBbOVS3dfEJ2i3HOqu
+         e87nwlS8ubG+9kGE3ivNXJyieZc62uVrhanYXfEexu1ZTgBl75ioOsf41ruoIzatbprA
+         zkIigWH/ipd/fERj9P+v1GTpf4d+Z+3PM7v8jEsunxWUczoYBvmy6Hh/WSLZrlnC1LBs
+         kq+A==
+X-Gm-Message-State: ABy/qLZMby2TmTv0vB6xxK/OIDUmV3NHGAiaOzhKEqKzoTTIwWmNtdFV
+        nENypOSRc3XmjaXsm36HHVYtswi8bB8Nl+/Kbu9859cQ3acm
+X-Google-Smtp-Source: APBJJlFZEYt289OLUkqWSSa9bn5aO/ez072STodLuKHByuMqpIR4mHNBEcNSOGvrU+SvOMqWDdnZxWkn9wE4DliL4NBIE9+LlCsV
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH v10 2/2] net: ti:
- icssg-prueth: Add ICSSG ethernet driver
-Content-Language: en-US
-To:     Roger Quadros <rogerq@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        MD Danish Anwar <danishanwar@ti.com>
-CC:     Randy Dunlap <rdunlap@infradead.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230719082755.3399424-1-danishanwar@ti.com>
- <20230719082755.3399424-3-danishanwar@ti.com>
- <20230719213543.0380e13e@kernel.org>
- <17cd1e70-73bc-78d5-7e9d-7b133d6f464b@ti.com>
- <2c9f7a88-1a99-73ce-e924-0effef399719@kernel.org>
-From:   Md Danish Anwar <a0501179@ti.com>
-Organization: Texas Instruments
-In-Reply-To: <2c9f7a88-1a99-73ce-e924-0effef399719@kernel.org>
+X-Received: by 2002:a4a:52d6:0:b0:569:a08a:d9c2 with SMTP id
+ d205-20020a4a52d6000000b00569a08ad9c2mr1830319oob.1.1689915183170; Thu, 20
+ Jul 2023 21:53:03 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 21:53:03 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000318ac80600f80ada@google.com>
+Subject: [syzbot] [fs?] general protection fault in iommu_deinit_device
+From:   syzbot <syzbot+a8bd07230391c0c577c2@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/23 1:11 am, Roger Quadros wrote:
-> Hi Danish,
-> 
-> On 20/07/2023 14:42, Md Danish Anwar wrote:
->> Hi Jakub,
->>
->> On 20/07/23 10:05 am, Jakub Kicinski wrote:
->>> The patch is too big to review.
->>>
->>> Please break it apart separating into individual features, targeting
->>> around 10 patches in the series. That will make it easier for reviewers
->>> to take a look at the features in which they have expertise.
->>>
->>
->> Sure Jakub. I will try to break this patch in multiple patches as below.
->>
->> Patch 1: Introduce Firmware mapping for the driver (icss_switch_map.h)
->>
->> Patch 2: Introduce mii helper APIs. (icssg_mii_rt.h and icssg_mii_cfg.h). This
->> patch will also introduce basic prueth and emac structures in icssg_prueth.h as
->> these structures will be used by the helper APIs.
->>
->> Patch 3: Introduce firmware configuration and classification APIs.
->> (icssg_classifier.c, icssg_config.h and icssg_config.c)
->>
->> Patch 4: Introduce APIs for ICSSG Queues (icssg_queues.c)
->>
->> Patch 5: Introduce ICSSG Ethernet driver. (icssg_prueth.c and icssg_prueth.h)
->> This patch will enable the driver and basic functionality can work after this
->> patch. This patch will be using all the APIs introduced earlier. This patch
->> will also include Kconfig and Makefile changes.
-> 
-> DT binding documentation patch can come here.
-> 
+Hello,
 
-Sure, Roger. I will add DT binding documentation patch here.
+syzbot found the following issue on:
 
->>
->> Patch 6: Enable standard statistics via ndo_get_stats64
->>
->> Patch 7: Introduce ethtool ops for ICSSG
->>
->> Patch 8: Introduce power management support (suspend / resume APIs)
->>
-> 
-> <snip>
-> 
+HEAD commit:    2205be537aeb Add linux-next specific files for 20230717
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=110613faa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=173c0f005722ecc3
+dashboard link: https://syzkaller.appspot.com/bug?extid=a8bd07230391c0c577c2
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e4f18ea80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1480be3ea80000
 
--- 
-Thanks and Regards,
-Danish.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/30f27c4289e7/disk-2205be53.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/67e0e47344f7/vmlinux-2205be53.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e542d8c69716/bzImage-2205be53.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a8bd07230391c0c577c2@syzkaller.appspotmail.com
+
+iommufd_mock iommufd_mock0: Adding to iommu group 0
+iommufd_mock iommufd_mock0: Removing from iommu group 0
+general protection fault, probably for non-canonical address 0xdffffc0000000006: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000030-0x0000000000000037]
+CPU: 0 PID: 5031 Comm: syz-executor409 Not tainted 6.5.0-rc1-next-20230717-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+RIP: 0010:sysfs_remove_link_from_group+0x2b/0x80 fs/sysfs/group.c:413
+Code: 0f 1e fa 41 54 49 89 d4 55 48 89 f5 53 48 89 fb e8 ba 13 73 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 39 48 8b 7b 30 31 d2 48 89 ee e8 81 f2 fe ff 48 85
+RSP: 0018:ffffc90003adfc18 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000006 RSI: ffffffff8213b9d6 RDI: 0000000000000030
+RBP: ffffffff8adb0760 R08: 0000000000000001 R09: ffffed10280ca11b
+R10: ffff8881406508df R11: ffffffff8a345578 R12: ffff888022507500
+R13: ffffffff8d519e20 R14: ffff888015ab8450 R15: ffff888015ab8448
+FS:  00005555570f1380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000000 CR3: 00000000226b9000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ iommu_deinit_device+0x111/0x580 drivers/iommu/iommu.c:401
+ __iommu_group_remove_device+0x296/0x390 drivers/iommu/iommu.c:573
+ iommu_group_remove_device+0x7e/0xa0 drivers/iommu/iommu.c:1170
+ mock_dev_destroy drivers/iommu/iommufd/selftest.c:396 [inline]
+ iommufd_test_mock_domain drivers/iommu/iommufd/selftest.c:452 [inline]
+ iommufd_test+0x1b92/0x2c70 drivers/iommu/iommufd/selftest.c:950
+ iommufd_fops_ioctl+0x347/0x4d0 drivers/iommu/iommufd/main.c:337
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f732a69e2e9
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe820edd58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffe820edf28 RCX: 00007f732a69e2e9
+RDX: 0000000020000100 RSI: 0000000000003ba0 RDI: 0000000000000003
+RBP: 00007f732a711610 R08: 0000000000000000 R09: 00007ffe820edf28
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffe820edf18 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:sysfs_remove_link_from_group+0x2b/0x80 fs/sysfs/group.c:413
+Code: 0f 1e fa 41 54 49 89 d4 55 48 89 f5 53 48 89 fb e8 ba 13 73 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 39 48 8b 7b 30 31 d2 48 89 ee e8 81 f2 fe ff 48 85
+RSP: 0018:ffffc90003adfc18 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000006 RSI: ffffffff8213b9d6 RDI: 0000000000000030
+RBP: ffffffff8adb0760 R08: 0000000000000001 R09: ffffed10280ca11b
+R10: ffff8881406508df R11: ffffffff8a345578 R12: ffff888022507500
+R13: ffffffff8d519e20 R14: ffff888015ab8450 R15: ffff888015ab8448
+FS:  00005555570f1380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055d13f5f7530 CR3: 00000000226b9000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	0f 1e fa             	nop    %edx
+   3:	41 54                	push   %r12
+   5:	49 89 d4             	mov    %rdx,%r12
+   8:	55                   	push   %rbp
+   9:	48 89 f5             	mov    %rsi,%rbp
+   c:	53                   	push   %rbx
+   d:	48 89 fb             	mov    %rdi,%rbx
+  10:	e8 ba 13 73 ff       	call   0xff7313cf
+  15:	48 8d 7b 30          	lea    0x30(%rbx),%rdi
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	75 39                	jne    0x69
+  30:	48 8b 7b 30          	mov    0x30(%rbx),%rdi
+  34:	31 d2                	xor    %edx,%edx
+  36:	48 89 ee             	mov    %rbp,%rsi
+  39:	e8 81 f2 fe ff       	call   0xfffef2bf
+  3e:	48                   	rex.W
+  3f:	85                   	.byte 0x85
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
