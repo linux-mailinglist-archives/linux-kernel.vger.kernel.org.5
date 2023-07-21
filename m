@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D048E75C66D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DB075C66F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbjGUMDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 08:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55700 "EHLO
+        id S230426AbjGUMEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjGUMDo (ORCPT
+        with ESMTP id S231250AbjGUMEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:03:44 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4296D19B3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:03:23 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fbf09a9139so3044327e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:03:23 -0700 (PDT)
+        Fri, 21 Jul 2023 08:04:15 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8EA30E1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:03:55 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fb7769f15aso2937596e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:03:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689941000; x=1690545800;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=IhkoDF78CCv7y5GQYbbsjZT44iTH15rIG128hk87YQc=;
-        b=JBT7HZNg/+51OOwGNYhejjohC3pQ8vhkr4nA5qcrwkIWAETyzDUWiCAEpzh4SK1YkZ
-         JveSjdBTPPbpZflUrtS93foCZMRht4kIgbltSJ/UFedBgJyDLN7C5S0uoDmH4WGSbl+w
-         /SBZlTNx1u3NQog52Pxqm5MFiDKTEtBw9/xlSQE3bXIRrOK604PrdKhzaTCB/d5Upo1K
-         ByTHDugbdPIE51TWQ0zgfrDyFrNgp+cZKJEVvefKqbJk4txy8VMxt7Y2gejrB0B3tfvV
-         gwQ4YxEIsmVJWNuXcuOgPbOvztUqp3CQz9XoVobyMPTyHrrakFkKR/Lv9geknSs0tlM6
-         fjrA==
+        d=linaro.org; s=google; t=1689941029; x=1690545829;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=paNfMqeWB24EZk/3dIV6VzBkkNTgHoYC3ceRjNDxxBY=;
+        b=qHopFLvzBA4yK1nozgGFfp7svoMLymvAoCQ86IPIK6qKUWOqWIBbcRJgaDWEptilpp
+         /QvK5xPfGE6Y9kRsl05LdQVRenx+TQjMiPCR/MDLoCMGbdqsy+iZg1Zv6zQ9857AurxM
+         gzf6iKwDX2jXzPJTh3G1GVGmkVlkX57PbPIY/TS2oXUQdQ2KdPmDaa61hK/UZJ30SJWF
+         gKeEnsa/ZPLKiwXV2gEI9CoGvrslqDrdJH/u4O4zbV4lW0i/oo53MUJxVJGVk+iM1xmL
+         /+pvTiukjWZ1MvVco835xz9wvtzpE8MvBRezUNyUtH5Hpm7M1GPpt0fjmQnmUffl6VVq
+         O/Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689941000; x=1690545800;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IhkoDF78CCv7y5GQYbbsjZT44iTH15rIG128hk87YQc=;
-        b=gc40xTBUYY+hja1ePKKzGjXr8akgkfzGoMtyi7ooCivDwTsPb5v37RD43n1ikUSdGD
-         8h6RX/SVc20XHT5CGIqKyRnRYRQMxs92MTGiJzWPclouw6cAPQasfoQX9ULelWgEXOas
-         6TreRnDiIvizByXbL4LmoTlOfhVRmW7xsrZn+KZFIuLyrvZSlZWRRgrIZqzCqP2sU+oc
-         gi1rwsAJH1i8NFrFfWPUlqRhK6dR8qU5FmA1REKpeLcm9OzSc0NHq3FIhX7KnMn0jxyh
-         qWek6DLiqpPk2BfVHO1XhAwMk2Tjo33BzGCckoD298XOhmMYw6BOu5eAbUY5/Aej55Pk
-         jthw==
-X-Gm-Message-State: ABy/qLZZkQL5uekwMRGIV9Rzlco2Qky3zJNw8ytTsFUbjtbNDNVgk33X
-        P94BMEAktkgrFY8fJeYop1CkfA==
-X-Google-Smtp-Source: APBJJlFGmpYr3UvI/UTEAO4mdaH2ulDlpGO5iK6eLCqJ87k4vm0gVfwsJpQK9hsB1IjkHPsU27C2tQ==
-X-Received: by 2002:a19:6541:0:b0:4f9:5404:af5 with SMTP id c1-20020a196541000000b004f954040af5mr1091273lfj.46.1689940999971;
-        Fri, 21 Jul 2023 05:03:19 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689941029; x=1690545829;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=paNfMqeWB24EZk/3dIV6VzBkkNTgHoYC3ceRjNDxxBY=;
+        b=dKVH2kK+H8WAvOWCbZmJCPLFM9kyxwIfZY4s/vquB5L8Wb4P6mY9H5NTnzfxdYnkZL
+         U9GwBwhcIKnrvdAHkGebmiiyy1sDYNuat+ehUxR134PqcGPR56OC5nqOMp4cr2+xb39P
+         3wu5KRPLL+wcmxnYZQxi6iyi1ABXPjyU/9XL2Mjeg+wFeVISvYYQVtVLk4i3nKrKCfqK
+         qU6MRJw5IK09x3ZW9PlVHHfEByu4DqCj+7ItxXTol9UtG7HdTVp+SNcDc5F/QRJ/LfiG
+         l/gs3WyDUZawEdD0wkljjjeW1n92D3CXrmNYm6lAq82bOgBtojSFBqhIxWfK1blSboVy
+         uK9Q==
+X-Gm-Message-State: ABy/qLYLKox3o03AgyBD1MknVfOcPNG026nz8rOHrDl6g/h4uStTeehN
+        y83BK78Gp4XBPT6bKnqnGjSm5UaxWFD+wigK1N/bBA==
+X-Google-Smtp-Source: APBJJlGS7ahf9rNV9AxYF9kEskXbalWEw4SurNvdwqDR9+Do+rP/J7pelu5kfPZnKQNPD0X/XiXsRA==
+X-Received: by 2002:ac2:58ed:0:b0:4f8:7803:64e6 with SMTP id v13-20020ac258ed000000b004f8780364e6mr1055063lfo.41.1689941029058;
+        Fri, 21 Jul 2023 05:03:49 -0700 (PDT)
 Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
-        by smtp.gmail.com with ESMTPSA id l14-20020ac2554e000000b004fbacee6028sm698628lfk.110.2023.07.21.05.03.17
+        by smtp.gmail.com with ESMTPSA id l14-20020ac2554e000000b004fbacee6028sm698628lfk.110.2023.07.21.05.03.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 05:03:19 -0700 (PDT)
-Message-ID: <3e1d650d-7c5b-381c-464f-3c464c056a1b@linaro.org>
-Date:   Fri, 21 Jul 2023 14:03:16 +0200
+        Fri, 21 Jul 2023 05:03:48 -0700 (PDT)
+Message-ID: <cdf4ca94-99cd-0736-acd1-0bb63d7dde7c@linaro.org>
+Date:   Fri, 21 Jul 2023 14:03:47 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] interconnect: qcom: qcm2290: Enable sync state
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230720-topic-qcm2290_icc-v1-0-7f67f2e259c1@linaro.org>
- <20230720-topic-qcm2290_icc-v1-2-7f67f2e259c1@linaro.org>
- <ZLmQdjDgIbbhyTMJ@gerhold.net>
+Subject: Re: [PATCH] mailmap: Update remaining active codeaurora.org email
+ addresses
 Content-Language: en-US
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20230720210256.1296567-1-quic_bjorande@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -104,7 +99,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <ZLmQdjDgIbbhyTMJ@gerhold.net>
+In-Reply-To: <20230720210256.1296567-1-quic_bjorande@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -117,26 +112,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.07.2023 21:52, Stephan Gerhold wrote:
-> On Thu, Jul 20, 2023 at 08:24:01PM +0200, Konrad Dybcio wrote:
->> Very surprisingly, qcm2290 does not seem to require any interface
->> clocks.
+On 20.07.2023 23:02, Bjorn Andersson wrote:
+> The lack of mailmap updates for @codeaurora.org addresses reduces the
+> usefulness of tools such as get_maintainer.pl. Some recent (and
+> welcome!) additions has been made to improve the situation, this
+> concludes the effort.
 > 
-> What does this mean exactly? The interconnect .sync_state() is
-> responsible to drop the initial maximum bandwidth votes, with the
-> assumption that all active devices have voted for the bandwidth they
-> need. How does this relate to "requiring interface clocks"?
-If it required such clocks to be present, sync_state could not
-complete, as trying to access some nodes would crash the platform
-due to unclocked access.
-
-> 
->> It's therefore safe to enable sync_state to park unused devices.
->> Do so.
-> 
-> Doesn't this make everything painfully slow? There are no interconnect
-> consumers at all in qcm2290.dtsi. I would expect that all bandwidths
-> end up at minimum.
-There are no interconnect providers defined in qcm2290.dtsi.
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+Finally somebody got around to do this. Thanks a lot.
 
 Konrad
