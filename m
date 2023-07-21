@@ -2,57 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC88E75D5C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E86475D5C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbjGUU35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:29:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
+        id S229872AbjGUUbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjGUU3z (ORCPT
+        with ESMTP id S229920AbjGUUb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:29:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B410E0;
-        Fri, 21 Jul 2023 13:29:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 03B8561D9E;
-        Fri, 21 Jul 2023 20:29:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2434FC433C9;
-        Fri, 21 Jul 2023 20:29:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689971393;
-        bh=XYmhbJIe+hh0dz93/kek9xodyfiBcV/T+AblsXSkuHA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HXmEvQOXkkWnlKqGWST0aiMRT/r2Mrji8/dMY+vde/2Fzb12jB6gJMjNg/ywo8oTI
-         IR98+jQjyxN9Q2HvDSRhjzzFXCT9kzuQZypaZjOyoTfZ8+ZztSBM9Q2KOyRbokqSJB
-         ZdxI+B9HUnfGfIfN1QXlfrxDjnEWoRiKvTcstQKpolw2vQdlLqzbKtflVEYRaq8Qca
-         4573Thk7IwWdGNCqunXVkpo/e+8sH9Jh68pZdFLE1FAHNmanRHFlhJ7aLWAjXNckMs
-         aA/jaWaFdu6hK8guat+evkU12tb4fmKz8FoNgIJsXo2SyPJ0yXbOcZ2LmxxWGMxsJO
-         nPOxgOJudDTTA==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.1 000/223] 6.1.40-rc1 review
-Date:   Fri, 21 Jul 2023 20:29:50 +0000
-Message-Id: <20230721202950.61910-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230721160520.865493356@linuxfoundation.org>
-References: 
+        Fri, 21 Jul 2023 16:31:29 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABF81FD2;
+        Fri, 21 Jul 2023 13:31:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689971486; x=1721507486;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xych12fXAllQmfKXQOtduucuGRdzVWia+wDdseBLe4E=;
+  b=PDfOfxjioxfxKPyAAPpyAtz9YU/ZwvwcaODR3q2mO1lMsiHgeBNcx7a/
+   6CUxWMW5vGe28pKEmApkvkN6XFSRsYme8Dxb382miXSO7WSJziAVxZEss
+   egaB6l2txffrXA9ErRlXYoldB5IS7dpeQzzWFo8m382+mRZoBb/YdjtOX
+   jmf1hFVR3Z1I1wAeLAs7CwE4M530oDdk6wrn6S2u4Tzy5vT6rjIrWcTKp
+   TlI5FEb2TTWZ+M9F4/GLuvHUXehEixjgBBbpNXQqhMMht9bptzJ0LHU/O
+   OlLTwoyKgxICgbak8OYCfkkuAk5Oc727DWdVbm/msz/j3m3NCceTMCjqW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="430905729"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="430905729"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 13:31:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="728224177"
+X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
+   d="scan'208";a="728224177"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 21 Jul 2023 13:31:21 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qMwmW-0007dx-0p;
+        Fri, 21 Jul 2023 20:31:20 +0000
+Date:   Sat, 22 Jul 2023 04:31:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Marco Felsch <m.felsch@pengutronix.de>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, peppe.cavallaro@st.com,
+        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        mcoquelin.stm32@gmail.com
+Cc:     oe-kbuild-all@lists.linux.dev, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v3 2/2] net: stmmac: add support for phy-supply
+Message-ID: <202307220459.2gaQtSqH-lkp@intel.com>
+References: <20230720072304.3358701-2-m.felsch@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720072304.3358701-2-m.felsch@pengutronix.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,60 +72,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Marco,
 
-On Fri, 21 Jul 2023 18:04:13 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+kernel test robot noticed the following build errors:
 
-> This is the start of the stable review cycle for the 6.1.40 release.
-> There are 223 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 23 Jul 2023 16:04:33 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.40-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
+[auto build test ERROR on net-next/main]
 
-I confirmed that this rc kernel passes DAMON functionality test[1] on my test
-machine.  Attaching the test results summary below.
+url:    https://github.com/intel-lab-lkp/linux/commits/Marco-Felsch/net-stmmac-add-support-for-phy-supply/20230720-152642
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20230720072304.3358701-2-m.felsch%40pengutronix.de
+patch subject: [PATCH net-next v3 2/2] net: stmmac: add support for phy-supply
+config: x86_64-kexec (https://download.01.org/0day-ci/archive/20230722/202307220459.2gaQtSqH-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230722/202307220459.2gaQtSqH-lkp@intel.com/reproduce)
 
-Tested-by: SeongJae Park <sj@kernel.org>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307220459.2gaQtSqH-lkp@intel.com/
 
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
+All errors (new ones prefixed by >>):
+
+   drivers/net/ethernet/stmicro/stmmac/stmmac_main.c: In function 'stmmac_suspend':
+>> drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:7706:32: error: 'struct plat_stmmacenet_data' has no member named 'use_phy_wol'
+    7706 |                 if (!priv->plat->use_phy_wol)
+         |                                ^~
+   drivers/net/ethernet/stmicro/stmmac/stmmac_main.c: In function 'stmmac_resume':
+   drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:7790:32: error: 'struct plat_stmmacenet_data' has no member named 'use_phy_wol'
+    7790 |                 if (!priv->plat->use_phy_wol)
+         |                                ^~
 
 
-Thanks,
-SJ
+vim +7706 drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 
-[...]
+  7651	
+  7652	/**
+  7653	 * stmmac_suspend - suspend callback
+  7654	 * @dev: device pointer
+  7655	 * Description: this is the function to suspend the device and it is called
+  7656	 * by the platform driver to stop the network queue, release the resources,
+  7657	 * program the PMT register (for WoL), clean and release driver resources.
+  7658	 */
+  7659	int stmmac_suspend(struct device *dev)
+  7660	{
+  7661		struct net_device *ndev = dev_get_drvdata(dev);
+  7662		struct stmmac_priv *priv = netdev_priv(ndev);
+  7663		u32 chan;
+  7664	
+  7665		if (!ndev || !netif_running(ndev))
+  7666			return 0;
+  7667	
+  7668		mutex_lock(&priv->lock);
+  7669	
+  7670		netif_device_detach(ndev);
+  7671	
+  7672		stmmac_disable_all_queues(priv);
+  7673	
+  7674		for (chan = 0; chan < priv->plat->tx_queues_to_use; chan++)
+  7675			hrtimer_cancel(&priv->dma_conf.tx_queue[chan].txtimer);
+  7676	
+  7677		if (priv->eee_enabled) {
+  7678			priv->tx_path_in_lpi_mode = false;
+  7679			del_timer_sync(&priv->eee_ctrl_timer);
+  7680		}
+  7681	
+  7682		/* Stop TX/RX DMA */
+  7683		stmmac_stop_all_dma(priv);
+  7684	
+  7685		if (priv->plat->serdes_powerdown)
+  7686			priv->plat->serdes_powerdown(ndev, priv->plat->bsp_priv);
+  7687	
+  7688		/* Enable Power down mode by programming the PMT regs */
+  7689		if (device_may_wakeup(priv->device) && priv->plat->pmt) {
+  7690			stmmac_pmt(priv, priv->hw, priv->wolopts);
+  7691			priv->irq_wake = 1;
+  7692		} else {
+  7693			stmmac_mac_set(priv, priv->ioaddr, false);
+  7694			pinctrl_pm_select_sleep_state(priv->device);
+  7695		}
+  7696	
+  7697		mutex_unlock(&priv->lock);
+  7698	
+  7699		rtnl_lock();
+  7700		if (device_may_wakeup(priv->device) && priv->plat->pmt) {
+  7701			phylink_suspend(priv->phylink, true);
+  7702		} else {
+  7703			if (device_may_wakeup(priv->device))
+  7704				phylink_speed_down(priv->phylink, false);
+  7705			phylink_suspend(priv->phylink, false);
+> 7706			if (!priv->plat->use_phy_wol)
+  7707				stmmac_phy_power_off(priv);
+  7708		}
+  7709		rtnl_unlock();
+  7710	
+  7711		if (priv->dma_cap.fpesel) {
+  7712			/* Disable FPE */
+  7713			stmmac_fpe_configure(priv, priv->ioaddr,
+  7714					     priv->plat->tx_queues_to_use,
+  7715					     priv->plat->rx_queues_to_use, false);
+  7716	
+  7717			stmmac_fpe_handshake(priv, false);
+  7718			stmmac_fpe_stop_wq(priv);
+  7719		}
+  7720	
+  7721		priv->speed = SPEED_UNKNOWN;
+  7722		return 0;
+  7723	}
+  7724	EXPORT_SYMBOL_GPL(stmmac_suspend);
+  7725	
 
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: sysfs.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_m68k.sh
-ok 12 selftests: damon-tests: build_arm64.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
-
-PASS
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
