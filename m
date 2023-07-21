@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BD975CC7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9DA75CC83
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbjGUPuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
+        id S232304AbjGUPue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232290AbjGUPuP (ORCPT
+        with ESMTP id S232308AbjGUPu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:50:15 -0400
+        Fri, 21 Jul 2023 11:50:28 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 910CD2D7E;
-        Fri, 21 Jul 2023 08:50:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7D1E63583;
+        Fri, 21 Jul 2023 08:50:18 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C48E12F4;
-        Fri, 21 Jul 2023 08:50:52 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CBEF1D75;
+        Fri, 21 Jul 2023 08:51:00 -0700 (PDT)
 Received: from e129166.arm.com (unknown [10.57.0.79])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 994C83F738;
-        Fri, 21 Jul 2023 08:50:06 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9FB213F738;
+        Fri, 21 Jul 2023 08:50:09 -0700 (PDT)
 From:   Lukasz Luba <lukasz.luba@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         rafael@kernel.org
@@ -29,9 +29,9 @@ Cc:     lukasz.luba@arm.com, dietmar.eggemann@arm.com, rui.zhang@intel.com,
         daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
         len.brown@intel.com, pavel@ucw.cz, Pierre.Gondois@arm.com,
         ionela.voinescu@arm.com, mhiramat@kernel.org
-Subject: [PATCH v3 03/12] PM: EM: Refactor em_pd_get_efficient_state() to be more flexible
-Date:   Fri, 21 Jul 2023 16:50:13 +0100
-Message-Id: <20230721155022.2339982-4-lukasz.luba@arm.com>
+Subject: [PATCH v3 04/12] PM: EM: Refactor a new function em_compute_costs()
+Date:   Fri, 21 Jul 2023 16:50:14 +0100
+Message-Id: <20230721155022.2339982-5-lukasz.luba@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230721155022.2339982-1-lukasz.luba@arm.com>
 References: <20230721155022.2339982-1-lukasz.luba@arm.com>
@@ -46,95 +46,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Energy Model (EM) is going to support runtime modification. There
-are going to be 2 EM tables which store information. This patch aims
-to prepare the code to be generic and use one of the tables. The function
-will no longer get a pointer to 'struct em_perf_domain' (the EM) but instead
-a pointer to 'struct em_perf_state' (which is one of the EM's tables).
-
-Prepare em_pd_get_efficient_state() for the upcoming changes and
-make it possible to re-use. Return an index for the best performance
-state for a given EM table. The function arguments that are introduced
-should allow to work on different performance state arrays. The caller of
-em_pd_get_efficient_state() should be able to use the index either
-on the default or the modifiable EM table.
+Refactor a dedicated function which will be easier to maintain and re-use
+in future. The upcoming changes for the modifiable EM perf_state table
+will use it (instead of duplicating the code).
 
 Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 ---
- include/linux/energy_model.h | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+ kernel/power/energy_model.c | 72 ++++++++++++++++++++++---------------
+ 1 file changed, 43 insertions(+), 29 deletions(-)
 
-diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index b9caa01dfac4..8069f526c9d8 100644
---- a/include/linux/energy_model.h
-+++ b/include/linux/energy_model.h
-@@ -175,33 +175,35 @@ void em_dev_unregister_perf_domain(struct device *dev);
+diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+index 85a70b7da023..fd1066dcf38b 100644
+--- a/kernel/power/energy_model.c
++++ b/kernel/power/energy_model.c
+@@ -103,14 +103,52 @@ static void em_debug_create_pd(struct device *dev) {}
+ static void em_debug_remove_pd(struct device *dev) {}
+ #endif
  
- /**
-  * em_pd_get_efficient_state() - Get an efficient performance state from the EM
-- * @pd   : Performance domain for which we want an efficient frequency
-- * @freq : Frequency to map with the EM
-+ * @state:		List of performance states, in ascending order
-+ * @nr_perf_states:	Number of performance states
-+ * @freq:		Frequency to map with the EM
-+ * @pd_flags:		Performance Domain flags
-  *
-  * It is called from the scheduler code quite frequently and as a consequence
-  * doesn't implement any check.
-  *
-- * Return: An efficient performance state, high enough to meet @freq
-+ * Return: An efficient performance state id, high enough to meet @freq
-  * requirement.
-  */
--static inline
--struct em_perf_state *em_pd_get_efficient_state(struct em_perf_domain *pd,
--						unsigned long freq)
-+static inline int
-+em_pd_get_efficient_state(struct em_perf_state *table, int nr_perf_states,
-+			  unsigned long freq, unsigned long pd_flags)
++static int em_compute_costs(struct device *dev, struct em_perf_state *table,
++			    struct em_data_callback *cb, int nr_states,
++			    unsigned long flags)
++{
++	unsigned long prev_cost = ULONG_MAX;
++	u64 fmax;
++	int i, ret;
++
++	/* Compute the cost of each performance state. */
++	fmax = (u64) table[nr_states - 1].frequency;
++	for (i = nr_states - 1; i >= 0; i--) {
++		unsigned long power_res, cost;
++
++		if (flags & EM_PERF_DOMAIN_ARTIFICIAL) {
++			ret = cb->get_cost(dev, table[i].frequency, &cost);
++			if (ret || !cost || cost > EM_MAX_POWER) {
++				dev_err(dev, "EM: invalid cost %lu %d\n",
++					cost, ret);
++				return -EINVAL;
++			}
++		} else {
++			power_res = table[i].power;
++			cost = div64_u64(fmax * power_res, table[i].frequency);
++		}
++
++		table[i].cost = cost;
++
++		if (table[i].cost >= prev_cost) {
++			table[i].flags = EM_PERF_STATE_INEFFICIENT;
++			dev_dbg(dev, "EM: OPP:%lu is inefficient\n",
++				table[i].frequency);
++		} else {
++			prev_cost = table[i].cost;
++		}
++	}
++
++	return 0;
++}
++
+ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
+ 				int nr_states, struct em_data_callback *cb,
+ 				unsigned long flags)
  {
- 	struct em_perf_state *ps;
- 	int i;
+-	unsigned long power, freq, prev_freq = 0, prev_cost = ULONG_MAX;
++	unsigned long power, freq, prev_freq = 0;
+ 	struct em_perf_state *table;
+ 	int i, ret;
+-	u64 fmax;
  
--	for (i = 0; i < pd->nr_perf_states; i++) {
--		ps = &pd->table[i];
-+	for (i = 0; i < nr_perf_states; i++) {
-+		ps = &table[i];
- 		if (ps->frequency >= freq) {
--			if (pd->flags & EM_PERF_DOMAIN_SKIP_INEFFICIENCIES &&
-+			if (pd_flags & EM_PERF_DOMAIN_SKIP_INEFFICIENCIES &&
- 			    ps->flags & EM_PERF_STATE_INEFFICIENT)
- 				continue;
--			break;
-+			return i;
- 		}
+ 	table = kcalloc(nr_states, sizeof(*table), GFP_KERNEL);
+ 	if (!table)
+@@ -154,33 +192,9 @@ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
+ 		table[i].frequency = prev_freq = freq;
  	}
  
--	return ps;
-+	return nr_perf_states - 1;
- }
+-	/* Compute the cost of each performance state. */
+-	fmax = (u64) table[nr_states - 1].frequency;
+-	for (i = nr_states - 1; i >= 0; i--) {
+-		unsigned long power_res, cost;
+-
+-		if (flags & EM_PERF_DOMAIN_ARTIFICIAL) {
+-			ret = cb->get_cost(dev, table[i].frequency, &cost);
+-			if (ret || !cost || cost > EM_MAX_POWER) {
+-				dev_err(dev, "EM: invalid cost %lu %d\n",
+-					cost, ret);
+-				goto free_ps_table;
+-			}
+-		} else {
+-			power_res = table[i].power;
+-			cost = div64_u64(fmax * power_res, table[i].frequency);
+-		}
+-
+-		table[i].cost = cost;
+-
+-		if (table[i].cost >= prev_cost) {
+-			table[i].flags = EM_PERF_STATE_INEFFICIENT;
+-			dev_dbg(dev, "EM: OPP:%lu is inefficient\n",
+-				table[i].frequency);
+-		} else {
+-			prev_cost = table[i].cost;
+-		}
+-	}
++	ret = em_compute_costs(dev, table, cb, nr_states, flags);
++	if (ret)
++		goto free_ps_table;
  
- /**
-@@ -226,7 +228,7 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- {
- 	unsigned long freq, scale_cpu;
- 	struct em_perf_state *ps;
--	int cpu;
-+	int cpu, i;
- 
- 	if (!sum_util)
- 		return 0;
-@@ -251,7 +253,9 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- 	 * Find the lowest performance state of the Energy Model above the
- 	 * requested frequency.
- 	 */
--	ps = em_pd_get_efficient_state(pd, freq);
-+	i = em_pd_get_efficient_state(pd->table, pd->nr_perf_states, freq,
-+				      pd->flags);
-+	ps = &pd->table[i];
- 
- 	/*
- 	 * The capacity of a CPU in the domain at the performance state (ps)
+ 	pd->table = table;
+ 	pd->nr_perf_states = nr_states;
 -- 
 2.25.1
 
