@@ -2,118 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5514D75D519
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 21:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C3775D51C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 21:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbjGUTfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 15:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
+        id S230046AbjGUTgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 15:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbjGUTfl (ORCPT
+        with ESMTP id S229575AbjGUTg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 15:35:41 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FCBE68
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 12:35:39 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b8b4749013so17045315ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 12:35:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1689968139; x=1690572939;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zzRV4jT/UtNnsNIK2YvG3L4X5UH72+69TP4OaQhmPt4=;
-        b=JfMGnrE+g4/SdXqp/ILAdh8OXvsFjfzKETJHY+EhlewfKhrwUZ7RoTSzKYzg/yardc
-         q8Kxwh36Uh0alOQRzLpTJiv+muY/pM/0QMO13VqRNd6mSkBAuzE8Y6Vf1Vo8IF8VaYFm
-         ZM5I8a2BhNFvQNAEAJURcgSp2m2m3PC2Yx+Rwz8AdVzrHJ2A+N9Y24PPf8Vh2DLA9J7a
-         ys5PbTXsComhwHn7A1jDs56BwRrB4QZzXdF2e88pkpT0JViBziznq2TDlyxDGepnE2RY
-         LEfZFIh6ZBKtXl8gzi+XeNAIQCBJA3i3bAy6V+Bidl2HemJcbdaJ9FaBpp3xBvsdlW4l
-         zL3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689968139; x=1690572939;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zzRV4jT/UtNnsNIK2YvG3L4X5UH72+69TP4OaQhmPt4=;
-        b=KqS6pGa7cMbnonozucxX4ZXlGtCSZgfHNmOQrSZ3+ERvJhIfe9bQXRZd3fmIe2r11c
-         U9wQMHOgdVW7QoaGTjUN0umwNW6OcOY0tqvedRzNzkIzJJEAwtYAvyCnBWWfKKvDm15T
-         h7tTmrskHV9QV5DQHVqI6L4xOukChhFUnrUgbpR259bUfDr7PSt62Ien+TJgGZRvFrYw
-         5YZhwChDUVI1SSCPE+VRQlaElpOAJQD0E0wOA/NWqnySw8he7zeUWFlWnSgso0drRRwz
-         M5DON7amTMXwTJbm65Cix619e/ECfI8PrVLDM7OrX4rHCOZ1kKT1z8SpsIdxTJKpSfRK
-         pA/A==
-X-Gm-Message-State: ABy/qLYbb+vlaVsPj7THHSi4ewXu5Njwy2XaFh+AHUoP/5jMllSsYsv9
-        XMqOBIKGWObcIOiFxyA+su/FqA==
-X-Google-Smtp-Source: APBJJlErhC+VIXfffdNPDZMSDd2lEyokEWsGZ4siE0VrJXPYSeMfFCGzQlYHv6H7Qp1LgMkojZxgOQ==
-X-Received: by 2002:a17:903:120f:b0:1b8:4b87:20dc with SMTP id l15-20020a170903120f00b001b84b8720dcmr2955939plh.37.1689968139289;
-        Fri, 21 Jul 2023 12:35:39 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id p15-20020a170902e74f00b0019ee045a2b3sm3836250plf.308.2023.07.21.12.35.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 12:35:38 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qMvub-003IJe-Bf;
-        Fri, 21 Jul 2023 16:35:37 -0300
-Date:   Fri, 21 Jul 2023 16:35:37 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>, iommu@lists.linux.dev,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] iommu: Prevent RESV_DIRECT devices from blocking
- domains
-Message-ID: <ZLreCUIJoo1TfmVz@ziepe.ca>
-References: <20230713043248.41315-1-baolu.lu@linux.intel.com>
- <20230713043248.41315-2-baolu.lu@linux.intel.com>
+        Fri, 21 Jul 2023 15:36:29 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFE71715;
+        Fri, 21 Jul 2023 12:36:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+        bh=aHk9rd9AUE2gc3/xbDzbaMmyUHyYtCgU4AX8wh2Umso=; b=F+D/QjKe6pPtGBvURNrxNRYDUB
+        wjOpFUEleMgjf9lgxcn46aTbZjSbgTkfFBU2i3ve1wv+MHjXM25GNt9rhqcugEpLcNm27NBuKQEdO
+        QG1mWP+Wxi1N9+HgYsPy+k+jv/DsZ+F5jsYo9ooq7CDNS62LcaNmu2uMRHyp5uyR0nlV/fyvFXb0s
+        iq84uJdVW+fkQgIyQD5GF+YPLNPwIuVB53f/UcHthholS+lz0aDC0MUGUKwZ1tLlWpxTVGGXF+B2x
+        ilHxWHrQBn5ZV4HdxaR42aZI4mPRe151Mc0ehfxwo6qObQ9d+pZx4fXN5GsUnlYcPqrAjED1UfCgk
+        MKXJi2bg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qMvvD-00EyBM-2T;
+        Fri, 21 Jul 2023 19:36:15 +0000
+Date:   Fri, 21 Jul 2023 12:36:15 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>, wangkefeng.wang@huawei.com,
+        nathan@kernel.org, ndesaulniers@google.com, nicolas@fjasle.eu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH] modpost, kallsyms: Treat add '$'-prefixed symbols as
+ mapping symbols
+Message-ID: <ZLreL/9W28qSbhB3@bombadil.infradead.org>
+References: <20230721150147.11720-2-palmer@rivosinc.com>
+ <CAK7LNATF9pxJc0nU3NPnX_PFJr7gF6Baras548ULkO8XE98_VQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230713043248.41315-2-baolu.lu@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNATF9pxJc0nU3NPnX_PFJr7gF6Baras548ULkO8XE98_VQ@mail.gmail.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 12:32:47PM +0800, Lu Baolu wrote:
-> The IOMMU_RESV_DIRECT flag indicates that a memory region must be mapped
-> 1:1 at all times. This means that the region must always be accessible to
-> the device, even if the device is attached to a blocking domain. This is
-> equal to saying that IOMMU_RESV_DIRECT flag prevents devices from being
-> attached to blocking domains.
+On Sat, Jul 22, 2023 at 02:02:56AM +0900, Masahiro Yamada wrote:
+> On Sat, Jul 22, 2023 at 12:20 AM Palmer Dabbelt <palmer@rivosinc.com> wrote:
+> >
+> > Trying to restrict the '$'-prefix change to RISC-V caused some fallout,
+> > so let's just treat all those symbols as special.
+> >
+> > Fixes: c05780ef3c1 ("module: Ignore RISC-V mapping symbols too")
+> > Link: https://lore.kernel.org/all/20230712015747.77263-1-wangkefeng.wang@huawei.com/
+> > Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 > 
-> This also implies that devices that implement RESV_DIRECT regions will be
-> prevented from being assigned to user space since taking the DMA ownership
-> immediately switches to a blocking domain.
 > 
-> The rule of preventing devices with the IOMMU_RESV_DIRECT regions from
-> being assigned to user space has existed in the Intel IOMMU driver for
-> a long time. Now, this rule is being lifted up to a general core rule,
-> as other architectures like AMD and ARM also have RMRR-like reserved
-> regions. This has been discussed in the community mailing list and refer
-> to below link for more details.
-> 
-> Other places using unmanaged domains for kernel DMA must follow the
-> iommu_get_resv_regions() and setup IOMMU_RESV_DIRECT - we do not restrict
-> them in the core code.
-> 
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Cc: Kevin Tian <kevin.tian@intel.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> Link: https://lore.kernel.org/linux-iommu/BN9PR11MB5276E84229B5BD952D78E9598C639@BN9PR11MB5276.namprd11.prod.outlook.com
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  include/linux/iommu.h |  2 ++
->  drivers/iommu/iommu.c | 37 +++++++++++++++++++++++++++----------
->  2 files changed, 29 insertions(+), 10 deletions(-)
+> Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Patch applied and pushed, thanks!
 
-Jason
+  Luis
