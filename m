@@ -2,190 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B6775BDAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8941D75BDAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbjGUFPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 01:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
+        id S229691AbjGUFRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 01:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGUFPc (ORCPT
+        with ESMTP id S229450AbjGUFRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 01:15:32 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2079.outbound.protection.outlook.com [40.107.92.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD14619B2;
-        Thu, 20 Jul 2023 22:15:30 -0700 (PDT)
+        Fri, 21 Jul 2023 01:17:05 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2040.outbound.protection.outlook.com [40.107.6.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DF4E52;
+        Thu, 20 Jul 2023 22:17:00 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K1OiHD2tar/mAPuXzNGvRl3piUoEAwKqsq6DlhAX/MrXLY2ggdYjsVmwkqUVmTu761g9ysfvGRUr2qHhiT6mP3UpsoE109Lz0PjuVcGttWBWs04VxlAjzJMJQwNHM6HBNrrR3PdG6cm6AQtcLTASTyIk4kHtnkKeCl8LxR35qHqS0uYcxWVaF/5hOkQC4o00YPiltie+9ooYpeOWR2VBYNOmoZ/StAJqdk+rlV7YmpiXAbYdwAxZoBNorO5ukgN2PVRXwsVB4d02SISYiKeBng4GySNw74Fdr9gt3EjMBmw9s0UecUAghn1gtNUOu08Ybjvl3c0RHVfaXjA3Oem3rA==
+ b=FtPUNNYrV/3dNPAC9bEJrqnMRd9z5721e3ptGLdOfxyofi5RzYVbr3edk/dl30HO3JEMunLxkLp+Q/C9CXV2XtFhdoO5I3frFNbScvGm2y9vRIBBtZdNPblm53isZt9rBaE51xlZJ6UYPCanIo7DrUBb/vBpamUUF2BDBun+aGkuhbpKb3p0VWFnGeolDkOSqNOWQNk+yCdrbSGRc2t0nWQmIgDq/WR3A4ZlODjbFz753KwBxbp0kBLw7tqafvLCUAHVMpqIQyqwLxyOpIsn95btxIg+inOBy/SVkwplCb6VH1DLrPhhKqOogdrUzRSH8Tzu+uxdh4CEApUZ8u4ccQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XsjZqe/jHcJbKiBDrhq4EE3RAZxdsbx85KxdVIdqRZU=;
- b=lplUUUo+RA0JEfumTfhHEbNCN8RgkFHSnTeUqzmRfunM0lE4qjQ3kAOxFuKtldHs9u3QMsSpawBLnuab1Kda2iRvHcfoE1i3Kpgj1hB8nzYZV0LtY9OftLQ+QmABkC8y7Gu+bnUVjzyQyFr29KPGSZe4OMbYlA3G3m29BuAOKDMscKPsT/drQk913HNGJ14bJBTJ/HxRY5A8i0QcP8XC8wyBU1QuwQakPrVDpjnyzx5Bvz+8Vq2oAWBBC/zXpGgIp6tR0AgCpux4H1OoplOL7it3sHBsIq+dy+oShgAW36UIBkLK8jZM3W7qOH3j/qjqps2MnLIz1wGA6J1r2AVKFw==
+ bh=MIT1hkDVji6kib6LELR8TOgdiHm5tySbXzu8mvBLHok=;
+ b=e1aW7Uy28FsdgXwlYba616UiO1YjVS2mOnlW5xwRkFt4bu7jcTqAd91HYbl/KGARHvaTWQEI+WFrwuy3AZclO/P1zZXCOoJcHmPFQ8SSOzymcPlQr93qwanzgZ61NNt0ftaIslPZ8zO6x5jXv/jXBJYbM/mWuy9xmC6CMHvmce8WhtRXP1Stl4d/qSIHPBvCdeOIxfb/NvHF3fd/uzqDgO8yN+m474VGRsyF6u7+8XjaldYOOOWmTICyU8/v3akqauNcviTxGSGve+Elc6PYoPCYUz8w3pceeycm3fIDsc+JiOoCfskF6RrW8dpSzIcQcyeCpJYBGSwyhvylr19X9w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XsjZqe/jHcJbKiBDrhq4EE3RAZxdsbx85KxdVIdqRZU=;
- b=o8Vm27OhCVdMIMHZ2Tyf8P9ipA8CGJ8ycv0RkoXeGQQf+FZ7zwvCwelo/CiuPWsDND9rsT6rkZHD8Rrh6vk5fy0lxrShFzVAEeTIpwAT70Mx+ehBFstN/Xs2GjkWFbh28ME/ogH45DSVtfsjgqozDiWLxM/anHCpUpuh2lc8E3g=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB5713.namprd12.prod.outlook.com (2603:10b6:208:370::18)
- by CY5PR12MB6034.namprd12.prod.outlook.com (2603:10b6:930:2e::12) with
+ bh=MIT1hkDVji6kib6LELR8TOgdiHm5tySbXzu8mvBLHok=;
+ b=jSuGD8OCm98o15COD7qz8oRq7InfoDjHCIugPjjaFgL6BaMrLXYRlRYkQg4NdZ6+1egwFjMfkd+9gwDNLRMBPVrVfiPy9P8CE0Ops8yZhqdxTIqDg2wkp6NC//qoAU+NJMNYt8TU3dhzHEHBMCN1qD1ANAxlC4BdHf5ILN77ueM=
+Received: from AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
+ by AS1PR04MB9455.eurprd04.prod.outlook.com (2603:10a6:20b:4d8::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24; Fri, 21 Jul
- 2023 05:15:27 +0000
-Received: from MN0PR12MB5713.namprd12.prod.outlook.com
- ([fe80::8ba3:7aea:769f:718f]) by MN0PR12MB5713.namprd12.prod.outlook.com
- ([fe80::8ba3:7aea:769f:718f%7]) with mapi id 15.20.6609.026; Fri, 21 Jul 2023
- 05:15:27 +0000
-Message-ID: <19be0aea-30b2-2aa2-12d7-57f668d759cb@amd.com>
-Date:   Fri, 21 Jul 2023 10:45:09 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/6] perf vendor events amd: Add Zen 4 memory controller
- events
-To:     Ian Rogers <irogers@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        x86@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, adrian.hunter@intel.com, tglx@linutronix.de,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        eranian@google.com, ananth.narayan@amd.com, ravi.bangoria@amd.com,
-        santosh.shukla@amd.com
-References: <cover.1689748843.git.sandipan.das@amd.com>
- <a70b1ef6ab427b768f21401af280d235dd095412.1689748843.git.sandipan.das@amd.com>
- <CAP-5=fX1NQzus3MQapmBrdgEhDG4+XmawgytfugHHOKD0E-COg@mail.gmail.com>
- <fef0492b-60c3-70ea-c7f1-370bf2734fc3@amd.com>
- <CAP-5=fX=1t51+a9=Fj-xt4zyLw9OG44bu9wRdPsu2hPoh8cNZQ@mail.gmail.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Fri, 21 Jul
+ 2023 05:16:57 +0000
+Received: from AM7PR04MB7046.eurprd04.prod.outlook.com
+ ([fe80::9018:e395:332c:e24b]) by AM7PR04MB7046.eurprd04.prod.outlook.com
+ ([fe80::9018:e395:332c:e24b%4]) with mapi id 15.20.6609.022; Fri, 21 Jul 2023
+ 05:16:57 +0000
+From:   Ying Liu <victor.liu@nxp.com>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lee@kernel.org" <lee@kernel.org>,
+        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
+        "deller@gmx.de" <deller@gmx.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>
+Subject: RE: [PATCH] backlight: gpio_backlight: Drop output gpio direction
+ check for initial power state
+Thread-Topic: [PATCH] backlight: gpio_backlight: Drop output gpio direction
+ check for initial power state
+Thread-Index: Adm60FHbZeccRsgE2UutMj3nHgFTFQALOCUAACT+sfA=
+Date:   Fri, 21 Jul 2023 05:16:57 +0000
+Message-ID: <AM7PR04MB7046CF1E1561A37C7A5AC89B983FA@AM7PR04MB7046.eurprd04.prod.outlook.com>
+References: <20230720061105.154821-1-victor.liu@nxp.com>
+ <20230720112742.GA2525277@aspen.lan>
+In-Reply-To: <20230720112742.GA2525277@aspen.lan>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Sandipan Das <sandipan.das@amd.com>
-In-Reply-To: <CAP-5=fX=1t51+a9=Fj-xt4zyLw9OG44bu9wRdPsu2hPoh8cNZQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2PR01CA0222.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:ea::12) To MN0PR12MB5713.namprd12.prod.outlook.com
- (2603:10b6:208:370::18)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM7PR04MB7046:EE_|AS1PR04MB9455:EE_
+x-ms-office365-filtering-correlation-id: 5245475b-6cec-44e0-cf1d-08db89a9b4ad
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TOWDeUZSHgAev40SsOnzECNfjnRf5QHp2UdPgnDK/pgO/LffO4huF+R/h09rXqX7vzfNP2u67Rt/0IX6y43jVnLVqc0vj4Jtfxdq07SlAukcRGSwJuAWxhambvUKE2x7RS9v7acLEtXulG3MrOHawOv6MyG2QUkjzUYVC0m4wNccdk9mmKj+BIt/uT71qcsOmJX0g1qJ0G29IZecCO3/n1CznSXwMZfZHq/XUOcVImKSPWDzahqwpqmgTqV8jJfhXFtkKOK0A8NGBVTFktZ7XN0w1lwebZh3tzUCNDjMlA4bjgS1IIiOJk0fdOPzmLFJen8fBh8xZeS3U0SOPQU1GlO5XCf8oV93cNeW1i23NnEZjXeIofbN1KPIAAk3MLo/lHkSC3Nn3b6LicoA4yeNM14tXVQAKDpaqDZjVvD744oWE2ASya8fnTo7VJHrW/qS9CsR8HK7OeoUTHThtHjDEq6Ohq0kBKWwJ2izHz7ULcUqpBjtYAwMPsBVV3PK4bn2DNPvZlZ+wIsw4VvN95YPutxDiQFcFBggq/XIeBJN2Vl8AebeJ1WhTSg/7WCdCYJ1agRUGyyw0u0D/7iNTtwWj+nza1V1MVo3odQ28T4vFxxjpmiNd9YxtG0JKU8JcQKj
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(346002)(136003)(39860400002)(366004)(451199021)(2906002)(38070700005)(86362001)(33656002)(122000001)(38100700002)(55016003)(41300700001)(6506007)(53546011)(9686003)(66446008)(66476007)(76116006)(66556008)(66946007)(6916009)(316002)(71200400001)(4326008)(64756008)(7696005)(186003)(26005)(7416002)(8936002)(8676002)(478600001)(54906003)(5660300002)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Z/LEiR+t88Bp64LXdEobK92xcc5ekac8CRDeIT1gYA7hdhgy2VggeJy49nFQ?=
+ =?us-ascii?Q?xQSBaBKhRzLEN3so72FoSpJ3JnVTHTKe4PiwgLcpG2oIt8cTI298TZQJfatp?=
+ =?us-ascii?Q?iF3XuTtf7rxD16P70UA6Bzl+h7JUIZjxpHhRFddV3lQNdAd+HJRM0ODhWEql?=
+ =?us-ascii?Q?6B4wGf7/sgVPr+I7T5X6gQDIIvO5uCGoholLDTIRlP0NbsAD/s1BS66Cddhs?=
+ =?us-ascii?Q?12DewbW519FQNjMZR4DPZnWOikA1WYJ4dhERnlGSifgthFXCq+U+HHddo6sS?=
+ =?us-ascii?Q?pY6S8AZimMKph8boFhyuxXSFUQNXX3Dszg/wh3ck+/OYVCcsLSD0etZm6zuG?=
+ =?us-ascii?Q?waomOHcDZQmVNtKWg4BH6HN4Hbs3CXjh+oFpmOYZMamCbE9fh44oRRVXnxLA?=
+ =?us-ascii?Q?ImfDlHzkY4lZvTK39++VuAzjzgYCltfYzKldmF3slPeqKpVO4Lr5E0eu2C/B?=
+ =?us-ascii?Q?jLkRgtAbJOmJIcgEDJkuHaJccqcw6aJz39TgATYKi+V6nhu/AbFWBiUmPwik?=
+ =?us-ascii?Q?8gVlYpKVFRr+3XgiR7Y2+2Z7xC+WQA90jv8jv8Tm68f2S2M/kfOw6W247/zJ?=
+ =?us-ascii?Q?mqqiGAGtPsrP8xnnWzTcGEa+6WL+3wiVZxypab9X+AnPA/+OHelDVU17Hzhz?=
+ =?us-ascii?Q?YtfmesxD+VQpr7vcLsl5GRFmr7q6K+hdsbTYbXyydUwraPQtoONhOvpOqrd1?=
+ =?us-ascii?Q?Ua6fnGyl/llWz888mbqyHRf6dMJY8F0857FYORh84c7qA8PVSQIC1bcd/tkW?=
+ =?us-ascii?Q?UobcB0HcmlbjXutOlKIuvZQ6BO6RoBj7UzYf0vw2CukgLc5DoWBMeEoqNB9D?=
+ =?us-ascii?Q?/pekp6l+7p5Rrmqt42jc4EF7eJV38uJF4/jusbSC5bnzDZqJtPL7d8EQpGPI?=
+ =?us-ascii?Q?L6w1KkCygSVpDBNehz5KRRrCdwC8yw9Ii+EgZRQ3kD7A7cqIYySa47ZtugdZ?=
+ =?us-ascii?Q?gBpuZ++qZEoEZ7T6eNtVswQo1kfyh/j3fl25A7nuBskIQGMfZYK2l43oJJ46?=
+ =?us-ascii?Q?2bM2IuPV3PyFGdJvqMPbfbkayObXDostfjuU5N4CIhWhMOcI3jnzEgXJWmyj?=
+ =?us-ascii?Q?742N76LOzaTiYRumEdf738xucRfdqPGb/chnf67w2iEUxbZYLk9rhX9AAlHK?=
+ =?us-ascii?Q?EclWu0AWJ/UvOua38PmZKyUzRlW2foc5X607V7Qs2RL0PRm9jp6WQChArpdz?=
+ =?us-ascii?Q?oK7xB0enC8zOx27mZivXXx7ezZMrlhqfIelNpnX6Y2GbLT3/0FbqcBtlrOTV?=
+ =?us-ascii?Q?Gf5yhJgfnlbVRyVNa0FijWM61vwLWiatcKAdWW1e2JSQbBfxYAGU76tfURgZ?=
+ =?us-ascii?Q?Q2fN+SoRP9+CiFf9XP7/itDulyK0YvF7GM98E1SRNv/apgOklIZ7zCH7u1bX?=
+ =?us-ascii?Q?1Cz5ypp3xNP79qYxr8e7D5fwt0UwUAHwFRPR+XmJ6lVFUTODdKnHvlq6vvXv?=
+ =?us-ascii?Q?h4CYlYmoMpQ/ILmlhnZeeWPeIq45vUPFSKox7PmDCiAstyykWtTZIWbY4LHz?=
+ =?us-ascii?Q?PFKFedCQ3ljHuzV1RliDxwSvAMcq5F+Hokz01Qdr4qF4X4b75mr+qnr294YS?=
+ =?us-ascii?Q?ZsfA0iSuDDyuEoLb/6huuYAJk6mlNCX4tmmNoLUz?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB5713:EE_|CY5PR12MB6034:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0dab5008-1dd0-48c7-3486-08db89a97eb0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zeOEAO3FHXnnTMkeBBHZyJ6NQJxLP/7poLeZ5FioNeV5pNx+PoQh5cvwBKYtuP+sA7btkd4wiKNPltkZQZOX8gyGlz+/SYAPjH3c7ZRpFUcA25Ll8p3IzXjEEZkWaxlNdY3j9egLtiC+De/FDhXcktyh9lvkvS/RJMwxXHXyYwxgkMpbtYfUhAgS+yYbG/DCx/GlqnBSFDvUGgTo4V6vRdleQGQRk6dOLMchT2zsgb+EqFbMN0VUkap4yZc5V3vUOJ4npnIfPoEfXl/t4z028+ZolOROJxOjEMmBY5FNJ4XYzUFg92RO0uWu+e6wO7uFNNB0e3lVsrWe2rSnjbIaZ9C4RicFg5ECq9j28Vudv9POW9Y3P6uJXIJRdFVvbwiDIqi/7PxBoSA2NT4o8LpEyQLPYrGrmmCEoqEH8ayiwoes77UuiO9bd3v8yipmpygZP1cacq+Xa6syqDgLoL0ySBLN1ZYB7iTnWCEmFz80b9a2zJSkzaDsjDLB02oJINR9GuSpftFSioBEUN+7ddxgcm8+IzqHGPkUupMAssL+lsd7teSUwk+mXfeAcK7RQ5xQ8rP0V1oLMMzLE4kHTxQ1uahEn8lMe0d6/i6RXU4g5XfsA3DSEz/4jy5x20Lw38/5b5QkP3My/6vDzgd7xIBDIw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB5713.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(39860400002)(346002)(376002)(366004)(451199021)(83380400001)(2616005)(2906002)(38100700002)(66556008)(316002)(66946007)(478600001)(4326008)(6486002)(6916009)(53546011)(41300700001)(6506007)(26005)(186003)(66476007)(31686004)(6512007)(31696002)(36756003)(5660300002)(44832011)(8936002)(8676002)(86362001)(7416002)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WUlpcWNWbHVzc3NRL09VREZrZ1ErSWRVdnFmTDBZaHNJREkzSUdGYitxNHhO?=
- =?utf-8?B?V0NEN1RrY0JiUDNiMllLSkJGS1dYVHluNDZjSGVlTm54QldrV3JsV2JiSXMy?=
- =?utf-8?B?d2dDN0RoK2hTL0JseWpuazFjWDNoY0R2ZS9QWXp1TXVYOFZBZnhDY1ByUy8x?=
- =?utf-8?B?SFVoOFdCUjE0UElmQVFCRm5zcyswekphOStHYllTc2hpZE1obXRTMjBlK1Uv?=
- =?utf-8?B?bUdLWGthdkZrbGJhTWNuK0JsMndkNDhRVE5tckVoL1J4b3BrZmxxRGZ5MEow?=
- =?utf-8?B?WXBMOUFWMXJRQVlBZVVSN1ZKVzhUMmxRR3FzZjBqbkpSSmRRV0NtOTVMM1Nx?=
- =?utf-8?B?NEpQQXFwYTMwRmZVUVl5SStKZ2cvN0hwdmpoa3NSd0U0dEg1VWdtY3NtU2M2?=
- =?utf-8?B?djNwbk5Lb29HeGp5QnEwc0czd0s3ZGV6cFVmOWszK0hjczYvOERaeDZYakxu?=
- =?utf-8?B?NURkNXpHc2hNOUZUUTUzV0tSRS9ZYmdPZ2ZkRXNJTjBzYU9UNG9abGs3WDZ2?=
- =?utf-8?B?cmN2TzBkTXhMMjdPSU9ESVVGaVA3VHVwd3BWTmdFckZ2RTN2NzVnbnhhSW9F?=
- =?utf-8?B?RWpBV3AxRXdBRmVGTGV3Uk1la0tuQlRCUUxuNUltRUYrSVZPWVZvM1gxcmJz?=
- =?utf-8?B?c1B6bU1pRHRmRVkwMW44MEpwQ01YeFdHSHJVRitzS2w1UC9zVG1KeGthYU9k?=
- =?utf-8?B?ekNPdGNIRXRnRDRySGlKNXlrajBJTzZOR0xsM1hrcXp0ZlFOZVN4elNJQ2NU?=
- =?utf-8?B?aW1kb09CT2pBQWNNOXd5cEtCSUpHSTFZWmR5c2xwTWF2MVdZcVlqVFYvVGNq?=
- =?utf-8?B?dmoxWlp0QUNCOU9vUlltZTFTNlBnaGQzTEhCMVhJRVpNZThCaUVTcDRLM08y?=
- =?utf-8?B?Z2E5UEsrenNLaFFxa0RLQXIrb3VZa3Vqd1JtL0ZGTVRTeUtHR05WU0FsSHpD?=
- =?utf-8?B?YXg4eVV3dDJzdEVvR3RFNUdwSjQvbE9Hc0ZyYVRWU2hHUUZObnBvVGU4c25p?=
- =?utf-8?B?dUNVYmJ6VVR2OWxMZTF2blNhMzJGV0pnUDNBYmlzUVFyZkk4cG5TNUJoMFB5?=
- =?utf-8?B?SVRFSGkzbWhGWG9aSlM2UmtXa3pqRk9jSkdaSFNJdE9yck83S2VPc0xNTG9k?=
- =?utf-8?B?WlYxckFXNmltOTFQL2RIOS80QnR5V2ZpeFgvL05Ka3lEdW5CNlo5SHdzVFBi?=
- =?utf-8?B?SVZUaDNkQzZaUWcxa2lYM3ROeWF4MVMxQ0lzRzZBMFFZVzJVdWh5NFBUK3Qy?=
- =?utf-8?B?YmM2cFJ5Z0dQV0pxQTdLM3BSaGhFM09UQ1FoVVkyajY5RW1jZVg4Y0Q4MjRq?=
- =?utf-8?B?VXNzZTRDeTI4SUIwSHlOQ3FmSkNrYWxvZTMzVklKSVo1bmVBYjNJem5QZWtY?=
- =?utf-8?B?NktjVWdqZFFQRVhiR2hnZkdhUUl3N1krZUdWSnZqcHlmUkY0Z3FHTkRhdkFq?=
- =?utf-8?B?NzV2ZzJ6cTJvdVR0cW9ZMXZUemc3aEEvdUE4akRGZWNuZWROdUdCd2crVFVP?=
- =?utf-8?B?bjNzL0xPbTVjRnZ0YWpPeVNOQ2FvVE9ONk1qUWtFZUFNR3d2NkpzZ2hGbjlx?=
- =?utf-8?B?eVEvUzRHMDZ5MlgzOWpMNkpPZkFXRU5RMWdhNGRhWFpHbm80aTlPTC9vY0dV?=
- =?utf-8?B?eWd1SlNNWVhiRy9qRFJ4UTAxcGlZZU9tcTFjQ3I1WE94NUV1YXo3UEltMTNN?=
- =?utf-8?B?YW1rMmxrNVZPYWNkRXlkaVlzdmNJVXBGUnY5NUV3RGprOWQwZ095WjdZbjFH?=
- =?utf-8?B?aEJmYTFacytGTnBReElNVTA1eUt5dnFRN3dPckNSbmtGY2NOOFJMaWhNelJD?=
- =?utf-8?B?SVM1bUR3MmgzWkYxckl5RGdsTXlIQXB4YWpHWEw2YUZaY3F0WVgwR0RNck4z?=
- =?utf-8?B?eVhNK2R1S2ZadFlna0RMZEMzaXJ2N2F5VGdQVzJoZUhvTmh4NEQ2bkZDVXpx?=
- =?utf-8?B?NGx1VzFJSlIzcVRCYlEvVWsveERPMDBVLzVwSUVFZm02anVzYVgvY1ZEU2pH?=
- =?utf-8?B?NDNoNk9XaW03T3VPOGRLZndRUWNEeXdEb1RHKzJ0Y054d0dFYU5TZVcyc0Zr?=
- =?utf-8?B?eWxPVDZJaTlrZGpwZkQ4OHhXOGJCNVNjU0Iwekp3bmdqZVpCOGM4VUNrbXFV?=
- =?utf-8?Q?UUaZgHAhNchRCR1giFE1awtPr?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0dab5008-1dd0-48c7-3486-08db89a97eb0
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB5713.namprd12.prod.outlook.com
+X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 05:15:27.4700
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7046.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5245475b-6cec-44e0-cf1d-08db89a9b4ad
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2023 05:16:57.6208
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZjqCD7g23QuzDpG4jEb9wRR/+vUwOgYu0t6ZkciUIGQTkVR3bGyFiztC2EYgvnIjX6oSB4g717PacDnjojGiEw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6034
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: S4uKR5zTo4lJqxfsyI2Fi5s/4Xn5VSHN6TVto3iuw8cC8RW76fYWJfiokVqkamCfK4QecDeLwDJiqBhDNWdavw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9455
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/2023 9:20 PM, Ian Rogers wrote:
-> On Wed, Jul 19, 2023 at 10:23 PM Sandipan Das <sandipan.das@amd.com> wrote:
->>
->> On 7/19/2023 9:42 PM, Ian Rogers wrote:
->>> On Tue, Jul 18, 2023 at 11:58 PM Sandipan Das <sandipan.das@amd.com> wrote:
->>>>
->>>> Make the jevents parser aware of the Unified Memory Controller (UMC) PMU
->>>> and add events taken from Section 8.2.1 "UMC Performance Monitor Events"
->>>> of the Processor Programming Reference (PPR) for AMD Family 19h Model 11h
->>>> processors. The events capture UMC command activity such as CAS, ACTIVATE,
->>>> PRECHARGE etc. while the metrics derive data bus utilization and memory
->>>> bandwidth out of these events.
->>>>
->>>> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
->>>
->>> Acked-by: Ian Rogers <irogers@google.com>
->>>
->>>> ---
->>>>  .../arch/x86/amdzen4/memory-controller.json   | 101 ++++++++++++++++++
->>>>  .../arch/x86/amdzen4/recommended.json         |  84 +++++++++++++++
->>>>  tools/perf/pmu-events/jevents.py              |   2 +
->>>>  3 files changed, 187 insertions(+)
->>>>  create mode 100644 tools/perf/pmu-events/arch/x86/amdzen4/memory-controller.json
->>>>
->>>> diff --git a/tools/perf/pmu-events/arch/x86/amdzen4/memory-controller.json b/tools/perf/pmu-events/arch/x86/amdzen4/memory-controller.json
->>>> new file mode 100644
->>>> index 000000000000..55263e5e4f69
->>>> --- /dev/null
->>>> +++ b/tools/perf/pmu-events/arch/x86/amdzen4/memory-controller.json
->>>> @@ -0,0 +1,101 @@
->>>> +[
->>>> +  {
->>>> +    "EventName": "umc_mem_clk",
->>>> +    "PublicDescription": "Number of memory clock cycles.",
->>>> +    "EventCode": "0x00",
->>>> +    "PerPkg": "1",
->>>> +    "Unit": "UMCPMC"
->>>
->>> nit: Why use UMCPMC and then rewrite to amd_umc, why not just use "amd_umc" ?
->>>
->>
->> I followed the convention that has been historically used for AMD uncore PMUs e.g.
->> the "Unit" for amd_df is "DFPMC" and for amd_l3 is "L3PMC". I do agree that its
->> simpler to use the same naming so will change this. If you prefer, I can send out
->> a separate patch to change the unit naming for amd_df and amd_l3.
-> 
-> Thanks for the explanation. I don't mind but it is nicer to have fewer
-> renames imo. If we get rid of one, perhaps we can get rid of them all?
-> Perhaps merge this and follow up with simplification.
-> 
+Hi Daniel,
 
-Sure, sounds good.
+On Thursday, July 20, 2023 7:28 PM Daniel Thompson <daniel.thompson@linaro.=
+org> wrote:
+>=20
+> On Thu, Jul 20, 2023 at 06:06:27AM +0000, Ying Liu wrote:
+> > Bootloader may leave gpio direction as input and gpio value as logical =
+low.
+> > It hints that initial backlight power state should be
+> FB_BLANK_POWERDOWN
+> > since the gpio value is literally logical low.
+>=20
+> To be honest this probably "hints" that the bootloader simply didn't
+> consider the backlight at all :-) . I'd rather the patch description
+> focus on what circumstances lead to the current code making a bad
+> decision. More like:
+>=20
+>   If the GPIO pin is in the input state but the backlight is currently
+>   off due to default pull downs then ...
 
-- Sandipan
+How about this patch description?
+
+---------------------------------8<----------------------------------------=
+---
+Without this patch, if gpio pin is in input state but backlight is currentl=
+y
+off due to default pull downs, then initial power state is set to
+FB_BLANK_UNBLANK in DT boot mode with phandle link and the backlight is
+effectively turned on in gpio_backlight_probe(), which is undesirable
+according to patch description of commit ec665b756e6f ("backlight:
+gpio-backlight: Correct initial power state handling").
+
+Quote:
+---
+If in DT boot we have phandle link then leave the GPIO in a state which the
+bootloader left it and let the user of the backlight to configure it furthe=
+r.
+---
+
+So, let's drop output gpio direction check and only check gpio value to set
+the initial power state.
+---------------------------------8<----------------------------------------=
+---
+
+Regards,
+Liu Ying
