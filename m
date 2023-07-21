@@ -2,187 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 049F075CB2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345A775CAE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbjGUPOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
+        id S231594AbjGUPFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbjGUPNw (ORCPT
+        with ESMTP id S230200AbjGUPFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:13:52 -0400
-X-Greylist: delayed 463 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Jul 2023 08:13:43 PDT
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9DA30DB;
-        Fri, 21 Jul 2023 08:13:43 -0700 (PDT)
-Received: from tp-owlcat.intra.ispras.ru (unknown [10.10.165.6])
-        by mail.ispras.ru (Postfix) with ESMTPSA id EB21640B27AF;
-        Fri, 21 Jul 2023 15:05:57 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru EB21640B27AF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-        s=default; t=1689951958;
-        bh=O0b5d9evA9lwBqNidYtPEYBZ7CVLeRcJ2bV1Mfo3SIU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S0i1WqiRtXiHhhkHUV6IlKrtQZAUvVRZe2S/M7HAqcGQgRINg/yP+yIxGj8NDuExT
-         HcMpCxo3hW8I+RUP3qIk0iiZlFAaKzD7oZxLMLwymxhgd6UzhMKP3qolInJfOGDCU5
-         7J0zU+X38yJMauQdaYJe2v5R7i2uN6fQrQ93EuIE=
-From:   Anton Gusev <aagusev@ispras.ru>
-To:     stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Anton Gusev <aagusev@ispras.ru>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Mark Zhang <markzhang@nvidia.com>,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Roland Dreier <rolandd@cisco.com>,
-        Sean Hefty <sean.hefty@intel.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org,
-        syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.10 1/1] RDMA/cma: Ensure rdma_addr_cancel() happens before issuing more requests
-Date:   Fri, 21 Jul 2023 18:05:33 +0300
-Message-ID: <20230721150535.191318-2-aagusev@ispras.ru>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230721150535.191318-1-aagusev@ispras.ru>
-References: <20230721150535.191318-1-aagusev@ispras.ru>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 11:05:46 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11ADF19B6
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:05:43 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AE4BE218B0;
+        Fri, 21 Jul 2023 15:05:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689951942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FNa2Ga/vdBWuEamymR1djSQjbjCUdeP1tyXN5hm2If8=;
+        b=t4gEHRUn/4R1W1nvw16UePnaCr7czzXy/iJLYd2r+M3+434Q0UFdraRXzjH8hTOP6DE+oH
+        WPeuxmi61S3jX50XqOk28s0nZfZUoqzC7seehhRj6HZyk+KjIBK1Rj/8PvWo8ADZy1BdZK
+        mMqSV7HQMLxnGGdzkmtnVepqnUXrlbs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689951942;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FNa2Ga/vdBWuEamymR1djSQjbjCUdeP1tyXN5hm2If8=;
+        b=w6JhbvP0+FjcIugs7BlpcG0tVg43PKwHZg8p7vEm8rkRhu+vgkf29KvGOvwHqpCUemJF74
+        9F2WxABiH/6v9+Bg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 79021134BA;
+        Fri, 21 Jul 2023 15:05:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ZSWVHMaeumQ2IQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 21 Jul 2023 15:05:42 +0000
+Date:   Fri, 21 Jul 2023 17:05:42 +0200
+Message-ID: <875y6dz4mx.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Stefan Binding <sbinding@opensource.cirrus.com>
+Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+Subject: Re: [PATCH v1 10/11] ALSA: hda: cs35l41: Add device_link between HDA and cs35l41_hda
+In-Reply-To: <bf6b5496-bcf9-771d-5921-fe137fa3bec0@opensource.cirrus.com>
+References: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
+        <20230720133147.1294337-11-sbinding@opensource.cirrus.com>
+        <87v8eeiryp.wl-tiwai@suse.de>
+        <bf6b5496-bcf9-771d-5921-fe137fa3bec0@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 305d568b72f17f674155a2a8275f865f207b3808 upstream.
+On Fri, 21 Jul 2023 16:55:43 +0200,
+Stefan Binding wrote:
+> 
+> 
+> On 20/07/2023 15:21, Takashi Iwai wrote:
+> > On Thu, 20 Jul 2023 15:31:46 +0200,
+> > Stefan Binding wrote:
+> >> To ensure consistency between the HDA core and the CS35L41 HDA
+> >> driver, add a device_link between them. This ensures that the
+> >> HDA core will suspend first, and resume second, meaning the
+> >> amp driver will not miss any events from the playback hook from
+> >> the HDA core during system suspend and resume.
+> >> 
+> >> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> >> ---
+> >>   sound/pci/hda/cs35l41_hda.c | 13 ++++++++++++-
+> >>   1 file changed, 12 insertions(+), 1 deletion(-)
+> >> 
+> >> diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+> >> index 70aa819cfbd64..175378cdf9dfa 100644
+> >> --- a/sound/pci/hda/cs35l41_hda.c
+> >> +++ b/sound/pci/hda/cs35l41_hda.c
+> >> @@ -1063,6 +1063,7 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
+> >>   {
+> >>   	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
+> >>   	struct hda_component *comps = master_data;
+> >> +	unsigned int sleep_flags;
+> >>   	int ret = 0;
+> >>     	if (!comps || cs35l41->index < 0 || cs35l41->index >=
+> >> HDA_MAX_COMPONENTS)
+> >> @@ -1102,6 +1103,11 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
+> >>     	mutex_unlock(&cs35l41->fw_mutex);
+> >>   +	sleep_flags = lock_system_sleep();
+> >> +	if (!device_link_add(&comps->codec->core.dev, cs35l41->dev, DL_FLAG_STATELESS))
+> >> +		dev_warn(dev, "Unable to create device link\n");
+> >> +	unlock_system_sleep(sleep_flags);
+> > Is lock_system_sleep() mandatory for device_link_add()?  The function
+> > takes its rw lock for the race, I suppose.
+> 
+> I believe this is mandatory, to ensure we don't try to add the device
+> link during a suspend/resume transition.
+> Its probably unlikely that that would occur during the component bind,
+> but just in case.
 
-The FSM can run in a circle allowing rdma_resolve_ip() to be called twice
-on the same id_priv. While this cannot happen without going through the
-work, it violates the invariant that the same address resolution
-background request cannot be active twice.
+OK, it seems needed in this case.  I found the description in
+device_link.rst, too.
 
-       CPU 1                                  CPU 2
 
-rdma_resolve_addr():
-  RDMA_CM_IDLE -> RDMA_CM_ADDR_QUERY
-  rdma_resolve_ip(addr_handler)  #1
+thanks,
 
-			 process_one_req(): for #1
-                          addr_handler():
-                            RDMA_CM_ADDR_QUERY -> RDMA_CM_ADDR_BOUND
-                            mutex_unlock(&id_priv->handler_mutex);
-                            [.. handler still running ..]
-
-rdma_resolve_addr():
-  RDMA_CM_ADDR_BOUND -> RDMA_CM_ADDR_QUERY
-  rdma_resolve_ip(addr_handler)
-    !! two requests are now on the req_list
-
-rdma_destroy_id():
- destroy_id_handler_unlock():
-  _destroy_id():
-   cma_cancel_operation():
-    rdma_addr_cancel()
-
-                          // process_one_req() self removes it
-		          spin_lock_bh(&lock);
-                           cancel_delayed_work(&req->work);
-	                   if (!list_empty(&req->list)) == true
-
-      ! rdma_addr_cancel() returns after process_on_req #1 is done
-
-   kfree(id_priv)
-
-			 process_one_req(): for #2
-                          addr_handler():
-	                    mutex_lock(&id_priv->handler_mutex);
-                            !! Use after free on id_priv
-
-rdma_addr_cancel() expects there to be one req on the list and only
-cancels the first one. The self-removal behavior of the work only happens
-after the handler has returned. This yields a situations where the
-req_list can have two reqs for the same "handle" but rdma_addr_cancel()
-only cancels the first one.
-
-The second req remains active beyond rdma_destroy_id() and will
-use-after-free id_priv once it inevitably triggers.
-
-Fix this by remembering if the id_priv has called rdma_resolve_ip() and
-always cancel before calling it again. This ensures the req_list never
-gets more than one item in it and doesn't cost anything in the normal flow
-that never uses this strange error path.
-
-Link: https://lore.kernel.org/r/0-v1-3bc675b8006d+22-syz_cancel_uaf_jgg@nvidia.com
-Cc: stable@vger.kernel.org
-Fixes: e51060f08a61 ("IB: IP address based RDMA connection manager")
-Reported-by: syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Anton Gusev <aagusev@ispras.ru>
----
- drivers/infiniband/core/cma.c      | 23 +++++++++++++++++++++++
- drivers/infiniband/core/cma_priv.h |  1 +
- 2 files changed, 24 insertions(+)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index db24f7dfa00f..805678f6fe57 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -1792,6 +1792,14 @@ static void cma_cancel_operation(struct rdma_id_private *id_priv,
- {
- 	switch (state) {
- 	case RDMA_CM_ADDR_QUERY:
-+		/*
-+		 * We can avoid doing the rdma_addr_cancel() based on state,
-+		 * only RDMA_CM_ADDR_QUERY has a work that could still execute.
-+		 * Notice that the addr_handler work could still be exiting
-+		 * outside this state, however due to the interaction with the
-+		 * handler_mutex the work is guaranteed not to touch id_priv
-+		 * during exit.
-+		 */
- 		rdma_addr_cancel(&id_priv->id.route.addr.dev_addr);
- 		break;
- 	case RDMA_CM_ROUTE_QUERY:
-@@ -3401,6 +3409,21 @@ int rdma_resolve_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
- 		if (dst_addr->sa_family == AF_IB) {
- 			ret = cma_resolve_ib_addr(id_priv);
- 		} else {
-+			/*
-+			 * The FSM can return back to RDMA_CM_ADDR_BOUND after
-+			 * rdma_resolve_ip() is called, eg through the error
-+			 * path in addr_handler(). If this happens the existing
-+			 * request must be canceled before issuing a new one.
-+			 * Since canceling a request is a bit slow and this
-+			 * oddball path is rare, keep track once a request has
-+			 * been issued. The track turns out to be a permanent
-+			 * state since this is the only cancel as it is
-+			 * immediately before rdma_resolve_ip().
-+			 */
-+			if (id_priv->used_resolve_ip)
-+				rdma_addr_cancel(&id->route.addr.dev_addr);
-+			else
-+				id_priv->used_resolve_ip = 1;
- 			ret = rdma_resolve_ip(cma_src_addr(id_priv), dst_addr,
- 					      &id->route.addr.dev_addr,
- 					      timeout_ms, addr_handler,
-diff --git a/drivers/infiniband/core/cma_priv.h b/drivers/infiniband/core/cma_priv.h
-index caece96ebcf5..b53f4fa5e3fb 100644
---- a/drivers/infiniband/core/cma_priv.h
-+++ b/drivers/infiniband/core/cma_priv.h
-@@ -89,6 +89,7 @@ struct rdma_id_private {
- 	u8			reuseaddr;
- 	u8			afonly;
- 	u8			timeout;
-+	u8 used_resolve_ip;
- 	enum ib_gid_type	gid_type;
- 
- 	/*
--- 
-2.41.0
-
+Takashi
