@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDDF75CB95
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BC975CB9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbjGUPXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
+        id S231245AbjGUPYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbjGUPXQ (ORCPT
+        with ESMTP id S230001AbjGUPYm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:23:16 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5683C35;
-        Fri, 21 Jul 2023 08:22:54 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6b9ed0831bcso1703911a34.0;
-        Fri, 21 Jul 2023 08:22:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689952974; x=1690557774;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=sc/DTasP+qpzciCLfF1JlTQRXfUStyF2Qp67Z3I2zcE=;
-        b=mwNakMTygU7aeOlyMGN+1YRXfckEAaBjZjgrsxiGExbe1JtrAWqD07Qye6c9hqpqhS
-         NSvfGLEod46/FYQq+BwuOs10pt7FBKcScPwYNc1gpP2IynnNI8Oug1W4oRjPO1Q7VT/Y
-         qzCI5leeaCHf2iXugSrEa+TfozQZie+QYDxT7Qh5nLDHkaZe0XCUJvvL2+ZxvDrj2oGF
-         ijotZv1mRYKioa+esPC95sZ5tz4XnRunRYMqfOVzo0YiZTLoxiKmrABWm+cT+oeLe7dU
-         MKOSID+fJHIDH+uW2wNvxrRALEMUJaPLjChWlftPk7eV+SO77w8Wxu33Abumu2mVemXw
-         ol/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689952974; x=1690557774;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sc/DTasP+qpzciCLfF1JlTQRXfUStyF2Qp67Z3I2zcE=;
-        b=ATMrs7YIeI8Esu5zuOuPywuZJK+2RVJHkqzh94ocRV9VwReKY1+ceIuMLcn1AVEdRt
-         ujDgAG0bVzeMG1DBgRI88cn8ADZ1ldnGQF/MGpJUx4sJS/EFduuBqaPt5iK9mkadEA11
-         2lj3OJ4b3jkBTyfYCHr/hs2gtdb3FmdSM/8eFGXP+TRSBHKO905vZqPCXNwBxhEyyePY
-         lpaWxolvj95CUFKY8ugeI1lLh0Tv3Xg3gRjNiinYj5KC60EcDBvwURXsA3Y7rxaJPsVk
-         bQImkzKGYdsWazGN08vQjL1p1su3xJLh2UxreEgNqA2nAgjiYAmMIC7JGgBtsuzbsAPb
-         gYyA==
-X-Gm-Message-State: ABy/qLbPFHDqGr1aLUUtOFCZe3gEJbYCGtc0Ukt48zMVEozecGFJ3zrF
-        tYuXo6JIUvXgrn15WqyyWsejOREgf0s=
-X-Google-Smtp-Source: APBJJlELpyaxYg1wg936x5ogzeyFoPXGq5hxdNV11us7uI9wcb5a/Zg9CQORzMhqmGM2od+F6//YSA==
-X-Received: by 2002:a05:6808:2897:b0:39c:475e:d78a with SMTP id eu23-20020a056808289700b0039c475ed78amr2307330oib.17.1689952973691;
-        Fri, 21 Jul 2023 08:22:53 -0700 (PDT)
-Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id 3-20020a17090a01c300b00263c8b33bcfsm2878401pjd.14.2023.07.21.08.22.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 08:22:52 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 20:52:49 +0530
-Message-Id: <87iladl25y.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     shikemeng@huaweicloud.com
-Subject: Re: [PATCH 01/10] ext4: correct grp validation in ext4_mb_good_group
-In-Reply-To: <20230721171007.2065423-2-shikemeng@huaweicloud.com>
+        Fri, 21 Jul 2023 11:24:42 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B3030E8;
+        Fri, 21 Jul 2023 08:24:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1689953073; x=1690557873; i=deller@gmx.de;
+ bh=Bma+M1sMIhrZ2XEr1uAufjvTaxAHToWtl3NVzIYXa14=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=oVhFyvUfT3uKdLtDPb/xewr3NQYeXfeepkV2ODHtc7LQBg3kiO72Gdeyn99D3xtttxlsEIn
+ RXR9KDeJxhb8ZXFCmy1qzikGuXHX51Vsm3GuPm1VRQqvExCIINF+x/Z6NYlPNvGZsWtc5V+nR
+ Yz6voEMzMOiO7pvSpvir9Y39QfTc/aV2yNr6cqPO2goGtXDIMM18kWnnJ1NSmzupb/vMJlfad
+ jtq1lGHuyjKTbH5TJw2/Mh819aBoYvI11P6+zd6kfVEU7/Dy7KaZk85rRYuqBVVNqpyn8s2Q2
+ 5p9cwwlTBGzSVRq0dVNdBOvlcoTJX4SDtmIJXH0hhJHqfpjcWsrg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from p100.fritz.box ([94.134.144.189]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MWRRT-1qOqs61Bkp-00Xv0v; Fri, 21
+ Jul 2023 17:24:33 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, linux-ia64@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>, linux-parisc@vger.kernel.org
+Cc:     Helge Deller <deller@gmx.de>
+Subject: [PATCH 0/2] io_uring: Fix io_uring mmap() by using architecture-provided get_unmapped_area()
+Date:   Fri, 21 Jul 2023 17:24:30 +0200
+Message-ID: <20230721152432.196382-1-deller@gmx.de>
+X-Mailer: git-send-email 2.41.0
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:NttXxibtAeucS18W4DNkMGqpnfrGeyUL6TqcRVGZWPnjHRif9sk
+ lGDv5x+6kVU7tYASYgAtzlvgJ6nImaILqna9eaG0bOF7FgDzT36hhyVYHxsNShvlN2inWtz
+ IKSewL2y57kFjTtGLBjQP33KsfvhlBnjb5bBR14V3UXFholJ5CbnL5UIGXolsxZrIrzEara
+ AdwdLnnPzt1d9FHERWuSg==
+UI-OutboundReport: notjunk:1;M01:P0:NBgUUTAtUHg=;qYdow01HRHzQATzICMLdnVy7+Ig
+ qOdbUudPJO+YOv9vl3aYmBelg7/QA+dtblyEFdZhOhhvr4TFTibPba26oLj+1xAv2NqUpvBZq
+ cwbFhEkVBQ3u/xrzuURxOHmxvvosd8X1tvMFUq4TAjvsiMWcfR62HT9k7PDxq0yq4m64ruwfW
+ DtYWBfg7euON5vfRG17HwjN7MyE/jbA3u/LGHnsaoxNhwI+14l6Maz2JLn+Xcch4+bcDySZOT
+ XkcUA6Ua8rQ5rOhGR5ZZ4nM+P+T1BZKOEO+5LYt0wfhF/MaJrsJJ/GRzCeF5m3y3MJ1fO4Cuj
+ 9LG+9bQSKEU9NUDZ+dDeHIb5lIjpZFD1aeFYmeosmMoDDVltBCIkMQqHHccxI89zgbb1xYRwT
+ VRbv8frPM8FhWCYu3B9aPzOB3yM6YDIrZ+r1TEbi4ZMkqtS2BuBDO/uKP9gWXv7gA2p+YqTAj
+ Vmx+pZU0S0RbzD5dV92QYb6u4nJyPWetwbrcJXQVvk/DASHUxk3J5Ns35JiVMvnWuPE1J191v
+ RPB+OrPq1Z8g6xgvA8fqVOizbql458Ts6cm2S+Jn27r/k+N4pGaSi6ADFC3G/0IRUoeBU0Gi7
+ 4i2Z9loaPFuEUGnqwef7Vz8mCX2RJ5/c1sNDKnkyYWs8teZpxHHqwyqs3EjvfYVpgNuf5HdU3
+ n6vJ2q7weUL+FZWrnT+Ke4VNJJqNwqC7GPdCU6bLTWORAy9oiVS/VcZtupcAST8cz2iKUiYDs
+ jZtDjHw9bUvJZqub90jb0u8IfLWza0/li2a23oZjLNWB3KfYzbHCnzdcJ1bZrO8SKnhCWdqrL
+ S6y3+5+VTxXqGJoyK0SP1VandvDBkPJGJ1dMCxupQRXlN5AdFCXa8Diw5y4+liFZC+HMUKGGD
+ VIK/78Tqup0rPy8Ed5SmN8HdbKG6INPxmqSqZo/Dud+BcRD3kZDuD6KF7flwJVQBMrf/HGs4y
+ B35vWfi53ORsP8aXqBjMa6wmvYU=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
+Fix io_uring on IA64 (and x86-32?) which was broken since commit
+d808459b2e31 ("io_uring: Adjust mapping wrt architecture aliasing
+requirements").
+The fix is to switch back to the get_unmapped_area() which is provided by
+each architecture.
 
-> Group corruption check will access memory of grp and will trigger kernel
-> crash if grp is NULL. So do NULL check before corruption check.
->
+Patch 1 switches io_uring back to use per-arch get_unmapped_area().
+Patch 2 (for IA64) is an independend cleanup.
 
-Fixes: 5354b2af3406 ("ext4: allow ext4_get_group_info() to fail")
+Helge
 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 3ab37533349f..90ffabac100b 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2554,7 +2554,7 @@ static bool ext4_mb_good_group(struct ext4_allocation_context *ac,
->  
->  	BUG_ON(cr < CR_POWER2_ALIGNED || cr >= EXT4_MB_NUM_CRS);
->  
-> -	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(grp) || !grp))
-> +	if (!grp || unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(grp)))
+Helge Deller (2):
+  io_uring: Fix io_uring mmap() by using architecture-provided
+    get_unmapped_area()
+  ia64: mmap: Consider pgoff when searching for free mapping
 
-maybe like below?
-      if (unlikely(!grp || EXT4_MB_GRP_BBITMAP_CORRUPT(grp)))
+ arch/ia64/kernel/sys_ia64.c     |  2 +-
+ arch/parisc/kernel/sys_parisc.c | 15 ++++++++----
+ io_uring/io_uring.c             | 42 +++++++++++++--------------------
+ 3 files changed, 28 insertions(+), 31 deletions(-)
 
--ritesh
+=2D-
+2.41.0
 
->  		return false;
->  
->  	free = grp->bb_free;
-> -- 
-> 2.30.0
