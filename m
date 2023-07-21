@@ -2,153 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEB975C4C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082C675C4C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjGUKfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37660 "EHLO
+        id S231146AbjGUKf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231771AbjGUKe7 (ORCPT
+        with ESMTP id S230151AbjGUKft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:34:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A171BC6;
-        Fri, 21 Jul 2023 03:34:44 -0700 (PDT)
+        Fri, 21 Jul 2023 06:35:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF341722;
+        Fri, 21 Jul 2023 03:35:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 94E9460916;
-        Fri, 21 Jul 2023 10:34:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8651C433C8;
-        Fri, 21 Jul 2023 10:34:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2077560C7B;
+        Fri, 21 Jul 2023 10:35:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AC3BC433C8;
+        Fri, 21 Jul 2023 10:35:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689935682;
-        bh=WJzJxCInUKPeiWu8BOjg9n0XyseJhFEbFfzut3tCW84=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=il8M+HwFbc0/nsctZmOVaHVk0eX+KeRZfVGVo8UVI63eDXS1q6wOCuTyL7wAjcEwW
-         wdv/dTEC8rcBatvW7Fco1o7YLdLQ+0wCj8ZfaPBjeC2DrI0vIeE9nNdLmGVMhOZeXc
-         vsVi+Wh1NP+uUJOpI1k8elTNdF33rlqORUmSRvqAIzhyzHHVqIWLdONhcABS4ZmkQ2
-         ZyaPTiwlnlvTF1CwluBT27SIUMD/KwAVSfiTiJ5k/+bZZMaI52RnXv8pFAwp4PC2ld
-         6zMPtQfClT6f17TDEeURPwcaA83ivhx3Nz43vCxhHfHTTn/x4LaU8ipSm4b3n00ynt
-         JIGZi07H/13fQ==
-Message-ID: <d50c6c34035f1a0b143507d9ab9fcf0d27a5dc86.camel@kernel.org>
-Subject: Re: [PATCH] Fix BUG: KASAN: use-after-free in
- trace_event_raw_event_filelock_lock
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Will Shiu <Will.Shiu@mediatek.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Date:   Fri, 21 Jul 2023 06:34:40 -0400
-In-Reply-To: <20230721051904.9317-1-Will.Shiu@mediatek.com>
-References: <20230721051904.9317-1-Will.Shiu@mediatek.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        s=k20201202; t=1689935747;
+        bh=Je4jmw2YnxTcTqTMRin9ETDHc7Fr+mZCpqJaYHv8iP4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=gyMuAeO0YQpXeU6s8MvqxN/S4e//q0/WuTsV6KPiOB6q3EaZb1YO89ex/9EZUDHXv
+         Vdnl7F5aan7jtnSZZDJNdWnKNaN70ScAFIc6evn7vnE4MkPYQy1GgxAUo5+RuZ1lNM
+         bKgboN/zhpwU/oOvuoG/Y8GMV0wAVN6hawUXYSRxKTLwEkvNoLaetDgEuKj/A5NntF
+         vrSwrubhoac6yD47ZsN51FOiZQPrgUMdnuOoLB7N+LzzS5W3JJb5CESRP+AYLOTa24
+         fv9s/Pcyg4QVZ2PmBijcYnFi+xCtreVFtqhBKlpzqrtzYeor3KafUwdmxGo4s2tDss
+         f+PUJjoE6wZuQ==
+Date:   Fri, 21 Jul 2023 05:35:44 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Vidya Sagar <vidyas@nvidia.com>, lpieralisi@kernel.org,
+        kw@linux.com, robh@kernel.org, bhelgaas@google.com,
+        thierry.reding@gmail.com, Sergey.Semin@baikalelectronics.ru,
+        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kthota@nvidia.com,
+        mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH V4] Revert "PCI: tegra194: Enable support for 256 Byte
+ payload"
+Message-ID: <20230721103544.GA569300@bhelgaas>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <53d1bf79-4353-49b5-76b6-c2266535c778@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-21 at 13:19 +0800, Will Shiu wrote:
-> As following backtrace, the struct file_lock request , in posix_lock_inod=
-e
-> is free before ftrace function using.
-> Replace the ftrace function ahead free flow could fix the use-after-free
-> issue.
->=20
-> [name:report&]=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> BUG:KASAN: use-after-free in trace_event_raw_event_filelock_lock+0x80/0x1=
-2c
-> [name:report&]Read at addr f6ffff8025622620 by task NativeThread/16753
-> [name:report_hw_tags&]Pointer tag: [f6], memory tag: [fe]
-> [name:report&]
-> BT:
-> Hardware name: MT6897 (DT)
-> Call trace:
->  dump_backtrace+0xf8/0x148
->  show_stack+0x18/0x24
->  dump_stack_lvl+0x60/0x7c
->  print_report+0x2c8/0xa08
->  kasan_report+0xb0/0x120
->  __do_kernel_fault+0xc8/0x248
->  do_bad_area+0x30/0xdc
->  do_tag_check_fault+0x1c/0x30
->  do_mem_abort+0x58/0xbc
->  el1_abort+0x3c/0x5c
->  el1h_64_sync_handler+0x54/0x90
->  el1h_64_sync+0x68/0x6c
->  trace_event_raw_event_filelock_lock+0x80/0x12c
->  posix_lock_inode+0xd0c/0xd60
->  do_lock_file_wait+0xb8/0x190
->  fcntl_setlk+0x2d8/0x440
+On Fri, Jul 21, 2023 at 09:23:01AM +0100, Jon Hunter wrote:
 > ...
-> [name:report&]
-> [name:report&]Allocated by task 16752:
-> ...
->  slab_post_alloc_hook+0x74/0x340
->  kmem_cache_alloc+0x1b0/0x2f0
->  posix_lock_inode+0xb0/0xd60
-> ...
->  [name:report&]
->  [name:report&]Freed by task 16752:
-> ...
->   kmem_cache_free+0x274/0x5b0
->   locks_dispose_list+0x3c/0x148
->   posix_lock_inode+0xc40/0xd60
->   do_lock_file_wait+0xb8/0x190
->   fcntl_setlk+0x2d8/0x440
->   do_fcntl+0x150/0xc18
-> ...
->=20
-> Signed-off-by: Will Shiu <Will.Shiu@mediatek.com>
-> ---
->  fs/locks.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/fs/locks.c b/fs/locks.c
-> index df8b26a42524..a552bdb6badc 100644
-> --- a/fs/locks.c
-> +++ b/fs/locks.c
-> @@ -1301,6 +1301,7 @@ static int posix_lock_inode(struct inode *inode, st=
-ruct file_lock *request,
->   out:
->  	spin_unlock(&ctx->flc_lock);
->  	percpu_up_read(&file_rwsem);
-> +	trace_posix_lock_inode(inode, request, error);
->  	/*
->  	 * Free any unused locks.
->  	 */
-> @@ -1309,7 +1310,6 @@ static int posix_lock_inode(struct inode *inode, st=
-ruct file_lock *request,
->  	if (new_fl2)
->  		locks_free_lock(new_fl2);
->  	locks_dispose_list(&dispose);
-> -	trace_posix_lock_inode(inode, request, error);
-> =20
->  	return error;
->  }
 
-Could you send along the entire KASAN log message? I'm not sure I see
-how this is being tripped. The lock we're passing in here is "request"
-and that shouldn't be freed since it's allocated and owned by the
-caller.
+> I see a version of this patch here ...
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git/log/?h=controller/tegra194
+> 
+> However, I don't see this in -next yet. If you are happy with this latest
+> version, could we get this into -next?
 
---=20
-Jeff Layton <jlayton@kernel.org>
+I'm on vacation until Tuesday; will build a new -next branch Tuesday
+or Wednesday.
