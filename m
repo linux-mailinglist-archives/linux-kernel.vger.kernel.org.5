@@ -2,358 +2,610 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C241F75C405
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18DE75C60D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbjGUKGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46236 "EHLO
+        id S230178AbjGULrQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 Jul 2023 07:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbjGUKGj (ORCPT
+        with ESMTP id S229593AbjGULrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:06:39 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7273F30E3;
-        Fri, 21 Jul 2023 03:06:23 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R6lZM33vwz4f468R;
-        Fri, 21 Jul 2023 18:06:19 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.67.175.61])
-        by APP1 (Coremail) with SMTP id cCh0CgCnEi2aWLpk84zSNg--.13464S2;
-        Fri, 21 Jul 2023 18:06:19 +0800 (CST)
-From:   Pu Lehui <pulehui@huaweicloud.com>
-To:     linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Guo Ren <guoren@kernel.org>,
-        Song Shuai <suagrfillet@gmail.com>,
-        Pu Lehui <pulehui@huawei.com>,
-        Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH v2] riscv, bpf: Adapt bpf trampoline to optimized riscv ftrace framework
-Date:   Fri, 21 Jul 2023 18:06:27 +0800
-Message-Id: <20230721100627.2630326-1-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 21 Jul 2023 07:47:15 -0400
+X-Greylist: delayed 3000 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Jul 2023 04:47:10 PDT
+Received: from mx11.pro-ite.de (ox4u.de [212.118.221.216])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8E11FD7;
+        Fri, 21 Jul 2023 04:47:09 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at ox4u.de
+Received: from ox4u-portal.int.pro-ite.de (ox4u-portal.int.pro-ite.de [10.56.12.63])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mx11.pro-ite.de (Postfix) with ESMTPSA id 5C14818E00DF2;
+        Fri, 21 Jul 2023 12:08:34 +0200 (CEST)
+Date:   Fri, 21 Jul 2023 12:08:35 +0200 (CEST)
+From:   Andre Werner <andre.werner@systec-electronic.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Andre Werner <werneazc@gmail.com>
+Cc:     jdelvare@suse.com, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, robh+dt@kernel.org,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <1739357210.100019.1689934116025@ox4u.de>
+In-Reply-To: <ed7a5ab6-3b54-461a-bfa9-7758abd12762@roeck-us.net>
+References: <20230718112810.21322-1-andre.werner@systec-electronic.com>
+ <20230718112810.21322-2-andre.werner@systec-electronic.com>
+ <ed7a5ab6-3b54-461a-bfa9-7758abd12762@roeck-us.net>
+Subject: Re: [PATCH v3 2/2] hwmon: (hs3001) Add driver for Renesas HS3001
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgCnEi2aWLpk84zSNg--.13464S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3XF4ktw18Ww4kZr45ZF1rtFb_yoWDJrWkp3
-        s3KrZ7AFWvqF4j9r9rWF18Xr13Ar4DtFyqkryfJws5Cw45Zr93CF18Kr4Fqry5C3s5uw48
-        JFs8A34qk3W7JrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
-        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
-        UQvtAUUUUU=
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.4-Rev27
+X-Originating-Client: open-xchange-appsuite
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pu Lehui <pulehui@huawei.com>
+Dear Guenter,
 
-Commit 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to
-half") optimizes the detour code size of kernel functions to half with
-T0 register and the upcoming DYNAMIC_FTRACE_WITH_DIRECT_CALLS of riscv
-is based on this optimization, we need to adapt riscv bpf trampoline
-based on this. One thing to do is to reduce detour code size of bpf
-programs, and the second is to deal with the return address after the
-execution of bpf trampoline. Meanwhile, we need to construct the frame
-of parent function, otherwise we will miss one layer when unwinding.
-The related tests have passed.
+I pushed a new version for the open patch. In addition find my comments to your feedback.
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
-v2:
-- target to riscv tree to avoid the crash caused by the wrong merge
-  sequence.
-- fix the wrong position of traced function FP.
+> On 07/19/2023 5:17 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> 
+>  
+> On Tue, Jul 18, 2023 at 01:28:10PM +0200, Andre Werner wrote:
+> > Add base support for Renesas HS3001 temperature
+> > and humidity sensors and its compatibles HS3002,
+> > HS3003 and HS3004.
+> > 
+> > The sensor has a fix I2C address 0x44. The resolution
+> > is fixed to 14bit (ref. Missing feature).
+> > 
+> > Missing feature:
+> > - Accessing non-volatile memory: Custom board has no
+> >   possibility to control voltage supply of sensor. Thus,
+> >   we cannot send the necessary control commands within
+> >   the first 10ms after power-on.
+> > 
+> > Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
+> 
+> checkpatch reports:
+> 
+> WARNING: From:/Signed-off-by: email address mismatch: 'From: Andre Werner <werneazc@gmail.com>' != 'Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>'
+> 
+> Please make sure that both addresses match; I can not accept your
+> patch otherwise.
 
- arch/riscv/net/bpf_jit_comp64.c | 153 +++++++++++++++++---------------
- 1 file changed, 82 insertions(+), 71 deletions(-)
+With our mail provider I was currently not able to send the patch. I will try again sending the next patch version.
 
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index c648864c8cd1..0ca4f5c0097c 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -13,6 +13,8 @@
- #include <asm/patch.h>
- #include "bpf_jit.h"
- 
-+#define RV_FENTRY_NINSNS 2
-+
- #define RV_REG_TCC RV_REG_A6
- #define RV_REG_TCC_SAVED RV_REG_S6 /* Store A6 in S6 if program do calls */
- 
-@@ -241,7 +243,7 @@ static void __build_epilogue(bool is_tail_call, struct rv_jit_context *ctx)
- 	if (!is_tail_call)
- 		emit_mv(RV_REG_A0, RV_REG_A5, ctx);
- 	emit_jalr(RV_REG_ZERO, is_tail_call ? RV_REG_T3 : RV_REG_RA,
--		  is_tail_call ? 20 : 0, /* skip reserved nops and TCC init */
-+		  is_tail_call ? (RV_FENTRY_NINSNS + 1) * 4 : 0, /* skip reserved nops and TCC init */
- 		  ctx);
- }
- 
-@@ -618,32 +620,7 @@ static int add_exception_handler(const struct bpf_insn *insn,
- 	return 0;
- }
- 
--static int gen_call_or_nops(void *target, void *ip, u32 *insns)
--{
--	s64 rvoff;
--	int i, ret;
--	struct rv_jit_context ctx;
--
--	ctx.ninsns = 0;
--	ctx.insns = (u16 *)insns;
--
--	if (!target) {
--		for (i = 0; i < 4; i++)
--			emit(rv_nop(), &ctx);
--		return 0;
--	}
--
--	rvoff = (s64)(target - (ip + 4));
--	emit(rv_sd(RV_REG_SP, -8, RV_REG_RA), &ctx);
--	ret = emit_jump_and_link(RV_REG_RA, rvoff, false, &ctx);
--	if (ret)
--		return ret;
--	emit(rv_ld(RV_REG_RA, -8, RV_REG_SP), &ctx);
--
--	return 0;
--}
--
--static int gen_jump_or_nops(void *target, void *ip, u32 *insns)
-+static int gen_jump_or_nops(void *target, void *ip, u32 *insns, bool is_call)
- {
- 	s64 rvoff;
- 	struct rv_jit_context ctx;
-@@ -658,38 +635,35 @@ static int gen_jump_or_nops(void *target, void *ip, u32 *insns)
- 	}
- 
- 	rvoff = (s64)(target - ip);
--	return emit_jump_and_link(RV_REG_ZERO, rvoff, false, &ctx);
-+	return emit_jump_and_link(is_call ? RV_REG_T0 : RV_REG_ZERO, rvoff, false, &ctx);
- }
- 
- int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
- 		       void *old_addr, void *new_addr)
- {
--	u32 old_insns[4], new_insns[4];
-+	u32 old_insns[RV_FENTRY_NINSNS], new_insns[RV_FENTRY_NINSNS];
- 	bool is_call = poke_type == BPF_MOD_CALL;
--	int (*gen_insns)(void *target, void *ip, u32 *insns);
--	int ninsns = is_call ? 4 : 2;
- 	int ret;
- 
--	if (!is_bpf_text_address((unsigned long)ip))
-+	if (!is_kernel_text((unsigned long)ip) &&
-+	    !is_bpf_text_address((unsigned long)ip))
- 		return -ENOTSUPP;
- 
--	gen_insns = is_call ? gen_call_or_nops : gen_jump_or_nops;
--
--	ret = gen_insns(old_addr, ip, old_insns);
-+	ret = gen_jump_or_nops(old_addr, ip, old_insns, is_call);
- 	if (ret)
- 		return ret;
- 
--	if (memcmp(ip, old_insns, ninsns * 4))
-+	if (memcmp(ip, old_insns, RV_FENTRY_NINSNS * 4))
- 		return -EFAULT;
- 
--	ret = gen_insns(new_addr, ip, new_insns);
-+	ret = gen_jump_or_nops(new_addr, ip, new_insns, is_call);
- 	if (ret)
- 		return ret;
- 
- 	cpus_read_lock();
- 	mutex_lock(&text_mutex);
--	if (memcmp(ip, new_insns, ninsns * 4))
--		ret = patch_text(ip, new_insns, ninsns);
-+	if (memcmp(ip, new_insns, RV_FENTRY_NINSNS * 4))
-+		ret = patch_text(ip, new_insns, RV_FENTRY_NINSNS);
- 	mutex_unlock(&text_mutex);
- 	cpus_read_unlock();
- 
-@@ -787,8 +761,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 	int i, ret, offset;
- 	int *branches_off = NULL;
- 	int stack_size = 0, nregs = m->nr_args;
--	int retaddr_off, fp_off, retval_off, args_off;
--	int nregs_off, ip_off, run_ctx_off, sreg_off;
-+	int retval_off, args_off, nregs_off, ip_off, run_ctx_off, sreg_off;
- 	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
- 	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
- 	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
-@@ -796,13 +769,27 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 	bool save_ret;
- 	u32 insn;
- 
--	/* Generated trampoline stack layout:
-+	/* Two types of generated trampoline stack layout:
-+	 *
-+	 * 1. trampoline called from function entry
-+	 * --------------------------------------
-+	 * FP + 8	    [ RA to parent func	] return address to parent
-+	 *					  function
-+	 * FP + 0	    [ FP of parent func ] frame pointer of parent
-+	 *					  function
-+	 * FP - 8           [ T0 to traced func ] return address of traced
-+	 *					  function
-+	 * FP - 16	    [ FP of traced func ] frame pointer of traced
-+	 *					  function
-+	 * --------------------------------------
- 	 *
--	 * FP - 8	    [ RA of parent func	] return address of parent
-+	 * 2. trampoline called directly
-+	 * --------------------------------------
-+	 * FP - 8	    [ RA to caller func ] return address to caller
- 	 *					  function
--	 * FP - retaddr_off [ RA of traced func	] return address of traced
-+	 * FP - 16	    [ FP of caller func	] frame pointer of caller
- 	 *					  function
--	 * FP - fp_off	    [ FP of parent func ]
-+	 * --------------------------------------
- 	 *
- 	 * FP - retval_off  [ return value      ] BPF_TRAMP_F_CALL_ORIG or
- 	 *					  BPF_TRAMP_F_RET_FENTRY_RET
-@@ -833,14 +820,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 	if (nregs > 8)
- 		return -ENOTSUPP;
- 
--	/* room for parent function return address */
--	stack_size += 8;
--
--	stack_size += 8;
--	retaddr_off = stack_size;
--
--	stack_size += 8;
--	fp_off = stack_size;
-+	/* room of trampoline frame to store return address and frame pointer */
-+	stack_size += 16;
- 
- 	save_ret = flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RET);
- 	if (save_ret) {
-@@ -867,12 +848,29 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 
- 	stack_size = round_up(stack_size, 16);
- 
--	emit_addi(RV_REG_SP, RV_REG_SP, -stack_size, ctx);
--
--	emit_sd(RV_REG_SP, stack_size - retaddr_off, RV_REG_RA, ctx);
--	emit_sd(RV_REG_SP, stack_size - fp_off, RV_REG_FP, ctx);
--
--	emit_addi(RV_REG_FP, RV_REG_SP, stack_size, ctx);
-+	if (func_addr) {
-+		/* For the trampoline called from function entry,
-+		 * the frame of traced function and the frame of
-+		 * trampoline need to be considered.
-+		 */
-+		emit_addi(RV_REG_SP, RV_REG_SP, -16, ctx);
-+		emit_sd(RV_REG_SP, 8, RV_REG_RA, ctx);
-+		emit_sd(RV_REG_SP, 0, RV_REG_FP, ctx);
-+		emit_addi(RV_REG_FP, RV_REG_SP, 16, ctx);
-+
-+		emit_addi(RV_REG_SP, RV_REG_SP, -stack_size, ctx);
-+		emit_sd(RV_REG_SP, stack_size - 8, RV_REG_T0, ctx);
-+		emit_sd(RV_REG_SP, stack_size - 16, RV_REG_FP, ctx);
-+		emit_addi(RV_REG_FP, RV_REG_SP, stack_size, ctx);
-+	} else {
-+		/* For the trampoline called directly, just handle
-+		 * the frame of trampoline.
-+		 */
-+		emit_addi(RV_REG_SP, RV_REG_SP, -stack_size, ctx);
-+		emit_sd(RV_REG_SP, stack_size - 8, RV_REG_RA, ctx);
-+		emit_sd(RV_REG_SP, stack_size - 16, RV_REG_FP, ctx);
-+		emit_addi(RV_REG_FP, RV_REG_SP, stack_size, ctx);
-+	}
- 
- 	/* callee saved register S1 to pass start time */
- 	emit_sd(RV_REG_FP, -sreg_off, RV_REG_S1, ctx);
-@@ -890,7 +888,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 
- 	/* skip to actual body of traced function */
- 	if (flags & BPF_TRAMP_F_SKIP_FRAME)
--		orig_call += 16;
-+		orig_call += RV_FENTRY_NINSNS * 4;
- 
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
- 		emit_imm(RV_REG_A0, (const s64)im, ctx);
-@@ -967,17 +965,30 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im,
- 
- 	emit_ld(RV_REG_S1, -sreg_off, RV_REG_FP, ctx);
- 
--	if (flags & BPF_TRAMP_F_SKIP_FRAME)
--		/* return address of parent function */
--		emit_ld(RV_REG_RA, stack_size - 8, RV_REG_SP, ctx);
--	else
--		/* return address of traced function */
--		emit_ld(RV_REG_RA, stack_size - retaddr_off, RV_REG_SP, ctx);
-+	if (func_addr) {
-+		/* trampoline called from function entry */
-+		emit_ld(RV_REG_T0, stack_size - 8, RV_REG_SP, ctx);
-+		emit_ld(RV_REG_FP, stack_size - 16, RV_REG_SP, ctx);
-+		emit_addi(RV_REG_SP, RV_REG_SP, stack_size, ctx);
- 
--	emit_ld(RV_REG_FP, stack_size - fp_off, RV_REG_SP, ctx);
--	emit_addi(RV_REG_SP, RV_REG_SP, stack_size, ctx);
-+		emit_ld(RV_REG_RA, 8, RV_REG_SP, ctx);
-+		emit_ld(RV_REG_FP, 0, RV_REG_SP, ctx);
-+		emit_addi(RV_REG_SP, RV_REG_SP, 16, ctx);
- 
--	emit_jalr(RV_REG_ZERO, RV_REG_RA, 0, ctx);
-+		if (flags & BPF_TRAMP_F_SKIP_FRAME)
-+			/* return to parent function */
-+			emit_jalr(RV_REG_ZERO, RV_REG_RA, 0, ctx);
-+		else
-+			/* return to traced function */
-+			emit_jalr(RV_REG_ZERO, RV_REG_T0, 0, ctx);
-+	} else {
-+		/* trampoline called directly */
-+		emit_ld(RV_REG_RA, stack_size - 8, RV_REG_SP, ctx);
-+		emit_ld(RV_REG_FP, stack_size - 16, RV_REG_SP, ctx);
-+		emit_addi(RV_REG_SP, RV_REG_SP, stack_size, ctx);
-+
-+		emit_jalr(RV_REG_ZERO, RV_REG_RA, 0, ctx);
-+	}
- 
- 	ret = ctx->ninsns;
- out:
-@@ -1691,8 +1702,8 @@ void bpf_jit_build_prologue(struct rv_jit_context *ctx)
- 
- 	store_offset = stack_adjust - 8;
- 
--	/* reserve 4 nop insns */
--	for (i = 0; i < 4; i++)
-+	/* nops reserved for auipc+jalr pair */
-+	for (i = 0; i < RV_FENTRY_NINSNS; i++)
- 		emit(rv_nop(), ctx);
- 
- 	/* First instruction is always setting the tail-call-counter
--- 
-2.25.1
+> 
+> > ---
+> > Changelog:
+> > v1: Initial version
+> > v2: Extensive refactoring following recommendations of reviewers:
+> >  - Delete unused defines and device properties. These are added in
+> >    the initial version because the device supports a programming mode,
+> >    but I was not able to implement it, because the custom board was
+> >    not able to control the power supply of the device and so I cannot
+> >    enter the programming mode of the device.
+> >  - Correct missunderstanding comments for defines.
+> >  - Delete mutexes for data and I2C bus accesses.
+> >  - Replace attributes with recommented chip-info structure. In the
+> >    initial version I followed the sth3x.c implementation that uses
+> >    files and attributes in sysfs. The show functions are replaced by
+> >    is_visible and read callbacks from the HWMON ABI. I also  delete pointless
+> >    function argument checks.
+> >  - Correct Yoda programming.
+> >  - Refactor probe function and delete sleep and measurement of humidity
+> >    and temperature in probe function. I kept an initial I2C
+> >    communication to ensure that the device is accessible during probe.
+> >  - Reduce the number of atteributes to humidity and temperature input.
+> >  v3: Delete chip data because it is unused.
+> > ---
+> >  Documentation/hwmon/hs3001.rst |  37 +++++
+> >  MAINTAINERS                    |   6 +
+> >  drivers/hwmon/Kconfig          |  10 ++
+> >  drivers/hwmon/Makefile         |   1 +
+> >  drivers/hwmon/hs3001.c         | 249 +++++++++++++++++++++++++++++++++
+> >  5 files changed, 303 insertions(+)
+> >  create mode 100644 Documentation/hwmon/hs3001.rst
+> >  create mode 100644 drivers/hwmon/hs3001.c
+> > 
+> > diff --git a/Documentation/hwmon/hs3001.rst b/Documentation/hwmon/hs3001.rst
+> > new file mode 100644
+> > index 000000000000..703fb9c45313
+> > --- /dev/null
+> > +++ b/Documentation/hwmon/hs3001.rst
+> > @@ -0,0 +1,37 @@
+> > +.. SPDX-License-Identifier: GPL-2.0-or-later
+> > +
+> > +Kernel driver HS3001
+> > +===================
+> > +
+> > +Supported chips:
+> > +
+> > +  * Renesas HS3001, HS3002, HS3003, HS3004
+> > +
+> > +    Prefix: 'hs3001'
+> > +
+> > +    Addresses scanned: -
+> > +
+> > +    Datasheet: https://www.renesas.com/us/en/document/dst/hs300x-datasheet?r=417401
+> > +
+> > +Author:
+> > +
+> > +  - Andre Werner <andre.werner@systec-electronic.com>
+> > +
+> > +Description
+> > +-----------
+> > +
+> > +This driver implements support for the Renesas HS3001 chips, a humidity
+> > +and temperature family. Temperature is measured in degrees celsius, relative
+> > +humidity is expressed as a percentage. In the sysfs interface, all values are
+> > +scaled by 1000, i.e. the value for 31.5 degrees celsius is 31500.
+> > +
+> > +The device communicates with the I2C protocol. Sensors have the I2C
+> > +address 0x44 by default.
+> > +
+> > +sysfs-Interface
+> > +---------------
+> > +
+> > +===============================================================================
+> > +temp1_input:        temperature input
+> > +humidity1_input:    humidity input
+> > +===============================================================================
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index aee340630eca..25d5282b43aa 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -9494,6 +9494,12 @@ S:	Maintained
+> >  W:	http://artax.karlin.mff.cuni.cz/~mikulas/vyplody/hpfs/index-e.cgi
+> >  F:	fs/hpfs/
+> >  
+> > +HS3001 Hardware Temperature and Humidity Sensor
+> > +M:	Andre Werner <andre.werner@systec-electronic.com>
+> > +L:	linux-hwmon@vger.kernel.org
+> > +S:	Maintained
+> > +F:	drivers/hwmon/hs3001.c
+> > +
+> >  HSI SUBSYSTEM
+> >  M:	Sebastian Reichel <sre@kernel.org>
+> >  S:	Maintained
+> > diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> > index 307477b8a371..ca6be5a23271 100644
+> > --- a/drivers/hwmon/Kconfig
+> > +++ b/drivers/hwmon/Kconfig
+> > @@ -734,6 +734,16 @@ config SENSORS_HIH6130
+> >  	  This driver can also be built as a module. If so, the module
+> >  	  will be called hih6130.
+> >  
+> > +config SENSORS_HS3001
+> > +	tristate "Renesas HS3001 humidity and temperature sensors"
+> > +	depends on I2C
+> > +	help
+> > +	  If you say yes here you get support for the Renesas HS3001,
+> > +	  to HS3004 humidity and temperature sensors.
+> > +
+> > +	  This driver can also be built as a module. If so, the module
+> > +	  will be called hs3001.
+> > +
+> >  config SENSORS_IBMAEM
+> >  	tristate "IBM Active Energy Manager temperature/power sensors and control"
+> >  	select IPMI_SI
+> > diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> > index 3f4b0fda0998..cdae4e1fc919 100644
+> > --- a/drivers/hwmon/Makefile
+> > +++ b/drivers/hwmon/Makefile
+> > @@ -86,6 +86,7 @@ obj-$(CONFIG_SENSORS_GSC)	+= gsc-hwmon.o
+> >  obj-$(CONFIG_SENSORS_GPIO_FAN)	+= gpio-fan.o
+> >  obj-$(CONFIG_SENSORS_GXP_FAN_CTRL) += gxp-fan-ctrl.o
+> >  obj-$(CONFIG_SENSORS_HIH6130)	+= hih6130.o
+> > +obj-$(CONFIG_SENSORS_HS3001)	+= hs3001.o
+> >  obj-$(CONFIG_SENSORS_ULTRA45)	+= ultra45_env.o
+> >  obj-$(CONFIG_SENSORS_I5500)	+= i5500_temp.o
+> >  obj-$(CONFIG_SENSORS_I5K_AMB)	+= i5k_amb.o
+> > diff --git a/drivers/hwmon/hs3001.c b/drivers/hwmon/hs3001.c
+> > new file mode 100644
+> > index 000000000000..162466d35cc2
+> > --- /dev/null
+> > +++ b/drivers/hwmon/hs3001.c
+> > @@ -0,0 +1,249 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * This is a non-complete driver implementation for the
+> > + * HS3001 humidity and temperature sensor and compatibles. It does not include
+> > + * the configuration possibilities, where it needs to be set to 'programming mode'
+> > + * during power-up.
+> > + *
+> > + *
+> > + * Copyright (C) 2023 SYS TEC electronic AG
+> > + * Author: Andre Werner <andre.werner@systec-electronic.com>
+> > + */
+> > +
+> > +#include <linux/delay.h>
+> > +#include <linux/err.h>
+> > +#include <linux/hwmon.h>
+> > +#include <linux/i2c.h>
+> > +#include <linux/init.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/types.h>
+> > +
+> > +/* Measurement times */
+> > +#define HS3001_WAKEUP_TIME		100		/* us */
+> > +#define HS3001_8BIT_RESOLUTION	550		/* us */
+> > +#define HS3001_10BIT_RESOLUTION	1310	/* us */
+> > +#define HS3001_12BIT_RESOLUTION	4500	/* us */
+> > +#define HS3001_14BIT_RESOLUTION	16900	/* us */
+> > +
+> > +#define HS3001_RESPONSE_LENGTH	4
+> > +
+> > +#define HS3001_FIXPOINT_ARITH	1000
+> > +#define HS3001_MIN_TEMPERATURE	(-40 * HS3001_FIXPOINT_ARITH)	/* milli degree */
+> > +#define HS3001_MAX_TEMPERATURE	(125 * HS3001_FIXPOINT_ARITH)	/* milli degree */
+> > +#define HS3001_MIN_HUMIDITY		(0 * HS3001_FIXPOINT_ARITH)	/* milli percent */
+> > +#define HS3001_MAX_HUMIDITY		(100 * HS3001_FIXPOINT_ARITH)	/* milli percent */
+> 
+> MIN_ and MAX_ values are not used anywhere.
+> 
 
+Deleted.
+
+> > +
+> > +#define HS3001_MASK_HUMIDITY_0X3FFF		0x3FFF
+> > +#define HS3001_MASK_TEMPERATURE_0XFFFC	0xFFFC
+> > +#define HS3001_MASK_STATUS_0XC0			0xC0
+> > +#define HS3001_STATUS_SHIFT				6
+> 
+> Please use GENMASK() and FIELD_GET().
+
+ACK.
+
+> 
+> > +
+> > +/* Definitions for Status Bits of A/D Data */
+> > +#define HS3001_DATA_VALID	0x00	/* Valid Data */
+> > +#define HS3001_DATA_STALE	0x01	/* Stale Data */
+> > +
+> > +#define LIMIT_MAX	0
+> > +#define LIMIT_MIN	1
+> 
+> Unused
+
+Deleted.
+
+> 
+> > +
+> > +struct hs3001_data {
+> > +	struct i2c_client *client;
+> > +	u32 wait_time;		/* in us */
+> > +	int temperature;	/* in milli degree */
+> > +	u32 humidity;		/* in milli % */
+> > +};
+> > +
+> > +static int hs3001_extract_temperature(u16 raw)
+> > +{
+> > +	/* fixpoint arithmetic 1 digit */
+> > +	int temp = ((raw & HS3001_MASK_TEMPERATURE_0XFFFC) >> 2) *
+> 
+> That mask is unnecessary: The incoming value is 16 bit, and the lower two bit
+> will be shifted out anyway.
+
+I get your point. Deleted.
+
+> 
+> > +	    HS3001_FIXPOINT_ARITH;
+> > +
+> > +	temp /= (1 << 14) - 1;
+> > +
+> > +	return temp * 165 - 40 * HS3001_FIXPOINT_ARITH;
+> 
+> Why limit temperature values to multiples of 0.165 degrees C ?
+
+I do not fully understand that question. I follow the equations from the
+datasheet, except that I multiplied the input by 1000 to calculated in milli
+degree celsius or in milli percent. The outputs are proven by sysfs-access and
+libsensors using a heater / coolant spray in Linux. I also used a second external
+thermometer at the sensor and measure the temperature in parallel. It all looks
+reasonable. 
+
+> 
+> > +}
+> > +
+> > +static u32 hs3001_extract_humidity(u16 raw)
+> > +{
+> > +	int hum = (raw & HS3001_MASK_HUMIDITY_0X3FFF) * HS3001_FIXPOINT_ARITH;
+> > +
+> > +	hum /= (1 << 14) - 1;
+> > +
+> > +	return hum * 100;
+> 
+> I think I asked before: Why limit humidity value range to 0.1 % when
+> the chip reports fractions ?
+
+See my answer to the temperature values section.
+
+> 
+> > +}
+> > +
+> > +static int hs3001_data_fetch_command(struct i2c_client *client,
+> > +				     struct hs3001_data *data)
+> > +{
+> > +	int ret;
+> > +	u8 buf[HS3001_RESPONSE_LENGTH];
+> > +	u8 hs3001_status;
+> > +
+> > +	ret = i2c_master_recv(client, buf, HS3001_RESPONSE_LENGTH);
+> > +
+> 
+> Drop empty lines between assignments and value checks
+
+Done.
+
+> 
+> > +	if (ret != HS3001_RESPONSE_LENGTH) {
+> > +		ret = ret < 0 ? ret : -EIO;
+> > +		dev_dbg(&client->dev,
+> > +			"Error in i2c communication. Error code: %d.\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	hs3001_status = (buf[0] & HS3001_MASK_STATUS_0XC0) >>
+> > +	    HS3001_STATUS_SHIFT;
+> > +	if (hs3001_status == HS3001_DATA_STALE) {
+> > +		dev_dbg(&client->dev, "Sensor busy.\n");
+> > +		return -EBUSY;
+> > +	} else if (hs3001_status != HS3001_DATA_VALID) {
+> 
+> No else after return
+
+Done.
+
+> 
+> > +		dev_dbg(&client->dev, "Data invalid.\n");
+> > +		return -EIO;
+> > +	}
+> > +
+> > +	data->humidity =
+> > +	    hs3001_extract_humidity(be16_to_cpup((__be16 *)&buf[0]));
+> > +	data->temperature =
+> > +	    hs3001_extract_temperature(be16_to_cpup((__be16 *)&buf[2]));
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +umode_t hs3001_is_visible(const void *data, enum hwmon_sensor_types type,
+> 
+> static
+
+Done.
+
+> 
+> > +			  u32 attr, int channel)
+> > +{
+> > +	/* Both, humidity and temperature can only be read. */
+> > +	return 0444;
+> > +}
+> > +
+> > +int hs3001_read(struct device *dev, enum hwmon_sensor_types type,
+> 
+> static
+
+Done.
+
+> 
+> > +		u32 attr, int channel, long *val)
+> > +{
+> > +	struct hs3001_data *data = dev_get_drvdata(dev);
+> > +	struct i2c_client *client = data->client;
+> > +	int ret;
+> > +
+> 
+> The sequence from here
+> 
+> > +	ret = i2c_master_send(client, NULL, 0);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	/*
+> > +	 * Sensor needs some time to process measurement depending on
+> > +	 * resolution
+> > +	 */
+> > +	fsleep(data->wait_time);
+> > +
+> > +	ret = hs3001_data_fetch_command(client, data);
+> 
+> to here needs to be mutex protected, or a second reader could step in
+> and repeat the master send command before the data is ready.
+> 
+
+Done.
+
+> The datasheet doesn't say what happens if a measurement request
+> is sent before the previous measurement is complete. Even if that
+> is safe, there would be a race condition where a second request is sent
+> before the measurement after to the first request is complete and/or
+> fetched. In that case, the chip might respond with "stale data"
+> to the second fetch request.
+> 
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	switch (type) {
+> > +	case hwmon_temp:
+> > +		switch (attr) {
+> > +		case hwmon_temp_input:
+> > +			*val = data->temperature;
+> > +			break;
+> > +		default:
+> > +			return -EINVAL;
+> > +		}
+> > +		break;
+> > +	case hwmon_humidity:
+> > +		switch (attr) {
+> > +		case hwmon_humidity_input:
+> > +			*val = data->humidity;
+> > +			break;
+> > +		default:
+> > +			return -EINVAL;
+> > +		}
+> > +		break;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct hwmon_channel_info *hs3001_info[] = {
+> > +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT),
+> > +	HWMON_CHANNEL_INFO(humidity, HWMON_H_INPUT),
+> > +	NULL
+> > +};
+> > +
+> > +static const struct hwmon_ops hs3001_hwmon_ops = {
+> > +	.is_visible = hs3001_is_visible,
+> > +	.read = hs3001_read,
+> > +};
+> > +
+> > +static const struct hwmon_chip_info hs3001_chip_info = {
+> > +	.ops = &hs3001_hwmon_ops,
+> > +	.info = hs3001_info,
+> > +};
+> > +
+> > +/* device ID table */
+> > +static const struct i2c_device_id hs3001_ids[] = {
+> > +	{ "hs3001", 0 },
+> > +	{ },
+> > +};
+> > +
+> > +MODULE_DEVICE_TABLE(i2c, hs3001_ids);
+> > +
+> > +static const struct of_device_id hs3001_of_match[] = {
+> > +	{.compatible = "renesas,hs3001"},
+> > +	{ },
+> > +};
+> > +
+> > +MODULE_DEVICE_TABLE(of, hs3001_of_match);
+> > +
+> > +static int hs3001_probe(struct i2c_client *client)
+> > +{
+> > +	struct hs3001_data *data;
+> > +	struct device *hwmon_dev;
+> > +	struct device *dev = &client->dev;
+> > +	int ret;
+> > +
+> > +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
+> > +		return -EOPNOTSUPP;
+> > +
+> > +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> > +	if (!data)
+> > +		return -ENOMEM;
+> > +
+> > +	data->client = client;
+> > +
+> > +	/*
+> > +	 * Measurement time = wake-up time + measurement time temperature
+> > +	 * + measurment time humidity. This is currently static, because
+> > +	 * enabling programming mode is not supported, yet.
+> > +	 */
+> 
+> Unrelated, but that chip is weird. "... sequence of commands needed to
+> enter the programming mode, which must be sent within 10ms after applying
+> power to the sensor" - who can realistically guarantee that, taking
+> the ramp rate of a power supply into account ?
+
+Yes, of course. It looks that it is usually used with microcontrollers.
+
+> 
+> > +	data->wait_time = (HS3001_WAKEUP_TIME + HS3001_14BIT_RESOLUTION +
+> > +			   HS3001_14BIT_RESOLUTION);
+> > +
+> > +	/* Test access to device */
+> > +	ret = i2c_master_send(client, NULL, 0);
+> > +	if (ret)
+> > +		return ret;
+> 
+> I am wondering: Does that add any practical value ? As far as I can see
+> it effectively just checks if a device is there, which doesn't mean
+> anything except that it also triggers a conversion if this is indeed
+> a HS3001/HS3003.
+
+I wanted to guarantee that the device is present in probe, because
+I thought that using the devicetree to define the chip for a platform,
+the hwmon device get registered in probe function even the chip is
+not available. I can drop that if you recommend it. Moreover, it
+initializes the data registers in the device to overcome the issue:
+
+(Datasheet chapter 4.7)
+"If a data fetch is performed before or during the first measurement after power-on reset, then the stale
+status will be returned, but this data is actually invalid since the first measurement has not been completed."
+
+So it should prevent to get wrong data from chip if accessing the device the first time to get values.
+
+In the first version I also add the measure delay, but it was recommended to delete
+it to not increase boot timings when using that sensor.
+
+> 
+> On top of that, what happens if a user actually requests data (calls a
+> read function) before the response to this measurement request is
+> complete ? Does the chip handle this properly, or is it possible that
+> it gets confused ?
+> 
+
+As far as I understand, if you request data to frequently, the status bits of
+the chip signals stale that is the data is old thus a measurement may be
+in progress.
+
+> > +
+> > +	hwmon_dev = devm_hwmon_device_register_with_info(dev,
+> > +				client->name, data, &hs3001_chip_info, NULL);
+> > +
+> CHECK: Alignment should match open parenthesis
+> #454: FILE: drivers/hwmon/hs3001.c:227:
+> +	hwmon_dev = devm_hwmon_device_register_with_info(dev,
+> +				client->name, data, &hs3001_chip_info, NULL);
+> 
+> You can use up to 100 columns.
+
+Done
+
+> 
+> > +	if (IS_ERR(hwmon_dev))
+> > +		return dev_err_probe(dev, PTR_ERR(hwmon_dev),
+> > +				     "Unable to register hwmon device.\n");
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static struct i2c_driver hs3001_i2c_driver = {
+> > +	.driver = {
+> > +		   .name = "hs3001",
+> > +		   .of_match_table = hs3001_of_match,
+> > +	},
+> > +	.probe_new = hs3001_probe,
+> > +	.id_table = hs3001_ids,
+> > +};
+> > +
+> > +module_i2c_driver(hs3001_i2c_driver);
+> > +
+> > +MODULE_AUTHOR("Andre Werner <andre.werner@systec-electronic.com>");
+> > +MODULE_DESCRIPTION("HS3001 humidity and temperature sensor base  driver");
+> 
+
+Done.
+
+> s/  / / (double space between base and driver)
+> > +MODULE_LICENSE("GPL");
+
+Regards,
+André
