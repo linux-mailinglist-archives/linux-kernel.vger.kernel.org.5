@@ -2,104 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F0C75CBA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31ED875CBA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbjGUPYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58438 "EHLO
+        id S231124AbjGUPZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbjGUPYn (ORCPT
+        with ESMTP id S231549AbjGUPZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:24:43 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8086D30DB;
-        Fri, 21 Jul 2023 08:24:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1689953074; x=1690557874; i=deller@gmx.de;
- bh=A7WxgBjz3zo2CGF0QZzRQfzfUsKrkF2oGa6/wHukdFM=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
- b=Ko2qdlYuXReozta8VnE/apNE4ymC4iZTiFxjjaTrWqbv3JfCPN118kMJWChmEnhlS24yB3N
- 1t8V9dVHuKJxQQIEvdgeGzMphReVYqX3QZ3C0WvhfnYS7SKhc+sRPYJPIDHvStB1RxMlMfEOH
- ZcaBANg+jJmd6S1FLrcpEWyjCN2bIl7Sa+2i4ikkkomVs4U8C7szAvfiUxuihA+dxplk7o8F0
- Y0REMm9pz92bAWA+1qBDiEOTGAFQQtAqo7HwZS8KR2NL1ikeglPK9IQVkCywUGfYaP3VqPE6g
- vXgGkF28uQawUqqWZaqnzBFXmUajHZUGJuguXvdQ1THzu2ef6ODg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from p100.fritz.box ([94.134.144.189]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MplXp-1pZVPD1kfV-00q8gd; Fri, 21
- Jul 2023 17:24:34 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, linux-ia64@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>, linux-parisc@vger.kernel.org
-Cc:     Helge Deller <deller@gmx.de>,
-        matoro <matoro_mailinglist_kernel@matoro.tk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 2/2] ia64: mmap: Consider pgoff when searching for free mapping
-Date:   Fri, 21 Jul 2023 17:24:32 +0200
-Message-ID: <20230721152432.196382-3-deller@gmx.de>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230721152432.196382-1-deller@gmx.de>
-References: <20230721152432.196382-1-deller@gmx.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BplPTINVd0OdLsIUOtIgdkny/5qsRkSo0WcblPhJqu+oYHGcw71
- bySZIEIKmJcNLmjhb0oyHAQr7vH8bDvcfn3G9AiBlVHH66N8vx2stCFdAQ0FpCCx/6LRvup
- fNkM5mAgT11aCqfJH9ZXj7iiqcRE/77E62bTUUtTpZBy0aU9iR2eMAqkVpwUxqNvjTwas5V
- MOOSvn7rsNQyWiClPxdEw==
-UI-OutboundReport: notjunk:1;M01:P0:AYbJDJWuZLQ=;AAsXgFhQ1l5zYV5mMqehdTP+Z69
- OK5Ws0ozn2VQuyZl3r6VhNTq190tOl0PsnFHiQo8EMfGxNF14Jeqq/NlM3oZsmJiWTmIiAtQM
- Cq4tK1VwMSsfTJGepWQgKeZqbMD98AaA30FoUvoLeyUe0APn0mykrO5eeWc3f58pcrNA/xbaA
- F6RN8Mn70+QFHMzOgqmNb3yzwpBNgjrGdkJm5fx6lnn1oPJUX9Uy2YJv8DqNxyvMJhGYrV4Xy
- fudinA+6wZ5BNMnyJuxoR+MLjfpkI1+HW76LGjPr1AC1VjmypYN0BigTDnCAr/nqbTSVaIOzV
- j6j4G5qmoISfY/fvPZr4tuca24UvOwBY0IrL0wRSnA+OrfOkAvkxNxjrmIpFOM63ZJi++mYuS
- 0MYgIeCMpkH2XvKGY+WWxlkflD6i87susUQp19Lwi4PB165Ap7MNokr63eE/n2DwiIsc0x7Ey
- KOx9dRGzUkRINyL/FNtUSBV/646Pb9Lql5aQa2XaY0HcVs/wcDgLwx/uMTjQjHcR3eC+sd/6R
- /KTmSIACgxjHYdStmASVhBa42RdXxOF6daYUCimJ5iZD4bMrtG/nTPCx/cd67JZUSr2ah+BCE
- wo1j9j4IQ+5nO61nhzC9aN0Pfu6WAIFqLrI4rCA4SvIpIQl3cSVlm0eLKPZ2Q95RRMepx+WX4
- nW2jVZ9PIaLD3am2rpQKWd0lHxpPTlFQHy2pvwRmcBoi7K2XuH/XBONRZF7gFLnxZV0ifoA+Q
- 2qmv6oSRNmXrTrMhlR4j8xCn+h4HwCBwPRAZBIMc/V1WMhPWlT6CpKU4ErjOWuUs5BfNEYUZ9
- ikmLLPIHkkWL55i93IKTiv9jkXTQrIq5mh19XnKVJpYNxAv71KYuJYcV312/IPpepC4CW8rsj
- kArwN2qAlQbBDUS9K7k+XvtCdiMv0W2nNDaizDkXthmsD1au7asBxLX/LAUxtNieo/moaxEIv
- SA90T0opNeszWvzo9N6wrK7IIh4=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 21 Jul 2023 11:25:41 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65AF3599;
+        Fri, 21 Jul 2023 08:25:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Content-Type:Mime-Version:
+        References:In-Reply-To:Message-Id:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=oXfy01pAFvoIyGHeuZzy5+Yl52G6bm9FeN2XpUUZ5O0=; b=leT7Sj6Auzl/lnVXWJj20rSp3H
+        ihZHugGiPx2N+iXkFfhJdWNOGro6u0fPoC5/Hf0GGQgCCyEY0InBIXwqYOG88Bxf1avof2gYC8Ebb
+        olAfctVBFLY80yMdtxjxFeKYICLKp3wJ0ZZ/CvXO5qupe0FZYhUMSmtXp5MQiz4ZvBeo=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:33064 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qMs0N-0002TV-Bx; Fri, 21 Jul 2023 11:25:20 -0400
+Date:   Fri, 21 Jul 2023 11:25:17 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jirislaby@kernel.org, jringle@gridpoint.com,
+        tomasz.mon@camlingroup.com, l.perczak@camlintechnologies.com,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        stable@vger.kernel.org
+Message-Id: <20230721112517.38ab9a40cdf6a0eddf074615@hugovil.com>
+In-Reply-To: <2023072040-clock-waltz-a5f2@gregkh>
+References: <CAHp75VeWFPBmsD8zsSAaQGNNXtfgLtQuM9AMGfLPk-6p0VW=Pg@mail.gmail.com>
+        <20230620100846.d58436efc061fb91074fa7e5@hugovil.com>
+        <CAHp75VcWSVgA8LFLo0-b5TfKWdHb2GfLpXV-V3PZvthTv1Xc4A@mail.gmail.com>
+        <20230620113312.882d8f0c7d5603b1c93f33fb@hugovil.com>
+        <CAHp75VfGm6=ULW6kMjsg2OgB1z1T0YdmzvCTa3DFXXX-q_RnfA@mail.gmail.com>
+        <20230620114209.fb5272ad8cf5c5e2895d68b1@hugovil.com>
+        <CAHp75VcieuYqxWrO7rknx2ROYz=rnWnKV6s9eXZ5Zd1BKc6YMg@mail.gmail.com>
+        <20230620121645.512b31a872306b43a276bbac@hugovil.com>
+        <20230719144048.4f340b8aa0a29ab65a274273@hugovil.com>
+        <2023071922-rigor-collage-804e@gregkh>
+        <2023072040-clock-waltz-a5f2@gregkh>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v7 5/9] serial: sc16is7xx: fix regression with GPIO
+ configuration
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IA64 is the only architecture which does not consider the pgoff value when
-searching for a possible free memory region with vm_unmapped_area().
-Adding this seems to have no negative side effect on IA64, so add it now
-to make IA64 consistent with all other architectures.
+On Thu, 20 Jul 2023 21:38:21 +0200
+Greg KH <gregkh@linuxfoundation.org> wrote:
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Tested-by: matoro <matoro_mailinglist_kernel@matoro.tk>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-ia64@vger.kernel.org
-=2D--
- arch/ia64/kernel/sys_ia64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Wed, Jul 19, 2023 at 09:14:23PM +0200, Greg KH wrote:
+> > On Wed, Jul 19, 2023 at 02:40:48PM -0400, Hugo Villeneuve wrote:
+> > > On Tue, 20 Jun 2023 12:16:45 -0400
+> > > Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > > 
+> > > > On Tue, 20 Jun 2023 18:45:51 +0300
+> > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > 
+> > > > > On Tue, Jun 20, 2023 at 6:42 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > > > > > On Tue, 20 Jun 2023 18:35:48 +0300
+> > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > > > On Tue, Jun 20, 2023 at 6:33 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > > > > > > > On Tue, 20 Jun 2023 18:18:12 +0300
+> > > > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > > > > > On Tue, Jun 20, 2023 at 5:08 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
+> > > > > > > > > > On Sun, 4 Jun 2023 22:31:04 +0300
+> > > > > > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > > > 
+> > > > > ...
+> > > > > 
+> > > > > > > > > > did you have a chance to look at V8 (sent two weks ago) which fixed all
+> > > > > > > > > > of what we discussed?
+> > > > > > > > >
+> > > > > > > > > The patch 6 already has my tag, anything specific you want me to do?
+> > > > > > > >
+> > > > > > > > Hi Andy,
+> > > > > > > > I forgot to remove your "Reviewed-by: Andy..." tag before sending V8
+> > > > > > > > since there were some changes involved in patch 6 and I wanted you to
+> > > > > > > > review them. Can you confirm if the changes are correct?
+> > > > > > > >
+> > > > > > > > I also added a new patch "remove obsolete out_thread label". It has no
+> > > > > > > > real impact on the code generation itself, but maybe you can review and
+> > > > > > > > confirm if tags are ok or not, based on commit message and also
+> > > > > > > > additional commit message.
+> > > > > > >
+> > > > > > > Both are fine to me.
+> > > > > >
+> > > > > > Hi,
+> > > > > > Ok, thank you for reviewing this.
+> > > > > >
+> > > > > > I guess now we are good to go with this series if the stable tags and
+> > > > > > patches order are good after Greg's review?
+> > > > > 
+> > > > > Taking into account that we are at rc7, and even with Fixes tags in
+> > > > > your series I think Greg might take this after v6.5-0rc1 is out. It's
+> > > > > up to him how to proceed with that. Note, he usually has thousands of
+> > > > > patches in backlog, you might need to respin it after the above
+> > > > > mentioned rc1.
+> > > > 
+> > > > Ok, understood.
+> > > > 
+> > > > Let's wait then.
+> > > 
+> > > Hi Andy/Greg,
+> > > we are now at v6.5-rc2 and I still do not see any of our patches in
+> > > linus or gregkh_tty repos.
+> > > 
+> > > Is there something missing from my part (or someone else) to go forward
+> > > with integrating these patches (v8) for v6.5?
+> > 
+> > My queue is huge right now, please be patient, I want to have them all
+> > handled by the end of next week...
+> > 
+> > You can always help out by reviewing other patches on the mailing list
+> > to reduce my review load.
+> 
+> Wait, no, this series was superseeded by v8, and in there you said you
+> were going to send a new series.  So please, fix it up and send the
+> updated version of the series, this one isn't going to be applied for
+> obvious reasons.
 
-diff --git a/arch/ia64/kernel/sys_ia64.c b/arch/ia64/kernel/sys_ia64.c
-index 6e948d015332..eb561cc93632 100644
-=2D-- a/arch/ia64/kernel/sys_ia64.c
-+++ b/arch/ia64/kernel/sys_ia64.c
-@@ -63,7 +63,7 @@ arch_get_unmapped_area (struct file *filp, unsigned long=
- addr, unsigned long len
- 	info.low_limit =3D addr;
- 	info.high_limit =3D TASK_SIZE;
- 	info.align_mask =3D align_mask;
--	info.align_offset =3D 0;
-+	info.align_offset =3D pgoff << PAGE_SHIFT;
- 	return vm_unmapped_area(&info);
- }
+Hi Greg,
+I never said that I would resend another update for this current
+serie (unless of course if it was to address a new comment). Re-reading
+that email made me realise that it was maybe not perfectly clear the
+way I wrote it.
 
-=2D-
-2.41.0
+What I said was that, once V8 was finally applied and
+incorporated in the kernel, then I would send a completely new and
+different serie to address issues/concerns/improvements/suggestions
+noted during the review of this serie (example: conversion of bindings
+to YAML and improve DTS node names, etc). We already agreed with some
+maintainers (ex: Conor Dooley) that it was reasonnable to do so.
 
+That is why I asked Andy if we were good to go with V8 and he
+confirmed that, and that it was now up to you to integrate it if your
+review was satisfactory.
+
+Hope this clears things and we can integrate it soon.
+
+Thank you, Hugo.
