@@ -2,88 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE1F75C93E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9432375C945
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbjGUOKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36104 "EHLO
+        id S230390AbjGUOLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:11:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbjGUOKo (ORCPT
+        with ESMTP id S230451AbjGUOLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:10:44 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9172D47
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:10:37 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 54CF4C0007;
-        Fri, 21 Jul 2023 14:10:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689948635;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pGdCdXItdOZQeU45kFrZwcBzzffnx3e+cCUIm+CzmFk=;
-        b=bc2qEHAFKehlFEzbQvoCKk0jAT8vTAr/mfvl52KcVRPthXMmtDfUMs6qurm5Z34yY5VM5w
-        RtCY4uLKft0vgI5HqODPoEkxVZST/N5F03nawHfuuVu1b+WjB1nl/fHWfYynvNN0OSt6/5
-        JHKQP7qBMfhDnbKm5Wg7bmCwezvzBS0joR3hquVKmg3U9h44H0nGbnBQ1aDeHlGm9jNUBK
-        kgpwx0ROYLchbReN4GMG1DzGGqLlpleDIiUG/ZtcBsDaheFmLd/ymJTuWDiKmkKv9OhiVB
-        94hHzvAYppgd0YybIeqwYggzAwsJsQMvYOJsWaX33DGEWBk5weeQnFAen3ygeA==
-Date:   Fri, 21 Jul 2023 16:10:33 +0200
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1 1/1] minmax: Fix header inclusions
-Message-ID: <20230721161033.55bc133c@bootlin.com>
-In-Reply-To: <20230721133932.12679-1-andriy.shevchenko@linux.intel.com>
-References: <20230721133932.12679-1-andriy.shevchenko@linux.intel.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 10:11:47 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B416ECE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:11:45 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-569e7aec37bso20106077b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689948704; x=1690553504;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=T4SdCBonFvWuf+V0yEJ7nT449w336KZFoWRjXJb2o+8=;
+        b=n0oKwH0dgFAGMVF27nk3YDk+kFnnpdNBuswzKKsDjUoF2nttUcFPQAkqIQGcn0vrbH
+         T/IucMfN+WY88gtSSszC9sE2AOaEvI3LvZ/89ISKL1/4Eui6pr5dnCaRqpMbBbdVWsYv
+         NRptPq/VIq8QeXzcY4lctUyDp4uXHQnVipX3esx5J7htoMXXac4+aNvckJCuvtputXFM
+         Ey6stLIQHLTh6AWzRANZgxRvllCkH15KVd+nBxOMRRXGWHdlimZlTV+Wew5WEIFL+PBk
+         V1aphpXfO/KyTCCCKDLLkTbYJ6wkv8i3EyZqsT8phHQ8tdPzL6w1VMKzFt0jzzKo/WGf
+         WWVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689948704; x=1690553504;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=T4SdCBonFvWuf+V0yEJ7nT449w336KZFoWRjXJb2o+8=;
+        b=jzI50ug8J8v1ukw3HknQImDtnBpDBWHxgsbzWnwJmr9QF6eHYgSvXppN1KAhK7YMZH
+         fpX1/thKJXDEAYCAT9SxPfmmB72HEYsFgfP21rBJcrMh5VyAspPcJzWDyC17jNslGr1I
+         FNnPgju5KaagWpU1FUmvCCF4/xnhW5GzPY2fQ3Tc70CMJ2Wh4PgtBPqLRHG9XZStMZ6j
+         gSDWlBYqGEIEpQJeh7SIeYj+208pKgGXbyv5jWlJrjthlS339ZuKf5t/noyS5sKGaCSJ
+         h5UeL399GFQNqFSeA1thIsUXTfedTiepFxel3yDnsIwwr9bV5+Q3lQIZWn9gkrM5f38X
+         8FgA==
+X-Gm-Message-State: ABy/qLYtwHg3Ck26CnSQnns2POCunKbW899Z/mgq6dW1goZRzYAiyA2g
+        +gx46G0C8L6nPW6OoahUdjkoS4CJqOw=
+X-Google-Smtp-Source: APBJJlGU/N1c7xh9FsCGTTqaD2PqcnAod11BMYxzm1muKo1ARK3G7tqDbEj8dtVJ1jfB1maibUqj4V2HcNs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:ba06:0:b0:c61:7151:6727 with SMTP id
+ t6-20020a25ba06000000b00c6171516727mr13809ybg.10.1689948704796; Fri, 21 Jul
+ 2023 07:11:44 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 07:11:43 -0700
+In-Reply-To: <f474282d701aca7af00e4f7171445abb5e734c6f.1689893403.git.isaku.yamahata@intel.com>
+Mime-Version: 1.0
+References: <cover.1689893403.git.isaku.yamahata@intel.com> <f474282d701aca7af00e4f7171445abb5e734c6f.1689893403.git.isaku.yamahata@intel.com>
+Message-ID: <ZLqSH/lEbHEnQ9i8@google.com>
+Subject: Re: [RFC PATCH v4 04/10] KVM: x86: Introduce PFERR_GUEST_ENC_MASK to
+ indicate fault is private
+From:   Sean Christopherson <seanjc@google.com>
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+s/Introduce/Use
 
-On Fri, 21 Jul 2023 16:39:32 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+This doesn't "introduce" anything, in the sense that it's an AMD-defined error
+code flag.  That matters because KVM *did* introduce/define PFERR_IMPLICIT_ACCESS.
 
-> BUILD_BUG_ON*() are defined in build_bug.h.
-> It also provides __UNIQUE_ID() that is defined
-> in the compiler.h.
+On Thu, Jul 20, 2023, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  include/linux/minmax.h | 1 +
->  1 file changed, 1 insertion(+)
+> Add two PFERR codes to designate that the page fault is private and that
+> it requires looking up memory attributes.  The vendor kvm page fault
+> handler should set PFERR_GUEST_ENC_MASK bit based on their fault
+> information.  It may or may not use the hardware value directly or
+> parse the hardware value to set the bit.
 > 
-> diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-> index 798c6963909f..049480235e53 100644
-> --- a/include/linux/minmax.h
-> +++ b/include/linux/minmax.h
-> @@ -2,6 +2,7 @@
->  #ifndef _LINUX_MINMAX_H
->  #define _LINUX_MINMAX_H
->  
-> +#include <linux/build_bug.h>
->  #include <linux/const.h>
->  
->  /*
+> For KVM_X86_PROTECTED_VM, ask memory attributes for the fault privateness.
 
-Reviewed-by: Herve Codina <herve.codina@bootlin.com>
+...
 
-Best regards,
-Hervé
+> +static inline bool kvm_is_fault_private(struct kvm *kvm, gpa_t gpa, u64 error_code)
+> +{
+> +	/*
+> +	 * This is racy with mmu_seq.  If we hit a race, it would result in a
+> +	 * spurious KVM_EXIT_MEMORY_FAULT.
+> +	 */
+> +	if (kvm->arch.vm_type == KVM_X86_SW_PROTECTED_VM)
+> +		return kvm_mem_is_private(kvm, gpa_to_gfn(gpa));
+
+Please synthesize the error code flag for SW-protected VMs, same as TDX, e.g.
+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 20e289e872eb..de9e0a9c41e6 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -5751,6 +5751,10 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
+        if (WARN_ON(!VALID_PAGE(vcpu->arch.mmu->root.hpa)))
+                return RET_PF_RETRY;
+ 
++       if (vcpu->kvm->arch.vm_type == KVM_X86_SW_PROTECTED_VM &&
++           kvm_mem_is_private(vcpu->kvm, gpa_to_gfn(cr2_or_gpa)))
++               error_code |= PFERR_GUEST_ENC_MASK;
++
+        r = RET_PF_INVALID;
+        if (unlikely(error_code & PFERR_RSVD_MASK)) {
+                r = handle_mmio_page_fault(vcpu, cr2_or_gpa, direct);
+
+Functionally it's the same, but I want all VM types to have the same source of
+truth for private versus shared, and I really don't want kvm_is_fault_private()
+to exist.
