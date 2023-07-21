@@ -2,53 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3DAE75C9FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9667375C9FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbjGUO0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
+        id S231338AbjGUO1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbjGUO0q (ORCPT
+        with ESMTP id S229599AbjGUO1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:26:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE942D4E;
-        Fri, 21 Jul 2023 07:26:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4625C61CB7;
-        Fri, 21 Jul 2023 14:26:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7A71C433C7;
-        Fri, 21 Jul 2023 14:26:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689949604;
-        bh=BZeN9FeV38FBVrjv5jXNGq0zJx4/r5Rcx3nWPl6iuaY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Vcbic/Kb+piqXboSFZOVQfl6pHNk1vO6wfsVm5zsdQMckBjiqQ3UodaSo/ASRCVjV
-         JDORFTxIgUeKLqOZ2tOuyN5sYGnCfwaUlSGfJkNCJecJo/Vz7AP7ws1PGdc2hdO1KZ
-         sFQx4O4xTW/xxF2gam/apdtPWmBUDEHblBlG69iDjFSobvbSupV4vkbVEoRzvL3NUC
-         5zkwyWwCrH12rW8xj5qhxGIk6hxoZforns+WFCgs6aSNImMJWGOU3E/EYGf6HmowNG
-         El6ssSqqF7JICntljX4+uOBdoNp8F2eFCzHpNli/8RBS1Yah3YlZkAKgOvsPNgJ8DH
-         tbsAOYIAZGnvA==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
-Cc:     =?UTF-8?q?Andreas=20Gr=C3=BCnbacher?= 
-        <andreas.gruenbacher@gmail.com>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] nfsd: better conform to setfacl's method for setting missing ACEs
-Date:   Fri, 21 Jul 2023 10:26:41 -0400
-Message-ID: <20230721142642.45871-1-jlayton@kernel.org>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        Fri, 21 Jul 2023 10:27:33 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5B61BD;
+        Fri, 21 Jul 2023 07:27:33 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-666ed230c81so1794762b3a.0;
+        Fri, 21 Jul 2023 07:27:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689949652; x=1690554452;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AF7tCZuwq+7c0GWnUSkmQBp9SWKqeqYjs69ZFgQZ6/0=;
+        b=sAZr0HTeun5o4leNcfqFqWEcQpk/QFEaCNV2+hVfs8oDk/d/b4+nkakv6bKZtz3rCN
+         N5+LGFJiDK8K+/2+c+wCeKaPUPdnhQGo+Wam+Ee6wYW+Q/uaobNzON4AAYq2ibELIMR+
+         YJOZ22TP//Olc8+xWh12X+BjKvnwffUh4B7aJcGIoWiVsfFkQU3kwZuoFuYoLpw4uKui
+         ihIluiFAmsyMVIQE7TSnjtFaJ87sIDLWBYHW69sDfWeukFN4fMOsi+m1f5m42Lol9kJm
+         Ag7aW+yz8QqhYTecTULWr9csPb5fBaqxgQ4LGZDm8BQ2fFn4fgcNyqHadr6fBkksH6vl
+         2ykg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689949652; x=1690554452;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AF7tCZuwq+7c0GWnUSkmQBp9SWKqeqYjs69ZFgQZ6/0=;
+        b=GhMY0xxl88wPROhA/AU+MZ6PejUr1ZrogZtj/+8BVKi1D4krqeJVc+ic5rMmbAn3ai
+         UPIbH5yPfBO9SfAf53N2QH2IMbca4yDXbvmrftI2oc2xGmZ1qQjOAAnCI39urKGf26HV
+         f7quuSYKEQcsrxKMeMWjbQgTeGZwghkt9pXmvQDihBfczm7+M7m5fN5bsgyP+jozDOXy
+         C78eTSeDMySRPnUN/WiWteDbkfD91mBZo9seDzrvO2W+xQZVr48HgqJLmPVxUZHC4wGI
+         MM4qIgIHQiFW48vKvJ4auTe0TtiE23QVD7CIpXLgnt/ZysMOWpynLLhEn8+2bkURnLLc
+         wHrA==
+X-Gm-Message-State: ABy/qLbL6QT4yzC/SMfZ1iLcgqx2BqZmjsuSyzIDI8+3FGY0yAlLcEcN
+        hvb8Y7A7x6Rtiiu+c4WOZ3I=
+X-Google-Smtp-Source: APBJJlH0fUBj49AhwwYk/EthIBUkAlu3Lt3Vcp3X972820zaXpul3Od1X33iDe7vyQe6a8Ba8hhK8g==
+X-Received: by 2002:a05:6a00:1995:b0:676:76ea:e992 with SMTP id d21-20020a056a00199500b0067676eae992mr276148pfl.5.1689949652460;
+        Fri, 21 Jul 2023 07:27:32 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id e2-20020aa78c42000000b00666e2dac482sm3051742pfd.124.2023.07.21.07.27.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 Jul 2023 07:27:32 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
+Date:   Fri, 21 Jul 2023 22:27:04 +0800
+Cc:     Eric Dumazet <edumazet@google.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, rcu@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>, roman.gushchin@linux.dev
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
+References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
+ <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,46 +76,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andreas pointed out that the way we're setting missing ACEs doesn't
-quite conform to what setfacl does. Change it to better conform to
-how setfacl does this.
 
-Cc: Andreas Grünbacher <andreas.gruenbacher@gmail.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/nfsd/nfs4acl.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 20:54=EF=BC=8CJoel Fernandes =
+<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+>=20
+>=20
+>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> wrote:
+>>=20
+>> =EF=BB=BF
+>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet =
+<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
+>>>=20
+>>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
+<mmpgouride@gmail.com> wrote:
+>>>>=20
+>>>> Hi,
+>>>>=20
+>>>> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of =
+first item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
+>>>> and a related discussion [1].
+>>>>=20
+>>>> After reading the whole discussion, it seems like that ptr->field =
+was cached by gcc even with the deprecated
+>>>> ACCESS_ONCE(), so my question is:
+>>>>=20
+>>>>      Is that a compiler bug? If so, has this bug been fixed today, =
+ten years later?
+>>>>=20
+>>>>      What about READ_ONCE(ptr->field)?
+>>>=20
+>>> Make sure sparse is happy.
+>>=20
+>> It caused a problem without barrier(), and the deprecated =
+ACCESS_ONCE() didn=E2=80=99t help:
+>>=20
+>>   https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
+>>=20
+>> So, my real question is: With READ_ONCE(ptr->field), are there still =
+some unusual cases where gcc=20
+>> decides not to reload ptr->field?
+>=20
+> I am a bit doubtful there will be strong (any?) interest in replacing =
+the barrier() with READ_ONCE() without any tangible reason, regardless =
+of whether a gcc issue was fixed.
+>=20
+> But hey, if you want to float the idea=E2=80=A6
 
-Chuck, it might be best to fold this into the original patch, if it
-looks ok.
+We already had the READ_ONCE() in rcu_deference_raw().
 
-diff --git a/fs/nfsd/nfs4acl.c b/fs/nfsd/nfs4acl.c
-index 64e45551d1b6..9ec61bd0e11b 100644
---- a/fs/nfsd/nfs4acl.c
-+++ b/fs/nfsd/nfs4acl.c
-@@ -742,14 +742,15 @@ static int nfs4_acl_nfsv4_to_posix(struct nfs4_acl *acl,
- 	 *  no owner, owning group, or others entry,  a  copy of  the  ACL
- 	 *  owner, owning group, or others entry is added to the Default ACL."
- 	 *
--	 * If none of the requisite ACEs were set, and some explicit user or group
--	 * ACEs were, copy the requisite entries from the effective set.
-+	 * Copy any missing ACEs from the effective set.
- 	 */
--	if (!default_acl_state.valid &&
--	    (default_acl_state.users->n || default_acl_state.groups->n)) {
--		default_acl_state.owner = effective_acl_state.owner;
--		default_acl_state.group = effective_acl_state.group;
--		default_acl_state.other = effective_acl_state.other;
-+	if (default_acl_state.users->n || default_acl_state.groups->n) {
-+		if (!(default_acl_state.valid & ACL_USER_OBJ))
-+			default_acl_state.owner = effective_acl_state.owner;
-+		if (!(default_acl_state.valid & ACL_GROUP_OBJ))
-+			default_acl_state.group = effective_acl_state.group;
-+		if (!(default_acl_state.valid & ACL_OTHER))
-+			default_acl_state.other = effective_acl_state.other;
- 	}
- 
- 	*pacl = posix_state_to_acl(&effective_acl_state, flags);
--- 
-2.41.0
+The barrier() here makes me think we need write code like below:
+=09
+	READ_ONCE(head->first);
+	barrier();
+	READ_ONCE(head->first);
+
+With READ_ONCE (or the deprecated ACCESS_ONCE),
+I don=E2=80=99t think a compiler should cache the value of head->first.
+
+>=20
+> Thanks,
+>=20
+> - Joel
+>=20
+>>=20
+>>>=20
+>>> Do you have a patch for review ?
+>>=20
+>> Possibly next month. :)
+>>=20
+>>>=20
+>>>=20
+>>>>=20
+>>>>=20
+>>>> [1] =
+https://lore.kernel.org/all/1369699930.3301.494.camel@edumazet-glaptop/
+>>>>=20
+>>>> Thanks,
+>>>> Alan
+>>=20
 
