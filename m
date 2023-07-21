@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F7F75BD96
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 06:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6338475BD98
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 07:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbjGUE7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 00:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
+        id S229663AbjGUFAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 01:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjGUE7o (ORCPT
+        with ESMTP id S229457AbjGUFAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 00:59:44 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19870B3;
-        Thu, 20 Jul 2023 21:59:41 -0700 (PDT)
+        Fri, 21 Jul 2023 01:00:45 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5415B3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 22:00:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1689915579;
-        bh=E8y/g9Khd0fFkgBzOo2hgfNC9FxKvpUwWSNkgdFASms=;
+        s=201909; t=1689915638;
+        bh=zOaO/BDiMViyIwV25A6Bb8YgrTQHlQUOzuaNQJEjFbI=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Vz9fUc/RXTu27vyeQvrCGoaE8JdmFqjso1U7IKft3F4+AMIPMbJxbd6+vpUogCok2
-         jjqvREfJvYqz3QSGYRTfM9NbVcZw6ETTGk+G5ORy8Ef27KmVipGpAru/++iMcP0ZIY
-         irL63A70ZpZtpSAA842FIXFsBi3K9pkiGHMiMA9uGES1k6AQTlIav7DvOXvaXW5lr1
-         +C0AtN1LzNzfZWs6cqLKzQSLR9CakXGeTo5RmwHO24fURCoJ28UFMNlTF5RfwYFygo
-         JIBkIXyWk0zwzOR6aKsdnuJSg4XvmCPd8c6HNDSu/dKGG51lsM7dl8r9XMYvtkwX6A
-         gBrLXrGghZj8Q==
+        b=kMSCklilWZrrZg224QJpabopJPo7ZDKutmdB2yp5BfMhoOC8ytdTiPCgv1tuqMpM9
+         JDwhRDIVruD0cm3BHtEo9ZchHtb9yLW3Va1h9p/ZfEfzDFqIE6oZiNpC5ZJuFuKNCB
+         G+kl6hkBtS2kAcIwjmZZ4XdNxHATlUKSb+mNsRJkOmxXRqdKFOmdDLUvQPQ3bZKDru
+         XBHiNpdW1cxCSo14NGh0Uo7VwsgdUR/dPXFOYXGjkT1Ms/N/Xv6eavsPWxPsU1TnWA
+         Tr5qRQrxX5LSMkC+MyLx8N9vtvB1JuUKZJ1m1KrAlWPxgDDu9bIdl2A0+fdyZyNNZj
+         sGeqSFaV9P/cA==
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R6cmH4jNJz4wqW;
-        Fri, 21 Jul 2023 14:59:27 +1000 (AEST)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R6cnf1zwhz4wxx;
+        Fri, 21 Jul 2023 15:00:38 +1000 (AEST)
 From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Arnd Bergmann <arnd@kernel.org>, linux-fbdev@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Deepak Rawat <drawat.floss@gmail.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guo Ren <guoren@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
+To:     Michael Ellerman <patch-notifications@ellerman.id.au>,
         Nicholas Piggin <npiggin@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        WANG Xuerui <kernel@xen0n.name>, Wei Liu <wei.liu@kernel.org>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2 1/9] vgacon: rework Kconfig dependencies
-In-Reply-To: <20230719123944.3438363-2-arnd@kernel.org>
-References: <20230719123944.3438363-1-arnd@kernel.org>
- <20230719123944.3438363-2-arnd@kernel.org>
-Date:   Fri, 21 Jul 2023 14:59:24 +1000
-Message-ID: <87pm4lj1w3.fsf@mail.lhotse>
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sathvika Vasireddy <sv@linux.ibm.com>,
+        Naveen N Rao <naveen@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: (subset) [PATCH v4 00/15] powerpc/objtool: uaccess validation
+ for PPC32 (v4)
+In-Reply-To: <168986105076.1117384.18255319220057556882.b4-ty@ellerman.id.au>
+References: <cover.1689091394.git.christophe.leroy@csgroup.eu>
+ <168986105076.1117384.18255319220057556882.b4-ty@ellerman.id.au>
+Date:   Fri, 21 Jul 2023 15:00:38 +1000
+Message-ID: <87mszpj1u1.fsf@mail.lhotse>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
-> From: Arnd Bergmann <arnd@arndb.de>
+Michael Ellerman <patch-notifications@ellerman.id.au> writes:
+> On Tue, 11 Jul 2023 18:08:26 +0200, Christophe Leroy wrote:
+>> This series adds UACCESS validation for PPC32. It includes
+>> a dozen of changes to objtool core.
+>> 
+>> It applies on top of series "Cleanup/Optimise KUAP (v3)"
+>> https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=363368&state=*
+>> 
+>> It is almost mature, performs code analysis for all PPC32.
+>> 
+>> [...]
 >
-> The list of dependencies here is phrased as an opt-out, but this is missing
-> a lot of architectures that don't actually support VGA consoles, and some
-> of the entries are stale:
+> Applied to powerpc/fixes.
 >
->  - powerpc used to support VGA consoles in the old arch/ppc codebase, but
->    the merged arch/powerpc never did
+> [01/15] Revert "powerpc/bug: Provide better flexibility to WARN_ON/__WARN_FLAGS() with asm goto"
+>         https://git.kernel.org/powerpc/c/b49e578b9314db051da0ad72bba24094193f9bd0
 
-Not disputing this, but how did you come to that conclusion? I grepped
-around and couldn't convince myself whether it can work on powerpc or
-not. ie. currently it's possible to enable CONFIG_VGA_CONSOLE and
-powerpc does have a struct screen_info defined which seems like it would
-allow vgacon_startup() to complete.
+Sorry that's b4 getting confused, I actually applied the v5 that I sent:
 
-My only concern is that someone could be using it with Qemu?
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20230712134552.534955-1-mpe@ellerman.id.au/
 
 cheers
