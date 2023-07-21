@@ -2,126 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3368375D793
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492A875D795
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbjGUWhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 18:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
+        id S229579AbjGUWhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 18:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjGUWhI (ORCPT
+        with ESMTP id S230321AbjGUWhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 18:37:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B9835A1;
-        Fri, 21 Jul 2023 15:37:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 85A0A61DA7;
-        Fri, 21 Jul 2023 22:37:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0582C433C8;
-        Fri, 21 Jul 2023 22:37:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689979025;
-        bh=JtgWv9gkBPTO/7duoIXZzImHZiRPR2Xkc9D0oLfDOBk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JoVHpeRvt3srOFXA2jb354adqL1WTBXimO/3s/1QSu8ZQayaZw3ztC5HTPvU1vhcy
-         U0/IgCP+osmKT6VArwK2SQDQbHwQ6upGSQDCpUDRaa/sdvqVrqiirAdHjbpM7IHJfe
-         7LYsg+/J9ChUmiG5Z3idC+wJydiBUJBNIZDouEoltKWn4LgVFlTnQR+r8rRauIhZ1G
-         pVCFTK8fKXLm5u/5Kpz0PGJ6eIEe+6wT/03dFMSYeRJRp3UNaDOeRMhSNrKa7XfGjM
-         24iV7erB8ooFeq+UGWU1zEHlm0OIPE3YHB2xlPLUWWmSoTahLNuQ58yV3rS6f75hrB
-         x8VfcF3+TM80w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 74D24CE09E0; Fri, 21 Jul 2023 15:37:05 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 15:37:05 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     thunder.leizhen@huaweicloud.com
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
-Subject: Re: [PATCH 1/2] rcu: Delete a redundant check in check_cpu_stall()
-Message-ID: <11e9e09a-c47f-4690-a7c5-9a08913c3e5d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230721075716.857-1-thunder.leizhen@huaweicloud.com>
- <20230721075716.857-2-thunder.leizhen@huaweicloud.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230721075716.857-2-thunder.leizhen@huaweicloud.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 18:37:16 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8C53A8C
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:37:14 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58378ae25bfso25024927b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:37:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689979033; x=1690583833;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nb2s/VVy5vEUTAq5dFAiQTgXU9RDEXhEPes4mc/LgaE=;
+        b=hrnZx3bQTbAYbnZBbI23Btu4RUwP0QbpLJBgafmTuZQTWWdqjy6qmocK+eAwwcxsYP
+         IJ5OcEGMQ0ZxJ8xGPp7nhAvW1orYdk6aPUb2klwpOm9t8sVVeYbZElO3aUY7ln7UZR6H
+         K/rnzg1O+9xEJO4ZV2GHYtq9xPGElvC5PKdHH6KLqy7qbfkdMelBTwPBySWMlss2tDMK
+         9RhIMG5wuOba8ReovgRtw1d1mJi6byKm6rb1EajIXUK71ea32K93XWu8f/093LZBTz85
+         poWUEnh3I0h+V20ryx8r5FnL0DC+3B2yixtnsHDQMr/AQqPPK7OgZqiqA5tUKl+mEIG7
+         YEyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689979033; x=1690583833;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nb2s/VVy5vEUTAq5dFAiQTgXU9RDEXhEPes4mc/LgaE=;
+        b=fGuUqFub+ek7fDL+1+baroeRxaABsTUe8CEgySERW989uSb3TiZfp2ypVjI1QVFTSp
+         I3Oex5iMOgaqTJer9rYR4xbyhle3P5iYOON0McKwT75c9ng9x/KibFkBfHoFZG0BuQK6
+         +JGgm8BQTP1j+4LfcUwnEJl2iWynobRqLZNlZPsT5tZjWmfVSVfm0B3Nj+24MPpChXte
+         dktIdCz5eO3gxudndNH0JRZwmcgKn2Msrn6a5dWsbRe6duhl62nZOaimXUYfSTgeDJg2
+         gu5Mvmd0J+74jwvdAaI5jAvV51cRYCVyKjVfjDVqQT3nKGaNzWa2+pZGpAPVwyCPchjV
+         v5BA==
+X-Gm-Message-State: ABy/qLZgapzYESmK8eOWgtzP95lwLkIy1GzgvmD55es8NBHqvdP05Xmi
+        QhwQYpBxHV7Y2awyinXVHmHh5elUqwU=
+X-Google-Smtp-Source: APBJJlF9/qI5AuU2qayHl35iJ1tMcnwLxcDahs8C4ipF5LJ8Rjje1k32sYbKXzUUCtzE/5INK/CAd8UeuAI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:102f:b0:c22:38c2:43de with SMTP id
+ x15-20020a056902102f00b00c2238c243demr23100ybt.11.1689979033628; Fri, 21 Jul
+ 2023 15:37:13 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 21 Jul 2023 15:37:11 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230721223711.2334426-1-seanjc@google.com>
+Subject: [PATCH] KVM: x86/mmu: Guard against collision with KVM-defined PFERR_IMPLICIT_ACCESS
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 03:57:15PM +0800, thunder.leizhen@huaweicloud.com wrote:
-> From: Zhen Lei <thunder.leizhen@huawei.com>
-> 
-> j = jiffies;
-> js = READ_ONCE(rcu_state.jiffies_stall);			(1)
-> if (ULONG_CMP_LT(j, js))					(2)
-> 	return;
-> 
-> if (cmpxchg(&rcu_state.jiffies_stall, js, jn) == js)		(3)
-> 	didstall = true;
-> 
-> if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {	(4)
-> 	jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
-> 	WRITE_ONCE(rcu_state.jiffies_stall, jn);
-> }
-> 
-> For ease of description, the pseudo code is extracted as above. First,
-> assume that only one CPU is operating, the condition 'didstall' is true
-> means that (3) succeeds. That is, the value of rcu_state.jiffies_stall
-> must be 'jn'.
-> 
-> Then, assuming that another CPU is also operating at the same time, there
-> are two cases:
-> 1. That CPU sees the updated result at (1), it returns at (2).
-> 2. That CPU does not see the updated result at (1), it fails at (3) and
->    cmpxchg returns jn. So that, didstall cannot be true.
+Add an assertion in kvm_mmu_page_fault() to ensure the error code provided
+by hardware doesn't conflict with KVM's software-defined IMPLICIT_ACCESS
+flag.  In the unlikely scenario that future hardware starts using bit 48
+for a hardware-defined flag, preserving the bit could result in KVM
+incorrectly interpreting the unknown flag as KVM's IMPLICIT_ACCESS flag.
 
-The history behind this one is that there are races in which the stall
-can end in the midst of check_cpu_stall().  For example, when the activity
-of producing the stall warning breaks things loose.
+WARN so that any such conflict can be surfaced to KVM developers and
+resolved, but otherwise ignore the bit as KVM can't possibly rely on a
+flag it knows nothing about.
 
-And yes, long ago, I figured that if things had been static for so
-many seconds, they were unlikely to change, and thus omitted any and
-all synchronization.  The Linux kernel taught me better.  ;-)
+Fixes: 4f4aa80e3b88 ("KVM: X86: Handle implicit supervisor access with SMAP")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
 
-							Thanx, Paul
+Note, Isaku already posted an RFC version of this, but that doesn't have
+Isaku's SoB, so I'm taking the easy (for me) route so that this can land
+sooner than later.
 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  kernel/rcu/tree_stall.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index cc884cd49e026a3..371713f3f7d15d9 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -794,7 +794,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
->  			rcu_ftrace_dump(DUMP_ALL);
->  		didstall = true;
->  	}
-> -	if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {
-> +	if (didstall) {
->  		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
->  		WRITE_ONCE(rcu_state.jiffies_stall, jn);
->  	}
-> -- 
-> 2.25.1
-> 
+https://lore.kernel.org/all/0d71b1cdd5d901478cbfd421b4b0071cce44e16a.1689893403.git.isaku.yamahata@intel.com
+
+ arch/x86/kvm/mmu/mmu.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index ec169f5c7dce..ef554fe9f477 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -5742,6 +5742,17 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
+ 	int r, emulation_type = EMULTYPE_PF;
+ 	bool direct = vcpu->arch.mmu->root_role.direct;
+ 
++	/*
++	 * IMPLICIT_ACCESS is a KVM-defined flag used to correctly perform SMAP
++	 * checks when emulating instructions that triggers implicit access.
++	 * WARN if hardware generates a fault with an error code that collides
++	 * with the KVM-defined value.  Clear the flag and continue on, i.e.
++	 * don't terminate the VM, as KVM can't possibly be relying on a flag
++	 * that KVM doesn't know about.
++	 */
++	if (WARN_ON_ONCE(error_code & PFERR_IMPLICIT_ACCESS))
++		error_code &= ~PFERR_IMPLICIT_ACCESS;
++
+ 	if (WARN_ON(!VALID_PAGE(vcpu->arch.mmu->root.hpa)))
+ 		return RET_PF_RETRY;
+ 
+
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
+-- 
+2.41.0.487.g6d72f3e995-goog
+
