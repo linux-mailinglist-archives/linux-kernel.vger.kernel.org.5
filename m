@@ -2,234 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F1775CB8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB0475CB93
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjGUPWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
+        id S231664AbjGUPXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:23:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjGUPWe (ORCPT
+        with ESMTP id S232115AbjGUPXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:22:34 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB63A4211;
-        Fri, 21 Jul 2023 08:22:12 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6687446eaccso1815031b3a.3;
-        Fri, 21 Jul 2023 08:22:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689952931; x=1690557731;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3b96Yds/aQ6m9sjATDOT3D72vDFAPpeGAK4iIlmZPEk=;
-        b=CrFonG/fTjyuXUYCQTKQkLaHl8mVRCTCI2whp+UEAK29c6jgKRukIEAMFnBUSAIlx0
-         MkEDf8Lk3wlhq5FSwQJo4M4zSRpPlU5HAXnFPbvhoSZIaNIx9/RLC6bIqmA546ktD+0F
-         s4NVIJWob9X3aH+cOKiOIePaYe6hpInNMR2rNtolODf/TZpdRmB+sWvvQzq9igQIzwP/
-         KNFhHbvrxry6n+yuC8sjzZ47vRJ/ASey849KytOpkqKdR482fN9Di4ZIsLlvFGguhq37
-         I641beAmzO9awfza7S0fy9ALfnV19qGg2xYWs3kgrjl9qaK7sDkRZmA41SGLsekvGZl7
-         QZBA==
+        Fri, 21 Jul 2023 11:23:07 -0400
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB47E3586;
+        Fri, 21 Jul 2023 08:22:42 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-57045429f76so22851467b3.0;
+        Fri, 21 Jul 2023 08:22:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689952931; x=1690557731;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3b96Yds/aQ6m9sjATDOT3D72vDFAPpeGAK4iIlmZPEk=;
-        b=NWJZV7jk24lQp9mKjwZdcxIF/yG+pHA3a8Bg6HGE2mBXpvZuu0l7B/6a0q5JAlgt1E
-         CL3lxstFOlUZov13W+6xjMP6owLiw7GqSB6IDk2psxEkC/aAutqcL/qaBXtSdi/sNdaE
-         MNvW9i/4dRNRp+fgwHHaIHH8IbYOBewOQEiMTwGI/TbO60gntjbthxHx3u87dvrMseeZ
-         RK0rq7st2Occ5GsftUFBVU1K9FCG3AwUAycBwwmt0Fi1E5TNhc6/Um6DwxZzDWrW6MEk
-         C4cX2LDqy5hkYAZ4ty2me9A9Y+XvP6LN04Qe2MtJ5VaYPwQFww3GmfireIoQGYc3KAQP
-         pyLA==
-X-Gm-Message-State: ABy/qLaU7z34FcDQA46LqGVHHP5WlIdD8qyQOrgFSrfsPIVXpPLZp7Z+
-        k9YIkzbYX3/QzNjJBvbvgHg=
-X-Google-Smtp-Source: APBJJlHwDiwChgFArU+ABqubLCi+ve9YBR306/8gDwMIMwIBPOtJ2y2iWH+l1a2Ut87X0+sEXkvssg==
-X-Received: by 2002:a05:6a20:1614:b0:132:f61e:7d41 with SMTP id l20-20020a056a20161400b00132f61e7d41mr2596615pzj.5.1689952931435;
-        Fri, 21 Jul 2023 08:22:11 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id n23-20020aa78a57000000b0068288aaf23esm3118541pfa.100.2023.07.21.08.22.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Jul 2023 08:22:10 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <CANn89iL47bu8bWu2EziK2gCJDBDb4Z5LAZJt1xhb_jQMaieG-g@mail.gmail.com>
-Date:   Fri, 21 Jul 2023 23:21:51 +0800
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        roman.gushchin@linux.dev
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E722F06F-FB78-4566-B5BD-754C1F6BD641@gmail.com>
-References: <04C1E631-725C-47AD-9914-25D5CE04DFF4@gmail.com>
- <CANn89iKJWw7zUP-E_d=Yhaz=Qw0R3Ae7ULaGgrtsi1yf2pfpGg@mail.gmail.com>
- <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
- <CANn89iLqU=huOuCt2kXmrXf68TUU-N90aQnMykkYcZ+Arx9-aA@mail.gmail.com>
- <EDE1C0AE-B479-49F9-995D-DA9CC1A6EA57@gmail.com>
- <CANn89iL47bu8bWu2EziK2gCJDBDb4Z5LAZJt1xhb_jQMaieG-g@mail.gmail.com>
-To:     Eric Dumazet <edumazet@google.com>
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689952933; x=1690557733;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bRpZOSTRgUgs93CpnfRqLnXeS2bgmI9aOiNkeLEthD0=;
+        b=XQ7CpVXcAYdVCdo2OFMrd45xJEfSBe/FwYXkV3wY3/gWd18XyXUPQlux+CiXrLwp/1
+         iG00iJQ1m9dPHSBWILMLFxt75Q2gC9eBDrmrGugBHBw3zlj+Zc1OYqaYHUcd5hsRZ7ni
+         QfCHkkB7y+MiUZ0yQuPLPo57sc/mYfpYPgKu8tm/PCz98z4v10agxkYV0oeSSTS8Tg0+
+         lFCMNyOcakoi+bc0NXJEdiG/M15TrkpYz2EfGqrXXhE2WOcrHnzq6GN277KMguzXLXHP
+         veUlu1K0D6wxfyxxCK4uIeo8TA7SVLP3LALUHkm7yv0cDXhAnEs9P8zvWTWf0Nt14lip
+         JkgQ==
+X-Gm-Message-State: ABy/qLbKkVRh+jrJCPWGA+pX9XQTq06fTJ/wqRR50Fn8Fs0MFpgo6HM+
+        U5/bWX4JLATKenfkvABNBTRM0bwnyBG/BQ==
+X-Google-Smtp-Source: APBJJlHsCwFm8o3IiOOLqKl7iC10k/IuqmOifIN/ywy/oIUtmb0iATjnTkKpDcXbOt21ws1bIqKHrA==
+X-Received: by 2002:a0d:ff86:0:b0:577:2cac:cd4b with SMTP id p128-20020a0dff86000000b005772caccd4bmr482814ywf.7.1689952933290;
+        Fri, 21 Jul 2023 08:22:13 -0700 (PDT)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id m74-20020a0dca4d000000b0056d2a19ad91sm924478ywd.103.2023.07.21.08.22.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 08:22:12 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5701eaf0d04so22523007b3.2;
+        Fri, 21 Jul 2023 08:22:12 -0700 (PDT)
+X-Received: by 2002:a81:4f44:0:b0:57a:5b6f:d41 with SMTP id
+ d65-20020a814f44000000b0057a5b6f0d41mr358831ywb.42.1689952932202; Fri, 21 Jul
+ 2023 08:22:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230711154449.1378385-1-eesposit@redhat.com> <ZK/9MlTh435FP5Ji@gambale.home>
+ <ZLABozIRVGmwuIBf@gambale.home> <ba2354dc63fd741d2d351b18d4312d0771c0935d.camel@HansenPartnership.com>
+ <ZLVyvAXwtemx1I6p@redhat.com> <0aa647f719103e8620d7209cbde40f04a7334749.camel@HansenPartnership.com>
+ <FBDC67DD-856F-429B-8E91-B0CA8B0F24B9@oracle.com> <CAMw=ZnQ5pjwJZdX9kyib=vFd_c5_5_eUhV_mT5OcRPt693m=Yg@mail.gmail.com>
+ <635B383C-38A5-479E-80A6-358D5F90988B@oracle.com> <CAMw=ZnQtEwNFyZ-Gt6ODb9gp22KY1GimaSfW46N7o-S1Hkfp4A@mail.gmail.com>
+ <c2f451e0f8d72cf3183aff9cbaf23f135fc7b495.camel@HansenPartnership.com>
+ <CAMw=ZnSHDYrLXoad=d_O_qAsurqv196z3Fc3VRAJXSsJNVXdPw@mail.gmail.com>
+ <137ddc2957d43576afd37afb0bedab3ceea1f8d7.camel@HansenPartnership.com>
+ <CAMw=ZnSPGp-jCAN+z_QdGJAgJv4=pgee_2oQ4oBqVqnye6813A@mail.gmail.com>
+ <caec9522f981393e6fd0f8e36ff495781828406f.camel@HansenPartnership.com> <CAMw=ZnREBiwqP+wmUfBishtZ9eOiNsaicypvMqFMmEdV_g2gpg@mail.gmail.com>
+In-Reply-To: <CAMw=ZnREBiwqP+wmUfBishtZ9eOiNsaicypvMqFMmEdV_g2gpg@mail.gmail.com>
+From:   Luca Boccassi <bluca@debian.org>
+Date:   Fri, 21 Jul 2023 16:22:00 +0100
+X-Gmail-Original-Message-ID: <CAMw=ZnREf8L1hrGgFUMrcBJNf-7ZTs0hMNFMB_nNAvyV=Pe2Nw@mail.gmail.com>
+Message-ID: <CAMw=ZnREf8L1hrGgFUMrcBJNf-7ZTs0hMNFMB_nNAvyV=Pe2Nw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Eric Snowberg <eric.snowberg@oracle.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "lennart@poettering.net" <lennart@poettering.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 21 Jul 2023 at 16:14, Luca Boccassi <bluca@debian.org> wrote:
+>
+> On Fri, 21 Jul 2023 at 14:34, James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+> >
+> > On Fri, 2023-07-21 at 14:10 +0100, Luca Boccassi wrote:
+> > > On Fri, 21 Jul 2023 at 14:01, James Bottomley
+> > > <James.Bottomley@hansenpartnership.com> wrote:
+> > [...]
+> > > > Well, my job is to be concerned about how individuals who want to
+> > > > own their own keys, either in MoK or db, participate in this, so I
+> > > > am mostly thinking about local signing.  Whatever we decide, there
+> > > > must be a local workflow pathway.
+> > >
+> > > Sure but for local signing via MoK that's obviously fine, as one gets
+> > > to keep the pieces. AFAIK it's a different flow in Shim whether
+> > > something is authorized by MoK, DB or the built-in cert, so having
+> > > different policies built-in for those different cases should be
+> > > doable. Actually at the moment even if Shim loads the image, if it
+> > > gets authorized by DB .sbat isn't checked at all.
+> >
+> > So let's be sure we mean the same thing here.  There is really no third
+> > party CA.  Microsoft gives the distributions a signing key to allow
+> > them to sign their version of shim.  Some distributions, like Red Hat,
+> > also embed their signing certificates in shim, so shim can distinguish
+> > between a RH key and another key added to MokList.  However, some
+> > distributions, like SUSE, insist that all signing keys be approved by
+> > the machine owner (so no embedded shim certs for non-enterprise) and
+> > their shim can't distinguish between SUSE keys and machine owner
+> > additions.  Given the variances in key handling, I think trying to
+> > distinguish between official and developer keys is a huge addition of
+> > complexity we don't need, so there has to be a workflow that functions
+> > for both and that workflow would seem to be allowing non-existent or
+> > empty sbat sections.  Official key holders  would *always* add sbat
+> > sections, so there's really no problem that needs a solution to be
+> > mandated here.
+>
+> The certificate is called the "Microsoft Corporation UEFI CA 2011" ,
+> issued by the "Microsoft Corporation Third Party Marketplace Root". So
+> for short, we call it UEFI 3rd party CA :-)
+> Anyway, I wasn't aware that SUSE doesn't embed their cert in Shim,
+> we'll have to take that in consideration for sure.
 
-> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 22:47=EF=BC=8CEric Dumazet =
-<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> On Fri, Jul 21, 2023 at 4:31=E2=80=AFPM Alan Huang =
-<mmpgouride@gmail.com> wrote:
->>=20
->>=20
->>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 05:11=EF=BC=8CEric Dumazet =
-<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
->>>=20
->>> On Thu, Jul 20, 2023 at 10:00=E2=80=AFPM Alan Huang =
-<mmpgouride@gmail.com> wrote:
->>>>=20
->>>>=20
->>>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet =
-<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
->>>>>=20
->>>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
-<mmpgouride@gmail.com> wrote:
->>>>>>=20
->>>>>> Hi,
->>>>>>=20
->>>>>> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of =
-first item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
->>>>>> and a related discussion [1].
->>>>>>=20
->>>>>> After reading the whole discussion, it seems like that ptr->field =
-was cached by gcc even with the deprecated
->>>>>> ACCESS_ONCE(), so my question is:
->>>>>>=20
->>>>>>      Is that a compiler bug? If so, has this bug been fixed =
-today, ten years later?
->>>>>>=20
->>>>>>      What about READ_ONCE(ptr->field)?
->>>>>=20
->>>>> Make sure sparse is happy.
->>>>=20
->>>> It caused a problem without barrier(), and the deprecated =
-ACCESS_ONCE() didn=E2=80=99t help:
->>>>=20
->>>>       https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
->>>>=20
->>>> So, my real question is: With READ_ONCE(ptr->field), are there =
-still some unusual cases where gcc
->>>> decides not to reload ptr->field?
->>>=20
->>> I can not really answer without seeing an actual patch...
->>=20
->> The content of the potential patch:
->>=20
->> diff --git a/include/linux/rculist_nulls.h =
-b/include/linux/rculist_nulls.h
->> index 89186c499dd4..bcd39670f359 100644
->> --- a/include/linux/rculist_nulls.h
->> +++ b/include/linux/rculist_nulls.h
->> @@ -158,15 +158,9 @@ static inline void hlist_nulls_add_fake(struct =
-hlist_nulls_node *n)
->>  * @pos:       the &struct hlist_nulls_node to use as a loop cursor.
->>  * @head:      the head of the list.
->>  * @member:    the name of the hlist_nulls_node within the struct.
->> - *
->> - * The barrier() is needed to make sure compiler doesn't cache first =
-element [1],
->> - * as this loop can be restarted [2]
->> - * [1] Documentation/memory-barriers.txt around line 1533
->> - * [2] Documentation/RCU/rculist_nulls.rst around line 146
->>  */
->> #define hlist_nulls_for_each_entry_rcu(tpos, pos, head, member)       =
-                 \
->> -       for (({barrier();}),                                          =
-          \
->> -            pos =3D =
-rcu_dereference_raw(hlist_nulls_first_rcu(head));            \
->> +       for (pos =3D =
-rcu_dereference_raw(hlist_nulls_first_rcu(head));            \
->>                (!is_a_nulls(pos)) &&                                  =
-         \
->>                ({ tpos =3D hlist_nulls_entry(pos, typeof(*tpos), =
-member); 1; }); \
->>                pos =3D =
-rcu_dereference_raw(hlist_nulls_next_rcu(pos)))
->> @@ -180,8 +174,7 @@ static inline void hlist_nulls_add_fake(struct =
-hlist_nulls_node *n)
->>  * @member:    the name of the hlist_nulls_node within the struct.
->>  */
->> #define hlist_nulls_for_each_entry_safe(tpos, pos, head, member)      =
-         \
->> -       for (({barrier();}),                                          =
-          \
->> -            pos =3D =
-rcu_dereference_raw(hlist_nulls_first_rcu(head));            \
->> +       for (pos =3D =
-rcu_dereference_raw(hlist_nulls_first_rcu(head));            \
->>                (!is_a_nulls(pos)) &&                                  =
-         \
->>                ({ tpos =3D hlist_nulls_entry(pos, typeof(*tpos), =
-member);        \
->>                   pos =3D =
-rcu_dereference_raw(hlist_nulls_next_rcu(pos)); 1; });)
->>=20
->>=20
->>>=20
->>> Why are you asking ? Are you tracking compiler bug fixes ?
->>=20
->> The barrier() here makes me confused.
->>=20
->> If we really need that, do we need:
->>=20
->>        READ_ONCE(head->first);
->>        barrier();
->>        READ_ONCE(head->first);
->>=20
->=20
-> Nope, the patch you want to revert (while it did fix (by pure luck
-> ???) a real bug back in the days) was replacing
->=20
-> ACCESS_ONCE()
->=20
-> by
->=20
-> barrier();
-> ACCESS_ONCE();
-
-Yeah.
-
-The commit message and related discussions all indicate
-that the compiler cached a value accessed through volatile.
-
-That=E2=80=99s why I asked here.
-
->=20
-> (There is one ACCESS_ONCE(), not two of them)
->=20
-> BTW,
->  barrier();
->  followed by an arbitrary number of barrier(); back to back,
-> translates to one barrier()
->=20
-> Frankly, I would not change the code, unless someone can explain what
-> was the issue.
-> (Perhaps there was a missing barrier elsewhere)
-
-Fair enough, although I feel like this is masking the real issue.
-
-(I feel like no one will know the real issue ten years later, when no =
-one knew it ten years ago.)
-
-Anyway, thanks for your time.
-
-
-
-
+Actually, a dev from SUSE's security just confirmed they embed their
+CA in Shim like every other distribution. Nobody seems to be aware of
+any example where a distribution relies exclusively on MoK - and
+that's understandable, as that would mean failing to boot by default
+on a new machine. Do you have any example/cases where that's actually
+happening? Outside development/local signing/etc.
