@@ -2,135 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4CC75CB59
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A17075CAA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbjGUPS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52964 "EHLO
+        id S231451AbjGUOvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbjGUPSQ (ORCPT
+        with ESMTP id S231286AbjGUOvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:18:16 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A18830DB;
-        Fri, 21 Jul 2023 08:18:14 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 31b8b80791d346d9; Fri, 21 Jul 2023 17:18:13 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
+        Fri, 21 Jul 2023 10:51:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DAE30DD;
+        Fri, 21 Jul 2023 07:51:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 9C449661901;
-        Fri, 21 Jul 2023 17:18:12 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH v2 5/8] ACPI: thermal: Hold thermal zone lock around trip updates
-Date:   Fri, 21 Jul 2023 16:51:23 +0200
-Message-ID: <3448044.QJadu78ljV@kreacher>
-In-Reply-To: <5710197.DvuYhMxLoT@kreacher>
-References: <13318886.uLZWGnKmhe@kreacher> <5710197.DvuYhMxLoT@kreacher>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D763A61CBC;
+        Fri, 21 Jul 2023 14:51:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7258C433C8;
+        Fri, 21 Jul 2023 14:51:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689951095;
+        bh=JyLcr+hjjbOtJozv2nCAZS5KuLenLLEMRv93SGfMz0A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lx3f1KiLZQ6aMFKpJddnpZcfv2cZAUxd0rHUGPpu6dHJXgGys0vJUzVc6BDb/ToIz
+         BDY55EEfyr4U4HmAyisYd+xC7w0KqmXNj9+59w4BN3AeSUdAxZHeatNDdWCFLxe5PP
+         3p31py3eSUZhE5dxG7QgMhLkBvDgm3toODzpTQAg=
+Date:   Fri, 21 Jul 2023 16:51:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dingyan Li <18500469033@163.com>
+Cc:     stern@rowland.harvard.edu, sebastian.reichel@collabora.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] USB: add usbfs ioctl to get specific superspeedplus
+ rates
+Message-ID: <2023072159-carol-underfeed-43eb@gregkh>
+References: <20230721084039.9728-1-18500469033@163.com>
+ <2023072105-lethargic-saddling-ad97@gregkh>
+ <130b453c.5c8f.1897872ce54.Coremail.18500469033@163.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgdekvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgt
- phhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <130b453c.5c8f.1897872ce54.Coremail.18500469033@163.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, Jul 21, 2023 at 08:35:37PM +0800, Dingyan Li wrote:
+> 
+> At 2023-07-21 19:04:29, "Greg KH" <gregkh@linuxfoundation.org> wrote:
+> >On Fri, Jul 21, 2023 at 04:40:39PM +0800, Dingyan Li wrote:
+> >> The usbfs interface does not provide any way to get specific
+> >> superspeedplus rate, like Gen2x1, Gen1x2 or Gen2x2. Current
+> >> API include an USBDEVFS_GET_SPEED ioctl, but it can only return
+> >> general superspeedplus speed instead of any specific rates.
+> >> Therefore we can't tell whether it's a Gen2x2(20Gbps) device.
+> >> 
+> >> This patch introduce a new ioctl USBDEVFS_GET_SSP_RATE to fix
+> >> it. Similar information is already available via sysfs, it's
+> >> good to add it for usbfs too.
+> >> 
+> >> Signed-off-by: Dingyan Li <18500469033@163.com>
+> >> ---
+> >>  drivers/usb/core/devio.c          | 3 +++
+> >>  include/uapi/linux/usbdevice_fs.h | 1 +
+> >>  2 files changed, 4 insertions(+)
+> >> 
+> >> diff --git a/drivers/usb/core/devio.c b/drivers/usb/core/devio.c
+> >> index 1a16a8bdea60..2f57eb163360 100644
+> >> --- a/drivers/usb/core/devio.c
+> >> +++ b/drivers/usb/core/devio.c
+> >> @@ -2783,6 +2783,9 @@ static long usbdev_do_ioctl(struct file *file, unsigned int cmd,
+> >>  	case USBDEVFS_GET_SPEED:
+> >>  		ret = ps->dev->speed;
+> >>  		break;
+> >> +	case USBDEVFS_GET_SSP_RATE:
+> >> +		ret = ps->dev->ssp_rate;
+> >> +		break;
+> >
+> >Shouldn't this new ioctl be documented somewhere?  What are the valid
+> >values it can return?  What if it in't a superspeed device?  Who is
+> >going to use this?
+> >
+> >And we have traditionally only been adding new information like this to
+> >sysfs, which was not around when usbfs was created.  Why not just use
+> >that instead?  Are you wanting to see all of the sysfs-provided
+> >information in usbfs also?
+> >
+> >thanks,
+> >
+> 
+> >greg k-h
+> 
+> 1. By saying "be documented somewhere", do you mean there is extra
+>     documentation work which needs to be done? Sorry that I missed this
+>     part since it's the first time for me to work on a kernel patch.
 
-There is a race condition between acpi_thermal_trips_update() and
-acpi_thermal_check_fn(), because the trip points may get updated while
-the latter is running which in theory may lead to inconsistent results.
-For example, if two trips are updated together, using the temperature
-value of one of them from before the update and the temperature value
-of the other one from after the update may not lead to the expected
-outcome.
+It needs to be documented somewhere, otherwise no one knows how to use
+it.
 
-To address this, make acpi_thermal_trips_update() hold the thermal zone
-lock across the entire update of trip points.
+> 2. If no error, returned values are "enum usb_ssp_rate" defined in include/linux/usb/ch9.h
+> 3. ssp rate is only valid for superspeedplus. For other speeds, it should be
+>     USB_SSP_GEN_UNKNOWN.
 
-While at it, change the acpi_thermal_trips_update() return data type
-to void as that function always returns 0 anyway.
+Ok, that should be documented.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+> 4. I found in libusb, there are two ways to get speed value for a device.
+>     One way is via sysfs, which has supported 20Gbps now. Another way is
+>     to use ioctl USBDEVFS_GET_SPEED. This is when I found this ioctl can only
+>     return USB_SPEED_SUPER_PLUS at most, it cannot determine current ssp rate
+>     further, no matter Gen1x2(10Gbps), Gen2x1(10Gbps) or Gen2x2(20Gbps). So I
+>     thought maybe it's good to provide a similar way like ioctl USBDEVFS_GET_SPEED
+>     in order to get ssp rates.
 
-v1 -> v2:
-   * Hold the thermal zone lock instead of thermal_check_lock around trip
-     point updates (this also helps to protect thermal_get_trend() from using
-     stale trip temperatures).
-   * Add a comment documenting the purpose of the locking.
-   * Make acpi_thermal_trips_update() void.
+If libusb doesn't need this ioctl, who would use it?  We only add apis
+that are actually going to be used.
 
----
- drivers/acpi/thermal.c |   21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+So if libusb doesn't use it, we need a real-world user for us to be able
+to add this.
 
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -190,7 +190,7 @@ static int acpi_thermal_get_polling_freq
- 	return 0;
- }
- 
--static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
-+static void __acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
- {
- 	acpi_status status;
- 	unsigned long long tmp;
-@@ -398,17 +398,28 @@ static int acpi_thermal_trips_update(str
- 			ACPI_THERMAL_TRIPS_EXCEPTION(flag, tz, "device");
- 		}
- 	}
-+}
- 
--	return 0;
-+static void acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
-+{
-+	/*
-+	 * The locking is needed here to protect thermal_get_trend() from using
-+	 * a stale passive trip temperature and to synchronize with the trip
-+	 * temperature updates in acpi_thermal_check_fn().
-+	 */
-+	thermal_zone_device_lock(tz->thermal_zone);
-+
-+	__acpi_thermal_trips_update(tz, flag);
-+
-+	thermal_zone_device_unlock(tz->thermal_zone);
- }
- 
- static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
- {
--	int i, ret = acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
- 	bool valid;
-+	int i;
- 
--	if (ret)
--		return ret;
-+	__acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
- 
- 	valid = tz->trips.critical.valid |
- 		tz->trips.hot.valid |
+thanks,
 
-
-
+greg k-h
