@@ -2,168 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31ED875CBA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC6D75CBAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbjGUPZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
+        id S231725AbjGUP0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbjGUPZl (ORCPT
+        with ESMTP id S231549AbjGUP0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:25:41 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65AF3599;
-        Fri, 21 Jul 2023 08:25:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Content-Type:Mime-Version:
-        References:In-Reply-To:Message-Id:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=oXfy01pAFvoIyGHeuZzy5+Yl52G6bm9FeN2XpUUZ5O0=; b=leT7Sj6Auzl/lnVXWJj20rSp3H
-        ihZHugGiPx2N+iXkFfhJdWNOGro6u0fPoC5/Hf0GGQgCCyEY0InBIXwqYOG88Bxf1avof2gYC8Ebb
-        olAfctVBFLY80yMdtxjxFeKYICLKp3wJ0ZZ/CvXO5qupe0FZYhUMSmtXp5MQiz4ZvBeo=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:33064 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qMs0N-0002TV-Bx; Fri, 21 Jul 2023 11:25:20 -0400
-Date:   Fri, 21 Jul 2023 11:25:17 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jirislaby@kernel.org, jringle@gridpoint.com,
-        tomasz.mon@camlingroup.com, l.perczak@camlintechnologies.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        stable@vger.kernel.org
-Message-Id: <20230721112517.38ab9a40cdf6a0eddf074615@hugovil.com>
-In-Reply-To: <2023072040-clock-waltz-a5f2@gregkh>
-References: <CAHp75VeWFPBmsD8zsSAaQGNNXtfgLtQuM9AMGfLPk-6p0VW=Pg@mail.gmail.com>
-        <20230620100846.d58436efc061fb91074fa7e5@hugovil.com>
-        <CAHp75VcWSVgA8LFLo0-b5TfKWdHb2GfLpXV-V3PZvthTv1Xc4A@mail.gmail.com>
-        <20230620113312.882d8f0c7d5603b1c93f33fb@hugovil.com>
-        <CAHp75VfGm6=ULW6kMjsg2OgB1z1T0YdmzvCTa3DFXXX-q_RnfA@mail.gmail.com>
-        <20230620114209.fb5272ad8cf5c5e2895d68b1@hugovil.com>
-        <CAHp75VcieuYqxWrO7rknx2ROYz=rnWnKV6s9eXZ5Zd1BKc6YMg@mail.gmail.com>
-        <20230620121645.512b31a872306b43a276bbac@hugovil.com>
-        <20230719144048.4f340b8aa0a29ab65a274273@hugovil.com>
-        <2023071922-rigor-collage-804e@gregkh>
-        <2023072040-clock-waltz-a5f2@gregkh>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Fri, 21 Jul 2023 11:26:10 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71C512F;
+        Fri, 21 Jul 2023 08:26:04 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-5607cdb0959so1127091eaf.2;
+        Fri, 21 Jul 2023 08:26:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689953164; x=1690557964;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2XADGzXDE1Cmqc9k3erzJdoJdm6r5SA4QUqxQVr/X6c=;
+        b=iKPRwnvs9sqCriXOw/HdWzzJ6w5MYPPuTn/ZViObaPe5zoVBNcUA394quv1FTU8IZA
+         uu87NSHHwQ58Mzsz6a1RSavv6W00W2rwo5yt0OY0tcaaBXheCvltY30m/ycBNotVplUV
+         CH6m1p+CbotMkZqG01VoSCFvAb8TQe7beRK81Xhk2GagSSz1QzX8SpWLNfnBXCGT3Bsn
+         dXANoI57rj75kbUs9BF1IdbH9GoVSTf8vU409IHK2jdM5lGUXi0D7TS3k5oDRKqp0Xkb
+         +1PpdI6SRXhc7Qk0/oAZ2p8AWVmyp9HgkvQoKtTRne4ZgIdkxXsjfmyGFEHvtuUWNe59
+         XA3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689953164; x=1690557964;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2XADGzXDE1Cmqc9k3erzJdoJdm6r5SA4QUqxQVr/X6c=;
+        b=ML1bEyQLyjJx/ZoBmHpftWvGreUi70GpG0ULtRJM3yCWVhqp3hWzYN/uWGfPuFKQj1
+         A6Dup7O/Yjn2IcgxHJFPk8Rq8hvzfkI0pUWodwvz0mllfoDsxNJbITAKjsmzjKSlWf+I
+         hjtTDxhnr1/Bwc5eWjl8rOfnVoBwPOpBkFM0usl8CTgb2ZprB20ti80tmAhxNFaVBBhM
+         p5XIOG4cKOdQkrfV3u9qI5B397oqWq6xm9GxUeUELVzyyOw4tLL831JzU0/pY9d5kchi
+         DvmUtfkx/3v/366e+vh7uWfu6VlOw2Whcswuf5Gkt4/7fTnqj3iMZC3V6wFUKVw84EaF
+         Dohg==
+X-Gm-Message-State: ABy/qLZejKGPcQNAN7md0x6JG20RbHhPtOp4HBeCyKFaQpl9Mjwi9Eh5
+        0GVjhepM2hbfLndKtXEyAbE=
+X-Google-Smtp-Source: APBJJlFXGIAfsDoT/WoZZltvCYh3AlJifi4lbFeTodR9/ZlSsyKgDUUepmSm1K23OQAJrb4qZ9EwzQ==
+X-Received: by 2002:a05:6808:1819:b0:3a1:f135:6a49 with SMTP id bh25-20020a056808181900b003a1f1356a49mr2925509oib.29.1689953164061;
+        Fri, 21 Jul 2023 08:26:04 -0700 (PDT)
+Received: from dw-tp ([49.207.232.207])
+        by smtp.gmail.com with ESMTPSA id l6-20020a17090a850600b002635db431a0sm2688201pjn.45.2023.07.21.08.26.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 08:26:03 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 20:56:00 +0530
+Message-Id: <87fs5hl20n.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     shikemeng@huaweicloud.com
+Subject: Re: [PATCH 02/10] ext4: avoid potential data overflow in next_linear_group
+In-Reply-To: <20230721171007.2065423-3-shikemeng@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
-Subject: Re: [PATCH v7 5/9] serial: sc16is7xx: fix regression with GPIO
- configuration
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023 21:38:21 +0200
-Greg KH <gregkh@linuxfoundation.org> wrote:
+Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-> On Wed, Jul 19, 2023 at 09:14:23PM +0200, Greg KH wrote:
-> > On Wed, Jul 19, 2023 at 02:40:48PM -0400, Hugo Villeneuve wrote:
-> > > On Tue, 20 Jun 2023 12:16:45 -0400
-> > > Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > 
-> > > > On Tue, 20 Jun 2023 18:45:51 +0300
-> > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > 
-> > > > > On Tue, Jun 20, 2023 at 6:42 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > > > On Tue, 20 Jun 2023 18:35:48 +0300
-> > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > > > > On Tue, Jun 20, 2023 at 6:33 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > > > > > On Tue, 20 Jun 2023 18:18:12 +0300
-> > > > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > > > > > > On Tue, Jun 20, 2023 at 5:08 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > > > > > > > > > On Sun, 4 Jun 2023 22:31:04 +0300
-> > > > > > > > > > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > > > 
-> > > > > ...
-> > > > > 
-> > > > > > > > > > did you have a chance to look at V8 (sent two weks ago) which fixed all
-> > > > > > > > > > of what we discussed?
-> > > > > > > > >
-> > > > > > > > > The patch 6 already has my tag, anything specific you want me to do?
-> > > > > > > >
-> > > > > > > > Hi Andy,
-> > > > > > > > I forgot to remove your "Reviewed-by: Andy..." tag before sending V8
-> > > > > > > > since there were some changes involved in patch 6 and I wanted you to
-> > > > > > > > review them. Can you confirm if the changes are correct?
-> > > > > > > >
-> > > > > > > > I also added a new patch "remove obsolete out_thread label". It has no
-> > > > > > > > real impact on the code generation itself, but maybe you can review and
-> > > > > > > > confirm if tags are ok or not, based on commit message and also
-> > > > > > > > additional commit message.
-> > > > > > >
-> > > > > > > Both are fine to me.
-> > > > > >
-> > > > > > Hi,
-> > > > > > Ok, thank you for reviewing this.
-> > > > > >
-> > > > > > I guess now we are good to go with this series if the stable tags and
-> > > > > > patches order are good after Greg's review?
-> > > > > 
-> > > > > Taking into account that we are at rc7, and even with Fixes tags in
-> > > > > your series I think Greg might take this after v6.5-0rc1 is out. It's
-> > > > > up to him how to proceed with that. Note, he usually has thousands of
-> > > > > patches in backlog, you might need to respin it after the above
-> > > > > mentioned rc1.
-> > > > 
-> > > > Ok, understood.
-> > > > 
-> > > > Let's wait then.
-> > > 
-> > > Hi Andy/Greg,
-> > > we are now at v6.5-rc2 and I still do not see any of our patches in
-> > > linus or gregkh_tty repos.
-> > > 
-> > > Is there something missing from my part (or someone else) to go forward
-> > > with integrating these patches (v8) for v6.5?
-> > 
-> > My queue is huge right now, please be patient, I want to have them all
-> > handled by the end of next week...
-> > 
-> > You can always help out by reviewing other patches on the mailing list
-> > to reduce my review load.
-> 
-> Wait, no, this series was superseeded by v8, and in there you said you
-> were going to send a new series.  So please, fix it up and send the
-> updated version of the series, this one isn't going to be applied for
-> obvious reasons.
+> ngroups is ext4_group_t (unsigned int) while next_linear_group treat it
+> in int. If ngroups is bigger than max number described by int, it will
+> be treat as a negative number. Then "return group + 1 >= ngroups ? 0 :
+> group + 1;" may keep returning 0.
+> Switch int to ext4_group_t in next_linear_group to fix the overflow.
+>
 
-Hi Greg,
-I never said that I would resend another update for this current
-serie (unless of course if it was to address a new comment). Re-reading
-that email made me realise that it was maybe not perfectly clear the
-way I wrote it.
+Fixes: 196e402adf2e ("ext4: improve cr 0 / cr 1 group scanning")
 
-What I said was that, once V8 was finally applied and
-incorporated in the kernel, then I would send a completely new and
-different serie to address issues/concerns/improvements/suggestions
-noted during the review of this serie (example: conversion of bindings
-to YAML and improve DTS node names, etc). We already agreed with some
-maintainers (ex: Conor Dooley) that it was reasonnable to do so.
+With that feel free to add: 
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-That is why I asked Andy if we were good to go with V8 and he
-confirmed that, and that it was now up to you to integrate it if your
-review was satisfactory.
 
-Hope this clears things and we can integrate it soon.
-
-Thank you, Hugo.
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  fs/ext4/mballoc.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 90ffabac100b..33ee3991f62c 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -1081,8 +1081,9 @@ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
+>   * Return next linear group for allocation. If linear traversal should not be
+>   * performed, this function just returns the same group
+>   */
+> -static int
+> -next_linear_group(struct ext4_allocation_context *ac, int group, int ngroups)
+> +static ext4_group_t
+> +next_linear_group(struct ext4_allocation_context *ac, ext4_group_t group,
+> +		  ext4_group_t ngroups)
+>  {
+>  	if (!should_optimize_scan(ac))
+>  		goto inc_and_return;
+> -- 
+> 2.30.0
