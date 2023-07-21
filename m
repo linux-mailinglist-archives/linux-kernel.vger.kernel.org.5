@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5822F75C2E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECBAE75C2E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbjGUJWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44102 "EHLO
+        id S231784AbjGUJWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231752AbjGUJWC (ORCPT
+        with ESMTP id S231775AbjGUJWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:22:02 -0400
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F8C30D7;
-        Fri, 21 Jul 2023 02:22:00 -0700 (PDT)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-992ca792065so267324766b.2;
-        Fri, 21 Jul 2023 02:22:00 -0700 (PDT)
+        Fri, 21 Jul 2023 05:22:10 -0400
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75FA30E1;
+        Fri, 21 Jul 2023 02:22:02 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-993a37b79e2so271183866b.1;
+        Fri, 21 Jul 2023 02:22:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689931319; x=1690536119;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nffHfmIGWBNnYrHHaoebYbm1P0ZPQ4FxstxDXTgR2ek=;
-        b=X9meTX17x8yJaG8IIV6000QQx46DxXf+I1hyIOGxeZ1d9d5pPUHoMwL9OZG8LS8dJj
-         jB/nbe8eyISiwTKxhLNWK2sP/G4FeC3ClWhedhEktMa6i8doKr9Dx0gwwAwNEStDosOz
-         q4SPXbNwwo9rMja8r+NnTYUfhC0OSwH8rh4o1hBdj+VVICSZuzaAQ3e64tLexIUDFmFq
-         1Ukq88zvQGPlM4C6cO/8HDCCOuQkSyvdn4cb2lsXcTiDDK4ZpyId46S+8mX39wsV8r/Y
-         g9gwjGMrxAG4u2BubrY9kxsF4ehDdg5zfpIcukhmMzGQ/riJLqywLbIOTixcSd00s0hj
-         4S5g==
-X-Gm-Message-State: ABy/qLYmDmXykGwK+eRN5wyZbfzhAyYyvFQlRZ7m2NiKN2flKBGQr/Gw
-        AANXzHjLzVFBgTAtRSZJTVo=
-X-Google-Smtp-Source: APBJJlGt2mx4nWNVpjQ9AqMDLzHuc19dTEUMtuNzhdBXWfS5s23tLFFQpbWcgc0XBGWs5Hc2Mtk9dA==
-X-Received: by 2002:a17:906:51c2:b0:99b:5cce:9746 with SMTP id v2-20020a17090651c200b0099b5cce9746mr1221087ejk.52.1689931318643;
-        Fri, 21 Jul 2023 02:21:58 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-012.fbsv.net. [2a03:2880:31ff:c::face:b00c])
-        by smtp.gmail.com with ESMTPSA id j1-20020a170906254100b00992076f4a01sm1885080ejb.190.2023.07.21.02.21.57
+        d=1e100.net; s=20221208; t=1689931321; x=1690536121;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tCflDaV8zc69JhQDjjJilHCHdTvzcdDmX3C6lC+uvr4=;
+        b=i3LGgn9aX67POknKwfpDma8GVzNrXq+e+pVS+oRcNH6WsOVbnleROIpZZ660qID78f
+         JgjxuJBmgsB38+KIv+wba/WGoh0c6EvMZCLpMOI+giNt+EMb4EVOJ6i8F99IvJsBquTi
+         PVADBkhxMetS5p9vUaaMMk7t6PYgt/CyU8iurPzxYIqNYfbMmwzwRh2sKuzjS7Umz0rb
+         bnFrJ56ylmV27PIsetSWnI0gMt1sTpgUrUt3586hkHmQ3eD0fDlqwi9ZZORVQFHOPk8x
+         RzKnqaqVBP0zd74FW0xUxujzd92mqfVXqtG+tnYTyl1b+4266YJ3kGAaW4/6xDUCRWUF
+         85Bw==
+X-Gm-Message-State: ABy/qLbHyQb91JHLoBGnjMj4h0lkSyJ5SuxFz/rhwwcQA8ljeOtmgK+6
+        U9oafGhGFk2zCiReJ09YrheTo7FA8nQ=
+X-Google-Smtp-Source: APBJJlFxIwuGPdeTEGimkFui9rLogtwLz/TKUG+5JEEX48ah0L+VvWgnfcd8BNE9TCp0rwEPzznwhQ==
+X-Received: by 2002:a17:907:7817:b0:99b:4210:cc75 with SMTP id la23-20020a170907781700b0099b4210cc75mr1171431ejc.40.1689931320897;
+        Fri, 21 Jul 2023 02:22:00 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-016.fbsv.net. [2a03:2880:31ff:10::face:b00c])
+        by smtp.gmail.com with ESMTPSA id dk20-20020a170906f0d400b00992ab0262c9sm1927268ejb.147.2023.07.21.02.22.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 02:21:58 -0700 (PDT)
+        Fri, 21 Jul 2023 02:22:00 -0700 (PDT)
 From:   Breno Leitao <leitao@debian.org>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -46,117 +46,115 @@ To:     "David S. Miller" <davem@davemloft.net>,
 Cc:     leit@meta.com, Petr Mladek <pmladek@suse.com>,
         netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next 1/2] netconsole: Use sysfs_emit() instead of snprintf()
-Date:   Fri, 21 Jul 2023 02:21:44 -0700
-Message-Id: <20230721092146.4036622-1-leitao@debian.org>
+Subject: [PATCH net-next 2/2] netconsole: Use kstrtobool() instead of kstrtoint()
+Date:   Fri, 21 Jul 2023 02:21:45 -0700
+Message-Id: <20230721092146.4036622-2-leitao@debian.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230721092146.4036622-1-leitao@debian.org>
+References: <20230721092146.4036622-1-leitao@debian.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the sysfs.rst documentation, _show() functions should only
-use sysfs_emit() instead of snprintf().
+Replace kstrtoint() by kstrtobool() in the sysfs _store() functions.
+This improves the user usability and simplify the code.
 
-Since snprintf() shouldn't be used in the sysfs _show() path, replace it
-by sysfs_emit().
+With this fix, it is now possible to use [YyNn] to set and unset a
+feature. Old behaviour is still unchanged.
+
+kstrtobool() is also safer and doesn't need the extra validation that
+is required when converting a string to bool (end field in the struct),
+which makes the code simpler.
 
 Suggested-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/netconsole.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/net/netconsole.c | 28 +++++++++-------------------
+ 1 file changed, 9 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
-index 31cbe02eda49..a3c53b8c9efc 100644
+index a3c53b8c9efc..87f18aedd3bd 100644
 --- a/drivers/net/netconsole.c
 +++ b/drivers/net/netconsole.c
-@@ -260,32 +260,32 @@ static struct netconsole_target *to_target(struct config_item *item)
- 
- static ssize_t enabled_show(struct config_item *item, char *buf)
+@@ -333,17 +333,15 @@ static ssize_t enabled_store(struct config_item *item,
  {
--	return snprintf(buf, PAGE_SIZE, "%d\n", to_target(item)->enabled);
-+	return sysfs_emit(buf, "%d\n", to_target(item)->enabled);
- }
- 
- static ssize_t extended_show(struct config_item *item, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", to_target(item)->extended);
-+	return sysfs_emit(buf, "%d\n", to_target(item)->extended);
- }
- 
- static ssize_t release_show(struct config_item *item, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", to_target(item)->release);
-+	return sysfs_emit(buf, "%d\n", to_target(item)->release);
- }
- 
- static ssize_t dev_name_show(struct config_item *item, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%s\n", to_target(item)->np.dev_name);
-+	return sysfs_emit(buf, "%s\n", to_target(item)->np.dev_name);
- }
- 
- static ssize_t local_port_show(struct config_item *item, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", to_target(item)->np.local_port);
-+	return sysfs_emit(buf, "%d\n", to_target(item)->np.local_port);
- }
- 
- static ssize_t remote_port_show(struct config_item *item, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", to_target(item)->np.remote_port);
-+	return sysfs_emit(buf, "%d\n", to_target(item)->np.remote_port);
- }
- 
- static ssize_t local_ip_show(struct config_item *item, char *buf)
-@@ -293,9 +293,9 @@ static ssize_t local_ip_show(struct config_item *item, char *buf)
  	struct netconsole_target *nt = to_target(item);
+ 	unsigned long flags;
+-	int enabled;
++	bool enabled;
+ 	int err;
  
- 	if (nt->np.ipv6)
--		return snprintf(buf, PAGE_SIZE, "%pI6c\n", &nt->np.local_ip.in6);
-+		return sysfs_emit(buf, "%pI6c\n", &nt->np.local_ip.in6);
- 	else
--		return snprintf(buf, PAGE_SIZE, "%pI4\n", &nt->np.local_ip);
-+		return sysfs_emit(buf, "%pI4\n", &nt->np.local_ip);
- }
+ 	mutex_lock(&dynamic_netconsole_mutex);
+-	err = kstrtoint(buf, 10, &enabled);
+-	if (err < 0)
++	err = kstrtobool(buf, &enabled);
++	if (err)
+ 		goto out_unlock;
  
- static ssize_t remote_ip_show(struct config_item *item, char *buf)
-@@ -303,9 +303,9 @@ static ssize_t remote_ip_show(struct config_item *item, char *buf)
- 	struct netconsole_target *nt = to_target(item);
- 
- 	if (nt->np.ipv6)
--		return snprintf(buf, PAGE_SIZE, "%pI6c\n", &nt->np.remote_ip.in6);
-+		return sysfs_emit(buf, "%pI6c\n", &nt->np.remote_ip.in6);
- 	else
--		return snprintf(buf, PAGE_SIZE, "%pI4\n", &nt->np.remote_ip);
-+		return sysfs_emit(buf, "%pI4\n", &nt->np.remote_ip);
- }
- 
- static ssize_t local_mac_show(struct config_item *item, char *buf)
-@@ -313,12 +313,12 @@ static ssize_t local_mac_show(struct config_item *item, char *buf)
- 	struct net_device *dev = to_target(item)->np.dev;
- 	static const u8 bcast[ETH_ALEN] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
- 
--	return snprintf(buf, PAGE_SIZE, "%pM\n", dev ? dev->dev_addr : bcast);
-+	return sysfs_emit(buf, "%pM\n", dev ? dev->dev_addr : bcast);
- }
- 
- static ssize_t remote_mac_show(struct config_item *item, char *buf)
+ 	err = -EINVAL;
+-	if (enabled < 0 || enabled > 1)
+-		goto out_unlock;
+ 	if ((bool)enabled == nt->enabled) {
+ 		pr_info("network logging has already %s\n",
+ 			nt->enabled ? "started" : "stopped");
+@@ -394,7 +392,7 @@ static ssize_t release_store(struct config_item *item, const char *buf,
+ 			     size_t count)
  {
--	return snprintf(buf, PAGE_SIZE, "%pM\n", to_target(item)->np.remote_mac);
-+	return sysfs_emit(buf, "%pM\n", to_target(item)->np.remote_mac);
- }
+ 	struct netconsole_target *nt = to_target(item);
+-	int release;
++	bool release;
+ 	int err;
  
- /*
+ 	mutex_lock(&dynamic_netconsole_mutex);
+@@ -405,13 +403,9 @@ static ssize_t release_store(struct config_item *item, const char *buf,
+ 		goto out_unlock;
+ 	}
+ 
+-	err = kstrtoint(buf, 10, &release);
+-	if (err < 0)
+-		goto out_unlock;
+-	if (release < 0 || release > 1) {
+-		err = -EINVAL;
++	err = kstrtobool(buf, &release);
++	if (err)
+ 		goto out_unlock;
+-	}
+ 
+ 	nt->release = release;
+ 
+@@ -426,7 +420,7 @@ static ssize_t extended_store(struct config_item *item, const char *buf,
+ 		size_t count)
+ {
+ 	struct netconsole_target *nt = to_target(item);
+-	int extended;
++	bool extended;
+ 	int err;
+ 
+ 	mutex_lock(&dynamic_netconsole_mutex);
+@@ -437,13 +431,9 @@ static ssize_t extended_store(struct config_item *item, const char *buf,
+ 		goto out_unlock;
+ 	}
+ 
+-	err = kstrtoint(buf, 10, &extended);
+-	if (err < 0)
+-		goto out_unlock;
+-	if (extended < 0 || extended > 1) {
+-		err = -EINVAL;
++	err = kstrtobool(buf, &extended);
++	if (err)
+ 		goto out_unlock;
+-	}
+ 
+ 	nt->extended = extended;
+ 
 -- 
 2.34.1
 
