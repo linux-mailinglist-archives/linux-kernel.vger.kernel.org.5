@@ -2,136 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3108D75C1BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569A275C1C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbjGUId3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
+        id S231375AbjGUIeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbjGUIdY (ORCPT
+        with ESMTP id S229668AbjGUId7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:33:24 -0400
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB765273C
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:33:22 -0700 (PDT)
+        Fri, 21 Jul 2023 04:33:59 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2197273C
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:33:57 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4f9fdb0ef35so2722272e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:33:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1689928402; x=1721464402;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ih/v3JlPgjnunjeMXetvHkaR0ZTTwffvOCV3Ri/27Bg=;
-  b=LaMZ3XdE5CM/s2nGGpEy97XOXujgIcVCiRuSre8jVMtVed/46GY+bdJn
-   PzCtC06bJYhOfHcJudSuKB0SH6boR6Vnguv37/91Ee6ut5EfmLK2l0gaC
-   mT0tIBUjnBDsZS0/g4nKv910UBsFdxR1vFe2qK3YvbNA3EdGql9NjMkhO
-   JHIzM0MQJSUnUFDCahs9xFSs76+bwS3XgswQM184X6j7Ap6Nsa/4wX2gm
-   MYFHL7STRWTCh/pV4NPCLYGhUTJyyjtkoaFvdal7C3pKZ1gyebkrVl7Hb
-   FvNGR59OGBgxRC62DAFCQMWMqv8iqlp/860xJHzZYaLoZJGfs6xqwRBuv
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,220,1684792800"; 
-   d="scan'208";a="32048650"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 21 Jul 2023 10:33:19 +0200
-Received: from steina-w.tq-net.de (unknown [10.123.53.21])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 55D45280084;
-        Fri, 21 Jul 2023 10:33:19 +0200 (CEST)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     Stefan Agner <stefan@agner.ch>, Alison Wang <alison.wang@nxp.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Schiffer <matthias.schiffer@tq-group.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Alexander Stein <alexander.stein@ew.tq-group.com>
-Subject: [RESEND 2/2] drm: fsl-dcu: enable PIXCLK on LS1021A
-Date:   Fri, 21 Jul 2023 10:33:14 +0200
-Message-Id: <20230721083314.1190614-2-alexander.stein@ew.tq-group.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230721083314.1190614-1-alexander.stein@ew.tq-group.com>
-References: <20230721083314.1190614-1-alexander.stein@ew.tq-group.com>
+        d=linaro.org; s=google; t=1689928436; x=1690533236;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j48T9zCnWdAs5uI/adcGdZub04Cr2ho64wAf4zPt+xU=;
+        b=g+lMby7oFVXzQQJ9+l9OAZaKWzytcclPKPjMT+8HOtZYNEVfR+9ZXUk8Il+f7LN7p/
+         CK5KM5bKWhZ8sOsmfx70+x0VoNCmxwCeS8MLAS05LGzGvBc2LY2aKp+MCMsztqdT1nnM
+         AbVd4+17ATjBZTu6bLTviHAg+YCxW+siob84K/20qA9EED778azsDms5MhRNdVnuW6Sd
+         O8UyIiG3UfeGm6RWxqUlke4LlWJqN2nlSje7fS+3aC/j9SO2M8/RcJthaqABg5g0h81O
+         EkHpgIUUDtJoHe16PKlyORnkV5DcefFtQNSZDQY9aAklzgXJ9mJc5ODxl+t6UBgckH9R
+         zgbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689928436; x=1690533236;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j48T9zCnWdAs5uI/adcGdZub04Cr2ho64wAf4zPt+xU=;
+        b=KVmADVPrSZTbuhiinr2fH4yS9/HrUGYSbl26NQvLrCL6LG9W61a0v4d6mSt49gcVsh
+         J+p3piTt3uIebTNBwV9GuNRbfWMWm7hMFUznY/IVmrTKM1AvfpT1a6LmaD0/tWUAyJjK
+         5I2nQaEOfp3qxSLRhs/JZWJYfRDwkghOlglyheVR+I6M/LO1FHs41nU+QQwtKbCz45D2
+         WC9j41lKm54wNA+EUm1uYgdQ1JqA6OfFQsrSLVQdbK3ibZXsyBq6Y/EXVu1GmwtUj3/D
+         aaCnlKDC5caDUfzJYwpR6OejAHVc+sOFvN9AHN08iDEUAsOM1ifVb1c1CQ9q6QvdQvYt
+         1GSg==
+X-Gm-Message-State: ABy/qLa18U5gbnwoZyBDmjRT5QnEcdQvl/55lvX+4CaL8HVnAkvdyQAQ
+        otO6kKcT1a4E5rFhprxJ/An/roCklcTqfIAk+tbhcA==
+X-Google-Smtp-Source: APBJJlGT3/iR9y5HHA/jBVQ9tVc+TQIyqddNHIye4549tL8TPl4RlNfQYLMBmdAG9ppv6DmGtV3l2zVOzpyA/lhNx3s=
+X-Received: by 2002:a19:8c54:0:b0:4f9:5a87:1028 with SMTP id
+ i20-20020a198c54000000b004f95a871028mr794622lfj.30.1689928435798; Fri, 21 Jul
+ 2023 01:33:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <1689842053-5291-1-git-send-email-Kenan.Liu@linux.alibaba.com>
+ <20230720085032.GB3569127@hirez.programming.kicks-ass.net> <6a70900a-649f-3a4d-2e47-61648bc95666@linux.alibaba.com>
+In-Reply-To: <6a70900a-649f-3a4d-2e47-61648bc95666@linux.alibaba.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 21 Jul 2023 10:33:44 +0200
+Message-ID: <CAKfTPtCmBL6aq9CaPvmhcyvGZtu=98crDyaHXRdwQxjyGtcDkQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] Adjust CFS loadbalance to adapt QEMU CPU topology.
+To:     "Kenan.Liu" <Kenan.Liu@linux.alibaba.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, luoben@linux.alibaba.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Schiffer <matthias.schiffer@tq-group.com>
+On Fri, 21 Jul 2023 at 04:59, Kenan.Liu <Kenan.Liu@linux.alibaba.com> wrote=
+:
+>
+> Hi Peter, thanks for your attention,
+>
+> please refer to my answer to your question inline:
+>
+>
+> =E5=9C=A8 2023/7/20 =E4=B8=8B=E5=8D=884:50, Peter Zijlstra =E5=86=99=E9=
+=81=93:
+> > On Thu, Jul 20, 2023 at 04:34:11PM +0800, Kenan.Liu wrote:
+> >> From: "Kenan.Liu" <Kenan.Liu@linux.alibaba.com>
+> >>
+> >> Multithreading workloads in VM with Qemu may encounter an unexpected
+> >> phenomenon: one hyperthread of a physical core is busy while its sibli=
+ng
+> >> is idle. Such as:
+> > Is this with vCPU pinning? Without that, guest topology makes no sense
+> > what so ever.
+>
+>
+> vCPU is pinned on host and the imbalance phenomenon we observed is inside
+> VM, not for the vCPU threads on host.
+>
+>
+> >> The main reason is that hyperthread index is consecutive in qemu nativ=
+e x86 CPU
+> >> model which is different from the physical topology.
+> > I'm sorry, what? That doesn't make sense. SMT enumeration is all over
+> > the place for Intel, but some actually do have (n,n+1) SMT. On AMD it's
+> > always (n,n+1) IIRC.
+> >
+> >> As the current kernel scheduler
+> >> implementation, hyperthread with an even ID number will be picked up i=
+n a much
+> >> higher probability during load-balancing and load-deploying.
+> > How so?
+>
+>
+> The SMT topology in qemu native x86 CPU model is (0,1),=E2=80=A6,(n,n+1),=
+=E2=80=A6,
+> but nomarlly seen SMT topo in physical machine is like (0,n),(1,n+1),=E2=
+=80=A6,
+> n means the total core number of the machine.
+>
+> The imbalance happens when the number of runnable threads is less
+> than the number of hyperthreads, select_idle_core() would be called
+> to decide which cpu be selected to run the waken-up task.
+>
+> select_idle_core() will return the checked cpu number if the whole
+> core is idle. On the contrary, if any one HT of the core is busy,
+> select_idle_core() would clear the whole core out from cpumask and
+> check the next core.
+>
+> select_idle_core():
+>      =E2=80=A6
+>      if (idle)
+>          return core;
+>
+>      cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
+>      return -1;
+>
+> In this manner, except the very beginning of for_each_cpu_wrap() loop,
+> HT with even ID number is always be checked at first, and be returned
+> to the caller if the whole core is idle, so the odd indexed HT almost
+> has no chance to be selected.
+>
+> select_idle_cpu():
+>      =E2=80=A6
+>      for_each_cpu_wrap(cpu, cpus, target + 1) {
+>          if (has_idle_core) {
+>              i =3D select_idle_core(p, cpu, cpus, &idle_cpu);
+>
+> And this will NOT happen when the SMT topo is (0,n),(1,n+1),=E2=80=A6, be=
+cause
+> when the loop starts from the bottom half of SMT number, HTs with larger
+> number will be checked first, when it starts from the top half, their
+> siblings with smaller number take the first place of inner core searching=
+.
 
-The PIXCLK needs to be enabled in SCFG before accessing certain DCU
-registers, or the access will hang.
+But why is it a problem ? Your system is almost idle and 1 HT per core
+is used. Who cares to select evenly one HT or the other as long as we
+select an idle core in priority ?
 
-Signed-off-by: Matthias Schiffer <matthias.schiffer@tq-group.com>
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
----
- drivers/gpu/drm/fsl-dcu/Kconfig           |  1 +
- drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c | 14 ++++++++++++++
- drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h |  3 +++
- 3 files changed, 18 insertions(+)
+This seems related to
+https://lore.kernel.org/lkml/BYAPR21MB1688FE804787663C425C2202D753A@BYAPR21=
+MB1688.namprd21.prod.outlook.com/
+we concluded that it was not a problem
 
-diff --git a/drivers/gpu/drm/fsl-dcu/Kconfig b/drivers/gpu/drm/fsl-dcu/Kconfig
-index 5ca71ef87325..c9ee98693b48 100644
---- a/drivers/gpu/drm/fsl-dcu/Kconfig
-+++ b/drivers/gpu/drm/fsl-dcu/Kconfig
-@@ -8,6 +8,7 @@ config DRM_FSL_DCU
- 	select DRM_PANEL
- 	select REGMAP_MMIO
- 	select VIDEOMODE_HELPERS
-+	select MFD_SYSCON if SOC_LS1021A
- 	help
- 	  Choose this option if you have an Freescale DCU chipset.
- 	  If M is selected the module will be called fsl-dcu-drm.
-diff --git a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
-index 90cbd18f096d..283858350961 100644
---- a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
-+++ b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
-@@ -100,12 +100,26 @@ static void fsl_dcu_irq_uninstall(struct drm_device *dev)
- static int fsl_dcu_load(struct drm_device *dev, unsigned long flags)
- {
- 	struct fsl_dcu_drm_device *fsl_dev = dev->dev_private;
-+	struct regmap *scfg;
- 	int ret;
- 
- 	ret = fsl_dcu_drm_modeset_init(fsl_dev);
- 	if (ret < 0)
- 		return dev_err_probe(dev->dev, ret, "failed to initialize mode setting\n");
- 
-+	scfg = syscon_regmap_lookup_by_compatible("fsl,ls1021a-scfg");
-+	if (PTR_ERR(scfg) != -ENODEV) {
-+		/*
-+		 * For simplicity, enable the PIXCLK unconditionally. Disabling
-+		 * the clock in PM or on unload could be implemented as a future
-+		 * improvement.
-+		 */
-+		ret = regmap_update_bits(scfg, SCFG_PIXCLKCR, SCFG_PIXCLKCR_PXCEN,
-+					SCFG_PIXCLKCR_PXCEN);
-+		if (ret < 0)
-+			return dev_err_probe(dev->dev, ret, "failed to enable pixclk\n");
-+	}
-+
- 	ret = drm_vblank_init(dev, dev->mode_config.num_crtc);
- 	if (ret < 0) {
- 		dev_err(dev->dev, "failed to initialize vblank\n");
-diff --git a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h
-index e2049a0e8a92..566396013c04 100644
---- a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h
-+++ b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.h
-@@ -160,6 +160,9 @@
- #define FSL_DCU_ARGB4444		12
- #define FSL_DCU_YUV422			14
- 
-+#define SCFG_PIXCLKCR			0x28
-+#define SCFG_PIXCLKCR_PXCEN		BIT(31)
-+
- #define VF610_LAYER_REG_NUM		9
- #define LS1021A_LAYER_REG_NUM		10
- 
--- 
-2.34.1
-
+>
+>
+> >
+> >> This RFC targets to solve the problem by adjusting CFS loabalance poli=
+cy:
+> >> 1. Explore CPU topology and adjust CFS loadbalance policy when we foun=
+d machine
+> >> with qemu native CPU topology.
+> >> 2. Export a procfs to control the traverse length when select idle cpu=
+.
+> >>
+> >> Kenan.Liu (2):
+> >>    sched/fair: Adjust CFS loadbalance for machine with qemu native CPU
+> >>      topology.
+> >>    sched/fair: Export a param to control the traverse len when select
+> >>      idle cpu.
+> > NAK, qemu can either provide a fake topology to the guest using normal
+> > x86 means (MADT/CPUID) or do some paravirt topology setup, but this is
+> > quite insane.
+> Thanks,
+>
+> Kenan.Liu
