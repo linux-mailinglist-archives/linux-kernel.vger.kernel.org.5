@@ -2,130 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6095875C2D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF0875C2D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 11:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbjGUJTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 05:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42228 "EHLO
+        id S231744AbjGUJTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 05:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231653AbjGUJTI (ORCPT
+        with ESMTP id S231653AbjGUJTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 05:19:08 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812882D57
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:19:06 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4faaaa476a9so2763896e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 02:19:06 -0700 (PDT)
+        Fri, 21 Jul 2023 05:19:46 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2114.outbound.protection.outlook.com [40.107.244.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89BF52D57;
+        Fri, 21 Jul 2023 02:19:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W8nz8m4RzIn141E1jaS3oVscW+uUeXNUPw+0lcGBCmC/OQr2IsDm5Vf5ZP8oHnWVCsVx+7QdHUB278BajwQnd4hKTEOcGZfk/hRQnV0hBoASa+hrch4/RXkjL6toJioM18sEsE2hguZ+jTYw1GxVuT8sP//35H+D8dZcRRgVNfq18B6rUpnmzEPTjLXMa19VgoevyHyaCtz5ob3pYqzSHEV4qUiEOihOTSfEI0Z6bKlRJWdVx8KlDO0ze6bK0JDuTN27ltjkcxh3CAxNrsbTgYtuV1zvtXOwTPjKTQZFKr/9V8AymOeZV4iKXCkzgmRfRpkGAki0YLlmyOjiMkxtTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bnHdnJA4XQaA9IMf1HPhfnDRaO72TfI59C7nqv1tKJQ=;
+ b=EZ/fgm/fvLPiXp6mT4+o8TAYgsyoG2jXc5wDqObDzqI8ENIFxpDaWafCsC5zq+Mq/tByMfbWWVlLYkaSKSdahjWZ9+brkX8S0mPOW+1QcCC1J37fsN9q+2NytgpJaBEipMxKynwETtScOltcxmuYhjbt7Pzca2IyWDBiftJG+v/Hx8mklKHxjmcImfWsngJKIiwP7gyRMhJUbSNvKrHt2R9R9Ji7g3oQMFK0XbLLk/pKcMVDerHqoU1kG4Orw07IoZKqnpaf92iVGIYDRCqPrbSi8bH6M8k53O8ytvtXAvP+JUTMqrpPDenUGp1jVpmSm1bFidit8jgh9FTpy0S8pA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689931145; x=1690535945;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+evqHRZa/EDVG2dkah/XolQarw2tcnvQkPThjVkdgX4=;
-        b=C9faln+8ZG+kepF1p2NkPiXas5l+aKMUeWPO7QYd8wXXtchbjPrJWW3zmNhPVpHMzL
-         +1N+Tq+VM+uyeoezmTlQlZbPk82yHAQzUyNzo8oW4+uZHTLXCHeH9n3xhQxiOLK2z2Mb
-         mlKq5/Y4M3JSc1phXYLqXPl+vFZCf8VBtsL2wrudICjAiuwn9DwDw9kz+9hOwQ8cXjie
-         F9ZDfCKna7WTiu0k4Xw78nfrTlpeEMHhr5CW1gNW0pJYNM8hk/D1cFrItjlUajrj7tWf
-         ufjYEZukg2/6/cZI8Oyol2TkIV08Icnyax8vI1YqYyTQinLvwqgy1HkErZ5U4DlYLUm+
-         Ds4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689931145; x=1690535945;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+evqHRZa/EDVG2dkah/XolQarw2tcnvQkPThjVkdgX4=;
-        b=Ew0vy6UL5ewNho7gYq9cNhdcY+J+Y2arDqcDq+OtHMRGX0FfAnxfF4cQUQQw+q5KVH
-         a+G/vJ6wz0KzU/WCXzvX/dFmLGOPHKruLNDNGmcgFhv1MFYHi8rN75RYNBqw8QwGA76a
-         XHHC8ZReDpZqbfVZWeqQDH3Bxuvjcr5RsK3I8wm8S4TRlEalzMsjdARyXQirw9+LFE7L
-         gp0q07yzR2To672BzaiHeWpfOnGCZyhmiDnii1wnKeWqB0rEQ3fD4BY395HdcH+kYhY+
-         adyeouhlVq5an5vq9ZTt6+L4DkDBg3xIMiKzxxvhjnUpr5bSCXZ+SuG/A6/HfQ7FRnqL
-         n+Qg==
-X-Gm-Message-State: ABy/qLauoQ3p6usuqog7Arb6bReNUOqGYTTT6VJMP1Ka8BJCl/U5KX0w
-        4zcx68o2F524GwVPH41aUEgcEA==
-X-Google-Smtp-Source: APBJJlGlK6Pe1Zp96sS0zm05WadvmEM2DpPWcOuBqKS52m6jHpx9Iq1Jm1dX1riJpkn11OIn0aFhcw==
-X-Received: by 2002:ac2:58db:0:b0:4f8:7513:8cac with SMTP id u27-20020ac258db000000b004f875138cacmr870399lfo.48.1689931144728;
-        Fri, 21 Jul 2023 02:19:04 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id o15-20020adfeacf000000b00313de682eb3sm3647154wrn.65.2023.07.21.02.19.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 02:19:04 -0700 (PDT)
-Message-ID: <2dac9cb5-2582-2e5d-689d-49ced2dbde5b@linaro.org>
-Date:   Fri, 21 Jul 2023 11:19:02 +0200
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bnHdnJA4XQaA9IMf1HPhfnDRaO72TfI59C7nqv1tKJQ=;
+ b=BzY/xEMFCuDAKdAEQbDgWecpLkLo30leD41IdYlKPwgmgOsAWEZtHqD6QOMUAUqfIqJq2DvCq5l/XzSIlyv9uyCZAeOzdNAJN4vrMNtlKBHHoDrvpVBrz0a/Je1/Pb/dSdqJvV0OJPZhwKxDaDqAQ+uvs3VHrEaeJkd26/jkA0o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by CH3PR13MB6337.namprd13.prod.outlook.com (2603:10b6:610:196::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Fri, 21 Jul
+ 2023 09:19:41 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.025; Fri, 21 Jul 2023
+ 09:19:41 +0000
+Date:   Fri, 21 Jul 2023 10:19:32 +0100
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Haren Myneni <haren@us.ibm.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Richard Weinberger <richard@nod.at>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        qat-linux@intel.com, linuxppc-dev@lists.ozlabs.org,
+        linux-mtd@lists.infradead.org, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH 07/21] ubifs: Migrate to acomp compression API
+Message-ID: <ZLpNpLIx5BUW97sr@corigine.com>
+References: <20230718125847.3869700-1-ardb@kernel.org>
+ <20230718125847.3869700-8-ardb@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718125847.3869700-8-ardb@kernel.org>
+X-ClientProxiedBy: LO4P123CA0184.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1a4::9) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [v2 PATCH] arm64: dts: stratix10: add new compatible for Intel
- SoCFPGA Stratix10 platform
-To:     "Li, Meng" <Meng.Li@windriver.com>,
-        "dinguyen@kernel.org" <dinguyen@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230721083821.1820881-1-Meng.Li@windriver.com>
- <b8333812-df9d-368a-939b-3495878a2e5e@linaro.org>
- <884ed5d5-8863-ac76-5f00-4ed58480e9ab@linaro.org>
- <PH0PR11MB5191F52F01EF337A5965F848F13FA@PH0PR11MB5191.namprd11.prod.outlook.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <PH0PR11MB5191F52F01EF337A5965F848F13FA@PH0PR11MB5191.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|CH3PR13MB6337:EE_
+X-MS-Office365-Filtering-Correlation-Id: 95dbfdd0-e082-4970-b490-08db89cb9d0e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hjS921l3Dg331FPXuA5pYBbdj3LpORrd525wbo/IrVUqrBbK1ABYkGZYC1CoEwWW4l8ZgsGmvP3vEhdLgt+bJ2ARzN+RfWBduEfTe7tf2RUFCwncNqugPstIe3yURdB0kVkPISvJoHVvxb4VFyyYf1D9xKNhBns8r84b+I04Tmz4+ICKpfXtRX2fMCtoj7wvCVRh8A0thMGHTODFo2te4gu0LMWSMan9kC6mLKOz7lrX2hb0Y/WMdvezfjCpIRcbfis1AKeK0XXogHR9XewExrTWz3GBco3OGVtLhUu2t74UULhAqgpP/035XaurYm/HBQNRilLlUr+AosmwpYi51yZ9kQ8JTTbd0/I8gIA+9/O6HI8rNjTnyb2bUp3i/vnn6cRzeZvL65wNInluArsvWB77ZuWKpXEMHzcYHY1GVIT+0xmWvxcg80h+b4dBb1b66B4vcVX/zeMmu+WQkXELC0wagOhLRvJ6Fk5FgntxPYX4Q4754eygHCv+8oBqZCzzcHZ3P/PPCZcvx/Nv/NeqOVP+/UNGtzfc7kSepQJCR9+S2h3oJI2yN8GdmhXHbWkaTCsmYvKf/rAlh9CEy/lj6pYskZJqmgcmesJj07sobGY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39840400004)(366004)(136003)(396003)(451199021)(36756003)(54906003)(478600001)(66946007)(66476007)(86362001)(66556008)(26005)(4326008)(6916009)(6506007)(55236004)(6486002)(6666004)(6512007)(8676002)(8936002)(44832011)(5660300002)(2906002)(41300700001)(7416002)(316002)(38100700002)(186003)(2616005)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JkHHdRGilrrfvnSV4ip+Xe0QbwgIDIA+BvsesGFcix9jczbiQMVuYNdL1Ar5?=
+ =?us-ascii?Q?1Io+BTvwVSi2u/JIcCR95J1OFs3X7knzJtn1qrEEhERojl7ne2ED7ELJ6daF?=
+ =?us-ascii?Q?nNv6CgF/ipeCcqytIfoQ3H36g0fi1/l5G472mGkE6WIAA57IpFkK3S19RokT?=
+ =?us-ascii?Q?8NUXVlG8LhZvStZrW8i84zj0XDD2dNYxbrX7eAmj0nJqabtLlEPBe2coqriN?=
+ =?us-ascii?Q?Oa5ThNgHjcBvDeml5ebqKgmkfmpBFU1lK6vXGIH0d15FDnKxIi8cQXR05bkY?=
+ =?us-ascii?Q?FlNyc06D0ZG+b1YedelMWCG4lA0XWKmUPqyxoefLmjXeAFVo3U0PzPVE7PJs?=
+ =?us-ascii?Q?Fko/N4b2Qz+K487i0Becl99RXEYOFkLeZ3C7Q632RZYMFNcT0P64+EHeTrAh?=
+ =?us-ascii?Q?auAFq7nl6U29n95csMGjbaUnkHz5ZNUmcAR0/4rIIQYJSfDpm+3JuzLL5Mpn?=
+ =?us-ascii?Q?Ol/GXJIl5HbVFd1Htmf/5oW1QbjYn9yznaL2jcf8+bEds+w8FciayRnf1Wza?=
+ =?us-ascii?Q?2Szo0qDYNUdQMY2wy/FCdHtD8H6PLq5nOL3DIE/YZH43ozxdi+8PqDNK+Q7f?=
+ =?us-ascii?Q?YAB7Vdl2FMB0BK/deg0w0jN0T5izEef/w9p7e8fEIuu3Ly9+KkCXYW9bl1fF?=
+ =?us-ascii?Q?hUXhjrpIKm3D4jkCVfX4iZoIIbMrdVn+au8DzKhYi0Qz/eVKeluhB/6WnmPQ?=
+ =?us-ascii?Q?W9NCk0gVwCM70babUjZJQhE3WU05Gbij78L1sYiurtwKMjo+F/CVMK6gY9Ac?=
+ =?us-ascii?Q?1d1x4BTa+UyDJq7rd584KYWPyjrCMgrUGXgOoCGh8oQYHOH5WS1YYmres7/A?=
+ =?us-ascii?Q?GlJEyJWFCXq3IZ72krkloj/lD8DhTwggrTf5DfGLsqVcpwPnUTidmOaGDO9K?=
+ =?us-ascii?Q?RgYOiGnQIn/ovCCHp+kz4qEOSOQQxIuDhwlcVOsHGbPEzS8DCQid4gZUREen?=
+ =?us-ascii?Q?bQp5CYmWuUdEpo8bi3CDoTJj26CV52LzwccGkuCfrmW0xlelvRf1dZyQvs2N?=
+ =?us-ascii?Q?QYal3IT5Z8fILmPpI6XLve6QujR5IExClKYZ1Z1rMkLyvO7QJv7Fpy6t7zno?=
+ =?us-ascii?Q?VrY+eudOeckRCtUezdPF3Zz1gPZ274udurhaCx7sx7Ph6ERHEzVDLpC3oNGE?=
+ =?us-ascii?Q?5FSV7Vzzn69WbtytCjCeqhu0DduIsZFfw5Ym7W+oVZuarjV7EncI1/iAYjh1?=
+ =?us-ascii?Q?W4K6NwdP0CYrItIOL8So4S5eSQxR3ZXmhAXDeEVGAWKMDG0CPmpS/M+X6PKN?=
+ =?us-ascii?Q?Ur9zVMlO1z9t+SZxAUmZ7reKutN5jkJ/Mn4d47oo2RFRlDGeg7koAEm5tOCO?=
+ =?us-ascii?Q?MipYAs8jxvoif+UPWAfb5jG5wfa9UQTyzoBC+hmAxJqkxsHMjsAPrKaVQH5p?=
+ =?us-ascii?Q?xhMQ/JD90873apxeh+Urb4JpgW1PmZy9wslWQYLPpHWJbzB6kgZrbpTFLne5?=
+ =?us-ascii?Q?tlOc75BZnz/fwmrschUN1d8HPTs3+zhyIZEOjvQW7aVYbhZHwU9KiEZG8FQf?=
+ =?us-ascii?Q?qb85MKER+nuyLQMsoXryqLqGFs+jUp+dGR0dJD11VzA5NCFB+SZxFJeVKOON?=
+ =?us-ascii?Q?8mWXSgJz3Ca7F1oNWfyHWoQT0SoP3lh18TQkJSS+E1ZWqCDqW5CM44F2ywxC?=
+ =?us-ascii?Q?rg=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95dbfdd0-e082-4970-b490-08db89cb9d0e
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 09:19:41.2973
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NTFAcLu2R1HiYxA8wGM8vAAv3d8qKyECBLxxWCMwbrbcSehwkWF5gIa+HtQmm0/X4yUgy/9D5zuRmAPu9kFR3FsXCRYNYPjWVr0EUJ0AaP4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR13MB6337
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/2023 11:05, Li, Meng wrote:
+On Tue, Jul 18, 2023 at 02:58:33PM +0200, Ard Biesheuvel wrote:
+> UBIFS is one of the remaining users of the obsolete 'comp' compression
+> API exposed by the crypto subsystem. Given that it operates strictly on
+> contiguous buffers that are either entirely in lowmem or covered by a
+> single page, the conversion to the acomp API is quite straight-forward.
 > 
+> Only synchronous acomp implementations are considered at the moment, and
+> whether or not a future conversion to permit asynchronous ones too will
+> be worth the effort remains to be seen.
 > 
->> -----Original Message-----
->> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Sent: Friday, July 21, 2023 4:54 PM
->> To: Li, Meng <Meng.Li@windriver.com>; dinguyen@kernel.org;
->> robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
->> devicetree@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Subject: Re: [v2 PATCH] arm64: dts: stratix10: add new compatible for Intel
->> SoCFPGA Stratix10 platform
->>
->> CAUTION: This email comes from a non Wind River email account!
->> Do not click links or open attachments unless you recognize the sender and
->> know the content is safe.
->>
->> On 21/07/2023 10:51, Krzysztof Kozlowski wrote:
->>> On 21/07/2023 10:38, Meng Li wrote:
->>>> Intel Stratix10 is very the same with Agilex platform, the DWC2 IP on
->>>> the Stratix platform also does not support clock-gating. The commit
->>>> 3d8d3504d233("usb: dwc2: Add platform specific data for Intel's
->>>> Agilex") had fixed this issue. So, add the essential compatible to
->>>> also use the specific data on Stratix10 platform.
->>>>
->>>> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>>
->>> From where did you get it?
->>>
->>> Did you just fake a tag to pass the review?
->>
->> I just double checked my replies and this for sure never happened.
->>
->> NAK, don't fake reviews. This very impolite and destroys entire trust.
->> The model of upstream collaboration depends on the trust, which is now gone
->> for Windriver.
->>
-> 
-> No! I don't fake a tag. 
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 
-Really? Then I ask second time - from where did you get it? Provide a link.
+...
 
-Best regards,
-Krzysztof
+> @@ -197,11 +205,24 @@ int ubifs_decompress(const struct ubifs_info *c, const void *in_buf,
+>  static int __init compr_init(struct ubifs_compressor *compr)
+>  {
+>  	if (compr->capi_name) {
+> -		compr->cc = crypto_alloc_comp(compr->capi_name, 0, 0);
+> +		long ret;
+> +
+> +		compr->cc = crypto_alloc_acomp(compr->capi_name, 0,
+> +					       CRYPTO_ALG_ASYNC);
+>  		if (IS_ERR(compr->cc)) {
+> +			ret = PTR_ERR(compr->cc);
+> +		} else {
+> +			compr->req = acomp_request_alloc(compr->cc);
+> +			if (!compr->req) {
+> +				crypto_free_acomp(compr->cc);
+> +				ret = -ENOMEM;
+> +			}
+> +		}
 
+Hi Ard,
+
+clang-16 W=1 and Smatch flag that ret may not always be initialised here.
+
+> +
+> +		if (ret) {
+>  			pr_err("UBIFS error (pid %d): cannot initialize compressor %s, error %ld",
+> -			       current->pid, compr->name, PTR_ERR(compr->cc));
+> -			return PTR_ERR(compr->cc);
+> +			       current->pid, compr->name, ret);
+> +			return ret;
+>  		}
+>  	}
+>  
+
+...
+
+> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+> index 4c36044140e7eba9..2225de5b8ef50f71 100644
+> --- a/fs/ubifs/ubifs.h
+> +++ b/fs/ubifs/ubifs.h
+> @@ -32,6 +32,7 @@
+>  #include <crypto/hash_info.h>
+>  #include <crypto/hash.h>
+>  #include <crypto/algapi.h>
+> +#include <crypto/acompress.h>
+>  
+>  #include <linux/fscrypt.h>
+>  
+> @@ -849,7 +850,8 @@ struct ubifs_node_range {
+>   */
+>  struct ubifs_compressor {
+>  	int compr_type;
+> -	struct crypto_comp *cc;
+> +	struct crypto_acomp *cc;
+> +	struct acomp_req *req;
+
+Please consider adding @req to the kernel doc for this structure.
+
+>  	struct mutex *comp_mutex;
+>  	struct mutex *decomp_mutex;
+>  	const char *name;
+
+...
