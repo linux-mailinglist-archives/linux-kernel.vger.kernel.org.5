@@ -2,125 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D471675C178
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3197475C18F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbjGUIYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36872 "EHLO
+        id S230389AbjGUI13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231197AbjGUIYQ (ORCPT
+        with ESMTP id S230062AbjGUI1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:24:16 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF379ED
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:24:14 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3159d5e409dso1784147f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:24:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689927853; x=1690532653;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LaHO8jdtLsSXJxnJeXXdT/34khW5y/PIz8TzPnqWIbM=;
-        b=npXpYotMTRo/mvTrcoTQdhz1mzs9qaFiQOBvAp6O0PpokoIkcjd2FJbWCmcjIHHKOz
-         8FvInldx2g9JaqbTnUzByTCjrwLlJNNB695G7kSK1Blbr6sAUw4FI1o2rWrsHPLfWXD3
-         KTQBqT8Oor102uT7hcO3FwEkyaXpnbQkcGZwOEdOMPw3ZDw02O09+wIz5vJQrIUuxfAF
-         OF3EyzViSO30kbK3z64alNPGOycAPYYAWkzyrWbrZ2TyvgrJsX9retNoJNqczaAkowdQ
-         ewegsbHET16QWge9BsvIhq0Et0KuiUT+g5t8wxSVqwlARhaVVXivKmzo1QORzXvbK9UK
-         NVNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689927853; x=1690532653;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LaHO8jdtLsSXJxnJeXXdT/34khW5y/PIz8TzPnqWIbM=;
-        b=LM1LqZ7sTNQbOsgr1FT+g1PlCirMyN/DD3aGAKnzJl71oVrjK3BlcZR6kcITdmngmI
-         PxAeStQ8/VVHWSJgjJQBl1ImXUsjlTqj3V9sBs0aGIy/vFFJuoKfbvTrRbEzVDABFo4C
-         nRY96CrHJwmkhIG26JUTS6pDnPDv93oiKTYq/OkiDzaB5CD2Zh/KatRQ88TzhOtexUp8
-         nrk6FD6Qwcss97dSOgEF5Thr9vN+rWzicn+V5BX2UhceanmiZ6JeijNtrQ3uWizovATU
-         Yo5Fzt6/QDQYFJ7DaUQ7GNggNMqk1cFt5xr72xGkKpUwMTP1CdJVc/viwZBj0t5sKHWY
-         /fSA==
-X-Gm-Message-State: ABy/qLa7/I+bTC2hOpPHuEkV141lwW+jDs5tmYZvqrNiqW9cYDNmVD+Q
-        BzHDC7EWRQG50OTC2/6L4OeXWQ==
-X-Google-Smtp-Source: APBJJlFSu6l7NqWd6+AwqSli6LFJT9onkAwyAt/FrCS0S4MhF0QrCzkxzlw8Ya30HQdfw4lkwhxa4w==
-X-Received: by 2002:a5d:51c8:0:b0:313:f75b:c552 with SMTP id n8-20020a5d51c8000000b00313f75bc552mr1246852wrv.15.1689927853129;
-        Fri, 21 Jul 2023 01:24:13 -0700 (PDT)
-Received: from [192.168.1.70] ([86.71.62.179])
-        by smtp.gmail.com with ESMTPSA id m24-20020a056000181800b003143ac73fd0sm3536255wrh.1.2023.07.21.01.24.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 01:24:12 -0700 (PDT)
-Message-ID: <d8b0f332-b8e3-59ac-741c-edc7f2f3341f@baylibre.com>
-Date:   Fri, 21 Jul 2023 10:24:11 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] ARM: multi_v7_defconfig: Enable OMAP watchdog support
-Content-Language: en-US
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        vigneshr@ti.com, afd@ti.com
-References: <20230718-enable-omap-wd-v2-1-921f829bc0a5@baylibre.com>
- <4db1d958-7b11-40d9-3f68-3e9390539cbe@baylibre.com>
- <20230721073836.GS5194@atomide.com>
-From:   Julien Panis <jpanis@baylibre.com>
-In-Reply-To: <20230721073836.GS5194@atomide.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 04:27:24 -0400
+Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5E1F0;
+        Fri, 21 Jul 2023 01:27:22 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CDE4D58026A;
+        Fri, 21 Jul 2023 04:27:21 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Fri, 21 Jul 2023 04:27:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1689928041; x=1689935241; bh=V8
+        kkxioRFPjR/pcGqI7bYcicee1af9QaKC3pDwPABSg=; b=b9mWPVKTa+C0qxGJVm
+        gVTKr5SnuCufxByEgtuEiTC/HjonV9yPvhgncSRQ0wUrLNE7orD78Rw7ohjT0q3C
+        c0X7wLA5W1uO4gHBmiwybGJLQQ7SrEMtBGvFZKQaT/Y0wzIbtxoIfYUgm9pO+XSJ
+        6I08Fx8oDJAOPBCXHuGFZFeWb1RYZSXq09xFAfH85OnLe5l+htjQL+F/B4Y6gUvs
+        ut/AOfdKRpwcHg/s2ox2GO/l5Ce/RBfBcnmaRO/F69sTDvSKTTvAQwHRFh24O6bw
+        V6xDq+6cg4uZot5gbimNNmCu9SHpdf5MFTDtGh/g5OFBKMn02cs7TznQk+C9/i4Y
+        dRwg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689928041; x=1689935241; bh=V8kkxioRFPjR/
+        pcGqI7bYcicee1af9QaKC3pDwPABSg=; b=unYn7VUfp/o2gT07nbqvQ5lIW9kBd
+        mBnKota720DDPc/oG1aRttW/D+crNdOAUEl9St9nonOTjtR5EHZ/ERbVU6RS/8a9
+        h60zyLUrHFHJTeNLWeadDvND/TVlwE64W4ER4jaFI7yfcqQcM9JFFXLEQa8gKTAm
+        2NneyWtfI14HUK6C7gElYEN39Z+C3ZEMkQn2ZM6gax2xS8UlImkh100FKtZaGPhv
+        lQk5OR6Mr17MQHWJ9UIPy7fklXcZo7AkC1hU9D8FRcT0DoHGZ1ht5evHlxZxLnfx
+        AEw3wiOX0qizHBpHqwTM2HVi93NRv6iA2yioBToovm3YnDAmy38mo5uCg==
+X-ME-Sender: <xms:Z0G6ZPfhyAhlj173FbFhonwA5KlUmCGO5J9kcywp3cozm27OsbAtLw>
+    <xme:Z0G6ZFM8NgJAA5o18IVcSBdDXzUfupTyVLyoGRWKf5AMnD9G8DAPvvhIosyFM_Fej
+    ixYPDY94XlYrOC-EQE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgddtudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:Z0G6ZIiZLjl3BUt93nzxV1cAQo4CS1KP6FaAGJXgj4g5DNvVpNZydQ>
+    <xmx:Z0G6ZA_7CvV2s3gdLefuPIP0mdWvT9_hDkmlpVhsn9Y5247aBbErLw>
+    <xmx:Z0G6ZLsjVOM0mZftdLzFVNIO9YmEUfPLUQYjwEJhvs0yikPIce9HbQ>
+    <xmx:aUG6ZDnhPzImHPxpYpY9KW7ioRMX4qP1VaFRlm_1LSESQRplTz4wfQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id AB365B60089; Fri, 21 Jul 2023 04:27:19 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
+Mime-Version: 1.0
+Message-Id: <19631e74-415e-4dcb-b79d-33dcf03d2dfc@app.fastmail.com>
+In-Reply-To: <87pm4lj1w3.fsf@mail.lhotse>
+References: <20230719123944.3438363-1-arnd@kernel.org>
+ <20230719123944.3438363-2-arnd@kernel.org> <87pm4lj1w3.fsf@mail.lhotse>
+Date:   Fri, 21 Jul 2023 10:26:30 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Arnd Bergmann" <arnd@kernel.org>, linux-fbdev@vger.kernel.org,
+        "Thomas Zimmermann" <tzimmermann@suse.de>,
+        "Helge Deller" <deller@gmx.de>,
+        "Javier Martinez Canillas" <javierm@redhat.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        "Ard Biesheuvel" <ardb@kernel.org>,
+        "Borislav Petkov" <bp@alien8.de>, "Brian Cain" <bcain@quicinc.com>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "Dave Airlie" <airlied@gmail.com>,
+        "Deepak Rawat" <drawat.floss@gmail.com>,
+        "Dexuan Cui" <decui@microsoft.com>,
+        "Dinh Nguyen" <dinguyen@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        guoren <guoren@kernel.org>,
+        "Haiyang Zhang" <haiyangz@microsoft.com>,
+        "Huacai Chen" <chenhuacai@kernel.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+        "Khalid Aziz" <khalid@gonehiking.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Matt Turner" <mattst88@gmail.com>,
+        "Max Filippov" <jcmvbkbc@gmail.com>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        "Russell King" <linux@armlinux.org.uk>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "WANG Xuerui" <kernel@xen0n.name>, "Wei Liu" <wei.liu@kernel.org>,
+        "Will Deacon" <will@kernel.org>, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 1/9] vgacon: rework Kconfig dependencies
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/23 09:38, Tony Lindgren wrote:
-> * Julien Panis <jpanis@baylibre.com> [230719 10:09]:
->> On 7/18/23 16:58, Julien Panis wrote:
->>> Increase build and test coverage by enabling support for OMAP watchdog,
->>> as used on TI OMAP based boards.
->>>
->>> The watchdog timer is an upward counter capable of generating a pulse on
->>> the reset pin and an interrupt to the device system modules following an
->>> overflow condition.
->>>
->>> Signed-off-by: Julien Panis <jpanis@baylibre.com>
-> Looks good to me:
->
-> Reviewed-by: Tony Lindgren <tony@atomide.com>
->
->> Maybe this patch should not be applied actually. I have 2 questions:
+On Fri, Jul 21, 2023, at 06:59, Michael Ellerman wrote:
+> Arnd Bergmann <arnd@kernel.org> writes:
+>> From: Arnd Bergmann <arnd@arndb.de>
 >>
->> [Q1] Using the following cmd sequence leads to a modified 'multi_v7_defconfig' file:
->>        'make multi_v7_defconfig'
->>        'make savedefconfig'
->>        'mv defconfig arch/arm/configs/multi_v7_defconfig'
->> ...even without modifying CONFIG_OMAP_WATCHDOG flag.
->> I guess it's due to modifications in various Kconfig files (dependencies for instance).
->> And perhaps it's also due to previous modifications of 'multi_v7_defconfig' file that
->> were not done by using 'make savedefconfig' (?)
->> How should I handle that for this patch ? This v2 has been created by modifying
->> 'multi_v7_defconfig' file manually. Using 'make savedefconfig' would be cleaner,
->> but as a result many flags would be re-organized whereas the commit intends to
->> enable 1 flag only.
-> After make savedefconfig you can take a look where the new option got placed
-> and then throw away the changes and add the entry manually :)
+>> The list of dependencies here is phrased as an opt-out, but this is missing
+>> a lot of architectures that don't actually support VGA consoles, and some
+>> of the entries are stale:
+>>
+>>  - powerpc used to support VGA consoles in the old arch/ppc codebase, but
+>>    the merged arch/powerpc never did
 >
->> [Q2] I would like to add another flag in order to enable CONFIG_RTC_DRV_OMAP.
->> Is it better grouping CONFIG_OMAP_WATCHDOG and CONFIG_RTC_DRV_OMAP in
->> a single commit ? What's recommended ?
-> Adding both is fine for the defconfig change, just try to place them where
-> they would end up after savedefconfig to avoid it getting more out of sync.
->
-> Regards,
->
-> Tony
+> Not disputing this, but how did you come to that conclusion? I grepped
+> around and couldn't convince myself whether it can work on powerpc or
+> not. ie. currently it's possible to enable CONFIG_VGA_CONSOLE and
+> powerpc does have a struct screen_info defined which seems like it would
+> allow vgacon_startup() to complete.
 
-OK, thank you for these explanations.
-There will be other flags to add (much more than 2 actually !). So, it's not worth merging
-this patch. I will send another patch with all the flags that must be set.
+The VGA console needs both screen_info and vga_con to work. In arch/ppc
+we had both, but in arch/powerpc we only retained the screen_info:
 
-Julien
+$ git grep vga_con v2.6.26 -- arch/ppc arch/ppc64 arch/powerpc
+v2.6.26:arch/ppc/platforms/pplus.c:     conswitchp = &vga_con;
+v2.6.26:arch/ppc/platforms/prep_setup.c:        conswitchp = &vga_con;
+
+so after arch/ppc was removed, this became impossible to use on both
+pplus and prep. These two platforms were also (as far as I can tell)
+the only ones to support vga16fb as an alternative to vgacon, but
+both platforms were removed later on.
+
+> My only concern is that someone could be using it with Qemu?
+
+I have not yet ruled out anyone using vga16fb on qemu before
+commit 0db5b61e0dc07 ("fbdev/vga16fb: Create EGA/VGA devices
+in sysfb code"), but I can see that this has been broken for
+12 months without anyone complaining about it, since vga16fb
+no longer works with the "orig_video_isVGA == 1" setting
+in arch/powerpc (the device is not created).
+
+In the qemu sources, I see five powerpc machines that intialize
+VGA support: mac_newworld, mac_oldworld, pegasos2, prep, and spapr.
+I think we can exclude prep (which was removed from the kernel)
+and spapr (64-bit VGA_MAP_MEM() looks broken). I think the
+macs always come up in graphical mode and only use
+offb/atifb/rivafb/matroxfb but not vga16fb that would require
+running the x86 VGA BIOS initialization.
+
+I suppose it's possible to use vga16fb (not vgacon) with
+"qemu-system-ppc -M pegasos2 -vga std" if that still boots
+at all. Support for pegasos2 hardware appears to have been
+removed with commit 04debf21fa174 ("powerpc: Remove core
+support for Marvell mv64x60 hostbridges"), but it's possible
+that this did not break qemu support if that only uses
+devices under arch/powerpc/platforms/chrp/pci.c. I could
+not get it to boot, but did not try very hard.
+
+      Arnd
