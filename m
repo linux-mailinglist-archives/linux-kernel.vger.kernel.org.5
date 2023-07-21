@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD7D75C00F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6A675C00E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbjGUHob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 03:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36808 "EHLO
+        id S231211AbjGUHoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 03:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231179AbjGUHo2 (ORCPT
+        with ESMTP id S230166AbjGUHoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 03:44:28 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2127A2D6D
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 00:44:26 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R6hQT0VkLz4f3jJH
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:44:17 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP2 (Coremail) with SMTP id Syh0CgBnDetMN7pktBOOOQ--.2147S2;
-        Fri, 21 Jul 2023 15:44:14 +0800 (CST)
-Subject: Re: [PATCH 1/2] mm/compaction: correct comment of candidate pfn in
- fast_isolate_freepages
-To:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Baolin Wang <baolin.wang@linux.alibaba.com>
-References: <20230720115351.2039431-1-shikemeng@huaweicloud.com>
- <20230720115351.2039431-2-shikemeng@huaweicloud.com>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <c9c8aa27-d1e0-3123-6767-31e94be89b91@huaweicloud.com>
-Date:   Fri, 21 Jul 2023 15:44:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Fri, 21 Jul 2023 03:44:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA2811D;
+        Fri, 21 Jul 2023 00:44:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A4F161545;
+        Fri, 21 Jul 2023 07:44:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD808C433C8;
+        Fri, 21 Jul 2023 07:44:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689925455;
+        bh=Er/BapZb3ALRPOmrjE6iHWD/lgnVLLcsK/VqJs60yPo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nCLyshxSscf0FcD2qfqnOU4ZCp5bAfqiOxoYbib7ddjVIWcaIanoCnij1MWrrDMrD
+         6fy38OH2di51feftiqQ1daVr0uVucWuCuZ8XFYmTRs76m8aoDWYRAd6QfAL5ip0PQV
+         jd7SeXp86PPDc2OOF9tuJlzCXJVTuFkwFZczU76Dsw1Hb4ATWXEIgDNCo8Ml2KhV3r
+         SBb6OX8PSipIvCC7RYiI5eST+PVw2plCZwGb/MYD3VQSVKX7vt1cTmQpy94Hu+MUnY
+         TsANyvpA+IAY2Ss63kIGn3Z9C3LzreOqLLGiqOF+OByOiCVENI+B8da2qGAwsD1oAW
+         uqDiAZS1yGwCQ==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qMkoJ-0003G1-1a;
+        Fri, 21 Jul 2023 09:44:24 +0200
+Date:   Fri, 21 Jul 2023 09:44:23 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com, ahalaney@redhat.com,
+        quic_shazhuss@quicinc.com
+Subject: Re: [PATCH v9 03/10] usb: dwc3: core: Access XHCI address space
+ temporarily to read port info
+Message-ID: <ZLo3Vym_54IsO-zl@hovoldconsulting.com>
+References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
+ <20230621043628.21485-4-quic_kriskura@quicinc.com>
+ <ZJrL5SXrSiYbvq2o@hovoldconsulting.com>
+ <0af6aa13-d83c-8c26-2a60-00cb3bbe4f5e@quicinc.com>
 MIME-Version: 1.0
-In-Reply-To: <20230720115351.2039431-2-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: Syh0CgBnDetMN7pktBOOOQ--.2147S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw4rur1kZr18Ar15Gw4kJFb_yoW8JF4kpF
-        4DAa1UXwnrJa48Ca47Aa17ua47Xws3tF18Grs3G3yrAanag3s7u3s2qF45ur92vr9Yk3y2
-        vrZ2gF1Ut3yUZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0af6aa13-d83c-8c26-2a60-00cb3bbe4f5e@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baolin, I try to resend a new v2 patchset, the patch 1 is still
-missing. Here is the patch 1 in old version and I find it in lore
-archive of lore.kernel.org with link [1].
-It's likely that patch 1 is denied by linux-mm.kvack.org but accepted
-by linux-kernel@vger.kernel.org. Is anyone know how to submit issue of
-linux-mm.kvack.org, please let know. Thanks!
+Hi Krishna,
 
-[1] https://lore.kernel.org/all/20230720115351.2039431-2-shikemeng@huaweicloud.com/
+Please remember to trim unnecessary context from your replies (e.g. as
+it makes it easier to read your reply and later the entire thread in the
+mailing list archives).
 
-on 7/20/2023 7:53 PM, Kemeng Shi wrote:
-> If no preferred one was not found, we will use candidate page with maximum
-> pfn > min_pfn which is saved in high_pfn. Correct "minimum" to "maximum
-> candidate" in comment.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  mm/compaction.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index eb1d3d9a422c..c0d8d08fc163 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1526,7 +1526,7 @@ static void fast_isolate_freepages(struct compact_control *cc)
->  				break;
->  		}
->  
-> -		/* Use a minimum pfn if a preferred one was not found */
-> +		/* Use a maximum candidate pfn if a preferred one was not found */
->  		if (!page && high_pfn) {
->  			page = pfn_to_page(high_pfn);
->  
-> 
+On Mon, Jul 03, 2023 at 12:18:14AM +0530, Krishna Kurapati PSSNV wrote:
+> On 6/27/2023 5:15 PM, Johan Hovold wrote:
+> > On Wed, Jun 21, 2023 at 10:06:21AM +0530, Krishna Kurapati wrote:
+  
+> >> diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+> >> index 8b1295e4dcdd..42fb17aa66fa 100644
+> >> --- a/drivers/usb/dwc3/core.h
+> >> +++ b/drivers/usb/dwc3/core.h
+> >> @@ -33,6 +33,10 @@
+> >>   
+> >>   #include <linux/power_supply.h>
+> >>   
+> >> +#define XHCI_EXT_PORT_MAJOR(x)	(((x) >> 24) & 0xff)
+> >> +#define XHCI_EXT_PORT_MINOR(x)	(((x) >> 16) & 0xff)
+> >> +#define XHCI_EXT_PORT_COUNT(x)	(((x) >> 8) & 0xff)
+> > 
+> > Again, don't copy defines from xhci.
+> > 
+> > Looks like these should be moved to the xhci-ext-caps.h header along
+> > with struct xhci_protocol_caps.
+> > 
+> Can't we just give them an exception ? Modifying xhci stuff doesn't 
+> sound good. Can I just rename them and keep them here ?
 
--- 
-Best wishes
-Kemeng Shi
+Nope. This is mainline, not Qualcomm's vendor kernel.
 
+Johan
