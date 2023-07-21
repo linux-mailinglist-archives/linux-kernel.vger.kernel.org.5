@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6950975D581
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5C675D580
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 22:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbjGUUTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 16:19:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
+        id S230345AbjGUUTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 16:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230375AbjGUUTU (ORCPT
+        with ESMTP id S230490AbjGUUTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 16:19:20 -0400
+        Fri, 21 Jul 2023 16:19:23 -0400
 Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C48F30CA
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:19:17 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1b888bdacbcso12652395ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:19:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32073A87
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:19:18 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1b8a4571c1aso12775545ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 13:19:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689970756; x=1690575556;
+        d=google.com; s=20221208; t=1689970758; x=1690575558;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mde8vJ2EtcoesCeVYOs5lIQ6ce5w4DlvdNVLFNYZgvw=;
-        b=OG1xATxce96iuWnMzlgqDnDaZv2FXzskZA+y4BUtx5VmlP67RNa2QHKDFmey4WYDT7
-         zvNUXdMCZrwTkCSrECGSiGHB6pP4XPFVEmSyDGZDd8vLnmjzw2ELySlD1Ofsw6BwcCYW
-         dTl3nD8gBC7wcs2gpf74X3VknyBBLWpQT/S+GlaYcetZzIGEyFZR0khZhhEpMpUsfHS/
-         tzCGxebOb956the72GUxF9v7PXeo3Wuf+ivVaHjOogwQNBQ3QYf+d5JiF2PYnWcl7EzX
-         Y7QIP/wBx9b3lUz+RkVAiiY1YweC3T0ki70Hv16Hyb3COP5kSj4beryjARpodF6LnY6v
-         Y/Jg==
+        bh=Xl/21nVHjxj9H71udXldkW3KRDjTiiyAWxQB92FBmLk=;
+        b=Z9kjVXVGPt914xe9fLgGWQ7njz6z0IpDO/S9kHemlYQXnKLvSITcv91xTIWcVJtv4m
+         CbGJMGVWN0Jx7yI0SSDzh5WgyereyRUc/tEyDpGT6MLizJYYxihqtQBSefCIu/1aboBj
+         0pFG/ifvnhuy1V3QTj222F9L3dkjAm/fM+mZ5LvJsm2PGxEdi2yFpOUZ6DMSDNxMm4DI
+         o/VS8q8UCReLs1GvOJfJFGFkGBUim2JZRxl8RuCfyBdOzDRbkrsJk1z5x/ZIP4GwZ4+o
+         3wsH96lRHH20QOA7RyxWEHtNxRZlo33VGObc3zEeEV5ho06ifM+g9OcDd0QadVn+P/E+
+         TuFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689970756; x=1690575556;
+        d=1e100.net; s=20221208; t=1689970758; x=1690575558;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Mde8vJ2EtcoesCeVYOs5lIQ6ce5w4DlvdNVLFNYZgvw=;
-        b=KRsBdwcgJweWUQdK1iYvuU8tYVOIJgtBag4ozRTI7GD3NWHmaUxBv0qtaxvubTGOlb
-         L10xambda66QXTwDFGaxBWYDYSAOoB9tTa/iMCrdlH+bO74yTBbb/QnzlQzRcyW1gBb8
-         EoVjiiTmWeYvpBGvor3EAdgFIm2TbLs0WwN8iwZW6mSixJ3AwJbuTDB1gTjdLiOY8TtY
-         12v+PaKBfBvzteTHd8lsJiN4OgQ9Gke478CVlVhf31USs15n2z7ZGiUGy6nGBltAOt65
-         HMcqUrf3pp5f1V4e0TDNXcQ2zLfRqFOMMzl0c0SM39GNdhLCzqvw6LFHLZ7wiROJIuxb
-         A9qA==
-X-Gm-Message-State: ABy/qLZWCRJXlBFRKgTqTr8Urfd4tN8xZJjhPN0Q6ypeTByP6Y6OlBjp
-        g1u+iNoeAwnlnciQPF6WZPW8wOW+sE0=
-X-Google-Smtp-Source: APBJJlGlHNXn19ATaXD6Ps+chy94B6SDHHnp2N5mtBL/FJxhcaQpXhy1QBTb+21BUjq1Om4DVC5jIj0WCFo=
+        bh=Xl/21nVHjxj9H71udXldkW3KRDjTiiyAWxQB92FBmLk=;
+        b=LRlhr7uGpyTcSSOPpOeT2tovIR2oAM3uLriwHVozPXtE1kZSvoG8ynd02/B8PcdgmF
+         /+a6F2cYCVb52Zkc9em4tma0tfy+KdgPFQhbAJUc3YgBs37tl7WxdAT41+g3yZI1ady0
+         NHDj7qPa5zmdzVm2/6twbCim3MqFSW2y7UB2BcqGozgvnAZmgtbUBeqqW/QgDg59NjDl
+         WoKU7BIeksRxGw9PBCNMJ37auosCTgrR2HHcODx3/oRqjYqvsXmMIIuz9ML5qqtLl/ks
+         PzQDqOeglgcBPtu1U0CKl3YcGzV1Pq7FJv3l7m3Yx2mheuKm5IuiX/9TxZBihOl+6/vp
+         9sGA==
+X-Gm-Message-State: ABy/qLYkSFYqbMj1vGbOPnVfQGnwmGaRvPYUlbR4a1ea/pXOnBjLtjjJ
+        MeHBW13rElX/EziIBN2PRW/zjS9PwyY=
+X-Google-Smtp-Source: APBJJlEzwu5ChQyLGT+FTc9q1c52pU5AreTLyPoJzZDa1ixxgiv0ygl5+KZatUpkRn4shtsG7YxA8qtZsN8=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:1c7:b0:1b5:2496:8c0d with SMTP id
- e7-20020a17090301c700b001b524968c0dmr11698plh.3.1689970756405; Fri, 21 Jul
- 2023 13:19:16 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:902:ecc1:b0:1b8:95fc:d0f with SMTP id
+ a1-20020a170902ecc100b001b895fc0d0fmr13723plh.7.1689970758296; Fri, 21 Jul
+ 2023 13:19:18 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 21 Jul 2023 13:18:46 -0700
+Date:   Fri, 21 Jul 2023 13:18:47 -0700
 In-Reply-To: <20230721201859.2307736-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230721201859.2307736-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230721201859.2307736-7-seanjc@google.com>
-Subject: [PATCH v4 06/19] x86/reboot: Hoist "disable virt" helpers above
- "emergency reboot" path
+Message-ID: <20230721201859.2307736-8-seanjc@google.com>
+Subject: [PATCH v4 07/19] x86/reboot: Disable virtualization during reboot iff
+ callback is registered
 From:   Sean Christopherson <seanjc@google.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -77,130 +77,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the various "disable virtualization" helpers above the emergency
-reboot path so that emergency_reboot_disable_virtualization() can be
-stubbed out in a future patch if neither KVM_INTEL nor KVM_AMD is enabled,
-i.e. if there is no in-tree user of CPU virtualization.
+Attempt to disable virtualization during an emergency reboot if and only
+if there is a registered virt callback, i.e. iff a hypervisor (KVM) is
+active.  If there's no active hypervisor, then the CPU can't be operating
+with VMX or SVM enabled (barring an egregious bug).
 
-No functional change intended.
+Checking for a valid callback instead of simply for SVM or VMX support
+can also eliminates spurious NMIs by avoiding the unecessary call to
+nmi_shootdown_cpus_on_restart().
 
-Reviewed-by: Kai Huang <kai.huang@intel.com>
+Note, IRQs are disabled, which prevents KVM from coming along and
+enabling virtualization after the fact.
+
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kernel/reboot.c | 90 ++++++++++++++++++++--------------------
- 1 file changed, 45 insertions(+), 45 deletions(-)
+ arch/x86/kernel/reboot.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-index 4cad7183b89e..85cb2dfcb67b 100644
+index 85cb2dfcb67b..98e5db3fd7f4 100644
 --- a/arch/x86/kernel/reboot.c
 +++ b/arch/x86/kernel/reboot.c
-@@ -530,6 +530,51 @@ static inline void kb_wait(void)
+@@ -22,7 +22,6 @@
+ #include <asm/reboot_fixups.h>
+ #include <asm/reboot.h>
+ #include <asm/pci_x86.h>
+-#include <asm/virtext.h>
+ #include <asm/cpu.h>
+ #include <asm/nmi.h>
+ #include <asm/smp.h>
+@@ -589,7 +588,7 @@ static void emergency_reboot_disable_virtualization(void)
+ 	 * Do the NMI shootdown even if virtualization is off on _this_ CPU, as
+ 	 * other CPUs may have virtualization enabled.
+ 	 */
+-	if (cpu_has_vmx() || cpu_has_svm(NULL)) {
++	if (rcu_access_pointer(cpu_emergency_virt_callback)) {
+ 		/* Safely force _this_ CPU out of VMX/SVM operation. */
+ 		cpu_emergency_disable_virtualization();
  
- static inline void nmi_shootdown_cpus_on_restart(void);
- 
-+/* RCU-protected callback to disable virtualization prior to reboot. */
-+static cpu_emergency_virt_cb __rcu *cpu_emergency_virt_callback;
-+
-+void cpu_emergency_register_virt_callback(cpu_emergency_virt_cb *callback)
-+{
-+	if (WARN_ON_ONCE(rcu_access_pointer(cpu_emergency_virt_callback)))
-+		return;
-+
-+	rcu_assign_pointer(cpu_emergency_virt_callback, callback);
-+}
-+EXPORT_SYMBOL_GPL(cpu_emergency_register_virt_callback);
-+
-+void cpu_emergency_unregister_virt_callback(cpu_emergency_virt_cb *callback)
-+{
-+	if (WARN_ON_ONCE(rcu_access_pointer(cpu_emergency_virt_callback) != callback))
-+		return;
-+
-+	rcu_assign_pointer(cpu_emergency_virt_callback, NULL);
-+	synchronize_rcu();
-+}
-+EXPORT_SYMBOL_GPL(cpu_emergency_unregister_virt_callback);
-+
-+/*
-+ * Disable virtualization, i.e. VMX or SVM, to ensure INIT is recognized during
-+ * reboot.  VMX blocks INIT if the CPU is post-VMXON, and SVM blocks INIT if
-+ * GIF=0, i.e. if the crash occurred between CLGI and STGI.
-+ */
-+void cpu_emergency_disable_virtualization(void)
-+{
-+	cpu_emergency_virt_cb *callback;
-+
-+	/*
-+	 * IRQs must be disabled as KVM enables virtualization in hardware via
-+	 * function call IPIs, i.e. IRQs need to be disabled to guarantee
-+	 * virtualization stays disabled.
-+	 */
-+	lockdep_assert_irqs_disabled();
-+
-+	rcu_read_lock();
-+	callback = rcu_dereference(cpu_emergency_virt_callback);
-+	if (callback)
-+		callback();
-+	rcu_read_unlock();
-+}
-+
- static void emergency_reboot_disable_virtualization(void)
- {
- 	local_irq_disable();
-@@ -786,54 +831,9 @@ void machine_crash_shutdown(struct pt_regs *regs)
- }
- #endif
- 
--/* RCU-protected callback to disable virtualization prior to reboot. */
--static cpu_emergency_virt_cb __rcu *cpu_emergency_virt_callback;
--
--void cpu_emergency_register_virt_callback(cpu_emergency_virt_cb *callback)
--{
--	if (WARN_ON_ONCE(rcu_access_pointer(cpu_emergency_virt_callback)))
--		return;
--
--	rcu_assign_pointer(cpu_emergency_virt_callback, callback);
--}
--EXPORT_SYMBOL_GPL(cpu_emergency_register_virt_callback);
--
--void cpu_emergency_unregister_virt_callback(cpu_emergency_virt_cb *callback)
--{
--	if (WARN_ON_ONCE(rcu_access_pointer(cpu_emergency_virt_callback) != callback))
--		return;
--
--	rcu_assign_pointer(cpu_emergency_virt_callback, NULL);
--	synchronize_rcu();
--}
--EXPORT_SYMBOL_GPL(cpu_emergency_unregister_virt_callback);
--
- /* This is the CPU performing the emergency shutdown work. */
- int crashing_cpu = -1;
- 
--/*
-- * Disable virtualization, i.e. VMX or SVM, to ensure INIT is recognized during
-- * reboot.  VMX blocks INIT if the CPU is post-VMXON, and SVM blocks INIT if
-- * GIF=0, i.e. if the crash occurred between CLGI and STGI.
-- */
--void cpu_emergency_disable_virtualization(void)
--{
--	cpu_emergency_virt_cb *callback;
--
--	/*
--	 * IRQs must be disabled as KVM enables virtualization in hardware via
--	 * function call IPIs, i.e. IRQs need to be disabled to guarantee
--	 * virtualization stays disabled.
--	 */
--	lockdep_assert_irqs_disabled();
--
--	rcu_read_lock();
--	callback = rcu_dereference(cpu_emergency_virt_callback);
--	if (callback)
--		callback();
--	rcu_read_unlock();
--}
--
- #if defined(CONFIG_SMP)
- 
- static nmi_shootdown_cb shootdown_callback;
 -- 
 2.41.0.487.g6d72f3e995-goog
 
