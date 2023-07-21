@@ -2,25 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1946375BF80
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E685475BF85
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 09:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbjGUHWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 03:22:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52092 "EHLO
+        id S229898AbjGUHWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 03:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjGUHWD (ORCPT
+        with ESMTP id S230122AbjGUHWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 03:22:03 -0400
+        Fri, 21 Jul 2023 03:22:16 -0400
 Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E1795E75;
-        Fri, 21 Jul 2023 00:22:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2067730DB;
+        Fri, 21 Jul 2023 00:22:10 -0700 (PDT)
 Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id A179F807E;
-        Fri, 21 Jul 2023 07:22:00 +0000 (UTC)
+        by muru.com (Postfix) with ESMTP id 082ED807E;
+        Fri, 21 Jul 2023 07:22:07 +0000 (UTC)
 From:   Tony Lindgren <tony@atomide.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
         Dhruva Gole <d-gole@ti.com>,
         =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
@@ -30,10 +31,12 @@ Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
         linux-omap@vger.kernel.org
-Subject: [PATCH v3 0/3] Serial core controller port device name fixes
-Date:   Fri, 21 Jul 2023 10:21:39 +0300
-Message-ID: <20230721072147.59121-1-tony@atomide.com>
+Subject: [PATCH v3 1/3] serial: core: Controller id cannot be negative
+Date:   Fri, 21 Jul 2023 10:21:40 +0300
+Message-ID: <20230721072147.59121-2-tony@atomide.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230721072147.59121-1-tony@atomide.com>
+References: <20230721072147.59121-1-tony@atomide.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -45,34 +48,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A few issues have been found with device naming for the serial core
-controller port device. These issues currently mostly affect the output
-for /sys/bus/serial-base/devices, but need to be also fixed to avoid
-port addressing issues later on.
+The controller id cannot be negative. Let's fix the ctrl_id in preparation
+for adding port port_id to fix the device name.
 
-Changes since v2:
-- Fix my email script as it had started to drop linux-serial as noted by
-  Greg
+Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
+Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ include/linux/serial_core.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-- Explain why we're changing ctrl_id as requested by Greg
-
-Changes since v1:
-- Port id cannot be negative as noted by Jiri
-
-- Controller id cannot be negative as noted by Andy
-
-- Port name is missing the controller instance as noted by Andy
-
-Tony Lindgren (3):
-  serial: core: Controller id cannot be negative
-  serial: core: Fix serial core port id to not use port->line
-  serial: core: Fix serial core controller port name to show controller
-    id
-
- drivers/tty/serial/8250/8250_core.c  |  2 ++
- drivers/tty/serial/serial_base_bus.c | 33 ++++++++++++++++++----------
- include/linux/serial_core.h          |  3 ++-
- 3 files changed, 25 insertions(+), 13 deletions(-)
-
+diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -459,7 +459,7 @@ struct uart_port {
+ 						struct serial_rs485 *rs485);
+ 	int			(*iso7816_config)(struct uart_port *,
+ 						  struct serial_iso7816 *iso7816);
+-	int			ctrl_id;		/* optional serial core controller id */
++	unsigned int		ctrl_id;		/* optional serial core controller id */
+ 	unsigned int		irq;			/* irq number */
+ 	unsigned long		irqflags;		/* irq flags  */
+ 	unsigned int		uartclk;		/* base uart clock */
 -- 
 2.41.0
