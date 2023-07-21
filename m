@@ -2,130 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E886A75CF64
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C26975CF65
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 18:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbjGUQci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 12:32:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
+        id S232505AbjGUQcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 12:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbjGUQcO (ORCPT
+        with ESMTP id S230004AbjGUQcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 12:32:14 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB244226;
-        Fri, 21 Jul 2023 09:30:47 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b74310566cso32237511fa.2;
-        Fri, 21 Jul 2023 09:30:46 -0700 (PDT)
+        Fri, 21 Jul 2023 12:32:15 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF144480
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 09:30:49 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-346392da0d6so10037615ab.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 09:30:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689956984; x=1690561784;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8qHEqgw4Pn9UBisxvApajhxxyFeSD6XeoYA6uu/VXuk=;
-        b=efCdlvV4kcBAvo3uKPnikg+rdKkPtqRGCHlZQQ+gwAacf3Bq2Xjx4qdyEdUdZY9a4x
-         dL5rJ0nRmvG1c99qlRZg+qSOEtgfojzjLjVP+j3h+drmUV/BPKRnE/MS2eTOeuVVDO1a
-         NMQDXluAJ/iky05gy79d5WQSMHL33cbRBkMYGDZjwI2yaLnrrgVG5ZboaKA06TYbOkZx
-         HtKMqerrzweOmyGMYoBRCnwJjIr9c80w1gKqAowIOCayHm22Ka9U2nexqUq+EJyFC/NB
-         jgKlygAybq3MbiTuwbUR+yN/Vz7DoMyakDajl7FCblCFBGFSDyea9yvNLJRnJH5GO+Eo
-         Fz2g==
+        d=gmail.com; s=20221208; t=1689956993; x=1690561793;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=f+FyGPDRmoxL2YC1UR+AkzCDS4XQ2NURuK6MfXzpH8g=;
+        b=beVRX8xlKEG8j6K58hHhqmUqFmY5Huk4fdeO+Gw5Gil8oPPUr26uxwf/qbE07zB5+x
+         yQDJ1Fn2425G8zkazELQKxP3ah6JafEa6URfADOvKo1pp8ted8HUAXlT4klKj9HVJtRa
+         5xrn3jGN/fFxmyc1AVcZT3XwWf1Rjx/w26oJ8ZQePhHqhwlP+pdCSkhbWPnm14sQ1bAu
+         ENtQmJmYOHoiEHX4hqJ2gs4sd1Imvq/5kH7JLdk/ruj4Ms16omg7xR61/5ntjF6Nz78U
+         JQ7IReSiOC12i08UsRvRYdn+2qsXJoB+wRo99g9VGdFSnH1DV+25u6N+1PWunxkjE/BZ
+         u6/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689956984; x=1690561784;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8qHEqgw4Pn9UBisxvApajhxxyFeSD6XeoYA6uu/VXuk=;
-        b=QZJFo4dMQk+j6NyUoxXqHNUdgRjFtIA+uEKqAdKpdm+ZQ3EnP+1+cRaSzQ7p29LouC
-         2RqYcLzdDvTzhQYHhg6IJXu22B+tVUhNjjx9e5ys39x61iUc44X9EirfaEpHq9wmH8pk
-         WHFRSsvypy7K6LyapqWpxJIo2m/cbylDwiaiiABp0dvC+pPt4rJs1RdmyMcjXwGSYGs0
-         cYvv1qM3P7PQBU9dVg2GTNPnCr73z2hllkvvgT7pMqLvLXxJRs0tFdXIlexxxzfMM0Lu
-         CO6kSz7iPRdkjF86vuVItOE2DwFTB40oexl/pkgN9Glgt/nIsplo28hGLRqtTbbV5lS6
-         Vt2w==
-X-Gm-Message-State: ABy/qLYEISB9SAahs+v/oL8HHKaSaT4AZRsdWENbgTWGFN1Rf4xKikMp
-        3B2nsI5qdTazA35WDnG3kV+b/C6PJJtMymNd11LoKsH+
-X-Google-Smtp-Source: APBJJlE+JiQAHHsvuU+tQsoIodHiDuMZZaAbw05uWYVkwhcstIm99YrMlAYm7UqlKLuyjfxvnWSENO+SqVtq9kdh3+k=
-X-Received: by 2002:a2e:b1d3:0:b0:2b9:3684:165 with SMTP id
- e19-20020a2eb1d3000000b002b936840165mr1868107lja.8.1689956983928; Fri, 21 Jul
- 2023 09:29:43 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689956993; x=1690561793;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f+FyGPDRmoxL2YC1UR+AkzCDS4XQ2NURuK6MfXzpH8g=;
+        b=mI2R5ukEzSKM0vW9Bi4BjPYo88EP9vj6JJdN8F8E8qmUrtpMRLYoESYWtTsFKdpmgM
+         ygkpr9YuToaJMH9vgNOlxN+lf0kZgLh+mfDVq0kpYgS0nKyBce/FeCfX8+4gjhhY+Onq
+         MdKQr3Wb5lBIujArjqzPyALXQoB6A6R5Ny3/2W2LHqkfevZFI4XXaldOIN9VtrvkP4NE
+         JxZXY7iRwiJIDeLh9c43IkKFM5FiH7sHG3gS07W7XdSPJvPyhxUbElfK1XZC69l/JS3p
+         s1P+vyj4f5w5/LkEPKF455xivUyDd2SBg+y7CbjVWvrEP3w8GJzODZpo3mZZDgNHjbvW
+         jR+g==
+X-Gm-Message-State: ABy/qLaOkkw31TPYLSDUXyDgrzqzIWXqrWGkyUngYh5Nt5vlnvejKmLW
+        IOdPVHwNl/TzZ6dTzONdXIc=
+X-Google-Smtp-Source: APBJJlGllmyzrKIplT3/vybQXfWY6B/wfRZEIIzVqJ+YcglP3MTS9S2ZvWhJOoDT2n9IKFOhqPKnpQ==
+X-Received: by 2002:a05:6e02:1a8a:b0:345:d58d:9ade with SMTP id k10-20020a056e021a8a00b00345d58d9ademr490967ilv.3.1689956993074;
+        Fri, 21 Jul 2023 09:29:53 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u7-20020a92da87000000b00345d00dc3fdsm1051573iln.78.2023.07.21.09.29.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 09:29:52 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <20b76893-cae3-e17f-99f5-7a0a448799db@roeck-us.net>
+Date:   Fri, 21 Jul 2023 09:29:51 -0700
 MIME-Version: 1.0
-References: <20230721142642.45871-1-jlayton@kernel.org>
-In-Reply-To: <20230721142642.45871-1-jlayton@kernel.org>
-From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date:   Fri, 21 Jul 2023 18:29:32 +0200
-Message-ID: <CAHpGcM+JCXu6TVrt+-woHCRFTKD2Dr_x6Xp0n4fw9aJHScbbMw@mail.gmail.com>
-Subject: Re: [PATCH] nfsd: better conform to setfacl's method for setting
- missing ACEs
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 2/2] regmap: Reject fast_io regmap configurations with
+ RBTREE and MAPLE caches
+Content-Language: en-US
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+References: <20230720032848.1306349-1-linux@roeck-us.net>
+ <20230720032848.1306349-2-linux@roeck-us.net>
+ <CGME20230721145342eucas1p12e658a54d36d985b2811e2c21f7810ee@eucas1p1.samsung.com>
+ <c2bba4df-da1f-5666-89aa-28c6700575ca@samsung.com>
+ <fe31bb86-40ec-4b77-9edd-eeaa61bb5e08@sirena.org.uk>
+ <c9614ffb-7840-6a84-883d-ed4371d75c11@roeck-us.net>
+ <205a83df-c67b-457f-a9bf-a9c6def4bb3e@sirena.org.uk>
+ <1c90db79-4a1a-d3cb-5250-f30cf6b5a90c@roeck-us.net>
+ <e61ebbfd-98d2-4dad-98e7-67d81c0cc04e@kadam.mountain>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <e61ebbfd-98d2-4dad-98e7-67d81c0cc04e@kadam.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Fr., 21. Juli 2023 um 16:26 Uhr schrieb Jeff Layton <jlayton@kernel.org>=
-:
-> Andreas pointed out that the way we're setting missing ACEs doesn't
-> quite conform to what setfacl does. Change it to better conform to
-> how setfacl does this.
+On 7/21/23 09:18, Dan Carpenter wrote:
+> On Fri, Jul 21, 2023 at 09:01:03AM -0700, Guenter Roeck wrote:
+> 
+>> Dan, let me know if you don't have time to send a proper patch.
+>> I have one based on your suggestion prepared that I could send out
+>> if needed.
+> 
+> I sent it but, aww crud, I forgot to CC you.  Really, get_maintainer.pl
+> should add everyone from the tag section to the CC list...
+> 
+> https://lore.kernel.org/all/58f12a07-5f4b-4a8f-ab84-0a42d1908cb9@moroto.mountain/
+> 
 
-Thanks, this looks reasonable.
+No worries.
 
-Andreas
+Thanks,
+Guenter
 
-> Cc: Andreas Gr=C3=BCnbacher <andreas.gruenbacher@gmail.com>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/nfsd/nfs4acl.c | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
->
-> Chuck, it might be best to fold this into the original patch, if it
-> looks ok.
->
-> diff --git a/fs/nfsd/nfs4acl.c b/fs/nfsd/nfs4acl.c
-> index 64e45551d1b6..9ec61bd0e11b 100644
-> --- a/fs/nfsd/nfs4acl.c
-> +++ b/fs/nfsd/nfs4acl.c
-> @@ -742,14 +742,15 @@ static int nfs4_acl_nfsv4_to_posix(struct nfs4_acl =
-*acl,
->          *  no owner, owning group, or others entry,  a  copy of  the  AC=
-L
->          *  owner, owning group, or others entry is added to the Default =
-ACL."
->          *
-> -        * If none of the requisite ACEs were set, and some explicit user=
- or group
-> -        * ACEs were, copy the requisite entries from the effective set.
-> +        * Copy any missing ACEs from the effective set.
->          */
-> -       if (!default_acl_state.valid &&
-> -           (default_acl_state.users->n || default_acl_state.groups->n)) =
-{
-> -               default_acl_state.owner =3D effective_acl_state.owner;
-> -               default_acl_state.group =3D effective_acl_state.group;
-> -               default_acl_state.other =3D effective_acl_state.other;
-> +       if (default_acl_state.users->n || default_acl_state.groups->n) {
-> +               if (!(default_acl_state.valid & ACL_USER_OBJ))
-> +                       default_acl_state.owner =3D effective_acl_state.o=
-wner;
-> +               if (!(default_acl_state.valid & ACL_GROUP_OBJ))
-> +                       default_acl_state.group =3D effective_acl_state.g=
-roup;
-> +               if (!(default_acl_state.valid & ACL_OTHER))
-> +                       default_acl_state.other =3D effective_acl_state.o=
-ther;
->         }
->
->         *pacl =3D posix_state_to_acl(&effective_acl_state, flags);
-> --
-> 2.41.0
->
