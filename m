@@ -2,128 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9432375C945
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4E275CB5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbjGUOLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
+        id S231915AbjGUPS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjGUOLr (ORCPT
+        with ESMTP id S231712AbjGUPSR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:11:47 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B416ECE
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:11:45 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-569e7aec37bso20106077b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689948704; x=1690553504;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=T4SdCBonFvWuf+V0yEJ7nT449w336KZFoWRjXJb2o+8=;
-        b=n0oKwH0dgFAGMVF27nk3YDk+kFnnpdNBuswzKKsDjUoF2nttUcFPQAkqIQGcn0vrbH
-         T/IucMfN+WY88gtSSszC9sE2AOaEvI3LvZ/89ISKL1/4Eui6pr5dnCaRqpMbBbdVWsYv
-         NRptPq/VIq8QeXzcY4lctUyDp4uXHQnVipX3esx5J7htoMXXac4+aNvckJCuvtputXFM
-         Ey6stLIQHLTh6AWzRANZgxRvllCkH15KVd+nBxOMRRXGWHdlimZlTV+Wew5WEIFL+PBk
-         V1aphpXfO/KyTCCCKDLLkTbYJ6wkv8i3EyZqsT8phHQ8tdPzL6w1VMKzFt0jzzKo/WGf
-         WWVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689948704; x=1690553504;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T4SdCBonFvWuf+V0yEJ7nT449w336KZFoWRjXJb2o+8=;
-        b=jzI50ug8J8v1ukw3HknQImDtnBpDBWHxgsbzWnwJmr9QF6eHYgSvXppN1KAhK7YMZH
-         fpX1/thKJXDEAYCAT9SxPfmmB72HEYsFgfP21rBJcrMh5VyAspPcJzWDyC17jNslGr1I
-         FNnPgju5KaagWpU1FUmvCCF4/xnhW5GzPY2fQ3Tc70CMJ2Wh4PgtBPqLRHG9XZStMZ6j
-         gSDWlBYqGEIEpQJeh7SIeYj+208pKgGXbyv5jWlJrjthlS339ZuKf5t/noyS5sKGaCSJ
-         h5UeL399GFQNqFSeA1thIsUXTfedTiepFxel3yDnsIwwr9bV5+Q3lQIZWn9gkrM5f38X
-         8FgA==
-X-Gm-Message-State: ABy/qLYtwHg3Ck26CnSQnns2POCunKbW899Z/mgq6dW1goZRzYAiyA2g
-        +gx46G0C8L6nPW6OoahUdjkoS4CJqOw=
-X-Google-Smtp-Source: APBJJlGU/N1c7xh9FsCGTTqaD2PqcnAod11BMYxzm1muKo1ARK3G7tqDbEj8dtVJ1jfB1maibUqj4V2HcNs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:ba06:0:b0:c61:7151:6727 with SMTP id
- t6-20020a25ba06000000b00c6171516727mr13809ybg.10.1689948704796; Fri, 21 Jul
- 2023 07:11:44 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 07:11:43 -0700
-In-Reply-To: <f474282d701aca7af00e4f7171445abb5e734c6f.1689893403.git.isaku.yamahata@intel.com>
-Mime-Version: 1.0
-References: <cover.1689893403.git.isaku.yamahata@intel.com> <f474282d701aca7af00e4f7171445abb5e734c6f.1689893403.git.isaku.yamahata@intel.com>
-Message-ID: <ZLqSH/lEbHEnQ9i8@google.com>
-Subject: Re: [RFC PATCH v4 04/10] KVM: x86: Introduce PFERR_GUEST_ENC_MASK to
- indicate fault is private
-From:   Sean Christopherson <seanjc@google.com>
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Fri, 21 Jul 2023 11:18:17 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B26C30E2;
+        Fri, 21 Jul 2023 08:18:15 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 87413cbeceb04564; Fri, 21 Jul 2023 17:18:13 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 5061F661901;
+        Fri, 21 Jul 2023 17:18:13 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH v2 4/8] ACPI: thermal: Clean up acpi_thermal_register_thermal_zone()
+Date:   Fri, 21 Jul 2023 16:12:35 +0200
+Message-ID: <2908953.e9J7NaK4W3@kreacher>
+In-Reply-To: <5710197.DvuYhMxLoT@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <5710197.DvuYhMxLoT@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrhedvgdekvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgt
+ phhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/Introduce/Use
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-This doesn't "introduce" anything, in the sense that it's an AMD-defined error
-code flag.  That matters because KVM *did* introduce/define PFERR_IMPLICIT_ACCESS.
+Rename the trips variable in acpi_thermal_register_thermal_zone() to
+trip_count so its name better reflects the purpose, rearrange white
+space in the loop over active trips for clarity and reduce code
+duplication related to calling thermal_zone_device_register() by
+using an extra local variable to store the passive delay value.
 
-On Thu, Jul 20, 2023, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> Add two PFERR codes to designate that the page fault is private and that
-> it requires looking up memory attributes.  The vendor kvm page fault
-> handler should set PFERR_GUEST_ENC_MASK bit based on their fault
-> information.  It may or may not use the hardware value directly or
-> parse the hardware value to set the bit.
-> 
-> For KVM_X86_PROTECTED_VM, ask memory attributes for the fault privateness.
+No intentional functional impact.
 
-...
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-> +static inline bool kvm_is_fault_private(struct kvm *kvm, gpa_t gpa, u64 error_code)
-> +{
-> +	/*
-> +	 * This is racy with mmu_seq.  If we hit a race, it would result in a
-> +	 * spurious KVM_EXIT_MEMORY_FAULT.
-> +	 */
-> +	if (kvm->arch.vm_type == KVM_X86_SW_PROTECTED_VM)
-> +		return kvm_mem_is_private(kvm, gpa_to_gfn(gpa));
+v1 -> v2: No changes.
 
-Please synthesize the error code flag for SW-protected VMs, same as TDX, e.g.
+---
+ drivers/acpi/thermal.c |   36 ++++++++++++++++--------------------
+ 1 file changed, 16 insertions(+), 20 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 20e289e872eb..de9e0a9c41e6 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5751,6 +5751,10 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
-        if (WARN_ON(!VALID_PAGE(vcpu->arch.mmu->root.hpa)))
-                return RET_PF_RETRY;
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -745,34 +745,30 @@ static void acpi_thermal_zone_sysfs_remo
  
-+       if (vcpu->kvm->arch.vm_type == KVM_X86_SW_PROTECTED_VM &&
-+           kvm_mem_is_private(vcpu->kvm, gpa_to_gfn(cr2_or_gpa)))
-+               error_code |= PFERR_GUEST_ENC_MASK;
+ static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz)
+ {
+-	int trips = 0;
++	int passive_delay = 0;
++	int trip_count = 0;
+ 	int result;
+ 	acpi_status status;
+ 	int i;
+ 
+ 	if (tz->trips.critical.valid)
+-		trips++;
++		trip_count++;
+ 
+ 	if (tz->trips.hot.valid)
+-		trips++;
+-
+-	if (tz->trips.passive.valid)
+-		trips++;
+-
+-	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid;
+-	     i++, trips++);
+-
+-	if (tz->trips.passive.valid)
+-		tz->thermal_zone = thermal_zone_device_register("acpitz", trips, 0, tz,
+-								&acpi_thermal_zone_ops, NULL,
+-								tz->trips.passive.tsp * 100,
+-								tz->polling_frequency * 100);
+-	else
+-		tz->thermal_zone =
+-			thermal_zone_device_register("acpitz", trips, 0, tz,
+-						     &acpi_thermal_zone_ops, NULL,
+-						     0, tz->polling_frequency * 100);
++		trip_count++;
+ 
++	if (tz->trips.passive.valid) {
++		trip_count++;
++		passive_delay = tz->trips.passive.tsp * 100;
++	}
 +
-        r = RET_PF_INVALID;
-        if (unlikely(error_code & PFERR_RSVD_MASK)) {
-                r = handle_mmio_page_fault(vcpu, cr2_or_gpa, direct);
++	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid; i++)
++		trip_count++;
++
++	tz->thermal_zone = thermal_zone_device_register("acpitz", trip_count, 0,
++							tz, &acpi_thermal_zone_ops,
++							NULL, passive_delay,
++							tz->polling_frequency * 100);
+ 	if (IS_ERR(tz->thermal_zone))
+ 		return -ENODEV;
+ 
 
-Functionally it's the same, but I want all VM types to have the same source of
-truth for private versus shared, and I really don't want kvm_is_fault_private()
-to exist.
+
+
