@@ -2,466 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCED175C9CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5783D75C9D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 16:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbjGUOXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 10:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43492 "EHLO
+        id S229981AbjGUOXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 10:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231915AbjGUOWz (ORCPT
+        with ESMTP id S230321AbjGUOXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 10:22:55 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002AE2D71
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:22:45 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbc59de009so16927335e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 07:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689949364; x=1690554164;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VDX19vDEIXyu3IFb94kHKgIM7QuqKWcHAhwogKCp3HA=;
-        b=xRkeCtCOHRy6PlqUYvtoT21Emi/YIis3tpnx2n/9B8tsJb7DUOmRf+4YdlSTo4YmHL
-         8Be2Yd9uvZL+FsIPLjGTeuz1LhYRJ2LmTUYtGe1cPUj/+2l+fFrp6z94IMje8ZH5nnKJ
-         0oR4ie8KwSA7ItvHO8Q8isNQlqBFXRaMHxzhwAa7BEUztIHMjsgDc/GkSGYloFdAfdR/
-         aE4EIESoy8zMrcnZaGGmbCkfr64ffZcxJkLS+JeepwSHs5PdC0zcrspU6EkyteqYzBFY
-         HhzUHmfO4DNRF8jlHt3i1k0Rg153t74cc1c1qw/SwbmX+VvSe8s6GAYTD/gyaO2i1BJv
-         QH/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689949364; x=1690554164;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VDX19vDEIXyu3IFb94kHKgIM7QuqKWcHAhwogKCp3HA=;
-        b=bvmBd3GWv9dQROQaiaBzHOdd0MO1m/UmZIVvKjtLrR32JTHl4KSPn9I5dWzP0GgLh1
-         rQD0v1Wj116V4lJO4ty0oRLPD7typr3OYRZWyS3GWTSnmPX4JBL6JCAi4g9g1bulzrEX
-         x5pd3IdlVMJGduqIXJwMOEH1h5JeII3zdby0RPRj60hhWPQZi/D9nDR33WrrL1lbdJ3n
-         CsflCxEDBYjz3utnqutIBxGd2/NPX3a2MhMyluJzbMMbwbdQByn3mihn1MKkv8KKQ3rk
-         rIJK75XvSfa56VUn/PoV0rZjP8yXnTiVJlqdKfkOhcL/jKDL9fjfQQ+u2mrtAjlfjIcG
-         XPSw==
-X-Gm-Message-State: ABy/qLb9mYZabABGEK9zVpXJfUCpbuP4NQHoavKx3DsPDDi41SAdYiRt
-        jCz+g4zAFTidlE5tfPnP7wBSdA==
-X-Google-Smtp-Source: APBJJlH7uQOeBsgKWGvO5Rmly7OItltRcCFNbXEVqWnWKB44qAlI8c74MMOCZZ4OQhY6Wj7y/LID/Q==
-X-Received: by 2002:a1c:7518:0:b0:3fc:85c:5ef7 with SMTP id o24-20020a1c7518000000b003fc085c5ef7mr1575647wmc.22.1689949363637;
-        Fri, 21 Jul 2023 07:22:43 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id f12-20020a7bcc0c000000b003fc0062f0f8sm3513929wmh.9.2023.07.21.07.22.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 07:22:42 -0700 (PDT)
-Message-ID: <0ec81b89-4d4c-4e13-5ea0-697f5c0af835@linaro.org>
-Date:   Fri, 21 Jul 2023 16:22:35 +0200
+        Fri, 21 Jul 2023 10:23:22 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255CF1BD;
+        Fri, 21 Jul 2023 07:23:22 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LE6VuN001098;
+        Fri, 21 Jul 2023 14:23:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=LHzbAf4p3hknDSQFHMo0HLS4YDqB1wYdsh71y9Uf2x8=;
+ b=EFBEIMdi4jLgY0lExoehWOhmEq7k2WeXXsZHPEH4YveOMdo6MzWBJ3BdprXKYNOJmOce
+ vylwYypHP6qdhVUa41Xp9ki5VtNBX/OjmGReRlPSni65mCrMnRYjwfzLdkQyjBOw+C/O
+ mYE93+bseWQcEEUannxldTRZn01MSeOr2p4+ZMcxzr6nv5T/ZU2M0JfAMRvJ+8aHW7vu
+ xhPU9oET9ZKwHuJIY5HcpTUiT2FAUJzBRaLR+oEM0j2hFbI7xE0JyzRbh1MGQuSYtEas
+ meSAgryILFbnAcKLJxN9Uldv8/zeFHkIdL3ChVCjfzvVtt0gAssMrQdPMJY+4Whp0W1X iQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ryc7gdd7h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jul 2023 14:23:21 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36LE824c010329;
+        Fri, 21 Jul 2023 14:23:21 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ryc7gdd76-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jul 2023 14:23:21 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36LCg61i008046;
+        Fri, 21 Jul 2023 14:23:20 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rv80jmt5u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jul 2023 14:23:20 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36LENHiF44302868
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Jul 2023 14:23:17 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 42DB220040;
+        Fri, 21 Jul 2023 14:23:17 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8751120043;
+        Fri, 21 Jul 2023 14:23:16 +0000 (GMT)
+Received: from [9.171.55.243] (unknown [9.171.55.243])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 21 Jul 2023 14:23:16 +0000 (GMT)
+Message-ID: <6dc411a6-95fc-0eb2-e8de-5c141292ea62@linux.ibm.com>
+Date:   Fri, 21 Jul 2023 16:23:16 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 07/42] soc: Add SoC driver for Cirrus ep93xx
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2 5/6] KVM: s390: interrupt: Fix single-stepping ISKE
+To:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Sven Schnelle <svens@linux.ibm.com>, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Freimann <jfreimann@redhat.com>
+References: <20230721120046.2262291-1-iii@linux.ibm.com>
+ <20230721120046.2262291-6-iii@linux.ibm.com>
 Content-Language: en-US
-To:     nikita.shubin@maquefel.me,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Lukasz Majewski <lukma@denx.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Peters <mpeters@embeddedTS.com>,
-        Kris Bahnsen <kris@embeddedTS.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-7-3d63a5f1103e@maquefel.me>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230605-ep93xx-v3-7-3d63a5f1103e@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
+From:   Christian Borntraeger <borntraeger@linux.ibm.com>
+In-Reply-To: <20230721120046.2262291-6-iii@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: _TmKtxLSgvwOrUNQcX9My4iKmrl4PVxn
+X-Proofpoint-ORIG-GUID: 860VH0J45EDEm7hypxFlcxaKa5MzhO6e
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-21_08,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 mlxlogscore=782 malwarescore=0 priorityscore=1501
+ suspectscore=0 adultscore=0 mlxscore=0 spamscore=0 clxscore=1015
+ impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2307210127
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/07/2023 13:29, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
+
+
+Am 21.07.23 um 13:57 schrieb Ilya Leoshkevich:
+> kvm_s390_skey_check_enable() does not emulate any instructions, rather,
+> it clears CPUSTAT_KSS and arranges for ISKE to run again. Therefore,
+> skip the PER check and let ISKE run happen. Otherwise a debugger will
+> see two single-step events on the same ISKE.
+
+The same would be true for all instruction triggering a keyless mode exit,
+like SSKE, RRBE but also LPSWE with a keyed PSW, no?
 > 
-> This adds an SoC driver for the ep93xx. Currently there
-> is only one thing not fitting into any other framework,
-> and that is the swlock setting.
-> 
-> It's used for clock settings and restart.
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+
+Reviewed-by: Christian Borntraeger <borntraeger@linux.ibm.com>
 > ---
->  drivers/soc/Kconfig               |   1 +
->  drivers/soc/Makefile              |   1 +
->  drivers/soc/cirrus/Kconfig        |  12 ++
->  drivers/soc/cirrus/Makefile       |   2 +
->  drivers/soc/cirrus/soc-ep93xx.c   | 231 ++++++++++++++++++++++++++++++++++++++
->  include/linux/soc/cirrus/ep93xx.h |  18 ++-
->  6 files changed, 264 insertions(+), 1 deletion(-)
+>   arch/s390/kvm/intercept.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-> index 4e176280113a..16327b63b773 100644
-> --- a/drivers/soc/Kconfig
-> +++ b/drivers/soc/Kconfig
-> @@ -8,6 +8,7 @@ source "drivers/soc/aspeed/Kconfig"
->  source "drivers/soc/atmel/Kconfig"
->  source "drivers/soc/bcm/Kconfig"
->  source "drivers/soc/canaan/Kconfig"
-> +source "drivers/soc/cirrus/Kconfig"
->  source "drivers/soc/fsl/Kconfig"
->  source "drivers/soc/fujitsu/Kconfig"
->  source "drivers/soc/imx/Kconfig"
-> diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-> index 3b0f9fb3b5c8..b76a03fe808e 100644
-> --- a/drivers/soc/Makefile
-> +++ b/drivers/soc/Makefile
-> @@ -9,6 +9,7 @@ obj-y				+= aspeed/
->  obj-$(CONFIG_ARCH_AT91)		+= atmel/
->  obj-y				+= bcm/
->  obj-$(CONFIG_SOC_CANAAN)	+= canaan/
-> +obj-$(CONFIG_EP93XX_SOC)        += cirrus/
->  obj-$(CONFIG_ARCH_DOVE)		+= dove/
->  obj-$(CONFIG_MACH_DOVE)		+= dove/
->  obj-y				+= fsl/
-> diff --git a/drivers/soc/cirrus/Kconfig b/drivers/soc/cirrus/Kconfig
-> new file mode 100644
-> index 000000000000..408f3343a265
-> --- /dev/null
-> +++ b/drivers/soc/cirrus/Kconfig
-> @@ -0,0 +1,12 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +if ARCH_EP93XX
-> +
-> +config EP93XX_SOC
-> +	bool "Cirrus EP93xx chips SoC"
-> +	select SOC_BUS
-> +	default y if !EP93XX_SOC_COMMON
-> +	help
-> +	  Support SoC for Cirrus EP93xx chips.
-> +
-> +endif
-> diff --git a/drivers/soc/cirrus/Makefile b/drivers/soc/cirrus/Makefile
-> new file mode 100644
-> index 000000000000..ed6752844c6f
-> --- /dev/null
-> +++ b/drivers/soc/cirrus/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +obj-y	+= soc-ep93xx.o
-> diff --git a/drivers/soc/cirrus/soc-ep93xx.c b/drivers/soc/cirrus/soc-ep93xx.c
-> new file mode 100644
-> index 000000000000..2fd48d900f24
-> --- /dev/null
-> +++ b/drivers/soc/cirrus/soc-ep93xx.c
-> @@ -0,0 +1,231 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * SoC driver for Cirrus EP93xx chips.
-> + * Copyright (C) 2022 Nikita Shubin <nikita.shubin@maquefel.me>
-> + *
-> + * Based on a rewrite of arch/arm/mach-ep93xx/core.c
-> + * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
-> + * Copyright (C) 2007 Herbert Valerio Riedel <hvr@gnu.org>
-> + *
-> + * Thanks go to Michael Burian and Ray Lehtiniemi for their key
-> + * role in the ep93xx Linux community
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/of.h>
-> +#include <linux/regmap.h>
-> +#include <linux/slab.h>
-> +#include <linux/sys_soc.h>
-> +#include <linux/soc/cirrus/ep93xx.h>
-> +
-> +#define EP93XX_EXT_CLK_RATE		14745600
-> +
-> +#define EP93XX_SYSCON_DEVCFG		0x80
-> +
-> +#define EP93XX_SWLOCK_MAGICK		0xaa
-> +#define EP93XX_SYSCON_SWLOCK		0xc0
-> +#define EP93XX_SYSCON_SYSCFG		0x9c
-> +#define EP93XX_SYSCON_SYSCFG_REV_MASK	0xf0000000
-> +#define EP93XX_SYSCON_SYSCFG_REV_SHIFT	28
-> +
-> +#define EP93XX_SYSCON_CLKSET1		0x20
-> +#define EP93XX_SYSCON_CLKSET1_NBYP1	BIT(23)
-> +#define EP93XX_SYSCON_CLKSET2		0x24
-> +#define EP93XX_SYSCON_CLKSET2_NBYP2	BIT(19)
-> +#define EP93XX_SYSCON_CLKSET2_PLL2_EN	BIT(18)
-> +
-> +static DEFINE_SPINLOCK(ep93xx_swlock);
-> +
-> +/* EP93xx System Controller software locked register write */
-> +void ep93xx_syscon_swlocked_write(struct regmap *map, unsigned int reg, unsigned int val)
-> +{
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&ep93xx_swlock, flags);
-> +
-> +	regmap_write(map, EP93XX_SYSCON_SWLOCK, EP93XX_SWLOCK_MAGICK);
-> +	regmap_write(map, reg, val);
-> +
-> +	spin_unlock_irqrestore(&ep93xx_swlock, flags);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(ep93xx_syscon_swlocked_write, EP93XX_SOC);
+> diff --git a/arch/s390/kvm/intercept.c b/arch/s390/kvm/intercept.c
+> index d2f7940c5d03..8793cec066a6 100644
+> --- a/arch/s390/kvm/intercept.c
+> +++ b/arch/s390/kvm/intercept.c
+> @@ -630,8 +630,7 @@ int kvm_handle_sie_intercept(struct kvm_vcpu *vcpu)
+>   		rc = handle_partial_execution(vcpu);
+>   		break;
+>   	case ICPT_KSS:
+> -		rc = kvm_s390_skey_check_enable(vcpu);
+> -		break;
 
-I doubt that your code compiles. Didn't you add a user of this in some
-earlier patch?
+maybe add a comment here: /* Instruction will be redriven, skip the PER check */
+> +		return kvm_s390_skey_check_enable(vcpu);
 
-Anyway, no, drop it, don't export some weird calls from core initcall to
-drivers. You violate layering and driver encapsulation. There is no
-dependency/probe ordering.
-
-There is no even need for this, because this code does not use it!
-
-> +
-> +void ep93xx_devcfg_set_clear(struct regmap *map, unsigned int set_bits, unsigned int clear_bits)
-> +{
-> +	unsigned long flags;
-> +	unsigned int val;
-> +
-> +	spin_lock_irqsave(&ep93xx_swlock, flags);
-> +
-> +	regmap_read(map, EP93XX_SYSCON_DEVCFG, &val);
-> +	val &= ~clear_bits;
-> +	val |= set_bits;
-> +	regmap_write(map, EP93XX_SYSCON_SWLOCK, EP93XX_SWLOCK_MAGICK);
-> +	regmap_write(map, EP93XX_SYSCON_DEVCFG, val);
-> +
-> +	spin_unlock_irqrestore(&ep93xx_swlock, flags);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(ep93xx_devcfg_set_clear, EP93XX_SOC);
-
-No.
-
-> +
-> +void ep93xx_swlocked_update_bits(struct regmap *map, unsigned int reg,
-> +				 unsigned int mask, unsigned int val)
-> +{
-> +	unsigned long flags;
-> +	unsigned int tmp, orig;
-> +
-> +	spin_lock_irqsave(&ep93xx_swlock, flags);
-> +
-> +	regmap_read(map, EP93XX_SYSCON_DEVCFG, &orig);
-> +	tmp = orig & ~mask;
-> +	tmp |= val & mask;
-> +	if (tmp != orig) {
-> +		regmap_write(map, EP93XX_SYSCON_SWLOCK, EP93XX_SWLOCK_MAGICK);
-> +		regmap_write(map, reg, tmp);
-> +	}
-> +
-> +	spin_unlock_irqrestore(&ep93xx_swlock, flags);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(ep93xx_swlocked_update_bits, EP93XX_SOC);
-
-No.
-
-
-> +
-> +unsigned int __init ep93xx_chip_revision(struct regmap *map)
-
-Why this is visible outside? This should be static.
-
-
-> +{
-> +	unsigned int val;
-> +
-> +	regmap_read(map, EP93XX_SYSCON_SYSCFG, &val);
-> +	val &= EP93XX_SYSCON_SYSCFG_REV_MASK;
-> +	val >>= EP93XX_SYSCON_SYSCFG_REV_SHIFT;
-> +	return val;
-> +}
-
-
-> +
-> +static const char __init *ep93xx_get_soc_rev(struct regmap *map)
-> +{
-> +	int rev = ep93xx_chip_revision(map);
-> +
-> +	switch (rev) {
-> +	case EP93XX_CHIP_REV_D0:
-> +		return "D0";
-> +	case EP93XX_CHIP_REV_D1:
-> +		return "D1";
-> +	case EP93XX_CHIP_REV_E0:
-> +		return "E0";
-> +	case EP93XX_CHIP_REV_E1:
-> +		return "E1";
-> +	case EP93XX_CHIP_REV_E2:
-> +		return "E2";
-> +	default:
-> +		return "unknown";
-> +	}
-> +}
-> +
-> +/*
-> + * PLL rate = 14.7456 MHz * (X1FBD + 1) * (X2FBD + 1) / (X2IPD + 1) / 2^PS
-> + */
-> +static unsigned long __init calc_pll_rate(u64 rate, u32 config_word)
-> +{
-> +	rate *= ((config_word >> 11) & GENMASK(4, 0)) + 1;	/* X1FBD */
-> +	rate *= ((config_word >> 5) & GENMASK(5, 0)) + 1;	/* X2FBD */
-> +	do_div(rate, (config_word & GENMASK(4, 0)) + 1);	/* X2IPD */
-> +	rate >>= ((config_word >> 16) & 3);			/* PS */
-> +
-> +	return rate;
-> +}
-> +
-> +static int __init ep93xx_soc_init(void)
-> +{
-> +	struct soc_device_attribute *attrs;
-> +	struct soc_device *soc_dev;
-> +	struct device_node *np;
-> +	struct regmap *map;
-> +	struct clk_hw *hw;
-> +	unsigned long clk_pll1_rate, clk_pll2_rate;
-> +	unsigned int clk_f_div, clk_h_div, clk_p_div, clk_usb_div;
-> +	const char fclk_divisors[] = { 1, 2, 4, 8, 16, 1, 1, 1 };
-> +	const char hclk_divisors[] = { 1, 2, 4, 5, 6, 8, 16, 32 };
-> +	const char pclk_divisors[] = { 1, 2, 4, 8 };
-> +	const char *machine = NULL;
-> +	u32 value;
-> +
-> +	/* Multiplatform guard, only proceed on ep93xx */
-> +	if (!of_machine_is_compatible("cirrus,ep9301"))
-> +		return 0;
-
-This should already be a warning sign for you...
-
-> +
-> +	map = syscon_regmap_lookup_by_compatible("cirrus,ep9301-syscon");
-> +	if (IS_ERR(map))
-> +		return PTR_ERR(map);
-
-No, not-reusable. Use devices and device nodes.
-
-> +
-> +	/* Determine the bootloader configured pll1 rate */
-> +	regmap_read(map, EP93XX_SYSCON_CLKSET1, &value);
-> +	if (!(value & EP93XX_SYSCON_CLKSET1_NBYP1))
-> +		clk_pll1_rate = EP93XX_EXT_CLK_RATE;
-> +	else
-> +		clk_pll1_rate = calc_pll_rate(EP93XX_EXT_CLK_RATE, value);
-> +
-> +	hw = clk_hw_register_fixed_rate(NULL, "pll1", "xtali", 0, clk_pll1_rate);
-> +	if (IS_ERR(hw))
-> +		return PTR_ERR(hw);
-> +
-> +	/* Initialize the pll1 derived clocks */
-> +	clk_f_div = fclk_divisors[(value >> 25) & 0x7];
-> +	clk_h_div = hclk_divisors[(value >> 20) & 0x7];
-> +	clk_p_div = pclk_divisors[(value >> 18) & 0x3];
-> +
-> +	hw = clk_hw_register_fixed_factor(NULL, "fclk", "pll1", 0, 1, clk_f_div);
-> +	if (IS_ERR(hw))
-> +		return PTR_ERR(hw);
-> +
-> +	hw = clk_hw_register_fixed_factor(NULL, "hclk", "pll1", 0, 1, clk_h_div);
-> +	if (IS_ERR(hw))
-> +		return PTR_ERR(hw);
-> +
-> +	hw = clk_hw_register_fixed_factor(NULL, "pclk", "hclk", 0, 1, clk_p_div);
-> +	if (IS_ERR(hw))
-> +		return PTR_ERR(hw);
-> +
-> +	/* Determine the bootloader configured pll2 rate */
-> +	regmap_read(map, EP93XX_SYSCON_CLKSET2, &value);
-> +	if (!(value & EP93XX_SYSCON_CLKSET2_NBYP2))
-> +		clk_pll2_rate = EP93XX_EXT_CLK_RATE;
-> +	else if (value & EP93XX_SYSCON_CLKSET2_PLL2_EN)
-> +		clk_pll2_rate = calc_pll_rate(EP93XX_EXT_CLK_RATE, value);
-> +	else
-> +		clk_pll2_rate = 0;
-> +
-> +	hw = clk_hw_register_fixed_rate(NULL, "pll2", "xtali", 0, clk_pll2_rate);
-> +	if (IS_ERR(hw))
-> +		return PTR_ERR(hw);
-> +
-> +	regmap_read(map, EP93XX_SYSCON_CLKSET2, &value);
-> +	clk_usb_div = (((value >> 28) & GENMASK(3, 0)) + 1);
-> +	hw = clk_hw_register_fixed_factor(NULL, "usb_clk", "pll2", 0, 1, clk_usb_div);
-> +	if (IS_ERR(hw))
-> +		return PTR_ERR(hw);
-> +
-> +	attrs = kzalloc(sizeof(*attrs), GFP_KERNEL);
-> +	if (!attrs)
-> +		return -ENOMEM;
-> +
-> +	np = of_find_node_by_path("/");
-> +	of_property_read_string(np, "model", &machine);
-> +	if (machine)
-> +		attrs->machine = kstrdup(machine, GFP_KERNEL);
-> +	of_node_put(np);
-> +
-> +	attrs->family = "Cirrus Logic EP93xx";
-> +	attrs->revision = ep93xx_get_soc_rev(map);
-> +
-> +	soc_dev = soc_device_register(attrs);
-> +	if (IS_ERR(soc_dev)) {
-> +		kfree(attrs->soc_id);
-> +		kfree(attrs->serial_number);
-> +		kfree(attrs);
-> +		return PTR_ERR(soc_dev);
-> +	}
-> +
-> +	pr_info("EP93xx SoC revision %s\n", attrs->revision);
-> +
-> +	return 0;
-> +}
-> +core_initcall(ep93xx_soc_init);
-
-That's not the way to add soc driver. You need a proper driver for it
-
-Best regards,
-Krzysztof
-
+>   	case ICPT_MCHKREQ:
+>   	case ICPT_INT_ENABLE:
+>   		/*
