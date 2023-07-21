@@ -2,189 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA04175C10C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F34375C113
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbjGUIO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
+        id S231454AbjGUIPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbjGUIOy (ORCPT
+        with ESMTP id S231444AbjGUIPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:14:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFFA2727;
-        Fri, 21 Jul 2023 01:14:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AB71261705;
-        Fri, 21 Jul 2023 08:14:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3075C433C8;
-        Fri, 21 Jul 2023 08:14:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689927284;
-        bh=sFlXHCb5ZvFuWm824StAJi7e5LrCinNBnp51yxoySZ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kGu8eB//nerrPvPDj1hCcc/PlC1GnAMZ+XCd5Pt9DcL5FtLuhrKtJSAxpqJKlapFL
-         XlmzIX/SPU7ndFE1/f2YLm3lC9WhO+BXfUej+oQEo8h9s5IIMJ4DUNSCjdiQhos59Y
-         SkOUNHcsP2HLqangqDzBuUgSvZQbMA3Vql8hRWo6wkZjGraxbkvcyA9AYZu+anE9+p
-         qltWp6GBEWZF3wXVJQf5bPWM3OZ471Js05ABe4vKTiqXPqJkR6yfexQrsOQi/lNUDC
-         zLervuL4tXGVwCd6MNDJYB8Vriyg8wS3dfaUAb0g6Yi0GniYPjUIFoJGN5v1WKh3iV
-         0EOqvnwbKwIuw==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qMlHp-0003Ms-1Q;
-        Fri, 21 Jul 2023 10:14:53 +0200
-Date:   Fri, 21 Jul 2023 10:14:53 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, quic_harshq@quicinc.com,
-        ahalaney@redhat.com, quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v9 06/10] usb: dwc3: qcom: Add support to read IRQ's
- related to multiport
-Message-ID: <ZLo-feuIr2FzCoxa@hovoldconsulting.com>
-References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
- <20230621043628.21485-7-quic_kriskura@quicinc.com>
- <ZJryrhuUrL5APh4o@hovoldconsulting.com>
- <7e32cf95-1565-5736-cc3e-c70e8d8f3ca7@quicinc.com>
+        Fri, 21 Jul 2023 04:15:33 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DE4270A
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:15:31 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-263121cd04eso894248a91.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689927331; x=1690532131;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pd2HhKZxSyoZydvli66d5N9UqG8GWNvUPymvOuFu+BY=;
+        b=WrqNWxA6ozYcj57TebNYbv3CyPO4HiaeGg8dhFmCNz2fu3TAP3T7amvGX2pGp3cOZk
+         0mv7FhbktJWEcOEpBX8bx85ELIypT5ZslXmYriWWqWV/DK3thkXFHcupNZL7CCnEtGh2
+         0b5BrMeVMnT8MhHGYtLLTW2LyuvDpptlTQ6hOCRJYaiH7MbaOt0wu3Ty8M5gT+4BxJ15
+         OmysFFZhihSq/aQQVdCiBHAa0gWsvdQetNvzA+1eekZ8tJsU7kKoj6Fu2OJXFnTtY6s+
+         E8pkbfOrvGplHvCVGaQe4RVURpfq9qeyCDvpQgQIMtAFE2vIDspDQ3j2B8ydhek++41s
+         3/Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689927331; x=1690532131;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pd2HhKZxSyoZydvli66d5N9UqG8GWNvUPymvOuFu+BY=;
+        b=bqe/RWNu71v3o/pVwkdv8HWx0seCPLp/MxKH6foUDsIWesO/Mdkc7flkZ1aFa/vQ/Z
+         SbNu0Bb/rAwMBQ1V+Gv2B1TPWPWRXbe+aFT+OXQyb8Q6wHtluW3HEDuuj0ujAo1eKSZy
+         s+tOgLhC2w7J2j6L5MUhj/Y20l7LOtP6pusd2LtciPq88SAHQ32JeODuJPMhz6qXNi69
+         xsSYs24HDIW3YdAlqtt6XLWF+zMSkcSUxrypoD5uooQx3hATeiAnPjVuM5LBr2oldSLI
+         9KH63zJcpdR6AVtqJGLhlU0z1ASiqElptB9BZPiPp0oe1h8Np/Z9WdzZgt7b5FK+drTA
+         w2Eg==
+X-Gm-Message-State: ABy/qLbtcmWwzF8BMtghecZzdLp+BdditvIhQY+FGFcvzBZEd80UJnPh
+        mb4Sanjr59nYGp2IPl/Kq8LB2sRnyE2hnFCza+Q=
+X-Google-Smtp-Source: APBJJlG1rDRObtkpxXKFgC+LcsERPI9sM+v6zog7x9RE1PuPwGG6oQ1tTBurwjrnhgRoza+RywP8Zc9+I4RW4uZoTb8=
+X-Received: by 2002:a17:90a:d711:b0:263:5c78:4b63 with SMTP id
+ y17-20020a17090ad71100b002635c784b63mr779192pju.45.1689927330568; Fri, 21 Jul
+ 2023 01:15:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e32cf95-1565-5736-cc3e-c70e8d8f3ca7@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230515095956.17898-1-zyytlz.wz@163.com> <kyzmstq5dodvgpmd7rge3gtdikbbpauw6fide7vccgii4xtb6n@bwrwjsx4ylmx>
+In-Reply-To: <kyzmstq5dodvgpmd7rge3gtdikbbpauw6fide7vccgii4xtb6n@bwrwjsx4ylmx>
+From:   Zheng Hacker <hackerzheng666@gmail.com>
+Date:   Fri, 21 Jul 2023 16:15:19 +0800
+Message-ID: <CAJedcCzmx02bfa22QezE8mu-iDsSdSy_oApT2ozCWO8O-8MJEQ@mail.gmail.com>
+Subject: Re: [PATCH] fs/jfs: Add a mutex named txEnd_lmLogClose_mutex to
+ prevent a race condition between txEnd and lmLogClose functions
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Zheng Wang <zyytlz.wz@163.com>, shaggy@kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        1395428693sheep@gmail.com, alex000young@gmail.com,
+        security@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 03, 2023 at 12:29:41AM +0530, Krishna Kurapati PSSNV wrote:
-> On 6/27/2023 8:01 PM, Johan Hovold wrote:
-> > On Wed, Jun 21, 2023 at 10:06:24AM +0530, Krishna Kurapati wrote:
-  
-> >> +static int dwc3_qcom_setup_mp_irq(struct platform_device *pdev)
-> >> +{
-> >> +	struct dwc3_qcom *qcom = platform_get_drvdata(pdev);
-> >> +	char irq_name[15];
-> >> +	int irq;
-> >> +	int ret;
-> >> +	int i;
-> >> +
-> >> +	for (i = 0; i < 4; i++) {
-> > 
-> > DWC3_MAX_PORTS here too and similar below.
-> > 
-> >> +		if (qcom->dp_hs_phy_irq[i])
-> >> +			continue;
-> > 
-> > This is not very nice. You should try to integrate the current lookup
-> > code as I told you to do with the PHY lookups. That is, use a single
-> > loop for all HS/SS IRQs, and pick the legacy name if the number of ports
-> > is 1.
-> > 
-> > Of course, you added the xhci capability parsing to the core driver so
-> > that information is not yet available, but you need it in the glue
-> > driver also...
-> > 
-> > As I mentioned earlier, you can infer the number of ports from the
-> > interrupt names. Alternatively, you can infer it from the compatible
-> > string. In any case, you should not need to ways to determine the same
-> > information in the glue driver, then in the core part, and then yet
-> > again in the xhci driver...
+Hello Michal,
 
->   The reason why I didn't integrate this with the original function was 
-> the ACPI stuff. The MP devices have no ACPI variant. And I think for 
-> clarity sake its best to keep these two functions separated.
 
-No. The ACPI stuff may make this a little harder to implement, but
-that's not a sufficient reason to not try to refactor things properly.
+Michal Koutn=C3=BD <mkoutny@suse.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=8820=E6=
+=97=A5=E5=91=A8=E5=9B=9B 17:56=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Hello Zheng.
+>
+> On Mon, May 15, 2023 at 05:59:56PM +0800, Zheng Wang <zyytlz.wz@163.com> =
+wrote:
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > BUG: KASAN: slab-use-after-free in instrument_atomic_write include/linu=
+x/instrumented.h:87 [inline]
+> > BUG: KASAN: slab-use-after-free in clear_bit include/asm-generic/bitops=
+/instrumented-atomic.h:41 [inline]
+> > BUG: KASAN: slab-use-after-free in txEnd+0x2a3/0x5a0 fs/jfs/jfs_txnmgr.=
+c:535
+> > Write of size 8 at addr ffff888021bee840 by task jfsCommit/130
+> >
+> > CPU: 3 PID: 130 Comm: jfsCommit Not tainted 6.3.0-rc7-pasta #1
+>
+> Is this still pertinent with the current mainline? (There were some
+> changes to jfs.)
 
-> >> +
-> >> +		sprintf(irq_name, "dp%d_hs_phy_irq", i+1);
-> > 
-> > Spaces around binary operators. Does not checkpatch warn about that?
-> > 
-> >> +		irq = dwc3_qcom_get_irq(pdev, irq_name, -1);
-> >> +		if (irq > 0) {
-> >> +			irq_set_status_flags(irq, IRQ_NOAUTOEN);
-> >> +			ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
-> >> +					qcom_dwc3_resume_irq,
-> >> +					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-> >> +					irq_name, qcom);
-> >> +			if (ret) {
-> >> +				dev_err(qcom->dev, "%s failed: %d\n", irq_name, ret);
-> >> +				return ret;
-> >> +			}
-> >> +		}
-> >> +
-> >> +		qcom->dp_hs_phy_irq[i] = irq;
-> >> +	}
-> >> +
-> >> +	for (i = 0; i < 4; i++) {
-> >> +		if (qcom->dm_hs_phy_irq[i])
-> >> +			continue;
-> >> +
-> >> +		sprintf(irq_name, "dm%d_hs_phy_irq", i+1);
-> >> +		irq = dwc3_qcom_get_irq(pdev, irq_name, -1);
-> >> +		if (irq > 0) {
-> >> +			irq_set_status_flags(irq, IRQ_NOAUTOEN);
-> >> +			ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
-> >> +					qcom_dwc3_resume_irq,
-> >> +					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-> >> +					irq_name, qcom);
-> >> +			if (ret) {
-> >> +				dev_err(qcom->dev, "%s failed: %d\n", irq_name, ret);
-> >> +				return ret;
-> >> +			}
-> >> +		}
-> >> +
-> >> +		qcom->dm_hs_phy_irq[i] = irq;
-> >> +	}
-> >> +
-> >> +	for (i = 0; i < 2; i++) {
-> >> +		if (qcom->ss_phy_irq[i])
-> >> +			continue;
-> >> +
-> >> +		sprintf(irq_name, "ss%d_phy_irq", i+1);
-> >> +		irq = dwc3_qcom_get_irq(pdev, irq_name, -1);
-> >> +		if (irq > 0) {
-> >> +			irq_set_status_flags(irq, IRQ_NOAUTOEN);
-> >> +			ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
-> >> +					qcom_dwc3_resume_irq,
-> >> +					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-> >> +					irq_name, qcom);
-> >> +			if (ret) {
-> >> +				dev_err(qcom->dev, "%s failed: %d\n", irq_name, ret);
-> >> +				return ret;
-> >> +			}
-> >> +		}
-> >> +
-> >> +		qcom->ss_phy_irq[i] = irq;
-> >> +	}
-> > 
-> > So the above should all be merged in either a single helper looking up
-> > all the interrupts for a port and resused for the non-MP case.
-> > 
-> I agree, Will merge all under some common helper function.
+Thank you very much for your reply and suggestion. I thought that this
+BUG still exists in the current mainline kernel version. Since I am
+not very familiar with this part of the code, I am not sure if the
+proposed fix is correct.
 
-Good.
+>
+> > Through analysis, it was found that a race condition occurred between t=
+wo
+> > functions lmLogClose and txEnd, which were executed in different thread=
+s.
+> > The possible sequence is as follows:
+> >
+> > -----------------------------------------------------------------------=
+--
+> > cpu1(free thread)        |        cpu2(use thread)
+> > -----------------------------------------------------------------------=
+--
+> > lmLogClose               |        txEnd
+> >                          |        log =3D JFS_SBI(tblk->sb)->log;
+> > sbi->log =3D NULL;         |
+> > kfree(log); [1] free log |
+> >                          |        clear_bit(log_FLUSH, &log->flag); [2]=
+ UAF
+>
+> That looks sane to a by-passer.
+>
+> > Fix it by add a mutex lock between lmLogClose and txEnd:
+>
+> It doesn't feel right wrt "lock data, not code" heuristics.
+> And when I apply that, it turns out there's already jfs_log_mutex.
+> I'd suggest you explain more why a new lock is needed (if that's the
+> preferred solutino).
 
-Johan
+You're right, I think my fix method is not a good solution. Hoping you
+and other developers can help fix it.
+
+>
+> Thanks,
+> Michal
+
+Once again, I appreciate your help and will take your feedback into
+consideration when working on a solution.
+
+Best regards,
+Zheng
