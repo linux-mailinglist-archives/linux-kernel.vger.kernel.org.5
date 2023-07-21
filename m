@@ -2,296 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 732ED75BBD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 03:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE2175BBE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 03:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229737AbjGUBgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 Jul 2023 21:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48510 "EHLO
+        id S229819AbjGUBkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 Jul 2023 21:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbjGUBgG (ORCPT
+        with ESMTP id S229560AbjGUBkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 Jul 2023 21:36:06 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A5BE52
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 18:36:04 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51e57874bfdso1916753a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 Jul 2023 18:36:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689903363; x=1690508163;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1zjFZ/qnuXqgX+NxqTX6RRxqDuu0OSPoHgtNn8vtHKE=;
-        b=jnYca5looDuo3Nm6RcWUhPaj+R9TggHL7fOZieLVdrVXpzw60cxqXyqGhSjEXkssG/
-         AoZ5ZV9QVzgOMUXDvCYRqyXAIkINjdkWroPeM+6ArYNjpLirqXkGYeOi4bpR6I5sHgYu
-         mED3xmcqJ4I2uRkIi4AH5h3OiwgAj/i2ca/uOeXiC7Ktm36fM4XDTuq3/JwnrQxSscsW
-         HnYnnArXgOhzzCf9w+m6IEkXt46FN1y4hpQr5tlOroIhBaamzz7QirzRzAC0MZOjECLP
-         b3w5m/K/DsuriX9b2ZtAOIG5u5Fdy/naG0ZJeaKhu1AQRvwboQmAi11L2Y+euK/OQDCx
-         HRaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689903363; x=1690508163;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1zjFZ/qnuXqgX+NxqTX6RRxqDuu0OSPoHgtNn8vtHKE=;
-        b=KeF05Mj1vRFZMX/DS0aAbeeNKKVKmPAGowEBYMc4lybC8T89BA7F3CLwYgUFkJr1lf
-         6ZGbfgycGsmgVqy+M3Eyq+p+lywGDkYXoEIAcff12LzfWOF3SjMKFfzPTVLKL0ZgI974
-         cHVKq7NFIm+tPmiD1ZsIHRH6iiuj7DAc9WHqPNfhxvo3YqPTp6KsF+SoemjmKoe/tfXs
-         el/Jfne6/zXlPcUPoxY/8TxKUA+wC7wNiwBMdpvi7d6mmkF64WwjVnT8SwLOka1yRrTN
-         QDdbJpaUMBNYwQMrUXPX3/8UH1STt2FiDVmmb8Ptm3yxiobKDNImSi2+AbfS7boVavPn
-         BT8A==
-X-Gm-Message-State: ABy/qLbk8Hr2FaZuioD5zDgZ+09Bz0mYbWk4AVsSyZ6txm56KXtwoc8C
-        rODtkifWFcRRIuMN1xyL/krB++KbPrCjYnTRLVPiHg==
-X-Google-Smtp-Source: APBJJlG8fB6nNAeS+qktKfhDZGWgGHCNBeFjG05sABzZuhi0U5WN5ZynG06D2xcK+2aW1H/pDTvnolhcGSPbdOT9pDw=
-X-Received: by 2002:a17:906:1d6:b0:991:d2a8:658a with SMTP id
- 22-20020a17090601d600b00991d2a8658amr426302ejj.34.1689903362938; Thu, 20 Jul
- 2023 18:36:02 -0700 (PDT)
+        Thu, 20 Jul 2023 21:40:13 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94691FED;
+        Thu, 20 Jul 2023 18:40:12 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36KLMV1c001984;
+        Fri, 21 Jul 2023 01:39:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2023-03-30;
+ bh=BZtX119c1YAIW4RFyhUCK+LylpeHQwScyIa+t9kt638=;
+ b=Ic87I25sg9XBPQmhQWzwVBvT2W32kjiLfCI+Nh+KBGq+nmiDlPqrSXw4eA2N95h3AVY1
+ V2MJzLBD1kjfHfLu7+OybiDl/u+XPaRcfgvhFJHmq0MV/Tvb9910uWc1Zb8TYnbjyq2N
+ lytLuAz33MwVVgQkc69qK+ARDLr0Tc+MKxvdzHa9Qq1w01XJscNX19naOj1einDqNPdP
+ FZ31ncrV78JR8R7jIdRpuEcNVv9v3odwFEzBWlOJOF+xzLQszfCP7A8Ecz6UwQwlcgsy
+ hbId5HXdezZB6CHnnbmLqj6XEb6YvD4kw90LRI92IeEFdqlxxX8k2iDvTj7ndZs6RErs gQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3run7731an-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Jul 2023 01:39:59 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36KN7Prx019211;
+        Fri, 21 Jul 2023 01:39:58 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw9vyr3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 21 Jul 2023 01:39:58 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36L1dwwc040835;
+        Fri, 21 Jul 2023 01:39:58 GMT
+Received: from oracle.com (dhcp-10-154-141-208.vpn.oracle.com [10.154.141.208])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ruhw9vyq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 21 Jul 2023 01:39:57 +0000
+Date:   Thu, 20 Jul 2023 21:39:54 -0400
+From:   Kris Van Hees <kris.van.hees@oracle.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Nick Alcock <nick.alcock@oracle.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Alessandro Carminati <alessandro.carminati@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Viktor Malik <vmalik@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        eugene.loh@oracle.com, kris.van.hees@oracle.com,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH v2] scripts/link-vmlinux.sh: Add alias to duplicate
+ symbols for kallsyms
+Message-ID: <ZLnh3bxQCRZ7564w@oracle.com>
+References: <ZLVxUQiC5iF+xTPQ@bombadil.infradead.org>
+ <20230714150326.1152359-1-alessandro.carminati@gmail.com>
+ <20230717105240.3d986331@gandalf.local.home>
+ <874jm088ah.fsf@esperi.org.uk>
+ <6edbfe7b-aec4-2b3c-2f85-42e418ab3d99@intel.com>
+ <87wmyu7n5t.fsf@esperi.org.uk>
+ <20230721100931.b366ecfbeb09cba01c73d47a@kernel.org>
 MIME-Version: 1.0
-References: <20230712060144.3006358-1-fengwei.yin@intel.com>
- <CAOUHufZHyEvU-c2O6B6stM_QVMxc22zV4Szn52myYqjdZvptUA@mail.gmail.com>
- <16844254-7248-f557-b1eb-b8b102c877a2@intel.com> <CAJD7tkYAkVOE2caqEj_hTmm47Kex451prBQ1wKTRUiOwnDcwNA@mail.gmail.com>
- <b995e802-1500-6930-79d0-8cc4bfe89589@intel.com> <CAJD7tkZtHku-kaK02MAdgaxNzr9hQkPty=cw44R_9HdTS+Pd5w@mail.gmail.com>
- <CAJD7tkZWXdHwpW5AeKqmn6TVCXm1wmKr-2RN2baRJ7c4ciTJng@mail.gmail.com>
- <208aff10-8a32-6ab8-f03a-7f3c9d3ca0f7@intel.com> <CAJD7tkYT6EZMwit8C9MTftUxMmuWtn2YpZ+NSVhy0xVCYuafsg@mail.gmail.com>
- <438d6f6d-2571-69d9-844e-9af9e6b4f820@intel.com> <CAJD7tkYWH8umBFgmxPmeOkRF=pauVW=MvyyN+z17XMHN+q8JKg@mail.gmail.com>
- <e3044d46-3b38-dc2e-b8d2-8ec1033f85e7@intel.com> <79f6822-f2f8-aba4-b517-b661d07e2d@google.com>
- <CAJD7tkaMycnAaY-8Gu=kUwbYqDzihP4BQDzCC2M4BTYAKgG6Qg@mail.gmail.com>
- <d2ae87ee-8ee3-0758-a433-8c937e5e3fb5@intel.com> <CAJD7tkbuU9Op_TmUET9N+Mug=AS7N3S16tZifVajVBL0yaYv4w@mail.gmail.com>
- <c8ea2617-df48-a1cf-e910-71eeba353d67@intel.com>
-In-Reply-To: <c8ea2617-df48-a1cf-e910-71eeba353d67@intel.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 20 Jul 2023 18:35:26 -0700
-Message-ID: <CAJD7tkYH-9YoLMSc4RLd0P4hmMcV4mzko8oijLXNOA_dquHJqA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 3/3] mm: mlock: update mlock_pte_range to handle
- large folio
-To:     "Yin, Fengwei" <fengwei.yin@intel.com>
-Cc:     Hugh Dickins <hughd@google.com>, Yu Zhao <yuzhao@google.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, willy@infradead.org, david@redhat.com,
-        ryan.roberts@arm.com, shy828301@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721100931.b366ecfbeb09cba01c73d47a@kernel.org>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-20_12,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxscore=0 adultscore=0 spamscore=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307210014
+X-Proofpoint-GUID: foimvApiqjguQfiOtuStkh9xqDh9tkq-
+X-Proofpoint-ORIG-GUID: foimvApiqjguQfiOtuStkh9xqDh9tkq-
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 6:12=E2=80=AFPM Yin, Fengwei <fengwei.yin@intel.com=
-> wrote:
->
->
->
-> On 7/21/2023 4:51 AM, Yosry Ahmed wrote:
-> > On Thu, Jul 20, 2023 at 5:03=E2=80=AFAM Yin, Fengwei <fengwei.yin@intel=
-.com> wrote:
-> >>
-> >>
-> >>
-> >> On 7/19/2023 11:44 PM, Yosry Ahmed wrote:
-> >>> On Wed, Jul 19, 2023 at 7:26=E2=80=AFAM Hugh Dickins <hughd@google.co=
-m> wrote:
-> >>>>
-> >>>> On Wed, 19 Jul 2023, Yin Fengwei wrote:
-> >>>>>>>>>>>>>> Could this also happen against normal 4K page? I mean when=
- user try to munlock
-> >>>>>>>>>>>>>> a normal 4K page and this 4K page is isolated. So it becom=
-e unevictable page?
-> >>>>>>>>>>>>> Looks like it can be possible. If cpu 1 is in __munlock_fol=
-io() and
-> >>>>>>>>>>>>> cpu 2 is isolating the folio for any purpose:
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> cpu1                        cpu2
-> >>>>>>>>>>>>>                             isolate folio
-> >>>>>>>>>>>>> folio_test_clear_lru() // 0
-> >>>>>>>>>>>>>                             putback folio // add to unevict=
-able list
-> >>>>>>>>>>>>> folio_test_clear_mlocked()
-> >>>>>>>>>>                                folio_set_lru()
-> >>>>> Let's wait the response from Huge and Yu. :).
-> >>>>
-> >>>> I haven't been able to give it enough thought, but I suspect you are=
- right:
-> >>>> that the current __munlock_folio() is deficient when folio_test_clea=
-r_lru()
-> >>>> fails.
-> >>>>
-> >>>> (Though it has not been reported as a problem in practice: perhaps b=
-ecause
-> >>>> so few places try to isolate from the unevictable "list".)
-> >>>>
-> >>>> I forget what my order of development was, but it's likely that I fi=
-rst
-> >>>> wrote the version for our own internal kernel - which used our origi=
-nal
-> >>>> lruvec locking, which did not depend on getting PG_lru first (having=
- got
-> >>>> lru_lock, it checked memcg, then tried again if that had changed).
-> >>>
-> >>> Right. Just holding the lruvec lock without clearing PG_lru would not
-> >>> protect against memcg movement in this case.
-> >>>
-> >>>>
-> >>>> I was uneasy with the PG_lru aspect of upstream lru_lock implementat=
-ion,
-> >>>> but it turned out to work okay - elsewhere; but it looks as if I mis=
-sed
-> >>>> its implication when adapting __munlock_page() for upstream.
-> >>>>
-> >>>> If I were trying to fix this __munlock_folio() race myself (sorry, I=
-'m
-> >>>> not), I would first look at that aspect: instead of folio_test_clear=
-_lru()
-> >>>> behaving always like a trylock, could "folio_wait_clear_lru()" or wh=
-atever
-> >>>> spin waiting for PG_lru here?
-> >>>
-> >>> +Matthew Wilcox
-> >>>
-> >>> It seems to me that before 70dea5346ea3 ("mm/swap: convert lru_add to
-> >>> a folio_batch"), __pagevec_lru_add_fn() (aka lru_add_fn()) used to do
-> >>> folio_set_lru() before checking folio_evictable(). While this is
-> >>> probably extraneous since folio_batch_move_lru() will set it again
-> >>> afterwards, it's probably harmless given that the lruvec lock is held
-> >>> throughout (so no one can complete the folio isolation anyway), and
-> >>> given that there were no problems introduced by this extra
-> >>> folio_set_lru() as far as I can tell.
-> >> After checking related code, Yes. Looks fine if we move folio_set_lru(=
-)
-> >> before if (folio_evictable(folio)) in lru_add_fn() because of holding
-> >> lru lock.
-> >>
-> >>>
-> >>> If we restore folio_set_lru() to lru_add_fn(), and revert 2262ace6071=
-3
-> >>> ("mm/munlock:
-> >>> delete smp_mb() from __pagevec_lru_add_fn()") to restore the strict
-> >>> ordering between manipulating PG_lru and PG_mlocked, I suppose we can
-> >>> get away without having to spin. Again, that would only be possible i=
-f
-> >>> reworking mlock_count [1] is acceptable. Otherwise, we can't clear
-> >>> PG_mlocked before PG_lru in __munlock_folio().
-> >> What about following change to move mlocked operation before check lru
-> >> in __munlock_folio()?
-> >
-> > It seems correct to me on a high level, but I think there is a subtle p=
-roblem:
-> >
-> > We clear PG_mlocked before trying to isolate to make sure that if
-> > someone already has the folio isolated they will put it back on an
-> > evictable list, then if we are able to isolate the folio ourselves and
-> > find that the mlock_count is > 0, we set PG_mlocked again.
-> >
-> > There is a small window where PG_mlocked might be temporarily cleared
-> > but the folio is not actually munlocked (i.e we don't update the
-> > NR_MLOCK stat). In that window, a racing reclaimer on a different cpu
-> > may find VM_LOCKED from in a different vma, and call mlock_folio(). In
-> > mlock_folio(), we will call folio_test_set_mlocked(folio) and see that
-> > PG_mlocked is clear, so we will increment the MLOCK stats, even though
-> > the folio was already mlocked. This can cause MLOCK stats to be
-> > unbalanced (increments more than decrements), no?
-> Looks like NR_MLOCK is always connected to PG_mlocked bit. Not possible
-> to be unbalanced.
->
-> Let's say:
->   mlock_folio()  NR_MLOCK increase and set mlocked
->   mlock_folio()  NR_MLOCK NO change as folio is already mlocked
->
->   __munlock_folio() with isolated folio. NR_MLOCK decrease (0) and
->                                          clear mlocked
->
->   folio_putback_lru()
->   reclaimed mlock_folio()  NR_MLOCK increase and set mlocked
->
->   munlock_folio()  NR_MLOCK decrease (0) and clear mlocked
->   munlock_folio()  NR_MLOCK NO change as folio has no mlocked set
+On Fri, Jul 21, 2023 at 10:09:31AM +0900, Masami Hiramatsu wrote:
+> On Thu, 20 Jul 2023 14:00:46 +0100
+> Nick Alcock <nick.alcock@oracle.com> wrote:
+> 
+> > On 19 Jul 2023, Alexander Lobakin verbalised:
+> > 
+> > > From: Nick Alcock <nick.alcock@oracle.com>
+> > > Date: Wed, 19 Jul 2023 12:12:06 +0100
+> > >>> Yes, please coordinate with Nick and review each other's work, now we
+> > >>> have two separate efforts with different reasons but hopefully we'll
+> > >
+> > > Three efforts[0] :D Mine went unnoticed unfortunately, so I switched to
+> > > other projects then.
+> > 
+> > It's odd, nobody seems to have noticed these until recently and now
+> > suddenly people are crawling out of the woodwork wanting unique
+> > addresses :) maybe the ambiguous ones are just getting commonplace
+> > enough that they're biting people more often?
+> 
+> Usually, the ambiguous symbols are used as internal functions and
+> are easily changed by kernel update. Thus it is only used for debugging.
+> On the other hand, exposed symbols are considered as more stable (It's
+> not really that stable.) so users tend to use that.
 
-Right. The problem with the diff is that we temporarily clear
-PG_mlocked *without* updating NR_MLOCK.
+In the use case of DTrace, tracing internal functions is certainly something
+that is used, be it for debugging/performance analysis, for gaining better
+understanding what internal operations are triggerd by userspace actions, etc.
 
-Consider a folio that is mlocked by two vmas. NR_MLOCK =3D folio_nr_pages.
+> BTW, note that `perf probe` and kprobe-events already supported that by
+> '_text+OFFSET' style to point those functions (`perf probe` convert the
+> given 'function@file-path' place to '_text+OFFSET' using DWARF and ELF).
+> BPF doesn't because it only supports "function name". (I'm not sure how
+> Dtrace support it)
 
-Assume cpu 1 is doing __munlock_folio from one of the vmas, while cpu
-2 is doing reclaim.
+DTrace supports arbitrary address probing based on an offset from a symbol.
 
-cpu 1                                        cpu2
-clear PG_mlocked
-                                                 folio_referenced()
-                                                   mlock_folio()
-                                                     set PG_mlocked
-                                                       add to NR_MLOCK
-mlock_count > 0
-set PG_mlocked
-goto out
+> If we really consider to improve BPF trace to trace such internal functions,
+> I think you should consider to reuse perf-probe's code to find actual
+> address and convert it to '_text+OFFSET' style to specify the probe point.
+> 
+> I think this still useful if user can identify the traced symbol from the
+> source code line, easily without DWARF analysis. And BPF also need to
+> support "SYMBOL+OFFSET" style probe points.
 
-Result: NR_MLOCK =3D folio_nr_pages * 2.
+While identifying a traced symbol is important, the use cases I am seeing are
+the other way around... being able to specify a symbol name (with whatever
+additional elements needed to make it unique) as target for placing a probe.
+And doing so without needing to depend on DWARF data or other rather large
+collection of debug data.  Especially on production systems, requiring the
+typically very large debuginfo style data to be installed is not acceptable
+for the use cases I encounter.
 
-When the folio is munlock()'d later from the second vma, NR_MLOCK will
-be reduced to folio_nr_pages, but there are not mlocked folios.
-
-This is the scenario that I have in mind. Please correct me if I am wrong.
-
->
->
-> Regards
-> Yin, Fengwei
->
-> >
-> >>
-> >> diff --git a/mm/mlock.c b/mm/mlock.c
-> >> index 0a0c996c5c21..514f0d5bfbfd 100644
-> >> --- a/mm/mlock.c
-> >> +++ b/mm/mlock.c
-> >> @@ -122,7 +122,9 @@ static struct lruvec *__mlock_new_folio(struct fol=
-io *folio, struct lruvec *lruv
-> >>  static struct lruvec *__munlock_folio(struct folio *folio, struct lru=
-vec *lruvec)
-> >>  {
-> >>         int nr_pages =3D folio_nr_pages(folio);
-> >> -       bool isolated =3D false;
-> >> +       bool isolated =3D false, mlocked =3D true;
-> >> +
-> >> +       mlocked =3D folio_test_clear_mlocked(folio);
-> >>
-> >>         if (!folio_test_clear_lru(folio))
-> >>                 goto munlock;
-> >> @@ -134,13 +136,17 @@ static struct lruvec *__munlock_folio(struct fol=
-io *folio, struct lruvec *lruvec
-> >>                 /* Then mlock_count is maintained, but might undercoun=
-t */
-> >>                 if (folio->mlock_count)
-> >>                         folio->mlock_count--;
-> >> -               if (folio->mlock_count)
-> >> +               if (folio->mlock_count) {
-> >> +                       if (mlocked)
-> >> +                               folio_set_mlocked(folio);
-> >>                         goto out;
-> >> +               }
-> >>         }
-> >>         /* else assume that was the last mlock: reclaim will fix it if=
- not */
-> >>
-> >>  munlock:
-> >> -       if (folio_test_clear_mlocked(folio)) {
-> >> +       if (mlocked) {
-> >>                 __zone_stat_mod_folio(folio, NR_MLOCK, -nr_pages);
-> >>                 if (isolated || !folio_test_unevictable(folio))
-> >>                         __count_vm_events(UNEVICTABLE_PGMUNLOCKED, nr_=
-pages);
-> >>
-> >>
-> >>>
-> >>> I am not saying this is necessarily better than spinning, just a note
-> >>> (and perhaps selfishly making [1] more appealing ;)).
-> >>>
-> >>> [1]https://lore.kernel.org/lkml/20230618065719.1363271-1-yosryahmed@g=
-oogle.com/
-> >>>
-> >>>>
-> >>>> Hugh
+> > > My idea was to give relative path from the kernel root to the objfile,
+> > > as we have a good bunch of non-unique "filename + symbol name" pairs.
+> > 
+> > I considered that, but unfortunately that has two problems to a raging
+> > perfectionist like me:
+> > 
+> >  - the objfile probably won't exist except if you're actually doing
+> >    kernel development, since kernel build trees are big enough that a
+> >    lot of people delete them after building or ship kernels to other
+> >    machines: if someone else built your kernel (overwhelmingly common
+> >    among non-kernel-devs) the objfiles are sure to be absent. (But an
+> >    option to not truncate the names when you know they won't be absent
+> >    might be a good idea, though this pushes space requirements up by
+> >    hundreds of kilobytes so it should probably be off by default.)
+> 
+> As I said, these internal symbol tracing is usually only for debugging
+> the kernel. So I think this is not so problematic.
+> 
+> Thank you,
+> 
+> > 
+> >  - even giving a path to the kernel module on disk (much lower
+> >    resolution and vulnerable to ambiguity again) is unreliable because
+> >    there's absolutely no guarantee that any given process can see any of
+> >    them: they might be in a different fs namespace or the modules might
+> >    only be present in an initramfs (hell, I even know setups which
+> >    *compile* the modules needed for rootfs mounting in the initramfs!
+> >    Yes this is borderline insane, yes it happens). More commonly, they
+> >    might be compressed using any of a number of compressors, changing
+> >    the name, and the kernel has no idea which compressor might have been
+> >    used (not unless you want it to go and look, and, well, wandering
+> >    around over the fs hunting down .ko.* files from kernelspace to get
+> >    their names right is *not* my idea of a good time! It's hard enough
+> >    to get that right from userspace, honestly, even with kmod helping.)
+> > 
+> >    The most you could do would be to provide a key you could use with
+> >    kmod to dig the real modules out from userspace. Partial names are as
+> >    good as anything for that :)
+> > 
+> > So all the objfile names are, when it comes down to it, is names with no
+> > intrinsic meaning: even if they're filenames of some kind, tools can't
+> > rely on being able to access those files. (For my most common use case,
+> > using a tracer on an enterprise-built production kernel, they'd almost
+> > never be able to.)
+> > 
+> > So you might as well treat the objfile names as arbitrary string keys
+> > that might be a memory-jogger for humans, which means you can chop
+> > boring bits off them to save space :)
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
