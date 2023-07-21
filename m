@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAFB75CCB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B664475CCBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 17:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbjGUPyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 11:54:18 -0400
+        id S230498AbjGUPys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 11:54:48 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231995AbjGUPyJ (ORCPT
+        with ESMTP id S231472AbjGUPyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 11:54:09 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7203A94
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 08:53:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689954830; x=1721490830;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZyXtUS7bskPkQepR8jD+E0svb+G4NCuyFbBEPrx/Ac0=;
-  b=Pbr2fPUGGYw9hNBj5LyETbCKA9QpJNcIv5J6NiT4db2VapCCJixrTR4r
-   ioDgEz+jIvgnHVVEJaav46OE3B7uQf/MjQlOtECox2ApFrPS7eEj6HiMS
-   eFr9CiSOMVEafIAiJxJRxHdt4r6OjSVBxlKSchLvib32v52b65PtyRZj/
-   7pxKM4hbb84uPBVlis0KbrHGk5iBATYOGj96lRJtCvs/f/pfJws8vN1wF
-   9RhejBarP4opdpWzDfJaXHyHwe2/44ax9BqTJtcqyhqfAk4NAVGVFq+0d
-   CxgUi/tdF5O+AEXLLCLY1bWjir5I47IB/JRTSf4dPO/d8EM13EGDNeljE
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="364515605"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="364515605"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 08:53:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="728147720"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="728147720"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 21 Jul 2023 08:53:39 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qMsRZ-0007Px-2Z;
-        Fri, 21 Jul 2023 15:53:29 +0000
-Date:   Fri, 21 Jul 2023 23:52:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Herve Codina <herve.codina@bootlin.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [PATCH v1 1/1] minmax: Fix header inclusions
-Message-ID: <202307212350.YQFKs9v6-lkp@intel.com>
-References: <20230721133932.12679-1-andriy.shevchenko@linux.intel.com>
+        Fri, 21 Jul 2023 11:54:41 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7172D79;
+        Fri, 21 Jul 2023 08:54:19 -0700 (PDT)
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 23C5C66070EA;
+        Fri, 21 Jul 2023 16:54:12 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689954854;
+        bh=aGb2zEtDX/ptoxn3icdi3HfOY+CTAIz5o9rwC4aMEwM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MQVlKjMn/v74MN9GY2ZGkCPUJVr98bbdcMoovGg7r/WpsKlBLzBpzFb00V4REfFfE
+         wTODDLD9Y6p5TzatkqI8A0RKvkrV3lA5lialHLY3khrD3M6G5/9N8TrCHEu49EBAgW
+         dZg45kBHTb13hZ51frSTBJ7zPhMEix3n8Ft+WJ+ky6CcWCIwbKBVsydTJhANLZUlq0
+         Kg04ZoB8xMWTBbAjTQxG2uOhnLfs35JWiKjB2GoscmgcbVK+ZfrlTKYjPDdiEP/w4E
+         WRg7FnRFCPn/D5g8wGCi3VW+JBUXV/xk/YsJrennqFF1uMOEfrutW1BQy9C6D2SLMx
+         vOmQVbXzdB+VA==
+Date:   Fri, 21 Jul 2023 11:54:08 -0400
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>, kernel@collabora.com,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Tinghan Shen <tinghan.shen@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] arm64: dts: mediatek: mt8195: Set DSU PMU status to fail
+Message-ID: <ce77d904-78a7-476c-9571-b1728016046f@notapiano>
+References: <20230720200753.322133-1-nfraprado@collabora.com>
+ <8bb1a42d-2809-04a9-dcdd-45fc91ea1bde@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230721133932.12679-1-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8bb1a42d-2809-04a9-dcdd-45fc91ea1bde@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Fri, Jul 21, 2023 at 10:16:44AM +0200, AngeloGioacchino Del Regno wrote:
+> Il 20/07/23 22:07, Nícolas F. R. A. Prado ha scritto:
+> > The DSU PMU allows monitoring performance events in the DSU cluster,
+> > which is done by configuring and reading back values from the DSU PMU
+> > system registers. However, for write-access to be allowed by ELs lower
+> > than EL3, the EL3 firmware needs to update the setting on the ACTLR3_EL3
+> > register, as it is disallowed by default.
+> 
+> Typo: ACTLR_EL2, ACTLR_EL3 bit 12 must be set if SCR.NS is 1;
+> ACTLR_EL3 bit 12 must be set if SCR.NS is 0.
+> 
+> On MT8195 Chromebooks, SCR.NS is 1 - hence ACTLR_EL2/EL3 must have BIT(12) set,
+> but at least ACTLR_EL2 doesn't have it set.
+> 
+> I haven't verified EL3, but that doesn't matter, since both need to be set.
 
-kernel test robot noticed the following build errors:
+The kernel is running at EL2 (as I verified from CurrentEL), so only ACTLR_EL3
+needs to be set. ACTLR_EL2 controls whether EL1 can write to the register (in
+non-secure mode) [1], which doesn't matter in this case.
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on crng-random/master v6.5-rc2 next-20230721]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+[1] https://developer.arm.com/documentation/101430/r1p2/Register-descriptions/AArch64-system-registers/ACTLR-EL2--Auxiliary-Control-Register--EL2
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/minmax-Fix-header-inclusions/20230721-214152
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230721133932.12679-1-andriy.shevchenko%40linux.intel.com
-patch subject: [PATCH v1 1/1] minmax: Fix header inclusions
-config: um-allnoconfig (https://download.01.org/0day-ci/archive/20230721/202307212350.YQFKs9v6-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230721/202307212350.YQFKs9v6-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307212350.YQFKs9v6-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from arch/um/os-Linux/sigio.c:6:
-   In file included from include/linux/minmax.h:5:
-   In file included from include/linux/build_bug.h:5:
->> include/linux/compiler.h:246:10: fatal error: 'asm/rwonce.h' file not found
-     246 | #include <asm/rwonce.h>
-         |          ^~~~~~~~~~~~~~
-   1 error generated.
-
-
-vim +246 include/linux/compiler.h
-
-a9a3ed1eff3601 Borislav Petkov 2020-04-22  245  
-e506ea451254ab Will Deacon     2019-10-15 @246  #include <asm/rwonce.h>
-e506ea451254ab Will Deacon     2019-10-15  247  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Nícolas
