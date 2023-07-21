@@ -2,152 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BED75D78D
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876E775D78F
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbjGUWd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 18:33:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40128 "EHLO
+        id S230352AbjGUWeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 18:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbjGUWd4 (ORCPT
+        with ESMTP id S229552AbjGUWe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 18:33:56 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943C43580
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:33:55 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5704995f964so25571157b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:33:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689978835; x=1690583635;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=USyIrgY7glI2I6Y1FEnoLFsj21yaEAeGNlnCwa16vxU=;
-        b=ck1pTWUbkvhYUxYB5e3viKVyP78tg8VHF5sR2juNPhLSnFq0EFHX1xxLtMdZ+DlJHv
-         53/ZCwbpK6IoS+/Gxs3zFHg/n/JJ+ZBUR/hLZDr7H+g4ZbMdK2oYX44p9KWLXISfiszC
-         D2Ctel3HzQBxkhJy0RmGB4dvaF40UH2HQq3B6wEV3oddZVylMso+Y87Zf4PFRd891SKy
-         3KNFLw1jukABNrr0YMUU09sAsKYBtlDBZKlWrVXDI9KK6tbdrmTpH0vQPklpryYRKLLY
-         2i6keBlqyy/wOYi6IYGOQ65X03CutWtBYcMPgafqDrRpI3xA7Jni8BLbJDCOC5Tn/DGj
-         B05w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689978835; x=1690583635;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=USyIrgY7glI2I6Y1FEnoLFsj21yaEAeGNlnCwa16vxU=;
-        b=hx+bxl0BR3yTLbJXQj73W9c42tOkA/S9QKWZ5DmwEKtZRmPgavhVB8xZt1XbhF4wMz
-         N1pBagmE6b9DyO68VNGVi3QEl0znIsiXWhaL7h70WMOXZdg4gbzWsg6o6Euzu/UydlYK
-         JDqf512G1CXCSPo91bjV+iANZ5F1k3QBDMK/Zyl6h0fdgYVqEZptVwMRpl9MdMiVSq/X
-         GhSpGRjDtsQssTa/XJqJj47MYTf1S1diLZiULZ61GDBGKIliNxIPCr3lzkAnw7io3hP3
-         W6xbup5Ux3qReSX82OY1lMSgGQsJdBHfDfkj7V/tDkpoDWQNkzSRWj4GTkNaUflkEhhS
-         MAdg==
-X-Gm-Message-State: ABy/qLYfFvPci5paQ4V0uHS916UrlUqiYp0q1WyaN/Rb2ZfadLfaGH2q
-        uZ7CNaiW8ZaIOahhaZEi1Do3akrvZ6k=
-X-Google-Smtp-Source: APBJJlH3r7Bida35VU4uL5e0ibtdttucr6EEWOFLP+th9pzb1aucpDZ9X30Dx96SzQEYp4ro5KvPm1YaqH8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:24a:b0:cea:fb07:7629 with SMTP id
- k10-20020a056902024a00b00ceafb077629mr22897ybs.10.1689978834851; Fri, 21 Jul
- 2023 15:33:54 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 21 Jul 2023 15:33:52 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230721223352.2333911-1-seanjc@google.com>
-Subject: [PATCH] selftests/rseq: Play nice with binaries statically linked
- against glibc 2.35+
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Aaron Lewis <aaronlewis@google.com>,
-        kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 18:34:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD14B3583;
+        Fri, 21 Jul 2023 15:34:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5BE5961DA8;
+        Fri, 21 Jul 2023 22:34:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9E34C433C8;
+        Fri, 21 Jul 2023 22:34:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689978867;
+        bh=amtm4eN/GW9Th2XfpHJtyiophvhqrM44V8MCh9awRZw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=q4puTUEDW0RsT7X4yMNkOgD5jCqxug/5WCqqBZkcYD4MyCC+psfmnstCWtJRZAOrh
+         AaaMArDzMSa+UROyuJulApvn2XVqjXW4H3Ytp4ATj2TzVnA4tcjGPmOpoxkXrkzDMJ
+         FHwO67Og0C4quuC1IpK2cRPlIhqR5hT6IKpvnOnvsmqke/YbWz9GxqDyl/WSS8n6yZ
+         9p7qx03L0Lh8r1UF1aMDYaFiDxW3vQmu85OPMawYMXnQIGZQCedFuRaxzq1ewdVeKm
+         9fENDTtsJ35Law+2qcs/+Je9Iieve+cq0TumAp8lf/sCNGjaz4S2X9Bw3r4TakQAUG
+         5SiAEsH+pnWyQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4025ECE09E0; Fri, 21 Jul 2023 15:34:27 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 15:34:27 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH rcu 5/5] checkpatch: Complain about unexpected uses of
+ RCU Tasks Trace
+Message-ID: <3ef4021c-fceb-4b49-866b-400c505f2545@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <a6fff63c-5930-4918-82a3-a9301309d88d@paulmck-laptop>
+ <20230717180454.1097714-5-paulmck@kernel.org>
+ <04e74fd214a01bee0fb5ac690730cb386536cced.camel@perches.com>
+ <8477fd32-38a5-4d66-8deb-a61b0e290df5@paulmck-laptop>
+ <589412dd594b7efc618728fe68ad6c86f3c60878.camel@perches.com>
+ <798959b0-b107-44c4-8262-075930ebfeaa@paulmck-laptop>
+ <c0ca3071-231a-49b1-b153-38ff0328470d@paulmck-laptop>
+ <be08b429164e18b70f8341eab3deb075fc8b63b4.camel@perches.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be08b429164e18b70f8341eab3deb075fc8b63b4.camel@perches.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To allow running rseq and KVM's rseq selftests as statically linked
-binaries, initialize the various "trampoline" pointers to point directly
-at the expect glibc symbols, and skip the dlysm() lookups if the rseq
-size is non-zero, i.e. the binary is statically linked *and* the libc
-registered its own rseq.
+On Thu, Jul 20, 2023 at 09:38:51PM -0700, Joe Perches wrote:
+> On Thu, 2023-07-20 at 20:56 -0700, Paul E. McKenney wrote:
+> 
+> > 
+> > > That works much better, thank you!  I will update the patch on my
+> > > next rebase.
+> > 
+> > As shown below.  Is this what you had in mind?
+> []
+> > commit 496aa3821b40459b107f4bbc14ca867daad21fb6
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Thu Jul 6 11:48:07 2023 -0700
+> > 
+> >     checkpatch: Complain about unexpected uses of RCU Tasks Trace
+> >     
+> >     RCU Tasks Trace is quite specialized, having been created specifically
+> >     for sleepable BPF programs.  Because it allows general blocking within
+> >     readers, any new use of RCU Tasks Trace must take current use cases into
+> >     account.  Therefore, update checkpatch.pl to complain about use of any of
+> >     the RCU Tasks Trace API members outside of BPF and outside of RCU itself.
+> []
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -7457,6 +7457,30 @@ sub process {
+> >  			}
+> >  		}
+> >  
+> > +# Complain about RCU Tasks Trace used outside of BPF (and of course, RCU).
+> > +		our $rcu_trace_funcs = qr{(?x:
+> > +			rcu_read_lock_trace |
+> > +			rcu_read_lock_trace_held |
+> > +			rcu_read_unlock_trace |
+> > +			call_rcu_tasks_trace |
+> > +			synchronize_rcu_tasks_trace |
+> > +			rcu_barrier_tasks_trace |
+> > +			rcu_request_urgent_qs_task
+> > +		)};
+> > +		our $rcu_trace_paths = qr{(?x:
+> > +			kernel/bpf/ |
+> > +			include/linux/bpf |
+> > +			net/bpf/ |
+> > +			kernel/rcu/ |
+> > +			include/linux/rcu
+> > +		)};
+> > +		if ($line =~ /\b$rcu_trace_funcs\s*\(/) {
+> > +			if ($realfile !~ m@^$rcu_trace_paths@) {
+> > +				WARN("RCU_TASKS_TRACE",
+> > +				     "use of RCU tasks trace is incorrect outside BPF or core RCU code\n" . $herecurr);
+> 
+> Exactly yes.
+> 
+> (though I still suggest a capture group to show the function like below)
+> 
+> 		if ($line =~ /\b($rcu_trace_funcs)\s*\(/ &&
+> 		    $realfile !~ m{^$rcu_trace_paths}) {
+> 			WARN("RCU_TASKS_TRACE",
+> 			     "use of RCU task trace '$1' is incorrect outside BPF or core RCU code\n" . $herecurr);
+> 		}
 
-Define weak versions of the symbols so as not to break linking against
-libc versions that don't support rseq in any capacity.
+That does seem to work!
 
-The KVM selftests in particular are often statically linked so that they
-can be run on targets with very limited runtime environments, i.e. test
-machines.
+I will fold this change in on my next rebase.
 
-Fixes: 233e667e1ae3 ("selftests/rseq: Uplift rseq selftests for compatibility with glibc-2.35")
-Cc: Aaron Lewis <aaronlewis@google.com>
-Cc: kvm@vger.kernel.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
-
-Note, this is very much the result of throwing noodles until something
-stuck, it seems like there's gotta be a less awful way to handle this :-(
-
-I Cc'd stable@ because I know I'm not the only person that runs statically
-linked KVM selftests, and figuring all this out was quite painful.
-
- tools/testing/selftests/rseq/rseq.c | 28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/rseq/rseq.c b/tools/testing/selftests/rseq/rseq.c
-index 4e4aa006004c..a723da253244 100644
---- a/tools/testing/selftests/rseq/rseq.c
-+++ b/tools/testing/selftests/rseq/rseq.c
-@@ -34,9 +34,17 @@
- #include "../kselftest.h"
- #include "rseq.h"
- 
--static const ptrdiff_t *libc_rseq_offset_p;
--static const unsigned int *libc_rseq_size_p;
--static const unsigned int *libc_rseq_flags_p;
-+/*
-+ * Define weak versions to play nice with binaries that are statically linked
-+ * against a libc that doesn't support registering its own rseq.
-+ */
-+__weak ptrdiff_t __rseq_offset;
-+__weak unsigned int __rseq_size;
-+__weak unsigned int __rseq_flags;
-+
-+static const ptrdiff_t *libc_rseq_offset_p = &__rseq_offset;
-+static const unsigned int *libc_rseq_size_p = &__rseq_size;
-+static const unsigned int *libc_rseq_flags_p = &__rseq_flags;
- 
- /* Offset from the thread pointer to the rseq area. */
- ptrdiff_t rseq_offset;
-@@ -155,9 +163,17 @@ unsigned int get_rseq_feature_size(void)
- static __attribute__((constructor))
- void rseq_init(void)
- {
--	libc_rseq_offset_p = dlsym(RTLD_NEXT, "__rseq_offset");
--	libc_rseq_size_p = dlsym(RTLD_NEXT, "__rseq_size");
--	libc_rseq_flags_p = dlsym(RTLD_NEXT, "__rseq_flags");
-+	/*
-+	 * If the libc's registered rseq size isn't already valid, it may be
-+	 * because the binary is dynamically linked and not necessarily due to
-+	 * libc not having registered a restartable sequence.  Try to find the
-+	 * symbols if that's the case.
-+	 */
-+	if (!*libc_rseq_size_p) {
-+		libc_rseq_offset_p = dlsym(RTLD_NEXT, "__rseq_offset");
-+		libc_rseq_size_p = dlsym(RTLD_NEXT, "__rseq_size");
-+		libc_rseq_flags_p = dlsym(RTLD_NEXT, "__rseq_flags");
-+	}
- 	if (libc_rseq_size_p && libc_rseq_offset_p && libc_rseq_flags_p &&
- 			*libc_rseq_size_p != 0) {
- 		/* rseq registration owned by glibc */
-
-base-commit: 88bb466c9dec4f70d682cf38c685324e7b1b3d60
--- 
-2.41.0.487.g6d72f3e995-goog
-
+							Thanx, Paul
