@@ -2,200 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A9675C679
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D048E75C66D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbjGUMFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 08:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
+        id S230463AbjGUMDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbjGUMEt (ORCPT
+        with ESMTP id S230238AbjGUMDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 08:04:49 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E81A3AAF;
-        Fri, 21 Jul 2023 05:04:29 -0700 (PDT)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36LA44aI007067;
-        Fri, 21 Jul 2023 14:04:13 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=selector1;
- bh=QJv4FgeoZI13kyNGmPPMTf96OOf5S9wcDXXdOT9sXaA=;
- b=SPlergAN5qCyFlQD1Rgi4TrAYSiH16tnHAUvFadudLoVT95J31goXCai1qdZI0N9ds4l
- gjW4OFoD3DEaizGAdlRPr5gVUp4R88TC6jPN8uR6TgHjpGV/+LawgGcvvkJv/2kE2c7Z
- fashXyVjnlXFOVxrcqqKm4dtFVaMRD8lahyyK8f0D01rmPM3larc/aVcD+E8JcNqQGOP
- ZYd0mA9j5yhBLjrZ+I0OXt0N5tcQ/WUEpxc/cG2k3v7+rG1Me0LgQjXEPxuejDy3aDQy
- OYzVS1fEz9aZARet9pmlvPaAdBfSpe3ME1msu8eOjmhKXZFBChCjAdoprwmmeLu+fGsq hg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ryqxjgvtp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Jul 2023 14:04:12 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0672B10002A;
-        Fri, 21 Jul 2023 14:04:12 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F3103229A68;
-        Fri, 21 Jul 2023 14:04:11 +0200 (CEST)
-Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Fri, 21 Jul
- 2023 14:04:11 +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     Alain Volmat <alain.volmat@foss.st.com>,
-        <linux-media@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/2] media: stm32: dcmi: only call s_stream on the source subdev
-Date:   Fri, 21 Jul 2023 14:03:15 +0200
-Message-ID: <20230721120316.1172445-3-alain.volmat@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230721120316.1172445-1-alain.volmat@foss.st.com>
-References: <20230721120316.1172445-1-alain.volmat@foss.st.com>
+        Fri, 21 Jul 2023 08:03:44 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4296D19B3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:03:23 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fbf09a9139so3044327e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 05:03:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689941000; x=1690545800;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=IhkoDF78CCv7y5GQYbbsjZT44iTH15rIG128hk87YQc=;
+        b=JBT7HZNg/+51OOwGNYhejjohC3pQ8vhkr4nA5qcrwkIWAETyzDUWiCAEpzh4SK1YkZ
+         JveSjdBTPPbpZflUrtS93foCZMRht4kIgbltSJ/UFedBgJyDLN7C5S0uoDmH4WGSbl+w
+         /SBZlTNx1u3NQog52Pxqm5MFiDKTEtBw9/xlSQE3bXIRrOK604PrdKhzaTCB/d5Upo1K
+         ByTHDugbdPIE51TWQ0zgfrDyFrNgp+cZKJEVvefKqbJk4txy8VMxt7Y2gejrB0B3tfvV
+         gwQ4YxEIsmVJWNuXcuOgPbOvztUqp3CQz9XoVobyMPTyHrrakFkKR/Lv9geknSs0tlM6
+         fjrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689941000; x=1690545800;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IhkoDF78CCv7y5GQYbbsjZT44iTH15rIG128hk87YQc=;
+        b=gc40xTBUYY+hja1ePKKzGjXr8akgkfzGoMtyi7ooCivDwTsPb5v37RD43n1ikUSdGD
+         8h6RX/SVc20XHT5CGIqKyRnRYRQMxs92MTGiJzWPclouw6cAPQasfoQX9ULelWgEXOas
+         6TreRnDiIvizByXbL4LmoTlOfhVRmW7xsrZn+KZFIuLyrvZSlZWRRgrIZqzCqP2sU+oc
+         gi1rwsAJH1i8NFrFfWPUlqRhK6dR8qU5FmA1REKpeLcm9OzSc0NHq3FIhX7KnMn0jxyh
+         qWek6DLiqpPk2BfVHO1XhAwMk2Tjo33BzGCckoD298XOhmMYw6BOu5eAbUY5/Aej55Pk
+         jthw==
+X-Gm-Message-State: ABy/qLZZkQL5uekwMRGIV9Rzlco2Qky3zJNw8ytTsFUbjtbNDNVgk33X
+        P94BMEAktkgrFY8fJeYop1CkfA==
+X-Google-Smtp-Source: APBJJlFGmpYr3UvI/UTEAO4mdaH2ulDlpGO5iK6eLCqJ87k4vm0gVfwsJpQK9hsB1IjkHPsU27C2tQ==
+X-Received: by 2002:a19:6541:0:b0:4f9:5404:af5 with SMTP id c1-20020a196541000000b004f954040af5mr1091273lfj.46.1689940999971;
+        Fri, 21 Jul 2023 05:03:19 -0700 (PDT)
+Received: from [192.168.1.101] (abyj181.neoplus.adsl.tpnet.pl. [83.9.29.181])
+        by smtp.gmail.com with ESMTPSA id l14-20020ac2554e000000b004fbacee6028sm698628lfk.110.2023.07.21.05.03.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 05:03:19 -0700 (PDT)
+Message-ID: <3e1d650d-7c5b-381c-464f-3c464c056a1b@linaro.org>
+Date:   Fri, 21 Jul 2023 14:03:16 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.129.178.213]
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-21_07,2023-07-20_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] interconnect: qcom: qcm2290: Enable sync state
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230720-topic-qcm2290_icc-v1-0-7f67f2e259c1@linaro.org>
+ <20230720-topic-qcm2290_icc-v1-2-7f67f2e259c1@linaro.org>
+ <ZLmQdjDgIbbhyTMJ@gerhold.net>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <ZLmQdjDgIbbhyTMJ@gerhold.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid calling s_stream on each subdev until reaching the sensor and
-instead call s_stream on the source subdev only (which will in turn
-do whatever needed to start the stream).
+On 20.07.2023 21:52, Stephan Gerhold wrote:
+> On Thu, Jul 20, 2023 at 08:24:01PM +0200, Konrad Dybcio wrote:
+>> Very surprisingly, qcm2290 does not seem to require any interface
+>> clocks.
+> 
+> What does this mean exactly? The interconnect .sync_state() is
+> responsible to drop the initial maximum bandwidth votes, with the
+> assumption that all active devices have voted for the bandwidth they
+> need. How does this relate to "requiring interface clocks"?
+If it required such clocks to be present, sync_state could not
+complete, as trying to access some nodes would crash the platform
+due to unclocked access.
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
----
- drivers/media/platform/st/stm32/stm32-dcmi.c | 63 +++++---------------
- 1 file changed, 14 insertions(+), 49 deletions(-)
+> 
+>> It's therefore safe to enable sync_state to park unused devices.
+>> Do so.
+> 
+> Doesn't this make everything painfully slow? There are no interconnect
+> consumers at all in qcm2290.dtsi. I would expect that all bandwidths
+> end up at minimum.
+There are no interconnect providers defined in qcm2290.dtsi.
 
-diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
-index dad6e22e4ce4..ac8a5031dce6 100644
---- a/drivers/media/platform/st/stm32/stm32-dcmi.c
-+++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
-@@ -134,6 +134,7 @@ struct stm32_dcmi {
- 	struct video_device		*vdev;
- 	struct v4l2_async_notifier	notifier;
- 	struct v4l2_subdev		*source;
-+	struct v4l2_subdev		*s_subdev;
- 	struct v4l2_format		fmt;
- 	struct v4l2_rect		crop;
- 	bool				do_crop;
-@@ -692,51 +693,6 @@ static int dcmi_pipeline_s_fmt(struct stm32_dcmi *dcmi,
- 	return 0;
- }
- 
--static int dcmi_pipeline_s_stream(struct stm32_dcmi *dcmi, int state)
--{
--	struct media_entity *entity = &dcmi->vdev->entity;
--	struct v4l2_subdev *subdev;
--	struct media_pad *pad;
--	int ret;
--
--	/* Start/stop all entities within pipeline */
--	while (1) {
--		pad = &entity->pads[0];
--		if (!(pad->flags & MEDIA_PAD_FL_SINK))
--			break;
--
--		pad = media_pad_remote_pad_first(pad);
--		if (!pad || !is_media_entity_v4l2_subdev(pad->entity))
--			break;
--
--		entity = pad->entity;
--		subdev = media_entity_to_v4l2_subdev(entity);
--
--		ret = v4l2_subdev_call(subdev, video, s_stream, state);
--		if (ret < 0 && ret != -ENOIOCTLCMD) {
--			dev_err(dcmi->dev, "%s: \"%s\" failed to %s streaming (%d)\n",
--				__func__, subdev->name,
--				state ? "start" : "stop", ret);
--			return ret;
--		}
--
--		dev_dbg(dcmi->dev, "\"%s\" is %s\n",
--			subdev->name, state ? "started" : "stopped");
--	}
--
--	return 0;
--}
--
--static int dcmi_pipeline_start(struct stm32_dcmi *dcmi)
--{
--	return dcmi_pipeline_s_stream(dcmi, 1);
--}
--
--static void dcmi_pipeline_stop(struct stm32_dcmi *dcmi)
--{
--	dcmi_pipeline_s_stream(dcmi, 0);
--}
--
- static int dcmi_start_streaming(struct vb2_queue *vq, unsigned int count)
- {
- 	struct stm32_dcmi *dcmi = vb2_get_drv_priv(vq);
-@@ -758,9 +714,12 @@ static int dcmi_start_streaming(struct vb2_queue *vq, unsigned int count)
- 		goto err_pm_put;
- 	}
- 
--	ret = dcmi_pipeline_start(dcmi);
--	if (ret)
-+	ret = v4l2_subdev_call(dcmi->s_subdev, video, s_stream, 1);
-+	if (ret < 0) {
-+		dev_err(dcmi->dev, "%s: Failed to start source subdev, error (%d)\n",
-+			__func__, ret);
- 		goto err_media_pipeline_stop;
-+	}
- 
- 	spin_lock_irq(&dcmi->irqlock);
- 
-@@ -862,7 +821,7 @@ static int dcmi_start_streaming(struct vb2_queue *vq, unsigned int count)
- 	return 0;
- 
- err_pipeline_stop:
--	dcmi_pipeline_stop(dcmi);
-+	v4l2_subdev_call(dcmi->s_subdev, video, s_stream, 0);
- 
- err_media_pipeline_stop:
- 	video_device_pipeline_stop(dcmi->vdev);
-@@ -889,8 +848,12 @@ static void dcmi_stop_streaming(struct vb2_queue *vq)
- {
- 	struct stm32_dcmi *dcmi = vb2_get_drv_priv(vq);
- 	struct dcmi_buf *buf, *node;
-+	int ret;
- 
--	dcmi_pipeline_stop(dcmi);
-+	ret = v4l2_subdev_call(dcmi->s_subdev, video, s_stream, 0);
-+	if (ret < 0)
-+		dev_err(dcmi->dev, "%s: Failed to stop source subdev, error (%d)\n",
-+			__func__, ret);
- 
- 	video_device_pipeline_stop(dcmi->vdev);
- 
-@@ -1876,6 +1839,8 @@ static int dcmi_graph_notify_bound(struct v4l2_async_notifier *notifier,
- 		dev_dbg(dcmi->dev, "DCMI is now linked to \"%s\"\n",
- 			subdev->name);
- 
-+	dcmi->s_subdev = subdev;
-+
- 	return ret;
- }
- 
--- 
-2.25.1
-
+Konrad
