@@ -2,123 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2FE75C0D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC3375C0E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 10:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbjGUIIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 04:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
+        id S231362AbjGUIJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 04:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbjGUIID (ORCPT
+        with ESMTP id S230346AbjGUIJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 04:08:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19BB2706;
-        Fri, 21 Jul 2023 01:07:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6DDBC616C1;
-        Fri, 21 Jul 2023 08:07:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92352C433CA;
-        Fri, 21 Jul 2023 08:07:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689926876;
-        bh=o1cZvieMYPYBkZJebOJ6isrBwhpPfnwvQn0FB1kHdAo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cRtnUhX26OscJYsPDIKSIA5KnE04vQQ58tmAaJfEE/H25IPTW91wAE6HgXvsOhyP0
-         AWjixPyco0ckgw8k0qpVAvbevNJSBCa6BrOPyOQjf+WdLt9fSxzKpnh73+InHfZKiO
-         cvUsYF8RwltcQ5j4qwr15MHDl3CDMCG/1AFGm1WTLhWYl101k3awGEPzIV5xAnOEDp
-         aaDHQFoybLPA6nI5lFzfB2uJdLckcWzAl1jpLhDbgnlxo4vatCeSYk0jHmscCzd85K
-         a9556tNlzTOoakK6RZNH6mj3ZEpORpW9XeTDlJlyEGDFG3oVrE1+C14UBNuavfOIa1
-         iCpvgNP6tDOTQ==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qMlBE-0003LY-1G;
-        Fri, 21 Jul 2023 10:08:05 +0200
-Date:   Fri, 21 Jul 2023 10:08:04 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, quic_pkondeti@quicinc.com,
-        quic_ppratap@quicinc.com, quic_jackp@quicinc.com,
-        quic_harshq@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v9 08/10] arm64: dts: qcom: sc8280xp: Add multiport
- controller node for SC8280
-Message-ID: <ZLo85M-4ZzfTyHQ9@hovoldconsulting.com>
-References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
- <20230621043628.21485-9-quic_kriskura@quicinc.com>
- <2eab503f-fa0d-990e-bed2-2445c5496798@linaro.org>
- <b183a130-6237-7d15-5d5a-b56582b92b35@quicinc.com>
- <ZJr9Xiv6_0nG0Pui@hovoldconsulting.com>
- <622288dd-cb3c-b673-5544-46ff10106dbc@quicinc.com>
+        Fri, 21 Jul 2023 04:09:24 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D478270A
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 01:09:03 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R6hyz08MHzBRDtd
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 16:08:59 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689926938; x=1692518939; bh=WO9OesZJO0OZ3dsby1KjHp/40kA
+        D6UC7sDZL2hJgxPc=; b=p0gIqxroMQbD1Utj1eUX2BjWiJti+USbKUbMZkijnWM
+        9tctpkViEDJ0IHc4RH9qMF2bOiPRE00KhjXXsjWEb0w5CzqK08Oa97KNk1DotJ30
+        kZeXGeCpkP/AudHL3OeKd2HGNWALhGrA4DY3IabK9tMsGFoARbL0psJSo7uP5bzp
+        EwIODa/bzkMe7JwkH6m013ag81waP0erILZoFJVZl0M538S2ABNxjIB9sjiOqZQg
+        D/EG0hagQzArr5XLrQxXWDgTn46P3N46Z4pGGUUhU04cWQ2v0eqHVDv30JX+co2M
+        6gKfpKW/gjY/AScM+WIHIGKfc7CqEoBFW57wRfnqeBg==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id TI6c0U1uA2HH for <linux-kernel@vger.kernel.org>;
+        Fri, 21 Jul 2023 16:08:58 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R6hyy4ctCzBRDs4;
+        Fri, 21 Jul 2023 16:08:58 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <622288dd-cb3c-b673-5544-46ff10106dbc@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Fri, 21 Jul 2023 08:08:58 +0000
+From:   sunran001@208suo.com
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/head: "foo * bar" should be "foo *bar"
+In-Reply-To: <20230721080703.5724-1-xujianghui@cdjrlc.com>
+References: <20230721080703.5724-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <f7ca9b619b85ea1c2a07a045197f92bd@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 03, 2023 at 12:40:19AM +0530, Krishna Kurapati PSSNV wrote:
-> On 6/27/2023 8:46 PM, Johan Hovold wrote:
-> > On Sat, Jun 24, 2023 at 12:43:23PM +0530, Krishna Kurapati PSSNV wrote:
-> >>> On 21.06.2023 06:36, Krishna Kurapati wrote:
-> >>>> Add USB and DWC3 node for tertiary port of SC8280 along with multiport
-> >>>> IRQ's and phy's. This will be used as a base for SA8295P and SA8295-Ride
-> >>>> platforms.
-> >>>>
-> >>>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+ERROR: "foo * bar" should be "foo *bar"
 
-> >> Yes wakeup is supported by all ports now, but I didn't make those
-> >> changes now as I wanted to keep driver code diff minimal and don't need
-> >> wakeup support for the product currently. But for sure, will update
-> >> driver code to handle wakeup on all ports in near future.
-> > 
-> > Why didn't you include it in v9? I thought you had a working
-> > implementation for this?
-> > 
-> > Since wakeup will be another case where glue and core need to interact,
-> > it's good to have the wakeup implementation from the start to be able to
-> > evaluate your multiport implementation properly.
-> > 
-> > Right now it looks like you only added wakeup interrupt lookup and
-> > request, but then you never actually enable them which is not very nice.
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  arch/x86/kernel/head64.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
->   As mentioned in one of my comments on earlier patches, wakeup is not a 
-> requirement I currently need to work on for the product. I added 
-> multiport IRQ support only because my pathces need to modify IRQ names. 
-> If there is a customer requirement I get in the future, I will 
-> definitely implement the wakeup part. But for now, I would like to stick 
-> to what is necessary for getting Multiport to work.
+diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+index 49f7629b17f7..20d35bfd70af 100644
+--- a/arch/x86/kernel/head64.c
++++ b/arch/x86/kernel/head64.c
+@@ -445,7 +445,7 @@ static unsigned long get_cmd_line_ptr(void)
 
-I think you need to implement this now as this is a basic features of
-any USB controller and one which is already supported by the driver you
-are changing. We've also had a long of history of Qualcomm pushing
-incomplete implementations upstream and then they move on to more
-pressing deadline and never actually complete the work.
+  static void __init copy_bootdata(char *real_mode_data)
+  {
+-	char * command_line;
++	char *command_line;
+  	unsigned long cmd_line_ptr;
 
-This very wakeup support is a good example of this as parts of it was
-merged years ago and when someone later tried to get it to actually
-work, it turned into a complete hack of an implementation as no one had
-thought about the overall design.
+  	/*
+@@ -471,7 +471,7 @@ static void __init copy_bootdata(char 
+*real_mode_data)
+  	sme_unmap_bootdata(real_mode_data);
+  }
 
-Johan
+-asmlinkage __visible void __init __noreturn x86_64_start_kernel(char * 
+real_mode_data)
++asmlinkage __visible void __init __noreturn x86_64_start_kernel(char 
+*real_mode_data)
+  {
+  	/*
+  	 * Build-time sanity checks on the kernel image and module
