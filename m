@@ -2,88 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8127375C640
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D0C75C645
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 14:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbjGUL7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 07:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
+        id S230339AbjGUMA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 08:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjGUL7s (ORCPT
+        with ESMTP id S230060AbjGUMAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 07:59:48 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5DAB3171B;
-        Fri, 21 Jul 2023 04:59:47 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FB2C2F4;
-        Fri, 21 Jul 2023 05:00:30 -0700 (PDT)
-Received: from bogus (unknown [10.57.96.100])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD21C3F6C4;
-        Fri, 21 Jul 2023 04:59:44 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 12:59:17 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 09/11] cpufreq: scmi: Add support to parse domain-id
- using #power-domain-cells
-Message-ID: <20230721115917.lescikl75kmeqkw4@bogus>
-References: <20230713141738.23970-1-ulf.hansson@linaro.org>
- <20230713141738.23970-10-ulf.hansson@linaro.org>
- <20230719152426.qwc5qqewrfjsarlz@bogus>
- <CAPDyKFogrwFnz2ZuKE-mLrCQmTCQcrtjhhyzB4CnoVnxAXqKEg@mail.gmail.com>
+        Fri, 21 Jul 2023 08:00:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BF819B2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 04:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689940782;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4Y7rbnaDJbn/YejSF4mQVA8Z4grlfMZHjKPnDFxLZ8A=;
+        b=NLYxJ/tI375ddfrYE69u4PU4Z9h7i6tOguCLsIe+/EncQBl2Aqsf93Gj2dpLFHHmIJWLvd
+        wEHK9+sHYSWQpfB86rX4TB+P5e6nKB+99bnGoy9jC96Rwt1F2pOlKeFgF426rwViuud1tV
+        rJFa43qXP2DG3tN66TNOfIOxNbBopgE=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-251-An_sCdLSOEuL5Hkflve6UA-1; Fri, 21 Jul 2023 07:59:41 -0400
+X-MC-Unique: An_sCdLSOEuL5Hkflve6UA-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-993d7ca4607so118760966b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 04:59:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689940780; x=1690545580;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4Y7rbnaDJbn/YejSF4mQVA8Z4grlfMZHjKPnDFxLZ8A=;
+        b=Zyp8PDuVGV3FSIifCiVV9NUV4ESPELVosJg6xI6nzy5Gte+hwE9OVK+ZKhY6evSRHW
+         i47iOigTdwnV8uuIPU3ujCuWYLGhURzx5nNZBUNW9kQRkj3ljqt5N5WSA5lrqpRcgEX5
+         DRCJ9vcX5nqT5DHqyPfazdmZjX1S+aNdq8iplEO+I+4EiSukI9PjigAFDhg+SuNc6+Cb
+         a4J+6bp50lp7eRpeIiyjwd7rxsZ3RmT7bwlLnwRBx80tKZAFWmSwVbEDKZE8DTcgksRB
+         z39eadj6lxqDGxc652JYOFOdQ9m5pz1abSMxfEu6KC70w8AZSA5+LRa6JS10Zc28YYO5
+         U/LA==
+X-Gm-Message-State: ABy/qLZWsYaRQS+tQGOWYDXksCaUw2LIjRUCwd3+FIi79NY/OYk2rzFX
+        ZsCTkSGfhs03G4uzYAEw1hhvyq0I/SF0Tb/mNOkdavhE59+XkG8+E6JaLliZNToM3OGRZWBaQFg
+        zwbwVH++kdqaeRZxtevJSZlvc
+X-Received: by 2002:a17:906:2da:b0:994:54af:e282 with SMTP id 26-20020a17090602da00b0099454afe282mr1360612ejk.10.1689940779997;
+        Fri, 21 Jul 2023 04:59:39 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEk/l1rT7vVGyK6B+M0/vN6OF6CipTv2G0AE0UWGqg9sgFPNWcoUSGmc+Sw2v1G9OPem3PIcQ==
+X-Received: by 2002:a17:906:2da:b0:994:54af:e282 with SMTP id 26-20020a17090602da00b0099454afe282mr1360600ejk.10.1689940779630;
+        Fri, 21 Jul 2023 04:59:39 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
+        by smtp.googlemail.com with ESMTPSA id um15-20020a170906cf8f00b00992b3ea1ee3sm2078970ejb.159.2023.07.21.04.59.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 04:59:38 -0700 (PDT)
+Message-ID: <6118063e-5c91-acc4-129f-3bacc19f25ce@redhat.com>
+Date:   Fri, 21 Jul 2023 13:59:36 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFogrwFnz2ZuKE-mLrCQmTCQcrtjhhyzB4CnoVnxAXqKEg@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH v11 09/29] KVM: x86: Disallow hugepages when memory
+ attributes are mixed
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20230718234512.1690985-1-seanjc@google.com>
+ <20230718234512.1690985-10-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20230718234512.1690985-10-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 01:52:17PM +0200, Ulf Hansson wrote:
-> On Wed, 19 Jul 2023 at 17:24, Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > On Thu, Jul 13, 2023 at 04:17:36PM +0200, Ulf Hansson wrote:
-> > > The performance domain-id can be described in DT using the power-domains
-> > > property or the clock property. The latter is already supported, so let's
-> > > add support for the power-domains too.
-> > >
-> >
-> > How is this supposed to work for the CPUs ? The CPU power domains are
-> > generally PSCI on most of the platforms and the one using OSI explicitly
-> > need to specify the details while ones using PC will not need to. Also they
-> > can never be performance domains too. So I am not sure if I am following this
-> > correctly.
-> 
-> Your concerns are certainly correct, I completely forgot about this.
-> We need to specify what power-domain index belongs to what, by using
-> power-domain-names in DT. So a CPU node, that has both psci for power
-> and scmi for performance would then typically look like this:
-> 
-> power-domains = <&CPU_PD0>, <&scmi_dvfs 4>;
-> power-domain-names = "psci", "scmi";
-> 
-> I will take care of this in the next version - and thanks a lot for
-> pointing this out!
+On 7/19/23 01:44, Sean Christopherson wrote:
+> +static bool range_has_attrs(struct kvm *kvm, gfn_t start, gfn_t end,
+> +			    unsigned long attrs)
+> +{
+> +	XA_STATE(xas, &kvm->mem_attr_array, start);
+> +	unsigned long index;
+> +	bool has_attrs;
+> +	void *entry;
+> +
+> +	rcu_read_lock();
+> +
+> +	if (!attrs) {
+> +		has_attrs = !xas_find(&xas, end);
+> +		goto out;
+> +	}
+> +
+> +	has_attrs = true;
+> +	for (index = start; index < end; index++) {
+> +		do {
+> +			entry = xas_next(&xas);
+> +		} while (xas_retry(&xas, entry));
+> +
+> +		if (xas.xa_index != index || xa_to_value(entry) != attrs) {
+> +			has_attrs = false;
+> +			break;
+> +		}
+> +	}
+> +
+> +out:
+> +	rcu_read_unlock();
+> +	return has_attrs;
+> +}
+> +
 
+Can you move this function to virt/kvm/kvm_main.c?
 
-Yes something like this will work. Just curious will this impact the idle
-paths ? By that I mean will the presence of additional domains add more
-work or will they be skipped as early as possible with just one additional
-check ?
+Thanks,
 
--- 
-Regards,
-Sudeep
+Paolo
+
