@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D3E75C61A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72C575C61C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 13:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbjGULw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 07:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48114 "EHLO
+        id S230336AbjGULxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 07:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbjGULwz (ORCPT
+        with ESMTP id S230136AbjGULxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 07:52:55 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE872130
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 04:52:54 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-cc7863e7b82so1721001276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 04:52:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689940373; x=1690545173;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/fxuqcvjNlrKwMc4wwhYKznxhsZSVT5gN9Y+RioTAqk=;
-        b=TQf3yhOwJAeHFWlt32JBzHWQnLL7uGsHRp/NFuL9RV1IWslYKWQzvKC+Pgv32QAUQ/
-         6WywXBGQvWLLFkpLOE/b1g6TmiJcz9lxvobsasNcQSDA5zy/JFVZh+e0DVBEvwOEd6ei
-         NoXSBSPeCIYUnyZr1T20mjcI1Z1acprCKzVZXGNYbixWl6TsZJs2eHql5pUZyIWHEpDn
-         eSkM+8fAF0kylgHrqRqCNjYUuFW4CbLPxoI2oLj/jg5bOL+mVRXk9huJlLF2TBEfscTD
-         ZUp4QLoxlIwXl0td94qpnsqnZ7wz+VEzmyCHgW6szkBoS+tS16+YJ81zl9sdPfZ5d3QH
-         cdRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689940373; x=1690545173;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/fxuqcvjNlrKwMc4wwhYKznxhsZSVT5gN9Y+RioTAqk=;
-        b=OKyROO4ZzZ5oM5vT8xaCb89Kd4W2iVEfbvAEL4MVExzbylQPFU84L9p89EHG1DKEXM
-         cS4SDiThpZpRag8Yv+z1Opw+E0v1BE0wAwpwguxLP75WeWevLdVfkl+UZm5/wOYDBitr
-         aNx1545yFdcP2Uje34ATRcK+qQ7eD6tUlAksBqgrPMxBcoXBiFtVf0DEn0YJaiW9yAeW
-         rHphF1Skz6CEkQ6SZ+t6ZUN1vdd4c2bN/iljarG7fC+b4mws98IO1J0BV+7C919i0kqw
-         f0Su5s2Du0IfL558gLsOS0ZfoyYkAR/7nG4RnhtGiILQBuF0X7oiXmK00sqzHNjTKKLM
-         QGiw==
-X-Gm-Message-State: ABy/qLZYnWIfhsqhNuvJuSt3gNle2ygOw1Bwz7gF4lB/11CalEwwYnLB
-        YTkduDuI30JPvX9eOTdZCd+/cUXXkvkqOIY3xExJjw==
-X-Google-Smtp-Source: APBJJlFDW96+XvHO2EbF9UNzQyoz1DeAL9nucDYLQwqTM4AdCdWWTNUS4XVJgKEnLsxd10UEdDoWlwtXPmYSjqcuTXw=
-X-Received: by 2002:a25:8485:0:b0:c69:54aa:d441 with SMTP id
- v5-20020a258485000000b00c6954aad441mr1467980ybk.34.1689940373619; Fri, 21 Jul
- 2023 04:52:53 -0700 (PDT)
+        Fri, 21 Jul 2023 07:53:38 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56262130;
+        Fri, 21 Jul 2023 04:53:36 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R6nvC73z1zHqR9;
+        Fri, 21 Jul 2023 19:51:03 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 21 Jul
+ 2023 19:53:33 +0800
+Subject: Re: [PATCH RFC net-next v2 7/7] net: skbuff: always try to recycle PP
+ pages directly when in softirq
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230714170853.866018-1-aleksander.lobakin@intel.com>
+ <20230714170853.866018-10-aleksander.lobakin@intel.com>
+ <20230718174042.67c02449@kernel.org>
+ <d7cd1903-de0e-0fe3-eb15-0146b589c7b0@intel.com>
+ <20230719135150.4da2f0ff@kernel.org>
+ <48c1d70b-d4bd-04c0-ab46-d04eaeaf4af0@intel.com>
+ <20230720101231.7a5ff6cd@kernel.org>
+ <8e65c3d3-c628-2176-2fc2-a1bc675ad607@intel.com>
+ <20230720110027.4bd43ee7@kernel.org>
+ <988fc62d-2329-1560-983a-79ff5653a6a6@intel.com>
+ <b3884ff9-d903-948d-797a-1830a39b1e71@intel.com>
+ <20230720122015.1e7efc21@kernel.org>
+ <e542f6b5-4eea-5ac6-a034-47e9f92dbf7e@intel.com>
+ <20230720124647.413363d5@kernel.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <406885ee-8dd0-1654-ec13-914ed8986c24@huawei.com>
+Date:   Fri, 21 Jul 2023 19:53:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-References: <20230713141738.23970-1-ulf.hansson@linaro.org>
- <20230713141738.23970-10-ulf.hansson@linaro.org> <20230719152426.qwc5qqewrfjsarlz@bogus>
-In-Reply-To: <20230719152426.qwc5qqewrfjsarlz@bogus>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 21 Jul 2023 13:52:17 +0200
-Message-ID: <CAPDyKFogrwFnz2ZuKE-mLrCQmTCQcrtjhhyzB4CnoVnxAXqKEg@mail.gmail.com>
-Subject: Re: [PATCH v2 09/11] cpufreq: scmi: Add support to parse domain-id
- using #power-domain-cells
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+In-Reply-To: <20230720124647.413363d5@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,30 +72,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Jul 2023 at 17:24, Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> On Thu, Jul 13, 2023 at 04:17:36PM +0200, Ulf Hansson wrote:
-> > The performance domain-id can be described in DT using the power-domains
-> > property or the clock property. The latter is already supported, so let's
-> > add support for the power-domains too.
-> >
->
-> How is this supposed to work for the CPUs ? The CPU power domains are
-> generally PSCI on most of the platforms and the one using OSI explicitly
-> need to specify the details while ones using PC will not need to. Also they
-> can never be performance domains too. So I am not sure if I am following this
-> correctly.
+On 2023/7/21 3:46, Jakub Kicinski wrote:
+> On Thu, 20 Jul 2023 21:33:40 +0200 Alexander Lobakin wrote:
+>>> We can as well check
+>>> 	(in_softirq() && !irqs_disabled() && !in_hardirq())
+>>> ?  
+>>
+>> Yes, something like that. Messy, but I see no other options...
+>>
+>> So, I guess you want to add an assertion to make sure that we're *not*
+>> in this:
+>>
+>> in_hardirq() || irqs_disabled()
+>>
+>> Does this mean that after it's added, my patch is sane? :p
+> 
+> Well... it's acceptable. Make sure you add a good, informative
+> but concise comment :)
+> 
 
-Your concerns are certainly correct, I completely forgot about this.
-We need to specify what power-domain index belongs to what, by using
-power-domain-names in DT. So a CPU node, that has both psci for power
-and scmi for performance would then typically look like this:
+Does it mean ptr_ring_produce_any() is needed in
+page_pool_recycle_in_ring() too?
 
-power-domains = <&CPU_PD0>, <&scmi_dvfs 4>;
-power-domain-names = "psci", "scmi";
+As it is assumed that page pool API can be called in the context with
+irqs_disabled() || in_hardirq(), and force recylcling happens in the
+prt_ring.
 
-I will take care of this in the next version - and thanks a lot for
-pointing this out!
+Isn't it conflit with the below patch? as the below patch assume page
+pool API can not be called in the context with irqs_disabled() || in_hardirq():
+[PATCH net-next] page_pool: add a lockdep check for recycling in hardirq
 
-Kind regards
-Uffe
+Or am I missing something obvious here?
