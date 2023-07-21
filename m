@@ -2,95 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B15675C4F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD0675C4F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 12:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjGUKrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 06:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
+        id S229815AbjGUKq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 06:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjGUKr3 (ORCPT
+        with ESMTP id S231178AbjGUKqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 06:47:29 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965AB1701;
-        Fri, 21 Jul 2023 03:47:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689936448; x=1721472448;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lqUeKJjFv2Sxri0zg/OC/DAKL78i5iZqhBI02xpLRko=;
-  b=b1gQmxJK0t5qLXwInz2z1vsdJy6AAum1O7lL2lvyHs1DN9MMjcWJh3Ie
-   XiQIolmGnSCp8dS7AHZSNibxy1hVJ/i0RigeqX+3TY4Dchg79d7tNOVZt
-   1zI0mxUUEvbdid5OKYkKK/OjvF3ZXRsYUUBweuFEO96HogAYXug1jV1FM
-   yXeHCATd/WIUfaKFRwUCN6MxORHdPgsDhMt0bhcAg+lXz7IRDf3PKuGMb
-   /1av+6I8NpXxKDEkf4L4OUG5eZRRZANszRY6PuFLljdeBGha5N7Pqp/NZ
-   HY/81IGWCW7Y7bnlpdITKo1unVMFC5S6MTvObMTBR5MjdcpzxEDN4ncJ0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="365884912"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="365884912"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 03:47:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="724827627"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="724827627"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orsmga002.jf.intel.com with ESMTP; 21 Jul 2023 03:47:13 -0700
-Date:   Fri, 21 Jul 2023 18:45:26 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFC PATCH v11 01/29] KVM: Wrap kvm_gfn_range.pte in a
- per-action union
-Message-ID: <ZLphxpSTL9Fpn1ye@yilunxu-OptiPlex-7050>
-References: <20230718234512.1690985-1-seanjc@google.com>
- <20230718234512.1690985-2-seanjc@google.com>
- <ZLolA2U83tP75Qdd@yzhao56-desk.sh.intel.com>
+        Fri, 21 Jul 2023 06:46:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED421FE1;
+        Fri, 21 Jul 2023 03:45:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A8D5860B9B;
+        Fri, 21 Jul 2023 10:45:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C05F4C433C7;
+        Fri, 21 Jul 2023 10:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689936353;
+        bh=bVNXVddqgqx1/2cVxz9Duf0iI7M4JNjftVODFvQksBw=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=MMe8+UN1AYvQDmbxtdcaYtRwOeD1cv/rDNshzQLq818XgH9e9Sy3CimOVXUYbevj2
+         v+3ZR4LXFpeHaqtJII/ktXn26Zy8RTCGnyOoGgMQAklZA3HxoHDQfEmO05xLKzTioU
+         VPwFZ1bAmhNLo4q7LsybDaqDcaR/9GTV6pKHB0WnzK/x+oZ2UEffhonGX6Ybf6bfy3
+         d6s582PefhesphdgBW6O8uGwvszjjl48ShHR/fmbSf1K+j7AOfh/s8a7ua9qKWWeBP
+         rDTBT1J0+VE4ZK3KbOW77vOea28fMt/hFTS9D9MaErXuzHEbJB8TigSOS0qEGMiy/x
+         GuILY+9gHJhZg==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     hanyu001@208suo.com
+Cc:     stf_xl@wp.pl, helmut.schaa@googlemail.com,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] wireless: ralink: rt2x00: Remove unnecessary spaces
+References: <tencent_0AFA418AB6A31D66F3B0481E8BC58A70A108@qq.com>
+        <c0f897b57f6b05d26f2c006154fa15ed@208suo.com>
+Date:   Fri, 21 Jul 2023 13:45:50 +0300
+In-Reply-To: <c0f897b57f6b05d26f2c006154fa15ed@208suo.com> (hanyu's message of
+        "Fri, 21 Jul 2023 17:37:59 +0800")
+Message-ID: <87pm4l35lt.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZLolA2U83tP75Qdd@yzhao56-desk.sh.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,38 +57,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-21 at 14:26:11 +0800, Yan Zhao wrote:
-> On Tue, Jul 18, 2023 at 04:44:44PM -0700, Sean Christopherson wrote:
-> 
-> May I know why KVM now needs to register to callback .change_pte()?
+hanyu001@208suo.com writes:
 
-I can see the original purpose is to "setting a pte in the shadow page
-table directly, instead of flushing the shadow page table entry and then
-getting vmexit to set it"[1].
+> Fix checkpatch warnings:
+>
+> ./drivers/net/wireless/ralink/rt2x00/rt2x00reg.h:168: ERROR: space
+> prohibited after that open parenthesis '('
+> ./drivers/net/wireless/ralink/rt2x00/rt2x00reg.h:168: ERROR: space
+> prohibited before that close parenthesis ')'
+> ./drivers/net/wireless/ralink/rt2x00/rt2x00reg.h:169: ERROR: space
+> prohibited after that open parenthesis '('
+> ./drivers/net/wireless/ralink/rt2x00/rt2x00reg.h:169: ERROR: space
+> prohibited before that close parenthesis ')'
+>
+> Signed-off-by: Yu Han <hanyu001@208suo.com>
 
-IIUC, KVM is expected to directly make the new pte present for new
-pages in this callback, like for COW.
+I have seen a lot of checkpatch fixes from you. We do not really like
+random checkpatch fixes from new people, too much work for very little
+gain. From looking at the title it's clear that you have not even read
+our wireless specific instructions from our wiki (see link below).
 
-> As also commented in kvm_mmu_notifier_change_pte(), .change_pte() must be
-> surrounded by .invalidate_range_{start,end}().
-> 
-> While kvm_mmu_notifier_invalidate_range_start() has called kvm_unmap_gfn_range()
-> to zap all leaf SPTEs, and page fault path will not install new SPTEs
-> successfully before kvm_mmu_notifier_invalidate_range_end(),
-> kvm_set_spte_gfn() should not be able to find any shadow present leaf entries to
-> update PFN.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-I also failed to figure out how the kvm_set_spte_gfn() could pass
-several !is_shadow_present_pte(iter.old_spte) check then write the new
-pte.
-
-
-[1] https://lore.kernel.org/all/200909222039.n8MKd4TL002696@imap1.linux-foundation.org/
-
-Thanks,
-Yilun
-
-> 
-> Or could we just delete completely
-> "kvm_handle_hva_range(mn, address, address + 1, pte, kvm_set_spte_gfn);"
-> from kvm_mmu_notifier_change_pte() ?
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
