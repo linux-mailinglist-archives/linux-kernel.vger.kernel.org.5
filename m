@@ -2,186 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE1A75D61D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 23:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37EB75D61E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 23:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229569AbjGUVAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 17:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60658 "EHLO
+        id S230475AbjGUVBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 17:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbjGUVAe (ORCPT
+        with ESMTP id S229675AbjGUVBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 17:00:34 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650FE2D46
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:00:33 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-51e29ede885so3073819a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:00:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689973232; x=1690578032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JOgbHJec+Tti6Wru7OdTqH4+oMnk38DLOG9c4qJJzP8=;
-        b=hkZ+D5g5lDrDl4A690EnFIQrEBWzd57RPaM7SaKw8Y1xk7u1cAMRN4ld2mJkGcGqTY
-         /owNQyHKnflgKZIMZHrBc4AfSR3tYOaMOz+dYxvCdQz1ey2+U9QmjTviN0Qum0KxXOdw
-         8SFQWbBe/mtcxHqLJFyQClCzU3YhFgrJb03GP0qsdY0KqtaR9x7Hx4Kq9tfA6JVlHuMC
-         ypntCYhcJXE3lxIkq+N9LeOkrGyUDm31Kih652QMPZI12bzYmDTEAxVdi1OIoHwEX4uX
-         mQtgA1yxQCz6Ur0+IYN0S57Jk3wDnFBAsv0rrUdhewR+YipnqPXBqEiLqMAQS7fN91mG
-         kzeA==
+        Fri, 21 Jul 2023 17:01:38 -0400
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151F51FD2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:01:37 -0700 (PDT)
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-78360b822abso108624239f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 14:01:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689973232; x=1690578032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JOgbHJec+Tti6Wru7OdTqH4+oMnk38DLOG9c4qJJzP8=;
-        b=DwMI6dacj2EfS1iG4yXtMBudmtvWa2SgteLBgZyMKOH/pi6Wx7iNS48bHVRfCWM/vA
-         fP7CMlWWkA1aAAZ7dTQ2HDyfDjJUJeHkoF1cRiHUAblbjrSLvglzhDBshI7L+/V3QQXY
-         kYJJwFbCmAQ8ekpnGY4CQjrIHtVJeT58yQl6/wHkcGv1rPHtkVaw6GUzj7ynLVmffHbT
-         0x7VspEjpvQYU8l/aJvdbLLzmG0XM6R+3nCftnbbumTIoZhE7oMv9gRgPR82UDfSub0Q
-         mtBauf/HAhyJj4b69nynmrHAIOaZfGn3RBD1xKS+AW3nEmjcXYNEqgw7MFVYAaJls8Qb
-         5Dxw==
-X-Gm-Message-State: ABy/qLZr4OpxPXHEkDKY6pE6RV07/6ZE2Vq+aYFMW0cHNqwkxzX8Ho2t
-        4tT+W6SeIgMfS332jmNSf4kWmKSFbKP+65MtlfrJIw==
-X-Google-Smtp-Source: APBJJlF4w7IolAQjvFt45KYghjPLjVomuKrZ2Ype4QjwYKABfJu98+K6+QIzMGKxUWt/Is9nh3WdSTiYhrlnIY4617k=
-X-Received: by 2002:a17:906:101a:b0:98d:cd3e:c193 with SMTP id
- 26-20020a170906101a00b0098dcd3ec193mr2203336ejm.46.1689973231695; Fri, 21 Jul
- 2023 14:00:31 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689973296; x=1690578096;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yM+Mlo3/qdURDyU/jOXBjf2mTfeeu/j5kwoCIZNPzV4=;
+        b=dCqFe+KZ43t5O8R5VvbWSkGkxR3UQCSAa30uucUJ/GvfoMOanFdIUiKO74oZCPv3+k
+         w1k/spW4U8V2OoUFguPXBOEp2JYySsJYJAcUjO0huXdoTUgya3jGS6yD7U7UaZzVMaPS
+         JH3KsJdBrVwnDeYhD7ezECgPR+h2HEdtfbwSl8RF4Gc+IEvjqvrWjnbC5B+pSqqVDcL1
+         +3vJluBfmtSO/5vtllpoq3aBgmILuujzYmE7uoaiuynL3aR7IqELWWhV8D/Cx8ofjWi9
+         yWh0CbxhtFfrh3QGyOCd+9lYb+FUwUL0DFG3PqT5te4l7AkES2IL1msmH8WM+6xY31fE
+         kleQ==
+X-Gm-Message-State: ABy/qLZci39Z+svv7NU1q/9w0uggEnpJbPRi+U2LMqGFKAiQXHyUbOt3
+        YVuxQJ8Kn8QdF65PhgfrCiw=
+X-Google-Smtp-Source: APBJJlEkNbiIvlo9GdVjs7O3HS7p2Fincaq3SVX/f/JJcykDQH0nGgIFUG1fZgJmhjt9Ga2CfRUS3g==
+X-Received: by 2002:a05:6602:151:b0:787:5ca:d4f with SMTP id v17-20020a056602015100b0078705ca0d4fmr913746iot.8.1689973296198;
+        Fri, 21 Jul 2023 14:01:36 -0700 (PDT)
+Received: from snowbird ([2601:282:1800:1f50::d356])
+        by smtp.gmail.com with ESMTPSA id c11-20020a6bfd0b000000b0076ffebfc9fasm1297464ioi.47.2023.07.21.14.01.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 14:01:35 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 14:01:34 -0700
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, tj@kernel.org, cl@linux.com,
+        mawupeng1@huawei.com
+Subject: Re: [PATCH 2/3] mm/percpu.c: optimize the code in
+ pcpu_setup_first_chunk() a little bit
+Message-ID: <ZLryLmHm99Pea2Yj@snowbird>
+References: <20230721131800.20003-1-bhe@redhat.com>
+ <20230721131800.20003-3-bhe@redhat.com>
 MIME-Version: 1.0
-References: <20230720070825.992023-1-yosryahmed@google.com>
- <20230720153515.GA1003248@cmpxchg.org> <ZLmRlTej8Tm82kXG@slm.duckdns.org>
- <CAJD7tkYhu3g9u7HkUTFBtT3Q4edVZ2g1TWV1FDcyM9srrYCBLg@mail.gmail.com>
- <ZLmxLUNdxMi5s2Kq@slm.duckdns.org> <CAJD7tkZKo_oSZ-mQc-knMELP8kiY1N7taQhdV6tPsqN0tg=gog@mail.gmail.com>
- <ZLm1ptOYH6F8fGHT@slm.duckdns.org> <CAJD7tkbDxw-hqG8i85NhnjxmXFMbR5OaSW5dHDVYfdA=ZnPAEw@mail.gmail.com>
- <ZLrN1BE42Tsybm6j@slm.duckdns.org> <CAJD7tkatz1JhKVj_iP9J0H7fPJnUSurZkCT1iJTJ=+qRen_nLQ@mail.gmail.com>
- <20230721204408.GA1033322@cmpxchg.org>
-In-Reply-To: <20230721204408.GA1033322@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 21 Jul 2023 13:59:55 -0700
-Message-ID: <CAJD7tkaro0opThQaMTFr_8sAjiFFEsaZK9YzEjBaSiDJ93DOBg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "T.J. Mercier" <tjmercier@google.com>,
-        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721131800.20003-3-bhe@redhat.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 1:44=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Fri, Jul 21, 2023 at 11:47:49AM -0700, Yosry Ahmed wrote:
-> > On Fri, Jul 21, 2023 at 11:26=E2=80=AFAM Tejun Heo <tj@kernel.org> wrot=
-e:
-> > >
-> > > Hello,
-> > >
-> > > On Fri, Jul 21, 2023 at 11:15:21AM -0700, Yosry Ahmed wrote:
-> > > > On Thu, Jul 20, 2023 at 3:31=E2=80=AFPM Tejun Heo <tj@kernel.org> w=
-rote:
-> > > > > memory at least in our case. The sharing across them comes down t=
-o things
-> > > > > like some common library pages which don't really account for muc=
-h these
-> > > > > days.
-> > > >
-> > > > Keep in mind that even a single page charged to a memcg and used by
-> > > > another memcg is sufficient to result in a zombie memcg.
-> > >
-> > > I mean, yeah, that's a separate issue or rather a subset which isn't =
-all
-> > > that controversial. That can be deterministically solved by reparenti=
-ng to
-> > > the parent like how slab is handled. I think the "deterministic" part=
- is
-> > > important here. As you said, even a single page can pin a dying cgrou=
-p.
-> >
-> > There are serious flaws with reparenting that I mentioned above. We do
-> > it for kernel memory, but that's because we really have no other
-> > choice. Oftentimes the memory is not reclaimable and we cannot find an
-> > owner for it. This doesn't mean it's the right answer for user memory.
-> >
-> > The semantics are new compared to normal charging (as opposed to
-> > recharging, as I explain below). There is an extra layer of
-> > indirection that we did not (as far as I know) measure the impact of.
-> > Parents end up with pages that they never used and we have no
-> > observability into where it came from. Most importantly, over time
-> > user memory will keep accumulating at the root, reducing the accuracy
-> > and usefulness of accounting, effectively an accounting leak and
-> > reduction of capacity. Memory that is not attributed to any user, aka
-> > system overhead.
->
-> Reparenting has been the behavior since the first iteration of cgroups
-> in the kernel. The initial implementation would loop over the LRUs and
-> reparent pages synchronously during rmdir. This had some locking
-> issues, so we switched to the current implementation of just leaving
-> the zombie memcg behind but neutralizing its controls.
+Hello,
 
-Thanks for the context.
+On Fri, Jul 21, 2023 at 09:17:59PM +0800, Baoquan He wrote:
+> This removes the need of local varibale 'chunk', and optimize the code
+> calling pcpu_alloc_first_chunk() to initialize reserved chunk and
+> dynamic chunk to make it simpler.
+> 
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  mm/percpu.c | 32 +++++++++++++-------------------
+>  1 file changed, 13 insertions(+), 19 deletions(-)
+> 
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index 1480bf283d11..c25b058a46ad 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -2581,7 +2581,6 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+>  {
+>  	size_t size_sum = ai->static_size + ai->reserved_size + ai->dyn_size;
+>  	size_t static_size, dyn_size;
+> -	struct pcpu_chunk *chunk;
+>  	unsigned long *group_offsets;
+>  	size_t *group_sizes;
+>  	unsigned long *unit_off;
+> @@ -2697,7 +2696,7 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+>  	pcpu_unit_pages = ai->unit_size >> PAGE_SHIFT;
+>  	pcpu_unit_size = pcpu_unit_pages << PAGE_SHIFT;
+>  	pcpu_atom_size = ai->atom_size;
+> -	pcpu_chunk_struct_size = struct_size(chunk, populated,
+> +	pcpu_chunk_struct_size = struct_size((struct pcpu_chunk *)0, populated,
+>  					     BITS_TO_LONGS(pcpu_unit_pages));
+>  
+>  	pcpu_stats_save_ai(ai);
+> @@ -2735,28 +2734,23 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+>  
+>  	/*
+>  	 * Initialize first chunk.
+> -	 * If the reserved_size is non-zero, this initializes the reserved
+> -	 * chunk.  If the reserved_size is zero, the reserved chunk is NULL
+> -	 * and the dynamic region is initialized here.  The first chunk,
+> -	 * pcpu_first_chunk, will always point to the chunk that serves
+> -	 * the dynamic region.
+> +	 * If the reserved_size is non-zero, initializes the reserved chunk
+                                         ^initialize
+> +	 * firstly. If the reserved_size is zero, the reserved chunk is NULL
+        ^ can remove firstly.
+> +	 * and the dynamic region is initialized directly. The first chunk,
+> +	 * pcpu_first_chunk, will always point to the chunk that serves the
+> +	 * dynamic region.
 
->
-> Thanks to Roman's objcg abstraction, we can now go back to the old
-> implementation of directly moving pages up to avoid the zombies.
->
-> However, these were pure implementation changes. The user-visible
-> semantics never varied: when you delete a cgroup, any leftover
-> resources are subject to control by the remaining parent cgroups.
-> Don't remove control domains if you still need to control resources.
-> But none of this is new or would change in any way!
+Reading this, I'll probably reword this comment to explain the reserved
+chunk better.
 
-The problem is that you cannot fully monitor or control all the
-resources charged to a control domain. The example of common shared
-libraries stands, the pages are charged on first touch basis. You
-can't easily control it or monitor who is charged for what exactly.
-Even if you can find out, is the answer to leave the cgroup alive
-forever because it is charged for a shared resource?
+>  	 */
+>  	tmp_addr = (unsigned long)base_addr + static_size;
+> -	map_size = ai->reserved_size ?: dyn_size;
+> -	chunk = pcpu_alloc_first_chunk(tmp_addr, map_size);
+> -
+> -	/* init dynamic chunk if necessary */
+>  	if (ai->reserved_size) {
+> -		pcpu_reserved_chunk = chunk;
+> -
+> -		tmp_addr = (unsigned long)base_addr + static_size +
+> -			   ai->reserved_size;
+> -		map_size = dyn_size;
+> -		chunk = pcpu_alloc_first_chunk(tmp_addr, map_size);
+> +		map_size = ai->reserved_size;
+> +		pcpu_reserved_chunk = pcpu_alloc_first_chunk(tmp_addr, map_size);
+>  	}
+>  
+> -	/* link the first chunk in */
+> -	pcpu_first_chunk = chunk;
+> +	/* init dynamic chunk if necessary */
+> +	tmp_addr += (unsigned long)ai->reserved_size;
 
-> Neutralizing
-> controls of a zombie cgroup results in the same behavior and
-> accounting as linking the pages to the parent cgroup's LRU!
->
-> The only thing that's new is the zombie cgroups. We can fix that by
-> effectively going back to the earlier implementation, but thanks to
-> objcg without the locking problems.
->
-> I just wanted to address this, because your description/framing of
-> reparenting strikes me as quite wrong.
+I'm not a big fan of += the tmp_addr as I personally find it easier to
+read if it's just laid out explicitly.
 
-Thanks for the context, and sorry if my framing was inaccurate. I was
-more focused on the in-kernel semantics rather than user-visible
-semantics. Nonetheless, with today's status or with reparenting, once
-the memory is at the root level (whether reparented to the root level,
-or in a zombie memcg whose parent is root), the memory has effectively
-escaped accounting. This is not a new problem that reparenting would
-introduce, but it's a problem that recharging is trying to fix that
-reparenting won't.
+> +	map_size = dyn_size;
+> +	pcpu_first_chunk = pcpu_alloc_first_chunk(tmp_addr, map_size);
+> +
+>  	pcpu_nr_empty_pop_pages = pcpu_first_chunk->nr_empty_pop_pages;
+>  	pcpu_chunk_relocate(pcpu_first_chunk, -1);
+>  
+> -- 
+> 2.34.1
+> 
 
-As I outlined above, the semantics of recharging are not new, they are
-equivalent to reclaiming and refaulting the memory in a more
-accelerated/efficient manner. The indeterminism in recharging is very
-similar to reclaiming and refaulting.
+Overall, I think this is good, but I'd go 1 step further and get rid of
+map_size. Regarding tmp_addr, I'd prefer if we kept all the math
+together.
 
-What do you think?
+Thanks,
+Dennis
