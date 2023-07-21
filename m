@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D6A75C7FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBF975C800
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 Jul 2023 15:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbjGUNj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 09:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
+        id S231404AbjGUNjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 09:39:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjGUNjZ (ORCPT
+        with ESMTP id S231365AbjGUNjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 09:39:25 -0400
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BC3E53;
-        Fri, 21 Jul 2023 06:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1689946763;
-  x=1721482763;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=Iw+bltGRYz/2l9De5LyQdFIZrY7VU+/N+bnY6dDOT/s=;
-  b=f1bhUSPovjH16UheDK0t7gYO6ocNgpprMYAnpd5KbE/aQbYGcvLg8SP9
-   SBBeVXtJtMSK5Ucb3t+DzM7Q2jmVdgAHBAs0vTP3dFLCOC30g3GRZ3xa3
-   jQt/UR7Cq0j55/URN20m4YrvMwJiU+eUSWYtQUT8NERECMxgo+hg2LFtc
-   Q/GC1cA2HdXrb+ZhVimI5wT+EmP1tXEPu/Q5JKv6LIPrZ5BYdI5+KPT1/
-   ZZ4wmyvrunTN5jS8Q9avLY1lL08fMFvywkasrX54bn9fiE6/Zz68Rf1HO
-   EZ2LxGfgDloJZ4g5fiLH6nsVGZnCkqmeVknNBH4yD25yA4TieYOULqpcJ
+        Fri, 21 Jul 2023 09:39:33 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD9FD1BDC
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 06:39:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689946771; x=1721482771;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=NkUrPuisbIFulQyMWqUtCvT40Kfi6q+a3Q6zjh8r0po=;
+  b=dx+HoGA5urIbfoBvEOG7q+RX3QvrM94/r9bABHNudN1ZHwMnjWlkZeN9
+   DtCo3PPBm2DiKTSU0iDTWT958tLB42FJTpUEdKfUBtIhf0y9l/8GEqvMH
+   TBkxk4AGeoykOSR+vrnSVh0QUflZDLrq2JPTbWye1QspcGLaGJ7nP2L8S
+   fFIYEyO5IdsX2t/y/d0/gNF8f10BonT1FDuoN8jk4RvzMNoQ93uKpQuZE
+   Q0YiKnXkPODs1vMkNzEw0HZ14yNWwHfAAvFYU3nFxxafWv9vFGHElbDEQ
+   Kld/LwJf9swyxcYzTea040tUFi1qiW+do9QF+93dLxz8yifnuV5pUus0p
    w==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-Date:   Fri, 21 Jul 2023 15:39:20 +0200
-Subject: [PATCH net] net: stmmac: Apply redundant write work around on 4.xx
- too
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="453399308"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="453399308"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 06:39:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="754461242"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
+   d="scan'208";a="754461242"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 21 Jul 2023 06:39:29 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id AC796370; Fri, 21 Jul 2023 16:39:36 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Herve Codina <herve.codina@bootlin.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v1 1/1] minmax: Fix header inclusions
+Date:   Fri, 21 Jul 2023 16:39:32 +0300
+Message-Id: <20230721133932.12679-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230721-stmmac-tx-workaround-v1-1-9411cbd5ee07@axis.com>
-X-B4-Tracking: v=1; b=H4sIAIeKumQC/x3MQQqDMBBA0avIrB0wUQz0KuIixrEOxUQmaRVC7
- m7o8i3+zxBJmCK8mgxCP44cfIVqG3C79W9CXqtBd7rvjFYY03FYh+nGK8jHSvj6FbdFGTMo1+u
- RoKan0Mb3fzuBpwRzKQ+mHijHawAAAA==
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-CC:     <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@axis.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,50 +64,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit a3a57bf07de23fe1ff779e0fdf710aa581c3ff73 ("net: stmmac: work
-around sporadic tx issue on link-up") worked around a problem with TX
-sometimes not working after a link-up by avoiding a redundant write to
-MAC_CTRL_REG (aka GMAC_CONFIG), since the IP appeared to have problems
-with handling multiple writes to that register in some cases.
+BUILD_BUG_ON*() are defined in build_bug.h.
+It also provides __UNIQUE_ID() that is defined
+in the compiler.h.
 
-That commit however only added the work around to dwmac_lib.c (apart
-from the common code in stmmac_main.c), but my systems with version
-4.21a of the IP exhibit the same problem, so add the work around to
-dwmac4_lib.c too.
-
-Fixes: a3a57bf07de2 ("net: stmmac: work around sporadic tx issue on link-up")
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/minmax.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-index df41eac54058..03ceb6a94073 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c
-@@ -240,13 +240,15 @@ void stmmac_dwmac4_set_mac_addr(void __iomem *ioaddr, const u8 addr[6],
- void stmmac_dwmac4_set_mac(void __iomem *ioaddr, bool enable)
- {
- 	u32 value = readl(ioaddr + GMAC_CONFIG);
-+	u32 old_val = value;
+diff --git a/include/linux/minmax.h b/include/linux/minmax.h
+index 798c6963909f..049480235e53 100644
+--- a/include/linux/minmax.h
++++ b/include/linux/minmax.h
+@@ -2,6 +2,7 @@
+ #ifndef _LINUX_MINMAX_H
+ #define _LINUX_MINMAX_H
  
- 	if (enable)
- 		value |= GMAC_CONFIG_RE | GMAC_CONFIG_TE;
- 	else
- 		value &= ~(GMAC_CONFIG_TE | GMAC_CONFIG_RE);
++#include <linux/build_bug.h>
+ #include <linux/const.h>
  
--	writel(value, ioaddr + GMAC_CONFIG);
-+	if (value != old_val)
-+		writel(value, ioaddr + GMAC_CONFIG);
- }
- 
- void stmmac_dwmac4_get_mac_addr(void __iomem *ioaddr, unsigned char *addr,
-
----
-base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
-change-id: 20230721-stmmac-tx-workaround-fb17741c326e
-
-Best regards,
+ /*
 -- 
-Vincent Whitchurch <vincent.whitchurch@axis.com>
+2.40.0.1.gaa8946217a0b
 
