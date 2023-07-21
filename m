@@ -2,111 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C07E975D7A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE8A75D7A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 00:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbjGUWnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 18:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
+        id S230444AbjGUWpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 18:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbjGUWno (ORCPT
+        with ESMTP id S229768AbjGUWpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 18:43:44 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AD13A86
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:43:44 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-2631231fed0so1289603a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 15:43:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689979423; x=1690584223;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=QLdjoAuH6ny9qcAXLDVVZFI8shq7PUiJbkoQWuRMVVg=;
-        b=r7DayOcA+ltTh6qjlaW24skIpW7xZ/eeZRZhOUL6eNDr49X0gtEPZCrp9ecJuvEyXa
-         iyUjReMGUqms9AQmBsMakzpo5wZxxM68a5j76iaYZttCeKC4bgdGFfLa/BnQr3+jt8S+
-         +wXPqZcgfTEEk3m9HhS0BLqP24tj0/TPPTZGgXkBIKGL56mERUjJVbULQtda6tVhY5wQ
-         eqhWSNgI0nNgQGqXEIaQ8wWdHVrZ1LWyxmvpoDZcT8PSdbhwYfJDwFHV3UfEtrr/WgNh
-         /BQ+a0EeMxOH3Ukt17t90axDe3hzA33+A6yMeH5hU5EXAVwuIAeIrC8vgkArp/6Z5hks
-         ynzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689979423; x=1690584223;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QLdjoAuH6ny9qcAXLDVVZFI8shq7PUiJbkoQWuRMVVg=;
-        b=fGejo3Ou5OiSxu9EHwkLxXSInj9NZp1gafnIgZPVjwldneBAz7rmlD+tb0MoCA7FTG
-         CERcKNWKUl+bxLTTgvxpxSBl5EOtT2PbmWwrvywjVW/rtLyBRxsk4/z+GjQlXeuYhQL1
-         MzNIQb/Xkd/EcdwC6lHqQNgwyykOxyXjKSKozS8gIzm74S62Y9yzx0bcHHedCDJpThP3
-         qxXwcx1nUj+IzYkHO/ZeK6rcKoH8x0hsepMeeRfdOutfkOt6r5Bg1HucU3jHWnqZCflI
-         ++Tak0gZhFO4L6IKVThBfJ9kf4rAHUIvylKJqvkvEHTt3Aqs+nxLlErsCA0uPCOSJ96g
-         Ze4g==
-X-Gm-Message-State: ABy/qLaV1t4uLsuyvbkBRlnlsg2G4Ygd0g7CmjziIGpwAv28E8DO7NJh
-        jDXzape6+oIS2opPtXcrmJnM1svS0CY=
-X-Google-Smtp-Source: APBJJlGl6ZlPeg7FzuC/9y7JTBhGtcOsUDfONYfHz3CdAvqvd3nJVGgrwd6x8dJgPSW4q+12UlFCrNglprA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:f691:b0:1b8:a555:385d with SMTP id
- l17-20020a170902f69100b001b8a555385dmr13248plg.9.1689979423484; Fri, 21 Jul
- 2023 15:43:43 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 21 Jul 2023 15:43:37 -0700
-In-Reply-To: <20230721224337.2335137-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230721224337.2335137-1-seanjc@google.com>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230721224337.2335137-3-seanjc@google.com>
-Subject: [PATCH 2/2] Revert "KVM: SVM: Skip WRMSR fastpath on VM-Exit if next
- RIP isn't valid"
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Thelen <gthelen@google.com>,
-        Aaron Lewis <aaronlewis@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 21 Jul 2023 18:45:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BA83A86;
+        Fri, 21 Jul 2023 15:45:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DFFA661DA7;
+        Fri, 21 Jul 2023 22:45:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AF70C433C7;
+        Fri, 21 Jul 2023 22:45:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689979544;
+        bh=laRv+88wjjpHhHhYfLumJkXL3NcEacG+YNj/KogaWHw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sILDCG+Nyv2MjbxqdB0F9NtfAnW/bHyrBpTTczIsVnZ6hD0mIF8OXUv+y+RAIDjmc
+         33Fs4/QilZWF/xqmpQwIxY95Sr5I23O03Mw2CiLNxIiCnB1cGq4SLIcXElTjTSO387
+         aOLBnd0zyyrR0FSZT9BQYRl5iF7hPk0MG57buI+Mp6eb74WcmxUVY6gG102VkFvegh
+         OwIiqc6UqJgVPk0vI0Cw4SgmIb62wftEBSoQcIGIuXIUg+YXHVKQdPe8BbOwZteuBq
+         jREMjvgreFUG4ndSiBVcobMRZ0LqBNGkdrJ9r6jPUhn/JpnoRW58Y1ClZfsQvMeJx7
+         bPdMuk0HSl9bA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id BEF8CCE09E0; Fri, 21 Jul 2023 15:45:43 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 15:45:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     thunder.leizhen@huaweicloud.com
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
+Subject: Re: [PATCH 2/2] rcu: Simplify check_cpu_stall()
+Message-ID: <3a275469-63aa-4929-acbc-28b7ea4b7bc9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230721075716.857-1-thunder.leizhen@huaweicloud.com>
+ <20230721075716.857-3-thunder.leizhen@huaweicloud.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721075716.857-3-thunder.leizhen@huaweicloud.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that handle_fastpath_set_msr_irqoff() acquires kvm->srcu, i.e. allows
-dereferencing memslots during WRMSR emulation, drop the requirement that
-"next RIP" is valid.  In hindsight, acquiring kvm->srcu would have been a
-better fix than avoiding the pastpath, but at the time it was thought that
-accessing SRCU-protected data in the fastpath was a one-off edge case.
+On Fri, Jul 21, 2023 at 03:57:16PM +0800, thunder.leizhen@huaweicloud.com wrote:
+> From: Zhen Lei <thunder.leizhen@huawei.com>
+> 
+> The code and comments of self detected and other detected are the same
+> except the output function. Combine the same parts to avoid duplication.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-This reverts commit 5c30e8101e8d5d020b1d7119117889756a6ed713.
+This looks like a nice simplification, thank you!
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/svm.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+Please make this not depend on the earlier patch and resend.
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index d381ad424554..cea08e5fa69b 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3986,14 +3986,8 @@ static int svm_vcpu_pre_run(struct kvm_vcpu *vcpu)
- 
- static fastpath_t svm_exit_handlers_fastpath(struct kvm_vcpu *vcpu)
- {
--	struct vmcb_control_area *control = &to_svm(vcpu)->vmcb->control;
--
--	/*
--	 * Note, the next RIP must be provided as SRCU isn't held, i.e. KVM
--	 * can't read guest memory (dereference memslots) to decode the WRMSR.
--	 */
--	if (control->exit_code == SVM_EXIT_MSR && control->exit_info_1 &&
--	    nrips && control->next_rip)
-+	if (to_svm(vcpu)->vmcb->control.exit_code == SVM_EXIT_MSR &&
-+	    to_svm(vcpu)->vmcb->control.exit_info_1)
- 		return handle_fastpath_set_msr_irqoff(vcpu);
- 
- 	return EXIT_FASTPATH_NONE;
--- 
-2.41.0.487.g6d72f3e995-goog
+							Thanx, Paul
 
+> ---
+>  kernel/rcu/tree_stall.h | 36 +++++++++++-------------------------
+>  1 file changed, 11 insertions(+), 25 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index 371713f3f7d15d9..0ade7f9dcaa18da 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -711,7 +711,7 @@ static void print_cpu_stall(unsigned long gps)
+>  
+>  static void check_cpu_stall(struct rcu_data *rdp)
+>  {
+> -	bool didstall = false;
+> +	bool self_detected;
+>  	unsigned long gs1;
+>  	unsigned long gs2;
+>  	unsigned long gps;
+> @@ -758,10 +758,10 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  		return; /* No stall or GP completed since entering function. */
+>  	rnp = rdp->mynode;
+>  	jn = jiffies + ULONG_MAX / 2;
+> +	self_detected = READ_ONCE(rnp->qsmask) & rdp->grpmask;
+>  	if (rcu_gp_in_progress() &&
+> -	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
+> +	    (self_detected || ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY)) &&
+>  	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+> -
+>  		/*
+>  		 * If a virtual machine is stopped by the host it can look to
+>  		 * the watchdog like an RCU stall. Check to see if the host
+> @@ -770,31 +770,17 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  		if (kvm_check_and_clear_guest_paused())
+>  			return;
+>  
+> -		/* We haven't checked in, so go dump stack. */
+> -		print_cpu_stall(gps);
+> -		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+> -			rcu_ftrace_dump(DUMP_ALL);
+> -		didstall = true;
+> -
+> -	} else if (rcu_gp_in_progress() &&
+> -		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
+> -		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+> -
+> -		/*
+> -		 * If a virtual machine is stopped by the host it can look to
+> -		 * the watchdog like an RCU stall. Check to see if the host
+> -		 * stopped the vm.
+> -		 */
+> -		if (kvm_check_and_clear_guest_paused())
+> -			return;
+> +		if (self_detected) {
+> +			/* We haven't checked in, so go dump stack. */
+> +			print_cpu_stall(gps);
+> +		} else {
+> +			/* They had a few time units to dump stack, so complain. */
+> +			print_other_cpu_stall(gs2, gps);
+> +		}
+>  
+> -		/* They had a few time units to dump stack, so complain. */
+> -		print_other_cpu_stall(gs2, gps);
+>  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+>  			rcu_ftrace_dump(DUMP_ALL);
+> -		didstall = true;
+> -	}
+> -	if (didstall) {
+> +
+>  		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
+>  		WRITE_ONCE(rcu_state.jiffies_stall, jn);
+>  	}
+> -- 
+> 2.25.1
+> 
