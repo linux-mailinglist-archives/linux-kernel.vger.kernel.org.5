@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5798575DCE7
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 16:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF6675DCED
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 16:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbjGVOYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 10:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35312 "EHLO
+        id S229896AbjGVObm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 10:31:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjGVOYG (ORCPT
+        with ESMTP id S229477AbjGVObk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 10:24:06 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6812709
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:24:05 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fb73ba3b5dso4510140e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690035844; x=1690640644;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HEMPNWlfZvC+ZaudeklsqNdBgq4KJbNHXO/19SnqXeY=;
-        b=CX/YDMFJYKOCdP4a3Jzb9GeKS39qNoJnsb4Yyu9v6qEQLAaJVlyX1SWqDSTcUpt2ZK
-         BZiZ+JKrNwJMX6vMEtpH8VemfrDrdfqabCOy44aT/eYluzqB6j1XE1BlCtP9sb+C+lg5
-         jz8rmNydDqQwl6KIMCmZ6Y5ybbi+hhbq9GSygv3C4631CpO11YKRdVHrP9bJ9AN9hDrn
-         rWJq32dZzLxFmfOLBTv2GDs2iwS5s2QB6D05rnSowXcgvca2gpAqGPyK2+TSnAeZucpl
-         Y1mQVCR0WJiaomYBurfmWNz1WKzEpijS0NC1ICVMY/qfgp02mGbU8oDqh8+gln3VgBb8
-         0eYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690035844; x=1690640644;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HEMPNWlfZvC+ZaudeklsqNdBgq4KJbNHXO/19SnqXeY=;
-        b=AWydWjEGPIHxbFzfQZaJsn1KlmxNYsSCsr+pZCJbumPFXLuUqsopnHkulS+dJkYbc/
-         19ZFm0tSrRvlL2amPpz8859wCE0QbE1MGOxu6jAN2Dc9MHYtof2F35M+nDlkR4mrXQKw
-         6GYs1G1N6CTjxUTKJFViKEg7zD2PjzysBm27Vj7an2hKkgOoQ/zVseKkpAAGHJ9344EQ
-         izsRe2Xs9xEeBj1By30Nxw7PO5ThvHZ+ZEPATHZd1APa3hr5HBdc4AqkBW/5QICaU4d0
-         k2jkFXyzK50CTYaNRVVyG9+6M35f20CHeojQ4vaaMQYjJ0lkWzR5+XDSVOPV9OBI4We6
-         5AoQ==
-X-Gm-Message-State: ABy/qLZjIDHRjJbeaoW2qoz5eN/llidxDTtM/FUt+gXJ1S1hFMZ1Xd4I
-        EP1FiD/bhLPzCgUGZOlM2EhHFEgts3ENfi+GON0=
-X-Google-Smtp-Source: APBJJlE6gDQMTodJm2ZziRpUo9Zx+TWL5mbtIxZ430omJ/panegE+Km6XqOQdW5hkmyT8FwWCoNnNQ==
-X-Received: by 2002:a19:770a:0:b0:4f5:a181:97b8 with SMTP id s10-20020a19770a000000b004f5a18197b8mr2658409lfc.25.1690035843438;
-        Sat, 22 Jul 2023 07:24:03 -0700 (PDT)
-Received: from halip-Pc.42.fr ([93.188.41.70])
-        by smtp.gmail.com with ESMTPSA id v10-20020a056512048a00b004fb86c89fa1sm1213642lfq.135.2023.07.22.07.24.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 07:24:03 -0700 (PDT)
-From:   Aleksei Filippov <halip0503@gmail.com>
-To:     shaggy@kernel.org, gregkh@linuxfoundation.org
-Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Alexei Filippov <halip0503@gmail.com>,
-        syzbot+5f088f29593e6b4c8db8@syzkaller.appspotmail.com
-Subject: [PATCH] jfs: validate max amount of blocks before allocation.
-Date:   Sat, 22 Jul 2023 17:24:01 +0300
-Message-Id: <20230722142401.71257-1-halip0503@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 22 Jul 2023 10:31:40 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ED11FE1;
+        Sat, 22 Jul 2023 07:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=KOFQHKY9FiS+M1ooBdGcu9VMnSbo7Qp9uGzk3JA61Tc=; b=gWjrQ4i5TaiVDqlOAIfX0xtisS
+        gwfUvVPBeTvGNyZShxKRbKdVUoL36JonhPRVYnygEXTIXpqMc+wztGcxQyLXRwKln/3LFZbh4tjgZ
+        K+gJoM7irVGYDNPIbi4jFH/BnthWOR3J262z10I4hxTM1pHTmJ49Zk2MLVBAKtJXZlnM5yxyWJyt8
+        +ATQ7hHaIbDroehG3a2KrB/oXOQGLGoD3xQbS9qlSUgzaABrMoaS3yoQ4PQjXubPx97Ri9/vjlTxR
+        vN/1GvkWVkN5cgRbdZfj6GLBjXcOcnDnU2iGUeE0EvRGfDEv96DgvVhO2+rfETPst5Ewcv4AdBYjq
+        9ttgRb+A==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qNDdl-00Gr7H-0i;
+        Sat, 22 Jul 2023 14:31:25 +0000
+Message-ID: <a60c8c63-509e-682c-16be-1a381b09b1eb@infradead.org>
+Date:   Sat, 22 Jul 2023 07:31:22 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH -next] clk: sunxi-ng: Modify mismatched function name
+Content-Language: en-US
+To:     Zhang Jianhua <chris.zjh@huawei.com>, mturquette@baylibre.com,
+        sboyd@kernel.org, wens@csie.org, jernej.skrabec@gmail.com,
+        samuel@sholland.org, ulf.hansson@linaro.org, mripard@kernel.org
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20230722153107.2078179-1-chris.zjh@huawei.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230722153107.2078179-1-chris.zjh@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexei Filippov <halip0503@gmail.com>
 
-The lack of checking bmp->db_max_freebud in extBalloc() can lead to
-shift out of bounds, so this patch prevents undefined behavior,
-because bmp->db_max_freebud == -1 only if there
-is no free space.
 
-Signed-off-by: Aleksei Filippov <halip0503@gmail.com>
-Reported-and-tested-by: syzbot+5f088f29593e6b4c8db8@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?id=01abadbd6ae6a08b1f1987aa61554c6b3ac19ff2
----
- fs/jfs/jfs_extent.c | 5 +++++
- 1 file changed, 5 insertions(+)
+On 7/22/23 08:31, Zhang Jianhua wrote:
+> No functional modification involved.
+> 
+> drivers/clk/sunxi-ng/ccu_mmc_timing.c:54: warning: expecting prototype for sunxi_ccu_set_mmc_timing_mode(). Prototype was for sunxi_ccu_get_mmc_timing_mode() instead
+> 
+> Fixes: f6f64ed868d3 ("clk: sunxi-ng: Add interface to query or configure MMC timing modes.")
+> Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
 
-diff --git a/fs/jfs/jfs_extent.c b/fs/jfs/jfs_extent.c
-index ae99a7e232ee..a82751e6c47f 100644
---- a/fs/jfs/jfs_extent.c
-+++ b/fs/jfs/jfs_extent.c
-@@ -311,6 +311,11 @@ extBalloc(struct inode *ip, s64 hint, s64 * nblocks, s64 * blkno)
- 	 * blocks in the map. in that case, we'll start off with the
- 	 * maximum free.
- 	 */
-+
-+	/* give up if no space left */
-+	if (bmp->db_maxfreebud == -1)
-+		return -ENOSPC;
-+
- 	max = (s64) 1 << bmp->db_maxfreebud;
- 	if (*nblocks >= max && *nblocks > nbperpage)
- 		nb = nblks = (max > nbperpage) ? max : nbperpage;
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Thanks.
+
+> ---
+>  drivers/clk/sunxi-ng/ccu_mmc_timing.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/sunxi-ng/ccu_mmc_timing.c b/drivers/clk/sunxi-ng/ccu_mmc_timing.c
+> index 23a8d44e2449..78919d7843be 100644
+> --- a/drivers/clk/sunxi-ng/ccu_mmc_timing.c
+> +++ b/drivers/clk/sunxi-ng/ccu_mmc_timing.c
+> @@ -43,7 +43,7 @@ int sunxi_ccu_set_mmc_timing_mode(struct clk *clk, bool new_mode)
+>  EXPORT_SYMBOL_GPL(sunxi_ccu_set_mmc_timing_mode);
+>  
+>  /**
+> - * sunxi_ccu_set_mmc_timing_mode: Get the current MMC clock timing mode
+> + * sunxi_ccu_get_mmc_timing_mode: Get the current MMC clock timing mode
+>   * @clk: clock to query
+>   *
+>   * Return: %0 if the clock is in old timing mode, > %0 if it is in
+
 -- 
-2.25.1
-
+~Randy
