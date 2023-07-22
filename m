@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9239775D948
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 05:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D445B75D94C
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 05:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbjGVDBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 23:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36454 "EHLO
+        id S230127AbjGVDDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 23:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjGVDBb (ORCPT
+        with ESMTP id S229832AbjGVDDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 23:01:31 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CACA10F4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 20:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1689994883;
-        bh=8WAvXoQqLuMqtLTnvKzEcTqmb/uCI/ucvc1IDEyZglI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=projGdOz5MBOYASHzzYjkAQtlyby1xV2fwhN562j33HN1LDR933djfkgNA3r1MDlx
-         86r8Qly5e549o/GMztBlhb4nYoTWlRQZPZF8jOftfDI2UGF3nbIxzTWML8gJWsudOd
-         hUSdi3PAjB7v67sj41+j+/1hQi4cW/gJ+PXKcmuOLTk2oSKqEl50h2/z2BJ5GuZmpU
-         lq2AlvnWZKOhbonoxTs4fJJrrEVI+Gr8h+CaWJQGgLtlzjsenC7Ney86vLfZhgtseN
-         fRN0XivWw2zpdwAF1Ajk0MxKT3rkL9URhYtqCf+eT7VOsx42OkYWBK+hOt9CKuDxpe
-         ZGEyRmzH+xEDw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R7B5Y4ryhz4wyC;
-        Sat, 22 Jul 2023 13:01:21 +1000 (AEST)
-Date:   Sat, 22 Jul 2023 13:01:20 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Willy Tarreau <w@1wt.eu>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Thomas =?UTF-8?B?V2Vp?= =?UTF-8?B?w59zY2h1aA==?= 
-        <thomas@t-8ch.de>, linux-kernel@vger.kernel.org
-Subject: Re: Upcoming nolibc pull request for the next merge window
-Message-ID: <20230722130120.6e4c0eab@canb.auug.org.au>
-In-Reply-To: <7afafb6c-9664-44a1-bc8f-d20239db1dd5@paulmck-laptop>
-References: <7afafb6c-9664-44a1-bc8f-d20239db1dd5@paulmck-laptop>
+        Fri, 21 Jul 2023 23:03:43 -0400
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159D63A84
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 20:03:43 -0700 (PDT)
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6b9d8b76be5so5262162a34.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 20:03:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689995022; x=1690599822;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S8Oe3TGTljBalJeDFwqyq1ZSvfeLmYQ5l8d2D3I9tuA=;
+        b=CbwNao+BTT9QiLwFnVJipqUIU8K7OA5fmL/YtNNEVTvgiBIYY6zPTvg+47Lb5LLX5r
+         WlwXhpttA1hoPB//hkzRAQVkQrKsGh8mQPlfKlKpJ3ijmN3N8s2S1TRYbCcSXygglQ6+
+         1MqTi5g2+VwZSeJ7MjaviK89O77kJ5L7ymykCE3QQY5AFM0kxwAD6BcMDzqQeOSBdf9X
+         73jbRz/RtWWctljjp0I+9CBqK90rm5M40o9vAm1HiQjd+/UvyAHZGTOu6aWWvizHPEQA
+         hk5+FrtjJPTYzj/3Z1KomLMdSa9tk+9FnocubFVqY9wNI6NDCgy/VZ4qAFyDI3/BXtdm
+         4m2Q==
+X-Gm-Message-State: ABy/qLZcugoQV0ccEV1BRVzqIwqmJw1pp9a1hpN/IbeUh6AUTpTOmfOM
+        IM5k1Vq25o1W4m+2hLLmgGSl+4SZJjTJM5tpLkBk1Vfo5pvz
+X-Google-Smtp-Source: APBJJlGFFZ2bisBOnJdbP4Jz0QWwcEWaC0EPJdh8lFNmi1OdHPtbDqhnkRLBl2p1AXH5ys98CSsuxWVisLhPwJaqkDBv7rW0X1Rc
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/f6xPJD0E9.JEJSA=IOUah=V";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6870:76a8:b0:1b0:3bfb:885f with SMTP id
+ dx40-20020a05687076a800b001b03bfb885fmr5170945oab.6.1689995022390; Fri, 21
+ Jul 2023 20:03:42 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 20:03:42 -0700
+In-Reply-To: <20230722020419.540-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fb5d0706010aa05a@google.com>
+Subject: Re: [syzbot] [fs?] general protection fault in iommu_deinit_device
+From:   syzbot <syzbot+a8bd07230391c0c577c2@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/f6xPJD0E9.JEJSA=IOUah=V
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi Paul,
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On Fri, 21 Jul 2023 10:39:48 -0700 "Paul E. McKenney" <paulmck@kernel.org> =
-wrote:
->
-> This is just to let you know that Willy and I are adding co-maintainers
-> for nolibc.  Shuah Khan will join me as administrative maintainer,
-> and will be sending the pull request to you for the next merge window.
->=20
-> Similarly, Thomas Wei=C3=9Fschuh will be joining Willy as technical maint=
-ainer
-> for nolibc.  With luck, this won't affect you, but in case you come across
-> a nolibc issue, please reach out to Thomas as well as Willy, Shuah,
-> and myself.  There will of course be an update to the MAINTAINERS file
-> in the near future, but just to let you know in the meantime.
+Reported-and-tested-by: syzbot+a8bd07230391c0c577c2@syzkaller.appspotmail.com
 
-Would it make sense to add a separate nolibc branch to linux-next (and
-no longer merge it into the rcu branch?  Or are there dependencies
-between the two?
+Tested on:
 
---=20
-Cheers,
-Stephen Rothwell
+commit:         2205be53 Add linux-next specific files for 20230717
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=11975a06a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=173c0f005722ecc3
+dashboard link: https://syzkaller.appspot.com/bug?extid=a8bd07230391c0c577c2
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=178a1e9aa80000
 
---Sig_/f6xPJD0E9.JEJSA=IOUah=V
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS7RoAACgkQAVBC80lX
-0GwEpQf8DGSNxYOqncvhe6TSjmTRwRchkHVoZw5f3p7/oLvX2+669rLWjWca8KeN
-nT89melFYeW51AwPeKiWuHl3tbYfPh2+0rl9izRvdQrR69lv9Zo6qJN7a37FlA2k
-8IDrs5A1444p6co6cFSc56jmWOPsby9Es2sc0tFDpi9HWIXgyp3UpCcrr94Y3Nzw
-Ki893QVUDwFXec0J0MzG5fsiYtY95ygbuhp6hGq0YO1v9W2JiWFA3wrUiyiTXBl9
-epb35Hfw/uGpvgvBZX3/R1p78qBJCLUygbsB4jCBzVBswNNFYN3MBShpHUzHmmAE
-pf4uFIBaij7z68H5CiCzsmP9K1MXHw==
-=laiU
------END PGP SIGNATURE-----
-
---Sig_/f6xPJD0E9.JEJSA=IOUah=V--
+Note: testing is done by a robot and is best-effort only.
