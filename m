@@ -2,157 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7F275DAA1
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 09:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E90B775DAA3
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 09:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjGVHdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 03:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55160 "EHLO
+        id S229965AbjGVHi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 03:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbjGVHdU (ORCPT
+        with ESMTP id S229546AbjGVHiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 03:33:20 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1B6211E
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 00:33:18 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=2;SR=0;TI=SMTPD_---0Vnx1zap_1690011193;
-Received: from 30.221.144.79(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0Vnx1zap_1690011193)
-          by smtp.aliyun-inc.com;
-          Sat, 22 Jul 2023 15:33:14 +0800
-Message-ID: <bf48239c-6850-d33d-e7f6-1a4a15400ae9@linux.alibaba.com>
-Date:   Sat, 22 Jul 2023 15:33:11 +0800
+        Sat, 22 Jul 2023 03:38:25 -0400
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6066D2709
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 00:38:24 -0700 (PDT)
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3a41b765478so6430938b6e.0
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 00:38:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690011503; x=1690616303;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3BFg2LH8Kt+Y3c9UeEmRjI3v36opiod0X7a7OqprL1w=;
+        b=VhfxBg7TWkksLKhZu7OiZOpQdzyumHGpJhclGasYzGQgrkjqjAWqx4PvMZ+Zl7B1d4
+         shMZnULzo/4Ps/Uexvup7IsycAdxe+WmVCfO9eTKNNXcUL6WV0R8fyN5ALau0q6kw6Wp
+         9FynDt3z2dtB3iw6IrKeIluL6yxe8FI2QckulLo0C2CMhrtf01H4VhWk3k8ogDj7i/8E
+         VM7MByiYkcK2+EmpOCUpjFbZb14qrujprSTMKfazsQy1CGbGanEYkRUNG4rkF4Z38MDw
+         /Sdi1P4ZLd2G2EfAttu0XKPZcecJhfjbVGnlnysj/vAg7tdTltZaZ4zXmkJQFYgGGWFm
+         bPwA==
+X-Gm-Message-State: ABy/qLYXN0JmnQJhryc5rYiWRPAi6SAA1I7bBqTdvqXOZHDAfnb+javd
+        PmzfALFI7WNwuv0geynkGiw0D4xO56B7ZR6vSYpMz0OBiP+u
+X-Google-Smtp-Source: APBJJlFeQ9rTgJVx5HyLmSJpNlRbWCk+M1T+morzZu/Q46jYvl0lP3UogNHWfrcfn3SNh8HkfE4neXOsFzAXAlas+4IBfWvkE0lB
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v5 2/2] erofs: boost negative xattr lookup with bloom
- filter
-Content-Language: en-US
-To:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20230721104923.20236-1-jefflexu@linux.alibaba.com>
- <20230721104923.20236-3-jefflexu@linux.alibaba.com> <ZLt/oJWa4MoE4F25@debian>
-From:   Jingbo Xu <jefflexu@linux.alibaba.com>
-In-Reply-To: <ZLt/oJWa4MoE4F25@debian>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:3097:b0:3a4:8ecb:1878 with SMTP id
+ bl23-20020a056808309700b003a48ecb1878mr9381158oib.1.1690011503647; Sat, 22
+ Jul 2023 00:38:23 -0700 (PDT)
+Date:   Sat, 22 Jul 2023 00:38:23 -0700
+In-Reply-To: <0000000000004386940600eca80d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000057611806010e77fa@google.com>
+Subject: Re: [syzbot] [net?] WARNING: ODEBUG bug in ingress_destroy
+From:   syzbot <syzbot+bdcf141f362ef83335cf@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, edumazet@google.com, hdanton@sina.com,
+        jhs@mojatatu.com, jiri@resnulli.us, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has bisected this issue to:
 
+commit e420bed025071a623d2720a92bc2245c84757ecb
+Author: Daniel Borkmann <daniel@iogearbox.net>
+Date:   Wed Jul 19 14:08:52 2023 +0000
 
-On 7/22/23 3:05 PM, Gao Xiang wrote:
-> On Fri, Jul 21, 2023 at 06:49:23PM +0800, Jingbo Xu wrote:
->> Optimise the negative xattr lookup with bloom filter.
->>
->> The bit value for the bloom filter map has a reverse semantics for
->> compatibility.  That is, the bit value of 0 indicates existence, while
->> the bit value of 1 indicates the absence of corresponding xattr.
->>
->> The initial version is _only_ enabled when xattr_filter_reserved is
->> zero.  The filter map internals may change in the future, in which case
->> the reserved flag will be set non-zero and we don't need bothering the
->> compatible bits again at that time.  For now disable the optimization if
->> this reserved flag is non-zero.
->>
->> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
->> ---
->>  fs/erofs/Kconfig    |  1 +
->>  fs/erofs/internal.h |  3 +++
->>  fs/erofs/super.c    |  1 +
->>  fs/erofs/xattr.c    | 14 ++++++++++++++
->>  4 files changed, 19 insertions(+)
->>
->> diff --git a/fs/erofs/Kconfig b/fs/erofs/Kconfig
->> index f259d92c9720..f49669def828 100644
->> --- a/fs/erofs/Kconfig
->> +++ b/fs/erofs/Kconfig
->> @@ -38,6 +38,7 @@ config EROFS_FS_DEBUG
->>  config EROFS_FS_XATTR
->>  	bool "EROFS extended attributes"
->>  	depends on EROFS_FS
->> +	select XXHASH
->>  	default y
->>  	help
->>  	  Extended attributes are name:value pairs associated with inodes by
->> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
->> index 36e32fa542f0..3c1f89d8421b 100644
->> --- a/fs/erofs/internal.h
->> +++ b/fs/erofs/internal.h
->> @@ -151,6 +151,7 @@ struct erofs_sb_info {
->>  	u32 xattr_prefix_start;
->>  	u8 xattr_prefix_count;
->>  	struct erofs_xattr_prefix_item *xattr_prefixes;
->> +	unsigned int xattr_filter_reserved;
->>  #endif
->>  	u16 device_id_mask;	/* valid bits of device id to be used */
->>  
->> @@ -251,6 +252,7 @@ EROFS_FEATURE_FUNCS(fragments, incompat, INCOMPAT_FRAGMENTS)
->>  EROFS_FEATURE_FUNCS(dedupe, incompat, INCOMPAT_DEDUPE)
->>  EROFS_FEATURE_FUNCS(xattr_prefixes, incompat, INCOMPAT_XATTR_PREFIXES)
->>  EROFS_FEATURE_FUNCS(sb_chksum, compat, COMPAT_SB_CHKSUM)
->> +EROFS_FEATURE_FUNCS(xattr_filter, compat, COMPAT_XATTR_FILTER)
->>  
->>  /* atomic flag definitions */
->>  #define EROFS_I_EA_INITED_BIT	0
->> @@ -270,6 +272,7 @@ struct erofs_inode {
->>  	unsigned char inode_isize;
->>  	unsigned int xattr_isize;
->>  
->> +	unsigned int xattr_name_filter;
->>  	unsigned int xattr_shared_count;
->>  	unsigned int *xattr_shared_xattrs;
->>  
->> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
->> index 9d6a3c6158bd..72122323300e 100644
->> --- a/fs/erofs/super.c
->> +++ b/fs/erofs/super.c
->> @@ -388,6 +388,7 @@ static int erofs_read_superblock(struct super_block *sb)
->>  	sbi->xattr_blkaddr = le32_to_cpu(dsb->xattr_blkaddr);
->>  	sbi->xattr_prefix_start = le32_to_cpu(dsb->xattr_prefix_start);
->>  	sbi->xattr_prefix_count = dsb->xattr_prefix_count;
->> +	sbi->xattr_filter_reserved = dsb->xattr_filter_reserved;
->>  #endif
->>  	sbi->islotbits = ilog2(sizeof(struct erofs_inode_compact));
->>  	sbi->root_nid = le16_to_cpu(dsb->root_nid);
->> diff --git a/fs/erofs/xattr.c b/fs/erofs/xattr.c
->> index 40178b6e0688..e9b9ed6b28d2 100644
->> --- a/fs/erofs/xattr.c
->> +++ b/fs/erofs/xattr.c
->> @@ -5,6 +5,7 @@
->>   * Copyright (C) 2021-2022, Alibaba Cloud
->>   */
->>  #include <linux/security.h>
->> +#include <linux/xxhash.h>
->>  #include "xattr.h"
->>  
->>  struct erofs_xattr_iter {
->> @@ -87,6 +88,7 @@ static int erofs_init_inode_xattrs(struct inode *inode)
->>  	}
->>  
->>  	ih = it.kaddr + erofs_blkoff(sb, it.pos);
->> +	vi->xattr_name_filter = le32_to_cpu(ih->h_name_filter);
->>  	vi->xattr_shared_count = ih->h_shared_count;
->>  	vi->xattr_shared_xattrs = kmalloc_array(vi->xattr_shared_count,
->>  						sizeof(uint), GFP_KERNEL);
->> @@ -392,7 +394,10 @@ int erofs_getxattr(struct inode *inode, int index, const char *name,
->>  		   void *buffer, size_t buffer_size)
->>  {
->>  	int ret;
->> +	uint32_t hashbit;
-> 
-> Why using `uint32_t` here rather than `unsigned int`? We don't use
-> `uint32_t` in the kernel codebase.
-> 
+    bpf: Add fd-based tcx multi-prog infra with link support
 
-xxh32() returns uint32_t.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1568abf4a80000
+start commit:   03b123debcbc tcp: tcp_enter_quickack_mode() should be static
+git tree:       net-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1768abf4a80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1368abf4a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=32e3dcc11fd0d297
+dashboard link: https://syzkaller.appspot.com/bug?extid=bdcf141f362ef83335cf
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10bf2bf4a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12741e9aa80000
 
+Reported-by: syzbot+bdcf141f362ef83335cf@syzkaller.appspotmail.com
+Fixes: e420bed02507 ("bpf: Add fd-based tcx multi-prog infra with link support")
 
--- 
-Thanks,
-Jingbo
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
