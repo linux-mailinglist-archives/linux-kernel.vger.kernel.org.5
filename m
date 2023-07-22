@@ -2,121 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E139675DBBC
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 12:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB07275DBBF
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 12:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbjGVKaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 06:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
+        id S229529AbjGVKap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 06:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjGVKaP (ORCPT
+        with ESMTP id S229579AbjGVKan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 06:30:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9AA270B
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 03:29:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690021768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qZLRLDZZbasI3kPxd2PCiFXEwaPIuFeJBoo7oz3+UCU=;
-        b=L+Z8Nckt+AdjdqgwjCi546sn5umpiv7BRWlxmwgiVjcYec0FWUTRG3RE+UByNk1LSvs/uR
-        E8Bv/8mXYX0mmSF9vjj+tBrbriPkuqbJ251HpRzNiT374BNVxZMe57PDaERN0YfBzchc7Q
-        7tWVWq2/sWzNpw3z566pI3CFPRMezhE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-64-wtLpiUYNPqCjgM1Q4mqXiw-1; Sat, 22 Jul 2023 06:29:27 -0400
-X-MC-Unique: wtLpiUYNPqCjgM1Q4mqXiw-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-31443e13f9dso1445454f8f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 03:29:27 -0700 (PDT)
+        Sat, 22 Jul 2023 06:30:43 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BA22715
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 03:30:41 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6b9c90527a0so2299408a34.1
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 03:30:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690021841; x=1690626641;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OOKl5MdBmvMSYXKLCi5t49QAL09Br/Pxi868eSGFh84=;
+        b=VVu7q7ucD2XFv5rZNuZA8D/e0dguqQKpujw+u6Qu9i5hDemofQ2rfD30TWZi0SZWnl
+         m0nwUPMmN1ZV4NxEGWzW0KzS0YFB2L9Uie+xNlXoJen7/coHvNw/Q2bo4eyHP9DAJmin
+         676XUuKib8GAnB/Q2bgRB5QeQlXEJB3JAnKHFhL6hzjVjS0/paE/lC9gyTkUhiIVWXZM
+         HKj5zVuTVAf2d/C7vUhsPowFUn8hdTa/82Fr6fbLTMbdVGlcAjxabmMlKSjunIk/VR+9
+         DyAODGiVMQksGs/XQ1m48U/fbSq2tLmN4Q96+kwO4MV/cdA5COxbC1ZHDEpimUN9ZN93
+         9zmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690021766; x=1690626566;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qZLRLDZZbasI3kPxd2PCiFXEwaPIuFeJBoo7oz3+UCU=;
-        b=jEgoR4i6hF15/aT6CqtiyUcNYPT0FFJoD9atwon7ti+WVIZIl8cVBTxK4DKtNviMxN
-         iH3I3ZqjYDNkmUy9zQ8ZFOdIwi3DNIiwKroYTpjzvxJDlsiFI/KTtY+oHdGNajY8FUyJ
-         m8NAaJR5hJll9gNjefAKj8ZsmJ7gN8swMuNDE5DGjlR5nlZa9mp0wODdVa7qJ+pJ6Ylv
-         YgkzSJHQ5/L6dabkiATnt6ArQBIBeAykJLPYUfo9WStW3nM6QbcNF57a8TCBka38OsR6
-         5i0gwOrLa1mopxvoCGjs9tj4EGzonQMODeQSWj24Uz/JgTxmYsG9ZMH+UhC1ROIQolLN
-         EXeg==
-X-Gm-Message-State: ABy/qLaUYG/v90S/MzyAHErgJs2/EPIJJs1yKJVJkVWaSJ6fGGcHux4E
-        CBgTRe2ijZ7WmgT6Pd/CawFQ0jvwcLiX/CZ1/sdJlGFqcmTyST/2Ug0uNm1OCJ++zIOeEKqlc28
-        3eYJRyiO3wg9JWlbJ6xpeFl/AE/xnqsnJLnlXuWhTiUdykd6bQzLAnNDwBbPb044JA+kKpISUMO
-        S0Pab89ZUM
-X-Received: by 2002:a5d:594c:0:b0:317:49a2:1f89 with SMTP id e12-20020a5d594c000000b0031749a21f89mr442347wri.1.1690021766020;
-        Sat, 22 Jul 2023 03:29:26 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlG0CW3cuTzgVY3orLwkAx2H5NfB4jIEo8bf4kpoNIbZm8TlKtXSwhP5qmSJP+CHTVpIhD+K5A==
-X-Received: by 2002:a5d:594c:0:b0:317:49a2:1f89 with SMTP id e12-20020a5d594c000000b0031749a21f89mr442306wri.1.1690021765546;
-        Sat, 22 Jul 2023 03:29:25 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id t10-20020a5d690a000000b00316fc844be7sm6553821wru.36.2023.07.22.03.29.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 03:29:25 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Helge Deller <deller@gmx.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Jingoo Han <jingoohan1@gmail.com>, Lee Jones <lee@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Nipun Gupta <nipun.gupta@amd.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 0/4] Allow disabling all native fbdev drivers and
- only keeping DRM emulation
-In-Reply-To: <20230719081544.741051-1-javierm@redhat.com>
-References: <20230719081544.741051-1-javierm@redhat.com>
-Date:   Sat, 22 Jul 2023 12:29:24 +0200
-Message-ID: <87h6pwtf23.fsf@minerva.mail-host-address-is-not-set>
+        d=1e100.net; s=20221208; t=1690021841; x=1690626641;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OOKl5MdBmvMSYXKLCi5t49QAL09Br/Pxi868eSGFh84=;
+        b=DjMhhOS7PzTNrRhHS49Dt1LaAv7WwcPhBsiKjwp2QBCJtvCCa7Lz6AKlai6uUqUkmi
+         fs+9HGJ+7gECD/yRKhc4x12QP80tN1JrXEcOZetpFsRqUCi6aL18ZPYYi1T0uIsNR/LC
+         ZOYaOzm+MgZ/8ZE2tYy/B7ghYlzBlWvcl0+sAjtQxWzyuKMhjQdAT1HxfTwB/VcjBv8k
+         Emq6rmcZ0hC+t+F8gdm1kJH//fbkv5wYaVCKodz2y55oBwTkAebyllvqAxxaDvBaxfno
+         Y3k+sToQl+U1siLUzyxvPSVD1fQsCqS9GSwSAEHQya7bwpln7cNVr/0hwgcAytmm9OYf
+         8geA==
+X-Gm-Message-State: ABy/qLbAh2DnePh3Nkd7XPXFznmloacKwnxhS8HF0Tt70N4jbJgumGWI
+        1qDyUotLn2FE3K+kOcgKzI7nUV5aS+LPr3icciEeRw==
+X-Google-Smtp-Source: APBJJlHxGRblosjMH4p2+lBC0j3tCcLuo+BldGrVBQsh613zaQjS0djs0GLvvduIJXDNq2dWqwjVUicaWzgXrmoBc6M=
+X-Received: by 2002:a05:6358:5e05:b0:134:ed9b:15a7 with SMTP id
+ q5-20020a0563585e0500b00134ed9b15a7mr1648429rwn.30.1690021840866; Sat, 22 Jul
+ 2023 03:30:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230721160520.865493356@linuxfoundation.org>
+In-Reply-To: <20230721160520.865493356@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 22 Jul 2023 16:00:29 +0530
+Message-ID: <CA+G9fYuoo8OPNGemxxcWjaGeO3U+xm2+aGOiC=8DiyzETG+1Jg@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/223] 6.1.40-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Arnd Bergmann <arnd@arndb.de>, Vlad Buslov <vladbu@nvidia.com>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Javier Martinez Canillas <javierm@redhat.com> writes:
-
-> This patch series splits the fbdev core support in two different Kconfig
-> symbols: FB and FB_CORE. The motivation for this is to allow CONFIG_FB to
-> be disabled, while still having the the core fbdev support needed for the
-> CONFIG_DRM_FBDEV_EMULATION to be enabled. The motivation is automatically
-> disabling all fbdev drivers instead of having to be disabled individually.
+On Sat, 22 Jul 2023 at 00:47, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
+> This is the start of the stable review cycle for the 6.1.40 release.
+> There are 223 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 23 Jul 2023 16:04:33 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.1.40-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Pushed to drm-misc (drm-misc-next). Thanks all!
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
--- 
-Best regards,
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+NOTES:
+These are not kernel regressions as per the review,
 
+Following kselfest build regressions noticed on stable-rc 6.1 and 6.4
+The selftests sources are from stable tree 6.4.y branch and version 6.4.4
+
+selftest build errors:
+---------------------
+
+1)
+aarch64-linux-gnu-gcc -Wall -O2 -Wno-unused-function -D_GNU_SOURCE
+-pthread   proc-empty-vm.c  -o kselftest/proc/proc-empty-vm
+proc-empty-vm.c: In function 'main':
+proc-empty-vm.c:350:2: error: #error "implement 'unmap everything'"
+  350 | #error "implement 'unmap everything'"
+      |  ^~~~~
+make[3]: *** [../lib.mk:147: kselftest/proc/proc-empty-vm] Error 1
+
+
+2)
+
+make[3]: Entering directory 'tools/testing/selftests/tc-testing'
+/bin/sh: 1: llc: not found
+clang -I. -I/include/uapi  -Wno-compare-distinct-pointer-types \
+-O2 -target bpf -emit-llvm -c action.c -o - |      \
+llc -march=3Dbpf -mcpu=3Dprobe  -filetype=3Dobj -o kselftest/tc-testing/act=
+ion.o
+/bin/sh: 1: clang: not found
+/bin/sh: 3: llc: not found
+make[3]: *** [Makefile:26: kselftest/tc-testing/action.o] Error 127
+
+
+## Build
+* kernel: 6.1.40-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.1.y
+* git commit: e54fe15e179b2cc0f0587e2ef1549295ae7bc3be
+* git describe: v6.1.39-224-ge54fe15e179b
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.3=
+9-224-ge54fe15e179b
+
+## Test Regressions (compared to v6.1.39)
+* bcm2711-rpi-4-b, kselftest-proc
+  - shardfile-proc
+
+* bcm2711-rpi-4-b, kselftest-tc-testing
+  - shardfile-tc-testing
+
+* dragonboard-410c, kselftest-proc
+  - shardfile-proc
+
+* dragonboard-410c, kselftest-tc-testing
+  - shardfile-tc-testing
+
+* juno-r2, kselftest-proc
+  - shardfile-proc
+
+* juno-r2, kselftest-tc-testing
+  - shardfile-tc-testing
+
+
+## Metric Regressions (compared to v6.1.39)
+
+## Test Fixes (compared to v6.1.39)
+
+## Metric Fixes (compared to v6.1.39)
+
+## Test result summary
+total: 149107, pass: 126633, fail: 2237, skip: 20065, xfail: 172
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 151 total, 150 passed, 1 failed
+* arm64: 57 total, 56 passed, 1 failed
+* i386: 41 total, 38 passed, 3 failed
+* mips: 30 total, 28 passed, 2 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 38 total, 36 passed, 2 failed
+* riscv: 16 total, 15 passed, 1 failed
+* s390: 16 total, 16 passed, 0 failed
+* sh: 14 total, 12 passed, 2 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 46 total, 46 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesytems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-watchdog
+* kselftest-x86
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
