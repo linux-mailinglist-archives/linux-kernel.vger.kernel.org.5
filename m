@@ -2,109 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E42075DD66
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 18:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D79E75DD6D
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 18:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbjGVQPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 12:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
+        id S229708AbjGVQTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 12:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjGVQPO (ORCPT
+        with ESMTP id S229468AbjGVQTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 12:15:14 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1E51FDF;
-        Sat, 22 Jul 2023 09:15:13 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36MFYMKv008838;
-        Sat, 22 Jul 2023 16:15:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=fcPaZKlUfF97BItefZgfwzcbT/04W5hIBwn0mC+LAys=;
- b=mWxCCjZGIZN64zn0PBaEp98e1FqPn0126n2Ja7ROy3pA4zGThUs7Z9FaOZBt7kapb8zp
- /0JQ7LAc6fkToccJ528nrLehnUFlrp2KUk9322+3+AmX21jYJ8kqLlBY/TfkIdFE/PEg
- yIWmgeTePpoll+hwrVsWHI76Zjj92cfsUHuc6WC/psIwmB6lnVz28pzK8mXf0Xg4zZk+
- sECohJ+JnAA+ZmJwvSVhlowX3yGkqyn/d9BWM1npocyfllJSYtn+pNmb3BDnsbs7Earp
- MFXjp0c8ueuLMQI0CUDynVr0MY+rSHCKxNYvtKpZM2Xpnbh4kvWN5LrFdhUwljmfhI/H fg== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s0gdp9gsv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 22 Jul 2023 16:15:04 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36MEa3Sj003390;
-        Sat, 22 Jul 2023 16:15:03 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3rv65y819u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 22 Jul 2023 16:15:03 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36MGEx843146312
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 22 Jul 2023 16:14:59 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5F4252004B;
-        Sat, 22 Jul 2023 16:14:59 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E07D72004D;
-        Sat, 22 Jul 2023 16:14:58 +0000 (GMT)
-Received: from osiris (unknown [9.171.82.123])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Sat, 22 Jul 2023 16:14:58 +0000 (GMT)
-Date:   Sat, 22 Jul 2023 18:14:57 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v2] s390: use obj-y to descend into drivers/s390/
-Message-ID: <20230722161457.7417-B-hca@linux.ibm.com>
-References: <20230721171358.3612099-1-masahiroy@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230721171358.3612099-1-masahiroy@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: AMpnYRmKKivFCMYBjnapAa-u-V0nxNnk
-X-Proofpoint-GUID: AMpnYRmKKivFCMYBjnapAa-u-V0nxNnk
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Sat, 22 Jul 2023 12:19:02 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1106F1FCB;
+        Sat, 22 Jul 2023 09:19:01 -0700 (PDT)
+Date:   Sat, 22 Jul 2023 16:18:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690042739;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7HxdfOmHaQBGRnG6kfgqJKnhhkp+BdN+BlMqHiWUe1w=;
+        b=qmErEK3NL6xrZP0u/tmXkmrQZ0z0KeyaoAtBmMJFdeutR1UPdLiKHRD8GBirSWLJ1z6FYw
+        GUMstq7LvMm8xrlcerIsXtFmzTJskSRMCxD5S13Q2PtfzBVytKqjSr0JRNPibkiGiHPBzd
+        vTob9VqXqL6EspFrMk1vB49CYX3Ytvz3ajm7Fc3ZppeGv1Vbe+Genvn/bfFOgJTF9LNIzN
+        RM5+PgHhsHRZU74g56mQdwAAtKYpacuUT8nvqQ0uGoQwR5/veXtybT/RHGN5J1ROtuk8BW
+        t7BjzdTaawUUWUQiGs7n5r4XDQuX6Ti8gf3KSlIR/Ks4Aa/kKn3N2CCq8whxYw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690042739;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7HxdfOmHaQBGRnG6kfgqJKnhhkp+BdN+BlMqHiWUe1w=;
+        b=872UD6kuSJSNjJfL1ZyaG3sgH8YoUDoGrgphet11KygaZSqRjI3Xtq/EHAfyYHVdvzb6cJ
+        W3/IwL6S/p90j0AA==
+From:   "tip-bot2 for Kim Phillips" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/cpu: Enable STIBP on AMD if Automatic IBRS is enabled
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230720194727.67022-1-kim.phillips@amd.com>
+References: <20230720194727.67022-1-kim.phillips@amd.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-22_06,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=385
- malwarescore=0 spamscore=0 bulkscore=0 suspectscore=0 adultscore=0
- priorityscore=1501 impostorscore=0 clxscore=1011 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307220146
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <169004273861.28540.3552352830983009627.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 02:13:58AM +0900, Masahiro Yamada wrote:
-> The single build rule does not work with the drivers-y syntax. [1]
-> 
-> Use the standard obj-y syntax. It moves the objects from drivers/s390/
-> to slightly lower address, but fixes the reported issue.
-> 
-> [1]: https://lore.kernel.org/linux-kbuild/d57ba55f-20a3-b836-783d-b49c8a161b6e@kernel.org/T/#m27f781ab60acadfed8a9e9642f30d5414a5e2df3
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> Tested-by: Jiri Slaby <jirislaby@kernel.org>
-> ---
-> 
-> Changes in v2:
->   - rephase the commit log
-> 
->  arch/s390/Makefile | 1 -
->  drivers/Makefile   | 2 ++
->  2 files changed, 2 insertions(+), 1 deletion(-)
+The following commit has been merged into the x86/urgent branch of tip:
 
-Applied, thanks!
+Commit-ID:     fd470a8beed88440b160d690344fbae05a0b9b1b
+Gitweb:        https://git.kernel.org/tip/fd470a8beed88440b160d690344fbae05a0b9b1b
+Author:        Kim Phillips <kim.phillips@amd.com>
+AuthorDate:    Thu, 20 Jul 2023 14:47:27 -05:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Sat, 22 Jul 2023 18:04:22 +02:00
+
+x86/cpu: Enable STIBP on AMD if Automatic IBRS is enabled
+
+Unlike Intel's Enhanced IBRS feature, AMD's Automatic IBRS does not
+provide protection to processes running at CPL3/user mode, see section
+"Extended Feature Enable Register (EFER)" in the APM v2 at
+https://bugzilla.kernel.org/attachment.cgi?id=304652
+
+Explicitly enable STIBP to protect against cross-thread CPL3
+branch target injections on systems with Automatic IBRS enabled.
+
+Also update the relevant documentation.
+
+Fixes: e7862eda309e ("x86/cpu: Support AMD Automatic IBRS")
+Reported-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20230720194727.67022-1-kim.phillips@amd.com
+---
+ Documentation/admin-guide/hw-vuln/spectre.rst | 11 +++++++----
+ arch/x86/kernel/cpu/bugs.c                    | 15 +++++++++------
+ 2 files changed, 16 insertions(+), 10 deletions(-)
+
+diff --git a/Documentation/admin-guide/hw-vuln/spectre.rst b/Documentation/admin-guide/hw-vuln/spectre.rst
+index 4d186f5..32a8893 100644
+--- a/Documentation/admin-guide/hw-vuln/spectre.rst
++++ b/Documentation/admin-guide/hw-vuln/spectre.rst
+@@ -484,11 +484,14 @@ Spectre variant 2
+ 
+    Systems which support enhanced IBRS (eIBRS) enable IBRS protection once at
+    boot, by setting the IBRS bit, and they're automatically protected against
+-   Spectre v2 variant attacks, including cross-thread branch target injections
+-   on SMT systems (STIBP). In other words, eIBRS enables STIBP too.
++   Spectre v2 variant attacks.
+ 
+-   Legacy IBRS systems clear the IBRS bit on exit to userspace and
+-   therefore explicitly enable STIBP for that
++   On Intel's enhanced IBRS systems, this includes cross-thread branch target
++   injections on SMT systems (STIBP). In other words, Intel eIBRS enables
++   STIBP, too.
++
++   AMD Automatic IBRS does not protect userspace, and Legacy IBRS systems clear
++   the IBRS bit on exit to userspace, therefore both explicitly enable STIBP.
+ 
+    The retpoline mitigation is turned on by default on vulnerable
+    CPUs. It can be forced on or off by the administrator
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 9e2a918..9550744 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1150,19 +1150,21 @@ spectre_v2_user_select_mitigation(void)
+ 	}
+ 
+ 	/*
+-	 * If no STIBP, enhanced IBRS is enabled, or SMT impossible, STIBP
++	 * If no STIBP, Intel enhanced IBRS is enabled, or SMT impossible, STIBP
+ 	 * is not required.
+ 	 *
+-	 * Enhanced IBRS also protects against cross-thread branch target
++	 * Intel's Enhanced IBRS also protects against cross-thread branch target
+ 	 * injection in user-mode as the IBRS bit remains always set which
+ 	 * implicitly enables cross-thread protections.  However, in legacy IBRS
+ 	 * mode, the IBRS bit is set only on kernel entry and cleared on return
+-	 * to userspace. This disables the implicit cross-thread protection,
+-	 * so allow for STIBP to be selected in that case.
++	 * to userspace.  AMD Automatic IBRS also does not protect userspace.
++	 * These modes therefore disable the implicit cross-thread protection,
++	 * so allow for STIBP to be selected in those cases.
+ 	 */
+ 	if (!boot_cpu_has(X86_FEATURE_STIBP) ||
+ 	    !smt_possible ||
+-	    spectre_v2_in_eibrs_mode(spectre_v2_enabled))
++	    (spectre_v2_in_eibrs_mode(spectre_v2_enabled) &&
++	     !boot_cpu_has(X86_FEATURE_AUTOIBRS)))
+ 		return;
+ 
+ 	/*
+@@ -2294,7 +2296,8 @@ static ssize_t mmio_stale_data_show_state(char *buf)
+ 
+ static char *stibp_state(void)
+ {
+-	if (spectre_v2_in_eibrs_mode(spectre_v2_enabled))
++	if (spectre_v2_in_eibrs_mode(spectre_v2_enabled) &&
++	    !boot_cpu_has(X86_FEATURE_AUTOIBRS))
+ 		return "";
+ 
+ 	switch (spectre_v2_user_stibp) {
