@@ -2,96 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0046A75DC50
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 14:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2AE75DC24
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 13:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230336AbjGVMAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 08:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
+        id S230148AbjGVLzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 07:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjGVMAI (ORCPT
+        with ESMTP id S229545AbjGVLzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 08:00:08 -0400
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6794730E3;
-        Sat, 22 Jul 2023 05:00:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1690026805;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F1GaE+2/EobGnXaZrbvRPqDqY+YQjb0KaQg4mOcftS0=;
-        b=Nxx985BTR1MUipNpPbGPhgeZ0+xVITtFXC6aNIc9OCPYwE45hc8r/mHsJIObHmz74FLnkA
-        jZCf6OXVwU4FpeJ5DyZHbywvWstyZ9PtrLcfZsT74fYEiS53rVOjoj16Icy5GOFEOvX34J
-        p8+cyKkBYYNQbUenTlujAxurASol9XM=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Peter Rosin <peda@axentia.se>
-Subject: [PATCH v2 22/22] i2c: mux: pca954x: Remove #ifdef guards for PM related functions
-Date:   Sat, 22 Jul 2023 13:53:10 +0200
-Message-Id: <20230722115310.27681-6-paul@crapouillou.net>
-In-Reply-To: <20230722115046.27323-1-paul@crapouillou.net>
-References: <20230722115046.27323-1-paul@crapouillou.net>
+        Sat, 22 Jul 2023 07:55:04 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128382D47
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 04:54:48 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbc656873eso25828455e9.1
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 04:54:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690026886; x=1690631686;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=02nknKMJYKlDUsZ+YqcOCSB4hUZzBMytrcBqER2E3Do=;
+        b=umiYYc/aB79bh3drCR+5MHqjugR24HGF2bX6eebpo10/T5g1KdLjrFKA9OZsFVoQvG
+         0W6mbXmvzfG5Z+NZyJ14nhs198h4uDwOXKBP7oWxSPVGBnxb06jURRyvhP+sVoVpk1X6
+         dafrfaNRCd7Em/sC5tVbcRLq0wHnQkdzB8yV7tSYeinLE2N1xMdDxhwP+VjKZJjoXhPw
+         iO7yFefbiOju0bALua9+h18ZdzL/VXQb8I/nNUY3Qz1PqeiJECNPM1uI1emjgNCB2d8I
+         6ruDO1BRhg+bvQsJq2cQe4W8xKinaWsj+hA7vjZsvcjCXEPbBTpCPqqwxWTFdpxZG/lA
+         pAbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690026886; x=1690631686;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=02nknKMJYKlDUsZ+YqcOCSB4hUZzBMytrcBqER2E3Do=;
+        b=UREV1R1zKY4sok5PbufFGfkKuFchtqq97Or4pGLUWAhdjVMl2FpKrsWf3/Uwyg23j8
+         BqrAqWBkrULwUBpfSIFYtKMvShC0ZfdmPpMfdYBaq/x5JCluoMlzbQkJjttilBUV2oEH
+         MX5KJdhU6YMWqS4vlvtj/jcXqOj9G4DgvJA96TAyNdwajo0GLdCxVyxypZALusr1pYct
+         Is49MPnSjaxbInh3C0nzEjoWfsN9o0k27LlkEkNDz2WKQ4DjVtpm0G5NcpFVySqlyh8g
+         hyTVV0w7v5rVJtCHh3bHBMCKsMA+EomosHcdTs57lpHIcmgrCV9zFs+osxmIVcySEIHR
+         XJCQ==
+X-Gm-Message-State: ABy/qLaCPaUJwfGzkmRUcwgDv6fKlOnhLxrNDtzbVqhl1dHCHL/AAlBR
+        0IIDz21q1UnQALg5fdV+YownyA==
+X-Google-Smtp-Source: APBJJlFx0RAbdgVsEAvPtj2sTHjoNfSYVpuccjeLCL0FmCVV3bneOPClpiWLn8F3WdkbgnpvEW1zmg==
+X-Received: by 2002:a05:6000:10c:b0:315:a1d5:a3d5 with SMTP id o12-20020a056000010c00b00315a1d5a3d5mr3843614wrx.22.1690026886543;
+        Sat, 22 Jul 2023 04:54:46 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id o8-20020adfeac8000000b003143b7449ffsm6726496wrn.25.2023.07.22.04.54.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Jul 2023 04:54:46 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/3] media: dt-bindings: samsung,exynos4212-fimc-is: replace duplicate pmu node with phandle
+Date:   Sat, 22 Jul 2023 13:54:39 +0200
+Message-Id: <20230722115441.139628-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new PM macros for the suspend and resume functions to be
-automatically dropped by the compiler when CONFIG_PM or
-CONFIG_PM_SLEEP are disabled, without having to use #ifdef guards.
+The FIMC IS camera must access the PMU (Power Management Unit) IO memory
+to control camera power.  This was achieved by duplicating the PMU node
+as its child like:
 
-This has the advantage of always compiling these functions in,
-independently of any Kconfig option. Thanks to that, bugs and other
-regressions are subsequently easier to catch.
+  soc@0 {
+    system-controller@10020000 { ... }; // Real PMU
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: Peter Rosin <peda@axentia.se>
+    camera@11800000 {
+      fimc-is@12000000 {
+        // FIMC IS camera node
+        pmu@10020000 {
+          reg = <0x10020000 0x3000>; // Fake PMU node
+        };
+      };
+    };
+  };
+
+This is not a correct representation of the hardware.  Mapping the PMU
+(Power Management Unit) IO memory should be via syscon-like phandle
+(samsung,pmu-syscon, already used for other drivers), not by duplicating
+"pmu" Devicetree node inside the FIMC IS.
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/i2c/muxes/i2c-mux-pca954x.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ .../media/samsung,exynos4212-fimc-is.yaml         | 15 ++++++++++-----
+ .../devicetree/bindings/media/samsung,fimc.yaml   |  5 +----
+ 2 files changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
-index 0ccee2ae5720..6965bf4c2348 100644
---- a/drivers/i2c/muxes/i2c-mux-pca954x.c
-+++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
-@@ -530,7 +530,6 @@ static void pca954x_remove(struct i2c_client *client)
- 	pca954x_cleanup(muxc);
- }
+diff --git a/Documentation/devicetree/bindings/media/samsung,exynos4212-fimc-is.yaml b/Documentation/devicetree/bindings/media/samsung,exynos4212-fimc-is.yaml
+index 3691cd4962b2..3a5ff3f47060 100644
+--- a/Documentation/devicetree/bindings/media/samsung,exynos4212-fimc-is.yaml
++++ b/Documentation/devicetree/bindings/media/samsung,exynos4212-fimc-is.yaml
+@@ -75,13 +75,20 @@ properties:
+   power-domains:
+     maxItems: 1
  
--#ifdef CONFIG_PM_SLEEP
- static int pca954x_resume(struct device *dev)
- {
- 	struct i2c_client *client = to_i2c_client(dev);
-@@ -544,14 +543,13 @@ static int pca954x_resume(struct device *dev)
++  samsung,pmu-syscon:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Power Management Unit (PMU) system controller interface, used to
++      power/start the ISP.
++
+ patternProperties:
+   "^pmu@[0-9a-f]+$":
+     type: object
+     additionalProperties: false
++    deprecated: true
+     description:
+       Node representing the SoC's Power Management Unit (duplicated with the
+-      correct PMU node in the SoC).
++      correct PMU node in the SoC). Deprecated, use samsung,pmu-syscon.
  
- 	return ret;
- }
--#endif
+     properties:
+       reg:
+@@ -131,6 +138,7 @@ required:
+   - clock-names
+   - interrupts
+   - ranges
++  - samsung,pmu-syscon
+   - '#size-cells'
  
--static SIMPLE_DEV_PM_OPS(pca954x_pm, NULL, pca954x_resume);
-+static DEFINE_SIMPLE_DEV_PM_OPS(pca954x_pm, NULL, pca954x_resume);
+ additionalProperties: false
+@@ -179,15 +187,12 @@ examples:
+                  <&sysmmu_fimc_fd>, <&sysmmu_fimc_mcuctl>;
+         iommu-names = "isp", "drc", "fd", "mcuctl";
+         power-domains = <&pd_isp>;
++        samsung,pmu-syscon = <&pmu_system_controller>;
  
- static struct i2c_driver pca954x_driver = {
- 	.driver		= {
- 		.name	= "pca954x",
--		.pm	= &pca954x_pm,
-+		.pm	= pm_sleep_ptr(&pca954x_pm),
- 		.of_match_table = pca954x_of_match,
- 	},
- 	.probe		= pca954x_probe,
+         #address-cells = <1>;
+         #size-cells = <1>;
+         ranges;
+ 
+-        pmu@10020000 {
+-            reg = <0x10020000 0x3000>;
+-        };
+-
+         i2c-isp@12140000 {
+             compatible = "samsung,exynos4212-i2c-isp";
+             reg = <0x12140000 0x100>;
+diff --git a/Documentation/devicetree/bindings/media/samsung,fimc.yaml b/Documentation/devicetree/bindings/media/samsung,fimc.yaml
+index 79ff6d83a9fd..530a08f5d3fe 100644
+--- a/Documentation/devicetree/bindings/media/samsung,fimc.yaml
++++ b/Documentation/devicetree/bindings/media/samsung,fimc.yaml
+@@ -236,15 +236,12 @@ examples:
+                      <&sysmmu_fimc_fd>, <&sysmmu_fimc_mcuctl>;
+             iommu-names = "isp", "drc", "fd", "mcuctl";
+             power-domains = <&pd_isp>;
++            samsung,pmu-syscon = <&pmu_system_controller>;
+ 
+             #address-cells = <1>;
+             #size-cells = <1>;
+             ranges;
+ 
+-            pmu@10020000 {
+-                reg = <0x10020000 0x3000>;
+-            };
+-
+             i2c-isp@12140000 {
+                 compatible = "samsung,exynos4212-i2c-isp";
+                 reg = <0x12140000 0x100>;
 -- 
-2.40.1
+2.34.1
 
