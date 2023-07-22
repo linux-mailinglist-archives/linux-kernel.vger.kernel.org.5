@@ -2,104 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCF075DD80
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 18:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6464B75DD82
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 18:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbjGVQre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 12:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57526 "EHLO
+        id S229683AbjGVQuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 12:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229828AbjGVQrc (ORCPT
+        with ESMTP id S229552AbjGVQuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 12:47:32 -0400
-Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11386E7B
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 09:47:30 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id NFlNqftgEZWkDNFlOqjnql; Sat, 22 Jul 2023 18:47:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1690044449;
-        bh=IQyaExm2W+hWmqxwBEcF/S4pavhj7DW1iV5TthHyYq0=;
-        h=From:To:Cc:Subject:Date;
-        b=bv6jFkyPyNTJAMS45ucOXR0aal1IV5W56+H6O/egzxKIDCJmW9IbSNtvYllo84heK
-         kKUxEWgD0UzOCdCp8ckbb5dtvYxgyLrPNbHN/QivomcO3XgGtKLmno54hYOQ6SXbbo
-         w/cK/Z9ZpGlRH0uTMjoRvlTwITZaW5ReuzffE6nwszpSH3t6Em6LY8D8IDhatmJi91
-         r7bTnzCQnRiq4+ct1gyt5lODJcKAHXe5B3YrSeHQVUnZ8gQlkqakffCDHc5qYRO4MM
-         +7Wk6XlzyjnH34PqzYxEgMsrG7lvf1uyLXp2cE+nDcOkDKwKSL3pPTH0wkLELackOL
-         K7t9XNqvKmegw==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 22 Jul 2023 18:47:29 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH v2] IB/hfi1: Use struct_size()
-Date:   Sat, 22 Jul 2023 18:47:24 +0200
-Message-Id: <f4618a67d5ae0a30eb3f2b4558c8cc790feed79a.1690044376.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sat, 22 Jul 2023 12:50:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60957A0;
+        Sat, 22 Jul 2023 09:50:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E97F960B06;
+        Sat, 22 Jul 2023 16:50:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFC23C433C7;
+        Sat, 22 Jul 2023 16:50:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690044616;
+        bh=9XeEJvlgen8BcyqBv9I/W6Fq2iW/Yz6k/D4YZTouxus=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jUAEq07Klk95vWO9FT5slhqsTh47S6Pom4vQcWI9MDXX9edeZlAaXCISBdfFraCkc
+         7pE8bA1zxsO3ggyKp3HVErjgMmR/g/X/4kbioVxIUwHHTJ4GB/PLcGDfVIK8EUL5Xu
+         RnsjY84EEVLpmkBoPyopa8oo1DcAsJ9xi7Ru3MfkJrW4IFmaGh5Dwmq80WM1/gDjS1
+         17RfDriN65MFFsUzSA99R8xDtf2mW2e9enTx/ROatl/cwEbBgHIXhWqmeLlxainqaa
+         Uq21RisUDgzqVCiFfGR6kmNOoUKnw0JCY8Vde2J7wvW11l8UW0nTx6nEnPqc7LLHXo
+         Vq/uW5iU4MoSQ==
+Date:   Sat, 22 Jul 2023 17:50:10 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Chenyuan Mi <michenyuan@huawei.com>
+Cc:     <lars@metafoo.de>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tools: iio: iio_generic_buffer: Fix some integer type
+ and calculation
+Message-ID: <20230722175010.2e10bc6c@jic23-huawei>
+In-Reply-To: <20230718081542.2892453-1-michenyuan@huawei.com>
+References: <20230718081542.2892453-1-michenyuan@huawei.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use struct_size() instead of hand-writing it, when allocating a structure
-with a flex array.
+On Tue, 18 Jul 2023 08:15:42 +0000
+Chenyuan Mi <michenyuan@huawei.com> wrote:
 
-This is less verbose, more robust and more informative.
+Hi,
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-It will also be helpful if the __counted_by() annotation is added with a
-Coccinelle script such as:
-   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=devel/counted_by&id=adc5b3cb48a049563dc673f348eab7b6beba8a9b
+In principle I support hardening code, though in this case we are talking
+about example code only.  We have libiio and similar for anyone who wants
+to do more than basic tests.
+
+> In function size_from_channelarray(), the return value 'bytes' is defined
+> as int type. However, the calcution of 'bytes' in this function is designed
+> to use the unsigned int type. So it is necessary to change 'bytes' type to
+> unsigned int to avoid integer overflow.
+
+For this one, in practice it's controlled entirely by the kernel drivers
+and they won't get anywhere near integer overflow.  The change is
+small however and doesn't hurt readability so I guess no harm applying it.
+
+> 
+> The size_from_channelarray() is called in main() function, its return value
+> is directly multipled by 'buf_len' and then used as the malloc() parameter.
+> The 'buf_len' is completely controllable by user, thus a multiplication
+> overflow may occur here. This could allocate an unexpected small area.
+
+That would have to be a very large allocation...  I suppose it is possible
+someone might try it...
+
+> 
+> Signed-off-by: Chenyuan Mi <michenyuan@huawei.com>
+
+My first inclination is not to apply this on basis that it adds slight complexity
+to example code (the aim of which is too illustrate the interface), however on the other
+side of things the checks don't add significant complexity...
+
+So I tried to apply it, but it doesn't go on cleanly and patch is telling
+me it's malformed. I'm not quite sure why.
+
+patching file tools/iio/iio_generic_buffer.c
+patch: **** malformed patch at line 68:                 ret = -ENOMEM;
+
+Jonathan
 
 
-Change in v2: use struct_size() in another place just a few line below.
----
- drivers/infiniband/hw/hfi1/pio.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
-index 62e7dc9bea7b..dfea53e0fdeb 100644
---- a/drivers/infiniband/hw/hfi1/pio.c
-+++ b/drivers/infiniband/hw/hfi1/pio.c
-@@ -1893,9 +1893,7 @@ int pio_map_init(struct hfi1_devdata *dd, u8 port, u8 num_vls, u8 *vl_scontexts)
- 			vl_scontexts[i] = sc_per_vl + (extra > 0 ? 1 : 0);
- 	}
- 	/* build new map */
--	newmap = kzalloc(sizeof(*newmap) +
--			 roundup_pow_of_two(num_vls) *
--			 sizeof(struct pio_map_elem *),
-+	newmap = kzalloc(struct_size(newmap, map, roundup_pow_of_two(num_vls)),
- 			 GFP_KERNEL);
- 	if (!newmap)
- 		goto bail;
-@@ -1910,9 +1908,8 @@ int pio_map_init(struct hfi1_devdata *dd, u8 port, u8 num_vls, u8 *vl_scontexts)
- 			int sz = roundup_pow_of_two(vl_scontexts[i]);
- 
- 			/* only allocate once */
--			newmap->map[i] = kzalloc(sizeof(*newmap->map[i]) +
--						 sz * sizeof(struct
--							     send_context *),
-+			newmap->map[i] = kzalloc(struct_size(newmap->map[i],
-+							     ksc, sz),
- 						 GFP_KERNEL);
- 			if (!newmap->map[i])
- 				goto bail;
--- 
-2.34.1
+
+
+> ---
+>  tools/iio/iio_generic_buffer.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
+> index f8deae4e26a1..dc7d19c179ca 100644
+> --- a/tools/iio/iio_generic_buffer.c
+> +++ b/tools/iio/iio_generic_buffer.c
+> @@ -51,9 +51,9 @@ enum autochan {
+>   * Has the side effect of filling the channels[i].location values used
+>   * in processing the buffer output.
+>   **/
+> -static int size_from_channelarray(struct iio_channel_info *channels, int num_channels)
+> +static unsigned int size_from_channelarray(struct iio_channel_info *channels, int num_channels)
+>  {
+> -	int bytes = 0;
+> +	unsigned int bytes = 0;
+>  	int i = 0;
+>  
+>  	while (i < num_channels) {
+> @@ -348,7 +348,7 @@ int main(int argc, char **argv)
+>  	ssize_t read_size;
+>  	int dev_num = -1, trig_num = -1;
+>  	char *buffer_access = NULL;
+> -	int scan_size;
+> +	unsigned int scan_size;
+>  	int noevents = 0;
+>  	int notrigger = 0;
+>  	char *dummy;
+> @@ -674,7 +674,14 @@ int main(int argc, char **argv)
+>  	}
+>  
+>  	scan_size = size_from_channelarray(channels, num_channels);
+> -	data = malloc(scan_size * buf_len);
+> +
+> +	size_t total_buf_len = scan_size * buf_len;
+> +
+> +	if (scan_size > 0 && total_buf_len / scan_size != buf_len) {
+> +		ret = -EFAULT;
+> +		perror("Integer overflow happened when calculate scan_size * buf_len");
+> +		goto error;
+> +	}
+> +
+> +	data = malloc(total_buf_len);
+>  	if (!data) {
+>  		ret = -ENOMEM;
+>  		goto error;
 
