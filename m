@@ -2,39 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC8075DC77
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 14:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C4B75DC7A
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 14:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbjGVMUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 08:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
+        id S230140AbjGVMYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 08:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGVMUT (ORCPT
+        with ESMTP id S229476AbjGVMYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 08:20:19 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E3BE89B;
-        Sat, 22 Jul 2023 05:20:17 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 36MCK93g017357;
-        Sat, 22 Jul 2023 14:20:09 +0200
-Date:   Sat, 22 Jul 2023 14:20:09 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     thomas@t-8ch.de, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 02/14] selftests/nolibc: add macros to enhance
- maintainability
-Message-ID: <20230722122009.GE17311@1wt.eu>
-References: <cover.1689759351.git.falcon@tinylab.org>
- <0415392c9c2b0a7249563abd79599a475019b508.1689759351.git.falcon@tinylab.org>
+        Sat, 22 Jul 2023 08:24:07 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C08210E;
+        Sat, 22 Jul 2023 05:24:06 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-267f68fdccfso63390a91.1;
+        Sat, 22 Jul 2023 05:24:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690028646; x=1690633446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D+TXoV0EO/SD5DvE1XwqMaH8zsVLkDh0doqX0bYlwo0=;
+        b=U/roaTDh96JdS/pOt4zEyp+1o6i8DXW33jtfDcgjTgx8J5GxkqE4h2B5h3xZMtAhdY
+         HaRUmUgJkVMmgm69n5FSi0yavBPsUvuCf9lPT05fjby6i7es954FGGdz5tW0y+xKBvZt
+         +CI1y0rHwTn9aYRhJL6wXd7KWGe+r4gxXri4ay3xxF6F7wLyU4k9C01ltjMEhd4ugDC7
+         cnCMTQnCow0V8z743RQauORUrIreutY5eHr2dXh8OJt83GaEVGGVdrqWOvfaqSKmIDTA
+         ArH8YbMEv3H0tBsBxPqgUHqXBVEfIdZowARe5DHI6qwFEvb4/rjnbfxm47FiBxtdNhxM
+         ly/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690028646; x=1690633446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D+TXoV0EO/SD5DvE1XwqMaH8zsVLkDh0doqX0bYlwo0=;
+        b=EFkpFn4T8g7OOaZOsH4weumFAhTMco1vOnzhryKqe6jk1RB/PZnDNilcpZ8S2lvmvX
+         stpoEid4V0eqXd6+knFYg9X+Xf8gsEwdm0bvPMcsuqocq/ZOYPi7PNGP6wLjXT5ZP1od
+         KW3GdMy2dz1ttq0drZNQMVm+mrjHmpQr8TYR0uexWZHaR6EjX43uHrG0Wu2C7YEkPtPf
+         m+1opWU+CF8gPIpXMg291lxOeje5Kb5vBmZdJ6t0EYsjIEHP2VIkrPB4vJEG2Uy1zPWY
+         dOShluM+NkmqzUQq0Z8owQHjFuTbeS1lbnp18Nylew149k/gxr7+5EWEqFjC4HnnWkre
+         JuQg==
+X-Gm-Message-State: ABy/qLaLj/w9Kx3TNp0R0d34fXaEBvdFcSy9pOn7o3SUrxAwDD6IUH9V
+        mp0CtkwUio/ezqnrEAke5aNeBxc8HSLIAXqDst1Y7j8Qi6g=
+X-Google-Smtp-Source: APBJJlGiTJiDC3PcJ30wWNQG2ghzCiHfafNOYMz3k1tWFhoA+8Dxtjd9bun3lqD52GHxFmU2zIGR9Wgf8hE2SsElBg8=
+X-Received: by 2002:a17:90a:304b:b0:262:c2a1:c01f with SMTP id
+ q11-20020a17090a304b00b00262c2a1c01fmr4103581pjl.3.1690028645911; Sat, 22 Jul
+ 2023 05:24:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0415392c9c2b0a7249563abd79599a475019b508.1689759351.git.falcon@tinylab.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20230721232123.2690960-1-xiaolei.wang@windriver.com>
+ <CAOMZO5AMDvERRaSUYtuf_zq4foSqUuo0kErhj+hEZUuZRPXv1g@mail.gmail.com> <13c51031-ed91-d641-6336-206298f1b60a@windriver.com>
+In-Reply-To: <13c51031-ed91-d641-6336-206298f1b60a@windriver.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sat, 22 Jul 2023 09:23:54 -0300
+Message-ID: <CAOMZO5AEJP2T26REbr8Wc17jENpgJq1Ktyp137zo9M1zDFRASQ@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: imx: Set default tuning step for imx7d usdhc0
+To:     wangxiaolei <xiaolei.wang@windriver.com>
+Cc:     Bough Chen <haibo.chen@nxp.com>, robh+dt@kernel.org,
+        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -42,57 +73,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 09:19:10PM +0800, Zhangjin Wu wrote:
-> The kernel targets share the same kernel make operations, the same
-> .config file, the same kernel image, add MAKE_KERNEL, KERNEL_CONFIG and
-> KERNEL_IMAGE for them.
-> 
-> Many targets share the same logging related settings, let's add common
-> variables RUN_OUT, LOG_OUT and REPORT_RUN_OUT for them.
-> 
-> The qemu run/rerun targets share the same qemu system run command, add
-> QEMU_SYSTEM_RUN for them.
-> 
-> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-> ---
->  tools/testing/selftests/nolibc/Makefile | 41 ++++++++++++++++---------
->  1 file changed, 27 insertions(+), 14 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-> index 0cd17de2062c..8c531518bb9f 100644
-> --- a/tools/testing/selftests/nolibc/Makefile
-> +++ b/tools/testing/selftests/nolibc/Makefile
-> @@ -166,45 +166,58 @@ endif
->  libc-test: nolibc-test.c
->  	$(QUIET_CC)$(CC) -o $@ $<
->  
-> +# common macros for logging
-> +RUN_OUT = $(CURDIR)/run.out
-> +LOG_OUT = > "$(RUN_OUT)"
-> +REPORT_RUN_OUT = $(REPORT) "$(RUN_OUT)"
-> +
->  # local libc-test
->  run-libc-test: libc-test
-> -	$(Q)./libc-test > "$(CURDIR)/run.out" || :
-> -	$(Q)$(REPORT) $(CURDIR)/run.out
-> +	$(Q)./libc-test $(LOG_OUT) || :
-> +	$(Q)$(REPORT_RUN_OUT)
+On Sat, Jul 22, 2023 at 4:29=E2=80=AFAM wangxiaolei <xiaolei.wang@windriver=
+.com> wrote:
 
-Sorry but I don't find that this improves maintainability, quite the
-opposite in fact. One reason is that you never visually expect that
-some shell indirection delimiters are hidden in a macro that seems
-to only convey a name. Sure there are valid use cases for this, but
-I think that here it's just adding too much abstraction and it makes
-it quite hard to unfold all of this mentally.
+> Oh, I didn't notice this patch on linux-imx, I refer to the settings in
+> https://github.com/nxp-imx/uboot-imx.git,
+>
+> but it should be the same, I think it is better to bring this patch in
 
-Please try to keep the number of macros to the minimum that needs to
-be replaced or forced by the user. Here I'm not seeing a compelling
-reason for a user to want to force LOG_OUT to something else. Also
-makefile macros are generally a pain to debug, which is another
-reason for not putting too many of them.
+Please send a patch that passes:
 
-I noticed that your next patch changes LOG_OUT to tee, it could have
-done it everywhere and wouldn't affect readability as much.
+fsl,tuning-step =3D <2>;
+fsl,tuning-start-tap =3D <20>;
 
-Thanks,
-Willy
+to all usdhc instances in imx7s.dtsi.
+
+Other imx dtsi files do this, but imx7s.dtsi currently misses these propert=
+ies.
+
+Thanks
