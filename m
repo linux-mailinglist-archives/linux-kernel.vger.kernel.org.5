@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7EF75D94B
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 05:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 226F975D952
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 05:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbjGVDCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 23:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36750 "EHLO
+        id S230204AbjGVDJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 23:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjGVDCM (ORCPT
+        with ESMTP id S229503AbjGVDJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 23:02:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116791701;
-        Fri, 21 Jul 2023 20:02:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 91F7361DC9;
-        Sat, 22 Jul 2023 03:02:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30E6BC433C7;
-        Sat, 22 Jul 2023 03:02:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689994929;
-        bh=ITlDvtYQcaS1d63hBlqr4vtLxAMsvJkpVR/H0tFzo38=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WNzviDvhEA0gENSUoToRW8ZhMN7x/3D+nX8kaqBQGeYPPmTe4YvQDNxUSi1B56jsd
-         ze+UQOKr1fK9fYSHzeFl/7gW0hjA6FnXPrNeM8EGmlP/7EP3K+XyAtN0uv5m5XSYPl
-         QgW4ktSbx9FORfFOpWglur83WbeGyxEZB8vIzq2YPMvkdgVVwJzNIB97K+bmkDB4d1
-         ARqj8nO9CdWGBVubdgJwdahXHLOFOEiVQezLxurn5UNs4fSid81egfe9y2gVTr6uzT
-         gtm7Cwanmw3myuwCEzvp3qZC8HK6abEoUS+1kRcLPAcs7Sow63fuFWc3HAwCqbpwwb
-         JEnLFAAvX6ryw==
-Date:   Fri, 21 Jul 2023 20:05:28 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
-Cc:     Pavan Kondeti <quic_pkondeti@quicinc.com>, agross@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: power: qcom,rpmhpd: Add Generic RPMh PD
- indexes
-Message-ID: <a4zztrn6jhblozdswba7psqtvjt5l765mfr3yl4llsm5gsyqef@7x6q7yabydvm>
-References: <1689744162-9421-1-git-send-email-quic_rohiagar@quicinc.com>
- <1689744162-9421-2-git-send-email-quic_rohiagar@quicinc.com>
- <e77c39fe-b7cf-49b3-9260-ecf4872e8fdf@quicinc.com>
- <7517b2ca-7d7f-dc0c-7f60-a6281b37ab40@quicinc.com>
+        Fri, 21 Jul 2023 23:09:26 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181FF3A9C;
+        Fri, 21 Jul 2023 20:09:23 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R7BFt3Stkz18LhY;
+        Sat, 22 Jul 2023 11:08:34 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 22 Jul
+ 2023 11:09:21 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <dhowells@redhat.com>, <jarkko@kernel.org>, <paul@paul-moore.com>,
+        <jmorris@namei.org>, <serge@hallyn.com>
+CC:     <keyrings@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] keys: Remove unused extern declaration iterate_over_keyring()
+Date:   Sat, 22 Jul 2023 11:08:32 +0800
+Message-ID: <20230722030832.33680-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7517b2ca-7d7f-dc0c-7f60-a6281b37ab40@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 06:47:42PM +0530, Rohit Agarwal wrote:
-> On 7/21/2023 11:14 AM, Pavan Kondeti wrote:
-> > On Wed, Jul 19, 2023 at 10:52:41AM +0530, Rohit Agarwal wrote:
-> > > diff --git a/include/dt-bindings/power/qcom,rpmhpd.h b/include/dt-bindings/power/qcom,rpmhpd.h
-[..]
-> > > +
-> > > +#endif
-> > > -- 
-> > I see the PD performance levels (RPMH_REGULATOR_LEVEL_xxx) are still
-> > coming from qcom-rpmpd.h. Which means Socs with RPMh also need to
-> > include the older header for these definitions along with this newly
-> > created header. something to improve for the clarity sake?
-> Agreed. I think we can move these to the new header so that the new SoC with
-> RPMH can completely
-> move to rpmhpd.h.
+Since commit b2a4df200d57 ("KEYS: Expand the capacity of a keyring")
+this is never used, so can be removed.
 
-Sounds very reasonable, please do that in a follow up patch.
-I'm picking this as is.
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ security/keys/internal.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Thanks,
-Bjorn
+diff --git a/security/keys/internal.h b/security/keys/internal.h
+index 3c1e7122076b..95a82eec1816 100644
+--- a/security/keys/internal.h
++++ b/security/keys/internal.h
+@@ -112,10 +112,6 @@ extern key_ref_t find_key_to_update(key_ref_t keyring_ref,
+ extern struct key *keyring_search_instkey(struct key *keyring,
+ 					  key_serial_t target_id);
+ 
+-extern int iterate_over_keyring(const struct key *keyring,
+-				int (*func)(const struct key *key, void *data),
+-				void *data);
+-
+ struct keyring_search_context {
+ 	struct keyring_index_key index_key;
+ 	const struct cred	*cred;
+-- 
+2.34.1
+
