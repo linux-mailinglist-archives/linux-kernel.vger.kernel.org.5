@@ -2,131 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E43575DE26
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 21:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8D075DE2B
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 21:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbjGVTGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 15:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        id S229662AbjGVTHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 15:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGVTGc (ORCPT
+        with ESMTP id S229476AbjGVTHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 15:06:32 -0400
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C015E45;
-        Sat, 22 Jul 2023 12:06:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1690052788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7guB4ZLz29lC5Mz2i2OthYSB2/BMWeO0nASQlIgRzPY=;
-        b=vTwlnTIAozIFBeEey9kTSN7kQfGflFzQIMU6ef7N3eHkTi2pT32bhu4G+CSr/HVijfzw9J
-        ztjvH+lqV4wKa/Obra29W78agD13UuzGwhonM9pdBQvxum7RPDoXbP0vnFywVliagz7V6h
-        zF4lNOGG7a92XX9XY6CG6ph7jYcPFAY=
-Message-ID: <96ce584d2ba6cb58ab3d5f8ea64f18ada54de944.camel@crapouillou.net>
-Subject: Re: [PATCH v2 21/22] i2c: virtio: Remove #ifdef guards for PM
- related functions
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Conghui Chen <conghui.chen@intel.com>,
-        virtualization@lists.linux-foundation.org
-Date:   Sat, 22 Jul 2023 21:06:26 +0200
-In-Reply-To: <20230722115310.27681-5-paul@crapouillou.net>
-References: <20230722115046.27323-1-paul@crapouillou.net>
-         <20230722115310.27681-5-paul@crapouillou.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Sat, 22 Jul 2023 15:07:53 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D800E65;
+        Sat, 22 Jul 2023 12:07:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690052872; x=1721588872;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=WfglSuPJmhsRxrO7QtQ35doaK6hJqVdmUu6AK9ShvRg=;
+  b=V40/dOrmtlwkX5xbwxPhN3QijWaRXxOQdtZbQWA+FNMpCFB2JxwsWaSM
+   mtdTBzCKAdJRtjfAnx/nwlsLb1U40FkdvvEPfrETgzZv020BozHuHqPzf
+   K9DhA8nsT7FRil8mbih8zyrrA4LIU3qoJIdp4zpT1ulGOpXoVDwmASfP/
+   FeiXW577Ftr/7l68W6qwxMq9L8QqlTOojlVhdyU4KnmIPI1n36oqOluAI
+   QjCWxecTW1XedBmLmiFNFNLEUhdG933q7rDIZjsVa4LCSBM6/EuPtK1rx
+   8MuDVI7g0J4kVc5iElQFqqI+1gW5h+EvH1zHkwjQfLwpQtrONOH/LOlLx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="346823957"
+X-IronPort-AV: E=Sophos;i="6.01,224,1684825200"; 
+   d="scan'208";a="346823957"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2023 12:07:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="815368074"
+X-IronPort-AV: E=Sophos;i="6.01,224,1684825200"; 
+   d="scan'208";a="815368074"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2023 12:07:51 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
+Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v4 0/7] Add support for Sub-NUMA cluster (SNC) systems
+Date:   Sat, 22 Jul 2023 12:07:33 -0700
+Message-Id: <20230722190740.326190-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230713163207.219710-1-tony.luck@intel.com>
+References: <20230713163207.219710-1-tony.luck@intel.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the build bot noticed - this patch is invalid as the
-virtio_driver.{freeze,restore} callbacks are guarded by #ifdefs.
+The Sub-NUMA cluster feature on some Intel processors partitions
+the CPUs that share an L3 cache into two or more sets. This plays
+havoc with the Resource Director Technology (RDT) monitoring features.
+Prior to this patch Intel has advised that SNC and RDT are incompatible.
 
-Feel free to apply the rest (if everybody is happy with them) and I'll
-respin this one.
+Some of these CPU support an MSR that can partition the RMID
+counters in the same way. This allows for monitoring features
+to be used (with the caveat that memory accesses between different
+SNC NUMA nodes may still not be counted accuratlely.
 
-Cheers,
--Paul
+Signed-off-by: Tony Luck <tony.luck@intel.com>
 
-Le samedi 22 juillet 2023 =C3=A0 13:53 +0200, Paul Cercueil a =C3=A9crit=C2=
-=A0:
-> Use the new PM macros for the suspend and resume functions to be
-> automatically dropped by the compiler when CONFIG_PM or
-> CONFIG_PM_SLEEP are disabled, without having to use #ifdef guards.
->=20
-> This has the advantage of always compiling these functions in,
-> independently of any Kconfig option. Thanks to that, bugs and other
-> regressions are subsequently easier to catch.
->=20
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
->=20
-> ---
-> Cc: Conghui Chen <conghui.chen@intel.com>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> Cc: virtualization@lists.linux-foundation.org
-> ---
-> =C2=A0drivers/i2c/busses/i2c-virtio.c | 8 ++------
-> =C2=A01 file changed, 2 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-virtio.c
-> b/drivers/i2c/busses/i2c-virtio.c
-> index 4b9536f50800..c60ae531ba57 100644
-> --- a/drivers/i2c/busses/i2c-virtio.c
-> +++ b/drivers/i2c/busses/i2c-virtio.c
-> @@ -243,7 +243,6 @@ static struct virtio_device_id id_table[] =3D {
-> =C2=A0};
-> =C2=A0MODULE_DEVICE_TABLE(virtio, id_table);
-> =C2=A0
-> -#ifdef CONFIG_PM_SLEEP
-> =C2=A0static int virtio_i2c_freeze(struct virtio_device *vdev)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0virtio_i2c_del_vqs(vdev);
-> @@ -254,7 +253,6 @@ static int virtio_i2c_restore(struct
-> virtio_device *vdev)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return virtio_i2c_setup_v=
-qs(vdev->priv);
-> =C2=A0}
-> -#endif
-> =C2=A0
-> =C2=A0static const unsigned int features[] =3D {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0VIRTIO_I2C_F_ZERO_LENGTH_=
-REQUEST,
-> @@ -269,10 +267,8 @@ static struct virtio_driver virtio_i2c_driver =3D
-> {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.driver=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=3D {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0.name=C2=A0=C2=A0=C2=A0=3D "i2c_virtio",
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0},
-> -#ifdef CONFIG_PM_SLEEP
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.freeze =3D virtio_i2c_freeze,
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.restore =3D virtio_i2c_restor=
-e,
-> -#endif
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.freeze=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=3D pm_sleep_ptr(virtio_i2c_freeze),
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.restore=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=3D pm_sleep_ptr(virtio_i2c_restore),
-> =C2=A0};
-> =C2=A0module_virtio_driver(virtio_i2c_driver);
-> =C2=A0
+---
+
+Changes since v3:
+
+Reinette provided the most excellent suggestion that this series
+could better achieve its objective if it enabled separate domain
+lists for control & monitoring within a resource, rather than
+creating a whole new resource to support separte node scope needed
+for SNC monitoring. Thus all the pre-amble patches from the previous
+version have gone, replaced by patches 1-4 of this new series.
+
+Note to anyone backporting this to some older Linux kernel version.
+You may be able to skip parts 2-4. These provide separate domain
+structures for control and monitor with just the fields needed for
+each. But this is largely cosmetic.
+
+Of the code from v3 that survived to v4 the following changes have
+been made (also from Reinette's review of v3).
+
+1) Rename "snc_ways" to "snc_nodes_per_l3_cache" to avoid the confusing
+use of "ways" which means something entirely different when talking
+about caches.
+2) Move the #define for MSR_RMID_SNC_CONFIG to <asm/msr-index.h> along
+with all the other RDT MSRs.
+3) Don't use a per-CPU variable "rmid_offset". Just calculate value
+needed at the one place where it is used.
+4) Don't create an entire resource structure with package scoped domains
+just to set the SNC MSR.
+5) Add comment in the commit message about adjusting the value shown in
+the "size" files in each resctrl ctrl_mon directory.
+
+This one not from Reinette:
+6) Prevent mounting in "mba_MBps" mode when SNC mode is enabled. This
+would just be confusing since monitoring is done at the node scope while
+control is still at package scope.
+
+Tony Luck (7):
+  x86/resctrl: Create separate domains for control and monitoring
+  x86/resctrl: Split the rdt_domain structures
+  x86/resctrl: Change monitor code to use rdt_mondomain
+  x86/resctrl: Delete unused fields from struct rdt_domain
+  x86/resctrl: Determine if Sub-NUMA Cluster is enabled and initialize.
+  x86/resctrl: Update documentation with Sub-NUMA cluster changes
+  selftests/resctrl: Adjust effective L3 cache size when SNC enabled
+
+ Documentation/arch/x86/resctrl.rst          |  10 +-
+ include/linux/resctrl.h                     |  50 +++-
+ arch/x86/include/asm/msr-index.h            |   1 +
+ arch/x86/kernel/cpu/resctrl/internal.h      |  40 ++-
+ tools/testing/selftests/resctrl/resctrl.h   |   1 +
+ arch/x86/kernel/cpu/resctrl/core.c          | 289 ++++++++++++++++----
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c   |   6 +-
+ arch/x86/kernel/cpu/resctrl/monitor.c       |  58 ++--
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c      |  54 ++--
+ tools/testing/selftests/resctrl/resctrlfs.c |  57 ++++
+ 10 files changed, 427 insertions(+), 139 deletions(-)
+
+
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
+-- 
+2.40.1
 
