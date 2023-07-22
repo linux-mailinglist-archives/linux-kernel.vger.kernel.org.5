@@ -2,68 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E38A275D8B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 03:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362EC75D8B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 03:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbjGVB23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 21:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
+        id S231157AbjGVB36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 21:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbjGVB21 (ORCPT
+        with ESMTP id S230173AbjGVB3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 21:28:27 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051673AA7
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 18:28:26 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b8a7735231so13208885ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 18:28:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689989305; x=1690594105;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1aVuOJi4p6R+oWVqYM04BRjT7YTKinYLVZF7mVB27JU=;
-        b=53nMhtDHVrBhZrfs0o3fbYfzq59/6d2VisNdxNl7flD7JzyzeaXlCYtwk004G2feNg
-         X62ufNG8xZSBzynjAkIhuU1d9Nloet8/0U1t/jQiuDPmPawkss3TeIedq6VFvzy1zyL6
-         NVMnal+DQ14XXTlipiy4PWOnti2wOnhc+CNXHmZxRXwmKueTowtBIWCaGRJaRhy+KIkO
-         wDdtE0FmI3Lx9xMqRF3X+sWYMAWefeJfitD9xzd6dB3CrHo71hy6w7CcfGZ0Z258LYhW
-         RkXbIL1E0B2TcLMuKigvhXoE2cOH+rnls/2XeqCa9GORldosDTev7dwH8nRn+LbjUAy/
-         dfhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689989305; x=1690594105;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1aVuOJi4p6R+oWVqYM04BRjT7YTKinYLVZF7mVB27JU=;
-        b=hEqgS/LOrjtQKcIqsdK+zN5JL3js8OnEeO++liTiZd78bynHs6EPxC0o9tSS5rKqrO
-         yoJer3TUNNznVZojH4w9+YSctI4PzvJXMsJFgxErUNHGurGxQtmjywGoUfzdu7kwXjhI
-         z0UrIYe+hcadfDDavExohFCXvNSpk6z0iinRKFbt4EW5F5p0JJPK1tkJ8BWyTWirrDA8
-         bTUL2bgScT3PQcVV4q8A7OyvxRB48UuxxRNTvf0hsXv+dybNyQlbPeuFE3uxR7shODg9
-         BDQOIOmIvGdrGybZYO3CrwMcv7U+3G89TOKCCJ3ZYlxVBXbth0BMD9666vBwMGZeX1/3
-         KgLw==
-X-Gm-Message-State: ABy/qLZMsNKOLcHk2f4mmk5i161zK9/g9PqIJVJCpaJaOUqL7qrH87Mk
-        Tqkt2fqE4ssDqA7mSCO/P+8MKP09rws=
-X-Google-Smtp-Source: APBJJlE5fyTLe8Av8vgAjnpGC6KaeaXF544cF46Nyy6GjtO1N4mJgdsCJ4OwDt2AWBBCyC+TlcrUexSYPdQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:cece:b0:1bb:1ffd:5cc8 with SMTP id
- d14-20020a170902cece00b001bb1ffd5cc8mr15856plg.11.1689989305504; Fri, 21 Jul
- 2023 18:28:25 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 18:28:23 -0700
-In-Reply-To: <5caef6bf-c3da-5928-32c9-54d6e42511ec@linux.intel.com>
-Mime-Version: 1.0
-References: <20230606091842.13123-1-binbin.wu@linux.intel.com>
- <20230606091842.13123-4-binbin.wu@linux.intel.com> <ZJtzdftocuwTvp67@google.com>
- <e11e348c-3763-8eda-281d-c8d965cd52b6@linux.intel.com> <ZJxwgCx3YatyH9or@google.com>
- <5caef6bf-c3da-5928-32c9-54d6e42511ec@linux.intel.com>
-Message-ID: <ZLswtzHxfHv/JaM4@google.com>
-Subject: Re: [PATCH v9 3/6] KVM: x86: Virtualize CR3.LAM_{U48,U57}
-From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
-        David.Laight@aculab.com, robert.hu@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        Fri, 21 Jul 2023 21:29:54 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F94A3C01;
+        Fri, 21 Jul 2023 18:29:52 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36M1RjGa015517;
+        Sat, 22 Jul 2023 01:29:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=YvapDlgEUzhYWt9kSo8gs1KQpSfobdwO/63wrHbPhWU=;
+ b=csljY8xGK+xqVZd9kL9pb1hsEQS9UU02KLfZ7LjBQU+8xp/QkTeyqMVgLT+RfJgsSmbv
+ NNq7U4CqUNqBoiyV8+ovGLlM6surnstAdWBmRT0V0TbP5KfGmx8NsOeauf7pnck7gspB
+ 0rtpquf2QMwDDfh0AoN+qWLHTHiLii7bh8Ux5X7qOWTzrlybTOrt8dtRr0Z2FYQT+pk7
+ ddMXf2SbkElQaVWC8NZBvdE2WO8DLFjSTc58XYAm42QMqemfByKfagPNqDmE9GHAXZiP
+ v91Uy/FGSfwbG95fDDGqjhtrSk+BVzMa3LtWhcnrd+Njaxa1d9vuykDVxh13I4GkmS5B zg== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ryfyf2sqf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 22 Jul 2023 01:29:30 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36M1TLt0013205
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 22 Jul 2023 01:29:21 GMT
+Received: from [10.110.24.156] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 21 Jul
+ 2023 18:29:19 -0700
+Message-ID: <ed76cf3a-cf53-03ae-ef64-0f94ecb51242@quicinc.com>
+Date:   Fri, 21 Jul 2023 18:29:19 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v4 2/9] virt: geniezone: Add GenieZone hypervisor support
+Content-Language: en-US
+To:     =?UTF-8?B?WWktRGUgV3UgKOWQs+S4gOW+tyk=?= <Yi-De.Wu@mediatek.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        =?UTF-8?B?WWluZ3NoaXVhbiBQYW4gKOa9mOepjui7kik=?= 
+        <Yingshiuan.Pan@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        =?UTF-8?B?WmUteXUgV2FuZyAo546L5r6k5a6HKQ==?= 
+        <Ze-yu.Wang@mediatek.com>, "will@kernel.org" <will@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        =?UTF-8?B?TVkgQ2h1YW5nICjojormmI7ouo0p?= <MY.Chuang@mediatek.com>,
+        "conor.dooley@microchip.com" <conor.dooley@microchip.com>,
+        =?UTF-8?B?UGVpTHVuIFN1ZWkgKOmai+WfueWAqyk=?= 
+        <PeiLun.Suei@mediatek.com>,
+        =?UTF-8?B?TGlqdS1jbHIgQ2hlbiAo6Zmz6bqX5aaCKQ==?= 
+        <Liju-clr.Chen@mediatek.com>,
+        =?UTF-8?B?SmFkZXMgU2hpaCAo5pa95ZCR546oKQ==?= 
+        <jades.shih@mediatek.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "dbrazdil@google.com" <dbrazdil@google.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        =?UTF-8?B?U2hhd24gSHNpYW8gKOiVreW/l+elpSk=?= 
+        <shawn.hsiao@mediatek.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        =?UTF-8?B?SXZhbiBUc2VuZyAo5pu+5b+X6LuSKQ==?= 
+        <ivan.tseng@mediatek.com>,
+        =?UTF-8?B?Q2hpLXNoZW4gWWVoICjokYnlpYfou5Ip?= 
+        <Chi-shen.Yeh@mediatek.com>
+References: <20230609085214.31071-1-yi-de.wu@mediatek.com>
+ <20230609085214.31071-3-yi-de.wu@mediatek.com>
+ <2fe0c7f9-55fc-ae63-3631-8526a0212ccd@linaro.org>
+ <ea531ba80db67cccb03ea173e714fe868f869e91.camel@mediatek.com>
+From:   Trilok Soni <quic_tsoni@quicinc.com>
+In-Reply-To: <ea531ba80db67cccb03ea173e714fe868f869e91.camel@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: KmU9ARhqeji_KEvAO7GLvlFq471SDz7_
+X-Proofpoint-ORIG-GUID: KmU9ARhqeji_KEvAO7GLvlFq471SDz7_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-21_12,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ mlxscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 clxscore=1011 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307220011
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,48 +117,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 03, 2023, Binbin Wu wrote:
+On 7/21/2023 1:46 AM, Yi-De Wu (吳一德) wrote:
+> On Fri, 2023-06-09 at 17:22 +0200, Krzysztof Kozlowski wrote:
+>>   	
+>> External email : Please do not click links or open attachments until
+>> you have verified the sender or the content.
+>>   On 09/06/2023 10:52, Yi-De Wu wrote:
+>>> From: "Yingshiuan Pan" <yingshiuan.pan@mediatek.com>
+>>>
+>>> GenieZone is MediaTek hypervisor solution, and it is running in EL2
+>>> stand alone as a type-I hypervisor. This patch exports a set of
+>> ioctl
+>>> interfaces for userspace VMM (e.g., crosvm) to operate guest VMs
+>>> lifecycle (creation and destroy) on GenieZone.
+>>
+>> ...
+>>
+>>> +static int gzvm_drv_probe(void)
+>>> +{
+>>> +int ret;
+>>> +
+>>> +if (gzvm_arch_probe() != 0) {
+>>> +pr_err("Not found available conduit\n");
+>>> +return -ENODEV;
+>>> +}
+>>> +
+>>> +ret = misc_register(&gzvm_dev);
+>>> +if (ret)
+>>> +return ret;
+>>> +gzvm_debug_dev = &gzvm_dev;
+>>> +
+>>> +return 0;
+>>> +}
+>>> +
+>>> +static int gzvm_drv_remove(void)
+>>> +{
+>>> +destroy_all_vm();
+>>> +misc_deregister(&gzvm_dev);
+>>> +return 0;
+>>> +}
+>>> +
+>>> +static int gzvm_dev_init(void)
+>>> +{
+>>> +return gzvm_drv_probe();
+>>
+>> So for every system and architecture you want to: probe, run some SMC
+>> and then print error that it is not othe system you wanted.
+>>
+>> I don't think this is what we want. You basically pollute all of
+>> other
+>> users just to have your hypervisor guest additions...
+>>
+>>
+>> Best regards,
+>> Krzysztof
 > 
-> On 6/29/2023 1:40 AM, Sean Christopherson wrote:
-> > On Wed, Jun 28, 2023, Binbin Wu wrote:
-> > > 
-> > > On 6/28/2023 7:40 AM, Sean Christopherson wrote:
-> > > > I think I'd prefer to drop this field and avoid bikeshedding the name entirely.  The
-> > > > only reason to effectively cache "X86_CR3_LAM_U48 | X86_CR3_LAM_U57" is because
-> > > > guest_cpuid_has() is slow, and I'd rather solve that problem with the "governed
-> > > > feature" framework.
-> > > Thanks for the suggestion.
-> > > 
-> > > Is the below patch the lastest patch of "governed feature" framework
-> > > support?
-> > > https://lore.kernel.org/kvm/20230217231022.816138-2-seanjc@google.com/
-> > Yes, I haven't refreshed it since the original posting.
-> > 
-> > > Do you have plan to apply it to kvm-x86 repo?
-> > I'm leaning more and more towards pushing it through sooner than later as this
-> > isn't the first time in recent memory that a patch/series has done somewhat odd
-> > things to workaround guest_cpuid_has() being slow.  I was hoping to get feedback
-> > before applying, but that's not looking likely at this point.
-> Hi Sean,
 > 
-> I plan to adopt the "KVM-governed feature framework" to track whether the
-> guest can use LAM feature.
-> Because your patchset is not applied yet, there are two ways to do it. Which
-> one do you prefer?
+> hi Krzysztof,
 > 
-> Option 1:
-> Make KVM LAM patchset base on your "KVM-governed feature framework"
-> patchset.
+> After some back-and-forth discussion[1][2][3][4][5], we'd like to bring
+> bakc all the attension of related issues in this thread.
 > 
-> Option 2:
-> Temporarily add a bool in kvm_vcpu_arch as following, and use the bool
-> "can_use_lam" instead of guest_can_use(vcpu, X86_FEATURE_LAM).
-> And provide a cleanup patch to use "KVM-governed feature framework", which
-> can be applied along with or after your patchset.
+> We're going to restore the dt solution on our next version, which means
+> we would maintain a simple dt for discovering the hypervisor node and
+> probe for the status of the device when needed.
 
-Sorry for not responding.  I was hoping I could get v2 posted before advising on
-a direction, but long story short, I made a few goofs and got delayed (I won't get
-v2 out until next week).  Belatedly, either option is fine by me (I see you posted
-v10 on top of the governed feature stuff).
+.. see the comment below.
 
-Thank!  And again, sorry.
+> 
+> The reasons are listed below for the record.
+> - Although dt is for hardware, it's difficult to discover a specific
+> hypervisor without probing on all subsystem and thus pollute all of
+> other users[4] as a consequence.
+
+I don't understand. Patches will help here to understand what exactly 
+you are referring here.
+
+> - The GenieZone hypervisor could be considered as a vendor model to
+> assist platform virtualization whose implementation is independent from
+> Linuxism.
+
+Then why we are adding this hypervisor support in Linux?
+
+> 
+> Please let us if there're any other concerns.
+> 
+> Reference
+> 
+> [1]
+> https://android-review.googlesource.com/c/kernel/common/+/2447547/comment/495502f3_bb52344b/
+
+Why we look at the ACK patches here on the LKML? Please submit them here 
+if you would like to discuss and review?
+
+---Trilok Soni
+
+
