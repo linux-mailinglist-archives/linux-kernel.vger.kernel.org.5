@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C831D75D9D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 06:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8268F75D9D4
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 06:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjGVEuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 00:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
+        id S231330AbjGVEu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 00:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231338AbjGVEtr (ORCPT
+        with ESMTP id S231172AbjGVEtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 00:49:47 -0400
+        Sat, 22 Jul 2023 00:49:45 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519914687;
-        Fri, 21 Jul 2023 21:48:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC1F4683;
+        Fri, 21 Jul 2023 21:48:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 09E9D60B07;
-        Sat, 22 Jul 2023 04:48:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 518E5C43391;
-        Sat, 22 Jul 2023 04:48:37 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7595B60A4E;
+        Sat, 22 Jul 2023 04:48:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC532C433C7;
+        Sat, 22 Jul 2023 04:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690001318;
-        bh=VPUaxVtXdPuq4HOqNcJIyglxoF0IOoqdg44mkFjj0xo=;
+        s=k20201202; t=1690001319;
+        bh=lUV+hV9+Om7+zu7Ta7+cYxJn7GpO7yeT62vr+Z7xZLI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T/gQUaCOpGdMRfrDiYuPDjF9izqAaP27voG5UdnyPecGtsnuRCiyG37Kb9Dd6GO5t
-         0UYVo0WEkGpNWGcXJL6i9JzTvhLjvoZk16PipBBZxDfSNMbzlJVH7I4Dx91D/TIPz9
-         FCRKTt1yCqsf0pc8OzR/YK3irXNF4Wjva5gY4aAtuL2bbMkge4qdHSfMtplKSYmdIF
-         quV6ZSRrtxRzk9U0kF4xUIOload+bM/ie6Y/dvrdesW5NOL4cv4DyvoOPQss7uxIsS
-         67p0fNvIwB5V1GV8VHXVyP+T9luA+vnG61bMn6vR1yza7vHcHnDmNlImpZWa+VRpdn
-         HqQwuYrsqkoNQ==
+        b=GYOnQB7LGmg6UQ7ATyc5uftAZKL+fpYqV41VkuWTsdYUh9V2Mc7FxbzKtA/qVshgI
+         B3ljmZn6jRLhZ/XlfMVWcYSVyx2o5c4qTd9N32cQuV9I95ed+8u6FykKZKkihv+8S6
+         AYsfV0td7uVd0VezHUy/wmq5BI65RhVxFGBXZJY8NZSU97cO9PqrybHCsK7Ms3rfO6
+         wOPj5b9smmmlz0svNP8y/BOXJvoeA68U/0wCoRJJkH6N5jEfuXq8uaWsMnebmXyR99
+         jJ8FDBInwRkw6In4widAxuK9TPsse2RTjzZMQ53eYai5ZmlF7H6dC0AWrYfY5QHvZk
+         4p8u/5ySS1Uwg==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 16/19] kbuild: rpm-pkg: rename binkernel.spec to kernel.spec
-Date:   Sat, 22 Jul 2023 13:48:03 +0900
-Message-Id: <20230722044806.3867434-16-masahiroy@kernel.org>
+Subject: [PATCH 17/19] kbuild: rpm-pkg: build the kernel in-place for rpm-pkg
+Date:   Sat, 22 Jul 2023 13:48:04 +0900
+Message-Id: <20230722044806.3867434-17-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230722044806.3867434-1-masahiroy@kernel.org>
 References: <20230722044806.3867434-1-masahiroy@kernel.org>
@@ -50,79 +50,37 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now kernel.spec and binkernel.spec have the exactly same contents.
+Currently, 'make rpm-pkg' always builds the kernel from the pristine
+source tree in the ~/rpmbuild/BUILD/ directory.
 
-Use kernel.spec for binrpm-pkg as well.
+Build the kernel incrementally just like 'make binrpm-pkg'.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- .gitignore                 | 2 +-
- Makefile                   | 2 +-
- scripts/Makefile.package   | 4 ++--
- scripts/remove-stale-files | 2 ++
- 4 files changed, 6 insertions(+), 4 deletions(-)
+ scripts/Makefile.package | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/.gitignore b/.gitignore
-index 9fd4c9533b3d..0bbae167bf93 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -74,7 +74,7 @@ modules.order
- #
- # RPM spec file (make rpm-pkg)
- #
--/*.spec
-+/kernel.spec
- /rpmbuild/
- 
- #
-diff --git a/Makefile b/Makefile
-index f258ef13fa5d..5a263e5f6559 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1595,7 +1595,7 @@ MRPROPER_FILES += include/config include/generated          \
- 		  certs/signing_key.pem \
- 		  certs/x509.genkey \
- 		  vmlinux-gdb.py \
--		  *.spec rpmbuild \
-+		  kernel.spec rpmbuild \
- 		  rust/libmacros.so
- 
- # clean - Delete most, but leave enough to build external modules
 diff --git a/scripts/Makefile.package b/scripts/Makefile.package
-index c36ae03d6002..be9602fa98da 100644
+index be9602fa98da..bf2da97f29d0 100644
 --- a/scripts/Makefile.package
 +++ b/scripts/Makefile.package
-@@ -86,9 +86,9 @@ srcrpm-pkg: linux.tar.gz
- # ---------------------------------------------------------------------------
- PHONY += binrpm-pkg
- binrpm-pkg:
--	$(CONFIG_SHELL) $(MKSPEC) prebuilt > $(objtree)/binkernel.spec
-+	$(CONFIG_SHELL) $(MKSPEC) prebuilt > $(objtree)/kernel.spec
- 	+rpmbuild $(RPMOPTS) --define "_builddir $(objtree)" --target \
--		$(UTS_MACHINE)-linux -bb $(objtree)/binkernel.spec \
-+		$(UTS_MACHINE)-linux -bb $(objtree)/kernel.spec \
- 		--build-in-place --noprep --define='_smp_mflags %{nil}' --without devel \
- 		--define='make $(MAKE)'
+@@ -72,6 +72,7 @@ PHONY += rpm-pkg
+ rpm-pkg: srpm = $(shell rpmspec --srpm --query --queryformat='%{name}-%{VERSION}-%{RELEASE}.src.rpm' kernel.spec)
+ rpm-pkg: srcrpm-pkg
+ 	+rpmbuild $(RPMOPTS) --target $(UTS_MACHINE)-linux -rb $(srpm) \
++	--build-in-place --noprep \
+ 	--define='_smp_mflags %{nil}' --define='make $(MAKE)'
  
-diff --git a/scripts/remove-stale-files b/scripts/remove-stale-files
-index f3659ea0335b..8b1a636f8543 100755
---- a/scripts/remove-stale-files
-+++ b/scripts/remove-stale-files
-@@ -37,3 +37,5 @@ rm -f .scmversion
- rm -rf include/ksym
- 
- find . -name '*.usyms' | xargs rm -f
-+
-+rm -f binkernel.spec
+ # srcrpm-pkg
 -- 
 2.39.2
 
