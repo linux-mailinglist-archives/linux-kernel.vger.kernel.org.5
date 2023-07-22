@@ -2,77 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6B075DD03
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 16:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DAA275DD07
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 16:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbjGVOt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 10:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
+        id S229824AbjGVOyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 10:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjGVOt6 (ORCPT
+        with ESMTP id S229707AbjGVOyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 10:49:58 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A541999;
-        Sat, 22 Jul 2023 07:49:57 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6689430d803so1750090b3a.0;
-        Sat, 22 Jul 2023 07:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690037396; x=1690642196;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6RbVO1ScgDHvCnnDrduqM9cFNB+8gywma+fRSXcXBlY=;
-        b=EIfc7YC6DTtA0YR8NlLDp3y9nj/fBsmGX5I8vui6vuJu+VdbZMs5PyzkbFngrjiFh7
-         3+TRP/kYDPZx1mcTct6WKy1jyp7G5QsxJWqlfL9mRAiNKcUDKJcp83dzGolqIu0vL5Wv
-         1Qc+Jeklwl6G0lruZIbk8wk9sgKJDzp6Hp3StPLH892xucJEephAmf+WulyufZa6n6kV
-         x8ajlFxxXxZEHxD/9YCMn/yfFfed3oZ921Lov/uyDCiotRey9Lv1jyugQY4IZNB6fqSj
-         pG29UA/351R2OUr/oz4A4sZ/q9/9JsJRgRMH3g9XqKc/cWv6j61VxAX5zdMSApuYAEym
-         QACw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690037396; x=1690642196;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6RbVO1ScgDHvCnnDrduqM9cFNB+8gywma+fRSXcXBlY=;
-        b=Nb9nCfQdhit8qjClnzpM4BWhi+LAPXjdwNpowTpRi3xbxun7TnBmAUNiV+LDq+ONy0
-         ohlWHDiWzU24aiZCtIGnDGWL+gFtRh3kylc6/9oxDcpuYVKPqPf/K2WtJ83CvguAmjfo
-         WwgyhJwBBxT8h/TxXJLo2PLvFkA+N/3508aRhhjdmaanbT8RBr4UJ/FhjainC6C/snJF
-         k5YgO7Jb6O7oeA+hiDQ3OCrsx68M5ycoakfIYXc6JyfED2URLzeyr/AhJAeL1XFAsxu6
-         tRedXhZYvpoUm0Xiy6yF887TsUGFcC1yiwJf/gOE915K2Zs8NzZSzyT+n8svGLsJbH1K
-         UewA==
-X-Gm-Message-State: ABy/qLYSkyLTvM2WGuzY6P9UUAwhW1tlaoLXKvpUd71qPg/h2pece+HU
-        neGd9VLeA3P4R5EjvBIzGDA=
-X-Google-Smtp-Source: APBJJlFjepFzPi/Ej+rmWsUG4Ww+c3XitwpKU0IkmaAi4l8ffNjPROhART6IL9X12YJZYbYJPCrNJQ==
-X-Received: by 2002:a05:6a20:88:b0:138:2fb8:6c48 with SMTP id 8-20020a056a20008800b001382fb86c48mr4008099pzg.8.1690037396413;
-        Sat, 22 Jul 2023 07:49:56 -0700 (PDT)
-Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id k196-20020a633dcd000000b005501b24b1c9sm4998093pga.62.2023.07.22.07.49.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Jul 2023 07:49:55 -0700 (PDT)
-Message-ID: <8730178d-fb3e-9841-8c93-c7cc3dc54a3e@gmail.com>
-Date:   Sat, 22 Jul 2023 07:49:53 -0700
+        Sat, 22 Jul 2023 10:54:14 -0400
+Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1831999
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:54:11 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id NDziq9IyeeA2LNDziqDHuc; Sat, 22 Jul 2023 16:54:09 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1690037649;
+        bh=lfDR0mINkrCKxcAnadMKPEe9Mciru7liyonpOcMXacU=;
+        h=From:To:Cc:Subject:Date;
+        b=DQxDYxtDbHTvG6MFjroIFnhP/3V6nQpawqQ2gCrQEhZGf80GXIq9vw1KxfQ8FK67f
+         tGELfSAPJgUCUCNmkgqoiRpHwJD+0N2OdqhjK5zu3rPd9sU4hz1u9nYERSfYVmfOTe
+         ftuMWx0FeVGyzWBCBxI72EAjl7S8nWH2RNBHO6DEJKv2VRg7mnaRPEULO9XumTKLCr
+         g7nIGEt6o9YlmPtObdlvQ8ApLGMeUpOsnu0NYg21FVASxN5/T6JXiAFQGvQgO9onWW
+         sPYZf0O9zDSVOtFJe+lo3BJGiUKwXgPkq+x1KRsuXZQ7RP5fHl57RZN5MsMpmrARLK
+         iVMIU1IinDs6A==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 22 Jul 2023 16:54:09 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
+        Pankaj Gupta <pankaj.gupta@nxp.com>,
+        Gaurav Jain <gaurav.jain@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH 1/2] crypto: caam - Use struct_size()
+Date:   Sat, 22 Jul 2023 16:53:58 +0200
+Message-Id: <0fc02b533bd3c3422bec5856bc65bbb66ebf7b58.1690037578.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 6.4 000/292] 6.4.5-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230721160528.800311148@linuxfoundation.org>
-Content-Language: en-US
-In-Reply-To: <20230721160528.800311148@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,32 +57,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use struct_size() instead of hand-writing it, when allocating a structure
+with a flex array.
 
+This is less verbose, more robust and more informative.
 
-On 7/21/2023 9:01 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.5 release.
-> There are 292 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 23 Jul 2023 16:04:29 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.5-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/crypto/caam/caamhash.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
-
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+diff --git a/drivers/crypto/caam/caamhash.c b/drivers/crypto/caam/caamhash.c
+index 80deb003f0a5..9e5924e24f2e 100644
+--- a/drivers/crypto/caam/caamhash.c
++++ b/drivers/crypto/caam/caamhash.c
+@@ -708,9 +708,8 @@ static struct ahash_edesc *ahash_edesc_alloc(struct ahash_request *req,
+ 	gfp_t flags = (req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP) ?
+ 		       GFP_KERNEL : GFP_ATOMIC;
+ 	struct ahash_edesc *edesc;
+-	unsigned int sg_size = sg_num * sizeof(struct sec4_sg_entry);
+ 
+-	edesc = kzalloc(sizeof(*edesc) + sg_size, flags);
++	edesc = kzalloc(struct_size(edesc, sec4_sg, sg_num), flags);
+ 	if (!edesc) {
+ 		dev_err(ctx->jrdev, "could not allocate extended descriptor\n");
+ 		return NULL;
 -- 
-Florian
+2.34.1
 
