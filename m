@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB66C75DEB9
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 23:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED9B75DEBF
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 23:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbjGVV4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 17:56:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
+        id S229595AbjGVV5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 17:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjGVV4A (ORCPT
+        with ESMTP id S229469AbjGVV5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 17:56:00 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BD71BF
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 14:55:59 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-66872d4a141so1821751b3a.1
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 14:55:59 -0700 (PDT)
+        Sat, 22 Jul 2023 17:57:48 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869F51737
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 14:57:47 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-348c62db335so3080975ab.0
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 14:57:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690062959; x=1690667759;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Op8r3roG6OOa9Lv1oC4Z/qAoTQvBrQgFrwVjhxRoefc=;
-        b=mTdJFi4UkmtcIztVWh5pYf8zH4Z4pB5cWYDL86PAivIdbNh9UfwYadaN9XjWHg5S2a
-         AgdVNuWOQs9lRuGL5m3CfaSWhAnKLNqWgvt4VqbAv9X3828cCDCXf4T/M4IfBD9c/dfp
-         Eq7qlpwUHmok/4vGNAegu6ixgsSRvLK+fyp+N/hhC8jhLjC5in2DRiVVMuH53BcBLx42
-         7xk0vkrr65OB421xPAmnwhXICEjdNIlzPro/O9nBJo7Xejbi1OUeluzoOOyAof6i8OqL
-         hpGXy4vbuNMV0vv7zLjijyQQESkc+EC/9WAuzjhPCAxX20uFGlnzc9jzzYwz+oaUp923
-         lMVw==
+        d=googlemail.com; s=20221208; t=1690063067; x=1690667867;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NiYt7Tw0QK7f0nlz4SKEHhaEGnGqAWTc0j4eEPb3kRI=;
+        b=ZJmJmCWE6gO0q9V9V7FLGpi9A4sxOAgfALRUjFO1sPEb0pIScMYl62jlC6Pn9DLgCW
+         lh8vILEeXCl1UJGK+2mB/w/LPHM9XBX979nhfs3fTb02+J69Gu+SDKdFSnt24EJ5eE3G
+         XhUlBC6wvB7Kd8NeiBh5szHXZgPJMko0q1bt+84LLMMLcZuh33lg9bqJWhLHAkE/aVT1
+         T9G+LJcn6Ey3U8dDNr6jcNjklx73XESyrjmfRSFNjOBkU8oj/wtq+17sxR8gyoIPSAD5
+         vNYvuxEZh/5PIJqoUViaPdihnIEYn+Df+rz4QuubdqxvFKYgjNzk36UXP+4nz834jw0F
+         Gtvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690062959; x=1690667759;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1690063067; x=1690667867;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Op8r3roG6OOa9Lv1oC4Z/qAoTQvBrQgFrwVjhxRoefc=;
-        b=erACYeqhgtxeuw+lRwVqZ5qDp1ts1kVwqDT5dCWZTGDtWDh83x0d4D9i/ez5PRGhRd
-         C1m1NhdM4fHtNTkF2rsZBva6a4VoEmCxu3G6Iq84CVTIXqbE0j+ehvMFGD64hPzaTqKy
-         oGGUyy890+STGD+K/Km2dWWou2ekkzKjM5QyTtOTugL77FBCq+Eu2wdQlBgIagNjS5U8
-         Pve70rJ3ezMW8NRLmWuV+vlIbs54QyqqtYNdZwhiMrRSy61m4fvG5lj8OlP9J9MrUlZb
-         HEIU6r2aBgJUT2Xu8xjZNIP76mZsH6Mcivh5GveJ/m94GENrNjGUtM4WIcdu9xsLuNjm
-         I6Lg==
-X-Gm-Message-State: ABy/qLYkCir+Llu5S69w8eMosuX126CHJOqtUC1L/FcIAM/wzup8M+A8
-        OFY//xT9HA1LvWzbdyzcRcqwoQ==
-X-Google-Smtp-Source: APBJJlHi9uPk5HT8P/Bh1fdT5M6EBnO2qNX5zOmrDLhQ6F7I/qp+4TqP6xLAhgWDjArdpAjcRvYiqQ==
-X-Received: by 2002:a05:6a00:1821:b0:680:6d16:8f8c with SMTP id y33-20020a056a00182100b006806d168f8cmr3608089pfa.32.1690062959005;
-        Sat, 22 Jul 2023 14:55:59 -0700 (PDT)
-Received: from [127.0.1.1] ([2601:1c2:1800:f680:2a8c:966f:392d:7230])
-        by smtp.gmail.com with ESMTPSA id e23-20020a633717000000b0056368adf5e2sm5517642pga.87.2023.07.22.14.55.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 14:55:58 -0700 (PDT)
-From:   Drew Fustini <dfustini@baylibre.com>
-Date:   Sat, 22 Jul 2023 14:55:41 -0700
-Subject: [PATCH 3/3] MAINTAINERS: add reviewer for T-Head RISC-V SoC
- support
+        bh=NiYt7Tw0QK7f0nlz4SKEHhaEGnGqAWTc0j4eEPb3kRI=;
+        b=kQa7fqFF3wCNzdgu3amSOQiOCCpN1BQAv/Q1sEV9TeVY9+/vBi/ayYMvkBlbCkqvRK
+         R20O94y4oKvjpxQ5U6OkTx3+xZmUvgrDOwwNvlm+k5kXnCmLrCPoxUwUL0jfZKniOB56
+         q6hQRejCS7mODUX7TtAPXzM/3mxgugQINI8Pk6BGvlQRu3U1nL+/6gDMRntRQLZmmUw5
+         kmdlcLWOa8AdTUEsVI3SQI388KpvzIDAG/xUmIUChRjJYo7YB/l10qoFb+9qd7ab1jpq
+         QZ2MzW13ugufG+1Ya0PFjrjucs/agyG3OIN0nyi1uZmJQkDbqhCWIlSfCZytHJGCEM3v
+         yolA==
+X-Gm-Message-State: ABy/qLZZ5KU61b7w9q/ql8EkrGBUhzzBBr/MMr4Lg+v06pFJpP1P/yIk
+        D/OVAd5NCOqiRPFM3V4RRCc=
+X-Google-Smtp-Source: APBJJlHn9jzE35Il7Hl7iVud49hHzAOTyod5n63H74V9XLwnE7acIsYFtMK2mdecTsPOx2PVVYZ71w==
+X-Received: by 2002:a92:d943:0:b0:348:8050:d7a with SMTP id l3-20020a92d943000000b0034880500d7amr3536447ilq.30.1690063066913;
+        Sat, 22 Jul 2023 14:57:46 -0700 (PDT)
+Received: from localhost.localdomain ([161.97.244.155])
+        by smtp.gmail.com with ESMTPSA id dp21-20020a0566381c9500b0042b1061c6a8sm1966166jab.84.2023.07.22.14.57.46
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Sat, 22 Jul 2023 14:57:46 -0700 (PDT)
+From:   Franziska Naepelt <franziska.naepelt@googlemail.com>
+To:     franziska.naepelt@googlemail.com
+Cc:     gregkh@linuxfoundation.org, hdegoede@redhat.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH 1/9] staging: rtl8723bs: ioctl_linux: Fix else on next line
+Date:   Sat, 22 Jul 2023 23:57:36 +0200
+Message-Id: <20230722215736.4183-1-franziska.naepelt@googlemail.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
+In-Reply-To: <20230722215330.4114-1-franziska.naepelt@googlemail.com>
+References: <20230722215330.4114-1-franziska.naepelt@googlemail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230722-upstream-beaglev-ahead-dts-v1-3-ccda511357f4@baylibre.com>
-References: <20230722-upstream-beaglev-ahead-dts-v1-0-ccda511357f4@baylibre.com>
-In-Reply-To: <20230722-upstream-beaglev-ahead-dts-v1-0-ccda511357f4@baylibre.com>
-To:     Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Fu Wei <wefu@redhat.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Drew Fustini <dfustini@baylibre.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690062955; l=651;
- i=dfustini@baylibre.com; s=20230430; h=from:subject:message-id;
- bh=YCC8HQBmQ4ArnnCjLKzrNbZrbvachARgWcNH5nyq8v4=;
- b=DD8uZ+RrE2UU4233SPWBBZvAtSm0Fj+EF7e7TvOfSnv2VL+fdfssMjERfpDTyWjmqIZU2m4G6
- jzN0MYkPTCsD5FC+ozl+/PB+Qr+QiUL5Kuhfs211l48QYFTbmDmmQ3C
-X-Developer-Key: i=dfustini@baylibre.com; a=ed25519;
- pk=p3GKE9XFmjhwAayAHG4U108yag7V8xQVd4zJLdW0g7g=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I will maintain support for the TH1520-based BeagleV Ahead board so
-adding myself as a reviewer for T-Head SoC patches.
+Fix the following checkpatch issue:
+- ERROR: else should follow close brace '}'
 
-Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+Signed-off-by: Franziska Naepelt <franziska.naepelt@googlemail.com>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/staging/rtl8723bs/os_dep/ioctl_linux.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d516295978a4..eaec3333f2ed 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18326,6 +18326,7 @@ RISC-V THEAD SoC SUPPORT
- M:	Jisheng Zhang <jszhang@kernel.org>
- M:	Guo Ren <guoren@kernel.org>
- M:	Fu Wei <wefu@redhat.com>
-+R:	Drew Fustini <dfustini@baylibre.com>
- L:	linux-riscv@lists.infradead.org
- S:	Maintained
- F:	arch/riscv/boot/dts/thead/
-
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+index 40a3157fb735..b8595b28bceb 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+@@ -654,8 +654,7 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 
+ 				psecuritypriv->busetkipkey = true;
+ 
+-			}
+-			else if (strcmp(param->u.crypt.alg, "CCMP") == 0) {
++			} else if (strcmp(param->u.crypt.alg, "CCMP") == 0) {
+ 				psecuritypriv->dot118021XGrpPrivacy = _AES_;
+ 
+ 				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
 -- 
-2.34.1
+2.39.2 (Apple Git-143)
 
