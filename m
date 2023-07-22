@@ -2,88 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7580B75DD7A
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 18:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA0E75DD7D
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 18:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjGVQn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 12:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56598 "EHLO
+        id S229791AbjGVQqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 12:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjGVQn1 (ORCPT
+        with ESMTP id S229468AbjGVQqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 12:43:27 -0400
-Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDC4E73
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 09:43:26 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id NFhRqde8bqvVSNFhRqwXs7; Sat, 22 Jul 2023 18:43:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1690044204;
-        bh=EvXOg9Wf3mDu5fhjycUMuKTbOj5nWm5mbNPIU3YSZCs=;
-        h=From:To:Cc:Subject:Date;
-        b=ly9sn9Y7k3+pn017fd72cAMjcY21k6cvEKg9DI1lB5dU3YAy1Q9aFNVMqbN8EjCie
-         /oKCEBDvYSloKacW1ztKu0gPcslzvRmm7qWczny4s68Cx9z7Rxyn52ctyBXGlogx9C
-         /ai579TbWtZ2FdzRISLFHVHrV3D1htFgVcURk7TCYTV/exdqq1+yUk3MF77d362vwh
-         y6EGeiaaiaGKJc7ERrd0pMhcPIUW2LG7dSVRYmmGipGKxPzhpEgqpWJOJ+2Cx03dOh
-         6xT38O32RvD9yTkpTvuvtsNh9i2yvKfnJhDzo3Dd546nAtL7oMxkNLBsvzolxv8t20
-         FqCjXkSHQbVlQ==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 22 Jul 2023 18:43:24 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH] IB/hfi1: Use struct_size()
-Date:   Sat, 22 Jul 2023 18:43:18 +0200
-Message-Id: <5631d2f1e20b48b27478275e8d3466e009ca1223.1690044181.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sat, 22 Jul 2023 12:46:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419C5E73;
+        Sat, 22 Jul 2023 09:46:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CA3C660B9F;
+        Sat, 22 Jul 2023 16:46:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81091C433C7;
+        Sat, 22 Jul 2023 16:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690044409;
+        bh=FUcJ5kyCBceu8cNLWIvq9oyoWX1mBM/NTa8B3HLsfeY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Hq9BFN+Qb8kL3PirNWumZYTFEez3EDB0Dy4bM/dvbTvUhL7MSsTBV0Zq1OHrHqzZi
+         fsUAhXykmE171UPRY0tmDtOhJ3ESTAZNYnEzdA7R4uhJxBCA8B8gihyx2uxgNH1XBd
+         FXVedcdFt9PjZVqbggvh0wgscpS0K3c2345OF7CXXZ5dpK8AsXMWSMo6XR929DmNto
+         OeDFDNbRrXw4giBuI24t7VQBOeOlCwqjbZKxKlsZljcnHkVm4lynj7aNLq16ZCoJM4
+         ohYxvMbVHnyjcwcHa6imFWUEQNPWj4KTKFB4J/U91V3fqLf+nrZU064jO07z+b5Xcb
+         KLhR80it9bWpg==
+Date:   Sat, 22 Jul 2023 17:46:45 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Icenowy Zheng <uwu@icenowy.me>
+Cc:     Vasily Khoruzhick <anarsoul@gmail.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Hugh Dickins <hughd@google.com>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] thermal/drivers/sun8i: Don't fail probe due to zone
+ registration failure
+Message-ID: <ZLwH9RFnJymdy7YD@finisterre.sirena.org.uk>
+References: <20230718-thermal-sun8i-registration-v1-1-c95b1b070340@kernel.org>
+ <5a9ccb708f004e70e2102417eb48b766b03777cd.camel@icenowy.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pJ7zt3hWz8YVEKZz"
+Content-Disposition: inline
+In-Reply-To: <5a9ccb708f004e70e2102417eb48b766b03777cd.camel@icenowy.me>
+X-Cookie: Give him an evasive answer.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use struct_size() instead of hand-writing it, when allocating a structure
-with a flex array.
 
-This is less verbose, more robust and more informative.
+--pJ7zt3hWz8YVEKZz
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-It will also be helpful if the __counted_by() annotation is added with a
-Coccinelle script such as:
-   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=devel/counted_by&id=adc5b3cb48a049563dc673f348eab7b6beba8a9b
----
- drivers/infiniband/hw/hfi1/pio.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+On Sat, Jul 22, 2023 at 08:11:43PM +0800, Icenowy Zheng wrote:
+> =E5=9C=A8 2023-07-18=E6=98=9F=E6=9C=9F=E4=BA=8C=E7=9A=84 16:04 +0100=EF=
+=BC=8CMark Brown=E5=86=99=E9=81=93=EF=BC=9A
 
-diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
-index 62e7dc9bea7b..5053d068399d 100644
---- a/drivers/infiniband/hw/hfi1/pio.c
-+++ b/drivers/infiniband/hw/hfi1/pio.c
-@@ -1893,9 +1893,7 @@ int pio_map_init(struct hfi1_devdata *dd, u8 port, u8 num_vls, u8 *vl_scontexts)
- 			vl_scontexts[i] = sc_per_vl + (extra > 0 ? 1 : 0);
- 	}
- 	/* build new map */
--	newmap = kzalloc(sizeof(*newmap) +
--			 roundup_pow_of_two(num_vls) *
--			 sizeof(struct pio_map_elem *),
-+	newmap = kzalloc(struct_size(newmap, map, roundup_pow_of_two(num_vls)),
- 			 GFP_KERNEL);
- 	if (!newmap)
- 		goto bail;
--- 
-2.34.1
+> > Since we currently do not define any trip points for the GPU thermal
+> > zones on at least A64 or H5 this means that we have no thermal
+> > support
+> > on these platforms:
 
+> > [=C2=A0=C2=A0=C2=A0 1.698703] thermal_sys: Failed to find 'trips' node
+> > [=C2=A0=C2=A0=C2=A0 1.698707] thermal_sys: Failed to find trip points f=
+or thermal-
+> > sensor id=3D1
+
+> I think this is an issue in the core thermal subsystem, and sent a
+> patch; Unfortunately the patch seems to be rejected by linux-arm-kernel
+> (and some other mailing lists)...
+
+It did seem to be a bit of an excessively strict requirement, I was
+going to poke at that myself.  It does seem worthwhile doing the change
+in the sun8i driver anyway, there might be some other issue that causes
+registration to fail which would have the same issue.
+
+> I will then resend it again and put Mark into CC list.
+
+Thanks.
+
+--pJ7zt3hWz8YVEKZz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS8B/UACgkQJNaLcl1U
+h9DbHQf/R/NTGVJ5ZHb5w5mBluOwQ43U4PSsTff9jY6HVWrnJNEXSSVFbmfADsWJ
+4nPr/Sv5UEHRMt9fvjV2mm96TwXIk6PcRyoOZ2UYSbth6gmaotVUKfZquoKmvaHJ
+Yi9UmOdbIz1i6Eil0s7UL/ZwuRShzzhxfQRdfyvTix9vryxtd6xkYDqMStdHqwc5
+5SCuPjyK9SvgWG0Rv50qCvS8DOfmOt0wJ22senQ9EWpoQVQzfOz7a/iReEUKBiLe
+15QFff1NN5i2mMzTN6jE0qa4+yxb/SP8LlJ1x/bar6pEZP6YLH3rN/TGEkczo4ej
+ZXV/HHHOmErXSt+FGKjXTJVb93AmGw==
+=W9D9
+-----END PGP SIGNATURE-----
+
+--pJ7zt3hWz8YVEKZz--
