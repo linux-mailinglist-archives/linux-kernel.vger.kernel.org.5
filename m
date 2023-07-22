@@ -2,128 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B48B75DE5E
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 21:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E4D75DE5F
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 21:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbjGVTl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 15:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
+        id S229709AbjGVTp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 15:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbjGVTl4 (ORCPT
+        with ESMTP id S229489AbjGVTp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 15:41:56 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342662707;
-        Sat, 22 Jul 2023 12:41:37 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36MJUTwu020067;
-        Sat, 22 Jul 2023 19:40:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=lTyqRrAz0M+mSVTdCULJfxi4Kvp6m47KIN1XFC6azao=;
- b=Tulg/cMYBdauh+BmOtTSWVDCXPZaY9nVDjB6ixukET0D/mLLVXAJZDfAVtQXKe0SsV/g
- Eib272VpV2/In7yOGxQKyQZ2LCXClaCiyK+oxTxkgtFMd6Cj6gfbwz/7mYzjbG6f1XQz
- IpQ9oAXzqw6SLnDMLHcWG9pd3xqBh/coGJsOse/OqGMIqGociC29aPSUPuMpayCFdkBs
- iBbyOuywsUk4AYwMltlpa+cme1zYES4WaL321ftlGxk8gBKHYla/xGGh8v7c5PjjDGTp
- +jKHXuiZJhVu2ABPZ3c5v+otttx9QcZdfNbvBnMaO92SsqgGjrxbIFzXJ1xoDFTGDLaE Zg== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s064dgw8r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 22 Jul 2023 19:40:58 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36MJetTj001500
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 22 Jul 2023 19:40:55 GMT
-Received: from [10.110.24.156] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sat, 22 Jul
- 2023 12:40:52 -0700
-Message-ID: <a19818a4-3457-7362-4deb-b981fdc9ba84@quicinc.com>
-Date:   Sat, 22 Jul 2023 12:40:51 -0700
+        Sat, 22 Jul 2023 15:45:58 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF9D10C3
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 12:45:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690055157; x=1721591157;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=FEEgno1rH+wwvAMVipqmcS3rNOJtmEjsn6vEz8C3xvo=;
+  b=Wf1w28VfhvuhBQTUPEMiguizBXhLcrJwHis3z+gKVasOCY488Xyp+ruY
+   zuriQldvUCXo6eq+Cbr8YzXkeUUnN88eOlReHN+l3cYaEDaQn/JGD3w5U
+   Cc1PFCzUiY0k304L9seu3T1eGnr6G5ubCn+sqJqKQVzzv4thMqR206q7L
+   NyYCQ3oBZ1thO/rSHnr2Srgq8R3HlM2YB/B0ZMf2OyzRTQJr/Foaj8mw/
+   Us4C8p/+0p/0f8KDYmTa0WxorBBXX1WyRWMNrYkOMCSH7F+ST08788wdZ
+   R1Dbd3Bm/rvx27g+XvcUo68c6DYqsXNl5EEacFTXgV9zCC7k0MTYjUyO2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="431019940"
+X-IronPort-AV: E=Sophos;i="6.01,224,1684825200"; 
+   d="scan'208";a="431019940"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2023 12:45:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="899061591"
+X-IronPort-AV: E=Sophos;i="6.01,224,1684825200"; 
+   d="scan'208";a="899061591"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 22 Jul 2023 12:45:54 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qNIY5-0008Yn-30;
+        Sat, 22 Jul 2023 19:45:53 +0000
+Date:   Sun, 23 Jul 2023 03:45:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sunil V L <sunilvl@ventanamicro.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: drivers/acpi/osl.c:723:27: sparse: sparse: incorrect type in
+ assignment (different address spaces)
+Message-ID: <202307230357.egcTAefj-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH] scripts/check-uapi.sh: add stgdiff support
-Content-Language: en-US
-To:     Giuliano Procida <gprocida@google.com>, <quic_johmoo@quicinc.com>
-CC:     <masahiroy@kernel.org>, <nathan@kernel.org>,
-        <ndesaulniers@google.com>, <nicolas@fjasle.eu>,
-        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <gregkh@linuxfoundation.org>,
-        <rdunlap@infradead.org>, <arnd@arndb.de>, <andersson@kernel.org>,
-        <tkjos@google.com>, <maennich@google.com>,
-        <kernel-team@android.com>, <libabigail@sourceware.org>,
-        <jorcrous@amazon.com>, <quic_satyap@quicinc.com>,
-        <quic_eberman@quicinc.com>, <quic_gurus@quicinc.com>
-References: <20230407203456.27141-2-quic_johmoo@quicinc.com>
- <20230720161053.1213680-1-gprocida@google.com>
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-In-Reply-To: <20230720161053.1213680-1-gprocida@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: X7PsJVrYMn_-7N-VhobBVNHwA6iB6cqa
-X-Proofpoint-ORIG-GUID: X7PsJVrYMn_-7N-VhobBVNHwA6iB6cqa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-22_08,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
- phishscore=0 mlxscore=0 spamscore=0 adultscore=0 bulkscore=0
- lowpriorityscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307220180
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/2023 9:10 AM, Giuliano Procida wrote:
-> Hi John.
-> 
-> I spent a few minutes adding stgdiff support to the script. It's
-> really just for illustration purposes.
-> 
-> As I think you know, STG doesn't yet exist as a project outside of
-> AOSP. Nevertheless, this may be useful to you as-is.
-> 
-> STG has quite a different philosophy to libabigil in terms of
-> filtering out certain kinds of differences. Some of the things (like
-> enum enumerator additions) are not considered harmless. The reasoning
-> behind this is basically...
-> https://en.wikipedia.org/wiki/Covariance_and_contravariance_(computer_science)
-> 
-> However, it does have --ignore interface_addition (and the related
-> --ignore type_definition_addition) which can be used to detect whether
-> one ABI is a subset of another.
-> 
-> I am looking at adding support for macro definitions (gcc -g3) to STG
-> which will then let us cover significantly more of the UAPI surface.
-> 
-> Unfortunately, there are some headers which use anonymous enums to
-> define constants (e.g. and ironically BTF). ABI tracking these types
-> would require something a bit hacky. Or we could just name them.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   295e1388de2d5c0c354adbd65d0319c5d636c222
+commit: a91a9ffbd3a55a0ae1bb75e2b6e85b2a03f64e8f RISC-V: Add support to build the ACPI core
+date:   7 weeks ago
+config: riscv-randconfig-r073-20230723 (https://download.01.org/0day-ci/archive/20230723/202307230357.egcTAefj-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230723/202307230357.egcTAefj-lkp@intel.com/reproduce)
 
-Thank you Giuliano for trying the script w/ stg. We will review the 
-modifications below.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307230357.egcTAefj-lkp@intel.com/
 
-Just to update everyone here that John is looking into the libabigail 
-changes to reduce the false positives as discussed earlier in the email 
-thread. There is some progress on the libabigail mailing list. Once we 
-have enough changes made in the libabigail, John will update here with 
-his results.
+sparse warnings: (new ones prefixed by >>)
+   WARNING: invalid argument to '-march': '_zihintpause'
+   drivers/acpi/osl.c:296:39: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void [noderef] __iomem * @@     got void * @@
+   drivers/acpi/osl.c:296:39: sparse:     expected void [noderef] __iomem *
+   drivers/acpi/osl.c:296:39: sparse:     got void *
+   drivers/acpi/osl.c:378:17: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/acpi/osl.c:723:27: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void [noderef] __iomem *[assigned] virt_addr @@     got void * @@
+   drivers/acpi/osl.c:723:27: sparse:     expected void [noderef] __iomem *[assigned] virt_addr
+   drivers/acpi/osl.c:723:27: sparse:     got void *
+   drivers/acpi/osl.c:754:27: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void [noderef] __iomem *[assigned] virt_addr @@     got void * @@
+   drivers/acpi/osl.c:754:27: sparse:     expected void [noderef] __iomem *[assigned] virt_addr
+   drivers/acpi/osl.c:754:27: sparse:     got void *
+   drivers/acpi/osl.c:1661:20: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *rv @@     got void [noderef] __iomem * @@
+   drivers/acpi/osl.c:1661:20: sparse:     expected void *rv
+   drivers/acpi/osl.c:1661:20: sparse:     got void [noderef] __iomem *
+   drivers/acpi/osl.c:711:1: sparse: sparse: context imbalance in 'acpi_os_read_memory' - wrong count at exit
+   drivers/acpi/osl.c:744:1: sparse: sparse: context imbalance in 'acpi_os_write_memory' - wrong count at exit
 
-We have also submitted abstract in LPC 2023 Android MC as well about the 
-UAPI checker. We hope to make a good progress before LPC.
+vim +723 drivers/acpi/osl.c
 
----Trilok Soni
+eeb2d80d502af2 Srinivas Pandruvada 2017-10-05  709  
+e615bf5b551986 Myron Stowe         2012-01-20  710  acpi_status
+653f4b538f66d3 Bob Moore           2012-02-14  711  acpi_os_read_memory(acpi_physical_address phys_addr, u64 *value, u32 width)
+e615bf5b551986 Myron Stowe         2012-01-20  712  {
+e615bf5b551986 Myron Stowe         2012-01-20  713  	void __iomem *virt_addr;
+e615bf5b551986 Myron Stowe         2012-01-20  714  	unsigned int size = width / 8;
+e615bf5b551986 Myron Stowe         2012-01-20  715  	bool unmap = false;
+e615bf5b551986 Myron Stowe         2012-01-20  716  	u64 dummy;
+eeb2d80d502af2 Srinivas Pandruvada 2017-10-05  717  	int error;
+e615bf5b551986 Myron Stowe         2012-01-20  718  
+e615bf5b551986 Myron Stowe         2012-01-20  719  	rcu_read_lock();
+e615bf5b551986 Myron Stowe         2012-01-20  720  	virt_addr = acpi_map_vaddr_lookup(phys_addr, size);
+e615bf5b551986 Myron Stowe         2012-01-20  721  	if (!virt_addr) {
+e615bf5b551986 Myron Stowe         2012-01-20  722  		rcu_read_unlock();
+e615bf5b551986 Myron Stowe         2012-01-20 @723  		virt_addr = acpi_os_ioremap(phys_addr, size);
+e615bf5b551986 Myron Stowe         2012-01-20  724  		if (!virt_addr)
+e615bf5b551986 Myron Stowe         2012-01-20  725  			return AE_BAD_ADDRESS;
+e615bf5b551986 Myron Stowe         2012-01-20  726  		unmap = true;
+e615bf5b551986 Myron Stowe         2012-01-20  727  	}
+e615bf5b551986 Myron Stowe         2012-01-20  728  
+e615bf5b551986 Myron Stowe         2012-01-20  729  	if (!value)
+e615bf5b551986 Myron Stowe         2012-01-20  730  		value = &dummy;
+e615bf5b551986 Myron Stowe         2012-01-20  731  
+eeb2d80d502af2 Srinivas Pandruvada 2017-10-05  732  	error = acpi_os_read_iomem(virt_addr, value, width);
+eeb2d80d502af2 Srinivas Pandruvada 2017-10-05  733  	BUG_ON(error);
+e615bf5b551986 Myron Stowe         2012-01-20  734  
+e615bf5b551986 Myron Stowe         2012-01-20  735  	if (unmap)
+e615bf5b551986 Myron Stowe         2012-01-20  736  		iounmap(virt_addr);
+e615bf5b551986 Myron Stowe         2012-01-20  737  	else
+e615bf5b551986 Myron Stowe         2012-01-20  738  		rcu_read_unlock();
+e615bf5b551986 Myron Stowe         2012-01-20  739  
+e615bf5b551986 Myron Stowe         2012-01-20  740  	return AE_OK;
+e615bf5b551986 Myron Stowe         2012-01-20  741  }
+e615bf5b551986 Myron Stowe         2012-01-20  742  
+
+:::::: The code at line 723 was first introduced by commit
+:::::: e615bf5b5519862ab66172f4dec7455d6543a578 ACPI, APEI: Add 64-bit read/write support for APEI on i386
+
+:::::: TO: Myron Stowe <mstowe@redhat.com>
+:::::: CC: Len Brown <len.brown@intel.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
