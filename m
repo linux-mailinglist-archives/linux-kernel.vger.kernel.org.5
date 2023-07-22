@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE8C75DE6F
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 22:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FEFA75DE71
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 22:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbjGVUHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 16:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
+        id S229829AbjGVUMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 16:12:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjGVUHn (ORCPT
+        with ESMTP id S229534AbjGVUMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 16:07:43 -0400
-Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3CB2137
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 13:07:39 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id NIsyqCllLulAmNIszqCc5G; Sat, 22 Jul 2023 22:07:31 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1690056451;
-        bh=7S4ycyHIMkZJiLKQzCPxeyh+eo13SBWOIVq3MxxljJ4=;
-        h=From:To:Cc:Subject:Date;
-        b=H1cITbJGrQCdw/dC2WdazoyVY0mrYULO1Vall8mjmOZhUf2HpWZfD5DXrHO7Fn447
-         iY3GHjnyT2VmoVdqX5leLbMcYQnneDP9YXuVSUKXMTUtiqDNTKVMS5T7Ki5SK2BOmi
-         QRef6/MoHPpVKxzX+YnsLQdwSUYSUZ2FKJjF+2cn/z/VEHHKzXFzWMgX0gMqsrkdZ3
-         x403vWMINEMsctZ55M0vSjPQ7iDnes1FYWLJwL77q3Wuum82zXi94W+cvARrsWfGrJ
-         vAMGUCVychN9LGChTN1g0SOTA5QWooUmDW19fCFBSlB8ec//PDWhefBwKbFsNQBF4q
-         9D9y0+LtrieXQ==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 22 Jul 2023 22:07:31 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] stm class: Use struct_size()
-Date:   Sat, 22 Jul 2023 22:07:26 +0200
-Message-Id: <d14d51f409c1e87fb87fa39869bdf7ce1b766120.1690056420.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sat, 22 Jul 2023 16:12:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE6D1AB;
+        Sat, 22 Jul 2023 13:11:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B3DC560BAF;
+        Sat, 22 Jul 2023 20:11:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C120C433C7;
+        Sat, 22 Jul 2023 20:11:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690056718;
+        bh=/9qrpDonabY7Xm8MCIwJtyIeTf31N3Re/7USWMHRKcs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FAbEVh9Heu4E8u7iKDY+e64+Tk7EG3xFaFcSkA/oiTpv72taAYk9Q+td/YzDreOuA
+         +2RDHN4MfVsWILebbSVVmIsaG9fSxAwkQ414cfBokjn5dic+30jaw0UExsHy96+Jxb
+         a1dDPxRZDeutnFDey2kOvsgVzeuqTNNDxVsNhR66qbUcVZWcT+eN1SWU2QnfsSK1l6
+         V19jdwhKq1ar2D2PS5GmhV0j8vkFyeR6/fSOVSYONuzecfx0FOgzLgn3fknlSs7SxH
+         Gs2UVudmYXXi6Z0YnplijX7e8pduAdtiuX+Htc3Cj0jZFbfJqUb/vkFpQ8yW7wpY06
+         VfyppHg6NsFcw==
+Date:   Sat, 22 Jul 2023 21:11:54 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Icenowy Zheng <zhengxingda@iscas.ac.cn>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, Icenowy Zheng <uwu@icenowy.me>
+Subject: Re: [PATCH RESEND RESEND] thermal/of: support thermal zones w/o
+ trips subnode
+Message-ID: <ZLw4CnzLI/QHPGWx@finisterre.sirena.org.uk>
+References: <20230722122534.2279689-1-zhengxingda@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qmlxt8wSsnvuRw3d"
+Content-Disposition: inline
+In-Reply-To: <20230722122534.2279689-1-zhengxingda@iscas.ac.cn>
+X-Cookie: Give him an evasive answer.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use struct_size() instead of hand-writing it, when allocating a structure
-with a flex array.
 
-This is less verbose, more robust and more informative.
+--qmlxt8wSsnvuRw3d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-It will also be helpful if the __counted_by() annotation is added with a
-Coccinelle script such as:
-   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=devel/counted_by&id=adc5b3cb48a049563dc673f348eab7b6beba8a9b
----
- drivers/hwtracing/stm/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sat, Jul 22, 2023 at 08:25:34PM +0800, Icenowy Zheng wrote:
+> From: Icenowy Zheng <uwu@icenowy.me>
+>=20
+> Although the current device tree binding of thermal zones require the
+> trips subnode, the binding in kernel v5.15 does not require it, and many
+> device trees shipped with the kernel, for example,
+> allwinner/sun50i-a64.dtsi and mediatek/mt8183-kukui.dtsi in ARM64, still
+> comply to the old binding and contain no trips subnode.
+>=20
+> Allow the code to successfully register thermal zones w/o trips subnode
+> for DT binding compatibility now.
+>=20
+> Furtherly, the inconsistency between DTs and bindings should be resolved
+> by either adding empty trips subnode or dropping the trips subnode
+> requirement.
 
-diff --git a/drivers/hwtracing/stm/core.c b/drivers/hwtracing/stm/core.c
-index 534fbefc7f6a..2195310ab81c 100644
---- a/drivers/hwtracing/stm/core.c
-+++ b/drivers/hwtracing/stm/core.c
-@@ -863,7 +863,7 @@ int stm_register_device(struct device *parent, struct stm_data *stm_data,
- 		return -EINVAL;
- 
- 	nmasters = stm_data->sw_end - stm_data->sw_start + 1;
--	stm = vzalloc(sizeof(*stm) + nmasters * sizeof(void *));
-+	stm = vzalloc(struct_size(stm, masters, nmasters));
- 	if (!stm)
- 		return -ENOMEM;
- 
--- 
-2.34.1
+This makes sense to me - it allows people to see the reported
+temperature even if there's no trips defined which seems more
+helpful than refusing to register.
 
+Reviewed-by: Mark Brown <broonie@kernel.org>
+
+--qmlxt8wSsnvuRw3d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS8OAkACgkQJNaLcl1U
+h9CRvwf9EgwMjwx2a6iutkecp3uFZwWNnW29QRQ4CiMFagDVw0T4QBY1c9lZHt+G
+gWpeUxAmdhOlFOPqUjsECVD4WLb0jgBLR/mTStJlVTfRDh19L7sqdPjv1wusWJRC
+EpvO18flHCvptt/uGpGJSpgSjvsdno2UN15ItUv21WPUo1fcyKymyRDoEREAETHy
+TQNRktd6GG6MxGdDPYtg+H/2UrI80IFS5r608F+lmcjo4J67dI2+x/TiuX5MQ3dD
+zR1NUdaACpYwjEctJ23troInehqwwglXs+CNm/p/WC9sWgfYaKSYdJXpjlS+mHFt
+NVJaVP9uS0BcAJL7sGXEapQApo6Beg==
+=Anzg
+-----END PGP SIGNATURE-----
+
+--qmlxt8wSsnvuRw3d--
