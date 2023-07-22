@@ -2,89 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F101775D8D6
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 03:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4024775D8D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 03:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbjGVB4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 21:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46180 "EHLO
+        id S230104AbjGVB5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 21:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjGVB4B (ORCPT
+        with ESMTP id S229552AbjGVB5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 21:56:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B173C03
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 18:56:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Fri, 21 Jul 2023 21:57:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D990C3C03
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 18:57:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689991019;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jYv8A4iNWJLqBUsmWoE6MiO6/A7584+GM0NOMC65SjQ=;
+        b=Q7or3ALLSJ7aPxEoG4la1pq4p8DbFdZz5EGHWjJlgf6nf1PHrkGZbrBaqgkouSt02HqOZ1
+        uoXVRquWrlKK0qs4obVl0zG6bErET3G8aWKcSorvA0NyKdW1+qoTYNgUoFvxE1XgY8zjeV
+        gZGnikXicBYNaLimdwu+XLQL3zpk8vE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-505-0_d3AoYJMze3FKf2Cz7xUA-1; Fri, 21 Jul 2023 21:56:55 -0400
+X-MC-Unique: 0_d3AoYJMze3FKf2Cz7xUA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0618761DA6
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 01:56:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DDFBC433C7;
-        Sat, 22 Jul 2023 01:55:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689990959;
-        bh=YIMeHkWDQz0s9WX+GvHlnTsrUYqiF/JbCOjQIvlM93w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QtG+EqkDWjYmXfT6W2+RRIIw3VCT7iNprPoryweITTLIZQAFRd3gVufVMWUxmmsul
-         HCKR1AN0lxPA3hmXAiLaXAVRuKsI2gc+opDB2OjYyOMIdj3TpUcB4uZAXG84LT8AiK
-         Ris27qqhb6z6/DcvMi6iORTY3J9T2iSD6evm9sIK4BvedCmlTyRcPW+QhpL4MA5ki1
-         tiYrRGQaOBr/oeJ9jfuUtH1bDrayxlOTcNcAMpk5oNHYJKqSvVAz6YFQnU6zDNti4W
-         5+SDb60GfJEblfk6305HyRSK2/rf1QC2g91xGVXnUyhaq9GCzeaU6tQ3SZv4zmLkO+
-         VMBF6BtTXD6YA==
-Date:   Fri, 21 Jul 2023 18:55:57 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     "Ng, Boon Khai" <boon.khai.ng@intel.com>,
-        "Boon@ecsmtp.png.intel.com" <Boon@ecsmtp.png.intel.com>,
-        "Khai@ecsmtp.png.intel.com" <Khai@ecsmtp.png.intel.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        "Tham, Mun Yew" <mun.yew.tham@intel.com>,
-        "Swee, Leong Ching" <leong.ching.swee@intel.com>,
-        "G Thomas, Rohan" <rohan.g.thomas@intel.com>,
-        Shevchenko Andriy <andriy.shevchenko@linux.intel.com>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [Enable Designware XGMAC VLAN Stripping Feature 1/2]
- dt-bindings: net: snps,dwmac: Add description for rx-vlan-offload
-Message-ID: <20230721185557.199fb5b8@kernel.org>
-In-Reply-To: <8e2f9c5f-6249-4325-58b2-a14549eb105d@kernel.org>
-References: <20230721062617.9810-1-boon.khai.ng@intel.com>
-        <20230721062617.9810-2-boon.khai.ng@intel.com>
-        <e552cea3-abbb-93e3-4167-aebe979aac6b@kernel.org>
-        <DM8PR11MB5751EAB220E28AECF6153522C13FA@DM8PR11MB5751.namprd11.prod.outlook.com>
-        <8e2f9c5f-6249-4325-58b2-a14549eb105d@kernel.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E378386F122;
+        Sat, 22 Jul 2023 01:56:54 +0000 (UTC)
+Received: from localhost (ovpn-12-31.pek2.redhat.com [10.72.12.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C15E7492C13;
+        Sat, 22 Jul 2023 01:56:53 +0000 (UTC)
+Date:   Sat, 22 Jul 2023 09:56:50 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, tj@kernel.org, cl@linux.com,
+        mawupeng1@huawei.com
+Subject: Re: [PATCH 3/3] mm/percpu.c: print error message too if atomic alloc
+ failed
+Message-ID: <ZLs3YmR0UkTr+jSK@MiWiFi-R3L-srv>
+References: <20230721131800.20003-1-bhe@redhat.com>
+ <20230721131800.20003-4-bhe@redhat.com>
+ <ZLryhIzyDUpEPUzT@snowbird>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLryhIzyDUpEPUzT@snowbird>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 18:21:32 +0200 Krzysztof Kozlowski wrote:
-> > $ ./scripts/get_maintainer.pl  --scm  -f drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c  
+On 07/21/23 at 02:03pm, Dennis Zhou wrote:
+> On Fri, Jul 21, 2023 at 09:18:00PM +0800, Baoquan He wrote:
+> > The variable 'err' is assgigned to an error message if atomic alloc
+> > failed, while it has no chance to be printed if is_atomic is true.
+> > 
+> > Here change to print error message too if atomic alloc failed, while
+> > avoid to call dump_stack() if that case.
+> > 
+> > Signed-off-by: Baoquan He <bhe@redhat.com>
+> > ---
+> >  mm/percpu.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/mm/percpu.c b/mm/percpu.c
+> > index c25b058a46ad..74f75ef0ad58 100644
+> > --- a/mm/percpu.c
+> > +++ b/mm/percpu.c
+> > @@ -1890,13 +1890,15 @@ static void __percpu *pcpu_alloc(size_t size, size_t align, bool reserved,
+> >  fail:
+> >  	trace_percpu_alloc_percpu_fail(reserved, is_atomic, size, align);
+> >  
+> > -	if (!is_atomic && do_warn && warn_limit) {
+> > +	if (do_warn && warn_limit) {
+> >  		pr_warn("allocation failed, size=%zu align=%zu atomic=%d, %s\n",
+> >  			size, align, is_atomic, err);
+> > -		dump_stack();
+> > +		if (is_atomic)
+> > +			dump_stack();
 > 
-> That's not how you run it. get_maintainers.pl should be run on patches
-> or on all files, not just some selection.
+> This should be (!is_atomic) to preserve the current logic?
 
-Adding Joe for visibility (I proposed to print a warning when people 
-do this and IIRC he wasn't on board).
+You are quite right, I must be dizzy at the moment when making change.
+Will fix this. Thanks for reviewing.
+
+> 
+> >  		if (!--warn_limit)
+> >  			pr_info("limit reached, disable warning\n");
+> >  	}
+> > +
+> >  	if (is_atomic) {
+> >  		/* see the flag handling in pcpu_balance_workfn() */
+> >  		pcpu_atomic_alloc_failed = true;
+> > -- 
+> > 2.34.1
+> > 
+> 
+> Thanks,
+> Dennis
+> 
+
