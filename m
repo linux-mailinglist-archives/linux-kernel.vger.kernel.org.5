@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB2675DDF0
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 19:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0271A75DDF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 19:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbjGVRgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 13:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
+        id S229679AbjGVRlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 13:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGVRge (ORCPT
+        with ESMTP id S229452AbjGVRlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 13:36:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75DC2680;
-        Sat, 22 Jul 2023 10:36:33 -0700 (PDT)
+        Sat, 22 Jul 2023 13:41:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768D82699;
+        Sat, 22 Jul 2023 10:40:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 719BE60BA1;
-        Sat, 22 Jul 2023 17:36:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CDBD3C433C7;
-        Sat, 22 Jul 2023 17:36:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D09D60BA0;
+        Sat, 22 Jul 2023 17:40:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 616E6C433C7;
+        Sat, 22 Jul 2023 17:40:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690047392;
-        bh=4veDvID5ILUnccAnYdZvyEgmdNW42cXu/waVUUKvCXo=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=C8JtNrxpYOnJZLhBdOfWGTDH6BL70RpqvgK3O5f/J1hxSxg1JUUiXcdYOYm/5oLSe
-         v/HsMaNPMvOX0bMuvoj4nEfDyUsLKkz131Ao1dylM57rlluVV0YCBh9M7GAdFKeri2
-         mm3uiXyS66WtSsBG2TO1gksIeiyH1b4H6w6ISwuWMSrBkl+PymaXmLmUEYZrnypY6P
-         cFE96ZbVvVvKXMais6Ny/TFwkEmRbNuMFy/W1xQHvhrINDyRiLiazsJ5iYV4OWPrjg
-         3Ehpaps+EOqiQ6Ip/iv5pGMvLgfdv0lwKoriGyCs/D4a1tBqFw2IlAKeMgpn42bQiN
-         L4rX9GS672IpA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B2284C595C0;
-        Sat, 22 Jul 2023 17:36:32 +0000 (UTC)
-Subject: Re: [GIT PULL] Devicetree fixes for v6.5, part 1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230721195151.GA1691988-robh@kernel.org>
-References: <20230721195151.GA1691988-robh@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230721195151.GA1691988-robh@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-6.5-1
-X-PR-Tracked-Commit-Id: ffc59c6414f9ffd52591786efe3e62e145563deb
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 725d444db6b0a8ed98461583ed1e6f12b8a7f0e9
-Message-Id: <169004739272.21373.9936211957901999724.pr-tracker-bot@kernel.org>
-Date:   Sat, 22 Jul 2023 17:36:32 +0000
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        s=k20201202; t=1690047655;
+        bh=kiCfJdeGX5yhKNyQrI6BAr+nYft+EbJO9huApEPteK0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZnsZpE4LDyp367SCFY+0DwEWjYp9MFI3PRAJsi9a/8h0RIPAQTyYRvsCxoK/O73dv
+         92n9TZTYnJtLkI5D8eCjlfjDdAAeft3RMixDGLITFMTmgF1oZ5PFssU76CgwCeTwXS
+         8nWZahB1+vkIS3zsgXq8J/ABsT/EkNAk2TjiYRnObDFVOoChIVHTaz0yINUsXne/1i
+         vjpL9RgeSDCcqoqGaUp7jYJbY8J6+Q4BlstbU67Ux+BDbvkTdRdENKb75weWFxSuBO
+         4CRMKW2agBTQw2duE8zT9LODV9izMzpIjlKzH2i6+tsLAmSZi5yt4F91EMza7JX+23
+         GcFyZ3NkUkLjw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id EC79BCE0902; Sat, 22 Jul 2023 10:40:54 -0700 (PDT)
+Date:   Sat, 22 Jul 2023 10:40:54 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Yun Levi <ppbuk5246@gmail.com>
+Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, osh@joshtriplett.org, boqun.feng@gmail.com,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: remove unnecessary check cpu_no_qs.norm on
+ rcu_report_qs_rdp
+Message-ID: <faf07eef-0a51-49f3-be48-0433952171ad@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230721121534.44328-1-ppbuk5246@gmail.com>
+ <05e98227-77f4-4918-8f8e-2170a158e350@paulmck-laptop>
+ <CAM7-yPRc4Z0siaiWf+fK2GEfjPMq5UaY13F4o19rU6NNUS5fNg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM7-yPRc4Z0siaiWf+fK2GEfjPMq5UaY13F4o19rU6NNUS5fNg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 21 Jul 2023 13:51:51 -0600:
+On Sat, Jul 22, 2023 at 10:23:26AM +0100, Yun Levi wrote:
+> Hi, Paul.
+> 
+> Thanks for looking into this :)
+> 
+> 
+> > Except that rcu_report_qs_rdp() is invoked with interrupts enabled,
+> > which means that there is some possibility of state changes up to the
+> > raw_spin_lock_irqsave_rcu_node(rnp, flags) statement.
+> >
+> > So, did you check whether RCU's interrupt paths change this state?
+> 
+> In my narrow view,
+> only a new gp started, cpu_no_qs.b.norm changes as true in the path of
+> rcu_sched_clock_irq.
+> But in that case, rcu_report_qs_rdp isn't called.
+> 
+> Did I understand your question well and are there any missed paths I didn't see?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-6.5-1
+Suppose that the scheduler-clock interrupt invoking rcu_sched_clock_irq()
+happened just before the lock was acquired in rcu_report_qs_rdp().
+Suppose further that the RCU grace-period kthread started a new grace
+period just before that interrupt occurred.  Then mightn't that interrupt
+notice the new grace period and set ->cpu_no_qs.b.norm to true before
+fully returning?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/725d444db6b0a8ed98461583ed1e6f12b8a7f0e9
+							Thanx, Paul
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> > Why not start with something like this?
+> >
+> >         if (!WARN_ON_ONCE(!rdp->cpu_no_qs.b.norm) ||
+> >             rdp->gp_seq != rnp->gp_seq || rdp->gpwrap) {
+> >
+> 
+> Yes. but with different message
