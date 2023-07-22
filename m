@@ -2,141 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA6375DB7B
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 11:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E4A75DB8A
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 11:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjGVJmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 05:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60212 "EHLO
+        id S229945AbjGVJsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 05:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbjGVJmD (ORCPT
+        with ESMTP id S229750AbjGVJsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 05:42:03 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933A1FE
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 02:42:01 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-314172bac25so2005126f8f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 02:42:01 -0700 (PDT)
+        Sat, 22 Jul 2023 05:48:03 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7C9E41
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 02:47:57 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99342a599e9so439354566b.3
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 02:47:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690018920; x=1690623720;
+        d=linaro.org; s=google; t=1690019275; x=1690624075;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vIiKd8WhXPxz7X6XYM8LX2pk87FlZNE/jREJGMzG5bc=;
-        b=lTr70M+v01b1HK/Rs0QIfQheuBdH7tjoJmDoxRUdvtjVgBjSwBMUdItWDtUOeZOJEe
-         pTxTAh5/BNzKSBPIjWobW1QJUnmOeKQ70Ryb9g9E3sd/AT8i5hIvKS1xHQoe2jtR9MZY
-         Es6jc9JuuAqCz4BnUd3BZlEVxhq/UQx69PJgG9HprXxj6R/sJmE1cG3oX2F7q7wD6Vh/
-         JT+rw6Gb1fUyhQRa0oghXSPxF9GkRwPIPk5Fvgw15Y7O91tyJhavGnpZRrfkTU938u21
-         4ZGXF8Ejwrq9o4L81HlZYhpcV3IgsLDQ4p5yrKSVwlc939M6MBFlZ91O4Kh7HrEQmVRr
-         Kz1g==
+        bh=yLhyN8pMB6jGCKau1Y0DkOxv/K9GhrUFRUUPHRidZoA=;
+        b=PYsDlJsHqC2NIvqW3vpM2kaYvvqSGX80NAGQi5zg0JUOz0J3OP6vlxfV9UhLJxKi8e
+         9oVerDLIyOuLSCHer9SU/TaslcK9ieyNRV4gHynB5rRgdszX4Qvu3QnTOin9CxEf/cev
+         S2BsAilTgGmrILfxCwnZOoXYBNL+/g2WVcOY230jsFaZZAHkTzbAC/lMHbYgyB8JQw/I
+         F1tDFSXhsr6wwa+uxm5BCfytZUh9Pe7CM1AOZrnl0zJET3LVF/lME8DH22/vSGbIAwCf
+         1q1KPCt28Nz2t5Xk4LZloyYnzYGJ5gtGPARtzShmKBurzHaKQZCw1Phe2SEUwDkgnPeE
+         XpEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690018920; x=1690623720;
+        d=1e100.net; s=20221208; t=1690019275; x=1690624075;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vIiKd8WhXPxz7X6XYM8LX2pk87FlZNE/jREJGMzG5bc=;
-        b=df2jjWYjdkGxVA828Ep6ICROIMWCPhFWV8QF4xwc6ITQIZgBjzydcoQX0JKwbtjJ7D
-         Eg4BowDIjr/2IZfkyOLAUzsHyYLZMHj38DQJ0fZRxAcJrgTEHyZ4f2/FiJTAUAUmXd4A
-         HIJU0oH7LJY49t6jN/CwK4PvZ8/oQA0ZHXW8ydWXf1FumzNVyIYWhct5ZluG5FS1FE2A
-         dDByo38s8qJiaNqfnK60ml9RyBkFdObuOWaXVmzGO3Rxsvoen8/nRvvyKvo0CxJyeped
-         kc2YHKnKrcJ9JlI0GQ63jsxWH4kig602UW4nqzk44dho1H3PzkFtawjzQhH5Bao1fFpT
-         kXUg==
-X-Gm-Message-State: ABy/qLa+Fc1XIUo8oQjkU4r0EJpSn5v0gSgWZMg8lBwIrlEBIjz9Fj71
-        qCNK/yVfAMm7DhgmCyOLSDBr6Q==
-X-Google-Smtp-Source: APBJJlFi9gcxEqT8Nrf3W3sLqaEiCNa3FbHoebyV+XTi/Z0TwxbzXjy2gMsN4FU1Y1OAcLSTdClcdQ==
-X-Received: by 2002:adf:fec8:0:b0:313:f86f:2851 with SMTP id q8-20020adffec8000000b00313f86f2851mr4007408wrs.3.1690018920017;
-        Sat, 22 Jul 2023 02:42:00 -0700 (PDT)
+        bh=yLhyN8pMB6jGCKau1Y0DkOxv/K9GhrUFRUUPHRidZoA=;
+        b=Kkw/kV7SSbLv+4t7e5CEboi1+pzdErnhfE9R2uKJ1DzSI0FsIYWIeLz21HjnN0/2dK
+         mT7ZXIHQsgrSbywIrPu0wsOPWCM+e1bvEBENCDdU2SeFWC7Nqqq46QDmUrzolZM5sdUe
+         CslDtJMjwNR4+F5o4d40llpjkaubFTeRf6SroTZWkkKjDAAg/kiZQfpl/kVceThrZady
+         1gbVcsTfd033viXR6G3aZms56bjhQ1iiETk4oNsHS9+oZOAV0R9L3dD2aHk226rpUk6Z
+         RRT6HuFfeuLEALK5U749JE5kClfNdDxQZhdaz6FolFJZmyGllbdK6+7rpVRuJ0dBjvtF
+         7tXA==
+X-Gm-Message-State: ABy/qLZ8tU1qxGMNGmDxzhUqaUvwiy+iDPd6BqBxQ8h/DPtMGSUVtcT4
+        wteC+j+RIb2mVSjcd/I/ktfy8hvrx9TmOKTld5w=
+X-Google-Smtp-Source: APBJJlHpXQtfsV1kOI9SsnQcshgNy2EdmTDJEHkIgT96bphtZgnz3hjkYk8eOV1GY8fH8HJ2c52grQ==
+X-Received: by 2002:a17:906:3048:b0:992:4e20:bca4 with SMTP id d8-20020a170906304800b009924e20bca4mr3930676ejd.42.1690019275598;
+        Sat, 22 Jul 2023 02:47:55 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id e18-20020a5d65d2000000b00314172ba213sm6405562wrw.108.2023.07.22.02.41.58
+        by smtp.gmail.com with ESMTPSA id ha5-20020a170906a88500b009944e912849sm3313353ejb.199.2023.07.22.02.47.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Jul 2023 02:41:59 -0700 (PDT)
-Message-ID: <b2b68cc6-1dd9-25ed-c65b-c4bf3a5a4f16@linaro.org>
-Date:   Sat, 22 Jul 2023 11:41:57 +0200
+        Sat, 22 Jul 2023 02:47:55 -0700 (PDT)
+Message-ID: <c3e3b35a-e399-6739-1b01-e6f701af965c@linaro.org>
+Date:   Sat, 22 Jul 2023 11:47:53 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 5/7] dt-bindings: interconnect: qcom: Fix and separate out
- SDM660
+Subject: Re: [PATCH] dt-bindings: i2c: arb-gpio-challange: convert to DT
+ schema
 Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Peter Rosin <peda@axentia.se>, Andi Shyti <andi.shyti@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawn.guo@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>, linux-i2c@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230721-topic-icc_bindings-v1-0-93e2bc728fb7@linaro.org>
- <20230721-topic-icc_bindings-v1-5-93e2bc728fb7@linaro.org>
+References: <20230721133035.15222-1-krzysztof.kozlowski@linaro.org>
+ <CAD=FV=U1humE-MrCgWmDqSjGZPnzP04-ScGcY7yBETuW-viyHQ@mail.gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230721-topic-icc_bindings-v1-5-93e2bc728fb7@linaro.org>
+In-Reply-To: <CAD=FV=U1humE-MrCgWmDqSjGZPnzP04-ScGcY7yBETuW-viyHQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/2023 15:54, Konrad Dybcio wrote:
-> Separate out SDM660 icc bindings from the common file and fix the
-> clocks description by removing the wrong internal RPM bus clock
-> representation that we've been carrying for years.
+On 21/07/2023 20:06, Doug Anderson wrote:
+> Hi,
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> On Fri, Jul 21, 2023 at 6:30 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> diff --git a/Documentation/devicetree/bindings/i2c/i2c-arb-gpio-challenge.yaml b/Documentation/devicetree/bindings/i2c/i2c-arb-gpio-challenge.yaml
+>> new file mode 100644
+>> index 000000000000..17f15490f073
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/i2c/i2c-arb-gpio-challenge.yaml
+>> @@ -0,0 +1,138 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/i2c/i2c-arb-gpio-challenge.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: GPIO-based I2C Arbitration Using a Challenge & Response Mechanism
+>> +
+>> +maintainers:
+>> +  - Doug Anderson <dianders@chromium.org>
+>> +  - Peter Rosin <peda@axentia.se>
+> 
+> While I don't object to Peter Rosin being listed here if he wants it,
+> I suspect that you added him because he was the author of
+> "i2c-arb.txt". I guess that file was really only added to try to keep
+> things common between this GPIO arbitrator and the one that he cares
 
-...
+I added him because he was listed as maintainer of all arbitration
+bindings (as part of I2C MUX entry in MAINTAINERS).
 
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,gcc-sdm660.h>
-> +    #include <dt-bindings/clock/qcom,mmcc-sdm660.h>
-> +    #include <dt-bindings/clock/qcom,rpmcc.h>
-> +
-> +    bimc: interconnect@1008000 {
-> +        compatible = "qcom,sdm660-bimc";
-> +        reg = <0x01008000 0x78000>;
-> +        #interconnect-cells = <1>;
-> +    };
-> +
-> +    cnoc: interconnect@1500000 {
-> +        compatible = "qcom,sdm660-cnoc";
-> +        reg = <0x01500000 0x10000>;
-> +        #interconnect-cells = <1>;
-> +    };
-> +
-> +    snoc: interconnect@1626000 {
-> +        compatible = "qcom,sdm660-snoc";
-> +        reg = <0x01626000 0x7090>;
-> +        #interconnect-cells = <1>;
-> +    };
-> +
-> +    a2noc: interconnect@1704000 {
-> +        compatible = "qcom,sdm660-a2noc";
-> +        reg = <0x01704000 0xc100>;
-> +        #interconnect-cells = <1>;
-> +        clocks = <&rpmcc RPM_SMD_IPA_CLK>,
-> +                 <&gcc GCC_UFS_AXI_CLK>,
-> +                 <&gcc GCC_AGGRE2_UFS_AXI_CLK>,
-> +                 <&gcc GCC_AGGRE2_USB3_AXI_CLK>,
-> +                 <&gcc GCC_CFG_NOC_USB2_AXI_CLK>;
-> +        clock-names = "ipa",
-> +                      "ufs_axi",
-> +                      "aggre2_ufs_axi",
-> +                      "aggre2_usb3_axi",
-> +                      "cfg_noc_usb2_axi";
-> +    };
+> about: "nxp,pca9541.txt". Probably he doesn't want to be added here.
+> 
+> Speaking of "nxp,pca9541.txt", it seems like you need to convert that
+> before removing "i2c-arb.txt". It still refers to that file even after
+> your patch, doesn't it?
 
-Keep only two examples.
+Indeed, thanks. I will convert it.
+
+> 
+> In any case, other than that, this looks fine. Thanks for doing the conversion!
+> 
+> Acked-by: Douglas Anderson <dianders@chromium.org>
+
 
 Best regards,
 Krzysztof
