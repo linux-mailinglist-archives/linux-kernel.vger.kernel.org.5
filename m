@@ -2,312 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0419475DCC6
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 15:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4FE75DCCF
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 15:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbjGVNc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 09:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
+        id S229707AbjGVN5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 09:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjGVNc5 (ORCPT
+        with ESMTP id S229692AbjGVN5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 09:32:57 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C84E47;
-        Sat, 22 Jul 2023 06:32:55 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-34896a1574dso15497425ab.0;
-        Sat, 22 Jul 2023 06:32:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690032775; x=1690637575;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MFVDXv2D7sWZUmHyufFhaQUMrCjeUslkjY6PdPoGRZY=;
-        b=qpvC1AsbeQA4qlCRCXiCYE7Joe9UruOopossHc3u+yEqozc8gWZozjh/A3px2Isnt3
-         tVmu8v4qrgqBmTYIWoyk8cpSEjiLetHkon6A5Joch0lKEyyDeT2ObBmJKOUFRL3y3uCf
-         GTMvnEr8hiEQIJMh9osGdtBX6jhaeD9Lfn/JhYtaBed7Nb308/sppEhJqGSWhNbe205s
-         xPfxQqmnKHMleL8aQfM4EF+UujsBJSMjAoWJh4vPOJy+HuTVwPZIRozbMF74cq7jxQDs
-         vzTroff42sdn8JSwgwU2gLopKjr+3VRckxIEU9dCB64TGt9Tc02t/LKCSE/TFtdErVCt
-         ZHbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690032775; x=1690637575;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MFVDXv2D7sWZUmHyufFhaQUMrCjeUslkjY6PdPoGRZY=;
-        b=kyyuSmUWkZzm0a1QkUcn0WNmq3rbtMP1Ihlpb+KtXDtExgBFi4BULNu/Qzjy1RAbdG
-         AqKli4SvajC8kW9FQBUeQqBHYpJc13sYtoOHAYk1PFHrtZ76Fe9fnFWwWjroBgMXQ0tU
-         EtrtAoeENZDZq86ks4UXyjRAu6MpPsjhePsSIpr59YTObN+AYl6EfObq64Jyd54nDzzu
-         Ozdx1GqhDtMyTOQD4lfDnPtUnr/2RpXOurBnrGlmX4iYne19+mhfjm4Tnf0VhLIN3J60
-         GDkwRCu8sJ+eo2zUcAPPnfSmAF7z9HWS4ySsTJaIelayB66XEpprCXUDjCKLJIoANGD4
-         DLYA==
-X-Gm-Message-State: ABy/qLb1m18/OxLKgqz75oNQAdQso4yXpbBjsVwe0gXrGNjZ+MAPxvO/
-        A5vEX5FdcQZv9In6oP0vSpw=
-X-Google-Smtp-Source: APBJJlEro5jXuQX2hLCT7E7OXdctLY8DI+WNw7E3sXmUsmNVrDB8kc5at7gpUyWt9NcEP+3isQNngw==
-X-Received: by 2002:a92:cacb:0:b0:348:7d72:86f4 with SMTP id m11-20020a92cacb000000b003487d7286f4mr2368411ilq.31.1690032774076;
-        Sat, 22 Jul 2023 06:32:54 -0700 (PDT)
-Received: from smtpclient.apple ([111.0.233.213])
-        by smtp.gmail.com with ESMTPSA id b26-20020a63a11a000000b00563962dbc70sm1406674pgf.58.2023.07.22.06.32.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 22 Jul 2023 06:32:53 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <ED5C700E-0C63-41E5-8A46-F7BC93B2FD42@gmail.com>
-Date:   Sat, 22 Jul 2023 21:32:01 +0800
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        rcu@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <76552616-5DF1-4A05-BA5A-AE0677F861FC@gmail.com>
-References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
- <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
- <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
- <cc9b292c-99b1-bec9-ba8e-9c202b5835cd@joelfernandes.org>
- <ED9F14A2-533B-471E-9B79-F75CEEE9A216@gmail.com>
- <ED5C700E-0C63-41E5-8A46-F7BC93B2FD42@gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Eric Dumazet <edumazet@google.com>, roman.gushchin@linux.dev,
-        "David.Laight@aculab.com" <David.Laight@ACULAB.COM>
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 22 Jul 2023 09:57:07 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9533A30D6;
+        Sat, 22 Jul 2023 06:57:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690034224; x=1721570224;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=5MIlRC2+zWqTR3u8Tn1LD4aunQEqMpb9fo+8qASwafs=;
+  b=jOOhUbJJOCPd00pMC3Jc1wo2HXdDydI3qPKDfzsCByRrEE3ExoJgQuaz
+   3KwzlkWoUHho1Nq53tURWBQFkT8vDiK2OPr2u0JT6USOr2fLkHOHJuPLz
+   YuI4FOpzdamtcOzpn6bUaljU1SH/rgj7TusNBJxd/akdrIgE3VFwdawbk
+   VSsc9u1vFU3XwHjd8AvD6nY1t96HODjExVPBlZ8AxACiVnyjV3232Outn
+   yfVwrnQLbrtllyRsAlES6ySUFUHPJ8FbKc6f6sQg8UOE32sl2rzrYtSLW
+   1nLz/vhnuawXUY+gyJOfbanF4QfS+BI9Md2UvzOd2av891Y5ZTv0S95Ps
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="367223274"
+X-IronPort-AV: E=Sophos;i="6.01,224,1684825200"; 
+   d="scan'208";a="367223274"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2023 06:57:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="702357374"
+X-IronPort-AV: E=Sophos;i="6.01,224,1684825200"; 
+   d="scan'208";a="702357374"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 22 Jul 2023 06:56:56 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qND62-0008Lr-0Z;
+        Sat, 22 Jul 2023 13:56:34 +0000
+Date:   Sat, 22 Jul 2023 21:55:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Peter Xu <peterx@redhat.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [v2] fs/proc/task_mmu: Implement IOCTL for efficient page table
+ scanning
+Message-ID: <202307222107.GdtIG4nq-lkp@intel.com>
+References: <ZLshsAj5PbsEAHhP@qmqm.qmqm.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZLshsAj5PbsEAHhP@qmqm.qmqm.pl>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Michał,
 
-> 2023=E5=B9=B47=E6=9C=8822=E6=97=A5 04:40=EF=BC=8CAlan Huang =
-<mmpgouride@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
->=20
->=20
->> 2023=E5=B9=B47=E6=9C=8822=E6=97=A5 =E4=B8=8A=E5=8D=884:08=EF=BC=8CAlan =
-Huang <mmpgouride@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
->>=20
->>=20
->>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 =E4=B8=8B=E5=8D=8811:21=EF=BC=8CJoe=
-l Fernandes <joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
->>>=20
->>> On 7/21/23 10:27, Alan Huang wrote:
->>>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 20:54=EF=BC=8CJoel Fernandes =
-<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
->>>>>=20
->>>>>=20
->>>>>=20
->>>>>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> =
-wrote:
->>>>>>=20
->>>>>> =EF=BB=BF
->>>>>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet =
-<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
->>>>>>>=20
->>>>>>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
-<mmpgouride@gmail.com> wrote:
->>>>>>>>=20
->>>>>>>> Hi,
->>>>>>>>=20
->>>>>>>> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of =
-first item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
->>>>>>>> and a related discussion [1].
->>>>>>>>=20
->>>>>>>> After reading the whole discussion, it seems like that =
-ptr->field was cached by gcc even with the deprecated
->>>>>>>> ACCESS_ONCE(), so my question is:
->>>>>>>>=20
->>>>>>>>    Is that a compiler bug? If so, has this bug been fixed =
-today, ten years later?
->>>>>>>>=20
->>>>>>>>    What about READ_ONCE(ptr->field)?
->>>>>>>=20
->>>>>>> Make sure sparse is happy.
->>>>>>=20
->>>>>> It caused a problem without barrier(), and the deprecated =
-ACCESS_ONCE() didn=E2=80=99t help:
->>>>>>=20
->>>>>> https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
->>>>>>=20
->>>>>> So, my real question is: With READ_ONCE(ptr->field), are there =
-still some unusual cases where gcc
->>>>>> decides not to reload ptr->field?
->>>>>=20
->>>>> I am a bit doubtful there will be strong (any?) interest in =
-replacing the barrier() with READ_ONCE() without any tangible reason, =
-regardless of whether a gcc issue was fixed.
->>>>>=20
->>>>> But hey, if you want to float the idea=E2=80=A6
->>>> We already had the READ_ONCE() in rcu_deference_raw().
->>>> The barrier() here makes me think we need write code like below:
->>>>=20
->>>> READ_ONCE(head->first);
->>>> barrier();
->>>> READ_ONCE(head->first);
->>>> With READ_ONCE (or the deprecated ACCESS_ONCE),
->>>> I don=E2=80=99t think a compiler should cache the value of =
-head->first.
->>>=20
->>>=20
->>> Right, it shouldn't need to cache. To Eric's point it might be risky =
-to remove the barrier() and someone needs to explain that issue first =
-(or IMO there needs to be another tangible reason like performance etc). =
-Anyway, FWIW I wrote a simple program and I am not seeing the =
-head->first cached with the pattern you shared above:
->>>=20
->>> #include <stdlib.h>
->>>=20
->>> #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
->>> #define barrier() __asm__ __volatile__("": : :"memory")
->>>=20
->>> typedef struct list_head {
->>>  int first;
->>>  struct list_head *next;
->>> } list_head;
->>>=20
->>> int main() {
->>>  list_head *head =3D (list_head *)malloc(sizeof(list_head));
->>>  head->first =3D 1;
->>>  head->next =3D 0;
->>>=20
->>>  READ_ONCE(head->first);
->>>  barrier();
->>>  READ_ONCE(head->first);
->>>=20
->>>  free(head);
->>>  return 0;
->>> }
->>>=20
->>> On ARM 32-bit, 64-bit and x86_64, with -Os and then another =
-experiment with -O2 on new gcc versions.
->>=20
->> Well, when I change the code as below:
->>=20
->> #include <stdlib.h>
->>=20
->> #define READ_ONCE(x) (*(volatile typeof(x) *)&(x))
->> #define barrier() __asm__ __volatile__("": : :"memory")
->>=20
->> typedef struct list_head {
->>  struct list_head *next;
->>  int first; // difference here
->> } list_head;
->>=20
->> int main() {
->>  list_head *head =3D (list_head *)malloc(sizeof(list_head));
->>  head->first =3D 1;
->>  head->next =3D 0;
->>=20
->>  READ_ONCE(head->first);
->>  READ_ONCE(head->first);
->>=20
->>  free(head);
->>  return 0;
->> }
->>=20
->> GCC 8, GCC 10, GCC 11 generate the following code (with -O2):
->>=20
->> main:
->>       subq    $8, %rsp
->>       movl    $16, %edi
->>       call    malloc
->>       movl    $1, 8(%rax)
->>       movq    %rax, %rdi
->>       call    free
->>       xorl    %eax, %eax
->>       addq    $8, %rsp
->>       ret
->>=20
->>=20
->> The READ_ONCE has been optimized away. The difference in the source =
-code is that I put ->first to the second member.
->>=20
->> That means, GCC 8, 10, 11 have the bug!
->>=20
->>=20
->=20
-> Found a related discussion:
->=20
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D102714
->=20
-> Looks like GCC 10, 11 have been backported, not sure whether GCC 8 has =
-been backported.
->=20
-> So, I have the following questions:
->=20
-> Given that some people might not update their GCC, do they need to be =
-notified?
->=20
-> Do we need to CC Linus?
+kernel test robot noticed the following build errors:
 
-No need.
+[auto build test ERROR on akpm-mm/mm-everything]
+[also build test ERROR on linus/master v6.5-rc2 next-20230721]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I put the following code into a kernel module:
+url:    https://github.com/intel-lab-lkp/linux/commits/Micha-Miros-aw/fs-proc-task_mmu-Implement-IOCTL-for-efficient-page-table-scanning/20230722-082500
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/ZLshsAj5PbsEAHhP%40qmqm.qmqm.pl
+patch subject: [v2] fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
+config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20230722/202307222107.GdtIG4nq-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20230722/202307222107.GdtIG4nq-lkp@intel.com/reproduce)
 
-typedef struct list_head_shit {
-	int next;
-	struct list_head *first;
-} list_head_shit;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307222107.GdtIG4nq-lkp@intel.com/
 
-static void noinline so_shit(void) {
-	list_head_shit *head =3D (list_head_shit =
-*)kmalloc(sizeof(list_head_shit), GFP_KERNEL);
-	head->first =3D 0;
-	head->next =3D 1;
+All errors (new ones prefixed by >>):
 
-	READ_ONCE(head->first);
-	READ_ONCE(head->first);
-
-	kfree(head);
-}
-
-x86_64-linux-gnu-gcc-11 generate the following code:
-
-0000000000000000 <so_shit>:
-   0:	48 8b 3d 00 00 00 00 	mov    0x0(%rip),%rdi        # 7 =
-<so_shit+0x7>
-   7:	ba 10 00 00 00       		mov    $0x10,%edx
-   c:	be c0 0c 00 00      	 	mov    $0xcc0,%esi
-  11:	e8 00 00 00 00      	 	call   16 <so_shit+0x16>
-  16:	48 c7 40 08 00 00 00 	movq   $0x0,0x8(%rax)
-  1d:	00
-  1e:	48 89 c7             		mov    %rax,%rdi
-  21:	c7 00 01 00 00 00    	movl   $0x1,(%rax)
-  27:	48 8b 47 08          		mov    0x8(%rdi),%rax	  # =
-READ_ONCE here
-  2b:	48 8b 47 08          		mov    0x8(%rdi),%rax	  # =
-READ_ONCE here
-  2f:	e9 00 00 00 00      	 	jmp    34 <so_shit+0x34>
-  34:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
-  3b:	00 00 00 00
-  3f:	90                   			nop
-
-The conclusion is that we can rely on READ_ONCE when writing kernel =
-code.
-
-The kernel=E2=80=99s READ_ONCE is different with the one Joel wrote =
-yesterday. (Joel=E2=80=99s is the same as the old ACCESS_ONCE)=20
-
-The compiler does have the bug when using simple volatile access:
-
-	https://lwn.net/Articles/624126/
-
-The C standard before the upcoming C23 only says accessing volatile =
-object,=20
-So I think volatile access (_ONCE) is implemented differently by GCC, =
-that=E2=80=99s why the simple ACCESS_ONCE didn=E2=80=99t work.
-
-With the upcoming C23, they will have the same side effect (Section =
-5.1.2.3):
-
-	https://open-std.org/JTC1/SC22/WG14/www/docs/n3096.pdf
-
-I think we can remove the barrier() now. :)
-
-Thanks,
-Alan
+   fs/proc/task_mmu.c:1921:6: error: call to undeclared function 'userfaultfd_wp_async'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+           if (userfaultfd_wp_async(vma) && userfaultfd_wp_use_markers(vma))
+               ^
+>> fs/proc/task_mmu.c:2047:13: error: use of undeclared identifier 'addr'
+           if (end != addr + HPAGE_SIZE) {
+                      ^
+   2 errors generated.
 
 
+vim +/addr +2047 fs/proc/task_mmu.c
+
+  1913	
+  1914	static int pagemap_scan_test_walk(unsigned long start, unsigned long end,
+  1915					  struct mm_walk *walk)
+  1916	{
+  1917		struct pagemap_scan_private *p = walk->private;
+  1918		struct vm_area_struct *vma = walk->vma;
+  1919		unsigned long vma_category = 0;
+  1920	
+> 1921		if (userfaultfd_wp_async(vma) && userfaultfd_wp_use_markers(vma))
+  1922			vma_category |= PAGE_IS_WPASYNC;
+  1923		else if (p->arg.flags & PM_SCAN_CHECK_WPASYNC)
+  1924			return -EPERM;
+  1925	
+  1926		if (vma->vm_flags & VM_PFNMAP)
+  1927			return 1;
+  1928	
+  1929		if (!pagemap_scan_is_interesting_vma(vma_category, p))
+  1930			return 1;
+  1931	
+  1932		p->cur_vma_category = vma_category;
+  1933		return 0;
+  1934	}
+  1935	
+  1936	static bool pagemap_scan_push_range(unsigned long categories,
+  1937					    struct pagemap_scan_private *p,
+  1938					    unsigned long addr, unsigned long end)
+  1939	{
+  1940		struct page_region *cur_buf = &p->cur_buf;
+  1941	
+  1942		/*
+  1943		 * When there is no output buffer provided at all, the sentinel values
+  1944		 * won't match here. There is no other way for `cur_buf->end` to be
+  1945		 * non-zero other than it being non-empty.
+  1946		 */
+  1947		if (addr == cur_buf->end && categories == cur_buf->categories) {
+  1948			cur_buf->end = end;
+  1949			return true;
+  1950		}
+  1951	
+  1952		if (cur_buf->end) {
+  1953			if (p->vec_buf_index >= p->vec_buf_len)
+  1954				return false;
+  1955	
+  1956			memcpy(&p->vec_buf[p->vec_buf_index], cur_buf,
+  1957			       sizeof(*p->vec_buf));
+  1958			++p->vec_buf_index;
+  1959		}
+  1960	
+  1961		cur_buf->start = addr;
+  1962		cur_buf->end = end;
+  1963		cur_buf->categories = categories;
+  1964		return true;
+  1965	}
+  1966	
+  1967	static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
+  1968					       unsigned long addr, unsigned long end)
+  1969	{
+  1970		struct page_region *cur_buf = &p->cur_buf;
+  1971	
+  1972		if (cur_buf->start != addr)
+  1973			cur_buf->end = addr;
+  1974		else
+  1975			cur_buf->start = cur_buf->end = 0;
+  1976	
+  1977		p->end_addr = 0;
+  1978		p->found_pages -= (end - addr) / PAGE_SIZE;
+  1979	}
+  1980	
+  1981	static int pagemap_scan_output(unsigned long categories,
+  1982				       struct pagemap_scan_private *p,
+  1983				       unsigned long addr, unsigned long *end)
+  1984	{
+  1985		unsigned long n_pages, total_pages;
+  1986		int ret = 0;
+  1987	
+  1988		if (!pagemap_scan_is_interesting_page(categories, p)) {
+  1989			*end = addr;
+  1990			return 0;
+  1991		}
+  1992	
+  1993		if (!p->vec_buf)
+  1994			return 0;
+  1995	
+  1996		categories &= p->arg.return_mask;
+  1997	
+  1998		n_pages = (*end - addr) / PAGE_SIZE;
+  1999		if (check_add_overflow(p->found_pages, n_pages, &total_pages) || total_pages > p->arg.max_pages) {
+  2000			size_t n_too_much = total_pages - p->arg.max_pages;
+  2001			*end -= n_too_much * PAGE_SIZE;
+  2002			n_pages -= n_too_much;
+  2003			ret = -ENOSPC;
+  2004		}
+  2005	
+  2006		if (!pagemap_scan_push_range(categories, p, addr, *end)) {
+  2007			*end = addr;
+  2008			n_pages = 0;
+  2009			ret = -ENOSPC;
+  2010		}
+  2011	
+  2012		p->found_pages += n_pages;
+  2013		if (ret)
+  2014			p->end_addr = *end;
+  2015		return ret;
+  2016	}
+  2017	
+  2018	static int pagemap_scan_thp_entry(pmd_t *pmd, unsigned long start,
+  2019					  unsigned long end, struct mm_walk *walk)
+  2020	{
+  2021	#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+  2022		struct pagemap_scan_private *p = walk->private;
+  2023		struct vm_area_struct *vma = walk->vma;
+  2024		unsigned long categories;
+  2025		spinlock_t *ptl;
+  2026		int ret = 0;
+  2027	
+  2028		ptl = pmd_trans_huge_lock(pmd, vma);
+  2029		if (!ptl)
+  2030			return -ENOENT;
+  2031	
+  2032		categories = p->cur_vma_category | pagemap_thp_category(*pmd);
+  2033	
+  2034		ret = pagemap_scan_output(categories, p, start, &end);
+  2035		if (start == end)
+  2036			goto out_unlock;
+  2037	
+  2038		if (~p->arg.flags & PM_SCAN_WP_MATCHING)
+  2039			goto out_unlock;
+  2040		if (~categories & PAGE_IS_WRITTEN)
+  2041			goto out_unlock;
+  2042	
+  2043		/*
+  2044		 * Break huge page into small pages if the WP operation
+  2045		 * need to be performed is on a portion of the huge page.
+  2046		 */
+> 2047		if (end != addr + HPAGE_SIZE) {
+  2048			spin_unlock(ptl);
+  2049			split_huge_pmd(vma, pmd, start);
+  2050			pagemap_scan_backout_range(p, start, end);
+  2051			return -ENOENT;
+  2052		}
+  2053	
+  2054		make_uffd_wp_pmd(vma, start, pmd);
+  2055		flush_tlb_range(vma, start, end);
+  2056	out_unlock:
+  2057		spin_unlock(ptl);
+  2058		return ret;
+  2059	#else /* !CONFIG_TRANSPARENT_HUGEPAGE */
+  2060		return -ENOENT;
+  2061	#endif
+  2062	}
+  2063	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
