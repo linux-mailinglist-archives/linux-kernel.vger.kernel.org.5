@@ -2,86 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E205375DCDD
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 16:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCAE475DCE0
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 16:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbjGVOK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 10:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
+        id S229821AbjGVOMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 10:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbjGVOK6 (ORCPT
+        with ESMTP id S229598AbjGVOMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 10:10:58 -0400
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8E42128
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:10:57 -0700 (PDT)
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3a5ad07254cso213213b6e.0
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:10:57 -0700 (PDT)
+        Sat, 22 Jul 2023 10:12:19 -0400
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85FE2D50
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:12:17 -0700 (PDT)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1b78a4797e1so5857161fac.3
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:12:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690035057; x=1690639857;
+        d=1e100.net; s=20221208; t=1690035137; x=1690639937;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=jE88Sg/HkvkvrZgXmJzjM5EFv0iGLJWGouDm2D6gBG0=;
-        b=DrF/zynP/VmUrIMCj416ztpyAP7oo5I7yPySpds9xA3ZrcG/K/rrzTBv/3YlFtgtrY
-         0oBa6IswXxO24HHSLlmjXGFq+HSsdIaT5O4ZRzJEtfTviFIO+A69a6YmL7kznzJNVxmV
-         7LX6F6flFcsLdWosroQ6ABnRL13wWudfNjipdoJXzJ+wIHLE5yZqdZZR8bXF1nLDj1s9
-         +AgObt7Wh+tQCV606tR87+XTm4diCcbYjlWQcpa7McqzhlgqG8Kgp1v5Qf8J4sTuIVBs
-         E789QybzjfS1bD5DDnnbq82J0flVgf++e/7Pb2+EYlTW709Niu03X0xaLry2IvBl2iMu
-         7l+g==
-X-Gm-Message-State: ABy/qLa99Hvjddy0CUBVjVkU5UjWQlzHojtOIxjPLS3c1DRGJJihu/td
-        8q/KJGtDBukxwVwx9xyFjAqRwor4Y412hltgE/aCtT3HaeSy
-X-Google-Smtp-Source: APBJJlHNcjzpmR2IYLssdl8GbcS097gsETsQPbM2yG7animODfDOsG8U/I/F8z/rynn2gmwAZpRYWKSmMXAhkleVkG598/twLkZ7
+        bh=jnDcp0NLtVq/ey0neKiVHzKFmmKRPAJzB+a/EW3co1A=;
+        b=Ek5MK1Q8nwhSonclis7sCUIvg7Bx0N95YCoQz10w3euJNtUu1DUlYVFlRm0xiFG9df
+         lVeUdYIIycDVazQoe35wquNvHwMPMNJTuLkR99RXiGiBXUnqZhoJqaqqfDH18SCAVgBt
+         NXBa68ueJWFft1KvmvUkPSSphMeTE8xdlIPsBGTJ3V+F+cbqqsft30vTH7t0ZgPPsIa+
+         QGysCjC/7GKezh+uHzglzfMbx4JFEpEqUeiqW4Ts7ZpMoaK06IVo2yJJlizNzvLnHNfv
+         3VO092BjAseMf63jUqskpBtCuRx67pP1CS5q8DJ2U0l5nxLo0Iy+jQxo6VEek3CETaOs
+         9s+w==
+X-Gm-Message-State: ABy/qLatgd/YA7LFjNddxtmNfFS4fOPHucNrfDnmato94Ym80aVWyD2R
+        2C0/Dk9rxSxzmTHvPUmanWb5ejWlfgAXRB3xlNeCW0kW9WRg
+X-Google-Smtp-Source: APBJJlEHDo8OtHioN1r+g5+qChjUQbWNll529ioG7mRnUPiQuDKhK1vas5Z8pEd572WIojX7LbcREqWqtJ6ynlcvopPteUlZ6db0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:f11:b0:3a1:f3ed:e9e with SMTP id
- m17-20020a0568080f1100b003a1f3ed0e9emr9991915oiw.3.1690035057187; Sat, 22 Jul
- 2023 07:10:57 -0700 (PDT)
-Date:   Sat, 22 Jul 2023 07:10:57 -0700
+X-Received: by 2002:a05:6870:98b3:b0:1b0:401:823d with SMTP id
+ eg51-20020a05687098b300b001b00401823dmr5732307oab.6.1690035137296; Sat, 22
+ Jul 2023 07:12:17 -0700 (PDT)
+Date:   Sat, 22 Jul 2023 07:12:17 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003de1ad060113f3d3@google.com>
-Subject: [syzbot] Monthly dccp report (Jul 2023)
-From:   syzbot <syzbot+listd0be519e02c69d098715@syzkaller.appspotmail.com>
-To:     dccp@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000043f64060113f871@google.com>
+Subject: [syzbot] [mm?] BUG: soft lockup in generic_file_write_iter (2)
+From:   syzbot <syzbot+3b5bce3e397a2c9dcac6@syzkaller.appspotmail.com>
+To:     brauner@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello dccp maintainers/developers,
+Hello,
 
-This is a 31-day syzbot report for the dccp subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/dccp
+syzbot found the following issue on:
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 5 issues are still open and 4 have been fixed so far.
+HEAD commit:    1a0beef98b58 Merge tag 'tpmdd-v6.4-rc1' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1744b894280000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3aa4ca13c88f2286
+dashboard link: https://syzkaller.appspot.com/bug?extid=3b5bce3e397a2c9dcac6
+compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: arm64
 
-Some of the still happening issues:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Ref Crashes Repro Title
-<1> 102     Yes   KASAN: use-after-free Read in ccid2_hc_tx_packet_recv
-                  https://syzkaller.appspot.com/bug?extid=554ccde221001ab5479a
-<2> 47      Yes   BUG: "hc->tx_t_ipi == NUM" holds (exception!) at net/dccp/ccids/ccid3.c:LINE/ccid3_update_send_interval()
-                  https://syzkaller.appspot.com/bug?extid=94641ba6c1d768b1e35e
-<3> 9       Yes   BUG: stored value of X_recv is zero at net/dccp/ccids/ccid3.c:LINE/ccid3_first_li() (3)
-                  https://syzkaller.appspot.com/bug?extid=2ad8ef335371014d4dc7
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3b5bce3e397a2c9dcac6@syzkaller.appspotmail.com
+
+watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [syz-executor.0:3202]
+Modules linked in:
+irq event stamp: 50116
+hardirqs last  enabled at (50115): [<ffff80000ca7e160>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:84 [inline]
+hardirqs last  enabled at (50115): [<ffff80000ca7e160>] exit_to_kernel_mode+0x38/0x120 arch/arm64/kernel/entry-common.c:94
+hardirqs last disabled at (50116): [<ffff80000ca7fdc8>] __el1_irq arch/arm64/kernel/entry-common.c:468 [inline]
+hardirqs last disabled at (50116): [<ffff80000ca7fdc8>] el1_interrupt+0x24/0x54 arch/arm64/kernel/entry-common.c:486
+softirqs last  enabled at (50020): [<ffff80000801080c>] _stext+0x80c/0xd70
+softirqs last disabled at (49871): [<ffff800008019484>] ____do_softirq+0x10/0x1c arch/arm64/kernel/irq.c:80
+CPU: 1 PID: 3202 Comm: syz-executor.0 Not tainted 6.3.0-syzkaller-00113-g1a0beef98b58 #0
+Hardware name: linux,dummy-virt (DT)
+pstate: 20000005 (nzCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : __arch_copy_from_user+0x1b0/0x230 arch/arm64/lib/copy_template.S:164
+lr : copyin lib/iov_iter.c:183 [inline]
+lr : copyin+0xb8/0x118 lib/iov_iter.c:175
+sp : ffff8000192a7840
+x29: ffff8000192a7840 x28: ffff8000192a7c30 x27: ffff80000dddb378
+x26: 0000000000001000 x25: 0000000040000000 x24: ffff000006324000
+x23: 0000ffff99400000 x22: 0000ffff99454000 x21: ffff000006324000
+x20: 0000ffff99454000 x19: 0000000000001000 x18: 0000000000000000
+x17: 0000000000000000 x16: 0000000000000000 x15: 0000ffff99454000
+x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
+x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
+x8 : 0000000000000000 x7 : 0000000000000000 x6 : ffff000006324d80
+x5 : ffff000006325000 x4 : 0000000000000000 x3 : ffff80000910e070
+x2 : 0000000000000200 x1 : 0000ffff99454dc0 x0 : ffff000006324000
+Call trace:
+ __arch_copy_from_user+0x1b0/0x230 arch/arm64/lib/copy_template.S:158
+ copy_page_from_iter_atomic+0x33c/0xe5c lib/iov_iter.c:815
+ generic_perform_write+0x218/0x3ec mm/filemap.c:3934
+ __generic_file_write_iter+0x1e8/0x3a0 mm/filemap.c:4054
+ generic_file_write_iter+0xc0/0x294 mm/filemap.c:4086
+ call_write_iter include/linux/fs.h:1851 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x4c8/0x740 fs/read_write.c:584
+ ksys_write+0xec/0x1d0 fs/read_write.c:637
+ __do_sys_write fs/read_write.c:649 [inline]
+ __se_sys_write fs/read_write.c:646 [inline]
+ __arm64_sys_write+0x6c/0x9c fs/read_write.c:646
+ __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+ invoke_syscall+0x6c/0x260 arch/arm64/kernel/syscall.c:52
+ el0_svc_common.constprop.0+0xc4/0x254 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x50/0x124 arch/arm64/kernel/syscall.c:193
+ el0_svc+0x54/0x140 arch/arm64/kernel/entry-common.c:637
+ el0t_64_sync_handler+0xb8/0xbc arch/arm64/kernel/entry-common.c:655
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+
 
 ---
 This report is generated by a bot. It may contain errors.
 See https://goo.gl/tpsmEJ for more information about syzbot.
 syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-You may send multiple commands in a single email message.
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
