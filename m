@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC5475DBE0
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 13:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7285B75DBE5
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 13:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjGVLWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 07:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
+        id S230022AbjGVLZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 07:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbjGVLWP (ORCPT
+        with ESMTP id S230002AbjGVLZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 07:22:15 -0400
+        Sat, 22 Jul 2023 07:25:28 -0400
 Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2045C3C39
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 04:21:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C956F3C0D
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 04:24:58 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HPihWtMzmXCIzUJHL4h8bhSaSZyW1kh6B0Ba7luAl0WzsTChXJ2NdNvSh9+Xha7ackbym6K/IgzaP65GPBw3Py5PffOt+rPJQEDmM2KRZ+OY9gI6N+56q6zd8CnUTx1AqZUtYocNVuy3fKGIEOXIzxQk5HSOCLsS0o2U2gNLlYLbEN7OyacaiDuPl74VRG3AyiLZ9NVm7rVQ/O1V9Y/w+xJkjW2mMHlbyB0fpi4VSMEXKNgl/Ux9mTIxHazprwdjKMyxHiWud16x6lHeYZgo2Fmu0ZUUhIQ1zvmvdAVWk9vpoz/JaQ3kpQiMy1Xp075i6sShStLX770cv0yDrhahOQ==
+ b=ixpMxZ1x4xx3/VVhIspMwJssF2kVFgx3K19HkqmHluulRv7Eeo0aSpdsJbKjjB90dQeCm6olx/0/Btrx1Mb+3QkCcE28Sbay0Tn++UEx5419UloRhyjmSvsAd7rCJovCxDa/o7KIdZUh5icGMuI7aVLbFef8Mpf4yA+TsdBVDfiwdTRQWmHEEWKJm2ckocKzHQi11D/KvNqXEof9mrvNcVWxdusZ4SpH9gMlcn/TxT2wkHzQb/Cjz9Nxt3iOdLM+QfECC206a1pSZ4y01cvDwbzCnY5mij7sIq5xiB530LhRXyrlvNqH8+z+NqD4yCRTlG8hQ7n1hPKdPcAcQdIkmQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pP5EnYMWy6h0McrrcwvHxMH9bmi4Ie9BZNOR+xAO3B8=;
- b=ds+DGYVXi1TP4/g8yhXktZmcPnd0wdvAbFb4rzeyC8PKJk94ljyxEUzqyVdqLaMrey36EHXoyPd0LHX7NN52GwHdX9zfQJJEMwkjvzoTxKRcxg1g+z8faNAeBz0N14tyaX/sfUxZtXOj7f89S8UD0LzV9uvpcLr1g3mBeQ4hDmmm4iaGvsjVF8blAww7/xEIWitfzuDvgMJ12LIVGTpVKLnx2IF84b075VQqpDr2cU3+XmcczA5gyrnSeZGahc9GRMSJ1TtvS6oRPCqP/2ZTXf3swZ2VC6scuwe9wxVhzhPonbfre/r5hcIxrxdM4Gpc+9R0NXUL/am43mLs7rTIEQ==
+ bh=O3s6XRk5sDMEp4erAgDEJbeHlmXvoaQdohpW0ELcNPc=;
+ b=HrSUtTd1ExjE+0eP8HBj53PFYKI46WAGZxmP1WoP8GEENtY9rGaWQUZeiasWnv9urSyJxpVvgnCaPHuvJqVAZqrwT/hf9j/PRSOUj+ki/P/8JAO6MU/sStOe5cS9KVMNdMfdnwXjmww/RJ09cytj6mp/GzxTKDSzFWHZzQbb2tjTg+bMJ9XBGkXVtTNCr7dMyKfTk9mptE46UU5y1BjVNartoCUbwAGizWyXRSgB/9gKVbGKZAAFVhaSyOQUYw09XOvJTpmUX0hWZ4QCMmypTWR8g+CAo1xk+/bYTU22fVkUOIl8Bhs7DmfEsahPcIG4p2wPsit1KIHaTBIMRC2yeg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pP5EnYMWy6h0McrrcwvHxMH9bmi4Ie9BZNOR+xAO3B8=;
- b=gXwkSp7RP0CMh56VO7eFTOSRuu1bTFl5fQOx3DmPoOqHLGx3LZv+egzj3v8JNizYbYj/IjyRRfDHIu7C5sQXIb2wW2Zih94qgHa+iXYj/Hd+K69ti/X/MRxSQZh2WNGogrjMUh2pDssMYxDe/a/1rBoTkocHwVKDLIs4zIQFsoo=
-Received: from SJ0PR03CA0029.namprd03.prod.outlook.com (2603:10b6:a03:33a::34)
- by CY8PR12MB7243.namprd12.prod.outlook.com (2603:10b6:930:58::6) with
+ bh=O3s6XRk5sDMEp4erAgDEJbeHlmXvoaQdohpW0ELcNPc=;
+ b=w6rcvI+WKW4V0+E72mjwmzxvU8kMaBluT/CH7VwMH1aYAoaIMHu6JGa2yvRYriA1Ag4QSrVqOKLGc1vgJeZcQkWZYAPW/DwQH/llA/DiWEQRTiEv59oPkLtn9fVlTDs9pHaw1yEbrOPJvt4EiDsJnI8vXXDTMHOdv0hbn5Z6aWg=
+Received: from SJ0PR03CA0026.namprd03.prod.outlook.com (2603:10b6:a03:33a::31)
+ by DM4PR12MB7645.namprd12.prod.outlook.com (2603:10b6:8:107::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.30; Sat, 22 Jul
- 2023 11:20:52 +0000
+ 2023 11:20:56 +0000
 Received: from DM6NAM11FT098.eop-nam11.prod.protection.outlook.com
- (2603:10b6:a03:33a:cafe::3f) by SJ0PR03CA0029.outlook.office365.com
- (2603:10b6:a03:33a::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.30 via Frontend
- Transport; Sat, 22 Jul 2023 11:20:51 +0000
+ (2603:10b6:a03:33a:cafe::c4) by SJ0PR03CA0026.outlook.office365.com
+ (2603:10b6:a03:33a::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.24 via Frontend
+ Transport; Sat, 22 Jul 2023 11:20:55 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -49,19 +49,19 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  DM6NAM11FT098.mail.protection.outlook.com (10.13.173.61) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6609.28 via Frontend Transport; Sat, 22 Jul 2023 11:20:51 +0000
+ 15.20.6609.28 via Frontend Transport; Sat, 22 Jul 2023 11:20:55 +0000
 Received: from gomati.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 22 Jul
- 2023 06:20:47 -0500
+ 2023 06:20:50 -0500
 From:   Nikunj A Dadhania <nikunj@amd.com>
 To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>
 CC:     <bp@alien8.de>, <thomas.lendacky@amd.com>,
         <dionnaglaze@google.com>, <pgonda@google.com>, <seanjc@google.com>,
         <pbonzini@redhat.com>, <nikunj@amd.com>
-Subject: [PATCH v3 11/14] x86/sev: Prevent RDTSC/RDTSCP interception for Secure TSC enabled guests
-Date:   Sat, 22 Jul 2023 16:49:06 +0530
-Message-ID: <20230722111909.15166-12-nikunj@amd.com>
+Subject: [PATCH v3 12/14] x86/kvmclock: Skip kvmclock when Secure TSC is available
+Date:   Sat, 22 Jul 2023 16:49:07 +0530
+Message-ID: <20230722111909.15166-13-nikunj@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230722111909.15166-1-nikunj@amd.com>
 References: <20230722111909.15166-1-nikunj@amd.com>
@@ -73,23 +73,23 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT098:EE_|CY8PR12MB7243:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7beb562b-4885-46ed-b9c0-08db8aa5b4df
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT098:EE_|DM4PR12MB7645:EE_
+X-MS-Office365-Filtering-Correlation-Id: 48bec2ad-b712-46fc-c8d6-08db8aa5b784
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZOeUlzCm249OE9LenRiFmpFmg0+ySm8etvTBiSoj1pIXtzU1p/Lg2Jgze6bu+3kvJwYqOdiaV1YwQByBBjaR6FaIYZwLga91f7UtZM2wnqmHZ8+/DaVdzKmE71txHpXiqozsF6fwWFEWP+rtUupK5wwA/l+LsPkCEK4jeEbGjcG1NCLKiEWHl8e/cUpv7Ft0KhZrks/EKcroMHuUy3A9Tcu7dwyLxioIgr7J65JgwdRiC/FvaQoA32t8BJ4QQb6FQKex6MkaPklYitOPKoSnwkaMuHx5L4v5g7HiD/pBGgLD2sk8iSC9NjNi/E1CVRSMDF6dHwluI6tq0Ecg/pfTW4S+AuFiuSJ8TLZQGZfXj5XJne5833a5wyTJTseyMIdBMIwajvULsBu7GqZ22K9qAkVcFL62jyHqkJzK1Kma3+1D4BXPXNkOihCuEhFBjUz3Xf4Ngg7wRpLp/YT8pZucQ4x/o1VSDHNuOwcu249QPDd+ewWUzhEI8iHy7wpKns6XzG7nzNXkDEDeZeHn4c5BnvDCyQe58pIKsNf3fDK1UY5Qc1NVxfAw9g9AZr/rs05gmRYjamQDWCULep7qYNEt+TkqyEqw6oO7JBiaVoyK3kdUBiFABdVoTD8TNlmSilLgMx01oE0oBSdqfguJvpyyIfwSZmDLW2m5SZospRRuQJ2034KXF/S/1/ufCaqFw2VqRxRtykSakgh4AzrT6bUFafVSWlNxqYiIYQ53TgtJCGYV+5KcQzDV9VO47EgH9gX2lDnp5g+F4Xcr7RfJY9N7LQ==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(346002)(39860400002)(136003)(451199021)(82310400008)(46966006)(40470700004)(36840700001)(6666004)(7696005)(478600001)(110136005)(54906003)(16526019)(186003)(336012)(2616005)(1076003)(26005)(2906002)(316002)(41300700001)(70586007)(70206006)(4326008)(5660300002)(8676002)(8936002)(356005)(82740400003)(81166007)(36756003)(40460700003)(36860700001)(426003)(47076005)(40480700001)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: ahqkD93P1iqWfg/HD94E4ixuvZyvmqXa8prwRYE9zgoXWyuexk5CCZ95sMsbfkiB2+sYJ6QJQDAyI5L5RSmon7xTKGAvwJg6LKlWArKrYlbN3Zo1iR+1YWVizMOqBoqog3FwjUFAoAj6eMxbUXiUOXO2ZS0wDz+GduoDaO/P3aNLm0aO5TvUkVIWEO2KUNlMDNVBRYo6bUWhpCt6yrP0JpW/j0Ez2Ra68wtsvU/OxX/7b0HpIftq8SEJGu8ftFA5dlmvYz2fn3hlK11p5Vj/Co2V3p/7oT1EnEe1Mu5/YtbreC00xnqEf+8AM+cIRVOkGvvANMgPj4sXBBdvUQN3eGjKeuCPKzhdpakogJCMyg59I3l4zS+m+AOTPfEPf+YTZx6fDbyWA3rDuH+suRa9MnhAJ7a9ujX4JZ2UCuf3H3BpTVm1o3Kpm9aQFDiRJFf2tB4y1iJIYWTC0Byz8xjvIfw83LBFmVcOKZPoVI4JO0tg0/qbmwuPwU4FphKSWem5BCgMLv9vd4C+muaDITXtJEYzkLJHP8uBCo9vWrqWRroYWloOfl2cRPERr/oPPtspmX8I5kPbBdc/Zcon+sAvhHA0LkZTpblF3w9H0ET999wYvzacUy64vtnX7NsGRjCc7AotOimTzaPUDxiG9nm9sr8+tOA4fL9OrxQh3XmXCeIlZGEo5EkmddrsoU4tIoXETWPo4ogwOwe3kSSb+1jFVxMjNlsA2TSRMu56A4JyosZMmAAoXo2UPuHvj2uzYZ+ocdv/Bx3JQHI/3I7CB5FECg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(346002)(376002)(136003)(82310400008)(451199021)(36840700001)(40470700004)(46966006)(4744005)(47076005)(1076003)(41300700001)(426003)(186003)(336012)(83380400001)(478600001)(26005)(6666004)(40480700001)(2616005)(40460700003)(2906002)(16526019)(7696005)(36756003)(5660300002)(70586007)(70206006)(4326008)(81166007)(356005)(82740400003)(8676002)(8936002)(316002)(36860700001)(110136005)(54906003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2023 11:20:51.1073
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2023 11:20:55.5601
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7beb562b-4885-46ed-b9c0-08db8aa5b4df
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48bec2ad-b712-46fc-c8d6-08db8aa5b784
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT098.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7243
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7645
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -101,34 +101,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hypervisor should not be intercepting RDTSC/RDTSCP when Secure TSC
-is enabled. A #VC exception will be generated if the RDTSC/RDTSCP
-instructions are being intercepted. If this should occur and Secure
-TSC is enabled, terminate guest execution.
+For AMD SNP guests having Secure TSC enabled, skip using the kvmclock.
+The guest kernel will fallback and use Secure TSC based clocksource.
 
 Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
 ---
- arch/x86/kernel/sev-shared.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/x86/kernel/kvmclock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index 3a5b0c9c4fcc..1c22025b298f 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -912,6 +912,13 @@ static enum es_result vc_handle_rdtsc(struct ghcb *ghcb,
- 	bool rdtscp = (exit_code == SVM_EXIT_RDTSCP);
- 	enum es_result ret;
+diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
+index 0f35d44c56fe..1be342064851 100644
+--- a/arch/x86/kernel/kvmclock.c
++++ b/arch/x86/kernel/kvmclock.c
+@@ -288,7 +288,7 @@ void __init kvmclock_init(void)
+ {
+ 	u8 flags;
  
-+	/*
-+	 * RDTSC and RDTSCP should not be intercepted when Secure TSC is
-+	 * enabled. Terminate the SNP guest when the interception is enabled.
-+	 */
-+	if (sev_status & MSR_AMD64_SNP_SECURE_TSC)
-+		return ES_VMM_ERROR;
-+
- 	ret = sev_es_ghcb_hv_call(ghcb, ctxt, exit_code, 0, 0);
- 	if (ret != ES_OK)
- 		return ret;
+-	if (!kvm_para_available() || !kvmclock)
++	if (!kvm_para_available() || !kvmclock || cc_platform_has(CC_ATTR_GUEST_SECURE_TSC))
+ 		return;
+ 
+ 	if (kvm_para_has_feature(KVM_FEATURE_CLOCKSOURCE2)) {
 -- 
 2.34.1
 
