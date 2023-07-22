@@ -2,78 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 835F075D989
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 05:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B9675D98C
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 06:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbjGVD7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 23:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44696 "EHLO
+        id S229905AbjGVEFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 00:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjGVD7m (ORCPT
+        with ESMTP id S229529AbjGVEFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 23:59:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82726E74;
-        Fri, 21 Jul 2023 20:59:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 20DD561DCF;
-        Sat, 22 Jul 2023 03:59:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1ACEC433C9;
-        Sat, 22 Jul 2023 03:59:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689998380;
-        bh=ZBGteabbJw7m9fJtIyroIDjaZlrkeHej14zYPb+AQZE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fkxULteX7hOXv6e8m+NVSljQVNTrWpNaidT3vW2UNHaK/jQIjS2KpEieRtrLJGczd
-         ixF9TmpCgWzxXhXj1HHKJAp3Ck2OsTj0A9K08J+/L/e/yKpsfhMjroxtlm0xkuNSSD
-         xliVWgqW/WQALEeRb9pCkWwmWCmBcPfHEbe0uxvcyZahL/++LFbSayLxylrkbCLwjp
-         +KRjc/HOdAf9o5aXmlsxcA9n3ov3zqroeQEJre+VwUYgIKg5l2+Qf19Wx+gwld2SW9
-         ++JnrSw9M7qF338RzpVQI7CnEJ7ueG0IZagbFajm4BkktDbsXcNMapZDVVY+80yp7m
-         h2XyUrVH6uAXQ==
-Date:   Fri, 21 Jul 2023 21:02:59 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Kathiravan T <quic_kathirav@quicinc.com>
-Cc:     Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, quic_saahtoma@quicinc.com
-Subject: Re: [PATCH V2 1/2] dt-bindings: arm: qcom,ids: drop the IPQ5019 SoC
- ID
-Message-ID: <e4fub7xxkiupbkszaxwu4x5otdi7afvyl334ybwlxafkbxfw3c@cd4gja5u6st6>
-References: <20230712041912.398724-1-quic_kathirav@quicinc.com>
- <20230712041912.398724-2-quic_kathirav@quicinc.com>
- <20230714155954.GA3919199-robh@kernel.org>
- <dba8ab0a-c17b-8660-5c5a-803e7f394547@quicinc.com>
+        Sat, 22 Jul 2023 00:05:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEEA1FD7
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 21:05:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ullnYhqG8fA5KMqRastTGiw9dH0/azv9SAaNZKVNpJY=; b=DyHXUWhekaxChDS3Qi7zTEgZqP
+        XTcNxRWhZsPCkJWA1G796Q0F7o/QSV367RlYzDl3gzmqTPmGmBRVxIao5UQ7DtO8v/521Yg0Wi8e2
+        t1o55guVz0Jf8uVY2YoCQcZw7KOtek7q+P/ujvy0uJjVAO9UUU+ui5U42bJIJTo/Cul10fTp/J5sb
+        8tq1dss3BpjuOdr2xQl06I0Q7ONa4xPXAOAOwHK0Qc9mfQ+qg34mrXJ8kimXrJp1OE5ivBapCrdNW
+        mtpMmJ4/elDQqD2dxRkAxNipns5+hiR/JXirbTPHZqZ3KWj+cxb1mqy/iphtW584MbOUBqYdxSFsV
+        KJbp07aA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qN3sC-001j68-QF; Sat, 22 Jul 2023 04:05:40 +0000
+Date:   Sat, 22 Jul 2023 05:05:40 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, songmuchun@bytedance.com,
+        david@redhat.com
+Subject: Re: [PATCH v2 0/1] change ->index to PAGE_SIZE for hugetlb pages
+Message-ID: <ZLtVlJA+V2+2yjxc@casper.infradead.org>
+References: <20230710230450.110064-1-sidhartha.kumar@oracle.com>
+ <20230720000011.GD3240@monkey>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dba8ab0a-c17b-8660-5c5a-803e7f394547@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230720000011.GD3240@monkey>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 15, 2023 at 08:41:56PM +0530, Kathiravan T wrote:
+On Wed, Jul 19, 2023 at 05:00:11PM -0700, Mike Kravetz wrote:
+> On 07/10/23 16:04, Sidhartha Kumar wrote:
+> > ========================== OVERVIEW ========================================
+> > This patchset attempts to implement a listed filemap TODO which is
+> > changing hugetlb folios to have ->index in PAGE_SIZE. This simplifies many
+> > functions within filemap.c as they have to special case hugetlb pages.
+> > From the RFC v1[1], Mike pointed out that hugetlb will still have to maintain
+> > a huge page sized index as it is used for the reservation map and the hash
+> > function for the hugetlb mutex table.
+> > 
+> > This patchset adds new wrappers for hugetlb code to to interact with the
+> > page cache. These wrappers calculate a linear page index as this is now
+> > what the page cache expects for hugetlb pages.
+> > 
+> > From the discussion on HGM for hugetlb[3], there is a want to remove hugetlb
+> > special casing throughout the core mm code. This series accomplishes
+> > a part of this by shifting complexity from filemap.c to hugetlb.c. There
+> > are still checks for hugetlb within the filemap code as cgroup accounting
+> > and hugetlb accounting are special cased as well. 
+> > 
+> > =========================== PERFORMANCE =====================================
 > 
-> On 7/14/2023 9:29 PM, Rob Herring wrote:
-> > On Wed, Jul 12, 2023 at 09:49:11AM +0530, Kathiravan T wrote:
-> > > IPQ5019 SoC is never productized. So lets drop it.
-> > You need to remove the user before removing the definition.
+> Hi Sid,
 > 
-> Rob, Currently there are no users for this macro.
+> Sorry for being dense but can you tell me what the below performance
+> information means.  My concern with such a change would be any noticeable
+> difference in populating a large (up to TB) hugetlb file.  My guess is
+> that it is going to take longer unless xarray is optimized for this.
 > 
+> We do have users that create and pre-populate hugetlb files this big.
+> Just want to make sure there are no surprises for them.
 
-But you're removing a user in patch 2? Or am I reading that incorrectly?
+It's Going To Depend.  Annoyingly.
 
-Regards,
-Bjorn
+Let's say you're using 1GB pages on a 4kB PAGE_SIZE machine.  That's an
+order-18 folio, so we end up skipping three layers of the tree, and if
+you're going up to 1TB, it's structured:
+
+root -> node (shift 30) -> node (shift 24) -> entry
+                                           -> entry (...)
+			-> node (shift 24) -> entry
+					   (...)
+			(...)
+
+This is essentially no different from before where each 1GB page would
+occupy a single entry.  It's just that it now occupies 2^18 entries,
+and everything in the tree has a different label.
+
+Where you will (may?) see a difference is with the 2MB entries.
+An order-9 page doesn't quite fit with the order-6 nodes in the tree,
+so it looks like this:
+
+root -> node (s30) -> node (s24) -> node (s18) -> node (s12) -> entry 0
+							     -> sibling
+							     -> sibling
+							     (...)
+							     -> entry 8
+							     -> sibling
+							     -> sibling
+							     (...)
+
+so all of a sudden the tree is 8x as big as it used to be.  The upside
+is that we lose all the calculations from filemap.c/pagemap.h.  It's a
+lot better than it was perhaps five years ago when each 2MB page would
+occupy 512 entries, but 8 entries is still worse than 1.
+
+Could we do better?  Undoubtedly.  We could have variable shifts & node
+sizes in the tree so that we perhaps had an s18 node that was 8x as large
+(4160 bytes), and then each order-9 entry in the tree would occupy one
+entry in that special large node.  I've been reluctant to introduce such
+a beast without strong evidence it would help.  Or we could introduce a
+small s12 node which could only store 8 entries (again an order-9 entry
+would occupy one entry in such a special node).
+
+These are things which would only benefit hugetlbfs, so there's a bit
+of a chicken-and-egg problem; no demand for the feature until the work
+is done, and the work maybe performs badly until the feature exists.
+
+And then some architectures have other orders for their huge pages.
+Order 11 is probably the worst possibility to exist (or in general 6n -
+1), but I haven't done a detailed survey to figure out if anyone supports
+such a thing.
