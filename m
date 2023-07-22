@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DCB75DF6E
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 01:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B32875DF71
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 01:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbjGVXyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 19:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60974 "EHLO
+        id S229564AbjGVX7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 19:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjGVXxw (ORCPT
+        with ESMTP id S229452AbjGVX7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 19:53:52 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BE92699
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 16:53:22 -0700 (PDT)
-Received: from workpc.. (109-252-150-127.dynamic.spd-mgts.ru [109.252.150.127])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6D0066607106;
-        Sun, 23 Jul 2023 00:53:19 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690070000;
-        bh=6qKB4njwK4pvtdiKlbD4ASfNH1pG62XLGXjGDD6zWg8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nLPvKTRmVWjb8eP4yVT7yKp4jWsOfcORj+1bLwVZ/+JaFFkJWwxRN2dx2zgAZE2ps
-         treJE9dWXzxEVgBHhbrcUSDHAfUb9IjMELvZToBHk+rIR53PEPQ1VgmJXefxuRBnix
-         OMcwQ3na64zGD8uO+jVav9+ujVVDAurQcatusGTxKKbGnjNhhQHq1WnzP0y/XsWo/m
-         6ceOfBM39yyCGFey0wBz/epn+F3D1/wYvxMZ9hUwrx6Z8xr8YaY9egLkw6r3n1C4a+
-         WaPSfsoyD2Meiud8VvyFE+zOV7LhHHKfbXTE49KAmdyeenFCT954SKFv0ly1lraXh9
-         gS4Cm0/5KW7BQ==
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-To:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: [PATCH v14 12/12] drm/gem: Add _unlocked postfix to drm_gem_pin/unpin()
-Date:   Sun, 23 Jul 2023 02:47:46 +0300
-Message-ID: <20230722234746.205949-13-dmitry.osipenko@collabora.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230722234746.205949-1-dmitry.osipenko@collabora.com>
-References: <20230722234746.205949-1-dmitry.osipenko@collabora.com>
+        Sat, 22 Jul 2023 19:59:43 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B830A0;
+        Sat, 22 Jul 2023 16:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=LdCxj801Ht28G0rQCx13yx2xtmGpyFI2ZkIeXhDpMo0=; b=C+1b9Mc+r/BExG40Gtw3eTuvMR
+        tQuiJ1T8CLJ6kKeYXXIaeC7dqqzlVeL+mL286qomuXSUm9AOssj63PWZNw0yg2EfKRKDwfAljLW2J
+        H4PyQUDPgmFBVMshlnygDT7y5vQU99TlPtJkgho1rGh4RESccFAt3lOipOBWF9lJoxN/qEPS9g+Dl
+        L+1XXMLhrs7rdtOgKJA6LDuf1PzBhjM/CoBttnP0liw3nuRRhlMVRNOwHNWNO0NuTjHi2haZjF+sr
+        GWhtrCzc2lKLQujHKAKMbqeIVlFWWp+i/4aRXjhxemTyXDBlCggXv4NNAYnb/V1bHrBRk3C22j5w1
+        qRYso4Hg==;
+Received: from 50-198-160-193-static.hfc.comcastbusiness.net ([50.198.160.193] helo=[10.150.81.113])
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qNMVP-000xLy-2e;
+        Sat, 22 Jul 2023 23:59:28 +0000
+Message-ID: <52c883a3-5951-b298-cae4-a46fa0619411@infradead.org>
+Date:   Sat, 22 Jul 2023 16:59:15 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2 2/3] doc/vm: add information about page_table_check
+ warn_on behavior
+Content-Language: en-US
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>,
+        akpm@linux-foundation.org, corbet@lwn.net, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rick.p.edgecombe@intel.com
+References: <20230722231508.1030269-1-pasha.tatashin@soleen.com>
+ <20230722231508.1030269-3-pasha.tatashin@soleen.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230722231508.1030269-3-pasha.tatashin@soleen.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make clear that drm_gem_pin/unpin() functions take reservation lock by
-adding _unlocked postfix to the function names.
+Hi--
 
-Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
----
- drivers/gpu/drm/drm_gem.c      | 4 ++--
- drivers/gpu/drm/drm_internal.h | 4 ++--
- drivers/gpu/drm/drm_prime.c    | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+On 7/22/23 16:15, Pasha Tatashin wrote:
+> The default behavior of page table check was changed from panicking
+> kernel to printing a warning.
+> 
+> Add a note how to still panic the kernel when error is detected.
+> 
+> Signed-off-by: Pasha Tatashin<pasha.tatashin@soleen.com>
+> ---
+>   Documentation/mm/page_table_check.rst | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/mm/page_table_check.rst b/Documentation/mm/page_table_check.rst
+> index c12838ce6b8d..f534c80ee9c9 100644
+> --- a/Documentation/mm/page_table_check.rst
+> +++ b/Documentation/mm/page_table_check.rst
+> @@ -14,13 +14,14 @@ Page table check performs extra verifications at the time when new pages become
+>   accessible from the userspace by getting their page table entries (PTEs PMDs
+>   etc.) added into the table.
+>   
+> -In case of detected corruption, the kernel is crashed. There is a small
+> +In case of detected corruption, a warning is printed. There is a small
+>   performance and memory overhead associated with the page table check. Therefore,
+>   it is disabled by default, but can be optionally enabled on systems where the
+>   extra hardening outweighs the performance costs. Also, because page table check
+>   is synchronous, it can help with debugging double map memory corruption issues,
+>   by crashing kernel at the time wrong mapping occurs instead of later which is
+> -often the case with memory corruptions bugs.
+> +often the case with memory corruptions bugs. In order to crash kernel sysctl
+> +panic_on_warn should be set to 1.
 
-diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
-index c18686f434d4..805eb0d85297 100644
---- a/drivers/gpu/drm/drm_gem.c
-+++ b/drivers/gpu/drm/drm_gem.c
-@@ -1146,7 +1146,7 @@ void drm_gem_print_info(struct drm_printer *p, unsigned int indent,
- 		obj->funcs->print_info(p, indent, obj);
- }
- 
--int drm_gem_pin(struct drm_gem_object *obj)
-+int drm_gem_pin_unlocked(struct drm_gem_object *obj)
- {
- 	if (obj->funcs->pin)
- 		return obj->funcs->pin(obj);
-@@ -1154,7 +1154,7 @@ int drm_gem_pin(struct drm_gem_object *obj)
- 	return 0;
- }
- 
--void drm_gem_unpin(struct drm_gem_object *obj)
-+void drm_gem_unpin_unlocked(struct drm_gem_object *obj)
- {
- 	if (obj->funcs->unpin)
- 		obj->funcs->unpin(obj);
-diff --git a/drivers/gpu/drm/drm_internal.h b/drivers/gpu/drm/drm_internal.h
-index d7e023bbb0d5..80f5bd1da8fd 100644
---- a/drivers/gpu/drm/drm_internal.h
-+++ b/drivers/gpu/drm/drm_internal.h
-@@ -173,8 +173,8 @@ void drm_gem_release(struct drm_device *dev, struct drm_file *file_private);
- void drm_gem_print_info(struct drm_printer *p, unsigned int indent,
- 			const struct drm_gem_object *obj);
- 
--int drm_gem_pin(struct drm_gem_object *obj);
--void drm_gem_unpin(struct drm_gem_object *obj);
-+int drm_gem_pin_unlocked(struct drm_gem_object *obj);
-+void drm_gem_unpin_unlocked(struct drm_gem_object *obj);
- int drm_gem_vmap(struct drm_gem_object *obj, struct iosys_map *map);
- void drm_gem_vunmap(struct drm_gem_object *obj, struct iosys_map *map);
- 
-diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-index 63b709a67471..8145b49e95ff 100644
---- a/drivers/gpu/drm/drm_prime.c
-+++ b/drivers/gpu/drm/drm_prime.c
-@@ -583,7 +583,7 @@ int drm_gem_map_attach(struct dma_buf *dma_buf,
- 	if (!obj->funcs->get_sg_table)
- 		return -ENOSYS;
- 
--	return drm_gem_pin(obj);
-+	return drm_gem_pin_unlocked(obj);
- }
- EXPORT_SYMBOL(drm_gem_map_attach);
- 
-@@ -601,7 +601,7 @@ void drm_gem_map_detach(struct dma_buf *dma_buf,
- {
- 	struct drm_gem_object *obj = dma_buf->priv;
- 
--	drm_gem_unpin(obj);
-+	drm_gem_unpin_unlocked(obj);
- }
- EXPORT_SYMBOL(drm_gem_map_detach);
- 
--- 
-2.41.0
+Better as:
+   In order to crash the kernel, the sysctl panic_on_warn should be set 
+to 1.
 
