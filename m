@@ -2,59 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CCE75DBF7
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 13:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FFC75DBFC
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 13:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbjGVLmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 07:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53282 "EHLO
+        id S229909AbjGVLrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 07:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGVLmR (ORCPT
+        with ESMTP id S229503AbjGVLrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 07:42:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD20269F;
-        Sat, 22 Jul 2023 04:42:15 -0700 (PDT)
+        Sat, 22 Jul 2023 07:47:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCC3273E;
+        Sat, 22 Jul 2023 04:47:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 56CBD60766;
-        Sat, 22 Jul 2023 11:42:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24F24C433C7;
-        Sat, 22 Jul 2023 11:42:11 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3CDD8608C0;
+        Sat, 22 Jul 2023 11:47:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 196E5C433C7;
+        Sat, 22 Jul 2023 11:47:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690026134;
-        bh=f2yHgyUaKA3l10ITzTIYa5o+ZSTULlacczfrf3CBjeg=;
+        s=k20201202; t=1690026436;
+        bh=qEBn6e+fYz7AhV051ZDXT5ospKb3k9meMO3A37lVuJA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GUbm8Cn+BV+1ejDdslO+FIrdGjx5mNih14qUGX7PapjMVkxNQnyVpxwLSVTuI7J0p
-         8qdX/tTHgtsRSA2k1nAxSuRjs4J7cUBnnzB/G7juyFg+qoBG6cjSdggKBmA+s+l4k1
-         Z6nZQBMYZrwAg6UiHQCyi967ogugQdX1K1iXk1ayNpDgjKB7iQ0maA56Sa9OYcCwC4
-         c6uekhJbp05nk54YGW4sxHr7j0mGN6Wv3FyFSCjjaXELAycT3A+ETP9NkEDe2hHBxh
-         IbUSxzb+6ezZwLlzby7fLc3cmiLTXGpjAdSqZhV741co27rg0gkrW+PdIAtym+7egW
-         ANs03ebYetOfQ==
-Date:   Sat, 22 Jul 2023 12:42:09 +0100
+        b=d2RDHwQcwB/hLm5ypoZMeeWNVB4tQO9WizZ0URooeHAORKqFh15tFh0Or0jb2ZfkS
+         cMp4BYRk0nDvV5F0mjuLFC5TffS3fxDPqBYx9O9aJiNZ2ejRMokZCdVJG9U73+DXUF
+         ubg9ETXOapXptJTnpVsGsaRjuby9kuZJcI3fZk1wxTg0S7b3K20Znsj4io7IUQGljY
+         pMiIBKZAIvQSqn9UIahDsxYgjXG310C8xvcw6yKASZ9qhB7hGapHbEaPGhsGo/uJ7p
+         Hvpl3cWiaYgtNQJ4LCq2ACFH2HKqBcnpKL7Ht7z2kGapeb7dYqMw/QB9xpvwViuC2+
+         RfGWIWgrH/w1w==
+Date:   Sat, 22 Jul 2023 12:47:09 +0100
 From:   Conor Dooley <conor@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        linux-rockchip@lists.infradead.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v2 1/3] dt-bindings: usb: add rk3588 compatible to
- rockchip,dwc3
-Message-ID: <20230722-coleslaw-breeder-40827e23f717@spud>
-References: <20230720173643.69553-1-sebastian.reichel@collabora.com>
- <20230720173643.69553-2-sebastian.reichel@collabora.com>
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Russell King <linux@armlinux.org.uk>,
+        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        Greg Ungerer <gerg@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v4 2/9] dt-bindings: net: mediatek,net: add
+ mt7988-eth binding
+Message-ID: <20230722-blip-sleet-8c3a75b1c911@spud>
+References: <cover.1689974536.git.daniel@makrotopia.org>
+ <5a333fa431562efed461ec5a987d6982db2ed620.1689974536.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="tUpYr2IqJ0mUbeeo"
+        protocol="application/pgp-signature"; boundary="S3k3Sb20TyWQtpEz"
 Content-Disposition: inline
-In-Reply-To: <20230720173643.69553-2-sebastian.reichel@collabora.com>
+In-Reply-To: <5a333fa431562efed461ec5a987d6982db2ed620.1689974536.git.daniel@makrotopia.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -66,88 +78,40 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---tUpYr2IqJ0mUbeeo
+--S3k3Sb20TyWQtpEz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 20, 2023 at 07:36:41PM +0200, Sebastian Reichel wrote:
-> RK3588 has three DWC3 controllers. Two of them are fully functional in
-> host, device and OTG mode including USB2 support. They are connected to
-> dedicated PHYs, that also support USB-C's DisplayPort alternate mode.
+On Fri, Jul 21, 2023 at 10:32:10PM +0100, Daniel Golle wrote:
+> Introduce DT bindings for the MT7988 SoC to mediatek,net.yaml.
+> The MT7988 SoC got 3 Ethernet MACs operating at a maximum of
+> 10 Gigabit/sec supported by 2 packet processor engines for
+> offloading tasks.
+> The first MAC is hard-wired to a built-in switch which exposes
+> four 1000Base-T PHYs as user ports.
+> It also comes with built-in 2500Base-T PHY which can be used
+> with the 2nd GMAC.
+> The 2nd and 3rd GMAC can be connected to external PHYs or provide
+> SFP(+) cages attached via SGMII, 1000Base-X, 2500Base-X, USXGMII,
+> 5GBase-KR or 10GBase-KR.
 >=20
-> The third controller is connected to one of the combphy's shared
-> with PCIe and SATA. It can only be used in host mode and does not
-> support USB2. Compared to the other controllers this one needs
-> some extra clocks.
->=20
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 
-I feel like I say it a bunch for some of these Rockchip bindings
-patches, but if you're adding more clocks for some SoCs, should some
-per-SoC constraints not also be added?
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-> ---
->  .../devicetree/bindings/usb/rockchip,dwc3.yaml        | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml b/D=
-ocumentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-> index 291844c8f3e1..cbc3e55e05e1 100644
-> --- a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-> +++ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-> @@ -30,6 +30,7 @@ select:
->          enum:
->            - rockchip,rk3328-dwc3
->            - rockchip,rk3568-dwc3
-> +          - rockchip,rk3588-dwc3
->    required:
->      - compatible
-> =20
-> @@ -39,6 +40,7 @@ properties:
->        - enum:
->            - rockchip,rk3328-dwc3
->            - rockchip,rk3568-dwc3
-> +          - rockchip,rk3588-dwc3
->        - const: snps,dwc3
-> =20
->    reg:
-> @@ -58,7 +60,9 @@ properties:
->            Master/Core clock, must to be >=3D 62.5 MHz for SS
->            operation and >=3D 30MHz for HS operation
->        - description:
-> -          Controller grf clock
-> +          Controller grf clock OR UTMI clock
-> +      - description:
-> +          PIPE clock
-> =20
->    clock-names:
->      minItems: 3
-> @@ -66,7 +70,10 @@ properties:
->        - const: ref_clk
->        - const: suspend_clk
->        - const: bus_clk
-> -      - const: grf_clk
-> +      - enum:
-> +          - grf_clk
-> +          - utmi
-> +      - const: pipe
-> =20
->    power-domains:
->      maxItems: 1
-> --=20
-> 2.40.1
->=20
+Thanks,
+Conor.
 
---tUpYr2IqJ0mUbeeo
+--S3k3Sb20TyWQtpEz
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLvAkQAKCRB4tDGHoIJi
-0kKYAQCiO80QFj97obJkn31yMX+NIi1z75tVqo+ogU5Kw2ikbgEA/CV6Gur4Ravl
-AlQ9PLxs1TY8cb9aF1himnHOGQeBDwE=
-=5k0e
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLvBvQAKCRB4tDGHoIJi
+0rTAAQDHnk1AXL1i3JuZmYT+/xX+kwzUCVfTJwQJkX31Ipzx2gD+OJ94P3rAvdSL
+gWeUD5nqQVtppRlDGSgQ2QX6lSK3Dww=
+=dmf1
 -----END PGP SIGNATURE-----
 
---tUpYr2IqJ0mUbeeo--
+--S3k3Sb20TyWQtpEz--
