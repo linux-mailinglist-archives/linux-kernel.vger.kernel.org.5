@@ -2,160 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3040D75D960
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 05:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260F775D965
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 05:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbjGVDQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 23:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
+        id S229655AbjGVDSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 23:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGVDQQ (ORCPT
+        with ESMTP id S229503AbjGVDSa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 23:16:16 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC9C3A9C;
-        Fri, 21 Jul 2023 20:16:14 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R7BPk5djjzrRmB;
-        Sat, 22 Jul 2023 11:15:22 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sat, 22 Jul 2023 11:16:10 +0800
-Message-ID: <1e382d8f-84b6-c1df-4091-9db14e9f82cf@huawei.com>
-Date:   Sat, 22 Jul 2023 11:16:10 +0800
+        Fri, 21 Jul 2023 23:18:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252F03A9C
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 20:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689995863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0uW4VHgKV+Lqk0wGj2Kld/LW6LChZPKDcy+khsmFX/c=;
+        b=TTbdomkbmAGMuYeSn12K2JvROlXP9ZDFJC20jC3OuHLL9OqDMwj1L2veume5WiT/BgrIDM
+        WBclYLnq09QcrOYnX7mcpapCVaUPdYEJ+1VXMSmhhjwUoc8s1CMCBCzzozX/c/Z8BUfP5O
+        mbLo6sqNRy9BCYItYYQ7KsVN8NN3k+o=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-625-ds7PrvWIO_iOLDwToedKAA-1; Fri, 21 Jul 2023 23:17:40 -0400
+X-MC-Unique: ds7PrvWIO_iOLDwToedKAA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 24EBE3C0D183;
+        Sat, 22 Jul 2023 03:17:40 +0000 (UTC)
+Received: from llong.com (unknown [10.22.16.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AEE77200A7CA;
+        Sat, 22 Jul 2023 03:17:39 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v3] perf/arm-dmc620: Fix dmc620_pmu_irqs_lock/cpu_hotplug_lock circular lock dependency
+Date:   Fri, 21 Jul 2023 23:17:28 -0400
+Message-Id: <20230722031729.3913953-1-longman@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH 2/4] ext4: fix BUG in ext4_mb_new_inode_pa() due to
- overflow
-Content-Language: en-US
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
-        <jack@suse.cz>, <ojaswin@linux.ibm.com>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
-References: <87lef9lljt.fsf@doe.com>
- <c9cde644-f757-2d72-6ac6-d5cfb1e43da5@huawei.com> <ZLq9MROKiyet9Oce@mit.edu>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <ZLq9MROKiyet9Oce@mit.edu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/22 1:15, Theodore Ts'o wrote:
-> On Fri, Jul 21, 2023 at 05:13:13PM +0800, Baokun Li wrote:
->>> Doing this with helpers, IMO is not useful as we also saw above.
->> I still think it is necessary to add a helper to make the code more concise.
->>
->> Ted, do you think the fex_end() helper function is needed here?
->>
->> I think we might need your advice to end this discussion. 😅
-> Having helper functions doesn't bother me all _that_ much --- so long
-> as they are named appropriately.  The readibility issues start with
-> the fact that the helper function uses loff_t as opposed to
-> ext4_lblk_t, and because someone looking at fex_end() would need
-> additional thinking to figure out what it did.  If renamed it to be
-> fex_logical_end() and made it take an ext4_lblk_t, I think it would be
-> better.
-Yes, naming is one of the most difficult things.
+The following circular locking dependency was reported when running
+cpus online/offline test on an arm64 system.
 
-The reason the helper function uses loff_t instead of ext4_lblk_t is because
-when we compute the extent logical end or pa end, we may exceed the
-maximum length of ext4_lblk_t and get an overflowed result, which can lead
-to the four issues fixed in the patch set. Perhaps I should add some 
-comments
-to explain these.
+[   84.195923] Chain exists of:
+                 dmc620_pmu_irqs_lock --> cpu_hotplug_lock --> cpuhp_state-down
 
-In other words, add this helper function and limit the return value of 
-the function
-to loff_t is precisely to remind people that such overflow problems exist.
-As mentioned by ritesh, ext4 has many places to directly perform type 
-conversion
-in place. However, when we modify the kernel or review code, we will 
-still ignore
-that the current code may have overflow problems, as in the commit fixed 
-by this
-patch.
+[   84.207305]  Possible unsafe locking scenario:
 
-If we have a helper function fex_end(), we can avoid potential overflow 
-problems
-by using it directly when we make changes or by questioning why we 
-didn't use
-a simpler helper function when reviewing the code, rather than just 
-adding a (loff_t)
-when we spot the problem and saying, "Oh, the problem is perfectly 
-solved!" 😀
+[   84.213212]        CPU0                    CPU1
+[   84.217729]        ----                    ----
+[   84.222247]   lock(cpuhp_state-down);
+[   84.225899]                                lock(cpu_hotplug_lock);
+[   84.232068]                                lock(cpuhp_state-down);
+[   84.238237]   lock(dmc620_pmu_irqs_lock);
+[   84.242236]
+                *** DEADLOCK ***
 
-The current problem can be solved in any way, the key is how to prevent 
-similar
-problems in the future?
-> The bigger complaint that I have, although it's not the fault of your
-> patch, is the use of "ext4_free_extent" all over ext4/mballoc.c when
-> it's much more often used for allocating blocks.  So the name of the
-> structure and the "fex" in "fex_end" or "fex_logical_end" is also
-> confusing.
->
-> Hmm... how about naming helper function extent_logial_end()?
-Great! Thank you for naming the helper function.
->
-> And at some point we might want to do a global search and replace
-> changing ext4_free_extent to something like ext4_mballoc_extent, and
-> changing the structure element names.  Perhaps:
->
->         fe_logical  --->  ex_lblk
->         fe_start    --->  ex_cluster_start
->         fe_group    --->  ex_group
->         fe_len      --->  ex_cluster_len
->
-> This is addressing problems where "start" can mean the starting
-> physical block, the starting logical block, or the starting cluster
-> relative to the beginning of the block group.
->
-> There is also documentation which is just wrong.  For example:
->
-> /**
->   * ext4_trim_all_free -- function to trim all free space in alloc. group
->   * @sb:			super block for file system
->   * @group:		group to be trimmed
->   * @start:		first group block to examine
->   * @max:		last group block to examine
->
-> start and max should be "first group cluster to examine" and "last
-> group cluster to examine", respectively.
-Yes, it is also very important to distinguish between mballoc_extent and 
-free_extent.
-I will try to rename ext4_free_extent to ext4_mballoc_extent and fix 
-some comment
-errors in another patch set that does some performance optimizations using
-"free extent".
->
-> The bottom line is that there are much larger opportunities to make
-> the code more maintainable than worrying about two new helper
-> functions.  :-)
->
-> Cheers,
->
-> 					- Ted
-Yes, making code more maintainable is always the goal.
-Thank you for your patient explanation!
+The problematic locking order seems to be
 
-Cheers!
+	lock(dmc620_pmu_irqs_lock) --> lock(cpu_hotplug_lock)
+
+This locking order happens when dmc620_pmu_get_irq() is called from
+dmc620_pmu_device_probe(). Since dmc620_pmu_irqs_lock is used for
+protecting the dmc620_pmu_irqs structure only, we don't actually need
+to hold the lock when adding a new instance to the CPU hotplug subsystem.
+
+Fix this possible deadlock scenario by releasing the lock before
+calling cpuhp_state_add_instance_nocalls() and reacquiring it afterward.
+To avoid the possibility of 2 racing dmc620_pmu_get_irq() calls inserting
+duplicated dmc620_pmu_irq structures with the same irq number, a dummy
+entry is inserted before releasing the lock which will block a competing
+thread from inserting another irq structure of the same irq number.
+
+Suggested-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ drivers/perf/arm_dmc620_pmu.c | 28 ++++++++++++++++++++++------
+ 1 file changed, 22 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/perf/arm_dmc620_pmu.c b/drivers/perf/arm_dmc620_pmu.c
+index 9d0f01c4455a..7cafd4dd4522 100644
+--- a/drivers/perf/arm_dmc620_pmu.c
++++ b/drivers/perf/arm_dmc620_pmu.c
+@@ -76,6 +76,7 @@ struct dmc620_pmu_irq {
+ 	refcount_t refcount;
+ 	unsigned int irq_num;
+ 	unsigned int cpu;
++	unsigned int valid;
+ };
+ 
+ struct dmc620_pmu {
+@@ -423,9 +424,14 @@ static struct dmc620_pmu_irq *__dmc620_pmu_get_irq(int irq_num)
+ 	struct dmc620_pmu_irq *irq;
+ 	int ret;
+ 
+-	list_for_each_entry(irq, &dmc620_pmu_irqs, irqs_node)
+-		if (irq->irq_num == irq_num && refcount_inc_not_zero(&irq->refcount))
++	list_for_each_entry(irq, &dmc620_pmu_irqs, irqs_node) {
++		if (irq->irq_num != irq_num)
++			continue;
++		if (!irq->valid)
++			return ERR_PTR(-EAGAIN);	/* Try again later */
++		if (refcount_inc_not_zero(&irq->refcount))
+ 			return irq;
++	}
+ 
+ 	irq = kzalloc(sizeof(*irq), GFP_KERNEL);
+ 	if (!irq)
+@@ -447,13 +453,23 @@ static struct dmc620_pmu_irq *__dmc620_pmu_get_irq(int irq_num)
+ 	if (ret)
+ 		goto out_free_irq;
+ 
+-	ret = cpuhp_state_add_instance_nocalls(cpuhp_state_num, &irq->node);
+-	if (ret)
+-		goto out_free_irq;
+-
+ 	irq->irq_num = irq_num;
+ 	list_add(&irq->irqs_node, &dmc620_pmu_irqs);
+ 
++	/*
++	 * Release dmc620_pmu_irqs_lock before calling
++	 * cpuhp_state_add_instance_nocalls() and reacquire it afterward.
++	 */
++	mutex_unlock(&dmc620_pmu_irqs_lock);
++	ret = cpuhp_state_add_instance_nocalls(cpuhp_state_num, &irq->node);
++	mutex_lock(&dmc620_pmu_irqs_lock);
++
++	if (ret) {
++		list_del(&irq->irqs_node);
++		goto out_free_irq;
++	}
++
++	irq->valid = true;
+ 	return irq;
+ 
+ out_free_irq:
 -- 
-With Best Regards,
-Baokun Li
-.
+2.31.1
+
