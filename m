@@ -2,41 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF8875DC56
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 14:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC6E75DC59
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 14:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbjGVMAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 08:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
+        id S230260AbjGVMCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 08:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230353AbjGVMAv (ORCPT
+        with ESMTP id S229769AbjGVMCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 08:00:51 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2269730C4;
-        Sat, 22 Jul 2023 05:00:47 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 36MC0bDQ017318;
-        Sat, 22 Jul 2023 14:00:37 +0200
-Date:   Sat, 22 Jul 2023 14:00:37 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     thomas@t-8ch.de, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Subject: Re: [PATCH v1 4/8] selftests/nolibc: add extra config file customize
- support
-Message-ID: <20230722120037.GA17311@1wt.eu>
-References: <cover.1689713175.git.falcon@tinylab.org>
- <ecd5cd252bc728df1becfebff772713e8edce1ec.1689713175.git.falcon@tinylab.org>
+        Sat, 22 Jul 2023 08:02:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1374D9B;
+        Sat, 22 Jul 2023 05:02:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C46460ADC;
+        Sat, 22 Jul 2023 12:02:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E722FC433C7;
+        Sat, 22 Jul 2023 12:02:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690027363;
+        bh=2lhE3RdVIzj9FW8Uxhynzfr7wWR0wibk1JlqbdY1c28=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qUSAZKPSjoAFmnw7V5FG+RMB/BPXFe6XkDTOzHu4AZfEX9x6/NnzAQDhopCsfAEam
+         Z8qhwqdoTLmXeYe0Qpv7XXBjrqQZcFrMUWkjVDyATimD/RUPbKpH75+Ra/+34LqfK9
+         DGgg4ru5+A5cC2vj+TrLIMH1H2FPfYB0Q/no5UweIOjb83W9I8NtGctg6bQBFOd8i9
+         xrH7uOaa1U1UwJzE+02EeKSOUmHfAxAYT3aQY9I7aVjxr15PsAUw/frlKFjiRw8fVu
+         m+L58mtmAXDi93YhlNxl+cDyw35UqQFEBjBcMMecEh25a4JdeueFboIyQ0FPMkVAWZ
+         zZAEQIJIQ77/A==
+Date:   Sat, 22 Jul 2023 13:02:38 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Peter Rosin <peda@axentia.se>, Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: i2c: nxp,pca9541: convert to DT schema
+Message-ID: <20230722-silliness-qualify-5120b10539d3@spud>
+References: <20230722095710.17496-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jM3LRQyBiv5Pj4Mz"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ecd5cd252bc728df1becfebff772713e8edce1ec.1689713175.git.falcon@tinylab.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20230722095710.17496-1-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,50 +61,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 05:14:07AM +0800, Zhangjin Wu wrote:
-> The default DEFCONFIG_<ARCH> may not always work for all architectures,
-> some architectures require to add extra kernel config options, this adds
-> a new 'extconfig' target for this requirement.
-> 
-> It allows to customize extra kernel config options via the common
-> common.config and the architecture specific <ARCH>.config, at last
-> trigger 'allnoconfig' to let them take effect with missing config
-> options as disabled.
-> 
-> The scripts/kconfig/merge_config.sh tool is used to merge the extra
-> config files.
-> 
-> Suggested-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-> Link: https://lore.kernel.org/lkml/67eb70d4-c9ff-4afc-bac7-7f36cc2c81bc@t-8ch.de/
-> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-> ---
->  tools/testing/selftests/nolibc/Makefile | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-> index f42adef87e12..08a5ca5f418b 100644
-> --- a/tools/testing/selftests/nolibc/Makefile
-> +++ b/tools/testing/selftests/nolibc/Makefile
-> @@ -39,6 +39,9 @@ DEFCONFIG_s390       = defconfig
->  DEFCONFIG_loongarch  = defconfig
->  DEFCONFIG            = $(DEFCONFIG_$(ARCH))
->  
-> +# extra kernel config files under configs/, include common + architecture specific
-> +EXTCONFIG            = common.config $(ARCH).config
-> +
->  # optional tests to run (default = all)
->  TEST =
->  
-> @@ -162,6 +165,10 @@ initramfs: nolibc-test
->  defconfig:
->  	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) mrproper $(DEFCONFIG) prepare
->  
-> +extconfig:
-> +	$(Q)$(srctree)/scripts/kconfig/merge_config.sh -O "$(srctree)" -m "$(srctree)/.config" $(foreach c,$(EXTCONFIG),$(wildcard $(CURDIR)/configs/$c))
-> +	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) KCONFIG_ALLCONFIG="$(srctree)/.config" allnoconfig
-> +
 
-Please also mention this entry in the "help" message.
-Other than that, OK.
+--jM3LRQyBiv5Pj4Mz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Willy
+On Sat, Jul 22, 2023 at 11:57:09AM +0200, Krzysztof Kozlowski wrote:
+> Convert the bindings for NXP PCA9541 I2C bus master selector to DT
+> schema.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+--jM3LRQyBiv5Pj4Mz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLvFXgAKCRB4tDGHoIJi
+0lPLAP9ZV1M4FMtdmU0BQNH3uQTpjAFvlGUloDpgKzEJ1WSHTAD9EhkgA4sMwgYI
+nUwPRQPVsP4oktbAtWgVCRr9SMxcCQI=
+=LWlQ
+-----END PGP SIGNATURE-----
+
+--jM3LRQyBiv5Pj4Mz--
