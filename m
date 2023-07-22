@@ -2,174 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 210AC75DCD2
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 15:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614AC75DCD7
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 16:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbjGVN6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 09:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
+        id S229477AbjGVOGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 10:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGVN6K (ORCPT
+        with ESMTP id S229452AbjGVOGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 09:58:10 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E4810FD;
-        Sat, 22 Jul 2023 06:58:10 -0700 (PDT)
+        Sat, 22 Jul 2023 10:06:19 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6262128;
+        Sat, 22 Jul 2023 07:06:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690034290; x=1721570290;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=bCsFYrqFuCb1H/kujsBcoErnwUesU07r4y1J/imt6q0=;
-  b=awPCWlMiM/s6TaqzbBt0nK2+Lmdyr0GETPjQc/yRIr8a9To1KEJ8M3Bn
-   /AS4ngXHXFMWH52ql8isqtHT93fRStyh5+lfWejI/a6wFFbZyc4pgb0GD
-   GMNKN3i73m1SYrxIG0kqMdeMzfW5PCaHjWXGh1IO35vSXkSTL16ARFDEE
-   QEGa93LkqVolgX0Kqr+ZWPKUH6KXufVMyRodtHlm/ozJTEtou0G1C35ML
-   ZdvUe5NzHrDpA68vvk1a20fCgNyW533udckMOWRUsg1Mcr5yPm+Siaqr5
-   2pxNyL3PJ5GCIOqx9rIK2F2hXELfT+kAe4/DnojmdBcl3AJl7t6veapeK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="366084843"
+  t=1690034778; x=1721570778;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=FWL7GsEsXsuIIlGHXCF3NbLBRp3WyWjS7z52lOLt9cM=;
+  b=OT4PZ+2jHe78K1AYSdq3Jkajh5ZApXrkn2BkG+Clx3E5NwQH/i7PqQYD
+   2ol/Ht49/6GDANF4XQAG3cCWCAT48YdT7sLwd2FsStbhUA6gIM8H3Whxq
+   h467fM90JimmHUjPiZwENSWp6QeqlBdlS7eiZiczB9BcYRE4Kuue9Anfv
+   L+4W26hKBiJ+YWHRWmEY8RoSeA+WGouOsQRUAwh7tjj6flW1VWbQv42BD
+   crjNEp6q6HG59K7FF8HTu0IPjYOHaK4TWrae9grlooE5Clz6YZ9gav357
+   uDjySsmY3iiMN2ftc2hID1r38GZkoAd2eWO0lpe4YeiD5mXh71/+g4Wku
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="367223915"
 X-IronPort-AV: E=Sophos;i="6.01,224,1684825200"; 
-   d="scan'208";a="366084843"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2023 06:58:09 -0700
+   d="scan'208";a="367223915"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2023 07:06:17 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="849131841"
+X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="760279985"
 X-IronPort-AV: E=Sophos;i="6.01,224,1684825200"; 
-   d="scan'208";a="849131841"
-Received: from jianhuis-mobl.ccr.corp.intel.com (HELO [10.249.173.108]) ([10.249.173.108])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2023 06:58:06 -0700
-Message-ID: <46a5bbcd-424a-7d85-bb2a-0d5634166c8c@linux.intel.com>
-Date:   Sat, 22 Jul 2023 21:58:03 +0800
+   d="scan'208";a="760279985"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 22 Jul 2023 07:06:10 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qNDFJ-0008M5-0z;
+        Sat, 22 Jul 2023 14:06:09 +0000
+Date:   Sat, 22 Jul 2023 22:05:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     oe-kbuild-all@lists.linux.dev, Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Peter Xu <peterx@redhat.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [v2] fs/proc/task_mmu: Implement IOCTL for efficient page table
+ scanning
+Message-ID: <202307222141.3RAiL0jR-lkp@intel.com>
+References: <ZLshsAj5PbsEAHhP@qmqm.qmqm.pl>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v2 1/2] iommu: Prevent RESV_DIRECT devices from blocking
- domains
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <20230713043248.41315-1-baolu.lu@linux.intel.com>
- <20230713043248.41315-2-baolu.lu@linux.intel.com>
- <BN9PR11MB52768040BD1C88E4EB8001878C3FA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Language: en-US
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52768040BD1C88E4EB8001878C3FA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZLshsAj5PbsEAHhP@qmqm.qmqm.pl>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/21 11:07, Tian, Kevin wrote:
->> From: Lu Baolu <baolu.lu@linux.intel.com>
->> Sent: Thursday, July 13, 2023 12:33 PM
->>
->> @@ -409,6 +409,7 @@ struct iommu_fault_param {
->>    * @priv:	 IOMMU Driver private data
->>    * @max_pasids:  number of PASIDs this device can consume
->>    * @attach_deferred: the dma domain attachment is deferred
->> + * @requires_direct: The driver requested IOMMU_RESV_DIRECT
-> 
-> it's not accurate to say "driver requested" as it's a device attribute.
-> 
-> s/requires_direct/require_direct/
-> 
-> what about "has_resv_direct"?
+Hi Michał,
 
-How about
+kernel test robot noticed the following build errors:
 
-  * @require_direct: device requires IOMMU_RESV_DIRECT reserved regions
+[auto build test ERROR on akpm-mm/mm-everything]
+[also build test ERROR on linus/master v6.5-rc2 next-20230721]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-?
+url:    https://github.com/intel-lab-lkp/linux/commits/Micha-Miros-aw/fs-proc-task_mmu-Implement-IOCTL-for-efficient-page-table-scanning/20230722-082500
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/ZLshsAj5PbsEAHhP%40qmqm.qmqm.pl
+patch subject: [v2] fs/proc/task_mmu: Implement IOCTL for efficient page table scanning
+config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20230722/202307222141.3RAiL0jR-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230722/202307222141.3RAiL0jR-lkp@intel.com/reproduce)
 
-> 
->> @@ -959,14 +959,12 @@ static int
->> iommu_create_device_direct_mappings(struct iommu_domain *domain,
->>   	unsigned long pg_size;
->>   	int ret = 0;
->>
->> -	if (!iommu_is_dma_domain(domain))
->> -		return 0;
->> -
->> -	BUG_ON(!domain->pgsize_bitmap);
->> -
->> -	pg_size = 1UL << __ffs(domain->pgsize_bitmap);
->> +	pg_size = domain->pgsize_bitmap ? 1UL << __ffs(domain-
->>> pgsize_bitmap) : 0;
->>   	INIT_LIST_HEAD(&mappings);
->>
->> +	if (WARN_ON_ONCE(iommu_is_dma_domain(domain) && !pg_size))
->> +		return -EINVAL;
->> +
->>   	iommu_get_resv_regions(dev, &mappings);
->>
->>   	/* We need to consider overlapping regions for different devices */
->> @@ -974,13 +972,17 @@ static int
->> iommu_create_device_direct_mappings(struct iommu_domain *domain,
->>   		dma_addr_t start, end, addr;
->>   		size_t map_size = 0;
->>
->> +		if (entry->type == IOMMU_RESV_DIRECT)
->> +			dev->iommu->requires_direct = 1;
->> +
->> +		if ((entry->type != IOMMU_RESV_DIRECT &&
->> +		     entry->type != IOMMU_RESV_DIRECT_RELAXABLE) ||
->> +		    !iommu_is_dma_domain(domain))
->> +			continue;
->> +
->>   		start = ALIGN(entry->start, pg_size);
->>   		end   = ALIGN(entry->start + entry->length, pg_size);
->>
->> -		if (entry->type != IOMMU_RESV_DIRECT &&
->> -		    entry->type != IOMMU_RESV_DIRECT_RELAXABLE)
->> -			continue;
->> -
->>   		for (addr = start; addr <= end; addr += pg_size) {
->>   			phys_addr_t phys_addr;
->>
-> 
-> piggybacking a device attribute detection in a function which tries to
-> populate domain mappings is a bit confusing.
-> 
-> Does it work better to introduce a new function to detect this attribute
-> and has it directly called in the probe path?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307222141.3RAiL0jR-lkp@intel.com/
 
-Jason answered this.
+All errors (new ones prefixed by >>):
 
-> 
->> @@ -2121,6 +2123,21 @@ static int __iommu_device_set_domain(struct
->> iommu_group *group,
->>   {
->>   	int ret;
->>
->> +	/*
->> +	 * If the driver has requested IOMMU_RESV_DIRECT then we cannot
-> 
-> ditto. It's not requested by the driver.
-> 
->> allow
->> +	 * the blocking domain to be attached as it does not contain the
->> +	 * required 1:1 mapping. This test effectively exclusive the device
-> 
-> s/exclusive/excludes/
-> 
+   fs/proc/task_mmu.c: In function 'pagemap_scan_test_walk':
+   fs/proc/task_mmu.c:1921:13: error: implicit declaration of function 'userfaultfd_wp_async'; did you mean 'userfaultfd_wp'? [-Werror=implicit-function-declaration]
+    1921 |         if (userfaultfd_wp_async(vma) && userfaultfd_wp_use_markers(vma))
+         |             ^~~~~~~~~~~~~~~~~~~~
+         |             userfaultfd_wp
+   fs/proc/task_mmu.c: In function 'pagemap_scan_thp_entry':
+>> fs/proc/task_mmu.c:2047:20: error: 'addr' undeclared (first use in this function)
+    2047 |         if (end != addr + HPAGE_SIZE) {
+         |                    ^~~~
+   fs/proc/task_mmu.c:2047:20: note: each undeclared identifier is reported only once for each function it appears in
+   cc1: some warnings being treated as errors
 
-Updated. Thanks!
 
-Best regards,
-baolu
+vim +/addr +2047 fs/proc/task_mmu.c
+
+  2017	
+  2018	static int pagemap_scan_thp_entry(pmd_t *pmd, unsigned long start,
+  2019					  unsigned long end, struct mm_walk *walk)
+  2020	{
+  2021	#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+  2022		struct pagemap_scan_private *p = walk->private;
+  2023		struct vm_area_struct *vma = walk->vma;
+  2024		unsigned long categories;
+  2025		spinlock_t *ptl;
+  2026		int ret = 0;
+  2027	
+  2028		ptl = pmd_trans_huge_lock(pmd, vma);
+  2029		if (!ptl)
+  2030			return -ENOENT;
+  2031	
+  2032		categories = p->cur_vma_category | pagemap_thp_category(*pmd);
+  2033	
+  2034		ret = pagemap_scan_output(categories, p, start, &end);
+  2035		if (start == end)
+  2036			goto out_unlock;
+  2037	
+  2038		if (~p->arg.flags & PM_SCAN_WP_MATCHING)
+  2039			goto out_unlock;
+  2040		if (~categories & PAGE_IS_WRITTEN)
+  2041			goto out_unlock;
+  2042	
+  2043		/*
+  2044		 * Break huge page into small pages if the WP operation
+  2045		 * need to be performed is on a portion of the huge page.
+  2046		 */
+> 2047		if (end != addr + HPAGE_SIZE) {
+  2048			spin_unlock(ptl);
+  2049			split_huge_pmd(vma, pmd, start);
+  2050			pagemap_scan_backout_range(p, start, end);
+  2051			return -ENOENT;
+  2052		}
+  2053	
+  2054		make_uffd_wp_pmd(vma, start, pmd);
+  2055		flush_tlb_range(vma, start, end);
+  2056	out_unlock:
+  2057		spin_unlock(ptl);
+  2058		return ret;
+  2059	#else /* !CONFIG_TRANSPARENT_HUGEPAGE */
+  2060		return -ENOENT;
+  2061	#endif
+  2062	}
+  2063	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
