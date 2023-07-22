@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2AE75DC24
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 13:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2CA75DC29
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 13:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbjGVLzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 07:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
+        id S230185AbjGVLzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 07:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjGVLzE (ORCPT
+        with ESMTP id S230121AbjGVLzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 07:55:04 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128382D47
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 04:54:48 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbc656873eso25828455e9.1
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 04:54:47 -0700 (PDT)
+        Sat, 22 Jul 2023 07:55:05 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E875B3586
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 04:54:49 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-316feb137a7so2380629f8f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 04:54:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690026886; x=1690631686;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=02nknKMJYKlDUsZ+YqcOCSB4hUZzBMytrcBqER2E3Do=;
-        b=umiYYc/aB79bh3drCR+5MHqjugR24HGF2bX6eebpo10/T5g1KdLjrFKA9OZsFVoQvG
-         0W6mbXmvzfG5Z+NZyJ14nhs198h4uDwOXKBP7oWxSPVGBnxb06jURRyvhP+sVoVpk1X6
-         dafrfaNRCd7Em/sC5tVbcRLq0wHnQkdzB8yV7tSYeinLE2N1xMdDxhwP+VjKZJjoXhPw
-         iO7yFefbiOju0bALua9+h18ZdzL/VXQb8I/nNUY3Qz1PqeiJECNPM1uI1emjgNCB2d8I
-         6ruDO1BRhg+bvQsJq2cQe4W8xKinaWsj+hA7vjZsvcjCXEPbBTpCPqqwxWTFdpxZG/lA
-         pAbA==
+        d=linaro.org; s=google; t=1690026888; x=1690631688;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XSFvde0MCghYMGJ+cTysg5G2vmHEvabjCrJg5MGa8zU=;
+        b=AJ0wW0mfEILVh321hQFNqbf7/MSRnMvsPEoBV/23yswWtY6gfHV77Js/MUkz2pUgZ9
+         SOuya4zd+jdxBQ6S9qMnutxMXM0x7xSdCrheVvaNnHfMhKSUcm7ZRK7m0xPcJS7aXJnf
+         g5TrwQw89oXuOmRBE1CKYYl4hc+qt+EbnGVONO4X4jwiUtkPtmevXQO7OxiDI3m47wm4
+         Ggkz7fYlXwHitlq//b73pg/YYPgKgqeeylcgsIwvkuA7nwByirO/Fef05NbsIB7vD3HH
+         Yd6m0D1mdhO1XyyBQVihMIMoGDJcAg7osKFOTEwhcc7Rt6DX9Xzj6aYwiVPW/XpBtYpa
+         x0KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690026886; x=1690631686;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=02nknKMJYKlDUsZ+YqcOCSB4hUZzBMytrcBqER2E3Do=;
-        b=UREV1R1zKY4sok5PbufFGfkKuFchtqq97Or4pGLUWAhdjVMl2FpKrsWf3/Uwyg23j8
-         BqrAqWBkrULwUBpfSIFYtKMvShC0ZfdmPpMfdYBaq/x5JCluoMlzbQkJjttilBUV2oEH
-         MX5KJdhU6YMWqS4vlvtj/jcXqOj9G4DgvJA96TAyNdwajo0GLdCxVyxypZALusr1pYct
-         Is49MPnSjaxbInh3C0nzEjoWfsN9o0k27LlkEkNDz2WKQ4DjVtpm0G5NcpFVySqlyh8g
-         hyTVV0w7v5rVJtCHh3bHBMCKsMA+EomosHcdTs57lpHIcmgrCV9zFs+osxmIVcySEIHR
-         XJCQ==
-X-Gm-Message-State: ABy/qLaCPaUJwfGzkmRUcwgDv6fKlOnhLxrNDtzbVqhl1dHCHL/AAlBR
-        0IIDz21q1UnQALg5fdV+YownyA==
-X-Google-Smtp-Source: APBJJlFx0RAbdgVsEAvPtj2sTHjoNfSYVpuccjeLCL0FmCVV3bneOPClpiWLn8F3WdkbgnpvEW1zmg==
-X-Received: by 2002:a05:6000:10c:b0:315:a1d5:a3d5 with SMTP id o12-20020a056000010c00b00315a1d5a3d5mr3843614wrx.22.1690026886543;
-        Sat, 22 Jul 2023 04:54:46 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690026888; x=1690631688;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XSFvde0MCghYMGJ+cTysg5G2vmHEvabjCrJg5MGa8zU=;
+        b=WGiNkvzJr9y1qCE50lrcbbHzpNkuMXt+wciS/RGk/wadIbcYBmYtuFq9es7K8MYwcz
+         /jpqC7ecMpV3ZDWi1Gy5/vRoC0B2AL8tGVb+YJrYh2f7WcthxxQvG2r2SQGtM0bzft60
+         f81Q4m2KKsqTcgcXX76fo8EiGecz8rsMui1hh+PXuIbXOcJfDmfhcmXiKO0vTS5fvNcq
+         2balm9s3qO2bLmJaPQNr+PoU2je4P1EMSlhrpkGKuamr+0cx+orYKbUv/k4KIu+p8u2V
+         pxAKFHTtq7yISb8FSH6BPhbe6tIi0NiANNdYQ2y1SrAqRy1vlUe1/uUv3hAGHt9l6MaU
+         yF/g==
+X-Gm-Message-State: ABy/qLazLZlYiz68ozEJjCaG6wTSvxq1QA6fNMPOYrV+tgxMl8ORkTiM
+        CnAWpJ5yHyb+ucPtEcKi0lJyMQ==
+X-Google-Smtp-Source: APBJJlF0yz9uTMrzF4wv7INQUV+nxRdzqO+OAi0W/JQtvnrWjafHc+cNBgjgrQ9tygnsAonn9T5KRw==
+X-Received: by 2002:adf:f592:0:b0:314:13e2:2f6c with SMTP id f18-20020adff592000000b0031413e22f6cmr3604699wro.58.1690026888105;
+        Sat, 22 Jul 2023 04:54:48 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id o8-20020adfeac8000000b003143b7449ffsm6726496wrn.25.2023.07.22.04.54.45
+        by smtp.gmail.com with ESMTPSA id o8-20020adfeac8000000b003143b7449ffsm6726496wrn.25.2023.07.22.04.54.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 04:54:46 -0700 (PDT)
+        Sat, 22 Jul 2023 04:54:47 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -60,10 +61,12 @@ To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 1/3] media: dt-bindings: samsung,exynos4212-fimc-is: replace duplicate pmu node with phandle
-Date:   Sat, 22 Jul 2023 13:54:39 +0200
-Message-Id: <20230722115441.139628-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 2/3] media: dt-bindings: samsung,fimc: correct unit addresses in DTS example
+Date:   Sat, 22 Jul 2023 13:54:40 +0200
+Message-Id: <20230722115441.139628-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230722115441.139628-1-krzysztof.kozlowski@linaro.org>
+References: <20230722115441.139628-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,106 +79,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The FIMC IS camera must access the PMU (Power Management Unit) IO memory
-to control camera power.  This was achieved by duplicating the PMU node
-as its child like:
-
-  soc@0 {
-    system-controller@10020000 { ... }; // Real PMU
-
-    camera@11800000 {
-      fimc-is@12000000 {
-        // FIMC IS camera node
-        pmu@10020000 {
-          reg = <0x10020000 0x3000>; // Fake PMU node
-        };
-      };
-    };
-  };
-
-This is not a correct representation of the hardware.  Mapping the PMU
-(Power Management Unit) IO memory should be via syscon-like phandle
-(samsung,pmu-syscon, already used for other drivers), not by duplicating
-"pmu" Devicetree node inside the FIMC IS.
+The camera node's ranges property and unit addresses of its children
+were not correct.  If camera is @11800000, then its fimc child is @0.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../media/samsung,exynos4212-fimc-is.yaml         | 15 ++++++++++-----
- .../devicetree/bindings/media/samsung,fimc.yaml   |  5 +----
- 2 files changed, 11 insertions(+), 9 deletions(-)
+ .../bindings/media/samsung,fimc.yaml          | 22 +++++++++----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/media/samsung,exynos4212-fimc-is.yaml b/Documentation/devicetree/bindings/media/samsung,exynos4212-fimc-is.yaml
-index 3691cd4962b2..3a5ff3f47060 100644
---- a/Documentation/devicetree/bindings/media/samsung,exynos4212-fimc-is.yaml
-+++ b/Documentation/devicetree/bindings/media/samsung,exynos4212-fimc-is.yaml
-@@ -75,13 +75,20 @@ properties:
-   power-domains:
-     maxItems: 1
- 
-+  samsung,pmu-syscon:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Power Management Unit (PMU) system controller interface, used to
-+      power/start the ISP.
-+
- patternProperties:
-   "^pmu@[0-9a-f]+$":
-     type: object
-     additionalProperties: false
-+    deprecated: true
-     description:
-       Node representing the SoC's Power Management Unit (duplicated with the
--      correct PMU node in the SoC).
-+      correct PMU node in the SoC). Deprecated, use samsung,pmu-syscon.
- 
-     properties:
-       reg:
-@@ -131,6 +138,7 @@ required:
-   - clock-names
-   - interrupts
-   - ranges
-+  - samsung,pmu-syscon
-   - '#size-cells'
- 
- additionalProperties: false
-@@ -179,15 +187,12 @@ examples:
-                  <&sysmmu_fimc_fd>, <&sysmmu_fimc_mcuctl>;
-         iommu-names = "isp", "drc", "fd", "mcuctl";
-         power-domains = <&pd_isp>;
-+        samsung,pmu-syscon = <&pmu_system_controller>;
- 
-         #address-cells = <1>;
-         #size-cells = <1>;
-         ranges;
- 
--        pmu@10020000 {
--            reg = <0x10020000 0x3000>;
--        };
--
-         i2c-isp@12140000 {
-             compatible = "samsung,exynos4212-i2c-isp";
-             reg = <0x12140000 0x100>;
 diff --git a/Documentation/devicetree/bindings/media/samsung,fimc.yaml b/Documentation/devicetree/bindings/media/samsung,fimc.yaml
-index 79ff6d83a9fd..530a08f5d3fe 100644
+index 530a08f5d3fe..88b176d594e2 100644
 --- a/Documentation/devicetree/bindings/media/samsung,fimc.yaml
 +++ b/Documentation/devicetree/bindings/media/samsung,fimc.yaml
-@@ -236,15 +236,12 @@ examples:
-                      <&sysmmu_fimc_fd>, <&sysmmu_fimc_mcuctl>;
-             iommu-names = "isp", "drc", "fd", "mcuctl";
-             power-domains = <&pd_isp>;
-+            samsung,pmu-syscon = <&pmu_system_controller>;
+@@ -117,7 +117,7 @@ examples:
+         #clock-cells = <1>;
+         #address-cells = <1>;
+         #size-cells = <1>;
+-        ranges = <0x0 0x0 0x18000000>;
++        ranges = <0x0 0x0 0xba1000>;
  
-             #address-cells = <1>;
+         clocks = <&clock CLK_SCLK_CAM0>, <&clock CLK_SCLK_CAM1>,
+                  <&clock CLK_PIXELASYNCM0>, <&clock CLK_PIXELASYNCM1>;
+@@ -132,9 +132,9 @@ examples:
+         pinctrl-0 = <&cam_port_a_clk_active &cam_port_b_clk_active>;
+         pinctrl-names = "default";
+ 
+-        fimc@11800000 {
++        fimc@0 {
+             compatible = "samsung,exynos4212-fimc";
+-            reg = <0x11800000 0x1000>;
++            reg = <0x00000000 0x1000>;
+             interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
+             clocks = <&clock CLK_FIMC0>,
+                      <&clock CLK_SCLK_FIMC0>;
+@@ -151,9 +151,9 @@ examples:
+ 
+         /* ... FIMC 1-3 */
+ 
+-        csis@11880000 {
++        csis@80000 {
+             compatible = "samsung,exynos4210-csis";
+-            reg = <0x11880000 0x4000>;
++            reg = <0x00080000 0x4000>;
+             interrupts = <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
+             clocks = <&clock CLK_CSIS0>,
+                      <&clock CLK_SCLK_CSIS0>;
+@@ -186,9 +186,9 @@ examples:
+ 
+         /* ... CSIS 1 */
+ 
+-        fimc-lite@12390000 {
++        fimc-lite@b90000 {
+               compatible = "samsung,exynos4212-fimc-lite";
+-              reg = <0x12390000 0x1000>;
++              reg = <0xb90000 0x1000>;
+               interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
+               power-domains = <&pd_isp>;
+               clocks = <&isp_clock CLK_ISP_FIMC_LITE0>;
+@@ -198,9 +198,9 @@ examples:
+ 
+         /* ... FIMC-LITE 1 */
+ 
+-        fimc-is@12000000 {
++        fimc-is@800000 {
+             compatible = "samsung,exynos4212-fimc-is";
+-            reg = <0x12000000 0x260000>;
++            reg = <0x00800000 0x260000>;
+             interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>,
+                          <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
+             clocks = <&isp_clock CLK_ISP_FIMC_LITE0>,
+@@ -242,9 +242,9 @@ examples:
              #size-cells = <1>;
              ranges;
  
--            pmu@10020000 {
--                reg = <0x10020000 0x3000>;
--            };
--
-             i2c-isp@12140000 {
+-            i2c-isp@12140000 {
++            i2c-isp@940000 {
                  compatible = "samsung,exynos4212-i2c-isp";
-                 reg = <0x12140000 0x100>;
+-                reg = <0x12140000 0x100>;
++                reg = <0x00940000 0x100>;
+                 clocks = <&isp_clock CLK_ISP_I2C1_ISP>;
+                 clock-names = "i2c_isp";
+                 pinctrl-0 = <&fimc_is_i2c1>;
 -- 
 2.34.1
 
