@@ -2,138 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 720C175DE1E
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 20:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B0475DE20
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 20:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229531AbjGVSwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 14:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48160 "EHLO
+        id S229615AbjGVSxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 14:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjGVSwm (ORCPT
+        with ESMTP id S229551AbjGVSxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 14:52:42 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17C32128
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 11:52:41 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52222562f1eso69719a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 11:52:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690051960; x=1690656760;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=G4EHsYbDrBuVMb0gheWkPS7eVFc1IDuaQkcZFjpTTTs=;
-        b=EjD8e/kE4zgLvTf0Y8U30s3ksjYhtPvE3bs7ydQwZREUSkWaV84qRlYN7Wjc1AUZJG
-         XNK+uaf3H0bYNy5ERd89OVoc/AufSaZUAJABJ5K/c+F0aKqrixcTR24BuBJ0DwEP1PI/
-         ddbtldqLZ2csSXXbKoNTklYHms9h3MiHIyU3k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690051960; x=1690656760;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=G4EHsYbDrBuVMb0gheWkPS7eVFc1IDuaQkcZFjpTTTs=;
-        b=ZTwOYjAl3q/C94Oypwm/SR2RfSCARDIVxBZ0EoJM2kT0DedNOHUQGr/rv0QSF9LGMy
-         bFseXoeEQ0VpeAHfS42G14UzvLJqVY8MuHDTfQmuh92Yd7ggTx41VbfIndrkeiAm06lw
-         NJXnRCZDatCJYWDMriod3tLmGfiFfGKnBAGIvBC5EF6LNon5R0QodL1FVDkd/A4BEiKU
-         B63udFIUtvma01f9pffw5YCK3IHssLyPYy5nK0OmK9OcRrq+tynEgvbkNHCyLvpfEYZe
-         aAZwAZZS4VYRNphhI+TOh9YL9AsRal/V53ZSrKuQrLLHImWQrIIqwdaeApNjF1/cthCk
-         uBvQ==
-X-Gm-Message-State: ABy/qLbVY2SgtMSLx6hD+aVQ0axF6j3/jZ+VuELw/dpXNbhoW7wY5vdf
-        fzleSdhVsV6rktpufetCaPJunI8qq9LgPVzJnTNLwQ==
-X-Google-Smtp-Source: APBJJlH5P0eWRH/dkEA//GYW+EdAv0PaQqogdfB4iFyeMTjsAyznAQdIxjUu+2VP1jsuvkERQaN3Bg==
-X-Received: by 2002:aa7:dcc7:0:b0:515:1e50:5498 with SMTP id w7-20020aa7dcc7000000b005151e505498mr4633987edu.15.1690051959990;
-        Sat, 22 Jul 2023 11:52:39 -0700 (PDT)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id bf9-20020a0564021a4900b0052177c077eesm3664931edb.68.2023.07.22.11.52.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Jul 2023 11:52:39 -0700 (PDT)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-52222562f1eso69697a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 11:52:39 -0700 (PDT)
-X-Received: by 2002:aa7:d48d:0:b0:521:63c5:77d7 with SMTP id
- b13-20020aa7d48d000000b0052163c577d7mr5117199edr.8.1690051959163; Sat, 22 Jul
- 2023 11:52:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230722160215.7417-A-hca@linux.ibm.com>
-In-Reply-To: <20230722160215.7417-A-hca@linux.ibm.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 22 Jul 2023 11:52:22 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj2g7kDTKPawbhOKXFsAF+Zayygmp1f64oerQktc_LCYw@mail.gmail.com>
-Message-ID: <CAHk-=wj2g7kDTKPawbhOKXFsAF+Zayygmp1f64oerQktc_LCYw@mail.gmail.com>
+        Sat, 22 Jul 2023 14:53:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D896211E;
+        Sat, 22 Jul 2023 11:53:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1201660677;
+        Sat, 22 Jul 2023 18:53:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 73E4DC433C8;
+        Sat, 22 Jul 2023 18:53:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690052011;
+        bh=ElkfNjyeK/aOBy5OYtmfAy/g3JU3qxJ3osaL4RmhO2A=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ZSStsp+Am6ljb3OuwA6cHkQyBKDaWP1lAPl3n/XALZAF+hNuMIpkcZUNX2XrvYMic
+         cl70RJC9yoTQuzO0SBq5al+R4MtAP6a8rOjwzIC27sg+a+5/irlsDy4AVRapkY6rJX
+         gdtEnbRQMMnRm2W3l0FQaBn+eMr0SvfAD/H85tY9+dTk3SUE5H9iJaS/qDnUI7N8sC
+         nwZ4eoxladAJ1wm3IDJ8Vy9CN3MDtA/8xJdxv7O/PQbbF1JnbSV2O0u49pgc7aybWy
+         cZwiwb79anoKD5LeIVktulVGKNS9mYLvsIkPeDMbve6YUwF72vW3q6A7JUggmxWWOq
+         AKYeCU3THjnGg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 60278C595C3;
+        Sat, 22 Jul 2023 18:53:31 +0000 (UTC)
 Subject: Re: [GIT PULL] s390 fixes for 6.5-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20230722160215.7417-A-hca@linux.ibm.com>
+References: <20230722160215.7417-A-hca@linux.ibm.com>
+X-PR-Tracked-List-Id: <linux-s390.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230722160215.7417-A-hca@linux.ibm.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.5-3
+X-PR-Tracked-Commit-Id: 4cfca532ddc3474b3fc42592d0e4237544344b1a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 295e1388de2d5c0c354adbd65d0319c5d636c222
+Message-Id: <169005201138.23354.7673878633795209202.pr-tracker-bot@kernel.org>
+Date:   Sat, 22 Jul 2023 18:53:31 +0000
 To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 22 Jul 2023 at 09:02, Heiko Carstens <hca@linux.ibm.com> wrote:
->
-> - Fix per vma lock fault handling: add missing !(fault & VM_FAULT_ERROR)
->   check to fault handler to prevent error handling for return values that
->   don't indicate an error
+The pull request you sent on Sat, 22 Jul 2023 18:02:15 +0200:
 
-Hmm. The s390 code / people seems to still be a bit confused about the
-VM_FAULT flags.
+> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.5-3
 
-The commit comment says "With per-vma locks, handle_mm_fault() may
-return non-fatal error flags".
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/295e1388de2d5c0c354adbd65d0319c5d636c222
 
-That's actively misleading.
+Thank you!
 
-Why? Because handle_mm_fault() may - and will - return non-fatal error
-flags *regardless* of the per-vma locks.
-
-There's VM_FAULT_COMPLETED, there's VM_FAULT_MAJOR, there are all
-those kinds of "informational" bits.
-
-So honestly, when that patch then does
-
-+       if (likely(!(fault & VM_FAULT_ERROR)))
-+               fault = 0;
-
-I feel like the code is very confused about what is going on, and is
-papering over the real bug.
-
-The *real* bug seems to be that do_protection_exception() and
-do_dat_exception() do this:
-
-        fault = do_exception(regs, access);
-        if (unlikely(fault))
-                do_fault_error(regs, fault);
-
-which is basically nonsensical. And the reason that s390 does that
-seems to be that s390 (and arm, for that matter) seem, to have added a
-few extra VM_FAULT_xyz bits that aren't part of VM_FAULT_ERROR, so
-then in do_fault_error() you have that nonsensical "test some of the
-fields as values, and other fields as bits".
-
-Anyway, I have pulled this, since it clearly fixes a problem. But I do
-think that the *deeper* problem is that s390 treats those bits as
-errors in the first place, when they really aren't. Yes, the error
-bits are *common*, but that field really shouldn't be seen as just
-errors, and I really think that the deeper problem is that
-
-        if (unlikely(fault))
-                do_fault_error(regs, fault);
-
-logic. It's simply wrong.
-
-Of course, it looks like the reason you found this is that the s390
-do_fault_error() then does a BUG() on any bits it doesn't understand.
-You have that nonsensical "clear flags" in other places too. So it's
-not like this work-around is new. But it's a workaround, and a sign of
-confusion, I feel.
-
-Maybe the extra s390 fault conditions should be added to the generic
-list and added to the VM_FAULT_ERROR mask. I dunno.
-
-              Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
