@@ -2,110 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E9A75DE19
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 20:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720C175DE1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 20:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjGVSY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 14:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
+        id S229531AbjGVSwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 14:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbjGVSYY (ORCPT
+        with ESMTP id S229477AbjGVSwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 14:24:24 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824FD2727;
-        Sat, 22 Jul 2023 11:24:20 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-3456fda4ed1so15984495ab.0;
-        Sat, 22 Jul 2023 11:24:20 -0700 (PDT)
+        Sat, 22 Jul 2023 14:52:42 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17C32128
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 11:52:41 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52222562f1eso69719a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 11:52:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690050259; x=1690655059;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DFxsM2OL5aJZXeujrybxptIwXjhT5R/1lLYKKwOWi0A=;
-        b=Rvz9B8lVED3sN95U3XJl3TEtiukuSzsbOdesAzL7Svh6lfkhCGSpvC4TVwGM1znFr5
-         WBsoaENrEPDhbLdU7BFyO+3/1dhrZ1jtTlQA8HH1nG2hKA8WdF0uiSpO1LeHq/P1wZd/
-         6aETySLJTt3ON1+Y1ICFKqbjpDDJ+MBf8wZFxU8NpIP2GWka0GRmZeTmpmoelGUh6e6K
-         lqUaMr4IV2yKNFxwI7sLAlScTtchaNBnUsQYl7pZhUaV06W7smAGy3j882s85phB7+fW
-         JT96qJRM2Y+SNVbnMxGT/UXXpu3fdNt/Fi8sjJBS0I6E1iRy+FcViz5nmQ1ikEK/hqHe
-         0qkw==
+        d=linux-foundation.org; s=google; t=1690051960; x=1690656760;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=G4EHsYbDrBuVMb0gheWkPS7eVFc1IDuaQkcZFjpTTTs=;
+        b=EjD8e/kE4zgLvTf0Y8U30s3ksjYhtPvE3bs7ydQwZREUSkWaV84qRlYN7Wjc1AUZJG
+         XNK+uaf3H0bYNy5ERd89OVoc/AufSaZUAJABJ5K/c+F0aKqrixcTR24BuBJ0DwEP1PI/
+         ddbtldqLZ2csSXXbKoNTklYHms9h3MiHIyU3k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690050259; x=1690655059;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DFxsM2OL5aJZXeujrybxptIwXjhT5R/1lLYKKwOWi0A=;
-        b=fl4glydN/Ie/SBH5SdBoaXnRmhyJ+TX5gGt/Ls4H6LHrhNXYKP61Rq8FcVdunyY8/s
-         C5xpb2T1wofxoelrdM+EotBbwhWC2MS3xSLrbrEpv+cOUq5/yNWoR5U9mNXr8JenGMwr
-         lF1lGEcpDxXURyP6y0/2PD9ehAas960x+xaAoL25rTDpo54YyVUfbpxM6YMSKg0Be5g/
-         3xCznzvVTbYbhiHbo/On3Ohgze+ZEAVsLJUABhDsB18QohatvSw/dwBU2sbOiZuAHPNx
-         XDBMiYvt968FYYMRJDjvVZszV/iLuVGqHWHwEaQE0kbCysEAyKBaqQx5g2wfJS2qNTdk
-         Z5uw==
-X-Gm-Message-State: ABy/qLavdWplaAET/Dndsp2E6QHBNq7r17tftwHTW6KjX/twYRWIKfdo
-        YUfrJfKyUeDmsf3ZDt33ut1BVXunjR8=
-X-Google-Smtp-Source: APBJJlEY1z+uGDMNv16OaY3bOqUl4wO6kTsdNz9BhmYFs1kf3sCGPSK6brp3AVFyKS80vnEWmSFWUg==
-X-Received: by 2002:a92:cd8a:0:b0:345:7497:3cb7 with SMTP id r10-20020a92cd8a000000b0034574973cb7mr4367445ilb.10.1690050259620;
-        Sat, 22 Jul 2023 11:24:19 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v10-20020a02cbaa000000b0042036f06b24sm1828981jap.163.2023.07.22.11.24.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 11:24:19 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 22 Jul 2023 11:24:18 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     James Seo <james@equiv.tech>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] docs: hwmon: hp-wmi-sensors: Change document title
-Message-ID: <7a689374-25bd-4b82-acbe-159fb85a2347@roeck-us.net>
-References: <20230722172513.9324-1-james@equiv.tech>
- <20230722172513.9324-3-james@equiv.tech>
+        d=1e100.net; s=20221208; t=1690051960; x=1690656760;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G4EHsYbDrBuVMb0gheWkPS7eVFc1IDuaQkcZFjpTTTs=;
+        b=ZTwOYjAl3q/C94Oypwm/SR2RfSCARDIVxBZ0EoJM2kT0DedNOHUQGr/rv0QSF9LGMy
+         bFseXoeEQ0VpeAHfS42G14UzvLJqVY8MuHDTfQmuh92Yd7ggTx41VbfIndrkeiAm06lw
+         NJXnRCZDatCJYWDMriod3tLmGfiFfGKnBAGIvBC5EF6LNon5R0QodL1FVDkd/A4BEiKU
+         B63udFIUtvma01f9pffw5YCK3IHssLyPYy5nK0OmK9OcRrq+tynEgvbkNHCyLvpfEYZe
+         aAZwAZZS4VYRNphhI+TOh9YL9AsRal/V53ZSrKuQrLLHImWQrIIqwdaeApNjF1/cthCk
+         uBvQ==
+X-Gm-Message-State: ABy/qLbVY2SgtMSLx6hD+aVQ0axF6j3/jZ+VuELw/dpXNbhoW7wY5vdf
+        fzleSdhVsV6rktpufetCaPJunI8qq9LgPVzJnTNLwQ==
+X-Google-Smtp-Source: APBJJlH5P0eWRH/dkEA//GYW+EdAv0PaQqogdfB4iFyeMTjsAyznAQdIxjUu+2VP1jsuvkERQaN3Bg==
+X-Received: by 2002:aa7:dcc7:0:b0:515:1e50:5498 with SMTP id w7-20020aa7dcc7000000b005151e505498mr4633987edu.15.1690051959990;
+        Sat, 22 Jul 2023 11:52:39 -0700 (PDT)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
+        by smtp.gmail.com with ESMTPSA id bf9-20020a0564021a4900b0052177c077eesm3664931edb.68.2023.07.22.11.52.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 22 Jul 2023 11:52:39 -0700 (PDT)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-52222562f1eso69697a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 11:52:39 -0700 (PDT)
+X-Received: by 2002:aa7:d48d:0:b0:521:63c5:77d7 with SMTP id
+ b13-20020aa7d48d000000b0052163c577d7mr5117199edr.8.1690051959163; Sat, 22 Jul
+ 2023 11:52:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230722172513.9324-3-james@equiv.tech>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230722160215.7417-A-hca@linux.ibm.com>
+In-Reply-To: <20230722160215.7417-A-hca@linux.ibm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 22 Jul 2023 11:52:22 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj2g7kDTKPawbhOKXFsAF+Zayygmp1f64oerQktc_LCYw@mail.gmail.com>
+Message-ID: <CAHk-=wj2g7kDTKPawbhOKXFsAF+Zayygmp1f64oerQktc_LCYw@mail.gmail.com>
+Subject: Re: [GIT PULL] s390 fixes for 6.5-rc3
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 10:25:14AM -0700, James Seo wrote:
-> Change title to "Kernel driver hp-wmi-sensors" for consistency with
-> most of the rest of Documentation/hwmon.
+On Sat, 22 Jul 2023 at 09:02, Heiko Carstens <hca@linux.ibm.com> wrote:
+>
+> - Fix per vma lock fault handling: add missing !(fault & VM_FAULT_ERROR)
+>   check to fault handler to prevent error handling for return values that
+>   don't indicate an error
 
-Not sure if it is worth it, but either case: Signed-off-by: missing.
+Hmm. The s390 code / people seems to still be a bit confused about the
+VM_FAULT flags.
 
-Guenter
+The commit comment says "With per-vma locks, handle_mm_fault() may
+return non-fatal error flags".
 
-> ---
->  Documentation/hwmon/hp-wmi-sensors.rst | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/hwmon/hp-wmi-sensors.rst b/Documentation/hwmon/hp-wmi-sensors.rst
-> index a6bca9aecdde..a611c6263074 100644
-> --- a/Documentation/hwmon/hp-wmi-sensors.rst
-> +++ b/Documentation/hwmon/hp-wmi-sensors.rst
-> @@ -2,9 +2,9 @@
->  
->  .. include:: <isonum.txt>
->  
-> -===========================
-> -Linux HP WMI Sensors Driver
-> -===========================
-> +============================
-> +Kernel driver hp-wmi-sensors
-> +============================
->  
->  :Copyright: |copy| 2023 James Seo <james@equiv.tech>
->  
-> -- 
-> 2.39.2
-> 
+That's actively misleading.
+
+Why? Because handle_mm_fault() may - and will - return non-fatal error
+flags *regardless* of the per-vma locks.
+
+There's VM_FAULT_COMPLETED, there's VM_FAULT_MAJOR, there are all
+those kinds of "informational" bits.
+
+So honestly, when that patch then does
+
++       if (likely(!(fault & VM_FAULT_ERROR)))
++               fault = 0;
+
+I feel like the code is very confused about what is going on, and is
+papering over the real bug.
+
+The *real* bug seems to be that do_protection_exception() and
+do_dat_exception() do this:
+
+        fault = do_exception(regs, access);
+        if (unlikely(fault))
+                do_fault_error(regs, fault);
+
+which is basically nonsensical. And the reason that s390 does that
+seems to be that s390 (and arm, for that matter) seem, to have added a
+few extra VM_FAULT_xyz bits that aren't part of VM_FAULT_ERROR, so
+then in do_fault_error() you have that nonsensical "test some of the
+fields as values, and other fields as bits".
+
+Anyway, I have pulled this, since it clearly fixes a problem. But I do
+think that the *deeper* problem is that s390 treats those bits as
+errors in the first place, when they really aren't. Yes, the error
+bits are *common*, but that field really shouldn't be seen as just
+errors, and I really think that the deeper problem is that
+
+        if (unlikely(fault))
+                do_fault_error(regs, fault);
+
+logic. It's simply wrong.
+
+Of course, it looks like the reason you found this is that the s390
+do_fault_error() then does a BUG() on any bits it doesn't understand.
+You have that nonsensical "clear flags" in other places too. So it's
+not like this work-around is new. But it's a workaround, and a sign of
+confusion, I feel.
+
+Maybe the extra s390 fault conditions should be added to the generic
+list and added to the VM_FAULT_ERROR mask. I dunno.
+
+              Linus
