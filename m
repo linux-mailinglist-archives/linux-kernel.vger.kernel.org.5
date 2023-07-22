@@ -2,187 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F018E75D856
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 02:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC96075D862
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 02:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbjGVAia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 20:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
+        id S229681AbjGVAlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 20:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231349AbjGVAiR (ORCPT
+        with ESMTP id S229529AbjGVAlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 20:38:17 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB6A44AA
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 17:37:51 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40371070eb7so72701cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 17:37:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689986262; x=1690591062;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gj3Xl7dsvl9L6KFIj63HJhmaeXyRYFaIHbakrb1Ec4I=;
-        b=MAdJRMJYGacsbrazrEuC0rQIeU8QNFQUnJUCPgK7a1vzUNIj82x/4RiX3EPgCAVJv+
-         vjDvb5O/dVdRr8MjaYyeLQg7RNJx5mp+B0hz5ymmByPWoPUwC282oofovzofBXW4lOgo
-         uDPcDd3ofQhJYWARPXrTAICAs+ZZ75L7XDKUp34xegAxO54nxkG3DD/j1+HS5w3acRR0
-         2hKfahZSEDpdXscDRJARFhBCX6IVCFk+ORU7D45GfxMEWXwEwOyTHIDBkfpEdDUfweXI
-         ZKFKuO/VLBeM83b2EJkOtpn3jk8ZfPHtjtO2qHeaVp1h/KkAmh89HkmVdmMDwtBOJ0ON
-         zzbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689986262; x=1690591062;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Gj3Xl7dsvl9L6KFIj63HJhmaeXyRYFaIHbakrb1Ec4I=;
-        b=Rp/lqdPnPC/qYcd5M7+heGJrTMIYuJgHt53iHYouEOprbNgbQv59g1ClNxDNQl95Yb
-         /M9a8wSlayLlZYy0ZTiZG2Jlwd6nIDj/LVFcBNvsEfj2xr9xpZ2RdIo843BA8aztRgrv
-         XUEfJRtQnEekUaSYu2caHxsbcLmha8SL4TZUCkTvJazEiZ2RM0t+6AE2CZzZcFn2irBW
-         W0egGF1AqVdjgR8vU1Z/IRIvEm6ZKVArx+nhsQoBZtU6Ix3T1lM0m+uwxY6ZaRAB5bZ6
-         M+RSnA7XOe5DkfHJNwLIqeUJ104Bpsa+WDzXOmwslB9Bp8XqGNydPq1cpqgOcON5Eb7v
-         OWaQ==
-X-Gm-Message-State: ABy/qLZd05ijcWcaQUJrRgbPizSxzAyWRyHSlsBJuA7WAbSQp2L1RqBu
-        LPSORWhOagZuvvGmB+nW/icW15RVWM/2zLpg4xpg5A==
-X-Google-Smtp-Source: APBJJlG6UeFhKQqQQEY9+tUoce4sdevzyvGzeohxg9thFoKM20vYXi0/+fsLHV/dolkPCJEyE+UJo35jN4HgsafYSAQ=
-X-Received: by 2002:ac8:5d49:0:b0:3f4:f0fd:fe7e with SMTP id
- g9-20020ac85d49000000b003f4f0fdfe7emr56472qtx.3.1689986262548; Fri, 21 Jul
- 2023 17:37:42 -0700 (PDT)
+        Fri, 21 Jul 2023 20:41:17 -0400
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B1C3C1D;
+        Fri, 21 Jul 2023 17:41:07 -0700 (PDT)
+Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1qN0fq-0001Ui-0w;
+        Fri, 21 Jul 2023 20:40:42 -0400
+Message-ID: <74c0d1b900d8f518bc152478682a353c29e0faa3.camel@surriel.com>
+Subject: Re: [PATCH] mm,ima,kexec: use memblock_free_late from
+ ima_free_kexec_buffer
+From:   Rik van Riel <riel@surriel.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        Mike Rapoport <rppt@kernel.org>, devicetree@vger.kernel.org,
+        x86@kernel.org, Juergen Gross <jgross@suse.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Date:   Fri, 21 Jul 2023 20:40:41 -0400
+In-Reply-To: <20230721193815.GA1679711-robh@kernel.org>
+References: <20230720101431.71640c8a@imladris.surriel.com>
+         <20230721193815.GA1679711-robh@kernel.org>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-arL+6ARjPI5tJ5FA86BZ"
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-References: <20230625-radish-comic-b0861fb96023@spud> <mhng-c2d55859-cf3b-48ac-bf38-9aa1344fc93c@palmer-ri-x1c9a>
-In-Reply-To: <mhng-c2d55859-cf3b-48ac-bf38-9aa1344fc93c@palmer-ri-x1c9a>
-From:   Fangrui Song <maskray@google.com>
-Date:   Fri, 21 Jul 2023 17:37:31 -0700
-Message-ID: <CAFP8O3+41QFVyNTVJ2iZYkB0tqnvdLTAoGShgGy-qPP1PHjBEw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] riscv: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Conor Dooley <conor@kernel.org>, jszhang@kernel.org,
-        ndesaulniers@google.com, bjorn@kernel.org, llvm@lists.linux.dev,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Sender: riel@surriel.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 25, 2023 at 1:06=E2=80=AFPM Palmer Dabbelt <palmer@dabbelt.com>=
- wrote:
->
-> On Sun, 25 Jun 2023 05:43:13 PDT (-0700), Conor Dooley wrote:
-> > On Sun, Jun 25, 2023 at 08:24:56PM +0800, Jisheng Zhang wrote:
-> >> On Fri, Jun 23, 2023 at 10:17:54AM -0700, Nick Desaulniers wrote:
-> >> > On Thu, Jun 22, 2023 at 11:18:03PM +0000, Nathan Chancellor wrote:
-> >> > > If you wanted to restrict it to just LD_IS_BFD in arch/riscv/Kconf=
-ig,
-> >> > > that would be fine with me too.
-> >> > >
-> >> > >   select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if LD_IS_BFD
-> >> >
-> >> > Hi Jisheng, would you mind sending a v3 with the attached patch appl=
-ied
-> >> > on top / at the end of your series?
-> >>
-> >> Hi Nick, Nathan, Palmer,
-> >>
-> >> I saw the series has been applied to riscv-next, so I'm not sure which
-> >> solution would it be, Palmer to apply Nick's patch to riscv-next or
-> >> I to send out v3, any suggestion is appreciated.
-> >
-> > I don't see what you are seeing w/ riscv/for-next. HEAD is currently at
-> > 4681dacadeef ("riscv: replace deprecated scall with ecall") and there
-> > are no patches from your series in the branch:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/log/?h=
-=3Dfor-next
->
-> It's been in and out of staging a few times as we tracked down the
-> performance regression, but it shouldn't have ever made it to linux-next
-> for real.
->
-> I'm fine just picking up the patch to disable DCE, I've got a few other
-> (hopefully small) things to work through first though.
 
-Note: for GCC, -fpatchable-function-entry=3D (used by
-arch/riscv/Kconfig) require GCC 13 for correct garbage collection
-semantics.
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D110729
+--=-arL+6ARjPI5tJ5FA86BZ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > Cheers,
-> > Conor.
-> >
-> >> > > Nick said he would work on a report for the LLVM side, so as long =
-as
-> >> > > this issue is handled in some way to avoid regressing LLD builds u=
-ntil
-> >> > > it is resolved, I don't think there is anything else for the kerne=
-l to
-> >> > > do. We like to have breadcrumbs via issue links, not sure if the r=
-eport
-> >> > > will be internal to Google or on LLVM's issue tracker though;
-> >> > > regardless, we will have to touch this block to add a version chec=
-k
-> >> > > later, at which point we can add a link to the fix in LLD.
-> >> >
-> >> > https://github.com/ClangBuiltLinux/linux/issues/1881
-> >>
-> >> > From 3e5e010958ee41b9fb408cfade8fb017c2fe7169 Mon Sep 17 00:00:00 20=
-01
-> >> > From: Nick Desaulniers <ndesaulniers@google.com>
-> >> > Date: Fri, 23 Jun 2023 10:06:17 -0700
-> >> > Subject: [PATCH] riscv: disable HAVE_LD_DEAD_CODE_DATA_ELIMINATION f=
-or LLD
-> >> >
-> >> > Linking allyesconfig with ld.lld-17 with CONFIG_DEAD_CODE_ELIMINATIO=
-N=3Dy
-> >> > takes hours.  Assuming this is a performance regression that can be
-> >> > fixed, tentatively disable this for now so that allyesconfig builds
-> >> > don't start timing out.  If and when there's a fix to ld.lld, this c=
-an
-> >> > be converted to a version check instead so that users of older but s=
-till
-> >> > supported versions of ld.lld don't hurt themselves by enabling
-> >> > CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=3Dy.
-> >> >
-> >> > Link: https://github.com/ClangBuiltLinux/linux/issues/1881
-> >> > Reported-by: Palmer Dabbelt <palmer@dabbelt.com>
-> >> > Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> >> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> >> > ---
-> >> > Hi Jisheng, would you mind sending a v3 with this patch on top/at th=
-e
-> >> > end of your patch series?
-> >> >
-> >> >  arch/riscv/Kconfig | 3 ++-
-> >> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >> >
-> >> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> >> > index 8effe5bb7788..0573991e9b78 100644
-> >> > --- a/arch/riscv/Kconfig
-> >> > +++ b/arch/riscv/Kconfig
-> >> > @@ -116,7 +116,8 @@ config RISCV
-> >> >    select HAVE_KPROBES if !XIP_KERNEL
-> >> >    select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
-> >> >    select HAVE_KRETPROBES if !XIP_KERNEL
-> >> > -  select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-> >> > +  # https://github.com/ClangBuiltLinux/linux/issues/1881
-> >> > +  select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
-> >> >    select HAVE_MOVE_PMD
-> >> >    select HAVE_MOVE_PUD
-> >> >    select HAVE_PCI
-> >> > --
-> >> > 2.41.0.162.gfafddb0af9-goog
-> >> >
-> >>
->
+On Fri, 2023-07-21 at 13:38 -0600, Rob Herring wrote:
+> On Thu, Jul 20, 2023 at 10:14:31AM -0400, Rik van Riel wrote:
+> > The code calling ima_free_kexec_buffer runs long after the memblock
+> > allocator has already been torn down, potentially resulting in a
+> > use
+> > after free in memblock_isolate_range.
+> >=20
+> > With KASAN or KFENCE, this use after free will result in a BUG
+> > from the idle task, and a subsequent kernel panic.
+> >=20
+> > Switch ima_free_kexec_buffer over to memblock_free_late to avoid
+> > that issue.
+> >=20
+> > Fixes: fee3ff99bc67 ("powerpc: Move arch independent ima kexec
+> > functions to drivers/of/kexec.c")
+>=20
+> Fixes: b69a2afd5afc ("x86/kexec: Carry forward IMA measurement log on
+> kexec")
+>=20
+Thank you for digging further back in the history of that code.
 
+> Acked-by: Rob Herring <robh@kernel.org>
+>=20
+> (I'm assuming someone else is taking this)
+
+I hope so, but I don't know who...
 
 --=20
-=E5=AE=8B=E6=96=B9=E7=9D=BF
+All Rights Reversed.
+
+--=-arL+6ARjPI5tJ5FA86BZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmS7JYkACgkQznnekoTE
+3oNweggAoTeYhkK7Bv29fhN4TQ3HPkHD/lkY8tc+Kul8fw1jvDSGfWdYOj8oB1hb
+WyDd+U2i0hJvA4ox324sIHxhjx3+WfZgWwRVu8yTB13WjgM6Z+7LaBMvhbHGXq+W
+bihdg26uumxREuF8slsvxAnhVIC5ZRbfGXFnvTo7T3ufJ7xSHT82WF+2+Zp6S7gs
+9kMFRrnb1lafUBomKHm/g4iaFxDTYYxPt73aJzPEXBSDwkjuGiJpUoLKgH5X3u/o
+6WI1/2UMzJR+K3dCI1ps6pZSG++JfR64OZDvKKR/SqbOW2yhtCING16b4SbD3HjA
+GGvP+81Bg3iZdWZCdmhRsA5AZ3t0oA==
+=6DM6
+-----END PGP SIGNATURE-----
+
+--=-arL+6ARjPI5tJ5FA86BZ--
