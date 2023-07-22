@@ -2,81 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F0675D9F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 07:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1676F75D9FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 07:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbjGVFON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 01:14:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
+        id S231286AbjGVFOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 01:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjGVFOL (ORCPT
+        with ESMTP id S231164AbjGVFON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 01:14:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A4F19A2;
-        Fri, 21 Jul 2023 22:14:10 -0700 (PDT)
+        Sat, 22 Jul 2023 01:14:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D9819A2;
+        Fri, 21 Jul 2023 22:14:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D2F98609FA;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 717D5609FA;
+        Sat, 22 Jul 2023 05:14:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EB00C433AB;
         Sat, 22 Jul 2023 05:14:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 624E7C433C8;
-        Sat, 22 Jul 2023 05:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690002849;
-        bh=l2etnZvJ9/hffs2X1dtEQe8kxdMzW6IwoomkjJCKvgI=;
+        s=k20201202; t=1690002850;
+        bh=zwuVY35KmXlsvLhRJrYhNjF1Jegax3V9BNSVgAuUxUw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oRwMosP0cDm7zISdBQOn5gTODekBtT5qZz2mJEqGhRgUtMP6QjQQLpvyZYye9a8qw
-         JqpqPxO1QQ4A8REvqUaAFGBaPV5ae1A6m3KQWMWzrLHW4C3JPG6Woyijf5mbIRLuPs
-         DE77/Fp+akBc3kwP+1RHcDuTd1ovzKN4ikiOASfi6gXjdOn419XPdmMdHHompNMSQc
-         DyZ0StHl3a2SR5l4ZAK6ysqAo7GmX9lyd9VlS+K9GFCVLCcIbBETS5VFnbEn7AEezf
-         o4pB76MUH2ElP7ehWRMTYocFo3TxU54F26V1bZIcVPOHua6ipyWD6RwQG5rX9IV3e5
-         KoI3e2DF+X1uA==
+        b=ZHJBA29c8ML8y5t7uNsDoSuKCfIXRAadAeTjN4DZq7ERclxBYGikylPqqRnPDtiWf
+         6pcc8cLlSHSdOW5i2EAPRIoTpuwXZMCumOpwlzq+th7g3Shl/Al07a1Pky/PWAda5P
+         A0FZ33XAEIRQEu0cae15FNAgSm9dCR4qmGLdPkjVWjxVySGoV3lqf4sLgIjG4WEEZk
+         XesFkZ+hDyn7rtB58e81YSe51ulWbdU/o0cG1obCkQUmzYodoWUE1RCb6Wf1CjnYm0
+         DYibqQLNplUyT6H382K1ubVhVvD1HwoIaYkq+xd7wiPFMF71qb0qKTQ0K75uoYeRuM
+         V7+RlwBG+KWJA==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+To:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
         Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Benjamin Li <benl@squareup.com>,
-        James Willcox <jwillcox@squareup.com>,
-        Joseph Gates <jgates@squareup.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Zac Crosby <zac@squareup.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Lee Jones <lee@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Xu Yang <xu.yang_2@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Jun Nie <jun.nie@linaro.org>, Max Chen <mchen@squareup.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Luca Weiss <luca@z3ntu.xyz>, Vinod Koul <vkoul@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vincent Knecht <vincent.knecht@mailoo.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        alsa-devel@alsa-project.org, iommu@lists.linux.dev,
-        linux-usb@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, Rob Herring <robh@kernel.org>,
-        Andy Gross <andy.gross@linaro.org>
-Subject: Re: (subset) [PATCH 00/11] Even more msm bindings fixes
-Date:   Fri, 21 Jul 2023 22:17:08 -0700
-Message-ID: <169000304212.3611206.847521612980089108.b4-ty@kernel.org>
+        Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>
+Subject: Re: (subset) [PATCH 0/7] random msm bindings fixes
+Date:   Fri, 21 Jul 2023 22:17:09 -0700
+Message-ID: <169000304215.3611206.10740642676453482395.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
-References: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
+In-Reply-To: <20230626-topic-bindingsfixups-v1-0-254ae8642e69@linaro.org>
+References: <20230626-topic-bindingsfixups-v1-0-254ae8642e69@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -91,20 +73,14 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Tue, 27 Jun 2023 18:24:16 +0200, Konrad Dybcio wrote:
-> This series contains couple more random dt schema warning fixes, centered
-> around linux-msm.
+On Mon, 26 Jun 2023 22:00:22 +0200, Konrad Dybcio wrote:
 > 
-> All of the patches (except) the last two are pretty much independent.
-> Patch 1 is not only a bindings fix, but also a functional one.
-> 
-> 
-> [...]
+
 
 Applied, thanks!
 
-[09/11] dt-bindings: arm: msm: kpss-acc: Make the optional reg truly optional
-        commit: 981be238e1d28e156aa9da2a8722f86f02fd0453
+[1/7] dt-bindings: qcom: Allow SoC names ending in "pro"
+      commit: e40266d90545ef11f95832177faedf41eadcc453
 
 Best regards,
 -- 
