@@ -2,52 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5227375D9DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 06:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA5B75D9D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 06:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbjGVEvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 00:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50156 "EHLO
+        id S230395AbjGVEul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 00:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231316AbjGVEuZ (ORCPT
+        with ESMTP id S231207AbjGVEtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 00:50:25 -0400
+        Sat, 22 Jul 2023 00:49:51 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6717F49D6;
-        Fri, 21 Jul 2023 21:48:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA6246A2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 21:48:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7BCD560A66;
-        Sat, 22 Jul 2023 04:48:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC55BC433CA;
-        Sat, 22 Jul 2023 04:48:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D8B2760AEF
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 04:48:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CAF6C433C8;
+        Sat, 22 Jul 2023 04:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690001322;
-        bh=gIGxS34xwv5NpXZcfC9AaBQEdsBf6s43cS3YwnJ+Ftc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RS9DH271H+aEdQwyuVGvK4kBz0UmFUzuLF0i0tyWYK8sNzUm/C2aB5xhjLgBRPEYw
-         GlRZeb+ElAZz3MmOebTdETVntOdVEY8WqhV+wlwZFsNQzP/rotqnFb3dSv/cw/3nto
-         qPw9yrQ/+1puX6wKNRuBI5YQXrDBuDNJmiUWZu7LjzahUVog8shGKbGgnZ3sWo+307
-         A9wkSWHjiGr/vUCVxPEMI1FiIoNVIJhAnxnDJnhIDb+gRxkrzKYrAUJ+359uYRB7hI
-         pDu1PnRfolaa6HkMt595NRYyx3R86FpL+O/6klXOLKEL5FZao2xDBAuOgtP+mHlrL4
-         6SoVYLTU8aYkg==
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 19/19] kbuild: rpm-pkg: skip build dependency check on non-rpm systems
-Date:   Sat, 22 Jul 2023 13:48:06 +0900
-Message-Id: <20230722044806.3867434-19-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230722044806.3867434-1-masahiroy@kernel.org>
-References: <20230722044806.3867434-1-masahiroy@kernel.org>
+        s=k20201202; t=1690001318;
+        bh=3UrDfCU4Ssx2uq6WCXoWnIuFnW0aBDsC7jDFre9FjEc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=RiPWltHhsHeZJ0Gn6cSfj+2cb8lMw/zObP3RHjatyd3twrTp75mHF0hD70sDRZ69m
+         qiHCDShNMjDY0sbHebqyxzfrAnR6faUKNI30WRlzTmzbdKI2oZIPZFCiEwU4D6y/b7
+         AdTBEiiIXzimz4cj+LMbNf42nqE7tYgZL/0m9LdxvVtk8BHaU930wmOiR/xN4dawh1
+         NcerXHwI5tQQTdWXE05tSkTiVf7qrM/56dxEe5aNtVFwh0NHsoCovRJpU0n8WmaZMg
+         jK1/liRiW/kPopi5q2GqGyyHwJEGLMo4ncOqPiCEcOCpLfDltDzhAYqzXTcUBl+Bgk
+         j5saN/XamS3hg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D7909CE0347; Fri, 21 Jul 2023 21:48:37 -0700 (PDT)
+Date:   Fri, 21 Jul 2023 21:48:37 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Willy Tarreau <w@1wt.eu>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Upcoming nolibc pull request for the next merge window
+Message-ID: <2c54d017-226e-41c3-a767-a607942ecba5@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <7afafb6c-9664-44a1-bc8f-d20239db1dd5@paulmck-laptop>
+ <20230722130120.6e4c0eab@canb.auug.org.au>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230722130120.6e4c0eab@canb.auug.org.au>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -58,44 +63,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8818039f959b ("kbuild: add ability to make source rpm buildable
-using koji") added the BuildRequires: field.
+On Sat, Jul 22, 2023 at 01:01:20PM +1000, Stephen Rothwell wrote:
+> Hi Paul,
+> 
+> On Fri, 21 Jul 2023 10:39:48 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> >
+> > This is just to let you know that Willy and I are adding co-maintainers
+> > for nolibc.  Shuah Khan will join me as administrative maintainer,
+> > and will be sending the pull request to you for the next merge window.
+> > 
+> > Similarly, Thomas Weißschuh will be joining Willy as technical maintainer
+> > for nolibc.  With luck, this won't affect you, but in case you come across
+> > a nolibc issue, please reach out to Thomas as well as Willy, Shuah,
+> > and myself.  There will of course be an update to the MAINTAINERS file
+> > in the near future, but just to let you know in the meantime.
+> 
+> Would it make sense to add a separate nolibc branch to linux-next (and
+> no longer merge it into the rcu branch?  Or are there dependencies
+> between the two?
 
-Checking the build dependency is fine, but one annoyance is that
-'make (bin)rpm-pkg' fails on non-rpm systems [1]. For example, Debian
-provides rpmbuild via 'apt install rpm', but of course cannot meet the
-requirement listed in the BuildRequires: field.
+Dependencies between nolibc and RCU are extremely rare, so it might well
+make sense to have a separate branch.
 
-It is possible to pass RPMOPTS=--nodeps to work around it, but it is
-reasonable to do it automatically.
+Maybe nolibc/next from either the -rcu tree or Shuah's tree?  Shuah,
+would something else work better for you?
 
-If 'rpm -q rpm' fails, it is not an RPM-managed system. (The command
-'rpm' is not installed at all, or was installed by other means.)
-
-In that case, pass --nodeps to skip the build dependency check.
-
-[1]: https://lore.kernel.org/linux-kbuild/Y6mkdYQYmjUz7bqV@li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com/
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- scripts/Makefile.package | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/Makefile.package b/scripts/Makefile.package
-index 0ace3973a0d1..85beab0363d7 100644
---- a/scripts/Makefile.package
-+++ b/scripts/Makefile.package
-@@ -92,7 +92,8 @@ rpm-pkg srcrpm-pkg binrpm-pkg: kernel.spec
- 	+$(strip rpmbuild -b$(build-type) kernel.spec \
- 	--define='_topdir $(abspath rpmbuild)' \
- 	$(if $(filter a b, $(build-type)), \
--		--target $(UTS_MACHINE)-linux --build-in-place --noprep --define='_smp_mflags %{nil}') \
-+		--target $(UTS_MACHINE)-linux --build-in-place --noprep --define='_smp_mflags %{nil}' \
-+		$$(rpm -q rpm >/dev/null 2>&1 || echo --nodeps)) \
- 	$(if $(filter b, $(build-type)), \
- 		--without devel) \
- 	$(RPMOPTS))
--- 
-2.39.2
-
+							Thanx, Paul
