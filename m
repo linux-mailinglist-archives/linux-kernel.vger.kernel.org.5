@@ -2,104 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F6275DF44
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 01:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A926075DF53
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 01:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbjGVXP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 19:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
+        id S229713AbjGVX12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 19:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjGVXPU (ORCPT
+        with ESMTP id S229625AbjGVX10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 19:15:20 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926641708
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 16:15:17 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-76ad842d12fso245745785a.3
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 16:15:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1690067716; x=1690672516;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jqX+omN+4AV/jEW9gJWFZdBmlFQeDD8EFviSI3KwL+8=;
-        b=h4VGOvKMgez+/NKOawppSiHt7934PF71iQ7qv8jvSgyoGVHQdeSp1JgcRIsn2D88hx
-         g2qwPAuZJScjWF75Ou+qLGKjKOMoBD6KgtLtf0HDYfqszmZ+yCoggVBesEXvtWMjVL8g
-         JpUjuA4gJbUNFr73GuH0FlWZrgf5yI6+x2LMQdtPiA8g0Av/6cdf1+CYfjPWtybKpcP9
-         eVd7uPFytoOlTw5R5xKtG9M76QYaPDi/SS5XihMN3binOTlJbuopN24pguAFSUKmGTZV
-         KDBH4hbi0ALobtUZ6mlYQTvapei1p+n2u+rufzxhHrLS/TA6KLItQHUFRHlM6LpiyDgq
-         m73w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690067716; x=1690672516;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jqX+omN+4AV/jEW9gJWFZdBmlFQeDD8EFviSI3KwL+8=;
-        b=eLenBmQTUY3EHLJWA8o1sEZTyNYppcTihuAIeEjq3zMkQjUwNaCfOLvq8VC3DF6aKU
-         FHTnt+K1ToK39UE3zzFBzmHySNI/sM9XgwDzup+hxafgEa7TFcC82TxaSCzApEvVHSiq
-         tCZ1/+9mFcgMpmfQJ0I609Lrp4aKP3Tjj+B+0PjDM+4qdlmzdogxaDnM57J1asxv9s5G
-         cOIqGDc0MYRh4HfrwJ8hGX0+XKsyXA4cnX8Oq5hHE+aOHhMS8ZC0kJd5zeMSP5pVepiS
-         9yWbH9oCmMsu3y8V57NtW8dSF3qWuzDPp8gjLECRQdnm9hBad2K/xAsoNEHAPE7toB24
-         cvOg==
-X-Gm-Message-State: ABy/qLY4a6WU46dqcASOd835b7GG1oE2P4N1Lc/cCC8uovMtTqSpE2f+
-        CsnMq22/ymN2r6GhBxL7sdgNdA==
-X-Google-Smtp-Source: APBJJlFbRKGfdxJ0JTND8bD4QwfCFUoHWRvornko1ZnN1WHJ1NJtPHQPbc8oka0cm1metbm5E4tqEg==
-X-Received: by 2002:a05:620a:2807:b0:75b:23a0:e7e9 with SMTP id f7-20020a05620a280700b0075b23a0e7e9mr4800481qkp.74.1690067716634;
-        Sat, 22 Jul 2023 16:15:16 -0700 (PDT)
-Received: from soleen.c.googlers.com.com (193.132.150.34.bc.googleusercontent.com. [34.150.132.193])
-        by smtp.gmail.com with ESMTPSA id u21-20020ae9c015000000b007675c4b530fsm2075957qkk.28.2023.07.22.16.15.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 16:15:16 -0700 (PDT)
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, akpm@linux-foundation.org,
-        corbet@lwn.net, linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rick.p.edgecombe@intel.com
-Subject: [PATCH v2 3/3] mm/page_table_check: Check writable zero page in page table check
-Date:   Sat, 22 Jul 2023 23:15:08 +0000
-Message-ID: <20230722231508.1030269-4-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-In-Reply-To: <20230722231508.1030269-1-pasha.tatashin@soleen.com>
-References: <20230722231508.1030269-1-pasha.tatashin@soleen.com>
+        Sat, 22 Jul 2023 19:27:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E9A819A6;
+        Sat, 22 Jul 2023 16:27:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9B67A60BD8;
+        Sat, 22 Jul 2023 23:27:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88B7FC433C8;
+        Sat, 22 Jul 2023 23:27:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690068443;
+        bh=C5VTDtOqdmj6Bz6JgxfHCEKJHYyIn7v2H/pyJ1qHGCM=;
+        h=From:Date:Subject:To:Cc:From;
+        b=fumBeebR/fj9xdn8EzaaqJ9QKok8wxdstGCw6EiJin3k5PiQAkG2KkNz6Gz1Ds0LN
+         GDotCebW5AX3X2f+BFcvxqW1q1McAvTRUDK93mXtfZEIrLVfebrXeHyyjEb1ZyLFNv
+         uyYNrjOx1HH8Tpx1X62ur6o/H9HLwIVllLVbCd1EsZTQ6KrV09RJGrn38NucQtDdgn
+         5mdHBKFRU9R1009c0gEAMfbpcl0aQ+t7hhD1xcygkiiaAXMoP5zAnSR5rNtXKGFgKN
+         sWyuVPCRaJEvsu1UFB2vMYHFZIUDhb+AbpATIjlhnP429Ec8yeecDHpZcGQaDdrVNh
+         cp/5igG+AETrA==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Sun, 23 Jul 2023 00:26:54 +0100
+Subject: [PATCH] thermal/of: Fix double free of params during
+ unregistration
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230723-thermal-fix-of-memory-corruption-v1-1-ed4fa16d199d@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAL1lvGQC/x2N0QqDMAxFf0XybKBG0LFfGT64mtrAaiV1YyL+u
+ 8HHA+eee0BhFS7wrA5Q/kmRvBg0dQU+jsvMKJMxkKPW9US4RdY0fjDIH3PAxCnrjj6rftfNxti
+ 33tzw6Bp6g2VWZXPvi9dwnheUwZCCcgAAAA==
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
+        Icenowy Zheng <uwu@icenowy.me>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-sunxi@lists.linux.dev, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org
+X-Mailer: b4 0.13-dev-099c9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2606; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=C5VTDtOqdmj6Bz6JgxfHCEKJHYyIn7v2H/pyJ1qHGCM=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkvGXVA478VBnEpmpTCC3lkhtcVWQsWgJ581sVm
+ 3BnS4HC/CyJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZLxl1QAKCRAk1otyXVSH
+ 0JDuB/9a/lDjye3WC1siBtiAlqrJwcRmcgSVvUyChe5ZEPX/NPDNQV2sE4Y/pEBW9r7bEfVgWug
+ tqEcqEuB5WtxrvMT6cCbg3BEFKMjy+JCJFExYChP5N6bJMwqicSzBsfF0YDBC5Th4H6pGTLP9u8
+ ZHlsg4d/3wYEVC/quGwLSSWgn3CulLd/rFDMzIMkYCc5y6XOChONE8A6Su5Bl+G03bQbY7AIEdL
+ NS9IMolnTV9NYXaJImgQhjn1AhNHrCbosXp5PNQ6ya6ZK7B0OMWOB4Tee6EGDjJRuegJLqa4GhQ
+ pu96tBHNv4NrjuxjnhnBtIPamTSl7r0Yh03594DCXVyhBFVf
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Unlike the other data structures provided during registration the
+thermal core takes a copy of the thermal_zone_params provided to it and
+stores that copy in the thermal_zone_device, taking care to free it on
+unregistration.  This is done because the parameters will be modified at
+runtime.
 
-The zero page should remain all zero, so that it can be mapped as
-read-only for read faults of memory that should be zeroed. If it is ever
-mapped writable to userspace, it could become non-zero and so other apps
-would unexpectedly get non-zero data. So the zero page should never be
-mapped writable to userspace. Check for this condition in
-page_table_check_set().
+Unfortunately the thermal_of code assumes that the params structure it
+provides will be used throughout the lifetime of the device and since
+the params are dynamically allocated based on the bindings it attempts
+to free it on unregistration.  This results in not only leaking the
+original params but also double freeing the copy the core made, leading
+to memory corruption.
 
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Fix this by instead freeing the params parsed from the DT during
+registration.
+
+This issue causing instability on systems where thermal zones are
+unregistered, especially visble on those systems where some zones
+provided by a device have no trip points such as Allwinner systems.
+For example with current mainline an arm64 defconfig is unbootable on
+Pine64 Plus and LibreTech Tritium is massively unstable.  These issues
+have been there for a while and have been made more prominent by recent
+memory management changes.
+
+Fixes: 3fd6d6e2b4e80 ("thermal/of: Rework the thermal device tree initialization")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- mm/page_table_check.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/thermal/thermal_of.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/mm/page_table_check.c b/mm/page_table_check.c
-index ad4447e999f8..db1ed36f7203 100644
---- a/mm/page_table_check.c
-+++ b/mm/page_table_check.c
-@@ -114,6 +114,8 @@ static void page_table_check_set(struct mm_struct *mm, unsigned long addr,
- 	if (!pfn_valid(pfn))
- 		return;
+diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+index 6fb14e521197..0af11cdfa2c1 100644
+--- a/drivers/thermal/thermal_of.c
++++ b/drivers/thermal/thermal_of.c
+@@ -442,13 +442,11 @@ static int thermal_of_unbind(struct thermal_zone_device *tz,
+ static void thermal_of_zone_unregister(struct thermal_zone_device *tz)
+ {
+ 	struct thermal_trip *trips = tz->trips;
+-	struct thermal_zone_params *tzp = tz->tzp;
+ 	struct thermal_zone_device_ops *ops = tz->ops;
  
-+	PAGE_TABLE_CHECK_WARN(is_zero_pfn(pfn) && rw);
+ 	thermal_zone_device_disable(tz);
+ 	thermal_zone_device_unregister(tz);
+ 	kfree(trips);
+-	kfree(tzp);
+ 	kfree(ops);
+ }
+ 
+@@ -530,6 +528,9 @@ static struct thermal_zone_device *thermal_of_zone_register(struct device_node *
+ 		goto out_kfree_tzp;
+ 	}
+ 
++	/* The core will take a copy of tzp, free our copy here. */
++	kfree(tzp);
 +
- 	page = pfn_to_page(pfn);
- 	page_ext = page_ext_get(page);
- 
+ 	ret = thermal_zone_device_enable(tz);
+ 	if (ret) {
+ 		pr_err("Failed to enabled thermal zone '%s', id=%d: %d\n",
+
+---
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
+change-id: 20230722-thermal-fix-of-memory-corruption-73c023f8612b
+
+Best regards,
 -- 
-2.41.0.487.g6d72f3e995-goog
+Mark Brown <broonie@kernel.org>
 
