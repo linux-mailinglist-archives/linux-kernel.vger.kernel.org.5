@@ -2,164 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D50F975DA8C
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 09:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67ACC75DA96
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 09:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbjGVHFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 03:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
+        id S230110AbjGVHWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 03:22:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjGVHFM (ORCPT
+        with ESMTP id S229684AbjGVHWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 03:05:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9001635A1
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 00:05:11 -0700 (PDT)
+        Sat, 22 Jul 2023 03:22:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C509B
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 00:22:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2252560A77
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:05:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9DD6C433C8;
-        Sat, 22 Jul 2023 07:05:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690009510;
-        bh=4Jb4Cg+dWbYRID2Lg5Gvj8jeSy+YZqmSa/1jEqqwL40=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Shb1jczFIibxGcSa/6yY5b0bFTQRdHwoSVO3f5cSDCx+siFotwfB4ALFBuRq8jfej
-         UHB66OstXwAfYKICFPzjKBPO0EB3Qe9BtUKHQ7tJmPdL1LS0O27EOD3JXBjUJs9tq/
-         R5NFxSPIcoAeCtiE2y7UjA4bW9VQN7uyoGz3ZjyPy1du6hXuUJ7TLMEQvG9sQrrz5o
-         S2+813KKV2xjPKmdqgkjDPOvVxc7NE8J1fxuv0xSxyYWnZO8fafzgwHajs5dp4dnQ9
-         eR0A537WzzXajxzn/3cYZfF2YlkLqIrBP3EAGdOyd/q7O2rKBP9L98r6vhKFedrxkg
-         zZpJ9B83/na0w==
-Date:   Sat, 22 Jul 2023 15:05:04 +0800
-From:   Gao Xiang <xiang@kernel.org>
-To:     Jingbo Xu <jefflexu@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] erofs: boost negative xattr lookup with bloom
- filter
-Message-ID: <ZLt/oJWa4MoE4F25@debian>
-Mail-Followup-To: Jingbo Xu <jefflexu@linux.alibaba.com>,
-        linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20230721104923.20236-1-jefflexu@linux.alibaba.com>
- <20230721104923.20236-3-jefflexu@linux.alibaba.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 374C460BA9
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:22:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61F2AC433C7;
+        Sat, 22 Jul 2023 07:22:10 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, Xuefeng Li <lixuefeng@loongson.cn>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH] LoongArch: Allow usage of LSX/LASX in the kernel
+Date:   Sat, 22 Jul 2023 15:22:01 +0800
+Message-Id: <20230722072201.2677516-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230721104923.20236-3-jefflexu@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 06:49:23PM +0800, Jingbo Xu wrote:
-> Optimise the negative xattr lookup with bloom filter.
-> 
-> The bit value for the bloom filter map has a reverse semantics for
-> compatibility.  That is, the bit value of 0 indicates existence, while
-> the bit value of 1 indicates the absence of corresponding xattr.
-> 
-> The initial version is _only_ enabled when xattr_filter_reserved is
-> zero.  The filter map internals may change in the future, in which case
-> the reserved flag will be set non-zero and we don't need bothering the
-> compatible bits again at that time.  For now disable the optimization if
-> this reserved flag is non-zero.
-> 
-> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
-> ---
->  fs/erofs/Kconfig    |  1 +
->  fs/erofs/internal.h |  3 +++
->  fs/erofs/super.c    |  1 +
->  fs/erofs/xattr.c    | 14 ++++++++++++++
->  4 files changed, 19 insertions(+)
-> 
-> diff --git a/fs/erofs/Kconfig b/fs/erofs/Kconfig
-> index f259d92c9720..f49669def828 100644
-> --- a/fs/erofs/Kconfig
-> +++ b/fs/erofs/Kconfig
-> @@ -38,6 +38,7 @@ config EROFS_FS_DEBUG
->  config EROFS_FS_XATTR
->  	bool "EROFS extended attributes"
->  	depends on EROFS_FS
-> +	select XXHASH
->  	default y
->  	help
->  	  Extended attributes are name:value pairs associated with inodes by
-> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-> index 36e32fa542f0..3c1f89d8421b 100644
-> --- a/fs/erofs/internal.h
-> +++ b/fs/erofs/internal.h
-> @@ -151,6 +151,7 @@ struct erofs_sb_info {
->  	u32 xattr_prefix_start;
->  	u8 xattr_prefix_count;
->  	struct erofs_xattr_prefix_item *xattr_prefixes;
-> +	unsigned int xattr_filter_reserved;
->  #endif
->  	u16 device_id_mask;	/* valid bits of device id to be used */
->  
-> @@ -251,6 +252,7 @@ EROFS_FEATURE_FUNCS(fragments, incompat, INCOMPAT_FRAGMENTS)
->  EROFS_FEATURE_FUNCS(dedupe, incompat, INCOMPAT_DEDUPE)
->  EROFS_FEATURE_FUNCS(xattr_prefixes, incompat, INCOMPAT_XATTR_PREFIXES)
->  EROFS_FEATURE_FUNCS(sb_chksum, compat, COMPAT_SB_CHKSUM)
-> +EROFS_FEATURE_FUNCS(xattr_filter, compat, COMPAT_XATTR_FILTER)
->  
->  /* atomic flag definitions */
->  #define EROFS_I_EA_INITED_BIT	0
-> @@ -270,6 +272,7 @@ struct erofs_inode {
->  	unsigned char inode_isize;
->  	unsigned int xattr_isize;
->  
-> +	unsigned int xattr_name_filter;
->  	unsigned int xattr_shared_count;
->  	unsigned int *xattr_shared_xattrs;
->  
-> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-> index 9d6a3c6158bd..72122323300e 100644
-> --- a/fs/erofs/super.c
-> +++ b/fs/erofs/super.c
-> @@ -388,6 +388,7 @@ static int erofs_read_superblock(struct super_block *sb)
->  	sbi->xattr_blkaddr = le32_to_cpu(dsb->xattr_blkaddr);
->  	sbi->xattr_prefix_start = le32_to_cpu(dsb->xattr_prefix_start);
->  	sbi->xattr_prefix_count = dsb->xattr_prefix_count;
-> +	sbi->xattr_filter_reserved = dsb->xattr_filter_reserved;
->  #endif
->  	sbi->islotbits = ilog2(sizeof(struct erofs_inode_compact));
->  	sbi->root_nid = le16_to_cpu(dsb->root_nid);
-> diff --git a/fs/erofs/xattr.c b/fs/erofs/xattr.c
-> index 40178b6e0688..e9b9ed6b28d2 100644
-> --- a/fs/erofs/xattr.c
-> +++ b/fs/erofs/xattr.c
-> @@ -5,6 +5,7 @@
->   * Copyright (C) 2021-2022, Alibaba Cloud
->   */
->  #include <linux/security.h>
-> +#include <linux/xxhash.h>
->  #include "xattr.h"
->  
->  struct erofs_xattr_iter {
-> @@ -87,6 +88,7 @@ static int erofs_init_inode_xattrs(struct inode *inode)
->  	}
->  
->  	ih = it.kaddr + erofs_blkoff(sb, it.pos);
-> +	vi->xattr_name_filter = le32_to_cpu(ih->h_name_filter);
->  	vi->xattr_shared_count = ih->h_shared_count;
->  	vi->xattr_shared_xattrs = kmalloc_array(vi->xattr_shared_count,
->  						sizeof(uint), GFP_KERNEL);
-> @@ -392,7 +394,10 @@ int erofs_getxattr(struct inode *inode, int index, const char *name,
->  		   void *buffer, size_t buffer_size)
->  {
->  	int ret;
-> +	uint32_t hashbit;
+Allow usage of LSX/LASX in the kernel by extending kernel_fpu_begin()
+and kernel_fpu_end().
 
-Why using `uint32_t` here rather than `unsigned int`? We don't use
-`uint32_t` in the kernel codebase.
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+ arch/loongarch/kernel/kfpu.c | 55 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 51 insertions(+), 4 deletions(-)
 
-Thanks,
-Gao Xiang
+diff --git a/arch/loongarch/kernel/kfpu.c b/arch/loongarch/kernel/kfpu.c
+index 5c46ae8c6cac..ec5b28e570c9 100644
+--- a/arch/loongarch/kernel/kfpu.c
++++ b/arch/loongarch/kernel/kfpu.c
+@@ -8,19 +8,40 @@
+ #include <asm/fpu.h>
+ #include <asm/smp.h>
+ 
++static unsigned int euen_mask = CSR_EUEN_FPEN;
++
++/*
++ * The critical section between kernel_fpu_begin() and kernel_fpu_end()
++ * is non-reentrant. It is the caller's responsibility to avoid reentrance.
++ * See drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c as an example.
++ */
+ static DEFINE_PER_CPU(bool, in_kernel_fpu);
++static DEFINE_PER_CPU(unsigned int, euen_current);
+ 
+ void kernel_fpu_begin(void)
+ {
++	unsigned int *euen_curr;
++
+ 	preempt_disable();
+ 
+ 	WARN_ON(this_cpu_read(in_kernel_fpu));
+ 
+ 	this_cpu_write(in_kernel_fpu, true);
++	euen_curr = this_cpu_ptr(&euen_current);
+ 
+-	if (!is_fpu_owner())
+-		enable_fpu();
++	*euen_curr = csr_xchg32(euen_mask, euen_mask, LOONGARCH_CSR_EUEN);
++
++#ifdef CONFIG_CPU_HAS_LASX
++	if (*euen_curr & CSR_EUEN_LASXEN)
++		_save_lasx(&current->thread.fpu);
++	else
++#endif
++#ifdef CONFIG_CPU_HAS_LSX
++	if (*euen_curr & CSR_EUEN_LSXEN)
++		_save_lsx(&current->thread.fpu);
+ 	else
++#endif
++	if (*euen_curr & CSR_EUEN_FPEN)
+ 		_save_fp(&current->thread.fpu);
+ 
+ 	write_fcsr(LOONGARCH_FCSR0, 0);
+@@ -29,15 +50,41 @@ EXPORT_SYMBOL_GPL(kernel_fpu_begin);
+ 
+ void kernel_fpu_end(void)
+ {
++	unsigned int *euen_curr;
++
+ 	WARN_ON(!this_cpu_read(in_kernel_fpu));
+ 
+-	if (!is_fpu_owner())
+-		disable_fpu();
++	euen_curr = this_cpu_ptr(&euen_current);
++
++#ifdef CONFIG_CPU_HAS_LASX
++	if (*euen_curr & CSR_EUEN_LASXEN)
++		_restore_lasx(&current->thread.fpu);
+ 	else
++#endif
++#ifdef CONFIG_CPU_HAS_LSX
++	if (*euen_curr & CSR_EUEN_LSXEN)
++		_restore_lsx(&current->thread.fpu);
++	else
++#endif
++	if (*euen_curr & CSR_EUEN_FPEN)
+ 		_restore_fp(&current->thread.fpu);
+ 
++	*euen_curr = csr_xchg32(*euen_curr, euen_mask, LOONGARCH_CSR_EUEN);
++
+ 	this_cpu_write(in_kernel_fpu, false);
+ 
+ 	preempt_enable();
+ }
+ EXPORT_SYMBOL_GPL(kernel_fpu_end);
++
++static int __init init_euen_mask(void)
++{
++	if (cpu_has_lsx)
++		euen_mask |= CSR_EUEN_LSXEN;
++
++	if (cpu_has_lasx)
++		euen_mask |= CSR_EUEN_LASXEN;
++
++	return 0;
++}
++arch_initcall(init_euen_mask);
+-- 
+2.39.3
 
