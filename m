@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4E375DAE0
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 09:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52D775DAE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 09:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbjGVHtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 03:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33090 "EHLO
+        id S231360AbjGVHwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 03:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbjGVHtP (ORCPT
+        with ESMTP id S231318AbjGVHwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 03:49:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BBA3C3D
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 00:48:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 941496010F
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:48:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A43DC433C8;
-        Sat, 22 Jul 2023 07:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690012082;
-        bh=6MQ29HDi9RobghOfq9ww6P1ehrV7jdzcjLwHNnWU8TY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Kj9zb2QV2XUlO6ArJk7Um1dVjnJix123wkWielmwHI1G12aNiMOftnyppaawHQ2Ev
-         9QihLXgFdtBBVHkdUPcfxtp1WVr9oya/sDbZZHbv5Kb0KTENPsRQoJpiK84Nf9JszY
-         aSsTkzZicl1F5DjvqaDwI9SkAjwEaPqXUptOLRt+EbkNT4pzyFXhdl5Cyn8e/gkXum
-         e76D0qNn7Zm3o1CUc/bhEHQtKDqPC4tV5gIUdbrXCZmma6fqI8R8SpEqaQeIK8ZVYJ
-         HoNqbHSk/r12c+HB/7bmVVjDFGFtClCwxaOpVGUlPJlPNz0x5ot1ozRxr9xlTQOSuh
-         fZztE9O4HIqIg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: force inc_active()/dec_active() to be inline functions
-Date:   Sat, 22 Jul 2023 09:47:44 +0200
-Message-Id: <20230722074753.568696-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Sat, 22 Jul 2023 03:52:18 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75EBBEB
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 00:52:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690012337; x=1721548337;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=HOxB/bC/5z1R9XKHy7Hkd/AI8/+npNRzYvMEv31iplM=;
+  b=fUJXFKtK3PXpz4rkDUB5/yr614e3MmFTieFzJFyoEOg3VgxVwGdM4PAP
+   xHRxn2Dy4o0JxQscUpOVvlr/TONJS1IwzyL7KEp8W7edj3HBD/k09OTNx
+   p0EC7cFvvHYeWQQOuUP8c5DIgVhoK9HazB+k/vCVFrfmkLeqjoMBwJW1h
+   R+ecjQs3APgnNRzDvWY1KiI1ZCuIpBEESMGsNKizM1JXI59Jjj4iBOotj
+   UEavmzXSqTu98482fuE86sDIphULozgmATnPVhE1uL4VpkJlIdwym7UmJ
+   NwOuKw/BID5smuY2s8oYJQCZXvbje6pAzgBXBKPqlJF7cf32bpni0sko3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="346776822"
+X-IronPort-AV: E=Sophos;i="6.01,224,1684825200"; 
+   d="scan'208";a="346776822"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2023 00:52:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="838819098"
+X-IronPort-AV: E=Sophos;i="6.01,224,1684825200"; 
+   d="scan'208";a="838819098"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 22 Jul 2023 00:52:15 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qN7PS-00088v-1R;
+        Sat, 22 Jul 2023 07:52:14 +0000
+Date:   Sat, 22 Jul 2023 15:51:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yangtao Li <frank.li@vivo.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>, Chao Yu <chao@kernel.org>
+Subject: fs/f2fs/gc.c:744:5: warning: stack frame size (1664) exceeds limit
+ (1024) in 'f2fs_get_victim'
+Message-ID: <202307221502.ZgVupGd4-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,49 +64,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Yangtao,
 
-Splitting these out into separate helper functions means that we
-actually pass an uninitialized variable into another function call
-if dec_active() happens to not be inlined, and CONFIG_PREEMPT_RT
-is disabled:
+FYI, the error/warning still remains.
 
-kernel/bpf/memalloc.c: In function 'add_obj_to_free_list':
-kernel/bpf/memalloc.c:200:9: error: 'flags' is used uninitialized [-Werror=uninitialized]
-  200 |         dec_active(c, flags);
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   d192f5382581d972c4ae1b4d72e0b59b34cadeb9
+commit: 19e0e21a51183d4e0784602f27e4db7b965077be f2fs: remove struct victim_selection default_v_ops
+date:   3 months ago
+config: riscv-randconfig-r022-20230722 (https://download.01.org/0day-ci/archive/20230722/202307221502.ZgVupGd4-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce: (https://download.01.org/0day-ci/archive/20230722/202307221502.ZgVupGd4-lkp@intel.com/reproduce)
 
-Mark the two functions as __always_inline so gcc can see through
-this regardless of optimizations and other options that may
-prevent it otherwise.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307221502.ZgVupGd4-lkp@intel.com/
 
-Fixes: 18e027b1c7c6d ("bpf: Factor out inc/dec of active flag into helpers.")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- kernel/bpf/memalloc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+All warnings (new ones prefixed by >>):
 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 51d6389e5152e..23906325298da 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -165,7 +165,7 @@ static struct mem_cgroup *get_memcg(const struct bpf_mem_cache *c)
- #endif
- }
- 
--static void inc_active(struct bpf_mem_cache *c, unsigned long *flags)
-+static __always_inline void inc_active(struct bpf_mem_cache *c, unsigned long *flags)
- {
- 	if (IS_ENABLED(CONFIG_PREEMPT_RT))
- 		/* In RT irq_work runs in per-cpu kthread, so disable
-@@ -183,7 +183,7 @@ static void inc_active(struct bpf_mem_cache *c, unsigned long *flags)
- 	WARN_ON_ONCE(local_inc_return(&c->active) != 1);
- }
- 
--static void dec_active(struct bpf_mem_cache *c, unsigned long flags)
-+static __always_inline void dec_active(struct bpf_mem_cache *c, unsigned long flags)
- {
- 	local_dec(&c->active);
- 	if (IS_ENABLED(CONFIG_PREEMPT_RT))
+>> fs/f2fs/gc.c:744:5: warning: stack frame size (1664) exceeds limit (1024) in 'f2fs_get_victim' [-Wframe-larger-than]
+   int f2fs_get_victim(struct f2fs_sb_info *sbi, unsigned int *result,
+       ^
+   fs/f2fs/gc.c:1675:12: warning: stack frame size (1104) exceeds limit (1024) in 'do_garbage_collect' [-Wframe-larger-than]
+   static int do_garbage_collect(struct f2fs_sb_info *sbi,
+              ^
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   error: A dwo section may not contain relocations
+   fatal error: too many errors emitted, stopping now [-ferror-limit=]
+   2 warnings and 20 errors generated.
+
+
+vim +/f2fs_get_victim +744 fs/f2fs/gc.c
+
+   735	
+   736	/*
+   737	 * This function is called from two paths.
+   738	 * One is garbage collection and the other is SSR segment selection.
+   739	 * When it is called during GC, it just gets a victim segment
+   740	 * and it does not remove it from dirty seglist.
+   741	 * When it is called from SSR segment selection, it finds a segment
+   742	 * which has minimum valid blocks and removes it from dirty seglist.
+   743	 */
+ > 744	int f2fs_get_victim(struct f2fs_sb_info *sbi, unsigned int *result,
+   745				int gc_type, int type, char alloc_mode,
+   746				unsigned long long age)
+   747	{
+   748		struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
+   749		struct sit_info *sm = SIT_I(sbi);
+   750		struct victim_sel_policy p;
+   751		unsigned int secno, last_victim;
+   752		unsigned int last_segment;
+   753		unsigned int nsearched;
+   754		bool is_atgc;
+   755		int ret = 0;
+   756	
+   757		mutex_lock(&dirty_i->seglist_lock);
+   758		last_segment = MAIN_SECS(sbi) * sbi->segs_per_sec;
+   759	
+   760		p.alloc_mode = alloc_mode;
+   761		p.age = age;
+   762		p.age_threshold = sbi->am.age_threshold;
+   763	
+   764	retry:
+   765		select_policy(sbi, gc_type, type, &p);
+   766		p.min_segno = NULL_SEGNO;
+   767		p.oldest_age = 0;
+   768		p.min_cost = get_max_cost(sbi, &p);
+   769	
+   770		is_atgc = (p.gc_mode == GC_AT || p.alloc_mode == AT_SSR);
+   771		nsearched = 0;
+   772	
+   773		if (is_atgc)
+   774			SIT_I(sbi)->dirty_min_mtime = ULLONG_MAX;
+   775	
+   776		if (*result != NULL_SEGNO) {
+   777			if (!get_valid_blocks(sbi, *result, false)) {
+   778				ret = -ENODATA;
+   779				goto out;
+   780			}
+   781	
+   782			if (sec_usage_check(sbi, GET_SEC_FROM_SEG(sbi, *result)))
+   783				ret = -EBUSY;
+   784			else
+   785				p.min_segno = *result;
+   786			goto out;
+   787		}
+   788	
+   789		ret = -ENODATA;
+   790		if (p.max_search == 0)
+   791			goto out;
+   792	
+   793		if (__is_large_section(sbi) && p.alloc_mode == LFS) {
+   794			if (sbi->next_victim_seg[BG_GC] != NULL_SEGNO) {
+   795				p.min_segno = sbi->next_victim_seg[BG_GC];
+   796				*result = p.min_segno;
+   797				sbi->next_victim_seg[BG_GC] = NULL_SEGNO;
+   798				goto got_result;
+   799			}
+   800			if (gc_type == FG_GC &&
+   801					sbi->next_victim_seg[FG_GC] != NULL_SEGNO) {
+   802				p.min_segno = sbi->next_victim_seg[FG_GC];
+   803				*result = p.min_segno;
+   804				sbi->next_victim_seg[FG_GC] = NULL_SEGNO;
+   805				goto got_result;
+   806			}
+   807		}
+   808	
+   809		last_victim = sm->last_victim[p.gc_mode];
+   810		if (p.alloc_mode == LFS && gc_type == FG_GC) {
+   811			p.min_segno = check_bg_victims(sbi);
+   812			if (p.min_segno != NULL_SEGNO)
+   813				goto got_it;
+   814		}
+   815	
+   816		while (1) {
+   817			unsigned long cost, *dirty_bitmap;
+   818			unsigned int unit_no, segno;
+   819	
+   820			dirty_bitmap = p.dirty_bitmap;
+   821			unit_no = find_next_bit(dirty_bitmap,
+   822					last_segment / p.ofs_unit,
+   823					p.offset / p.ofs_unit);
+   824			segno = unit_no * p.ofs_unit;
+   825			if (segno >= last_segment) {
+   826				if (sm->last_victim[p.gc_mode]) {
+   827					last_segment =
+   828						sm->last_victim[p.gc_mode];
+   829					sm->last_victim[p.gc_mode] = 0;
+   830					p.offset = 0;
+   831					continue;
+   832				}
+   833				break;
+   834			}
+   835	
+   836			p.offset = segno + p.ofs_unit;
+   837			nsearched++;
+   838	
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
