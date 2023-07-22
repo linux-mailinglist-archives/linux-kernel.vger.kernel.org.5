@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC2C75DCE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 16:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5798575DCE7
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 16:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbjGVOTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 10:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
+        id S229821AbjGVOYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 10:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjGVOTi (ORCPT
+        with ESMTP id S229477AbjGVOYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 10:19:38 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69482709;
-        Sat, 22 Jul 2023 07:19:37 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b703cbfaf5so41883231fa.1;
-        Sat, 22 Jul 2023 07:19:37 -0700 (PDT)
+        Sat, 22 Jul 2023 10:24:06 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6812709
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:24:05 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fb73ba3b5dso4510140e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:24:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690035576; x=1690640376;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cj7Am9y7Ub1W147cRpCDox5jRFGPz/3xm9Zj5ypIhV4=;
-        b=FgbBkhrbb6/jRw2JfVhRhA6ZHxpJ00oIhBqj8Uizt7l1/HZk1+tLekUphlt97EHvmE
-         PoQKWBhXXPzjrQ1/hJ9040j/tgo6pbRstMynfpJFHSvDU8HcmCI06w7iN4zpMyV0L/8G
-         LIJteBlgAwQwCzpN36DVOMenx2AhExqe2lxVNPI0/XC67/feKivLfKRwHo7wT3NsYSHs
-         oKgNVfijaeCuSZqdsTe5t6ZgRGQDknvmzguaz58H4Wmc4Sc8OO0yBiZoV2eZBxm/X7FS
-         YdY/wjjYg6GUEhzojiPmtGKm8vMK5uVo0J3plISXSm169bHizaHMthIJ73hVNm7oG8F3
-         GORQ==
+        d=gmail.com; s=20221208; t=1690035844; x=1690640644;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HEMPNWlfZvC+ZaudeklsqNdBgq4KJbNHXO/19SnqXeY=;
+        b=CX/YDMFJYKOCdP4a3Jzb9GeKS39qNoJnsb4Yyu9v6qEQLAaJVlyX1SWqDSTcUpt2ZK
+         BZiZ+JKrNwJMX6vMEtpH8VemfrDrdfqabCOy44aT/eYluzqB6j1XE1BlCtP9sb+C+lg5
+         jz8rmNydDqQwl6KIMCmZ6Y5ybbi+hhbq9GSygv3C4631CpO11YKRdVHrP9bJ9AN9hDrn
+         rWJq32dZzLxFmfOLBTv2GDs2iwS5s2QB6D05rnSowXcgvca2gpAqGPyK2+TSnAeZucpl
+         Y1mQVCR0WJiaomYBurfmWNz1WKzEpijS0NC1ICVMY/qfgp02mGbU8oDqh8+gln3VgBb8
+         0eYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690035576; x=1690640376;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cj7Am9y7Ub1W147cRpCDox5jRFGPz/3xm9Zj5ypIhV4=;
-        b=DpAWi6pMP5CDRdGzfXEAGk2MgxKagP0LkycmZMvqcBJjy5lHm0R5wWjlNhqQGWCGJ8
-         L+FWQieuEedPRDTQQBRAVx0Nt/boNPg/DXRRpSg1Cd4EdJe16BHJEcjrKH/N6XisH1Ih
-         ZqgmNFtnlHTCkP8xvZGKUKoIU28z15/bD47eO+xrQSlxiFpiWYgqlosge8pdCK15IZKc
-         2ai8P0AFtG929nF99q13yDAgXv4FRFqEIGX0zVm7y0RBMRjYKQDihiYfT2TD1AALVKtI
-         iAmwponHeVQjk5BdhAcw5mzy9VuqqkM9Is321E4BGVJD+sDuX3tGsANP2lgnAX44L8Fq
-         5fVg==
-X-Gm-Message-State: ABy/qLbq3y3VK7s7mpyugV5zhVXa6O2I7M05+uFVPdheM6LaacGwbWdT
-        fHTbI23czmbTmUP4lhyIvnJRXqDyhSaaNeKznhZ6C8gJ
-X-Google-Smtp-Source: APBJJlE6cLw63WGQBPm5k6xt4dM/k8TPLxHhACie+tWizqLN2a/ompqsLyQ6v/MFlSvm22rScmbflCb/xpy4FezOiqw=
-X-Received: by 2002:a2e:7205:0:b0:2b9:383b:89fc with SMTP id
- n5-20020a2e7205000000b002b9383b89fcmr3211936ljc.0.1690035575499; Sat, 22 Jul
- 2023 07:19:35 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690035844; x=1690640644;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HEMPNWlfZvC+ZaudeklsqNdBgq4KJbNHXO/19SnqXeY=;
+        b=AWydWjEGPIHxbFzfQZaJsn1KlmxNYsSCsr+pZCJbumPFXLuUqsopnHkulS+dJkYbc/
+         19ZFm0tSrRvlL2amPpz8859wCE0QbE1MGOxu6jAN2Dc9MHYtof2F35M+nDlkR4mrXQKw
+         6GYs1G1N6CTjxUTKJFViKEg7zD2PjzysBm27Vj7an2hKkgOoQ/zVseKkpAAGHJ9344EQ
+         izsRe2Xs9xEeBj1By30Nxw7PO5ThvHZ+ZEPATHZd1APa3hr5HBdc4AqkBW/5QICaU4d0
+         k2jkFXyzK50CTYaNRVVyG9+6M35f20CHeojQ4vaaMQYjJ0lkWzR5+XDSVOPV9OBI4We6
+         5AoQ==
+X-Gm-Message-State: ABy/qLZjIDHRjJbeaoW2qoz5eN/llidxDTtM/FUt+gXJ1S1hFMZ1Xd4I
+        EP1FiD/bhLPzCgUGZOlM2EhHFEgts3ENfi+GON0=
+X-Google-Smtp-Source: APBJJlE6gDQMTodJm2ZziRpUo9Zx+TWL5mbtIxZ430omJ/panegE+Km6XqOQdW5hkmyT8FwWCoNnNQ==
+X-Received: by 2002:a19:770a:0:b0:4f5:a181:97b8 with SMTP id s10-20020a19770a000000b004f5a18197b8mr2658409lfc.25.1690035843438;
+        Sat, 22 Jul 2023 07:24:03 -0700 (PDT)
+Received: from halip-Pc.42.fr ([93.188.41.70])
+        by smtp.gmail.com with ESMTPSA id v10-20020a056512048a00b004fb86c89fa1sm1213642lfq.135.2023.07.22.07.24.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Jul 2023 07:24:03 -0700 (PDT)
+From:   Aleksei Filippov <halip0503@gmail.com>
+To:     shaggy@kernel.org, gregkh@linuxfoundation.org
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexei Filippov <halip0503@gmail.com>,
+        syzbot+5f088f29593e6b4c8db8@syzkaller.appspotmail.com
+Subject: [PATCH] jfs: validate max amount of blocks before allocation.
+Date:   Sat, 22 Jul 2023 17:24:01 +0300
+Message-Id: <20230722142401.71257-1-halip0503@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Sat, 22 Jul 2023 09:19:24 -0500
-Message-ID: <CAH2r5msCqEDv1mUMMVTg8t7K+CO82Ha_xQoYJ-FkQ9h83By5wA@mail.gmail.com>
-Subject: [GIT PULL] smb3 client minor debugging fix
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit fdf0eaf11452d72945af31804e2a1048ee1b574c:
+From: Alexei Filippov <halip0503@gmail.com>
 
-  Linux 6.5-rc2 (2023-07-16 15:10:37 -0700)
+The lack of checking bmp->db_max_freebud in extBalloc() can lead to
+shift out of bounds, so this patch prevents undefined behavior,
+because bmp->db_max_freebud == -1 only if there
+is no free space.
 
-are available in the Git repository at:
+Signed-off-by: Aleksei Filippov <halip0503@gmail.com>
+Reported-and-tested-by: syzbot+5f088f29593e6b4c8db8@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?id=01abadbd6ae6a08b1f1987aa61554c6b3ac19ff2
+---
+ fs/jfs/jfs_extent.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/6.5-rc2-smb3-client-fixes
+diff --git a/fs/jfs/jfs_extent.c b/fs/jfs/jfs_extent.c
+index ae99a7e232ee..a82751e6c47f 100644
+--- a/fs/jfs/jfs_extent.c
++++ b/fs/jfs/jfs_extent.c
+@@ -311,6 +311,11 @@ extBalloc(struct inode *ip, s64 hint, s64 * nblocks, s64 * blkno)
+ 	 * blocks in the map. in that case, we'll start off with the
+ 	 * maximum free.
+ 	 */
++
++	/* give up if no space left */
++	if (bmp->db_maxfreebud == -1)
++		return -ENOSPC;
++
+ 	max = (s64) 1 << bmp->db_maxfreebud;
+ 	if (*nblocks >= max && *nblocks > nbperpage)
+ 		nb = nblks = (max > nbperpage) ? max : nbperpage;
+-- 
+2.25.1
 
-for you to fetch changes up to ac0ce20fd8eaa9f5e193d138fbf1749c780928d0:
-
-  cifs: update internal module version number for cifs.ko (2023-07-20
-08:30:32 -0500)
-
-----------------------------------------------------------------
-add small debugging improvement
-- it is helpful for network debugging of smb3 problems to be able to
-use directory not just file (e.g. access to empty share)
-----------------------------------------------------------------
-Shyam Prasad N (1):
-      cifs: allow dumping keys for directories too
-
-Steve French (1):
-      cifs: update internal module version number for cifs.ko
-
- fs/smb/client/cifsfs.h |  2 +-
- fs/smb/client/ioctl.c  | 17 +++++++++++++----
- 2 files changed, 14 insertions(+), 5 deletions(-)
-
-
---
-Thanks,
-
-Steve
