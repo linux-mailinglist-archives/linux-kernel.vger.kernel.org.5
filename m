@@ -2,41 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3C975D93C
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 04:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E9775D946
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 04:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjGVCzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 22:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
+        id S230010AbjGVCz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 22:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjGVCzJ (ORCPT
+        with ESMTP id S230021AbjGVCz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 22:55:09 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2D41701;
-        Fri, 21 Jul 2023 19:55:08 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R79vR4kRWzHnhd;
-        Sat, 22 Jul 2023 10:52:35 +0800 (CST)
-Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
- (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 22 Jul
- 2023 10:55:05 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <rafael@kernel.org>, <lenb@kernel.org>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ACPI: Remove unsued extern declaration acpi_paddr_to_node()
-Date:   Sat, 22 Jul 2023 10:55:05 +0800
-Message-ID: <20230722025505.5052-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Fri, 21 Jul 2023 22:55:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AAD10E5;
+        Fri, 21 Jul 2023 19:55:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7D0A961DCA;
+        Sat, 22 Jul 2023 02:55:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34096C433C7;
+        Sat, 22 Jul 2023 02:55:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689994523;
+        bh=gVyAOpDYnIY9wjG1dKA++oAIaxdquYahQk+hSoMtifc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AUQPrvDWSmMsIjRk3cQpn8aL7IPa/rN8lScqE5nBslfiphjvfq8HtDcImlOKVyXTn
+         x436Y1mxahl9sI0JLnFKgE+Zg55QW/50QGYZI7J/9RbiLLUKRp8Pw8MVhWulwgvMau
+         git0Y1AjJoJeId9/ITgQiwPfPfUcBTqVboD6K221b9ON3skFctBzZ85YHtFEFO5DoX
+         Ur7RWG4i/T54dzCbKs4qidVRdmEWb1B0hRr7b6MRunbspzL1UFLqkjkIVKNmz8nG/f
+         vOM4Tl2/05j2LsuNMk//W/eo/qin6KLK56kUjzehTS8CfdFjpZbRVydaPJE20TW9RX
+         P6I+RgPevKSoA==
+Date:   Fri, 21 Jul 2023 19:58:42 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
+Cc:     agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/2] soc: qcom: rpmhpd: Use the newly created generic
+ RPMHPD bindings
+Message-ID: <4ghmbalxufhf4fmj2vtj32rgvygomnxih6vpxv2pbh66mxahqf@77kfeyf2yku2>
+References: <1689744162-9421-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1689744162-9421-3-git-send-email-quic_rohiagar@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1689744162-9421-3-git-send-email-quic_rohiagar@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -45,27 +59,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is never used since commit 1e3590e2e4a3 ("[PATCH] pgdat allocation for new node
-add (get node id by acpi)")
+On Wed, Jul 19, 2023 at 10:52:42AM +0530, Rohit Agarwal wrote:
+> Update the SoC SM8[2345]50 entries to use the new
+> generic RPMHPD bindings.
+> 
+> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- include/linux/acpi.h | 2 --
- 1 file changed, 2 deletions(-)
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
 
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 641dc4843987..58a0fdf68ca2 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -477,8 +477,6 @@ static inline int acpi_get_node(acpi_handle handle)
- 	return 0;
- }
- #endif
--extern int acpi_paddr_to_node(u64 start_addr, u64 size);
--
- extern int pnpacpi_disabled;
- 
- #define PXM_INVAL	(-1)
--- 
-2.34.1
-
+Regards,
+Bjorn
