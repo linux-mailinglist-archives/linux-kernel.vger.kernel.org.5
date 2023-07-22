@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B699875DCFB
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 16:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D037075DD0A
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 16:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbjGVOpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 10:45:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39114 "EHLO
+        id S229552AbjGVOy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 10:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjGVOpo (ORCPT
+        with ESMTP id S229990AbjGVOyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 10:45:44 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DDF9B;
-        Sat, 22 Jul 2023 07:45:43 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-635ddf49421so15943186d6.2;
-        Sat, 22 Jul 2023 07:45:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690037142; x=1690641942;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mqIzWQIELt1M29KP7P5oujEwHJFaetYOs/+klZpSQx4=;
-        b=RK8jwytlqDCMYR7DAgQlFOPgz7ZSUk9yowDalHVAkF1SqVZHI7iZ+KGKQ1yO2EqoI4
-         40U+i132HQbzSa8u/YHuXXLlkiIt4BfL1vukBpQmnnY84XgUQhZ+qNGv3zc3tu5xiSfC
-         2VwJphHgH72PCCSR51oP4D0/J4UytCvaE/JWAzJpE8RAXddUNFiEIDk1DG/KtMjym0R3
-         RhoP5njuk5nhyTVS9wE4+zgcetJQJ0SDJwerT22cHB9WNSw8SfsIVHwVhr4m3lOSsmHU
-         i125jBVVk1aTEge62OA+pCkOw8jQQTKnF2q/eH3meyfBFDn3KrLIp/WDvSvMd7NglqP/
-         vF4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690037142; x=1690641942;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mqIzWQIELt1M29KP7P5oujEwHJFaetYOs/+klZpSQx4=;
-        b=EE3YDWwog1/s0XKrc+1MFdIJTwX4VbLKMgatwTy/9WwnQvnF2PYxW+oWVJLVDId+Vp
-         hpcvDFGHhDgmOKb2o1JSlaWl7xuWcGBjjGSsRegbCbNAiBGDnHvTgI7zTYrR45SmsCxN
-         lbFjtfNRDDczqKQzRVwDmMw0iIPmrhofbN/gqRrmUJ6KIXdDwpwOWhQERHFAQg028/vn
-         091PCkF8AOyRzJj0NMZ+u9KVDr10oliB9jVr/XxDJ8ch12VTE2LRmkYfZ+gotWLM8LJ7
-         KmUnoITeJ+E02+9mZTlEbyYoa3zdY5Iz+tEiOkT9qDAhbJrQ9NMXBj4d51W9FfhQNpgM
-         aZWg==
-X-Gm-Message-State: ABy/qLY96kxlBJP21/8JIqM6ql2s5ZcWD1x2lS6bp1lIL1JNIErnAzur
-        90uUegZijiR66614eLsASXg=
-X-Google-Smtp-Source: APBJJlErq+eRGzlcgBN48vqeyOo9IGrUh9BQBxnfTMGubwltp7kE48GP+Eoj0stwnEeM1xlAJThRkQ==
-X-Received: by 2002:a0c:8e07:0:b0:635:eff8:2b9d with SMTP id v7-20020a0c8e07000000b00635eff82b9dmr2401408qvb.27.1690037142515;
-        Sat, 22 Jul 2023 07:45:42 -0700 (PDT)
-Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id k9-20020a0cf289000000b006263a9e7c63sm61438qvl.104.2023.07.22.07.45.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Jul 2023 07:45:41 -0700 (PDT)
-Message-ID: <d40d5a96-e0af-388e-9fd5-c068b0d2896e@gmail.com>
-Date:   Sat, 22 Jul 2023 07:45:35 -0700
+        Sat, 22 Jul 2023 10:54:52 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72F01FD2
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 07:54:41 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id E6E235C00B0;
+        Sat, 22 Jul 2023 10:54:40 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Sat, 22 Jul 2023 10:54:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=davidreaver.com;
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:date:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to;
+         s=fm3; t=1690037680; x=1690124080; bh=1yjiORy39pCWYuOJ1JsVJ5WcE
+        LO0kW+BzYweY2Xf8Vg=; b=ZY3H8DSgfWOUMsJZB4uOmwJTdjArYs4nZ/6P3NS1a
+        tuRxG4cCs0wgnOColy+L83kSHBI3H9R2QDXpfRP1dNHUIVK/WIopuarEIhXivLLK
+        Vbm8S+TBD3oXgd9roJFEI0ZVgkaRff9F2COy1idU9Olnk6MJCup9Ir2qGfEbF77z
+        ZFNZlZaA2rpjTvZLXM9lWcIFieH1bXE9hfFEgbzgdrwKNo5pHVYt76WmNbAEV9TE
+        pZ2BLs90CFgFOblfwgjNVDv2U9TYH/nFQKFngG1s70nehxOYUKvknKWQbHjKwNJQ
+        omsqxxTnT2oTSzgir/JtO0/KcQDlIJkOL03X9XlW2oUpA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1690037680; x=1690124080; bh=1yjiORy39pCWYuOJ1JsVJ5WcELO0kW+BzYw
+        eY2Xf8Vg=; b=OVr0r+yqBRbCZZr0tv1+OCUxSNzIfJiCaaRHNBDUztRRKiXb3po
+        I/L7DkrnEqK+BpECTN766vK324Xk6KUy6YRycB1R0wcx59/0GmshprzqBEEmi1Pk
+        V3OvAulCFuOXQP4fR9rGQAOX730hnObXDsiGcJoRvMarAV+rXfn+2udOrn2WtJHs
+        yodvjab6YR6dDzjy+wNbIXGjAKUSuDCUwoKQF8biVFH6zt7UHqEpRMn62C99+OHN
+        YWj9eqdd+Zqvx/nG3lkwDIc7DmrJFvsjUcqb/QgUCHgUG7ci6Gc2FodQtMWXc1xX
+        vEgWl3uC7jQxdMoF9CIIRNRPtZXVSMR8oFA==
+X-ME-Sender: <xms:sO27ZD3I61TPbb8J9i9TrD-iXUNiuQSs9eOEMFMDbD3Qd7jrQjba0w>
+    <xme:sO27ZCEsfcSQNbpW_mC3UeZDA8dV7gOFnfoKK_DOsO4Nk-4bszjT9uq713YjlKtlI
+    QtcTYnLpmY-1pzPHPw>
+X-ME-Received: <xmr:sO27ZD7IvWKcuwkShvgCZ1FirHIjlxg7NB1CCeiPgAsO00XTt4o76-Ez6u6XUHNYRnrgN45XlqIO3gy0OTLKVg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrheeggdektdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpehffgfhvfevufffjgfkgggtgfesthhqredttderjeenucfhrhhomhepffgrvhhi
+    ugcutfgvrghvvghruceomhgvsegurghvihgurhgvrghvvghrrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeegffetffeltdffkedtgedugeehgfejgeffueffieevheetvdevkeeiffef
+    heevgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmvgesuggrvhhiughrvggrvhgvrhdrtghomh
+X-ME-Proxy: <xmx:sO27ZI1iwS5k39psd4FMboHwmpwecmcBQorneym3WfD4jHGDUfD3ng>
+    <xmx:sO27ZGFoIQPirKkK3q-eS02-l_OJWWjs5EI_8fWB1BXD1JE1mN8GpA>
+    <xmx:sO27ZJ8zUzH4hPzTfxLNXR7HMmtl_NNVnw4bv30iKz89-PeCWf83XQ>
+    <xmx:sO27ZL62f67IJyOeyzw_rVSgx_12DQoMpJtsMWv7pWJGrW66t6e-ow>
+Feedback-ID: i67e946c9:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 22 Jul 2023 10:54:39 -0400 (EDT)
+References: <20230706185100.84322-1-hugo@hugovil.com>
+ <CANiq72kZ0cHxCKkm_781G__9tJxYCw3tpJarqvLOFB4Jw6ZONw@mail.gmail.com>
+ <20230706154937.1380bdcf9d84e1cff78911fa@hugovil.com>
+ <7eb2d50baf269310e51854f700936e94@lemonage.de>
+User-agent: mu4e 1.10.4; emacs 28.2
+From:   David Reaver <me@davidreaver.com>
+To:     poeschel@lemonage.de
+Cc:     Hugo Villeneuve <hugo@hugovil.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        linux-kernel@vger.kernel.org, geert@linux-m68k.org,
+        Christian Meusel <christian.meusel@posteo.de>
+Subject: Re: [PATCH] auxdisplay: hd44780: move cursor home after clear
+ display command
+Date:   Sat, 22 Jul 2023 07:46:59 -0700
+In-reply-to: <7eb2d50baf269310e51854f700936e94@lemonage.de>
+Message-ID: <86wmysknde.fsf@davidreaver.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH net-next v2 5/6] net: dsa: microchip: use wakeup-source DT
- property to enable PME output
-Content-Language: en-US
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-References: <20230721135501.1464455-1-o.rempel@pengutronix.de>
- <20230721135501.1464455-6-o.rempel@pengutronix.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230721135501.1464455-6-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -91,27 +96,72 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+poeschel@lemonage.de writes:
 
-On 7/21/2023 6:55 AM, Oleksij Rempel wrote:
-> KSZ switches with WoL support signals wake event over PME pin. If this
-> pin is attached to some external PMIC or System Controller can't be
-> described as GPIO, the only way to describe it in the devicetree is to
-> use wakeup-source property.
+> Am 2023-07-06 21:49, schrieb Hugo Villeneuve:
+>> On Thu, 6 Jul 2023 21:33:05 +0200
+>> Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> wrote:
+>>
+>>> On Thu, Jul 6, 2023 at 8:51=E2=80=AFPM Hugo Villeneuve <hugo@hugovil.co=
+m> wrote:
+>>> >
+>>> > The "clear display" command on the NewHaven NHD-0220DZW-AG5 display
+>>> > does NOT change the DDRAM address to 00h (home position) like the
+>>> > standard Hitachi HD44780 controller. As a consequence, the starting
+>>> > position of the initial string LCD_INIT_TEXT is not guaranteed to be
+>>> > at 0,0 depending on where the cursor was before the clear display
+>>> > command.
+>>> >
+>>> > Extract of CLEAR_DISPLAY command from datasheets of:
+>>> >
+>>> >     Hitachi HD44780:
+>>> >         ... It then sets DDRAM address 0 into the address counter...
+>>> >
+>>> >     NewHaven NHD-0220DZW-AG5 datasheet:
+>>> >         ... This instruction does not change the DDRAM Address
+>>> >
+>>> > Move the cursor home after sending clear display command to support
+>>> > non-standard LCDs.
+>>> >
+>>> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+>>> Thanks! Sounds good to me, as long the extra command does not
+>>> introduce some issue with the actual HD44780 -- can we double-check
+>>> the HD44780 still works as expected?
+>>> Cc'ing Lars and Geert since they may be able to give it a quick test.
+>> Hi Miguel,
+>> I do not have a standard Hitachi controller to test it on, so lets wait
+>> for feedback from Lars and Geert or others.
+>
+> Sorry guys,
+> I do not have access to the relevant hardware anymore. I am CC'ing Christ=
+ian,
+> who has the relevant hardware and maybe he can help testing the patch.
+> Christian is on vacation up until mid august, so we have to wait a bit mo=
+re
+> for someone able to test this.
+>
+> BTW: The displays I did the work back then on were for sure not genuine
+> Hitachi ones either.
+> I do not see, that the little patch should do any harm.
+>
+> Regards,
+> Lars
 
-There is a word missing in the above sentence between "System 
-Controller" and "can't be", and I believe the word is "that".
 
-> So, add support for this property and enable
-> PME switch output if this property is present.
+I was actually hooking up a 16x2 HD44780 on my BeagleBone Black last
+night before I came across this patch, so I was able to test this. It
+works fine for me. I tested with:
 
-A property that "enables" something means that you are using Device Tree 
-as a way to encode some sort of policy, maybe this is  just the wording 
-here and what you would want to say is that describing the node with a 
-'wakeup-source' property indicates that the device is wake-up capable, 
-regardless of the presence/absence of an interrupt parent?
+    $ printf '\f' > /dev/lcd
+    $ printf 'Hello\nWorld!\n' > /dev/lcd
+    $ printf '\x1b[LR' > /dev/lcd
+    $ printf '\x1b[LR' > /dev/lcd
+    $ printf '\x1b[LR' > /dev/lcd
+    $ printf '\f' > /dev/lcd
+    $ printf 'Goodbye\nWorld!\n' > /dev/lcd
 
-With the commit message reworded:
+As expected, "Goodbye World!" was correctly placed left-aligned on the
+display, split over both lines. Let me know if there is something else
+you would like me to do to test this!
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+Tested-by: David Reaver <me@davidreaver.com>
