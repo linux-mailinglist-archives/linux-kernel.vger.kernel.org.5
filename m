@@ -2,198 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E30775DE78
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 22:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBBA75DE7B
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 22:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbjGVUTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 16:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
+        id S229623AbjGVUUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 16:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjGVUTW (ORCPT
+        with ESMTP id S229491AbjGVUUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 16:19:22 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808B6E53;
-        Sat, 22 Jul 2023 13:19:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=zlKBQlo+spEK7fOXagOjfqBhrZHU9x6qjF2zofp+Ezk=; b=LUi4ybPqoqArTKIN+u6U7J9ZLB
-        DIq7hxqyfdnm74ilU627CYFM8SdZb2oAUQFnP1HCitDhDQK/5DMfkE24KPaYE6r/nGRXemUix/CjX
-        y5KK8w6vTjnY4NVVoBMqd8GbLhn+y5N4bgUnU9X5MenVhc8vPL08E0/UC0uzbYD/YkxFMNQIc3VMm
-        fSiC3apI+reAqq7IkQstFrnWzQ51TNlDSFqC2a2O4kjjh4NfrTz1niuyGrVmgJV2iWrjeS3DlSUNf
-        KuWG7iDB3xtiDhgpQx/xOQ6n6ejMOd2gTL2b4nBuNnXRyqk+uDAB4Swglh6QkLHEphR8HeVZsW+BD
-        PZLs0Xzg==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qNJ4L-00HF3Y-2L;
-        Sat, 22 Jul 2023 20:19:13 +0000
-Message-ID: <b0826064-0cd6-dfd0-a377-5cd56c4035be@infradead.org>
-Date:   Sat, 22 Jul 2023 13:19:11 -0700
+        Sat, 22 Jul 2023 16:20:46 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D989E58
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 13:20:45 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-316eabffaa6so2228838f8f.2
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 13:20:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690057244; x=1690662044;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uqgsDoxp+a0ulkkTMnYutRgTki2aDg/PYW80rkVVPp8=;
+        b=kYZne3f9yGRgh6iPxanTdnhcjLJm2mlrZslm1lNk8kQmuV2BBbGujayti+IPSxQ8OX
+         JPWq6WIGuSfOlZS0iNpb1PWMJ/4sKGSHVt63UEfoN5633s0LU1FlFlCLlpPdE/GsjnIu
+         9EjVJY3hgmRiGMWNABQfG+dvUF/WpEI6/ugsG1mCFPiqjDo6eprxME1Y/ZFcW6U7VP2b
+         +rJYg3CXgGkJpzrGlJCGYBHVhgcvsbLFcIKtKlt1zHPIqb5aWn3IyT3xdJjQ3TygYN5A
+         X3FC7VQ3guZTZNYdZoJMrDJm/MtdyL/fIHpOyqNpzTB+K1hdxTiG3EC+QbNFtm7EmFbJ
+         p3Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690057244; x=1690662044;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uqgsDoxp+a0ulkkTMnYutRgTki2aDg/PYW80rkVVPp8=;
+        b=iRMuJG2UddTxTxArma0pNo/q0ew3m8HcKfnVMkBnZH7YWX5OmxKDhd4t0/O6qX2Pe6
+         mKX45/kuLQ/FVP/cUH15iN+tOA14knPO8pjKsednM6XWOGqtPpr+pcZ7YPyLbmO6hed9
+         GhChkUik/WW7SZbKsWCikUZf9SnoCHBKXddfikgK5lOFCmZAOwnJWHe6tA4oW0dWN+1u
+         kFlmgiWaEFRZeKoqjMFibTX6ZmS1kyY4cDDEJ/t1yIaRmjzOk/L2vW66Fxt0Tp5kC8+F
+         cfUIXUYXBYTz28kkeneW7sjjeW60gx7+8Q2C1pVanat+L1AKkWZZGZvkfaI1hD4he28F
+         ypHg==
+X-Gm-Message-State: ABy/qLYkr/cRMwm+8ojUNczCYpqj+//KZLmnHWvil1HR9WOooc38U668
+        Io6vFGP2RTKk8zUG9hEU3RF2zg==
+X-Google-Smtp-Source: APBJJlHtGR5LPmf1KqxQqGuubWj7q/2swHpo0BwtoPPXrcKJwOgxc6GbBBBkKHLogidNI3C5Z/BtHA==
+X-Received: by 2002:adf:f8d1:0:b0:316:ee7f:f9bb with SMTP id f17-20020adff8d1000000b00316ee7ff9bbmr3436488wrq.65.1690057243072;
+        Sat, 22 Jul 2023 13:20:43 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id w10-20020adfd4ca000000b003140f47224csm7773076wrk.15.2023.07.22.13.20.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Jul 2023 13:20:42 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        replicant@osuosl.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        =?UTF-8?q?Martin=20J=C3=BCcker?= <martin.juecker@gmail.com>,
+        Henrik Grimler <henrik@grimler.se>,
+        Artur Weber <aweber.kernel@gmail.com>
+Subject: [PATCH RFT] ARM: dts: samsung: exynos4412-midas: add USB connector and USB OTG
+Date:   Sat, 22 Jul 2023 22:20:39 +0200
+Message-Id: <20230722202039.35877-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 2/3] Documentation: riscv: Add early boot document
-Content-Language: en-US
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Song Shuai <songshuaishuai@tinylab.org>,
-        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        Atish Patra <atishp@rivosinc.com>
-References: <20230722113445.630714-1-alexghiti@rivosinc.com>
- <20230722113445.630714-2-alexghiti@rivosinc.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230722113445.630714-2-alexghiti@rivosinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add full description of USB-MUIC and MUIC-MHL connections, along with
+proper USB connector and OTG mode for DWC2 USB controller.
 
-On 7/22/23 04:34, Alexandre Ghiti wrote:
-> This document describes the constraints and requirements of the early
-> boot process in a RISC-V kernel.
-> 
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> Reviewed-by: Björn Töpel <bjorn@rivosinc.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> Reviewed-by: Sunil V L <sunilvl@ventanamicro.com>
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
-> Reviewed-by: Atish Patra <atishp@rivosinc.com>
-> Reviewed-by: Song Shuai <songshuaishuai@tinylab.org>
-> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
-> ---
-> - Changes in v5:
->   * Rebase on top of docs-next
-> 
->  Documentation/riscv/boot-image-header.rst |   3 -
->  Documentation/riscv/boot.rst              | 169 ++++++++++++++++++++++
->  Documentation/riscv/index.rst             |   1 +
->  3 files changed, 170 insertions(+), 3 deletions(-)
->  create mode 100644 Documentation/riscv/boot.rst
-> 
+This fixes dtc W=1 warnings:
 
-> diff --git a/Documentation/riscv/boot.rst b/Documentation/riscv/boot.rst
-> new file mode 100644
-> index 000000000000..f890ac442c91
-> --- /dev/null
-> +++ b/Documentation/riscv/boot.rst
-> @@ -0,0 +1,169 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +===============================================
-> +RISC-V Kernel Boot Requirements and Constraints
-> +===============================================
-> +
-> +:Author: Alexandre Ghiti <alexghiti@rivosinc.com>
-> +:Date: 23 May 2023
-> +
-> +This document describes what the RISC-V kernel expects from bootloaders and
-> +firmware, but also the constraints that any developer must have in mind when
+  Warning (graph_child_address): /i2c-mhl/hdmi-bridge@39/ports: graph node has single child node 'port@0', #address-cells/#size-cells are not necessary
 
-I would s/but/and/.
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: replicant@osuosl.org
+Cc: phone-devel@vger.kernel.org
+Cc: ~postmarketos/upstreaming@lists.sr.ht
+Cc: Martin Jücker <martin.juecker@gmail.com>
+Cc: Henrik Grimler <henrik@grimler.se>
+Cc: Artur Weber <aweber.kernel@gmail.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> +touching the early boot process. For the purposes of this document, the
-> +``early boot process`` refers to any code that runs before the final virtual
-> +mapping is set up.
-> +
-> +Pre-kernel Requirements and Constraints
-> +=======================================
-> +
-> +The RISC-V kernel expects the following of bootloaders and platform firmware:
-> +
-> +Register state
-> +--------------
-> +
-> +The RISC-V kernel expects:
-> +
-> +  * ``$a0`` to contain the hartid of the current core.
-> +  * ``$a1`` to contain the address of the devicetree in memory.
-> +
-> +CSR state
-> +---------
-> +
-> +The RISC-V kernel expects:
-> +
-> +  * ``$satp = 0``: the MMU, if present, must be disabled.
-> +
-> +Reserved memory for resident firmware
-> +-------------------------------------
-> +
-> +The RISC-V kernel must not map any resident memory, or memory protected with
-> +PMPs, in the direct mapping, so the firmware must correctly mark those regions
-> +as per the devicetree specification and/or the UEFI specification.
-> +
-> +Kernel location
-> +---------------
-> +
-> +The RISC-V kernel expects to be placed at a PMD boundary (2MB aligned for rv64
-> +and 4MB aligned for rv32). Note that the EFI stub will physically relocate the
-> +kernel if that's not the case.
-> +
-> +Hardware description
-> +--------------------
-> +
-> +The firmware can pass either a devicetree or ACPI tables to the RISC-V kernel.
-> +
-> +The devicetree is either passed directly to the kernel from the previous stage
-> +using the ``$a1`` register, or when booting with UEFI, it can be passed using the
-> +EFI configuration table.
-> +
-> +The ACPI tables are passed to the kernel using the EFI configuration table. In
-> +this case, a tiny devicetree is still created by the EFI stub. Please refer to
-> +"EFI stub and devicetree" section below for details about this devicetree.
-> +
-> +Kernel entrance
-> +---------------
+---
 
-How about "entry" instead of "entrance"?
+Not tested on hardware. Please kindly check if peripheral mode is not
+broken. Or maybe OTG started to work?
+---
+ .../boot/dts/samsung/exynos4412-midas.dtsi    | 46 ++++++++++++++++++-
+ 1 file changed, 45 insertions(+), 1 deletion(-)
 
-> +
-> +On SMP systems, there are 2 methods to enter the kernel:
-> +
-> +- ``RISCV_BOOT_SPINWAIT``: the firmware releases all harts in the kernel, one hart
-> +  wins a lottery and executes the early boot code while the other harts are
-> +  parked waiting for the initialization to finish. This method is mostly used to
-> +  support older firmwares without SBI HSM extension and M-mode RISC-V kernel.
-> +- ``Ordered booting``: the firmware releases only one hart that will execute the
-> +  initialization phase and then will start all other harts using the SBI HSM
-> +  extension. The ordered booting method is the preferred booting method for
-> +  booting the RISC-V kernel because it can support cpu hotplug and kexec.
-
-preferably s/cpu/CPU/
-
-> +
-> +UEFI
-> +----
-
-[snip]
-
-I can't say how correct the documentation is, but it is well-written
-and has no issues with punctuation, grammar, or spelling AFAICT, so
-you can take this if you want it:
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-thanks.
+diff --git a/arch/arm/boot/dts/samsung/exynos4412-midas.dtsi b/arch/arm/boot/dts/samsung/exynos4412-midas.dtsi
+index 57836d5554d0..6057f9d9811e 100644
+--- a/arch/arm/boot/dts/samsung/exynos4412-midas.dtsi
++++ b/arch/arm/boot/dts/samsung/exynos4412-midas.dtsi
+@@ -182,6 +182,34 @@ pmic@66 {
+ 			pinctrl-0 = <&max77693_irq>;
+ 			reg = <0x66>;
+ 
++			connector {
++				compatible = "samsung,usb-connector-11pin",
++					     "usb-b-connector";
++				label = "micro-USB";
++				type = "micro";
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++
++						muic_to_usb: endpoint {
++							remote-endpoint = <&usb_to_muic>;
++						};
++					};
++
++					port@3 {
++						reg = <3>;
++
++						muic_to_mhl: endpoint {
++							remote-endpoint = <&mhl_to_muic>;
++						};
++					};
++				};
++			};
++
+ 			regulators {
+ 				esafeout1_reg: ESAFEOUT1 {
+ 					regulator-name = "ESAFEOUT1";
+@@ -287,6 +315,14 @@ mhl_to_hdmi: endpoint {
+ 						remote-endpoint = <&hdmi_to_mhl>;
+ 					};
+ 				};
++
++				port@1 {
++					reg = <1>;
++
++					mhl_to_muic: endpoint {
++						remote-endpoint = <&muic_to_mhl>;
++					};
++				};
+ 			};
+ 		};
+ 	};
+@@ -545,8 +581,16 @@ hdmi_to_mhl: endpoint {
+ &hsotg {
+ 	vusb_d-supply = <&ldo15_reg>;
+ 	vusb_a-supply = <&ldo12_reg>;
+-	dr_mode = "peripheral";
++	dr_mode = "otg";
++	role-switch-default-mode = "peripheral";
++	usb-role-switch;
+ 	status = "okay";
++
++	port {
++		usb_to_muic: endpoint {
++			remote-endpoint = <&muic_to_usb>;
++		};
++	};
+ };
+ 
+ &i2c_0 {
 -- 
-~Randy
+2.34.1
+
