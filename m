@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6BE175D831
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 02:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB7175D836
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 02:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbjGVAbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 20:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
+        id S231220AbjGVAeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 20:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjGVAbW (ORCPT
+        with ESMTP id S229744AbjGVAeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 20:31:22 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FABA272D;
-        Fri, 21 Jul 2023 17:31:18 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 2CEB86016E;
-        Sat, 22 Jul 2023 02:31:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1689985876; bh=vHQq3ZzNW3zorfLxkEgx2EZDUysb20GUI2w0lOAJB34=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=reihfOX2LnpQb5NcYgkF4y7wXf39c/bTOlbuiBmBlTPNj3yxwtx9ht2eimJCK8NQ/
-         L6dYX6APSmOIkXIN6q+zrzmd26RVUgDskTD+KQKEIHu/M9zX6KAx4MVPoJtKwBa2jG
-         z+DDafP2jznGHSSDiZ1H1+ZxboTQHsP0zaAcs0cDonyzPq/4iT+SEoAeha1lXLmsIA
-         hh42+mLpdWyzSQdKGrae0pTaqzCsRLjuM6fIoYad47UtaTEXoYszdagE6W4jtEO8Es
-         k2qhMt8tdVerfcpKzy9fMtUZ8iDoiAuI/lnuzqS6p/Z0svaSjljy/mpF6pIaZaSqlH
-         nsRQ9ET3XmLYw==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 2YsFdt3FoqKt; Sat, 22 Jul 2023 02:31:13 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 6F2296015F;
-        Sat, 22 Jul 2023 02:31:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1689985873; bh=vHQq3ZzNW3zorfLxkEgx2EZDUysb20GUI2w0lOAJB34=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=hxXR1YpD2E4RfeXEX1B5LMGbLrJbutaax6aiQJIm1hI5PG1GoOcCEzpvHPUFxNm10
-         uQHBVeXuZQHhxR27hwx3d3PY7unYVhLaGRi1+em5rkvfY1fIjpkXDAEChtcG3TEokA
-         HXlfnJalYREAbgLD/X+GANEOI/NT3K2gXk3WN6cWhmiYCFu8j+fOlqLlPgUkK5PfhC
-         OajSx5S+exzYN7/9V0Roh1WI02lYbxl/PAdIHQN/BpkB2UySmK9xRVN8XejEgrUmvV
-         1BESbPU14+s1HfBvqHxvEmBevD5EP/qKoWhETRLDPSoq19L6e5IHRdtAX2dOKjIMJf
-         9ffjrdFUg+yew==
-Message-ID: <c9a9856b-4a86-3f32-b6e5-d89af4a46048@alu.unizg.hr>
-Date:   Sat, 22 Jul 2023 02:31:12 +0200
+        Fri, 21 Jul 2023 20:34:17 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571AE35AC;
+        Fri, 21 Jul 2023 17:34:10 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E3A7421903;
+        Sat, 22 Jul 2023 00:34:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689986048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qSXC/2EX9oy7Zub+xfuyFakWJVtNoucQuw1q9yV6Xeg=;
+        b=yLqNv1r4YqQh6E1WAEpOgBxySH8ndFJEDsEEEvrxVszfMMm1IMVEHQ2oTH9oV9kQv1WXdV
+        uaD3dDScl+kh7d8DBptUah4MEpmnTl3oTBzI0Wb/13XFWtoiixZ2OL/MbAgRjRT7JiTo4/
+        wABfVLd1kiFR5Tl/sGBaFv17sDpz/K8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689986048;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qSXC/2EX9oy7Zub+xfuyFakWJVtNoucQuw1q9yV6Xeg=;
+        b=7ek051keFIYVAERfA+joxMZtS8Ghn+h7CZZXDKTAoCKKFkq5d247zVZX8Q/D93Un8XRe8i
+        82hlJigUlfdR9pBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1EDE4134B0;
+        Sat, 22 Jul 2023 00:34:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id iVrFMP0ju2SGDwAAMHmgww
+        (envelope-from <neilb@suse.de>); Sat, 22 Jul 2023 00:34:05 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PROBLEM] [ADDITIONAL DIAG] seltests: net/forwarding/sch_ets.sh
- [HANG]
-Content-Language: en-US
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-To:     Petr Machata <petrm@nvidia.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>
-References: <759fe934-2e43-e9ff-8946-4fd579c09b05@alu.unizg.hr>
- <87cz0m9a3n.fsf@nvidia.com>
- <580b9f28-7a68-e618-b2d5-b8663386aa12@alu.unizg.hr>
- <6c871d89-390d-41ae-ef48-6cd12b99fd74@alu.unizg.hr>
-In-Reply-To: <6c871d89-390d-41ae-ef48-6cd12b99fd74@alu.unizg.hr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Jeff Layton" <jlayton@kernel.org>
+Cc:     "Chuck Lever" <chuck.lever@oracle.com>,
+        "Olga Kornievskaia" <kolga@netapp.com>,
+        "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
+        "Boyang Xue" <bxue@redhat.com>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] nfsd: sanely handle inabilty to fetch pre/post attributes
+In-reply-to: <11c799a6cb0bf073dda77f592d70d809fca9b030.camel@kernel.org>
+References: <20230720-bz2223560-v2-0-070aaf2660b7@kernel.org>,
+ <168988936713.11078.5407820394334916284@noble.neil.brown.name>,
+ <11c799a6cb0bf073dda77f592d70d809fca9b030.camel@kernel.org>
+Date:   Sat, 22 Jul 2023 10:34:01 +1000
+Message-id: <168998604179.11078.18238251274062077853@noble.neil.brown.name>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,381 +76,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 18:25, Mirsad Todorovac wrote:
-> On 7/20/23 18:07, Mirsad Todorovac wrote:
->> On 7/20/23 11:43, Petr Machata wrote:
->>>
->>> Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr> writes:
->>>
->>>> Using the same config for 6.5-rc2 on Ubuntu 22.04 LTS and 22.10, the execution
->>>> stop at the exact same line on both boxes (os I reckon it is more than an
->>>> accident):
->>>>
->>>> # selftests: net/forwarding: sch_ets.sh
->>>> # TEST: ping vlan 10                                                  [ OK ]
->>>> # TEST: ping vlan 11                                                  [ OK ]
->>>> # TEST: ping vlan 12                                                  [ OK ]
->>>> # Running in priomap mode
->>>> # Testing ets bands 3 strict 3, streams 0 1
->>>> # TEST: band 0                                                        [ OK ]
->>>> # INFO: Expected ratio >95% Measured ratio 100.00
->>>> # TEST: band 1                                                        [ OK ]
->>>> # INFO: Expected ratio <5% Measured ratio 0
->>>> # Testing ets bands 3 strict 3, streams 1 2
->>>> # TEST: band 1                                                        [ OK ]
->>>> # INFO: Expected ratio >95% Measured ratio 100.00
->>>> # TEST: band 2                                                        [ OK ]
->>>> # INFO: Expected ratio <5% Measured ratio 0
->>>> # Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
->>>> # TEST: band 0                                                        [ OK ]
->>>> # INFO: Expected ratio >95% Measured ratio 100.00
->>>> # TEST: band 1                                                        [ OK ]
->>>> # INFO: Expected ratio <5% Measured ratio 0
->>>> # Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 1 2
->>>> # TEST: bands 1:2                                                     [ OK ]
->>>> # INFO: Expected ratio 2.00 Measured ratio 1.99
->>>> # Testing ets bands 3 quanta 3300 3300 3300, streams 0 1 2
->>>> # TEST: bands 0:1                                                     [ OK ]
->>>> # INFO: Expected ratio 1.00 Measured ratio .99
->>>> # TEST: bands 0:2                                                     [ OK ]
->>>> # INFO: Expected ratio 1.00 Measured ratio 1.00
->>>> # Testing ets bands 3 quanta 5000 3500 1500, streams 0 1 2
->>>> # TEST: bands 0:1                                                     [ OK ]
->>>> # INFO: Expected ratio 1.42 Measured ratio 1.42
->>>> # TEST: bands 0:2                                                     [ OK ]
->>>> # INFO: Expected ratio 3.33 Measured ratio 3.33
->>>> # Testing ets bands 3 quanta 5000 8000 1500, streams 0 1 2
->>>> # TEST: bands 0:1                                                     [ OK ]
->>>> # INFO: Expected ratio 1.60 Measured ratio 1.59
->>>> # TEST: bands 0:2                                                     [ OK ]
->>>> # INFO: Expected ratio 3.33 Measured ratio 3.33
->>>> # Testing ets bands 2 quanta 5000 2500, streams 0 1
->>>> # TEST: bands 0:1                                                     [ OK ]
->>>> # INFO: Expected ratio 2.00 Measured ratio 1.99
->>>> # Running in classifier mode
->>>> # Testing ets bands 3 strict 3, streams 0 1
->>>> # TEST: band 0                                                        [ OK ]
->>>> # INFO: Expected ratio >95% Measured ratio 100.00
->>>> # TEST: band 1                                                        [ OK ]
->>>> # INFO: Expected ratio <5% Measured ratio 0
->>>> # Testing ets bands 3 strict 3, streams 1 2
->>>> # TEST: band 1                                                        [ OK ]
->>>> # INFO: Expected ratio >95% Measured ratio 100.00
->>>> # TEST: band 2                                                        [ OK ]
->>>> # INFO: Expected ratio <5% Measured ratio 0
->>>> # Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
->>>>
->>>> I tried to run 'set -x' enabled version standalone, but that one finished
->>>> correctly (?).
->>>>
->>>> It could be something previous scripts left, but right now I don't have a clue.
->>>> I can attempt to rerun all tests with sch_ets.sh bash 'set -x' enabled later today.
->>>
->>> If you run it standalone without set -x, does it finish as well?
->>
->> Added that. Yes, standlone run finishes correctly, with or without 'set -x':
->>
->> root@defiant:/home/marvin/linux/kernel/linux_torvalds/tools/testing/selftests/net/forwarding# ./sch_ets.sh
->> TEST: ping vlan 10                                                  [ OK ]
->> TEST: ping vlan 11                                                  [ OK ]
->> TEST: ping vlan 12                                                  [ OK ]
->> Running in priomap mode
->> Testing ets bands 3 strict 3, streams 0 1
->> TEST: band 0                                                        [ OK ]
->> INFO: Expected ratio >95% Measured ratio 100.00
->> TEST: band 1                                                        [ OK ]
->> INFO: Expected ratio <5% Measured ratio 0
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 3 strict 3, streams 1 2
->> TEST: band 1                                                        [ OK ]
->> INFO: Expected ratio >95% Measured ratio 100.00
->> TEST: band 2                                                        [ OK ]
->> INFO: Expected ratio <5% Measured ratio 0
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
->> TEST: band 0                                                        [ OK ]
->> INFO: Expected ratio >95% Measured ratio 100.00
->> TEST: band 1                                                        [ OK ]
->> INFO: Expected ratio <5% Measured ratio 0
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 1 2
->> TEST: bands 1:2                                                     [ OK ]
->> INFO: Expected ratio 2.00 Measured ratio 1.99
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 3 quanta 3300 3300 3300, streams 0 1 2
->> TEST: bands 0:1                                                     [ OK ]
->> INFO: Expected ratio 1.00 Measured ratio 1.00
->> TEST: bands 0:2                                                     [ OK ]
->> INFO: Expected ratio 1.00 Measured ratio .99
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 3 quanta 5000 3500 1500, streams 0 1 2
->> TEST: bands 0:1                                                     [ OK ]
->> INFO: Expected ratio 1.42 Measured ratio 1.42
->> TEST: bands 0:2                                                     [ OK ]
->> INFO: Expected ratio 3.33 Measured ratio 3.33
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 3 quanta 5000 8000 1500, streams 0 1 2
->> TEST: bands 0:1                                                     [ OK ]
->> INFO: Expected ratio 1.60 Measured ratio 1.59
->> TEST: bands 0:2                                                     [ OK ]
->> INFO: Expected ratio 3.33 Measured ratio 3.33
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 2 quanta 5000 2500, streams 0 1
->> TEST: bands 0:1                                                     [ OK ]
->> INFO: Expected ratio 2.00 Measured ratio 1.99
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Running in classifier mode
->> Testing ets bands 3 strict 3, streams 0 1
->> TEST: band 0                                                        [ OK ]
->> INFO: Expected ratio >95% Measured ratio 100.00
->> TEST: band 1                                                        [ OK ]
->> INFO: Expected ratio <5% Measured ratio 0
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 3 strict 3, streams 1 2
->> TEST: band 1                                                        [ OK ]
->> INFO: Expected ratio >95% Measured ratio 100.00
->> TEST: band 2                                                        [ OK ]
->> INFO: Expected ratio <5% Measured ratio 0
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
->> TEST: band 0                                                        [ OK ]
->> INFO: Expected ratio >95% Measured ratio 100.00
->> TEST: band 1                                                        [ OK ]
->> INFO: Expected ratio <5% Measured ratio 0
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 1 2
->> TEST: bands 1:2                                                     [ OK ]
->> INFO: Expected ratio 2.00 Measured ratio 1.99
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 3 quanta 3300 3300 3300, streams 0 1 2
->> TEST: bands 0:1                                                     [ OK ]
->> INFO: Expected ratio 1.00 Measured ratio .99
->> TEST: bands 0:2                                                     [ OK ]
->> INFO: Expected ratio 1.00 Measured ratio .99
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 3 quanta 5000 3500 1500, streams 0 1 2
->> TEST: bands 0:1                                                     [ OK ]
->> INFO: Expected ratio 1.42 Measured ratio 1.42
->> TEST: bands 0:2                                                     [ OK ]
->> INFO: Expected ratio 3.33 Measured ratio 3.33
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 3 quanta 5000 8000 1500, streams 0 1 2
->> TEST: bands 0:1                                                     [ OK ]
->> INFO: Expected ratio 1.60 Measured ratio 1.60
->> TEST: bands 0:2                                                     [ OK ]
->> INFO: Expected ratio 3.33 Measured ratio 3.33
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> Testing ets bands 2 quanta 5000 2500, streams 0 1
->> TEST: bands 0:1                                                     [ OK ]
->> INFO: Expected ratio 2.00 Measured ratio 2.00
->> killing MZ
->> killed MZ
->> killing MZ
->> killed MZ
->> root@defiant:/home/marvin/linux/kernel/linux_torvalds/tools/testing/selftests/net/forwarding#
->>
->>> That would imply that the reproducer needs to include the previous tests as
->>> well.
->>
->> This is entirely possible, as timeouts and CTRL+C events do not seem to be caught
->> and the cleanup is not done ...
->>
->> sch_ets_core.sh:    trap cleanup EXIT
->>
->> Some tests time out even after settings:timeout=240, so IMHO this should be taken into account.
->>
->> Best regards,
->> Mirsad Todorovac
->>
->>> It looks like the test is stuck in ets_test_mixed in classifier_mode.
->>> A way to run just this test would be:
->>>
->>>      TESTS="classifier_mode ets_test_mixed" ./sch_ets.sh
->>>
->>> Looking at the code, the only place that I can see that waits on
->>> anything is the "{ kill %% && wait %%; } 2>/dev/null" line in
->>> stop_traffic() (in lib.sh). Maybe something like this would let
->>> us see if that's the case:
->>>
->>> modified   tools/testing/selftests/net/forwarding/lib.sh
->>> @@ -1468,8 +1470,10 @@ start_tcp_traffic()
->>>   stop_traffic()
->>>   {
->>> +    echo killing MZ
->>>       # Suppress noise from killing mausezahn.
->>>       { kill %% && wait %%; } 2>/dev/null
->>> +    echo killed MZ
->>>   }
+On Fri, 21 Jul 2023, Jeff Layton wrote:
+> On Fri, 2023-07-21 at 07:42 +1000, NeilBrown wrote:
+> > 
+> > I think both v3 and v4 allow a reply that says "the operation was a
+> > success but there are no post-op attrs".  With v4 you can say "there is
+> > no change-attr, but here are some other attrs".  I think.
+> > 
 > 
-> FYI, this is the [incomplete] list of the tests that time out even after
-> being assigned long timeout of 240s instead of default.
+> v3 has this ability:
 > 
-> marvin@defiant:~/linux/kernel/linux_torvalds$ grep TIMEOUT ../kselftest-6.5-rc2-net-forwarding-8.log
-> not ok 13 selftests: net/forwarding: custom_multipath_hash.sh # TIMEOUT 240 seconds
-> not ok 18 selftests: net/forwarding: gre_custom_multipath_hash.sh # TIMEOUT 240 seconds
-> not ok 19 selftests: net/forwarding: gre_inner_v4_multipath.sh # TIMEOUT 240 seconds
-> not ok 21 selftests: net/forwarding: gre_multipath_nh_res.sh # TIMEOUT 240 seconds
-> not ok 22 selftests: net/forwarding: gre_multipath_nh.sh # TIMEOUT 240 seconds
-> not ok 27 selftests: net/forwarding: ip6gre_custom_multipath_hash.sh # TIMEOUT 240 seconds
-> not ok 34 selftests: net/forwarding: ip6gre_inner_v4_multipath.sh # TIMEOUT 240 seconds
-> not ok 58 selftests: net/forwarding: no_forwarding.sh # TIMEOUT 240 seconds
-> not ok 67 selftests: net/forwarding: router_mpath_nh_res.sh # TIMEOUT 240 seconds
-> not ok 68 selftests: net/forwarding: router_mpath_nh.sh # TIMEOUT 240 seconds
-> not ok 70 selftests: net/forwarding: router_multipath.sh # TIMEOUT 240 seconds
-> marvin@defiant:~/linux/kernel/linux_torvalds$
+>       union pre_op_attr switch (bool attributes_follow) {
+>       case TRUE:
+>            wcc_attr  attributes;
+>       case FALSE:
+>            void;
+>       };
+> 
+> ...we can just set the attributes_follow flag to false there in that
+> case.
+> 
+> That's not possible with v4, AFAICT. Several of the *4resok structures
+> contain a change_info4, which just looks like this:
+> 
+> struct change_info4 {
+>         bool            atomic;
+>         changeid4       before;
+>         changeid4       after;
+> };
 
-The test seem to be stuck despite adding SIGTERM cleanup to all tests
-that timed out:
+Yes...  I was thinking of GETATTR which reports a bitmap of all the
+attributes that it can return.  Though I'm not sure if the server is
+"allowed" to not return something that it has said is "supported".  And
+I think changeid has to be "supported".  I'm not sure.
 
-# selftests: net/forwarding: sch_ets.sh
-# TEST: ping vlan 10                                                  [ OK ]
-# TEST: ping vlan 11                                                  [ OK ]
-# TEST: ping vlan 12                                                  [ OK ]
-# Running in priomap mode
-# Testing ets bands 3 strict 3, streams 0 1
-# TEST: band 0                                                        [ OK ]
-# INFO: Expected ratio >95% Measured ratio 100.00
-# TEST: band 1                                                        [ OK ]
-# INFO: Expected ratio <5% Measured ratio 0
-# Testing ets bands 3 strict 3, streams 1 2
-# TEST: band 1                                                        [ OK ]
-# INFO: Expected ratio >95% Measured ratio 100.00
-# TEST: band 2                                                        [ OK ]
-# INFO: Expected ratio <5% Measured ratio 0
-# Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
-# TEST: band 0                                                        [ OK ]
-# INFO: Expected ratio >95% Measured ratio 100.00
-# TEST: band 1                                                        [ OK ]
-# INFO: Expected ratio <5% Measured ratio 0
-# Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 1 2
-# TEST: bands 1:2                                                     [ OK ]
-# INFO: Expected ratio 2.00 Measured ratio 2.00
-# Testing ets bands 3 quanta 3300 3300 3300, streams 0 1 2
-# TEST: bands 0:1                                                     [ OK ]
-# INFO: Expected ratio 1.00 Measured ratio .99
-# TEST: bands 0:2                                                     [ OK ]
-# INFO: Expected ratio 1.00 Measured ratio .99
-# Testing ets bands 3 quanta 5000 3500 1500, streams 0 1 2
-# TEST: bands 0:1                                                     [ OK ]
-# INFO: Expected ratio 1.42 Measured ratio 1.42
-# TEST: bands 0:2                                                     [ OK ]
-# INFO: Expected ratio 3.33 Measured ratio 3.33
-# Testing ets bands 3 quanta 5000 8000 1500, streams 0 1 2
-# TEST: bands 0:1                                                     [ OK ]
-# INFO: Expected ratio 1.60 Measured ratio 1.59
-# TEST: bands 0:2                                                     [ OK ]
-# INFO: Expected ratio 3.33 Measured ratio 3.33
-# Testing ets bands 2 quanta 5000 2500, streams 0 1
-# TEST: bands 0:1                                                     [ OK ]
-# INFO: Expected ratio 2.00 Measured ratio 1.99
-# Running in classifier mode
-# Testing ets bands 3 strict 3, streams 0 1
-# TEST: band 0                                                        [ OK ]
-# INFO: Expected ratio >95% Measured ratio 100.00
-# TEST: band 1                                                        [ OK ]
-# INFO: Expected ratio <5% Measured ratio 0
-# Testing ets bands 3 strict 3, streams 1 2
-# TEST: band 1                                                        [ OK ]
-# INFO: Expected ratio >95% Measured ratio 100.00
-# TEST: band 2                                                        [ OK ]
-# INFO: Expected ratio <5% Measured ratio 0
-# Testing ets bands 4 strict 1 quanta 5000 2500 1500, streams 0 1
+But anyway, that doesn't help change_info4 which comes with
+directory-modifying operation.
 
-What is happening is a stuck mousezahn loop:
+> 
+> We can set "atomic" to false (and this patch does that in this
+> situation), but I don't believe there is any alternative to the change
+> attribute. If the underlying fs doesn't support native change attrs, the
+> server is expected to fake one up somehow (usually from the ctime).
 
-root      558266    2732  0 01:17 pts/2    00:00:23 mausezahn veth0.10 -p 8000 -A 192.0.2.1 -B 192.0.2.2 -c 0 -a own -b ba:33:37:81:dc:5
-root      558273    2732  0 01:17 pts/2    00:00:23 mausezahn veth0.11 -p 8000 -A 192.0.2.17 -B 192.0.2.18 -c 0 -a own -b ba:33:37:81:dc
+I had a look again at the current code and your patch, and I think that
+if the "post' vfs_getattr() fails, then the operation succeeds, the
+change_info is marked non-atomic (as you say) and the "after" changeid is
+set to an uninitialised value.  Is that right?  Did I miss something?
+Maybe we should set it to the pre value plus 1.
 
-$ sudo strace -p 558266
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
-ioctl(5, SIOCGIFINDEX, {ifr_name="veth0.10"}) = -1 ENODEV (No such device)
+It probably doesn't matter at all in practice, but if I'm right and it
+is using an uninitialized value, we should at least fix that.
 
-I am not sure if this will ever complete, or is it a runaway loop?
+Thanks - your v3 patch looks good in general.  I like the must_check and
+the goto structure.
 
-Probably it is stuck, for nothing was written to the test log for 71 minutes.
+Thanks,
+NeilBrown
 
-I hope we are coming closer to the cause.
 
-Previously I didn't figure out what hanged.
+> 
+> We could (in principle) allow the operation to proceed on v3 even if
+> fh_fill_pre_attrs fails, but I don't think we can do the same thing with
+> v4. That said, if getattr is failing then it's somewhat likely that
+> other operations will fail too, so aborting the operation in this
+> situation doesn't seem too onerous.
+> 
+> -- 
+> Jeff Layton <jlayton@kernel.org>
+> 
 
-FWIW, I will post the patches for the scripts that timed out for your review.
-
-Kind regards,
-Mirsad
