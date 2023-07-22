@@ -2,182 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0F775DCAC
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 14:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A38E475DCA9
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 14:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbjGVMoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 08:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
+        id S230393AbjGVMnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 08:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjGVMoF (ORCPT
+        with ESMTP id S229903AbjGVMnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 08:44:05 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C90268E
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 05:44:03 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbc54cab6fso22550815e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 05:44:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690029842; x=1690634642;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YeCObNb4PmolJTFe26id2IecwNBs81NuN62SQUhE5h0=;
-        b=pUM+520vb2S92A6ynS7MBf+a+TvlSycieG6x/eLAxB9vkNf2NAAk3hKz2lVbEhN6Km
-         9D+OpTxN358e0ePT4GlQNjD4y8JMqJED6JHYZ1vhglRCGL+/9vv8wgBa/4HC0Fg3s8wl
-         rq+o2tb+8mmawwLyIZAoIgVi0mtbElZCDvcWyHCsAUhpD8yih7TyKqRWkFD9vcKvJ5l5
-         To5s+Yl8KRng8QyCvHUYBfFXpVY39ST6SArgtFX6PcsvC0376cKqK/E6lDNOuZdou2k4
-         ZmWsNfaeoEOrbmUCy2hQGQ6pkeaaasNFlU+Xmn7w+FgnOZcFNhGwUveLYe1tubOKHwSl
-         xSJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690029842; x=1690634642;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YeCObNb4PmolJTFe26id2IecwNBs81NuN62SQUhE5h0=;
-        b=FRBFbrfZeZIgNRKi3upvN7os+H4/wjZAmz7x9l4UppJwxzrD5GfrlDYjPEHkAOL0Ze
-         cfESzbXuw5uyhdC0MqcXqAazLWDBhLW3NeqHd1G4ICpwn5GAqWFroi5RSmcvCBvWgw02
-         t8h3owYycw2VRJOIfNRZikTfCl0VM7BPap6hwh5PMBNgghQ/twF+0uRtcH5CxTNBBXmP
-         FR/2WjubzuII4JTdRiY3gJYvOMVkmIdo1CNj82x+afjjl7tSRn6lUbKlXKR1w4ZHksfl
-         Oyq2w5kKjamt+DNnwtUmN49Fm31D0C6om2+lQ62E+Z5InYaMQFUHF497g2SEN3TOLY1F
-         1SAw==
-X-Gm-Message-State: ABy/qLbo2aCUfKj/RDcR2HjoHdyGNJkv7BKvT8CWu+4W17kjfCAIUEwH
-        DyYcNZIbTztQqWFW+gOnwdwRhw==
-X-Google-Smtp-Source: APBJJlESOn48Uam2uBAko67ZqktvYU2AYN1QmwgL/HAND5SbQf6wVpva7H1fOV9++dlkWv6Q6TZ77g==
-X-Received: by 2002:a05:600c:21cf:b0:3fc:e00:5275 with SMTP id x15-20020a05600c21cf00b003fc0e005275mr2809721wmj.2.1690029841797;
-        Sat, 22 Jul 2023 05:44:01 -0700 (PDT)
-Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id n11-20020a7bcbcb000000b003fba92fad35sm7985875wmi.26.2023.07.22.05.44.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 05:44:01 -0700 (PDT)
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: [PATCH v6 5/5] riscv: libstub: Implement KASLR by using generic functions
-Date:   Sat, 22 Jul 2023 14:38:50 +0200
-Message-Id: <20230722123850.634544-6-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230722123850.634544-1-alexghiti@rivosinc.com>
-References: <20230722123850.634544-1-alexghiti@rivosinc.com>
+        Sat, 22 Jul 2023 08:43:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2576F10F4;
+        Sat, 22 Jul 2023 05:43:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AE05360B3B;
+        Sat, 22 Jul 2023 12:43:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AAD5C433C7;
+        Sat, 22 Jul 2023 12:43:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690029825;
+        bh=MggwQRQ9SOVOUL60eVZBHXNGxixHb5ip6KidgI1jCmk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hjDfbxg8SlBFbpd0J4Pzy0B40QuK4+7gtNjp22NLC8HAgutGu2aQDuYPRs3EpJKdn
+         MIWEdexOI8RK5J+JLRItJmB/cZW9nEGdkzHwqpD3OyErGEfNWpKrjuZGGQaWvuePXO
+         T+P0RvRdrbPIHwy9IeRtaFal7eJB84GId7oxwiaLjr+wQJI26T2fD9cGEVuAAf2C/r
+         R/TDYZlKvRLiMRlIUVTc0yS2Cb+2XoQH33CkXY6dvCpEyK69wj5LT6la0y60xLFEND
+         x/tTWdZ1ylMafLQWhOqR8PZu1GjX8Mn5mTURcP6Rzaht5tIinv9HnuJkTgXxLtuLlE
+         R37pEcsxWJbCg==
+Date:   Sat, 22 Jul 2023 13:43:41 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mfd: maxim,max8998: Convert to DT schema
+Message-ID: <20230722-job-cod-0a501b80e778@spud>
+References: <20230721161712.31767-1-krzysztof.kozlowski@linaro.org>
+ <20230722-occupant-outflank-bf433bc728c5@spud>
+ <8324119a-ac06-da3d-dacb-5b7cc90f22eb@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="971vFZo8tH9dJKN/"
+Content-Disposition: inline
+In-Reply-To: <8324119a-ac06-da3d-dacb-5b7cc90f22eb@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can now use arm64 functions to handle the move of the kernel physical
-mapping: if KASLR is enabled, we will try to get a random seed from the
-firmware, if not possible, the kernel will be moved to a location that
-suits its alignment constraints.
 
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
----
- arch/riscv/include/asm/efi.h              |  2 ++
- arch/riscv/kernel/image-vars.h            |  1 +
- drivers/firmware/efi/libstub/Makefile     |  2 +-
- drivers/firmware/efi/libstub/riscv-stub.c | 33 +++++++++++------------
- 4 files changed, 19 insertions(+), 19 deletions(-)
+--971vFZo8tH9dJKN/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/riscv/include/asm/efi.h b/arch/riscv/include/asm/efi.h
-index 29e9a0d84b16..00b24ba55035 100644
---- a/arch/riscv/include/asm/efi.h
-+++ b/arch/riscv/include/asm/efi.h
-@@ -51,4 +51,6 @@ void efi_virtmap_unload(void);
- 
- unsigned long stext_offset(void);
- 
-+void efi_icache_sync(unsigned long start, unsigned long end);
-+
- #endif /* _ASM_EFI_H */
-diff --git a/arch/riscv/kernel/image-vars.h b/arch/riscv/kernel/image-vars.h
-index 15616155008c..ea1a10355ce9 100644
---- a/arch/riscv/kernel/image-vars.h
-+++ b/arch/riscv/kernel/image-vars.h
-@@ -27,6 +27,7 @@ __efistub__start		= _start;
- __efistub__start_kernel		= _start_kernel;
- __efistub__end			= _end;
- __efistub__edata		= _edata;
-+__efistub___init_text_end	= __init_text_end;
- __efistub_screen_info		= screen_info;
- 
- #endif
-diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-index 11aba8a041ec..dc90a31b189f 100644
---- a/drivers/firmware/efi/libstub/Makefile
-+++ b/drivers/firmware/efi/libstub/Makefile
-@@ -88,7 +88,7 @@ lib-$(CONFIG_EFI_GENERIC_STUB)	+= efi-stub.o string.o intrinsics.o systable.o \
- lib-$(CONFIG_ARM)		+= arm32-stub.o
- lib-$(CONFIG_ARM64)		+= kaslr.o arm64.o arm64-stub.o smbios.o
- lib-$(CONFIG_X86)		+= x86-stub.o
--lib-$(CONFIG_RISCV)		+= riscv.o riscv-stub.o
-+lib-$(CONFIG_RISCV)		+= kaslr.o riscv.o riscv-stub.o
- lib-$(CONFIG_LOONGARCH)		+= loongarch.o loongarch-stub.o
- 
- CFLAGS_arm32-stub.o		:= -DTEXT_OFFSET=$(TEXT_OFFSET)
-diff --git a/drivers/firmware/efi/libstub/riscv-stub.c b/drivers/firmware/efi/libstub/riscv-stub.c
-index 145c9f0ba217..c96d6dcee86c 100644
---- a/drivers/firmware/efi/libstub/riscv-stub.c
-+++ b/drivers/firmware/efi/libstub/riscv-stub.c
-@@ -30,32 +30,29 @@ efi_status_t handle_kernel_image(unsigned long *image_addr,
- 				 efi_loaded_image_t *image,
- 				 efi_handle_t image_handle)
- {
--	unsigned long kernel_size = 0;
--	unsigned long preferred_addr;
-+	unsigned long kernel_size, kernel_codesize, kernel_memsize;
- 	efi_status_t status;
- 
- 	kernel_size = _edata - _start;
-+	kernel_codesize = __init_text_end - _start;
-+	kernel_memsize = kernel_size + (_end - _edata);
- 	*image_addr = (unsigned long)_start;
--	*image_size = kernel_size + (_end - _edata);
--
--	/*
--	 * RISC-V kernel maps PAGE_OFFSET virtual address to the same physical
--	 * address where kernel is booted. That's why kernel should boot from
--	 * as low as possible to avoid wastage of memory. Currently, dram_base
--	 * is occupied by the firmware. So the preferred address for kernel to
--	 * boot is next aligned address. If preferred address is not available,
--	 * relocate_kernel will fall back to efi_low_alloc_above to allocate
--	 * lowest possible memory region as long as the address and size meets
--	 * the alignment constraints.
--	 */
--	preferred_addr = EFI_KIMG_PREFERRED_ADDRESS;
--	status = efi_relocate_kernel(image_addr, kernel_size, *image_size,
--				     preferred_addr, efi_get_kimg_min_align(),
--				     0x0);
-+	*image_size = kernel_memsize;
-+	*reserve_size = *image_size;
- 
-+	status = efi_kaslr_relocate_kernel(image_addr,
-+					   reserve_addr, reserve_size,
-+					   kernel_size, kernel_codesize, kernel_memsize,
-+					   efi_kaslr_get_phys_seed(image_handle));
- 	if (status != EFI_SUCCESS) {
- 		efi_err("Failed to relocate kernel\n");
- 		*image_size = 0;
- 	}
-+
- 	return status;
- }
-+
-+void efi_icache_sync(unsigned long start, unsigned long end)
-+{
-+	asm volatile ("fence.i" ::: "memory");
-+}
--- 
-2.39.2
+On Sat, Jul 22, 2023 at 02:25:20PM +0200, Krzysztof Kozlowski wrote:
+> On 22/07/2023 13:57, Conor Dooley wrote:
+> > On Fri, Jul 21, 2023 at 06:17:12PM +0200, Krzysztof Kozlowski wrote:
+> >> Convert the bindings for Maxim MAX8998, National/TI LP3974 Power
+> >> Management IC to DT schema.  Adjust example to real DTS and make second
+> >> interrupt optional (like on s5pv210-aries.dtsi).
+> >>
+> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >> ---
+> >>  .../devicetree/bindings/mfd/max8998.txt       | 125 -------
+> >>  .../bindings/mfd/maxim,max8998.yaml           | 324 ++++++++++++++++++
+> >>  2 files changed, 324 insertions(+), 125 deletions(-)
+> >>  delete mode 100644 Documentation/devicetree/bindings/mfd/max8998.txt
+> >>  create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max899=
+8.yaml
+> >=20
+> >> diff --git a/Documentation/devicetree/bindings/mfd/maxim,max8998.yaml =
+b/Documentation/devicetree/bindings/mfd/maxim,max8998.yaml
+> >> new file mode 100644
+> >> index 000000000000..f3c3f64fd012
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/mfd/maxim,max8998.yaml
+> >> @@ -0,0 +1,324 @@
+> >> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/mfd/maxim,max8998.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Maxim MAX8998, National/TI LP3974 Power Management IC
+> >> +
+> >> +maintainers:
+> >> +  - Krzysztof Kozlowski <krzk@kernel.org>
+> >> +
+> >> +description:
+> >> +  The Maxim MAX8998 is a Power Management IC which includes voltage/c=
+urrent
+> >> +  regulators, real time clock, battery charging controller and severa=
+l other
+> >> +  sub-blocks. It is interfaced using an I2C interface. Each sub-block=
+ is
+> >> +  addressed by the host system using different i2c slave address.
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    enum:
+> >> +      - maxim,max8998
+> >> +      - national,lp3974
+> >> +      - ti,lp3974
+> >=20
+> > Should one of these be marked as deprecated?
+>=20
+> We could deprecate national, because it was acquired by TI. But the chip
+> was actually made by National - the datasheet I found has a National
+> brand in product brief page and only the title page was added by TI.
 
+It's probably unimportant, given you say this is unlikely to be used in
+new hardware, but it does seem odd to me to have two compatibles for the
+same chip.
+
+> >> +  regulators:
+> >> +    type: object
+> >> +    additionalProperties: false
+> >> +
+> >> +    properties:
+> >> +      CHARGER:
+> >> +        type: object
+> >> +        $ref: /schemas/regulator/regulator.yaml#
+> >> +        unevaluatedProperties: false
+> >> +        description:
+> >> +          CHARGER is main battery charger current control, wrongly re=
+presented
+> >> +          as regulator.
+> >> +
+> >> +        properties:
+> >> +          regulator-min-microamp:
+> >> +            minimum: 90000
+> >> +            maximum: 800000
+> >> +
+> >> +          regulator-max-microamp:
+> >> +            minimum: 90000
+> >> +            maximum: 800000
+> >=20
+> > Did you pull these from the datasheet, or from the dts/example?
+>=20
+> From the driver.
+
+Ah, thanks. Was just curious really.
+Other than the deprecated thing looking odd, this stuff seemed fine to
+me.
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+> TBH, this is, very very old device used in very old boards which I don't
+> care about. I just want DT schema to be happy, so I don't think the
+> bindings should be really correct. It's not like anyone will make any
+> device with it.
+
+Hopefully they don't :)
+
+
+--971vFZo8tH9dJKN/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLvO/QAKCRB4tDGHoIJi
+0tLfAP44no1em1b5CNZ2wWZL3yujpgl83isbd1jgTEamT++lZAD+MBgvrcm1BHRB
+gUjp19Y4PQcbAn2EPHaj0Zj+cs1RKg4=
+=+SzQ
+-----END PGP SIGNATURE-----
+
+--971vFZo8tH9dJKN/--
