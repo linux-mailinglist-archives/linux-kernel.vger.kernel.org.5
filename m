@@ -2,251 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F09A75DD62
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 18:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E42075DD66
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 18:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbjGVQJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 12:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
+        id S229591AbjGVQPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 12:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjGVQJ2 (ORCPT
+        with ESMTP id S229468AbjGVQPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 12:09:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055F21FDF;
-        Sat, 22 Jul 2023 09:09:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8807360B9E;
-        Sat, 22 Jul 2023 16:09:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E104AC433CA;
-        Sat, 22 Jul 2023 16:09:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690042163;
-        bh=XlqnUjAAGQf18Gzjf58M0ZJvZ/hG9R61k0ineAbK0yg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Z91QhgNtkHOANe90yfLX/U5hOUMAiNke/OL9/j3Ht5B+07iM3DUhz+gU4C9IK1oZX
-         0rtJwRflazO3Amf7alGhySqNvdMl71k+O38CLyVXJmdCq3cnmnejzrrPuTPE76mHDz
-         HrdBYObfkXMjvsaPbS3C0yl9rL70+AfOLxBavegUKVqmgvvLJj/StAtjOoxigV9z45
-         c5UwUGBFRbEUFUFcI33UlkibL4uSWi1kkoBdPlMjgvkQXeez/3pcusQV3OOw9GbMAM
-         pdNO4g4rzDguYM9rea01xtvlRUM/PGqd0QkK/iI/7tIQuKZIHJCc4dvScW5IprzgYk
-         64lCFMkJ5hvqA==
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3a1ebb85f99so2233347b6e.2;
-        Sat, 22 Jul 2023 09:09:23 -0700 (PDT)
-X-Gm-Message-State: ABy/qLaF6fVt8kGdu5yZne94i4KPH+78n1M2sH5P/Jm17wRm9pqrE4p6
-        z2FYg7FszbWrFYbhs0o1n+wDaadHraq14BQ5E4A=
-X-Google-Smtp-Source: APBJJlHPpDv+VZ/4EYRfVhQzoIs3NEngzOUyMzM44psYtjM7fttRbAl0kW4RVp/GLWrbeOmB94cCdQ6/mjWWf/CvBmo=
-X-Received: by 2002:a05:6808:7c5:b0:3a0:4ff2:340 with SMTP id
- f5-20020a05680807c500b003a04ff20340mr5280903oij.57.1690042163139; Sat, 22 Jul
- 2023 09:09:23 -0700 (PDT)
+        Sat, 22 Jul 2023 12:15:14 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1E51FDF;
+        Sat, 22 Jul 2023 09:15:13 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36MFYMKv008838;
+        Sat, 22 Jul 2023 16:15:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=fcPaZKlUfF97BItefZgfwzcbT/04W5hIBwn0mC+LAys=;
+ b=mWxCCjZGIZN64zn0PBaEp98e1FqPn0126n2Ja7ROy3pA4zGThUs7Z9FaOZBt7kapb8zp
+ /0JQ7LAc6fkToccJ528nrLehnUFlrp2KUk9322+3+AmX21jYJ8kqLlBY/TfkIdFE/PEg
+ yIWmgeTePpoll+hwrVsWHI76Zjj92cfsUHuc6WC/psIwmB6lnVz28pzK8mXf0Xg4zZk+
+ sECohJ+JnAA+ZmJwvSVhlowX3yGkqyn/d9BWM1npocyfllJSYtn+pNmb3BDnsbs7Earp
+ MFXjp0c8ueuLMQI0CUDynVr0MY+rSHCKxNYvtKpZM2Xpnbh4kvWN5LrFdhUwljmfhI/H fg== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s0gdp9gsv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 22 Jul 2023 16:15:04 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36MEa3Sj003390;
+        Sat, 22 Jul 2023 16:15:03 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3rv65y819u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 22 Jul 2023 16:15:03 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36MGEx843146312
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 22 Jul 2023 16:14:59 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F4252004B;
+        Sat, 22 Jul 2023 16:14:59 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E07D72004D;
+        Sat, 22 Jul 2023 16:14:58 +0000 (GMT)
+Received: from osiris (unknown [9.171.82.123])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Sat, 22 Jul 2023 16:14:58 +0000 (GMT)
+Date:   Sat, 22 Jul 2023 18:14:57 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v2] s390: use obj-y to descend into drivers/s390/
+Message-ID: <20230722161457.7417-B-hca@linux.ibm.com>
+References: <20230721171358.3612099-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721171358.3612099-1-masahiroy@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: AMpnYRmKKivFCMYBjnapAa-u-V0nxNnk
+X-Proofpoint-GUID: AMpnYRmKKivFCMYBjnapAa-u-V0nxNnk
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20220109181529.351420-1-masahiroy@kernel.org> <20220109181529.351420-3-masahiroy@kernel.org>
- <YdwZe9DHJZUaa6aO@buildd.core.avm.de> <20230623144544.GA24871@lxhi-065> <20230719190902.GA11207@lxhi-064.domain>
-In-Reply-To: <20230719190902.GA11207@lxhi-064.domain>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 23 Jul 2023 01:08:46 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQhn28Wbb97+U_3n0EwoKnonjFoY3OnKcE7aqnSgRc4ow@mail.gmail.com>
-Message-ID: <CAK7LNAQhn28Wbb97+U_3n0EwoKnonjFoY3OnKcE7aqnSgRc4ow@mail.gmail.com>
-Subject: Re: [PATCH 3/5] kbuild: rename cmd_{bzip2,lzma,lzo,lz4,xzkern,zstd22}
-To:     Eugeniu Rosca <erosca@de.adit-jv.com>
-Cc:     Nicolas Schier <n.schier@avm.de>,
-        SzuWei Lin <szuweilin@google.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, Matthias.Thomae@de.bosch.com,
-        yyankovskyi@de.adit-jv.com, Dirk.Behme@de.bosch.com,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-22_06,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=385
+ malwarescore=0 spamscore=0 bulkscore=0 suspectscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 clxscore=1011 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307220146
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 4:09=E2=80=AFAM Eugeniu Rosca <erosca@de.adit-jv.co=
-m> wrote:
->
-> Hello Yamada-san,
->
-> On Fri, Jun 23, 2023 at 04:45:44PM +0200, Eugeniu Rosca wrote:
-> > Hello Yamada-san,
-> > Hello Nicolas,
-> > Cc: SzuWei Lin (committer of the patch in AOSP [1])
-> > Cc: Kbuild
-> >
-> > On Mon, Jan 10, 2022 at 12:33:15PM +0100, Nicolas Schier wrote:
-> > > On Mon, Jan 10, 2022 at 03:15:27AM +0900, Masahiro Yamada wrote:
-> > > > GZIP-compressed files end with 4 byte data that represents the size
-> > > > of the original input. The decompressors (the self-extracting kerne=
-l)
-> > > > exploit it to know the vmlinux size beforehand. To mimic the GZIP's
-> > > > trailer, Kbuild provides cmd_{bzip2,lzma,lzo,lz4,xzkern,zstd22}.
-> > > > Unfortunately these macros are used everywhere despite the appended
-> > > > size data is only useful for the decompressors.
-> > > >
-> > > > There is no guarantee that such hand-crafted trailers are safely ig=
-nored.
-> > > > In fact, the kernel refuses compressed initramdisks with the garbag=
-e
-> > > > data. That is why usr/Makefile overrides size_append to make it no-=
-op.
-> > > >
-> > > > To limit the use of such broken compressed files, this commit renam=
-es
-> > > > the existing macros as follows:
-> > > >
-> > > >   cmd_bzip2   --> cmd_bzip2_with_size
-> > > >   cmd_lzma    --> cmd_lzma_with_size
-> > > >   cmd_lzo     --> cmd_lzo_with_size
-> > > >   cmd_lz4     --> cmd_lz4_with_size
-> > > >   cmd_xzkern  --> cmd_xzkern_with_size
-> > > >   cmd_zstd22  --> cmd_zstd22_with_size
-> > > >
-> > > > To keep the decompressors working, I updated the following Makefile=
-s
-> > > > accordingly:
-> > > >
-> > > >   arch/arm/boot/compressed/Makefile
-> > > >   arch/h8300/boot/compressed/Makefile
-> > > >   arch/mips/boot/compressed/Makefile
-> > > >   arch/parisc/boot/compressed/Makefile
-> > > >   arch/s390/boot/compressed/Makefile
-> > > >   arch/sh/boot/compressed/Makefile
-> > > >   arch/x86/boot/compressed/Makefile
-> > > >
-> > > > I reused the current macro names for the normal usecases; they prod=
-uce
-> > > > the compressed data in the proper format.
-> > > >
-> > > > I did not touch the following:
-> > > >
-> > > >   arch/arc/boot/Makefile
-> > > >   arch/arm64/boot/Makefile
-> > > >   arch/csky/boot/Makefile
-> > > >   arch/mips/boot/Makefile
-> > > >   arch/riscv/boot/Makefile
-> > > >   arch/sh/boot/Makefile
-> > > >   kernel/Makefile
-> > > >
-> > > > This means those Makefiles will stop appending the size data.
-> > > >
-> > > > I dropped the 'override size_append' hack from usr/Makefile.
-> > > >
-> > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > > ---
-> > >
-> > > Reviewed-by: Nicolas Schier <n.schier@avm.de>
-> >
-> > If you don't mind, I would like to report another instance of
-> > "/bin/sh: Argument list too long" while building some out-of-tree *ko
-> > in a number of downstream v5.15.78+ kernels containing [1].
-> >
-> > For some time now, we've been living with ugly hacks to overcome it.
-> >
-> > Fortunately, recent git bisecting efforts apparently reveal that
-> > current v5.17-rc1 commit (and its backports in downstream) look to
-> > act as the culprit (confirmed on several host machines). So, I
-> > started to have some hopes of a long-term solution and hence
-> > sharing the findings as a first step.
-> >
-> > I am not entirely clear how to properly trace this behavior, since no
-> > amount of "make V=3D1/V=3D2" uncovers more details. Purely by accident,=
- I
-> > looked into the top/htop output (while running the repro) and
-> > noticed several processes doing:
-> >
-> > /bin/sh -c dec_size=3D0; for F in <humongous list of filenames>; do \
-> >   fsize=3D$(sh /abs/path/to/scripts/file-size.sh $F); \
-> >   dec_size=3D$(expr $dec_size + $fsize); done; printf "%08x\n" $dec_siz=
-e \
-> >   | sed 's/\(..\)/\1 /g' | { read ch0 ch1 ch2 ch3; for ch in \
-> >   $ch3 $ch2 $ch1 $ch0; do printf '%s%03o' '\\' $((0x$ch)); done; }
-> >
-> > As it was the case in the recent report [2], the above command seems
-> > to require/assume generous amount of space for the shell arguments.
-> >
-> > I still haven't compared the exact traces before and after this commit,
-> > to quantify by how much the shell argument list is increased (TODO).
-> >
-> > Another aspect is that current commit seems to introduce the
-> > regression in a multi-threaded make only. The issue is apparently
-> > masked by 'make -j1' (TBC), which adds another level of complexity.
-> >
-> > Unfortunately, the build use-case is highly tailored to downstream
-> > and is not repeatable against vanilla out of the box.
-> >
-> > I will continue to increase my understanding behind what's happening.
-> > In case there are already any suggestions, would appreciate those.
->
-> JFYI, we've got confirmation from Qualcomm Customer Support interface
-> that reverting [1] heals the issue on QC end as well. However, it looks
-> like none of us has clear understanding how to properly
-> troubleshoot/trace/compare the behavior before and after the commit.
->
-> I would happily follow any suggestions.
->
-> > [1] https://android.googlesource.com/kernel/common/+/bc6d3d83539512
-> >     ("UPSTREAM: kbuild: rename cmd_{bzip2,lzma,lzo,lz4,xzkern,zstd22}")
-> >
-> > [2] https://lore.kernel.org/linux-kbuild/20230616194505.GA27753@lxhi-06=
-5/
->
-> --
-> Best regards,
-> Eugeniu Rosca
+On Sat, Jul 22, 2023 at 02:13:58AM +0900, Masahiro Yamada wrote:
+> The single build rule does not work with the drivers-y syntax. [1]
+> 
+> Use the standard obj-y syntax. It moves the objects from drivers/s390/
+> to slightly lower address, but fixes the reported issue.
+> 
+> [1]: https://lore.kernel.org/linux-kbuild/d57ba55f-20a3-b836-783d-b49c8a161b6e@kernel.org/T/#m27f781ab60acadfed8a9e9642f30d5414a5e2df3
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Tested-by: Jiri Slaby <jirislaby@kernel.org>
+> ---
+> 
+> Changes in v2:
+>   - rephase the commit log
+> 
+>  arch/s390/Makefile | 1 -
+>  drivers/Makefile   | 2 ++
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 
-
-
-
-
-The only suspicious code I found in the Android common kernel
-is the following line in scripts/Makefile.lib
-
-
-
-quiet_cmd_zstd =3D ZSTD    $@
-      cmd_zstd =3D { cat $(real-prereqs) | $(ZSTD) -19; $(size_append); } >=
- $@
-
-
-
-
-
-
-
-If you see the corresponding line in the mainline kernel,
-it looks as follows:
-
-
-quiet_cmd_zstd =3D ZSTD    $@
-      cmd_zstd =3D cat $(real-prereqs) | $(ZSTD) -19 > $@
-
-
-
-
-
-
-
-
-7ce7e984ab2b218d6e92d5165629022fe2daf9ee depends on
-64d8aaa4ef388b22372de4dc9ce3b9b3e5f45b6c
-
-
-But, Android common kernel back-ported only
-7ce7e984ab2b218d6e92d5165629022fe2daf9ee
-
-
-
-Please backport 64d8aaa4ef388b22372de4dc9ce3b9b3e5f45b6c
-and see if the problem goes away.
-
-
---=20
-Best Regards
-Masahiro Yamada
+Applied, thanks!
