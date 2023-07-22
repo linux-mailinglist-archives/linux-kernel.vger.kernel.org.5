@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBC775D80A
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 02:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A6A75D80D
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 02:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbjGVAJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 20:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37516 "EHLO
+        id S230338AbjGVAMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 20:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjGVAJQ (ORCPT
+        with ESMTP id S229529AbjGVAMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 20:09:16 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD0C30FF;
-        Fri, 21 Jul 2023 17:09:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1689984553; x=1690589353; i=w_armin@gmx.de;
- bh=K7v4oJ8bdkwFUPWX9U+8bpz7Y/cvFtbhuun3p54pee0=;
- h=X-UI-Sender-Class:To:From:Subject:Date;
- b=qwKRhfghIa3keHMzx4uSFavLV4CO/ROdE/39zcMNui9uRJvQl5FnR+xG+bQ0ANHoxZjdo1d
- vpgX9ySRQ6X7Xj8OQlIEqD+xT/cOMbu5OvZu2tUIk+roni2wAVMM3jfc96zn42qvAEMRYkn+x
- pE6ubj5wG7ijk+L5D97T4I0WFKc0a64omALaFom58Hi4HpccwvVRpQvnv7VucTOtvfBGlRLYK
- pTya5W20i23696QtA2woG9xsc2YP3K11/+yKGEiCGJQ8tUaPMDLaALqHGTk13/sN7gVMzzhS3
- fRi6qu4fHAXt0V7mHYNZRTglQXx49XkAY5swSojd+bE4AnWWJFrA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MSKuA-1qThDt1SbA-00Sdzc; Sat, 22
- Jul 2023 02:09:13 +0200
-To:     "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Armin Wolf <W_Armin@gmx.de>
-Subject: WMI probe failure when reprobing
-Message-ID: <1252c8fb-8d5f-98ad-b24a-5fabec2e1c8b@gmx.de>
-Date:   Sat, 22 Jul 2023 02:09:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 21 Jul 2023 20:12:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D31F12F;
+        Fri, 21 Jul 2023 17:12:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BA50F61DB5;
+        Sat, 22 Jul 2023 00:12:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EF61C433C7;
+        Sat, 22 Jul 2023 00:12:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689984762;
+        bh=xIn7LIW3Am88HZKhucqW4ZhBJ10lWTPD5eayxdEyWaE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gyYy41QLKxVEbPCOs5ut0eKmId8vMYna3jIBKca9HALw+vRaaQiZAxwomzgKIml9P
+         acbWpAs0re0qFbwHTf4KlPM45s9hX4y8GLx+9PlsfRK6GXkc5X8nEhbkfA/rZ74qNb
+         blBbu4rIM+wJQDeR7Yl+YNCkOl4+LYKymGkfx/qkPrtdpaV32+wJ4r8QD6cD2iXkq2
+         pa0pWZGOMTEutEV5HRHIF5/ecGwyNH2ahpxcGxZOKG3RizN+zFHefx4wlFXRAGtTHv
+         MT5gWKmpcCk3pjXOa8ApLV5O9UWJT3roqoclABijDRKEBD/68AGxOhd5qLtlf8ZWU9
+         f+5FV09oZZtJA==
+Date:   Sat, 22 Jul 2023 01:12:38 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Francesco Dolcini <francesco@dolcini.it>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH v1 1/2] arm64: dts: freescale: verdin-imx8mp: dahlia: add
+ sound card
+Message-ID: <ZLse9jKdQqJILbVJ@finisterre.sirena.org.uk>
+References: <20230719125430.249644-1-francesco@dolcini.it>
+ <20230719125430.249644-2-francesco@dolcini.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Provags-ID: V03:K1:ieJ3CecbsjmP11vfKIEAPflCd7vibaLKj4sekxzv5yerJQjjw2l
- E80/JeqZPifOz4f5gvvepLlGpQMVXNAoD2TdhRXnh5cqmpw9cljCh9LmzSJ6JA+3n3tHdo4
- Z1oBA/+bptEgHJCu+Z9bRKjKcvsqA82iz1M8RBmeXKbwjbVCQWvdu//vodR22h2G/7uotmk
- sqMV1tgliyacBV9AGc2qA==
-UI-OutboundReport: notjunk:1;M01:P0:5atBhy26hpM=;h62WOA6O+MGfKxeXV1o+KhFnYrd
- qcWGHqmtYZZ293JgLXaAI1hdhnX1RoWlbc2uDuCP7AOALvBDI70GBK1ZiSil6LPEJIO4zigH3
- jUgzMKukwcj/Wb33Un7cK3l+kyFhnK3452c0DTr+a1Wjy+DpveFWad7u4UNr88xKlKpgDzVyU
- 7whK2sELy/rUC9f1nvYUKWJyx5BWxjs4BpyVuAAeBFHHkN1NY1n2ym+eEwfG4VJcLqxOLzLPB
- iYJDObt8B+nX0dfVTvP/cpLOOPsYmtjN8+wjcy3XNMpuZTkTlDHWpQ462ZXyZQFl2v21Eak3r
- ws1lNxRU51EAU3oZU2/qGaYizTX+aggcNgQQ8vBXRuIDpXi7qCGJpGZmL3Zzhz359nNAhjnJX
- GMH1Ot4yWXgfCgw1KMFIJi56AHloqQ5J9ezfNFFFZKwcMSZ8GQBvAroc0EGOeJKLBjQPXgzr9
- rdyVvN4ZioAtuo5MO+BlZiQLQaIY3XAIuDbP8HjxSYX5E05sL7MoelaFr7OopkFdG6xmUL9IK
- xL+7UOq9ufhzmIKOBhbROOK9qiWxyo0tlHoeBfONSl7gqyI4LrwYx4YSDKBYpl4IDcLaAMrOM
- 8LahbpVfMoZpqybPCNQeaWOZux9Z+IRQXoA5rJT/sh4DO4oNM2CYGLzKMtMYhkZc3/jVdMwak
- FcsamAI9zH4fFSDXGylb22GdGyhrWX6QbbyugjBUZrHNOljgz4m1dABiYYzpKNBAWe36ph25l
- Kjfq+tMNUM8OH3J8Yb5IxJv/YsctGMJ2TqVEYRIJtmwTwm2m8RJtyF8br1xHZPdXHmSe+XVab
- OHYaZSGr/Qea4UjG7IxV/KWBIUgbO5iVyAUaYSb88PqeBu4OkaOhCNzgRDkQDCIeWqx2yX2Qo
- iS7eGxmkelcnYdLUDVlLAfNsYqF3uvW9XaMMtSyFASSuklsvJrJ5JKBz+D5vos6rFfGBuNVAz
- 4W++SFgM4SXnSpk2gOIg726BE8M=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ern2nQKVDGv3ys/b"
+Content-Disposition: inline
+In-Reply-To: <20230719125430.249644-2-francesco@dolcini.it>
+X-Cookie: Give him an evasive answer.
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-i just noticed that under some circumstances, ACPI WMI devices might fail to reprobe
-when being manually unbound and later rebound.
-Example:
+--ern2nQKVDGv3ys/b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-1. ACPI WMI device #1 binds and registers WMI device with GUID
-"05901221-D566-11D1-B2F0-00A0C9062910", resulting in the device
-being named "05901221-D566-11D1-B2F0-00A0C9062910".
-2. ACPI WMI device #2 binds and registers WMI device with GUID
-"05901221-D566-11D1-B2F0-00A0C9062910", resulting in the device
-being named "05901221-D566-11D1-B2F0-00A0C9062910-1".
-3. ACPI WMI device #1 is manually unbound and later rebound,
-now the WMI device with GUID "05901221-D566-11D1-B2F0-00A0C9062910"
-is being named "05901221-D566-11D1-B2F0-00A0C9062910-1" too, since
-device naming depends on the number of GUIDs currently known to
-the WMI subsystem.
-4. A WMI device named "05901221-D566-11D1-B2F0-00A0C9062910-1" already
-exists, causing the registration of the new WMI device to fail.
+On Wed, Jul 19, 2023 at 02:54:29PM +0200, Francesco Dolcini wrote:
+> From: Francesco Dolcini <francesco.dolcini@toradex.com>
+>=20
+> Add WM8904 based analog sound card to Dahlia carrier board.
 
-I thought about some possible ways to solve this naming issue:
+Tested-by: Mark Brown <broonie@kernel.org>
 
-- symlinks to simulate old WMI devices names, new WMI device names similar to "wmiX" with X being a global unique id
-- no symlinks, new WMI device names similar to "wmiX" with X being a global unique id
-- use global id instead of GUID number
+It'd be great to get this merged for the benefit of my CI.
 
-The first approach has full sysfs backward compatibility but i do not know how to create symlinks inside the "devices"
-directory. The second approach is the easiest and cleanest one, but provides no sysfs backward compatibility. The last
-approach provides only limited sysfs backward compatibility and only for programs which can handle "<GUID>-X" WMI device
-names.
+--ern2nQKVDGv3ys/b
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Currently, there is one single stable sysfs ABI entry concerning the WMI subsystem (for wmi-bmof), and two testing
-sysfs ABI entries (dell-wmi-privacy, sbl-fw-update). I do not know of any userspace programs relying on these ABIs,
-but i suspect there might be a couple of scripts which might be affected.
+-----BEGIN PGP SIGNATURE-----
 
-Which approach should i take to solve this problem?
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS7HvUACgkQJNaLcl1U
+h9Almwf/RE9gKuJIW6kdVX9eOd0obNnWUVlYY1rqDmgHoYJoTaFbISwffFbAXEtz
+MIazx9+1AmE3UynGsAtfoMXSLIG69kaXlsiEM99PGuNE2A3zi0ZR6WeFNZaYkKAu
+4bhjKByjpn+NKiPCWgw51UHMzoXSEKDNWpkagcIav/cskHkN7IILmqvsuF3buAMu
+qZSnll+8BXIUUpnfSpHpW6qfBhj86SzEfsYkDjJnorLHCwVui+dalvyGHKLsxQhj
+YBWVy4hFSogXNwNLrcXkhxbJM+rxdQqtSpUKGz5J+7b5OkbG5FpjQOAF6QG/95GH
+zoU3QrHYoa0AQfFAPMqXTf98zIR6TA==
+=ady3
+-----END PGP SIGNATURE-----
 
-Armin Wolf
-
+--ern2nQKVDGv3ys/b--
