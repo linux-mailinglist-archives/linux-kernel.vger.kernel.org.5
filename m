@@ -2,104 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D479275DC3B
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 13:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F8875DC15
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 13:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbjGVL6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 07:58:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
+        id S229666AbjGVLxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 07:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230023AbjGVL6H (ORCPT
+        with ESMTP id S229560AbjGVLxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 07:58:07 -0400
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0CB185;
-        Sat, 22 Jul 2023 04:57:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1690026686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K1kXVJYmeYFGDk1jOMEZ/tC/buoxy4+qLy2zmLpTzDA=;
-        b=i1/AC2mEsJ/+3v8VXsJj7b5qxQCSPhPpXMsSkM1WKYcx/atu7FEWHrwJbkbJNaNLmwr4Fn
-        wOoS3UGuAPu5rJgo+8dp6VZuOXjy9xKcryvGL6RT2QaTe5DYNE4zHDdOUTERRhqGerOTfA
-        EqLGbBpljEoTA9PVM7+7rzf1WRXJ5RU=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v2 16/22] i2c: pxa: Remove #ifdef guards for PM related functions
-Date:   Sat, 22 Jul 2023 13:50:40 +0200
-Message-Id: <20230722115046.27323-17-paul@crapouillou.net>
-In-Reply-To: <20230722115046.27323-1-paul@crapouillou.net>
-References: <20230722115046.27323-1-paul@crapouillou.net>
+        Sat, 22 Jul 2023 07:53:08 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7D93AB8;
+        Sat, 22 Jul 2023 04:52:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=gpMai+RGZVHO11XO50XWI3/EZ38TmKbr58h9zhvA2Ng=; b=wLJ2lxgjKeS0A5E5folJrJ1QmX
+        ENdR+hijE1xMd2fkD0roQAMmMydabk+nSI7LKbibanWBfivtAqYdo2MPw2uXJS7Xi1zL+bi3nQCvr
+        SfZt/5QFdOl4ZT+uNXsALE4jOzaFpKUEcrtH3xBCKQJMn5RoLiGx4IWeF28Li2DxgUaY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qNBA9-001vyL-VK; Sat, 22 Jul 2023 13:52:41 +0200
+Date:   Sat, 22 Jul 2023 13:52:41 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Tristram.Ha@microchip.com
+Cc:     o.rempel@pengutronix.de, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
+        linux@armlinux.org.uk, devicetree@vger.kernel.org,
+        pabeni@redhat.com, kuba@kernel.org, davem@davemloft.net,
+        Arun.Ramadoss@microchip.com, edumazet@google.com,
+        f.fainelli@gmail.com, conor+dt@kernel.org, olteanv@gmail.com,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org
+Subject: Re: [PATCH net-next v2 6/6] net: dsa: microchip: ksz9477: make
+ switch MAC address configurable
+Message-ID: <95007aa6-a09b-4a05-93cb-65db405a2549@lunn.ch>
+References: <20230721135501.1464455-1-o.rempel@pengutronix.de>
+ <20230721135501.1464455-7-o.rempel@pengutronix.de>
+ <BYAPR11MB3558A296C1D1830F15AC6BEFEC3FA@BYAPR11MB3558.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR11MB3558A296C1D1830F15AC6BEFEC3FA@BYAPR11MB3558.namprd11.prod.outlook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new PM macros for the suspend and resume functions to be
-automatically dropped by the compiler when CONFIG_PM or
-CONFIG_PM_SLEEP are disabled, without having to use #ifdef guards.
+> The DSA driver used to have an API to set the MAC address to the switch,
+> but it was removed because nobody used it.
 
-This has the advantage of always compiling these functions in,
-independently of any Kconfig option. Thanks to that, bugs and other
-regressions are subsequently easier to catch.
+That is a long time ago, when Marvell was about the only supported
+vendor. As far as i understood, it was used to set the MAC source
+address used when sending pause frames. But since pause frames are
+link local by definition, and the switches had a reasonable default,
+it was removed.
 
-Note that the behaviour is slightly different than before; the original
-code wrapped the suspend/resume with #ifdef CONFIG_PM guards, which
-resulted in these functions being compiled in but never used when
-CONFIG_PM_SLEEP was disabled.
-
-Now, those functions are only compiled in when CONFIG_PM_SLEEP is
-enabled.
-
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
----
- drivers/i2c/busses/i2c-pxa.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-pxa.c b/drivers/i2c/busses/i2c-pxa.c
-index 937f7eebe906..65a18d73be5c 100644
---- a/drivers/i2c/busses/i2c-pxa.c
-+++ b/drivers/i2c/busses/i2c-pxa.c
-@@ -1491,7 +1491,6 @@ static void i2c_pxa_remove(struct platform_device *dev)
- 	clk_disable_unprepare(i2c->clk);
- }
- 
--#ifdef CONFIG_PM
- static int i2c_pxa_suspend_noirq(struct device *dev)
- {
- 	struct pxa_i2c *i2c = dev_get_drvdata(dev);
-@@ -1516,17 +1515,12 @@ static const struct dev_pm_ops i2c_pxa_dev_pm_ops = {
- 	.resume_noirq = i2c_pxa_resume_noirq,
- };
- 
--#define I2C_PXA_DEV_PM_OPS (&i2c_pxa_dev_pm_ops)
--#else
--#define I2C_PXA_DEV_PM_OPS NULL
--#endif
--
- static struct platform_driver i2c_pxa_driver = {
- 	.probe		= i2c_pxa_probe,
- 	.remove_new	= i2c_pxa_remove,
- 	.driver		= {
- 		.name	= "pxa2xx-i2c",
--		.pm	= I2C_PXA_DEV_PM_OPS,
-+		.pm	= pm_sleep_ptr(&i2c_pxa_dev_pm_ops),
- 		.of_match_table = i2c_pxa_dt_ids,
- 	},
- 	.id_table	= i2c_pxa_id_table,
--- 
-2.40.1
-
+    Andrew
