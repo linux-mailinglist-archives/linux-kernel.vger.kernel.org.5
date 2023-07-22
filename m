@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FB975DF29
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 00:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E97D75DF2C
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 00:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbjGVWaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 18:30:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52214 "EHLO
+        id S229656AbjGVWjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 18:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGVWaK (ORCPT
+        with ESMTP id S229452AbjGVWjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 18:30:10 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CA810DC;
-        Sat, 22 Jul 2023 15:30:09 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6b9ec15e014so2606674a34.0;
-        Sat, 22 Jul 2023 15:30:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20221208; t=1690065008; x=1690669808;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t5mJll+udYAOXh1dqyerngRmFpTg3nf1DZBJwkPP9FE=;
-        b=fmBlKEPNTll7Q+ApeducTu+N4D5OEnPiqEyE3puoZ/f1QD58JAZi3eDATZeNITi4jM
-         NfCgRpKG9YqZ7gTqit6ClJvIXxAk6p9bQG6pv0wRSvmMg6/61kNc8VHkifEP2v5aqsjg
-         cQIdaTdDbMnzV+GtdSdip8WB6G+CpgJTfTVWjkqkUBB14+1nLPcBTPuMMwj1Rqqyunzc
-         fJ/hBqVXc716JoOJbFu7BB3PgKyiN31fKUwHTqyLY87rTDz6TBhrrHyjVRBM5mxmqEA/
-         UdrAVEnebIlMeTFvBVz9eydtQ+K6ptB6xhScRnBOHxGTVfzldVCuZrLojZqa5elrCdlf
-         7+SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690065008; x=1690669808;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t5mJll+udYAOXh1dqyerngRmFpTg3nf1DZBJwkPP9FE=;
-        b=Xf47bS03Oqmz2itgy4hcC0EYosjD0PM5VKWlNtJ0kn8yZm2IqKgx0Q7VyKtRD6c4CD
-         mfm8Tn6CNglFpRIHSHKkrrwBInUSPkQnR/YXsEtAYo8RawPGWvA87hkHd2ihWVK5sLBW
-         iJjS7eCSNUoM9eOTOqhS8BkUu6EZjunCs8gXuIB2iKedPegJoNBR4b2F2FLPF+6T5oeC
-         vIME15YNXBe5IOGTidJE9zHPl6yKKDdDQweQXt98VAMBwxVmwZUhsi80sOsgbMlsiXi3
-         /w3VL6M4uSviPfrnBbcM3T5yLPdENS6LkSxAlGLSxcisgfvidMMeeJeOhKf0dE93uj+J
-         ziyQ==
-X-Gm-Message-State: ABy/qLZP1FvFGD3CycklsjkMhLW+ufJKWcxduOGEV4BrGaB5/vJ9Xbdj
-        oKCZCaWWwJJzf5Ukx1Iig92R+tXL43Mmd1dhYbs=
-X-Google-Smtp-Source: APBJJlFCI6V1NvyiDmCqWK0vJJCL9x89CoMWJp9xHrtgspyjqNJyxayK/dkl5i6UuA6YH6Ew7ialEeiv9fv3vIHFAw0=
-X-Received: by 2002:a05:6358:6f0c:b0:134:61a5:7f05 with SMTP id
- r12-20020a0563586f0c00b0013461a57f05mr1831945rwn.10.1690065008440; Sat, 22
- Jul 2023 15:30:08 -0700 (PDT)
+        Sat, 22 Jul 2023 18:39:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691B210DC;
+        Sat, 22 Jul 2023 15:39:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E2DB960BDC;
+        Sat, 22 Jul 2023 22:39:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 409D2C433C9;
+        Sat, 22 Jul 2023 22:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690065583;
+        bh=5PNN8we9ZXbyJX4vwmKQL4+M0AeqQiN+w4Vj/oDaEuc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=eS8E/DqEQGMKSymzT02ie4/03Y4vRvf/GMAYK+Lkyw9KHlklDB8b0xUuHHLdQMSuD
+         5VRf3J5SHSqAMsqoPeBtWnuNZNgSxYsz+pj7FV5+pxiABsv+J8MV1mlhAFc/OVK8Ao
+         NGoPI6Sl+ne3iOKeAx2cqRt4/bRXOrT0igEc1jDnSyAMTY8Hoq2eDd27k6RZeyB6Gx
+         JlBdjRmO3rDcmeJd6HSUpfsHzl26WjQTvpW2nLNoBzE9DCMFK+4SybWPBrGZ44VvE3
+         YAXTz+IgOrvsDOq1F4k/Ii/yols8Cj3V4I99iyK2qr1RXTbrYUL2S+yDTyOhZFJK0s
+         pMx9D7xuxKdhQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B7503CE0908; Sat, 22 Jul 2023 15:39:42 -0700 (PDT)
+Date:   Sat, 22 Jul 2023 15:39:42 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Yun Levi <ppbuk5246@gmail.com>
+Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
+        joel@joelfernandes.org, osh@joshtriplett.org, boqun.feng@gmail.com,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: remove unnecessary check cpu_no_qs.norm on
+ rcu_report_qs_rdp
+Message-ID: <31070aab-8665-44c4-8950-0631a777ef44@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230721121534.44328-1-ppbuk5246@gmail.com>
+ <05e98227-77f4-4918-8f8e-2170a158e350@paulmck-laptop>
+ <CAM7-yPRc4Z0siaiWf+fK2GEfjPMq5UaY13F4o19rU6NNUS5fNg@mail.gmail.com>
+ <faf07eef-0a51-49f3-be48-0433952171ad@paulmck-laptop>
+ <CAM7-yPTrHN1xPXWjSUrJeTEOuy78DpmL8ytUY+a4ZOekiAbnZg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230701102538.5359-1-franziska.naepelt@googlemail.com>
- <5ad04b3a-7c77-cadb-13b4-509a086cf04d@web.de> <2023070123-unburned-worsening-0713@gregkh>
-In-Reply-To: <2023070123-unburned-worsening-0713@gregkh>
-From:   =?UTF-8?Q?Franziska_N=C3=A4pelt?= 
-        <franziska.naepelt@googlemail.com>
-Date:   Sun, 23 Jul 2023 00:29:57 +0200
-Message-ID: <CAAUT3iNqwgtFJz2Q1bRN+MsSna26KC1FJc3jchu=8B09A2SkvQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] staging: rtl8723bs: Fix space issues
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Markus Elfring <Markus.Elfring@web.de>,
-        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Emily Peri <eperi1024@gmail.com>,
-        Guo Zihua <guozihua@huawei.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Kang Minchul <tegongkang@gmail.com>,
-        Philipp Hortmann <philipp.g.hortmann@gmail.com>,
-        Veerendranath Jakkam <quic_vjakkam@quicinc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM7-yPTrHN1xPXWjSUrJeTEOuy78DpmL8ytUY+a4ZOekiAbnZg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Sat, Jul 22, 2023 at 09:14:28PM +0100, Yun Levi wrote:
+> Hi Paul.
+> 
+> > Suppose that the scheduler-clock interrupt invoking rcu_sched_clock_irq()
+> > happened just before the lock was acquired in rcu_report_qs_rdp().
+> > Suppose further that the RCU grace-period kthread started a new grace
+> > period just before that interrupt occurred.  Then mightn't that interrupt
+> > notice the new grace period and set ->cpu_no_qs.b.norm to true before
+> > fully returning?
+> 
+> IIUC, RCU grace-period kthread couldn't start new grace period
+> because the interrupted cpu don't report qs to rnp  via rcu_report_qs_rdp.
+> That situation is listened like new gp could be started thou all cpus
+> doesn't enter yet.
+> That's is the reason why it's better to use WARN_ON_ONCE as you suggest
+> to notice if the buggy situation happens
 
-Am Sa., 1. Juli 2023 um 17:00 Uhr schrieb Greg Kroah-Hartman
-<gregkh@linuxfoundation.org>:
->
-> On Sat, Jul 01, 2023 at 04:43:09PM +0200, Markus Elfring wrote:
-> > You should not put only your own email address into the field =E2=80=9C=
-To=E2=80=9D.
-> > Please reconsider the distribution of addresses between message header =
-fields once more.
->
-> Please do not comment on staging driver changes anymore, it is not
-> helpful to anyone involved.
->
-> greg k-h
+And try testing with CONFIG_RCU_STRICT_GRACE_PERIOD=y and CONFIG_PREEMPT=n.
+Though there might be better Kconfig options to use.  Those two come
+immediately to mind.
 
-Am I supposed to adjust something here?
-As far as I understood, I can ignore the comments from Markus, correct?
+> Am I missing something or wrong?
 
-Franziska
+I cannot see into your head, so I cannot say.
+
+But one critical piece is that softirq handlers, including the RCU_SOFTIRQ
+handler rcu_core_si(), can be invoked upon return from interrupts.
+Another critical piece is that if a CPU is idle during any part of a
+grace period, the grace-period kthread can report a quiescent state on
+its behalf.
+
+Does that help?
+
+							Thanx, Paul
