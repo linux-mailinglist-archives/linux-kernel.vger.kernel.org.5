@@ -2,75 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F25EC75DA1B
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 07:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1289075DA2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 07:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbjGVFOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 01:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
+        id S231401AbjGVFTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 01:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbjGVFOV (ORCPT
+        with ESMTP id S231421AbjGVFSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 01:14:21 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEDB19A2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 22:14:20 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-992f6d7c7fbso419719966b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 22:14:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690002859; x=1690607659;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=W/fJ++rD7IhcYQa3mlA8l9n2h0lbuUQyxIsuA/Pokas=;
-        b=x9i43kGUm52Dw2XwZ9G0GWo2GtlHg/ZIY0QxwXWGSLd3ougP4ahxD/mLXXNrmLOQ4K
-         FubkTtuGUKX8dkhf5oWiDkOamtN+NiW5Gy79d2lG1EMJBNzpVs8GCbYAjmIqqnNGo5ir
-         xQh1GzO4q9uRADlOxXzkGiZA/NjJL9T+JxAlFtgUEOAqvZZXyh6ix/0PJBx9UO/PRnYc
-         Gfk4Os3Qec7dP4SuMY8Qe3fVi6bz1Af6/vK9UnGHt+AJJve3kr1iK7RlZmEEFg1r9nYT
-         R40XCBR2Y6KsBrn5Wp+I5+inIkc1ubj+4UdbUwIj6ZLOj3x6thnV+BMrGtYkkPdM0p4c
-         3c2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690002859; x=1690607659;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W/fJ++rD7IhcYQa3mlA8l9n2h0lbuUQyxIsuA/Pokas=;
-        b=EESvp6bcX6ADtn6CD2n9RuOeSK0ZmwrwOVG8JnIoQyXwceXPxy3gFwtDo9WC06JfNU
-         M5wEPIzZAgseO4yY7E595T8IF4xIHJTiosCFrS/MUUWykzrH4U5Sp4q85mffZavIqlOb
-         ixw+JsZUkojx9Ydq43qD/WUA7XS4E803BmrACp83VjhokBQHqIF2kBqLPH7I7tpd7k5U
-         Qw+NztTYV3EVq+pavNqPSsbudqDjIx2kpvuzZeYE+bpF2c/7YvZPglt2EaQZuDoNisS4
-         9Ovsns8JPUM8xR0NvTOXTCAqSvWgjTgEUgeBE0xZapxsxIm0wnpsBYGbWR3mPdxlSxvB
-         Xb1g==
-X-Gm-Message-State: ABy/qLZQFfXpHSBO+4t6z4HGNKr+QD3uzkU3fxlQ1KWvUa2dsJbR871/
-        ag+m0fnk3WVfd/ClGbmjng/wAA==
-X-Google-Smtp-Source: APBJJlFmNhatXmfajxatwljET+9ZqXKrHVZ2b/TAtg7AtDfB4aOnw9zNm++j9SEQIJAT2QTgtgwv2g==
-X-Received: by 2002:a17:907:7606:b0:994:522f:3f4a with SMTP id jx6-20020a170907760600b00994522f3f4amr3451668ejc.29.1690002859078;
-        Fri, 21 Jul 2023 22:14:19 -0700 (PDT)
-Received: from [192.168.2.173] ([79.115.63.16])
-        by smtp.gmail.com with ESMTPSA id d19-20020a170906041300b009883a3edcfcsm3078107eja.171.2023.07.21.22.14.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 22:14:18 -0700 (PDT)
-Message-ID: <fd57fe7e-ca0e-27d4-1692-d6d9301fb79c@linaro.org>
-Date:   Sat, 22 Jul 2023 08:14:16 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] mtd: spi-nor: let SFDP determine the flash and sector
- size
-Content-Language: en-US
-To:     tkuw584924@gmail.com, takahiro.kuwano@infineon.com,
-        michael@walle.cc, pratyush@kernel.org
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bacem.daassi@infineon.com, miquel.raynal@bootlin.com,
-        richard@nod.at
-References: <20230722045901.9872-1-tudor.ambarus@linaro.org>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230722045901.9872-1-tudor.ambarus@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Sat, 22 Jul 2023 01:18:54 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA9C469C
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 22:18:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690003108; x=1721539108;
+  h=date:from:to:cc:subject:message-id;
+  bh=vwLYiK/vHdDQX/l+2Ni8necRVsfqKKpQxdz5VcdTKro=;
+  b=I3gXIgzSDa5SpwVTUL6xO5tLMjCOYg256Zihjp5veEFG3tVDAnEriYaX
+   y8A3lVFuQ4LVLvhal0/lmOQv5InzmalbQJSM7HkvGkOGjW571bbRyvmG5
+   II1IzZ1qzl0AXlYYsGgfMj0RA2bC3Al8fM3Fa3LFh99/7Rw94F6kwoFFT
+   k7tFgTxNhDMt3TxnEYpzfoT2kORyAdaOMhiXN9JX/jlffk7EF3aWujX+R
+   YlxXp4SsHRFFmfAqypJyJAufvU+S11jafbsTekTwHoUGlzsP0O6uUAWc6
+   SIJCi6Jl8EG0J0PSbQlIL1iKByxQ4AZ3gbE1379XNSQNDsdiNNw2YnC53
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="364625901"
+X-IronPort-AV: E=Sophos;i="6.01,223,1684825200"; 
+   d="scan'208";a="364625901"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 22:17:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="719073282"
+X-IronPort-AV: E=Sophos;i="6.01,223,1684825200"; 
+   d="scan'208";a="719073282"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 21 Jul 2023 22:17:38 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qN4zq-0007zv-0c;
+        Sat, 22 Jul 2023 05:17:38 +0000
+Date:   Sat, 22 Jul 2023 13:16:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:ras/core] BUILD SUCCESS
+ c3629dd7e67d6ec5705d33b0de0d142c972fe573
+Message-ID: <202307221341.FKbIdDBa-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,4 +60,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-subject should have started with "mtd: spi-nor: spansion:"
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ras/core
+branch HEAD: c3629dd7e67d6ec5705d33b0de0d142c972fe573  x86/mce: Prevent duplicate error records
+
+elapsed time: 721m
+
+configs tested: 73
+configs skipped: 92
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                randconfig-r013-20230720   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r002-20230720   gcc  
+arm                  randconfig-r014-20230720   gcc  
+arm                  randconfig-r025-20230720   gcc  
+arm                  randconfig-r046-20230721   clang
+csky                                defconfig   gcc  
+hexagon              randconfig-r041-20230721   clang
+hexagon              randconfig-r045-20230721   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230720   gcc  
+i386         buildonly-randconfig-r005-20230720   gcc  
+i386         buildonly-randconfig-r006-20230720   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230721   clang
+i386                 randconfig-i002-20230721   clang
+i386                 randconfig-i003-20230721   clang
+i386                 randconfig-i004-20230721   clang
+i386                 randconfig-i005-20230721   clang
+i386                 randconfig-i006-20230721   clang
+i386                 randconfig-i011-20230720   clang
+i386                 randconfig-i012-20230720   clang
+i386                 randconfig-i013-20230720   clang
+i386                 randconfig-i014-20230720   clang
+i386                 randconfig-i015-20230720   clang
+i386                 randconfig-i016-20230720   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r022-20230720   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r004-20230720   gcc  
+openrisc             randconfig-r011-20230720   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r003-20230720   gcc  
+s390                 randconfig-r005-20230720   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r006-20230720   gcc  
+sh                   randconfig-r016-20230720   gcc  
+sparc                            allyesconfig   gcc  
+sparc                randconfig-r024-20230720   gcc  
+sparc64              randconfig-r026-20230720   gcc  
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r015-20230720   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230720   gcc  
+x86_64       buildonly-randconfig-r002-20230720   gcc  
+x86_64       buildonly-randconfig-r003-20230720   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230720   clang
+x86_64               randconfig-x002-20230720   clang
+x86_64               randconfig-x003-20230720   clang
+x86_64               randconfig-x004-20230720   clang
+x86_64               randconfig-x005-20230720   clang
+x86_64               randconfig-x006-20230720   clang
+x86_64               randconfig-x011-20230720   gcc  
+x86_64               randconfig-x012-20230720   gcc  
+x86_64               randconfig-x013-20230720   gcc  
+x86_64               randconfig-x014-20230720   gcc  
+x86_64               randconfig-x015-20230720   gcc  
+x86_64               randconfig-x016-20230720   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
