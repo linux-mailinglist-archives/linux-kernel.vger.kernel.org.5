@@ -2,198 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5301E75DDAA
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 19:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FEF75DDB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 19:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbjGVRLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 13:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33138 "EHLO
+        id S229850AbjGVRNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 13:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjGVRLl (ORCPT
+        with ESMTP id S229477AbjGVRNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 13:11:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08951A7;
-        Sat, 22 Jul 2023 10:11:40 -0700 (PDT)
+        Sat, 22 Jul 2023 13:13:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB7BE67;
+        Sat, 22 Jul 2023 10:13:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4EC7160B06;
-        Sat, 22 Jul 2023 17:11:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2223FC433CA;
-        Sat, 22 Jul 2023 17:11:37 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3795B60BA4;
+        Sat, 22 Jul 2023 17:13:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C996C433C8;
+        Sat, 22 Jul 2023 17:13:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690045899;
-        bh=U9JOz+mgUIxGOmWhwhz9t8plaw7DwJDJuAtyOyeLx5E=;
+        s=k20201202; t=1690046030;
+        bh=WBUDQNvPcAAQ33CTwyobl5vG7ksUY6lE1tb9THb+/rw=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HppSdQxeLzmuuHqSF7E8dWk+HKkts0UI9nH8YFCORNwleT6DeXqCxpY/GuuXcQrfV
-         80h39gx66muPbQka3uWS8GYsTfw0Zu+NeDFK9e9jKZs++Ex5bMEop5tPBSKtJiHmUx
-         V3lbGECJ+xFwv2iBRd3aOJZQQJzASEzdAnROd9RV3t+QU+ZGNXOe4gcLKhCNhjjmxT
-         n0dbYJdFA7lYq70WrgEMZitOy5zuAQ2vXttX76rZIMykJiu39gf1kCTZZRPlWun+85
-         NAnE5PgW3QGGrazXR5ifps9iOUCDlm1Hznk0WJbAxKa7mnhnkeBYQFwehrK80lLh/f
-         8K0eHvbjgHYJA==
-Date:   Sat, 22 Jul 2023 18:11:36 +0100
+        b=RINvGBcssY7x7S//6mp28SyHWEuOMCmaftZ6UiNsNaFjjH4Qr9N/d9I7QxjBNgNMx
+         rmHDtKJBSpGILR+eL4QTpv1bOCupqz5SObFkyMBK6uxYx/qgdW562WeaFXlhs6DRO+
+         Kl8sXlmKDGtAUPzU5OB+MI6lsu34mpnyw42rQZOkQbeR5cZ1Ls3CaR+ide00vC9xPP
+         tfSu8L4o5qEN1a3sEXPoSJp9w36gpu8nTdG/Pnfq0lAeV0omBibBMiSWgdjjiQr22w
+         vdXAuk17aLFUeOZeV9sG2dHsMhZVIDPFhEx6myBXime4+OxI/fiF91emVY2hyI0rKL
+         FrxIAjM3dSUFQ==
+Date:   Sat, 22 Jul 2023 18:13:45 +0100
 From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Nuno Sa <nuno.sa@analog.com>
-Subject: Re: [PATCH v2 2/8] iio: core: Use sysfs_match_string() helper
-Message-ID: <20230722181136.4e2d1017@jic23-huawei>
-In-Reply-To: <20230721170022.3461-3-andriy.shevchenko@linux.intel.com>
-References: <20230721170022.3461-1-andriy.shevchenko@linux.intel.com>
-        <20230721170022.3461-3-andriy.shevchenko@linux.intel.com>
+To:     George Stark <gnstark@sberdevices.ru>
+Cc:     <lars@metafoo.de>, <neil.armstrong@linaro.org>,
+        <khilman@baylibre.com>, <jbrunet@baylibre.com>,
+        <martin.blumenstingl@googlemail.com>,
+        <andriy.shevchenko@linux.intel.com>, <nuno.sa@analog.com>,
+        <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>, <kernel@sberdevices.ru>
+Subject: Re: [PATCH v2 1/2] iio: adc: meson: fix core clock enable/disable
+ moment
+Message-ID: <20230722181345.44a79b6d@jic23-huawei>
+In-Reply-To: <20230721102413.255726-2-gnstark@sberdevices.ru>
+References: <20230721102413.255726-1-gnstark@sberdevices.ru>
+        <20230721102413.255726-2-gnstark@sberdevices.ru>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 20:00:16 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+On Fri, 21 Jul 2023 13:23:08 +0300
+George Stark <gnstark@sberdevices.ru> wrote:
 
-> Use sysfs_match_string() helper instead of open coded variant.
+> Enable core clock at probe stage and disable it at remove stage.
+> Core clock is responsible for turning on/off the entire SoC module so
+> it should be on before the first module register is touched and be off
+> at very last moment.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+> Fixes: 3adbf3427330 ("iio: adc: add a driver for the SAR ADC found in Amlogic Meson SoCs")
+> Signed-off-by: George Stark <gnstark@sberdevices.ru>
+Applied to the fixes-togreg branch of iio.git and marked for stable.
 
-It 'should' be impossible to end up with one of the clocks
-that we reject for the store..
+The 2nd patch will have to wait as it's not a fix.
 
-So I wonder if it would be cleaner to only add the clocks we
-actually use to the clock_names[] array and use the failure to match
-(-EINVAL) to call BUG() which then matches the existing behaviour.
-
-If the clock matching was a generic function I'd be fine with doing what
-you have here, but it's local to IIO so we don't have to play nice with
-clocks we don't understand.
+Thanks,
 
 Jonathan
-
 > ---
->  drivers/iio/industrialio-core.c | 81 +++++++++++++--------------------
->  1 file changed, 31 insertions(+), 50 deletions(-)
+>  drivers/iio/adc/meson_saradc.c | 23 ++++++++++++-----------
+>  1 file changed, 12 insertions(+), 11 deletions(-)
 > 
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 6cca86fd0ef9..4e45740331ee 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -1400,50 +1400,32 @@ static ssize_t label_show(struct device *dev, struct device_attribute *attr,
+> diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
+> index 2ee12f3ad312..8397a5347f32 100644
+> --- a/drivers/iio/adc/meson_saradc.c
+> +++ b/drivers/iio/adc/meson_saradc.c
+> @@ -1055,12 +1055,6 @@ static int meson_sar_adc_hw_enable(struct iio_dev *indio_dev)
+>  		goto err_vref;
+>  	}
 >  
->  static DEVICE_ATTR_RO(label);
->  
-> +static const char * const clock_names[] = {
-> +	[CLOCK_REALTIME]	 	= "realtime",
-> +	[CLOCK_MONOTONIC]	 	= "monotonic",
-> +	[CLOCK_PROCESS_CPUTIME_ID]	= "process_cputime_id",
-> +	[CLOCK_THREAD_CPUTIME_ID]	= "thread_cputime_id",
-> +	[CLOCK_MONOTONIC_RAW]	 	= "monotonic_raw",
-> +	[CLOCK_REALTIME_COARSE]	 	= "realtime_coarse",
-> +	[CLOCK_MONOTONIC_COARSE] 	= "monotonic_coarse",
-> +	[CLOCK_BOOTTIME]	 	= "boottime",
-> +	[CLOCK_REALTIME_ALARM]		= "realtime_alarm",
-> +	[CLOCK_BOOTTIME_ALARM]		= "boottime_alarm",
-> +	[CLOCK_SGI_CYCLE]		= "sgi_cycle",
-> +	[CLOCK_TAI]		 	= "tai",
-> +};
-> +
->  static ssize_t current_timestamp_clock_show(struct device *dev,
->  					    struct device_attribute *attr,
->  					    char *buf)
->  {
->  	const struct iio_dev *indio_dev = dev_to_iio_dev(dev);
->  	const clockid_t clk = iio_device_get_clock(indio_dev);
-> -	const char *name;
-> -	ssize_t sz;
->  
-> -	switch (clk) {
-> -	case CLOCK_REALTIME:
-> -		name = "realtime\n";
-> -		sz = sizeof("realtime\n");
-> -		break;
-> -	case CLOCK_MONOTONIC:
-> -		name = "monotonic\n";
-> -		sz = sizeof("monotonic\n");
-> -		break;
-> -	case CLOCK_MONOTONIC_RAW:
-> -		name = "monotonic_raw\n";
-> -		sz = sizeof("monotonic_raw\n");
-> -		break;
-> -	case CLOCK_REALTIME_COARSE:
-> -		name = "realtime_coarse\n";
-> -		sz = sizeof("realtime_coarse\n");
-> -		break;
-> -	case CLOCK_MONOTONIC_COARSE:
-> -		name = "monotonic_coarse\n";
-> -		sz = sizeof("monotonic_coarse\n");
-> -		break;
-> -	case CLOCK_BOOTTIME:
-> -		name = "boottime\n";
-> -		sz = sizeof("boottime\n");
-> -		break;
-> -	case CLOCK_TAI:
-> -		name = "tai\n";
-> -		sz = sizeof("tai\n");
-> -		break;
-> -	default:
-> +	if (clk < 0 && clk >= ARRAY_SIZE(clock_names))
->  		BUG();
-
-This is a functional change as more clocks are allowed without
-things going boom.
-
+> -	ret = clk_prepare_enable(priv->core_clk);
+> -	if (ret) {
+> -		dev_err(dev, "failed to enable core clk\n");
+> -		goto err_core_clk;
 > -	}
+> -
+>  	regval = FIELD_PREP(MESON_SAR_ADC_REG0_FIFO_CNT_IRQ_MASK, 1);
+>  	regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG0,
+>  			   MESON_SAR_ADC_REG0_FIFO_CNT_IRQ_MASK, regval);
+> @@ -1087,8 +1081,6 @@ static int meson_sar_adc_hw_enable(struct iio_dev *indio_dev)
+>  	regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG3,
+>  			   MESON_SAR_ADC_REG3_ADC_EN, 0);
+>  	meson_sar_adc_set_bandgap(indio_dev, false);
+> -	clk_disable_unprepare(priv->core_clk);
+> -err_core_clk:
+>  	regulator_disable(priv->vref);
+>  err_vref:
+>  	meson_sar_adc_unlock(indio_dev);
+> @@ -1116,8 +1108,6 @@ static void meson_sar_adc_hw_disable(struct iio_dev *indio_dev)
 >  
-> -	memcpy(buf, name, sz);
-> -	return sz;
-> +	return sysfs_emit(buf, "%s\n", clock_names[clk]);
+>  	meson_sar_adc_set_bandgap(indio_dev, false);
+>  
+> -	clk_disable_unprepare(priv->core_clk);
+> -
+>  	regulator_disable(priv->vref);
+>  
+>  	if (!ret)
+> @@ -1379,7 +1369,7 @@ static int meson_sar_adc_probe(struct platform_device *pdev)
+>  	if (IS_ERR(priv->clkin))
+>  		return dev_err_probe(dev, PTR_ERR(priv->clkin), "failed to get clkin\n");
+>  
+> -	priv->core_clk = devm_clk_get(dev, "core");
+> +	priv->core_clk = devm_clk_get_enabled(dev, "core");
+>  	if (IS_ERR(priv->core_clk))
+>  		return dev_err_probe(dev, PTR_ERR(priv->core_clk), "failed to get core clk\n");
+>  
+> @@ -1462,15 +1452,26 @@ static int meson_sar_adc_remove(struct platform_device *pdev)
+>  static int meson_sar_adc_suspend(struct device *dev)
+>  {
+>  	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+> +	struct meson_sar_adc_priv *priv = iio_priv(indio_dev);
+>  
+>  	meson_sar_adc_hw_disable(indio_dev);
+>  
+> +	clk_disable_unprepare(priv->core_clk);
+> +
+>  	return 0;
 >  }
 >  
->  static ssize_t current_timestamp_clock_store(struct device *dev,
-> @@ -1453,22 +1435,21 @@ static ssize_t current_timestamp_clock_store(struct device *dev,
->  	clockid_t clk;
->  	int ret;
->  
-> -	if (sysfs_streq(buf, "realtime"))
-> -		clk = CLOCK_REALTIME;
-> -	else if (sysfs_streq(buf, "monotonic"))
-> -		clk = CLOCK_MONOTONIC;
-> -	else if (sysfs_streq(buf, "monotonic_raw"))
-> -		clk = CLOCK_MONOTONIC_RAW;
-> -	else if (sysfs_streq(buf, "realtime_coarse"))
-> -		clk = CLOCK_REALTIME_COARSE;
-> -	else if (sysfs_streq(buf, "monotonic_coarse"))
-> -		clk = CLOCK_MONOTONIC_COARSE;
-> -	else if (sysfs_streq(buf, "boottime"))
-> -		clk = CLOCK_BOOTTIME;
-> -	else if (sysfs_streq(buf, "tai"))
-> -		clk = CLOCK_TAI;
-> -	else
-> +	ret = sysfs_match_string(clock_names, buf);
-> +	if (ret < 0)
-> +		return ret;
+>  static int meson_sar_adc_resume(struct device *dev)
+>  {
+>  	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+> +	struct meson_sar_adc_priv *priv = iio_priv(indio_dev);
+> +	int ret;
 > +
-> +	switch (ret) {
-> +	case CLOCK_PROCESS_CPUTIME_ID:
-> +	case CLOCK_THREAD_CPUTIME_ID:
-> +	case CLOCK_REALTIME_ALARM:
-> +	case CLOCK_BOOTTIME_ALARM:
-> +	case CLOCK_SGI_CYCLE:
->  		return -EINVAL;
-> +	default:
-> +		clk = ret;
-> +		break;
+> +	ret = clk_prepare_enable(priv->core_clk);
+> +	if (ret) {
+> +		dev_err(dev, "failed to enable core clk\n");
+> +		return ret;
 > +	}
 >  
->  	ret = iio_device_set_clock(dev_to_iio_dev(dev), clk);
->  	if (ret)
+>  	return meson_sar_adc_hw_enable(indio_dev);
+>  }
 
