@@ -2,282 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD88775DBB6
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 12:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CC175DBB9
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 12:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbjGVK0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 06:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38696 "EHLO
+        id S229925AbjGVK1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 06:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjGVK0H (ORCPT
+        with ESMTP id S229699AbjGVK1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 06:26:07 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5066F26A2
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 03:26:05 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R7Mwz0q76zVjf2;
-        Sat, 22 Jul 2023 18:24:35 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 22 Jul
- 2023 18:26:02 +0800
-From:   ZhaoLong Wang <wangzhaolong1@huawei.com>
-To:     <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [RFC 1/1] ubi: An interface is added for dump the mapping between LEBs and PEBs
-Date:   Sat, 22 Jul 2023 18:23:02 +0800
-Message-ID: <20230722102302.1848135-2-wangzhaolong1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230722102302.1848135-1-wangzhaolong1@huawei.com>
-References: <20230722102302.1848135-1-wangzhaolong1@huawei.com>
+        Sat, 22 Jul 2023 06:27:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6529526A2;
+        Sat, 22 Jul 2023 03:27:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0296A608C3;
+        Sat, 22 Jul 2023 10:27:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 258BEC433C8;
+        Sat, 22 Jul 2023 10:27:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690021659;
+        bh=iCrvGuQQggONZZnbk+kJyPGMugBTRIKZ/40i59fGJus=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y5oAwCwMQfanuDo40P+fUYThuMWdJXhODRTvmKjmM2XU9rnp+yGYD4gG936lFXe51
+         MNSUSK+0PhftarUNEjHamLqMHfLUnfYh276RxRDRKG8wgpnbQlMnYE5wKr05Qzc75m
+         2VDDaoa+RDnulhIj7js2UXzeu9OMO+zvaCBgT2oZuOeXviN2q+uAWvpi3WWtn30k+U
+         +ukH/2Ez6MUZhqTo9TB411Ixok82tYd6eX40ADJVAVOBbN5ezyZrn+oXFDlRHMLqx2
+         8P6gimtuQtHMA2vptj296Yy99mgL3CfW1YIk93GKMa0Z7S+fu+off/dFYMKA+CFMw1
+         KJ8dpkPpVgw8g==
+Date:   Sat, 22 Jul 2023 11:27:34 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@ew.tq-group.com
+Subject: Re: [PATCH 1/3] dt-bindings: arm: ti: Add compatible for AM642-based
+ TQMaX4XxL SOM family and carrier board
+Message-ID: <20230722-clanking-seventeen-4b7cbd53b792@spud>
+References: <6db614465a281f802771994399ebb1040acb67bc.1689936866.git.matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XuiSL+gUS1N7m78I"
+Content-Disposition: inline
+In-Reply-To: <6db614465a281f802771994399ebb1040acb67bc.1689936866.git.matthias.schiffer@ew.tq-group.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A debugfs interface named "detailed_eba_table_info" is added to view
-the PEB and LEB mapping information of all volumes on a UBI device.
 
-$ cat /sys/kernel/debug/ubi/ubi1/detailed_eba_table_info
+--XuiSL+gUS1N7m78I
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-=========   vol_name:"test_volA",id:2   ========
-logical_block_number    physical_block_number
-0                        274
-1                        275
-2                        276
-3                        277
-4                        278
-......
-=========   vol_name:"test_volB",id:3   ========
-logical_block_number    physical_block_number
-0                        619
-1                        613
-2                        614
-3                       (unmaped)
-4                        622
-......
+On Fri, Jul 21, 2023 at 12:59:00PM +0200, Matthias Schiffer wrote:
+> For now only the MBaX4Xx carrier board is defined.
+>=20
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> ---
+>  Documentation/devicetree/bindings/arm/ti/k3.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/ti/k3.yaml b/Documenta=
+tion/devicetree/bindings/arm/ti/k3.yaml
+> index 577eee95c8932..ae56170bf2d25 100644
+> --- a/Documentation/devicetree/bindings/arm/ti/k3.yaml
+> +++ b/Documentation/devicetree/bindings/arm/ti/k3.yaml
+> @@ -72,6 +72,13 @@ properties:
+>            - const: phytec,am64-phycore-som
+>            - const: ti,am642
+> =20
+> +      - description: K3 AM642 SoC on TQ-Systems TQMaX4XxL SoM
+> +        item:
 
-Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
----
- drivers/mtd/ubi/debug.c | 104 ++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/ubi/eba.c   |  24 ----------
- drivers/mtd/ubi/ubi.h   |  24 ++++++++++
- 3 files changed, 128 insertions(+), 24 deletions(-)
+s/item/items/, please test bindings no matter how simple they may
+appear.
 
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 27168f511d6d..c6be9450b509 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -386,6 +386,7 @@ static const struct file_operations dfs_fops = {
- 	.owner  = THIS_MODULE,
- };
- 
-+
- /* As long as the position is less then that total number of erase blocks,
-  * we still have more to print.
-  */
-@@ -493,6 +494,106 @@ static const struct file_operations eraseblk_count_fops = {
- 	.release = eraseblk_count_release,
- };
- 
-+static void *eba_table_seq_start(struct seq_file *s, loff_t *pos)
-+{
-+	int volumes_length = UBI_MAX_VOLUMES + UBI_INT_VOL_COUNT;
-+
-+	if (*pos >= 0 && *pos < volumes_length)
-+		return pos;
-+
-+	return NULL;
-+}
-+
-+static void *eba_table_seq_next(struct seq_file *s, void *v, loff_t *pos)
-+{
-+	int volumes_length = UBI_MAX_VOLUMES + UBI_INT_VOL_COUNT;
-+
-+	(*pos)++;
-+
-+	if (*pos >= 0 && *pos < volumes_length)
-+		return pos;
-+
-+	return NULL;
-+}
-+
-+static void eba_table_seq_stop(struct seq_file *s, void *v)
-+{
-+}
-+
-+static int eba_table_seq_show(struct seq_file *s, void *iter)
-+{
-+	struct ubi_device *ubi = s->private;
-+	int *vol_idx  = iter;
-+	struct ubi_volume *vol;
-+	int lnum, pnum, vol_id;
-+
-+	vol = ubi->volumes[*vol_idx];
-+	if (vol == NULL)
-+		return 0;
-+
-+	vol_id = vol->vol_id;
-+	seq_printf(s, "=========   vol_name:\"%s\",id:%d   ========\n", vol->name, vol_id);
-+	seq_puts(s, "logical_block_number\tphysical_block_number\n");
-+	spin_lock(&ubi->volumes_lock);
-+	for (lnum = 0; lnum < vol->reserved_pebs; ++lnum) {
-+		pnum = vol->eba_tbl->entries[lnum].pnum;
-+		if (pnum >= 0)
-+			seq_printf(s, "%-22d\t %-11d\n", lnum, pnum);
-+		else
-+			seq_printf(s, "%-22d\t(unmaped)\n", lnum);
-+	}
-+	spin_unlock(&ubi->volumes_lock);
-+
-+	return 0;
-+}
-+
-+static const struct seq_operations eba_table_seq_ops = {
-+	.start = eba_table_seq_start,
-+	.next = eba_table_seq_next,
-+	.stop = eba_table_seq_stop,
-+	.show = eba_table_seq_show
-+};
-+
-+static int eba_table_open(struct inode *inode, struct file *f)
-+{
-+	struct seq_file *s;
-+	int err;
-+
-+	err = seq_open(f, &eba_table_seq_ops);
-+	if (err)
-+		return err;
-+
-+	s = f->private_data;
-+	s->private = ubi_get_device((unsigned long)inode->i_private);
-+
-+	if (!s->private)
-+		return -ENODEV;
-+	else
-+		return 0;
-+}
-+
-+static int eba_table_release(struct inode *inode, struct file *f)
-+{
-+	struct seq_file *s = f->private_data;
-+	struct ubi_device *ubi = s->private;
-+
-+	ubi_put_device(ubi);
-+
-+	return seq_release(inode, f);
-+}
-+
-+/* File operations for UBI debugfs files which to read
-+ * eba_tbl to help developer get the map status of ubi
-+ * volumes
-+ */
-+static const struct file_operations eba_table_fops = {
-+	.owner = THIS_MODULE,
-+	.open = eba_table_open,
-+	.read = seq_read,
-+	.llseek = no_llseek,
-+	.release = eba_table_release,
-+};
-+
- /**
-  * ubi_debugfs_init_dev - initialize debugfs for an UBI device.
-  * @ubi: UBI device description object
-@@ -556,6 +657,9 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
- 						   mode, d->dfs_dir,
- 						   (void *)ubi_num, &dfs_fops);
- 
-+	debugfs_create_file("detailed_eba_table_info", S_IRUSR, d->dfs_dir,
-+			    (void *)ubi_num, &eba_table_fops);
-+
- 	debugfs_create_file("detailed_erase_block_info", S_IRUSR, d->dfs_dir,
- 			    (void *)ubi_num, &eraseblk_count_fops);
- 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 655ff41863e2..c856ea73a67c 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -36,30 +36,6 @@
- /* Number of physical eraseblocks reserved for atomic LEB change operation */
- #define EBA_RESERVED_PEBS 1
- 
--/**
-- * struct ubi_eba_entry - structure encoding a single LEB -> PEB association
-- * @pnum: the physical eraseblock number attached to the LEB
-- *
-- * This structure is encoding a LEB -> PEB association. Note that the LEB
-- * number is not stored here, because it is the index used to access the
-- * entries table.
-- */
--struct ubi_eba_entry {
--	int pnum;
--};
--
--/**
-- * struct ubi_eba_table - LEB -> PEB association information
-- * @entries: the LEB to PEB mapping (one entry per LEB).
-- *
-- * This structure is private to the EBA logic and should be kept here.
-- * It is encoding the LEB to PEB association table, and is subject to
-- * changes.
-- */
--struct ubi_eba_table {
--	struct ubi_eba_entry *entries;
--};
--
- /**
-  * ubi_next_sqnum - get next sequence number.
-  * @ubi: UBI device description object
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index c8f1bd4fa100..1457657901df 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -153,6 +153,30 @@ enum {
- 	POWER_CUT_VID_WRITE = 0x02,
- };
- 
-+/**
-+ * struct ubi_eba_entry - structure encoding a single LEB -> PEB association
-+ * @pnum: the physical eraseblock number attached to the LEB
-+ *
-+ * This structure is encoding a LEB -> PEB association. Note that the LEB
-+ * number is not stored here, because it is the index used to access the
-+ * entries table.
-+ */
-+struct ubi_eba_entry {
-+	int pnum;
-+};
-+
-+/**
-+ * struct ubi_eba_table - LEB -> PEB association information
-+ * @entries: the LEB to PEB mapping (one entry per LEB).
-+ *
-+ * This structure is private to the EBA logic and should be kept here.
-+ * It is encoding the LEB to PEB association table, and is subject to
-+ * changes.
-+ */
-+struct ubi_eba_table {
-+	struct ubi_eba_entry *entries;
-+};
-+
- /**
-  * struct ubi_vid_io_buf - VID buffer used to read/write VID info to/from the
-  *			   flash.
--- 
-2.31.1
+> +          - enum:
+> +              - tq,am642-tqma6442l-mbax4xxl # MBaX4XxL base board
+> +          - const: tq,am642-tqma6442l
+> +          - const: ti,am642
+> +
+>        - description: K3 AM654 SoC
+>          items:
+>            - enum:
+> --=20
+> TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+> Amtsgericht M=FCnchen, HRB 105018
+> Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+> https://www.tq-group.com/
+>=20
 
+--XuiSL+gUS1N7m78I
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLuvFgAKCRB4tDGHoIJi
+0nsXAP9csAdECJzAYfGtdRBEbr0GRCZ6qcinP5Ou4j+xJ1vvRQEAynOFTOefZ90a
+IaC7rXMgopuVKvmTo6wyX8+UTI9sYAk=
+=K4TT
+-----END PGP SIGNATURE-----
+
+--XuiSL+gUS1N7m78I--
