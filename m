@@ -2,73 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A17BD75DC75
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 14:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC8075DC77
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 14:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbjGVMRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 08:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
+        id S229824AbjGVMUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 08:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbjGVMR2 (ORCPT
+        with ESMTP id S229476AbjGVMUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 08:17:28 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A62210C1
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 05:17:27 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3110ab7110aso2414883f8f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 05:17:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690028245; x=1690633045;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tYNA0eA6zTpIVrLQIQILDRIMWUDj6tQ3eTCKjVqejNg=;
-        b=lTGur3HjPh+24Q/GOoLXJK6GH1QbnIUwPqJ93LQdr9XSyYWSyqiUIuUbtUHFvkIAer
-         uF8oWzeUakeP//THm9J2kIR8ZRCY76uNjhIgUvsjY8VnfRkDFFLJ2YokaYz9JjcSqCM4
-         EUVsRTnQeIaIcRVSXb0B15DBr7VWGkGS0jG9TJ/Z/MOqQkQ4IEprYHbx6AnpinUXwfSN
-         zTSTjkN+9oSPFS4wGmg+F6wpeZyJP1RKlZMTUxKgltYi4HPFa6nbWdoi9iKDq6WkSHSy
-         jF0MUXuhRWPrexaUgLU70gyCilPjcRKQ8d0CFltTAnhkygDbG6DnxCEP5hxxCAVI+4aV
-         XsoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690028245; x=1690633045;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tYNA0eA6zTpIVrLQIQILDRIMWUDj6tQ3eTCKjVqejNg=;
-        b=Dl9bnWdM+aMOu1z/FFsrJ6mzCPMoAS1b9CB1w/ol4ywUDdjOLckLP1I+hXuCAH6+UF
-         h6j3PFF/Og4y3Vkwkii4LTs7dNxxY27VCrVqATS46LV2tBD2Cawa5McilyCkFDcRY4Y/
-         HHI8z+4N6zVvZbtiM1tt38quyZTBv+JqTnALWxEdoJf00HaPmwmk9pqYud10mX1ub6fh
-         wM8O/Gytl3Np5JXB9lieWjbvcb7B4+/hlocna8ZslbLA2KVvZ4R7trr5Nz6ZByZsAcO+
-         kZKxlA9K1gcKXmnlHY8kXILbQzrjHL8i54opJeIs1GcRAVWb+dGmeBv+EE5tIb+xx8Fc
-         JmYg==
-X-Gm-Message-State: ABy/qLbUfRoQEleoYMtjzp2fdSDgveDR8e/NQSgaAREugW2c3X6yxw/J
-        DtXMaFrZR0nn/hj16jR4+r+Fgg==
-X-Google-Smtp-Source: APBJJlFa6HLdZkKgR0Jf0kClb3GPuraMh66N7bcNCziOtQEkeaNrl44e92mgZ7gk6h6dAhxLtU4MUQ==
-X-Received: by 2002:a5d:49c1:0:b0:315:9de4:92f0 with SMTP id t1-20020a5d49c1000000b003159de492f0mr4219589wrs.5.1690028245712;
-        Sat, 22 Jul 2023 05:17:25 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id h18-20020a5d5492000000b003142e438e8csm6779086wrv.26.2023.07.22.05.17.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 05:17:25 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 3/3] ARM: dts: samsung: s5pv210: fix camera unit addresses/ranges
-Date:   Sat, 22 Jul 2023 14:17:19 +0200
-Message-Id: <20230722121719.150094-3-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230722121719.150094-1-krzysztof.kozlowski@linaro.org>
-References: <20230722121719.150094-1-krzysztof.kozlowski@linaro.org>
+        Sat, 22 Jul 2023 08:20:19 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E3BE89B;
+        Sat, 22 Jul 2023 05:20:17 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 36MCK93g017357;
+        Sat, 22 Jul 2023 14:20:09 +0200
+Date:   Sat, 22 Jul 2023 14:20:09 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Zhangjin Wu <falcon@tinylab.org>
+Cc:     thomas@t-8ch.de, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 02/14] selftests/nolibc: add macros to enhance
+ maintainability
+Message-ID: <20230722122009.GE17311@1wt.eu>
+References: <cover.1689759351.git.falcon@tinylab.org>
+ <0415392c9c2b0a7249563abd79599a475019b508.1689759351.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0415392c9c2b0a7249563abd79599a475019b508.1689759351.git.falcon@tinylab.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,86 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The camera node has both unit address and children within the same bus
-mapping, thus needs proper ranges property to fix dtc W=1 warnings:
+On Wed, Jul 19, 2023 at 09:19:10PM +0800, Zhangjin Wu wrote:
+> The kernel targets share the same kernel make operations, the same
+> .config file, the same kernel image, add MAKE_KERNEL, KERNEL_CONFIG and
+> KERNEL_IMAGE for them.
+> 
+> Many targets share the same logging related settings, let's add common
+> variables RUN_OUT, LOG_OUT and REPORT_RUN_OUT for them.
+> 
+> The qemu run/rerun targets share the same qemu system run command, add
+> QEMU_SYSTEM_RUN for them.
+> 
+> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+> ---
+>  tools/testing/selftests/nolibc/Makefile | 41 ++++++++++++++++---------
+>  1 file changed, 27 insertions(+), 14 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+> index 0cd17de2062c..8c531518bb9f 100644
+> --- a/tools/testing/selftests/nolibc/Makefile
+> +++ b/tools/testing/selftests/nolibc/Makefile
+> @@ -166,45 +166,58 @@ endif
+>  libc-test: nolibc-test.c
+>  	$(QUIET_CC)$(CC) -o $@ $<
+>  
+> +# common macros for logging
+> +RUN_OUT = $(CURDIR)/run.out
+> +LOG_OUT = > "$(RUN_OUT)"
+> +REPORT_RUN_OUT = $(REPORT) "$(RUN_OUT)"
+> +
+>  # local libc-test
+>  run-libc-test: libc-test
+> -	$(Q)./libc-test > "$(CURDIR)/run.out" || :
+> -	$(Q)$(REPORT) $(CURDIR)/run.out
+> +	$(Q)./libc-test $(LOG_OUT) || :
+> +	$(Q)$(REPORT_RUN_OUT)
 
-  Warning (unit_address_vs_reg): /soc/camera@fa600000: node has a unit name, but no reg or ranges property
-  Warning (simple_bus_reg): /soc/camera@fa600000: missing or empty reg/ranges property
+Sorry but I don't find that this improves maintainability, quite the
+opposite in fact. One reason is that you never visually expect that
+some shell indirection delimiters are hidden in a macro that seems
+to only convey a name. Sure there are valid use cases for this, but
+I think that here it's just adding too much abstraction and it makes
+it quite hard to unfold all of this mentally.
 
-Subtract 0xfa600000 from all its children nodes.  No functional impact
-expected.
+Please try to keep the number of macros to the minimum that needs to
+be replaced or forced by the user. Here I'm not seeing a compelling
+reason for a user to want to force LOG_OUT to something else. Also
+makefile macros are generally a pain to debug, which is another
+reason for not putting too many of them.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+I noticed that your next patch changes LOG_OUT to tee, it could have
+done it everywhere and wouldn't affect readability as much.
 
----
-
-Changes in v2:
-1. New patch
----
- arch/arm/boot/dts/samsung/s5pv210.dtsi | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/arch/arm/boot/dts/samsung/s5pv210.dtsi b/arch/arm/boot/dts/samsung/s5pv210.dtsi
-index f7de5b5f2f38..ed560c9a3aa1 100644
---- a/arch/arm/boot/dts/samsung/s5pv210.dtsi
-+++ b/arch/arm/boot/dts/samsung/s5pv210.dtsi
-@@ -549,17 +549,17 @@ i2c1: i2c@fab00000 {
- 
- 		camera: camera@fa600000 {
- 			compatible = "samsung,fimc";
-+			ranges = <0x0 0xfa600000 0xe01000>;
- 			clocks = <&clocks SCLK_CAM0>, <&clocks SCLK_CAM1>;
- 			clock-names = "sclk_cam0", "sclk_cam1";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			#clock-cells = <1>;
- 			clock-output-names = "cam_a_clkout", "cam_b_clkout";
--			ranges;
- 
--			csis0: csis@fa600000 {
-+			csis0: csis@0 {
- 				compatible = "samsung,s5pv210-csis";
--				reg = <0xfa600000 0x4000>;
-+				reg = <0x00000000 0x4000>;
- 				interrupt-parent = <&vic2>;
- 				interrupts = <29>;
- 				clocks = <&clocks CLK_CSIS>,
-@@ -572,9 +572,9 @@ csis0: csis@fa600000 {
- 				#size-cells = <0>;
- 			};
- 
--			fimc0: fimc@fb200000 {
-+			fimc0: fimc@c00000 {
- 				compatible = "samsung,s5pv210-fimc";
--				reg = <0xfb200000 0x1000>;
-+				reg = <0x00c00000 0x1000>;
- 				interrupts = <5>;
- 				interrupt-parent = <&vic2>;
- 				clocks = <&clocks CLK_FIMC0>,
-@@ -586,9 +586,9 @@ fimc0: fimc@fb200000 {
- 				samsung,cam-if;
- 			};
- 
--			fimc1: fimc@fb300000 {
-+			fimc1: fimc@d00000 {
- 				compatible = "samsung,s5pv210-fimc";
--				reg = <0xfb300000 0x1000>;
-+				reg = <0x00d00000 0x1000>;
- 				interrupt-parent = <&vic2>;
- 				interrupts = <6>;
- 				clocks = <&clocks CLK_FIMC1>,
-@@ -602,9 +602,9 @@ fimc1: fimc@fb300000 {
- 				samsung,lcd-wb;
- 			};
- 
--			fimc2: fimc@fb400000 {
-+			fimc2: fimc@e00000 {
- 				compatible = "samsung,s5pv210-fimc";
--				reg = <0xfb400000 0x1000>;
-+				reg = <0x00e00000 0x1000>;
- 				interrupt-parent = <&vic2>;
- 				interrupts = <7>;
- 				clocks = <&clocks CLK_FIMC2>,
--- 
-2.34.1
-
+Thanks,
+Willy
