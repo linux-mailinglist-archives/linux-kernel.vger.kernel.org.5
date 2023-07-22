@@ -2,97 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9050075D88D
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 03:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4255075D88E
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 03:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbjGVBOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 21:14:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
+        id S231297AbjGVBPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 21:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbjGVBOM (ORCPT
+        with ESMTP id S230031AbjGVBPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 21:14:12 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8CD35B1;
-        Fri, 21 Jul 2023 18:14:12 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68336d06620so2203311b3a.1;
-        Fri, 21 Jul 2023 18:14:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689988451; x=1690593251;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ge0BDodPbbi0t2/fQVg7nNuXVsJ2KKE3irKK+lnKz00=;
-        b=Q/quBlo055unQKj9s1TErQXtrc0CsCScbBVDQvoDxQ3boCFwjCQle9lI5ltwM2t3AQ
-         euLwJmBg9f7hX/2Fq6r9W1zuhtOCZ1T6VYG/A1DGFtI2aLdi0ljIEMnqnGql59s16QpQ
-         +/yC+ZO+b1Ffy6CeVNYUOU9ETshZjRvrgAAfK5ZEE/5mRrAJNlju+D1wO8ZlvhuJdnHO
-         K+SKwqBbD3/Yh1mXpb1XKP7/4uLzvH7IUydyHMN5F3kObCsKD4bcY7mzNWDSzwsqKcIX
-         cRUr27q41tc7EkvoZkGCEqX4nYOGRlbeHp82Ca9apeJzF8KgnClpDa3obP+WYJVHI0ll
-         7GhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689988451; x=1690593251;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ge0BDodPbbi0t2/fQVg7nNuXVsJ2KKE3irKK+lnKz00=;
-        b=kNg+4s6+dPDRy3MvFuqrx6SDQKbGkPOvRqcTfjHLSNKpDsL2IF6Vd3ZPZC/6yX1JD5
-         +3W55n72MMimJRn6eBRYXR3j4aiaBMF4ElJa2KGADUQh27TvyKRpIEJRD4wxmkOvkQ6/
-         V8BBiv0zW4psfxCalcGPijngNbzaUdDGFip/pBGEEc1gwRJulQaZauul1TcnqpDtDeR1
-         EpunVZ5Sv0OjkO0KODIyiYSou45xE8Yl+n+W0aMT/eF5uv8kOtN21y9WxQNzvvwIppMz
-         KYhnoGPeKbILcXXXrOGMnyWf8XZuTfV+/IfX6O6xGMxvda9MHh72Q8yHju6U0dEoN3dn
-         v2Ow==
-X-Gm-Message-State: ABy/qLbN+DIbSTNc/BdVxorpyH6QlI3gXq0OLSdGmXw7u7Hjzn4YYvha
-        CMuM3KXqL68nM/sR1QaDKkQ=
-X-Google-Smtp-Source: APBJJlEM8VtmMPfrX0tLIxqyOlH1EDvEeJqR/ZAAsVsb5C+p+sVSO05LSklBbfMOmb18iUsXox3gKg==
-X-Received: by 2002:a05:6a00:2ea9:b0:666:d78c:33ab with SMTP id fd41-20020a056a002ea900b00666d78c33abmr2512688pfb.21.1689988451333;
-        Fri, 21 Jul 2023 18:14:11 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:fbd8])
-        by smtp.gmail.com with ESMTPSA id c25-20020aa78e19000000b00682c864f35bsm3649807pfr.140.2023.07.21.18.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jul 2023 18:14:10 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 21 Jul 2023 15:14:09 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Carlos Bilbao <carlos.bilbao@amd.com>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        amd <amd@localhost.localdomain>
-Subject: Re: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
-Message-ID: <ZLstYbAzqkqwIRzy@slm.duckdns.org>
-References: <20230717141852.153965-1-carlos.bilbao@amd.com>
- <93557f79-c12c-3c3f-2c25-9ba50a618daa@amd.com>
+        Fri, 21 Jul 2023 21:15:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF6535B7
+        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 18:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689988487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b6R1QlipilZ8PvReJeTFJdQRGxlgRH9JHq1e33Yk320=;
+        b=dLY+o8touajtdGZANP3lfS13GaXY1CsU2zlQh145X9+iLRoL3BnY3+0VRjFkAhTs9+RPGo
+        VO2HnG3D57o7xlvGgQO0rsO5EFnRRy6vrXY0xd+21B1MhS8Nxx7nBtaWynEv6jPf3X7qda
+        N8UNbIFi9RuJwrgsbWU+65rAziyaXio=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-314-hhOyGdPgPGOUGHeqaxD95g-1; Fri, 21 Jul 2023 21:14:43 -0400
+X-MC-Unique: hhOyGdPgPGOUGHeqaxD95g-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B2CDB29AA2C2;
+        Sat, 22 Jul 2023 01:14:42 +0000 (UTC)
+Received: from localhost (ovpn-12-31.pek2.redhat.com [10.72.12.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 534F9492C13;
+        Sat, 22 Jul 2023 01:14:40 +0000 (UTC)
+Date:   Sat, 22 Jul 2023 09:14:37 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, tj@kernel.org, cl@linux.com,
+        mawupeng1@huawei.com
+Subject: Re: [PATCH 2/3] mm/percpu.c: optimize the code in
+ pcpu_setup_first_chunk() a little bit
+Message-ID: <ZLstfVZZUJigJzNq@MiWiFi-R3L-srv>
+References: <20230721131800.20003-1-bhe@redhat.com>
+ <20230721131800.20003-3-bhe@redhat.com>
+ <ZLryLmHm99Pea2Yj@snowbird>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <93557f79-c12c-3c3f-2c25-9ba50a618daa@amd.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZLryLmHm99Pea2Yj@snowbird>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 05:32:04PM -0500, Carlos Bilbao wrote:
-> On 7/17/23 9:18 AM, Carlos Bilbao wrote:
-> > From: amd <amd@localhost.localdomain>
-> > 
-> > Fix two type mismatch errors encountered while compiling blk-iocost.c with
-> > GCC version 13.1.1 that involved constant operator WEIGHT_ONE. Cast the
-> > result of the division operation to (unsigned int) to match the expected
-> > format specifier %u in two seq_printf invocations.
-> > 
-> > Reviewed-by: Carlos Bilbao <carlos.bilbao@amd.com>
-> This should have been:
+On 07/21/23 at 02:01pm, Dennis Zhou wrote:
+> Hello,
 > 
-> Signed-off-by: Carlos Bilbao <carlos.bilbao@amd.com>
+> On Fri, Jul 21, 2023 at 09:17:59PM +0800, Baoquan He wrote:
+> > This removes the need of local varibale 'chunk', and optimize the code
+> > calling pcpu_alloc_first_chunk() to initialize reserved chunk and
+> > dynamic chunk to make it simpler.
+> > 
+> > Signed-off-by: Baoquan He <bhe@redhat.com>
+> > ---
+> >  mm/percpu.c | 32 +++++++++++++-------------------
+> >  1 file changed, 13 insertions(+), 19 deletions(-)
+> > 
+> > diff --git a/mm/percpu.c b/mm/percpu.c
+> > index 1480bf283d11..c25b058a46ad 100644
+> > --- a/mm/percpu.c
+> > +++ b/mm/percpu.c
+> > @@ -2581,7 +2581,6 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+> >  {
+> >  	size_t size_sum = ai->static_size + ai->reserved_size + ai->dyn_size;
+> >  	size_t static_size, dyn_size;
+> > -	struct pcpu_chunk *chunk;
+> >  	unsigned long *group_offsets;
+> >  	size_t *group_sizes;
+> >  	unsigned long *unit_off;
+> > @@ -2697,7 +2696,7 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+> >  	pcpu_unit_pages = ai->unit_size >> PAGE_SHIFT;
+> >  	pcpu_unit_size = pcpu_unit_pages << PAGE_SHIFT;
+> >  	pcpu_atom_size = ai->atom_size;
+> > -	pcpu_chunk_struct_size = struct_size(chunk, populated,
+> > +	pcpu_chunk_struct_size = struct_size((struct pcpu_chunk *)0, populated,
+> >  					     BITS_TO_LONGS(pcpu_unit_pages));
+> >  
+> >  	pcpu_stats_save_ai(ai);
+> > @@ -2735,28 +2734,23 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+> >  
+> >  	/*
+> >  	 * Initialize first chunk.
+> > -	 * If the reserved_size is non-zero, this initializes the reserved
+> > -	 * chunk.  If the reserved_size is zero, the reserved chunk is NULL
+> > -	 * and the dynamic region is initialized here.  The first chunk,
+> > -	 * pcpu_first_chunk, will always point to the chunk that serves
+> > -	 * the dynamic region.
+> > +	 * If the reserved_size is non-zero, initializes the reserved chunk
+>                                          ^initialize
+> > +	 * firstly. If the reserved_size is zero, the reserved chunk is NULL
+>         ^ can remove firstly.
+> > +	 * and the dynamic region is initialized directly. The first chunk,
+> > +	 * pcpu_first_chunk, will always point to the chunk that serves the
+> > +	 * dynamic region.
+> 
+> Reading this, I'll probably reword this comment to explain the reserved
+> chunk better.
 
-Carlos, can you please retest the current linus#master?
+Agree. The expression is a little messy and too colloquial.
 
-Thanks.
+> 
+> >  	 */
+> >  	tmp_addr = (unsigned long)base_addr + static_size;
+> > -	map_size = ai->reserved_size ?: dyn_size;
+> > -	chunk = pcpu_alloc_first_chunk(tmp_addr, map_size);
+> > -
+> > -	/* init dynamic chunk if necessary */
+> >  	if (ai->reserved_size) {
+> > -		pcpu_reserved_chunk = chunk;
+> > -
+> > -		tmp_addr = (unsigned long)base_addr + static_size +
+> > -			   ai->reserved_size;
+> > -		map_size = dyn_size;
+> > -		chunk = pcpu_alloc_first_chunk(tmp_addr, map_size);
+> > +		map_size = ai->reserved_size;
+> > +		pcpu_reserved_chunk = pcpu_alloc_first_chunk(tmp_addr, map_size);
+> >  	}
+> >  
+> > -	/* link the first chunk in */
+> > -	pcpu_first_chunk = chunk;
+> > +	/* init dynamic chunk if necessary */
+> > +	tmp_addr += (unsigned long)ai->reserved_size;
+> 
+> I'm not a big fan of += the tmp_addr as I personally find it easier to
+> read if it's just laid out explicitly.
 
+OK, will change.
+
+> 
+> > +	map_size = dyn_size;
+> > +	pcpu_first_chunk = pcpu_alloc_first_chunk(tmp_addr, map_size);
+> > +
+> >  	pcpu_nr_empty_pop_pages = pcpu_first_chunk->nr_empty_pop_pages;
+> >  	pcpu_chunk_relocate(pcpu_first_chunk, -1);
+> >  
+> > -- 
+> > 2.34.1
+> > 
+> 
+> Overall, I think this is good, but I'd go 1 step further and get rid of
+> map_size. Regarding tmp_addr, I'd prefer if we kept all the math
+> together.
+
+Makes sense. Thanks a lot for your careful review and great suggestions.
+
+According to your comments, I made a draft v2. Please help check if I
+have got them correctly and if the new change is OK to you.
+
+From 17832ce8a755d8327b853a18c6f1cc00c9f93e50 Mon Sep 17 00:00:00 2001
+From: Baoquan He <bhe@redhat.com>
+Date: Tue, 27 Jun 2023 09:33:28 +0800
+Subject: [PATCH] mm/percpu.c: optimize the code in pcpu_setup_first_chunk() a
+ little bit
+Content-type: text/plain
+
+This removes the need of local varibale 'chunk', and optimize the code
+calling pcpu_alloc_first_chunk() to initialize reserved chunk and
+dynamic chunk to make it simpler.
+
+Signed-off-by: Baoquan He <bhe@redhat.com>
+---
+ mm/percpu.c | 36 +++++++++++++-----------------------
+ 1 file changed, 13 insertions(+), 23 deletions(-)
+
+diff --git a/mm/percpu.c b/mm/percpu.c
+index 1480bf283d11..83fc47206680 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -2581,14 +2581,12 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+ {
+ 	size_t size_sum = ai->static_size + ai->reserved_size + ai->dyn_size;
+ 	size_t static_size, dyn_size;
+-	struct pcpu_chunk *chunk;
+ 	unsigned long *group_offsets;
+ 	size_t *group_sizes;
+ 	unsigned long *unit_off;
+ 	unsigned int cpu;
+ 	int *unit_map;
+ 	int group, unit, i;
+-	int map_size;
+ 	unsigned long tmp_addr;
+ 	size_t alloc_size;
+ 
+@@ -2697,7 +2695,7 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+ 	pcpu_unit_pages = ai->unit_size >> PAGE_SHIFT;
+ 	pcpu_unit_size = pcpu_unit_pages << PAGE_SHIFT;
+ 	pcpu_atom_size = ai->atom_size;
+-	pcpu_chunk_struct_size = struct_size(chunk, populated,
++	pcpu_chunk_struct_size = struct_size((struct pcpu_chunk *)0, populated,
+ 					     BITS_TO_LONGS(pcpu_unit_pages));
+ 
+ 	pcpu_stats_save_ai(ai);
+@@ -2734,29 +2732,21 @@ void __init pcpu_setup_first_chunk(const struct pcpu_alloc_info *ai,
+ 	dyn_size = ai->dyn_size - (static_size - ai->static_size);
+ 
+ 	/*
+-	 * Initialize first chunk.
+-	 * If the reserved_size is non-zero, this initializes the reserved
+-	 * chunk.  If the reserved_size is zero, the reserved chunk is NULL
+-	 * and the dynamic region is initialized here.  The first chunk,
+-	 * pcpu_first_chunk, will always point to the chunk that serves
+-	 * the dynamic region.
++	 * Initialize first chunk:
++	 *
++	 * - If the reserved_size is non-zero, initialize the reserved
++	 *   chunk firstly. Otherwise, the reserved chunk is NULL.
++	 *
++	 * - The first chunk, pcpu_first_chunk, always points to the
++	 *   chunk that serves the dynamic region.
+ 	 */
+ 	tmp_addr = (unsigned long)base_addr + static_size;
+-	map_size = ai->reserved_size ?: dyn_size;
+-	chunk = pcpu_alloc_first_chunk(tmp_addr, map_size);
+-
+-	/* init dynamic chunk if necessary */
+-	if (ai->reserved_size) {
+-		pcpu_reserved_chunk = chunk;
+-
+-		tmp_addr = (unsigned long)base_addr + static_size +
+-			   ai->reserved_size;
+-		map_size = dyn_size;
+-		chunk = pcpu_alloc_first_chunk(tmp_addr, map_size);
+-	}
++	if (ai->reserved_size)
++		pcpu_reserved_chunk = pcpu_alloc_first_chunk(tmp_addr,
++						ai->reserved_size);
++	tmp_addr = (unsigned long)base_addr + static_size + ai->reserved_size;
++	pcpu_first_chunk = pcpu_alloc_first_chunk(tmp_addr, dyn_size);
+ 
+-	/* link the first chunk in */
+-	pcpu_first_chunk = chunk;
+ 	pcpu_nr_empty_pop_pages = pcpu_first_chunk->nr_empty_pop_pages;
+ 	pcpu_chunk_relocate(pcpu_first_chunk, -1);
+ 
 -- 
-tejun
+2.34.1
+
