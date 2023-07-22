@@ -2,103 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9FC75DD8D
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 18:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D38E75DD95
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 19:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbjGVQ7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 12:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60006 "EHLO
+        id S229791AbjGVRHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 13:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjGVQ7J (ORCPT
+        with ESMTP id S229477AbjGVRHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 12:59:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E751910FA;
-        Sat, 22 Jul 2023 09:59:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 79CD860B8B;
-        Sat, 22 Jul 2023 16:59:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EC52C433C8;
-        Sat, 22 Jul 2023 16:59:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690045147;
-        bh=Ij/rcsp5XlAxMerhVwPsIgVA3kkMS01caPTwvxw8uGQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Odo2jweh+cUBE0mbhrXwKnFNCjy3c5laBUNaawbmRe/fOxoaGoXTrNTse7XnCmddB
-         Eatr7NAcPkXii/qd8Si1FFx+cNzdjTYYfbMDJKskbzOqar3KgOm3hRbfj8FmQsTCtL
-         RRciAVIBqnMz9+1I6RifmFlbuw9/gwIqm2mcY8blmwbEbs9CNZbzKw1Uul2uMl0DU9
-         7PaLy2kmjX/K00aOjhlsRBJD5iwbx93ny+6pu/Zn8HKCL2lwGKGTMZRWq1dEODbGU/
-         uvLPLdeQTF8Dn9PNxrTg29fOYYWNqHP5Zxu7qnN/AVwIxS0z4/Udt0nFSvSaZGPgg6
-         ku3OI5qa+vQzQ==
-Date:   Sat, 22 Jul 2023 17:59:01 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        George Stark <gnstark@sberdevices.ru>, <lars@metafoo.de>,
-        <neil.armstrong@linaro.org>, <khilman@baylibre.com>,
-        <jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>,
-        <nuno.sa@analog.com>, <linux-iio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-amlogic@lists.infradead.org>, <kernel@sberdevices.ru>
-Subject: Re: [PATCH v1 0/3] iio: adc: meson: tune init sequence
-Message-ID: <20230722175901.16f47142@jic23-huawei>
-In-Reply-To: <20230718104100.00007c0c@Huawei.com>
-References: <20230715110654.6035-1-gnstark@sberdevices.ru>
-        <20230716171134.43d05c45@jic23-huawei>
-        <a172c764-1eef-835f-f237-8f78b4c6e877@sberdevices.ru>
-        <ZLURZWPkmP6aKDOZ@smile.fi.intel.com>
-        <20230718104100.00007c0c@Huawei.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sat, 22 Jul 2023 13:07:15 -0400
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D9B1A7;
+        Sat, 22 Jul 2023 10:07:14 -0700 (PDT)
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1ba2e911c24so1912226fac.0;
+        Sat, 22 Jul 2023 10:07:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690045633; x=1690650433;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aR5sCXAxQTVo6Nxobbh0jeRT3E3q1mjLjpUY2gBLFfI=;
+        b=M6xNzvn9qfgjwampMqsk9kyRuUzW2Hl7DnmtUBeldISzPj5rnFeyHh73GDALYg6OMB
+         +dfDw2XgA9KMSe2UupnN7DTu2KnpfdGNKMlkXNQpxJmEM5KdtFC1hHpO5jjZn8Kuc98t
+         MBN33MHOrKHsmv2/n/O25rhZ1gwKSPcE77X5pobL1nBcJD/6U5bXC2VADhbaEaqPCddY
+         pE/HBj7Xat55v/gUD8TsEmr5YLXOVECzl1VWoVJxX4fD5MPCl9fp5vrVDCG0L1LzlQN0
+         5n3Ndx36Af7zKxSr2/+QDecxhf49rWN9mp6NTr89FqwacG6sldc8OO5sM1uroJ/Jxjei
+         AYRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690045633; x=1690650433;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aR5sCXAxQTVo6Nxobbh0jeRT3E3q1mjLjpUY2gBLFfI=;
+        b=Cuv+abSwDkhMPH8ESBdlHAoLIdZDSsIRh7SrrXAVQLJgfG/ADa7BVl7EZvTHFFu3i/
+         5WRti7hLZCkHbMFYVp69fHn0URVOw8T1KGBLnHPb5SLB6xXe/7n4Ula+Q5sCTyFiN/a6
+         k9mBLCYiJ/ExcR2RP1A6g9lefIwTaIcfNxgA2a5cR98hEuX+P1/wuEMy/bVJCGsBH5//
+         UQOK3vjT5L3vHjsluuj337hsKaPmeCCRIlDCefDDim0DNJOaLDDCw2gIe5SqluI4eeui
+         hi56t6YtEyNDVXFgBiulPVx7Zd8uwvdQZkEATVAyv+KzTIbMHDYR4F/TTmFJT5WHKwyb
+         4CJg==
+X-Gm-Message-State: ABy/qLZ6naFKZzDUyl/P9lf0nTQ2+K5pXxl1BnrMW80g0GMrgh5Q+q07
+        ChDHlo3EpUix5o1L+sSKZekk1L6hifwlJrOD7BE=
+X-Google-Smtp-Source: APBJJlGf12boWGa1Ok5FcHZ42bsj2uiFXxSgYW/GRxrbZhwgHnh1o7HA330OZXEQh8XFvImF/v+0qEkYHsn6d3M6X4M=
+X-Received: by 2002:a05:6870:7026:b0:19a:2d23:4e32 with SMTP id
+ u38-20020a056870702600b0019a2d234e32mr4404421oae.28.1690045633557; Sat, 22
+ Jul 2023 10:07:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230721103350.3684483-1-james.hilliard1@gmail.com>
+ <20230721103350.3684483-2-james.hilliard1@gmail.com> <3492152a-d668-54ba-7cb4-4db8bfec6f03@linaro.org>
+ <CADvTj4r8oVyghXN_4ONMBfhMqHGNPJN517kB6X1FfwUmB16OFQ@mail.gmail.com> <ZLpu72xDla42x7J8@francesco-nb.int.toradex.com>
+In-Reply-To: <ZLpu72xDla42x7J8@francesco-nb.int.toradex.com>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Sat, 22 Jul 2023 11:07:01 -0600
+Message-ID: <CADvTj4op-CEmBrfZ6a2YkzPbZ42EbG7wCkwGbwgdS-FXKG2Qxg@mail.gmail.com>
+Subject: Re: [PATCH v6 2/3] ARM: dts: imx6qdl: Add Variscite VAR-SOM-MX6 SoM support
+To:     Francesco Dolcini <francesco@dolcini.it>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        devicetree@vger.kernel.org,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 10:41:00 +0100
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+On Fri, Jul 21, 2023 at 5:41=E2=80=AFAM Francesco Dolcini <francesco@dolcin=
+i.it> wrote:
+>
+> On Fri, Jul 21, 2023 at 05:05:51AM -0600, James Hilliard wrote:
+> > On Fri, Jul 21, 2023 at 4:43=E2=80=AFAM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> > > On 21/07/2023 12:33, James Hilliard wrote:
+> > > > +             compatible =3D "regulator-fixed";
+> > > > +             regulator-name =3D "touch_3v3_supply";
+> > > > +             regulator-always-on;
+> > >
+> > > Also, missing constraints.
+> >
+> > Hmm, what's the correct way to determine the constraint values?
+>
+> You should know/understand the hardware design. Normally when writing a
+> DT file you have the hardware schematics and the relevant datasheets
+> available.
 
-> On Mon, 17 Jul 2023 13:01:09 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > On Mon, Jul 17, 2023 at 12:41:29PM +0300, George Stark wrote:  
-> > > On 7/16/23 19:11, Jonathan Cameron wrote:    
-> > > > On Sat, 15 Jul 2023 14:05:57 +0300
-> > > > George Stark <gnstark@sberdevices.ru> wrote:    
-> > 
-> > ...
-> >   
-> > > > These look fine to me, but I'd like them to sit on list a little while
-> > > > on off chance anyone else has feedback on them.    
-> > > 
-> > > I understand. I'd resend the patches in a week or more if there's no
-> > > feedback.    
-> > 
-> > There is no need to resend as long as they are available via lore.kernel.org
-> > mail archives.
-> >   
-> 
-> FYI, I track using patchwork.kernel.org so rarely drop a patch set down the back of the
-> sofa any more...
-> 
-> Jonathan
+I did find some datasheets/schematics, but I'm having trouble finding somet=
+hing
+which indicates it would be anything other than 3.3v there(although I don't=
+ read
+a lot of schematics in general so I might be missing something obvious):
+https://www.variscite.com/wp-content/uploads/2017/12/VAR-SOM-MX6_v1-Datashe=
+et.pdf
+https://www.variscite.com/wp-content/uploads/2017/12/VAR-SOM-MX6_datasheet.=
+pdf
+https://www.variscite.com/wp-content/uploads/2017/12/VAR-MX6CustomBoard-Sch=
+ematics-for-VAR-SOM-MX6_V1.pdf
+https://www.variscite.com/wp-content/uploads/2017/12/V2_VAR-MX6CustomBoard-=
+Schematics.pdf
+https://www.variscite.com/wp-content/uploads/2017/12/VAR-MX6CustomBoard-Dat=
+asheet.pdf
 
-Long enough.  Applied to the togreg branch of iio.git and pushed out as testing
-for 0-day to see if we missed anything.
+>
+> > I'm guessing they should just be set to this based on the name?:
+> > regulator-min-microvolt =3D <3300000>;
+> > regulator-max-microvolt =3D <3300000>;
+>
+> This looks like a good guess, assuming that the regulator name is
+> correct.
 
-Thanks,
+Tested with that but it didn't work, screen failed so I guess must be
+something different?
 
-Jonathan
-
-
+>
+> Francesco
+>
