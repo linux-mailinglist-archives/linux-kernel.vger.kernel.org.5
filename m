@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB5075D976
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 05:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFC375D986
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 05:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbjGVDnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 Jul 2023 23:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
+        id S230474AbjGVD4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 Jul 2023 23:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjGVDnl (ORCPT
+        with ESMTP id S229597AbjGVD4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 Jul 2023 23:43:41 -0400
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332CE30F2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 20:43:39 -0700 (PDT)
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-560ce5f7646so4648787eaf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 20:43:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689997418; x=1690602218;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QAMEMAdmbmttw5YPvNXuauoZBE1q9FfZAQHS9dSgDjE=;
-        b=hdpHLORmytj1pJWLKDLkNC2HoJBtHzFEJAfWUDU/W4KNYUZ7zvg2kJxX5DE+qqGkiw
-         JlRR2D7yrhFbY88kJ/oxmGQ6Hbq8kcKspQpZ0VggwIalS5Cl/chl7aC7E1DBM+Vm/8AN
-         pIcNftU7tr8EEyQb9QvWfgQFLqjnB6a0K69vdytg64vbx9Ac0iHOXirUT57WovJ+iLPV
-         MgENZMBn85t4uCuRzsg45k0ZqSlY9xHioeU8g9WXfpFaVvT9kGOIFvUY1FiMjAgEmv+h
-         MynTEi45i9Rt13NbbeAA0qpMnyD9P2iacrvEWXRqM4wU3J1DatYki+4KKmvp9RELq8hG
-         LLFQ==
-X-Gm-Message-State: ABy/qLYYUsgAX3d+MesxVDijk/VJwbFMGtCQrI66uQICCO/di1e46Fwo
-        FHeoWmp4teY+KoUZ8vbt4DQqWvRiBxz+A8AUbsCWp5tvfeCJ
-X-Google-Smtp-Source: APBJJlEy9qyQ148ZIoOWJ4EYZ/oCstSNClRmiVPCL1SHHGNqvxM1pHgpncz3oWi77/QVcFat4l68BAu4nr7IhaTf6yAXnhLT53UB
+        Fri, 21 Jul 2023 23:56:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1BBF0;
+        Fri, 21 Jul 2023 20:56:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1952C61DAA;
+        Sat, 22 Jul 2023 03:56:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF9D6C433C7;
+        Sat, 22 Jul 2023 03:56:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689998171;
+        bh=xeB+GD2/T24xF60NZo1JJmzAvsqgxo+DoSn3WlJgCIE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=faZF1KEUZg15a9P7i8vAO8suVPQbBPUuTK0vSMmEa7OlCqWmTtf7talDmAR5G/5dx
+         z+LOle+d7ZtPNFnyTyvpNxOX4LMOcwaLvz3aD7vtDeDX6ePCv2iino4cxeyOkSHs9I
+         WKqEleV+Q0O9RaQD2DuIfFtInqNguzUe7aZtIjir6JWg4Fa6uYVThFrS4eBMG+Q4bm
+         /K7UWNfsQKIdqkNQ45GptZZpPq6oGs9xl435/0jigXUpyMlm0qTxyqPpMX3VO5wHp/
+         fNhbRGVvMNivpHoJpe5l9AXTDaHG/2A5l524Ft/m+R82bfe2506cOsfHQnkiE72b3R
+         VgZj3bg27Ru5g==
+Date:   Fri, 21 Jul 2023 20:59:30 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Eric Chanudet <echanude@redhat.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Caleb Connolly <caleb.connolly@linaro.org>
+Subject: Re: [PATCH v2] arm64: dts: qcom: sa8540p-ride: enable rtc
+Message-ID: <dtussvqzf7x5p633pxt3julkffhzt5rxwp3aghs4ocj5odq4la@ed6jhcv76hbk>
+References: <20230718145105.3464105-1-echanude@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:180e:b0:3a3:d677:9a8d with SMTP id
- bh14-20020a056808180e00b003a3d6779a8dmr8384853oib.0.1689997418550; Fri, 21
- Jul 2023 20:43:38 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 20:43:38 -0700
-In-Reply-To: <c0c7247d6a133b188c8e9780f243ae29@disroot.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cddbf806010b2fe9@google.com>
-Subject: Re: [syzbot] [hfs?] kernel BUG in hfs_show_options
-From:   syzbot <syzbot+155274e882dcbf9885df@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sel4@disroot.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718145105.3464105-1-echanude@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Jul 18, 2023 at 10:46:10AM -0400, Eric Chanudet wrote:
+> diff --git a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+[..]
+> +&pmm8540a_sdam_7 {
+> +	status = "okay";
+> +
+> +	rtc_offset: rtc-offset@ac {
+> +		reg = <0xac 0x4>;
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+I'm still trying to get confirmation that this is a good choice.
 
-Reported-and-tested-by: syzbot+155274e882dcbf9885df@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         aeba4568 Add linux-next specific files for 20230718
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=12db078aa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e7ec534f91cfce6c
-dashboard link: https://syzkaller.appspot.com/bug?extid=155274e882dcbf9885df
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=158d50bea80000
-
-Note: testing is done by a robot and is best-effort only.
+Regards,
+Bjorn
