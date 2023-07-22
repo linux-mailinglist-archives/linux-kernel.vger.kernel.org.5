@@ -2,305 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23AA575DD12
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 17:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 760E875DD16
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 17:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbjGVPEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 11:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43256 "EHLO
+        id S230010AbjGVPJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 11:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGVPEx (ORCPT
+        with ESMTP id S229456AbjGVPJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 11:04:53 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7003910F5;
-        Sat, 22 Jul 2023 08:04:52 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-668704a5b5bso2678389b3a.0;
-        Sat, 22 Jul 2023 08:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690038288; x=1690643088;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wilBskxoDLE0WDOTpeghLkRAu1C7OaNnBdQQcZMzLkI=;
-        b=B0Jab/5JHgCCwnSQ6jUTtkFRtAx7xLaCuEztsjj4cfy+HOtr9aSKtg+wlKCdOJR9DD
-         8GXr+XDJIhk5+2fgr+f2DAX8eYHXuM586gFHFjeVtK9HBBXAPzx3LoN+6whfMlNev0J6
-         BjUMa8rM3hj4JtRcbPPeFkwcCnYta3ot0jOiv1k8RAbkn7IK3Ftv5rmkc5nhSR0U/A7T
-         qAMUmQH+p2+3Eh58ejVBLdgiY7xsQjCnFQqAXmzoeOi/GFzmjpfrrs7poYY4FI9pLU1V
-         sSWvcoyJnnDBx2La3lsN/veXSSbKI94NYWSfXxYAL1B3VgrQH8Zk1AJ25/VIyY5V+xli
-         9Ahg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690038288; x=1690643088;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wilBskxoDLE0WDOTpeghLkRAu1C7OaNnBdQQcZMzLkI=;
-        b=V5JHcVJKoydCGUinr3VrhxKdrpHyyLZB7CheJgFmwQpdIxSE7I063OGLqdfMvI8War
-         pAgC6KmN/y4PYcTo4ey4MWdCDseCdKgcIWW4bZAT9c8wdSh993xTGNEFrkHQrY7nLEKV
-         PmD1OMjuKZcTg/yl2Hzmr/+5gDUgJ79AyMcso6AXZNHPciIUKSgbO8P0uzrMmPYo7IXr
-         0Xq0LUfkCZcrh+d/CtPMXispauX1wwLZPY3ke1NKiHILX79HwUCqj18yXOfXijGPfG8p
-         y3NyEh2UDjGve0CcW63Vw8jhFqz6EUloiKIQIIMO0AifOr6fTuzp2cX/J45T2xdNnZAL
-         A2rA==
-X-Gm-Message-State: ABy/qLa5auMa5ycfoU5vbKkQ6HFHcjP7Gfo/5vrrbZBLOrUHDqPhul9Y
-        xDBFCQNzk2O91G5J86xaDMM=
-X-Google-Smtp-Source: APBJJlGxcmrBPJkkrmx/e3PRqO2PvqLRi84fUXlTWzRTPNzPB8X7wH0zopvOQ+rcNGWzlUfRGaUpvg==
-X-Received: by 2002:a05:6a20:3d26:b0:133:f860:ac42 with SMTP id y38-20020a056a203d2600b00133f860ac42mr6636953pzi.34.1690038287764;
-        Sat, 22 Jul 2023 08:04:47 -0700 (PDT)
-Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id s21-20020a62e715000000b00678afd4824asm4858236pfh.175.2023.07.22.08.04.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 08:04:47 -0700 (PDT)
-Date:   Sat, 22 Jul 2023 20:34:43 +0530
-Message-Id: <87h6pwj8c4.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shikemeng@huaweicloud.com
-Subject: Re: [PATCH v5 5/8] ext4: call ext4_mb_mark_group_bb in ext4_mb_clear_bb
-In-Reply-To: <20230629144007.1263510-6-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 22 Jul 2023 11:09:22 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402BC1FF9;
+        Sat, 22 Jul 2023 08:09:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690038560; x=1721574560;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tP0c6UT1JUEzDEMg01H9+yYjfoMtWTAGuC2DlrbRxOU=;
+  b=AtFcxLwS/heBgoOeGwccjwN3iKY2e3vZVP2YtLEqTEBXWnSO8rCuLYxR
+   HteToGY6BcwxtgYiwYfOWijFHNnH+HE+yUxwiHiF64APBYfSDSYqeExQ/
+   HlkS6djSjWtslTVekLsqlfpOELyiB15JR/FKUeqqxtBUISJ01TMC+NqC6
+   c04+rH3G2Afu/J/a2Q3wvZzIFmf5pl6v09CUEK9rX2mo29777Jyrpw+wO
+   41Lhyz0xFfMY6Xe6WVpaC2Tme47I5L3uzPq5Vgnehvhupdd7e4auroPir
+   aK+8kUlKSdAw/HHn3Aodd1L06R12fDAJ4rQk5VAqBSxEMEZ0+i57Ya28U
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="357195982"
+X-IronPort-AV: E=Sophos;i="6.01,224,1684825200"; 
+   d="scan'208";a="357195982"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2023 08:09:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="795301223"
+X-IronPort-AV: E=Sophos;i="6.01,224,1684825200"; 
+   d="scan'208";a="795301223"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 22 Jul 2023 08:09:18 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qNEE8-0008Om-33;
+        Sat, 22 Jul 2023 15:09:13 +0000
+Date:   Sat, 22 Jul 2023 23:07:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Wolfram Sang <wsa-dev@sang-engineering.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Conghui Chen <conghui.chen@intel.com>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 21/22] i2c: virtio: Remove #ifdef guards for PM
+ related functions
+Message-ID: <202307222246.K1GYOGCB-lkp@intel.com>
+References: <20230722115310.27681-5-paul@crapouillou.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230722115310.27681-5-paul@crapouillou.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
+Hi Paul,
 
-> call ext4_mb_mark_group_bb in ext4_mb_clear_bb to remove repeat code
-> to update block bitmap and group descriptor on disk.
->
-> Note: ext4_mb_clear_bb will update buddy and bitmap in two critical
-> sections instead of update in the same critical section.
->
-> Original lock behavior introduced in commit 7a2fcbf7f8573 ("ext4: don't
-> use blocks freed but not yet committed in buddy cache init") to avoid
-> race betwwen ext4_mb_free_blocks and ext4_mb_init_cache:
-> ext4_mb_load_buddy_gfp
-> ext4_lock_group
-> mb_clear_bits(bitmap_bh, ...)
-> mb_free_blocks/ext4_mb_free_metadata
-> ext4_unlock_group
-> ext4_mb_unload_buddy
->
-> New lock behavior in this patch:
-> ext4_mb_load_buddy_gfp
-> ext4_lock_group
-> mb_clear_bits(bitmap_bh, ...)
-> ext4_unlock_group
->
-> /* no ext4_mb_init_cache for the same group will be called as
-> ext4_mb_load_buddy_gfp will ensure buddy page is update-to-date */
->
-> ext4_lock_group
-> mb_free_blocks/ext4_mb_free_metadata
-> ext4_unlock_group
-> ext4_mb_unload_buddy
->
-> As buddy page for group is always update-to-date between
-> ext4_mb_load_buddy_gfp and ext4_mb_unload_buddy. Then no
-> ext4_mb_init_cache will be called for the same group concurrentlly when
-> we update bitmap and buddy page betwwen buddy load and unload.
+kernel test robot noticed the following build errors:
 
-More information will definitely help.
+[auto build test ERROR on wsa/i2c/for-next]
+[also build test ERROR on brgl/gpio/for-next krzk/for-next linus/master v6.5-rc2 next-20230721]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-In ext4_mb_init_cache(), within a lock_group(), we first initialize
-a incore bitmap from on disk block bitmap, pa and from
-ext4_mb_generate_from_freelist() (this function basically requires
-ext4_mb_free_metadata() to be called)
-Then we go and initialize incore buddy within a page which utilize bitmap
-block data (from previous step) for generating buddy info.
-So this clearly means we need incore bitmap and mb_free_metadata() to be updated
-together within the same group lock.
+url:    https://github.com/intel-lab-lkp/linux/commits/Paul-Cercueil/i2c-au1550-Remove-ifdef-guards-for-PM-related-functions/20230722-200209
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-next
+patch link:    https://lore.kernel.org/r/20230722115310.27681-5-paul%40crapouillou.net
+patch subject: [PATCH v2 21/22] i2c: virtio: Remove #ifdef guards for PM related functions
+config: i386-randconfig-r015-20230722 (https://download.01.org/0day-ci/archive/20230722/202307222246.K1GYOGCB-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20230722/202307222246.K1GYOGCB-lkp@intel.com/reproduce)
 
-Now you said that ext4_mb_init_cache() can't be called together between
-ext4_mb_load_buddy_gfp() and unload_buddy() because buddy page is uptodate?? 
-Can you give more details please? 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307222246.K1GYOGCB-lkp@intel.com/
 
-What about if the resize gets called on the last group which is within the
-same page on which we are operating. Also consider blocksize < pagesize.
-That means we can have even more blocks within the same page.
-So ext4_mb_init_cache() can still get called right while between load_buddy and unload_buddy?
+All errors (new ones prefixed by >>):
 
-Maybe I need to take a closer look at it.
-
--ritesh
+>> drivers/i2c/busses/i2c-virtio.c:270:3: error: field designator 'freeze' does not refer to any field in type 'struct virtio_driver'
+           .freeze                 = pm_sleep_ptr(virtio_i2c_freeze),
+            ^
+>> drivers/i2c/busses/i2c-virtio.c:271:3: error: field designator 'restore' does not refer to any field in type 'struct virtio_driver'
+           .restore                = pm_sleep_ptr(virtio_i2c_restore),
+            ^
+   2 errors generated.
 
 
->
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc.c | 90 ++++++++++++-----------------------------------
->  1 file changed, 23 insertions(+), 67 deletions(-)
->
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 34fd12aeaf8d..57cc304b724e 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6325,19 +6325,21 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  			       ext4_fsblk_t block, unsigned long count,
->  			       int flags)
->  {
-> -	struct buffer_head *bitmap_bh = NULL;
-> +	struct ext4_mark_context mc = {
-> +		.handle = handle,
-> +		.sb = inode->i_sb,
-> +		.state = 0,
-> +	};
->  	struct super_block *sb = inode->i_sb;
-> -	struct ext4_group_desc *gdp;
->  	struct ext4_group_info *grp;
->  	unsigned int overflow;
->  	ext4_grpblk_t bit;
-> -	struct buffer_head *gd_bh;
->  	ext4_group_t block_group;
->  	struct ext4_sb_info *sbi;
->  	struct ext4_buddy e4b;
->  	unsigned int count_clusters;
->  	int err = 0;
-> -	int ret;
-> +	int mark_flags = 0;
->  
->  	sbi = EXT4_SB(sb);
->  
-> @@ -6369,18 +6371,6 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  		/* The range changed so it's no longer validated */
->  		flags &= ~EXT4_FREE_BLOCKS_VALIDATED;
->  	}
-> -	count_clusters = EXT4_NUM_B2C(sbi, count);
-> -	bitmap_bh = ext4_read_block_bitmap(sb, block_group);
-> -	if (IS_ERR(bitmap_bh)) {
-> -		err = PTR_ERR(bitmap_bh);
-> -		bitmap_bh = NULL;
-> -		goto error_return;
-> -	}
-> -	gdp = ext4_get_group_desc(sb, block_group, &gd_bh);
-> -	if (!gdp) {
-> -		err = -EIO;
-> -		goto error_return;
-> -	}
->  
->  	if (!(flags & EXT4_FREE_BLOCKS_VALIDATED) &&
->  	    !ext4_inode_block_valid(inode, block, count)) {
-> @@ -6390,28 +6380,7 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  		goto error_return;
->  	}
->  
-> -	BUFFER_TRACE(bitmap_bh, "getting write access");
-> -	err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
-> -					    EXT4_JTR_NONE);
-> -	if (err)
-> -		goto error_return;
-> -
-> -	/*
-> -	 * We are about to modify some metadata.  Call the journal APIs
-> -	 * to unshare ->b_data if a currently-committing transaction is
-> -	 * using it
-> -	 */
-> -	BUFFER_TRACE(gd_bh, "get_write_access");
-> -	err = ext4_journal_get_write_access(handle, sb, gd_bh, EXT4_JTR_NONE);
-> -	if (err)
-> -		goto error_return;
-> -#ifdef AGGRESSIVE_CHECK
-> -	{
-> -		int i;
-> -		for (i = 0; i < count_clusters; i++)
-> -			BUG_ON(!mb_test_bit(bit + i, bitmap_bh->b_data));
-> -	}
-> -#endif
-> +	count_clusters = EXT4_NUM_B2C(sbi, count);
->  	trace_ext4_mballoc_free(sb, inode, block_group, bit, count_clusters);
->  
->  	/* __GFP_NOFAIL: retry infinitely, ignore TIF_MEMDIE and memcg limit. */
-> @@ -6420,6 +6389,22 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  	if (err)
->  		goto error_return;
->  
-> +#ifdef AGGRESSIVE_CHECK
-> +	mark_flags |= EXT4_MB_BITMAP_MARKED_CHECK;
-> +#endif
-> +	err = ext4_mb_mark_group_bb(&mc, block_group, bit, count_clusters,
-> +				    mark_flags);
-> +
-> +
-> +	if (err && mc.changed == 0) {
-> +		ext4_mb_unload_buddy(&e4b);
-> +		goto error_return;
-> +	}
-> +
-> +#ifdef AGGRESSIVE_CHECK
-> +	BUG_ON(mc.changed != count_clusters);
-> +#endif
-> +
->  	/*
->  	 * We need to make sure we don't reuse the freed block until after the
->  	 * transaction is committed. We make an exception if the inode is to be
-> @@ -6442,13 +6427,8 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  		new_entry->efd_tid = handle->h_transaction->t_tid;
->  
->  		ext4_lock_group(sb, block_group);
-> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
->  		ext4_mb_free_metadata(handle, &e4b, new_entry);
->  	} else {
-> -		/* need to update group_info->bb_free and bitmap
-> -		 * with group lock held. generate_buddy look at
-> -		 * them with group lock_held
-> -		 */
->  		if (test_opt(sb, DISCARD)) {
->  			err = ext4_issue_discard(sb, block_group, bit,
->  						 count_clusters, NULL);
-> @@ -6461,23 +6441,11 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
->  
->  		ext4_lock_group(sb, block_group);
-> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
->  		mb_free_blocks(inode, &e4b, bit, count_clusters);
->  	}
->  
-> -	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
-> -	ext4_free_group_clusters_set(sb, gdp, ret);
-> -	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
-> -	ext4_group_desc_csum_set(sb, block_group, gdp);
->  	ext4_unlock_group(sb, block_group);
->  
-> -	if (sbi->s_log_groups_per_flex) {
-> -		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
-> -		atomic64_add(count_clusters,
-> -			     &sbi_array_rcu_deref(sbi, s_flex_groups,
-> -						  flex_group)->free_clusters);
-> -	}
-> -
->  	/*
->  	 * on a bigalloc file system, defer the s_freeclusters_counter
->  	 * update to the caller (ext4_remove_space and friends) so they
-> @@ -6492,26 +6460,14 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  
->  	ext4_mb_unload_buddy(&e4b);
->  
-> -	/* We dirtied the bitmap block */
-> -	BUFFER_TRACE(bitmap_bh, "dirtied bitmap block");
-> -	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
-> -
-> -	/* And the group descriptor block */
-> -	BUFFER_TRACE(gd_bh, "dirtied group descriptor block");
-> -	ret = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
-> -	if (!err)
-> -		err = ret;
-> -
->  	if (overflow && !err) {
->  		block += count;
->  		count = overflow;
-> -		put_bh(bitmap_bh);
->  		/* The range changed so it's no longer validated */
->  		flags &= ~EXT4_FREE_BLOCKS_VALIDATED;
->  		goto do_more;
->  	}
->  error_return:
-> -	brelse(bitmap_bh);
->  	ext4_std_error(sb, err);
->  	return;
->  }
-> -- 
-> 2.30.0
+vim +270 drivers/i2c/busses/i2c-virtio.c
+
+   260	
+   261	static struct virtio_driver virtio_i2c_driver = {
+   262		.feature_table		= features,
+   263		.feature_table_size	= ARRAY_SIZE(features),
+   264		.id_table		= id_table,
+   265		.probe			= virtio_i2c_probe,
+   266		.remove			= virtio_i2c_remove,
+   267		.driver			= {
+   268			.name	= "i2c_virtio",
+   269		},
+ > 270		.freeze			= pm_sleep_ptr(virtio_i2c_freeze),
+ > 271		.restore		= pm_sleep_ptr(virtio_i2c_restore),
+   272	};
+   273	module_virtio_driver(virtio_i2c_driver);
+   274	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
