@@ -2,57 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1289075DA2E
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 07:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F0675D9F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 Jul 2023 07:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbjGVFTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 01:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
+        id S231171AbjGVFON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 01:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbjGVFSy (ORCPT
+        with ESMTP id S229457AbjGVFOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 01:18:54 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA9C469C
-        for <linux-kernel@vger.kernel.org>; Fri, 21 Jul 2023 22:18:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690003108; x=1721539108;
-  h=date:from:to:cc:subject:message-id;
-  bh=vwLYiK/vHdDQX/l+2Ni8necRVsfqKKpQxdz5VcdTKro=;
-  b=I3gXIgzSDa5SpwVTUL6xO5tLMjCOYg256Zihjp5veEFG3tVDAnEriYaX
-   y8A3lVFuQ4LVLvhal0/lmOQv5InzmalbQJSM7HkvGkOGjW571bbRyvmG5
-   II1IzZ1qzl0AXlYYsGgfMj0RA2bC3Al8fM3Fa3LFh99/7Rw94F6kwoFFT
-   k7tFgTxNhDMt3TxnEYpzfoT2kORyAdaOMhiXN9JX/jlffk7EF3aWujX+R
-   YlxXp4SsHRFFmfAqypJyJAufvU+S11jafbsTekTwHoUGlzsP0O6uUAWc6
-   SIJCi6Jl8EG0J0PSbQlIL1iKByxQ4AZ3gbE1379XNSQNDsdiNNw2YnC53
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="364625901"
-X-IronPort-AV: E=Sophos;i="6.01,223,1684825200"; 
-   d="scan'208";a="364625901"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 22:17:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="719073282"
-X-IronPort-AV: E=Sophos;i="6.01,223,1684825200"; 
-   d="scan'208";a="719073282"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 21 Jul 2023 22:17:38 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qN4zq-0007zv-0c;
-        Sat, 22 Jul 2023 05:17:38 +0000
-Date:   Sat, 22 Jul 2023 13:16:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:ras/core] BUILD SUCCESS
- c3629dd7e67d6ec5705d33b0de0d142c972fe573
-Message-ID: <202307221341.FKbIdDBa-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Sat, 22 Jul 2023 01:14:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A4F19A2;
+        Fri, 21 Jul 2023 22:14:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D2F98609FA;
+        Sat, 22 Jul 2023 05:14:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 624E7C433C8;
+        Sat, 22 Jul 2023 05:14:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690002849;
+        bh=l2etnZvJ9/hffs2X1dtEQe8kxdMzW6IwoomkjJCKvgI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oRwMosP0cDm7zISdBQOn5gTODekBtT5qZz2mJEqGhRgUtMP6QjQQLpvyZYye9a8qw
+         JqpqPxO1QQ4A8REvqUaAFGBaPV5ae1A6m3KQWMWzrLHW4C3JPG6Woyijf5mbIRLuPs
+         DE77/Fp+akBc3kwP+1RHcDuTd1ovzKN4ikiOASfi6gXjdOn419XPdmMdHHompNMSQc
+         DyZ0StHl3a2SR5l4ZAK6ysqAo7GmX9lyd9VlS+K9GFCVLCcIbBETS5VFnbEn7AEezf
+         o4pB76MUH2ElP7ehWRMTYocFo3TxU54F26V1bZIcVPOHua6ipyWD6RwQG5rX9IV3e5
+         KoI3e2DF+X1uA==
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Benjamin Li <benl@squareup.com>,
+        James Willcox <jwillcox@squareup.com>,
+        Joseph Gates <jgates@squareup.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Zac Crosby <zac@squareup.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Lee Jones <lee@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Xu Yang <xu.yang_2@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Jun Nie <jun.nie@linaro.org>, Max Chen <mchen@squareup.com>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vincent Knecht <vincent.knecht@mailoo.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        alsa-devel@alsa-project.org, iommu@lists.linux.dev,
+        linux-usb@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>, Rob Herring <robh@kernel.org>,
+        Andy Gross <andy.gross@linaro.org>
+Subject: Re: (subset) [PATCH 00/11] Even more msm bindings fixes
+Date:   Fri, 21 Jul 2023 22:17:08 -0700
+Message-ID: <169000304212.3611206.847521612980089108.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
+References: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,92 +90,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ras/core
-branch HEAD: c3629dd7e67d6ec5705d33b0de0d142c972fe573  x86/mce: Prevent duplicate error records
 
-elapsed time: 721m
+On Tue, 27 Jun 2023 18:24:16 +0200, Konrad Dybcio wrote:
+> This series contains couple more random dt schema warning fixes, centered
+> around linux-msm.
+> 
+> All of the patches (except) the last two are pretty much independent.
+> Patch 1 is not only a bindings fix, but also a functional one.
+> 
+> 
+> [...]
 
-configs tested: 73
-configs skipped: 92
+Applied, thanks!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+[09/11] dt-bindings: arm: msm: kpss-acc: Make the optional reg truly optional
+        commit: 981be238e1d28e156aa9da2a8722f86f02fd0453
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                randconfig-r013-20230720   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r002-20230720   gcc  
-arm                  randconfig-r014-20230720   gcc  
-arm                  randconfig-r025-20230720   gcc  
-arm                  randconfig-r046-20230721   clang
-csky                                defconfig   gcc  
-hexagon              randconfig-r041-20230721   clang
-hexagon              randconfig-r045-20230721   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230720   gcc  
-i386         buildonly-randconfig-r005-20230720   gcc  
-i386         buildonly-randconfig-r006-20230720   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230721   clang
-i386                 randconfig-i002-20230721   clang
-i386                 randconfig-i003-20230721   clang
-i386                 randconfig-i004-20230721   clang
-i386                 randconfig-i005-20230721   clang
-i386                 randconfig-i006-20230721   clang
-i386                 randconfig-i011-20230720   clang
-i386                 randconfig-i012-20230720   clang
-i386                 randconfig-i013-20230720   clang
-i386                 randconfig-i014-20230720   clang
-i386                 randconfig-i015-20230720   clang
-i386                 randconfig-i016-20230720   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r022-20230720   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r004-20230720   gcc  
-openrisc             randconfig-r011-20230720   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r003-20230720   gcc  
-s390                 randconfig-r005-20230720   gcc  
-sh                               allmodconfig   gcc  
-sh                   randconfig-r006-20230720   gcc  
-sh                   randconfig-r016-20230720   gcc  
-sparc                            allyesconfig   gcc  
-sparc                randconfig-r024-20230720   gcc  
-sparc64              randconfig-r026-20230720   gcc  
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r015-20230720   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230720   gcc  
-x86_64       buildonly-randconfig-r002-20230720   gcc  
-x86_64       buildonly-randconfig-r003-20230720   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230720   clang
-x86_64               randconfig-x002-20230720   clang
-x86_64               randconfig-x003-20230720   clang
-x86_64               randconfig-x004-20230720   clang
-x86_64               randconfig-x005-20230720   clang
-x86_64               randconfig-x006-20230720   clang
-x86_64               randconfig-x011-20230720   gcc  
-x86_64               randconfig-x012-20230720   gcc  
-x86_64               randconfig-x013-20230720   gcc  
-x86_64               randconfig-x014-20230720   gcc  
-x86_64               randconfig-x015-20230720   gcc  
-x86_64               randconfig-x016-20230720   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Bjorn Andersson <andersson@kernel.org>
