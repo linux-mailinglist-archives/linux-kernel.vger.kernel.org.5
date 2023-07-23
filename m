@@ -2,132 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0F075E022
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 08:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3820175E026
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 08:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjGWGkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 02:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37580 "EHLO
+        id S229692AbjGWGlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 02:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbjGWGkj (ORCPT
+        with ESMTP id S229599AbjGWGll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 02:40:39 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8499B10D3;
-        Sat, 22 Jul 2023 23:40:38 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36N6bU1R016333;
-        Sun, 23 Jul 2023 06:40:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=vZPw6+ClErtd32k3gz+P/jOP3JLU9OHuDrJYxqghC40=;
- b=HOyQySZnoAkCLyBgD5Aeu+K13EWcV2sR/q97XPKEut6wNjLH8a3JBheAkTBlQJbdwUOO
- U1ub3R7rnKwSLlm5+ybszdLAavvOoS+tY2LYesUDnmGZ8KXWoPm/6nbtIehr9Vv+yLmw
- xZvZAlJW7vdWpL+Z7jA4FS3eHOLT1mRovvxk7VTyDtZE4PQXB9IG9Wj8uNuDmdJIZz7s
- kxMntbt/wULCvvf1vQh60aa30HzWbGsZXkPE60crxYgmekACutvNRtr0er8ZVWzHUJjR
- rHc8o8peapn0ttt6Vrkw+mZ0SXhAKqYGcUShXXwxv/P9MHRC78d5vHZWx6mEi2Z8pFP1 0A== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s0n7dexh4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 23 Jul 2023 06:40:28 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36N6PMfb014403;
-        Sun, 23 Jul 2023 06:40:28 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0stx9u5s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 23 Jul 2023 06:40:28 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36N6eOAP23593564
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 23 Jul 2023 06:40:25 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CA34820043;
-        Sun, 23 Jul 2023 06:40:24 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6D51A20040;
-        Sun, 23 Jul 2023 06:40:24 +0000 (GMT)
-Received: from osiris (unknown [9.171.79.53])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Sun, 23 Jul 2023 06:40:24 +0000 (GMT)
-Date:   Sun, 23 Jul 2023 08:40:22 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [GIT PULL] s390 fixes for 6.5-rc3
-Message-ID: <20230723064022.11906-A-hca@linux.ibm.com>
-References: <20230722160215.7417-A-hca@linux.ibm.com>
- <CAHk-=wj2g7kDTKPawbhOKXFsAF+Zayygmp1f64oerQktc_LCYw@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wj2g7kDTKPawbhOKXFsAF+Zayygmp1f64oerQktc_LCYw@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vQyHWTTe3205rmBPEfxFypQcAKVDWvhm
-X-Proofpoint-ORIG-GUID: vQyHWTTe3205rmBPEfxFypQcAKVDWvhm
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Sun, 23 Jul 2023 02:41:41 -0400
+Received: from smtp.smtpout.orange.fr (smtp-29.smtpout.orange.fr [80.12.242.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC0210F8
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 23:41:40 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id NSmdq59F14DtINSmdqfFoy; Sun, 23 Jul 2023 08:41:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1690094498;
+        bh=Q7o0UQvRfkS/4+Mc6nSPTzH0IapT9/fEsaA6pwimGA0=;
+        h=From:To:Cc:Subject:Date;
+        b=N/o86135ANjyjKGmokuS7xBDhOlV15gvy89zRuss8Qpd7KKHc/I4AvMRy0vHpTNPP
+         CdHlSFsd+qtazyI5QGlhGEa7t2s+ezl1Wb0N6mE9oRHSoYuvUBlBdxTuuwctbFxR2A
+         9Zk5/e8z356kbKZSdmRnh2veOy8ewV5V48lDUyg0xuZHjeRIA/sxilDnSt8F7xqOnf
+         4DmDV+b4GJow+4SNILdEJP+Bla9fs59NxWl1NOK80l4LU2T6INRhrrsH+zD1gGPb4e
+         3J3PTblIWoQEMzg6a8hURf62+DuwkL5YE/vJoHpuj+ZKimoSeJBJVwoZCInRtvdcx7
+         t0prBJ/xef2wQ==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 23 Jul 2023 08:41:38 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: [PATCH] drm/msm: Slightly simplify memory allocation in submit_lookup_cmds()
+Date:   Sun, 23 Jul 2023 08:41:33 +0200
+Message-Id: <9861e8b1ce385a556e0c9c4533beee9c4a92809c.1690094459.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-23_02,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 clxscore=1015 mlxscore=0 adultscore=0 phishscore=0
- mlxlogscore=653 impostorscore=0 bulkscore=0 priorityscore=1501
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307230060
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 11:52:22AM -0700, Linus Torvalds wrote:
-> On Sat, 22 Jul 2023 at 09:02, Heiko Carstens <hca@linux.ibm.com> wrote:
-> >
-> > - Fix per vma lock fault handling: add missing !(fault & VM_FAULT_ERROR)
-> >   check to fault handler to prevent error handling for return values that
-> >   don't indicate an error
-> 
-> Hmm. The s390 code / people seems to still be a bit confused about the
-> VM_FAULT flags.
-> 
-> The commit comment says "With per-vma locks, handle_mm_fault() may
-> return non-fatal error flags".
-> 
-> That's actively misleading.
-...
-> Anyway, I have pulled this, since it clearly fixes a problem. But I do
-> think that the *deeper* problem is that s390 treats those bits as
-> errors in the first place, when they really aren't. Yes, the error
-> bits are *common*, but that field really shouldn't be seen as just
-> errors, and I really think that the deeper problem is that
-> 
->         if (unlikely(fault))
->                 do_fault_error(regs, fault);
-> 
-> logic. It's simply wrong.
-> 
-> Of course, it looks like the reason you found this is that the s390
-> do_fault_error() then does a BUG() on any bits it doesn't understand.
-> You have that nonsensical "clear flags" in other places too. So it's
-> not like this work-around is new. But it's a workaround, and a sign of
-> confusion, I feel.
-> 
-> Maybe the extra s390 fault conditions should be added to the generic
-> list and added to the VM_FAULT_ERROR mask. I dunno.
+If 'sz' is SIZE_MAX, kmalloc() will fail. So there is no need to explicitly
+check for an hypothetical overflow.
 
-Thanks for looking a bit deeper into the code. Our "special" private
-VM_FAULT flags came already to attention a couple of months ago [1]. Most
-of the flags are historic - I'll try to get rid of all of them, since for
-other architectures it is also possible without having private flags.
+Remove the check to save a few lines of code.
 
-Our fault handling code needs some refactoring anyway. Hopefully the result
-will be easier to maintain, and makes it a bit more difficult to add bugs
-like I recently introduced with this per-vma lock architecture backend.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/gpu/drm/msm/msm_gem_submit.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-[1] https://lore.kernel.org/all/Y+CLpdnOGFg28uMJ@casper.infradead.org/
+diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+index 3f1aa4de3b87..6ca8f8cbb6e2 100644
+--- a/drivers/gpu/drm/msm/msm_gem_submit.c
++++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+@@ -211,11 +211,7 @@ static int submit_lookup_cmds(struct msm_gem_submit *submit,
+ 
+ 		sz = array_size(submit_cmd.nr_relocs,
+ 				sizeof(struct drm_msm_gem_submit_reloc));
+-		/* check for overflow: */
+-		if (sz == SIZE_MAX) {
+-			ret = -ENOMEM;
+-			goto out;
+-		}
++
+ 		submit->cmd[i].relocs = kmalloc(sz, GFP_KERNEL);
+ 		if (!submit->cmd[i].relocs) {
+ 			ret = -ENOMEM;
+-- 
+2.34.1
+
