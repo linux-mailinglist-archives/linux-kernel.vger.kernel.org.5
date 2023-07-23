@@ -2,125 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 305E275DF86
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 03:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AABA75DF89
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 03:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbjGWBEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 21:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        id S229668AbjGWBQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 21:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGWBEm (ORCPT
+        with ESMTP id S229476AbjGWBQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 21:04:42 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845711BE2
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 18:04:38 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3a5a7ebdd9fso590068b6e.0
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 18:04:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690074277; x=1690679077;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ye3LRGSURfy3VknXwfgBx3T/03XjBq/mir5HY2YR/bA=;
-        b=cOXsJItF9H6s6DhK5XjwTXJryb5Jx/cV50cDU9tsS7ghKEvXwJ8i8Pue31j4Mn2AB9
-         DkAUuqYzbCReROV+80XidrGtNDhzCT13ch43VrG6UkuKAyRQWhxtB/yPvTJTAs519t6K
-         9f41aPVDentRsAl+sJOPnOvSw5vA0ekepbLJwHLD6o7ysozt5fzfr8Lff7MSzCmeI1te
-         ufz0Wp2BpshQh8q2WZbUIZovmj0dZubvfz350sTRpxlPAmBm99YWaiNeasa0Xx/qsVAJ
-         FU7pPxyW5weHXVoWjc55113w8u4OXd1OZ3+qaSMslLoe/7Jq5YrVAZWcqF2cP6YPhwSa
-         2Ncg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690074277; x=1690679077;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ye3LRGSURfy3VknXwfgBx3T/03XjBq/mir5HY2YR/bA=;
-        b=OkL7yvNFLyPhnC7AcCc3J59+xw9oNI17km9aSTwLqDvZZ/mY6EC4tI8OFCSh3iIqRV
-         IDQkZkxs2L6x6kxPBfOXkSKF47sBYMtmCl5B3y1q2NCfB9KabdHvrmMZLmuiR8qi3KpX
-         AmicPG1MLT2TkEVbF9gj3vrfj11tN9KLCBWfbgOXhULqrAsdMSMlGZvh4SfoEtqdWmTM
-         U9tO+odTtQbCvwfwrZYNOPJVRi4cqmZU+ZTxiO+/vw3O4dPRB5I1yZEp56t/eMn1EAID
-         sJGfXIrA/B8oga0MoHQe5fCnXO6ZT90csxkjSRhNUTjDXTT7D+ZnA/c2atx3nquWEZkA
-         Q1Jg==
-X-Gm-Message-State: ABy/qLaZKwEgrZtiNmJQ/AUNt703CKR87QnhSFMvZStYseeKpNzhJfKt
-        +p+a6/DV8mRJYyXVlt+rycVBpQ==
-X-Google-Smtp-Source: APBJJlEAVa6Ye+J7tbKUWQVmlUCvqtTBbnwc6koa7fYyl03zoal3Hl3hZMP3GdFWSAPzvdzbbY+fTw==
-X-Received: by 2002:aca:120f:0:b0:3a4:5b8:76c2 with SMTP id 15-20020aca120f000000b003a405b876c2mr6407733ois.7.1690074276980;
-        Sat, 22 Jul 2023 18:04:36 -0700 (PDT)
-Received: from x1.hsd1.or.comcast.net ([2601:1c2:1800:f680:2a8c:966f:392d:7230])
-        by smtp.gmail.com with ESMTPSA id 19-20020a170902c15300b001b849932030sm5966160plj.198.2023.07.22.18.04.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 18:04:36 -0700 (PDT)
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Diederik de Haas <didi.debian@cknow.org>,
-        Ian Rogers <irogers@google.com>, SeongJae Park <sj@kernel.org>,
-        Drew Fustini <dfustini@baylibre.com>,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Conor Dooley <conor@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>
-Subject: [PATCH] scripts/spelling.txt: remove 'thead' as a typo
-Date:   Sat, 22 Jul 2023 18:03:30 -0700
-Message-Id: <20230723010329.674186-1-dfustini@baylibre.com>
-X-Mailer: git-send-email 2.34.1
+        Sat, 22 Jul 2023 21:16:35 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 607D21B8;
+        Sat, 22 Jul 2023 18:16:31 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R7lhN02LKzVj2S;
+        Sun, 23 Jul 2023 09:15:00 +0800 (CST)
+Received: from [10.174.151.185] (10.174.151.185) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sun, 23 Jul 2023 09:16:28 +0800
+Subject: Re: [PATCH] mm/memcg: use get_page() for device private pages in
+ mc_handle_swap_pte()
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
+        <shakeelb@google.com>, <muchun.song@linux.dev>,
+        <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230715032802.2508163-1-linmiaohe@huawei.com>
+ <ZLIY+ZwrLvpapGE6@casper.infradead.org>
+ <73b5d7c2-783d-3d75-2c1b-4b91a039df94@huawei.com>
+Message-ID: <3a86cef4-d1fd-8914-3b0a-2ae95ccff740@huawei.com>
+Date:   Sun, 23 Jul 2023 09:16:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <73b5d7c2-783d-3d75-2c1b-4b91a039df94@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.151.185]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T-Head is a vendor of processor core IP, and they have recently
-introduced the RISC-V TH1520 SoC. Remove 'thead' as a typo of 'thread'
-to avoid checkpatch incorrectly warning that 'thead' is typo in patches
-that add support for T-Head designs in the kernel.
+On 2023/7/17 10:28, Miaohe Lin wrote:
+> On 2023/7/15 11:56, Matthew Wilcox wrote:
+>> On Sat, Jul 15, 2023 at 11:28:02AM +0800, Miaohe Lin wrote:
+>>> When page table locked is held, the page can't be freed from under us.
+>>
+>> But the page isn't mapped into the page table ... there's a swap entry
+>> in the page table, so I don't think your logic holds.
+>>
+> 
+> IIUC, device_private_entry will hold one page refcnt when it's set to page table.
 
-Cc: Conor Dooley <conor@kernel.org>
-Cc: Guo Ren <guoren@kernel.org>
-Cc: Jisheng Zhang <jszhang@kernel.org>
-Link: https://www.t-head.cn/
-Signed-off-by: Drew Fustini <dfustini@baylibre.com>
----
- scripts/spelling.txt | 1 -
- 1 file changed, 1 deletion(-)
+Take remove_migration_pte() as example, it will hold extra one page refcnt when set device private entry:
+  remove_migration_pte()
+    ...
+    folio_get(folio);
+    ...
+    if (unlikely(is_device_private_page(new))) {
+      make_[writable|readable]_device_private_entry();
+    }
+    ...
+    set_pte_at
 
-For example, checkpatch prints the following warnings for 89b0186ab532
-("dt-bindings: riscv: Add T-HEAD TH1520 board compatibles"):
+> And there's similar code in do_swap_page():
+> 
+>   vm_fault_t do_swap_page(struct vm_fault *vmf)
+>     if (unlikely(non_swap_entry(entry))) {
+>       if (is_device_private_entry(entry))
+>         /*
+>          * Get a page reference while we know the page can't be
+>          * freed.
+>          */
+>         get_page(vmf->page);
+>         pte_unmap_unlock(vmf->pte, vmf->ptl);
+>         ret = vmf->page->pgmap->ops->migrate_to_ram(vmf);
+>         put_page(vmf->page);
+>     ...
+> 
+> If my logic doesn't hold, do_swap_page() will need to fix the code. Or am I miss something?
 
-  $ ./scripts/checkpatch.pl --strict -g 89b0186ab532
-  WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-  new file mode 100644
+Can I have your opinion?
 
-  WARNING: 'thead' may be misspelled - perhaps 'thread'?
-  +$id: http://devicetree.org/schemas/riscv/thead.yaml#
-                                          ^^^^^
-
-  WARNING: 'thead' may be misspelled - perhaps 'thread'?
-  +          - const: thead,th1520
-                    ^^^^^
-  total: 0 errors, 3 warnings, 0 checks, 29 lines checked
-
-The 'thead' typo false positive adds noise to automation like the
-linux-riscv patchwork bot:
-https://patchwork.kernel.org/project/linux-riscv/patch/20230722-upstream-beaglev-ahead-dts-v1-2-ccda511357f4@baylibre.com/
-
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index fc7ba95e86a0..855c4863124b 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -1541,7 +1541,6 @@ temeprature||temperature
- temorary||temporary
- temproarily||temporarily
- temperture||temperature
--thead||thread
- theads||threads
- therfore||therefore
- thier||their
--- 
-2.34.1
+Thanks.
 
