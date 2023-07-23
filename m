@@ -2,141 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF5775E0FD
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2945475E0FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbjGWJik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 05:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40934 "EHLO
+        id S229865AbjGWJkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 05:40:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjGWJii (ORCPT
+        with ESMTP id S229491AbjGWJkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 05:38:38 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C655E67;
-        Sun, 23 Jul 2023 02:38:37 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3174aac120aso392942f8f.2;
-        Sun, 23 Jul 2023 02:38:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690105116; x=1690709916;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oxNqVJ8M0RlStNJiqmdGBEdZEF6FgJ1pvu+FzFr7WF0=;
-        b=FYJY+Bnur9aWsu4JUe2QcktPfX1ZzMT7ckqyKMJjd1FsziSSoGOxn7tMu0APZfH0Yc
-         LqMCRiBaRJGPUuoJiWt9BOQdwz7fEHapRbLkQIpw9dq8bvJI03LVa80Ir8R2KCnnbGPi
-         Gqs78Hc9HX2pHoStqBZHbnRRoYAbMLukkM88Bz+++peQC5xRWxYWZUGwXIVZHdIjzUip
-         emvyfzWkkIuArKz7ae6X1L0xZ7+fHpiJi8Nc0hEApqibuoXtE5NhGJ6ZBiUOGNSoBDTs
-         jjaVXyenoxODBkRjpLTcbru/9k1YWKSKxfvJj/53v9GBiTUk1KIjBbng/e8ROP4bOla4
-         Pefg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690105116; x=1690709916;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oxNqVJ8M0RlStNJiqmdGBEdZEF6FgJ1pvu+FzFr7WF0=;
-        b=COi/Ioyh3RiEKkEDeg6N54t43tHTsDsuhdLqoulB/2E723lV1sSGmYtgujQpFu9xef
-         6manY864kU28jrZXz5a69PFvW5wOz8YzdOKK8YUKgXyGxp5aFTFiOGV/K1CieoK1ARbN
-         mf4z9wWz3gkYUPs6+XgZHpLQYn3aBGH2tz1bHWEPrHKRjO3yzH9U2aixQqFi8tBDuF+a
-         hyak5jgbeXorLmNxhqDmPl1Uyn+7VuIDCwy/soEVU17Jekqj3KeG0jdQlzfmkLdEMFEJ
-         YxIxp+tntmjPdJ7jYPVLlXch1jX49jg+ABedOpQOQam6GEpz1uOA/6sHD+jHptdRReNt
-         Q88g==
-X-Gm-Message-State: ABy/qLbnrpVHwPijR8ezLOgKT+xjB559UvIcZ284PHuycQXB8kzRF/gl
-        ir8lJSxgca+o0IsMvAojWSE=
-X-Google-Smtp-Source: APBJJlHEoHQAlhF6vEArYxkf108SJhFb8RJ0pr+GGHx6NyP863uApYvVhr8KpOvpDqncDS8OfFbWMw==
-X-Received: by 2002:a5d:61c5:0:b0:30f:af19:81f3 with SMTP id q5-20020a5d61c5000000b0030faf1981f3mr4621201wrv.41.1690105115424;
-        Sun, 23 Jul 2023 02:38:35 -0700 (PDT)
-Received: from mmaatuq-HP-Laptop-15-dy2xxx.. ([2001:8f8:1163:535c:ce7:4d43:f827:e4e8])
-        by smtp.gmail.com with ESMTPSA id r5-20020adff105000000b003145521f4e5sm9186373wro.116.2023.07.23.02.38.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 02:38:34 -0700 (PDT)
-From:   Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        shuah@kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-Subject: [PATCH] selftests/bpf: fix build errors if CONFIG_NF_CONNTRACK_MARK not set.
-Date:   Sun, 23 Jul 2023 13:38:06 +0400
-Message-Id: <20230723093806.2850822-1-mahmoudmatook.mm@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 23 Jul 2023 05:40:06 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0476E6A
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:40:03 -0700 (PDT)
+Received: from spock.localnet (unknown [94.142.239.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id B9F9314697E4;
+        Sun, 23 Jul 2023 11:39:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1690105196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dJFwaE+Wp4xXknQEEGSTLenwUzVW0tD9EFuQKBQb2hA=;
+        b=tDbhV6Iu6EzvMO9d9hGrN/M3BZJ+vwKqaMkNJvSNvJ1zEQxPbrw701hdYG7+R83ep5k1Ec
+        jxCDL+I/uD/rpi0aMzO3KvZPWa6YKD1lnA6aJEIHJ44RMSJ53VfmxLh35NhgEHUjNoaOCl
+        CZwsX4/QoEA7uCMpCKzKRrhHidHKEmI=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andres Freund <andres@anarazel.de>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 6.4 800/800] io_uring: Use io_schedule* in cqring wait
+Date:   Sun, 23 Jul 2023 11:39:42 +0200
+Message-ID: <12251678.O9o76ZdvQC@natalenko.name>
+In-Reply-To: <20230716195007.731909670@linuxfoundation.org>
+References: <20230716194949.099592437@linuxfoundation.org>
+ <20230716195007.731909670@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="nextPart5695128.DvuYhMxLoT";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'mark' member in 'struct nf_conn' is conditionally defined
- by CONFIG_NF_CONNTRACK_MARK
- so any reference to it should follow the same.
+--nextPart5695128.DvuYhMxLoT
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: stable@vger.kernel.org
+Date: Sun, 23 Jul 2023 11:39:42 +0200
+Message-ID: <12251678.O9o76ZdvQC@natalenko.name>
+In-Reply-To: <20230716195007.731909670@linuxfoundation.org>
+MIME-Version: 1.0
 
- $ make -C tools/testing/selftests/bpf
-	progs/test_bpf_nf.c:219:12: error: no member named 'mark' in 'struct nf_conn'
-	                        if (ct->mark == 42) {
-	                            ~~  ^
-	progs/test_bpf_nf.c:220:9: error: no member named 'mark' in 'struct nf_conn'
-	                                ct->mark++;
-	                                ~~  ^
-	progs/test_bpf_nf.c:221:34: error: no member named 'mark' in 'struct nf_conn'
-                                test_exist_lookup_mark = ct->mark;
+Hello.
 
-Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
----
- .../testing/selftests/bpf/progs/test_bpf_nf.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+On ned=C4=9Ble 16. =C4=8Dervence 2023 21:50:53 CEST Greg Kroah-Hartman wrot=
+e:
+> From: Andres Freund <andres@anarazel.de>
+>=20
+> commit 8a796565cec3601071cbbd27d6304e202019d014 upstream.
+>=20
+> I observed poor performance of io_uring compared to synchronous IO. That
+> turns out to be caused by deeper CPU idle states entered with io_uring,
+> due to io_uring using plain schedule(), whereas synchronous IO uses
+> io_schedule().
+>=20
+> The losses due to this are substantial. On my cascade lake workstation,
+> t/io_uring from the fio repository e.g. yields regressions between 20%
+> and 40% with the following command:
+> ./t/io_uring -r 5 -X0 -d 1 -s 1 -c 1 -p 0 -S$use_sync -R 0 /mnt/t2/fio/wr=
+ite.0.0
+>=20
+> This is repeatable with different filesystems, using raw block devices
+> and using different block devices.
+>=20
+> Use io_schedule_prepare() / io_schedule_finish() in
+> io_cqring_wait_schedule() to address the difference.
+>=20
+> After that using io_uring is on par or surpassing synchronous IO (using
+> registered files etc makes it reliably win, but arguably is a less fair
+> comparison).
+>=20
+> There are other calls to schedule() in io_uring/, but none immediately
+> jump out to be similarly situated, so I did not touch them. Similarly,
+> it's possible that mutex_lock_io() should be used, but it's not clear if
+> there are cases where that matters.
+>=20
+> Cc: stable@vger.kernel.org # 5.10+
+> Cc: Pavel Begunkov <asml.silence@gmail.com>
+> Cc: io-uring@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Andres Freund <andres@anarazel.de>
+> Link: https://lore.kernel.org/r/20230707162007.194068-1-andres@anarazel.de
+> [axboe: minor style fixup]
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  io_uring/io_uring.c |   15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+>=20
+> --- a/io_uring/io_uring.c
+> +++ b/io_uring/io_uring.c
+> @@ -2575,6 +2575,8 @@ int io_run_task_work_sig(struct io_ring_
+>  static inline int io_cqring_wait_schedule(struct io_ring_ctx *ctx,
+>  					  struct io_wait_queue *iowq)
+>  {
+> +	int token, ret;
+> +
+>  	if (unlikely(READ_ONCE(ctx->check_cq)))
+>  		return 1;
+>  	if (unlikely(!llist_empty(&ctx->work_llist)))
+> @@ -2585,11 +2587,20 @@ static inline int io_cqring_wait_schedul
+>  		return -EINTR;
+>  	if (unlikely(io_should_wake(iowq)))
+>  		return 0;
+> +
+> +	/*
+> +	 * Use io_schedule_prepare/finish, so cpufreq can take into account
+> +	 * that the task is waiting for IO - turns out to be important for low
+> +	 * QD IO.
+> +	 */
+> +	token =3D io_schedule_prepare();
+> +	ret =3D 0;
+>  	if (iowq->timeout =3D=3D KTIME_MAX)
+>  		schedule();
+>  	else if (!schedule_hrtimeout(&iowq->timeout, HRTIMER_MODE_ABS))
+> -		return -ETIME;
+> -	return 0;
+> +		ret =3D -ETIME;
+> +	io_schedule_finish(token);
+> +	return ret;
+>  }
+> =20
+>  /*
 
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-index 77ad8adf68da..0b285de8b7e7 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-@@ -157,7 +157,10 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
- 		struct nf_conn *ct_ins;
- 
- 		bpf_ct_set_timeout(ct, 10000);
--		ct->mark = 77;
-+		#if defined(CONFIG_NF_CONNTRACK_MARK)
-+			ct->mark = 77;
-+		#endif
-+
- 
- 		/* snat */
- 		saddr.ip = bpf_get_prandom_u32();
-@@ -188,7 +191,9 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
- 				bpf_ct_change_timeout(ct_lk, 10000);
- 				test_delta_timeout = ct_lk->timeout - bpf_jiffies64();
- 				test_delta_timeout /= CONFIG_HZ;
--				test_insert_lookup_mark = ct_lk->mark;
-+				#if defined(CONFIG_NF_CONNTRACK_MARK)
-+					test_insert_lookup_mark = ct_lk->mark;
-+				#endif
- 				bpf_ct_change_status(ct_lk,
- 						     IPS_CONFIRMED | IPS_SEEN_REPLY);
- 				test_status = ct_lk->status;
-@@ -210,10 +215,12 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
- 		       sizeof(opts_def));
- 	if (ct) {
- 		test_exist_lookup = 0;
--		if (ct->mark == 42) {
--			ct->mark++;
--			test_exist_lookup_mark = ct->mark;
--		}
-+		#if defined(CONFIG_NF_CONNTRACK_MARK)
-+			if (ct->mark == 42) {
-+				ct->mark++;
-+				test_exist_lookup_mark = ct->mark;
-+			}
-+		#endif
- 		bpf_ct_release(ct);
- 	} else {
- 		test_exist_lookup = opts_def.error;
--- 
-2.34.1
+Reportedly, this caused a regression as reported in [1] [2] [3]. Not only v=
+6.4.4 is affected, v6.1.39 is affected too.
+
+Reverting this commit fixes the issue.
+
+Please check.
+
+Thanks.
+
+[1] https://bbs.archlinux.org/viewtopic.php?id=3D287343
+[2] https://bugzilla.kernel.org/show_bug.cgi?id=3D217700
+[3] https://bugzilla.kernel.org/show_bug.cgi?id=3D217699
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+--nextPart5695128.DvuYhMxLoT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmS89V4ACgkQil/iNcg8
+M0vYLA//Rm/Cq4E6nAwj8QoHK0QmrWbP6Fv1g26ZBjR6cFS9rU7wHylkgdfQoEcV
+hVx7G8nkWrJfnPwD6j4X2kJE2dZmBLc8x/zWhbaM7Fhzvz/lGIQqc2LxdeWphVEO
+tLGEzrF7MUTYacH0NF6uzgdPXSz5ulKIQrKrJzhVOkSmTaJJvaWL+JAYWjcSCYNr
+x270YN705uQj5x8cWsb/vz68IPzMDzcQIv4v5ZBCCGVL1n++DG9MxhOzd8wFbfv0
+CW4z03dEu0OEmBmHBldvJWqNsa/Oc3DPfakBUe3T0kJxRCColZop9PQGgTebK4qz
+0Q5I49z8HXIuSZ48leAcGatwCPv5hBLpxvHAnRDn/GxYd/7XVgbwxHj6gyWyxeEe
+EhCcMTWo14ZKLMR8rqjXcagbaAQiRNNCJRuaZlZQjqR0BWKRC4oSlb9HhEqpXrJe
+rl9GXx03Hav2ACGnF1U7yatGEUdz3MPkMkBSRaKeY/S6DQKhfAVmhTy/I3lmi8n+
+pca+EFglQNyF0foIR51F2ERtQVpILM0JzHg1dvImn1Z09PRfiT5PwbgUOuVmT3NH
+gIlFxmdbTA/oxtIqWuxL7+ipC2zgq2H0Ggh9T45E8kUwbVAE/ZxO+/dTyFOo4pV1
+UM29CR2RJ8O0AcHKQKrM9D8+mnjwaYpIGWo+IL9XJ9GggFop6Qc=
+=H98+
+-----END PGP SIGNATURE-----
+
+--nextPart5695128.DvuYhMxLoT--
+
+
 
