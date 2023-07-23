@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC6975DFA7
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 04:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4269A75DFAA
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 04:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbjGWCCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 22:02:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
+        id S229771AbjGWCDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 22:03:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGWCCn (ORCPT
+        with ESMTP id S229763AbjGWCDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 22:02:43 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E868119;
-        Sat, 22 Jul 2023 19:02:42 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b961822512so46494171fa.2;
-        Sat, 22 Jul 2023 19:02:42 -0700 (PDT)
+        Sat, 22 Jul 2023 22:03:12 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C79138;
+        Sat, 22 Jul 2023 19:03:10 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-666edfc50deso2073874b3a.0;
+        Sat, 22 Jul 2023 19:03:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690077761; x=1690682561;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1690077790; x=1690682590;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CxXqztj5OtaboYjZJG2RhBj3enmq0GMAVkQwjxk3WaM=;
-        b=KzmI0GVDBAVsb+2SsO5TF0mSZnnJB9lI55c9iArQ7WqfJtwhG0Y53aJp6aYCqQrenY
-         7w6K1l3hUJpYBUI2na591nMv5ukdZXBX0wTQR69L75a1MlemSZ1PJN78gM9xg+A4BneO
-         SDa5q1spEGrwRCVFhwb6ENzdriiMJltHJpGu896p0Zcl+7N2bn8owTQEousVkhZrVqTT
-         VcqgH/qkI+XqZ5NPkcaGYf39SaOXHN/WOFZfvkA5O1Qs8LamYoSvN/dAYZMwAIeKXweM
-         seN4KjzldN/0lrnL51NOV4KA6AoZtm4p1v21gx9yEd6eLrRvwA9q6V5D6+PtijPH668i
-         pfgA==
+        bh=eg6TbyeOVcQsY9Q8Ckx4fXoTDSkrQFOQaolkev87oCg=;
+        b=HcXcQ5nDr9I47fFsVtJ9AdboECTu8+ij46DkwZYqdSK3Xu/XVL7BgQ6jwIcOtENl3V
+         uy0dh4QSZKmo6QmuT5oLISmW4F5b5eTvDnEr4OoAD7aSsjMKkuPaFVpdHnGSLw4ds0Qa
+         Z71gF38sgVm0qtYl3v30RAPcd7Up5VwRaYLSHeqvEW53otBzJf8rofWxVRvdDpEqUxqy
+         aKy01wNb7M8sJeiL001UhB4OjTYpw/Xn3gET00jnPBIrpOjbxO8pbcooyWK9Ilq5/Ln3
+         G+G9tFhm0ogSIdqUTdJDsP2Z2Q/MJ0kdDwUkhHu2VeZe/YsEZ9L6ng8HUyH6wK3qDfuA
+         b6TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690077761; x=1690682561;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CxXqztj5OtaboYjZJG2RhBj3enmq0GMAVkQwjxk3WaM=;
-        b=gh8Vd3MMLua80cBe3N7cjYU8Q1S1h7YnZ+r4Z1uqFomU3IdbXR1ov6yLZLkgob0wLR
-         lmdgiK7JbrPraBWJePkuexlPbL5J43j0cB10yD7NTSMTJjCN1Zlw4vzOze2k22u2EIdu
-         /btQS3fZg/FP5peVnY5utNnkxuiOl11miyY4BErqSS6FthikruE7VrbPUXxusbwFCXKx
-         EUYWmQvXI9GlH34D+cs3VQcXiG9eDRRmONeD5e7voA2eXi7fzW83oAJjushGzfBeGz5r
-         WJ4KeEOrYwD1jwIro67h06583UhZxrYpwgyjKSraIXiJCOIAwCUOnvhmeJkvHZ+7Tnb8
-         oezg==
-X-Gm-Message-State: ABy/qLbtg+tLj5hUbbveud3IunbnVIFKe0dp9YnTa1vVQQvaCWTSXmFo
-        i9ljCsxwj237UFGpOZkNfwt5xKoQp2S1OY6mXhw=
-X-Google-Smtp-Source: APBJJlFOUkirrJ9kb1G3aNFcsCoIimvObe12ggBhf/OK/05/RgMz+f8feFW2/xIRgU1rXbAWhHF8M23AQtCKrawjxXg=
-X-Received: by 2002:a2e:9283:0:b0:2b6:eeb3:da94 with SMTP id
- d3-20020a2e9283000000b002b6eeb3da94mr3695037ljh.22.1690077760516; Sat, 22 Jul
- 2023 19:02:40 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690077790; x=1690682590;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=eg6TbyeOVcQsY9Q8Ckx4fXoTDSkrQFOQaolkev87oCg=;
+        b=BaEOJ/mWnmqcUpxoY5bY6FnmzzBr5to43LAXv8twSdP+CXZxzuPemBJVin/Y+yTU5s
+         UxAAi5S0oNh6ZKbrSUD5nVtC+5XjZJduhH4zzmWkkRP7sHpN8p8+Levf/kXdmBBJjb+V
+         lIxRK3bSDnONcz3mEVpuS990zOo4A6OpFtNQSRQy+v27psEJf1mBTxM+qYRXr33r/cQd
+         Js1nKFLaKNyH1iasY9ikpVjsPsTjuoe9iLP9wwsnjYXGu3JsooxGCpHPiB7/xcrgcke6
+         4R/vT347pSJo1V5rlsd8kTtlXwxCHYtAy8E5GJt1O+6Mb9Z9665YiLqIKPVf3RY0uVPg
+         oskw==
+X-Gm-Message-State: ABy/qLZeYiVFNtnmBJoq5QBpYp8ml2VJp6LSTlPKuxDaceY1rDTeZczE
+        8R/PNr6GiXywYU4RgcRsppY=
+X-Google-Smtp-Source: APBJJlGnc1N/Fmf+WcuRP0kVxZ9IoI6ZEidxjh5Pxa5hR3B6RiMbbtYo5KPj5HwB5oAjC+X9qXBtgA==
+X-Received: by 2002:a05:6a21:999f:b0:12b:40d3:aeb1 with SMTP id ve31-20020a056a21999f00b0012b40d3aeb1mr9860694pzb.25.1690077790204;
+        Sat, 22 Jul 2023 19:03:10 -0700 (PDT)
+Received: from [192.168.0.104] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id y8-20020a62b508000000b00663b712bfbdsm5145424pfe.57.2023.07.22.19.03.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 22 Jul 2023 19:03:09 -0700 (PDT)
+Message-ID: <871f22f4-c456-db15-3466-085971bd1221@gmail.com>
+Date:   Sun, 23 Jul 2023 09:03:03 +0700
 MIME-Version: 1.0
-References: <bba66a5f-3605-e36b-2bf3-f25a48307a46@gmail.com>
-In-Reply-To: <bba66a5f-3605-e36b-2bf3-f25a48307a46@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 22 Jul 2023 19:02:29 -0700
-Message-ID: <CAADnVQKJ+SzCEaXxpSKemJo8p0bCOGcoOv1NDsJMsTsMmJmiZQ@mail.gmail.com>
-Subject: Re: bpf: bpf_probe_read_user_str() returns 0 for empty strings
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Max Froehling <Maximilian.Froehling@gdata.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux BPF <bpf@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Huacai Chen <chenhuacai@loongson.cn>,
+        Bjorn Helgaas <bhelgaas@google.com>, jiaxun.yang@flygoat.com,
+        Aurelien Jarno <aurel32@debian.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Loongarch <loongarch@lists.linux.dev>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: PCI: Loongson: 8b3517f88ff2 breaks PCIe on some system
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,83 +77,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 6:53=E2=80=AFPM Bagas Sanjaya <bagasdotme@gmail.com=
-> wrote:
->
-> Hi,
->
-> I notice a bug report on Bugzilla [1]. Quoting from it:
->
-> > Overview:
-> >
-> > From within eBPF, calling the helper function bpf_probe_read_user_str(v=
-oid *dst, __u32 size, const void *unsafe_ptr returns 0 when the source stri=
-ng (void *unsafe_ptr) consists of a string containing only a single null-by=
-te.
-> >
-> > This violates various functions documentations (the helper and various =
-internal kernel functions), which all state:
+Hi,
 
-Sounds like the bugzilla author believes it's a documentation issue.
-If so, please encourage the author to send the patch to fix the doc.
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-> >
-> >> On success, the strictly positive length of the output string,
-> >> including the trailing NUL character. On error, a negative value.
-> >
-> > To me, this states that the function should return 1 for char myString[=
-] =3D ""; However, this is not the case. The function returns 0 instead.
-> >
-> > For non-empty strings, it works as expected. For example, char myString=
-[] =3D "abc"; returns 4.
-> >
-> > Steps to Reproduce:
-> > * Write an eBPF program that calls bpf_probe_read_user_str(), using a u=
-serspace pointer pointing to an empty string.
-> > * Store the result value of that function
-> > * Do the same thing, but try out bpf_probe_read_kernel_str(), like this=
-:
-> > char empty[] =3D "";
-> > char copy[5];
-> > long ret =3D bpf_probe_read_kernel_str(copy, 5, empty);
-> > * Compare the return value of bpf_probe_read_user_str() and bpf_probe_r=
-ead_kernel_str()
-> >
-> > Expected Result:
-> >
-> > Both functions return 1 (because of the single NULL byte).
-> >
-> > Actual Result:
-> >
-> > bpf_probe_read_user_str() returns 0, while bpf_probe_read_kernel_str() =
-returns 1.
-> >
-> > Additional Information:
-> >
-> > I believe I can see the bug on the current Linux kernel master branch.
-> >
-> > In the file/function mm/maccess.c::strncpy_from_user_nofault() the help=
-er implementation calls strncpy_from_user(), which returns the length witho=
-ut trailing 0. Hence this function returns 0 for an empty string.
-> >
-> > However, in line 192 (as of commit fdf0eaf11452d72945af31804e2a1048ee1b=
-574c) there is a check that only increments ret, if it is > 0. This appears=
- to be the logic that adds the trailing null byte. Since the check only doe=
-s this for a ret > 0, a ret of 0 remains at 0.
-> >
-> > This is a possible off-by-one error that might cause the behavior.
->
-> See Bugzilla for the full thread.
->
-> FYI, the culprit line is introduced by commit 3d7081822f7f9e ("uaccess: A=
-dd
-> non-pagefault user-space read functions"). I Cc: culprit SoB so that they
-> can look into this bug.
->
-> Thanks.
->
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D217679
->
-> --
-> An old man doll... just what I always wanted! - Clara
->
+> After 8b3517f88ff2 ("PCI: loongson: Prevent LS7A MRRS increases") backported to stable, we have received multiple regression reports including one from Debian build farm[1] that some systems failed to initialize some PCIe devices.
+> 
+> I was able to reproduce on one of my Loongson-3A4000+7A system. It seems like the root cause is firmware on those systems didn't set MRRS properly but 8b3517f88ff2 ("PCI: loongson: Prevent LS7A MRRS increases") assumed firmware's maximum MRRS is always valid.
+> 
+> [1]: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1035587
+
+See Bugzilla for the full thread.
+
+The linked Debian BTS entry have debugging details on this regression
+(boot log, cpuinfo, and lspci).
+
+Anyway, I'm adding this regression to regzbot:
+
+#regzbot introduced: 8b3517f88ff298 https://bugzilla.kernel.org/show_bug.cgi?id=217680
+#regzbot title: LS7A MRRS quirk fails to initialize PCIe devices
+#regzbot link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1035587
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217680
+
+-- 
+An old man doll... just what I always wanted! - Clara
