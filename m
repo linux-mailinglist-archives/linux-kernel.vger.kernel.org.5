@@ -2,134 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BABE175E2E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 17:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 454CC75E2E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 17:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbjGWPiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 11:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58694 "EHLO
+        id S229708AbjGWPlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 11:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjGWPiW (ORCPT
+        with ESMTP id S229446AbjGWPls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 11:38:22 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E0C1AD
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 08:38:22 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6682909acadso1930810b3a.3
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 08:38:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690126701; x=1690731501;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5cmykefcdNhgVGfJdHuYylH/HeDsJaOrk0SIp3sP/JU=;
-        b=ov+BpRiYgea8xlcwARUtusVDTtfXt0zC6EKRxm30xUvDkrhLHUSDhTWZZ05ThCkDae
-         ueVPCpms5Hz1wArm+Xv97aKJKegOtTzyJbI/bpYtmxV43ZNJit1sBbtq/sOkIIxmXfU4
-         VE2pXWsTDWyYyI03oGoNMVaYnN0yhgwRkxFMxq3laR09aOD2oY8A0SAR51lITXOSoc6J
-         G5vX21/kavKXM9w0kyEi/Lpw4RODOTLJM8FSL+DAphZWsJQSIWmO1Nc1vpkYliaQLWRF
-         DGFO1ksWTWyx2hKOQjOLddkIgZmu/yOzSRzBuPg29DKsBRJ+es4gqP4a1nQbglI6B9/G
-         mbkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690126701; x=1690731501;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5cmykefcdNhgVGfJdHuYylH/HeDsJaOrk0SIp3sP/JU=;
-        b=UG4T4aEGC9kyzKGRn9rw4ScduM+ht8bc2e05FVIjMgQ8oTeU0I0ZuzEe8Iuesgk11N
-         xMiqx/yjW89Q7Ah6+qopz8KymY/2X467hQS8sfSq65gjvoymV2D95RaW6mmPgisdTWFa
-         ezeOyvVHLAP6EKjRgy6qP2EItr5zWA7OJD8ffiDOGHZaKhjjh18kYvAgcLbDFPfEWzOZ
-         WNSIWMbR8d1mU7Oxr9h+0t8WpYRNjT/6kRxCUTK5hzM7+Ymf1rsxSWNbwVGRPN/G6G9R
-         m0SfL3bmCuj7mNdou+r3fyheoEvW5CIourAluHWD7auFhTaXRDPdY5gFHbnuIO2iE432
-         wFqQ==
-X-Gm-Message-State: ABy/qLaVyr8yaGec/rPgRfXdJATCPrvrDKyaV3ysRn/TKpya9Nnpmewf
-        9T0SNXFSeGW1TN9Tehh7ti8=
-X-Google-Smtp-Source: APBJJlHmaNVJSFpJcCEb+1BeIjzHHI/5SyteTiblySRF84cv2yj7i9+ib0lbS6DYyJT8mgXgxJdUAw==
-X-Received: by 2002:a17:902:bd96:b0:1b1:99c9:8ce1 with SMTP id q22-20020a170902bd9600b001b199c98ce1mr4921708pls.51.1690126701353;
-        Sun, 23 Jul 2023 08:38:21 -0700 (PDT)
-Received: from localhost ([216.228.127.130])
-        by smtp.gmail.com with ESMTPSA id s21-20020a170902989500b001b03842ab78sm7055043plp.89.2023.07.23.08.38.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 08:38:20 -0700 (PDT)
-Date:   Sun, 23 Jul 2023 08:38:18 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 1/5] lib/bitmap: add bitmap_{set,get}_value()
-Message-ID: <ZL1JarpwxpsB3fhY@yury-ThinkPad>
-References: <20230720173956.3674987-1-glider@google.com>
- <20230720173956.3674987-2-glider@google.com>
- <ZLyI+0EL1VztnHLe@yury-ThinkPad>
+        Sun, 23 Jul 2023 11:41:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E91E4A
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 08:41:46 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qNbCn-0000p7-Na; Sun, 23 Jul 2023 17:41:09 +0200
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qNbCj-0005tl-ST; Sun, 23 Jul 2023 17:41:05 +0200
+Date:   Sun, 23 Jul 2023 17:41:05 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Ziqi Zhao <astrajoan@yahoo.com>
+Cc:     davem@davemloft.net, edumazet@google.com, ivan.orlov0322@gmail.com,
+        kernel@pengutronix.de, kuba@kernel.org, linux@rempel-privat.de,
+        linux-can@vger.kernel.org, mkl@pengutronix.de, pabeni@redhat.com,
+        robin@protonic.nl, skhan@linuxfoundation.org,
+        socketcan@hartkopp.net, arnd@arndb.de,
+        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        mudongliangabcd@gmail.com, netdev@vger.kernel.org,
+        nikolay@nvidia.com, roopa@nvidia.com,
+        syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com,
+        syzbot+1591462f226d9cbf0564@syzkaller.appspotmail.com
+Subject: Re: [PATCH] can: j1939: prevent deadlock by changing
+ j1939_socks_lock to rwlock
+Message-ID: <20230723154105.GB17320@pengutronix.de>
+References: <20230704064710.3189-1-astrajoan@yahoo.com>
+ <20230721162226.8639-1-astrajoan@yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZLyI+0EL1VztnHLe@yury-ThinkPad>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230721162226.8639-1-astrajoan@yahoo.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 06:57:26PM -0700, Yury Norov wrote:
-> On Thu, Jul 20, 2023 at 07:39:52PM +0200, Alexander Potapenko wrote:
-> > +/**
-> > + * bitmap_write - write n-bit value within a memory region
-> > + * @map: address to the bitmap memory region
-> > + * @value: value of nbits
-> > + * @start: bit offset of the n-bit value
-> > + * @nbits: size of value in bits, up to BITS_PER_LONG
-> > + */
-> > +static inline void bitmap_write(unsigned long *map,
-> > +				unsigned long value,
-> > +				unsigned long start, unsigned long nbits)
-> > +{
-> > +	size_t index = BIT_WORD(start);
-> > +	unsigned long offset = start % BITS_PER_LONG;
-> > +	unsigned long space = BITS_PER_LONG - offset;
-> > +
-> > +	if (unlikely(!nbits))
-> > +		return;
-> > +	value &= GENMASK(nbits - 1, 0);
+Hi,
+
+Thank you for you patch. Right now I'm on vacation, I'll to take a look
+on it as soon as possible. If i do not response for more then 3 weeks,
+please ping me.
+
+On Fri, Jul 21, 2023 at 09:22:26AM -0700, Ziqi Zhao wrote:
+> The following 3 locks would race against each other, causing the
+> deadlock situation in the Syzbot bug report:
 > 
-> Strictly speaking, a 'value' shouldn't contain set bits beyond nbits
-> because otherwise it's an out-of-bonds type of error.
+> - j1939_socks_lock
+> - active_session_list_lock
+> - sk_session_queue_lock
 > 
-> This is kind of gray zone to me, because it's a caller's responsibility
-> to provide correct input. But on the other hand, it would be a great
-> headache debugging corrupted bitmaps.
+> A reasonable fix is to change j1939_socks_lock to an rwlock, since in
+> the rare situations where a write lock is required for the linked list
+> that j1939_socks_lock is protecting, the code does not attempt to
+> acquire any more locks. This would break the circular lock dependency,
+> where, for example, the current thread already locks j1939_socks_lock
+> and attempts to acquire sk_session_queue_lock, and at the same time,
+> another thread attempts to acquire j1939_socks_lock while holding
+> sk_session_queue_lock.
 > 
-> Now that we've got a single user of the bitmap_write, and even more,
-> it's wrapped with a helper, I think it would be reasonable to trim a
-> 'value' in the helper, if needed.
+> NOTE: This patch along does not fix the unregister_netdevice bug
+> reported by Syzbot; instead, it solves a deadlock situation to prepare
+> for one or more further patches to actually fix the Syzbot bug, which
+> appears to be a reference counting problem within the j1939 codebase.
 > 
-> Anyways, the comment must warn about that loudly...
+> Reported-by: syzbot+1591462f226d9cbf0564@syzkaller.appspotmail.com
+> Signed-off-by: Ziqi Zhao <astrajoan@yahoo.com>
+> ---
+>  net/can/j1939/j1939-priv.h |  2 +-
+>  net/can/j1939/main.c       |  2 +-
+>  net/can/j1939/socket.c     | 25 +++++++++++++------------
+>  3 files changed, 15 insertions(+), 14 deletions(-)
+> 
+> diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
+> index 16af1a7f80f6..74f15592d170 100644
+> --- a/net/can/j1939/j1939-priv.h
+> +++ b/net/can/j1939/j1939-priv.h
+> @@ -86,7 +86,7 @@ struct j1939_priv {
+>  	unsigned int tp_max_packet_size;
+>  
+>  	/* lock for j1939_socks list */
+> -	spinlock_t j1939_socks_lock;
+> +	rwlock_t j1939_socks_lock;
+>  	struct list_head j1939_socks;
+>  
+>  	struct kref rx_kref;
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> index ecff1c947d68..a6fb89fa6278 100644
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+> @@ -274,7 +274,7 @@ struct j1939_priv *j1939_netdev_start(struct net_device *ndev)
+>  		return ERR_PTR(-ENOMEM);
+>  
+>  	j1939_tp_init(priv);
+> -	spin_lock_init(&priv->j1939_socks_lock);
+> +	rwlock_init(&priv->j1939_socks_lock);
+>  	INIT_LIST_HEAD(&priv->j1939_socks);
+>  
+>  	mutex_lock(&j1939_netdev_lock);
+> diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+> index feaec4ad6d16..a8b981dc2065 100644
+> --- a/net/can/j1939/socket.c
+> +++ b/net/can/j1939/socket.c
+> @@ -80,16 +80,16 @@ static void j1939_jsk_add(struct j1939_priv *priv, struct j1939_sock *jsk)
+>  	jsk->state |= J1939_SOCK_BOUND;
+>  	j1939_priv_get(priv);
+>  
+> -	spin_lock_bh(&priv->j1939_socks_lock);
+> +	write_lock_bh(&priv->j1939_socks_lock);
+>  	list_add_tail(&jsk->list, &priv->j1939_socks);
+> -	spin_unlock_bh(&priv->j1939_socks_lock);
+> +	write_unlock_bh(&priv->j1939_socks_lock);
+>  }
+>  
+>  static void j1939_jsk_del(struct j1939_priv *priv, struct j1939_sock *jsk)
+>  {
+> -	spin_lock_bh(&priv->j1939_socks_lock);
+> +	write_lock_bh(&priv->j1939_socks_lock);
+>  	list_del_init(&jsk->list);
+> -	spin_unlock_bh(&priv->j1939_socks_lock);
+> +	write_unlock_bh(&priv->j1939_socks_lock);
+>  
+>  	j1939_priv_put(priv);
+>  	jsk->state &= ~J1939_SOCK_BOUND;
+> @@ -329,13 +329,13 @@ bool j1939_sk_recv_match(struct j1939_priv *priv, struct j1939_sk_buff_cb *skcb)
+>  	struct j1939_sock *jsk;
+>  	bool match = false;
+>  
+> -	spin_lock_bh(&priv->j1939_socks_lock);
+> +	read_lock_bh(&priv->j1939_socks_lock);
+>  	list_for_each_entry(jsk, &priv->j1939_socks, list) {
+>  		match = j1939_sk_recv_match_one(jsk, skcb);
+>  		if (match)
+>  			break;
+>  	}
+> -	spin_unlock_bh(&priv->j1939_socks_lock);
+> +	read_unlock_bh(&priv->j1939_socks_lock);
+>  
+>  	return match;
+>  }
+> @@ -344,11 +344,11 @@ void j1939_sk_recv(struct j1939_priv *priv, struct sk_buff *skb)
+>  {
+>  	struct j1939_sock *jsk;
+>  
+> -	spin_lock_bh(&priv->j1939_socks_lock);
+> +	read_lock_bh(&priv->j1939_socks_lock);
+>  	list_for_each_entry(jsk, &priv->j1939_socks, list) {
+>  		j1939_sk_recv_one(jsk, skb);
+>  	}
+> -	spin_unlock_bh(&priv->j1939_socks_lock);
+> +	read_unlock_bh(&priv->j1939_socks_lock);
+>  }
+>  
+>  static void j1939_sk_sock_destruct(struct sock *sk)
+> @@ -484,6 +484,7 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr *uaddr, int len)
+>  
+>  		priv = j1939_netdev_start(ndev);
+>  		dev_put(ndev);
+> +
+>  		if (IS_ERR(priv)) {
+>  			ret = PTR_ERR(priv);
+>  			goto out_release_sock;
+> @@ -1078,12 +1079,12 @@ void j1939_sk_errqueue(struct j1939_session *session,
+>  	}
+>  
+>  	/* spread RX notifications to all sockets subscribed to this session */
+> -	spin_lock_bh(&priv->j1939_socks_lock);
+> +	read_lock_bh(&priv->j1939_socks_lock);
+>  	list_for_each_entry(jsk, &priv->j1939_socks, list) {
+>  		if (j1939_sk_recv_match_one(jsk, &session->skcb))
+>  			__j1939_sk_errqueue(session, &jsk->sk, type);
+>  	}
+> -	spin_unlock_bh(&priv->j1939_socks_lock);
+> +	read_unlock_bh(&priv->j1939_socks_lock);
+>  };
+>  
+>  void j1939_sk_send_loop_abort(struct sock *sk, int err)
+> @@ -1271,7 +1272,7 @@ void j1939_sk_netdev_event_netdown(struct j1939_priv *priv)
+>  	struct j1939_sock *jsk;
+>  	int error_code = ENETDOWN;
+>  
+> -	spin_lock_bh(&priv->j1939_socks_lock);
+> +	read_lock_bh(&priv->j1939_socks_lock);
+>  	list_for_each_entry(jsk, &priv->j1939_socks, list) {
+>  		jsk->sk.sk_err = error_code;
+>  		if (!sock_flag(&jsk->sk, SOCK_DEAD))
+> @@ -1279,7 +1280,7 @@ void j1939_sk_netdev_event_netdown(struct j1939_priv *priv)
+>  
+>  		j1939_sk_queue_drop_all(priv, jsk, error_code);
+>  	}
+> -	spin_unlock_bh(&priv->j1939_socks_lock);
+> +	read_unlock_bh(&priv->j1939_socks_lock);
+>  }
+>  
+>  static int j1939_sk_no_ioctlcmd(struct socket *sock, unsigned int cmd,
+> -- 
+> 2.34.1
+> 
+> 
+> 
 
-OK. I spent a night with that, and I'm still not sure. Pseudo code
-that implements it looks like this:
-
-        for (bit = 0; bit < nbits; bit++)
-                assign_bit(start + bit, bitmap, val & BIT(bit));
-
-And it ignores trailing bits. So if we're optimizing this pattern,
-we'd ignore these bits just as well...
-
-Either way, whatever we decide, let's stay clear with our intentions
-and mention explicitly that tail bits are either must be zero, or
-ignored.
-
-Alexander, can you add the snippet above to the comments for the
-bitmap_write() and bitmap_read(), as well as in the test? Also, if we
-decide to clear tail of the input value, would BITMAP_LAST_WORD_MASK()
-generate better code than GENMASK(nbits - 1, 0) does?
-
-Commets are very appreciated.
-
-Thanks,
-Yury
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
