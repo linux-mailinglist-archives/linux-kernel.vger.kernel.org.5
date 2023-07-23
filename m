@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6736675E30A
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 18:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B0C75E314
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 18:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbjGWQIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 12:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
+        id S229973AbjGWQIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 12:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbjGWQIq (ORCPT
+        with ESMTP id S229666AbjGWQIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 12:08:46 -0400
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303E4E76
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 09:08:45 -0700 (PDT)
+        Sun, 23 Jul 2023 12:08:47 -0400
+Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [5.144.164.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8092AE7C
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 09:08:46 -0700 (PDT)
 Received: from Marijn-Arch-PC.localdomain (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 830B03F1D1;
-        Sun, 23 Jul 2023 18:08:42 +0200 (CEST)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id C8FF03F1DA;
+        Sun, 23 Jul 2023 18:08:43 +0200 (CEST)
 From:   Marijn Suijten <marijn.suijten@somainline.org>
-Date:   Sun, 23 Jul 2023 18:08:40 +0200
-Subject: [PATCH v4 02/17] arm64: dts: qcom: sm6125: Pad APPS IOMMU address
- to 8 characters
+Date:   Sun, 23 Jul 2023 18:08:41 +0200
+Subject: [PATCH v4 03/17] arm64: dts: qcom: sm6125: Sort spmi_bus node
+ numerically by reg
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230723-sm6125-dpu-v4-2-a3f287dd6c07@somainline.org>
+Message-Id: <20230723-sm6125-dpu-v4-3-a3f287dd6c07@somainline.org>
 References: <20230723-sm6125-dpu-v4-0-a3f287dd6c07@somainline.org>
 In-Reply-To: <20230723-sm6125-dpu-v4-0-a3f287dd6c07@somainline.org>
 To:     Andy Gross <agross@kernel.org>,
@@ -60,36 +60,81 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-APPS IOMMU is the only node in sm6125.dtsi that doesn't have its
-address padded to 8 hexadecimals; fix this by prepending a 0.
+This node has always resided in the wrong spot, making it somewhat
+harder to contribute new node entries while maintaining proper sorting
+around it.  Move the node up to sit after hsusb_phy1 where it maintains
+proper numerical sorting on the (first of its many) reg address
+property.
 
-Fixes: 8ddb4bc3d3b5 ("arm64: dts: qcom: sm6125: Configure APPS SMMU")
+Fixes: cff4bbaf2a2d ("arm64: dts: qcom: Add support for SM6125")
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
 ---
- arch/arm64/boot/dts/qcom/sm6125.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/sm6125.dtsi | 36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/qcom/sm6125.dtsi b/arch/arm64/boot/dts/qcom/sm6125.dtsi
-index 6937c7ebdb81..7feb6feffa40 100644
+index 7feb6feffa40..cfd0901d4555 100644
 --- a/arch/arm64/boot/dts/qcom/sm6125.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sm6125.dtsi
-@@ -1209,7 +1209,7 @@ spmi_bus: spmi@1c40000 {
+@@ -684,6 +684,24 @@ hsusb_phy1: phy@1613000 {
+ 			status = "disabled";
+ 		};
  
++		spmi_bus: spmi@1c40000 {
++			compatible = "qcom,spmi-pmic-arb";
++			reg = <0x01c40000 0x1100>,
++			      <0x01e00000 0x2000000>,
++			      <0x03e00000 0x100000>,
++			      <0x03f00000 0xa0000>,
++			      <0x01c0a000 0x26000>;
++			reg-names = "core", "chnls", "obsrvr", "intr", "cnfg";
++			interrupt-names = "periph_irq";
++			interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
++			qcom,ee = <0>;
++			qcom,channel = <0>;
++			#address-cells = <2>;
++			#size-cells = <0>;
++			interrupt-controller;
++			#interrupt-cells = <4>;
++		};
++
+ 		rpm_msg_ram: sram@45f0000 {
+ 			compatible = "qcom,rpm-msg-ram";
+ 			reg = <0x045f0000 0x7000>;
+@@ -1189,24 +1207,6 @@ sram@4690000 {
+ 			reg = <0x04690000 0x10000>;
+ 		};
+ 
+-		spmi_bus: spmi@1c40000 {
+-			compatible = "qcom,spmi-pmic-arb";
+-			reg = <0x01c40000 0x1100>,
+-			      <0x01e00000 0x2000000>,
+-			      <0x03e00000 0x100000>,
+-			      <0x03f00000 0xa0000>,
+-			      <0x01c0a000 0x26000>;
+-			reg-names = "core", "chnls", "obsrvr", "intr", "cnfg";
+-			interrupt-names = "periph_irq";
+-			interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
+-			qcom,ee = <0>;
+-			qcom,channel = <0>;
+-			#address-cells = <2>;
+-			#size-cells = <0>;
+-			interrupt-controller;
+-			#interrupt-cells = <4>;
+-		};
+-
  		apps_smmu: iommu@c600000 {
  			compatible = "qcom,sm6125-smmu-500", "qcom,smmu-500", "arm,mmu-500";
--			reg = <0xc600000 0x80000>;
-+			reg = <0x0c600000 0x80000>;
- 			interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 88 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>,
+ 			reg = <0x0c600000 0x80000>;
 
 -- 
 2.41.0
