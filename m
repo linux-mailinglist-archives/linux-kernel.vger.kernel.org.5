@@ -2,79 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE1675E2B7
+	by mail.lfdr.de (Postfix) with ESMTP id 61F2F75E2B6
 	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 16:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjGWOuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 10:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
+        id S229646AbjGWOu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 10:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjGWOua (ORCPT
+        with ESMTP id S229557AbjGWOu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 10:50:30 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40489A8
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 07:50:29 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-63cfe6e0c32so1927086d6.1
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 07:50:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1690123828; x=1690728628;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XbJYLMBE6yZWZtHXhUUqaRNiGofik3CcRLGI3pFqykE=;
-        b=YkO18S8ZdFq2T6J3xUhBXqe+9SNwwSJ7cixs31sAhRpASF13+CPFZHEg9o4u3AcqmB
-         OPYq3xPQttUC3SQG9ok2raOKj8pJyeZViQtwciZWZmuXPnEOIfTO8ZzgxqGcPGyFHime
-         4LLa1KOAt2Q/S+9VTxORf1n5OE8eFSWas9CGs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690123828; x=1690728628;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XbJYLMBE6yZWZtHXhUUqaRNiGofik3CcRLGI3pFqykE=;
-        b=Ie2JQZarTCsmZFk5Jmej6amd+QAZ2KYYLVm8LXor573NVzDuezokpasykyn10uRe5H
-         ekqfDvPfW1nbUhrG8Zw3DSOM1eYXA2eEt+U4tyCtcnOVPX/znPhZxEAVYTLQ392YDNIw
-         CLPn5puuRSjOtXJhfLGSb1aiM+NQBCn4lDgs08g1n5QZhjKq4J90Bc3EulM05vrATK05
-         g3qpK0RCo/7t8lzlUPMG/y756v5a2bMzjIiZ4WLPeI4KdVJO1sT5CjLxZHHSlaOvfdcH
-         R2uA4Eyczsd+Qlk6Izdn+0fiGUEikZd1Qtbt/7ZuLLcv27s7SXG88Hzt8q0vxw5LtKBM
-         U75g==
-X-Gm-Message-State: ABy/qLaiTHURV1mBPVtimewisvJoN+WIOKodzhBoefOfzj6JGx7eO5YT
-        VIuFBI2zi7peycu1LbqQiGLSfBfMgl5eagmPaJQ=
-X-Google-Smtp-Source: APBJJlGtEhT2RjFcanL8kjdpwZNzyNf9eCcws/91q63UCpS2CEvwDCdEc5+8vWTKgA3nRM5sKEqpAw==
-X-Received: by 2002:a0c:b551:0:b0:63c:f999:ba83 with SMTP id w17-20020a0cb551000000b0063cf999ba83mr1757454qvd.32.1690123828250;
-        Sun, 23 Jul 2023 07:50:28 -0700 (PDT)
-Received: from [192.168.0.198] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id s15-20020a0ce30f000000b00637abbfaac9sm97573qvl.98.2023.07.23.07.50.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Jul 2023 07:50:27 -0700 (PDT)
-Message-ID: <a7bcbcf2-9b34-4326-822f-e1f2aa5c5668@joelfernandes.org>
-Date:   Sun, 23 Jul 2023 10:50:26 -0400
+        Sun, 23 Jul 2023 10:50:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DDFD1
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 07:50:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 893E760DD0
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 14:50:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E326EC43391
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 14:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690123854;
+        bh=bFz5Su99lgDNw5CTuJ0Se6DmILexAB+dada3RMIyzQA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XGlNMnBeWNS67ZRcbA4rPqFc5XPtifixpM5NyhC099oqVp9wCLLVD8C0pTQQrA/dq
+         fPTD0SwXQqycIq/Fs/xw2lHXIpQhTfmR3VwayO+sC/E5MDBsGJO4qwomZqkzjOqjb6
+         h/NWqlORzrok6ww42xNWzor3DXCy9MQRs6rZSrR8p1XzHhP49uvZlWjD/KyEfF/+iV
+         hCoqONJIJSxwlkiN+4R/hWdDvyHLwvgcoR/ib9VeCKTNOQw6B8BOzU1op56du0fC4h
+         4ogbYKRmIXFc/CK+mtuhGmR1EUelaXjpFvqV/QqNnbftGcAjDyGcmIoL7knKt831vf
+         tas/5WTgk/5Xw==
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-9926623e367so621012266b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 07:50:54 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYtQsIW3ss4hmapnuSFd2edhMtsCI80vFYcG6EbX0Sof3gzERTP
+        pmwWTOBmchEtK9/GvN9WdnqdFFObWvoUp4c9hrE=
+X-Google-Smtp-Source: APBJJlHNJDByT4f+1G7PHiNcAPy4OIFqDWyt7Wg8Ddv8/OBD6da3UOSqrCiEkdrm/xvkT9wp46NB9LYy8WoxjMtXTT4=
+X-Received: by 2002:a17:906:3185:b0:965:fb87:4215 with SMTP id
+ 5-20020a170906318500b00965fb874215mr7086694ejy.15.1690123853069; Sun, 23 Jul
+ 2023 07:50:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [BUG] Re: Linux 6.4.4
-Content-Language: en-US
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-References: <20230720132714.GA3726096@google.com>
- <2b8fc10b-785e-48b9-9a38-5c1af81f9578@paulmck-laptop>
- <CAEXW_YQO7OCdkXm_SBcPhAm8V8vMaF_5DQq7PbG9PZb7RFgA_g@mail.gmail.com>
- <f18e165c-9196-4b41-a202-82cfd5ac7f8b@paulmck-laptop>
- <8682b08c-347b-5547-60e0-013dcf1f8c93@joelfernandes.org>
- <eb04b7d0-2f49-4e01-be09-9062d9f08404@paulmck-laptop>
- <32aec6d1-bf25-7b47-8f31-7b6318d5238d@joelfernandes.org>
- <9b42cb38-8375-fc41-475a-2bd26c60a7b9@joelfernandes.org>
- <5dcf7117-cec7-4772-8aad-e100484a84dc@paulmck-laptop>
- <7bfde9f4-2bd6-7337-b9ca-94a9253d847f@joelfernandes.org>
- <ad82995c-061e-4f97-a972-c13a85ad0b72@paulmck-laptop>
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <ad82995c-061e-4f97-a972-c13a85ad0b72@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+References: <20230723010329.674186-1-dfustini@baylibre.com>
+In-Reply-To: <20230723010329.674186-1-dfustini@baylibre.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sun, 23 Jul 2023 22:50:41 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTS7-N=KkDeeja_v1hvydgBPVCv6X6zZW8hj37Hntz56Sg@mail.gmail.com>
+Message-ID: <CAJF2gTS7-N=KkDeeja_v1hvydgBPVCv6X6zZW8hj37Hntz56Sg@mail.gmail.com>
+Subject: Re: [PATCH] scripts/spelling.txt: remove 'thead' as a typo
+To:     Drew Fustini <dfustini@baylibre.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Diederik de Haas <didi.debian@cknow.org>,
+        Ian Rogers <irogers@google.com>, SeongJae Park <sj@kernel.org>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        linux-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,44 +70,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Good catch, thank you very much.
+
+Acked-by: Guo Ren <guoren@kernel.org>
+
+On Sun, Jul 23, 2023 at 9:04=E2=80=AFAM Drew Fustini <dfustini@baylibre.com=
+> wrote:
+>
+> T-Head is a vendor of processor core IP, and they have recently
+> introduced the RISC-V TH1520 SoC. Remove 'thead' as a typo of 'thread'
+> to avoid checkpatch incorrectly warning that 'thead' is typo in patches
+> that add support for T-Head designs in the kernel.
+>
+> Cc: Conor Dooley <conor@kernel.org>
+> Cc: Guo Ren <guoren@kernel.org>
+> Cc: Jisheng Zhang <jszhang@kernel.org>
+> Link: https://www.t-head.cn/
+> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> ---
+>  scripts/spelling.txt | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> For example, checkpatch prints the following warnings for 89b0186ab532
+> ("dt-bindings: riscv: Add T-HEAD TH1520 board compatibles"):
+>
+>   $ ./scripts/checkpatch.pl --strict -g 89b0186ab532
+>   WARNING: added, moved or deleted file(s), does MAINTAINERS need updatin=
+g?
+>   new file mode 100644
+>
+>   WARNING: 'thead' may be misspelled - perhaps 'thread'?
+>   +$id: http://devicetree.org/schemas/riscv/thead.yaml#
+>                                           ^^^^^
+>
+>   WARNING: 'thead' may be misspelled - perhaps 'thread'?
+>   +          - const: thead,th1520
+>                     ^^^^^
+>   total: 0 errors, 3 warnings, 0 checks, 29 lines checked
+>
+> The 'thead' typo false positive adds noise to automation like the
+> linux-riscv patchwork bot:
+> https://patchwork.kernel.org/project/linux-riscv/patch/20230722-upstream-=
+beaglev-ahead-dts-v1-2-ccda511357f4@baylibre.com/
+>
+> diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+> index fc7ba95e86a0..855c4863124b 100644
+> --- a/scripts/spelling.txt
+> +++ b/scripts/spelling.txt
+> @@ -1541,7 +1541,6 @@ temeprature||temperature
+>  temorary||temporary
+>  temproarily||temporarily
+>  temperture||temperature
+> -thead||thread
+>  theads||threads
+>  therfore||therefore
+>  thier||their
+> --
+> 2.34.1
+>
 
 
-On 7/22/23 13:27, Paul E. McKenney wrote:
-[..]
-> 
-> OK, if this kernel is non-preemptible, you are not running TREE03,
-> correct?
-> 
->> Next plan of action is to get sched_waking stack traces since I have a
->> very reliable repro of this now.
-> 
-> Too much fun!  ;-)
-
-For TREE07 issue, it is actually the schedule_timeout_interruptible(1)
-in stutter_wait() that is beating up the CPU0 for 4 seconds.
-
-This is very similar to the issue I fixed in New year in d52d3a2bf408
-("torture: Fix hang during kthread shutdown phase")
-
-Adding a cond_resched() there also did not help.
-
-I think the issue is the stutter thread fails to move spt forward
-because it does not get CPU time. But spt == 1 should be very brief
-AFAIU. I was wondering if we could set that to RT.
-
-But also maybe the following will cure it like it did for the shutdown
-issue, giving the stutter thread just enough CPU time to move spt forward.
-
-Now I am trying the following and will let it run while I go do other
-family related things. ;)
-
-+++ b/kernel/torture.c
-@@ -733,6 +733,6 @@ bool stutter_wait(const char *title)
-                        ret = true;
-                }
-                if (spt == 1) {
--                       schedule_timeout_interruptible(1);
-+                       schedule_timeout_interruptible(HZ / 20);
-                        cond_resched();
-                } else if (spt == 2) {
-
+--=20
+Best Regards
+ Guo Ren
