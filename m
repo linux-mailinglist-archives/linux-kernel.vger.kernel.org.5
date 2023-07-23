@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4636A75E03D
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 09:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B8D75E040
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 09:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbjGWHXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 03:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42394 "EHLO
+        id S229785AbjGWHZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 03:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGWHXJ (ORCPT
+        with ESMTP id S229503AbjGWHZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 03:23:09 -0400
-Received: from out203-205-251-82.mail.qq.com (out203-205-251-82.mail.qq.com [203.205.251.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76539FD
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 00:23:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1690096984;
-        bh=uA1bQ6F3ScWTXuQJewjURf1TMDBQ+1aeSJ31bGjC9EM=;
-        h=From:To:Cc:Subject:Date;
-        b=HR8t/7nZch5w/7x3CAlnp0uundcxkao+AUPmUW36B/pU9csOicHC7B91ilPd70pFs
-         xuOxx8KRD0LOQNnaJHP5aDlEmN763xLnjec3df/u+fx4ls41nmeUnD5H0+Mwx/M7Mm
-         HKdM4XAQQZI72xjMNgdMBx7cwDajgNe95yuQkpz8=
-Received: from localhost.ust.hk ([175.159.123.184])
-        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-        id 5C20A80A; Sun, 23 Jul 2023 15:23:02 +0800
-X-QQ-mid: xmsmtpt1690096982tdwknz5eh
-Message-ID: <tencent_F05F5B0860B41E180AA0A88B1279376CB508@qq.com>
-X-QQ-XMAILINFO: NyTsQ4JOu2J2rgist0z0wskKoEKHyOVxX9Znkpt5bRhyb9VtAdlhIo6i1JhRyg
-         85XVjr7LzqQo2hEvAHNer49d4uxQ88lRWNu2DBWPx/apGj1htvBM9b39kq4WGUwjmpbS7+F02Ela
-         4Pj9yaYx6k/2fG9n017Eurar/JQdprpZAlckyqkjl9Fij8eY3c14jwVbjD9qjUDJf7ny7QrCQGcC
-         dZZlqF/ScYLAwKa/jFhk7aO6ahmyjNI7GSGMB9Yt5c0TPVXP8y6g+WZ5okYDfcH0o+cn0KayxY+g
-         wDICZtJmz14b9XRWpGLX1JCC9U2dPJJpbTw+13STSNpfZO2Pi2hjVyKq2JyuIqi6bR44TFTtevqV
-         JolNeNAc2qWl5TYG2SR7pihCnKahwWkJy2LQrI4LYe65p/B25enCeBrwh5O3AE4UrN5bcmJVmxiv
-         o3MLjpSSiZQ9Ckz4I3Sb7h5f0fXHe207Ew2qewUPrMnI1kohVI9QQ+dHv4aZDJrAHTe5Ro8XQKxh
-         ue8+vLNKuAeciSgz3+jgyIh6XcnWeeKtC9A9HA7/jfrZh3O67j8rIOgvk7b3Ena9SNYMlyb7xrPm
-         blS30s0AVXNN0d3lOFJxOVejmqI04DHSLwjiwHoRxDF+8Amlri0sHdoQwmxuXyk/Zm7JEIY9Xvo0
-         Km2cgdM7gIm4aUA512Nu7fja0lcEatO76b3oZ9BHIf8Q8xaXOOvXugR7Qp3tuoZYowoBLnBeT5zm
-         0SPi6lZdFBOcbeJNIkAwg8tC6LUJNQwkqxGXxaVVqBQ6/yKZ9hKdP0cSroP98+uetd4Fv/YfKDrw
-         dEhQAW3Jq1ZXIFA3WvoXM5kfd+k/BU6l4Cr098EzrnGRD//nc/hqTRo9KLRBTsS+QE/wYHdMQAgK
-         nepDWb81U6x9HL8ODKEY38Q8MS07KI5UfoiUeWzteNsTXh0YhNzTCkCD8pwa11gKZnetZkwlt1NP
-         J9HKq5GilOccBRXSTwzW2C2DihRBsZQRpSwqGMaRAGD79UOr1C7ui0sOPtYJL1pjgT0DkxdWIz2X
-         GiKSkujIgCutDdrN7+
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From:   Zhang Shurong <zhang_shurong@foxmail.com>
-To:     oder_chiou@realtek.com
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Shurong <zhang_shurong@foxmail.com>
-Subject: [PATCH] ASoC: rt5668: add missed regulator_bulk_disable
-Date:   Sun, 23 Jul 2023 15:23:01 +0800
-X-OQ-MSGID: <20230723072301.10106-1-zhang_shurong@foxmail.com>
-X-Mailer: git-send-email 2.41.0
+        Sun, 23 Jul 2023 03:25:29 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3D110CB;
+        Sun, 23 Jul 2023 00:25:28 -0700 (PDT)
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4R7vvm4Pcdz9tBC;
+        Sun, 23 Jul 2023 09:25:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
+        s=MBO0001; t=1690097124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QUpiLW4Bjo600wsGfn6sWtbls6tv+Y76e5aMy/lLZRI=;
+        b=pL5jsGfH/OXKALWyo2XjDske4VVW7aj41TCh0369DoyEZfqtCZo2q628fGWW0pw2wRmNts
+        pDr8Nu266KYGfBJEtrPr4GShQMq9A4/IvAIPzGoEYPcrE/KdRUuii8WRSgYzCV4hPDSLal
+        3sDpNdrjYGUQ64ezvLempkwb4k2IrdsEB7vIe9Gj3DA/rm/dIZ8WjUuTd73hxZKcNZvyBC
+        89DifAsAT+b/AdgM/3n53/hPqVeLKj15eMRFeIkm8Y+FyHZvzfetfsecGSpwzsTT793g6b
+        95gPumEjD8fq+8d4kq/os/mlm7WBqHxH/WZ84Ao5ZFwPcTR1HJTwOVoyXdpeoQ==
+References: <20230717-pll-mipi_set_rate_parent-v4-0-04acf1d39765@oltmanns.dev>
+ <20230717-pll-mipi_set_rate_parent-v4-8-04acf1d39765@oltmanns.dev>
+ <ho2bblo2hzizst74hfqog3ga4cjf7eead2ntbl4e7xi5c32bhq@qpttu7ayv7vy>
+From:   Frank Oltmanns <frank@oltmanns.dev>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Roman Beranek <me@crly.cz>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 08/11] clk: sunxi-ng: nkm: Support finding closest rate
+In-reply-to: <ho2bblo2hzizst74hfqog3ga4cjf7eead2ntbl4e7xi5c32bhq@qpttu7ayv7vy>
+Date:   Sun, 23 Jul 2023 09:25:10 +0200
+Message-ID: <87ilabqecp.fsf@oltmanns.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,46 +61,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver forgets to call regulator_bulk_disable()
+Hi Maxime,
 
-Add the missed call to fix it.
+On 2023-07-17 at 16:14:58 +0200, Maxime Ripard <mripard@kernel.org> wrote:
+> [[PGP Signed Part:Undecided]]
+> On Mon, Jul 17, 2023 at 03:34:32PM +0200, Frank Oltmanns wrote:
+>> When finding the best rate for a NKM clock, consider rates that are
+>> higher than the requested rate, if the CCU_FEATURE_CLOSEST_RATE flag is
+>> set by using the helper function ccu_is_better_rate().
+>>
+>> Accommodate ccu_mux_helper_determine_rate to this change.
+>>
+>> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+>> ---
+>>  drivers/clk/sunxi-ng/ccu_mux.c |  2 +-
+>>  drivers/clk/sunxi-ng/ccu_nkm.c | 18 ++++++++----------
+>>  2 files changed, 9 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/clk/sunxi-ng/ccu_mux.c b/drivers/clk/sunxi-ng/ccu_mux.c
+>> index 1d557e323169..3ca695439620 100644
+>> --- a/drivers/clk/sunxi-ng/ccu_mux.c
+>> +++ b/drivers/clk/sunxi-ng/ccu_mux.c
+>> @@ -139,7 +139,7 @@ int ccu_mux_helper_determine_rate(struct ccu_common *common,
+>>  			goto out;
+>>  		}
+>>
+>> -		if ((req->rate - tmp_rate) < (req->rate - best_rate)) {
+>> +		if (ccu_is_better_rate(common, req->rate, tmp_rate, best_rate)) {
+>>  			best_rate = tmp_rate;
+>>  			best_parent_rate = parent_rate;
+>>  			best_parent = parent;
+>> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu_nkm.c
+>> index 793160bc2d47..5439b9351cd7 100644
+>> --- a/drivers/clk/sunxi-ng/ccu_nkm.c
+>> +++ b/drivers/clk/sunxi-ng/ccu_nkm.c
+>> @@ -39,6 +39,7 @@ static unsigned long ccu_nkm_optimal_parent_rate(unsigned long rate, unsigned lo
+>>  }
+>>
+>>  static unsigned long ccu_nkm_find_best_with_parent_adj(struct clk_hw *phw, struct _ccu_nkm *nkm,
+>> +						       struct ccu_common *common,
+>>  						       unsigned long *parent, unsigned long rate)
+>>  {
+>>  	unsigned long best_rate = 0, best_parent_rate = *parent, tmp_parent = *parent;
+>> @@ -54,10 +55,8 @@ static unsigned long ccu_nkm_find_best_with_parent_adj(struct clk_hw *phw, struc
+>>  				tmp_parent = clk_hw_round_rate(phw, tmp_parent);
+>>
+>>  				tmp_rate = tmp_parent * _n * _k / _m;
+>> -				if (tmp_rate > rate)
+>> -					continue;
+>>
+>> -				if ((rate - tmp_rate) < (rate - best_rate)) {
+>> +				if (ccu_is_better_rate(common, rate, tmp_rate, best_rate)) {
+>>  					best_rate = tmp_rate;
+>>  					best_parent_rate = tmp_parent;
+>>  					best_n = _n;
+>> @@ -78,7 +77,7 @@ static unsigned long ccu_nkm_find_best_with_parent_adj(struct clk_hw *phw, struc
+>>  }
+>>
+>>  static unsigned long ccu_nkm_find_best(unsigned long parent, unsigned long rate,
+>> -				       struct _ccu_nkm *nkm)
+>> +				       struct _ccu_nkm *nkm, struct ccu_common *common)
+>
+> Same comment than on patch 7, common should be first in those two functions.
+>
 
-Fixes: d59fb2856223 ("ASoC: rt5668: add rt5668B codec driver")
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
----
- sound/soc/codecs/rt5668.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Ok, I wasn't sure what your expectation is for existing functions. For
+ccu_find_best_with_parent_adj the order is:
+  1. *phw
+  2. *nkm
+  3. *common
+  4. *parent
+  5. rate
 
-diff --git a/sound/soc/codecs/rt5668.c b/sound/soc/codecs/rt5668.c
-index f04c810fd710..d66c9e9b9185 100644
---- a/sound/soc/codecs/rt5668.c
-+++ b/sound/soc/codecs/rt5668.c
-@@ -2452,6 +2452,13 @@ static void rt5668_calibrate(struct rt5668_priv *rt5668)
- 
- }
- 
-+static void rt5668_i2c_disable_regulators(void *data)
-+{
-+	struct rt5668_priv *rt5668 = data;
-+
-+	regulator_bulk_disable(ARRAY_SIZE(rt5668->supplies), rt5668->supplies);
-+}
-+
- static int rt5668_i2c_probe(struct i2c_client *i2c)
- {
- 	struct rt5668_platform_data *pdata = dev_get_platdata(&i2c->dev);
-@@ -2490,6 +2497,11 @@ static int rt5668_i2c_probe(struct i2c_client *i2c)
- 		return ret;
- 	}
- 
-+	ret = devm_add_action_or_reset(&i2c->dev, rt5668_i2c_disable_regulators,
-+			rt5668);
-+	if (ret)
-+		return ret;
-+
- 	ret = regulator_bulk_enable(ARRAY_SIZE(rt5668->supplies),
- 				    rt5668->supplies);
- 	if (ret != 0) {
--- 
-2.41.0
+We don't have the parent hw in ccu_nkm_find_best. The order prior to
+this patch is:
+  1. parent
+  2. rate
+  3. *nkm
 
+We need to add *common to that, so I could add it to the beginning as
+per your suggestion:
+  1. *common
+  2. parent
+  3. rate
+  4. *nkm
+
+I could also pull *nkm to the beginning (similar to the parent_adj
+version):
+  4. *nkm
+  1. *common
+  2. parent
+  3. rate
+
+Thanks for your feedback,
+  Frank
+
+>
+> Once fixed,
+> Acked-by: Maxime Ripard <mripard@kernel.org>
+>
+> Maxime
+>
+> [[End of PGP Signed Part]]
