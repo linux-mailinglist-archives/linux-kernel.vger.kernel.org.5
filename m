@@ -2,146 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 852BD75E07D
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 10:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC5375E07F
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 10:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbjGWIWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 04:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53778 "EHLO
+        id S229703AbjGWIZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 04:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbjGWIWi (ORCPT
+        with ESMTP id S229477AbjGWIZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 04:22:38 -0400
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5428C10EC;
-        Sun, 23 Jul 2023 01:22:32 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R751e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0Vnzn8WJ_1690100545;
-Received: from srmbuffer011165236051.sqa.net(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0Vnzn8WJ_1690100545)
-          by smtp.aliyun-inc.com;
-          Sun, 23 Jul 2023 16:22:26 +0800
-From:   Jing Zhang <renyu.zj@linux.alibaba.com>
-To:     John Garry <john.g.garry@oracle.com>,
-        Ian Rogers <irogers@google.com>
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
-        Zhuo Song <zhuo.song@linux.alibaba.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
-Subject: [PATCH v4 4/4] perf vendor events: Add metrics for Arm CMN
-Date:   Sun, 23 Jul 2023 16:21:53 +0800
-Message-Id: <1690100513-61165-5-git-send-email-renyu.zj@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1690100513-61165-1-git-send-email-renyu.zj@linux.alibaba.com>
-References: <1690100513-61165-1-git-send-email-renyu.zj@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 23 Jul 2023 04:25:17 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919A9E46;
+        Sun, 23 Jul 2023 01:25:16 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 48EEA32003CE;
+        Sun, 23 Jul 2023 04:25:15 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sun, 23 Jul 2023 04:25:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690100714; x=1690187114; bh=dIPYdFitpP50L
+        KtnnhqPZLbAi743uFQ8ZFjL77pDtNg=; b=x5ojDjWGPP5b52vypHfJD9zieinRr
+        VXSxGDT/7UvF7hD81HdzESl9x23kwCFWs4gTL0HXet5lLcTQqakuCH6yjr42f1UK
+        6m57sifK3luK2DSuo+ZH4Cfz1QymGSqmKe76xI3MgVgeAVzy8JPyBY2YwPlj9mPH
+        7UjMh7Euo0LsnfcbvL6IGAuk4lWm1Sv2BJ/79WcuB1YPqMgAIyKr1+IUHg4vtgrL
+        95tsh6mAoCtRMcblMICfnXP5+XpU24ZRuUI+I8K67jUmIV3pxdUec8T45F8870OU
+        wuZ8qiVZzn16hEE+yeL8cBO4CbNSsh5DGbJBcmnkQPRjXR0LFWKX1aMPQ==
+X-ME-Sender: <xms:6uO8ZL1QXcu1UCGWBvtY9TvXPFOGHPSTIgJMccDTw2q0oeZH5iLIJg>
+    <xme:6uO8ZKFKdwlCr8oCd5g_iYDWMuQazOH7B9WO5gbc98eJYcbWAuCEqus2wRn3GSQTg
+    1iSBGwK41INVok>
+X-ME-Received: <xmr:6uO8ZL7Eo5YdZHZkGxXzM10TmgDQ0iLySct2jXnJkk4BgP4mbzt96O6dP-j1>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrheeigddtfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
+    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
+    gvrhhnpedvudefveekheeugeeftddvveefgfduieefudeifefgleekheegleegjeejgeeg
+    hfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiug
+    hoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:6uO8ZA3liK6dp5j5ODaIwRmp8l7LFlkvytvenOmjVKsz86DmBzyqiw>
+    <xmx:6uO8ZOH4Uvi4IoYIOCq7buaKmZm_E74wmcgnERsN5eqwPElXI9YXMA>
+    <xmx:6uO8ZB-6QFUaxFSdL5A8QDlqguoTcv008IzpthmyBwL9qaVareP4CA>
+    <xmx:6uO8ZB2_PHn0Mz_1zXeOTvZLWuuHuIuujDBb2lbmUO7DzEfYiAu0Vg>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 23 Jul 2023 04:25:13 -0400 (EDT)
+Date:   Sun, 23 Jul 2023 11:25:10 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v1 01/11] selftests: forwarding:
+ custom_multipath_hash.sh: add cleanup for SIGTERM sent by timeout
+Message-ID: <ZLzj5oYrbHGvCMkq@shredder>
+References: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add JSON metrics for Arm CMN. Currently just add part of CMN PMU
-metrics which are general and compatible for any SoC with CMN-ANY.
+On Sat, Jul 22, 2023 at 02:36:00AM +0200, Mirsad Todorovac wrote:
+> Add trap and cleanup for SIGTERM sent by timeout and SIGINT from
+> keyboard, for the test times out and leaves incoherent network stack.
+> 
+> Fixes: 511e8db54036c ("selftests: forwarding: Add test for custom multipath hash")
+> Cc: Ido Schimmel <idosch@nvidia.com>
+> Cc: netdev@vger.kernel.org
+> ---
 
-Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
----
- .../pmu-events/arch/arm64/arm/cmn/sys/metric.json  | 74 ++++++++++++++++++++++
- 1 file changed, 74 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json
+The patches are missing your Signed-off-by and a cover letter. Anyway,
+please don't send a new version just yet. I'm not sure this is the
+correct approach and I'm looking into it.
 
-diff --git a/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json b/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json
-new file mode 100644
-index 0000000..64db534
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json
-@@ -0,0 +1,74 @@
-+[
-+	{
-+		"MetricName": "slc_miss_rate",
-+		"BriefDescription": "The system level cache miss rate.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "hnf_cache_miss / hnf_slc_sf_cache_access",
-+		"ScaleUnit": "100%",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "hnf_message_retry_rate",
-+		"BriefDescription": "HN-F message retry rate indicates whether a lack of credits is causing the bottlenecks.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "hnf_pocq_retry / hnf_pocq_reqs_recvd",
-+		"ScaleUnit": "100%",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "sf_hit_rate",
-+		"BriefDescription": "Snoop filter hit rate can be used to measure the snoop filter efficiency.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "hnf_sf_hit / hnf_slc_sf_cache_access",
-+		"ScaleUnit": "100%",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "mc_message_retry_rate",
-+		"BriefDescription": "The memory controller request retries rate indicates whether the memory controller is the bottleneck.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "hnf_mc_retries / hnf_mc_reqs",
-+		"ScaleUnit": "100%",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "rni_actual_read_bandwidth.all",
-+		"BriefDescription": "This event measure the actual bandwidth that RN-I bridge sends to the interconnect.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "rnid_rxdat_flits * 32 / 1e6 / duration_time",
-+		"ScaleUnit": "1MB/s",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "rni_actual_write_bandwidth.all",
-+		"BriefDescription": "This event measures the actual write bandwidth at RN-I bridges.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "rnid_txdat_flits * 32 / 1e6 / duration_time",
-+		"ScaleUnit": "1MB/s",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "rni_retry_rate",
-+		"BriefDescription": "RN-I bridge retry rate indicates whether the memory controller is the bottleneck.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "rnid_txreq_flits_retried / rnid_txreq_flits_total",
-+		"ScaleUnit": "100%",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "sbsx_actual_write_bandwidth.all",
-+		"BriefDescription": "sbsx actual write bandwidth.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "sbsx_txdat_flitv * 32 / 1e6 / duration_time",
-+		"ScaleUnit": "1MB/s",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	}
-+]
--- 
-1.8.3.1
-
+Thanks
