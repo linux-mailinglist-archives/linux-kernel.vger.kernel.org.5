@@ -2,167 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9957E75E491
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 21:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8875375E493
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 21:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbjGWTlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 15:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54776 "EHLO
+        id S229945AbjGWTmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 15:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjGWTlR (ORCPT
+        with ESMTP id S229468AbjGWTmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 15:41:17 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAE6A8
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 12:41:15 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 340905C0063;
-        Sun, 23 Jul 2023 15:41:11 -0400 (EDT)
-Received: from imap46 ([10.202.2.96])
-  by compute5.internal (MEProxy); Sun, 23 Jul 2023 15:41:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com.au;
-         h=cc:cc:content-type:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1690141271; x=
-        1690227671; bh=0W5XwGXuOpwCRV6H16V7wLiCytnuII5cpJCFDXkenzI=; b=T
-        lNqK87Lcr/HEQyfjQR/59cn5tygIjnf44ijZ1P6x8bLdlDl8zU0b0jekVKN3p7dk
-        KPG8DNGLW43clZ2ElqmqvP1qd8mBQUZA0kKbluALCnVhl2Uy/eo1ByAwg1Py1xAX
-        O96HjEFrrIYO6cXNgyVI507jb/5lXeGOtMCpGsDd5cAlV92ePsRJjyq8MeyT77td
-        TANfgXbJ6+mzlVXTR2ugqWlfgXqK6yONFjMaXnWUX8sER2O9ldh61JIIi1ox3Ab6
-        Gn0LENBCmt9t3mU6xgwbtXktnyDcpZFn9IVuL9G/wB+CPnBqdu6aqDSkdPxuDNcC
-        w3ofypSZlq6z9xgwi3ncQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690141271; x=1690227671; bh=0W5XwGXuOpwCR
-        V6H16V7wLiCytnuII5cpJCFDXkenzI=; b=iK0Ts7lO+sq6PijKny7XGPnnzLPIc
-        Z3H/U+sBY8uAt/Woa55GPa5ZMsUGPQdDd8xhJJiMZIdh+I0m6OEPr3wl8McAUxDA
-        hNhBhsI3QwaaICwbSwFhuTbYk/WsLPCXe5L6sL8qepOJHsCV/tHkSQUC3BK+hvPv
-        jF6wlmgFgOIom2abrF4t0e9p1NbjwWesJnYeuMDB/Kd9I+s+0XZah+zVukplO3Q1
-        67ucDJTV97vnzyRVS2kM6IzDqBvSFVGLa4b1E3MPVBAHF5y1P4xPZ4IUITFrEFhF
-        bNBF7YA7JcApnVl1mi9SzySTUbfi0wdnrZ2OCxbmoaCWsYXDUQXP4+imQ==
-X-ME-Sender: <xms:VoK9ZAwFgtIWaVTEsTnXQxIyLX9SeGYii1pua4lbhZ-HtUUel2G7HQ>
-    <xme:VoK9ZEQK68jdxzMxHjz168tyLOQ3IYfgpOMz5fcAFgQh9ZaecQ_tMxUnkzoHLHUtc
-    6gnhUczk1pE9HLeKw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrheeigddufeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedflfho
-    hhhnucfvhhhomhhsohhnfdcuoehlihhsthhssehjohhhnhhthhhomhhsohhnrdhfrghsth
-    hmrghilhdrtghomhdrrghuqeenucggtffrrghtthgvrhhnpeejjeefieelgfeftdekkeef
-    keffgeelteelhfehkeelgefgtddtveevudehteetgfenucffohhmrghinhepkhgvrhhnvg
-    hlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
-    mheplhhishhtshesjhhohhhnthhhohhmshhonhdrfhgrshhtmhgrihhlrdgtohhmrdgruh
-X-ME-Proxy: <xmx:VoK9ZCXPXB2ualRwmLQhcczYvy3pm4DP30Zkcjif1ERwGSUsq5tDOQ>
-    <xmx:VoK9ZOjcnjMWfGctz5Xa5uw8q7qmItn51GCEHr7BJc0mrlXzNXXwiw>
-    <xmx:VoK9ZCBDQMeeH5FAtASE5zRupL9VmQrhPc2Vc0ZSrt2que7S4SiQAA>
-    <xmx:V4K9ZE3F6uunNjJdi_yN67Bf6T3cD6cANPf6ouCZcK6whHZIpGFVvg>
-Feedback-ID: ia7894244:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 9A3BA2A20085; Sun, 23 Jul 2023 15:41:10 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
-Mime-Version: 1.0
-Message-Id: <925d1b35-3e70-4b5d-9533-f730a652d242@app.fastmail.com>
-In-Reply-To: <20230717075147.43326-2-miquel.raynal@bootlin.com>
-References: <20230717075147.43326-1-miquel.raynal@bootlin.com>
- <20230717075147.43326-2-miquel.raynal@bootlin.com>
-Date:   Sun, 23 Jul 2023 19:39:50 +0000
-From:   "John Thomson" <lists@johnthomson.fastmail.com.au>
-To:     "Miquel Raynal" <miquel.raynal@bootlin.com>,
-        "Srinivas Kandagatla" <srinivas.kandagatla@linaro.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
-        "Robert Marko" <robert.marko@sartura.hr>,
-        "Luka Perkov" <luka.perkov@sartura.hr>,
-        "Michael Walle" <michael@walle.cc>,
-        "Randy Dunlap" <rdunlap@infradead.org>
-Subject: Re: [PATCH v6 1/3] ABI: sysfs-nvmem-cells: Expose cells through sysfs
-Content-Type: text/plain
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 23 Jul 2023 15:42:10 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45EEAD
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 12:42:08 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d07c535377fso1679883276.1
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 12:42:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690141328; x=1690746128;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ay3/eaFB0phovm13Qd1bOLsG3Es2DyLvGejXTaS4q4U=;
+        b=HAxlucnKdeO4JPoSpkgIKQGB9tRnSd4Sqyg/N8IwICd7sWf3K7AZGX3wNsd+AikBKN
+         AiGEXIGP5ukBjOcayTV5ty3t5fQsDANnEqi3NFM6pNzkYdWcxpsJZbVbv0hIn3AQjuNZ
+         qg+nuONbgEPG6yZdQVAPMHdxfhr0STqkZxOhhZ6d/ccfPPDI2oRafVeGYlsfSquhptkx
+         mM7q/lBj4ndCETwEh7iZKFD6jYQ8/Az9G1QIavKtoA7hZq05pr6V1wysSdylsJtwuUJl
+         9TawfkH0oCVHqL3DtflQ+pIc+T/134U37iNvEsD5cUwJzQSNaywaJO/jumg1vjugbqxP
+         IiYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690141328; x=1690746128;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ay3/eaFB0phovm13Qd1bOLsG3Es2DyLvGejXTaS4q4U=;
+        b=JfsSQOjEPVWBaBDEs8zKM1Etsao/IPe+0ZalyGCZ0o6DZW7ZZxyYr+yNwSDtO4gWh4
+         Te/YjWCbptgaLZ2bP22FKEiY7ZwODE+GvrjRNu1mTXz6GReCnGrXnH/CoZeycNABXh0W
+         0h6Z1KaBA/VPlj+AwUsKFxJROlgUK9wEasJSgtjNTjkaYjhBywW87ilbzCOyAfdfEo1o
+         L137bLPy5X7Z5KJDAXmqo/GfjdUjdyKWpeIq6cJhHpJsnZu7AHArEM0kYT/MxdkW+e/5
+         r5uDrKPrZwixx3jpUE5UvFuQuv6HA36902eAJ2UIUHTlE2YOtUmjyY1quMETgA3BH4T6
+         r+pw==
+X-Gm-Message-State: ABy/qLY6fbd66KMLPBKUdvYtSSBz8lIYBgMuAz2ghmc1l9w37T9oukkG
+        3SGe8ykS0vGpryQ0nsSCpVW55m0SaQLTaXAcVh5y1g==
+X-Google-Smtp-Source: APBJJlG+gbAx16cl9uw30afY0MrdCHU2zjimXfqSl6S7KhEce0zaN1261XuOaXx6BAuEWxLwP5bEWP9fHi9+vUGp9hs=
+X-Received: by 2002:a25:1503:0:b0:c8d:1b31:62fb with SMTP id
+ 3-20020a251503000000b00c8d1b3162fbmr4928906ybv.26.1690141326525; Sun, 23 Jul
+ 2023 12:42:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230717201652.17168-1-mario.limonciello@amd.com>
+In-Reply-To: <20230717201652.17168-1-mario.limonciello@amd.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 23 Jul 2023 21:41:55 +0200
+Message-ID: <CACRpkdYoxoZ0G7QzQ7XV2FPh9gUJG-CKfpFY1xNQdbBcJOQ=3w@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: amd: Don't show `Invalid config param` errors
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Basavaraj.Natikar@amd.com, Shyam-sundar.S-k@amd.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+On Mon, Jul 17, 2023 at 10:17=E2=80=AFPM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
 
-On Mon, 17 Jul 2023, at 07:51, Miquel Raynal wrote:
-> The binary content of nvmem devices is available to the user so in the
-> easiest cases, finding the content of a cell is rather easy as it is
-> just a matter of looking at a known and fixed offset. However, nvmem
-> layouts have been recently introduced to cope with more advanced
-> situations, where the offset and size of the cells is not known in
-> advance or is dynamic. When using layouts, more advanced parsers are
-> used by the kernel in order to give direct access to the content of each
-> cell regardless of their position/size in the underlying device, but
-> these information were not accessible to the user.
+> On some systems amd_pinconf_set() is called with parameters
+> 0x8 (PIN_CONFIG_DRIVE_PUSH_PULL) or 0x14 (PIN_CONFIG_PERSIST_STATE)
+> which are not supported by pinctrl-amd.
 >
-> By exposing the nvmem cells to the user through a dedicated cell/ folder
-> containing one file per cell, we provide a straightforward access to
-> useful user information without the need for re-writing a userland
-> parser. Content of nvmem cells is usually: product names, manufacturing
-> date, MAC addresses, etc,
+> Don't show an err message when called with an invalid parameter,
+> downgrade this to debug instead.
 >
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  Documentation/ABI/testing/sysfs-nvmem-cells | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-nvmem-cells
->
-> diff --git a/Documentation/ABI/testing/sysfs-nvmem-cells 
-> b/Documentation/ABI/testing/sysfs-nvmem-cells
-> new file mode 100644
-> index 000000000000..b2d15a8d36e5
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-nvmem-cells
-> @@ -0,0 +1,19 @@
-> +What:		/sys/bus/nvmem/devices/.../cells/<cell-name>
-> +Date:		May 2023
-> +KernelVersion:	6.5
-> +Contact:	Miquel Raynal <miquel.raynal@bootlin.com>
-> +Description:
-> +		The "cells" folder contains one file per cell exposed by
-> +		the nvmem device. The name of the file is the cell name.
+> Cc: stable@vger.kernel.org # 6.1
+> Fixes: 635a750d958e1 ("pinctrl: amd: Use amd_pinconf_set() for all config=
+ options")
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 
-Could we consider using a file within a folder (name defined by cell propertys) to access the cell bytes?
-Example (pick the best path and filename):
-/sys/bus/nvmem/devices/.../cells/<cell-name>/bytes
+Applied for nonurgent fixes.
 
-That way, it is much easier to expand this at a later stage,
-like adding an of_node link at
-/sys/bus/nvmem/devices/.../cells/<cell-name>/of_node
-or exposing other nvmem cell properties.
-
-This is particularly relevant given the cell-name alone does not always
-uniquely represent a cell on an nvmem device.
-https://lore.kernel.org/lkml/ZLaZ7fzUSsa0Igx1@makrotopia.org/
-https://lore.kernel.org/lkml/e7173ab2-d3b2-4f75-beb8-32593b868774@www.fastmail.com/
-
-> +		The length of the file is the size of the cell (when
-> +		known). The content of the file is the binary content of
-> +		the cell (may sometimes be ASCII, likely without
-> +		trailing character).
-> +		Note: This file is only present if CONFIG_NVMEM_SYSFS
-> +		is enabled.
-> +
-> +		Example::
-> +
-> +		  hexdump -C /sys/bus/nvmem/devices/1-00563/cells/product-name
-> +		  00000000  54 4e 34 38 4d 2d 50 2d  44 4e         |TN48M-P-DN|
-> +		  0000000a
-> -- 
-> 2.34.1
-
-Cheers,
-
--- 
-  John Thomson
+Yours,
+Linus Walleij
