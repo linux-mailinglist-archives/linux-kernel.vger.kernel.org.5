@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D4175E477
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 21:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035DA75E47E
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 21:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbjGWTWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 15:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
+        id S229749AbjGWTYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 15:24:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGWTWE (ORCPT
+        with ESMTP id S229599AbjGWTYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 15:22:04 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E960F1BC
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 12:22:02 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5839f38342fso25863117b3.0
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 12:22:02 -0700 (PDT)
+        Sun, 23 Jul 2023 15:24:21 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2C3E5B
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 12:24:20 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-cf284f4d7afso4053476276.3
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 12:24:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690140122; x=1690744922;
+        d=linaro.org; s=google; t=1690140258; x=1690745058;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fquRMBRj9ZKqtHZyYUupyMW1B32z8De1kiiyymiS6II=;
-        b=elN31IJY1iHFOuFJlXhVERTNIognMnWyaoIqk4XbLYrR/dqY4+4zCyHHAfj/GvTodg
-         u5Qsr5toLHA4xAoeSMji+9UA6ErZp66b7H6vF/Nql1H41cABdt/j/ayUpyDNj/hhbBaj
-         V8Vb1T0/A9UFx3glSYHxplAckjNNlgYVRixk/zzhupIqx6S2zfbj1e58/2wYSafgiRBE
-         //EhHzuGoJFosu8DnMGGKbCRbtRznqaLg4/fOzRtyFvyDXcQ+SrfSpbKNELIa0wklH03
-         sLxvKuD9MuqJqc3I3FmjZ70VsYmumNfYTIgJKubsBSDhCqkdJXVKG3vbBkjtX2hvxCEP
-         fdqw==
+        bh=eAG8curcXxIe67r63NSNDmtyHfYk/6+uaC4W2xqV//M=;
+        b=Ev7xVYwHjSWdhn6rRSoGo5howvOJoeNhnE2KY48cG8mA8cA+wbVU0GBX4StOoGAgrA
+         vXW88fZAYMKewV6edX0hIek5idMGKqXJUW8TuF+SOUMYwrsCwaRHe17q0EcltNSZ2seR
+         glPNFGlED48MoHPkaAiVVLFIXBo6zNozT8dD14JDtIjvn75q6i/HUoXrqz47RFk5+Xlx
+         m8AMJv7xIqBBDAiuHEVuielX8WqhBk3R53hwjjCr+LYqumXWS/4Yi8ZALHuDOVt5BAJK
+         9BUGda2VF72dZ4Aqz3Qlc0sD2Lf0p1LZRUHbryD4xxFWopmjoV3XJpOeJHKOAtHcUznI
+         pGfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690140122; x=1690744922;
+        d=1e100.net; s=20221208; t=1690140258; x=1690745058;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fquRMBRj9ZKqtHZyYUupyMW1B32z8De1kiiyymiS6II=;
-        b=FfZ9jT+NS7tQnhfc7Q2kWbikLAqWL01JajyBxojBAHxIcWyTATNfvFASchMB5D6+Ii
-         tpzzVZeqUFmUViXzYE2OCPFEtqQUDcY6+kJmUJgYegpcTixX57yHehJoiM506gwhXNq1
-         cy5dR/OlSQCtG7yaMa0GA2L4qlUIiUlpqigASZus/mrobl9sHoaFN3eOMTIdKyFUAqX/
-         vSAxwv1Rbiy3PhgvaD/3aIaeitV/W6/qPYEwHLA8Ejh/8MaCg1ajx1Jy+6z1Q0VnMtOh
-         g9SJ9gRjc968hBn2h/nb/65FWxK1g0OE8aYgslR0nnxt31qdJvweNX21YX5fOlKRbq9m
-         I2Fg==
-X-Gm-Message-State: ABy/qLaRtFbHFWJBg2yIz9nFmYunb43tlO+s2db1ktbYNNO50cRnfwzA
-        aGbjRCvrXJdwBTrPlrsL3I5WcCEwStIa09DIgK+WTg==
-X-Google-Smtp-Source: APBJJlFQTsRtV2Lfbo2xvto2SS5L44j+argU3fk97wrQhIMB6JGqzRsGIo/hPeDhFQB6VbWRPFTB0A/lm1tvJPnqI0A=
-X-Received: by 2002:a81:6f55:0:b0:577:3b66:441 with SMTP id
- k82-20020a816f55000000b005773b660441mr4296179ywc.50.1690140122199; Sun, 23
- Jul 2023 12:22:02 -0700 (PDT)
+        bh=eAG8curcXxIe67r63NSNDmtyHfYk/6+uaC4W2xqV//M=;
+        b=jpZcX7yb9A6c/VEM20caybZBXnRiy5hm6xNoQ391GOQZBlIuUdcQ9WiKirhVr+LwHL
+         J2VEIvoMudNpz5fuxjj46/S1fzZHVqPM7JRnIDxqIUzQ/5SOhobzWqb3mAQtdYqZFygz
+         h5C4Y7xB849zv8m9T11B+N19rHGB410Av+ErALjt/2it5JF6Ug8jzMIl303bFTns9Dua
+         gTvsKsoIr4IDLaPsqNAzGBDJMYmajVZXFHAy+aCdINAH3KaGiEfiKyPAAs+3GKsPPAfv
+         yDLwU5nsyhaSlMZszqfwiVM/j2uJwNj/Er3xrpleBMS9W6ZnrfxmoSFxS1yfx1hn27Ez
+         ccQQ==
+X-Gm-Message-State: ABy/qLYG3dWfNW9T/to0nvxxBHqtWvtfwpcFOjfWKvx+TLcxcGsdKifK
+        bnw2MN5cVjsq7yiH+xGpA0HMvE3I0yKSKgZo1D8o3KuUNLgT+8qq
+X-Google-Smtp-Source: APBJJlGoasXGfe5hFr70DcARWayE4fKQCzefyqvO314rjOOL1v2XYXRNlYBTZsNWTDPa9JwN5dqmukHiXsaEhGyz3+4=
+X-Received: by 2002:a25:2106:0:b0:ced:497e:df3d with SMTP id
+ h6-20020a252106000000b00ced497edf3dmr5257589ybh.37.1690140258456; Sun, 23 Jul
+ 2023 12:24:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230714122441.3098337-1-huqiang.qin@amlogic.com>
- <20230714122441.3098337-3-huqiang.qin@amlogic.com> <CACRpkdbbUga0biH=1tkCgRzUqNiDGdVf2woda5X2s43ct-na7Q@mail.gmail.com>
- <3e71a3cd-dc40-c3c3-8fe7-5c95096cc462@amlogic.com>
-In-Reply-To: <3e71a3cd-dc40-c3c3-8fe7-5c95096cc462@amlogic.com>
+References: <20230714122441.3098337-1-huqiang.qin@amlogic.com> <20230714122441.3098337-2-huqiang.qin@amlogic.com>
+In-Reply-To: <20230714122441.3098337-2-huqiang.qin@amlogic.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 23 Jul 2023 21:21:50 +0200
-Message-ID: <CACRpkdaEnfG5=zqBNG0gpHfva1dDf=YBUPd8yhkKLSi_-Fvb=A@mail.gmail.com>
-Subject: Re: [PATCH V3 2/2] pinctrl: Add driver support for Amlogic C3 SoCs
+Date:   Sun, 23 Jul 2023 21:24:07 +0200
+Message-ID: <CACRpkdap8057An+wcieB0UR9V5AicvGnPgnjLE_fhQonQmvDDg@mail.gmail.com>
+Subject: Re: [PATCH V3 1/2] dt-bindings: pinctrl: Add compatibles for Amlogic
+ C3 SoCs
 To:     Huqiang Qin <huqiang.qin@amlogic.com>
 Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
         conor+dt@kernel.org, neil.armstrong@linaro.org,
@@ -68,7 +67,7 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,20 +75,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 9:25=E2=80=AFAM Huqiang Qin <huqiang.qin@amlogic.co=
+On Fri, Jul 14, 2023 at 2:25=E2=80=AFPM Huqiang Qin <huqiang.qin@amlogic.co=
 m> wrote:
 
-> > Andy had more comments about the header inclusion. Please
-> > include all used headers directly as requested, I think it's a good
-> > idea and avoids confusing compile problems.
+> Add a new compatible name for Amlogic C3 pin controller, and add
+> a new dt-binding header file which document the detail pin names.
 >
-> Yes, this is a good idea, but when many files must include the same batch
-> of header files (seems to have become a kind of template), it seems like
-> a good choice for us to put them all in pinctrl-meson.h (actually been do=
-ing
-> this a long time ago).
+> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
 
-OK I'd say that is up to the taste of the driver maintainer so it's OK.
+Patch applied!
 
 Yours,
 Linus Walleij
