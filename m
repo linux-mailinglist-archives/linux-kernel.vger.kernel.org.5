@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2087675E436
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 20:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB1775E439
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 20:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbjGWSut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 14:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
+        id S229835AbjGWSvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 14:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjGWSur (ORCPT
+        with ESMTP id S229477AbjGWSvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 14:50:47 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E13F3;
-        Sun, 23 Jul 2023 11:50:45 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id EEF6460171;
-        Sun, 23 Jul 2023 20:50:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1690138231; bh=eNrWuD560AZswhvCgLs7uptVHWEPszV5AXkZsEm1AFc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=kKtW7zkPlbVYiEjfq2pAyG9eTvXD/dWqB/mgDKPn5grVXsvg1pj/XFfGqBgpgsR+y
-         N/62sf7AOkcvHooutHKix2yXbdfjEDXbdXfW27hDJRQ0qjWis8qb9buthEXVx8mSsV
-         jt02bHWDdNTjO57PQuGxmBbqi74QU/V73L2pr4L4mYMgFj1IqPg5s86Y59CN/fX++p
-         q9cXBGoccxd+DY6f/wPcze/U8GT6eZGlG5/shi8clMXmL8HMpXCSPpEYNab8jouJwW
-         lkQ6zxPE4g+9gNwa/pGZNJE7f9U9L6s0YkB7iUcW/rkiflIgMn0b6xMmEgucpLuYus
-         QcP27dxQET2YQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id oBXA4NpgkQJv; Sun, 23 Jul 2023 20:50:29 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 3B3406015F;
-        Sun, 23 Jul 2023 20:50:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1690138229; bh=eNrWuD560AZswhvCgLs7uptVHWEPszV5AXkZsEm1AFc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=OB5bpdEebStwgkNUwbQbvwyYjaNk2cxHv0UmILS6m2DSDFp7ALM9qZFAbejPhRy6C
-         2etVBk8UGrY1+gWFUBJIRJVnWd5uRyLn63lb4/PKNiIATHs6W5I36jOhV1dw5GdrWL
-         RR3IfSTFTg2bxjy7fFYnZQkmen+t+b2mXeU0OqOfgT8dvwCeiEohkve8IHhFCMurud
-         OvD6ptdv8uQ4/ciiAzn/puBTbbrEf71BEGVNNmkiOmQ0+J5/2C4Hp5Am+oerLT00VZ
-         wsop0c950e/OqgDVAPp5D/BW+AjaXEN8PZnFn6wNdsmSAEjvRyaVWKR6j1ZWGa5ZNU
-         uUmHfKYHE3Clw==
-Message-ID: <2004b5c6-6bff-88a8-a3f2-cfe95f12996b@alu.unizg.hr>
-Date:   Sun, 23 Jul 2023 20:50:13 +0200
+        Sun, 23 Jul 2023 14:51:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2687DF3;
+        Sun, 23 Jul 2023 11:51:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AC88860E26;
+        Sun, 23 Jul 2023 18:51:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15784C433C9;
+        Sun, 23 Jul 2023 18:51:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690138297;
+        bh=K5MA7Fk2+ObXwZvLoreYo8Ex71NIZz1A6wUqpOMZEEU=;
+        h=From:Date:Subject:To:Cc:From;
+        b=TB2mRwAzlmivy4jn5yj90bWCFhOGclyyOwZgONcchrUCR45TQX2RddqvYM1kO2mjt
+         DyTM/9x3uacipR4mdHpXUQEqyXG0Y1bKqfJ3RnrEafFZrvE2qRxEQbSuxfvb7kT52M
+         x3R9Z/A4bsgSz1+CbTVZ3r88jxRL+UPvO7a7XKDlztpSf7RfgZMUurJuWaDnCS539B
+         JmDu/eUut3kwcbUbx1XTcSKBc11jTFj8ka+36GkJJL9vTEmoTHZU0EdD+QZNH0tpDX
+         vdD04R20CTJNSw0IgyaLV78OXI7NVAcFmdd5KFh7aZmzJAZMEduw1E34onqOJ1rMMk
+         GWX+aU7Om07XQ==
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5675add2980so2277535eaf.3;
+        Sun, 23 Jul 2023 11:51:37 -0700 (PDT)
+X-Gm-Message-State: ABy/qLa0pKNvArA5po+PeiVRAGZN9X/dHwEis8m56z9Nom5hN3uLB1an
+        LnsorYAE04ajDf/ez0XZ/mbusHozjbB5uj1RrCU=
+X-Google-Smtp-Source: APBJJlGn4yxFMpSTSfuvmgu0fHAaNp9KaNvlPrFnP/okeYVBQ02AP5Dw4xZzo/MXiCv0xfbjy3/RwCc/+9e4pkKuiAU=
+X-Received: by 2002:a4a:d2cd:0:b0:567:95:a0e5 with SMTP id j13-20020a4ad2cd000000b005670095a0e5mr6244951oos.0.1690138296328;
+ Sun, 23 Jul 2023 11:51:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 01/11] selftests: forwarding: custom_multipath_hash.sh:
- add cleanup for SIGTERM sent by timeout
-Content-Language: en-US
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-References: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
- <ZLzj5oYrbHGvCMkq@shredder> <ZL1jFk1z3zDH7dUM@shredder>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZL1jFk1z3zDH7dUM@shredder>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 24 Jul 2023 03:51:00 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS7+XWY8Vy4Hfst7DnpOwx3tnGpAbPTAojjzzH40+gDgQ@mail.gmail.com>
+Message-ID: <CAK7LNAS7+XWY8Vy4Hfst7DnpOwx3tnGpAbPTAojjzzH40+gDgQ@mail.gmail.com>
+Subject: [GIT PULL] Kbuild fixes for v6.5-rc3
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/23/23 19:27, Ido Schimmel wrote:
-> On Sun, Jul 23, 2023 at 11:25:16AM +0300, Ido Schimmel wrote:
->> On Sat, Jul 22, 2023 at 02:36:00AM +0200, Mirsad Todorovac wrote:
->>> Add trap and cleanup for SIGTERM sent by timeout and SIGINT from
->>> keyboard, for the test times out and leaves incoherent network stack.
->>>
->>> Fixes: 511e8db54036c ("selftests: forwarding: Add test for custom multipath hash")
->>> Cc: Ido Schimmel <idosch@nvidia.com>
->>> Cc: netdev@vger.kernel.org
->>> ---
->>
->> The patches are missing your Signed-off-by and a cover letter. Anyway,
->> please don't send a new version just yet. I'm not sure this is the
->> correct approach and I'm looking into it.
-> 
-> Please test with the following four patches on top of net.git:
-> 
-> https://github.com/idosch/linux/commits/submit/sefltests_fix_v1
+Hello Linus,
 
-Will do. Just applying.
+Please pull some Kbuild fixes.
 
-However, I have upgraded to iproute2-next, maybe the error message should
-give a hint on that, too ... That might relieve the pressure on developers
-answering always the same questions ...
+Thank you.
 
-Kind regards,
-Mirsad
+
+
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+tags/kbuild-fixes-v6.5
+
+for you to fetch changes up to df01b7cfcef08bf3fdcac2909d0e1910781d6bfd:
+
+  kbuild: rust: avoid creating temporary files (2023-07-24 03:15:31 +0900)
+
+----------------------------------------------------------------
+Kbuild fixes for v6.5
+
+ - Fix stale help text in gconfig
+
+ - Support *.S files in compile_commands.json
+
+ - Flatten KBUILD_CFLAGS
+
+ - Fix external module builds with Rust so that temporary files are
+   created in the modules directories instead of the kernel tree
+
+----------------------------------------------------------------
+Alexey Dobriyan (1):
+      kbuild: flatten KBUILD_CFLAGS
+
+Benjamin Gray (1):
+      gen_compile_commands: add assembly files to compilation database
+
+Miguel Ojeda (1):
+      kbuild: rust: avoid creating temporary files
+
+Randy Dunlap (2):
+      kconfig: gconfig: drop the Show Debug Info help text
+      kconfig: gconfig: correct program name in help text
+
+ Makefile                                    | 22 +++++++++++++++++-----
+ scripts/Makefile.build                      |  5 ++++-
+ scripts/Makefile.host                       |  6 +++++-
+ scripts/clang-tools/gen_compile_commands.py |  2 +-
+ scripts/kconfig/gconf.c                     | 11 ++++-------
+ 5 files changed, 31 insertions(+), 15 deletions(-)
