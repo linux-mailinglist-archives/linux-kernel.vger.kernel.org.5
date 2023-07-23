@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CB975E279
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 16:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A80C75E27F
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 16:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbjGWOOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 10:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39266 "EHLO
+        id S229665AbjGWOQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 10:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGWONi (ORCPT
+        with ESMTP id S229656AbjGWOP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 10:13:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B970191
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 07:13:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3944F60D3E
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 14:13:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A4F5C433CD
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 14:13:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690121616;
-        bh=UNaK5accp1ZwP3ldqWX+XmypiJ0xhGUuuZsk7zhlSQw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iNdQcLV8Ep9KYJCqkmRFYgcOl0e91fePudNAaqXmkVF68b/lDZO2xPvjfSG0/EERi
-         i1lbGU6bm8RNs0+l9o30a6tx4aKyoIodUjevyO0I4qiakbafihw7hK6/02S42mq605
-         SK93gjrGJqU6LgaW3ygm6z6QZ9+zzIK0TRgj9j45EPoHf4e0A7vHuOZUmhtm6Kl31F
-         qGOQVKhe1n3ZSfm3nAzwARfERewTQwAZOddj+4sCTzWMjdRA6/CvONVgTHr3wVQsEN
-         uFkI5cvaH/Tai6B2TBIWGC0tc054sTYfB+xYGMEXClA+ribu1vN5vaep6gVXgb2ZkK
-         Q3dxv+Y3HRWsA==
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-51ff0e3d8c1so4907033a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 07:13:36 -0700 (PDT)
-X-Gm-Message-State: ABy/qLablAxBUtVsaJHNLno/WfXHLYApsLRviYvy3xeJfWAlb6BNFEnp
-        G6wRGAsogyxfbU0GBnjJM49vILUX3LxqcTPMOY8=
-X-Google-Smtp-Source: APBJJlF81pdK1S5qyov7uXaNJT8toiXRPZCn5bAAB50MkmBHTmXN9RB2JTeu7HCmJAa15BjS1Q2ACUTR3OZuVQL59ZY=
-X-Received: by 2002:aa7:c459:0:b0:522:2711:871 with SMTP id
- n25-20020aa7c459000000b0052227110871mr1630550edr.1.1690121614807; Sun, 23 Jul
- 2023 07:13:34 -0700 (PDT)
+        Sun, 23 Jul 2023 10:15:58 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4C110DF
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 07:15:56 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-997c4107d62so514744166b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 07:15:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690121755; x=1690726555;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=N5gRIf9soWu1L4l6EUy8y1Fb5IIrkKYz0UV071lXLSI=;
+        b=MY2L09s594Rox7deo3eNSWYQvAr+z2BXjSPPVBgshC6fWI5QB7qpBlWNt7twt78hxV
+         xVqtqN3pCRJ/ciYQyfOpbK1gXro+47vCMtcik32TBmNjo0yIZyU2CJRnJitXXFxQdCCb
+         LdnjXmdLImQKmqZtMvG8qvytQSnwvgRe4KVxd2u31O/p2ZszCLB41x/Cvp9YzLnKHlem
+         4Zyl6BE2ejA2FzbRhDdkg34ruqfTU68VlAfejsCn6qvNuGhWI2WG3/XcYGNvrYiJ/4bt
+         ePsAljjB5j3IB5mo05zkf416vxBzC1choRTs7lXLcYzxdEqoTx60ibwdrNwQ3iOIdI6G
+         OgXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690121755; x=1690726555;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N5gRIf9soWu1L4l6EUy8y1Fb5IIrkKYz0UV071lXLSI=;
+        b=g3D5cJavUBUY4oVTO7Ma48p1paYF03GlG4wTp2Ic3OXWsw47wjnUb3ytLyMBpJf65/
+         GWX9j9WQBbLPh1QHJCRa7XJbjWjMG9juJ0Rj0WIpPyYtU86gwciW8A24bz9xryb7+rZZ
+         c5Elf3OS4TlY8DkG/ECN/uEb/lG+18FC6z9FdrTdZZfA4skLSeRJp+jgIwC/9ZjvLAF9
+         KSoYkxh9CRqt3TFXoSASr4g8ygxqotvuudfzvhhsWoCaM49gQwWy0LG5ko/EAIZ46jnj
+         buXd4G6jHXiQRqYlLPCyJhjq/dhAnQrg60iHL9rmrvG88C9n//lP/jyqGGb5g695R0om
+         hv/Q==
+X-Gm-Message-State: ABy/qLYn6OE0y9i6maR6gmEHGFximOWtn8Qgd8DL9VCgDgzNT4bqftPo
+        cyfsFbnzSae5F9zCJx57Zj4+YXTFnDr87fVj8vY=
+X-Google-Smtp-Source: APBJJlE4TRQ4jxiEhgw2ekB7zPZtl8glF3AfTjfQF+ItgZ3+t2ozlWJzjRTcL9Lm73lYnvG0ctZSxg==
+X-Received: by 2002:a17:907:2c42:b0:982:9daf:9fcf with SMTP id hf2-20020a1709072c4200b009829daf9fcfmr7271159ejc.66.1690121755099;
+        Sun, 23 Jul 2023 07:15:55 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id g6-20020aa7c586000000b0051dd1c10c13sm4810592edq.29.2023.07.23.07.15.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Jul 2023 07:15:54 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/2] dt-bindings: usb: qcom,dwc3: drop assigned-clocks
+Date:   Sun, 23 Jul 2023 16:15:49 +0200
+Message-Id: <20230723141550.90223-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230615121016.3731983-1-chenhuacai@loongson.cn>
- <CAAhV-H49AyrG-sH2SXLNg_cX-Wv8vS4Qno_2N4v6ccGGciv-+A@mail.gmail.com>
- <ZJ9kWqhRCWkLcYyv@bombadil.infradead.org> <CAAhV-H7qk8wSFt=ZMUSUt4cAmH+-5AsGqszXNW9w+u6Y8vDN+A@mail.gmail.com>
-In-Reply-To: <CAAhV-H7qk8wSFt=ZMUSUt4cAmH+-5AsGqszXNW9w+u6Y8vDN+A@mail.gmail.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Sun, 23 Jul 2023 22:13:23 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7RgkZJ2hfmNmJXKqcYeE1q11V4-2Ni0j-FLJ0b5fc=Sg@mail.gmail.com>
-Message-ID: <CAAhV-H7RgkZJ2hfmNmJXKqcYeE1q11V4-2Ni0j-FLJ0b5fc=Sg@mail.gmail.com>
-Subject: Re: [PATCH] kthread: Rename user_mode_thread() to kmuser_thread()
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Eric Biederman <ebiederm@xmission.com>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,45 +77,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Eric,
+The binding does not have to specify assigned-clocks, because they are
+already allowed by core DT schema.  On the other hand, fixed
+assigned-clocks in the binding will not fit different boards or SoCs.
+Exactly this is the case for Qualcomm SuperSpeed DWC3 USB SoC controller
+binding, where few boards have different assigned-clocks:
 
-On Tue, Jul 18, 2023 at 8:43=E2=80=AFPM Huacai Chen <chenhuacai@kernel.org>=
- wrote:
->
-> Hi, Luis,
->
-> On Sat, Jul 1, 2023 at 7:25=E2=80=AFAM Luis Chamberlain <mcgrof@kernel.or=
-g> wrote:
-> >
-> > On Sun, Jun 25, 2023 at 04:55:33PM +0800, Huacai Chen wrote:
-> > > Friendly ping?
-> >
-> > You want to cc the folks who Nacked your patch. Until then, this
-> > probably can't go further.
-> Thank you very much. Eric and Andrew are already in the CC list, so
-> add Thomas now.
->
-> My brain is a little old-fashioned so I insisted that "a thread
-> without mm_struct should be a kernel thread" in the previous patch.
-> Unfortunately this makes Eric and Thomas unhappy, I'm very sorry for
-> that.
->
-> During the discussion of the previous patch I know I made some
-> mistakes about some basic concepts, but I also found the name
-> "user_mode_thread()" is somewhat confusing. I think rename it to
-> kmuser_thread() is better, because:
-> 1, it identify init and umh as user threads;
-> 2, it points out that init and umh are special user threads that run
-> in kernel mode before loading a user program.
->
-> Sorry for my rudeness again.
-Excuse me, but could you please tell me what your opinion is. In my
-opinion a typical user thread is created by
-pthread_create()/sys_clone(), it is better to distinguish typical user
-threads from init and umh.
+  ipq8074-hk10-c1.dtb: usb@8cf8800: assigned-clocks: [[5, 131], [5, 132], [5, 133]] is too long
+  sdm660-xiaomi-lavender.dtb: usb@a8f8800: assigned-clocks: [[37, 92], [37, 91], [38, 64]] is too long
 
-Huacai
->
-> Huacai
-> >
-> >   Luis
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+index 08d42fde466a..7cedd751161d 100644
+--- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+@@ -85,15 +85,6 @@ properties:
+     minItems: 1
+     maxItems: 9
+ 
+-  assigned-clocks:
+-    items:
+-      - description: Phandle and clock specifier of MOCK_UTMI_CLK.
+-      - description: Phandle and clock specifoer of MASTER_CLK.
+-
+-  assigned-clock-rates:
+-    items:
+-      - description: Must be 19.2MHz (19200000).
+-      - description: Must be >= 60 MHz in HS mode, >= 125 MHz in SS mode.
+   resets:
+     maxItems: 1
+ 
+-- 
+2.34.1
+
