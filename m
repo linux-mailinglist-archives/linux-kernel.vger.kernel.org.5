@@ -2,117 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2C475E43E
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 20:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19D675E442
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 20:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbjGWSzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 14:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
+        id S229651AbjGWS7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 14:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGWSzj (ORCPT
+        with ESMTP id S229456AbjGWS7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 14:55:39 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CA8DD;
-        Sun, 23 Jul 2023 11:55:38 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5221e487e08so1913046a12.0;
-        Sun, 23 Jul 2023 11:55:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690138537; x=1690743337;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=LgmHA9TbwRKm5WlrTCRPPSgqddYKlkGXSvlysDZKcHc=;
-        b=Nawec058ivMeKyF/5+HaTYaWXtiMjw/ECiIC8QRW5dNm3P4MzJ+eXR0zUsSCSC6C1X
-         lIdxN0N1V7lOB4lSu6EprZ1q3OH6VDvHD3zxb3smMNVkEEcVtG01+3hacu+rmLb1QeN1
-         TBP1WwIDu4EdaNyZXv2/z/qfCN4vnvwUFLlzc7UKDWGsdW+dgKMqVNenwbs6emI4wagq
-         2Mu/kldXbvPf+3YXnVvitIZK/9B22fMwD1/PgLyPEMMDWdrj1+rGdjHoEHAgT21SatsB
-         /kh4BbtYoiJ0OJxjA5XTFLOhC55VUWYCwW2XDdZKZb/9V4tRDbINp37iShC9iR5kqfWb
-         PoJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690138537; x=1690743337;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LgmHA9TbwRKm5WlrTCRPPSgqddYKlkGXSvlysDZKcHc=;
-        b=i+wA+6rmC63Vj8dai4yFkZOnXZHd2uu8XBhc9PLu6Wks0xBKcEIVIAk/8PV0fAUYIB
-         eKZ12iQpt0L6uysaZq9W9AniM2u3FxkQcVI4HVrkhxXlpQ+viJFOgBNZng41WZbRMaKb
-         ZRaTeNktsFnYOgMgIGuhbPj2tVmUGCniS4k0PFOcYEbYXqg+wCXX4MEXNe/9gr5LWdAh
-         lgZfPE1HaVYh6qJ0jbxYABp1Xm76PFSgY2IwGkO7t41SDZ9nB6Bozm/j2K9aGh+XhVEz
-         4oHU8t3PViBqZ5i9YlnaNk1rNXpLIdIUiJZyFP5XeMxpIwjGSi9LqPMrCKWOR5P8ml1d
-         UISQ==
-X-Gm-Message-State: ABy/qLbFYJdIZqbxfeStZR98VahVvnXpM9zWpbOID31Y+mEx2/JMREdS
-        Owdl6VisJso7UhF1iePOgMG1NvucWc0=
-X-Google-Smtp-Source: APBJJlF9Q7mtX/qbyq1JqHFzz3cfcw1odilg6aWAsNqqCaQxlIrlBXQkXv+L2eq1HaOtYDesgjhmLA==
-X-Received: by 2002:a17:907:7890:b0:994:1fc7:a7e6 with SMTP id ku16-20020a170907789000b009941fc7a7e6mr8463961ejc.4.1690138536563;
-        Sun, 23 Jul 2023 11:55:36 -0700 (PDT)
-Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
-        by smtp.gmail.com with ESMTPSA id x14-20020a1709065ace00b00992e14af9b9sm5426349ejs.134.2023.07.23.11.55.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 11:55:36 -0700 (PDT)
-Date:   Sun, 23 Jul 2023 20:55:35 +0200
-From:   Nam Cao <namcaov@gmail.com>
-To:     Franziska =?iso-8859-1?Q?N=E4pelt?= 
-        <franziska.naepelt@googlemail.com>
-Cc:     Markus Elfring <Markus.Elfring@web.de>,
+        Sun, 23 Jul 2023 14:59:05 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEA6137;
+        Sun, 23 Jul 2023 11:59:00 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 44F9532001E9;
+        Sun, 23 Jul 2023 14:58:59 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Sun, 23 Jul 2023 14:59:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1690138738; x=1690225138; bh=v5Kv5iz6fuLn+7shirlgVBNk4b6Xzv54sN8
+        LYTm3QUI=; b=hdppA/XbeUlbJmhfEEt+klLUDZYAW7a6SMeFLHzCJA0+na+MX2X
+        5YaMbvcvg41rD1AqWF391uGqpeNPy2BpMEGQOJI+UEldm9Xjx80HAECsDXAFkk/h
+        Ge/TnMMiOGDXbSjTQ9vy9BQ+7DyOhZWtmp2lmLjRzKplt8R9W3j09eNcg0x5Y+Ej
+        d5fxmlAY+o12uOcf/TJz2Tt6zq8Kis8ahRljekAcqWUrOzYNhaeSUJCP6po0cUta
+        6/+xgJhCrWjgY5qPRTe+/6bECswzsBpHbilMO3sEvCj1M2RWDMP99mVqzCTerQHC
+        hCFkU3JscQLb7i6Px92RQtTkryUKk+a6dMQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1690138738; x=1690225138; bh=v5Kv5iz6fuLn+7shirlgVBNk4b6Xzv54sN8
+        LYTm3QUI=; b=GhuHjBMv38VCbnkiD0qspVB5ybpL50/lLlK1GIttj+kZPGTwQ85
+        fzLGvp3rBYi5LcwXiHYoZE0FNP6hq3U2zqeT3Sqi92NbndHTZkCHcJTnrLeWYNPy
+        2DPHm72lnfDJyBhiihFq6g9TcgoGkmOHJ7sQVAnbhRDa9i3cMrueSjwzmIMT4TZD
+        j4GD0YT/emh2sFYrcXqQb0MMDGePDgJaA1nd8loBZ5zLZx72QZGe3CfxFijIcYj5
+        /xyMTCagkMVc7kZhJk4n4YIi+XpHq3fV4FOAYLFH1QP0pL+m1g9syeeKjWfIWJT7
+        XQuo83jBFMohjNF4x5YzsZhH3Xv/AiwI00A==
+X-ME-Sender: <xms:cni9ZLAxwhLRyHbRJ4DpcOLAIukcCrWYU_9P73f20xv_lRz-CG2png>
+    <xme:cni9ZBhkiSskXztF4HWgMFStYh-qAqTWB8VELwHEklJzwPI9c_2yEh4sgoQDFaI3Q
+    qTRSGQxCvO-34xKAg>
+X-ME-Received: <xmr:cni9ZGmG7QY215ZdQXRx4ANit0EzHEEu9BqhM_yWIxbX0F2qFPhWrZBwusoK1Xt8nIxl_zuhDB7cRbV1NUi-0_0LriZobppLVBrTd5oNhq4AWErTMxelp4fFiyHE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrheeigddufedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeetnhgu
+    rhgvshcuhfhrvghunhguuceorghnughrvghssegrnhgrrhgriigvlhdruggvqeenucggtf
+    frrghtthgvrhhnpefhieetgfelveettdffjeevudejkeejudfgtdevffejledvtdefkeeg
+    gfejhffggeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhgurhgvshesrghnrghrrgiivghlrdguvg
+X-ME-Proxy: <xmx:cni9ZNz8k5Xl7RAboeVV69sMN3I7MnRQVNRiUs7X3lhc8vDRuWhtVw>
+    <xmx:cni9ZAQWRMS1MvQmxtRKCsqBwENVKbHHnQadQsokdvLTqu-iaPDBLA>
+    <xmx:cni9ZAaUWwGL-Hjcq4zSUefcrTQgym1mNigfwVmx53V0rlF_Wk9Yiw>
+    <xmx:cni9ZPFi33bvsWzNq3I4UMRFZyBnxBhGxJBE_JxjTk5UvGXDpLRQiw>
+Feedback-ID: id4a34324:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 23 Jul 2023 14:58:58 -0400 (EDT)
+Date:   Sun, 23 Jul 2023 11:58:56 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     Jens Axboe <axboe@kernel.dk>, stable@vger.kernel.org,
+        Genes Lists <lists@sapience.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Emily Peri <eperi1024@gmail.com>,
-        Guo Zihua <guozihua@huawei.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Kang Minchul <tegongkang@gmail.com>,
-        Philipp Hortmann <philipp.g.hortmann@gmail.com>,
-        Veerendranath Jakkam <quic_vjakkam@quicinc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 1/3] staging: rtl8723bs: Fix space issues
-Message-ID: <ZL13p4tSQAx6cx8E@nam-dell>
-References: <20230701102538.5359-1-franziska.naepelt@googlemail.com>
- <5ad04b3a-7c77-cadb-13b4-509a086cf04d@web.de>
- <2023070123-unburned-worsening-0713@gregkh>
- <CAAUT3iNqwgtFJz2Q1bRN+MsSna26KC1FJc3jchu=8B09A2SkvQ@mail.gmail.com>
- <4b9fdaa7-bdcf-ef41-0d54-ba41520cde4c@web.de>
- <CAAUT3iPUaNRUyvqP1O97M0AmKri7Ghc06ku4TS6vcHQ=Sb4ycg@mail.gmail.com>
- <ZL11kmTYFXMwrYww@nam-dell>
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6.4 800/800] io_uring: Use io_schedule* in cqring wait
+Message-ID: <20230723185856.h6vjipo4rguf6emt@awork3.anarazel.de>
+References: <20230716194949.099592437@linuxfoundation.org>
+ <538065ee-4130-6a00-dcc8-f69fbc7d7ba0@kernel.dk>
+ <70e5349a-87af-a2ea-f871-95270f57c6e3@sapience.com>
+ <2691683.mvXUDI8C0e@natalenko.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZL11kmTYFXMwrYww@nam-dell>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2691683.mvXUDI8C0e@natalenko.name>
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 08:46:42PM +0200, Nam Cao wrote:
-> On Sun, Jul 23, 2023 at 07:44:44PM +0200, Franziska N�pelt wrote:
-> > Hi Markus,
-> > 
-> > Am So., 23. Juli 2023 um 08:19 Uhr schrieb Markus Elfring
-> > <Markus.Elfring@web.de>:
-> > >
-> > > > Am I supposed to adjust something here?
-> > >
-> > > There are possibilities remaining to handle recurring communication difficulties
-> > > in more constructive ways for some hints.
-> > >
-> > >
-> > > > As far as I understood, I can ignore the comments from Markus, correct?
-> > >
-> > > Would the provided technical information be taken better into account
-> > > if it would be presented by any other contributors?
-> > 
-> > That's not my point, I appreciate feedback from anybody, absolutely no question
-> > on that. I'm just struggling to know what I'm supposed to do when the maintainer
-> > is saying somebody's comments are not helpful.
-> 
-> I would wait some more. Greg is probably just too busy to take your patches at
-> the moment.
+Hi,
 
-Don't let that slows you down though, work on other patches in the mean time if
-you would like to.
+On 2023-07-23 20:06:19 +0200, Oleksandr Natalenko wrote:
+> On neděle 23. července 2023 19:43:50 CEST Genes Lists wrote:
+> > On 7/23/23 11:31, Jens Axboe wrote:
+> > ...
+> > > Just read the first one, but this is very much expected. It's now just
+> > > correctly reflecting that one thread is waiting on IO. IO wait being
+> > > 100% doesn't mean that one core is running 100% of the time, it just
+> > > means it's WAITING on IO 100% of the time.
+> > >
+> >
+> > Seems reasonable thank you.
+> >
+> > Question - do you expect the iowait to stay high for a freshly created
+> > mariadb doing nothing (as far as I can tell anyway) until process
+> > exited? Or Would you think it would drop in this case prior to the
+> > process exiting.
+> >
+> > For example I tried the following - is the output what you expect?
+> >
+> > Create a fresh mariab with no databases - monitor the core showing the
+> > iowaits with:
+> >
+> >     mpstat -P ALL 2 100
+> >
+> > # rm -f /var/lib/mysql/*
+> > # mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+> >
+> > # systemctl start mariadb      (iowaits -> 100%)
+> >
+> >
+> > # iotop -bo |grep maria        (shows no output, iowait stays 100%)
+> >
+> > (this persists until mariadb process exits)
+> >
+> >
+> > # systemctl stop mariadb       (iowait drops to 0%)
+>
+> This is a visible userspace behaviour change with no changes in the
+> userspace itself, so we cannot just ignore it. If for some reason this is
+> how it should be now, how do we explain it to MariaDB devs to get this
+> fixed?
+
+Just to confirm I understand: Your concern is how it looks in mpstat, not
+performance or anything like that?
+
+As far as I can tell, mariadb submits a bunch of IOs, which all have
+completed:
+...
+        mariadbd  438034 [000] 67593.094595:       io_uring:io_uring_submit_req: ring 0xffff8887878ac800, req 0xffff888929df2400, user_data 0x55d5eaf29488, opcode READV, flags 0x0, sq_thread 0
+        mariadbd  438034 [000] 67593.094604:       io_uring:io_uring_submit_req: ring 0xffff8887878ac800, req 0xffff888929df2500, user_data 0x55d5eaf29520, opcode READV, flags 0x0, sq_thread 0
+        mariadbd  438034 [000] 67593.094690:         io_uring:io_uring_complete: ring 0xffff8887878ac800, req 0xffff888929df2400, user_data 0x55d5eaf29488, result 16384, cflags 0x0 extra1 0 extra2 0 
+        mariadbd  438034 [000] 67593.094699:         io_uring:io_uring_complete: ring 0xffff8887878ac800, req 0xffff888929df2500, user_data 0x55d5eaf29520, result 16384, cflags 0x0 extra1 0 extra2 0 
+
+Then waits for io_uring events:
+        mariadbd  438032 [003] 67593.095282:      io_uring:io_uring_cqring_wait: ring 0xffff8887878ac800, min_events 1
+
+There won't be any completions without further IO being submitted.
+
+io_uring could have logic to somehow report a different state in such a case
+(where there'll not be any completions before new IOs being submitted), but
+that'd likely not be free.
+
+Greetings,
+
+Andres Freund
