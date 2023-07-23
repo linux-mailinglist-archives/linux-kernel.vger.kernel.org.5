@@ -2,68 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FC975E108
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE9A75E10D
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbjGWJs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 05:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
+        id S229922AbjGWJwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 05:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjGWJsy (ORCPT
+        with ESMTP id S229914AbjGWJwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 05:48:54 -0400
-X-Greylist: delayed 6945 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 23 Jul 2023 02:48:50 PDT
-Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E60F010DC
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:48:50 -0700 (PDT)
-Received: from linma$zju.edu.cn ( [42.120.103.59] ) by
- ajax-webmail-mail-app3 (Coremail) ; Sun, 23 Jul 2023 17:48:46 +0800
- (GMT+08:00)
-X-Originating-IP: [42.120.103.59]
-Date:   Sun, 23 Jul 2023 17:48:46 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "Lin Ma" <linma@zju.edu.cn>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] vdpa: Complement vdpa_nl_policy for nlattr length
- check
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220622(41e5976f)
- Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <729f5c17.e4079.18982192866.Coremail.linma@zju.edu.cn>
-References: <20230723080507.3716924-1-linma@zju.edu.cn>
- <20230723050656-mutt-send-email-mst@kernel.org>
- <729f5c17.e4079.18982192866.Coremail.linma@zju.edu.cn>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Sun, 23 Jul 2023 05:52:40 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C1610D8
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:52:39 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-98dfb3f9af6so585692766b.2
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:52:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690105958; x=1690710758;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3VrvByN/8nuSLSqkqBQiwTi662+hO3SXTsNA8vy2Xio=;
+        b=g7VlPFJCUqoeAsUwdWUwZXDiwebB6RLPRNg7JFu/cg81RO+ra054ls+7M7/eJPwEOZ
+         Y/YobxCG7FYjZfHxGCiKq4gv0zv0uwpLcwVZzXLsM1UkmL9xZNyfGibPVv5pccyq0ff8
+         wLGwQ39cJfIsOG+H/4cBzZAHrUZz6hswq8Jm/Pw6tMsDY9EVhVgCLwcSd8OhhdnH5l80
+         AwGJXD7YqocARXvzy+7Axkid95cWUZY1I6udTFf0HBivp2APV414PkYqdM/EukwYEpkL
+         KMPuuOBsMa2HidWqIdjlvzj1/m64dHXcicv8PxY4iyADIotlMd8T1faEgZZPpZZs7DN7
+         RXiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690105958; x=1690710758;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3VrvByN/8nuSLSqkqBQiwTi662+hO3SXTsNA8vy2Xio=;
+        b=QPdAlx1ooVplrh1eQMMz7YiaDOSyIUSiI2zyLKaeCobQfcdaDTB6rrCHxrQm42OMYn
+         gcvrVriOaXbPRdJZSNDa++JKo82XFeEZ6Io8Tl46T5dtKpvzOmNoOgBz6A4XDfNyF7+s
+         dcG0zrYnkwa/RR506ffndStg4ljtKU6NdMiV/cJyxcAJT2ebTcadCOo9WPBH+xKEEgs9
+         9sOVCs2xW5CydeU1zdQbOeh4ISt9txGoE2E+becNuLMXsc/0ApOzSd31Rx3DKvBpjhsk
+         9LgRI9n3OCpFbiVRDRXewCTXkuQfI1Km9fn3dNTRj4Q2h2FXUSLqEPj871QaNa+qsBpo
+         RDhw==
+X-Gm-Message-State: ABy/qLa1JITGewoi4QpsJ2vBtElMUxruEaArm7fFKxnTP4tNyZK7SNh9
+        ZpErJM6Wq1M4egb/JRhueF/nrQ==
+X-Google-Smtp-Source: APBJJlGYHC/lniVtA/t7I3Ixv+3Xx7qz3wksoy9sBvq5H6hmO5tjSlYOn2P07wnrhmxZZhyNtdML8g==
+X-Received: by 2002:a17:906:3f56:b0:99b:5445:10d3 with SMTP id f22-20020a1709063f5600b0099b544510d3mr7020881ejj.75.1690105957975;
+        Sun, 23 Jul 2023 02:52:37 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id jj28-20020a170907985c00b0098d93142ce1sm4891371ejc.109.2023.07.23.02.52.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Jul 2023 02:52:37 -0700 (PDT)
+Message-ID: <66fc3434-8cc4-3316-ffda-2ffa08cce0f6@linaro.org>
+Date:   Sun, 23 Jul 2023 11:52:35 +0200
 MIME-Version: 1.0
-Message-ID: <8ecec51.e40ad.1898226c545.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cC_KCgDnl5x+97xkwjmBCw--.34923W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwUFEmS8hHkFxAABs0
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 1/2] dt-bindings: display: add bindings for pcd8544
+ displays
+Content-Language: en-US
+To:     Viktar Simanenka <viteosen@gmail.com>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230720124026.356603-1-viteosen@gmail.com>
+ <5b9ceb0e-b7e4-d4b3-461e-c70f4a01fa5e@linaro.org>
+ <CAFQqR8-O+w-RQnLUSvyL-4h78pJ1cSr67Chce03+tLCTYP7YWg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAFQqR8-O+w-RQnLUSvyL-4h78pJ1cSr67Chce03+tLCTYP7YWg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj4gU3VyZSwgdGhhdCBpcyBhbm90aGVyIHVuZGVyZ29pbmcgdGFzayBJJ20gd29ya2luZyBvbi4g
-SWYgdGhlIG5sYXR0ciBpcyBwYXJzZWQgd2l0aAo+IE5MX1ZBTElEQVRFX1VOU1BFQywgYW55IGZv
-cmdvdHRlbiBubGF0dHIgd2lsbCBiZSByZWplY3RlZCwgdGhlcmVmb3JlICh3aGljaCBpcyB0aGUg
-ZGVmYXVsdAo+IGZvciBtb2Rlcm4gbmxhX3BhcnNlKS4gCgpGb3IgdGhlIGdlbmVyYWwgbmV0bGlu
-ayBpbnRlcmZhY2UsIHRoZSBkZWNpZGluZyBmbGFnIHNob3VsZCBiZSBnZW5sX29wcy52YWxpZGF0
-ZSBkZWZpbmVkIGluIAplYWNoIG9wcy4gVGhlIGRlZmF1bHQgdmFsaWRhdGUgZmxhZyBpcyBzdHJp
-Y3QsIHdoaWxlIHRoZSBkZXZlbG9wZXIgY2FuIG92ZXJ3cml0ZSB0aGUgZmxhZyAKd2l0aCBHRU5M
-X0RPTlRfVkFMSURBVEVfU1RSSUNUIHRvIGVhc2UgdGhlIHZhbGlkYXRpb24uIFRoYXQgaXMgdG8g
-c2F5LCBzYWZlciBjb2RlIHNob3VsZCAKZW5mb3JjZSBOTF9WQUxJREFURV9TVFJJQ1QgYnkgbm90
-IG92ZXJ3cml0aW5nIHRoZSB2YWxpZGF0ZSBmbGFnLgoKUmVncmFkcwpMaW4=
+On 21/07/2023 14:25, Viktar Simanenka wrote:
+> On Fri, Jul 21, 2023 at 11:42 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 20/07/2023 14:40, Viktar Simanenka wrote:
+>>> +allOf:
+>>> +  - $ref: panel/panel-common.yaml#
+>>
+>> This is not a panel, is it?
+> 
+> I can't clearly tell the difference between LCD display and panel.
+> I've added panel-common because of 'backlight' and 'reset-gpios'
+> properties. I've looked at 'sitronix,st7735r.yaml',
+> 'ilitek,ili9486.yaml' as examples. SPI controlled LCD displays, but in
+
+Probably your device is not a panel (datasheet says: LCD controller),
+thus it should not reference panel-common.
+
+
+> color.
+> In fact 'reset-gpios' is already in my yaml. I might just add the
+> 'backlight' property explicitly and remove this dependency. Should I?
+
+Best regards,
+Krzysztof
+
