@@ -2,97 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1178B75E107
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FC975E108
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbjGWJrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 05:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
+        id S229836AbjGWJs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 05:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjGWJre (ORCPT
+        with ESMTP id S229850AbjGWJsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 05:47:34 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A6EE6D
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:47:33 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-583b47809beso9636737b3.0
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:47:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=plu-edu.20221208.gappssmtp.com; s=20221208; t=1690105652; x=1690710452;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tw50ljkf/McGf24gQO6ryHlnxMv+pgNUd5iIU5i5t0I=;
-        b=z07OiU4euN0C2yaDHbVHPrlPIRCrl8vBH1wqBL6tiMbnZWnSN7OTaoZgasm12xQQdu
-         5DNBWVQ5FwLCL4VQOVgVpzE75Zjj7jI+Zyy8NdxDRw7/6ePpI8SkTUxJHkqezDwufbr2
-         VnvmeRQ57TiNCdRZsGooZkUjlChadPsTfh6JHVg5lXLrk0XFlAki1vR9idgsa/4rsQzC
-         BCQAwenyROsI46lVE8EwVenjxXPUQDjZ3RIZUP0XMCLq2WK/ybCUL1yuJfIUpA+irTy5
-         wK7jDd5YIntmKrUrnzf5nqT8G5+YuHtWLmaV/3H757octWWhxOfGgmJsd/IAbR2DdlNw
-         Az3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690105652; x=1690710452;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Tw50ljkf/McGf24gQO6ryHlnxMv+pgNUd5iIU5i5t0I=;
-        b=IJq/5gC5OlruJfztOtDACkGngFTYjyLWtMgTebfG//PukA/rY+E4PKF+PbfaB6BMG1
-         mO0PRKqx2LOaRJj/deh2ticMzzTZrXmaq796q76zqAPOZjk4/EAVCpSnnYckXH3Pyxdo
-         Wqytbv6SBOGIyshBNcgrE4N7NkDYFJOv/Lw3Q6hs8cFRcfog2rI2FvRE4+mRawkV3W8W
-         Pl8ePyZhmBRa6DnlloVOER1f3IBJFtnYW4BWCbWctrLJMeXCfHq8A+TeiN7rHEgoicKs
-         3xQ9ogZ803QE3q+88SKe6VBdyNaJlP5GXi2YstuN64lG7G2xGmu7xHi+fxLT218MJyD0
-         wzbA==
-X-Gm-Message-State: ABy/qLav584UOq/uFoEJ1A8mYQOnABSrMrTl/cZ5R3GSlQHbq8nhcOdQ
-        lTTl72yUm1boR9d4SYbilRikJhxSeZZSLgwhr5PgaQ==
-X-Google-Smtp-Source: APBJJlG9EaOFpTLpu9kRjOBOpYStzryBx73lv7FLhVCT5reBojLGTHvnDryrMMAVnc1p4JNjR0PM33Y6oCskfYi8tDk=
-X-Received: by 2002:a81:6dc3:0:b0:583:9fa1:e86d with SMTP id
- i186-20020a816dc3000000b005839fa1e86dmr3774709ywc.24.1690105652729; Sun, 23
- Jul 2023 02:47:32 -0700 (PDT)
+        Sun, 23 Jul 2023 05:48:54 -0400
+X-Greylist: delayed 6945 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 23 Jul 2023 02:48:50 PDT
+Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E60F010DC
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:48:50 -0700 (PDT)
+Received: from linma$zju.edu.cn ( [42.120.103.59] ) by
+ ajax-webmail-mail-app3 (Coremail) ; Sun, 23 Jul 2023 17:48:46 +0800
+ (GMT+08:00)
+X-Originating-IP: [42.120.103.59]
+Date:   Sun, 23 Jul 2023 17:48:46 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "Lin Ma" <linma@zju.edu.cn>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] vdpa: Complement vdpa_nl_policy for nlattr length
+ check
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220622(41e5976f)
+ Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <729f5c17.e4079.18982192866.Coremail.linma@zju.edu.cn>
+References: <20230723080507.3716924-1-linma@zju.edu.cn>
+ <20230723050656-mutt-send-email-mst@kernel.org>
+ <729f5c17.e4079.18982192866.Coremail.linma@zju.edu.cn>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Received: by 2002:a05:7000:9509:b0:4f3:89f2:4dfe with HTTP; Sun, 23 Jul 2023
- 02:47:32 -0700 (PDT)
-Reply-To: crypto.trustinvestmenttrading@gmail.com
-From:   "@RONNY SIEGL _CRYPTO" <danielrl@plu.edu>
-Date:   Sun, 23 Jul 2023 02:47:32 -0700
-Message-ID: <CAJQDWQ_D8JPUZK95Atfi6ptYv=-DrOPpNGsz2dXO48XZFA61tg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=7.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,FREEMAIL_FORGED_REPLYTO,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [2607:f8b0:4864:20:0:0:0:112e listed in]
-        [list.dnswl.org]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  1.2 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
+Message-ID: <8ecec51.e40ad.1898226c545.Coremail.linma@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cC_KCgDnl5x+97xkwjmBCw--.34923W
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwUFEmS8hHkFxAABs0
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Do you have Crypto Wallet?
-How about i tell you how to get one and how you can earn $260,000 from
-Crypto trading within a week. ASK ME HOW? For more information contact
-us for a direct conversation on WhatsApp Messenger: +1 (507) 209=E2=80=9106=
-12=E2=80=AC
-
-Regards,
-SIEGL CRYPTO.
+Cj4gU3VyZSwgdGhhdCBpcyBhbm90aGVyIHVuZGVyZ29pbmcgdGFzayBJJ20gd29ya2luZyBvbi4g
+SWYgdGhlIG5sYXR0ciBpcyBwYXJzZWQgd2l0aAo+IE5MX1ZBTElEQVRFX1VOU1BFQywgYW55IGZv
+cmdvdHRlbiBubGF0dHIgd2lsbCBiZSByZWplY3RlZCwgdGhlcmVmb3JlICh3aGljaCBpcyB0aGUg
+ZGVmYXVsdAo+IGZvciBtb2Rlcm4gbmxhX3BhcnNlKS4gCgpGb3IgdGhlIGdlbmVyYWwgbmV0bGlu
+ayBpbnRlcmZhY2UsIHRoZSBkZWNpZGluZyBmbGFnIHNob3VsZCBiZSBnZW5sX29wcy52YWxpZGF0
+ZSBkZWZpbmVkIGluIAplYWNoIG9wcy4gVGhlIGRlZmF1bHQgdmFsaWRhdGUgZmxhZyBpcyBzdHJp
+Y3QsIHdoaWxlIHRoZSBkZXZlbG9wZXIgY2FuIG92ZXJ3cml0ZSB0aGUgZmxhZyAKd2l0aCBHRU5M
+X0RPTlRfVkFMSURBVEVfU1RSSUNUIHRvIGVhc2UgdGhlIHZhbGlkYXRpb24uIFRoYXQgaXMgdG8g
+c2F5LCBzYWZlciBjb2RlIHNob3VsZCAKZW5mb3JjZSBOTF9WQUxJREFURV9TVFJJQ1QgYnkgbm90
+IG92ZXJ3cml0aW5nIHRoZSB2YWxpZGF0ZSBmbGFnLgoKUmVncmFkcwpMaW4=
