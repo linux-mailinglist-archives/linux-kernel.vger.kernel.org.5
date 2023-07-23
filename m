@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 351B075E075
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 10:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D51475E078
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 10:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbjGWIWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 04:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53716 "EHLO
+        id S229899AbjGWIWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 04:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGWIW3 (ORCPT
+        with ESMTP id S229452AbjGWIWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 04:22:29 -0400
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425A110C8;
-        Sun, 23 Jul 2023 01:22:27 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0Vnzn8Ns_1690100515;
-Received: from srmbuffer011165236051.sqa.net(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0Vnzn8Ns_1690100515)
+        Sun, 23 Jul 2023 04:22:32 -0400
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB99710D1;
+        Sun, 23 Jul 2023 01:22:28 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0Vnzn8Vl_1690100542;
+Received: from srmbuffer011165236051.sqa.net(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0Vnzn8Vl_1690100542)
           by smtp.aliyun-inc.com;
-          Sun, 23 Jul 2023 16:22:22 +0800
+          Sun, 23 Jul 2023 16:22:23 +0800
 From:   Jing Zhang <renyu.zj@linux.alibaba.com>
 To:     John Garry <john.g.garry@oracle.com>,
         Ian Rogers <irogers@google.com>
@@ -37,10 +37,12 @@ Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
         Zhuo Song <zhuo.song@linux.alibaba.com>,
         Jing Zhang <renyu.zj@linux.alibaba.com>,
         Shuai Xue <xueshuai@linux.alibaba.com>
-Subject: [PATCH v4 0/4] Add metric for Arm CMN
-Date:   Sun, 23 Jul 2023 16:21:49 +0800
-Message-Id: <1690100513-61165-1-git-send-email-renyu.zj@linux.alibaba.com>
+Subject: [PATCH v4 1/4] perf metric: Event "Compat" value supports matching multiple identifiers
+Date:   Sun, 23 Jul 2023 16:21:50 +0800
+Message-Id: <1690100513-61165-2-git-send-email-renyu.zj@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1690100513-61165-1-git-send-email-renyu.zj@linux.alibaba.com>
+References: <1690100513-61165-1-git-send-email-renyu.zj@linux.alibaba.com>
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
@@ -51,40 +53,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+The jevent "Compat" is used for uncore PMU alias or metric definitions.
 
-This patch set adds event aliases and metrics for Arm CMN, and expands
-Compat's ability to match multiple identifiers and expands event fields
-in order to achieve the above capabilities.
+The same PMU driver has different PMU identifiers due to different hardware
+versions and types, but they may have some common PMU event/metric. Since a
+Compat value can only match one identifier, when adding the same event
+alias and metric to PMUs with different identifiers, each identifier needs
+to be defined once, which is not streamlined enough.
 
-If it is no longer necessary to declare the "Compat" or "Unit" value
-when the metric is described by event aliases, I will delete "Compat"
-and "Unit" in the metric, but keep them for now.
+So let "Compat" value supports matching multiple identifiers. For example,
+the Compat value {abcde;123*} can match the PMU identifier "abcde" and the
+the PMU identifier with the prefix "123", where "*" is a wildcard.
+Tokens in Unit field are delimited by ';' with no spaces.
 
-Changes since v3:
-- Split the arm CMN and ali_drw PMU patches compare to v3. ali_drw PMU
-  related patches are in another patchset.
-- "Compat" supports matching multiple identifiers.
-- Support more event filed.
-- Add alias for part of Arm CMN PMU.
-- Fix some bug for CMN metric description.
-- Link: https://lore.kernel.org/all/1685438374-33287-1-git-send-email-renyu.zj@linux.alibaba.com/
+Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
+---
+ tools/perf/util/metricgroup.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-Jing Zhang (4):
-  perf metric: Event "Compat" value supports matching multiple
-    identifiers
-  perf jevents: Support more event fields
-  perf vendor events: Add alias for Arm CMN PMU events.
-  perf vendor events: Add metrics for Arm CMN
-
- .../pmu-events/arch/arm64/arm/cmn/sys/cmn.json     | 266 +++++++++++++++++++++
- .../pmu-events/arch/arm64/arm/cmn/sys/metric.json  |  74 ++++++
- tools/perf/pmu-events/jevents.py                   |  23 +-
- tools/perf/util/metricgroup.c                      |  27 ++-
- 4 files changed, 381 insertions(+), 9 deletions(-)
- create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/cmn.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json
-
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index f3559be..c910df0 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -456,6 +456,31 @@ struct metricgroup_iter_data {
+ 	void *data;
+ };
+ 
++static bool match_pmu_identifier(const char *id, const char *compat)
++{
++	char *tmp = NULL, *tok, *str;
++	bool res;
++	int n;
++
++	str = strdup(compat);
++	if (!str)
++		return false;
++
++	tok = strtok_r(str, ";", &tmp);
++	for (; tok; tok = strtok_r(NULL, ";", &tmp)) {
++		n = strlen(tok);
++		if ((tok[n - 1] == '*' && !strncmp(id, tok, n - 1)) ||
++		    !strcmp(id, tok)) {
++			res = true;
++			goto out;
++		}
++	}
++	res = false;
++out:
++	free(str);
++	return res;
++}
++
+ static int metricgroup__sys_event_iter(const struct pmu_metric *pm,
+ 				       const struct pmu_metrics_table *table,
+ 				       void *data)
+@@ -468,7 +493,7 @@ static int metricgroup__sys_event_iter(const struct pmu_metric *pm,
+ 
+ 	while ((pmu = perf_pmu__scan(pmu))) {
+ 
+-		if (!pmu->id || strcmp(pmu->id, pm->compat))
++		if (!pmu->id || !match_pmu_identifier(pmu->id, pm->compat))
+ 			continue;
+ 
+ 		return d->fn(pm, table, d->data);
 -- 
 1.8.3.1
 
