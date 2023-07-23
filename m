@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD0A75E1FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 15:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA62175E1FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 15:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjGWNLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 09:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
+        id S229773AbjGWNOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 09:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjGWNLt (ORCPT
+        with ESMTP id S229566AbjGWNO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 09:11:49 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B62E52;
-        Sun, 23 Jul 2023 06:11:47 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31716932093so2366052f8f.3;
-        Sun, 23 Jul 2023 06:11:47 -0700 (PDT)
+        Sun, 23 Jul 2023 09:14:29 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB203E57;
+        Sun, 23 Jul 2023 06:14:27 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbc5d5742bso32697535e9.2;
+        Sun, 23 Jul 2023 06:14:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690117906; x=1690722706;
+        d=gmail.com; s=20221208; t=1690118066; x=1690722866;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tX3v8B1OLr2NP8ZefAYOHoM8zrephbkRog16CAgCySk=;
-        b=eeIlzQzsrkW6W3wuEfnkS0XDVJCR/WM2l1G8xFjEIkIwtWHl40IVkAmaeY7XrneztS
-         yiKyi39B8I74HmXEzBzvOWlraLvGz2kF9nwyHrfcqAit5m2MnRzdV1HDVNv5yb3czGO1
-         9rYImd/KEb+Gvk8ZHdcM7T2VIdEGguq2EIz/EMZyxUxXd0Z6h/2enRmep/aUmwqXQt9y
-         shRpNTIwgZrk7luFx5rjJ1X8sCaHK/mqeNcbOEr7yYxLUYxUV4+5ghczBa4xLF/mSnWS
-         oNxIKogQqMLEBib1sPJsxAf/IDKReTk9SiSPXWTTSpNIlHJ7cVDWCI/2Nx9QtwQBpQaC
-         Zdmw==
+        bh=8W1u2MVpGKLpBiXVuRgUMbIPOpowv0h6POZ4Q69kPEw=;
+        b=f7yYsghWvl866bYjcCiFV0z7F4z95ARagx3h3TSvgIxiKS4YEl0LSrRGAtpHiAkpk9
+         btGjehTl5ra7cllW8CwPnkas0KSINR7pY83WV4SnjPIdoHeDmXhhsl6SuiigTbkrx95U
+         o8Kktc79ujFxmmUouqHMc/2hsMw12E+At1OaaGvXxqs5BoqOfmg6StwwQwqItc2U8dY8
+         WYLQCsxTHqbwp+qggzrkgcoPBQhhEql6IS6B+ShGMOuZ5HkxlmEy2L2q8yLbcGMktk3T
+         +8byXKtHZx9/IPYa+XqMIzpuQMVFE+JQRqh3z8FZtp3jlSDk18+VoDGyxX/s1RaWdp2p
+         JXqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690117906; x=1690722706;
+        d=1e100.net; s=20221208; t=1690118066; x=1690722866;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tX3v8B1OLr2NP8ZefAYOHoM8zrephbkRog16CAgCySk=;
-        b=Nh02/jyrDc/9exf/myQgbWI254wDzwoXqPBGvOCeRky8NtMXw+284thbsyLCpblH8H
-         EcNs9paVLwx3aLFHuruOJHfKGcVdLWKabryia4kxADJBU/VfRu0q4SLICRNUu9RvE2Ic
-         3yZP+qJ4XvRSEp301OKUcBWpaOhgegh9CC/m8Kw74rXyJzL5QVcjabV31JczaKYS/WkI
-         4TtF4tGUgA0vdZmr+KRGddqezqbrU7DTK7wFprjsf5c3SQSutryax5VSSCTX36PhWS3H
-         FPpQPqZMClXbdk26y4jVwAzO/qBNokods5D4i1e/1bw7+V4yfmF5f4Id3JFpWVpdwFNi
-         7TsA==
-X-Gm-Message-State: ABy/qLYZK3VUu57XnTN1FoEQ4SIx6JnWYd1leBOpp/G/LqSPuZBhn7qP
-        Rx4NyMJKxzvalzkCsxwJz3E=
-X-Google-Smtp-Source: APBJJlGY3mEwmPlTj7RWvoK3PH/n9T926KyRvr/yePecgUfe0DfX/dlG9X9kk2ZcQlnwoeLzT27sCg==
-X-Received: by 2002:a5d:4fc9:0:b0:317:5e91:558a with SMTP id h9-20020a5d4fc9000000b003175e91558amr73951wrw.38.1690117905639;
-        Sun, 23 Jul 2023 06:11:45 -0700 (PDT)
+        bh=8W1u2MVpGKLpBiXVuRgUMbIPOpowv0h6POZ4Q69kPEw=;
+        b=PyTmX2PRAeJoIQb4vDi7Q4fsUrmR02Mp7hR7Yi174j9NaMam7moKPajaXJ+mZoiFeI
+         6w35kh/+luOKblq+1l26jau6+7oRz5RDwKHirOVv/U5xPQ0uIwK53k3+MDdImiJsg3rq
+         3XsHNl4Hxvt4gR/+64HxHQMG08KgpbSDUfAoCkyIeXADmzpnL8b8omak3Ju6XSOHGURa
+         U5XoRbs8hf4uWvC9/90g3gpG8dPWuyshL5XvEKMXo0kSWjMRwaeYsg+OF8p7wcns0+gB
+         LCYQs5y6ONT2Egoy+KGChauV4foswg20CbmRfCj6D1fygHkmAuJkjTc3zT0yavGJaKAe
+         gBOA==
+X-Gm-Message-State: ABy/qLYVh08nvaGyk3Ij/0uC1scVeXpBTGNXKwzLgM0Y0xwouhsP/25R
+        +01hLjATVH6THXus+Tlhhk265p/0ltI=
+X-Google-Smtp-Source: APBJJlFEVmjwJvqvDE8T2vbcheMra+2GkEuWoZHrWtnjG6aA0Fgss2BDAGlYBjc9BJkKVsMiO7TAlw==
+X-Received: by 2002:adf:d84d:0:b0:317:4828:89b7 with SMTP id k13-20020adfd84d000000b00317482889b7mr2945320wrl.67.1690118065735;
+        Sun, 23 Jul 2023 06:14:25 -0700 (PDT)
 Received: from suse.localnet (host-87-20-104-222.retail.telecomitalia.it. [87.20.104.222])
-        by smtp.gmail.com with ESMTPSA id a23-20020a5d4577000000b00314315071bbsm9642868wrc.38.2023.07.23.06.11.44
+        by smtp.gmail.com with ESMTPSA id b17-20020a5d45d1000000b003142ea7a661sm9740742wrs.21.2023.07.23.06.14.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 06:11:45 -0700 (PDT)
+        Sun, 23 Jul 2023 06:14:25 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Linus Walleij <linus.walleij@linaro.org>,
         Mike Rapoport <rppt@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Matthew Wilcox <willy@infradead.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Bagas Sanjaya <bagasdotme@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
         Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [RFC PATCH v2] Documentation/page_tables: MMU, TLB,
- and Page Faults
-Date:   Sun, 23 Jul 2023 15:11:38 +0200
-Message-ID: <5974032.lOV4Wx5bFT@suse>
-In-Reply-To: <20230723120100.5891-1-fmdefrancesco@gmail.com>
-References: <20230723120100.5891-1-fmdefrancesco@gmail.com>
+Subject: Re: [RFC PATCH] Documentation/page_tables: MMU, TLB, and Page Faults
+Date:   Sun, 23 Jul 2023 15:14:18 +0200
+Message-ID: <4838064.GXAFRqVoOG@suse>
+In-Reply-To: <20230722004451.7730-1-fmdefrancesco@gmail.com>
+References: <20230722004451.7730-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On domenica 23 luglio 2023 13:56:38 CEST Fabio M. De Francesco wrote:
+On sabato 22 luglio 2023 02:43:13 CEST Fabio M. De Francesco wrote:
 > Extend page_tables.rst by adding a small introductive section about
 > the role of MMU and TLB in translating between virtual addresses and
 > physical page frames. Furthermore explain the concepts behind the
 > Page Faults exceptions and how Linux handles them.
 
-Please discard this RFC because I sent it by mistake.
-The real RFC is "[RFC PATCH v2] Documentation/page_tables: Add info about MMU/
-TLB and Page Faults" at https://lore.kernel.org/lkml/20230723120721.7139-1-fmdefrancesco@gmail.com/
+This is superseded by "[RFC PATCH v2] Documentation/page_tables: Add info 
+about MMU/TLB and Page Faults" at https://lore.kernel.org/lkml/
+20230723120721.7139-1-fmdefrancesco@gmail.com/. Please refer to the above-
+mentioned second version and discard this.
 
-Sorry for the noise.
+Thanks,
 
 Fabio
 
@@ -103,11 +103,6 @@ Fabio
 > Cc: Randy Dunlap <rdunlap@infradead.org>
 > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 > ---
-> 
-> v1->v2: Add further information about lower level functions in the page
-> fault handler and add information about how and why to disable / enable
-> the page fault handler (provided a link to a Ira's patch that make use
-> of pagefault_disable() to prevent deadlocks.
 > 
 > This is an RFC PATCH because of two reasons:
 > 
