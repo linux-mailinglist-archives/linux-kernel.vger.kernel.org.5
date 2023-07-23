@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B85E75E218
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 15:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBB575E21C
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 15:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjGWNdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 09:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
+        id S229610AbjGWNgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 09:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGWNdu (ORCPT
+        with ESMTP id S229452AbjGWNgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 09:33:50 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F5D10DC;
-        Sun, 23 Jul 2023 06:33:49 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36NDVoWe018898;
-        Sun, 23 Jul 2023 13:33:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=/zRygFxep4I/hzO0qe76/3c+2dFGWUlJIzmD/z6DibU=;
- b=By+zk12pVfbaSE8TOjrmcva22wC/wWYN7H+mlGF6nB9GzOCHvgK66FGq41yfUCoQcAwZ
- 0ZzJzDkNgNiOf1diSNzp7OJaKVErBGE6Ob0+a/WYp0edh69ZAXXWY8UxVl5Brk4CPwMV
- E9vhW0b5YA57AFhaHaFQUW3uet6mj3axnYjuoEWRgP4D6G7XBH+/jmV5thIhQ7CD5lnE
- uLX37/K9Ywpa8KU/w+ShvkghCJhCaKQuX8Fw7P8ERJrLV7CxLxgCPdotOV18JgR7c7+D
- eeTYlc5pZpvhsHLleUoHEKrNoFGG1P+ckWgMNNe3Irw2ZJStPl//Vo65c2lTfCrrgExp 0A== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s089tsgy9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 23 Jul 2023 13:33:40 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36NDXd8Y031337
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 23 Jul 2023 13:33:39 GMT
-Received: from [10.216.27.226] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sun, 23 Jul
- 2023 06:33:35 -0700
-Message-ID: <06c8e7c6-91e9-7f6b-1feb-d94ce88ebb26@quicinc.com>
-Date:   Sun, 23 Jul 2023 19:03:27 +0530
+        Sun, 23 Jul 2023 09:36:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD46710DD;
+        Sun, 23 Jul 2023 06:36:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A9F960CFA;
+        Sun, 23 Jul 2023 13:36:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3FE4C433CB;
+        Sun, 23 Jul 2023 13:36:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690119362;
+        bh=O1IIMN7Y1zRc3XOUmu8VPg3ACsmolQilL9wEXTaUfq0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bEohhuLUK1dSi12/IxXfSkxMEfJgOh0hOz+UucGXozkJpf7axqzuCpVb8Y+hXgCNX
+         SaPf2jkC52Lm1mk0xAnT9v0MwB1AWeT1fEIov9y7rQUG4fEkIlmHDNVR5dhSzy5CU8
+         sXpyAm/oSnTJAtfE5yzVxKS0Jca0FEXYP2mYBl+HfuyM9gjsltwEXfbjtEIRJ2PiO4
+         BE8vBu94NSSU4v8qXxvtB/S72Bh16bAakamyFA35uOLtrZTy3Xp0Ai7vsgXS3ij2aj
+         mx1S+a71fzn2Xa3D33cPycajyhSwu12mbW9UMKHoA4YbLhEUncOv1kBtnGCidfWSwA
+         sQ/j/u+2oigow==
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3a36b52b4a4so2217932b6e.1;
+        Sun, 23 Jul 2023 06:36:02 -0700 (PDT)
+X-Gm-Message-State: ABy/qLa0Y28e2mPMLHDyhmuWsYU8E0eEMyQvZmtmah9Udi2cc6+EK6Hw
+        ucuLhpQ8w1O6DVVsywJ14Emb9FZZk6+0WHNK6Jc=
+X-Google-Smtp-Source: APBJJlEtZ7vv6IbOH84SATHMJCAMxnz2YpuXNOI1/BwoW86mbx9Nm47dGyoVL7wZ1gh1ODC5aHD1JS0QWO0h/EoEPu8=
+X-Received: by 2002:a05:6808:302c:b0:39c:7f78:ba6d with SMTP id
+ ay44-20020a056808302c00b0039c7f78ba6dmr6412590oib.19.1690119361932; Sun, 23
+ Jul 2023 06:36:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [PATCH V2 1/2] dt-bindings: arm: qcom,ids: drop the IPQ5019 SoC
- ID
-To:     Bjorn Andersson <andersson@kernel.org>
-CC:     Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_saahtoma@quicinc.com>
-References: <20230712041912.398724-1-quic_kathirav@quicinc.com>
- <20230712041912.398724-2-quic_kathirav@quicinc.com>
- <20230714155954.GA3919199-robh@kernel.org>
- <dba8ab0a-c17b-8660-5c5a-803e7f394547@quicinc.com>
- <e4fub7xxkiupbkszaxwu4x5otdi7afvyl334ybwlxafkbxfw3c@cd4gja5u6st6>
-Content-Language: en-US
-From:   Kathiravan T <quic_kathirav@quicinc.com>
-In-Reply-To: <e4fub7xxkiupbkszaxwu4x5otdi7afvyl334ybwlxafkbxfw3c@cd4gja5u6st6>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: GIybfryqChpFPHCsz-EBlg1lzd0QCUep
-X-Proofpoint-ORIG-GUID: GIybfryqChpFPHCsz-EBlg1lzd0QCUep
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-23_02,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=650
- malwarescore=0 lowpriorityscore=0 suspectscore=0 phishscore=0 mlxscore=0
- bulkscore=0 adultscore=0 clxscore=1015 spamscore=0 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307230125
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+References: <20230718055235.1050223-1-ojeda@kernel.org> <CAK7LNAQ-hjW_19fjA+E-bQCrXcVPdN4-GvzAnEnYzna5KRVXew@mail.gmail.com>
+ <CANiq72kZjOGvRKoRxtgG=2DhJnMJK9TCQtTmeef_B=nLcLQD6g@mail.gmail.com>
+ <CAK7LNASqumGb0xvSa8n4Heasz9BKxgk4mvzNXsfFhZE1G+Bxbg@mail.gmail.com>
+ <CANiq72kD2wxXy2ri8sBhVJ4y-JJiq+kYt_MRZwuwB9uGkX-_jQ@mail.gmail.com> <CAK7LNARm1LevTQVw1j5pQjp_gP=6-4CiwXLRDXbVH3bnC0OCxg@mail.gmail.com>
+In-Reply-To: <CAK7LNARm1LevTQVw1j5pQjp_gP=6-4CiwXLRDXbVH3bnC0OCxg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 23 Jul 2023 22:35:25 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARZaeJ4SzRFo-GUA4Q7DGHwrDshxEMuEDO_N+SPHvof3A@mail.gmail.com>
+Message-ID: <CAK7LNARZaeJ4SzRFo-GUA4Q7DGHwrDshxEMuEDO_N+SPHvof3A@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: rust: avoid creating temporary files
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        linux-kbuild@vger.kernel.org, rust-for-linux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Raphael Nestler <raphael.nestler@gmail.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,22 +81,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/22/2023 9:32 AM, Bjorn Andersson wrote:
-> On Sat, Jul 15, 2023 at 08:41:56PM +0530, Kathiravan T wrote:
->> On 7/14/2023 9:29 PM, Rob Herring wrote:
->>> On Wed, Jul 12, 2023 at 09:49:11AM +0530, Kathiravan T wrote:
->>>> IPQ5019 SoC is never productized. So lets drop it.
->>> You need to remove the user before removing the definition.
->> Rob, Currently there are no users for this macro.
->>
-> But you're removing a user in patch 2? Or am I reading that incorrectly?
-
-
-My bad. Sorry, I misunderstood the Rob's statement. Let me send the V3 
-in the correct order.
-
-
+On Sun, Jul 23, 2023 at 2:05=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
 >
-> Regards,
-> Bjorn
+> On Sun, Jul 23, 2023 at 12:52=E2=80=AFAM Miguel Ojeda
+> <miguel.ojeda.sandonis@gmail.com> wrote:
+> >
+> > On Thu, Jul 20, 2023 at 8:35=E2=80=AFPM Masahiro Yamada <masahiroy@kern=
+el.org> wrote:
+> > >
+> > > Maybe, the following was a breakage.
+> > >
+> > > commit 295d8398c67e314d99bb070f38883f83fe94a97a
+> > > Author: Masahiro Yamada <masahiroy@kernel.org>
+> > > Date:   Sat Jan 7 18:18:15 2023 +0900
+> > >
+> > >     kbuild: specify output names separately for each emission type fr=
+om rustc
+> > >
+> > > Before that, rust_common_cmd had --out-dir.
+> >
+> > That's right, good catch!
+> >
+> > > BTW, do we also need to fix scripts/Makefile.host
+> > > in case the external module Makefile creates host programs?
+> >
+> > Indeed, we need it too. [1] would fix it (tested it with a trivial
+> > out-of-tree Rust hostprog).
+> >
+> > Do you want me to send it separately? i.e. to avoid losing the
+> > `Tested-by`s etc. that we already got for this one, which is the
+> > important one since that actually has users.
+> >
+> > The hostprogs fix is not really critical for stable, since it is
+> > unlikely there are users at all (we just got the first in-tree real
+> > user in the Rust+KUnit integration coming into 6.6), but I guess it
+> > does not hurt for the same reason.
+>
+>
+> Can you send v2 with the following squashed?
+>
+>
+> I think it makes sense to fix both if we add
+> Fixes: 295d8398c67e ("kbuild: specify output names separately for each
+> emission type from rustc")
+
+
+I dropped v1 for now,
+expecting to get v2 soon.
+
+
+--=20
+Best Regards
+Masahiro Yamada
