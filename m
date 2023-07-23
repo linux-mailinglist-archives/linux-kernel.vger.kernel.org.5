@@ -2,65 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6611775E403
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 19:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9310575E408
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 19:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbjGWRYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 13:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59800 "EHLO
+        id S229646AbjGWR2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 13:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjGWRYv (ORCPT
+        with ESMTP id S229618AbjGWR17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 13:24:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E983124;
-        Sun, 23 Jul 2023 10:24:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0EF2A60DE6;
-        Sun, 23 Jul 2023 17:24:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58782C433C8;
-        Sun, 23 Jul 2023 17:24:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690133089;
-        bh=NcUAOb9a14qpp5qEFch5ZQfeJp4e03nXK0pnPHmx9VA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UFtEdHZfS+1JR8wtzVslMiqBF6TMicuNOzX7kq/EP2MgIxE1NCgJbLAk6g2iszya3
-         /kVK6AP4OITFenUrUkRNx5WuFc2zhtkyK5SQVaEIlTE9cqqyLnhJw0Xywq05ZQX70w
-         Xidp9+eKja9kY5OWKXzWmZPqSIliob1Jjq6CnuNYVrMJBEqd0HpS7lzUG6qUIFTQhm
-         Ppvp7I9G6rCAQuglnrLzWjZyRXzjFkHrDrVo1zCq1LVPXjPnU+uDwjnuV6B9CtJydN
-         qyX8bmKl5/0Q5irqXUGr03hjlRddrNrJWwL8QQTKcyN8fR3CPCOTIyP/LPsyB5N0Yx
-         uOq7dvm/3Oyrg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EF599CE0304; Sun, 23 Jul 2023 10:24:48 -0700 (PDT)
-Date:   Sun, 23 Jul 2023 10:24:48 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Yun Levi <ppbuk5246@gmail.com>
-Cc:     frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, osh@joshtriplett.org, boqun.feng@gmail.com,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, qiang.zhang1211@gmail.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: remove unnecessary check cpu_no_qs.norm on
- rcu_report_qs_rdp
-Message-ID: <11f70a6f-18da-4ab2-b2e8-68845c1b40f9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230721121534.44328-1-ppbuk5246@gmail.com>
- <05e98227-77f4-4918-8f8e-2170a158e350@paulmck-laptop>
- <CAM7-yPRc4Z0siaiWf+fK2GEfjPMq5UaY13F4o19rU6NNUS5fNg@mail.gmail.com>
- <faf07eef-0a51-49f3-be48-0433952171ad@paulmck-laptop>
- <CAM7-yPTrHN1xPXWjSUrJeTEOuy78DpmL8ytUY+a4ZOekiAbnZg@mail.gmail.com>
- <31070aab-8665-44c4-8950-0631a777ef44@paulmck-laptop>
- <CAM7-yPSn8ietAJ8NKb0-VHDQhkHs73u--KFmO3rpTPUvcFuMvA@mail.gmail.com>
+        Sun, 23 Jul 2023 13:27:59 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225511B3;
+        Sun, 23 Jul 2023 10:27:59 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 1EC4032004AE;
+        Sun, 23 Jul 2023 13:27:55 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Sun, 23 Jul 2023 13:27:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690133274; x=1690219674; bh=9pS/poHVY3gKi
+        EOMsPaEtsBloR1fdynWZkvZgdvRBgw=; b=C8rKzsFr2XmR44yoaGMA1zaUV+5/e
+        +K4DKSax0LmJnfIPGe3KjT2Zqe+NLze9qyLEkVSA17WbzeG9bRNAOa8L9w07J5Bv
+        Egpoe/pltHkmiYjl7QOIYknO24wzxmbyewbikFZlZzG/XNI2vJE10BItijf0Ukzb
+        V1Gg2xHrkjZpRiw4SnYDbNbWIeustV4whOqKd/bFGE4AJrbNt4C+x2Mb42OY1Pgh
+        SEBM6mFy+Er8FlBjBNrVfZagZ1IYgCKk1aa2mUkCXJLhTKLYnl5zVeeaR0/m9r+q
+        Ixx5ZqDwoogER7YyAdp2IMszPz9X4dD5D+Fxb2O4Y2zzfr9++yCEdMZoQ==
+X-ME-Sender: <xms:GmO9ZDmv7LyBV8FVTU8rjLNzDsm2GN7lQ-K5tnbeDrkVABFpHFExvA>
+    <xme:GmO9ZG3ttVRAlchkVrVMBpNQCnEa2SOGRh7ud3Jt9pWkfQdZkCnaDtFpLX_FKFvPU
+    zognaKQDzatVo8>
+X-ME-Received: <xmr:GmO9ZJpdouL2b4QnQ5tf-pqyohzWCMRKxDLaAXZXKQuKpV7AUs5wdGbf00Ko>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrheeigdduuddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
+    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
+    htvghrnhephfffjeeghfejheejveehvefhteevveefgfeuudeuiedvieejiefhgeehleej
+    gfeunecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:GmO9ZLmiFXqV4OhDSySxY9u4F_mUnWbXptlKTqhDqVPmFi2dfJVzsQ>
+    <xmx:GmO9ZB1DOBgcnuk-kOLjEixcZRBAk-Wqy42J0N7QKAJlsQXJ0U7WgA>
+    <xmx:GmO9ZKs942FvFUaAkfUj3QuX0SV5CR-Xl7WGJOKS6J-3FS5uXK5T5Q>
+    <xmx:GmO9ZOms2VV35dkSkmglS2Q32iZW1huD5yJm-7PPAZyukkhfqc7C0A>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 23 Jul 2023 13:27:53 -0400 (EDT)
+Date:   Sun, 23 Jul 2023 20:27:50 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v1 01/11] selftests: forwarding:
+ custom_multipath_hash.sh: add cleanup for SIGTERM sent by timeout
+Message-ID: <ZL1jFk1z3zDH7dUM@shredder>
+References: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
+ <ZLzj5oYrbHGvCMkq@shredder>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAM7-yPSn8ietAJ8NKb0-VHDQhkHs73u--KFmO3rpTPUvcFuMvA@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <ZLzj5oYrbHGvCMkq@shredder>
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,63 +79,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 07:23:00AM +0100, Yun Levi wrote:
-> Thanks for replying to reply Paul :)
+On Sun, Jul 23, 2023 at 11:25:16AM +0300, Ido Schimmel wrote:
+> On Sat, Jul 22, 2023 at 02:36:00AM +0200, Mirsad Todorovac wrote:
+> > Add trap and cleanup for SIGTERM sent by timeout and SIGINT from
+> > keyboard, for the test times out and leaves incoherent network stack.
+> > 
+> > Fixes: 511e8db54036c ("selftests: forwarding: Add test for custom multipath hash")
+> > Cc: Ido Schimmel <idosch@nvidia.com>
+> > Cc: netdev@vger.kernel.org
+> > ---
 > 
-> > And try testing with CONFIG_RCU_STRICT_GRACE_PERIOD=y and CONFIG_PREEMPT=n.
-> > Though there might be better Kconfig options to use.  Those two come
-> > immediately to mind.
-> 
-> I've tested with this option via rcu torture.
-> and it doesn't report any problems.
-> and after commit 6d60ea03ac2d3 ("rcu: Report QS for outermost
-> PREEMPT=n rcu_read_unlock() for strict GPs")
-> it always makes cpu_no_qs.b.norm false whenever it calls
-> rcu_report_qs_rdp in rcu_read_unlock.
+> The patches are missing your Signed-off-by and a cover letter. Anyway,
+> please don't send a new version just yet. I'm not sure this is the
+> correct approach and I'm looking into it.
 
-Again, the concern is that an interrupt and softirq handler at that
-point changes the grace period.  What else could you do to check that
-this sequence of events actually occurred?  That is, that your testing
-didn't just get lucky and not actually hit this condition?
+Please test with the following four patches on top of net.git:
 
-Interrupts are enabled at that point, so there is nothing that prevents
-that condition, after all.
-
-> > But one critical piece is that softirq handlers, including the RCU_SOFTIRQ
-> > handler rcu_core_si(), can be invoked upon return from interrupts.
-> 
-> I think in that case, no problem because if it reports qs already,
-> rcu_check_quiescent_state wouldn't call rcu_report_qs_rdp again.
-> And if RCU_SOFTIRQ is called as soon as RCU interrupt is finished,
-> it seems the fastest one to notify qs to related tree.
-> 
-> > Another critical piece is that if a CPU is idle during any part of a
-> > grace period, the grace-period kthread can report a quiescent state on
-> > its behalf.
-> 
-> I think
->     1) If timer interrupt is still programed,
->           - when rcu_sched_clock_irq first reports qs, no problem
->           - If qs is reported via grace period thread first,
-> note_gp_chagned in rcu interrupt
->             will recognize this situation by setting core_needs_qs as false,
->             it doesn't call rcu_report_qs_rdp thou cpu_no_qs.b.norm is true.
-> 
->      2) If the timer interrupt isn't programmed,
->           - rcu_gp_kthreaad reports its qs, no problem.
-> 
-> So, I think there's no problem removing
->       "rdp->cpu_no_qs.b.norm" check in rcu_report_qs_rdp.
-> or wrap this condition check as WARN_ON_ONCE.
-
-One additional concern is that a quiescent state detected in an old
-grace period will be incorrectly reported for a new grace period.
-
-							Thanx, Paul
-
-> > Does that help?
-> Many thanks always :)
-> 
-> --------
-> SIncerely,
-> Levi.
+https://github.com/idosch/linux/commits/submit/sefltests_fix_v1
