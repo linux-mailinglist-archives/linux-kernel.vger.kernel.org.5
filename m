@@ -2,118 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D2D75E3E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 18:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D2D75E3EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 18:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbjGWQpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 12:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
+        id S229656AbjGWQq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 12:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGWQpe (ORCPT
+        with ESMTP id S229746AbjGWQq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 12:45:34 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7299D191
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 09:45:33 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d066d72eb12so2384216276.1
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 09:45:33 -0700 (PDT)
+        Sun, 23 Jul 2023 12:46:56 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4CC191;
+        Sun, 23 Jul 2023 09:46:54 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b962c226ceso50316121fa.3;
+        Sun, 23 Jul 2023 09:46:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690130732; x=1690735532;
+        d=gmail.com; s=20221208; t=1690130812; x=1690735612;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3Z4Q/5i212yOfDJHSZ237NJV5w/BOsCv0oJZlIG69OI=;
-        b=FNsDYxJQhN4UYlo+NaIAuZ4TSaC1B2tgqtuVqVH3IoE2onNMulPmKxMTcCXNWLO6mV
-         O5jSPzamZfi45jV+9vI2ygWXyo1O4wOko8kVYYuXY7HeXuvoscW1iCrKxS6wrT7iTGsv
-         J+UxYDIM6aPcGKvps3u0qCPY7+BBssLn5Wk6wMk7M9mrXZyM/7GEhpitJHi4oD0G2TqI
-         aeGfLDQ66q11u+wvgjruyRbpAt84zp7O+HhNwRjpAI0gN7mkQzNbzyOezHHQhr1w8dD1
-         QuU98M1BjjfDwT2Oqig+C1MbetYUISgzbh4r4KvQ7xLni5Kw35f5QfPIqCP/DTxhDmSP
-         GCqA==
+        bh=XDMDgAIp9Hy8mjss6jK4giThQapzOntB6CEZnZ0araw=;
+        b=mxv4jX/h67VXj5zNgLevyLjfSza+WMldwjt7HRLnEDfmppXF224s2b4H4Dv7Wv181/
+         1eRv9tC4rRbYk0Q6dbPnfhAVg6BO3IQr1mPnOpMt4p/pvUSMo8P6bAwFmhjWnOD1xFK5
+         4MhBFRguPRC1l9u6CyxG171PsTJj3teQJKFqlKqucl7BDRqye0a5GwzloqGg9yf0CBqT
+         67M4Pq35vCRbBJ8mqATOPNfDacXfJzNVuXZVTQOhQdF+liEarUNhs9bk0rWQESk0wdmW
+         2kuku5cmNhcHA/ThQRaosNLQtmr74jcy36njjNsHVMJpnzTxkux/4+VqQUEWYLq6qgda
+         3pOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690130732; x=1690735532;
+        d=1e100.net; s=20221208; t=1690130812; x=1690735612;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3Z4Q/5i212yOfDJHSZ237NJV5w/BOsCv0oJZlIG69OI=;
-        b=Ie0JNZoLAVLJ4J9ssE36r6Z2cL0s4noRIE641IipGjST73Jhhk6zZmut6/oJFhCWCj
-         IVHQTxwOtDjGI8uIqU7haLFPZU73lGreU5+gpemyrwy+aUGE86yaQjaDHjf712G2J1d/
-         liTaVrbXya0g5N8ggxTvmt3qwIsGayN36Y2DN2U1mIquOYZNWjdgiq9a78aH1NAoA1vZ
-         lka17r/fUJ9QEPs51eKtkvdDhuo5hHTIIZs2f1QpwwQSzzUxWpnoxYUtP4KDsBX/dcWm
-         1BD+vld5YWXyq+vSGajg6M1un0uqlKEzkRiEa+OfrrI1iDBMUTLidW/sDp0Kh439Esnh
-         ZTDw==
-X-Gm-Message-State: ABy/qLZTloc74tT69EJUqMRY7fSOSIPAHjQivoBhjWDre0WQaJKLRCD4
-        lwTrr/xfhO8hnIrBVQxcHyQU69VbGjIkZLb2kaXa2w==
-X-Google-Smtp-Source: APBJJlHvhLN9VFNppA3TR3b1CrYYc4K0cwFupMPvPmsFSAY7uxPuqkSik5JiuIYuW7MEFv3Fwa4OHPTSm6EZd+QBRhs=
-X-Received: by 2002:a25:2642:0:b0:d09:b2b1:9771 with SMTP id
- m63-20020a252642000000b00d09b2b19771mr2708738ybm.14.1690130732609; Sun, 23
- Jul 2023 09:45:32 -0700 (PDT)
+        bh=XDMDgAIp9Hy8mjss6jK4giThQapzOntB6CEZnZ0araw=;
+        b=OAsRRJxjSI/9LSyD1Fn8M5wz0vhYwYCd/SE2LYK0GqbCfdfxVRzrUqvqv/nhryVqbf
+         vrlzEJU1cwIPGcmRDC8pYsWxllE7WPUhhCslKO1LRWhoR9MwE6CoQLIXBWZk16lLPUK6
+         rPCsZ8Pp9WgjiWsD7oqjt0A1iuAaMpiZt9A894SQPDd/h2BbSWm5eG0E4ErT/p+iHgBm
+         t6m6NpDulb6G6KO8GnW7vZPXFnJ7Ai5kH22runG655nEFF+MYch55WVdpHHUSyJPqy1d
+         ZuMiFeDtOSSGYseJcFayoVJMoQQ8m3yMXHhQ+EHjLi2OhxtAVcuyckz3zzkqLa7MdzTT
+         6znQ==
+X-Gm-Message-State: ABy/qLbnWJqMRF1Nzb0WlXv8jM2ZFCpliYkrWJLZCzy75mZUIvxZjhAn
+        fmXiQ4Fb7RiCyJO/G4KsNRwVbdKbREI18otuu1Y=
+X-Google-Smtp-Source: APBJJlHCkGJA/41HdSXXRX5Ujn1jSZ+oogOof6Qq65nE/jYX+rQigm7DyrBPcZJWgraVZdBeZhySlj7wqtG5E+I9JIU=
+X-Received: by 2002:a2e:b70e:0:b0:2b4:45bc:7bd with SMTP id
+ j14-20020a2eb70e000000b002b445bc07bdmr4341122ljo.4.1690130812336; Sun, 23 Jul
+ 2023 09:46:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230719152007.197710-1-arnaud.ferraris@collabora.com> <20230719152007.197710-3-arnaud.ferraris@collabora.com>
-In-Reply-To: <20230719152007.197710-3-arnaud.ferraris@collabora.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 23 Jul 2023 18:45:21 +0200
-Message-ID: <CACRpkdZ2Fu8jyyyDd4e1yq8g4bDoj2gCd4KnntST8uYvDNKUZw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2 RESEND] drm: panel: Add novatek nt35596s panel driver
-To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Molly Sophia <mollysophia379@gmail.com>
+References: <20230722074753.568696-1-arnd@kernel.org> <CALOAHbCV2v3X7g1TD42yve0juhRD2vhq=DMtDz9P6+mX8Dae_w@mail.gmail.com>
+In-Reply-To: <CALOAHbCV2v3X7g1TD42yve0juhRD2vhq=DMtDz9P6+mX8Dae_w@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 23 Jul 2023 09:46:41 -0700
+Message-ID: <CAADnVQKGe8DN+Zs387UVwpij3ROGqNEnc5r940h5ueqQYHTYCA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: force inc_active()/dec_active() to be inline functions
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hou Tao <houtao1@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaud & Molly,
-
-overall the driver looks very good!
-
-On Wed, Jul 19, 2023 at 5:20=E2=80=AFPM Arnaud Ferraris
-<arnaud.ferraris@collabora.com> wrote:
-
-> From: Molly Sophia <mollysophia379@gmail.com>
+On Sun, Jul 23, 2023 at 7:25=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
 >
-> Novatek NT35596s is a generic DSI IC that drives command and video mode
-> panels. Add the driver for it. Currently add support for the LCD panel
-> from JDI connected with this IC, as found on Xiaomi Mi Mix2s phones.
+> On Sat, Jul 22, 2023 at 3:48=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> w=
+rote:
+> >
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > Splitting these out into separate helper functions means that we
+> > actually pass an uninitialized variable into another function call
+> > if dec_active() happens to not be inlined, and CONFIG_PREEMPT_RT
+> > is disabled:
 >
-> Signed-off-by: Molly Sophia <mollysophia379@gmail.com>
-> Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
-(...)
+> Do you mean that the compiler can remove the flags automatically when
+> dec_active() is inlined, but can't remove it automatically when
+> dec_active() is not inlined ?
+> If so, why can't we improve the compiler ?
 
->  .../gpu/drm/panel/panel-novatek-nt36672a.c    | 251 ++++++++++++++++--
+Agree.
+Sounds like a compiler bug.
 
-So are you sure the nt35596s panel driver is so similar to nt36672a that
-they should share the same driver?
+> If we have to change the kernel, what about the change below?
 
-With all the magic number sequences I'm not so sure, do they really share
-any of the magic numbers?
-
-If not, consider creating a new driver, and then base it on the
-nt35510 instead.
-
-> +static const struct nt36672a_panel_cmd jdi_nt35596s_video_on_cmds[] =3D =
-{
-> +       { .data =3D { 0xff, 0x24 } },
-> +       { .data =3D { 0x9d, 0x34 } },
-(...)
-
-These are never nice. Do you have a datasheet so you can provide
-defines for the magic hex values?
-
-The construction with these .data seqence array
-should be replaces with some open coded sequences
-I feel, bit this pattern is already in the driver so I guess it's OK.
-
-Yours,
-Linus Walleij
+To workaround the compiler bug we can simply init flag=3D0 to silence
+the warn, but even that is silly. Passing flag=3D0 into irqrestore is buggy=
+.
