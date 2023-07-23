@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 106D275E0F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF5775E0FD
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbjGWJew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 05:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
+        id S229844AbjGWJik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 05:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbjGWJeu (ORCPT
+        with ESMTP id S229491AbjGWJii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 05:34:50 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11A6E5E
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:34:49 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-316feb137a7so2927090f8f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:34:49 -0700 (PDT)
+        Sun, 23 Jul 2023 05:38:38 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C655E67;
+        Sun, 23 Jul 2023 02:38:37 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3174aac120aso392942f8f.2;
+        Sun, 23 Jul 2023 02:38:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690104888; x=1690709688;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4RQzulAln68QaO9xCL+1uqZn0t96ask7tv6fnlyXL9E=;
-        b=mxahKaJmQ9V/amzC/e6KwIs48UtlToaFXzkTmbqljUfs7owNzm+ROa+GSqcutQaXxx
-         nKqYmNZ/eZorXs7fb8R8kCfDKpvIPM91Zw/yCLu5wErRC443YichwaqUP9NyLq8RteGZ
-         e8/c8laNGwDh25TFszYPeCtJ9Z8EHyT7Naj+79RQAb3nxiLzAsXw6AaNuCCnaTcMZoe7
-         B/LLndwWh6q8AGqsp+KGFPtze+6yykZxvKYXsyx7gpwncBFkST95DW5TMKJtEXH5cqtX
-         moVIvxIJ1g9wfxVX5PmTh+EI5W3ZpHb7Ey6FlYmmoTx7E34J/LhMS02wSYPYEoCj8fMs
-         jMqQ==
+        d=gmail.com; s=20221208; t=1690105116; x=1690709916;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oxNqVJ8M0RlStNJiqmdGBEdZEF6FgJ1pvu+FzFr7WF0=;
+        b=FYJY+Bnur9aWsu4JUe2QcktPfX1ZzMT7ckqyKMJjd1FsziSSoGOxn7tMu0APZfH0Yc
+         LqMCRiBaRJGPUuoJiWt9BOQdwz7fEHapRbLkQIpw9dq8bvJI03LVa80Ir8R2KCnnbGPi
+         Gqs78Hc9HX2pHoStqBZHbnRRoYAbMLukkM88Bz+++peQC5xRWxYWZUGwXIVZHdIjzUip
+         emvyfzWkkIuArKz7ae6X1L0xZ7+fHpiJi8Nc0hEApqibuoXtE5NhGJ6ZBiUOGNSoBDTs
+         jjaVXyenoxODBkRjpLTcbru/9k1YWKSKxfvJj/53v9GBiTUk1KIjBbng/e8ROP4bOla4
+         Pefg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690104888; x=1690709688;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4RQzulAln68QaO9xCL+1uqZn0t96ask7tv6fnlyXL9E=;
-        b=SOJuEayQO8ZIdAjx2/uUl8ovWABOTg0Bk4s2JcDxNmYXEWD0/LHzi8zspxCBrAli9x
-         DtwhUF+rqgmEkM1yScNhG/ObL+YfO7xL00p+rQgkaqpaw3YqHU40C9T5LLqnk43psGVe
-         JKXpGgtYoz6U5gT+z39S5al+OiIbn8IWP6T5Vn6PJ2SOdPYfeOQw962ZG2CIhoRvHvHa
-         bVQNbyzAairoywGvCiJmTUXwWYm7rlwen/c7vLODsd88Jwjk6zw3+SyS7p6xDjkvRIBX
-         m5t51mbozZ3Z23tlSnL0zYUq48DLto9zgRLeUeeaZYrOiBLmvg9ab4YLtHBOM23Xf/iH
-         eFAA==
-X-Gm-Message-State: ABy/qLaxadgZY7VWayYHFT+PtOOV1fGUPZqiW3aj1MyYajcO+H7Mp/Uu
-        jTcKgdURPNhII0AkFpgs+vHrOA==
-X-Google-Smtp-Source: APBJJlFriNeOwzy4enYAho2TrtX5YBSNV5iCxkOpDFw6Wt6bicliLHEWrHUekrzUkCyhRfMet3gV8Q==
-X-Received: by 2002:adf:e34c:0:b0:314:336e:d4d8 with SMTP id n12-20020adfe34c000000b00314336ed4d8mr5779040wrj.8.1690104888099;
-        Sun, 23 Jul 2023 02:34:48 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id v4-20020a5d4b04000000b0031411b7087dsm9241975wrq.20.2023.07.23.02.34.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Jul 2023 02:34:47 -0700 (PDT)
-Message-ID: <12079552-f724-b821-15c0-bf2ea6afc780@linaro.org>
-Date:   Sun, 23 Jul 2023 11:34:45 +0200
+        d=1e100.net; s=20221208; t=1690105116; x=1690709916;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oxNqVJ8M0RlStNJiqmdGBEdZEF6FgJ1pvu+FzFr7WF0=;
+        b=COi/Ioyh3RiEKkEDeg6N54t43tHTsDsuhdLqoulB/2E723lV1sSGmYtgujQpFu9xef
+         6manY864kU28jrZXz5a69PFvW5wOz8YzdOKK8YUKgXyGxp5aFTFiOGV/K1CieoK1ARbN
+         mf4z9wWz3gkYUPs6+XgZHpLQYn3aBGH2tz1bHWEPrHKRjO3yzH9U2aixQqFi8tBDuF+a
+         hyak5jgbeXorLmNxhqDmPl1Uyn+7VuIDCwy/soEVU17Jekqj3KeG0jdQlzfmkLdEMFEJ
+         YxIxp+tntmjPdJ7jYPVLlXch1jX49jg+ABedOpQOQam6GEpz1uOA/6sHD+jHptdRReNt
+         Q88g==
+X-Gm-Message-State: ABy/qLbnrpVHwPijR8ezLOgKT+xjB559UvIcZ284PHuycQXB8kzRF/gl
+        ir8lJSxgca+o0IsMvAojWSE=
+X-Google-Smtp-Source: APBJJlHEoHQAlhF6vEArYxkf108SJhFb8RJ0pr+GGHx6NyP863uApYvVhr8KpOvpDqncDS8OfFbWMw==
+X-Received: by 2002:a5d:61c5:0:b0:30f:af19:81f3 with SMTP id q5-20020a5d61c5000000b0030faf1981f3mr4621201wrv.41.1690105115424;
+        Sun, 23 Jul 2023 02:38:35 -0700 (PDT)
+Received: from mmaatuq-HP-Laptop-15-dy2xxx.. ([2001:8f8:1163:535c:ce7:4d43:f827:e4e8])
+        by smtp.gmail.com with ESMTPSA id r5-20020adff105000000b003145521f4e5sm9186373wro.116.2023.07.23.02.38.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Jul 2023 02:38:34 -0700 (PDT)
+From:   Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        shuah@kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+Subject: [PATCH] selftests/bpf: fix build errors if CONFIG_NF_CONNTRACK_MARK not set.
+Date:   Sun, 23 Jul 2023 13:38:06 +0400
+Message-Id: <20230723093806.2850822-1-mahmoudmatook.mm@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 07/11] dt-bindings: remoteproc: qcom,msm8996-mss-pil:
- Remove PNoC clock
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230721-topic-rpm_clk_cleanup-v1-0-cf6cd5c621d5@linaro.org>
- <20230721-topic-rpm_clk_cleanup-v1-7-cf6cd5c621d5@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230721-topic-rpm_clk_cleanup-v1-7-cf6cd5c621d5@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,16 +74,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/2023 17:36, Konrad Dybcio wrote:
-> The PNoC clock is a clock for the entire PNoC bus, managed from
-> within the interconnect driver. Attaching it to MSS was a total hack.
-> Get rid of it.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+'mark' member in 'struct nf_conn' is conditionally defined
+ by CONFIG_NF_CONNTRACK_MARK
+ so any reference to it should follow the same.
 
+ $ make -C tools/testing/selftests/bpf
+	progs/test_bpf_nf.c:219:12: error: no member named 'mark' in 'struct nf_conn'
+	                        if (ct->mark == 42) {
+	                            ~~  ^
+	progs/test_bpf_nf.c:220:9: error: no member named 'mark' in 'struct nf_conn'
+	                                ct->mark++;
+	                                ~~  ^
+	progs/test_bpf_nf.c:221:34: error: no member named 'mark' in 'struct nf_conn'
+                                test_exist_lookup_mark = ct->mark;
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+---
+ .../testing/selftests/bpf/progs/test_bpf_nf.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+index 77ad8adf68da..0b285de8b7e7 100644
+--- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
++++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+@@ -157,7 +157,10 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+ 		struct nf_conn *ct_ins;
+ 
+ 		bpf_ct_set_timeout(ct, 10000);
+-		ct->mark = 77;
++		#if defined(CONFIG_NF_CONNTRACK_MARK)
++			ct->mark = 77;
++		#endif
++
+ 
+ 		/* snat */
+ 		saddr.ip = bpf_get_prandom_u32();
+@@ -188,7 +191,9 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+ 				bpf_ct_change_timeout(ct_lk, 10000);
+ 				test_delta_timeout = ct_lk->timeout - bpf_jiffies64();
+ 				test_delta_timeout /= CONFIG_HZ;
+-				test_insert_lookup_mark = ct_lk->mark;
++				#if defined(CONFIG_NF_CONNTRACK_MARK)
++					test_insert_lookup_mark = ct_lk->mark;
++				#endif
+ 				bpf_ct_change_status(ct_lk,
+ 						     IPS_CONFIRMED | IPS_SEEN_REPLY);
+ 				test_status = ct_lk->status;
+@@ -210,10 +215,12 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+ 		       sizeof(opts_def));
+ 	if (ct) {
+ 		test_exist_lookup = 0;
+-		if (ct->mark == 42) {
+-			ct->mark++;
+-			test_exist_lookup_mark = ct->mark;
+-		}
++		#if defined(CONFIG_NF_CONNTRACK_MARK)
++			if (ct->mark == 42) {
++				ct->mark++;
++				test_exist_lookup_mark = ct->mark;
++			}
++		#endif
+ 		bpf_ct_release(ct);
+ 	} else {
+ 		test_exist_lookup = opts_def.error;
+-- 
+2.34.1
 
