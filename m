@@ -2,141 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FC375E295
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 16:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C8675E297
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 16:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbjGWOVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 10:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
+        id S229582AbjGWOWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 10:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjGWOVv (ORCPT
+        with ESMTP id S229469AbjGWOWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 10:21:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C910CB8;
-        Sun, 23 Jul 2023 07:21:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Sun, 23 Jul 2023 10:22:48 -0400
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1F595;
+        Sun, 23 Jul 2023 07:22:46 -0700 (PDT)
+Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 66E5A60D36;
-        Sun, 23 Jul 2023 14:21:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C4A3C433C8;
-        Sun, 23 Jul 2023 14:21:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690122109;
-        bh=P7IlLhixxEgKf7EpbN4DFFwoc1k1ZVIYZ+hvTtej5ok=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Nf3VNf1VQPkyJzPRuDrzkcf1vm0BYDCgs5u38VttEdibhXOWuzQQSsD3WNFktN6xR
-         ZgV4t4LN67chHoHXYej97xlQCGNic9iTMRBTL60pA1YBG14IARxvxa7fda8/4kxQK0
-         0/LBixFhlZKzcYZMAG1r5lA6FebXZvQZGDvoSO+/q2QVl7iJa4IeIhVJV3h/EbuIIy
-         Ms1nownVv8FuDcm7l+X5tRzAUjtvWzYpdB4YG5OAjRhMGjIDXyZIU5DgUeuuhePlkb
-         MEavIeV66nZVBoOYLSoc/bPX2f/BwWOdJdREhdEBcorsYvwzxyUZczqxsRtG7ijRo+
-         WrVow2dPnon/w==
-From:   Miguel Ojeda <ojeda@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        linux-kbuild@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Raphael Nestler <raphael.nestler@gmail.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v2] kbuild: rust: avoid creating temporary files
-Date:   Sun, 23 Jul 2023 16:21:28 +0200
-Message-ID: <20230723142128.194339-1-ojeda@kernel.org>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+         client-signature RSA-PSS (2048 bits) client-digest SHA256)
+        (Client CN "mail.riseup.net", Issuer "R3" (not verified))
+        by mx0.riseup.net (Postfix) with ESMTPS id 4R859K22Dnz9tKq;
+        Sun, 23 Jul 2023 14:22:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1690122165; bh=BzwabxifSp+p4PAYhEknT/y66C5ageFXR6IPrGgoS2c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Usc7JN7loTFyCEqsB39yNbCDTJYBv3D3JcAzSH74akloAciEsMncZxJwiISPiAE1C
+         tN9tv4crvk/C8ZSZopKKgGzxgkhbVWYLAeEq1g5xCKRLBUnb9LPPzfXAdxEP32E2V2
+         T4aIx6tsZooWaQZBlCiAVzYn6/oIonWjE7dVhznQ=
+X-Riseup-User-ID: 31A219CC4290EDED5704FEFAA8012067F9DF7A1EE10ABB69FF497B6766463EE3
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4R859D52CSzJp26;
+        Sun, 23 Jul 2023 14:22:40 +0000 (UTC)
+Message-ID: <025697f9-fda2-d039-5e0f-01165cee774f@riseup.net>
+Date:   Sun, 23 Jul 2023 11:22:37 -0300
 MIME-Version: 1.0
+Subject: Re: [PATCH v2 00/11] drm: kunit: Switch to kunit actions
+To:     Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        dri-devel@lists.freedesktop.org, David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendan.higgins@linux.dev>
+References: <20230720-kms-kunit-actions-rework-v2-0-175017bd56ab@kernel.org>
+Content-Language: en-US
+From:   Maira Canal <mairacanal@riseup.net>
+In-Reply-To: <20230720-kms-kunit-actions-rework-v2-0-175017bd56ab@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`rustc` outputs by default the temporary files (i.e. the ones saved
-by `-Csave-temps`, such as `*.rcgu*` files) in the current working
-directory when `-o` and `--out-dir` are not given (even if
-`--emit=x=path` is given, i.e. it does not use those for temporaries).
+Hi Maxime,
 
-Since out-of-tree modules are compiled from the `linux` tree,
-`rustc` then tries to create them there, which may not be accessible.
+On 7/20/23 08:15, Maxime Ripard wrote:
+> Hi,
+> 
+> Since v6.5-rc1, kunit gained a devm/drmm-like mechanism that makes tests
+> resources much easier to cleanup.
+> 
+> This series converts the existing tests to use those new actions where
+> relevant.
+> > Let me know what you think,
 
-Thus pass `--out-dir` explicitly, even if it is just for the temporary
-files.
+With the problems pointed out by kernel test bot fixed, the whole
+series is:
 
-Similarly, do so for Rust host programs too.
+Reviewed-by: Maíra Canal <mairacanal@riseup.net>
 
-Reported-by: Raphael Nestler <raphael.nestler@gmail.com>
-Closes: https://github.com/Rust-for-Linux/linux/issues/1015
-Reported-by: Andrea Righi <andrea.righi@canonical.com>
-Tested-by: Raphael Nestler <raphael.nestler@gmail.com> # non-hostprogs
-Tested-by: Andrea Righi <andrea.righi@canonical.com> # non-hostprogs
-Fixes: 295d8398c67e ("kbuild: specify output names separately for each emission type from rustc")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
----
-v2:
-  - Add fix for host programs too (Masahiro).
+Best Regards,
+- Maíra
 
- scripts/Makefile.build | 5 ++++-
- scripts/Makefile.host  | 6 +++++-
- 2 files changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 6413342a03f4..82e3fb19fdaf 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -264,6 +264,9 @@ $(obj)/%.lst: $(src)/%.c FORCE
- 
- rust_allowed_features := new_uninit
- 
-+# `--out-dir` is required to avoid temporaries being created by `rustc` in the
-+# current working directory, which may be not accessible in the out-of-tree
-+# modules case.
- rust_common_cmd = \
- 	RUST_MODFILE=$(modfile) $(RUSTC_OR_CLIPPY) $(rust_flags) \
- 	-Zallow-features=$(rust_allowed_features) \
-@@ -272,7 +275,7 @@ rust_common_cmd = \
- 	--extern alloc --extern kernel \
- 	--crate-type rlib -L $(objtree)/rust/ \
- 	--crate-name $(basename $(notdir $@)) \
--	--emit=dep-info=$(depfile)
-+	--out-dir $(dir $@) --emit=dep-info=$(depfile)
- 
- # `--emit=obj`, `--emit=asm` and `--emit=llvm-ir` imply a single codegen unit
- # will be used. We explicitly request `-Ccodegen-units=1` in any case, and
-diff --git a/scripts/Makefile.host b/scripts/Makefile.host
-index 7aea9005e497..8f7f842b54f9 100644
---- a/scripts/Makefile.host
-+++ b/scripts/Makefile.host
-@@ -86,7 +86,11 @@ hostc_flags    = -Wp,-MMD,$(depfile) \
- hostcxx_flags  = -Wp,-MMD,$(depfile) \
-                  $(KBUILD_HOSTCXXFLAGS) $(HOST_EXTRACXXFLAGS) \
-                  $(HOSTCXXFLAGS_$(target-stem).o)
--hostrust_flags = --emit=dep-info=$(depfile) \
-+
-+# `--out-dir` is required to avoid temporaries being created by `rustc` in the
-+# current working directory, which may be not accessible in the out-of-tree
-+# modules case.
-+hostrust_flags = --out-dir $(dir $@) --emit=dep-info=$(depfile) \
-                  $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
-                  $(HOSTRUSTFLAGS_$(target-stem))
- 
-
-base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
--- 
-2.41.0
-
+> Maxime
+> 
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> ---
+> Changes in v2:
+> - Fix some typos
+> - Use plaltform_device_del instead of removing the call to
+>    platform_device_put after calling platform_device_add
+> - Link to v1: https://lore.kernel.org/r/20230710-kms-kunit-actions-rework-v1-0-722c58d72c72@kernel.org
+> 
+> ---
+> Maxime Ripard (11):
+>        drm/tests: helpers: Switch to kunit actions
+>        drm/tests: client-modeset: Remove call to drm_kunit_helper_free_device()
+>        drm/tests: modes: Remove call to drm_kunit_helper_free_device()
+>        drm/tests: probe-helper: Remove call to drm_kunit_helper_free_device()
+>        drm/tests: helpers: Create a helper to allocate a locking ctx
+>        drm/tests: helpers: Create a helper to allocate an atomic state
+>        drm/vc4: tests: pv-muxing: Remove call to drm_kunit_helper_free_device()
+>        drm/vc4: tests: mock: Use a kunit action to unregister DRM device
+>        drm/vc4: tests: pv-muxing: Switch to managed locking init
+>        drm/vc4: tests: Switch to atomic state allocation helper
+>        drm/vc4: tests: pv-muxing: Document test scenario
+> 
+>   drivers/gpu/drm/tests/drm_client_modeset_test.c |   8 --
+>   drivers/gpu/drm/tests/drm_kunit_helpers.c       | 108 +++++++++++++++++++++-
+>   drivers/gpu/drm/tests/drm_modes_test.c          |   8 --
+>   drivers/gpu/drm/tests/drm_probe_helper_test.c   |   8 --
+>   drivers/gpu/drm/vc4/tests/vc4_mock.c            |   5 ++
+>   drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c  | 115 +++++++++---------------
+>   include/drm/drm_kunit_helpers.h                 |   7 ++
+>   7 files changed, 158 insertions(+), 101 deletions(-)
+> ---
+> base-commit: c58c49dd89324b18a812762a2bfa5a0458e4f252
+> change-id: 20230710-kms-kunit-actions-rework-5d163762c93b
+> 
+> Best regards,
