@@ -2,327 +2,448 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0765475DF76
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 02:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F5775DF7D
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 02:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjGWAHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 20:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38006 "EHLO
+        id S229571AbjGWAZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 20:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjGWAHE (ORCPT
+        with ESMTP id S229493AbjGWAZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 20:07:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8101B2
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 17:07:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 417A360BDB
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 00:07:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE215C433C8;
-        Sun, 23 Jul 2023 00:06:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690070819;
-        bh=lqNI3FthrxzR4UIE2SkVJyrmDez/g/Je8RwOANooSwU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gBAq2jfyXsJdxFNkJpod2uhwIgYgwTT4+ob/wsHXtF5u/9cikSXGr4pMbXt4O5fYE
-         XMoImsj73V4v/j0Qq9JrRiXgXpawyyHeBet6sEGQ+bZC7RhTmO7gCduFnmzFX8G58/
-         Ujp1L1Y7QdMGzhx2nuukUGng//TXW7bfLFHuVN2N/nLC317aen7UuETWRCOJsGmp+c
-         9HJeIou4jyBxbmGjLhw7Ts4t9u8eQfAeNRC/JNv2k+kz8GGbzDJnBxIwpg1pBU2aB/
-         q6VZ7LuskT7B1134vM/CbGPXqwJixp2v+AabulVJotgvWxBGqgTi4aRoBuPOvkCJl6
-         DQEiyUPSAqthw==
-Date:   Sat, 22 Jul 2023 17:06:57 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Juergen Gross <jgross@suse.com>, Jan Beulich <jbeulich@suse.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        sander44 <ionut_n2001@yahoo.com>,
-        Linux Xen <xen-devel@lists.xenproject.org>,
-        Linux BPF <bpf@vger.kernel.org>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        keescook@chromium.org, gustavoars@kernel.org
-Subject: Re: Fwd: UBSAN: index 1 is out of range for type
- 'xen_netif_rx_sring_entry [1]'
-Message-ID: <20230723000657.GA878540@dev-arch.thelio-3990X>
-References: <7e3841ce-011d-5ba6-9dae-7b14e07b5c4b@gmail.com>
+        Sat, 22 Jul 2023 20:25:13 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8585B10FB
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 17:25:10 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-348c8fc6eb9so2258575ab.2
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 17:25:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1690071909; x=1690676709;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=49CQc5om57PknB0KI/2hfLurHVzLrrNKGtxP13k1/vQ=;
+        b=ObVoDgj+LlwJerjZQMZgb/mB1wsMt5apKLN4ArB/w8RhvCePeoNg1ZMfI4CsuADNPi
+         mZTGJ1EGDG9HcJZOiUWu5spasgmu2HEkyCuopKxVdCLCRg9MG9AxpMM/7vWg9PO1++gU
+         VLELwE37kk/pfcYP+Ins4N5Cu4l7FqYg9UoC4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690071909; x=1690676709;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=49CQc5om57PknB0KI/2hfLurHVzLrrNKGtxP13k1/vQ=;
+        b=hvzQu8moh04mTSfhYUztoDmR69hxrm8lFfmKBpVm6cjRelsPmvRK7y7f50K2a0Kg7V
+         NWOtEE9qUfwv5b7MAgVJI3vYxX7lU4pgMqWEnKPuaBt5zO2McBUhaa//SU6t3F86JwVV
+         /JMkv8QY53g19exirXQqYEIZnDxhKQ1vG8wayTQVr3EM/4Y5xqDoYBCqVchFX9IerrgC
+         qfVT1NHOvFftsT+WgR0L07O5frs0GwICc1yjLx+kL3pruCiMFxusECPIi90BoanWGWcb
+         S2WYQEHcexwo5y0Z6FM7phEWox5/eFUeFrHLDfHkSoT1icuppPa1C2TzI5VKHijDvr7I
+         aUOg==
+X-Gm-Message-State: ABy/qLZMfJZK57FNpURh92stc4p02NwlAycjQltAs+iaRQfkCKXfZY3i
+        D1ozuyxpXr6JRFpGb5EfLXRLMQ==
+X-Google-Smtp-Source: APBJJlFxDkwk3jrb7WrWq1Q+7OoT+zADZvDtOUr7Wi505SnqIUYEnrkCV0wrT/PV2VBo+fFIG6Zopg==
+X-Received: by 2002:a05:6e02:19c9:b0:348:7980:1e65 with SMTP id r9-20020a056e0219c900b0034879801e65mr5077399ill.14.1690071909535;
+        Sat, 22 Jul 2023 17:25:09 -0700 (PDT)
+Received: from localhost (195.121.66.34.bc.googleusercontent.com. [34.66.121.195])
+        by smtp.gmail.com with ESMTPSA id r16-20020a92d450000000b00345cce526cdsm1997119ilm.54.2023.07.22.17.25.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Jul 2023 17:25:08 -0700 (PDT)
+Date:   Sun, 23 Jul 2023 00:25:07 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [BUG] Re: Linux 6.4.4
+Message-ID: <20230723002507.GA284241@google.com>
+References: <2b8fc10b-785e-48b9-9a38-5c1af81f9578@paulmck-laptop>
+ <CAEXW_YQO7OCdkXm_SBcPhAm8V8vMaF_5DQq7PbG9PZb7RFgA_g@mail.gmail.com>
+ <f18e165c-9196-4b41-a202-82cfd5ac7f8b@paulmck-laptop>
+ <8682b08c-347b-5547-60e0-013dcf1f8c93@joelfernandes.org>
+ <eb04b7d0-2f49-4e01-be09-9062d9f08404@paulmck-laptop>
+ <32aec6d1-bf25-7b47-8f31-7b6318d5238d@joelfernandes.org>
+ <9b42cb38-8375-fc41-475a-2bd26c60a7b9@joelfernandes.org>
+ <5dcf7117-cec7-4772-8aad-e100484a84dc@paulmck-laptop>
+ <7bfde9f4-2bd6-7337-b9ca-94a9253d847f@joelfernandes.org>
+ <ad82995c-061e-4f97-a972-c13a85ad0b72@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <7e3841ce-011d-5ba6-9dae-7b14e07b5c4b@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ad82995c-061e-4f97-a972-c13a85ad0b72@paulmck-laptop>
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 07:21:05AM +0700, Bagas Sanjaya wrote:
-> Hi,
-> 
-> I notice a regression report on Bugzilla [1]. Quoting from it:
-> 
-> > Hi Kernel Team,
+On Sat, Jul 22, 2023 at 10:27:55AM -0700, Paul E. McKenney wrote:
+> On Sat, Jul 22, 2023 at 08:38:02AM -0400, Joel Fernandes wrote:
 > > 
-> > I rebuild today latest version from mainline repo.
-> > And i notice issue regarding xen-netfront.c.
 > > 
-> > Error:
-> > [    3.477400] ================================================================================
-> > [    3.477633] UBSAN: array-index-out-of-bounds in drivers/net/xen-netfront.c:1291:3
-> > [    3.477858] index 1 is out of range for type 'xen_netif_rx_sring_entry [1]'
-> > [    3.478085] CPU: 0 PID: 700 Comm: NetworkManager Not tainted 6.5.0-rc2-1-generation1 #3
-> > [    3.478088] Hardware name: Intel Corporation W2600CR/W2600CR, BIOS SE5C600.86B.02.06.0007.082420181029 01/13/2022
-> > [    3.478090] Call Trace:
-> > [    3.478092]  <IRQ>
-> > [    3.478097]  dump_stack_lvl+0x48/0x70
-> > [    3.478105]  dump_stack+0x10/0x20
-> > [    3.478107]  __ubsan_handle_out_of_bounds+0xc6/0x110
-> > [    3.478114]  xennet_poll+0xa94/0xac0
-> > [    3.478118]  ? generic_smp_call_function_single_interrupt+0x13/0x20
-> > [    3.478125]  __napi_poll+0x33/0x200
-> > [    3.478131]  net_rx_action+0x181/0x2e0
-> > [    3.478135]  __do_softirq+0xd9/0x346
-> > [    3.478139]  do_softirq.part.0+0x41/0x80
-> > [    3.478144]  </IRQ>
-> > [    3.478145]  <TASK>
-> > [    3.478146]  __local_bh_enable_ip+0x72/0x80
-> > [    3.478149]  _raw_spin_unlock_bh+0x1d/0x30
-> > [    3.478151]  xennet_open+0x75/0x160
-> > [    3.478154]  __dev_open+0x105/0x1d0
-> > [    3.478156]  __dev_change_flags+0x1b5/0x230
-> > [    3.478158]  dev_change_flags+0x27/0x80
-> > [    3.478160]  do_setlink+0x3d2/0x12b0
-> > [    3.478164]  ? __nla_validate_parse+0x5b/0xdb0
-> > [    3.478169]  __rtnl_newlink+0x6f6/0xb10
-> > [    3.478173]  ? rtnl_newlink+0x2f/0x80
-> > [    3.478177]  rtnl_newlink+0x48/0x80
-> > [    3.478180]  rtnetlink_rcv_msg+0x170/0x430
-> > [    3.478183]  ? fib6_clean_node+0xad/0x190
-> > [    3.478188]  ? __pfx_rtnetlink_rcv_msg+0x10/0x10
-> > [    3.478191]  netlink_rcv_skb+0x5d/0x110
-> > [    3.478195]  rtnetlink_rcv+0x15/0x30
-> > [    3.478198]  netlink_unicast+0x247/0x390
-> > [    3.478200]  netlink_sendmsg+0x25e/0x4e0
-> > [    3.478202]  sock_sendmsg+0xaf/0xc0
-> > [    3.478204]  ____sys_sendmsg+0x2a9/0x350
-> > [    3.478206]  ___sys_sendmsg+0x9a/0xf0
-> > [    3.478212]  ? _copy_from_iter+0x80/0x4a0
-> > [    3.478217]  __sys_sendmsg+0x89/0xf0
-> > [    3.478220]  __x64_sys_sendmsg+0x1d/0x30
-> > [    3.478222]  do_syscall_64+0x5c/0x90
-> > [    3.478226]  ? do_syscall_64+0x68/0x90
-> > [    3.478228]  ? ksys_write+0xe6/0x100
-> > [    3.478232]  ? exit_to_user_mode_prepare+0x49/0x220
-> > [    3.478236]  ? syscall_exit_to_user_mode+0x1b/0x50
-> > [    3.478240]  ? do_syscall_64+0x68/0x90
-> > [    3.478242]  ? do_syscall_64+0x68/0x90
-> > [    3.478243]  ? irqentry_exit_to_user_mode+0x9/0x30
-> > [    3.478246]  ? irqentry_exit+0x43/0x50
-> > [    3.478248]  ? sysvec_xen_hvm_callback+0x4b/0xd0
-> > [    3.478250]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> > [    3.478253] RIP: 0033:0x7f973c244e4d
-> > [    3.478268] Code: 28 89 54 24 1c 48 89 74 24 10 89 7c 24 08 e8 ca ee ff ff 8b 54 24 1c 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 44 24 08 e8 fe ee ff ff 48
-> > [    3.478270] RSP: 002b:00007fff4777f470 EFLAGS: 00000293 ORIG_RAX: 000000000000002e
-> > [    3.478273] RAX: ffffffffffffffda RBX: 00005583087c6480 RCX: 00007f973c244e4d
-> > [    3.478274] RDX: 0000000000000000 RSI: 00007fff4777f4c0 RDI: 000000000000000c
-> > [    3.478276] RBP: 00007fff4777f4c0 R08: 0000000000000000 R09: 0000000000000000
-> > [    3.478277] R10: 0000000000000000 R11: 0000000000000293 R12: 00005583087c6480
-> > [    3.478279] R13: 00007fff4777f668 R14: 00007fff4777f65c R15: 0000000000000000
-> > [    3.478283]  </TASK>
-> > [    3.478284] ================================================================================
-> > [    3.685513] ================================================================================
-> > [    3.685751] UBSAN: array-index-out-of-bounds in drivers/net/xen-netfront.c:485:7
-> > [    3.686111] index 1 is out of range for type 'xen_netif_tx_sring_entry [1]'
-> > [    3.686379] CPU: 1 PID: 697 Comm: avahi-daemon Not tainted 6.5.0-rc2-1-generation1 #3
-> > [    3.686381] Hardware name: Intel Corporation W2600CR/W2600CR, BIOS SE5C600.86B.02.06.0007.082420181029 01/13/2022
-> > [    3.686385] Call Trace:
-> > [    3.686388]  <TASK>
-> > [    3.686391]  dump_stack_lvl+0x48/0x70
-> > [    3.686399]  dump_stack+0x10/0x20
-> > [    3.686399]  __ubsan_handle_out_of_bounds+0xc6/0x110
-> > [    3.686403]  xennet_tx_setup_grant+0x1f7/0x230
-> > [    3.686403]  ? __pfx_xennet_tx_setup_grant+0x10/0x10
-> > [    3.686403]  gnttab_foreach_grant_in_range+0x5c/0x100
-> > [    3.686415]  xennet_start_xmit+0x428/0x990
-> > [    3.686415]  ? kmem_cache_alloc_node+0x1b1/0x3b0
-> > [    3.686415]  dev_hard_start_xmit+0x68/0x1e0
-> > [    3.686415]  sch_direct_xmit+0x10b/0x350
-> > [    3.686415]  __dev_queue_xmit+0x512/0xda0
-> > [    3.686439]  ? ___neigh_create+0x6cb/0x970
-> > [    3.686439]  neigh_resolve_output+0x118/0x1e0
-> > [    3.686446]  ip_finish_output2+0x181/0x540
-> > [    3.686450]  ? netif_rx_internal+0x46/0x140
-> > [    3.686456]  __ip_finish_output+0xb6/0x180
-> > [    3.686456]  ? dev_loopback_xmit+0x86/0x110
-> > [    3.686456]  ip_finish_output+0x29/0x100
-> > [    3.686456]  ip_mc_output+0x95/0x2e0
-> > [    3.686456]  ? __pfx_ip_finish_output+0x10/0x10
-> > [    3.686456]  ip_send_skb+0x9f/0xb0
-> > [    3.686456]  udp_send_skb+0x158/0x380
-> > [    3.686475]  udp_sendmsg+0xb84/0xf20
-> > [    3.686475]  ? do_sys_poll+0x3a1/0x5f0
-> > [    3.686483]  ? __pfx_ip_generic_getfrag+0x10/0x10
-> > [    3.686483]  inet_sendmsg+0x76/0x80
-> > [    3.686483]  ? inet_sendmsg+0x76/0x80
-> > [    3.686483]  sock_sendmsg+0xa8/0xc0
-> > [    3.686483]  ? _copy_from_user+0x30/0xa0
-> > [    3.686483]  ____sys_sendmsg+0x2a9/0x350
-> > [    3.686483]  ___sys_sendmsg+0x9a/0xf0
-> > [    3.686483]  __sys_sendmsg+0x89/0xf0
-> > [    3.686483]  __x64_sys_sendmsg+0x1d/0x30
-> > [    3.686483]  do_syscall_64+0x5c/0x90
-> > [    3.686483]  ? exit_to_user_mode_prepare+0x49/0x220
-> > [    3.686483]  ? syscall_exit_to_user_mode+0x1b/0x50
-> > [    3.686483]  ? do_syscall_64+0x68/0x90
-> > [    3.686483]  ? syscall_exit_to_user_mode+0x1b/0x50
-> > [    3.686483]  ? do_syscall_64+0x68/0x90
-> > [    3.686483]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> > [    3.686483] RIP: 0033:0x7ff365942e13
-> > [    3.686483] Code: 8b 15 b9 a1 00 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b8 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 89 54 24 1c 48
-> > [    3.686483] RSP: 002b:00007ffc7bf1ca78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> > [    3.686483] RAX: ffffffffffffffda RBX: 00005596bd24c900 RCX: 00007ff365942e13
-> > [    3.686483] RDX: 0000000000000000 RSI: 00007ffc7bf1cb30 RDI: 000000000000000c
-> > [    3.686483] RBP: 000000000000000c R08: 0000000000000004 R09: 0000000000000019
-> > [    3.686483] R10: 00007ff365a1ca94 R11: 0000000000000246 R12: 00007ffc7bf1cb30
-> > [    3.686483] R13: 0000000000000002 R14: 00005596bd235f9c R15: 0000000000000000
-> > [    3.686483]  </TASK>
-> > [    3.686483] ================================================================================
-> > [    3.686858] ================================================================================
-> > [    3.687190] UBSAN: array-index-out-of-bounds in drivers/net/xen-netfront.c:413:4
-> > [    3.687501] index 1 is out of range for type 'xen_netif_tx_sring_entry [1]'
-> > [    3.687800] CPU: 18 PID: 0 Comm: swapper/18 Not tainted 6.5.0-rc2-1-generation1 #3
-> > [    3.687804] Hardware name: Intel Corporation W2600CR/W2600CR, BIOS SE5C600.86B.02.06.0007.082420181029 01/13/2022
-> > [    3.687806] Call Trace:
-> > [    3.687808]  <IRQ>
-> > [    3.687812]  dump_stack_lvl+0x48/0x70
-> > [    3.687819]  dump_stack+0x10/0x20
-> > [    3.687821]  __ubsan_handle_out_of_bounds+0xc6/0x110
-> > [    3.687827]  xennet_tx_buf_gc+0x34a/0x440
-> > [    3.687831]  xennet_handle_tx.constprop.0+0x49/0x90
-> > [    3.687834]  xennet_tx_interrupt+0x32/0x70
-> > [    3.687837]  __handle_irq_event_percpu+0x4f/0x1b0
-> > [    3.687842]  handle_irq_event+0x39/0x80
-> > [    3.687846]  handle_edge_irq+0x8c/0x230
-> > [    3.687849]  handle_irq_desc+0x40/0x60
-> > [    3.687851]  generic_handle_irq+0x1f/0x30
-> > [    3.687854]  handle_irq_for_port+0x8e/0x180
-> > [    3.687858]  ? _raw_spin_unlock_irqrestore+0x11/0x60
-> > [    3.687861]  __evtchn_fifo_handle_events+0x221/0x330
-> > [    3.687866]  evtchn_fifo_handle_events+0xe/0x20
-> > [    3.687869]  __xen_evtchn_do_upcall+0x72/0xd0
-> > [    3.687873]  xen_hvm_evtchn_do_upcall+0xe/0x20
-> > [    3.687876]  __sysvec_xen_hvm_callback+0x53/0x70
-> > [    3.687880]  sysvec_xen_hvm_callback+0x8d/0xd0
-> > [    3.687884]  </IRQ>
-> > [    3.687885]  <TASK>
-> > [    3.687886]  asm_sysvec_xen_hvm_callback+0x1b/0x20
-> > [    3.687891] RIP: 0010:pv_native_safe_halt+0xb/0x10
-> > [    3.687896] Code: 0b 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 eb 07 0f 00 2d 49 cc 33 00 fb f4 <c3> cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 55
-> > [    3.687898] RSP: 0000:ffffad85c0147e08 EFLAGS: 00000246
-> > [    3.687901] RAX: ffffffffa00d39a0 RBX: 0000000000000002 RCX: 0000000000000000
-> > [    3.687902] RDX: 0000000000000002 RSI: ffffffffa14d28e0 RDI: ffff920446abda00
-> > [    3.687904] RBP: ffffad85c0147e18 R08: 0000000000000000 R09: 0000000000000000
-> > [    3.687905] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
-> > [    3.687906] R13: 0000000000000002 R14: 0000000000000002 R15: ffffffffa14d29c8
-> > [    3.687909]  ? __pfx_intel_idle_hlt+0x10/0x10
-> > [    3.687913]  ? intel_idle_hlt+0xc/0x40
-> > [    3.687916]  cpuidle_enter_state+0xa0/0x730
-> > [    3.687920]  cpuidle_enter+0x2e/0x50
-> > [    3.687924]  call_cpuidle+0x23/0x60
-> > [    3.687928]  do_idle+0x207/0x260
-> > [    3.687932]  cpu_startup_entry+0x1d/0x20
-> > [    3.687934]  start_secondary+0x129/0x160
-> > [    3.687939]  secondary_startup_64_no_verify+0x17e/0x18b
-> > [    3.687945]  </TASK>
-> > [    3.687946] ================================================================================
-> > [    4.624607] bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter if you need this.
-> > [    4.629153] Bridge firewalling registered
-> > [    4.745355] Initializing XFRM netlink socket
-> > [    4.794107] loop8: detected capacity change from 0 to 8
-> > [    7.104544] rfkill: input handler disabled
-> > [   26.445163] ================================================================================
-> > [   26.445171] UBSAN: array-index-out-of-bounds in drivers/net/xen-netfront.c:807:4
-> > [   26.445175] index 109 is out of range for type 'xen_netif_tx_sring_entry [1]'
-> > [   26.445178] CPU: 8 PID: 1729 Comm: sshd Not tainted 6.5.0-rc2-1-generation1 #3
-> > [   26.445180] Hardware name: Intel Corporation W2600CR/W2600CR, BIOS SE5C600.86B.02.06.0007.082420181029 01/13/2022
-> > [   26.445181] Call Trace:
-> > [   26.445185]  <TASK>
-> > [   26.445185]  dump_stack_lvl+0x48/0x70
-> > [   26.445185]  dump_stack+0x10/0x20
-> > [   26.445200]  __ubsan_handle_out_of_bounds+0xc6/0x110
-> > [   26.445206]  xennet_start_xmit+0x932/0x990
-> > [   26.445211]  dev_hard_start_xmit+0x68/0x1e0
-> > [   26.445216]  sch_direct_xmit+0x10b/0x350
-> > [   26.445220]  __dev_queue_xmit+0x512/0xda0
-> > [   26.445224]  ip_finish_output2+0x261/0x540
-> > [   26.445225]  __ip_finish_output+0xb6/0x180
-> > [   26.445225]  ip_finish_output+0x29/0x100
-> > [   26.445234]  ip_output+0x73/0x120
-> > [   26.445234]  ? __pfx_ip_finish_output+0x10/0x10
-> > [   26.445238]  ip_local_out+0x61/0x70
-> > [   26.445238]  __ip_queue_xmit+0x18d/0x470
-> > [   26.445238]  ip_queue_xmit+0x15/0x30
-> > [   26.445238]  __tcp_transmit_skb+0xb39/0xcc0
-> > [   26.445238]  tcp_write_xmit+0x595/0x1570
-> > [   26.445238]  ? _copy_from_iter+0x80/0x4a0
-> > [   26.445256]  __tcp_push_pending_frames+0x37/0x110
-> > [   26.445259]  tcp_push+0x123/0x190
-> > [   26.445260]  tcp_sendmsg_locked+0xafe/0xed0
-> > [   26.445264]  tcp_sendmsg+0x2c/0x50
-> > [   26.445268]  inet_sendmsg+0x42/0x80
-> > [   26.445268]  sock_write_iter+0x160/0x180
-> > [   26.445274]  vfs_write+0x397/0x440
-> > [   26.445274]  ksys_write+0xc9/0x100
-> > [   26.445274]  __x64_sys_write+0x19/0x30
-> > [   26.445274]  do_syscall_64+0x5c/0x90
-> > [   26.445287]  ? syscall_exit_to_user_mode+0x1b/0x50
-> > [   26.445290]  ? do_syscall_64+0x68/0x90
-> > [   26.445290]  ? do_syscall_64+0x68/0x90
-> > [   26.445294]  ? do_syscall_64+0x68/0x90
-> > [   26.445294]  ? syscall_exit_to_user_mode+0x1b/0x50
-> > [   26.445298]  ? do_syscall_64+0x68/0x90
-> > [   26.445300]  ? exc_page_fault+0x94/0x1b0
-> > [   26.445302]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> > [   26.445306] RIP: 0033:0x7f26c4c3d473
-> > [   26.445318] Code: 8b 15 21 2a 0e 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 48 89 54 24 18
-> > [   26.445321] RSP: 002b:00007ffdee7b5528 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> > [   26.445321] RAX: ffffffffffffffda RBX: 0000000000000700 RCX: 00007f26c4c3d473
-> > [   26.445321] RDX: 0000000000000700 RSI: 000055567032e230 RDI: 0000000000000004
-> > [   26.445321] RBP: 0000555670313d70 R08: fffffffffffffff0 R09: 0000000000000000
-> > [   26.445321] R10: 0000000000000000 R11: 0000000000000246 R12: 000055566fcb2768
-> > [   26.445321] R13: 0000000000000000 R14: 0000000000000004 R15: 000055566fc67a80
-> > [   26.445332]  </TASK>
-> > [   26.445333] ================================================================================
+> > On 7/21/23 18:08, Paul E. McKenney wrote:
+> > > On Fri, Jul 21, 2023 at 03:20:48PM -0400, Joel Fernandes wrote:
+> > >> (Trimming the CC list a bit)
+> > >> On 7/21/23 08:13, Joel Fernandes wrote:
+> > >>> On 7/20/23 15:47, Paul E. McKenney wrote:
+> > >>>> On Thu, Jul 20, 2023 at 03:32:35PM -0400, Joel Fernandes wrote:
+> > >>>>> On 7/20/23 15:04, Paul E. McKenney wrote:
+> > >>>>>> On Thu, Jul 20, 2023 at 12:31:13PM -0400, Joel Fernandes wrote:
+> > >>>>>>> Hi Paul,
+> > >>>>>>>
+> > >>>>>>> On Thu, Jul 20, 2023 at 11:55 AM Paul E. McKenney
+> > >>>>>>> <paulmck@kernel.org> wrote:
+> > >>>>>>>>
+> > >>>>>>>> On Thu, Jul 20, 2023 at 01:27:14PM +0000, Joel Fernandes wrote:
+> > >>>>> [...]
+> > >>>>>>>>>
+> > >>>>>>>>> So likely RCU boosting is failing:
+> > >>>>>>>>>
+> > >>>>>>>>> The full TREE03 splat:
+> > >>>>>>>>> [   54.243588] ------------[ cut here ]------------
+> > >>>>>>>>> [   54.244547] rcu-torture: rcu_torture_boost started
+> > >>>>> [...]
+> > >>>>>>>>> [   54.300499] RIP: 0010:rcu_torture_stats_print+0x5b2/0x620
+> > >>>>> [...]
+> > >>>>>>>>> [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+> > >>>>>>>>>
+> > >>>>>>>>> However, if we are to believe the '9', it appears the object did
+> > >>>>>>>>> made it
+> > >>>>>>>>> quite some till the end of the pipe array but not until the free
+> > >>>>>>>>> pool.
+> > >>>>>>>>
+> > >>>>>>>> This is from this if/for statement, correct?
+> > >>>>>>>>
+> > >>>>>>>>                   stutter_waited =
+> > >>>>>>>> stutter_wait("rcu_torture_writer");
+> > >>>>>>>>                   if (stutter_waited &&
+> > >>>>>>>>                       !atomic_read(&rcu_fwd_cb_nodelay) &&
+> > >>>>>>>>                       !cur_ops->slow_gps &&
+> > >>>>>>>>                       !torture_must_stop() &&
+> > >>>>>>>>                       boot_ended)
+> > >>>>>>>>                           for (i = 0; i <
+> > >>>>>>>> ARRAY_SIZE(rcu_tortures); i++)
+> > >>>>>>>>                                   if
+> > >>>>>>>> (list_empty(&rcu_tortures[i].rtort_free) &&
+> > >>>>>>>>                                      
+> > >>>>>>>> rcu_access_pointer(rcu_torture_current) !=
+> > >>>>>>>>                                       &rcu_tortures[i]) {
+> > >>>>>>>>                                           tracing_off();
+> > >>>>>>>>                                           show_rcu_gp_kthreads();
+> > >>>>>>>>                                           WARN(1, "%s:
+> > >>>>>>>> rtort_pipe_count:
+> > >>>>>>>>                                           rcu_ftrace_dump(DUMP_ALL);
+> > >>>>>>>>                                   }
+> > >>>>>>>
+> > >>>>>>> Yes, that's right.
+> > >>>>>>>
+> > >>>>>>>> If so, this happens when there was a stutter wait, but RCU grace
+> > >>>>>>>> periods failed to clear out the backlog during the several seconds
+> > >>>>>>>> that
+> > >>>>>>>> rcutorture was forced idle.  This might be related to the RCU
+> > >>>>>>>> priority
+> > >>>>>>>> boosting failure, in which a preempted reader persisted across the
+> > >>>>>>>> stutter interval.
+> > >>>>>>>
+> > >>>>>>> When RCU is operating normally, shouldn't the check
+> > >>>>>>> "(list_empty(&rcu_tortures[i].rtort_free)" not run until the preempted
+> > >>>>>>> reader unblocks and exits its RCU read-side critical section?
+> > >>>>>>
+> > >>>>>> Yes, but not just "until", but rather "long after".  If RCU is doing
+> > >>>>>> grace periods correctly, an active reader on a given rcu_tortures[]
+> > >>>>>> element will prevent .rtort_pipe_count from exceeding the value 2.
+> > >>>>>
+> > >>>>> Ah ok, so the rtort_pipe_count being 9 is a sign RCU isn't making
+> > >>>>> progress
+> > >>>>> thus making it absent from the free list.
+> > >>>>
+> > >>>> Yes, though RCU is -just- -barely- too slow, as one more grace period
+> > >>>> would have done it.
+> > >>>>
+> > >>>>>> The element will not be put on a list until .rtort_pipe_count is equal
+> > >>>>>> to RCU_TORTURE_PIPE_LEN, which is 10.
+> > >>>>>>
+> > >>>>>> This warning usually appears when something is holding up the
+> > >>>>>> grace-period
+> > >>>>>> kthread.  Historically, this has included deadlocks, missed timers,
+> > >>>>>> and whatever else can prevent the grace-period kthread from running.
+> > >>>>>
+> > >>>>> Makes sense.
+> > >>>>>
+> > >>>>>>> One thing that confuses me, in the case of
+> > >>>>>>> "cur_ops->deferred_free(old_rp);" , the earlier do-while loop may exit
+> > >>>>>>> before the async callbacks can finish. So what prevents the
+> > >>>>>>> "(list_empty(&rcu_tortures[i].rtort_free)" check from happening before
+> > >>>>>>> grace periods happen? Thanks for any clarification.
+> > >>>>>>
+> > >>>>>> We only enter this code if the stutter_wait() actually waited, and by
+> > >>>>>> default this function will wait about five seconds.  Since the
+> > >>>>>> rcutorture
+> > >>>>>> testing goes idle during this time period (or is supposed to!), if
+> > >>>>>> things
+> > >>>>>> are working properly, knocking off ten grace periods during that time
+> > >>>>>> should be pretty much a given.
+> > >>>>>
+> > >>>>> Sure, makes sense. And this is not Lazy-RCU so 5 seconds should be
+> > >>>>> plenty
+> > >>>>> ;). I think I was subconsciously expecting an rcu_barrier() somewhere
+> > >>>>> in the
+> > >>>>> code before those checks, but that's not needed as you pointed that the
+> > >>>>> stutter should be giving enough time for RCU to make progress.
+> > >>>>
+> > >>>> And there might need to be a call_rcu_hurry() in there somewhere,
+> > >>>> now that you mention it.  Which would pretty much defeat any sort of
+> > >>>> lazy-RCU-callback testing in rcutorture, but testing of laziness might
+> > >>>> need to be separate anyway.
+> > >>>>
+> > >>>>> So hmm, the count being 9 means that not enough RCU grace periods have
+> > >>>>> passed for the rcu_torture object in question thus keeping it always
+> > >>>>> allocated. The GP thread not getting CPU can do that indeed, or perhaps
+> > >>>>> something else stalling RCU like a preempted reader, length preemption
+> > >>>>> disabling on a CPU and so forth..  I'll try to collect a trace when it
+> > >>>>> happens.
+> > >>>>
+> > >>>> Looking forward to seeing what you come up with!
+> > >>>
+> > >>> So far I found this. Before the crash, GPs took about 50ms, during the
+> > >>> crash it took 5 seconds before the warning which aligns with what you
+> > >>> mentioned about stutter.
+> > >>>
+> > >>>
+> > >>> The GP that never completed is at this line:
+> > >>>
+> > >>> [ 2816.041082]    <...>-13       13d.... 1237016139us :
+> > >>> rcu_grace_period: rcu_sched 144681 start
+> > >>>
+> > >>> And fqs loop got a "dti" for CPUs:
+> > >>> 1
+> > >>> 2
+> > >>> 12
+> > >>>
+> > >>> And I see cpuqs for:
+> > >>> 13
+> > >>> 6
+> > >>> 10
+> > >>> 5
+> > >>> 4
+> > >>> 11
+> > >>>
+> > >>> No idea what happened to 3, 8, 9, 14, 15. Maybe the "dti" for those did
+> > >>> not show in the trace?
+> > >>>
+> > >>> However, I see that CPU 7 did this:
+> > >>> [ 2816.205277]   <idle>-0         7d.... 1237016284us : sched_switch:
+> > >>> prev_comm=swapper/7 prev_pid=0 prev_prio=120 prev_state=R ==>
+> > >>> next_comm=rcu_torture_rea next_pid=149 next_prio=139
+> > >>>
+> > >>>
+> > >>> and then did this about 3 seconds later:
+> > >>> [ 2819.394111] rcu_tort-149       7dNs.. 1237025699us :
+> > >>> rcu_grace_period: rcu_sched 144677 cpuend
+> > >>> [ 2819.412745] rcu_tort-149       7dNs.. 1237025699us :
+> > >>> rcu_grace_period: rcu_sched 144681 cpustart
+> > >>>
+> > >>>
+> > >>> Which means it never switched out from the CPU all this while. Neither
+> > >>> did it report cpuqs. Ok it did notice the new GP started, welcome to the
+> > >>> party mate ;)
+> > >>>
+> > >>> That points the issue I think. I wonder if the emergency provisions for
+> > >>> forcing quiescent states on NOHZ_FULL CPUs kicked in. ISTR, we had
+> > >>> issues with that in the past where we had to fix the tick path to report
+> > >>> a QS.
+> > >>>
+> > >>> I'll add some more traces. Especially around preempted readers, the
+> > >>> emergency provisions for forcing a QS and so forth and see if I can dig
+> > >>> more information.
+> > >>
+> > >> In another instance, I caught a stack trace of CPU5 when it did not
+> > >> check-in with RCU for 3 seconds or so:
+> > >>
+> > >> [ 1127.067889]  kmalloc_trace+0x25/0x90
+> > >> [ 1127.072823]  rcu_torture_fwd_prog+0x3d8/0xa60
+> > >> [ 1127.078749]  ? __pfx_rcu_torture_fwd_prog+0x10/0x10
+> > >> [ 1127.085468]  ? kthread+0xcb/0xf0
+> > >> [ 1127.090040]  ? __pfx_rcu_torture_fwd_prog+0x10/0x10
+> > >> [ 1127.096626]  kthread+0xcb/0xf0
+> > >> [ 1127.100803]  ? __pfx_kthread+0x10/0x10
+> > >> [ 1127.107207]  ret_from_fork+0x2c/0x50
+> > >> [ 1127.113662]  </TASK>
+> > >> [ 1127.117818] Kernel panic - not syncing: kernel: panic_on_warn set ...
+> > >>
+> > >> It appears it was in "rcu_torture_fwd_prog" at the time. It got stuck
+> > >> there for 2 seconds.
+> > >>
+> > >> Interestingly, I did find the scheduler tick was trying to get in touch
+> > >> with the CPU and it was running code on it even:
+> > >> [ 5858.463102] rcu_tort-174       5d.h.. 1131149320us : rcu_utilization:
+> > >> Start scheduler-tick
+> > >> [ 5858.472903] rcu_tort-174       5d.h.. 1131149320us : rcu_utilization:
+> > >> End scheduler-tick
+> > >>
+> > >> So I could add some traces there to figure out what is it upto. ISTR, we
+> > >> also send IPIs to these CPUs? So maybe adding some traces there too is
+> > >> in order.
+> > >>
+> > >> Also earlier in dmesg it did this:
+> > >> [ 1124.825504] rcu_torture_fwd_prog n_max_cbs: 44181
+> > >> [ 1124.832158] rcu_torture_fwd_prog: Starting forward-progress test 0
+> > >> [ 1124.840977] rcu_torture_fwd_prog_cr: Starting forward-progress test 0
+> > >> [ 1126.726621] ------------[ cut here ]------------
+> > >> [ 1126.733296] rcutorture_oom_notify invoked upon OOM during
+> > >> forward-progress testing.
+> > >>
+> > >> Before that "cut here", there is a 2 second gap which tells me it got
+> > >> stuck there.
+> > >>
+> > >> So this function rcu_torture_fwd_prog() is keeping the CPU unresponsive
+> > >> from an RCU perspective for some reason? Because I never saw the
+> > >> "rcu_torture_fwd_prog_cr: Waiting for CBs" message before it panicked.
+> > > 
+> > > Thank you for digging into this!
+> > > 
+> > > Yes, rcu_torture_fwd_prog() is supposed to monopolize CPUs.  But it
+> > > is supposed to respect stuttering.  It is quite possible that the
+> > > synchronization is insufficient.  Or that the "supposed to" never
+> > > made it into the code.
+> > > 
+> > >> Collecting traces again.. ;) thanks,
+> > > 
+> > > ;-) ;-) ;-)
+> > 
+> > I narrowed it down to the timer softirq taking too long and doing this
+> > for 4 seconds:
+> > 
+> > [ 6781.411834] ksoftirq-12        0dNs.. 206231531us : sched_wakeup:
+> > comm=rcu_torture_rea pid=153 prio=139 target_cpu=000
+> > [ 6781.424854] ksoftirq-12        0dNs.. 206231531us : sched_waking:
+> > comm=rcu_torture_rea pid=164 prio=139 target_cpu=006
+> > [ 6781.437650] ksoftirq-12        0dNs.. 206231533us : sched_wakeup:
+> > comm=rcu_torture_rea pid=164 prio=139 target_cpu=000
+> > [ 6781.451019] ksoftirq-12        0dNs.. 206231533us : sched_waking:
+> > comm=rcu_torture_rea pid=162 prio=139 target_cpu=002
+> > [ 6781.463825] ksoftirq-12        0dNs.. 206231535us : sched_wakeup:
+> > comm=rcu_torture_rea pid=162 prio=139 target_cpu=000
+> > [ 6781.476290] ksoftirq-12        0dNs.. 206231535us : sched_waking:
+> > comm=rcu_torture_wri pid=143 prio=139 target_cpu=004
+> > [ 6781.489257] ksoftirq-12        0dNs.. 206231537us : sched_wakeup:
+> > comm=rcu_torture_wri pid=143 prio=139 target_cpu=000
+> > [ 6781.502559] ksoftirq-12        0dNs.. 206231538us : sched_waking:
+> > comm=rcu_torture_rea pid=154 prio=139 target_cpu=006
+> > [ 6781.515093] ksoftirq-12        0dNs.. 206231539us : sched_wakeup:
+> > comm=rcu_torture_rea pid=154 prio=139 target_cpu=000
+> > [ 6781.527622] ksoftirq-12        0dNs.. 206231539us : sched_waking:
+> > comm=rcu_torture_fak pid=149 prio=139 target_cpu=003
+> > [ 6781.539979] ksoftirq-12        0dNs.. 206231541us : sched_wakeup:
+> > comm=rcu_torture_fak pid=149 prio=139 target_cpu=000
+> > [ 6781.552717] ksoftirq-12        0dNs.. 206231541us : sched_waking:
+> > comm=rcu_torture_fak pid=145 prio=139 target_cpu=005
+> > [ 6781.565074] ksoftirq-12        0dNs.. 206231543us : sched_wakeup:
+> > comm=rcu_torture_fak pid=145 prio=139 target_cpu=000
+> > [ 6781.577580] ksoftirq-12        0dNs.. 206231543us : sched_waking:
+> > comm=rcu_torture_rea pid=166 prio=139 target_cpu=003
+> > [ 6781.590211] ksoftirq-12        0dNs.. 206231547us : sched_wakeup:
+> > comm=rcu_torture_rea pid=166 prio=139 target_cpu=000
+> > 
+> > And I caught the softirq exit which told me it is coming from timer softirq:
+> > [ 6781.603150] ksoftirq-12        0.Ns.. 206231552us : __do_softirq:
+> > softirq exit: name: TIMER, action handler: run_timer_softirq
+> > 
+> > Maybe something to do with calls to stuttering or lack of cond_resched()
+> > in the torture code somewhere? Unfortunately I was not able to get a
+> > stack trace and what is doing the wake ups.
 > 
-> See Bugzilla for the full thread and attached dmesg.
-> 
-> Anyway, I'm adding it to regzbot:
-> 
-> #regzbot introduced: 8446066bf8c1f9f https://bugzilla.kernel.org/show_bug.cgi?id=217693
-> 
-> Thanks.
-> 
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217693
+> Huh.  It seems to be waking up each rcutorture kthread twice.
 
-I doubt it is 8446066bf8c1f9f that causes this. Based on the comment
-next to the 'ring[1]' in DEFINE_RING_TYPES() in
-include/xen/interface/io/ring.h, this is probably caused/exposed by
-commit df8fc4e934c1 ("kbuild: Enable -fstrict-flex-arrays=3") in
-6.5-rc1, which causes that array to no longer be a flexible array but an
-array with one element, which would cause UBSAN to complain about an
-array access past index one. Adding Kees and Gustavo.
+That's actually 2 different tracepoints. So its 2 events per wakeup.
 
-Unfortunately, it seems this file is vendored from Xen, so I assume it
-would need to be fixed there then pulled into Linux:
+> So maybe
+> this is the timed wakeups towards the end of the stutter interval?
 
-https://github.com/xen-project/xen/tree/master/xen/include/public/io/ring.h
+Thanks, I'll look into that as well.
 
-Cheers,
-Nathan
+> But
+> how many kthreads do you have?  Four seconds at about two microseconds per
+> kthread would be about 2 million kthreads, so I am guessing that something
+> else is also going on.
+
+In the 4 seconds, it repeatedy does the sched_waking on 17 different threads
+all are from rcu_torture.
+
+> Or that there are sometimes longer delays between
+> wakeups.
+
+I am seeing a delay of 100-200 microseconds or so between them.
+
+> Or maybe it cycles through rcutorture's kthreads, repeatedly
+> awakening the set.
+
+Yes.
+
+> Which might actually happen given enough kthreads spinning in
+> stutter_wait() doing that occasional 10-microsecond torture_hrtimeout_us()
+> call, mightn't it?
+
+Yeah could be, I was planning to trace that code but last when I added traces
+there it overflowed my trace buffer. Now I made the buffer 1MB/CPU so
+hopefully will survive ;-)
+
+> Perhaps try changing that torture_hrtimeout_us() to something like:
+> 
+> 	torture_hrtimeout_us(100, 0, NULL);
+> 
+> Or, better, make that function rely entirely on a single hrtimer per
+> kthread.  Which will likely also require spreading the timers across the
+> available CPUs.  Perhaps part of the problem here is that there are very
+> few online CPUs, not enough to keep up.
+
+Thanks I'll look more into it, good way for me to study the stutter
+functionality.
+
+> > This is at least one of the issues. I do believe the fwd prog functions
+> > taking too long in the kernel without doing a cond_resched() is another
+> > issue but I need to reduce the RCU stall timeout to 2 seconds to see
+> > those happen otherwise I think those just get "hidden".
+> 
+> The rcu_torture_fwd_prog_cond_resched() function is supposed to be taking
+> care of that for the callback flooding, but maybe I missed a place where
+> a call is needed.
+> 
+> For the tight loop of readers, there is a call to cond_resched().  Ah,
+> but are you running a preemptible kernel?  (If we are still talking
+> about TREE03, I believe that is a "yes".)  Maybe try changing the
+> cond_resched() in the rcu_torture_fwd_prog_nr() function's loop to
+> rcu_torture_fwd_prog_cond_resched()?
+
+Sure, I can try to make this change, but the fwd_prog issue was for TREE07
+(non-preemptible).
+
+> > Both these issues appear to be threads spending too much time in kernel
+> > mode in non-preemptible kernels. The RCU GP thread was able to get CPU
+> > so that wasn't the issue in these instances.
+> > 
+> > Thoughts?
+> 
+> OK, if this kernel is non-preemptible, you are not running TREE03,
+> correct?
+
+I am running both TREE03 and TREE07 on the same stable kernel version. The
+TREE03 issue was related to the boost failure warning. The TREE07 was an
+rcutorture object was still allocated with a pipecount of 9 or sometimes 6.
+The TREE07 issue is definitely spending of too much time in kernel mode which
+is holding up the CPU. The TREE03 issue is likely unrelated, but I thought I
+will get to that next after looking into TREE07.
+
+> > Next plan of action is to get sched_waking stack traces since I have a
+> > very reliable repro of this now.
+> 
+> Too much fun!  ;-)
+
+True! :D
+
+thanks,
+
+ - Joel
+
