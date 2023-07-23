@@ -2,93 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC5375E07F
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 10:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917B175E082
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 10:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbjGWIZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 04:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
+        id S229707AbjGWI2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 04:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjGWIZR (ORCPT
+        with ESMTP id S229469AbjGWI2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 04:25:17 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919A9E46;
-        Sun, 23 Jul 2023 01:25:16 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 48EEA32003CE;
-        Sun, 23 Jul 2023 04:25:15 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sun, 23 Jul 2023 04:25:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690100714; x=1690187114; bh=dIPYdFitpP50L
-        KtnnhqPZLbAi743uFQ8ZFjL77pDtNg=; b=x5ojDjWGPP5b52vypHfJD9zieinRr
-        VXSxGDT/7UvF7hD81HdzESl9x23kwCFWs4gTL0HXet5lLcTQqakuCH6yjr42f1UK
-        6m57sifK3luK2DSuo+ZH4Cfz1QymGSqmKe76xI3MgVgeAVzy8JPyBY2YwPlj9mPH
-        7UjMh7Euo0LsnfcbvL6IGAuk4lWm1Sv2BJ/79WcuB1YPqMgAIyKr1+IUHg4vtgrL
-        95tsh6mAoCtRMcblMICfnXP5+XpU24ZRuUI+I8K67jUmIV3pxdUec8T45F8870OU
-        wuZ8qiVZzn16hEE+yeL8cBO4CbNSsh5DGbJBcmnkQPRjXR0LFWKX1aMPQ==
-X-ME-Sender: <xms:6uO8ZL1QXcu1UCGWBvtY9TvXPFOGHPSTIgJMccDTw2q0oeZH5iLIJg>
-    <xme:6uO8ZKFKdwlCr8oCd5g_iYDWMuQazOH7B9WO5gbc98eJYcbWAuCEqus2wRn3GSQTg
-    1iSBGwK41INVok>
-X-ME-Received: <xmr:6uO8ZL7Eo5YdZHZkGxXzM10TmgDQ0iLySct2jXnJkk4BgP4mbzt96O6dP-j1>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrheeigddtfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedvudefveekheeugeeftddvveefgfduieefudeifefgleekheegleegjeejgeeg
-    hfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiug
-    hoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:6uO8ZA3liK6dp5j5ODaIwRmp8l7LFlkvytvenOmjVKsz86DmBzyqiw>
-    <xmx:6uO8ZOH4Uvi4IoYIOCq7buaKmZm_E74wmcgnERsN5eqwPElXI9YXMA>
-    <xmx:6uO8ZB-6QFUaxFSdL5A8QDlqguoTcv008IzpthmyBwL9qaVareP4CA>
-    <xmx:6uO8ZB2_PHn0Mz_1zXeOTvZLWuuHuIuujDBb2lbmUO7DzEfYiAu0Vg>
-Feedback-ID: i494840e7:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 23 Jul 2023 04:25:13 -0400 (EDT)
-Date:   Sun, 23 Jul 2023 11:25:10 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc:     Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v1 01/11] selftests: forwarding:
- custom_multipath_hash.sh: add cleanup for SIGTERM sent by timeout
-Message-ID: <ZLzj5oYrbHGvCMkq@shredder>
-References: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
+        Sun, 23 Jul 2023 04:28:44 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D88E7B;
+        Sun, 23 Jul 2023 01:28:43 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bb2468257fso17656705ad.0;
+        Sun, 23 Jul 2023 01:28:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690100923; x=1690705723;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=f2RBK6a1rrlPMn5TOATq9/7yx1S/Tl+2zZSZzJBZNsM=;
+        b=aZpe29ckQMqcjD0CsG2rRtigKYI0ycSzcfnysKME5uEV0dbXxqtgQbq/bhqYWPtf+W
+         CSobQNGJyv5uNyH8uuFRqc+5O513SpfChXjITqC+MhD19F9pcuh321hq90epTf2hntZI
+         xNJWWUot6UblUHOmHbXg/+aohGhJxd/y12WJLiLVw7Vx4xrYQ+RkRLK3FWeQQFqVSwmi
+         9I9HtohJOBSMAaRi0gRLwLmBeMkiYmP6he6Yyl1LTMroJeD73kHNriFDxANu2tsSg2Wy
+         F/HCRsLhC2jDUyU/dZPzCQK7fbSeZV8UPDqP3L85G8sLY7tJZ8mUKPFj1Z5xZ9XOIHty
+         eGqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690100923; x=1690705723;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f2RBK6a1rrlPMn5TOATq9/7yx1S/Tl+2zZSZzJBZNsM=;
+        b=CggpZvVvuacZ8XkEOCP9CV3eh0DdAnq8xAUNrXTxvHYaFjREWxjQI26eoho2KRvrjM
+         TOX3dzf5EhKhgaOIGHB4A8WMXzpV/XZiq0kS+wdeyWfFWFLDrpf95iOEDLX80ml6yHmF
+         epP8wejuwYQp/bG4Y3weovbMuitw8poTiQT01Tu3FAODuSPhauLJ39H/ktDxfU3sdvNf
+         /JPzKy56yNK1Egd8lJ3eqGKRua0g0H4MfjEM+/rN//gluw/EiQVE9sqbBDzMRWvaPLvZ
+         zG7JsvJCI9QdMP5oiDVjrY/nHGL57E4Uvc6VJiaZYFfPjiyx43kzvC0sZSiZNsYb2KiM
+         QzQg==
+X-Gm-Message-State: ABy/qLbQOsiH57UE5tAWXFD4zUfj6ylrK6mzRc0NGV3vwVidK4KZ5MrE
+        9z6/Dnf965rEfVnmm0Judsk=
+X-Google-Smtp-Source: APBJJlEyAivqgS1z/Q7bcfIa339ze+9MNCa6mD2worMXLAUFaSPxd3TpcGx2eH8f/O2vbFPJ05rqIg==
+X-Received: by 2002:a17:902:d509:b0:1b9:de67:2870 with SMTP id b9-20020a170902d50900b001b9de672870mr6536878plg.40.1690100922731;
+        Sun, 23 Jul 2023 01:28:42 -0700 (PDT)
+Received: from zephyrusG14 ([103.251.210.195])
+        by smtp.gmail.com with ESMTPSA id s10-20020a170902ea0a00b001b53d3d8f3dsm6428406plg.299.2023.07.23.01.28.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Jul 2023 01:28:42 -0700 (PDT)
+Date:   Sun, 23 Jul 2023 13:58:36 +0530
+From:   Yogesh Hegde <yogi.kernel@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, heiko@sntech.de, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v2] arm64: dts: rockchip: Fix Wifi/Bluetooth on ROCK Pi 4
+ boards
+Message-ID: <ZLzktMnJHTg13Pp/@zephyrusG14>
+References: <ZLbATQRjOl09aLAp@zephyrusG14>
+ <2023071850-festival-illusion-6399@gregkh>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <2023071850-festival-illusion-6399@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 02:36:00AM +0200, Mirsad Todorovac wrote:
-> Add trap and cleanup for SIGTERM sent by timeout and SIGINT from
-> keyboard, for the test times out and leaves incoherent network stack.
+On Tue, Jul 18, 2023 at 07:37:21PM +0200, Greg KH wrote:
+> On Tue, Jul 18, 2023 at 10:09:41PM +0530, Yogesh Hegde wrote:
+> > This patch fixes an issue affecting the Wifi/Bluetooth connectivity on
+> > ROCK Pi 4 boards. Commit f471b1b2db08 ("arm64: dts: rockchip: Fix Bluetooth
+> > on ROCK Pi 4 boards") introduced a problem with the clock configuration.
+> > Specifically, the clock-names property of the sdio-pwrseq node was not
+> > updated to 'lpo', causing the driver to wait indefinitely for the wrong clock
+> > signal 'ext_clock' instead of the expected one 'lpo'. This prevented the proper
+> > initialization of Wifi/Bluetooth chip on ROCK Pi 4 boards.
+> > 
+> > To address this, this patch updates the clock-names property of the
+> > sdio-pwrseq node to "lpo" to align with the changes made to the bluetooth node.
+> > 
+> > This patch has been tested on ROCK Pi 4B.
+> > 
+> > Fixes: f471b1b2db08 ("arm64: dts: rockchip: Fix Bluetooth on ROCK Pi 4 boards")
+> > Signed-off-by: Yogesh Hegde <yogi.kernel@gmail.com>
 > 
-> Fixes: 511e8db54036c ("selftests: forwarding: Add test for custom multipath hash")
-> Cc: Ido Schimmel <idosch@nvidia.com>
-> Cc: netdev@vger.kernel.org
-> ---
+> Why are you saying this fixes a specific old commit and not also
+> properly cc: the stable@vger.kernel.org alias?
+It is a mistake on my part. I apologize for the mistake. 
+> 
+> Please read:
+>     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> for how to do this properly.
+Thanks for the link, I will read through it and resend a v3 of the patch 
+with fixes. 
 
-The patches are missing your Signed-off-by and a cover letter. Anyway,
-please don't send a new version just yet. I'm not sure this is the
-correct approach and I'm looking into it.
-
-Thanks
+Thanks and Regards 
+-- Yogesh 
