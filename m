@@ -2,179 +2,500 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E2775DF9B
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 03:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D08675DF9F
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 04:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbjGWB53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 21:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
+        id S229736AbjGWCBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 22:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGWB52 (ORCPT
+        with ESMTP id S229476AbjGWCBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 21:57:28 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677E91FD7
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 18:57:27 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b8b4748fe4so18430345ad.1
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 18:57:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690077447; x=1690682247;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6OJA1szbHJT2dTZkEYp229VJOjQYpcsaqtJfcTXaGHw=;
-        b=SPvSXlRUArMMM7H0n77+u0MIxjCm0vQfLvSGUieskKSANsRFdURbBL3lB76raHnwu+
-         fHmbkGEKmVewVfwXRvSQUtPZ2nzR+esLoi0N50P1mq+gaF/Gk6tgCwrw25HGIYqFY4oB
-         9VIu3CMdsQ1WadxBHWCqqt2hyBChrHr4SSpiaD2ooZ698Ia6xwJb4IhEVUwK/vMq4lG9
-         kX7FWhibBMldmFN2KHl2sDJaex22YuZhL8oCJ9apwSD0qZ3Ym1a5+ULFbgGBBBduhMSe
-         G2GEeQtMts1weJzJmTHApMoKE1Eg5w1RJzwgmPAfD2ZtrB1VZStOK7WM49YG+cDWhn6/
-         uYLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690077447; x=1690682247;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6OJA1szbHJT2dTZkEYp229VJOjQYpcsaqtJfcTXaGHw=;
-        b=QGuV2S3eJ4fV3d1JMowZ9Mnrf3CKPjeIbKu7FuWUzxYuhlmq/wLzU5TQEpGq8OS0Yq
-         /ayCEKxuKRgYpLbX68ccc2vyB9EFPwgHyIhYcu8yEGIbrxnsHyV5Sk63N9d4RT5RTDLg
-         jutW+S5KMhX16m9X+aaedwHMeg3DfJLW27vQvGjo//y4mNc3/s6qcNnR3hbKWbHHKWYf
-         ViA/8Xc6uhxg+LenVDrp++OAHE175iqSshc6djtMwlN+1L6mb+hFrgcwCX7txsc9qRMf
-         /boW8wIpJdZ96kaLuk9AGPiAVbWmwPjU4kuQKkp0rKECz82LDiDPBMUx3YzyIaWF8oHu
-         uIvg==
-X-Gm-Message-State: ABy/qLbBnnS2DysbWtkP1HYyXYmMFtdwoCoDKwhTV29yPEk9zh9uTDCV
-        cK2HbiIZ7FKqYlG+Udu/YsTZumCMZG/Y5Q==
-X-Google-Smtp-Source: APBJJlGhAzGcE+2IOC+BjPU/5Vwb4rjWM8XqjTX5uJY2OU0MetPGTmcbrM2iQkJFc8VrJyG5hCZqcQ==
-X-Received: by 2002:a17:902:6ac6:b0:1bb:6875:5a73 with SMTP id i6-20020a1709026ac600b001bb68755a73mr4371328plt.2.1690077446732;
-        Sat, 22 Jul 2023 18:57:26 -0700 (PDT)
-Received: from localhost ([216.228.127.128])
-        by smtp.gmail.com with ESMTPSA id jk4-20020a170903330400b001b8b6a19bd6sm6048646plb.63.2023.07.22.18.57.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 18:57:26 -0700 (PDT)
-Date:   Sat, 22 Jul 2023 18:57:23 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 1/5] lib/bitmap: add bitmap_{set,get}_value()
-Message-ID: <ZLyI+0EL1VztnHLe@yury-ThinkPad>
-References: <20230720173956.3674987-1-glider@google.com>
- <20230720173956.3674987-2-glider@google.com>
+        Sat, 22 Jul 2023 22:01:15 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 1F39DE4
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 19:01:10 -0700 (PDT)
+Received: (qmail 1802266 invoked by uid 1000); 22 Jul 2023 22:01:09 -0400
+Date:   Sat, 22 Jul 2023 22:01:09 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Khazhy Kumykov <khazhy@google.com>
+Cc:     syzbot <syzbot+18996170f8096c6174d0@syzkaller.appspotmail.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [usb?] KASAN: slab-out-of-bounds Read in
+ read_descriptors (3)
+Message-ID: <e5a6c3be-6dd3-4c85-9c5b-f9fb7aca0b36@rowland.harvard.edu>
+References: <000000000000c0ffe505fe86c9ca@google.com>
+ <CACGdZYJVYXA1gYTx+fvLa6H443+4SXLgG-iJcE7wQYSh+0aOzg@mail.gmail.com>
+ <CACGdZYK8FupYqA2CoqoDjS4i=FvG1+ie7fG2MENHtuxspC0-Dg@mail.gmail.com>
+ <69cddb70-771c-4ded-a14e-b46ce6413eb4@rowland.harvard.edu>
+ <CACGdZYJexQYh8T_5vpanWvjADuGQYW82gdV-51N=nk5HTtcDwg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230720173956.3674987-2-glider@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACGdZYJexQYh8T_5vpanWvjADuGQYW82gdV-51N=nk5HTtcDwg@mail.gmail.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 07:39:52PM +0200, Alexander Potapenko wrote:
-> +/**
-> + * bitmap_write - write n-bit value within a memory region
-> + * @map: address to the bitmap memory region
-> + * @value: value of nbits
-> + * @start: bit offset of the n-bit value
-> + * @nbits: size of value in bits, up to BITS_PER_LONG
-> + */
-> +static inline void bitmap_write(unsigned long *map,
-> +				unsigned long value,
-> +				unsigned long start, unsigned long nbits)
-> +{
-> +	size_t index = BIT_WORD(start);
-> +	unsigned long offset = start % BITS_PER_LONG;
-> +	unsigned long space = BITS_PER_LONG - offset;
-> +
-> +	if (unlikely(!nbits))
-> +		return;
-> +	value &= GENMASK(nbits - 1, 0);
+On Fri, Jul 21, 2023 at 03:40:01PM -0700, Khazhy Kumykov wrote:
+> On Fri, Jul 21, 2023 at 11:56 AM Alan Stern <stern@rowland.harvard.edu> wrote:
 
-Strictly speaking, a 'value' shouldn't contain set bits beyond nbits
-because otherwise it's an out-of-bonds type of error.
+> > On the other hand, it would almost certainly be simpler if
+> > hub_port_connect_change() and the other places calling
+> > usb_get_device_descriptor() would read into a temporary buffer instead
+> > of directly into udev->descriptor.  Do you think the problem could be
+> > solved this way?  It would be cleaner in the end.
+> 
+> Simpler... It'll probably be cleaner in the end, but we're
+> snapshotting and resetting udev->descriptor several call frames above
+> where we're calling usb_get_device_descriptor in the case of
+> usb_reset_and_verify_device().. For hub_port_connect_change() it
+> should be straightforward - use the on-stack descriptor as the buf for
+> usb_get_descriptor(), and bail out like we do already.
+> 
+> For usb_reset_and_verify_device... we're calling hub_port_init, which
+> is directly modifying a bunch of the usb struct, fetches the
+> descriptor, validates it, and we rely on the return here to decide
+> whether or not to simulate a disconnect...
+> 
+> I'd personally lean to reverting 45bf39f8df7f, but I'm not that
+> familiar with the code here. :)
 
-This is kind of gray zone to me, because it's a caller's responsibility
-to provide correct input. But on the other hand, it would be a great
-headache debugging corrupted bitmaps.
+Let's see what syzbot has to say about this patch...
 
-Now that we've got a single user of the bitmap_write, and even more,
-it's wrapped with a helper, I think it would be reasonable to trim a
-'value' in the helper, if needed.
+Alan Stern
 
-Anyways, the comment must warn about that loudly...
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/ v6.5-rc2
 
-> +	if (space >= nbits) {
-> +		map[index] &= ~(GENMASK(nbits - 1, 0) << offset);
+ drivers/usb/core/hcd.c     |    3 
+ drivers/usb/core/hub.c     |  167 +++++++++++++++++++++++++--------------------
+ drivers/usb/core/message.c |   37 ---------
+ drivers/usb/core/usb.h     |    8 +-
+ 4 files changed, 104 insertions(+), 111 deletions(-)
 
-'GENMASK(nbits - 1, 0) << offset' looks really silly.
-
-> +		map[index] |= value << offset;
-
-Here you commit 2 reads and 2 writes for a word instead of one.
-
-> +		return;
-> +	}
-> +	map[index] &= ~BITMAP_FIRST_WORD_MASK(start);
-
-~FIRST_WORD is the same as LAST WORD. I tried to replace, and it saves
-~25 bytes of .text on x86_64.
-
-> +	map[index] |= value << offset;
-> +	map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-> +	map[index + 1] |= (value >> space);
-> +}
-
-With all that I think the implementation should look something like
-this:
-
-        unsigned long w, mask;
-
-        if (unlikely(nbits == 0))
-                return 0;
-
-        map += BIT_WORD(start);
-        start %= BITS_PER_LONG;
-        end = start + nbits - 1;
-
-        w = *map & (end < BITS_PER_LONG ? ~GENMASK(end, start) : BITMAP_LAST_WORD_MASK(start));
-        *map = w | (value << start);
-
-        if (end < BITS_PER_LONG)
-                return;
-
-        w = *++map & BITMAP_FIRST_WORD_MASK(end);
-        *map = w | (value >> BITS_PER_LONG * 2 - end);
-
-It's not tested, except the /s/~FIRST_WORD/LAST_WORD/ part, but I expect
-it should be more efficient.
-
-Alexander, can you please try the above and compare?
-
-In previous iteration, I asked you to share disassembly listings for the
-functions. Can you please do that now?
-
-Regarding the rest of the series:
- - I still see Evgenii's name in mtecomp.c, and EA0 references;
- - git-am throws warning about trailing line;
- - checkpatch warns 7 times;
-
-Can you fix all the above before sending the new version?
-
-Have you tested generic part against BE32, BE64 and LE32 architectures;
-and arch part against BE64? If not, please do.
-
-You're mentioning that the compression ratio is 2 to 20x. Can you
-share the absolute numbers? If it's 1k vs 2k, I think most people
-just don't care...
-
-Can you share the code that you used to measure the compression ratio?
-Would it make sense to export the numbers via sysfs?
-
-Thanks,
-Yury
+Index: usb-devel/drivers/usb/core/hcd.c
+===================================================================
+--- usb-devel.orig/drivers/usb/core/hcd.c
++++ usb-devel/drivers/usb/core/hcd.c
+@@ -994,7 +994,8 @@ static int register_root_hub(struct usb_
+ 	mutex_lock(&usb_bus_idr_lock);
+ 
+ 	usb_dev->ep0.desc.wMaxPacketSize = cpu_to_le16(64);
+-	retval = usb_get_device_descriptor(usb_dev, USB_DT_DEVICE_SIZE);
++	retval = usb_get_device_descriptor(usb_dev,
++			&usb_dev->descriptor, USB_DT_DEVICE_SIZE);
+ 	if (retval != sizeof usb_dev->descriptor) {
+ 		mutex_unlock(&usb_bus_idr_lock);
+ 		dev_dbg (parent_dev, "can't read %s device descriptor %d\n",
+Index: usb-devel/drivers/usb/core/message.c
+===================================================================
+--- usb-devel.orig/drivers/usb/core/message.c
++++ usb-devel/drivers/usb/core/message.c
+@@ -1040,43 +1040,6 @@ char *usb_cache_string(struct usb_device
+ EXPORT_SYMBOL_GPL(usb_cache_string);
+ 
+ /*
+- * usb_get_device_descriptor - (re)reads the device descriptor (usbcore)
+- * @dev: the device whose device descriptor is being updated
+- * @size: how much of the descriptor to read
+- *
+- * Context: task context, might sleep.
+- *
+- * Updates the copy of the device descriptor stored in the device structure,
+- * which dedicates space for this purpose.
+- *
+- * Not exported, only for use by the core.  If drivers really want to read
+- * the device descriptor directly, they can call usb_get_descriptor() with
+- * type = USB_DT_DEVICE and index = 0.
+- *
+- * This call is synchronous, and may not be used in an interrupt context.
+- *
+- * Return: The number of bytes received on success, or else the status code
+- * returned by the underlying usb_control_msg() call.
+- */
+-int usb_get_device_descriptor(struct usb_device *dev, unsigned int size)
+-{
+-	struct usb_device_descriptor *desc;
+-	int ret;
+-
+-	if (size > sizeof(*desc))
+-		return -EINVAL;
+-	desc = kmalloc(sizeof(*desc), GFP_NOIO);
+-	if (!desc)
+-		return -ENOMEM;
+-
+-	ret = usb_get_descriptor(dev, USB_DT_DEVICE, 0, desc, size);
+-	if (ret >= 0)
+-		memcpy(&dev->descriptor, desc, size);
+-	kfree(desc);
+-	return ret;
+-}
+-
+-/*
+  * usb_set_isoch_delay - informs the device of the packet transmit delay
+  * @dev: the device whose delay is to be informed
+  * Context: task context, might sleep
+Index: usb-devel/drivers/usb/core/usb.h
+===================================================================
+--- usb-devel.orig/drivers/usb/core/usb.h
++++ usb-devel/drivers/usb/core/usb.h
+@@ -43,8 +43,6 @@ extern bool usb_endpoint_is_ignored(stru
+ 		struct usb_endpoint_descriptor *epd);
+ extern int usb_remove_device(struct usb_device *udev);
+ 
+-extern int usb_get_device_descriptor(struct usb_device *dev,
+-		unsigned int size);
+ extern int usb_set_isoch_delay(struct usb_device *dev);
+ extern int usb_get_bos_descriptor(struct usb_device *dev);
+ extern void usb_release_bos_descriptor(struct usb_device *dev);
+@@ -57,6 +55,12 @@ extern int usb_generic_driver_suspend(st
+ extern int usb_generic_driver_resume(struct usb_device *udev,
+ 		pm_message_t msg);
+ 
++static inline int usb_get_device_descriptor(struct usb_device *dev,
++		struct usb_device_descriptor *desc, unsigned int size)
++{
++	return usb_get_descriptor(dev, USB_DT_DEVICE, 0, desc, size);
++}
++
+ static inline unsigned usb_get_max_power(struct usb_device *udev,
+ 		struct usb_host_config *c)
+ {
+Index: usb-devel/drivers/usb/core/hub.c
+===================================================================
+--- usb-devel.orig/drivers/usb/core/hub.c
++++ usb-devel/drivers/usb/core/hub.c
+@@ -2671,12 +2671,19 @@ int usb_authorize_device(struct usb_devi
+ 	}
+ 
+ 	if (usb_dev->wusb) {
+-		result = usb_get_device_descriptor(usb_dev, sizeof(usb_dev->descriptor));
++		struct usb_device_descriptor desc;
++
++		result = usb_get_device_descriptor(usb_dev, &desc, sizeof(desc));
+ 		if (result < 0) {
+ 			dev_err(&usb_dev->dev, "can't re-read device descriptor for "
+ 				"authorization: %d\n", result);
+ 			goto error_device_descriptor;
+ 		}
++		if (memcmp(&usb_dev->descriptor, &desc, sizeof(desc)) != 0) {
++			dev_err(&usb_dev->dev, "device descriptor changed before authorization: %d\n",
++					result);
++			goto error_device_descriptor;
++		}
+ 	}
+ 
+ 	usb_dev->authorized = 1;
+@@ -4730,7 +4737,7 @@ static int hub_enable_device(struct usb_
+  */
+ static int
+ hub_port_init(struct usb_hub *hub, struct usb_device *udev, int port1,
+-		int retry_counter)
++		int retry_counter, struct usb_device_descriptor *dev_descr)
+ {
+ 	struct usb_device	*hdev = hub->hdev;
+ 	struct usb_hcd		*hcd = bus_to_hcd(hdev->bus);
+@@ -4742,6 +4749,12 @@ hub_port_init(struct usb_hub *hub, struc
+ 	int			devnum = udev->devnum;
+ 	const char		*driver_name;
+ 	bool			do_new_scheme;
++	const bool		reinit = !!dev_descr;
++	union {
++		struct usb_device_descriptor	d;
++#define GET_DESCRIPTOR_BUFSIZE	64
++		u8				raw[GET_DESCRIPTOR_BUFSIZE];
++	}			buf;
+ 
+ 	/* root hub ports have a slightly longer reset period
+ 	 * (from USB 2.0 spec, section 7.1.7.5)
+@@ -4774,32 +4787,34 @@ hub_port_init(struct usb_hub *hub, struc
+ 	}
+ 	oldspeed = udev->speed;
+ 
+-	/* USB 2.0 section 5.5.3 talks about ep0 maxpacket ...
+-	 * it's fixed size except for full speed devices.
+-	 * For Wireless USB devices, ep0 max packet is always 512 (tho
+-	 * reported as 0xff in the device descriptor). WUSB1.0[4.8.1].
+-	 */
+-	switch (udev->speed) {
+-	case USB_SPEED_SUPER_PLUS:
+-	case USB_SPEED_SUPER:
+-	case USB_SPEED_WIRELESS:	/* fixed at 512 */
+-		udev->ep0.desc.wMaxPacketSize = cpu_to_le16(512);
+-		break;
+-	case USB_SPEED_HIGH:		/* fixed at 64 */
+-		udev->ep0.desc.wMaxPacketSize = cpu_to_le16(64);
+-		break;
+-	case USB_SPEED_FULL:		/* 8, 16, 32, or 64 */
+-		/* to determine the ep0 maxpacket size, try to read
+-		 * the device descriptor to get bMaxPacketSize0 and
+-		 * then correct our initial guess.
+-		 */
+-		udev->ep0.desc.wMaxPacketSize = cpu_to_le16(64);
+-		break;
+-	case USB_SPEED_LOW:		/* fixed at 8 */
+-		udev->ep0.desc.wMaxPacketSize = cpu_to_le16(8);
+-		break;
+-	default:
+-		goto fail;
++	if (!reinit) {
++		/* USB 2.0 section 5.5.3 talks about ep0 maxpacket ...
++		 * it's fixed size except for full speed devices.
++		 * For Wireless USB devices, ep0 max packet is always 512 (tho
++		 * reported as 0xff in the device descriptor). WUSB1.0[4.8.1].
++		 */
++		switch (udev->speed) {
++		case USB_SPEED_SUPER_PLUS:
++		case USB_SPEED_SUPER:
++		case USB_SPEED_WIRELESS:	/* fixed at 512 */
++			udev->ep0.desc.wMaxPacketSize = cpu_to_le16(512);
++			break;
++		case USB_SPEED_HIGH:		/* fixed at 64 */
++			udev->ep0.desc.wMaxPacketSize = cpu_to_le16(64);
++			break;
++		case USB_SPEED_FULL:		/* 8, 16, 32, or 64 */
++			/* to determine the ep0 maxpacket size, try to read
++			 * the device descriptor to get bMaxPacketSize0 and
++			 * then correct our initial guess.
++			 */
++			udev->ep0.desc.wMaxPacketSize = cpu_to_le16(64);
++			break;
++		case USB_SPEED_LOW:		/* fixed at 8 */
++			udev->ep0.desc.wMaxPacketSize = cpu_to_le16(8);
++			break;
++		default:
++			goto fail;
++		}
+ 	}
+ 
+ 	if (udev->speed == USB_SPEED_WIRELESS)
+@@ -4822,22 +4837,24 @@ hub_port_init(struct usb_hub *hub, struc
+ 	if (udev->speed < USB_SPEED_SUPER)
+ 		dev_info(&udev->dev,
+ 				"%s %s USB device number %d using %s\n",
+-				(udev->config) ? "reset" : "new", speed,
++				(reinit ? "reset" : "new"), speed,
+ 				devnum, driver_name);
+ 
+-	/* Set up TT records, if needed  */
+-	if (hdev->tt) {
+-		udev->tt = hdev->tt;
+-		udev->ttport = hdev->ttport;
+-	} else if (udev->speed != USB_SPEED_HIGH
+-			&& hdev->speed == USB_SPEED_HIGH) {
+-		if (!hub->tt.hub) {
+-			dev_err(&udev->dev, "parent hub has no TT\n");
+-			retval = -EINVAL;
+-			goto fail;
++	if (!reinit) {
++		/* Set up TT records, if needed  */
++		if (hdev->tt) {
++			udev->tt = hdev->tt;
++			udev->ttport = hdev->ttport;
++		} else if (udev->speed != USB_SPEED_HIGH
++				&& hdev->speed == USB_SPEED_HIGH) {
++			if (!hub->tt.hub) {
++				dev_err(&udev->dev, "parent hub has no TT\n");
++				retval = -EINVAL;
++				goto fail;
++			}
++			udev->tt = &hub->tt;
++			udev->ttport = port1;
+ 		}
+-		udev->tt = &hub->tt;
+-		udev->ttport = port1;
+ 	}
+ 
+ 	/* Why interleave GET_DESCRIPTOR and SET_ADDRESS this way?
+@@ -4861,7 +4878,6 @@ hub_port_init(struct usb_hub *hub, struc
+ 		}
+ 
+ 		if (do_new_scheme) {
+-			struct usb_device_descriptor *buf;
+ 			int r = 0;
+ 
+ 			retval = hub_enable_device(udev);
+@@ -4872,28 +4888,21 @@ hub_port_init(struct usb_hub *hub, struc
+ 				goto fail;
+ 			}
+ 
+-#define GET_DESCRIPTOR_BUFSIZE	64
+-			buf = kmalloc(GET_DESCRIPTOR_BUFSIZE, GFP_NOIO);
+-			if (!buf) {
+-				retval = -ENOMEM;
+-				continue;
+-			}
+-
+ 			/* Retry on all errors; some devices are flakey.
+ 			 * 255 is for WUSB devices, we actually need to use
+ 			 * 512 (WUSB1.0[4.8.1]).
+ 			 */
+ 			for (operations = 0; operations < GET_MAXPACKET0_TRIES;
+ 					++operations) {
+-				buf->bMaxPacketSize0 = 0;
++				buf.d.bMaxPacketSize0 = 0;
+ 				r = usb_control_msg(udev, usb_rcvaddr0pipe(),
+ 					USB_REQ_GET_DESCRIPTOR, USB_DIR_IN,
+ 					USB_DT_DEVICE << 8, 0,
+-					buf, GET_DESCRIPTOR_BUFSIZE,
++					buf.raw, GET_DESCRIPTOR_BUFSIZE,
+ 					initial_descriptor_timeout);
+-				switch (buf->bMaxPacketSize0) {
++				switch (buf.d.bMaxPacketSize0) {
+ 				case 8: case 16: case 32: case 64: case 255:
+-					if (buf->bDescriptorType ==
++					if (buf.d.bDescriptorType ==
+ 							USB_DT_DEVICE) {
+ 						r = 0;
+ 						break;
+@@ -4915,9 +4924,15 @@ hub_port_init(struct usb_hub *hub, struc
+ 						udev->speed > USB_SPEED_FULL))
+ 					break;
+ 			}
+-			udev->descriptor.bMaxPacketSize0 =
+-					buf->bMaxPacketSize0;
+-			kfree(buf);
++			if (!reinit) {
++				udev->descriptor.bMaxPacketSize0 =
++						buf.d.bMaxPacketSize0;
++			} else if (udev->descriptor.bMaxPacketSize0 !=
++					buf.d.bMaxPacketSize0) {
++				dev_err(&udev->dev, "device reset changed ep0 maxpacket size!\n");
++				retval = -ENODEV;
++				goto fail;
++			}
+ 
+ 			retval = hub_port_reset(hub, port1, udev, delay, false);
+ 			if (retval < 0)		/* error or disconnect */
+@@ -4981,7 +4996,8 @@ hub_port_init(struct usb_hub *hub, struc
+ 				break;
+ 		}
+ 
+-		retval = usb_get_device_descriptor(udev, 8);
++		/* !do_new_scheme || wusb */
++		retval = usb_get_device_descriptor(udev, &buf.d, 8);
+ 		if (retval < 8) {
+ 			if (retval != -ENODEV)
+ 				dev_err(&udev->dev,
+@@ -4992,6 +5008,15 @@ hub_port_init(struct usb_hub *hub, struc
+ 		} else {
+ 			u32 delay;
+ 
++			if (!reinit) {
++				udev->descriptor.bMaxPacketSize0 =
++						buf.d.bMaxPacketSize0;
++			} else if (udev->descriptor.bMaxPacketSize0 !=
++					buf.d.bMaxPacketSize0) {
++				dev_err(&udev->dev, "device reset changed ep0 maxpacket size!\n");
++				retval = -ENODEV;
++				goto fail;
++			}
+ 			retval = 0;
+ 
+ 			delay = udev->parent->hub_delay;
+@@ -5046,8 +5071,8 @@ hub_port_init(struct usb_hub *hub, struc
+ 		usb_ep0_reinit(udev);
+ 	}
+ 
+-	retval = usb_get_device_descriptor(udev, USB_DT_DEVICE_SIZE);
+-	if (retval < (signed)sizeof(udev->descriptor)) {
++	retval = usb_get_device_descriptor(udev, &buf.d, sizeof(buf.d));
++	if (retval < (signed)sizeof(buf.d)) {
+ 		if (retval != -ENODEV)
+ 			dev_err(&udev->dev, "device descriptor read/all, error %d\n",
+ 					retval);
+@@ -5055,6 +5080,10 @@ hub_port_init(struct usb_hub *hub, struc
+ 			retval = -ENOMSG;
+ 		goto fail;
+ 	}
++	if (!reinit)
++		udev->descriptor = buf.d;
++	else
++		*dev_descr = buf.d;
+ 
+ 	usb_detect_quirks(udev);
+ 
+@@ -5158,7 +5187,7 @@ hub_power_remaining(struct usb_hub *hub)
+ 
+ 
+ static int descriptors_changed(struct usb_device *udev,
+-		struct usb_device_descriptor *old_device_descriptor,
++		struct usb_device_descriptor *new_device_descriptor,
+ 		struct usb_host_bos *old_bos)
+ {
+ 	int		changed = 0;
+@@ -5169,8 +5198,8 @@ static int descriptors_changed(struct us
+ 	int		length;
+ 	char		*buf;
+ 
+-	if (memcmp(&udev->descriptor, old_device_descriptor,
+-			sizeof(*old_device_descriptor)) != 0)
++	if (memcmp(&udev->descriptor, new_device_descriptor,
++			sizeof(*new_device_descriptor)) != 0)
+ 		return 1;
+ 
+ 	if ((old_bos && !udev->bos) || (!old_bos && udev->bos))
+@@ -5348,7 +5377,7 @@ static void hub_port_connect(struct usb_
+ 		}
+ 
+ 		/* reset (non-USB 3.0 devices) and get descriptor */
+-		status = hub_port_init(hub, udev, port1, i);
++		status = hub_port_init(hub, udev, port1, i, NULL);
+ 		if (status < 0)
+ 			goto loop;
+ 
+@@ -5524,9 +5553,8 @@ static void hub_port_connect_change(stru
+ 			 * changed device descriptors before resuscitating the
+ 			 * device.
+ 			 */
+-			descriptor = udev->descriptor;
+-			retval = usb_get_device_descriptor(udev,
+-					sizeof(udev->descriptor));
++			retval = usb_get_device_descriptor(udev, &descriptor,
++					sizeof(descriptor));
+ 			if (retval < 0) {
+ 				dev_dbg(&udev->dev,
+ 						"can't read device descriptor %d\n",
+@@ -5536,8 +5564,6 @@ static void hub_port_connect_change(stru
+ 						udev->bos)) {
+ 					dev_dbg(&udev->dev,
+ 							"device descriptor has changed\n");
+-					/* for disconnect() calls */
+-					udev->descriptor = descriptor;
+ 				} else {
+ 					status = 0; /* Nothing to do */
+ 				}
+@@ -5982,7 +6008,7 @@ static int usb_reset_and_verify_device(s
+ 	struct usb_device		*parent_hdev = udev->parent;
+ 	struct usb_hub			*parent_hub;
+ 	struct usb_hcd			*hcd = bus_to_hcd(udev->bus);
+-	struct usb_device_descriptor	descriptor = udev->descriptor;
++	struct usb_device_descriptor	descriptor;
+ 	struct usb_host_bos		*bos;
+ 	int				i, j, ret = 0;
+ 	int				port1 = udev->portnum;
+@@ -6018,7 +6044,7 @@ static int usb_reset_and_verify_device(s
+ 		/* ep0 maxpacket size may change; let the HCD know about it.
+ 		 * Other endpoints will be handled by re-enumeration. */
+ 		usb_ep0_reinit(udev);
+-		ret = hub_port_init(parent_hub, udev, port1, i);
++		ret = hub_port_init(parent_hub, udev, port1, i, &descriptor);
+ 		if (ret >= 0 || ret == -ENOTCONN || ret == -ENODEV)
+ 			break;
+ 	}
+@@ -6030,7 +6056,6 @@ static int usb_reset_and_verify_device(s
+ 	/* Device might have changed firmware (DFU or similar) */
+ 	if (descriptors_changed(udev, &descriptor, bos)) {
+ 		dev_info(&udev->dev, "device firmware changed\n");
+-		udev->descriptor = descriptor;	/* for disconnect() calls */
+ 		goto re_enumerate;
+ 	}
+ 
