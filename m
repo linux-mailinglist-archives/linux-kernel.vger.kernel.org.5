@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FD775E31A
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 18:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348BC75E31F
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 18:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbjGWQI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 12:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
+        id S230013AbjGWQJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 12:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbjGWQIt (ORCPT
+        with ESMTP id S229897AbjGWQIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 12:08:49 -0400
-Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [5.144.164.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B728BE74;
-        Sun, 23 Jul 2023 09:08:47 -0700 (PDT)
+        Sun, 23 Jul 2023 12:08:51 -0400
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68173E72
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 09:08:49 -0700 (PDT)
 Received: from Marijn-Arch-PC.localdomain (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 1DEC53F1DE;
-        Sun, 23 Jul 2023 18:08:45 +0200 (CEST)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 617623F1E4;
+        Sun, 23 Jul 2023 18:08:46 +0200 (CEST)
 From:   Marijn Suijten <marijn.suijten@somainline.org>
-Date:   Sun, 23 Jul 2023 18:08:42 +0200
-Subject: [PATCH v4 04/17] dt-bindings: display/msm: Remove DSI1 ports from
- SM6350/SM6375 example
+Date:   Sun, 23 Jul 2023 18:08:43 +0200
+Subject: [PATCH v4 05/17] dt-bindings: clock: qcom,dispcc-sm6125: Require
+ GCC PLL0 DIV clock
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230723-sm6125-dpu-v4-4-a3f287dd6c07@somainline.org>
+Message-Id: <20230723-sm6125-dpu-v4-5-a3f287dd6c07@somainline.org>
 References: <20230723-sm6125-dpu-v4-0-a3f287dd6c07@somainline.org>
 In-Reply-To: <20230723-sm6125-dpu-v4-0-a3f287dd6c07@somainline.org>
 To:     Andy Gross <agross@kernel.org>,
@@ -57,67 +57,67 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzk@kernel.org>,
         linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>
+        freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>,
+        Rob Herring <robh@kernel.org>
 X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both SM6350 and SM6375 support only a single DSI link, and don't have a
-corresponding dsi1 node in DTS.  Their examples should not suggest an
-output interface port on the display-controller node to this inexistant
-DSI host, with a dsi1_in label reference that doesn't exist in the
-example either.
+The "gcc_disp_gpll0_div_clk_src" clock is consumed by the driver, will
+be passed from DT, and should be required by the bindings.
 
-Fixes: 3b7502b0c205 ("dt-bindings: display/msm: Add SM6350 MDSS")
-Fixes: 2a5c1021bc77 ("dt-bindings: display/msm: Add SM6375 MDSS")
+Fixes: 8397c9c0c26b ("dt-bindings: clock: add QCOM SM6125 display clock bindings")
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
 ---
- .../devicetree/bindings/display/msm/qcom,sm6350-mdss.yaml          | 7 -------
- .../devicetree/bindings/display/msm/qcom,sm6375-mdss.yaml          | 7 -------
- 2 files changed, 14 deletions(-)
+ Documentation/devicetree/bindings/clock/qcom,dispcc-sm6125.yaml | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sm6350-mdss.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sm6350-mdss.yaml
-index ed0ad194d4ce..63962a8f2faf 100644
---- a/Documentation/devicetree/bindings/display/msm/qcom,sm6350-mdss.yaml
-+++ b/Documentation/devicetree/bindings/display/msm/qcom,sm6350-mdss.yaml
-@@ -131,13 +131,6 @@ examples:
-                         remote-endpoint = <&dsi0_in>;
-                     };
-                 };
--
--                port@1 {
--                    reg = <1>;
--                    dpu_intf2_out: endpoint {
--                        remote-endpoint = <&dsi1_in>;
--                    };
--                };
-             };
-         };
+diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm6125.yaml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm6125.yaml
+index 8a210c4c5f82..8fd29915bf2c 100644
+--- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm6125.yaml
++++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm6125.yaml
+@@ -29,6 +29,7 @@ properties:
+       - description: Link clock from DP PHY
+       - description: VCO DIV clock from DP PHY
+       - description: AHB config clock from GCC
++      - description: GPLL0 div source from GCC
  
-diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sm6375-mdss.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sm6375-mdss.yaml
-index 76369a4f7c4d..595a9d56949c 100644
---- a/Documentation/devicetree/bindings/display/msm/qcom,sm6375-mdss.yaml
-+++ b/Documentation/devicetree/bindings/display/msm/qcom,sm6375-mdss.yaml
-@@ -132,13 +132,6 @@ examples:
-                         remote-endpoint = <&dsi0_in>;
-                     };
-                 };
--
--                port@1 {
--                    reg = <1>;
--                    dpu_intf2_out: endpoint {
--                        remote-endpoint = <&dsi1_in>;
--                    };
--                };
-             };
-         };
+   clock-names:
+     items:
+@@ -39,6 +40,7 @@ properties:
+       - const: dp_phy_pll_link_clk
+       - const: dp_phy_pll_vco_div_clk
+       - const: cfg_ahb_clk
++      - const: gcc_disp_gpll0_div_clk_src
  
+   '#clock-cells':
+     const: 1
+@@ -72,14 +74,16 @@ examples:
+                <&dsi1_phy 1>,
+                <&dp_phy 0>,
+                <&dp_phy 1>,
+-               <&gcc GCC_DISP_AHB_CLK>;
++               <&gcc GCC_DISP_AHB_CLK>,
++               <&gcc GCC_DISP_GPLL0_DIV_CLK_SRC>;
+       clock-names = "bi_tcxo",
+                     "dsi0_phy_pll_out_byteclk",
+                     "dsi0_phy_pll_out_dsiclk",
+                     "dsi1_phy_pll_out_dsiclk",
+                     "dp_phy_pll_link_clk",
+                     "dp_phy_pll_vco_div_clk",
+-                    "cfg_ahb_clk";
++                    "cfg_ahb_clk",
++                    "gcc_disp_gpll0_div_clk_src";
+       #clock-cells = <1>;
+       #power-domain-cells = <1>;
+     };
 
 -- 
 2.41.0
