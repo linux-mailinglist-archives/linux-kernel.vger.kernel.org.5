@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0206075E0F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AED75E0F3
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbjGWJeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 05:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjGWJeE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229797AbjGWJeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 23 Jul 2023 05:34:04 -0400
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A458E5E
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:33:59 -0700 (PDT)
-Received: from linma$zju.edu.cn ( [42.120.103.59] ) by
- ajax-webmail-mail-app3 (Coremail) ; Sun, 23 Jul 2023 17:33:54 +0800
- (GMT+08:00)
-X-Originating-IP: [42.120.103.59]
-Date:   Sun, 23 Jul 2023 17:33:54 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "Lin Ma" <linma@zju.edu.cn>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] vdpa: Complement vdpa_nl_policy for nlattr length
- check
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220622(41e5976f)
- Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <20230723050656-mutt-send-email-mst@kernel.org>
-References: <20230723080507.3716924-1-linma@zju.edu.cn>
- <20230723050656-mutt-send-email-mst@kernel.org>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbjGWJeC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 Jul 2023 05:34:02 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28176E67
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:34:00 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbc5d5746cso30902515e9.2
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:34:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690104838; x=1690709638;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OC0hL4ajjQBun5KqVFTzcpsSj0OMP1ItjYDfFgKDcog=;
+        b=kp6dRrQUevs9NleJDIlPEeph5mcu+PXMAQug5ZzzeW6rl+pj4grKrkWk4egllNaPqg
+         7ffRnavd40Fg4Q2eOFptOwQ0B0F50hw9pyeiYksz/SKYqFG5PYtp6W5BYLJweDRxNram
+         YadqiUP3b+NTPMMzg/VM4/eoe+Y8jlmEGBU/89rrn45bFJpv2122TQ2YFHmVH6x2hKzX
+         In6erAig/Oq5d8kxUycrrr377AjnvL0JViXl8gUEoKsiRWUEEXRqL0VHcPkXkAyPkdg9
+         zP6eFmHtILztNQtEoNPMmQC26L1fdLqalNw7siSnstdYIdDNejNGhWV8H4vhA531pyVU
+         g6Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690104838; x=1690709638;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OC0hL4ajjQBun5KqVFTzcpsSj0OMP1ItjYDfFgKDcog=;
+        b=PJA7qOSUqPW9hlHwOjmHXxkGP1J2J4P+eGSyS69za/Rhsu/mYJkNdQyS9hEcFBoOvT
+         SFzvkr9B1C/rT4mvysW2waW7fnBDm3DhQw0xm023/AimZEyi6XGfbCnuOA6SOpeiflvv
+         Gy24n7gXeHhGRIRwXc4Ce8J2zCXl9imtN7dFQNgg/zy5tqIhQZYbRriTD23QUuPqz8Ji
+         /EzmitR4Mo6SjLy4WyZTdd8IUe0CqXbE7AoTSd0ByD/pP1/GAvC7c0JpA7L+GMg++qeH
+         rfAQSVUJDNfzTpN2mzhSfuQGy2km/vi6KROFT4/wziHiRnHxEL9GntnJeVpsFJDhpAoA
+         zkTg==
+X-Gm-Message-State: ABy/qLZ/Xg14nM0U+paGRz5DHOI18ah8gXvBhqEbfLtRLXXh69eTVtmR
+        5nFUOzoyanh5ge5DX0j360Tyew==
+X-Google-Smtp-Source: APBJJlGQYnTIzlGqoT+dviUAIa3bhjXpw2+p9F3nFx1r9W62L0Gpb/iIAmd6BIQ4N1VtH/tpbeCfgQ==
+X-Received: by 2002:a7b:c30e:0:b0:3f9:871:c2da with SMTP id k14-20020a7bc30e000000b003f90871c2damr4859726wmj.40.1690104838588;
+        Sun, 23 Jul 2023 02:33:58 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id p1-20020a05600c204100b003fc17e8a1efsm9791468wmg.45.2023.07.23.02.33.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Jul 2023 02:33:58 -0700 (PDT)
+Message-ID: <3c0f0a26-ea9a-faa6-9fe1-ffcf242b6200@linaro.org>
+Date:   Sun, 23 Jul 2023 11:33:55 +0200
 MIME-Version: 1.0
-Message-ID: <729f5c17.e4079.18982192866.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cC_KCgCn4gED9LxkLvqACw--.43663W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwIFEmS8hHkFjgABs5
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW3Jw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 06/11] dt-bindings: remoteproc: qcom,adsp: Remove AGGRE2
+ clock
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230721-topic-rpm_clk_cleanup-v1-0-cf6cd5c621d5@linaro.org>
+ <20230721-topic-rpm_clk_cleanup-v1-6-cf6cd5c621d5@linaro.org>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230721-topic-rpm_clk_cleanup-v1-6-cf6cd5c621d5@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gTWljaGFlbCwKCj4gPgo+ID4gVGhlIHZkcGFfbmxfcG9saWN5IHN0cnVjdHVyZSBpcyB1
-c2VkIHRvIHZhbGlkYXRlIHRoZSBubGF0dHIgd2hlbiBwYXJzaW5nCj4gPiB0aGUgaW5jb21pbmcg
-bmxtc2cuIEl0IHdpbGwgZW5zdXJlIHRoZSBhdHRyaWJ1dGUgYmVpbmcgZGVzY3JpYmVkIHByb2R1
-Y2VzCj4gPiBhIHZhbGlkIG5sYXR0ciBwb2ludGVyIGluIGluZm8tPmF0dHJzIGJlZm9yZSBlbnRl
-cmluZyBpbnRvIGVhY2ggaGFuZGxlcgo+ID4gaW4gdmRwYV9ubF9vcHMuCj4gPiAKPiA+IFRoYXQg
-aXMgdG8gc2F5LCB0aGUgbWlzc2luZyBwYXJ0IGluIHZkcGFfbmxfcG9saWN5IG1heSBsZWFkIHRv
-IGlsbGVnYWwKPiA+IG5sYXR0ciBhZnRlciBwYXJzaW5nLCB3aGljaCBjb3VsZCBsZWFkIHRvIE9P
-QiByZWFkIGp1c3QgbGlrZSBDVkUtMjAyMy0zNzczLgo+IAo+IEhtbS4KPiAKPiBodHRwczovL2N2
-ZS5taXRyZS5vcmcvY2dpLWJpbi9jdmVuYW1lLmNnaT9uYW1lPUNWRS0yMDIzLTM3NzMKPiAKPiAq
-KiBSRVNFUlZFRCAqKiBUaGlzIGNhbmRpZGF0ZSBoYXMgYmVlbiByZXNlcnZlZCBieSBhbiBvcmdh
-bml6YXRpb24gb3IgaW5kaXZpZHVhbCB0aGF0IHdpbGwgdXNlIGl0IHdoZW4gYW5ub3VuY2luZyBh
-IG5ldyBzZWN1cml0eSBwcm9ibGVtLiBXaGVuIHRoZSBjYW5kaWRhdGUgaGFzIGJlZW4gcHVibGlj
-aXplZCwgdGhlIGRldGFpbHMgZm9yIHRoaXMgY2FuZGlkYXRlIHdpbGwgYmUgcHJvdmlkZWQuCj4g
-CgpZZWFoLCB0aGF0IENWRSBpcyBhc3NpZ25lZCB3aGlsZSBmaXggbm90IHVwc3RyZWFtIHlldC4g
-RllJLCB0aGUgZml4IGlzIHBlbmRpbmcgdG9vLiAKU2VlLCBodHRwczovL21hcmMuaW5mby8/bD1s
-aW51eC1rZXJuZWwmbT0xNjkwMDk4MDExMzEwNTgmdz0yLgoKCj4gCj4gPiBUaGlzIHBhdGNoIGFk
-ZHMgdGhyZWUgbWlzc2luZyBubGFfcG9saWN5IHRvIGF2b2lkIHN1Y2ggYnVncy4KPiA+IAo+ID4g
-Rml4ZXM6IDkwZmVhNWE4MDBjMyAoInZkcGE6IGRldmljZSBmZWF0dXJlIHByb3Zpc2lvbmluZyIp
-Cj4gPiBGaXhlczogMTNiMDBiMTM1NjY1ICgidmRwYTogQWRkIHN1cHBvcnQgZm9yIHF1ZXJ5aW5n
-IHZlbmRvciBzdGF0aXN0aWNzIikKPiA+IEZpeGVzOiBhZDY5ZGQwYmYyNmIgKCJ2ZHBhOiBJbnRy
-b2R1Y2UgcXVlcnkgb2YgZGV2aWNlIGNvbmZpZyBsYXlvdXQiKQo+ID4gU2lnbmVkLW9mZi1ieTog
-TGluIE1hIDxsaW5tYUB6anUuZWR1LmNuPgo+IAo+IEkgZG9uJ3Qga25vdyBob3cgT09CIHRyaWdn
-ZXJzIGJ1dCB0aGlzIGR1cGxpY2F0aW9uIGlzIHByb2JsZW1hdGljIEkKPiB0aGluazogd2UgYXJl
-IGxpa2VseSB0byBmb3JnZXQgYWdhaW4gaW4gdGhlIGZ1dHVyZS4gIElzbid0IHRoZXJlIGEgd2F5
-Cj4gdG8gYmxvY2sgZXZlcnl0aGluZyB0aGF0IGlzIG5vdCBsaXN0ZWQ/Cj4gCgpTdXJlLCB0aGF0
-IGlzIGFub3RoZXIgdW5kZXJnb2luZyB0YXNrIEknbSB3b3JraW5nIG9uLiBJZiB0aGUgbmxhdHRy
-IGlzIHBhcnNlZCB3aXRoCk5MX1ZBTElEQVRFX1VOU1BFQywgYW55IGZvcmdvdHRlbiBubGF0dHIg
-d2lsbCBiZSByZWplY3RlZCwgdGhlcmVmb3JlICh3aGljaCBpcyB0aGUgZGVmYXVsdApmb3IgbW9k
-ZXJuIG5sYV9wYXJzZSkuIFRoZSBwcm9ibGVtIGhlcmUgaXMgdGhhdCB0aGVyZSBhcmUgc3RpbGwg
-Y29uc3VtZXJzIGZvcgpubGFfcGFyc2VfZGVwcmVjYXRlZC4gQW5kIHdlIGNhbm5vdCBzaW1wbHkg
-cmVwbGFjZSBhbGwgKl9kZXByZWNhdGVkIHRvIG1vZGVybiBvbmVzCmFzIGl0IG1heSBicmVhayB1
-c2Vyc3BhY2UuIFNlZSB0aGUgY29tbWl0IG1lc3NhZ2UgaW4gOGNiMDgxNzQ2YzAzICgibmV0bGlu
-azogbWFrZQp2YWxpZGF0aW9uIG1vcmUgY29uZmlndXJhYmxlIGZvciBmdXR1cmUgc3RyaWN0bmVz
-cyIpCgpJIGJlbGlldmUgaWYgd2UgY2FuIGRvIGVub3VnaCB0ZXN0IGFnYWluc3QgdXNlcnNwYWNl
-IHRvb2xjaGFpbnMsIHdlIGNhbiB1bHRpbWF0ZWx5CnVwZ3JhZGUgYWxsICpfZGVwcHJlY2F0ZWQg
-cGFyc2VycyB0byBtb2Rlcm4gb25lcywgd2hpY2ggY29zdHMgdGltZSBhbmQgZWZmb3J0cy4gVGhp
-cwpzZW5kIHBhdGNoIGlzIGEgbXVjaCBzaW1wbGVyIChidXQgdGVtcG9yYXJ5KSBzb2x1dGlvbiBm
-b3Igbm93LgoKUmVnYXJkcwpMaW4K
+On 21/07/2023 17:36, Konrad Dybcio wrote:
+> The AGGRE2 clock is a clock for the entire AGGRE2 bus, managed from
+> within the interconnect driver. Attaching it to SLPI was a total hack.
+> Get rid of it.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+> index a2b0079de039..af78f76734db 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+> @@ -91,11 +91,9 @@ allOf:
+>          clocks:
+>            items:
+>              - description: XO clock
+> -            - description: AGGRE2 clock
+
+I think this entry can be squashed now with previous if:then:.
+
+Best regards,
+Krzysztof
+
