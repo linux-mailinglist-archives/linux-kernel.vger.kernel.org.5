@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD4475E5BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 01:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D041975E5BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 01:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbjGWXTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 19:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34374 "EHLO
+        id S229899AbjGWXUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 19:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjGWXTv (ORCPT
+        with ESMTP id S229898AbjGWXUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 19:19:51 -0400
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35240E5D;
-        Sun, 23 Jul 2023 16:19:50 -0700 (PDT)
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-666edfc50deso2362517b3a.0;
-        Sun, 23 Jul 2023 16:19:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690154389; x=1690759189;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/zGk1Niam6UZ2jy2licKvwrBdebUzet8WIVWth2StMA=;
-        b=Jtclg3eedaDYMmGNcFYEtB0xWHNLUT94yn4GUFiGynd3CWOKzCXWKfwD/L/smBjl36
-         O8B7wFqRj7wKhFJ+1x9h98sd5zFMXaharsYntpX6JpNYMVE65johWjekWP3yHIh4uhBl
-         jb6R5OIOCfPn5IrxqFtB4D1NdhRM9Eu1sLGYTWXxZUPa1Oef2BSGhCH0OTPH8PEn9XmN
-         klbAd/NEMWrh1Wglkmxra6oVgtX8qSLm3yvxWI9GtYKAutEqajvLFNU0uC19YIpfT5lO
-         F87K9GWMmByuWZLa7C9um2bSnVyCnl/6YqzeR0bA5bKq5bKKz5BlTfNa99VlTYNDax1p
-         EV3g==
-X-Gm-Message-State: ABy/qLarJdATQTlpBIKo8j4m9yencp5eMJ0+coX3TmJzauI1X/dbOLgY
-        TT1V7Bh/AOuCe8TlZvVwhys=
-X-Google-Smtp-Source: APBJJlG7c6VUFMt9StjN8OzLFMiRjZ1/RdPf879H3Fo6SfW3Faqo+7wmGxoBDjyGcjGmQ58fyWUPRQ==
-X-Received: by 2002:a05:6a20:2446:b0:130:7ef2:ff21 with SMTP id t6-20020a056a20244600b001307ef2ff21mr12157563pzc.19.1690154389642;
-        Sun, 23 Jul 2023 16:19:49 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id m198-20020a633fcf000000b0054fe6bae952sm7190723pga.4.2023.07.23.16.19.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 16:19:49 -0700 (PDT)
-Date:   Sun, 23 Jul 2023 23:19:47 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Ani Sinha <anisinha@redhat.com>
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vmbus_testing: fix wrong python syntax for integer value
- comparison
-Message-ID: <ZL21k2GWKgZldIq4@liuwe-devbox-debian-v2>
-References: <20230705134408.6302-1-anisinha@redhat.com>
- <761F02E9-7A80-486B-8CB4-B5E067D7F587@redhat.com>
+        Sun, 23 Jul 2023 19:20:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558A4E78;
+        Sun, 23 Jul 2023 16:20:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AE03260E9C;
+        Sun, 23 Jul 2023 23:20:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 197BFC433C7;
+        Sun, 23 Jul 2023 23:20:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690154403;
+        bh=g8SzQXFzpEBeTHxOxGlzKqVUPbZUuS6W4t99oZqHAxA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OViqbWr5eRhdTDonKw3okEYaqpSzDRH78ixWzUh65LtIZ8WwvcOIYNhWbaZ01bS1Z
+         xoOLXbRPSMcGQUzfi2EaKs+nPrm0QN2wmnZXs7BGvAY/d+zhEJuKBBiP5vJE6wGMBY
+         pZcpGJd+NREdjqOeCI/OlgdryqLwC/LSdbH4v42cVETAlAwhnd1H33hI8ewvakDjW3
+         /57GkMzVET9oJsAwIc6BqBUX6A/0Y8o//hYf5bEpb1dS3fxovIKge1h60fWjEahkgU
+         AfjD9tuVze7nsiJZl9pXcfn9GMjigqSdsdAAKs7pBAtsHJGi1dfjkm8QPCUHbOR1bd
+         wmxt+PmrKJYCw==
+Date:   Mon, 24 Jul 2023 00:19:59 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Conor Dooley <Conor.Dooley@microchip.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the riscv-dt tree
+Message-ID: <20230724-enclosure-imprint-e502e7414ce6@spud>
+References: <20230724084817.0ed6cbf4@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="RKXUebwcOE38mN55"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <761F02E9-7A80-486B-8CB4-B5E067D7F587@redhat.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230724084817.0ed6cbf4@canb.auug.org.au>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 01:13:25PM +0530, Ani Sinha wrote:
-> 
-> 
-> > On 05-Jul-2023, at 7:14 PM, Ani Sinha <anisinha@redhat.com> wrote:
-> > 
-> > It is incorrect in python to compare integer values using the "is" keyword.
-> > The "is" keyword in python is used to compare references to two objects,
-> > not their values. Newer version of python3 (version 3.8) throws a warning
-> > when such incorrect comparison is made. For value comparison, "==" should
-> > be used.
-> > 
-> > Fix this in the code and suppress the following warning:
-> > 
-> > /usr/sbin/vmbus_testing:167: SyntaxWarning: "is" with a literal. Did you mean "=="?
-> 
-> Ping …
-> 
 
-Applied to hyperv-fixes. Thanks.
+--RKXUebwcOE38mN55
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jul 24, 2023 at 08:48:17AM +1000, Stephen Rothwell wrote:
+
+> In commit
+>=20
+>   8e421af310dc ("riscv: dts: starfive: remove undocumented phy properties=
+")
+>=20
+> Fixes tag
+>=20
+>   Fixes: b15a73c358d1 ("riscv: dts: starfive: visionfive2: Add configurat=
+ion of gmac and phy")
+>=20
+> has these problem(s):
+>=20
+>   - Subject does not match target commit subject
+>=20
+> Thus
+>=20
+> Fixes: b15a73c358d1 ("riscv: dts: starfive: visionfive 2: Add configurati=
+on of gmac and phy")
+
+Hopefully the commit will go away entirely when I get sent a real fix
+for b15a73c358d1, but Fixes: tag duly fixed nonetheless. Thanks.
+
+--RKXUebwcOE38mN55
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZL21nwAKCRB4tDGHoIJi
+0ur6AP9VNtdU7MLD+wO9g1rB+u1gC7K16cpoPz81B2E1abNyhAEAtLbRsylC+8Hr
+1S4axwhPniUJiYpXcfygGoTgZ6v4tgU=
+=stOX
+-----END PGP SIGNATURE-----
+
+--RKXUebwcOE38mN55--
