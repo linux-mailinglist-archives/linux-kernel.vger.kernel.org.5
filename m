@@ -2,112 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 910D575E0B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DDA75E0CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbjGWJXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 05:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36556 "EHLO
+        id S229779AbjGWJYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 05:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjGWJXh (ORCPT
+        with ESMTP id S229705AbjGWJYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 05:23:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08A01A1;
-        Sun, 23 Jul 2023 02:23:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3DD8B60C70;
-        Sun, 23 Jul 2023 09:23:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2802BC433CA;
-        Sun, 23 Jul 2023 09:23:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690104215;
-        bh=mAwywMcPI4ambiKlJ8RwQkwJADEyYv0oTSApNmrgDhQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XVGudBlN2TPPnvRg8HBMle9q1tlfuLKgFDl4bGWeWWzRoo3FKdPZ+F6Y7k+gGdFH2
-         EnZYNyXQLEF7esKEywXa993fc8y8w+/cjDf+xL6wRvyikUItLSWbXrROM1imOlfhDb
-         +RolmxObbTqaLHgxd8f40rq5xpjdw6ura7rlcBGTfJVCJqscQJaqN2D2Pkyto+Rfq5
-         KQjkFLs0gUEQcZc1hMAgvwyr81o7tcly4KMYEIITxBcO1IpsN4SjjGOPYw0t5DTCxp
-         Uhy5rXGJKcPEeXBNn8vKWvvCOz6taxop7e4VuGVrKAMRhfFeuwJb5Rxu+AKbCPhPUv
-         7M7fsdCHm+tPg==
-Date:   Sun, 23 Jul 2023 10:23:35 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Nuno Sa <nuno.sa@analog.com>
-Subject: Re: [PATCH v2 7/8] iio: core: Move initcalls closer to the
- respective calls
-Message-ID: <20230723102335.6df07e6d@jic23-huawei>
-In-Reply-To: <20230721170022.3461-8-andriy.shevchenko@linux.intel.com>
-References: <20230721170022.3461-1-andriy.shevchenko@linux.intel.com>
-        <20230721170022.3461-8-andriy.shevchenko@linux.intel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sun, 23 Jul 2023 05:24:08 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E611A4;
+        Sun, 23 Jul 2023 02:24:07 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qNVJt-0000EZ-PK; Sun, 23 Jul 2023 11:24:05 +0200
+Message-ID: <01e617d6-c7e0-8f46-6f04-94961251f2a0@leemhuis.info>
+Date:   Sun, 23 Jul 2023 11:24:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: Kernel 6.5-rc2: system crash on suspend bisected
+Content-Language: en-US, de-DE
+To:     Woody Suwalski <terraluna977@gmail.com>, imammedo@redhat.com,
+        bhelgaas@google.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+References: <11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com>
+From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     Linux kernel regressions list <regressions@lists.linux.dev>
+In-Reply-To: <11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1690104247;995ef5b1;
+X-HE-SMSGID: 1qNVJt-0000EZ-PK
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 20:00:21 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+[CCing the regression list, as it should be in the loop for regressions:
+https://docs.kernel.org/admin-guide/reporting-regressions.html]
 
-> Move subsys_initcall() and module_exit() closer to the respective calls.
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
 
-Why? For this particular set of macros I can see advantages to them being
-near the code and to them being in a fairly predictable location (end of
-file).
-
-I think the patch description should make the why argument. 
-
-Jonathan
-
-
+On 20.07.23 05:36, Woody Suwalski wrote:
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-> ---
->  drivers/iio/industrialio-core.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> Laptop shows a kernel crash trace after a first suspend to ram, on a
+> second attempt to suspend it becomes frozen solid. This is 100%
+> repeatable with a 6.5-rc2 kernel, not happening with a 6.4 kernel - see
+> the attached dmesg output.
 > 
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index a9b9804097ab..5c9c68d69fc6 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -354,6 +354,7 @@ static int __init iio_init(void)
->  error_nothing:
->  	return ret;
->  }
-> +subsys_initcall(iio_init);
->  
->  static void __exit iio_exit(void)
->  {
-> @@ -362,6 +363,7 @@ static void __exit iio_exit(void)
->  	bus_unregister(&iio_bus_type);
->  	debugfs_remove(iio_debugfs_dentry);
->  }
-> +module_exit(iio_exit);
->  
->  #if defined(CONFIG_DEBUG_FS)
->  static ssize_t iio_debugfs_read_reg(struct file *file, char __user *userbuf,
-> @@ -2118,9 +2120,6 @@ int iio_device_get_current_mode(struct iio_dev *indio_dev)
->  }
->  EXPORT_SYMBOL_GPL(iio_device_get_current_mode);
->  
-> -subsys_initcall(iio_init);
-> -module_exit(iio_exit);
-> -
->  MODULE_AUTHOR("Jonathan Cameron <jic23@kernel.org>");
->  MODULE_DESCRIPTION("Industrial I/O core");
->  MODULE_LICENSE("GPL");
+> I have bisected the kernel uilds and it points to :
+> [40613da52b13fb21c5566f10b287e0ca8c12c4e9] PCI: acpiphp: Reassign
+> resources on bridge if necessary
+> 
+> Reversing this patch seems to fix the kernel crash problem on my laptop.
+> 
+> Happy to test some proper fix patches...
+> 
 
+Thanks for the report. To be sure the issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+tracking bot:
+
+#regzbot ^introduced 40613da52b13fb21c5566f10b287e0ca8c12c
+#regzbot title PCI: acpiphp: Oops on first attempt to suspend, freeze on
+second
+#regzbot ignore-activity
+
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
+
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (the parent of this mail). See page linked in footer for
+details.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
