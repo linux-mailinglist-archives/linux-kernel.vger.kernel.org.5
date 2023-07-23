@@ -2,542 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B5175E08E
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 10:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7B575E090
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjGWI7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 04:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58930 "EHLO
+        id S229723AbjGWJFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 05:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjGWI7O (ORCPT
+        with ESMTP id S229470AbjGWJFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 04:59:14 -0400
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE7E1AE;
-        Sun, 23 Jul 2023 01:59:10 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4R7xzt25t8z9sRG;
-        Sun, 23 Jul 2023 10:59:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
-        s=MBO0001; t=1690102746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jLF7bGxejPHjwZVHNyJCgEtKEjrfVUR9tmrTS+c/5ts=;
-        b=K2KE9T8VgEwbnuSHjyc00wO3KzJvJqYeVI3kLmaNh4TdOT2qauWv7Qke3eqGpYLbrqP46s
-        4LvhgokN8MmyP84o9rZzekKUZgop5nuVTtTdA3Ny73cdZlCocmOl0uoADBgskjObGd9xog
-        wd6RR7usdaD6VX/m7wSreSMj4q6HoBJWPFrsFkl7hUzWSDNpjJHwvmcY4JqJDqX53HylKQ
-        2UhjzydJfvk2qL0B54N+GZpNqybzJHGT6bZZ5Qt5rPY/JtfwCCVr8zerz7lDcMe0zFnwIv
-        n9s6mn7yz61VpvlGuR/BfqTQwJeKMxyaYqAbvdSLqUCvUn6yCf0PTqMgMdi4DA==
-References: <20230605190745.366882-1-frank@oltmanns.dev>
- <20230605190745.366882-2-frank@oltmanns.dev>
- <2bvcukogzhcdbfsrruylgw5fbezaqjpcojqaambfoiv5fc2upy@ffumn5sevbeb>
- <875y7y1f0d.fsf@oltmanns.dev>
- <sijbhopoxuw5wodyry3smg7tm4wzoc7k6xakt4qdvxqsok32mv@u7rh4dct5ya6>
- <87a5x41w5r.fsf@oltmanns.dev>
- <unoskbtcteluxj7g3xkwc7ngcmglvcbm5ah25m7huhqxwd4dj3@nmfxbedwyu54>
- <87bkhbhnol.fsf@oltmanns.dev>
- <yj6ss64s7p2uaslodj5zklrwhegz54bgh4l4wmldv6cccggepz@yombds4hij3c>
- <87pm4xg2ub.fsf@oltmanns.dev>
- <ycdinzk5633ig5r3ao3czn4p53j32fir4jjsgue3pvi7rcovkn@sptpsyt72ir7>
-From:   Frank Oltmanns <frank@oltmanns.dev>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Roman Beranek <me@crly.cz>,
-        Samuel Holland <samuel@sholland.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH 1/2] clk: sunxi-ng: nkm: consider alternative parent
- rates when finding rate
-In-reply-to: <ycdinzk5633ig5r3ao3czn4p53j32fir4jjsgue3pvi7rcovkn@sptpsyt72ir7>
-Date:   Sun, 23 Jul 2023 10:59:03 +0200
-Message-ID: <871qgzqa08.fsf@oltmanns.dev>
+        Sun, 23 Jul 2023 05:05:01 -0400
+Received: from mail-oo1-f77.google.com (mail-oo1-f77.google.com [209.85.161.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AA512D
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:05:00 -0700 (PDT)
+Received: by mail-oo1-f77.google.com with SMTP id 006d021491bc7-56768da274aso6096011eaf.1
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:05:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690103099; x=1690707899;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5Z7PC83KsxoVU5Bzl33X/u0SPn6MRJplL3HDqlvZzBo=;
+        b=BWD+Gzq+vk1ZIG3TKHolCmP5XYq7R3NDDLsMuGQKpTXbt1V0NovA0Rc8pL4BuU+3kD
+         sgwrF7LXGGtUg7W/t3VY6Nb+XzxfDmB8nmIL+ulDboVqtjXBwT5ASkhKL+/OQii3a+L1
+         8LSPqCjF7NkyP+nadsf41tRZhi6lXwmIrZLSGndDv6BJhmfdN42ZYGKgko01hjV/B7lJ
+         U8ji0pRixrdml53SNA82GX4Qprz+Z9zKNj+Xib/wsGaP3tCXb1Jd0GiD5n5ZvQQrJVUB
+         aLsBQDphwtjwJoqql949RhoTP4infZgnLESYrloofrZsAvMFDssbVg6oxCPUpGEJ9J9r
+         lY4g==
+X-Gm-Message-State: ABy/qLayfhlgZOOW4lDblfoViGWPz8rC/8YgMqvJknuLbX/W0UtwtZcb
+        lpRxFAPcgw0DNJ8NOOqWvhgAU9b82IoKRG3yauV364GdQPkG
+X-Google-Smtp-Source: APBJJlFQdcYY9cg4tNJFXkSCa1L1k1gByIFG2HQ+CcpbR4gCIBed9LPe9W1c/hYlg7t3WoCKihk+K/4ERFJb9mL4C/r1mM3HPACw
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:210e:b0:3a3:edca:2950 with SMTP id
+ r14-20020a056808210e00b003a3edca2950mr13320629oiw.5.1690103099730; Sun, 23
+ Jul 2023 02:04:59 -0700 (PDT)
+Date:   Sun, 23 Jul 2023 02:04:59 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e4b0f0060123ca40@google.com>
+Subject: [syzbot] [mm?] KASAN: slab-use-after-free Read in madvise_collapse
+From:   syzbot <syzbot+173cc8cfdfbbef6dd755@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+Hello,
 
-On 2023-07-17 at 16:06:02 +0200, Maxime Ripard <mripard@kernel.org> wrote:
-> [[PGP Signed Part:Undecided]]
-> On Wed, Jul 12, 2023 at 06:39:56AM +0200, Frank Oltmanns wrote:
->> Hi Maxime,
->>
->> On 2023-06-19 at 20:05:44 +0200, Maxime Ripard <maxime@cerno.tech> wrote:
->> > [[PGP Signed Part:Undecided]]
->> > On Mon, Jun 19, 2023 at 10:16:26AM +0200, Frank Oltmanns wrote:
->> >> Hi Maxime,
->> >>
->> >> the essence of my following ramblings:
->> >>  - I do think it is reasonable that nkm is asking its parent for the
->> >>    rate that nkm actually needs from said parent to fulfill the request.
->> >>  - I don't think nkm should make assumptions about the rounding
->> >>    behaviour of the parent.
->> >
->> > I guess we agree :)
->> >
->> > And I would go even further and say that we shouldn't make *any*
->> > assumption about the behaviour of the parent.
->> >
->> >> The reason is, that I want to prevent users of ccu_nkm from making
->> >> mistakes when defining their clocks (which includes the parent of their
->> >> nkm clock).
->> >>
->> >> Please read below the details on why I think that.
->> >>
->> >> [...]
->> >>
->> >> >> No. I didn't. My assumption is: If ccu_nkm_find_best is asked for the
->> >> >> best rate for rate = 449035712, it should try to include 449035712 in
->> >> >> its candidates, agreed?
->> >> >>
->> >> >> Example 1:
->> >> >> ==========
->> >> >> rate=449035712, n=11, k=3, m=16:
->> >> >> We should as for a parent rate of 217714285, because:
->> >> >> 217714285 * 11 * 3 / 16 = 449035712
->> >> >>
->> >> >> How do we get from 449035712 to 217714285, you ask?
->> >> >>
->> >> >>       DIV_ROUND_UP(rate * m, n * k)
->> >> >
->> >> > Why are we rounding up? I don't think the hardware will round up there.
->> >>
->> >> Being a "software guy" it is also my understanding that the hardware
->> >> does not round up here (or round down for that matter).
->> >
->> > That's my understanding as well.
->> >
->> >> But anyway, my concern is the rate's representation *in software*. The
->> >> clk drivers are using unsigned long to represent the actual rate. This
->> >> is not a lossless representation. In other words, the value (i.e. the
->> >> software representation) of that rate is, of course, a "lie". The
->> >> hardware clock is running at some rate that is hopefully close to what
->> >> we represent in software, but still it's an abstraction.
->> >>
->> >> For example, the user (e.g. in my example a panel) asks us for a rate
->> >> that is represented in softwares as 449035712. Given the values n=11,
->> >> k=3, m=16, we can *only* represent this value in software if the parent
->> >> gives us a rate that is represented in software as 217714285. Therefore,
->> >> I think it is reasonable to ask the parent for that rate (217714285).
->> >
->> > I somewhat agree, but I still don't think it's worth rounding up.
->> >
->> > If we don't round up (and assuming the parent itself won't round the
->> > clock), we end up with a rate of 449035710 using the dividers you
->> > mentioned. It's a .0000005% deviation (I hope I didn't screw up the
->> > number of 0s). It's negligible for all practical purposes, and it's not
->> > worth making the code inconsistent and eyebrow raising.
->> >
->> >> >> Do you agree that we should ask the parent for 217714285 in case we want
->> >> >> a rate of 449035712 and we're currently evaluating the case n=11, k=3,
->> >> >> m=16?
->> >> >>
->> >> >> We should not ask for a parent rate of 217714284, because:
->> >> >> 217714284 * 11 * 3 / 16 = 449035710
->> >> >>
->> >> >> Example 2:
->> >> >> ==========
->> >> >> rate=500000000, n=11, k=3, m=16:
->> >> >> Here we should not ask the parent for
->> >> >>       DIV_ROUND_UP(rate * m, n * k)
->> >> >> because that would be 242424243.
->> >> >>
->> >> >> 242424243 * 11 * 3 / 16 = 500000001
->> >> >>
->> >> >> We (the NKM clock, not the parent!) would overshoot (please see at the
->> >> >> end of this mail, why (for now) I don't want to support overshooting in
->> >> >> the NKM clock).
->> >> >>
->> >> >> Instead we should as for a parent rate of 242424242, because:
->> >> >> 242424242 * 11 * 3 / 16 = 499999999
->> >> >>
->> >> >> In conclusion, there are cases, where we (the NKM clock) have to ask the
->> >> >> parent for
->> >> >>       DIV_ROUND_UP(rate * m, n * k)
->> >> >> And there are also cases, where we have to ask the parent for
->> >> >>       rate * m / (n * k)
->> >> >
->> >> > I mean, I think you're overthinking this.
->> >> >
->> >> > If you never round up and mimic how the hardware behaves, and test all
->> >> > combination, then eventually you'll find the closest rate.
->> >> >
->> >> > If you don't because the parent doesn't look for the closest rate, then
->> >> > the parent should be changed too.
->> >> >
->> >> > It really is that simple.
->> >> >
->> >> >> This is what the code is trying to do. Maybe it's easier to look at V2
->> >> >> because I extracted the calcultion of the optimal parent rate into a
->> >> >> separate function hoping that this makes things clearer.
->> >> >>
->> >> >> Let me stress this: When calculating the optimal rate for the parent,
->> >> >> I'm not making any assumptions here about how the PARENT clock rounds.
->> >> >> In fact, I assume that the parent could be perfect and always provides
->> >> >> the rate it is asked for. I only take into account how the nkm clock
->> >> >> rounds.
->> >> >
->> >> > At the very least, you assume that the parent rounding can be "wrong"
->> >> > and try to work around that.
->> >>
->> >> No. I'm not assuming anything about the parent. But I *know* that if we
->> >> (nkm) want to get a rate that is represented in softwares as 449035712
->> >> and given the values n=11, k=3, m=16, we (nkm) must get the rate from
->> >> the parent that the parent represents in software as 217714285, because
->> >> I know that we (nkm) calculate *our* (nkm) rate using
->> >>     parent * n * k / m
->> >>
->> >> So if (!) we want to give the user the rate that they ask for, why not
->> >> ask the parent for the rate that we need (217714285)?
->> >>
->> >> I admit that I'm making assumptions here. My assumptions are that we
->> >>  a. want to at least try to give the user what they asked for
->> >>  b. without making assumptions about the parent's behaviour.
->> >>
->> >> Those assumptions could of course be wrong, but, honestly, I would find
->> >> that confusing.
->> >
->> > I guess my point leans more towards the "social" side than the
->> > mathematical one. If I followed you so far, the precision you expect to
->> > gain is in the <1Hz range (and I've been in sick leave for a while, so
->> > sorry if I didn't before). The rate is in the 100MHz range.
->> >
->> > So the precision gain is pretty much nothing. Sure, it's closer from a
->> > mathematical standpoint. But there's zero benefit from it.
->> >
->> > However, it comes at the cost of a code that is definitely more
->> > complicated (or less naive, depending on how you look at it I guess :))
->> > and will be harder to figure out for someone that jumps into the driver.
->> >
->> > So the trade-off doesn't really make fixing it worth it to me.
->> >
->> >> >> > you ask the parent to compute whatever is closest to that optimal parent
->> >> >> > rate.
->> >> >> >
->> >> >> > It's the parent responsibility now. It's the parent decision to figure
->> >> >> > out what "the closest" means, if it can change rate, if it has any range
->> >> >> > limitation, etc. You can't work around that.
->> >> >> >
->> >> >> > What you actually want there is the parent to actually provide the
->> >> >> > closest rate, even if it means overshooting.
->> >> >> >
->> >> >>
->> >> >> I want to ask the parent for a rate, that would actually result in the
->> >> >> rate that nkm_find_best was asked for. Are you asking me to instead ask
->> >> >> the parent for a rate that doesn't fit that criterion?
->> >> >
->> >> > No. I'm asking to call clk_hw_round_rate(parent_hw, rate * m / (n * k))
->> >> > and use whatever value it returned.
->> >> >
->> >> > If it requires changing the parent clock to improve its round_rate
->> >> > behaviour, then do that too.
->> >> >
->> >>
->> >> Hmmm... Okay. So you *are* saying, that I should make changes to the
->> >> parent so that we do not need to request the exact rate we want from the
->> >> parent. But I really don't understand why.
->> >
->> > No, sorry. I initially thought that you were working around "divider"
->> > rounding issue (as opposed to integer like you mentionned above) with
->> > the parent not providing its optimal rate, and you adjusting based on
->> > that offset.
->> >
->> >> As I wrote above, I'm not making any assumptions of how and if the
->> >> parent rounds. My code is rounding *prior* to asking the parent. Your
->> >> proposal on the other hand *requires* changing the parent to round
->> >> closest where mine does not.
->> >>
->> >> My concern is, that we could then end up with the situation that someone
->> >> defines an nkm clock in their SoC which has CLK_SET_RATE_PARENT set, but
->> >> does not set the ROUND_CLOSEST flag on the parent, because it's not
->> >> immediately apparent why they should do that.
->> >
->> > It's going to happen, and probably happens at the moment already,
->> > because not only the NKM clocks are affected, but virtually all of them,
->> > and most don't use ROUND_CLOSEST.
->> >
->> > And to some extent, it's fine. We would handle it like any other bug: if
->> > we ever encounter one, we'll write a fix, backport it to stable and all
->> > will be fine.
->> >
->> > You can't figure out all the use-cases we'll require in the future
->> > anyway.
->> >
->> >> Let's assume that hypothetical board were the A64, the nkm clock were pll-mipi,
->> >> and the parent were pll-video0 and we "forget" to set ROUND_CLOSEST on
->> >> pll-video0:
->> >>
->> >> When pll-mipi nkm clock is asked via determine_rate() for a rate of
->> >> 449064000 it would return 449035712 and a parent rate of 217714285
->> >> (using n=11, k=3, m=16, but those details aren't returned by
->> >> determine_rate()).
->> >>
->> >> Eventually, determine_rate() will be called again, but this time for a
->> >> rate of 449035712. The user already knows that we can provide that,
->> >> because we told them (see previous paragraph). But since we're
->> >> truncating when calculating the rate that we'd like the parent to
->> >> provide, we end up asking the parent for 217714284 when we actually need
->> >> it to provide 217714285. So we now *require* the parent to find the
->> >> closest and additionally we must *hope* that the parent is incapable of
->> >> providing the rate that we asked for.
->> >
->> > I mean... yeah. It's what abstraction is all about. For all we know, the
->> > parent to pll-mipi could be a crystal that can't change its frequency
->> > and we should deal with that. Or it could be an ideal clock that always
->> > returns the rate you ask for. Or a firmware clock that behaves like an
->> > ideal clock but lies about it :)
->> >
->> > It's that clock responsibility to do its best to provide the rate we ask
->> > for.
->> >
->> > And if we need to make it behave better, then it's fine too. So your
->> > example is indeed true, but it's more of a case of "let's send another
->> > patch" rather than trying to figure out all possible cases and try to
->> > figure things out accordingly. Because you won't be able to figure out
->> > all possible cases for the current SoCs and the next ones, and the
->> > workloads that people are going to run on those SoCs anyway.
->> >
->> >> >> If you carefully look at ccu_mp, you will see that it would ignore
->> >> >> cases when its parent had rounded up. ccu_nkm is no different.
->> >> >> Teaching all of sunxi-ng's clocks to respect ROUND_CLOSEST is a
->> >> >> totally different beast. For now, sunxi-ng always expects rounding
->> >> >> down.
->> >> >
->> >> > Then change that?
->> >>
->> >> You told me that both over- and undershooting are fine when
->> >> determining the rate, *but also* "it's a bit context specific which one
->> >> we should favour. If we were to do anything, it would be to support both
->> >> and let the clock driver select which behaviour it wants." (see
->> >> https://lore.kernel.org/all/flngzi4henkzcpzwdexencdkw77h52g3nduup7pwctpwfiuznk@eewnnut5mvsq/)
->> >>
->> >> So, I can't just change NKM's parent's default behavior (which is an NM
->> >> clock in my case), because, if I understand correctly, I would have to
->> >> introduce a "ROUND_CLOSEST" flag for NM clocks.
->> >
->> > Sure
->> >
->> >> But then I feel like I would have to document somewhere that when
->> >> setting CLK_SET_RATE_PARENT for an NKM clock, that the parent clock
->> >> needs to ROUND_CLOSEST, in order to avoid drifting away from the
->> >> requested rate in the successive calls that are made to
->> >> ccu_nkm_determine_rate(), which I tried to explain above and in previous
->> >> messages.
->> >
->> > That's kind of what I meant too. Whether "drifting away" is an issue is
->> > context specific too. for some clocks it just doesn't matter. Nobody
->> > ever complained that the register clock of the MMC controller was
->> > drifting away, because it doesn't affect the system in the slightest.
->> >
->> > The video clock tree (and possibly others) will be affected though, and
->> > we'll indeed need to add that flag. But we're doing it all the time (and
->> > sometimes get it wrong) for things like which clocks should be left
->> > enabled for example.
->>
->> I'm afraid we have to re-visit this decision. I found a case, where the
->> drifting causes a problem.
->
-> I'm sure it can cause a lot of issues everywhere. My point was that the
-> solution is to add the flag so the issue goes away, and not to try to
-> workaround a driver that might or not have the flag. We should assume
-> it's properly set, and properly set it.
+syzbot found the following issue on:
 
-I want you to be aware that this might result in a situation that will
-waste many hours of development time for people trying to use the
-SET_PARENT_RATE flag on NKM clocks in their SoCs. Because it has
-surprising side effects that I lay out below.
+HEAD commit:    ae867bc97b71 Add linux-next specific files for 20230721
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1553a881a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c403a6b36e7c85ac
+dashboard link: https://syzkaller.appspot.com/bug?extid=173cc8cfdfbbef6dd755
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1076d84aa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=161debd1a80000
 
-How do we tell developers that they *must* use CCU_ROUND closest on the
-whole clk branch starting at whe nkm clock's parent if they want to use
-SET_PARENT_RATE on a NKM clock. They must do it from the beginning or
-they will need to start chasing errors. This could easily prevented by
-applying this patch [1].
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/a76b93f21f84/disk-ae867bc9.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8eb30097a952/vmlinux-ae867bc9.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7506a6b3ec38/bzImage-ae867bc9.xz
 
-Because, if they don't the following will happen:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+173cc8cfdfbbef6dd755@syzkaller.appspotmail.com
 
->> Setting pll-mipi's SET_PARENT_RATE flag, but not setting the tree's
->> CCU_FEATURE_CLOSEST_RATE flag results in the following tree:
->>
->>     clock                     rate
->>     -----------------------------------
->>     pll-video0                201000000
->>        hdmi-phy-clk            50250000
->>        hdmi                   201000000
->>        tcon1                  201000000
->>        pll-mipi               414562500
->>           tcon0               414562500
->>              tcon-data-clock  138187500
->>
->> Note, that tcon-data-clock's rate is garbage. It should be tcon0/4, but
->> it is tcon0/3.
+==================================================================
+BUG: KASAN: slab-use-after-free in madvise_collapse+0xa6c/0xb50 mm/khugepaged.c:2723
+Read of size 8 at addr ffff88802b4e6588 by task syz-executor296/5046
 
-^
-|
-Now, *that* is surprising, isn't it? Well at least for me it was. I set
-the SET_PARENT_RATE on pll-mipi and suddenly tcon-data-clock is garbage.
-How can that be?
+CPU: 0 PID: 5046 Comm: syz-executor296 Not tainted 6.5.0-rc2-next-20230721-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ madvise_collapse+0xa6c/0xb50 mm/khugepaged.c:2723
+ madvise_vma_behavior+0x200/0x1e60 mm/madvise.c:1094
+ madvise_walk_vmas+0x1cf/0x2c0 mm/madvise.c:1268
+ do_madvise+0x333/0x660 mm/madvise.c:1448
+ __do_sys_madvise mm/madvise.c:1461 [inline]
+ __se_sys_madvise mm/madvise.c:1459 [inline]
+ __x64_sys_madvise+0xaa/0x110 mm/madvise.c:1459
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f7ec298d359
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f7ec292d238 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007f7ec2a17318 RCX: 00007f7ec298d359
+RDX: 0000000000000019 RSI: 000000000060005f RDI: 0000000020000000
+RBP: 00007f7ec2a17310 R08: 00007fffd329edf7 R09: 00007f7ec292d6c0
+R10: 0000000000000000 R11: 0000000000000246 R12: b635773f07ebbeea
+R13: 000000000000006e R14: 00007fffd329ed10 R15: 00007fffd329edf8
+ </TASK>
 
-Ok, let's start debugging:
+Allocated by task 5033:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ __kasan_slab_alloc+0x81/0x90 mm/kasan/common.c:328
+ kasan_slab_alloc include/linux/kasan.h:186 [inline]
+ slab_post_alloc_hook mm/slab.h:762 [inline]
+ slab_alloc_node mm/slub.c:3478 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc+0x172/0x3b0 mm/slub.c:3502
+ vm_area_alloc+0x1f/0x220 kernel/fork.c:485
+ mmap_region+0x386/0x2640 mm/mmap.c:2717
+ do_mmap+0x87c/0xed0 mm/mmap.c:1353
+ vm_mmap_pgoff+0x1a6/0x3b0 mm/util.c:543
+ ksys_mmap_pgoff+0x7d/0x5b0 mm/mmap.c:1399
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
->>
->> I added some logging to ccu_find_best*() to understand, as to why that
->> is:
->>
->>     ccu_nkm_find_best_with_parent_adj: rate=414600000, best_rate=414577776, best_parent_rate=282666666, n=11, k=2, m=15
->>     ccu_nkm_find_best_with_parent_adj: rate=414600000, best_rate=414577776, best_parent_rate=282666666, n=11, k=2, m=15
->>     ccu_nkm_find_best_with_parent_adj: rate=414577776, best_rate=414562500, best_parent_rate=201000000, n=11, k=3, m=16
->>     ccu_nkm_find_best_with_parent_adj: rate=414562500, best_rate=414562500, best_parent_rate=201000000, n=11, k=3, m=16
->>     ccu_nkm_find_best: rate=414562500, best_rate=414562500, parent_rate=201000000, n=11, k=3, m=16
->>
->> We can see that the rate is drifting over the successive calls. We've
->> seen it before and deemed it no big deal.
->>
->> To highlight the issue a bit more, I added some logging at the end of
->> sun4i_dclk_round_rate() and sun4i_dclk_set_rate.
->>
->>     ccu_nkm_find_best_with_parent_adj: rate=414600000, best_rate=414577776, best_parent_rate=282666666, n=11, k=2, m=15
->>     sun4i_dclk_round_rate: rate=103650000, best_rate=103644444, best_parent=414577776, best_div=4
->>     ccu_nkm_find_best_with_parent_adj: rate=414600000, best_rate=414577776, best_parent_rate=282666666, n=11, k=2, m=15
->>     sun4i_dclk_round_rate: rate=103650000, best_rate=103644444, best_parent=414577776, best_div=4
->>
->> Here we can see that sun4i_dclk now has determined that 103644444 is its
->> best rate, based on the parent rate of 414577776.
->>
->> But now, the nkm clock pll-mipi changes its mind and thinks that it
->> cannot provide 414577776 any more, instead it wants to provide
->> 414562500.
->
-> That's a bit surprising, but not entirely.
+Freed by task 5035:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:162 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ kmem_cache_free+0xf0/0x490 mm/slub.c:3831
+ rcu_do_batch kernel/rcu/tree.c:2139 [inline]
+ rcu_core+0x7fb/0x1bb0 kernel/rcu/tree.c:2403
+ __do_softirq+0x218/0x965 kernel/softirq.c:553
 
-The drifting itself is not suprising at all to me. It is the topic of
-this whole mail thread. :-)
+Last potentially related work creation:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
+ __call_rcu_common.constprop.0+0x9a/0x790 kernel/rcu/tree.c:2653
+ remove_vma+0x140/0x170 mm/mmap.c:148
+ remove_mt mm/mmap.c:2285 [inline]
+ do_vmi_align_munmap+0xf75/0x1710 mm/mmap.c:2547
+ do_vmi_munmap+0x20e/0x450 mm/mmap.c:2611
+ mmap_region+0x194/0x2640 mm/mmap.c:2661
+ do_mmap+0x87c/0xed0 mm/mmap.c:1353
+ vm_mmap_pgoff+0x1a6/0x3b0 mm/util.c:543
+ ksys_mmap_pgoff+0x7d/0x5b0 mm/mmap.c:1399
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-> For example, one of the
-> parent clock of our parent might have changed rate between our
-> round_rate and set_rate calls.
+The buggy address belongs to the object at ffff88802b4e6500
+ which belongs to the cache vm_area_struct of size 192
+The buggy address is located 136 bytes inside of
+ freed 192-byte region [ffff88802b4e6500, ffff88802b4e65c0)
 
-That's not the reason here. The reason is that I added the
-SET_PARENT_RATE flag, but did not add CCU_FEATURE_ROUND_CLOSEST to
-pll-mipi's parent and all its descendants.
+The buggy address belongs to the physical page:
+page:ffffea0000ad3980 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2b4e6
+flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000200 ffff888014674b40 ffffea0001dce680 dead000000000002
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 4724, tgid 4724 (dhcpcd-run-hook), ts 33134643925, free_ts 33125953991
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1569
+ prep_new_page mm/page_alloc.c:1576 [inline]
+ get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3256
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4512
+ alloc_pages+0x1a9/0x270 mm/mempolicy.c:2279
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab+0x24e/0x380 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0x8bc/0x1570 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc+0x392/0x3b0 mm/slub.c:3502
+ vm_area_alloc+0x1f/0x220 kernel/fork.c:485
+ mmap_region+0x386/0x2640 mm/mmap.c:2717
+ do_mmap+0x87c/0xed0 mm/mmap.c:1353
+ vm_mmap_pgoff+0x1a6/0x3b0 mm/util.c:543
+ ksys_mmap_pgoff+0x422/0x5b0 mm/mmap.c:1399
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1160 [inline]
+ free_unref_page_prepare+0x508/0xb90 mm/page_alloc.c:2383
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2478
+ vfree+0x181/0x7a0 mm/vmalloc.c:2842
+ delayed_vfree_work+0x56/0x70 mm/vmalloc.c:2763
+ process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
+ worker_thread+0x687/0x1110 kernel/workqueue.c:2751
+ kthread+0x33a/0x430 kernel/kthread.c:389
+ ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:296
 
-*I* know, that I shouldn't do that. But will Jane and Joe SoC-Developer?
-How do we tell them? Will the necessary documentation really be easier
-to maintain than the 24 line patch [1] I submitted?
+Memory state around the buggy address:
+ ffff88802b4e6480: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
+ ffff88802b4e6500: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88802b4e6580: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+                      ^
+ ffff88802b4e6600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88802b4e6680: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
+==================================================================
 
-Again, without the patch NKM clocks are making assumptions about the
-parent clock. They now depend on:
- a. The parent clock rounding to the closest requested rate.
- b. The parent clock not supporting the rate the NKM requests.
 
-If either of the two is not true, it will break tcon-data-clock.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> Why does it change its mind?
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Because the parent does not round to the closest rate.
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-This is what happens, if the parent does not fulfill the two
-requirements:
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-  1. tcon0 (or someone else, this is just an example) asks the NKM clock
-     (pll-mipi) for rate A (e.g. 414600000).
-  2. The NKM clock tries out all combinations of N, K, and M and each
-     time asks the parent for a rate, that is close to the "optimal"
-     parent rate.
-  3. At some point the NKM clock asks its parent for rate B (282681818).
-  4. The parent will respond that it doesn't support rate B, but rate B'
-     (282666666) could be used.
-  5. Using that information, NKM tells the clk framework that it can't
-     provide rate A (414600000), but it could provide A' (414577776).
-  6. The clk framework tells tcon0 that. tcon0 agrees and says: "Fine,
-     clk framework, let's go with rate A'."
-  7. clk framework asks the NKM clock, for rate A' (414577776).
-  8. Like in step 2 the NKM goes through all combinations and asks the
-     parent for a rate that is optimal to the "optimal" parent rate.
-  9. Without the patch [1] at some point the NKM clock will ask the
-     parent for B'' (282666665) (!) due to integer rounding.
- 11. The parent will respond that it doesn't support rate B'', but rate
-     B''' could be used. (I don't know what rate that is, but it's now
-     so bad that the previous combination of N, K, and M is no longer
-     the best combination.)
- 12. Using that information, NKM tells the clk framework that it can't
-     provide rate A' (414577776), but it could provide A'' (414562500).
-     That's what I meant, that the nkm clock "changed its mind".
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Actually, steps 7-12 are performed a few times and each time the rate
-could get a little bit worse. Not by much, so you said it's not worth
-adding patch [1], because "there's zero benefit from it". [2]
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
 
-The new information I'm trying to convey here, is that tcon0 has based
-its round_rate result on A' because the clk framework told it so.
-Apparently, the clk framework expects that when a clock claims it can
-provide rate A' when asked for rate A, that it will also respond with A'
-when asked for A'. I don't think that's an unreasonable requirement for
-clocks [footnote A]. But the NKM clock does not always fulfill it, if it
-can set its parent rate but doesn't have patch [1].
-
-This is not some kind of race condition as you described above. It
-happens 100% of the time when a clock (tcon0) asks an nkm clock
-(pll-mipi) for an "unfortunate" rate and the nkm's parent (pll-video0)
-does not support rounding up.
-
-"Unfortunate" is a rate where the best parent rate can not be calculated
-by the simple formula:
-    rate * m / (n * k)
-
-You wrote in [2]:
-> We're back to the trade-off I was mentioning earlier. I'm not against
-> it on principle. However, if it's not absolutely required, then I
-> don't think it's a good idea to merge it.
->
-> Especially if it's to workaround a parent flag missing. A clock flag
-> patch is easy to read, write, understand, review, merge and maintain.
-> It's basically a nop to merge provided the commit log is decent
-> enough.
-
-I'm at a point where I have to disagree that a clock flag patch is easy
-to write and understand. You asked me, why the clock is changing its
-mind and we had already discussed it a lot. I don't see why this
-discussion would be different in 6 months or 2 years. IMO the discussion
-we're having is not a "nop". And for a developer to find out that they
-need to set the parent's ROUND_CLOSEST flag is not a "nop" either.
-
-The patch [1] makes the life of SoC developers easier while it makes the
-nkm clock maintainer's life harder. So the question is, how much easier
-is the developer's life (a lot, IMO) and how much harder is the
-maintainer's life (a little, IMO).
-
-In conclusion, for me applying patch [1] is the best option we have. It
-not only prevents but also documents the issue in a clean way.
-
-Thanks again for your time. And again I'm sorry for being so annoyingly
-persistent and verbose.
-
-BR,
-  Frank
-
-[1]: https://lore.kernel.org/all/20230717-pll-mipi_set_rate_parent-v4-3-04acf1d39765@oltmanns.dev/
-[2]: https://lore.kernel.org/all/yj6ss64s7p2uaslodj5zklrwhegz54bgh4l4wmldv6cccggepz@yombds4hij3c/
-
-[footnote A]: I assume, this is a design choice and not a bug. If it's a
-              bug, we should of course fix it.
-
->
-> Maxime
->
-> [[End of PGP Signed Part]]
+If you want to undo deduplication, reply with:
+#syz undup
