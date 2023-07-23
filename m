@@ -2,122 +2,618 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8801075E516
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 23:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1420075E51B
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 23:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbjGWV6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 17:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
+        id S229994AbjGWV6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 17:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjGWV6O (ORCPT
+        with ESMTP id S229491AbjGWV6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 17:58:14 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C557DE68;
-        Sun, 23 Jul 2023 14:58:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=IYAlUHXkzs4yHGq9o8cV2GDjIUpEiwbm5rCfp1MO9CY=; b=H7pT1KY2nNjOJxm+3FLxBoZTuq
-        M4unC/y5wJ79+7lp/MAakzdv9FgQUejejwmYMwKsqOQdN51fhz3G5a9kIdkV/rMAK6ME3tg9YDj6W
-        U1cePP4udbvYqfoHwVbh2aqRQWbmWZqBnMzZ1+0gmcfnmZlghz4LnbXVyFhRZHQb1XIZokcVmiFPn
-        IfTw5Wup2MsHZEeSIdSwn/zZRWAM2PU5M9xkqAO+pd/YBgs7VfQc2xF4voF4U9lVMWI4UIcmSWgS6
-        SbECgD+Jx30OLJoMtth4vj3M7y5JJFppm8ZxAZ6YXGWVcGG1JWOXGfWKETrRkMco7Vh4cUeaIs0hO
-        MXApPjCQ==;
-Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qNh5U-001xyd-1P;
-        Sun, 23 Jul 2023 21:58:00 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Tejun Heo <tj@kernel.org>,
-        Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH v2] um/drivers: Kconfig: fix hostaudio build errors
-Date:   Sun, 23 Jul 2023 14:57:56 -0700
-Message-ID: <20230723215756.18307-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.41.0
+        Sun, 23 Jul 2023 17:58:46 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC7B10F0;
+        Sun, 23 Jul 2023 14:58:29 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qNh5l-0005Qb-1v;
+        Sun, 23 Jul 2023 21:58:17 +0000
+Date:   Sun, 23 Jul 2023 22:58:09 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Russell King <linux@armlinux.org.uk>,
+        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        Greg Ungerer <gerg@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH net-next v5 3/9] net: ethernet: mtk_eth_soc: add version in
+ mtk_soc_data
+Message-ID: <40372b6934ad5a7ed6282f23dfdbc8d874669e1f.1690148927.git.daniel@makrotopia.org>
+References: <cover.1690148927.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1690148927.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use "select"s to ensure that the required kconfig symbols are set
-as expected.
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-This fixes build errors when CONFIG_SOUND is not set.
+Introduce version field in mtk_soc_data data structure in order to
+make mtk_eth driver easier to maintain for chipset configuration
+codebase. Get rid of MTK_NETSYS_V2 bit in chip capabilities.
+This is a preliminary patch to introduce support for MT7988 SoC.
 
-ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
-hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
-ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
-ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
-hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
-ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
-ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Fixes: d886e87cb82b ("sound: make OSS sound core optional")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Link: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: linux-kbuild@vger.kernel.org
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
-v2: don't delete the HOSTAUDIO Kconfig entry (Masahiro)
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c   | 55 +++++++++++--------
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h   | 36 +++++++-----
+ drivers/net/ethernet/mediatek/mtk_ppe.c       | 18 +++---
+ .../net/ethernet/mediatek/mtk_ppe_offload.c   |  2 +-
+ drivers/net/ethernet/mediatek/mtk_wed.c       |  4 +-
+ 5 files changed, 66 insertions(+), 49 deletions(-)
 
- arch/um/drivers/Kconfig |   10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
-
-diff -- a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -111,20 +111,14 @@ config SSL_CHAN
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+index 7490d48000c26..206cffb0e5acf 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+@@ -593,7 +593,7 @@ static void mtk_set_queue_speed(struct mtk_eth *eth, unsigned int idx,
+ 	      FIELD_PREP(MTK_QTX_SCH_MIN_RATE_MAN, 1) |
+ 	      FIELD_PREP(MTK_QTX_SCH_MIN_RATE_EXP, 4) |
+ 	      MTK_QTX_SCH_LEAKY_BUCKET_SIZE;
+-	if (!MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v1(eth))
+ 		val |= MTK_QTX_SCH_LEAKY_BUCKET_EN;
  
- config UML_SOUND
- 	tristate "Sound support"
-+	select SOUND
-+	select SOUND_OSS_CORE
- 	help
- 	  This option enables UML sound support.  If enabled, it will pull in
- 	  soundcore and the UML hostaudio relay, which acts as a intermediary
- 	  between the host's dsp and mixer devices and the UML sound system.
- 	  It is safe to say 'Y' here.
+ 	if (IS_ENABLED(CONFIG_SOC_MT7621)) {
+@@ -970,7 +970,7 @@ static bool mtk_rx_get_desc(struct mtk_eth *eth, struct mtk_rx_dma_v2 *rxd,
+ 	rxd->rxd1 = READ_ONCE(dma_rxd->rxd1);
+ 	rxd->rxd3 = READ_ONCE(dma_rxd->rxd3);
+ 	rxd->rxd4 = READ_ONCE(dma_rxd->rxd4);
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++	if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		rxd->rxd5 = READ_ONCE(dma_rxd->rxd5);
+ 		rxd->rxd6 = READ_ONCE(dma_rxd->rxd6);
+ 	}
+@@ -1028,7 +1028,7 @@ static int mtk_init_fq_dma(struct mtk_eth *eth)
  
--config SOUND
--	tristate
--	default UML_SOUND
--
--config SOUND_OSS_CORE
--	bool
--	default UML_SOUND
--
- config HOSTAUDIO
- 	tristate
- 	default UML_SOUND
+ 		txd->txd3 = TX_DMA_PLEN0(MTK_QDMA_PAGE_SIZE);
+ 		txd->txd4 = 0;
+-		if (MTK_HAS_CAPS(soc->caps, MTK_NETSYS_V2)) {
++		if (mtk_is_netsys_v2_or_greater(eth)) {
+ 			txd->txd5 = 0;
+ 			txd->txd6 = 0;
+ 			txd->txd7 = 0;
+@@ -1219,7 +1219,7 @@ static void mtk_tx_set_dma_desc(struct net_device *dev, void *txd,
+ 	struct mtk_mac *mac = netdev_priv(dev);
+ 	struct mtk_eth *eth = mac->hw;
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		mtk_tx_set_dma_desc_v2(dev, txd, info);
+ 	else
+ 		mtk_tx_set_dma_desc_v1(dev, txd, info);
+@@ -1526,7 +1526,7 @@ static void mtk_update_rx_cpu_idx(struct mtk_eth *eth)
+ 
+ static bool mtk_page_pool_enabled(struct mtk_eth *eth)
+ {
+-	return MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2);
++	return eth->soc->version == 2;
+ }
+ 
+ static struct page_pool *mtk_create_page_pool(struct mtk_eth *eth,
+@@ -1868,7 +1868,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+ 			break;
+ 
+ 		/* find out which mac the packet come from. values start at 1 */
+-		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++		if (mtk_is_netsys_v2_or_greater(eth))
+ 			mac = RX_DMA_GET_SPORT_V2(trxd.rxd5) - 1;
+ 		else if (!MTK_HAS_CAPS(eth->soc->caps, MTK_SOC_MT7628) &&
+ 			 !(trxd.rxd4 & RX_DMA_SPECIAL_TAG))
+@@ -1964,7 +1964,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+ 		skb->dev = netdev;
+ 		bytes += skb->len;
+ 
+-		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++		if (mtk_is_netsys_v2_or_greater(eth)) {
+ 			reason = FIELD_GET(MTK_RXD5_PPE_CPU_REASON, trxd.rxd5);
+ 			hash = trxd.rxd5 & MTK_RXD5_FOE_ENTRY;
+ 			if (hash != MTK_RXD5_FOE_ENTRY)
+@@ -1989,8 +1989,8 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+ 		/* When using VLAN untagging in combination with DSA, the
+ 		 * hardware treats the MTK special tag as a VLAN and untags it.
+ 		 */
+-		if (!MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2) &&
+-		    (trxd.rxd2 & RX_DMA_VTAG) && netdev_uses_dsa(netdev)) {
++		if (mtk_is_netsys_v1(eth) && (trxd.rxd2 & RX_DMA_VTAG) &&
++		    netdev_uses_dsa(netdev)) {
+ 			unsigned int port = RX_DMA_VPID(trxd.rxd3) & GENMASK(2, 0);
+ 
+ 			if (port < ARRAY_SIZE(eth->dsa_meta) &&
+@@ -2300,7 +2300,7 @@ static int mtk_tx_alloc(struct mtk_eth *eth)
+ 		txd->txd2 = next_ptr;
+ 		txd->txd3 = TX_DMA_LS0 | TX_DMA_OWNER_CPU;
+ 		txd->txd4 = 0;
+-		if (MTK_HAS_CAPS(soc->caps, MTK_NETSYS_V2)) {
++		if (mtk_is_netsys_v2_or_greater(eth)) {
+ 			txd->txd5 = 0;
+ 			txd->txd6 = 0;
+ 			txd->txd7 = 0;
+@@ -2353,14 +2353,14 @@ static int mtk_tx_alloc(struct mtk_eth *eth)
+ 			      FIELD_PREP(MTK_QTX_SCH_MIN_RATE_MAN, 1) |
+ 			      FIELD_PREP(MTK_QTX_SCH_MIN_RATE_EXP, 4) |
+ 			      MTK_QTX_SCH_LEAKY_BUCKET_SIZE;
+-			if (!MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++			if (mtk_is_netsys_v1(eth))
+ 				val |= MTK_QTX_SCH_LEAKY_BUCKET_EN;
+ 			mtk_w32(eth, val, soc->reg_map->qdma.qtx_sch + ofs);
+ 			ofs += MTK_QTX_OFFSET;
+ 		}
+ 		val = MTK_QDMA_TX_SCH_MAX_WFQ | (MTK_QDMA_TX_SCH_MAX_WFQ << 16);
+ 		mtk_w32(eth, val, soc->reg_map->qdma.tx_sch_rate);
+-		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++		if (mtk_is_netsys_v2_or_greater(eth))
+ 			mtk_w32(eth, val, soc->reg_map->qdma.tx_sch_rate + 4);
+ 	} else {
+ 		mtk_w32(eth, ring->phys_pdma, MT7628_TX_BASE_PTR0);
+@@ -2489,7 +2489,7 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
+ 
+ 		rxd->rxd3 = 0;
+ 		rxd->rxd4 = 0;
+-		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++		if (mtk_is_netsys_v2_or_greater(eth)) {
+ 			rxd->rxd5 = 0;
+ 			rxd->rxd6 = 0;
+ 			rxd->rxd7 = 0;
+@@ -3037,7 +3037,7 @@ static int mtk_start_dma(struct mtk_eth *eth)
+ 		       MTK_TX_BT_32DWORDS | MTK_NDP_CO_PRO |
+ 		       MTK_RX_2B_OFFSET | MTK_TX_WB_DDONE;
+ 
+-		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++		if (mtk_is_netsys_v2_or_greater(eth))
+ 			val |= MTK_MUTLI_CNT | MTK_RESV_BUF |
+ 			       MTK_WCOMP_EN | MTK_DMAD_WR_WDONE |
+ 			       MTK_CHK_DDONE_EN | MTK_LEAKY_BUCKET_EN;
+@@ -3183,7 +3183,7 @@ static int mtk_open(struct net_device *dev)
+ 	phylink_start(mac->phylink);
+ 	netif_tx_start_all_queues(dev);
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		return 0;
+ 
+ 	if (mtk_uses_dsa(dev) && !eth->prog) {
+@@ -3449,7 +3449,7 @@ static void mtk_hw_reset(struct mtk_eth *eth)
+ {
+ 	u32 val;
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++	if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN, 0);
+ 		val = RSTCTRL_PPE0_V2;
+ 	} else {
+@@ -3461,7 +3461,7 @@ static void mtk_hw_reset(struct mtk_eth *eth)
+ 
+ 	ethsys_reset(eth, RSTCTRL_ETH | RSTCTRL_FE | val);
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN,
+ 			     0x3ffffff);
+ }
+@@ -3487,7 +3487,7 @@ static void mtk_hw_warm_reset(struct mtk_eth *eth)
+ 		return;
+ 	}
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0_V2;
+ 	else
+ 		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0;
+@@ -3657,7 +3657,7 @@ static int mtk_hw_init(struct mtk_eth *eth, bool reset)
+ 	else
+ 		mtk_hw_reset(eth);
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++	if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		/* Set FE to PDMAv2 if necessary */
+ 		val = mtk_r32(eth, MTK_FE_GLO_MISC);
+ 		mtk_w32(eth,  val | BIT(4), MTK_FE_GLO_MISC);
+@@ -3694,7 +3694,7 @@ static int mtk_hw_init(struct mtk_eth *eth, bool reset)
+ 	 */
+ 	val = mtk_r32(eth, MTK_CDMQ_IG_CTRL);
+ 	mtk_w32(eth, val | MTK_CDMQ_STAG_EN, MTK_CDMQ_IG_CTRL);
+-	if (!MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++	if (mtk_is_netsys_v1(eth)) {
+ 		val = mtk_r32(eth, MTK_CDMP_IG_CTRL);
+ 		mtk_w32(eth, val | MTK_CDMP_STAG_EN, MTK_CDMP_IG_CTRL);
+ 
+@@ -3716,7 +3716,7 @@ static int mtk_hw_init(struct mtk_eth *eth, bool reset)
+ 	mtk_w32(eth, eth->soc->txrx.rx_irq_done_mask, reg_map->qdma.int_grp + 4);
+ 	mtk_w32(eth, 0x21021000, MTK_FE_INT_GRP);
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++	if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		/* PSE should not drop port8 and port9 packets from WDMA Tx */
+ 		mtk_w32(eth, 0x00000300, PSE_DROP_CFG);
+ 
+@@ -4521,7 +4521,7 @@ static int mtk_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++	if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 		if (!res) {
+ 			err = -EINVAL;
+@@ -4629,9 +4629,8 @@ static int mtk_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (eth->soc->offload_version) {
+-		u32 num_ppe;
++		u32 num_ppe = mtk_is_netsys_v2_or_greater(eth) ? 2 : 1;
+ 
+-		num_ppe = MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2) ? 2 : 1;
+ 		num_ppe = min_t(u32, ARRAY_SIZE(eth->ppe), num_ppe);
+ 		for (i = 0; i < num_ppe; i++) {
+ 			u32 ppe_addr = eth->soc->reg_map->ppe_base + i * 0x400;
+@@ -4723,6 +4722,7 @@ static const struct mtk_soc_data mt2701_data = {
+ 	.hw_features = MTK_HW_FEATURES,
+ 	.required_clks = MT7623_CLKS_BITMAP,
+ 	.required_pctl = true,
++	.version = 1,
+ 	.txrx = {
+ 		.txd_size = sizeof(struct mtk_tx_dma),
+ 		.rxd_size = sizeof(struct mtk_rx_dma),
+@@ -4739,6 +4739,7 @@ static const struct mtk_soc_data mt7621_data = {
+ 	.hw_features = MTK_HW_FEATURES,
+ 	.required_clks = MT7621_CLKS_BITMAP,
+ 	.required_pctl = false,
++	.version = 1,
+ 	.offload_version = 1,
+ 	.hash_offset = 2,
+ 	.foe_entry_size = MTK_FOE_ENTRY_V1_SIZE,
+@@ -4759,6 +4760,7 @@ static const struct mtk_soc_data mt7622_data = {
+ 	.hw_features = MTK_HW_FEATURES,
+ 	.required_clks = MT7622_CLKS_BITMAP,
+ 	.required_pctl = false,
++	.version = 1,
+ 	.offload_version = 2,
+ 	.hash_offset = 2,
+ 	.has_accounting = true,
+@@ -4779,6 +4781,7 @@ static const struct mtk_soc_data mt7623_data = {
+ 	.hw_features = MTK_HW_FEATURES,
+ 	.required_clks = MT7623_CLKS_BITMAP,
+ 	.required_pctl = true,
++	.version = 1,
+ 	.offload_version = 1,
+ 	.hash_offset = 2,
+ 	.foe_entry_size = MTK_FOE_ENTRY_V1_SIZE,
+@@ -4801,6 +4804,7 @@ static const struct mtk_soc_data mt7629_data = {
+ 	.required_clks = MT7629_CLKS_BITMAP,
+ 	.required_pctl = false,
+ 	.has_accounting = true,
++	.version = 1,
+ 	.txrx = {
+ 		.txd_size = sizeof(struct mtk_tx_dma),
+ 		.rxd_size = sizeof(struct mtk_rx_dma),
+@@ -4818,6 +4822,7 @@ static const struct mtk_soc_data mt7981_data = {
+ 	.hw_features = MTK_HW_FEATURES,
+ 	.required_clks = MT7981_CLKS_BITMAP,
+ 	.required_pctl = false,
++	.version = 2,
+ 	.offload_version = 2,
+ 	.hash_offset = 4,
+ 	.has_accounting = true,
+@@ -4839,6 +4844,7 @@ static const struct mtk_soc_data mt7986_data = {
+ 	.hw_features = MTK_HW_FEATURES,
+ 	.required_clks = MT7986_CLKS_BITMAP,
+ 	.required_pctl = false,
++	.version = 2,
+ 	.offload_version = 2,
+ 	.hash_offset = 4,
+ 	.has_accounting = true,
+@@ -4859,6 +4865,7 @@ static const struct mtk_soc_data rt5350_data = {
+ 	.hw_features = MTK_HW_FEATURES_MT7628,
+ 	.required_clks = MT7628_CLKS_BITMAP,
+ 	.required_pctl = false,
++	.version = 1,
+ 	.txrx = {
+ 		.txd_size = sizeof(struct mtk_tx_dma),
+ 		.rxd_size = sizeof(struct mtk_rx_dma),
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+index 28adda0c90c0d..8ca368973e922 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+@@ -820,7 +820,6 @@ enum mkt_eth_capabilities {
+ 	MTK_SHARED_INT_BIT,
+ 	MTK_TRGMII_MT7621_CLK_BIT,
+ 	MTK_QDMA_BIT,
+-	MTK_NETSYS_V2_BIT,
+ 	MTK_SOC_MT7628_BIT,
+ 	MTK_RSTCTRL_PPE1_BIT,
+ 	MTK_U3_COPHY_V2_BIT,
+@@ -855,7 +854,6 @@ enum mkt_eth_capabilities {
+ #define MTK_SHARED_INT		BIT(MTK_SHARED_INT_BIT)
+ #define MTK_TRGMII_MT7621_CLK	BIT(MTK_TRGMII_MT7621_CLK_BIT)
+ #define MTK_QDMA		BIT(MTK_QDMA_BIT)
+-#define MTK_NETSYS_V2		BIT(MTK_NETSYS_V2_BIT)
+ #define MTK_SOC_MT7628		BIT(MTK_SOC_MT7628_BIT)
+ #define MTK_RSTCTRL_PPE1	BIT(MTK_RSTCTRL_PPE1_BIT)
+ #define MTK_U3_COPHY_V2		BIT(MTK_U3_COPHY_V2_BIT)
+@@ -934,11 +932,11 @@ enum mkt_eth_capabilities {
+ #define MT7981_CAPS  (MTK_GMAC1_SGMII | MTK_GMAC2_SGMII | MTK_GMAC2_GEPHY | \
+ 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
+ 		      MTK_MUX_U3_GMAC2_TO_QPHY | MTK_U3_COPHY_V2 | \
+-		      MTK_NETSYS_V2 | MTK_RSTCTRL_PPE1)
++		      MTK_RSTCTRL_PPE1)
+ 
+ #define MT7986_CAPS  (MTK_GMAC1_SGMII | MTK_GMAC2_SGMII | \
+ 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
+-		      MTK_NETSYS_V2 | MTK_RSTCTRL_PPE1)
++		      MTK_RSTCTRL_PPE1)
+ 
+ struct mtk_tx_dma_desc_info {
+ 	dma_addr_t	addr;
+@@ -1009,6 +1007,7 @@ struct mtk_reg_map {
+  * @required_pctl		A bool value to show whether the SoC requires
+  *				the extra setup for those pins used by GMAC.
+  * @hash_offset			Flow table hash offset.
++ * @version			SoC version.
+  * @foe_entry_size		Foe table entry size.
+  * @has_accounting		Bool indicating support for accounting of
+  *				offloaded flows.
+@@ -1027,6 +1026,7 @@ struct mtk_soc_data {
+ 	bool		required_pctl;
+ 	u8		offload_version;
+ 	u8		hash_offset;
++	u8		version;
+ 	u16		foe_entry_size;
+ 	netdev_features_t hw_features;
+ 	bool		has_accounting;
+@@ -1183,6 +1183,16 @@ struct mtk_mac {
+ /* the struct describing the SoC. these are declared in the soc_xyz.c files */
+ extern const struct of_device_id of_mtk_match[];
+ 
++static inline bool mtk_is_netsys_v1(struct mtk_eth *eth)
++{
++	return eth->soc->version == 1;
++}
++
++static inline bool mtk_is_netsys_v2_or_greater(struct mtk_eth *eth)
++{
++	return eth->soc->version > 1;
++}
++
+ static inline struct mtk_foe_entry *
+ mtk_foe_get_entry(struct mtk_ppe *ppe, u16 hash)
+ {
+@@ -1193,7 +1203,7 @@ mtk_foe_get_entry(struct mtk_ppe *ppe, u16 hash)
+ 
+ static inline u32 mtk_get_ib1_ts_mask(struct mtk_eth *eth)
+ {
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		return MTK_FOE_IB1_BIND_TIMESTAMP_V2;
+ 
+ 	return MTK_FOE_IB1_BIND_TIMESTAMP;
+@@ -1201,7 +1211,7 @@ static inline u32 mtk_get_ib1_ts_mask(struct mtk_eth *eth)
+ 
+ static inline u32 mtk_get_ib1_ppoe_mask(struct mtk_eth *eth)
+ {
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		return MTK_FOE_IB1_BIND_PPPOE_V2;
+ 
+ 	return MTK_FOE_IB1_BIND_PPPOE;
+@@ -1209,7 +1219,7 @@ static inline u32 mtk_get_ib1_ppoe_mask(struct mtk_eth *eth)
+ 
+ static inline u32 mtk_get_ib1_vlan_tag_mask(struct mtk_eth *eth)
+ {
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		return MTK_FOE_IB1_BIND_VLAN_TAG_V2;
+ 
+ 	return MTK_FOE_IB1_BIND_VLAN_TAG;
+@@ -1217,7 +1227,7 @@ static inline u32 mtk_get_ib1_vlan_tag_mask(struct mtk_eth *eth)
+ 
+ static inline u32 mtk_get_ib1_vlan_layer_mask(struct mtk_eth *eth)
+ {
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		return MTK_FOE_IB1_BIND_VLAN_LAYER_V2;
+ 
+ 	return MTK_FOE_IB1_BIND_VLAN_LAYER;
+@@ -1225,7 +1235,7 @@ static inline u32 mtk_get_ib1_vlan_layer_mask(struct mtk_eth *eth)
+ 
+ static inline u32 mtk_prep_ib1_vlan_layer(struct mtk_eth *eth, u32 val)
+ {
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		return FIELD_PREP(MTK_FOE_IB1_BIND_VLAN_LAYER_V2, val);
+ 
+ 	return FIELD_PREP(MTK_FOE_IB1_BIND_VLAN_LAYER, val);
+@@ -1233,7 +1243,7 @@ static inline u32 mtk_prep_ib1_vlan_layer(struct mtk_eth *eth, u32 val)
+ 
+ static inline u32 mtk_get_ib1_vlan_layer(struct mtk_eth *eth, u32 val)
+ {
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		return FIELD_GET(MTK_FOE_IB1_BIND_VLAN_LAYER_V2, val);
+ 
+ 	return FIELD_GET(MTK_FOE_IB1_BIND_VLAN_LAYER, val);
+@@ -1241,7 +1251,7 @@ static inline u32 mtk_get_ib1_vlan_layer(struct mtk_eth *eth, u32 val)
+ 
+ static inline u32 mtk_get_ib1_pkt_type_mask(struct mtk_eth *eth)
+ {
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		return MTK_FOE_IB1_PACKET_TYPE_V2;
+ 
+ 	return MTK_FOE_IB1_PACKET_TYPE;
+@@ -1249,7 +1259,7 @@ static inline u32 mtk_get_ib1_pkt_type_mask(struct mtk_eth *eth)
+ 
+ static inline u32 mtk_get_ib1_pkt_type(struct mtk_eth *eth, u32 val)
+ {
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		return FIELD_GET(MTK_FOE_IB1_PACKET_TYPE_V2, val);
+ 
+ 	return FIELD_GET(MTK_FOE_IB1_PACKET_TYPE, val);
+@@ -1257,7 +1267,7 @@ static inline u32 mtk_get_ib1_pkt_type(struct mtk_eth *eth, u32 val)
+ 
+ static inline u32 mtk_get_ib2_multicast_mask(struct mtk_eth *eth)
+ {
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		return MTK_FOE_IB2_MULTICAST_V2;
+ 
+ 	return MTK_FOE_IB2_MULTICAST;
+diff --git a/drivers/net/ethernet/mediatek/mtk_ppe.c b/drivers/net/ethernet/mediatek/mtk_ppe.c
+index 9129821f3ab8f..2f0e682449ef6 100644
+--- a/drivers/net/ethernet/mediatek/mtk_ppe.c
++++ b/drivers/net/ethernet/mediatek/mtk_ppe.c
+@@ -208,7 +208,7 @@ int mtk_foe_entry_prepare(struct mtk_eth *eth, struct mtk_foe_entry *entry,
+ 
+ 	memset(entry, 0, sizeof(*entry));
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++	if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		val = FIELD_PREP(MTK_FOE_IB1_STATE, MTK_FOE_STATE_BIND) |
+ 		      FIELD_PREP(MTK_FOE_IB1_PACKET_TYPE_V2, type) |
+ 		      FIELD_PREP(MTK_FOE_IB1_UDP, l4proto == IPPROTO_UDP) |
+@@ -272,7 +272,7 @@ int mtk_foe_entry_set_pse_port(struct mtk_eth *eth,
+ 	u32 *ib2 = mtk_foe_entry_ib2(eth, entry);
+ 	u32 val = *ib2;
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++	if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		val &= ~MTK_FOE_IB2_DEST_PORT_V2;
+ 		val |= FIELD_PREP(MTK_FOE_IB2_DEST_PORT_V2, port);
+ 	} else {
+@@ -423,7 +423,7 @@ int mtk_foe_entry_set_wdma(struct mtk_eth *eth, struct mtk_foe_entry *entry,
+ 	struct mtk_foe_mac_info *l2 = mtk_foe_entry_l2(eth, entry);
+ 	u32 *ib2 = mtk_foe_entry_ib2(eth, entry);
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++	if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		*ib2 &= ~MTK_FOE_IB2_PORT_MG_V2;
+ 		*ib2 |=  FIELD_PREP(MTK_FOE_IB2_RX_IDX, txq) |
+ 			 MTK_FOE_IB2_WDMA_WINFO_V2;
+@@ -447,7 +447,7 @@ int mtk_foe_entry_set_queue(struct mtk_eth *eth, struct mtk_foe_entry *entry,
+ {
+ 	u32 *ib2 = mtk_foe_entry_ib2(eth, entry);
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++	if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		*ib2 &= ~MTK_FOE_IB2_QID_V2;
+ 		*ib2 |= FIELD_PREP(MTK_FOE_IB2_QID_V2, queue);
+ 		*ib2 |= MTK_FOE_IB2_PSE_QOS_V2;
+@@ -603,7 +603,7 @@ __mtk_foe_entry_commit(struct mtk_ppe *ppe, struct mtk_foe_entry *entry,
+ 	struct mtk_foe_entry *hwe;
+ 	u32 val;
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++	if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		entry->ib1 &= ~MTK_FOE_IB1_BIND_TIMESTAMP_V2;
+ 		entry->ib1 |= FIELD_PREP(MTK_FOE_IB1_BIND_TIMESTAMP_V2,
+ 					 timestamp);
+@@ -619,7 +619,7 @@ __mtk_foe_entry_commit(struct mtk_ppe *ppe, struct mtk_foe_entry *entry,
+ 	hwe->ib1 = entry->ib1;
+ 
+ 	if (ppe->accounting) {
+-		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++		if (mtk_is_netsys_v2_or_greater(eth))
+ 			val = MTK_FOE_IB2_MIB_CNT_V2;
+ 		else
+ 			val = MTK_FOE_IB2_MIB_CNT;
+@@ -979,7 +979,7 @@ void mtk_ppe_start(struct mtk_ppe *ppe)
+ 			 MTK_PPE_SCAN_MODE_KEEPALIVE_AGE) |
+ 	      FIELD_PREP(MTK_PPE_TB_CFG_ENTRY_NUM,
+ 			 MTK_PPE_ENTRIES_SHIFT);
+-	if (MTK_HAS_CAPS(ppe->eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(ppe->eth))
+ 		val |= MTK_PPE_TB_CFG_INFO_SEL;
+ 	ppe_w32(ppe, MTK_PPE_TB_CFG, val);
+ 
+@@ -995,7 +995,7 @@ void mtk_ppe_start(struct mtk_ppe *ppe)
+ 	      MTK_PPE_FLOW_CFG_IP4_NAPT |
+ 	      MTK_PPE_FLOW_CFG_IP4_DSLITE |
+ 	      MTK_PPE_FLOW_CFG_IP4_NAT_FRAG;
+-	if (MTK_HAS_CAPS(ppe->eth->soc->caps, MTK_NETSYS_V2))
++	if (mtk_is_netsys_v2_or_greater(ppe->eth))
+ 		val |= MTK_PPE_MD_TOAP_BYP_CRSN0 |
+ 		       MTK_PPE_MD_TOAP_BYP_CRSN1 |
+ 		       MTK_PPE_MD_TOAP_BYP_CRSN2 |
+@@ -1037,7 +1037,7 @@ void mtk_ppe_start(struct mtk_ppe *ppe)
+ 
+ 	ppe_w32(ppe, MTK_PPE_DEFAULT_CPU_PORT, 0);
+ 
+-	if (MTK_HAS_CAPS(ppe->eth->soc->caps, MTK_NETSYS_V2)) {
++	if (mtk_is_netsys_v2_or_greater(ppe->eth)) {
+ 		ppe_w32(ppe, MTK_PPE_DEFAULT_CPU_PORT1, 0xcb777);
+ 		ppe_w32(ppe, MTK_PPE_SBW_CTRL, 0x7f);
+ 	}
+diff --git a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
+index 02eebff02d457..a70a5417c1734 100644
+--- a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
++++ b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
+@@ -193,7 +193,7 @@ mtk_flow_set_output_device(struct mtk_eth *eth, struct mtk_foe_entry *foe,
+ 	if (mtk_flow_get_wdma_info(dev, dest_mac, &info) == 0) {
+ 		mtk_foe_entry_set_wdma(eth, foe, info.wdma_idx, info.queue,
+ 				       info.bss, info.wcid);
+-		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
++		if (mtk_is_netsys_v2_or_greater(eth)) {
+ 			switch (info.wdma_idx) {
+ 			case 0:
+ 				pse_port = 8;
+diff --git a/drivers/net/ethernet/mediatek/mtk_wed.c b/drivers/net/ethernet/mediatek/mtk_wed.c
+index 985cff910f30c..5f062ecb402cc 100644
+--- a/drivers/net/ethernet/mediatek/mtk_wed.c
++++ b/drivers/net/ethernet/mediatek/mtk_wed.c
+@@ -1091,7 +1091,7 @@ mtk_wed_rx_reset(struct mtk_wed_device *dev)
+ 	} else {
+ 		struct mtk_eth *eth = dev->hw->eth;
+ 
+-		if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
++		if (mtk_is_netsys_v2_or_greater(eth))
+ 			wed_set(dev, MTK_WED_RESET_IDX,
+ 				MTK_WED_RESET_IDX_RX_V2);
+ 		else
+@@ -1907,7 +1907,7 @@ void mtk_wed_add_hw(struct device_node *np, struct mtk_eth *eth,
+ 	hw->wdma = wdma;
+ 	hw->index = index;
+ 	hw->irq = irq;
+-	hw->version = MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2) ? 2 : 1;
++	hw->version = mtk_is_netsys_v1(eth) ? 1 : 2;
+ 
+ 	if (hw->version == 1) {
+ 		hw->mirror = syscon_regmap_lookup_by_phandle(eth_np,
+-- 
+2.41.0
