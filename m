@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E54E375E43B
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 20:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2C475E43E
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 20:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbjGWSyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 14:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
+        id S229823AbjGWSzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 14:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGWSyQ (ORCPT
+        with ESMTP id S229456AbjGWSzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 14:54:16 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E4ADD;
-        Sun, 23 Jul 2023 11:54:15 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id B85CC60171;
-        Sun, 23 Jul 2023 20:54:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1690138453; bh=HE8dH2TxQcCO0dn0F5uZh3uzgF6puo8d0Es9W0bVdxA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ESZiSEXsSZ8GX0wjE2dPEynswzqG5bnTzdktFz4uBugZUNUbivOuua2l4HkVg7s7P
-         C4VXht2g6Nnjs0kTLlfW83qESwv797Nm7OFd7kHMNY/+Z/wJwEda0yg6aIvMguhhoT
-         v98EqxkTboyPgR1YplUijS3uexK7VEZnCaCruTIeyn+GfdJgFYWlFq6Gf8tkMzSsc+
-         spuyiq26aIdRrSYqi2EuO7dqYVevPtTwg1xM4+b9gGdWdJrxjgZ11VMzm+ObuPTaTt
-         6uY4vttihIGjwx8wezTqXFNr9jDJ2//yLXBlFHNbwTTFaJUVjdxUpiW30AILACiny+
-         rvwvEkStFxzwg==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3F3czHrlMqIT; Sun, 23 Jul 2023 20:54:11 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 052746015F;
-        Sun, 23 Jul 2023 20:54:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1690138451; bh=HE8dH2TxQcCO0dn0F5uZh3uzgF6puo8d0Es9W0bVdxA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=gs4+JUeuK/JAKEj5nSXmcwg6nLBUC/DkvNNdlGQWMv7nSyTURfvQuHYtyyaHqnpyA
-         5l/3YqykSvYjUOeYmqA5Q39WjjauTojI6+bniYb+DOb0Dhfb8CjF60yqiQhr64oPsF
-         2H9sriEbd+1Lb6rkBbT3XZCDomMdOWdIFO+i6SNwnDnq6tJNvIsA5k/9jLru622PlP
-         np6WtK4UkC15YyJlhvIGUivO2Am1n5lnJ8FlUIaIGLikaPk2bo00u/3Fnmhfie0Fdp
-         GPxKqaZ2RdUkuZFoxutuDf1A3LhitPJfg7ojHpEu9yotZZb2fJlojFRK3hNI35Ut42
-         3mr78NSzxDfFA==
-Message-ID: <0550924e-dce9-f90d-df8a-db810fd2499f@alu.unizg.hr>
-Date:   Sun, 23 Jul 2023 20:54:10 +0200
+        Sun, 23 Jul 2023 14:55:39 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CA8DD;
+        Sun, 23 Jul 2023 11:55:38 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5221e487e08so1913046a12.0;
+        Sun, 23 Jul 2023 11:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690138537; x=1690743337;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=LgmHA9TbwRKm5WlrTCRPPSgqddYKlkGXSvlysDZKcHc=;
+        b=Nawec058ivMeKyF/5+HaTYaWXtiMjw/ECiIC8QRW5dNm3P4MzJ+eXR0zUsSCSC6C1X
+         lIdxN0N1V7lOB4lSu6EprZ1q3OH6VDvHD3zxb3smMNVkEEcVtG01+3hacu+rmLb1QeN1
+         TBP1WwIDu4EdaNyZXv2/z/qfCN4vnvwUFLlzc7UKDWGsdW+dgKMqVNenwbs6emI4wagq
+         2Mu/kldXbvPf+3YXnVvitIZK/9B22fMwD1/PgLyPEMMDWdrj1+rGdjHoEHAgT21SatsB
+         /kh4BbtYoiJ0OJxjA5XTFLOhC55VUWYCwW2XDdZKZb/9V4tRDbINp37iShC9iR5kqfWb
+         PoJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690138537; x=1690743337;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LgmHA9TbwRKm5WlrTCRPPSgqddYKlkGXSvlysDZKcHc=;
+        b=i+wA+6rmC63Vj8dai4yFkZOnXZHd2uu8XBhc9PLu6Wks0xBKcEIVIAk/8PV0fAUYIB
+         eKZ12iQpt0L6uysaZq9W9AniM2u3FxkQcVI4HVrkhxXlpQ+viJFOgBNZng41WZbRMaKb
+         ZRaTeNktsFnYOgMgIGuhbPj2tVmUGCniS4k0PFOcYEbYXqg+wCXX4MEXNe/9gr5LWdAh
+         lgZfPE1HaVYh6qJ0jbxYABp1Xm76PFSgY2IwGkO7t41SDZ9nB6Bozm/j2K9aGh+XhVEz
+         4oHU8t3PViBqZ5i9YlnaNk1rNXpLIdIUiJZyFP5XeMxpIwjGSi9LqPMrCKWOR5P8ml1d
+         UISQ==
+X-Gm-Message-State: ABy/qLbFYJdIZqbxfeStZR98VahVvnXpM9zWpbOID31Y+mEx2/JMREdS
+        Owdl6VisJso7UhF1iePOgMG1NvucWc0=
+X-Google-Smtp-Source: APBJJlF9Q7mtX/qbyq1JqHFzz3cfcw1odilg6aWAsNqqCaQxlIrlBXQkXv+L2eq1HaOtYDesgjhmLA==
+X-Received: by 2002:a17:907:7890:b0:994:1fc7:a7e6 with SMTP id ku16-20020a170907789000b009941fc7a7e6mr8463961ejc.4.1690138536563;
+        Sun, 23 Jul 2023 11:55:36 -0700 (PDT)
+Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
+        by smtp.gmail.com with ESMTPSA id x14-20020a1709065ace00b00992e14af9b9sm5426349ejs.134.2023.07.23.11.55.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Jul 2023 11:55:36 -0700 (PDT)
+Date:   Sun, 23 Jul 2023 20:55:35 +0200
+From:   Nam Cao <namcaov@gmail.com>
+To:     Franziska =?iso-8859-1?Q?N=E4pelt?= 
+        <franziska.naepelt@googlemail.com>
+Cc:     Markus Elfring <Markus.Elfring@web.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Emily Peri <eperi1024@gmail.com>,
+        Guo Zihua <guozihua@huawei.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Kang Minchul <tegongkang@gmail.com>,
+        Philipp Hortmann <philipp.g.hortmann@gmail.com>,
+        Veerendranath Jakkam <quic_vjakkam@quicinc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/3] staging: rtl8723bs: Fix space issues
+Message-ID: <ZL13p4tSQAx6cx8E@nam-dell>
+References: <20230701102538.5359-1-franziska.naepelt@googlemail.com>
+ <5ad04b3a-7c77-cadb-13b4-509a086cf04d@web.de>
+ <2023070123-unburned-worsening-0713@gregkh>
+ <CAAUT3iNqwgtFJz2Q1bRN+MsSna26KC1FJc3jchu=8B09A2SkvQ@mail.gmail.com>
+ <4b9fdaa7-bdcf-ef41-0d54-ba41520cde4c@web.de>
+ <CAAUT3iPUaNRUyvqP1O97M0AmKri7Ghc06ku4TS6vcHQ=Sb4ycg@mail.gmail.com>
+ <ZL11kmTYFXMwrYww@nam-dell>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 01/11] selftests: forwarding: custom_multipath_hash.sh:
- add cleanup for SIGTERM sent by timeout
-Content-Language: en-US
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-References: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
- <ZLzj5oYrbHGvCMkq@shredder>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZLzj5oYrbHGvCMkq@shredder>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZL11kmTYFXMwrYww@nam-dell>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/23/23 10:25, Ido Schimmel wrote:
-> On Sat, Jul 22, 2023 at 02:36:00AM +0200, Mirsad Todorovac wrote:
->> Add trap and cleanup for SIGTERM sent by timeout and SIGINT from
->> keyboard, for the test times out and leaves incoherent network stack.
->>
->> Fixes: 511e8db54036c ("selftests: forwarding: Add test for custom multipath hash")
->> Cc: Ido Schimmel <idosch@nvidia.com>
->> Cc: netdev@vger.kernel.org
->> ---
+On Sun, Jul 23, 2023 at 08:46:42PM +0200, Nam Cao wrote:
+> On Sun, Jul 23, 2023 at 07:44:44PM +0200, Franziska Näpelt wrote:
+> > Hi Markus,
+> > 
+> > Am So., 23. Juli 2023 um 08:19 Uhr schrieb Markus Elfring
+> > <Markus.Elfring@web.de>:
+> > >
+> > > > Am I supposed to adjust something here?
+> > >
+> > > There are possibilities remaining to handle recurring communication difficulties
+> > > in more constructive ways for some hints.
+> > >
+> > >
+> > > > As far as I understood, I can ignore the comments from Markus, correct?
+> > >
+> > > Would the provided technical information be taken better into account
+> > > if it would be presented by any other contributors?
+> > 
+> > That's not my point, I appreciate feedback from anybody, absolutely no question
+> > on that. I'm just struggling to know what I'm supposed to do when the maintainer
+> > is saying somebody's comments are not helpful.
 > 
-> The patches are missing your Signed-off-by and a cover letter. Anyway,
-> please don't send a new version just yet. I'm not sure this is the
-> correct approach and I'm looking into it.
-> 
-> Thanks
+> I would wait some more. Greg is probably just too busy to take your patches at
+> the moment.
 
-Sure thing. What a blunder, just when I thought I had the perfect patches.
-
-Still, I think it is the way da go for all the test programs, to catch the
-SIGINT and SIGTERM ...
-
-This way, I need to reboot the system before running the tests on a clean
-slate ...
-
-Kind regards,
-Mirsad
+Don't let that slows you down though, work on other patches in the mean time if
+you would like to.
