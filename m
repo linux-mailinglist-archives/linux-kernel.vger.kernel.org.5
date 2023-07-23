@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B368075E25A
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 16:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202E675E25B
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 16:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbjGWOHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 10:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34330 "EHLO
+        id S229771AbjGWOHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 10:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbjGWOHg (ORCPT
+        with ESMTP id S229572AbjGWOHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 10:07:36 -0400
+        Sun, 23 Jul 2023 10:07:37 -0400
 Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA60E70;
-        Sun, 23 Jul 2023 07:07:34 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b703caf344so48182541fa.1;
-        Sun, 23 Jul 2023 07:07:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5748C12B;
+        Sun, 23 Jul 2023 07:07:36 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b702319893so49832651fa.3;
+        Sun, 23 Jul 2023 07:07:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690121253; x=1690726053;
+        d=gmail.com; s=20221208; t=1690121254; x=1690726054;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6gGoSMkFuHXtajQB/WUOa8a8eVkA/mLa0sBAjisK8c8=;
-        b=LjKB6N787aelnjZZiFNGxyXnzk+tG5mbL3hV0YHHDsnFEKw3hj2G7a4g8gQD57GiUc
-         Oe5+sNC2RwVADMycaUzNfC0hQHFQDutv/9JE+okTiSoWBSoS77XffbQVAMtWpM9LT/9G
-         Gxw2Hwvj6rNSq+WZu/pVgAGxzujma/oSONbbS1S97RUA0h7ziC+ehaMiGAD+BrfsUQuT
-         jA6kwYvZJmkkA2obOWvPWayX05/EpusKIqTjsESTQ8/mkyuiYCgHEui6DqHHc2QI51yv
-         gRRhrM5mWrzodeH7H+CrbhUyxHT8GAZrHUPK3I52oBpn9OMsDk8TEu8I6xP8ViUnQCax
-         CZ2w==
+        bh=2e37AKpgfP+e3Di/jLJSpwPHf9AXaevgDCuq32UDQMM=;
+        b=FcY390jOKSaNXZwkPSv+wO1hS+/Tp7MxfdUOeciW1O3PaLj7RfzR8HbrijWzUb5r8m
+         FiPj8WkL59dDDDAPii0Zn6ifbR0kZox7/GF4e42M+VaUPumxOtxRYXqzcYQg0GPofVba
+         AbA+KWxQiolUOOdRPSe1DYqHCvTTdvNoq1pNa4lRvUq9ECy7jQDRJF29w/094QsTImFT
+         nOZlTJH2An9kXFA7s7omCodoF9lWNFNpMiaspZ5RINq/6DJiWWHyfJyW2nBd591LXbB2
+         w3eMOUVx1ZzLIj5aTNDlj7AtcWQ2LLVu1Mcm4KRRFCV8CaJYxbHTmBueD2iWRgloVjyW
+         gp8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690121253; x=1690726053;
+        d=1e100.net; s=20221208; t=1690121254; x=1690726054;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6gGoSMkFuHXtajQB/WUOa8a8eVkA/mLa0sBAjisK8c8=;
-        b=lhU0wYSn1gv4SjgQMzw8hlNHtwMY2Qb6lL+UwxhvYVtHaldlihEaEmGyba909O0f4F
-         X+JaTYluuhYE6ufKYoYHjCHR//fWURawR3nt2jdORwW9L3yX6NLnq7AGuE0KXFbUlVZF
-         /Jzfcom9a6Zqxk3Z0lVBQ5+eTn00V+Ki+v4DcYZF+C0YFZhIry/yhh23Js8v0FxM2vRz
-         34saYG6Bh8jwGmwOYNUBXmKd9vsx0RXvqWWoZ59KeI/svyg9QFrk0yMfCTKw0AG/Blpa
-         slXu4u0pfunLhR16giEw5TtbvePB/eddaagH9bcDN8XK0Kv2ja5+MJoOe+ojx39QcelD
-         ud1g==
-X-Gm-Message-State: ABy/qLb1isKhhu2yn/K0cJDIb2ZFdETfiNBythTtZtelZOm4/8+BEjqp
-        6qBoHdCMszMcXusFsH/jwbahxS97y/Ogyw==
-X-Google-Smtp-Source: APBJJlEPVVooZlfoEODVTjUtkTLca1nNFTXxzleHzrWBMZQvgIa66cmpIVTOf/sz95pYEnm8Jt1+xA==
-X-Received: by 2002:a05:6512:2826:b0:4f8:58ae:8ea8 with SMTP id cf38-20020a056512282600b004f858ae8ea8mr4019183lfb.58.1690121252700;
-        Sun, 23 Jul 2023 07:07:32 -0700 (PDT)
+        bh=2e37AKpgfP+e3Di/jLJSpwPHf9AXaevgDCuq32UDQMM=;
+        b=UcihShg5lY7x+1T53OFpwVKr5IFp1vTj2i4F6+IBULATZx6NImAC6QBEvtnApzZGGS
+         mDaZ1rBIleemrM3bE5isD3vy9a8khrjPvxIyTxHDIxcUNQMnKbe9hJrfaASzzTcfPyLc
+         kruEqzveAFJttUkzpjzuNjkFdxkIDcJHbnydBh/JD7bz07dW9dcixsdEkrDNJvttLOkU
+         pva8D1oVDtet+sYAg/tIk5ynd9bSyL5j2xZBCwveVFHeO3KirrD2CoMfdAPVVHiX6jGl
+         4prGe0+RrVk2ZroihQWcojANOGz0CeQqb04XN6a27onUwj17QCRhxA2m/eKfesrPSiNG
+         1Z/w==
+X-Gm-Message-State: ABy/qLar74mn+I52UoeW0FSMQXhSTqCfG3ZO4s6RqpZVZjyX2eYPeEyY
+        vSbPUos/cswiL1+GMYlWyQzP+Mqyq/sZ4A==
+X-Google-Smtp-Source: APBJJlHerg5IKyx/Lu59KC3K59oQGSyuPInnsgujv5/4msaMJQYOc8LKvHnbMrhnXNXu+1t5nI1Pew==
+X-Received: by 2002:a05:6512:3b8a:b0:4fd:cdc6:3519 with SMTP id g10-20020a0565123b8a00b004fdcdc63519mr4108459lfv.44.1690121254508;
+        Sun, 23 Jul 2023 07:07:34 -0700 (PDT)
 Received: from localhost.localdomain (ccx116.neoplus.adsl.tpnet.pl. [83.30.147.116])
-        by smtp.gmail.com with ESMTPSA id o2-20020a05651238a200b004fbcd542888sm1688366lft.60.2023.07.23.07.07.31
+        by smtp.gmail.com with ESMTPSA id o2-20020a05651238a200b004fbcd542888sm1688366lft.60.2023.07.23.07.07.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 07:07:32 -0700 (PDT)
+        Sun, 23 Jul 2023 07:07:34 -0700 (PDT)
 From:   Adam Skladowski <a39.skl@gmail.com>
 Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
         Adam Skladowski <a39.skl@gmail.com>,
@@ -66,9 +66,9 @@ Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
         Marijn Suijten <marijn.suijten@somainline.org>,
         linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/7] drivers: soc: qcom: rpmpd: Fix MSM8976 power domains setup
-Date:   Sun, 23 Jul 2023 16:06:48 +0200
-Message-Id: <20230723140712.9438-2-a39.skl@gmail.com>
+Subject: [PATCH 2/7] clk: qcom: clk-hfpll: Configure l_val in init when required
+Date:   Sun, 23 Jul 2023 16:06:49 +0200
+Message-Id: <20230723140712.9438-3-a39.skl@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230723140712.9438-1-a39.skl@gmail.com>
 References: <20230723140712.9438-1-a39.skl@gmail.com>
@@ -85,86 +85,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Downstream kernel parses resource names based on pm8950-rpm-regulator.dtsi
-in such file qcom,resource-name takes three values: smpa,ldoa and clk0.
-First appearance of RWSC/RWSM point to msm-4.4 kernel
-which is way newer than what this platform was shipped with (msm-3.10).
-For the max_state downstream code limit value to TURBO inside dts
-with only one turbo_high being placed in msm-thermal bindings.
-One of effects of requesting TURBO_HIGH vote is rebooting of device
-which happens during voting inside WCNSS/IRIS,
-this behavior was observed on LeEco S2 smartphone.
-Fix regulator setup and drop unused resources.
+Add support for pre-configuring default frequency multiplier,
+this appears to be required on some platforms like MSM8976.
+Without configuring L_VAL device reboots when trying to bring PLL up.
 
 Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
 ---
- drivers/soc/qcom/rpmpd.c | 25 +++++++++----------------
- 1 file changed, 9 insertions(+), 16 deletions(-)
+ drivers/clk/qcom/clk-hfpll.c | 4 ++++
+ drivers/clk/qcom/clk-hfpll.h | 1 +
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/soc/qcom/rpmpd.c b/drivers/soc/qcom/rpmpd.c
-index 3135dd1dafe0..69bc7c4d0ace 100644
---- a/drivers/soc/qcom/rpmpd.c
-+++ b/drivers/soc/qcom/rpmpd.c
-@@ -166,13 +166,6 @@ static struct rpmpd cx_rwcx0_vfl = {
- 	.key = KEY_FLOOR_LEVEL,
- };
+diff --git a/drivers/clk/qcom/clk-hfpll.c b/drivers/clk/qcom/clk-hfpll.c
+index 86f728dc69e5..a93b1493c882 100644
+--- a/drivers/clk/qcom/clk-hfpll.c
++++ b/drivers/clk/qcom/clk-hfpll.c
+@@ -44,6 +44,10 @@ static void __clk_hfpll_init_once(struct clk_hw *hw)
+ 		regmap_write(regmap, hd->user_reg, regval);
+ 	}
  
--static struct rpmpd cx_rwsc2_vfl = {
--	.pd = { .name = "cx_vfl", },
--	.res_type = RPMPD_RWSC,
--	.res_id = 2,
--	.key = KEY_FLOOR_LEVEL,
--};
--
- static struct rpmpd cx_s1a_vfc = {
- 	.pd = { .name = "cx_vfc", },
- 	.res_type = RPMPD_SMPA,
-@@ -328,6 +321,12 @@ static struct rpmpd mx_s6a_lvl_ao = {
- 	.res_id = 6,
- 	.key = KEY_LEVEL,
- };
-+static struct rpmpd mx_s6a_vfl = {
-+	.pd = { .name = "mx_vfl", },
-+	.res_type = RPMPD_SMPA,
-+	.res_id = 6,
-+	.key = KEY_FLOOR_LEVEL,
-+};
++	/* Write L_VAL from conf if it exist */
++	if (hd->l_val)
++		regmap_write(regmap, hd->l_reg, hd->l_val);
++
+ 	if (hd->droop_reg)
+ 		regmap_write(regmap, hd->droop_reg, hd->droop_val);
  
- static struct rpmpd mx_s7a_lvl_ao;
- static struct rpmpd mx_s7a_lvl = {
-@@ -361,12 +360,6 @@ static struct rpmpd mx_rwmx0_vfl = {
- 	.key = KEY_FLOOR_LEVEL,
- };
+diff --git a/drivers/clk/qcom/clk-hfpll.h b/drivers/clk/qcom/clk-hfpll.h
+index 2a57b2fb2f2f..27b9effcb3fd 100644
+--- a/drivers/clk/qcom/clk-hfpll.h
++++ b/drivers/clk/qcom/clk-hfpll.h
+@@ -18,6 +18,7 @@ struct hfpll_data {
+ 	u32 status_reg;
+ 	u8  lock_bit;
  
--static struct rpmpd mx_rwsm6_vfl = {
--	.pd = { .name = "mx_vfl", },
--	.res_type = RPMPD_RWSM,
--	.res_id = 6,
--	.key = KEY_FLOOR_LEVEL,
--};
- 
- /* MD */
- static struct rpmpd md_s1a_corner_ao;
-@@ -591,16 +584,16 @@ static const struct rpmpd_desc msm8953_desc = {
- static struct rpmpd *msm8976_rpmpds[] = {
- 	[MSM8976_VDDCX] =	&cx_s2a_lvl,
- 	[MSM8976_VDDCX_AO] =	&cx_s2a_lvl_ao,
--	[MSM8976_VDDCX_VFL] =	&cx_rwsc2_vfl,
-+	[MSM8976_VDDCX_VFL] =	&cx_s2a_vfl,
- 	[MSM8976_VDDMX] =	&mx_s6a_lvl,
- 	[MSM8976_VDDMX_AO] =	&mx_s6a_lvl_ao,
--	[MSM8976_VDDMX_VFL] =	&mx_rwsm6_vfl,
-+	[MSM8976_VDDMX_VFL] =	&mx_s6a_vfl,
- };
- 
- static const struct rpmpd_desc msm8976_desc = {
- 	.rpmpds = msm8976_rpmpds,
- 	.num_pds = ARRAY_SIZE(msm8976_rpmpds),
--	.max_state = RPM_SMD_LEVEL_TURBO_HIGH,
-+	.max_state = RPM_SMD_LEVEL_TURBO,
- };
- 
- static struct rpmpd *msm8994_rpmpds[] = {
++	u32 l_val;
+ 	u32 droop_val;
+ 	u32 config_val;
+ 	u32 user_val;
 -- 
 2.41.0
 
