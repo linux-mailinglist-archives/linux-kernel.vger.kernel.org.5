@@ -2,53 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2062175DFB8
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 04:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91DF75DFBB
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 04:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbjGWCX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 22:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50598 "EHLO
+        id S229853AbjGWC3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 22:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjGWCXZ (ORCPT
+        with ESMTP id S229545AbjGWC3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 22:23:25 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA531BD4
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 19:23:22 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R7n8J2YSvzHnVL;
-        Sun, 23 Jul 2023 10:20:48 +0800 (CST)
-Received: from [10.174.151.185] (10.174.151.185) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sun, 23 Jul 2023 10:23:19 +0800
-Subject: Re: [PATCH 1/4] mm/swapfile: fix wrong swap entry type for hwpoisoned
- swapcache page
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     <akpm@linux-foundation.org>, <naoya.horiguchi@nec.com>,
-        <shy828301@gmail.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230715031729.2420338-1-linmiaohe@huawei.com>
- <20230715031729.2420338-2-linmiaohe@huawei.com>
- <ZLIXg7BPPAoUYUGV@casper.infradead.org>
- <33748ced-5fd3-f3f7-f358-ca016ca8ba36@huawei.com>
- <ZLStQ5QACPOHJcd2@casper.infradead.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <c81fb547-df79-6966-790d-219b8511f3c2@huawei.com>
-Date:   Sun, 23 Jul 2023 10:23:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sat, 22 Jul 2023 22:29:45 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C711BD3
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 19:29:44 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6b9aadde448so2849137a34.0
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 19:29:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690079383; x=1690684183;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uaustwNzjZmVePWypLXeoTLylLeiPcQlbyLPn6f6Obw=;
+        b=QLeT/VCnFDu7+iJJQ8Z9+xNUr22l4+J5EJq+ySm/BvTfkXYuP8mBuvYr7YDpCXWAin
+         zbHNyIYS7CM0DwIEVwoBfYtZDckqKHqXPrftBCcCrJD61Mva1kgyTF02I9TLiZPoqslB
+         ElTbMkbOIOTPcSgX43AgkxHPWh8EcYbO+4stZP1c1lwbNxqh1NUV3PTvK5rR15ryWXyR
+         3cBDNHXBgU7Rgi9CfbngokamJ/kgevWxeSCVwvWhLldh79012665j6P5WLPDqnCqYiWl
+         yOX3cX00YdoamAzw7VeRymor4gAkWUxFgDkyT5gcn6MK1qn6Y5ghZqovbE1UsKktvRpU
+         6QWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690079383; x=1690684183;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uaustwNzjZmVePWypLXeoTLylLeiPcQlbyLPn6f6Obw=;
+        b=fdtWLVjzh1+YukRTZUGoJkq2R6OU5Axe64m3nW5LPMBZA6Unvgsw627YSygAnG7Dwf
+         L2LP//XzPsfXg2EouAGkDoTxQiz5MmLvAiw5IXy2PMRqztkbRRazmIPKxXAHCY0imbs/
+         59t1jV93MoxA1+gUBJYyXVypPNpADQRdgbQ2RbJPvwYv7nvQVcimNDaack9v3W07GUmz
+         DvNhuLKujxydjCyYNsUOhyp2RlfzMja/C120uRNbvQzVRIPyk87+8m/AmgMA3WWJKxfI
+         06GoGEhF54DJa7sG4PG6Dv96wo3nB3JgrbJXw2A+hNCL4xGuC0qe6ucuNcutR0v6u/n1
+         cO5A==
+X-Gm-Message-State: ABy/qLZjibZ0kJugQjkHE4/0vLxgBl7SkG9MMrkki7mZtq1UAktv8fSm
+        EzZux7B02D2dOkbhuS6kKKU=
+X-Google-Smtp-Source: APBJJlHOGKDXakiRWOhkcQkFS0r6ynD4QhW1NnQ+4sbefE3ZendQTqwKIoFyuFTbGzenaqDrpMdHXQ==
+X-Received: by 2002:a05:6830:19ce:b0:6b9:b985:2892 with SMTP id p14-20020a05683019ce00b006b9b9852892mr4352380otp.17.1690079383363;
+        Sat, 22 Jul 2023 19:29:43 -0700 (PDT)
+Received: from localhost ([216.228.127.128])
+        by smtp.gmail.com with ESMTPSA id ji22-20020a170903325600b001bb9b87ac95sm62388plb.103.2023.07.22.19.29.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Jul 2023 19:29:42 -0700 (PDT)
+Date:   Sat, 22 Jul 2023 19:29:39 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org
+Subject: Re: [PATCH v4 2/5] lib/test_bitmap: add tests for
+ bitmap_{set,get}_value()
+Message-ID: <ZLyQk5Wmcx7Cf84W@yury-ThinkPad>
+References: <20230720173956.3674987-1-glider@google.com>
+ <20230720173956.3674987-3-glider@google.com>
 MIME-Version: 1.0
-In-Reply-To: <ZLStQ5QACPOHJcd2@casper.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720173956.3674987-3-glider@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,80 +76,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/17 10:53, Matthew Wilcox wrote:
-> On Mon, Jul 17, 2023 at 10:33:14AM +0800, Miaohe Lin wrote:
->> On 2023/7/15 11:50, Matthew Wilcox wrote:
->>> On Sat, Jul 15, 2023 at 11:17:26AM +0800, Miaohe Lin wrote:
->>>> Hwpoisoned dirty swap cache page is kept in the swap cache and there's
->>>> simple interception code in do_swap_page() to catch it. But when trying
->>>> to swapoff, unuse_pte() will wrongly install a general sense of "future
->>>> accesses are invalid" swap entry for hwpoisoned swap cache page due to
->>>> unaware of such type of page. The user will receive SIGBUS signal without
->>>> expected BUS_MCEERR_AR payload.
->>>
->>> Have you observed this, or do you just think it's true?
->>>
->>>> +++ b/mm/swapfile.c
->>>> @@ -1767,7 +1767,8 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
->>>>  		swp_entry_t swp_entry;
->>>>  
->>>>  		dec_mm_counter(vma->vm_mm, MM_SWAPENTS);
->>>> -		if (hwposioned) {
->>>> +		/* Hwpoisoned swapcache page is also !PageUptodate. */
->>>> +		if (hwposioned || PageHWPoison(page)) {
->>>
->>> This line makes no sense to me.  How do we get here with PageHWPoison()
->>> being true and hwposioned being false?
->>
->> hwposioned will be true iff ksm_might_need_to_copy returns -EHWPOISON.
->> And there's PageUptodate check in ksm_might_need_to_copy before we can return -EHWPOISON:
->>
->>   ksm_might_need_to_copy
->>     if (!PageUptodate(page))
->>       return page;		/* let do_swap_page report the error */
->>     ^^^
->>     Will return here because hwpoisoned swapcache page is !PageUptodate(cleared via me_swapcache_dirty()).
->>
->> Or am I miss something?
+On Thu, Jul 20, 2023 at 07:39:53PM +0200, Alexander Potapenko wrote:
+> Add basic tests ensuring that values can be added at arbitrary positions
+> of the bitmap, including those spanning into the adjacent unsigned
+> longs.
 > 
-> Ah!  So we don't even get to calling copy_mc_to_kernel().  That seems
-> like a bug in ksm_might_need_to_copy(), don't you think?  Maybe this
-> would be a better fix:
-> 
-> +	if (PageHWPoison(page))
-> +		return ERR_PTR(-EHWPOISON);
+> Signed-off-by: Alexander Potapenko <glider@google.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-I'm preparing posting the v2. But I found this won't fix the issue if CONFIG_KSM is disabled. So the correct fix
-should be something like below?
+[...]
 
-diff --git a/mm/ksm.c b/mm/ksm.c
-index 97a9627116fa..74804158ee02 100644
---- a/mm/ksm.c
-+++ b/mm/ksm.c
-@@ -2794,6 +2794,8 @@ struct page *ksm_might_need_to_copy(struct page *page,
-                        anon_vma->root == vma->anon_vma->root) {
-                return page;            /* still no need to copy it */
+> +/*
+> + * Test bitmap should be big enough to include the cases when start is not in
+> + * the first word, and start+nbits lands in the following word.
+> + */
+> +#define TEST_BIT_LEN (BITS_PER_LONG * 3)
+
+Why not just 1000? Is your code safe against unaligned bitmaps?
+
+> +#define TEST_BYTE_LEN (BITS_TO_LONGS(TEST_BIT_LEN) * sizeof(unsigned long))
+
+BITS_TO_BYTES
+
+> +static void __init test_set_get_value(void)
+
+test_bitmap_read_write. Here, and in subjects for #1 and #2.
+
+> +{
+> +	DECLARE_BITMAP(bitmap, TEST_BIT_LEN);
+> +	DECLARE_BITMAP(exp_bitmap, TEST_BIT_LEN);
+> +	/* Prevent constant folding. */
+> +	volatile unsigned long zero_bits = 0;
+
+Use READ_ONCE() instead of volatile
+
+> +	unsigned long val, bit;
+> +	int i;
+> +
+> +	/* Setting/getting zero bytes should not crash the kernel. */
+> +	bitmap_write(NULL, 0, 0, zero_bits);
+> +	val = bitmap_read(NULL, 0, zero_bits);
+> +	expect_eq_ulong(0, val);
+
+No, val is undefined.
+
+> +
+> +	/*
+> +	 * Ensure that bitmap_read() reads the same value that was previously
+> +	 * written, and two consequent values are correctly merged.
+> +	 * The resulting bit pattern is asymmetric to rule out possible issues
+> +	 * with bit numeration order.
+> +	 */
+> +	for (i = 0; i < TEST_BIT_LEN - 7; i++) {
+
+Can you add some empty lines in the block below in sake of
+readability? Maybe after expect()?
+
+> +		bitmap_zero(bitmap, TEST_BIT_LEN);
+> +		bitmap_write(bitmap, 0b10101UL, i, 5);
+> +		val = bitmap_read(bitmap, i, 5);
+> +		expect_eq_ulong(0b10101UL, val);
+> +		bitmap_write(bitmap, 0b101UL, i + 5, 3);
+> +		val = bitmap_read(bitmap, i + 5, 3);
+> +		expect_eq_ulong(0b101UL, val);
+> +		val = bitmap_read(bitmap, i, 8);
+> +		expect_eq_ulong(0b10110101UL, val);
+> +	}
+> +
+> +	/*
+> +	 * Check that setting a single bit does not accidentally touch the
+> +	 * adjacent bits.
+> +	 */
+> +	for (i = 0; i < TEST_BIT_LEN; i++) {
+> +		/*
+> +		 * A 0b10101010 pattern to catch both 0s replaced to 1s and vice
+> +		 * versa.
+> +		 */
+> +		memset(bitmap, 0xaa, TEST_BYTE_LEN);
+> +		memset(exp_bitmap, 0xaa, TEST_BYTE_LEN);
+> +		for (bit = 0; bit <= 1; bit++) {
+> +			bitmap_write(bitmap, bit, i, 1);
+> +			__assign_bit(i, exp_bitmap, bit);
+> +			expect_eq_bitmap(exp_bitmap, bitmap, TEST_BIT_LEN);
+> +		}
+
+I suggested the other test:
+
+val = DEADBEEF;
+for (nbits = 1; nbits <= BITS_PER_LONG; nbits++)
+        for (start = 0; start < 1000; i++) {
+                if (start + nbits >= 1000)
+                        break;;
+
+                v = val & GENMASK(nbits - 1, 0);
+
+		memset(bitmap, 0xaa /* also 0xff and 0x00 */, TEST_BYTE_LEN);
+		memset(exp_bitmap, 0xaa, TEST_BYTE_LEN);
+
+                for (n = 0; n < nbits; n++)
+			__assign_bit(v & BIT(n), exp_bitmap, start + n);
+
+                bitmap_write(bitmap, v, start, nbits);
+		expect_eq_bitmap(exp_bitmap, bitmap, 1000);
+
+                r = bitmap_read(bitmap, start, nbits);
+                expect_eq(r, v);
         }
-+       if (PageHWPoison(page))
-+               return ERR_PTR(-EHWPOISON);
-        if (!PageUptodate(page))
-                return page;            /* let do_swap_page report the error */
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 346e22b8ae97..3dcc9d92689c 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1744,7 +1744,7 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
-        struct page *swapcache;
-        spinlock_t *ptl;
-        pte_t *pte, new_pte, old_pte;
--       bool hwposioned = false;
-+       bool hwposioned = PageHWPoison(page);
-        int ret = 1;
+> +	}
+> +
+> +	/* Ensure setting 0 bits does not change anything. */
+> +	memset(bitmap, 0xaa, TEST_BYTE_LEN);
+> +	memset(exp_bitmap, 0xaa, TEST_BYTE_LEN);
+> +	for (i = 0; i < TEST_BIT_LEN; i++) {
+> +		bitmap_write(bitmap, ~0UL, i, 0);
+> +		expect_eq_bitmap(exp_bitmap, bitmap, TEST_BIT_LEN);
+> +	}
+> +}
+> +#undef TEST_BYTE_LEN
+> +#undef TEST_BIT_LEN
+> +
+>  static void __init selftest(void)
+>  {
+>  	test_zero_clear();
+> @@ -1249,6 +1328,8 @@ static void __init selftest(void)
+>  	test_for_each_clear_bitrange_from();
+>  	test_for_each_set_clump8();
+>  	test_for_each_set_bit_wrap();
+> +
+> +	test_set_get_value();
 
-        swapcache = page;
+This should append the test_bitmap_* section
 
-
-Thanks.
-
-
+Thanks,
+Yury
