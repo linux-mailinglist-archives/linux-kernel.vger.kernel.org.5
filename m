@@ -2,65 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B616C75E362
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 18:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6AB75E395
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 18:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjGWQJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 12:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33170 "EHLO
+        id S229923AbjGWQWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 12:22:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbjGWQJ1 (ORCPT
+        with ESMTP id S229821AbjGWQWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 12:09:27 -0400
-Received: from relay05.th.seeweb.it (relay05.th.seeweb.it [5.144.164.166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169701FD0;
-        Sun, 23 Jul 2023 09:09:05 -0700 (PDT)
-Received: from Marijn-Arch-PC.localdomain (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
+        Sun, 23 Jul 2023 12:22:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C13E72;
+        Sun, 23 Jul 2023 09:22:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 2E5523F1DE;
-        Sun, 23 Jul 2023 18:09:02 +0200 (CEST)
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-Date:   Sun, 23 Jul 2023 18:08:55 +0200
-Subject: [PATCH v4 17/17] arm64: dts: qcom: sm6125-seine: Configure MDSS,
- DSI and panel
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230723-sm6125-dpu-v4-17-a3f287dd6c07@somainline.org>
-References: <20230723-sm6125-dpu-v4-0-a3f287dd6c07@somainline.org>
-In-Reply-To: <20230723-sm6125-dpu-v4-0-a3f287dd6c07@somainline.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B3B360DCF;
+        Sun, 23 Jul 2023 16:22:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1153C433C8;
+        Sun, 23 Jul 2023 16:22:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690129325;
+        bh=7hHXq5KIGZC56c1hv7UXeUsgzL3fx7D0F+Gla1+ZuLg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lahRw5W+Sld4yPDA3+L9Vc2Rkfld49P9uq31pPL2GHeT5QMH/scER6UMa6DQwbzaz
+         YK+LIJG1GZnrSv5aRDvWJFmaNxRwJfhLTopV7YBP1Chs6Ws/1J2T/KOEsms5YPZ+kR
+         cTHoKeEMTtXx5jA8p39buiLddz0WvTIbOI/uwTfGed1m+lAqE1a1W+SA3DN6eHuJvl
+         o/4QUPVJpdDl32ffWVmiiYkFgVXsX4h0wcEEE6N6xiOtkqBuK9qrm17lPZVtMpNcZ1
+         VHS+5NJ+mAWig5S8WlQ1V2zTTMfLZky5A5DvsdIHOa1LT9P8Zq9Djac0J/GnuR/Eoh
+         6wgU05nH/XwoA==
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krishna Manikandan <quic_mkrishn@quicinc.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH net-next 00/10] net: stmmac: add new features to xgmac
+Date:   Mon, 24 Jul 2023 00:10:19 +0800
+Message-Id: <20230723161029.1345-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.40.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,93 +64,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable MDSS and DSI, and configure the Samsung SOFEF01-M ams597ut01
-6.0" 1080x2520 panel.
+This series add below new features to xgmac:
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
----
- .../dts/qcom/sm6125-sony-xperia-seine-pdx201.dts   | 59 ++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+correct RX COE parsing
+add more feature parsing from hw cap
+enlarge C22 ADDR and rx/tx channels
+support parse safety ce/ue irq from DT
+support per channel irq
 
-diff --git a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-index 82b0da5bb794..62c3e6d8147c 100644
---- a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-+++ b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-@@ -179,6 +179,43 @@ &i2c3 {
- 	/* Cirrus Logic CS35L41 boosted audio amplifier @ 40 */
- };
- 
-+&mdss {
-+	status = "okay";
-+};
-+
-+&mdss_dsi0 {
-+	vdda-supply = <&pm6125_l18>;
-+	status = "okay";
-+
-+	panel@0 {
-+		compatible = "samsung,sofef01-m-ams597ut01";
-+		reg = <0>;
-+
-+		reset-gpios = <&tlmm 90 GPIO_ACTIVE_LOW>;
-+
-+		vddio-supply = <&pm6125_l12>;
-+
-+		pinctrl-0 = <&mdss_dsi_active &mdss_te_active_sleep>;
-+		pinctrl-1 = <&mdss_dsi_sleep &mdss_te_active_sleep>;
-+		pinctrl-names = "default", "sleep";
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&mdss_dsi0_out>;
-+			};
-+		};
-+	};
-+};
-+
-+&mdss_dsi0_out {
-+	remote-endpoint = <&panel_in>;
-+	data-lanes = <0 1 2 3>;
-+};
-+
-+&mdss_dsi0_phy {
-+	status = "okay";
-+};
-+
- &pm6125_adc {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&camera_flash_therm &emmc_ufs_therm &rf_pa1_therm>;
-@@ -469,6 +506,28 @@ vol_down_n: vol-down-n-state {
- 		drive-strength = <2>;
- 		bias-disable;
- 	};
-+
-+	mdss_te_active_sleep: mdss-te-active-sleep-state {
-+		pins = "gpio89";
-+		function = "mdp_vsync";
-+		drive-strength = <2>;
-+		bias-pull-down;
-+	};
-+
-+	mdss_dsi_active: mdss-dsi-active-state {
-+		pins = "gpio90";
-+		function = "gpio";
-+		drive-strength = <8>;
-+		bias-disable;
-+	};
-+
-+	mdss_dsi_sleep: mdss-dsi-sleep-state {
-+		pins = "gpio90";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-pull-down;
-+	};
-+
- };
- 
- &usb3 {
+Jisheng Zhang (10):
+  net: stmmac: correct RX COE parsing for xgmac
+  net: stmmac: xgmac: add more feature parsing from hw cap
+  net: stmmac: mdio: enlarge the max XGMAC C22 ADDR to 31
+  net: stmmac: enlarge max rx/tx queues and channels to 16
+  net: stmmac: rename multi_msi_en to perch_irq_en
+  net: stmmac: xgmac: support per-channel irq
+  dt-bindings: net: snps,dwmac: add safety irq support
+  net: stmmac: platform: support parsing safety irqs from DT
+  dt-bindings: net: snps,dwmac: add per channel irq support
+  net: stmmac: platform: support parsing per channel irq from DT
+
+ .../devicetree/bindings/net/snps,dwmac.yaml   | 27 +++++++++++++
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c |  4 +-
+ .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  5 +++
+ .../ethernet/stmicro/stmmac/dwxgmac2_core.c   |  5 +--
+ .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    | 37 +++++++++++-------
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 12 +++---
+ .../net/ethernet/stmicro/stmmac/stmmac_mdio.c |  2 +-
+ .../ethernet/stmicro/stmmac/stmmac_platform.c | 39 +++++++++++++++++++
+ include/linux/stmmac.h                        | 10 ++---
+ 10 files changed, 112 insertions(+), 31 deletions(-)
 
 -- 
-2.41.0
+2.40.1
 
