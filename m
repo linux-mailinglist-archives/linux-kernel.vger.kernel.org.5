@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D09ED75E15F
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 12:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D6175E1AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 14:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbjGWKYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 06:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
+        id S229749AbjGWMGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 08:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjGWKX1 (ORCPT
+        with ESMTP id S229640AbjGWMGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 06:23:27 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBFC172D;
-        Sun, 23 Jul 2023 03:23:05 -0700 (PDT)
-Received: from kwepemm600012.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R7zqn4RG2zrRfn;
-        Sun, 23 Jul 2023 18:22:13 +0800 (CST)
-Received: from build.huawei.com (10.175.101.6) by
- kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sun, 23 Jul 2023 18:23:02 +0800
-From:   Wenchao Hao <haowenchao2@huawei.com>
-To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Dan Carpenter <error27@gmail.com>, <louhongxiang@huawei.com>,
-        Wenchao Hao <haowenchao2@huawei.com>
-Subject: [PATCH 13/13] scsi:scsi_debug: Add param to control if setup target based error handle
-Date:   Mon, 24 Jul 2023 07:44:22 +0800
-Message-ID: <20230723234422.1629194-14-haowenchao2@huawei.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20230723234422.1629194-1-haowenchao2@huawei.com>
-References: <20230723234422.1629194-1-haowenchao2@huawei.com>
+        Sun, 23 Jul 2023 08:06:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789B81BF
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 05:06:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D35C60CEB
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 12:06:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D7DBC433C7;
+        Sun, 23 Jul 2023 12:06:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690113993;
+        bh=lCA7wyn7EJy5EJxSIML6nBv4d37+7+FxeiGSeIwj+JU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O5TsTrihRy4Hqcqkwhs0jdj5vodaDq5XpA+yJobPmqyDIwvJ9Bz3CIshuo/2IwydS
+         my68wzYF+XWCIcY5vy0876bqDA6YxgbB4cam9PEQ7GwBDctgcLvsRuzLyXJrhtvg4z
+         c2SODRfZ3znAgrWmjO4zMQ+A9Y0ZPSfgybGBoXr8=
+Date:   Sun, 23 Jul 2023 14:06:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Aleksei Filippov <halip0503@gmail.com>
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        shaggy@kernel.org,
+        syzbot+5f088f29593e6b4c8db8@syzkaller.appspotmail.com
+Subject: Re: [PATCH] jfs: validate max amount of blocks before allocation.
+Message-ID: <2023072318-semantic-payee-0162@gregkh>
+References: <2023072251-spokesman-zebra-908d@gregkh>
+ <20230723120209.7963-1-halip0503@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600012.china.huawei.com (7.193.23.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230723120209.7963-1-halip0503@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,62 +54,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new module param lun_eh to control if setup target based error handle,
-this is used to test the target based error handle.
+On Sun, Jul 23, 2023 at 03:02:09PM +0300, Aleksei Filippov wrote:
+> From: Alexei Filippov <halip0503@gmail.com>
+> 
+> The lack of checking bmp->db_max_freebud in extBalloc() can lead to
+> shift out of bounds, so this patch prevents undefined behavior, because
+> bmp->db_max_freebud == -1 only if there is no free space.
+> 
+> Signed-off-by: Aleksei Filippov <halip0503@gmail.com>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Reported-and-tested-by: syzbot+5f088f29593e6b4c8db8@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?id=01abadbd6ae6a08b1f1987aa61554c6b3ac19ff2
+> ---
+>  fs/jfs/jfs_extent.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/fs/jfs/jfs_extent.c b/fs/jfs/jfs_extent.c
+> index ae99a7e232ee..a82751e6c47f 100644
+> --- a/fs/jfs/jfs_extent.c
+> +++ b/fs/jfs/jfs_extent.c
+> @@ -311,6 +311,11 @@ extBalloc(struct inode *ip, s64 hint, s64 * nblocks, s64 * blkno)
+>  	 * blocks in the map. in that case, we'll start off with the
+>  	 * maximum free.
+>  	 */
+> +
+> +	/* give up if no space left */
+> +	if (bmp->db_maxfreebud == -1)
+> +		return -ENOSPC;
+> +
+>  	max = (s64) 1 << bmp->db_maxfreebud;
+>  	if (*nblocks >= max && *nblocks > nbperpage)
+>  		nb = nblks = (max > nbperpage) ? max : nbperpage;
+> -- 
+> 2.25.1
+> 
 
-Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
----
- drivers/scsi/scsi_debug.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Hi,
 
-diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
-index 7ab57fc30301..31105d7fb562 100644
---- a/drivers/scsi/scsi_debug.c
-+++ b/drivers/scsi/scsi_debug.c
-@@ -842,6 +842,7 @@ static bool write_since_sync;
- static bool sdebug_statistics = DEF_STATISTICS;
- static bool sdebug_wp;
- static bool sdebug_lun_eh;
-+static bool sdebug_target_eh;
- /* Following enum: 0: no zbc, def; 1: host aware; 2: host managed */
- static enum blk_zoned_model sdeb_zbc_model = BLK_ZONED_NONE;
- static char *sdeb_zbc_model_s;
-@@ -1131,6 +1132,9 @@ static int sdebug_target_alloc(struct scsi_target *starget)
- 
- 	starget->hostdata = targetip;
- 
-+	if (sdebug_target_eh)
-+		return scsi_target_setup_eh(starget);
-+
- 	return 0;
- }
- 
-@@ -1138,6 +1142,9 @@ static void sdebug_target_destroy(struct scsi_target *starget)
- {
- 	struct sdebug_target_info *targetip;
- 
-+	if (sdebug_target_eh)
-+		scsi_target_clear_eh(starget);
-+
- 	targetip = (struct sdebug_target_info *)starget->hostdata;
- 	if (targetip) {
- 		debugfs_remove(targetip->debugfs_entry);
-@@ -6162,6 +6169,7 @@ module_param_named(zone_max_open, sdeb_zbc_max_open, int, S_IRUGO);
- module_param_named(zone_nr_conv, sdeb_zbc_nr_conv, int, S_IRUGO);
- module_param_named(zone_size_mb, sdeb_zbc_zone_size_mb, int, S_IRUGO);
- module_param_named(lun_eh, sdebug_lun_eh, bool, S_IRUGO);
-+module_param_named(target_eh, sdebug_target_eh, bool, S_IRUGO);
- 
- MODULE_AUTHOR("Eric Youngdale + Douglas Gilbert");
- MODULE_DESCRIPTION("SCSI debug adapter driver");
-@@ -6235,6 +6243,7 @@ MODULE_PARM_DESC(zone_max_open, "Maximum number of open zones; [0] for no limit
- MODULE_PARM_DESC(zone_nr_conv, "Number of conventional zones (def=1)");
- MODULE_PARM_DESC(zone_size_mb, "Zone size in MiB (def=auto)");
- MODULE_PARM_DESC(lun_eh, "LUN based error handle (def=0)");
-+MODULE_PARM_DESC(target_eh, "target based error handle (def=0)");
- 
- #define SDEBUG_INFO_LEN 256
- static char sdebug_info[SDEBUG_INFO_LEN];
--- 
-2.35.3
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/process/submitting-patches.rst for what
+  needs to be done here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
