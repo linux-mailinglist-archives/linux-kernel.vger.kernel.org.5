@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D36F875E358
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 18:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EB675E359
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 18:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbjGWQJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 12:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33750 "EHLO
+        id S230210AbjGWQJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 12:09:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbjGWQJR (ORCPT
+        with ESMTP id S230110AbjGWQJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 23 Jul 2023 12:09:17 -0400
-Received: from relay05.th.seeweb.it (relay05.th.seeweb.it [5.144.164.166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B59D171F;
-        Sun, 23 Jul 2023 09:09:01 -0700 (PDT)
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [5.144.164.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDF419A1
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 09:09:02 -0700 (PDT)
 Received: from Marijn-Arch-PC.localdomain (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 4725F3F1C4;
-        Sun, 23 Jul 2023 18:08:58 +0200 (CEST)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 8F75D3F1D1;
+        Sun, 23 Jul 2023 18:08:59 +0200 (CEST)
 From:   Marijn Suijten <marijn.suijten@somainline.org>
-Date:   Sun, 23 Jul 2023 18:08:52 +0200
-Subject: [PATCH v4 14/17] arm64: dts: qcom: sm6125: Switch fixed xo_board
- clock to RPM XO clock
+Date:   Sun, 23 Jul 2023 18:08:53 +0200
+Subject: [PATCH v4 15/17] arm64: dts: qcom: sm6125: Add dispcc node
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230723-sm6125-dpu-v4-14-a3f287dd6c07@somainline.org>
+Message-Id: <20230723-sm6125-dpu-v4-15-a3f287dd6c07@somainline.org>
 References: <20230723-sm6125-dpu-v4-0-a3f287dd6c07@somainline.org>
 In-Reply-To: <20230723-sm6125-dpu-v4-0-a3f287dd6c07@somainline.org>
 To:     Andy Gross <agross@kernel.org>,
@@ -60,7 +59,7 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,56 +67,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have a working RPM XO clock; no other driver except rpmcc should be
-parenting directly to the fixed-factor xo_board clock nor should it be
-reachable by that global name.  Remove the name to that effect, so that
-every clock relation is explicitly defined in DTS.
+Enable and configure the dispcc node on SM6125 for consumption by MDSS
+later on.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
 ---
- arch/arm64/boot/dts/qcom/sm6125.dtsi | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/qcom/sm6125.dtsi | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/sm6125.dtsi b/arch/arm64/boot/dts/qcom/sm6125.dtsi
-index cfd0901d4555..90e242ad7943 100644
+index 90e242ad7943..23d1284793d2 100644
 --- a/arch/arm64/boot/dts/qcom/sm6125.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sm6125.dtsi
-@@ -23,7 +23,6 @@ xo_board: xo-board {
- 			compatible = "fixed-clock";
- 			#clock-cells = <0>;
- 			clock-frequency = <19200000>;
--			clock-output-names = "xo_board";
+@@ -3,6 +3,7 @@
+  * Copyright (c) 2021, Martin Botka <martin.botka@somainline.org>
+  */
+ 
++#include <dt-bindings/clock/qcom,dispcc-sm6125.h>
+ #include <dt-bindings/clock/qcom,gcc-sm6125.h>
+ #include <dt-bindings/clock/qcom,sm6125-gpucc.h>
+ #include <dt-bindings/clock/qcom,rpmcc.h>
+@@ -1208,6 +1209,34 @@ sram@4690000 {
+ 			reg = <0x04690000 0x10000>;
  		};
  
- 		sleep_clk: sleep-clk {
-@@ -199,6 +198,8 @@ rpm_requests: rpm-requests {
- 				rpmcc: clock-controller {
- 					compatible = "qcom,rpmcc-sm6125", "qcom,rpmcc";
- 					#clock-cells = <1>;
-+					clocks = <&xo_board>;
-+					clock-names = "xo";
- 				};
- 
- 				rpmpd: power-controller {
-@@ -718,7 +719,7 @@ sdhc_1: mmc@4744000 {
- 
- 			clocks = <&gcc GCC_SDCC1_AHB_CLK>,
- 				 <&gcc GCC_SDCC1_APPS_CLK>,
--				 <&xo_board>;
-+				 <&rpmcc RPM_SMD_XO_CLK_SRC>;
- 			clock-names = "iface", "core", "xo";
- 			iommus = <&apps_smmu 0x160 0x0>;
- 
-@@ -745,7 +746,7 @@ sdhc_2: mmc@4784000 {
- 
- 			clocks = <&gcc GCC_SDCC2_AHB_CLK>,
- 				 <&gcc GCC_SDCC2_APPS_CLK>,
--				 <&xo_board>;
-+				 <&rpmcc RPM_SMD_XO_CLK_SRC>;
- 			clock-names = "iface", "core", "xo";
- 			iommus = <&apps_smmu 0x180 0x0>;
- 
++		dispcc: clock-controller@5f00000 {
++			compatible = "qcom,sm6125-dispcc";
++			reg = <0x05f00000 0x20000>;
++
++			clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
++				 <0>,
++				 <0>,
++				 <0>,
++				 <0>,
++				 <0>,
++				 <&gcc GCC_DISP_AHB_CLK>,
++				 <&gcc GCC_DISP_GPLL0_DIV_CLK_SRC>;
++			clock-names = "bi_tcxo",
++				      "dsi0_phy_pll_out_byteclk",
++				      "dsi0_phy_pll_out_dsiclk",
++				      "dsi1_phy_pll_out_dsiclk",
++				      "dp_phy_pll_link_clk",
++				      "dp_phy_pll_vco_div_clk",
++				      "cfg_ahb_clk",
++				      "gcc_disp_gpll0_div_clk_src";
++
++			required-opps = <&rpmpd_opp_ret>;
++			power-domains = <&rpmpd SM6125_VDDCX>;
++
++			#clock-cells = <1>;
++			#power-domain-cells = <1>;
++		};
++
+ 		apps_smmu: iommu@c600000 {
+ 			compatible = "qcom,sm6125-smmu-500", "qcom,smmu-500", "arm,mmu-500";
+ 			reg = <0x0c600000 0x80000>;
 
 -- 
 2.41.0
