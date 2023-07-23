@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6ED75E263
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 16:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E96075E26A
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 16:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbjGWOHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 10:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
+        id S229843AbjGWOH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 10:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjGWOHs (ORCPT
+        with ESMTP id S229877AbjGWOHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 10:07:48 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68D91B8;
-        Sun, 23 Jul 2023 07:07:41 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fddd4e942eso4753759e87.3;
-        Sun, 23 Jul 2023 07:07:41 -0700 (PDT)
+        Sun, 23 Jul 2023 10:07:50 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2491C1709;
+        Sun, 23 Jul 2023 07:07:44 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fb863edcb6so5160318e87.0;
+        Sun, 23 Jul 2023 07:07:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690121260; x=1690726060;
+        d=gmail.com; s=20221208; t=1690121262; x=1690726062;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GnagQxwlD2BGmfp1Y+SwDf/PshNGhc6oxsdbzF1ORog=;
-        b=nZuo0QmUECVkywcqjxDoSIprotwScO72FvSS7egFpQApX5HL4xU7FQMxGQoFW6C2ZJ
-         H4+ErzP1Xq7+f00pZPHmSuAuJoHExElFgOAJI6uJ+Zo9LfRtkFOWzlFZkL3AX5EivqWb
-         Jq8IgfnZ20x1iHCZA7ZGf6pdKGKECCpNvM9jM94jTlwGzoH8R2tEobFpcavnUZoph5DB
-         yXGp62Z2D5DqoZidcxTal2sHgfnF1tNTPu3ALUnttBUpgDa60K1Q5FUaVhgHfrxK7FV7
-         cXoQghU2TLk3M45TQ/K/H3q6+eV01Q8aW4/3Uok2BPdcd8Fvbu7juinHolw2TftJL3Qf
-         2Iug==
+        bh=ZnquK1Bf+NrtIkuj5n5WuqzSN63Lf7C6vpkZFjzFEOU=;
+        b=qjJQFC/pyIzq5bIHb2/d1EwWRDADxVHwsIYltrDhEDjdIyYiSo6jp8z0KqroqYON3F
+         +iJq+JNhOv4SsBqXGKmIDOuFqmR/jHOY896lHtjmewuG2iScImOi+Qudmz/aPmtiIvKY
+         Q1mAtUVquvtaY2jW4t9x2jKlwn63GW8mKSX+Y/2K7gqQDl32czJ4If0HQttiGh+vptod
+         kDz+O0HEDckL4Dt31oMpO3mpD9j2LwCvcSNxIpBYgl40IR3glQoysydHVP93uuPLmoUO
+         wxxeAnk+/5n344l2/I0R7CrRMY+kV/jhziVc2O0RT7kEq6sHokBmVKqJtd+j3XwNTojO
+         8vnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690121260; x=1690726060;
+        d=1e100.net; s=20221208; t=1690121262; x=1690726062;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GnagQxwlD2BGmfp1Y+SwDf/PshNGhc6oxsdbzF1ORog=;
-        b=WPKwa3MczK+lfAgxUKmV64JUXIcTaStYoPBg9xWQl/czx2uuw7Abtqokg91v5BKGWZ
-         CnuHqj/T149ob3T4sOB1sQRrq6JDQt1hhyA2uvmZje3iJwAnWEtHzUTo1I44jEE9fVeP
-         vMtbIWnXE7gz8ucSncuvPotLM3HIvRZZ3BAXgr9RwnFVoYsfZgudbBEHGaT+019dL54m
-         x7mBadQkHSQe8MnSX4RIJLgfea7o9215y0ZhXPPSGRhHKUqSFEW48r+lqj11iB9Uiyei
-         VrKE8nPYKtHOMToFlCEhH1mJ2ueg344f4CjFvMECVNcoa8G+TNnpSvFfmiDXwE/Xtwym
-         nZpA==
-X-Gm-Message-State: ABy/qLZLSAEXHRV/PLNMcmDUYCLLi0U4+9J+eAkvq69YNaA1UUkd3P5T
-        f9Ke4/LkfvAvxLVqEIy+r8eOjqhSqXKhxA==
-X-Google-Smtp-Source: APBJJlFj+EYJEQ21PIOegYg0bGgHBZXNghyGxBKofLLed9bm3ysz2uLJPzAcS6QqDFCpXwgBx3QO4A==
-X-Received: by 2002:a05:6512:3410:b0:4f8:4245:ed57 with SMTP id i16-20020a056512341000b004f84245ed57mr4399826lfr.35.1690121259947;
-        Sun, 23 Jul 2023 07:07:39 -0700 (PDT)
+        bh=ZnquK1Bf+NrtIkuj5n5WuqzSN63Lf7C6vpkZFjzFEOU=;
+        b=L59nxJJcaI3w7IRb+ey1eXa5hNAXoIqUjAOvjXLw+VfGF3XXWUgUGKmHrKqz2im+Qj
+         h/0I14HUmujJ2VSFM5OoVD6/XrtOkChCXUFq+0ufCBQlzS0Pt8qXVGiCVsjqIdjwsdGB
+         YmYKef9T/L3BlYEQnQTNSjUEd2TfEEutZ/lYAAJ5TiK0izlZKSF1vraz8LTdj04bYf+I
+         V7+48JQtsbFt98ndjR35equgDs1tf3djgtdROJ8MOiecVqfdTYMbCu0A9iXh9F3hkQ1z
+         t/r3R4P3FpW26tm05su7i7CpJPOYhy5FcijuXdjYWvE9Ldh4Q65/J8Dzno5dgGTByicx
+         8edw==
+X-Gm-Message-State: ABy/qLZLbFXow9+HM5+JFaNWbvQTQE34efoXW761pmetoQWkz0OCT0/y
+        qqgrurKQrwg4ek0GiCDmlGSGaBpUnEYrvA==
+X-Google-Smtp-Source: APBJJlGdrL+NcR7PEBtWtKnxNv23eTE7INMr6IX5Sn2CahykbJMH6xT9aE11pXbRN/YLaBOfBDM4Lw==
+X-Received: by 2002:a19:7508:0:b0:4ed:cc6d:61fe with SMTP id y8-20020a197508000000b004edcc6d61femr3856837lfe.24.1690121261699;
+        Sun, 23 Jul 2023 07:07:41 -0700 (PDT)
 Received: from localhost.localdomain (ccx116.neoplus.adsl.tpnet.pl. [83.30.147.116])
-        by smtp.gmail.com with ESMTPSA id o2-20020a05651238a200b004fbcd542888sm1688366lft.60.2023.07.23.07.07.38
+        by smtp.gmail.com with ESMTPSA id o2-20020a05651238a200b004fbcd542888sm1688366lft.60.2023.07.23.07.07.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 07:07:39 -0700 (PDT)
+        Sun, 23 Jul 2023 07:07:41 -0700 (PDT)
 From:   Adam Skladowski <a39.skl@gmail.com>
 Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
         Adam Skladowski <a39.skl@gmail.com>,
@@ -66,9 +66,9 @@ Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
         Marijn Suijten <marijn.suijten@somainline.org>,
         linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/7] clk: qcom: hfpll: Add MSM8976 PLL data
-Date:   Sun, 23 Jul 2023 16:06:52 +0200
-Message-Id: <20230723140712.9438-6-a39.skl@gmail.com>
+Subject: [PATCH 6/7] arm64: dts: qcom: msm8976: Split lpass region
+Date:   Sun, 23 Jul 2023 16:06:53 +0200
+Message-Id: <20230723140712.9438-7-a39.skl@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230723140712.9438-1-a39.skl@gmail.com>
 References: <20230723140712.9438-1-a39.skl@gmail.com>
@@ -85,86 +85,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PLL configuration for MSM8976 SoC, this SoC offers 3 HFPLL.
-Small cluster offers two presets for 652-902Mhz range and 902Mhz-1.47Ghz.
-For simplicity only add second range as smaller frequencies can be obtained
-via apcs divider or safe parent this also saves us
-a hassle of reconfiguring VCO bit and config_val.
-A72 and CCI cluster only use single frequency range with their
-outputs/post_dividers/vco_bits being static.
+Some devices like Sony Loire uses Broadcom module over sdc3 however others
+utilize qcom WCNSS, split shared region based on downstream pil-tz loader.
 
 Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
 ---
- drivers/clk/qcom/hfpll.c | 54 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+ arch/arm64/boot/dts/qcom/msm8976.dtsi | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/qcom/hfpll.c b/drivers/clk/qcom/hfpll.c
-index ec18bc8f0089..a9c4c77e0f50 100644
---- a/drivers/clk/qcom/hfpll.c
-+++ b/drivers/clk/qcom/hfpll.c
-@@ -32,8 +32,62 @@ static const struct hfpll_data hdata = {
- 	.max_rate = 2900000000UL,
- };
+diff --git a/arch/arm64/boot/dts/qcom/msm8976.dtsi b/arch/arm64/boot/dts/qcom/msm8976.dtsi
+index ab76806317a7..7385d5edec04 100644
+--- a/arch/arm64/boot/dts/qcom/msm8976.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8976.dtsi
+@@ -338,7 +338,12 @@ mpss_mem: mpss@86c00000 {
+ 		};
  
-+static const struct hfpll_data msm8976_a53 = {
-+	.mode_reg = 0x00,
-+	.l_reg = 0x04,
-+	.m_reg = 0x08,
-+	.n_reg = 0x0c,
-+	.user_reg = 0x10,
-+	.config_reg = 0x14,
-+	.config_val = 0x341600,
-+	.status_reg = 0x1c,
-+	.lock_bit = 16,
+ 		lpass_mem: lpass@8c200000 {
+-			reg = <0x0 0x8c200000 0x0 0x1800000>;
++			reg = <0x0 0x8c200000 0x0 0x1000000>;
++			no-map;
++		};
 +
-+	.l_val = 0x35,
-+	.user_val = 0x109,
-+	.min_rate = 902400000UL,
-+	.max_rate = 1478400000UL,
-+};
-+
-+static const struct hfpll_data msm8976_a72 = {
-+	.mode_reg = 0x00,
-+	.l_reg = 0x04,
-+	.m_reg = 0x08,
-+	.n_reg = 0x0c,
-+	.user_reg = 0x10,
-+	.config_reg = 0x14,
-+	.config_val = 0x4e0405d,
-+	.status_reg = 0x1c,
-+	.lock_bit = 16,
-+
-+	.l_val = 0x3e,
-+	.user_val = 0x100109,
-+	.min_rate = 940800000UL,
-+	.max_rate = 1843200000UL,
-+};
-+
-+static const struct hfpll_data msm8976_cci = {
-+	.mode_reg = 0x00,
-+	.l_reg = 0x04,
-+	.m_reg = 0x08,
-+	.n_reg = 0x0c,
-+	.user_reg = 0x10,
-+	.config_reg = 0x14,
-+	.config_val = 0x141400,
-+	.status_reg = 0x1c,
-+	.lock_bit = 16,
-+
-+	.l_val = 0x20,
-+	.user_val = 0x100109,
-+	.min_rate = 556800000UL,
-+	.max_rate = 902400000UL,
-+};
-+
- static const struct of_device_id qcom_hfpll_match_table[] = {
- 	{ .compatible = "qcom,hfpll", &hdata },
-+	{ .compatible = "qcom,hfpll-msm8976-a53", &msm8976_a53 },
-+	{ .compatible = "qcom,hfpll-msm8976-a72", &msm8976_a72 },
-+	{ .compatible = "qcom,hfpll-msm8976-cci", &msm8976_cci },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, qcom_hfpll_match_table);
++		wcnss_fw_mem: wcnss@8d200000 {
++			reg = <0x0 0x8d200000 0x0 0x800000>;
+ 			no-map;
+ 		};
+ 
 -- 
 2.41.0
 
