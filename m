@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5CE75DFE8
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 06:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E2375DFEF
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 06:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229569AbjGWEuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 00:50:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58956 "EHLO
+        id S229595AbjGWE7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 00:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbjGWEuX (ORCPT
+        with ESMTP id S229487AbjGWE7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 00:50:23 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03ED0E73
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 21:50:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690087821; x=1721623821;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/xZW808BrUCeT5DlyP4BVVq4u1ojxXBhWS/KYqOFDsA=;
-  b=XSxLFnzLmcePWdgqGFO7MWgm9mmHvCOD8MlLHhqs+Vg7XiDpxbaGiF7l
-   HbR2MlTpywVErqPDS2pRQU3tbCDqrc7z6aD0xKIH2zzkoe6c1Iu1ikd2Y
-   nIcdj2VGb/1EndRG7NTiRxdca87swHdSta1tNGm4esih2sdED8EqjW/sO
-   VEUPXwHENTnaMYPSu4360hzjubKnyPBInN40K9+ZtSMHnOg+IjHpuavLt
-   PEeZ5lmYzxwEj5RHEL5hG7K2Va0msegRslF3LUuMBONY3RHar3JfNcYEA
-   0DXk+oJz0unKUQPg/QjMi9pH81EdKYwQrAsL6+zaszo7+nfvpvuK+E1K/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="370850798"
-X-IronPort-AV: E=Sophos;i="6.01,226,1684825200"; 
-   d="scan'208";a="370850798"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2023 21:50:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10779"; a="899131358"
-X-IronPort-AV: E=Sophos;i="6.01,226,1684825200"; 
-   d="scan'208";a="899131358"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 22 Jul 2023 21:50:18 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qNR2v-0008qL-0x;
-        Sun, 23 Jul 2023 04:50:17 +0000
-Date:   Sun, 23 Jul 2023 12:49:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        Erik Schilling <erik.schilling@linaro.org>,
-        Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 2/2] xen: privcmd: Add support for irqfd
-Message-ID: <202307231237.JHGxqmdg-lkp@intel.com>
-References: <a25d5f01fe9b4624aa12cab77abd001044ea02d5.1689845210.git.viresh.kumar@linaro.org>
+        Sun, 23 Jul 2023 00:59:44 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84F810D8;
+        Sat, 22 Jul 2023 21:59:41 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99454855de1so481126166b.2;
+        Sat, 22 Jul 2023 21:59:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690088380; x=1690693180;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p4lRuB5t7lbiPhYG692DvefCkvkwHh1+HHIitls9jjU=;
+        b=OnoEaMwxEiAyUtBBk2ATXpJ0ysNJMHDpJcetClM1VHv7260ZkFQrQJQZ60eYnIvRTC
+         ghFZ2hMX3kPXr70KdOZLNrBe7E7TvvI0+NGTqu3X7NE923IWplr96+biW0hd1/HelmYT
+         lPJgogIX9/9JkDemUf2cm1pxbrMP19k9nWVgKGmnw32O9gpFjlI82+ijtzYJoaVXGr3U
+         x6i2iT6AL8UpCwTkw+ekdYxfQcjycfV55v4zldMrG+lXqikSMarzAONCdR/U4+3RYncI
+         D8hw1JmOVczQnIkTLIszTqXNTLJjfY9mH+Zglc7A5sW71N9TonDB/lZovZfq4gr7bXm5
+         ImQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690088380; x=1690693180;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p4lRuB5t7lbiPhYG692DvefCkvkwHh1+HHIitls9jjU=;
+        b=B8vdcWhxCb6iFiWoicRBOS8dpA2BHFWCYiCHA9tzOn/rYURlisnDpQp9crCPN7KGFI
+         0ZdItir/IDpnRDs8dYgcdem+AK2FxZ8nmihCaUhebD9GJHuDzoMWldYKUqgYjwTGDWP9
+         iVO1GrMWqFoKwzpf+A0kmljSeRsJQCFKV2vV7jmlpArWkmIQrAVSpTC7r23/fXq/14S4
+         KTs6w7KbKNXh+bo6hkNSSgvOH/T/1HPsSYmfhEVdDseNwSn01UCrmLx7+Klq1Hwkysu2
+         Klj0tbUWsrSeJ44BwSeKjzJnr7eLfTNEBaLXt3AGsaoyjh5F3LKFzy/HqkoUAUsbgpY6
+         ZIFQ==
+X-Gm-Message-State: ABy/qLZ5oDlLaKCuGD0RlnqrngcIV2zFGLZPiA8lk6OEj90wQKX+SPfE
+        EFfcaazrZKD48uTxvLqC45Q=
+X-Google-Smtp-Source: APBJJlE9N5+KgFgrbyO/R9dPRgkkRzr3bDkB1s5pb2SM5UofM7KLoyhZAhjFvjrJjEKyhiBzYt/VIA==
+X-Received: by 2002:a17:907:7631:b0:993:e9b8:90f5 with SMTP id jy17-20020a170907763100b00993e9b890f5mr5501402ejc.8.1690088379974;
+        Sat, 22 Jul 2023 21:59:39 -0700 (PDT)
+Received: from [192.168.4.4] (host-95-237-109-246.retail.telecomitalia.it. [95.237.109.246])
+        by smtp.gmail.com with ESMTPSA id jj28-20020a170907985c00b0098d93142ce1sm4523735ejc.109.2023.07.22.21.59.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 22 Jul 2023 21:59:39 -0700 (PDT)
+Message-ID: <263fd788-dd66-412e-bd8d-0bf6319025b9@gmail.com>
+Date:   Sun, 23 Jul 2023 06:59:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a25d5f01fe9b4624aa12cab77abd001044ea02d5.1689845210.git.viresh.kumar@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 1/2] dt-bindings: iio: dac: add mcp4728.yaml
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1689857295.git.andrea.collamati@gmail.com>
+ <9816cd272d19802ec6eeff0c7c29e85d4a0ade88.1689857295.git.andrea.collamati@gmail.com>
+ <20230720-nastily-professor-3a5cae27893d@spud>
+From:   Andrea Collamati <andrea.collamati@gmail.com>
+In-Reply-To: <20230720-nastily-professor-3a5cae27893d@spud>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,124 +81,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+Hi Conor,
 
-kernel test robot noticed the following build errors:
+On 7/20/23 19:01, Conor Dooley wrote:
+>> Add documentation for MCP4728
+>>
+>> Signed-off-by: Andrea Collamati <andrea.collamati@gmail.com>
+>> ---
+>>  .../bindings/iio/dac/microchip,mcp4728.yaml   | 48 +++++++++++++++++++
+>>  1 file changed, 48 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/iio/dac/microchip,mcp4728.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/iio/dac/microchip,mcp4728.yaml b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4728.yaml
+>> new file mode 100644
+>> index 000000000000..6fd9be076245
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4728.yaml
+>> @@ -0,0 +1,48 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/iio/dac/microchip,mcp4728.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Microchip MCP4728 DAC
+>> +
+>> +description:
+>> +  MCP4728 is a quad channel, 12-bit voltage output
+>> +  Digital-to-Analog Converter with non-volatile
+>> +  memory and I2C compatible Serial Interface.
+>> +  https://www.microchip.com/en-us/product/mcp4728
+>> +
+>> +maintainers:
+>> +  - Andrea Collamati <andrea.collamati@gmail.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - microchip,mcp4728
+> This can just be
+> compatible:
+>   const: microchip,mcp47288
+> since you only have a single item in your enum.
 
-[auto build test ERROR on xen-tip/linux-next]
-[also build test ERROR on linus/master v6.5-rc2 next-20230721]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I will in include in v4.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Viresh-Kumar/xen-privcmd-Add-support-for-irqfd/20230720-173905
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git linux-next
-patch link:    https://lore.kernel.org/r/a25d5f01fe9b4624aa12cab77abd001044ea02d5.1689845210.git.viresh.kumar%40linaro.org
-patch subject: [PATCH V2 2/2] xen: privcmd: Add support for irqfd
-config: x86_64-randconfig-r091-20230723 (https://download.01.org/0day-ci/archive/20230723/202307231237.JHGxqmdg-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230723/202307231237.JHGxqmdg-lkp@intel.com/reproduce)
+Thank you.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307231237.JHGxqmdg-lkp@intel.com/
+               Andrea
 
-All error/warnings (new ones prefixed by >>):
-
-   drivers/xen/privcmd.c: In function 'privcmd_irqfd_assign':
->> drivers/xen/privcmd.c:961:19: error: implicit declaration of function 'eventfd_ctx_fileget'; did you mean 'eventfd_ctx_fdget'? [-Werror=implicit-function-declaration]
-     961 |         eventfd = eventfd_ctx_fileget(f.file);
-         |                   ^~~~~~~~~~~~~~~~~~~
-         |                   eventfd_ctx_fdget
->> drivers/xen/privcmd.c:961:17: warning: assignment to 'struct eventfd_ctx *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     961 |         eventfd = eventfd_ctx_fileget(f.file);
-         |                 ^
-   cc1: some warnings being treated as errors
-
-
-vim +961 drivers/xen/privcmd.c
-
-   936	
-   937	static int privcmd_irqfd_assign(struct privcmd_irqfd *irqfd)
-   938	{
-   939		struct privcmd_kernel_irqfd *kirqfd, *tmp;
-   940		struct eventfd_ctx *eventfd;
-   941		__poll_t events;
-   942		struct fd f;
-   943		int ret;
-   944	
-   945		kirqfd = kzalloc(sizeof(*kirqfd), GFP_KERNEL);
-   946		if (!kirqfd)
-   947			return -ENOMEM;
-   948	
-   949		kirqfd->irq = irqfd->irq;
-   950		kirqfd->dom = irqfd->dom;
-   951		kirqfd->level = irqfd->level;
-   952		INIT_LIST_HEAD(&kirqfd->list);
-   953		INIT_WORK(&kirqfd->shutdown, irqfd_shutdown);
-   954	
-   955		f = fdget(irqfd->fd);
-   956		if (!f.file) {
-   957			ret = -EBADF;
-   958			goto error_kfree;
-   959		}
-   960	
- > 961		eventfd = eventfd_ctx_fileget(f.file);
-   962		if (IS_ERR(eventfd)) {
-   963			ret = PTR_ERR(eventfd);
-   964			goto error_fd_put;
-   965		}
-   966	
-   967		kirqfd->eventfd = eventfd;
-   968	
-   969		/*
-   970		 * Install our own custom wake-up handling so we are notified via a
-   971		 * callback whenever someone signals the underlying eventfd.
-   972		 */
-   973		init_waitqueue_func_entry(&kirqfd->wait, irqfd_wakeup);
-   974		init_poll_funcptr(&kirqfd->pt, irqfd_poll_func);
-   975	
-   976		mutex_lock(&irqfds_lock);
-   977	
-   978		list_for_each_entry(tmp, &irqfds_list, list) {
-   979			if (kirqfd->eventfd == tmp->eventfd) {
-   980				ret = -EBUSY;
-   981				mutex_unlock(&irqfds_lock);
-   982				goto error_eventfd;
-   983			}
-   984		}
-   985	
-   986		list_add_tail(&kirqfd->list, &irqfds_list);
-   987		mutex_unlock(&irqfds_lock);
-   988	
-   989		/*
-   990		 * Check if there was an event already pending on the eventfd before we
-   991		 * registered, and trigger it as if we didn't miss it.
-   992		 */
-   993		events = vfs_poll(f.file, &kirqfd->pt);
-   994		if (events & EPOLLIN)
-   995			irqfd_inject(kirqfd);
-   996	
-   997		/*
-   998		 * Do not drop the file until the kirqfd is fully initialized, otherwise
-   999		 * we might race against the EPOLLHUP.
-  1000		 */
-  1001		fdput(f);
-  1002		return 0;
-  1003	
-  1004	error_eventfd:
-  1005		eventfd_ctx_put(eventfd);
-  1006	
-  1007	error_fd_put:
-  1008		fdput(f);
-  1009	
-  1010	error_kfree:
-  1011		kfree(kirqfd);
-  1012		return ret;
-  1013	}
-  1014	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
