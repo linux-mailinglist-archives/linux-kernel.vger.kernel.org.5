@@ -2,101 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5A275E4D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 22:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6FC75E4D6
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 22:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229895AbjGWU0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 16:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
+        id S229692AbjGWUam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 16:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjGWU0E (ORCPT
+        with ESMTP id S229493AbjGWUaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 16:26:04 -0400
+        Sun, 23 Jul 2023 16:30:39 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EFD1B8;
-        Sun, 23 Jul 2023 13:26:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A811B8
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 13:30:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 50F5E60E98;
-        Sun, 23 Jul 2023 20:26:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 482EBC433C7;
-        Sun, 23 Jul 2023 20:26:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B763760E88
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 20:30:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE38CC433C7;
+        Sun, 23 Jul 2023 20:30:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690143962;
-        bh=LyrK5xXC8EJYilE6Mh1xjWU8trzIouJgLVGPPFNgsYQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=uKjKp/9T7tdBFgTeiqUyADsQ3/yESfaMi0xILJXjxHjxXFOxU/Lk89Od46uTnwELR
-         s7CZ8JOEWj+B/ZE410JShYN3zwmLRNbu1DOyYb1Nu9P9zqJWrFhWEwuQaHgia3ENwe
-         QQtNI+fThgx8gpwMZlfg5gRM3xTZWGQJGGOJyXsDqnDTmj/oJ+ooGxpuCQ/K0wcRiq
-         89o1dEeHTYxRIaYuo46L3AjSGij01pP8dbceprT1FxJe/c+Hvc+vCoxElspBCMavYK
-         TBUsMBRQK0E78nsSuV6gg9H3fIRPXDLx5qRmcjBXI5wW5m2j0eBFAvAXylDEoD4m1n
-         TXr9VYEnVKCkA==
-Message-ID: <c84a78c6-1582-a9fa-e0fd-43c0faac5a75@kernel.org>
-Date:   Mon, 24 Jul 2023 05:26:00 +0900
+        s=k20201202; t=1690144238;
+        bh=7+A6c39gdcE1g7Jj1te99cUCcE8RirIo32OTAJBLi8M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SJrIGJv1CAoSzbTHPOQKckC86Lk6uMepycf5I6FF58MiBTFTAIDi+U0i0orJpmC58
+         U5F4q5Buf8WybYBJbVN5jHYO6Sk9+bniYfmzohIn53Iv/zHNmpbgIoOJAjFf+as3Ih
+         R8TCpa6BkfAEADQmNDf6enNim1lZQs9SiVmmYqIVig3FSsroQ+o5SGlVZPghtaSC2j
+         bu9UiO2pBU+MfQQiNnzYrpIc3oh+zxGtfZOOcQr2341xgBglqZIsWDuD1UiNSr4Fb6
+         VnH2XvL8FG1TCpvtyzqUj8bDuZCgbAsvK9P4eyitLiW5SpCL0JkIILrQpbB8JuUL3n
+         7d6I/sjgz8ZZA==
+Date:   Sun, 23 Jul 2023 22:30:35 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] driver core: Move dev_err_probe() to where it
+ belogs
+Message-ID: <20230723203035.wmdskibs2lvofnju@intel.intel>
+References: <20230721131309.16821-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] PM / devfreq: Reword the kernel-doc comment for
- devfreq_monitor_start() API
-Content-Language: en-US
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230720084854.18975-1-manivannan.sadhasivam@linaro.org>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20230720084854.18975-1-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721131309.16821-1-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 7. 20. 17:48, Manivannan Sadhasivam wrote:
-> Current kernel-doc comment doesn't specify the default timer used for the
-> load monitoring. Also, it uses the term "default delayed work" which could
-> be misunderstood as "default delayer timer". So reword the comment to
-> clearly specify the default timer and also reword the last sentence to make
-> it more understandable.
+Hi Andi,
+
+On Fri, Jul 21, 2023 at 04:13:09PM +0300, Andy Shevchenko wrote:
+> dev_err_probe() belongs to the printing API, hence
+> move the definition from device.h to dev_printk.h.
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/devfreq/devfreq.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+> There is no change to the callers at all, since:
+> 1) implementation is located in the same core.c;
+> 2) dev_printk.h is guaranteed to be included by device.h.
 > 
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index 7686993d639f..e2939c1b7d1f 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -472,10 +472,11 @@ static void devfreq_monitor(struct work_struct *work)
->   * devfreq_monitor_start() - Start load monitoring of devfreq instance
->   * @devfreq:	the devfreq instance.
->   *
-> - * Helper function for starting devfreq device load monitoring. By
-> - * default delayed work based monitoring is supported. Function
-> - * to be called from governor in response to DEVFREQ_GOV_START
-> - * event when device is added to devfreq framework.
-> + * Helper function for starting devfreq device load monitoring. By default,
-> + * deferrable timer is used for load monitoring. But the users can change this
-> + * behavior using the "timer" type in devfreq_dev_profile. This function will be
-> + * called by devfreq governor in response to the DEVFREQ_GOV_START event
-> + * generated while adding a device to the devfreq framework.
->   */
->  void devfreq_monitor_start(struct devfreq *devfreq)
->  {
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Applied it. Thanks.
+yes! I think that's right!
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
 
+Andi
