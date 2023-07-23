@@ -2,77 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 700C675DFF4
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 07:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F24E75DFF8
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 07:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbjGWFGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 01:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
+        id S229615AbjGWFJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 01:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGWFGg (ORCPT
+        with ESMTP id S229456AbjGWFJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 01:06:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B9110D7;
-        Sat, 22 Jul 2023 22:06:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 472F260C1F;
-        Sun, 23 Jul 2023 05:06:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0DDFC43391;
-        Sun, 23 Jul 2023 05:06:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690088792;
-        bh=RcmR2y8+8t1nMaDLo3EG2DyBfOGWDbEYicQEkeAfYL8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MMiO041S6v0e4pRkVWpsXAku5y8BstlIdJ9S9dDlSalUwoh60xSTIzlyPx9/dSRGi
-         lA0A5RxT7oDHLZeii7tX7mHckcc8fP3Qte46jURM3H/AU4EJr/c6NyC0MpV23BWZ+p
-         VcPIu+UM6QHBZvi70kJQktbFkV9ga1VvzjTHT3oFGlPv8k3vZHIemtHZQopFd+/hYw
-         3JM3FFM6oEyOzGEa09pQZKHxYio4MlDyC7bnYfWapPqYnK1GWYKR85gKAeZvbejbde
-         ReisEv5A/5xIhZKls1cdXpRDKOl5IZIi+F+dCxwgI0w9yzxW5dnoGIW/LHeoCrIt88
-         2szKxw4G7cGJA==
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-56344354e2cso2077680eaf.1;
-        Sat, 22 Jul 2023 22:06:32 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZVykwVbtnukLSCrc+d5c/o6z0XtJSd67GREMcG30qe8y9m8cI0
-        KCSZsCxaUyqFdgMj5dKspUYTmnaDO0ziJhN0ukE=
-X-Google-Smtp-Source: APBJJlEaBRLz1z4/yyBQEA47mU5zfWs0viX27L4DZi41LLNZIunKwGHLU39tghd5QO6NenF5flweuZukIFP9Xu723T4=
-X-Received: by 2002:a4a:6f05:0:b0:566:f283:35ad with SMTP id
- h5-20020a4a6f05000000b00566f28335admr4448493ooc.8.1690088791870; Sat, 22 Jul
- 2023 22:06:31 -0700 (PDT)
+        Sun, 23 Jul 2023 01:09:16 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB2810E7;
+        Sat, 22 Jul 2023 22:09:14 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5216569f9e3so5156684a12.0;
+        Sat, 22 Jul 2023 22:09:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690088953; x=1690693753;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KglQgMbRlKTqODEIIOL/flrqvJ7lLQMAGylCxt4/neU=;
+        b=ni+aLBlmW+HggRhGUw67SPgBHPFuxEvkpw8VKR4i74K6u5t6dLSWSURh9pcmY4dgMl
+         oMhSXnPqYz2SflbOGj+FoDDQU04t6kabGavq08Zlr6Sx3GAjKnK0LcNeaqCg30vyt24f
+         gAwBxYrRQEv9iDkpg/cViUGFoDUNaCPUEYfIGZvuvyME0MyexFF++J7h9CMr6kxFrNo4
+         m9QTMrVHJGEVg/LI76G23a+DltXA94laKNlDN1lmbr8yL6fp6ZdxghDc2qV9CmpGx4VF
+         x2ESeooJFl13hb542QNZjyOJYuxan3toKZUlV/+ddlcSAAO359jPefzcNIPP4qNWrY7Z
+         dUBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690088953; x=1690693753;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KglQgMbRlKTqODEIIOL/flrqvJ7lLQMAGylCxt4/neU=;
+        b=NlU/BZwfhTTRgF8SijUwWe1JAfE4Xv9XHwLL37YjkmrE3MbWWWIGolPXzvUdguV7Es
+         onGnvD06gx+2v2dSUq63SX9/p9QOWbyhGSiGjeOYhXGGMRQtIucMFbtwJY1GWmFyZm2D
+         fjZjt5rEi83v5P3NAKnP0VNorgp9Vdoa6fTx8vuSB6K6KAySU2OM4c1LbGhLFRFU1pQH
+         NsI49XyzZKwmo24VJgMqkaS1ajojTClO9sfFZlCgSDH+G7OLCLCz9yzjmO6yXyrT/F7a
+         U/SdnR99KCxM8b9pYwz98HGY5teeIFyZD5OZr17z0uNDs7Gno8fGVSq24ldusiHHEvPD
+         eJpA==
+X-Gm-Message-State: ABy/qLaIp/Lt2s+ek+ksxCZ76hb47wJWJQIIaqSvuB2kIqQ7aCoDVp1s
+        HN+ACc7iPRHgUYefLPtNuaq1cD7olI6zSw==
+X-Google-Smtp-Source: APBJJlFcF1tobm4kLvzySpBTN70OFQgWpHOzNOg6F0vgM+GgCXK+SH2sqEVCes46Qi5z6j7tY9a1Vg==
+X-Received: by 2002:a05:6402:742:b0:522:1dcb:c355 with SMTP id p2-20020a056402074200b005221dcbc355mr2627220edy.16.1690088952740;
+        Sat, 22 Jul 2023 22:09:12 -0700 (PDT)
+Received: from [192.168.4.4] (host-95-237-109-246.retail.telecomitalia.it. [95.237.109.246])
+        by smtp.gmail.com with ESMTPSA id k10-20020aa7c04a000000b0050488d1d376sm4286995edo.0.2023.07.22.22.09.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 22 Jul 2023 22:09:12 -0700 (PDT)
+Message-ID: <739ea3c7-7181-183c-799d-a3f9403c7f66@gmail.com>
+Date:   Sun, 23 Jul 2023 07:09:11 +0200
 MIME-Version: 1.0
-References: <20230718055235.1050223-1-ojeda@kernel.org> <CAK7LNAQ-hjW_19fjA+E-bQCrXcVPdN4-GvzAnEnYzna5KRVXew@mail.gmail.com>
- <CANiq72kZjOGvRKoRxtgG=2DhJnMJK9TCQtTmeef_B=nLcLQD6g@mail.gmail.com>
- <CAK7LNASqumGb0xvSa8n4Heasz9BKxgk4mvzNXsfFhZE1G+Bxbg@mail.gmail.com> <CANiq72kD2wxXy2ri8sBhVJ4y-JJiq+kYt_MRZwuwB9uGkX-_jQ@mail.gmail.com>
-In-Reply-To: <CANiq72kD2wxXy2ri8sBhVJ4y-JJiq+kYt_MRZwuwB9uGkX-_jQ@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 23 Jul 2023 14:05:55 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARm1LevTQVw1j5pQjp_gP=6-4CiwXLRDXbVH3bnC0OCxg@mail.gmail.com>
-Message-ID: <CAK7LNARm1LevTQVw1j5pQjp_gP=6-4CiwXLRDXbVH3bnC0OCxg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: rust: avoid creating temporary files
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        linux-kbuild@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Raphael Nestler <raphael.nestler@gmail.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 2/2] iio: add MCP4728 I2C DAC driver
+Content-Language: en-US
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1689857295.git.andrea.collamati@gmail.com>
+ <3d08130fcb093fea3f755848690db9b2c8e1cb75.1689857295.git.andrea.collamati@gmail.com>
+ <20230720201311.0142db3d@jic23-huawei>
+From:   Andrea Collamati <andrea.collamati@gmail.com>
+In-Reply-To: <20230720201311.0142db3d@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,74 +80,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 12:52=E2=80=AFAM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
+Hi Jonathan,
+
+On 7/20/23 21:13, Jonathan Cameron wrote:
+>> +static const char *const mcp4728_vref_modes[] = {
+>> +	"vdd_ext",
+>> +	"internal",
+>> +};
+>> +
+>> +static int mcp4728_get_vref_mode(struct iio_dev *indio_dev,
+>> +				 const struct iio_chan_spec *chan)
+>> +{
+>> +	struct mcp4728_data *data = iio_priv(indio_dev);
+>> +
+>> +	return data->channel_data[chan->channel].ref_mode;
+>> +}
+>> +
+>> +static int mcp4728_set_vref_mode(struct iio_dev *indio_dev,
+>> +				 const struct iio_chan_spec *chan,
+>> +				 unsigned int mode)
+>> +{
+>> +	struct mcp4728_data *data = iio_priv(indio_dev);
+>> +	int ret;
+>> +
+>> +	data->channel_data[chan->channel].ref_mode = mode;
+>> +
+>> +	if (mode == MCP4728_VREF_EXTERNAL_VDD &&
+>> +	    data->channel_data[chan->channel].g_mode == MCP4728_GAIN_X2) {
+>> +		dev_warn(&data->client->dev,
+>> +			 "CH%d: Gain x2 not effective when vref is vdd, force to x1",
+>> +			 chan->channel);
+> Even better if you don't present the option at all and wrap it up in the
+> standard ABI of _scale
 >
-> On Thu, Jul 20, 2023 at 8:35=E2=80=AFPM Masahiro Yamada <masahiroy@kernel=
-.org> wrote:
-> >
-> > Maybe, the following was a breakage.
-> >
-> > commit 295d8398c67e314d99bb070f38883f83fe94a97a
-> > Author: Masahiro Yamada <masahiroy@kernel.org>
-> > Date:   Sat Jan 7 18:18:15 2023 +0900
-> >
-> >     kbuild: specify output names separately for each emission type from=
- rustc
-> >
-> > Before that, rust_common_cmd had --out-dir.
->
-> That's right, good catch!
->
-> > BTW, do we also need to fix scripts/Makefile.host
-> > in case the external module Makefile creates host programs?
->
-> Indeed, we need it too. [1] would fix it (tested it with a trivial
-> out-of-tree Rust hostprog).
->
-> Do you want me to send it separately? i.e. to avoid losing the
-> `Tested-by`s etc. that we already got for this one, which is the
-> important one since that actually has users.
->
-> The hostprogs fix is not really critical for stable, since it is
-> unlikely there are users at all (we just got the first in-tree real
-> user in the Rust+KUnit integration coming into 6.6), but I guess it
-> does not hurt for the same reason.
+I think that the solution could be:
+
+- Removing custom ABI (vref/gain)
+
+- Initialize them at device tree level using two 4-elements arrays.
+
+- Finally using the same approach of https://github.com/torvalds/linux/blob/c2782531397f5cb19ca3f8f9c17727f1cdf5bee8/drivers/iio/dac/mcp4725.c#L462 where after having  synced current parameters stored in EEPROM they are updated with the ones specified in dts.
 
 
-Can you send v2 with the following squashed?
+Best regards
+
+                       Andrea
 
 
-I think it makes sense to fix both if we add
-Fixes: 295d8398c67e ("kbuild: specify output names separately for each
-emission type from rustc")
-
-
-
-
-
-> Thanks!
->
-> Cheers,
-> Miguel
->
-> [1]
->
-> diff --git a/scripts/Makefile.host b/scripts/Makefile.host
-> index 7aea9005e497..54adf2e2ec51 100644
-> --- a/scripts/Makefile.host
-> +++ b/scripts/Makefile.host
-> @@ -86,7 +86,7 @@ hostc_flags    =3D -Wp,-MMD,$(depfile) \
->  hostcxx_flags  =3D -Wp,-MMD,$(depfile) \
->                   $(KBUILD_HOSTCXXFLAGS) $(HOST_EXTRACXXFLAGS) \
->                   $(HOSTCXXFLAGS_$(target-stem).o)
-> -hostrust_flags =3D --emit=3Ddep-info=3D$(depfile) \
-> +hostrust_flags =3D --out-dir $(dir $@) --emit=3Ddep-info=3D$(depfile) \
->                   $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
->                   $(HOSTRUSTFLAGS_$(target-stem))
-
-
-
---=20
-Best Regards
-Masahiro Yamada
