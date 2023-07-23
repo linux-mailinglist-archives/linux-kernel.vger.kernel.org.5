@@ -2,181 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FDC75E2DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 17:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BABE175E2E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 17:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbjGWPbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 11:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
+        id S229760AbjGWPiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 11:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjGWPbc (ORCPT
+        with ESMTP id S229446AbjGWPiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 11:31:32 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CC51A4
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 08:31:29 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6862d4a1376so976357b3a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 08:31:29 -0700 (PDT)
+        Sun, 23 Jul 2023 11:38:22 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E0C1AD
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 08:38:22 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6682909acadso1930810b3a.3
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 08:38:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1690126289; x=1690731089;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fDTMYwDqEgFqSn0Pl8eq3n9zy7vYWtdmW+PQbREAfGo=;
-        b=D2U81L0yay3s2CHGMfdTVZNe5ck5DZzVI4ZCXjD97LPBzeNxvTavVAl3j6LnswenH6
-         +7H9PoAx6BHp4l+/rCqF4P25FWANKbJMj1/0mgYFmzJPpEdY33k4LaEVJMrz6GveOr87
-         3jdu0Ti5zUA+cQm2oDAc219xPiHNyfgjbgJyVL+DvllJM+ZvoTQE7KOi9m5E6Oyjf7SN
-         SJoyz8cDv90JfR3V0RVuSZ4AnD9EDyqJDVHB7Tk10WKyRBG00iqe5152e2yzJofTE+UO
-         1h5T1WvomLTZpcbWml3CP5npLwhTZV6aSGXaGo/jdBQ4Z57KlUXyDpmDqNC8XEa6Uifr
-         XngA==
+        d=gmail.com; s=20221208; t=1690126701; x=1690731501;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5cmykefcdNhgVGfJdHuYylH/HeDsJaOrk0SIp3sP/JU=;
+        b=ov+BpRiYgea8xlcwARUtusVDTtfXt0zC6EKRxm30xUvDkrhLHUSDhTWZZ05ThCkDae
+         ueVPCpms5Hz1wArm+Xv97aKJKegOtTzyJbI/bpYtmxV43ZNJit1sBbtq/sOkIIxmXfU4
+         VE2pXWsTDWyYyI03oGoNMVaYnN0yhgwRkxFMxq3laR09aOD2oY8A0SAR51lITXOSoc6J
+         G5vX21/kavKXM9w0kyEi/Lpw4RODOTLJM8FSL+DAphZWsJQSIWmO1Nc1vpkYliaQLWRF
+         DGFO1ksWTWyx2hKOQjOLddkIgZmu/yOzSRzBuPg29DKsBRJ+es4gqP4a1nQbglI6B9/G
+         mbkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690126289; x=1690731089;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fDTMYwDqEgFqSn0Pl8eq3n9zy7vYWtdmW+PQbREAfGo=;
-        b=ktTPDcRU2+365mIvyAp0y6YhM5p4kwb4K9c8RM4J4R7nYZyqLLdIOAJJ1Q4UKHGQJ+
-         z6xB8sTZ8eMUvZ5HgBY/XhkKmWVBKlKCoowl4Zcuat0XdbVs0xv7lQo4hayWBiURu4X1
-         aMoyL70jvkcLQYPg2ov5Q7OSqvjXKDQ2ZPu3AnfKaHaZ55RQSwJ9u5sra/yEBSxqSTeN
-         +VGYRdFbPbioJSb46h9G12bhf8hpzjyVXxxUvROReJEp/xtzm2vNLTv72zwPCqHqr4UL
-         LZFGMEf0i2k3jUyu0UtccpCEX4roClRRVjvuq8iMQKEv72ZvxoVz/u0dKLvYiYIVo09E
-         OwdQ==
-X-Gm-Message-State: ABy/qLaB2Fh7hrTX1zWupFZBaCYgHm192lLb+xXZZC3W0Kb1zyk/VTkO
-        NQQcND9s2KLgQscdvDqxaByXiMcEnY0mvqF3Pkc=
-X-Google-Smtp-Source: APBJJlHXouCZDH/+NNu1TfzsTLZtOP1XA/fWhsuSOrjvoTA5jn+cYnPSHKt7RkpkfKq2EWMJpz19Kg==
-X-Received: by 2002:a05:6a00:3993:b0:682:59aa:178d with SMTP id fi19-20020a056a00399300b0068259aa178dmr9063211pfb.1.1690126289030;
-        Sun, 23 Jul 2023 08:31:29 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id a14-20020aa7864e000000b0064fe06fe712sm6074443pfo.129.2023.07.23.08.31.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Jul 2023 08:31:28 -0700 (PDT)
-Message-ID: <538065ee-4130-6a00-dcc8-f69fbc7d7ba0@kernel.dk>
-Date:   Sun, 23 Jul 2023 09:31:26 -0600
+        d=1e100.net; s=20221208; t=1690126701; x=1690731501;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5cmykefcdNhgVGfJdHuYylH/HeDsJaOrk0SIp3sP/JU=;
+        b=UG4T4aEGC9kyzKGRn9rw4ScduM+ht8bc2e05FVIjMgQ8oTeU0I0ZuzEe8Iuesgk11N
+         xMiqx/yjW89Q7Ah6+qopz8KymY/2X467hQS8sfSq65gjvoymV2D95RaW6mmPgisdTWFa
+         ezeOyvVHLAP6EKjRgy6qP2EItr5zWA7OJD8ffiDOGHZaKhjjh18kYvAgcLbDFPfEWzOZ
+         WNSIWMbR8d1mU7Oxr9h+0t8WpYRNjT/6kRxCUTK5hzM7+Ymf1rsxSWNbwVGRPN/G6G9R
+         m0SfL3bmCuj7mNdou+r3fyheoEvW5CIourAluHWD7auFhTaXRDPdY5gFHbnuIO2iE432
+         wFqQ==
+X-Gm-Message-State: ABy/qLaVyr8yaGec/rPgRfXdJATCPrvrDKyaV3ysRn/TKpya9Nnpmewf
+        9T0SNXFSeGW1TN9Tehh7ti8=
+X-Google-Smtp-Source: APBJJlHmaNVJSFpJcCEb+1BeIjzHHI/5SyteTiblySRF84cv2yj7i9+ib0lbS6DYyJT8mgXgxJdUAw==
+X-Received: by 2002:a17:902:bd96:b0:1b1:99c9:8ce1 with SMTP id q22-20020a170902bd9600b001b199c98ce1mr4921708pls.51.1690126701353;
+        Sun, 23 Jul 2023 08:38:21 -0700 (PDT)
+Received: from localhost ([216.228.127.130])
+        by smtp.gmail.com with ESMTPSA id s21-20020a170902989500b001b03842ab78sm7055043plp.89.2023.07.23.08.38.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Jul 2023 08:38:20 -0700 (PDT)
+Date:   Sun, 23 Jul 2023 08:38:18 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v4 1/5] lib/bitmap: add bitmap_{set,get}_value()
+Message-ID: <ZL1JarpwxpsB3fhY@yury-ThinkPad>
+References: <20230720173956.3674987-1-glider@google.com>
+ <20230720173956.3674987-2-glider@google.com>
+ <ZLyI+0EL1VztnHLe@yury-ThinkPad>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 6.4 800/800] io_uring: Use io_schedule* in cqring wait
-Content-Language: en-US
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andres Freund <andres@anarazel.de>
-References: <20230716194949.099592437@linuxfoundation.org>
- <20230716195007.731909670@linuxfoundation.org>
- <12251678.O9o76ZdvQC@natalenko.name>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <12251678.O9o76ZdvQC@natalenko.name>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLyI+0EL1VztnHLe@yury-ThinkPad>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/23/23 3:39?AM, Oleksandr Natalenko wrote:
-> Hello.
+On Sat, Jul 22, 2023 at 06:57:26PM -0700, Yury Norov wrote:
+> On Thu, Jul 20, 2023 at 07:39:52PM +0200, Alexander Potapenko wrote:
+> > +/**
+> > + * bitmap_write - write n-bit value within a memory region
+> > + * @map: address to the bitmap memory region
+> > + * @value: value of nbits
+> > + * @start: bit offset of the n-bit value
+> > + * @nbits: size of value in bits, up to BITS_PER_LONG
+> > + */
+> > +static inline void bitmap_write(unsigned long *map,
+> > +				unsigned long value,
+> > +				unsigned long start, unsigned long nbits)
+> > +{
+> > +	size_t index = BIT_WORD(start);
+> > +	unsigned long offset = start % BITS_PER_LONG;
+> > +	unsigned long space = BITS_PER_LONG - offset;
+> > +
+> > +	if (unlikely(!nbits))
+> > +		return;
+> > +	value &= GENMASK(nbits - 1, 0);
 > 
-> On ned?le 16. ?ervence 2023 21:50:53 CEST Greg Kroah-Hartman wrote:
->> From: Andres Freund <andres@anarazel.de>
->>
->> commit 8a796565cec3601071cbbd27d6304e202019d014 upstream.
->>
->> I observed poor performance of io_uring compared to synchronous IO. That
->> turns out to be caused by deeper CPU idle states entered with io_uring,
->> due to io_uring using plain schedule(), whereas synchronous IO uses
->> io_schedule().
->>
->> The losses due to this are substantial. On my cascade lake workstation,
->> t/io_uring from the fio repository e.g. yields regressions between 20%
->> and 40% with the following command:
->> ./t/io_uring -r 5 -X0 -d 1 -s 1 -c 1 -p 0 -S$use_sync -R 0 /mnt/t2/fio/write.0.0
->>
->> This is repeatable with different filesystems, using raw block devices
->> and using different block devices.
->>
->> Use io_schedule_prepare() / io_schedule_finish() in
->> io_cqring_wait_schedule() to address the difference.
->>
->> After that using io_uring is on par or surpassing synchronous IO (using
->> registered files etc makes it reliably win, but arguably is a less fair
->> comparison).
->>
->> There are other calls to schedule() in io_uring/, but none immediately
->> jump out to be similarly situated, so I did not touch them. Similarly,
->> it's possible that mutex_lock_io() should be used, but it's not clear if
->> there are cases where that matters.
->>
->> Cc: stable@vger.kernel.org # 5.10+
->> Cc: Pavel Begunkov <asml.silence@gmail.com>
->> Cc: io-uring@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Andres Freund <andres@anarazel.de>
->> Link: https://lore.kernel.org/r/20230707162007.194068-1-andres@anarazel.de
->> [axboe: minor style fixup]
->> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> ---
->>  io_uring/io_uring.c |   15 +++++++++++++--
->>  1 file changed, 13 insertions(+), 2 deletions(-)
->>
->> --- a/io_uring/io_uring.c
->> +++ b/io_uring/io_uring.c
->> @@ -2575,6 +2575,8 @@ int io_run_task_work_sig(struct io_ring_
->>  static inline int io_cqring_wait_schedule(struct io_ring_ctx *ctx,
->>  					  struct io_wait_queue *iowq)
->>  {
->> +	int token, ret;
->> +
->>  	if (unlikely(READ_ONCE(ctx->check_cq)))
->>  		return 1;
->>  	if (unlikely(!llist_empty(&ctx->work_llist)))
->> @@ -2585,11 +2587,20 @@ static inline int io_cqring_wait_schedul
->>  		return -EINTR;
->>  	if (unlikely(io_should_wake(iowq)))
->>  		return 0;
->> +
->> +	/*
->> +	 * Use io_schedule_prepare/finish, so cpufreq can take into account
->> +	 * that the task is waiting for IO - turns out to be important for low
->> +	 * QD IO.
->> +	 */
->> +	token = io_schedule_prepare();
->> +	ret = 0;
->>  	if (iowq->timeout == KTIME_MAX)
->>  		schedule();
->>  	else if (!schedule_hrtimeout(&iowq->timeout, HRTIMER_MODE_ABS))
->> -		return -ETIME;
->> -	return 0;
->> +		ret = -ETIME;
->> +	io_schedule_finish(token);
->> +	return ret;
->>  }
->>  
->>  /*
+> Strictly speaking, a 'value' shouldn't contain set bits beyond nbits
+> because otherwise it's an out-of-bonds type of error.
 > 
-> Reportedly, this caused a regression as reported in [1] [2] [3]. Not only v6.4.4 is affected, v6.1.39 is affected too.
+> This is kind of gray zone to me, because it's a caller's responsibility
+> to provide correct input. But on the other hand, it would be a great
+> headache debugging corrupted bitmaps.
 > 
-> Reverting this commit fixes the issue.
+> Now that we've got a single user of the bitmap_write, and even more,
+> it's wrapped with a helper, I think it would be reasonable to trim a
+> 'value' in the helper, if needed.
 > 
-> Please check.
-> 
-> Thanks.
-> 
-> [1] https://bbs.archlinux.org/viewtopic.php?id=287343
-> [2] https://bugzilla.kernel.org/show_bug.cgi?id=217700
-> [3] https://bugzilla.kernel.org/show_bug.cgi?id=217699
+> Anyways, the comment must warn about that loudly...
 
-Just read the first one, but this is very much expected. It's now just
-correctly reflecting that one thread is waiting on IO. IO wait being
-100% doesn't mean that one core is running 100% of the time, it just
-means it's WAITING on IO 100% of the time.
+OK. I spent a night with that, and I'm still not sure. Pseudo code
+that implements it looks like this:
 
--- 
-Jens Axboe
+        for (bit = 0; bit < nbits; bit++)
+                assign_bit(start + bit, bitmap, val & BIT(bit));
 
+And it ignores trailing bits. So if we're optimizing this pattern,
+we'd ignore these bits just as well...
+
+Either way, whatever we decide, let's stay clear with our intentions
+and mention explicitly that tail bits are either must be zero, or
+ignored.
+
+Alexander, can you add the snippet above to the comments for the
+bitmap_write() and bitmap_read(), as well as in the test? Also, if we
+decide to clear tail of the input value, would BITMAP_LAST_WORD_MASK()
+generate better code than GENMASK(nbits - 1, 0) does?
+
+Commets are very appreciated.
+
+Thanks,
+Yury
