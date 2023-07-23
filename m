@@ -2,60 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7C175E170
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 12:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5278475E172
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 12:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbjGWKk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 06:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58726 "EHLO
+        id S229782AbjGWKlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 06:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGWKkY (ORCPT
+        with ESMTP id S229689AbjGWKlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 06:40:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA386186
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 03:40:23 -0700 (PDT)
+        Sun, 23 Jul 2023 06:41:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD280E50;
+        Sun, 23 Jul 2023 03:41:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B43D60C8A
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 10:40:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9EC93C433C9;
-        Sun, 23 Jul 2023 10:40:22 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 625BB60C79;
+        Sun, 23 Jul 2023 10:41:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2991C433C8;
+        Sun, 23 Jul 2023 10:41:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690108822;
-        bh=h2/d1cfHOZ62zqj3dX1qlhbMC676qqkOThcZ4MePpvs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=hr9gFV36IjKumo0RFvApYGSfSQKfszEPzBazK2Ayl8vS+FHi8qHlfSBw3DTRy7Re+
-         V9qLlmaZGfZgJzzlV3IrdtNNSsCIveWpNHIHk47RNynsQTF3qekHBHhkkea3VeKbqI
-         npKvByas9fLncH/Jb3HpRauhmFD9qmcBTZJlPh6H87Xx/VCu/gFkC6jKB3pRBoaY/s
-         GRLtXK2fkET7/ylWbDOkKySg/iGNcSASu0PS9GFKghmzzYSMPpHwMOKI+e64QTK41N
-         sginJB6z3UdzzmhWGqjqEKjtidpEDzmRtDRLQ+LuJanu7CJuSjauhC0xG/r/9ymwow
-         +Ll/htbcZAErg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 851ACC595C1;
-        Sun, 23 Jul 2023 10:40:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1690108878;
+        bh=YSNr6NaJj/l3Zd8Zt+CzlpZ1+SDnbH+rJBsSmfHyXXI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hTQbwWA6nXDrsFbJGliqSuOXYmdyaKXc1jQEixqGfBC/WohhzBKFjc4vb/WREUIQY
+         Zt/A2OSsPoje6slwuM9DNZkPFXWyAU/bD44DDCMkS0eYGtEle+0+Gg7e2XgvpFIKOu
+         biQGkg1TgyJmiSNDR4feyMj1fGD5q8aAK00vTmuBcJyvjF/dn6Qqdlz0x3WaRbjrqF
+         OyuVly8WhbDW6qrmRJW3TJQ9BI8G5kMPZrFUQ1Bkopowyzl9D3GLhjeMGYKHk7HiYq
+         W730BpMUgjzezBLzdT1cTlw1c/Aul1E+lxM0VjSEoHUaphqFDyEdgkX1QlPQTUyHfM
+         /V01qXs09Lg2w==
+Date:   Sun, 23 Jul 2023 11:41:13 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de
+Subject: Re: [PATCH 6.1 000/223] 6.1.40-rc1 review
+Message-ID: <20230723-slate-footman-c422002d6813@spud>
+References: <20230721160520.865493356@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v10 0/6] Process connector bug fixes & enhancements
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169010882253.17686.11040484082696320491.git-patchwork-notify@kernel.org>
-Date:   Sun, 23 Jul 2023 10:40:22 +0000
-References: <20230719201821.495037-1-anjali.k.kulkarni@oracle.com>
-In-Reply-To: <20230719201821.495037-1-anjali.k.kulkarni@oracle.com>
-To:     Anjali Kulkarni <Anjali.K.Kulkarni@oracle.com>
-Cc:     davem@davemloft.net, Liam.Howlett@Oracle.com,
-        akpm@linux-foundation.org, david@fries.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, zbr@ioremap.net,
-        brauner@kernel.org, johannes@sipsolutions.net,
-        ecree.xilinx@gmail.com, leon@kernel.org, keescook@chromium.org,
-        socketcan@hartkopp.net, petrm@nvidia.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        anjali.k.kulkarni@oracle.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4gp48Ds4lL0Dlq6T"
+Content-Disposition: inline
+In-Reply-To: <20230721160520.865493356@linuxfoundation.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,41 +60,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+--4gp48Ds4lL0Dlq6T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, 19 Jul 2023 13:18:15 -0700 you wrote:
-> Oracle DB is trying to solve a performance overhead problem it has been
-> facing for the past 10 years and using this patch series, we can fix this
-> issue.
-> 
-> Oracle DB runs on a large scale with 100000s of short lived processes,
-> starting up and exiting quickly. A process monitoring DB daemon which
-> tracks and cleans up after processes that have died without a proper exit
-> needs notifications only when a process died with a non-zero exit code
-> (which should be rare).
-> 
-> [...]
+On Fri, Jul 21, 2023 at 06:04:13PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.40 release.
+> There are 223 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-Here is the summary with links:
-  - [net-next,v10,1/6] netlink: Reverse the patch which removed filtering
-    https://git.kernel.org/netdev/net-next/c/a3377386b564
-  - [net-next,v10,2/6] netlink: Add new netlink_release function
-    https://git.kernel.org/netdev/net-next/c/a4c9a56e6a2c
-  - [net-next,v10,3/6] connector/cn_proc: Add filtering to fix some bugs
-    https://git.kernel.org/netdev/net-next/c/2aa1f7a1f47c
-  - [net-next,v10,4/6] connector/cn_proc: Performance improvements
-    https://git.kernel.org/netdev/net-next/c/743acf351bae
-  - [net-next,v10,5/6] connector/cn_proc: Allow non-root users access
-    https://git.kernel.org/netdev/net-next/c/bfdfdc2f3b70
-  - [net-next,v10,6/6] connector/cn_proc: Selftest for proc connector
-    https://git.kernel.org/netdev/net-next/c/73a29531f45f
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thanks,
+Conor.
 
+--4gp48Ds4lL0Dlq6T
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZL0DyQAKCRB4tDGHoIJi
+0s58APoD0Z5dBGa9yOAu8Kd8iqSmEBAE9bREMpyU5mUZZiTvLAD+Nt26JhOWydir
+WlcchGlZJSO/CjVA8f73f+C7HEK/UA0=
+=frpn
+-----END PGP SIGNATURE-----
+
+--4gp48Ds4lL0Dlq6T--
