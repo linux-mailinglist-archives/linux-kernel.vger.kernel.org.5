@@ -2,108 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 886CB75E38D
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 18:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163EF75E3B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 18:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbjGWQWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 12:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
+        id S229676AbjGWQYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 12:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGWQWG (ORCPT
+        with ESMTP id S229848AbjGWQYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 12:22:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C65BD7;
-        Sun, 23 Jul 2023 09:22:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 397C860DE1;
-        Sun, 23 Jul 2023 16:22:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68F25C433C7;
-        Sun, 23 Jul 2023 16:22:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690129321;
-        bh=VlKwicQ1FtbfywJIZNn75dqLhDSkbzEV7/AeiOVrpgw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=URS+/Gvavy5vkLcIuROrDFd772aHbPjyncKjtpUQHIiYm//H7ORNBfZlIV+wdTCMa
-         GSKKS1gevOYD9f8ZkPmcjwwEIrJGNWAmGiQlxNqSJpLMjrvY0u7JGu2E1om6IAk/SD
-         OaM5EpMxcZZdTXwzfbN+6glk63IUPUBb+qvu9koTTQ0gSVbeL9SM74Ls8f/6E1LkE4
-         r0H/FfykHBAgMO7o3exeJAyN/7opYVKh/u14S1qFKOkq5VRUs8m6qj2LIvh0h3fgrg
-         ORp22IrmYh7VU2y7ATVJ0+h0M12stfi4sBETVHhJTjz7Cde5NkE/pEWYQ28tqzx+Qe
-         1Z293/STzQTnA==
-Received: (nullmailer pid 915352 invoked by uid 1000);
-        Sun, 23 Jul 2023 16:21:59 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Sun, 23 Jul 2023 12:24:04 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F501706;
+        Sun, 23 Jul 2023 09:23:38 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-267fcd6985cso695312a91.2;
+        Sun, 23 Jul 2023 09:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690129407; x=1690734207;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TSNfH7WpcXj5Pi6KtTuPLxh+ad+PNqkkHK3RTVluyTY=;
+        b=kFXQ41a5jgIKRgOBA3On6T+yIlbYoYtgwDSWCy7ssfCDJFHtVvhbN7Y8h1Hqbsik5z
+         Yovs2M4Saz/27gadU07U1/C3d5cRvpdMXkFltYuTruJNjJNwkP2SBT7+tfC1AwB+AVcM
+         xvWtyHLgBRE5XoGEUpWE1M4etpxS0XsNv7QPiPyAuBpgls9Nx0kl0F/cfxFcQoLbQ6Mu
+         FR2CH94wYbaEjCY7ltFZ9SOM2NiMKIMru69CB+mNgQjVk0Hzoz9htVfpZMMrt3HdsLiD
+         8fu8Skrflav14MrDHqTOBYgqXKVUvYGhxeuCqIKsPtrwca4jWMKCU3caiBBgMK09V4ob
+         /q8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690129407; x=1690734207;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TSNfH7WpcXj5Pi6KtTuPLxh+ad+PNqkkHK3RTVluyTY=;
+        b=gbwWNJhmQ50kE+Zc27oW61X/Xg3nJHNWH5oVkGSpkgjfyX07Z2aSlJkrz3z9ipe5oe
+         V5e7tQP1+UCsiS1lOlF5jOVi87+RkMkHIfEjBLLA1fK1pRonlepkmanjGsjJ2xLn1jAj
+         nJIcHVh1pxbyVjETzDa6+rIkCDKRVuu7P3MmN/RfU7wH1J2P6cwnA6aAuk6kKQOXlGf+
+         FR8ll5zEEusK15NUdueUPnc+bqJfALNfn1SX+9EKmVbBFdEErikUy6sjd5MTpi+vOgHj
+         015DjPt/EfA+jORy30u0vebS2/35f5NNsbihdxGNZPEvfH4DLSYJIvZNrklxdMFv+HWM
+         w/zg==
+X-Gm-Message-State: ABy/qLbJeYQoR12tdF5MCpKWnTZU3JL26zzPXhXV/u2ev62j4Ameq/hx
+        AOozgwt7BFw8GQPPZCgxlbQLq5QwNlaBcg5q
+X-Google-Smtp-Source: APBJJlFbt5Ym/sqj8JlSRFlLvb/KmyxsLBAFCaI10iYYjCKmzVP3kJznG+YbMNIHBjWURW13RXpqFA==
+X-Received: by 2002:a17:90a:8b8d:b0:25f:20f:2f7d with SMTP id z13-20020a17090a8b8d00b0025f020f2f7dmr7524713pjn.2.1690129406801;
+        Sun, 23 Jul 2023 09:23:26 -0700 (PDT)
+Received: from d.home.yangfl.dn42 ([104.28.245.199])
+        by smtp.gmail.com with ESMTPSA id u3-20020a17090aae8300b00265a7145fe5sm6883787pjq.41.2023.07.23.09.23.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Jul 2023 09:23:26 -0700 (PDT)
+From:   David Yang <mmyangfl@gmail.com>
+To:     linux-clk@vger.kernel.org
+Cc:     David Yang <mmyangfl@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 00/13] clk: hisilicon: Migrate devm APIs
+Date:   Mon, 24 Jul 2023 00:22:25 +0800
+Message-Id: <20230723162245.35033-1-mmyangfl@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Ivan Mikhaylov <fr0st61te@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Po-Yu Chuang <ratbert@faraday-tech.com>,
-        netdev@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230723155107.4498-1-fr0st61te@gmail.com>
-References: <20230723155107.4498-1-fr0st61te@gmail.com>
-Message-Id: <169012931925.915323.851405439785815833.robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: net: ftgmac100: convert to yaml version
- from txt
-Date:   Sun, 23 Jul 2023 10:21:59 -0600
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Migrate devm APIs for HiSilicon clock drivers and remove redundant codes.
 
-On Sun, 23 Jul 2023 18:51:07 +0300, Ivan Mikhaylov wrote:
-> Conversion from ftgmac100.txt to yaml format version.
-> 
-> Signed-off-by: Ivan Mikhaylov <fr0st61te@gmail.com>
-> ---
->  .../bindings/net/faraday,ftgmac100.yaml       | 102 ++++++++++++++++++
->  .../devicetree/bindings/net/ftgmac100.txt     |  67 ------------
->  2 files changed, 102 insertions(+), 67 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/faraday,ftgmac100.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/ftgmac100.txt
-> 
+This series is a partial improvement of [1]
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+v2: fix test robot error
+v3:
+  * size_t for all these num types
+  * hisi_clk_unregister() change into separate patch
+  * keep relevant header inclusions
+  * split driver files changes into separate patches
+  * explain hisi_clk_register_fn() checkpatch warnings
+  * not fixed: MODULE_LICENSE("GPL v2"), as stated in SPDX-License-Identifier
+  * not fixed: "hisilicon,hip04-clock" un-documented, as none of dts files in
+    arch/ use it, better to ask hisi people why they pushed this driver
+v4:
+  * typo: hisi_clocks_get_nr() should check clks->nr first
+  * unexport hisi_clk_unregister_fn() as no one use them outside
+v5: catch up with remove_new refactoring
 
-yamllint warnings/errors:
+Links:
+[1]: https://lore.kernel.org/r/20230322164201.2454771-1-mmyangfl@gmail.com
+v1: https://lore.kernel.org/r/20230326052757.297551-1-mmyangfl@gmail.com
+v2: https://lore.kernel.org/r/20230329075104.165176-1-mmyangfl@gmail.com
+v3: https://lore.kernel.org/r/20230410110733.192151-1-mmyangfl@gmail.com
+v4: https://lore.kernel.org/r/20230411174329.424763-1-mmyangfl@gmail.com
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/faraday,ftgmac100.yaml: properties:clock-names: 'oneOf' conditional failed, one must be fixed:
-	[{'enum': ['MACCLK', 'RCLK']}] is too short
-	False schema does not allow 1
-	hint: "minItems" is only needed if less than the "items" list length
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+David Yang (13):
+  clk: hisilicon: Add helper functions for platform driver
+  clk: hisilicon: hi3516cv300: Use helper functions
+  clk: hisilicon: hi3798cv200: Use helper functions
+  clk: hisilicon: Remove hisi_crg_funcs
+  clk: hisilicon: hi3519: Use helper functions
+  clk: hisilicon: hi3559a: Use helper functions
+  clk: hisilicon: hi3660: Convert into module
+  clk: hisilicon: hi3670: Convert into module
+  clk: hisilicon: hi3620: Convert into platform driver module
+  clk: hisilicon: hi6220: Convert into platform driver module
+  clk: hisilicon: hip04: Convert into platform driver module
+  clk: hisilicon: hix5hd2: Convert into platform driver module
+  clk: hisilicon: Migrate devm APIs
 
-doc reference errors (make refcheckdocs):
+ drivers/clk/hisilicon/clk-hi3519.c        | 127 +-----
+ drivers/clk/hisilicon/clk-hi3559a.c       | 252 +++---------
+ drivers/clk/hisilicon/clk-hi3620.c        | 212 +++++-----
+ drivers/clk/hisilicon/clk-hi3660.c        | 192 +++------
+ drivers/clk/hisilicon/clk-hi3670.c        | 248 ++++--------
+ drivers/clk/hisilicon/clk-hi6220-stub.c   |   9 +-
+ drivers/clk/hisilicon/clk-hi6220.c        | 229 ++++++-----
+ drivers/clk/hisilicon/clk-hip04.c         |  39 +-
+ drivers/clk/hisilicon/clk-hisi-phase.c    |  13 +-
+ drivers/clk/hisilicon/clk-hix5hd2.c       |  98 +++--
+ drivers/clk/hisilicon/clk.c               | 457 +++++++++++-----------
+ drivers/clk/hisilicon/clk.h               | 141 ++++---
+ drivers/clk/hisilicon/clkdivider-hi6220.c |  24 +-
+ drivers/clk/hisilicon/clkgate-separated.c |  26 +-
+ drivers/clk/hisilicon/crg-hi3516cv300.c   | 171 +-------
+ drivers/clk/hisilicon/crg-hi3798cv200.c   | 196 +---------
+ drivers/clk/hisilicon/crg.h               |  11 +-
+ drivers/clk/hisilicon/reset.c             |  42 ++
+ 18 files changed, 937 insertions(+), 1550 deletions(-)
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230723155107.4498-1-fr0st61te@gmail.com
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+base-commit: c2782531397f5cb19ca3f8f9c17727f1cdf5bee8
+-- 
+2.40.1
 
