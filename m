@@ -2,74 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6E275E50A
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 23:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FF275E510
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 23:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbjGWVl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 17:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
+        id S229934AbjGWV5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 17:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjGWVl6 (ORCPT
+        with ESMTP id S229492AbjGWV5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 17:41:58 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED67DE45
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 14:41:56 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3a5abb5e2aeso948681b6e.0
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 14:41:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20221208.gappssmtp.com; s=20221208; t=1690148516; x=1690753316;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oQyAvcaWHWv3RJcgIfZb6x+KSjpzqCRmKiuGw9VJrqY=;
-        b=irzyAbUDOUBFInrJkC1J2ixfp2i3kv7rPTJCTtpR3qjGvmBrk2EdDpeP2R7OnfuX0b
-         k6jCVexGkHnRMthfFky/C3Egc4HfJN7YZC5UVV2LusaA5MuaT7wj6hmxrfxxXng8V5O4
-         RF2ADRLK7OMfpyPL9psRh0MVwCI/YcyU8QG6Q6qEPXm5nh6CXSjOUsPNvpd6Pue3dy+h
-         JN4dz9NxPi9WGKdXhFAOPfMPHsSccWDRPDtwABjh3+PyhVC+m3NapevFva/EUooWDhA9
-         kqZ/ocucNaRBsITy99FSUDaFZOA16GRS3gMjIOtf/+4ID8g37CLxYCl73AOfSQUiKIaq
-         61JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690148516; x=1690753316;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oQyAvcaWHWv3RJcgIfZb6x+KSjpzqCRmKiuGw9VJrqY=;
-        b=ODSLnspUlKiCLhROMA9W3mTR+sj9MzHb6LYdvouu10bbN5g4zuKDwuwkI8Eo/9K/Z+
-         8H0L3oPZETNriscoY6J0c50io23XHJA5VPnJQ8MEUzrRWOyAtTeZfkpieU0TeqGtGuV/
-         xRxJZiR3E4LE6AQfINDzZ4agGW8fWWownxO5jjb2vc7Hxs3GuBqLSnozQbNHsGXzLBwq
-         kPt489a/64zR7RvPXlYZHfzvnIcD0O97S0qbiqULhWQcaMHyTyoxGlyeskeP/3YjEUnU
-         c7uUSptecymorhQHvLz4HdIL/rqzShiBlOymvDuaznLMdchwM7HLDW0giu/kL8xvuW0i
-         Q82w==
-X-Gm-Message-State: ABy/qLbo3X/ab6AVPfKW5u29vEFqQ8WnRN13EOj7WmxRWDCSvR3f8i7n
-        GcPHzIrF1vWtD4a//K63j/kpCQ==
-X-Google-Smtp-Source: APBJJlGGfLBbo66K53/3ZS8TbcpoVaZTjIVUfiH/F7Y+dKv2Lj3f3WSp3vu2SNgjZC8c/1bYee9OlQ==
-X-Received: by 2002:a05:6808:ecc:b0:39e:b834:1859 with SMTP id q12-20020a0568080ecc00b0039eb8341859mr8622714oiv.29.1690148516185;
-        Sun, 23 Jul 2023 14:41:56 -0700 (PDT)
-Received: from ?IPV6:2804:7f1:e2c1:6d75:166e:2197:2c44:331b? ([2804:7f1:e2c1:6d75:166e:2197:2c44:331b])
-        by smtp.gmail.com with ESMTPSA id u43-20020a056808152b00b003a1eae6ff73sm3493688oiw.36.2023.07.23.14.41.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Jul 2023 14:41:55 -0700 (PDT)
-Message-ID: <fe7cba2c-a0da-b1bd-1f0b-c6ecfa10de81@mojatatu.com>
-Date:   Sun, 23 Jul 2023 18:41:52 -0300
+        Sun, 23 Jul 2023 17:57:44 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7B094;
+        Sun, 23 Jul 2023 14:57:41 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qNh4p-0005PG-2t;
+        Sun, 23 Jul 2023 21:57:19 +0000
+Date:   Sun, 23 Jul 2023 22:57:08 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Russell King <linux@armlinux.org.uk>,
+        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        Greg Ungerer <gerg@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH net-next v5 0/9] net: ethernet: mtk_eth_soc: add basic
+ support for MT7988 SoC
+Message-ID: <cover.1690148927.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1] net/sched: mqprio: Add length check for
- TCA_MQPRIO_{MAX/MIN}_RATE64
-Content-Language: en-US
-To:     Lin Ma <linma@zju.edu.cn>, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230723075631.3712113-1-linma@zju.edu.cn>
-From:   Victor Nogueira <victor@mojatatu.com>
-In-Reply-To: <20230723075631.3712113-1-linma@zju.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,63 +59,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/07/2023 04:56, Lin Ma wrote:
-> The nla_for_each_nested parsing in function mqprio_parse_nlattr() does
-> not check the length of the nested attribute. This can lead to an
-> out-of-attribute read and allow a malformed nlattr (e.g., length 0) to
-> be viewed as 8 byte integer and passed to priv->max_rate/min_rate.
-> 
-> This patch adds the check based on nla_len() when check the nla_type(),
-> which ensures that the attribute has enough length.
-> 
-> Fixes: 4e8b86c06269 ("mqprio: Introduce new hardware offload mode and shaper in mqprio")
-> Signed-off-by: Lin Ma <linma@zju.edu.cn>
-> ---
->   net/sched/sch_mqprio.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/sched/sch_mqprio.c b/net/sched/sch_mqprio.c
-> index ab69ff7577fc..7bd1d261d8e7 100644
-> --- a/net/sched/sch_mqprio.c
-> +++ b/net/sched/sch_mqprio.c
-> @@ -285,7 +285,8 @@ static int mqprio_parse_nlattr(struct Qdisc *sch, struct tc_mqprio_qopt *qopt,
->   		i = 0;
->   		nla_for_each_nested(attr, tb[TCA_MQPRIO_MIN_RATE64],
->   				    rem) {
-> -			if (nla_type(attr) != TCA_MQPRIO_MIN_RATE64) {
-> +			if (nla_type(attr) != TCA_MQPRIO_MIN_RATE64 ||
-> +			    nla_len(attr) < sizeof(u64)) {
+The MediaTek MT7988 SoC introduces a new version (3) of the NETSYS
+block and comes with three instead of two MACs.
 
-Shouldn't the check be nla_len(attr) != sizeof(u64)?
-An attribute with a bigger length also seems to be invalid.
+The first MAC can be internally connected to a built-in Gigabit
+Ethernet switch with four 1000M/100M/10M twisted pair user ports.
 
-You could also separate this check into another if statement,
-so that the error message is clearer in regards to why the attr is
-invalid. Something like:
+The second MAC can be internally connected to a built-in 2500Base-T
+Ethernet PHY.
 
-if (nla_len(attr) != sizeof(u64)) {
-         NL_SET_ERR_MSG_ATTR_FMT(extack, attr,
-                                 "Attribute length expected to be %lu",
-                                 sizeof(u64));
-         return -EINVAL;
-}
+There are two SerDes units which can be operated in USXGMII, 10GBase-(K)R,
+5GBase-R, 2500Base-X, 1000Base-X or SGMII interface mode.
 
->   				NL_SET_ERR_MSG_ATTR(extack, attr,
->   						    "Attribute type expected to be TCA_MQPRIO_MIN_RATE64");
->   				return -EINVAL;
-> @@ -307,7 +308,8 @@ static int mqprio_parse_nlattr(struct Qdisc *sch, struct tc_mqprio_qopt *qopt,
->   		i = 0;
->   		nla_for_each_nested(attr, tb[TCA_MQPRIO_MAX_RATE64],
->   				    rem) {
-> -			if (nla_type(attr) != TCA_MQPRIO_MAX_RATE64) {
-> +			if (nla_type(attr) != TCA_MQPRIO_MAX_RATE64 ||
-> +			    nla_len(attr) < sizeof(u64)) {
+This series adds initial support for NETSYS v3 and the first MAC of the
+MT7988 SoC connecting the built-in DSA switch.
 
-Same as the previous comment.
+The switch is supported since commit 110c18bfed414 ("net: dsa: mt7530:
+introduce driver for MT7988 built-in switch").
 
->   				NL_SET_ERR_MSG_ATTR(extack, attr,
->   						    "Attribute type expected to be TCA_MQPRIO_MAX_RATE64");
->   				return -EINVAL;
+Basic support for the 1000M/100M/10M built-in PHYs connected to the
+switch ports is present since commit ("98c485eaf509b net: phy: add
+driver for MediaTek SoC built-in GE PHYs").
 
-cheers,
-Victor
+The series should not conflict with Russell's recently submitted series
+"Remove legacy phylink behaviour", hence the order of them being
+picked into net-next doesn't matter.
+
+Changes since v4:
+  * Rebase on current net-next tree
+
+Changes since v3:
+  * Set 'mediatek,infracfg = false;' in dt-bindings for those chips
+    which do not require infracfg phandle.
+
+Changes since v2:
+  * Use version number instead of feature bits for NETSYS version
+  * Remove unneeded check for NULL when calling mtk_pcs_lynxi_destroy
+  * Reduce dt-bindings to what is actually needed at this point for
+    the driver to work.
+
+Changes since v1:
+  * Set MTK_MAX_DEVS to 3 instead of converting to dynamic number of
+    Ethernet MACs.
+  * use mtk_m32 when ever possible
+  * more small improvements and minor comments addressed
+
+Daniel Golle (3):
+  dt-bindings: net: mediatek,net: add missing mediatek,mt7621-eth
+  dt-bindings: net: mediatek,net: add mt7988-eth binding
+  net: ethernet: mtk_eth_soc: convert clock bitmap to u64
+
+Lorenzo Bianconi (6):
+  net: ethernet: mtk_eth_soc: add version in mtk_soc_data
+  net: ethernet: mtk_eth_soc: increase MAX_DEVS to 3
+  net: ethernet: mtk_eth_soc: rely on MTK_MAX_DEVS and remove
+    MTK_MAC_COUNT
+  net: ethernet: mtk_eth_soc: add NETSYS_V3 version support
+  net: ethernet: mtk_eth_soc: convert caps in mtk_soc_data struct to u64
+  net: ethernet: mtk_eth_soc: add basic support for MT7988 SoC
+
+
+ .../devicetree/bindings/net/mediatek,net.yaml | 109 ++++-
+ drivers/net/ethernet/mediatek/mtk_eth_path.c  |  36 +-
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c   | 398 ++++++++++++++----
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h   | 327 +++++++++-----
+ drivers/net/ethernet/mediatek/mtk_ppe.c       |  18 +-
+ .../net/ethernet/mediatek/mtk_ppe_offload.c   |   2 +-
+ drivers/net/ethernet/mediatek/mtk_wed.c       |   4 +-
+ 7 files changed, 668 insertions(+), 226 deletions(-)
+
+-- 
+2.41.0
