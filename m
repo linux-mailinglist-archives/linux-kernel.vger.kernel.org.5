@@ -2,211 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C91DF75DFBB
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 04:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621B475DFC2
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 05:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbjGWC3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 22:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
+        id S229834AbjGWDTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 23:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjGWC3p (ORCPT
+        with ESMTP id S229545AbjGWDTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 22:29:45 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C711BD3
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 19:29:44 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6b9aadde448so2849137a34.0
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 19:29:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690079383; x=1690684183;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uaustwNzjZmVePWypLXeoTLylLeiPcQlbyLPn6f6Obw=;
-        b=QLeT/VCnFDu7+iJJQ8Z9+xNUr22l4+J5EJq+ySm/BvTfkXYuP8mBuvYr7YDpCXWAin
-         zbHNyIYS7CM0DwIEVwoBfYtZDckqKHqXPrftBCcCrJD61Mva1kgyTF02I9TLiZPoqslB
-         ElTbMkbOIOTPcSgX43AgkxHPWh8EcYbO+4stZP1c1lwbNxqh1NUV3PTvK5rR15ryWXyR
-         3cBDNHXBgU7Rgi9CfbngokamJ/kgevWxeSCVwvWhLldh79012665j6P5WLPDqnCqYiWl
-         yOX3cX00YdoamAzw7VeRymor4gAkWUxFgDkyT5gcn6MK1qn6Y5ghZqovbE1UsKktvRpU
-         6QWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690079383; x=1690684183;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uaustwNzjZmVePWypLXeoTLylLeiPcQlbyLPn6f6Obw=;
-        b=fdtWLVjzh1+YukRTZUGoJkq2R6OU5Axe64m3nW5LPMBZA6Unvgsw627YSygAnG7Dwf
-         L2LP//XzPsfXg2EouAGkDoTxQiz5MmLvAiw5IXy2PMRqztkbRRazmIPKxXAHCY0imbs/
-         59t1jV93MoxA1+gUBJYyXVypPNpADQRdgbQ2RbJPvwYv7nvQVcimNDaack9v3W07GUmz
-         DvNhuLKujxydjCyYNsUOhyp2RlfzMja/C120uRNbvQzVRIPyk87+8m/AmgMA3WWJKxfI
-         06GoGEhF54DJa7sG4PG6Dv96wo3nB3JgrbJXw2A+hNCL4xGuC0qe6ucuNcutR0v6u/n1
-         cO5A==
-X-Gm-Message-State: ABy/qLZjibZ0kJugQjkHE4/0vLxgBl7SkG9MMrkki7mZtq1UAktv8fSm
-        EzZux7B02D2dOkbhuS6kKKU=
-X-Google-Smtp-Source: APBJJlHOGKDXakiRWOhkcQkFS0r6ynD4QhW1NnQ+4sbefE3ZendQTqwKIoFyuFTbGzenaqDrpMdHXQ==
-X-Received: by 2002:a05:6830:19ce:b0:6b9:b985:2892 with SMTP id p14-20020a05683019ce00b006b9b9852892mr4352380otp.17.1690079383363;
-        Sat, 22 Jul 2023 19:29:43 -0700 (PDT)
-Received: from localhost ([216.228.127.128])
-        by smtp.gmail.com with ESMTPSA id ji22-20020a170903325600b001bb9b87ac95sm62388plb.103.2023.07.22.19.29.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 19:29:42 -0700 (PDT)
-Date:   Sat, 22 Jul 2023 19:29:39 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org
-Subject: Re: [PATCH v4 2/5] lib/test_bitmap: add tests for
- bitmap_{set,get}_value()
-Message-ID: <ZLyQk5Wmcx7Cf84W@yury-ThinkPad>
-References: <20230720173956.3674987-1-glider@google.com>
- <20230720173956.3674987-3-glider@google.com>
+        Sat, 22 Jul 2023 23:19:46 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D330F10CA;
+        Sat, 22 Jul 2023 20:19:44 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R7pPL6zp3zHnVL;
+        Sun, 23 Jul 2023 11:17:10 +0800 (CST)
+Received: from huawei.com (10.174.151.185) by canpemm500002.china.huawei.com
+ (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sun, 23 Jul
+ 2023 11:19:32 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <tj@kernel.org>, <hannes@cmpxchg.org>, <lizefan.x@bytedance.com>
+CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] cgroup: minor cleanup for cgroup_local_stat_show()
+Date:   Sun, 23 Jul 2023 11:19:32 +0800
+Message-ID: <20230723031932.3152951-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230720173956.3674987-3-glider@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.151.185]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 07:39:53PM +0200, Alexander Potapenko wrote:
-> Add basic tests ensuring that values can be added at arbitrary positions
-> of the bitmap, including those spanning into the adjacent unsigned
-> longs.
-> 
-> Signed-off-by: Alexander Potapenko <glider@google.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Make it under CONFIG_CGROUP_SCHED to rid of __maybe_unused annotation.
+Also put cgroup_tryget_css() inside CONFIG_CGROUP_SCHED as it's only
+called when CONFIG_CGROUP_SCHED. No functional change intended.
 
-[...]
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ kernel/cgroup/cgroup.c | 63 ++++++++++++++++++++++--------------------
+ 1 file changed, 33 insertions(+), 30 deletions(-)
 
-> +/*
-> + * Test bitmap should be big enough to include the cases when start is not in
-> + * the first word, and start+nbits lands in the following word.
-> + */
-> +#define TEST_BIT_LEN (BITS_PER_LONG * 3)
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 31603146e7c2..7296331c7582 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -492,28 +492,6 @@ static struct cgroup_subsys_state *cgroup_css(struct cgroup *cgrp,
+ 		return &cgrp->self;
+ }
+ 
+-/**
+- * cgroup_tryget_css - try to get a cgroup's css for the specified subsystem
+- * @cgrp: the cgroup of interest
+- * @ss: the subsystem of interest
+- *
+- * Find and get @cgrp's css associated with @ss.  If the css doesn't exist
+- * or is offline, %NULL is returned.
+- */
+-static struct cgroup_subsys_state *cgroup_tryget_css(struct cgroup *cgrp,
+-						     struct cgroup_subsys *ss)
+-{
+-	struct cgroup_subsys_state *css;
+-
+-	rcu_read_lock();
+-	css = cgroup_css(cgrp, ss);
+-	if (css && !css_tryget_online(css))
+-		css = NULL;
+-	rcu_read_unlock();
+-
+-	return css;
+-}
+-
+ /**
+  * cgroup_e_css_by_mask - obtain a cgroup's effective css for the specified ss
+  * @cgrp: the cgroup of interest
+@@ -3655,6 +3633,28 @@ static int cgroup_stat_show(struct seq_file *seq, void *v)
+ }
+ 
+ #ifdef CONFIG_CGROUP_SCHED
++/**
++ * cgroup_tryget_css - try to get a cgroup's css for the specified subsystem
++ * @cgrp: the cgroup of interest
++ * @ss: the subsystem of interest
++ *
++ * Find and get @cgrp's css associated with @ss.  If the css doesn't exist
++ * or is offline, %NULL is returned.
++ */
++static struct cgroup_subsys_state *cgroup_tryget_css(struct cgroup *cgrp,
++						     struct cgroup_subsys *ss)
++{
++	struct cgroup_subsys_state *css;
++
++	rcu_read_lock();
++	css = cgroup_css(cgrp, ss);
++	if (css && !css_tryget_online(css))
++		css = NULL;
++	rcu_read_unlock();
++
++	return css;
++}
++
+ static int cgroup_extra_stat_show(struct seq_file *seq, int ssid)
+ {
+ 	struct cgroup *cgrp = seq_css(seq)->cgroup;
+@@ -3686,8 +3686,9 @@ static int cpu_stat_show(struct seq_file *seq, void *v)
+ 	return ret;
+ }
+ 
+-static int __maybe_unused cgroup_local_stat_show(struct seq_file *seq,
+-						 struct cgroup *cgrp, int ssid)
++#ifdef CONFIG_CGROUP_SCHED
++static int cgroup_local_stat_show(struct seq_file *seq,
++				  struct cgroup *cgrp, int ssid)
+ {
+ 	struct cgroup_subsys *ss = cgroup_subsys[ssid];
+ 	struct cgroup_subsys_state *css;
+@@ -3707,14 +3708,16 @@ static int __maybe_unused cgroup_local_stat_show(struct seq_file *seq,
+ 
+ static int cpu_local_stat_show(struct seq_file *seq, void *v)
+ {
+-	struct cgroup __maybe_unused *cgrp = seq_css(seq)->cgroup;
+-	int ret = 0;
++	struct cgroup *cgrp = seq_css(seq)->cgroup;
+ 
+-#ifdef CONFIG_CGROUP_SCHED
+-	ret = cgroup_local_stat_show(seq, cgrp, cpu_cgrp_id);
+-#endif
+-	return ret;
++	return cgroup_local_stat_show(seq, cgrp, cpu_cgrp_id);
++}
++#else
++static int cpu_local_stat_show(struct seq_file *seq, void *v)
++{
++	return 0;
+ }
++#endif
+ 
+ #ifdef CONFIG_PSI
+ static int cgroup_io_pressure_show(struct seq_file *seq, void *v)
+-- 
+2.33.0
 
-Why not just 1000? Is your code safe against unaligned bitmaps?
-
-> +#define TEST_BYTE_LEN (BITS_TO_LONGS(TEST_BIT_LEN) * sizeof(unsigned long))
-
-BITS_TO_BYTES
-
-> +static void __init test_set_get_value(void)
-
-test_bitmap_read_write. Here, and in subjects for #1 and #2.
-
-> +{
-> +	DECLARE_BITMAP(bitmap, TEST_BIT_LEN);
-> +	DECLARE_BITMAP(exp_bitmap, TEST_BIT_LEN);
-> +	/* Prevent constant folding. */
-> +	volatile unsigned long zero_bits = 0;
-
-Use READ_ONCE() instead of volatile
-
-> +	unsigned long val, bit;
-> +	int i;
-> +
-> +	/* Setting/getting zero bytes should not crash the kernel. */
-> +	bitmap_write(NULL, 0, 0, zero_bits);
-> +	val = bitmap_read(NULL, 0, zero_bits);
-> +	expect_eq_ulong(0, val);
-
-No, val is undefined.
-
-> +
-> +	/*
-> +	 * Ensure that bitmap_read() reads the same value that was previously
-> +	 * written, and two consequent values are correctly merged.
-> +	 * The resulting bit pattern is asymmetric to rule out possible issues
-> +	 * with bit numeration order.
-> +	 */
-> +	for (i = 0; i < TEST_BIT_LEN - 7; i++) {
-
-Can you add some empty lines in the block below in sake of
-readability? Maybe after expect()?
-
-> +		bitmap_zero(bitmap, TEST_BIT_LEN);
-> +		bitmap_write(bitmap, 0b10101UL, i, 5);
-> +		val = bitmap_read(bitmap, i, 5);
-> +		expect_eq_ulong(0b10101UL, val);
-> +		bitmap_write(bitmap, 0b101UL, i + 5, 3);
-> +		val = bitmap_read(bitmap, i + 5, 3);
-> +		expect_eq_ulong(0b101UL, val);
-> +		val = bitmap_read(bitmap, i, 8);
-> +		expect_eq_ulong(0b10110101UL, val);
-> +	}
-> +
-> +	/*
-> +	 * Check that setting a single bit does not accidentally touch the
-> +	 * adjacent bits.
-> +	 */
-> +	for (i = 0; i < TEST_BIT_LEN; i++) {
-> +		/*
-> +		 * A 0b10101010 pattern to catch both 0s replaced to 1s and vice
-> +		 * versa.
-> +		 */
-> +		memset(bitmap, 0xaa, TEST_BYTE_LEN);
-> +		memset(exp_bitmap, 0xaa, TEST_BYTE_LEN);
-> +		for (bit = 0; bit <= 1; bit++) {
-> +			bitmap_write(bitmap, bit, i, 1);
-> +			__assign_bit(i, exp_bitmap, bit);
-> +			expect_eq_bitmap(exp_bitmap, bitmap, TEST_BIT_LEN);
-> +		}
-
-I suggested the other test:
-
-val = DEADBEEF;
-for (nbits = 1; nbits <= BITS_PER_LONG; nbits++)
-        for (start = 0; start < 1000; i++) {
-                if (start + nbits >= 1000)
-                        break;;
-
-                v = val & GENMASK(nbits - 1, 0);
-
-		memset(bitmap, 0xaa /* also 0xff and 0x00 */, TEST_BYTE_LEN);
-		memset(exp_bitmap, 0xaa, TEST_BYTE_LEN);
-
-                for (n = 0; n < nbits; n++)
-			__assign_bit(v & BIT(n), exp_bitmap, start + n);
-
-                bitmap_write(bitmap, v, start, nbits);
-		expect_eq_bitmap(exp_bitmap, bitmap, 1000);
-
-                r = bitmap_read(bitmap, start, nbits);
-                expect_eq(r, v);
-        }
-
-> +	}
-> +
-> +	/* Ensure setting 0 bits does not change anything. */
-> +	memset(bitmap, 0xaa, TEST_BYTE_LEN);
-> +	memset(exp_bitmap, 0xaa, TEST_BYTE_LEN);
-> +	for (i = 0; i < TEST_BIT_LEN; i++) {
-> +		bitmap_write(bitmap, ~0UL, i, 0);
-> +		expect_eq_bitmap(exp_bitmap, bitmap, TEST_BIT_LEN);
-> +	}
-> +}
-> +#undef TEST_BYTE_LEN
-> +#undef TEST_BIT_LEN
-> +
->  static void __init selftest(void)
->  {
->  	test_zero_clear();
-> @@ -1249,6 +1328,8 @@ static void __init selftest(void)
->  	test_for_each_clear_bitrange_from();
->  	test_for_each_set_clump8();
->  	test_for_each_set_bit_wrap();
-> +
-> +	test_set_get_value();
-
-This should append the test_bitmap_* section
-
-Thanks,
-Yury
