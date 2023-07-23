@@ -2,73 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F5775DF7D
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 02:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D2275DF7F
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 02:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjGWAZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 20:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
+        id S229654AbjGWA1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 20:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjGWAZN (ORCPT
+        with ESMTP id S229554AbjGWA1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 20:25:13 -0400
+        Sat, 22 Jul 2023 20:27:01 -0400
 Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8585B10FB
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 17:25:10 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-348c8fc6eb9so2258575ab.2
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 17:25:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBB410E9
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 17:26:59 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-348c8fc6eb9so2261075ab.2
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 17:26:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1690071909; x=1690676709;
+        d=joelfernandes.org; s=google; t=1690072019; x=1690676819;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=49CQc5om57PknB0KI/2hfLurHVzLrrNKGtxP13k1/vQ=;
-        b=ObVoDgj+LlwJerjZQMZgb/mB1wsMt5apKLN4ArB/w8RhvCePeoNg1ZMfI4CsuADNPi
-         mZTGJ1EGDG9HcJZOiUWu5spasgmu2HEkyCuopKxVdCLCRg9MG9AxpMM/7vWg9PO1++gU
-         VLELwE37kk/pfcYP+Ins4N5Cu4l7FqYg9UoC4=
+        bh=B9lNMQjARkVt4iuaxHVGISMBctHrpMYZ/3OfENkrO4g=;
+        b=UwuylH0yqd0pPjxGeJAB38UElzi4yE7snsnHtqJq7V9RsFA0B88xl23jmsMmIIWEsJ
+         W7iBoemK+SlTnlpuqJvhNpYbyLaSTx5sqNdOFFr/CMWy6LuTmEnKTZcztbGrH6w79AMC
+         ZTrqQgX1izWQ6iv4A2L3+QQbvNNpVyB1b+tjs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690071909; x=1690676709;
+        d=1e100.net; s=20221208; t=1690072019; x=1690676819;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=49CQc5om57PknB0KI/2hfLurHVzLrrNKGtxP13k1/vQ=;
-        b=hvzQu8moh04mTSfhYUztoDmR69hxrm8lFfmKBpVm6cjRelsPmvRK7y7f50K2a0Kg7V
-         NWOtEE9qUfwv5b7MAgVJI3vYxX7lU4pgMqWEnKPuaBt5zO2McBUhaa//SU6t3F86JwVV
-         /JMkv8QY53g19exirXQqYEIZnDxhKQ1vG8wayTQVr3EM/4Y5xqDoYBCqVchFX9IerrgC
-         qfVT1NHOvFftsT+WgR0L07O5frs0GwICc1yjLx+kL3pruCiMFxusECPIi90BoanWGWcb
-         S2WYQEHcexwo5y0Z6FM7phEWox5/eFUeFrHLDfHkSoT1icuppPa1C2TzI5VKHijDvr7I
-         aUOg==
-X-Gm-Message-State: ABy/qLZMfJZK57FNpURh92stc4p02NwlAycjQltAs+iaRQfkCKXfZY3i
-        D1ozuyxpXr6JRFpGb5EfLXRLMQ==
-X-Google-Smtp-Source: APBJJlFxDkwk3jrb7WrWq1Q+7OoT+zADZvDtOUr7Wi505SnqIUYEnrkCV0wrT/PV2VBo+fFIG6Zopg==
-X-Received: by 2002:a05:6e02:19c9:b0:348:7980:1e65 with SMTP id r9-20020a056e0219c900b0034879801e65mr5077399ill.14.1690071909535;
-        Sat, 22 Jul 2023 17:25:09 -0700 (PDT)
+        bh=B9lNMQjARkVt4iuaxHVGISMBctHrpMYZ/3OfENkrO4g=;
+        b=QW2IF+7NtrKnIeewgwgs+fCyELCPC0KdykP0mbpdDAkZZgf/BNMHWmJHTvkpO2gghh
+         svWyIO/G+MacNiQ7E/xJPXLSothiIQn+wWiosyvcXUuP6XpLJRPwnAhb2ifYEM8A9SR8
+         lhFhhnjs/t4ycN8t6N4DS72DhRJV/pIFhQR/xES1T48ohsRQoKDtxYEC7Q9HMkbOXoK9
+         HBBfmRt+prdWIuTyPsfnuxnN1sAiJQc7yXAdKV+628n5upV+Z+uLrNnbrSHYSOH9D7ti
+         E9zRfuLDcNTaYJBA1ioSoXk4aZ0InUYA9FlC9PkajGKs/9dQf9fguBnoPOMGepF3j1HJ
+         3KHw==
+X-Gm-Message-State: ABy/qLYD7ngcj6BLt6vW5ZdfVzOdRalJjZW84a5FqELOVleMG3k1Q3NQ
+        O4FV2EawTmUcJdB9IPccJyyxwQ==
+X-Google-Smtp-Source: APBJJlGDMDbCfA0/QfE3x9CvWOa5zK1KUw+E9r1mJObXptdoCA/Fzq/S5HdYThLQFxHQjvIZEwGVJQ==
+X-Received: by 2002:a05:6e02:1c29:b0:345:f28f:cc26 with SMTP id m9-20020a056e021c2900b00345f28fcc26mr4930562ilh.24.1690072019241;
+        Sat, 22 Jul 2023 17:26:59 -0700 (PDT)
 Received: from localhost (195.121.66.34.bc.googleusercontent.com. [34.66.121.195])
-        by smtp.gmail.com with ESMTPSA id r16-20020a92d450000000b00345cce526cdsm1997119ilm.54.2023.07.22.17.25.08
+        by smtp.gmail.com with ESMTPSA id b13-20020a92c14d000000b00348730b48a1sm1988129ilh.43.2023.07.22.17.26.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 17:25:08 -0700 (PDT)
-Date:   Sun, 23 Jul 2023 00:25:07 +0000
+        Sat, 22 Jul 2023 17:26:58 -0700 (PDT)
+Date:   Sun, 23 Jul 2023 00:26:58 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
+        jslaby@suse.cz, rcu@vger.kernel.org
 Subject: Re: [BUG] Re: Linux 6.4.4
-Message-ID: <20230723002507.GA284241@google.com>
-References: <2b8fc10b-785e-48b9-9a38-5c1af81f9578@paulmck-laptop>
- <CAEXW_YQO7OCdkXm_SBcPhAm8V8vMaF_5DQq7PbG9PZb7RFgA_g@mail.gmail.com>
- <f18e165c-9196-4b41-a202-82cfd5ac7f8b@paulmck-laptop>
- <8682b08c-347b-5547-60e0-013dcf1f8c93@joelfernandes.org>
- <eb04b7d0-2f49-4e01-be09-9062d9f08404@paulmck-laptop>
- <32aec6d1-bf25-7b47-8f31-7b6318d5238d@joelfernandes.org>
- <9b42cb38-8375-fc41-475a-2bd26c60a7b9@joelfernandes.org>
- <5dcf7117-cec7-4772-8aad-e100484a84dc@paulmck-laptop>
- <7bfde9f4-2bd6-7337-b9ca-94a9253d847f@joelfernandes.org>
- <ad82995c-061e-4f97-a972-c13a85ad0b72@paulmck-laptop>
+Message-ID: <20230723002658.GB284241@google.com>
+References: <2023071940-suspect-ominous-4a6a@gregkh>
+ <20230720132714.GA3726096@google.com>
+ <CAABZP2xrLRTVM6te22RFTYCpFB6CnyZ1ASjq=vsGuhpnRfU-OA@mail.gmail.com>
+ <CAABZP2xwBczWqpPv09JWT+GrJ5oKjeBO7VV1O23yCX7AsbxGBw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ad82995c-061e-4f97-a972-c13a85ad0b72@paulmck-laptop>
+In-Reply-To: <CAABZP2xwBczWqpPv09JWT+GrJ5oKjeBO7VV1O23yCX7AsbxGBw@mail.gmail.com>
 X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no
@@ -79,371 +75,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 10:27:55AM -0700, Paul E. McKenney wrote:
-> On Sat, Jul 22, 2023 at 08:38:02AM -0400, Joel Fernandes wrote:
-> > 
-> > 
-> > On 7/21/23 18:08, Paul E. McKenney wrote:
-> > > On Fri, Jul 21, 2023 at 03:20:48PM -0400, Joel Fernandes wrote:
-> > >> (Trimming the CC list a bit)
-> > >> On 7/21/23 08:13, Joel Fernandes wrote:
-> > >>> On 7/20/23 15:47, Paul E. McKenney wrote:
-> > >>>> On Thu, Jul 20, 2023 at 03:32:35PM -0400, Joel Fernandes wrote:
-> > >>>>> On 7/20/23 15:04, Paul E. McKenney wrote:
-> > >>>>>> On Thu, Jul 20, 2023 at 12:31:13PM -0400, Joel Fernandes wrote:
-> > >>>>>>> Hi Paul,
-> > >>>>>>>
-> > >>>>>>> On Thu, Jul 20, 2023 at 11:55 AM Paul E. McKenney
-> > >>>>>>> <paulmck@kernel.org> wrote:
-> > >>>>>>>>
-> > >>>>>>>> On Thu, Jul 20, 2023 at 01:27:14PM +0000, Joel Fernandes wrote:
-> > >>>>> [...]
-> > >>>>>>>>>
-> > >>>>>>>>> So likely RCU boosting is failing:
-> > >>>>>>>>>
-> > >>>>>>>>> The full TREE03 splat:
-> > >>>>>>>>> [   54.243588] ------------[ cut here ]------------
-> > >>>>>>>>> [   54.244547] rcu-torture: rcu_torture_boost started
-> > >>>>> [...]
-> > >>>>>>>>> [   54.300499] RIP: 0010:rcu_torture_stats_print+0x5b2/0x620
-> > >>>>> [...]
-> > >>>>>>>>> [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
-> > >>>>>>>>>
-> > >>>>>>>>> However, if we are to believe the '9', it appears the object did
-> > >>>>>>>>> made it
-> > >>>>>>>>> quite some till the end of the pipe array but not until the free
-> > >>>>>>>>> pool.
-> > >>>>>>>>
-> > >>>>>>>> This is from this if/for statement, correct?
-> > >>>>>>>>
-> > >>>>>>>>                   stutter_waited =
-> > >>>>>>>> stutter_wait("rcu_torture_writer");
-> > >>>>>>>>                   if (stutter_waited &&
-> > >>>>>>>>                       !atomic_read(&rcu_fwd_cb_nodelay) &&
-> > >>>>>>>>                       !cur_ops->slow_gps &&
-> > >>>>>>>>                       !torture_must_stop() &&
-> > >>>>>>>>                       boot_ended)
-> > >>>>>>>>                           for (i = 0; i <
-> > >>>>>>>> ARRAY_SIZE(rcu_tortures); i++)
-> > >>>>>>>>                                   if
-> > >>>>>>>> (list_empty(&rcu_tortures[i].rtort_free) &&
-> > >>>>>>>>                                      
-> > >>>>>>>> rcu_access_pointer(rcu_torture_current) !=
-> > >>>>>>>>                                       &rcu_tortures[i]) {
-> > >>>>>>>>                                           tracing_off();
-> > >>>>>>>>                                           show_rcu_gp_kthreads();
-> > >>>>>>>>                                           WARN(1, "%s:
-> > >>>>>>>> rtort_pipe_count:
-> > >>>>>>>>                                           rcu_ftrace_dump(DUMP_ALL);
-> > >>>>>>>>                                   }
-> > >>>>>>>
-> > >>>>>>> Yes, that's right.
-> > >>>>>>>
-> > >>>>>>>> If so, this happens when there was a stutter wait, but RCU grace
-> > >>>>>>>> periods failed to clear out the backlog during the several seconds
-> > >>>>>>>> that
-> > >>>>>>>> rcutorture was forced idle.  This might be related to the RCU
-> > >>>>>>>> priority
-> > >>>>>>>> boosting failure, in which a preempted reader persisted across the
-> > >>>>>>>> stutter interval.
-> > >>>>>>>
-> > >>>>>>> When RCU is operating normally, shouldn't the check
-> > >>>>>>> "(list_empty(&rcu_tortures[i].rtort_free)" not run until the preempted
-> > >>>>>>> reader unblocks and exits its RCU read-side critical section?
-> > >>>>>>
-> > >>>>>> Yes, but not just "until", but rather "long after".  If RCU is doing
-> > >>>>>> grace periods correctly, an active reader on a given rcu_tortures[]
-> > >>>>>> element will prevent .rtort_pipe_count from exceeding the value 2.
-> > >>>>>
-> > >>>>> Ah ok, so the rtort_pipe_count being 9 is a sign RCU isn't making
-> > >>>>> progress
-> > >>>>> thus making it absent from the free list.
-> > >>>>
-> > >>>> Yes, though RCU is -just- -barely- too slow, as one more grace period
-> > >>>> would have done it.
-> > >>>>
-> > >>>>>> The element will not be put on a list until .rtort_pipe_count is equal
-> > >>>>>> to RCU_TORTURE_PIPE_LEN, which is 10.
-> > >>>>>>
-> > >>>>>> This warning usually appears when something is holding up the
-> > >>>>>> grace-period
-> > >>>>>> kthread.  Historically, this has included deadlocks, missed timers,
-> > >>>>>> and whatever else can prevent the grace-period kthread from running.
-> > >>>>>
-> > >>>>> Makes sense.
-> > >>>>>
-> > >>>>>>> One thing that confuses me, in the case of
-> > >>>>>>> "cur_ops->deferred_free(old_rp);" , the earlier do-while loop may exit
-> > >>>>>>> before the async callbacks can finish. So what prevents the
-> > >>>>>>> "(list_empty(&rcu_tortures[i].rtort_free)" check from happening before
-> > >>>>>>> grace periods happen? Thanks for any clarification.
-> > >>>>>>
-> > >>>>>> We only enter this code if the stutter_wait() actually waited, and by
-> > >>>>>> default this function will wait about five seconds.  Since the
-> > >>>>>> rcutorture
-> > >>>>>> testing goes idle during this time period (or is supposed to!), if
-> > >>>>>> things
-> > >>>>>> are working properly, knocking off ten grace periods during that time
-> > >>>>>> should be pretty much a given.
-> > >>>>>
-> > >>>>> Sure, makes sense. And this is not Lazy-RCU so 5 seconds should be
-> > >>>>> plenty
-> > >>>>> ;). I think I was subconsciously expecting an rcu_barrier() somewhere
-> > >>>>> in the
-> > >>>>> code before those checks, but that's not needed as you pointed that the
-> > >>>>> stutter should be giving enough time for RCU to make progress.
-> > >>>>
-> > >>>> And there might need to be a call_rcu_hurry() in there somewhere,
-> > >>>> now that you mention it.  Which would pretty much defeat any sort of
-> > >>>> lazy-RCU-callback testing in rcutorture, but testing of laziness might
-> > >>>> need to be separate anyway.
-> > >>>>
-> > >>>>> So hmm, the count being 9 means that not enough RCU grace periods have
-> > >>>>> passed for the rcu_torture object in question thus keeping it always
-> > >>>>> allocated. The GP thread not getting CPU can do that indeed, or perhaps
-> > >>>>> something else stalling RCU like a preempted reader, length preemption
-> > >>>>> disabling on a CPU and so forth..  I'll try to collect a trace when it
-> > >>>>> happens.
-> > >>>>
-> > >>>> Looking forward to seeing what you come up with!
-> > >>>
-> > >>> So far I found this. Before the crash, GPs took about 50ms, during the
-> > >>> crash it took 5 seconds before the warning which aligns with what you
-> > >>> mentioned about stutter.
-> > >>>
-> > >>>
-> > >>> The GP that never completed is at this line:
-> > >>>
-> > >>> [ 2816.041082]    <...>-13       13d.... 1237016139us :
-> > >>> rcu_grace_period: rcu_sched 144681 start
-> > >>>
-> > >>> And fqs loop got a "dti" for CPUs:
-> > >>> 1
-> > >>> 2
-> > >>> 12
-> > >>>
-> > >>> And I see cpuqs for:
-> > >>> 13
-> > >>> 6
-> > >>> 10
-> > >>> 5
-> > >>> 4
-> > >>> 11
-> > >>>
-> > >>> No idea what happened to 3, 8, 9, 14, 15. Maybe the "dti" for those did
-> > >>> not show in the trace?
-> > >>>
-> > >>> However, I see that CPU 7 did this:
-> > >>> [ 2816.205277]   <idle>-0         7d.... 1237016284us : sched_switch:
-> > >>> prev_comm=swapper/7 prev_pid=0 prev_prio=120 prev_state=R ==>
-> > >>> next_comm=rcu_torture_rea next_pid=149 next_prio=139
-> > >>>
-> > >>>
-> > >>> and then did this about 3 seconds later:
-> > >>> [ 2819.394111] rcu_tort-149       7dNs.. 1237025699us :
-> > >>> rcu_grace_period: rcu_sched 144677 cpuend
-> > >>> [ 2819.412745] rcu_tort-149       7dNs.. 1237025699us :
-> > >>> rcu_grace_period: rcu_sched 144681 cpustart
-> > >>>
-> > >>>
-> > >>> Which means it never switched out from the CPU all this while. Neither
-> > >>> did it report cpuqs. Ok it did notice the new GP started, welcome to the
-> > >>> party mate ;)
-> > >>>
-> > >>> That points the issue I think. I wonder if the emergency provisions for
-> > >>> forcing quiescent states on NOHZ_FULL CPUs kicked in. ISTR, we had
-> > >>> issues with that in the past where we had to fix the tick path to report
-> > >>> a QS.
-> > >>>
-> > >>> I'll add some more traces. Especially around preempted readers, the
-> > >>> emergency provisions for forcing a QS and so forth and see if I can dig
-> > >>> more information.
-> > >>
-> > >> In another instance, I caught a stack trace of CPU5 when it did not
-> > >> check-in with RCU for 3 seconds or so:
-> > >>
-> > >> [ 1127.067889]  kmalloc_trace+0x25/0x90
-> > >> [ 1127.072823]  rcu_torture_fwd_prog+0x3d8/0xa60
-> > >> [ 1127.078749]  ? __pfx_rcu_torture_fwd_prog+0x10/0x10
-> > >> [ 1127.085468]  ? kthread+0xcb/0xf0
-> > >> [ 1127.090040]  ? __pfx_rcu_torture_fwd_prog+0x10/0x10
-> > >> [ 1127.096626]  kthread+0xcb/0xf0
-> > >> [ 1127.100803]  ? __pfx_kthread+0x10/0x10
-> > >> [ 1127.107207]  ret_from_fork+0x2c/0x50
-> > >> [ 1127.113662]  </TASK>
-> > >> [ 1127.117818] Kernel panic - not syncing: kernel: panic_on_warn set ...
-> > >>
-> > >> It appears it was in "rcu_torture_fwd_prog" at the time. It got stuck
-> > >> there for 2 seconds.
-> > >>
-> > >> Interestingly, I did find the scheduler tick was trying to get in touch
-> > >> with the CPU and it was running code on it even:
-> > >> [ 5858.463102] rcu_tort-174       5d.h.. 1131149320us : rcu_utilization:
-> > >> Start scheduler-tick
-> > >> [ 5858.472903] rcu_tort-174       5d.h.. 1131149320us : rcu_utilization:
-> > >> End scheduler-tick
-> > >>
-> > >> So I could add some traces there to figure out what is it upto. ISTR, we
-> > >> also send IPIs to these CPUs? So maybe adding some traces there too is
-> > >> in order.
-> > >>
-> > >> Also earlier in dmesg it did this:
-> > >> [ 1124.825504] rcu_torture_fwd_prog n_max_cbs: 44181
-> > >> [ 1124.832158] rcu_torture_fwd_prog: Starting forward-progress test 0
-> > >> [ 1124.840977] rcu_torture_fwd_prog_cr: Starting forward-progress test 0
-> > >> [ 1126.726621] ------------[ cut here ]------------
-> > >> [ 1126.733296] rcutorture_oom_notify invoked upon OOM during
-> > >> forward-progress testing.
-> > >>
-> > >> Before that "cut here", there is a 2 second gap which tells me it got
-> > >> stuck there.
-> > >>
-> > >> So this function rcu_torture_fwd_prog() is keeping the CPU unresponsive
-> > >> from an RCU perspective for some reason? Because I never saw the
-> > >> "rcu_torture_fwd_prog_cr: Waiting for CBs" message before it panicked.
-> > > 
-> > > Thank you for digging into this!
-> > > 
-> > > Yes, rcu_torture_fwd_prog() is supposed to monopolize CPUs.  But it
-> > > is supposed to respect stuttering.  It is quite possible that the
-> > > synchronization is insufficient.  Or that the "supposed to" never
-> > > made it into the code.
-> > > 
-> > >> Collecting traces again.. ;) thanks,
-> > > 
-> > > ;-) ;-) ;-)
-> > 
-> > I narrowed it down to the timer softirq taking too long and doing this
-> > for 4 seconds:
-> > 
-> > [ 6781.411834] ksoftirq-12        0dNs.. 206231531us : sched_wakeup:
-> > comm=rcu_torture_rea pid=153 prio=139 target_cpu=000
-> > [ 6781.424854] ksoftirq-12        0dNs.. 206231531us : sched_waking:
-> > comm=rcu_torture_rea pid=164 prio=139 target_cpu=006
-> > [ 6781.437650] ksoftirq-12        0dNs.. 206231533us : sched_wakeup:
-> > comm=rcu_torture_rea pid=164 prio=139 target_cpu=000
-> > [ 6781.451019] ksoftirq-12        0dNs.. 206231533us : sched_waking:
-> > comm=rcu_torture_rea pid=162 prio=139 target_cpu=002
-> > [ 6781.463825] ksoftirq-12        0dNs.. 206231535us : sched_wakeup:
-> > comm=rcu_torture_rea pid=162 prio=139 target_cpu=000
-> > [ 6781.476290] ksoftirq-12        0dNs.. 206231535us : sched_waking:
-> > comm=rcu_torture_wri pid=143 prio=139 target_cpu=004
-> > [ 6781.489257] ksoftirq-12        0dNs.. 206231537us : sched_wakeup:
-> > comm=rcu_torture_wri pid=143 prio=139 target_cpu=000
-> > [ 6781.502559] ksoftirq-12        0dNs.. 206231538us : sched_waking:
-> > comm=rcu_torture_rea pid=154 prio=139 target_cpu=006
-> > [ 6781.515093] ksoftirq-12        0dNs.. 206231539us : sched_wakeup:
-> > comm=rcu_torture_rea pid=154 prio=139 target_cpu=000
-> > [ 6781.527622] ksoftirq-12        0dNs.. 206231539us : sched_waking:
-> > comm=rcu_torture_fak pid=149 prio=139 target_cpu=003
-> > [ 6781.539979] ksoftirq-12        0dNs.. 206231541us : sched_wakeup:
-> > comm=rcu_torture_fak pid=149 prio=139 target_cpu=000
-> > [ 6781.552717] ksoftirq-12        0dNs.. 206231541us : sched_waking:
-> > comm=rcu_torture_fak pid=145 prio=139 target_cpu=005
-> > [ 6781.565074] ksoftirq-12        0dNs.. 206231543us : sched_wakeup:
-> > comm=rcu_torture_fak pid=145 prio=139 target_cpu=000
-> > [ 6781.577580] ksoftirq-12        0dNs.. 206231543us : sched_waking:
-> > comm=rcu_torture_rea pid=166 prio=139 target_cpu=003
-> > [ 6781.590211] ksoftirq-12        0dNs.. 206231547us : sched_wakeup:
-> > comm=rcu_torture_rea pid=166 prio=139 target_cpu=000
-> > 
-> > And I caught the softirq exit which told me it is coming from timer softirq:
-> > [ 6781.603150] ksoftirq-12        0.Ns.. 206231552us : __do_softirq:
-> > softirq exit: name: TIMER, action handler: run_timer_softirq
-> > 
-> > Maybe something to do with calls to stuttering or lack of cond_resched()
-> > in the torture code somewhere? Unfortunately I was not able to get a
-> > stack trace and what is doing the wake ups.
-> 
-> Huh.  It seems to be waking up each rcutorture kthread twice.
+On Sat, Jul 22, 2023 at 09:00:16AM +0800, Zhouyi Zhou wrote:
+> On Fri, Jul 21, 2023 at 9:51 AM Zhouyi Zhou <zhouzhouyi@gmail.com> wrote:
+> >
+> > On Thu, Jul 20, 2023 at 9:31 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+> > >
+> > > On Wed, Jul 19, 2023 at 05:06:39PM +0200, Greg Kroah-Hartman wrote:
+> > > > I'm announcing the release of the 6.4.4 kernel.
+> > > >
+> > > > All users of the 6.4 kernel series must upgrade.
+> > > >
+> > > > The updated 6.4.y git tree can be found at:
+> > > >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-6.4.y
+> > > > and can be browsed at the normal kernel.org git web browser:
+> > > >       https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+> > >
+> > > I have been consistently hitting the following splat with rcutorture's TREE03
+> > > test on 6.4.4. This happened with 6.4.4-rc3 as well.
+> > Hi, I am also interested in this topic , I am going to test 6.4.4 on my laptop
+> I rcu tortured 6.4.4 on my Intel(R) Core(TM) i7-11800H laptop for 2
+> rounds each of which lasting 7 hours.
+> all of them report:
+> Summary: Successes: 55 Failures: 0.
 
-That's actually 2 different tracepoints. So its 2 events per wakeup.
-
-> So maybe
-> this is the timed wakeups towards the end of the stutter interval?
-
-Thanks, I'll look into that as well.
-
-> But
-> how many kthreads do you have?  Four seconds at about two microseconds per
-> kthread would be about 2 million kthreads, so I am guessing that something
-> else is also going on.
-
-In the 4 seconds, it repeatedy does the sched_waking on 17 different threads
-all are from rcu_torture.
-
-> Or that there are sometimes longer delays between
-> wakeups.
-
-I am seeing a delay of 100-200 microseconds or so between them.
-
-> Or maybe it cycles through rcutorture's kthreads, repeatedly
-> awakening the set.
-
-Yes.
-
-> Which might actually happen given enough kthreads spinning in
-> stutter_wait() doing that occasional 10-microsecond torture_hrtimeout_us()
-> call, mightn't it?
-
-Yeah could be, I was planning to trace that code but last when I added traces
-there it overflowed my trace buffer. Now I made the buffer 1MB/CPU so
-hopefully will survive ;-)
-
-> Perhaps try changing that torture_hrtimeout_us() to something like:
-> 
-> 	torture_hrtimeout_us(100, 0, NULL);
-> 
-> Or, better, make that function rely entirely on a single hrtimer per
-> kthread.  Which will likely also require spreading the timers across the
-> available CPUs.  Perhaps part of the problem here is that there are very
-> few online CPUs, not enough to keep up.
-
-Thanks I'll look more into it, good way for me to study the stutter
-functionality.
-
-> > This is at least one of the issues. I do believe the fwd prog functions
-> > taking too long in the kernel without doing a cond_resched() is another
-> > issue but I need to reduce the RCU stall timeout to 2 seconds to see
-> > those happen otherwise I think those just get "hidden".
-> 
-> The rcu_torture_fwd_prog_cond_resched() function is supposed to be taking
-> care of that for the callback flooding, but maybe I missed a place where
-> a call is needed.
-> 
-> For the tight loop of readers, there is a call to cond_resched().  Ah,
-> but are you running a preemptible kernel?  (If we are still talking
-> about TREE03, I believe that is a "yes".)  Maybe try changing the
-> cond_resched() in the rcu_torture_fwd_prog_nr() function's loop to
-> rcu_torture_fwd_prog_cond_resched()?
-
-Sure, I can try to make this change, but the fwd_prog issue was for TREE07
-(non-preemptible).
-
-> > Both these issues appear to be threads spending too much time in kernel
-> > mode in non-preemptible kernels. The RCU GP thread was able to get CPU
-> > so that wasn't the issue in these instances.
-> > 
-> > Thoughts?
-> 
-> OK, if this kernel is non-preemptible, you are not running TREE03,
-> correct?
-
-I am running both TREE03 and TREE07 on the same stable kernel version. The
-TREE03 issue was related to the boost failure warning. The TREE07 was an
-rcutorture object was still allocated with a pipecount of 9 or sometimes 6.
-The TREE07 issue is definitely spending of too much time in kernel mode which
-is holding up the CPU. The TREE03 issue is likely unrelated, but I thought I
-will get to that next after looking into TREE07.
-
-> > Next plan of action is to get sched_waking stack traces since I have a
-> > very reliable repro of this now.
-> 
-> Too much fun!  ;-)
-
-True! :D
+Thanks for checking. One thing about my environment is it is nested
+virtualized. So rcutorture is actually running inside a second-level of
+virtualization which probably adds a lot of timing related uncertainty to my
+testing (which could be a good thing :P).
 
 thanks,
 
  - Joel
 
+
+> 
+> Thanks, Zhouyi
+> >
+> > Thanks, Zhouyi
+> > >
+> > > Happens at:
+> > >                 WARN_ON_ONCE(n_rcu_torture_boost_failure); // boost failed (TIMER_SOFTIRQ RT prio?)
+> > >
+> > > So likely RCU boosting is failing:
+> > >
+> > > The full TREE03 splat:
+> > > [   54.243588] ------------[ cut here ]------------
+> > > [   54.244547] rcu-torture: rcu_torture_boost started
+> > > [   54.247643] WARNING: CPU: 12 PID: 166 at kernel/rcu/rcutorture.c:2227 rcu_torture_stats_print+0x5b2/0x620
+> > > [   54.273082] Modules linked in:
+> > > [   54.278336] CPU: 12 PID: 166 Comm: rcu_torture_sta Not tainted 6.4.4-g62813c2d2a36 #1
+> > > [   54.288540] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > > [   54.300499] RIP: 0010:rcu_torture_stats_print+0x5b2/0x620
+> > > [   54.307525] Code: 00 00 48 8b 05 3f 6c 46 02 e9 4a fe ff ff 0f 0b e9 02 fd ff ff 0f 0b e9 09 fd ff ff 0f 0b e9 10 fd ff ff 0f 0b e9 17 fd ff ff <0f> 0b e9 1e fd ff ff 0f 0b e9 21 fd ff ff e8 0b 54 ff ff 84 c0 0f
+> > > [   54.331276] RSP: 0000:ffff9fef805efe08 EFLAGS: 00010202
+> > > [   54.338374] RAX: 0000000000000000 RBX: ffff9fef805efe88 RCX: 00000000ffffdfff
+> > > [   54.347738] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+> > > [   54.358923] RBP: ffff9fef805efe30 R08: 00000000ffffdfff R09: 00000000ffffdfff
+> > > [   54.368209] R10: ffffffff94e59280 R11: ffffffff94e59280 R12: 0000000000000001
+> > > [   54.377367] R13: 0000000000000000 R14: 00000000000002fc R15: ffffffff93514000
+> > > [   54.386739] FS:  0000000000000000(0000) GS:ffff9c901f500000(0000) knlGS:0000000000000000
+> > > [   54.397130] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [   54.404585] CR2: 0000000000000000 CR3: 000000000308e000 CR4: 00000000000006e0
+> > > [   54.413884] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > [   54.423118] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > [   54.432192] Call Trace:
+> > > [   54.435634]  <TASK>
+> > > [   54.438512]  ? rcu_torture_stats_print+0x5b2/0x620
+> > > [   54.444904]  ? __warn+0x7c/0x130
+> > > [   54.449221]  ? rcu_torture_stats_print+0x5b2/0x620
+> > > [   54.455737]  ? report_bug+0x171/0x1a0
+> > > [   54.460935]  ? handle_bug+0x3c/0x70
+> > > [   54.465874]  ? exc_invalid_op+0x17/0x70
+> > > [   54.471336]  ? asm_exc_invalid_op+0x1a/0x20
+> > > [   54.477092]  ? __pfx_rcu_torture_stats+0x10/0x10
+> > > [   54.483472]  ? rcu_torture_stats_print+0x5b2/0x620
+> > > [   54.490029]  ? rcu_torture_stats_print+0x28a/0x620
+> > > [   54.496565]  ? finish_task_switch.isra.0+0x7e/0x240
+> > > [   54.503261]  rcu_torture_stats+0x25/0x70
+> > > [   54.508686]  kthread+0xe3/0x110
+> > > [   54.513141]  ? __pfx_kthread+0x10/0x10
+> > > [   54.518330]  ret_from_fork+0x2c/0x50
+> > > [   54.523356]  </TASK>
+> > > [   54.526500] ---[ end trace 0000000000000000 ]---
+> > >
+> > > Also other issues in 6.4.4, I am seeing RCU failures with TREE07 about 40
+> > > minutes into the test. This warning indicates that an rcu_torture object from
+> > > the rcu_torture pool is still allocated which is an indiciation that RCU is
+> > > not working.
+> > >
+> > > [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+> > >
+> > > However, if we are to believe the '9', it appears the object did made it
+> > > quite some till the end of the pipe array but not until the free pool.
+> > >
+> > > The full TREE07 splat:
+> > > [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+> > > [ 2169.489413] WARNING: CPU: 4 PID: 130 at kernel/rcu/rcutorture.c:1584 rcu_torture_writer+0x7f2/0xd80
+> > > [ 2169.504064] Modules linked in:
+> > > [ 2169.508957] CPU: 4 PID: 130 Comm: rcu_torture_wri Not tainted 6.4.4-g62813c2d2a36 #2
+> > > [ 2169.521735] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > > [ 2169.540908] RIP: 0010:rcu_torture_writer+0x7f2/0xd80
+> > > [ 2169.548542] Code: 15 8b 62 45 02 49 8d 45 e8 48 39 c2 74 bf e8 85 03 08 00 41 8b 55 f8 48 c7 c6 d0 f7 e0 9d 48 c7 c7 d7 7b 28 9e e8 ce 29 f7 ff <0f> 0b 8b 05 9a 48 45 02 85 c0 75 97 89 d8 87 05 8e 48 45 02 85 c0
+> > > [ 2169.578445] RSP: 0000:ffffa645804cfe20 EFLAGS: 00010282
+> > > [ 2169.586793] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 00000000ffffdfff
+> > > [ 2169.598069] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000009ffb
+> > > [ 2169.609359] RBP: ffffa645804cff10 R08: 00000000ffffdfff R09: 00000000ffffdfff
+> > > [ 2169.620717] R10: ffffffff9e659220 R11: ffffffff9e659220 R12: 0000000000000017
+> > > [ 2169.631918] R13: ffffffff9f166b60 R14: 0000000000000000 R15: 0000000000000001
+> > > [ 2169.643365] FS:  0000000000000000(0000) GS:ffff8b3a5f300000(0000) knlGS:0000000000000000
+> > > [ 2169.655249] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [ 2169.663207] CR2: 0000000000000000 CR3: 000000001562e000 CR4: 00000000000006e0
+> > > [ 2169.672806] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > [ 2169.682194] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > [ 2169.693530] Call Trace:
+> > > [ 2169.698054]  <TASK>
+> > > [ 2169.701786]  ? rcu_torture_writer+0x7f2/0xd80
+> > > [ 2169.708853]  ? __warn+0x7c/0x120
+> > > [ 2169.714088]  ? rcu_torture_writer+0x7f2/0xd80
+> > > [ 2169.721066]  ? report_bug+0x15d/0x180
+> > > [ 2169.726125]  ? handle_bug+0x3c/0x70
+> > > [ 2169.730948]  ? exc_invalid_op+0x17/0x70
+> > > [ 2169.736238]  ? asm_exc_invalid_op+0x1a/0x20
+> > > [ 2169.742047]  ? rcu_torture_writer+0x7f2/0xd80
+> > > [ 2169.747907]  ? __pfx_rcu_torture_writer+0x10/0x10
+> > > [ 2169.754175]  kthread+0xcb/0xf0
+> > > [ 2169.758407]  ? __pfx_kthread+0x10/0x10
+> > > [ 2169.763501]  ret_from_fork+0x2c/0x50
+> > > [ 2169.768420]  </TASK>
+> > > [ 2169.771445] ---[ end trace 0000000000000000 ]---
+> > > [ 2169.777698] Dumping ftrace buffer:
+> > > [ 2169.782470]    (ftrace buffer empty)
+> > > [ 2169.787241] ------------[ cut here ]------------
+> > >
+> > >
+> > > I will continue to monitor and debug these but since I recently re-started
+> > > testing stable (my infra was down for a long time), I don't have any
+> > > reference for when these started happening.
+> > >
+> > > thanks,
+> > >
+> > >  - Joel
+> > >
