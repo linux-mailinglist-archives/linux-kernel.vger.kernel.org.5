@@ -2,105 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A1275E2A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 16:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFEF575E2A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 16:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbjGWO14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 10:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
+        id S229456AbjGWO2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 10:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbjGWO1z (ORCPT
+        with ESMTP id S229452AbjGWO2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 10:27:55 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C34E72;
-        Sun, 23 Jul 2023 07:27:53 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-c01e1c0402cso2762184276.0;
-        Sun, 23 Jul 2023 07:27:53 -0700 (PDT)
+        Sun, 23 Jul 2023 10:28:48 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93039E72
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 07:28:47 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52229f084beso579088a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 07:28:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690122473; x=1690727273;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HFiEDMhSpzLopPoOlxDs4RsXxTglhVRYk9wnNiaoU+k=;
-        b=MgzRVzh3ZoIlTtu5Rl8dFU+0y9ZM5ybnecxFcj1xrbAagKWs2YTjOedKvokIU9O7Oh
-         crpfbGyfIsl2XhsK4jzXExTAZlCnT+wopexNXvLs4MdR4UehZr3wQ21yBVIchbZNlleV
-         jVIPiXuX0rkExO+zzR5jybEwV2/EaXmQmztjEWZy3bhQ8FzlpYpzYHmM8uIVDUE2ksxY
-         n5mJy/OSuNCqKm0F5zWNS/6idr1cOnfz8U1/QS9gOZQDWE27+Yxa9hrO7fa6PN6InsBQ
-         m0g3ylDXHUi4MEGEJD1dzKQWkkGEjXApzfRtJ/vVWaDahvjRgiwsxhxdaJv5Y7yqxb7f
-         zf0A==
+        d=linaro.org; s=google; t=1690122526; x=1690727326;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CnglWu01tYHwRNOL8HHkMLLSEFA+kFYQg1Vd2bg+vtE=;
+        b=aZyOQUBhQS9KKId8c3bvqlgtAedmrTKIlVb/EH9qY+3z0bgiUmcf68YDmSpMcc4X12
+         ST23elE9DSDswNdPV+JFJYrZF37CLpEGL5sbMxZMLpdiCzr6coKIWe/42ZnK6Axmh4nl
+         wIVEDpfSsGvj+Gc/0HAqTH/E1fVHQbRUpWPEil+mkFfsHF1ZOxcz98g7mZ/eB4bGDc89
+         m2R03kuptIzHduRdEwp9x8dpyLyk+hU3L5OirGMl+tpb56MGFUfriqepvOdfk0UVUjQX
+         XOSNk0hlU1skQT+uR78DcMSImG0+8y6M5Fmb2qE/PvI2iqwMiapLCfZM/H9WnVNohuVu
+         ukHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690122473; x=1690727273;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HFiEDMhSpzLopPoOlxDs4RsXxTglhVRYk9wnNiaoU+k=;
-        b=QDKsjAzOZUbjBWpsA0rkPFDLxLGhllXukiJfJD1vjKRg9RLscVeE/0MqF77m487y7m
-         9WtxOWwRauPdNBJy4rEUZyvCrwHo7PmnPzJ7QPOvWp3T3Uk+ZyfCkOX/Sitq7eC5JGSY
-         dTEq53q9OLFy+DT/mj8c4c/RLiwftLmwtDphkRW6ZCqC2Ekc9zx6ly0Qg/V4NUSh9Lkt
-         yfXAvHyvzm+KOhjSqO/g+ymIIu0BZgpyLrTBFrGASFZosU7MeBfot08A5Vi5vE1n2c7C
-         k6hkpphQL2xhVMVeLq4qpJ0EvwjWjtsut/yYVhF+PfAjCW7wdnPS0fQYAiRy8YKJB+B8
-         6x5w==
-X-Gm-Message-State: ABy/qLYG3JDPwZ6zIfi72OrSlOq6c616y1+MgWhYmaCFxCtSXRoOF3dX
-        J5+JkvBsriOBYH2/jkh7z8wXX6pn6tjBDVpDNuMGOhh+9g0=
-X-Google-Smtp-Source: APBJJlHKjY4S91COs3SvmMr8xgjcPvakjvQDa3/QiQBlB6ZxUeFGQ6i9syJCna6ZBeQXdxliBsCVBQFatVghbOFa5Po=
-X-Received: by 2002:a5b:c6:0:b0:c5d:1407:f2bc with SMTP id d6-20020a5b00c6000000b00c5d1407f2bcmr4649024ybp.17.1690122473065;
- Sun, 23 Jul 2023 07:27:53 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690122526; x=1690727326;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CnglWu01tYHwRNOL8HHkMLLSEFA+kFYQg1Vd2bg+vtE=;
+        b=Zu3+tAfu5Kpq2j+gYwCr3nCtd+4uxNvwk3a8uXkNoI/y0yxN9KoZfpeARyv2Ij8zr6
+         nhEdUQqyAWgKNNL8Gw/p+Jl6ycxiVBAZf3jI42zY563AD2t2/d2cfELkfstF9+kE1Vsy
+         ZAh7uFDpq8HbztxIT0hzeB3lmNbBgU/dwUG+nJFWtL+niyTwDXFZCSnWHQmjEDsAB7oc
+         hSdq6Sjec56bEkYaiNRqITD8fXDzQDIQKH0ZeNgZsjSweUyYYh3MnLP/eoacGDuVPbxj
+         m8Y6IeRuxInY6Xy2eLwtGojn2dfFFhHubANNvR/fh8BhpHtK8liJM474OS0sWCNI+Qqf
+         PM6w==
+X-Gm-Message-State: ABy/qLa+W7jfOC/BXyW1KmyzuryNIl6dcMi3P5IyABZEXiNCgeVGgVZV
+        cY7ZwuIc203SgclY4k/qZgHttw==
+X-Google-Smtp-Source: APBJJlGsft6GzVcOYUHlpDWS1vZO9h6TJLjor6mTF5Oc9u0bIh6YbPzh+jOOPYkhtRgpob9cGavFfw==
+X-Received: by 2002:a17:906:5a4e:b0:982:30e3:ddcb with SMTP id my14-20020a1709065a4e00b0098230e3ddcbmr7560414ejc.65.1690122526109;
+        Sun, 23 Jul 2023 07:28:46 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id e27-20020a170906375b00b00988f168811bsm5260805ejc.135.2023.07.23.07.28.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Jul 2023 07:28:45 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: mfd: maxim,max77693: Add USB connector
+Date:   Sun, 23 Jul 2023 16:28:42 +0200
+Message-Id: <20230723142842.98204-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230718055235.1050223-1-ojeda@kernel.org> <CAK7LNAQ-hjW_19fjA+E-bQCrXcVPdN4-GvzAnEnYzna5KRVXew@mail.gmail.com>
- <CANiq72kZjOGvRKoRxtgG=2DhJnMJK9TCQtTmeef_B=nLcLQD6g@mail.gmail.com>
- <CAK7LNASqumGb0xvSa8n4Heasz9BKxgk4mvzNXsfFhZE1G+Bxbg@mail.gmail.com>
- <CANiq72kD2wxXy2ri8sBhVJ4y-JJiq+kYt_MRZwuwB9uGkX-_jQ@mail.gmail.com> <CAK7LNARm1LevTQVw1j5pQjp_gP=6-4CiwXLRDXbVH3bnC0OCxg@mail.gmail.com>
-In-Reply-To: <CAK7LNARm1LevTQVw1j5pQjp_gP=6-4CiwXLRDXbVH3bnC0OCxg@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sun, 23 Jul 2023 16:27:41 +0200
-Message-ID: <CANiq72m0ZnVNj5p8LApsBJO2NWZ2-wnr4hdP6qhgkvBnLdXWsQ@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: rust: avoid creating temporary files
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        linux-kbuild@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Raphael Nestler <raphael.nestler@gmail.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 7:06=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
-rg> wrote:
->
-> Can you send v2 with the following squashed?
->
-> I think it makes sense to fix both if we add
-> Fixes: 295d8398c67e ("kbuild: specify output names separately for each
-> emission type from rustc")
+Add micro-USB connector under "muic" node to properly represent the
+hardware.  Deprecate also the old "max77693-muic" in favor of generic
+"muic" (this is max77693, so there is no need to state it in its child
+nodes).  This "muic" node is used only to instantiate MUIC driver by
+compatible, thus actual Linux driver changes are needed.  Extend the
+example with this new code.
 
-Both done [1] -- I marked the `Tested-by`s with "# non-hostprogs" to avoid
-losing the tags.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Thanks!
+---
 
-[1] https://lore.kernel.org/rust-for-linux/20230723142128.194339-1-ojeda@ke=
-rnel.org/
+Changes in v2:
+1. Put connector node in the muic node (Henrik).
+2. Rename max77693-muic -> muic.
+3. Extend example.
 
-Cheers,
-Miguel
+DTS change using this:
+https://lore.kernel.org/linux-samsung-soc/20230723142417.97734-1-krzysztof.kozlowski@linaro.org/T/#u
+---
+ .../bindings/mfd/maxim,max77693.yaml          | 48 +++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mfd/maxim,max77693.yaml b/Documentation/devicetree/bindings/mfd/maxim,max77693.yaml
+index 1b06a77ec798..6a6f222b868f 100644
+--- a/Documentation/devicetree/bindings/mfd/maxim,max77693.yaml
++++ b/Documentation/devicetree/bindings/mfd/maxim,max77693.yaml
+@@ -37,6 +37,7 @@ properties:
+   max77693-muic:
+     type: object
+     additionalProperties: false
++    deprecated: true
+ 
+     properties:
+       compatible:
+@@ -45,6 +46,21 @@ properties:
+     required:
+       - compatible
+ 
++  muic:
++    type: object
++    additionalProperties: false
++
++    properties:
++      compatible:
++        const: maxim,max77693-muic
++
++      connector:
++        $ref: /schemas/connector/usb-connector.yaml#
++        unevaluatedProperties: false
++
++    required:
++      - compatible
++
+   motor-driver:
+     type: object
+     additionalProperties: false
+@@ -107,6 +123,38 @@ examples:
+                 };
+             };
+ 
++            muic {
++                compatible = "maxim,max77693-muic";
++
++                connector {
++                    compatible = "samsung,usb-connector-11pin",
++                                 "usb-b-connector";
++                    label = "micro-USB";
++                    type = "micro";
++
++                    ports {
++                        #address-cells = <1>;
++                        #size-cells = <0>;
++
++                        port@0 {
++                            reg = <0>;
++
++                            muic_to_usb: endpoint {
++                                remote-endpoint = <&usb_to_muic>;
++                            };
++                        };
++
++                        port@3 {
++                            reg = <3>;
++
++                            muic_to_mhl: endpoint {
++                                remote-endpoint = <&mhl_to_muic>;
++                            };
++                        };
++                    };
++                };
++            };
++
+             motor-driver {
+                 compatible = "maxim,max77693-haptic";
+                 haptic-supply = <&ldo26_reg>;
+-- 
+2.34.1
+
