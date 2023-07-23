@@ -2,244 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7B575E090
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF5775E092
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbjGWJFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 05:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
+        id S229663AbjGWJIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 05:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjGWJFB (ORCPT
+        with ESMTP id S229470AbjGWJIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 05:05:01 -0400
-Received: from mail-oo1-f77.google.com (mail-oo1-f77.google.com [209.85.161.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AA512D
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:05:00 -0700 (PDT)
-Received: by mail-oo1-f77.google.com with SMTP id 006d021491bc7-56768da274aso6096011eaf.1
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:05:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690103099; x=1690707899;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5Z7PC83KsxoVU5Bzl33X/u0SPn6MRJplL3HDqlvZzBo=;
-        b=BWD+Gzq+vk1ZIG3TKHolCmP5XYq7R3NDDLsMuGQKpTXbt1V0NovA0Rc8pL4BuU+3kD
-         sgwrF7LXGGtUg7W/t3VY6Nb+XzxfDmB8nmIL+ulDboVqtjXBwT5ASkhKL+/OQii3a+L1
-         8LSPqCjF7NkyP+nadsf41tRZhi6lXwmIrZLSGndDv6BJhmfdN42ZYGKgko01hjV/B7lJ
-         U8ji0pRixrdml53SNA82GX4Qprz+Z9zKNj+Xib/wsGaP3tCXb1Jd0GiD5n5ZvQQrJVUB
-         aLsBQDphwtjwJoqql949RhoTP4infZgnLESYrloofrZsAvMFDssbVg6oxCPUpGEJ9J9r
-         lY4g==
-X-Gm-Message-State: ABy/qLayfhlgZOOW4lDblfoViGWPz8rC/8YgMqvJknuLbX/W0UtwtZcb
-        lpRxFAPcgw0DNJ8NOOqWvhgAU9b82IoKRG3yauV364GdQPkG
-X-Google-Smtp-Source: APBJJlFQdcYY9cg4tNJFXkSCa1L1k1gByIFG2HQ+CcpbR4gCIBed9LPe9W1c/hYlg7t3WoCKihk+K/4ERFJb9mL4C/r1mM3HPACw
+        Sun, 23 Jul 2023 05:08:19 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2081.outbound.protection.outlook.com [40.107.223.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB11B12D;
+        Sun, 23 Jul 2023 02:08:18 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TZpAUogpAfjlIVzetO5gqNV/lOKDOuAZqcx4ao4L2Ntal/r6mPIuSRjKo7y2EtEIEUygU0meUnW1SKCaLDBOgJprU2jOGu5o8klCcw5bP2DhL48a1o5KDZjhY6IY+oJhuGfMZJziXbfo5CTubLgWLKnRdNxUrKu8TbcsCsUxy+GqeSsvUrySD23JJeCM4LVmKNvJl02YB8SVHq8FczIC5wcZ5itI4mxkaemp0/Lz1RPu7Kv6tgDeZqnlXdwF8N0Sfi5JNQDxWWfRdY4qobs2G5Q1U/vKKnfYLPsf8T5L+wY0w4/9qv/9nbIA7EKZFVG9Hy+DPyAktJc6qWFl4Tispw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=E4Y3ZStcr0+oBCkNjT2W/R3UbAap0tUJlbV6nCt0giY=;
+ b=enRVxhaQ1ZLp5jXzlhTANsBO84Uxh8eqkp8BrPfBeD5NKvm3bquYvuAuRY1Yj0Q0cxR1aJsmEqFKrgcpr6s+if9G5cm5PXuoA9jBVkJLlrtURUVhlCDDVdCQ+FDSYNVb3fZkiHhw7vmW4mDbtiLNiICY2SFKyrUVBSPvnIbo8gDUdVsjnPOSKOl0Do5H4RbmXEXVy4J+1cq6uJZYp1LFCdZ9EH2XxOxoxFQ0gCYMpgTxKaZccNskdSL7tByItZNZGIF6bFsz+WgqfamLpGZVbojlDX+LYL25nLLVxVKV39a0sdMFxmHgxcUm4sSM/Ezo1pC8PKAu0KPQxJ+Oaoe/LA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E4Y3ZStcr0+oBCkNjT2W/R3UbAap0tUJlbV6nCt0giY=;
+ b=X32IG/4e7rlhZ4ZxFHEHpf7YGkCiIVoWOlhQUhutOl9wCtm/8zTttLLoK+v5jogwZ2FqEYrLi8f1avTHHxTtzSfXF46srfZ/YEikjXbBG+ojw5XLZU6MM7fFN6XMYJgkxt4SKXeChZRbkR37Fy2fRMU7qqjXRM5+TeytMTAK/A+4tnGH1V1N12DsodbCNxYa+OR81hgP+06oMAacXJrQySBTxkLlR9W3exyBNVgN5VEcgV01uqhbZ13u47g5g5+a0Ena1iSK6CXfZ8ucdz/ZNXxIsICDvO2hcVMG3TjHE0FXNAa04wWWX2vN71VlPgSupzz3CW4EORONbDnlHopgag==
+Received: from MW4PR04CA0324.namprd04.prod.outlook.com (2603:10b6:303:82::29)
+ by CH0PR12MB8549.namprd12.prod.outlook.com (2603:10b6:610:182::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.29; Sun, 23 Jul
+ 2023 09:08:15 +0000
+Received: from CO1NAM11FT114.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:82:cafe::d4) by MW4PR04CA0324.outlook.office365.com
+ (2603:10b6:303:82::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.30 via Frontend
+ Transport; Sun, 23 Jul 2023 09:08:15 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CO1NAM11FT114.mail.protection.outlook.com (10.13.174.103) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.22 via Frontend Transport; Sun, 23 Jul 2023 09:08:14 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Sun, 23 Jul 2023
+ 02:08:09 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Sun, 23 Jul
+ 2023 02:08:08 -0700
+Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Sun, 23 Jul 2023 02:08:08 -0700
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>,
+        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH 5.15 000/532] 5.15.121-rc1 review
+In-Reply-To: <20230721160614.695323302@linuxfoundation.org>
+References: <20230721160614.695323302@linuxfoundation.org>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:210e:b0:3a3:edca:2950 with SMTP id
- r14-20020a056808210e00b003a3edca2950mr13320629oiw.5.1690103099730; Sun, 23
- Jul 2023 02:04:59 -0700 (PDT)
-Date:   Sun, 23 Jul 2023 02:04:59 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e4b0f0060123ca40@google.com>
-Subject: [syzbot] [mm?] KASAN: slab-use-after-free Read in madvise_collapse
-From:   syzbot <syzbot+173cc8cfdfbbef6dd755@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Message-ID: <04a3c91c-8b4e-43e3-aa8b-619f9366b285@rnnvmail205.nvidia.com>
+Date:   Sun, 23 Jul 2023 02:08:08 -0700
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT114:EE_|CH0PR12MB8549:EE_
+X-MS-Office365-Filtering-Correlation-Id: ab16a304-1379-49cc-7084-08db8b5c5904
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1IijPJRADaDHM2QsCwaR/hgEjfMOt2XzlZsHaMAtdVPueW/cKT/V8GUAmSthEtbK00nxrx+d78lJj79vvi0R6GOICqBUJVFzGEz1UCFOO97/flkvEcb83G38euTWdLkamTtuWRPX3ZNeWYRrYoUPB3GeosullCVJ+COC2G4WzqjYtFkQ4dtsr9QVmcHEx7rnVHKmPH/z6uzlvieaL2IvTf3jJHPFQ5L6Zl1HfAvbZZJTMl2q6+l6DBKuYTAZqyVo39R8kKqxidnc40offkLAF6rHhrk1wFM849UVR3DORjipWAaQ31Yuclu503pPr2XqSNsqek/yB5ozwvRGyXfNOyuUl2iUJJAZkXtZiNVEwZGPedDUHnmW8TS8xjpTv/dZa5+OhupkGqG+ko/ENU07JG7/kOoeIDxp/7Hvw5rlmsSfTQ1sFdOqU2RQuOVszIjSpJ8H5FQw18hWtbH0wx7cM0vFUlS0ZC5DzCaGAwv5/ROF7K38py6mnXp3ZE/HrHmu/ckiR4xiJHiGkxClH/7oQcCE7phcUsUaWEZ7Ix0UZHXfQ7/uw/ScNqSb73xlKilAv3n3Z3zLfNgywUGe6O9AzxV5ts3lQFgW/ufOBab39/TyxnNEE1hk0nR834FnXorVH5McaHFKs5zTa6LX8gTPZ2mPDdNLLsm6uty/Eqm34rihXaJm/UQuIqPl+/ZHFVi0j0HTQQp4ITRemsAg4hCUjYbbMqDIVgpQ87tvBnjUt0tA7zVxcTs04Djlq5NNfWt4uerBSUrBkDlBkDGPo8tGBHP5JUWHE+5u8XDLs4RJWsk=
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(376002)(396003)(346002)(82310400008)(451199021)(36840700001)(40470700004)(46966006)(36860700001)(40480700001)(86362001)(31696002)(82740400003)(40460700003)(7636003)(356005)(54906003)(478600001)(2906002)(336012)(186003)(26005)(966005)(31686004)(8936002)(5660300002)(7416002)(8676002)(316002)(41300700001)(70206006)(70586007)(6916009)(4326008)(47076005)(426003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2023 09:08:14.8835
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab16a304-1379-49cc-7084-08db8b5c5904
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT114.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB8549
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, 21 Jul 2023 17:58:24 +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.121 release.
+> There are 532 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 23 Jul 2023 16:04:40 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.121-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-syzbot found the following issue on:
+All tests passing for Tegra ...
 
-HEAD commit:    ae867bc97b71 Add linux-next specific files for 20230721
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1553a881a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c403a6b36e7c85ac
-dashboard link: https://syzkaller.appspot.com/bug?extid=173cc8cfdfbbef6dd755
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1076d84aa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=161debd1a80000
+Test results for stable-v5.15:
+    11 builds:	11 pass, 0 fail
+    28 boots:	28 pass, 0 fail
+    114 tests:	114 pass, 0 fail
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a76b93f21f84/disk-ae867bc9.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8eb30097a952/vmlinux-ae867bc9.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7506a6b3ec38/bzImage-ae867bc9.xz
+Linux version:	5.15.121-rc1-g48958c96454b
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
+                tegra20-ventana, tegra210-p2371-2180,
+                tegra210-p3450-0000, tegra30-cardhu-a04
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+173cc8cfdfbbef6dd755@syzkaller.appspotmail.com
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
 
-==================================================================
-BUG: KASAN: slab-use-after-free in madvise_collapse+0xa6c/0xb50 mm/khugepaged.c:2723
-Read of size 8 at addr ffff88802b4e6588 by task syz-executor296/5046
-
-CPU: 0 PID: 5046 Comm: syz-executor296 Not tainted 6.5.0-rc2-next-20230721-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- madvise_collapse+0xa6c/0xb50 mm/khugepaged.c:2723
- madvise_vma_behavior+0x200/0x1e60 mm/madvise.c:1094
- madvise_walk_vmas+0x1cf/0x2c0 mm/madvise.c:1268
- do_madvise+0x333/0x660 mm/madvise.c:1448
- __do_sys_madvise mm/madvise.c:1461 [inline]
- __se_sys_madvise mm/madvise.c:1459 [inline]
- __x64_sys_madvise+0xaa/0x110 mm/madvise.c:1459
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f7ec298d359
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f7ec292d238 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
-RAX: ffffffffffffffda RBX: 00007f7ec2a17318 RCX: 00007f7ec298d359
-RDX: 0000000000000019 RSI: 000000000060005f RDI: 0000000020000000
-RBP: 00007f7ec2a17310 R08: 00007fffd329edf7 R09: 00007f7ec292d6c0
-R10: 0000000000000000 R11: 0000000000000246 R12: b635773f07ebbeea
-R13: 000000000000006e R14: 00007fffd329ed10 R15: 00007fffd329edf8
- </TASK>
-
-Allocated by task 5033:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- __kasan_slab_alloc+0x81/0x90 mm/kasan/common.c:328
- kasan_slab_alloc include/linux/kasan.h:186 [inline]
- slab_post_alloc_hook mm/slab.h:762 [inline]
- slab_alloc_node mm/slub.c:3478 [inline]
- slab_alloc mm/slub.c:3486 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
- kmem_cache_alloc+0x172/0x3b0 mm/slub.c:3502
- vm_area_alloc+0x1f/0x220 kernel/fork.c:485
- mmap_region+0x386/0x2640 mm/mmap.c:2717
- do_mmap+0x87c/0xed0 mm/mmap.c:1353
- vm_mmap_pgoff+0x1a6/0x3b0 mm/util.c:543
- ksys_mmap_pgoff+0x7d/0x5b0 mm/mmap.c:1399
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Freed by task 5035:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:162 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
- slab_free mm/slub.c:3809 [inline]
- kmem_cache_free+0xf0/0x490 mm/slub.c:3831
- rcu_do_batch kernel/rcu/tree.c:2139 [inline]
- rcu_core+0x7fb/0x1bb0 kernel/rcu/tree.c:2403
- __do_softirq+0x218/0x965 kernel/softirq.c:553
-
-Last potentially related work creation:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
- __call_rcu_common.constprop.0+0x9a/0x790 kernel/rcu/tree.c:2653
- remove_vma+0x140/0x170 mm/mmap.c:148
- remove_mt mm/mmap.c:2285 [inline]
- do_vmi_align_munmap+0xf75/0x1710 mm/mmap.c:2547
- do_vmi_munmap+0x20e/0x450 mm/mmap.c:2611
- mmap_region+0x194/0x2640 mm/mmap.c:2661
- do_mmap+0x87c/0xed0 mm/mmap.c:1353
- vm_mmap_pgoff+0x1a6/0x3b0 mm/util.c:543
- ksys_mmap_pgoff+0x7d/0x5b0 mm/mmap.c:1399
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-The buggy address belongs to the object at ffff88802b4e6500
- which belongs to the cache vm_area_struct of size 192
-The buggy address is located 136 bytes inside of
- freed 192-byte region [ffff88802b4e6500, ffff88802b4e65c0)
-
-The buggy address belongs to the physical page:
-page:ffffea0000ad3980 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2b4e6
-flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000200 ffff888014674b40 ffffea0001dce680 dead000000000002
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 4724, tgid 4724 (dhcpcd-run-hook), ts 33134643925, free_ts 33125953991
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1569
- prep_new_page mm/page_alloc.c:1576 [inline]
- get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3256
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4512
- alloc_pages+0x1a9/0x270 mm/mempolicy.c:2279
- alloc_slab_page mm/slub.c:1870 [inline]
- allocate_slab+0x24e/0x380 mm/slub.c:2017
- new_slab mm/slub.c:2070 [inline]
- ___slab_alloc+0x8bc/0x1570 mm/slub.c:3223
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- slab_alloc mm/slub.c:3486 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
- kmem_cache_alloc+0x392/0x3b0 mm/slub.c:3502
- vm_area_alloc+0x1f/0x220 kernel/fork.c:485
- mmap_region+0x386/0x2640 mm/mmap.c:2717
- do_mmap+0x87c/0xed0 mm/mmap.c:1353
- vm_mmap_pgoff+0x1a6/0x3b0 mm/util.c:543
- ksys_mmap_pgoff+0x422/0x5b0 mm/mmap.c:1399
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1160 [inline]
- free_unref_page_prepare+0x508/0xb90 mm/page_alloc.c:2383
- free_unref_page+0x33/0x3b0 mm/page_alloc.c:2478
- vfree+0x181/0x7a0 mm/vmalloc.c:2842
- delayed_vfree_work+0x56/0x70 mm/vmalloc.c:2763
- process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
- worker_thread+0x687/0x1110 kernel/workqueue.c:2751
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:296
-
-Memory state around the buggy address:
- ffff88802b4e6480: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
- ffff88802b4e6500: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88802b4e6580: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-                      ^
- ffff88802b4e6600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88802b4e6680: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Jon
