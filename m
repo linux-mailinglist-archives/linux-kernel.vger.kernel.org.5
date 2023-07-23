@@ -2,209 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 519F875E186
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 12:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545A075E18C
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 13:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjGWK44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 06:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33724 "EHLO
+        id S229976AbjGWLCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 07:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjGWK4z (ORCPT
+        with ESMTP id S229534AbjGWLCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 06:56:55 -0400
-X-Greylist: delayed 4613 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 23 Jul 2023 03:56:53 PDT
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [104.207.131.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1773CE5E;
-        Sun, 23 Jul 2023 03:56:53 -0700 (PDT)
-Received: from spock.localnet (unknown [94.142.239.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 8E69B1469946;
-        Sun, 23 Jul 2023 12:56:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1690109807;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ec8/Bt0MksyYMDCWUoM6BjObcBxYL4x8PlH6qLBKgs4=;
-        b=rjmPHfGnLQ2Xeeg3GptQMxXu+U7/daHPaMHNmJa24J2pFCfB7+gMSN0FGSOhqL+BDymPvN
-        43TL0eY5hX017zqHRLxlWo4gX4zbPR/XHTHFIWRmbcGh5NBdh5aEeFWf8BtRoPlFGG/BIz
-        K4/juGaeUjARZMnC0lpJQ6KSim+sQOQ=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andres Freund <andres@anarazel.de>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 6.4 800/800] io_uring: Use io_schedule* in cqring wait
-Date:   Sun, 23 Jul 2023 12:56:37 +0200
-Message-ID: <4847260.31r3eYUQgx@natalenko.name>
-In-Reply-To: <2023072310-superman-frosted-7321@gregkh>
-References: <20230716194949.099592437@linuxfoundation.org>
- <12251678.O9o76ZdvQC@natalenko.name>
- <2023072310-superman-frosted-7321@gregkh>
+        Sun, 23 Jul 2023 07:02:00 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3197E79;
+        Sun, 23 Jul 2023 04:01:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1690110114; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=itBHUgVWw+1H1AyvmMuLnCjl6KYYeNbbu5HvJn+py+fJ8gVzGRImfhlWqQ48JggDFR
+    WYJnzbAa0A9aYmBCgHDnFK3jfdFkZeggltkwTo8LK5ppuD59AC0NnYKQP1UwyZNEh7t2
+    8ua7Nx61VvbWj9sEEN9p4FkTuNgpqdl5F6gVGDHZtReeG62CeZ/WqPQPrQ7JLIX402S2
+    Qz7+jJLbvEGbfIezuefkZNNz0LICkId9/Ckf1lpeb/HjxFUlIMw2LKvkALdABNYmfeCS
+    8DH22n/TEBfFUD1cojAeyMNUoxwlRj6r7+1b8YVR41wofK5kcmhr2Wap75xuzCSGuLHG
+    o+TA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1690110114;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=bMEA9P1xZg+7wXNCY5oLz3njvCClnHVxBBvE+kvx+fY=;
+    b=nrqknRiAOMYBvr7pywL9h6lng3I2jyQs5yRa1Dm85YvWSPtqHF95GaofMdByQTBidl
+    jFto/THDMp4v9bRIE3CPOowg3ivJu31vzau+mKuq82XE3I/NnLMbJpmTcIrZS4PAdD1G
+    TmxAD1jjiD+iaqPpAxPEHnkVDF240IyZrtNViEf5t6GydDny4c27MCWpQULN2kT0caCh
+    i9//rfcofZ47Wcax06UM9Mt3eXL/vUZzAfqSHEJGEPXO16vmEeO40hTHrs8kj2532cle
+    XcfdrH6s5ZKWS+DDrFFs8RQmcbatN20kxf2xjNCEKd82GPTbyxZKtCC0uvikXyht3U7K
+    CjZA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1690110114;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=bMEA9P1xZg+7wXNCY5oLz3njvCClnHVxBBvE+kvx+fY=;
+    b=J0aWpBYiV3ufk3SEV4OOYGjMF1LVGbqn90t99Hr+axMSS6HZonax2DNo0O7vYDx33U
+    SQRhLBQSKis/1WCsylY+MGUxg9+dwuoWs8OUyN3B/yb+RZcv3yUHpa/9fV0I6KH28G70
+    y6FHExgSm4AE30Hyi0tgL+4I4kX+io/SuN1fomlRXChslmraiJrWWwEj+0f9jYwaPtl9
+    e/xHn/zTN7oTAf+V898mLISuflWcBfuFcVKHtLH0F9pX3xLO0w6AwnNt+F+CV23GOaz2
+    4bImC1oWmAZ0sAcaMqYHPNbKNk7L6GRsgEXR82gnOVDLcpyH/WCNG7KH6FAai4E9r31W
+    95gg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1690110114;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=bMEA9P1xZg+7wXNCY5oLz3njvCClnHVxBBvE+kvx+fY=;
+    b=3xZ3SUxyANjKWunm+nKULfxJ8zatT2UVBAFbFRWaTGD3ReyvxyYtAaMohsLk6V2WmQ
+    Dbzf3+Py0Z3oselbvvBg==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8p+L1A=="
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.6.4 DYNA|AUTH)
+    with ESMTPSA id V0b383z6NB1sCdu
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Sun, 23 Jul 2023 13:01:54 +0200 (CEST)
+Date:   Sun, 23 Jul 2023 13:01:48 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] interconnect: qcom: qcm2290: Enable sync state
+Message-ID: <ZL0InL6slLRNcVkI@gerhold.net>
+References: <20230720-topic-qcm2290_icc-v1-0-7f67f2e259c1@linaro.org>
+ <20230720-topic-qcm2290_icc-v1-2-7f67f2e259c1@linaro.org>
+ <ZLmQdjDgIbbhyTMJ@gerhold.net>
+ <3e1d650d-7c5b-381c-464f-3c464c056a1b@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4499511.LvFx2qVVIh";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e1d650d-7c5b-381c-464f-3c464c056a1b@linaro.org>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart4499511.LvFx2qVVIh
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Sun, 23 Jul 2023 12:56:37 +0200
-Message-ID: <4847260.31r3eYUQgx@natalenko.name>
-In-Reply-To: <2023072310-superman-frosted-7321@gregkh>
-MIME-Version: 1.0
+On Fri, Jul 21, 2023 at 02:03:16PM +0200, Konrad Dybcio wrote:
+> On 20.07.2023 21:52, Stephan Gerhold wrote:
+> > On Thu, Jul 20, 2023 at 08:24:01PM +0200, Konrad Dybcio wrote:
+> >> Very surprisingly, qcm2290 does not seem to require any interface
+> >> clocks.
+> > 
+> > What does this mean exactly? The interconnect .sync_state() is
+> > responsible to drop the initial maximum bandwidth votes, with the
+> > assumption that all active devices have voted for the bandwidth they
+> > need. How does this relate to "requiring interface clocks"?
+> If it required such clocks to be present, sync_state could not
+> complete, as trying to access some nodes would crash the platform
+> due to unclocked access.
 
-On ned=C4=9Ble 23. =C4=8Dervence 2023 12:50:30 CEST Greg Kroah-Hartman wrot=
-e:
-> On Sun, Jul 23, 2023 at 11:39:42AM +0200, Oleksandr Natalenko wrote:
-> > Hello.
-> >=20
-> > On ned=C4=9Ble 16. =C4=8Dervence 2023 21:50:53 CEST Greg Kroah-Hartman =
-wrote:
-> > > From: Andres Freund <andres@anarazel.de>
-> > >=20
-> > > commit 8a796565cec3601071cbbd27d6304e202019d014 upstream.
-> > >=20
-> > > I observed poor performance of io_uring compared to synchronous IO. T=
-hat
-> > > turns out to be caused by deeper CPU idle states entered with io_urin=
-g,
-> > > due to io_uring using plain schedule(), whereas synchronous IO uses
-> > > io_schedule().
-> > >=20
-> > > The losses due to this are substantial. On my cascade lake workstatio=
-n,
-> > > t/io_uring from the fio repository e.g. yields regressions between 20%
-> > > and 40% with the following command:
-> > > ./t/io_uring -r 5 -X0 -d 1 -s 1 -c 1 -p 0 -S$use_sync -R 0 /mnt/t2/fi=
-o/write.0.0
-> > >=20
-> > > This is repeatable with different filesystems, using raw block devices
-> > > and using different block devices.
-> > >=20
-> > > Use io_schedule_prepare() / io_schedule_finish() in
-> > > io_cqring_wait_schedule() to address the difference.
-> > >=20
-> > > After that using io_uring is on par or surpassing synchronous IO (usi=
-ng
-> > > registered files etc makes it reliably win, but arguably is a less fa=
-ir
-> > > comparison).
-> > >=20
-> > > There are other calls to schedule() in io_uring/, but none immediately
-> > > jump out to be similarly situated, so I did not touch them. Similarly,
-> > > it's possible that mutex_lock_io() should be used, but it's not clear=
- if
-> > > there are cases where that matters.
-> > >=20
-> > > Cc: stable@vger.kernel.org # 5.10+
-> > > Cc: Pavel Begunkov <asml.silence@gmail.com>
-> > > Cc: io-uring@vger.kernel.org
-> > > Cc: linux-kernel@vger.kernel.org
-> > > Signed-off-by: Andres Freund <andres@anarazel.de>
-> > > Link: https://lore.kernel.org/r/20230707162007.194068-1-andres@anaraz=
-el.de
-> > > [axboe: minor style fixup]
-> > > Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > ---
-> > >  io_uring/io_uring.c |   15 +++++++++++++--
-> > >  1 file changed, 13 insertions(+), 2 deletions(-)
-> > >=20
-> > > --- a/io_uring/io_uring.c
-> > > +++ b/io_uring/io_uring.c
-> > > @@ -2575,6 +2575,8 @@ int io_run_task_work_sig(struct io_ring_
-> > >  static inline int io_cqring_wait_schedule(struct io_ring_ctx *ctx,
-> > >  					  struct io_wait_queue *iowq)
-> > >  {
-> > > +	int token, ret;
-> > > +
-> > >  	if (unlikely(READ_ONCE(ctx->check_cq)))
-> > >  		return 1;
-> > >  	if (unlikely(!llist_empty(&ctx->work_llist)))
-> > > @@ -2585,11 +2587,20 @@ static inline int io_cqring_wait_schedul
-> > >  		return -EINTR;
-> > >  	if (unlikely(io_should_wake(iowq)))
-> > >  		return 0;
-> > > +
-> > > +	/*
-> > > +	 * Use io_schedule_prepare/finish, so cpufreq can take into account
-> > > +	 * that the task is waiting for IO - turns out to be important for =
-low
-> > > +	 * QD IO.
-> > > +	 */
-> > > +	token =3D io_schedule_prepare();
-> > > +	ret =3D 0;
-> > >  	if (iowq->timeout =3D=3D KTIME_MAX)
-> > >  		schedule();
-> > >  	else if (!schedule_hrtimeout(&iowq->timeout, HRTIMER_MODE_ABS))
-> > > -		return -ETIME;
-> > > -	return 0;
-> > > +		ret =3D -ETIME;
-> > > +	io_schedule_finish(token);
-> > > +	return ret;
-> > >  }
-> > > =20
-> > >  /*
-> >=20
-> > Reportedly, this caused a regression as reported in [1] [2] [3]. Not on=
-ly v6.4.4 is affected, v6.1.39 is affected too.
-> >=20
-> > Reverting this commit fixes the issue.
-> >=20
-> > Please check.
->=20
-> Is this also an issue in 6.5-rc2?
+You mean something like the IPA clock that must be active to do the QoS
+writes?
 
-As per [1], yes.
+Wouldn't it already crash before .sync_state() then, when the initial
+max bandwidth votes are being made?
 
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D217699#c4
+> 
+> > 
+> >> It's therefore safe to enable sync_state to park unused devices.
+> >> Do so.
+> > 
+> > Doesn't this make everything painfully slow? There are no interconnect
+> > consumers at all in qcm2290.dtsi. I would expect that all bandwidths
+> > end up at minimum.
+> There are no interconnect providers defined in qcm2290.dtsi.
 
->=20
-> thanks,
->=20
-> greg k-h
->=20
+Ack, so I guess you're going to add them together with the actual
+consumers?
 
+I think the patch itself is fine. Only the commit message is a bit
+misleading. The actual change that is being done here is enabling the
+bandwidth scaling (dropping the max bandwidth votes after
+.sync_state()). Can you try to clarify the commit message a bit?
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
---nextPart4499511.LvFx2qVVIh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmS9B2UACgkQil/iNcg8
-M0t3jA//UGeNRI4zGXOBcNBqKEugB/rXG1DyEoejAj8xD5afm9afoqR9U7YvWqrs
-nJ88PAA+oQgkQXAbQF6zEc0M5IH8TG9KN1gFEO2KWsHsJPcpgGKqxdQRcH+RglTg
-lxbIQHm56xx5rENz0KMP41pF3PMe7tE1xvKqoRTIblYaQvhMWYId/JNJ3DdxJ1iL
-+jBegEGGmnphio4QskRQCZMQyumY5HBbpaD6eQtrsGzejy3FkqD0W9PtoQLzNExR
-w3WErlNekYori4c5doeTyv020Pt6EE8kHQr/r5hqeKSALVvN90HsHlvKsbnXSsU2
-91GKTQsZSVZlw8tV3zWRVQTpHH4i/bdhdpDANIsJHN4chPnCXK0WszX67UFdpYMM
-NqaJdAqo+sWINtD/HdGHoCzMZ2xt0o3vk9P6gIRScLapFAyrxUjMt1kYWkeS+A17
-QfDjftV8MEP/v1NxrTNMCGd7ap+JpvF6guW/z8kRjhPukYVC8v19EjqFkDLB05TY
-3SckSZTwyQfGIfEFMMiOT0EHPXRQH+YrBL02yT7o005gBa5is7sC2fV8l+vV965M
-LeI7z5YTlF2xFT+nb4CGs5m/gszI5NDdBCkVcZKwHpBk3zpjvCqKktm7kyKjfHen
-pXkbVIohwXcZ97kG9uCdUXVv9KW5sAZ/oyDyqr1ku/YM6tbUZ84=
-=O7Ua
------END PGP SIGNATURE-----
-
---nextPart4499511.LvFx2qVVIh--
-
-
+Thanks,
+Stephan
 
