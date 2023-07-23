@@ -2,77 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F18E75E0B3
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910D575E0B5
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 11:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbjGWJW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 05:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36136 "EHLO
+        id S229756AbjGWJXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 05:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjGWJWy (ORCPT
+        with ESMTP id S229487AbjGWJXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 05:22:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF0E1A1
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:22:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690104131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wjrc6TOLXArF64jzw4lnU3nwlr/kM5lUILDmXAhT2bQ=;
-        b=cNshD94aBNgb7fwqyWxEkVBSoOVv+iyL6lZND8iG5YtwTiMUS0sFs1vz4UtHtvcSy4/x1B
-        3XO+0dschz4YywaNwvRZcN5CIJCiUWnaCanu4SrDBY5afGFQXJIg3n3s6kD/mmDOFmtYcI
-        71uKKWaTqPcBoBquwmmLCsjhgHpUcXk=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-373-RTVfmwHxPNuqqCHJ1pdbBQ-1; Sun, 23 Jul 2023 05:22:09 -0400
-X-MC-Unique: RTVfmwHxPNuqqCHJ1pdbBQ-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-30e3ee8a42eso1702704f8f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:22:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690104128; x=1690708928;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wjrc6TOLXArF64jzw4lnU3nwlr/kM5lUILDmXAhT2bQ=;
-        b=GlUhQ8MuEEGkiPu2kaxO5biB93F4VzicopC2jLbeVLhh6/q4w+/SXf6YzbPzYg7pCF
-         g74g3IxEkMSTIDY159VuejdaekSRdPRayQ+FhKKbx3PMYp5Bz4K6LMLKwPZziHQwYEQe
-         lKyjHakQbqccqmEjKmUg1/+FOz/0Rfea8svzetFLk3uDHO1JZhkXYphQkc7PqwAF+cSQ
-         b1jDrNZbzXUO9cphl4bzptRw18FnWcSEhfu5niX05ATTnvNbdxOGEKQShk7wOaNZXILK
-         PbNNCgCN5XzKu6lskjhOEa+iDMHKAIKBQpaH5+gUi3oUIkmXqlGduZdV/jfHDgcdp0RR
-         lY4Q==
-X-Gm-Message-State: ABy/qLYANmtMYvp5DHORsNDdHqAME5gXIMts8P2UrF7dak3s4Wi9eUki
-        gCliqmh03UbNuusyZpebw1H/ru42bFQl2WIpBIbRNIrZ6kbcglbwKTomSdFxCxdDdIB0zm+v4Yp
-        bMQi/jAau8QCdhuL0Rglq9sCMkLC6scJYC3I=
-X-Received: by 2002:a5d:50c6:0:b0:317:5b5f:3348 with SMTP id f6-20020a5d50c6000000b003175b5f3348mr703716wrt.71.1690104128225;
-        Sun, 23 Jul 2023 02:22:08 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlG4VWdAF8sEgmxCXAx+NL/2ya4luKKVI/QrBQmHRwPdNIMT0zNeOjBSDEEZ20I/Pl78wcJHbA==
-X-Received: by 2002:a5d:50c6:0:b0:317:5b5f:3348 with SMTP id f6-20020a5d50c6000000b003175b5f3348mr703703wrt.71.1690104127892;
-        Sun, 23 Jul 2023 02:22:07 -0700 (PDT)
-Received: from redhat.com ([2.55.164.187])
-        by smtp.gmail.com with ESMTPSA id q9-20020adfcd89000000b0030ae3a6be4asm9209312wrj.72.2023.07.23.02.22.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 02:22:06 -0700 (PDT)
-Date:   Sun, 23 Jul 2023 05:22:03 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Lin Ma <linma@zju.edu.cn>
-Cc:     jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] vdpa: Complement vdpa_nl_policy for nlattr length
- check
-Message-ID: <20230723050656-mutt-send-email-mst@kernel.org>
-References: <20230723080507.3716924-1-linma@zju.edu.cn>
+        Sun, 23 Jul 2023 05:23:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08A01A1;
+        Sun, 23 Jul 2023 02:23:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3DD8B60C70;
+        Sun, 23 Jul 2023 09:23:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2802BC433CA;
+        Sun, 23 Jul 2023 09:23:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690104215;
+        bh=mAwywMcPI4ambiKlJ8RwQkwJADEyYv0oTSApNmrgDhQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XVGudBlN2TPPnvRg8HBMle9q1tlfuLKgFDl4bGWeWWzRoo3FKdPZ+F6Y7k+gGdFH2
+         EnZYNyXQLEF7esKEywXa993fc8y8w+/cjDf+xL6wRvyikUItLSWbXrROM1imOlfhDb
+         +RolmxObbTqaLHgxd8f40rq5xpjdw6ura7rlcBGTfJVCJqscQJaqN2D2Pkyto+Rfq5
+         KQjkFLs0gUEQcZc1hMAgvwyr81o7tcly4KMYEIITxBcO1IpsN4SjjGOPYw0t5DTCxp
+         Uhy5rXGJKcPEeXBNn8vKWvvCOz6taxop7e4VuGVrKAMRhfFeuwJb5Rxu+AKbCPhPUv
+         7M7fsdCHm+tPg==
+Date:   Sun, 23 Jul 2023 10:23:35 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Nuno Sa <nuno.sa@analog.com>
+Subject: Re: [PATCH v2 7/8] iio: core: Move initcalls closer to the
+ respective calls
+Message-ID: <20230723102335.6df07e6d@jic23-huawei>
+In-Reply-To: <20230721170022.3461-8-andriy.shevchenko@linux.intel.com>
+References: <20230721170022.3461-1-andriy.shevchenko@linux.intel.com>
+        <20230721170022.3461-8-andriy.shevchenko@linux.intel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230723080507.3716924-1-linma@zju.edu.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,55 +59,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 04:05:07PM +0800, Lin Ma wrote:
-> The vdpa_nl_policy structure is used to validate the nlattr when parsing
-> the incoming nlmsg. It will ensure the attribute being described produces
-> a valid nlattr pointer in info->attrs before entering into each handler
-> in vdpa_nl_ops.
+On Fri, 21 Jul 2023 20:00:21 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+
+> Move subsys_initcall() and module_exit() closer to the respective calls.
+
+Why? For this particular set of macros I can see advantages to them being
+near the code and to them being in a fairly predictable location (end of
+file).
+
+I think the patch description should make the why argument. 
+
+Jonathan
+
+
 > 
-> That is to say, the missing part in vdpa_nl_policy may lead to illegal
-> nlattr after parsing, which could lead to OOB read just like CVE-2023-3773.
-
-Hmm.
-
-https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-3773
-
-** RESERVED ** This candidate has been reserved by an organization or individual that will use it when announcing a new security problem. When the candidate has been publicized, the details for this candidate will be provided.
-
-
-
-> This patch adds three missing nla_policy to avoid such bugs.
-> 
-> Fixes: 90fea5a800c3 ("vdpa: device feature provisioning")
-> Fixes: 13b00b135665 ("vdpa: Add support for querying vendor statistics")
-> Fixes: ad69dd0bf26b ("vdpa: Introduce query of device config layout")
-> Signed-off-by: Lin Ma <linma@zju.edu.cn>
-
-I don't know how OOB triggers but this duplication is problematic I
-think: we are likely to forget again in the future.  Isn't there a way
-to block everything that is not listed?
-
-
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
 > ---
->  drivers/vdpa/vdpa.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/iio/industrialio-core.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-> index 965e32529eb8..f2f654fd84e5 100644
-> --- a/drivers/vdpa/vdpa.c
-> +++ b/drivers/vdpa/vdpa.c
-> @@ -1247,8 +1247,11 @@ static const struct nla_policy vdpa_nl_policy[VDPA_ATTR_MAX + 1] = {
->  	[VDPA_ATTR_MGMTDEV_DEV_NAME] = { .type = NLA_STRING },
->  	[VDPA_ATTR_DEV_NAME] = { .type = NLA_STRING },
->  	[VDPA_ATTR_DEV_NET_CFG_MACADDR] = NLA_POLICY_ETH_ADDR,
-> +	[VDPA_ATTR_DEV_NET_CFG_MAX_VQP] = { .type = NLA_U16 },
->  	/* virtio spec 1.1 section 5.1.4.1 for valid MTU range */
->  	[VDPA_ATTR_DEV_NET_CFG_MTU] = NLA_POLICY_MIN(NLA_U16, 68),
-> +	[VDPA_ATTR_DEV_QUEUE_INDEX] = { .type = NLA_U32 },
-> +	[VDPA_ATTR_DEV_FEATURES] = { .type = NLA_U64 },
->  };
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index a9b9804097ab..5c9c68d69fc6 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -354,6 +354,7 @@ static int __init iio_init(void)
+>  error_nothing:
+>  	return ret;
+>  }
+> +subsys_initcall(iio_init);
 >  
->  static const struct genl_ops vdpa_nl_ops[] = {
-> -- 
-> 2.17.1
+>  static void __exit iio_exit(void)
+>  {
+> @@ -362,6 +363,7 @@ static void __exit iio_exit(void)
+>  	bus_unregister(&iio_bus_type);
+>  	debugfs_remove(iio_debugfs_dentry);
+>  }
+> +module_exit(iio_exit);
+>  
+>  #if defined(CONFIG_DEBUG_FS)
+>  static ssize_t iio_debugfs_read_reg(struct file *file, char __user *userbuf,
+> @@ -2118,9 +2120,6 @@ int iio_device_get_current_mode(struct iio_dev *indio_dev)
+>  }
+>  EXPORT_SYMBOL_GPL(iio_device_get_current_mode);
+>  
+> -subsys_initcall(iio_init);
+> -module_exit(iio_exit);
+> -
+>  MODULE_AUTHOR("Jonathan Cameron <jic23@kernel.org>");
+>  MODULE_DESCRIPTION("Industrial I/O core");
+>  MODULE_LICENSE("GPL");
 
