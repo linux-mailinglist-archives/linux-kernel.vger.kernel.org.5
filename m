@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A3975E415
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 19:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6252175E417
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 19:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbjGWRny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 13:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
+        id S229881AbjGWRo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 13:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjGWRnx (ORCPT
+        with ESMTP id S229487AbjGWRo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 13:43:53 -0400
-Received: from s1.sapience.com (s1.sapience.com [72.84.236.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A11180;
-        Sun, 23 Jul 2023 10:43:51 -0700 (PDT)
-Authentication-Results: dkim-srvy7; dkim=pass (Good ed25519-sha256 
-   signature) header.d=sapience.com header.i=@sapience.com 
-   header.a=ed25519-sha256; dkim=pass (Good 2048 bit rsa-sha256 signature) 
-   header.d=sapience.com header.i=@sapience.com header.a=rsa-sha256
-Received: from srv8.prv.sapience.com (srv8.prv.sapience.com [x.x.x.x])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-        (No client certificate requested)
-        by s1.sapience.com (Postfix) with ESMTPS id CC9B2480A2C;
-        Sun, 23 Jul 2023 13:43:50 -0400 (EDT)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=sapience.com;
- i=@sapience.com; q=dns/txt; s=dk-ed25519-220413; t=1690134230;
- h=message-id : date : mime-version : subject : to : cc : references :
- from : in-reply-to : content-type : content-transfer-encoding : from;
- bh=qvqDvJ6z1X9pX7Hz0D/dTmd7iKskTuw2eAbBlB2IUA8=;
- b=GGLUkJ31b4aqlIQt6HoDwqanAilkCW4FtvSMmEaSUEWT8roDn1k8IDTXeU9/j4cjtxi4r
- qPOq30SiHCc03OjAg==
-ARC-Seal: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412; t=1690134230;
-        cv=none; b=gFmye88JIl45MokehuUtQWprJPFmv7a9r6IGfDUrgigK3yUbjgfDDVr/MtDdxANlFUhzSGW0Lpuqs+zbA/ZmMT96X8y2BuUVbuBkkAaTXPPt7+PURlGtQSSw7zYyHf/lWuw1DNi8cEgKMCFUh4bCCsenwR0tZB+kWCh+qJ0lYB7tzeLrvBDItB8LgTMcG9VE2Bhl6VhIrQIo4cnt/6o1Prw04LXZ4bFEWeYYIhSbZF8BMV18lTHK7QX8K0mUnApjUhf+7XMpf4r4/O/hVZmglxiXtPj9HoYNy3MInkdw/U1I0k6BtgVBDSVQ3jGVEIW2dBENxp5YSxZMkkAz/dgqEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412;
-        t=1690134230; c=relaxed/simple;
-        bh=kbvOZxDd3f2v9gt1kWG06Fh7pqlACOQ1tCnubhOp440=;
-        h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:
-         User-Agent:Subject:Content-Language:To:Cc:References:From:
-         In-Reply-To:Content-Type:Content-Transfer-Encoding; b=pEhJWsHNWS261GrUVRCnR0TcDCNy443AuPHsEGsKUDXhZLVoZXrn5z45HBlDz5Ukj6DV52+a2o0jKX35cOliJovQLfFvuLXAtMbw/RPpSNzJP9weWmlcjNoDY8CL4h/yZhr1hhM9Z/aR91CnCYdQw5dcp0cMF4h4cvGpt5uBu+IGdToW0tRrwm21nGgbNF6OszShZNBGDiwhCfgl5E2WebmUbJx/l3n1ZshcopPcydb8llK8temdPXeebJ79fPwNUhDP4R8HL1Ly64X542sYT8YyW+o93ta1CPUBmmGUzlnfy6d4ju9E9E0/JJEvue081JIhQoZaLo4fiOey1WjkpA==
-ARC-Authentication-Results: i=1; arc-srv8.sapience.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sapience.com;
- i=@sapience.com; q=dns/txt; s=dk-rsa-220413; t=1690134230;
- h=message-id : date : mime-version : subject : to : cc : references :
- from : in-reply-to : content-type : content-transfer-encoding : from;
- bh=qvqDvJ6z1X9pX7Hz0D/dTmd7iKskTuw2eAbBlB2IUA8=;
- b=Rh9J5zY4+DAvkrIZm5dScnyFvaix14kjyjGMETV0BdlNQxJhVHoG1caSvcCsYEyBtS3XW
- 4MvTZPFlixQGJXinr15KtsH+ALm7uyuSgTQwjxypmywiCVhGYbp36QsAUd4h16OUr4GjUtL
- w8VTlSw59g8eKtu6LPLD4UdA56reXpysz6aHsR2fCP6C4wso2G8JCpjvcPlX57cqbJ8yPMa
- sK23RKNraPim0NXEPAO8HhRIT9pqVG+b1IphPzKUeJ76kJjYoyp9XRGqFgX520Ke9FwMTKV
- vEECVchxult78U8gjgCxcY/JxvHVHq6Mr8LAEzBO2K1cCp5e64iISbZPS+5w==
-Message-ID: <70e5349a-87af-a2ea-f871-95270f57c6e3@sapience.com>
-Date:   Sun, 23 Jul 2023 13:43:50 -0400
+        Sun, 23 Jul 2023 13:44:57 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FBF6180;
+        Sun, 23 Jul 2023 10:44:56 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-583f99641adso1150037b3.2;
+        Sun, 23 Jul 2023 10:44:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20221208; t=1690134296; x=1690739096;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sPdCSD5AmFVFEdD2cqqk2qtaqyfuU2DEBfQJVgjKFB0=;
+        b=N9vsVovBzUqMiszcLD94N3fd+7uZVZRdtAETQZ4Dox4iiDvnWlpim1WJZC/vQGW2uh
+         9oLG5MAiXLXMjUbOBxjnHj4CFq2APH690SkqLWIfwh3+k5yKjMnZ3Run2dfB/EsPUIkF
+         1Pkr91u7+hiHQYK57px1fw81a0T2LeL8z52uh1MUdpN878OsZ9F8+MYqnFRo+hH+A3u0
+         PhxY2N1P1UAkTH3VsQ6CDOGImMjbhUp8TmH+cwQquBdPBWqVIPFe8ZvfuO0WLbgfXrb5
+         0Ow87GBBOsIBFNvDFv18jwnnflSXHu+YA+wu7N3jAs8itxB1gykdRFDc1BpJJK6uLH8b
+         TQWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690134296; x=1690739096;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sPdCSD5AmFVFEdD2cqqk2qtaqyfuU2DEBfQJVgjKFB0=;
+        b=fTAKtAecT7jgOFh333owFxXcYPonGV2ahhp3m+N56tdsTdpSrMIEOqNZvMzxi4adhf
+         vGaKIBgGNsYWwOgZGNlU/lF0atKlLeEIRQGEI7Xq/8/zLRj1SXpnGvQaoWLkWVd6SgH/
+         +hzUxAvvNm5JfTlqgNs+j8o2LF9dhNRcK6C7RvmhbdBnIymjjWRJQZaEl/p+akrQbp/v
+         GacRI4uo8MUeMM4g9sBe35nMXLUOHV4ZhEh5sNp1cF24wwBis+IdSjcB4bD8Ol7QWVtf
+         T5Hje9W4y/Rn9BFpxt8yyqs6lyJlfUt7GVSWJUK4lzwYDbyoJ0WNPQS513gHfNGrgZgg
+         qivw==
+X-Gm-Message-State: ABy/qLaU59zOqXwy2WS74E6F0X6iIdC26sfKR80e/rELzzlV1XcztyWB
+        JfMHT7BKZujfWvEReQBgCJ4nGspPYUBR7m2zCzY=
+X-Google-Smtp-Source: APBJJlFSX7H7gt9TFDUi3uuo8jI+fP82XT4JuAUkLCOV3bUxhx+tBBiHLYKTPs1zPM4F93IG7mfUgkSRLc0WJtJVvYc=
+X-Received: by 2002:a0d:d98f:0:b0:583:78b7:53f1 with SMTP id
+ b137-20020a0dd98f000000b0058378b753f1mr4096965ywe.7.1690134295743; Sun, 23
+ Jul 2023 10:44:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.4 800/800] io_uring: Use io_schedule* in cqring wait
-Content-Language: en-US
-To:     Jens Axboe <axboe@kernel.dk>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        stable@vger.kernel.org
+References: <20230701102538.5359-1-franziska.naepelt@googlemail.com>
+ <5ad04b3a-7c77-cadb-13b4-509a086cf04d@web.de> <2023070123-unburned-worsening-0713@gregkh>
+ <CAAUT3iNqwgtFJz2Q1bRN+MsSna26KC1FJc3jchu=8B09A2SkvQ@mail.gmail.com> <4b9fdaa7-bdcf-ef41-0d54-ba41520cde4c@web.de>
+In-Reply-To: <4b9fdaa7-bdcf-ef41-0d54-ba41520cde4c@web.de>
+From:   =?UTF-8?Q?Franziska_N=C3=A4pelt?= 
+        <franziska.naepelt@googlemail.com>
+Date:   Sun, 23 Jul 2023 19:44:44 +0200
+Message-ID: <CAAUT3iPUaNRUyvqP1O97M0AmKri7Ghc06ku4TS6vcHQ=Sb4ycg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] staging: rtl8723bs: Fix space issues
+To:     Markus Elfring <Markus.Elfring@web.de>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andres Freund <andres@anarazel.de>
-References: <20230716194949.099592437@linuxfoundation.org>
- <20230716195007.731909670@linuxfoundation.org>
- <12251678.O9o76ZdvQC@natalenko.name>
- <538065ee-4130-6a00-dcc8-f69fbc7d7ba0@kernel.dk>
-From:   Genes Lists <lists@sapience.com>
-In-Reply-To: <538065ee-4130-6a00-dcc8-f69fbc7d7ba0@kernel.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Emily Peri <eperi1024@gmail.com>,
+        Guo Zihua <guozihua@huawei.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Kang Minchul <tegongkang@gmail.com>,
+        Philipp Hortmann <philipp.g.hortmann@gmail.com>,
+        Veerendranath Jakkam <quic_vjakkam@quicinc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/23/23 11:31, Jens Axboe wrote:
-...
-> Just read the first one, but this is very much expected. It's now just
-> correctly reflecting that one thread is waiting on IO. IO wait being
-> 100% doesn't mean that one core is running 100% of the time, it just
-> means it's WAITING on IO 100% of the time.
-> 
+Hi Markus,
 
-Seems reasonable thank you.
+Am So., 23. Juli 2023 um 08:19 Uhr schrieb Markus Elfring
+<Markus.Elfring@web.de>:
+>
+> > Am I supposed to adjust something here?
+>
+> There are possibilities remaining to handle recurring communication difficulties
+> in more constructive ways for some hints.
+>
+>
+> > As far as I understood, I can ignore the comments from Markus, correct?
+>
+> Would the provided technical information be taken better into account
+> if it would be presented by any other contributors?
 
-Question - do you expect the iowait to stay high for a freshly created 
-mariadb doing nothing (as far as I can tell anyway) until process 
-exited? Or Would you think it would drop in this case prior to the 
-process exiting.
+That's not my point, I appreciate feedback from anybody, absolutely no question
+on that. I'm just struggling to know what I'm supposed to do when the maintainer
+is saying somebody's comments are not helpful.
+In another thread I was told I should mainly follow the maintainers comments in
+case of different opinions.
 
-For example I tried the following - is the output what you expect?
-
-Create a fresh mariab with no databases - monitor the core showing the 
-iowaits with:
-
-    mpstat -P ALL 2 100
-
-# rm -f /var/lib/mysql/*
-# mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
-
-# systemctl start mariadb      (iowaits -> 100%) 
- 
-
-# iotop -bo |grep maria        (shows no output, iowait stays 100%)
-
-(this persists until mariadb process exits)
- 
-
-# systemctl stop mariadb       (iowait drops to 0%) 
-
-
-
-
-
+Franziska
