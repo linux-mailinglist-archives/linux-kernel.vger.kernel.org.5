@@ -2,134 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A6175E4D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 22:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5A275E4D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 22:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjGWUZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 16:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36112 "EHLO
+        id S229895AbjGWU0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 16:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjGWUZR (ORCPT
+        with ESMTP id S229493AbjGWU0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 16:25:17 -0400
-Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB2D1B8
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 13:25:13 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id NfdYqBzmMQztPNfdZqOQPG; Sun, 23 Jul 2023 22:25:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1690143906;
-        bh=fiLQ1tlpJj1LRpew92AztLTpxiVgw4Le/tOPPNtRsXs=;
-        h=From:To:Cc:Subject:Date;
-        b=r7cvxUQ3Y3BP1WuBmUAe9nDSZNt/2yt0WBoq27TFMwsk1hYI94yjHvxVWlsxK+xGr
-         EBxucGGAT6oh9Eu/bkgvIbRgErkMx/6H1gQAJ/E+fq+L3fwSUYIxap5i1g2LSg0NVd
-         gXFgGExfH/LcPokz9R30TDg26K1bdeeEDWDtU8auwXAQ4iu3w68jkcco4ZpwmPerbr
-         pmy0kwj3AzXqmgERYN60g4QLRZ/8mt8UzcpbyUgO/MB0MIOQ7FFAPvE4KCwC7gsVzI
-         2hcVStpXgPQMJRmCwIID7v9ii/m2c2mh6zP2fTQCl6njBwcP9dG6fHnoIHVLs12ZvX
-         aAmqpcfBsLxOw==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 23 Jul 2023 22:25:06 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Gregory Greenman <gregory.greenman@intel.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-wireless@vger.kernel.org
-Subject: [PATCH wireless] wifi: iwlwifi: mvm: Fix a memory corruption issue
-Date:   Sun, 23 Jul 2023 22:24:59 +0200
-Message-Id: <23f0ec986ef1529055f4f93dcb3940a6cf8d9a94.1690143750.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sun, 23 Jul 2023 16:26:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EFD1B8;
+        Sun, 23 Jul 2023 13:26:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 50F5E60E98;
+        Sun, 23 Jul 2023 20:26:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 482EBC433C7;
+        Sun, 23 Jul 2023 20:26:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690143962;
+        bh=LyrK5xXC8EJYilE6Mh1xjWU8trzIouJgLVGPPFNgsYQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=uKjKp/9T7tdBFgTeiqUyADsQ3/yESfaMi0xILJXjxHjxXFOxU/Lk89Od46uTnwELR
+         s7CZ8JOEWj+B/ZE410JShYN3zwmLRNbu1DOyYb1Nu9P9zqJWrFhWEwuQaHgia3ENwe
+         QQtNI+fThgx8gpwMZlfg5gRM3xTZWGQJGGOJyXsDqnDTmj/oJ+ooGxpuCQ/K0wcRiq
+         89o1dEeHTYxRIaYuo46L3AjSGij01pP8dbceprT1FxJe/c+Hvc+vCoxElspBCMavYK
+         TBUsMBRQK0E78nsSuV6gg9H3fIRPXDLx5qRmcjBXI5wW5m2j0eBFAvAXylDEoD4m1n
+         TXr9VYEnVKCkA==
+Message-ID: <c84a78c6-1582-a9fa-e0fd-43c0faac5a75@kernel.org>
+Date:   Mon, 24 Jul 2023 05:26:00 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] PM / devfreq: Reword the kernel-doc comment for
+ devfreq_monitor_start() API
+Content-Language: en-US
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230720084854.18975-1-manivannan.sadhasivam@linaro.org>
+From:   Chanwoo Choi <chanwoo@kernel.org>
+In-Reply-To: <20230720084854.18975-1-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A few lines above, space is kzalloc()'ed for:
-	sizeof(struct iwl_nvm_data) +
-	sizeof(struct ieee80211_channel) +
-	sizeof(struct ieee80211_rate)
+On 23. 7. 20. 17:48, Manivannan Sadhasivam wrote:
+> Current kernel-doc comment doesn't specify the default timer used for the
+> load monitoring. Also, it uses the term "default delayed work" which could
+> be misunderstood as "default delayer timer". So reword the comment to
+> clearly specify the default timer and also reword the last sentence to make
+> it more understandable.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/devfreq/devfreq.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> index 7686993d639f..e2939c1b7d1f 100644
+> --- a/drivers/devfreq/devfreq.c
+> +++ b/drivers/devfreq/devfreq.c
+> @@ -472,10 +472,11 @@ static void devfreq_monitor(struct work_struct *work)
+>   * devfreq_monitor_start() - Start load monitoring of devfreq instance
+>   * @devfreq:	the devfreq instance.
+>   *
+> - * Helper function for starting devfreq device load monitoring. By
+> - * default delayed work based monitoring is supported. Function
+> - * to be called from governor in response to DEVFREQ_GOV_START
+> - * event when device is added to devfreq framework.
+> + * Helper function for starting devfreq device load monitoring. By default,
+> + * deferrable timer is used for load monitoring. But the users can change this
+> + * behavior using the "timer" type in devfreq_dev_profile. This function will be
+> + * called by devfreq governor in response to the DEVFREQ_GOV_START event
+> + * generated while adding a device to the devfreq framework.
+>   */
+>  void devfreq_monitor_start(struct devfreq *devfreq)
+>  {
 
-'mvm->nvm_data' is a 'struct iwl_nvm_data', so it is fine.
+Applied it. Thanks.
 
-At the end of this structure, there is the 'channels' flex array.
-Each element is of type 'struct ieee80211_channel'.
-So only 1 element is allocated in this array.
-
-When doing:
-  mvm->nvm_data->bands[0].channels = mvm->nvm_data->channels;
-We point at the first element of the 'channels' flex array.
-So this is fine.
-
-However, when doing:
-  mvm->nvm_data->bands[0].bitrates =
-			(void *)((u8 *)mvm->nvm_data->channels + 1);
-because of the "(u8 *)" cast, we add only 1 to the address of the beginning
-of the flex array.
-
-It is likely that we want point at the 'struct ieee80211_rate' allocated
-just after.
-
-Remove the spurious casting so that the pointer arithmetic works as
-expected.
-
-Fixes: 8ca151b568b6 ("iwlwifi: add the MVM driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-I've checked in the .s files, and :
-
-Before
-======
-# drivers/net/wireless/intel/iwlwifi/mvm/fw.c:801: 		mvm->nvm_data->bands[0].channels = mvm->nvm_data->channels;
-	leaq	1448(%r13), %rax	#, tmp248
-
-# drivers/net/wireless/intel/iwlwifi/mvm/fw.c:805: 			(void *)((u8 *)mvm->nvm_data->channels + 1);
-	leaq	1449(%r13), %rax	#, tmp252
-
-
-After:
-=====
-# drivers/net/wireless/intel/iwlwifi/mvm/fw.c:801: 		mvm->nvm_data->bands[0].channels = mvm->nvm_data->channels;
-	leaq	1448(%r13), %rax	#, tmp248
-
-# drivers/net/wireless/intel/iwlwifi/mvm/fw.c:805: 			(void *)(mvm->nvm_data->channels + 1);
-	leaq	1512(%r13), %rax	#, tmp252
-
-And on my system sizeof(struct ieee80211_channel) = 64
-
-/!\ This patch is only speculative and untested. /!\
-
-It is strange that a memory corruption issue has been un-noticed for more
-than 10 years.
-
-So review with care.
----
- drivers/net/wireless/intel/iwlwifi/mvm/fw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
-index 1f5db65a088d..1d5ee4330f29 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
-@@ -802,7 +802,7 @@ int iwl_run_init_mvm_ucode(struct iwl_mvm *mvm)
- 		mvm->nvm_data->bands[0].n_channels = 1;
- 		mvm->nvm_data->bands[0].n_bitrates = 1;
- 		mvm->nvm_data->bands[0].bitrates =
--			(void *)((u8 *)mvm->nvm_data->channels + 1);
-+			(void *)(mvm->nvm_data->channels + 1);
- 		mvm->nvm_data->bands[0].bitrates->hw_value = 10;
- 	}
- 
 -- 
-2.34.1
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
 
