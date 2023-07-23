@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A0275E215
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 15:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B85E75E218
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 15:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbjGWNaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 09:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56630 "EHLO
+        id S229618AbjGWNdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 09:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGWNaI (ORCPT
+        with ESMTP id S229452AbjGWNdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 09:30:08 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA4A10C9
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 06:30:03 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b701dee4bfso50385491fa.0
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 06:30:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690119002; x=1690723802;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nzYFzRzP7i0c6DYPDuN0yOXQ/LKGeHJaUfK0vwejrvA=;
-        b=SuNbWUVBNcoIVYaGMiFhxCT87+Z8Iw8FIsxquqXDTEFGgrzVwzhQYX94n70Q39UsRf
-         fjQ6canVSvU3et2bSgbSGipIVkwIQOIvljyPzqKp8gGEjlJGKn6649TzIcP0MV7DkmHy
-         jRTvozh6JkyioHu96i/lRKZ5banbq4rd2y0K+sL4WdEIxNEZ72obmFGkDxWJZVrxgxQ+
-         te4x2P2Ip8ra7byXZvO9ZoXpHQSY3iJwt++NO+gl5jiucfkZYnq8VhmqZHUYZVTj/z7X
-         0YD/7IETFslDT5rtWGCqNXIVTLXEu76U5y/r7FFtyn01qehbH6zdNrP4+ISKdvn/Qtaj
-         Kq4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690119002; x=1690723802;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nzYFzRzP7i0c6DYPDuN0yOXQ/LKGeHJaUfK0vwejrvA=;
-        b=ljvqFZEqXyFjzN3xYHw43i6l0mbB8KJ3W276eMKfb0hJdDUe0co10lRBgjCFB+H00T
-         2YTVOlvdWgeTKdr02AeMFGphHNk0a8L8a/oSeS9mYC0US7glZB+IK1M66EJIoy3GSp5V
-         suLbiH17/h+YVJpk3eI46g/B7K1IuYw8tHLA+ZmAB6mZ9qPsX6CgKm2KoaR5YLJDkmJJ
-         rkagDAkpamveYh4l0Fu/NH7fO5+55nuUekWz32iEkZ06x5TQeilILo92nja82f7XaQEe
-         2oOu4SRz8vdDFCoM9YAgwxjpOU4oxyungU5bw33y1kOHDsOvucRofFyr6DdVme7l6i4M
-         KoRQ==
-X-Gm-Message-State: ABy/qLakQ+bW21dWKSaWXOhrfymdJhgxqFm4DNayPV7dcYa377i+sHly
-        WNygHIrl3auZ1Hkt/ueWtRQ=
-X-Google-Smtp-Source: APBJJlHAqctAbylZ7n/HbAQDPO4nE2oqQlTJf+9jf9mG/GvyFj5oahtXRZRQ9VBTpMQxtDaeOFk+jA==
-X-Received: by 2002:a2e:9058:0:b0:2b7:4078:13e0 with SMTP id n24-20020a2e9058000000b002b7407813e0mr4742383ljg.43.1690119001589;
-        Sun, 23 Jul 2023 06:30:01 -0700 (PDT)
-Received: from halip-Pc.42.fr ([93.188.41.70])
-        by smtp.gmail.com with ESMTPSA id k15-20020a2e240f000000b002b6eb5db863sm2158270ljk.43.2023.07.23.06.30.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 06:30:01 -0700 (PDT)
-From:   Aleksei Filippov <halip0503@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     halip0503@gmail.com, jfs-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, shaggy@kernel.org,
-        syzbot+5f088f29593e6b4c8db8@syzkaller.appspotmail.com
-Subject: [PATCH v3] jfs: validate max amount of blocks before allocation.
-Date:   Sun, 23 Jul 2023 16:29:59 +0300
-Message-Id: <20230723132959.4945-1-halip0503@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <2023072318-semantic-payee-0162@gregkh>
-References: <2023072318-semantic-payee-0162@gregkh>
+        Sun, 23 Jul 2023 09:33:50 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F5D10DC;
+        Sun, 23 Jul 2023 06:33:49 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36NDVoWe018898;
+        Sun, 23 Jul 2023 13:33:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=/zRygFxep4I/hzO0qe76/3c+2dFGWUlJIzmD/z6DibU=;
+ b=By+zk12pVfbaSE8TOjrmcva22wC/wWYN7H+mlGF6nB9GzOCHvgK66FGq41yfUCoQcAwZ
+ 0ZzJzDkNgNiOf1diSNzp7OJaKVErBGE6Ob0+a/WYp0edh69ZAXXWY8UxVl5Brk4CPwMV
+ E9vhW0b5YA57AFhaHaFQUW3uet6mj3axnYjuoEWRgP4D6G7XBH+/jmV5thIhQ7CD5lnE
+ uLX37/K9Ywpa8KU/w+ShvkghCJhCaKQuX8Fw7P8ERJrLV7CxLxgCPdotOV18JgR7c7+D
+ eeTYlc5pZpvhsHLleUoHEKrNoFGG1P+ckWgMNNe3Irw2ZJStPl//Vo65c2lTfCrrgExp 0A== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s089tsgy9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 23 Jul 2023 13:33:40 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36NDXd8Y031337
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 23 Jul 2023 13:33:39 GMT
+Received: from [10.216.27.226] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sun, 23 Jul
+ 2023 06:33:35 -0700
+Message-ID: <06c8e7c6-91e9-7f6b-1feb-d94ce88ebb26@quicinc.com>
+Date:   Sun, 23 Jul 2023 19:03:27 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.0
+Subject: Re: [PATCH V2 1/2] dt-bindings: arm: qcom,ids: drop the IPQ5019 SoC
+ ID
+To:     Bjorn Andersson <andersson@kernel.org>
+CC:     Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <quic_saahtoma@quicinc.com>
+References: <20230712041912.398724-1-quic_kathirav@quicinc.com>
+ <20230712041912.398724-2-quic_kathirav@quicinc.com>
+ <20230714155954.GA3919199-robh@kernel.org>
+ <dba8ab0a-c17b-8660-5c5a-803e7f394547@quicinc.com>
+ <e4fub7xxkiupbkszaxwu4x5otdi7afvyl334ybwlxafkbxfw3c@cd4gja5u6st6>
+Content-Language: en-US
+From:   Kathiravan T <quic_kathirav@quicinc.com>
+In-Reply-To: <e4fub7xxkiupbkszaxwu4x5otdi7afvyl334ybwlxafkbxfw3c@cd4gja5u6st6>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: GIybfryqChpFPHCsz-EBlg1lzd0QCUep
+X-Proofpoint-ORIG-GUID: GIybfryqChpFPHCsz-EBlg1lzd0QCUep
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-23_02,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=650
+ malwarescore=0 lowpriorityscore=0 suspectscore=0 phishscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 clxscore=1015 spamscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307230125
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexei Filippov <halip0503@gmail.com>
 
-The lack of checking bmp->db_max_freebud in extBalloc() can lead to
-shift out of bounds, so this patch prevents undefined behavior, because
-bmp->db_max_freebud == -1 only if there is no free space.
+On 7/22/2023 9:32 AM, Bjorn Andersson wrote:
+> On Sat, Jul 15, 2023 at 08:41:56PM +0530, Kathiravan T wrote:
+>> On 7/14/2023 9:29 PM, Rob Herring wrote:
+>>> On Wed, Jul 12, 2023 at 09:49:11AM +0530, Kathiravan T wrote:
+>>>> IPQ5019 SoC is never productized. So lets drop it.
+>>> You need to remove the user before removing the definition.
+>> Rob, Currently there are no users for this macro.
+>>
+> But you're removing a user in patch 2? Or am I reading that incorrectly?
 
-Signed-off-by: Aleksei Filippov <halip0503@gmail.com>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-and-tested-by: syzbot+5f088f29593e6b4c8db8@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?id=01abadbd6ae6a08b1f1987aa61554c6b3ac19ff2
----
- fs/jfs/jfs_extent.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/fs/jfs/jfs_extent.c b/fs/jfs/jfs_extent.c
-index ae99a7e232ee..a82751e6c47f 100644
---- a/fs/jfs/jfs_extent.c
-+++ b/fs/jfs/jfs_extent.c
-@@ -311,6 +311,11 @@ extBalloc(struct inode *ip, s64 hint, s64 * nblocks, s64 * blkno)
- 	 * blocks in the map. in that case, we'll start off with the
- 	 * maximum free.
- 	 */
-+
-+	/* give up if no space left */
-+	if (bmp->db_maxfreebud == -1)
-+		return -ENOSPC;
-+
- 	max = (s64) 1 << bmp->db_maxfreebud;
- 	if (*nblocks >= max && *nblocks > nbperpage)
- 		nb = nblks = (max > nbperpage) ? max : nbperpage;
--- 
-2.25.1
+My bad. Sorry, I misunderstood the Rob's statement. Let me send the V3 
+in the correct order.
 
-Fix commit message.
+
+>
+> Regards,
+> Bjorn
