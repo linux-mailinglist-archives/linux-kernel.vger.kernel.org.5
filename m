@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8254875E513
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 23:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B30975E518
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 23:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbjGWV5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 17:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46688 "EHLO
+        id S229945AbjGWV6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 17:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjGWV5u (ORCPT
+        with ESMTP id S229964AbjGWV6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 17:57:50 -0400
+        Sun, 23 Jul 2023 17:58:15 -0400
 Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97D8E63;
-        Sun, 23 Jul 2023 14:57:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3989E73;
+        Sun, 23 Jul 2023 14:58:13 -0700 (PDT)
 Received: from local
         by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
          (Exim 4.96)
         (envelope-from <daniel@makrotopia.org>)
-        id 1qNh5A-0005PR-1F;
-        Sun, 23 Jul 2023 21:57:40 +0000
-Date:   Sun, 23 Jul 2023 22:57:32 +0100
+        id 1qNh5X-0005Pv-1h;
+        Sun, 23 Jul 2023 21:58:03 +0000
+Date:   Sun, 23 Jul 2023 22:57:55 +0100
 From:   Daniel Golle <daniel@makrotopia.org>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -44,9 +44,9 @@ To:     "David S. Miller" <davem@davemloft.net>,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v5 1/9] dt-bindings: net: mediatek,net: add missing
- mediatek,mt7621-eth
-Message-ID: <8e7972028d1004ee0a306ebe8b3f2eae3da76c1e.1690148927.git.daniel@makrotopia.org>
+Subject: [PATCH net-next v5 2/9] dt-bindings: net: mediatek,net: add
+ mt7988-eth binding
+Message-ID: <fbd561c2f8b374970f8617941da9abf64137f145.1690148927.git.daniel@makrotopia.org>
 References: <cover.1690148927.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -61,67 +61,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the Ethernet controller found in the MediaTek MT7621 MIPS SoC
-family which is supported by the mtk_eth_soc driver.
+Introduce DT bindings for the MT7988 SoC to mediatek,net.yaml.
+The MT7988 SoC got 3 Ethernet MACs operating at a maximum of
+10 Gigabit/sec supported by 2 packet processor engines for
+offloading tasks.
+The first MAC is hard-wired to a built-in switch which exposes
+four 1000Base-T PHYs as user ports.
+It also comes with built-in 2500Base-T PHY which can be used
+with the 2nd GMAC.
+The 2nd and 3rd GMAC can be connected to external PHYs or provide
+SFP(+) cages attached via SGMII, 1000Base-X, 2500Base-X, USXGMII,
+5GBase-KR or 10GBase-KR.
 
-Fixes: 889bcbdeee57 ("net: ethernet: mediatek: support MT7621 SoC ethernet hardware")
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- .../devicetree/bindings/net/mediatek,net.yaml | 27 ++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/net/mediatek,net.yaml | 82 +++++++++++++++++--
+ 1 file changed, 76 insertions(+), 6 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/net/mediatek,net.yaml b/Documentation/devicetree/bindings/net/mediatek,net.yaml
-index acb2b2ac4fe1e..38aa3d97ee234 100644
+index 38aa3d97ee234..8d3554818c377 100644
 --- a/Documentation/devicetree/bindings/net/mediatek,net.yaml
 +++ b/Documentation/devicetree/bindings/net/mediatek,net.yaml
-@@ -19,6 +19,7 @@ properties:
-     enum:
-       - mediatek,mt2701-eth
-       - mediatek,mt7623-eth
-+      - mediatek,mt7621-eth
-       - mediatek,mt7622-eth
+@@ -24,6 +24,7 @@ properties:
        - mediatek,mt7629-eth
        - mediatek,mt7981-eth
-@@ -32,7 +33,7 @@ properties:
-   clock-names: true
+       - mediatek,mt7986-eth
++      - mediatek,mt7988-eth
+       - ralink,rt5350-eth
  
-   interrupts:
--    minItems: 3
-+    minItems: 1
-     maxItems: 4
+   reg:
+@@ -61,6 +62,12 @@ properties:
+       Phandle to the mediatek hifsys controller used to provide various clocks
+       and reset to the system.
  
-   power-domains:
-@@ -131,6 +132,30 @@ allOf:
++  mediatek,infracfg:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle to the syscon node that handles the path from GMAC to
++      PHY variants.
++
+   mediatek,sgmiisys:
+     $ref: /schemas/types.yaml#/definitions/phandle-array
+     minItems: 1
+@@ -122,6 +129,8 @@ allOf:
+             - const: gp1
+             - const: gp2
+ 
++        mediatek,infracfg: false
++
+         mediatek,pctl:
+           $ref: /schemas/types.yaml#/definitions/phandle
+           description:
+@@ -152,6 +161,8 @@ allOf:
+             - const: ethif
+             - const: fe
+ 
++        mediatek,infracfg: false
++
+         mediatek,wed: false
  
          mediatek,wed-pcie: false
+@@ -184,6 +195,8 @@ allOf:
+             - const: sgmii_ck
+             - const: eth2pll
  
++        mediatek,infracfg: false
++
+         mediatek,sgmiisys:
+           minItems: 1
+           maxItems: 1
+@@ -229,12 +242,6 @@ allOf:
+             - const: sgmii_ck
+             - const: eth2pll
+ 
+-        mediatek,infracfg:
+-          $ref: /schemas/types.yaml#/definitions/phandle
+-          description:
+-            Phandle to the syscon node that handles the path from GMAC to
+-            PHY variants.
+-
+         mediatek,sgmiisys:
+           minItems: 2
+           maxItems: 2
+@@ -275,6 +282,8 @@ allOf:
+             - const: netsys0
+             - const: netsys1
+ 
++        mediatek,infracfg: false
++
+         mediatek,sgmiisys:
+           minItems: 2
+           maxItems: 2
+@@ -311,6 +320,67 @@ allOf:
+             - const: netsys0
+             - const: netsys1
+ 
++        mediatek,infracfg: false
++
++        mediatek,sgmiisys:
++          minItems: 2
++          maxItems: 2
++
 +  - if:
 +      properties:
 +        compatible:
 +          contains:
-+            enum:
-+              - mediatek,mt7621-eth
++            const: mediatek,mt7988-eth
 +    then:
 +      properties:
 +        interrupts:
-+          maxItems: 1
++          minItems: 4
 +
 +        clocks:
-+          minItems: 2
-+          maxItems: 2
++          minItems: 34
++          maxItems: 34
 +
 +        clock-names:
 +          items:
-+            - const: ethif
++            - const: crypto
 +            - const: fe
++            - const: gp2
++            - const: gp1
++            - const: gp3
++            - const: ethwarp_wocpu2
++            - const: ethwarp_wocpu1
++            - const: ethwarp_wocpu0
++            - const: esw
++            - const: netsys0
++            - const: netsys1
++            - const: sgmii_tx250m
++            - const: sgmii_rx250m
++            - const: sgmii2_tx250m
++            - const: sgmii2_rx250m
++            - const: top_usxgmii0_sel
++            - const: top_usxgmii1_sel
++            - const: top_sgm0_sel
++            - const: top_sgm1_sel
++            - const: top_xfi_phy0_xtal_sel
++            - const: top_xfi_phy1_xtal_sel
++            - const: top_eth_gmii_sel
++            - const: top_eth_refck_50m_sel
++            - const: top_eth_sys_200m_sel
++            - const: top_eth_sys_sel
++            - const: top_eth_xgmii_sel
++            - const: top_eth_mii_sel
++            - const: top_netsys_sel
++            - const: top_netsys_500m_sel
++            - const: top_netsys_pao_2x_sel
++            - const: top_netsys_sync_250m_sel
++            - const: top_netsys_ppefb_250m_sel
++            - const: top_netsys_warp_sel
++            - const: wocpu1
++            - const: wocpu0
++            - const: xgp1
++            - const: xgp2
++            - const: xgp3
 +
-+        mediatek,wed: false
-+
-+        mediatek,wed-pcie: false
-+
-   - if:
-       properties:
-         compatible:
+         mediatek,sgmiisys:
+           minItems: 2
+           maxItems: 2
 -- 
 2.41.0
