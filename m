@@ -2,105 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4269A75DFAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 04:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C31975DFAC
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 04:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbjGWCDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 22:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47462 "EHLO
+        id S229737AbjGWCIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 22:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjGWCDM (ORCPT
+        with ESMTP id S229456AbjGWCIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 22:03:12 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C79138;
-        Sat, 22 Jul 2023 19:03:10 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-666edfc50deso2073874b3a.0;
-        Sat, 22 Jul 2023 19:03:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690077790; x=1690682590;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eg6TbyeOVcQsY9Q8Ckx4fXoTDSkrQFOQaolkev87oCg=;
-        b=HcXcQ5nDr9I47fFsVtJ9AdboECTu8+ij46DkwZYqdSK3Xu/XVL7BgQ6jwIcOtENl3V
-         uy0dh4QSZKmo6QmuT5oLISmW4F5b5eTvDnEr4OoAD7aSsjMKkuPaFVpdHnGSLw4ds0Qa
-         Z71gF38sgVm0qtYl3v30RAPcd7Up5VwRaYLSHeqvEW53otBzJf8rofWxVRvdDpEqUxqy
-         aKy01wNb7M8sJeiL001UhB4OjTYpw/Xn3gET00jnPBIrpOjbxO8pbcooyWK9Ilq5/Ln3
-         G+G9tFhm0ogSIdqUTdJDsP2Z2Q/MJ0kdDwUkhHu2VeZe/YsEZ9L6ng8HUyH6wK3qDfuA
-         b6TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690077790; x=1690682590;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eg6TbyeOVcQsY9Q8Ckx4fXoTDSkrQFOQaolkev87oCg=;
-        b=BaEOJ/mWnmqcUpxoY5bY6FnmzzBr5to43LAXv8twSdP+CXZxzuPemBJVin/Y+yTU5s
-         UxAAi5S0oNh6ZKbrSUD5nVtC+5XjZJduhH4zzmWkkRP7sHpN8p8+Levf/kXdmBBJjb+V
-         lIxRK3bSDnONcz3mEVpuS990zOo4A6OpFtNQSRQy+v27psEJf1mBTxM+qYRXr33r/cQd
-         Js1nKFLaKNyH1iasY9ikpVjsPsTjuoe9iLP9wwsnjYXGu3JsooxGCpHPiB7/xcrgcke6
-         4R/vT347pSJo1V5rlsd8kTtlXwxCHYtAy8E5GJt1O+6Mb9Z9665YiLqIKPVf3RY0uVPg
-         oskw==
-X-Gm-Message-State: ABy/qLZeYiVFNtnmBJoq5QBpYp8ml2VJp6LSTlPKuxDaceY1rDTeZczE
-        8R/PNr6GiXywYU4RgcRsppY=
-X-Google-Smtp-Source: APBJJlGnc1N/Fmf+WcuRP0kVxZ9IoI6ZEidxjh5Pxa5hR3B6RiMbbtYo5KPj5HwB5oAjC+X9qXBtgA==
-X-Received: by 2002:a05:6a21:999f:b0:12b:40d3:aeb1 with SMTP id ve31-20020a056a21999f00b0012b40d3aeb1mr9860694pzb.25.1690077790204;
-        Sat, 22 Jul 2023 19:03:10 -0700 (PDT)
-Received: from [192.168.0.104] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id y8-20020a62b508000000b00663b712bfbdsm5145424pfe.57.2023.07.22.19.03.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Jul 2023 19:03:09 -0700 (PDT)
-Message-ID: <871f22f4-c456-db15-3466-085971bd1221@gmail.com>
-Date:   Sun, 23 Jul 2023 09:03:03 +0700
+        Sat, 22 Jul 2023 22:08:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BD9131
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 19:07:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690078046;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aolYBVkE3WPKfHj0+foqpR/ODsP1aqUpuEFPF1b8XQI=;
+        b=XiEPEpWUkDzgKpjAVUL0vquzHdgMRW1hpYsHunef+bqNsEiL1XLNipr7A/osm//TxfZli9
+        fu0pbCQwgcOA88CAP7Yog8NrcccZbmpih9iuafmDHhO5LUnxByUTF409hugnEK3kU0tYI2
+        bqyf8H+iBFxaMw2iZBVG4laLoYLnpgY=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-518-IHVL0zy_OzWro8RtDRzEQw-1; Sat, 22 Jul 2023 22:07:21 -0400
+X-MC-Unique: IHVL0zy_OzWro8RtDRzEQw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ACC59293248C;
+        Sun, 23 Jul 2023 02:07:20 +0000 (UTC)
+Received: from [10.22.32.12] (unknown [10.22.32.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E77711121314;
+        Sun, 23 Jul 2023 02:07:19 +0000 (UTC)
+Message-ID: <0e39d62d-44bc-731e-471e-4df621b4cdd5@redhat.com>
+Date:   Sat, 22 Jul 2023 22:07:19 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
+ Thunderbird/102.7.1
+Subject: Re: [PATCH] asm-generic: ticket-lock: Optimize
+ arch_spin_value_unlocked
 Content-Language: en-US
-To:     Huacai Chen <chenhuacai@loongson.cn>,
-        Bjorn Helgaas <bhelgaas@google.com>, jiaxun.yang@flygoat.com,
-        Aurelien Jarno <aurel32@debian.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Loongarch <loongarch@lists.linux.dev>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: PCI: Loongson: 8b3517f88ff2 breaks PCIe on some system
-Content-Type: text/plain; charset=UTF-8
+To:     guoren@kernel.org, David.Laight@ACULAB.COM, will@kernel.org,
+        peterz@infradead.org, mingo@redhat.com
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
+References: <20230719070001.795010-1-guoren@kernel.org>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230719070001.795010-1-guoren@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 7/19/23 03:00, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+> Using arch_spinlock_is_locked would cause another unnecessary memory
+> access to the contended value. Although it won't cause a significant
+> performance gap in most architectures, the arch_spin_value_unlocked
+> argument contains enough information. Thus, remove unnecessary
+> atomic_read in arch_spin_value_unlocked().
 
-I notice a regression report on Bugzilla [1]. Quoting from it:
+AFAICS, only one memory access is needed for the current 
+arch_spinlock_is_locked(). So your description isn't quite right. OTOH, 
+caller of arch_spin_value_unlocked() could benefit from this change. 
+Currently, the only caller is lockref.
 
-> After 8b3517f88ff2 ("PCI: loongson: Prevent LS7A MRRS increases") backported to stable, we have received multiple regression reports including one from Debian build farm[1] that some systems failed to initialize some PCIe devices.
-> 
-> I was able to reproduce on one of my Loongson-3A4000+7A system. It seems like the root cause is firmware on those systems didn't set MRRS properly but 8b3517f88ff2 ("PCI: loongson: Prevent LS7A MRRS increases") assumed firmware's maximum MRRS is always valid.
-> 
-> [1]: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1035587
+Other than that, the patch looks good to me.
 
-See Bugzilla for the full thread.
+Cheers,
+Longman
 
-The linked Debian BTS entry have debugging details on this regression
-(boot log, cpuinfo, and lspci).
+>
+> Signed-off-by: Guo Ren <guoren@kernel.org>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: David Laight <David.Laight@ACULAB.COM>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> ---
+> Changelog:
+> This patch is separate from:
+> https://lore.kernel.org/linux-riscv/20220808071318.3335746-1-guoren@kernel.org/
+>
+> Peter & David have commented on it:
+> https://lore.kernel.org/linux-riscv/YsK4Z9w0tFtgkni8@hirez.programming.kicks-ass.net/
+> ---
+>   include/asm-generic/spinlock.h | 16 +++++++++-------
+>   1 file changed, 9 insertions(+), 7 deletions(-)
+>
+> diff --git a/include/asm-generic/spinlock.h b/include/asm-generic/spinlock.h
+> index fdfebcb050f4..90803a826ba0 100644
+> --- a/include/asm-generic/spinlock.h
+> +++ b/include/asm-generic/spinlock.h
+> @@ -68,11 +68,18 @@ static __always_inline void arch_spin_unlock(arch_spinlock_t *lock)
+>   	smp_store_release(ptr, (u16)val + 1);
+>   }
+>   
+> +static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
+> +{
+> +	u32 val = lock.counter;
+> +
+> +	return ((val >> 16) == (val & 0xffff));
+> +}
+> +
+>   static __always_inline int arch_spin_is_locked(arch_spinlock_t *lock)
+>   {
+> -	u32 val = atomic_read(lock);
+> +	arch_spinlock_t val = READ_ONCE(*lock);
+>   
+> -	return ((val >> 16) != (val & 0xffff));
+> +	return !arch_spin_value_unlocked(val);
+>   }
+>   
+>   static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
+> @@ -82,11 +89,6 @@ static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
+>   	return (s16)((val >> 16) - (val & 0xffff)) > 1;
+>   }
+>   
+> -static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
+> -{
+> -	return !arch_spin_is_locked(&lock);
+> -}
+> -
+>   #include <asm/qrwlock.h>
+>   
+>   #endif /* __ASM_GENERIC_SPINLOCK_H */
 
-Anyway, I'm adding this regression to regzbot:
-
-#regzbot introduced: 8b3517f88ff298 https://bugzilla.kernel.org/show_bug.cgi?id=217680
-#regzbot title: LS7A MRRS quirk fails to initialize PCIe devices
-#regzbot link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1035587
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217680
-
--- 
-An old man doll... just what I always wanted! - Clara
