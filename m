@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D6175E5AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 00:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9494375E5B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 01:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229737AbjGWWzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 18:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60096 "EHLO
+        id S229790AbjGWXDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 19:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjGWWzT (ORCPT
+        with ESMTP id S229651AbjGWXD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 18:55:19 -0400
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDF51B7
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 15:55:19 -0700 (PDT)
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6b9d16c1f3bso3398256a34.2
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 15:55:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690152918; x=1690757718;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aUHzU2F2eAFVsc/O9Q7E+gnv1debu/0OoQduFE4zLvQ=;
-        b=Q8h+O1U6KS7chZt6JwRrmfKYKk098ovzIdfXxygl1UTfqrvaQJxB6VZxk4HazI8Rsu
-         BMcSJDDqrp5upN/ZGtdGB6RlJZDWdHqzDps58Ez5g1PHnB3XXVw3x3vrUhQTJ5yYNZ6B
-         ptOncPB6ral/39plX20wFsOjZ8TSW3GQGH4gqd4h1jFohdCsIdTQirAMwBoRn6D/tgfG
-         3Lls+3k0ovcDEnmt8s7CZv13J83sicFEaG5NDZEe5tMDT0BeyHDEbWR6ly+9CgpTgwnO
-         JFswBIQxWsUv0tKzqBilIHq9H1bk+6NKR7z3T9SfkF+ZWjskRISIWV5KmujI21I+u0+V
-         CjUQ==
-X-Gm-Message-State: ABy/qLYEnSjnInk/F8LN+CCvFZw0gAWxBBqaesPy2yW4T9ZggPAbk8Bq
-        924AOf3zolu61Om5+SnarD0=
-X-Google-Smtp-Source: APBJJlF/ug0ThZGhnKznWZAy0KS8g9loTF7zoqWL+EgGWJkarSD6tOJIuyPncnfUj0pwbpbY6fZ1SQ==
-X-Received: by 2002:a9d:4f19:0:b0:6b9:68fb:5a28 with SMTP id d25-20020a9d4f19000000b006b968fb5a28mr6669400otl.27.1690152918346;
-        Sun, 23 Jul 2023 15:55:18 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id jh11-20020a170903328b00b001bb3beb2bc6sm133349plb.65.2023.07.23.15.55.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 15:55:17 -0700 (PDT)
-Date:   Sun, 23 Jul 2023 22:55:16 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: Re: [patch 52/58] x86/apic: Replace acpi_wake_cpu_handler_update()
- and apic_set_eoi_cb()
-Message-ID: <ZL2v1HvtmPVZxmGf@liuwe-devbox-debian-v2>
-References: <20230717223049.327865981@linutronix.de>
- <20230717223226.178478466@linutronix.de>
+        Sun, 23 Jul 2023 19:03:29 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F08E5C;
+        Sun, 23 Jul 2023 16:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690153407;
+        bh=vKk+zQjfeVHdrQhTyb8CNok8oPqG+yP/ASG9POArvxs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rXdVGqyPHy7OukkRWRXLDXcDT3CAAbRUUKXifHcJn/ujREhLG1P89+xo8TJUBUI38
+         JxuA1oa/nK3e1+TgEUavK4pK1zP/QBTOw6UJrzBJ+DIDEuZt3nZy70AGZRWEepWr7K
+         OB0TiZ75jglXBSS4SdtFA6ddp8rgMQcm8qZ8fbS7l7y6hVd+TwS4JHi51W3/0Di4KA
+         GpyFoGnr6Kbeg8d94jPf7eGNWd7AAYX+a9xptOK0Rgrahvg3Ng2HRIAZJBjztov6Zc
+         Ix0hFZLRDwbD49ycmXCq5Ls6pDy2QG9RDNz5afdhuIhec47XT7MHE4duRf3eWTWJz2
+         vTSm9g7gPZLWA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R8Jk75Cv5z4wy1;
+        Mon, 24 Jul 2023 09:03:27 +1000 (AEST)
+Date:   Mon, 24 Jul 2023 09:03:26 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the mm tree
+Message-ID: <20230724090326.72e61015@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717223226.178478466@linutronix.de>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/7dqyzp9CXjG.3lFeIoEqTvW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 01:15:55AM +0200, Thomas Gleixner wrote:
-> Switch them over to apic_update_callback() and remove the code.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+--Sig_/7dqyzp9CXjG.3lFeIoEqTvW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
+Hi all,
+
+The following commit is also in Linus Torvalds' tree as a different commit
+(but the same patch):
+
+  5ad6c1f83fb9 ("kbuild: flatten KBUILD_CFLAGS")
+
+This is commit
+
+  0817d2599cfe ("kbuild: flatten KBUILD_CFLAGS")
+
+in Lunus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/7dqyzp9CXjG.3lFeIoEqTvW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS9sb4ACgkQAVBC80lX
+0GyALQf/YFMFFXobXndxXYJ8PRvkx+JN3zByw/VWDv9SMVt6QzLo+12teQx7rX/D
+hRAhKpokasjqaATJfGRjdepN7FnuwkKkOWlbDlA6KxVZxq12wiYGM1IlUm34P9HH
+lxQV4L58e7oIZ9QDgK2ZX7xxABCb1JGm0/7DlbtDn8zOGdhmLO8vyP8VgGkcNZaR
+kcJ4mMcFH7k+Nu0h9Yr2hBSKQKH9PPDqQ1PLieTz5/CDj+1exsaNvwz4cnyTaLRJ
+1qxy/AuVAnnsUywdVaT2+8cLEgiWjZK7EBkzif5yX/A49BAN6gmJbiAzGnDG6OpO
+0x9T43FW00TSRk/U59sCkPXw5M+1PQ==
+=2x4h
+-----END PGP SIGNATURE-----
+
+--Sig_/7dqyzp9CXjG.3lFeIoEqTvW--
