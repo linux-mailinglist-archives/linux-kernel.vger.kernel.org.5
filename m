@@ -2,243 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEB675E5A0
+	by mail.lfdr.de (Postfix) with ESMTP id B6BD275E5A2
 	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 00:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbjGWWoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 18:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
+        id S229865AbjGWWol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 18:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjGWWoB (ORCPT
+        with ESMTP id S229493AbjGWWok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 18:44:01 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFA71AA
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 15:43:59 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3a3373211a1so2243134b6e.0
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 15:43:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690152239; x=1690757039;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=D1MFo/F5V4CgFvfMHG9FyY8WBpbna1inS026XkI5woE=;
-        b=7GkOB/sMWoGM/KvUWv4Pso+O7QrjoGdW65YnVUfBw0ZbxGKIX+8sq85YDa6wmQUlYr
-         WZ+VCAhIV/wDyDyJtsW33MtqkYSLUaw+ARyqyFUgr6RB5s2GJtMmpztL4uJIm9Qc4Nv5
-         5OTSTomp76+yljFCXfhB/rfOaQDpGVyCVaCZFSUWq2Wws8Uz9TH2qa+7NGaZfVHjw4Ec
-         UfKb6jy290GSVF5JuUg4YWaTtYeqDWbDiujm906zzA5Sw1CYzEHuVOVHcJF9uZk+/1uB
-         c6+mmyXM0Or13ELux0d2SLo+u/RQKy9u17EnzDgYRyw14ZGgInC/dnDJSv1G5/Z751/l
-         1MqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690152239; x=1690757039;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D1MFo/F5V4CgFvfMHG9FyY8WBpbna1inS026XkI5woE=;
-        b=ZIk7ch+QveNr/l/v056MNvnoKav8mRNi8jvgPSOXS8m+yP1Ho7hYXhpxiPoVYgGkgX
-         pQ40Kw5bul6b103yQGLh8+bzqYZMLQvOfDlwXwbLzcxCu6pC7GJ1M9VrfHXnEhA0Jxqm
-         N/R3f2m6mWxGHuTr+frgmINv0qDWntxrp//FH2e+1Hk+qwAkkxMufqDwKiOyz7ajDfBQ
-         +m8ufBjgC/cJ1zkZWmfp8llL8p9nC7FH826EXtxYZR4BfSDKZoUrznlbMGOYsLlDpjWT
-         2zV38oPG9T8qQk2HZFvLYgRYlKYclcEulzow8FZ7hWlJqH3LRKGYB7Iyj/sQ25nZwOB7
-         8y/A==
-X-Gm-Message-State: ABy/qLYCPlVZlo8mH7Zvsmj/V0apsYThJuteoLo4bf+U1cbSPWEJv/B8
-        1p/5yuVrh5AycYBlYGA0B5iaHDFfJt8BZ1JurUQZWTx+
-X-Google-Smtp-Source: APBJJlGzrp4XRYTlBrKp8r+Sx4egB3DJkLS2gqWEsoZOd0YfBh8kJ+UBQe5/IHDc6iyI9Pz2hHGO/Q==
-X-Received: by 2002:a05:6808:8ca:b0:3a4:24f9:24c0 with SMTP id k10-20020a05680808ca00b003a424f924c0mr8570962oij.54.1690152238938;
-        Sun, 23 Jul 2023 15:43:58 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id bm47-20020a0568081aaf00b003a5b027ccb2sm1121691oib.38.2023.07.23.15.43.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 15:43:58 -0700 (PDT)
-Date:   Sun, 23 Jul 2023 15:43:50 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     syzbot <syzbot+173cc8cfdfbbef6dd755@syzkaller.appspotmail.com>
-cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [mm?] KASAN: slab-use-after-free Read in
- madvise_collapse
-In-Reply-To: <000000000000e4b0f0060123ca40@google.com>
-Message-ID: <29a5e24d-e052-fcdc-1dfb-b2f2aec3f614@google.com>
-References: <000000000000e4b0f0060123ca40@google.com>
+        Sun, 23 Jul 2023 18:44:40 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 390AE1AA;
+        Sun, 23 Jul 2023 15:44:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690152277;
+        bh=FFJbRmWPuFn+hHeXw5R3llNT9JS3TxX+Z3Uz0Aa1ehE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GhtUV9N9pUteSBkU2oRhZ82icl/XWFvt+j82XnRqwOAcr1ZH9WO4Yo7R0Q616pmhE
+         oF2xCXOuAQbrEvZ9NkwbcCNeb0rqXAJbbTHn5CFaWesQFQl8wXgcJHeSN1bjW81ZFe
+         wNgm358325hB6d/ePa8m4j4la+IDo8Z2hsA0cHYbfvZCE7tYCMtNzYhuQUYWZhPuAv
+         lk99lrw9+oJjl+TB/4Mh6G6L+fNmF9jl2pjXQn5vufcPG8uHppsb9BBNbKWpxkcn9d
+         0wyxj0jNlCoHEvWdako0eT5Wh2HlL/YCqs7aaH72cWl78EoPYvso3DnGAZMH0e81uZ
+         nn1CvDE1QDLKw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R8JJP2DvGz4wyC;
+        Mon, 24 Jul 2023 08:44:37 +1000 (AEST)
+Date:   Mon, 24 Jul 2023 08:44:36 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the bluetooth tree
+Message-ID: <20230724084436.0ebf8cee@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/Onjev0jTMukVx.TVM9PB=du";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 23 Jul 2023, syzbot wrote:
+--Sig_/Onjev0jTMukVx.TVM9PB=du
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    ae867bc97b71 Add linux-next specific files for 20230721
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1553a881a80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c403a6b36e7c85ac
-> dashboard link: https://syzkaller.appspot.com/bug?extid=173cc8cfdfbbef6dd755
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1076d84aa80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=161debd1a80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/a76b93f21f84/disk-ae867bc9.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/8eb30097a952/vmlinux-ae867bc9.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/7506a6b3ec38/bzImage-ae867bc9.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+173cc8cfdfbbef6dd755@syzkaller.appspotmail.com
-> 
-> ==================================================================
-> BUG: KASAN: slab-use-after-free in madvise_collapse+0xa6c/0xb50 mm/khugepaged.c:2723
-> Read of size 8 at addr ffff88802b4e6588 by task syz-executor296/5046
-> 
-> CPU: 0 PID: 5046 Comm: syz-executor296 Not tainted 6.5.0-rc2-next-20230721-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
->  print_address_description mm/kasan/report.c:364 [inline]
->  print_report+0xc4/0x620 mm/kasan/report.c:475
->  kasan_report+0xda/0x110 mm/kasan/report.c:588
->  madvise_collapse+0xa6c/0xb50 mm/khugepaged.c:2723
->  madvise_vma_behavior+0x200/0x1e60 mm/madvise.c:1094
->  madvise_walk_vmas+0x1cf/0x2c0 mm/madvise.c:1268
->  do_madvise+0x333/0x660 mm/madvise.c:1448
->  __do_sys_madvise mm/madvise.c:1461 [inline]
->  __se_sys_madvise mm/madvise.c:1459 [inline]
->  __x64_sys_madvise+0xaa/0x110 mm/madvise.c:1459
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f7ec298d359
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f7ec292d238 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
-> RAX: ffffffffffffffda RBX: 00007f7ec2a17318 RCX: 00007f7ec298d359
-> RDX: 0000000000000019 RSI: 000000000060005f RDI: 0000000020000000
-> RBP: 00007f7ec2a17310 R08: 00007fffd329edf7 R09: 00007f7ec292d6c0
-> R10: 0000000000000000 R11: 0000000000000246 R12: b635773f07ebbeea
-> R13: 000000000000006e R14: 00007fffd329ed10 R15: 00007fffd329edf8
->  </TASK>
-> 
-> Allocated by task 5033:
->  kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
->  kasan_set_track+0x25/0x30 mm/kasan/common.c:52
->  __kasan_slab_alloc+0x81/0x90 mm/kasan/common.c:328
->  kasan_slab_alloc include/linux/kasan.h:186 [inline]
->  slab_post_alloc_hook mm/slab.h:762 [inline]
->  slab_alloc_node mm/slub.c:3478 [inline]
->  slab_alloc mm/slub.c:3486 [inline]
->  __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
->  kmem_cache_alloc+0x172/0x3b0 mm/slub.c:3502
->  vm_area_alloc+0x1f/0x220 kernel/fork.c:485
->  mmap_region+0x386/0x2640 mm/mmap.c:2717
->  do_mmap+0x87c/0xed0 mm/mmap.c:1353
->  vm_mmap_pgoff+0x1a6/0x3b0 mm/util.c:543
->  ksys_mmap_pgoff+0x7d/0x5b0 mm/mmap.c:1399
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
-> Freed by task 5035:
->  kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
->  kasan_set_track+0x25/0x30 mm/kasan/common.c:52
->  kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
->  ____kasan_slab_free mm/kasan/common.c:236 [inline]
->  ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
->  kasan_slab_free include/linux/kasan.h:162 [inline]
->  slab_free_hook mm/slub.c:1800 [inline]
->  slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
->  slab_free mm/slub.c:3809 [inline]
->  kmem_cache_free+0xf0/0x490 mm/slub.c:3831
->  rcu_do_batch kernel/rcu/tree.c:2139 [inline]
->  rcu_core+0x7fb/0x1bb0 kernel/rcu/tree.c:2403
->  __do_softirq+0x218/0x965 kernel/softirq.c:553
-> 
-> Last potentially related work creation:
->  kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
->  __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
->  __call_rcu_common.constprop.0+0x9a/0x790 kernel/rcu/tree.c:2653
->  remove_vma+0x140/0x170 mm/mmap.c:148
->  remove_mt mm/mmap.c:2285 [inline]
->  do_vmi_align_munmap+0xf75/0x1710 mm/mmap.c:2547
->  do_vmi_munmap+0x20e/0x450 mm/mmap.c:2611
->  mmap_region+0x194/0x2640 mm/mmap.c:2661
->  do_mmap+0x87c/0xed0 mm/mmap.c:1353
->  vm_mmap_pgoff+0x1a6/0x3b0 mm/util.c:543
->  ksys_mmap_pgoff+0x7d/0x5b0 mm/mmap.c:1399
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
-> The buggy address belongs to the object at ffff88802b4e6500
->  which belongs to the cache vm_area_struct of size 192
-> The buggy address is located 136 bytes inside of
->  freed 192-byte region [ffff88802b4e6500, ffff88802b4e65c0)
-> 
-> The buggy address belongs to the physical page:
-> page:ffffea0000ad3980 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2b4e6
-> flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-> page_type: 0xffffffff()
-> raw: 00fff00000000200 ffff888014674b40 ffffea0001dce680 dead000000000002
-> raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 4724, tgid 4724 (dhcpcd-run-hook), ts 33134643925, free_ts 33125953991
->  set_page_owner include/linux/page_owner.h:31 [inline]
->  post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1569
->  prep_new_page mm/page_alloc.c:1576 [inline]
->  get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3256
->  __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4512
->  alloc_pages+0x1a9/0x270 mm/mempolicy.c:2279
->  alloc_slab_page mm/slub.c:1870 [inline]
->  allocate_slab+0x24e/0x380 mm/slub.c:2017
->  new_slab mm/slub.c:2070 [inline]
->  ___slab_alloc+0x8bc/0x1570 mm/slub.c:3223
->  __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
->  __slab_alloc_node mm/slub.c:3375 [inline]
->  slab_alloc_node mm/slub.c:3468 [inline]
->  slab_alloc mm/slub.c:3486 [inline]
->  __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
->  kmem_cache_alloc+0x392/0x3b0 mm/slub.c:3502
->  vm_area_alloc+0x1f/0x220 kernel/fork.c:485
->  mmap_region+0x386/0x2640 mm/mmap.c:2717
->  do_mmap+0x87c/0xed0 mm/mmap.c:1353
->  vm_mmap_pgoff+0x1a6/0x3b0 mm/util.c:543
->  ksys_mmap_pgoff+0x422/0x5b0 mm/mmap.c:1399
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> page last free stack trace:
->  reset_page_owner include/linux/page_owner.h:24 [inline]
->  free_pages_prepare mm/page_alloc.c:1160 [inline]
->  free_unref_page_prepare+0x508/0xb90 mm/page_alloc.c:2383
->  free_unref_page+0x33/0x3b0 mm/page_alloc.c:2478
->  vfree+0x181/0x7a0 mm/vmalloc.c:2842
->  delayed_vfree_work+0x56/0x70 mm/vmalloc.c:2763
->  process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
->  worker_thread+0x687/0x1110 kernel/workqueue.c:2751
->  kthread+0x33a/0x430 kernel/kthread.c:389
->  ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
->  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:296
-> 
-> Memory state around the buggy address:
->  ffff88802b4e6480: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
->  ffff88802b4e6500: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >ffff88802b4e6580: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
->                       ^
->  ffff88802b4e6600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->  ffff88802b4e6680: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
-> ==================================================================
+Hi all,
 
-I don't think we need to worry about this report: it should be fixed by
-https://lore.kernel.org/linux-mm/b53be6a4-7715-51f9-aad-f1347dcb7c4@google.com/T/#m9e27b97ad27df2551ec54ef220417c1aa263b161
+The following commits are also in Linus Torvalds' tree as different
+commits (but the same patches):
 
-Hugh
+  1097b9b5a14b ("Bluetooth: hci_event: call disconnect callback before dele=
+ting conn")
+  1a43e2538e5a ("Bluetooth: ISO: fix iso_conn related locking and validity =
+issues")
+  2a9bc19e9d39 ("Bluetooth: use RCU for hci_conn_params and iterate safely =
+in hci_sync")
+  45018a3caf9b ("Bluetooth: coredump: fix building with coredump disabled")
+  5beaf842b507 ("Bluetooth: SCO: fix sco_conn related locking and validity =
+issues")
+  64068b2b948a ("Bluetooth: MGMT: Use correct address for memcpy()")
+  752a4a227d35 ("Bluetooth: btusb: Fix bluetooth on Intel Macbook 2014")
+  7728d4d43b78 ("Bluetooth: hci_sync: Avoid use-after-free in dbg for hci_r=
+emove_adv_monitor()")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Onjev0jTMukVx.TVM9PB=du
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS9rVQACgkQAVBC80lX
+0GzuZggApFWUB4/v7gPrmnlA8tLtQ53PtRBv20gSH59Ml7t6PVON6/XDDLYat8QX
+znAtyyOFXxFQlu8o74t25AACBmkDEQInlcUXa6qWwe9VetmqXmC8xLy66AA84uEA
+88AgzETsuCSRz87jpxfOvxyRNSn8d6sklJBQuFVrgDODdNnuqyL1VvSwS0BQ0Vuo
+udYu3s0srIztbjsRmYJUtTYa5CHMfG30sj7KSTTllwO0aivYuHzQOA031XzOSyBI
+HJW9fgj5x4iZdXSPERMgxk30xSlqQ7oLeiCwGZzP/cMv9mXePAhxf5nREd19PgZt
+8S3NpBkY4tszSg6j7A/a+6LI/HO8rQ==
+=vQNY
+-----END PGP SIGNATURE-----
+
+--Sig_/Onjev0jTMukVx.TVM9PB=du--
