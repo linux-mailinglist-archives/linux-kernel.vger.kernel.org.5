@@ -2,141 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C31975DFAC
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 04:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD2D75DFAF
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 04:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229737AbjGWCIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 Jul 2023 22:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
+        id S229779AbjGWCPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 Jul 2023 22:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGWCIO (ORCPT
+        with ESMTP id S229456AbjGWCPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 Jul 2023 22:08:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BD9131
-        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 19:07:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690078046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aolYBVkE3WPKfHj0+foqpR/ODsP1aqUpuEFPF1b8XQI=;
-        b=XiEPEpWUkDzgKpjAVUL0vquzHdgMRW1hpYsHunef+bqNsEiL1XLNipr7A/osm//TxfZli9
-        fu0pbCQwgcOA88CAP7Yog8NrcccZbmpih9iuafmDHhO5LUnxByUTF409hugnEK3kU0tYI2
-        bqyf8H+iBFxaMw2iZBVG4laLoYLnpgY=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-518-IHVL0zy_OzWro8RtDRzEQw-1; Sat, 22 Jul 2023 22:07:21 -0400
-X-MC-Unique: IHVL0zy_OzWro8RtDRzEQw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ACC59293248C;
-        Sun, 23 Jul 2023 02:07:20 +0000 (UTC)
-Received: from [10.22.32.12] (unknown [10.22.32.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E77711121314;
-        Sun, 23 Jul 2023 02:07:19 +0000 (UTC)
-Message-ID: <0e39d62d-44bc-731e-471e-4df621b4cdd5@redhat.com>
-Date:   Sat, 22 Jul 2023 22:07:19 -0400
+        Sat, 22 Jul 2023 22:15:40 -0400
+Received: from progateway7-pub.mail.pro1.eigbox.com (gproxy5-pub.mail.unifiedlayer.com [67.222.38.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7260B180
+        for <linux-kernel@vger.kernel.org>; Sat, 22 Jul 2023 19:15:38 -0700 (PDT)
+Received: from cmgw15.mail.unifiedlayer.com (unknown [10.0.90.130])
+        by progateway7.mail.pro1.eigbox.com (Postfix) with ESMTP id B1DAD10047C0A
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 02:15:37 +0000 (UTC)
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTP
+        id NOdFqb5p72l9pNOdFqtrKx; Sun, 23 Jul 2023 02:15:37 +0000
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.4 cv=cagXElPM c=1 sm=1 tr=0 ts=64bc8d49
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10:nop_charset_1 a=ws7JD89P4LkA:10:nop_rcvd_month_year
+ a=-Ou01B_BuAIA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=XARjAJDYreQpguygG0EA:9 a=QEXdDO2ut3YA:10:nop_charset_2
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=pCtqBofhwelLmwn5RF4yhXuv5BamYcq1W5B05vn0iAU=; b=hsx/GDDHjThw0OBCJ3SAgBuazJ
+        V4oeVXq54ngmpLFR4GLggYzfzmHCJGOK/OUNri0TF9HDvyJhWmQ1vDqBHznlOaZl61e8Pu/VrWg8p
+        BomosswepK25fJfNd9NS1jqD/z2zUBRYMFLVFTq9WYqm3aXkIr0h6oYcCi5aH2vfSgdWYW8+ad7dr
+        28NCOeiegdlDrQ7Ed4JoFfo8MW4s7xx3mO35gGpjUqxmh773C4Xyb1HUNav/c+DFlZTh9XNH/Cd/L
+        a2DOuqnfJLoXj/MAx6NfAfnwqPDmINqAz+cNa5j3yzzCt1V4a0Z7zteZ6YF3LXIs+TUX8DvbDEU8C
+        W/g/03JQ==;
+Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:48954 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <re@w6rz.net>)
+        id 1qNOdE-001XgN-09;
+        Sat, 22 Jul 2023 20:15:36 -0600
+Subject: Re: [PATCH 5.15 000/532] 5.15.121-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230721160614.695323302@linuxfoundation.org>
+In-Reply-To: <20230721160614.695323302@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <58291149-ffe7-4000-e908-e872495bb3a8@w6rz.net>
+Date:   Sat, 22 Jul 2023 19:15:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] asm-generic: ticket-lock: Optimize
- arch_spin_value_unlocked
-Content-Language: en-US
-To:     guoren@kernel.org, David.Laight@ACULAB.COM, will@kernel.org,
-        peterz@infradead.org, mingo@redhat.com
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
-References: <20230719070001.795010-1-guoren@kernel.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230719070001.795010-1-guoren@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 73.162.232.9
+X-Source-L: No
+X-Exim-ID: 1qNOdE-001XgN-09
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:48954
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/19/23 03:00, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
+On 7/21/23 8:58 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.121 release.
+> There are 532 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Using arch_spinlock_is_locked would cause another unnecessary memory
-> access to the contended value. Although it won't cause a significant
-> performance gap in most architectures, the arch_spin_value_unlocked
-> argument contains enough information. Thus, remove unnecessary
-> atomic_read in arch_spin_value_unlocked().
-
-AFAICS, only one memory access is needed for the current 
-arch_spinlock_is_locked(). So your description isn't quite right. OTOH, 
-caller of arch_spin_value_unlocked() could benefit from this change. 
-Currently, the only caller is lockref.
-
-Other than that, the patch looks good to me.
-
-Cheers,
-Longman
-
+> Responses should be made by Sun, 23 Jul 2023 16:04:40 +0000.
+> Anything received after that time might be too late.
 >
-> Signed-off-by: Guo Ren <guoren@kernel.org>
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: David Laight <David.Laight@ACULAB.COM>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> ---
-> Changelog:
-> This patch is separate from:
-> https://lore.kernel.org/linux-riscv/20220808071318.3335746-1-guoren@kernel.org/
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.121-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 >
-> Peter & David have commented on it:
-> https://lore.kernel.org/linux-riscv/YsK4Z9w0tFtgkni8@hirez.programming.kicks-ass.net/
-> ---
->   include/asm-generic/spinlock.h | 16 +++++++++-------
->   1 file changed, 9 insertions(+), 7 deletions(-)
+> thanks,
 >
-> diff --git a/include/asm-generic/spinlock.h b/include/asm-generic/spinlock.h
-> index fdfebcb050f4..90803a826ba0 100644
-> --- a/include/asm-generic/spinlock.h
-> +++ b/include/asm-generic/spinlock.h
-> @@ -68,11 +68,18 @@ static __always_inline void arch_spin_unlock(arch_spinlock_t *lock)
->   	smp_store_release(ptr, (u16)val + 1);
->   }
->   
-> +static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
-> +{
-> +	u32 val = lock.counter;
-> +
-> +	return ((val >> 16) == (val & 0xffff));
-> +}
-> +
->   static __always_inline int arch_spin_is_locked(arch_spinlock_t *lock)
->   {
-> -	u32 val = atomic_read(lock);
-> +	arch_spinlock_t val = READ_ONCE(*lock);
->   
-> -	return ((val >> 16) != (val & 0xffff));
-> +	return !arch_spin_value_unlocked(val);
->   }
->   
->   static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
-> @@ -82,11 +89,6 @@ static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
->   	return (s16)((val >> 16) - (val & 0xffff)) > 1;
->   }
->   
-> -static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
-> -{
-> -	return !arch_spin_is_locked(&lock);
-> -}
-> -
->   #include <asm/qrwlock.h>
->   
->   #endif /* __ASM_GENERIC_SPINLOCK_H */
+> greg k-h
+
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+
+Tested-by: Ron Economos <re@w6rz.net>
 
