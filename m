@@ -2,541 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBF075E574
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 00:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD27475E578
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 00:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbjGWWAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 18:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
+        id S229547AbjGWWHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 18:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjGWWAp (ORCPT
+        with ESMTP id S229470AbjGWWHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 18:00:45 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B86310E7;
-        Sun, 23 Jul 2023 15:00:14 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qNh7P-0005UC-0a;
-        Sun, 23 Jul 2023 21:59:59 +0000
-Date:   Sun, 23 Jul 2023 22:59:51 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Russell King <linux@armlinux.org.uk>,
-        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        Greg Ungerer <gerg@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v5 9/9] net: ethernet: mtk_eth_soc: add basic
- support for MT7988 SoC
-Message-ID: <15641a4f6f8edbe8ca7665ea5006079200c126b6.1690148927.git.daniel@makrotopia.org>
-References: <cover.1690148927.git.daniel@makrotopia.org>
-MIME-Version: 1.0
+        Sun, 23 Jul 2023 18:07:32 -0400
+Received: from mx-out2.startmail.com (mx-out2.startmail.com [145.131.90.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17A2E5C;
+        Sun, 23 Jul 2023 15:07:28 -0700 (PDT)
+Date:   Sun, 23 Jul 2023 17:07:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=startmail.com;
+        s=2020-07; t=1690150046;
+        bh=Pzhbdmi+Q4cAPO2nJq3dihfzBgR3qM8T9EVB24WXGeE=;
+        h=Date:From:To:Subject:Message-ID:References:Mime-Version:
+         Content-Type:Content-Disposition:In-Reply-To:From:Subject:To:Date:
+         Sender:Content-Type:Content-Transfer-Encoding:Content-Disposition:
+         Mime-Version:Reply-To:In-Reply-To:References:Message-Id:Autocrypt;
+        b=Fsi7v8rCqO8VBaD+2fAY45r8W9+Cxydl7tdq66yA5syYPQ4NZYMoRAv89z5wXhx9t
+         U9wUtRa+dyfXmFZtcnKbwAQzJkrKaC2LCmrNFdPU3qZRMyG+xVWzdonOJxgBXEW13V
+         kuIutoJh/KpEXc3L8xrBwEMJRG445/zcyr7K/n4GBCEnxBWDDXpl2sI9IWdX/SANVY
+         xebjc8aa+NdyzdnUgvjEiDUTk6K/EpBi4TFP12XkFD8izbaHgREevuA+z9oWNTevLL
+         oRHn7VnGQi//wQvKBLTZu81NPmfxTDKDFzoZFDns/rgu6VM6dmmOWMTK4tJw8zPIOr
+         Kba6d6Zv4wyEg==
+From:   "Marty E. Plummer" <hanetzer@startmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] hwmon: (pmbus) Add driver fpr Infineon IR35201
+Message-ID: <izfbs2b72mmy6hgwugq5pnilon6626up7yp5quta6dd6tnlusx@bkuyfpenkb4f>
+References: <20230720115805.1510279-1-hanetzer@startmail.com>
+ <b86e19ed-12af-e488-3c21-002be2ad5914@roeck-us.net>
+ <axue7wmaxbj7vurapabuwtvqk3br3zt2g373d6ako4m24wzaxf@2uvgmasdd7dk>
+ <bf1be356-9e3e-6fd7-0987-03deb593131e@roeck-us.net>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1690148927.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <bf1be356-9e3e-6fd7-0987-03deb593131e@roeck-us.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-
-Introduce support for ethernet chip available in MT7988 SoC to
-mtk_eth_soc driver. As a first step support only the first GMAC which
-is hard-wired to the internal DSA switch having 4 built-in gigabit
-Ethernet PHYs.
-
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/net/ethernet/mediatek/mtk_eth_path.c |  14 +-
- drivers/net/ethernet/mediatek/mtk_eth_soc.c  | 201 +++++++++++++++++--
- drivers/net/ethernet/mediatek/mtk_eth_soc.h  |  86 +++++++-
- 3 files changed, 273 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_path.c b/drivers/net/ethernet/mediatek/mtk_eth_path.c
-index 34ac492e047cb..7c27a19c4d8f4 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_path.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_path.c
-@@ -43,7 +43,7 @@ static const char *mtk_eth_path_name(u64 path)
- static int set_mux_gdm1_to_gmac1_esw(struct mtk_eth *eth, u64 path)
- {
- 	bool updated = true;
--	u32 val, mask, set;
-+	u32 mask, set, reg;
- 
- 	switch (path) {
- 	case MTK_ETH_PATH_GMAC1_SGMII:
-@@ -59,11 +59,13 @@ static int set_mux_gdm1_to_gmac1_esw(struct mtk_eth *eth, u64 path)
- 		break;
- 	}
- 
--	if (updated) {
--		val = mtk_r32(eth, MTK_MAC_MISC);
--		val = (val & mask) | set;
--		mtk_w32(eth, val, MTK_MAC_MISC);
--	}
-+	if (mtk_is_netsys_v3_or_greater(eth))
-+		reg = MTK_MAC_MISC_V3;
-+	else
-+		reg = MTK_MAC_MISC;
-+
-+	if (updated)
-+		mtk_m32(eth, mask, set, reg);
- 
- 	dev_dbg(eth->dev, "path %s in %s updated = %d\n",
- 		mtk_eth_path_name(path), __func__, updated);
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index 1344e2fc6d6f2..b2eb721e777a1 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -152,6 +152,54 @@ static const struct mtk_reg_map mt7986_reg_map = {
- 	.pse_oq_sta		= 0x01a0,
- };
- 
-+static const struct mtk_reg_map mt7988_reg_map = {
-+	.tx_irq_mask		= 0x461c,
-+	.tx_irq_status		= 0x4618,
-+	.pdma = {
-+		.rx_ptr		= 0x6900,
-+		.rx_cnt_cfg	= 0x6904,
-+		.pcrx_ptr	= 0x6908,
-+		.glo_cfg	= 0x6a04,
-+		.rst_idx	= 0x6a08,
-+		.delay_irq	= 0x6a0c,
-+		.irq_status	= 0x6a20,
-+		.irq_mask	= 0x6a28,
-+		.adma_rx_dbg0	= 0x6a38,
-+		.int_grp	= 0x6a50,
-+	},
-+	.qdma = {
-+		.qtx_cfg	= 0x4400,
-+		.qtx_sch	= 0x4404,
-+		.rx_ptr		= 0x4500,
-+		.rx_cnt_cfg	= 0x4504,
-+		.qcrx_ptr	= 0x4508,
-+		.glo_cfg	= 0x4604,
-+		.rst_idx	= 0x4608,
-+		.delay_irq	= 0x460c,
-+		.fc_th		= 0x4610,
-+		.int_grp	= 0x4620,
-+		.hred		= 0x4644,
-+		.ctx_ptr	= 0x4700,
-+		.dtx_ptr	= 0x4704,
-+		.crx_ptr	= 0x4710,
-+		.drx_ptr	= 0x4714,
-+		.fq_head	= 0x4720,
-+		.fq_tail	= 0x4724,
-+		.fq_count	= 0x4728,
-+		.fq_blen	= 0x472c,
-+		.tx_sch_rate	= 0x4798,
-+	},
-+	.gdm1_cnt		= 0x1c00,
-+	.gdma_to_ppe		= 0x3333,
-+	.ppe_base		= 0x2000,
-+	.wdma_base = {
-+		[0]		= 0x4800,
-+		[1]		= 0x4c00,
-+	},
-+	.pse_iq_sta		= 0x0180,
-+	.pse_oq_sta		= 0x01a0,
-+};
-+
- /* strings used by ethtool */
- static const struct mtk_ethtool_stats {
- 	char str[ETH_GSTRING_LEN];
-@@ -179,10 +227,54 @@ static const struct mtk_ethtool_stats {
- };
- 
- static const char * const mtk_clks_source_name[] = {
--	"ethif", "sgmiitop", "esw", "gp0", "gp1", "gp2", "fe", "trgpll",
--	"sgmii_tx250m", "sgmii_rx250m", "sgmii_cdr_ref", "sgmii_cdr_fb",
--	"sgmii2_tx250m", "sgmii2_rx250m", "sgmii2_cdr_ref", "sgmii2_cdr_fb",
--	"sgmii_ck", "eth2pll", "wocpu0", "wocpu1", "netsys0", "netsys1"
-+	"ethif",
-+	"sgmiitop",
-+	"esw",
-+	"gp0",
-+	"gp1",
-+	"gp2",
-+	"gp3",
-+	"xgp1",
-+	"xgp2",
-+	"xgp3",
-+	"crypto",
-+	"fe",
-+	"trgpll",
-+	"sgmii_tx250m",
-+	"sgmii_rx250m",
-+	"sgmii_cdr_ref",
-+	"sgmii_cdr_fb",
-+	"sgmii2_tx250m",
-+	"sgmii2_rx250m",
-+	"sgmii2_cdr_ref",
-+	"sgmii2_cdr_fb",
-+	"sgmii_ck",
-+	"eth2pll",
-+	"wocpu0",
-+	"wocpu1",
-+	"netsys0",
-+	"netsys1",
-+	"ethwarp_wocpu2",
-+	"ethwarp_wocpu1",
-+	"ethwarp_wocpu0",
-+	"top_usxgmii0_sel",
-+	"top_usxgmii1_sel",
-+	"top_sgm0_sel",
-+	"top_sgm1_sel",
-+	"top_xfi_phy0_xtal_sel",
-+	"top_xfi_phy1_xtal_sel",
-+	"top_eth_gmii_sel",
-+	"top_eth_refck_50m_sel",
-+	"top_eth_sys_200m_sel",
-+	"top_eth_sys_sel",
-+	"top_eth_xgmii_sel",
-+	"top_eth_mii_sel",
-+	"top_netsys_sel",
-+	"top_netsys_500m_sel",
-+	"top_netsys_pao_2x_sel",
-+	"top_netsys_sync_250m_sel",
-+	"top_netsys_ppefb_250m_sel",
-+	"top_netsys_warp_sel",
- };
- 
- void mtk_w32(struct mtk_eth *eth, u32 val, unsigned reg)
-@@ -195,7 +287,7 @@ u32 mtk_r32(struct mtk_eth *eth, unsigned reg)
- 	return __raw_readl(eth->base + reg);
- }
- 
--static u32 mtk_m32(struct mtk_eth *eth, u32 mask, u32 set, unsigned reg)
-+u32 mtk_m32(struct mtk_eth *eth, u32 mask, u32 set, unsigned int reg)
- {
- 	u32 val;
- 
-@@ -400,6 +492,19 @@ static void mtk_gmac0_rgmii_adjust(struct mtk_eth *eth,
- 	dev_err(eth->dev, "Missing PLL configuration, ethernet may not work\n");
- }
- 
-+static void mtk_setup_bridge_switch(struct mtk_eth *eth)
-+{
-+	/* Force Port1 XGMAC Link Up */
-+	mtk_m32(eth, 0, MTK_XGMAC_FORCE_LINK(MTK_GMAC1_ID),
-+		MTK_XGMAC_STS(MTK_GMAC1_ID));
-+
-+	/* Adjust GSW bridge IPG to 11 */
-+	mtk_m32(eth, GSWTX_IPG_MASK | GSWRX_IPG_MASK,
-+		(GSW_IPG_11 << GSWTX_IPG_SHIFT) |
-+		(GSW_IPG_11 << GSWRX_IPG_SHIFT),
-+		MTK_GSW_CFG);
-+}
-+
- static struct phylink_pcs *mtk_mac_select_pcs(struct phylink_config *config,
- 					      phy_interface_t interface)
- {
-@@ -459,6 +564,8 @@ static void mtk_mac_config(struct phylink_config *config, unsigned int mode,
- 					goto init_err;
- 			}
- 			break;
-+		case PHY_INTERFACE_MODE_INTERNAL:
-+			break;
- 		default:
- 			goto err_phy;
- 		}
-@@ -528,6 +635,15 @@ static void mtk_mac_config(struct phylink_config *config, unsigned int mode,
- 		return;
- 	}
- 
-+	/* Setup gmac */
-+	if (mtk_is_netsys_v3_or_greater(eth) &&
-+	    mac->interface == PHY_INTERFACE_MODE_INTERNAL) {
-+		mtk_w32(mac->hw, MTK_GDMA_XGDM_SEL, MTK_GDMA_EG_CTRL(mac->id));
-+		mtk_w32(mac->hw, MAC_MCR_FORCE_LINK_DOWN, MTK_MAC_MCR(mac->id));
-+
-+		mtk_setup_bridge_switch(eth);
-+	}
-+
- 	return;
- 
- err_phy:
-@@ -740,11 +856,15 @@ static int mtk_mdio_init(struct mtk_eth *eth)
- 	}
- 	divider = min_t(unsigned int, DIV_ROUND_UP(MDC_MAX_FREQ, max_clk), 63);
- 
-+	/* Configure MDC Turbo Mode */
-+	if (mtk_is_netsys_v3_or_greater(eth))
-+		mtk_m32(eth, 0, MISC_MDC_TURBO, MTK_MAC_MISC_V3);
-+
- 	/* Configure MDC Divider */
--	val = mtk_r32(eth, MTK_PPSC);
--	val &= ~PPSC_MDC_CFG;
--	val |= FIELD_PREP(PPSC_MDC_CFG, divider) | PPSC_MDC_TURBO;
--	mtk_w32(eth, val, MTK_PPSC);
-+	val = FIELD_PREP(PPSC_MDC_CFG, divider);
-+	if (!mtk_is_netsys_v3_or_greater(eth))
-+		val |= PPSC_MDC_TURBO;
-+	mtk_m32(eth, PPSC_MDC_CFG, val, MTK_PPSC);
- 
- 	dev_dbg(eth->dev, "MDC is running on %d Hz\n", MDC_MAX_FREQ / divider);
- 
-@@ -1205,10 +1325,19 @@ static void mtk_tx_set_dma_desc_v2(struct net_device *dev, void *txd,
- 		data |= TX_DMA_LS0;
- 	WRITE_ONCE(desc->txd3, data);
- 
--	if (mac->id == MTK_GMAC3_ID)
--		data = PSE_GDM3_PORT;
--	else
--		data = (mac->id + 1) << TX_DMA_FPORT_SHIFT_V2; /* forward port */
-+	 /* set forward port */
-+	switch (mac->id) {
-+	case MTK_GMAC1_ID:
-+		data = PSE_GDM1_PORT << TX_DMA_FPORT_SHIFT_V2;
-+		break;
-+	case MTK_GMAC2_ID:
-+		data = PSE_GDM2_PORT << TX_DMA_FPORT_SHIFT_V2;
-+		break;
-+	case MTK_GMAC3_ID:
-+		data = PSE_GDM3_PORT << TX_DMA_FPORT_SHIFT_V2;
-+		break;
-+	}
-+
- 	data |= TX_DMA_SWC_V2 | QID_BITS_V2(info->qid);
- 	WRITE_ONCE(desc->txd4, data);
- 
-@@ -4387,6 +4516,17 @@ static int mtk_add_mac(struct mtk_eth *eth, struct device_node *np)
- 			  mac->phylink_config.supported_interfaces);
- 	}
- 
-+	if (mtk_is_netsys_v3_or_greater(mac->hw) &&
-+	    MTK_HAS_CAPS(mac->hw->soc->caps, MTK_ESW_BIT) &&
-+	    id == MTK_GMAC1_ID) {
-+		mac->phylink_config.mac_capabilities = MAC_ASYM_PAUSE |
-+						       MAC_SYM_PAUSE |
-+						       MAC_10000FD;
-+		phy_interface_zero(mac->phylink_config.supported_interfaces);
-+		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
-+			  mac->phylink_config.supported_interfaces);
-+	}
-+
- 	phylink = phylink_create(&mac->phylink_config,
- 				 of_fwnode_handle(mac->of_node),
- 				 phy_mode, &mtk_phylink_ops);
-@@ -4913,6 +5053,24 @@ static const struct mtk_soc_data mt7986_data = {
- 	},
- };
- 
-+static const struct mtk_soc_data mt7988_data = {
-+	.reg_map = &mt7988_reg_map,
-+	.ana_rgc3 = 0x128,
-+	.caps = MT7988_CAPS,
-+	.hw_features = MTK_HW_FEATURES,
-+	.required_clks = MT7988_CLKS_BITMAP,
-+	.required_pctl = false,
-+	.version = 3,
-+	.txrx = {
-+		.txd_size = sizeof(struct mtk_tx_dma_v2),
-+		.rxd_size = sizeof(struct mtk_rx_dma_v2),
-+		.rx_irq_done_mask = MTK_RX_DONE_INT_V2,
-+		.rx_dma_l4_valid = RX_DMA_L4_VALID_V2,
-+		.dma_max_len = MTK_TX_DMA_BUF_LEN_V2,
-+		.dma_len_offset = 8,
-+	},
-+};
-+
- static const struct mtk_soc_data rt5350_data = {
- 	.reg_map = &mt7628_reg_map,
- 	.caps = MT7628_CAPS,
-@@ -4931,14 +5089,15 @@ static const struct mtk_soc_data rt5350_data = {
- };
- 
- const struct of_device_id of_mtk_match[] = {
--	{ .compatible = "mediatek,mt2701-eth", .data = &mt2701_data},
--	{ .compatible = "mediatek,mt7621-eth", .data = &mt7621_data},
--	{ .compatible = "mediatek,mt7622-eth", .data = &mt7622_data},
--	{ .compatible = "mediatek,mt7623-eth", .data = &mt7623_data},
--	{ .compatible = "mediatek,mt7629-eth", .data = &mt7629_data},
--	{ .compatible = "mediatek,mt7981-eth", .data = &mt7981_data},
--	{ .compatible = "mediatek,mt7986-eth", .data = &mt7986_data},
--	{ .compatible = "ralink,rt5350-eth", .data = &rt5350_data},
-+	{ .compatible = "mediatek,mt2701-eth", .data = &mt2701_data },
-+	{ .compatible = "mediatek,mt7621-eth", .data = &mt7621_data },
-+	{ .compatible = "mediatek,mt7622-eth", .data = &mt7622_data },
-+	{ .compatible = "mediatek,mt7623-eth", .data = &mt7623_data },
-+	{ .compatible = "mediatek,mt7629-eth", .data = &mt7629_data },
-+	{ .compatible = "mediatek,mt7981-eth", .data = &mt7981_data },
-+	{ .compatible = "mediatek,mt7986-eth", .data = &mt7986_data },
-+	{ .compatible = "mediatek,mt7988-eth", .data = &mt7988_data },
-+	{ .compatible = "ralink,rt5350-eth", .data = &rt5350_data },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, of_mtk_match);
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 5902944ddb4fa..1a25724ae8e6a 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -117,7 +117,8 @@
- #define MTK_CDMP_EG_CTRL	0x404
- 
- /* GDM Exgress Control Register */
--#define MTK_GDMA_FWD_CFG(x)	(0x500 + (x * 0x1000))
-+#define MTK_GDMA_FWD_CFG(x)	({ typeof(x) _x = (x); (_x == MTK_GMAC3_ID) ?	\
-+				   0x540 : 0x500 + (_x * 0x1000); })
- #define MTK_GDMA_SPECIAL_TAG	BIT(24)
- #define MTK_GDMA_ICS_EN		BIT(22)
- #define MTK_GDMA_TCS_EN		BIT(21)
-@@ -126,6 +127,11 @@
- #define MTK_GDMA_TO_PDMA	0x0
- #define MTK_GDMA_DROP_ALL       0x7777
- 
-+/* GDM Egress Control Register */
-+#define MTK_GDMA_EG_CTRL(x)	({ typeof(x) _x = (x); (_x == MTK_GMAC3_ID) ?	\
-+				   0x544 : 0x504 + (_x * 0x1000); })
-+#define MTK_GDMA_XGDM_SEL	BIT(31)
-+
- /* Unicast Filter MAC Address Register - Low */
- #define MTK_GDMA_MAC_ADRL(x)	(0x508 + (x * 0x1000))
- 
-@@ -389,7 +395,26 @@
- #define PHY_IAC_TIMEOUT		HZ
- 
- #define MTK_MAC_MISC		0x1000c
-+#define MTK_MAC_MISC_V3		0x10010
- #define MTK_MUX_TO_ESW		BIT(0)
-+#define MISC_MDC_TURBO		BIT(4)
-+
-+/* XMAC status registers */
-+#define MTK_XGMAC_STS(x)	(((x) == MTK_GMAC3_ID) ? 0x1001C : 0x1000C)
-+#define MTK_XGMAC_FORCE_LINK(x)	(((x) == MTK_GMAC2_ID) ? BIT(31) : BIT(15))
-+#define MTK_USXGMII_PCS_LINK	BIT(8)
-+#define MTK_XGMAC_RX_FC		BIT(5)
-+#define MTK_XGMAC_TX_FC		BIT(4)
-+#define MTK_USXGMII_PCS_MODE	GENMASK(3, 1)
-+#define MTK_XGMAC_LINK_STS	BIT(0)
-+
-+/* GSW bridge registers */
-+#define MTK_GSW_CFG		(0x10080)
-+#define GSWTX_IPG_MASK		GENMASK(19, 16)
-+#define GSWTX_IPG_SHIFT		16
-+#define GSWRX_IPG_MASK		GENMASK(3, 0)
-+#define GSWRX_IPG_SHIFT		0
-+#define GSW_IPG_11		11
- 
- /* Mac control registers */
- #define MTK_MAC_MCR(x)		(0x10100 + (x * 0x100))
-@@ -647,6 +672,11 @@ enum mtk_clks_map {
- 	MTK_CLK_GP0,
- 	MTK_CLK_GP1,
- 	MTK_CLK_GP2,
-+	MTK_CLK_GP3,
-+	MTK_CLK_XGP1,
-+	MTK_CLK_XGP2,
-+	MTK_CLK_XGP3,
-+	MTK_CLK_CRYPTO,
- 	MTK_CLK_FE,
- 	MTK_CLK_TRGPLL,
- 	MTK_CLK_SGMII_TX_250M,
-@@ -663,6 +693,27 @@ enum mtk_clks_map {
- 	MTK_CLK_WOCPU1,
- 	MTK_CLK_NETSYS0,
- 	MTK_CLK_NETSYS1,
-+	MTK_CLK_ETHWARP_WOCPU2,
-+	MTK_CLK_ETHWARP_WOCPU1,
-+	MTK_CLK_ETHWARP_WOCPU0,
-+	MTK_CLK_TOP_USXGMII_SBUS_0_SEL,
-+	MTK_CLK_TOP_USXGMII_SBUS_1_SEL,
-+	MTK_CLK_TOP_SGM_0_SEL,
-+	MTK_CLK_TOP_SGM_1_SEL,
-+	MTK_CLK_TOP_XFI_PHY_0_XTAL_SEL,
-+	MTK_CLK_TOP_XFI_PHY_1_XTAL_SEL,
-+	MTK_CLK_TOP_ETH_GMII_SEL,
-+	MTK_CLK_TOP_ETH_REFCK_50M_SEL,
-+	MTK_CLK_TOP_ETH_SYS_200M_SEL,
-+	MTK_CLK_TOP_ETH_SYS_SEL,
-+	MTK_CLK_TOP_ETH_XGMII_SEL,
-+	MTK_CLK_TOP_ETH_MII_SEL,
-+	MTK_CLK_TOP_NETSYS_SEL,
-+	MTK_CLK_TOP_NETSYS_500M_SEL,
-+	MTK_CLK_TOP_NETSYS_PAO_2X_SEL,
-+	MTK_CLK_TOP_NETSYS_SYNC_250M_SEL,
-+	MTK_CLK_TOP_NETSYS_PPEFB_250M_SEL,
-+	MTK_CLK_TOP_NETSYS_WARP_SEL,
- 	MTK_CLK_MAX
- };
- 
-@@ -716,6 +767,36 @@ enum mtk_clks_map {
- 				 BIT_ULL(MTK_CLK_SGMII2_RX_250M) | \
- 				 BIT_ULL(MTK_CLK_SGMII2_CDR_REF) | \
- 				 BIT_ULL(MTK_CLK_SGMII2_CDR_FB))
-+#define MT7988_CLKS_BITMAP	(BIT_ULL(MTK_CLK_FE) | BIT_ULL(MTK_CLK_ESW) | \
-+				 BIT_ULL(MTK_CLK_GP1) | BIT_ULL(MTK_CLK_GP2) | \
-+				 BIT_ULL(MTK_CLK_GP3) | BIT_ULL(MTK_CLK_XGP1) | \
-+				 BIT_ULL(MTK_CLK_XGP2) | BIT_ULL(MTK_CLK_XGP3) | \
-+				 BIT_ULL(MTK_CLK_CRYPTO) | \
-+				 BIT_ULL(MTK_CLK_SGMII_TX_250M) | \
-+				 BIT_ULL(MTK_CLK_SGMII_RX_250M) | \
-+				 BIT_ULL(MTK_CLK_SGMII2_TX_250M) | \
-+				 BIT_ULL(MTK_CLK_SGMII2_RX_250M) | \
-+				 BIT_ULL(MTK_CLK_ETHWARP_WOCPU2) | \
-+				 BIT_ULL(MTK_CLK_ETHWARP_WOCPU1) | \
-+				 BIT_ULL(MTK_CLK_ETHWARP_WOCPU0) | \
-+				 BIT_ULL(MTK_CLK_TOP_USXGMII_SBUS_0_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_USXGMII_SBUS_1_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_SGM_0_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_SGM_1_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_XFI_PHY_0_XTAL_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_XFI_PHY_1_XTAL_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_ETH_GMII_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_ETH_REFCK_50M_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_ETH_SYS_200M_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_ETH_SYS_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_ETH_XGMII_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_ETH_MII_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_NETSYS_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_NETSYS_500M_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_NETSYS_PAO_2X_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_NETSYS_SYNC_250M_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_NETSYS_PPEFB_250M_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_NETSYS_WARP_SEL))
- 
- enum mtk_dev_state {
- 	MTK_HW_INIT,
-@@ -964,6 +1045,8 @@ enum mkt_eth_capabilities {
- 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
- 		      MTK_RSTCTRL_PPE1)
- 
-+#define MT7988_CAPS  (MTK_GDM1_ESW | MTK_QDMA | MTK_RSTCTRL_PPE1)
-+
- struct mtk_tx_dma_desc_info {
- 	dma_addr_t	addr;
- 	u32		size;
-@@ -1309,6 +1392,7 @@ void mtk_stats_update_mac(struct mtk_mac *mac);
- 
- void mtk_w32(struct mtk_eth *eth, u32 val, unsigned reg);
- u32 mtk_r32(struct mtk_eth *eth, unsigned reg);
-+u32 mtk_m32(struct mtk_eth *eth, u32 mask, u32 set, unsigned int reg);
- 
- int mtk_gmac_sgmii_path_setup(struct mtk_eth *eth, int mac_id);
- int mtk_gmac_gephy_path_setup(struct mtk_eth *eth, int mac_id);
--- 
-2.41.0
+On Thu, Jul 20, 2023 at 12:22:47PM -0700, Guenter Roeck wrote:
+> On 7/20/23 11:35, Marty E. Plummer wrote:
+> > On Thu, Jul 20, 2023 at 07:00:39AM -0700, Guenter Roeck wrote:
+> > > 
+> > Maybe.On 7/20/23 04:58, Marty E. Plummer wrote:
+> > > > The IR35201 is a dual-loop digital multi-phase buck controller designed for CPU voltage regulation.
+> > > > 
+> > > > Signed-off-by: Marty E. Plummer <hanetzer@startmail.com>
+> > > > ---
+> > > >    Documentation/hwmon/index.rst   |  1 +
+> > > >    Documentation/hwmon/ir35201.rst | 63 +++++++++++++++++++++++
+> > > >    drivers/hwmon/pmbus/Kconfig     |  9 ++++
+> > > >    drivers/hwmon/pmbus/Makefile    |  1 +
+> > > >    drivers/hwmon/pmbus/ir35201.c   | 89 +++++++++++++++++++++++++++++++++
+> > > >    5 files changed, 163 insertions(+)
+> > > >    create mode 100644 Documentation/hwmon/ir35201.rst
+> > > >    create mode 100644 drivers/hwmon/pmbus/ir35201.c
+> > > > 
+> > > > diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> > > > index 042e1cf9501b..5b44a268de0d 100644
+> > > > --- a/Documentation/hwmon/index.rst
+> > > > +++ b/Documentation/hwmon/index.rst
+> > > > @@ -87,6 +87,7 @@ Hardware Monitoring Kernel Drivers
+> > > >       ina3221
+> > > >       inspur-ipsps1
+> > > >       intel-m10-bmc-hwmon
+> > > > +   ir35201
+> > > >       ir35221
+> > > >       ir38064
+> > > >       ir36021
+> > > > diff --git a/Documentation/hwmon/ir35201.rst b/Documentation/hwmon/ir35201.rst
+> > > > new file mode 100644
+> > > > index 000000000000..6ca34d4b02a3
+> > > > --- /dev/null
+> > > > +++ b/Documentation/hwmon/ir35201.rst
+> > > > @@ -0,0 +1,63 @@
+> > > > +.. SPDX-License-Identifier: GPL-2.0
+> > > > +
+> > > > +Kernel driver ir35201
+> > > > +=====================
+> > > > +
+> > > > +Supported chips:
+> > > > +
+> > > > +  * Infineon IR35201
+> > > > +
+> > > > +    Prefix: ir35201
+> > > > +    Addresses scanned: -
+> > > > +
+> > > > +    Datasheet: Publicly available at the Infineon website
+> > > > +      https://www.infineon.com/dgdl/Infineon-IR35201MTRPBF-DS-v01_00-EN.pdf?fileId=5546d462576f347501579c95d19772b5
+> > > > +
+> > > > +Authors:
+> > > > +      - Marty E. Plummer <hanetzer@startmail.com>
+> > > > +
+> > > > +Description
+> > > > +-----------
+> > > > +
+> > > > +The IR35201 is a dual-loop digital multi-phase buck controller designed for
+> > > > +CPU voltage regulation.
+> > > > +
+> > > > +Usage Notes
+> > > > +-----------
+> > > > +
+> > > > +This driver does not probe for PMBus devices. You will have to instantiate
+> > > > +devices explicitly.
+> > > > +
+> > > > +Sysfs attributes
+> > > > +----------------
+> > > > +
+> > > > +======================= ===========================
+> > > > +curr1_label             "iin"
+> > > > +curr1_input             Measured input current
+> > > > +curr1_alarm             Input fault alarm
+> > > > +
+> > > > +curr2_label             "iout1"
+> > > > +curr2_input             Measured output current
+> > > > +curr2_alarm             Output over-current alarm
+> > > > +
+> > > > +in1_label               "vin"
+> > > > +in1_input               Measured input voltage
+> > > > +in1_alarm               Input under-voltage alarm
+> > > > +
+> > > > +in2_label               "vout1"
+> > > > +in2_input               Measured output voltage
+> > > > +in2_alarm               Output over-voltage alarm
+> > > > +
+> > > > +power1_label            "pin"
+> > > > +power1_input            Measured input power
+> > > > +power1_alarm            Input under-voltage alarm
+> > > > +
+> > > > +power2_label            "pout1"
+> > > > +power2_input            Measured output power
+> > > > +
+> > > > +temp1_input             Measured temperature
+> > > > +temp1_alarm             Temperature alarm
+> > > > +
+> > > > +temp2_input             Measured other loop temperature
+> > > > +temp2_alarm             Temperature alarm
+> > > > +======================= ===========================
+> > > > diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+> > > > index 270b6336b76d..7180823b15bb 100644
+> > > > --- a/drivers/hwmon/pmbus/Kconfig
+> > > > +++ b/drivers/hwmon/pmbus/Kconfig
+> > > > @@ -123,6 +123,15 @@ config SENSORS_INSPUR_IPSPS
+> > > >    	  This driver can also be built as a module. If so, the module will
+> > > >    	  be called inspur-ipsps.
+> > > > +config SENSORS_IR35201
+> > > > +	tristate "Infineon IR35201"
+> > > > +	help
+> > > > +	  If you say yes here you get hardware monitoring support for the
+> > > > +	  Infineon IR35201 controller.
+> > > > +
+> > > > +	  This driver can also be built as a module. If so, the module will
+> > > > +	  be called ir35201.
+> > > > +
+> > > >    config SENSORS_IR35221
+> > > >    	tristate "Infineon IR35221"
+> > > >    	help
+> > > > diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+> > > > index 84ee960a6c2d..40729dd14e7a 100644
+> > > > --- a/drivers/hwmon/pmbus/Makefile
+> > > > +++ b/drivers/hwmon/pmbus/Makefile
+> > > > @@ -15,6 +15,7 @@ obj-$(CONFIG_SENSORS_FSP_3Y)	+= fsp-3y.o
+> > > >    obj-$(CONFIG_SENSORS_IBM_CFFPS)	+= ibm-cffps.o
+> > > >    obj-$(CONFIG_SENSORS_DPS920AB)	+= dps920ab.o
+> > > >    obj-$(CONFIG_SENSORS_INSPUR_IPSPS) += inspur-ipsps.o
+> > > > +obj-$(CONFIG_SENSORS_IR35201)	+= ir35201.o
+> > > >    obj-$(CONFIG_SENSORS_IR35221)	+= ir35221.o
+> > > >    obj-$(CONFIG_SENSORS_IR36021)	+= ir36021.o
+> > > >    obj-$(CONFIG_SENSORS_IR38064)	+= ir38064.o
+> > > > diff --git a/drivers/hwmon/pmbus/ir35201.c b/drivers/hwmon/pmbus/ir35201.c
+> > > > new file mode 100644
+> > > > index 000000000000..77f77057175a
+> > > > --- /dev/null
+> > > > +++ b/drivers/hwmon/pmbus/ir35201.c
+> > > > @@ -0,0 +1,89 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0+
+> > > > +/*
+> > > > + * Hardware monitoring driver for Infineon IR35201
+> > > > + */
+> > > > +
+> > > > +#include <linux/err.h>
+> > > > +#include <linux/i2c.h>
+> > > > +#include <linux/init.h>
+> > > > +#include <linux/kernel.h>
+> > > > +#include <linux/module.h>
+> > > > +#include "pmbus.h"
+> > > > +
+> > > > +static struct pmbus_driver_info ir35201_info = {
+> > > > +	.pages = 1,
+> > > > +	.format[PSC_VOLTAGE_IN] = linear,
+> > > > +	.format[PSC_VOLTAGE_OUT] = linear,
+> > > > +	.format[PSC_CURRENT_IN] = linear,
+> > > > +	.format[PSC_CURRENT_OUT] = linear,
+> > > > +	.format[PSC_POWER] = linear,
+> > > > +	.format[PSC_TEMPERATURE] = linear,
+> > > > +	.func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_VOUT
+> > > > +		| PMBUS_HAVE_IIN | PMBUS_HAVE_IOUT
+> > > > +		| PMBUS_HAVE_PIN | PMBUS_HAVE_POUT
+> > > > +		| PMBUS_HAVE_TEMP | PMBUS_HAVE_TEMP2
+> > > > +		| PMBUS_HAVE_STATUS_TEMP,
+> > > 
+> > > Several supported status registers are missing.
+> > > 
+> > Maybe. Did the best I could with this and another datasheet (ir36* iirc)
+> > open at the same time and both source files open for comparison, and the
+> > output from sensors with this patch, with allowances for variations
+> > in temps, matches more or less what HWINFO64 outputs on a windows pe
+> > based build of hiren's boot cd.
+> 
+> STATUS_INPUT, STATUS_IOUT, and STATUS_VOUT are supported according
+> to the datasheet. Do you have reason to believe that this is incorrect ?
+> If so, I would want to see a comment in the driver explaining that the
+> datasheet is wrong and doesn't support those registers.
+> 
+> > > > +};
+> > > > +
+> > > > +static int ir35201_probe(struct i2c_client *client)
+> > > > +{
+> > > > +	u8 buf[I2C_SMBUS_BLOCK_MAX];
+> > > > +	int ret;
+> > > > +
+> > > > +	if (!i2c_check_functionality(client->adapter,
+> > > > +				     I2C_FUNC_SMBUS_READ_BYTE_DATA
+> > > > +					 | I2C_FUNC_SMBUS_READ_WORD_DATA
+> > > > +					 | I2C_FUNC_SMBUS_READ_BLOCK_DATA))
+> > > > +		return -ENODEV;
+> > > > +
+> > > > +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(&client->dev, "Failed to read PMBUS_MFR_ID\n");
+> > > > +		return ret;
+> > > > +	}
+> > > > +	if (ret != 2 || strncmp(buf, "IR", strlen("IR"))) {
+> > > > +		dev_err(&client->dev, "MFR_ID unrecognized\n");
+> > > > +		return -ENODEV;
+> > > > +	}
+> > > > +
+> > > 
+> > > Did you actually test this ? Datasheet says it is "ASCII 52 49" which
+> > > would make it "RI" like IR35221, not "IR". Problem though is that it
+> > > seems like the register is writeable via some USER programming,
+> > > making it unreliable.
+> > > 
+> > Yes, I did. And strangely enough, it reads 'backwards' or so, relative
+> > to the 35221. I almost sent this along without removing the debugging
+> > pr_infos I had in this area to check that. drove me bonkers a bit.
+> > > > +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(&client->dev, "Failed to read PMBUS_MFR_MODEL\n");
+> > > > +		return ret;
+> > > > +	}
+> > > > +	if (ret != 1 || buf[0] != 0x50) {
+> > > > +		dev_err(&client->dev, "MFR_MODEL unrecognized\n");
+> > > > +		return -ENODEV;
+> > > > +	}
+> > > > +
+> > > 
+> > > The datasheet suggests that PMBUS_MFR_ID and PMBUS_MFR_MODEL can differ based
+> > > on some USER register programming. I would suggest to read IC_DEVICE_ID instead
+> > > and compare against that (which s supposed to be 0x4d).
+> > > 
+> > Somehow I missed that, but it was on my 'to-check' list. I think the
+> > issue may have arose from my datasheet comparison, as the ir36* doesn't
+> > have such a register listed.
+> 
+> Different series, probably different microcontroller and different microcode.
+> 
+> > > On a higher level, I don't see anything special in this chip. Would it be possible
+> > > to just add it to pmbus.c ? Something like
+> > > 
+> > > 	{"ir35201", (kernel_ulong_t)&pmbus_info_one},
+> > > 
+> > Honestly, I was wondering about folding this and the other very similar
+> > IR3* chips into one driver. Should be doable? But I guess this approach
+> > works as well; in fact, during my investigation phase I stuck the pmbus
+> > driver onto the correct i2c address to get an easy way to read stuff
+> > from the chip (tbh I'm surprised that this far along in linux we don't
+> > have anything other than pmbus_peek to poke for info; maybe i2c-tools
+> > can do it but I can't seem to make it work like I'd expect).
+> 
+> This isn't about "doable". We don't want to add new drivers just for fun
+> and/or "because it works as well". A new driver should only be added if
+> needed. It was done, for example, for IR35221 because that chip has
+> non-standard registers which we want to have supported.
+> 
+> Unless I am missing something, IR35201 only supports standard commands.
+> So the question is: Is the new driver really needed ? It appears you are
+> saying that, no, it isn't needed. Add the chip to pmbus.c as I suggested above.
+> If and only if that doesn't work we can talk about a new driver.
+> 
+Binding the pmbus subdriver (I guess you could call it that) for the
+"adp4000", which shares the same pmbus_device_info struct you suggested
+results in sensible output in lm_sensors. I'll whip up a new patch and
+send it in.
+> Thanks,
+> Guenter
+> 
