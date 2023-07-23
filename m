@@ -2,380 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9C175DFFF
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 07:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 301ED75E00E
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 Jul 2023 08:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbjGWFhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 01:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34422 "EHLO
+        id S229617AbjGWGFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 02:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGWFhN (ORCPT
+        with ESMTP id S229456AbjGWGFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 01:37:13 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8121BD0;
-        Sat, 22 Jul 2023 22:37:12 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-666eec46206so3113081b3a.3;
-        Sat, 22 Jul 2023 22:37:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690090631; x=1690695431;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=67iV377mlrZw0t0KHI20eTHUfEv5Ir/34Yk/0iNGuEw=;
-        b=A3q5FBZaG1Ll/l/HvHElCKpkS+c+MaizDAwcBs8wrmZ+7BGVNcJjDzz0YEDBaiBZo3
-         2iBoQPuYUX3gy4nZuKWhVCHJqY4tvviJl7Wn+QbZCC8upKgrZUjRx+gqiSqxe7bAglH9
-         eD6MMt507ptEmyvT9WmXoaHrvLQONlFJ/7MozDiIqJjKoliwyR9eJ8Uncpdpsd0hpWl+
-         jvXTBefd/6Ub/XeP4WBtrZS/sfcSgsb3XUYf4lzUwDYCXZTfXTzpLZehZIOLq1XRLkEm
-         X9vXHLQNLBPVuTvAUvgADgL5r36b5iCczjgnX1uQs28RAM5cb5puR0+Rw93kERzC/YoP
-         /2Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690090631; x=1690695431;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=67iV377mlrZw0t0KHI20eTHUfEv5Ir/34Yk/0iNGuEw=;
-        b=MhoXZzSRSou7Nz0gHzXxsfvFnjSM6RQkmsAd0PZ2p8unE+AqWnYu2mSvFkw7SZ4pa5
-         /CY8cxjz1ivwAnJuC0cIAbI3QpR4Tq7A/8+dc4b8JJk335g7fQCh0DO/t/Bhh49np5Xb
-         Ilydeb1PNXoZnTKoesdedm7t2E/h7l2IFOOGIrT5g1TLEWM++sIZ1G4nCU2Gy6Ep5ADX
-         NwMha9/GKd72o+2mj6Gb5prQ3gqPnPph0edVTYA+oe56esBX7LDCstb/XmaAl+s/Y94K
-         VYkos2LmTmiCyjRhF3VPR1nEThJZswYy5L+g76tpBX+EppINdHCD3rWHKLZ/FeQiU7px
-         yg7w==
-X-Gm-Message-State: ABy/qLY26pA1YGtgrW1iZDlAnbZDo5PBwyASORO5PNiwxG3X2AoP6RQr
-        vZg7ZpC5MuCLGeIUJRqMKOE=
-X-Google-Smtp-Source: APBJJlHbtOOYOI2+R6FnPYL9mwGMzMivPV2Soz8ZIM0ASEPAudBC8OfaW50E8151F2Z26JeDT6ijGA==
-X-Received: by 2002:a05:6a00:812:b0:668:81c5:2f8d with SMTP id m18-20020a056a00081200b0066881c52f8dmr6788882pfk.3.1690090631424;
-        Sat, 22 Jul 2023 22:37:11 -0700 (PDT)
-Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id s9-20020a63af49000000b0055ff89c5453sm5837384pgo.6.2023.07.22.22.37.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jul 2023 22:37:10 -0700 (PDT)
-Date:   Sun, 23 Jul 2023 11:07:06 +0530
-Message-Id: <87edkzjiil.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ojaswin@linux.ibm.com
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shikemeng@huaweicloud.com
-Subject: Re: [PATCH v5 5/8] ext4: call ext4_mb_mark_group_bb in ext4_mb_clear_bb
-In-Reply-To: <87h6pwj8c4.fsf@doe.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 23 Jul 2023 02:05:18 -0400
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2137.outbound.protection.outlook.com [40.107.113.137])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732EA1BD4;
+        Sat, 22 Jul 2023 23:05:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O2/w4zUYQ3ZExlTp7i6mmiciVnjtyzESMr6mTeZyQHjM4ZGRVh7QHOX1Ax1Lt5apMb7HjZl7uUtJ2MlFn7PQiHJC8nqVjA44BylVAr/F44bYwAAF9P1APwsHe/PgDGGcOqjlHr8cdt+f5vq4YbZOTh7t4uSHARCpJbMzGG4hPZ2gIKGc4DwtrbPXFqmtrrULpRPOZD0gXQA1zhLAYgjB9ohcnk7vaA9lwehrV1rjBMrzarpCQNeqZ7vnwk80w5Z8dJUiZWgFPqVW/K+5Jc4KoIgiNk5FNgVmQQWYADoO+YUQ9jYNx2u9/KJQ49TLk11rW6ibN1OFUTPxxyq3ZlnZrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s17XvGdvK/JhvChvq256W1e68/Md0m8CUIJHWqVfvLI=;
+ b=gRBWe/XlBXBZJ40mx+blfgpT9TZlUUFjtpGlX3clnDmLYXCVGtbiRj67LBj1I4quxBCsOxb0NPAMpK1mGOAePqnSVZ7ezHaAGw13mc8whh+xQ+qLtCwTe2giu/O69ffIbyiSlwaiCeh50s6p5zXqRF3Imt/9QGqL2k7QdjhM1Pcy7LzX4Qp4S7MwmpfNkwa6dBwIbDUAbxCUvH1QR/NDuDvGORemUoVmsusOQJC9GEFHQRCg5BbE0AAIsEJK6cyRNhas4ahPyavuGnqbfEco8Um/xsXTh88nT7rY6JFd1dl8Q2V58DMEj2Z2ZbnJpqS8Hxgkt1qm2FES0KipyMMhYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s17XvGdvK/JhvChvq256W1e68/Md0m8CUIJHWqVfvLI=;
+ b=kRdkbqTQrFsF5kMJaGfzISB+iYxNoJBeD8kpTE5VsjjghTgY+0/Om1uBoX6/aUBRU+0o3OUUzToPHkq2tDFtEOpc6gdkRzty0oabVKGXiYV3PVVP4YfaIwIVxyX3CyeV8AsT3nzBXEvOvWiA3YJM1HhcRpYrKPLPC72SQelP/VA=
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
+ by TYCPR01MB11973.jpnprd01.prod.outlook.com (2603:1096:400:38c::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Sun, 23 Jul
+ 2023 06:05:10 +0000
+Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::834b:28df:28dc:7f95]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
+ ([fe80::834b:28df:28dc:7f95%7]) with mapi id 15.20.6609.031; Sun, 23 Jul 2023
+ 06:05:06 +0000
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+CC:     Mark Brown <broonie@kernel.org>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Andreas Helbech Kleist <andreaskleist@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 1/2] Input: exc3000 - Simplify probe()
+Thread-Topic: [PATCH v2 1/2] Input: exc3000 - Simplify probe()
+Thread-Index: AQHZuLEfke7PxT5AM0ulEoLw/IRIvq++HaYAgAAHzdCAAB6ZAIAAA3QAgAAChWCAAZImAIAAxbxwgAQs5wCAAUhbgIAAfjkAgABL7XA=
+Date:   Sun, 23 Jul 2023 06:05:06 +0000
+Message-ID: <OS0PR01MB59222E6CE0EEED3A5FE843C1863DA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+References: <20230717131756.240645-1-biju.das.jz@bp.renesas.com>
+ <20230717131756.240645-2-biju.das.jz@bp.renesas.com>
+ <ZLVlIPHdmEGdG5D1@google.com>
+ <OS0PR01MB592264ADC86061AB003048DD863BA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <66228ad3-c087-418c-925f-b9fd4a60fb16@sirena.org.uk>
+ <ZLWIPPAfeR1+KbeH@google.com>
+ <OS0PR01MB59225D8CF3E96808DD776A8E863BA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <ZLbbslBiIQXFWpmN@google.com>
+ <TYCPR01MB593346FBBA320260A290EAFD8639A@TYCPR01MB5933.jpnprd01.prod.outlook.com>
+ <ZLsCOj1t4JvG3SEp@google.com>
+ <TYCPR01MB5933D4252360AAE57D90FE1C863CA@TYCPR01MB5933.jpnprd01.prod.outlook.com>
+ <CAKdAkRT9tMnLnDLgWAevE_4HQ0wYMPehvsYaAeYrXdGGiyjXRA@mail.gmail.com>
+In-Reply-To: <CAKdAkRT9tMnLnDLgWAevE_4HQ0wYMPehvsYaAeYrXdGGiyjXRA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYCPR01MB11973:EE_
+x-ms-office365-filtering-correlation-id: be3e7d15-ed74-463d-84bb-08db8b42c35d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OVGsQ+erfbHW/K95x7gMy09hWaNBdOwTdP5wSlVgOlWc7r/sR9YRoyslsK3iiiAwh2N0beJqwO4Ewb23uJFPKU0qBGxK6+TnH3rjA+06JpKgrqQlxTeNn7sGFLNXqhQIFixrd4t+RuTyg5J+Dzz4fLkCxG4NGeGkS5NdjX+qwVb71soxPfNyFtj/lKGQwX29p4rMxuIucs36W8H9FJV0Ca6cnY63uz93R8Wv30DN9PTFsUc4dds0xtWBFePP0Y/TWK2RVSrA9tk0GrblDUvFpPKhu8D7tp8WLFSUu+eCaYCB+IsCTQUn7L5xuWpfrKJ6y1OhZqCF4FKuWehvLqhCEGH2EwyZx/gBBhHtf4oyOFKiDhq6uLqtwN9NpWBhVlgSu9i3RmZqaJ9TEN4s4gpf4eMqnaLLNBw2n+cpCt6fRmwKE5MRjh5H9uIrUxdmZ0j5DhUquas4RC5P5K0WJcLVTF7P/vBn29M0XEelsZxi1pR2aaudr70NojxiDA8elHUHdXNr7iooGVdDVr1q33a8iy/p+RrVunCPV5r+29JXMQP/rGoQVLjeJ1nBVJ6z4lXqCGd5hGdOhdKJXSdAVAzWj7tE9d6C2Z4V1aND2STLg8g=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(346002)(136003)(39860400002)(366004)(451199021)(38100700002)(122000001)(55016003)(83380400001)(8936002)(8676002)(7416002)(5660300002)(52536014)(478600001)(54906003)(66556008)(66476007)(66446008)(64756008)(6916009)(4326008)(316002)(76116006)(66946007)(41300700001)(26005)(186003)(6506007)(71200400001)(966005)(7696005)(9686003)(2906002)(33656002)(38070700005)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?HjOLTCgL8IftxM6hoopdCwkHwX/VL8cs0sK69rNWeVWdSWnUswk3UzAjjH?=
+ =?iso-8859-1?Q?y6SMMICjWN1NikGn9eUnwIIOWQkgZCA5tC7LNOCAAwTxn6/vRyLb7zZVsT?=
+ =?iso-8859-1?Q?SwXX5oXAEow2f56JbPVouq3DflDjBnFFcFnUAmvnq+rr7fvZSbj7+Pmxdg?=
+ =?iso-8859-1?Q?kyJpSwTDJ9HBnpOIzP1gPsDB4T7Sls3Q0k8vdrENEaEpO6qdKt/GHMpPNm?=
+ =?iso-8859-1?Q?NeHuF1mpjJn7ivdLVFvcbEvQLxedlgd8Mq7HrVw2yW0d6yc9usoUSM7tRu?=
+ =?iso-8859-1?Q?wEkz3sepUHOucG7rjz955xLbpr6wbXJtp0nhKiTn86UlPKbNV8ufRXFyA2?=
+ =?iso-8859-1?Q?/d2R0bmTPLtX8vWxqiwXg6s0wTd1Ekw5IFdQLpGUbqhyN4NwNwy5rFHQI2?=
+ =?iso-8859-1?Q?gUTIwt2wF/jHc0BUC6FyJdLlQkQltwmN20xfceFEmkaEi74weqh/Meyzd2?=
+ =?iso-8859-1?Q?8dqzsk+HNK2k6A+ML4R+Y5wp0V+x3bnyRH4o0BrsHuebIzHUR4gCF+ccYO?=
+ =?iso-8859-1?Q?iGHgWCVLDi2XtNz7IfFbBaMOkt4TcBRLSGLx8WZ77WGt5bzCtLe15G5wyi?=
+ =?iso-8859-1?Q?7VQBYsyD5lCI0BUT1nArMnygvGvONbqKnj6aSlgSipn+3OdBAYF/KccBgE?=
+ =?iso-8859-1?Q?i7L/Iy6fNPGxYZIwodzYrMwAhuAX8AVsaJRWcGwjoQy9Seq/CGdZRBdD6U?=
+ =?iso-8859-1?Q?g+Fpt3f0GaqQkKDVIn0n4LLccgwFt81moz2CYqMycMvQ7GVcHWF5VlOXzH?=
+ =?iso-8859-1?Q?TU+jTReBjlKAhoSnbAnyQm74ejuqx8WiAkA4kU0m9NcAg81x9MQGXCLeyb?=
+ =?iso-8859-1?Q?cEIuzisoFBHbwRQ8HQ51Afs2mt83VqDvcMvffzfWVr1cQvWP+IETV4kJYe?=
+ =?iso-8859-1?Q?2tI+WVLGnLCXTH6W2yTBS3RhwMeCBhsg2UoOYRzHBxB6j0kYJQXqIEeQwT?=
+ =?iso-8859-1?Q?blmsXbXnvMoEXqreuJ9xft8wQiLz+r6buU+pM0H9TNxlCB/ESW9+f5htfk?=
+ =?iso-8859-1?Q?z/hIYVJjOMtW/5SZemJrPvhiDp3FQR6j7t0bARkCSK/q7p/j8YhakRHoc6?=
+ =?iso-8859-1?Q?xMVVpT2Of8yOqccHYMF4OXELWysu1SrQcEWMYYrMLpbO6ZNL0aPNkSJ5FX?=
+ =?iso-8859-1?Q?RNtw49WE8U5RRDQRag82FeSjhdsCWQ5oqfwxjWoODx5p5KqmyBlRei8n06?=
+ =?iso-8859-1?Q?QvUGncGTf4wtEED5S5X7bPCWmO/p76ISxsQTdzSHif4LMk23XQkbnZnxyo?=
+ =?iso-8859-1?Q?6jbGihrutsfimlefIuuVxBknAR42JI4YMGG/vyVPS7C6GwgJz55SQ8d0Zn?=
+ =?iso-8859-1?Q?Y0Y75Ru7E9rucNHVLjatxCWZZsG8w1R4GzDChoSZx4Ud8ueVyFoJupw6vR?=
+ =?iso-8859-1?Q?JxPB0cMmHyGALMcuwI6wajkk25CN1eWAD5FT1yR+hYFRZJREww9482fvCA?=
+ =?iso-8859-1?Q?hK87+NHdno+H8RzCtGJOl5TQCyMazPb57yHyBSBq3nfm9N7re6AyrAu8zN?=
+ =?iso-8859-1?Q?GHPVOAYtbiQZjPW83kxD+ZlxJSlmTetn/jMQL5rIfWQh/FdhhrceFs6hvj?=
+ =?iso-8859-1?Q?whn3bio54B4gNmjOKDFnbUF4I2JPbIK/oE8OzLkdhM+m4xZokOHhR4DPjb?=
+ =?iso-8859-1?Q?qmHUoR7JxAYU7IwvE9oSJL/vVRs+JPsUrO?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: be3e7d15-ed74-463d-84bb-08db8b42c35d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jul 2023 06:05:06.4826
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 92QFLinrBOyP22wEfLAAhDYyQAYmntbVe1eNCzhf8rzqvuy2e1Wb/5K7+rJgA6jdF+W8gHbLfAfNQFJPNumETHtWk9jSvBeZ7dobgpuC9kw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB11973
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
+Hi Dmitry,
 
-> Kemeng Shi <shikemeng@huaweicloud.com> writes:
->
->> call ext4_mb_mark_group_bb in ext4_mb_clear_bb to remove repeat code
->> to update block bitmap and group descriptor on disk.
->>
->> Note: ext4_mb_clear_bb will update buddy and bitmap in two critical
->> sections instead of update in the same critical section.
->>
->> Original lock behavior introduced in commit 7a2fcbf7f8573 ("ext4: don't
->> use blocks freed but not yet committed in buddy cache init") to avoid
->> race betwwen ext4_mb_free_blocks and ext4_mb_init_cache:
->> ext4_mb_load_buddy_gfp
->> ext4_lock_group
->> mb_clear_bits(bitmap_bh, ...)
->> mb_free_blocks/ext4_mb_free_metadata
->> ext4_unlock_group
->> ext4_mb_unload_buddy
->>
->> New lock behavior in this patch:
->> ext4_mb_load_buddy_gfp
->> ext4_lock_group
->> mb_clear_bits(bitmap_bh, ...)
->> ext4_unlock_group
->>
->> /* no ext4_mb_init_cache for the same group will be called as
->> ext4_mb_load_buddy_gfp will ensure buddy page is update-to-date */
->>
->> ext4_lock_group
->> mb_free_blocks/ext4_mb_free_metadata
->> ext4_unlock_group
->> ext4_mb_unload_buddy
->>
->> As buddy page for group is always update-to-date between
->> ext4_mb_load_buddy_gfp and ext4_mb_unload_buddy. Then no
->> ext4_mb_init_cache will be called for the same group concurrentlly when
->> we update bitmap and buddy page betwwen buddy load and unload.
->
-> More information will definitely help.
->
-> In ext4_mb_init_cache(), within a lock_group(), we first initialize
-> a incore bitmap from on disk block bitmap, pa and from
-> ext4_mb_generate_from_freelist() (this function basically requires
-> ext4_mb_free_metadata() to be called)
-> Then we go and initialize incore buddy within a page which utilize bitmap
-> block data (from previous step) for generating buddy info.
-> So this clearly means we need incore bitmap and mb_free_metadata() to be updated
-> together within the same group lock.
+Thanks for the feedback.
 
-Here I meant on-disk bitmap in bitmap_bh. Anyhow I don't think this is really
-required though.
+> Subject: Re: [PATCH v2 1/2] Input: exc3000 - Simplify probe()
+>=20
+> On Sat, Jul 22, 2023 at 05:51:17PM +0000, Biju Das wrote:
+> > Hi Dmitry Torokhov,
+> >
+> > Thanks for the feedback.
+> >
+> > > Subject: Re: [PATCH v2 1/2] Input: exc3000 - Simplify probe()
+> > >
+> > > On Wed, Jul 19, 2023 at 06:43:47AM +0000, Biju Das wrote:
+> > > > Hi Dmitry Torokhov,
+> > > >
+> > > > Thanks for the feedback.
+> > > >
+> > > > > Subject: Re: [PATCH v2 1/2] Input: exc3000 - Simplify probe()
+> > > > >
+> > > > > On Mon, Jul 17, 2023 at 06:45:27PM +0000, Biju Das wrote:
+> > > > > > Hi Dmitry,
+> > > > > >
+> > > > > > > Subject: Re: [PATCH v2 1/2] Input: exc3000 - Simplify
+> > > > > > > probe()
+> > > > > > >
+> > > > > > > On Mon, Jul 17, 2023 at 07:15:50PM +0100, Mark Brown wrote:
+> > > > > > > > On Mon, Jul 17, 2023 at 04:35:02PM +0000, Biju Das wrote:
+> > > > > > > >
+> > > > > > > > > The .device_get_match_data callbacks are missing for I2C
+> > > > > > > > > and SPI bus
+> > > > > > > subsystems.
+> > > > > > > > > Can you please throw some lights on this?
+> > > > > > > >
+> > > > > > > > It's the first time I've ever heard of that callback, I
+> > > > > > > > don't know why whoever added it wouldn't have done those
+> > > > > > > > buses in particular or if it just didn't happen.  Try
+> > > > > > > > adding it and if it works send
+> > > > > the patches?
+> > > > > > >
+> > > > > > > I think there is a disconnect. Right now
+> > > > > > > device_get_match_data callbacks are part of
+> > > > > > > fwnode_operations. I was proposing to add another optional
+> > > > > > > device_get_match_data callback to 'struct
+> > > bus_type'
+> > > > > > > to allow individual buses control how match data is handled,
+> > > > > > > before (or after) jumping into the fwnode-backed
+> > > > > > > device_get_match_data
+> > > > > callbacks.
+> > > > > >
+> > > > > > That is what implemented here [1] and [2] right?
+> > > > > >
+> > > > > >
+> > > > > > First it check for fwnode-backed device_get_match_data
+> > > > > > callbacks and Fallback is bus-type based match.
+> > > > > >
+> > > > > > Looks like you are proposing to unify [1] and [2] and you want
+> > > > > > the logic to be other way around. ie, first bus-type match,
+> > > > > > then fwnode-backed callbacks?
+> > > > > >
+> > > > >
+> > > > > I do not have a strong preference for the ordering, i.e. I think
+> > > > > it is perfectly fine to do the generic fwnode-based lookup and
+> > > > > if there is no match have bus method called as a fallback,
+> > > >
+> > > > That involves a bit of work.
+> > > >
+> > > > const void *device_get_match_data(const struct device *dev);
+> > > >
+> > > > const struct i2c_device_id *i2c_match_id(const struct
+> > > > i2c_device_id
+> > > *id,
+> > > >                                    const struct i2c_client
+> > > > *client);
+> > > >
+> > > > const struct spi_device_id *spi_get_device_id(const struct
+> > > > spi_device *sdev);
+> > > >
+> > > > Basically, the bus-client driver(such as exc3000) needs to pass
+> > > > struct device and device_get_match_data after generic fwnode-based
+> > > > lookup, needs to find the bus type based on struct device and call
+> > > > a new generic
+> > > > void* bus_get_match_data(void*) callback, so that each bus
+> > > > interface can do a match.
+> > >
+> > > Yes, something like this (which does not seem that involved to
+> me...):
+> >
+> > Looks it will work.
+> >
+> > But there is some 2 additional checks in core code, every driver which
+> is not bus type need to go through this checks.
+> >
+> > Also in Bus specific callback, there are 2 additional checks.
+> >
+> > So, performance wise [1] is better.
+>=20
+> I do not believe this is a concern whatsoever: majority of
+> architectures/boards have been converted to ACPI/DT, which are being
+> matched first as they are now, so the fallback to bus-specific matching
+> against bus-specific device ID tables will be very infrequent.
+> Additionally, device_get_match_data() is predominantly called from
+> driver probe paths, so we need not be concerned with it being used with
+> class devices or other kinds of devices not associated with a bus.
 
+Looks like most of the i2c client driver uses similar handling for=20
+ACPI/DT and ID tables. If that is the case, it is good to have this
+proposed change which will simplify most of the drivers listed in [1]
 
->
-> Now you said that ext4_mb_init_cache() can't be called together between
-> ext4_mb_load_buddy_gfp() and unload_buddy() because buddy page is uptodate?? 
-> Can you give more details please? 
+[1] https://elixir.bootlin.com/linux/latest/A/ident/i2c_match_id
 
-Ok. So even if the page is uptodate, ext4_mb_init_cache() can still get
-called when you have a resize and the extended group belongs to the same
-page (for bs < ps). But we don't touch the bitmap and buddy info for the
-groups which are already initialized.
-And as you said we can't be working on bitmap or buddy info unless we
-have called ext4_mb_load_buddy_gfp() which takes care of the bitmap and
-buddy initialization for this group and it will clear the
-EXT4_GROUP_INFO_NEED_INIT_BIT in grp->bb_state so that
-ext4_mb_init_cache() called due to resize doesn't re-initialize it.
+Eg: drivers/hwmon/pmbus/ibm-cffps.c
 
+	enum versions vs =3D cffps_unknown;
+	const void *md =3D of_device_get_match_data(&client->dev);
+	const struct i2c_device_id *id;
 
-But one concern that I still have is - till now we update the bitmap and
-buddy info atomically within the same group lock. This patch is changing
-this behavior. So you might wanna explain that this race will never happen
-and why?
+	if (md) {
+		vs =3D (enum versions)md;
+	} else {
+		id =3D i2c_match_id(ibm_cffps_id, client);
+		if (id)
+			vs =3D (enum versions)id->driver_data;
+	}
 
+The above code can be converted to=20
+     vs =3D (enum versions)device_get_match_data(&client->dev);
 
-ext4_mb_clear_bb()              xxxxxxxx()
+>=20
+> >
+> > Moreover, we need to avoid code duplication with [1]
+> >
+> > [1]
+>=20
+> If and when my proposed solution gets into the kernel we can drop
+> i2c_get_match_data() altogether.
 
-    ext4_mb_load_buddy_gfp()    ext4_mb_load_buddy_gfp() // this can happen in parallel for initialized groups
-    ext4_lock_group()           ext4_lock_group()   // will wait
-    update block bitmap
-    ext4_unlock_group()
-                                ext4_lock_group() // succeed. 
-                                looks into bitmap and buddy info and found discripancy.
-                                mark group corrupt or something?
-                                ext4_unlock_group()    
+Agreed. Will wait for other people's view on this topic.
 
-    ext4_lock_group()
-    update buddy info
-    ext4_unlock_group()
-    ext4_mb_unlock_buddy()      ext4_mb_unlock_buddy()
-
-
-...On more reading, I don't find a dependency between the two. 
-I see mb_free_blocks (poor naming I know...) which is responsible for
-freeing buddy info does not have any return value. So it won't return an
-error ever. Other thing to note is, ext4_mb_release_inode_pa() does
-check for bits set in bitmap and based on that call mb_free_blocks(),
-but I think we don't have a problem there since we take a group lock and
-we first update the bitmap. 
-
-So I haven't found any dependency due to which we need to update bitmap
-and buddy info atomically. Hence IMO, we can separate it out from a common
-lock.
-Feel free to add/update more details if you thnk anything is missed.
-I didn't put why journal commit cannot run between the two, because I
-think we are still in the middle of a txn.
-(i.e. we still haven't call ext4_journal_stop())
-
-I am putting above information here.. so that if someone else reviews
-the code, then can find this discussion for reference.
-
-However please note that the subject of the commit is not very
-informative. I think this patch should have been split into two - 
-
-1. ext4: Separate block bitmap and buddy bitmap freeing in ext4_mb_clear_bb() 
-... In this commit message you should explain why this can be seperated.
-This way a reviewer would know that this requires a closer review to
-make sure that locking is handled correctly and/or there is no race.
-
-2. ext4: Make use of ext4_mb_mark_group_bb() in ext4_mb_clear_bb()
-This commit message then just becomes make use of the new function that
-you created.
-
--ritesh
-
->
-> What about if the resize gets called on the last group which is within the
-> same page on which we are operating. Also consider blocksize < pagesize.
-> That means we can have even more blocks within the same page.
-> So ext4_mb_init_cache() can still get called right while between load_buddy and unload_buddy?
->
-> Maybe I need to take a closer look at it.
->
-> -ritesh
->
->
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
->>  fs/ext4/mballoc.c | 90 ++++++++++++-----------------------------------
->>  1 file changed, 23 insertions(+), 67 deletions(-)
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index 34fd12aeaf8d..57cc304b724e 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -6325,19 +6325,21 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->>  			       ext4_fsblk_t block, unsigned long count,
->>  			       int flags)
->>  {
->> -	struct buffer_head *bitmap_bh = NULL;
->> +	struct ext4_mark_context mc = {
->> +		.handle = handle,
->> +		.sb = inode->i_sb,
->> +		.state = 0,
->> +	};
->>  	struct super_block *sb = inode->i_sb;
->> -	struct ext4_group_desc *gdp;
->>  	struct ext4_group_info *grp;
->>  	unsigned int overflow;
->>  	ext4_grpblk_t bit;
->> -	struct buffer_head *gd_bh;
->>  	ext4_group_t block_group;
->>  	struct ext4_sb_info *sbi;
->>  	struct ext4_buddy e4b;
->>  	unsigned int count_clusters;
->>  	int err = 0;
->> -	int ret;
->> +	int mark_flags = 0;
->>  
->>  	sbi = EXT4_SB(sb);
->>  
->> @@ -6369,18 +6371,6 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->>  		/* The range changed so it's no longer validated */
->>  		flags &= ~EXT4_FREE_BLOCKS_VALIDATED;
->>  	}
->> -	count_clusters = EXT4_NUM_B2C(sbi, count);
->> -	bitmap_bh = ext4_read_block_bitmap(sb, block_group);
->> -	if (IS_ERR(bitmap_bh)) {
->> -		err = PTR_ERR(bitmap_bh);
->> -		bitmap_bh = NULL;
->> -		goto error_return;
->> -	}
->> -	gdp = ext4_get_group_desc(sb, block_group, &gd_bh);
->> -	if (!gdp) {
->> -		err = -EIO;
->> -		goto error_return;
->> -	}
->>  
->>  	if (!(flags & EXT4_FREE_BLOCKS_VALIDATED) &&
->>  	    !ext4_inode_block_valid(inode, block, count)) {
->> @@ -6390,28 +6380,7 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->>  		goto error_return;
->>  	}
->>  
->> -	BUFFER_TRACE(bitmap_bh, "getting write access");
->> -	err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
->> -					    EXT4_JTR_NONE);
->> -	if (err)
->> -		goto error_return;
->> -
->> -	/*
->> -	 * We are about to modify some metadata.  Call the journal APIs
->> -	 * to unshare ->b_data if a currently-committing transaction is
->> -	 * using it
->> -	 */
->> -	BUFFER_TRACE(gd_bh, "get_write_access");
->> -	err = ext4_journal_get_write_access(handle, sb, gd_bh, EXT4_JTR_NONE);
->> -	if (err)
->> -		goto error_return;
->> -#ifdef AGGRESSIVE_CHECK
->> -	{
->> -		int i;
->> -		for (i = 0; i < count_clusters; i++)
->> -			BUG_ON(!mb_test_bit(bit + i, bitmap_bh->b_data));
->> -	}
->> -#endif
->> +	count_clusters = EXT4_NUM_B2C(sbi, count);
->>  	trace_ext4_mballoc_free(sb, inode, block_group, bit, count_clusters);
->>  
->>  	/* __GFP_NOFAIL: retry infinitely, ignore TIF_MEMDIE and memcg limit. */
->> @@ -6420,6 +6389,22 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->>  	if (err)
->>  		goto error_return;
->>  
->> +#ifdef AGGRESSIVE_CHECK
->> +	mark_flags |= EXT4_MB_BITMAP_MARKED_CHECK;
->> +#endif
->> +	err = ext4_mb_mark_group_bb(&mc, block_group, bit, count_clusters,
->> +				    mark_flags);
->> +
->> +
->> +	if (err && mc.changed == 0) {
->> +		ext4_mb_unload_buddy(&e4b);
->> +		goto error_return;
->> +	}
->> +
->> +#ifdef AGGRESSIVE_CHECK
->> +	BUG_ON(mc.changed != count_clusters);
->> +#endif
->> +
->>  	/*
->>  	 * We need to make sure we don't reuse the freed block until after the
->>  	 * transaction is committed. We make an exception if the inode is to be
->> @@ -6442,13 +6427,8 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->>  		new_entry->efd_tid = handle->h_transaction->t_tid;
->>  
->>  		ext4_lock_group(sb, block_group);
->> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
->>  		ext4_mb_free_metadata(handle, &e4b, new_entry);
->>  	} else {
->> -		/* need to update group_info->bb_free and bitmap
->> -		 * with group lock held. generate_buddy look at
->> -		 * them with group lock_held
->> -		 */
->>  		if (test_opt(sb, DISCARD)) {
->>  			err = ext4_issue_discard(sb, block_group, bit,
->>  						 count_clusters, NULL);
->> @@ -6461,23 +6441,11 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->>  			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
->>  
->>  		ext4_lock_group(sb, block_group);
->> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
->>  		mb_free_blocks(inode, &e4b, bit, count_clusters);
->>  	}
->>  
->> -	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
->> -	ext4_free_group_clusters_set(sb, gdp, ret);
->> -	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
->> -	ext4_group_desc_csum_set(sb, block_group, gdp);
->>  	ext4_unlock_group(sb, block_group);
->>  
->> -	if (sbi->s_log_groups_per_flex) {
->> -		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
->> -		atomic64_add(count_clusters,
->> -			     &sbi_array_rcu_deref(sbi, s_flex_groups,
->> -						  flex_group)->free_clusters);
->> -	}
->> -
->>  	/*
->>  	 * on a bigalloc file system, defer the s_freeclusters_counter
->>  	 * update to the caller (ext4_remove_space and friends) so they
->> @@ -6492,26 +6460,14 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->>  
->>  	ext4_mb_unload_buddy(&e4b);
->>  
->> -	/* We dirtied the bitmap block */
->> -	BUFFER_TRACE(bitmap_bh, "dirtied bitmap block");
->> -	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
->> -
->> -	/* And the group descriptor block */
->> -	BUFFER_TRACE(gd_bh, "dirtied group descriptor block");
->> -	ret = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
->> -	if (!err)
->> -		err = ret;
->> -
->>  	if (overflow && !err) {
->>  		block += count;
->>  		count = overflow;
->> -		put_bh(bitmap_bh);
->>  		/* The range changed so it's no longer validated */
->>  		flags &= ~EXT4_FREE_BLOCKS_VALIDATED;
->>  		goto do_more;
->>  	}
->>  error_return:
->> -	brelse(bitmap_bh);
->>  	ext4_std_error(sb, err);
->>  	return;
->>  }
->> -- 
->> 2.30.0
+Cheers,
+Biju
