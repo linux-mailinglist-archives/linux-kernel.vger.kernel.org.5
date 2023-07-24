@@ -2,151 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8056575EA05
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337B875EA09
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbjGXDVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 23:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
+        id S229931AbjGXDWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 23:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjGXDVS (ORCPT
+        with ESMTP id S229506AbjGXDV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 23:21:18 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C57313D;
-        Sun, 23 Jul 2023 20:21:17 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-262d33fa37cso1907953a91.3;
-        Sun, 23 Jul 2023 20:21:17 -0700 (PDT)
+        Sun, 23 Jul 2023 23:21:56 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9AE13D;
+        Sun, 23 Jul 2023 20:21:54 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d124309864dso179434276.3;
+        Sun, 23 Jul 2023 20:21:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690168876; x=1690773676;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/vh+lK1Kh/jWqDSpT68Nj187KVXpeHhtW55C4KVCYTk=;
-        b=iA/Ir/yGS0vqXQZi4NOyNhedqIeJhPp3btHk7G1v9ThEQtt7OtrG8tJURqt+Li4WyW
-         Qauzg9aBt5YDzl+qInTFWzgjGTB8sSeSQgVEIePQugCQtTANxP1ilXT2APH3niscwpxY
-         D0JxS8xqEHc9HUCPWdqUQ95Zb72o3v+T/oj/y6YB1hmANQE9IEQriSnAsFQ7GiraGy+1
-         6tMA+020gpkM47AAsrglLQQgS5bz5iKGUOMCE2cFT3DqqxBJB0/dlSg+PGzMDz95P2+H
-         Jq23+GTpr4fDuOGHOpxaF7XLez72wPqEK4s+M7w36g81E8Vo339tixNgPo8S9bzekE6d
-         JRwA==
+        d=gmail.com; s=20221208; t=1690168914; x=1690773714;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5gXp87FdyDQ9jbHfN2VxP5CgykvIrcfvrmu6OPAgs4o=;
+        b=VlrmZpAcliY2nHkMtFA29j0IxEkzZClRqlekwMNLB4g//RzSwRjI0p5Phhs8pFSP9H
+         Pob6zkHs8lWBQ51MhD1MpfdHfMJEuvNf0tOquED7xJ/QSByn5Sc50fXWTx7A1Ve6mYac
+         pVDOHHfwpjBjC7/f8XqLRHTqVZbvzxFn4WYBvyK99c14pCWaofm07TUl/KZXjGg9lvfX
+         l8QTB/tVKk4Rry9OiTdzPHvFlxoJY3Yy33zFsusdtoWjFKl5dN4V3jRH24CKLHTeKhC5
+         W+rAQbflmgajrraj0tP0CDN62GOQcsC7/2NdUkXGIM+0pOWN76pbAs02YW9WncwnbDbs
+         d9fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690168876; x=1690773676;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/vh+lK1Kh/jWqDSpT68Nj187KVXpeHhtW55C4KVCYTk=;
-        b=OK2SzRUFogeH9rZKxNhc+KS6tOGklJTKvPVZn/KQJNdCO4cwAjfijZQC1OXXNUNZHJ
-         h3ou+4W+jY2EspX5sNdit0DfvOjv2ilh3NEPa9V8C3pmx1XqB1e/YoVUG8M6Mx8zEi+g
-         MbawDfHU1axQU/bXw06Xevw/XCYcqNgbUjy4t0Fuxosrauaf/dGGv6iVe5NkXLmGHbkG
-         5/P3cabEOX5Tp1N33TdBy0TUMkvVXU24GG5/4TUcJW8JDH0nWleBQhHrTzxBg8rWzrot
-         kmjC0DleunX+s86dBo6kZSdr5zCR2KzIuyxzVNZX98qXy8Ptsabdx6Mmst47Xf3/7fZ+
-         2PwQ==
-X-Gm-Message-State: ABy/qLa+jR6AqXxPt/7PNuwDNU03iw7E3IGirXC7eX55A8/MWMbPFRTh
-        u7PolZ/S+q3+PDwafd8c3SAy4aTWF7dzGbinyMtY3nnSEck=
-X-Google-Smtp-Source: APBJJlHGLB6OIEJJMDDXEPw9cpQLWZTCMVrlutdyPmJ2m/b+yBTr5E0zMBA2SgaqhVDIldRwS3ig/mQxDwoHAbjC+PI=
-X-Received: by 2002:a17:90a:f2d3:b0:267:ce35:2f10 with SMTP id
- gt19-20020a17090af2d300b00267ce352f10mr7398282pjb.4.1690168876417; Sun, 23
- Jul 2023 20:21:16 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690168914; x=1690773714;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5gXp87FdyDQ9jbHfN2VxP5CgykvIrcfvrmu6OPAgs4o=;
+        b=JxYZSWHTmomyhvryzpcG0csPn+lW+zr4SbNOE6tiUdL/rs9zmJC+iuy+K0rQ2yqcUF
+         mQeUUnwvkJCSiBFiQXvX6WM7VRCUKBgHppdsafeHdpPm/XboSej/SFgA4ummMZj01kVL
+         lpTuysdCsAMWlEfuCbehkiiqc3cthFte4/Xw2omWizqYHpNeaiDN3OfOizFMhTW+NMP1
+         MQ65300Zus2DtRCOV+QpdDawMtVVmoiaogOAWQ9URd2Ep6gqgtt/G8MM+8BDjEYG/2AN
+         zZ4RXvgeReloFblQ2AgxtdiTwAfhhfO2g95xeCuQv/1/eSfR82GlrplknfScLr+zNasY
+         fFmw==
+X-Gm-Message-State: ABy/qLaxrA6nmdM9KqWFJ8I76GuDiLo85FPW/aqH+eVyc5qYOK0STqfz
+        n72pfdeuuTTHNEIMcs2+nQY=
+X-Google-Smtp-Source: APBJJlFFuNlgAGSz0kM5w3Pa5wQXn+44xlh1+P4aHAt0yfJ7fE+6sBOAjN/LdMSBvUZOmPUc9Rtl5w==
+X-Received: by 2002:a25:2f85:0:b0:d0a:7e3:fa0 with SMTP id v127-20020a252f85000000b00d0a07e30fa0mr2691363ybv.53.1690168913855;
+        Sun, 23 Jul 2023 20:21:53 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id gp20-20020a17090adf1400b0025023726fc4sm7280497pjb.26.2023.07.23.20.21.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Jul 2023 20:21:53 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <e093a52d-e36f-ec26-e218-1e3b3b400e34@roeck-us.net>
+Date:   Sun, 23 Jul 2023 20:21:51 -0700
 MIME-Version: 1.0
-References: <20230721121534.44328-1-ppbuk5246@gmail.com> <05e98227-77f4-4918-8f8e-2170a158e350@paulmck-laptop>
- <CAM7-yPRc4Z0siaiWf+fK2GEfjPMq5UaY13F4o19rU6NNUS5fNg@mail.gmail.com>
- <faf07eef-0a51-49f3-be48-0433952171ad@paulmck-laptop> <CAM7-yPTrHN1xPXWjSUrJeTEOuy78DpmL8ytUY+a4ZOekiAbnZg@mail.gmail.com>
- <31070aab-8665-44c4-8950-0631a777ef44@paulmck-laptop> <CAM7-yPSn8ietAJ8NKb0-VHDQhkHs73u--KFmO3rpTPUvcFuMvA@mail.gmail.com>
-In-Reply-To: <CAM7-yPSn8ietAJ8NKb0-VHDQhkHs73u--KFmO3rpTPUvcFuMvA@mail.gmail.com>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Mon, 24 Jul 2023 11:21:04 +0800
-Message-ID: <CALm+0cWeZnMUk8Lj_nF3Htd14czGcT_Yt71nVwJdGhTECQOAWg@mail.gmail.com>
-Subject: Re: [PATCH] rcu: remove unnecessary check cpu_no_qs.norm on rcu_report_qs_rdp
-To:     Yun Levi <ppbuk5246@gmail.com>
-Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, osh@joshtriplett.org, boqun.feng@gmail.com,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>
+Cc:     "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230424101352.28117-1-Delphine_CC_Chiu@Wiwynn.com>
+ <20230424101352.28117-2-Delphine_CC_Chiu@Wiwynn.com>
+ <321a84c6-6d74-4042-a6ce-6229073c8d30@roeck-us.net>
+ <SG2PR04MB55436F03F6CAD6D415FDEE40A102A@SG2PR04MB5543.apcprd04.prod.outlook.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v1 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
+ bindings
+In-Reply-To: <SG2PR04MB55436F03F6CAD6D415FDEE40A102A@SG2PR04MB5543.apcprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> Thanks for replying to reply Paul :)
->
-> > And try testing with CONFIG_RCU_STRICT_GRACE_PERIOD=y and CONFIG_PREEMPT=n.
-> > Though there might be better Kconfig options to use.  Those two come
-> > immediately to mind.
->
-> I've tested with this option via rcu torture.
-> and it doesn't report any problems.
-> and after commit 6d60ea03ac2d3 ("rcu: Report QS for outermost
-> PREEMPT=n rcu_read_unlock() for strict GPs")
-> it always makes cpu_no_qs.b.norm false whenever it calls
-> rcu_report_qs_rdp in rcu_read_unlock.
->
-> > But one critical piece is that softirq handlers, including the RCU_SOFTIRQ
-> > handler rcu_core_si(), can be invoked upon return from interrupts.
->
-> I think in that case, no problem because if it reports qs already,
-> rcu_check_quiescent_state wouldn't call rcu_report_qs_rdp again.
-> And if RCU_SOFTIRQ is called as soon as RCU interrupt is finished,
-> it seems the fastest one to notify qs to related tree.
->
-> > Another critical piece is that if a CPU is idle during any part of a
-> > grace period, the grace-period kthread can report a quiescent state on
-> > its behalf.
->
-> I think
->     1) If timer interrupt is still programed,
->           - when rcu_sched_clock_irq first reports qs, no problem
->           - If qs is reported via grace period thread first,
-> note_gp_chagned in rcu interrupt
->             will recognize this situation by setting core_needs_qs as false,
->             it doesn't call rcu_report_qs_rdp thou cpu_no_qs.b.norm is true.
->
->      2) If the timer interrupt isn't programmed,
->           - rcu_gp_kthreaad reports its qs, no problem.
->
-> So, I think there's no problem removing
->       "rdp->cpu_no_qs.b.norm" check in rcu_report_qs_rdp.
-> or wrap this condition check as WARN_ON_ONCE.
->
-> > Does that help?
-> Many thanks always :)
->
+On 7/23/23 19:12, Delphine_CC_Chiu/WYHQ/Wiwynn wrote:
 
+>>> +properties:
+>>> +  compatible:
+>>> +    enum:
+>>> +      - lltc,ltc4286
+>>> +      - lltc,ltc4287
+>>
+>> There is no LTC4287, at least according to the Analog website.
+> It has been announced on Analog Devices website.
+> Please refer to this link: https://www.analog.com/en/products/ltc2487.html#product-overview
+> 
 
-Hi Levi
+No, that is wrong. You are pointing to ltc2487, which is something
+completely different.
 
-For built with CONFIG_RCU_STRICT_GRACE_PERIOD=y and CONFIG_PREEMPT=n kernels
-Consider the following scenario:
+Guenter
 
-__rcu_read_unlock()
-   -> rcu_read_unlock_strict()
-        ->rdp = this_cpu_ptr(&rcu_data);
-        ->rdp->cpu_no_qs.b.norm = false;
-
-                 by interrupt and return invoke rcu_core():
-                 ->rcu_check_quiescent_state()
-                      ->rdp = raw_cpu_ptr(&rcu_data);
-                      -> rcu_check_quiescent_state(rdp);
-                            ->note_gp_changes(rdp);
-                                -> __note_gp_changes(rnp, rdp)
-                                start new gp
-                                ->rdp->cpu_no_qs.b.norm = true;
-
-        ->rcu_report_qs_rdp(rdp);
-           ->if (rdp->cpu_no_qs.b.norm || ...)
-
-
-Thanks
-Zqiang
-
-
->
-> --------
-> SIncerely,
-> Levi.
