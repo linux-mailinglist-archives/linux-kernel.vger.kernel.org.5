@@ -2,137 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B06E75FB77
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4810075FB7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbjGXQHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40294 "EHLO
+        id S230007AbjGXQIR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Jul 2023 12:08:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbjGXQHL (ORCPT
+        with ESMTP id S229485AbjGXQIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:07:11 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73CD10FF;
-        Mon, 24 Jul 2023 09:07:09 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6b9aadde448so4066664a34.0;
-        Mon, 24 Jul 2023 09:07:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690214829; x=1690819629;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sNi5vVMCJWfHjXXkqvqwnxz9gP61j7y0zdFiLD2AOm4=;
-        b=b1cbmfyKHmtLdjno0V/bvAf32VvNFJpzM2VD9rlw08X9zpd1njJBjfqc/4AQ++uSbl
-         Dm2JllG46Lyxx3hPZ9KJMj6B0UPhnnC9OROEcysatpXE5tJ2x9QTbp+z9nmC7mFdGArS
-         SJoRedyiX6G/HPiW5OJcoE0H0fpz7CIZdKJ08//8arjk2akZHVkrHM+AO9qzmYp5x9bI
-         4/U+gAoQwOoq4u3ki7jpL0BHB6uu69D8nGrch3zYWUQA0eAmx2Ze4G6iydhata5WgXrR
-         wP+jMiuUv9E4Ch6BJVUaYYyvoskSeTxRoSmXPvuRCnLNKCchY2UU+RAiWA8Pkoey9Z8k
-         Z/cg==
+        Mon, 24 Jul 2023 12:08:15 -0400
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B248131
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:08:14 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-583b4522927so27828077b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:08:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690214829; x=1690819629;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sNi5vVMCJWfHjXXkqvqwnxz9gP61j7y0zdFiLD2AOm4=;
-        b=fmWoXkQhxKWuWds8plPew+uUHCaTgEzFOojR6ypd9su91NwhToioPhgP2w+kBQvayb
-         ER699vBOorEOxyLxTTzWfE0hkDes7vKKbyeDf1daYKVU8cVqubvtgiU1b6n55HPp7lsg
-         8j/0OJwL6q03BBBBiagoPDx51jIqeK48cMeMXv6XiocqE/Oryy5Jf91CvVFp37lQ95KE
-         J1Sj0NNILoKrQnGDFI1KgMvXQP3rp6XWaY6PT8KDA1MysC/Q+Yo4+3pqvLiMWAZevYwd
-         pn+hvGE6o+XpSX9EpreU9e4S8yttRG3ykxW7XMW4PsAFE/JD7WEiN4lPGHSQcgTDbVMF
-         TAew==
-X-Gm-Message-State: ABy/qLZUGN4qteK9s7FgjeEpGyVWF2D9bT/XQffykXQMvXTpnK1HczfN
-        RoIqCls6ArMvGH1kAPbkyAQ=
-X-Google-Smtp-Source: APBJJlH3usIPW2PVHeDvPhTMcX6b5v/xPdx3CCRtBadftST/7fWKXnmZp3nVJH0zxKDL4ioZx54VIw==
-X-Received: by 2002:a05:6830:11da:b0:6b9:99fe:4747 with SMTP id v26-20020a05683011da00b006b999fe4747mr9267660otq.29.1690214829009;
-        Mon, 24 Jul 2023 09:07:09 -0700 (PDT)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id p3-20020a9d6943000000b006b9734b9fafsm4024904oto.13.2023.07.24.09.07.05
+        d=1e100.net; s=20221208; t=1690214893; x=1690819693;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Oc4HBfAWhFIrA+P5+l0RBWimMN2JNFuFZoCBh9iYioY=;
+        b=Fe7iTkYMaFUKSLGFVgRCZKttRU/fbVpGkiN8Q2N12VSz6jIbcP4Yw3lweR5eb13Ckt
+         iRX8iVj/0wIOo3HNPd28OHrCUUE1tSgXk0KBTY4WrXL/jj9thWZv9mkcD1luXTzJCDlA
+         yyPa5yupDDCxS/ei7uF3CbcpnW4x300Ca4c+zOSXrNb+uJh+MpSkVLzpf0hms1CTokCX
+         5jNP7ZTg0kNbHQXZ9+DwAET2bEdxg0Hq2AHRNvjoUV40DRJTGlcgs74fWFDKHjr9DW8P
+         r4FHGVQa6Z0aVGuA60uSWjKQ/YqGb8YmpmMcE6LM3/Qxk8Je+NWT4bboKynr7ehZF3v0
+         iV+g==
+X-Gm-Message-State: ABy/qLY4sscTjDdUqD+d6yfg2h+ZxYNOMfB1O8JzC58Zrmyf8W7WBd6Q
+        g0s6xTlVKiNKjt39Va5lp0SjVBWBRbLD3Q==
+X-Google-Smtp-Source: APBJJlEKac4I2SozQ3UScZ+DGgxLIBMYdBtdanpJJvSQagh2wSIUIZuOtxy5z1KVxINORCWllmrsYA==
+X-Received: by 2002:a0d:cb08:0:b0:579:efbb:cbe3 with SMTP id n8-20020a0dcb08000000b00579efbbcbe3mr7512713ywd.43.1690214893579;
+        Mon, 24 Jul 2023 09:08:13 -0700 (PDT)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id b81-20020a0dd954000000b005794a9576f0sm2873547ywe.9.2023.07.24.09.08.12
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 09:07:08 -0700 (PDT)
-Message-ID: <ebdf2635-6003-fc62-310f-5b9071473415@gmail.com>
-Date:   Mon, 24 Jul 2023 13:07:04 -0300
+        Mon, 24 Jul 2023 09:08:12 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-57688a146ecso54815347b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:08:12 -0700 (PDT)
+X-Received: by 2002:a25:2fcb:0:b0:d0e:b419:f4dc with SMTP id
+ v194-20020a252fcb000000b00d0eb419f4dcmr3377848ybv.10.1690214892152; Mon, 24
+ Jul 2023 09:08:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/12] rust: init: add `{pin_}chain` functions to
- `{Pin}Init<T, E>`
-Content-Language: en-US
-To:     Benno Lossin <benno.lossin@proton.me>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <nmi@metaspace.dk>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Asahi Lina <lina@asahilina.net>
-References: <20230719141918.543938-1-benno.lossin@proton.me>
- <20230719141918.543938-12-benno.lossin@proton.me>
- <0b818707-4762-c12d-8624-7d3c4f6841da@gmail.com>
- <5f22b25d-132d-7cbc-8bca-8333516c1663@proton.me>
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <5f22b25d-132d-7cbc-8bca-8333516c1663@proton.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230722180925.1408885-1-hugo@hugovil.com>
+In-Reply-To: <20230722180925.1408885-1-hugo@hugovil.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 24 Jul 2023 18:08:00 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVTDrTowx2-MgYaaNASKLZw=ra5z7pL5WtemDgZ3HS5sQ@mail.gmail.com>
+Message-ID: <CAMuHMdVTDrTowx2-MgYaaNASKLZw=ra5z7pL5WtemDgZ3HS5sQ@mail.gmail.com>
+Subject: Re: [PATCH v2] auxdisplay: hd44780: move cursor home after clear
+ display command
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/24/23 11:08, Benno Lossin wrote:
-> On 21.07.23 02:23, Martin Rodriguez Reboredo wrote:
->> On 7/19/23 11:21, Benno Lossin wrote:
->>> +/// An initializer returned by [`PinInit::pin_chain`].
->>> +pub struct ChainPinInit<I, F, T: ?Sized, E>(I, F, __internal::Invariant<(E, Box<T>)>);
->>> +
->>> +// SAFETY: the `__pinned_init` function is implemented such that it
->>> +// - returns `Ok(())` on successful initialization,
->>> +// - returns `Err(err)` on error and in this case `slot` will be dropped.
->>> +// - considers `slot` pinned.
->>> +unsafe impl<T: ?Sized, E, I, F> PinInit<T, E> for ChainPinInit<I, F, T, E>
->>> +where
->>> +    I: PinInit<T, E>,
->>> +    F: FnOnce(Pin<&mut T>) -> Result<(), E>,
->>> +{
->>> +    unsafe fn __pinned_init(self, slot: *mut T) -> Result<(), E> {
->>> +        // SAFETY: all requirements fulfilled since this function is `__pinned_init`.
->>> +        unsafe { self.0.__pinned_init(slot)? };
->>> +        // SAFETY: The above call initialized `slot` and we still have unique access.
->>> +        let val = unsafe { &mut *slot };
->>> +        // SAFETY: `slot` is considered pinned
->>> +        let val = unsafe { Pin::new_unchecked(val) };
->>> +        (self.1)(val).map_err(|e| {
->>> +            // SAFETY: `slot` was initialized above.
->>> +            unsafe { core::ptr::drop_in_place(slot) };
->>> +            e
->>
->> I might stumble upon an error like EAGAIN if I call `pin_chain` but that
->> means `slot` will be dropped. So my recommendation is to either not drop
->> the value or detail in `pin_chain`'s doc comment that the closure will
->> drop on error.
-> 
-> This is a bit confusing to me, because dropping the value on returning `Err`
-> is a safety requirement of `PinInit`. Could you elaborate why this is
-> surprising? I can of course add it to the documentation, but I do not see
-> how it could be implemented differently. Since if you do not drop the value
-> here, nobody would know that it is still initialized.
+Hi Hugo,
 
-I knew about the requirement of dropping on `Err`, but what has caught my
-attention is that `{pin_}chain` might not abide with it per the doc
-comment as it says that `self` is initialized before calling `f`...
+On Sat, Jul 22, 2023 at 8:18 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+>
+> The DISPLAY_CLEAR command on the NewHaven NHD-0220DZW-AG5 display
+> does NOT change the DDRAM address to 00h (home position) like the
+> standard Hitachi HD44780 controller. As a consequence, the starting
+> position of the initial string LCD_INIT_TEXT is not guaranteed to be
+> at 0,0 depending on where the cursor was before the DISPLAY_CLEAR
+> command.
+>
+> Extract of DISPLAY_CLEAR command from datasheets of:
+>
+>     Hitachi HD44780:
+>         ... It then sets DDRAM address 0 into the address counter...
+>
+>     NewHaven NHD-0220DZW-AG5 datasheet:
+>         ... This instruction does not change the DDRAM Address
+>
+> Move the cursor home after sending DISPLAY_CLEAR command to support
+> non-standard LCDs.
+>
+> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-     /// First initializes the value using `self` then calls the function
-     /// `f` with the initialized value.
+Thanks for your patch!
 
-But one can not know what would happen when `f` fails, specially if
-such failure can be ignored or it's only temporarily.
+> --- a/drivers/auxdisplay/hd44780_common.c
+> +++ b/drivers/auxdisplay/hd44780_common.c
+> @@ -82,7 +82,15 @@ int hd44780_common_clear_display(struct charlcd *lcd)
+>         hdc->write_cmd(hdc, LCD_CMD_DISPLAY_CLEAR);
+>         /* datasheet says to wait 1,64 milliseconds */
+>         long_sleep(2);
+> -       return 0;
+> +
+> +       /*
+> +        * The Hitachi HD44780 controller (and compatible ones) reset the DDRAM
+> +        * address when executing the DISPLAY_CLEAR command, thus the
+> +        * following call is not required. However, other controllers do not
+> +        * (e.g. NewHaven NHD-0220DZW-AG5), thus move the cursor to home
+> +        * unconditionally to support both.
+> +        */
+> +       return hd44780_common_home(lcd);
 
-So then, the best course IMO is to mention that in some way the value is
-still being initialized, kinda setting it up, and that it will be dropped
-when an error is returned. WDYT?
+Sorry, I haven't tested your patch yet, as my HD44780 display is
+currently not connected to any system.
+
+Your patch LGTM, so
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Note that hd44780_common_home() calls hd44780_common_gotoxy().
+According to the documentation, both HD44780U and NHD-0220DZW-AG5
+support the Return Home command (0x02), so that could be a good
+alternative.
+
+>  }
+>  EXPORT_SYMBOL_GPL(hd44780_common_clear_display);
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
