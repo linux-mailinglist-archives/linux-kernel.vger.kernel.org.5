@@ -2,90 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C6E75F8BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC9475F8C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbjGXNqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
+        id S230078AbjGXNqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbjGXNpv (ORCPT
+        with ESMTP id S231797AbjGXNqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:45:51 -0400
-Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACEB4200
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:43:45 -0700 (PDT)
-Received: from [167.98.27.226] (helo=[10.35.4.179])
-        by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-        id 1qNvpr-002awt-2z; Mon, 24 Jul 2023 14:42:51 +0100
-Message-ID: <e75d0e92-1e6e-43c2-1935-00f22df5579d@codethink.co.uk>
-Date:   Mon, 24 Jul 2023 14:42:50 +0100
+        Mon, 24 Jul 2023 09:46:04 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5DD1B3;
+        Mon, 24 Jul 2023 06:43:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690206235; x=1721742235;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=k5M12onZc7LjlJ3T/aLtJ/tbWke5cSmJgH3mrt/yYJA=;
+  b=TU+2I7mEjCvYUWagnDVs6WDHwWJOlwYpA5gAbhMO72YZd8wnP6/94NCD
+   y/t5Ne++Q6ADrHMkJkHuw+a4XaUsblkPktEhAjWYbRHirBGwg4gC1fj1a
+   XDtuEtCm+w8mxpj9xOs/G70Zp6H+yv7LVDh7gYa2oHdmgsg3fjJ1LKl1m
+   tct6WsZv1Nn8Bo+z2oYIFnpfDVdCJvLXeX3nraXl2msFoFtVZlZ1N2gED
+   kwlmp8I0C0bZoXrznG/i5BpiubohJw8LGKol6iPigI2ygGKYUp/FyINI/
+   x6bbhxWikso7Bnx9XBd9N07OgvEDaVB8tgJqGr30u6eJNuDkCr71+HOQ8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="371043521"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="371043521"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 06:43:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="1056431915"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="1056431915"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Jul 2023 06:42:59 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id D2BBA1A6; Mon, 24 Jul 2023 16:43:07 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v1 1/1] asm-generic: Fix spelling of architecture
+Date:   Mon, 24 Jul 2023 16:43:01 +0300
+Message-Id: <20230724134301.13980-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] riscv: Fix local irq restore when flags indicates irq
- disabled
-Content-Language: en-GB
-To:     "luxu.kernel" <luxujoy@gmail.com>, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        luxu.kernel@bytedance.com
-References: <20230724132736.124106-1-luxu.kernel@bytedance.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-In-Reply-To: <20230724132736.124106-1-luxu.kernel@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/2023 14:27, luxu.kernel wrote:
-> When arch_local_irq_restore() is called with flags indicating irqs
-> disabled, we need to clear SR_IE bit in CSR_STATUS, whereas current
-> implementation based on csr_set() function only sets SR_IE bit of
-> CSR_STATUS when SR_IE bit of flags is high and does nothing when
-> SR_IE bit of flags is low.
-> 
-> This commit supplies csr clear operation when calling irq restore
-> function with flags indicating irq disabled.
-> 
-> Signed-off-by: luxu.kernel <luxu.kernel@bytedance.com>
+Fix spelling of "architecture" in the Kbuild file.
 
-real-names are required for signoff
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/asm-generic/Kbuild | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->   arch/riscv/include/asm/irqflags.h | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/include/asm/irqflags.h b/arch/riscv/include/asm/irqflags.h
-> index 08d4d6a5b7e9..7c31fc3c3559 100644
-> --- a/arch/riscv/include/asm/irqflags.h
-> +++ b/arch/riscv/include/asm/irqflags.h
-> @@ -49,7 +49,10 @@ static inline int arch_irqs_disabled(void)
->   /* set interrupt enabled status */
->   static inline void arch_local_irq_restore(unsigned long flags)
->   {
-> -	csr_set(CSR_STATUS, flags & SR_IE);
-> +	if (flags & SR_IE)
-> +		csr_set(CSR_STATUS, SR_IE);
-> +	else
-> +		csr_clear(CSR_STATUS, SR_IE);
->   }
->   
->   #endif /* _ASM_RISCV_IRQFLAGS_H */
-
-I think this is correct, I wonder how long this has been going on
-without anyone noticing?
-
+diff --git a/include/asm-generic/Kbuild b/include/asm-generic/Kbuild
+index 941be574bbe0..def242528b1d 100644
+--- a/include/asm-generic/Kbuild
++++ b/include/asm-generic/Kbuild
+@@ -2,7 +2,7 @@
+ #
+ # asm headers that all architectures except um should have
+ # (This file is not included when SRCARCH=um since UML borrows several
+-# asm headers from the host architecutre.)
++# asm headers from the host architecture.)
+ 
+ mandatory-y += atomic.h
+ mandatory-y += archrandom.h
 -- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
-
-https://www.codethink.co.uk/privacy.html
+2.40.0.1.gaa8946217a0b
 
