@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 725E375EAC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 07:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D8375EAC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 07:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbjGXFOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 01:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
+        id S229905AbjGXFOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 01:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjGXFN6 (ORCPT
+        with ESMTP id S229456AbjGXFN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 01:13:58 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193BDE54;
+        Mon, 24 Jul 2023 01:13:59 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB13E47;
         Sun, 23 Jul 2023 22:13:52 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2632336f75fso2496906a91.3;
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-55ae51a45deso1863465a12.3;
         Sun, 23 Jul 2023 22:13:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690175631; x=1690780431;
+        d=gmail.com; s=20221208; t=1690175632; x=1690780432;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TqW8DfZ6fP+85CmTsJVzjeFdh5CJjlffb6mkzwyRRAA=;
-        b=Tlc1MlavR+Wldxpwq4X5o+8CWM7f7kxeQC4dmahGNQQetc8PON7FoURC6vPsEYZvJB
-         7+OOHFLM6NASIqpsBr8SBXN/6zacIwRGDzy2k5A4/D6oJYBUPgheH39SaP0fFEeY2xrG
-         gDQWXHzjhlC0pK7dQOUh1ghuZzHL1k5JkBKx9J+5vrRjZNrA9rnIz8qXBazD6NyerZLK
-         UpcK9GXTEqLCXQHQ9SQCUqbNfopRqoKYcuU5lDIOmW/mldOqYuLb4zr7v6wfXO6tJAbC
-         AvAJRdYPPz0ehJFhxnskvKKIdLyAR718xeKz/TSCz78vN67ZFV421Hh/ZjK6as5gXdSc
-         cV5Q==
+        bh=03EJWrFuVnN7Ttag8T1UjPvKeFWGUuTA0IYhmoMhgg0=;
+        b=FiusPs/hFTgSo1KubGOMb8AhhcHl9uCi6O38VK/7Hy02JOrKsymMaqBf/LtSrmhy79
+         Sie/LjQYh76DqR5hMBW53/9jh58c1Fts+6s9hgCwJ4O4WoAZTLhhUnCq8lVF4Zl8K9AD
+         BNE8yrHpqhIOzQTUBanNCVTMi7TZ/RIBGxvSitsaQdkkpojKaQJ8ONLfVgJBrYb5juSx
+         sPd0ZfEFG/FqDhA9cTIkoj5+qJTVXelxjhixuDacyuoOSaga+LmIXkfl7IIexfE8I0l9
+         ZuyGKL9vlH+gFX+7YalSMX4Tas40z9XlnLm/AQ5LxcjebTi3GiishznjFcL2dwJ6wYET
+         XMRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690175631; x=1690780431;
+        d=1e100.net; s=20221208; t=1690175632; x=1690780432;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TqW8DfZ6fP+85CmTsJVzjeFdh5CJjlffb6mkzwyRRAA=;
-        b=AGRVCNcW9hNeOVXCqq6PPe2azXZ8BbFxB4d8mwy2u6xseFEnZzK3wbdSCzBtbv4QEA
-         BgX1ObXEC8ie5w4PnRPDEJOtZfk4F1xFf/SV35Lx6bM65ke44FEDmC8rZ8YyvZGaumDj
-         TzxLtsIElJAv1QVnPaUJAndANONvx7L3Asn+hFiEOrq0i37qR4Hw88+VHza/hC89PxBc
-         DlCDt5YXx+yPk/LbxL8eo7WbRB/kBZDLdCZBTs14W9GtXdOl31iW2KNnf2DkGNgwTJw6
-         GyCfL5fE8ylURIRtfSPu/A+sfqI8SITFCfjkOC1l0kyF3Aex3XtUO8qk2HJt3QZ1gIPk
-         hGaw==
-X-Gm-Message-State: ABy/qLbGBg4OwUpRL0kTy1oWGYTi98k1HNXeCkiBwKztsDVtIE0+B9Su
-        btceiAZBF+n9sPLxcCDipIFGc7Dw7FA=
-X-Google-Smtp-Source: APBJJlH0Im8QdnVDV93025+Hbwmqv/NIDLqn4PdqoTzvlK5Q+axm2BFQ63P3SnqiCMS6ZM9l0jtNPw==
-X-Received: by 2002:a17:90b:3711:b0:268:13c4:b800 with SMTP id mg17-20020a17090b371100b0026813c4b800mr2499791pjb.21.1690175631102;
+        bh=03EJWrFuVnN7Ttag8T1UjPvKeFWGUuTA0IYhmoMhgg0=;
+        b=BjEXachNGXAoskfRP/PMg9XM7T9sAt9kMZuxrTEib3bV91x9uGH16opnXkHb2nyc1l
+         4iwGGD/A9iwrq4mzgaVc9NSysvdFo9umfT0opQEO3tzbulIjFgJySbsjmOJ+4DNQ2aHi
+         74eL3MVhc30+fkODbyKEnimLZ4FQKFvwrF+lQKJKTQLlKcxVrDYVjFMCXTIF67JKPdZb
+         2INBaU/U7+tyPEeT/gocA0Bk9QS6JWh8F0rmfBfrcJcrd4KWDLFYpx3MZ7m00y5YCBKs
+         6tt22flfwLq1HhjyU+pgH3jN1QvLGPAxgTWLiBF4wjvViK4G6BZm7DoKCTb8VfzmU1zs
+         qP8g==
+X-Gm-Message-State: ABy/qLY1LlzKYxCzCDnT20JXr2wWmsep9sWkVTwN2McvE0PE8hsYLyuk
+        MmDnUbcDcvaVhZmmDExfBxhcqafDQpg=
+X-Google-Smtp-Source: APBJJlH2b2TLnA+/XQ9lY/4HOD8AV018YZJ4STZy72ICtUXvyaLXUK0m1SINjFMDdyXk6kXvXk9QzQ==
+X-Received: by 2002:a17:90a:66c6:b0:262:ce8f:a3e with SMTP id z6-20020a17090a66c600b00262ce8f0a3emr5539310pjl.42.1690175631957;
         Sun, 23 Jul 2023 22:13:51 -0700 (PDT)
 Received: from dtor-ws.mtv.corp.google.com ([2620:15c:9d:2:b8db:3c3:1ff4:2ae3])
-        by smtp.gmail.com with ESMTPSA id gv17-20020a17090b11d100b00265dc26d8dfsm7501106pjb.27.2023.07.23.22.13.50
+        by smtp.gmail.com with ESMTPSA id gv17-20020a17090b11d100b00265dc26d8dfsm7501106pjb.27.2023.07.23.22.13.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 22:13:50 -0700 (PDT)
+        Sun, 23 Jul 2023 22:13:51 -0700 (PDT)
 From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To:     linux-input@vger.kernel.org
 Cc:     Yangtao Li <frank.li@vivo.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] Input: qt2160 - do not hard code interrupt trigger
-Date:   Sun, 23 Jul 2023 22:13:41 -0700
-Message-ID: <20230724051345.335219-3-dmitry.torokhov@gmail.com>
+Subject: [PATCH 4/4] Input: qt2160 - convert to use devm_* api
+Date:   Sun, 23 Jul 2023 22:13:42 -0700
+Message-ID: <20230724051345.335219-4-dmitry.torokhov@gmail.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
 In-Reply-To: <20230724051345.335219-1-dmitry.torokhov@gmail.com>
 References: <20230724051345.335219-1-dmitry.torokhov@gmail.com>
@@ -71,27 +71,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rely on the platform and ACPI/DT to set up the interrupt trigger.
+From: Yangtao Li <frank.li@vivo.com>
 
+Use devm_* api to simplify code, this makes it unnecessary to explicitly
+release resources.
+
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
+Link: https://lore.kernel.org/r/20230714080611.81302-7-frank.li@vivo.com
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/input/keyboard/qt2160.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/input/keyboard/qt2160.c | 77 +++++++++------------------------
+ 1 file changed, 20 insertions(+), 57 deletions(-)
 
 diff --git a/drivers/input/keyboard/qt2160.c b/drivers/input/keyboard/qt2160.c
-index b8c0f0ebf604..6cfaabd10482 100644
+index 6cfaabd10482..7e3b09642ab7 100644
 --- a/drivers/input/keyboard/qt2160.c
 +++ b/drivers/input/keyboard/qt2160.c
-@@ -371,8 +371,7 @@ static int qt2160_probe(struct i2c_client *client)
+@@ -239,7 +239,7 @@ static int qt2160_write(struct i2c_client *client, u8 reg, u8 data)
+ static int qt2160_register_leds(struct qt2160_data *qt2160)
+ {
+ 	struct i2c_client *client = qt2160->client;
+-	int ret;
++	int error;
+ 	int i;
+ 
+ 	for (i = 0; i < QT2160_NUM_LEDS_X; i++) {
+@@ -252,9 +252,9 @@ static int qt2160_register_leds(struct qt2160_data *qt2160)
+ 		led->id = i;
+ 		led->qt2160 = qt2160;
+ 
+-		ret = led_classdev_register(&client->dev, &led->cdev);
+-		if (ret < 0)
+-			return ret;
++		error = devm_led_classdev_register(&client->dev, &led->cdev);
++		if (error)
++			return error;
+ 	}
+ 
+ 	/* Tur off LEDs */
+@@ -265,14 +265,6 @@ static int qt2160_register_leds(struct qt2160_data *qt2160)
+ 	return 0;
+ }
+ 
+-static void qt2160_unregister_leds(struct qt2160_data *qt2160)
+-{
+-	int i;
+-
+-	for (i = 0; i < QT2160_NUM_LEDS_X; i++)
+-		led_classdev_unregister(&qt2160->leds[i].cdev);
+-}
+-
+ #else
+ 
+ static inline int qt2160_register_leds(struct qt2160_data *qt2160)
+@@ -280,10 +272,6 @@ static inline int qt2160_register_leds(struct qt2160_data *qt2160)
+ 	return 0;
+ }
+ 
+-static inline void qt2160_unregister_leds(struct qt2160_data *qt2160)
+-{
+-}
+-
+ #endif
+ 
+ static bool qt2160_identify(struct i2c_client *client)
+@@ -334,13 +322,13 @@ static int qt2160_probe(struct i2c_client *client)
+ 		return -ENODEV;
+ 
+ 	/* Chip is valid and active. Allocate structure */
+-	qt2160 = kzalloc(sizeof(struct qt2160_data), GFP_KERNEL);
+-	input = input_allocate_device();
+-	if (!qt2160 || !input) {
+-		dev_err(&client->dev, "insufficient memory\n");
+-		error = -ENOMEM;
+-		goto err_free_mem;
+-	}
++	qt2160 = devm_kzalloc(&client->dev, sizeof(*qt2160), GFP_KERNEL);
++	if (!qt2160)
++		return -ENOMEM;
++
++	input = devm_input_allocate_device(&client->dev);
++	if (!input)
++		return -ENOMEM;
+ 
+ 	qt2160->client = client;
+ 	qt2160->input = input;
+@@ -366,22 +354,24 @@ static int qt2160_probe(struct i2c_client *client)
+ 	error = qt2160_write(client, QT2160_CMD_CALIBRATE, 1);
+ 	if (error) {
+ 		dev_err(&client->dev, "failed to calibrate device\n");
+-		goto err_free_mem;
++		return error;
+ 	}
  
  	if (client->irq) {
- 		error = request_threaded_irq(client->irq, NULL, qt2160_irq,
--					     IRQF_TRIGGER_LOW | IRQF_ONESHOT,
--					     "qt2160", input);
-+					     IRQF_ONESHOT, "qt2160", input);
+-		error = request_threaded_irq(client->irq, NULL, qt2160_irq,
+-					     IRQF_ONESHOT, "qt2160", input);
++		error = devm_request_threaded_irq(&client->dev, client->irq,
++						  NULL, qt2160_irq,
++						  IRQF_ONESHOT,
++						  "qt2160", input);
  		if (error) {
  			dev_err(&client->dev,
  				"failed to allocate irq %d\n", client->irq);
+-			goto err_free_mem;
++			return error;
+ 		}
+ 	} else {
+ 		error = input_setup_polling(input, qt2160_get_key_matrix);
+ 		if (error) {
+ 			dev_err(&client->dev, "Failed to setup polling\n");
+-			goto err_free_mem;
++			return error;
+ 		}
+ 		input_set_poll_interval(input, QT2160_CYCLE_INTERVAL);
+ 	}
+@@ -389,43 +379,17 @@ static int qt2160_probe(struct i2c_client *client)
+ 	error = qt2160_register_leds(qt2160);
+ 	if (error) {
+ 		dev_err(&client->dev, "Failed to register leds\n");
+-		goto err_free_irq;
++		return error;
+ 	}
+ 
+ 	error = input_register_device(qt2160->input);
+ 	if (error) {
+ 		dev_err(&client->dev,
+ 			"Failed to register input device\n");
+-		goto err_unregister_leds;
++		return error;
+ 	}
+ 
+-	i2c_set_clientdata(client, qt2160);
+-
+ 	return 0;
+-
+-err_unregister_leds:
+-	qt2160_unregister_leds(qt2160);
+-err_free_irq:
+-	if (client->irq)
+-		free_irq(client->irq, qt2160);
+-err_free_mem:
+-	input_free_device(input);
+-	kfree(qt2160);
+-	return error;
+-}
+-
+-static void qt2160_remove(struct i2c_client *client)
+-{
+-	struct qt2160_data *qt2160 = i2c_get_clientdata(client);
+-
+-	qt2160_unregister_leds(qt2160);
+-
+-	/* Release IRQ so no queue will be scheduled */
+-	if (client->irq)
+-		free_irq(client->irq, qt2160);
+-
+-	input_unregister_device(qt2160->input);
+-	kfree(qt2160);
+ }
+ 
+ static const struct i2c_device_id qt2160_idtable[] = {
+@@ -442,7 +406,6 @@ static struct i2c_driver qt2160_driver = {
+ 
+ 	.id_table	= qt2160_idtable,
+ 	.probe		= qt2160_probe,
+-	.remove		= qt2160_remove,
+ };
+ 
+ module_i2c_driver(qt2160_driver);
 -- 
 2.41.0.487.g6d72f3e995-goog
 
