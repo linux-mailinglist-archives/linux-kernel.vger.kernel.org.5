@@ -2,272 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB1875F41F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD0075F43C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbjGXLCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 07:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55950 "EHLO
+        id S233360AbjGXLEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 07:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233311AbjGXLCL (ORCPT
+        with ESMTP id S232859AbjGXLEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:02:11 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5E7187;
-        Mon, 24 Jul 2023 04:02:04 -0700 (PDT)
+        Mon, 24 Jul 2023 07:04:10 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00DD12E;
+        Mon, 24 Jul 2023 04:04:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690196524; x=1721732524;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=wWRqT8vpJKT05tICl5ocqYcd9Og4iXGsP7bje/RHewk=;
-  b=E3/mImZdNT27yQkPXslSFksdujZU0bzTij0oeB7hAU1wx62+JJDQbJnC
-   tt4n+WmsZQ7TiEjJvvpx95h0fdKaqW8inKsC9zgDmFTCFrKJZaoFMD4gC
-   +W6wLDHwQ0BGG3gOHqOWkF+PHkWU+sxlLpS2ZsbDj/lgGk/wcgBrWFCBP
-   svOzOZ+0TSl0KPa1iW2GzcH+g6V0bMUIlgThwCgwcwyB82xleaskLbAVg
-   Y4FXiCVsm77BnOg+lKrI4OHrNRvtIF2OLYIspB0DBXwLSkNcS6E2DUdNu
-   4f6rt07YWnmZusyR+jZTHzdWg/t1NYFD22nFrs/97VQOiBqB0GeDwnB6n
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="371009921"
+  t=1690196649; x=1721732649;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Jt6M8sUWV3u8Y+MFDb2Z6bVVr18T0wsHPHfO6KI1CTs=;
+  b=S+m2PETYR+SyhHOiMwLr3vJlhsj0FxPS7qDF6u2yFIL9Pxca/kQKny4l
+   +89duZzafp1Cp0P6pp2Xg7Lp4c3iXF3ifeOXWRnPRbcw1yDRQ/LGIy11l
+   USennes5oLNVPt6lAwJlUEjFqpEOkKT8w8mMvTC8bAZPee+KMJaU/Xej8
+   ro99UHvYZE4NFbNgIMchkr0+WD3Gq8206oBPO5XNc6f296JV/+6TyDjO0
+   ByOQ48sZt4WNKBqpYqBwDroFIFvnl9OVqcWJug0CgfNHLpi8OuOan4gts
+   LbJTwg/440w8Q4bsbreF/EaPe84jDmH+yGIxhuIhMUuYtfShlX+zyGZhI
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="366301775"
 X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="371009921"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 04:02:00 -0700
+   d="scan'208";a="366301775"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 04:04:09 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="869036288"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Jul 2023 04:01:59 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D770D2BC; Mon, 24 Jul 2023 14:02:06 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Nuno Sa <nuno.sa@analog.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v3 4/4] iio: core: Fix issues and style of the comments
-Date:   Mon, 24 Jul 2023 14:02:04 +0300
-Message-Id: <20230724110204.46285-5-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20230724110204.46285-1-andriy.shevchenko@linux.intel.com>
-References: <20230724110204.46285-1-andriy.shevchenko@linux.intel.com>
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="815775737"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="815775737"
+Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
+  by FMSMGA003.fm.intel.com with ESMTP; 24 Jul 2023 04:04:08 -0700
+From:   Yi Liu <yi.l.liu@intel.com>
+To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
+        kevin.tian@intel.com, robin.murphy@arm.com,
+        baolu.lu@linux.intel.com
+Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
+        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
+        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com
+Subject: [PATCH v3 00/17] iommufd: Add nesting infrastructure
+Date:   Mon, 24 Jul 2023 04:03:49 -0700
+Message-Id: <20230724110406.107212-1-yi.l.liu@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The `scripts/kernel-doc -v -none -Wall` reports several issues
-with the kernel doc in IIO core C file. Update the comments
-accordingly.
+Nested translation is a hardware feature that is supported by many modern
+IOMMU hardwares. It has two stages (stage-1, stage-2) address translation
+to get access to the physical address. stage-1 translation table is owned
+by userspace (e.g. by a guest OS), while stage-2 is owned by kernel. Changes
+to stage-1 translation table should be followed by an IOTLB invalidation.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
----
- drivers/iio/industrialio-core.c | 57 +++++++++++++++++++++------------
- 1 file changed, 37 insertions(+), 20 deletions(-)
+Take Intel VT-d as an example, the stage-1 translation table is I/O page
+table. As the below diagram shows, guest I/O page table pointer in GPA
+(guest physical address) is passed to host and be used to perform the stage-1
+address translation. Along with it, modifications to present mappings in the
+guest I/O page table should be followed with an IOTLB invalidation.
 
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index 13d6b6ac5ccf..7302a342dd48 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/* The industrial I/O core
-+/*
-+ * The industrial I/O core
-  *
-  * Copyright (c) 2008 Jonathan Cameron
-  *
-@@ -183,7 +184,9 @@ static const char * const iio_chan_info_postfix[] = {
-  * @indio_dev:		Device structure whose ID is being queried
-  *
-  * The IIO device ID is a unique index used for example for the naming
-- * of the character device /dev/iio\:device[ID]
-+ * of the character device /dev/iio\:device[ID].
-+ *
-+ * Returns: Unique ID for the device.
-  */
- int iio_device_id(struct iio_dev *indio_dev)
- {
-@@ -196,6 +199,8 @@ EXPORT_SYMBOL_GPL(iio_device_id);
- /**
-  * iio_buffer_enabled() - helper function to test if the buffer is enabled
-  * @indio_dev:		IIO device structure for device
-+ *
-+ * Returns: True, if the buffer is enabled.
-  */
- bool iio_buffer_enabled(struct iio_dev *indio_dev)
- {
-@@ -225,6 +230,9 @@ EXPORT_SYMBOL_GPL(iio_get_debugfs_dentry);
-  * iio_find_channel_from_si() - get channel from its scan index
-  * @indio_dev:		device
-  * @si:			scan index to match
-+ *
-+ * Returns:
-+ * Constant pointer to iio_chan_spec, if scan index matches, NULL on failure.
-  */
- const struct iio_chan_spec
- *iio_find_channel_from_si(struct iio_dev *indio_dev, int si)
-@@ -249,7 +257,9 @@ EXPORT_SYMBOL(iio_read_const_attr);
- /**
-  * iio_device_set_clock() - Set current timestamping clock for the device
-  * @indio_dev: IIO device structure containing the device
-- * @clock_id: timestamping clock posix identifier to set.
-+ * @clock_id: timestamping clock POSIX identifier to set.
-+ *
-+ * Returns: 0 on success, or a negative error code.
-  */
- int iio_device_set_clock(struct iio_dev *indio_dev, clockid_t clock_id)
- {
-@@ -275,6 +285,8 @@ EXPORT_SYMBOL(iio_device_set_clock);
- /**
-  * iio_device_get_clock() - Retrieve current timestamping clock for the device
-  * @indio_dev: IIO device structure containing the device
-+ *
-+ * Returns: Clock ID of the current timestamping clock for the device.
-  */
- clockid_t iio_device_get_clock(const struct iio_dev *indio_dev)
- {
-@@ -287,6 +299,8 @@ EXPORT_SYMBOL(iio_device_get_clock);
- /**
-  * iio_get_time_ns() - utility function to get a time stamp for events etc
-  * @indio_dev: device
-+ *
-+ * Returns: Timestamp of the event in nanoseconds.
-  */
- s64 iio_get_time_ns(const struct iio_dev *indio_dev)
- {
-@@ -593,7 +607,7 @@ EXPORT_SYMBOL_GPL(iio_show_mount_matrix);
-  * If device is assigned no mounting matrix property, a default 3x3 identity
-  * matrix will be filled in.
-  *
-- * Return: 0 if success, or a negative error code on failure.
-+ * Returns: 0 if success, or a negative error code on failure.
-  */
- int iio_read_mount_matrix(struct device *dev, struct iio_mount_matrix *matrix)
- {
-@@ -691,9 +705,9 @@ static ssize_t __iio_format_value(char *buf, size_t offset, unsigned int type,
-  * @vals:	Pointer to the values, exact meaning depends on the
-  *		type parameter.
-  *
-- * Return: 0 by default, a negative number on failure or the
-- *	   total number of characters written for a type that belongs
-- *	   to the IIO_VAL_* constant.
-+ * Returns:
-+ * 0 by default, a negative number on failure or the total number of characters
-+ * written for a type that belongs to the IIO_VAL_* constant.
-  */
- ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals)
- {
-@@ -846,8 +860,8 @@ static ssize_t iio_read_channel_info_avail(struct device *dev,
-  * @fract: The fractional part of the number
-  * @scale_db: True if this should parse as dB
-  *
-- * Returns 0 on success, or a negative error code if the string could not be
-- * parsed.
-+ * Returns:
-+ * 0 on success, or a negative error code if the string could not be parsed.
-  */
- static int __iio_str_to_fixpoint(const char *str, int fract_mult,
- 				 int *integer, int *fract, bool scale_db)
-@@ -916,8 +930,8 @@ static int __iio_str_to_fixpoint(const char *str, int fract_mult,
-  * @integer: The integer part of the number
-  * @fract: The fractional part of the number
-  *
-- * Returns 0 on success, or a negative error code if the string could not be
-- * parsed.
-+ * Returns:
-+ * 0 on success, or a negative error code if the string could not be parsed.
-  */
- int iio_str_to_fixpoint(const char *str, int fract_mult,
- 			int *integer, int *fract)
-@@ -1629,7 +1643,10 @@ const struct device_type iio_device_type = {
-  * iio_device_alloc() - allocate an iio_dev from a driver
-  * @parent:		Parent device.
-  * @sizeof_priv:	Space to allocate for private structure.
-- **/
-+ *
-+ * Returns:
-+ * Pointer to allocated iio_dev on success, NULL on failure.
-+ */
- struct iio_dev *iio_device_alloc(struct device *parent, int sizeof_priv)
- {
- 	struct iio_dev_opaque *iio_dev_opaque;
-@@ -1679,7 +1696,7 @@ EXPORT_SYMBOL(iio_device_alloc);
- /**
-  * iio_device_free() - free an iio_dev from a driver
-  * @dev:		the iio_dev associated with the device
-- **/
-+ */
- void iio_device_free(struct iio_dev *dev)
- {
- 	if (dev)
-@@ -1700,7 +1717,7 @@ static void devm_iio_device_release(void *iio_dev)
-  * Managed iio_device_alloc. iio_dev allocated with this function is
-  * automatically freed on driver detach.
-  *
-- * RETURNS:
-+ * Returns:
-  * Pointer to allocated iio_dev on success, NULL on failure.
-  */
- struct iio_dev *devm_iio_device_alloc(struct device *parent, int sizeof_priv)
-@@ -1727,8 +1744,8 @@ EXPORT_SYMBOL_GPL(devm_iio_device_alloc);
-  * @filp:	File structure for iio device used to keep and later access
-  *		private data
-  *
-- * Return: 0 on success or -EBUSY if the device is already opened
-- **/
-+ * Returns: 0 on success or -EBUSY if the device is already opened
-+ */
- static int iio_chrdev_open(struct inode *inode, struct file *filp)
- {
- 	struct iio_dev_opaque *iio_dev_opaque =
-@@ -1761,7 +1778,7 @@ static int iio_chrdev_open(struct inode *inode, struct file *filp)
-  * @inode:	Inode structure pointer for the char device
-  * @filp:	File structure pointer for the char device
-  *
-- * Return: 0 for successful release
-+ * Returns: 0 for successful release.
-  */
- static int iio_chrdev_release(struct inode *inode, struct file *filp)
- {
-@@ -1800,7 +1817,7 @@ static long iio_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 
- 	mutex_lock(&iio_dev_opaque->info_exist_lock);
- 
--	/**
-+	/*
- 	 * The NULL check here is required to prevent crashing when a device
- 	 * is being removed while userspace would still have open file handles
- 	 * to try to access this device.
-@@ -1978,7 +1995,7 @@ EXPORT_SYMBOL(__iio_device_register);
- /**
-  * iio_device_unregister() - unregister a device from the IIO subsystem
-  * @indio_dev:		Device structure representing the device.
-- **/
-+ */
- void iio_device_unregister(struct iio_dev *indio_dev)
- {
- 	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-@@ -2029,7 +2046,7 @@ EXPORT_SYMBOL_GPL(__devm_iio_device_register);
-  *
-  * Use with iio_device_release_direct_mode()
-  *
-- * Returns: 0 on success, -EBUSY on failure
-+ * Returns: 0 on success, -EBUSY on failure.
-  */
- int iio_device_claim_direct_mode(struct iio_dev *indio_dev)
- {
+    .-------------.  .---------------------------.
+    |   vIOMMU    |  | Guest I/O page table      |
+    |             |  '---------------------------'
+    .----------------/
+    | PASID Entry |--- PASID cache flush --+
+    '-------------'                        |
+    |             |                        V
+    |             |           I/O page table pointer in GPA
+    '-------------'
+Guest
+------| Shadow |---------------------------|--------
+      v        v                           v
+Host
+    .-------------.  .------------------------.
+    |   pIOMMU    |  |  FS for GIOVA->GPA     |
+    |             |  '------------------------'
+    .----------------/  |
+    | PASID Entry |     V (Nested xlate)
+    '----------------\.----------------------------------.
+    |             |   | SS for GPA->HPA, unmanaged domain|
+    |             |   '----------------------------------'
+    '-------------'
+Where:
+ - FS = First stage page tables
+ - SS = Second stage page tables
+<Intel VT-d Nested translation>
+
+In IOMMUFD, all the translation tables are tracked by hw_pagetable (hwpt)
+and each has an iommu_domain allocated from iommu driver. So in this series
+hw_pagetable and iommu_domain means the same thing if no special note.
+IOMMUFD has already supported allocating hw_pagetable that is linked with
+an IOAS. However, nesting requires IOMMUFD to allow allocating hw_pagetable
+with driver specific parameters and interface to sync stage-1 IOTLB as user
+owns the stage-1 translation table.
+
+This series is based on the iommu hw info reporting series [1]. It first
+introduces new iommu op for allocating domains with user data and the op
+for invalidate stage-1 IOTLB, and then extend the IOMMUFD internal infrastructure
+to accept user_data and parent hwpt, then relay the data to iommu core to
+allocate user iommu_domain. After it, extends the ioctl IOMMU_HWPT_ALLOC to
+accept user data and stage-2 hwpt ID to allocate hwpt. Along with it, ioctl
+IOMMU_HWPT_INVALIDATE is added to invalidate stage-1 IOTLB. This is needed
+for user-managed hwpts. Selftest is added as well to cover the new ioctls.
+
+Complete code can be found in [2], QEMU could can be found in [3].
+
+At last, this is a team work together with Nicolin Chen, Lu Baolu. Thanks
+them for the help. ^_^. Look forward to your feedbacks.
+
+[1] https://lore.kernel.org/linux-iommu/20230724105936.107042-1-yi.l.liu@intel.com/
+[2] https://github.com/yiliu1765/iommufd/tree/iommufd_nesting
+[3] https://github.com/yiliu1765/qemu/tree/wip/iommufd_rfcv4_nesting
+
+Change log:
+
+v3:
+ - Add new uAPI things in alphabetical order
+ - Pass in "enum iommu_hwpt_type hwpt_type" to op->domain_alloc_user for
+   sanity, replacing the previous op->domain_alloc_user_data_len solution
+ - Return ERR_PTR from domain_alloc_user instead of NULL
+ - Only add IOMMU_RESV_SW_MSI to kernel-managed HWPT in nested translation (Kevin)
+ - Add IOMMU_RESV_IOVA_RANGES to report resv iova ranges to userspace hence
+   userspace is able to exclude the ranges in the stage-1 HWPT (e.g. guest I/O
+   page table). (Kevin)
+ - Add selftest coverage for the new IOMMU_RESV_IOVA_RANGES ioctl
+ - Minor changes per Kevin's inputs
+
+v2: https://lore.kernel.org/linux-iommu/20230511143844.22693-1-yi.l.liu@intel.com/
+ - Add union iommu_domain_user_data to include all user data structures to avoid
+   passing void * in kernel APIs.
+ - Add iommu op to return user data length for user domain allocation
+ - Rename struct iommu_hwpt_alloc::data_type to be hwpt_type
+ - Store the invalidation data length in iommu_domain_ops::cache_invalidate_user_data_len
+ - Convert cache_invalidate_user op to be int instead of void
+ - Remove @data_type in struct iommu_hwpt_invalidate
+ - Remove out_hwpt_type_bitmap in struct iommu_hw_info hence drop patch 08 of v1
+
+v1: https://lore.kernel.org/linux-iommu/20230309080910.607396-1-yi.l.liu@intel.com/
+
+Thanks,
+	Yi Liu
+
+Lu Baolu (2):
+  iommu: Add new iommu op to create domains owned by userspace
+  iommu: Add nested domain support
+
+Nicolin Chen (6):
+  iommufd/hw_pagetable: Do not populate user-managed hw_pagetables
+  iommufd: Only enforce IOMMU_RESV_SW_MSI when attaching user-managed
+    HWPT
+  iommufd/selftest: Add domain_alloc_user() support in iommu mock
+  iommufd/selftest: Add coverage for IOMMU_HWPT_ALLOC with user data
+  iommufd/selftest: Add IOMMU_TEST_OP_MD_CHECK_IOTLB test op
+  iommufd/selftest: Add coverage for IOMMU_HWPT_INVALIDATE ioctl
+
+Yi Liu (9):
+  iommufd/hw_pagetable: Use domain_alloc_user op for domain allocation
+  iommufd: Pass in hwpt_type/parent/user_data to
+    iommufd_hw_pagetable_alloc()
+  iommufd: Add IOMMU_RESV_IOVA_RANGES
+  iommufd: IOMMU_HWPT_ALLOC allocation with user data
+  iommufd: Add IOMMU_HWPT_INVALIDATE
+  iommufd/selftest: Add a helper to get test device
+  iommufd/selftest: Add IOMMU_TEST_OP_DEV_[ADD|DEL]_RESERVED to add/del
+    reserved regions to selftest device
+  iommufd/selftest: Add .get_resv_regions() for mock_dev
+  iommufd/selftest: Add coverage for IOMMU_RESV_IOVA_RANGES
+
+ drivers/iommu/iommufd/device.c                |   9 +-
+ drivers/iommu/iommufd/hw_pagetable.c          | 181 +++++++++++-
+ drivers/iommu/iommufd/io_pagetable.c          |   5 +-
+ drivers/iommu/iommufd/iommufd_private.h       |  20 +-
+ drivers/iommu/iommufd/iommufd_test.h          |  36 +++
+ drivers/iommu/iommufd/main.c                  |  59 +++-
+ drivers/iommu/iommufd/selftest.c              | 266 ++++++++++++++++--
+ include/linux/iommu.h                         |  34 +++
+ include/uapi/linux/iommufd.h                  |  96 ++++++-
+ tools/testing/selftests/iommu/iommufd.c       | 224 ++++++++++++++-
+ tools/testing/selftests/iommu/iommufd_utils.h |  70 +++++
+ 11 files changed, 958 insertions(+), 42 deletions(-)
+
 -- 
-2.40.0.1.gaa8946217a0b
+2.34.1
 
