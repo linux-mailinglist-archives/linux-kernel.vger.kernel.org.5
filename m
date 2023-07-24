@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0212875EBCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C896275EBD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbjGXGkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 02:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
+        id S230441AbjGXGlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 02:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbjGXGj6 (ORCPT
+        with ESMTP id S231164AbjGXGky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 02:39:58 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA80510F7
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 23:39:37 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-7835ae70e46so147541039f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 23:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1690180775; x=1690785575;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UA46JXOgesbC+Hw0WTVb9Ex0u0JFh+2lvb8Dt3Xe0GY=;
-        b=JSlKugo93w0LuvvZESIAqXK6JMorSBm2Ud2Jp8AIpXbKxCfQMgtUComirCGVW/KZVh
-         /RYjmhzK3M6Njr/rTrAH3a+R0mzs+vvSMxv6d+tTAf4K4fODG2Ry8ylSUQdVJwP+9xc4
-         35kJ25AUs9tLxhEotHLmGZ9D7jjHqnrx9YIrLRvnVGBfvZmcTK7XN8srAYYy2CnOX5iG
-         sEzePFGOAnaBsMHAJRay3/QSKhdMWUrZDj5xnqUaFK5Ja2x6tHjjNENu2DRgbNUJIhBn
-         nNe0MEY9DksIp5wBk7YxeZo8BO8VEY1y4WvdlbBVSgQopiKuA2Ex5tE9HXmjBwD1lN7/
-         f9kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690180775; x=1690785575;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UA46JXOgesbC+Hw0WTVb9Ex0u0JFh+2lvb8Dt3Xe0GY=;
-        b=BktdfJVzh+oJd9vKC5iDnIKc7rd9K4Gt7ywxnAWBHpc7xn52O0XqYxLA7p5L5bGxG1
-         /eTgv5jQ/wMxq0xXiXRT7EUFkcllGkkQge9FCxJy9B0KTF15I8Uy/cCzThq9TWYHt1kv
-         45/wU2PLDC34lys3xfIz5eISv8QCbqTmkzgQreVzlcjyX213+YR1ABpq5a0fdyufh67j
-         1+7EAkO6gKvOrE2h2pzzk3rL0DFQMpsaZ6/1C6A/XnJYa8aDAkDE95jPR2ZC4r+pIlvi
-         EVqsF2XHcc+UFF3tuMPpEnTjV/XGW1Lgp3SIE3C0uoQb26dAKB+StzC2C2s2cIv1k3f3
-         7elA==
-X-Gm-Message-State: ABy/qLaF7GW80+L/DoNYLm0OWKdYlT4X5oMmxWKc/jj6nLQX6BGlV3Jh
-        HLCDMNCBafOl2xgvlWfVoAjjpw==
-X-Google-Smtp-Source: APBJJlHV6rGQMRqhG8BlCwNt5/JB2Dpn4brGoL7I+r6vKYg4/PRYcUEmkkUFP/rWyfL3ZaD9uP5JmQ==
-X-Received: by 2002:a5d:9f18:0:b0:783:58f4:2e2e with SMTP id q24-20020a5d9f18000000b0078358f42e2emr6459037iot.0.1690180775592;
-        Sun, 23 Jul 2023 23:39:35 -0700 (PDT)
-Received: from dread.disaster.area (pa49-186-119-116.pa.vic.optusnet.com.au. [49.186.119.116])
-        by smtp.gmail.com with ESMTPSA id x9-20020a056a00270900b00654228f9e93sm6933872pfv.120.2023.07.23.23.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jul 2023 23:39:35 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qNpEC-009qt9-1h;
-        Mon, 24 Jul 2023 16:39:32 +1000
-Date:   Mon, 24 Jul 2023 16:39:32 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Nitesh Shetty <nj.shetty@samsung.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>, hch@lst.de,
-        gost.dev@samsung.com, Anuj Gupta <anuj20.g@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/read_write: Enable copy_file_range for block device.
-Message-ID: <ZL4cpDxr450zomJ0@dread.disaster.area>
-References: <CGME20230724060655epcas5p24f21ce77480885c746b9b86d27585492@epcas5p2.samsung.com>
- <20230724060336.8939-1-nj.shetty@samsung.com>
+        Mon, 24 Jul 2023 02:40:54 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA2819AC;
+        Sun, 23 Jul 2023 23:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690180826; x=1721716826;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qK2V9u8FVB2OzLWYxccOO3cuqL/7jSveVNmw59rP1qc=;
+  b=eczFvOwaDOjkm5S1gpG9N3HesD5H2o0RPR5YGmVB8meJyO8am6xJmO7j
+   hL74OmesT3x8+8NUiNW2CwPj5JRTzHot3h0Vyulu8cr4an/He2n0DR7Ch
+   xYc/DccLH/hhyw9odusCh75zh6hfaxfGeVHOhoVrQxaf+fYBws7Q3LM0V
+   pKrI9w2XxQ2ffz0djSJKKEl1ml2nQA2bOcSkepcdEtnh5X4TyYy3qsMHA
+   8YLFl+/ard/+7Sa28siBvGxVZkCP2fsaeZXY1UWNq7sMZM9e9+naOwyGA
+   f2iu0ha/mw4nKi1d6boqq0Fb6RZit/zmxM2ngFdEY0+EPrT3ZcKyAY2f6
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="366253802"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="366253802"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2023 23:40:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="815714991"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="815714991"
+Received: from jiaqingz-mobl.ccr.corp.intel.com (HELO [10.238.9.84]) ([10.238.9.84])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2023 23:40:00 -0700
+Message-ID: <77d86059-e8ad-88a6-f2b1-6b4f3aeb24be@linux.intel.com>
+Date:   Mon, 24 Jul 2023 14:39:58 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724060336.8939-1-nj.shetty@samsung.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/2] can: ems_pci: move ASIX AX99100 ids to pci_ids.h
+Content-Language: en-US
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>,
+        support@ems-wuensche.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-can@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
+References: <20230720102859.2985655-1-jiaqing.zhao@linux.intel.com>
+ <20230720102859.2985655-3-jiaqing.zhao@linux.intel.com>
+ <20230720-document-tingle-e5d555714021-mkl@pengutronix.de>
+From:   Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+In-Reply-To: <20230720-document-tingle-e5d555714021-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 11:33:36AM +0530, Nitesh Shetty wrote:
-> From: Anuj Gupta <anuj20.g@samsung.com>
+
+
+On 2023-07-20 18:40, Marc Kleine-Budde wrote:
+> On 20.07.2023 10:28:59, Jiaqing Zhao wrote:
+>> Move PCI Vendor and Device ID of ASIX AX99100 PCIe to Multi I/O
+>> Controller to pci_ids.h for its serial and parallel port driver
+>> support in subsequent patches.
 > 
-> Change generic_copy_file_checks to use ->f_mapping->host for both inode_in
-> and inode_out. Allow block device in generic_file_rw_checks.
+> Sorry, I haven't noticed the change in "include/linux/pci_ids.h", that
+> the other patches depend on. How to coordinate among the subsystems?
+> 
+> I don't mind taking the entire (v1) series with the Acks from the
+> tty/serial and parport maintainers, or give my Acked-by to upstream
+> via their trees.
 
-Why? copy_file_range() is for copying a range of a regular file to
-another regular file - why do we want to support block devices for
-somethign that is clearly intended for copying data files?
+Since in ems_pci there are only definition changes, I think having your
+Acked-by and upstream via the serial/parallel tree might be better.
 
-Also, the copy_file_range man page states:
-
-ERRORS
-.....
-    EINVAL Either fd_in or fd_out is not a regular file.
-.....
-
-If we are changing the behavioru of copy_file_range (why?), then man
-page updates need to be done as well, documenting the change, which
-kernel versions only support regular files, etc.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>> Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+>> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+>> ---
+>>  drivers/net/can/sja1000/ems_pci.c | 6 +-----
+>>  include/linux/pci_ids.h           | 4 ++++
+>>  2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> Marc
+> 
