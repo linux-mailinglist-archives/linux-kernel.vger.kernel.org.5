@@ -2,128 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA49D75F24E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9E975F26D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbjGXKMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
+        id S233079AbjGXKNy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Jul 2023 06:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231866AbjGXKLq (ORCPT
+        with ESMTP id S231779AbjGXKMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:11:46 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8D959F3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:04:27 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-666e916b880so2302060b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1690193032; x=1690797832;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UUcCkSTwYLiD/t1kcQ5bDbSt1mwTfBpcBGNsDxfuBOA=;
-        b=CNwx/jLmX1kzvaYEGA/thpQvQrezMQ734fYSg9UAAm6yofFqIEpkSVs/+WHZxynyl2
-         Vk5PFfX0aoJHpDT1WSh2FCbYNS80FR1zvpg9Hg6ZufKE2ymwsc4/zCvYErKQsLCNn7Ug
-         jAT8y4mbv+syB/ElAFiNUUiItdQdWpKw++rdUy7g6l/G5og8eJf5/OoNKyRUl126Rz3b
-         Y90AEXS9SwLiC/i5KoxCrCwfEN0/+GBzo5QUtk+bYLFUDshvh4GM6Q1zeoAd/jUNnSrB
-         uSzkC6GecKY8I09698ymosvxd53FxBz0BKxSNBmLzMk9pbEPCaf5Pb/ZJASRb40Lbkx6
-         A0wQ==
+        Mon, 24 Jul 2023 06:12:39 -0400
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B927C7D95;
+        Mon, 24 Jul 2023 03:05:21 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-583b47809beso18621987b3.0;
+        Mon, 24 Jul 2023 03:05:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690193032; x=1690797832;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UUcCkSTwYLiD/t1kcQ5bDbSt1mwTfBpcBGNsDxfuBOA=;
-        b=kKoAndRUm4ELbulE6i/63k1jdrsG/e4W7hLpiwh3yHmQ8CtDpM42T5tYyFEFWBKKcb
-         +Q1zAivmEYFzKL9Rzme5+94x17kiH4snJTob19fMjAPOaga+FMiqoF43iTcQuFxySI06
-         ZlO0Ypt5OM87d8oUrBAFtFS7xMfylCz91qo8WqgII2gqkQvu9D+w0rFGgHpwagB72qkv
-         cDx3CrrpG2Yosj8sVbKrqJSQVaMOEAvR/tOyBCs6KFB0HZufPLVRbXyvHYBjRChuxGL1
-         XqKz7vf/iJpZstTEkwcqG6fWmupf/9S8F5kqexDfClHR6eh2d/QbbRcHRHQl8+SfP8yz
-         9rEg==
-X-Gm-Message-State: ABy/qLYnCcGASmr89t4VpcvWT8/2cQindnofaWiwaWDWV7bsh2xcKqT/
-        OHJyIWylv+r7isJBWvFZzhz1pQ==
-X-Google-Smtp-Source: APBJJlF43UAKvGrY1ke4RxpEUoaG1cuBNgNQ+LQfclku2hQlPUblZkiVF3u8/jv+OZzAmqZsogTuIg==
-X-Received: by 2002:a05:6a20:a11b:b0:134:d8e6:2717 with SMTP id q27-20020a056a20a11b00b00134d8e62717mr8724991pzk.47.1690193032051;
-        Mon, 24 Jul 2023 03:03:52 -0700 (PDT)
-Received: from sunil-pc.Dlink ([106.51.190.25])
-        by smtp.gmail.com with ESMTPSA id l12-20020a62be0c000000b0067459e92801sm7344789pff.64.2023.07.24.03.03.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 03:03:51 -0700 (PDT)
-From:   Sunil V L <sunilvl@ventanamicro.com>
-To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v3 -fixes] RISC-V: ACPI: Fix acpi_os_ioremap to return iomem address
-Date:   Mon, 24 Jul 2023 15:33:46 +0530
-Message-Id: <20230724100346.1302937-1-sunilvl@ventanamicro.com>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20221208; t=1690193072; x=1690797872;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kdime7qoPODmAiTa2PQFmD+bM1Qwuzb0rIVovoauwF0=;
+        b=fOSxzlFxA8X1afGtT6G8mBinIkhtcXZ+ydmi/uDK1njapdH4XqDiQQUtdFb36fAxbn
+         NUTVh6XaQTZ4x6sbP57YY4cj5m//mf4S4otpzAdP+Womumod5kKGZ/xL4XiA/kMIgGXb
+         F8sKfHmdRshJp3m3kZo4hnS8naix4hjFYQRjlzgMWUpkAZN/CJ/HV1WYnJOofT0UX45/
+         Jk7xqQOU/bYhGSc2VXbU1GpTd6QDuTTnargJsbsEh1fkE2LA8LOLsPGNAqmDZW1Zf5/f
+         C6TBm2W2/Y4kpQm4iw3XUvZihLM9QadR1BpBewCqpZQxEhdTfuWZbRHXXh3Th5hkIvQ+
+         t8Tg==
+X-Gm-Message-State: ABy/qLa75hRE4JKil0dpOKlCLCGg86Rk4fR396ZYf/d1o6Jg1FmizJac
+        vkhgcry9nqGsJ6jEo9ZX95lrrHP8JpEnEg==
+X-Google-Smtp-Source: APBJJlEDnODc8wVRL3hvLfPLovhS+i/V1oKCqYM0moHLmJy2hhjU/yei1qvrmVVFUyupOpOUckr+Aw==
+X-Received: by 2002:a81:4e82:0:b0:56d:502:43d4 with SMTP id c124-20020a814e82000000b0056d050243d4mr5491485ywb.11.1690193072404;
+        Mon, 24 Jul 2023 03:04:32 -0700 (PDT)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id v14-20020a81a54e000000b005773430a57csm2654030ywg.78.2023.07.24.03.04.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 03:04:32 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5703cb4bcb4so46818587b3.3;
+        Mon, 24 Jul 2023 03:04:32 -0700 (PDT)
+X-Received: by 2002:a5b:a8b:0:b0:cfd:1bb9:e356 with SMTP id
+ h11-20020a5b0a8b000000b00cfd1bb9e356mr6248370ybq.32.1690193071935; Mon, 24
+ Jul 2023 03:04:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230612033904.34921-1-zhanglibing@cdjrlc.com>
+ <0dc9409b662180ed29cbc281f0f076b7@208suo.com> <fcd37e67fba625da304fdaf07e0ab0db@208suo.com>
+In-Reply-To: <fcd37e67fba625da304fdaf07e0ab0db@208suo.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 24 Jul 2023 12:04:19 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX0xP5Gugo7uF5Wqk9_ny6-4fOWYRm41KicOo26kC6m+g@mail.gmail.com>
+Message-ID: <CAMuHMdX0xP5Gugo7uF5Wqk9_ny6-4fOWYRm41KicOo26kC6m+g@mail.gmail.com>
+Subject: Re: [PATCH] clk: baikal-t1: Using div64_ Ul replaces do_ Div() function
+To:     wuyonggang001@208suo.com
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Serge Semin <fancer.lancer@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-acpi_os_ioremap() currently is a wrapper to memremap() on
-RISC-V. But the callers of acpi_os_ioremap() expect it to
-return __iomem address and hence sparse tool reports a new
-warning. Fix this issue by type casting to  __iomem type.
+Hi Yonggang,
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202307230357.egcTAefj-lkp@intel.com/
-Fixes: a91a9ffbd3a5 ("RISC-V: Add support to build the ACPI core")
-Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
----
-Changes since v2:
-	1) Removed unnecessary __force.
-	2) Removed unnecessary space after cast to fix checkpatch --strict warning.
+CC Serge
 
-Changes since v1:
-	1) Removed enhancements from the fix patch.
+On Wed, Jun 14, 2023 at 8:07 AM <wuyonggang001@208suo.com> wrote:
+> Fix the following coccicheck warning:
+>
+> drivers/clk/baikal-t1/ccu-pll.c:81:1-7: WARNING: do_div() does a
+> 64-by-32 division, please consider using div64_ul instead.
+>
+> Signed-off-by: Yonggang Wu <wuyonggang001@208suo.com>
 
- arch/riscv/include/asm/acpi.h | 2 +-
- arch/riscv/kernel/acpi.c      | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Thanks for your patch, which is now commit b93d1331ea266dea
+("clk: baikal-t1: Using div64_ Ul replaces do_ Div() function")
+in clk/clk-next.
 
-diff --git a/arch/riscv/include/asm/acpi.h b/arch/riscv/include/asm/acpi.h
-index f71ce21ff684..d5604d2073bc 100644
---- a/arch/riscv/include/asm/acpi.h
-+++ b/arch/riscv/include/asm/acpi.h
-@@ -19,7 +19,7 @@ typedef u64 phys_cpuid_t;
- #define PHYS_CPUID_INVALID INVALID_HARTID
- 
- /* ACPI table mapping after acpi_permanent_mmap is set */
--void *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
-+void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
- #define acpi_os_ioremap acpi_os_ioremap
- 
- #define acpi_strict 1	/* No out-of-spec workarounds on RISC-V */
-diff --git a/arch/riscv/kernel/acpi.c b/arch/riscv/kernel/acpi.c
-index 5ee03ebab80e..56cb2c986c48 100644
---- a/arch/riscv/kernel/acpi.c
-+++ b/arch/riscv/kernel/acpi.c
-@@ -215,9 +215,9 @@ void __init __acpi_unmap_table(void __iomem *map, unsigned long size)
- 	early_iounmap(map, size);
- }
- 
--void *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
-+void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
- {
--	return memremap(phys, size, MEMREMAP_WB);
-+	return (void __iomem *)memremap(phys, size, MEMREMAP_WB);
- }
- 
- #ifdef CONFIG_PCI
+> b/drivers/clk/baikal-t1/ccu-pll.c
+> index 13ef28001439..d41735c6956a 100644
+> --- a/drivers/clk/baikal-t1/ccu-pll.c
+> +++ b/drivers/clk/baikal-t1/ccu-pll.c
+> @@ -66,7 +66,7 @@ static inline unsigned long
+> ccu_pll_lock_delay_us(unsigned long ref_clk,
+>   {
+>       u64 us = 500ULL * nr * USEC_PER_SEC;
+>
+> -    do_div(us, ref_clk);
+> +    div64_ul(us, ref_clk);
+
+The above is not equivalent:
+  - do_div() returned the quotient as an output parameter in us,
+  - div64_ul() returns the quotient using the return value.
+
+Have you tested your patch?
+
+>
+>       return us;
+
+So this should become:
+
+    return div64_ul(500ULL * nr * USEC_PER_SEC, ref_clk);
+
+>   }
+> @@ -78,9 +78,9 @@ static inline unsigned long ccu_pll_calc_freq(unsigned
+> long ref_clk,
+>   {
+>       u64 tmp = ref_clk;
+>
+> -    do_div(tmp, nr);
+> +    div64_ul(tmp, nr);
+>       tmp *= nf;
+> -    do_div(tmp, od);
+> +    div64_ul(tmp, od);
+>
+>       return tmp;
+
+Likewise.
+But as ref_clk is unsigned long, there is no need to use div64_ul()
+for the first division, and this can be simplified to:
+
+    u64 tmp = (u64)(ref_clk / nr) * nf;
+    return div64_ul(tmp, od);
+
+To avoid loss of precision, it might be better to reverse the order
+of the division and multiplication:
+
+    u64 tmp = (u64)ref_clk * nf / nr;
+
+But doing that requires intimate knowledge about the range of nf to
+avoid overflow, so I leave that to Serge.
+
+>   }
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.39.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
