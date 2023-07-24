@@ -2,110 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3AA75F90E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6738575F91B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbjGXN5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60136 "EHLO
+        id S230119AbjGXOAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbjGXN5n (ORCPT
+        with ESMTP id S230094AbjGXN75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:57:43 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC897125
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:57:41 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-991fe70f21bso707805666b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:57:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690207060; x=1690811860;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Fe9z2wVqi4uXGGhmuKhfL0klCprqpJzundzw8QwfPx8=;
-        b=PzlIqRLwuxOwrOmnzKC5SEgl3Num/V5AZPJDYdGGhoF9PVf6bjoo6VmZXIuIlWr2GB
-         xcVLooJ5K9BnBiGmqf/sQfBFabAc5koX/8Ek0YH7zW8hECNFwDedsydHcAF1K94n813v
-         Z8Ld9ELjs851FTTxPV9H9w3RKXWRYsyR4v707faZdkUFV/agDLo8h54bwKvzVFz8Hmu+
-         fj8cbqjiN8KmaRAqdo2lRHe8zWnWc5btQtDviP9+6m4UbeDnIc1AZBbbBz6CwSk6oPmJ
-         AI7ZEfoMJX5VXI+7Yl4bqoJs4hmdM8oHE337Zi3+uEXRLgblbWmlDSMPRSIftCeAfTv9
-         4Cag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690207060; x=1690811860;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fe9z2wVqi4uXGGhmuKhfL0klCprqpJzundzw8QwfPx8=;
-        b=g69n89G/8+Cg21sPLZUEYQaOd/v7DVlVbUg5PG1/8cz36jsfOml4m6FibcihjNtm+5
-         7pfNgJPrzPwwc556CnYXr2QPR6dzZYPorAGeifHgUygxsgxvGH3B3YEBm+5EAomwt9WL
-         JtaHSpg+/eLP2hVEsOKoGCR8U8HTOFXy7qI/QYzCVJksi+I6hGd93fEn9feltD5oVtxM
-         b4J2qbg62H7AIgyGYlaF9UaDBOcFkY5yNETRxGcCRv4OiuncQFmdrNa8h09teiUgbYS8
-         f7bqbLtXyu3ulHD/15d6284PLbikMTi067bYZBhpfTjeZBeVak6EOqYEn6UutFapGi7X
-         L9IA==
-X-Gm-Message-State: ABy/qLbr/4VBdX47/SsMER5aK57IDhm5W4xok1Oandgg6ajPvclaon47
-        gZKRw2ey879Szr1yz2chd97PxQ==
-X-Google-Smtp-Source: APBJJlGgULAF3ZxrMoEL/wR2lRhASSflOgtg/XiNIrK3NnKBr0/YS1pVFSmzzglEcIPM/j9U1dwutQ==
-X-Received: by 2002:a17:906:2253:b0:973:d1ce:dbe8 with SMTP id 19-20020a170906225300b00973d1cedbe8mr9946894ejr.46.1690207060358;
-        Mon, 24 Jul 2023 06:57:40 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id bi3-20020a170906a24300b00992ae4cf3c1sm6707106ejb.186.2023.07.24.06.57.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 06:57:39 -0700 (PDT)
-Message-ID: <c907c3aa-84b8-c667-e8ea-dd7e5bd4a54b@linaro.org>
-Date:   Mon, 24 Jul 2023 15:57:37 +0200
+        Mon, 24 Jul 2023 09:59:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8D8133
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690207149;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P2aZVU7pPnDc/RmZQW4iakWRtXamS7FJFx+fSy45nyM=;
+        b=QymtMmsTSY3Ev2cIqp6Ix7MseEEcWqIwRWNx3PhIqH2fSbt3fa+2F/JBee0l6rYM1grPHV
+        3EWyDEDk0QvVdHs/p01w/F0Xg5T67hU5WBkgPKmU5DM38YssvZLUS2tnoNGEjsnyKUjQW/
+        DcGQRxYVNKyb88niZ/CjiXBEupfsMgM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-122-NK6o2GkLNmuwifLXGGNa6Q-1; Mon, 24 Jul 2023 09:59:05 -0400
+X-MC-Unique: NK6o2GkLNmuwifLXGGNa6Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 51785800159;
+        Mon, 24 Jul 2023 13:59:05 +0000 (UTC)
+Received: from dell-r430-03.lab.eng.brq2.redhat.com (dell-r430-03.lab.eng.brq2.redhat.com [10.37.153.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 67ED040C2063;
+        Mon, 24 Jul 2023 13:59:04 +0000 (UTC)
+From:   Igor Mammedov <imammedo@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     terraluna977@gmail.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, imammedo@redhat.com, mst@redhat.com
+Subject: [PATCH] hack to debug acpiphp crash
+Date:   Mon, 24 Jul 2023 15:59:02 +0200
+Message-Id: <20230724135902.2217991-1-imammedo@redhat.com>
+In-Reply-To: <11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com>
+References: <11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] arm64: dts: ti: k3-am62a7-sk: Enable dual role support
- for Type-C port
-Content-Language: en-US
-To:     Ravi Gunasekaran <r-gunasekaran@ti.com>, nm@ti.com,
-        vigneshr@ti.com, kristo@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rogerq@kernel.org
-References: <20230724115133.2226-1-r-gunasekaran@ti.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230724115133.2226-1-r-gunasekaran@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/2023 13:51, Ravi Gunasekaran wrote:
-> USB0 is interfaced with a Type-C DRP connector and is managed via a
-> USB PD controller. Add support for the Type-C port with dual data
-> and power sink role.
-> 
-> Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am62a7-sk.dts | 33 +++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
-> index d2cca6182738..b478b794de00 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
-> @@ -226,6 +226,24 @@
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&main_i2c0_pins_default>;
->  	clock-frequency = <400000>;
-> +
-> +	typec_pd0:tps6598x@3f {
 
-Missing space after:
+Woody thanks for testing,
 
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+can you try following patch which will try to workaround NULL bus->self if it's
+a really cuplrit and print an extra debug information.
+Add following to kernel command line(make sure that CONFIG_DYNAMIC_DEBUG is enabled):
 
+dyndbg="file drivers/pci/access.c +p; file drivers/pci/hotplug/acpiphp_glue.c +p; file drivers/pci/bus.c +p; file drivers/pci/pci.c +p; file drivers/pci/setup-bus.c +p" ignore_loglevel
 
-Best regards,
-Krzysztof
+What I find odd in you logs is that enable_slot() is called while native PCIe
+should be used. Additional info might help to understand what's going on:
+  1: 'lspci' output
+  2:  DSDT and all SSDT ACPI tables (you can use 'acpidump -b' to get them).
+
+Signed-off-by: Igor Mammedov <imammedo@redhat.com>
+---
+ drivers/pci/hotplug/acpiphp_glue.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+index 328d1e416014..9ce3fd9d72a9 100644
+--- a/drivers/pci/hotplug/acpiphp_glue.c
++++ b/drivers/pci/hotplug/acpiphp_glue.c
+@@ -485,7 +485,10 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+ 	struct pci_bus *bus = slot->bus;
+ 	struct acpiphp_func *func;
+ 
++WARN(1, "enable_slot");
++pci_info(bus, "enable_slot bus\n");
+ 	if (bridge && bus->self && hotplug_is_native(bus->self)) {
++pr_err("enable_slot: bridge branch\n");
+ 		/*
+ 		 * If native hotplug is used, it will take care of hotplug
+ 		 * slot management and resource allocation for hotplug
+@@ -498,8 +501,10 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+ 				acpiphp_native_scan_bridge(dev);
+ 		}
+ 	} else {
++		LIST_HEAD(add_list);
+ 		int max, pass;
+ 
++pr_err("enable_slot: acpiphp_rescan_slot branch\n");
+ 		acpiphp_rescan_slot(slot);
+ 		max = acpiphp_max_busnr(bus);
+ 		for (pass = 0; pass < 2; pass++) {
+@@ -508,13 +513,23 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+ 					continue;
+ 
+ 				max = pci_scan_bridge(bus, dev, max, pass);
++pci_info(dev, "enable_slot: pci_scan_bridge: max: %d\n", max);
+ 				if (pass && dev->subordinate) {
+ 					check_hotplug_bridge(slot, dev);
+ 					pcibios_resource_survey_bus(dev->subordinate);
++                                        if (bus->self)
++						__pci_bus_size_bridges(dev->subordinate,
++								       &add_list);
+ 				}
+ 			}
+ 		}
+-		pci_assign_unassigned_bridge_resources(bus->self);
++                if (bus->self) {
++pci_info(bus->self, "enable_slot: pci_assign_unassigned_bridge_resources:\n");
++			pci_assign_unassigned_bridge_resources(bus->self);
++                } else {
++pci_info(bus, "enable_slot: __pci_bus_assign_resources:\n");
++			__pci_bus_assign_resources(bus, &add_list, NULL);
++		}
+ 	}
+ 
+ 	acpiphp_sanitize_bus(bus);
+@@ -541,6 +556,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+ 		}
+ 		pci_dev_put(dev);
+ 	}
++pr_err("enable_slot: end\n");
+ }
+ 
+ /**
+-- 
+2.39.3
 
