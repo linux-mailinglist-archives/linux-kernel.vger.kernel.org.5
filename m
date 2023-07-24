@@ -2,66 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9AC75FC90
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B5E75FC96
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbjGXQwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42606 "EHLO
+        id S230498AbjGXQxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjGXQw2 (ORCPT
+        with ESMTP id S230253AbjGXQxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:52:28 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5EFE54;
-        Mon, 24 Jul 2023 09:52:27 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36OGqKo7016119;
-        Mon, 24 Jul 2023 11:52:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690217540;
-        bh=6sKluWMDVCAl9wXd9uzouBrl9+1xuYp1yE/vSDzWnJQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=R6/uGjH6vSOD+pMBKBfessTY5V4CLhdpFgBojU8Ipqi/F8foS2Nl3dl04wGSZugZN
-         hMvWIb4jjXH2eL8bHGGc+Lpz8GtM8khWff9+OirggKfOMfm+JwSBqPmmn8qARwiCpg
-         grL7Ww6/pt0KOIR9rgIaiVHHMUL7k0sT2AeODAgY=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36OGqKIh108650
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Jul 2023 11:52:20 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 24
- Jul 2023 11:52:20 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 24 Jul 2023 11:52:20 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36OGqKmN006460;
-        Mon, 24 Jul 2023 11:52:20 -0500
-Date:   Mon, 24 Jul 2023 11:52:20 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Jayesh Choudhary <j-choudhary@ti.com>
-CC:     <vigneshr@ti.com>, <afd@ti.com>,
-        <krzysztof.kozlowski+dt@linaro.org>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <conor+dt@kernel.org>, <rogerq@kernel.org>,
-        <s-vadapalli@ti.com>, <a-bhatia1@ti.com>, <r-ravikumar@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/5] arm64: dts: ti: k3-j784s4-main: Add system
- controller and SERDES lane mux
-Message-ID: <20230724165220.kbjo7t5vthurqeuj@spokesman>
-References: <20230721132029.123881-1-j-choudhary@ti.com>
- <20230721132029.123881-2-j-choudhary@ti.com>
+        Mon, 24 Jul 2023 12:53:02 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8896AA4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:53:01 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99b9421aaebso176477166b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:53:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690217580; x=1690822380;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+UA9sLTmCceaVH3djDwF4zW7p7bRxV+TYZsQs3yv4/4=;
+        b=MTl3ovYe8e/zSYYq5Z7hdt4bZLg5Yxiber4StnfaAtiwGaiwcj/Txh2uJI15r0AboO
+         QeRgSjFFt3Ak3fuOM/kOmdt1yX2tnlBHJkgY7lpSwWcqQQVaWRgnOeDvUZobe7Rrt1uY
+         NP2LZsIsW2TJcD4Cokdpg/T6Hq7+FFJUomu4o/hWR9vldiyOExI0ma0wITcrVjZLGMMq
+         bgmIIF2CIjuSTuEpDSWTx80SSz/nXonCzH+brqpjznu37lT/emP/ldBnzxGcfelId/DP
+         JB+sLPomu9f5Biu9Cdi9Am3b0yvrE+g7VUEj5zHaNBw2NOePct6IkUzFOTsScgEOXSzO
+         2J2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690217580; x=1690822380;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+UA9sLTmCceaVH3djDwF4zW7p7bRxV+TYZsQs3yv4/4=;
+        b=gWEFfDNJYttp1m7bJUqWb/aCDWYpwog12jb1l4lMVGZ4IqBdl8jV9JnO4Da9ahb1CS
+         UwXtPYssid8fUdazt1ClLPMDYJqKwUzYmCd9mxPKFbYCi6aw+xsWx3enbYmc2SnYzWdo
+         4xemNfGnK11cVLuHEKYrMqpqWIBdwFamk4qPBE2eo21tjhO2thXaMexXuYnURkXwXUXz
+         V69NF0xBA2dB50CKPO7Dgc3l9iUIirwa9M26J7kDUis2aWvNGIyWgX3PZgXfpqt/vHIR
+         fXAhPz1Vc2Re3v8A6qtSbVq7lWFEVoViRREccqgnGYrzko/q/In09IGh1hpYkAt3HAgc
+         cUbA==
+X-Gm-Message-State: ABy/qLYUdL+VKfI7hMz+pHwSrmM/aBgMp35fOXllQumswc8f2DPuoJlu
+        VscQm456gtnXCRplr5mj3Thw6g==
+X-Google-Smtp-Source: APBJJlGVH4OaeaMwPLujZMBro9heN2RofqpqgrS3qBYBWGDrn2tWxQOmPBLEImp83ncwwd1ls9EkJA==
+X-Received: by 2002:a17:906:106:b0:986:d833:3cf9 with SMTP id 6-20020a170906010600b00986d8333cf9mr9986138eje.39.1690217580052;
+        Mon, 24 Jul 2023 09:53:00 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id a15-20020a1709062b0f00b0098ce63e36e9sm7028954ejg.16.2023.07.24.09.52.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 09:52:58 -0700 (PDT)
+Message-ID: <58475de8-8636-d9e5-d91b-bb61f77d6cca@linaro.org>
+Date:   Mon, 24 Jul 2023 18:52:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230721132029.123881-2-j-choudhary@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] arm64: dts: qcom: sm8150: Fix the I2C7 interrupt
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        qaz6750 <qaz6750@outlook.com>, andersson@kernel.org,
+        agross@kernel.org
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <SY7P282MB3787F073ED6E860E820C6CDDB202A@SY7P282MB3787.AUSP282.PROD.OUTLOOK.COM>
+ <898f8e84-de31-8147-ebb3-cef41f22868f@linaro.org>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <898f8e84-de31-8147-ebb3-cef41f22868f@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,86 +79,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18:50-20230721, Jayesh Choudhary wrote:
-> From: Siddharth Vadapalli <s-vadapalli@ti.com>
-> 
-> The system controller node manages the CTRL_MMR0 region.
-> Add serdes_ln_ctrl node which is used for controlling the SERDES lane mux.
-> 
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> [j-choudhary@ti.com: Fix serdes_ln_ctrl node]
-> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 40 ++++++++++++++++++++++
->  1 file changed, 40 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> index 11f163e5cadf..5a4da4eb8d3d 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> @@ -5,6 +5,10 @@
->   * Copyright (C) 2022 Texas Instruments Incorporated - https://www.ti.com/
->   */
->  
-> +#include <dt-bindings/mux/mux.h>
-> +
-> +#include "k3-serdes.h"
-> +
->  &cbass_main {
->  	msmc_ram: sram@70000000 {
->  		compatible = "mmio-sram";
-> @@ -26,6 +30,42 @@ l3cache-sram@200000 {
->  		};
->  	};
->  
-> +	scm_conf: syscon@100000 {
-> +		compatible = "ti,j721e-system-controller", "syscon", "simple-mfd";
+On 24/07/2023 18:29, Konrad Dybcio wrote:
+> On 24.07.2023 18:21, qaz6750 wrote:
+>> I2C6 and I2C7 use the same interrupts, which is incorrect.
+>> In the downstream kernel, I2C7 has interrupts of 608 instead of 607.
+>>
+>> Signed-off-by: qaz6750 <qaz6750@outlook.com>
+>> ---
+> Fixes: 81bee6953b58 ("arm64: dts: qcom: sm8150: add i2c nodes")
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Would'nt a simple-bus work?
-https://lore.kernel.org/all/20230605205220.rjmcsi5tjn4auqa7@arose/
+But we also need full name or known identity, not anonymous contribution.
 
-> +		reg = <0x00 0x00100000 0x00 0x1c000>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x00 0x00 0x00100000 0x1c000>;
-> +
-> +		serdes_ln_ctrl: mux-controller@4080 {
-> +			compatible = "mmio-mux";
-> +			reg = <0x00004080 0x30>;
-> +			#mux-control-cells = <1>;
-> +			mux-reg-masks = <0x4080 0x3>, <0x4084 0x3>, /* SERDES0 lane0/1 select */
-> +					<0x4088 0x3>, <0x408c 0x3>, /* SERDES0 lane2/3 select */
-> +					<0x4090 0x3>, <0x4094 0x3>, /* SERDES1 lane0/1 select */
-> +					<0x4098 0x3>, <0x409c 0x3>, /* SERDES1 lane2/3 select */
-> +					<0x40a0 0x3>, <0x40a4 0x3>, /* SERDES2 lane0/1 select */
-> +					<0x40a8 0x3>, <0x40ac 0x3>; /* SERDES2 lane2/3 select */
-> +			idle-states = <J784S4_SERDES0_LANE0_PCIE1_LANE0>,
-> +				      <J784S4_SERDES0_LANE1_PCIE1_LANE1>,
-> +				      <J784S4_SERDES0_LANE2_IP3_UNUSED>,
-> +				      <J784S4_SERDES0_LANE3_USB>,
-> +				      <J784S4_SERDES1_LANE0_PCIE0_LANE0>,
-> +				      <J784S4_SERDES1_LANE1_PCIE0_LANE1>,
-> +				      <J784S4_SERDES1_LANE2_PCIE0_LANE2>,
-> +				      <J784S4_SERDES1_LANE3_PCIE0_LANE3>,
-> +				      <J784S4_SERDES2_LANE0_IP2_UNUSED>,
-> +				      <J784S4_SERDES2_LANE1_IP2_UNUSED>,
-> +				      <J784S4_SERDES2_LANE2_QSGMII_LANE1>,
-> +				      <J784S4_SERDES2_LANE3_QSGMII_LANE2>,
-> +				      <J784S4_SERDES4_LANE0_EDP_LANE0>,
-> +				      <J784S4_SERDES4_LANE1_EDP_LANE1>,
-> +				      <J784S4_SERDES4_LANE2_EDP_LANE2>,
-> +				      <J784S4_SERDES4_LANE3_EDP_LANE3>;
-> +		};
-> +	};
-> +
->  	gic500: interrupt-controller@1800000 {
->  		compatible = "arm,gic-v3";
->  		#address-cells = <2>;
-> -- 
-> 2.25.1
-> 
+Best regards,
+Krzysztof
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
