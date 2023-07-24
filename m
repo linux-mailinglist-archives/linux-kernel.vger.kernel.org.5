@@ -2,81 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 626F175F9A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2840075F9A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbjGXOSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:18:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
+        id S231193AbjGXOUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjGXOSw (ORCPT
+        with ESMTP id S231236AbjGXOUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:18:52 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 8CC85E64
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:18:51 -0700 (PDT)
-Received: (qmail 1848669 invoked by uid 1000); 24 Jul 2023 10:18:50 -0400
-Date:   Mon, 24 Jul 2023 10:18:50 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Stanley Chang <stanley_chang@realtek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Roy Luo <royluo@google.com>, Ray Chi <raychi@google.com>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v8 1/5] usb: phy: add usb phy notify port status API
-Message-ID: <802dd50c-7201-45d2-8855-6692aeb947db@rowland.harvard.edu>
-References: <20230724103600.14164-1-stanley_chang@realtek.com>
+        Mon, 24 Jul 2023 10:20:30 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B54E64;
+        Mon, 24 Jul 2023 07:20:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690208429; x=1721744429;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jpqAetm4pZsB5/kXbjlZnlIftjDXYhKEa2j6e0p9oaw=;
+  b=Eiy1HBKTYWI4BrqhjiO+kTBNEVt8pOSY5sw1IzEDFw/MJQNAFhpKGmvT
+   vM5WnkfEHmarq85GaG/BHUs0VV1wn2VH/2t+VtkcMP/23q6SfxOEvYkdj
+   YuU2fjgDbYa7PyNvOyHXX7HGLgT3DbJB5LIc8mEUSmqmG8MNJJokiM5Tu
+   af9IPKexfl5fqsXHNAdwAF+VcrcfCVJdZ9RMpmHj7ipUKF4iSz8X/RHr0
+   ivAGb5GusydIdmXThbGpzqooRDheIFvZQM/QLjty0Ooaf2iRUkrbF3PrT
+   hy0PkkqfHTeTQw5EKx+TEWPrLkq4CyOQS160EA4TRmIE48I2/xPF5tvbE
+   g==;
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="asc'?scan'208";a="221901442"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Jul 2023 07:20:28 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 24 Jul 2023 07:20:24 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 24 Jul 2023 07:20:22 -0700
+Date:   Mon, 24 Jul 2023 15:19:49 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-efi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Zong Li <zong.li@sifive.com>
+Subject: Re: [PATCH v6 2/5] riscv: Dump out kernel offset information on panic
+Message-ID: <20230724-fineness-sectional-8cdd1e4bbff2@wendy>
+References: <20230722123850.634544-1-alexghiti@rivosinc.com>
+ <20230722123850.634544-3-alexghiti@rivosinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="aMNb8/bsNIfqV7pO"
 Content-Disposition: inline
-In-Reply-To: <20230724103600.14164-1-stanley_chang@realtek.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230722123850.634544-3-alexghiti@rivosinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 06:34:48PM +0800, Stanley Chang wrote:
+--aMNb8/bsNIfqV7pO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> --- a/drivers/usb/core/hub.c
-> +++ b/drivers/usb/core/hub.c
-> @@ -614,6 +614,30 @@ static int hub_ext_port_status(struct usb_hub *hub, int port1, int type,
->  		ret = 0;
->  	}
->  	mutex_unlock(&hub->status_mutex);
-> +
-> +	/*
-> +	 * There is no need to lock status_mutex here, because status_mutex
-> +	 * protects hub->status, and the phy driver only checks the port
-> +	 * status without changing the status.
-> +	 */
-> +	if (!ret) {
-> +		struct usb_device *hdev = hub->hdev;
-> +
-> +		/*
-> +		 * Applies to roothub only. That is, when hdev->parent is
-> +		 * empty. Only roothub will be notified of port state
-> +		 * changes, since the USB PHY only cares about changes at
-> +		 * the next level.
-> +		 */
-> +		if (hdev && !hdev->parent) {
+Hey Alex,
 
-hdev can never be NULL, so you don't need to test it.  Also, there 
-is an is_root_hub() routine you can call here -- it's an inline defined 
-in usb.h.  If you use that then you won't have to explain it in the 
-comment.
+On Sat, Jul 22, 2023 at 02:38:47PM +0200, Alexandre Ghiti wrote:
+> Dump out the KASLR virtual kernel offset when panic to help debug kernel.
+>=20
+> Signed-off-by: Zong Li <zong.li@sifive.com>
 
-To be fair, there are plenty of other places in the driver that test 
-!hdev->parent (or !udev->parent) with no explanation.
+Either you're missing a Co-developed-by: or the author of this patch is
+incorrect.
 
-Alan Stern
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+
+--aMNb8/bsNIfqV7pO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZL6IhAAKCRB4tDGHoIJi
+0uMUAP9RhMxzS+06VHvIGGfhOAXni5ygCNraqDKLEstEuQWfDQEAlV63sF94gRq7
+ibFLhTzDBOjVznhq0Br9EjnHLbwKzAE=
+=G/wQ
+-----END PGP SIGNATURE-----
+
+--aMNb8/bsNIfqV7pO--
