@@ -2,181 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF9075F0FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A3A75F186
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232739AbjGXJyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 05:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52848 "EHLO
+        id S232905AbjGXJ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 05:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232891AbjGXJx0 (ORCPT
+        with ESMTP id S229578AbjGXJ5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 05:53:26 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on062c.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0d::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C1649FA;
-        Mon, 24 Jul 2023 02:49:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l7oQ6lg6w1zxaiB+lg+3NDVAJZodLQbOMHCGkMwj7/Un5uggCKaPZNvsFnG3FWjPWmQ9lMo/8oRpXSRMvZj6eanoewnTm8kKAs+JP55JnPDKFeddvrQkQPuvZv99wjd1DgrpmtXLWc60bWoDLfFZmJc5C3DxKnGUMV5d8rxEfwXrIMJVgeNS4mNDn8LfKg/AADEa+BuM2cOvmNA1J3aDiIqJifAVILED0mk02W3e6hg7KtWUpx/u/XJ+RxQAvupIbB8XTTYYVat2CQmWR/U9nqTCARo3Y+N0uc9JiWT1G36zycJ1q+GUs8JFyARs/4hr03jfDUXPcMv9Js/JdLEvkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jT4G+XmhBCccAPOdJit89nkg0G9VWUhC73g9MfPCltI=;
- b=GkoOVKTnP+Uor2+mURUd0yqZ9af8rimEO9/qQ4I9VCR75J1zTl9yeTMSVQ1PUEBy6l0jhPChoiOKb9hXiEMcmw9YuXmlV0vk+nNL/Y7HjMAcVo0HCZLrV/Ra9Tx1NWVOxQ7+dI5nRYkuipw44Y1CBlDHybCgiEetRvHULDCW8cw/d0BSHZaXETyuxh52ze6+uBklmT+EM7VfXmlfGxsOuHwELAEi3x+oRwogoSUgn8bhjrF599pTQ5HlBbSooE+jw+4ldwKDYk3ZNFLpR8TEhRxmKqMECxoFcx4RPz3BBGNZiHTUv51zr9GCW9/d1hzlck4nxe6on0JMfwdIU86kCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jT4G+XmhBCccAPOdJit89nkg0G9VWUhC73g9MfPCltI=;
- b=C9Fg3gDU0yBBYpFdH4JcDF1EvA6TWrB/+OTV+6XP72v49jp8FDDvMxHTefPgbVRUcDv71LAMP4CSspurRS7x5KTGK1pqfM7zj1OKtm2fRc+8ueIksdJdjkLfVwwE5r0QOhtidHDIJYbUsWa34vYq+ivDlELU41ZYfFicYoIiBrw=
-Received: from VI1PR04MB5005.eurprd04.prod.outlook.com (2603:10a6:803:57::30)
- by PAWPR04MB9814.eurprd04.prod.outlook.com (2603:10a6:102:37f::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Mon, 24 Jul
- 2023 09:48:43 +0000
-Received: from VI1PR04MB5005.eurprd04.prod.outlook.com
- ([fe80::7f26:a98a:b8c5:f620]) by VI1PR04MB5005.eurprd04.prod.outlook.com
- ([fe80::7f26:a98a:b8c5:f620%4]) with mapi id 15.20.6609.031; Mon, 24 Jul 2023
- 09:48:43 +0000
-From:   Carlos Song <carlos.song@nxp.com>
-To:     Andi Shyti <andi.shyti@kernel.org>
-CC:     Aisheng Dong <aisheng.dong@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "Anson.Huang@nxp.com" <Anson.Huang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        Bough Chen <haibo.chen@nxp.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXT] Re: [PATCH 2/2] dt-bindings: i2c: imx-lpi2c: Add bus
- recovery example
-Thread-Topic: [EXT] Re: [PATCH 2/2] dt-bindings: i2c: imx-lpi2c: Add bus
- recovery example
-Thread-Index: AQHZkgDKNieDK5p0x0ufpk1V6aTcbK9y6mUAgAEgY/CAA3rLgIAR5vSAgD+T9jA=
-Date:   Mon, 24 Jul 2023 09:48:42 +0000
-Message-ID: <VI1PR04MB5005DB33D791DEED3F1E0612E802A@VI1PR04MB5005.eurprd04.prod.outlook.com>
-References: <20230529074302.3612294-1-carlos.song@nxp.com>
- <20230529074302.3612294-2-carlos.song@nxp.com>
- <ed004607-5a23-564a-3185-a63af87783e5@linaro.org>
- <VI1PR04MB5005E43373DB10A9FD726AD7E8489@VI1PR04MB5005.eurprd04.prod.outlook.com>
- <5b537617-a9cb-609b-790d-3dda4b3933ec@linaro.org>
- <20230613224201.jyvodavmww43h4pi@intel.intel>
-In-Reply-To: <20230613224201.jyvodavmww43h4pi@intel.intel>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: VI1PR04MB5005:EE_|PAWPR04MB9814:EE_
-x-ms-office365-filtering-correlation-id: e5056027-0c4e-4cd1-201c-08db8c2b2a9d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1H9YrwtLldSFXhiz88JFro51HSJuC0gYxrjPAAtCCJqQFGsLxgEBCV3Jv4aEz5iMtDKCS61+RS85g1UnX6oBXpi201BkBsiUE4Qhc7J9eWSB0lYpex/80LD5IPbNob65AHshA9R0g9KVIVbn2YiNynfCh4BgMYhUvvUJ2hFjBL28KlYLMOM7x8s++j0/e7HMhRdrn0+lZ3U5V/9+j8JRr6Xcjjb1vc69YIqCuNK7o6fWF3TbkzjPgkCxRxkZIR1oYR/kG/TdVVZs71cukMkVW1kVVz4qsQ9yOcr57rigITHJ6BogogAzjgpLrg+2cz7ejSBbDDmA5hqXNG3jNK7ZkL415ZYYjfdRZUPKtIj/1hbZyh8Yj24HnRqAw260QhFueH76uE3XNVfCktluZBk+CD99L7MaMmmAZ9lS1erOgyR5bRum51fNikTxvU6eCqht5M6mccaj+RIWFQVHl5nUigcMUglNsZfL0sPNF3K5/5bu7faDoIBc4gEzNYsxkm6w9VyfWX1VndI4Q4Mc4ULJy3Q/xrlS8s7TC2lASYut2hQ+sh8xMMkFycuI4ecwVrL4KEgOZOuaalIhDjWQrkap5vNaCF0KcPMI2z7R7OIqHJrFQGW5LUp9X9eHp/mWo58D
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5005.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(39860400002)(376002)(396003)(346002)(451199021)(83380400001)(38100700002)(122000001)(52536014)(86362001)(38070700005)(33656002)(55016003)(54906003)(478600001)(2906002)(186003)(6506007)(26005)(71200400001)(7696005)(9686003)(5660300002)(44832011)(8936002)(7416002)(8676002)(76116006)(316002)(41300700001)(64756008)(66946007)(66446008)(66476007)(66556008)(6916009)(4326008)(53546011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ALTver4mNMUfTJj1bwjG5koHSplWKbE8MOOlUzzrwqwbrVWaQxntTAzm/S8i?=
- =?us-ascii?Q?6Kc4Yg+4KRtiytIU/D9xXFOEhu4hW5xVwZtKEZl8hIwhfqfh2X8pki3CcbC4?=
- =?us-ascii?Q?eYS9Z7JUc4bIBKMAxyJHPMqNIpXbKIRKvNjAX8shSOuwhlq4H/JR2rwXnfLW?=
- =?us-ascii?Q?A1N9dNFTqZ1yaeZuos2kQTd1NkPjDYolgwHrpzHx8DY6IO3+kvQoUy+YTtPb?=
- =?us-ascii?Q?4izS+kBbbRVe+OZM3JCvAc57yDQXe6nYZYaNOrB4lxQUeSW8kdxe+H+zDnAc?=
- =?us-ascii?Q?qz/OIgGkxuRzvNJfqVodB6WFsCsC/v+1W9BPrDl+RdGsS9DF4NKUxKsXU9ro?=
- =?us-ascii?Q?Qn/9X9H7Rfx8/79aqgRF8bmTgb7p21GJ/D81Hs7S8lHHNifP4jqEbN6bc3Bp?=
- =?us-ascii?Q?LdTnGwZ4O6y8O8W+ltQHtbzahBhdtA9URjAhZIuUFnu+V5venUx+bO++BfaK?=
- =?us-ascii?Q?5UsMiCKzEkcaAniKDdkNbgpdrNjDmCZyDCSg5oKnITYYH+LbkFvkljIeGnoz?=
- =?us-ascii?Q?zHx2VEvwGCn5xR6k4CsSSb1Vng3Q8Tamq6H5kvRIIBElpGy7h3Lc8PvQt5KK?=
- =?us-ascii?Q?kANJwsdGpjksWhiPsW4bBSP3OPlNXX3lkTERrCCx7iwVp9sCwdrY6iphQ7vH?=
- =?us-ascii?Q?WaxGv6qnO2UU474BLJlrAjKq+Jv8QbXuPSNLPS7x3uNR1hRNsVO8cb+STanB?=
- =?us-ascii?Q?+zIXYRpMmsxjceFJIRoPmwMzZFpVEVgZ4r95fgaMNbFcXz17385xH7kLC68s?=
- =?us-ascii?Q?6UQ6kgfxWzafzIcQy/VhZvQBgSEjIPzmM/pLoAEN8D/OnlKQCejmi9tLd0YH?=
- =?us-ascii?Q?4PcX7JRkNYKNYuYmfia6JegXC60tn3ZafMlFBi5RYJBFyv4HxCP2gSyCTGBx?=
- =?us-ascii?Q?hKlQ5dp0xlcojx81NnEwVtqrjo1XBwv/y3KxXF6jV+7YzSQdP7byJkDN3Hsg?=
- =?us-ascii?Q?yx/XONtFn+iZsvMOhAw5xp1hgfwWAp2Dnh85zuXk7wDCOLPL7Erw4ZUh0v/4?=
- =?us-ascii?Q?IbD58NsDTrAHjuIPJCXQmqA87FGOOqrp6baLisZmleVRKJCdb5/9/K5it6Hb?=
- =?us-ascii?Q?0ZJAbFOt9x64LDNpEayrknHJJn1LwUFQ7Ob43AfG0UuIEqhN2VTHCPqyLvF+?=
- =?us-ascii?Q?idl9MnfmjNwbebUA1qFHLYff1NJKRzU7t7FmjNxmYEvyxv97itDTOe9YCoPM?=
- =?us-ascii?Q?Pu1kQK9UTBt5cXulh2pTdCJD0Pqytf5cE6WQaLE/HAwHHF1TGHxF9jmIgL0r?=
- =?us-ascii?Q?tn2x+KZvrWTEWC83/NdNte4ADVlzuQwu+mH4tG+lkMx38wBpm5An8BE7MeZS?=
- =?us-ascii?Q?yJSUALusOnOTjEAbtAedng1vZ611FoIPkPGwTW18vC2ISYSywDWJWN0Yy88Z?=
- =?us-ascii?Q?88Fp7dIYE1B45B8BjHIWYna+AAq4ZYYFLrbKXj5aC7U/V/hWENdBsMwCHO7a?=
- =?us-ascii?Q?pPdq8A07FF3Am0Hhf02xmefR7oGOEQucFRSxIxcGuoRZ1QAt7so1ZBheL0TO?=
- =?us-ascii?Q?GsAzrilD6afi9Isdt4Izzj6FvgvoZPM2U9uhrXKOH3ctJ5RNWsHvw266zYUV?=
- =?us-ascii?Q?6WqjutK7iF2iezXzhE0=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 24 Jul 2023 05:57:37 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD1D5FF0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:52:09 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-522382c4840so609384a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:52:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690192279; x=1690797079;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qH1xPhg/Am+ZrA/6voevZTtm38nK8XnjsWRckc1S8Y0=;
+        b=fxsgaMznyP34uFtm9q8dp/qpx6mJfNaqnKkUjO+3VyQIqxKm9Reo4Q5mHXlTYUL17o
+         QX5dwmR9wsUckH6mHlK8U10jRKhNSD9dcRyZP23ZCcRr7zc4lo1OW2B9jteri0NljHRZ
+         FJW8kEJxQ2n7FuflC3mkhc8bzFnBMRCl9QNubAq1900yEoDlLyuSPLTDK8pbNKAVzXnz
+         QmN76iP3U/PILiqE1lrDQ7LKn0jev5m4vo2oUaUs4Jr38FF/hc0frMCmUIohSMmewlbv
+         tgIBeXlZXWd/yQYdy/VloU9o8WliDVcckNeVYtGbaqr6pRFQOS5X0ihF63V120YQ4hq6
+         P6JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690192279; x=1690797079;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qH1xPhg/Am+ZrA/6voevZTtm38nK8XnjsWRckc1S8Y0=;
+        b=PMV+AtzCNfut0jxDB42f2jBamA+yuszWtM7VbtWBmMgBtJmuv0lIy5LH3ndXkROlfa
+         wg5ogSBu/DC2z09p/blcw0jwFBFgeV6RDo3tRWvF395JCpZ22Ik9oezV3U8qrv71fVPq
+         MHa7qs6CE9pT1t58t8Ip4yGnqsIcwap4KnoM1WqdcaqyN+uy+bI0MFA0t9uD14alAZYQ
+         vaJ4KI+nYHTWb0aRMFoAkszCyf2bDagFadCgs//Yzwq6tv+AlsYoKxT093IRwnszDsQb
+         pzKhBiYeADq6AHaGgQcnhwdmL3ybaL+pG6bVi5fNncA7Tu0bFHeGeJl4TcidZ5eP5QM6
+         GBFg==
+X-Gm-Message-State: ABy/qLbBtdT8XrItLgOqud46PMUg8kyN1yhU4E4mQ4FyTc6afJuqt9Cu
+        +wOGs/jeUkr+r7petJBG92ObaQ==
+X-Google-Smtp-Source: APBJJlGV4XG1oZ6mf5FuCv97rwX7+atN757Oexd4FcjKk5uHoW5XYBMwCJwhh9zXKY+U05Om/FOqtw==
+X-Received: by 2002:a17:906:5a4c:b0:992:345e:831b with SMTP id my12-20020a1709065a4c00b00992345e831bmr10299061ejc.50.1690192279269;
+        Mon, 24 Jul 2023 02:51:19 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id v19-20020a170906489300b0098e2eaec394sm6486372ejq.101.2023.07.24.02.51.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 02:51:18 -0700 (PDT)
+Message-ID: <488769bd-8373-5f53-204a-3739f104cd99@linaro.org>
+Date:   Mon, 24 Jul 2023 11:51:17 +0200
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5005.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5056027-0c4e-4cd1-201c-08db8c2b2a9d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jul 2023 09:48:42.9371
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RERwwA3BQ68RE0bBcaulObBwqSVxn2VP+4atsOBs26JMWExg5DJ1ftMqpfBVYbme9vQyPOkL3bRw+Ugbb2RV9Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB9814
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,SPF_HELO_PASS,
-        T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 1/6] dt-bindings: cache: qcom,llcc: Add LLCC compatible
+ for QDU1000/QRU1000
+Content-Language: en-US
+To:     Komal Bajaj <quic_kbajaj@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        srinivas.kandagatla@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230724084155.8682-1-quic_kbajaj@quicinc.com>
+ <20230724084155.8682-2-quic_kbajaj@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230724084155.8682-2-quic_kbajaj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Andy
+On 24/07/2023 10:41, Komal Bajaj wrote:
+> Add LLCC compatible for QDU1000/QRU1000 SoCs and add optional
+> nvmem-cells and nvmem-cell-names properties to support multiple
+> configurations for multi channel DDR.
+> 
+> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+> ---
 
-Thank you very much for your advice!
-I have re-made my patches based on your suggestion.
 
-> -----Original Message-----
-> From: Andi Shyti <andi.shyti@kernel.org>
-> Sent: Wednesday, June 14, 2023 6:42 AM
-> To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Cc: Carlos Song <carlos.song@nxp.com>; Aisheng Dong
-> <aisheng.dong@nxp.com>; shawnguo@kernel.org; s.hauer@pengutronix.de;
-> kernel@pengutronix.de; festevam@gmail.com; robh+dt@kernel.org;
-> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
-> Anson.Huang@nxp.com; Clark Wang <xiaoning.wang@nxp.com>; Bough Chen
-> <haibo.chen@nxp.com>; dl-linux-imx <linux-imx@nxp.com>;
-> linux-i2c@vger.kernel.org; devicetree@vger.kernel.org;
-> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org
-> Subject: Re: [EXT] Re: [PATCH 2/2] dt-bindings: i2c: imx-lpi2c: Add bus r=
-ecovery
-> example
->=20
-> Caution: This is an external email. Please take care when clicking links =
-or
-> opening attachments. When in doubt, report the message using the 'Report =
-this
-> email' button
->=20
->=20
-> Hi,
->=20
-> > > We also find the sci-gpio and sda-gpio have been defined in the ref:
-> /schemas/i2c/i2c-controller.yaml.
-> > > So is this the root cause of no need to add these properties?
-> >
-> > Yes.
->=20
-> is some cleanup needed also in i2c-imx.yaml?
->=20
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Carlos: I will not upstream any patch for i2c-imx.yaml. I will drop it.
+Best regards,
+Krzysztof
 
-> Andi
