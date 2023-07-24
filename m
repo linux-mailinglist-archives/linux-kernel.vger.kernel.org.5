@@ -2,128 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 741EC75F61E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0EC75F608
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbjGXMTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
+        id S230395AbjGXMSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230450AbjGXMT0 (ORCPT
+        with ESMTP id S229456AbjGXMSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:19:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC751BF
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:18:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690201053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rw38L/Q8Z4s8bYibZZQKRAeS223PBas54MnJkEMI578=;
-        b=EMrV+S9kXPzaiun9CW4tY8MEIJ8Z+eAJM75OFlPclmPmVS6vvKZ7UsOX/j15FUhdmEb/GG
-        m1RNE6YwB7fAq+0Bbud41PgM5bZJeYxVA7gt0KEBmSZAF/UvOprdVwr/BgrhosINSAzNWc
-        ENOvIh0GcEizNWycCUk5PtIzn/Cx9qc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-546-xQRTI1wTMQuC2bZfzDPW_g-1; Mon, 24 Jul 2023 08:17:32 -0400
-X-MC-Unique: xQRTI1wTMQuC2bZfzDPW_g-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-30e6153f0eeso2088412f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:17:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690201051; x=1690805851;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rw38L/Q8Z4s8bYibZZQKRAeS223PBas54MnJkEMI578=;
-        b=J6RivClykvLSKwtlBRkFYag/J4j4lFMf+36MH0K5Tiiit6Lyg4pOPACqjyG8r5X0jl
-         VxVnEYhk4wGeQP43pDouvMjj5yi3YgiTvwrTgC3oCcof2igwW6SEPqzbRYUloyLX9sXk
-         ewLyzL7ytS2npLY8pYnw1Na9SwLd32+eV1EE/FJv2sAUw2IapjLXlnwD3GE0Vq6TaTQ6
-         L1SSwqY0Xh55ABlhA10ns4AJE+d67prGz1WeWrBeB3h5EKk3ld0NORV05Zsy5P/ZWxG6
-         6nBY2bq2MMfNp6yjTSH9OLO1xPRaq7ciGlX8cIo5QFKZ+2esDK09jdr+Nba+vpU9nDZF
-         x8rQ==
-X-Gm-Message-State: ABy/qLaRuQhk7Dme6BmpBtu1zqCbKGxG87M1n8/XAY7EE5QeN1NkJlzE
-        cN6ZEdDHMyZ7xQOhVIUY3+OG3h0DZG5e2GTvQelPykf2de+IDGu1NBTlRzxbVgrOLpUauKavXku
-        ULmVBj8TPiEBec6ccK5ihqFMW
-X-Received: by 2002:a5d:61c5:0:b0:30f:af19:81f3 with SMTP id q5-20020a5d61c5000000b0030faf1981f3mr6477781wrv.41.1690201050954;
-        Mon, 24 Jul 2023 05:17:30 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEYkw/lGxF1vjEi65r5E6yxlhuiVPGxjyLJAPmxRiUwT8XJoqElxkVFhxzMFJGpNUQbu+34jA==
-X-Received: by 2002:a5d:61c5:0:b0:30f:af19:81f3 with SMTP id q5-20020a5d61c5000000b0030faf1981f3mr6477770wrv.41.1690201050535;
-        Mon, 24 Jul 2023 05:17:30 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c73d:bb00:91a5:d1c:3a7e:4c77? (p200300cbc73dbb0091a50d1c3a7e4c77.dip0.t-ipconnect.de. [2003:cb:c73d:bb00:91a5:d1c:3a7e:4c77])
-        by smtp.gmail.com with ESMTPSA id o26-20020a5d58da000000b0030ae499da59sm12758358wrf.111.2023.07.24.05.17.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 05:17:30 -0700 (PDT)
-Message-ID: <754fa87f-48a1-b086-c258-6f74375dec29@redhat.com>
-Date:   Mon, 24 Jul 2023 14:17:29 +0200
+        Mon, 24 Jul 2023 08:18:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FCA170D;
+        Mon, 24 Jul 2023 05:17:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A55C61124;
+        Mon, 24 Jul 2023 12:17:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE84DC433C7;
+        Mon, 24 Jul 2023 12:17:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690201064;
+        bh=QrEpSq7cPtZ3cWIhHPElPK38cx6jwtPbdBU+j7U7fKM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=lFo5/uyfnIZhAXSNnfYH/zs0wLPvsdGmMHFPu1gPwZUyuOP10nfFnm2e23E9mVHox
+         RPTdsfQNauiU49m1hBahLSzV9+gtG/J7umAiMCAj2AameE5Kr8rrBCOJ9W6HPjIMkc
+         lBp1NfEAIBufJmTKwy4+ZdRStOdLezK2HhFQXgRbYXDnNec/zH0oZOEiZUwOk3URR0
+         CwbOA3I9uES6cdgV2JXRUz8O/MvIwDzgSFlH2Jg5PAfwuqtmwK87bHc16vNtVYlbJG
+         hfzmJLudml4J90E2WDeTwJcjuLZaZewiSQ45z8+KBeEkpGI5axaDFLzZmilBUDvalQ
+         cGU58i/dTyQGA==
+Message-ID: <01e8445d033314b6d9cd67bece74ca1c3ce89945.camel@kernel.org>
+Subject: Re: [PATCH v2 34/47] nfsd: dynamically allocate the nfsd-client
+ shrinker
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+        david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz,
+        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
+        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+        gregkh@linuxfoundation.org, muchun.song@linux.dev
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Chuck Lever <chuck.lever@oracle.com>
+Date:   Mon, 24 Jul 2023 08:17:39 -0400
+In-Reply-To: <20230724094354.90817-35-zhengqi.arch@bytedance.com>
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+         <20230724094354.90817-35-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/2] mm/compaction: avoid unneeded pageblock_end_pfn
- when no_set_skip_hint is set
-Content-Language: en-US
-To:     Kemeng Shi <shikemeng@huawei.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        baolin.wang@linux.alibaba.com
-References: <20230721150957.2058634-1-shikemeng@huawei.com>
- <20230721150957.2058634-3-shikemeng@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230721150957.2058634-3-shikemeng@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.07.23 17:09, Kemeng Shi wrote:
-> Move pageblock_end_pfn after no_set_skip_hint check to avoid unneeded
-> pageblock_end_pfn if no_set_skip_hint is set.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huawei.com>
-> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+On Mon, 2023-07-24 at 17:43 +0800, Qi Zheng wrote:
+> In preparation for implementing lockless slab shrink, use new APIs to
+> dynamically allocate the nfsd-client shrinker, so that it can be freed
+> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
+> read-side critical section when releasing the struct nfsd_net.
+>=20
+> Acked-by: Chuck Lever <chuck.lever@oracle.com>
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 > ---
->   mm/compaction.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index c0d8d08fc163..9b7a0a69e19f 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -458,12 +458,12 @@ static void update_cached_migrate(struct compact_control *cc, unsigned long pfn)
->   {
->   	struct zone *zone = cc->zone;
->   
-> -	pfn = pageblock_end_pfn(pfn);
+>  fs/nfsd/netns.h     |  2 +-
+>  fs/nfsd/nfs4state.c | 20 ++++++++++++--------
+>  2 files changed, 13 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/fs/nfsd/netns.h b/fs/nfsd/netns.h
+> index ec49b200b797..f669444d5336 100644
+> --- a/fs/nfsd/netns.h
+> +++ b/fs/nfsd/netns.h
+> @@ -195,7 +195,7 @@ struct nfsd_net {
+>  	int			nfs4_max_clients;
+> =20
+>  	atomic_t		nfsd_courtesy_clients;
+> -	struct shrinker		nfsd_client_shrinker;
+> +	struct shrinker		*nfsd_client_shrinker;
+>  	struct work_struct	nfsd_shrinker_work;
+>  };
+> =20
+> diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+> index 3339177f8e2f..c7a4616cd866 100644
+> --- a/fs/nfsd/nfs4state.c
+> +++ b/fs/nfsd/nfs4state.c
+> @@ -4388,8 +4388,7 @@ static unsigned long
+>  nfsd4_state_shrinker_count(struct shrinker *shrink, struct shrink_contro=
+l *sc)
+>  {
+>  	int count;
+> -	struct nfsd_net *nn =3D container_of(shrink,
+> -			struct nfsd_net, nfsd_client_shrinker);
+> +	struct nfsd_net *nn =3D shrink->private_data;
+> =20
+>  	count =3D atomic_read(&nn->nfsd_courtesy_clients);
+>  	if (!count)
+> @@ -8125,12 +8124,17 @@ static int nfs4_state_create_net(struct net *net)
+>  	INIT_WORK(&nn->nfsd_shrinker_work, nfsd4_state_shrinker_worker);
+>  	get_net(net);
+> =20
+> -	nn->nfsd_client_shrinker.scan_objects =3D nfsd4_state_shrinker_scan;
+> -	nn->nfsd_client_shrinker.count_objects =3D nfsd4_state_shrinker_count;
+> -	nn->nfsd_client_shrinker.seeks =3D DEFAULT_SEEKS;
 > -
->   	/* Set for isolation rather than compaction */
->   	if (cc->no_set_skip_hint)
->   		return;
->   
-> +	pfn = pageblock_end_pfn(pfn);
+> -	if (register_shrinker(&nn->nfsd_client_shrinker, "nfsd-client"))
+> +	nn->nfsd_client_shrinker =3D shrinker_alloc(0, "nfsd-client");
+> +	if (!nn->nfsd_client_shrinker)
+>  		goto err_shrinker;
 > +
->   	if (pfn > zone->compact_cached_migrate_pfn[0])
->   		zone->compact_cached_migrate_pfn[0] = pfn;
->   	if (cc->mode != MIGRATE_ASYNC &&
+> +	nn->nfsd_client_shrinker->scan_objects =3D nfsd4_state_shrinker_scan;
+> +	nn->nfsd_client_shrinker->count_objects =3D nfsd4_state_shrinker_count;
+> +	nn->nfsd_client_shrinker->seeks =3D DEFAULT_SEEKS;
+> +	nn->nfsd_client_shrinker->private_data =3D nn;
+> +
+> +	shrinker_register(nn->nfsd_client_shrinker);
+> +
+>  	return 0;
+> =20
+>  err_shrinker:
+> @@ -8228,7 +8232,7 @@ nfs4_state_shutdown_net(struct net *net)
+>  	struct list_head *pos, *next, reaplist;
+>  	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
+> =20
+> -	unregister_shrinker(&nn->nfsd_client_shrinker);
+> +	shrinker_unregister(nn->nfsd_client_shrinker);
+>  	cancel_work(&nn->nfsd_shrinker_work);
+>  	cancel_delayed_work_sync(&nn->laundromat_work);
+>  	locks_end_grace(&nn->nfsd4_manager);
 
-I'm pretty sure the compiler can to optimize this -- there should not be 
-any function call involved, so the compiler can reorder as it pleases.
-
-Anyhow, change itself looks good.
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Cheers,
-
-David / dhildenb
-
+Acked-by: Jeff Layton <jlayton@kernel.org>
