@@ -2,159 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E1475FF84
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7B175FF88
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbjGXTGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 15:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59374 "EHLO
+        id S230381AbjGXTGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 15:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbjGXTGE (ORCPT
+        with ESMTP id S230332AbjGXTG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 15:06:04 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C008170F;
-        Mon, 24 Jul 2023 12:05:59 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36OHQrXr005598;
-        Mon, 24 Jul 2023 19:05:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=uT4ufz+wHsOJ65L3P5ysUER/zTxRqHomRl0RlZwXaWU=;
- b=OokxkpHpg4OhJ+OCpfuapHoM6I2dQqig7aOFRNq0AY571F2O7MXJtXTTLPemCMZc/+tq
- r3VUhZLif0/JRlGj6ouWBctGwyD1FQ/F/iSfjLJ/qsrfxidcpsHSJoe1wJJQN5DTqfEX
- XGLpY5PEASC7Zveb9mPYsefOe4oUj801Q5y0JzjlvDX9zFuqqK1NhY7LZjVvtsrpnC1i
- DTF96Msjrzw1UeGQY1TdEYeq0959rsMDHvN9Dz6YuzUGEiYKGJ6ZuC2jdx+wsYs3EfXb
- +XS+F14FMWpxoy86RRuIil00sWapNExHa9aofVFcmDex0n46sS/4pmPZq59KKjdjmLww Ww== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1v6u8fqq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 19:05:55 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36OJ5ssq007013
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 19:05:54 GMT
-Received: from [10.134.65.165] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 24 Jul
- 2023 12:05:54 -0700
-Message-ID: <c3e4912d-3635-864a-9944-6cc280641cf5@quicinc.com>
-Date:   Mon, 24 Jul 2023 12:05:54 -0700
+        Mon, 24 Jul 2023 15:06:26 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1D21BCA
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 12:06:11 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5222b917e0cso2164559a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 12:06:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690225570; x=1690830370;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ARogtLV1RFi23rA4Eq6YEJ7tIgrbKGbfHhga/QvC0fU=;
+        b=w0kQy3xiLmArXRkkGu10vZ23WrHCfJLWIXo9QxV+sek2oXdNWu2anZlxzT+qkbBsHV
+         HL2hbzWcVsbMl8+yiex4lhMms+WPq6/OqGZqlbtDDCvQlPYqHhuKuK1ZoTZRfPOTjN8W
+         HYcaW60qbC3XNSDX5BqZ38V76iV3C+6J4LO07s6H2LT7DTBK9EkfIW5UkWnv4HUsL/Ev
+         1W6ZNTqBHKdnibskaSOSQZ2HXRGCq1usIeFAvpMDaPoEepeWU+jxwscrZz0vLxwidAYU
+         cXPjtxD8SB8okSLgQiB0flkAv2HWqHJ8KhPPRvynHdM8woQsP/eJPhoEY5CnAtfOO6Ns
+         CkVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690225570; x=1690830370;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ARogtLV1RFi23rA4Eq6YEJ7tIgrbKGbfHhga/QvC0fU=;
+        b=aQwdSa/vx5eCtTxC0AyA2stJLATZuUFwMtSZouzrxUySeUR+PaXHdQA8vLwikbqZrJ
+         s2FjctagV7W58W2BsKAsLgk38/x4ttjwgcBEY+NK1QYRcRYEUI8siva3AzAtRmKF1YDj
+         UTXRYGgv0uF+hyWTR15X9o/pqac9yqUleu0ILcn+k1xWgav+4rlY3vxHB7o8kxgTQfsK
+         PxWBe8e3YHjq74cGetRNPdPSx+F3mj74ab9tRiNjJD1L8M9BrvnayHfDSmoVRzEsbIBU
+         qK83M2/MCUUJZmb4dchQ+CfPjgXh1rQWHBpl1DS+xFs6wyz8s6WX0HxDJNHD50xjayLx
+         nD4g==
+X-Gm-Message-State: ABy/qLZsg/HLQ21o+XAQFJ1Slk788xHftU81Eq+SUpyVibIPKZLB5z9H
+        c43dAtut+CcV1J/2deY3LVGbNA==
+X-Google-Smtp-Source: APBJJlFhBfPgz5j3cak/MLvEFnT1GfFIYwYH+XuXWgIqTQF5ElhY9BQssoVDyngMXlOqYXdd6ZWVKA==
+X-Received: by 2002:a05:6402:1814:b0:521:d23b:f2c5 with SMTP id g20-20020a056402181400b00521d23bf2c5mr9287843edy.14.1690225570119;
+        Mon, 24 Jul 2023 12:06:10 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id h1-20020aa7de01000000b0051a4fcf7187sm6524547edv.62.2023.07.24.12.06.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 12:06:06 -0700 (PDT)
+Message-ID: <34be3638-ed14-bb0b-eb2e-c44f43c582f2@linaro.org>
+Date:   Mon, 24 Jul 2023 21:06:00 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH V5 1/3] firmware: qcom_scm: provide a read-modify-write
- function
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 2/3] pinctrl: qcom: sm8350-lpass-lpi: add SM8350 LPASS
+ TLMM
 Content-Language: en-US
-To:     Kathiravan T <quic_kathirav@quicinc.com>,
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
         Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Mukesh Ojha" <quic_mojha@quicinc.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>
-CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
-        <quic_anusha@quicinc.com>, <quic_saahtoma@quicinc.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-References: <20230720070408.1093698-1-quic_kathirav@quicinc.com>
- <20230720070408.1093698-2-quic_kathirav@quicinc.com>
-From:   Elliot Berman <quic_eberman@quicinc.com>
-In-Reply-To: <20230720070408.1093698-2-quic_kathirav@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: SyZz-8N0IQ_YZPDQ-3VEN98z-z9nFdTu
-X-Proofpoint-GUID: SyZz-8N0IQ_YZPDQ-3VEN98z-z9nFdTu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-24_14,2023-07-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- priorityscore=1501 mlxlogscore=800 lowpriorityscore=0 impostorscore=0
- mlxscore=0 spamscore=0 adultscore=0 phishscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307240167
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230719192058.433517-1-krzysztof.kozlowski@linaro.org>
+ <20230719192058.433517-2-krzysztof.kozlowski@linaro.org>
+ <CACRpkdbK7gU36nVOm0J+HbLk5JRKki+30=UaJ6hZjF1DiB4bBw@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CACRpkdbK7gU36nVOm0J+HbLk5JRKki+30=UaJ6hZjF1DiB4bBw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/20/2023 12:04 AM, Kathiravan T wrote:
-> From: Mukesh Ojha <quic_mojha@quicinc.com>
+On 24/07/2023 20:09, Linus Walleij wrote:
+> On Wed, Jul 19, 2023 at 9:21 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
 > 
-> It was realized by Srinivas K. that there is a need of read-modify-write
-> scm exported function so that it can be used by multiple clients.
+>> Add driver for pin controller in Low Power Audio SubSystem (LPASS).  The
+>> driver is similar to SM8250 LPASS pin controller, with difference in one
+>> new pin (gpio14) belonging to swr_tx_data.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
-> Let's introduce qcom_scm_io_update_field() which masks out the bits and
-> write the passed value to that bit-offset.
+> This sure looks good to me.
 > 
-> Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
-> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
+> Krzystof, can you collect a branch with pin control changes for
+> Qualcomm chips that I can pull? If it's OK with Bjorn that is.
 
+Sure, I can go through the lore search results and grab recent submissions.
 
-After updating EXPORT_SYMBOL -> EXPORT_SYMBOL_GPL:
+Best regards,
+Krzysztof
 
-Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
-
-> ---
-> Changes in V5:
-> 	- No changes
-> 
->   drivers/firmware/qcom_scm.c            | 15 +++++++++++++++
->   include/linux/firmware/qcom/qcom_scm.h |  2 ++
->   2 files changed, 17 insertions(+)
-> 
-> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-> index fde33acd46b7..104d86e49b97 100644
-> --- a/drivers/firmware/qcom_scm.c
-> +++ b/drivers/firmware/qcom_scm.c
-> @@ -407,6 +407,21 @@ int qcom_scm_set_remote_state(u32 state, u32 id)
->   }
->   EXPORT_SYMBOL(qcom_scm_set_remote_state);
->   
-> +int qcom_scm_io_update_field(phys_addr_t addr, unsigned int mask, unsigned int val)
-> +{
-> +	unsigned int old, new;
-> +	int ret;
-> +
-> +	ret = qcom_scm_io_readl(addr, &old);
-> +	if (ret)
-> +		return ret;
-> +
-> +	new = (old & ~mask) | (val & mask);
-> +
-> +	return qcom_scm_io_writel(addr, new);
-> +}
-> +EXPORT_SYMBOL(qcom_scm_io_update_field);
-> +
->   static int __qcom_scm_set_dload_mode(struct device *dev, bool enable)
->   {
->   	struct qcom_scm_desc desc = {
-> diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
-> index 250ea4efb7cb..ca41e4eb33ad 100644
-> --- a/include/linux/firmware/qcom/qcom_scm.h
-> +++ b/include/linux/firmware/qcom/qcom_scm.h
-> @@ -84,6 +84,8 @@ extern bool qcom_scm_pas_supported(u32 peripheral);
->   
->   extern int qcom_scm_io_readl(phys_addr_t addr, unsigned int *val);
->   extern int qcom_scm_io_writel(phys_addr_t addr, unsigned int val);
-> +extern int qcom_scm_io_update_field(phys_addr_t addr, unsigned int mask,
-> +				    unsigned int val);
->   
->   extern bool qcom_scm_restore_sec_cfg_available(void);
->   extern int qcom_scm_restore_sec_cfg(u32 device_id, u32 spare);
