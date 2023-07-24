@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E07A77600B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 22:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C147600AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 22:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbjGXUzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 16:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
+        id S230165AbjGXUyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 16:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjGXUzH (ORCPT
+        with ESMTP id S229481AbjGXUyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 16:55:07 -0400
+        Mon, 24 Jul 2023 16:54:53 -0400
+X-Greylist: delayed 66 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 Jul 2023 13:54:51 PDT
 Received: from smtprelay07.ispgateway.de (smtprelay07.ispgateway.de [134.119.228.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29131704;
-        Mon, 24 Jul 2023 13:54:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0730CE42;
+        Mon, 24 Jul 2023 13:54:50 -0700 (PDT)
 Received: from [77.64.243.219] (helo=note-book.lan)
         by smtprelay07.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <git@apitzsch.eu>)
-        id 1qO2Yj-0001dY-7T; Mon, 24 Jul 2023 22:53:37 +0200
+        id 1qO2Yj-0001dY-Ol; Mon, 24 Jul 2023 22:53:37 +0200
 From:   =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
-Subject: [PATCH 0/2] arm64: dts: qcom: msm8939-longcheer-l9100: Add initial
- dts
-Date:   Mon, 24 Jul 2023 22:52:40 +0200
-Message-Id: <20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu>
+Date:   Mon, 24 Jul 2023 22:52:41 +0200
+Subject: [PATCH 1/2] dt-bindings: arm: qcom: Add BQ Aquaris M5
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAJjkvmQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDcyMT3aTC+FxT3aRky8S0VGNzizSLFCWg2oKi1LTMCrA50bG1tQAvoSj
- sVwAAAA==
+Message-Id: <20230724-bq_m5-v1-1-17a0870a73be@apitzsch.eu>
+References: <20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu>
+In-Reply-To: <20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -51,35 +50,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This dts adds support for BQ Aquaris M5 (Longcheer L9100) released in
-2015.
-
-Add a device tree with initial support for:
-
-- GPIO keys
-- Hall sensor
-- SDHCI
-- WCNSS (BT/WIFI)
-- Accelerometer/Magnetometer
-- Vibrator
-- Touchscreen
-- Front flash
+Add a compatible for BQ Aquaris M5 (Longcheer L9100).
 
 Signed-off-by: André Apitzsch <git@apitzsch.eu>
 ---
-André Apitzsch (2):
-      dt-bindings: arm: qcom: Add BQ Aquaris M5
-      arm64: dts: qcom: msm8939-longcheer-l9100: Add initial device tree
+ Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
- Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
- arch/arm64/boot/dts/qcom/Makefile                  |   1 +
- .../boot/dts/qcom/msm8939-longcheer-l9100.dts      | 340 +++++++++++++++++++++
- 3 files changed, 342 insertions(+)
----
-base-commit: 4d2c646ac07cf4a35ef1c4a935a1a4fd6c6b1a36
-change-id: 20230724-bq_m5-bc9afe378f8d
+diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+index a6f7ef4f0830..66f660dd5026 100644
+--- a/Documentation/devicetree/bindings/arm/qcom.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+@@ -186,6 +186,7 @@ properties:
+ 
+       - items:
+           - enum:
++              - longcheer,l9100
+               - samsung,a7
+               - sony,kanuti-tulip
+               - square,apq8039-t2
 
-Best regards,
 -- 
-André Apitzsch <git@apitzsch.eu>
+2.41.0
 
