@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9844075EDD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6C075EDD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbjGXIi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35912 "EHLO
+        id S231518AbjGXIif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231682AbjGXIiR (ORCPT
+        with ESMTP id S231693AbjGXIiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:38:17 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5451C1B3;
-        Mon, 24 Jul 2023 01:38:15 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36O5l0cS008204;
-        Mon, 24 Jul 2023 08:38:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=suzFnpv6BPJlA2ifbK6IzzKqd8KwmxfGfS0Sw74ZJPs=;
- b=AvWZwjo+5+oGr53vP4DGV/kzH788nt8vVMRdLnSdpoyUhFb1ZT8TpRCYdioeCX2heQzg
- 7/QPXUx6m38ioaT6J0fnMzZCPT0B4ZYFWROx6bOETVm5Y2naLcDFK85PDoCgud/B3Ica
- BtWul8mE5eHXbhuDS87O8X8t3KidkHjsELpHVKMTUaOdaKhPgn9fIIaUMeDEnzDVO1zd
- QtjxwLZPVHgH0n2heEZ+B9Tk8QYlMWKlzvfhv3d/p6Gb2sUEPp9UwymbJ7lbBXnE665N
- TGOB6GSHS+nQ3YnY6fi5p3IpIe+qjqh4Id/HHPN5TxNqVAOJBC+FppAg9iFCIpbsldcZ Dw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s06es2t6a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 08:38:12 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36O8cBgR032658
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 08:38:11 GMT
-Received: from hu-kathirav-blr.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 24 Jul 2023 01:38:07 -0700
-From:   Kathiravan T <quic_kathirav@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mon, 24 Jul 2023 04:38:18 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38279E63
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:38:16 -0700 (PDT)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qNr4k-0000Cb-FM; Mon, 24 Jul 2023 10:37:54 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 531031F839B;
+        Mon, 24 Jul 2023 08:37:52 +0000 (UTC)
+Date:   Mon, 24 Jul 2023 10:37:51 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Markus Schneider-Pargmann <msp@baylibre.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     <quic_saahtoma@quicinc.com>,
-        Kathiravan T <quic_kathirav@quicinc.com>
-Subject: [PATCH V3 2/2] dt-bindings: arm: qcom,ids: drop the IPQ5019 SoC ID
-Date:   Mon, 24 Jul 2023 14:07:45 +0530
-Message-ID: <20230724083745.1015321-3-quic_kathirav@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230724083745.1015321-1-quic_kathirav@quicinc.com>
-References: <20230724083745.1015321-1-quic_kathirav@quicinc.com>
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Vivek Yadav <vivek.2311@samsung.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH v3 6/6] can: tcan4x5x: Add error messages in probe
+Message-ID: <20230724-switch-mulch-3ba56c15997e-mkl@pengutronix.de>
+References: <20230721135009.1120562-1-msp@baylibre.com>
+ <20230721135009.1120562-7-msp@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: pmF0HHO0rqN0yt_Sa_Z4nqCu7BCKMadU
-X-Proofpoint-ORIG-GUID: pmF0HHO0rqN0yt_Sa_Z4nqCu7BCKMadU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-24_06,2023-07-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 mlxlogscore=547
- suspectscore=0 adultscore=0 spamscore=0 impostorscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307240076
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="47dlh53tks43qz2m"
+Content-Disposition: inline
+In-Reply-To: <20230721135009.1120562-7-msp@baylibre.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPQ5019 SoC is never productized. So lets drop it.
 
-Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
----
-Changes in V3:
-	- Swapped the order of patch 1 and patch 2 inorder to remove the
-	  user first and then definition
+--47dlh53tks43qz2m
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Changes in V2:
-	- Updated the commit message with the precise information for
-	  dropping this ID
+On 21.07.2023 15:50:09, Markus Schneider-Pargmann wrote:
+> To be able to understand issues during probe easier, add error messages
+> if something fails.
 
- include/dt-bindings/arm/qcom,ids.h | 1 -
- 1 file changed, 1 deletion(-)
+Can you print the error codes as "%pe", ERR_PTR(err)?
 
-diff --git a/include/dt-bindings/arm/qcom,ids.h b/include/dt-bindings/arm/qcom,ids.h
-index bcbe9ee2cdaf..179dd56b2d95 100644
---- a/include/dt-bindings/arm/qcom,ids.h
-+++ b/include/dt-bindings/arm/qcom,ids.h
-@@ -250,7 +250,6 @@
- #define QCOM_ID_QRU1000			539
- #define QCOM_ID_QDU1000			545
- #define QCOM_ID_QDU1010			587
--#define QCOM_ID_IPQ5019			569
- #define QCOM_ID_QRU1032			588
- #define QCOM_ID_QRU1052			589
- #define QCOM_ID_QRU1062			590
--- 
-2.34.1
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--47dlh53tks43qz2m
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmS+OFwACgkQvlAcSiqK
+BOjakgf6A9YWvI4O+h3cneg50ebbmXekF1W+V+CO92LM4MNZ2Vlx3Iv6YrdxgAG/
+f7UASQ3G9eBjJLQYnGHbYG5DMgR2p9Y8LGJB6cJQ3EiRcsVe7vRi71iUyRthiUTB
+jDgHJwBcTO8jeitILlFmOsrZMljTU5AzkSJG6eoRY4xK5p2GjlFULxr0h8TwxgXQ
+McZkpazS9fiijMLL5V63U5P3vpui2iSp1nDy3ZfDeRI71/egjLVj1EmZ5ILcY/cQ
+hthAmBCjEZ5hHS8lvllfRcP5zr/N2L9/OylrwTrPT1dsU6dVAQE7einaoUgSSvrU
+z4zth+g2cGEh5UXzTHg3iZ2aZPR0LA==
+=23ps
+-----END PGP SIGNATURE-----
+
+--47dlh53tks43qz2m--
