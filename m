@@ -2,57 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A423A75EA44
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B1775EA47
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbjGXDud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 23:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
+        id S230037AbjGXDvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 23:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjGXDua (ORCPT
+        with ESMTP id S229504AbjGXDuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 23:50:30 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D9483;
-        Sun, 23 Jul 2023 20:50:27 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R8R3V26V0zVjfm;
-        Mon, 24 Jul 2023 11:48:54 +0800 (CST)
-Received: from M910t (10.110.54.157) by kwepemi500013.china.huawei.com
- (7.221.188.120) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 24 Jul
- 2023 11:50:23 +0800
-Date:   Mon, 24 Jul 2023 11:50:06 +0800
-From:   Changbin Du <changbin.du@huawei.com>
-To:     Ian Rogers <irogers@google.com>
-CC:     Changbin Du <changbin.du@huawei.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf: add new option '--workload-attr' to set workload
- sched_policy/priority/mask
-Message-ID: <20230724035006.5vje3jzhmedyljas@M910t>
-References: <20230713085831.395112-1-changbin.du@huawei.com>
- <b1127b63-6c6a-e42e-ce6c-cf4f24bbc5a1@intel.com>
- <20230714071914.3jro4kfcvhun2ptd@M910t>
- <CAP-5=fV49y9y8Q3-3rhACMQJiQ+nAh0RfysT8bhpJ5_AOqLScw@mail.gmail.com>
+        Sun, 23 Jul 2023 23:50:54 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B78ABE49;
+        Sun, 23 Jul 2023 20:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690170646;
+        bh=1WvpFcCXiC55XJ1Msdg3rG8+IKnB5aPwn0slLurwDG0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cR1czoN1qw0zw7GVzSRHAFzu2GDyIJ/1vWKaMQTVf+8DNWeCMmt57Wgrh8v2mcVl5
+         2Bi/zmqtNx1BToTVbZSPeSbegR9Lg2fk945e4LV27AfxtiIthrBNLclwwufR83g6OT
+         wgsSjXTMuaKpqLW/92gkR62RYwXSxRG/auG8tQS1LyxnILdE64bThiyiNhUq1kSKn4
+         01rcObNegjCu+SD1q7o3fVEeUiJOHINxq2bl4nKqwNDL2+iUhwB5toay3kQ0Ohz1Nm
+         YnNs+ZjcphVP67Peeyirs6UDXxK6TEe6POmoTYHe4LypIW1180QW/lYXkhQzvlFiR1
+         p8HLnGRvfus8g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R8R5d11Tyz4wyY;
+        Mon, 24 Jul 2023 13:50:45 +1000 (AEST)
+Date:   Mon, 24 Jul 2023 13:50:42 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@redhat.com>
+Cc:     Rob Clark <robdclark@chromium.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gustavo Padovan <gustavo.padovan@collabora.co.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drm tree
+Message-ID: <20230724135042.663447e1@canb.auug.org.au>
+In-Reply-To: <20230712091714.760c00c8@canb.auug.org.au>
+References: <20230330142818.7efb6d05@canb.auug.org.au>
+        <CAJs_Fx67+VQwveGE3i7Nyp+5R2+Z5mEeDJ9ZMTZEY_gnYtc5Sw@mail.gmail.com>
+        <20230712091714.760c00c8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fV49y9y8Q3-3rhACMQJiQ+nAh0RfysT8bhpJ5_AOqLScw@mail.gmail.com>
-X-Originating-IP: [10.110.54.157]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+Content-Type: multipart/signed; boundary="Sig_/22Dy8D9SSj0NkaQKQw6rT+z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,62 +58,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 09:55:39AM -0700, Ian Rogers wrote:
-> On Fri, Jul 14, 2023 at 12:19 AM Changbin Du <changbin.du@huawei.com> wrote:
+--Sig_/22Dy8D9SSj0NkaQKQw6rT+z
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Wed, 12 Jul 2023 09:17:14 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Thu, 30 Mar 2023 07:28:26 -0700 Rob Clark <robdclark@chromium.org> wro=
+te:
 > >
-> > On Fri, Jul 14, 2023 at 10:06:31AM +0300, Adrian Hunter wrote:
-> > > On 13/07/23 11:58, Changbin Du wrote:
-> > > > To get consistent benchmarking results, sometimes we need to set the
-> > > > sched_policy/priority/mask of the workload to reduce system noise.
-> > > >
-> > > > For example, CPU binding is required on big.little system.
-> > > >
-> > > >   $ perf stat -r 10 -- taskset -c 0 ls
-> > > >
-> > > > Nevertheless, the 'taskset' is also counted here.
-> > > >
-> > > > To get away of the middleman, this adds a new option '--workload-attr' to
-> > > > do the same jobs for stat and record commands.
-> > > >
-> > > >   $ sudo perf stat --workload-attr fifo,40,0x1 -- ls
-> > > >
-> > > > Above will make 'ls' run on CPU #0 with fifo scheduler and realtime
-> > > > priority is 40.
+> > On Wed, Mar 29, 2023 at 8:28=E2=80=AFPM Stephen Rothwell <sfr@canb.auug=
+.org.au> wrote: =20
 > > >
-> > > Aren't there ways to set up a process then start perf using -p <pid>
-> > > then let the process continue.
+> > > After merging the drm tree, today's linux-next build (htmldocs) produ=
+ced
+> > > this warning:
 > > >
-> > By that you need a mechanism to pause the new spawnned process and wait perf to
-> > attach. Or setup the sched properties by the app itself. But sometimes we just
-> > simply want to run the app through and measure some events. With
-> > --workload-attr, we do not need extra setup works.
-> 
-> To my naive eyes this looks to be a broadly useful addition. Some thoughts:
->  - "cpu-mask" as the command line argument name, this is "-C" and
-> "--cpu" elsewhere, so perhaps just "cpu" as the mask is perhaps
-> confusing.
-I changed the name of third field to cpu-list, and use perf_cpu_map_new() to
-parse the list. This api doesn't accept a mask.
+> > > include/uapi/linux/sync_file.h:77: warning: Function parameter or mem=
+ber 'num_fences' not described in 'sync_file_info'
+> > >   =20
+> >=20
+> > thanks, should be fixed by:
+> >=20
+> > https://patchwork.freedesktop.org/series/115871/
+> >  =20
+> > > Revealed by commit
+> > >
+> > >   d71c11cc79d2 ("dma-buf/sync_file: Surface sync-file uABI")
+> > >
+> > > Introduced by commit
+> > >
+> > >   2d75c88fefb2 ("staging/android: refactor SYNC IOCTLs")
+> > >
+> > > in 2016. =20
+>=20
+> I am still getting this warning (presumably now from Linus' tree).
 
-        --workload-attr <sched_policy[,priority][,cpu-list]>
-                          setup target workload (the <command>) attributes:
-
-                                sched_policy: other|fifo|rr|batch|idle
-                                priority: scheduling priority for fifo|rr, nice value for other
-                                cpu-list: CPU affinity. e.g. 1-2:4 is processors #1, #2, and #4
-
->  - could we get a test? Perhaps add a case to tools/perf/tests/shell/stat.sh:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/tests/shell/stat.sh?h=perf-tools-next
-> 
-No problem, I will add a testcase there.
-
-> Thanks,
-> Ian
-> 
-> > --
-> > Cheers,
-> > Changbin Du
-
--- 
+I am still getting this warning despite the patch from Rob being
+available since March 30.
+--=20
 Cheers,
-Changbin Du
+Stephen Rothwell
+
+--Sig_/22Dy8D9SSj0NkaQKQw6rT+z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS99RIACgkQAVBC80lX
+0GwIigf/b3WOVdQXdt7NdigUv+jhB+G6q/H0CVE5JL6V3nRZdnQUuEwjknmeqSOw
+PTgIk63cMafuPIUCNyWcmTyVlesR5swlx20OAR4so+JdndSxkKAaIaJI/K5AllP/
+sDwhsedJngbDQkOJBnDE+L3jOSVEdOm9yXQ//zA9dlJr3jFHl77VBNcUIa+g7efP
+mQEbaBRko/EQ6ZA7FOJZAeKtaVp2aH+jUf6iWiV9ivj+iNh0TbSEW49UtGTdHOsq
+1HemmSOc6e33fuElX9roIZP5Huhii75PzSROsgaHMcJjd//O70bV6gEOp1q9TR/m
+z2iui1Ud6QEW0dy3SZXthY8+8TXwJg==
+=inDK
+-----END PGP SIGNATURE-----
+
+--Sig_/22Dy8D9SSj0NkaQKQw6rT+z--
