@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB6C75E828
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE0C75E7E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbjGXBiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41280 "EHLO
+        id S230369AbjGXBgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231923AbjGXBhc (ORCPT
+        with ESMTP id S231806AbjGXBfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:37:32 -0400
+        Sun, 23 Jul 2023 21:35:51 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51582D47;
-        Sun, 23 Jul 2023 18:33:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7822D49DC;
+        Sun, 23 Jul 2023 18:32:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 635E960F37;
-        Mon, 24 Jul 2023 01:32:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AA67C433C8;
-        Mon, 24 Jul 2023 01:32:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B2C960FA3;
+        Mon, 24 Jul 2023 01:31:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59EE7C433C9;
+        Mon, 24 Jul 2023 01:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162323;
-        bh=hgTBqzl/yG7c7fl4Pyg0zWOTyB1lQ4nb49Gh4dnJUhM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YVLNgaJYe9N93lb0VV2w0JLuSkWjBsl6rMxrI0x+kQMgpgaQcTrMQvhcDjyhmhvIr
-         crbsaT7JY5FXgnE4B/GOKkorD6UQxhHOVXRNaXsGNYhf/Ox1R7RaG8WYpH+pCyy18V
-         pXTcfPO/IdiYkD1oszOwLwEjdzf4r746fx+H6tX4uELkDNt/1d07XZQjKPEO0CwKFF
-         etSDzn5Zv6vdk8Amq+LvnbuGXCVwmNG3b4Eqo5MWpVX4YTNbimFisqIq7yhBRnC0At
-         v8vOennCOXLO7CfjesJuW6tCD2afp5YiU6aTq0LndF8Q4dfw+bfhdWBciStU9IStFf
-         sP94TV0NEV5QQ==
+        s=k20201202; t=1690162282;
+        bh=ODNt56JiN6gRK2N6uBDKwB1dCXrkmW14yZe2M7cBT7o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GcnPq9XQAb5KuHmcaec6Dr0DOWueCR5+SePsfrRjnB/LJJ0QhvCoA9V6p6rO3FN1o
+         vfUPX8gKgKQ4ZcvVHtERnngruNCL+YWD8lL0SvA/0pwmflXNw6wpka9l9uoEiIwCFK
+         LQEHkCAuE9r22VhlEBNxOm7uUugqpWpeTA7mtesLSU4ui/0/XExUVRogxDj3H1Nu9d
+         nJJkMcIZDMg5O7+UK7jsycgzwQV5ele3jH6/cCk+iaC4aGJ2VCcjtLUg/FH1MDPEFe
+         YTD4Yi3h2H/gsGSJ6j12nYGhjBYOfSR6CAEhtIOljaL+yfAuxuS2qBDzo4J+2KhRUb
+         mQLmFfTAOIeNQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Armin Wolf <W_Armin@gmx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-pcmcia@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.4 16/40] pcmcia: rsrc_nonstatic: Fix memory leak in nonstatic_release_resource_db()
-Date:   Sun, 23 Jul 2023 21:31:16 -0400
-Message-Id: <20230724013140.2327815-16-sashal@kernel.org>
+Cc:     Anisse Astier <an.astier@criteo.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, matt@codeblueprint.co.uk,
+        ard.biesheuvel@linaro.org, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, x86@kernel.org, matthew.garrett@nebula.com,
+        jk@ozlabs.org, linux-efi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 1/3] efivarfs: expose used and total size
+Date:   Sun, 23 Jul 2023 21:31:17 -0400
+Message-Id: <20230724013119.2327427-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230724013140.2327815-1-sashal@kernel.org>
-References: <20230724013140.2327815-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.4.5
+X-stable-base: Linux 6.1.40
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -60,62 +60,184 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Armin Wolf <W_Armin@gmx.de>
+From: Anisse Astier <an.astier@criteo.com>
 
-[ Upstream commit c85fd9422fe0f5d667305efb27f56d09eab120b0 ]
+[ Upstream commit d86ff3333cb1d5f42d8898fb5fdb304e143c0237 ]
 
-When nonstatic_release_resource_db() frees all resources associated
-with an PCMCIA socket, it forgets to free socket_data too, causing
-a memory leak observable with kmemleak:
+When writing EFI variables, one might get errors with no other message
+on why it fails. Being able to see how much is used by EFI variables
+helps analyzing such issues.
 
-unreferenced object 0xc28d1000 (size 64):
-  comm "systemd-udevd", pid 297, jiffies 4294898478 (age 194.484s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 f0 85 0e c3 00 00 00 00  ................
-    00 00 00 00 0c 10 8d c2 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffda4245>] __kmem_cache_alloc_node+0x2d7/0x4a0
-    [<7e51f0c8>] kmalloc_trace+0x31/0xa4
-    [<d52b4ca0>] nonstatic_init+0x24/0x1a4 [pcmcia_rsrc]
-    [<a2f13e08>] pcmcia_register_socket+0x200/0x35c [pcmcia_core]
-    [<a728be1b>] yenta_probe+0x4d8/0xa70 [yenta_socket]
-    [<c48fac39>] pci_device_probe+0x99/0x194
-    [<84b7c690>] really_probe+0x181/0x45c
-    [<8060fe6e>] __driver_probe_device+0x75/0x1f4
-    [<b9b76f43>] driver_probe_device+0x28/0xac
-    [<648b766f>] __driver_attach+0xeb/0x1e4
-    [<6e9659eb>] bus_for_each_dev+0x61/0xb4
-    [<25a669f3>] driver_attach+0x1e/0x28
-    [<d8671d6b>] bus_add_driver+0x102/0x20c
-    [<df0d323c>] driver_register+0x5b/0x120
-    [<942cd8a4>] __pci_register_driver+0x44/0x4c
-    [<e536027e>] __UNIQUE_ID___addressable_cleanup_module188+0x1c/0xfffff000 [iTCO_vendor_support]
+Since this is not a conventional filesystem, block size is intentionally
+set to 1 instead of PAGE_SIZE.
 
-Fix this by freeing socket_data too.
+x86 quirks of reserved size are taken into account; so that available
+and free size can be different, further helping debugging space issues.
 
-Tested on a Acer Travelmate 4002WLMi by manually binding/unbinding
-the yenta_cardbus driver (yenta_socket).
+With this patch, one can see the remaining space in EFI variable storage
+via efivarfs, like this:
 
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-Message-ID: <20230512184529.5094-1-W_Armin@gmx.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+   $ df -h /sys/firmware/efi/efivars/
+   Filesystem      Size  Used Avail Use% Mounted on
+   efivarfs        176K  106K   66K  62% /sys/firmware/efi/efivars
+
+Signed-off-by: Anisse Astier <an.astier@criteo.com>
+[ardb: - rename efi_reserved_space() to efivar_reserved_space()
+       - whitespace/coding style tweaks]
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pcmcia/rsrc_nonstatic.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/platform/efi/quirks.c |  8 +++++++
+ drivers/firmware/efi/efi.c     |  1 +
+ drivers/firmware/efi/vars.c    | 12 +++++++++++
+ fs/efivarfs/super.c            | 39 +++++++++++++++++++++++++++++++++-
+ include/linux/efi.h            | 11 ++++++++++
+ 5 files changed, 70 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pcmcia/rsrc_nonstatic.c b/drivers/pcmcia/rsrc_nonstatic.c
-index 471e0c5815f39..bf9d070a44966 100644
---- a/drivers/pcmcia/rsrc_nonstatic.c
-+++ b/drivers/pcmcia/rsrc_nonstatic.c
-@@ -1053,6 +1053,8 @@ static void nonstatic_release_resource_db(struct pcmcia_socket *s)
- 		q = p->next;
- 		kfree(p);
- 	}
-+
-+	kfree(data);
+diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+index b0b848d6933af..f0cc00032751d 100644
+--- a/arch/x86/platform/efi/quirks.c
++++ b/arch/x86/platform/efi/quirks.c
+@@ -114,6 +114,14 @@ void efi_delete_dummy_variable(void)
+ 				     EFI_VARIABLE_RUNTIME_ACCESS, 0, NULL);
  }
  
++u64 efivar_reserved_space(void)
++{
++	if (efi_no_storage_paranoia)
++		return 0;
++	return EFI_MIN_RESERVE;
++}
++EXPORT_SYMBOL_GPL(efivar_reserved_space);
++
+ /*
+  * In the nonblocking case we do not attempt to perform garbage
+  * collection if we do not have enough free space. Rather, we do the
+diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+index b43e5e6ddaf6e..db3c0ce08e441 100644
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -190,6 +190,7 @@ static int generic_ops_register(void)
+ 	generic_ops.get_variable = efi.get_variable;
+ 	generic_ops.get_next_variable = efi.get_next_variable;
+ 	generic_ops.query_variable_store = efi_query_variable_store;
++	generic_ops.query_variable_info = efi.query_variable_info;
+ 
+ 	if (efi_rt_services_supported(EFI_RT_SUPPORTED_SET_VARIABLE)) {
+ 		generic_ops.set_variable = efi.set_variable;
+diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
+index 0ba9f18312f5b..de36d4e4bd95c 100644
+--- a/drivers/firmware/efi/vars.c
++++ b/drivers/firmware/efi/vars.c
+@@ -241,3 +241,15 @@ efi_status_t efivar_set_variable(efi_char16_t *name, efi_guid_t *vendor,
+ 	return status;
+ }
+ EXPORT_SYMBOL_NS_GPL(efivar_set_variable, EFIVAR);
++
++efi_status_t efivar_query_variable_info(u32 attr,
++					u64 *storage_space,
++					u64 *remaining_space,
++					u64 *max_variable_size)
++{
++	if (!__efivars->ops->query_variable_info)
++		return EFI_UNSUPPORTED;
++	return __efivars->ops->query_variable_info(attr, storage_space,
++			remaining_space, max_variable_size);
++}
++EXPORT_SYMBOL_NS_GPL(efivar_query_variable_info, EFIVAR);
+diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+index 6780fc81cc11f..0994446a35442 100644
+--- a/fs/efivarfs/super.c
++++ b/fs/efivarfs/super.c
+@@ -13,6 +13,7 @@
+ #include <linux/ucs2_string.h>
+ #include <linux/slab.h>
+ #include <linux/magic.h>
++#include <linux/statfs.h>
+ 
+ #include "internal.h"
+ 
+@@ -23,8 +24,44 @@ static void efivarfs_evict_inode(struct inode *inode)
+ 	clear_inode(inode);
+ }
+ 
++static int efivarfs_statfs(struct dentry *dentry, struct kstatfs *buf)
++{
++	const u32 attr = EFI_VARIABLE_NON_VOLATILE |
++			 EFI_VARIABLE_BOOTSERVICE_ACCESS |
++			 EFI_VARIABLE_RUNTIME_ACCESS;
++	u64 storage_space, remaining_space, max_variable_size;
++	efi_status_t status;
++
++	status = efivar_query_variable_info(attr, &storage_space, &remaining_space,
++					    &max_variable_size);
++	if (status != EFI_SUCCESS)
++		return efi_status_to_err(status);
++
++	/*
++	 * This is not a normal filesystem, so no point in pretending it has a block
++	 * size; we declare f_bsize to 1, so that we can then report the exact value
++	 * sent by EFI QueryVariableInfo in f_blocks and f_bfree
++	 */
++	buf->f_bsize	= 1;
++	buf->f_namelen	= NAME_MAX;
++	buf->f_blocks	= storage_space;
++	buf->f_bfree	= remaining_space;
++	buf->f_type	= dentry->d_sb->s_magic;
++
++	/*
++	 * In f_bavail we declare the free space that the kernel will allow writing
++	 * when the storage_paranoia x86 quirk is active. To use more, users
++	 * should boot the kernel with efi_no_storage_paranoia.
++	 */
++	if (remaining_space > efivar_reserved_space())
++		buf->f_bavail = remaining_space - efivar_reserved_space();
++	else
++		buf->f_bavail = 0;
++
++	return 0;
++}
+ static const struct super_operations efivarfs_ops = {
+-	.statfs = simple_statfs,
++	.statfs = efivarfs_statfs,
+ 	.drop_inode = generic_delete_inode,
+ 	.evict_inode = efivarfs_evict_inode,
+ };
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 4e1bfee9675d2..b8cd4db7a1bfc 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -1045,6 +1045,7 @@ struct efivar_operations {
+ 	efi_set_variable_t *set_variable;
+ 	efi_set_variable_t *set_variable_nonblocking;
+ 	efi_query_variable_store_t *query_variable_store;
++	efi_query_variable_info_t *query_variable_info;
+ };
+ 
+ struct efivars {
+@@ -1053,6 +1054,12 @@ struct efivars {
+ 	const struct efivar_operations *ops;
+ };
+ 
++#ifdef CONFIG_X86
++u64 __attribute_const__ efivar_reserved_space(void);
++#else
++static inline u64 efivar_reserved_space(void) { return 0; }
++#endif
++
+ /*
+  * The maximum size of VariableName + Data = 1024
+  * Therefore, it's reasonable to save that much
+@@ -1087,6 +1094,10 @@ efi_status_t efivar_set_variable_locked(efi_char16_t *name, efi_guid_t *vendor,
+ efi_status_t efivar_set_variable(efi_char16_t *name, efi_guid_t *vendor,
+ 				 u32 attr, unsigned long data_size, void *data);
+ 
++efi_status_t efivar_query_variable_info(u32 attr, u64 *storage_space,
++					u64 *remaining_space,
++					u64 *max_variable_size);
++
+ #if IS_ENABLED(CONFIG_EFI_CAPSULE_LOADER)
+ extern bool efi_capsule_pending(int *reset_type);
  
 -- 
 2.39.2
