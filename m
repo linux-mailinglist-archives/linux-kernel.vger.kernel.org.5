@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5024075FDB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A7D75FDB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbjGXR3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36828 "EHLO
+        id S231686AbjGXR3w convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Jul 2023 13:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbjGXR3v (ORCPT
+        with ESMTP id S231653AbjGXR3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:29:51 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA57E1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:29:47 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fd28ae8b90so3145e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:29:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690219786; x=1690824586;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MDkF/IWFKRglR3qWWX4AN+kufJEx5Kc41nROK+8O7lI=;
-        b=nVf4gto/qjNh2zXk8AwF2ibFw0CyIiiyKMhRiWGNuvC/Pmal0l5ZZbCzwIgS+VmgV7
-         1iUjsgJUXjGlaRIp2KofIP7TUbcV7bw+XFPxcvsi2vQEM0Wma7sSeAxXJW8TuWQYIReX
-         1Hzw1DLRd6UbBkdNcMa1ACROcFNACXX+/q/8maywVzzRjhXskMtESjKdRskvaohhDITk
-         Q8eGpV1Z4jXb2IyUYhI2fc+c/4+OuEOydu7E1OnhqQTHdoNkzkZZh3DerbO6kaa/2ZzT
-         ESh6BImKErYwEoEBbRikOWvOU1VmZaDZ0IxbMajHnsYNdsEWL3IuIKEpNNB/cU3iPtGd
-         S7KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690219786; x=1690824586;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MDkF/IWFKRglR3qWWX4AN+kufJEx5Kc41nROK+8O7lI=;
-        b=DeI3ZzKshrE19/NOeETzf6E3Yay1D0zRWoTEJOW81sltvGTFLK9IdeYOss7bP1EMBB
-         Hs0Vs4Anucc/t1fOjbsVtG+STR9w06hul+fx+2aTyDezQEr2zuXLZPicm9Zo+g6QvxtH
-         NK/UNv77/9Idw4E8gRky8ZURmZki7vgK0OgmKluVhTwMCiSsM7OsGRW/6PoVIzykLd38
-         IRKKQrilWoMtqEp65i2qYa3HRsy005V0ka1ib6aKPl9JUg0BkdrKH3nzS2cs4T81eOHC
-         mWL3kIsx/DM0baSEmi1SacZxisKkGh2lRs4Vmh9hYkd8ezcnr2rRlYieqDVeyV2w0a9J
-         NBRQ==
-X-Gm-Message-State: ABy/qLZEIiE6xBADQv9sLNNa8apGjmPJJPschlH8CsMdVJPuwwCh5e8Y
-        W97kFoOejqlvNjyp+A5IXtr60+XggeFHtSwaJNRj5pDnh7Hgtd7Iqq8=
-X-Google-Smtp-Source: APBJJlEGhQmbz6EIp31/9ksAy4uci6XEiQc+7Mz+B5i1hxx8DRc9mdINflvY12TOOLdhH2gO/ISVrD2htfsauuFv7M8=
-X-Received: by 2002:a05:600c:3c93:b0:3fc:75d:8f85 with SMTP id
- bg19-20020a05600c3c9300b003fc075d8f85mr199859wmb.6.1690219786166; Mon, 24 Jul
- 2023 10:29:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230721225107.942336-1-jannh@google.com> <20230724101136.4c58e8291961e87f6c5c1c79@linux-foundation.org>
-In-Reply-To: <20230724101136.4c58e8291961e87f6c5c1c79@linux-foundation.org>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 24 Jul 2023 19:29:09 +0200
-Message-ID: <CAG48ez1RPZQ0p7dB3BsVwiTPHqge1Ja7E-XCQp-P7xBHT+AM=w@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: Fix memory ordering for mm_lock_seq and vm_lock_seq
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>
+        Mon, 24 Jul 2023 13:29:50 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4886598;
+        Mon, 24 Jul 2023 10:29:49 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qNzNA-003ztw-8Q; Mon, 24 Jul 2023 19:29:28 +0200
+Received: from p5b13a085.dip0.t-ipconnect.de ([91.19.160.133] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qNzNA-002BPR-0R; Mon, 24 Jul 2023 19:29:28 +0200
+Message-ID: <31ad16fe8f1435805185ba8e889512ec181a867e.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH v1] sh: boards: fix CEU buffer size passed to
+ dma_declare_coherent_memory()
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Petr Tesarik <petrtesarik@huaweicloud.com>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        petr@tesarici.cz, Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 24 Jul 2023 19:29:27 +0200
+In-Reply-To: <20230724171229.GC11977@pendragon.ideasonboard.com>
+References: <20230724120742.2187-1-petrtesarik@huaweicloud.com>
+         <20230724171229.GC11977@pendragon.ideasonboard.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
+MIME-Version: 1.0
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.160.133
+X-ZEDAT-Hint: PO
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 7:11=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
-> On Sat, 22 Jul 2023 00:51:07 +0200 Jann Horn <jannh@google.com> wrote:
-> > BACKPORT WARNING: One of the functions changed by this patch (which I'v=
-e
-> > written against Linus' tree) is vma_try_start_write(), but this functio=
-n
-> > no longer exists in mm/mm-everything. I don't know whether the merged
-> > version of this patch will be ordered before or after the patch that
-> > removes vma_try_start_write(). If you're backporting this patch to a
-> > tree with vma_try_start_write(), make sure this patch changes that
-> > function.
->
-> I staged this patch as a hotfix, ahead of mm-unstable material.
->
-> The conflict is with Hugh's "mm: delete mmap_write_trylock() and
-> vma_try_start_write()"
-> (https://lkml.kernel.org/r/4e6db3d-e8e-73fb-1f2a-8de2dab2a87c@google.com)
->
-> I fixed the reject in the obvious way (deleted the function anyway),
-> but there's a possibility that the ordering issue you have addressed
-> will now be reintroduced by Hugh's series, so please let's review that.
+Hi Laurent!
 
-Thanks. I've looked at Hugh's series and what you did (deleting the
-function anyway) looks good to me.
+On Mon, 2023-07-24 at 20:12 +0300, Laurent Pinchart wrote:
+> Thank you for the patch.
+> 
+> On Mon, Jul 24, 2023 at 02:07:42PM +0200, Petr Tesarik wrote:
+> > From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> > 
+> > In all these cases, the last argument to dma_declare_coherent_memory() is
+> > the buffer end address, but the expected value should be the size of the
+> > reserved region.
+> > 
+> > Fixes: 39fb993038e1 ("media: arch: sh: ap325rxa: Use new renesas-ceu camera driver")
+> > Fixes: c2f9b05fd5c1 ("media: arch: sh: ecovec: Use new renesas-ceu camera driver")
+> > Fixes: f3590dc32974 ("media: arch: sh: kfr2r09: Use new renesas-ceu camera driver")
+> > Fixes: 186c446f4b84 ("media: arch: sh: migor: Use new renesas-ceu camera driver")
+> > Fixes: 1a3c230b4151 ("media: arch: sh: ms7724se: Use new renesas-ceu camera driver")
+> > Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> 
+> But given that nobody noticed for 5 years, maybe we should drop
+> renesas-ceu support from those boards ? Or drop the boards completely ?
+
+arch/sh is being maintained again, so it's save to keep these boards. At some point, we're
+going to convert the architecture to using Device Trees which should reduce the maintenance
+burden anyways.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
