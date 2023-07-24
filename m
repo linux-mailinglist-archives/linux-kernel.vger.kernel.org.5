@@ -2,158 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EED75FEDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 20:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E319F75FEE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 20:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbjGXSNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 14:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37596 "EHLO
+        id S230082AbjGXSS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 14:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbjGXSNg (ORCPT
+        with ESMTP id S229862AbjGXSS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 14:13:36 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60C010D;
-        Mon, 24 Jul 2023 11:13:35 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 181165C00E2;
-        Mon, 24 Jul 2023 14:13:35 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Mon, 24 Jul 2023 14:13:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1690222415; x=1690308815; bh=A78TPr7zOQZUSIsSb+PDLz8PQ1fT3C4Qm9t
-        i6RePZ8E=; b=ANirWXVEVR9cJ1vNpi/cZT0NE5rOcmmOpjksE8FyNDnVg7dYQlR
-        ooAZgrzwMxA75fyKbRW2EPomYLGOVhoPnvH1j39n45/bmJsQYsnZSZA6RqgdCKGu
-        hRhpbAoqwttJpr+JTkQ35nMi7M31lq8TGtFc3iL1rXQ4p/+yEilPaf18+vE3EhZw
-        6TK4FFJRwXJV23b1lerjgXVLE36lm6zLTBo03pU5HS/reI2ph1fpADMewOfxDjf8
-        e7Cjun013/XFhtwngeurLqQ7A9ClUrYQMM3/hJ8LXFfqyxZK7PUwJ69CEIOQNrPp
-        CnhOZ6EwS2i0RqQoVq9VSzKpDLwVErRqVAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1690222415; x=1690308815; bh=A78TPr7zOQZUSIsSb+PDLz8PQ1fT3C4Qm9t
-        i6RePZ8E=; b=rpJdkhfdqYtYwZ4CFWamwOyyURWVJeJ4Z/8y7+03xTFLzNAgJG3
-        8NXIfpu2A5+SPB6lllH2KMu7FvKwS+ydcEJhQgn/c47MsLTd5v9LLne6AA6nOrIy
-        h84u4/4yYkYZ9VEvG+gdqNE5ERYPyN0ewMOSpwvakp06AfZMoTICBS6i4EgHvtb2
-        6I0/8WXT5CMtGtBSoqJXzvZG8FMrwHLaPYcUdahwJrD8Uzvhyl6+/KA/bCf4cE/V
-        fBjmVOXNamnVgk9Jk53zAMP4ezlPjm8Y9snD6bcgJ3XvEyEEZeNAiuBv2aVw5q+z
-        8iM+9HOwyNdaebl3Y0oPn9pfedREDnhe4ng==
-X-ME-Sender: <xms:Tr--ZBgCUs_j-I1zEc1-rGR-u0rcZtO6bdMA1Zr7J55in10PeFxMzw>
-    <xme:Tr--ZGCQ4vmJ3P_SMuO-DtZjXpvondAwhSF2I9Ro4Q80vIntZbAMhkhY3YbvrrO9m
-    Z1Gxt0tJuzHPmg5LP4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrheekgdduvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:Tr--ZBERDkNGE0-tWMjVeGpk4phjlHBiy27zhuC2bX9YP8FG39JiAw>
-    <xmx:Tr--ZGT24e5Z3lF2N52OODUSFmU_eHUYsoKPbKv93XmZXFnMSvlikg>
-    <xmx:Tr--ZOyEB9KuwqBWUUEYPWD_2dvrV4gYKqav67FgWQPrhDMPShHoRA>
-    <xmx:T7--ZCA2yEoOHioVC_vuoS0oMeMI-NlojMu1kJP8qncg7A-zOMn33A>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 66AF3B60089; Mon, 24 Jul 2023 14:13:34 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
-Mime-Version: 1.0
-Message-Id: <679d8d63-ce92-4294-8620-e98c82365b2c@app.fastmail.com>
-In-Reply-To: <CAADnVQ+p4wpd=tKJAiwB34O1y5vv4mibtkt9D-F7sG=rQapcew@mail.gmail.com>
-References: <20230722074753.568696-1-arnd@kernel.org>
- <CALOAHbCV2v3X7g1TD42yve0juhRD2vhq=DMtDz9P6+mX8Dae_w@mail.gmail.com>
- <CAADnVQKGe8DN+Zs387UVwpij3ROGqNEnc5r940h5ueqQYHTYCA@mail.gmail.com>
- <fa5e9098-d6f9-48a2-bb77-2620b6bb6556@app.fastmail.com>
- <CAADnVQ+p4wpd=tKJAiwB34O1y5vv4mibtkt9D-F7sG=rQapcew@mail.gmail.com>
-Date:   Mon, 24 Jul 2023 20:13:13 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-Cc:     "Yafang Shao" <laoar.shao@gmail.com>,
-        "Arnd Bergmann" <arnd@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>,
-        "Hou Tao" <houtao1@huawei.com>,
-        "Martin KaFai Lau" <martin.lau@linux.dev>,
-        "Song Liu" <song@kernel.org>, "Yonghong Song" <yhs@fb.com>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        "KP Singh" <kpsingh@kernel.org>,
-        "Stanislav Fomichev" <sdf@google.com>,
-        "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>,
-        "Kumar Kartikeya Dwivedi" <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf: force inc_active()/dec_active() to be inline functions
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 24 Jul 2023 14:18:26 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB0FE4E;
+        Mon, 24 Jul 2023 11:18:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FftEnjrfbBAd3Ww9EqN8sppXbEA0boEKYQQaC3XYChY=; b=ALkl62CiRE28E2LSizMN3y7fEY
+        kJycbVRJZEvZWmguJTa9cV8saw4voW845Dk7ZUIQ/EpBqHehcYEObAuEhAbV5cICUXMxpEHgWD1xY
+        0G6eQD7tzvNPI+5LLNz+rczyJT/b6KyVcZ+bYO3jrw6raTDm6jxMaJpIvIG1XxtiGTStkaoeXQ5ux
+        i2K6PllfRHRUSgqlIGCCkFHMYoEy4mFvIGC8wSVGTqOtUaudgrq/YQeHfsLxDw4QBvQ2/XP3rLron
+        /nYKqQX7yUCVJiO+cQev86wNP91/7Iz+oGCh9AS1aLKpPK5iq4sDhzycio7fP17V8xO0Lv6e1RKak
+        XdsSA3Lg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qO08S-005BNK-31;
+        Mon, 24 Jul 2023 18:18:20 +0000
+Date:   Mon, 24 Jul 2023 11:18:20 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Alistair Popple <apopple@nvidia.com>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Pankaj Raghav <p.raghav@samsung.com>
+Cc:     SeongJae Park <sj@kernel.org>, kevin.tian@intel.com,
+        x86@kernel.org, ajd@linux.ibm.com, kvm@vger.kernel.org,
+        linux-mm@kvack.org, catalin.marinas@arm.com, seanjc@google.com,
+        will@kernel.org, linux-kernel@vger.kernel.org, npiggin@gmail.com,
+        zhi.wang.linux@gmail.com, jgg@ziepe.ca, iommu@lists.linux.dev,
+        nicolinc@nvidia.com, jhubbard@nvidia.com, fbarrat@linux.ibm.com,
+        akpm@linux-foundation.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, robin.murphy@arm.com,
+        mcgrof@kernel.org
+Subject: Re: [PATCH v2 3/5] mmu_notifiers: Call invalidate_range() when
+ invalidating TLBs
+Message-ID: <ZL7AbLJ+RUUgzt8O@bombadil.infradead.org>
+References: <8f293bb51a423afa71ddc3ba46e9f323ee9ffbc7.1689768831.git-series.apopple@nvidia.com>
+ <20230719225105.1934-1-sj@kernel.org>
+ <877cqvl7vr.fsf@nvdebian.thelocal>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877cqvl7vr.fsf@nvdebian.thelocal>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023, at 20:00, Alexei Starovoitov wrote:
-> On Sun, Jul 23, 2023 at 11:32=E2=80=AFAM Arnd Bergmann <arnd@arndb.de>=
- wrote:
->>
->> >> If so, why can't we improve the compiler ?
->> >
->> > Agree.
->> > Sounds like a compiler bug.
->>
->> I don't know what you might want to change in the compiler
->> to avoid this. Compilers are free to decide which functions to
->> inline in the absence of noinline or always_inline flags.
->
-> Clearly a compiler bug.
-> Compilers should not produce false positive warnings regardless
-> how inlining went and optimizations performed.
+Cc'ing fsdevel + xfs folks as this fixes a regression tests with
+XFS with generic/176.
 
-That would be a nice idea, but until we force everyone to
-migrate to clang, that's not something in our power. gcc is
-well known to throw tons of warnings that depend on inlining:
--Wnull-dereference, -Wmaybe-uninitialized, -Wdiv-by-zero
-and other inherently depend on how much gcc can infer from
-inlining and dead code elimination.
+On Thu, Jul 20, 2023 at 10:52:59AM +1000, Alistair Popple wrote:
+> 
+> SeongJae Park <sj@kernel.org> writes:
+> 
+> > Hi Alistair,
+> >
+> > On Wed, 19 Jul 2023 22:18:44 +1000 Alistair Popple <apopple@nvidia.com> wrote:
+> >
+> >> The invalidate_range() is going to become an architecture specific mmu
+> >> notifier used to keep the TLB of secondary MMUs such as an IOMMU in
+> >> sync with the CPU page tables. Currently it is called from separate
+> >> code paths to the main CPU TLB invalidations. This can lead to a
+> >> secondary TLB not getting invalidated when required and makes it hard
+> >> to reason about when exactly the secondary TLB is invalidated.
+> >> 
+> >> To fix this move the notifier call to the architecture specific TLB
+> >> maintenance functions for architectures that have secondary MMUs
+> >> requiring explicit software invalidations.
+> >> 
+> >> This fixes a SMMU bug on ARM64. On ARM64 PTE permission upgrades
+> >> require a TLB invalidation. This invalidation is done by the
+> >> architecutre specific ptep_set_access_flags() which calls
+> >> flush_tlb_page() if required. However this doesn't call the notifier
+> >> resulting in infinite faults being generated by devices using the SMMU
+> >> if it has previously cached a read-only PTE in it's TLB.
+> >> 
+> >> Moving the invalidations into the TLB invalidation functions ensures
+> >> all invalidations happen at the same time as the CPU invalidation. The
+> >> architecture specific flush_tlb_all() routines do not call the
+> >> notifier as none of the IOMMUs require this.
+> >> 
+> >> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> >> Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+> >
+> > I found below kernel NULL-dereference issue on latest mm-unstable tree, and
+> > bisect points me to the commit of this patch, namely
+> > 75c400f82d347af1307010a3e06f3aa5d831d995.
+> >
+> > To reproduce, I use 'stress-ng --bigheap $(nproc)'.  The issue happens as soon
+> > as it starts reclaiming memory.  I didn't dive deep into this yet, but
+> > reporting this issue first, since you might have an idea already.
+> 
+> Thanks for the report SJ!
+> 
+> I see the problem - current->mm can (obviously!) be NULL which is what's
+> leading to the NULL dereference. Instead I think on x86 I need to call
+> the notifier when adding the invalidate to the tlbbatch in
+> arch_tlbbatch_add_pending() which is equivalent to what ARM64 does.
+> 
+> The below should fix it. Will do a respin with this.
+> 
+> ---
+> 
+> diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
+> index 837e4a50281a..79c46da919b9 100644
+> --- a/arch/x86/include/asm/tlbflush.h
+> +++ b/arch/x86/include/asm/tlbflush.h
+> @@ -4,6 +4,7 @@
+>  
+>  #include <linux/mm_types.h>
+>  #include <linux/sched.h>
+> +#include <linux/mmu_notifier.h>
+>  
+>  #include <asm/processor.h>
+>  #include <asm/cpufeature.h>
+> @@ -282,6 +283,7 @@ static inline void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *b
+>  {
+>  	inc_mm_tlb_gen(mm);
+>  	cpumask_or(&batch->cpumask, &batch->cpumask, mm_cpumask(mm));
+> +	mmu_notifier_arch_invalidate_secondary_tlbs(mm, 0, -1UL);
+>  }
+>  
+>  static inline void arch_flush_tlb_batched_pending(struct mm_struct *mm)
+> diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+> index 0b990fb56b66..2d253919b3e8 100644
+> --- a/arch/x86/mm/tlb.c
+> +++ b/arch/x86/mm/tlb.c
+> @@ -1265,7 +1265,6 @@ void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
+>  
+>  	put_flush_tlb_info();
+>  	put_cpu();
+> -	mmu_notifier_arch_invalidate_secondary_tlbs(current->mm, 0, -1UL);
+>  }
+>  
+>  /*
 
-In this case, it doesn't even require a lot of imagination,
-the code is literally written as undefined behavior when
-the first call is inlined and the second one is not, I don't
-see what one would do in gcc to /not/ warn about passing
-an uninitialized register into a function call, other than
-moving the warning before inlining and DCE as clang does.
+This patch also fixes a regression introduced on linux-next, the same
+crash on arch_tlbbatch_flush() is reproducible with fstests generic/176
+on XFS. This patch fixes that regression [0]. This should also close out
+the syzbot crash too [1]
 
->> One difference between gcc and clang is that gcc tries to
->> be smart about warnings by using information from inlining
->> to produce better warnings, while clang never uses information
->> across function boundaries for generated warnings, so it won't
->> find this one, but also would ignore an unconditional use
->> of the uninitialized variable.
->>
->> >> If we have to change the kernel, what about the change below?
->> >
->> > To workaround the compiler bug we can simply init flag=3D0 to silen=
-ce
->> > the warn, but even that is silly. Passing flag=3D0 into irqrestore =
-is buggy.
->>
->> Maybe inc_active() could return the flags instead of modifying
->> the stack variable? that would also result in slightly better
->> code when it's not inlined.
->
-> Which gcc are we talking about here that is so buggy?
+[0] https://gist.github.com/mcgrof/b37fc8cf7e6e1b3935242681de1a83e2
+[1] https://lore.kernel.org/all/0000000000003afcb4060135a664@google.com/
 
-I think I only tried versions 8 through 13 for this one, but
-can check others as well.
+Tested-by: Luis Chamberlain <mcgrof@kernel.org>
 
-     Arnd
+  Luis
