@@ -2,316 +2,375 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D04FE75F522
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC8475F563
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjGXLck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 07:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52130 "EHLO
+        id S229813AbjGXLqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 07:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbjGXLc3 (ORCPT
+        with ESMTP id S229998AbjGXLqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:32:29 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4D61BC0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:32:00 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7836272f36eso156583239f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:32:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1690198314; x=1690803114;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MSZt7mHez9tNJy/98/Qfr0OOVK6jV7kKAFtTUhVHj+4=;
-        b=Zu3QSNlWTHcd8OApwq0U+bD1SZkTRkdgFVizZQ0Kx7en8kEJKrVeVocSG+Chv6CbDP
-         8nJtj3qZsoyDChCMF0DmJt+9YtpDu01OVSusMX7q1fmFDHxXKGJHDUXT48KQnY/TCtTY
-         Ca4tZz8IH40wQVfKABxCYjCdDP7vUQYkYJOd7Yf3WR6gZXyp2TUWTTa0LsG27VSBw3R2
-         r7jG9Qg1XyuTpO0sUi1Wh1+fPVhFZ3yF82QJ+Ou5dSdQIMJA1iqQvaZXvmw88x3vkHvl
-         UyLDohMJw2aqsCJU6kE0hyYX+REUCLzbiWUui1gaA2l+B1Cl80IYVjKJFyIGGaPsc+ep
-         oupw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690198314; x=1690803114;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MSZt7mHez9tNJy/98/Qfr0OOVK6jV7kKAFtTUhVHj+4=;
-        b=IbfNnqt9Dr/+nYRzgnawnUi8ubiInR7fQ2+2wU2P94402Ohap7npq+77i535q7iNcM
-         2bcwexsuJ2H6uEBQ8BLLQDgLogOhxPczl4J0Qlq4eLJfw8baHEp8XO++KurnbShT26tf
-         h8a8zduaBb4pUehpyYmnKxuU0IcigX51wv7V6h69h0DOm6uE9B+fvD+f0ma6X35T0NLJ
-         JDaCvNokERgzkG5ONlQin7B55O2IpSs56bKXg0GEh/OAM3lItze+SmG60x/Ul813/3O/
-         mfxaikI5/auk3vwaz8IIcMlJ8yjbo4DEb4be7u1I3LoPSYN2nE29IzNhpeCXn7dlYpTn
-         RaRg==
-X-Gm-Message-State: ABy/qLaMqv6qzJkYs9hsu+qPjcmT37FITuM+9cMy6lybcbhRsSvpiOk2
-        URFbD+KM/jITEqcV0FAr9gk0h4FeDmw+1M30fXfL9w==
-X-Google-Smtp-Source: APBJJlGHxOZ/paRjIch74XqvwUxQz0xz3MZH+VtCE2KMsEa3zvL3fC42DqgKEx4uhzMK7nJeCic/WBnYFQ/RxL330dA=
-X-Received: by 2002:a6b:7f0a:0:b0:76c:8877:861d with SMTP id
- l10-20020a6b7f0a000000b0076c8877861dmr7363380ioq.1.1690198313863; Mon, 24 Jul
- 2023 04:31:53 -0700 (PDT)
+        Mon, 24 Jul 2023 07:46:40 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C15E5C
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690199190; x=1721735190;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=PxaN+6W271Cyw9sPYyy9VqsWusr4rxCuxxEhtCzeMqo=;
+  b=IIDEzd5PHWqQ0vs6PIli1+mmpz8fjRCne2jWwEBrGua9ZzGTh21fQLeH
+   0rcmeqBpnWmjjmFnBt7/Ubrb5Srv/LXJQ9p40A/+M0DYgmm6Svu/bAGyn
+   MsZYWVlWPAgsAIeTrQI6vxS7bp/3TmFJ9b9wRmOOQ4SqByRJYVvkl/uDc
+   z+nhCsvMcj8Y2sHbcIzDz/xq0ozXmTJO3ipLEc6so2pQrjRnrBDYzTjMG
+   xEBBrSrDDpVfELzCYYbrASSSAYm+m8iUm9Iy4jo3vyVl1crw+IwdQyW/V
+   L0AHdBAkTTgE00fJyMwBot8PdkLJy8n7e7YZCjWrvT6pX2JC9Vudy7f05
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="398322254"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="398322254"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 04:46:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="760761966"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="760761966"
+Received: from sosterlu-mobl.ger.corp.intel.com (HELO [10.249.37.56]) ([10.249.37.56])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 04:46:25 -0700
+Message-ID: <03d5abcd-53a6-bf61-227e-d608c5fbfe70@linux.intel.com>
+Date:   Mon, 24 Jul 2023 13:32:02 +0200
 MIME-Version: 1.0
-References: <cover.1689792825.git.tjeznach@rivosinc.com> <d62ceb33620cab766d809e6bbf30eaf5b46bc955.1689792825.git.tjeznach@rivosinc.com>
- <CANXhq0r=2eqpy9wLjVt1U0J7=LpnJLcKV7N9d90jvCss=7+Fzg@mail.gmail.com> <CAK9=C2Vg9eR5LJPeqDDQ0pHZcrT5DOUzA8_wYEVEjfnhb6s8pw@mail.gmail.com>
-In-Reply-To: <CAK9=C2Vg9eR5LJPeqDDQ0pHZcrT5DOUzA8_wYEVEjfnhb6s8pw@mail.gmail.com>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Mon, 24 Jul 2023 19:31:42 +0800
-Message-ID: <CANXhq0oTrU_-OQroW7H+hvxcU7YROhkgdCF9g_WtPTzVFQL7gA@mail.gmail.com>
-Subject: Re: [PATCH 03/11] dt-bindings: Add RISC-V IOMMU bindings
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Tomasz Jeznach <tjeznach@rivosinc.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
-        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
-        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v2 8/9] ASoC: SOF: Intel: Remove deferred probe for SOF
+Content-Language: en-US
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        alsa-devel@alsa-project.org
+Cc:     sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Matthew Auld <matthew.auld@intel.com>
+References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+ <20230719164141.228073-9-maarten.lankhorst@linux.intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230719164141.228073-9-maarten.lankhorst@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 6:02=E2=80=AFPM Anup Patel <apatel@ventanamicro.com=
-> wrote:
->
-> On Mon, Jul 24, 2023 at 1:33=E2=80=AFPM Zong Li <zong.li@sifive.com> wrot=
-e:
-> >
-> > On Thu, Jul 20, 2023 at 3:35=E2=80=AFAM Tomasz Jeznach <tjeznach@rivosi=
-nc.com> wrote:
-> > >
-> > > From: Anup Patel <apatel@ventanamicro.com>
-> > >
-> > > We add DT bindings document for RISC-V IOMMU platform and PCI devices
-> > > defined by the RISC-V IOMMU specification.
-> > >
-> > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > > ---
-> > >  .../bindings/iommu/riscv,iommu.yaml           | 146 ++++++++++++++++=
-++
-> > >  1 file changed, 146 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/iommu/riscv,iom=
-mu.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml=
- b/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
-> > > new file mode 100644
-> > > index 000000000000..8a9aedb61768
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
-> > > @@ -0,0 +1,146 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/iommu/riscv,iommu.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: RISC-V IOMMU Implementation
-> > > +
-> > > +maintainers:
-> > > +  - Tomasz Jeznach <tjeznach@rivosinc.com>
-> > > +
-> > > +description:
-> > > +  The RISC-V IOMMU specificaiton defines an IOMMU for RISC-V platfor=
-ms
-> > > +  which can be a regular platform device or a PCI device connected t=
-o
-> > > +  the host root port.
-> > > +
-> > > +  The RISC-V IOMMU provides two stage translation, device directory =
-table,
-> > > +  command queue and fault reporting as wired interrupt or MSIx event=
- for
-> > > +  both PCI and platform devices.
-> > > +
-> > > +  Visit https://github.com/riscv-non-isa/riscv-iommu for more detail=
-s.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    oneOf:
-> > > +      - description: RISC-V IOMMU as a platform device
-> > > +        items:
-> > > +          - enum:
-> > > +              - vendor,chip-iommu
-> > > +          - const: riscv,iommu
-> > > +
-> > > +      - description: RISC-V IOMMU as a PCI device connected to root =
-port
-> > > +        items:
-> > > +          - enum:
-> > > +              - vendor,chip-pci-iommu
-> > > +          - const: riscv,pci-iommu
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +    description:
-> > > +      For RISC-V IOMMU as a platform device, this represents the MMI=
-O base
-> > > +      address of registers.
-> > > +
-> > > +      For RISC-V IOMMU as a PCI device, this represents the PCI-PCI =
-bridge
-> > > +      details as described in Documentation/devicetree/bindings/pci/=
-pci.txt
-> > > +
-> > > +  '#iommu-cells':
-> > > +    const: 2
-> > > +    description: |
-> > > +      Each IOMMU specifier represents the base device ID and number =
-of
-> > > +      device IDs.
-> > > +
-> > > +  interrupts:
-> > > +    minItems: 1
-> > > +    maxItems: 16
-> > > +    description:
-> > > +      The presence of this property implies that given RISC-V IOMMU =
-uses
-> > > +      wired interrupts to notify the RISC-V HARTS (or CPUs).
-> > > +
-> > > +  msi-parent:
-> > > +    description:
-> > > +      The presence of this property implies that given RISC-V IOMMU =
-uses
-> > > +      MSIx to notify the RISC-V HARTs (or CPUs). This property shoul=
-d be
-> > > +      considered only when the interrupts property is absent.
-> > > +
-> > > +  dma-coherent:
-> > > +    description:
-> > > +      Present if page table walks and DMA accessed made by the RISC-=
-V IOMMU
-> > > +      are cache coherent with the CPU.
-> > > +
-> > > +  power-domains:
-> > > +    maxItems: 1
-> > > +
-> >
-> > In RISC-V IOMMU, certain devices can be set to bypass mode when the
-> > IOMMU is in translation mode. To identify the devices that require
-> > bypass mode by default, does it be sensible to add a property to
-> > indicate this behavior?
->
-> Bypass mode for a device is a property of that device (similar to dma-coh=
-erent)
-> and not of the IOMMU. Other architectures (ARM and x86) never added such
-> a device property for bypass mode so I guess it is NOT ADVISABLE to do it=
-.
->
-> If this is REALLY required then we can do something similar to the QCOM
-> SMMU driver where they have a whitelist of devices which are allowed to
-> be in bypass mode (i.e. IOMMU_DOMAIN_IDENTITY) based their device
-> compatible string and any device outside this whitelist is blocked by def=
-ault.
->
 
-I have considered that adding the property of bypass mode to that
-device would be more appropriate. However, if we want to define this
-property for the device, it might need to go through the generic IOMMU
-dt-bindings, but I'm not sure if other IOMMU devices need this. I am
-bringing up this topic here because I would like to explore if there
-are any solutions on the IOMMU side, such as a property that indicates
-the phandle of devices wishing to set bypass mode, somewhat similar to
-the whitelist you mentioned earlier. Do you think we should address
-this? After all, this is a case of RISC-V IOMMU supported.
 
-> Regards,
-> Anup
->
-> >
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - '#iommu-cells'
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    /* Example 1 (IOMMU platform device with wired interrupts) */
-> > > +    immu1: iommu@1bccd000 {
-> > > +        compatible =3D "vendor,chip-iommu", "riscv,iommu";
-> > > +        reg =3D <0x1bccd000 0x1000>;
-> > > +        interrupt-parent =3D <&aplic_smode>;
-> > > +        interrupts =3D <32 4>, <33 4>, <34 4>, <35 4>;
-> > > +        #iommu-cells =3D <2>;
-> > > +    };
-> > > +
-> > > +    /* Device with two IOMMU device IDs, 0 and 7 */
-> > > +    master1 {
-> > > +        iommus =3D <&immu1 0 1>, <&immu1 7 1>;
-> > > +    };
-> > > +
-> > > +  - |
-> > > +    /* Example 2 (IOMMU platform device with MSIs) */
-> > > +    immu2: iommu@1bcdd000 {
-> > > +        compatible =3D "vendor,chip-iommu", "riscv,iommu";
-> > > +        reg =3D <0x1bccd000 0x1000>;
-> > > +        msi-parent =3D <&imsics_smode>;
-> > > +        #iommu-cells =3D <2>;
-> > > +    };
-> > > +
-> > > +    bus {
-> > > +        #address-cells =3D <2>;
-> > > +        #size-cells =3D <2>;
-> > > +
-> > > +        /* Device with IOMMU device IDs ranging from 32 to 64 */
-> > > +        master1 {
-> > > +                iommus =3D <&immu2 32 32>;
-> > > +        };
-> > > +
-> > > +        pcie@40000000 {
-> > > +            compatible =3D "pci-host-cam-generic";
-> > > +            device_type =3D "pci";
-> > > +            #address-cells =3D <3>;
-> > > +            #size-cells =3D <2>;
-> > > +            bus-range =3D <0x0 0x1>;
-> > > +
-> > > +            /* CPU_PHYSICAL(2)  SIZE(2) */
-> > > +            reg =3D <0x0 0x40000000 0x0 0x1000000>;
-> > > +
-> > > +            /* BUS_ADDRESS(3)  CPU_PHYSICAL(2)  SIZE(2) */
-> > > +            ranges =3D <0x01000000 0x0 0x01000000  0x0 0x01000000  0=
-x0 0x00010000>,
-> > > +                     <0x02000000 0x0 0x41000000  0x0 0x41000000  0x0=
- 0x3f000000>;
-> > > +
-> > > +            #interrupt-cells =3D <0x1>;
-> > > +
-> > > +            /* PCI_DEVICE(3)  INT#(1)  CONTROLLER(PHANDLE)  CONTROLL=
-ER_DATA(2) */
-> > > +            interrupt-map =3D <   0x0 0x0 0x0  0x1  &aplic_smode  0x=
-4 0x1>,
-> > > +                            < 0x800 0x0 0x0  0x1  &aplic_smode  0x5 =
-0x1>,
-> > > +                            <0x1000 0x0 0x0  0x1  &aplic_smode  0x6 =
-0x1>,
-> > > +                            <0x1800 0x0 0x0  0x1  &aplic_smode  0x7 =
-0x1>;
-> > > +
-> > > +            /* PCI_DEVICE(3)  INT#(1) */
-> > > +            interrupt-map-mask =3D <0xf800 0x0 0x0  0x7>;
-> > > +
-> > > +            msi-parent =3D <&imsics_smode>;
-> > > +
-> > > +            /* Devices with bus number 0-127 are mastered via immu2 =
-*/
-> > > +            iommu-map =3D <0x0000 &immu2 0x0000 0x8000>;
-> > > +        };
-> > > +    };
-> > > +...
-> > > --
-> > > 2.34.1
-> > >
-> > >
-> > > _______________________________________________
-> > > linux-riscv mailing list
-> > > linux-riscv@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+On 7/19/23 18:41, Maarten Lankhorst wrote:
+> This was only used to allow modprobing i915, by converting to the
+> -EPROBE_DEFER mechanism, it can be completely removed, and is in
+> fact counterproductive since -EPROBE_DEFER otherwise won't be
+> handled correctly.
+
+I personally remember only that the request_module("i915") was the main
+motivation for the use of the workqueue, but when it comes to the
+HDaudio codec management we don't even know what we don't know.
+
+I am a bit worried that the snd-hda-intel driver keeps the workqueue for
+HDaudio codec initialization, and this patch removes the workqueue
+completely for SOF. That doesn't seem right. Either both drivers need a
+workqueue or none need a workqueue.
+
+Maybe what we need is to move the i915/xe initialization out of the
+workqueue, and see in a second pass if that workqueue can be safely
+removed from the SOF driver?
+
+
+> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Acked-by: Matthew Auld <matthew.auld@intel.com>
+> Acked-by: Mark Brown <broonie@kernel.org>
+> ---
+>  sound/soc/sof/Kconfig           | 19 -----------------
+>  sound/soc/sof/core.c            | 38 ++-------------------------------
+>  sound/soc/sof/intel/Kconfig     |  1 -
+>  sound/soc/sof/intel/hda-codec.c |  2 +-
+>  sound/soc/sof/intel/hda.c       | 32 ++++++++++++++++-----------
+>  sound/soc/sof/sof-pci-dev.c     |  3 +--
+>  sound/soc/sof/sof-priv.h        |  5 -----
+>  7 files changed, 23 insertions(+), 77 deletions(-)
+> 
+> diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+> index 80361139a49ad..8ee39e5558062 100644
+> --- a/sound/soc/sof/Kconfig
+> +++ b/sound/soc/sof/Kconfig
+> @@ -82,17 +82,6 @@ config SND_SOC_SOF_DEVELOPER_SUPPORT
+>  
+>  if SND_SOC_SOF_DEVELOPER_SUPPORT
+>  
+> -config SND_SOC_SOF_FORCE_PROBE_WORKQUEUE
+> -	bool "SOF force probe workqueue"
+> -	select SND_SOC_SOF_PROBE_WORK_QUEUE
+> -	help
+> -	  This option forces the use of a probe workqueue, which is only used
+> -	  when HDaudio is enabled due to module dependencies. Forcing this
+> -	  option is intended for debug only, but this should not add any
+> -	  functional issues in nominal cases.
+> -	  Say Y if you are involved in SOF development and need this option.
+> -	  If not, select N.
+> -
+>  config SND_SOC_SOF_NOCODEC
+>  	tristate
+>  
+> @@ -271,14 +260,6 @@ config SND_SOC_SOF
+>  	  module dependencies but since the module or built-in type is decided
+>  	  at the top level it doesn't matter.
+>  
+> -config SND_SOC_SOF_PROBE_WORK_QUEUE
+> -	bool
+> -	help
+> -	  This option is not user-selectable but automagically handled by
+> -	  'select' statements at a higher level.
+> -	  When selected, the probe is handled in two steps, for example to
+> -	  avoid lockdeps if request_module is used in the probe.
+> -
+>  # Supported IPC versions
+>  config SND_SOC_SOF_IPC3
+>  	bool
+> diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+> index 30db685cc5f4b..cdf86dc4a8a87 100644
+> --- a/sound/soc/sof/core.c
+> +++ b/sound/soc/sof/core.c
+> @@ -191,7 +191,8 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+>  	/* probe the DSP hardware */
+>  	ret = snd_sof_probe(sdev);
+>  	if (ret < 0) {
+> -		dev_err(sdev->dev, "error: failed to probe DSP %d\n", ret);
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(sdev->dev, "error: failed to probe DSP %d\n", ret);
+>  		goto probe_err;
+>  	}
+>  
+> @@ -309,8 +310,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+>  	if (plat_data->sof_probe_complete)
+>  		plat_data->sof_probe_complete(sdev->dev);
+>  
+> -	sdev->probe_completed = true;
+> -
+>  	return 0;
+>  
+>  sof_machine_err:
+> @@ -336,19 +335,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+>  	return ret;
+>  }
+>  
+> -static void sof_probe_work(struct work_struct *work)
+> -{
+> -	struct snd_sof_dev *sdev =
+> -		container_of(work, struct snd_sof_dev, probe_work);
+> -	int ret;
+> -
+> -	ret = sof_probe_continue(sdev);
+> -	if (ret < 0) {
+> -		/* errors cannot be propagated, log */
+> -		dev_err(sdev->dev, "error: %s failed err: %d\n", __func__, ret);
+> -	}
+> -}
+> -
+>  int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
+>  {
+>  	struct snd_sof_dev *sdev;
+> @@ -436,33 +422,16 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
+>  
+>  	sof_set_fw_state(sdev, SOF_FW_BOOT_NOT_STARTED);
+>  
+> -	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)) {
+> -		INIT_WORK(&sdev->probe_work, sof_probe_work);
+> -		schedule_work(&sdev->probe_work);
+> -		return 0;
+> -	}
+> -
+>  	return sof_probe_continue(sdev);
+>  }
+>  EXPORT_SYMBOL(snd_sof_device_probe);
+>  
+> -bool snd_sof_device_probe_completed(struct device *dev)
+> -{
+> -	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+> -
+> -	return sdev->probe_completed;
+> -}
+> -EXPORT_SYMBOL(snd_sof_device_probe_completed);
+> -
+>  int snd_sof_device_remove(struct device *dev)
+>  {
+>  	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+>  	struct snd_sof_pdata *pdata = sdev->pdata;
+>  	int ret;
+>  
+> -	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
+> -		cancel_work_sync(&sdev->probe_work);
+> -
+>  	/*
+>  	 * Unregister any registered client device first before IPC and debugfs
+>  	 * to allow client drivers to be removed cleanly
+> @@ -501,9 +470,6 @@ int snd_sof_device_shutdown(struct device *dev)
+>  {
+>  	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+>  
+> -	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
+> -		cancel_work_sync(&sdev->probe_work);
+> -
+>  	if (sdev->fw_state == SOF_FW_BOOT_COMPLETE) {
+>  		sof_fw_trace_free(sdev);
+>  		return snd_sof_shutdown(sdev);
+> diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+> index 69c1a370d3b61..d9e87a91670a3 100644
+> --- a/sound/soc/sof/intel/Kconfig
+> +++ b/sound/soc/sof/intel/Kconfig
+> @@ -293,7 +293,6 @@ config SND_SOC_SOF_HDA_LINK
+>  config SND_SOC_SOF_HDA_AUDIO_CODEC
+>  	bool "SOF support for HDAudio codecs"
+>  	depends on SND_SOC_SOF_HDA_LINK
+> -	select SND_SOC_SOF_PROBE_WORK_QUEUE
+>  	help
+>  	  This adds support for HDAudio codecs with Sound Open Firmware
+>  	  for Intel(R) platforms.
+> diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+> index f1fd5b44aaac9..344b61576c0e3 100644
+> --- a/sound/soc/sof/intel/hda-codec.c
+> +++ b/sound/soc/sof/intel/hda-codec.c
+> @@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
+>  		return 0;
+>  
+>  	/* i915 exposes a HDA codec for HDMI audio */
+> -	ret = snd_hdac_i915_init(bus, true);
+> +	ret = snd_hdac_i915_init(bus, false);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+> index 64bebe1a72bbc..a8b7a68142c05 100644
+> --- a/sound/soc/sof/intel/hda.c
+> +++ b/sound/soc/sof/intel/hda.c
+> @@ -801,8 +801,11 @@ static int hda_init(struct snd_sof_dev *sdev)
+>  
+>  	/* init i915 and HDMI codecs */
+>  	ret = hda_codec_i915_init(sdev);
+> -	if (ret < 0)
+> -		dev_warn(sdev->dev, "init of i915 and HDMI codec failed\n");
+> +	if (ret < 0) {
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_warn(sdev->dev, "init of i915 and HDMI codec failed: %i\n", ret);
+> +		return ret;
+> +	}
+>  
+>  	/* get controller capabilities */
+>  	ret = hda_dsp_ctrl_get_caps(sdev);
+> @@ -1115,14 +1118,6 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+>  	sdev->pdata->hw_pdata = hdev;
+>  	hdev->desc = chip;
+>  
+> -	hdev->dmic_dev = platform_device_register_data(sdev->dev, "dmic-codec",
+> -						       PLATFORM_DEVID_NONE,
+> -						       NULL, 0);
+> -	if (IS_ERR(hdev->dmic_dev)) {
+> -		dev_err(sdev->dev, "error: failed to create DMIC device\n");
+> -		return PTR_ERR(hdev->dmic_dev);
+> -	}
+> -
+>  	/*
+>  	 * use position update IPC if either it is forced
+>  	 * or we don't have other choice
+> @@ -1142,6 +1137,15 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+>  	if (ret < 0)
+>  		goto hdac_bus_unmap;
+>  
+> +	hdev->dmic_dev = platform_device_register_data(sdev->dev, "dmic-codec",
+> +						       PLATFORM_DEVID_NONE,
+> +						       NULL, 0);
+> +	if (IS_ERR(hdev->dmic_dev)) {
+> +		dev_err(sdev->dev, "error: failed to create DMIC device\n");
+> +		ret = PTR_ERR(hdev->dmic_dev);
+> +		goto hdac_exit;
+> +	}
+> +
+
+I am not following why we have to move dmic-related code, can we try to
+move this in a separate patch?
+
+>  	if (sdev->dspless_mode_selected)
+>  		goto skip_dsp_setup;
+>  
+> @@ -1150,7 +1154,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+>  	if (!sdev->bar[HDA_DSP_BAR]) {
+>  		dev_err(sdev->dev, "error: ioremap error\n");
+>  		ret = -ENXIO;
+> -		goto hdac_bus_unmap;
+> +		goto platform_unreg;
+>  	}
+>  
+>  	sdev->mmio_bar = HDA_DSP_BAR;
+> @@ -1248,10 +1252,12 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+>  /* dsp_unmap: not currently used */
+>  	if (!sdev->dspless_mode_selected)
+>  		iounmap(sdev->bar[HDA_DSP_BAR]);
+> -hdac_bus_unmap:
+> +platform_unreg:
+>  	platform_device_unregister(hdev->dmic_dev);
+> -	iounmap(bus->remap_addr);
+> +hdac_exit:
+>  	hda_codec_i915_exit(sdev);
+> +hdac_bus_unmap:
+> +	iounmap(bus->remap_addr);
+>  err:
+>  	return ret;
+>  }
+> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+> index f5ece43d0ec24..0fa424613082e 100644
+> --- a/sound/soc/sof/sof-pci-dev.c
+> +++ b/sound/soc/sof/sof-pci-dev.c
+> @@ -339,8 +339,7 @@ void sof_pci_remove(struct pci_dev *pci)
+>  	snd_sof_device_remove(&pci->dev);
+>  
+>  	/* follow recommendation in pci-driver.c to increment usage counter */
+> -	if (snd_sof_device_probe_completed(&pci->dev) &&
+> -	    !(sof_pci_debug & SOF_PCI_DISABLE_PM_RUNTIME))
+> +	if (!(sof_pci_debug & SOF_PCI_DISABLE_PM_RUNTIME))
+>  		pm_runtime_get_noresume(&pci->dev);
+>  
+>  	/* release pci regions and disable device */
+> diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+> index d4f6702e93dcb..71db636cfdccc 100644
+> --- a/sound/soc/sof/sof-priv.h
+> +++ b/sound/soc/sof/sof-priv.h
+> @@ -564,10 +564,6 @@ struct snd_sof_dev {
+>  	enum sof_fw_state fw_state;
+>  	bool first_boot;
+>  
+> -	/* work queue in case the probe is implemented in two steps */
+> -	struct work_struct probe_work;
+> -	bool probe_completed;
+> -
+>  	/* DSP HW differentiation */
+>  	struct snd_sof_pdata *pdata;
+>  
+> @@ -675,7 +671,6 @@ struct snd_sof_dev {
+>  int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data);
+>  int snd_sof_device_remove(struct device *dev);
+>  int snd_sof_device_shutdown(struct device *dev);
+> -bool snd_sof_device_probe_completed(struct device *dev);
+>  
+>  int snd_sof_runtime_suspend(struct device *dev);
+>  int snd_sof_runtime_resume(struct device *dev);
