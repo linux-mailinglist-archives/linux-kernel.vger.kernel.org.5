@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A621B75FF72
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A807B75FF74
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjGXTBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 15:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
+        id S230149AbjGXTBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 15:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjGXTB3 (ORCPT
+        with ESMTP id S230088AbjGXTBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 15:01:29 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A28188;
-        Mon, 24 Jul 2023 12:01:26 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-666e6541c98so4441614b3a.2;
-        Mon, 24 Jul 2023 12:01:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690225285; x=1690830085;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ytTgJxsf1t1AvxkCbddKWo4X3TXhqqtq1teyxCHoYOk=;
-        b=EZi2+4C78YEQye1s/K5NqtUGVGXTSRHLCfjA3ZtxnAj785TEQHtjdQc8hTXfqDBp7u
-         21EtjmGDvLleaQu1XM+NfAb0vg79SmB5i1xkIGwMpLv2cgS9gMvad54AOiJWoTIFnyh+
-         08fX3gEJmuQDThegI6WwsyqDJCvYU2t4X3j4DWCUxCfLHPPGsCO1rH5UVNt6K2/asPCy
-         42WudfHKFQ09DPP5yFnolnMRrbKRPH7Wdpzo4VmmrLqgRSqsW9GrmGoc07GKnscA+nfo
-         DdWmNxpoo+j2sgsomqS8Iop03DJXdSNwqAfYAgK1HvzlgbmV5ShWkNnRT5M+A/kCeOvL
-         vBMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690225285; x=1690830085;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ytTgJxsf1t1AvxkCbddKWo4X3TXhqqtq1teyxCHoYOk=;
-        b=QORIIl7QyLcFO6KiTzV7Tmf8KXAsVphjAO4VB6Uk31h4MKWp9WxsCANVTiuEJgvfvG
-         kAKsCiSDKeK1RXblwnRwKQSI1CAEVTQU7MKJDzAPez9EsoMJWtRvYBlOc3BuCi/X06cM
-         MOBOIHcS/K/wg1VNEEJrrrjwuS/BgTNhb49Iwor+Q055RQTItp0TG9n74zvH+vGfDlf3
-         up1CLHuahb/7CpBXGr2bRg9KHMOxeo/JXMeDMJ2kddq6pkJlxfp9Zzo/wIqjYcusUBWr
-         jk2afZjan0yGNgbYLO13jTNoc1+y6IkViB4FCKi4OgRok6i40P/hAKn8AB9RRdqt469x
-         BU+Q==
-X-Gm-Message-State: ABy/qLacVmoo472ib96JpY99MkIEkb/fx5HmsrutRbaDg1rpvmv9UaSb
-        KlxP/8o5SdWMnTHrGvdXOKC9m/m//cg=
-X-Google-Smtp-Source: APBJJlEnTwHHa2/VK6vUKdGrPE8+7iOUquvjmU858aF6UZE7WB0ArdiBb8M+6pBOVK/b2wvMvFdURw==
-X-Received: by 2002:a05:6a00:1a01:b0:666:8cbb:6e02 with SMTP id g1-20020a056a001a0100b006668cbb6e02mr10845449pfv.8.1690225285294;
-        Mon, 24 Jul 2023 12:01:25 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:9d8f:da31:e274:eeb5])
-        by smtp.gmail.com with ESMTPSA id j1-20020aa783c1000000b0063f00898245sm2599472pfn.146.2023.07.24.12.01.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 12:01:24 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 12:01:22 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     linux-input@vger.kernel.org, Yangtao Li <frank.li@vivo.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] Input: lm8323 - convert to use devm_* api
-Message-ID: <ZL7KghF8L+y1Fzcs@google.com>
-References: <20230724052901.350240-1-dmitry.torokhov@gmail.com>
- <20230724052901.350240-2-dmitry.torokhov@gmail.com>
- <b83df292-6f7a-a8bf-895e-6df80a17029f@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b83df292-6f7a-a8bf-895e-6df80a17029f@wanadoo.fr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 24 Jul 2023 15:01:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57783188;
+        Mon, 24 Jul 2023 12:01:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E0D88612FC;
+        Mon, 24 Jul 2023 19:01:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADDA5C433C7;
+        Mon, 24 Jul 2023 19:01:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1690225306;
+        bh=IVmjp3tZL1zUzIeebpw0YEnIAORXP4cay/HXpSS/roU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=p+SYTcxn9Hs60lt294Y81fMLOhz/lQ2y1Yukf6QGu15HmWhrOVzCPYDNUu3beIKoy
+         alq96xu1sqzgIgB+Mqi6TR4GcBNNEFSUOXSKAvWu0oyD1sQnl8mTeg6WA8J3xqCR4V
+         FzdhgnYQ5Vl1KVr/B/84bHBrpY43BCQ9kr5/ZQAY=
+Date:   Mon, 24 Jul 2023 12:01:45 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        =?ISO-8859-1?Q?J=E9r=F4me?= Glisse <jglisse@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 0/8] selftests/mm fixes for arm64
+Message-Id: <20230724120145.b0d985e6f926db587a7debd1@linux-foundation.org>
+In-Reply-To: <ef907f64-f7aa-3759-1adc-3fb7e3f3487b@arm.com>
+References: <20230724082522.1202616-1-ryan.roberts@arm.com>
+        <20230724093804.bbe8bc2a83d4575f17778eb0@linux-foundation.org>
+        <ef907f64-f7aa-3759-1adc-3fb7e3f3487b@arm.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 08:53:11PM +0200, Christophe JAILLET wrote:
-> Le 24/07/2023 à 07:29, Dmitry Torokhov a écrit :
-> > From: Yangtao Li <frank.li@vivo.com>
-> > +
-> > +		err = devm_led_classdev_register(dev, &pwm->cdev);
+On Mon, 24 Jul 2023 19:49:13 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
 
-                      ^^^^^^^^^^^^^^
-
-...
-
-> > -
-> > -	for (i = 0; i < 3; i++)
-> > -		if (lm->pwm[i].enabled)
-> > -			led_classdev_unregister(&lm->pwm[i].cdev);
+> On 24/07/2023 17:38, Andrew Morton wrote:
+> > On Mon, 24 Jul 2023 09:25:14 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
+> > 
+> >> This is v3 of my series to clean up mm selftests so that they run correctly on
+> >> arm64. See [1] for full explanation.
+> > 
+> > Please don't do that.  Please maintain the [0/n] description alongside the
+> > patchset and resend it each time you resend the series.
 > 
-> this look wrong.
+> OK understood. Sorry about that. Do you have any docs for the mm submission
+> process? If not, please keep pointing issues out and I'll get it right eventually.
 
-Why? It will be cleared up by devm.
+A work in progress ;)
 
-Thanks.
+> I previously thought that the cover letter was primarily for the email
+> recipients and the description on each patch was the part that went into git?
+> Clearly I'm wrong, but can't see anything in submitting-patches.rst so guess the
+> mm process is a bit different?
 
--- 
-Dmitry
+I expect all subsystem maintainers would like the [0/N] intro to be
+maintained and resent as the patchset evolves.
+
+> > 
+> > I could go over and copy-paste [1] into this patchset, but I don't know if it
+> > is fully up to date.   I'll leave the patchset intro blank for now - please
+> > review/edit [1] and send the result in reply to this email, thanks. 
+> 
+> I doubt you would want the whole cover letter in git, so here is the relavent intro:
+
+Pasted, thanks.
