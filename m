@@ -2,106 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D09BC75EDC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB1675EDC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbjGXIg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35254 "EHLO
+        id S231196AbjGXIiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbjGXIg5 (ORCPT
+        with ESMTP id S231742AbjGXIiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:36:57 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F0C9AD
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:36:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690187816; x=1721723816;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=uDhtutM0pr0AK29Z2GxbbSWEScl9EcBUidY6d+4jQdQ=;
-  b=FfriHYhB50uHGUv+Y+a5iS7RD5k5dkrG9TfQNrHniycwGCqbUuFDEQl1
-   pBH6MBXIcokZrzwctSpHlPmSdETEOP8bmuC09O6+j4AfV5PbieLAGk7ct
-   TLG9EQqLj9vsWX/FkqCmbb15eRKKB8bnnZTGijG1n0hTlhUyNyGfNDs5V
-   w4uHstNa+OQxJA//D4CRVx5dtmlksq0Kwqjn71aIyFJaOfsNXHjkDRyOj
-   Ais0sWNDc/GYH4SFdJLYGc2+adWH0/MPiyyRlo8Hp4fdvqAig5hGocOco
-   I4KyBA2mDT04XP7jEYhxSPlP1h59WxrkPo+02414wml+donaJiCgqoxP6
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="370984571"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="370984571"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 01:36:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="790886438"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="790886438"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Jul 2023 01:36:38 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qNr3U-004i0X-2v;
-        Mon, 24 Jul 2023 11:36:36 +0300
-Date:   Mon, 24 Jul 2023 11:36:36 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Alexander Potapenko <glider@google.com>, catalin.marinas@arm.com,
-        will@kernel.org, pcc@google.com, andreyknvl@gmail.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 1/5] lib/bitmap: add bitmap_{set,get}_value()
-Message-ID: <ZL44FFAkG8pKS1lv@smile.fi.intel.com>
-References: <20230720173956.3674987-1-glider@google.com>
- <20230720173956.3674987-2-glider@google.com>
- <ZLyI+0EL1VztnHLe@yury-ThinkPad>
+        Mon, 24 Jul 2023 04:38:09 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D288E99;
+        Mon, 24 Jul 2023 01:38:08 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36O6gLoG028423;
+        Mon, 24 Jul 2023 08:38:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=dvkkVUeEgieiaxL3ckEMZvP7tELbGUER5JrAuxwP+o8=;
+ b=FOE2JzLMqT7fal+EPn1lWGkN0W6pkbsovIKQxhn1Fyry1FNY47abrt2ygATzxFf94Yhu
+ p8cqbxEnl8aQD3hTnmYDkKgpBG/J5w1YQ8P5yS4qmPmG5YJdBkZGwg2N5v0UI8pwt0HB
+ 2kqWw7nbmv1BNFN3CUjrRfsBzMxj5SKk5JJr8FBT4JMiXZOi9NMh2sxaH2eIu19knon/
+ EA/u6waGSgbw6GWgCXVHCYjrUgNwHlar6aK9vGplrX51SrzAXBabEaIMgRKOxhfHrmHJ
+ oh30TFoG8dKkyhIH/zr4eIW+DIDABNicq4Us8bQqsy1V9OFF8CIQo65k67Us6REMhPd0 dw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s064djuq6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 24 Jul 2023 08:38:04 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36O8c3F6002746
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 24 Jul 2023 08:38:03 GMT
+Received: from hu-kathirav-blr.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 24 Jul 2023 01:37:59 -0700
+From:   Kathiravan T <quic_kathirav@quicinc.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <quic_saahtoma@quicinc.com>,
+        Kathiravan T <quic_kathirav@quicinc.com>
+Subject: [PATCH V3 0/2]  Drop the IPQ5019 SoC ID
+Date:   Mon, 24 Jul 2023 14:07:43 +0530
+Message-ID: <20230724083745.1015321-1-quic_kathirav@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZLyI+0EL1VztnHLe@yury-ThinkPad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 4Zfp5SqBk9s9MJ5p2DV2xBRR3J6BUr1s
+X-Proofpoint-ORIG-GUID: 4Zfp5SqBk9s9MJ5p2DV2xBRR3J6BUr1s
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-24_06,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ phishscore=0 mlxscore=0 spamscore=0 adultscore=0 bulkscore=0
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
+ mlxlogscore=430 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307240076
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 06:57:23PM -0700, Yury Norov wrote:
-> On Thu, Jul 20, 2023 at 07:39:52PM +0200, Alexander Potapenko wrote:
+Kathiravan T (2):
+  soc: qcom: socinfo: drop the IPQ5019 SoC ID
+  dt-bindings: arm: qcom,ids: drop the IPQ5019 SoC ID
 
-> > +		map[index] &= ~(GENMASK(nbits - 1, 0) << offset);
-> 
-> 'GENMASK(nbits - 1, 0) << offset' looks really silly.
-
-But you followed the thread to get a clue why it's written in this form, right?
-
-...
-
-> With all that I think the implementation should look something like
-> this:
-
-I would go this way if and only if the code generation on main architectures
-with both GCC and clang is better.
-
-And maybe even some performance tests need to be provided.
-
-...
-
-> Alexander, can you please try the above and compare?
-
-> In previous iteration, I asked you to share disassembly listings for the
-> functions. Can you please do that now?
-
-Exactly what we need before going with your suggestion(s).
+ drivers/soc/qcom/socinfo.c         | 1 -
+ include/dt-bindings/arm/qcom,ids.h | 1 -
+ 2 files changed, 2 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
