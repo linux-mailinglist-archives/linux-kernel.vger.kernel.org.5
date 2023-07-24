@@ -2,47 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B82C75E89B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF7A75E89F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbjGXBmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41130 "EHLO
+        id S232128AbjGXBms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232053AbjGXBmE (ORCPT
+        with ESMTP id S232170AbjGXBmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:42:04 -0400
+        Sun, 23 Jul 2023 21:42:09 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2A01BD0;
-        Sun, 23 Jul 2023 18:37:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E5319AE;
+        Sun, 23 Jul 2023 18:37:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 137A560F1E;
-        Mon, 24 Jul 2023 01:33:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACF7CC433C7;
-        Mon, 24 Jul 2023 01:33:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 43D3660FF4;
+        Mon, 24 Jul 2023 01:33:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E14BC4339A;
+        Mon, 24 Jul 2023 01:33:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162391;
-        bh=9sg7e9CQ/eMXJ0e8JW8PqVK0n93E3YbfwKNb4Hbv5wI=;
+        s=k20201202; t=1690162392;
+        bh=EIWfUnjXcJVTn0EHmxB5zBJ1QWExieyyzDTAYh10xhs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XwYBsi4Q9fSf7RyvoeLFh5qZzXRX5j3H17LdErjMbqxAcy9Uw9jjvXlYq4XTATiPz
-         fRcWAFQFvMyUG3bwOTsaVRloRNZrBCQADBB0AsJtySqPcH0m3EmabeWTtxJ31ZMaoT
-         MjbvLvllkdnmfoEnoEY0XedstxqxLySbOmS4SpqzETba3JUvLdj7xfFAMk/TmdHql7
-         L5oYDsocsLzF/AUsGtTpD/vyEl75Ci43SPgqFnHZ1oMjBU2tBHHWozAKWQQbSYsDGv
-         uk9X0YofHzN+JsGpF0e9FvXT4ktV6V6+iWt5sekDE8ir1moX2gLIu0R8qm3ovAutx7
-         DjcVMto0BVN9A==
+        b=iapjsMGSN9/NR9MqbutFgzyNFqup7nNJT9tM4thDb+1PDDa43j3KKfIHQc4ppVE4y
+         V5OneF/y2D3BjV/17sgNoWIjnXmzHaRrdPx2PvC4tV7cMHYZMmkZrqKaKVtI3GyaYp
+         rbKdszaDxy+lD2H50CZWXjauA7ExU9bn5j8EQwm9wMp88GoPjMDXdfI5Ed5sSyEvZj
+         fhiBNG/aM1ZPWKZ48nQ1nbCsb8DNBKIKYIdcPx1MTJ5p4fb/eqbunH7X1V1GLS5n81
+         9BxL9FDpiWCxPABlEasAOO2DUcdbSdql62aMaCSqKQxNi8dRyv3BYe67+TiRFMAa9X
+         4LYOYI/t5UC9Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chao Yu <chao@kernel.org>,
-        syzbot+12cb4425b22169b52036@syzkaller.appspotmail.com,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, yuchao0@huawei.com,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 6.1 24/34] f2fs: fix to do sanity check on direct node in truncate_dnode()
-Date:   Sun, 23 Jul 2023 21:32:27 -0400
-Message-Id: <20230724013238.2329166-24-sashal@kernel.org>
+Cc:     Edward Lo <loyuantsung@gmail.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 25/34] fs/ntfs3: Enhance sanity check while generating attr_list
+Date:   Sun, 23 Jul 2023 21:32:28 -0400
+Message-Id: <20230724013238.2329166-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013238.2329166-1-sashal@kernel.org>
 References: <20230724013238.2329166-1-sashal@kernel.org>
@@ -61,153 +59,197 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <chao@kernel.org>
+From: Edward Lo <loyuantsung@gmail.com>
 
-[ Upstream commit a6ec83786ab9f13f25fb18166dee908845713a95 ]
+[ Upstream commit fdec309c7672cbee4dc0229ee4cbb33c948a1bdd ]
 
-syzbot reports below bug:
+ni_create_attr_list uses WARN_ON to catch error cases while generating
+attribute list, which only prints out stack trace and may not be enough.
+This repalces them with more proper error handling flow.
 
-BUG: KASAN: slab-use-after-free in f2fs_truncate_data_blocks_range+0x122a/0x14c0 fs/f2fs/file.c:574
-Read of size 4 at addr ffff88802a25c000 by task syz-executor148/5000
+[   59.666332] BUG: kernel NULL pointer dereference, address: 000000000000000e
+[   59.673268] #PF: supervisor read access in kernel mode
+[   59.678354] #PF: error_code(0x0000) - not-present page
+[   59.682831] PGD 8000000005ff1067 P4D 8000000005ff1067 PUD 7dee067 PMD 0
+[   59.688556] Oops: 0000 [#1] PREEMPT SMP KASAN PTI
+[   59.692642] CPU: 0 PID: 198 Comm: poc Tainted: G    B   W          6.2.0-rc1+ #4
+[   59.698868] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+[   59.708795] RIP: 0010:ni_create_attr_list+0x505/0x860
+[   59.713657] Code: 7e 10 e8 5e d0 d0 ff 45 0f b7 76 10 48 8d 7b 16 e8 00 d1 d0 ff 66 44 89 73 16 4d 8d 75 0e 4c 89 f7 e8 3f d0 d0 ff 4c 8d8
+[   59.731559] RSP: 0018:ffff88800a56f1e0 EFLAGS: 00010282
+[   59.735691] RAX: 0000000000000001 RBX: ffff88800b7b5088 RCX: ffffffffb83079fe
+[   59.741792] RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffffffffbb7f9fc0
+[   59.748423] RBP: ffff88800a56f3a8 R08: ffff88800b7b50a0 R09: fffffbfff76ff3f9
+[   59.754654] R10: ffffffffbb7f9fc7 R11: fffffbfff76ff3f8 R12: ffff88800b756180
+[   59.761552] R13: 0000000000000000 R14: 000000000000000e R15: 0000000000000050
+[   59.768323] FS:  00007feaa8c96440(0000) GS:ffff88806d400000(0000) knlGS:0000000000000000
+[   59.776027] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   59.781395] CR2: 00007f3a2e0b1000 CR3: 000000000a5bc000 CR4: 00000000000006f0
+[   59.787607] Call Trace:
+[   59.790271]  <TASK>
+[   59.792488]  ? __pfx_ni_create_attr_list+0x10/0x10
+[   59.797235]  ? kernel_text_address+0xd3/0xe0
+[   59.800856]  ? unwind_get_return_address+0x3e/0x60
+[   59.805101]  ? __kasan_check_write+0x18/0x20
+[   59.809296]  ? preempt_count_sub+0x1c/0xd0
+[   59.813421]  ni_ins_attr_ext+0x52c/0x5c0
+[   59.817034]  ? __pfx_ni_ins_attr_ext+0x10/0x10
+[   59.821926]  ? __vfs_setxattr+0x121/0x170
+[   59.825718]  ? __vfs_setxattr_noperm+0x97/0x300
+[   59.829562]  ? __vfs_setxattr_locked+0x145/0x170
+[   59.833987]  ? vfs_setxattr+0x137/0x2a0
+[   59.836732]  ? do_setxattr+0xce/0x150
+[   59.839807]  ? setxattr+0x126/0x140
+[   59.842353]  ? path_setxattr+0x164/0x180
+[   59.845275]  ? __x64_sys_setxattr+0x71/0x90
+[   59.848838]  ? do_syscall_64+0x3f/0x90
+[   59.851898]  ? entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[   59.857046]  ? stack_depot_save+0x17/0x20
+[   59.860299]  ni_insert_attr+0x1ba/0x420
+[   59.863104]  ? __pfx_ni_insert_attr+0x10/0x10
+[   59.867069]  ? preempt_count_sub+0x1c/0xd0
+[   59.869897]  ? _raw_spin_unlock_irqrestore+0x2b/0x50
+[   59.874088]  ? __create_object+0x3ae/0x5d0
+[   59.877865]  ni_insert_resident+0xc4/0x1c0
+[   59.881430]  ? __pfx_ni_insert_resident+0x10/0x10
+[   59.886355]  ? kasan_save_alloc_info+0x1f/0x30
+[   59.891117]  ? __kasan_kmalloc+0x8b/0xa0
+[   59.894383]  ntfs_set_ea+0x90d/0xbf0
+[   59.897703]  ? __pfx_ntfs_set_ea+0x10/0x10
+[   59.901011]  ? kernel_text_address+0xd3/0xe0
+[   59.905308]  ? __kernel_text_address+0x16/0x50
+[   59.909811]  ? unwind_get_return_address+0x3e/0x60
+[   59.914898]  ? __pfx_stack_trace_consume_entry+0x10/0x10
+[   59.920250]  ? arch_stack_walk+0xa2/0x100
+[   59.924560]  ? filter_irq_stacks+0x27/0x80
+[   59.928722]  ntfs_setxattr+0x405/0x440
+[   59.932512]  ? __pfx_ntfs_setxattr+0x10/0x10
+[   59.936634]  ? kvmalloc_node+0x2d/0x120
+[   59.940378]  ? kasan_save_stack+0x41/0x60
+[   59.943870]  ? kasan_save_stack+0x2a/0x60
+[   59.947719]  ? kasan_set_track+0x29/0x40
+[   59.951417]  ? kasan_save_alloc_info+0x1f/0x30
+[   59.955733]  ? __kasan_kmalloc+0x8b/0xa0
+[   59.959598]  ? __kmalloc_node+0x68/0x150
+[   59.963163]  ? kvmalloc_node+0x2d/0x120
+[   59.966490]  ? vmemdup_user+0x2b/0xa0
+[   59.969060]  __vfs_setxattr+0x121/0x170
+[   59.972456]  ? __pfx___vfs_setxattr+0x10/0x10
+[   59.976008]  __vfs_setxattr_noperm+0x97/0x300
+[   59.981562]  __vfs_setxattr_locked+0x145/0x170
+[   59.986100]  vfs_setxattr+0x137/0x2a0
+[   59.989964]  ? __pfx_vfs_setxattr+0x10/0x10
+[   59.993616]  ? __kasan_check_write+0x18/0x20
+[   59.997425]  do_setxattr+0xce/0x150
+[   60.000304]  setxattr+0x126/0x140
+[   60.002967]  ? __pfx_setxattr+0x10/0x10
+[   60.006471]  ? __virt_addr_valid+0xcb/0x140
+[   60.010461]  ? __call_rcu_common.constprop.0+0x1c7/0x330
+[   60.016037]  ? debug_smp_processor_id+0x1b/0x30
+[   60.021008]  ? kasan_quarantine_put+0x5b/0x190
+[   60.025545]  ? putname+0x84/0xa0
+[   60.027910]  ? __kasan_slab_free+0x11e/0x1b0
+[   60.031483]  ? putname+0x84/0xa0
+[   60.033986]  ? preempt_count_sub+0x1c/0xd0
+[   60.036876]  ? __mnt_want_write+0xae/0x100
+[   60.040738]  ? mnt_want_write+0x8f/0x150
+[   60.044317]  path_setxattr+0x164/0x180
+[   60.048096]  ? __pfx_path_setxattr+0x10/0x10
+[   60.052096]  ? strncpy_from_user+0x175/0x1c0
+[   60.056482]  ? debug_smp_processor_id+0x1b/0x30
+[   60.059848]  ? fpregs_assert_state_consistent+0x6b/0x80
+[   60.064557]  __x64_sys_setxattr+0x71/0x90
+[   60.068892]  do_syscall_64+0x3f/0x90
+[   60.072868]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+[   60.077523] RIP: 0033:0x7feaa86e4469
+[   60.080915] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 088
+[   60.097353] RSP: 002b:00007ffdbd8311e8 EFLAGS: 00000286 ORIG_RAX: 00000000000000bc
+[   60.103386] RAX: ffffffffffffffda RBX: 9461c5e290baac00 RCX: 00007feaa86e4469
+[   60.110322] RDX: 00007ffdbd831fe0 RSI: 00007ffdbd831305 RDI: 00007ffdbd831263
+[   60.116808] RBP: 00007ffdbd836180 R08: 0000000000000001 R09: 00007ffdbd836268
+[   60.123879] R10: 000000000000007d R11: 0000000000000286 R12: 0000000000400500
+[   60.130540] R13: 00007ffdbd836260 R14: 0000000000000000 R15: 0000000000000000
+[   60.136553]  </TASK>
+[   60.138818] Modules linked in:
+[   60.141839] CR2: 000000000000000e
+[   60.144831] ---[ end trace 0000000000000000 ]---
+[   60.149058] RIP: 0010:ni_create_attr_list+0x505/0x860
+[   60.153975] Code: 7e 10 e8 5e d0 d0 ff 45 0f b7 76 10 48 8d 7b 16 e8 00 d1 d0 ff 66 44 89 73 16 4d 8d 75 0e 4c 89 f7 e8 3f d0 d0 ff 4c 8d8
+[   60.172443] RSP: 0018:ffff88800a56f1e0 EFLAGS: 00010282
+[   60.176246] RAX: 0000000000000001 RBX: ffff88800b7b5088 RCX: ffffffffb83079fe
+[   60.182752] RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffffffffbb7f9fc0
+[   60.189949] RBP: ffff88800a56f3a8 R08: ffff88800b7b50a0 R09: fffffbfff76ff3f9
+[   60.196950] R10: ffffffffbb7f9fc7 R11: fffffbfff76ff3f8 R12: ffff88800b756180
+[   60.203671] R13: 0000000000000000 R14: 000000000000000e R15: 0000000000000050
+[   60.209595] FS:  00007feaa8c96440(0000) GS:ffff88806d400000(0000) knlGS:0000000000000000
+[   60.216299] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   60.222276] CR2: 00007f3a2e0b1000 CR3: 000000000a5bc000 CR4: 00000000000006f0
 
-CPU: 1 PID: 5000 Comm: syz-executor148 Not tainted 6.4.0-rc7-syzkaller-00041-ge660abd551f1 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
- print_address_description.constprop.0+0x2c/0x3c0 mm/kasan/report.c:351
- print_report mm/kasan/report.c:462 [inline]
- kasan_report+0x11c/0x130 mm/kasan/report.c:572
- f2fs_truncate_data_blocks_range+0x122a/0x14c0 fs/f2fs/file.c:574
- truncate_dnode+0x229/0x2e0 fs/f2fs/node.c:944
- f2fs_truncate_inode_blocks+0x64b/0xde0 fs/f2fs/node.c:1154
- f2fs_do_truncate_blocks+0x4ac/0xf30 fs/f2fs/file.c:721
- f2fs_truncate_blocks+0x7b/0x300 fs/f2fs/file.c:749
- f2fs_truncate.part.0+0x4a5/0x630 fs/f2fs/file.c:799
- f2fs_truncate include/linux/fs.h:825 [inline]
- f2fs_setattr+0x1738/0x2090 fs/f2fs/file.c:1006
- notify_change+0xb2c/0x1180 fs/attr.c:483
- do_truncate+0x143/0x200 fs/open.c:66
- handle_truncate fs/namei.c:3295 [inline]
- do_open fs/namei.c:3640 [inline]
- path_openat+0x2083/0x2750 fs/namei.c:3791
- do_filp_open+0x1ba/0x410 fs/namei.c:3818
- do_sys_openat2+0x16d/0x4c0 fs/open.c:1356
- do_sys_open fs/open.c:1372 [inline]
- __do_sys_creat fs/open.c:1448 [inline]
- __se_sys_creat fs/open.c:1442 [inline]
- __x64_sys_creat+0xcd/0x120 fs/open.c:1442
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-The root cause is, inodeA references inodeB via inodeB's ino, once inodeA
-is truncated, it calls truncate_dnode() to truncate data blocks in inodeB's
-node page, it traverse mapping data from node->i.i_addr[0] to
-node->i.i_addr[ADDRS_PER_BLOCK() - 1], result in out-of-boundary access.
-
-This patch fixes to add sanity check on dnode page in truncate_dnode(),
-so that, it can help to avoid triggering such issue, and once it encounters
-such issue, it will record newly introduced ERROR_INVALID_NODE_REFERENCE
-error into superblock, later fsck can detect such issue and try repairing.
-
-Also, it removes f2fs_truncate_data_blocks() for cleanup due to the
-function has only one caller, and uses f2fs_truncate_data_blocks_range()
-instead.
-
-Reported-and-tested-by: syzbot+12cb4425b22169b52036@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/linux-f2fs-devel/000000000000f3038a05fef867f8@google.com
-Signed-off-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Edward Lo <loyuantsung@gmail.com>
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/f2fs.h          |  1 -
- fs/f2fs/file.c          |  5 -----
- fs/f2fs/node.c          | 14 ++++++++++++--
- include/linux/f2fs_fs.h |  1 +
- 4 files changed, 13 insertions(+), 8 deletions(-)
+ fs/ntfs3/frecord.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 8d7dc76e6f935..2a3a07f426e13 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3431,7 +3431,6 @@ static inline bool __is_valid_data_blkaddr(block_t blkaddr)
-  * file.c
-  */
- int f2fs_sync_file(struct file *file, loff_t start, loff_t end, int datasync);
--void f2fs_truncate_data_blocks(struct dnode_of_data *dn);
- int f2fs_do_truncate_blocks(struct inode *inode, u64 from, bool lock);
- int f2fs_truncate_blocks(struct inode *inode, u64 from, bool lock);
- int f2fs_truncate(struct inode *inode);
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index dbad2db68f1bc..d15f52c4466b6 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -628,11 +628,6 @@ void f2fs_truncate_data_blocks_range(struct dnode_of_data *dn, int count)
- 					 dn->ofs_in_node, nr_free);
+diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+index b1b476fb7229b..dda13e1f1b330 100644
+--- a/fs/ntfs3/frecord.c
++++ b/fs/ntfs3/frecord.c
+@@ -874,6 +874,7 @@ int ni_create_attr_list(struct ntfs_inode *ni)
+ 	if (err)
+ 		goto out1;
+ 
++	err = -EINVAL;
+ 	/* Call mi_remove_attr() in reverse order to keep pointers 'arr_move' valid. */
+ 	while (to_free > 0) {
+ 		struct ATTRIB *b = arr_move[--nb];
+@@ -882,7 +883,8 @@ int ni_create_attr_list(struct ntfs_inode *ni)
+ 
+ 		attr = mi_insert_attr(mi, b->type, Add2Ptr(b, name_off),
+ 				      b->name_len, asize, name_off);
+-		WARN_ON(!attr);
++		if (!attr)
++			goto out1;
+ 
+ 		mi_get_ref(mi, &le_b[nb]->ref);
+ 		le_b[nb]->id = attr->id;
+@@ -892,17 +894,20 @@ int ni_create_attr_list(struct ntfs_inode *ni)
+ 		attr->id = le_b[nb]->id;
+ 
+ 		/* Remove from primary record. */
+-		WARN_ON(!mi_remove_attr(NULL, &ni->mi, b));
++		if (!mi_remove_attr(NULL, &ni->mi, b))
++			goto out1;
+ 
+ 		if (to_free <= asize)
+ 			break;
+ 		to_free -= asize;
+-		WARN_ON(!nb);
++		if (!nb)
++			goto out1;
+ 	}
+ 
+ 	attr = mi_insert_attr(&ni->mi, ATTR_LIST, NULL, 0,
+ 			      lsize + SIZEOF_RESIDENT, SIZEOF_RESIDENT);
+-	WARN_ON(!attr);
++	if (!attr)
++		goto out1;
+ 
+ 	attr->non_res = 0;
+ 	attr->flags = 0;
+@@ -922,9 +927,10 @@ int ni_create_attr_list(struct ntfs_inode *ni)
+ 	kfree(ni->attr_list.le);
+ 	ni->attr_list.le = NULL;
+ 	ni->attr_list.size = 0;
++	return err;
+ 
+ out:
+-	return err;
++	return 0;
  }
  
--void f2fs_truncate_data_blocks(struct dnode_of_data *dn)
--{
--	f2fs_truncate_data_blocks_range(dn, ADDRS_PER_BLOCK(dn->inode));
--}
--
- static int truncate_partial_data_page(struct inode *inode, u64 from,
- 								bool cache_only)
- {
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index 07419c3e42a52..e4b3d285302ff 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -923,6 +923,7 @@ static int truncate_node(struct dnode_of_data *dn)
- 
- static int truncate_dnode(struct dnode_of_data *dn)
- {
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(dn->inode);
- 	struct page *page;
- 	int err;
- 
-@@ -930,16 +931,25 @@ static int truncate_dnode(struct dnode_of_data *dn)
- 		return 1;
- 
- 	/* get direct node */
--	page = f2fs_get_node_page(F2FS_I_SB(dn->inode), dn->nid);
-+	page = f2fs_get_node_page(sbi, dn->nid);
- 	if (PTR_ERR(page) == -ENOENT)
- 		return 1;
- 	else if (IS_ERR(page))
- 		return PTR_ERR(page);
- 
-+	if (IS_INODE(page) || ino_of_node(page) != dn->inode->i_ino) {
-+		f2fs_err(sbi, "incorrect node reference, ino: %lu, nid: %u, ino_of_node: %u",
-+				dn->inode->i_ino, dn->nid, ino_of_node(page));
-+		set_sbi_flag(sbi, SBI_NEED_FSCK);
-+		f2fs_handle_error(sbi, ERROR_INVALID_NODE_REFERENCE);
-+		f2fs_put_page(page, 1);
-+		return -EFSCORRUPTED;
-+	}
-+
- 	/* Make dnode_of_data for parameter */
- 	dn->node_page = page;
- 	dn->ofs_in_node = 0;
--	f2fs_truncate_data_blocks(dn);
-+	f2fs_truncate_data_blocks_range(dn, ADDRS_PER_BLOCK(dn->inode));
- 	err = truncate_node(dn);
- 	if (err)
- 		return err;
-diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-index ee0d75d9a302d..77055b239165a 100644
---- a/include/linux/f2fs_fs.h
-+++ b/include/linux/f2fs_fs.h
-@@ -104,6 +104,7 @@ enum f2fs_error {
- 	ERROR_INCONSISTENT_SIT,
- 	ERROR_CORRUPTED_VERITY_XATTR,
- 	ERROR_CORRUPTED_XATTR,
-+	ERROR_INVALID_NODE_REFERENCE,
- 	ERROR_MAX,
- };
- 
+ /*
 -- 
 2.39.2
 
