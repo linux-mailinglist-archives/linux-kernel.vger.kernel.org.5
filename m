@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D290A75F9E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A13275F9EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbjGXO3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
+        id S231343AbjGXOcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjGXO3c (ORCPT
+        with ESMTP id S230223AbjGXOcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:29:32 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B90E66
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:29:29 -0700 (PDT)
+        Mon, 24 Jul 2023 10:32:16 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8232D10F0;
+        Mon, 24 Jul 2023 07:32:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690208969; x=1721744969;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690209129; x=1721745129;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=ptetqP70i7cB7AXi3WKMSEKGgpo8qePz8JSJ5VlYKpg=;
-  b=CgOYGLjxuz6Zzxzv++W4a7K/SxyVb8IcJja+8FTYP/TRLuGKQ3cKVE5r
-   kEq/9C8nS/h6tFFFq/CKGyQryz10xeNDPLFu2wYOC+dibC+4qjEaFx2Z5
-   6KnV6xjUfUUeiCcIhUey8ahc+Wtb+NQwBpmHRstuHozeMoK16VpYi4qxg
-   CujyehAyTIOkVH3BIxByg9aCfPmN2tFAU6vqiNJGK+RsnN/avwNYKLUut
-   kAKqQttb3i3AqgI6kvoGYerQMUgl4UxoyREjNIcV+HYVDUcwqjxgjg+nK
-   Oj/i+fGhCrl1rYDTxg1IcjQr/Thn2lXDoH9JUTC0z3MqT00O0w0ZE4UqT
+  bh=8lSqctVplAIarKGMJtl03N2iVLoJAxL48zKohtkfpEY=;
+  b=I7sLOnHoVcjr7fkPhbt4R3jva+sRv+KDKhbSdKC/+F2pAIao7UFmLPTt
+   f15XhJGXpUw0WYm0qhc1tsBRXtcQ2LHDdgvqNGPLOcxEotDjyDc1SAUnr
+   YzgVOLUFOj/1kQyLRXJDGn+gxgCM/zDlSGoE8PUA5GVBzeDN6IaiiXRqK
+   q+v8Z9iyllFOogEsH+1wLIRKEuOlq+N9qzTRpJivp2kR/GZW4xSwrpBWP
+   Uy8L1ivBhYCt0QyKnwkrQVDXGxbsMydVOMYoHF9Rb+dpEGCT29GIY38dE
+   qBA8JBpIAs5AQBvSvhQYXonjQyuHBYawQH9fF4wXHSE/0YlGIvE1a439x
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="357453667"
 X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="357453667"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 07:29:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="760810404"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="760810404"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP; 24 Jul 2023 07:29:26 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qNwYv-00GzIe-1H;
-        Mon, 24 Jul 2023 17:29:25 +0300
-Date:   Mon, 24 Jul 2023 17:29:25 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1 1/1] minmax: Fix header inclusions
-Message-ID: <ZL6KxZh9SwizrApS@smile.fi.intel.com>
-References: <20230721133932.12679-1-andriy.shevchenko@linux.intel.com>
- <20230721161033.55bc133c@bootlin.com>
+   d="asc'?scan'208";a="162903015"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Jul 2023 07:32:08 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 24 Jul 2023 07:31:37 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 24 Jul 2023 07:31:35 -0700
+Date:   Mon, 24 Jul 2023 15:31:01 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-efi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v6 0/5] riscv: Introduce KASLR
+Message-ID: <20230724-sanded-dental-c9125c76ad74@wendy>
+References: <20230722123850.634544-1-alexghiti@rivosinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xtSbObKEFv5fOwOJ"
 Content-Disposition: inline
-In-Reply-To: <20230721161033.55bc133c@bootlin.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+In-Reply-To: <20230722123850.634544-1-alexghiti@rivosinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,19 +70,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 04:10:33PM +0200, Herve Codina wrote:
-> On Fri, 21 Jul 2023 16:39:32 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+--xtSbObKEFv5fOwOJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Reviewed-by: Herve Codina <herve.codina@bootlin.com>
+Hey Alex,
 
-Thank you!
+On Sat, Jul 22, 2023 at 02:38:45PM +0200, Alexandre Ghiti wrote:
+> The following KASLR implementation allows to randomize the kernel mapping:
+>=20
+> - virtually: we expect the bootloader to provide a seed in the device-tree
+> - physically: only implemented in the EFI stub, it relies on the firmware=
+ to
+>   provide a seed using EFI_RNG_PROTOCOL. arm64 has a similar implementati=
+on
+>   hence the patch 3 factorizes KASLR related functions for riscv to take
+>   advantage.
+>=20
+> The new virtual kernel location is limited by the early page table that o=
+nly
+> has one PUD and with the PMD alignment constraint, the kernel can only ta=
+ke
+> < 512 positions.
 
-Note, the https://lore.kernel.org/all/20230724142307.28411-1-andriy.shevchenko@linux.intel.com/
-has a fix to the broken builds the LKP reported about.
+I gave this all a go today, it seems to do what it it says on the tin,
+and crashing my kernel does dump out an offset etc.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
+
+I'll hopefully get some time later in the week to go through the code.
+
+Cheers,
+Conor.
 
 
+--xtSbObKEFv5fOwOJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZL6LJQAKCRB4tDGHoIJi
+0rUmAP434IQTNV26JB6nzkQMeniT7xYLVBw5Vtp0L980VphnTAD/UnQM8ZUEwq2o
+p+omBnMci+/NF3PBemZTOQee5NYREwg=
+=PcHz
+-----END PGP SIGNATURE-----
+
+--xtSbObKEFv5fOwOJ--
