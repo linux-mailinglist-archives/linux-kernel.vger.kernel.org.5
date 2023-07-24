@@ -2,112 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A92A75F36A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD44875F378
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbjGXKfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35326 "EHLO
+        id S231573AbjGXKhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbjGXKfF (ORCPT
+        with ESMTP id S231424AbjGXKhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:35:05 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F177DB
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:35:04 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b703cbfaf5so59260621fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:35:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690194902; x=1690799702;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6/4NT80C8o+EyVnLY4XxDVvzkLXvBxsKNvLZXorPucs=;
-        b=QMDPg7CvuicgqrmXn4s2PTmeMnayG0YoqCu6+afVpm0Rr9ZM8D2BxnfoMeL/4Osgog
-         p7Z+y7d37B9z06xLwWyT4AlUZVKNcb6hbd2+Sx169REqmHneu6N8HnDxslDKMswH+Qq9
-         AzM3LRtF8Flqrh7NeNyU7izNCTzPelENkqQ49zLm73AmbLa39yJ30kzK72/b+ZMKBeVe
-         cdPFk3steFLjHs5CddbOd/7IEDrnLmwmQidzv4DbptkKfmupw6J5YZ3jviGOdZAPCsaj
-         pABdrz2BXe5QJ7/4Fj3tA96IUptUh+WLT1lTRcG+G/fpINCxYnwqNWBa6iem7diw0ezk
-         rb5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690194902; x=1690799702;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6/4NT80C8o+EyVnLY4XxDVvzkLXvBxsKNvLZXorPucs=;
-        b=K17+s/XdaaOt0vOwHuCOSbv7SJ+qehCwtMIRQniDRTO3NJnhwEo6OANYcxybFge7c8
-         sXHdDXLVFxPdauvj1JKFyO7f4vzzGBsjICtLMFXhpqJRy8BYCrIsAnpe6baVu4LkTIAq
-         phcOYhnsBL6wBlKdwdD9/0IUPgzJp9gpKM8YwAt2u9RYwh5B8pnE4cLMyStcGg0k6ZVT
-         qvtDBP021INvW54zwqpphrogFjhd7XqyCBtk+C3KRHmK4pA9s28xFzqZLv5NIClJ6nxw
-         0DOHMZGR1umkbGCAeJ8SZ4YTxQR3J5w9j7Ac+lgQcm8VHGmKWXEdOvI8zy4nx1DBZg6s
-         65iw==
-X-Gm-Message-State: ABy/qLZMvg8salxqEBunGco4EqlsQfMJJnMNtnX5zKuMtrILPKTqV70Y
-        fCmOL1j8/M0HPG2ndqmMwut/kg==
-X-Google-Smtp-Source: APBJJlFkNROY/IPGZNiGFV2eLYpS4XZEGRoVUN9Vi8JcQBAMdJWzJHF6XyyJXDiFotmH+F8tESrQlg==
-X-Received: by 2002:a2e:9599:0:b0:2b7:364e:91ec with SMTP id w25-20020a2e9599000000b002b7364e91ecmr5407843ljh.13.1690194902424;
-        Mon, 24 Jul 2023 03:35:02 -0700 (PDT)
-Received: from [192.168.1.101] (abyl203.neoplus.adsl.tpnet.pl. [83.9.31.203])
-        by smtp.gmail.com with ESMTPSA id 12-20020a05651c00cc00b002b94b355527sm2761607ljr.32.2023.07.24.03.35.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 03:35:02 -0700 (PDT)
-Message-ID: <e5ce83a0-9d4c-1fb2-17eb-777a41d8e754@linaro.org>
-Date:   Mon, 24 Jul 2023 12:34:59 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: sc8180x: align USB DWC3 clocks with
- bindings
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Mon, 24 Jul 2023 06:37:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B30E6;
+        Mon, 24 Jul 2023 03:37:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 14E1061049;
+        Mon, 24 Jul 2023 10:37:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFCE9C433C7;
+        Mon, 24 Jul 2023 10:36:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690195019;
+        bh=erjTcGyG14w2Zi8fvEJFyZ49i/awkMiYG5EL4ynnBh0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=H/p3Ry3MKJm9ScMIauv5R4TtCh0tgbTEWXEToPVmvw69RtnluKXDl75pU0C+VC8Rh
+         2dIkoSSefai9END6qHTf68ETtt4E3qJZpWlsK7ewQ08F4eCh+4tlY09q7ZZM8k3ulu
+         thwzrsCX9to2RwSRCZidhdI9F/wLnWClrgj5QdQxjreMl08jSUJCI2RpnDl1FDAOuB
+         /WCKhDwIuw8C/+r40C8Md0WnGGg1kluUv+dUhFP9Lch/7NCYuph6lr5H1Ypm5ndnIN
+         tqZ2BuG6fLD72XzSKUDUT3ziHbZlkXi4MON4K9pN2JW1w6Q/cyhfhRqUE3szDNKvAm
+         +U6pOn7mB0MtA==
+Message-ID: <963cc8896ff6a6759c57f1d97e51f35972d4fc6d.camel@kernel.org>
+Subject: Re: [PATCH v2 0/2] nfsd: sanely handle inabilty to fetch pre/post
+ attributes
+From:   Jeff Layton <jlayton@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Boyang Xue <bxue@redhat.com>, linux-nfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230723141849.93078-1-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230723141849.93078-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Date:   Mon, 24 Jul 2023 06:36:57 -0400
+In-Reply-To: <168998604179.11078.18238251274062077853@noble.neil.brown.name>
+References: <20230720-bz2223560-v2-0-070aaf2660b7@kernel.org>
+        , <168988936713.11078.5407820394334916284@noble.neil.brown.name>
+        , <11c799a6cb0bf073dda77f592d70d809fca9b030.camel@kernel.org>
+         <168998604179.11078.18238251274062077853@noble.neil.brown.name>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,12 +63,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.07.2023 16:18, Krzysztof Kozlowski wrote:
-> Bindings require different order of clocks for USB DWC3 nodes (sleep
-> before mock_utmi).
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Sat, 2023-07-22 at 10:34 +1000, NeilBrown wrote:
+> On Fri, 21 Jul 2023, Jeff Layton wrote:
+> > On Fri, 2023-07-21 at 07:42 +1000, NeilBrown wrote:
+> > >=20
+> > > I think both v3 and v4 allow a reply that says "the operation was a
+> > > success but there are no post-op attrs".  With v4 you can say "there =
+is
+> > > no change-attr, but here are some other attrs".  I think.
+> > >=20
+> >=20
+> > v3 has this ability:
+> >=20
+> >       union pre_op_attr switch (bool attributes_follow) {
+> >       case TRUE:
+> >            wcc_attr  attributes;
+> >       case FALSE:
+> >            void;
+> >       };
+> >=20
+> > ...we can just set the attributes_follow flag to false there in that
+> > case.
+> >=20
+> > That's not possible with v4, AFAICT. Several of the *4resok structures
+> > contain a change_info4, which just looks like this:
+> >=20
+> > struct change_info4 {
+> >         bool            atomic;
+> >         changeid4       before;
+> >         changeid4       after;
+> > };
+>=20
+> Yes...  I was thinking of GETATTR which reports a bitmap of all the
+> attributes that it can return.  Though I'm not sure if the server is
+> "allowed" to not return something that it has said is "supported".  And
+> I think changeid has to be "supported".  I'm not sure.
+>
+> But anyway, that doesn't help change_info4 which comes with
+> directory-modifying operation.
+>=20
+> >=20
+> > We can set "atomic" to false (and this patch does that in this
+> > situation), but I don't believe there is any alternative to the change
+> > attribute. If the underlying fs doesn't support native change attrs, th=
+e
+> > server is expected to fake one up somehow (usually from the ctime).
+>=20
+> I had a look again at the current code and your patch, and I think that
+> if the "post' vfs_getattr() fails, then the operation succeeds, the
+> change_info is marked non-atomic (as you say) and the "after" changeid is
+> set to an uninitialised value. =A0Is that right?  Did I miss something?
+> Maybe we should set it to the pre value plus 1.
+>=20
+> It probably doesn't matter at all in practice, but if I'm right and it
+> is using an uninitialized value, we should at least fix that.
+>=20
+> Thanks - your v3 patch looks good in general.  I like the must_check and
+> the goto structure.
+>=20
+> Thanks,
+> NeilBrown
+>=20
+>=20
 
-Konrad
+
+The current patch sets the missing pre/post values to 0. I'm happy to
+change that to pre-value+1 though if you think that'd be more correct.
+The client already fudges the changeid like that in the CB_GETATTR case,
+so I doubt that would break anything.
+--=20
+Jeff Layton <jlayton@kernel.org>
