@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5273475EDF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B646E75EDFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbjGXIkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
+        id S231371AbjGXIlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbjGXIkP (ORCPT
+        with ESMTP id S231848AbjGXIkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:40:15 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D16E1A1;
-        Mon, 24 Jul 2023 01:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690188011; x=1721724011;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ACtwk6q0osdWK/LRY8lcrJv/gU2GjAAIEZNi8CD+KKM=;
-  b=dPpx5aVju3ej9PX4u7K7zKzQViO7AN1G5Wb2VRVEqbiIVBJd3HDdGZF8
-   Msi036d57dOHW/ZdOLMOubqMqYj6FjKoNJZjz789kvod+znaUCMYDXCDY
-   W6++miZdpCpQQFKEnoCOsF9xy8WuMRA8pn7TcYaIjqQ96sZXCbXvy7ChF
-   0LGEcTylfTXKmMlIvzngSbaPrw0/Fuz2FtIFYcxJLCjIvqcIIjsLk1dFL
-   o172C2re2RnL5CA6aeU473YnO+JGJ8IpniMV4stqmt5YgcoeBSeF8mZdA
-   UNApLqJ7av3+NXupfqFcv7nCYdMZlodCKND8zJcY9Ep5a5LwcsZTuOjAg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="433627685"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="433627685"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 01:40:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="675749521"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="675749521"
-Received: from unknown (HELO jiaqingz-acrn-container.sh.intel.com) ([10.239.138.235])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 01:40:08 -0700
-From:   Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Gerhard Uttenthaler <uttenthaler@ems-wuensche.com>,
-        support@ems-wuensche.com, linux-serial@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
-Subject: [PATCH v3 4/4] parport_pc: add support for ASIX AX99100
-Date:   Mon, 24 Jul 2023 08:39:33 +0000
-Message-Id: <20230724083933.3173513-5-jiaqing.zhao@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230724083933.3173513-1-jiaqing.zhao@linux.intel.com>
-References: <20230724083933.3173513-1-jiaqing.zhao@linux.intel.com>
+        Mon, 24 Jul 2023 04:40:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE8B171F
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:40:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CA31960FCA
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:40:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34E84C433C7;
+        Mon, 24 Jul 2023 08:40:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690188030;
+        bh=C+g9lG7y+eHxmO1DwvFohayuG7Vw2U1uWFRqR4wxhvc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Zp+lKC9DOiigHNG7q4UTl4zLFUZ3u+UJNI538qU43plYIE2VKFmGOeZwCOSS2BZ3d
+         e0l45C0PzhcsLBN6UWj1A/25BZUQ70BgTD4hItlo290nJWbMz0WGz6pHnJ54dcIfvm
+         C62bJnH8MiuHNRXx7UK4PYWEM0ryG7KIrngsSzGw3aLlzPLpzdqdah9OEgees9xN2Q
+         pUq06vnn8fJ03YBc9HGWqzBs03qgNBstAWgQ9Se6Y7BlVaFOYsiTAo3K7DCancBEQ9
+         F/OMBfgBU5JMeLtMYsMHLEWZzT8Ry7KLMpjDqO8DBztR4FyjKSIFbEvRx7gHVZ3uu0
+         DtVthmtXskZCw==
+From:   Robert Foss <rfoss@kernel.org>
+To:     Xin Ji <xji@analogixsemi.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Jonas Karlman <jonas@kwiboo.se>
+Cc:     Robert Foss <rfoss@kernel.org>,
+        Pin-yen Lin <treapking@chromium.org>,
+        =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
+        <nfraprado@collabora.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Airlie <airlied@gmail.com>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v13] drm/bridge: Remove redundant i2c_client in anx7625/it6505
+Date:   Mon, 24 Jul 2023 10:40:22 +0200
+Message-ID: <169018800611.622568.1753290816240362291.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230718110407.1005200-1-wenst@chromium.org>
+References: <20230718110407.1005200-1-wenst@chromium.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCI function 2 on ASIX AX99100 PCIe to Multi I/O Controller can be
-configured as a single-port parallel port controller. The subvendor id
-is 0x2000 when configured as parallel port. It supports IEEE-1284 EPP /
-ECP with its ECR on BAR1.
+On Tue, 18 Jul 2023 19:04:05 +0800, Chen-Yu Tsai wrote:
+> From: Pin-yen Lin <treapking@chromium.org>
+> 
+> These two drivers embed a i2c_client in their private driver data, but
+> only strict device is actually needed. Replace the i2c_client reference
+> with a struct device one.
+> 
+> 
+> [...]
 
-Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/parport/parport_pc.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Applied, thanks!
 
-diff --git a/drivers/parport/parport_pc.c b/drivers/parport/parport_pc.c
-index 3bacbaf16f42..1f236aaf7867 100644
---- a/drivers/parport/parport_pc.c
-+++ b/drivers/parport/parport_pc.c
-@@ -2655,6 +2655,7 @@ enum parport_pc_pci_cards {
- 	netmos_9815,
- 	netmos_9901,
- 	netmos_9865,
-+	asix_ax99100,
- 	quatech_sppxp100,
- 	wch_ch382l,
- };
-@@ -2733,6 +2734,7 @@ static struct parport_pc_pci {
- 	/* netmos_9815 */		{ 2, { { 0, 1 }, { 2, 3 }, } },
- 	/* netmos_9901 */               { 1, { { 0, -1 }, } },
- 	/* netmos_9865 */               { 1, { { 0, -1 }, } },
-+	/* asix_ax99100 */		{ 1, { { 0, 1 }, } },
- 	/* quatech_sppxp100 */		{ 1, { { 0, 1 }, } },
- 	/* wch_ch382l */		{ 1, { { 2, -1 }, } },
- };
-@@ -2823,6 +2825,9 @@ static const struct pci_device_id parport_pc_pci_tbl[] = {
- 	  0xA000, 0x1000, 0, 0, netmos_9865 },
- 	{ PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9865,
- 	  0xA000, 0x2000, 0, 0, netmos_9865 },
-+	/* ASIX AX99100 PCIe to Multi I/O Controller */
-+	{ PCI_VENDOR_ID_ASIX, PCI_DEVICE_ID_ASIX_AX99100,
-+	  0xA000, 0x2000, 0, 0, asix_ax99100 },
- 	/* Quatech SPPXP-100 Parallel port PCI ExpressCard */
- 	{ PCI_VENDOR_ID_QUATECH, PCI_DEVICE_ID_QUATECH_SPPXP_100,
- 	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, quatech_sppxp100 },
--- 
-2.39.2
+[1/1] drm/bridge: Remove redundant i2c_client in anx7625/it6505
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=d65feac281ab
+
+
+
+Rob
 
