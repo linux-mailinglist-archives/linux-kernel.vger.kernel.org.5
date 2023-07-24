@@ -2,127 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F19F775F407
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7394775F1F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233251AbjGXK7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
+        id S233009AbjGXKEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233225AbjGXK7f (ORCPT
+        with ESMTP id S233564AbjGXKD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:59:35 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704C090;
-        Mon, 24 Jul 2023 03:59:33 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b96789d574so55378601fa.2;
-        Mon, 24 Jul 2023 03:59:33 -0700 (PDT)
+        Mon, 24 Jul 2023 06:03:56 -0400
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C23B7A8A
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:56:03 -0700 (PDT)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-55acbe0c7e4so378271a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:56:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690196372; x=1690801172;
+        d=bytedance.com; s=google; t=1690192182; x=1690796982;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Pg3LdyxpJSkdMgcrpAAOq3iMwhvNlpKWfKdNTyn8mhQ=;
-        b=fGCTLEynvWOQHnVbYne2y6L2d9vnBZo/jnGWEWmz9zuFcCXTvm6o667Ojx94ghpyA8
-         bWcxKpvJTvskyvv38Ih75tsWtryCPG83LE1a11GYVAxD5gLrug468mwu6qGZaKSKxSqO
-         7d5BLjzBONIjzO5Zt+gg+Ay4kKv0ku4wpVVAA8LfCjMJGcQDWmggzQ5UJpu26BOiIPU8
-         R7+1FkiTzA9dhieeSAQBgqVV1+GqEU0baO62BtZliIcOV/49wXVx5pX/PVoEq+XS4m9o
-         ZQFAkuoatPxqatCg0hVLqxx5rxionrbgXKTxMt4P0ZRV5q9vWNcGma+UGOwzSnzhTJfN
-         nSNA==
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FPgx5tx5pugTz0d6jibfzfGw2xSKE+ix47CgP1Qw/g4=;
+        b=eNFqSXTl7Fs+A61apTH/V806oFNFqUEW9iBW/QGnoaz3m8bxFzAIk52taB3hTPoo0J
+         15Uy/EhxhzzXrAniIeKy95ZVaJB60ETDr5+Beo/2JORQV0eMMIYUvFGSn01JXJQmgfvF
+         wVSzhI8MrjoxVzBXxfbK/bzinkaNiYLaxnx8BzakR2VO4bS5jTMeezTAiUWxMRd9glqy
+         y7ZbeUA/amFMlmdildpnpY/ykDL2iuVB+OIlcnryGkEk6VSFnVV3f/s+KAnTQMPBvZI0
+         bhvIVOkp7ajnZG67FTbNaTw3FFqm546EN6Ypmf7e8IynzALyaOfSF7MjrTN2cH5bObeQ
+         XNsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690196372; x=1690801172;
+        d=1e100.net; s=20221208; t=1690192182; x=1690796982;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Pg3LdyxpJSkdMgcrpAAOq3iMwhvNlpKWfKdNTyn8mhQ=;
-        b=BP3/X7kwMrXO+te9e/avjlMTK6X4UGBJoAc/vCJpcCD4yv+GNPKLqNH1PcbXmzgxHB
-         Z31+SqRTKCctFK5YbO+9HAdu+dW/VdvCm1swS0cLMfhWxlzrrMygIkor7vzH0ILLPsTP
-         PpbDHulns+ycgtzxexboGvyhhDRMKuL7zY0xqloSzwNCj8yKuYmzNFhjG5sz30KjrWda
-         zpsbmWa0uLlQDyxN95jUjeYxwZX9oX4AiajpZ7Fgb+pzEW1MRnhYuNS57DEZLL9ECYu/
-         KwBUV9OlxxPELjkX9VS04j4FDtpxb6mf0hPvXn7GMuUF0TwJzdOh2Er7IOBNSSnxg2OL
-         DXVg==
-X-Gm-Message-State: ABy/qLYsQHBtoMymOt6JAK+nNLs/yMYPEBzykzExiXjDWs7+4qSstj11
-        5cXCO0NS2pZH4mnhiY8kJRY=
-X-Google-Smtp-Source: APBJJlFLKQlYGJVUR8zBuBtVygQ6CORcyKk19Gzmrvbw88E6Skc6S40ZBE0E2VWtSblQH3gKWcnu6A==
-X-Received: by 2002:a2e:990d:0:b0:2b6:9dd5:7a5 with SMTP id v13-20020a2e990d000000b002b69dd507a5mr5323602lji.12.1690196371615;
-        Mon, 24 Jul 2023 03:59:31 -0700 (PDT)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id m14-20020a7bcb8e000000b003fbc9371193sm10055353wmi.13.2023.07.24.03.59.30
+        bh=FPgx5tx5pugTz0d6jibfzfGw2xSKE+ix47CgP1Qw/g4=;
+        b=SkzoymkQwP14yqd+mXCRYcDSZrachlak9yQW7/9kx7woFAvlkRBsh8bKnuzVkuPUXl
+         j+D8KBQK2VlbVsSoFXrHa2S3+iWaGdOyriOCB5/ywLnIcLZscIc2eFI/fffKSyrb5tVa
+         5m8Kb8gB1lZAMHiLdMyTQPhmab+xRrYqm2BRuuICL8+Y+LK3LE6oDPW5tGRG21gnbaNA
+         wfUOLxoSZuIEIX7tOxqVBoFkhv6E7aqemAml0bdMKI7FWd5UCbT7aye/1OEdlPsbeXqo
+         0f6S6lSQK8sPfGdKZHljCfqDaniyoGPMQ7gpVyjMdIH/WGRL3s2tdQGmMk7Z34eFuBuj
+         tmHA==
+X-Gm-Message-State: ABy/qLbR3fjkuwYRvUcx4/4ViXzGHzKTVSxYGTS6amXvT6qb92KiuFsz
+        05xPVwduQrnCIUB5GxMs1QL53A==
+X-Google-Smtp-Source: APBJJlHNherDqZFzA7p7tcMEc26kiZZ4z0G58iklJcv127ghy/RIpJQTR76k3+Vr6OIbO3Et5X/b8Q==
+X-Received: by 2002:a17:903:2305:b0:1b8:b0c4:2e3d with SMTP id d5-20020a170903230500b001b8b0c42e3dmr12244115plh.4.1690192182555;
+        Mon, 24 Jul 2023 02:49:42 -0700 (PDT)
+Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.49.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 03:59:31 -0700 (PDT)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Atin Bainada <hi@atinb.me>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [net-next PATCH 3/3] net: dsa: qca8k: limit user ports access to the first CPU port on setup
-Date:   Mon, 24 Jul 2023 05:30:58 +0200
-Message-Id: <20230724033058.16795-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230724033058.16795-1-ansuelsmth@gmail.com>
-References: <20230724033058.16795-1-ansuelsmth@gmail.com>
+        Mon, 24 Jul 2023 02:49:42 -0700 (PDT)
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH v2 23/47] drm/msm: dynamically allocate the drm-msm_gem shrinker
+Date:   Mon, 24 Jul 2023 17:43:30 +0800
+Message-Id: <20230724094354.90817-24-zhengqi.arch@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+In-Reply-To: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for multi-CPU support, set CPU port LOOKUP MEMBER outside
-the port loop and setup the LOOKUP MEMBER mask for user ports only to
-the first CPU port.
+In preparation for implementing lockless slab shrink, use new APIs to
+dynamically allocate the drm-msm_gem shrinker, so that it can be freed
+asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
+read-side critical section when releasing the struct msm_drm_private.
 
-This is to handle flooding condition where every CPU port is set as
-target and prevent packet duplication for unknown frames from user ports.
-
-Secondary CPU port LOOKUP MEMBER mask will be setup later when
-port_change_master will be implemented.
-
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- drivers/net/dsa/qca/qca8k-8xxx.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/msm/msm_drv.c          |  4 ++-
+ drivers/gpu/drm/msm/msm_drv.h          |  4 +--
+ drivers/gpu/drm/msm/msm_gem_shrinker.c | 36 ++++++++++++++++----------
+ 3 files changed, 28 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/net/dsa/qca/qca8k-8xxx.c b/drivers/net/dsa/qca/qca8k-8xxx.c
-index 31552853fdd4..6286a64a2fe3 100644
---- a/drivers/net/dsa/qca/qca8k-8xxx.c
-+++ b/drivers/net/dsa/qca/qca8k-8xxx.c
-@@ -1850,18 +1850,16 @@ qca8k_setup(struct dsa_switch *ds)
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 891eff8433a9..7f6933be703f 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -461,7 +461,9 @@ static int msm_drm_init(struct device *dev, const struct drm_driver *drv)
  	if (ret)
- 		return ret;
+ 		goto err_msm_uninit;
  
-+	/* CPU port gets connected to all user ports of the switch */
-+	ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(cpu_port),
-+			QCA8K_PORT_LOOKUP_MEMBER, dsa_user_ports(ds));
+-	msm_gem_shrinker_init(ddev);
++	ret = msm_gem_shrinker_init(ddev);
 +	if (ret)
-+		return ret;
++		goto err_msm_uninit;
+ 
+ 	if (priv->kms_init) {
+ 		ret = priv->kms_init(ddev);
+diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+index e13a8cbd61c9..84523d4a1e58 100644
+--- a/drivers/gpu/drm/msm/msm_drv.h
++++ b/drivers/gpu/drm/msm/msm_drv.h
+@@ -217,7 +217,7 @@ struct msm_drm_private {
+ 	} vram;
+ 
+ 	struct notifier_block vmap_notifier;
+-	struct shrinker shrinker;
++	struct shrinker *shrinker;
+ 
+ 	struct drm_atomic_state *pm_state;
+ 
+@@ -279,7 +279,7 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+ unsigned long msm_gem_shrinker_shrink(struct drm_device *dev, unsigned long nr_to_scan);
+ #endif
+ 
+-void msm_gem_shrinker_init(struct drm_device *dev);
++int msm_gem_shrinker_init(struct drm_device *dev);
+ void msm_gem_shrinker_cleanup(struct drm_device *dev);
+ 
+ int msm_gem_prime_mmap(struct drm_gem_object *obj, struct vm_area_struct *vma);
+diff --git a/drivers/gpu/drm/msm/msm_gem_shrinker.c b/drivers/gpu/drm/msm/msm_gem_shrinker.c
+index f38296ad8743..7daab1298c11 100644
+--- a/drivers/gpu/drm/msm/msm_gem_shrinker.c
++++ b/drivers/gpu/drm/msm/msm_gem_shrinker.c
+@@ -34,8 +34,7 @@ static bool can_block(struct shrink_control *sc)
+ static unsigned long
+ msm_gem_shrinker_count(struct shrinker *shrinker, struct shrink_control *sc)
+ {
+-	struct msm_drm_private *priv =
+-		container_of(shrinker, struct msm_drm_private, shrinker);
++	struct msm_drm_private *priv = shrinker->private_data;
+ 	unsigned count = priv->lru.dontneed.count;
+ 
+ 	if (can_swap())
+@@ -100,8 +99,7 @@ active_evict(struct drm_gem_object *obj)
+ static unsigned long
+ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
+ {
+-	struct msm_drm_private *priv =
+-		container_of(shrinker, struct msm_drm_private, shrinker);
++	struct msm_drm_private *priv = shrinker->private_data;
+ 	struct {
+ 		struct drm_gem_lru *lru;
+ 		bool (*shrink)(struct drm_gem_object *obj);
+@@ -148,10 +146,11 @@ msm_gem_shrinker_shrink(struct drm_device *dev, unsigned long nr_to_scan)
+ 	struct shrink_control sc = {
+ 		.nr_to_scan = nr_to_scan,
+ 	};
+-	int ret;
++	unsigned long ret = SHRINK_STOP;
+ 
+ 	fs_reclaim_acquire(GFP_KERNEL);
+-	ret = msm_gem_shrinker_scan(&priv->shrinker, &sc);
++	if (priv->shrinker)
++		ret = msm_gem_shrinker_scan(priv->shrinker, &sc);
+ 	fs_reclaim_release(GFP_KERNEL);
+ 
+ 	return ret;
+@@ -210,16 +209,27 @@ msm_gem_shrinker_vmap(struct notifier_block *nb, unsigned long event, void *ptr)
+  *
+  * This function registers and sets up the msm shrinker.
+  */
+-void msm_gem_shrinker_init(struct drm_device *dev)
++int msm_gem_shrinker_init(struct drm_device *dev)
+ {
+ 	struct msm_drm_private *priv = dev->dev_private;
+-	priv->shrinker.count_objects = msm_gem_shrinker_count;
+-	priv->shrinker.scan_objects = msm_gem_shrinker_scan;
+-	priv->shrinker.seeks = DEFAULT_SEEKS;
+-	WARN_ON(register_shrinker(&priv->shrinker, "drm-msm_gem"));
 +
- 	/* Setup connection between CPU port & user ports
- 	 * Configure specific switch configuration for ports
- 	 */
- 	for (i = 0; i < QCA8K_NUM_PORTS; i++) {
--		/* CPU port gets connected to all user ports of the switch */
--		if (dsa_is_cpu_port(ds, i)) {
--			ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(i),
--					QCA8K_PORT_LOOKUP_MEMBER, dsa_user_ports(ds));
--			if (ret)
--				return ret;
--		}
--
- 		/* Individual user ports get connected to CPU port only */
- 		if (dsa_is_user_port(ds, i)) {
- 			ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(i),
++	priv->shrinker = shrinker_alloc(0, "drm-msm_gem");
++	if (!priv->shrinker) {
++		WARN_ON(1);
++		return -ENOMEM;
++	}
++
++	priv->shrinker->count_objects = msm_gem_shrinker_count;
++	priv->shrinker->scan_objects = msm_gem_shrinker_scan;
++	priv->shrinker->seeks = DEFAULT_SEEKS;
++	priv->shrinker->private_data = priv;
++
++	shrinker_register(priv->shrinker);
+ 
+ 	priv->vmap_notifier.notifier_call = msm_gem_shrinker_vmap;
+ 	WARN_ON(register_vmap_purge_notifier(&priv->vmap_notifier));
++
++	return 0;
+ }
+ 
+ /**
+@@ -232,8 +242,8 @@ void msm_gem_shrinker_cleanup(struct drm_device *dev)
+ {
+ 	struct msm_drm_private *priv = dev->dev_private;
+ 
+-	if (priv->shrinker.nr_deferred) {
++	if (priv->shrinker) {
+ 		WARN_ON(unregister_vmap_purge_notifier(&priv->vmap_notifier));
+-		unregister_shrinker(&priv->shrinker);
++		shrinker_unregister(priv->shrinker);
+ 	}
+ }
 -- 
-2.40.1
+2.30.2
 
