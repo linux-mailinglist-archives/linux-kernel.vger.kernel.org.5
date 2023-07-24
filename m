@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF43E75EE47
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FD475EE54
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbjGXIss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47016 "EHLO
+        id S231872AbjGXIuq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Jul 2023 04:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231861AbjGXIsh (ORCPT
+        with ESMTP id S231845AbjGXIun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:48:37 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A910E6;
-        Mon, 24 Jul 2023 01:48:35 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 68A326607029;
-        Mon, 24 Jul 2023 09:48:32 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690188513;
-        bh=Zjy3Rsv9lo1VbeTw2uMo83jvJBhbL51/vCj6P5OZnjw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=oZtI02nAH/g+z3t+cRxRIxH4roa4RJN5x+XIvLlNZGUSJG/ZD9WCg6KScBrDgzecI
-         V3AhzDnnVdo+M7mynMcm1TPlZg0JqhVqqw6pXC3aSFp+mHtOim2pjbzcSi08zH2g3J
-         dRXlFdcW3W6AzhLAVvzHpvsCTR06h2/P9u3uWwUj9B75Zu0SbKvAk10eJUm1+qAeDC
-         PGdqi/xPXd7lbXuAWX+qT3yJbxvDXDRSWuq6u0zXhockOWZ3ujEAn5JHEnIbDAKEMU
-         FArdoWuoz5XeNoGenBD96pmAWCXYbZSma/qGAuYc81qOmsH6RJeNdVaqac6lSNaEn5
-         FRpOOm6jQ/djA==
-Message-ID: <55e72667-dec5-dab0-9d1b-dc127fe4d065@collabora.com>
-Date:   Mon, 24 Jul 2023 10:48:30 +0200
+        Mon, 24 Jul 2023 04:50:43 -0400
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6099DAF
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:50:41 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-cea0021d1f3so7621316276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:50:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690188640; x=1690793440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eru5igGG5ZNMFyi9+7h599RckQE/U9fJOptjtiH/IWA=;
+        b=EkCXiHqj4/VKRKeeEjEgSdMD7crdlGXhlb/YwHHz3kh3FveUMOPJLtE7ARMKjdfv3O
+         GM7kkQxe+cP8i1jcQc2CB2kWEFM77tJKxFWFC4YJ7AQKywUyAGI+m1ARMYxYnthA1Uku
+         Wm7vWtdcMgUJbURRTCmkQXGP40iHVK13PziRKh25oGpSNY+vzhf1PYh41uJ7WbWXKMRp
+         8Ij3+64D1FbIw9OAmPna/sUU6Hri0QaPMYa72Uz4sWTK357Bsyd9eWyeiy+nyy1q5Z+U
+         rcoSS1oYng7zrar0w5EKnIFuW+WEvlRodSyiatOv2E+1qo/8VM6zkgmINaXsTlIMMtMN
+         2E1A==
+X-Gm-Message-State: ABy/qLZFin7kl0JEw6hcGilHSMznASVZ6Niq3sXCETxN/2Ci/DrrEXrC
+        VikmMaQkviQIAaergmUTPIDy6msL3UgI7Q==
+X-Google-Smtp-Source: APBJJlEREVRu4bG1oZY61fBWxCKpEbkRgO99aB8zn2iuIYvOQCKf4XHqM+w6X+4hBmMGlJwsRd45ZQ==
+X-Received: by 2002:a0d:d6c2:0:b0:577:2aa4:70aa with SMTP id y185-20020a0dd6c2000000b005772aa470aamr4893389ywd.21.1690188640269;
+        Mon, 24 Jul 2023 01:50:40 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id z4-20020a81c204000000b005772fc5912dsm2647506ywc.91.2023.07.24.01.50.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 01:50:39 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d13e0bfbbcfso330284276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:50:39 -0700 (PDT)
+X-Received: by 2002:a25:f54:0:b0:cef:9a1b:8380 with SMTP id
+ 81-20020a250f54000000b00cef9a1b8380mr6389620ybp.24.1690188639473; Mon, 24 Jul
+ 2023 01:50:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/7] drivers: soc: qcom: rpmpd: Fix MSM8976 power domains
- setup
-Content-Language: en-US
-To:     Adam Skladowski <a39.skl@gmail.com>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230723140712.9438-1-a39.skl@gmail.com>
- <20230723140712.9438-2-a39.skl@gmail.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230723140712.9438-2-a39.skl@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230721075949.5632-1-xujianghui@cdjrlc.com> <fcc5460f8a84680d6e7379d320ad0575@208suo.com>
+In-Reply-To: <fcc5460f8a84680d6e7379d320ad0575@208suo.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 24 Jul 2023 10:50:27 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX-wns-BuCGSvC+fLS_RogY=uo2Md_7cnxyHtd-+sHoww@mail.gmail.com>
+Message-ID: <CAMuHMdX-wns-BuCGSvC+fLS_RogY=uo2Md_7cnxyHtd-+sHoww@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Fix two occurrences of the checkpatch.pl error:
+To:     sunran001@208suo.com
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 23/07/23 16:06, Adam Skladowski ha scritto:
-> Downstream kernel parses resource names based on pm8950-rpm-regulator.dtsi
-> in such file qcom,resource-name takes three values: smpa,ldoa and clk0.
-> First appearance of RWSC/RWSM point to msm-4.4 kernel
+Hi Ran,
 
-Are we sure that RWSC/RWSM being present isn't firmware-related?
-What is the observed issue, why are you removing RWSC/RWSM and what did you
-solve with that?
+On Fri, Jul 21, 2023 at 10:04 AM <sunran001@208suo.com> wrote:
+> ERROR: that open brace { should be on the previous line
+> ERROR: space required after that ',' (ctx:VxV)
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
 
-If it's just about dropping unused resources, that may be unused only on
-firmware versions older than "X".
+Thanks for your patch!
 
-> which is way newer than what this platform was shipped with (msm-3.10).
-> For the max_state downstream code limit value to TURBO inside dts
-> with only one turbo_high being placed in msm-thermal bindings.
-> One of effects of requesting TURBO_HIGH vote is rebooting of device
-> which happens during voting inside WCNSS/IRIS,
-> this behavior was observed on LeEco S2 smartphone.
-> Fix regulator setup and drop unused resources.
+But obviously you forgot to run scripts/checkpatch.pl on your own patch:
 
-That's fine, but you're missing a Fixes tag, which is required, being this a fix.
+    WARNING: A patch subject line should describe the change not the
+tool that found it
+    #2:
+    Subject: [PATCH] m68k: Fix two occurrences of the checkpatch.pl error:
 
-Regards,
-Angelo
+    WARNING: From:/Signed-off-by: email name mismatch: 'From:
+sunran001@208suo.com' != 'Signed-off-by: Ran Sun
+<sunran001@208suo.com>'
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
