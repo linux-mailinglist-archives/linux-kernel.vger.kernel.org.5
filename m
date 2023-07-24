@@ -2,471 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0095760272
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBD976027A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbjGXWkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 18:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57902 "EHLO
+        id S231263AbjGXWlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 18:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjGXWkB (ORCPT
+        with ESMTP id S229485AbjGXWlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 18:40:01 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DF610E3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:39:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iHy6sT6ly3r+rSt/ylzf5RzGX9IA8iHHHLa2We3ZfNDCRcfbeAau/YaLkKfhOi9DI8iZ4Pj6kYYLDDN2Z9cTrn+v2BWJQx2gbzsog2vfT/u3C/FfoQUhxNff7O/xubvajpExV9hkZ7pFAUbjwJsUHDi6z8RfcL0xY+nOJQxFLXzIM2iVMBvoAGel+sk/ijzsw0cQxzrG44YPfEMB9WrHbgeHIDzZoMOIQItcj9iGYNX/YHaDKG1oKipDlbZK7g3nPWWZCr6llQux4m6SfWhlqSVKTFqNZKvmzonfrBHAbVUxZsTxI9mZNEOVwrv1akrnJWbD/RvotpkMz+ZOo4Z6lg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y3oRDCG3zPG4xh+1g2igGFDFVcQeGgJx6VlIpSPVECI=;
- b=hLsn0e5Tg4P8V9rIP3FSSmdLolp5XkHrcuqRgXZHkTYmgwmTGlC45KQm4DcUAap809doLHSDvufUBeY842BbIZqRFMVXuPOE/G26ysY5NtSVFyP3g8MXOc/Kh8A3EPXaD0XyIOZSHsVNEzAPhTBZOg4AH0y7/zF4PEvcVx22b5RYZQuUaspEjOCl3bds2B04qiRdG9zM7cAez9LXTv5ezOt7gTyFggiubZcKXFY48tkl7LWo4rZzCeDWEU7l0ibA0mLPNhUqzuzKaz/i7dQcF6h440ALzT6YSyNPAArMBLVshXd2as74SZjy65B1ucY5jwFsb2Jj/sgDubuoaY519Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y3oRDCG3zPG4xh+1g2igGFDFVcQeGgJx6VlIpSPVECI=;
- b=Yh7OtIgw7vmAlLrNNNffaBds9BBZq4wqVCNUFTzo9iqj6BeAjxtstbbOZ/NuWVPXIun4QfdXplL/pB8JhloWE07iBdUbpzCvtr+NNB8D0c9G0zK9BRph093OigqWAgIohSiX9H/B8kU97Zx++XyboD/JI9JkBF9dKIb7S9QA8qU=
-Received: from DM4PR12MB5293.namprd12.prod.outlook.com (2603:10b6:5:390::24)
- by CH0PR12MB5233.namprd12.prod.outlook.com (2603:10b6:610:d0::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Mon, 24 Jul
- 2023 22:39:54 +0000
-Received: from DM4PR12MB5293.namprd12.prod.outlook.com
- ([fe80::6a5a:1893:3fcc:c5bb]) by DM4PR12MB5293.namprd12.prod.outlook.com
- ([fe80::6a5a:1893:3fcc:c5bb%5]) with mapi id 15.20.6609.032; Mon, 24 Jul 2023
- 22:39:54 +0000
-From:   "Liang, Richard qi" <Richardqi.Liang@amd.com>
-To:     "Quan, Evan" <Evan.Quan@amd.com>,
-        "Yang, WenYou" <WenYou.Yang@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>
-CC:     "Yuan, Perry" <Perry.Yuan@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] drm/amd/pm: Vangogh: Add new gpu_metrics_v2_4 to
- acquire gpu_metrics
-Thread-Topic: [PATCH v2] drm/amd/pm: Vangogh: Add new gpu_metrics_v2_4 to
- acquire gpu_metrics
-Thread-Index: AQHZpAoXUUfjRc6/zUugx95aoGx9Va+3AZwAgAgPxgCACqWL8A==
-Date:   Mon, 24 Jul 2023 22:39:54 +0000
-Message-ID: <DM4PR12MB52934E4464BF443DCA460F2DE102A@DM4PR12MB5293.namprd12.prod.outlook.com>
-References: <20230621063139.583787-1-WenYou.Yang@amd.com>
- <DM6PR12MB35319E01AE25E8388F3CFBFEFD37A@DM6PR12MB3531.namprd12.prod.outlook.com>
- <DM6PR12MB2619854DEA5DF5C9F7A11499E438A@DM6PR12MB2619.namprd12.prod.outlook.com>
-In-Reply-To: <DM6PR12MB2619854DEA5DF5C9F7A11499E438A@DM6PR12MB2619.namprd12.prod.outlook.com>
-Accept-Language: en-CA, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=1f0e7ae4-e076-4b64-85da-ad97d543303e;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-07-13T00:55:07Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR12MB5293:EE_|CH0PR12MB5233:EE_
-x-ms-office365-filtering-correlation-id: 79bc08a3-2f91-4797-b965-08db8c96e6a7
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FGePc5YeLJdxzFcSn3L1W40df5KHgTwGREiSpY90H+lncSqNT74gBFXHg1bKc8Omz9/rJ105bcESXUqJfMSkLy6G1oEW4pV+WBwuE0dEqUsP+37Xw0SFRgeAsWOQMMFBAHiW4tBvwbs92GtH4aRIme1ufv/ahuo+waIYfSqy9dyWOKKCKIXvZDn68eFAQYaMlNzGd8gvFO5NUDuMlbBpHciQyb9l77F9cYpAhVjvWcKihg7wjWf3QBIHvQ9HI1x9rTCguLKCVurIILNFPjOgIniQi80vZHcVyqcY7CGX18J5r8WhhdWdEAyxuRRa7R5veiLZHMtbYL2eIGzBDTVo0Gm/ckJ8Z0aYc0N69XIzLz1RuYsRM2228oG7UqcZiAT1b9VMdXaq1k22m2NlN0Obm5czpsb0+4VzBgTHypdtD3JKlTnKMoiRIBTJJiBp9W2lA63srdNtErEjSmN2hcZz3g8h9ZCdYtyMmyZxFpA8PfGKlpmVS9fWYyYgPNy/nrS7NhEHT2uxAq5Pp9rkyCjoK1oWb6kj9y1hzs+cAwNIQttBLpOur78D0V3oyEexBgib5DjMr9k5peZdfUrhdxNMuqTN5s4KrSeCS9/R10hOOI7/b5UMSwTZXkiEhMwUh5wiPwsOL5pKg67k++uVbXlKHT5jZ2RnuHN0bBuK3exdrpIwIlGWy94jgyqt3sUSWOcq
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5293.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(346002)(396003)(366004)(136003)(451199021)(2906002)(55016003)(38100700002)(122000001)(9686003)(921005)(83380400001)(186003)(26005)(6506007)(53546011)(52536014)(86362001)(5660300002)(8936002)(110136005)(38070700005)(6636002)(30864003)(33656002)(478600001)(71200400001)(7696005)(76116006)(4326008)(66476007)(8676002)(66446008)(66556008)(64756008)(66946007)(316002)(54906003)(41300700001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4EXcuKy9luJX6IryUR7a2M/gPfgZL9va6JgDzAgOg6I3j4LM8B8v4amSUGoM?=
- =?us-ascii?Q?Dkoes7kDByMMMapPi7YyauOb1rv1CPoYOIiuxRGyY7yEN4zIiTlCzRqWFbrU?=
- =?us-ascii?Q?Hz7JDvRqc2BElyi5ltMq3QVTFMXah8YolAp4O4C8He2AK9S/euNOcDKanbJn?=
- =?us-ascii?Q?vf32W4se8PV8nMMOyaGcjjY0FyQ5eVNAvpB86rBvZj90AAj0+pF8reEmIBcm?=
- =?us-ascii?Q?YVPedEF9+WW5TcrWaKLamRJABtbykXzEBDdTwE0ThOgBrQiT6UeN0qLiKlpD?=
- =?us-ascii?Q?GD4khe/UCJ5Ve3dOGshPr7lYN57jX8KVDU/EjzZZsIF/eEOiAdu8UK2QAsyv?=
- =?us-ascii?Q?XN+Jf3U6KMSRlNF9s8NS8jxci2gp8524fxiZkLHLxCkGSpXfeUGE6Ugx8CGy?=
- =?us-ascii?Q?onK0ejL7uDY44Hz6cXjNd7nICyfTqtd+pBvYxs8RIkSVLnHa5R1QUsJKkuUx?=
- =?us-ascii?Q?N6NqxktkKTu63TOlQxl0DK3QkqCBQFB1Dw46aQQ64sN0lBpSDANyFxrXV5iB?=
- =?us-ascii?Q?YO4luDAUR4p74uOsiWgtNTHPrrlT2TpOy6e7YMDGQLirOU0lkVGR3gvPw8bG?=
- =?us-ascii?Q?vyBQ5MRl3NHYF7rRu7J0dhMEB0u8l+iLUSLokAATaTi9UFCQZ7KyvBZNUho4?=
- =?us-ascii?Q?C+FtgYIQ9H4zyIGM/xHNa4pmcL7Y4P9a/pHTn1i8zdY90ndUuJeA2AQrNvJl?=
- =?us-ascii?Q?ht+4ZB5hsuMG87m+AAAhQ4QZYWar/tPJgwBU8ohMO1vYuwvINAe63da1GlMM?=
- =?us-ascii?Q?E1jAJDUWuZv1tYEVqSgn74uKW830+q5nyhrNgThNGVX664sDfcEUkgJBsJrl?=
- =?us-ascii?Q?A8Fi53P0o31TAkhiEEehOAG4SAwaGedVj8JT5O4s75lzmq5MIU0Uqx1m2HgB?=
- =?us-ascii?Q?UsZgMMjrJaGt6udRbs5cg5yVKqv/BOTnYwKPL20RWNoZNhd+3qYcaf4W6f0l?=
- =?us-ascii?Q?5t43+Ya7+Pg4IsuMqCanv6btX3o+IcU+tNA3O6pqZ7FG6kuxEcNFA+Cye1X7?=
- =?us-ascii?Q?pczNqOG6zHpWwD/h9iFVSOKYyq07TmmO3k88VpFqVWTKxi/dhIWYYW8Snr8Q?=
- =?us-ascii?Q?l4B5IYl1ccp/ECMR6IJpTAiZtkVqTvBwPidLAhqJkiMCFpjO+uEZEZe1KVvi?=
- =?us-ascii?Q?SK0uop7IQGpT3YXWJRBb5DPUZA5IltA6dhAw6HR9LfQX6Evc5aekb7cmet6R?=
- =?us-ascii?Q?WQw77Nn6h9k6P3oinPuNDeu/90C4RoNsDS25x239fe4yqwe6ZGEj72+h7g9H?=
- =?us-ascii?Q?qF/d1HA222zQYzPtCzGvF7CcfcZSq7PbtqDTnUg4W5b+zULoxPTINrhxrRq/?=
- =?us-ascii?Q?OD4sDwOtsHYA7pm37wmviUyfjox7MGh2Uz65RsqfAXvx9lL7MsggV8NIQLEz?=
- =?us-ascii?Q?5BE/Ihq9iSg7j060oKLdO6lPc2fgK8gtEToxZV6CQeWgmc8rRKgCIQfkrCi0?=
- =?us-ascii?Q?zx9znJLAoZU1rukOxCUGBczge4Z0SU4lzTHbD20dDER9NlZYnN8AYapbWKIn?=
- =?us-ascii?Q?RG1MwykeGtRZNIkgVi1Nl7RwMkO40F7zyWNiDIDDiX4FFlfDZnh2yYB4WLki?=
- =?us-ascii?Q?E1vkIuwiaH74JzOSqQQ=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 24 Jul 2023 18:41:01 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BD71AA
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:40:59 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-345ff33d286so28495675ab.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:40:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690238458; x=1690843258;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iKKgu6i/BBqK+vHvXOuZXXT6jRdj5IPssioGIwoBJF4=;
+        b=Hzu3T9XRyiq8KcynvHxfdIrLya3B1g/zWPJ57AoSNqTf6WLvQkAl7lLPBg3JcBQNk7
+         XCe5GmZtcSJmpMaCLHK0FdZGTermZaDN2ZyQS4Ic0OBqm+6GU97c6w9+8KhzFlcG8ndH
+         iYktX4ihjyT79kvfDkJOWXvTyr4067FfY61ONlueQEe1QBhQva36howY/OQ7g4JF1OkV
+         dlHPOavI+CteCqNVxPKtAqABLki/5bkxxnJiloH7qKhJT61LcVGOSaC0rBh+mEIGosjB
+         9FmPee5ELruCiQU03d8C/vpfDeCL1GFFBziCMk26YjTUVatDO3qn2gv2slFnpK4rEh9U
+         5mRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690238458; x=1690843258;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iKKgu6i/BBqK+vHvXOuZXXT6jRdj5IPssioGIwoBJF4=;
+        b=aoTsfHchVwq9NudLw7ZEfDRxJdalHGx3qHlUfHuEI4JSB8W+dSZkhiHhPk8SPLqMgH
+         6xRACChBI7imwNnWfH0MTQkzI4quXJbCKNrphxmBB3/egFOM5WmGQP7saUgOc01iNZcl
+         JO29GYh53MKXxOyoEVLy8zfQPRI2NbhFybiKraWrPO8zuBYAu5R+CW0yuoD3qS5syO2Q
+         ZJxzC7GVjrv1UjfDL0gUTuQb34w8PgCeLSwv1qNfUW2ZzhxbVhz8PfaIjFGYRb9Q1w2u
+         gcbBAfedqHtJBh1AyoqkD7RQbhcgie05RGF7Q2ym4e5w6cMj2C04y8gQdPEOQzu5EEAP
+         xzOQ==
+X-Gm-Message-State: ABy/qLbZJVAvchxOgIdu2+girDVuQG+MAD1sknC8//7vMKv+1Rh1j0hu
+        hxLGoJBCiCWrpOM2+O7FVRwclw==
+X-Google-Smtp-Source: APBJJlEWt68nkZpbyT0RxibRCLbOdlbisPQd9crre6rbKDCoThNCdcGwvFgg74D0WZSNonJH4u9QYw==
+X-Received: by 2002:a05:6e02:b47:b0:348:8163:b6be with SMTP id f7-20020a056e020b4700b003488163b6bemr1218203ilu.30.1690238458732;
+        Mon, 24 Jul 2023 15:40:58 -0700 (PDT)
+Received: from localhost.localdomain (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
+        by smtp.gmail.com with ESMTPSA id o11-20020a056638124b00b0042b482a8763sm3090952jas.70.2023.07.24.15.40.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 15:40:58 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     dianders@chromium.org, caleb.connolly@linaro.org, mka@chromium.org,
+        evgreen@chromium.org, andersson@kernel.org,
+        quic_cpratapa@quicinc.com, quic_avuyyuru@quicinc.com,
+        quic_jponduru@quicinc.com, quic_subashab@quicinc.com,
+        elder@kernel.org, netdev@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH net] net: ipa: only reset hashed tables when supported
+Date:   Mon, 24 Jul 2023 17:40:55 -0500
+Message-Id: <20230724224055.1688854-1-elder@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5293.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 79bc08a3-2f91-4797-b965-08db8c96e6a7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jul 2023 22:39:54.5674
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aPd5vijPunMRAGtRHvPx5lxaJhx5cISC6XaWozywJesdL4EIIHn05MymjmoTWj4I
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5233
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only - General]
+Last year, the code that manages GSI channel transactions switched
+from using spinlock-protected linked lists to using indexes into the
+ring buffer used for a channel.  Recently, Google reported seeing
+transaction reference count underflows occasionally during shutdown.
 
-Hi Wenyou,
-Could you merge the patch?
+Doug Anderson found a way to reproduce the issue reliably, and
+bisected the issue to the commit that eliminated the linked lists
+and the lock.  The root cause was ultimately determined to be
+related to unused transactions being committed as part of the modem
+shutdown cleanup activity.  Unused transactions are not normally
+expected (except in error cases).
 
-Thanks,
-Richard
+The modem uses some ranges of IPA-resident memory, and whenever it
+shuts down we zero those ranges.  In ipa_filter_reset_table() a
+transaction is allocated to zero modem filter table entries.  If
+hashing is not supported, hashed table memory should not be zeroed.
+But currently nothing prevents that, and the result is an unused
+transaction.  Something similar occurs when we zero routing table
+entries for the modem.
 
------Original Message-----
-From: Quan, Evan <Evan.Quan@amd.com>
-Sent: Tuesday, July 18, 2023 12:03 AM
-To: Yang, WenYou <WenYou.Yang@amd.com>; Deucher, Alexander <Alexander.Deuch=
-er@amd.com>; Limonciello, Mario <Mario.Limonciello@amd.com>; Koenig, Christ=
-ian <Christian.Koenig@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>
-Cc: Yuan, Perry <Perry.Yuan@amd.com>; Liang, Richard qi <Richardqi.Liang@am=
-d.com>; amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; lin=
-ux-kernel@vger.kernel.org
-Subject: RE: [PATCH v2] drm/amd/pm: Vangogh: Add new gpu_metrics_v2_4 to ac=
-quire gpu_metrics
+By preventing any attempt to clear hashed tables when hashing is not
+supported, the reference count underflow is avoided in this case.
 
-[AMD Official Use Only - General]
+Note that there likely remains an issue with properly freeing unused
+transactions (if they occur due to errors).  This patch addresses
+only the underflows that Google originally reported.
 
-Hi Wenyou,
+Fixes: d338ae28d8a8 ("net: ipa: kill all other transaction lists")
+Cc: <stable@vger.kernel.org>	# 6.4.x
+Tested-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/ipa_table.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-I think you already got the greenlight(RB from Mario and ACK from me) to la=
-nd the change.
-Go ahead please.
-
-Evan
-> -----Original Message-----
-> From: Yang, WenYou <WenYou.Yang@amd.com>
-> Sent: Thursday, July 13, 2023 8:56 AM
-> To: Yang, WenYou <WenYou.Yang@amd.com>; Deucher, Alexander
-> <Alexander.Deucher@amd.com>; Limonciello, Mario
-> <Mario.Limonciello@amd.com>; Koenig, Christian
-> <Christian.Koenig@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>; Quan,
-> Evan <Evan.Quan@amd.com>
-> Cc: Yuan, Perry <Perry.Yuan@amd.com>; Liang, Richard qi
-> <Richardqi.Liang@amd.com>; amd-gfx@lists.freedesktop.org; dri-
-> devel@lists.freedesktop.org; linux-kernel@vger.kernel.org
-> Subject: RE: [PATCH v2] drm/amd/pm: Vangogh: Add new gpu_metrics_v2_4
-> to acquire gpu_metrics
->
-> [AMD Official Use Only - General]
->
-> Any comments? Any advice?
->
-> Best Regards,
-> Wenyou
->
-> > -----Original Message-----
-> > From: Wenyou Yang <WenYou.Yang@amd.com>
-> > Sent: Wednesday, June 21, 2023 2:32 PM
-> > To: Deucher, Alexander <Alexander.Deucher@amd.com>; Limonciello,
-> > Mario <Mario.Limonciello@amd.com>; Koenig, Christian
-> > <Christian.Koenig@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>; Quan,
-> > Evan <Evan.Quan@amd.com>
-> > Cc: Yuan, Perry <Perry.Yuan@amd.com>; Liang, Richard qi
-> > <Richardqi.Liang@amd.com>; amd-gfx@lists.freedesktop.org; dri-
-> > devel@lists.freedesktop.org; linux-kernel@vger.kernel.org; Yang,
-> > WenYou <WenYou.Yang@amd.com>
-> > Subject: [PATCH v2] drm/amd/pm: Vangogh: Add new gpu_metrics_v2_4 to
-> > acquire gpu_metrics
-> >
-> > To acquire the voltage and current info from gpu_metrics interface,
-> > but
-> > gpu_metrics_v2_3 doesn't contain them, and to be backward
-> > compatible, add new gpu_metrics_v2_4 structure.
-> >
-> > Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-> > Acked-by: Evan Quan <evan.quan@amd.com>
-> > Signed-off-by: Wenyou Yang <WenYou.Yang@amd.com>
-> > ---
-> >  .../gpu/drm/amd/include/kgd_pp_interface.h    |  69 +++++++++++
-> >  .../gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c  | 109
-> ++++++++++++++++-
-> > -
-> >  drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c        |   3 +
-> >  3 files changed, 172 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/include/kgd_pp_interface.h
-> > b/drivers/gpu/drm/amd/include/kgd_pp_interface.h
-> > index 9f542f6e19ed..90989405eddc 100644
-> > --- a/drivers/gpu/drm/amd/include/kgd_pp_interface.h
-> > +++ b/drivers/gpu/drm/amd/include/kgd_pp_interface.h
-> > @@ -892,4 +892,73 @@ struct gpu_metrics_v2_3 {
-> >       uint16_t                        average_temperature_core[8]; //
-> > average CPU core temperature on APUs
-> >       uint16_t                        average_temperature_l3[2];
-> >  };
-> > +
-> > +struct gpu_metrics_v2_4 {
-> > +     struct metrics_table_header     common_header;
-> > +
-> > +     /* Temperature (unit: centi-Celsius) */
-> > +     uint16_t                        temperature_gfx;
-> > +     uint16_t                        temperature_soc;
-> > +     uint16_t                        temperature_core[8];
-> > +     uint16_t                        temperature_l3[2];
-> > +
-> > +     /* Utilization (unit: centi) */
-> > +     uint16_t                        average_gfx_activity;
-> > +     uint16_t                        average_mm_activity;
-> > +
-> > +     /* Driver attached timestamp (in ns) */
-> > +     uint64_t                        system_clock_counter;
-> > +
-> > +     /* Power/Energy (unit: mW) */
-> > +     uint16_t                        average_socket_power;
-> > +     uint16_t                        average_cpu_power;
-> > +     uint16_t                        average_soc_power;
-> > +     uint16_t                        average_gfx_power;
-> > +     uint16_t                        average_core_power[8];
-> > +
-> > +     /* Average clocks (unit: MHz) */
-> > +     uint16_t                        average_gfxclk_frequency;
-> > +     uint16_t                        average_socclk_frequency;
-> > +     uint16_t                        average_uclk_frequency;
-> > +     uint16_t                        average_fclk_frequency;
-> > +     uint16_t                        average_vclk_frequency;
-> > +     uint16_t                        average_dclk_frequency;
-> > +
-> > +     /* Current clocks (unit: MHz) */
-> > +     uint16_t                        current_gfxclk;
-> > +     uint16_t                        current_socclk;
-> > +     uint16_t                        current_uclk;
-> > +     uint16_t                        current_fclk;
-> > +     uint16_t                        current_vclk;
-> > +     uint16_t                        current_dclk;
-> > +     uint16_t                        current_coreclk[8];
-> > +     uint16_t                        current_l3clk[2];
-> > +
-> > +     /* Throttle status (ASIC dependent) */
-> > +     uint32_t                        throttle_status;
-> > +
-> > +     /* Fans */
-> > +     uint16_t                        fan_pwm;
-> > +
-> > +     uint16_t                        padding[3];
-> > +
-> > +     /* Throttle status (ASIC independent) */
-> > +     uint64_t                        indep_throttle_status;
-> > +
-> > +     /* Average Temperature (unit: centi-Celsius) */
-> > +     uint16_t                        average_temperature_gfx;
-> > +     uint16_t                        average_temperature_soc;
-> > +     uint16_t                        average_temperature_core[8];
-> > +     uint16_t                        average_temperature_l3[2];
-> > +
-> > +     /* Power/Voltage (unit: mV) */
-> > +     uint16_t                        average_cpu_voltage;
-> > +     uint16_t                        average_soc_voltage;
-> > +     uint16_t                        average_gfx_voltage;
-> > +
-> > +     /* Power/Current (unit: mA) */
-> > +     uint16_t                        average_cpu_current;
-> > +     uint16_t                        average_soc_current;
-> > +     uint16_t                        average_gfx_current;
-> > +};
-> >  #endif
-> > diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> > b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> > index 067b4e0b026c..185d0b50ee8e 100644
-> > --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> > +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> > @@ -1854,6 +1854,86 @@ static ssize_t
-> > vangogh_get_gpu_metrics_v2_3(struct
-> > smu_context *smu,
-> >       return sizeof(struct gpu_metrics_v2_3);  }
-> >
-> > +static ssize_t vangogh_get_gpu_metrics_v2_4(struct smu_context *smu,
-> > +                                         void **table) {
-> > +     SmuMetrics_t metrics;
-> > +     struct smu_table_context *smu_table =3D &smu->smu_table;
-> > +     struct gpu_metrics_v2_4 *gpu_metrics =3D
-> > +                             (struct gpu_metrics_v2_4 *)smu_table-
-> > >gpu_metrics_table;
-> > +     int ret =3D 0;
-> > +
-> > +     ret =3D smu_cmn_get_metrics_table(smu, &metrics, true);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     smu_cmn_init_soft_gpu_metrics(gpu_metrics, 2, 4);
-> > +
-> > +     gpu_metrics->temperature_gfx =3D metrics.Current.GfxTemperature;
-> > +     gpu_metrics->temperature_soc =3D metrics.Current.SocTemperature;
-> > +     memcpy(&gpu_metrics->temperature_core[0],
-> > +            &metrics.Current.CoreTemperature[0],
-> > +            sizeof(uint16_t) * 4);
-> > +     gpu_metrics->temperature_l3[0] =3D
-> > + metrics.Current.L3Temperature[0];
-> > +
-> > +     gpu_metrics->average_temperature_gfx =3D
-> > metrics.Average.GfxTemperature;
-> > +     gpu_metrics->average_temperature_soc =3D
-> > metrics.Average.SocTemperature;
-> > +     memcpy(&gpu_metrics->average_temperature_core[0],
-> > +            &metrics.Average.CoreTemperature[0],
-> > +            sizeof(uint16_t) * 4);
-> > +     gpu_metrics->average_temperature_l3[0] =3D
-> > +metrics.Average.L3Temperature[0];
-> > +
-> > +     gpu_metrics->average_gfx_activity =3D metrics.Current.GfxActivity=
-;
-> > +     gpu_metrics->average_mm_activity =3D
-> > + metrics.Current.UvdActivity;
-> > +
-> > +     gpu_metrics->average_socket_power =3D
-> > metrics.Current.CurrentSocketPower;
-> > +     gpu_metrics->average_cpu_power =3D metrics.Current.Power[0];
-> > +     gpu_metrics->average_soc_power =3D metrics.Current.Power[1];
-> > +     gpu_metrics->average_gfx_power =3D metrics.Current.Power[2];
-> > +
-> > +     gpu_metrics->average_cpu_voltage =3D metrics.Current.Voltage[0];
-> > +     gpu_metrics->average_soc_voltage =3D metrics.Current.Voltage[1];
-> > +     gpu_metrics->average_gfx_voltage =3D metrics.Current.Voltage[2];
-> > +
-> > +     gpu_metrics->average_cpu_current =3D metrics.Current.Current[0];
-> > +     gpu_metrics->average_soc_current =3D metrics.Current.Current[1];
-> > +     gpu_metrics->average_gfx_current =3D metrics.Current.Current[2];
-> > +
-> > +     memcpy(&gpu_metrics->average_core_power[0],
-> > +            &metrics.Average.CorePower[0],
-> > +            sizeof(uint16_t) * 4);
-> > +
-> > +     gpu_metrics->average_gfxclk_frequency =3D
-> > metrics.Average.GfxclkFrequency;
-> > +     gpu_metrics->average_socclk_frequency =3D
-> > metrics.Average.SocclkFrequency;
-> > +     gpu_metrics->average_uclk_frequency =3D
-> > metrics.Average.MemclkFrequency;
-> > +     gpu_metrics->average_fclk_frequency =3D
-> > metrics.Average.MemclkFrequency;
-> > +     gpu_metrics->average_vclk_frequency =3D metrics.Average.VclkFrequ=
-ency;
-> > +     gpu_metrics->average_dclk_frequency =3D
-> > metrics.Average.DclkFrequency;
-> > +
-> > +     gpu_metrics->current_gfxclk =3D metrics.Current.GfxclkFrequency;
-> > +     gpu_metrics->current_socclk =3D metrics.Current.SocclkFrequency;
-> > +     gpu_metrics->current_uclk =3D metrics.Current.MemclkFrequency;
-> > +     gpu_metrics->current_fclk =3D metrics.Current.MemclkFrequency;
-> > +     gpu_metrics->current_vclk =3D metrics.Current.VclkFrequency;
-> > +     gpu_metrics->current_dclk =3D metrics.Current.DclkFrequency;
-> > +
-> > +     memcpy(&gpu_metrics->current_coreclk[0],
-> > +            &metrics.Current.CoreFrequency[0],
-> > +            sizeof(uint16_t) * 4);
-> > +     gpu_metrics->current_l3clk[0] =3D
-> > + metrics.Current.L3Frequency[0];
-> > +
-> > +     gpu_metrics->throttle_status =3D metrics.Current.ThrottlerStatus;
-> > +     gpu_metrics->indep_throttle_status =3D
-> > +
-> >
-> > smu_cmn_get_indep_throttler_status(metrics.Current.ThrottlerStatus,
-> > +
-> > vangogh_throttler_map);
-> > +
-> > +     gpu_metrics->system_clock_counter =3D ktime_get_boottime_ns();
-> > +
-> > +     *table =3D (void *)gpu_metrics;
-> > +
-> > +     return sizeof(struct gpu_metrics_v2_4); }
-> > +
-> >  static ssize_t vangogh_get_gpu_metrics(struct smu_context *smu,
-> >                                     void **table)  { @@ -1923,23
-> > +2003,34 @@ static ssize_t vangogh_common_get_gpu_metrics(struct
-> > smu_context *smu,  {
-> >       uint32_t if_version;
-> >       uint32_t smu_version;
-> > +     uint32_t smu_program;
-> > +     uint32_t fw_version;
-> >       int ret =3D 0;
-> >
-> >       ret =3D smu_cmn_get_smc_version(smu, &if_version, &smu_version);
-> > -     if (ret) {
-> > +     if (ret)
-> >               return ret;
-> > -     }
-> >
-> > -     if (smu_version >=3D 0x043F3E00) {
-> > -             if (if_version < 0x3)
-> > -                     ret =3D vangogh_get_legacy_gpu_metrics_v2_3(smu,
-> > table);
-> > +     smu_program =3D (smu_version >> 24) & 0xff;
-> > +     fw_version =3D smu_version & 0xffffff;
-> > +     if (smu_program =3D=3D 6) {
-> > +             if (fw_version >=3D 0x3F0800)
-> > +                     ret =3D vangogh_get_gpu_metrics_v2_4(smu,
-> > + table);
-> >               else
-> >                       ret =3D vangogh_get_gpu_metrics_v2_3(smu,
-> > table);
-> > +
-> >       } else {
-> > -             if (if_version < 0x3)
-> > -                     ret =3D vangogh_get_legacy_gpu_metrics(smu, table=
-);
-> > -             else
-> > -                     ret =3D vangogh_get_gpu_metrics(smu, table);
-> > +             if (smu_version >=3D 0x043F3E00) {
-> > +                     if (if_version < 0x3)
-> > +                             ret =3D
-> > vangogh_get_legacy_gpu_metrics_v2_3(smu, table);
-> > +                     else
-> > +                             ret =3D
-> > + vangogh_get_gpu_metrics_v2_3(smu,
-> > table);
-> > +             } else {
-> > +                     if (if_version < 0x3)
-> > +                             ret =3D
-> > + vangogh_get_legacy_gpu_metrics(smu,
-> > table);
-> > +                     else
-> > +                             ret =3D vangogh_get_gpu_metrics(smu, tabl=
-e);
-> > +             }
-> >       }
-> >
-> >       return ret;
-> > diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-> > b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-> > index 3ecb900e6ecd..cee5e32b4ff9 100644
-> > --- a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-> > +++ b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-> > @@ -996,6 +996,9 @@ void smu_cmn_init_soft_gpu_metrics(void *table,
-> > uint8_t frev, uint8_t crev)
-> >       case METRICS_VERSION(2, 3):
-> >               structure_size =3D sizeof(struct gpu_metrics_v2_3);
-> >               break;
-> > +     case METRICS_VERSION(2, 4):
-> > +             structure_size =3D sizeof(struct gpu_metrics_v2_4);
-> > +             break;
-> >       default:
-> >               return;
-> >       }
-> > --
-> > 2.39.2
->
-
+diff --git a/drivers/net/ipa/ipa_table.c b/drivers/net/ipa/ipa_table.c
+index f0529c31d0b6e..7b637bb8b41c8 100644
+--- a/drivers/net/ipa/ipa_table.c
++++ b/drivers/net/ipa/ipa_table.c
+@@ -273,16 +273,15 @@ static int ipa_filter_reset(struct ipa *ipa, bool modem)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = ipa_filter_reset_table(ipa, true, false, modem);
+-	if (ret)
+-		return ret;
+-
+ 	ret = ipa_filter_reset_table(ipa, false, true, modem);
++	if (ret || !ipa_table_hash_support(ipa))
++		return ret;
++
++	ret = ipa_filter_reset_table(ipa, true, false, modem);
+ 	if (ret)
+ 		return ret;
+-	ret = ipa_filter_reset_table(ipa, true, true, modem);
+ 
+-	return ret;
++	return ipa_filter_reset_table(ipa, true, true, modem);
+ }
+ 
+ /* The AP routes and modem routes are each contiguous within the
+@@ -291,12 +290,13 @@ static int ipa_filter_reset(struct ipa *ipa, bool modem)
+  * */
+ static int ipa_route_reset(struct ipa *ipa, bool modem)
+ {
++	bool hash_support = ipa_table_hash_support(ipa);
+ 	u32 modem_route_count = ipa->modem_route_count;
+ 	struct gsi_trans *trans;
+ 	u16 first;
+ 	u16 count;
+ 
+-	trans = ipa_cmd_trans_alloc(ipa, 4);
++	trans = ipa_cmd_trans_alloc(ipa, hash_support ? 4 : 2);
+ 	if (!trans) {
+ 		dev_err(&ipa->pdev->dev,
+ 			"no transaction for %s route reset\n",
+@@ -313,10 +313,12 @@ static int ipa_route_reset(struct ipa *ipa, bool modem)
+ 	}
+ 
+ 	ipa_table_reset_add(trans, false, false, false, first, count);
+-	ipa_table_reset_add(trans, false, true, false, first, count);
+-
+ 	ipa_table_reset_add(trans, false, false, true, first, count);
+-	ipa_table_reset_add(trans, false, true, true, first, count);
++
++	if (hash_support) {
++		ipa_table_reset_add(trans, false, true, false, first, count);
++		ipa_table_reset_add(trans, false, true, true, first, count);
++	}
+ 
+ 	gsi_trans_commit_wait(trans);
+ 
+-- 
+2.34.1
 
