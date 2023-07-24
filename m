@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D2E7602F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 01:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EEF97602E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 01:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbjGXXID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 19:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38208 "EHLO
+        id S230199AbjGXXCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 19:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjGXXH7 (ORCPT
+        with ESMTP id S229974AbjGXXCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 19:07:59 -0400
-X-Greylist: delayed 599 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 Jul 2023 16:07:57 PDT
-Received: from tilde.club (tilde.club [IPv6:2607:5300:204:4340::114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82441700;
-        Mon, 24 Jul 2023 16:07:57 -0700 (PDT)
-Received: by tilde.club (Postfix, from userid 5616)
-        id 443962232AA89; Mon, 24 Jul 2023 22:49:02 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 tilde.club 443962232AA89
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tilde.club; s=mail;
-        t=1690238942; bh=QtqSfd3Czt7+G3Jl4KW7N8PcQYi7h4YI/wJv8N7kNV4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p+2hBvkKZ4PMtjW8+7HZUTVNNYd0tS442Hc1vqsImYc2aWtNKojZjXz8uJ2I3gzg9
-         gEO4JDHmZcq/23qFhXX8KkWgCfe1bTUjLfVMZlEp/BgIIP14UbrMcdAKpU3rhqyEvk
-         Fe0UkOWAOEU2YknoFcwPdfJ3y68UgdGn819df4CA=
-From:   sel4@tilde.club
-To:     kees@kernel.org
-Cc:     keescook@chromium.org, Brandon Luo <sel4@tilde.club>,
-        syzbot+98d3ceb7e01269e7bf4f@syzkaller.appspotmail.com,
-        syzbot+155274e882dcbf9885df@syzkaller.appspotmail.com,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fortify: strnlen: Call fortify_panic() only if the number of bytes read is greater than maxlen
-Date:   Mon, 24 Jul 2023 22:48:57 +0000
-Message-ID: <20230724224857.2049906-1-sel4@tilde.club>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <4F5F9CC2-803C-4E18-968C-A46B32528F1F@kernel.org>
-References: <4F5F9CC2-803C-4E18-968C-A46B32528F1F@kernel.org>
+        Mon, 24 Jul 2023 19:02:18 -0400
+X-Greylist: delayed 376 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 Jul 2023 16:02:17 PDT
+Received: from out-34.mta1.migadu.com (out-34.mta1.migadu.com [95.215.58.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F7CE70
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 16:02:17 -0700 (PDT)
+Message-ID: <4c524936-989b-f679-d9ec-cf374c849c6f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690239359;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H6YN2MhKnObTVNJlwXZBDVh2nU9Nss9o5bGaetiiYLk=;
+        b=OCUfQwf35fGkg4l3oybIH0OevuT0Zex7S9aARt7wwkSawx/N3p+55TqfELamAc59XkvMjd
+        d7IpN68fWVMFNKZi6ikR2rcdDcsxH8tPMrEqc0sDib+tNM+8LPPKLQfT+bVf5ujtSCOD0Y
+        kqnZnwP9B6xmC1zwwimS+v7HKW0BxFw=
+Date:   Mon, 24 Jul 2023 15:55:49 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v6 4/8] net: remove duplicate reuseport_lookup
+ functions
+Content-Language: en-US
+To:     Lorenz Bauer <lmb@isovalent.com>
+Cc:     Hemanth Malla <hemanthmalla@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Joe Stringer <joe@wand.net.nz>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>
+References: <20230720-so-reuseport-v6-0-7021b683cdae@isovalent.com>
+ <20230720-so-reuseport-v6-4-7021b683cdae@isovalent.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20230720-so-reuseport-v6-4-7021b683cdae@isovalent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brandon Luo <sel4@tilde.club>
+On 7/20/23 8:30 AM, Lorenz Bauer wrote:
+> @@ -452,7 +436,14 @@ static struct sock *udp4_lib_lookup2(struct net *net,
+>   				      daddr, hnum, dif, sdif);
+>   		if (score > badness) {
+>   			badness = score;
+> -			result = lookup_reuseport(net, sk, skb, saddr, sport, daddr, hnum);
+> +
+> +			if (sk->sk_state == TCP_ESTABLISHED) {
+> +				result = sk;
+> +				continue;
+> +			}
 
-If the number of bytes read is p_size and p_size is less than maxlen,
-fortify_panic() will be called incorrectly. Only panic if the number of
-bytes read is greater than the minimum of p_size and maxlen since that is
- the argument to __real_strnlen().
-
-Reported-by: syzbot+98d3ceb7e01269e7bf4f@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/000000000000d8352e0600c0c804@google.com/
-
-Reported-by: syzbot+155274e882dcbf9885df@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/000000000000de4c2c0600c02b28@google.com/
-
-Signed-off-by: Brandon Luo <sel4@tilde.club>
----
- include/linux/fortify-string.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/fortify-string.h b/include/linux/fortify-string.h
-index da51a83b2829..cde637f735fe 100644
---- a/include/linux/fortify-string.h
-+++ b/include/linux/fortify-string.h
-@@ -176,8 +176,9 @@ __FORTIFY_INLINE __kernel_size_t strnlen(const char * const POS p, __kernel_size
- 	}
- 
- 	/* Do not check characters beyond the end of p. */
--	ret = __real_strnlen(p, maxlen < p_size ? maxlen : p_size);
--	if (p_size <= ret && maxlen != ret)
-+	maxlen = (maxlen < p_size) ? maxlen : p_size;
-+	ret = __real_strnlen(p, maxlen);
-+	if (maxlen < ret)
- 		fortify_panic(__func__);
- 	return ret;
- }
--- 
-2.41.0
-
+Thanks for the cleanup. I also found moving the TCP_ESTABLISHED check here made 
+the score logic easier to reason.
