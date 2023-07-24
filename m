@@ -2,66 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2524A7601FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745DA760202
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbjGXWEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 18:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        id S229954AbjGXWIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 18:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbjGXWE2 (ORCPT
+        with ESMTP id S229496AbjGXWIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 18:04:28 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D714210E2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:04:26 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4f954d7309fso6085046e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:04:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1690236265; x=1690841065;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bi9QF+ezCeeyehvtVZ4C7/mvj+DDfBkK4HVduZqN9YM=;
-        b=VlCmbuWK7dSqWRI5Eg+b7TWUQktclr/SkHYXZrKnYik2x0aBvELIjYCRsCd26iv8T0
-         i88uGHFfnkcjmWjvZhUUqrDPQ9HPuMuDAkEumLwrU3h/KMs5mQIwKJ9+y6f3bASs8oOm
-         /cseRaC7aK3i5QscJgbEl/aAqA4goAwnQ+4WU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690236265; x=1690841065;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bi9QF+ezCeeyehvtVZ4C7/mvj+DDfBkK4HVduZqN9YM=;
-        b=CEgx8isHrePfhn69ew0jnEGp9gRJW5CCs4ZmCj7bozO0omm9RsUudOmAOEOEWwhrDl
-         Sdms4GH5ZPwK0OzQitbf1M7DyHkIhAn3WOEV/GVhEFlqbVMrhDE9Vju09swNgs+Gzocm
-         +hfOEK18MuYTMa5q8cD4gUn+XGAcauH6Y4Fs5bthGlvhooWl254RHXak6dEHHIhMzyXv
-         teythoDK4mUA1I1/FLL2Hd5MqrxvNmpjuderikQ4JqLkY3Np9nY01rP8k4P4PRHbNXjA
-         xElYhCLLuIqozMqrd1xQoU6alH1QhnvJVnSLvVe6r3savLGz00GYezmytdTKbQC4nv5a
-         pWxg==
-X-Gm-Message-State: ABy/qLYzYofNNYlANvkpV8Rpnl6aKlZ2fJragBIsFL5ltmNzqxKsLEJP
-        UaLqroOkm2HKmzwF6AxXq3NTxmv5ApgB0gw1/G1XhA==
-X-Google-Smtp-Source: APBJJlFlKDSHef/dw8Nqo573c6JM9iKNIp+ELSXm/aT1ZNYrMaUlfCXk+81jiLMMFNB/icAOAykjFEsklFxJ6PMmk54=
-X-Received: by 2002:a05:6512:108d:b0:4fd:d1a0:ec8f with SMTP id
- j13-20020a056512108d00b004fdd1a0ec8fmr170469lfg.13.1690236264996; Mon, 24 Jul
- 2023 15:04:24 -0700 (PDT)
+        Mon, 24 Jul 2023 18:08:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0A510EC
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:08:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A1DE161455
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 22:08:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70362C433C8;
+        Mon, 24 Jul 2023 22:08:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690236496;
+        bh=GAjZkvnU69tRmreUB7FnKwG6gWl6gwTbuqowaPIxOP8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LD812y6GhvNf81+vQmORo0Hum550TLstldsLojxu4Rk9ECOhRNKSB/GekT8vL/r1B
+         1yKVo9Z0eHkCG+CD92qbU6b9o5oH6Gaq1hKJY+O1clbsaoaMDPnBD0d+HlE3sqxszB
+         mFPAX/ISexsUuBqWewpgFROAXjewgCWOpj95DfAVtWt9pklw1Sma6ocYZokyB+3RPR
+         7wi9+xl+769ce5QVTYTq0qDN0EJb/XQjRTgIJRlHl8dI/lnBCsf++MIJH2IX2r/Pxf
+         OQCPZ2OOjngjJkvjTWE9njRMWzRRnyaiLjzKcXgGVCNqq0lfuqYbx4mwQgW8yAUc88
+         kloMUGezuMpSg==
+Date:   Mon, 24 Jul 2023 15:08:15 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Edward Cree <ecree.xilinx@gmail.com>
+Cc:     Joe Damato <jdamato@fastly.com>, netdev@vger.kernel.org,
+        saeedm@nvidia.com, tariqt@nvidia.com, ecree@solarflare.com,
+        andrew@lunn.ch, davem@davemloft.net, leon@kernel.org,
+        pabeni@redhat.com, bhutchings@solarflare.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net 0/2] rxfh with custom RSS fixes
+Message-ID: <20230724150815.494ae294@kernel.org>
+In-Reply-To: <b52f55ef-f166-cd1a-85b5-5fe32fe5f525@gmail.com>
+References: <20230723150658.241597-1-jdamato@fastly.com>
+        <b52f55ef-f166-cd1a-85b5-5fe32fe5f525@gmail.com>
 MIME-Version: 1.0
-References: <CA+wXwBRGab3UqbLqsr8xG=ZL2u9bgyDNNea4RGfTDjqB=J3geQ@mail.gmail.com>
- <CA+wXwBR6S3StBwJJmo8Fu6KdPW5Q382N7FwnmfckBJo4e6ZD_A@mail.gmail.com> <ZL7w9dEH8BSXRzyu@dread.disaster.area>
-In-Reply-To: <ZL7w9dEH8BSXRzyu@dread.disaster.area>
-From:   Daniel Dao <dqminh@cloudflare.com>
-Date:   Mon, 24 Jul 2023 23:04:13 +0100
-Message-ID: <CA+wXwBQmusp49-b6cU-hPAoOnpTiuvA2QrjaOSyb-EvKigC_Ug@mail.gmail.com>
-Subject: Re: Kernel NULL pointer deref and data corruptions with xfs on 6.1
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, djwong@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,42 +59,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:45=E2=80=AFPM Dave Chinner <david@fromorbit.com>=
- wrote:
->
-> On Mon, Jul 24, 2023 at 12:23:31PM +0100, Daniel Dao wrote:
-> > Hi again,
-> >
-> > We had another example of xarray corruption involving xfs and zsmalloc.=
- We are
-> > running zram as swap. We have 2 tasks deadlock waiting for page to be r=
-eleased
->
-> Do your problems on 6.1 go away if you stop using zram as swap?
+On Mon, 24 Jul 2023 20:27:43 +0100 Edward Cree wrote:
+> On 23/07/2023 16:06, Joe Damato wrote:
+> > Greetings:
+> > 
+> > While attempting to get the RX flow hash key for a custom RSS context on
+> > my mlx5 NIC, I got an error:
+> > 
+> > $ sudo ethtool -u eth1 rx-flow-hash tcp4 context 1
+> > Cannot get RX network flow hashing options: Invalid argument
+> > 
+> > I dug into this a bit and noticed two things:
+> > 
+> > 1. ETHTOOL_GRXFH supports custom RSS contexts, but ETHTOOL_SRXFH does
+> > not. I moved the copy logic out of ETHTOOL_GRXFH and into a helper so
+> > that both ETHTOOL_{G,S}RXFH now call it, which fixes ETHTOOL_SRXFH. This
+> > is patch 1/2.  
+> 
+> As I see it, this is a new feature, not a fix, so belongs on net-next.
+> (No existing driver accepts FLOW_RSS in ETHTOOL_SRXFH's cmd->flow_type,
+>  which is just as well as if they did this would be a uABI break.)
+> 
+> Going forward, ETHTOOL_SRXFH will hopefully be integrated into the new
+>  RSS context kAPI I'm working on[1], so that we can have a new netlink
+>  uAPI for RSS configuration that's all in one place instead of the
+>  piecemeal-grown ethtool API with its backwards-compatible hacks.
+> But that will take a while, so I think this should go in even though
+>  it's technically an extension to legacy ethtool; it was part of the
+>  documented uAPI and userland implements it, it just never got
+>  implemented on the kernel side (because the initial driver with
+>  context support, sfc, didn't support SRXFH).
 
-We had xarray corruptions even on nodes without swap, so I'm not sure
-if swap matters.
-The corruption on those nodes were noted in the first email with the
-following trace
+What's the status on your work? Are you planning to split the RSS
+config from ethtool or am I reading too much into what you said?
 
- BUG: kernel NULL pointer dereference, address: 0000000000000036
-    #PF: supervisor read access in kernel mode
-    #PF: error_code(0x0000) - not-present page
-    PGD 18806c5067 P4D 18806c5067 PUD 188ed48067 PMD 0
-    Oops: 0000 [#1] PREEMPT SMP NOPTI
-    CPU: 73 PID: 3579408 Comm: prometheus Tainted: G           O
-6.1.34-cloudflare-2023.6.7 #1
-    Hardware name: GIGABYTE R162-Z12-CD1/MZ12-HD4-CD, BIOS M03 11/19/2021
-    RIP: 0010:__filemap_get_folio (arch/x86/include/asm/atomic.h:29
-include/linux/atomic/atomic-arch-fallback.h:1242
-include/linux/atomic/atomic-arch-fallback.h:1267
-include/linux/atomic/atomic-instrumented.h:608
-include/linux/page_ref.h:238 include/linux/page_ref.h:247
-include/linux/page_ref.h:280 include/linux/page_ref.h:313
-mm/filemap.c:1863 mm/filemap.c:1915)
-
-It's hard for us to run tests without zram swap at scale since the
-benefits are significant with a lot of
-workloads.
-
-Daniel.
+It'd be great to push the uAPI extensions back and make them
+netlink-only, but we can't make Joe wait if it takes a long time
+to finish up the basic conversion :(
