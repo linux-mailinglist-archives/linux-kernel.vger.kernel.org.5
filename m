@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C7D75E93A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A69475E740
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbjGXBte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
+        id S231415AbjGXB0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232919AbjGXBsI (ORCPT
+        with ESMTP id S231359AbjGXBZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:48:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0658B6598;
-        Sun, 23 Jul 2023 18:40:25 -0700 (PDT)
+        Sun, 23 Jul 2023 21:25:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4021830E7;
+        Sun, 23 Jul 2023 18:23:43 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 95FA660F24;
-        Mon, 24 Jul 2023 01:23:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D524C433C7;
-        Mon, 24 Jul 2023 01:23:29 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 53F8160F19;
+        Mon, 24 Jul 2023 01:23:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F39DC433CA;
+        Mon, 24 Jul 2023 01:23:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161812;
-        bh=Fz6RXpQ9T59WQ0G81m7lRvqJdxJVsd3sjQGZu9os1Ns=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K9sYxY4EDqVo748zdcTUAw7JMxSOGZSLug1WsNLqxkgHTYMBi20uZZcXwrRq8RtvV
-         ll4H1y4M3kxxgqmdTKRnlLHVXs5ecOcBohRR3+DnsOgg9UkX5CHUmTB9uDPW/+IJI9
-         Sga0KgTHKTPO4IWGLFyiD5cH7Q4d68MIAdc2dKfkPZWpQMYG6gTQDZMFlEtZcx4b+R
-         d5j2CQ9EjSshIRigZgMX+7B+HtZ0BMBVW3y0W5HCy9JGRcjgnMQSoxAzSK+2I3kHcy
-         7DyHNIuPN8VggBWR1M5fpD0AihAdelmAOiTxamopZCh8rHMvkctnk8QI7esIQ9k/db
-         78c2/UiLm4T7A==
+        s=k20201202; t=1690161819;
+        bh=ZvOWAskADKSj0B2dpPKENk9zBWJojJGWzA5nxG6V8zU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PY0J1LQPiaqKtJI6XOtcZkjeTIS/kT/UHORigKifoWyiB3zWdtljJC0ZTY3P8QLuJ
+         0YgpsAF3dbp8P9H9yTfrNJvnRiHyLdky8V89PVzse218ozuT9TEztfxOyhlLg2MVH3
+         t2zD6GINc1/Kqi1/hvt9qGjqSh4BtOcYA9SMatAQrGobLUOR7pDgxXS4YVSBvOV9Mb
+         d2lC2qtkvACi5MH6VQhcvt/atfx0Uqqt2M8/Cv31bQ8JVva1+V1R6mURmNg4dBqwTt
+         kvJ1f9W968iTsZOnqW3WzcpPxDtHL4N+A3F5Y+Y0DP2roluAY4HSkLrF9YFVA3J07/
+         qbDFZ3fotL3oQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Immad Mir <mirimmad17@gmail.com>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, shaggy@kernel.org,
-        jfs-discussion@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 6.1 41/41] FS: JFS: Check for read-only mounted filesystem in txBegin
-Date:   Sun, 23 Jul 2023 21:21:14 -0400
-Message-Id: <20230724012118.2316073-41-sashal@kernel.org>
+Cc:     hackyzh002 <hackyzh002@gmail.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, David1.Zhou@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.15 01/23] drm/radeon: Fix integer overflow in radeon_cs_parser_init
+Date:   Sun, 23 Jul 2023 21:23:12 -0400
+Message-Id: <20230724012334.2317140-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230724012118.2316073-1-sashal@kernel.org>
-References: <20230724012118.2316073-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.40
+X-stable-base: Linux 5.15.121
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,37 +61,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Immad Mir <mirimmad17@gmail.com>
+From: hackyzh002 <hackyzh002@gmail.com>
 
-[ Upstream commit 95e2b352c03b0a86c5717ba1d24ea20969abcacc ]
+[ Upstream commit f828b681d0cd566f86351c0b913e6cb6ed8c7b9c ]
 
- This patch adds a check for read-only mounted filesystem
- in txBegin before starting a transaction potentially saving
- from NULL pointer deref.
+The type of size is unsigned, if size is 0x40000000, there will be an
+integer overflow, size will be zero after size *= sizeof(uint32_t),
+will cause uninitialized memory to be referenced later
 
-Signed-off-by: Immad Mir <mirimmad17@gmail.com>
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: hackyzh002 <hackyzh002@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_txnmgr.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/gpu/drm/radeon/radeon_cs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/jfs/jfs_txnmgr.c b/fs/jfs/jfs_txnmgr.c
-index ffd4feece0785..ce4b4760fcb1d 100644
---- a/fs/jfs/jfs_txnmgr.c
-+++ b/fs/jfs/jfs_txnmgr.c
-@@ -354,6 +354,11 @@ tid_t txBegin(struct super_block *sb, int flag)
- 	jfs_info("txBegin: flag = 0x%x", flag);
- 	log = JFS_SBI(sb)->log;
+diff --git a/drivers/gpu/drm/radeon/radeon_cs.c b/drivers/gpu/drm/radeon/radeon_cs.c
+index 9ed2b2700e0a5..e5fbe851ed930 100644
+--- a/drivers/gpu/drm/radeon/radeon_cs.c
++++ b/drivers/gpu/drm/radeon/radeon_cs.c
+@@ -270,7 +270,8 @@ int radeon_cs_parser_init(struct radeon_cs_parser *p, void *data)
+ {
+ 	struct drm_radeon_cs *cs = data;
+ 	uint64_t *chunk_array_ptr;
+-	unsigned size, i;
++	u64 size;
++	unsigned i;
+ 	u32 ring = RADEON_CS_RING_GFX;
+ 	s32 priority = 0;
  
-+	if (!log) {
-+		jfs_error(sb, "read-only filesystem\n");
-+		return 0;
-+	}
-+
- 	TXN_LOCK();
- 
- 	INCREMENT(TxStat.txBegin);
 -- 
 2.39.2
 
