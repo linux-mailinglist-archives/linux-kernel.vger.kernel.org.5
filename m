@@ -2,52 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C0575E780
+	by mail.lfdr.de (Postfix) with ESMTP id E05C375E782
 	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbjGXB2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
+        id S231501AbjGXB2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231435AbjGXB1T (ORCPT
+        with ESMTP id S231506AbjGXB1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 23 Jul 2023 21:27:19 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632594681;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DCA4682;
         Sun, 23 Jul 2023 18:24:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D182360F1D;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DC32360F13;
+        Mon, 24 Jul 2023 01:24:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0527C433CB;
         Mon, 24 Jul 2023 01:24:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0E35C433C8;
-        Mon, 24 Jul 2023 01:24:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161849;
-        bh=iqD2z/IVhDi0WM/KEjgSh/ZYzgqFhIE1K7YNkIMHOS8=;
+        s=k20201202; t=1690161850;
+        bh=UhaWQwJ10TNFYLdIupAYVg8SYBySq2CqoJQgWJ3VDf8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y1TDVwOJTPOROGaypI7iKNFB/XIFNdRmAVmClEL5U6KEbipbeI27do2rCggdVLmRe
-         NUJUpFWeKxVjiVFlQqUEN9HiPuTNd4ELsWZG0MdBRTPqhVnlN8OcqaKnF8dhN887jC
-         1fPl+sWu3uuv1JEYXMA/10baoq7IfsvhJsf4DiSdUApkeWwjWsBToEkMb73I/Nd0ce
-         ml2yvGi1uFI9xP7exBXffk8tuUFKK9L0Gl8YM9MaaaM/uiPkRZWtZF+VaqTGB5xDqr
-         8NgZMTbC7OnmdeXMs+VTKUvB/y7ypvSvsv5gOMqYOvDspwCE7Y0I01W4Rr80FT6AY/
-         DdcdR1RHi1olA==
+        b=gOo5XemfOIQ9x9/Ki5DblF6CvSnubGYIHvghIClLuT/wuUlEWNal8mVu5808lsb9R
+         G+nhyurrAKu33DhrvheyxkgU2fsn5AFIp8HRclhMAUSthRr1QnZ3OfthfnAJentzpu
+         0uUHKi0SGjIlifQUfo1Y5yKVMudMI1EP3U5hI4NXKr3C3wL8n4ZGqq0pqauLMW3zSS
+         5ymUhrbHytrgmyGW1YDc32MZ/8qR2fLFYA+jSUc+HjQX5lxmq+twOD/U3q6uANeX2V
+         cmYxKdkqwPzt3OX9Z6u3cLetKby7xYWbLXaPHn35uIHOHiRriBxxGemeLOoSqIfcag
+         SSJKP/BFmrmLA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.15 16/23] ASoC: SOF: core: Free the firmware trace before calling snd_sof_shutdown()
-Date:   Sun, 23 Jul 2023 21:23:27 -0400
-Message-Id: <20230724012334.2317140-16-sashal@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, miklos@szeredi.hu,
+        linux-unionfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 17/23] ovl: check type and offset of struct vfsmount in ovl_entry
+Date:   Sun, 23 Jul 2023 21:23:28 -0400
+Message-Id: <20230724012334.2317140-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012334.2317140-1-sashal@kernel.org>
 References: <20230724012334.2317140-1-sashal@kernel.org>
@@ -66,52 +60,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+From: Christian Brauner <brauner@kernel.org>
 
-[ Upstream commit d389dcb3a48cec4f03c16434c0bf98a4c635372a ]
+[ Upstream commit f723edb8a532cd26e1ff0a2b271d73762d48f762 ]
 
-The shutdown is called on reboot/shutdown of the machine.
-At this point the firmware tracing cannot be used anymore but in case of
-IPC3 it is using and keeping a DMA channel active (dtrace).
+Porting overlayfs to the new amount api I started experiencing random
+crashes that couldn't be explained easily. So after much debugging and
+reasoning it became clear that struct ovl_entry requires the point to
+struct vfsmount to be the first member and of type struct vfsmount.
 
-For Tiger Lake platforms we have a quirk in place to fix rare reboot issues
-when a DMA was active before rebooting the system.
-If the tracing is enabled this quirk will be always used and a print
-appears on the kernel log which might be misleading or not even correct.
+During the port I added a new member at the beginning of struct
+ovl_entry which broke all over the place in the form of random crashes
+and cache corruptions. While there's a comment in ovl_free_fs() to the
+effect of "Hack! Reuse ofs->layers as a vfsmount array before freeing
+it" there's no such comment on struct ovl_entry which makes this easy to
+trip over.
 
-Release the fw tracing before executing the shutdown to make sure that this
-known DMA user is cleared away.
+Add a comment and two static asserts for both the offset and the type of
+pointer in struct ovl_entry.
 
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20230616100039.378150-4-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/overlayfs/ovl_entry.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 59d0d7b2b55c8..5f8e89da7b578 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -406,8 +406,10 @@ int snd_sof_device_shutdown(struct device *dev)
- 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
- 		cancel_work_sync(&sdev->probe_work);
+diff --git a/fs/overlayfs/ovl_entry.h b/fs/overlayfs/ovl_entry.h
+index b2d64f3c974bb..08031638bbeec 100644
+--- a/fs/overlayfs/ovl_entry.h
++++ b/fs/overlayfs/ovl_entry.h
+@@ -32,6 +32,7 @@ struct ovl_sb {
+ };
  
--	if (sdev->fw_state == SOF_FW_BOOT_COMPLETE)
-+	if (sdev->fw_state == SOF_FW_BOOT_COMPLETE) {
-+		sof_fw_trace_free(sdev);
- 		return snd_sof_shutdown(sdev);
-+	}
+ struct ovl_layer {
++	/* ovl_free_fs() relies on @mnt being the first member! */
+ 	struct vfsmount *mnt;
+ 	/* Trap in ovl inode cache */
+ 	struct inode *trap;
+@@ -42,6 +43,14 @@ struct ovl_layer {
+ 	int fsid;
+ };
  
- 	return 0;
- }
++/*
++ * ovl_free_fs() relies on @mnt being the first member when unmounting
++ * the private mounts created for each layer. Let's check both the
++ * offset and type.
++ */
++static_assert(offsetof(struct ovl_layer, mnt) == 0);
++static_assert(__same_type(typeof_member(struct ovl_layer, mnt), struct vfsmount *));
++
+ struct ovl_path {
+ 	const struct ovl_layer *layer;
+ 	struct dentry *dentry;
 -- 
 2.39.2
 
