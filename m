@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 489E975F83B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0361E75F846
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230309AbjGXN1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
+        id S231225AbjGXN1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbjGXN1J (ORCPT
+        with ESMTP id S230251AbjGXN1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:27:09 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ABDCE47
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:26:53 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99b78fda9a8so422768766b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:26:53 -0700 (PDT)
+        Mon, 24 Jul 2023 09:27:44 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC000137
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:27:42 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-666eba6f3d6so2437070b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:27:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690205212; x=1690810012;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=j3RBb+0rdI0PV2BXiS1JbrEVU9RxO+lG8P/0tc+GO2k=;
-        b=BgBI17fdQ/GbfAC+tyBQqZDxHUVtXE2gyuA+iY6fgjJRj2mM7rPqhup90hSQ0GMKuD
-         7wQ2ysntk6ex6WlxX7SrnKsvpJs2XA6FdwaYllJ+DEfSaRXKA57bbjh0+H8WmO0PbduE
-         hrODJiSi61B02+5Ei0iTz2CxXlU0gPoTvKGb/qskxos6EM8nX6Z0Zr5RWs/4S1ce0q/N
-         ewa2Czwe1HfC8hwPsJJlRUA9Sga7nleuaCd3v6zKnmsf6dsxOFoGgEoNjtbEkbTeYVBV
-         hMOsEi72t6F9OD58sdW77RkqaZzv0XJTAqv4tHh1PLqpdLK/NXeUG7khR0cxshjIisfl
-         rRTw==
+        d=gmail.com; s=20221208; t=1690205262; x=1690810062;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qe1WWOmOhwyGNUK/umivfemB/L6/ebTKyDycVpoI8eA=;
+        b=YvdR+gZs+SBsvKp4JTeP+13nxYLoph3fZCusDTczzhYiUglTAz7SFT+bHHRkd5+Td3
+         ouzaPB0MR9DMa5loZdmBYZv9OibL6SwWIJa0MzhT+AxqYV7VyMVsAaicBYX9nnxeVJFJ
+         iud19b4IDh2b8VZJeThqo5Oj3+jUTtApVYjaQjskOp0mr53NjyuPXIz/NMClJk5U4eNv
+         Q64iD2vHftwJ6+T0aFhNRrYBex2e8ehfQbtt1ZqINvfOGV/d5UGH5Lh7eRCvl8Mz2PWN
+         lBiuR9RfxcITiPuBFD94tkk3NJjKej5jHaZpACo6ZuD6thAGgjgRDhyqky7mv/f5u3vt
+         CTXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690205212; x=1690810012;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j3RBb+0rdI0PV2BXiS1JbrEVU9RxO+lG8P/0tc+GO2k=;
-        b=ELlRxvxkFYJF13+gwqNLKa45wjNbpZHv/aXW3Y+eDci2oUf0TO5kLMv94/g8qW3CG7
-         IE0MCFqD+XLijYFlN5UXlxm5Fbk+2KsTeAxjHja/9YsuM4ngQbEcfSjWnAOjRL2WZzwk
-         6brkTjhk6ajJtS79ET3RUIsX5JS/0+qM8yIel9ulbSXXhsBsMzZYQsDMTvVSoznGmH3c
-         esBNisu0HlNP4s7NW1KngcqNt04vN2gU0zMsVmC3J3KAoQNgzkd0Gv2EF+YwRfpbK5sy
-         u164XQYMWItsbci1x/brgn6Qn/o1Lmg758ADtO/qU44s8qCKbX6jYc6MwWI/hNE2heUf
-         jiIQ==
-X-Gm-Message-State: ABy/qLbtsUx4BBjZIevmOBALOUO5bxhVq+R0B1rzBRrBs7HsG4Zri6By
-        cmsvqMw6qC0Au04eziNjDvgl9g==
-X-Google-Smtp-Source: APBJJlG+MYBK5sVdt/kiSQV3ZDPpauvV89+zavgwzbGMZNg+Lkas7YB/9OEJZ5Op6rZW781mBlqpIg==
-X-Received: by 2002:a17:907:2bea:b0:98d:f4a7:71cf with SMTP id gv42-20020a1709072bea00b0098df4a771cfmr9317640ejc.62.1690205211882;
-        Mon, 24 Jul 2023 06:26:51 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id h19-20020a1709062dd300b0097073f1ed84sm6754521eji.4.2023.07.24.06.26.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 06:26:51 -0700 (PDT)
-Message-ID: <aa2978d7-b0bb-e05c-6da1-3930e291643a@linaro.org>
-Date:   Mon, 24 Jul 2023 15:26:49 +0200
+        d=1e100.net; s=20221208; t=1690205262; x=1690810062;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qe1WWOmOhwyGNUK/umivfemB/L6/ebTKyDycVpoI8eA=;
+        b=O9vcWe6Gt0pj8sjLG/1jDQNOebfHblSeArSlwren/GdokIcARqA+zHL7c+H2NIZ8gb
+         pTx7OxPqVcWxVnWiEeg2Zv3Rdv9QJ/D9cOYkDJ983Ye4MCEfoH79wnn1KUmiH/wfPDc5
+         c/sA4y5E2xuyvTy0g+YmvcKMh2+LXbh9wAcRZfHk2FECnM+GBy4pR6f78V9Vje1+leGZ
+         u/+zMZiov0Jr8c4mQT+vXkylwV++Lj+Ow3wt66weiR8JGidhhwJa0Ler27HBQDgtZ1rn
+         dEfNw4DrNyZeZe8fPOzV48IH4HhVVsGNZKfH6zI0yV6/HRwe9a4DUMV542KHGRXT5j1t
+         zGRQ==
+X-Gm-Message-State: ABy/qLbbA22asSMDdJ1T5CkJn/Ri4qJcQ4lDTpy42YfzgQQvEFjqXY1g
+        t8/eTbY2imoN35L8kEd9UOs=
+X-Google-Smtp-Source: APBJJlHgTYF3JtTeWGHx5BDlx5lH37dxbu8R1gftf3UNN0LgQ/rlyAJO2eA4MU2Gx7mXCMB+EtCQIA==
+X-Received: by 2002:a05:6a20:1d0:b0:134:8b50:47cd with SMTP id 16-20020a056a2001d000b001348b5047cdmr8801634pzz.9.1690205262234;
+        Mon, 24 Jul 2023 06:27:42 -0700 (PDT)
+Received: from n26-073-040.byted.org ([106.38.226.194])
+        by smtp.gmail.com with ESMTPSA id w13-20020a170902d70d00b001b9f032bb3dsm8945763ply.3.2023.07.24.06.27.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 06:27:41 -0700 (PDT)
+From:   "luxu.kernel" <luxujoy@gmail.com>
+X-Google-Original-From: "luxu.kernel" <luxu.kernel@bytedance.com>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        luxu.kernel@bytedance.com
+Subject: [PATCH] riscv: Fix local irq restore when flags indicates irq disabled
+Date:   Mon, 24 Jul 2023 21:27:36 +0800
+Message-Id: <20230724132736.124106-1-luxu.kernel@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 2/6] soc: qcom: llcc: Refactor llcc driver to support
- multiple configuration
-Content-Language: en-US
-To:     Mukesh Ojha <quic_mojha@quicinc.com>,
-        Komal Bajaj <quic_kbajaj@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        srinivas.kandagatla@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230724084155.8682-1-quic_kbajaj@quicinc.com>
- <20230724084155.8682-3-quic_kbajaj@quicinc.com>
- <39b4bafd-410f-cae8-13ae-e18d751b51a2@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <39b4bafd-410f-cae8-13ae-e18d751b51a2@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/2023 14:28, Mukesh Ojha wrote:
-> On 7/24/2023 2:11 PM, Komal Bajaj wrote:
->> Refactor driver to support multiple configuration for llcc on a target.
->>
->> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
->> ---
->>   drivers/soc/qcom/llcc-qcom.c | 264 +++++++++++++++++++++++------------
->>   1 file changed, 178 insertions(+), 86 deletions(-)
->>
->> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
->> index 67c19ed2219a..321f8d2079f7 100644
->> --- a/drivers/soc/qcom/llcc-qcom.c
->> +++ b/drivers/soc/qcom/llcc-qcom.c
->> @@ -127,6 +127,12 @@ struct qcom_llcc_config {
->>   	bool no_edac;
->>   };
->>   
->> +struct qcom_sct_config
-> 
-> const ?
+When arch_local_irq_restore() is called with flags indicating irqs
+disabled, we need to clear SR_IE bit in CSR_STATUS, whereas current
+implementation based on csr_set() function only sets SR_IE bit of
+CSR_STATUS when SR_IE bit of flags is high and does nothing when
+SR_IE bit of flags is low.
 
-What (and how) should be const above?
+This commit supplies csr clear operation when calling irq restore
+function with flags indicating irq disabled.
 
-Best regards,
-Krzysztof
+Signed-off-by: luxu.kernel <luxu.kernel@bytedance.com>
+---
+ arch/riscv/include/asm/irqflags.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/include/asm/irqflags.h b/arch/riscv/include/asm/irqflags.h
+index 08d4d6a5b7e9..7c31fc3c3559 100644
+--- a/arch/riscv/include/asm/irqflags.h
++++ b/arch/riscv/include/asm/irqflags.h
+@@ -49,7 +49,10 @@ static inline int arch_irqs_disabled(void)
+ /* set interrupt enabled status */
+ static inline void arch_local_irq_restore(unsigned long flags)
+ {
+-	csr_set(CSR_STATUS, flags & SR_IE);
++	if (flags & SR_IE)
++		csr_set(CSR_STATUS, SR_IE);
++	else
++		csr_clear(CSR_STATUS, SR_IE);
+ }
+ 
+ #endif /* _ASM_RISCV_IRQFLAGS_H */
+-- 
+2.20.1
 
