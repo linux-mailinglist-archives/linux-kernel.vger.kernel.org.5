@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 998EA75E88C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5387675E890
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbjGXBmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41326 "EHLO
+        id S232274AbjGXBmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbjGXBlT (ORCPT
+        with ESMTP id S232186AbjGXBlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:41:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B3949F6;
-        Sun, 23 Jul 2023 18:36:44 -0700 (PDT)
+        Sun, 23 Jul 2023 21:41:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930CA4EE0;
+        Sun, 23 Jul 2023 18:36:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 767AD60F4D;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 085F860F14;
+        Mon, 24 Jul 2023 01:33:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4765FC433CB;
         Mon, 24 Jul 2023 01:33:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 203BDC433CC;
-        Mon, 24 Jul 2023 01:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162382;
-        bh=/lMwOp/a1X9GwFsBiE54ajNyp1XZhnGLosgfOspcy28=;
+        s=k20201202; t=1690162384;
+        bh=UyHxfqUl9MQg/GfcFVN8UXFu7u8PfUUqHYukYbKHR6U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eOJpAEFhSTz8CawKiV5t1rAKFhHqbjKzBpVSeEESV3h8CHEl9dfmgOoWCK/PTwxrt
-         yfxjJdjAYWqFUmnlf+4GKNC0O7Ek6VNJ42IX9pTeg5cS9pJcY+C+TLzArZkMVtNcSK
-         Ytp/oOjrFlN2u0ap2W/wRNd5jI9Cz/XIsPE+48szlPoXP87B32PAQ5pSby32t4y7jZ
-         LwC5ae786zBrCuLShsc74X00RdE5/r7xvBJBvYoYK2IrDBksqf1ggv1xvs/8C4S357
-         +XMFfSBEo/2mgfyMcOP45c7YsvS80LSjTjX322HZXfPypQFFqtpopSRTWCpyYPR8rE
-         0HCTbRZXVVtQg==
+        b=sxOwL+CKPl5X8G4AW0/9V54vK2SljDsxckKu5qACOogdasoPGVEUUDzOJHB8Ao0Qh
+         TAmhkwVtRTGAsvhMkBflgJ/fm0q9CbvkB5ZG4RfE+sNWcOXhfkMaMvKnE8YasQBCLM
+         c+mmrkqeNG9nRc1f+YGYJbR7SCWc8Ef0xxqfwkpCvrM1Oo+t0CkEUBuoyTbHjoe60s
+         t0ZXlkrI/4ZBDWGEZIW4N9pZCLc2/SlM4kFKQvXL+SBvvjbgiNVPTtHGeeo3rJVAnu
+         SgNLnyEGzfs2LXxWSPXeXKGhIslvczlpwQgBC7bGMUzquPkeZs7ejmDtKfaldLFlmn
+         xz6Rk5BvQxxiw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yuechao Zhao <yuechao.zhao@advantech.com.cn>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Sasha Levin <sashal@kernel.org>, wim@iguana.be,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 18/34] watchdog: sp5100_tco: support Hygon FCH/SCH (Server Controller Hub)
-Date:   Sun, 23 Jul 2023 21:32:21 -0400
-Message-Id: <20230724013238.2329166-18-sashal@kernel.org>
+Cc:     Zhengping Jiang <jiangzp@google.com>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
+        gustavo@padovan.org, johan.hedberg@gmail.com, davem@davemloft.net,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 19/34] Bluetooth: L2CAP: Fix use-after-free
+Date:   Sun, 23 Jul 2023 21:32:22 -0400
+Message-Id: <20230724013238.2329166-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013238.2329166-1-sashal@kernel.org>
 References: <20230724013238.2329166-1-sashal@kernel.org>
@@ -51,8 +52,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.40
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,44 +62,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
+From: Zhengping Jiang <jiangzp@google.com>
 
-[ Upstream commit 009637de1f65cff452ad49554d1e8ef9fda99e43 ]
+[ Upstream commit f752a0b334bb95fe9b42ecb511e0864e2768046f ]
 
-Add PCI_VENDOR_ID_HYGON(Hygon vendor id [0x1d94]) in this driver
+Fix potential use-after-free in l2cap_le_command_rej.
 
-Signed-off-by: Yuechao Zhao <yuechao.zhao@advantech.com.cn>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lkml.kernel.org/r/20230612031907.796461-1-a345351830@gmail.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Zhengping Jiang <jiangzp@google.com>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/sp5100_tco.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/bluetooth/l2cap_core.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/watchdog/sp5100_tco.c b/drivers/watchdog/sp5100_tco.c
-index 14f8d8d90920f..2bd3dc25cb030 100644
---- a/drivers/watchdog/sp5100_tco.c
-+++ b/drivers/watchdog/sp5100_tco.c
-@@ -96,7 +96,7 @@ static enum tco_reg_layout tco_reg_layout(struct pci_dev *dev)
- 	    sp5100_tco_pci->device == PCI_DEVICE_ID_AMD_KERNCZ_SMBUS &&
- 	    sp5100_tco_pci->revision >= AMD_ZEN_SMBUS_PCI_REV) {
- 		return efch_mmio;
--	} else if (dev->vendor == PCI_VENDOR_ID_AMD &&
-+	} else if ((dev->vendor == PCI_VENDOR_ID_AMD || dev->vendor == PCI_VENDOR_ID_HYGON) &&
- 	    ((dev->device == PCI_DEVICE_ID_AMD_HUDSON2_SMBUS &&
- 	     dev->revision >= 0x41) ||
- 	    (dev->device == PCI_DEVICE_ID_AMD_KERNCZ_SMBUS &&
-@@ -579,6 +579,8 @@ static const struct pci_device_id sp5100_tco_pci_tbl[] = {
- 	  PCI_ANY_ID, },
- 	{ PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_KERNCZ_SMBUS, PCI_ANY_ID,
- 	  PCI_ANY_ID, },
-+	{ PCI_VENDOR_ID_HYGON, PCI_DEVICE_ID_AMD_KERNCZ_SMBUS, PCI_ANY_ID,
-+	  PCI_ANY_ID, },
- 	{ 0, },			/* End of list */
- };
- MODULE_DEVICE_TABLE(pci, sp5100_tco_pci_tbl);
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index 02fc9961464cf..a7899857aee5d 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -6375,9 +6375,14 @@ static inline int l2cap_le_command_rej(struct l2cap_conn *conn,
+ 	if (!chan)
+ 		goto done;
+ 
++	chan = l2cap_chan_hold_unless_zero(chan);
++	if (!chan)
++		goto done;
++
+ 	l2cap_chan_lock(chan);
+ 	l2cap_chan_del(chan, ECONNREFUSED);
+ 	l2cap_chan_unlock(chan);
++	l2cap_chan_put(chan);
+ 
+ done:
+ 	mutex_unlock(&conn->chan_lock);
 -- 
 2.39.2
 
