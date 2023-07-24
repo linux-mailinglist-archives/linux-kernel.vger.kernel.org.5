@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CB275F406
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19F775F407
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233226AbjGXK7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
+        id S233251AbjGXK7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233169AbjGXK7d (ORCPT
+        with ESMTP id S233225AbjGXK7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:59:33 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79716FF;
-        Mon, 24 Jul 2023 03:59:32 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbca8935bfso32764745e9.3;
-        Mon, 24 Jul 2023 03:59:32 -0700 (PDT)
+        Mon, 24 Jul 2023 06:59:35 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704C090;
+        Mon, 24 Jul 2023 03:59:33 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b96789d574so55378601fa.2;
+        Mon, 24 Jul 2023 03:59:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690196371; x=1690801171;
+        d=gmail.com; s=20221208; t=1690196372; x=1690801172;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5oqH5/rE8ocNa3lVYSAWAjwDwYzH5wzVOgSmdaIdUr8=;
-        b=Pi2ryTIPkS3v4zSBsFRnhvFrDEuLSFJ+6B6UJijM8XW9sUirMJ8blmDnAWzcvB5WWQ
-         SfSTmD9SUqWjFECjv+j8N/C5vnA/oz+gW8dXcdvPoLFg9oFPuHtyLqAUOUAlUnWRInQi
-         XmEkm+/qz6LVItRrWNSGQ9GdjqDcGnlxOB64E+hqIHW02WULuPJTIBgxEpCT0xRpOfFT
-         BAKF7XD+KcAr+WtnbhQCfWcXHojvxBilxCaUl9Out9mJGrwXhZM0Yz1SL2N1CJ+uUS1m
-         0MwZrFc7uqcz8DHQ9ZDgX3e5nhmfVP0i+PQKXBNM5Pfwoy1vuR/wYnGK5mtXudMKp2ey
-         dfhw==
+        bh=Pg3LdyxpJSkdMgcrpAAOq3iMwhvNlpKWfKdNTyn8mhQ=;
+        b=fGCTLEynvWOQHnVbYne2y6L2d9vnBZo/jnGWEWmz9zuFcCXTvm6o667Ojx94ghpyA8
+         bWcxKpvJTvskyvv38Ih75tsWtryCPG83LE1a11GYVAxD5gLrug468mwu6qGZaKSKxSqO
+         7d5BLjzBONIjzO5Zt+gg+Ay4kKv0ku4wpVVAA8LfCjMJGcQDWmggzQ5UJpu26BOiIPU8
+         R7+1FkiTzA9dhieeSAQBgqVV1+GqEU0baO62BtZliIcOV/49wXVx5pX/PVoEq+XS4m9o
+         ZQFAkuoatPxqatCg0hVLqxx5rxionrbgXKTxMt4P0ZRV5q9vWNcGma+UGOwzSnzhTJfN
+         nSNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690196371; x=1690801171;
+        d=1e100.net; s=20221208; t=1690196372; x=1690801172;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5oqH5/rE8ocNa3lVYSAWAjwDwYzH5wzVOgSmdaIdUr8=;
-        b=XCEDR8y8y9F6dJEpf6aWKg42a6iB6W/xLk9d17G+Vqe/oNKLIeo6PbgFqb2rukZ9iH
-         4NmNwAv879FjeRbr7gTu01viDsxV8ui232vcciMazprB8rjuqyq/XxyFrENBlXCCY5r9
-         zfz7eSZeEC7GxOMjHSD2m9CNlCj51JAt3rG/uWklq2SHG+w5JFEsAe+d4ucfQlhq1sr1
-         ZxrfHmYIvpalWfVXgB/MzvJZnZ0wzUS9hRAwTrgIwSHMpLA9xEkl9CIWbEQkG88bGnVw
-         tq+l02rm/yfm7dPNC2+gcddffFIjQJ6yCJRZVHIjAnpTUPEuq2vV1+/J7Qz1h0ns02Iw
-         N1jQ==
-X-Gm-Message-State: ABy/qLYtmNvVZ58LMc+evXZ4SaP3Ptfoj9Vws9YQFaAYqypKyg8kELts
-        pjz676AjCG7ZUPldYRJxb3Q=
-X-Google-Smtp-Source: APBJJlHmc9FIcgTYT5rbzJdifFNu9mvDNw+oM6GiUFZ8Po1xFQTtqDvx5SKTl9oBrV9TRdexUtEk+g==
-X-Received: by 2002:a1c:f713:0:b0:3fb:a6ee:4cec with SMTP id v19-20020a1cf713000000b003fba6ee4cecmr6050943wmh.33.1690196370722;
-        Mon, 24 Jul 2023 03:59:30 -0700 (PDT)
+        bh=Pg3LdyxpJSkdMgcrpAAOq3iMwhvNlpKWfKdNTyn8mhQ=;
+        b=BP3/X7kwMrXO+te9e/avjlMTK6X4UGBJoAc/vCJpcCD4yv+GNPKLqNH1PcbXmzgxHB
+         Z31+SqRTKCctFK5YbO+9HAdu+dW/VdvCm1swS0cLMfhWxlzrrMygIkor7vzH0ILLPsTP
+         PpbDHulns+ycgtzxexboGvyhhDRMKuL7zY0xqloSzwNCj8yKuYmzNFhjG5sz30KjrWda
+         zpsbmWa0uLlQDyxN95jUjeYxwZX9oX4AiajpZ7Fgb+pzEW1MRnhYuNS57DEZLL9ECYu/
+         KwBUV9OlxxPELjkX9VS04j4FDtpxb6mf0hPvXn7GMuUF0TwJzdOh2Er7IOBNSSnxg2OL
+         DXVg==
+X-Gm-Message-State: ABy/qLYsQHBtoMymOt6JAK+nNLs/yMYPEBzykzExiXjDWs7+4qSstj11
+        5cXCO0NS2pZH4mnhiY8kJRY=
+X-Google-Smtp-Source: APBJJlFLKQlYGJVUR8zBuBtVygQ6CORcyKk19Gzmrvbw88E6Skc6S40ZBE0E2VWtSblQH3gKWcnu6A==
+X-Received: by 2002:a2e:990d:0:b0:2b6:9dd5:7a5 with SMTP id v13-20020a2e990d000000b002b69dd507a5mr5323602lji.12.1690196371615;
+        Mon, 24 Jul 2023 03:59:31 -0700 (PDT)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id m14-20020a7bcb8e000000b003fbc9371193sm10055353wmi.13.2023.07.24.03.59.29
+        by smtp.googlemail.com with ESMTPSA id m14-20020a7bcb8e000000b003fbc9371193sm10055353wmi.13.2023.07.24.03.59.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 03:59:30 -0700 (PDT)
+        Mon, 24 Jul 2023 03:59:31 -0700 (PDT)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
@@ -61,9 +61,9 @@ To:     Andrew Lunn <andrew@lunn.ch>,
         Christian Marangi <ansuelsmth@gmail.com>,
         Atin Bainada <hi@atinb.me>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [net-next PATCH 2/3] net: dsa: qca8k: make learning configurable and keep off if standalone
-Date:   Mon, 24 Jul 2023 05:30:57 +0200
-Message-Id: <20230724033058.16795-2-ansuelsmth@gmail.com>
+Subject: [net-next PATCH 3/3] net: dsa: qca8k: limit user ports access to the first CPU port on setup
+Date:   Mon, 24 Jul 2023 05:30:58 +0200
+Message-Id: <20230724033058.16795-3-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230724033058.16795-1-ansuelsmth@gmail.com>
 References: <20230724033058.16795-1-ansuelsmth@gmail.com>
@@ -79,144 +79,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Address learning should initially be turned off by the driver for port
-operation in standalone mode, then the DSA core handles changes to it
-via ds->ops->port_bridge_flags().
+In preparation for multi-CPU support, set CPU port LOOKUP MEMBER outside
+the port loop and setup the LOOKUP MEMBER mask for user ports only to
+the first CPU port.
 
-Currently this is not the case for qca8k where learning is enabled
-unconditionally in qca8k_setup for every user port.
+This is to handle flooding condition where every CPU port is set as
+target and prevent packet duplication for unknown frames from user ports.
 
-Handle ports configured in standalone mode by making the learning
-configurable and not enabling it by default.
-
-Implement .port_pre_bridge_flags and .port_bridge_flags dsa ops to
-enable learning for bridge that request it and tweak
-.port_stp_state_set to correctly disable learning when port is
-configured in standalone mode.
+Secondary CPU port LOOKUP MEMBER mask will be setup later when
+port_change_master will be implemented.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- drivers/net/dsa/qca/qca8k-8xxx.c   |  7 +++--
- drivers/net/dsa/qca/qca8k-common.c | 44 ++++++++++++++++++++++++++++++
- drivers/net/dsa/qca/qca8k.h        |  6 ++++
- 3 files changed, 54 insertions(+), 3 deletions(-)
+ drivers/net/dsa/qca/qca8k-8xxx.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/dsa/qca/qca8k-8xxx.c b/drivers/net/dsa/qca/qca8k-8xxx.c
-index ae088a4df794..31552853fdd4 100644
+index 31552853fdd4..6286a64a2fe3 100644
 --- a/drivers/net/dsa/qca/qca8k-8xxx.c
 +++ b/drivers/net/dsa/qca/qca8k-8xxx.c
-@@ -1870,9 +1870,8 @@ qca8k_setup(struct dsa_switch *ds)
- 			if (ret)
- 				return ret;
+@@ -1850,18 +1850,16 @@ qca8k_setup(struct dsa_switch *ds)
+ 	if (ret)
+ 		return ret;
  
--			/* Enable ARP Auto-learning by default */
--			ret = regmap_set_bits(priv->regmap, QCA8K_PORT_LOOKUP_CTRL(i),
--					      QCA8K_PORT_LOOKUP_LEARN);
-+			ret = regmap_clear_bits(priv->regmap, QCA8K_PORT_LOOKUP_CTRL(i),
-+						QCA8K_PORT_LOOKUP_LEARN);
- 			if (ret)
- 				return ret;
- 
-@@ -1978,6 +1977,8 @@ static const struct dsa_switch_ops qca8k_switch_ops = {
- 	.port_change_mtu	= qca8k_port_change_mtu,
- 	.port_max_mtu		= qca8k_port_max_mtu,
- 	.port_stp_state_set	= qca8k_port_stp_state_set,
-+	.port_pre_bridge_flags	= qca8k_port_pre_bridge_flags,
-+	.port_bridge_flags	= qca8k_port_bridge_flags,
- 	.port_bridge_join	= qca8k_port_bridge_join,
- 	.port_bridge_leave	= qca8k_port_bridge_leave,
- 	.port_fast_age		= qca8k_port_fast_age,
-diff --git a/drivers/net/dsa/qca/qca8k-common.c b/drivers/net/dsa/qca/qca8k-common.c
-index 13b8452ce5b2..e53694d2852a 100644
---- a/drivers/net/dsa/qca/qca8k-common.c
-+++ b/drivers/net/dsa/qca/qca8k-common.c
-@@ -565,9 +565,26 @@ int qca8k_get_mac_eee(struct dsa_switch *ds, int port,
- 	return 0;
- }
- 
-+static int qca8k_port_configure_learning(struct dsa_switch *ds, int port,
-+					 bool learning)
-+{
-+	struct qca8k_priv *priv = ds->priv;
++	/* CPU port gets connected to all user ports of the switch */
++	ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(cpu_port),
++			QCA8K_PORT_LOOKUP_MEMBER, dsa_user_ports(ds));
++	if (ret)
++		return ret;
 +
-+	if (learning)
-+		return regmap_set_bits(priv->regmap,
-+				       QCA8K_PORT_LOOKUP_CTRL(port),
-+				       QCA8K_PORT_LOOKUP_LEARN);
-+	else
-+		return regmap_clear_bits(priv->regmap,
-+					 QCA8K_PORT_LOOKUP_CTRL(port),
-+					 QCA8K_PORT_LOOKUP_LEARN);
-+}
-+
- void qca8k_port_stp_state_set(struct dsa_switch *ds, int port, u8 state)
- {
-+	struct dsa_port *dp = dsa_to_port(ds, port);
- 	struct qca8k_priv *priv = ds->priv;
-+	bool learning = false;
- 	u32 stp_state;
- 
- 	switch (state) {
-@@ -582,8 +599,11 @@ void qca8k_port_stp_state_set(struct dsa_switch *ds, int port, u8 state)
- 		break;
- 	case BR_STATE_LEARNING:
- 		stp_state = QCA8K_PORT_LOOKUP_STATE_LEARNING;
-+		learning = dp->learning;
- 		break;
- 	case BR_STATE_FORWARDING:
-+		learning = dp->learning;
-+		fallthrough;
- 	default:
- 		stp_state = QCA8K_PORT_LOOKUP_STATE_FORWARD;
- 		break;
-@@ -591,6 +611,30 @@ void qca8k_port_stp_state_set(struct dsa_switch *ds, int port, u8 state)
- 
- 	qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(port),
- 		  QCA8K_PORT_LOOKUP_STATE_MASK, stp_state);
-+
-+	qca8k_port_configure_learning(ds, port, learning);
-+}
-+
-+int qca8k_port_pre_bridge_flags(struct dsa_switch *ds, int port,
-+				struct switchdev_brport_flags flags,
-+				struct netlink_ext_ack *extack)
-+{
-+	if (flags.mask & ~BR_LEARNING)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+int qca8k_port_bridge_flags(struct dsa_switch *ds, int port,
-+			    struct switchdev_brport_flags flags,
-+			    struct netlink_ext_ack *extack)
-+{
-+	int ret;
-+
-+	ret = qca8k_port_configure_learning(ds, port,
-+					    flags.val & BR_LEARNING);
-+
-+	return ret;
- }
- 
- int qca8k_port_bridge_join(struct dsa_switch *ds, int port,
-diff --git a/drivers/net/dsa/qca/qca8k.h b/drivers/net/dsa/qca/qca8k.h
-index c5cc8a172d65..8f88b7db384d 100644
---- a/drivers/net/dsa/qca/qca8k.h
-+++ b/drivers/net/dsa/qca/qca8k.h
-@@ -522,6 +522,12 @@ int qca8k_get_mac_eee(struct dsa_switch *ds, int port, struct ethtool_eee *e);
- 
- /* Common bridge function */
- void qca8k_port_stp_state_set(struct dsa_switch *ds, int port, u8 state);
-+int qca8k_port_pre_bridge_flags(struct dsa_switch *ds, int port,
-+				struct switchdev_brport_flags flags,
-+				struct netlink_ext_ack *extack);
-+int qca8k_port_bridge_flags(struct dsa_switch *ds, int port,
-+			    struct switchdev_brport_flags flags,
-+			    struct netlink_ext_ack *extack);
- int qca8k_port_bridge_join(struct dsa_switch *ds, int port,
- 			   struct dsa_bridge bridge,
- 			   bool *tx_fwd_offload,
+ 	/* Setup connection between CPU port & user ports
+ 	 * Configure specific switch configuration for ports
+ 	 */
+ 	for (i = 0; i < QCA8K_NUM_PORTS; i++) {
+-		/* CPU port gets connected to all user ports of the switch */
+-		if (dsa_is_cpu_port(ds, i)) {
+-			ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(i),
+-					QCA8K_PORT_LOOKUP_MEMBER, dsa_user_ports(ds));
+-			if (ret)
+-				return ret;
+-		}
+-
+ 		/* Individual user ports get connected to CPU port only */
+ 		if (dsa_is_user_port(ds, i)) {
+ 			ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(i),
 -- 
 2.40.1
 
