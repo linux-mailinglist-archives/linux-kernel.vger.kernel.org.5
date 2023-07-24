@@ -2,91 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E198275FAB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A1075FAC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbjGXPY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 11:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
+        id S231251AbjGXPY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 11:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjGXPYZ (ORCPT
+        with ESMTP id S230297AbjGXPY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 11:24:25 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F88A1B3;
-        Mon, 24 Jul 2023 08:24:23 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fddd4e942eso6322040e87.3;
-        Mon, 24 Jul 2023 08:24:22 -0700 (PDT)
+        Mon, 24 Jul 2023 11:24:56 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1477912F
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:24:55 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40550136e54so597161cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:24:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690212261; x=1690817061;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=jb1AZLdeo1z+1jWoJg0jC2cfacR/CrHBIYgRy/5PsR0=;
-        b=C+XSSIKlbL5TvOfVDMq0DeY6Oo9N+dhuJH0//3ZPWIyryu5RzQhNm+5th3r76px9wV
-         d8TKExRIhcVW7xNCkLWApABddBEbCTIN8n4JIz6TzrW6ZjRoqX0tkxEEHd/HWkGmuiHo
-         9zWJUtuVgSSu3OCVPEm9oQF4Ol7qrJ4jkaCvjnsxtDN83nchWlrvS7xBMNt5q1QwLi+6
-         uKsU/oXANu+JV2eOSJMYRwoycIWNo66KEenCbKPTcXsDOwZ0aE16TY0aYh810eblQvQ8
-         y966tXuG+PWSXXwOgjEl4Fa4jLb6r/yd4T5e9nf5Ox+qEsxXYaAoWfpqccK6KjAPAKDG
-         51Mw==
+        d=google.com; s=20221208; t=1690212294; x=1690817094;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/ARRWNWh2Vmb25NjHP5oLpxafnyIHI4eaaf29F6UDI8=;
+        b=7x0VllgkQZ5Lhm3lNOZYgbjqIZVMqawjLMvScJ3sLXCdq0pk0OVB6NpIUxJhgPFKP+
+         35RLBrM73909fXim0ML2FaZmcXj0nHajLqvyQREYToX1EWZ6li0z07Z8B+tBjzCtBeiz
+         z2Q3Fpw9grdmt9C9I6+9UVMuv6dkKHpyeDlk384H2i90VGjZMQnMVHPgECjogh8AWvuW
+         pNcFvHLM5oB4Qe/qBdHljBEEJDr8a5FkSxxlbbRnxsV7yA3tmg9ydLZVSc9XJCqeTTmU
+         X1NLWOMax2UtUGCpazbmOJajvXVxpRXq0fY3ff2dy1r//GxJ1NaRbrK7ZIJClO58ThCb
+         GpGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690212261; x=1690817061;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jb1AZLdeo1z+1jWoJg0jC2cfacR/CrHBIYgRy/5PsR0=;
-        b=hAf0LT2dppRfg6HosJjRqJaNgwGVs19qfcBy6rI7a6YMfEPnWqGmdqad1JRhqn2yE5
-         JfFQv4slqQsXZDGVQhiUMp/zYmiqQPNqJaAxeixO1K1Xl8S3xfKCtVCMCg/MD2T1VJda
-         FQJ8R0uBgpdFMI9wJx2kbKlE/62u4neYMW1P9bfWcm595yXxAGpM6VZgPWxL2SrPwSXA
-         fm3hCal5rdQifOVsbD6THqPtLI7dWDro/hHyeC1soBUxzfG8p0gdY3fX2tWy0mUQiEjs
-         aLkV+2hedL47a2++rqbWZicFwhJXhQYvU9GkiIN76TM8r39/HbVhncHWNENOAl88FGnS
-         ZjLA==
-X-Gm-Message-State: ABy/qLaLSUmqGjEpL9+y0il3X3DL0BGqsPEs2Q+dY5uiZW+7Y1apQVT6
-        h+/pNkFGseFN36aOdh/V3gM=
-X-Google-Smtp-Source: APBJJlGm4nB2CAS91epgKZXy55YFO74venLk2LJUXKkXcQweu28w1FnK1/EO0qh00tYzbkhPVsGYOQ==
-X-Received: by 2002:a05:6512:2252:b0:4fd:da95:6f39 with SMTP id i18-20020a056512225200b004fdda956f39mr7662194lfu.68.1690212260869;
-        Mon, 24 Jul 2023 08:24:20 -0700 (PDT)
-Received: from mobilestation ([93.157.254.210])
-        by smtp.gmail.com with ESMTPSA id b5-20020a056512024500b004fb73bea65esm2272713lfo.25.2023.07.24.08.24.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 08:24:20 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 18:24:14 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Michail Ivanov <Michail.Ivanov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Punnaiah Choudary Kalluri 
-        <punnaiah.choudary.kalluri@xilinx.com>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/19] EDAC/mc/synopsys: Various fixes and cleanups
-Message-ID: <4thyfyadmlmbj4taelvxswxrmqen6vlbmab65hl7lepvec3ava@suy7s5i3n7dl>
-References: <20220910194237.10142-1-Sergey.Semin@baikalelectronics.ru>
- <4488875.LvFx2qVVIh@steina-w>
- <20230525102434.lqhwtgxqfd2d3356@mobilestation>
- <y6j735uysubwyyzfs7vabz46ewhe7hfmp5aauk3cktduh2r6zt@lxesd43mzfyl>
+        d=1e100.net; s=20221208; t=1690212294; x=1690817094;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/ARRWNWh2Vmb25NjHP5oLpxafnyIHI4eaaf29F6UDI8=;
+        b=YqrhUyUB5XnoZKLPzuZPw0eHM4Sd4rax4pgdCP9Ce7wTvaGp3lEYMKtIibAXjv6luT
+         JDa5lSt4dacENKs4qkq5Cb468F+l46F20PK3l0dYw3kiBhIOLsDhn2pruh154X2BtK6k
+         ddy99rH2gNncpK7xj0wJrqUtRDez+1M8linhRLzYfSY78Xrv5IMTEP2iE8zhFyaS7NYG
+         VIECpRw3HEd/4eY4PLnbmvc+qs41SasoQjm4+Xo5kBXt/Hpq8MTGMd22jA9X9mfUoM3X
+         UYagxwHiSeWk2qmeqZKljJTlxxnDA09sYW2MH6eG5w8wJgNCLDeFaf5ZVYi8ZITQg4YR
+         1JhQ==
+X-Gm-Message-State: ABy/qLaNY9wvIvWziRATBmJ3Lb2RYmuevKzDBX87bUUFQi0UtDOMAI7o
+        lffTkUaEFcZ8ob24GvCc9eZqYHklKhr6bLTJ4igU5g==
+X-Google-Smtp-Source: APBJJlEf6NqfF5oOXAsS8tbDsNEIs+dIB+DwL5BKxyMm1DmXo0JNX3tzw75Jk4jlazxsoVQ782TOxUrZveOVOxKy0Fg=
+X-Received: by 2002:ac8:7d81:0:b0:403:f5b8:2bd2 with SMTP id
+ c1-20020ac87d81000000b00403f5b82bd2mr447401qtd.9.1690212294090; Mon, 24 Jul
+ 2023 08:24:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <y6j735uysubwyyzfs7vabz46ewhe7hfmp5aauk3cktduh2r6zt@lxesd43mzfyl>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20230719001836.198363-1-irogers@google.com> <ZLf4C/+x2ZSpb1Uz@kernel.org>
+In-Reply-To: <ZLf4C/+x2ZSpb1Uz@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 24 Jul 2023 08:24:42 -0700
+Message-ID: <CAP-5=fWXd8KhvxnPjjFjtybNZ7BsN6n_55xFaEA_-Jda0g2+XQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] Parse event sort/regroup fixes
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,197 +79,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alexander
+On Wed, Jul 19, 2023 at 7:49=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Tue, Jul 18, 2023 at 05:18:33PM -0700, Ian Rogers escreveu:
+> > Patch 1, fix:
+> > perf stat -e cycles,slots,topdown-fe-bound
+> > so that cycles isn't made a group leader (failure caused by PMUs
+> > matching). Previously this event list would fail so not necessarily a
+> > regression over previous perf release.
+> >
+> > Patch 2, when regrouping events the leader needs to be updated due to
+> > sorting. This fix causes larger event groups that then regress at
+> > least the tigerlake metric test as the kernel PMU driver fails to
+> > break the weak groups. This is a fix for a bug but the consequence of
+> > fixing the bug is to make a passing test fail due to the kernel PMU
+> > driver.
+> >
+> > Patch 3, don't alter the list position of events without a group if
+> > they don't need forcing into a group. Analysis showed this was the
+> > cause of the issue reported by Andi Kleen:
+> > https://lore.kernel.org/linux-perf-users/ZLBgbHkbrfGygM%2Fu@tassilo/
+>
+> Andi,
+>
+>         Can you please check these patches and provide a Tested-by?
 
-On Mon, Jul 03, 2023 at 02:58:06PM +0300, Serge Semin wrote:
-> Hi Alexander
-> 
-> On Thu, May 25, 2023 at 01:24:37PM +0300, Serge Semin wrote:
-> > Hi Alexander,
-> > 
-> > On Thu, May 25, 2023 at 08:35:59AM +0200, Alexander Stein wrote:
-> > > Hi,
-> > > 
-> > > Am Samstag, 10. September 2022, 21:42:18 CEST schrieb Serge Semin:
-> > > > This patchset is a first one in the series created in the framework of
-> > > > my Baikal-T1 DDRC-related work:
-> > > > 
-> > > > [1: In-progress] EDAC/mc/synopsys: Various fixes and cleanups
-> > > > Link: ---you are looking at it---
-> > > > [2: In-progress] EDAC/synopsys: Add generic DDRC info and address mapping
-> > > > Link:
-> > > > https://lore.kernel.org/linux-edac/20220822191427.27969-1-Sergey.Semin@baik
-> > > > alelectronics.ru [3: In-progress] EDAC/synopsys: Add generic resources and
-> > > > Baikal-T1 support Link:
-> > > > https://lore.kernel.org/linux-edac/20220822191957.28546-1-Sergey.Semin@baik
-> > > > alelectronics.ru
-> > > > 
-> > > > Note the patchsets above must be merged in the same order as they are
-> > > > placed in the list in order to prevent conflicts. Nothing prevents them
-> > > > from being reviewed synchronously though. Any tests are very welcome.
-> > > > Thanks in advance.
-> > > 
-> > > What is the state of this/these series? AFAICS only the DT patches got 
-> > > applied.
-> > > The synopsys driver got refactored quite a lot, so adding proper support for 
-> > > imx8mp from current state will conflict quite a lot.
-> > > It's a Synopsys V3.70a (without HW poisoning support!), refer to commit 
-> > > 68b7cf5d91d4c ("arm64: dts: imx8mp: add ddr controller node to support EDAC on 
-> > > imx8mp").
-> > 
-> > I has been quite busy lately in DW PCIe RP/EP/eDMA driver and my own
-> > deeds. But I am going to get back to this series within a month.
-> > Could you meanwhile have a look at it (review and tests are very
-> > welcome) and if possible start adding the imx8mp support based on the
-> > suggested patchsets (see the lore links above)?
-> > 
-> > The main goal of my changes is to generalize the driver code and make
-> > it working for the original Synopsys DW uMCTL2 device only with as much
-> > compatibility as possible with the various IP-core configs. Most
-> > likely adding your imx8mp DW uMCTL2 V3.70a on top of my changes will
-> > be much easier than writing your own changes.
-> > 
-> > Note recently I've rebased my patches on top of the latest kernel
-> > (6.4-rc1). Can't remember any major conflict so most likely it won't
-> > cause much difficulties for you too. The resultant driver works well
-> > for my system: DDR-phys memory space back-and-forth mapping, errors
-> > poisoning scrubbing, etc.
-> > 
-> > -Serge(y)
-> 
-> Just to let you know. I need two more weeks to settle down my current
-> work and then I am getting back to this series. Once again sorry for
-> the delay.
+I think we should be aiming to get these fixes/changes into Linux 6.5
+and it's a shame this didn't happen last week. Feedback appreciated.
 
-Terribly sorry for the delay again. But I need two more weeks to
-finish my work. Then I'll finally get back to this patchset.
+Thanks,
+Ian
 
--Serge(y)
-
-> 
-> -Serge(y)
-> 
-> > 
-> > > 
-> > > Best regards,
-> > > Alexander
-> > > 
-> > > > Regarding this series content. It's an initial patchset which
-> > > > traditionally provides various fixes, cleanups and modifications required
-> > > > for the more comfortable further features development. The main goal of it
-> > > > though is to detach the Xilinx Zynq A05 DDRC related code into the
-> > > > dedicated driver since first it has nothing to do with the Synopsys DW
-> > > > uMCTL2 DDR controller and second it will be a great deal obstacle on the
-> > > > way of extending the Synopsys-part functionality.
-> > > > 
-> > > > The series starts with fixes patches, which in short concern the next
-> > > > aspects: touching the ZynqMP-specific CSRs on the Xilinx ZinqMP platform
-> > > > only, serializing an access to the ECCCLR register, adding correct memory
-> > > > devices type detection, setting a correct value to the
-> > > > mem_ctl_info.scrub_cap field, dropping an erroneous ADDRMAP[4] parsing and
-> > > > getting back a correct order of the ECC errors info detection procedure.
-> > > > 
-> > > > Afterwards the patchset provides several cleanup patches required for the
-> > > > more coherent code splitting up (Xilinx Zynq A05 and Synopsys DW uMCTL2)
-> > > > so the provided modifications would be useful in both drivers. First we
-> > > > get to replace the platform resource manual IO-remapping with the
-> > > > devm_platform_ioremap_resource() method call. Secondly we suggest to drop:
-> > > > internal CE/UE errors counters, local to_mci() macros definition, some
-> > > > redundant ecc_error_info structure fields and redundant info from the
-> > > > error message, duplicated dimm->nr_pages debug printout and spaces from
-> > > > the MEM_TYPE flags declarations. (The later two updates concern the MCI
-> > > > core part.) Thirdly before splitting up the driver we need to add an
-> > > > unique MC index allocation infrastructure to the MCI core.  It's required
-> > > > since after splitting the driver up we'll need to make sure both device
-> > > > types could be correctly probed on the same platform. Finally the Xilinx
-> > > > Zynq A05 part of the driver is moved out to a dedicated driver where it
-> > > > should been originally placed. After that the platform-specific setups API
-> > > > is removed from the Synopsys DW uMCTL2 DDRC driver since it's no longer
-> > > > required.
-> > > > 
-> > > > Finally as the cherry on the cake we suggest to unify the DW uMCTL2 DDRC
-> > > > driver entities naming and replace the open-coded "shift/mask" patter with
-> > > > the kernel helpers like BIT/GENMASK/FIELD_x in there. It shall
-> > > > significantly improve the code readability.
-> > > > 
-> > > > Link:
-> > > > https://lore.kernel.org/linux-edac/20220822190730.27277-1-Sergey.Semin@baik
-> > > > alelectronics.ru/ Changelog 2:
-> > > > - Move Synopsys DW uMCTL2 DDRC bindings file renaming to a separate patch.
-> > > >   (@Krzysztof)
-> > > > - Introduce a new compatible string "snps,dw-umctl2-ddrc" matching the new
-> > > >   DT-schema name.
-> > > > - Forgot to fix some of the prefix of the SYNPS_ZYNQMP_IRQ_REGS macro
-> > > >   in several places. (@tbot)
-> > > > - Drop the no longer used "priv" pointer from the mc_init() function.
-> > > >   (@tbot)
-> > > > - Include "linux/bitfield.h" header file to get the FIELD_GET macro
-> > > >   definition. (@tbot)
-> > > > - Drop the already merged in patches:
-> > > > [PATCH 12/20] EDAC/mc: Replace spaces with tabs in memtype flags definition
-> > > > [PATCH 13/20] EDAC/mc: Drop duplicated dimm->nr_pages debug printout
-> > > > 
-> > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > > > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> > > > Cc: Michail Ivanov <Michail.Ivanov@baikalelectronics.ru>
-> > > > Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
-> > > > Cc: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
-> > > > Cc: Manish Narani <manish.narani@xilinx.com>
-> > > > Cc: Dinh Nguyen <dinguyen@kernel.org>
-> > > > Cc: James Morse <james.morse@arm.com>
-> > > > Cc: Robert Richter <rric@kernel.org>
-> > > > Cc: Rob Herring <robh@kernel.org>
-> > > > Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > > > Cc: devicetree@vger.kernel.org
-> > > > Cc: linux-arm-kernel@lists.infradead.org
-> > > > Cc: linux-edac@vger.kernel.org
-> > > > Cc: linux-kernel@vger.kernel.org
-> > > > 
-> > > > Serge Semin (19):
-> > > >   EDAC/synopsys: Fix native uMCTL2 IRQs handling procedure
-> > > >   EDAC/synopsys: Fix generic device type detection procedure
-> > > >   EDAC/synopsys: Fix mci->scrub_cap field setting
-> > > >   EDAC/synopsys: Drop erroneous ADDRMAP4.addrmap_col_b10 parse
-> > > >   EDAC/synopsys: Fix reading errors count before ECC status
-> > > >   EDAC/synopsys: Use platform device devm ioremap method
-> > > >   EDAC/synopsys: Drop internal CE and UE counters
-> > > >   EDAC/synopsys: Drop local to_mci macro implementation
-> > > >   EDAC/synopsys: Drop struct ecc_error_info.blknr field
-> > > >   EDAC/synopsys: Shorten out struct ecc_error_info.bankgrpnr field name
-> > > >   EDAC/synopsys: Drop redundant info from error message
-> > > >   EDAC/mc: Init DIMM labels in MC registration method
-> > > >   EDAC/mc: Add MC unique index allocation procedure
-> > > >   dt-bindings: memory: snps: Detach Zynq DDRC controller support
-> > > >   dt-bindings: memory: snps: Use more descriptive device name
-> > > >   EDAC/synopsys: Detach Zynq DDRC controller support
-> > > >   EDAC/synopsys: Drop unused platform-specific setup API
-> > > >   EDAC/synopsys: Unify the driver entities naming
-> > > >   EDAC/synopsys: Convert to using BIT/GENMASK/FIELD_x macros
-> > > > 
-> > > >  .../snps,dw-umctl2-ddrc.yaml                  |  56 ++
-> > > >  .../memory-controllers/synopsys,ddrc-ecc.yaml |  76 --
-> > > >  .../xlnx,zynq-ddrc-a05.yaml                   |  38 +
-> > > >  MAINTAINERS                                   |   3 +
-> > > >  drivers/edac/Kconfig                          |   9 +-
-> > > >  drivers/edac/Makefile                         |   1 +
-> > > >  drivers/edac/edac_mc.c                        | 135 ++-
-> > > >  drivers/edac/edac_mc.h                        |   4 +
-> > > >  drivers/edac/synopsys_edac.c                  | 903 ++++++------------
-> > > >  drivers/edac/zynq_edac.c                      | 504 ++++++++++
-> > > >  10 files changed, 1026 insertions(+), 703 deletions(-)
-> > > >  create mode 100644
-> > > > Documentation/devicetree/bindings/memory-controllers/snps,dw-umctl2-ddrc.ya
-> > > > ml delete mode 100644
-> > > > Documentation/devicetree/bindings/memory-controllers/synopsys,ddrc-ecc.yaml
-> > > > create mode 100644
-> > > > Documentation/devicetree/bindings/memory-controllers/xlnx,zynq-ddrc-a05.yam
-> > > > l create mode 100644 drivers/edac/zynq_edac.c
-> > > 
-> > > 
-> > > -- 
-> > > TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
-> > > Amtsgericht München, HRB 105018
-> > > Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
-> > > http://www.tq-group.com/
-> > > 
-> > > 
+> Thanks,
+>
+> - Arnaldo
+>
+> > Due to the test regression in patch 2, follow up patches may be
+> > necessary for Icelake+ Intel vendor metrics to add METRIC_NO_GROUP to
+> > avoid the kernel PMU driver issue.
+> >
+> > Ian Rogers (3):
+> >   perf parse-events: Extra care around force grouped events
+> >   perf parse-events: When fixing group leaders always set the leader
+> >   perf parse-events: Only move force grouped evsels when sorting
+> >
+> >  tools/perf/util/parse-events.c | 58 +++++++++++++++++++++-------------
+> >  1 file changed, 36 insertions(+), 22 deletions(-)
+> >
+> > --
+> > 2.41.0.487.g6d72f3e995-goog
