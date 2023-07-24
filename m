@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7702175E7E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F3175E84A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbjGXBgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
+        id S231898AbjGXBjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbjGXBfz (ORCPT
+        with ESMTP id S231489AbjGXBjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:35:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269D749F4;
-        Sun, 23 Jul 2023 18:32:23 -0700 (PDT)
+        Sun, 23 Jul 2023 21:39:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4024C2D;
+        Sun, 23 Jul 2023 18:34:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8B73060F73;
-        Mon, 24 Jul 2023 01:31:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C33EC433C8;
-        Mon, 24 Jul 2023 01:31:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D0C5B60F72;
+        Mon, 24 Jul 2023 01:32:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 756BFC433CA;
+        Mon, 24 Jul 2023 01:32:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162284;
-        bh=tYVVUQ5QvJhxCcxzi5B1Xh2p7sB0q7I0ozxtNFjT9EI=;
+        s=k20201202; t=1690162326;
+        bh=gk/VE39/NSplkE3FDt7MO81fwPrNrErMqW1aWZef9kc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aiCXqkRd9gciCJEPx41WuDDB7RJJVJOuKG3FG13x5ux6sCe6oSdfh61yHaw6yaN5m
-         Fc9eIW0aMvu1nbUCT6Zxlu/fEB4y8BpC8rZwtLtJrCb0eRm7opQJqFJAvbw2CCQo7e
-         Ite0WZz/EsFHp42TwUfhd8wFGgfyxAF7AAzP5aHhhshtHEuTQgq68/pKe3cUIQ4c6m
-         Az4RRTNf3WuepVVOuKipCKHTKhWdWZEzJNHEwLXabY2bWRY9rypcNUhic9nLik3VZ0
-         zNC7C0YMNi4LgWkmJJ+7btNIN41scT44DPInlmOiC3JhSzZ1qLIZ9BpXCEIAcXZIMN
-         ZFOUzlsiEsVPg==
+        b=E3dM2oymqyPfpzTz4v+Zll+czY+oqeym3wDdV0o0sp8gQfPyWm/ELhf60fBgfhpPD
+         Q78crqJW7b3f8MlLBPSQ/QuTM4Ll9olWCrloLiU2WcNUue2Nm2GvCYQZwSSFLVCbz8
+         mAE+q4fK/mPBe3FyLJV3n0ojW57wY8rhjqxtmDDAlsDpi9/hYmM2aCgQUr+PKrDp+f
+         js2Vs1i2eWBtvYvoiwRYHYcZS4qtLuFiykktrPbQpNfZnV8c7bhUF8K8baCreyQxxX
+         a5Mr+LK2kuFA+lE12jY+9y6HiAzK3D8W9k6R9f5VosDgu2Ov+0zML5L6OrPykYKhgY
+         NOwTcr4xl2upg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Paulo Alcantara <pc@manguebit.com>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.1 2/3] smb: client: fix warning in cifs_smb3_do_mount()
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Gil Fine <gil.fine@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>, andreas.noever@gmail.com,
+        michael.jamet@intel.com, yehezkel.bernat@intel.com
+Subject: [PATCH AUTOSEL 6.4 18/40] thunderbolt: Limit Intel Barlow Ridge USB3 bandwidth
 Date:   Sun, 23 Jul 2023 21:31:18 -0400
-Message-Id: <20230724013119.2327427-2-sashal@kernel.org>
+Message-Id: <20230724013140.2327815-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230724013119.2327427-1-sashal@kernel.org>
-References: <20230724013119.2327427-1-sashal@kernel.org>
+In-Reply-To: <20230724013140.2327815-1-sashal@kernel.org>
+References: <20230724013140.2327815-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.40
+X-stable-base: Linux 6.4.5
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,86 +60,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paulo Alcantara <pc@manguebit.com>
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-[ Upstream commit 12c30f33cc6769bf411088a2872843c4f9ea32f9 ]
+[ Upstream commit f2bfa944080dcbb8eb56259dfd2c07204cbee17e ]
 
-This fixes the following warning reported by kernel test robot
+Intel Barlow Ridge discrete USB4 host router has the same limitation as
+the previous generations so make sure the USB3 bandwidth limitation
+quirk is applied to Barlow Ridge too.
 
-  fs/smb/client/cifsfs.c:982 cifs_smb3_do_mount() warn: possible
-  memory leak of 'cifs_sb'
-
-Link: https://lore.kernel.org/all/202306170124.CtQqzf0I-lkp@intel.com/
-Signed-off-by: Paulo Alcantara (SUSE) <pc@manguebit.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Gil Fine <gil.fine@linux.intel.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/smb/client/cifsfs.c | 28 ++++++++++------------------
- 1 file changed, 10 insertions(+), 18 deletions(-)
+ drivers/thunderbolt/nhi.h    | 2 ++
+ drivers/thunderbolt/quirks.c | 8 ++++++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/fs/smb/client/cifsfs.c b/fs/smb/client/cifsfs.c
-index 078df1e2dd18a..18d66497c42d1 100644
---- a/fs/smb/client/cifsfs.c
-+++ b/fs/smb/client/cifsfs.c
-@@ -883,11 +883,11 @@ struct dentry *
- cifs_smb3_do_mount(struct file_system_type *fs_type,
- 	      int flags, struct smb3_fs_context *old_ctx)
- {
--	int rc;
--	struct super_block *sb = NULL;
--	struct cifs_sb_info *cifs_sb = NULL;
- 	struct cifs_mnt_data mnt_data;
-+	struct cifs_sb_info *cifs_sb;
-+	struct super_block *sb;
- 	struct dentry *root;
-+	int rc;
- 
+diff --git a/drivers/thunderbolt/nhi.h b/drivers/thunderbolt/nhi.h
+index c15a0c46c9cff..0f029ce758825 100644
+--- a/drivers/thunderbolt/nhi.h
++++ b/drivers/thunderbolt/nhi.h
+@@ -77,6 +77,8 @@ extern const struct tb_nhi_ops icl_nhi_ops;
+ #define PCI_DEVICE_ID_INTEL_ADL_NHI1			0x466d
+ #define PCI_DEVICE_ID_INTEL_BARLOW_RIDGE_HOST_80G_NHI	0x5781
+ #define PCI_DEVICE_ID_INTEL_BARLOW_RIDGE_HOST_40G_NHI	0x5784
++#define PCI_DEVICE_ID_INTEL_BARLOW_RIDGE_HUB_80G_BRIDGE 0x5786
++#define PCI_DEVICE_ID_INTEL_BARLOW_RIDGE_HUB_40G_BRIDGE 0x57a4
+ #define PCI_DEVICE_ID_INTEL_MTL_M_NHI0			0x7eb2
+ #define PCI_DEVICE_ID_INTEL_MTL_P_NHI0			0x7ec2
+ #define PCI_DEVICE_ID_INTEL_MTL_P_NHI1			0x7ec3
+diff --git a/drivers/thunderbolt/quirks.c b/drivers/thunderbolt/quirks.c
+index 1157b8869bcca..8c2ee431fcde8 100644
+--- a/drivers/thunderbolt/quirks.c
++++ b/drivers/thunderbolt/quirks.c
+@@ -74,6 +74,14 @@ static const struct tb_quirk tb_quirks[] = {
+ 		  quirk_usb3_maximum_bandwidth },
+ 	{ 0x8087, PCI_DEVICE_ID_INTEL_MTL_P_NHI1, 0x0000, 0x0000,
+ 		  quirk_usb3_maximum_bandwidth },
++	{ 0x8087, PCI_DEVICE_ID_INTEL_BARLOW_RIDGE_HOST_80G_NHI, 0x0000, 0x0000,
++		  quirk_usb3_maximum_bandwidth },
++	{ 0x8087, PCI_DEVICE_ID_INTEL_BARLOW_RIDGE_HOST_40G_NHI, 0x0000, 0x0000,
++		  quirk_usb3_maximum_bandwidth },
++	{ 0x8087, PCI_DEVICE_ID_INTEL_BARLOW_RIDGE_HUB_80G_BRIDGE, 0x0000, 0x0000,
++		  quirk_usb3_maximum_bandwidth },
++	{ 0x8087, PCI_DEVICE_ID_INTEL_BARLOW_RIDGE_HUB_40G_BRIDGE, 0x0000, 0x0000,
++		  quirk_usb3_maximum_bandwidth },
  	/*
- 	 * Prints in Kernel / CIFS log the attempted mount operation
-@@ -898,11 +898,9 @@ cifs_smb3_do_mount(struct file_system_type *fs_type,
- 	else
- 		cifs_info("Attempting to mount %s\n", old_ctx->UNC);
- 
--	cifs_sb = kzalloc(sizeof(struct cifs_sb_info), GFP_KERNEL);
--	if (cifs_sb == NULL) {
--		root = ERR_PTR(-ENOMEM);
--		goto out;
--	}
-+	cifs_sb = kzalloc(sizeof(*cifs_sb), GFP_KERNEL);
-+	if (!cifs_sb)
-+		return ERR_PTR(-ENOMEM);
- 
- 	cifs_sb->ctx = kzalloc(sizeof(struct smb3_fs_context), GFP_KERNEL);
- 	if (!cifs_sb->ctx) {
-@@ -945,10 +943,8 @@ cifs_smb3_do_mount(struct file_system_type *fs_type,
- 
- 	sb = sget(fs_type, cifs_match_super, cifs_set_super, flags, &mnt_data);
- 	if (IS_ERR(sb)) {
--		root = ERR_CAST(sb);
- 		cifs_umount(cifs_sb);
--		cifs_sb = NULL;
--		goto out;
-+		return ERR_CAST(sb);
- 	}
- 
- 	if (sb->s_root) {
-@@ -979,13 +975,9 @@ cifs_smb3_do_mount(struct file_system_type *fs_type,
- 	deactivate_locked_super(sb);
- 	return root;
- out:
--	if (cifs_sb) {
--		if (!sb || IS_ERR(sb)) {  /* otherwise kill_sb will handle */
--			kfree(cifs_sb->prepath);
--			smb3_cleanup_fs_context(cifs_sb->ctx);
--			kfree(cifs_sb);
--		}
--	}
-+	kfree(cifs_sb->prepath);
-+	smb3_cleanup_fs_context(cifs_sb->ctx);
-+	kfree(cifs_sb);
- 	return root;
- }
- 
+ 	 * CLx is not supported on AMD USB4 Yellow Carp and Pink Sardine platforms.
+ 	 */
 -- 
 2.39.2
 
