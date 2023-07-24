@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B70875F699
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157B475F69A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjGXMnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
+        id S230289AbjGXMnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230489AbjGXMnE (ORCPT
+        with ESMTP id S229895AbjGXMnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:43:04 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE79D8
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:43:03 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <j.zink@pengutronix.de>)
-        id 1qNutq-00028q-R2; Mon, 24 Jul 2023 14:42:54 +0200
-Message-ID: <8a5686f8-8c86-8242-b1b0-881b55a35489@pengutronix.de>
-Date:   Mon, 24 Jul 2023 14:42:51 +0200
+        Mon, 24 Jul 2023 08:43:06 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD24126
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:43:04 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:e908:444e:5a23:b79e])
+        by baptiste.telenet-ops.be with bizsmtp
+        id R0j22A00H26vpYY010j2rR; Mon, 24 Jul 2023 14:43:02 +0200
+Received: from geert (helo=localhost)
+        by ramsan.of.borg with local-esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qNuty-002O66-6f;
+        Mon, 24 Jul 2023 14:43:02 +0200
+Date:   Mon, 24 Jul 2023 14:43:02 +0200 (CEST)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-kernel@vger.kernel.org
+cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org
+Subject: Re: Build regressions/improvements in v6.5-rc3
+In-Reply-To: <20230724122626.1701631-1-geert@linux-m68k.org>
+Message-ID: <88f83d73-781d-bdc-126-aa629cb368c@linux-m68k.org>
+References: <CAHk-=wi4Yau-3Bsv2rXYmtXMTLaj3=Wyf4cdM6d89czFvkVsRQ@mail.gmail.com> <20230724122626.1701631-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] arm64: dts: imx8mp: use correct clock for eqos
- timestamping counter
-Content-Language: en-US, de-DE
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, patchwork-jzi@pengutronix.de
-References: <20230719-imx8mp_enet_qos_use_125mhz_clock-v2-1-eed15d74bfd1@pengutronix.de>
- <CAOMZO5AxuMOmy_RwQ-HpTMJn7Lg9j6ytb6t0pMerQd+t0AG12Q@mail.gmail.com>
-From:   Johannes Zink <j.zink@pengutronix.de>
-In-Reply-To: <CAOMZO5AxuMOmy_RwQ-HpTMJn7Lg9j6ytb6t0pMerQd+t0AG12Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: j.zink@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone,
+On Mon, 24 Jul 2023, Geert Uytterhoeven wrote:
+> JFYI, when comparing v6.5-rc3[1] to v6.5-rc2[3], the summaries are:
+>  - build errors: +5/-0
 
-On 7/22/23 03:49, Fabio Estevam wrote:
-> On Fri, Jul 21, 2023 at 12:51 AM Johannes Zink <j.zink@pengutronix.de> wrote:
->>
->> The i.MX8MP Reference Manual rev 1 06/2021, section 11.7.2.5 "Timestamp
->> Support" indicates the PTP timestamp clock expects a typical frequency
->> of 125MHz.
->>
->> As this also improves the precision of the measured timestamps: assign
->> appropriate 125MHz Clock parent. As no one except the timestamping
->> counter uses this clock, there are no side-effects of this change in
->> other peripherals.
->>
->> Signed-off-by: Johannes Zink <j.zink@pengutronix.de>
-> 
-> Reviewed-by: Fabio Estevam <festevam@gmail.com>
-> 
-> 
+   + /kisskb/src/include/linux/fortify-string.h: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]:  => 583:25, 493:25
 
-please scratch this patch, the PTP Timestamping clock cannot be supplied with a 
-125MHz clock, there is no 125MHz source in the MUX input and I misinterpreted 
-the clocksummary when testing this patch.
+mips-gcc13/mips-allmodconfig
 
-Sorry for the noise,
-Johannes
+Full context:
 
+     In function 'fortify_memset_chk',
+ 	inlined from 'memset_io' at /kisskb/src/arch/mips/include/asm/io.h:486:2,
+ 	inlined from 'build_auth_frame' at /kisskb/src/drivers/net/wireless/legacy/ray_cs.c:2697:2:
+     /kisskb/src/include/linux/fortify-string.h:493:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
+       493 |                         __write_overflow_field(p_size_field, size);
+ 	  |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     In function 'fortify_memcpy_chk',
+ 	inlined from 'memcpy_toio' at /kisskb/src/arch/mips/include/asm/io.h:494:2,
+ 	inlined from 'translate_frame' at /kisskb/src/drivers/net/wireless/legacy/ray_cs.c:955:3,
+ 	inlined from 'ray_hw_xmit.constprop' at /kisskb/src/drivers/net/wireless/legacy/ray_cs.c:912:12:
+     /kisskb/src/include/linux/fortify-string.h:583:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
+       583 |                         __write_overflow_field(p_size_field, size);
+ 	  |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--- 
-Pengutronix e.K.                | Johannes Zink                  |
-Steuerwalder Str. 21            | https://www.pengutronix.de/    |
-31137 Hildesheim, Germany       | Phone: +49-5121-206917-0       |
-Amtsgericht Hildesheim, HRA 2686| Fax:   +49-5121-206917-5555    |
+Single-element flexible array abuse in drivers/net/wireless/legacy/rayctl.h:tx_msg.var
 
+   + error: modpost: ".L856" [drivers/mtd/nand/raw/nand.ko] undefined!:  => N/A
+
+parisc-gcc13/parisc-allmodconfig
+
+   + {standard input}: Error: Missing symbol name in directive:  => 1096
+   + {standard input}: Error: unrecognized symbol type "":  => 1096
+
+sh4-gcc12/sh-allmodconfig (ICE)
+
+   + {standard input}: Error: unknown opcode:  => 1091
+
+sh4-gcc13/sh-allmodconfig (ICE)
+
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/6eaae198076080886b9e7d57f4ae06fa782f90ef/ (all 235 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fdf0eaf11452d72945af31804e2a1048ee1b574c/ (161 out of 235 configs)
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
