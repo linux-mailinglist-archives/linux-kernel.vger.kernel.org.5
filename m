@@ -2,157 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1BC75EED7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2CD75EEE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232187AbjGXJOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 05:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35208 "EHLO
+        id S232197AbjGXJRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 05:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232152AbjGXJOn (ORCPT
+        with ESMTP id S231933AbjGXJRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 05:14:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2AE1B0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:13:54 -0700 (PDT)
+        Mon, 24 Jul 2023 05:17:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F8F12A
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:16:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690190034;
+        s=mimecast20190719; t=1690190191;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2oPDYvwpZtu0Ko50jtkdQDGuMOTIWCRCGf2FetUqVmk=;
-        b=VGJkn90QFxetVFTML/KZga4fs3BGD1RZk9y1LAfU7qjzF+26SqRuXPJ6ZtU1Z9K4zZuGDf
-        ud7iwTVHepqxYqkG2vaui1JdH2NRhow0HcjpszzUbz6H1j8V7GY0A5JiQzJCLIjMeyoW+Q
-        jyFHViDNfJ6FTWCt+BqOjbAJq5sQ1Tg=
-Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
- [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=icRPVMyvz00tO2C7RCJF1Tux1aykT12dt3mhAkPzG2Q=;
+        b=SihXq1ghOuWfXab+3414j8fYBPTivasO9/EMvlkERDJRo7AMGXcnoa/j/FQSBt2GEtzM+R
+        Y1zN9ej2etiTtiBqUq5Syet9RLY7ZcqfHsWYb15vElfO4ZXv6ERTACTrI8kuCqD3xq+ZFm
+        ywxEaJbbsYqGgEcmdVHtJP/Cq9y7O58=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-479-UvYQZFpYOuOxV0vgqXm61g-1; Mon, 24 Jul 2023 05:13:52 -0400
-X-MC-Unique: UvYQZFpYOuOxV0vgqXm61g-1
-Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1bb64b02f8fso125277fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:13:52 -0700 (PDT)
+ us-mta-128-SXOUBiIhMM-mNFsKZWIbaQ-1; Mon, 24 Jul 2023 05:16:30 -0400
+X-MC-Unique: SXOUBiIhMM-mNFsKZWIbaQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fa8f8fb7b3so24822555e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:16:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690190032; x=1690794832;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690190189; x=1690794989;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2oPDYvwpZtu0Ko50jtkdQDGuMOTIWCRCGf2FetUqVmk=;
-        b=ayfkuGdphCSr82bWiWt7Wd9TI4ysm2y4reEJ3KKRs9zsBEHmjsshbiyU4nH6pzpEsS
-         bqDFUAZmxbZCXWRNLTGvCuDmRTpvbGfHdw0J9QwUIXpkkWagJyy95K1y+WMuom3/hnqa
-         Ss58AevPMVhH7eZMq01Qva38rQWQ8Ipi4jRYecwzdAbII6sqGlpUSzjiwy7MoFeFNgFV
-         SuiONPF0fXneU/kgpikytJoA1dZSFZUMfSthJ5O6YA+3w4m+1QK7mgo5ex4yTmb+h9wq
-         TeGTOOOLA0tHGsKWGIKvNit+iJl0cfHYJy1QAcV3mQPt7h0+7XBehru4lEfGfqw1M2bH
-         5TqA==
-X-Gm-Message-State: ABy/qLZa6VKowQQd6QmQKiNVRsR8N6FIyl2pL5FJxkCF4D1HHHMloQgc
-        HBiI/Mb0Nlh6QRhbf41uzIf53M5AS+BfNQUR1ThuamDVFDque7+h4mPLLbIXdL0I1Ubb5FIgWP6
-        xkr0Rwdr7yCLGiqCje6BNSdaO
-X-Received: by 2002:a05:6870:568e:b0:1b7:613c:2e30 with SMTP id p14-20020a056870568e00b001b7613c2e30mr7564440oao.2.1690190032046;
-        Mon, 24 Jul 2023 02:13:52 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGz31tvB+wfj4JC9JljpAdnVVugjKH/UFomLvpFW9yVXyN8NXs0fQCdMnGqdTxGWM2Ywaca6g==
-X-Received: by 2002:a05:6870:568e:b0:1b7:613c:2e30 with SMTP id p14-20020a056870568e00b001b7613c2e30mr7564429oao.2.1690190031838;
-        Mon, 24 Jul 2023 02:13:51 -0700 (PDT)
-Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id w6-20020a63af06000000b0050f85ef50d1sm7977675pge.26.2023.07.24.02.13.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 02:13:51 -0700 (PDT)
-Message-ID: <c28915ad-d10c-a5f4-9b95-4ab644139780@redhat.com>
-Date:   Mon, 24 Jul 2023 17:13:45 +0800
+        bh=icRPVMyvz00tO2C7RCJF1Tux1aykT12dt3mhAkPzG2Q=;
+        b=EeHsAk5pZa53t+iY2OmPiwNQR3EOjKouquPInLwH85Jyzdc7Yo89ouoeWQfN0UrHzm
+         80lKtG5xr2vKWDHEOwkPAjRK+TEr/36tQHIHpLTzqkDY03TEoozhonrcshFlyNNlpiVg
+         yNQjXaxJxUur2BRY9a0oCzVM4MuGOelNnpzDjHGY+kol0kf0tHbhwiR2WhrWG1gxDgUt
+         FOWwT1vxAavUC7b25l0aCxA/apN0jCee4TSFCMIYU1Y+J+O/HVoJbu7Y7eflToXwzIpE
+         k3rZtUbhqJFxgkUuLnMH7dD7YIeF/rC2quoIA75pZfnd8jnePhRAbzjTfE05Nlc96/a2
+         +mDQ==
+X-Gm-Message-State: ABy/qLb7rnenvFiAFYqO1MsIPqk1UVci4L0WcRrfN/ix9pN6poR5gyw8
+        TVETGYgHo8gwjcvT3Vp8BCJkiSwP+Kdkf3fFsuS8sPhdD91Iwe1YNp+7GdKp6EvOGU/RA9wuF7o
+        KaxWns7eQu2oSgCq+Ww77sV1e
+X-Received: by 2002:a7b:c8cc:0:b0:3fb:a100:2581 with SMTP id f12-20020a7bc8cc000000b003fba1002581mr7384034wml.14.1690190189043;
+        Mon, 24 Jul 2023 02:16:29 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEyl2PbEYyYEdIUkJYNgJkkvw8hwzDzPetupE0xaqyfvR+woA7PyBQlcGetBSagDtFB50Mn8Q==
+X-Received: by 2002:a7b:c8cc:0:b0:3fb:a100:2581 with SMTP id f12-20020a7bc8cc000000b003fba1002581mr7384013wml.14.1690190188706;
+        Mon, 24 Jul 2023 02:16:28 -0700 (PDT)
+Received: from redhat.com ([2a06:c701:73e0:3800:a16e:b2a0:7d06:58aa])
+        by smtp.gmail.com with ESMTPSA id f14-20020a7bcd0e000000b003fc01f7b415sm12536095wmj.39.2023.07.24.02.16.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 02:16:27 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 05:16:25 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "jasowang@redhat.com" <jasowang@redhat.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linma@zju.edu.cn" <linma@zju.edu.cn>, Eli Cohen <elic@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
+        Parav Pandit <parav@nvidia.com>
+Subject: Re: [PATCH v1] vdpa: Complement vdpa_nl_policy for nlattr length
+ check
+Message-ID: <20230724050005-mutt-send-email-mst@kernel.org>
+References: <20230723080507.3716924-1-linma@zju.edu.cn>
+ <20230723050656-mutt-send-email-mst@kernel.org>
+ <729f5c17.e4079.18982192866.Coremail.linma@zju.edu.cn>
+ <8ecec51.e40ad.1898226c545.Coremail.linma@zju.edu.cn>
+ <20230723055820-mutt-send-email-mst@kernel.org>
+ <CACGkMEuGHMu6te3jRfEhhwTrWR1mpqp3hbVhDKQiXK9tgwz3qw@mail.gmail.com>
+ <56aa7d5c6d5840aedef83d3dc39f0bb3162bbb58.camel@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v7 03/12] KVM: Remove CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20230722022251.3446223-1-rananta@google.com>
- <20230722022251.3446223-4-rananta@google.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <20230722022251.3446223-4-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <56aa7d5c6d5840aedef83d3dc39f0bb3162bbb58.camel@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 24, 2023 at 08:38:04AM +0000, Dragos Tatulea wrote:
+> 
+> On Mon, 2023-07-24 at 15:11 +0800, Jason Wang wrote:
+> > On Sun, Jul 23, 2023 at 6:02 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > 
+> > > On Sun, Jul 23, 2023 at 05:48:46PM +0800, Lin Ma wrote:
+> > > > 
+> > > > > Sure, that is another undergoing task I'm working on. If the nlattr is
+> > > > > parsed with
+> > > > > NL_VALIDATE_UNSPEC, any forgotten nlattr will be rejected, therefore
+> > > > > (which is the default
+> > > > > for modern nla_parse).
+> > > > 
+> > > > For the general netlink interface, the deciding flag should be
+> > > > genl_ops.validate defined in
+> > > > each ops. The default validate flag is strict, while the developer can
+> > > > overwrite the flag
+> > > > with GENL_DONT_VALIDATE_STRICT to ease the validation. That is to say,
+> > > > safer code should
+> > > > enforce NL_VALIDATE_STRICT by not overwriting the validate flag.
+> > > > 
+> > > > Regrads
+> > > > Lin
+> > > 
+> > > 
+> > > Oh I see.
+> > > 
+> > > It started here:
+> > > 
+> > > commit 33b347503f014ebf76257327cbc7001c6b721956
+> > > Author: Parav Pandit <parav@nvidia.com>
+> > > Date:   Tue Jan 5 12:32:00 2021 +0200
+> > > 
+> > >     vdpa: Define vdpa mgmt device, ops and a netlink interface
+> > > 
+> > > which did:
+> > > 
+> > > +               .validate = GENL_DONT_VALIDATE_STRICT |
+> > > GENL_DONT_VALIDATE_DUMP,
+> > > 
+> > > 
+> > > which was most likely just a copy paste from somewhere, right Parav?
+> > > 
+> > > and then everyone kept copying this around.
+> > > 
+> > > Parav, Eli can we drop these? There's a tiny chance of breaking something
+> > > but I feel there aren't that many users outside mlx5 yet, so if you
+> > > guys can test on mlx5 and confirm no breakage, I think we are good.
+> > 
+> > Adding Dragos.
+> > 
+> I will check. Just to make sure I understand correctly: you want me to drop the
+> .validate flags all together in all vdpa ops and check, right?
+> 
+> Thanks,
+> Dragos
 
-
-On 7/22/23 10:22, Raghavendra Rao Ananta wrote:
-> kvm_arch_flush_remote_tlbs() or CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
-> are two mechanisms to solve the same problem, allowing
-> architecture-specific code to provide a non-IPI implementation of
-> remote TLB flushing.
-> 
-> Dropping CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL allows KVM to standardize
-> all architectures on kvm_arch_flush_remote_tlbs() instead of
-> maintaining two mechanisms.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
-> ---
->   virt/kvm/Kconfig    | 3 ---
->   virt/kvm/kvm_main.c | 2 --
->   2 files changed, 5 deletions(-)
-> 
-> diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
-> index b74916de5183..484d0873061c 100644
-> --- a/virt/kvm/Kconfig
-> +++ b/virt/kvm/Kconfig
-> @@ -62,9 +62,6 @@ config HAVE_KVM_CPU_RELAX_INTERCEPT
->   config KVM_VFIO
->          bool
->   
-> -config HAVE_KVM_ARCH_TLB_FLUSH_ALL
-> -       bool
-> -
->   config HAVE_KVM_INVALID_WAKEUPS
->          bool
->   
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 70e5479797ac..d6b050786155 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -345,7 +345,6 @@ bool kvm_make_all_cpus_request(struct kvm *kvm, unsigned int req)
->   }
->   EXPORT_SYMBOL_GPL(kvm_make_all_cpus_request);
->   
-> -#ifndef CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
->   void kvm_flush_remote_tlbs(struct kvm *kvm)
->   {
->   	++kvm->stat.generic.remote_tlb_flush_requests;
-> @@ -366,7 +365,6 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
->   		++kvm->stat.generic.remote_tlb_flush;
->   }
->   EXPORT_SYMBOL_GPL(kvm_flush_remote_tlbs);
-> -#endif
->   
->   static void kvm_flush_shadow_all(struct kvm *kvm)
->   {
+yes - I suspect you will then need this patch to make things work.
 
 -- 
-Shaoqin
+MST
 
