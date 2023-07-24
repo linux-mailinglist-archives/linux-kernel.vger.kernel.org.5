@@ -2,47 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8521975FDA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DED775FDAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbjGXR1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35396 "EHLO
+        id S231676AbjGXR23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231654AbjGXR1q (ORCPT
+        with ESMTP id S231653AbjGXR21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:27:46 -0400
+        Mon, 24 Jul 2023 13:28:27 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DA8E1;
-        Mon, 24 Jul 2023 10:27:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C44EE76;
+        Mon, 24 Jul 2023 10:28:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E8BB1612D2;
-        Mon, 24 Jul 2023 17:27:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 068A9C433C8;
-        Mon, 24 Jul 2023 17:27:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690219660;
-        bh=ZaK1kFjMDyFsd5mpv053hXFMQa3aRQiHkdkr37Kdc0A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WjJrnfqEdWVPltY3i8NxPC25aKD7QBVyUROaf2OnTIwhqLChHAM4OScbfFSBEeY6I
-         v9r+oDfV2+sT6FUEVvBnnLs5yCmowX/HPrbUYZsLXF1REJcJfo+prpPsIP0dSQJelC
-         2yNzVLoTmxNWvsLO3lJ6cH9IMyIVlKtvoLtPAqt8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 4.19.289
-Date:   Mon, 24 Jul 2023 19:27:28 +0200
-Message-ID: <2023072408-riddance-attic-d962@gregkh>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <2023072408-hunchback-maximize-5cde@gregkh>
-References: <2023072408-hunchback-maximize-5cde@gregkh>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EEDF3612BB;
+        Mon, 24 Jul 2023 17:28:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52345C433C8;
+        Mon, 24 Jul 2023 17:28:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690219705;
+        bh=twLkaxMgs6piq0ZeQkavdqOEjTHt1kteFtzNVLOvJ9Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AI2qiCY24Q0v7zAFtd+xpAyXL5i/UaDHKwIzIK3qeZoo8R/2X9J1RlT9KdArYfCzi
+         JTTq7RkzfWDF62FujThw6oJk+v54LH6rGVQCIKx9uPAapbra2cfBmjhs0jue/3hvbx
+         bHO+IBkp5pWV5fH1o2Rw16kakYO59StayV0tdEdxqu2dobSjFuiN5LanDgtRlLfzG0
+         uBKmBpYJ6cb7vKmSEIc+ezcSfGVUoUo8DtXiqKbNmexpCxv8VMxv1zbL1LRQhExPx7
+         ZaSL6WyFUgubnjy6G5X9Eufaukl712lrNotSMybmN9Q5tgykeyuSqF6nyWrfBsNuSU
+         /NXWOBotY6vtA==
+Date:   Mon, 24 Jul 2023 18:28:20 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next 09/10] dt-bindings: net: snps,dwmac: add per
+ channel irq support
+Message-ID: <20230724-slick-shush-5338b16a558c@spud>
+References: <20230723161029.1345-1-jszhang@kernel.org>
+ <20230723161029.1345-10-jszhang@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yzmqMJ1ISurXR8jS"
+Content-Disposition: inline
+In-Reply-To: <20230723161029.1345-10-jszhang@kernel.org>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -53,326 +69,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index 0293da44bdcd..9af8ec084269 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 4
- PATCHLEVEL = 19
--SUBLEVEL = 288
-+SUBLEVEL = 289
- EXTRAVERSION =
- NAME = "People's Front"
- 
-diff --git a/arch/x86/include/asm/microcode.h b/arch/x86/include/asm/microcode.h
-index 8e915e3813f6..b675db12a8ab 100644
---- a/arch/x86/include/asm/microcode.h
-+++ b/arch/x86/include/asm/microcode.h
-@@ -5,6 +5,7 @@
- #include <asm/cpu.h>
- #include <linux/earlycpio.h>
- #include <linux/initrd.h>
-+#include <asm/microcode_amd.h>
- 
- struct ucode_patch {
- 	struct list_head plist;
-diff --git a/arch/x86/include/asm/microcode_amd.h b/arch/x86/include/asm/microcode_amd.h
-index a645b25ee442..403a8e76b310 100644
---- a/arch/x86/include/asm/microcode_amd.h
-+++ b/arch/x86/include/asm/microcode_amd.h
-@@ -48,11 +48,13 @@ extern void __init load_ucode_amd_bsp(unsigned int family);
- extern void load_ucode_amd_ap(unsigned int family);
- extern int __init save_microcode_in_initrd_amd(unsigned int family);
- void reload_ucode_amd(unsigned int cpu);
-+extern void amd_check_microcode(void);
- #else
- static inline void __init load_ucode_amd_bsp(unsigned int family) {}
- static inline void load_ucode_amd_ap(unsigned int family) {}
- static inline int __init
- save_microcode_in_initrd_amd(unsigned int family) { return -EINVAL; }
- static inline void reload_ucode_amd(unsigned int cpu) {}
-+static inline void amd_check_microcode(void) {}
- #endif
- #endif /* _ASM_X86_MICROCODE_AMD_H */
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 847f3f5820d2..d9c6603dcd63 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -407,6 +407,7 @@
- #define MSR_AMD64_DE_CFG		0xc0011029
- #define MSR_AMD64_DE_CFG_LFENCE_SERIALIZE_BIT	 1
- #define MSR_AMD64_DE_CFG_LFENCE_SERIALIZE	BIT_ULL(MSR_AMD64_DE_CFG_LFENCE_SERIALIZE_BIT)
-+#define MSR_AMD64_DE_CFG_ZEN2_FP_BACKUP_FIX_BIT 9
- 
- #define MSR_AMD64_BU_CFG2		0xc001102a
- #define MSR_AMD64_IBSFETCHCTL		0xc0011030
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index c8979f8cbce5..256f2c6120ec 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -23,11 +23,6 @@
- 
- #include "cpu.h"
- 
--static const int amd_erratum_383[];
--static const int amd_erratum_400[];
--static const int amd_erratum_1054[];
--static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum);
--
- /*
-  * nodes_per_socket: Stores the number of nodes per socket.
-  * Refer to Fam15h Models 00-0fh BKDG - CPUID Fn8000_001E_ECX
-@@ -35,6 +30,78 @@ static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum);
-  */
- static u32 nodes_per_socket = 1;
- 
-+/*
-+ * AMD errata checking
-+ *
-+ * Errata are defined as arrays of ints using the AMD_LEGACY_ERRATUM() or
-+ * AMD_OSVW_ERRATUM() macros. The latter is intended for newer errata that
-+ * have an OSVW id assigned, which it takes as first argument. Both take a
-+ * variable number of family-specific model-stepping ranges created by
-+ * AMD_MODEL_RANGE().
-+ *
-+ * Example:
-+ *
-+ * const int amd_erratum_319[] =
-+ *	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x10, 0x2, 0x1, 0x4, 0x2),
-+ *			   AMD_MODEL_RANGE(0x10, 0x8, 0x0, 0x8, 0x0),
-+ *			   AMD_MODEL_RANGE(0x10, 0x9, 0x0, 0x9, 0x0));
-+ */
-+
-+#define AMD_LEGACY_ERRATUM(...)		{ -1, __VA_ARGS__, 0 }
-+#define AMD_OSVW_ERRATUM(osvw_id, ...)	{ osvw_id, __VA_ARGS__, 0 }
-+#define AMD_MODEL_RANGE(f, m_start, s_start, m_end, s_end) \
-+	((f << 24) | (m_start << 16) | (s_start << 12) | (m_end << 4) | (s_end))
-+#define AMD_MODEL_RANGE_FAMILY(range)	(((range) >> 24) & 0xff)
-+#define AMD_MODEL_RANGE_START(range)	(((range) >> 12) & 0xfff)
-+#define AMD_MODEL_RANGE_END(range)	((range) & 0xfff)
-+
-+static const int amd_erratum_400[] =
-+	AMD_OSVW_ERRATUM(1, AMD_MODEL_RANGE(0xf, 0x41, 0x2, 0xff, 0xf),
-+			    AMD_MODEL_RANGE(0x10, 0x2, 0x1, 0xff, 0xf));
-+
-+static const int amd_erratum_383[] =
-+	AMD_OSVW_ERRATUM(3, AMD_MODEL_RANGE(0x10, 0, 0, 0xff, 0xf));
-+
-+/* #1054: Instructions Retired Performance Counter May Be Inaccurate */
-+static const int amd_erratum_1054[] =
-+	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0, 0, 0x2f, 0xf));
-+
-+static const int amd_zenbleed[] =
-+	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0x30, 0x0, 0x4f, 0xf),
-+			   AMD_MODEL_RANGE(0x17, 0x60, 0x0, 0x7f, 0xf),
-+			   AMD_MODEL_RANGE(0x17, 0xa0, 0x0, 0xaf, 0xf));
-+
-+static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum)
-+{
-+	int osvw_id = *erratum++;
-+	u32 range;
-+	u32 ms;
-+
-+	if (osvw_id >= 0 && osvw_id < 65536 &&
-+	    cpu_has(cpu, X86_FEATURE_OSVW)) {
-+		u64 osvw_len;
-+
-+		rdmsrl(MSR_AMD64_OSVW_ID_LENGTH, osvw_len);
-+		if (osvw_id < osvw_len) {
-+			u64 osvw_bits;
-+
-+			rdmsrl(MSR_AMD64_OSVW_STATUS + (osvw_id >> 6),
-+			    osvw_bits);
-+			return osvw_bits & (1ULL << (osvw_id & 0x3f));
-+		}
-+	}
-+
-+	/* OSVW unavailable or ID unknown, match family-model-stepping range */
-+	ms = (cpu->x86_model << 4) | cpu->x86_stepping;
-+	while ((range = *erratum++))
-+		if ((cpu->x86 == AMD_MODEL_RANGE_FAMILY(range)) &&
-+		    (ms >= AMD_MODEL_RANGE_START(range)) &&
-+		    (ms <= AMD_MODEL_RANGE_END(range)))
-+			return true;
-+
-+	return false;
-+}
-+
- static inline int rdmsrl_amd_safe(unsigned msr, unsigned long long *p)
- {
- 	u32 gprs[8] = { 0 };
-@@ -909,6 +976,47 @@ static void init_amd_zn(struct cpuinfo_x86 *c)
- 	}
- }
- 
-+static bool cpu_has_zenbleed_microcode(void)
-+{
-+	u32 good_rev = 0;
-+
-+	switch (boot_cpu_data.x86_model) {
-+	case 0x30 ... 0x3f: good_rev = 0x0830107a; break;
-+	case 0x60 ... 0x67: good_rev = 0x0860010b; break;
-+	case 0x68 ... 0x6f: good_rev = 0x08608105; break;
-+	case 0x70 ... 0x7f: good_rev = 0x08701032; break;
-+	case 0xa0 ... 0xaf: good_rev = 0x08a00008; break;
-+
-+	default:
-+		return false;
-+		break;
-+	}
-+
-+	if (boot_cpu_data.microcode < good_rev)
-+		return false;
-+
-+	return true;
-+}
-+
-+static void zenbleed_check(struct cpuinfo_x86 *c)
-+{
-+	if (!cpu_has_amd_erratum(c, amd_zenbleed))
-+		return;
-+
-+	if (cpu_has(c, X86_FEATURE_HYPERVISOR))
-+		return;
-+
-+	if (!cpu_has(c, X86_FEATURE_AVX))
-+		return;
-+
-+	if (!cpu_has_zenbleed_microcode()) {
-+		pr_notice_once("Zenbleed: please update your microcode for the most optimal fix\n");
-+		msr_set_bit(MSR_AMD64_DE_CFG, MSR_AMD64_DE_CFG_ZEN2_FP_BACKUP_FIX_BIT);
-+	} else {
-+		msr_clear_bit(MSR_AMD64_DE_CFG, MSR_AMD64_DE_CFG_ZEN2_FP_BACKUP_FIX_BIT);
-+	}
-+}
-+
- static void init_amd(struct cpuinfo_x86 *c)
- {
- 	early_init_amd(c);
-@@ -1011,6 +1119,8 @@ static void init_amd(struct cpuinfo_x86 *c)
- 		msr_set_bit(MSR_K7_HWCR, MSR_K7_HWCR_IRPERF_EN_BIT);
- 
- 	check_null_seg_clears_base(c);
-+
-+	zenbleed_check(c);
- }
- 
- #ifdef CONFIG_X86_32
-@@ -1106,73 +1216,6 @@ static const struct cpu_dev amd_cpu_dev = {
- 
- cpu_dev_register(amd_cpu_dev);
- 
--/*
-- * AMD errata checking
-- *
-- * Errata are defined as arrays of ints using the AMD_LEGACY_ERRATUM() or
-- * AMD_OSVW_ERRATUM() macros. The latter is intended for newer errata that
-- * have an OSVW id assigned, which it takes as first argument. Both take a
-- * variable number of family-specific model-stepping ranges created by
-- * AMD_MODEL_RANGE().
-- *
-- * Example:
-- *
-- * const int amd_erratum_319[] =
-- *	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x10, 0x2, 0x1, 0x4, 0x2),
-- *			   AMD_MODEL_RANGE(0x10, 0x8, 0x0, 0x8, 0x0),
-- *			   AMD_MODEL_RANGE(0x10, 0x9, 0x0, 0x9, 0x0));
-- */
--
--#define AMD_LEGACY_ERRATUM(...)		{ -1, __VA_ARGS__, 0 }
--#define AMD_OSVW_ERRATUM(osvw_id, ...)	{ osvw_id, __VA_ARGS__, 0 }
--#define AMD_MODEL_RANGE(f, m_start, s_start, m_end, s_end) \
--	((f << 24) | (m_start << 16) | (s_start << 12) | (m_end << 4) | (s_end))
--#define AMD_MODEL_RANGE_FAMILY(range)	(((range) >> 24) & 0xff)
--#define AMD_MODEL_RANGE_START(range)	(((range) >> 12) & 0xfff)
--#define AMD_MODEL_RANGE_END(range)	((range) & 0xfff)
--
--static const int amd_erratum_400[] =
--	AMD_OSVW_ERRATUM(1, AMD_MODEL_RANGE(0xf, 0x41, 0x2, 0xff, 0xf),
--			    AMD_MODEL_RANGE(0x10, 0x2, 0x1, 0xff, 0xf));
--
--static const int amd_erratum_383[] =
--	AMD_OSVW_ERRATUM(3, AMD_MODEL_RANGE(0x10, 0, 0, 0xff, 0xf));
--
--/* #1054: Instructions Retired Performance Counter May Be Inaccurate */
--static const int amd_erratum_1054[] =
--	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0, 0, 0x2f, 0xf));
--
--static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum)
--{
--	int osvw_id = *erratum++;
--	u32 range;
--	u32 ms;
--
--	if (osvw_id >= 0 && osvw_id < 65536 &&
--	    cpu_has(cpu, X86_FEATURE_OSVW)) {
--		u64 osvw_len;
--
--		rdmsrl(MSR_AMD64_OSVW_ID_LENGTH, osvw_len);
--		if (osvw_id < osvw_len) {
--			u64 osvw_bits;
--
--			rdmsrl(MSR_AMD64_OSVW_STATUS + (osvw_id >> 6),
--			    osvw_bits);
--			return osvw_bits & (1ULL << (osvw_id & 0x3f));
--		}
--	}
--
--	/* OSVW unavailable or ID unknown, match family-model-stepping range */
--	ms = (cpu->x86_model << 4) | cpu->x86_stepping;
--	while ((range = *erratum++))
--		if ((cpu->x86 == AMD_MODEL_RANGE_FAMILY(range)) &&
--		    (ms >= AMD_MODEL_RANGE_START(range)) &&
--		    (ms <= AMD_MODEL_RANGE_END(range)))
--			return true;
--
--	return false;
--}
--
- void set_dr_addr_mask(unsigned long mask, int dr)
- {
- 	if (!boot_cpu_has(X86_FEATURE_BPEXT))
-@@ -1191,3 +1234,15 @@ void set_dr_addr_mask(unsigned long mask, int dr)
- 		break;
- 	}
- }
-+
-+static void zenbleed_check_cpu(void *unused)
-+{
-+	struct cpuinfo_x86 *c = &cpu_data(smp_processor_id());
-+
-+	zenbleed_check(c);
-+}
-+
-+void amd_check_microcode(void)
-+{
-+	on_each_cpu(zenbleed_check_cpu, NULL, 1);
-+}
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 55293e5dcbff..ec324be00603 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -2077,6 +2077,8 @@ void microcode_check(void)
- 
- 	perf_check_microcode();
- 
-+	amd_check_microcode();
-+
- 	/* Reload CPUID max function as it might've changed. */
- 	info.cpuid_level = cpuid_eax(0);
- 
-diff --git a/arch/x86/kernel/cpu/microcode/amd.c b/arch/x86/kernel/cpu/microcode/amd.c
-index b33e4fe9de19..5698e04803b5 100644
---- a/arch/x86/kernel/cpu/microcode/amd.c
-+++ b/arch/x86/kernel/cpu/microcode/amd.c
-@@ -532,7 +532,7 @@ static enum ucode_state apply_microcode_amd(int cpu)
- 	rdmsr(MSR_AMD64_PATCH_LEVEL, rev, dummy);
- 
- 	/* need to apply patch? */
--	if (rev >= mc_amd->hdr.patch_id) {
-+	if (rev > mc_amd->hdr.patch_id) {
- 		ret = UCODE_OK;
- 		goto out;
- 	}
+
+--yzmqMJ1ISurXR8jS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hey Jisheng,
+
+On Mon, Jul 24, 2023 at 12:10:28AM +0800, Jisheng Zhang wrote:
+> The IP supports per channel interrupt, add support for this usage case.
+>=20
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+
+Silly question perhaps, but the commit message and description for this
+property imply that this is an optional feature that software may choose
+to make use of, but will function without. Is that the case?
+
+> ---
+>  .../devicetree/bindings/net/snps,dwmac.yaml   | 23 +++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Docu=
+mentation/devicetree/bindings/net/snps,dwmac.yaml
+> index bb80ca205d26..525210c2c06c 100644
+> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> @@ -101,6 +101,11 @@ properties:
+>      minItems: 1
+>      maxItems: 2
+> =20
+> +  snps,per-channel-interrupt:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Indicates that Rx and Tx complete will generate a unique interrupt=
+ for each channel
+> +
+>    interrupts:
+>      minItems: 1
+>      items:
+> @@ -109,6 +114,8 @@ properties:
+>        - description: The interrupt that occurs when Rx exits the LPI sta=
+te
+>        - description: The interrupt that occurs when Safety Feature Corre=
+ctible Errors happen
+>        - description: The interrupt that occurs when Safety Feature Uncor=
+rectible Errors happen
+> +      - description: All of the rx per-channel interrupts
+> +      - description: All of the tx per-channel interrupts
+> =20
+>    interrupt-names:
+>      minItems: 1
+> @@ -118,6 +125,22 @@ properties:
+>        - const: eth_lpi
+>        - const: sfty_ce_irq
+>        - const: sfty_ue_irq
+> +      - const: rx0
+> +      - const: rx1
+> +      - const: rx2
+> +      - const: rx3
+> +      - const: rx4
+> +      - const: rx5
+> +      - const: rx6
+> +      - const: rx7
+> +      - const: tx0
+> +      - const: tx1
+> +      - const: tx2
+> +      - const: tx3
+> +      - const: tx4
+> +      - const: tx5
+> +      - const: tx6
+> +      - const: tx7
+> =20
+>    clocks:
+>      minItems: 1
+> --=20
+> 2.40.1
+>=20
+
+--yzmqMJ1ISurXR8jS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZL60swAKCRB4tDGHoIJi
+0kp0AP9cl/Kkn46dTmz0i/arZps5F7oU5toWGL4Tz+RgllbJmAD/UV4ChCqmubDi
+srI+nEMnjcExH4WbPf9u5fMGWCZ75AM=
+=cJ/j
+-----END PGP SIGNATURE-----
+
+--yzmqMJ1ISurXR8jS--
