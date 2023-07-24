@@ -2,125 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC7675E9AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259E975E97F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjGXCYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 22:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33262 "EHLO
+        id S230075AbjGXCHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 22:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbjGXCY0 (ORCPT
+        with ESMTP id S230462AbjGXCGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 22:24:26 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA380E53
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 19:24:10 -0700 (PDT)
-Received: from dggpemm500014.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R8MpC3W0xztRZ0;
-        Mon, 24 Jul 2023 09:22:11 +0800 (CST)
-Received: from [10.174.178.120] (10.174.178.120) by
- dggpemm500014.china.huawei.com (7.185.36.153) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 24 Jul 2023 09:25:22 +0800
-Message-ID: <35a0dad6-4f3b-f2c3-f835-b13c1e899f8d@huawei.com>
-Date:   Mon, 24 Jul 2023 09:25:22 +0800
+        Sun, 23 Jul 2023 22:06:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507FE4EEA;
+        Sun, 23 Jul 2023 19:00:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 262BF60FBD;
+        Mon, 24 Jul 2023 01:32:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26791C433C7;
+        Mon, 24 Jul 2023 01:32:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690162343;
+        bh=Hxmsd7CTkowhF3Snq2/CkhdalK+PtprpnpOIPLirBOs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IL+TW5uYOcT8tZQGVVx15xyNM3QU4CukOgLSM1xo1MWfPI2e+LQU6j9y1Uz4NjRWG
+         WrDzCIksby/NR67AM4rTu5Cva0oWR2AA+W5316zJRGDQPwvVRTllcMra6m/quGP4Je
+         SFPlyUYJfuijHy0fsXzOPSdBy0zSIPdvkt48zTQqP1x9HdERuT2k2Nuou5VGTZ1vOP
+         3r8+u6o2z0UcNsC0Fjc95ADuy85oO3wuF801VtNK1r+xH55Iydtux+voAgbAMdeCzz
+         JFTPhlQpECQVAkjGe9hN6Wbz0pZ2qeNrPkWkCWDxGaEwSDrPCDb8xGr7CdgvA6RXTH
+         cd5UbMVmKHS0g==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 31/40] fs/ntfs3: Mark ntfs dirty when on-disk struct is corrupted
+Date:   Sun, 23 Jul 2023 21:31:31 -0400
+Message-Id: <20230724013140.2327815-31-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230724013140.2327815-1-sashal@kernel.org>
+References: <20230724013140.2327815-1-sashal@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC:     <mawupeng1@huawei.com>, <catalin.marinas@arm.com>,
-        <akpm@linux-foundation.org>, <sudaraja@codeaurora.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <wangkefeng.wang@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>, <mark.rutland@arm.com>,
-        <anshuman.khandual@arm.com>
-Subject: Re: [RFC PATCH] arm64: mm: Fix kernel page tables incorrectly deleted
- during memory removal
-Content-Language: en-US
-To:     <will@kernel.org>
-References: <20230717115150.1806954-1-mawupeng1@huawei.com>
- <20230721103628.GA12601@willie-the-truck>
-From:   mawupeng <mawupeng1@huawei.com>
-In-Reply-To: <20230721103628.GA12601@willie-the-truck>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.120]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500014.china.huawei.com (7.185.36.153)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.4.5
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
+[ Upstream commit e0f363a98830e8d7d70fbaf91c07ae0b7c57aafe ]
 
-On 2023/7/21 18:36, Will Deacon wrote:
-> On Mon, Jul 17, 2023 at 07:51:50PM +0800, Wupeng Ma wrote:
->> From: Ma Wupeng <mawupeng1@huawei.com>
->>
->> During our test, we found that kernel page table may be unexpectedly
->> cleared with rodata off. The root cause is that the kernel page is
->> initialized with pud size(1G block mapping) while offline is memory
->> block size(MIN_MEMORY_BLOCK_SIZE 128M), eg, if 2G memory is hot-added,
->> when offline a memory block, the call trace is shown below,
->>
->>  offline_and_remove_memory
->>     try_remove_memory
->>       arch_remove_memory
->>        __remove_pgd_mapping
->>          unmap_hotplug_range
->>            unmap_hotplug_p4d_range
->>              unmap_hotplug_pud_range
->>                if (pud_sect(pud))
->>                  pud_clear(pudp);
-> 
-> Sorry, but I'm struggling to understand the problem here. If we're adding
-> and removing a 2G memory region, why _wouldn't_ we want to use large 1GiB
-> mappings?
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ntfs3/fsntfs.c  | 2 +-
+ fs/ntfs3/index.c   | 6 ++++++
+ fs/ntfs3/ntfs_fs.h | 2 ++
+ fs/ntfs3/record.c  | 6 ++++++
+ 4 files changed, 15 insertions(+), 1 deletion(-)
 
+diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
+index 28cc421102e59..21567e58265c4 100644
+--- a/fs/ntfs3/fsntfs.c
++++ b/fs/ntfs3/fsntfs.c
+@@ -178,7 +178,7 @@ int ntfs_fix_post_read(struct NTFS_RECORD_HEADER *rhdr, size_t bytes,
+ 	/* Check errors. */
+ 	if ((fo & 1) || fo + fn * sizeof(short) > SECTOR_SIZE || !fn-- ||
+ 	    fn * SECTOR_SIZE > bytes) {
+-		return -EINVAL; /* Native chkntfs returns ok! */
++		return -E_NTFS_CORRUPT;
+ 	}
+ 
+ 	/* Get fixup pointer. */
+diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
+index 0a48d2d672198..b40da258e6848 100644
+--- a/fs/ntfs3/index.c
++++ b/fs/ntfs3/index.c
+@@ -1113,6 +1113,12 @@ int indx_read(struct ntfs_index *indx, struct ntfs_inode *ni, CLST vbn,
+ 	*node = in;
+ 
+ out:
++	if (err == -E_NTFS_CORRUPT) {
++		ntfs_inode_err(&ni->vfs_inode, "directory corrupted");
++		ntfs_set_state(ni->mi.sbi, NTFS_DIRTY_ERROR);
++		err = -EINVAL;
++	}
++
+ 	if (ib != in->index)
+ 		kfree(ib);
+ 
+diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
+index eb01f7e76479a..2e4be773728df 100644
+--- a/fs/ntfs3/ntfs_fs.h
++++ b/fs/ntfs3/ntfs_fs.h
+@@ -53,6 +53,8 @@ enum utf16_endian;
+ #define E_NTFS_NONRESIDENT		556
+ /* NTFS specific error code about punch hole. */
+ #define E_NTFS_NOTALIGNED		557
++/* NTFS specific error code when on-disk struct is corrupted. */
++#define E_NTFS_CORRUPT			558
+ 
+ 
+ /* sbi->flags */
+diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
+index 7060f784c2d72..7974ca35a15c6 100644
+--- a/fs/ntfs3/record.c
++++ b/fs/ntfs3/record.c
+@@ -180,6 +180,12 @@ int mi_read(struct mft_inode *mi, bool is_mft)
+ 	return 0;
+ 
+ out:
++	if (err == -E_NTFS_CORRUPT) {
++		ntfs_err(sbi->sb, "mft corrupted");
++		ntfs_set_state(sbi, NTFS_DIRTY_ERROR);
++		err = -EINVAL;
++	}
++
+ 	return err;
+ }
+ 
+-- 
+2.39.2
 
-> Or are you saying that only a subset of the memory is removed,
-> but we then accidentally unmap the whole thing?
-
-Yes, umap a subset but the whole thing page table entry is removed.
-
-> 
->> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
->> index 95d360805f8a..44c724ce4f70 100644
->> --- a/arch/arm64/mm/mmu.c
->> +++ b/arch/arm64/mm/mmu.c
->> @@ -44,6 +44,7 @@
->>  #define NO_BLOCK_MAPPINGS	BIT(0)
->>  #define NO_CONT_MAPPINGS	BIT(1)
->>  #define NO_EXEC_MAPPINGS	BIT(2)	/* assumes FEAT_HPDS is not used */
->> +#define NO_PUD_MAPPINGS		BIT(3)
->>  
->>  int idmap_t0sz __ro_after_init;
->>  
->> @@ -344,7 +345,7 @@ static void alloc_init_pud(pgd_t *pgdp, unsigned long addr, unsigned long end,
->>  		 */
->>  		if (pud_sect_supported() &&
->>  		   ((addr | next | phys) & ~PUD_MASK) == 0 &&
->> -		    (flags & NO_BLOCK_MAPPINGS) == 0) {
->> +		    (flags & (NO_BLOCK_MAPPINGS | NO_PUD_MAPPINGS)) == 0) {
->>  			pud_set_huge(pudp, phys, prot);
->>  
->>  			/*
->> @@ -1305,7 +1306,7 @@ struct range arch_get_mappable_range(void)
->>  int arch_add_memory(int nid, u64 start, u64 size,
->>  		    struct mhp_params *params)
->>  {
->> -	int ret, flags = NO_EXEC_MAPPINGS;
->> +	int ret, flags = NO_EXEC_MAPPINGS | NO_PUD_MAPPINGS;
-> 
-> I think we should allow large mappings here and instead prevent partial
-> removal of the block, if that's what is causing the issue.
-
-This could solve this problem.
-Or we can prevent  partial removal? Or rebulid page table entry which is not removed?
-
-> 
-> Will
