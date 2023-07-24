@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F0B75EDCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9844075EDD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbjGXIiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
+        id S231719AbjGXIi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbjGXIiM (ORCPT
+        with ESMTP id S231682AbjGXIiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:38:12 -0400
+        Mon, 24 Jul 2023 04:38:17 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB7C9CA;
-        Mon, 24 Jul 2023 01:38:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5451C1B3;
+        Mon, 24 Jul 2023 01:38:15 -0700 (PDT)
 Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36O6EvdJ023544;
-        Mon, 24 Jul 2023 08:38:08 GMT
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36O5l0cS008204;
+        Mon, 24 Jul 2023 08:38:12 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=qcppdkim1;
- bh=bG9WY357ePXE5z1gTNxxx6tTmyDNjG9gYjoyvB8218c=;
- b=K7Z8rwvw4ddgYkch/g66tsf74hSsegCH09Yvcd+DUcz1WzccnN6dXV35ff4AzxmLJJhI
- IStDX7LScWQw/fDgM/N67iU/leTAV07kXKF7PYYcfbZ7ls1N6Ywgyc/RKbN/d9Ja/PVN
- nOpDrfMCFaMq1+kkSgWix8Tvs58tXd7d74YpWmIHt1DWITqJQlSIEPFU4tRnN9lfyCjZ
- BpqTLha1XsXzRpqWyniapPLaCWfE6b2L4T8uhakEofoayCezHCEAWAxp5gqtDceJ1rT/
- GZcj0ngw625XHSXHiwb/qE4Gyl0fAoNuIDvt0RQc7megfKaas9E3zwuF1Jy9GVCWBgiJ Hg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s06es2t64-1
+ bh=suzFnpv6BPJlA2ifbK6IzzKqd8KwmxfGfS0Sw74ZJPs=;
+ b=AvWZwjo+5+oGr53vP4DGV/kzH788nt8vVMRdLnSdpoyUhFb1ZT8TpRCYdioeCX2heQzg
+ 7/QPXUx6m38ioaT6J0fnMzZCPT0B4ZYFWROx6bOETVm5Y2naLcDFK85PDoCgud/B3Ica
+ BtWul8mE5eHXbhuDS87O8X8t3KidkHjsELpHVKMTUaOdaKhPgn9fIIaUMeDEnzDVO1zd
+ QtjxwLZPVHgH0n2heEZ+B9Tk8QYlMWKlzvfhv3d/p6Gb2sUEPp9UwymbJ7lbBXnE665N
+ TGOB6GSHS+nQ3YnY6fi5p3IpIe+qjqh4Id/HHPN5TxNqVAOJBC+FppAg9iFCIpbsldcZ Dw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s06es2t6a-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 08:38:08 +0000
+        Mon, 24 Jul 2023 08:38:12 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36O8c7nX002869
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36O8cBgR032658
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 08:38:07 GMT
+        Mon, 24 Jul 2023 08:38:11 GMT
 Received: from hu-kathirav-blr.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 24 Jul 2023 01:38:03 -0700
+ 15.2.1118.30; Mon, 24 Jul 2023 01:38:07 -0700
 From:   Kathiravan T <quic_kathirav@quicinc.com>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -50,9 +50,9 @@ To:     Andy Gross <agross@kernel.org>,
         <devicetree@vger.kernel.org>
 CC:     <quic_saahtoma@quicinc.com>,
         Kathiravan T <quic_kathirav@quicinc.com>
-Subject: [PATCH V3 1/2] soc: qcom: socinfo: drop the IPQ5019 SoC ID
-Date:   Mon, 24 Jul 2023 14:07:44 +0530
-Message-ID: <20230724083745.1015321-2-quic_kathirav@quicinc.com>
+Subject: [PATCH V3 2/2] dt-bindings: arm: qcom,ids: drop the IPQ5019 SoC ID
+Date:   Mon, 24 Jul 2023 14:07:45 +0530
+Message-ID: <20230724083745.1015321-3-quic_kathirav@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230724083745.1015321-1-quic_kathirav@quicinc.com>
 References: <20230724083745.1015321-1-quic_kathirav@quicinc.com>
@@ -64,13 +64,13 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ZIIocooM-zA0_CsbWd4majPNMVJKACyd
-X-Proofpoint-ORIG-GUID: ZIIocooM-zA0_CsbWd4majPNMVJKACyd
+X-Proofpoint-GUID: pmF0HHO0rqN0yt_Sa_Z4nqCu7BCKMadU
+X-Proofpoint-ORIG-GUID: pmF0HHO0rqN0yt_Sa_Z4nqCu7BCKMadU
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-24_06,2023-07-20_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 mlxlogscore=805
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 mlxlogscore=547
  suspectscore=0 adultscore=0 spamscore=0 impostorscore=0 mlxscore=0
  malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2306200000 definitions=main-2307240076
@@ -95,21 +95,21 @@ Changes in V2:
 	- Updated the commit message with the precise information for
 	  dropping this ID
 
- drivers/soc/qcom/socinfo.c | 1 -
+ include/dt-bindings/arm/qcom,ids.h | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
-index 4d49945b3a35..78293ab13c87 100644
---- a/drivers/soc/qcom/socinfo.c
-+++ b/drivers/soc/qcom/socinfo.c
-@@ -406,7 +406,6 @@ static const struct soc_id soc_id[] = {
- 	{ qcom_board_id(QRU1000) },
- 	{ qcom_board_id(QDU1000) },
- 	{ qcom_board_id(QDU1010) },
--	{ qcom_board_id(IPQ5019) },
- 	{ qcom_board_id(QRU1032) },
- 	{ qcom_board_id(QRU1052) },
- 	{ qcom_board_id(QRU1062) },
+diff --git a/include/dt-bindings/arm/qcom,ids.h b/include/dt-bindings/arm/qcom,ids.h
+index bcbe9ee2cdaf..179dd56b2d95 100644
+--- a/include/dt-bindings/arm/qcom,ids.h
++++ b/include/dt-bindings/arm/qcom,ids.h
+@@ -250,7 +250,6 @@
+ #define QCOM_ID_QRU1000			539
+ #define QCOM_ID_QDU1000			545
+ #define QCOM_ID_QDU1010			587
+-#define QCOM_ID_IPQ5019			569
+ #define QCOM_ID_QRU1032			588
+ #define QCOM_ID_QRU1052			589
+ #define QCOM_ID_QRU1062			590
 -- 
 2.34.1
 
