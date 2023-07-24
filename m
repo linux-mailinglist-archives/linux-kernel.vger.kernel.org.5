@@ -2,216 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A0275FA40
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB15375FA45
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbjGXOzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35840 "EHLO
+        id S229959AbjGXO51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjGXOzm (ORCPT
+        with ESMTP id S229468AbjGXO5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:55:42 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B627C10C0;
-        Mon, 24 Jul 2023 07:55:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690210540; x=1721746540;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=0nQmreZIIFL5rEUPYPNOo7mftuofidoQGo9palwNguw=;
-  b=Pb9+CNagUg5PRfUxXh8qCaZXRgU/7qe0oG2ZZzQ/4ho3mPLPO0ICuP1/
-   00ouNESRfd2QaQJxfwjXTV/6HA2/ley2CVb7jEFfB4vkTOh6EU6cSax9P
-   cZ0QFCGWZiWVyDoPX9liuS3Cv0JoOwFlNXPL8tw+0y6FLbPevLP1/OC23
-   o4PaCpFImeNkULTymvDcVouCn49vbcjFegCU8sTzd031rRMAPwEu2nTRO
-   1XYrZ/2kmxqlWhN5LafhukewA6rpYkmOiI7wId6OZNvLDGs4BJH38ST4g
-   eL6dUtAebx1G6aEuklNkhrN/dBgXGIp9h7eG1zGIgacN0AC6WZN4Ulcfy
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="398369098"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="398369098"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 07:55:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="899520928"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="899520928"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.48.113])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 24 Jul 2023 07:55:38 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "x86@kernel.org" <x86@kernel.org>, "tj@kernel.org" <tj@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>
-Subject: Re: [PATCH v3 03/28] x86/sgx: Add 'struct sgx_epc_lru_lists' to
- encapsulate lru list(s)
-References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
- <20230712230202.47929-4-haitao.huang@linux.intel.com>
- <CU4GHCJTRKLZ.1RK23NWPHJGNI@seitikki>
- <op.17794m01wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <4f5496d2e0ea8edba430e7de7304bdd840616146.camel@intel.com>
-Date:   Mon, 24 Jul 2023 09:55:37 -0500
+        Mon, 24 Jul 2023 10:57:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0990810C8
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:56:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690210593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qyDhIAIIOkviYuugYW1Y2WwDIHyMCteZyLgKjPu6Mk8=;
+        b=bLHOtEixW62mJrsbgtte/mDJCkb+34c3NJYiX19Jc21ABP/NmiQK7U/uWRT3xfnwZH/0mI
+        2SzEvWoJD9zgdCHKZ9z7aW11VPXckxyvQ6aJj7fYunrrszQ4NMobg3DxfzkUjMF+AcDo3q
+        oOsjrlh0BqU4/GaSiA+p4m85l9ZmoaA=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-655-A3383VSBM5O4rEq-6uiQ4A-1; Mon, 24 Jul 2023 10:56:31 -0400
+X-MC-Unique: A3383VSBM5O4rEq-6uiQ4A-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-99ab59eef1fso369248266b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:56:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690210591; x=1690815391;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qyDhIAIIOkviYuugYW1Y2WwDIHyMCteZyLgKjPu6Mk8=;
+        b=HwZDxs0N4Vuoo8yty1yX8I4wE4f0qMorNTVH1Y8BFikOKJa9bJzSgBwE5N+5zQDdMI
+         BwqnuQj1d0NEi3X8gFT6Ysb2eMGLjITW8jahO6Oe23FfG3nz9TZ0qpkgtBlyGWI1ERxD
+         CEg7UhgqCNpKPVf5+2aKZ4QTWJ8hbkEkurvgkw6MGmmDIqNzjPVeI1Joyj8izMwcbAQW
+         Htyi5wu0MvuHLvb/TL5D6OqPN/PPxLiREpq+QAPlpDU0nlIZX7ale4i69FGlfv9ZIFR1
+         +ALGgBGyLLZvbzBKHewhYYL6qEpSb8HQHqP843Jzzy6uwj2X23lpvBCPDZnnXAnSSH5C
+         2b2w==
+X-Gm-Message-State: ABy/qLab9nKMr08903Biq5ucUIazeIPPNsVP5LrOB/NaJfwiJmZOKwkg
+        jozVqN4poWTga+OrwW3JDgiNt9lySOoL2XWxEpeMJ/VShpD+3bFAOHMeEvMPLj15leSJYC/5Ln8
+        5vDieaq6Hw2EjfvR5NBr7wjDr
+X-Received: by 2002:a17:906:142:b0:99b:4378:a5aa with SMTP id 2-20020a170906014200b0099b4378a5aamr10932494ejh.49.1690210590813;
+        Mon, 24 Jul 2023 07:56:30 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGew8ZfxpMg1IPHgdW+P4N+fJj23+LIyZEInwx4n2Bho+JUbvzjjxmxPJwDcIJS99FXO2fHEg==
+X-Received: by 2002:a17:906:142:b0:99b:4378:a5aa with SMTP id 2-20020a170906014200b0099b4378a5aamr10932446ejh.49.1690210590470;
+        Mon, 24 Jul 2023 07:56:30 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id dt15-20020a170906b78f00b00991bba473e1sm6867427ejb.3.2023.07.24.07.56.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 07:56:29 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <a2569132-393e-0149-f76c-f6de282e1c96@redhat.com>
+Date:   Mon, 24 Jul 2023 16:56:27 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.18lc2zw6wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <4f5496d2e0ea8edba430e7de7304bdd840616146.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Cc:     brouer@redhat.com,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Hari Ramakrishnan <rharix@google.com>,
+        David Ahern <dsahern@kernel.org>,
+        Samiullah Khawaja <skhawaja@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>, logang@deltatee.com,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
+ page_pool: remove PP_FLAG_PAGE_FRAG flag)
+Content-Language: en-US
+To:     Mina Almasry <almasrymina@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+References: <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org>
+ <20230711093224.1bf30ed5@kernel.org>
+ <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
+ <20230711133915.03482fdc@kernel.org>
+ <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
+ <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com>
+ <ZK6kOBl4EgyYPtaD@ziepe.ca>
+ <CAHS8izNuda2DXKTFAov64F7J2_BbMPaqJg1NuMpWpqGA20+S_Q@mail.gmail.com>
+ <143a7ca4-e695-db98-9488-84cf8b78cf86@amd.com>
+ <CAHS8izPm6XRS54LdCDZVd0C75tA1zHSu6jLVO8nzTLXCc=H7Nw@mail.gmail.com>
+ <ZLFv2PIgdeH8gKmh@ziepe.ca>
+ <CAHS8izNMB-H3w0CE9kj6hT5q_F6_XJy_X_HtZwmisOEDhp31yg@mail.gmail.com>
+In-Reply-To: <CAHS8izNMB-H3w0CE9kj6hT5q_F6_XJy_X_HtZwmisOEDhp31yg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kai
-On Mon, 24 Jul 2023 05:04:48 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-> On Mon, 2023-07-17 at 08:23 -0500, Haitao Huang wrote:
->> On Mon, 17 Jul 2023 07:45:36 -0500, Jarkko Sakkinen <jarkko@kernel.org>
->> wrote:
+
+On 17/07/2023 03.53, Mina Almasry wrote:
+> On Fri, Jul 14, 2023 at 8:55 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >>
->> > On Wed Jul 12, 2023 at 11:01 PM UTC, Haitao Huang wrote:
->> > > From: Kristen Carlson Accardi <kristen@linux.intel.com>
->> > >
->> > > Introduce a data structure to wrap the existing reclaimable list
->> > > and its spinlock in a struct to minimize the code changes needed
->> > > to handle multiple LRUs as well as reclaimable and non-reclaimable
->> > > lists. The new structure will be used in a following set of patches  
->> to
->> > > implement SGX EPC cgroups.
->
-> Although briefly mentioned in the first patch, it would be better to put  
-> more
-> background about the "reclaimable" and "non-reclaimable" thing here,  
-> focusing on
-> _why_ we need multiple LRUs (presumably you mean two lists: reclaimable  
-> and non-
-> reclaimable).
->
-Sure I can add a little more background to introduce the  
-reclaimable/unreclaimable concept. But why we need multiple LRUs would be  
-self-evident in later patches, not sure I will add details here.
-
->> > >
->> > > The changes to the structure needed for unreclaimable lists will be
->> > > added in later patches.
->> > >
->> > > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> > > Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
->> > > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> > > Cc: Sean Christopherson <seanjc@google.com>
->> > >
->> > > V3:
->> > > Removed the helper functions and revised commit messages
->
-> Please put change history into:
->
-> ---
->   change history
-> ---
->
-> So it can be stripped away when applying the patch.
->
-Will do that.
-
->> > > ---
->> > >  arch/x86/kernel/cpu/sgx/sgx.h | 17 +++++++++++++++++
->> > >  1 file changed, 17 insertions(+)
->> > >
->> > > diff --git a/arch/x86/kernel/cpu/sgx/sgx.h
->> > > b/arch/x86/kernel/cpu/sgx/sgx.h
->> > > index f6e3c5810eef..77fceba73a25 100644
->> > > --- a/arch/x86/kernel/cpu/sgx/sgx.h
->> > > +++ b/arch/x86/kernel/cpu/sgx/sgx.h
->> > > @@ -92,6 +92,23 @@ static inline void *sgx_get_epc_virt_addr(struct
->> > > sgx_epc_page *page)
->> > >  	return section->virt_addr + index * PAGE_SIZE;
->> > >  }
->> > >
->> > > +/*
->> > > + * This data structure wraps a list of reclaimable EPC pages, and a
->> > > list of
->> > > + * non-reclaimable EPC pages and is used to implement a LRU policy
->> > > during
->> > > + * reclamation.
->> > > + */
->
-> I'd prefer to not mention the "non-reclaimable" thing in this patch, but  
-> defer
-> to the one actually introduces the "non-reclaimable" list.  Actually, I  
-> don't
-> think we even need this comment, given you have this in the structure:
->
-> 	struct list_head reclaimable;
->
-
-Agreed.
-
-> Which already explains the "reclaimable" list.  I suppose the  
-> non-reclaimable
-> list would be named similarly thus need no comment either.
->
-> Also, I am wondering why you need to split this out as a separate  
-> patch.  It
-> basically does nothing.  To me you should just merge this to the next  
-> patch,
-
-I think Kristen splitted the original patch based on Dave's comments:
-
-https://lore.kernel.org/all/e71d76b2-4368-4627-abd4-2163e6786a20@intel.com/
-
-> which actually does what you claimed in the changelog:
->
-> 	Introduce a data structure to wrap the existing reclaimable list and 
-> 	its spinlock ...
->
-> Then this can be an infrastructure change patch, which doesn't bring any
-> functional change, to support the non-reclaimable list.
->
->
->> > > +struct sgx_epc_lru_lists {
->> > > +	/* Must acquire this lock to access */
->> > > +	spinlock_t lock;
->> >
->> > Isn't this self-explanatory, why the inline comment?
+>> On Fri, Jul 14, 2023 at 07:55:15AM -0700, Mina Almasry wrote:
 >>
->> I got a warning from the checkpatch script complaining this lock needs
->> comments.
->
-> I suspected this, so I applied this patch, removed the comment,  
-> generated a new
-> patch, and run checkpatch.pl for it.  It didn't report any warning/error  
-> in my
-> testing.
->
-> Are you sure you got a warning?
+>>> Once the skb frags with struct new_abstraction are in the TCP stack,
+>>> they will need some special handling in code accessing the frags. But
+>>> my RFC already addressed that somewhat because the frags were
+>>> inaccessible in that case. In this case the frags will be both
+>>> inaccessible and will not be struct pages at all (things like
+>>> get_page() will not work), so more special handling will be required,
+>>> maybe.
+>>
+>> It seems sort of reasonable, though there will be interesting concerns
+>> about coherence and synchronization with generial purpose DMABUFs that
+>> will need tackling.
+>>
+>> Still it is such a lot of churn and weridness in the netdev side, I
+>> think you'd do well to present an actual full application as
+>> justification.
+>>
+>> Yes, you showed you can stick unordered TCP data frags into GPU memory
+>> sort of quickly, but have you gone further with this to actually show
+>> it is useful for a real world GPU centric application?
+>>
+>> BTW your cover letter said 96% utilization, the usual server
+>> configuation is one NIC per GPU, so you were able to hit 1500Gb/sec of
+>> TCP BW with this?
+>>
+> 
+> I do notice that the number of NICs is missing from our public
+> documentation so far, so I will refrain from specifying how many NICs
+> are on those A3 VMs until the information is public. But I think I can
+> confirm that your general thinking is correct, the perf that we're
+> getting is 96.6% line rate of each GPU/NIC pair, 
 
-I did a reran and it's actually a "CHECK" I got:
+What do you mean by 96.6% "line rate".
+Is is the Ethernet line-rate?
 
-$ ./scripts/checkpatch.pl --strict  
-0001-x86-sgx-Add-struct-sgx_epc_lru_lists-to-encapsulate-.patch
-CHECK: spinlock_t definition without comment
-#41: FILE: arch/x86/kernel/cpu/sgx/sgx.h:101:
-+       spinlock_t lock;
+Is the measured throughput the measured TCP data "goodput"?
+Assuming
+  - MTU 1500 bytes (1514 on wire).
+  - Ethernet header 14 bytes
+  - IP header 20 bytes
+  - TCP header 20 bytes
 
-total: 0 errors, 0 warnings, 1 checks, 22 lines checked
+Due to header overhead the goodput will be approx 96.4%.
+  - (1514-(14+20+20))/1514 = 0.9643
+  - (Not taking Ethernet interframe gap into account).
 
-Thanks
-Haitao
+Thus, maybe you have hit Ethernet wire line-rate already?
+
+> and scales linearly
+> for each NIC/GPU pair we've tested with so far. Line rate of each
+> NIC/GPU pair is 200 Gb/sec.
+> 
+> So if we have 8 NIC/GPU pairs we'd be hitting 96.6% * 200 * 8 = 1545 GB/sec.
+
+Lets keep our units straight.
+Here you mean 1545 Gbit/sec, which is 193 GBytes/s
+
+> If we have, say, 2 NIC/GPU pairs, we'd be hitting 96.6% * 200 * 2 = 384 GB/sec
+
+Here you mean 384 Gbit/sec, which is 48 GBytes/sec.
+
+> ...
+> etc.
+> 
+
+These massive throughput numbers are important, because they *exceed*
+the physical host RAM/DIMM memory speeds.
+
+This is the *real argument* why software cannot afford to do a single
+copy of the data from host-RAM into GPU-memory, because the CPU memory
+throughput to DRAM/DIMM are insufficient.
+
+My testlab CPU E5-1650 have 4 DIMM slots DDR4
+  - Data Width: 64 bits (= 8 bytes)
+  - Configured Memory Speed: 2400 MT/s
+  - Theoretical maximum memory bandwidth: 76.8 GBytes/s (2400*8*4)
+
+Even the theoretical max 76.8 GBytes/s (614 Gbit/s) is not enough for
+the 193 GBytes/s or 1545 Gbit/s (8 NIC/GPU pairs).
+
+When testing this with lmbench tool bw_mem, the results (below
+signature) are in the area 14.8 GBytes/sec (118 Gbit/s), as soon as
+exceeding L3 cache size.  In practice it looks like main memory is
+limited to reading 118 Gbit/s *once*. (Mina's NICs run at 200 Gbit/s)
+
+Given DDIO can deliver network packets into L3, I also tried to figure
+out what the L3 read bandwidth, which I measured to be 42.4 GBits/sec
+(339 Gbit/s), in hopes that it would be enough, but it was not.
+
+
+--Jesper
+(data below signature)
+
+CPU under test:
+
+  $ cat /proc/cpuinfo | egrep -e 'model name|cache size' | head -2
+  model name	: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz
+  cache size	: 15360 KB
+
+
+Providing some cmdline outputs from lmbench "bw_mem" tool.
+(Output format is "%0.2f %.2f\n", megabytes, megabytes_per_second)
+
+$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 256M rd
+256.00 14924.50
+
+$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 256M wr
+256.00 9895.25
+
+$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 256M rdwr
+256.00 9737.54
+
+$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 256M bcopy
+256.00 12462.88
+
+$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 256M bzero
+256.00 14869.89
+
+
+Next output shows reducing size below L3 cache size, which shows an
+increase in speed, likely the L3 bandwidth.
+
+$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 64M rd
+64.00 14840.58
+
+$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 32M rd
+32.00 14823.97
+
+$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 16M rd
+16.00 24743.86
+
+$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 8M rd
+8.00 40852.26
+
+$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 4M rd
+4.00 42545.65
+
+$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 2M rd
+2.00 42447.82
+
+$ taskset -c 2 /usr/lib/lmbench/bin/x86_64-linux-gnu/bw_mem 1M rd
+1.00 42447.82
+
