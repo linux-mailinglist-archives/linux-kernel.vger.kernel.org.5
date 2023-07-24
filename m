@@ -2,170 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B729975FBFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1D075FC01
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbjGXQZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52680 "EHLO
+        id S229862AbjGXQ0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbjGXQZ3 (ORCPT
+        with ESMTP id S229562AbjGXQ0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:25:29 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4C2C518E;
-        Mon, 24 Jul 2023 09:25:26 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F16D2FEC;
-        Mon, 24 Jul 2023 09:26:08 -0700 (PDT)
-Received: from [10.1.26.44] (FVFF763DQ05P.cambridge.arm.com [10.1.26.44])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 33FCA3F5A1;
-        Mon, 24 Jul 2023 09:25:23 -0700 (PDT)
-Message-ID: <46a3d6d3-f14e-efde-83eb-5952f313f909@arm.com>
-Date:   Mon, 24 Jul 2023 17:25:21 +0100
+        Mon, 24 Jul 2023 12:26:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD7719A2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690215936;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=drAtcPHCS22fP7yNxW1l2FqAXXz6i9T2pfEijoZr8LE=;
+        b=Jg91pGSGYDlmtxEy/KNYCvbf6jZ7TM83/B8JqKwX1TqBspnTwP6rG9bWKegR5FebiX1iu7
+        ne/KK2Gwq5za6Rx2ovDsngOhjbjZ1QFB/oRRzl83dlPtA63KmGW5BnT7w9Na9YCAoDukab
+        zz4EK8GE8otpPaDwZZkpzOxpeoly+nE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-416-v3dJyOVKPCiMh3BNUtI08A-1; Mon, 24 Jul 2023 12:25:33 -0400
+X-MC-Unique: v3dJyOVKPCiMh3BNUtI08A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7D3F0800159;
+        Mon, 24 Jul 2023 16:25:32 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.205])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D754E40C2063;
+        Mon, 24 Jul 2023 16:25:30 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <000000000000836b2805fffd6d7e@google.com>
+References: <000000000000836b2805fffd6d7e@google.com>
+To:     syzbot <syzbot+6f66f3e78821b0fff882@syzkaller.appspotmail.com>
+Cc:     dhowells@redhat.com, akpm@linux-foundation.org, axboe@kernel.dk,
+        herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [block?] KASAN: slab-out-of-bounds Read in bio_split_rw
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: acpi: Remove ETM from AMBA scan list (was Re: [PATCH V6 6/6]
- coresight: etm4x: Add ACPI support in platform driver)
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-To:     rafael@kernel.org, Len Brown <lenb@kernel.org>
-Cc:     Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>,
-        Steve Clevenger <scclevenger@os.amperecomputing.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, devicetree@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        gregkh@linuxfoundation.org
-References: <20230710062500.45147-1-anshuman.khandual@arm.com>
- <20230710062500.45147-7-anshuman.khandual@arm.com>
- <38f0c8f3-5fb3-a18a-456d-867da2998786@arm.com>
- <ac77142d-964b-691d-ea15-105a523d9738@arm.com>
-In-Reply-To: <ac77142d-964b-691d-ea15-105a523d9738@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <13124.1690215929.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 24 Jul 2023 17:25:29 +0100
+Message-ID: <13125.1690215929@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael/Len
-
-On 19/07/2023 11:11, Suzuki K Poulose wrote:
-> Rafael, Len
-> 
-> Ping (packets 6, lost 100%).
-> 
-> 
-> On 10/07/2023 17:40, Suzuki K Poulose wrote:
->> Rafael, Len
->>
->> On 10/07/2023 07:25, Anshuman Khandual wrote:
->>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>
->>> Drop ETM4X ACPI ID from the AMBA ACPI device list, and instead just 
->>> move it
->>> inside the new ACPI devices list detected and used via platform driver.
->>>
->>> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
->>> Cc: Len Brown <lenb@kernel.org>
->>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Cc: Mike Leach <mike.leach@linaro.org>
->>> Cc: Leo Yan <leo.yan@linaro.org>
->>> Cc: Sudeep Holla <sudeep.holla@arm.com>
->>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
->>> Cc: linux-acpi@vger.kernel.org
->>> Cc: coresight@lists.linaro.org
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Reviewed-by: Sudeep Holla <sudeep.holla@arm.com> (for ACPI specific 
->>> changes)
->>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>
->> We would like to queue this via coresight tree. The acpi_amba bits have
->> been reviewed by Sudeep. Please could you give us an Ack, if you are
->> happy with the proposal ?
->>
-
-Please could one of you respond to this patch ? We are blocked on your 
-Ack for queuing this. There are machines out there, which rely on this
-patch to use Arm self-hosted tracing based on CoreSight.
-
-Kind regards
-Suzuki
-
-> 
-> Kind regards
-> Suzuki
-> 
->> Kind regards
->> Suzuki
->>
->>
->>> ---
->>>   drivers/acpi/acpi_amba.c                           |  1 -
->>>   drivers/hwtracing/coresight/coresight-etm4x-core.c | 10 ++++++++++
->>>   2 files changed, 10 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/acpi/acpi_amba.c b/drivers/acpi/acpi_amba.c
->>> index f5b443ab01c2..099966cbac5a 100644
->>> --- a/drivers/acpi/acpi_amba.c
->>> +++ b/drivers/acpi/acpi_amba.c
->>> @@ -22,7 +22,6 @@
->>>   static const struct acpi_device_id amba_id_list[] = {
->>>       {"ARMH0061", 0}, /* PL061 GPIO Device */
->>>       {"ARMH0330", 0}, /* ARM DMA Controller DMA-330 */
->>> -    {"ARMHC500", 0}, /* ARM CoreSight ETM4x */
->>>       {"ARMHC501", 0}, /* ARM CoreSight ETR */
->>>       {"ARMHC502", 0}, /* ARM CoreSight STM */
->>>       {"ARMHC503", 0}, /* ARM CoreSight Debug */
->>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c 
->>> b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>> index 43f583987250..703b6fcbb6a5 100644
->>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>> @@ -3,6 +3,7 @@
->>>    * Copyright (c) 2014, The Linux Foundation. All rights reserved.
->>>    */
->>> +#include <linux/acpi.h>
->>>   #include <linux/bitops.h>
->>>   #include <linux/kernel.h>
->>>   #include <linux/moduleparam.h>
->>> @@ -2347,12 +2348,21 @@ static const struct of_device_id 
->>> etm4_sysreg_match[] = {
->>>       {}
->>>   };
->>> +#ifdef CONFIG_ACPI
->>> +static const struct acpi_device_id etm4x_acpi_ids[] = {
->>> +    {"ARMHC500", 0}, /* ARM CoreSight ETM4x */
->>> +    {}
->>> +};
->>> +MODULE_DEVICE_TABLE(acpi, etm4x_acpi_ids);
->>> +#endif
->>> +
->>>   static struct platform_driver etm4_platform_driver = {
->>>       .probe        = etm4_probe_platform_dev,
->>>       .remove        = etm4_remove_platform_dev,
->>>       .driver            = {
->>>           .name            = "coresight-etm4x",
->>>           .of_match_table        = etm4_sysreg_match,
->>> +        .acpi_match_table    = ACPI_PTR(etm4x_acpi_ids),
->>>           .suppress_bind_attrs    = true,
->>>           .pm            = &etm4_dev_pm_ops,
->>>       },
->>
-> 
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t 0b7ec177b589842c0abf9e91459c83ba28d32452
 
