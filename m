@@ -2,141 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F0D75F2FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C5B75F2FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbjGXKYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
+        id S231640AbjGXKYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:24:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233508AbjGXKXK (ORCPT
+        with ESMTP id S233669AbjGXKX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:23:10 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ACC249D0;
-        Mon, 24 Jul 2023 03:16:53 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 0988C24E35D;
-        Mon, 24 Jul 2023 18:16:52 +0800 (CST)
-Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 24 Jul
- 2023 18:16:52 +0800
-Received: from [192.168.120.57] (171.223.208.138) by EXMBX068.cuchost.com
- (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 24 Jul
- 2023 18:16:51 +0800
-Message-ID: <eb258dcd-a8f0-26ed-2d77-f49269ebb469@starfivetech.com>
-Date:   Mon, 24 Jul 2023 18:16:50 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 0/4] StarFive's Pulse Width Modulation driver support
-Content-Language: en-US
-From:   William Qiu <william.qiu@starfivetech.com>
-To:     <devicetree@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-CC:     Thierry Reding <thierry.reding@gmail.com>,
+        Mon, 24 Jul 2023 06:23:28 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09ACF4C3F;
+        Mon, 24 Jul 2023 03:17:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690193850; x=1721729850;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=N9j/ubjb14KYeVTqGuXmeyX8gTse+DRrHNcAXBsXH/M=;
+  b=cYscqBdWq+NDMk9OiYDl294EP4NLV15CRBLB/yV4/2hrcAku+QCeKZcD
+   hm9yxS/pfQnmp6j4Ef+MIzudegc/qIVe0Z+/PMDDBDCo779dNcTzscAPU
+   2VQtKjzMTqfGYhvuC8opsylKUrXmt1lHxptj4uuab7k+fWABPRMiNKZu3
+   BGPTuIoDySmaY5JJMv9Bcy1uk7fHwR1IASj1vhyvYJBZHuCIqyWZJbmAU
+   2W2IkaR/oy0MzvUY5ACWOkdQa7iASgeslBiKb9f9rDcmGfD2xZ9lUCVAm
+   eUfb4dTlVUqyDcNyRZnD2gfnm4YnzQ1kLQv/VfdpPrb7EaD1tO4IQyCQV
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="asc'?scan'208";a="221852815"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Jul 2023 03:17:28 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 24 Jul 2023 03:17:27 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 24 Jul 2023 03:17:25 -0700
+Date:   Mon, 24 Jul 2023 11:16:51 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Xingyu Wu <xingyu.wu@starfivetech.com>
+CC:     <linux-riscv@lists.infradead.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Conor Dooley <conor@kernel.org>,
         Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>
-References: <20230601085154.36938-1-william.qiu@starfivetech.com>
- <c3c7fb8a-7c0c-5966-88cd-e004db69de83@starfivetech.com>
-In-Reply-To: <c3c7fb8a-7c0c-5966-88cd-e004db69de83@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [171.223.208.138]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX068.cuchost.com
- (172.16.6.68)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v1] reset: starfive: jh7110: Add StarFive STG/ISP/VOUT
+ resets support
+Message-ID: <20230724-junkman-dominion-5a0ccfa0ba11@wendy>
+References: <20230724055440.100947-1-xingyu.wu@starfivetech.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8I5cd4AYGkoQ6umA"
+Content-Disposition: inline
+In-Reply-To: <20230724055440.100947-1-xingyu.wu@starfivetech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--8I5cd4AYGkoQ6umA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jul 24, 2023 at 01:54:40PM +0800, Xingyu Wu wrote:
+> Add new struct members and auxiliary_device_id of resets to support
+> System-Top-Group, Image-Signal-Process and Video-Output on the StarFive
+> JH7110 SoC.
+>=20
+> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+> Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+> ---
+>=20
+> Hi Stephen,
+>=20
+> I found that the PR sent by Conor was missing this STG/ISP/VOUT
+> resets patch:
+> https://lore.kernel.org/all/20230719-trough-frisk-40b92acb485a@spud/
+>=20
+> I resend this patch to make the CRG drivers completed.
 
-On 2023/6/27 15:46, William Qiu wrote:
-> 
-> 
-> On 2023/6/1 16:51, William Qiu wrote:
->> Hi,
->> 
->> This patchset adds initial rudimentary support for the StarFive
->> Pulse Width Modulation controller driver. And this driver will
->> be used in StarFive's VisionFive 2 board.The first patch add
->> Documentations for the device and Patch 2 adds device probe for
->> the module.
->> 
->> Changes v2->v3:
->> - Rebased to v6.4rc3.
->> - Sorted the header files in alphabetic order.
->> - Changed iowrite32() to writel().
->> - Added a way to turn off.
->> - Moified polarity inversion implementation.
->> - Added 7100 support.
->> - Added dts patches.
->> - Used the various helpers in linux/math.h.
->> - Corrected formatting problems.
->> - Renamed dtbinding  to 'starfive,jh7100-pwm.yaml'.
->> - Dropped the redundant code.
->> 
->> Changes v2->v3:
->> - Fixed some formatting issues.
->> 
->> Changes v1->v2:
->> - Renamed the dt-binding 'pwm-starfive.yaml' to 'starfive,jh7110-pwm.yaml'.
->> - Dropped the compatible's Items.
->> - Dropped the unuse defines.
->> - Modified the code to follow the Linux coding style.
->> - Changed return value to dev_err_probe.
->> - Dropped the unnecessary local variable.
->> 
->> The patch series is based on v6.4rc3.
->> 
->> William Qiu (4):
->>   dt-bindings: pwm: Add StarFive PWM module
->>   pwm: starfive: Add PWM driver support
->>   riscv: dts: starfive: jh7110: Add PWM node and pins configuration
->>   riscv: dts: starfive: jh7100: Add PWM node and pins configuration
->> 
->>  .../bindings/pwm/starfive,jh7100-pwm.yaml     |  55 +++++
->>  MAINTAINERS                                   |   7 +
->>  .../boot/dts/starfive/jh7100-common.dtsi      |  24 +++
->>  arch/riscv/boot/dts/starfive/jh7100.dtsi      |   9 +
->>  .../jh7110-starfive-visionfive-2.dtsi         |  22 ++
->>  arch/riscv/boot/dts/starfive/jh7110.dtsi      |   9 +
->>  drivers/pwm/Kconfig                           |   9 +
->>  drivers/pwm/Makefile                          |   1 +
->>  drivers/pwm/pwm-starfive-ptc.c                | 192 ++++++++++++++++++
->>  9 files changed, 328 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/pwm/starfive,jh7100-pwm.yaml
->>  create mode 100644 drivers/pwm/pwm-starfive-ptc.c
->> 
->> --
->> 2.34.1
->> 
-> Hi everyone,
-> 
-> Could you please help me review this patch series to see if there is
-> anything that needs to be modified?
-> Thanks for taking time to review this patch series.
-> 
-> Best Regards,
-> William
+The context here being that I did not realise that the reset patch also
+depended on the dt-binding headers & thought it could go separately.
 
-Hi Thierry Reding,
+--8I5cd4AYGkoQ6umA
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Could you please help me review this patch series to see if there is
-anything that needs to be modified?
-Thanks for taking time to review this patch series.
- 
-Best Regards,
-William
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZL5PkwAKCRB4tDGHoIJi
+0uG7AP4idzqiMp3mx7axRB5CH1pm7aQqGrsKI1ov2Rtr/2eW/AD+LiCS9ZYRQ81r
+9m/rPkMhd7Jtl8YQ2z+Ifo63IZdjTgM=
+=2j3k
+-----END PGP SIGNATURE-----
+
+--8I5cd4AYGkoQ6umA--
