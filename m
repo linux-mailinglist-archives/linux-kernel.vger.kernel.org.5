@@ -2,159 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C9475FC0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F0775FC10
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231447AbjGXQ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54478 "EHLO
+        id S231491AbjGXQ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbjGXQ1W (ORCPT
+        with ESMTP id S230041AbjGXQ2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:27:22 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B36910F5;
-        Mon, 24 Jul 2023 09:27:19 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14C73FEC;
-        Mon, 24 Jul 2023 09:28:02 -0700 (PDT)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 11E4F3F5A1;
-        Mon, 24 Jul 2023 09:27:15 -0700 (PDT)
-Message-ID: <0d268afa-c04b-7a4e-be5e-2362d3dfa64d@arm.com>
-Date:   Mon, 24 Jul 2023 17:27:14 +0100
+        Mon, 24 Jul 2023 12:28:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85B418E
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:28:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690216080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/q1M3frn/kIM/eRSovVFItIpuBu0xQYXg5rsHI5knGY=;
+        b=HwXt1CeGJQ/ZSkNnlX3KAfRUKR3iMeuDweoCxnCUOGfqiCQCIPR0VjuGB5mOEb2FSLq+QE
+        Dhs8CYbY9XENWByedar6dLm8Ua0PicEATI7/dOoxFywQUZqPUMcxBWUVcavZ//60gxBlyF
+        ncNDpDv1QcB67PKhWbZsc6HdyuodTfE=
+Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
+ [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-192-yNRuO-srME-P--N1IrSdKA-1; Mon, 24 Jul 2023 12:27:58 -0400
+X-MC-Unique: yNRuO-srME-P--N1IrSdKA-1
+Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-583a89cccf6so24187637b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:27:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690216078; x=1690820878;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/q1M3frn/kIM/eRSovVFItIpuBu0xQYXg5rsHI5knGY=;
+        b=XfJgUSeR/RRZGcP5vXXzkelS7v5wRNkkas2sFrC+pSoM8wyv4WM/ETZ45AH1KA8Q8V
+         3o07HI0ikH0GrgDxauSGtsPK7zAv1zWFjglQoZR9Eft895klvDoPgMZd+2g4eS8BJojF
+         JE535aVItU3ndk36qHeBGjK/mCfSlVi2s4F7tiOfIkxTkqezHsxbM+sf/6CEB2kZcYsU
+         sQwkpEDHMS9USH68EYCNCaFDj6DVXlzD/w/CIVoapkvyueBBraFKqSDQ/00l/olx1Q5Y
+         g7rHXE2DDkxutRFNc3wEH9GrDEWxtWQnul159EjITPxSvTXXiPie0nMmVnDnn3KbGb82
+         u3+Q==
+X-Gm-Message-State: ABy/qLZfFnlx/cuO92AMM6sCYtGyZJOur1Tidqmem8s+WvTLah/AEyjR
+        WSE08l1/9xcu8EqlBZYD7nTF9M9Lqq1ntMJfqQOrjampNkOC4CAeaCems7Tfdn/7rsACCJoX4Za
+        6Wvm2kjYq0Xoa6C8Bv27vQWEa
+X-Received: by 2002:a0d:ea46:0:b0:583:fa2b:26d2 with SMTP id t67-20020a0dea46000000b00583fa2b26d2mr2714967ywe.7.1690216078146;
+        Mon, 24 Jul 2023 09:27:58 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGqhDGqbKivicLOzFznS5VksXqmDbS43FPuhJhY1yE7ZQrqDLYL7qAQEACeSKhL4nMhr4rjzA==
+X-Received: by 2002:a0d:ea46:0:b0:583:fa2b:26d2 with SMTP id t67-20020a0dea46000000b00583fa2b26d2mr2714946ywe.7.1690216077876;
+        Mon, 24 Jul 2023 09:27:57 -0700 (PDT)
+Received: from ?IPv6:2600:6c64:4e7f:603b:2613:173:a68a:fce8? ([2600:6c64:4e7f:603b:2613:173:a68a:fce8])
+        by smtp.gmail.com with ESMTPSA id a65-20020a0df144000000b0057726fce046sm2879448ywf.26.2023.07.24.09.27.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 09:27:57 -0700 (PDT)
+Message-ID: <4f35b02968a18e636e1689c9d52729ef63a438f9.camel@redhat.com>
+Subject: Re: [RFC PATCH 0/3] scsi: qedf: sanitise uaccess
+From:   Laurence Oberman <loberman@redhat.com>
+To:     Oleksandr Natalenko <oleksandr@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-scsi@vger.kernel.org, Saurav Kashyap <skashyap@marvell.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jozef Bacik <jobacik@redhat.com>, Rob Evers <revers@redhat.com>
+Date:   Mon, 24 Jul 2023 12:27:55 -0400
+In-Reply-To: <dd7c6170def7159b558b79d34520c3d5290e36b9.camel@redhat.com>
+References: <20230724120241.40495-1-oleksandr@redhat.com>
+         <dd7c6170def7159b558b79d34520c3d5290e36b9.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [Question - ARM CCA] vCPU Hotplug Support in ARM Realm world
- might require ARM spec change?
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-To:     Salil Mehta <salil.mehta@huawei.com>,
-        "steven.price@arm.com" <steven.price@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "christoffer.dall@arm.com" <christoffer.dall@arm.com>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        Salil Mehta <salil.mehta@opnsrc.net>,
-        "andrew.jones@linux.dev" <andrew.jones@linux.dev>,
-        yuzenghui <yuzenghui@huawei.com>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Gareth Stockwell <Gareth.Stockwell@arm.com>
-References: <9cb24131a09a48e9a622e92bf8346c9d@huawei.com>
- <7da93c6e-1cbf-8840-282e-f115197b80c4@arm.com>
-Content-Language: en-US
-In-Reply-To: <7da93c6e-1cbf-8840-282e-f115197b80c4@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Salil
+On Mon, 2023-07-24 at 09:03 -0400, Laurence Oberman wrote:
+> On Mon, 2023-07-24 at 14:02 +0200, Oleksandr Natalenko wrote:
+> > qedf driver, debugfs part of it specifically, touches __user
+> > pointers
+> > directly for printing out info to userspace via sprintf(), which
+> > may
+> > cause crash like this:
+> >=20
+> > BUG: unable to handle kernel paging request at 00007ffd1d6b43a0
+> > IP: [<ffffffffaa7a882a>] string.isra.7+0x6a/0xf0
+> > Oops: 0003 [#1] SMP
+> > Call Trace:
+> > =C2=A0[<ffffffffaa7a9f31>] vsnprintf+0x201/0x6a0
+> > =C2=A0[<ffffffffaa7aa556>] sprintf+0x56/0x80
+> > =C2=A0[<ffffffffc04227ed>] qedf_dbg_stop_io_on_error_cmd_read+0x6d/0x90
+> > [qedf]
+> > =C2=A0[<ffffffffaa65bb2f>] vfs_read+0x9f/0x170
+> > =C2=A0[<ffffffffaa65cb82>] SyS_pread64+0x92/0xc0
+> >=20
+> > Avoid this by preparing the info in a kernel buffer first, either
+> > allocated on stack for small printouts, or via vmalloc() for big
+> > ones,
+> > and then copying it to the userspace properly.
+> >=20
+> > I'm not sure how big the vmalloc()'ed buffer should be, and also
+> > whether
+> > vmalloc()'ing it directly in the _read() function is a good idea,
+> > hence
+> > RFC prefix.
+> >=20
+> > The qedf_dbg_stop_io_on_error_cmd_read()-related patch is actually
+> > tested,
+> > the rest is compile-tested only.
+> >=20
+> > Oleksandr Natalenko (3):
+> > =C2=A0 scsi: qedf: do not touch __user pointer in
+> > =C2=A0=C2=A0=C2=A0 qedf_dbg_stop_io_on_error_cmd_read() directly
+> > =C2=A0 scsi: qedf: do not touch __user pointer in
+> > qedf_dbg_debug_cmd_read()
+> > =C2=A0=C2=A0=C2=A0 directly
+> > =C2=A0 scsi: qedf: do not touch __user pointer in
+> > qedf_dbg_fp_int_cmd_read()
+> > =C2=A0=C2=A0=C2=A0 directly
+> >=20
+> > =C2=A0drivers/scsi/qedf/qedf_dbg.h=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 ++
+> > =C2=A0drivers/scsi/qedf/qedf_debugfs.c | 35 +++++++++++++++++++--------=
+-
+> > --
+> > --
+> > =C2=A02 files changed, 23 insertions(+), 14 deletions(-)
+> >=20
+> > --
+> > 2.41.0
+> >=20
+>=20
+> I will test the series, the one patch was already tested.
+> This was reproduced in our LAB
+> Will report back after testing
+>=20
+> Regards
+> Laurence
 
-On 19/07/2023 10:28, Suzuki K Poulose wrote:
-> Hi Salil
-> 
-> Thanks for raising this.
-> 
-> On 19/07/2023 03:35, Salil Mehta wrote:
->> [Reposting it here from Linaro Open Discussion List for more eyes to 
->> look at]
->>
->> Hello,
->> I have recently started to dabble with ARM CCA stuff and check if our
->> recent changes to support vCPU Hotplug in ARM64 can work in the realm
->> world. I have realized that in the RMM specification[1] PSCI_CPU_ON
->> command(B5.3.3) does not handles the PSCI_DENIED return code(B5.4.2),
->> from the host. This might be required to support vCPU Hotplug feature
->> in the realm world in future. vCPU Hotplug is an important feature to
->> support kata-containers in realm world as it reduces the VM boot time
->> and facilitates dynamic adjustment of vCPUs (which I think should be
->> true even with Realm world as current implementation only makes use
->> of the PSCI_ON/OFF to realize the Hotplug look-like effect?)
->>
->>
->> As per our recent changes [2], [3] related to support vCPU Hotplug on
->> ARM64, we handle the guest exits due to SMC/HVC Hypercall in the
->> user-space i.e. VMM/Qemu. In realm world, REC Exits to host due to
->> PSCI_CPU_ON should undergo similar policy checks and I think,
->>
->> 1. Host should *deny* to online the target vCPUs which are NOT plugged
->> 2. This means target REC should be denied by host. Can host call
->>     RMI_PSCI_COMPETE in such s case?
->> 3. The *return* value (B5.3.3.1.3 Output values) should be PSCI_DENIED
-> 
-> The Realm exit with EXIT_PSCI already provides the parameters passed
-> onto the PSCI request. This happens for all PSCI calls except
-> (PSCI_VERSION and PSCI_FEAUTRES). The hyp could forward these exits to
-> the VMM and could invoke the RMI_PSCI_COMPLETE only when the VMM blesses 
-> the request (wherever applicable).
-> 
-> However, the RMM spec currently doesn't allow denying the request.
-> i.e., without RMI_PSCI_COMPLETE, the REC cannot be scheduled back in.
-> We will address this in the RMM spec and get back to you.
+For the series:  Against 6.5.0-rc3
+Makes sense to me and tested.
 
-This is now resolved in RMMv1.0-eac3 spec, available here [0].
-
-This allows the host to DENY a PSCI_CPU_ON request. The RMM ensures that
-the response doesn't violate the security guarantees by checking the
-state of the target REC.
-
-[0] https://developer.arm.com/documentation/den0137/latest/
-
-Kind regards
-Suzuki
+Reviewed-by: Laurence Oberman <loberman@redhat.com>
+Tested-by: Laurence Oberman <loberman@redhat.com>
 
 
+[root@segstorage5 host2]# ls
+clear_stats  debug  driver_stats  fp_int  io_trace  offload_stats=20
+stop_io_on_error
+[root@segstorage5 host2]# cat stop_io_on_error
+false
+[root@segstorage5 host2]# cat debug
+debug mask =3D 0x2
+[root@segstorage5 host2]# cat fp_int
 
+Fastpath I/O completions
 
-> 
-> Kind regards
-> Suzuki
-> 
-> 
->> 4. Failure condition (B5.3.3.2) should be amended with
->>     runnable pre: target_rec.flags.runnable == NOT_RUNNABLE (?)
->>              post: result == PSCI_DENIED (?)
->> 5. Change would also be required in the flow (D1.4 PSCI flows) depicting
->>     PSCI_CPU_ON flow (D1.4.1)
->>
->> I do understand that ARM CCA support is in its infancy stage and
->> discussing about vCPU Hotplug in realm world seem to be a far-fetched
->> idea right now. But specification changes require lot of time and if
->> this change is really required then it should be further discussed
->> within ARM.
->>
->> Many thanks!
->>
->>
->> Bes regards
->> Salil
->>
->>
->> References:
->>
->> [1] https://developer.arm.com/documentation/den0137/latest/
->> [2] https://github.com/salil-mehta/qemu.git 
->> virt-cpuhp-armv8/rfc-v1-port11052023.dev-1
->> [3] https://git.gitlab.arm.com/linux-arm/linux-jm.git 
->> virtual_cpu_hotplug/rfc/v2
->>
-> 
+#0: 792
+#1: 1242
+#2: 1151
+#3: 978
+#4: 775
+#5: 855
+#6: 899
+#7: 643
+#8: 801
+#9: 1013
+#10: 956
+#11: 678
+#12: 703
+#13: 817
+#14: 932
+#15: 614
 
