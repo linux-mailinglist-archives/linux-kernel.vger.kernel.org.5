@@ -2,194 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E16175FEEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 20:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA23E75FEF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 20:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbjGXSS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 14:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38892 "EHLO
+        id S229866AbjGXSVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 14:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbjGXSSw (ORCPT
+        with ESMTP id S229522AbjGXSVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 14:18:52 -0400
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2075.outbound.protection.outlook.com [40.107.212.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BDA10D9;
-        Mon, 24 Jul 2023 11:18:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jvOOFYqzZ1kj8oaLkC/ciyyVG5jKkgYkT0E9gEz6MAOWqjSlp1rYwGXlwLAzA4NZSYa6gLa/3ZiZ9dSxJCCuDPMlpvcHP/WCV3yPtvdvI57haRbdqc15f9Vnj2Cfxvft7hjUh04yRFRWOmQB3e3Vq+ppJGI6x3qbI9LCXeV+KzNGAWSFIY8pKUdfKZEtQ1mzZ9MWi4zihz4FiOHGpD4jJmSRwhHyXmXqzfhwJPzBCQWgyTtrK1uusnp5NtDl6hQlfVV1c5IAG+pmBQqadVzSJaWNe0z9CTo1Qq6Eo6veDWsUWhI/m52AQHapc6LUcl5rjhq+UZEh1p/nJVb1OBMDuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tOI6Si0TL/iCTmjZKhFOL9x33W1wbvdG8s30iVTGwDE=;
- b=Tg3Nmn7THd4ui9JF7apoJPJf+YJj1tb9vUHD0OmNPFfXjFoloL0GXKRJ5aoyO9b3+mHZTMq1++cUDmkSyo5ztzxKd0U6g3JLQxNxE++7WdYjXYrbNkm4xCDYFBoYiyqi8AmFKmL2Kyu1OJpiItnXIE+DlyJ/18Jr2BNkWqxNuwDNxtXeJR7RsMZIghcjYrPpphguFDaEEYzDMwEycvtleTWoStkiH/CkB2eEkXWlye1O8If9WJecC5ug0fJssUM/K89RobY9dDUrooHLa1WJwfvVkWh1cQ5AgTzMgaV4zb0U+VH/PdMm8pXaLKRWAYO48dzKSlNyQ16Fv7zsXZAzWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tOI6Si0TL/iCTmjZKhFOL9x33W1wbvdG8s30iVTGwDE=;
- b=gMM4m0RXc6glJLg1JUchUoqBaCtV7TJbCqftp9dw6x0JsdWVp2nbv+LFgRlPaWKsp7fufyYK/GDQruvutqDIFI0dyu9Tm00ruGqjWs+e3ol+y3+JVEbPR/ZcDTHLqZlNQjo+SiPdYrdw7TZEtXpZIgOEN6JTcSCqEPmV8Q1+USE=
-Received: from BN7PR06CA0065.namprd06.prod.outlook.com (2603:10b6:408:34::42)
- by CH3PR12MB8236.namprd12.prod.outlook.com (2603:10b6:610:121::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Mon, 24 Jul
- 2023 18:18:43 +0000
-Received: from BN8NAM11FT042.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:34:cafe::c4) by BN7PR06CA0065.outlook.office365.com
- (2603:10b6:408:34::42) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33 via Frontend
- Transport; Mon, 24 Jul 2023 18:18:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BN8NAM11FT042.mail.protection.outlook.com (10.13.177.85) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6631.25 via Frontend Transport; Mon, 24 Jul 2023 18:18:43 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 24 Jul
- 2023 13:18:43 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 24 Jul
- 2023 13:18:42 -0500
-Received: from [172.19.74.144] (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Mon, 24 Jul 2023 13:18:42 -0500
-Message-ID: <6f85ea12-b0d3-520f-f114-001669aa0434@amd.com>
-Date:   Mon, 24 Jul 2023 11:18:42 -0700
+        Mon, 24 Jul 2023 14:21:41 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4DD10D9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 11:21:39 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-666edfc50deso3006171b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 11:21:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690222899; x=1690827699;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QEUjvqdRzTdfDkwicizCwRYFy04Vl/AY1lqkB/hOCjo=;
+        b=br9RkcEvcXtV0Fil4emk4TsED2K9yy2SzHENve3KeNHExIgHdCbjnC7ECrSJxbGkss
+         IXu/FL0dtAPTyX3fc7pdybmCRarz1i585iMUk1BPPvhaZtAAwZE6uEFtx5yd9Vh43MS+
+         432ztBbXleTVkWeyoX3Tc3juGLyr7Sb6cq4iVADmVSRKoKkB0zHB8x35QWgNX9xNYfMM
+         iRPJzwjK/0KUEdZYXxkCea0gHJx2VNoJDgjKMVnNmKsTnG7gwEdLiujzmsl3xuwSzBDe
+         ObPIjRoN8rYKPf+nV1MFbUloIZSKjqx8Q8355INOVgvYkZgMHKXccf4hCxYtfyygE+bf
+         PMfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690222899; x=1690827699;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QEUjvqdRzTdfDkwicizCwRYFy04Vl/AY1lqkB/hOCjo=;
+        b=OSqHV5ASI/fN9xx2vQSqHO14o0ZOg7Y0XWbQt8Ai5kHQtrjeP0lCj1XDSDEoUIEzVL
+         IOGGQ5smygOgUWV/mAYvepA6TjvzAuOU1eCMJM8jEl9bD/HVw1OQUsLJCUM6L6WKNDb5
+         zBVGjQMqyLHfze2BHsXunjZCtEx3rKdTV6RfgXPXnw8RoEtTMdice2XQza82eBf9RNmY
+         CKByXSirzqa3aVEKqIwPtRGX+7Z7db/IjEN6QHKWG2i6mc9nurm7UHQrsbdZ0yxU9/3i
+         4VYE9iYnm4+KtUdzyMmGQc63tcXmVbY1y8pVUMJC5rrv0FEz8UjCaC/2EN9KqpeoRsah
+         rDIA==
+X-Gm-Message-State: ABy/qLYTsDLMMwq+0PLHp/e2FaQdKfm7iinqo/DMfAPobXMh/6lLDPld
+        RnfDzKx7kcOso3movRaBJZ7wxg==
+X-Google-Smtp-Source: APBJJlGkIVhru3kteceAqIxz/2TdYmq94CKwcauG2anD7zgAdek+sul734EOBuPyGbjhwmrL16qKyA==
+X-Received: by 2002:a05:6a20:6a11:b0:12e:caac:f263 with SMTP id p17-20020a056a206a1100b0012ecaacf263mr13293078pzk.20.1690222899380;
+        Mon, 24 Jul 2023 11:21:39 -0700 (PDT)
+Received: from x1.hsd1.or.comcast.net ([2601:1c2:1800:f680:b55a:eeb0:a3a8:248e])
+        by smtp.gmail.com with ESMTPSA id g20-20020a62e314000000b00682b2044149sm8007620pfh.4.2023.07.24.11.21.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 11:21:39 -0700 (PDT)
+From:   Drew Fustini <dfustini@baylibre.com>
+To:     Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, Drew Fustini <dfustini@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: dts: change TH1520 files to dual license
+Date:   Mon, 24 Jul 2023 11:21:29 -0700
+Message-Id: <20230724182129.843687-1-dfustini@baylibre.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH V10 2/5] PCI: Create device tree node for bridge
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-CC:     Bjorn Helgaas <helgaas@kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <max.zhen@amd.com>, <sonal.santan@amd.com>,
-        <stefano.stabellini@xilinx.com>
-References: <1688059190-4225-3-git-send-email-lizhi.hou@amd.com>
- <20230629225631.GA446944@bhelgaas> <20230629235226.GA92592-robh@kernel.org>
- <9f39fc3d-ae40-e5b1-8d40-8c27fc4e1022@amd.com>
- <CAL_JsqLzGted2tYHM7uKZRYDHypz4P6KMXGDuYLgpYsJcUyU8Q@mail.gmail.com>
-From:   Lizhi Hou <lizhi.hou@amd.com>
-In-Reply-To: <CAL_JsqLzGted2tYHM7uKZRYDHypz4P6KMXGDuYLgpYsJcUyU8Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT042:EE_|CH3PR12MB8236:EE_
-X-MS-Office365-Filtering-Correlation-Id: ba54086b-f533-45b6-20d0-08db8c7269f6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +Q20ZlcM7o6xS3+hvsQmBa05MYepVnVj2kcUj8pBlDdzROyDi+REushs3+rU1C18xhqwHLuawL5npzXeJaSnnAYtuORADiZaiw86D/nZBzY1Ux9tBGBRj7jYGiQIddBCuHcn7BfKk3pZuzk0yQzyFKlDWIWLs0XcESaInjrAVmigUGxLbglPFjqauqCO1eqDPIcXPzBmP/UzXJhDhDl1V0r9K26YWEK1DpPwrbEowgeuAZ8UpUfMiiJpGekqFqivbP5Msb8Of1boo37ympumyWKcxkvHeBGR1u1CFHD0CF977hgRZL8xr6aAZH9C1WM3Hd5ROes8omfyJsoOSlHNOGCE0+0mwRrYq4GhR6inwFm28wmB3AlhcICP7cZFoQwOph3ZwTONuNpGeyIr9DPicDC+gihx15bNg3EfsrCvy+wLGuyDfftuYgrG4s9aeE7I1kS+ZucYf8k2Yepw+2PdZ6B/XV5HSJViiHuDzcwXZ3UcJSf0RV0g8yvbeJbdH6vgcp1EHEDX35G/W27VJazxCoSzxRcNjqGbUT+nOyc4diUMyvPg5u7t+r18eZl0cZfWGq/UkfhbhFGDbqGuaQc2jujXiqi6ao3+xpF2+C1n+4fy2JtFBIddlo13hkNq9HGSTjwRisLc75zIGxolFmPcE2fQLwEhnHLefiDHjOAUv7zztMrBj/lLddO9OA5WE8Vptiohze48WDCSpQyrfS82Qh7SX/Dwn4/4asSXMEBgab8W07wcPL7WAze8TtNwfoHJN9SeXUzawHHUKsi44AyuCZq9ik/ajGnM1Uij+Kkil50=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(376002)(39860400002)(346002)(451199021)(82310400008)(40470700004)(36840700001)(46966006)(2906002)(40480700001)(478600001)(8676002)(966005)(81166007)(426003)(356005)(47076005)(82740400003)(186003)(26005)(336012)(2616005)(36860700001)(53546011)(40460700003)(8936002)(31696002)(86362001)(5660300002)(36756003)(44832011)(6916009)(70586007)(70206006)(316002)(16576012)(54906003)(41300700001)(4326008)(31686004)(36900700001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 18:18:43.4486
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba54086b-f533-45b6-20d0-08db8c7269f6
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT042.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8236
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Modify the SPDX-License-Identifier for dual license of GPL-2.0 OR MIT.
 
-On 7/18/23 11:15, Rob Herring wrote:
-> On Fri, Jun 30, 2023 at 12:25 PM Lizhi Hou <lizhi.hou@amd.com> wrote:
->>
->> On 6/29/23 16:52, Rob Herring wrote:
->>>>> +                   rp[i].child_addr[0] = j;
->>>>> +   ret = of_changeset_add_empty_prop(ocs, np, "dynamic");
->>>> It seems slightly confusing to use a "dynamic" property here when we
->>>> also have the OF_DYNAMIC dynamic flag above.  I think they have
->>>> different meanings, don't they?
->>> Hum, what's the property for? It's new in this version. Any DT property
->>> needs to be documented, but I don't see why we need it.
->> This is mentioned in my previous reply for V9
->>
->> https://lore.kernel.org/lkml/af9b6bb3-a98d-4fb6-b51e-b48bca61dada@amd.com/
->>
->> As we discussed before, "interrupt-map" was intended to be used here.
->>
->> And after thinking it more, it may not work for the cases where ppnode
->>
->> is not dynamically generated and it does not have "interrupt-map".
->>
->> For example the IBM ppc system, its device tree has nodes for pci bridge
->>
->> and it does not have "interrupt-map".
-> How do you know? I ask because usually the only way I have visibility
-> there is when I break something. In traditional OpenFirmware, which
-> IBM PPC is, all PCI devices have a DT node because it's the firmware
-> telling the OS "these are the devices I discovered and this is how I
-> configured them".
+Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+---
+ arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi | 2 +-
+ arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts      | 2 +-
+ arch/riscv/boot/dts/thead/th1520.dtsi                  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-I configured a ppc VM and added a bridge to the VM
+Jisheng Zhang and Guo Ren - I thought I would post this patch based on
+the discussion in the thread about the BeagleV Ahead patches.
 
-qemu-system-ppc -L pc-bios -boot c -prom-env "boot-device=hd:,\yaboot" 
--prom-env "boot-args=conf=hd:,\yaboot.conf" -M mac99 -m 1024 -hda 
-debian10.qcow2 -nographic -device pci-bridge,chassis_nr=1,id=pci.9
-
-# ls /proc/device-tree/pci\@f2000000/pci1b36\,1\@f/
-66mhz-capable        class-code      fast-back-to-back min-grant      
-vendor-id
-assigned-addresses  device-id      interrupts         name
-bus-range        devsel-speed  linux,phandle      reg
-cache-line-size     ethernet@1      max-latency revision-id
-
-The bridge node does not have 'interrupt-map'. That is why I concerned 
-for using 'interrupt-map'.
-
-
-To further debugging on if it really breaks anything, I added a nic 
-device under bridge. Even without my patch, it is failed anyway.
-
-      [    0.086586] pci 0000:01:01.0: of_irq_parse_pci: failed with rc=-22
-
-So I setup another power10 VM and see the 'interrupt-map' is created for 
-pci bridge. And the nic device under bridge works fine.
-
-
-Maybe using 'interrupt-map' will not break anything in the real world.  
-I will re-create a patchset which uses 'interrupt-map' (like V9) and 
-checks it only when CONFIG_PCI_DYNAMIC_OF_NODES is turned on.
-
+Message-ID:
+20230722-upstream-beaglev-ahead-dts-v1-0-ccda511357f4@baylibre.com
 
 Thanks,
+Drew
 
-Lizhi
+diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+index 4b0249ac710f..a802ab110429 100644
+--- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
++++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+ /*
+  * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+  */
+diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts b/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
+index a1248b2ee3a3..9a3884a73e13 100644
+--- a/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
++++ b/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+ /*
+  * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+  */
+diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
+index 56a73134b49e..ce708183b6f6 100644
+--- a/arch/riscv/boot/dts/thead/th1520.dtsi
++++ b/arch/riscv/boot/dts/thead/th1520.dtsi
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+ /*
+  * Copyright (C) 2021 Alibaba Group Holding Limited.
+  * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+-- 
+2.34.1
 
->
->> Based on previous discussions, OF_DYNAMIC should not be used here.
-> For the same reasons, I don't think the behavior should change based
-> on being dynamic. Now maybe the behavior when it's an ACPI system with
-> DT overlays has to change, but that's a problem for later. I don't yet
-> know if we'd handle that here somehow or elsewhere so that this node
-> looks like a normal DT system.
->
-> This should all work the same whether we've generated the nodes or
-> they were already present in the FDT when we booted.
->
->> So I think adding "dynamic" might be a way to identify the dynamically
->>
->> added node. Or we can introduce a new flag e.g OF_IRQ_SWIZZLING.
-> I hope not. The flags tend to be hacks.
->
-> Rob
