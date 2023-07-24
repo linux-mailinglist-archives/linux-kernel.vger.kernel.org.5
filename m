@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A13275F9EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA8D75F9EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbjGXOcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
+        id S230043AbjGXOby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbjGXOcQ (ORCPT
+        with ESMTP id S230223AbjGXObv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:32:16 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8232D10F0;
-        Mon, 24 Jul 2023 07:32:09 -0700 (PDT)
+        Mon, 24 Jul 2023 10:31:51 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51686A4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:31:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690209129; x=1721745129;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8lSqctVplAIarKGMJtl03N2iVLoJAxL48zKohtkfpEY=;
-  b=I7sLOnHoVcjr7fkPhbt4R3jva+sRv+KDKhbSdKC/+F2pAIao7UFmLPTt
-   f15XhJGXpUw0WYm0qhc1tsBRXtcQ2LHDdgvqNGPLOcxEotDjyDc1SAUnr
-   YzgVOLUFOj/1kQyLRXJDGn+gxgCM/zDlSGoE8PUA5GVBzeDN6IaiiXRqK
-   q+v8Z9iyllFOogEsH+1wLIRKEuOlq+N9qzTRpJivp2kR/GZW4xSwrpBWP
-   Uy8L1ivBhYCt0QyKnwkrQVDXGxbsMydVOMYoHF9Rb+dpEGCT29GIY38dE
-   qBA8JBpIAs5AQBvSvhQYXonjQyuHBYawQH9fF4wXHSE/0YlGIvE1a439x
-   g==;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690209110; x=1721745110;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+5gG+0+scvDqbfX5/L0lqS4BwovP5AcRlSaFF9Lgp1c=;
+  b=fchlWQPx2n/WHU9ps3TAMGDgiDhxgrdns4ok+8ShBg9gnGLW9nzZj1lt
+   /38vPeUk1pKOsyTR0RJaDne6UGl/hEwdwX/qRsiQEv/iBELVox46SQFsD
+   tkW+KObP/RcU38Br3cIrHOY5g08ANyVOUa0geWfuFInTk6fVvfQWxxIm6
+   1zhQIT30z/3H4yhZpz7PnxdblTCPYw3BAJ85zVbHitQM0jtcpGKGcm0Wk
+   LsJrQA8J7htvyQb8ApoKKZ1n2/vqbH9WFAGV6oSkwYqRfZ2V0+TSzUG46
+   0y0ofH+C1bWy1Nuf4hSyrbkpajMIbAJc1gjz9ajXiA7EigBY36ES3Z4Wp
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="398362893"
 X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="asc'?scan'208";a="162903015"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Jul 2023 07:32:08 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 24 Jul 2023 07:31:37 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 24 Jul 2023 07:31:35 -0700
-Date:   Mon, 24 Jul 2023 15:31:01 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-efi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v6 0/5] riscv: Introduce KASLR
-Message-ID: <20230724-sanded-dental-c9125c76ad74@wendy>
-References: <20230722123850.634544-1-alexghiti@rivosinc.com>
+   d="scan'208";a="398362893"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 07:31:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="790986713"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="790986713"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Jul 2023 07:31:24 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 08F591A6; Mon, 24 Jul 2023 17:31:32 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Herve Codina <herve.codina@bootlin.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Yang Guang <yang.guang5@zte.com.cn>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2 1/1] Revert "um: Use swap() to make code cleaner"
+Date:   Mon, 24 Jul 2023 17:31:31 +0300
+Message-Id: <20230724143131.30090-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xtSbObKEFv5fOwOJ"
-Content-Disposition: inline
-In-Reply-To: <20230722123850.634544-1-alexghiti@rivosinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,50 +69,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---xtSbObKEFv5fOwOJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This reverts commit 9b0da3f22307af693be80f5d3a89dc4c7f360a85.
 
-Hey Alex,
+The sigio.c is clearly user space code which is handled by
+arch/um/scripts/Makefile.rules (see USER_OBJS rule).
 
-On Sat, Jul 22, 2023 at 02:38:45PM +0200, Alexandre Ghiti wrote:
-> The following KASLR implementation allows to randomize the kernel mapping:
->=20
-> - virtually: we expect the bootloader to provide a seed in the device-tree
-> - physically: only implemented in the EFI stub, it relies on the firmware=
- to
->   provide a seed using EFI_RNG_PROTOCOL. arm64 has a similar implementati=
-on
->   hence the patch 3 factorizes KASLR related functions for riscv to take
->   advantage.
->=20
-> The new virtual kernel location is limited by the early page table that o=
-nly
-> has one PUD and with the PMD alignment constraint, the kernel can only ta=
-ke
-> < 512 positions.
+The above mentioned commit simply broke this agreement,
+we may not use Linux kernel internal headers in them without
+thorough thinking.
 
-I gave this all a go today, it seems to do what it it says on the tin,
-and crashing my kernel does dump out an offset etc.
+Hence, revert the wrong commit.
 
-Tested-by: Conor Dooley <conor.dooley@microchip.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202307212304.cH79zJp1-lkp@intel.com/
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: fixed typo (h --> c), added Reported-by tag
+ arch/um/os-Linux/sigio.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-I'll hopefully get some time later in the week to go through the code.
+diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
+index 37d60e72cf26..9e71794839e8 100644
+--- a/arch/um/os-Linux/sigio.c
++++ b/arch/um/os-Linux/sigio.c
+@@ -3,7 +3,6 @@
+  * Copyright (C) 2002 - 2008 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+  */
+ 
+-#include <linux/minmax.h>
+ #include <unistd.h>
+ #include <errno.h>
+ #include <fcntl.h>
+@@ -51,7 +50,7 @@ static struct pollfds all_sigio_fds;
+ 
+ static int write_sigio_thread(void *unused)
+ {
+-	struct pollfds *fds;
++	struct pollfds *fds, tmp;
+ 	struct pollfd *p;
+ 	int i, n, respond_fd;
+ 	char c;
+@@ -78,7 +77,9 @@ static int write_sigio_thread(void *unused)
+ 					       "write_sigio_thread : "
+ 					       "read on socket failed, "
+ 					       "err = %d\n", errno);
+-				swap(current_poll, next_poll);
++				tmp = current_poll;
++				current_poll = next_poll;
++				next_poll = tmp;
+ 				respond_fd = sigio_private[1];
+ 			}
+ 			else {
+-- 
+2.40.0.1.gaa8946217a0b
 
-Cheers,
-Conor.
-
-
---xtSbObKEFv5fOwOJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZL6LJQAKCRB4tDGHoIJi
-0rUmAP434IQTNV26JB6nzkQMeniT7xYLVBw5Vtp0L980VphnTAD/UnQM8ZUEwq2o
-p+omBnMci+/NF3PBemZTOQee5NYREwg=
-=PcHz
------END PGP SIGNATURE-----
-
---xtSbObKEFv5fOwOJ--
