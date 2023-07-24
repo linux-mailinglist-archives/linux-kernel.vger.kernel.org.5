@@ -2,111 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0038F75E99C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA2E75E9EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbjGXCRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 22:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50444 "EHLO
+        id S229901AbjGXCy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 22:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbjGXCQz (ORCPT
+        with ESMTP id S229548AbjGXCyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 22:16:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB621212D;
-        Sun, 23 Jul 2023 19:16:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B9DE660F9C;
-        Mon, 24 Jul 2023 01:36:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C53F2C433BB;
-        Mon, 24 Jul 2023 01:35:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162560;
-        bh=PW4WxFGrvqfneht5/Jh0eks0NWEnSus/V5aQFykvO60=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PhoJAM1Wz3t1UDlxLMs7M762JvpCudlNbSDkmjdc4QvYdpqR1eItftglN0bQwKWUf
-         /33coj89E9CM5Cc8bLn2ft4xpUd9Ug+EzSXjb5peetlJE833GDHZK8biucM2Dx6gGa
-         mpFXtB+ykJ6+W/GaxQ5IH751/a24tN1o9g5az1ux1JejVPuBeUGSzSEX5QWBe6bo0H
-         BVcps63aPJLLF4Ay53d9u4hBCOn+nExkUI9fe6xv0NPhT7j1NI8W+iT7ao8fEOc29t
-         HpFexqPiiLcvqXiuJZneoDwSrL9fc6QhPmGzkj0yN5T/y4YzqRmUhjICgQWicRe/i0
-         prHGqgEUVqDGA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, tiffany.lin@mediatek.com,
-        andrew-ct.chen@mediatek.com, minghsiu.tsai@mediatek.com,
-        houlong.wei@mediatek.com, matthias.bgg@gmail.com,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.14 2/9] media: platform: mediatek: vpu: fix NULL ptr dereference
-Date:   Sun, 23 Jul 2023 21:35:44 -0400
-Message-Id: <20230724013554.2334965-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230724013554.2334965-1-sashal@kernel.org>
-References: <20230724013554.2334965-1-sashal@kernel.org>
+        Sun, 23 Jul 2023 22:54:25 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10449107;
+        Sun, 23 Jul 2023 19:54:24 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R8N9Q3qm7z4f3mWg;
+        Mon, 24 Jul 2023 09:38:50 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgBnHbEo1r1kmzauOg--.11345S3;
+        Mon, 24 Jul 2023 09:38:51 +0800 (CST)
+Subject: Re: [PATCH 1/2] rcu: Delete a redundant check in check_cpu_stall()
+To:     paulmck@kernel.org
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
+References: <20230721075716.857-1-thunder.leizhen@huaweicloud.com>
+ <20230721075716.857-2-thunder.leizhen@huaweicloud.com>
+ <11e9e09a-c47f-4690-a7c5-9a08913c3e5d@paulmck-laptop>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <042c0f6d-3579-228c-dea4-5f2c880a43f7@huaweicloud.com>
+Date:   Mon, 24 Jul 2023 09:38:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.320
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <11e9e09a-c47f-4690-a7c5-9a08913c3e5d@paulmck-laptop>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgBnHbEo1r1kmzauOg--.11345S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tryfXr1xXry7AFyDWFykKrg_yoW8tFyDpF
+        W8J3WjgFs5GF1IkwnFyw1kJryUZa1jgryUt3WDWryFy3sIy3WfKFyDWFyrWFWFvr93Xw4S
+        qw1vqwnrCw4jyFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UWE__UUUUU=
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit 3df55cd773e8603b623425cc97b05e542854ad27 ]
 
-If pdev is NULL, then it is still dereferenced.
+On 2023/7/22 6:37, Paul E. McKenney wrote:
+> On Fri, Jul 21, 2023 at 03:57:15PM +0800, thunder.leizhen@huaweicloud.com wrote:
+>> From: Zhen Lei <thunder.leizhen@huawei.com>
+>>
+>> j = jiffies;
+>> js = READ_ONCE(rcu_state.jiffies_stall);			(1)
+>> if (ULONG_CMP_LT(j, js))					(2)
+>> 	return;
+>>
+>> if (cmpxchg(&rcu_state.jiffies_stall, js, jn) == js)		(3)
+>> 	didstall = true;
+>>
+>> if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {	(4)
+>> 	jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
+>> 	WRITE_ONCE(rcu_state.jiffies_stall, jn);
+>> }
+>>
+>> For ease of description, the pseudo code is extracted as above. First,
+>> assume that only one CPU is operating, the condition 'didstall' is true
+>> means that (3) succeeds. That is, the value of rcu_state.jiffies_stall
+>> must be 'jn'.
+>>
+>> Then, assuming that another CPU is also operating at the same time, there
+>> are two cases:
+>> 1. That CPU sees the updated result at (1), it returns at (2).
+>> 2. That CPU does not see the updated result at (1), it fails at (3) and
+>>    cmpxchg returns jn. So that, didstall cannot be true.
+> 
+> The history behind this one is that there are races in which the stall
+> can end in the midst of check_cpu_stall().  For example, when the activity
+> of producing the stall warning breaks things loose.
+> 
+> And yes, long ago, I figured that if things had been static for so
+> many seconds, they were unlikely to change, and thus omitted any and
+> all synchronization.  The Linux kernel taught me better.  ;-)
 
-This fixes this smatch warning:
+Okay, got it, thank you
 
-drivers/media/platform/mediatek/vpu/mtk_vpu.c:570 vpu_load_firmware() warn: address of NULL pointer 'pdev'
+> 
+> 							Thanx, Paul
+> 
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  kernel/rcu/tree_stall.h | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+>> index cc884cd49e026a3..371713f3f7d15d9 100644
+>> --- a/kernel/rcu/tree_stall.h
+>> +++ b/kernel/rcu/tree_stall.h
+>> @@ -794,7 +794,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>>  			rcu_ftrace_dump(DUMP_ALL);
+>>  		didstall = true;
+>>  	}
+>> -	if (didstall && READ_ONCE(rcu_state.jiffies_stall) == jn) {
+>> +	if (didstall) {
+>>  		jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
+>>  		WRITE_ONCE(rcu_state.jiffies_stall, jn);
+>>  	}
+>> -- 
+>> 2.25.1
+>>
+> .
+> 
 
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: Yunfei Dong <yunfei.dong@mediatek.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/media/platform/mtk-vpu/mtk_vpu.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-index 019a5e7e1a402..de5e732b1f0b6 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-@@ -536,16 +536,18 @@ static int load_requested_vpu(struct mtk_vpu *vpu,
- int vpu_load_firmware(struct platform_device *pdev)
- {
- 	struct mtk_vpu *vpu;
--	struct device *dev = &pdev->dev;
-+	struct device *dev;
- 	struct vpu_run *run;
- 	const struct firmware *vpu_fw = NULL;
- 	int ret;
- 
- 	if (!pdev) {
--		dev_err(dev, "VPU platform device is invalid\n");
-+		pr_err("VPU platform device is invalid\n");
- 		return -EINVAL;
- 	}
- 
-+	dev = &pdev->dev;
-+
- 	vpu = platform_get_drvdata(pdev);
- 	run = &vpu->run;
- 
 -- 
-2.39.2
+Regards,
+  Zhen Lei
 
