@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC4A75EDA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADA575EDAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjGXIcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60466 "EHLO
+        id S231614AbjGXIcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbjGXIcC (ORCPT
+        with ESMTP id S231561AbjGXIcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:32:02 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FBA133
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:31:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690187511; x=1721723511;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=M5Gcu/a7aoS622+pui9ZezyikbGDySg+qAew+JOPU94=;
-  b=Lxr7143oKaOdWC0ACon5/KRZQJF1c4fqy5iL/+vtfC6FjRnn2VMBtG40
-   GDNFXYNxtiesSHDH1S9vN1YSIf08n2TgwhcfehecVadlMNHul46kUs4pg
-   at5/IGy5yfTzI8msngDyJVCoV/+PxF6qC9Pvn1YQ19bMjh6NJ8wfB49sd
-   6G2d+MTsHv5PpJGh5KCkndRkVGKcRIA9qWLit3LMlQXpW+ZOtH0WHareU
-   WDDhbUn+LD4/fKPm+fbZw3WZvjLAwzMMN3Vvv2CIps8WbTAr+3hM4nLf2
-   zZH8HHwO1xQWKaXLRpNMNFOadrpIVqpXbgP1GQa3wPJXSi7DokPDhMeNP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="366276189"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="366276189"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 01:31:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="815735938"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="815735938"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by FMSMGA003.fm.intel.com with ESMTP; 24 Jul 2023 01:31:49 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qNqyp-004XSJ-2x;
-        Mon, 24 Jul 2023 11:31:47 +0300
-Date:   Mon, 24 Jul 2023 11:31:47 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH] cpumask: kernel-doc additions in cpumask.c
-Message-ID: <ZL428z19Fvx+WeRQ@smile.fi.intel.com>
-References: <20230724023414.24882-1-rdunlap@infradead.org>
+        Mon, 24 Jul 2023 04:32:04 -0400
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6071BE
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:31:57 -0700 (PDT)
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1b03916c318so8282419fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:31:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690187517; x=1690792317;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5J7ktKzhmZkgZE+x3/G0qL4ztdEtmMYBnbiSBN9PzD4=;
+        b=exzmwNZ25I95rU/yYUri2CdYyDE0ZCVK32hZnqUSOYSeyTRueExlQig8eDDSt/LQ32
+         jzaDWnybOH+i24M2x01GRlbMlNuar2D6TXYS4TAIkY0u7OjZPfM/RJ38r01Om+Q8MsOW
+         Jf9dLQsxglKrgWVeVbOCMHmRokvP4OZLxjw/rzanf1haIVgDBKexx66QlIXQ2fD6DEeq
+         1zjcl4VFG7ERfFy3YmlrRpiQMBXmQoXhIHm4PbmYBigxG4hTMbaKeXDdhZECZjDv8tk3
+         gde1LeH/zvVN75Y+ZlJ8wvupC5lUf/WiLaa1CERG4LCzMtE1aMG/3wHuKc4cP1PY8Omw
+         Mi3A==
+X-Gm-Message-State: ABy/qLbtq4O7t82YDnFogm81EXjAypydwbTeeqznjiZL7fwah4ssb4Tk
+        Xz+GZvFbL+O/2yLvkfwfACQDzyGz7Ts3Xp9yF0uK0bQwcJEC
+X-Google-Smtp-Source: APBJJlGj/AJV4crgXsUXx9xg+t5bD9FjXzISucJ6nztTudvcQmIAzJBWyVunO9vhiMzwYzSXUNaEEibrpyrJIIYrloS6X308afx3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724023414.24882-1-rdunlap@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6870:5b1b:b0:1bb:785d:7436 with SMTP id
+ ds27-20020a0568705b1b00b001bb785d7436mr1599528oab.10.1690187517019; Mon, 24
+ Jul 2023 01:31:57 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 01:31:56 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008e4e370601377210@google.com>
+Subject: [syzbot] Monthly overlayfs report (Jul 2023)
+From:   syzbot <syzbot+lista7343adf220a77c2e87e@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 07:34:14PM -0700, Randy Dunlap wrote:
-> Add Return: value for 4 functions.
-> Add kernel-doc for cpumask_any_distribute().
+Hello overlayfs maintainers/developers,
 
+This is a 31-day syzbot report for the overlayfs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/overlayfs
 
-Fine, but shouldn't this be folded into the *.h patch?
+During the period, 3 new issues were detected and 1 were fixed.
+In total, 7 issues are still open and 18 have been fixed so far.
 
-Either way,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Some of the still happening issues:
 
--- 
-With Best Regards,
-Andy Shevchenko
+Ref Crashes Repro Title
+<1> 727     Yes   possible deadlock in mnt_want_write (2)
+                  https://syzkaller.appspot.com/bug?extid=b42fe626038981fb7bfa
+<2> 50      No    general protection fault in d_path
+                  https://syzkaller.appspot.com/bug?extid=a67fc5321ffb4b311c98
+<3> 5       No    possible deadlock in seq_read_iter (2)
+                  https://syzkaller.appspot.com/bug?extid=da4f9f61f96525c62cc7
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
