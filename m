@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A28775F51F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C772975F501
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjGXLcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 07:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51768 "EHLO
+        id S229990AbjGXLag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 07:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbjGXLbv (ORCPT
+        with ESMTP id S231152AbjGXLa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:31:51 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DA9E7B;
-        Mon, 24 Jul 2023 04:31:24 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36OBUpbg049976;
-        Mon, 24 Jul 2023 06:30:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690198251;
-        bh=TUFI28QkqhwCli+ZAIc0ejOORJ5GwGvqBlmS1gbjbB4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=WUhsKRtAL6vOdDTZPlr1I3GUkQrWsRkgkJZ617ydXQPD1ZtN+KfFjp3qvnecVOhyz
-         /cHLQNI5Ug5tCq+NnBOOtKcmvLXReyUtZiLfJ/PuHpDFoRcJrUi5W1m6IhwGZlpPgU
-         FIFvYw3RFErvLk5x87l/pyl7bCFjn5W70lEtnSO0=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36OBUp9c065145
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Jul 2023 06:30:51 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 24
- Jul 2023 06:30:50 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 24 Jul 2023 06:30:50 -0500
-Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36OBUot7076926;
-        Mon, 24 Jul 2023 06:30:50 -0500
-Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.217])
-        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 36OBUn38010863;
-        Mon, 24 Jul 2023 06:30:50 -0500
-From:   MD Danish Anwar <danishanwar@ti.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        MD Danish Anwar <danishanwar@ti.com>
-CC:     <nm@ti.com>, <srk@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v11 10/10] net: ti: icssg-prueth: Add Power management support
-Date:   Mon, 24 Jul 2023 16:59:34 +0530
-Message-ID: <20230724112934.2637802-11-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230724112934.2637802-1-danishanwar@ti.com>
-References: <20230724112934.2637802-1-danishanwar@ti.com>
+        Mon, 24 Jul 2023 07:30:27 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FD5E61
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:30:22 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1b8b4749013so33860185ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690198222; x=1690803022;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9wTwN4pAorOUOyXMOhqG3AkkB1rX6LG3xQzfJKwRVRg=;
+        b=jNsDDcu07XuErllFwj90pV3I2k1w7MyPshKAIq/Z3yHNaETTEAOeOG3pkQ75ZOMH0R
+         knCMoz8xYQ5YVdvslAatHlEIeDQeIo11halj8jjZXVhxEfaoLZ6ID6M+GrXlGpQozK7d
+         LoUChR1wshNuvcdLUhFI92EhZ/7Thb8TFCYXea4CBslP5fIjg3BfzQzG0j5oVosyxKHa
+         AashG8/mrhroYzHrAIxoEsIUIMhx39IpseayvF5nN7mOT8UZUyKkYn101WY3KMJYEob9
+         PMFZV1pZN2TNkck+9Kqal+lIZyZ3ZGmpmUHsCsso7nUa31iRP3CfE+EzSEbbgGC/7G+C
+         q7Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690198222; x=1690803022;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9wTwN4pAorOUOyXMOhqG3AkkB1rX6LG3xQzfJKwRVRg=;
+        b=DaFmf6uj7FHLoJ9qC+lyYMoqXJ/aeRJediKU7dq2MUFhfbqVKhqJn17aveovjcfv6h
+         e/zKl3rrxVC9yRoMyfk1nDjJ0RU0EfvLsZLmORape61pgpqVcpgEPEB/P0fRBe4/gekd
+         t3nVYFoeA4ZnV1OWXYtnb80xqUGOrIktxv6VCbyR2a+oFFzECbSaenIod21VpJBmWoRw
+         HC1z3FMPhy5dR6azv0oLZszlwn4atr3tJlum+KINKSfcpKErqVA3POs5oO84F1GchwVN
+         9FIoMtwHJKb0tsBitoj/MOAA4G+sNIxEdlNqYztQ2QI9I1/s7ow4CRSlYatw+thbuTWR
+         yQzg==
+X-Gm-Message-State: ABy/qLaM4An0K1G4DNb4y8zn+2q/Uq9wpcHS/LfuKsMUffk8fLkCStXc
+        nq7sSjD7QYRXl2zF4VLEISE6Tg==
+X-Google-Smtp-Source: APBJJlHiTNX9dGv2bQKMKk+nEIGvhnwrVswpIJsw/BOzGutW/OEVqXS41QvBJtE+Nr5CDCRrAAVJyQ==
+X-Received: by 2002:a17:903:11cd:b0:1b8:3601:9bf7 with SMTP id q13-20020a17090311cd00b001b836019bf7mr11217761plh.24.1690198221960;
+        Mon, 24 Jul 2023 04:30:21 -0700 (PDT)
+Received: from leoy-huanghe.lan (n058152048165.netvigator.com. [58.152.48.165])
+        by smtp.gmail.com with ESMTPSA id h1-20020a170902f7c100b001b8b45b177esm3627602plw.274.2023.07.24.04.30.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 04:30:20 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 19:30:13 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Ali Saidi <alisaidi@amazon.com>
+Cc:     acme@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        john.g.garry@oracle.com, james.clark@arm.com,
+        mike.leach@linaro.org, peterz@infradead.org, mingo@redhat.com,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, scott@os.amperecomputing.com,
+        maz@kernel.org, anshuman.khandual@arm.com, german.gomez@arm.com,
+        renyu.zj@linux.alibaba.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        fissure2010@gmail.com
+Subject: Re: [PATCH v1 0/3] arm64: Support Cortex-X4 CPU for Perf Arm SPE
+Message-ID: <20230724113013.GB76473@leoy-huanghe.lan>
+References: <20230717054327.79815-1-leo.yan@linaro.org>
+ <20230721181653.22398-1-alisaidi@amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721181653.22398-1-alisaidi@amazon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,90 +80,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add suspend / resume APIs to support power management in ICSSG ethernet
-driver.
+Hi Ali,
 
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
----
- drivers/net/ethernet/ti/icssg_prueth.c | 57 ++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+On Fri, Jul 21, 2023 at 06:16:53PM +0000, Ali Saidi wrote:
 
-diff --git a/drivers/net/ethernet/ti/icssg_prueth.c b/drivers/net/ethernet/ti/icssg_prueth.c
-index a34e29ed3351..53d93a33c64d 100644
---- a/drivers/net/ethernet/ti/icssg_prueth.c
-+++ b/drivers/net/ethernet/ti/icssg_prueth.c
-@@ -1835,6 +1835,62 @@ static int prueth_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int prueth_suspend(struct device *dev)
-+{
-+	struct prueth *prueth = dev_get_drvdata(dev);
-+	struct net_device *ndev;
-+	int i, ret;
-+
-+	for (i = 0; i < PRUETH_NUM_MACS; i++) {
-+		ndev = prueth->registered_netdevs[i];
-+
-+		if (!ndev)
-+			continue;
-+
-+		if (netif_running(ndev)) {
-+			netif_device_detach(ndev);
-+			ret = emac_ndo_stop(ndev);
-+			if (ret < 0) {
-+				netdev_err(ndev, "failed to stop: %d", ret);
-+				return ret;
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int prueth_resume(struct device *dev)
-+{
-+	struct prueth *prueth = dev_get_drvdata(dev);
-+	struct net_device *ndev;
-+	int i, ret;
-+
-+	for (i = 0; i < PRUETH_NUM_MACS; i++) {
-+		ndev = prueth->registered_netdevs[i];
-+
-+		if (!ndev)
-+			continue;
-+
-+		if (netif_running(ndev)) {
-+			ret = emac_ndo_open(ndev);
-+			if (ret < 0) {
-+				netdev_err(ndev, "failed to start: %d", ret);
-+				return ret;
-+			}
-+			netif_device_attach(ndev);
-+		}
-+	}
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static const struct dev_pm_ops prueth_dev_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(prueth_suspend, prueth_resume)
-+};
-+
- static const struct prueth_pdata am654_icssg_pdata = {
- 	.fdqring_mode = K3_RINGACC_RING_MODE_MESSAGE,
- 	.quirk_10m_link_issue = 1,
-@@ -1852,6 +1908,7 @@ static struct platform_driver prueth_driver = {
- 	.driver = {
- 		.name = "icssg-prueth",
- 		.of_match_table = prueth_dt_match,
-+		.pm = &prueth_dev_pm_ops,
- 	},
- };
- module_platform_driver(prueth_driver);
--- 
-2.34.1
+> > This series support Cortex-X4 CPU in Perf Arm SPE.
 
+[...]
+
+> This looks good to me, but can we add the other cores that operate the
+> same way now too? Flipping through the TRMs A78, X3, V2, X1, A715,
+> A720, and A78C all have the same encodings. 
+
+Thanks a lot for exploring more CPU variants which share the same data
+source packet format.
+
+The latest Linux kernel have defined the CPU part number and MIDR for
+below CPU variants:
+
+- A78
+- X1
+- A715
+- A78C
+
+I would like to use a patch to support these CPUs in perf tool.  Given
+other CPU variants (X3/V2/A720) have not been supported in the kernel,
+and so far no one requests them, I would like leave them out.
+
+Please let me know if this okay for you or not.
+
+
+> Reviewed-by: Ali Saidi <alisaidi@amazon.com>
+
+Thanks for review, I will add your review tags in the new patch set.
+
+Leo
