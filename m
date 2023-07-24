@@ -2,63 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8055975EC19
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48DF75EC1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbjGXG5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 02:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48224 "EHLO
+        id S230158AbjGXG6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 02:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbjGXG5p (ORCPT
+        with ESMTP id S229498AbjGXG6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 02:57:45 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 95EDAE55;
-        Sun, 23 Jul 2023 23:57:42 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB63BDE0;
-        Sun, 23 Jul 2023 23:58:24 -0700 (PDT)
-Received: from [10.162.41.7] (a077893.blr.arm.com [10.162.41.7])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25C8D3F67D;
-        Sun, 23 Jul 2023 23:57:33 -0700 (PDT)
-Message-ID: <c784911e-72f4-8150-530b-234978546a45@arm.com>
-Date:   Mon, 24 Jul 2023 12:27:31 +0530
+        Mon, 24 Jul 2023 02:58:16 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEA9E6B
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 23:58:03 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=luoben@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vo2WTht_1690181877;
+Received: from 30.97.48.76(mailfrom:luoben@linux.alibaba.com fp:SMTPD_---0Vo2WTht_1690181877)
+          by smtp.aliyun-inc.com;
+          Mon, 24 Jul 2023 14:57:59 +0800
+Message-ID: <70494547-a538-baf5-0554-6788ac2b45e8@linux.alibaba.com>
+Date:   Mon, 24 Jul 2023 14:57:57 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v1 3/3] perf arm-spe: Support data source for Cortex-X4
- CPU
-Content-Language: en-US
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        John Garry <john.g.garry@oracle.com>,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        D Scott Phillips <scott@os.amperecomputing.com>,
-        Marc Zyngier <maz@kernel.org>,
-        German Gomez <german.gomez@arm.com>,
-        Ali Saidi <alisaidi@amazon.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, fissure2010@gmail.com
-References: <20230717054327.79815-1-leo.yan@linaro.org>
- <20230717054327.79815-4-leo.yan@linaro.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20230717054327.79815-4-leo.yan@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+From:   luoben@linux.alibaba.com
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        pbonzini@redhat.com, mikelley@microsoft.com, yu.c.chen@intel.com,
+        "Kenan.Liu" <Kenan.Liu@linux.alibaba.com>, mingo@redhat.com,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] Adjust CFS loadbalance to adapt QEMU CPU
+ topology.
+References: <1689842053-5291-1-git-send-email-Kenan.Liu@linux.alibaba.com>
+ <20230720085032.GB3569127@hirez.programming.kicks-ass.net>
+ <6a70900a-649f-3a4d-2e47-61648bc95666@linux.alibaba.com>
+ <CAKfTPtCmBL6aq9CaPvmhcyvGZtu=98crDyaHXRdwQxjyGtcDkQ@mail.gmail.com>
+ <20230721091328.GE3630545@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230721091328.GE3630545@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,70 +54,78 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 7/17/23 11:13, Leo Yan wrote:
-> We have a CPU list to maintain Neoverse CPUs (N1/N2/V2), this list is
-> used for parsing data source packet.  Since Cortex-x4 CPU shares the
-> same data source format with Neoverse CPUs, this commit adds Cortex-x4
-> CPU into the CPU list so we can reuse the parsing logic.
+On 2023/7/21 17:13, Peter Zijlstra <peterz@infradead.org> wrote:
+> On Fri, Jul 21, 2023 at 10:33:44AM +0200, Vincent Guittot wrote:
+> > On Fri, 21 Jul 2023 at 04:59, Kenan.Liu <Kenan.Liu@linux.alibaba.com> wrote:
 > 
-> The CPU list was assumed for only Neoverse CPUs, but now Cortex-X4 has
-> been added into the list.  To avoid Neoverse specific naming, this patch
-> renames the variables and function as the default data source format.
+> >> The SMT topology in qemu native x86 CPU model is (0,1),…,(n,n+1),…,
+> >> but nomarlly seen SMT topo in physical machine is like (0,n),(1,n+1),…,
+> >> n means the total core number of the machine.
+> >>
+> >> The imbalance happens when the number of runnable threads is less
+> >> than the number of hyperthreads, select_idle_core() would be called
+> >> to decide which cpu be selected to run the waken-up task.
+> >>
+> >> select_idle_core() will return the checked cpu number if the whole
+> >> core is idle. On the contrary, if any one HT of the core is busy,
+> >> select_idle_core() would clear the whole core out from cpumask and
+> >> check the next core.
+> >>
+> >> select_idle_core():
+> >>       …
+> >>       if (idle)
+> >>           return core;
+> >>
+> >>       cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
+> >>       return -1;
+> >>
+> >> In this manner, except the very beginning of for_each_cpu_wrap() loop,
+> >> HT with even ID number is always be checked at first, and be returned
+> >> to the caller if the whole core is idle, so the odd indexed HT almost
+> >> has no chance to be selected.
+> >>
+> >> select_idle_cpu():
+> >>       …
+> >>       for_each_cpu_wrap(cpu, cpus, target + 1) {
+> >>           if (has_idle_core) {
+> >>               i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> >>
+> >> And this will NOT happen when the SMT topo is (0,n),(1,n+1),…, because
+> >> when the loop starts from the bottom half of SMT number, HTs with larger
+> >> number will be checked first, when it starts from the top half, their
+> >> siblings with smaller number take the first place of inner core searching.
+> >
+> > But why is it a problem ? Your system is almost idle and 1 HT per core
+> > is used. Who cares to select evenly one HT or the other as long as we
+> > select an idle core in priority ?
 > 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/util/arm-spe.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
+> Right, why is this a problem? Hyperthreads are supposed to be symmetric,
+> it doesn't matter which of the two are active, the important thing is to
+> only have one active if we can.
 > 
-> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-> index afbd5869f6bf..c2cdb9f2e188 100644
-> --- a/tools/perf/util/arm-spe.c
-> +++ b/tools/perf/util/arm-spe.c
-> @@ -409,15 +409,16 @@ static int arm_spe__synth_instruction_sample(struct arm_spe_queue *speq,
->  	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
->  }
->  
-> -static const struct midr_range neoverse_spe[] = {
-> +static const struct midr_range cpus_use_default_data_src[] = {
+> (Unlike Power7, they have asymmetric SMT)
+> 
 
-Is not 'cpus_use_default_data_src' too long ? 'use' could be dropped ?
+hi Peter and Vincent,
 
->  	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N1),
->  	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
->  	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_V1),
-> +	MIDR_ALL_VERSIONS(MIDR_CORTEX_X4),
->  	{},
->  };
->  
-> -static void arm_spe__synth_data_source_neoverse(const struct arm_spe_record *record,
-> -						union perf_mem_data_src *data_src)
-> +static void arm_spe__synth_data_source_default(const struct arm_spe_record *record,
-> +					       union perf_mem_data_src *data_src)
->  {
->  	/*
->  	 * Even though four levels of cache hierarchy are possible, no known
-> @@ -518,7 +519,8 @@ static void arm_spe__synth_data_source_generic(const struct arm_spe_record *reco
->  static u64 arm_spe__synth_data_source(const struct arm_spe_record *record, u64 midr)
->  {
->  	union perf_mem_data_src	data_src = { .mem_op = PERF_MEM_OP_NA };
-> -	bool is_neoverse = is_midr_in_range_list(midr, neoverse_spe);
-> +	bool is_default_dc =
+Some upper-level monitoring logic may take the CPU usage as a metric for
+computing resource scaling. Imbalanced scheduling can create the illusion
+of CPU resource scarcity, leading to more frequent triggering of resource
+expansion by the upper-level scheduling system. However, this is actually
+a waste of resources. So, we think this may be a problem.
 
-_dc stands for ?
+Could you please take a further look at PATCH#2? We found that the default
+'nr' value did not perform well under our scenario, and we believe that
+adjustable variables would be more appropriate.
 
-> +		is_midr_in_range_list(midr, cpus_use_default_data_src);
->  
->  	if (record->op & ARM_SPE_OP_LD)
->  		data_src.mem_op = PERF_MEM_OP_LOAD;
-> @@ -527,8 +529,8 @@ static u64 arm_spe__synth_data_source(const struct arm_spe_record *record, u64 m
->  	else
->  		return 0;
->  
-> -	if (is_neoverse)
-> -		arm_spe__synth_data_source_neoverse(record, &data_src);
-> +	if (is_default_dc)
-> +		arm_spe__synth_data_source_default(record, &data_src);
->  	else
->  		arm_spe__synth_data_source_generic(record, &data_src);
->  
+Our scenario is as follows:
+16 processes are running in a 32 CPU VM, with 8 threads per process,
+they are all running the same job. 
+
+The expected result is that the CPU usage is evenly distributed, but
+we found that even-numbered cores were used for scheduling decisions
+and consumed more CPU resources (5%~20%), mainly because of the default
+value of nr=4. In this scenario, we found that nr=2 is more suitable.
+
+Thanks,
+Ben
