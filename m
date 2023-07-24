@@ -2,311 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265E575F5A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F1175F5A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbjGXMFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
+        id S230126AbjGXMEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbjGXMFP (ORCPT
+        with ESMTP id S229602AbjGXMEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:05:15 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2052.outbound.protection.outlook.com [40.107.243.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F01F10EB
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:05:09 -0700 (PDT)
+        Mon, 24 Jul 2023 08:04:42 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346341A1;
+        Mon, 24 Jul 2023 05:04:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690200282; x=1721736282;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=REQTdiLTLALApex//VBfTIss6xowNJdellWclGbsc1s=;
+  b=k5ecNg1WrPBlFQ6fRfZtp9sRxn7moVwiz5W/mwg2b/K2llCx4t+kMDS6
+   ZERfCMaUjnirF07JleZO4VryQcvlKE2+5RKEtcL5iRO6xsW/EC29AxXbW
+   Q/chr3jrqvbFx7yA74GNWvyTxAri12ODPX8SVG9NfDZ0lRgiNlt7ftr2n
+   j4fqz3H4TfXsNTE8OyK1emA18r/L/DZ4NMc4nwm5JnTt6Vmx0vT+VmXXH
+   4h9LBw/8v2RYq5uqNi1lY0sYfuc9UAVfGtIpTsyCq6QldNUryGkuP1AQn
+   y4b5vvOl0+zsAkvxWuERp7KylTvkuKCla5FvxzmGHRS6CIXSinUsU9abf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="366313116"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="366313116"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 05:04:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="899470732"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="899470732"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga005.jf.intel.com with ESMTP; 24 Jul 2023 05:04:41 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 24 Jul 2023 05:04:40 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 24 Jul 2023 05:04:40 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.105)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 24 Jul 2023 05:04:40 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Kzni/4aPXesM/r+NVGGjk8GWn1sUgitr6dwj7OpVAv8mAHRea5y5GBP6gzphZJvwlf+SMZddDgpGJjPLK7KaG0kyMrEgQxw6IwdhgBAwcFwW2V809zzdtD8F8ORuRbaYJ8ILBGthXFHKpErFxraW3jxp0go2lRN0NR8s9xpzaNN6iQTebzBivcFwvwqPAryYeY55orhKzKjyDTyN5aRKo+f5MDvU6tAmNS2h3McJJoCOSr9HVEhYfgzUAtKws2BIZHPLYlmA8MZhh2JLOJeKNiTD0NJPkYgjT70/AlQTF5jsp8uA+t3xvoWwsWliBxLopeBkg1u0aQRW1qkgkze1SA==
+ b=MHHYHFZt3FVGvl9OxP6ycJufA05Ohf/14O5L0RbYYFYxOiDZ0ySWIithTxkBD/nnjboRQ56eEUM/uPksmPiiFm+XeZReiOYeu+oqkvm7pFRG3L+o3jaPAFGHMcoJxWPMtZ4XlZkIug7FQvTOWl8mOIistqqfwDexdk244MeiFEadZuKGfUlIzixndXR+MyCKfy3CtieMFCb0tZNk+MVV7kfAYHdq9ju0qKlpNPWEvmMI87M8aBsdcUwXelWF3mZkkxscOQK90qZbqmJ/9gPcZg+t2CM5rqGAEer7EBa2OunaQbCkRUFNWqYdeFFAfFvStB2wbcfJjOwQagd2huPoFQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cOqBUnirZoRWiDgYqzn7wAF4ngZGrzB7sn02TwVKG9s=;
- b=KdqT748tO5HCpYfy4isgJ6ZyLd9g9THearJ49vN0gcy/F5mFfY4SHB80mmW016+NtjBLbTPNwQAI3uAAgSdnZtCMa1m7HmwTSf1uYnG6/wA30mfapo7Jd1cl3H5jTVsXfAwpwovDBcI86LqTCXSIm7nfGqcCuvyy8IVu3v1zcYxfaPCY2X5XU/h4TqWe9CbHPtqptcg4Y+gJ3E8LhXbOGf50sX0WpSeE9t6ibbKAcIpj0ajkam2ocjLd9gMRAOuStQ9OIG2jE3n9+wvRlSFDwLlc6DqZbGxo+WyhF2oj1VQdHkgbIq0s8OkmZXRlvo9ppvK1nhkfy67p7BcNpdBEmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cOqBUnirZoRWiDgYqzn7wAF4ngZGrzB7sn02TwVKG9s=;
- b=GFF9eth0lHxr4+TrbJSDgcB4rqf1DoXLx0PzP3Nrxo28nszkw2yHxxRQ784hQMfBPKVBG4zBE/qhXQiw5avE//6w9uWgJVghp9LJyqxJrHkWIMbd0UqZFm+u5gF0UvjRDRZhVb08fKnIXpHsWZ3vG6gGBE5a/AMrdoAFZ7dmEjo=
-Received: from MW4PR04CA0171.namprd04.prod.outlook.com (2603:10b6:303:85::26)
- by SN7PR12MB7022.namprd12.prod.outlook.com (2603:10b6:806:261::7) with
+ bh=REQTdiLTLALApex//VBfTIss6xowNJdellWclGbsc1s=;
+ b=FwcM21duZHXRlN5bOPqUSvoZTUqkTWA6QdGDb46BNUjZEwZUg9ger+QEZqE25pdgG85oKfyvz9jWjdH4HdxYjobkKsRWgPA8lvrhhSfMfhEWrf+S0AVVuwhS2WV5/GHwEgPIjpV3khhkaNAdD8NdSQ71xi5ppNlS3UBqY1lKBG7XvkhTasewKh/Mlvj6GJuaKMEfIxB8SKCsltmpn7NonacAUYInx25c1VuN6hQ0KZfPRu4fw+2LJagOhwj4QLCXfN1KSZKoswOkEPBIga/EOW6J+u+HOS3dtvjuIOkaFtXaliaNNx64a7NJ3W5jpMfDodPsnmiOgOhaLcyM87CbMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CY5PR11MB6366.namprd11.prod.outlook.com (2603:10b6:930:3a::8)
+ by DM4PR11MB7351.namprd11.prod.outlook.com (2603:10b6:8:104::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Mon, 24 Jul
- 2023 12:05:05 +0000
-Received: from CO1NAM11FT030.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:85:cafe::41) by MW4PR04CA0171.outlook.office365.com
- (2603:10b6:303:85::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32 via Frontend
- Transport; Mon, 24 Jul 2023 12:05:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CO1NAM11FT030.mail.protection.outlook.com (10.13.174.125) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6631.25 via Frontend Transport; Mon, 24 Jul 2023 12:05:04 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 24 Jul
- 2023 07:05:02 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 24 Jul
- 2023 05:04:44 -0700
-Received: from xhdipdslab41.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Mon, 24 Jul 2023 07:04:42 -0500
-From:   Nipun Gupta <nipun.gupta@amd.com>
-To:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>
-CC:     <git@amd.com>, <pieter.jansen-van-vuuren@amd.com>,
-        <nikhil.agarwal@amd.com>, <michal.simek@amd.com>,
-        <abhijit.gangurde@amd.com>, Nipun Gupta <nipun.gupta@amd.com>
-Subject: [PATCH v3] cdx: add support for bus mastering
-Date:   Mon, 24 Jul 2023 17:34:33 +0530
-Message-ID: <20230724120433.15910-1-nipun.gupta@amd.com>
-X-Mailer: git-send-email 2.17.1
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.30; Mon, 24 Jul
+ 2023 12:04:38 +0000
+Received: from CY5PR11MB6366.namprd11.prod.outlook.com
+ ([fe80::f8a8:855c:2d19:9ac1]) by CY5PR11MB6366.namprd11.prod.outlook.com
+ ([fe80::f8a8:855c:2d19:9ac1%7]) with mapi id 15.20.6609.025; Mon, 24 Jul 2023
+ 12:04:38 +0000
+From:   "Usyskin, Alexander" <alexander.usyskin@intel.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Winkler, Tomas" <tomas.winkler@intel.com>,
+        "Lubart, Vitaly" <vitaly.lubart@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>
+Subject: RE: [PATCH 1/2] mtd: use refcount to prevent corruption
+Thread-Topic: [PATCH 1/2] mtd: use refcount to prevent corruption
+Thread-Index: AQHZo3n2ZB8U6WhTx0+aElx0ckVEpq+5lImAgAGKEwCAAPTUYIAAe3sAgAxtDQCAAAdkAIAAAWCw
+Date:   Mon, 24 Jul 2023 12:04:38 +0000
+Message-ID: <CY5PR11MB6366FB890508D05E1D1C1375ED02A@CY5PR11MB6366.namprd11.prod.outlook.com>
+References: <20230620131905.648089-1-alexander.usyskin@intel.com>
+        <20230620131905.648089-2-alexander.usyskin@intel.com>
+        <TYWPR01MB87756794A30EB389AB017EB1C234A@TYWPR01MB8775.jpnprd01.prod.outlook.com>
+        <20230715174112.3909e43f@xps-13>
+        <CY5PR11MB63666C8DA33C93E1DC3BCB21ED3AA@CY5PR11MB6366.namprd11.prod.outlook.com>
+        <20230716153926.5e975231@xps-13>
+        <CY5PR11MB6366C254F767B6C432C98A0CED02A@CY5PR11MB6366.namprd11.prod.outlook.com>
+ <20230724135118.54e39faf@xps-13>
+In-Reply-To: <20230724135118.54e39faf@xps-13>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY5PR11MB6366:EE_|DM4PR11MB7351:EE_
+x-ms-office365-filtering-correlation-id: 33aff8cd-4552-4c4b-aefc-08db8c3e2781
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qS0byd07rgmknM/gES54WWNgrfmBAyIT0/DYlVvjxMrwFk9b2YS4tUZdWuTi0XAWtUcMP6JTNMegV5JEoFMNN/9FS5uxrxDExEFcd2msGFHaBQlZhIqGu4a7jrkSoJ9lAFEOb0amiqxrwKvo+9WpR9Ktj/mOa73uLSByII5JSrNbqi8PMd6WpX03jvVDJ1cpAezOTozRvTr9+KK0UNstDyK32MOG4FgGdQ4YNNOu6EFkYHJLjhkg7160nXBp2sk2IY28qcSSk8NFK5bFba+OTRiny//rqDn32oEDqGh9J+p/2wv07GGB/pwyvGJb3Wf55rZjReQa1tE4PsGbzVZGF9j5UbriBnBBjL4/IEvf/+BudIP0vbibUxXqJ5fpCA4Jhj0qMie55C7NMVok1cbwk/NcV1FmpMEIGJyq/TVG5OXmHhXGNpnbn81h8QXVct6x7znl6RlDzKU4e6FQ/8+L2duKnrxzNpF57ddKfKsRT8559BTFbqKgfKxKqAoOx9L4pvA7+H43Sqvevpd+GVpEl8E7B02E+NPdkJ20oXU6KaPS6QJfuj/CFmMTPkSZGSC6LTu1sJR6sfz724cjLbjuJ8KbFtx61BByabNVwBLeh3VnDIqS6o0Ffk5inwM/ULuH
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6366.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(346002)(366004)(136003)(396003)(39860400002)(451199021)(41300700001)(6506007)(33656002)(186003)(83380400001)(478600001)(66574015)(26005)(71200400001)(38070700005)(55016003)(9686003)(2906002)(7696005)(86362001)(7416002)(5660300002)(52536014)(66556008)(64756008)(66476007)(66946007)(76116006)(122000001)(4326008)(6916009)(66446008)(8936002)(8676002)(316002)(82960400001)(38100700002)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RmRUUnJBM3JMSm1uTG85emNmOFc5b0VHUTVWQ0d5M1JsdjVhMGxLakhKd01H?=
+ =?utf-8?B?bzgrbThXeEZoS0hZbzRuTzNCdnRCRkJMcXNGZDRQazV3bHhmd0JtWGRKbHkz?=
+ =?utf-8?B?U0tpazNNZ2xEWEc3NVdwQW93TGZOL2hDZGxIbHBjUHh4Y1ppWmVCaTN5UlMv?=
+ =?utf-8?B?OC9ZdlB4RXJjdXRSUVI3MnNxN09pSncyTlpjaHNXRjNLbyt6R09SUHpES3Yz?=
+ =?utf-8?B?NGYyVDRkRkUya0JiTzQrUWlxdHNkZ0hCRWpFM2g2UEZsaExnTDRCWDhaRkww?=
+ =?utf-8?B?SDJtRG1IQ2dsdVF6cURzN0d4M2F1c0lrK05NTnNFVmkxMTk0b253c2JXTGNz?=
+ =?utf-8?B?eVQ3Z2U2U3J6QnN3UldzeEkzU2lWbHg5THBwYUhwaHExZHlpdGo2TkM1dk1v?=
+ =?utf-8?B?MW9yVmpTeFg1UDJ2S1JTaVNGa3B2KzhLaDJUMSsvemV0ZlJ4alBiSk12VUNy?=
+ =?utf-8?B?S3d6NFpoenJJNEgrM25rYVRvUXlGczh5T1JzTEl4OEJ4NUIvR2dOSGxBMHNu?=
+ =?utf-8?B?bnAvTHdYUE5NdUV3R2piMGEwVjVKLzRoSEl4R0RMakNWT1BrUkJMVEl3U0kx?=
+ =?utf-8?B?QXJEZUhWM0FGZjE4NnVRTkYvK0x1YWh0YWNEYjU5Vml3U3pJbDk0OUxNZVg1?=
+ =?utf-8?B?U0Fad3A0NGw3eGExVHAvUkpwaGJWWG1tNGEzWEJaQzdZbnBsQTFUTDljUDZR?=
+ =?utf-8?B?aFBGbWNFTGU0ZnNGVGU0K01XL0RDNlUvbVpOZ1N2RWllRWozeEdtT21pMEJV?=
+ =?utf-8?B?djJDVXlqUkpYM1NLakNNSDQ0emtsMHFNM2JybGJocktMVFlzUVBJdzM4ZzN0?=
+ =?utf-8?B?RkJzdklEUUsvYndpQ0IvRXJWQXByaXJ0aE5tT1Z0SGZweGZ2TE5NZDZISDB6?=
+ =?utf-8?B?cGZ6QXI1bWR6SUlaOVErY29GTER5T0NiaEZlYkV5Rm55dG94SGUrdElRTE81?=
+ =?utf-8?B?WDhwbk11djYvTlZDUUpsaWVYdm1tRXhFRU95U2c3eW9ybXRmSVVtTXhjWWw1?=
+ =?utf-8?B?MDROQmNaZElsSE1Hb01GTnVvMmgzNm5RaHZBVm1RSktiZVJzMnlueEFvMjVW?=
+ =?utf-8?B?aU1mZzlLN21aVjlBRlByaDVDQzcvZVZSUUNMSCtiVGZwNXRYNHgzcDF6MUdH?=
+ =?utf-8?B?d2J6R3hCT09zRVFudXlaaUtpVHJudFpYMHZTSmdvQnQrVWdueTJPbFNIRE1J?=
+ =?utf-8?B?RWpjdUVJOGdwZGFFZGRxODl6bUppTi80ZVJOTjdFcnZsbDhrTkRUNVRtMTJN?=
+ =?utf-8?B?dXY2RVM3NUk0anJSNExVZU04cnE3SWVOdGxYczhBYWx3S3JTNHlNcVJLeHkv?=
+ =?utf-8?B?ZW9XZHVhcW5nSWQ0bTBqT204RDRubGRIQmh0aENVTHZMemdUTlF0Q0ZQZG8z?=
+ =?utf-8?B?cWhRM2JMTit0MnFVWmhRKy80eXV4L21wb3BCVzYzYzgzRkhpNWRGZEpLSjQ4?=
+ =?utf-8?B?K1lxYmtiZkQxZVhjYThDaUZPSkxtZnhXZ1dQS3dmdHY2d292TzB6YlBhUEZM?=
+ =?utf-8?B?Wk12RUVvbFBWVTFiV2h0N3lkREc2V2hoVVExZTV1QkxCRnJzTUpodFBMenhj?=
+ =?utf-8?B?RUIxS1ZpOXR2T2xyZ2RGbEFwQm4rSU9ZdzRpTW1DdGlxZ05sN1IrY1pjNFpm?=
+ =?utf-8?B?NWFUYmJIaEI0cjRvNUxKRDdZSWY1bG5kY1hJOGtDZCsyY1FkYXFVMzQyZ1Jz?=
+ =?utf-8?B?NzRmWjdMcTJDNU9YZm1EWXlWczVLSW9QTXlmTnkwTlFsTWZxVFNPZ3hFSjZx?=
+ =?utf-8?B?Q3RuQUREQnM5bVNRMFlOQTg5OTd3YkRBY0k3ZGNidm1tZG51QkNHanZKTitJ?=
+ =?utf-8?B?YlZJS2pFZW9HWURRR2lzbFRqN3NlZ1JQOGdORmZnVW9PTEY5aFhmOGZRaFF2?=
+ =?utf-8?B?N3VVQUhheFJTcG9oNlpsMEtCMlJUYkpJeXBnT1VCTURwdjExMEpHcXpBbStG?=
+ =?utf-8?B?WDZOT3RFRWxLT0RtUHpseUhpLzQvLzN1cE5SeC94WDJUOVJ2K1MrelR3akp0?=
+ =?utf-8?B?dE52MG92RXA3TVFzS0lEZHVuc1RnUkFBZGtYYVI0UUNjMFdZQURyS1E3citm?=
+ =?utf-8?B?M3lOMHRZdWJwelcra3lValRlZUNBTU44K1RXZmk3WnhPWml5YmxHQW4vZTNT?=
+ =?utf-8?B?d1ZqN2pGM0VYRTlsSUVuN3hMTC9XRDVqVCtZckRKaml2R1NxRk1YazBCR2pU?=
+ =?utf-8?B?R0E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT030:EE_|SN7PR12MB7022:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4bfc7e46-b545-47b2-ff5c-08db8c3e378a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PPioAtjZ6bgO9SeFoWCPXPVpkWh/av1bVthyMPXazLhUU9DYkzj2cFNpXQln9VhcouSh1VZZZ90TqfOkcrCUtfJHnaQPRzyg/9V+mOHfjLS96qUOKMp6fJHeatTv+A+//3aoSUqrCOcRWzIJQtgC/Sx4rORUaDe7kMBGshimdiLKBkyBz78dRYFqXDpW0XttTo0isF7BEx1ibzUCgTRWkSuVF+ILtGm5OijsdhVQF4G2N2hpe+8q53oA367CWdRf7uyxn2egIPElxD690x75YqdVhwE0Gxw9/TOEUAaOpUSc/FFI4MJrcqqNBw0j9Xguo1vOu8syIp0jI5w4ahHckrRKmpy3Du+IwC7HrDu87COZ3rN6kAzp9V+01r7U1q97v1Z5E0PoNUcDPotP1GiGy+E74VorADJgUhqaE31Fc3JzVGuGZPrTR+DMlcoiwrLtGX1ccjHcpt9O4Xgy64tXWkr2sphAEXKEDPbBXTbedHYbJhHEtzK2gGbm8TwW58i2XqBNDUC0PiaKom95ChSElFLK1Gh4rqBX9kuukbsx+ebx3tt0se9PwN22I311pIeHcxHK8cDUUMxVnykxvfHGinfJxMnkwmqgXwAo1Wi4RnPwXvTl/ZSucryKYAZWaYLrYBqJsZsE1A0fN+Ms/uUsejDv2Jg7SpHtJ2SI4GLSkWMQfyqLuP87FHrmj8naMg6NuQ3NnP0+vnW5oCCBdC6s/bLTZ0VqnO5b7WxYa+dvHMGaK3DRWqmo5eVwnkeSmpbufYwT5Sh/BwSgRqPlUgozBw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(376002)(136003)(346002)(451199021)(82310400008)(46966006)(36840700001)(40470700004)(5660300002)(8676002)(44832011)(8936002)(316002)(41300700001)(478600001)(2906002)(54906003)(110136005)(6666004)(1076003)(336012)(186003)(26005)(47076005)(2616005)(426003)(4326008)(70586007)(70206006)(83380400001)(36860700001)(356005)(36756003)(40480700001)(81166007)(40460700003)(86362001)(82740400003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 12:05:04.9368
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6366.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 33aff8cd-4552-4c4b-aefc-08db8c3e2781
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jul 2023 12:04:38.1310
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4bfc7e46-b545-47b2-ff5c-08db8c3e378a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT030.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7022
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kwT+So4V4rzdYK8DLqXuuRgetMuGfJ4VDgQA6cOgMqwzp4Wpt7tZuHADEo6n8X7FAahZ5e6rzN0ZnIjzw5abRmyvynoQ/Z94HYPpIFQHrv8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7351
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce cdx_set_master() and cdx_clear_master() APIs to support
-enable and disable of bus mastering. Drivers need to use these APIs to
-enable/disable DMAs from the CDX devices.
-
-Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
-Reviewed-by: Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>
----
-
-Changes v2->v3
-- Changed return value from EOPNOTSUPP to -EOPNOTSUPP in
-  cdx_set_master()
-
-Changes v1->v2:
-- Replace bme with bus_master_enable
-- Added check for dev_configure API callback
-- remove un-necessary error prints
-- changed conditional to if-else
-- updated commit message to use 72 columns
-
- drivers/cdx/cdx.c                       | 29 +++++++++++++
- drivers/cdx/controller/cdx_controller.c |  4 ++
- drivers/cdx/controller/mcdi_functions.c | 58 +++++++++++++++++++++++++
- drivers/cdx/controller/mcdi_functions.h | 13 ++++++
- include/linux/cdx/cdx_bus.h             | 16 +++++++
- 5 files changed, 120 insertions(+)
-
-diff --git a/drivers/cdx/cdx.c b/drivers/cdx/cdx.c
-index d2cad4c670a0..71ddb56a5d08 100644
---- a/drivers/cdx/cdx.c
-+++ b/drivers/cdx/cdx.c
-@@ -182,6 +182,35 @@ cdx_match_id(const struct cdx_device_id *ids, struct cdx_device *dev)
- 	return NULL;
- }
- 
-+int cdx_set_master(struct cdx_device *cdx_dev)
-+{
-+	struct cdx_controller *cdx = cdx_dev->cdx;
-+	struct cdx_device_config dev_config;
-+	int ret = -EOPNOTSUPP;
-+
-+	dev_config.type = CDX_DEV_BUS_MASTER_CONF;
-+	dev_config.bus_master_enable = true;
-+	if (cdx->ops->dev_configure)
-+		ret = cdx->ops->dev_configure(cdx, cdx_dev->bus_num,
-+					      cdx_dev->dev_num, &dev_config);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(cdx_set_master);
-+
-+void cdx_clear_master(struct cdx_device *cdx_dev)
-+{
-+	struct cdx_controller *cdx = cdx_dev->cdx;
-+	struct cdx_device_config dev_config;
-+
-+	dev_config.type = CDX_DEV_BUS_MASTER_CONF;
-+	dev_config.bus_master_enable = false;
-+	if (cdx->ops->dev_configure)
-+		cdx->ops->dev_configure(cdx, cdx_dev->bus_num,
-+					cdx_dev->dev_num, &dev_config);
-+}
-+EXPORT_SYMBOL_GPL(cdx_clear_master);
-+
- /**
-  * cdx_bus_match - device to driver matching callback
-  * @dev: the cdx device to match against
-diff --git a/drivers/cdx/controller/cdx_controller.c b/drivers/cdx/controller/cdx_controller.c
-index dc52f95f8978..39aa569d8e07 100644
---- a/drivers/cdx/controller/cdx_controller.c
-+++ b/drivers/cdx/controller/cdx_controller.c
-@@ -55,6 +55,10 @@ static int cdx_configure_device(struct cdx_controller *cdx,
- 	case CDX_DEV_RESET_CONF:
- 		ret = cdx_mcdi_reset_device(cdx->priv, bus_num, dev_num);
- 		break;
-+	case CDX_DEV_BUS_MASTER_CONF:
-+		ret = cdx_mcdi_bus_master_enable(cdx->priv, bus_num, dev_num,
-+						 dev_config->bus_master_enable);
-+		break;
- 	default:
- 		ret = -EINVAL;
- 	}
-diff --git a/drivers/cdx/controller/mcdi_functions.c b/drivers/cdx/controller/mcdi_functions.c
-index 0158f26533dd..6acd8fea4586 100644
---- a/drivers/cdx/controller/mcdi_functions.c
-+++ b/drivers/cdx/controller/mcdi_functions.c
-@@ -137,3 +137,61 @@ int cdx_mcdi_reset_device(struct cdx_mcdi *cdx, u8 bus_num, u8 dev_num)
- 
- 	return ret;
- }
-+
-+static int cdx_mcdi_ctrl_flag_get(struct cdx_mcdi *cdx, u8 bus_num,
-+				  u8 dev_num, u32 *flags)
-+{
-+	MCDI_DECLARE_BUF(inbuf, MC_CMD_CDX_DEVICE_CONTROL_GET_IN_LEN);
-+	MCDI_DECLARE_BUF(outbuf, MC_CMD_CDX_DEVICE_CONTROL_GET_OUT_LEN);
-+	size_t outlen;
-+	int ret;
-+
-+	MCDI_SET_DWORD(inbuf, CDX_DEVICE_CONTROL_GET_IN_BUS, bus_num);
-+	MCDI_SET_DWORD(inbuf, CDX_DEVICE_CONTROL_GET_IN_DEVICE, dev_num);
-+	ret = cdx_mcdi_rpc(cdx, MC_CMD_CDX_DEVICE_CONTROL_GET, inbuf,
-+			   sizeof(inbuf), outbuf, sizeof(outbuf), &outlen);
-+	if (ret)
-+		return ret;
-+
-+	if (outlen != MC_CMD_CDX_DEVICE_CONTROL_GET_OUT_LEN)
-+		return -EIO;
-+
-+	*flags = MCDI_DWORD(outbuf, CDX_DEVICE_CONTROL_GET_OUT_FLAGS);
-+
-+	return 0;
-+}
-+
-+static int cdx_mcdi_ctrl_flag_set(struct cdx_mcdi *cdx, u8 bus_num,
-+				  u8 dev_num, bool enable, int lbn)
-+{
-+	MCDI_DECLARE_BUF(inbuf, MC_CMD_CDX_DEVICE_CONTROL_SET_IN_LEN);
-+	u32 flags;
-+	int ret;
-+
-+	/*
-+	 * Get flags and then set/reset BUS_MASTER_BIT according to
-+	 * the input params.
-+	 */
-+	ret = cdx_mcdi_ctrl_flag_get(cdx, bus_num, dev_num, &flags);
-+	if (ret)
-+		return ret;
-+
-+	flags = flags & (u32)(~(BIT(lbn)));
-+	if (enable)
-+		flags |= (1 << lbn);
-+
-+	MCDI_SET_DWORD(inbuf, CDX_DEVICE_CONTROL_SET_IN_BUS, bus_num);
-+	MCDI_SET_DWORD(inbuf, CDX_DEVICE_CONTROL_SET_IN_DEVICE, dev_num);
-+	MCDI_SET_DWORD(inbuf, CDX_DEVICE_CONTROL_SET_IN_FLAGS, flags);
-+	ret = cdx_mcdi_rpc(cdx, MC_CMD_CDX_DEVICE_CONTROL_SET, inbuf,
-+			   sizeof(inbuf), NULL, 0, NULL);
-+
-+	return ret;
-+}
-+
-+int cdx_mcdi_bus_master_enable(struct cdx_mcdi *cdx, u8 bus_num,
-+			       u8 dev_num, bool enable)
-+{
-+	return cdx_mcdi_ctrl_flag_set(cdx, bus_num, dev_num, enable,
-+			MC_CMD_CDX_DEVICE_CONTROL_SET_IN_BUS_MASTER_ENABLE_LBN);
-+}
-diff --git a/drivers/cdx/controller/mcdi_functions.h b/drivers/cdx/controller/mcdi_functions.h
-index 7440ace5539a..a448d6581eb4 100644
---- a/drivers/cdx/controller/mcdi_functions.h
-+++ b/drivers/cdx/controller/mcdi_functions.h
-@@ -58,4 +58,17 @@ int cdx_mcdi_get_dev_config(struct cdx_mcdi *cdx,
- int cdx_mcdi_reset_device(struct cdx_mcdi *cdx,
- 			  u8 bus_num, u8 dev_num);
- 
-+/**
-+ * cdx_mcdi_bus_master_enable - Set/Reset bus mastering for cdx device
-+ *				represented by bus_num:dev_num
-+ * @cdx: pointer to MCDI interface.
-+ * @bus_num: Bus number.
-+ * @dev_num: Device number.
-+ * @enable: Enable bus mastering if set, disable otherwise.
-+ *
-+ * Return: 0 on success, <0 on failure
-+ */
-+int cdx_mcdi_bus_master_enable(struct cdx_mcdi *cdx, u8 bus_num,
-+			       u8 dev_num, bool enable);
-+
- #endif /* CDX_MCDI_FUNCTIONS_H */
-diff --git a/include/linux/cdx/cdx_bus.h b/include/linux/cdx/cdx_bus.h
-index bead71b7bc73..1816c279879e 100644
---- a/include/linux/cdx/cdx_bus.h
-+++ b/include/linux/cdx/cdx_bus.h
-@@ -21,11 +21,13 @@
- struct cdx_controller;
- 
- enum {
-+	CDX_DEV_BUS_MASTER_CONF,
- 	CDX_DEV_RESET_CONF,
- };
- 
- struct cdx_device_config {
- 	u8 type;
-+	bool bus_master_enable;
- };
- 
- typedef int (*cdx_scan_cb)(struct cdx_controller *cdx);
-@@ -170,4 +172,18 @@ extern struct bus_type cdx_bus_type;
-  */
- int cdx_dev_reset(struct device *dev);
- 
-+/**
-+ * cdx_set_master - enables bus-mastering for CDX device
-+ * @cdx_dev: the CDX device to enable
-+ *
-+ * Return: 0 for success, -errno on failure
-+ */
-+int cdx_set_master(struct cdx_device *cdx_dev);
-+
-+/**
-+ * cdx_clear_master - disables bus-mastering for CDX device
-+ * @cdx_dev: the CDX device to disable
-+ */
-+void cdx_clear_master(struct cdx_device *cdx_dev);
-+
- #endif /* _CDX_BUS_H_ */
--- 
-2.17.1
-
+SGkgTWlxdWVsLA0KPiANCj4gSGkgQWxleGFuZGVyLA0KPiANCj4gYWxleGFuZGVyLnVzeXNraW5A
+aW50ZWwuY29tIHdyb3RlIG9uIE1vbiwgMjQgSnVsIDIwMjMgMTE6NDM6NTkgKzAwMDA6DQo+IA0K
+PiA+ID4gPiA+ID4gV2l0aCB0aGlzIHBhdGNoIGFwcGxpZWQsIHdoZW4gSSBsb2FkIHVwIHRoZSBt
+b2R1bGUsIEkgZ2V0IHRoZSBzYW1lIDMNCj4gPiA+ID4gPiA+IGRldmljZXM6DQo+ID4gPiA+ID4g
+PiAvZGV2L210ZDANCj4gPiA+ID4gPiA+IC9kZXYvbXRkMHJvDQo+ID4gPiA+ID4gPiAvZGV2L210
+ZGJsb2NrMA0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IFVwb24gcmVtb3ZhbCwgdGhlIGJlbG93
+IDIgZGV2aWNlcyBzdGlsbCBoYW5nIGFyb3VuZDoNCj4gPiA+ID4gPiA+IC9kZXYvbXRkMA0KPiA+
+ID4gPiA+ID4gL2Rldi9tdGQwcm8NCj4gPiA+ID4gPg0KPiA+ID4gPiBPdXIgdXNlLWNhc2UgZG8g
+bm90IHByb2R1Y2UgbXRkYmxvY2ssIG1heWJlIHRoZXJlIGFyZSBzb21lDQo+IGltYmFsYW5jZXMN
+Cj4gPiA+IG9mIGdldC9wdXQ/DQo+ID4gPiA+IEkgaGF2ZSBzb21ld2hlcmUgdmVyc2lvbiB3aXRo
+IHByX2RlYnVnIGFmdGVyIGV2ZXJ5IGtyZWZfZ2V0L3B1dC4gVGhhdA0KPiBtYXkNCj4gPiA+IGhl
+bHAgdG8gY2F0Y2ggd2hlcmUNCj4gPiA+ID4gaXQgbWlzc2VkLCBJIGhvcGUuDQo+ID4gPg0KPiA+
+ID4gSSBiZWxpZXZlIG10ZGJsb2NrIGlzIHRoZSBnb29kIGNpdGl6ZW4gaGVyZS4gSnVzdCBkaXNh
+YmxlDQo+ID4gPiBDT05GSUdfTVREX0JMT0NLIGZyb20geW91ciBjb25maWd1cmF0aW9uIGFuZCB5
+b3Ugd2lsbCBsaWtlbHkgb2JzZXJ2ZQ0KPiA+ID4gdGhlIHNhbWUgaXNzdWUsIGp1c3QgYSBiaXQg
+bmFycm93ZWQsIHBlcmhhcHMuIEluZGVlZCwgaWYgeW91IG1hbmFnZSB0bw0KPiA+ID4gZm9sbG93
+IGFsbCB0aGUgZ2V0L3B1dCBjYWxscyBpdCBjYW4gaGVscCB0byBmaW5kIGFuIGltYmFsYW5jZS4N
+Cj4gPiA+DQo+ID4gPiBUaGFua3MsDQo+ID4gPiBNaXF1w6hsDQo+ID4NCj4gPiBNaXF1ZWwsIGRv
+IHlvdSBoYXZlIENPTkZJR19NVERfUEFSVElUSU9ORURfTUFTVEVSIHNldCBpbiB5b3VyDQo+IGNv
+bmZpZz8NCj4gDQo+IE5vdCBzdXJlIEkgZ2V0IHlvdXIgcXVlc3Rpb24uIFlvdSBjYW4gZW5hYmxl
+IG9yIGRpc2FibGUgaXQsIGl0IHNob3VsZA0KPiB3b3JrIGluIGJvdGggY2FzZXMgKHlldCwgdGhl
+IGhhbmRsaW5nIGlzIG9mIGNvdXJzZSBhIGJpdCBkaWZmZXJlbnQgYXMNCj4gdGhlIHRvcCBsZXZl
+bCBkZXZpY2Ugd2lsbCBiZSByZXRhaW5lZC9ub3QgcmV0YWluZWQpLg0KPiANCj4gVGhhbmtzLA0K
+PiBNaXF1w6hsDQoNCkknbSB0cnlpbmcgdG8gdW5kZXJzdGFuZCB3aHkgSSBjYW4ndCByZXByb2R1
+Y2UgdGhlIHByb2JsZW0gaW4gbXkgc2NlbmFyaW8uDQpJIGZvdW5kIGFuIGltcG9ydGFudCBkaWZm
+ZXJlbmNlIGluIHVwc3RyZWFtZWQgcGF0Y2ggYW5kIGludGVybmFsIHZlcnNpb246DQpUaGUgSVNf
+RU5BQkxFRChDT05GSUdfTVREX1BBUlRJVElPTkVEX01BU1RFUikgY2hlY2sgYXJvdW5kIGtyZWZf
+Z2V0L3B1dCBkb2VzIG5vdCBleGlzdHMgaW4gdGhlIGludGVybmFsIHRyZWUuDQpUaGUgY29kZSBi
+ZWZvcmUgbXkgcGF0Y2ggZG8gbm90IGhhdmUgc3VjaCBjaGVjaywgc28gSSB0ZW5kIHRvIGFzc3Vt
+ZSB0aGF0IHRoaXMgY2hlY2sgc2hvdWxkIGJlIHJlbW92ZWQuDQpJZiB5b3UgcmVwcm9kdWNlIGhh
+cHBlbnMgd2l0aCBDT05GSUdfTVREX1BBUlRJVElPTkVEX01BU1RFUiBkaXNhYmxlZCB0aGF0IG1h
+eSBleHBsYWluIHByb2JsZW1zIHRoYXQgeW91IHNlZS4NCg0KLS0gDQpUaGFua3MsDQpTYXNoYQ0K
+DQoNCg0K
