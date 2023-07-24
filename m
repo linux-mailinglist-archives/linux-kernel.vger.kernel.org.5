@@ -2,259 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EAE75F5B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D8E75F5B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbjGXMNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
+        id S230226AbjGXMNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjGXMNQ (ORCPT
+        with ESMTP id S230230AbjGXMNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:13:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F791BF;
-        Mon, 24 Jul 2023 05:13:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CF7266111F;
-        Mon, 24 Jul 2023 12:13:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 391B9C433C8;
-        Mon, 24 Jul 2023 12:13:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690200794;
-        bh=5lARTRlkcLkwGHmez9f9aPfhEdGhUKlUDQvXf3fnxUs=;
-        h=From:Date:Subject:To:Cc:From;
-        b=SgkOYSbsypxENA7qLIE42GPi9QQvDn8kOXcpBs79FktLXUKABXbRW5Rp0VaUuWdpr
-         G+VwtwKT/iDQ0hWPf2bNTb/xYVk07Ch+4ssYK44I7Xul9htnH76ar4YvwczNlZMa0d
-         binvBO7joXNFSYEWB4+AQAHyf+I6XNerocP/F7xczKsZQA9HA1554fSP2JnVolErqG
-         FtPjo7eD7zAPUuapTl0wsfyEaxUwPXAZhGlzRWyq4mWo7TSLzt5Acg5f5qFvAX8x10
-         ZrXj+LWb0/bepQMTJXeoxtsbRrM3TyaaSmVlFPZR/9Nr8c8+oVk2TkBHldqptLDw+A
-         3ejBpJ3E34LKQ==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Mon, 24 Jul 2023 08:13:05 -0400
-Subject: [PATCH v2] nfsd: inherit required unset default acls from
- effective set
+        Mon, 24 Jul 2023 08:13:38 -0400
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68B7E61;
+        Mon, 24 Jul 2023 05:13:33 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vo91cmw_1690200808;
+Received: from 30.240.115.26(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vo91cmw_1690200808)
+          by smtp.aliyun-inc.com;
+          Mon, 24 Jul 2023 20:13:30 +0800
+Message-ID: <3dba0c90-9673-eadd-4f82-353ae48567a7@linux.alibaba.com>
+Date:   Mon, 24 Jul 2023 20:13:26 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230724-nfsd-acl-v2-1-1cfaac973498@kernel.org>
-X-B4-Tracking: v=1; b=H4sIANBqvmQC/23Myw6CMBCF4Vchs3ZML0KDK9/DsCh0ChNJMa1pN
- KTvbmXt8j85+XZIFJkSXJsdImVOvIUa6tTAtNgwE7KrDUooLYzsMfjk0E4rtnbsZKsNXaiDen9
- G8vw+qPtQe+H02uLnkLP8rX+QLFEijcJbr53qpbk9KAZaz1ucYSilfAEAo/veoQAAAA==
-To:     Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ondrej Valousek <ondrej.valousek@diasemi.com>,
-        Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5550; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=5lARTRlkcLkwGHmez9f9aPfhEdGhUKlUDQvXf3fnxUs=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBkvmrY2NPF3xcpJD5VmN8da0rZmazOFfAGJk/vF
- 3yCe0PvzwGJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZL5q2AAKCRAADmhBGVaC
- FYz2D/9avmrWR7g+tY4C0l/iG/c6BSsASRhbPCfBfaCtCFD0HI54YZPjqG7rxh5sE75gOd4l8ht
- sdzNc2qew/AleCsn4e8lIN1+hFvGRh2VTSuiE36GdudaU5qrW9J/9jm3F/Af7vT3PDtes5RxQBZ
- 1sNYi++smIz+NS/h+TWZndRTH/Psgm0M7X7yeH5n1yELqmkAC1z5uRJUPdsDifNY4gyUq1f72QZ
- IKeeWuUlB1ppts9Gl76SGKoZqLOs7hvr4jrSC/98eAEvJ23DVYvEwwFC7wWRGfbP5r0urBF/CD0
- 2NdG6AHIGfeBuCHhJc6bswZEEX+9FiEMrrMgCpcAFfKcgjbNzd9FkHPE7IcQJFNUfBXbIu5vnM0
- NIWm3Ht95ciJtsxsdf8ajF9r+vW5lW+KI3jlNXbqDBibyFgKacg0NLQhaeBAkJsqko4vnDo/Vug
- sc7IA1sv576yblWC8YkYB1snbg1cedQ/RiYnh5AEllHmJyK0vchlqxYu/DlH+rTKZRVD4mEqocO
- 5jG58cJ1LCVBvLDpZvVsZcYrQQz0Q6DU/qiD4nAl+mse223g2p1FNgvLwamAL5AO6hYOrZdsE9Z
- sPeRRAEnxz+9OsYuLdgovKQv8iWUSjGy2CXwgfVZazrvX/mN+hdw8PAASaAdlXYdV3sNbMwSkZG
- iZNZKz0dPL7Lqsw==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v6 0/4] drivers/perf: add Synopsys DesignWare PCIe PMU
+ driver support
+Content-Language: en-US
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
+        helgaas@kernel.org, yangyicong@huawei.com, will@kernel.org,
+        baolin.wang@linux.alibaba.com, robin.murphy@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com
+References: <20230606074938.97724-1-xueshuai@linux.alibaba.com>
+ <204e3891-c041-53ae-a965-f3abec2cc091@linux.alibaba.com>
+ <161dc5b6-7c20-ea8c-2efb-9594e94df2d3@linux.alibaba.com>
+ <5db5aaf0-4fb7-a017-3b6f-017d04a93d33@linux.alibaba.com>
+ <20230724101807.000012bf@Huawei.com>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <20230724101807.000012bf@Huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A well-formed NFSv4 ACL will always contain OWNER@/GROUP@/EVERYONE@
-ACEs, but there is no requirement for inheritable entries for those
-entities. POSIX ACLs must always have owner/group/other entries, even for a
-default ACL.
 
-nfsd builds the default ACL from inheritable ACEs, but the current code
-just leaves any unspecified ACEs zeroed out. The result is that adding a
-default user or group ACE to an inode can leave it with unwanted deny
-entries.
 
-For instance, a newly created directory with no acl will look something
-like this:
+On 2023/7/24 17:18, Jonathan Cameron wrote:
+> Really a question for Bjorn I think, but here is my 2 cents...
+> 
+> The problem here is that we need to do that fundamental redesign of the
+> way the PCI ports drivers work.  I'm not sure there is a path to merging
+> this until that is done.  The bigger problem is that I'm not sure anyone
+> is actively looking at that yet.  I'd like to look at this (as I have
+> the same problem for some other drivers), but it is behind various
+> other things on my todo list.
+> 
+> Bjorn might be persuaded on a temporary solution, but that would come
+> with some maintenance problems, particularly when we try to do it
+> 'right' in the future.  Maybe adding another service driver would be
+> a stop gap as long as we know we won't keep doing so for ever. Not sure.
 
-	# NFSv4 translation by server
-	A::OWNER@:rwaDxtTcCy
-	A::GROUP@:rxtcy
-	A::EVERYONE@:rxtcy
+Thank you for your reply, and got your point, :)
 
-	# POSIX ACL of underlying file
-	user::rwx
-	group::r-x
-	other::r-x
++ Bjorn
 
-...if I then add new v4 ACE:
 
-	nfs4_setfacl -a A:fd:1000:rwx /mnt/local/test
+>>>> The approach used here is to separately walk the PCI topology and
+>>>> register the devices.  It can 'maybe' get away with that because no
+>>>> interrupts and I assume resets have no nasty impacts on it because
+>>>> the device is fairly simple.  In general that's not going to work.
+>>>> CXL does a similar trick (which I don't much like, but too late
+>>>> now), but we've also run into the problem of how to get interrupts
+>>>> if not the main driver.
+>>>
+>>> Yes, this is a real problem.  I think the "walk all PCI devices
+>>> looking for one we like" approach is terrible because it breaks a lot
+>>> of driver model assumptions (no device ID to autoload module via udev,
+>>> hotplug doesn't work, etc), but we don't have a good alternative right
+>>> now.
+>>>
+>>> I think portdrv is slightly better because at least it claims the
+>>> device in the usual way and gives a way for service drivers to
+>>> register with it.  But I don't really like that either because it
+>>> created a new weird /sys/bus/pci_express hierarchy full of these
+>>> sub-devices that aren't really devices, and it doesn't solve the
+>>> module load and hotplug issues.
+>>>
+>>> I would like to have portdrv be completely built into the PCI core and
+>>> not claim Root Ports or Switch Ports.  Then those devices would be
+>>> available via the usual driver model for driver loading and binding
+>>> and for hotplug.
+>>
+>> Let me see if I understand this correctly as I can think of a few options
+>> that perhaps are inline with what you are thinking.
+>>
+>> 1) All the portdrv stuff converted to normal PCI core helper functions
+>>    that a driver bound to the struct pci_dev can use.
+>> 2) Driver core itself provides a bunch of extra devices alongside the
+>>    struct pci_dev one to which additional drivers can bind? - so kind
+>>    of portdrv handling, but squashed into the PCI device topology?
+>> 3) Have portdrv operated under the hood, so all the services etc that
+>>    it provides don't require a driver to be bound at all.  Then
+>>    allow usual VID/DID based driver binding.
+>>
+>> If 1 - we are going to run into class device restrictions and that will
+>> just move where we have to handle the potential vendor specific parts.
+>> We probably don't want that to be a hydra with all the functionality
+>> and lookups etc driven from there, so do we end up with sub devices
+>> of that new PCI port driver with a discover method based on either
+>> vsec + VID or DVSEC with devices created under the main pci_dev.
+>> That would have to include nastiness around interrupt discovery for
+>> those sub devices. So ends up roughly like port_drv.
+>>
+>> I don't think 2 solves anything.
+>>
+>> For 3 - interrupts and ownership of facilities is going to be tricky
+>> as initially those need to be owned by the PCI core (no device driver bound)
+>> and then I guess handed off to the driver once it shows up?  Maybe that
+>> driver should call a pci_claim_port() that gives it control of everything
+>> and pci_release_port() that hands it all back to the core.  That seems
+>> racey.
+>
+> Yes, 3 is the option I want to explore.  That's what we already do for
+> things like ASPM.  Agreed, interrupts is a potential issue.  I think
+> the architected parts of config space should be implicitly owned by
+> the PCI core, with interfaces à la pci_disable_link_state() if drivers
+> need them.
+>
+> Bjorn
+> https://lore.kernel.org/lkml/ZGUAWxoEngmqFcLJ@bhelgaas/
 
-...I end up with a result like this today:
+@Bjorn Is there a path to merging this patch set until your explore is done?
+And are you still actively looking at that yet?
 
-	user::rwx
-	user:1000:rwx
-	group::r-x
-	mask::rwx
-	other::r-x
-	default:user::---
-	default:user:1000:rwx
-	default:group::---
-	default:mask::rwx
-	default:other::---
+I am not quite familiar with PCI core, but I would like to help work on that.
 
-	A::OWNER@:rwaDxtTcCy
-	A::1000:rwaDxtcy
-	A::GROUP@:rxtcy
-	A::EVERYONE@:rxtcy
-	D:fdi:OWNER@:rwaDx
-	A:fdi:OWNER@:tTcCy
-	A:fdi:1000:rwaDxtcy
-	A:fdi:GROUP@:tcy
-	A:fdi:EVERYONE@:tcy
+Thank you.
 
-...which is not at all expected. Adding a single inheritable allow ACE
-should not result in everyone else losing access.
-
-The setfacl command solves a silimar issue by copying owner/group/other
-entries from the effective ACL when none of them are set:
-
-    "If a Default ACL entry is created, and the  Default  ACL  contains  no
-     owner,  owning group,  or  others  entry,  a  copy of the ACL owner,
-     owning group, or others entry is added to the Default ACL.
-
-Having nfsd do the same provides a more sane result (with no deny ACEs
-in the resulting set):
-
-	user::rwx
-	user:1000:rwx
-	group::r-x
-	mask::rwx
-	other::r-x
-	default:user::rwx
-	default:user:1000:rwx
-	default:group::r-x
-	default:mask::rwx
-	default:other::r-x
-
-	A::OWNER@:rwaDxtTcCy
-	A::1000:rwaDxtcy
-	A::GROUP@:rxtcy
-	A::EVERYONE@:rxtcy
-	A:fdi:OWNER@:rwaDxtTcCy
-	A:fdi:1000:rwaDxtcy
-	A:fdi:GROUP@:rxtcy
-	A:fdi:EVERYONE@:rxtcy
-
-Reported-by: Ondrej Valousek <ondrej.valousek@diasemi.com>
-Closes: https://bugzilla.redhat.com/show_bug.cgi?id=2136452
-Suggested-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
-Changes in v2:
-- always set missing ACEs whenever default ACL has any ACEs that are
-  explicitly set. This better conforms to how setfacl works.
-- drop now-unneeded "empty" boolean
-- Link to v1: https://lore.kernel.org/r/20230719-nfsd-acl-v1-1-eb0faf3d2917@kernel.org
----
- fs/nfsd/nfs4acl.c | 32 ++++++++++++++++++++++++++++----
- 1 file changed, 28 insertions(+), 4 deletions(-)
-
-diff --git a/fs/nfsd/nfs4acl.c b/fs/nfsd/nfs4acl.c
-index 518203821790..b931d4383517 100644
---- a/fs/nfsd/nfs4acl.c
-+++ b/fs/nfsd/nfs4acl.c
-@@ -441,7 +441,7 @@ struct posix_ace_state_array {
-  * calculated so far: */
- 
- struct posix_acl_state {
--	int empty;
-+	unsigned char valid;
- 	struct posix_ace_state owner;
- 	struct posix_ace_state group;
- 	struct posix_ace_state other;
-@@ -457,7 +457,6 @@ init_state(struct posix_acl_state *state, int cnt)
- 	int alloc;
- 
- 	memset(state, 0, sizeof(struct posix_acl_state));
--	state->empty = 1;
- 	/*
- 	 * In the worst case, each individual acl could be for a distinct
- 	 * named user or group, but we don't know which, so we allocate
-@@ -500,7 +499,7 @@ posix_state_to_acl(struct posix_acl_state *state, unsigned int flags)
- 	 * and effective cases: when there are no inheritable ACEs,
- 	 * calls ->set_acl with a NULL ACL structure.
- 	 */
--	if (state->empty && (flags & NFS4_ACL_TYPE_DEFAULT))
-+	if (!state->valid && (flags & NFS4_ACL_TYPE_DEFAULT))
- 		return NULL;
- 
- 	/*
-@@ -622,9 +621,10 @@ static void process_one_v4_ace(struct posix_acl_state *state,
- 				struct nfs4_ace *ace)
- {
- 	u32 mask = ace->access_mask;
-+	short type = ace2type(ace);
- 	int i;
- 
--	state->empty = 0;
-+	state->valid |= type;
- 
- 	switch (ace2type(ace)) {
- 	case ACL_USER_OBJ:
-@@ -726,6 +726,30 @@ static int nfs4_acl_nfsv4_to_posix(struct nfs4_acl *acl,
- 		if (!(ace->flag & NFS4_ACE_INHERIT_ONLY_ACE))
- 			process_one_v4_ace(&effective_acl_state, ace);
- 	}
-+
-+	/*
-+	 * At this point, the default ACL may have zeroed-out entries for owner,
-+	 * group and other. That usually results in a non-sensical resulting ACL
-+	 * that denies all access except to any ACE that was explicitly added.
-+	 *
-+	 * The setfacl command solves a similar problem with this logic:
-+	 *
-+	 * "If  a  Default  ACL  entry is created, and the Default ACL contains
-+	 *  no owner, owning group, or others entry,  a  copy of  the  ACL
-+	 *  owner, owning group, or others entry is added to the Default ACL."
-+	 *
-+	 * Copy any missing ACEs from the effective set, if any ACEs were
-+	 * explicitly set.
-+	 */
-+	if (default_acl_state.valid) {
-+		if (!(default_acl_state.valid & ACL_USER_OBJ))
-+			default_acl_state.owner = effective_acl_state.owner;
-+		if (!(default_acl_state.valid & ACL_GROUP_OBJ))
-+			default_acl_state.group = effective_acl_state.group;
-+		if (!(default_acl_state.valid & ACL_OTHER))
-+			default_acl_state.other = effective_acl_state.other;
-+	}
-+
- 	*pacl = posix_state_to_acl(&effective_acl_state, flags);
- 	if (IS_ERR(*pacl)) {
- 		ret = PTR_ERR(*pacl);
-
----
-base-commit: 7bfb36a2ee1d329a501ba4781db4145dc951c798
-change-id: 20230719-nfsd-acl-5ab61537e4e6
-
-Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
-
+Best Regards,
+Shuai
