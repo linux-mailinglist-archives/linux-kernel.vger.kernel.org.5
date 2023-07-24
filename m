@@ -2,155 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D7875F5E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A1375F5AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbjGXMQD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Jul 2023 08:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46102 "EHLO
+        id S230195AbjGXMIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjGXMQA (ORCPT
+        with ESMTP id S229495AbjGXMIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:16:00 -0400
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B63110E4;
-        Mon, 24 Jul 2023 05:15:34 -0700 (PDT)
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6bb140cd5a5so2034274a34.3;
-        Mon, 24 Jul 2023 05:15:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690200925; x=1690805725;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9nNGOJzgymf6gQYpdxd2UIkw90HSJ+oAIVzOwuAShWk=;
-        b=Uy62wyMg9w8t+mqXu0QFMNYQLHegY1Q65joGU4ncPvQPGwYptIiN2f6DmsYUouk6+7
-         JtAWmLG197KYoHDOmAfg3ZxOMrjHz4xE3hYyT76AcEWP1/NbfEO6q8JRB5nr/BxAzOyg
-         a7+QOuyPI2rhvw7/jP5F4BBg9IY8T8XHLcAMM5ohppGtr7R86x2IuaPjPO9X/nWI0OoX
-         EtvgGcsk0r/ueEy3TzgJuT1uDqG0x03uxNtyt02jDdb+T8/6bg+fyCYc4tnNsnN92/Ld
-         LEs75sY2hdIgCGspHVn8/auJuTwf5Te67YoZrN0CdTPjjYJTQVBra4cPZU4AkhkcKXZg
-         UqmA==
-X-Gm-Message-State: ABy/qLbLYusZCq828Ib/fOAikT1ZT1JurJbDna2ZiunMDfG28vkcu73f
-        FuQTMKLHFf9zJHCLdakK0mBA/eVijJEt8w==
-X-Google-Smtp-Source: APBJJlGibdh4VyCHZRuKbHeK83kZpT8FPuPgZrxRhKw6BlST+Wy1ddPXguufHTrmJ8wIiimetINKUg==
-X-Received: by 2002:a05:6830:188:b0:6b9:91da:484f with SMTP id q8-20020a056830018800b006b991da484fmr8804468ota.27.1690200924916;
-        Mon, 24 Jul 2023 05:15:24 -0700 (PDT)
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com. [209.85.161.50])
-        by smtp.gmail.com with ESMTPSA id d9-20020a056830004900b006b8c6eb962esm3835164otp.52.2023.07.24.05.15.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 05:15:24 -0700 (PDT)
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-56368c40e8eso2620523eaf.0;
-        Mon, 24 Jul 2023 05:15:24 -0700 (PDT)
-X-Received: by 2002:a25:238e:0:b0:d05:abaf:9933 with SMTP id
- j136-20020a25238e000000b00d05abaf9933mr7019302ybj.36.1690200457350; Mon, 24
- Jul 2023 05:07:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230719123944.3438363-1-arnd@kernel.org> <20230719123944.3438363-2-arnd@kernel.org>
- <87pm4lj1w3.fsf@mail.lhotse> <19631e74-415e-4dcb-b79d-33dcf03d2dfc@app.fastmail.com>
-In-Reply-To: <19631e74-415e-4dcb-b79d-33dcf03d2dfc@app.fastmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 24 Jul 2023 14:07:25 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVszR+oZi8x8L0iXx=ydTiaNUZxToBSdf=2ZH5t85+D_Q@mail.gmail.com>
-Message-ID: <CAMuHMdVszR+oZi8x8L0iXx=ydTiaNUZxToBSdf=2ZH5t85+D_Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/9] vgacon: rework Kconfig dependencies
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Arnd Bergmann <arnd@kernel.org>, linux-fbdev@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Deepak Rawat <drawat.floss@gmail.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        guoren <guoren@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        Mon, 24 Jul 2023 08:08:41 -0400
+Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AEA12D;
+        Mon, 24 Jul 2023 05:08:39 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4R8dv32rHlz9yMLM;
+        Mon, 24 Jul 2023 19:57:19 +0800 (CST)
+Received: from A2101119013HW2.china.huawei.com (unknown [10.81.222.124])
+        by APP2 (Coremail) with SMTP id GxC2BwCHPEOgab5kvDzyBA--.27732S2;
+        Mon, 24 Jul 2023 13:08:10 +0100 (CET)
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Khalid Aziz <khalid@gonehiking.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        WANG Xuerui <kernel@xen0n.name>, Wei Liu <wei.liu@kernel.org>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-sh@vger.kernel.org (open list:SUPERH),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+Subject: [PATCH v1] sh: boards: fix CEU buffer size passed to dma_declare_coherent_memory()
+Date:   Mon, 24 Jul 2023 14:07:42 +0200
+Message-Id: <20230724120742.2187-1-petrtesarik@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GxC2BwCHPEOgab5kvDzyBA--.27732S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuF4rAFW8KFWUCFW7XryDAwb_yoWrKF1rpa
+        4UuF4DKry09FsYy3s7uwsrZ343C3Zaya43Jrs8Gry8uFyfA34UWFyfJr18Ar1UXrWjqa48
+        Xas8Crn5Zw4rtaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJV
+        WxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFylc7CjxVAKzI0EY4vE52x082I5MxAIw28Icx
+        kI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
+        xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42
+        IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY
+        6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z2
+        80aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU2oGQUUUUU=
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+From: Petr Tesarik <petr.tesarik.ext@huawei.com>
 
-On Fri, Jul 21, 2023 at 10:29 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> On Fri, Jul 21, 2023, at 06:59, Michael Ellerman wrote:
-> > Arnd Bergmann <arnd@kernel.org> writes:
-> >> From: Arnd Bergmann <arnd@arndb.de>
-> >>
-> >> The list of dependencies here is phrased as an opt-out, but this is missing
-> >> a lot of architectures that don't actually support VGA consoles, and some
-> >> of the entries are stale:
-> >>
-> >>  - powerpc used to support VGA consoles in the old arch/ppc codebase, but
-> >>    the merged arch/powerpc never did
-> >
-> > Not disputing this, but how did you come to that conclusion? I grepped
-> > around and couldn't convince myself whether it can work on powerpc or
-> > not. ie. currently it's possible to enable CONFIG_VGA_CONSOLE and
-> > powerpc does have a struct screen_info defined which seems like it would
-> > allow vgacon_startup() to complete.
->
-> The VGA console needs both screen_info and vga_con to work. In arch/ppc
-> we had both, but in arch/powerpc we only retained the screen_info:
->
-> $ git grep vga_con v2.6.26 -- arch/ppc arch/ppc64 arch/powerpc
-> v2.6.26:arch/ppc/platforms/pplus.c:     conswitchp = &vga_con;
-> v2.6.26:arch/ppc/platforms/prep_setup.c:        conswitchp = &vga_con;
->
-> so after arch/ppc was removed, this became impossible to use on both
-> pplus and prep. These two platforms were also (as far as I can tell)
-> the only ones to support vga16fb as an alternative to vgacon, but
-> both platforms were removed later on.
+In all these cases, the last argument to dma_declare_coherent_memory() is
+the buffer end address, but the expected value should be the size of the
+reserved region.
 
-I did use vgacon and vga16fb on CHRP on a second video card
-(initialized using Gabriel Paubert's x86 BIOS emulator), but that was
-definitely before the advent of arch/powerpc/.
+Fixes: 39fb993038e1 ("media: arch: sh: ap325rxa: Use new renesas-ceu camera driver")
+Fixes: c2f9b05fd5c1 ("media: arch: sh: ecovec: Use new renesas-ceu camera driver")
+Fixes: f3590dc32974 ("media: arch: sh: kfr2r09: Use new renesas-ceu camera driver")
+Fixes: 186c446f4b84 ("media: arch: sh: migor: Use new renesas-ceu camera driver")
+Fixes: 1a3c230b4151 ("media: arch: sh: ms7724se: Use new renesas-ceu camera driver")
+Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+---
+ arch/sh/boards/mach-ap325rxa/setup.c | 2 +-
+ arch/sh/boards/mach-ecovec24/setup.c | 6 ++----
+ arch/sh/boards/mach-kfr2r09/setup.c  | 2 +-
+ arch/sh/boards/mach-migor/setup.c    | 2 +-
+ arch/sh/boards/mach-se/7724/setup.c  | 6 ++----
+ 5 files changed, 7 insertions(+), 11 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/sh/boards/mach-ap325rxa/setup.c b/arch/sh/boards/mach-ap325rxa/setup.c
+index 151792162152..645cccf3da88 100644
+--- a/arch/sh/boards/mach-ap325rxa/setup.c
++++ b/arch/sh/boards/mach-ap325rxa/setup.c
+@@ -531,7 +531,7 @@ static int __init ap325rxa_devices_setup(void)
+ 	device_initialize(&ap325rxa_ceu_device.dev);
+ 	dma_declare_coherent_memory(&ap325rxa_ceu_device.dev,
+ 			ceu_dma_membase, ceu_dma_membase,
+-			ceu_dma_membase + CEU_BUFFER_MEMORY_SIZE - 1);
++			CEU_BUFFER_MEMORY_SIZE);
+ 
+ 	platform_device_add(&ap325rxa_ceu_device);
+ 
+diff --git a/arch/sh/boards/mach-ecovec24/setup.c b/arch/sh/boards/mach-ecovec24/setup.c
+index 674da7ebd8b7..7ec03d4a4edf 100644
+--- a/arch/sh/boards/mach-ecovec24/setup.c
++++ b/arch/sh/boards/mach-ecovec24/setup.c
+@@ -1454,15 +1454,13 @@ static int __init arch_setup(void)
+ 	device_initialize(&ecovec_ceu_devices[0]->dev);
+ 	dma_declare_coherent_memory(&ecovec_ceu_devices[0]->dev,
+ 				    ceu0_dma_membase, ceu0_dma_membase,
+-				    ceu0_dma_membase +
+-				    CEU_BUFFER_MEMORY_SIZE - 1);
++				    CEU_BUFFER_MEMORY_SIZE);
+ 	platform_device_add(ecovec_ceu_devices[0]);
+ 
+ 	device_initialize(&ecovec_ceu_devices[1]->dev);
+ 	dma_declare_coherent_memory(&ecovec_ceu_devices[1]->dev,
+ 				    ceu1_dma_membase, ceu1_dma_membase,
+-				    ceu1_dma_membase +
+-				    CEU_BUFFER_MEMORY_SIZE - 1);
++				    CEU_BUFFER_MEMORY_SIZE);
+ 	platform_device_add(ecovec_ceu_devices[1]);
+ 
+ 	gpiod_add_lookup_table(&cn12_power_gpiod_table);
+diff --git a/arch/sh/boards/mach-kfr2r09/setup.c b/arch/sh/boards/mach-kfr2r09/setup.c
+index 20f4db778ed6..c6d556dfbbbe 100644
+--- a/arch/sh/boards/mach-kfr2r09/setup.c
++++ b/arch/sh/boards/mach-kfr2r09/setup.c
+@@ -603,7 +603,7 @@ static int __init kfr2r09_devices_setup(void)
+ 	device_initialize(&kfr2r09_ceu_device.dev);
+ 	dma_declare_coherent_memory(&kfr2r09_ceu_device.dev,
+ 			ceu_dma_membase, ceu_dma_membase,
+-			ceu_dma_membase + CEU_BUFFER_MEMORY_SIZE - 1);
++			CEU_BUFFER_MEMORY_SIZE);
+ 
+ 	platform_device_add(&kfr2r09_ceu_device);
+ 
+diff --git a/arch/sh/boards/mach-migor/setup.c b/arch/sh/boards/mach-migor/setup.c
+index f60061283c48..773ee767d0c4 100644
+--- a/arch/sh/boards/mach-migor/setup.c
++++ b/arch/sh/boards/mach-migor/setup.c
+@@ -604,7 +604,7 @@ static int __init migor_devices_setup(void)
+ 	device_initialize(&migor_ceu_device.dev);
+ 	dma_declare_coherent_memory(&migor_ceu_device.dev,
+ 			ceu_dma_membase, ceu_dma_membase,
+-			ceu_dma_membase + CEU_BUFFER_MEMORY_SIZE - 1);
++			CEU_BUFFER_MEMORY_SIZE);
+ 
+ 	platform_device_add(&migor_ceu_device);
+ 
+diff --git a/arch/sh/boards/mach-se/7724/setup.c b/arch/sh/boards/mach-se/7724/setup.c
+index b60a2626e18b..6495f9354065 100644
+--- a/arch/sh/boards/mach-se/7724/setup.c
++++ b/arch/sh/boards/mach-se/7724/setup.c
+@@ -940,15 +940,13 @@ static int __init devices_setup(void)
+ 	device_initialize(&ms7724se_ceu_devices[0]->dev);
+ 	dma_declare_coherent_memory(&ms7724se_ceu_devices[0]->dev,
+ 				    ceu0_dma_membase, ceu0_dma_membase,
+-				    ceu0_dma_membase +
+-				    CEU_BUFFER_MEMORY_SIZE - 1);
++				    CEU_BUFFER_MEMORY_SIZE);
+ 	platform_device_add(ms7724se_ceu_devices[0]);
+ 
+ 	device_initialize(&ms7724se_ceu_devices[1]->dev);
+ 	dma_declare_coherent_memory(&ms7724se_ceu_devices[1]->dev,
+ 				    ceu1_dma_membase, ceu1_dma_membase,
+-				    ceu1_dma_membase +
+-				    CEU_BUFFER_MEMORY_SIZE - 1);
++				    CEU_BUFFER_MEMORY_SIZE);
+ 	platform_device_add(ms7724se_ceu_devices[1]);
+ 
+ 	return platform_add_devices(ms7724se_devices,
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
