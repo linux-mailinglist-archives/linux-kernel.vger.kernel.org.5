@@ -2,177 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2107A75F533
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A19A075F531
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbjGXLfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 07:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        id S229683AbjGXLeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 07:34:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbjGXLe6 (ORCPT
+        with ESMTP id S229909AbjGXLeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:34:58 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465ADE77
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:34:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690198478; x=1721734478;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Y44xlJ8tDP9ORhfkWkFI860EGN+2lysyuKBMEUHzYzo=;
-  b=dgHx3wvSRq1Z8T3IVGBApsZoqc7wqWun7Y1OxzRA4dcTT4y4w5t7vKXM
-   d+dqbluIxvBxad/pUcWCwHxVIQuQOzkgV8VYlsjxs3Pcb7i7S4z7qUztE
-   7OGu+kHsmTn86sUK7ZghoaUpBz8Ync6e6YNKmcG+Ot6/+7Nr4Hp2VNmqX
-   z+T3hCPFftlOni69grLfvfPcxMkOPmGqG3McNBvLx3tguY7i7B3b/eKhm
-   KOYRu8LI5Dug5UZhR3iUhlPitfKh5soR6/Utuqei44Xdpw4AOcF15n6Yo
-   nthPXCCOEZjHHvjcXPbv5f+hHBXyHVBtL6TXk/wtNpx0AnZe8FFUg/Z02
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="347696234"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="347696234"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 04:33:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="719649110"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="719649110"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 24 Jul 2023 04:33:42 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qNtoi-0009hm-1M;
-        Mon, 24 Jul 2023 11:33:34 +0000
-Date:   Mon, 24 Jul 2023 19:32:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sunil V L <sunilvl@ventanamicro.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: drivers/pnp/pnpacpi/core.c:253:17: warning: 'strncpy' specified
- bound 50 equals destination size
-Message-ID: <202307241942.Rff2Nri5-lkp@intel.com>
+        Mon, 24 Jul 2023 07:34:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F9D26A5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:33:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690198364;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EXJhrkLdNOLUHGZbbc+F0hjfqb3hPCsrY6WTn8MVyN8=;
+        b=IKMGMDoBf5Q4TRF+J45GToUGxW8KJvD5bGgLyJeeLFh25nplZJDxAd3SInz6BrXVMcuVby
+        hYYnA1MfyF7PRcydtsYPxyA9Zv0hniuCao8nXh20+jsSTaAkzAhJk2Wn0xOxzvlNoVm9B7
+        dKLPBtMs43iUq3LlMZkcsIFwzQ66bYY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-169-ArKHm3Z2PmS6awbwkkKByg-1; Mon, 24 Jul 2023 07:32:43 -0400
+X-MC-Unique: ArKHm3Z2PmS6awbwkkKByg-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-316f39e3e89so2536815f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:32:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690198362; x=1690803162;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EXJhrkLdNOLUHGZbbc+F0hjfqb3hPCsrY6WTn8MVyN8=;
+        b=PdjBJqV8xcHhM9ZY2Ig8xH0sEEH19bQy0zpdv++3Rfz6vRbXF+rWTWHVkhk9WYWcIC
+         NdMZz9CwOHgEl4ajMP50MBzntu0pOUTRyJN81o0Zed9A3qtqo/OmhtzjfC5efuaHM9Ld
+         cIngVo+DLkTsJFWsfWGx/+nQz1eMH3bEo7kUnFJraOqC20mdsjZUUjI4pdktNqErHUDi
+         t/VrbuGwaQkCT40tn2ac0g52JIKNAuacOXrK59c31+Yn5+SYyQwQMPAzGsErdTjr6KO4
+         AlE7hGNnJ1x+Y5+M8bfCrWMKWcqcgBnegT6/cLE1TfEOjXJkKBmD/Csa8XIpuYx3BAvO
+         j5UA==
+X-Gm-Message-State: ABy/qLYY2TyIPDrdefblbAgYT8QFGwwr6vRHKHdByNJC8aSLdoOs3A94
+        Q9tW0WqW8EBfcQniRaO2+ogdfgf0annsNHiUiGwGoXtDiiO7FI6Qjs5U1dPTf6UQNTGD+YiB0qW
+        +bGnx/BJ2T2mcFFxh3aG9NMDy
+X-Received: by 2002:a5d:4ec5:0:b0:314:98f:2495 with SMTP id s5-20020a5d4ec5000000b00314098f2495mr7489853wrv.12.1690198362015;
+        Mon, 24 Jul 2023 04:32:42 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEI60yM7OEQYltk8pZJRHHkHj4AM6BZ+3LNkwODYxQy3aj86Uaqvq9RfiI7soFJIBmCEAmJvQ==
+X-Received: by 2002:a5d:4ec5:0:b0:314:98f:2495 with SMTP id s5-20020a5d4ec5000000b00314098f2495mr7489803wrv.12.1690198361680;
+        Mon, 24 Jul 2023 04:32:41 -0700 (PDT)
+Received: from vschneid.remote.csb ([149.12.7.81])
+        by smtp.gmail.com with ESMTPSA id w7-20020a5d4047000000b00313f61889ecsm12615302wrp.66.2023.07.24.04.32.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 04:32:41 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-trace-kernel@vger.kernel.org" 
+        <linux-trace-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 20/20] x86/mm, mm/vmalloc: Defer
+ flush_tlb_kernel_range() targeting NOHZ_FULL CPUs
+In-Reply-To: <188AEA79-10E6-4DFF-86F4-FE624FD1880F@vmware.com>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-21-vschneid@redhat.com>
+ <188AEA79-10E6-4DFF-86F4-FE624FD1880F@vmware.com>
+Date:   Mon, 24 Jul 2023 12:32:38 +0100
+Message-ID: <xhsmh8rb5tui1.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6eaae198076080886b9e7d57f4ae06fa782f90ef
-commit: a91a9ffbd3a55a0ae1bb75e2b6e85b2a03f64e8f RISC-V: Add support to build the ACPI core
-date:   8 weeks ago
-config: riscv-randconfig-r032-20230724 (https://download.01.org/0day-ci/archive/20230724/202307241942.Rff2Nri5-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230724/202307241942.Rff2Nri5-lkp@intel.com/reproduce)
+On 21/07/23 18:15, Nadav Amit wrote:
+>> On Jul 20, 2023, at 9:30 AM, Valentin Schneider <vschneid@redhat.com> wr=
+ote:
+>>
+>> vunmap()'s issued from housekeeping CPUs are a relatively common source =
+of
+>> interference for isolated NOHZ_FULL CPUs, as they are hit by the
+>> flush_tlb_kernel_range() IPIs.
+>>
+>> Given that CPUs executing in userspace do not access data in the vmalloc
+>> range, these IPIs could be deferred until their next kernel entry.
+>
+> So I think there are a few assumptions here that it seems suitable to con=
+firm
+> and acknowledge the major one in the commit log (assuming they hold).
+>
+> There is an assumption that VMAP page-tables are not freed. I actually
+> never paid attention to that, but skimming the code it does seem so. To
+> clarify the issue: if page-tables were freed and their pages were reused,
+> there would be a problem that page-walk caches for instance would be used
+> and =E2=80=9Cjunk=E2=80=9D entries from the reused pages would be used. S=
+ee [1].
+>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307241942.Rff2Nri5-lkp@intel.com/
+Thanks for looking into this and sharing context. This is an area I don't
+have much experience with, so help is much appreciated!
 
-All warnings (new ones prefixed by >>):
+Indeed, accessing addresses that should be impacted by a TLB flush *before*
+executing the deferred flush is an issue. Deferring sync_core() for
+instruction patching is a similar problem - it's all in the shape of
+"access @addr impacted by @operation during kernel entry, before actually
+executing @operation".
 
-   drivers/pnp/pnpacpi/core.c: In function 'pnpacpi_add_device.isra':
->> drivers/pnp/pnpacpi/core.c:253:17: warning: 'strncpy' specified bound 50 equals destination size [-Wstringop-truncation]
-     253 |                 strncpy(dev->name, acpi_device_name(device), sizeof(dev->name));
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+AFAICT the only reasonable way to go about the deferral is to prove that no
+such access happens before the deferred @operation is done. We got to prove
+that for sync_core() deferral, cf. PATCH 18.
 
+I'd like to reason about it for deferring vunmap TLB flushes:
 
-vim +/strncpy +253 drivers/pnp/pnpacpi/core.c
+What addresses in VMAP range, other than the stack, can early entry code
+access? Yes, the ranges can be checked at runtime, but is there any chance
+of figuring this out e.g. at build-time?
 
-420a0f66378c84 Dmitry Torokhov   2010-09-18  208  
-^1da177e4c3f41 Linus Torvalds    2005-04-16  209  static int __init pnpacpi_add_device(struct acpi_device *device)
-^1da177e4c3f41 Linus Torvalds    2005-04-16  210  {
-^1da177e4c3f41 Linus Torvalds    2005-04-16  211  	struct pnp_dev *dev;
-844142c3f80c66 Rasmus Villemoes  2015-09-09  212  	const char *pnpid;
-7f47fa6c2ff15f Bjorn Helgaas     2009-09-21  213  	struct acpi_hardware_id *id;
-249135d1a2ea3c Dmitry Torokhov   2013-12-15  214  	int error;
-^1da177e4c3f41 Linus Torvalds    2005-04-16  215  
-2905875344f977 Adrian Hunter     2012-11-23  216  	/* Skip devices that are already bound */
-2905875344f977 Adrian Hunter     2012-11-23  217  	if (device->physical_node_count)
-2905875344f977 Adrian Hunter     2012-11-23  218  		return 0;
-2905875344f977 Adrian Hunter     2012-11-23  219  
-39a0ad871000d2 Zhao Yakui        2008-08-11  220  	/*
-39a0ad871000d2 Zhao Yakui        2008-08-11  221  	 * If a PnPacpi device is not present , the device
-39a0ad871000d2 Zhao Yakui        2008-08-11  222  	 * driver should not be loaded.
-39a0ad871000d2 Zhao Yakui        2008-08-11  223  	 */
-0e77e2c416e8fa Zhang Rui         2013-09-03  224  	if (!acpi_has_method(device->handle, "_CRS"))
-420a0f66378c84 Dmitry Torokhov   2010-09-18  225  		return 0;
-420a0f66378c84 Dmitry Torokhov   2010-09-18  226  
-420a0f66378c84 Dmitry Torokhov   2010-09-18  227  	pnpid = pnpacpi_get_id(device);
-420a0f66378c84 Dmitry Torokhov   2010-09-18  228  	if (!pnpid)
-420a0f66378c84 Dmitry Torokhov   2010-09-18  229  		return 0;
-420a0f66378c84 Dmitry Torokhov   2010-09-18  230  
-eec15edbb0e144 Zhang Rui         2014-05-30  231  	if (!device->status.present)
-^1da177e4c3f41 Linus Torvalds    2005-04-16  232  		return 0;
-^1da177e4c3f41 Linus Torvalds    2005-04-16  233  
-420a0f66378c84 Dmitry Torokhov   2010-09-18  234  	dev = pnp_alloc_dev(&pnpacpi_protocol, num, pnpid);
-bda1e4e5a3d976 Bjorn Helgaas     2008-04-28  235  	if (!dev)
-^1da177e4c3f41 Linus Torvalds    2005-04-16  236  		return -ENOMEM;
-bda1e4e5a3d976 Bjorn Helgaas     2008-04-28  237  
-2eb1eb02dda368 Rafael J. Wysocki 2015-03-13  238  	ACPI_COMPANION_SET(&dev->dev, device);
-c4da6940a7a41c Bjorn Helgaas     2009-11-17  239  	dev->data = device;
-07d4e9af109221 Bjorn Helgaas     2007-07-26  240  	/* .enabled means the device can decode the resources */
-^1da177e4c3f41 Linus Torvalds    2005-04-16  241  	dev->active = device->status.enabled;
-0e77e2c416e8fa Zhang Rui         2013-09-03  242  	if (acpi_has_method(device->handle, "_SRS"))
-^1da177e4c3f41 Linus Torvalds    2005-04-16  243  		dev->capabilities |= PNP_CONFIGURABLE;
-^1da177e4c3f41 Linus Torvalds    2005-04-16  244  	dev->capabilities |= PNP_READ;
-856608ee5e1ea3 Shaohua Li        2008-01-12  245  	if (device->flags.dynamic_status && (dev->capabilities & PNP_CONFIGURABLE))
-^1da177e4c3f41 Linus Torvalds    2005-04-16  246  		dev->capabilities |= PNP_WRITE;
-^1da177e4c3f41 Linus Torvalds    2005-04-16  247  	if (device->flags.removable)
-^1da177e4c3f41 Linus Torvalds    2005-04-16  248  		dev->capabilities |= PNP_REMOVABLE;
-0e77e2c416e8fa Zhang Rui         2013-09-03  249  	if (acpi_has_method(device->handle, "_DIS"))
-^1da177e4c3f41 Linus Torvalds    2005-04-16  250  		dev->capabilities |= PNP_DISABLE;
-^1da177e4c3f41 Linus Torvalds    2005-04-16  251  
-^1da177e4c3f41 Linus Torvalds    2005-04-16  252  	if (strlen(acpi_device_name(device)))
-^1da177e4c3f41 Linus Torvalds    2005-04-16 @253  		strncpy(dev->name, acpi_device_name(device), sizeof(dev->name));
-^1da177e4c3f41 Linus Torvalds    2005-04-16  254  	else
-^1da177e4c3f41 Linus Torvalds    2005-04-16  255  		strncpy(dev->name, acpi_device_bid(device), sizeof(dev->name));
-^1da177e4c3f41 Linus Torvalds    2005-04-16  256  
-d152cf5d0c3325 Bjorn Helgaas     2008-04-28  257  	if (dev->active)
-d152cf5d0c3325 Bjorn Helgaas     2008-04-28  258  		pnpacpi_parse_allocated_resource(dev);
-^1da177e4c3f41 Linus Torvalds    2005-04-16  259  
-d152cf5d0c3325 Bjorn Helgaas     2008-04-28  260  	if (dev->capabilities & PNP_CONFIGURABLE)
-d152cf5d0c3325 Bjorn Helgaas     2008-04-28  261  		pnpacpi_parse_resource_option_data(dev);
-^1da177e4c3f41 Linus Torvalds    2005-04-16  262  
-7f47fa6c2ff15f Bjorn Helgaas     2009-09-21  263  	list_for_each_entry(id, &device->pnp.ids, list) {
-420a0f66378c84 Dmitry Torokhov   2010-09-18  264  		if (!strcmp(id->id, pnpid))
-^1da177e4c3f41 Linus Torvalds    2005-04-16  265  			continue;
-7f47fa6c2ff15f Bjorn Helgaas     2009-09-21  266  		if (!ispnpidacpi(id->id))
-7f47fa6c2ff15f Bjorn Helgaas     2009-09-21  267  			continue;
-7f47fa6c2ff15f Bjorn Helgaas     2009-09-21  268  		pnp_add_id(dev, id->id);
-^1da177e4c3f41 Linus Torvalds    2005-04-16  269  	}
-^1da177e4c3f41 Linus Torvalds    2005-04-16  270  
-^1da177e4c3f41 Linus Torvalds    2005-04-16  271  	/* clear out the damaged flags */
-^1da177e4c3f41 Linus Torvalds    2005-04-16  272  	if (!dev->active)
-f44900020926b2 Bjorn Helgaas     2008-04-28  273  		pnp_init_resources(dev);
-249135d1a2ea3c Dmitry Torokhov   2013-12-15  274  
-249135d1a2ea3c Dmitry Torokhov   2013-12-15  275  	error = pnp_add_device(dev);
-249135d1a2ea3c Dmitry Torokhov   2013-12-15  276  	if (error) {
-249135d1a2ea3c Dmitry Torokhov   2013-12-15  277  		put_device(&dev->dev);
-249135d1a2ea3c Dmitry Torokhov   2013-12-15  278  		return error;
-249135d1a2ea3c Dmitry Torokhov   2013-12-15  279  	}
-249135d1a2ea3c Dmitry Torokhov   2013-12-15  280  
-^1da177e4c3f41 Linus Torvalds    2005-04-16  281  	num++;
-^1da177e4c3f41 Linus Torvalds    2005-04-16  282  
-2eb1eb02dda368 Rafael J. Wysocki 2015-03-13  283  	return 0;
-^1da177e4c3f41 Linus Torvalds    2005-04-16  284  }
-^1da177e4c3f41 Linus Torvalds    2005-04-16  285  
+> I would also assume the memory-hot-unplug of some sorts is not an issue,
+> (i.e., you cannot have a stale TLB entry pointing to memory that was
+> unplugged).
+>
+> I also think that there might be speculative code execution using stale
+> TLB entries that would point to memory that has been reused and perhaps
+> controllable by the user. If somehow the CPU/OS is tricked to use the
+> stale executable TLB entries early enough on kernel entry that might be
+> an issue. I guess it is probably theoretical issue, but it would be helpf=
+ul
+> to confirm.
+>
+> In general, deferring TLB flushes can be done safely. This patch, I think,
+> takes it one step forward and allows the reuse of the memory before the T=
+LB
+> flush is actually done. This is more dangerous.
+>
+> [1] https://lore.kernel.org/lkml/tip-b956575bed91ecfb136a8300742ecbbf4514=
+71ab@git.kernel.org/
 
-:::::: The code at line 253 was first introduced by commit
-:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
-
-:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
-:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
