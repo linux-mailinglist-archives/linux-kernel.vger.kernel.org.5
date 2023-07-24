@@ -2,55 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CC375E962
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA09975E9D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbjGXBy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
+        id S230262AbjGXCkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 22:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233113AbjGXBxZ (ORCPT
+        with ESMTP id S229771AbjGXCkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:53:25 -0400
+        Sun, 23 Jul 2023 22:40:07 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9473259D7;
-        Sun, 23 Jul 2023 18:44:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC1413D;
+        Sun, 23 Jul 2023 19:39:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A9E160FCD;
-        Mon, 24 Jul 2023 01:37:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04AE7C433CB;
-        Mon, 24 Jul 2023 01:37:09 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E4D2360F00;
+        Mon, 24 Jul 2023 01:24:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 725FCC433CA;
+        Mon, 24 Jul 2023 01:24:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162631;
-        bh=UJvsFIkKAOURJ83ZQboQ8+scf1xnUpxiqgB4HHDgtHw=;
+        s=k20201202; t=1690161863;
+        bh=ymCCvCYmQlg/znA9eNYVAZq5QI1ZGy4/cF3lYth5HBc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IMgtGyrlrxQCZgL3BGD2BzQlSn2/MX0BYcx05tKwyjGRcoik7kn378X3lm5bIQa28
-         Rgk2C2Z6L+SAHWabOxyYDnFqG5n14LrQ/ynksNnWNMZE8JZrgJ72/OKBmcXBnQCmBG
-         yc+4lrSLL7mWpu3mpoBNRNai0g9Ov4xCy+a3HUXv62X2pZgRxbRNYhwWOJEgdp7W1o
-         Xs+5l9IkBESulnvzUcni07RYwKLLtwSWYqpYgR3pydd6zh8OlCZ1JKnu71uGCAd8jK
-         0qUL/AJ3Qk0wQpKsb5S3jf5M7DjkSD8MoM43wVjac22S0604ssu0xm5Ht9fzbb0ZZI
-         TO5XGtqVgDpFQ==
+        b=AprypV+2XOT1s664ytNkyzUwKOrl3yqmumrJFR1UOElPzaR7ADOz5KvVx9sWKXyT8
+         ckK7Yb/taU70UQCMlVwIxWm+koY37GQswIK3O2AKSylonvd83Vo/XsCtdtEPCAJvY1
+         4uyhsAaswU6N16tpbPKth4eq50Bf2ijYoCb9HUfxzt3SGkQ0tQou4mPL4s/v10o35p
+         GSgLFN4wAThjLs8QNXSbG0m0E3CHUs2/91QWWxAfvOYR5TsXztmHUCt9jHKPEShMn0
+         FMDzdbSBQcBeMst2Hl0myZ/NJvvG2LSmV/M0wiq3ALueTNQ8AmdnhDMx8qDj48QLL0
+         pmpS0Is6NLLIQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     shanzhulig <shanzhulig@gmail.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, airlied@linux.ie,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 4.14 9/9] drm/amdgpu: Fix potential fence use-after-free v2
-Date:   Sun, 23 Jul 2023 21:35:51 -0400
-Message-Id: <20230724013554.2334965-9-sashal@kernel.org>
+Cc:     Oswald Buddenhagen <oswald.buddenhagen@gmx.de>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.10 02/22] ALSA: emu10k1: roll up loops in DSP setup code for Audigy
+Date:   Sun, 23 Jul 2023 21:23:59 -0400
+Message-Id: <20230724012419.2317649-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230724013554.2334965-1-sashal@kernel.org>
-References: <20230724013554.2334965-1-sashal@kernel.org>
+In-Reply-To: <20230724012419.2317649-1-sashal@kernel.org>
+References: <20230724012419.2317649-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.320
+X-stable-base: Linux 5.10.186
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -62,38 +59,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: shanzhulig <shanzhulig@gmail.com>
+From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 
-[ Upstream commit 2e54154b9f27262efd0cb4f903cc7d5ad1fe9628 ]
+[ Upstream commit 8cabf83c7aa54530e699be56249fb44f9505c4f3 ]
 
-fence Decrements the reference count before exiting.
-Avoid Race Vulnerabilities for fence use-after-free.
+There is no apparent reason for the massive code duplication.
 
-v2 (chk): actually fix the use after free and not just move it.
-
-Signed-off-by: shanzhulig <shanzhulig@gmail.com>
-Signed-off-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Link: https://lore.kernel.org/r/20230510173917.3073107-3-oswald.buddenhagen@gmx.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/pci/emu10k1/emufx.c | 112 +++-----------------------------------
+ 1 file changed, 9 insertions(+), 103 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-index 8a8b65b1b5a9a..7bad519aaae08 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-@@ -1343,6 +1343,9 @@ static int amdgpu_cs_wait_all_fences(struct amdgpu_device *adev,
- 			continue;
+diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+index 4e76ed0e91d5d..e17b93b25d2ff 100644
+--- a/sound/pci/emu10k1/emufx.c
++++ b/sound/pci/emu10k1/emufx.c
+@@ -1560,14 +1560,8 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 	gpr += 2;
  
- 		r = dma_fence_wait_timeout(fence, true, timeout);
-+		if (r > 0 && fence->error)
-+			r = fence->error;
-+
- 		dma_fence_put(fence);
- 		if (r < 0)
- 			return r;
+ 	/* Master volume (will be renamed later) */
+-	A_OP(icode, &ptr, iMAC0, A_GPR(playback+0+SND_EMU10K1_PLAYBACK_CHANNELS), A_C_00000000, A_GPR(gpr), A_GPR(playback+0+SND_EMU10K1_PLAYBACK_CHANNELS));
+-	A_OP(icode, &ptr, iMAC0, A_GPR(playback+1+SND_EMU10K1_PLAYBACK_CHANNELS), A_C_00000000, A_GPR(gpr), A_GPR(playback+1+SND_EMU10K1_PLAYBACK_CHANNELS));
+-	A_OP(icode, &ptr, iMAC0, A_GPR(playback+2+SND_EMU10K1_PLAYBACK_CHANNELS), A_C_00000000, A_GPR(gpr), A_GPR(playback+2+SND_EMU10K1_PLAYBACK_CHANNELS));
+-	A_OP(icode, &ptr, iMAC0, A_GPR(playback+3+SND_EMU10K1_PLAYBACK_CHANNELS), A_C_00000000, A_GPR(gpr), A_GPR(playback+3+SND_EMU10K1_PLAYBACK_CHANNELS));
+-	A_OP(icode, &ptr, iMAC0, A_GPR(playback+4+SND_EMU10K1_PLAYBACK_CHANNELS), A_C_00000000, A_GPR(gpr), A_GPR(playback+4+SND_EMU10K1_PLAYBACK_CHANNELS));
+-	A_OP(icode, &ptr, iMAC0, A_GPR(playback+5+SND_EMU10K1_PLAYBACK_CHANNELS), A_C_00000000, A_GPR(gpr), A_GPR(playback+5+SND_EMU10K1_PLAYBACK_CHANNELS));
+-	A_OP(icode, &ptr, iMAC0, A_GPR(playback+6+SND_EMU10K1_PLAYBACK_CHANNELS), A_C_00000000, A_GPR(gpr), A_GPR(playback+6+SND_EMU10K1_PLAYBACK_CHANNELS));
+-	A_OP(icode, &ptr, iMAC0, A_GPR(playback+7+SND_EMU10K1_PLAYBACK_CHANNELS), A_C_00000000, A_GPR(gpr), A_GPR(playback+7+SND_EMU10K1_PLAYBACK_CHANNELS));
++	for (z = 0; z < 8; z++)
++		A_OP(icode, &ptr, iMAC0, A_GPR(playback+z+SND_EMU10K1_PLAYBACK_CHANNELS), A_C_00000000, A_GPR(gpr), A_GPR(playback+z+SND_EMU10K1_PLAYBACK_CHANNELS));
+ 	snd_emu10k1_init_mono_control(&controls[nctl++], "Wave Master Playback Volume", gpr, 0);
+ 	gpr += 2;
+ 
+@@ -1651,102 +1645,14 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 			dev_dbg(emu->card->dev, "emufx.c: gpr=0x%x, tmp=0x%x\n",
+ 			       gpr, tmp);
+ 			*/
+-			/* For the EMU1010: How to get 32bit values from the DSP. High 16bits into L, low 16bits into R. */
+-			/* A_P16VIN(0) is delayed by one sample,
+-			 * so all other A_P16VIN channels will need to also be delayed
+-			 */
+-			/* Left ADC in. 1 of 2 */
+ 			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_P16VIN(0x0), A_FXBUS2(0) );
+-			/* Right ADC in 1 of 2 */
+-			gpr_map[gpr++] = 0x00000000;
+-			/* Delaying by one sample: instead of copying the input
+-			 * value A_P16VIN to output A_FXBUS2 as in the first channel,
+-			 * we use an auxiliary register, delaying the value by one
+-			 * sample
+-			 */
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(2) );
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x1), A_C_00000000, A_C_00000000);
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(4) );
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x2), A_C_00000000, A_C_00000000);
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(6) );
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x3), A_C_00000000, A_C_00000000);
+-			/* For 96kHz mode */
+-			/* Left ADC in. 2 of 2 */
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(0x8) );
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x4), A_C_00000000, A_C_00000000);
+-			/* Right ADC in 2 of 2 */
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(0xa) );
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x5), A_C_00000000, A_C_00000000);
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(0xc) );
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x6), A_C_00000000, A_C_00000000);
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr - 1), A_FXBUS2(0xe) );
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x7), A_C_00000000, A_C_00000000);
+-			/* Pavel Hofman - we still have voices, A_FXBUS2s, and
+-			 * A_P16VINs available -
+-			 * let's add 8 more capture channels - total of 16
+-			 */
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16(icode, &ptr, tmp,
+-								  bit_shifter16,
+-								  A_GPR(gpr - 1),
+-								  A_FXBUS2(0x10));
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x8),
+-			     A_C_00000000, A_C_00000000);
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16(icode, &ptr, tmp,
+-								  bit_shifter16,
+-								  A_GPR(gpr - 1),
+-								  A_FXBUS2(0x12));
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0x9),
+-			     A_C_00000000, A_C_00000000);
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16(icode, &ptr, tmp,
+-								  bit_shifter16,
+-								  A_GPR(gpr - 1),
+-								  A_FXBUS2(0x14));
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0xa),
+-			     A_C_00000000, A_C_00000000);
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16(icode, &ptr, tmp,
+-								  bit_shifter16,
+-								  A_GPR(gpr - 1),
+-								  A_FXBUS2(0x16));
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0xb),
+-			     A_C_00000000, A_C_00000000);
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16(icode, &ptr, tmp,
+-								  bit_shifter16,
+-								  A_GPR(gpr - 1),
+-								  A_FXBUS2(0x18));
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0xc),
+-			     A_C_00000000, A_C_00000000);
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16(icode, &ptr, tmp,
+-								  bit_shifter16,
+-								  A_GPR(gpr - 1),
+-								  A_FXBUS2(0x1a));
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0xd),
+-			     A_C_00000000, A_C_00000000);
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16(icode, &ptr, tmp,
+-								  bit_shifter16,
+-								  A_GPR(gpr - 1),
+-								  A_FXBUS2(0x1c));
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0xe),
+-			     A_C_00000000, A_C_00000000);
+-			gpr_map[gpr++] = 0x00000000;
+-			snd_emu10k1_audigy_dsp_convert_32_to_2x16(icode, &ptr, tmp,
+-								  bit_shifter16,
+-								  A_GPR(gpr - 1),
+-								  A_FXBUS2(0x1e));
+-			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 1), A_P16VIN(0xf),
+-			     A_C_00000000, A_C_00000000);
++			/* A_P16VIN(0) is delayed by one sample, so all other A_P16VIN channels
++			 * will need to also be delayed; we use an auxiliary register for that. */
++			for (z = 1; z < 0x10; z++) {
++				snd_emu10k1_audigy_dsp_convert_32_to_2x16( icode, &ptr, tmp, bit_shifter16, A_GPR(gpr), A_FXBUS2(z * 2) );
++				A_OP(icode, &ptr, iACC3, A_GPR(gpr), A_P16VIN(z), A_C_00000000, A_C_00000000);
++				gpr_map[gpr++] = 0x00000000;
++			}
+ 		}
+ 
+ #if 0
 -- 
 2.39.2
 
