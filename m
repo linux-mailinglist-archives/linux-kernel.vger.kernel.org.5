@@ -2,170 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A7175FC8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9AC75FC90
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbjGXQu7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Jul 2023 12:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42142 "EHLO
+        id S230381AbjGXQwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjGXQuz (ORCPT
+        with ESMTP id S229506AbjGXQw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:50:55 -0400
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47282D7;
-        Mon, 24 Jul 2023 09:50:54 -0700 (PDT)
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3a36b309524so3462457b6e.3;
-        Mon, 24 Jul 2023 09:50:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690217453; x=1690822253;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y7TFRM2vKH90k3Dtf6CLI36a//C1NHq5z29tE+TVuvw=;
-        b=KaRTk5xtWLXjkCrMXW1CDH2z5cNbiEiHzW13EFs2Gte5voHPahk+2Vm5Y6VYGm6Ot5
-         Ds2j2DuqYEFfOzppLTblKIPP1F7+vY7JVJoBjdEoQrueF+FIZ1bkpSVy5m79g5vTNzlq
-         qcGRUVZJg8Tyf7UupjKWxvBDa2eHlaVFx/ul5N7VuRWe4veXv1vnfGlPqIXyeiyIpUAl
-         3LRlOFIX+zRoSsMeYof35Syh8p/tqmefYfd2bYme7Ro5e051o7psTI5QvafedupY+Rct
-         C8s/nyF2hYyiGch/Ck7LGqJRN747ZPDvwThjcKE0kRMMKml/ZawD0c+bNHtaqWLJSn2u
-         hNbg==
-X-Gm-Message-State: ABy/qLa/WtwA8Q5+B9xzXyfHZEUtZy2eIuPOj2e25gJYtOxLA8P3zZ8P
-        aWyTLLkBYDJZyHrIFZFcDEvI4IjZh7qEpg==
-X-Google-Smtp-Source: APBJJlEsLcMttLlBkADBkO03dQAtpnT1oIpPaR9fWOd7vu2geFLXX9jv4YdnN7wI1KSbkCNtZfxnKw==
-X-Received: by 2002:a54:4089:0:b0:3a1:dc7e:bb39 with SMTP id i9-20020a544089000000b003a1dc7ebb39mr10783173oii.18.1690217453321;
-        Mon, 24 Jul 2023 09:50:53 -0700 (PDT)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id v14-20020a81a54e000000b005773430a57csm2870741ywg.78.2023.07.24.09.50.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 09:50:53 -0700 (PDT)
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-ca4a6e11f55so3806428276.1;
-        Mon, 24 Jul 2023 09:50:52 -0700 (PDT)
-X-Received: by 2002:a25:e0c2:0:b0:d06:e29e:9bca with SMTP id
- x185-20020a25e0c2000000b00d06e29e9bcamr6446755ybg.55.1690217452760; Mon, 24
- Jul 2023 09:50:52 -0700 (PDT)
+        Mon, 24 Jul 2023 12:52:28 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5EFE54;
+        Mon, 24 Jul 2023 09:52:27 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36OGqKo7016119;
+        Mon, 24 Jul 2023 11:52:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690217540;
+        bh=6sKluWMDVCAl9wXd9uzouBrl9+1xuYp1yE/vSDzWnJQ=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=R6/uGjH6vSOD+pMBKBfessTY5V4CLhdpFgBojU8Ipqi/F8foS2Nl3dl04wGSZugZN
+         hMvWIb4jjXH2eL8bHGGc+Lpz8GtM8khWff9+OirggKfOMfm+JwSBqPmmn8qARwiCpg
+         grL7Ww6/pt0KOIR9rgIaiVHHMUL7k0sT2AeODAgY=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36OGqKIh108650
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 Jul 2023 11:52:20 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 24
+ Jul 2023 11:52:20 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 24 Jul 2023 11:52:20 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36OGqKmN006460;
+        Mon, 24 Jul 2023 11:52:20 -0500
+Date:   Mon, 24 Jul 2023 11:52:20 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Jayesh Choudhary <j-choudhary@ti.com>
+CC:     <vigneshr@ti.com>, <afd@ti.com>,
+        <krzysztof.kozlowski+dt@linaro.org>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <conor+dt@kernel.org>, <rogerq@kernel.org>,
+        <s-vadapalli@ti.com>, <a-bhatia1@ti.com>, <r-ravikumar@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/5] arm64: dts: ti: k3-j784s4-main: Add system
+ controller and SERDES lane mux
+Message-ID: <20230724165220.kbjo7t5vthurqeuj@spokesman>
+References: <20230721132029.123881-1-j-choudhary@ti.com>
+ <20230721132029.123881-2-j-choudhary@ti.com>
 MIME-Version: 1.0
-References: <20230711072053.2837327-1-geert+renesas@glider.be>
- <CAMRc=Mef-J-WinQxphm+CU8u-PoBan1hPT2yLih4i-RFUDePBQ@mail.gmail.com> <CAMRc=MfsbngW4dor9UXX1ncyabZ=NjUFZFTarcfgOO3iMz4zgw@mail.gmail.com>
-In-Reply-To: <CAMRc=MfsbngW4dor9UXX1ncyabZ=NjUFZFTarcfgOO3iMz4zgw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 24 Jul 2023 18:50:41 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUratvH_C=EXaMxY+SDpvdRbLGPhe4qN7h_TtvHc_zWSg@mail.gmail.com>
-Message-ID: <CAMuHMdUratvH_C=EXaMxY+SDpvdRbLGPhe4qN7h_TtvHc_zWSg@mail.gmail.com>
-Subject: Re: [PATCH] gpio: mxc: Improve PM configuration
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230721132029.123881-2-j-choudhary@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bartosz,
+On 18:50-20230721, Jayesh Choudhary wrote:
+> From: Siddharth Vadapalli <s-vadapalli@ti.com>
+> 
+> The system controller node manages the CTRL_MMR0 region.
+> Add serdes_ln_ctrl node which is used for controlling the SERDES lane mux.
+> 
+> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> [j-choudhary@ti.com: Fix serdes_ln_ctrl node]
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 40 ++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> index 11f163e5cadf..5a4da4eb8d3d 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> @@ -5,6 +5,10 @@
+>   * Copyright (C) 2022 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  
+> +#include <dt-bindings/mux/mux.h>
+> +
+> +#include "k3-serdes.h"
+> +
+>  &cbass_main {
+>  	msmc_ram: sram@70000000 {
+>  		compatible = "mmio-sram";
+> @@ -26,6 +30,42 @@ l3cache-sram@200000 {
+>  		};
+>  	};
+>  
+> +	scm_conf: syscon@100000 {
+> +		compatible = "ti,j721e-system-controller", "syscon", "simple-mfd";
 
-On Thu, Jul 20, 2023 at 5:23 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> On Thu, Jul 20, 2023 at 5:17 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > On Tue, Jul 11, 2023 at 9:20 AM Geert Uytterhoeven
-> > <geert+renesas@glider.be> wrote:
-> > > If CONFIG_PM=n (e.g. m68k/allmodconfig):
-> > >
-> > >     drivers/gpio/gpio-mxc.c:612:12: error: ‘mxc_gpio_runtime_resume’ defined but not used [-Werror=unused-function]
-> > >       612 | static int mxc_gpio_runtime_resume(struct device *dev)
-> > >           |            ^~~~~~~~~~~~~~~~~~~~~~~
-> > >     drivers/gpio/gpio-mxc.c:602:12: error: ‘mxc_gpio_runtime_suspend’ defined but not used [-Werror=unused-function]
-> > >       602 | static int mxc_gpio_runtime_suspend(struct device *dev)
-> > >           |            ^~~~~~~~~~~~~~~~~~~~~~~~
-> > >
-> > > Fix this by using the non-SET *_PM_OPS to configure the dev_pm_ops
-> > > callbacks, and by wrapping the driver.pm initializer insider pm_ptr().
-> > >
-> > > As NOIRQ_SYSTEM_SLEEP_PM_OPS() uses pm_sleep_ptr() internally, the
-> > > __maybe_unused annotations for the noirq callbacks are no longer needed,
-> > > and can be removed.
-> > >
-> > > Fixes: 3283d820dce649ad ("gpio: mxc: add runtime pm support")
-> > > Reported-by: noreply@ellerman.id.au
-> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > ---
-> > >  drivers/gpio/gpio-mxc.c | 10 +++++-----
-> > >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/drivers/gpio/gpio-mxc.c b/drivers/gpio/gpio-mxc.c
-> > > index a9fb6bd9aa6f9645..a43df5d5006e62d3 100644
-> > > --- a/drivers/gpio/gpio-mxc.c
-> > > +++ b/drivers/gpio/gpio-mxc.c
-> > > @@ -623,7 +623,7 @@ static int mxc_gpio_runtime_resume(struct device *dev)
-> > >         return 0;
-> > >  }
-> > >
-> > > -static int __maybe_unused mxc_gpio_noirq_suspend(struct device *dev)
-> > > +static int mxc_gpio_noirq_suspend(struct device *dev)
-> > >  {
-> > >         struct platform_device *pdev = to_platform_device(dev);
-> > >         struct mxc_gpio_port *port = platform_get_drvdata(pdev);
-> > > @@ -634,7 +634,7 @@ static int __maybe_unused mxc_gpio_noirq_suspend(struct device *dev)
-> > >         return 0;
-> > >  }
-> > >
-> > > -static int __maybe_unused mxc_gpio_noirq_resume(struct device *dev)
-> > > +static int mxc_gpio_noirq_resume(struct device *dev)
-> > >  {
-> > >         struct platform_device *pdev = to_platform_device(dev);
-> > >         struct mxc_gpio_port *port = platform_get_drvdata(pdev);
-> > > @@ -647,8 +647,8 @@ static int __maybe_unused mxc_gpio_noirq_resume(struct device *dev)
-> > >  }
-> > >
-> > >  static const struct dev_pm_ops mxc_gpio_dev_pm_ops = {
-> > > -       SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(mxc_gpio_noirq_suspend, mxc_gpio_noirq_resume)
-> > > -       SET_RUNTIME_PM_OPS(mxc_gpio_runtime_suspend, mxc_gpio_runtime_resume, NULL)
-> > > +       NOIRQ_SYSTEM_SLEEP_PM_OPS(mxc_gpio_noirq_suspend, mxc_gpio_noirq_resume)
-> > > +       RUNTIME_PM_OPS(mxc_gpio_runtime_suspend, mxc_gpio_runtime_resume, NULL)
-> > >  };
-> > >
-> > >  static int mxc_gpio_syscore_suspend(void)
-> > > @@ -695,7 +695,7 @@ static struct platform_driver mxc_gpio_driver = {
-> > >                 .name   = "gpio-mxc",
-> > >                 .of_match_table = mxc_gpio_dt_ids,
-> > >                 .suppress_bind_attrs = true,
-> > > -               .pm = &mxc_gpio_dev_pm_ops,
-> > > +               .pm = pm_ptr(&mxc_gpio_dev_pm_ops),
-> > >         },
-> > >         .probe          = mxc_gpio_probe,
-> > >  };
-> > > --
-> > > 2.34.1
-> > >
-> >
-> > Applied, thanks!
-> >
-> > Bart
->
-> Nevermind, Arnd has a better fix for that so I'll apply his change.
+Would'nt a simple-bus work?
+https://lore.kernel.org/all/20230605205220.rjmcsi5tjn4auqa7@arose/
 
-I disagree. And my patch was first ;-)
-
-Arnd's version lacks the pm_ptr() around the mxc_gpio_driver.driver.pm
-initializer, so the compiler cannot throw out the (rather large) unused
-mxc_gpio_dev_pm_ops structure.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
+> +		reg = <0x00 0x00100000 0x00 0x1c000>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges = <0x00 0x00 0x00100000 0x1c000>;
+> +
+> +		serdes_ln_ctrl: mux-controller@4080 {
+> +			compatible = "mmio-mux";
+> +			reg = <0x00004080 0x30>;
+> +			#mux-control-cells = <1>;
+> +			mux-reg-masks = <0x4080 0x3>, <0x4084 0x3>, /* SERDES0 lane0/1 select */
+> +					<0x4088 0x3>, <0x408c 0x3>, /* SERDES0 lane2/3 select */
+> +					<0x4090 0x3>, <0x4094 0x3>, /* SERDES1 lane0/1 select */
+> +					<0x4098 0x3>, <0x409c 0x3>, /* SERDES1 lane2/3 select */
+> +					<0x40a0 0x3>, <0x40a4 0x3>, /* SERDES2 lane0/1 select */
+> +					<0x40a8 0x3>, <0x40ac 0x3>; /* SERDES2 lane2/3 select */
+> +			idle-states = <J784S4_SERDES0_LANE0_PCIE1_LANE0>,
+> +				      <J784S4_SERDES0_LANE1_PCIE1_LANE1>,
+> +				      <J784S4_SERDES0_LANE2_IP3_UNUSED>,
+> +				      <J784S4_SERDES0_LANE3_USB>,
+> +				      <J784S4_SERDES1_LANE0_PCIE0_LANE0>,
+> +				      <J784S4_SERDES1_LANE1_PCIE0_LANE1>,
+> +				      <J784S4_SERDES1_LANE2_PCIE0_LANE2>,
+> +				      <J784S4_SERDES1_LANE3_PCIE0_LANE3>,
+> +				      <J784S4_SERDES2_LANE0_IP2_UNUSED>,
+> +				      <J784S4_SERDES2_LANE1_IP2_UNUSED>,
+> +				      <J784S4_SERDES2_LANE2_QSGMII_LANE1>,
+> +				      <J784S4_SERDES2_LANE3_QSGMII_LANE2>,
+> +				      <J784S4_SERDES4_LANE0_EDP_LANE0>,
+> +				      <J784S4_SERDES4_LANE1_EDP_LANE1>,
+> +				      <J784S4_SERDES4_LANE2_EDP_LANE2>,
+> +				      <J784S4_SERDES4_LANE3_EDP_LANE3>;
+> +		};
+> +	};
+> +
+>  	gic500: interrupt-controller@1800000 {
+>  		compatible = "arm,gic-v3";
+>  		#address-cells = <2>;
+> -- 
+> 2.25.1
+> 
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
