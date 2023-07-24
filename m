@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D5A75E90E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B94975E912
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232681AbjGXBqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
+        id S232618AbjGXBq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232525AbjGXBpg (ORCPT
+        with ESMTP id S232520AbjGXBqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:45:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26D3B9;
-        Sun, 23 Jul 2023 18:39:15 -0700 (PDT)
+        Sun, 23 Jul 2023 21:46:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBC6421B;
+        Sun, 23 Jul 2023 18:39:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 85A6060F98;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CB3CE6101A;
+        Mon, 24 Jul 2023 01:34:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55ACBC433D9;
         Mon, 24 Jul 2023 01:34:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10D6CC433CC;
-        Mon, 24 Jul 2023 01:34:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162463;
-        bh=omSorsWROY2XhObA/P2khsZpOVC+P+TZxcFELmq9keA=;
+        s=k20201202; t=1690162465;
+        bh=fDu+OA0ecfybC9TkDKxJE57Fpj+CEaLgTsQsGmFD0Xg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UMeiGuXPWkB7TQ8wCqeW7F0qM8iUrDtfuHJmI+8sTyc18peBhzKrWRT7ubErmVseh
-         QqX6hpT9BlvyrHoQAQwN4+JqoxSNEAvRJTHnebvVn2FKjrmRLF/1cH/cMZwUvAX3KU
-         uJwDF4syrT3yQa7MCgC+7A98bbz42PhjqfQrzMU7N1+Uty85+1Oaxh7psGwpoVKQCU
-         MD5c+ipTwMFzNK/4cNemCDCrr2aGC9Ht66iXSuUE0jsk92GNH1ILhI5fG5qIsHZclL
-         frayJbKl2vSj53rJXVaCMgTfKQi8T4DOrvPM9WZsO5Gwz0PSZpnMXBE/oXqwT4nuf1
-         Mv4QHXfRyMYtQ==
+        b=sb9b7fvo9+//I1tZNlQBfSkj77Yat6S76iod98tSVUrSQX4vh8GfxMnD1jLcvwO0w
+         28shWw2uaqvZRYO9JNGtePX0IhnJXb4duv+M9Khvvkc8xJZqzGrYeqHNIvs3+cB9Uu
+         TTzjrX4dXBH9HQkJ8s2haDQnU4vErlzn4dxXs3VsCQceT0YxmEAVTpLz5dVALNHiJ8
+         fRhyP254PzV8d+xGOS3gQamRqoiwdgU1RzC+SspQUj3zz+3lTCq7JITHql2/WiUzzW
+         hl4wVnix2xmSziSNK4M5RDNUwAvc7XvZQXZkhEvi/xi0yQLtBtal6MaJlPRn2PuRo2
+         CgxAc8Xu4H7jw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tuo Li <islituo@gmail.com>, BassCheck <bass@buaa.edu.cn>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 15/16] ALSA: hda: fix a possible null-pointer dereference due to data race in snd_hdac_regmap_sync()
-Date:   Sun, 23 Jul 2023 21:33:59 -0400
-Message-Id: <20230724013401.2333159-15-sashal@kernel.org>
+Cc:     Rae Moar <rmoar@google.com>, kernel test robot <lkp@intel.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Sasha Levin <sashal@kernel.org>, james.l.morris@oracle.com,
+        serge@hallyn.com, linux-security-module@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 16/16] apparmor: fix use of strcpy in policy_unpack_test
+Date:   Sun, 23 Jul 2023 21:34:00 -0400
+Message-Id: <20230724013401.2333159-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013401.2333159-1-sashal@kernel.org>
 References: <20230724013401.2333159-1-sashal@kernel.org>
@@ -49,8 +50,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.186
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,59 +60,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuo Li <islituo@gmail.com>
+From: Rae Moar <rmoar@google.com>
 
-[ Upstream commit 1f4a08fed450db87fbb5ff5105354158bdbe1a22 ]
+[ Upstream commit b54aebd4411134b525a82d663a26b2f135ecb7e8 ]
 
-The variable codec->regmap is often protected by the lock
-codec->regmap_lock when is accessed. However, it is accessed without
-holding the lock when is accessed in snd_hdac_regmap_sync():
+Replace the use of strcpy() in build_aa_ext_struct() in
+policy_unpack_test.c with strscpy().
 
-  if (codec->regmap)
+strscpy() is the safer method to use to ensure the buffer does not
+overflow. This was found by kernel test robot:
+https://lore.kernel.org/all/202301040348.NbfVsXO0-lkp@intel.com/.
 
-In my opinion, this may be a harmful race, because if codec->regmap is
-set to NULL right after the condition is checked, a null-pointer
-dereference can occur in the called function regcache_sync():
+Reported-by: kernel test robot <lkp@intel.com>
 
-  map->lock(map->lock_arg); --> Line 360 in drivers/base/regmap/regcache.c
-
-To fix this possible null-pointer dereference caused by data race, the
-mutex_lock coverage is extended to protect the if statement as well as the
-function call to regcache_sync().
-
-[ Note: the lack of the regmap_lock itself is harmless for the current
-  codec driver implementations, as snd_hdac_regmap_sync() is only for
-  PM runtime resume that is prohibited during the codec probe.
-  But the change makes the whole code more consistent, so it's merged
-  as is -- tiwai ]
-
-Reported-by: BassCheck <bass@buaa.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
-Link: https://lore.kernel.org/r/20230703031016.1184711-1-islituo@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Rae Moar <rmoar@google.com>
+Signed-off-by: John Johansen <john.johansen@canonical.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/hdac_regmap.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ security/apparmor/policy_unpack_test.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/sound/hda/hdac_regmap.c b/sound/hda/hdac_regmap.c
-index d75f31eb9d78f..bf35acca5ea0e 100644
---- a/sound/hda/hdac_regmap.c
-+++ b/sound/hda/hdac_regmap.c
-@@ -597,10 +597,9 @@ EXPORT_SYMBOL_GPL(snd_hdac_regmap_update_raw_once);
-  */
- void snd_hdac_regmap_sync(struct hdac_device *codec)
- {
--	if (codec->regmap) {
--		mutex_lock(&codec->regmap_lock);
-+	mutex_lock(&codec->regmap_lock);
-+	if (codec->regmap)
- 		regcache_sync(codec->regmap);
--		mutex_unlock(&codec->regmap_lock);
--	}
-+	mutex_unlock(&codec->regmap_lock);
- }
- EXPORT_SYMBOL_GPL(snd_hdac_regmap_sync);
+diff --git a/security/apparmor/policy_unpack_test.c b/security/apparmor/policy_unpack_test.c
+index 533137f45361c..3c84981aa1f48 100644
+--- a/security/apparmor/policy_unpack_test.c
++++ b/security/apparmor/policy_unpack_test.c
+@@ -66,31 +66,30 @@ struct aa_ext *build_aa_ext_struct(struct policy_unpack_fixture *puf,
+ 
+ 	*buf = AA_NAME;
+ 	*(buf + 1) = strlen(TEST_STRING_NAME) + 1;
+-	strcpy(buf + 3, TEST_STRING_NAME);
++	strscpy(buf + 3, TEST_STRING_NAME, e->end - (void *)(buf + 3));
+ 
+ 	buf = e->start + TEST_STRING_BUF_OFFSET;
+ 	*buf = AA_STRING;
+ 	*(buf + 1) = strlen(TEST_STRING_DATA) + 1;
+-	strcpy(buf + 3, TEST_STRING_DATA);
+-
++	strscpy(buf + 3, TEST_STRING_DATA, e->end - (void *)(buf + 3));
+ 	buf = e->start + TEST_NAMED_U32_BUF_OFFSET;
+ 	*buf = AA_NAME;
+ 	*(buf + 1) = strlen(TEST_U32_NAME) + 1;
+-	strcpy(buf + 3, TEST_U32_NAME);
++	strscpy(buf + 3, TEST_U32_NAME, e->end - (void *)(buf + 3));
+ 	*(buf + 3 + strlen(TEST_U32_NAME) + 1) = AA_U32;
+ 	*((u32 *)(buf + 3 + strlen(TEST_U32_NAME) + 2)) = TEST_U32_DATA;
+ 
+ 	buf = e->start + TEST_NAMED_U64_BUF_OFFSET;
+ 	*buf = AA_NAME;
+ 	*(buf + 1) = strlen(TEST_U64_NAME) + 1;
+-	strcpy(buf + 3, TEST_U64_NAME);
++	strscpy(buf + 3, TEST_U64_NAME, e->end - (void *)(buf + 3));
+ 	*(buf + 3 + strlen(TEST_U64_NAME) + 1) = AA_U64;
+ 	*((u64 *)(buf + 3 + strlen(TEST_U64_NAME) + 2)) = TEST_U64_DATA;
+ 
+ 	buf = e->start + TEST_NAMED_BLOB_BUF_OFFSET;
+ 	*buf = AA_NAME;
+ 	*(buf + 1) = strlen(TEST_BLOB_NAME) + 1;
+-	strcpy(buf + 3, TEST_BLOB_NAME);
++	strscpy(buf + 3, TEST_BLOB_NAME, e->end - (void *)(buf + 3));
+ 	*(buf + 3 + strlen(TEST_BLOB_NAME) + 1) = AA_BLOB;
+ 	*(buf + 3 + strlen(TEST_BLOB_NAME) + 2) = TEST_BLOB_DATA_SIZE;
+ 	memcpy(buf + 3 + strlen(TEST_BLOB_NAME) + 6,
+@@ -99,7 +98,7 @@ struct aa_ext *build_aa_ext_struct(struct policy_unpack_fixture *puf,
+ 	buf = e->start + TEST_NAMED_ARRAY_BUF_OFFSET;
+ 	*buf = AA_NAME;
+ 	*(buf + 1) = strlen(TEST_ARRAY_NAME) + 1;
+-	strcpy(buf + 3, TEST_ARRAY_NAME);
++	strscpy(buf + 3, TEST_ARRAY_NAME, e->end - (void *)(buf + 3));
+ 	*(buf + 3 + strlen(TEST_ARRAY_NAME) + 1) = AA_ARRAY;
+ 	*((u16 *)(buf + 3 + strlen(TEST_ARRAY_NAME) + 2)) = TEST_ARRAY_SIZE;
+ 
 -- 
 2.39.2
 
