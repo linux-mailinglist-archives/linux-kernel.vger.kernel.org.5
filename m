@@ -2,144 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 094E27600D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD257600D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbjGXVCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43668 "EHLO
+        id S229877AbjGXVCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjGXVCA (ORCPT
+        with ESMTP id S229485AbjGXVCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:02:00 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F911E70
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:01:59 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-440ad406bc8so1225591137.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:01:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690232518; x=1690837318;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DwEv6m7WdEj0WSS/WT/tsZ81hOCgU00T3UAZ9HdZAtM=;
-        b=ZXJZqU++vguNApIwgPzo62X8jAfLDKCBIFCtO0mpcS9spwAkiHrJzjk3NqFkmjzfUJ
-         00W5rK4Im2ZLUNSjWMonuSYFVPgD8zpl6ZQdlEvys7eXO3FIpf57vu1SQFRoHiQ1qC8/
-         PnZlXRVgzntWJdt92inSsTgCxwbzn3SijHCpCqHJHrkAISuXS7tWqmyfiUDdgZ9fH17a
-         Xu+A8LW0LEpsgVEfA3+ZXDrcitcAT9LYOM0ADJfrw4tSxp7RaNbqFUwsfrQ7XFNnnuBs
-         z1dzEXCIAVkaEXj7JfwKwv521RnbBdchV5jPs7lA15JjkKx3v3d5BG0lhYYIhc1GlFAX
-         77JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690232518; x=1690837318;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DwEv6m7WdEj0WSS/WT/tsZ81hOCgU00T3UAZ9HdZAtM=;
-        b=TxvOpdxYRl2mx6gDbjCsww9J5cvq4Nair79I+r1tT5DlaEKwEGoD7VHdqoHMGdeHHA
-         4p+KcuaWuqMpNtUGpiM2HhHzs0q8hOtzi52wyhYHFLyRiadZPss3HR9NS5Q8uiMJTPqx
-         Q8OBINexmyee5u96h52KCjMjveE4QSfLnndluYaxpTYgwVgSWPXPJ0LbfTZp7ySmaLm1
-         t6FMt1H72+RBSUKQd+SRJECndRkwXjRumvZidi63oNDYt9xWy6r+sJpv7/Yi9fQRQ9FG
-         RMxhyii8w9plSryXR/G7BqhYSlRUpJXwzTv66AssD7AvitFGwsq8DVbJ/IAik9H0HS0C
-         F/HA==
-X-Gm-Message-State: ABy/qLZ/WKqoToskZd/2HgUHyVQ5KHRrcW9fpqDFnTSODBnCXv91kkEg
-        Rk/0zOYEm/OrG2GJI6hbpacTkaXejylkEWtau2tl9w==
-X-Google-Smtp-Source: APBJJlErB59jzrRIhB+T/J9RpOvQv83sc4JBVzJJ4GXRhV/iU5dwS7hKGJz9QozlSrr9AqlTgzi1XIEgW6D/7n8VTUk=
-X-Received: by 2002:a67:ef84:0:b0:443:6392:71ea with SMTP id
- r4-20020a67ef84000000b00443639271eamr2866297vsp.34.1690232518329; Mon, 24 Jul
- 2023 14:01:58 -0700 (PDT)
+        Mon, 24 Jul 2023 17:02:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62410E67;
+        Mon, 24 Jul 2023 14:02:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E827D61411;
+        Mon, 24 Jul 2023 21:02:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A62EC433D9;
+        Mon, 24 Jul 2023 21:02:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690232558;
+        bh=0+Srw7lXT1FA8YIDbGu44docy330MM50fqmGEpJ5PiY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eF880e10xh6n475OZjp5F/Po8sUNB+6EBgxnJbCsEXZK3RaXYlY+t3JoJzkMC5CUV
+         TjA2GwYkIaFbjR1iRd1y7TXm/mEDexVUie/0iU3huXUxbyhN26riJMpZt88FNvDvi9
+         Kcn4MX3KpjJRaA2BATIpZHbS0sqACpdYlP4WIwC5h6aN/paMxhVY/+7BrzUQA+21/g
+         gcyzj9jR3ZFeArfjNVuNqDSCaXTcvgFcl3deDvxjOawX9gsXagFytQPlAgnZPRDfeP
+         kYdOd5rTcMWpbV8TEl1op6AUBrzBkzavsxry0ellreSDbh0UxUKUUqvfeB8B1OIsUo
+         XRipzVZd0M7+Q==
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2b7430bda8bso70538321fa.0;
+        Mon, 24 Jul 2023 14:02:38 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZwkQSTkS3vn0blE4KPAI18RpQFkPumnouB2gfqExRwWL5NLaFP
+        BcDMSF+j57OATqZczONwoREfNyehKiNnwNu/BQ==
+X-Google-Smtp-Source: APBJJlG02/cT58K6TBy2dpTL5aTHIezcfXvz2TD3qAfXrj44uyTbqvpoDx2CALCp5CDzH8HFqOlm6YDCvEHlbpVDOSQ=
+X-Received: by 2002:a2e:924b:0:b0:2b6:e536:a2a3 with SMTP id
+ v11-20020a2e924b000000b002b6e536a2a3mr7171152ljg.19.1690232555975; Mon, 24
+ Jul 2023 14:02:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230724201247.748146-1-irogers@google.com> <20230724201247.748146-3-irogers@google.com>
-In-Reply-To: <20230724201247.748146-3-irogers@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 24 Jul 2023 14:01:46 -0700
-Message-ID: <CAKwvOdkkfkoOE7G__gJ1cQq5i2o4bauk7pqudb3vd2R7sneoYg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/4] perf parse-events: Avoid use uninitialized warning
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Carsten Haitzler <carsten.haitzler@arm.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev, maskray@google.com
+References: <20230723071105.40157-1-krzysztof.kozlowski@linaro.org>
+ <20230724162638.GA3784203-robh@kernel.org> <60e7e772-bf0a-264d-abac-4ed72766a2d0@linaro.org>
+In-Reply-To: <60e7e772-bf0a-264d-abac-4ed72766a2d0@linaro.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 24 Jul 2023 15:02:23 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLwZR_VQEAuhLLqN4BF8Yvh=3vkQe=tFHaKWzJzMMP+qw@mail.gmail.com>
+Message-ID: <CAL_JsqLwZR_VQEAuhLLqN4BF8Yvh=3vkQe=tFHaKWzJzMMP+qw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: usb: add missing unevaluatedProperties on
+ USB connector
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jagan Sridharan <badhri@google.com>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Min Guo <min.guo@mediatek.com>,
+        Gene Chen <gene_chen@richtek.com>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 1:13=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
+On Mon, Jul 24, 2023 at 11:05=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
-> With GCC LTO a potential use uninitialized is spotted:
-> ```
-> In function =E2=80=98parse_events_config_bpf=E2=80=99,
->     inlined from =E2=80=98parse_events_load_bpf=E2=80=99 at util/parse-ev=
-ents.c:874:8:
-> util/parse-events.c:792:37: error: =E2=80=98error_pos=E2=80=99 may be use=
-d uninitialized [-Werror=3Dmaybe-uninitialized]
->   792 |                                 idx =3D term->err_term + error_po=
-s;
->       |                                     ^
-> util/parse-events.c: In function =E2=80=98parse_events_load_bpf=E2=80=99:
-> util/parse-events.c:765:13: note: =E2=80=98error_pos=E2=80=99 was declare=
-d here
->   765 |         int error_pos;
->       |             ^
-> ```
-> So initialize at declaration.
-
-This common pattern in C is error prone (conditional assignment in the
-callee; callers maybe forget to initialize, then unconditionally use
-the value). Clang's static analyzer can spot these, but isn't run for
-tools/ AFAIK.
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
+> On 24/07/2023 18:26, Rob Herring wrote:
+> > On Sun, Jul 23, 2023 at 09:11:05AM +0200, Krzysztof Kozlowski wrote:
+> >> The usb-connector.yaml schema allows any additional properties, thus i=
+ts
+> >> usage should finish with unevaluatedProperties: false.
+> >
+> > Is it problematic if usb-connector.yaml is restricted?
 >
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/parse-events.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Yes, a bit.
+> 1. Missing reg/unit-address:
+> Documentation/devicetree/bindings/usb/cypress,cypd4226.yaml
+> I guess this could be easily solved.
 >
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-event=
-s.c
-> index acde097e327c..da29061ecf49 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -762,7 +762,7 @@ parse_events_config_bpf(struct parse_events_state *pa=
-rse_state,
->                         struct list_head *head_config)
->  {
->         struct parse_events_term *term;
-> -       int error_pos;
-> +       int error_pos =3D 0;
+> 2. phy-supply:
+> arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+> (and more of armada)
+> This is a bit odd:
 >
->         if (!head_config || list_empty(head_config))
->                 return 0;
-> --
-> 2.41.0.487.g6d72f3e995-goog
+> phy@18300 {
+>   compatible =3D "marvell,comphy-a3700";
+>   comphy0: phy@0 {}
+>   comphy1: phy@1 {}
+>   comphy2: phy@2 {
+>     connector {
+>       compatible =3D "usb-a-connector";
+>       phy-supply =3D <&exp_usb3_vbus>;
+>    };
+> };
 >
+> I would assume that phy-supply should be a property of the phy.
 
+Indeed. We already have vbus-supply which this looks like it is. I'm
+pretty sure I've seen Vbus in phy bindings too which I've pushed back
+on as to whether Vbus really went to the phy or was there because the
+phy driver just wants to control Vbus.
 
---=20
-Thanks,
-~Nick Desaulniers
+The marvell platforms aren't in great shape schema wise, so maybe
+don't worry about it now.
+
+Rob
