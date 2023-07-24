@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC5375E806
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF47075E80A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbjGXBhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:37:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37466 "EHLO
+        id S231893AbjGXBhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbjGXBgk (ORCPT
+        with ESMTP id S231246AbjGXBgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:36:40 -0400
+        Sun, 23 Jul 2023 21:36:47 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FCD59F9;
-        Sun, 23 Jul 2023 18:33:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58FA59FF;
+        Sun, 23 Jul 2023 18:33:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F1C1E60F66;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 87BB760F60;
+        Mon, 24 Jul 2023 01:31:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A482C433CC;
         Mon, 24 Jul 2023 01:31:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 834B3C433C9;
-        Mon, 24 Jul 2023 01:31:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162310;
-        bh=5SmmEGHfrZpuLd/DCKZNq391SJbmZqSPRMwsRqx3UYA=;
+        s=k20201202; t=1690162312;
+        bh=c981O8wuVun9esepfw++HUguwxtUWbBn3o4RYZoaNMM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UeZMw3gcdZg5SB4qZq7LxSHdQ6YXwu7pY6zK8QBP2Xg3GX2nqBDSbgwUf5v9dJmh+
-         Cn+nJRNmnnGaWlWxQdN4rJTqU6ld9HT86fFei72ZSsXqotF+JekZF2eVtqajOhADbJ
-         CdnlI06vLXPx4KlbQ2NEYV6hhz0CUOQoXfF+ChNSt9+DzqbW2v8fGoTAArMwa/+T6Z
-         C9F4q6FtJJGwi/9OTPUwr4YhDuJ6LnpKppusTvhMxBDVrIwBZKASu0/qbbRoR4igd4
-         eY+bT0gqBxGjwlmUH0ywSJPwIXBDJgs9uowBrGW4yW6/9Lvn+NCxUd/RcCBHMAlylR
-         mTIemPEtHku4A==
+        b=C9A+q5LdkO+NXl0+5BvZ+2q+oUdPuA4Lrm39oUZORFSQkBeZ+a5eg+lABeUkmUbwH
+         8nc/8m2yF5Mq8iM2qNfh96MFR80FupHTdJG3BmbZFDeyTvBgm9M/jJDmDJT1o86xfq
+         gZspXrfv6SgQ+G7SKBjFrgM7pZASoH+DJrhY2YFnc6GIbpyyESYpHuqGEBSQ1P3h02
+         nQ940ARfQxYitv2yekzhH8kNasBkY6Ss9VwDcsIlmmVcxKGCH/hbfzZcmiqXef6MjF
+         peP5K5jah0LiOBecSlYcF9HM09sSGB9FGRrV66hAD4KcYFpvUH7i9d+gPHNzyTtGWh
+         VVKeV1dXU0DRQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Avichal Rakesh <arakesh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        laurent.pinchart@ideasonboard.com, balbi@kernel.org,
-        linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 06/40] usb: gadget: uvc: queue empty isoc requests if no video buffer is available
-Date:   Sun, 23 Jul 2023 21:31:06 -0400
-Message-Id: <20230724013140.2327815-6-sashal@kernel.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, matthias.bgg@gmail.com,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.4 07/40] media: platform: mediatek: vpu: fix NULL ptr dereference
+Date:   Sun, 23 Jul 2023 21:31:07 -0400
+Message-Id: <20230724013140.2327815-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013140.2327815-1-sashal@kernel.org>
 References: <20230724013140.2327815-1-sashal@kernel.org>
@@ -61,103 +62,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Avichal Rakesh <arakesh@google.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit c3ff12a92bd7072170978b8b41c2fa41b038139a ]
+[ Upstream commit 3df55cd773e8603b623425cc97b05e542854ad27 ]
 
-ISOC transfers expect a certain cadence of requests being queued. Not
-keeping up with the expected rate of requests results in missed ISOC
-transfers (EXDEV). The application layer may or may not produce video
-frames to match this expectation, so uvc gadget driver must handle cases
-where the application is not queuing up buffers fast enough to fulfill
-ISOC requirements.
+If pdev is NULL, then it is still dereferenced.
 
-Currently, uvc gadget driver waits for new video buffer to become available
-before queuing up usb requests. With this patch the gadget driver queues up
-0 length usb requests whenever there are no video buffers available. The
-USB controller's complete callback is used as the limiter for how quickly
-the 0 length packets will be queued. Video buffers are still queued as
-soon as they become available.
+This fixes this smatch warning:
 
-Link: https://lore.kernel.org/CAMHf4WKbi6KBPQztj9FA4kPvESc1fVKrC8G73-cs6tTeQby9=w@mail.gmail.com/
-Signed-off-by: Avichal Rakesh <arakesh@google.com>
-Link: https://lore.kernel.org/r/20230508231103.1621375-1-arakesh@google.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+drivers/media/platform/mediatek/vpu/mtk_vpu.c:570 vpu_load_firmware() warn: address of NULL pointer 'pdev'
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc: Yunfei Dong <yunfei.dong@mediatek.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/uvc_video.c | 32 ++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 8 deletions(-)
+ drivers/media/platform/mediatek/vpu/mtk_vpu.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-index dd1c6b2ca7c6f..e81865978299c 100644
---- a/drivers/usb/gadget/function/uvc_video.c
-+++ b/drivers/usb/gadget/function/uvc_video.c
-@@ -386,6 +386,9 @@ static void uvcg_video_pump(struct work_struct *work)
- 	struct uvc_buffer *buf;
- 	unsigned long flags;
+diff --git a/drivers/media/platform/mediatek/vpu/mtk_vpu.c b/drivers/media/platform/mediatek/vpu/mtk_vpu.c
+index 5e2bc286f168e..1a95958a1f908 100644
+--- a/drivers/media/platform/mediatek/vpu/mtk_vpu.c
++++ b/drivers/media/platform/mediatek/vpu/mtk_vpu.c
+@@ -562,15 +562,17 @@ static int load_requested_vpu(struct mtk_vpu *vpu,
+ int vpu_load_firmware(struct platform_device *pdev)
+ {
+ 	struct mtk_vpu *vpu;
+-	struct device *dev = &pdev->dev;
++	struct device *dev;
+ 	struct vpu_run *run;
  	int ret;
-+	bool buf_int;
-+	/* video->max_payload_size is only set when using bulk transfer */
-+	bool is_bulk = video->max_payload_size;
  
- 	while (video->ep->enabled) {
- 		/*
-@@ -408,20 +411,35 @@ static void uvcg_video_pump(struct work_struct *work)
- 		 */
- 		spin_lock_irqsave(&queue->irqlock, flags);
- 		buf = uvcg_queue_head(queue);
--		if (buf == NULL) {
-+
-+		if (buf != NULL) {
-+			video->encode(req, video, buf);
-+			/* Always interrupt for the last request of a video buffer */
-+			buf_int = buf->state == UVC_BUF_STATE_DONE;
-+		} else if (!(queue->flags & UVC_QUEUE_DISCONNECTED) && !is_bulk) {
-+			/*
-+			 * No video buffer available; the queue is still connected and
-+			 * we're traferring over ISOC. Queue a 0 length request to
-+			 * prevent missed ISOC transfers.
-+			 */
-+			req->length = 0;
-+			buf_int = false;
-+		} else {
-+			/*
-+			 * Either queue has been disconnected or no video buffer
-+			 * available to bulk transfer. Either way, stop processing
-+			 * further.
-+			 */
- 			spin_unlock_irqrestore(&queue->irqlock, flags);
- 			break;
- 		}
- 
--		video->encode(req, video, buf);
--
- 		/*
- 		 * With usb3 we have more requests. This will decrease the
- 		 * interrupt load to a quarter but also catches the corner
- 		 * cases, which needs to be handled.
- 		 */
--		if (list_empty(&video->req_free) ||
--		    buf->state == UVC_BUF_STATE_DONE ||
-+		if (list_empty(&video->req_free) || buf_int ||
- 		    !(video->req_int_count %
- 		       DIV_ROUND_UP(video->uvc_num_requests, 4))) {
- 			video->req_int_count = 0;
-@@ -441,8 +459,7 @@ static void uvcg_video_pump(struct work_struct *work)
- 
- 		/* Endpoint now owns the request */
- 		req = NULL;
--		if (buf->state != UVC_BUF_STATE_DONE)
--			video->req_int_count++;
-+		video->req_int_count++;
+ 	if (!pdev) {
+-		dev_err(dev, "VPU platform device is invalid\n");
++		pr_err("VPU platform device is invalid\n");
+ 		return -EINVAL;
  	}
  
- 	if (!req)
-@@ -527,4 +544,3 @@ int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
- 			V4L2_BUF_TYPE_VIDEO_OUTPUT, &video->mutex);
- 	return 0;
- }
--
++	dev = &pdev->dev;
++
+ 	vpu = platform_get_drvdata(pdev);
+ 	run = &vpu->run;
+ 
 -- 
 2.39.2
 
