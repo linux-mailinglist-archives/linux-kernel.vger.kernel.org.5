@@ -2,375 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC8475F563
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2107A75F533
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbjGXLqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 07:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
+        id S229591AbjGXLfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 07:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbjGXLqk (ORCPT
+        with ESMTP id S230051AbjGXLe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:46:40 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C15E5C
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:46:30 -0700 (PDT)
+        Mon, 24 Jul 2023 07:34:58 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465ADE77
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 04:34:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690199190; x=1721735190;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PxaN+6W271Cyw9sPYyy9VqsWusr4rxCuxxEhtCzeMqo=;
-  b=IIDEzd5PHWqQ0vs6PIli1+mmpz8fjRCne2jWwEBrGua9ZzGTh21fQLeH
-   0rcmeqBpnWmjjmFnBt7/Ubrb5Srv/LXJQ9p40A/+M0DYgmm6Svu/bAGyn
-   MsZYWVlWPAgsAIeTrQI6vxS7bp/3TmFJ9b9wRmOOQ4SqByRJYVvkl/uDc
-   z+nhCsvMcj8Y2sHbcIzDz/xq0ozXmTJO3ipLEc6so2pQrjRnrBDYzTjMG
-   xEBBrSrDDpVfELzCYYbrASSSAYm+m8iUm9Iy4jo3vyVl1crw+IwdQyW/V
-   L0AHdBAkTTgE00fJyMwBot8PdkLJy8n7e7YZCjWrvT6pX2JC9Vudy7f05
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="398322254"
+  t=1690198478; x=1721734478;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Y44xlJ8tDP9ORhfkWkFI860EGN+2lysyuKBMEUHzYzo=;
+  b=dgHx3wvSRq1Z8T3IVGBApsZoqc7wqWun7Y1OxzRA4dcTT4y4w5t7vKXM
+   d+dqbluIxvBxad/pUcWCwHxVIQuQOzkgV8VYlsjxs3Pcb7i7S4z7qUztE
+   7OGu+kHsmTn86sUK7ZghoaUpBz8Ync6e6YNKmcG+Ot6/+7Nr4Hp2VNmqX
+   z+T3hCPFftlOni69grLfvfPcxMkOPmGqG3McNBvLx3tguY7i7B3b/eKhm
+   KOYRu8LI5Dug5UZhR3iUhlPitfKh5soR6/Utuqei44Xdpw4AOcF15n6Yo
+   nthPXCCOEZjHHvjcXPbv5f+hHBXyHVBtL6TXk/wtNpx0AnZe8FFUg/Z02
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="347696234"
 X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="398322254"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 04:46:29 -0700
+   d="scan'208";a="347696234"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 04:33:44 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="760761966"
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="719649110"
 X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="760761966"
-Received: from sosterlu-mobl.ger.corp.intel.com (HELO [10.249.37.56]) ([10.249.37.56])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 04:46:25 -0700
-Message-ID: <03d5abcd-53a6-bf61-227e-d608c5fbfe70@linux.intel.com>
-Date:   Mon, 24 Jul 2023 13:32:02 +0200
+   d="scan'208";a="719649110"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 24 Jul 2023 04:33:42 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qNtoi-0009hm-1M;
+        Mon, 24 Jul 2023 11:33:34 +0000
+Date:   Mon, 24 Jul 2023 19:32:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sunil V L <sunilvl@ventanamicro.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: drivers/pnp/pnpacpi/core.c:253:17: warning: 'strncpy' specified
+ bound 50 equals destination size
+Message-ID: <202307241942.Rff2Nri5-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v2 8/9] ASoC: SOF: Intel: Remove deferred probe for SOF
-Content-Language: en-US
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Matthew Auld <matthew.auld@intel.com>
-References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
- <20230719164141.228073-9-maarten.lankhorst@linux.intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230719164141.228073-9-maarten.lankhorst@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6eaae198076080886b9e7d57f4ae06fa782f90ef
+commit: a91a9ffbd3a55a0ae1bb75e2b6e85b2a03f64e8f RISC-V: Add support to build the ACPI core
+date:   8 weeks ago
+config: riscv-randconfig-r032-20230724 (https://download.01.org/0day-ci/archive/20230724/202307241942.Rff2Nri5-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230724/202307241942.Rff2Nri5-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307241942.Rff2Nri5-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/pnp/pnpacpi/core.c: In function 'pnpacpi_add_device.isra':
+>> drivers/pnp/pnpacpi/core.c:253:17: warning: 'strncpy' specified bound 50 equals destination size [-Wstringop-truncation]
+     253 |                 strncpy(dev->name, acpi_device_name(device), sizeof(dev->name));
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-On 7/19/23 18:41, Maarten Lankhorst wrote:
-> This was only used to allow modprobing i915, by converting to the
-> -EPROBE_DEFER mechanism, it can be completely removed, and is in
-> fact counterproductive since -EPROBE_DEFER otherwise won't be
-> handled correctly.
+vim +/strncpy +253 drivers/pnp/pnpacpi/core.c
 
-I personally remember only that the request_module("i915") was the main
-motivation for the use of the workqueue, but when it comes to the
-HDaudio codec management we don't even know what we don't know.
+420a0f66378c84 Dmitry Torokhov   2010-09-18  208  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  209  static int __init pnpacpi_add_device(struct acpi_device *device)
+^1da177e4c3f41 Linus Torvalds    2005-04-16  210  {
+^1da177e4c3f41 Linus Torvalds    2005-04-16  211  	struct pnp_dev *dev;
+844142c3f80c66 Rasmus Villemoes  2015-09-09  212  	const char *pnpid;
+7f47fa6c2ff15f Bjorn Helgaas     2009-09-21  213  	struct acpi_hardware_id *id;
+249135d1a2ea3c Dmitry Torokhov   2013-12-15  214  	int error;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  215  
+2905875344f977 Adrian Hunter     2012-11-23  216  	/* Skip devices that are already bound */
+2905875344f977 Adrian Hunter     2012-11-23  217  	if (device->physical_node_count)
+2905875344f977 Adrian Hunter     2012-11-23  218  		return 0;
+2905875344f977 Adrian Hunter     2012-11-23  219  
+39a0ad871000d2 Zhao Yakui        2008-08-11  220  	/*
+39a0ad871000d2 Zhao Yakui        2008-08-11  221  	 * If a PnPacpi device is not present , the device
+39a0ad871000d2 Zhao Yakui        2008-08-11  222  	 * driver should not be loaded.
+39a0ad871000d2 Zhao Yakui        2008-08-11  223  	 */
+0e77e2c416e8fa Zhang Rui         2013-09-03  224  	if (!acpi_has_method(device->handle, "_CRS"))
+420a0f66378c84 Dmitry Torokhov   2010-09-18  225  		return 0;
+420a0f66378c84 Dmitry Torokhov   2010-09-18  226  
+420a0f66378c84 Dmitry Torokhov   2010-09-18  227  	pnpid = pnpacpi_get_id(device);
+420a0f66378c84 Dmitry Torokhov   2010-09-18  228  	if (!pnpid)
+420a0f66378c84 Dmitry Torokhov   2010-09-18  229  		return 0;
+420a0f66378c84 Dmitry Torokhov   2010-09-18  230  
+eec15edbb0e144 Zhang Rui         2014-05-30  231  	if (!device->status.present)
+^1da177e4c3f41 Linus Torvalds    2005-04-16  232  		return 0;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  233  
+420a0f66378c84 Dmitry Torokhov   2010-09-18  234  	dev = pnp_alloc_dev(&pnpacpi_protocol, num, pnpid);
+bda1e4e5a3d976 Bjorn Helgaas     2008-04-28  235  	if (!dev)
+^1da177e4c3f41 Linus Torvalds    2005-04-16  236  		return -ENOMEM;
+bda1e4e5a3d976 Bjorn Helgaas     2008-04-28  237  
+2eb1eb02dda368 Rafael J. Wysocki 2015-03-13  238  	ACPI_COMPANION_SET(&dev->dev, device);
+c4da6940a7a41c Bjorn Helgaas     2009-11-17  239  	dev->data = device;
+07d4e9af109221 Bjorn Helgaas     2007-07-26  240  	/* .enabled means the device can decode the resources */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  241  	dev->active = device->status.enabled;
+0e77e2c416e8fa Zhang Rui         2013-09-03  242  	if (acpi_has_method(device->handle, "_SRS"))
+^1da177e4c3f41 Linus Torvalds    2005-04-16  243  		dev->capabilities |= PNP_CONFIGURABLE;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  244  	dev->capabilities |= PNP_READ;
+856608ee5e1ea3 Shaohua Li        2008-01-12  245  	if (device->flags.dynamic_status && (dev->capabilities & PNP_CONFIGURABLE))
+^1da177e4c3f41 Linus Torvalds    2005-04-16  246  		dev->capabilities |= PNP_WRITE;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  247  	if (device->flags.removable)
+^1da177e4c3f41 Linus Torvalds    2005-04-16  248  		dev->capabilities |= PNP_REMOVABLE;
+0e77e2c416e8fa Zhang Rui         2013-09-03  249  	if (acpi_has_method(device->handle, "_DIS"))
+^1da177e4c3f41 Linus Torvalds    2005-04-16  250  		dev->capabilities |= PNP_DISABLE;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  251  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  252  	if (strlen(acpi_device_name(device)))
+^1da177e4c3f41 Linus Torvalds    2005-04-16 @253  		strncpy(dev->name, acpi_device_name(device), sizeof(dev->name));
+^1da177e4c3f41 Linus Torvalds    2005-04-16  254  	else
+^1da177e4c3f41 Linus Torvalds    2005-04-16  255  		strncpy(dev->name, acpi_device_bid(device), sizeof(dev->name));
+^1da177e4c3f41 Linus Torvalds    2005-04-16  256  
+d152cf5d0c3325 Bjorn Helgaas     2008-04-28  257  	if (dev->active)
+d152cf5d0c3325 Bjorn Helgaas     2008-04-28  258  		pnpacpi_parse_allocated_resource(dev);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  259  
+d152cf5d0c3325 Bjorn Helgaas     2008-04-28  260  	if (dev->capabilities & PNP_CONFIGURABLE)
+d152cf5d0c3325 Bjorn Helgaas     2008-04-28  261  		pnpacpi_parse_resource_option_data(dev);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  262  
+7f47fa6c2ff15f Bjorn Helgaas     2009-09-21  263  	list_for_each_entry(id, &device->pnp.ids, list) {
+420a0f66378c84 Dmitry Torokhov   2010-09-18  264  		if (!strcmp(id->id, pnpid))
+^1da177e4c3f41 Linus Torvalds    2005-04-16  265  			continue;
+7f47fa6c2ff15f Bjorn Helgaas     2009-09-21  266  		if (!ispnpidacpi(id->id))
+7f47fa6c2ff15f Bjorn Helgaas     2009-09-21  267  			continue;
+7f47fa6c2ff15f Bjorn Helgaas     2009-09-21  268  		pnp_add_id(dev, id->id);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  269  	}
+^1da177e4c3f41 Linus Torvalds    2005-04-16  270  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  271  	/* clear out the damaged flags */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  272  	if (!dev->active)
+f44900020926b2 Bjorn Helgaas     2008-04-28  273  		pnp_init_resources(dev);
+249135d1a2ea3c Dmitry Torokhov   2013-12-15  274  
+249135d1a2ea3c Dmitry Torokhov   2013-12-15  275  	error = pnp_add_device(dev);
+249135d1a2ea3c Dmitry Torokhov   2013-12-15  276  	if (error) {
+249135d1a2ea3c Dmitry Torokhov   2013-12-15  277  		put_device(&dev->dev);
+249135d1a2ea3c Dmitry Torokhov   2013-12-15  278  		return error;
+249135d1a2ea3c Dmitry Torokhov   2013-12-15  279  	}
+249135d1a2ea3c Dmitry Torokhov   2013-12-15  280  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  281  	num++;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  282  
+2eb1eb02dda368 Rafael J. Wysocki 2015-03-13  283  	return 0;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  284  }
+^1da177e4c3f41 Linus Torvalds    2005-04-16  285  
 
-I am a bit worried that the snd-hda-intel driver keeps the workqueue for
-HDaudio codec initialization, and this patch removes the workqueue
-completely for SOF. That doesn't seem right. Either both drivers need a
-workqueue or none need a workqueue.
+:::::: The code at line 253 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
 
-Maybe what we need is to move the i915/xe initialization out of the
-workqueue, and see in a second pass if that workqueue can be safely
-removed from the SOF driver?
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
 
-
-> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Acked-by: Matthew Auld <matthew.auld@intel.com>
-> Acked-by: Mark Brown <broonie@kernel.org>
-> ---
->  sound/soc/sof/Kconfig           | 19 -----------------
->  sound/soc/sof/core.c            | 38 ++-------------------------------
->  sound/soc/sof/intel/Kconfig     |  1 -
->  sound/soc/sof/intel/hda-codec.c |  2 +-
->  sound/soc/sof/intel/hda.c       | 32 ++++++++++++++++-----------
->  sound/soc/sof/sof-pci-dev.c     |  3 +--
->  sound/soc/sof/sof-priv.h        |  5 -----
->  7 files changed, 23 insertions(+), 77 deletions(-)
-> 
-> diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-> index 80361139a49ad..8ee39e5558062 100644
-> --- a/sound/soc/sof/Kconfig
-> +++ b/sound/soc/sof/Kconfig
-> @@ -82,17 +82,6 @@ config SND_SOC_SOF_DEVELOPER_SUPPORT
->  
->  if SND_SOC_SOF_DEVELOPER_SUPPORT
->  
-> -config SND_SOC_SOF_FORCE_PROBE_WORKQUEUE
-> -	bool "SOF force probe workqueue"
-> -	select SND_SOC_SOF_PROBE_WORK_QUEUE
-> -	help
-> -	  This option forces the use of a probe workqueue, which is only used
-> -	  when HDaudio is enabled due to module dependencies. Forcing this
-> -	  option is intended for debug only, but this should not add any
-> -	  functional issues in nominal cases.
-> -	  Say Y if you are involved in SOF development and need this option.
-> -	  If not, select N.
-> -
->  config SND_SOC_SOF_NOCODEC
->  	tristate
->  
-> @@ -271,14 +260,6 @@ config SND_SOC_SOF
->  	  module dependencies but since the module or built-in type is decided
->  	  at the top level it doesn't matter.
->  
-> -config SND_SOC_SOF_PROBE_WORK_QUEUE
-> -	bool
-> -	help
-> -	  This option is not user-selectable but automagically handled by
-> -	  'select' statements at a higher level.
-> -	  When selected, the probe is handled in two steps, for example to
-> -	  avoid lockdeps if request_module is used in the probe.
-> -
->  # Supported IPC versions
->  config SND_SOC_SOF_IPC3
->  	bool
-> diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-> index 30db685cc5f4b..cdf86dc4a8a87 100644
-> --- a/sound/soc/sof/core.c
-> +++ b/sound/soc/sof/core.c
-> @@ -191,7 +191,8 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
->  	/* probe the DSP hardware */
->  	ret = snd_sof_probe(sdev);
->  	if (ret < 0) {
-> -		dev_err(sdev->dev, "error: failed to probe DSP %d\n", ret);
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(sdev->dev, "error: failed to probe DSP %d\n", ret);
->  		goto probe_err;
->  	}
->  
-> @@ -309,8 +310,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
->  	if (plat_data->sof_probe_complete)
->  		plat_data->sof_probe_complete(sdev->dev);
->  
-> -	sdev->probe_completed = true;
-> -
->  	return 0;
->  
->  sof_machine_err:
-> @@ -336,19 +335,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
->  	return ret;
->  }
->  
-> -static void sof_probe_work(struct work_struct *work)
-> -{
-> -	struct snd_sof_dev *sdev =
-> -		container_of(work, struct snd_sof_dev, probe_work);
-> -	int ret;
-> -
-> -	ret = sof_probe_continue(sdev);
-> -	if (ret < 0) {
-> -		/* errors cannot be propagated, log */
-> -		dev_err(sdev->dev, "error: %s failed err: %d\n", __func__, ret);
-> -	}
-> -}
-> -
->  int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
->  {
->  	struct snd_sof_dev *sdev;
-> @@ -436,33 +422,16 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
->  
->  	sof_set_fw_state(sdev, SOF_FW_BOOT_NOT_STARTED);
->  
-> -	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)) {
-> -		INIT_WORK(&sdev->probe_work, sof_probe_work);
-> -		schedule_work(&sdev->probe_work);
-> -		return 0;
-> -	}
-> -
->  	return sof_probe_continue(sdev);
->  }
->  EXPORT_SYMBOL(snd_sof_device_probe);
->  
-> -bool snd_sof_device_probe_completed(struct device *dev)
-> -{
-> -	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-> -
-> -	return sdev->probe_completed;
-> -}
-> -EXPORT_SYMBOL(snd_sof_device_probe_completed);
-> -
->  int snd_sof_device_remove(struct device *dev)
->  {
->  	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
->  	struct snd_sof_pdata *pdata = sdev->pdata;
->  	int ret;
->  
-> -	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
-> -		cancel_work_sync(&sdev->probe_work);
-> -
->  	/*
->  	 * Unregister any registered client device first before IPC and debugfs
->  	 * to allow client drivers to be removed cleanly
-> @@ -501,9 +470,6 @@ int snd_sof_device_shutdown(struct device *dev)
->  {
->  	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
->  
-> -	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
-> -		cancel_work_sync(&sdev->probe_work);
-> -
->  	if (sdev->fw_state == SOF_FW_BOOT_COMPLETE) {
->  		sof_fw_trace_free(sdev);
->  		return snd_sof_shutdown(sdev);
-> diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-> index 69c1a370d3b61..d9e87a91670a3 100644
-> --- a/sound/soc/sof/intel/Kconfig
-> +++ b/sound/soc/sof/intel/Kconfig
-> @@ -293,7 +293,6 @@ config SND_SOC_SOF_HDA_LINK
->  config SND_SOC_SOF_HDA_AUDIO_CODEC
->  	bool "SOF support for HDAudio codecs"
->  	depends on SND_SOC_SOF_HDA_LINK
-> -	select SND_SOC_SOF_PROBE_WORK_QUEUE
->  	help
->  	  This adds support for HDAudio codecs with Sound Open Firmware
->  	  for Intel(R) platforms.
-> diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-> index f1fd5b44aaac9..344b61576c0e3 100644
-> --- a/sound/soc/sof/intel/hda-codec.c
-> +++ b/sound/soc/sof/intel/hda-codec.c
-> @@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
->  		return 0;
->  
->  	/* i915 exposes a HDA codec for HDMI audio */
-> -	ret = snd_hdac_i915_init(bus, true);
-> +	ret = snd_hdac_i915_init(bus, false);
->  	if (ret < 0)
->  		return ret;
->  
-> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-> index 64bebe1a72bbc..a8b7a68142c05 100644
-> --- a/sound/soc/sof/intel/hda.c
-> +++ b/sound/soc/sof/intel/hda.c
-> @@ -801,8 +801,11 @@ static int hda_init(struct snd_sof_dev *sdev)
->  
->  	/* init i915 and HDMI codecs */
->  	ret = hda_codec_i915_init(sdev);
-> -	if (ret < 0)
-> -		dev_warn(sdev->dev, "init of i915 and HDMI codec failed\n");
-> +	if (ret < 0) {
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_warn(sdev->dev, "init of i915 and HDMI codec failed: %i\n", ret);
-> +		return ret;
-> +	}
->  
->  	/* get controller capabilities */
->  	ret = hda_dsp_ctrl_get_caps(sdev);
-> @@ -1115,14 +1118,6 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
->  	sdev->pdata->hw_pdata = hdev;
->  	hdev->desc = chip;
->  
-> -	hdev->dmic_dev = platform_device_register_data(sdev->dev, "dmic-codec",
-> -						       PLATFORM_DEVID_NONE,
-> -						       NULL, 0);
-> -	if (IS_ERR(hdev->dmic_dev)) {
-> -		dev_err(sdev->dev, "error: failed to create DMIC device\n");
-> -		return PTR_ERR(hdev->dmic_dev);
-> -	}
-> -
->  	/*
->  	 * use position update IPC if either it is forced
->  	 * or we don't have other choice
-> @@ -1142,6 +1137,15 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
->  	if (ret < 0)
->  		goto hdac_bus_unmap;
->  
-> +	hdev->dmic_dev = platform_device_register_data(sdev->dev, "dmic-codec",
-> +						       PLATFORM_DEVID_NONE,
-> +						       NULL, 0);
-> +	if (IS_ERR(hdev->dmic_dev)) {
-> +		dev_err(sdev->dev, "error: failed to create DMIC device\n");
-> +		ret = PTR_ERR(hdev->dmic_dev);
-> +		goto hdac_exit;
-> +	}
-> +
-
-I am not following why we have to move dmic-related code, can we try to
-move this in a separate patch?
-
->  	if (sdev->dspless_mode_selected)
->  		goto skip_dsp_setup;
->  
-> @@ -1150,7 +1154,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
->  	if (!sdev->bar[HDA_DSP_BAR]) {
->  		dev_err(sdev->dev, "error: ioremap error\n");
->  		ret = -ENXIO;
-> -		goto hdac_bus_unmap;
-> +		goto platform_unreg;
->  	}
->  
->  	sdev->mmio_bar = HDA_DSP_BAR;
-> @@ -1248,10 +1252,12 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
->  /* dsp_unmap: not currently used */
->  	if (!sdev->dspless_mode_selected)
->  		iounmap(sdev->bar[HDA_DSP_BAR]);
-> -hdac_bus_unmap:
-> +platform_unreg:
->  	platform_device_unregister(hdev->dmic_dev);
-> -	iounmap(bus->remap_addr);
-> +hdac_exit:
->  	hda_codec_i915_exit(sdev);
-> +hdac_bus_unmap:
-> +	iounmap(bus->remap_addr);
->  err:
->  	return ret;
->  }
-> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-> index f5ece43d0ec24..0fa424613082e 100644
-> --- a/sound/soc/sof/sof-pci-dev.c
-> +++ b/sound/soc/sof/sof-pci-dev.c
-> @@ -339,8 +339,7 @@ void sof_pci_remove(struct pci_dev *pci)
->  	snd_sof_device_remove(&pci->dev);
->  
->  	/* follow recommendation in pci-driver.c to increment usage counter */
-> -	if (snd_sof_device_probe_completed(&pci->dev) &&
-> -	    !(sof_pci_debug & SOF_PCI_DISABLE_PM_RUNTIME))
-> +	if (!(sof_pci_debug & SOF_PCI_DISABLE_PM_RUNTIME))
->  		pm_runtime_get_noresume(&pci->dev);
->  
->  	/* release pci regions and disable device */
-> diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-> index d4f6702e93dcb..71db636cfdccc 100644
-> --- a/sound/soc/sof/sof-priv.h
-> +++ b/sound/soc/sof/sof-priv.h
-> @@ -564,10 +564,6 @@ struct snd_sof_dev {
->  	enum sof_fw_state fw_state;
->  	bool first_boot;
->  
-> -	/* work queue in case the probe is implemented in two steps */
-> -	struct work_struct probe_work;
-> -	bool probe_completed;
-> -
->  	/* DSP HW differentiation */
->  	struct snd_sof_pdata *pdata;
->  
-> @@ -675,7 +671,6 @@ struct snd_sof_dev {
->  int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data);
->  int snd_sof_device_remove(struct device *dev);
->  int snd_sof_device_shutdown(struct device *dev);
-> -bool snd_sof_device_probe_completed(struct device *dev);
->  
->  int snd_sof_runtime_suspend(struct device *dev);
->  int snd_sof_runtime_resume(struct device *dev);
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
