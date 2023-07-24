@@ -2,202 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A257B75FFEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0022C75FFF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbjGXTqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 15:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45068 "EHLO
+        id S230372AbjGXTra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 15:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjGXTqd (ORCPT
+        with ESMTP id S229562AbjGXTr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 15:46:33 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2121.outbound.protection.outlook.com [40.107.244.121])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7431713;
-        Mon, 24 Jul 2023 12:46:32 -0700 (PDT)
+        Mon, 24 Jul 2023 15:47:28 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2052.outbound.protection.outlook.com [40.107.244.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028291712;
+        Mon, 24 Jul 2023 12:47:27 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TVICpvZcmj2MbCS7AQBzUwzDsWAEw7GsWGR7ro6XCJePAv8bxIJKfk/ErEHRFNf8abnzO8CrCa7z0T8SHWJy6l+Ri0VHvu9slMzu8jLE3amqz1K0w+5uoWjO+SL2MQb4JpaLHyuSNz3LCBlZAufaYO72SY3FhBRCPpMnBs5Zc/q/srkUI7AdeIhAxFQNKDDTdTiviF9VxgIxiS58yBXZas7E3e0F+PLvD3vEcdDELQp41O3K6dy55GWnownL7jFAIN6bwa0pnUkWHzAeJ++UjnSNOYTk6E0Hg92GzsFZXTySFu+f3Vv8zm3z6PvSVnXfwPWVFd9auPIDBPsY/IUauA==
+ b=XGCl7SKwAgJA97FEnSkWOF1J5Itjeg0bRnzs44uzwBio2b6pyknnBRsugpD4g1YG4m5AlfxVYO2bsd3U2g3t2cXFgLoBD/ob91UMbaRjoz77GQBQ0ZwJreqgP7i+s7RKvBwa53BfqHMtwn9GOsfOQSXUgqRMd+WkCEpHVB5hgIgWWWd/Il1A5HkCDr/KnaJJdUJEKrPIkA5KBwNCX3ZCqIWz5iny4uME+NEUXVnHkpvCkhVUWNottSuC0dOzSPze3zOMS4n+JpbezBX/uU5Hn2Tehcn9wBZ17ZdUsrK7axEYbYKli7QoGF2Rf4U3sQdHeJBXtumkIeM0se2S0e2lgg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VfS/ZDrzUrHe0auivOJhoq6S/6ESI5rnuNdiwU/HgtQ=;
- b=OXZZ7ScsA4Yis3/N4u3YyJpCgP6jUIaqTVJLkRJjSh5HwuDqdoo4NWH0m9iK0WmFDtpAycC5VRHcokzCI9plsP4q0KfZ7RUwdmvAHqVJNb3XpUe3hBdFsuCfkNklD51CY9wdDmTYFpgMh0/nucPjDXGY3w1sT5qr//p8XD9+mfFfuvTyH4XVREKMJSc3xPyqAd1QzP7MG+6k66WfJt5huMmdw3CGn0KQIe1Wc4A32yTU7F8xPTYDt/jllzSqK4EqUEyIPid9L0tBLyn/AoVMDLShrs8x6poFKWohBbtU5bUvWMj75Co6Xw989AeCXUXYs/Rjo4QECk7v1CeoWJrkQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ bh=E69jBX40xfsE3F9QodggaYDMwtFNYjmiaZdzWf/g268=;
+ b=lifE7hbp7gyZwlOwNXqvvYcogHpyu4Rhlt1fSrC2wXV5BxP3mQzxhUzc5VngusyFQwxnql6iriqI9BEvR5VzDj7wF9HUeCoyVtYuQ0EcO/CAExN/UxS8rMXn3D5w6aif12meahO+Z9R9glYsdp3xyxgTgQO5BxwV5eRTFh0k/VdnPT0Ji8P6s/tHxf78QHoYblWf5z0iN3Uc//lgcdNvJimFMxETkx+NKldCtR18629Cx5n9JvR9hETF9Gx3sm/i9XSwIn/wo6LyeeJQ9SSshsRHx3F7eb1O/aqbJ3qumuD2YsrMY1xeGXm30Xeu4kjXGon/ryXB70Jgmhn1f9FheQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VfS/ZDrzUrHe0auivOJhoq6S/6ESI5rnuNdiwU/HgtQ=;
- b=GmvxgB5sElQCCAkTaCh6FYqNV/i5/q2SXum/IePLH4NzU++wVI1GXDz49S98kF+mBvyKcEghuRPZZ0snhaA9P0HJ+1od4s+Wqn/2I+Uoxh5a0AITkmOjx0qUFwRKznZp0ZX7xwf+uAsSTjWddIU1pMlc2VBNLEsdhdVyhD8VsR4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by DM8PR13MB5222.namprd13.prod.outlook.com (2603:10b6:8:9::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6609.32; Mon, 24 Jul 2023 19:46:29 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.032; Mon, 24 Jul 2023
- 19:46:29 +0000
-Date:   Mon, 24 Jul 2023 21:46:19 +0200
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Bob Gilligan <gilligan@arista.com>,
-        Dan Carpenter <error27@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Donald Cassidy <dcassidy@redhat.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        "Gaillardetz, Dominik" <dgaillar@ciena.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Ivan Delalande <colona@arista.com>,
-        Leonard Crestez <cdleonard@gmail.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        "Tetreault, Francois" <ftetreau@ciena.com>, netdev@vger.kernel.org,
-        Steen Hegelund <Steen.Hegelund@microchip.com>
-Subject: Re: [PATCH v8.1 net-next 01/23] net/tcp: Prepare tcp_md5sig_pool for
- TCP-AO
-Message-ID: <ZL7VCxdVCrOti72U@corigine.com>
-References: <20230721161916.542667-1-dima@arista.com>
- <20230721161916.542667-2-dima@arista.com>
- <ZL54mOdTzX5Z9Fji@corigine.com>
- <db7bc3ce-dea0-9abe-9b06-300c10c37759@arista.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <db7bc3ce-dea0-9abe-9b06-300c10c37759@arista.com>
-X-ClientProxiedBy: AM0PR02CA0163.eurprd02.prod.outlook.com
- (2603:10a6:20b:28d::30) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+ bh=E69jBX40xfsE3F9QodggaYDMwtFNYjmiaZdzWf/g268=;
+ b=kDX9IskRZSBmWFoAGfi+AxcQjwP4IYjc47zY01wMBcumyzcrGNAepA3KGVUMiIp8pMszYG0eA0HUv1f8vIah0BdZ/XkE2AwgqqArl5U6Th1RLJe/QPIVE8Tx+btXfQAod1sxj5/TlPwuO0vXZiEmeJrvuiQmOkXDiRXa62KuRb7o6UNp5HssGUy+/JfWsQzFgirxo6xwlzRAiMtxCyO9GaYizzUY7XB3195T3F4O8BXcMsSJJRyc6mZkauQR3voIULZXtNVh3lKKpJjqlcHdLGm4ZOeFE1Nu2Gl6j6J+oFtYpkWSIpnwE7vXy48ZGtA89C7IUSAU5vBYUUQedlWFzw==
+Received: from BYAPR07CA0088.namprd07.prod.outlook.com (2603:10b6:a03:12b::29)
+ by PH7PR12MB6812.namprd12.prod.outlook.com (2603:10b6:510:1b6::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Mon, 24 Jul
+ 2023 19:47:23 +0000
+Received: from DM6NAM11FT084.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:a03:12b:cafe::4b) by BYAPR07CA0088.outlook.office365.com
+ (2603:10b6:a03:12b::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32 via Frontend
+ Transport; Mon, 24 Jul 2023 19:47:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ DM6NAM11FT084.mail.protection.outlook.com (10.13.172.132) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.25 via Frontend Transport; Mon, 24 Jul 2023 19:47:23 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 24 Jul 2023
+ 12:47:12 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Mon, 24 Jul 2023 12:47:12 -0700
+Received: from Asurada-Nvidia.nvidia.com (10.127.8.11) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Mon, 24 Jul 2023 12:47:11 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     <jgg@nvidia.com>, <kevin.tian@intel.com>,
+        <alex.williamson@redhat.com>
+CC:     <yi.l.liu@intel.com>, <joro@8bytes.org>, <will@kernel.org>,
+        <robin.murphy@arm.com>, <shuah@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <iommu@lists.linux.dev>,
+        <kvm@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <mjrosato@linux.ibm.com>, <farman@linux.ibm.com>
+Subject: [PATCH v8 0/4] cover-letter: Add IO page table replacement support
+Date:   Mon, 24 Jul 2023 12:47:03 -0700
+Message-ID: <cover.1690226015.git.nicolinc@nvidia.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|DM8PR13MB5222:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5db57751-8b8e-4c80-84fe-08db8c7eac4b
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT084:EE_|PH7PR12MB6812:EE_
+X-MS-Office365-Filtering-Correlation-Id: bad9d17f-27b9-4bb6-78fd-08db8c7eccd9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IaDEZ6R8IjqOa6P3UhvrnDSD++YGPmMTh88nqh5lTnTl4HmHXxn3pCi5Axto+lKOv46m2GtTLivx8cH5O2qWPI4+vAfLKLgmVIdtv1VgoaTiTyjUjr2U8WZbr/JR7H9fFStg15iGBlQWYT16Fqlt6VYvY169b0Pal6LqhALeKGy68H4lIPEAbVigsvz73Lge08VHaLWrC+D1R3N16rJSD4wJ7f1wM3x2MRmbG7+8It/BecHZ3fIYit0rZS+GpdsZDtWEdRocpbgY+5uN80qVuAh0OeamH0WGLugpzMOWbp2QXYGizNYCCgU8GeQJBMnMQs9+k5UBOG/nFRMbMgXeBI4osmRAVcKEkykf1bIzzdegrqyPPB1zWNQzDe5LA6wVIchcyd3u1taDiR8roxJs6CAFJewtJlV2XL5OhOgXgKvKEqDn3G+uls1bBd3crPNYOpZUTdNKWruTmAcxsx51VAHouboGHwDnQcPc6DN7WhK/yvAlSzxbTYD2J/tq2tcjPqNRofFQIEmaOVXrWaxMenwPnEPsdua5EMDascox47pzJIqWjRuuKT8lC73h6a4ox2R8Mjl+vqPqRfEvTMP/16TDuPPJ+Dp4hNWQpxKLYCw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(39840400004)(346002)(366004)(376002)(451199021)(2616005)(36756003)(2906002)(83380400001)(41300700001)(7416002)(44832011)(5660300002)(53546011)(6506007)(8676002)(8936002)(186003)(6666004)(54906003)(66946007)(6486002)(478600001)(86362001)(38100700002)(66556008)(6512007)(316002)(66476007)(4326008)(6916009);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uwuVecYCFktsyc2D1bLIXSIW/y8S/xYvDClDb/J1zxIHmwzXIPKDmQ9pAth3?=
- =?us-ascii?Q?5VMZYGWnurKLRsrDhXvL8v3OWWc6sywoFd3nh1KoGkO/CAy8Segqvqi3cK6V?=
- =?us-ascii?Q?B8PuK2vBTTL84yqzKr6FV7n2uoxpfzm+wD675HmNAwdq2/mHt0dpyVZFd43y?=
- =?us-ascii?Q?vPlTOU0Bx6qeVsYnaEYcJwPPay6YTCKNtUTFjfk78xtyRYvNNar2btt49LWq?=
- =?us-ascii?Q?GZjq46he9rqhdWpsjI8GNOBNmaRMZI4i19dbcfrMqTVB0VjmyI2xD71jR+GY?=
- =?us-ascii?Q?uYfv3tDhwCjkwCY2fZx19tOVSP0SMyJDMnOkoQ15ueoaBNQU9y55XiIje63Y?=
- =?us-ascii?Q?qMV3QcFpfmMdXzBxGrYeHyr6nmV75GDmta5jLZ+PxE/rKjQXXDf4otcT/tU0?=
- =?us-ascii?Q?h2RqS0k+FCKmPkszMcevKqCz4TCggx8QfYnhBc0TbK+V91bieGhNe1mLKvJv?=
- =?us-ascii?Q?KhSRqZOEVINwURi0dz59kX/J479J1u+ks/SKpxmkngN/Tbf/yUQgo5MmO+vz?=
- =?us-ascii?Q?rERgrZhEY+IqPqCiLob8wmUZPkgwBqxI6qm+NgItO68trrjcFd+oMUP4hJj8?=
- =?us-ascii?Q?524l5mL7TlXnUc2gGIy7fCGF10gcz5x0rKCP7YqzaToer8hyndZao4XP3QuQ?=
- =?us-ascii?Q?JwhdLtd3Vw6MiIChlJRYX5JDImg/FIu0caoCCD4Hdz/CftLkQkwdOzSEdsaL?=
- =?us-ascii?Q?SKpRX1Cokeyxh/YnrJlUPF8cJNL5FY9tFjtGKSo1wwqvz/2b6OAUYmOqLBMQ?=
- =?us-ascii?Q?Z1Aibxmu9+JyXWoOyjBMbe2JC/QD0oBwUcINGSwZQWrbRWnCiykebSqkWfUK?=
- =?us-ascii?Q?jiMfS9YNIUkWxkI+5frKe6YaAGaK1lQsYltK4/HWHQPdoIHUGciDAxke7iEZ?=
- =?us-ascii?Q?2fiJ4aynfkCzuapYjouo8RqLNjwlA7HHCWlzv0p7Ce2auWjK7XImvnMsAOM/?=
- =?us-ascii?Q?WeTeo7NGe8BaNaE6LLWF2ch90k40+ep9y46L0pZnfAch4zt1opERjR1FQmPk?=
- =?us-ascii?Q?OpaFxdHb4vrrKSLqcauZY+X46yXMvn389SPvCFdiifVWOiyExRwXSu7Q/i0H?=
- =?us-ascii?Q?ERJZsqraM4EDYqwCIedHQK/xbynYk1dmvVBiX0a5Neza3Mz0VdRql5cDtjBP?=
- =?us-ascii?Q?xiXOSts5m8l3oqD/kzQjfVzVZSFQ6l7w17iKhuYxVVgGBFa+S+0xFAYoFE5R?=
- =?us-ascii?Q?654w4NNXjo4otPRY71ePGDhc8lRtPYCGZijr44H1+cdfPULmrCV4qiKIeChe?=
- =?us-ascii?Q?QGI8o5i+LJb69ouPwiNoCeeZ0u4gfskZFEzZoOo3mE7DewM0GC7o2IRV9tJo?=
- =?us-ascii?Q?MGgOirhbnuNDrBD9hhn2A7yR4hYg9x5JOlzmJJWbU/Xaa8jq65f/EtrzIxOg?=
- =?us-ascii?Q?okWRBL96z5NmcixiafXIxtLLkPG0ewUmoEYF7y4iDZz1YVZag1ouOy1ukkeD?=
- =?us-ascii?Q?cUlpmynw9uv4hxZemI4y+hOcs1htBESj7L5zzlMCyfAbhK3X+Lvb0B5hR3NN?=
- =?us-ascii?Q?VWWNWs4XIpvMnU8LxIZcc5VXZkbeA31JLnpaK5ho8u8QNUlOElFWeOJNL3Gz?=
- =?us-ascii?Q?ShyVFknU40s10rfrFgLJsg6Bnrpig4Z5mi/8ZS/vQPYj7xlJDQUP/Qs0XABI?=
- =?us-ascii?Q?fpAWH7QsthCjiyIRA/vQych++k/Dm6smADtGTNbA4NLmqOfe23DaLi4oj40e?=
- =?us-ascii?Q?UELZWg=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5db57751-8b8e-4c80-84fe-08db8c7eac4b
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 19:46:29.0198
+X-Microsoft-Antispam-Message-Info: q29hlPNymq7Gi68P2vG7wfJGY2ZTklOgtLZPqQ8vIeGhR2mDWsKhkJw0/n5pDjn9dVZf7s0irjeSahMBthxdT2T1A3sATYRFUboqPBex8x+FM2uwq+jiLYHLyMctYoaknx6hrI6oVxDV8mXMWopbqC7ko7iN7ugfjeMzha+2UI32LQYtqHXQaEveX6bq7/LY9n6zh+0rUQle6Mi17WQV+72YqTDHjBQUl5lR/1VMRBTQZ9qoocQOJyzVbeqMGRol5uuZlWHAMxp6xJo/hr05aM1xuW3ASxQ/cacBUn2aVdjeK5at5eaGoDqj8cMBEp0C0RnxgrrYcS+e0v/xHaiGsz+Z5J73HfDt24VPMLYBKZZza0v5TO10eJYZNYqF5vMs+c9+xl+JFBIbx/UJ/71rTtcCT9hbtGMvLAfJjoWMzopY1pkJZTqGwMTyW+D7fvnnhQcrNgucKN8fySLdr8IlFUBDC9fGAs7aDqHC4zQ1L1Iq5stAWlo0ewrbRXXFuEscNA4sma6xEHlkLmQGN2Y13Q3dLMbgqrahcXela5z1vgg6MCryiM3H3APedzlhdCplU4P5hWytU0VbvAGv18epqsUhs9JRUVGM14oPiqY9h7ZgfNub2fFXHW68m/UeRXxCC1jDirma9b3x0PxZ42yjtJqWqICubAkgtMjkyA2R0D01K0QRw1cgstsfR6OoQSpMDTWDnLNcP4kqXIY8CyiFJw/ct1ywHK9u2S0731HpcUKZKygp8RF6pYmcg1aNu8DZx+5Ni6A+5MKV3E10B4DIZwR0FLMU9DJi2IPj1UVQ4xk5qQcBQvPz4K9Z4L87MC2A
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(396003)(376002)(39860400002)(451199021)(82310400008)(36840700001)(46966006)(40470700004)(2616005)(40480700001)(426003)(40460700003)(7696005)(6666004)(478600001)(356005)(7636003)(966005)(86362001)(82740400003)(36756003)(26005)(5660300002)(7416002)(41300700001)(8936002)(8676002)(4326008)(316002)(2906002)(54906003)(110136005)(70586007)(70206006)(336012)(186003)(83380400001)(47076005)(36860700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 19:47:23.2223
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TVe1/0N6o+woCYy+c1N4tF/l7Xa3oGEn9TdRMw8M3YlNn57T5Cb7tQ74T4JKFYG7YW7ZNe1V6XoGy4pWgAGO/i/BbARrmWyXHOAq227iGB0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR13MB5222
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: bad9d17f-27b9-4bb6-78fd-08db8c7eccd9
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT084.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6812
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 05:06:30PM +0100, Dmitry Safonov wrote:
-> Hi Simon,
-> 
-> On 7/24/23 14:11, Simon Horman wrote:
-> > On Fri, Jul 21, 2023 at 05:18:52PM +0100, Dmitry Safonov wrote:
-> > 
-> > Hi Dmitry,
-> > 
-> > some minor nits from my side.
-> > 
-> > ...
-> > 
-> >> +/**
-> >> + * tcp_sigpool_start - disable bh and start using tcp_sigpool_ahash
-> >> + * @id: tcp_sigpool that was previously allocated by tcp_sigpool_alloc_ahash()
-> >> + * @c: returned tcp_sigpool for usage (uninitialized on failure)
-> >> + */
-> >> +int tcp_sigpool_start(unsigned int id, struct tcp_sigpool *c);
-> >> +/**
-> >> + * tcp_sigpool_end - enable bh and stop using tcp_sigpool
-> > 
-> > nit: as this is a kernel doc, please document @c here.
-> 
-> Thanks, yeah, I also noticed that on netdev/kdoc and there are some
-> other nits on the patchwork that Intel's build bot didn't report to my
-> surprise. Will address them in v9.
+[ This series depends on the VFIO device cdev series ]
 
-Always room for improvement :)
+Changelog
+v8:
+ * Rebased on top of Jason's iommufd_hwpt series and then cdev v15 series:
+   https://lore.kernel.org/all/0-v8-6659224517ea+532-iommufd_alloc_jgg@nvidia.com/
+   https://lore.kernel.org/kvm/20230718135551.6592-1-yi.l.liu@intel.com/
+ * Changed the order of detach() and attach() in replace(), to fix a bug
+v7:
+ https://lore.kernel.org/all/cover.1683593831.git.nicolinc@nvidia.com/
+ * Rebased on top of v6.4-rc1 and cdev v11 candidate
+ * Fixed a wrong file in replace() API patch
+ * Added Kevin's "Reviewed-by" to replace() API patch
+v6:
+ https://lore.kernel.org/all/cover.1679939952.git.nicolinc@nvidia.com/
+ * Rebased on top of cdev v8 series
+   https://lore.kernel.org/kvm/20230327094047.47215-1-yi.l.liu@intel.com/
+ * Added "Reviewed-by" from Kevin to PATCH-4
+ * Squashed access->ioas updating lines into iommufd_access_change_pt(),
+   and changed function return type accordingly for simplification.
+v5:
+ https://lore.kernel.org/all/cover.1679559476.git.nicolinc@nvidia.com/
+ * Kept the cmd->id in the iommufd_test_create_access() so the access can
+   be created with an ioas by default. Then, renamed the previous ioctl
+   IOMMU_TEST_OP_ACCESS_SET_IOAS to IOMMU_TEST_OP_ACCESS_REPLACE_IOAS, so
+   it would be used to replace an access->ioas pointer.
+ * Added iommufd_access_replace() API after the introductions of the other
+   two APIs iommufd_access_attach() and iommufd_access_detach().
+ * Since vdev->iommufd_attached is also set in emulated pathway too, call
+   iommufd_access_update(), similar to the physical pathway.
+v4:
+ https://lore.kernel.org/all/cover.1678284812.git.nicolinc@nvidia.com/
+ * Rebased on top of Jason's series adding replace() and hwpt_alloc()
+ https://lore.kernel.org/all/0-v2-51b9896e7862+8a8c-iommufd_alloc_jgg@nvidia.com/
+ * Rebased on top of cdev series v6
+ https://lore.kernel.org/kvm/20230308132903.465159-1-yi.l.liu@intel.com/
+ * Dropped the patch that's moved to cdev series.
+ * Added unmap function pointer sanity before calling it.
+ * Added "Reviewed-by" from Kevin and Yi.
+ * Added back the VFIO change updating the ATTACH uAPI.
+v3:
+ https://lore.kernel.org/all/cover.1677288789.git.nicolinc@nvidia.com/
+ * Rebased on top of Jason's iommufd_hwpt branch:
+ https://lore.kernel.org/all/0-v2-406f7ac07936+6a-iommufd_hwpt_jgg@nvidia.com/
+ * Dropped patches from this series accordingly. There were a couple of
+   VFIO patches that will be submitted after the VFIO cdev series. Also,
+   renamed the series to be "emulated".
+ * Moved dma_unmap sanity patch to the first in the series.
+ * Moved dma_unmap sanity to cover both VFIO and IOMMUFD pathways.
+ * Added Kevin's "Reviewed-by" to two of the patches.
+ * Fixed a NULL pointer bug in vfio_iommufd_emulated_bind().
+ * Moved unmap() call to the common place in iommufd_access_set_ioas().
+v2:
+ https://lore.kernel.org/all/cover.1675802050.git.nicolinc@nvidia.com/
+ * Rebased on top of vfio_device cdev v2 series.
+ * Update the kdoc and commit message of iommu_group_replace_domain().
+ * Dropped revert-to-core-domain part in iommu_group_replace_domain().
+ * Dropped !ops->dma_unmap check in vfio_iommufd_emulated_attach_ioas().
+ * Added missing rc value in vfio_iommufd_emulated_attach_ioas() from the
+   iommufd_access_set_ioas() call.
+ * Added a new patch in vfio_main to deny vfio_pin/unpin_pages() calls if
+   vdev->ops->dma_unmap is not implemented.
+ * Added a __iommmufd_device_detach helper and let the replace routine do
+   a partial detach().
+ * Added restriction on auto_domains to use the replace feature.
+ * Added the patch "iommufd/device: Make hwpt_list list_add/del symmetric"
+   from the has_group removal series.
+v1:
+ https://lore.kernel.org/all/cover.1675320212.git.nicolinc@nvidia.com/
 
-> >> + */
-> >> +void tcp_sigpool_end(struct tcp_sigpool *c);
-> >> +size_t tcp_sigpool_algo(unsigned int id, char *buf, size_t buf_len);
-> >>  /* - functions */
-> >>  int tcp_v4_md5_hash_skb(char *md5_hash, const struct tcp_md5sig_key *key,
-> >>  			const struct sock *sk, const struct sk_buff *skb);
-> > 
-> > ...
-> > 
-> >> @@ -1439,8 +1443,7 @@ int tcp_v4_md5_hash_skb(char *md5_hash, const struct tcp_md5sig_key *key,
-> >>  			const struct sock *sk,
-> >>  			const struct sk_buff *skb)
-> >>  {
-> >> -	struct tcp_md5sig_pool *hp;
-> >> -	struct ahash_request *req;
-> >> +	struct tcp_sigpool hp;
-> >>  	const struct tcphdr *th = tcp_hdr(skb);
-> >>  	__be32 saddr, daddr;
-> > 
-> > nit: please consider using reverse xmas tree - longest line to shortest -
-> >      for these local variable declarations.
-> > 
-> > 	const struct tcphdr *th = tcp_hdr(skb);
-> > 	struct tcp_sigpool hp;
-> > 	__be32 saddr, daddr;
-> > 
-> > Likewise, elsewhere, when it can be done without excess churn.
-> 
-> Yeah, fail enough, I usually keep it Xmas-like, but sometimes they slip
-> in unnoticed. I'll take a look over the patches.
+Hi all,
 
-Thanks. I also flagged this in my review of 3/23,
-as I hadn't noticed your response here.
+The existing IOMMU APIs provide a pair of functions: iommu_attach_group()
+for callers to attach a device from the default_domain (NULL if not being
+supported) to a given iommu domain, and iommu_detach_group() for callers
+to detach a device from a given domain to the default_domain. Internally,
+the detach_dev op is deprecated for the newer drivers with default_domain.
+This means that those drivers likely can switch an attaching domain to
+another one, without stagging the device at a blocking or default domain,
+for use cases such as:
+1) vPASID mode, when a guest wants to replace a single pasid (PASID=0)
+   table with a larger table (PASID=N)
+2) Nesting mode, when switching the attaching device from an S2 domain
+   to an S1 domain, or when switching between relevant S1 domains.
+
+This series is rebased on top of Jason Gunthorpe's series that introduces
+iommu_group_replace_domain API and IOMMUFD infrastructure for the IOMMUFD
+"physical" devices. The IOMMUFD "emulated" deivces will need some extra
+steps to replace the access->ioas object and its iopt pointer.
+
+You can also find this series on Github:
+https://github.com/nicolinc/iommufd/commits/iommu_group_replace_domain-v8
+
+Thank you
+Nicolin Chen
+
+Nicolin Chen (4):
+  vfio: Do not allow !ops->dma_unmap in vfio_pin/unpin_pages()
+  iommufd: Add iommufd_access_replace() API
+  iommufd/selftest: Add IOMMU_TEST_OP_ACCESS_REPLACE_IOAS coverage
+  vfio: Support IO page table replacement
+
+ drivers/iommu/iommufd/device.c                | 72 ++++++++++++++-----
+ drivers/iommu/iommufd/iommufd_test.h          |  4 ++
+ drivers/iommu/iommufd/selftest.c              | 19 +++++
+ drivers/vfio/iommufd.c                        | 11 +--
+ drivers/vfio/vfio_main.c                      |  4 ++
+ include/linux/iommufd.h                       |  1 +
+ include/uapi/linux/vfio.h                     |  6 ++
+ tools/testing/selftests/iommu/iommufd.c       | 29 +++++++-
+ tools/testing/selftests/iommu/iommufd_utils.h | 19 +++++
+ 9 files changed, 142 insertions(+), 23 deletions(-)
+
+-- 
+2.41.0
+
