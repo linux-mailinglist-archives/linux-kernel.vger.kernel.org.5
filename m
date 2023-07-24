@@ -2,57 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AC875E72E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E4575E72F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjGXBZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
+        id S231374AbjGXBZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:25:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231229AbjGXBYV (ORCPT
+        with ESMTP id S231237AbjGXBYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:24:21 -0400
+        Sun, 23 Jul 2023 21:24:22 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1650210CF;
-        Sun, 23 Jul 2023 18:23:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4903DE45;
+        Sun, 23 Jul 2023 18:23:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DD8A260F02;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 27D9760EEE;
+        Mon, 24 Jul 2023 01:23:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9DA8C433CB;
         Mon, 24 Jul 2023 01:23:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80C3AC433C7;
-        Mon, 24 Jul 2023 01:23:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161782;
-        bh=BiTMSXI9KdRxa9YYU67peBK//OlQrgZWHgUTs04Hqng=;
+        s=k20201202; t=1690161783;
+        bh=yzl/7No59yu4X8CqHuljtqwoKUXFaGufb7aItaEIIRY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q+Q5X6tFzWhGvE0139UMQooXr1rk8kpw/DrdANm5VhPWbyiDwGr+iY0g4sAiMXoGs
-         BXdPb/FED9+qQTzT4vEN33EtAzOqy4vn/gIT01dl8ExSqhF40L5O2+ERru6yo39TXQ
-         7MuFNZ5bAAgzl+6EZUdK1fiwp599vNjh7f82gTtD7xJEzd0WYZqb1mN1jW5hl3eQpp
-         qC0pGxB567dmbafR6FvRfjV9wBYli77x7aJvSZiHg++knjZ7FDJDqpLfQnEabj3z3s
-         uRg7MZIhxTZyGynYua+McIJsfa0ZnCC5tWeK22P5Ay82gEUWTOWkJlGhzl3+O+7HUT
-         uRlg45BvR0aZA==
+        b=TXx/FPuBm20abbhMpLjq14IBGAYJVX1bBhtQUhfNHVCIduRUTPdQ0REuS1dftRb2T
+         YtzuR1mb1GFtSONj2a7ggK/u/v8FYO1tFfGZUfuTzpznW7k3+wCfs0Bd1UHVVIvyvY
+         jaz0sbBUsxHLuuJ6zuyzRoKnY8LssUXhVFmo4iHlJMVwZEsqm3U58rbv0rK4LopvNZ
+         Q9eMdbkkkdmeVMWVuncCmvnJ1WYPhNlWblvjAqhYa5+vf/I7OD8MshbaNhXbbJXUcu
+         6Y6BZ6ti4lkTbcN2WjMQXeWs39NRpRg6TRhLgCbNimPiM4yEXKLr1H/2GnZCXgQFpH
+         6DGtIFiGJaKHQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Michel=20D=C3=A4nzer?= <mdaenzer@redhat.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        Sasha Levin <sashal@kernel.org>, harry.wentland@amd.com,
-        sunpeng.li@amd.com, christian.koenig@amd.com, airlied@linux.ie,
-        daniel@ffwll.ch, qingqing.zhuo@amd.com, Dmytro.Laktyushkin@amd.com,
-        wayne.lin@amd.com, Wesley.Chalmers@amd.com,
-        Rodrigo.Siqueira@amd.com, hugo.hu@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.1 28/41] Revert "drm/amd/display: Do not set drr on pipe commit"
-Date:   Sun, 23 Jul 2023 21:21:01 -0400
-Message-Id: <20230724012118.2316073-28-sashal@kernel.org>
+Cc:     Marco Morandini <marco.morandini@polimi.it>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 29/41] HID: add quirk for 03f0:464a HP Elite Presenter Mouse
+Date:   Sun, 23 Jul 2023 21:21:02 -0400
+Message-Id: <20230724012118.2316073-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012118.2316073-1-sashal@kernel.org>
 References: <20230724012118.2316073-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.40
@@ -67,107 +60,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michel Dänzer <mdaenzer@redhat.com>
+From: Marco Morandini <marco.morandini@polimi.it>
 
-[ Upstream commit 8e1b45c578b799510f9a01a9745a737e74f43cb1 ]
+[ Upstream commit 0db117359e47750d8bd310d19f13e1c4ef7fc26a ]
 
-This reverts commit 474f01015ffdb74e01c2eb3584a2822c64e7b2be.
+HP Elite Presenter Mouse HID Record Descriptor shows
+two mouses (Repord ID 0x1 and 0x2), one keypad (Report ID 0x5),
+two Consumer Controls (Report IDs 0x6 and 0x3).
+Previous to this commit it registers one mouse, one keypad
+and one Consumer Control, and it was usable only as a
+digitl laser pointer (one of the two mouses). This patch defines
+the 464a USB device ID and enables the HID_QUIRK_MULTI_INPUT
+quirk for it, allowing to use the device both as a mouse
+and a digital laser pointer.
 
-Caused a regression:
-
-Samsung Odyssey Neo G9, running at 5120x1440@240/VRR, connected to Navi
-21 via DisplayPort, blanks and the GPU hangs while starting the Steam
-game Assetto Corsa Competizione (via Proton 7.0).
-
-Example dmesg excerpt:
-
- amdgpu 0000:0c:00.0: [drm] ERROR [CRTC:82:crtc-0] flip_done timed out
- NMI watchdog: Watchdog detected hard LOCKUP on cpu 6
- [...]
- RIP: 0010:amdgpu_device_rreg.part.0+0x2f/0xf0 [amdgpu]
- Code: 41 54 44 8d 24 b5 00 00 00 00 55 89 f5 53 48 89 fb 4c 3b a7 60 0b 00 00 73 6a 83 e2 02 74 29 4c 03 a3 68 0b 00 00 45 8b 24 24 <48> 8b 43 08 0f b7 70 3e 66 90 44 89 e0 5b 5d 41 5c 31 d2 31 c9 31
- RSP: 0000:ffffb39a119dfb88 EFLAGS: 00000086
- RAX: ffffffffc0eb96a0 RBX: ffff9e7963dc0000 RCX: 0000000000007fff
- RDX: 0000000000000000 RSI: 0000000000004ff6 RDI: ffff9e7963dc0000
- RBP: 0000000000004ff6 R08: ffffb39a119dfc40 R09: 0000000000000010
- R10: ffffb39a119dfc40 R11: ffffb39a119dfc44 R12: 00000000000e05ae
- R13: 0000000000000000 R14: ffff9e7963dc0010 R15: 0000000000000000
- FS:  000000001012f6c0(0000) GS:ffff9e805eb80000(0000) knlGS:000000007fd40000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 00000000461ca000 CR3: 00000002a8a20000 CR4: 0000000000350ee0
- Call Trace:
-  <TASK>
-  dm_read_reg_func+0x37/0xc0 [amdgpu]
-  generic_reg_get2+0x22/0x60 [amdgpu]
-  optc1_get_crtc_scanoutpos+0x6a/0xc0 [amdgpu]
-  dc_stream_get_scanoutpos+0x74/0x90 [amdgpu]
-  dm_crtc_get_scanoutpos+0x82/0xf0 [amdgpu]
-  amdgpu_display_get_crtc_scanoutpos+0x91/0x190 [amdgpu]
-  ? dm_read_reg_func+0x37/0xc0 [amdgpu]
-  amdgpu_get_vblank_counter_kms+0xb4/0x1a0 [amdgpu]
-  dm_pflip_high_irq+0x213/0x2f0 [amdgpu]
-  amdgpu_dm_irq_handler+0x8a/0x200 [amdgpu]
-  amdgpu_irq_dispatch+0xd4/0x220 [amdgpu]
-  amdgpu_ih_process+0x7f/0x110 [amdgpu]
-  amdgpu_irq_handler+0x1f/0x70 [amdgpu]
-  __handle_irq_event_percpu+0x46/0x1b0
-  handle_irq_event+0x34/0x80
-  handle_edge_irq+0x9f/0x240
-  __common_interrupt+0x66/0x110
-  common_interrupt+0x5c/0xd0
-  asm_common_interrupt+0x22/0x40
-
-Reviewed-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Michel Dänzer <mdaenzer@redhat.com>
-Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Marco Morandini <marco.morandini@polimi.it>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c | 6 ------
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c | 7 -------
- 2 files changed, 13 deletions(-)
+ drivers/hid/hid-ids.h    | 1 +
+ drivers/hid/hid-quirks.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-index 7ff4a308152a0..2d49e99a152c4 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
-@@ -2021,12 +2021,6 @@ void dcn20_optimize_bandwidth(
- 	if (hubbub->funcs->program_compbuf_size)
- 		hubbub->funcs->program_compbuf_size(hubbub, context->bw_ctx.bw.dcn.compbuf_size_kb, true);
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 653db6cdab579..9a17e5cc3539b 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -614,6 +614,7 @@
+ #define USB_DEVICE_ID_UGCI_FIGHTING	0x0030
  
--	if (context->bw_ctx.bw.dcn.clk.fw_based_mclk_switching) {
--		dc_dmub_srv_p_state_delegate(dc,
--			true, context);
--		context->bw_ctx.bw.dcn.clk.p_state_change_support = true;
--	}
--
- 	dc->clk_mgr->funcs->update_clocks(
- 			dc->clk_mgr,
- 			context,
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-index c97d3e81a83d2..a1b312483d7f1 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-@@ -987,18 +987,11 @@ void dcn30_set_disp_pattern_generator(const struct dc *dc,
- void dcn30_prepare_bandwidth(struct dc *dc,
-  	struct dc_state *context)
- {
--	if (context->bw_ctx.bw.dcn.clk.fw_based_mclk_switching) {
--		dc->optimized_required = true;
--		context->bw_ctx.bw.dcn.clk.p_state_change_support = false;
--	}
--
- 	if (dc->clk_mgr->dc_mode_softmax_enabled)
- 		if (dc->clk_mgr->clks.dramclk_khz <= dc->clk_mgr->bw_params->dc_mode_softmax_memclk * 1000 &&
- 				context->bw_ctx.bw.dcn.clk.dramclk_khz > dc->clk_mgr->bw_params->dc_mode_softmax_memclk * 1000)
- 			dc->clk_mgr->funcs->set_max_memclk(dc->clk_mgr, dc->clk_mgr->bw_params->clk_table.entries[dc->clk_mgr->bw_params->clk_table.num_entries - 1].memclk_mhz);
- 
- 	dcn20_prepare_bandwidth(dc, context);
--
--	dc_dmub_srv_p_state_delegate(dc, false, context);
- }
- 
+ #define USB_VENDOR_ID_HP		0x03f0
++#define USB_PRODUCT_ID_HP_ELITE_PRESENTER_MOUSE_464A		0x464a
+ #define USB_PRODUCT_ID_HP_LOGITECH_OEM_USB_OPTICAL_MOUSE_0A4A	0x0a4a
+ #define USB_PRODUCT_ID_HP_LOGITECH_OEM_USB_OPTICAL_MOUSE_0B4A	0x0b4a
+ #define USB_PRODUCT_ID_HP_PIXART_OEM_USB_OPTICAL_MOUSE		0x134a
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index 66e64350f1386..f8f20a7c24b17 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -96,6 +96,7 @@ static const struct hid_device_id hid_quirks[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HOLTEK_ALT, USB_DEVICE_ID_HOLTEK_ALT_KEYBOARD_A096), HID_QUIRK_NO_INIT_REPORTS },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HOLTEK_ALT, USB_DEVICE_ID_HOLTEK_ALT_KEYBOARD_A293), HID_QUIRK_ALWAYS_POLL },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HP, USB_PRODUCT_ID_HP_LOGITECH_OEM_USB_OPTICAL_MOUSE_0A4A), HID_QUIRK_ALWAYS_POLL },
++	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_HP, USB_PRODUCT_ID_HP_ELITE_PRESENTER_MOUSE_464A), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HP, USB_PRODUCT_ID_HP_LOGITECH_OEM_USB_OPTICAL_MOUSE_0B4A), HID_QUIRK_ALWAYS_POLL },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HP, USB_PRODUCT_ID_HP_PIXART_OEM_USB_OPTICAL_MOUSE), HID_QUIRK_ALWAYS_POLL },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HP, USB_PRODUCT_ID_HP_PIXART_OEM_USB_OPTICAL_MOUSE_094A), HID_QUIRK_ALWAYS_POLL },
 -- 
 2.39.2
 
