@@ -2,66 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BCE75F3C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6D075F3C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbjGXKtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
+        id S232490AbjGXKtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232314AbjGXKtA (ORCPT
+        with ESMTP id S232434AbjGXKta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:49:00 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D297102;
-        Mon, 24 Jul 2023 03:48:56 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 4D52F7FD6;
-        Mon, 24 Jul 2023 18:48:49 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 24 Jul
- 2023 18:48:49 +0800
-Received: from [192.168.125.136] (183.27.99.135) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 24 Jul
- 2023 18:48:48 +0800
-Message-ID: <a687c273-48b1-651e-313f-d8140732c5d8@starfivetech.com>
-Date:   Mon, 24 Jul 2023 18:48:47 +0800
+        Mon, 24 Jul 2023 06:49:30 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED2C124
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:49:24 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fa48b5dc2eso6187081e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:49:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690195762; x=1690800562;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DZNvYrVthLVnyT1vCTz76LDPSOhoYBXUv6sJqHcelaw=;
+        b=YJTYZImmB9JueLr3bDE0VuBdRIzqjP7CeXNL00mQgdEmEjfrZgJZSIwhPXM2ig+kPB
+         ZeAmZR62wrlMN9+EvEatTNKZ9alkGgugOrVcP2KiBkh1NOF/PXEXG7rjg7nXe/vHbusq
+         bkjTe8pGg6fSR3lvsxz5FBLM5tEsUa0KdtSFAFMLg+6Hp7GfMK80NJ/QjCybeMqkL9Eo
+         tw7YHUjTRxvhnMA2n6QKEqXDyBZxj5i2qRAVHoqei6vWc+UGgmC+kWaN/f1fSoSLWQqE
+         2oyYE26f0FPbpZYHXun/O4Kt8yjBZP+icHWGjHbGSI37HSD79a7uUjXYwbYhHBVOJ+vf
+         qipw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690195762; x=1690800562;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DZNvYrVthLVnyT1vCTz76LDPSOhoYBXUv6sJqHcelaw=;
+        b=YdHc4X/dUaoEsjL4qU5h4maxNvTuoEgbvGcL+rnoSO9taYsxm8fcbvp6bW1Ob/nrxy
+         UNzDeYzUK+x6GEJbTO4OEmm4Zpxsgv/7HBK00v3o90BDgLr2w7wJDKKC/UfUcLRI3tOV
+         jWAIjBdyUw+7gb0TRUWcfw76nEiTV8ZiVixqFPgnfP0H3T5UDqDWmCtEzAqiv3EMqL06
+         TwjT7Y/ivkDh3j8ZnEErFHorzO3iCmDNSgs5vz7jZyKDLu5+l4ea7iwaMyhgt2DMCoQs
+         whwcWIZ4wo7/PoQe+AspRd8Kohp1IZ3IvoqftLm//f2RSTV+fLFFg7K4leI6CvP2vvG4
+         WJzg==
+X-Gm-Message-State: ABy/qLYscRPLu5B+9iPas8+1g4QqaVrrGDeraZi+sne7UkEt9QUaAAqM
+        2uKlKOYFyxKjRurSmWin18mF4Q==
+X-Google-Smtp-Source: APBJJlFqc/fKryxe6UpKwyBjZRCiXffFBiaWUEf9MknSIxwWMEJd8TqWmfpO2ij4O28nimR0iZeBNA==
+X-Received: by 2002:a05:6512:b97:b0:4fb:97e8:bc1c with SMTP id b23-20020a0565120b9700b004fb97e8bc1cmr6296392lfv.54.1690195762416;
+        Mon, 24 Jul 2023 03:49:22 -0700 (PDT)
+Received: from [192.168.1.101] (abyl203.neoplus.adsl.tpnet.pl. [83.9.31.203])
+        by smtp.gmail.com with ESMTPSA id o14-20020ac2494e000000b004fdc7ec5cbesm2164201lfi.300.2023.07.24.03.49.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 03:49:22 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH v2 0/2] QCM2290 icc fixes
+Date:   Mon, 24 Jul 2023 12:49:20 +0200
+Message-Id: <20230720-topic-qcm2290_icc-v2-0-a2ceb9d3e713@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v1 8/9] PCI: PLDA: starfive: Add JH7110 PCIe controller
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Minda Chen <minda.chen@starfivetech.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>
-References: <20230720161555.GA526946@bhelgaas>
-From:   Kevin Xie <kevin.xie@starfivetech.com>
-In-Reply-To: <20230720161555.GA526946@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.99.135]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-B4-Tracking: v=1; b=H4sIADBXvmQC/32NQQ6CMBAAv0L2bE27BhFP/MMQU5YFNsEWWyQaw
+ t+tPMDjTDKZFSIH4QjXbIXAi0TxLgEeMqDBup6VtIkBNZ50gVrNfhJST3oglvouRAqNaanEnJA
+ vkLrGRlZNsI6GVLrXOCY5Be7kvY9udeJB4uzDZ/8u5mf/LRajtCq6c9EhY16SqUZxNvijDz3U2
+ 7Z9Ad38cZvIAAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Shawn Guo <shawn.guo@linaro.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690195761; l=703;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=V5VLuysiELC1Er6lyMJIuGPFDavBvRd/ufRAXrK7W9o=;
+ b=fwqrM0Qa9FnLzPux2jyipgO4M7jLpaHP1a4+DULTJ38WE9pzeHjAfsrjZeHx0iXIUKNC9UV+l
+ pLCgziY+yHNAm2seXUTDE3cUOo/Ec+tAwSZN0mC2xANz+lCWAEsjdOA
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,104 +86,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series contains fixes necessary for icc to behave correctly on
+QCM2290.
 
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Changes in v2:
+- Clarify commit message in patch 2
+- Link to v1: https://lore.kernel.org/r/20230720-topic-qcm2290_icc-v1-0-7f67f2e259c1@linaro.org
 
-On 2023/7/21 0:15, Bjorn Helgaas wrote:
-> On Thu, Jul 20, 2023 at 06:11:59PM +0800, Kevin Xie wrote:
->> On 2023/7/20 0:48, Bjorn Helgaas wrote:
->> > On Wed, Jul 19, 2023 at 06:20:56PM +0800, Minda Chen wrote:
->> >> Add StarFive JH7110 SoC PCIe controller platform
->> >> driver codes.
-> 
->> >> + * The BAR0/1 of bridge should be hidden during enumeration to
->> >> + * avoid the sizing and resource allocation by PCIe core.
->> >> + */
->> >> +static bool starfive_pcie_hide_rc_bar(struct pci_bus *bus, unsigned int  devfn,
->> >> +				      int offset)
->> >> +{
->> >> +	if (pci_is_root_bus(bus) && !devfn &&
->> >> +	    (offset == PCI_BASE_ADDRESS_0 || offset == PCI_BASE_ADDRESS_1))
->> >> +		return true;
->> >> +
->> >> +	return false;
->> >> +}
->> >> +
->> >> +int starfive_pcie_config_write(struct pci_bus *bus, unsigned int devfn,
->> >> +			       int where, int size, u32 value)
->> >> +{
->> >> +	if (starfive_pcie_hide_rc_bar(bus, devfn, where))
->> >> +		return PCIBIOS_BAD_REGISTER_NUMBER;
->> > 
->> > I think you are trying present BARs 0 & 1 as unimplemented.  Such BARs
->> > are hardwired to zero, so you should make them behave that way (both
->> > read and write).  Many callers of config accessors don't check the
->> > return value, so I don't think it's reliable to just return
->> > PCIBIOS_BAD_REGISTER_NUMBER.
->> 
->> This is a hardware defect that we did not hardwired those BARs to
->> zero, and it is configurable for software now.  We have to add this
->> filter function for workaround.
-> 
-> Yes.  My point is that this only affects the write path, and the read
-> probably does not read 0 as it should.  This means lspci will show the
-> wrong thing, and the PCI core will try to size the BAR when it doesn't
-> need to.  I haven't looked at the BAR sizing code; it might even come
-> up with a bogus size and address, when it *should* just conclude the
-> BAR doesn't exist at all.
-> 
+---
+Konrad Dybcio (2):
+      interconnect: qcom: qcm2290: Enable keep_alive on all buses
+      interconnect: qcom: qcm2290: Enable sync state
 
-Got it, I will try to hide those BARs both in read and write operations.
+ drivers/interconnect/qcom/qcm2290.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+---
+base-commit: c58c49dd89324b18a812762a2bfa5a0458e4f252
+change-id: 20230720-topic-qcm2290_icc-211dc925c2e8
 
->> >> +	/* Ensure that PERST has been asserted for at least 100 ms */
->> >> +	msleep(300);
->> >> +	gpiod_set_value_cansleep(pcie->reset_gpio, 0);
->> > 
->> > At least 100 ms, but you sleep *300* ms?  This is probably related to
->> > https://lore.kernel.org/r/20230718155515.GA483233@bhelgaas
->> > 
->> > Please include a comment with the source of the delay value.  I assume
->> > it's T_PVPERL and T_PERST-CLK from the PCIe CEM spec.  This way we can
->> > someday share those #defines across drivers.
->> 
->> Yes, the delay value here is T_PVPERL from PCIe CEM spec r2.0 (Table
->> 2-4).  At the first time we set 100ms delay according to sector 2.2
->> of the spec: "After there has been time (TPVPERL) for the power and
->> clock to become stable, PERST# is deasserted high and the PCI
->> Express functions can start up."
->> 
->> However, in the compatibility testing with several NVMe SSD, we
->> found that Lenovo Thinklife ST8000 NVMe can not get ready in 100ms,
->> and it actually needs almost 200ms.  Thus, we increased the T_PVPERL
->> value to 300ms for the better device compatibility.
->>
->> We will use a macro to define T_PVPERL, and add comments for the
->> source of it.  If the compatibility delay of 300ms is not
->> reasonable, we can revert it to 100ms.
-> 
-> Thanks for this valuable information!  This NVMe issue potentially
-> affects many similar drivers, and we may need a more generic fix so
-> this device works well with all of them.
-> 
-> T_PVPERL is defined to start when power is stable.  Do you have a way
-> to accurately determine that point?  I'm guessing this:
-> 
->   gpiod_set_value_cansleep(pcie->power_gpio, 1)
-> 
-> turns the power on?  But of course that doesn't mean it is instantly
-> stable.  Maybe your testing is telling you that your driver should
-> have a hardware-specific 200ms delay to wait for power to become
-> stable, followed by the standard 100ms for T_PVPERL?
-> 
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
-You are right, we did not take the power stable cost into account.
-T_PVPERL is enough for Lenovo Thinklife ST8000 NVMe SSD to get ready,
-and the extra cost is from the power circuit of a PCIe to M.2 connector,
-which is used to verify M.2 SSD with our EVB at early stage.
-
-As the Thinklife NVMe SSD may be a halted product,
-and the onboard power circuit of VisionFive V2 is no problem,
-we decided revert the sleep time to be 100ms.
-
-We will add a comment for the source of T_PVPERL until your define in pci.h is accepted.
-
-> Bjorn
