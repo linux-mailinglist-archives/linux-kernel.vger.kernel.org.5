@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D41175FAD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B98475FAD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbjGXPcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 11:32:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49804 "EHLO
+        id S231376AbjGXPc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 11:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbjGXPc0 (ORCPT
+        with ESMTP id S229479AbjGXPc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 Jul 2023 11:32:26 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9101EE57;
-        Mon, 24 Jul 2023 08:32:22 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbc0609cd6so34803575e9.1;
-        Mon, 24 Jul 2023 08:32:22 -0700 (PDT)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9DAB1B3;
+        Mon, 24 Jul 2023 08:32:23 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fd2f298712so13734485e9.2;
+        Mon, 24 Jul 2023 08:32:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690212741; x=1690817541;
+        d=gmail.com; s=20221208; t=1690212742; x=1690817542;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Uh131th5kq2SQHF8kYtNRQvjlJTlYiaIhaFGooO8kUo=;
-        b=rMuYTyo8xrub4HIbmV+wNnF3zawKWt48DGl+hNOsmEvnykYpXH4QrT+L/D2lXI4/fd
-         XrUZdfZ+c4oAQjQ+qqP1qc5ydHikAV181XknINdkQjAJozlQP87I6BHPqsi1r8Wo4sh7
-         DEFJnLOwQj5fx10GZ2RCO97YVdr+JX1gZCxheKeqVR+GreqTj9YjSaUUnITXEIcLFD/y
-         0vS7QgcHs8/eP5PATEDKZVmcBHHsvPMWnxHsB37cjEGJvUNxr7Ut4+0KldWH5g8zObE8
-         OG5ZTyLR20BVWVIVyEcato/71JCk9WGsuzyLpQi40ZOOpuNBenDPeLJ054/ORVLFnW9f
-         TTLQ==
+        bh=MLAkbsYK7QIyvj28dGSLrTuJv0qXZGTFq3rKFWJSTa8=;
+        b=AnB+05knb3qUpk3tgMEV76tSVJNMy4NFF1nCvQRvZp8KJfQFQgEQwzRWUKGTVhdnzy
+         /h0ZwqLtXhp87T1XnU1FWg6VPt/SixTmvEHsAI2B8fHAMNFp0EjMcEiD78fMLsGRaBMD
+         q/zzKiq4iPR4M4XqwiwkpyRNSwUPfyQPjwhWxIaLniP01aCeBJEeChUTTiu6ol7DL2iZ
+         TmqAIkkJ82+IpPRSkKalt8klg0hDiS7kEO/TmgdUzE+BWnviES6WWXqHmzyL9R0jr0/d
+         5bqy81GLeqbzRP9couiZ2KnfjiGIkNW8XbsoTbh/rZajFFs7L0VIvW5/o/zHDibe8tdC
+         yAFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690212741; x=1690817541;
+        d=1e100.net; s=20221208; t=1690212742; x=1690817542;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Uh131th5kq2SQHF8kYtNRQvjlJTlYiaIhaFGooO8kUo=;
-        b=jSNT7JtkJ7JMLV6aG4tavcaZuL9j7MQkcv3EKzg2rQLfuwZyv4aDuRcRVMrHcNeMO4
-         8UWVlMkwdPw6Rn+eXR1YhSDfb3ygwUxwFvQRky7/+n5xhQnL39RwfZygvmWDNagKfqG8
-         YBHtkWGysjLavZf9Hzrv94zwFAu4mGDVaiVvsEjwgMhQMBzZT0KhsknMjw6ROZc10R/L
-         +KCJLEJgGhA5qbYHAU6zFfwIstHccPyQ21/nm1yeh+8OTehoUScLCyk6G4q/K+8mQCOt
-         6dFbU646lsuY7MSIjZiZ01iKdRwVQmhtFdB1HGNiJRWa0gF46GrNWbiUWapGE9QtK1es
-         v/uQ==
-X-Gm-Message-State: ABy/qLbbdtNUicwfkLXDvSYqr5WtjXmo7nhcVFBww21xhYqJN0MztnDt
-        MnG4vEO5thHkFZEo/GYctrM=
-X-Google-Smtp-Source: APBJJlFhTU1ecL9j/gFKbaH5gK0fEaTlhKkfzjQhu1xlFRomN6TcIQhbLQ8V5jkTu1RMqDxyjdvgQA==
-X-Received: by 2002:a05:600c:22cf:b0:3fb:ffef:d058 with SMTP id 15-20020a05600c22cf00b003fbffefd058mr5972219wmg.0.1690212740858;
-        Mon, 24 Jul 2023 08:32:20 -0700 (PDT)
+        bh=MLAkbsYK7QIyvj28dGSLrTuJv0qXZGTFq3rKFWJSTa8=;
+        b=BRD0Jx+Np+oDzqnnZK6mYtsGL5eODXxwPgD+3V0uV6/+9txqpduSue3RVD7Z4Wy438
+         anV39wlPvUg25bZXwZcFdY3BumJzNrkJ6PycJaHRxVv+kCUe1U0KzO+9TQRwFNY8WZj/
+         nEz0Xh/loKNWCQL+V3n7XhMdEWu4n34/ycuj+SkymYUIUzJZ8kbG0h88LHm0+FMt/M2P
+         cMVaxh4sV8sjIYfHsFJkBG8+RJsZYv6mh0C2WHhu9w/sgh+rlPEjoPdGYdepMK9SXthG
+         +Tny6I9GsrQcaAngJd/X2xw28NFBotrgfTmVfPPynEM15oiS5SGpjl2m3WyucTLXdTFA
+         CYIQ==
+X-Gm-Message-State: ABy/qLZaWIx0qKtwyVQ2+jLqTcJOr2gxFxVseXarWjadDbGYncPJNNI5
+        iAPpXpQygHxOr++rcy7bnB0=
+X-Google-Smtp-Source: APBJJlFzUChT3stE+hWXYTvd8qsZM9EcHcQKmn4J4SGmiACu+AiMweUAUZKJjx/4+C6zxE3hdiZeuQ==
+X-Received: by 2002:a05:600c:446:b0:3fb:fda1:710c with SMTP id s6-20020a05600c044600b003fbfda1710cmr5821024wmb.2.1690212741966;
+        Mon, 24 Jul 2023 08:32:21 -0700 (PDT)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id l8-20020a7bc448000000b003fb40ec9475sm10676900wmi.11.2023.07.24.08.32.19
+        by smtp.googlemail.com with ESMTPSA id l8-20020a7bc448000000b003fb40ec9475sm10676900wmi.11.2023.07.24.08.32.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 08:32:20 -0700 (PDT)
+        Mon, 24 Jul 2023 08:32:21 -0700 (PDT)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -58,9 +58,9 @@ To:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
         Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Christian Marangi <ansuelsmth@gmail.com>
-Subject: [PATCH 2/3] nvmem: u-boot-env: Permit to declare custom env-size
-Date:   Mon, 24 Jul 2023 10:26:31 +0200
-Message-Id: <20230724082632.21133-2-ansuelsmth@gmail.com>
+Subject: [PATCH 3/3] nvmem: u-boot-env: Handle "reduced" ASCII address declaration
+Date:   Mon, 24 Jul 2023 10:26:32 +0200
+Message-Id: <20230724082632.21133-3-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230724082632.21133-1-ansuelsmth@gmail.com>
 References: <20230724082632.21133-1-ansuelsmth@gmail.com>
@@ -76,98 +76,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Permit to declare a custom size of the U-Boot env that differs than the
-partition size where the U-Boot env is located.
+Parsing ASCII values is hard as hex values can be declared in many ways
+and OEM never follow a genera rules. This is especially problematic for
+parsing MAC address writte in ASCII format where an hex values can be
+written in 2 different format:
+- a Full format with leading 0, 01 02 06 0A
+- a Reduced format with trimmed leading 0, 1 2 6 A
 
-U-Boot env is validated by calculating the CRC32 on the entire env
-and in some specific case, the env size might differ from the partition
-size resulting in wrong CRC32 calculation than the expected one saved at
-the start of the partition.
+The current U-Boot-env driver assume that the Full format is always used
+by parsting the NVMEM cell size and expect always the form of
+XX:XX:XX:XX:XX:XX to pass it directly to mac_pton that expects this
+format.
 
-This happens when U-Boot is compiled by hardcoding a specific env size
-but the env is actually placed in a bigger partition, resulting in needing
-to provide a custom value.
+Reality is that it's common for OEM to use the reduced format resulting
+in MAC address in the format of XX:a:XX:XX:XX:XX:XX or a:XX:XX:XX:XX:XX
+or XX:XX:XX:XX:XX:a.
 
-To declare a custom env-size, the new property 'u-boot,env-size' is
-introduced to handle this special case.
+To handle these special format additional care is needed.
 
-If the property is not declared, the mtd size is used instead.
+Some additional logic are added to "normalize" the MAC address in ASCII
+to a format that is accepted by mac_pton.
+
+As using the NVMEM cell size is not enough anymore, some additional
+validation are done by checking if we have at least a format of
+X:X:X:X:X:X by checking if we have at least 5 ':' char while checking
+the NVMEM cell. The size validation is changed to check a range of
+ETH_ALEN + 5 (assuming a min valid MAC address of X:X:X:X:X:X) and
+the full form by checking 3 * ETH_ALEN -1 (for the full format
+XX:XX:XX:XX:XX:XX)
+
+The parsing function try to be as redable as possible while saving some
+code duplication and skip the use of memcpy function as the post_process
+is called very little time just on driver probe.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- drivers/nvmem/u-boot-env.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ drivers/nvmem/u-boot-env.c | 50 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 48 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/nvmem/u-boot-env.c b/drivers/nvmem/u-boot-env.c
-index ee9fd9989b6e..b64c37308789 100644
+index b64c37308789..e33565e872f8 100644
 --- a/drivers/nvmem/u-boot-env.c
 +++ b/drivers/nvmem/u-boot-env.c
-@@ -24,6 +24,7 @@ enum u_boot_env_format {
- struct u_boot_env {
- 	struct device *dev;
- 	enum u_boot_env_format format;
-+	unsigned int u_boot_env_size;
+@@ -76,12 +76,58 @@ static int u_boot_env_read(void *context, unsigned int offset, void *val,
+ static int u_boot_env_read_post_process_ethaddr(void *context, const char *id, int index,
+ 						unsigned int offset, void *buf, size_t bytes)
+ {
++	u8 *src_mac = buf;
+ 	u8 mac[ETH_ALEN];
  
- 	struct mtd_info *mtd;
+-	if (bytes != 3 * ETH_ALEN - 1)
++	if (bytes < ETH_ALEN + 5 || bytes > 3 * ETH_ALEN - 1)
+ 		return -EINVAL;
  
-@@ -149,14 +150,14 @@ static int u_boot_env_parse(struct u_boot_env *priv)
- 	uint8_t *buf;
- 	int err;
- 
--	buf = kcalloc(1, priv->mtd->size, GFP_KERNEL);
-+	buf = kcalloc(1, priv->u_boot_env_size, GFP_KERNEL);
- 	if (!buf) {
- 		err = -ENOMEM;
- 		goto err_out;
- 	}
- 
--	err = mtd_read(priv->mtd, 0, priv->mtd->size, &bytes, buf);
--	if ((err && !mtd_is_bitflip(err)) || bytes != priv->mtd->size) {
-+	err = mtd_read(priv->mtd, 0, priv->u_boot_env_size, &bytes, buf);
-+	if ((err && !mtd_is_bitflip(err)) || bytes != priv->u_boot_env_size) {
- 		dev_err(dev, "Failed to read from mtd: %d\n", err);
- 		goto err_kfree;
- 	}
-@@ -179,8 +180,8 @@ static int u_boot_env_parse(struct u_boot_env *priv)
- 		break;
- 	}
- 	crc32 = le32_to_cpu(*(__le32 *)(buf + crc32_offset));
--	crc32_data_len = priv->mtd->size - crc32_data_offset;
--	data_len = priv->mtd->size - data_offset;
-+	crc32_data_len = priv->u_boot_env_size - crc32_data_offset;
-+	data_len = priv->u_boot_env_size - data_offset;
- 
- 	calc = crc32(~0, buf + crc32_data_offset, crc32_data_len) ^ ~0L;
- 	if (calc != crc32) {
-@@ -189,7 +190,7 @@ static int u_boot_env_parse(struct u_boot_env *priv)
- 		goto err_kfree;
- 	}
- 
--	buf[priv->mtd->size - 1] = '\0';
-+	buf[priv->u_boot_env_size - 1] = '\0';
- 	err = u_boot_env_add_cells(priv, buf, data_offset, data_len);
- 	if (err)
- 		dev_err(dev, "Failed to add cells: %d\n", err);
-@@ -224,6 +225,10 @@ static int u_boot_env_probe(struct platform_device *pdev)
- 		return PTR_ERR(priv->mtd);
- 	}
- 
-+	/* In absence of a custom env size, use the full mtd partition size */
-+	if (of_property_read_u32(np, "u-boot,env-size", &priv->u_boot_env_size))
-+		priv->u_boot_env_size = priv->mtd->size;
+-	if (!mac_pton(buf, mac))
++	/* ASCII address might need to be normalized, try to parse it */
++	if (bytes != 3 * ETH_ALEN - 1) {
++		u8 tmp_mac[3 * ETH_ALEN - 1];
++		int i = 0, j = 0;
 +
- 	err = u_boot_env_parse(priv);
- 	if (err)
- 		return err;
-@@ -232,7 +237,7 @@ static int u_boot_env_probe(struct platform_device *pdev)
- 	config.cells = priv->cells;
- 	config.ncells = priv->ncells;
- 	config.priv = priv;
--	config.size = priv->mtd->size;
-+	config.size = priv->u_boot_env_size;
++		while (i < bytes) {
++			/* First check if we need to handle a reduced section
++			 * or we are handling the last byte.
++			 * Example of reduced section:
++			 * - a:XX:XX:XX:XX:XX
++			 * - XX:a:XX:XX:XX:XX
++			 * - XX:XX:XX:XX:XX:a
++			 */
++			if (src_mac[i + 1] == ':' || i + 1 == bytes) {
++				tmp_mac[j] = '0';
++				tmp_mac[j + 1] = src_mac[i];
++				if (src_mac[i + 1] == ':')
++					tmp_mac[j + 2] = src_mac[i + 1];
++				i += 2;
++			/* Handle a full section or we are handling the last 2 byte.
++			 * Example of full section:
++			 * - aa:XX:XX:XX:XX:XX
++			 * - XX:aa:XX:XX:XX:XX
++			 * - XX:XX:XX:XX:XX:aa
++			 */
++			} else if (src_mac[i + 2] == ':' || i + 2 == bytes) {
++				tmp_mac[j] = src_mac[i];
++				tmp_mac[j + 1] = src_mac[i + 1];
++				if (src_mac[i + 2] == ':')
++					tmp_mac[j + 2] = src_mac[i + 2];
++				i += 3;
++			/* Return -EINVAL if we have a not valid ascii address.
++			 * We can use the logic of missing ':' to validate a
++			 * correct ASCII address.
++			 */
++			} else {
++				return -EINVAL;
++			}
++			j += 3;
++		}
++
++		/* Parse the normalized mac instead of the nvmem cell */
++		src_mac = tmp_mac;
++	}
++
++	if (!mac_pton(src_mac, mac))
+ 		return -EINVAL;
  
- 	return PTR_ERR_OR_ZERO(devm_nvmem_register(dev, &config));
- }
+ 	if (index)
 -- 
 2.40.1
 
