@@ -2,119 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C391F75EF00
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165A775EF04
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbjGXJVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 05:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
+        id S231186AbjGXJW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 05:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231613AbjGXJVD (ORCPT
+        with ESMTP id S230225AbjGXJW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 05:21:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F491A5
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:21:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C02F61006
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:21:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C06EC433C7;
-        Mon, 24 Jul 2023 09:20:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690190461;
-        bh=hYZSp23/VZnyiPenBn/BSzT12KqKsEamnSBdtafgomc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OP36OM8W0zUYoWak6ujK1nziRzxIwc3NzUMcDxlJb3NcXVc/BeTct4m+aQvAMsQIN
-         ejeCmrw6fAV+i/Z/AgnOItsEeDwU4VfYrQKlx0/tTZgNchGLAXZ28QI5B6PdYVQqlt
-         FvBfY038tmRqh32hVXBWfABl1ZBMMBZxioXJtCyI7yOqFbc3YtduUO7Noby9r26NH/
-         GAyExsvv/UH3PtcUApVZ0gtBRzLldGeOpD5z2RgdOGfNSp6Mizs5osLguKnWeww1s1
-         zIza8uCegyQrtFn7XLhoYXXniBWRxqVax1lveb2yY4IzXP1OHcXHNOwQxxmwt/yczO
-         m21AK7S3JqWFQ==
-Date:   Mon, 24 Jul 2023 10:20:55 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Zheng Hacker <hackerzheng666@gmail.com>
-Cc:     Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Zheng Wang <zyytlz.wz@163.com>, davem@davemloft.net,
-        linyunsheng@huawei.com, edumazet@google.com, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        1395428693sheep@gmail.com, alex000young@gmail.com
-Subject: Re: [PATCH net v3] net: ravb: Fix possible UAF bug in ravb_remove
-Message-ID: <20230724092055.GB11203@google.com>
-References: <20230311180630.4011201-1-zyytlz.wz@163.com>
- <20230710114253.GA132195@google.com>
- <20230710091545.5df553fc@kernel.org>
- <20230712115633.GB10768@google.com>
- <CAJedcCzRVSW7_R5WN0v3KdUQGdLEA88T3V2YUKmQO+A+uCQU8Q@mail.gmail.com>
- <a116e972-dfcf-6923-1ad3-a40870e02f6a@omp.ru>
- <CAJedcCz1ynutATi9qev1t3-moXti_19ZJSzgC2t-5q4JAYG3dw@mail.gmail.com>
- <CAJedcCydqmVBrNq_RCDF2gRds39XqWORFi32MV+9LGa5p28dPQ@mail.gmail.com>
- <20230717130408.GC1082701@google.com>
+        Mon, 24 Jul 2023 05:22:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE954133
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:21:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690190503;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ijXK5mx/mHT57SLCIb40VpMSvRABTcruzVYNxBiTMvo=;
+        b=PnCPT/QSuHfGQQiO8obUoFTHlK3/o3+eICUySW+UHFafFTx0hgOaO//VAUDeumtt19WNU3
+        5r9GcaCMyF9IJPAZG4wAV2hX/kHmujyPxDBMRPMG3jq9Jre+wbLbnUTnHu5EjcKRjMXOrc
+        lL0Tv9wYBEUUAGrYIG1kqRno7adBhzM=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-90-EdYVnII9P4Op_50fA5AvRg-1; Mon, 24 Jul 2023 05:21:41 -0400
+X-MC-Unique: EdYVnII9P4Op_50fA5AvRg-1
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1b88d18c2c6so4237415ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:21:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690190500; x=1690795300;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ijXK5mx/mHT57SLCIb40VpMSvRABTcruzVYNxBiTMvo=;
+        b=gTcqa/bX6NLZzGrByP88JQ+48k0xKtZKApOzwFVKRzAr7BP6uuCQPOEXO+BNQSJw/r
+         DNkDcsJRKM3CAfIEWa+t0ypYcuf3iEoU0BPAkNH/dzhI6q28jYP5Tnq51RGHxyArIvKk
+         WYkROtn+N3oEzGbdRogkcPk/ku2Xjkd9sqaU0MS88hmYQuNJ3zIPal6org4VqFnjMBaT
+         1SRV97bsl8K8I04uXbVaJhZlPWUen1xCBJOqnCi7yb9EcZWnLo/erT9u/xxAZEYBimqk
+         C//fcj7DFUQMEhECzF+33iQfC8qypIKDgCuJ34RMG6rYV2VCC9DMlB6QCVwsZsUmI4Db
+         Nk5Q==
+X-Gm-Message-State: ABy/qLZgR4yOE0EwoxRBzbFT9Vp/8upJNI/aeBeoJDpVGVb12u1dKUKO
+        EHf1xGAp6/2jvEnEe+hOdctPE11WVAjxam1rtl9y7u2+TFlJogSxJ2Aq4K41Qj5ZuBYTzOPok3h
+        uw8YAYHxeuEsjnppznT26RLMz
+X-Received: by 2002:a17:903:24f:b0:1b8:ac61:ffcd with SMTP id j15-20020a170903024f00b001b8ac61ffcdmr12283766plh.3.1690190500639;
+        Mon, 24 Jul 2023 02:21:40 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEZg+XWG7wausr9JUrEDKdubfGzKS3ftfwX+fiU3qfVPHFuyHIzNTMWW2KHzK0G7Dd2zhpA5A==
+X-Received: by 2002:a17:903:24f:b0:1b8:ac61:ffcd with SMTP id j15-20020a170903024f00b001b8ac61ffcdmr12283739plh.3.1690190500295;
+        Mon, 24 Jul 2023 02:21:40 -0700 (PDT)
+Received: from [10.66.61.39] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id n10-20020a170902e54a00b001bb34ae3f47sm8365727plf.122.2023.07.24.02.21.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 02:21:39 -0700 (PDT)
+Message-ID: <86b36980-0a3b-7f56-44b4-079e8058021e@redhat.com>
+Date:   Mon, 24 Jul 2023 17:21:34 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230717130408.GC1082701@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v7 07/12] KVM: arm64: Implement
+ __kvm_tlb_flush_vmid_range()
+Content-Language: en-US
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>
+References: <20230722022251.3446223-1-rananta@google.com>
+ <20230722022251.3446223-8-rananta@google.com>
+From:   Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <20230722022251.3446223-8-rananta@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 Jul 2023, Lee Jones wrote:
 
-> On Sun, 16 Jul 2023, Zheng Hacker wrote:
-> > Zheng Hacker <hackerzheng666@gmail.com> 于2023年7月16日周日 10:11写道：
-> > >
-> > > Hello,
-> > >
-> > > This bug is found by static analysis. I'm sorry that my friends apply
-> > > for a CVE number before we really fix it. We made a list about the
-> > > bugs we have submitted and wouldn't disclose them before the fix. But
-> > > we had a inconsistent situation last month. And we applied it by
-> > > mistake foe we thought we had fixed it. And so sorry about my late
-> > > reply, I'll see the patch right now.
-> > >
-> > > Best regards,
-> > > Zheng Wang
-> > >
-> > > Sergey Shtylyov <s.shtylyov@omp.ru> 于2023年7月16日周日 04:48写道：
-> > > >
-> > > > On 7/15/23 7:07 PM, Zheng Hacker wrote:
-> > > >
-> > > > > Sorry for my late reply. I'll see what I can do later.
-> > > >
-> > > >    That's good to hear!
-> > > >    Because I'm now only able to look at it during weekends...
-> > > >
-> > > > > Lee Jones <lee@kernel.org> 于2023年7月12日周三 19:56写道：
-> > > > >>
-> > > > >> On Mon, 10 Jul 2023, Jakub Kicinski wrote:
-> > > > >>
-> > > > >>> On Mon, 10 Jul 2023 12:42:53 +0100 Lee Jones wrote:
-> > > > >>>> For better or worse, it looks like this issue was assigned a CVE.
-> > > > >>>
-> > > > >>> Ugh, what a joke.
-> > > > >>
-> > > > >> I think that's putting it politely. :)
-> >
-> > After reviewing the code, I think it's better to put the code in
-> > ravb_remove. For the ravb_remove is bound with the device and
-> > ravb_close is bound with the file. We may not call ravb_close if
-> > there's no file opened.
+
+On 7/22/23 10:22, Raghavendra Rao Ananta wrote:
+> Define  __kvm_tlb_flush_vmid_range() (for VHE and nVHE)
+> to flush a range of stage-2 page-tables using IPA in one go.
+> If the system supports FEAT_TLBIRANGE, the following patches
+> would conviniently replace global TLBI such as vmalls12e1is
+> in the map, unmap, and dirty-logging paths with ripas2e1is
+> instead.
 > 
-> When you do submit this, would you be kind enough to Cc me please?
-
-Could I trouble you for an update on this please?
-
-Have you submitted v4 yet?
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>   arch/arm64/include/asm/kvm_asm.h   |  3 +++
+>   arch/arm64/kvm/hyp/nvhe/hyp-main.c | 11 +++++++++++
+>   arch/arm64/kvm/hyp/nvhe/tlb.c      | 30 ++++++++++++++++++++++++++++++
+>   arch/arm64/kvm/hyp/vhe/tlb.c       | 27 +++++++++++++++++++++++++++
+>   4 files changed, 71 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
+> index 7d170aaa2db4..2c27cb8cf442 100644
+> --- a/arch/arm64/include/asm/kvm_asm.h
+> +++ b/arch/arm64/include/asm/kvm_asm.h
+> @@ -70,6 +70,7 @@ enum __kvm_host_smccc_func {
+>   	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_ipa,
+>   	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_ipa_nsh,
+>   	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid,
+> +	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_range,
+>   	__KVM_HOST_SMCCC_FUNC___kvm_flush_cpu_context,
+>   	__KVM_HOST_SMCCC_FUNC___kvm_timer_set_cntvoff,
+>   	__KVM_HOST_SMCCC_FUNC___vgic_v3_read_vmcr,
+> @@ -229,6 +230,8 @@ extern void __kvm_tlb_flush_vmid_ipa(struct kvm_s2_mmu *mmu, phys_addr_t ipa,
+>   extern void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mmu *mmu,
+>   					 phys_addr_t ipa,
+>   					 int level);
+> +extern void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> +					phys_addr_t start, unsigned long pages);
+>   extern void __kvm_tlb_flush_vmid(struct kvm_s2_mmu *mmu);
+>   
+>   extern void __kvm_timer_set_cntvoff(u64 cntvoff);
+> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> index a169c619db60..857d9bc04fd4 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> @@ -135,6 +135,16 @@ static void handle___kvm_tlb_flush_vmid_ipa_nsh(struct kvm_cpu_context *host_ctx
+>   	__kvm_tlb_flush_vmid_ipa_nsh(kern_hyp_va(mmu), ipa, level);
+>   }
+>   
+> +static void
+> +handle___kvm_tlb_flush_vmid_range(struct kvm_cpu_context *host_ctxt)
+> +{
+> +	DECLARE_REG(struct kvm_s2_mmu *, mmu, host_ctxt, 1);
+> +	DECLARE_REG(phys_addr_t, start, host_ctxt, 2);
+> +	DECLARE_REG(unsigned long, pages, host_ctxt, 3);
+> +
+> +	__kvm_tlb_flush_vmid_range(kern_hyp_va(mmu), start, pages);
+> +}
+> +
+>   static void handle___kvm_tlb_flush_vmid(struct kvm_cpu_context *host_ctxt)
+>   {
+>   	DECLARE_REG(struct kvm_s2_mmu *, mmu, host_ctxt, 1);
+> @@ -327,6 +337,7 @@ static const hcall_t host_hcall[] = {
+>   	HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa),
+>   	HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa_nsh),
+>   	HANDLE_FUNC(__kvm_tlb_flush_vmid),
+> +	HANDLE_FUNC(__kvm_tlb_flush_vmid_range),
+>   	HANDLE_FUNC(__kvm_flush_cpu_context),
+>   	HANDLE_FUNC(__kvm_timer_set_cntvoff),
+>   	HANDLE_FUNC(__vgic_v3_read_vmcr),
+> diff --git a/arch/arm64/kvm/hyp/nvhe/tlb.c b/arch/arm64/kvm/hyp/nvhe/tlb.c
+> index b9991bbd8e3f..09347111c2cd 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/tlb.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/tlb.c
+> @@ -182,6 +182,36 @@ void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mmu *mmu,
+>   	__tlb_switch_to_host(&cxt);
+>   }
+>   
+> +void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> +				phys_addr_t start, unsigned long pages)
+> +{
+> +	struct tlb_inv_context cxt;
+> +	unsigned long stride;
+> +
+> +	/*
+> +	 * Since the range of addresses may not be mapped at
+> +	 * the same level, assume the worst case as PAGE_SIZE
+> +	 */
+> +	stride = PAGE_SIZE;
+> +	start = round_down(start, stride);
+> +
+> +	/* Switch to requested VMID */
+> +	__tlb_switch_to_guest(mmu, &cxt, false);
+> +
+> +	__flush_tlb_range_op(ipas2e1is, start, pages, stride, 0, 0, false);
+> +
+> +	dsb(ish);
+> +	__tlbi(vmalle1is);
+> +	dsb(ish);
+> +	isb();
+> +
+> +	/* See the comment in __kvm_tlb_flush_vmid_ipa() */
+> +	if (icache_is_vpipt())
+> +		icache_inval_all_pou();
+> +
+> +	__tlb_switch_to_host(&cxt);
+> +}
+> +
+>   void __kvm_tlb_flush_vmid(struct kvm_s2_mmu *mmu)
+>   {
+>   	struct tlb_inv_context cxt;
+> diff --git a/arch/arm64/kvm/hyp/vhe/tlb.c b/arch/arm64/kvm/hyp/vhe/tlb.c
+> index e69da550cdc5..02f4ed2fd715 100644
+> --- a/arch/arm64/kvm/hyp/vhe/tlb.c
+> +++ b/arch/arm64/kvm/hyp/vhe/tlb.c
+> @@ -138,6 +138,33 @@ void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mmu *mmu,
+>   	dsb(nsh);
+>   	__tlbi(vmalle1);
+>   	dsb(nsh);
+> +
+> +	__tlb_switch_to_host(&cxt);
+> +}
+> +
+> +void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> +				phys_addr_t start, unsigned long pages)
+> +{
+> +	struct tlb_inv_context cxt;
+> +	unsigned long stride;
+> +
+> +	/*
+> +	 * Since the range of addresses may not be mapped at
+> +	 * the same level, assume the worst case as PAGE_SIZE
+> +	 */
+> +	stride = PAGE_SIZE;
+> +	start = round_down(start, stride);
+> +
+> +	dsb(ishst);
+> +
+> +	/* Switch to requested VMID */
+> +	__tlb_switch_to_guest(mmu, &cxt);
+> +
+> +	__flush_tlb_range_op(ipas2e1is, start, pages, stride, 0, 0, false);
+> +
+> +	dsb(ish);
+> +	__tlbi(vmalle1is);
+> +	dsb(ish);
+>   	isb();
+>   
+>   	__tlb_switch_to_host(&cxt);
 
 -- 
-Lee Jones [李琼斯]
+Shaoqin
+
