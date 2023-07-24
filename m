@@ -2,113 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A801075FA3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A0275FA40
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbjGXOxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35144 "EHLO
+        id S230071AbjGXOzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjGXOxr (ORCPT
+        with ESMTP id S229590AbjGXOzm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:53:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331A810C7;
-        Mon, 24 Jul 2023 07:53:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BCBBA611CE;
-        Mon, 24 Jul 2023 14:53:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7962AC433CA;
-        Mon, 24 Jul 2023 14:53:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690210426;
-        bh=JvxzI2ec4nmjfcSx7Dk5ZGMMTg3mm1W+45Wt9adUQn0=;
-        h=From:Date:Subject:To:Cc:From;
-        b=Hyaiu9wKl1597Jykx6MIkp3p2w9NyKmkR46knQGiHN+WHxcQuZ8zqKcD1C4FUkjNE
-         HrW3fjhHWmG4gaVE6NxDtdc76VEWgurYVISMJra3uh8JaJ+U35YQ16E5NkU0YdTt3b
-         jBYsXGa3ji/BiaOxYVqTjxdIBH1+zgqOCXny6S2zztvDOAK0192iG+MMQ1KdJvWBdw
-         wItdKVoH8hcFCSh/UXRDwbaYSZDTEcvIvOnEYySwOc5CtLkamD94CSB/MDiZVZgPyG
-         ZRw7JIJysp2P4UqjOIhOMgnNoT65YXvD5K8MzUbJ9dbgQL4sqVo/A9dXqWfBAhWQVz
-         GGZ+2DI6XvhnA==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Mon, 24 Jul 2023 10:53:39 -0400
-Subject: [PATCH RFC] nfsd: set missing after_change as before_change + 1
+        Mon, 24 Jul 2023 10:55:42 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B627C10C0;
+        Mon, 24 Jul 2023 07:55:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690210540; x=1721746540;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=0nQmreZIIFL5rEUPYPNOo7mftuofidoQGo9palwNguw=;
+  b=Pb9+CNagUg5PRfUxXh8qCaZXRgU/7qe0oG2ZZzQ/4ho3mPLPO0ICuP1/
+   00ouNESRfd2QaQJxfwjXTV/6HA2/ley2CVb7jEFfB4vkTOh6EU6cSax9P
+   cZ0QFCGWZiWVyDoPX9liuS3Cv0JoOwFlNXPL8tw+0y6FLbPevLP1/OC23
+   o4PaCpFImeNkULTymvDcVouCn49vbcjFegCU8sTzd031rRMAPwEu2nTRO
+   1XYrZ/2kmxqlWhN5LafhukewA6rpYkmOiI7wId6OZNvLDGs4BJH38ST4g
+   eL6dUtAebx1G6aEuklNkhrN/dBgXGIp9h7eG1zGIgacN0AC6WZN4Ulcfy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="398369098"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="398369098"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 07:55:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="899520928"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="899520928"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.48.113])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 24 Jul 2023 07:55:38 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "x86@kernel.org" <x86@kernel.org>, "tj@kernel.org" <tj@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
+        "Chatre, Reinette" <reinette.chatre@intel.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>
+Subject: Re: [PATCH v3 03/28] x86/sgx: Add 'struct sgx_epc_lru_lists' to
+ encapsulate lru list(s)
+References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
+ <20230712230202.47929-4-haitao.huang@linux.intel.com>
+ <CU4GHCJTRKLZ.1RK23NWPHJGNI@seitikki>
+ <op.17794m01wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <4f5496d2e0ea8edba430e7de7304bdd840616146.camel@intel.com>
+Date:   Mon, 24 Jul 2023 09:55:37 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230724-bz2223560-v1-1-b6da868c0fc6@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAHKQvmQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDcyMT3aQqIyMjY1MzA13T1BSzpGTjRNOUJHMloPqCotS0zAqwWdFKQW7
- OSrG1tQC4mS3XYAAAAA==
-To:     Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1219; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=JvxzI2ec4nmjfcSx7Dk5ZGMMTg3mm1W+45Wt9adUQn0=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBkvpB5K3xyXadUePxkbITjV0wr5i3sW9yPqwRuH
- fq29BBvN0WJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZL6QeQAKCRAADmhBGVaC
- FauDD/0S+0CLT+t0uMc0+7sYPkn462IXnlMUmCDYC4Uf2epjFLYX+Lpjoq9e3AlQRNjV7lM7fXa
- 1IuP7V+HONzuV5H0X0C8ZQRaMngyMA1v6WpEGyYZivvecwLmlvcO0WS1bAnFXc1gldE3SPfTEgB
- IFqDqcKFEAclOeAkslrXM++Q8vON7icGc9pAud23iWZFXg4NqGKcktWvKPLyi8kzF38W44LuUBc
- IiKLNjoinEhpfst2C0q9181By19+INvO9q592rYRAJisU6HRut7lpZ6Yb/xgOtB6vYDwhjhFJOy
- xXRsIftqYy2e6IHMLBnZygXG6Dt14Y8qlaHxGGFloFJzEDlrcnYpX/LCiAfAz4/fiID97zjyN7/
- cnqL+e4U3oDEoGJ1W+CvIeFX/iAurm0rGr569jtzrqzm8MzPw8Xf1CdDFaMmJkyq6mwxOFkgCZ2
- HqecpHrzFKkVu2Jm+qJMyMIPBZBEHdp7N2ebzkOWNiKTGQ5sevrGfCN6yvrJ2Y+d8uWois0uhUk
- T1OfKn6H8Sp8JGU1cJYJSHASAqA+pfuYot3HEAzrHWI/dGQSiatrpVGLT53yX8lQxIpbs6aVKfW
- DdrtMrAC++R23oX2IA/SpJYz1CcT6HkMo+Mu4pReJUeDKgdzWJaulo4p4GDaudxzlXNo6X2w51D
- A9CryTIjyVsUaZA==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.18lc2zw6wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <4f5496d2e0ea8edba430e7de7304bdd840616146.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the event that we can't fetch post_op_attr attributes, we still need
-to set a value for the after_change. The operation has already happened,
-so we're not able to return an error at that point, but we do want to
-ensure that the client knows that its cache should be invalidated.
+Hi Kai
+On Mon, 24 Jul 2023 05:04:48 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-If we weren't able to fetch post-op attrs, then just set the
-after_change to before_change + 1. The atomic flag should already be
-clear in this case.
+> On Mon, 2023-07-17 at 08:23 -0500, Haitao Huang wrote:
+>> On Mon, 17 Jul 2023 07:45:36 -0500, Jarkko Sakkinen <jarkko@kernel.org>
+>> wrote:
+>>
+>> > On Wed Jul 12, 2023 at 11:01 PM UTC, Haitao Huang wrote:
+>> > > From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> > >
+>> > > Introduce a data structure to wrap the existing reclaimable list
+>> > > and its spinlock in a struct to minimize the code changes needed
+>> > > to handle multiple LRUs as well as reclaimable and non-reclaimable
+>> > > lists. The new structure will be used in a following set of patches  
+>> to
+>> > > implement SGX EPC cgroups.
+>
+> Although briefly mentioned in the first patch, it would be better to put  
+> more
+> background about the "reclaimable" and "non-reclaimable" thing here,  
+> focusing on
+> _why_ we need multiple LRUs (presumably you mean two lists: reclaimable  
+> and non-
+> reclaimable).
+>
+Sure I can add a little more background to introduce the  
+reclaimable/unreclaimable concept. But why we need multiple LRUs would be  
+self-evident in later patches, not sure I will add details here.
 
-Suggested-by: Neil Brown <neilb@suse.de>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/nfsd/nfs4proc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>> > >
+>> > > The changes to the structure needed for unreclaimable lists will be
+>> > > added in later patches.
+>> > >
+>> > > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> > > Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> > > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> > > Cc: Sean Christopherson <seanjc@google.com>
+>> > >
+>> > > V3:
+>> > > Removed the helper functions and revised commit messages
+>
+> Please put change history into:
+>
+> ---
+>   change history
+> ---
+>
+> So it can be stripped away when applying the patch.
+>
+Will do that.
 
-diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-index 3f6710c9c5c9..f0f318e78630 100644
---- a/fs/nfsd/nfs4proc.c
-+++ b/fs/nfsd/nfs4proc.c
-@@ -411,7 +411,7 @@ set_change_info(struct nfsd4_change_info *cinfo, struct svc_fh *fhp)
- 	if (WARN_ON_ONCE(!fhp->fh_pre_saved))
- 		cinfo->before_change = 0;
- 	if (!fhp->fh_post_saved)
--		cinfo->after_change = 0;
-+		cinfo->after_change = cinfo->before_change + 1;
- }
- 
- static __be32
+>> > > ---
+>> > >  arch/x86/kernel/cpu/sgx/sgx.h | 17 +++++++++++++++++
+>> > >  1 file changed, 17 insertions(+)
+>> > >
+>> > > diff --git a/arch/x86/kernel/cpu/sgx/sgx.h
+>> > > b/arch/x86/kernel/cpu/sgx/sgx.h
+>> > > index f6e3c5810eef..77fceba73a25 100644
+>> > > --- a/arch/x86/kernel/cpu/sgx/sgx.h
+>> > > +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+>> > > @@ -92,6 +92,23 @@ static inline void *sgx_get_epc_virt_addr(struct
+>> > > sgx_epc_page *page)
+>> > >  	return section->virt_addr + index * PAGE_SIZE;
+>> > >  }
+>> > >
+>> > > +/*
+>> > > + * This data structure wraps a list of reclaimable EPC pages, and a
+>> > > list of
+>> > > + * non-reclaimable EPC pages and is used to implement a LRU policy
+>> > > during
+>> > > + * reclamation.
+>> > > + */
+>
+> I'd prefer to not mention the "non-reclaimable" thing in this patch, but  
+> defer
+> to the one actually introduces the "non-reclaimable" list.  Actually, I  
+> don't
+> think we even need this comment, given you have this in the structure:
+>
+> 	struct list_head reclaimable;
+>
 
----
-base-commit: 97a5d0146ef443df148805a4e9c3c44111f14ab1
-change-id: 20230724-bz2223560-5ed6bc3a5db7
+Agreed.
 
-Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
+> Which already explains the "reclaimable" list.  I suppose the  
+> non-reclaimable
+> list would be named similarly thus need no comment either.
+>
+> Also, I am wondering why you need to split this out as a separate  
+> patch.  It
+> basically does nothing.  To me you should just merge this to the next  
+> patch,
 
+I think Kristen splitted the original patch based on Dave's comments:
+
+https://lore.kernel.org/all/e71d76b2-4368-4627-abd4-2163e6786a20@intel.com/
+
+> which actually does what you claimed in the changelog:
+>
+> 	Introduce a data structure to wrap the existing reclaimable list and 
+> 	its spinlock ...
+>
+> Then this can be an infrastructure change patch, which doesn't bring any
+> functional change, to support the non-reclaimable list.
+>
+>
+>> > > +struct sgx_epc_lru_lists {
+>> > > +	/* Must acquire this lock to access */
+>> > > +	spinlock_t lock;
+>> >
+>> > Isn't this self-explanatory, why the inline comment?
+>>
+>> I got a warning from the checkpatch script complaining this lock needs
+>> comments.
+>
+> I suspected this, so I applied this patch, removed the comment,  
+> generated a new
+> patch, and run checkpatch.pl for it.  It didn't report any warning/error  
+> in my
+> testing.
+>
+> Are you sure you got a warning?
+
+I did a reran and it's actually a "CHECK" I got:
+
+$ ./scripts/checkpatch.pl --strict  
+0001-x86-sgx-Add-struct-sgx_epc_lru_lists-to-encapsulate-.patch
+CHECK: spinlock_t definition without comment
+#41: FILE: arch/x86/kernel/cpu/sgx/sgx.h:101:
++       spinlock_t lock;
+
+total: 0 errors, 0 warnings, 1 checks, 22 lines checked
+
+Thanks
+Haitao
