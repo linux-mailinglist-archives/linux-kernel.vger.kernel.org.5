@@ -2,50 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9360C75F647
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16CC75F648
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbjGXM13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54370 "EHLO
+        id S231129AbjGXM1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjGXM11 (ORCPT
+        with ESMTP id S231145AbjGXM1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:27:27 -0400
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85ECD10CB;
-        Mon, 24 Jul 2023 05:27:23 -0700 (PDT)
-Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 2AD0A61E5FE01;
-        Mon, 24 Jul 2023 14:26:44 +0200 (CEST)
-Message-ID: <75dea485-9bdf-355f-0aff-a26de0998b80@molgen.mpg.de>
-Date:   Mon, 24 Jul 2023 14:26:43 +0200
+        Mon, 24 Jul 2023 08:27:35 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F4110CB;
+        Mon, 24 Jul 2023 05:27:30 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbc244d307so40999905e9.1;
+        Mon, 24 Jul 2023 05:27:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690201648; x=1690806448;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SWM93a9xu6qm4bqV/ft0sQuj37BqnW4nnz/nyihWvyk=;
+        b=qO7HYU0kl3lmlv91vLm2frzUvgIIcr/xv62HYg7vRMOsA1rTV4UhDhHJJNY/UNXSk7
+         Oyi+xR1ONajaFHBdjsY59qfuIrsEDNEAazUdOxkHqpwgo3S6YmmTHrQWTyxnxNnc+g0L
+         hFn0Rg8R+Dmahmdg6llDxzFXBoN3nYT+gE4DJ+XpEM0kPFc1g0Ybnf7JInOg5vigE1Hh
+         DVbpXQt9I5Eamy1WuJUut768365Of4jeJsu9Qt0MGPqPA2ANeTZ2lJo9aeECHfhGhjK8
+         qLZjtzNdhWHcOLrYRMTzYuHl18I5nhOawkZPfqJwB2ekPZWV8gkwdLtkLJMKIAqBB3sB
+         3bDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690201648; x=1690806448;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=SWM93a9xu6qm4bqV/ft0sQuj37BqnW4nnz/nyihWvyk=;
+        b=fvDAUT5C1fxe/Aph9Rb2aixvzzce7RkdsaUDXrsY9iWOHdybFgiEkaVy7mdqHnie49
+         KcgWFl+LkyMT5ZQBIQ3wpF8u8TFbb5m9hIVLaq2DmL3V9dLF0VnOJdS00kjvZVVACjXK
+         yx/Why35SYSMmWl4ZeMQ6gAtapjApac/9NXFqOfiKMscMxV8UKHBRNxkLTrOzJVr0Hnb
+         W5Anl1RsR0ktjpGu6JWdk6d9TjgbA9HVI5D+gKV70a5Zj3OAx9wdOgu7DUhKdg1C7djZ
+         UPZBv9OIANnDDTwmbFqgpP+v8VQK1Lxxa4OPSLLoYpHxpDiykDox1S1KUrUPqr+bPsId
+         btJA==
+X-Gm-Message-State: ABy/qLYq2lQ6JXVGFUQSg56iVYvmYZyN3svIddp5fk+OqdCeaNfCr4jb
+        EnF6JCKhwRQQYnTMVm0Pi4j4Kkf8g3s=
+X-Google-Smtp-Source: APBJJlFfX4JupHVdcocdDdxAtai6IVeZqCcBHiRZQ08wzVfXyG/pYCDFjufiN62ne4tPmWbdTZmFdA==
+X-Received: by 2002:a5d:69c3:0:b0:315:96ca:dcab with SMTP id s3-20020a5d69c3000000b0031596cadcabmr8418583wrw.35.1690201648414;
+        Mon, 24 Jul 2023 05:27:28 -0700 (PDT)
+Received: from [192.168.0.101] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.googlemail.com with ESMTPSA id n8-20020adfe348000000b00315af025098sm12840340wrj.46.2023.07.24.05.27.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 05:27:27 -0700 (PDT)
+Message-ID: <bcf97046-e336-712a-ac68-7fd194f2953e@gmail.com>
+Date:   Mon, 24 Jul 2023 13:27:26 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v1] Bluetooth: Add timeout in disconnect when power off
 Content-Language: en-US
-To:     Howard Chung <howardchung@google.com>
-Cc:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        Archie Pusaka <apusaka@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20230724111206.3067352-1-howardchung@google.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20230724111206.3067352-1-howardchung@google.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Youling Tang <tangyouling@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        loongarch@lists.linux.dev,
+        "bpf@vger.kernel.org >> bpf" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   "Colin King (gmail)" <colin.i.king@gmail.com>
+Subject: re: LoongArch: Add BPF JIT support
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,186 +76,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Howard,
+Hi,
+
+Static analysis with clang scan build on arch/loongarch/net/bpf_jit.h 
+has detected a potential issue with the following commit:
+
+commit 5dc615520c4dfb358245680f1904bad61116648e
+Author: Tiezhu Yang <yangtiezhu@loongson.cn>
+Date:   Wed Oct 12 16:36:20 2022 +0800
+
+     LoongArch: Add BPF JIT support
+
+This issue is as follows:
+
+arch/loongarch/net/bpf_jit.h:153:23: warning: Logical disjunction always 
+evaluates to true: imm_51_31 != 0 || imm_51_31 != 0x1fffff. 
+[incorrectLogicOperator]
+    if (imm_51_31 != 0 || imm_51_31 != 0x1fffff) {
 
 
-Thank you for your patch. Some minor nits.
+The statement seems to be always true. I suspect it should it be instead:
 
-Am 24.07.23 um 13:12 schrieb Howard Chung:
-> For some controllers, it is known that when the HCI disconnect and HCI
-> Reset are too close to each other, the LMP disconnect command might not
-> been sent out yet and the command will be dropped by the controoler when
+    if (imm_51_31 != 0 && imm_51_31 != 0x1fffff) {
 
-1.  s/been/be/ or *have been*?
-2.  controller
+regards,
 
-> it is asked to reset itself. This could happen on powering off adapter.
-> 
-> One possible issue is that if a connection exists, and then powering off
-> and on adapter within a short time, then our host stack assumes the
-
-I do not understand the part of the first comma.
-
-> conntection was disconnected but this might not be true, so if we issue
-
-connection
-
-> a connection to the peer, it will fail with ACL Already Connected error.
-> 
-> This CL makes the host stack to wait for |HCI_EV_DISCONN_COMPLETE| when
-> powering off with a configurable timeout unless the timeout is set to 0.
-> 
-> Reviewed-by: Archie Pusaka <apusaka@google.com>
-> Signed-off-by: Howard Chung <howardchung@google.com>
-> ---
-> Hi upstream maintainers, this is tested with an AX211 device and Logi
-> K580 keyboard by the following procedures:
-> 1. pair the peer and stay connected.
-> 2. power off and on immediately
-> 3. observe that the btsnoop log is consistent with the configured
->     timeout.
-
-It’d be great to have this in the commit message.
-
->   include/net/bluetooth/hci_core.h |  1 +
->   net/bluetooth/hci_core.c         |  2 +-
->   net/bluetooth/hci_sync.c         | 38 +++++++++++++++++++++++---------
->   net/bluetooth/mgmt_config.c      |  6 +++++
->   4 files changed, 35 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-> index 8200a6689b39..ce44f9c60059 100644
-> --- a/include/net/bluetooth/hci_core.h
-> +++ b/include/net/bluetooth/hci_core.h
-> @@ -432,6 +432,7 @@ struct hci_dev {
->   	__u16		advmon_allowlist_duration;
->   	__u16		advmon_no_filter_duration;
->   	__u8		enable_advmon_interleave_scan;
-> +	__u16		discon_on_poweroff_timeout;
-
-I’d append the unit to the variable name: `discon_on_poweroff_timeout_ms`.
-
->   
->   	__u16		devid_source;
->   	__u16		devid_vendor;
-> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> index 0fefa6788911..769865494f45 100644
-> --- a/net/bluetooth/hci_core.c
-> +++ b/net/bluetooth/hci_core.c
-> @@ -2479,7 +2479,7 @@ struct hci_dev *hci_alloc_dev_priv(int sizeof_priv)
->   	hdev->adv_instance_cnt = 0;
->   	hdev->cur_adv_instance = 0x00;
->   	hdev->adv_instance_timeout = 0;
-> -
-> +	hdev->discon_on_poweroff_timeout = 0;	/* Default to no timeout */
->   	hdev->advmon_allowlist_duration = 300;
->   	hdev->advmon_no_filter_duration = 500;
->   	hdev->enable_advmon_interleave_scan = 0x00;	/* Default to disable */
-> diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
-> index 3348a1b0e3f7..260e9f05359c 100644
-> --- a/net/bluetooth/hci_sync.c
-> +++ b/net/bluetooth/hci_sync.c
-> @@ -5250,6 +5250,8 @@ static int hci_disconnect_sync(struct hci_dev *hdev, struct hci_conn *conn,
->   			       u8 reason)
->   {
->   	struct hci_cp_disconnect cp;
-> +	unsigned long timeout;
-
-Ditto.
-
-> +	int err;
->   
->   	if (conn->type == AMP_LINK)
->   		return hci_disconnect_phy_link_sync(hdev, conn->handle, reason);
-> @@ -5258,19 +5260,33 @@ static int hci_disconnect_sync(struct hci_dev *hdev, struct hci_conn *conn,
->   	cp.handle = cpu_to_le16(conn->handle);
->   	cp.reason = reason;
->   
-> -	/* Wait for HCI_EV_DISCONN_COMPLETE, not HCI_EV_CMD_STATUS, when the
-> -	 * reason is anything but HCI_ERROR_REMOTE_POWER_OFF. This reason is
-> -	 * used when suspending or powering off, where we don't want to wait
-> -	 * for the peer's response.
-> +	/* The HCI_ERROR_REMOTE_POWER_OFF is used when suspending or powering off,
-> +	 * so we don't want to waste time waiting for the reply of the peer.
-> +	 * However, if the configuration specified, we'll wait some time to give the
-
-“if the configuration specified” sounds strange to me.
-
-
-Kind regards,
-
-Paul
-
-
-> +	 * controller chance to actually send the disconnect command.
->   	 */
-> -	if (reason != HCI_ERROR_REMOTE_POWER_OFF)
-> -		return __hci_cmd_sync_status_sk(hdev, HCI_OP_DISCONNECT,
-> -						sizeof(cp), &cp,
-> -						HCI_EV_DISCONN_COMPLETE,
-> -						HCI_CMD_TIMEOUT, NULL);
-> +	if (reason == HCI_ERROR_REMOTE_POWER_OFF && !hdev->discon_on_poweroff_timeout) {
-> +		return __hci_cmd_sync_status(hdev, HCI_OP_DISCONNECT,
-> +					     sizeof(cp), &cp, HCI_CMD_TIMEOUT);
-> +	}
->   
-> -	return __hci_cmd_sync_status(hdev, HCI_OP_DISCONNECT, sizeof(cp), &cp,
-> -				     HCI_CMD_TIMEOUT);
-> +	if (reason == HCI_ERROR_REMOTE_POWER_OFF)
-> +		timeout = msecs_to_jiffies(hdev->discon_on_poweroff_timeout);
-> +	else
-> +		timeout = HCI_CMD_TIMEOUT;
-> +
-> +	err = __hci_cmd_sync_status_sk(hdev, HCI_OP_DISCONNECT,
-> +				       sizeof(cp), &cp,
-> +				       HCI_EV_DISCONN_COMPLETE,
-> +				       timeout, NULL);
-> +
-> +	/* Ignore the error in suspending or powering off case to avoid the procedure being
-> +	 * aborted.
-> +	 */
-> +	if (reason == HCI_ERROR_REMOTE_POWER_OFF)
-> +		return 0;
-> +
-> +	return err;
->   }
->   
->   static int hci_le_connect_cancel_sync(struct hci_dev *hdev,
-> diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_config.c
-> index 6ef701c27da4..f3194e3642d9 100644
-> --- a/net/bluetooth/mgmt_config.c
-> +++ b/net/bluetooth/mgmt_config.c
-> @@ -78,6 +78,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
->   		HDEV_PARAM_U16(advmon_allowlist_duration);
->   		HDEV_PARAM_U16(advmon_no_filter_duration);
->   		HDEV_PARAM_U8(enable_advmon_interleave_scan);
-> +		HDEV_PARAM_U16(discon_on_poweroff_timeout);
->   	} __packed rp = {
->   		TLV_SET_U16(0x0000, def_page_scan_type),
->   		TLV_SET_U16(0x0001, def_page_scan_int),
-> @@ -111,6 +112,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
->   		TLV_SET_U16(0x001d, advmon_allowlist_duration),
->   		TLV_SET_U16(0x001e, advmon_no_filter_duration),
->   		TLV_SET_U8(0x001f, enable_advmon_interleave_scan),
-> +		TLV_SET_U16(0x0020, discon_on_poweroff_timeout),
->   	};
->   
->   	bt_dev_dbg(hdev, "sock %p", sk);
-> @@ -186,6 +188,7 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
->   		case 0x001b:
->   		case 0x001d:
->   		case 0x001e:
-> +		case 0x0020:
->   			exp_type_len = sizeof(u16);
->   			break;
->   		case 0x001f:
-> @@ -314,6 +317,9 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
->   		case 0x0001f:
->   			hdev->enable_advmon_interleave_scan = TLV_GET_U8(buffer);
->   			break;
-> +		case 0x00020:
-> +			hdev->discon_on_poweroff_timeout = TLV_GET_LE16(buffer);
-> +			break;
->   		default:
->   			bt_dev_warn(hdev, "unsupported parameter %u", type);
->   			break;
+Colin
