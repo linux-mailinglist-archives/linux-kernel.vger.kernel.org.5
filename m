@@ -2,175 +2,892 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF39075E9F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B594B75E9F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjGXDA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 23:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60376 "EHLO
+        id S229968AbjGXDEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 23:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbjGXDAX (ORCPT
+        with ESMTP id S229713AbjGXDEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 23:00:23 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 21654185;
-        Sun, 23 Jul 2023 20:00:18 -0700 (PDT)
-Received: from loongson.cn (unknown [112.20.109.108])
-        by gateway (Coremail) with SMTP id _____8AxV_FA6b1kXvwIAA--.22978S3;
-        Mon, 24 Jul 2023 11:00:16 +0800 (CST)
-Received: from [192.168.100.8] (unknown [112.20.109.108])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxF8w56b1ki2U4AA--.48015S3;
-        Mon, 24 Jul 2023 11:00:12 +0800 (CST)
-Message-ID: <d7b825d7-0430-50b0-514a-8685362b640c@loongson.cn>
-Date:   Mon, 24 Jul 2023 11:00:09 +0800
+        Sun, 23 Jul 2023 23:04:46 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0029D186;
+        Sun, 23 Jul 2023 20:04:39 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fba03becc6so6187886e87.0;
+        Sun, 23 Jul 2023 20:04:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690167878; x=1690772678;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zJ2MvVQVBDrz821hBcvIzcyMAjKw4805uBRZSPiZvGg=;
+        b=lQuPvIitM2dCfnVlGx3mUUb3Xmjs8mEZd59L0klxlPqWJd8SQLw3XpFAtb3q5pZfkG
+         xP+m6kSQmZaz4BrZbqtyMAZB14WFGJ3tM0aX0tR9XgUnqLd37UL7HmyUn9hnumE8inDw
+         XGWzCR32oRjS/bdmMBtaIspTIg2W/rJDc8SAcVpVcyXgFjWt/kP3GN0fiJQD9eLaLn04
+         cfAmoLi/3VN8r1BEcRXY4JJLO0bOI3EoR434tNMB5wCZzxlAqRlIi8WuUMvlZmTrkaXF
+         uQncBU85XIdqo4HF9rgY4RJgsztEPI3wME5AW8CbUKlR2lu9+croxedcSefMxb/X9R6P
+         hfVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690167878; x=1690772678;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zJ2MvVQVBDrz821hBcvIzcyMAjKw4805uBRZSPiZvGg=;
+        b=Wo+6fXzP1RMeL3fstw4bJOlU37PySlvvm5AZVjRTcH0QJVvwTlSQ1WtABW9oza4WiL
+         vw26igh5ytUsRSiHki8/Z0H0HH39WyVIGkDpV0J2MSTM5WEz76PjkXHtxZ5n4in/J7Nz
+         KHLY+xrzIMehzQo4Qclaz7nz0lFLA/1VzgouqAWPL+mFiWgsmBbH80nHm5c3+1ReNZXN
+         4GvkcjPJ+mlTCLNN9DHZNLD5SSOoOExMQOrmVysLHktkT1Z1WK3gST9HAmbAXEl5MOne
+         mvHGInV+yGPYddXKgg51LAIye6ZO2rzN7WXC9/CdeaPR9AMmywMMBNyxh1Cj6zziSYGm
+         7t0w==
+X-Gm-Message-State: ABy/qLbqUElHIAsnhst2gmTaStDMiqIMhtci6wmEY1L3T8rBcKKr5qZC
+        f7Gh8K8ysLcBtXC3owunoxUUbR46mHHBreJ2VSE=
+X-Google-Smtp-Source: APBJJlEsdK9hCj5iUCJ0mJLZtXOpVf6Mnmw4QVR+Q30lALkY0wLeGos4SkJeo6+kmPvffN6/+Y5OsJdLoHZkHwFk4KM=
+X-Received: by 2002:a05:6512:33d0:b0:4fb:7758:4ec0 with SMTP id
+ d16-20020a05651233d000b004fb77584ec0mr4999230lfg.24.1690167877713; Sun, 23
+ Jul 2023 20:04:37 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH AUTOSEL 6.4 28/58] ALSA: hda: Add Loongson LS7A HD-Audio
- support
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Huacai Chen <chenhuacai@loongson.cn>, Takashi Iwai <tiwai@suse.de>,
-        bhelgaas@google.com, perex@perex.cz, tiwai@suse.com,
-        rafael@kernel.org, chenhuacai@kernel.org,
-        gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com,
-        mengyingkun@loongson.cn, fred.oh@linux.intel.com,
-        kai.vehmanen@linux.intel.com, jasontao@glenfly.com,
-        amadeuszx.slawinski@linux.intel.com, mkumard@nvidia.com,
-        linux-pci@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20230724011338.2298062-1-sashal@kernel.org>
- <20230724011338.2298062-28-sashal@kernel.org>
-Content-Language: en-US
-From:   Yanteng Si <siyanteng@loongson.cn>
-In-Reply-To: <20230724011338.2298062-28-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxF8w56b1ki2U4AA--.48015S3
-X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxWF1DAr43Jr1UZr47KryUurX_yoWrGrW8pr
-        s5ZryjkFZ7tryYvFsrG3W7Kr97u3WDA3ZF9rW29w1xZFnavw1Sgas8ur4YvFWavry5WrW3
-        WFWqk34xAayUtwcCm3ZEXasCq-sJn29KB7ZKAUJUUUUP529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUU9Eb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUtVW8ZwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWr
-        XwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-        kF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4U
-        MxCIbckI1I0E14v26r1q6r43MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
-        0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
-        14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20x
-        vaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8
-        JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0L0ePUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230314092311.8924-1-jim.t90615@gmail.com> <20230314092311.8924-2-jim.t90615@gmail.com>
+ <519312b6-f28c-7482-21c1-d9628f0295cb@molgen.mpg.de>
+In-Reply-To: <519312b6-f28c-7482-21c1-d9628f0295cb@molgen.mpg.de>
+From:   Jim Liu <jim.t90615@gmail.com>
+Date:   Mon, 24 Jul 2023 11:04:26 +0800
+Message-ID: <CAKUZ0+FGSEgzbK6H_sHaGpP9JnvrLeBRQViqmViR1OVXoVs7vA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] gpio: nuvoton: Add Nuvoton NPCM sgpio driver
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     JJLIU0@nuvoton.com, KWLIU@nuvoton.com, linus.walleij@linaro.org,
+        brgl@bgdev.pl, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-gpio@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi  Paul
 
-Hi Sasha,
+sorry for reply late.
 
-在 2023/7/24 09:12, Sasha Levin 写道:
-> From: Yanteng Si <siyanteng@loongson.cn>
+First, thanks for your review.
+
+the description is as below:
+
+The SGPIO module can be programmed to support from zero (none) to
+eight external output ports ,
+each with eight output pins (for a total of 64 output pins). The
+output ports must be serial-to-parallel devices (such as the HC595 or
+a faster equivalent).
+
+The SGPIO can be programmed to accept from zero to eight external
+input ports (IXPp), each with eight input pins, supporting a total of
+64 input pins. The input ports must be parallel-to-serial devices
+(such as the HC165 or a faster equivalent).
+
+you can add hc595 and hc165 ic to get the serial data from BMC and
+send serial data to BMC.
+This driver can expand  extra gpio pins up to 64 input and 64 output.
+
+i will use jim.t90615@gmail.com this mail to upstream this driver not
+company mail.
+
+The driver needs to fix the length of the variables, because the reg
+size is one byte.
+
+I will follow your suggestion to modify and upstream again. If you
+have any questions please let me know.
+
+Best regards,
+Jim
+
+On Tue, Mar 14, 2023 at 7:46=E2=80=AFPM Paul Menzel <pmenzel@molgen.mpg.de>=
+ wrote:
 >
-> [ Upstream commit 28bd137a3c8e105587ba8c55b68ef43b519b270f ]
+> Dear Jim,
 >
-> Add the new PCI ID 0x0014 0x7a07 and the new PCI ID 0x0014 0x7a37
-> Loongson HDA controller.
 >
-> Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
-> Acked-by: Huacai Chen <chenhuacai@loongson.cn>
-> Link: https://lore.kernel.org/r/993587483b9509796b29a416f257fcfb4b15c6ea.1686128807.git.siyanteng@loongson.cn
-Loongson HDA can't work if AUTOSEL only ports this one patch, because 
-6.4 also needs the other three patches inside this thread. Also, 6.1, 
-5.15, and 5.10 have the same problem.
-
-Give me a shout if you need anything.
-
-Thanks,
-Yanteng
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->   include/linux/pci_ids.h    | 3 +++
->   sound/hda/hdac_device.c    | 1 +
->   sound/pci/hda/hda_intel.c  | 7 +++++++
->   sound/pci/hda/patch_hdmi.c | 1 +
->   4 files changed, 12 insertions(+)
+> Am 14.03.23 um 10:23 schrieb Jim Liu:
+> > Add Nuvoton BMC NPCM7xx/NPCM8xx sgpio driver support.
 >
-> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-> index 95f33dadb2be2..c0c4ca8e28510 100644
-> --- a/include/linux/pci_ids.h
-> +++ b/include/linux/pci_ids.h
-> @@ -158,6 +158,9 @@
->   
->   #define PCI_VENDOR_ID_LOONGSON		0x0014
->   
-> +#define PCI_DEVICE_ID_LOONGSON_HDA      0x7a07
-> +#define PCI_DEVICE_ID_LOONGSON_HDMI     0x7a37
-> +
->   #define PCI_VENDOR_ID_TTTECH		0x0357
->   #define PCI_DEVICE_ID_TTTECH_MC322	0x000a
->   
-> diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-> index 6c043fbd606f1..bbf7bcdb449a8 100644
-> --- a/sound/hda/hdac_device.c
-> +++ b/sound/hda/hdac_device.c
-> @@ -645,6 +645,7 @@ struct hda_vendor_id {
->   };
->   
->   static const struct hda_vendor_id hda_vendor_ids[] = {
-> +	{ 0x0014, "Loongson" },
->   	{ 0x1002, "ATI" },
->   	{ 0x1013, "Cirrus Logic" },
->   	{ 0x1057, "Motorola" },
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 3226691ac923c..9c353dc7740c4 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -237,6 +237,7 @@ enum {
->   	AZX_DRIVER_CTHDA,
->   	AZX_DRIVER_CMEDIA,
->   	AZX_DRIVER_ZHAOXIN,
-> +	AZX_DRIVER_LOONGSON,
->   	AZX_DRIVER_GENERIC,
->   	AZX_NUM_DRIVERS, /* keep this as last entry */
->   };
-> @@ -360,6 +361,7 @@ static const char * const driver_short_names[] = {
->   	[AZX_DRIVER_CTHDA] = "HDA Creative",
->   	[AZX_DRIVER_CMEDIA] = "HDA C-Media",
->   	[AZX_DRIVER_ZHAOXIN] = "HDA Zhaoxin",
-> +	[AZX_DRIVER_LOONGSON] = "HDA Loongson",
->   	[AZX_DRIVER_GENERIC] = "HD-Audio Generic",
->   };
->   
-> @@ -2809,6 +2811,11 @@ static const struct pci_device_id azx_ids[] = {
->   	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_HDMI },
->   	/* Zhaoxin */
->   	{ PCI_DEVICE(0x1d17, 0x3288), .driver_data = AZX_DRIVER_ZHAOXIN },
-> +	/* Loongson HDAudio*/
-> +	{PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_HDA),
-> +	  .driver_data = AZX_DRIVER_LOONGSON },
-> +	{PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_HDMI),
-> +	  .driver_data = AZX_DRIVER_LOONGSON },
->   	{ 0, }
->   };
->   MODULE_DEVICE_TABLE(pci, azx_ids);
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index 5c0b1a09fd57c..260d3e64f6589 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -4505,6 +4505,7 @@ static int patch_gf_hdmi(struct hda_codec *codec)
->    * patch entries
->    */
->   static const struct hda_device_id snd_hda_id_hdmi[] = {
-> +HDA_CODEC_ENTRY(0x00147a47, "Loongson HDMI",	patch_generic_hdmi),
->   HDA_CODEC_ENTRY(0x1002793c, "RS600 HDMI",	patch_atihdmi),
->   HDA_CODEC_ENTRY(0x10027919, "RS600 HDMI",	patch_atihdmi),
->   HDA_CODEC_ENTRY(0x1002791a, "RS690/780 HDMI",	patch_atihdmi),
-
+> This commit message is too terse for adding over 650 new lines. Please
+> elaborate, and mention the datasheet name and revision, and how you
+> tested this.
+>
+> Also, Why is a new driver needed?
+>
+> > Signed-off-by: Jim Liu <jim.t90615@gmail.com>
+>
+> Should your company address be used instead?
+>
+> > ---
+> > Changes for v5:
+> >     - remove printk
+> >     - add descriptive for to_bank
+> >     - using "GPL" instead of "GPL v2"
+> > Changes for v4:
+> >     - followed reviewer suggestion to modify npcm_sgpio_dir_in
+> >     - blank line in npcm_sgpio_dir_out
+> >     - use int type for dir in npcm_sgpio_get
+> >
+> > Changes for v3:
+> >     - remove return in bank_reg function
+> > Changes for v2:
+> >     - add prefix
+> >     - write the enum values in all capitals
+> >     - remove _init in npcm_sgpio_probe
+> > ---
+> >   drivers/gpio/Kconfig           |   8 +
+> >   drivers/gpio/Makefile          |   1 +
+> >   drivers/gpio/gpio-npcm-sgpio.c | 648 ++++++++++++++++++++++++++++++++=
++
+> >   3 files changed, 657 insertions(+)
+> >   create mode 100644 drivers/gpio/gpio-npcm-sgpio.c
+> >
+> > diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> > index 13be729710f2..3296eb23245a 100644
+> > --- a/drivers/gpio/Kconfig
+> > +++ b/drivers/gpio/Kconfig
+> > @@ -460,6 +460,14 @@ config GPIO_MXS
+> >       select GPIO_GENERIC
+> >       select GENERIC_IRQ_CHIP
+> >
+> > +config GPIO_NPCM_SGPIO
+> > +     bool "Nuvoton SGPIO support"
+> > +     depends on (ARCH_NPCM || COMPILE_TEST) && OF_GPIO
+> > +     select GPIO_GENERIC
+> > +     select GPIOLIB_IRQCHIP
+> > +     help
+> > +       Say Y here to support Nuvoton NPCM7XX/NPCM8XX SGPIO functionali=
+ty.
+> > +
+> >   config GPIO_OCTEON
+> >       tristate "Cavium OCTEON GPIO"
+> >       depends on CAVIUM_OCTEON_SOC
+> > diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+> > index c048ba003367..1cbf21934299 100644
+> > --- a/drivers/gpio/Makefile
+> > +++ b/drivers/gpio/Makefile
+> > @@ -110,6 +110,7 @@ obj-$(CONFIG_GPIO_MT7621)         +=3D gpio-mt7621.=
+o
+> >   obj-$(CONFIG_GPIO_MVEBU)            +=3D gpio-mvebu.o
+> >   obj-$(CONFIG_GPIO_MXC)                      +=3D gpio-mxc.o
+> >   obj-$(CONFIG_GPIO_MXS)                      +=3D gpio-mxs.o
+> > +obj-$(CONFIG_GPIO_NPCM_SGPIO)                +=3D gpio-npcm-sgpio.o
+> >   obj-$(CONFIG_GPIO_OCTEON)           +=3D gpio-octeon.o
+> >   obj-$(CONFIG_GPIO_OMAP)                     +=3D gpio-omap.o
+> >   obj-$(CONFIG_GPIO_PALMAS)           +=3D gpio-palmas.o
+> > diff --git a/drivers/gpio/gpio-npcm-sgpio.c b/drivers/gpio/gpio-npcm-sg=
+pio.c
+> > new file mode 100644
+> > index 000000000000..10bab1495a6c
+> > --- /dev/null
+> > +++ b/drivers/gpio/gpio-npcm-sgpio.c
+> > @@ -0,0 +1,648 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Nuvoton NPCM Serial GPIO Driver
+> > + *
+> > + * Copyright (C) 2021 Nuvoton Technologies
+> > + */
+> > +
+> > +#include <linux/bitfield.h>
+> > +#include <linux/clk.h>
+> > +#include <linux/gpio/driver.h>
+> > +#include <linux/hashtable.h>
+> > +#include <linux/init.h>
+> > +#include <linux/io.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/spinlock.h>
+> > +#include <linux/string.h>
+> > +
+> > +#define MAX_NR_HW_SGPIO                      64
+> > +
+> > +#define  NPCM_IOXCFG1                                0x2A
+> > +#define  NPCM_IOXCFG1_SFT_CLK                GENMASK(3, 0)
+> > +#define  NPCM_IOXCFG1_SCLK_POL               BIT(4)
+> > +#define  NPCM_IOXCFG1_LDSH_POL               BIT(5)
+> > +
+> > +#define  NPCM_IOXCTS 0x28
+> > +#define  NPCM_IOXCTS_IOXIF_EN BIT(7)
+> > +#define  NPCM_IOXCTS_RD_MODE GENMASK(2, 1)
+> > +#define  NPCM_IOXCTS_RD_MODE_PERIODIC BIT(2)
+> > +#define  NPCM_IOXCTS_RD_MODE_CONTINUOUS GENMASK(2, 1)
+> > +
+> > +#define  NPCM_IOXCFG2 0x2B
+> > +#define  NPCM_IXOEVCFG_MASK 0x3
+> > +#define  NPCM_IXOEVCFG_BOTH 0x3
+> > +#define  NPCM_IXOEVCFG_FALLING 0x2
+> > +#define  NPCM_IXOEVCFG_RISING 0x1
+> > +
+> > +#define GPIO_BANK(x)    ((x) / 8)
+> > +#define GPIO_BIT(x)     ((x) % 8)
+> > +
+> > +/*
+> > + * Select the freqency of shift clock.
+>
+> frequency
+>
+> > + * The shift clock is a division of the APB clock.
+> > + */
+> > +struct npcm_clk_cfg {
+> > +     const int *SFT_CLK;
+> > +     const u8 *CLK_SEL;
+> > +     const u8 cfg_opt;
+>
+> Why fix the length of the variables? Can=E2=80=99t standard `unsigned int=
+` be used?
+>
+> > +};
+> > +
+> > +struct npcm_sgpio {
+> > +     struct gpio_chip chip;
+> > +     struct clk *pclk;
+> > +     struct irq_chip intc;
+> > +     spinlock_t lock; /*protect event config*/
+> > +     void __iomem *base;
+> > +     int irq;
+> > +     u8 nin_sgpio;
+> > +     u8 nout_sgpio;
+> > +     u8 in_port;
+> > +     u8 out_port;
+> > +     u8 int_type[MAX_NR_HW_SGPIO];
+> > +};
+> > +
+> > +struct npcm_sgpio_bank {
+> > +     u8 rdata_reg;
+> > +     u8 wdata_reg;
+> > +     u8 event_config;
+> > +     u8 event_status;
+> > +};
+> > +
+> > +enum npcm_sgpio_reg {
+> > +     READ_DATA,
+> > +     WRITE_DATA,
+> > +     EVENT_CFG,
+> > +     EVENT_STS,
+> > +};
+> > +
+> > +static const struct npcm_sgpio_bank npcm_sgpio_banks[] =3D {
+> > +     {
+> > +             .wdata_reg =3D 0x00,
+> > +             .rdata_reg =3D 0x08,
+> > +             .event_config =3D 0x10,
+> > +             .event_status =3D 0x20,
+> > +     },
+> > +     {
+> > +             .wdata_reg =3D 0x01,
+> > +             .rdata_reg =3D 0x09,
+> > +             .event_config =3D 0x12,
+> > +             .event_status =3D 0x21,
+> > +     },
+> > +     {
+> > +             .wdata_reg =3D 0x02,
+> > +             .rdata_reg =3D 0x0a,
+> > +             .event_config =3D 0x14,
+> > +             .event_status =3D 0x22,
+> > +     },
+> > +     {
+> > +             .wdata_reg =3D 0x03,
+> > +             .rdata_reg =3D 0x0b,
+> > +             .event_config =3D 0x16,
+> > +             .event_status =3D 0x23,
+> > +     },
+> > +     {
+> > +             .wdata_reg =3D 0x04,
+> > +             .rdata_reg =3D 0x0c,
+> > +             .event_config =3D 0x18,
+> > +             .event_status =3D 0x24,
+> > +     },
+> > +     {
+> > +             .wdata_reg =3D 0x05,
+> > +             .rdata_reg =3D 0x0d,
+> > +             .event_config =3D 0x1a,
+> > +             .event_status =3D 0x25,
+> > +     },
+> > +     {
+> > +             .wdata_reg =3D 0x06,
+> > +             .rdata_reg =3D 0x0e,
+> > +             .event_config =3D 0x1c,
+> > +             .event_status =3D 0x26,
+> > +     },
+> > +     {
+> > +             .wdata_reg =3D 0x07,
+> > +             .rdata_reg =3D 0x0f,
+> > +             .event_config =3D 0x1e,
+> > +             .event_status =3D 0x27,
+> > +     },
+> > +
+> > +};
+> > +
+> > +static void __iomem *bank_reg(struct npcm_sgpio *gpio,
+> > +                           const struct npcm_sgpio_bank *bank,
+> > +                             const enum npcm_sgpio_reg reg)
+>
+> The alignment looks inconsistent.
+>
+> > +{
+> > +     switch (reg) {
+> > +     case READ_DATA:
+> > +             return gpio->base + bank->rdata_reg;
+> > +     case WRITE_DATA:
+> > +             return gpio->base + bank->wdata_reg;
+> > +     case EVENT_CFG:
+> > +             return gpio->base + bank->event_config;
+> > +     case EVENT_STS:
+> > +             return gpio->base + bank->event_status;
+> > +     default:
+> > +             /* acturally if code runs to here, it's an error case */
+>
+> actually
+>
+> > +             WARN(1, "Getting here is an error condition\n");
+> > +     }
+> > +}
+> > +
+> > +static const struct npcm_sgpio_bank *offset_to_bank(unsigned int offse=
+t)
+> > +{
+> > +     unsigned int bank =3D GPIO_BANK(offset);
+> > +
+> > +     return &npcm_sgpio_banks[bank];
+> > +}
+> > +
+> > +static void irqd_to_npcm_sgpio_data(struct irq_data *d,
+> > +                                 struct npcm_sgpio **gpio,
+> > +                                 const struct npcm_sgpio_bank **bank,
+> > +                                 u8 *bit, int *offset)
+> > +{
+> > +     struct npcm_sgpio *internal;
+> > +
+> > +     *offset =3D irqd_to_hwirq(d);
+> > +     internal =3D irq_data_get_irq_chip_data(d);
+> > +     WARN_ON(!internal);
+> > +
+> > +     *gpio =3D internal;
+> > +     *offset -=3D internal->nout_sgpio;
+> > +     *bank =3D offset_to_bank(*offset);
+> > +     *bit =3D GPIO_BIT(*offset);
+> > +}
+> > +
+> > +static int npcm_sgpio_init_port(struct npcm_sgpio *gpio)
+> > +{
+> > +     u8 in_port, out_port, set_port, reg;
+> > +
+> > +     in_port =3D gpio->nin_sgpio / 8;
+> > +     if (gpio->nin_sgpio % 8 > 0)
+> > +             in_port +=3D 1;
+> > +
+> > +     out_port =3D gpio->nout_sgpio / 8;
+> > +     if (gpio->nout_sgpio % 8 > 0)
+> > +             out_port +=3D 1;
+> > +
+> > +     gpio->in_port =3D in_port;
+> > +     gpio->out_port =3D out_port;
+> > +     set_port =3D ((out_port & 0xf) << 4) | (in_port & 0xf);
+> > +     iowrite8(set_port, gpio->base + NPCM_IOXCFG2);
+> > +
+> > +     reg =3D ioread8(gpio->base + NPCM_IOXCFG2);
+> > +
+> > +     if (reg =3D=3D set_port)
+> > +             return 0;
+> > +     else
+> > +             return -EINVAL;
+>
+> As you used a ternary operator below:
+>
+>      return reg =3D=3D set_port ? 0 : -EINVAL;
+>
+> > +}
+> > +
+> > +static int npcm_sgpio_dir_in(struct gpio_chip *gc, unsigned int offset=
+)
+> > +{
+> > +     struct npcm_sgpio *gpio =3D gpiochip_get_data(gc);
+> > +
+> > +     return offset < gpio->nout_sgpio ? -EINVAL : 0;
+> > +}
+> > +
+> > +static int npcm_sgpio_dir_out(struct gpio_chip *gc, unsigned int offse=
+t, int val)
+> > +{
+> > +     struct npcm_sgpio *gpio =3D gpiochip_get_data(gc);
+> > +
+> > +     if (offset < gpio->nout_sgpio) {
+> > +             gc->set(gc, offset, val);
+> > +             return 0;
+> > +     }
+> > +
+> > +     return -EINVAL;
+> > +}
+> > +
+> > +static int npcm_sgpio_get_direction(struct gpio_chip *gc, unsigned int=
+ offset)
+> > +{
+> > +     struct npcm_sgpio *gpio =3D gpiochip_get_data(gc);
+> > +
+> > +     if (offset < gpio->nout_sgpio)
+> > +             return 0;
+> > +     return 1;
+>
+> Could error codes be used here too?
+>
+> > +}
+> > +
+> > +static void npcm_sgpio_set(struct gpio_chip *gc, unsigned int offset, =
+int val)
+> > +{
+> > +     struct npcm_sgpio *gpio =3D gpiochip_get_data(gc);
+> > +     const struct  npcm_sgpio_bank *bank =3D offset_to_bank(offset);
+> > +     void __iomem *addr;
+> > +     u8 reg =3D 0;
+> > +
+> > +     addr =3D bank_reg(gpio, bank, WRITE_DATA);
+> > +     reg =3D ioread8(addr);
+> > +
+> > +     if (val) {
+> > +             reg |=3D (val << GPIO_BIT(offset));
+> > +             iowrite8(reg, addr);
+> > +     } else {
+> > +             reg &=3D ~(1 << GPIO_BIT(offset));
+> > +             iowrite8(reg, addr);
+> > +     }
+>
+> Looks like Ziowrite8()` could be moved out of the branches.
+>
+>
+> Kind regards,
+>
+> Paul
+>
+>
+> > +}
+> > +
+> > +static int npcm_sgpio_get(struct gpio_chip *gc, unsigned int offset)
+> > +{
+> > +     struct npcm_sgpio *gpio =3D gpiochip_get_data(gc);
+> > +     const struct  npcm_sgpio_bank *bank;
+> > +     void __iomem *addr;
+> > +     u8 reg;
+> > +     int dir;
+> > +
+> > +     dir =3D npcm_sgpio_get_direction(gc, offset);
+> > +     if (dir =3D=3D 0) {
+> > +             bank =3D offset_to_bank(offset);
+> > +
+> > +             addr =3D bank_reg(gpio, bank, WRITE_DATA);
+> > +             reg =3D ioread8(addr);
+> > +             reg =3D (reg >> GPIO_BIT(offset)) & 0x01;
+> > +     } else {
+> > +             offset -=3D gpio->nout_sgpio;
+> > +             bank =3D offset_to_bank(offset);
+> > +
+> > +             addr =3D bank_reg(gpio, bank, READ_DATA);
+> > +             reg =3D ioread8(addr);
+> > +             reg =3D (reg >> GPIO_BIT(offset)) & 0x01;
+> > +     }
+> > +
+> > +     return reg;
+> > +}
+> > +
+> > +static void npcm_sgpio_setup_enable(struct npcm_sgpio *gpio, bool enab=
+le)
+> > +{
+> > +     u8 reg =3D 0;
+> > +
+> > +     reg =3D ioread8(gpio->base + NPCM_IOXCTS);
+> > +     reg =3D reg & ~NPCM_IOXCTS_RD_MODE;
+> > +     reg =3D reg | NPCM_IOXCTS_RD_MODE_PERIODIC;
+> > +
+> > +     if (enable) {
+> > +             reg |=3D NPCM_IOXCTS_IOXIF_EN;
+> > +             iowrite8(reg, gpio->base + NPCM_IOXCTS);
+> > +     } else {
+> > +             reg &=3D ~NPCM_IOXCTS_IOXIF_EN;
+> > +             iowrite8(reg, gpio->base + NPCM_IOXCTS);
+> > +     }
+> > +}
+> > +
+> > +static int npcm_sgpio_setup_clk(struct npcm_sgpio *gpio,
+> > +                             const struct npcm_clk_cfg *clk_cfg, u32 s=
+gpio_freq)
+> > +{
+> > +     unsigned long apb_freq;
+> > +     u32 sgpio_clk_div;
+> > +     u8 tmp;
+> > +     int i;
+> > +
+> > +     apb_freq =3D clk_get_rate(gpio->pclk);
+> > +     sgpio_clk_div =3D (apb_freq / sgpio_freq);
+> > +     if ((apb_freq % sgpio_freq) !=3D 0)
+> > +             sgpio_clk_div +=3D 1;
+> > +
+> > +     tmp =3D ioread8(gpio->base + NPCM_IOXCFG1) & ~NPCM_IOXCFG1_SFT_CL=
+K;
+> > +
+> > +     for (i =3D 0; i < clk_cfg->cfg_opt; i++) {
+> > +             if (sgpio_clk_div >=3D clk_cfg->SFT_CLK[i]) {
+> > +                     iowrite8(clk_cfg->CLK_SEL[i] | tmp, gpio->base + =
+NPCM_IOXCFG1);
+> > +                     return 0;
+> > +             }
+> > +     }
+> > +
+> > +     return -EINVAL;
+> > +}
+> > +
+> > +static void npcm_sgpio_irq_init_valid_mask(struct gpio_chip *gc,
+> > +                                        unsigned long *valid_mask, uns=
+igned int ngpios)
+> > +{
+> > +     struct npcm_sgpio *gpio =3D gpiochip_get_data(gc);
+> > +     int n =3D gpio->nin_sgpio;
+> > +
+> > +     /* input GPIOs in the high range */
+> > +     bitmap_set(valid_mask, gpio->nout_sgpio, n);
+> > +     bitmap_clear(valid_mask, 0, gpio->nout_sgpio);
+> > +}
+> > +
+> > +static void npcm_sgpio_irq_set_mask(struct irq_data *d, bool set)
+> > +{
+> > +     const struct npcm_sgpio_bank *bank;
+> > +     struct npcm_sgpio *gpio;
+> > +     unsigned long flags;
+> > +     void __iomem *addr;
+> > +     int offset;
+> > +     u16 reg, type;
+> > +     u8 bit;
+> > +
+> > +     irqd_to_npcm_sgpio_data(d, &gpio, &bank, &bit, &offset);
+> > +     addr =3D bank_reg(gpio, bank, EVENT_CFG);
+> > +
+> > +     spin_lock_irqsave(&gpio->lock, flags);
+> > +
+> > +     npcm_sgpio_setup_enable(gpio, false);
+> > +
+> > +     reg =3D ioread16(addr);
+> > +     if (set) {
+> > +             reg &=3D ~(NPCM_IXOEVCFG_MASK << (bit * 2));
+> > +     } else {
+> > +             type =3D gpio->int_type[offset];
+> > +             reg |=3D (type << (bit * 2));
+> > +     }
+> > +
+> > +     iowrite16(reg, addr);
+> > +
+> > +     npcm_sgpio_setup_enable(gpio, true);
+> > +
+> > +     addr =3D bank_reg(gpio, bank, EVENT_STS);
+> > +     reg =3D ioread8(addr);
+> > +     reg |=3D BIT(bit);
+> > +     iowrite8(reg, addr);
+> > +
+> > +     spin_unlock_irqrestore(&gpio->lock, flags);
+> > +}
+> > +
+> > +static void npcm_sgpio_irq_ack(struct irq_data *d)
+> > +{
+> > +     const struct npcm_sgpio_bank *bank;
+> > +     struct npcm_sgpio *gpio;
+> > +     unsigned long flags;
+> > +     void __iomem *status_addr;
+> > +     int offset;
+> > +     u8 bit;
+> > +
+> > +     irqd_to_npcm_sgpio_data(d, &gpio, &bank, &bit, &offset);
+> > +     status_addr =3D bank_reg(gpio, bank, EVENT_STS);
+> > +     spin_lock_irqsave(&gpio->lock, flags);
+> > +     iowrite8(BIT(bit), status_addr);
+> > +     spin_unlock_irqrestore(&gpio->lock, flags);
+> > +}
+> > +
+> > +static void npcm_sgpio_irq_mask(struct irq_data *d)
+> > +{
+> > +     npcm_sgpio_irq_set_mask(d, true);
+> > +}
+> > +
+> > +static void npcm_sgpio_irq_unmask(struct irq_data *d)
+> > +{
+> > +     npcm_sgpio_irq_set_mask(d, false);
+> > +}
+> > +
+> > +static int npcm_sgpio_set_type(struct irq_data *d, unsigned int type)
+> > +{
+> > +     const struct npcm_sgpio_bank *bank;
+> > +     irq_flow_handler_t handler;
+> > +     struct npcm_sgpio *gpio;
+> > +     unsigned long flags;
+> > +     void __iomem *addr;
+> > +     int offset;
+> > +     u16 reg, val;
+> > +     u8 bit;
+> > +
+> > +     irqd_to_npcm_sgpio_data(d, &gpio, &bank, &bit, &offset);
+> > +
+> > +     switch (type & IRQ_TYPE_SENSE_MASK) {
+> > +     case IRQ_TYPE_EDGE_BOTH:
+> > +             val =3D NPCM_IXOEVCFG_BOTH;
+> > +             handler =3D handle_edge_irq;
+> > +             break;
+> > +     case IRQ_TYPE_EDGE_RISING:
+> > +             val =3D NPCM_IXOEVCFG_RISING;
+> > +             handler =3D handle_edge_irq;
+> > +             break;
+> > +     case IRQ_TYPE_EDGE_FALLING:
+> > +             val =3D NPCM_IXOEVCFG_FALLING;
+> > +             handler =3D handle_edge_irq;
+> > +             break;
+> > +     case IRQ_TYPE_LEVEL_HIGH:
+> > +             val =3D NPCM_IXOEVCFG_RISING;
+> > +             handler =3D handle_level_irq;
+> > +             break;
+> > +     case IRQ_TYPE_LEVEL_LOW:
+> > +             val =3D NPCM_IXOEVCFG_FALLING;
+> > +             handler =3D handle_level_irq;
+> > +             break;
+> > +     default:
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     gpio->int_type[offset] =3D val;
+> > +
+> > +     spin_lock_irqsave(&gpio->lock, flags);
+> > +     npcm_sgpio_setup_enable(gpio, false);
+> > +     addr =3D bank_reg(gpio, bank, EVENT_CFG);
+> > +     reg =3D ioread16(addr);
+> > +
+> > +     reg |=3D (val << (bit * 2));
+> > +
+> > +     iowrite16(reg, addr);
+> > +     npcm_sgpio_setup_enable(gpio, true);
+> > +     spin_unlock_irqrestore(&gpio->lock, flags);
+> > +
+> > +     irq_set_handler_locked(d, handler);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static void npcm_sgpio_irq_handler(struct irq_desc *desc)
+> > +{
+> > +     struct gpio_chip *gc =3D irq_desc_get_handler_data(desc);
+> > +     struct irq_chip *ic =3D irq_desc_get_chip(desc);
+> > +     struct npcm_sgpio *gpio =3D gpiochip_get_data(gc);
+> > +     unsigned int i, j, girq;
+> > +     unsigned long reg;
+> > +
+> > +     chained_irq_enter(ic, desc);
+> > +
+> > +     for (i =3D 0; i < ARRAY_SIZE(npcm_sgpio_banks); i++) {
+> > +             const struct npcm_sgpio_bank *bank =3D &npcm_sgpio_banks[=
+i];
+> > +
+> > +             reg =3D ioread8(bank_reg(gpio, bank, EVENT_STS));
+> > +             for_each_set_bit(j, &reg, 8) {
+> > +                     girq =3D irq_find_mapping(gc->irq.domain, i * 8 +=
+ gpio->nout_sgpio + j);
+> > +                     generic_handle_irq(girq);
+> > +             }
+> > +     }
+> > +
+> > +     chained_irq_exit(ic, desc);
+> > +}
+> > +
+> > +static int npcm_sgpio_setup_irqs(struct npcm_sgpio *gpio,
+> > +                              struct platform_device *pdev)
+> > +{
+> > +     int rc, i;
+> > +     struct gpio_irq_chip *irq;
+> > +
+> > +     rc =3D platform_get_irq(pdev, 0);
+> > +     if (rc < 0)
+> > +             return rc;
+> > +
+> > +     gpio->irq =3D rc;
+> > +
+> > +     npcm_sgpio_setup_enable(gpio, false);
+> > +
+> > +     /* Disable IRQ and clear Interrupt status registers for all SGPIO=
+ Pins. */
+> > +     for (i =3D 0; i < ARRAY_SIZE(npcm_sgpio_banks); i++) {
+> > +             const struct npcm_sgpio_bank *bank =3D &npcm_sgpio_banks[=
+i];
+> > +
+> > +             iowrite16(0x0000, bank_reg(gpio, bank, EVENT_CFG));
+> > +             iowrite8(0xff, bank_reg(gpio, bank, EVENT_STS));
+> > +     }
+> > +
+> > +     gpio->intc.name =3D dev_name(&pdev->dev);
+> > +     gpio->intc.irq_ack =3D npcm_sgpio_irq_ack;
+> > +     gpio->intc.irq_mask =3D npcm_sgpio_irq_mask;
+> > +     gpio->intc.irq_unmask =3D npcm_sgpio_irq_unmask;
+> > +     gpio->intc.irq_set_type =3D npcm_sgpio_set_type;
+> > +
+> > +     irq =3D &gpio->chip.irq;
+> > +     irq->chip =3D &gpio->intc;
+> > +     irq->init_valid_mask =3D npcm_sgpio_irq_init_valid_mask;
+> > +     irq->handler =3D handle_bad_irq;
+> > +     irq->default_type =3D IRQ_TYPE_NONE;
+> > +     irq->parent_handler =3D npcm_sgpio_irq_handler;
+> > +     irq->parent_handler_data =3D gpio;
+> > +     irq->parents =3D &gpio->irq;
+> > +     irq->num_parents =3D 1;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static const int npcm750_SFT_CLK[] =3D {
+> > +             1024, 32, 8, 4, 3, 2,
+> > +};
+> > +
+> > +static const u8 npcm750_CLK_SEL[] =3D {
+> > +             0x00, 0x05, 0x07, 0x0C, 0x0D, 0x0E,
+> > +};
+> > +
+> > +static const int npcm845_SFT_CLK[] =3D {
+> > +             1024, 32, 16, 8, 4,
+> > +};
+> > +
+> > +static const u8 npcm845_CLK_SEL[] =3D {
+> > +             0x00, 0x05, 0x06, 0x07, 0x0C,
+> > +};
+> > +
+> > +static const struct npcm_clk_cfg npcm750_sgpio_pdata =3D {
+> > +     .SFT_CLK =3D npcm750_SFT_CLK,
+> > +     .CLK_SEL =3D npcm750_CLK_SEL,
+> > +     .cfg_opt =3D 6,
+> > +};
+> > +
+> > +static const struct npcm_clk_cfg npcm845_sgpio_pdata =3D {
+> > +     .SFT_CLK =3D npcm845_SFT_CLK,
+> > +     .CLK_SEL =3D npcm845_CLK_SEL,
+> > +     .cfg_opt =3D 5,
+> > +};
+> > +
+> > +static const struct of_device_id npcm_sgpio_of_table[] =3D {
+> > +     { .compatible =3D "nuvoton,npcm750-sgpio", .data =3D &npcm750_sgp=
+io_pdata, },
+> > +     { .compatible =3D "nuvoton,npcm845-sgpio", .data =3D &npcm845_sgp=
+io_pdata, },
+> > +     {}
+> > +};
+> > +
+> > +MODULE_DEVICE_TABLE(of, npcm_sgpio_of_table);
+> > +
+> > +static int npcm_sgpio_probe(struct platform_device *pdev)
+> > +{
+> > +     struct npcm_sgpio *gpio;
+> > +     const struct npcm_clk_cfg *clk_cfg;
+> > +     int rc;
+> > +     u32 nin_gpios, nout_gpios, sgpio_freq;
+> > +
+> > +     gpio =3D devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
+> > +     if (!gpio)
+> > +             return -ENOMEM;
+> > +
+> > +     gpio->base =3D devm_platform_ioremap_resource(pdev, 0);
+> > +     if (IS_ERR(gpio->base))
+> > +             return PTR_ERR(gpio->base);
+> > +
+> > +     clk_cfg =3D device_get_match_data(&pdev->dev);
+> > +     if (!clk_cfg)
+> > +             return -EINVAL;
+> > +
+> > +     rc =3D device_property_read_u32(&pdev->dev, "nuvoton,input-ngpios=
+", &nin_gpios);
+> > +     if (rc < 0) {
+> > +             dev_err(&pdev->dev, "Could not read ngpios property\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     rc =3D device_property_read_u32(&pdev->dev, "nuvoton,output-ngpio=
+s", &nout_gpios);
+> > +     if (rc < 0) {
+> > +             dev_err(&pdev->dev, "Could not read ngpios property\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     gpio->nin_sgpio =3D nin_gpios;
+> > +     gpio->nout_sgpio =3D nout_gpios;
+> > +     if (gpio->nin_sgpio > MAX_NR_HW_SGPIO || gpio->nout_sgpio > MAX_N=
+R_HW_SGPIO) {
+> > +             dev_err(&pdev->dev, "Number of GPIOs exceeds the maximum =
+of %d: input: %d output: %d\n",
+> > +                     MAX_NR_HW_SGPIO, nin_gpios, nout_gpios);
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     rc =3D device_property_read_u32(&pdev->dev, "bus-frequency", &sgp=
+io_freq);
+> > +     if (rc < 0) {
+> > +             dev_err(&pdev->dev, "Could not read bus-frequency propert=
+y\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     gpio->pclk =3D devm_clk_get(&pdev->dev, NULL);
+> > +     if (IS_ERR(gpio->pclk)) {
+> > +             dev_err(&pdev->dev, "Could not get pclk\n");
+> > +             return PTR_ERR(gpio->pclk);
+> > +     }
+> > +
+> > +     rc =3D npcm_sgpio_setup_clk(gpio, clk_cfg, sgpio_freq);
+> > +     if (rc < 0) {
+> > +             dev_err(&pdev->dev, "Failed to setup clock\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     spin_lock_init(&gpio->lock);
+> > +     gpio->chip.parent =3D &pdev->dev;
+> > +     gpio->chip.ngpio =3D gpio->nin_sgpio + gpio->nout_sgpio;
+> > +     gpio->chip.direction_input =3D npcm_sgpio_dir_in;
+> > +     gpio->chip.direction_output =3D npcm_sgpio_dir_out;
+> > +     gpio->chip.get_direction =3D npcm_sgpio_get_direction;
+> > +     gpio->chip.request =3D NULL;
+> > +     gpio->chip.free =3D NULL;
+> > +     gpio->chip.get =3D npcm_sgpio_get;
+> > +     gpio->chip.set =3D npcm_sgpio_set;
+> > +     gpio->chip.set_config =3D NULL;
+> > +     gpio->chip.label =3D dev_name(&pdev->dev);
+> > +     gpio->chip.base =3D -1;
+> > +
+> > +     rc =3D npcm_sgpio_init_port(gpio);
+> > +     if (rc < 0)
+> > +             return rc;
+> > +
+> > +     rc =3D npcm_sgpio_setup_irqs(gpio, pdev);
+> > +     if (rc < 0)
+> > +             return rc;
+> > +
+> > +     rc =3D devm_gpiochip_add_data(&pdev->dev, &gpio->chip, gpio);
+> > +     if (rc < 0)
+> > +             return rc;
+> > +
+> > +     npcm_sgpio_setup_enable(gpio, true);
+> > +     dev_info(&pdev->dev, "NPCM: SGPIO module is ready\n");
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static struct platform_driver npcm_sgpio_driver =3D {
+> > +     .driver =3D {
+> > +             .name =3D KBUILD_MODNAME,
+> > +             .of_match_table =3D npcm_sgpio_of_table,
+> > +     },
+> > +     .probe  =3D npcm_sgpio_probe,
+> > +};
+> > +
+> > +module_platform_driver(npcm_sgpio_driver);
+> > +
+> > +MODULE_AUTHOR("Jim Liu <jjliu0@nuvoton.com>");
+> > +MODULE_AUTHOR("Joseph Liu <kwliu@nuvoton.com>");
+> > +MODULE_DESCRIPTION("Nuvoton NPCM Serial GPIO Driver");
+> > +MODULE_LICENSE("GPL");
