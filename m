@@ -2,129 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D23775E692
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA6075E696
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbjGXBVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
+        id S230237AbjGXBVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbjGXBV0 (ORCPT
+        with ESMTP id S230217AbjGXBV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:21:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A273710CF;
-        Sun, 23 Jul 2023 18:20:53 -0700 (PDT)
+        Sun, 23 Jul 2023 21:21:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB94199F;
+        Sun, 23 Jul 2023 18:20:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C334060E9C;
-        Mon, 24 Jul 2023 01:19:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24678C433C8;
-        Mon, 24 Jul 2023 01:19:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DD21960EF0;
+        Mon, 24 Jul 2023 01:19:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C891FC433C7;
+        Mon, 24 Jul 2023 01:19:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161587;
-        bh=ImR3UXOF6VoJ4MCSRQKC8RpuOKabCwM5SEE6az3qi4w=;
+        s=k20201202; t=1690161597;
+        bh=3Ah2v/E3gdvqrwSFzpiBN4S2urYpIlyOXZ3pz2IOL6M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lnNL3juETAkL/MregViThrRq3lZKODkzvjEvU++yTSkC9ueMDBXvzBaAnVsmC3JrS
-         1Em+GkbgyFO11Zj19A+xlrxSgfpQJQpCi7dt+bR9Je79JN8VEU/9XgaRg4BgwzKR0v
-         svOiCa6W4Ab4DhcZv6ZGJyPYrNSOqLtfip3fWAoDgU/Dan7bNPLCDA1REfWmbP/nfn
-         H/neKJ9dSnjTMD+zv6Z5C5FkYA1f3E5lW0Th4IYebjUvAq3zyHKjl8Qko0e80defVO
-         OSwlXCn3NEgT0Us3beaks26NINYCMEDD5otA14nXB7c3Sts37m4YX/q6gJp9llfYOg
-         LAL7mWF7l1FUw==
+        b=OtGKcS4Hem45iO9T4R3lcZuPu+39H+8FIcpTsk6BePyMkma6CzFpqI7Md+1eEenLN
+         20UGoeXR4BHAy9Ugjmm42a1s6tPfaM/LA57CIUemHOCJVZSZmBpVyjP9mUEK0bOBzS
+         OmmMk6EqXOCaxPlxGsAv3m4AAH0+Lua7oInJKKjZxAAPvqOU8lB/dDEaDDc3izJ0Gb
+         P8aCjRRR5d9o5Wy0e43BkQYMyQ7BbqDs8QX5vnZowrYgGnaSnME5ADVgrRTvxP7XrG
+         S3wEDnmi1HbLb9oFn61JLkfA9I2YiKBysBhE/S+lnMZwG/EfKjjgpX2MdYAtElKGWx
+         McBDHhzPRBvSQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alvin Lee <alvin.lee2@amd.com>,
-        Nevenko Stupar <nevenko.stupar@amd.com>,
-        Jun Lei <jun.lei@amd.com>, Tom Chung <chiahsuan.chung@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
+Cc:     =?UTF-8?q?Michel=20D=C3=A4nzer?= <mdaenzer@redhat.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
+        Hamza Mahfooz <hamza.mahfooz@amd.com>,
         Sasha Levin <sashal@kernel.org>, harry.wentland@amd.com,
         sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
         christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, Dillon.Varone@amd.com, nathan@kernel.org,
-        Ilya.Bakoulin@amd.com, Nevenko.Stupar@amd.com,
+        daniel@ffwll.ch, alvin.lee2@amd.com, jun.lei@amd.com,
+        qingqing.zhuo@amd.com, wenjing.liu@amd.com, Dillon.Varone@amd.com,
+        Wesley.Chalmers@amd.com, hanghong.ma@amd.com, Aric.Cyr@amd.com,
+        Josip.Pavic@amd.com, mwen@igalia.com, sungjoon.kim@amd.com,
         amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.4 41/58] drm/amd/display: Apply 60us prefetch for DCFCLK <= 300Mhz
-Date:   Sun, 23 Jul 2023 21:13:09 -0400
-Message-Id: <20230724011338.2298062-41-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 42/58] Revert "drm/amd/display: Do not set drr on pipe commit"
+Date:   Sun, 23 Jul 2023 21:13:10 -0400
+Message-Id: <20230724011338.2298062-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724011338.2298062-1-sashal@kernel.org>
 References: <20230724011338.2298062-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.5
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alvin Lee <alvin.lee2@amd.com>
+From: Michel Dänzer <mdaenzer@redhat.com>
 
-[ Upstream commit 7e60ab4eb3e4ba2adac46d737fdbbc5732bebd58 ]
+[ Upstream commit 360930985ec9f394c82ba0b235403b4a366d1560 ]
 
-[Description]
-- Previously we wanted to apply extra 60us of prefetch for min DCFCLK
-  (200Mhz), but DCFCLK can be calculated to be 201Mhz which underflows
-  also without the extra prefetch
-- Instead, apply the the extra 60us prefetch for any DCFCLK freq <=
-  300Mhz
+This reverts commit e101bf95ea87ccc03ac2f48dfc0757c6364ff3c7.
 
-Reviewed-by: Nevenko Stupar <nevenko.stupar@amd.com>
-Reviewed-by: Jun Lei <jun.lei@amd.com>
-Acked-by: Tom Chung <chiahsuan.chung@amd.com>
-Signed-off-by: Alvin Lee <alvin.lee2@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Caused a regression:
+
+Samsung Odyssey Neo G9, running at 5120x1440@240/VRR, connected to Navi
+21 via DisplayPort, blanks and the GPU hangs while starting the Steam
+game Assetto Corsa Competizione (via Proton 7.0).
+
+Example dmesg excerpt:
+
+ amdgpu 0000:0c:00.0: [drm] ERROR [CRTC:82:crtc-0] flip_done timed out
+ NMI watchdog: Watchdog detected hard LOCKUP on cpu 6
+ [...]
+ RIP: 0010:amdgpu_device_rreg.part.0+0x2f/0xf0 [amdgpu]
+ Code: 41 54 44 8d 24 b5 00 00 00 00 55 89 f5 53 48 89 fb 4c 3b a7 60 0b 00 00 73 6a 83 e2 02 74 29 4c 03 a3 68 0b 00 00 45 8b 24 24 <48> 8b 43 08 0f b7 70 3e 66 90 44 89 e0 5b 5d 41 5c 31 d2 31 c9 31
+ RSP: 0000:ffffb39a119dfb88 EFLAGS: 00000086
+ RAX: ffffffffc0eb96a0 RBX: ffff9e7963dc0000 RCX: 0000000000007fff
+ RDX: 0000000000000000 RSI: 0000000000004ff6 RDI: ffff9e7963dc0000
+ RBP: 0000000000004ff6 R08: ffffb39a119dfc40 R09: 0000000000000010
+ R10: ffffb39a119dfc40 R11: ffffb39a119dfc44 R12: 00000000000e05ae
+ R13: 0000000000000000 R14: ffff9e7963dc0010 R15: 0000000000000000
+ FS:  000000001012f6c0(0000) GS:ffff9e805eb80000(0000) knlGS:000000007fd40000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00000000461ca000 CR3: 00000002a8a20000 CR4: 0000000000350ee0
+ Call Trace:
+  <TASK>
+  dm_read_reg_func+0x37/0xc0 [amdgpu]
+  generic_reg_get2+0x22/0x60 [amdgpu]
+  optc1_get_crtc_scanoutpos+0x6a/0xc0 [amdgpu]
+  dc_stream_get_scanoutpos+0x74/0x90 [amdgpu]
+  dm_crtc_get_scanoutpos+0x82/0xf0 [amdgpu]
+  amdgpu_display_get_crtc_scanoutpos+0x91/0x190 [amdgpu]
+  ? dm_read_reg_func+0x37/0xc0 [amdgpu]
+  amdgpu_get_vblank_counter_kms+0xb4/0x1a0 [amdgpu]
+  dm_pflip_high_irq+0x213/0x2f0 [amdgpu]
+  amdgpu_dm_irq_handler+0x8a/0x200 [amdgpu]
+  amdgpu_irq_dispatch+0xd4/0x220 [amdgpu]
+  amdgpu_ih_process+0x7f/0x110 [amdgpu]
+  amdgpu_irq_handler+0x1f/0x70 [amdgpu]
+  __handle_irq_event_percpu+0x46/0x1b0
+  handle_irq_event+0x34/0x80
+  handle_edge_irq+0x9f/0x240
+  __common_interrupt+0x66/0x110
+  common_interrupt+0x5c/0xd0
+  asm_common_interrupt+0x22/0x40
+
+Reviewed-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Michel Dänzer <mdaenzer@redhat.com>
+Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_32.c    | 4 ++--
- .../gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_32.h    | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c | 6 ------
+ drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c | 7 -------
+ 2 files changed, 13 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_32.c b/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_32.c
-index d75248b6cae99..9a5150e96017a 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_32.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_32.c
-@@ -811,7 +811,7 @@ static void DISPCLKDPPCLKDCFCLKDeepSleepPrefetchParametersWatermarksAndPerforman
- 					v->SwathHeightC[k],
- 					TWait,
- 					(v->DRAMSpeedPerState[mode_lib->vba.VoltageLevel] <= MEM_STROBE_FREQ_MHZ ||
--						v->DCFCLKPerState[mode_lib->vba.VoltageLevel] <= MIN_DCFCLK_FREQ_MHZ) ?
-+						v->DCFCLKPerState[mode_lib->vba.VoltageLevel] <= DCFCLK_FREQ_EXTRA_PREFETCH_REQ_MHZ) ?
- 							mode_lib->vba.ip.min_prefetch_in_strobe_us : 0,
- 					/* Output */
- 					&v->DSTXAfterScaler[k],
-@@ -3311,7 +3311,7 @@ void dml32_ModeSupportAndSystemConfigurationFull(struct display_mode_lib *mode_l
- 							v->swath_width_chroma_ub_this_state[k],
- 							v->SwathHeightYThisState[k],
- 							v->SwathHeightCThisState[k], v->TWait,
--							(v->DRAMSpeedPerState[i] <= MEM_STROBE_FREQ_MHZ || v->DCFCLKState[i][j] <= MIN_DCFCLK_FREQ_MHZ) ?
-+							(v->DRAMSpeedPerState[i] <= MEM_STROBE_FREQ_MHZ || v->DCFCLKState[i][j] <= DCFCLK_FREQ_EXTRA_PREFETCH_REQ_MHZ) ?
- 									mode_lib->vba.ip.min_prefetch_in_strobe_us : 0,
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
+index 6ce10fd4bb1a4..5403e9399a465 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
+@@ -2113,12 +2113,6 @@ void dcn20_optimize_bandwidth(
+ 	if (hubbub->funcs->program_compbuf_size)
+ 		hubbub->funcs->program_compbuf_size(hubbub, context->bw_ctx.bw.dcn.compbuf_size_kb, true);
  
- 							/* Output */
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_32.h b/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_32.h
-index d98e36a9a09cc..c4745d63039bb 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_32.h
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn32/display_mode_vba_32.h
-@@ -53,7 +53,7 @@
- #define BPP_BLENDED_PIPE 0xffffffff
+-	if (context->bw_ctx.bw.dcn.clk.fw_based_mclk_switching) {
+-		dc_dmub_srv_p_state_delegate(dc,
+-			true, context);
+-		context->bw_ctx.bw.dcn.clk.p_state_change_support = true;
+-	}
+-
+ 	dc->clk_mgr->funcs->update_clocks(
+ 			dc->clk_mgr,
+ 			context,
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
+index f923224e85fc6..32121db2851e6 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
+@@ -985,18 +985,11 @@ void dcn30_set_disp_pattern_generator(const struct dc *dc,
+ void dcn30_prepare_bandwidth(struct dc *dc,
+ 			     struct dc_state *context)
+ {
+-	if (context->bw_ctx.bw.dcn.clk.fw_based_mclk_switching) {
+-		dc->optimized_required = true;
+-		context->bw_ctx.bw.dcn.clk.p_state_change_support = false;
+-	}
+-
+ 	if (dc->clk_mgr->dc_mode_softmax_enabled)
+ 		if (dc->clk_mgr->clks.dramclk_khz <= dc->clk_mgr->bw_params->dc_mode_softmax_memclk * 1000 &&
+ 				context->bw_ctx.bw.dcn.clk.dramclk_khz > dc->clk_mgr->bw_params->dc_mode_softmax_memclk * 1000)
+ 			dc->clk_mgr->funcs->set_max_memclk(dc->clk_mgr, dc->clk_mgr->bw_params->clk_table.entries[dc->clk_mgr->bw_params->clk_table.num_entries - 1].memclk_mhz);
  
- #define MEM_STROBE_FREQ_MHZ 1600
--#define MIN_DCFCLK_FREQ_MHZ 200
-+#define DCFCLK_FREQ_EXTRA_PREFETCH_REQ_MHZ 300
- #define MEM_STROBE_MAX_DELIVERY_TIME_US 60.0
+ 	dcn20_prepare_bandwidth(dc, context);
+-
+-	dc_dmub_srv_p_state_delegate(dc, false, context);
+ }
  
- struct display_mode_lib;
 -- 
 2.39.2
 
