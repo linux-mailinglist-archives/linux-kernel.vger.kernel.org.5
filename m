@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C21B75FF54
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 20:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5538F75FF57
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 20:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbjGXSuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 14:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52266 "EHLO
+        id S230130AbjGXSvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 14:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbjGXSuq (ORCPT
+        with ESMTP id S229667AbjGXSvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 14:50:46 -0400
+        Mon, 24 Jul 2023 14:51:42 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0CBF10E2;
-        Mon, 24 Jul 2023 11:50:45 -0700 (PDT)
-Received: from rrs24-12-35.corp.microsoft.com (unknown [131.107.1.149])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 19BD620A1078;
-        Mon, 24 Jul 2023 11:50:45 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 19BD620A1078
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BB06A1BC5;
+        Mon, 24 Jul 2023 11:51:16 -0700 (PDT)
+Received: from rrs24-12-35.corp.microsoft.com (unknown [131.107.8.21])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 31AB920A1183;
+        Mon, 24 Jul 2023 11:51:16 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 31AB920A1183
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1690224645;
-        bh=IGGYFXNUvMQx09Tnw6sJKKjcZi3QrY5MCquaxh4wmqI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FBIxwNZTHktnp2qkPtSRMEdejWCZAxFZAuJ0n/1vpS5HLuRTSAyHJSSveVXEGPIo1
-         7rwxXZ3URibY3H80FJg6Y5DNZNbZ//Zhzy8rc0A+yxag6g1rYwlPKpu13G7+sE8RfK
-         t+n7TtpnfXEZpvy2o7roxxlNMYAfARp0uksFDqjU=
+        s=default; t=1690224676;
+        bh=fG/VVJdNR2WTEg2Zz86Hgb4NKA0nLWrpmnZFJx0+ZbY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Uve26pxBRy8nkqgNp5KAs+FvjYA6fImtGG15bBVm4bWz0H1werLPp5p3W7S8cI+z1
+         XQ8tzupZfUJg2odguTm5IyAsQ7g45ImXnU99ieVRe3HxJBPM91ohXYpc2T3CF4/WCK
+         0tan4MNLAbDjR7gR9I7hl3LCJQ1w4QkVJgOKtUZU=
 From:   Easwar Hariharan <eahariha@linux.microsoft.com>
 To:     stable@vger.kernel.org
 Cc:     easwar.hariharan@microsoft.com,
@@ -45,12 +45,10 @@ Cc:     easwar.hariharan@microsoft.com,
         linux-kernel@vger.kernel.org (open list),
         iommu@lists.linux-foundation.org (open list:IOMMU DRIVERS),
         iommu@lists.linux.dev (open list:IOMMU DRIVERS)
-Subject: [PATCH v2 5.15 3/3] iommu/arm-smmu-v3: Document MMU-700 erratum 2812531
-Date:   Mon, 24 Jul 2023 18:50:17 +0000
-Message-Id: <20230724185017.1675459-4-eahariha@linux.microsoft.com>
+Subject: [PATCH 6.1] iommu/arm-smmu-v3: Document MMU-700 erratum 2812531
+Date:   Mon, 24 Jul 2023 18:51:06 +0000
+Message-Id: <20230724185107.1675882-1-eahariha@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230724185017.1675459-1-eahariha@linux.microsoft.com>
-References: <20230724185017.1675459-1-eahariha@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -96,16 +94,16 @@ Link: https://lore.kernel.org/r/330221cdfd0003cd51b6c04e7ff3566741ad8374.1683731
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 ---
- Documentation/arm64/silicon-errata.rst      |  4 ++
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 41 +++++++++++++++++++++
+ Documentation/arm64/silicon-errata.rst      |  4 +++
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 39 +++++++++++++++++++++
  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  1 +
- 3 files changed, 46 insertions(+)
+ 3 files changed, 44 insertions(+)
 
 diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
-index f64354f8a79f..322df8abbc0e 100644
+index 55492fea4427..120784507bc0 100644
 --- a/Documentation/arm64/silicon-errata.rst
 +++ b/Documentation/arm64/silicon-errata.rst
-@@ -122,6 +122,10 @@ stable kernels.
+@@ -138,6 +138,10 @@ stable kernels.
  +----------------+-----------------+-----------------+-----------------------------+
  | ARM            | MMU-500         | #841119,826419  | N/A                         |
  +----------------+-----------------+-----------------+-----------------------------+
@@ -117,15 +115,13 @@ index f64354f8a79f..322df8abbc0e 100644
  | Broadcom       | Brahma-B53      | N/A             | ARM64_ERRATUM_845719        |
  +----------------+-----------------+-----------------+-----------------------------+
 diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index bcdb2cbdda97..ba2e5149604c 100644
+index d4d8bfee9feb..3e20c60e9c32 100644
 --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
 +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -897,6 +897,14 @@ static void arm_smmu_cmdq_batch_add(struct arm_smmu_device *smmu,
- 				    struct arm_smmu_cmdq_batch *cmds,
- 				    struct arm_smmu_cmdq_ent *cmd)
+@@ -882,6 +882,12 @@ static void arm_smmu_cmdq_batch_add(struct arm_smmu_device *smmu,
  {
-+	int index;
-+
+ 	int index;
+ 
 +	if (cmds->num == CMDQ_BATCH_ENTRIES - 1 &&
 +	    (smmu->options & ARM_SMMU_OPT_CMDQ_FORCE_SYNC)) {
 +		arm_smmu_cmdq_issue_cmdlist(smmu, cmds->cmds, cmds->num, true);
@@ -135,7 +131,7 @@ index bcdb2cbdda97..ba2e5149604c 100644
  	if (cmds->num == CMDQ_BATCH_ENTRIES) {
  		arm_smmu_cmdq_issue_cmdlist(smmu, cmds->cmds, cmds->num, false);
  		cmds->num = 0;
-@@ -3459,6 +3467,39 @@ static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
+@@ -3410,6 +3416,39 @@ static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
  	return 0;
  }
  
@@ -176,10 +172,10 @@ index bcdb2cbdda97..ba2e5149604c 100644
  {
  	u32 reg;
 diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index 4cb136f07914..eeb780c5c1e0 100644
+index cd48590ada30..406ac0426762 100644
 --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
 +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -645,6 +645,7 @@ struct arm_smmu_device {
+@@ -644,6 +644,7 @@ struct arm_smmu_device {
  #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
  #define ARM_SMMU_OPT_PAGE0_REGS_ONLY	(1 << 1)
  #define ARM_SMMU_OPT_MSIPOLL		(1 << 2)
