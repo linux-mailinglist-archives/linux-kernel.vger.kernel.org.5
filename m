@@ -2,165 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E77975FA31
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4329575FA34
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbjGXOwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
+        id S230208AbjGXOwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231645AbjGXOwU (ORCPT
+        with ESMTP id S230166AbjGXOwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:52:20 -0400
-Received: from s.wrqvwxzv.outbound-mail.sendgrid.net (s.wrqvwxzv.outbound-mail.sendgrid.net [149.72.154.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCB210C3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:52:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
-        h=from:subject:mime-version:to:cc:content-transfer-encoding:
-        content-type:cc:content-type:from:subject:to;
-        s=s1; bh=WcPMS8VJ8wZGKcidpFy/HqVz+nWN87bUiNsDE1gwuRs=;
-        b=jmjEZFV8G9PUpRXSheQcL4plISa3RZzSmTOYznoXHVGXvcMsEoC4Nop7o+OWT+M1NHHG
-        qz3Wp+H26cYeIadd/VX8l+mX2z2ABk7ZLqlmsu7fZlhlc/Mgx26C4piKBhgFYm5+Z5d/ds
-        3NLFVWffSas7TqKKdLDV5Q0IbYYpNXfwPMXHbqPGdkN7JLgPoW/6w5LZg0L1ptxRi8CAga
-        S8oNOhXMRdcBjGocoAQTDja6qLU3zXYsyisBt0Mhf0usuM879s6tu/aGRk+isP8frKObvj
-        obIDbfudqTnJGJPeCkW0mGL/FsjjH1xi+qfem5jLW6AMqjfDZOOk+DBwWV+ulonw==
-Received: by filterdrecv-8684c58db7-nfltn with SMTP id filterdrecv-8684c58db7-nfltn-1-64BE901F-40
-        2023-07-24 14:52:16.172047943 +0000 UTC m=+6448424.450220586
-Received: from bionic.localdomain (unknown)
-        by geopod-ismtpd-8 (SG)
-        with ESMTP
-        id MTXJzVVRT-imukorVRJulQ
-        Mon, 24 Jul 2023 14:52:15.522 +0000 (UTC)
-From:   Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH] arm64: dts: rockchip: Fix regulators and enable SATA on Radxa
- E25
-Date:   Mon, 24 Jul 2023 14:52:16 +0000 (UTC)
-Message-ID: <20230724145213.3833099-1-jonas@kwiboo.se>
-X-Mailer: git-send-email 2.41.0
+        Mon, 24 Jul 2023 10:52:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DBF10D7;
+        Mon, 24 Jul 2023 07:52:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6DBB3611F6;
+        Mon, 24 Jul 2023 14:52:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA815C433C8;
+        Mon, 24 Jul 2023 14:52:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690210353;
+        bh=Io85B1vzGj1NiepBNP1CXkgl9j43eYMLYiUZyMtHevU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CJj9nVWeVnJDFBR0XVDtKFcRx4DdPvYzBxJs7NdyqhCdkyJSi7ns/QunyuF5T7ps6
+         XU2A2MDFy7UQQzJsIx/xDqLe0FliBY/Oeg0aB/OquAS8cepo48SytLWwhoRHBnqAgE
+         wTZhFOxngaubHLo/KhuNmg/icDkWf3KABmSQcw7hRGodIB5PblbvuCT6kpl36W6FZr
+         hIH+s80Togjk4lAfltww4D/tmAcJlqIFj1q84XSHWsxVyk2brxNcyWdq/AUnuQb02p
+         QLpBDuBflcJsU3fMXLT8vIMOo2OPS1Po+gVqEtzb2kBqqlYChJ+9nWv8THywbJoX77
+         fSGCA/VpqlDFg==
+Date:   Mon, 24 Jul 2023 16:52:19 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 15/20] context-tracking: Introduce work deferral
+ infrastructure
+Message-ID: <ZL6QI4mV-NKlh4Ox@localhost.localdomain>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-16-vschneid@redhat.com>
 MIME-Version: 1.0
-X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0hxdxYYdTXqyX82wfI?=
- =?us-ascii?Q?Ra=2FGfuQUGNsOvlZGB3QHxCYxiOjHZP07t=2FuVIOp?=
- =?us-ascii?Q?Tg7CNYgQHfx=2FyVh5KOiYjmJ=2Fl+SMjKTWeswu=2FXk?=
- =?us-ascii?Q?1TJiXMzZnr9RPT6duBhWqAmr87Nn137pCHkSCsF?=
- =?us-ascii?Q?6xFUjy2Wf8iSOmnQNQ4800BqGy9D78J7RD5ERo?=
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chukun Pan <amadeus@jmu.edu.cn>
-Cc:     FUKAUMI Naoki <naoki@radxa.com>, Jonas Karlman <jonas@kwiboo.se>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-X-Entity-ID: P7KYpSJvGCELWjBME/J5tg==
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=us-ascii
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230720163056.2564824-16-vschneid@redhat.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Despite its name, the regulator vcc3v3_pcie30x1 has nothing to do with
-pcie30x1. Instead, it supply power to VBAT1-5 on the M.2 KEY B port as
-seen on page 8 of the schematic [1].
+Le Thu, Jul 20, 2023 at 05:30:51PM +0100, Valentin Schneider a écrit :
+> +enum ctx_state {
+> +	/* Following are values */
+> +	CONTEXT_DISABLED	= -1,	/* returned by ct_state() if unknown */
+> +	CONTEXT_KERNEL		= 0,
+> +	CONTEXT_IDLE		= 1,
+> +	CONTEXT_USER		= 2,
+> +	CONTEXT_GUEST		= 3,
+> +	CONTEXT_MAX             = 4,
+> +};
+> +
+> +/*
+> + * We cram three different things within the same atomic variable:
+> + *
+> + *                CONTEXT_STATE_END                        RCU_DYNTICKS_END
+> + *                         |       CONTEXT_WORK_END                |
+> + *                         |               |                       |
+> + *                         v               v                       v
+> + *         [ context_state ][ context work ][ RCU dynticks counter ]
+> + *         ^                ^               ^
+> + *         |                |               |
+> + *         |        CONTEXT_WORK_START      |
+> + * CONTEXT_STATE_START              RCU_DYNTICKS_START
 
-pcie30x1 is used for the mini PCIe slot, and as seen on page 9 the
-vcc3v3_minipcie regulator is instead related to pcie30x1.
+Should the layout be displayed in reverse? Well at least I always picture
+bitmaps in reverse, that's probably due to the direction of the shift arrows.
+Not sure what is the usual way to picture it though...
 
-The M.2 KEY B port can be used for WWAN USB2 modules or SATA drives.
+> + */
+> +
+> +#define CT_STATE_SIZE (sizeof(((struct context_tracking *)0)->state) * BITS_PER_BYTE)
+> +
+> +#define CONTEXT_STATE_START 0
+> +#define CONTEXT_STATE_END   (bits_per(CONTEXT_MAX - 1) - 1)
 
-Use correct regulator vcc3v3_minipcie for pcie30x1 and enable sata1 node
-to fix use of SATA drives on the M.2 slot.
+Since you have non overlapping *_START symbols, perhaps the *_END
+are superfluous?
 
-[1] https://dl.radxa.com/cm3p/e25/radxa-e25-v1.4-sch.pdf
+> +
+> +#define RCU_DYNTICKS_BITS  (IS_ENABLED(CONFIG_CONTEXT_TRACKING_WORK) ? 16 : 31)
+> +#define RCU_DYNTICKS_START (CT_STATE_SIZE - RCU_DYNTICKS_BITS)
+> +#define RCU_DYNTICKS_END   (CT_STATE_SIZE - 1)
+> +#define RCU_DYNTICKS_IDX   BIT(RCU_DYNTICKS_START)
 
-Fixes: 2bf2f4d9f673 ("arm64: dts: rockchip: Add Radxa CM3I E25")
-Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
----
- .../boot/dts/rockchip/rk3568-radxa-e25.dts    | 24 ++++++++++++-------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+Might be the right time to standardize and fix our naming:
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3568-radxa-e25.dts b/arch/arm64/boot/dts/rockchip/rk3568-radxa-e25.dts
-index 63c4bd873188..72ad74c38a2b 100644
---- a/arch/arm64/boot/dts/rockchip/rk3568-radxa-e25.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3568-radxa-e25.dts
-@@ -47,6 +47,9 @@ vbus_typec: vbus-typec-regulator {
- 		vin-supply = <&vcc5v0_sys>;
- 	};
- 
-+	/* actually fed by vcc5v0_sys, dependent
-+	 * on pi6c clock generator
-+	 */
- 	vcc3v3_minipcie: vcc3v3-minipcie-regulator {
- 		compatible = "regulator-fixed";
- 		enable-active-high;
-@@ -54,9 +57,9 @@ vcc3v3_minipcie: vcc3v3-minipcie-regulator {
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&minipcie_enable_h>;
- 		regulator-name = "vcc3v3_minipcie";
--		regulator-min-microvolt = <5000000>;
--		regulator-max-microvolt = <5000000>;
--		vin-supply = <&vcc5v0_sys>;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc3v3_pi6c_05>;
- 	};
- 
- 	vcc3v3_ngff: vcc3v3-ngff-regulator {
-@@ -71,9 +74,6 @@ vcc3v3_ngff: vcc3v3-ngff-regulator {
- 		vin-supply = <&vcc5v0_sys>;
- 	};
- 
--	/* actually fed by vcc5v0_sys, dependent
--	 * on pi6c clock generator
--	 */
- 	vcc3v3_pcie30x1: vcc3v3-pcie30x1-regulator {
- 		compatible = "regulator-fixed";
- 		enable-active-high;
-@@ -83,7 +83,7 @@ vcc3v3_pcie30x1: vcc3v3-pcie30x1-regulator {
- 		regulator-name = "vcc3v3_pcie30x1";
- 		regulator-min-microvolt = <3300000>;
- 		regulator-max-microvolt = <3300000>;
--		vin-supply = <&vcc3v3_pi6c_05>;
-+		vin-supply = <&vcc5v0_sys>;
- 	};
- 
- 	vcc3v3_pi6c_05: vcc3v3-pi6c-05-regulator {
-@@ -99,6 +99,10 @@ vcc3v3_pi6c_05: vcc3v3-pi6c-05-regulator {
- 	};
- };
- 
-+&combphy1 {
-+	phy-supply = <&vcc3v3_pcie30x1>;
-+};
-+
- &pcie2x1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pcie20_reset_h>;
-@@ -117,7 +121,7 @@ &pcie3x1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pcie30x1m0_pins>;
- 	reset-gpios = <&gpio0 RK_PC3 GPIO_ACTIVE_HIGH>;
--	vpcie3v3-supply = <&vcc3v3_pcie30x1>;
-+	vpcie3v3-supply = <&vcc3v3_minipcie>;
- 	status = "okay";
- };
- 
-@@ -178,6 +182,10 @@ &pwm12 {
- 	status = "okay";
- };
- 
-+&sata1 {
-+	status = "okay";
-+};
-+
- &sdmmc0 {
- 	bus-width = <4>;
- 	cap-sd-highspeed;
--- 
-2.41.0
+CT_STATE_START,
+CT_STATE_KERNEL,
+CT_STATE_USER,
+...
+CT_WORK_START,
+CT_WORK_*,
+...
+CT_RCU_DYNTICKS_START,
+CT_RCU_DYNTICKS_IDX
 
+> +bool ct_set_cpu_work(unsigned int cpu, unsigned int work)
+> +{
+> +	struct context_tracking *ct = per_cpu_ptr(&context_tracking, cpu);
+> +	unsigned int old;
+> +	bool ret = false;
+> +
+> +	preempt_disable();
+> +
+> +	old = atomic_read(&ct->state);
+> +	/*
+> +	 * Try setting the work until either
+> +	 * - the target CPU no longer accepts any more deferred work
+> +	 * - the work has been set
+> +	 *
+> +	 * NOTE: CONTEXT_GUEST intersects with CONTEXT_USER and CONTEXT_IDLE
+> +	 * as they are regular integers rather than bits, but that doesn't
+> +	 * matter here: if any of the context state bit is set, the CPU isn't
+> +	 * in kernel context.
+> +	 */
+> +	while ((old & (CONTEXT_GUEST | CONTEXT_USER | CONTEXT_IDLE)) && !ret)
+
+That may still miss a recent entry to userspace due to the first plain read, ending
+with an undesired interrupt.
+
+You need at least one cmpxchg. Well, of course that stays racy by nature because
+between the cmpxchg() returning CONTEXT_KERNEL and the actual IPI raised and
+received, the remote CPU may have gone to userspace already. But still it limits
+a little the window.
+
+Thanks.
+
+> +		ret = atomic_try_cmpxchg(&ct->state, &old, old | (work << CONTEXT_WORK_START));
+> +
+> +	preempt_enable();
+> +	return ret;
+> +}
+> +#else
+> +static __always_inline void ct_work_flush(unsigned long work) { }
+> +static __always_inline void ct_work_clear(struct context_tracking *ct) { }
+> +#endif
+> +
+>  /*
+>   * Record entry into an extended quiescent state.  This is only to be
+>   * called when not already in an extended quiescent state, that is,
+> @@ -88,7 +133,8 @@ static noinstr void ct_kernel_exit_state(int offset)
+>  	 * next idle sojourn.
+>  	 */
+>  	rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
+> -	seq = ct_state_inc(offset);
+> +	seq = ct_state_inc_clear_work(offset);
+> +
+>  	// RCU is no longer watching.  Better be in extended quiescent state!
+>  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && (seq & RCU_DYNTICKS_IDX));
+>  }
+> @@ -100,7 +146,7 @@ static noinstr void ct_kernel_exit_state(int offset)
+>   */
+>  static noinstr void ct_kernel_enter_state(int offset)
+>  {
+> -	int seq;
+> +	unsigned long seq;
+>  
+>  	/*
+>  	 * CPUs seeing atomic_add_return() must see prior idle sojourns,
+> @@ -108,6 +154,7 @@ static noinstr void ct_kernel_enter_state(int offset)
+>  	 * critical section.
+>  	 */
+>  	seq = ct_state_inc(offset);
+> +	ct_work_flush(seq);
+>  	// RCU is now watching.  Better not be in an extended quiescent state!
+>  	rcu_dynticks_task_trace_exit();  // After ->dynticks update!
+>  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !(seq & RCU_DYNTICKS_IDX));
+> diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
+> index bae8f11070bef..fdb266f2d774b 100644
+> --- a/kernel/time/Kconfig
+> +++ b/kernel/time/Kconfig
+> @@ -181,6 +181,11 @@ config CONTEXT_TRACKING_USER_FORCE
+>  	  Say N otherwise, this option brings an overhead that you
+>  	  don't want in production.
+>  
+> +config CONTEXT_TRACKING_WORK
+> +	bool
+> +	depends on HAVE_CONTEXT_TRACKING_WORK && CONTEXT_TRACKING_USER
+> +	default y
+> +
+>  config NO_HZ
+>  	bool "Old Idle dynticks config"
+>  	help
+> -- 
+> 2.31.1
+> 
