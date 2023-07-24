@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0B375F896
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD5775F8A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbjGXNi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
+        id S231690AbjGXNjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231811AbjGXNiZ (ORCPT
+        with ESMTP id S229545AbjGXNig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:38:25 -0400
+        Mon, 24 Jul 2023 09:38:36 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ADE93C10
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:36:47 -0700 (PDT)
-Message-ID: <20230724132047.780772553@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3623F10D5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:36:55 -0700 (PDT)
+Message-ID: <20230724132047.837772527@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690205718;
+        s=2020; t=1690205720;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=O0XTJMurd8agT9XR8N/9h35QD+xMCyVQhi7/zAo436M=;
-        b=ZWXoG6IobDx6riWyjqKv9qh46qsw9PmprJtJxi4cys5MjKFTsvisDgmmRYUsv+el8SE71+
-        KXGU+c97azP3w1HyMNrA3DQs+oh+YqGjJiymvTiUP0QxmnEYO3Mlp+lhxR1X1IcQPyG8nX
-        P9dx2m+we7FjI8tMuwYh14bjeIaUp2jhqes9xOzIVU14C3OjlP4XFcMk3biwaxEbgBrY52
-        Z5LI1bs0PmVBhwbbadTB01QVmLhMncMo1ROmsMXQSaMIWG5r6vHe2wxjPzofoHS/YRkETT
-        33PvP6hUv45T2UDOBZUPEhgf9sRgPyBSxsxut+X2/33WJQF3HjDIl8Zt/h3rkg==
+         references:references; bh=ughx6myInj7tBGUgtVNaK0CKBD3pdVmOGF8WRhhzTa4=;
+        b=kwoiOuDAovdAN5YiiqAECbj6LLitpjSJP+TZ+3qeF4Bl0Q4kNBW8ZOGZ6vmO0QnEH5yhgs
+        ZldHloRckXQgBf9hQWCR493aunpVDGjOmDFOV3uQS9ykP1QdgQ5BIgllzb3ZcaPPO1RDpl
+        SOi/zlRzJIDAR4IH4NVv6DCIsAG4h9YU+RMaVMNjsKF31fjZWohtGY6E/KHpjfnpXpip26
+        9bfKdl5PcHWPNHIRf32md5tNpRnZQAdm+IOGrdS3QlRmmiRSMheq1FPYpPvJW6cmyShcJ9
+        q5gkkYRsdstEX72ASXepqBQCj6l+U977gYTSDIdU4pmYJUw9qgAWw7uIsR9kqg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690205718;
+        s=2020e; t=1690205720;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=O0XTJMurd8agT9XR8N/9h35QD+xMCyVQhi7/zAo436M=;
-        b=bi4hxsCuLFaqNkJLJd0Of7FbqVBIiWHA7kyC7kZlN4qP2gWFrXinMDkuM/ShQlOGiW1Ghl
-        nFxs6eylWxcHPgCQ==
+         references:references; bh=ughx6myInj7tBGUgtVNaK0CKBD3pdVmOGF8WRhhzTa4=;
+        b=2WL7HNmn/6HgtJssUiNXv9sezZpnoJgvv1UvWVS3rp+2602W790X3X0MZYw1ym0th1zxaR
+        Jc9ma375Z2A2EkDg==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
@@ -44,11 +44,12 @@ Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
         Michael Kelley <mikelley@microsoft.com>,
         Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V2 54/58] x86/xen/apic: Mark apic __ro_after_init
+Subject: [patch V2 55/58] x86/apic: Mark all hotpath APIC callback wrappers
+ __always_inline
 References: <20230724131206.500814398@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 24 Jul 2023 15:35:17 +0200 (CEST)
+Date:   Mon, 24 Jul 2023 15:35:19 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,72 +60,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nothing can change it post init.
-
-Remove the 32bit callbacks and comments as XENPV is strictly 64bit.
-
-While at it mop up the whitespace damage which causes eyebleed due to an
-editor which is highlighting it.
+There is no value for instrumentation to look at those wrappers and with the
+upcoming conversion to static calls even less so.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Juergen Gross <jgross@suse.com>
 ---
- arch/x86/xen/apic.c |   26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+ arch/x86/include/asm/apic.h |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
---- a/arch/x86/xen/apic.c
-+++ b/arch/x86/xen/apic.c
-@@ -123,39 +123,37 @@ static int xen_cpu_present_to_apicid(int
- 		return BAD_APICID;
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -371,48 +371,48 @@ void __init apic_install_driver(struct a
+ 		pr_info("APIC: %s() replaced with %ps()\n", #_callback, _fn);	\
  }
  
--static struct apic xen_pv_apic = {
--	.name 				= "Xen PV",
--	.probe 				= xen_apic_probe_pv,
-+static struct apic xen_pv_apic __ro_after_init = {
-+	.name				= "Xen PV",
-+	.probe				= xen_apic_probe_pv,
- 	.acpi_madt_oem_check		= xen_madt_oem_check,
+-static inline u32 apic_read(u32 reg)
++static __always_inline u32 apic_read(u32 reg)
+ {
+ 	return apic->read(reg);
+ }
  
- 	/* .delivery_mode and .dest_mode_logical not used by XENPV */
+-static inline void apic_write(u32 reg, u32 val)
++static __always_inline void apic_write(u32 reg, u32 val)
+ {
+ 	apic->write(reg, val);
+ }
  
- 	.disable_esr			= 0,
+-static inline void apic_eoi(void)
++static __always_inline void apic_eoi(void)
+ {
+ 	apic->eoi();
+ }
  
--	.check_apicid_used		= default_check_apicid_used, /* Used on 32-bit */
--	.ioapic_phys_id_map		= default_ioapic_phys_id_map, /* Used on 32-bit */
- 	.cpu_present_to_apicid		= xen_cpu_present_to_apicid,
- 	.phys_pkg_id			= xen_phys_pkg_id, /* detect_ht */
+-static inline void apic_native_eoi(void)
++static __always_inline void apic_native_eoi(void)
+ {
+ 	apic->native_eoi();
+ }
  
- 	.max_apic_id			= UINT_MAX,
--	.get_apic_id 			= xen_get_apic_id,
--	.set_apic_id 			= xen_set_apic_id, /* Can be NULL on 32-bit. */
-+	.get_apic_id			= xen_get_apic_id,
-+	.set_apic_id			= xen_set_apic_id,
+-static inline u64 apic_icr_read(void)
++static __always_inline u64 apic_icr_read(void)
+ {
+ 	return apic->icr_read();
+ }
  
- 	.calc_dest_apicid		= apic_flat_calc_apicid,
+-static inline void apic_icr_write(u32 low, u32 high)
++static __always_inline void apic_icr_write(u32 low, u32 high)
+ {
+ 	apic->icr_write(low, high);
+ }
  
- #ifdef CONFIG_SMP
--	.send_IPI_mask 			= xen_send_IPI_mask,
--	.send_IPI_mask_allbutself 	= xen_send_IPI_mask_allbutself,
--	.send_IPI_allbutself 		= xen_send_IPI_allbutself,
--	.send_IPI_all 			= xen_send_IPI_all,
--	.send_IPI_self 			= xen_send_IPI_self,
-+	.send_IPI_mask			= xen_send_IPI_mask,
-+	.send_IPI_mask_allbutself	= xen_send_IPI_mask_allbutself,
-+	.send_IPI_allbutself		= xen_send_IPI_allbutself,
-+	.send_IPI_all			= xen_send_IPI_all,
-+	.send_IPI_self			= xen_send_IPI_self,
- #endif
- 	.read				= xen_apic_read,
- 	.write				= xen_apic_write,
- 	.eoi				= xen_apic_eoi,
+-static inline void apic_wait_icr_idle(void)
++static __always_inline void apic_wait_icr_idle(void)
+ {
+ 	if (apic->wait_icr_idle)
+ 		apic->wait_icr_idle();
+ }
  
--	.icr_read 			= xen_apic_icr_read,
--	.icr_write 			= xen_apic_icr_write,
-+	.icr_read			= xen_apic_icr_read,
-+	.icr_write			= xen_apic_icr_write,
- };
+-static inline u32 safe_apic_wait_icr_idle(void)
++static __always_inline u32 safe_apic_wait_icr_idle(void)
+ {
+ 	return apic->safe_wait_icr_idle ? apic->safe_wait_icr_idle() : 0;
+ }
  
- static void __init xen_apic_check(void)
+-static inline bool apic_id_valid(u32 apic_id)
++static __always_inline bool apic_id_valid(u32 apic_id)
+ {
+ 	return apic_id <= apic->max_apic_id;
+ }
 
