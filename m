@@ -2,252 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB22175FB15
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75AE75FB1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbjGXPqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 11:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        id S229566AbjGXPr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 11:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbjGXPqH (ORCPT
+        with ESMTP id S229877AbjGXPrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 11:46:07 -0400
-Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020025.outbound.protection.outlook.com [52.101.56.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7EFE61;
-        Mon, 24 Jul 2023 08:46:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cNRfKRFZX1dLAZ+4RjYX1hw5tqsUL+9wrh8MHJox52JoDbp5MfeLjBB1oZf+6ucTMRIXKOtWdCSzZCNfVCSMlru+aGDFHkiyiQYXUdACbvkg30aGYZYInhhI/mvDZQUG+/50E0TFw3/mHmzvFf4KBT5wdrNidoFvV/DzVjeVFqmoGaIeCKK63CrYT9WNJnd85d/zl1ivT9OINzbZisusPG6O/zZS7wamZPNfmlkelX9JNcopg/vFXqDjDmTdZaFycUMAei5vVQ1lKaHStbFOrIpzZXfFHrfxosuY/FyjP+10uILe91sMnDlR/Y1xyTOdFt1/e55Xnr+x7dEshz2VNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pu75WyEQiSdPQx4qbpSOAMTnmeBGNkFYSert3oNa2TE=;
- b=H6hoT9mGFJEpna0BmIRCE8gXxbtIxPSsurghue19Y6kyxUiDxzCrrZLsMCDrqR6lEcEmibbv8W0UiAxGNLOuSoLFmkue7BJLRG1+fUe1Wm/6srDt4QxP1NK+PWjLF5dVu61lxSfh4WBJ4kmmIKgEctkmsBqGGCjFc2XCLFHLcCaMZAm9wCdPom6CysZU2noLFuH8qlNy6ugvZxgZg7Uo+zjgF5We00UgRd5agJlrr3xMiqOK7rO+ZwJI35rlC3KOI1s1EQLSybe9bQFFb6yNo7ZA1IJlB0gR5RlqLqDApmkAZ1fGEqmzh52fQBiHSWXTK5FRwVydC2FOO4neZkKNIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pu75WyEQiSdPQx4qbpSOAMTnmeBGNkFYSert3oNa2TE=;
- b=If1drKKy8/tm7Hs+ZdUu4DKe5Ojs3NPUYk4JZk4sVIcK+QwVw0XCa1WfBUn9wEMTQUGxMqDJXkjiW5vTKSa0gN2Vd96NUVTqO/TNsP5upyOlkU0tcqIxJzTGX0jW/aLIlZ4JT5IrT9s5dno22pq3eQQyqqU0aSmzxX1nCICcm2o=
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
- by BY5PR21MB1425.namprd21.prod.outlook.com (2603:10b6:a03:237::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.3; Mon, 24 Jul
- 2023 15:46:01 +0000
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::d2:cad1:318e:224b]) by PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::d2:cad1:318e:224b%7]) with mapi id 15.20.6652.002; Mon, 24 Jul 2023
- 15:46:01 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     "brouer@redhat.com" <brouer@redhat.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Paul Rosswurm <paulros@microsoft.com>,
-        "olaf@aepfle.de" <olaf@aepfle.de>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Long Li <longli@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: RE: [PATCH V3,net-next] net: mana: Add page pool for RX buffers
-Thread-Topic: [PATCH V3,net-next] net: mana: Add page pool for RX buffers
-Thread-Index: AQHZvAZSl8pOb40fXE2pDlV9gZuDN6/IzCkAgABE5NA=
-Date:   Mon, 24 Jul 2023 15:46:01 +0000
-Message-ID: <PH7PR21MB3116F8A97F3626AB04915B96CA02A@PH7PR21MB3116.namprd21.prod.outlook.com>
-References: <1689966321-17337-1-git-send-email-haiyangz@microsoft.com>
- <1af55bbb-7aff-e575-8dc1-8ba64b924580@redhat.com>
-In-Reply-To: <1af55bbb-7aff-e575-8dc1-8ba64b924580@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c6d1dca0-82a5-4594-bb8b-68dcecd3c549;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-24T15:36:01Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|BY5PR21MB1425:EE_
-x-ms-office365-filtering-correlation-id: 1f71a066-3da6-48b7-54db-08db8c5d1522
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zdRAyB4+tAUOsO2Q/Wdtm0dpa5nlpeD45xZ/grD3WWCNA3JJPMtl/13jeTZiyrQbLbemrXcaXKsCpz7f0il28cgKX1MThIkAGUvxRDZjJw0i8IpZHAES81oQTjbkpIaPpsGlfJSWUyJTnm29J3CrTo/Bh3TxRUdhJ7CdOremFOlUS1oGpEUysFSVbFZjkBYiqfl5SN29XvzyDLyuWvJiDFYQ73ElOY+4GjbnRyA/Q1wgftD15Fb3ne4IaNu0Wrt8DBsqm8ibO2324pM5tv8J/QCRfczwSnWFbKhKDro2N8qNXnEB370e/CVy03fwa/1CHBrPLwGXBjiZ/2g2zdety71r30ZSKuUKAB739yzJanrK3Q7TEibD0y0SPpTynedltHgbQaRRKypMCXQTJJh4rZnbUaDC/kjC18UXoVgkr2dVvPclWL7vMquwUb3A816FNQhERIIjpwmSAvbEuvIZDvdTr9wU7e50IrTlonXMwfB3ZVtXTLPtcpv19N+q070wRMdztjK9FuiJT05KboN4qmUSKtBMjJh70qY2RPkuAK2KY3TP2tL04YNVOVRLiC7QUq+PQFY+kwExGICCv53iaD3fGgysZnUgYrFCi+0t3RAXoLjJH8m8jxYmoIzpZj8QrC0J07cQREdgleURSojlLK+0CnYbS/xUJKJukb2VTVs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(39860400002)(396003)(346002)(376002)(451199021)(122000001)(38100700002)(71200400001)(9686003)(55016003)(41300700001)(8676002)(8936002)(82960400001)(82950400001)(478600001)(10290500003)(110136005)(54906003)(66476007)(4326008)(66946007)(66446008)(66556008)(64756008)(76116006)(8990500004)(316002)(7696005)(38070700005)(83380400001)(86362001)(2906002)(6506007)(5660300002)(7416002)(53546011)(52536014)(33656002)(186003)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?BFZHFiou+iCCVFaD9FU08Dsd1CnuZNYPQrW7u6LwJiUqeAWwPzmS8eZig86u?=
- =?us-ascii?Q?B0PLpOEDD4yETc/pkhztZNn+uFg4NCGSZLm942ND4Bj5vdkHXD2mxicsu2Lk?=
- =?us-ascii?Q?YP3FUl0U4CKrZn+BxqyYEhH5Iaf4NVEiIWL5OpaFzGGADcug7dy43sgLDam4?=
- =?us-ascii?Q?Gm8/4kL7U0cn+TQGxAbff1niSd3OO6wsn/UTTEh9JVd6YZO1N8xqhTB4acjl?=
- =?us-ascii?Q?VQFqtpTZhkFmQLPhWRop4HuQKc/mSbJjCLP2K1ELbRgTedPZJazAObuYohTq?=
- =?us-ascii?Q?/fjWuWVhDqHDDl4BcN53fyuAObiGmc1yY9Vx0ToReS+l2QfCbtLoGM41/GlD?=
- =?us-ascii?Q?YMtWGaESxi3uVoCltL42v6kP9RNgXCozXyVyOJ+OriquyZDDDa76XFli5nHJ?=
- =?us-ascii?Q?m1YP5y3mJVmunwGzlp9n2jsYN1t+tj8BMD5HTPc9vRl6OYifqzrfMHr+Tam3?=
- =?us-ascii?Q?cBk7zIRXGsDGMH3r7gN72CJ2eTOTbDgOQHksTFvt40PYwNogjralSuQwfGjo?=
- =?us-ascii?Q?lqiuXB8ZNPp6uP87FqGuCGWsqEBCxLBPcaexj80iXZBp1K17BlPcLqWJM7ya?=
- =?us-ascii?Q?xDjU0vgRzLFUhs4rVuMUt3XKG4ZxtK20g3GZZGs76GzBVyd1C6EakEDf6TJu?=
- =?us-ascii?Q?LKy5cHbnDbC4OIqSRXePSF6L8s6VHvJkFYfZIg57sW1VPaMZAsVVmrKdOxt0?=
- =?us-ascii?Q?BpAUCGiFRk+EsnjZarlw/i15ZkpGUP8dOGjLd0VvPN1rqaEXLB9BSbIJcc2I?=
- =?us-ascii?Q?fcrEyH2GVL6Mh6g8AM0Wws5TW/faqUvaexLcXEl0jd0QwQgvDhJJlBEoKLSI?=
- =?us-ascii?Q?952+GPc7KpRBx1bWTckqLFXlDwFjPFjDis1CYuoF0K3gjuZe+KG2Y+I+nsup?=
- =?us-ascii?Q?kws1Bv0d5OYkwWJjPK63eYkQobbx4/dP5if2+cY3x5mXMWeuyev+gPjf/PUB?=
- =?us-ascii?Q?s/zTqvryzkldt2w1cQtAqbidDJ4DT54Rc+t9XwIEvm2qgUFwcjlfbXqxayjQ?=
- =?us-ascii?Q?9bUHgxIGRZsLFduZGH6hSXJoxSW5P5e8Un3FfEyC14YhBUVW4wkT25PAkefv?=
- =?us-ascii?Q?D+s6m259Yj5FxnqVsNtA+YIMNQmxcAbek41Ug7EWFLDuPUlBdXJnBZyxAY+i?=
- =?us-ascii?Q?pngQO51W0HIjN4UazUUnedG0AJXZmPZt3XnopaKGd5MbD7/PvQYGyrLkQ9m3?=
- =?us-ascii?Q?kLAbBUaj0bt7Kxz8DfMyCDkJTZ3iWnop0mkC0YMnrRu5xSFIHD1DQuiioOtj?=
- =?us-ascii?Q?sQeQlUJ5v0aBbxwoLiRlXBD0IMQYSPkCmeQHasGOBiWbw59zIHdg5VC+s1ar?=
- =?us-ascii?Q?ZxVXD8/irHe0lLU1Fhe4MCILYnmL/q0ZfWVhZUM+/esyAgTRcWmr2rvOQ/Ee?=
- =?us-ascii?Q?inBjwOZMjgDuvfmXJajs9TeGSJaJCxn0D2dBnOHm/B2Qb4dKBXAdY5f+0AJp?=
- =?us-ascii?Q?dENiW3Zgcjvj1o0Sr0EkOnkM97g72kUmVqgQEXPJJMY3PnGlz9p2SalOJJ1y?=
- =?us-ascii?Q?gYSgI4EwO0ZKHe8EsJf/Sn3DtQ62XbNkEIzp1NG/K01Qf6w878EWgVH0npsV?=
- =?us-ascii?Q?ek924Tzqkiba2p/gpWbLvxCJe+nD33RPsPl3Tu/e?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 24 Jul 2023 11:47:24 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEFF121
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:47:23 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-78706966220so35730539f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1690213643; x=1690818443;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a2SXCjszCcNvyzagTPBmmTB8ZVmLpsS/Ne8xQ61QXVQ=;
+        b=LvsvN3sJTEyyyWOJlfact5mtY0XZUi4lZ17qzGpKD5YVloXaCiTsX3KAaeXXtGhpWn
+         r3FqdN0NGgz1e5C5SANi6zOugXBBmbsErWYz6s+9PCQJ3Rxvsh/VjRQNziz1YcOsS83B
+         QwA0k9O8j2/FFMWWs2RU6zH0nGqA/exwk+vCyVX18O7IXU2GplNfgT+W2XjbDuhjVEaD
+         DUivAMb+tLZCmO2orJ7YPtU2GFBp2MIYzoa1QViJWkAbY5tqRss5wnJJO3nJN2aWoXNJ
+         Cg10LI0MhR6/4X/JPwa8xUZ+wwce6fQ/Y+pF3m/VNhiAdxHs8klwMw/jHIUq1KoTkhIU
+         7/0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690213643; x=1690818443;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a2SXCjszCcNvyzagTPBmmTB8ZVmLpsS/Ne8xQ61QXVQ=;
+        b=MCb8bnlw34nDjGfBMOGlMHtgW/HhWz3Zgm7DpXzQFKq+ew52b/4LPWJtkelHJgtYEv
+         GTvuVfY0tojrKZEF43BOvlc64Au/g0zX18I9mdWS3IDxDUlgYsNOr2CZrxwzKOt6JQ1m
+         RcvU0CNPKcAWx/BCOWltb7EuLQxr7T+WPNf2MPLCV72Q6DJwMrZttc9dIZRovuYIIwpP
+         cvCqgXq7fqgxGc3yPe2mqUW6jZLj022hWhlXWnYAvQKboOYC7gwPeml9IiFEE2oZldQ3
+         VjxVsaJYZeY2vv7KfgN2f9JiXO9YtvKyVMDTQ/nKqFUg0A3kYyTzGtZorAqCd9P3WqGY
+         TOeQ==
+X-Gm-Message-State: ABy/qLY9X5+TNc9573p9SVgeJZhei/DL/++cyoDYsH48rguqIbVDw0AA
+        L5ptQjraRWEEQcBOurdQBHdnMg==
+X-Google-Smtp-Source: APBJJlEQZcsdjdB1LpnJi4+5q+nQ/Hbb7uF1D1blb0hPZ7O53jf1TRm2UdSfqrVo9m6vUQV7fZ1cPQ==
+X-Received: by 2002:a05:6602:4809:b0:77a:ee79:652 with SMTP id ed9-20020a056602480900b0077aee790652mr8087301iob.1.1690213642756;
+        Mon, 24 Jul 2023 08:47:22 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id g19-20020a056638061300b0042b6a760c31sm3038815jar.28.2023.07.24.08.47.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 08:47:22 -0700 (PDT)
+Message-ID: <11ded843-ac08-2306-ad0f-586978d038b1@kernel.dk>
+Date:   Mon, 24 Jul 2023 09:47:21 -0600
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f71a066-3da6-48b7-54db-08db8c5d1522
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jul 2023 15:46:01.7183
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xIL+y0jUG5MlouwZJsj+P0mIY0FFUAN9YnqeODMreuhQl7q1pm1ab5eTwwHORdYu81Egz+1UYAV3DrKpoaIvLQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR21MB1425
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 6.4 800/800] io_uring: Use io_schedule* in cqring wait
+Content-Language: en-US
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        stable@vger.kernel.org, Genes Lists <lists@sapience.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andres Freund <andres@anarazel.de>
+References: <20230716194949.099592437@linuxfoundation.org>
+ <538065ee-4130-6a00-dcc8-f69fbc7d7ba0@kernel.dk>
+ <70e5349a-87af-a2ea-f871-95270f57c6e3@sapience.com>
+ <2691683.mvXUDI8C0e@natalenko.name>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <2691683.mvXUDI8C0e@natalenko.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/23/23 12:06?PM, Oleksandr Natalenko wrote:
+> Hello.
+> 
+> On ned?le 23. ?ervence 2023 19:43:50 CEST Genes Lists wrote:
+>> On 7/23/23 11:31, Jens Axboe wrote:
+>> ...
+>>> Just read the first one, but this is very much expected. It's now just
+>>> correctly reflecting that one thread is waiting on IO. IO wait being
+>>> 100% doesn't mean that one core is running 100% of the time, it just
+>>> means it's WAITING on IO 100% of the time.
+>>>
+>>
+>> Seems reasonable thank you.
+>>
+>> Question - do you expect the iowait to stay high for a freshly created 
+>> mariadb doing nothing (as far as I can tell anyway) until process 
+>> exited? Or Would you think it would drop in this case prior to the 
+>> process exiting.
+>>
+>> For example I tried the following - is the output what you expect?
+>>
+>> Create a fresh mariab with no databases - monitor the core showing the 
+>> iowaits with:
+>>
+>>     mpstat -P ALL 2 100
+>>
+>> # rm -f /var/lib/mysql/*
+>> # mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+>>
+>> # systemctl start mariadb      (iowaits -> 100%) 
+>>  
+>>
+>> # iotop -bo |grep maria        (shows no output, iowait stays 100%)
+>>
+>> (this persists until mariadb process exits)
+>>  
+>>
+>> # systemctl stop mariadb       (iowait drops to 0%) 
+> 
+> This is a visible userspace behaviour change with no changes in the
+> userspace itself, so we cannot just ignore it. If for some reason this
+> is how it should be now, how do we explain it to MariaDB devs to get
+> this fixed?
+
+It's not a behavioural change, it's a reporting change. There's no
+functionality changing here. That said, I do think we should narrow it a
+bit so we're only marked as in iowait if the task waiting has pending
+IO. That should still satisfy the initial problem, and it won't flag
+iowait on mariadb like cases where they have someone else just
+perpetually waiting on requests.
+
+As a side effect, this also removes the flush that wasn't at all
+necessary on io_uring.
+
+If folks are able to test the below, that would be appreciated.
 
 
-> -----Original Message-----
-> From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-> Sent: Monday, July 24, 2023 7:29 AM
-> To: Haiyang Zhang <haiyangz@microsoft.com>; linux-hyperv@vger.kernel.org;
-> netdev@vger.kernel.org
-> Cc: brouer@redhat.com; Dexuan Cui <decui@microsoft.com>; KY Srinivasan
-> <kys@microsoft.com>; Paul Rosswurm <paulros@microsoft.com>;
-> olaf@aepfle.de; vkuznets@redhat.com; davem@davemloft.net;
-> wei.liu@kernel.org; edumazet@google.com; kuba@kernel.org;
-> pabeni@redhat.com; leon@kernel.org; Long Li <longli@microsoft.com>;
-> ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
-> daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
-> ast@kernel.org; Ajay Sharma <sharmaajay@microsoft.com>; hawk@kernel.org;
-> tglx@linutronix.de; shradhagupta@linux.microsoft.com; linux-
-> kernel@vger.kernel.org; Ilias Apalodimas <ilias.apalodimas@linaro.org>; J=
-esper
-> Dangaard Brouer <hawk@kernel.org>
-> Subject: Re: [PATCH V3,net-next] net: mana: Add page pool for RX buffers
->=20
->=20
->=20
-> On 21/07/2023 21.05, Haiyang Zhang wrote:
-> > Add page pool for RX buffers for faster buffer cycle and reduce CPU
-> > usage.
-> >
-> > The standard page pool API is used.
-> >
-> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> > ---
-> > V3:
-> > Update xdp mem model, pool param, alloc as suggested by Jakub Kicinski
-> > V2:
-> > Use the standard page pool API as suggested by Jesper Dangaard Brouer
-> >
-> > ---
-> >   drivers/net/ethernet/microsoft/mana/mana_en.c | 91 +++++++++++++++---=
--
-> >   include/net/mana/mana.h                       |  3 +
-> >   2 files changed, 78 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > index a499e460594b..4307f25f8c7a 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> [...]
-> > @@ -1659,6 +1679,8 @@ static void mana_poll_rx_cq(struct mana_cq *cq)
-> >
-> >   	if (rxq->xdp_flush)
-> >   		xdp_do_flush();
-> > +
-> > +	page_pool_nid_changed(rxq->page_pool, numa_mem_id());
->=20
-> I don't think this page_pool_nid_changed() called is needed, if you do
-> as I suggest below (nid =3D NUMA_NO_NODE).
->=20
->=20
-> >   }
-> >
-> >   static int mana_cq_handler(void *context, struct gdma_queue
-> *gdma_queue)
-> [...]
->=20
-> > @@ -2008,6 +2041,25 @@ static int mana_push_wqe(struct mana_rxq *rxq)
-> >   	return 0;
-> >   }
-> >
-> > +static int mana_create_page_pool(struct mana_rxq *rxq)
-> > +{
-> > +	struct page_pool_params pprm =3D {};
->=20
-> You are implicitly assigning NUMA node id zero.
->=20
-> > +	int ret;
-> > +
-> > +	pprm.pool_size =3D RX_BUFFERS_PER_QUEUE;
-> > +	pprm.napi =3D &rxq->rx_cq.napi;
->=20
-> You likely want to assign pprm.nid to NUMA_NO_NODE
->=20
->   pprm.nid =3D NUMA_NO_NODE;
->=20
-> For most drivers it is recommended to assign ``NUMA_NO_NODE`` (value -1)
-> as the NUMA ID to ``pp_params.nid``. When ``CONFIG_NUMA`` is enabled
-> this setting will automatically select the (preferred) NUMA node (via
-> ``numa_mem_id()``) based on where NAPI RX-processing is currently
-> running. The effect is that page_pool will only use recycled memory when
-> NUMA node match running CPU. This assumes CPU refilling driver RX-ring
-> will also run RX-NAPI.
->=20
-> If a driver want more control over the NUMA node memory selection,
-> drivers can assign (``pp_params.nid``) something else than
-> `NUMA_NO_NODE`` and runtime adjust via function
-> ``page_pool_nid_changed()``.
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index 89a611541bc4..f4591b912ea8 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -2493,11 +2493,20 @@ int io_run_task_work_sig(struct io_ring_ctx *ctx)
+ 	return 0;
+ }
+ 
++static bool current_pending_io(void)
++{
++	struct io_uring_task *tctx = current->io_uring;
++
++	if (!tctx)
++		return false;
++	return percpu_counter_read_positive(&tctx->inflight);
++}
++
+ /* when returns >0, the caller should retry */
+ static inline int io_cqring_wait_schedule(struct io_ring_ctx *ctx,
+ 					  struct io_wait_queue *iowq)
+ {
+-	int token, ret;
++	int io_wait, ret;
+ 
+ 	if (unlikely(READ_ONCE(ctx->check_cq)))
+ 		return 1;
+@@ -2511,17 +2520,19 @@ static inline int io_cqring_wait_schedule(struct io_ring_ctx *ctx,
+ 		return 0;
+ 
+ 	/*
+-	 * Use io_schedule_prepare/finish, so cpufreq can take into account
+-	 * that the task is waiting for IO - turns out to be important for low
+-	 * QD IO.
++	 * Mark us as being in io_wait if we have pending requests, so cpufreq
++	 * can take into account that the task is waiting for IO - turns out
++	 * to be important for low QD IO.
+ 	 */
+-	token = io_schedule_prepare();
++	io_wait = current->in_iowait;
++	if (current_pending_io())
++		current->in_iowait = 1;
+ 	ret = 0;
+ 	if (iowq->timeout == KTIME_MAX)
+ 		schedule();
+ 	else if (!schedule_hrtimeout(&iowq->timeout, HRTIMER_MODE_ABS))
+ 		ret = -ETIME;
+-	io_schedule_finish(token);
++	current->in_iowait = io_wait;
+ 	return ret;
+ }
+ 
 
-Our driver is using NUMA 0 by default, so I implicitly assign NUMA node id=
-=20
-to zero during pool init.=20
-
-And, if the IRQ/CPU affinity is changed, the page_pool_nid_changed()
-will update the nid for the pool. Does this sound good?
-
-Thanks,
--Haiyang
+-- 
+Jens Axboe
 
