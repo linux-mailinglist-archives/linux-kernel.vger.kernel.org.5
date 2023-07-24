@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3407D75E8B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9EE275E8BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232265AbjGXBoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42004 "EHLO
+        id S232321AbjGXBoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232301AbjGXBma (ORCPT
+        with ESMTP id S232209AbjGXBmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:42:30 -0400
+        Sun, 23 Jul 2023 21:42:37 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20525277;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF631BD3;
         Sun, 23 Jul 2023 18:37:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 83D8260FC3;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CAB2460FFF;
+        Mon, 24 Jul 2023 01:33:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5146AC433C8;
         Mon, 24 Jul 2023 01:33:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B858C433CB;
-        Mon, 24 Jul 2023 01:33:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162401;
-        bh=Q8XHT6Z9pSImRFpAsGhr16MXDJJ4RL/IlXl8gptBKaI=;
+        s=k20201202; t=1690162403;
+        bh=nGSDXvVX4lelz1Sbv2iNOqwTq9fHFua6ngurqZWqlFE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RwV8ou2vVY7F5fNhnGTT+Uq9xv5THG+ymQ/Xf2Di+R/IW8FvQMbD1HPHD2+1/e8c2
-         S5xsoCQ4T2/Jbq/fR9W8CyGmB7PQIaIQFXsqItM8UPI6puQ9bTBITr3m16Wy4E/vJf
-         liBOxqyChSI1oSc7LTeF0wBjxOGpa28uHvbroqrXU1LHTcaEiq1sI6lUXiqR+JKhno
-         NrWpjkZeknXngRPuEzP97DzWGbnK1nZdjcKobmGROeHJHnNtKv+TL9tSDZOmwbiD8+
-         p7jIpBUoJb81I7qBpA928js7Ztpgm1DZEKNyq84PgzBDhMmTrvxjf7LxtPAEhD6nme
-         fBAL1uUwHcJIQ==
+        b=cbeGeoRIFuad4yIDVE0rwv9xVCM2nmEAVVRZziWyOo4yy7NPFD/vPnbV29Abga4hv
+         AtT0Gfq2iXO9Fgadhpi4Di5tCaqV9TlcbeAk6PtzgAoH+48cMdbVBArte0vNECoD0K
+         m3WyI7xeIeBk/Sg4RAiYqrAnl3K/iE1wH6d36ZatInAtgd8k+s/cP5A4aqLV2I4BBO
+         hj3IgT24dpCizNtjK3mifgxfbc40rHPnQ6bNWyBYQp/L9lEo/+hOcWgGqKlS75mSWu
+         PTG7mkyZOII5cAuJnYGzvU4KAqYUHX3C617ancq6Bj444Zgo46ljKxEfagyiOEXAk7
+         LqbYUhiSw3DTw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Luke D. Jones" <luke@ljones.dev>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 32/34] ALSA: hda/realtek: Add quirk for ASUS ROG GA402X
-Date:   Sun, 23 Jul 2023 21:32:35 -0400
-Message-Id: <20230724013238.2329166-32-sashal@kernel.org>
+Cc:     Rae Moar <rmoar@google.com>, kernel test robot <lkp@intel.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Sasha Levin <sashal@kernel.org>, james.l.morris@oracle.com,
+        serge@hallyn.com, linux-security-module@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 33/34] apparmor: fix use of strcpy in policy_unpack_test
+Date:   Sun, 23 Jul 2023 21:32:36 -0400
+Message-Id: <20230724013238.2329166-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013238.2329166-1-sashal@kernel.org>
 References: <20230724013238.2329166-1-sashal@kernel.org>
@@ -59,36 +60,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Luke D. Jones" <luke@ljones.dev>
+From: Rae Moar <rmoar@google.com>
 
-[ Upstream commit 9abc77fb144fe916fd2f592dc4b8c7bade02e58a ]
+[ Upstream commit b54aebd4411134b525a82d663a26b2f135ecb7e8 ]
 
-Adds the required quirk to enable the Cirrus amp and correct pins
-on the ASUS ROG GA402X series which uses an I2C connected Cirrus amp.
+Replace the use of strcpy() in build_aa_ext_struct() in
+policy_unpack_test.c with strscpy().
 
-While this works if the related _DSD properties are made available, these
-aren't included in the ACPI of these laptops (yet).
+strscpy() is the safer method to use to ensure the buffer does not
+overflow. This was found by kernel test robot:
+https://lore.kernel.org/all/202301040348.NbfVsXO0-lkp@intel.com/.
 
-Signed-off-by: Luke D. Jones <luke@ljones.dev>
-Link: https://lore.kernel.org/r/20230704044619.19343-3-luke@ljones.dev
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reported-by: kernel test robot <lkp@intel.com>
+
+Signed-off-by: Rae Moar <rmoar@google.com>
+Signed-off-by: John Johansen <john.johansen@canonical.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ security/apparmor/policy_unpack_test.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 5cb843d56cd16..cad413b4e26e0 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9544,6 +9544,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x13b0, "ASUS Z550SA", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_ASUS_ZENBOOK),
- 	SND_PCI_QUIRK(0x1043, 0x1433, "ASUS GX650P", ALC285_FIXUP_ASUS_I2C_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x1043, 0x1463, "Asus GA402X", ALC285_FIXUP_ASUS_I2C_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1473, "ASUS GU604V", ALC285_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1483, "ASUS GU603V", ALC285_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
+diff --git a/security/apparmor/policy_unpack_test.c b/security/apparmor/policy_unpack_test.c
+index 0a969b2e03dba..64ddea559f9ac 100644
+--- a/security/apparmor/policy_unpack_test.c
++++ b/security/apparmor/policy_unpack_test.c
+@@ -66,31 +66,30 @@ static struct aa_ext *build_aa_ext_struct(struct policy_unpack_fixture *puf,
+ 
+ 	*buf = AA_NAME;
+ 	*(buf + 1) = strlen(TEST_STRING_NAME) + 1;
+-	strcpy(buf + 3, TEST_STRING_NAME);
++	strscpy(buf + 3, TEST_STRING_NAME, e->end - (void *)(buf + 3));
+ 
+ 	buf = e->start + TEST_STRING_BUF_OFFSET;
+ 	*buf = AA_STRING;
+ 	*(buf + 1) = strlen(TEST_STRING_DATA) + 1;
+-	strcpy(buf + 3, TEST_STRING_DATA);
+-
++	strscpy(buf + 3, TEST_STRING_DATA, e->end - (void *)(buf + 3));
+ 	buf = e->start + TEST_NAMED_U32_BUF_OFFSET;
+ 	*buf = AA_NAME;
+ 	*(buf + 1) = strlen(TEST_U32_NAME) + 1;
+-	strcpy(buf + 3, TEST_U32_NAME);
++	strscpy(buf + 3, TEST_U32_NAME, e->end - (void *)(buf + 3));
+ 	*(buf + 3 + strlen(TEST_U32_NAME) + 1) = AA_U32;
+ 	*((u32 *)(buf + 3 + strlen(TEST_U32_NAME) + 2)) = TEST_U32_DATA;
+ 
+ 	buf = e->start + TEST_NAMED_U64_BUF_OFFSET;
+ 	*buf = AA_NAME;
+ 	*(buf + 1) = strlen(TEST_U64_NAME) + 1;
+-	strcpy(buf + 3, TEST_U64_NAME);
++	strscpy(buf + 3, TEST_U64_NAME, e->end - (void *)(buf + 3));
+ 	*(buf + 3 + strlen(TEST_U64_NAME) + 1) = AA_U64;
+ 	*((u64 *)(buf + 3 + strlen(TEST_U64_NAME) + 2)) = TEST_U64_DATA;
+ 
+ 	buf = e->start + TEST_NAMED_BLOB_BUF_OFFSET;
+ 	*buf = AA_NAME;
+ 	*(buf + 1) = strlen(TEST_BLOB_NAME) + 1;
+-	strcpy(buf + 3, TEST_BLOB_NAME);
++	strscpy(buf + 3, TEST_BLOB_NAME, e->end - (void *)(buf + 3));
+ 	*(buf + 3 + strlen(TEST_BLOB_NAME) + 1) = AA_BLOB;
+ 	*(buf + 3 + strlen(TEST_BLOB_NAME) + 2) = TEST_BLOB_DATA_SIZE;
+ 	memcpy(buf + 3 + strlen(TEST_BLOB_NAME) + 6,
+@@ -99,7 +98,7 @@ static struct aa_ext *build_aa_ext_struct(struct policy_unpack_fixture *puf,
+ 	buf = e->start + TEST_NAMED_ARRAY_BUF_OFFSET;
+ 	*buf = AA_NAME;
+ 	*(buf + 1) = strlen(TEST_ARRAY_NAME) + 1;
+-	strcpy(buf + 3, TEST_ARRAY_NAME);
++	strscpy(buf + 3, TEST_ARRAY_NAME, e->end - (void *)(buf + 3));
+ 	*(buf + 3 + strlen(TEST_ARRAY_NAME) + 1) = AA_ARRAY;
+ 	*((u16 *)(buf + 3 + strlen(TEST_ARRAY_NAME) + 2)) = TEST_ARRAY_SIZE;
+ 
 -- 
 2.39.2
 
