@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E1575FA91
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 825B375FAA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbjGXPS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 11:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
+        id S230314AbjGXPU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 11:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbjGXPSq (ORCPT
+        with ESMTP id S229845AbjGXPUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 11:18:46 -0400
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE746137
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:18:45 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 6897D7DA;
-        Mon, 24 Jul 2023 15:18:44 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6897D7DA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1690211924; bh=xZw/H+LWeED7vti6M1J3qcQxd7Om4IJ0vRJRFLOH1vQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=bU2UQDwpcdRJhpYxPFt0Wmzaxd7SCooKgCnpi6JtbEyNxRrc4utYR2XkeK2APeZoD
-         c6qV2hrfaodOkquynb7gFzcu6LzwqlqXsvyxn4+dAPTxzTRN4yZdxp0X4hEoGSaAgu
-         ZqIiGGM9Q2sRlcgsyQcvMSj8oiMQShP5ihug6ZFOz7KLO390hVUZeTXMavDEgOA+TZ
-         ayKtd0JmDvbLIFshISAoIm/3jXywArpR4DHLCRMYj8Ie8Xg6FaQySI2mILVcOmhHO2
-         ++5mVt8z5egrXZ1QaNuiWfz8MTiHJx8Lctn2rR8tgVayO5r5kKYAKTeC+TbMRRv6KC
-         IVxvh3X9fAveg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: linux-next: build warning after merge of the sound-asoc tree
-In-Reply-To: <ZL6AWGiabBGyU3Dq@smile.fi.intel.com>
-References: <20230713121627.17990c86@canb.auug.org.au>
- <ZK/ruOD4QFPQ3Q5q@smile.fi.intel.com>
- <ZK/w5LFanElxZazG@smile.fi.intel.com>
- <ZLES/6iNcmR7H+f7@smile.fi.intel.com>
- <20230724135858.3c1abb01@canb.auug.org.au>
- <ZL410jAw2ksuBx56@smile.fi.intel.com>
- <cbff36d5-cde7-43bd-b0d5-ede8950fd885@sirena.org.uk>
- <ZL53HkIWuE4byo+R@smile.fi.intel.com>
- <43862e72-eeb2-4670-8cd6-0e334044583d@sirena.org.uk>
- <ZL6AWGiabBGyU3Dq@smile.fi.intel.com>
-Date:   Mon, 24 Jul 2023 09:18:43 -0600
-Message-ID: <87zg3lbang.fsf@meer.lwn.net>
+        Mon, 24 Jul 2023 11:20:25 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2F9199D;
+        Mon, 24 Jul 2023 08:20:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=2Uq2Pslaml20DkLDwKIg3Bu+xRL9XU0v7guHi1TrQWo=; b=AMbbYdovmJxjBGIC8OX8ya+rO5
+        g2Q7ooGVlDXvojFicjeF2yv/uglkqBe0+0mGMnHzQUcX47jvY0Zq7onOVrUGWbNoqbkQXhHVidrUD
+        n8S8yhZ9ZeqjgWs6TYnvbvRei32lgFqefJrjrLvs7yaSCRmhCwPwm8CvTY/fllnbA6ABRxN4w1ftc
+        FsNxaCOwHhX+0JntQD9/ROobN0RQUqtGPwarRdRrM8P/4GPWNoeNuXRacMXgP2yczoH9fmuGG6ysq
+        nqa/WRgPR94l+KKbmITifk2GWyyjVVTcLvIo2Z7iStn2qNLXuKtb2O0GMGYhRolD3+bzL0O1T1KB9
+        60GLtT3w==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qNxLs-004iws-1D;
+        Mon, 24 Jul 2023 15:20:00 +0000
+Message-ID: <7f92397e-a51b-0fc1-bb70-823dfe10f16d@infradead.org>
+Date:   Mon, 24 Jul 2023 08:19:58 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] dma-buf/sync_file: Fix docs syntax
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Hackmann <ghackmann@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:SYNC FILE FRAMEWORK" <linux-media@vger.kernel.org>
+References: <20230724145000.125880-1-robdclark@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230724145000.125880-1-robdclark@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,39 +62,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
 
-> +Cc: Jon
->
-> On Mon, Jul 24, 2023 at 02:11:00PM +0100, Mark Brown wrote:
->> On Mon, Jul 24, 2023 at 04:05:34PM +0300, Andy Shevchenko wrote:
->> > On Mon, Jul 24, 2023 at 01:36:53PM +0100, Mark Brown wrote:
->> 
->> > > Jon's usually fairly responsive, perhaps there's something worrying
->> > > there,
->> 
->> > Hmm... maybe my understanding of the :export: is wrong? Or what do you suggest?
->> 
->> I have no idea what any of that is doing.  I'm hoping Jon does.
->
-> Okay, so far we are waiting for his reply...
 
-Sorry, it took me a bit to reconstruct why I hadn't applied this .. the
-simple fact is that it doesn't apply to docs-next.
-include/linux/int_log.h doesn't exist in mainline, so the kernel-doc
-directive to include from it doesn't either.  All of that is introduced
-in linux-next ... so the fix really needs to take the same path that the
-rest of the changes did.
+On 7/24/23 07:49, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> Fixes the warning:
+> 
+>   include/uapi/linux/sync_file.h:77: warning: Function parameter or member 'num_fences' not described in 'sync_file_info'
+> 
+> Fixes: 2d75c88fefb2 ("staging/android: refactor SYNC IOCTLs")
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 
-I guess I'd just assumed that was going to happen and didn't reply,
-apologies for that.
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Thanks.
 
-Feel free to add:
+> ---
+>  include/uapi/linux/sync_file.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/uapi/linux/sync_file.h b/include/uapi/linux/sync_file.h
+> index 7e42a5b7558b..ff0a931833e2 100644
+> --- a/include/uapi/linux/sync_file.h
+> +++ b/include/uapi/linux/sync_file.h
+> @@ -56,7 +56,7 @@ struct sync_fence_info {
+>   * @name:	name of fence
+>   * @status:	status of fence. 1: signaled 0:active <0:error
+>   * @flags:	sync_file_info flags
+> - * @num_fences	number of fences in the sync_file
+> + * @num_fences:	number of fences in the sync_file
+>   * @pad:	padding for 64-bit alignment, should always be zero
+>   * @sync_fence_info: pointer to array of struct &sync_fence_info with all
+>   *		 fences in the sync_file
 
-Acked-by: Jonathan Corbet <corbet@lwn.net>
-
-if you feel so inclined.
-
-Thanks,
-
-jon
+-- 
+~Randy
