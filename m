@@ -2,66 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F8376019B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2047601A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbjGXV4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
+        id S231372AbjGXV5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:57:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjGXV4w (ORCPT
+        with ESMTP id S229437AbjGXV5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:56:52 -0400
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F37E118
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:56:51 -0700 (PDT)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1bb74752ddbso912055fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:56:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690235811; x=1690840611;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4pN8GLV6mblrpyzl4xCBtTwLW6T0bqIm6dP2+4c2Ijg=;
-        b=ex1Wo45D08B5F2BxqCHr1dwrTMI7e7zjs+AjJLkeYi14cZrldGKTq2l/qJkpVpH7s4
-         lTgewYPuMEyXG6od4I0TuIJU3C5/qmnFu+4TAOtWSKm0TwFtBZiEFY0xJwGFdRRTvRgh
-         2SPXaaSZM2HtbmtB8dbh0gaoS/S/x0KfsahSHkkXfLr2/o1dXDIAoChBs6kYinmOko2F
-         MGlzCMF0039V6Jy2PqhaPf/6aY+ktsZKsyvdnZmsl2bn+Ch0dtE2EAiTEUAE98XbEFO4
-         Nzw/fjQHB3GxedKwU7Oy5nRl2kFV/FwSlQOtgFJiZiAzA7/VyTG4AWcGdcfn66Y2GY7t
-         MMRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690235811; x=1690840611;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4pN8GLV6mblrpyzl4xCBtTwLW6T0bqIm6dP2+4c2Ijg=;
-        b=iPCcGVkvVVq+1oPTQ1+9e7f8gQB9ChIHLmfLGSfcpW1IR2tD0QGjct6eiRRMiPBCfH
-         u6uUNFqcrpPHqm4aDzmJLsxgJoRho99lRKNlgfz0NlaL40Y6MUFeI5IErXFUQMRwBXRO
-         mwqLqtQh50irfPzSVhMZcrUThG8pT5aKQi8TX6wLR5xCnXjnCmoXfWL1hmtm4ZxhyWUa
-         QYnfYNNLewaI3YBImE4M2fVQcIys5mjro5DhOau6x6AOQpHDPy3FeIYTo1MnmZ7E5EoL
-         4eMtgjBUIWUmBgfjgGSIgn3SDXMtE2m8ODV4Wo/DvG9VCNwLM1BmGmJrc9ElmAsWlJ+Z
-         5H0A==
-X-Gm-Message-State: ABy/qLZaVbii76QRKcvQ8a2oL8Hces0ZDh9XmsBSRk1hTvr35LIXMou0
-        AfAY0Wj8wXbmIQm+unUQVoirarDQoWcb5086yRU=
-X-Google-Smtp-Source: APBJJlGDsEk+lu7TEMF7QOIWoj98nmSPrGfYqGkKJGH9iJWRwyycyEi0//AJPXVHIEzwD2JOcGvt1Ci8pCBeeG0l/s0=
-X-Received: by 2002:a05:6870:d14b:b0:1bb:6b9b:bc78 with SMTP id
- f11-20020a056870d14b00b001bb6b9bbc78mr5243129oac.42.1690235810709; Mon, 24
- Jul 2023 14:56:50 -0700 (PDT)
+        Mon, 24 Jul 2023 17:57:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D2D194;
+        Mon, 24 Jul 2023 14:57:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0247961451;
+        Mon, 24 Jul 2023 21:57:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5430AC433C9;
+        Mon, 24 Jul 2023 21:57:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690235838;
+        bh=0h+dePu6rfFOElRcgVsU297/GZNJnUly0bCMrw5Ff18=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NAC8ciK8rb0/RL1BJPLjTRLBt6CasWW+075WiQWKFXy6eZ2E5q3ZUapb8BwtSOo3q
+         N/goKsGuxq4Rm09bmtYeV3g2v9OqYskyaX1al35QnIvYWziPH5CX/EmB3b3sSsARL2
+         jZC8hJ4G0LXNIGGO90UMBMvCMdpeE/2DKURXwdY6Sn7q3Wa+haJSMPfr1Vbzt1N46b
+         CqTrFR/79fT8N6Uxa4GG4QglPOWvZwaB2b3E5ndOQTgh+Yr8cjAOShvBHIsfk6fy32
+         3KGk0WCIXSNq8Z/S7HHUgn9KAogSruWSkCCFtxkYCclEaeewf540LgBDG2VWe7RgYu
+         JoO9robSErv9A==
+Message-ID: <f95c78d8-2baa-edde-39bb-8341cde2d63f@kernel.org>
+Date:   Tue, 25 Jul 2023 06:57:09 +0900
 MIME-Version: 1.0
-References: <20230724085303.9607-1-xujianghui@cdjrlc.com> <c5575527bac1642f2cf896ae0ee9f582@208suo.com>
-In-Reply-To: <c5575527bac1642f2cf896ae0ee9f582@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 24 Jul 2023 17:56:39 -0400
-Message-ID: <CADnq5_NXmmjFp02YqOyzKn2ta+6s_3KedUTq3Tu1o0jpNbGd=Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: Clean up errors in smu_v11_0_7_pptable.h
-To:     sunran001@208suo.com
-Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 09/15] PM / devfreq: Switch to
+ dev_pm_opp_find_freq_{ceil/floor}_indexed() APIs
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com, andersson@kernel.org,
+        konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
+        quic_nitirawa@quicinc.com, quic_narepall@quicinc.com,
+        quic_bhaskarv@quicinc.com, quic_richardp@quicinc.com,
+        quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
+        bmasney@redhat.com, krzysztof.kozlowski@linaro.org,
+        linux-kernel@vger.kernel.org
+References: <20230720054100.9940-1-manivannan.sadhasivam@linaro.org>
+ <20230720054100.9940-10-manivannan.sadhasivam@linaro.org>
+ <1703ab6e-8567-8574-f011-af19813f97e8@kernel.org>
+ <20230724054611.GA2370@thinkpad>
+From:   Chanwoo Choi <chanwoo@kernel.org>
+Content-Language: en-US
+In-Reply-To: <20230724054611.GA2370@thinkpad>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,120 +75,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This one doesn't apply cleanly.
+On 23. 7. 24. 14:46, Manivannan Sadhasivam wrote:
+> On Mon, Jul 24, 2023 at 05:06:04AM +0900, Chanwoo Choi wrote:
+>> Hi,
+>>
+>> On 23. 7. 20. 14:40, Manivannan Sadhasivam wrote:
+>>> Some devfreq consumers like UFS driver need to work with multiple clocks
+>>> through the OPP framework. For this reason, OPP framework exposes the
+>>> _indexed() APIs for finding the floor/ceil of the supplied frequency of
+>>> the indexed clock. So let's use them in the devfreq driver.
+>>>
+>>> Currently, the clock index of 0 is used which works fine for multiple as
+>>> well as single clock.
+>>>
+>>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>>> ---
+>>>  drivers/devfreq/devfreq.c | 14 +++++++-------
+>>>  1 file changed, 7 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+>>> index e36cbb920ec8..7686993d639f 100644
+>>> --- a/drivers/devfreq/devfreq.c
+>>> +++ b/drivers/devfreq/devfreq.c
+>>> @@ -88,7 +88,7 @@ static unsigned long find_available_min_freq(struct devfreq *devfreq)
+>>>  	struct dev_pm_opp *opp;
+>>>  	unsigned long min_freq = 0;
+>>>  
+>>> -	opp = dev_pm_opp_find_freq_ceil(devfreq->dev.parent, &min_freq);
+>>> +	opp = dev_pm_opp_find_freq_ceil_indexed(devfreq->dev.parent, &min_freq, 0);
+>>
+>> This patch changed the used function from dev_pm_opp_find_freq_ceil
+>> to dev_pm_opp_find_freq_ceil_indexed even if there are no supporting of the multiple clocks
+>> and then dev_pm_opp_find_freq_ceil is not removed from OPP.
+>>
+>> I think that it is better to use dev_pm_opp_find_freq_ceil_indexed
+>> when need to support multiple clocks with real case.
+>>
+> 
+> There is the user for dev_pm_opp_find_freq_ceil_indexed() which is the UFS
+> driver and since UFS is using devfreq, we need this change. I've added this info
+> in the commit message as well. What am I missing?
 
-Alex
 
-On Mon, Jul 24, 2023 at 4:54=E2=80=AFAM <sunran001@208suo.com> wrote:
->
-> Fix the following errors reported by checkpatch:
->
-> ERROR: trailing whitespace
-> ERROR: open brace '{' following struct go on the same line
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->   .../amd/pm/swsmu/inc/smu_v11_0_7_pptable.h    | 41 +++++++++----------
->   1 file changed, 19 insertions(+), 22 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0_7_pptable.h
-> b/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0_7_pptable.h
-> index 1cb399dbc7cc..64d60d48846a 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0_7_pptable.h
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0_7_pptable.h
-> @@ -42,23 +42,23 @@
->   #define SMU_11_0_7_PP_POWERSAVINGCLOCK_VERSION            0x01
->   // Power Saving Clock Table Version 1.00
->
->   enum SMU_11_0_7_ODFEATURE_CAP {
-> -    SMU_11_0_7_ODCAP_GFXCLK_LIMITS =3D 0,
-> -    SMU_11_0_7_ODCAP_GFXCLK_CURVE,
-> -    SMU_11_0_7_ODCAP_UCLK_LIMITS,
-> -    SMU_11_0_7_ODCAP_POWER_LIMIT,
-> -    SMU_11_0_7_ODCAP_FAN_ACOUSTIC_LIMIT,
-> -    SMU_11_0_7_ODCAP_FAN_SPEED_MIN,
-> -    SMU_11_0_7_ODCAP_TEMPERATURE_FAN,
-> -    SMU_11_0_7_ODCAP_TEMPERATURE_SYSTEM,
-> -    SMU_11_0_7_ODCAP_MEMORY_TIMING_TUNE,
-> -    SMU_11_0_7_ODCAP_FAN_ZERO_RPM_CONTROL,
-> -    SMU_11_0_7_ODCAP_AUTO_UV_ENGINE,
-> -    SMU_11_0_7_ODCAP_AUTO_OC_ENGINE,
-> -    SMU_11_0_7_ODCAP_AUTO_OC_MEMORY,
-> +    SMU_11_0_7_ODCAP_GFXCLK_LIMITS =3D 0,
-> +    SMU_11_0_7_ODCAP_GFXCLK_CURVE,
-> +    SMU_11_0_7_ODCAP_UCLK_LIMITS,
-> +    SMU_11_0_7_ODCAP_POWER_LIMIT,
-> +    SMU_11_0_7_ODCAP_FAN_ACOUSTIC_LIMIT,
-> +    SMU_11_0_7_ODCAP_FAN_SPEED_MIN,
-> +    SMU_11_0_7_ODCAP_TEMPERATURE_FAN,
-> +    SMU_11_0_7_ODCAP_TEMPERATURE_SYSTEM,
-> +    SMU_11_0_7_ODCAP_MEMORY_TIMING_TUNE,
-> +    SMU_11_0_7_ODCAP_FAN_ZERO_RPM_CONTROL,
-> +    SMU_11_0_7_ODCAP_AUTO_UV_ENGINE,
-> +    SMU_11_0_7_ODCAP_AUTO_OC_ENGINE,
-> +    SMU_11_0_7_ODCAP_AUTO_OC_MEMORY,
->       SMU_11_0_7_ODCAP_FAN_CURVE,
->       SMU_11_0_ODCAP_AUTO_FAN_ACOUSTIC_LIMIT,
-> -    SMU_11_0_7_ODCAP_POWER_MODE,
-> -    SMU_11_0_7_ODCAP_COUNT,
-> +    SMU_11_0_7_ODCAP_POWER_MODE,
-> +    SMU_11_0_7_ODCAP_COUNT,
->   };
->
->   enum SMU_11_0_7_ODFEATURE_ID {
-> @@ -130,8 +130,7 @@ enum SMU_11_0_7_PWRMODE_SETTING {
->   };
->   #define SMU_11_0_7_MAX_PMSETTING      32        //Maximum Number of
-> PowerMode Settings
->
-> -struct smu_11_0_7_overdrive_table
-> -{
-> +struct smu_11_0_7_overdrive_table {
->       uint8_t  revision;
-> //Revision =3D SMU_11_0_7_PP_OVERDRIVE_VERSION
->       uint8_t  reserve[3];                                      //Zero
-> filled field reserved for future use
->       uint32_t feature_count;                                   //Total
-> number of supported features
-> @@ -160,8 +159,7 @@ enum SMU_11_0_7_PPCLOCK_ID {
->   };
->   #define SMU_11_0_7_MAX_PPCLOCK      16          //Maximum Number of PP
-> Clocks
->
-> -struct smu_11_0_7_power_saving_clock_table
-> -{
-> +struct smu_11_0_7_power_saving_clock_table {
->       uint8_t  revision;
-> //Revision =3D SMU_11_0_7_PP_POWERSAVINGCLOCK_VERSION
->       uint8_t  reserve[3];                                      //Zero
-> filled field reserved for future use
->       uint32_t count;
-> //power_saving_clock_count =3D SMU_11_0_7_PPCLOCK_COUNT
-> @@ -169,8 +167,7 @@ struct smu_11_0_7_power_saving_clock_table
->       uint32_t min[SMU_11_0_7_MAX_PPCLOCK];
-> //PowerSavingClock Mode Clock Minimum array In MHz
->   };
->
-> -struct smu_11_0_7_powerplay_table
-> -{
-> +struct smu_11_0_7_powerplay_table {
->         struct atom_common_table_header header;       //For
-> sienna_cichlid, header.format_revision =3D 15, header.content_revision =
-=3D 0
->         uint8_t  table_revision;                      //For
-> sienna_cichlid, table_revision =3D 2
->         uint16_t table_size;                          //Driver portion
-> table size. The offset to smc_pptable including header size
-> @@ -178,7 +175,7 @@ struct smu_11_0_7_powerplay_table
->         uint32_t golden_revision;                     //PPGen use only:
-> PP Table Revision on the Golden Data Base
->         uint16_t format_id;                           //PPGen use only:
-> PPTable for different ASICs. For sienna_cichlid this should be 0x80
->         uint32_t platform_caps;
-> //POWERPLAYABLE::ulPlatformCaps
-> -
-> +
->         uint8_t  thermal_controller_type;             //one of
-> SMU_11_0_7_PP_THERMALCONTROLLER
->
->         uint16_t small_power_limit1;
+I found out the difference of them. 
+- dev_pm_opp_find_freq_ceil() used the 'assert_single_clk' which check the count of clock.
+                                                               
+
+(snip)
+
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
+
