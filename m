@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5012176001E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C51BC76001D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbjGXT4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 15:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
+        id S230156AbjGXT4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 15:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjGXT4f (ORCPT
+        with ESMTP id S229552AbjGXT4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 Jul 2023 15:56:35 -0400
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3EA171B
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274D410CB
         for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 12:56:34 -0700 (PDT)
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1ad17b9fcd8so8453584fac.0
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1bb493c6ee1so3657207fac.3
         for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 12:56:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1690228593; x=1690833393;
         h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bqy++k90y41wMJfzlow3b+lCJ8ynuiD7DIqIylcfRDo=;
-        b=Wde2ebJZ4VjOSXgSzyZwLwVHu+itXbzX2rJsoVrXWRr8bIlQhQKnspY30wZcrPChm0
-         n2/3Hc14J10/PeZT9fKykOyfk5kWibTCW/XU4oPesUpP+2CeneNXctZldnzxMGNcgI+6
-         EY0/wzav/XKcalpiIDWtcNRgkIyhco2la4TyZvp6iZ1JwWiWH1sJlbpzpfS6y4NLP2Ll
-         DNpxffAssP3QoRh5qkwqLhnKtTPOgXMuMWL9Ow1jPrXro2w2+TsBxDrXT5oequdRY5nz
-         8jUEn4S2yzkbEQI1vQlE9ODmeKNaDGMy/eS5oSYhZ3gUsT3R7rn8bvoXkXhzKK3kbiDt
-         bwhw==
-X-Gm-Message-State: ABy/qLYqQe7ZP6UUUNZqccSpvpv8bcQ7HjOiB3+ci2sIQVAgBHMg+cAK
-        mHz/a0+L/dO171A6woianFBdA4MNWnDIBPDiRcJTdCkbF1PR
-X-Google-Smtp-Source: APBJJlHlWs+LFB7k3NIuMhWUm8QZfovlY8FvMe8cw31aYRNPGdP4kGfjP2cedYFiR+mvcbKKTWKUqWkzzDN0Hlb3tS+kAExpxT+o
+        bh=g0HbIfON9h7OtlOqGplVgAJ/Ron1dfOFrue7VmqDYzg=;
+        b=HviviiH8QHCDN80a9CLD0kduVyC4tgyhY3qu4cFaYywgUxSeRWx6sseZ/nojaMNO+/
+         xh1WqAVsKkGydcvBAIX0KRXUdbpPWwSJ7+y07RKjdl1YcolxoBXnDSItRWb1KkRVYQP8
+         b81h5xbfxs6nKTRQI+hnw2mucmybL2je9nJz7YPtTE+i/USrL3aRsDQ2wQdofuDFhXrE
+         7DZB6KHQwb1tg6QWtGojCmGSfp8XbXcMNm/RrJxI+0V4LM6sNJz++Di1Jx9qhBkdLKuf
+         0Dh9FICbG84GVMKuJE9ITLrogYF/UFQ1ym7vBypmZPWTJzucyzpjiN0kd9MO7L8XUV+S
+         W4rQ==
+X-Gm-Message-State: ABy/qLbsivdeIzXPwMw4/wJS0zBS9QVsnffkCq3CpdfMaiSs9rDFTPcC
+        YGZv3bBGfi95CuEaLoc/7pqGFMZtA8Dh8ifcyRi9dIOWXuua
+X-Google-Smtp-Source: APBJJlGy8FHZDVrssAfEDgGHScfjKPZjYZWznrOxt65Wocsqqyr5rTphmuoPNIEOMBE7bKR1W0V4AWAMQMX5N468FTXqgMvgSHHN
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:76b3:b0:1bb:4279:4be9 with SMTP id
- dx51-20020a05687076b300b001bb42794be9mr7995398oab.3.1690228593707; Mon, 24
- Jul 2023 12:56:33 -0700 (PDT)
+X-Received: by 2002:a05:6870:955e:b0:1bb:51ab:a7bc with SMTP id
+ v30-20020a056870955e00b001bb51aba7bcmr7056676oal.1.1690228593534; Mon, 24 Jul
+ 2023 12:56:33 -0700 (PDT)
 Date:   Mon, 24 Jul 2023 12:56:33 -0700
-In-Reply-To: <ZL7U/V3SFaJndkhW@bombadil.infradead.org>
+In-Reply-To: <ZL7Una9vhJpX+dkb@bombadil.infradead.org>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ead1d006014102dc@google.com>
-Subject: Re: [syzbot] [modules?] general protection fault in sys_finit_module
-From:   syzbot <syzbot+9e4e94a2689427009d35@syzkaller.appspotmail.com>
+Message-ID: <000000000000e82d5806014102a7@google.com>
+Subject: Re: [syzbot] [modules?] KASAN: invalid-access Read in init_module_from_file
+From:   syzbot <syzbot+e3705186451a87fd93b8@syzkaller.appspotmail.com>
 To:     bpf@vger.kernel.org, chris@chrisdown.name,
         linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
         llvm@lists.linux.dev, mcgrof@kernel.org, nathan@kernel.org,
@@ -71,7 +71,7 @@ Tested on:
 
 commit:         [unknown 
 git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 910e230d5f1bb72c54532e94fbb1705095c7bab6
-dashboard link: https://syzkaller.appspot.com/bug?extid=9e4e94a2689427009d35
+dashboard link: https://syzkaller.appspot.com/bug?extid=e3705186451a87fd93b8
 compiler:       
 
 Note: no patches were applied.
