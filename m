@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E21C75FB01
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1625275FAFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbjGXPju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 11:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
+        id S229823AbjGXPjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 11:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbjGXPjd (ORCPT
+        with ESMTP id S231434AbjGXPjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 11:39:33 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D760D10E4;
-        Mon, 24 Jul 2023 08:39:27 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36OFdEnT105756;
+        Mon, 24 Jul 2023 11:39:31 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D2210EC;
+        Mon, 24 Jul 2023 08:39:25 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36OFdEMc129943;
         Mon, 24 Jul 2023 10:39:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
         s=ti-com-17Q1; t=1690213154;
-        bh=IwnS8WMnRIgOiB352WjcFBOFkWVWnNv59QMzPWERN4k=;
+        bh=gIh8Oa2yTIhPHcGMcsV0nHdTtNfTz0Xlz8CxSlkOme4=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=CukYjg1PyxRGt6/BG5hdKQHEPPeGDIkcnM4vB0A0mW93f1e7OWa514sC/73aE6Ntq
-         u9AtXrHj8j+QZxwHfgvlNCH84KgzipSsKIiP9bKX6vNIPlQuUXLupQN71WxmH5g6EY
-         gmJinCRF256FToYSljbJcqXqJR59wU7MGjAIGAHw=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36OFdEOE049951
+        b=pH5HG/9omBH0wt92W3dWHGjso/HXI8PR8LVprIUmkILSaf/o5coRqib7smGvXpZhH
+         0WJvt5W2tVY6Qvlysd9PdJM0JhOHzKdf8azXFgywOVSGyp0vlzaugPDCg2kXIf73tU
+         E7pnmCd5XTIYNtSdpJThq4RB7rVyxFq278yvKXkQ=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36OFdDuV018404
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Jul 2023 10:39:14 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 24 Jul 2023 10:39:13 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 24
  Jul 2023 10:39:13 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Mon, 24 Jul 2023 10:39:13 -0500
 Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36OFdDLr050297;
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36OFdDqZ001769;
         Mon, 24 Jul 2023 10:39:13 -0500
 From:   Nishanth Menon <nm@ti.com>
 To:     Tony Lindgren <tony@atomide.com>,
@@ -53,9 +53,9 @@ CC:     Vibhore Vardhan <vibhore@ti.com>, Dhruva Gole <d-gole@ti.com>,
         <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-pm@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 3/5] arm: dts: ti: omap: Fix OPP table node names
-Date:   Mon, 24 Jul 2023 10:39:09 -0500
-Message-ID: <20230724153911.1376830-4-nm@ti.com>
+Subject: [PATCH 4/5] dt-bindings: opp: Convert ti-omap5-opp-supply.txt to yaml binding
+Date:   Mon, 24 Jul 2023 10:39:10 -0500
+Message-ID: <20230724153911.1376830-5-nm@ti.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230724153911.1376830-1-nm@ti.com>
 References: <20230724153911.1376830-1-nm@ti.com>
@@ -73,372 +73,200 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the opp table node names for opps to be compliant with bindings.
+Rename ti-omap5-opp-supply to be bit more generic omap-opp-supply and
+convert the binding to yaml.
 
 Signed-off-by: Nishanth Menon <nm@ti.com>
 ---
-Should probably go via Tony's tree.
+ .../bindings/opp/ti,omap-opp-supply.yaml      | 108 ++++++++++++++++++
+ .../bindings/opp/ti-omap5-opp-supply.txt      |  63 ----------
+ 2 files changed, 108 insertions(+), 63 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/opp/ti,omap-opp-supply.yaml
+ delete mode 100644 Documentation/devicetree/bindings/opp/ti-omap5-opp-supply.txt
 
- .../arm/boot/dts/ti/omap/am335x-boneblack.dts |  3 +-
- .../dts/ti/omap/am335x-osd335x-common.dtsi    |  3 +-
- arch/arm/boot/dts/ti/omap/am33xx.dtsi         | 30 ++++++++++++-------
- arch/arm/boot/dts/ti/omap/am3517.dtsi         |  6 ++--
- arch/arm/boot/dts/ti/omap/am4372.dtsi         | 15 ++++++----
- arch/arm/boot/dts/ti/omap/am437x-idk-evm.dts  |  6 ++--
- arch/arm/boot/dts/ti/omap/dra7.dtsi           |  9 ++++--
- arch/arm/boot/dts/ti/omap/dra76x.dtsi         |  3 +-
- arch/arm/boot/dts/ti/omap/omap34xx.dtsi       | 12 ++++----
- arch/arm/boot/dts/ti/omap/omap36xx.dtsi       | 12 +++++---
- 10 files changed, 64 insertions(+), 35 deletions(-)
-
-diff --git a/arch/arm/boot/dts/ti/omap/am335x-boneblack.dts b/arch/arm/boot/dts/ti/omap/am335x-boneblack.dts
-index b956e2f60fe0..16b567e3cb47 100644
---- a/arch/arm/boot/dts/ti/omap/am335x-boneblack.dts
-+++ b/arch/arm/boot/dts/ti/omap/am335x-boneblack.dts
-@@ -20,7 +20,8 @@ &cpu0_opp_table {
- 	 * BeagleBone Blacks have PG 2.0 silicon which is guaranteed
- 	 * to support 1GHz OPP so enable it for PG 2.0 on this board.
- 	 */
--	oppnitro-1000000000 {
-+	opp-1000000000 {
-+		/* OPP Nitro */
- 		opp-supported-hw = <0x06 0x0100>;
- 	};
- };
-diff --git a/arch/arm/boot/dts/ti/omap/am335x-osd335x-common.dtsi b/arch/arm/boot/dts/ti/omap/am335x-osd335x-common.dtsi
-index 9863bf499a39..93a3af83feac 100644
---- a/arch/arm/boot/dts/ti/omap/am335x-osd335x-common.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/am335x-osd335x-common.dtsi
-@@ -28,7 +28,8 @@ &cpu0_opp_table {
- 	* the HW OPP table, the silicon looks like it is Revision 1.0 (ie the
- 	* EFUSE_SMA register reads as all zeros).
- 	*/
--	oppnitro-1000000000 {
-+	opp-1000000000 {
-+		/* OPP Nitro */
- 		opp-supported-hw = <0x06 0x0100>;
- 	};
- };
-diff --git a/arch/arm/boot/dts/ti/omap/am33xx.dtsi b/arch/arm/boot/dts/ti/omap/am33xx.dtsi
-index 32d397b3950b..1a2cd5baf402 100644
---- a/arch/arm/boot/dts/ti/omap/am33xx.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/am33xx.dtsi
-@@ -80,64 +80,74 @@ cpu0_opp_table: opp-table {
- 		 * because the can not be enabled simultaneously on a
- 		 * single SoC.
- 		 */
--		opp50-300000000 {
-+		opp-50-300000000{
-+			/* OPP50 */
- 			opp-hz = /bits/ 64 <300000000>;
- 			opp-microvolt = <950000 931000 969000>;
- 			opp-supported-hw = <0x06 0x0010>;
- 			opp-suspend;
- 		};
- 
--		opp100-275000000 {
-+		opp-100-275000000{
-+			/* OPP100-1 */
- 			opp-hz = /bits/ 64 <275000000>;
- 			opp-microvolt = <1100000 1078000 1122000>;
- 			opp-supported-hw = <0x01 0x00FF>;
- 			opp-suspend;
- 		};
- 
--		opp100-300000000 {
-+		opp-100-300000000{
-+			/* OPP100-2 */
- 			opp-hz = /bits/ 64 <300000000>;
- 			opp-microvolt = <1100000 1078000 1122000>;
- 			opp-supported-hw = <0x06 0x0020>;
- 			opp-suspend;
- 		};
- 
--		opp100-500000000 {
-+		opp-100-500000000{
-+			/* OPP100-3 */
- 			opp-hz = /bits/ 64 <500000000>;
- 			opp-microvolt = <1100000 1078000 1122000>;
- 			opp-supported-hw = <0x01 0xFFFF>;
- 		};
- 
--		opp100-600000000 {
-+		opp-100-600000000 {
-+			/* OPP100-4 */
- 			opp-hz = /bits/ 64 <600000000>;
- 			opp-microvolt = <1100000 1078000 1122000>;
- 			opp-supported-hw = <0x06 0x0040>;
- 		};
- 
--		opp120-600000000 {
-+		opp-120-600000000 {
-+			/* OPP120-1 */
- 			opp-hz = /bits/ 64 <600000000>;
- 			opp-microvolt = <1200000 1176000 1224000>;
- 			opp-supported-hw = <0x01 0xFFFF>;
- 		};
- 
--		opp120-720000000 {
-+		opp-120-720000000 {
-+			/* OPP120-2 */
- 			opp-hz = /bits/ 64 <720000000>;
- 			opp-microvolt = <1200000 1176000 1224000>;
- 			opp-supported-hw = <0x06 0x0080>;
- 		};
- 
--		oppturbo-720000000 {
-+		opp-720000000 {
-+			/* OPP Turbo-1 */
- 			opp-hz = /bits/ 64 <720000000>;
- 			opp-microvolt = <1260000 1234800 1285200>;
- 			opp-supported-hw = <0x01 0xFFFF>;
- 		};
- 
--		oppturbo-800000000 {
-+		opp-800000000 {
-+			/* OPP Turbo-2 */
- 			opp-hz = /bits/ 64 <800000000>;
- 			opp-microvolt = <1260000 1234800 1285200>;
- 			opp-supported-hw = <0x06 0x0100>;
- 		};
- 
--		oppnitro-1000000000 {
-+		opp-1000000000 {
-+			/* OPP Nitro */
- 			opp-hz = /bits/ 64 <1000000000>;
- 			opp-microvolt = <1325000 1298500 1351500>;
- 			opp-supported-hw = <0x04 0x0200>;
-diff --git a/arch/arm/boot/dts/ti/omap/am3517.dtsi b/arch/arm/boot/dts/ti/omap/am3517.dtsi
-index 823f63502e9f..fbfc956f4e4d 100644
---- a/arch/arm/boot/dts/ti/omap/am3517.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/am3517.dtsi
-@@ -34,14 +34,16 @@ cpu0_opp_table: opp-table {
- 		 * appear to operate at 300MHz as well. Since AM3517 only
- 		 * lists one operating voltage, it will remain fixed at 1.2V
- 		 */
--		opp50-300000000 {
-+		opp-50-300000000 {
-+			/* OPP50 */
- 			opp-hz = /bits/ 64 <300000000>;
- 			opp-microvolt = <1200000>;
- 			opp-supported-hw = <0xffffffff 0xffffffff>;
- 			opp-suspend;
- 		};
- 
--		opp100-600000000 {
-+		opp-100-600000000 {
-+			/* OPP100 */
- 			opp-hz = /bits/ 64 <600000000>;
- 			opp-microvolt = <1200000>;
- 			opp-supported-hw = <0xffffffff 0xffffffff>;
-diff --git a/arch/arm/boot/dts/ti/omap/am4372.dtsi b/arch/arm/boot/dts/ti/omap/am4372.dtsi
-index 8613355bbd5e..9d2c064534f7 100644
---- a/arch/arm/boot/dts/ti/omap/am4372.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/am4372.dtsi
-@@ -70,32 +70,37 @@ cpu0_opp_table: opp-table {
- 		compatible = "operating-points-v2-ti-cpu";
- 		syscon = <&scm_conf>;
- 
--		opp50-300000000 {
-+		opp-50-300000000 {
-+			/* OPP50 */
- 			opp-hz = /bits/ 64 <300000000>;
- 			opp-microvolt = <950000 931000 969000>;
- 			opp-supported-hw = <0xFF 0x01>;
- 			opp-suspend;
- 		};
- 
--		opp100-600000000 {
-+		opp-100-600000000 {
-+			/* OPP100 */
- 			opp-hz = /bits/ 64 <600000000>;
- 			opp-microvolt = <1100000 1078000 1122000>;
- 			opp-supported-hw = <0xFF 0x04>;
- 		};
- 
--		opp120-720000000 {
-+		opp-120-720000000 {
-+			/* OPP120 */
- 			opp-hz = /bits/ 64 <720000000>;
- 			opp-microvolt = <1200000 1176000 1224000>;
- 			opp-supported-hw = <0xFF 0x08>;
- 		};
- 
--		oppturbo-800000000 {
-+		opp-800000000{
-+			/* OPP Turbo */
- 			opp-hz = /bits/ 64 <800000000>;
- 			opp-microvolt = <1260000 1234800 1285200>;
- 			opp-supported-hw = <0xFF 0x10>;
- 		};
- 
--		oppnitro-1000000000 {
-+		opp-1000000000 {
-+			/* OPP Nitro */
- 			opp-hz = /bits/ 64 <1000000000>;
- 			opp-microvolt = <1325000 1298500 1351500>;
- 			opp-supported-hw = <0xFF 0x20>;
-diff --git a/arch/arm/boot/dts/ti/omap/am437x-idk-evm.dts b/arch/arm/boot/dts/ti/omap/am437x-idk-evm.dts
-index 863552393c07..5b2ac88a7e6a 100644
---- a/arch/arm/boot/dts/ti/omap/am437x-idk-evm.dts
-+++ b/arch/arm/boot/dts/ti/omap/am437x-idk-evm.dts
-@@ -527,11 +527,13 @@ &cpu0_opp_table {
- 	 * Supply voltage supervisor on board will not allow opp50 so
- 	 * disable it and set opp100 as suspend OPP.
- 	 */
--	opp50-300000000 {
-+	opp-50-300000000 {
-+		/* opp50-300000000 */
- 		status = "disabled";
- 	};
- 
--	opp100-600000000 {
-+	opp-100-600000000 {
-+		/* opp100-600000000 */
- 		opp-suspend;
- 	};
- };
-diff --git a/arch/arm/boot/dts/ti/omap/dra7.dtsi b/arch/arm/boot/dts/ti/omap/dra7.dtsi
-index 97ce0c4f1df7..3f3e52e3b375 100644
---- a/arch/arm/boot/dts/ti/omap/dra7.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/dra7.dtsi
-@@ -101,7 +101,8 @@ cpu0_opp_table: opp-table {
- 		compatible = "operating-points-v2-ti-cpu";
- 		syscon = <&scm_wkup>;
- 
--		opp_nom-1000000000 {
-+		opp-1000000000 {
-+			/* OPP NOM */
- 			opp-hz = /bits/ 64 <1000000000>;
- 			opp-microvolt = <1060000 850000 1150000>,
- 					<1060000 850000 1150000>;
-@@ -109,7 +110,8 @@ opp_nom-1000000000 {
- 			opp-suspend;
- 		};
- 
--		opp_od-1176000000 {
-+		opp-1176000000 {
-+			/* OPP OD */
- 			opp-hz = /bits/ 64 <1176000000>;
- 			opp-microvolt = <1160000 885000 1160000>,
- 					<1160000 885000 1160000>;
-@@ -117,7 +119,8 @@ opp_od-1176000000 {
- 			opp-supported-hw = <0xFF 0x02>;
- 		};
- 
--		opp_high@1500000000 {
-+		opp-1500000000 {
-+			/* OPP High */
- 			opp-hz = /bits/ 64 <1500000000>;
- 			opp-microvolt = <1210000 950000 1250000>,
- 					<1210000 950000 1250000>;
-diff --git a/arch/arm/boot/dts/ti/omap/dra76x.dtsi b/arch/arm/boot/dts/ti/omap/dra76x.dtsi
-index 931db7932c11..1045eb24aa0d 100644
---- a/arch/arm/boot/dts/ti/omap/dra76x.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/dra76x.dtsi
-@@ -130,7 +130,8 @@ &mmc3 {
- };
- 
- &cpu0_opp_table {
--	opp_plus@1800000000 {
-+	opp-1800000000 {
-+		/* OPP Plus */
- 		opp-hz = /bits/ 64 <1800000000>;
- 		opp-microvolt = <1250000 950000 1250000>,
- 				<1250000 950000 1250000>;
-diff --git a/arch/arm/boot/dts/ti/omap/omap34xx.dtsi b/arch/arm/boot/dts/ti/omap/omap34xx.dtsi
-index 9dbf62797f0f..fc7233ac183a 100644
---- a/arch/arm/boot/dts/ti/omap/omap34xx.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/omap34xx.dtsi
-@@ -25,7 +25,7 @@ cpu0_opp_table: opp-table {
- 		compatible = "operating-points-v2-ti-cpu";
- 		syscon = <&scm_conf>;
- 
--		opp1-125000000 {
-+		opp-125000000 {
- 			opp-hz = /bits/ 64 <125000000>;
- 			/*
- 			 * we currently only select the max voltage from table
-@@ -40,32 +40,32 @@ opp1-125000000 {
- 			opp-supported-hw = <0xffffffff 3>;
- 		};
- 
--		opp2-250000000 {
-+		opp-250000000 {
- 			opp-hz = /bits/ 64 <250000000>;
- 			opp-microvolt = <1075000 1075000 1075000>;
- 			opp-supported-hw = <0xffffffff 3>;
- 			opp-suspend;
- 		};
- 
--		opp3-500000000 {
-+		opp-500000000 {
- 			opp-hz = /bits/ 64 <500000000>;
- 			opp-microvolt = <1200000 1200000 1200000>;
- 			opp-supported-hw = <0xffffffff 3>;
- 		};
- 
--		opp4-550000000 {
-+		opp-550000000 {
- 			opp-hz = /bits/ 64 <550000000>;
- 			opp-microvolt = <1275000 1275000 1275000>;
- 			opp-supported-hw = <0xffffffff 3>;
- 		};
- 
--		opp5-600000000 {
-+		opp-600000000 {
- 			opp-hz = /bits/ 64 <600000000>;
- 			opp-microvolt = <1350000 1350000 1350000>;
- 			opp-supported-hw = <0xffffffff 3>;
- 		};
- 
--		opp6-720000000 {
-+		opp-720000000 {
- 			opp-hz = /bits/ 64 <720000000>;
- 			opp-microvolt = <1350000 1350000 1350000>;
- 			/* only high-speed grade omap3530 devices */
-diff --git a/arch/arm/boot/dts/ti/omap/omap36xx.dtsi b/arch/arm/boot/dts/ti/omap/omap36xx.dtsi
-index 50e640a32b5c..e6d8070c1bf8 100644
---- a/arch/arm/boot/dts/ti/omap/omap36xx.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/omap36xx.dtsi
-@@ -30,7 +30,8 @@ cpu0_opp_table: opp-table {
- 		compatible = "operating-points-v2-ti-cpu";
- 		syscon = <&scm_conf>;
- 
--		opp50-300000000 {
-+		opp-50-300000000 {
-+			/* OPP50 */
- 			opp-hz = /bits/ 64 <300000000>;
- 			/*
- 			 * we currently only select the max voltage from table
-@@ -48,21 +49,24 @@ opp50-300000000 {
- 			opp-suspend;
- 		};
- 
--		opp100-600000000 {
-+		opp-100-600000000 {
-+			/* OPP100 */
- 			opp-hz = /bits/ 64 <600000000>;
- 			opp-microvolt = <1200000 1200000 1200000>,
- 					 <1200000 1200000 1200000>;
- 			opp-supported-hw = <0xffffffff 3>;
- 		};
- 
--		opp130-800000000 {
-+		opp-130-800000000 {
-+			/* OPP130 */
- 			opp-hz = /bits/ 64 <800000000>;
- 			opp-microvolt = <1325000 1325000 1325000>,
- 					 <1325000 1325000 1325000>;
- 			opp-supported-hw = <0xffffffff 3>;
- 		};
- 
--		opp1g-1000000000 {
-+		opp-1000000000 {
-+			/* OPP1G */
- 			opp-hz = /bits/ 64 <1000000000>;
- 			opp-microvolt = <1375000 1375000 1375000>,
- 					 <1375000 1375000 1375000>;
+diff --git a/Documentation/devicetree/bindings/opp/ti,omap-opp-supply.yaml b/Documentation/devicetree/bindings/opp/ti,omap-opp-supply.yaml
+new file mode 100644
+index 000000000000..ff1b3d8fea31
+--- /dev/null
++++ b/Documentation/devicetree/bindings/opp/ti,omap-opp-supply.yaml
+@@ -0,0 +1,108 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/opp/ti,omap-opp-supply.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Texas Instruments OMAP compatible OPP supply description
++
++description: |
++  OMAP5, DRA7, and AM57 family of SoCs have Class0 AVS eFuse registers which
++  contain data that can be used to adjust voltages programmed for some of their
++  supplies for more efficient operation. This binding provides the information
++  needed to read these values and use them to program the main regulator during
++  an OPP transitions.
++
++  Also, some supplies may have an associated vbb-supply which is an Adaptive Body
++  Bias regulator which much be transitioned in a specific sequence with regards
++  to the vdd-supply and clk when making an OPP transition. By supplying two
++  regulators to the device that will undergo OPP transitions we can make use
++  of the multi regulator binding that is part of the OPP core described
++  to describe both regulators needed by the platform.
++
++maintainers:
++  - Nishanth Menon <nm@ti.com>
++
++properties:
++  $nodename:
++    pattern: '^opp-supply(@[0-9a-f]+)?$'
++
++  compatible:
++    oneOf:
++      - description: Basic OPP supply controlling VDD and VBB
++        items:
++          - const: ti,omap-opp-supply
++      - description: OMAP5+ optimized voltages in efuse(Class 0) VDD along with
++          VBB.
++        items:
++          - const: ti,omap5-opp-supply
++      - description: OMAP5+ optimized voltages in efuse(class0) VDD but no VBB
++        items:
++          - const: ti,omap5-core-opp-supply
++
++  reg:
++    description: Address and length of the efuse register set for the device
++    maxItems: 1
++
++  ti,absolute-max-voltage-uv:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Absolute maximum voltage for the OPP supply
++
++  ti,efuse-settings:
++    $ref: /schemas/types.yaml#/definitions/uint32-matrix
++    description: An array of u32 tuple items providing information about
++      optimized efuse configuration. Each item consists of the following
++      voltage_in_uV - reference voltage (OPP Voltage)
++      efuse_offset - efuse offset fromr eg where the optimized voltage is
++        stored.
++    items:
++      minItems: 2
++      maxItems: 2
++    minItems: 1
++
++required:
++  - compatible
++  - ti,absolute-max-voltage-uv
++
++allOf:
++  - if:
++      not:
++        properties:
++          compatible:
++            contains:
++              const: ti,omap-opp-supply
++    then:
++      required:
++        - reg
++        - ti,efuse-settings
++
++additionalProperties: false
++
++examples:
++  - |
++    opp_supply_mpu_iva_hd: opp-supply {
++        compatible = "ti,omap-opp-supply";
++        ti,absolute-max-voltage-uv = <1375000>;
++    };
++  - |
++    opp_supply_mpu: opp-supply@4a003b20 {
++        compatible = "ti,omap5-opp-supply";
++        reg = <0x4a003b20 0x8>;
++        ti,efuse-settings =
++            /* uV   offset */
++            <1060000 0x0>,
++            <1160000 0x4>,
++            <1210000 0x8>;
++        ti,absolute-max-voltage-uv = <1500000>;
++    };
++  - |
++    opp_supply_mpu2: opp-supply@4a003b00 {
++        compatible = "ti,omap5-core-opp-supply";
++        reg = <0x4a003b00 0x8>;
++        ti,efuse-settings =
++            /* uV   offset */
++            <1060000 0x0>,
++            <1160000 0x4>,
++            <1210000 0x8>;
++        ti,absolute-max-voltage-uv = <1500000>;
++    };
+diff --git a/Documentation/devicetree/bindings/opp/ti-omap5-opp-supply.txt b/Documentation/devicetree/bindings/opp/ti-omap5-opp-supply.txt
+deleted file mode 100644
+index b70d326117cd..000000000000
+--- a/Documentation/devicetree/bindings/opp/ti-omap5-opp-supply.txt
++++ /dev/null
+@@ -1,63 +0,0 @@
+-Texas Instruments OMAP compatible OPP supply description
+-
+-OMAP5, DRA7, and AM57 family of SoCs have Class0 AVS eFuse registers which
+-contain data that can be used to adjust voltages programmed for some of their
+-supplies for more efficient operation. This binding provides the information
+-needed to read these values and use them to program the main regulator during
+-an OPP transitions.
+-
+-Also, some supplies may have an associated vbb-supply which is an Adaptive Body
+-Bias regulator which much be transitioned in a specific sequence with regards
+-to the vdd-supply and clk when making an OPP transition. By supplying two
+-regulators to the device that will undergo OPP transitions we can make use
+-of the multi regulator binding that is part of the OPP core described here [1]
+-to describe both regulators needed by the platform.
+-
+-[1] Documentation/devicetree/bindings/opp/opp-v2.yaml
+-
+-Required Properties for Device Node:
+-- vdd-supply: phandle to regulator controlling VDD supply
+-- vbb-supply: phandle to regulator controlling Body Bias supply
+-	      (Usually Adaptive Body Bias regulator)
+-
+-Required Properties for opp-supply node:
+-- compatible: Should be one of:
+-	"ti,omap-opp-supply" - basic OPP supply controlling VDD and VBB
+-	"ti,omap5-opp-supply" - OMAP5+ optimized voltages in efuse(class0)VDD
+-			    along with VBB
+-	"ti,omap5-core-opp-supply" - OMAP5+ optimized voltages in efuse(class0) VDD
+-			    but no VBB.
+-- reg: Address and length of the efuse register set for the device (mandatory
+-	only for "ti,omap5-opp-supply")
+-- ti,efuse-settings: An array of u32 tuple items providing information about
+-	optimized efuse configuration. Each item consists of the following:
+-	volt: voltage in uV - reference voltage (OPP voltage)
+-	efuse_offseet: efuse offset from reg where the optimized voltage is stored.
+-- ti,absolute-max-voltage-uv: absolute maximum voltage for the OPP supply.
+-
+-Example:
+-
+-/* Device Node (CPU)  */
+-cpus {
+-	cpu0: cpu@0 {
+-		device_type = "cpu";
+-
+-		...
+-
+-		vdd-supply = <&vcc>;
+-		vbb-supply = <&abb_mpu>;
+-	};
+-};
+-
+-/* OMAP OPP Supply with Class0 registers */
+-opp_supply_mpu: opp_supply@4a003b20 {
+-	compatible = "ti,omap5-opp-supply";
+-	reg = <0x4a003b20 0x8>;
+-	ti,efuse-settings = <
+-	/* uV   offset */
+-	1060000 0x0
+-	1160000 0x4
+-	1210000 0x8
+-	>;
+-	ti,absolute-max-voltage-uv = <1500000>;
+-};
 -- 
 2.40.0
 
