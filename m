@@ -2,102 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECBF75EB89
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C406575EB9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbjGXGdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 02:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
+        id S230192AbjGXGfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 02:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjGXGdu (ORCPT
+        with ESMTP id S230369AbjGXGf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 02:33:50 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D439ED2;
-        Sun, 23 Jul 2023 23:33:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=xi02gFW93Id0bT7Sh+4wBXdpqlJzFPayUdH3m+EHzPM=; b=BSdcx4WoALDgeHupsuSnOLc1rn
-        gERe7ONSyqR4QdO2pdzHlgtJabW3mHKBgo9gz+fGGpRUX+vnDhZJ5AOedAXhwikUVAL0+SmhjwbxN
-        /N0VWSoe1u1O8qFlW0Q/15iF3i1+4nL3KQEXy6vAxvUZONFG/WTS+I9t67a82XbLG7OfvoNZTxlTI
-        kjMZrhFr7XVvcCGYfNtO/vTmnvsfUi39W5AF55O0z+mC8Pv0FcqpRQ7u2UZsTkfqp6YEEL95yW2ps
-        /w1IpB+gf6iGr6PMeyaMEROi7+ys87t30fRl2tQhbDcxqjeRIsrAXvlidl94WCiUtoYWe74OlVV2m
-        HuQe1YPw==;
-Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qNp8c-002ySv-17;
-        Mon, 24 Jul 2023 06:33:46 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Timur Tabi <timur@kernel.org>,
-        Kumar Gala <galak@kernel.crashing.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org
-Subject: [PATCH] Documentation: devices.txt: reconcile serial/ucc_uart minor numers
-Date:   Sun, 23 Jul 2023 23:33:41 -0700
-Message-ID: <20230724063341.28198-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.41.0
+        Mon, 24 Jul 2023 02:35:26 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04BDE66;
+        Sun, 23 Jul 2023 23:34:52 -0700 (PDT)
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36O62Zob013753;
+        Mon, 24 Jul 2023 02:34:43 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3s0c150xu9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 24 Jul 2023 02:34:42 -0400
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 36O6YfcG027279
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 Jul 2023 02:34:41 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Mon, 24 Jul 2023 02:34:40 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Mon, 24 Jul 2023 02:34:40 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Mon, 24 Jul 2023 02:34:40 -0400
+Received: from okan.localdomain (IST-LT-43126.ad.analog.com [10.25.36.11])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 36O6YSOJ029336;
+        Mon, 24 Jul 2023 02:34:31 -0400
+From:   Okan Sahin <okan.sahin@analog.com>
+To:     <okan.sahin@analog.com>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/2] Add DS4520 GPIO Expander Support
+Date:   Mon, 24 Jul 2023 09:34:12 +0300
+Message-ID: <20230724063414.102805-1-okan.sahin@analog.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: qiazPYt7LoV9UrPGkYunMf5WDOGHb81n
+X-Proofpoint-GUID: qiazPYt7LoV9UrPGkYunMf5WDOGHb81n
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-24_04,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=645 impostorscore=0
+ clxscore=1011 priorityscore=1501 suspectscore=0 lowpriorityscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307240060
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reconcile devices.txt with serial/ucc_uart.c regarding device number
-assignments. ucc_uart.c supports 4 ports and uses minor devnums
-46-49, so update devices.txt with that info.
-Then update ucc_uart.c's reference to the location of the devices.txt
-list in the kernel source tree.
+GPIO expander driver and bindings for DS4520.
+The patches are required to be applied in sequence.
 
-Fixes: d7584ed2b994 ("[POWERPC] qe-uart: add support for Freescale QUICCEngine UART")
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Timur Tabi <timur@kernel.org>
-Cc: Kumar Gala <galak@kernel.crashing.org>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: linux-serial@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
----
- Documentation/admin-guide/devices.txt |    2 +-
- drivers/tty/serial/ucc_uart.c         |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Changes in v3:
+* Patch 1: "dt-bindings: gpio: ds4520: Add ADI DS4520"
+  * Add ngpios property.
+* Patch 2: "gpio: ds4520: Add ADI DS4520 GPIO Expander Support"
+  * Add namespace for MACROS
+  * Read ngpios from dt
+  * Add missing header file
 
-diff -- a/drivers/tty/serial/ucc_uart.c b/drivers/tty/serial/ucc_uart.c
---- a/drivers/tty/serial/ucc_uart.c
-+++ b/drivers/tty/serial/ucc_uart.c
-@@ -59,7 +59,7 @@ static int firmware_loaded;
- /* #define LOOPBACK */
- 
- /* The major and minor device numbers are defined in
-- * http://www.lanana.org/docs/device-list/devices-2.6+.txt.  For the QE
-+ * Documentation/admin-guide/devices.txt.  For the QE
-  * UART, we have major number 204 and minor numbers 46 - 49, which are the
-  * same as for the CPM2.  This decision was made because no Freescale part
-  * has both a CPM and a QE.
-diff -- a/Documentation/admin-guide/devices.txt b/Documentation/admin-guide/devices.txt
---- a/Documentation/admin-guide/devices.txt
-+++ b/Documentation/admin-guide/devices.txt
-@@ -2691,7 +2691,7 @@
- 		 45 = /dev/ttyMM1		Marvell MPSC - port 1 (obsolete unused)
- 		 46 = /dev/ttyCPM0		PPC CPM (SCC or SMC) - port 0
- 		    ...
--		 47 = /dev/ttyCPM5		PPC CPM (SCC or SMC) - port 5
-+		 49 = /dev/ttyCPM5		PPC CPM (SCC or SMC) - port 3
- 		 50 = /dev/ttyIOC0		Altix serial card
- 		    ...
- 		 81 = /dev/ttyIOC31		Altix serial card
+Changes in v2:
+* Patch 1: "dt-bindings: gpio: ds4520: Add ADI DS4520"
+  * Drop label for gpio node
+  * Use consistent quotes
+  * Fix filename matching compatible.
+* Patch 2: "gpio: ds4520: Add ADI DS4520 GPIO Expander Support"
+  * Use regmap_gpio framework
+  * Fix typo in Kconfig
+  * Fix commit message
+
+Okan Sahin (2):
+  dt-bindings: gpio: ds4520: Add ADI DS4520
+  gpio: ds4520: Add ADI DS4520 GPIO Expander Support
+
+ .../bindings/gpio/adi,ds4520-gpio.yaml        | 51 +++++++++++
+ drivers/gpio/Kconfig                          | 11 +++
+ drivers/gpio/Makefile                         |  1 +
+ drivers/gpio/gpio-ds4520.c                    | 89 +++++++++++++++++++
+ 4 files changed, 152 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpio/adi,ds4520-gpio.yaml
+ create mode 100644 drivers/gpio/gpio-ds4520.c
+
+-- 
+2.30.2
+
