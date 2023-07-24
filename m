@@ -2,120 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F3D760194
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FD0760195
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbjGXVyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
+        id S230305AbjGXVzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjGXVyT (ORCPT
+        with ESMTP id S229541AbjGXVzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:54:19 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D68194
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:54:18 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-583b0637c04so39358857b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:54:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1690235657; x=1690840457;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DQnZVWxKX+0CXafj6SJn4lekIqwhPXUIrLSw0b0Ful8=;
-        b=So/G3KZGtWFl9G3u0VtRaafKXrXKTw3kIG1uGlCrkctZh0r+yc2/8579W4gqddkPoQ
-         YiXM8tpjpD/vewR3GLr8W9tjOFqzKpDAAyj5Y11QjzoGUdyVjEJTx52CUfAdevLX/0+k
-         gct2e/EsQf0zqd6IK6R4kwjbVYDOMd3j3IYvEyyyILHoHZau1+EWVQDxhn+3/H3OHJML
-         Qg4XcL4oJQtg+Ij2VnE/5sGBARqipnRvYyrfMEqXMzsbuy4tPGsXAbrtVEfxSZ7pOXM4
-         qEBwUFiP45QxGgGTE1mFGVDxPz7pq1+HsF4hD4gBKTiyr1ta/YTYZfVW/ERMzVkpznEO
-         qVOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690235657; x=1690840457;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DQnZVWxKX+0CXafj6SJn4lekIqwhPXUIrLSw0b0Ful8=;
-        b=ZRquZskfFgb2TGOu4HHUNqqn0EbxVUdnhBF8b+MAzTPFMemuo2Ah45+N0y73NxIoHx
-         IX5MVMCU/lOuCMFzHRQRfw1mN03vSe3Q7lY9VPluTf/qjObKrnn1u4R9ZSOpItHkt3AT
-         uZD8O4vgDHGTwB5/YDuv7Dla6IlqURlBz7GWYAvl+h9dTpz4s8genRIln4gIQJZRHbQx
-         v2FFq/IGZTiyicgI6RhPc2WqZvKHt2rLQEXi17VQUQEdQ9iemh9WyAxBz3mWP9JQqBLr
-         oTHwRfwdGj8T+/1jgqMrzEJbpXgEoNybT7BGbKdyk32JLcffb+6sOdbCfkbYU9Cz9pBE
-         hcRQ==
-X-Gm-Message-State: ABy/qLY5xEzC6SLKffKlOqWnh3epDc2jIbArJ4AaJewJQpmH/F6tlFzs
-        GVsQlX1weYX1p/cOK0dsvUDi8hd1tNmHfIeDNUmT
-X-Google-Smtp-Source: APBJJlGm86O3vRSyfJo7FzGkguVP9DN/0Kx7zG8LSr+E4dwbB1z1OOAPei8bpFNceBvParOi32TeB3Kmh32RVv+jcWQ=
-X-Received: by 2002:a81:6d88:0:b0:583:821b:603a with SMTP id
- i130-20020a816d88000000b00583821b603amr587409ywc.20.1690235657596; Mon, 24
- Jul 2023 14:54:17 -0700 (PDT)
+        Mon, 24 Jul 2023 17:55:17 -0400
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DA6118;
+        Mon, 24 Jul 2023 14:55:15 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 21:55:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1690235712; x=1690494912;
+        bh=mQ0wVbJZR6Qqo1f6a7btQ5EY0YN+6oKaQQ8JxSOeS/w=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=gB22Eo3q0kUmG8e6tgL+f8mLMNn6WdDfiToEXTVAgaHbWsVdYEeVX6n9+kZTxqXHZ
+         kgPc+e0ujGzBYji5jP3IZ9YITKZhKbQBHHE3KVS8mIkPFgJrqHUo5J2wYgz81IM1h1
+         GBEYfSMhymndkTxv6iG2TE5fBWDJbTX6C6IDG/CH/y4eQg34mztVIoWoPQt9rAuRH9
+         B/RJYJkjhHGqSlWJo77J9kEBVSG+Zzl5a3Pdw5s3J7Fh6HI9yB/xlbCjepqEsPM+bl
+         n4dRgL90afLOBXkEMlaSNd5JrDze2btqR2lEarQt12rh4XW20E3ucIjxuOC0jEEtOd
+         mPjkmb/7+U6YQ==
+To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Asahi Lina <lina@asahilina.net>
+Subject: Re: [PATCH v2 11/12] rust: init: add `{pin_}chain` functions to `{Pin}Init<T, E>`
+Message-ID: <e02b8645-4284-7573-966a-6b6654d4a772@proton.me>
+In-Reply-To: <ebdf2635-6003-fc62-310f-5b9071473415@gmail.com>
+References: <20230719141918.543938-1-benno.lossin@proton.me> <20230719141918.543938-12-benno.lossin@proton.me> <0b818707-4762-c12d-8624-7d3c4f6841da@gmail.com> <5f22b25d-132d-7cbc-8bca-8333516c1663@proton.me> <ebdf2635-6003-fc62-310f-5b9071473415@gmail.com>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-References: <20230724145204.534703-1-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20230724145204.534703-1-roberto.sassu@huaweicloud.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 24 Jul 2023 17:54:06 -0400
-Message-ID: <CAHC9VhQcVSX+kZ3PMJGJ3i-qxv9g3iP_Y4At5VCV8qSoJYj8Cg@mail.gmail.com>
-Subject: Re: [PATCH] security: Fix ret values doc for security_inode_init_security()
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     jmorris@namei.org, serge@hallyn.com,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:52=E2=80=AFAM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Commit 6bcdfd2cac55 ("security: Allow all LSMs to provide xattrs for
-> inode_init_security hook") unified the !initxattrs and initxattrs cases. =
-By
-> doing that, security_inode_init_security() cannot return -EOPNOTSUPP
-> anymore, as it is always replaced with zero at the end of the function.
->
-> Also, mentioning -ENOMEM as the only possible error is not correct. For
-> example, evm_inode_init_security() could return -ENOKEY.
->
-> Fix these issues in the documentation of security_inode_init_security().
->
-> Fixes: 6bcdfd2cac55 ("security: Allow all LSMs to provide xattrs for inod=
-e_init_security hook")
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  security/security.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/security/security.c b/security/security.c
-> index cfdd0cbbcb9..5aa9cb91f0f 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -1604,8 +1604,8 @@ EXPORT_SYMBOL(security_dentry_create_files_as);
->   * a security attribute on this particular inode, then it should return
->   * -EOPNOTSUPP to skip this processing.
->   *
-> - * Return: Returns 0 on success, -EOPNOTSUPP if no security attribute is
-> - * needed, or -ENOMEM on memory allocation failure.
-> + * Return: Returns 0 on success or on -EOPNOTSUPP error, a negative valu=
-e other
-> + *         than -EOPNOTSUPP otherwise.
+On 7/24/23 18:07, Martin Rodriguez Reboredo wrote:
+> On 7/24/23 11:08, Benno Lossin wrote:
+>> This is a bit confusing to me, because dropping the value on returning `=
+Err`
+>> is a safety requirement of `PinInit`. Could you elaborate why this is
+>> surprising? I can of course add it to the documentation, but I do not se=
+e
+>> how it could be implemented differently. Since if you do not drop the va=
+lue
+>> here, nobody would know that it is still initialized.
+>=20
+> I knew about the requirement of dropping on `Err`, but what has caught my
+> attention is that `{pin_}chain` might not abide with it per the doc
+> comment as it says that `self` is initialized before calling `f`...
+>=20
+>       /// First initializes the value using `self` then calls the functio=
+n
+>       /// `f` with the initialized value.
+>=20
+> But one can not know what would happen when `f` fails, specially if
+> such failure can be ignored or it's only temporarily.
+>=20
+> So then, the best course IMO is to mention that in some way the value is
+> still being initialized, kinda setting it up, and that it will be dropped
+> when an error is returned. WDYT?
 
-How about "Returns 0 if the LSM successfully initialized all of the
-inode security attributes that are required, negative values
-otherwise."?  The caller doesn't need to worry about the individual
-LSMs returning -EOPNOTSUPP in the case of no security attributes, and
-if they really care, they are likely reading the description above (or
-the code) which explains it in much better detail.
+I see, then I will just expand the documentation.
 
-Thoughts?
+--=20
+Cheers,
+Benno
 
---
-paul-moore.com
+
