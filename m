@@ -2,201 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6547E75EC09
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C1A75EC08
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbjGXGyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 02:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
+        id S230080AbjGXGyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 02:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjGXGyE (ORCPT
+        with ESMTP id S230141AbjGXGxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 02:54:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87DC3E55
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 23:53:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690181583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2pKG/QpR2RzRLFZUHbEZEOsoTAlRHGNWkIflkbnf814=;
-        b=FBDoHLF90gR6yzb5LXKlLXj8JE/FjdLWSpHffYJDkw5PZYFhVvEU9qf6Oyq1IWQnVg599t
-        LbN1zyRxp2ZY/aDkJAr5jwMU20VCe0nnDZZsYwzJ1a9LKQI5mafWBT0sVPDThMd8BzY+np
-        OihEAwzfVrpsweAscNrCmjmEPcccXyQ=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-632-cdgTaQJcMYeWX2M-5C6zDg-1; Mon, 24 Jul 2023 02:53:02 -0400
-X-MC-Unique: cdgTaQJcMYeWX2M-5C6zDg-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b6f97c9d54so34091061fa.3
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 23:53:01 -0700 (PDT)
+        Mon, 24 Jul 2023 02:53:54 -0400
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E3FE70;
+        Sun, 23 Jul 2023 23:53:38 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-4fba8f2197bso5904778e87.3;
+        Sun, 23 Jul 2023 23:53:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690181580; x=1690786380;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2pKG/QpR2RzRLFZUHbEZEOsoTAlRHGNWkIflkbnf814=;
-        b=lYssCbgWNVP1MZVcQ8197elmx2y9Gh+HutXy/A9VYoghblNcm+/UnsG01AQV5QylY0
-         svLq+cCndm6lsunx/zkSFi9tNjw5KQ6Y2/LWeBIkczl1Av2HIWgU9bTDaDsjJTaFaNvl
-         lWAhyuUbSEMuVNBO+bfP7D+xifyWtbgglNz69RIkK2dgcy1d1UNNJZ3r4S1JVb95cxir
-         a/ZalIU+32gnyYwx7AA57j0/UNwbuQfnQgSdW1+ggcBBdT8PwE9AjC/0WN/BEz+rID4q
-         hAEzb2ucvvirhmi7iVnGWqy5FUfNJbPqisLGLtx3RA2NEFErMeTHa0io6AwrKwGC2K6D
-         9i7g==
-X-Gm-Message-State: ABy/qLYfornGcecb/v5j1WoIveQ+wkpYgbxhx/cHf+hTqAd6B+f72HO5
-        RBvEdpC9p+ygOmE/8S6OL/x70HhHL6qFGaBGfXqOEzXOMrDJ5g6LAZL4xKr6j1GhUe6kZM/S9+g
-        40KW/6gheyCVrrLmCmtWNtiPYbZ9bP83zs3J6xFvs
-X-Received: by 2002:a05:651c:205:b0:2b5:9f54:e290 with SMTP id y5-20020a05651c020500b002b59f54e290mr4905530ljn.0.1690181580678;
-        Sun, 23 Jul 2023 23:53:00 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGAmLS3rinVGsLd7AiJM7P6pJi3Om6DIylJcrxKdBPPEYm9eGwGfcqzWBBrKCtsdHC9O5nMYXmIxWSEsqiejcM=
-X-Received: by 2002:a05:651c:205:b0:2b5:9f54:e290 with SMTP id
- y5-20020a05651c020500b002b59f54e290mr4905511ljn.0.1690181580374; Sun, 23 Jul
- 2023 23:53:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690181616; x=1690786416;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z2MRbPLz8TFpHcgcbByErm3/k9uRtAlDJrHvhV7eK88=;
+        b=hoI2EvT8VK9u5bn+VRh1413hW+3XU0i53lEyjQNgrOeQNi91zqul8/lp48ZCM+UTFn
+         7+ue9qvyweY0Od8uC2/eh78ZUaqnI8QpX4tbmcHlrOZk176TfzAR0nnDXMRRzqB+U+wN
+         4MvyUY9clN3lsh0E9sk9T16F6uctRWs9YBfMQxwEry+LtWHvpGU/3xfdxheJQzALhUpM
+         cxSy6Vj5LGKWaeBlft1LznhsMeqBcvi6bjtwMdcDSTw/HX1VmRdBegOIu0pD+TsYwZFw
+         yNJ+Oq80x+2qW7qnXO0HIwtxKQ8KsakdMFTlJhsofe6xRs0xrYsiEu+VVtqAgKcTu8+2
+         QJ7w==
+X-Gm-Message-State: ABy/qLayeKAEVH5+hWmvM87SSS8SYkFQnpw1eadD+imOLaGoTY2Xazb0
+        4En9HxQxLBZv8pHk9PEwD8HwzIAeWF4=
+X-Google-Smtp-Source: APBJJlHyUL8SddevDRp86zp9skRrtCY7ZxytlhvfUbcIGbAhM4p3M8xaCWlyhsPCCkHzHbWT0iLlng==
+X-Received: by 2002:ac2:58db:0:b0:4f8:7513:8cac with SMTP id u27-20020ac258db000000b004f875138cacmr4008530lfo.48.1690181616114;
+        Sun, 23 Jul 2023 23:53:36 -0700 (PDT)
+Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id m14-20020a7bcb8e000000b003fbc9371193sm9467366wmi.13.2023.07.23.23.53.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Jul 2023 23:53:35 -0700 (PDT)
+Message-ID: <1e4fb878-a7a5-f8cf-a4c7-cc221b02f3c2@kernel.org>
+Date:   Mon, 24 Jul 2023 08:53:34 +0200
 MIME-Version: 1.0
-References: <20230720083839.481487-1-jasowang@redhat.com> <20230720083839.481487-3-jasowang@redhat.com>
- <e4eb0162-d303-b17c-a71d-ca3929380b31@amd.com> <20230720170001-mutt-send-email-mst@kernel.org>
- <263a5ad7-1189-3be3-70de-c38a685bebe0@redhat.com> <20230721104445-mutt-send-email-mst@kernel.org>
- <6278a4aa-8901-b0e3-342f-5753a4bf32af@redhat.com> <20230721110925-mutt-send-email-mst@kernel.org>
- <e3490755-35ac-89b4-b0fa-b63720a9a5c9@redhat.com> <20230723053441-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20230723053441-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 24 Jul 2023 14:52:49 +0800
-Message-ID: <CACGkMEuPcOyjgHkKXrcnofdb5XhYYTrGQeuR3j6Oypr0KZxLMg@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 2/2] virtio-net: add cond_resched() to the
- command waiting loop
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Maxime Coquelin <maxime.coquelin@redhat.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        xuanzhuo@linux.alibaba.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, davem@davemloft.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/2] UML: use obj-y to descend into arch/um/*/
+Content-Language: en-US
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-um@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+References: <20230721171857.3612639-1-masahiroy@kernel.org>
+ <20230721171857.3612639-2-masahiroy@kernel.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20230721171857.3612639-2-masahiroy@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 2:46=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
- wrote:
->
-> On Fri, Jul 21, 2023 at 10:18:03PM +0200, Maxime Coquelin wrote:
-> >
-> >
-> > On 7/21/23 17:10, Michael S. Tsirkin wrote:
-> > > On Fri, Jul 21, 2023 at 04:58:04PM +0200, Maxime Coquelin wrote:
-> > > >
-> > > >
-> > > > On 7/21/23 16:45, Michael S. Tsirkin wrote:
-> > > > > On Fri, Jul 21, 2023 at 04:37:00PM +0200, Maxime Coquelin wrote:
-> > > > > >
-> > > > > >
-> > > > > > On 7/20/23 23:02, Michael S. Tsirkin wrote:
-> > > > > > > On Thu, Jul 20, 2023 at 01:26:20PM -0700, Shannon Nelson wrot=
-e:
-> > > > > > > > On 7/20/23 1:38 AM, Jason Wang wrote:
-> > > > > > > > >
-> > > > > > > > > Adding cond_resched() to the command waiting loop for a b=
-etter
-> > > > > > > > > co-operation with the scheduler. This allows to give CPU =
-a breath to
-> > > > > > > > > run other task(workqueue) instead of busy looping when pr=
-eemption is
-> > > > > > > > > not allowed on a device whose CVQ might be slow.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Jason Wang <jasowang@redhat.com>
-> > > > > > > >
-> > > > > > > > This still leaves hung processes, but at least it doesn't p=
-in the CPU any
-> > > > > > > > more.  Thanks.
-> > > > > > > > Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
-> > > > > > > >
-> > > > > > >
-> > > > > > > I'd like to see a full solution
-> > > > > > > 1- block until interrupt
-> > > > > >
-> > > > > > Would it make sense to also have a timeout?
-> > > > > > And when timeout expires, set FAILED bit in device status?
-> > > > >
-> > > > > virtio spec does not set any limits on the timing of vq
-> > > > > processing.
-> > > >
-> > > > Indeed, but I thought the driver could decide it is too long for it=
-.
-> > > >
-> > > > The issue is we keep waiting with rtnl locked, it can quickly make =
-the
-> > > > system unusable.
-> > >
-> > > if this is a problem we should find a way not to keep rtnl
-> > > locked indefinitely.
-> >
-> > From the tests I have done, I think it is. With OVS, a reconfiguration =
-is
-> > performed when the VDUSE device is added, and when a MLX5 device is
-> > in the same bridge, it ends up doing an ioctl() that tries to take the
-> > rtnl lock. In this configuration, it is not possible to kill OVS becaus=
-e
-> > it is stuck trying to acquire rtnl lock for mlx5 that is held by virtio=
--
-> > net.
->
-> So for sure, we can queue up the work and process it later.
-> The somewhat tricky part is limiting the memory consumption.
+On 21. 07. 23, 19:18, Masahiro Yamada wrote:
+> The single build rule does not work with the core-y syntax. [1]
+> 
+> Use the standard obj-y syntax.
+> 
+> [1]: https://lore.kernel.org/linux-kbuild/d57ba55f-20a3-b836-783d-b49c8a161b6e@kernel.org/T/#m7bc402e1e038f00ebcf2e92ed7fcb8a52fc1ea44
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-And it needs to sync with rtnl somehow, e.g device unregistering which
-seems not easy.
+Tested-by: Jiri Slaby <jirislaby@kernel.org>
 
-Thanks
-
->
->
-> > >
-> > > > > > > 2- still handle surprise removal correctly by waking in that =
-case
-> > > > > > >
-> > > > > > >
-> > > > > > >
-> > > > > > > > > ---
-> > > > > > > > >      drivers/net/virtio_net.c | 4 +++-
-> > > > > > > > >      1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > > > > > >
-> > > > > > > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virti=
-o_net.c
-> > > > > > > > > index 9f3b1d6ac33d..e7533f29b219 100644
-> > > > > > > > > --- a/drivers/net/virtio_net.c
-> > > > > > > > > +++ b/drivers/net/virtio_net.c
-> > > > > > > > > @@ -2314,8 +2314,10 @@ static bool virtnet_send_command(s=
-truct virtnet_info *vi, u8 class, u8 cmd,
-> > > > > > > > >              * into the hypervisor, so the request should=
- be handled immediately.
-> > > > > > > > >              */
-> > > > > > > > >             while (!virtqueue_get_buf(vi->cvq, &tmp) &&
-> > > > > > > > > -              !virtqueue_is_broken(vi->cvq))
-> > > > > > > > > +              !virtqueue_is_broken(vi->cvq)) {
-> > > > > > > > > +               cond_resched();
-> > > > > > > > >                     cpu_relax();
-> > > > > > > > > +       }
-> > > > > > > > >
-> > > > > > > > >             return vi->ctrl->status =3D=3D VIRTIO_NET_OK;
-> > > > > > > > >      }
-> > > > > > > > > --
-> > > > > > > > > 2.39.3
-> > > > > > > > >
-> > > > > > > > > _______________________________________________
-> > > > > > > > > Virtualization mailing list
-> > > > > > > > > Virtualization@lists.linux-foundation.org
-> > > > > > > > > https://lists.linuxfoundation.org/mailman/listinfo/virtua=
-lization
-> > > > > > >
-> > > > >
-> > >
->
+thanks,
+-- 
+js
+suse labs
 
