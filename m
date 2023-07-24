@@ -2,191 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D49A75F9F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7460675F9F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbjGXOdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
+        id S230301AbjGXOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbjGXOda (ORCPT
+        with ESMTP id S229946AbjGXOe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:33:30 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4AA12C
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:33:24 -0700 (PDT)
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230724143322epoutp01820d34f05597e30242a7a312020fd561~01FCFAptb1174511745epoutp01P
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:33:22 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230724143322epoutp01820d34f05597e30242a7a312020fd561~01FCFAptb1174511745epoutp01P
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1690209202;
-        bh=2lbXG54zL1G8BlZYG/zy39SDXTgugu4KVifoDcPDB0s=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=EgsT2B3zHiOUKOmkwRyYN7pBLC2tlPfezi/2jz9Vvm98a4o0kXFVw8qI0w4EIV3kf
-         evtLGLNPRUDACtB2lk+R722GCMRwP2uNzMDlkmtoXzZ8BoGKUHacYHbgZGaINvF/A0
-         ymLvsE6TLBJVz/O+QrbHGAUYOmSzuDAf3kIqQkx8=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20230724143321epcas5p2f0468b310ac42bddc2f0425049a18eff~01FBmEqUA2906029060epcas5p2P;
-        Mon, 24 Jul 2023 14:33:21 +0000 (GMT)
-Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.181]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4R8jM34c2vz4x9Q1; Mon, 24 Jul
-        2023 14:33:19 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        43.A9.57354.FAB8EB46; Mon, 24 Jul 2023 23:33:19 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20230724143319epcas5p45943b6438993193a457c7e3750d5407a~01E__51sB0398903989epcas5p49;
-        Mon, 24 Jul 2023 14:33:19 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230724143319epsmtrp1c8e00b315bc428a088a576ba71a3fd34~01E_95vVN3018030180epsmtrp1M;
-        Mon, 24 Jul 2023 14:33:19 +0000 (GMT)
-X-AuditID: b6c32a44-269fb7000001e00a-7b-64be8baf6f8f
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        04.D2.30535.EAB8EB46; Mon, 24 Jul 2023 23:33:18 +0900 (KST)
-Received: from alimakhtar04 (unknown [107.122.12.5]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20230724143315epsmtip10ab7ae65819b6fa5ffaabf4fd2de38b7~01E7a3F8l2217022170epsmtip1R;
-        Mon, 24 Jul 2023 14:33:15 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Krzysztof Kozlowski'" <krzysztof.kozlowski+dt@linaro.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        "'Andy Gross'" <agross@kernel.org>,
-        "'Bjorn Andersson'" <andersson@kernel.org>,
-        "'Konrad Dybcio'" <konrad.dybcio@linaro.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        "'Jonathan Corbet'" <corbet@lwn.net>,
-        "'Arnd Bergmann'" <arnd@arndb.de>,
-        "'Olof Johansson'" <olof@lixom.net>, <soc@kernel.org>,
-        <workflows@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <arm@kernel.org>
-In-Reply-To: <20230723131924.78190-3-krzysztof.kozlowski@linaro.org>
-Subject: RE: [PATCH v3 3/3] MAINTAINER: samsung: document dtbs_check
- requirement for Samsung
-Date:   Mon, 24 Jul 2023 20:03:13 +0530
-Message-ID: <18dd01d9be3b$ca143490$5e3c9db0$@samsung.com>
+        Mon, 24 Jul 2023 10:34:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDECE6
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:34:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690209250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sw5JYA3+zGjsKL/Hf3UxVttJt75aXV0WOzCX0uDZMJk=;
+        b=DpJ9A4y7Rdfycl/jVG1dGD/GQQ/31rACRFNd7gLxuzZ9X+Uw7jOIWYTcubiUSJbzXgU9Oh
+        lQKKMBLqPZU8BpeOUHucmL+CbaRoU59MzX7NCWIT01xVyQ32v6XGtgepv0s+cXXs4svJfZ
+        2JMzvoYCEq+uyNmoP18AlMLlUmMwF0o=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-450-2242VwcsMp6SRYZI29FIGA-1; Mon, 24 Jul 2023 10:34:07 -0400
+X-MC-Unique: 2242VwcsMp6SRYZI29FIGA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 15B5C8F77CC;
+        Mon, 24 Jul 2023 14:34:07 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 305672166B25;
+        Mon, 24 Jul 2023 14:33:46 +0000 (UTC)
+Date:   Mon, 24 Jul 2023 22:33:43 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v8 1/4] fs/proc/kcore: avoid bounce buffer for ktext data
+Message-ID: <ZL6Lx6QbLubsj3cg@MiWiFi-R3L-srv>
+References: <cover.1679566220.git.lstoakes@gmail.com>
+ <fd39b0bfa7edc76d360def7d034baaee71d90158.1679566220.git.lstoakes@gmail.com>
+ <ZHc2fm+9daF6cgCE@krava>
+ <ZLqMtcPXAA8g/4JI@MiWiFi-R3L-srv>
+ <86fd0ccb-f460-651f-8048-1026d905a2d6@redhat.com>
+ <ZL4xif/LX6ZhRqtf@MiWiFi-R3L-srv>
+ <ZL4z6LVzrbMvXwyl@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-us
-Thread-Index: AQJVkvW7fnRp8t18XMiZ0n2xtNvXyAL8zzyAAox4cNyupQckgA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA01TbUxbVRjOaW9vC1p3V6ocuujKzYjSBGg3qLcG1CjRjs3YBD+iznV37Q0l
-        9Mu2wNQfIggrVIawgEpg3QYZpC7WtYxuY2UIZa6QlYxvCRjKhxtDPgKbzgHGtndT/j3v+z7v
-        ed7nPedwmLxJVMDJ1Vsok57U4mg00t6TmJjktHWqxY6VeCIwu4EQ7dZ04vq9NpTYqrnOJs57
-        Awxirus4IOy+AIuwnvQgxIk7QSbhXbzIJlyzoyyi+tpNNnGmrBkhhq40oMR3A50Mom9sHSVK
-        vT42MTu2iRL3L28xXo2RbzysAXKXoxyVT45eReXu5i/kwzeKWfKmEydZ8nXXcwr2h3npGopU
-        UyYhpVcZ1Ln6nAz8QLbydWWaVCxJksiIF3GhntRRGXjmQUXSG7nakBVcWEBq80MpBWk24ykv
-        p5sM+RZKqDGYLRk4ZVRrjanGZDOpM+frc5L1lOUliVi8Ny1EPJKnqfHwjX07jv3QdAopAg5u
-        BeBwIJYKK7YSKkA0h4d1ALji2AB0sAZgoPk3hA7+BNDnr0IrQFSko8f/kE0XvABu3H3AooMF
-        AIuddlaYhWJJ8FJTGRou8LFbLDjtsqFhwSgsE676lWFODHYYlteVssMYwRLgZXtJBHMxGfxj
-        7VeExjuh//u5CGZiu6FnqYFJTyGEf8+fY9H5WLjQ64v08rHX4IytP6ILsVUOnJ/peDR2Juyb
-        rmPTOAbe/aXtERbAhaoyNr0MOTy7KaDTGrjU4gQ0fgV2DTcgYQoTS4TOKym07FOwcmOOQXdy
-        obWMR7MTYMnyCELjXbDaZmM9Pnyqzkhv6haAPdZx9BsgrN9msn6byfptxur/Fz4NEAeIo4xm
-        XQ6lSjNK9FThf7etMuhcIPLMRZmXwLj9n+RuwOCAbgA5TJzPlRzqVPO4avLTzyiTQWnK11Lm
-        bpAW2nw1U/C0yhD6J3qLUpIqE6dKpdJU2T6pBI/lLpY2qnlYDmmh8ijKSJke9zE4UYIiBmtu
-        eb57qngn7/TqYNdZbWFRp/uZSfKOWzD0wW3v/H77PuMn8Rewod+PjwU28efXd/F8iQ8c355b
-        K5cWrIw6D2S3Z54PvulNafFNF+g+T74/PjAgri3E354RZfUoLryjOvXk0k9fZ/cGRc2VfHJF
-        NdVWM+Gq9Phyexm+ldyfrbulyPtBmeJosnS86Ks9ngTnjht1I+uBtxqDI/5haqKQW5X3kXtw
-        9r3l1kYwUnuvPkZjiIstn5zpT6t94XaVszfbt/fo4LWJm3wGlXH4YnyZSz4RXZVSd5Uhiut4
-        4qCypfXjEuzQj19W98dmdbVv/lW8p9/tYe8/cmzJzn/32axF45lWHDFrSImIaTKT/wIULqAS
-        bwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJIsWRmVeSWpSXmKPExsWy7bCSnO667n0pBsvWWVmce/ybxWJbh43F
-        sS9b2Cz+TjrGbrFm7zkmiycH2hkt5h85x2rRMXk7i0Xfi4fMFntfb2W32PT4GqvFxP1n2S0W
-        ti1hsbi8aw6bxYzz+5gsTl3/zGbRuvcIu8Xj63/YLL7u/MvkIOzx+9ckRo9NqzrZPO5c28Pm
-        sXlJvceVE02sHov7JrN6fN4kF8AexWWTkpqTWZZapG+XwJUxabtIwSn+itWL57E0MK7i7WLk
-        5JAQMJE4fPIXexcjF4eQwG5GiTk7GlghEtIS1zdOYIewhSVW/nsOVfScUeLXz9lMIAk2AV2J
-        HYvb2EASIgIPWSU+3prHAlF1llHi2OzNQKM4ODgFXCQ+nIwHaRAWiJE4+HEBG4jNIqAqsXN+
-        M9gGXgFLiTefbrJA2IISJ2c+YQFpZRbQk2jbyAgSZhaQl9j+dg4zxEEKEj+fLmOFiItLvDx6
-        BGyMiICTxKPu02wTGIVmIZk0C2HSLCSTZiHpXsDIsopRMrWgODc9t9iwwCgvtVyvODG3uDQv
-        XS85P3cTIzh2tbR2MO5Z9UHvECMTB+MhRgkOZiURXsOYfSlCvCmJlVWpRfnxRaU5qcWHGKU5
-        WJTEeb+97k0REkhPLEnNTk0tSC2CyTJxcEo1MBn0lJ4+rlFz67LC0d2P/N9VZQmsMjsyyb64
-        c/3UbrEi96tzl+yJY9QpLv/a+Ha1frFR+5nEnUk+3D8+T9AN3O1UW397xZSgf8FNoiq/tCaW
-        J98xueTIEfm0S1drmXLf+lknLCQY1EpW3mINUnXnm3ok/bfegsikf1Fz357x1XM/5HdXJ7uO
-        Va7BeHbJNPM2CcdlYXnyG2Jbcr8Yh9g7GRRGGJ9YtyP1xLyjTOWettfOZfI833vn7ZzI0LLJ
-        ZrkfXxVGTaplmNDwPeQZz+PybbxXt7x1eVN9sOhT1teLXat3WB5QNJ+2bPeyBxVP/W83LtBc
-        7RDHeOKZRvCxr1oJLhOyLDJCG3sF5zIkKr94qsRSnJFoqMVcVJwIAMDkWeBMAwAA
-X-CMS-MailID: 20230724143319epcas5p45943b6438993193a457c7e3750d5407a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230723131941epcas5p17cc35fcb68cb748ed1dbd00bf609540f
-References: <20230723131924.78190-1-krzysztof.kozlowski@linaro.org>
-        <CGME20230723131941epcas5p17cc35fcb68cb748ed1dbd00bf609540f@epcas5p1.samsung.com>
-        <20230723131924.78190-3-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZL4z6LVzrbMvXwyl@krava>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07/24/23 at 10:18am, Jiri Olsa wrote:
+> On Mon, Jul 24, 2023 at 04:08:41PM +0800, Baoquan He wrote:
+> > On 07/24/23 at 08:23am, David Hildenbrand wrote:
+> > > Hi,
+> > > 
+> > > > 
+> > > > I met this too when I executed below command to trigger a kcore reading.
+> > > > I wanted to do a simple testing during system running and got this.
+> > > > 
+> > > >    makedumpfile --mem-usage /proc/kcore
+> > > > 
+> > > > Later I tried your above objdump testing, it corrupted system too.
+> > > > 
+> > > 
+> > > What do you mean with "corrupted system too" --  did it not only fail to
+> > > dump the system, but also actually harmed the system?
+> > 
+> > From my testing, reading kcore will cause system panic, then reboot. Not
+> > sure if Jiri saw the same phenomenon.
+> 
+> it did not crash for me, just the read error
+> could you get console output from that?
 
+I got a new arm64 machine, then executing "makedumpfile --mem-usage
+/proc/kcore" won't trigger panic, your objdump command can trigger
+panic. The call trace is pasted at below. It's the same as the panic and
+call trace I met on my last arm64 machine.
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Sent: Sunday, July 23, 2023 6:49 PM
-> To: Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
-> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
-> Alim Akhtar <alim.akhtar@samsung.com>; Andy Gross <agross@kernel.org>;
-> Bjorn Andersson <andersson@kernel.org>; Konrad Dybcio
-> <konrad.dybcio@linaro.org>; devicetree@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-samsung-soc@vger.kernel.org; linux-
-> kernel@vger.kernel.org; linux-arm-msm@vger.kernel.org; Jonathan Corbet
-> <corbet@lwn.net>; Arnd Bergmann <arnd@arndb.de>; Olof Johansson
-> <olof@lixom.net>; soc@kernel.org; workflows@vger.kernel.org; linux-
-> doc@vger.kernel.org; arm@kernel.org
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Subject: [PATCH v3 3/3] MAINTAINER: samsung: document dtbs_check
-> requirement for Samsung
-> 
-> Samsung ARM/ARM64 SoCs (including legacy S3C64xx and S5PV210) are also
-> expected not to bring any new dtbs_check warnings.  In fact this have been
-> already enforced and tested since few release.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
-
-> ---
-> 
-> Changes in v3:
-> 1. None
-> 
-> Changes in v2:
-> 1. None
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 9fe3870300f2..4b299e39111d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2646,6 +2646,7 @@ R:	Alim Akhtar <alim.akhtar@samsung.com>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  L:	linux-samsung-soc@vger.kernel.org
->  S:	Maintained
-> +P:	Documentation/process/maintainer-soc-clean-dts.rst
->  Q:	https://patchwork.kernel.org/project/linux-samsung-soc/list/
->  B:	mailto:linux-samsung-soc@vger.kernel.org
->  C:	irc://irc.libera.chat/linux-exynos
-> --
-> 2.34.1
-
+[13270.314323] Mem abort info:
+[13270.317162]   ESR = 0x0000000096000007
+[13270.320901]   EC = 0x25: DABT (current EL), IL = 32 bits
+[13270.326217]   SET = 0, FnV = 0
+[13270.329261]   EA = 0, S1PTW = 0
+[13270.332390]   FSC = 0x07: level 3 translation fault
+[13270.337270] Data abort info:
+[13270.340139]   ISV = 0, ISS = 0x00000007, ISS2 = 0x00000000
+[13270.345626]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+[13270.350666]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[13270.355981] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000400651d64000
+[13270.362672] [ffffdc9cf3ea0000] pgd=1000401ffffff003, p4d=1000401ffffff003, pud=1000401fffffe003, pmd=1000401fffffd003, pte=0000000000000000
+[13270.375367] Internal error: Oops: 0000000096000007 [#4] SMP
+[13270.380934] Modules linked in: mlx5_ib ib_uverbs ib_core rfkill vfat fat joydev cdc_ether usbnet mii mlx5_core acpi_ipmi mlxfw ipmi_ssif psample tls ipmi_devintf pci_hyperv_intf arm_spe_pmu ipmi_msghandler arm_cmn arm_dmc620_pmu arm_dsu_pmu cppc_cpufreq acpi_tad fuse zram xfs crct10dif_ce polyval_ce polyval_generic ghash_ce uas sbsa_gwdt nvme nvme_core ast usb_storage nvme_common i2c_algo_bit xgene_hwmon
+[13270.416751] CPU: 15 PID: 8803 Comm: objdump Tainted: G      D            6.5.0-rc3 #1
+[13270.424570] Hardware name: WIWYNN Mt.Jade Server System B81.030Z1.0007/Mt.Jade Motherboard, BIOS 2.10.20220531 (SCP: 2.10.20220531) 2022/05/31
+[13270.437337] pstate: 20400009 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[13270.444289] pc : __arch_copy_to_user+0x180/0x240
+[13270.448910] lr : _copy_to_iter+0x11c/0x5d0
+[13270.453002] sp : ffff8000b15a37c0
+[13270.456306] x29: ffff8000b15a37c0 x28: ffffdc9cf3ea0000 x27: ffffdc9cf6938158
+[13270.463431] x26: ffff8000b15a3ba8 x25: 0000000000000690 x24: ffff8000b15a3b80
+[13270.470556] x23: 00000000000038ac x22: ffffdc9cf3ea0000 x21: ffff8000b15a3b80
+[13270.477682] x20: ffffdc9cf64fdf00 x19: 0000000000000400 x18: 0000000000000000
+[13270.484806] x17: 0000000000000000 x16: 0000000000000000 x15: ffffdc9cf3ea0000
+[13270.491931] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
+[13270.499056] x11: 0001000000000000 x10: ffffdc9cf64fdf00 x9 : 0000000000000690
+[13270.506182] x8 : 000000007c000000 x7 : 0000fd007e000000 x6 : 000000000eee0b60
+[13270.513306] x5 : 000000000eee0f60 x4 : 0000000000000000 x3 : 0000000000000400
+[13270.520431] x2 : 0000000000000380 x1 : ffffdc9cf3ea0000 x0 : 000000000eee0b60
+[13270.527556] Call trace:
+[13270.529992]  __arch_copy_to_user+0x180/0x240
+[13270.534250]  read_kcore_iter+0x718/0x878
+[13270.538167]  proc_reg_read_iter+0x8c/0xe8
+[13270.542168]  vfs_read+0x214/0x2c0
+[13270.545478]  ksys_read+0x78/0x118
+[13270.548782]  __arm64_sys_read+0x24/0x38
+[13270.552608]  invoke_syscall+0x78/0x108
+[13270.556351]  el0_svc_common.constprop.0+0x4c/0xf8
+[13270.561044]  do_el0_svc+0x34/0x50
+[13270.564347]  el0_svc+0x34/0x108
+[13270.567482]  el0t_64_sync_handler+0x100/0x130
+[13270.571829]  el0t_64_sync+0x194/0x198
+[13270.575483] Code: d503201f d503201f d503201f d503201f (a8c12027) 
+[13270.581567] ---[ end trace 0000000000000000 ]---
 
