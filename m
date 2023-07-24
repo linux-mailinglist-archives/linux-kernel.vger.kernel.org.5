@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DCB75F599
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2B575F59E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbjGXMDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
+        id S229486AbjGXMDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjGXMDa (ORCPT
+        with ESMTP id S230143AbjGXMDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:03:30 -0400
+        Mon, 24 Jul 2023 08:03:38 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6BC1A1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:02:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618061BF
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:02:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690200166;
+        s=mimecast20190719; t=1690200169;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0cvYxFz9mjJySSTDejKAHRAi+MgA/colULiqidjHAEA=;
-        b=H16el6YC2XqGawI14ZK3EAIlivs/N38JQX3VotUJ1xS3hE2cFtiBVFkQQS3CrX+VB0BBnO
-        KRvtYmtkiBF7/iAar0oTveTduS5VCGqFs4yEPm6BUQesmojOOKKL7yiEccjMcjuFm+TVyQ
-        +Giv3o0VA6XrfuBEflx5Q7AuiujLm9w=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lSRQBULx+TvRi9w0R85wybLn1zR6qk9EVDsaRk1ameQ=;
+        b=dkUq9EQYpKRYePIy58gch6h4nocspdZWdVNGs5U4fjGiZzrPlQHH3LUcqoZLultvZhfo3y
+        fOpxyUqSrlGdh9A8fVx+gt969hnfKq5G1Q8sOUUTHZ2uWTejwLWDn/uIQxQXgo/cPyd2ad
+        c8d+j6SKF3Y2XbCWyZQwWUFLgNRCnfQ=
 Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-417-H6QFWb5UMv-cTsPAhWVuzg-1; Mon, 24 Jul 2023 08:02:42 -0400
-X-MC-Unique: H6QFWb5UMv-cTsPAhWVuzg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+ us-mta-665-LkaPnEg9PgulEKUeZ7-pKw-1; Mon, 24 Jul 2023 08:02:43 -0400
+X-MC-Unique: LkaPnEg9PgulEKUeZ7-pKw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 20BED1C172A5;
-        Mon, 24 Jul 2023 12:02:42 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1FA3A3827907;
+        Mon, 24 Jul 2023 12:02:43 +0000 (UTC)
 Received: from localhost (dhcp-10-40-5-80.brq.redhat.com [10.40.5.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C5325201EE6E;
-        Mon, 24 Jul 2023 12:02:41 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C64B6C2C856;
+        Mon, 24 Jul 2023 12:02:42 +0000 (UTC)
 From:   Oleksandr Natalenko <oleksandr@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-scsi@vger.kernel.org, Saurav Kashyap <skashyap@marvell.com>,
@@ -47,12 +48,14 @@ Cc:     linux-scsi@vger.kernel.org, Saurav Kashyap <skashyap@marvell.com>,
         Jozef Bacik <jobacik@redhat.com>,
         Laurence Oberman <loberman@redhat.com>,
         Rob Evers <revers@redhat.com>
-Subject: [RFC PATCH 0/3] scsi: qedf: sanitise uaccess
-Date:   Mon, 24 Jul 2023 14:02:38 +0200
-Message-ID: <20230724120241.40495-1-oleksandr@redhat.com>
+Subject: [RFC PATCH 1/3] scsi: qedf: do not touch __user pointer in qedf_dbg_stop_io_on_error_cmd_read() directly
+Date:   Mon, 24 Jul 2023 14:02:39 +0200
+Message-ID: <20230724120241.40495-2-oleksandr@redhat.com>
+In-Reply-To: <20230724120241.40495-1-oleksandr@redhat.com>
+References: <20230724120241.40495-1-oleksandr@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -64,43 +67,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-qedf driver, debugfs part of it specifically, touches __user pointers
-directly for printing out info to userspace via sprintf(), which may
-cause crash like this:
+The qedf_dbg_stop_io_on_error_cmd_read() function invokes sprintf()
+directly on a __user pointer, which may crash the kernel.
 
-BUG: unable to handle kernel paging request at 00007ffd1d6b43a0
-IP: [<ffffffffaa7a882a>] string.isra.7+0x6a/0xf0
-Oops: 0003 [#1] SMP
-Call Trace:
- [<ffffffffaa7a9f31>] vsnprintf+0x201/0x6a0
- [<ffffffffaa7aa556>] sprintf+0x56/0x80
- [<ffffffffc04227ed>] qedf_dbg_stop_io_on_error_cmd_read+0x6d/0x90 [qedf]
- [<ffffffffaa65bb2f>] vfs_read+0x9f/0x170
- [<ffffffffaa65cb82>] SyS_pread64+0x92/0xc0
+Avoid doing that by using a small on-stack buffer for sprintf()
+and then calling simple_read_from_buffer() which does a proper
+copy_to_user() call.
 
-Avoid this by preparing the info in a kernel buffer first, either
-allocated on stack for small printouts, or via vmalloc() for big ones,
-and then copying it to the userspace properly.
+Signed-off-by: Oleksandr Natalenko <oleksandr@redhat.com>
+---
+ drivers/scsi/qedf/qedf_debugfs.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-I'm not sure how big the vmalloc()'ed buffer should be, and also whether
-vmalloc()'ing it directly in the _read() function is a good idea, hence
-RFC prefix.
-
-The qedf_dbg_stop_io_on_error_cmd_read()-related patch is actually tested,
-the rest is compile-tested only.
-
-Oleksandr Natalenko (3):
-  scsi: qedf: do not touch __user pointer in
-    qedf_dbg_stop_io_on_error_cmd_read() directly
-  scsi: qedf: do not touch __user pointer in qedf_dbg_debug_cmd_read()
-    directly
-  scsi: qedf: do not touch __user pointer in qedf_dbg_fp_int_cmd_read()
-    directly
-
- drivers/scsi/qedf/qedf_dbg.h     |  2 ++
- drivers/scsi/qedf/qedf_debugfs.c | 35 +++++++++++++++++++-------------
- 2 files changed, 23 insertions(+), 14 deletions(-)
-
---
+diff --git a/drivers/scsi/qedf/qedf_debugfs.c b/drivers/scsi/qedf/qedf_debugfs.c
+index a3ed681c8ce3f..4d1b99569d490 100644
+--- a/drivers/scsi/qedf/qedf_debugfs.c
++++ b/drivers/scsi/qedf/qedf_debugfs.c
+@@ -185,18 +185,17 @@ qedf_dbg_stop_io_on_error_cmd_read(struct file *filp, char __user *buffer,
+ 				   size_t count, loff_t *ppos)
+ {
+ 	int cnt;
++	char cbuf[7];
+ 	struct qedf_dbg_ctx *qedf_dbg =
+ 				(struct qedf_dbg_ctx *)filp->private_data;
+ 	struct qedf_ctx *qedf = container_of(qedf_dbg,
+ 	    struct qedf_ctx, dbg_ctx);
+ 
+ 	QEDF_INFO(qedf_dbg, QEDF_LOG_DEBUGFS, "entered\n");
+-	cnt = sprintf(buffer, "%s\n",
++	cnt = sprintf(cbuf, "%s\n",
+ 	    qedf->stop_io_on_error ? "true" : "false");
+ 
+-	cnt = min_t(int, count, cnt - *ppos);
+-	*ppos += cnt;
+-	return cnt;
++	return simple_read_from_buffer(buffer, count, ppos, cbuf, cnt);
+ }
+ 
+ static ssize_t
+-- 
 2.41.0
 
