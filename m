@@ -2,176 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D74A75EED3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA5775EECB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbjGXJOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 05:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34860 "EHLO
+        id S232157AbjGXJNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 05:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjGXJOJ (ORCPT
+        with ESMTP id S229999AbjGXJNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 05:14:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B081D12A
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:13:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690190000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=//aPJH4zrPdTDxzMzJs7UJ4GFjBaI2aqgPX71P6a5dg=;
-        b=hXiDVIM2mC3M6DJsNh6TsEmcyuphhWW5Y30rCsHVrxAdwAA2WSAZNiGoCgRDi9g8hVRQMZ
-        walFasxW6u2nnMi5jmtvK/FCD5xDt+x/0HTBTtYdfiFv0KCZgaOyu3eGHarGETccSPkor+
-        jDG2F7fOrsKg6HOzd0Xt97+t4S4wV4c=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-369-_cHJUeYQOq2996_vFUj-BQ-1; Mon, 24 Jul 2023 05:13:13 -0400
-X-MC-Unique: _cHJUeYQOq2996_vFUj-BQ-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-26801e9bcdaso439039a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:13:13 -0700 (PDT)
+        Mon, 24 Jul 2023 05:13:34 -0400
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B40133
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:13:33 -0700 (PDT)
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3a1ec37ccbbso9520578b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:13:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690189992; x=1690794792;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690190013; x=1690794813;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=//aPJH4zrPdTDxzMzJs7UJ4GFjBaI2aqgPX71P6a5dg=;
-        b=R3esfAwQN5vFxRsmCwm2xtk5midy9KvLVakLpQuxFtGeay70L3xh2/5C5pfaa6aJxX
-         w1+xv3sG3x0EvcUrVYI7QoJwG71ksF73fXzkpup++SMbCjJaDL2XE6IUVKX4gaGFp/5w
-         M7Wo3m8Ahd8E7a2cdnm0e6LqVe4AY8HWNewoM3KYW1PiXn1f3/8N2ftlgRjySlR3+H21
-         YK0ai67fic/ff4XuR8MTbJalHVudrzVKJKfCof7AFKgjWDxI6laE7lcE4S188ZDghLy+
-         VBkv3Y0BDtqLZ7yg99lhD7SWCqUrWLurr+iFgbY1/a1Pjjc8xbJjg4Ca/jvzvi4OsXUN
-         iExQ==
-X-Gm-Message-State: ABy/qLau0enwSoehsLUUoEHNppmq6WyGZtWFrJVNBbAQiD7auoEcHwk+
-        0vxhCqiRvYTWBfN/0YXrCEyvzHNV5FpDK/Yi7QQBvBetr9WZWdhuDKvG/d+0wHmKenCCUc2VqA0
-        yfDNvjDx1VsytM6Rt7jZF3e1y
-X-Received: by 2002:a17:902:ce92:b0:1b8:1591:9f81 with SMTP id f18-20020a170902ce9200b001b815919f81mr12102519plg.4.1690189992429;
-        Mon, 24 Jul 2023 02:13:12 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFYYex+PeZplrxlN0jNWs984ysaSZQSKu+vtitozLwa1hyTQD6SfImYNcNMAys3P7/0AANuTw==
-X-Received: by 2002:a17:902:ce92:b0:1b8:1591:9f81 with SMTP id f18-20020a170902ce9200b001b815919f81mr12102507plg.4.1690189992175;
-        Mon, 24 Jul 2023 02:13:12 -0700 (PDT)
-Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id w7-20020a170902e88700b001b06c106844sm8389140plg.151.2023.07.24.02.13.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 02:13:11 -0700 (PDT)
-Message-ID: <bab509a1-5096-4ca0-e043-898d941e200a@redhat.com>
-Date:   Mon, 24 Jul 2023 17:13:06 +0800
+        bh=/68D1NVpjDgOAkUJuDYSp1QYtQNfm/oepylLJakZ8SU=;
+        b=ZhhByYlbYZPJZDbrBHzZvTYRbCdbq7XS+f331mvYjuuteL73JUlS9/Yr4bzsYoBdCh
+         Cv6Q8wW085BWKwt5HoVBZdiYBoke9ZRqxpZmvG9+tmM3mp00gRUFYKlORJrgWw679nnk
+         93wjTQzfAs3sq7T+cV9GlKiS4xnfgMLDvmL7oUD9/86zq10dM+luI4Nr6uHdTVhm2XrA
+         mlZFiLnGVZfZfS0DUe0nvxQiHojGYAFX/l6R1BvNPbAaI2VugEVms9mOZf8mKDqbBEPz
+         u0JOlHbZpeBh9w34EgGemn8/RYkuaTly1f5R0CPgo6vrew7MCdbqvnaOeZCo/+FylD3G
+         S3qw==
+X-Gm-Message-State: ABy/qLaJcF6ioRg3oCe5Fa9SAjfHrryTrOibCUrk1bbjqmhQIdGK+YQc
+        rxAQ7TIF/JI6N0ol3222REOJS9Eu8Od9iWraY2sKr046CLnO
+X-Google-Smtp-Source: APBJJlHhD8j3WMGPNMRwhpIQ5NfH51cbt05RHMwLUgVKLR4yT+Dh2yKRweGEy5zHCaM+S65ljUXdhQZ5Tp4e5akajof/P+lWkeSd
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v7 02/12] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20230722022251.3446223-1-rananta@google.com>
- <20230722022251.3446223-3-rananta@google.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <20230722022251.3446223-3-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6808:ecc:b0:3a4:87eb:da2c with SMTP id
+ q12-20020a0568080ecc00b003a487ebda2cmr17689590oiv.0.1690190013150; Mon, 24
+ Jul 2023 02:13:33 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 02:13:33 -0700
+In-Reply-To: <000000000000ee69e80600ec7cc7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000563cff06013807a0@google.com>
+Subject: Re: [syzbot] [bpf?] WARNING: ODEBUG bug in tcx_uninstall
+From:   syzbot <syzbot+14736e249bce46091c18@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, hdanton@sina.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
+        song@kernel.org, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has bisected this issue to:
 
+commit e420bed025071a623d2720a92bc2245c84757ecb
+Author: Daniel Borkmann <daniel@iogearbox.net>
+Date:   Wed Jul 19 14:08:52 2023 +0000
 
-On 7/22/23 10:22, Raghavendra Rao Ananta wrote:
-> Stop depending on CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL and opt to
-> standardize on kvm_arch_flush_remote_tlbs() since it avoids
-> duplicating the generic TLB stats across architectures that implement
-> their own remote TLB flush.
-> 
-> This adds an extra function call to the ARM64 kvm_flush_remote_tlbs()
-> path, but that is a small cost in comparison to flushing remote TLBs.
-> 
-> In addition, instead of just incrementing remote_tlb_flush_requests
-> stat, the generic interface would also increment the
-> remote_tlb_flush stat.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
-> ---
->   arch/arm64/include/asm/kvm_host.h | 3 +++
->   arch/arm64/kvm/Kconfig            | 1 -
->   arch/arm64/kvm/mmu.c              | 6 +++---
->   3 files changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 8b6096753740..7281222f24ef 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -1111,6 +1111,9 @@ int __init kvm_set_ipa_limit(void);
->   #define __KVM_HAVE_ARCH_VM_ALLOC
->   struct kvm *kvm_arch_alloc_vm(void);
->   
-> +#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
-> +int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
-> +
->   static inline bool kvm_vm_is_protected(struct kvm *kvm)
->   {
->   	return false;
-> diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-> index f531da6b362e..6b730fcfee37 100644
-> --- a/arch/arm64/kvm/Kconfig
-> +++ b/arch/arm64/kvm/Kconfig
-> @@ -25,7 +25,6 @@ menuconfig KVM
->   	select MMU_NOTIFIER
->   	select PREEMPT_NOTIFIERS
->   	select HAVE_KVM_CPU_RELAX_INTERCEPT
-> -	select HAVE_KVM_ARCH_TLB_FLUSH_ALL
->   	select KVM_MMIO
->   	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
->   	select KVM_XFER_TO_GUEST_WORK
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 6db9ef288ec3..0ac721fa27f1 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -161,15 +161,15 @@ static bool memslot_is_logging(struct kvm_memory_slot *memslot)
->   }
->   
->   /**
-> - * kvm_flush_remote_tlbs() - flush all VM TLB entries for v7/8
-> + * kvm_arch_flush_remote_tlbs() - flush all VM TLB entries for v7/8
->    * @kvm:	pointer to kvm structure.
->    *
->    * Interface to HYP function to flush all VM TLB entries
->    */
-> -void kvm_flush_remote_tlbs(struct kvm *kvm)
-> +int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
->   {
-> -	++kvm->stat.generic.remote_tlb_flush_requests;
->   	kvm_call_hyp(__kvm_tlb_flush_vmid, &kvm->arch.mmu);
-> +	return 0;
->   }
->   
->   static bool kvm_is_device_pfn(unsigned long pfn)
+    bpf: Add fd-based tcx multi-prog infra with link support
 
--- 
-Shaoqin
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14c60c6aa80000
+start commit:   03b123debcbc tcp: tcp_enter_quickack_mode() should be static
+git tree:       net-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16c60c6aa80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12c60c6aa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=32e3dcc11fd0d297
+dashboard link: https://syzkaller.appspot.com/bug?extid=14736e249bce46091c18
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133f36c6a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a8e73aa80000
 
+Reported-by: syzbot+14736e249bce46091c18@syzkaller.appspotmail.com
+Fixes: e420bed02507 ("bpf: Add fd-based tcx multi-prog infra with link support")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
