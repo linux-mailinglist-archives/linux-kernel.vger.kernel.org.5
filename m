@@ -2,236 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 185D9760260
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BE076024B
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbjGXWcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 18:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
+        id S230126AbjGXWb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 18:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbjGXWcB (ORCPT
+        with ESMTP id S229485AbjGXWbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 18:32:01 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFDD19A0;
-        Mon, 24 Jul 2023 15:31:41 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36OLnIoq014121;
-        Mon, 24 Jul 2023 22:31:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=7zCDwDuNPEk6XuxGoTgy162uXdxAuBzpKTYh0NZ7KkE=;
- b=Wj5J1Nzxf62puMxfMeKOecG44yRQ1iq9552b1upl7TSY3rw1LXuq8MHmecYkMQZPTbfQ
- pTcdrfTsShMVqPOl21aX+/Z9/zjcOtPGVf92RnbjxXOOPuH3QhMm+aB54dut8lXbfn1s
- N5lLOELHWkkitrepblp5J2kxCm4Xz9ZieecqfhHwmTP4sPtgW3MmeqvuWIT3KLy+EIB0
- QfLjxef2fB8lBWSIDo/cR2x0PRSHJ26mv4aWZbLKrD3gA2tolXREX4ocHwfbmkheWODG
- HfMiMI8RbvveiB8MsiFdxcb8mK6G4OiJYabAvTh/CoDP7UdXfbXpQ4Sa1M7wLtrp/D4p iA== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1pfh9nqb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 22:31:31 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36OMVVYL000969
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 22:31:31 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 24 Jul 2023 15:31:30 -0700
-From:   Elliot Berman <quic_eberman@quicinc.com>
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>
-CC:     Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
-        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        Melody Olvera <quic_molvera@quicinc.com>,
-        "Prasad Sodagudi" <quic_psodagud@quicinc.com>
-Subject: [RFC PATCH 4/4] power: reset: Implement a PSCI SYSTEM_RESET2 reboot-mode driver
-Date:   Mon, 24 Jul 2023 15:30:54 -0700
-Message-ID: <20230724223057.1208122-5-quic_eberman@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230724223057.1208122-1-quic_eberman@quicinc.com>
-References: <20230724223057.1208122-1-quic_eberman@quicinc.com>
+        Mon, 24 Jul 2023 18:31:25 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7114110D;
+        Mon, 24 Jul 2023 15:31:23 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b935316214so61528441fa.1;
+        Mon, 24 Jul 2023 15:31:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690237882; x=1690842682;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hyLFD9WDuFUoUwZ/OsjIvbcM065C9QMvLj1zUBG6gSs=;
+        b=D8lWwBjBGAMzsHFRYBQ6rpF6OZp/H8askSMoajc/eyDhinGEKNAMmn6S35DJLfbVk3
+         O/gNf+3UzyRYxYLe/Oh5VbDFAtc3VRS2P2rAGkPdc5sn1hBXPWwrnUO1Ec+DGHw3N7Mh
+         9cTdFGxggt7lvsZl7vgRVH0qEuanzThS13cGa1OnquvyUmUHie3Sw2Xgvo+5DII9UVgw
+         mvexL5Ikm5J40zETtVUzkh0mmEteTAEgStzt28I4mfKrzcDuiXa6olS5vymqsL6FESSp
+         lVk3gde9A+VUniMEzRYfk58xEmxZ5sNxiTQ31VZGI/TGNLRMURXw81nTtw79qutQvnme
+         ynyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690237882; x=1690842682;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hyLFD9WDuFUoUwZ/OsjIvbcM065C9QMvLj1zUBG6gSs=;
+        b=FRkWgTSZmylNdTGOvtQnXmzitWp6Dzuw8oATXuJyzbwp+/w+F684yb/ggNa2+yOxJ+
+         /AuvnH1OK1U1ogQaIbtuNu777JVH3r4Cp5jsMsyPQrBym0fkXdAlj3rM7Tcz+iibF3PE
+         Gek983/m0k7F1lkH/L77gfbnrFhJ5pg4lpp1l4ANYrDUOSHrS6VE3sdAAd0o7v1lq212
+         wrMpihjT6lTzzlXZ8XqwiuazB/XCzHRgON2ljgt4Nv36HdgxscP5/aBtrqqj68xBguOh
+         0kA2wspMMBfhcRtYcZvrwoEJun/7pUfft4+EbU9baO4a1hIWfPUoiY/XeH1iTgvvEpz3
+         IDHQ==
+X-Gm-Message-State: ABy/qLZcSzyVzaAYfL3QNKiSgfdJfLsKjTUc3DKCP21fAEKCkDtMPw5y
+        gFsnr/2tqhm4HLTXD0yTDRGPw5Ux0QJr3d9J5yc=
+X-Google-Smtp-Source: APBJJlH3RgcI+9OcZhDB3VBSHeLKnLdw/X5RT0kz+ivy2QJy6uHCoki8/0N9tEvZhMi1gQdkhw/J1cjNP9fMwsLtO40=
+X-Received: by 2002:a2e:98c7:0:b0:2b6:d47f:2a4 with SMTP id
+ s7-20020a2e98c7000000b002b6d47f02a4mr245042ljj.13.1690237881392; Mon, 24 Jul
+ 2023 15:31:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: OamcRKc4R8jr9pYGFvttDRzCQiyKt5mV
-X-Proofpoint-GUID: OamcRKc4R8jr9pYGFvttDRzCQiyKt5mV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-24_18,2023-07-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- bulkscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0 impostorscore=0
- mlxscore=0 priorityscore=1501 phishscore=0 suspectscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307240198
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230724111206.3067352-1-howardchung@google.com>
+In-Reply-To: <20230724111206.3067352-1-howardchung@google.com>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Mon, 24 Jul 2023 15:31:08 -0700
+Message-ID: <CABBYNZ+UrWFNULhn8Nu79rvS-NZ4Rt4X4y=s+-DHEwjfKuX8Gg@mail.gmail.com>
+Subject: Re: [PATCH v1] Bluetooth: Add timeout in disconnect when power off
+To:     Howard Chung <howardchung@google.com>
+Cc:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        Archie Pusaka <apusaka@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PSCI implements a restart notifier for architectural defined resets.
-The SYSTEM_RESET2 allows vendor firmware to define additional reset
-types which could be mapped to the reboot reason.
+Hi Howard,
 
-Implement a driver to wire the reboot-mode framework to make vendor
-SYSTEM_RESET2 calls on reboot.
+On Mon, Jul 24, 2023 at 4:12=E2=80=AFAM Howard Chung <howardchung@google.co=
+m> wrote:
+>
+> For some controllers, it is known that when the HCI disconnect and HCI
+> Reset are too close to each other, the LMP disconnect command might not
+> been sent out yet and the command will be dropped by the controoler when
+> it is asked to reset itself. This could happen on powering off adapter.
+>
+> One possible issue is that if a connection exists, and then powering off
+> and on adapter within a short time, then our host stack assumes the
+> conntection was disconnected but this might not be true, so if we issue
+> a connection to the peer, it will fail with ACL Already Connected error.
 
-Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
----
- MAINTAINERS                             |  1 +
- drivers/firmware/psci/psci.c            |  9 +++++
- drivers/power/reset/Kconfig             |  9 +++++
- drivers/power/reset/Makefile            |  1 +
- drivers/power/reset/psci-vendor-reset.c | 49 +++++++++++++++++++++++++
- include/linux/psci.h                    |  2 +
- 6 files changed, 71 insertions(+)
- create mode 100644 drivers/power/reset/psci-vendor-reset.c
+That sounds more like a bug in the controller though, the spec is
+quite clear that it must reset the link-layer state:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2da4c5f1917b..214b14c1da63 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16984,6 +16984,7 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
- F:	Documentation/devicetree/bindings/power/reset/arm,psci-vendor-reset.yaml
- F:	drivers/firmware/psci/
-+F:	drivers/power/reset/psci-vendor-reset.c
- F:	include/linux/psci.h
- F:	include/uapi/linux/psci.h
- 
-diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-index d9629ff87861..6db73f9d2304 100644
---- a/drivers/firmware/psci/psci.c
-+++ b/drivers/firmware/psci/psci.c
-@@ -328,6 +328,15 @@ static struct notifier_block psci_sys_reset_nb = {
- 	.priority = 129,
- };
- 
-+void psci_vendor_sys_reset2(u32 reset_type, u32 cookie)
-+{
-+	if (psci_system_reset2_supported)
-+		invoke_psci_fn(PSCI_FN_NATIVE(1_1, SYSTEM_RESET2),
-+			reset_type | BIT_ULL(31),
-+			cookie, 0);
-+}
-+EXPORT_SYMBOL_GPL(psci_vendor_sys_reset2);
-+
- static void psci_sys_poweroff(void)
- {
- 	invoke_psci_fn(PSCI_0_2_FN_SYSTEM_OFF, 0, 0, 0);
-diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-index fff07b2bd77b..1474b9d51089 100644
---- a/drivers/power/reset/Kconfig
-+++ b/drivers/power/reset/Kconfig
-@@ -311,4 +311,13 @@ config POWER_MLXBF
- 	help
- 	  This driver supports reset or low power mode handling for Mellanox BlueField.
- 
-+config POWER_RESET_PSCI_VENDOR_RESET
-+	tristate "PSCI Vendor SYSTEM_RESET2 driver"
-+	depends on ARM64 || ARM || COMPILE_TEST
-+	select ARM_PSCI_FW
-+	select REBOOT_MODE
-+	help
-+	  Say y/m here to enable driver to use Vendor SYSTEM_RESET2 types on
-+	  chips which have firmware implementing custom SYSTEM_RESET2 types.
-+
- endif
-diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
-index d763e6735ee3..d09243966b74 100644
---- a/drivers/power/reset/Makefile
-+++ b/drivers/power/reset/Makefile
-@@ -37,3 +37,4 @@ obj-$(CONFIG_SYSCON_REBOOT_MODE) += syscon-reboot-mode.o
- obj-$(CONFIG_POWER_RESET_SC27XX) += sc27xx-poweroff.o
- obj-$(CONFIG_NVMEM_REBOOT_MODE) += nvmem-reboot-mode.o
- obj-$(CONFIG_POWER_MLXBF) += pwr-mlxbf.o
-+obj-$(CONFIG_POWER_RESET_PSCI_VENDOR_RESET) += psci-vendor-reset.o
-diff --git a/drivers/power/reset/psci-vendor-reset.c b/drivers/power/reset/psci-vendor-reset.c
-new file mode 100644
-index 000000000000..95d027225185
---- /dev/null
-+++ b/drivers/power/reset/psci-vendor-reset.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/**
-+ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/reboot-mode.h>
-+#include <linux/psci.h>
-+
-+static int psci_vendor_system_reset2(struct reboot_mode_driver *reboot, unsigned int magic)
-+{
-+	psci_vendor_sys_reset2(magic, 0);
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static int psci_vendor_reset_probe(struct platform_device *pdev)
-+{
-+	struct reboot_mode_driver *reboot;
-+
-+	reboot = devm_kzalloc(&pdev->dev, sizeof(*reboot), GFP_KERNEL);
-+	if (!reboot)
-+		return -ENOMEM;
-+
-+	reboot->write = psci_vendor_system_reset2;
-+
-+	return devm_reboot_mode_register(&pdev->dev, reboot);
-+}
-+
-+static const struct of_device_id psci_vendor_reset_id_table[] = {
-+	{ .compatible = "arm,psci-vendor-reset" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, psci_vendor_reset_id_table);
-+
-+static struct platform_driver psci_vendor_reset_driver = {
-+	.probe = psci_vendor_reset_probe,
-+	.driver = {
-+		.name = "psci-vendor-reset",
-+		.of_match_table = of_match_ptr(psci_vendor_reset_id_table),
-+	},
-+};
-+module_platform_driver(psci_vendor_reset_driver);
-+
-+MODULE_DESCRIPTION("PSCI Vendor SYSTEM_RESET2 Driver");
-+MODULE_LICENSE("GPL");
-diff --git a/include/linux/psci.h b/include/linux/psci.h
-index 4ca0060a3fc4..0c652c12e0a8 100644
---- a/include/linux/psci.h
-+++ b/include/linux/psci.h
-@@ -21,6 +21,8 @@ bool psci_power_state_is_valid(u32 state);
- int psci_set_osi_mode(bool enable);
- bool psci_has_osi_support(void);
- 
-+void psci_vendor_sys_reset2(u32 reset_type, u32 cookie);
-+
- struct psci_operations {
- 	u32 (*get_version)(void);
- 	int (*cpu_suspend)(u32 state, unsigned long entry_point);
--- 
-2.41.0
+BLUETOOTH CORE SPECIFICATION Version 5.3 | Vol 4, Part E
+page 1972
 
+...HCI_Reset command shall reset the Link Manager, Baseband and Link Layer.
+
+So it sounds like the controller shall perform and the necessary
+procedures before it respond with a Command Complete.
+
+> This CL makes the host stack to wait for |HCI_EV_DISCONN_COMPLETE| when
+> powering off with a configurable timeout unless the timeout is set to 0.
+>
+> Reviewed-by: Archie Pusaka <apusaka@google.com>
+> Signed-off-by: Howard Chung <howardchung@google.com>
+> ---
+> Hi upstream maintainers, this is tested with an AX211 device and Logi
+> K580 keyboard by the following procedures:
+> 1. pair the peer and stay connected.
+> 2. power off and on immediately
+> 3. observe that the btsnoop log is consistent with the configured
+>    timeout.
+>
+>  include/net/bluetooth/hci_core.h |  1 +
+>  net/bluetooth/hci_core.c         |  2 +-
+>  net/bluetooth/hci_sync.c         | 38 +++++++++++++++++++++++---------
+>  net/bluetooth/mgmt_config.c      |  6 +++++
+>  4 files changed, 35 insertions(+), 12 deletions(-)
+>
+> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci=
+_core.h
+> index 8200a6689b39..ce44f9c60059 100644
+> --- a/include/net/bluetooth/hci_core.h
+> +++ b/include/net/bluetooth/hci_core.h
+> @@ -432,6 +432,7 @@ struct hci_dev {
+>         __u16           advmon_allowlist_duration;
+>         __u16           advmon_no_filter_duration;
+>         __u8            enable_advmon_interleave_scan;
+> +       __u16           discon_on_poweroff_timeout;
+>
+>         __u16           devid_source;
+>         __u16           devid_vendor;
+> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> index 0fefa6788911..769865494f45 100644
+> --- a/net/bluetooth/hci_core.c
+> +++ b/net/bluetooth/hci_core.c
+> @@ -2479,7 +2479,7 @@ struct hci_dev *hci_alloc_dev_priv(int sizeof_priv)
+>         hdev->adv_instance_cnt =3D 0;
+>         hdev->cur_adv_instance =3D 0x00;
+>         hdev->adv_instance_timeout =3D 0;
+> -
+> +       hdev->discon_on_poweroff_timeout =3D 0;   /* Default to no timeou=
+t */
+>         hdev->advmon_allowlist_duration =3D 300;
+>         hdev->advmon_no_filter_duration =3D 500;
+>         hdev->enable_advmon_interleave_scan =3D 0x00;     /* Default to d=
+isable */
+> diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
+> index 3348a1b0e3f7..260e9f05359c 100644
+> --- a/net/bluetooth/hci_sync.c
+> +++ b/net/bluetooth/hci_sync.c
+> @@ -5250,6 +5250,8 @@ static int hci_disconnect_sync(struct hci_dev *hdev=
+, struct hci_conn *conn,
+>                                u8 reason)
+>  {
+>         struct hci_cp_disconnect cp;
+> +       unsigned long timeout;
+> +       int err;
+>
+>         if (conn->type =3D=3D AMP_LINK)
+>                 return hci_disconnect_phy_link_sync(hdev, conn->handle, r=
+eason);
+> @@ -5258,19 +5260,33 @@ static int hci_disconnect_sync(struct hci_dev *hd=
+ev, struct hci_conn *conn,
+>         cp.handle =3D cpu_to_le16(conn->handle);
+>         cp.reason =3D reason;
+>
+> -       /* Wait for HCI_EV_DISCONN_COMPLETE, not HCI_EV_CMD_STATUS, when =
+the
+> -        * reason is anything but HCI_ERROR_REMOTE_POWER_OFF. This reason=
+ is
+> -        * used when suspending or powering off, where we don't want to w=
+ait
+> -        * for the peer's response.
+> +       /* The HCI_ERROR_REMOTE_POWER_OFF is used when suspending or powe=
+ring off,
+> +        * so we don't want to waste time waiting for the reply of the pe=
+er.
+> +        * However, if the configuration specified, we'll wait some time =
+to give the
+> +        * controller chance to actually send the disconnect command.
+>          */
+> -       if (reason !=3D HCI_ERROR_REMOTE_POWER_OFF)
+> -               return __hci_cmd_sync_status_sk(hdev, HCI_OP_DISCONNECT,
+> -                                               sizeof(cp), &cp,
+> -                                               HCI_EV_DISCONN_COMPLETE,
+> -                                               HCI_CMD_TIMEOUT, NULL);
+> +       if (reason =3D=3D HCI_ERROR_REMOTE_POWER_OFF && !hdev->discon_on_=
+poweroff_timeout) {
+> +               return __hci_cmd_sync_status(hdev, HCI_OP_DISCONNECT,
+> +                                            sizeof(cp), &cp, HCI_CMD_TIM=
+EOUT);
+> +       }
+>
+> -       return __hci_cmd_sync_status(hdev, HCI_OP_DISCONNECT, sizeof(cp),=
+ &cp,
+> -                                    HCI_CMD_TIMEOUT);
+> +       if (reason =3D=3D HCI_ERROR_REMOTE_POWER_OFF)
+> +               timeout =3D msecs_to_jiffies(hdev->discon_on_poweroff_tim=
+eout);
+> +       else
+> +               timeout =3D HCI_CMD_TIMEOUT;
+> +
+> +       err =3D __hci_cmd_sync_status_sk(hdev, HCI_OP_DISCONNECT,
+> +                                      sizeof(cp), &cp,
+> +                                      HCI_EV_DISCONN_COMPLETE,
+> +                                      timeout, NULL);
+> +
+> +       /* Ignore the error in suspending or powering off case to avoid t=
+he procedure being
+> +        * aborted.
+> +        */
+> +       if (reason =3D=3D HCI_ERROR_REMOTE_POWER_OFF)
+> +               return 0;
+> +
+> +       return err;
+>  }
+>
+>  static int hci_le_connect_cancel_sync(struct hci_dev *hdev,
+> diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_config.c
+> index 6ef701c27da4..f3194e3642d9 100644
+> --- a/net/bluetooth/mgmt_config.c
+> +++ b/net/bluetooth/mgmt_config.c
+> @@ -78,6 +78,7 @@ int read_def_system_config(struct sock *sk, struct hci_=
+dev *hdev, void *data,
+>                 HDEV_PARAM_U16(advmon_allowlist_duration);
+>                 HDEV_PARAM_U16(advmon_no_filter_duration);
+>                 HDEV_PARAM_U8(enable_advmon_interleave_scan);
+> +               HDEV_PARAM_U16(discon_on_poweroff_timeout);
+>         } __packed rp =3D {
+>                 TLV_SET_U16(0x0000, def_page_scan_type),
+>                 TLV_SET_U16(0x0001, def_page_scan_int),
+> @@ -111,6 +112,7 @@ int read_def_system_config(struct sock *sk, struct hc=
+i_dev *hdev, void *data,
+>                 TLV_SET_U16(0x001d, advmon_allowlist_duration),
+>                 TLV_SET_U16(0x001e, advmon_no_filter_duration),
+>                 TLV_SET_U8(0x001f, enable_advmon_interleave_scan),
+> +               TLV_SET_U16(0x0020, discon_on_poweroff_timeout),
+>         };
+>
+>         bt_dev_dbg(hdev, "sock %p", sk);
+> @@ -186,6 +188,7 @@ int set_def_system_config(struct sock *sk, struct hci=
+_dev *hdev, void *data,
+>                 case 0x001b:
+>                 case 0x001d:
+>                 case 0x001e:
+> +               case 0x0020:
+>                         exp_type_len =3D sizeof(u16);
+>                         break;
+>                 case 0x001f:
+> @@ -314,6 +317,9 @@ int set_def_system_config(struct sock *sk, struct hci=
+_dev *hdev, void *data,
+>                 case 0x0001f:
+>                         hdev->enable_advmon_interleave_scan =3D TLV_GET_U=
+8(buffer);
+>                         break;
+> +               case 0x00020:
+> +                       hdev->discon_on_poweroff_timeout =3D TLV_GET_LE16=
+(buffer);
+> +                       break;
+>                 default:
+>                         bt_dev_warn(hdev, "unsupported parameter %u", typ=
+e);
+>                         break;
+> --
+> 2.41.0.487.g6d72f3e995-goog
+>
+
+
+--=20
+Luiz Augusto von Dentz
