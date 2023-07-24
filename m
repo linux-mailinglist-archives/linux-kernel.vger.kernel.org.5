@@ -2,364 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 198C575FD7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B80175FD84
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbjGXRYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59936 "EHLO
+        id S230526AbjGXRYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjGXRYX (ORCPT
+        with ESMTP id S231223AbjGXRYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:24:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED7D10F9;
-        Mon, 24 Jul 2023 10:24:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 541006113A;
-        Mon, 24 Jul 2023 17:24:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3684FC433C8;
-        Mon, 24 Jul 2023 17:24:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690219460;
-        bh=hKzFGeEkEsWA3mxFM5Fj52m95mNf2DGA6nTLBCoFfFI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2R4gsd4p7ZU0KrKzN3vzG0kQWkDS7X0UP2Gx8fLNp79WKpdlwJ2JQAR56FUPgwB0s
-         +98PgmxfSDoQOpElYp6XoAx9C/8U112kLSubV3VV0wca5Ef0A5e9hsxO4m8SBkbJT6
-         4QFshzyzuTSn3D30dR9SwAP6BErsakao42Dl/uDY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 6.4.6
-Date:   Mon, 24 Jul 2023 19:24:09 +0200
-Message-ID: <2023072445-oxymoron-astronomy-b51f@gregkh>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <2023072445-clad-bouncy-0628@gregkh>
-References: <2023072445-clad-bouncy-0628@gregkh>
+        Mon, 24 Jul 2023 13:24:39 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2302A10FF;
+        Mon, 24 Jul 2023 10:24:36 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 65DD4320092B;
+        Mon, 24 Jul 2023 13:24:34 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 24 Jul 2023 13:24:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1690219473; x=1690305873; bh=30
+        d8X/GI+G1ANrMbLmCjOU7CaE2R2Mm48/9tj9s2I8A=; b=C6ZNKY39Fw2fwKdmp7
+        61uj3cvlHl3zte9Tb4CHQ7+wlLZnd+mpisveVfsON8lOU16q5M/rdjssjmOirM/T
+        gz0d1vFbHHM81KtWT404B6oKJRB+5f8MmEmMLP8u8tJuIPpSKcWOqKIKLTd+c942
+        VKqWvFG2v8NACch5r6uzvNVmeoDgt9+CodKvlSMXXeKrx+Vr4XiruSdHRI6Bwfyg
+        iczBpKKf/+VfVRsiP25SxChF2tRyrN8tjfPJdfip9EqW1qD5FprAhzIOgJ/YfPbI
+        /E7oLWeQwGx9sN03pKtaqMGKpbL+h+mTPGMFIdmseoWBLrWg/hUDGJXx66p+tfHB
+        vEaw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690219473; x=1690305873; bh=30d8X/GI+G1AN
+        rMbLmCjOU7CaE2R2Mm48/9tj9s2I8A=; b=Mh0kJmgCBxwX4CMM6yDPlNASUNrFV
+        rf8y397rWesi44R6Dv8ha22GliUxMPZDBP/mrdV4FSA0d/e9XtQlz7exBnksVklY
+        vpNSqVR5ANGebLLKJn5TQh48oVqVH4apyaAxvpB/r0mhaX15GsFKoptAmL319f5z
+        bWzZnt+Wv4B8FEiwm9BkDU0hK3hoNS3w4XjwbUka6azVGm2seM1+yXHfM0rH3wbO
+        qohYUN0BtwV0S44tnLRfNFAElwiuxKWODqsZ/vc1MJ+VXjtabq4MennrrAS2w3ru
+        db6yRapeeT8fcR12Wg/zjjv/1y5RMB1YF7cJGYwwY7D1bhg0hqBih6UVA==
+X-ME-Sender: <xms:0bO-ZBbvGzTGZQ3fhfirj8XeBjdLV2Bf5Q2xu8ynddlmKTxhDbT_Gg>
+    <xme:0bO-ZIas8AxvRa8AcbS7ROakpprdMcmlZpf_1lKKIjTsI3q41Sz7PKqq2q4EBneja
+    PydZjmLBjRZ5Ng83Q>
+X-ME-Received: <xmr:0bO-ZD8xYvToLzRDO4XtFTS6NSlFW9q9noR3UPav5Mr9BTt0O4gULuySHjsW5u93tj6uHlNSK-sGaOBqKcu-SUkoee0qYk5aDWkGtSorTBaSyWduaXiIbJEEzcRU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrheekgdduudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughr
+    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
+    grthhtvghrnhepvdfffeevhfetveffgeeiteefhfdtvdffjeevhfeuteegleduheetvedu
+    ieettddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvghssegrnhgrrhgriigvlhdruggv
+X-ME-Proxy: <xmx:0bO-ZPr9BJPAC2vIu-QuK06pYzU8JDYri9V2IJ978q-hHbU20-iu1Q>
+    <xmx:0bO-ZMqDCkCsq-Ieel64Gawbkyo6QbVr3b8EkffmKaAfzeWYPu27lQ>
+    <xmx:0bO-ZFQ1AOJEKCyiN2aVWLycW0VhgZql6-EtB5qfqaevnfmePSnCQg>
+    <xmx:0bO-ZEJklolShpLKKGoiWuVH8FEIb_b-SpRAPyaEW2IBMnDgVm0yvg>
+Feedback-ID: id4a34324:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 24 Jul 2023 13:24:33 -0400 (EDT)
+Date:   Mon, 24 Jul 2023 10:24:32 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Phil Elwell <phil@raspberrypi.com>, asml.silence@gmail.com,
+        david@fromorbit.com, hch@lst.de, io-uring@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-xfs@vger.kernel.org,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH] io_uring: Use io_schedule* in cqring wait
+Message-ID: <20230724172432.mcua7vewxrs5cvlg@awork3.anarazel.de>
+References: <CAMEGJJ2RxopfNQ7GNLhr7X9=bHXKo+G5OOe0LUq=+UgLXsv1Xg@mail.gmail.com>
+ <3d97ae14-dd8d-7f82-395a-ccc17c6156be@kernel.dk>
+ <20230724161654.cjh7pd63uas5grmz@awork3.anarazel.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724161654.cjh7pd63uas5grmz@awork3.anarazel.de>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index c324529158cc..23ddaa3f3034 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 6
- PATCHLEVEL = 4
--SUBLEVEL = 5
-+SUBLEVEL = 6
- EXTRAVERSION =
- NAME = Hurr durr I'ma ninja sloth
- 
-diff --git a/arch/x86/include/asm/microcode.h b/arch/x86/include/asm/microcode.h
-index 320566a0443d..66dbba181bd9 100644
---- a/arch/x86/include/asm/microcode.h
-+++ b/arch/x86/include/asm/microcode.h
-@@ -5,6 +5,7 @@
- #include <asm/cpu.h>
- #include <linux/earlycpio.h>
- #include <linux/initrd.h>
-+#include <asm/microcode_amd.h>
- 
- struct ucode_patch {
- 	struct list_head plist;
-diff --git a/arch/x86/include/asm/microcode_amd.h b/arch/x86/include/asm/microcode_amd.h
-index e6662adf3af4..9675c621c1ca 100644
---- a/arch/x86/include/asm/microcode_amd.h
-+++ b/arch/x86/include/asm/microcode_amd.h
-@@ -48,11 +48,13 @@ extern void __init load_ucode_amd_bsp(unsigned int family);
- extern void load_ucode_amd_ap(unsigned int family);
- extern int __init save_microcode_in_initrd_amd(unsigned int family);
- void reload_ucode_amd(unsigned int cpu);
-+extern void amd_check_microcode(void);
- #else
- static inline void __init load_ucode_amd_bsp(unsigned int family) {}
- static inline void load_ucode_amd_ap(unsigned int family) {}
- static inline int __init
- save_microcode_in_initrd_amd(unsigned int family) { return -EINVAL; }
- static inline void reload_ucode_amd(unsigned int cpu) {}
-+static inline void amd_check_microcode(void) {}
- #endif
- #endif /* _ASM_X86_MICROCODE_AMD_H */
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 3aedae61af4f..a00a53e15ab7 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -545,6 +545,7 @@
- #define MSR_AMD64_DE_CFG		0xc0011029
- #define MSR_AMD64_DE_CFG_LFENCE_SERIALIZE_BIT	 1
- #define MSR_AMD64_DE_CFG_LFENCE_SERIALIZE	BIT_ULL(MSR_AMD64_DE_CFG_LFENCE_SERIALIZE_BIT)
-+#define MSR_AMD64_DE_CFG_ZEN2_FP_BACKUP_FIX_BIT 9
- 
- #define MSR_AMD64_BU_CFG2		0xc001102a
- #define MSR_AMD64_IBSFETCHCTL		0xc0011030
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index 571abf808ea3..26ad7ca423e7 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -27,11 +27,6 @@
- 
- #include "cpu.h"
- 
--static const int amd_erratum_383[];
--static const int amd_erratum_400[];
--static const int amd_erratum_1054[];
--static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum);
--
- /*
-  * nodes_per_socket: Stores the number of nodes per socket.
-  * Refer to Fam15h Models 00-0fh BKDG - CPUID Fn8000_001E_ECX
-@@ -39,6 +34,78 @@ static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum);
-  */
- static u32 nodes_per_socket = 1;
- 
-+/*
-+ * AMD errata checking
-+ *
-+ * Errata are defined as arrays of ints using the AMD_LEGACY_ERRATUM() or
-+ * AMD_OSVW_ERRATUM() macros. The latter is intended for newer errata that
-+ * have an OSVW id assigned, which it takes as first argument. Both take a
-+ * variable number of family-specific model-stepping ranges created by
-+ * AMD_MODEL_RANGE().
-+ *
-+ * Example:
-+ *
-+ * const int amd_erratum_319[] =
-+ *	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x10, 0x2, 0x1, 0x4, 0x2),
-+ *			   AMD_MODEL_RANGE(0x10, 0x8, 0x0, 0x8, 0x0),
-+ *			   AMD_MODEL_RANGE(0x10, 0x9, 0x0, 0x9, 0x0));
-+ */
-+
-+#define AMD_LEGACY_ERRATUM(...)		{ -1, __VA_ARGS__, 0 }
-+#define AMD_OSVW_ERRATUM(osvw_id, ...)	{ osvw_id, __VA_ARGS__, 0 }
-+#define AMD_MODEL_RANGE(f, m_start, s_start, m_end, s_end) \
-+	((f << 24) | (m_start << 16) | (s_start << 12) | (m_end << 4) | (s_end))
-+#define AMD_MODEL_RANGE_FAMILY(range)	(((range) >> 24) & 0xff)
-+#define AMD_MODEL_RANGE_START(range)	(((range) >> 12) & 0xfff)
-+#define AMD_MODEL_RANGE_END(range)	((range) & 0xfff)
-+
-+static const int amd_erratum_400[] =
-+	AMD_OSVW_ERRATUM(1, AMD_MODEL_RANGE(0xf, 0x41, 0x2, 0xff, 0xf),
-+			    AMD_MODEL_RANGE(0x10, 0x2, 0x1, 0xff, 0xf));
-+
-+static const int amd_erratum_383[] =
-+	AMD_OSVW_ERRATUM(3, AMD_MODEL_RANGE(0x10, 0, 0, 0xff, 0xf));
-+
-+/* #1054: Instructions Retired Performance Counter May Be Inaccurate */
-+static const int amd_erratum_1054[] =
-+	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0, 0, 0x2f, 0xf));
-+
-+static const int amd_zenbleed[] =
-+	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0x30, 0x0, 0x4f, 0xf),
-+			   AMD_MODEL_RANGE(0x17, 0x60, 0x0, 0x7f, 0xf),
-+			   AMD_MODEL_RANGE(0x17, 0xa0, 0x0, 0xaf, 0xf));
-+
-+static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum)
-+{
-+	int osvw_id = *erratum++;
-+	u32 range;
-+	u32 ms;
-+
-+	if (osvw_id >= 0 && osvw_id < 65536 &&
-+	    cpu_has(cpu, X86_FEATURE_OSVW)) {
-+		u64 osvw_len;
-+
-+		rdmsrl(MSR_AMD64_OSVW_ID_LENGTH, osvw_len);
-+		if (osvw_id < osvw_len) {
-+			u64 osvw_bits;
-+
-+			rdmsrl(MSR_AMD64_OSVW_STATUS + (osvw_id >> 6),
-+			    osvw_bits);
-+			return osvw_bits & (1ULL << (osvw_id & 0x3f));
-+		}
-+	}
-+
-+	/* OSVW unavailable or ID unknown, match family-model-stepping range */
-+	ms = (cpu->x86_model << 4) | cpu->x86_stepping;
-+	while ((range = *erratum++))
-+		if ((cpu->x86 == AMD_MODEL_RANGE_FAMILY(range)) &&
-+		    (ms >= AMD_MODEL_RANGE_START(range)) &&
-+		    (ms <= AMD_MODEL_RANGE_END(range)))
-+			return true;
-+
-+	return false;
-+}
-+
- static inline int rdmsrl_amd_safe(unsigned msr, unsigned long long *p)
- {
- 	u32 gprs[8] = { 0 };
-@@ -916,6 +983,47 @@ static void init_amd_zn(struct cpuinfo_x86 *c)
- 	}
- }
- 
-+static bool cpu_has_zenbleed_microcode(void)
-+{
-+	u32 good_rev = 0;
-+
-+	switch (boot_cpu_data.x86_model) {
-+	case 0x30 ... 0x3f: good_rev = 0x0830107a; break;
-+	case 0x60 ... 0x67: good_rev = 0x0860010b; break;
-+	case 0x68 ... 0x6f: good_rev = 0x08608105; break;
-+	case 0x70 ... 0x7f: good_rev = 0x08701032; break;
-+	case 0xa0 ... 0xaf: good_rev = 0x08a00008; break;
-+
-+	default:
-+		return false;
-+		break;
-+	}
-+
-+	if (boot_cpu_data.microcode < good_rev)
-+		return false;
-+
-+	return true;
-+}
-+
-+static void zenbleed_check(struct cpuinfo_x86 *c)
-+{
-+	if (!cpu_has_amd_erratum(c, amd_zenbleed))
-+		return;
-+
-+	if (cpu_has(c, X86_FEATURE_HYPERVISOR))
-+		return;
-+
-+	if (!cpu_has(c, X86_FEATURE_AVX))
-+		return;
-+
-+	if (!cpu_has_zenbleed_microcode()) {
-+		pr_notice_once("Zenbleed: please update your microcode for the most optimal fix\n");
-+		msr_set_bit(MSR_AMD64_DE_CFG, MSR_AMD64_DE_CFG_ZEN2_FP_BACKUP_FIX_BIT);
-+	} else {
-+		msr_clear_bit(MSR_AMD64_DE_CFG, MSR_AMD64_DE_CFG_ZEN2_FP_BACKUP_FIX_BIT);
-+	}
-+}
-+
- static void init_amd(struct cpuinfo_x86 *c)
- {
- 	early_init_amd(c);
-@@ -1020,6 +1128,8 @@ static void init_amd(struct cpuinfo_x86 *c)
- 	if (spectre_v2_in_eibrs_mode(spectre_v2_enabled) &&
- 	    cpu_has(c, X86_FEATURE_AUTOIBRS))
- 		WARN_ON_ONCE(msr_set_bit(MSR_EFER, _EFER_AUTOIBRS));
-+
-+	zenbleed_check(c);
- }
- 
- #ifdef CONFIG_X86_32
-@@ -1115,73 +1225,6 @@ static const struct cpu_dev amd_cpu_dev = {
- 
- cpu_dev_register(amd_cpu_dev);
- 
--/*
-- * AMD errata checking
-- *
-- * Errata are defined as arrays of ints using the AMD_LEGACY_ERRATUM() or
-- * AMD_OSVW_ERRATUM() macros. The latter is intended for newer errata that
-- * have an OSVW id assigned, which it takes as first argument. Both take a
-- * variable number of family-specific model-stepping ranges created by
-- * AMD_MODEL_RANGE().
-- *
-- * Example:
-- *
-- * const int amd_erratum_319[] =
-- *	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x10, 0x2, 0x1, 0x4, 0x2),
-- *			   AMD_MODEL_RANGE(0x10, 0x8, 0x0, 0x8, 0x0),
-- *			   AMD_MODEL_RANGE(0x10, 0x9, 0x0, 0x9, 0x0));
-- */
--
--#define AMD_LEGACY_ERRATUM(...)		{ -1, __VA_ARGS__, 0 }
--#define AMD_OSVW_ERRATUM(osvw_id, ...)	{ osvw_id, __VA_ARGS__, 0 }
--#define AMD_MODEL_RANGE(f, m_start, s_start, m_end, s_end) \
--	((f << 24) | (m_start << 16) | (s_start << 12) | (m_end << 4) | (s_end))
--#define AMD_MODEL_RANGE_FAMILY(range)	(((range) >> 24) & 0xff)
--#define AMD_MODEL_RANGE_START(range)	(((range) >> 12) & 0xfff)
--#define AMD_MODEL_RANGE_END(range)	((range) & 0xfff)
--
--static const int amd_erratum_400[] =
--	AMD_OSVW_ERRATUM(1, AMD_MODEL_RANGE(0xf, 0x41, 0x2, 0xff, 0xf),
--			    AMD_MODEL_RANGE(0x10, 0x2, 0x1, 0xff, 0xf));
--
--static const int amd_erratum_383[] =
--	AMD_OSVW_ERRATUM(3, AMD_MODEL_RANGE(0x10, 0, 0, 0xff, 0xf));
--
--/* #1054: Instructions Retired Performance Counter May Be Inaccurate */
--static const int amd_erratum_1054[] =
--	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0, 0, 0x2f, 0xf));
--
--static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum)
--{
--	int osvw_id = *erratum++;
--	u32 range;
--	u32 ms;
--
--	if (osvw_id >= 0 && osvw_id < 65536 &&
--	    cpu_has(cpu, X86_FEATURE_OSVW)) {
--		u64 osvw_len;
--
--		rdmsrl(MSR_AMD64_OSVW_ID_LENGTH, osvw_len);
--		if (osvw_id < osvw_len) {
--			u64 osvw_bits;
--
--			rdmsrl(MSR_AMD64_OSVW_STATUS + (osvw_id >> 6),
--			    osvw_bits);
--			return osvw_bits & (1ULL << (osvw_id & 0x3f));
--		}
--	}
--
--	/* OSVW unavailable or ID unknown, match family-model-stepping range */
--	ms = (cpu->x86_model << 4) | cpu->x86_stepping;
--	while ((range = *erratum++))
--		if ((cpu->x86 == AMD_MODEL_RANGE_FAMILY(range)) &&
--		    (ms >= AMD_MODEL_RANGE_START(range)) &&
--		    (ms <= AMD_MODEL_RANGE_END(range)))
--			return true;
--
--	return false;
--}
--
- static DEFINE_PER_CPU_READ_MOSTLY(unsigned long[4], amd_dr_addr_mask);
- 
- static unsigned int amd_msr_dr_addr_masks[] = {
-@@ -1235,3 +1278,15 @@ u32 amd_get_highest_perf(void)
- 	return 255;
- }
- EXPORT_SYMBOL_GPL(amd_get_highest_perf);
-+
-+static void zenbleed_check_cpu(void *unused)
-+{
-+	struct cpuinfo_x86 *c = &cpu_data(smp_processor_id());
-+
-+	zenbleed_check(c);
-+}
-+
-+void amd_check_microcode(void)
-+{
-+	on_each_cpu(zenbleed_check_cpu, NULL, 1);
-+}
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 80710a68ef7d..04eebbacb550 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -2341,6 +2341,8 @@ void microcode_check(struct cpuinfo_x86 *prev_info)
- 
- 	perf_check_microcode();
- 
-+	amd_check_microcode();
-+
- 	store_cpu_caps(&curr_info);
- 
- 	if (!memcmp(&prev_info->x86_capability, &curr_info.x86_capability,
+Hi,
+
+On 2023-07-24 09:16:56 -0700, Andres Freund wrote:
+> Building a kernel to test with the patch applied, will reboot into it once the
+> call I am on has finished. Unfortunately the performance difference didn't
+> reproduce nicely in VM...
+
+Performance is good with the patch applied. Results are slightly better even,
+but I think that's likely just noise.
+
+Greetings,
+
+Andres Freund
