@@ -2,96 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF05575FA36
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E77975FA31
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230339AbjGXOxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
+        id S230214AbjGXOwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbjGXOwq (ORCPT
+        with ESMTP id S231645AbjGXOwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:52:46 -0400
-Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251F710DC;
-        Mon, 24 Jul 2023 07:52:44 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4R8jXN1mnyz9y0Yq;
-        Mon, 24 Jul 2023 22:41:24 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwDnbwspkL5kT9D+BA--.29494S2;
-        Mon, 24 Jul 2023 15:52:30 +0100 (CET)
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH] security: Fix ret values doc for security_inode_init_security()
-Date:   Mon, 24 Jul 2023 16:52:04 +0200
-Message-Id: <20230724145204.534703-1-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 24 Jul 2023 10:52:20 -0400
+Received: from s.wrqvwxzv.outbound-mail.sendgrid.net (s.wrqvwxzv.outbound-mail.sendgrid.net [149.72.154.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCB210C3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:52:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+        h=from:subject:mime-version:to:cc:content-transfer-encoding:
+        content-type:cc:content-type:from:subject:to;
+        s=s1; bh=WcPMS8VJ8wZGKcidpFy/HqVz+nWN87bUiNsDE1gwuRs=;
+        b=jmjEZFV8G9PUpRXSheQcL4plISa3RZzSmTOYznoXHVGXvcMsEoC4Nop7o+OWT+M1NHHG
+        qz3Wp+H26cYeIadd/VX8l+mX2z2ABk7ZLqlmsu7fZlhlc/Mgx26C4piKBhgFYm5+Z5d/ds
+        3NLFVWffSas7TqKKdLDV5Q0IbYYpNXfwPMXHbqPGdkN7JLgPoW/6w5LZg0L1ptxRi8CAga
+        S8oNOhXMRdcBjGocoAQTDja6qLU3zXYsyisBt0Mhf0usuM879s6tu/aGRk+isP8frKObvj
+        obIDbfudqTnJGJPeCkW0mGL/FsjjH1xi+qfem5jLW6AMqjfDZOOk+DBwWV+ulonw==
+Received: by filterdrecv-8684c58db7-nfltn with SMTP id filterdrecv-8684c58db7-nfltn-1-64BE901F-40
+        2023-07-24 14:52:16.172047943 +0000 UTC m=+6448424.450220586
+Received: from bionic.localdomain (unknown)
+        by geopod-ismtpd-8 (SG)
+        with ESMTP
+        id MTXJzVVRT-imukorVRJulQ
+        Mon, 24 Jul 2023 14:52:15.522 +0000 (UTC)
+From:   Jonas Karlman <jonas@kwiboo.se>
+Subject: [PATCH] arm64: dts: rockchip: Fix regulators and enable SATA on Radxa
+ E25
+Date:   Mon, 24 Jul 2023 14:52:16 +0000 (UTC)
+Message-ID: <20230724145213.3833099-1-jonas@kwiboo.se>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwDnbwspkL5kT9D+BA--.29494S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr1xKr17tFWUZr47ZrWxCrg_yoW8XF4kpa
-        1UKF1UWr15tFy7WFn5AF47u3WSkay5Gr4DGrsxZr17A3WDZrn5tr4Fyr15ury3XrWUAw10
-        qw42kr43Jr1DA37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-        1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8imRUUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAIBF1jj5Db5QACsQ
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0hxdxYYdTXqyX82wfI?=
+ =?us-ascii?Q?Ra=2FGfuQUGNsOvlZGB3QHxCYxiOjHZP07t=2FuVIOp?=
+ =?us-ascii?Q?Tg7CNYgQHfx=2FyVh5KOiYjmJ=2Fl+SMjKTWeswu=2FXk?=
+ =?us-ascii?Q?1TJiXMzZnr9RPT6duBhWqAmr87Nn137pCHkSCsF?=
+ =?us-ascii?Q?6xFUjy2Wf8iSOmnQNQ4800BqGy9D78J7RD5ERo?=
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chukun Pan <amadeus@jmu.edu.cn>
+Cc:     FUKAUMI Naoki <naoki@radxa.com>, Jonas Karlman <jonas@kwiboo.se>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+X-Entity-ID: P7KYpSJvGCELWjBME/J5tg==
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+Despite its name, the regulator vcc3v3_pcie30x1 has nothing to do with
+pcie30x1. Instead, it supply power to VBAT1-5 on the M.2 KEY B port as
+seen on page 8 of the schematic [1].
 
-Commit 6bcdfd2cac55 ("security: Allow all LSMs to provide xattrs for
-inode_init_security hook") unified the !initxattrs and initxattrs cases. By
-doing that, security_inode_init_security() cannot return -EOPNOTSUPP
-anymore, as it is always replaced with zero at the end of the function.
+pcie30x1 is used for the mini PCIe slot, and as seen on page 9 the
+vcc3v3_minipcie regulator is instead related to pcie30x1.
 
-Also, mentioning -ENOMEM as the only possible error is not correct. For
-example, evm_inode_init_security() could return -ENOKEY.
+The M.2 KEY B port can be used for WWAN USB2 modules or SATA drives.
 
-Fix these issues in the documentation of security_inode_init_security().
+Use correct regulator vcc3v3_minipcie for pcie30x1 and enable sata1 node
+to fix use of SATA drives on the M.2 slot.
 
-Fixes: 6bcdfd2cac55 ("security: Allow all LSMs to provide xattrs for inode_init_security hook")
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+[1] https://dl.radxa.com/cm3p/e25/radxa-e25-v1.4-sch.pdf
+
+Fixes: 2bf2f4d9f673 ("arm64: dts: rockchip: Add Radxa CM3I E25")
+Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 ---
- security/security.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../boot/dts/rockchip/rk3568-radxa-e25.dts    | 24 ++++++++++++-------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/security/security.c b/security/security.c
-index cfdd0cbbcb9..5aa9cb91f0f 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -1604,8 +1604,8 @@ EXPORT_SYMBOL(security_dentry_create_files_as);
-  * a security attribute on this particular inode, then it should return
-  * -EOPNOTSUPP to skip this processing.
-  *
-- * Return: Returns 0 on success, -EOPNOTSUPP if no security attribute is
-- * needed, or -ENOMEM on memory allocation failure.
-+ * Return: Returns 0 on success or on -EOPNOTSUPP error, a negative value other
-+ *         than -EOPNOTSUPP otherwise.
-  */
- int security_inode_init_security(struct inode *inode, struct inode *dir,
- 				 const struct qstr *qstr,
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-radxa-e25.dts b/arch/arm64/boot/dts/rockchip/rk3568-radxa-e25.dts
+index 63c4bd873188..72ad74c38a2b 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-radxa-e25.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-radxa-e25.dts
+@@ -47,6 +47,9 @@ vbus_typec: vbus-typec-regulator {
+ 		vin-supply = <&vcc5v0_sys>;
+ 	};
+ 
++	/* actually fed by vcc5v0_sys, dependent
++	 * on pi6c clock generator
++	 */
+ 	vcc3v3_minipcie: vcc3v3-minipcie-regulator {
+ 		compatible = "regulator-fixed";
+ 		enable-active-high;
+@@ -54,9 +57,9 @@ vcc3v3_minipcie: vcc3v3-minipcie-regulator {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&minipcie_enable_h>;
+ 		regulator-name = "vcc3v3_minipcie";
+-		regulator-min-microvolt = <5000000>;
+-		regulator-max-microvolt = <5000000>;
+-		vin-supply = <&vcc5v0_sys>;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		vin-supply = <&vcc3v3_pi6c_05>;
+ 	};
+ 
+ 	vcc3v3_ngff: vcc3v3-ngff-regulator {
+@@ -71,9 +74,6 @@ vcc3v3_ngff: vcc3v3-ngff-regulator {
+ 		vin-supply = <&vcc5v0_sys>;
+ 	};
+ 
+-	/* actually fed by vcc5v0_sys, dependent
+-	 * on pi6c clock generator
+-	 */
+ 	vcc3v3_pcie30x1: vcc3v3-pcie30x1-regulator {
+ 		compatible = "regulator-fixed";
+ 		enable-active-high;
+@@ -83,7 +83,7 @@ vcc3v3_pcie30x1: vcc3v3-pcie30x1-regulator {
+ 		regulator-name = "vcc3v3_pcie30x1";
+ 		regulator-min-microvolt = <3300000>;
+ 		regulator-max-microvolt = <3300000>;
+-		vin-supply = <&vcc3v3_pi6c_05>;
++		vin-supply = <&vcc5v0_sys>;
+ 	};
+ 
+ 	vcc3v3_pi6c_05: vcc3v3-pi6c-05-regulator {
+@@ -99,6 +99,10 @@ vcc3v3_pi6c_05: vcc3v3-pi6c-05-regulator {
+ 	};
+ };
+ 
++&combphy1 {
++	phy-supply = <&vcc3v3_pcie30x1>;
++};
++
+ &pcie2x1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pcie20_reset_h>;
+@@ -117,7 +121,7 @@ &pcie3x1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pcie30x1m0_pins>;
+ 	reset-gpios = <&gpio0 RK_PC3 GPIO_ACTIVE_HIGH>;
+-	vpcie3v3-supply = <&vcc3v3_pcie30x1>;
++	vpcie3v3-supply = <&vcc3v3_minipcie>;
+ 	status = "okay";
+ };
+ 
+@@ -178,6 +182,10 @@ &pwm12 {
+ 	status = "okay";
+ };
+ 
++&sata1 {
++	status = "okay";
++};
++
+ &sdmmc0 {
+ 	bus-width = <4>;
+ 	cap-sd-highspeed;
 -- 
-2.34.1
+2.41.0
 
