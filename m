@@ -2,250 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BE175EBEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC9F75EBF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbjGXGtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 02:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42742 "EHLO
+        id S231206AbjGXGvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 02:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjGXGs6 (ORCPT
+        with ESMTP id S229705AbjGXGvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 02:48:58 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42466F4;
-        Sun, 23 Jul 2023 23:48:56 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-66f3fc56ef4so3255713b3a.0;
-        Sun, 23 Jul 2023 23:48:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690181336; x=1690786136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Uw+3+6134Ea6eLasLJ/S/SDEJdvVZRIDfXKZ4eH+a/c=;
-        b=sPvqxckrXp9KV6Uesp4IBvEFupxL9QtCPEXBfdbU6K57MNTrZgwmxBc7VtmIi5qVjC
-         jlrsSoOtE7hFAkD3lXM9ngC3BYjFYorzt+RJf7/X+3dBowWeegclMvxU8OLwGghcGcT+
-         nPZfXn9k2x/1DC/2g8rV0kJT1pB/FBHKJ08lEArvezHxlFcFjl/GADDZzcndE6mQnd0P
-         lKhnWfVg/7zijottID5H4Z/osqY7AfGNwNafiW/zkCamB9V667lv/1SjKDHB6fSHCJZY
-         Y4HyFXcc9dyzQZi/efKli3i7nWwzvm9hnvfkE1eV+BfWU8XCwzI8WS/28afrohtJDY65
-         4rTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690181336; x=1690786136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Uw+3+6134Ea6eLasLJ/S/SDEJdvVZRIDfXKZ4eH+a/c=;
-        b=I2pikb/90sPAqxQyCmsHn8TSQIuw8WAhg1FefJcdFbgHPXer90YHyBM2dSkBGTAS92
-         gAiPRInTwU4+Oukwm5wJRanZwxHC+YNBg4Gpc5rUzZuAcZ/wJQNz0WOxCelvQk6D23w4
-         xHKTx+CC3T9WjJBPrXTbn5UEleREwUdEIpX63WDKgoW5tOOgEtu5j+cJPtuxPnXL+IDQ
-         sddxWM/2MUFLFUXr/rEX1aKtnVX0uUGPoBq1W30Tq287TxM+496WLTadqYdefxqhSVYb
-         YaZIPv7NcLGa8WsQ2GBaTMSofZV2YObPyG9oqFbKYjXSjH+BxBnovWEiDoo5nsmHhbmb
-         BJBw==
-X-Gm-Message-State: ABy/qLazzYah7LFZDbPXKQHWeEa29Lb2tmoPxPM1ZtQoGkfBlGORnvqu
-        qQU1MLHl3AYHnflIBvsgQ7S7wtxgu0VwOUH2WzI=
-X-Google-Smtp-Source: APBJJlHqGIhv016Zdm3HKBl/0x5IVySijyHDXKOlOpytzhjB7ontWMLNTZ7J7V1kHN3xZC00hF/eLPJB1CBgkUkjRbs=
-X-Received: by 2002:a17:90b:4b0d:b0:263:3386:9da3 with SMTP id
- lx13-20020a17090b4b0d00b0026333869da3mr12142951pjb.17.1690181335625; Sun, 23
- Jul 2023 23:48:55 -0700 (PDT)
+        Mon, 24 Jul 2023 02:51:06 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9C82CD2;
+        Sun, 23 Jul 2023 23:51:02 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36O6neaE7018707, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36O6neaE7018707
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 24 Jul 2023 14:49:40 +0800
+Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Mon, 24 Jul 2023 14:49:51 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Mon, 24 Jul 2023 14:49:51 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Mon, 24 Jul 2023 14:49:51 +0800
+From:   =?big5?B?U3RhbmxleSBDaGFuZ1up96h8vHdd?= <stanley_chang@realtek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Roy Luo <royluo@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Flavio Suligoi <f.suligoi@asem.it>,
+        Ray Chi <raychi@google.com>,
+        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: RE: [PATCH v7 1/5] usb: phy: add usb phy notify port status API
+Thread-Topic: [PATCH v7 1/5] usb: phy: add usb phy notify port status API
+Thread-Index: AQHZsJ7kDWGiCOPLRk2HhU7h2LN0sq/H/g6AgACS9CA=
+Date:   Mon, 24 Jul 2023 06:49:50 +0000
+Message-ID: <47131beec8a24572873aa31e87cfaab6@realtek.com>
+References: <20230707064725.25291-1-stanley_chang@realtek.com>
+ <2023072452-jasmine-palm-7b73@gregkh>
+In-Reply-To: <2023072452-jasmine-palm-7b73@gregkh>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.190.159]
+x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230721121534.44328-1-ppbuk5246@gmail.com> <05e98227-77f4-4918-8f8e-2170a158e350@paulmck-laptop>
- <CAM7-yPRc4Z0siaiWf+fK2GEfjPMq5UaY13F4o19rU6NNUS5fNg@mail.gmail.com>
- <faf07eef-0a51-49f3-be48-0433952171ad@paulmck-laptop> <CAM7-yPTrHN1xPXWjSUrJeTEOuy78DpmL8ytUY+a4ZOekiAbnZg@mail.gmail.com>
- <31070aab-8665-44c4-8950-0631a777ef44@paulmck-laptop> <CAM7-yPSn8ietAJ8NKb0-VHDQhkHs73u--KFmO3rpTPUvcFuMvA@mail.gmail.com>
- <CALm+0cWeZnMUk8Lj_nF3Htd14czGcT_Yt71nVwJdGhTECQOAWg@mail.gmail.com> <CAM7-yPR2jG=4MkBF1+=f8KUNqmSopq3yTTfWN6YvLcmJjpq8Hw@mail.gmail.com>
-In-Reply-To: <CAM7-yPR2jG=4MkBF1+=f8KUNqmSopq3yTTfWN6YvLcmJjpq8Hw@mail.gmail.com>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Mon, 24 Jul 2023 14:48:43 +0800
-Message-ID: <CALm+0cX9h8mxiXNZQm4kOnijAyNug8PqF-eXpMT96f6U1YGLWQ@mail.gmail.com>
-Subject: Re: [PATCH] rcu: remove unnecessary check cpu_no_qs.norm on rcu_report_qs_rdp
-To:     Yun Levi <ppbuk5246@gmail.com>
-Cc:     paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        joel@joelfernandes.org, osh@joshtriplett.org, boqun.feng@gmail.com,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> Hi Z qiang!
->
-> Thanks for replying. But I'm pinned on something wrong..!
->
-> > For built with CONFIG_RCU_STRICT_GRACE_PERIOD=3Dy and CONFIG_PREEMPT=3D=
-n kernels
-> > Consider the following scenario:
-> >
-> > __rcu_read_unlock()
-> >    -> rcu_read_unlock_strict()
-
-note that as soon as we exit the rcu read critical section
-the rcu_read_unlock_strict() will be called, even if the RCU is idle
-at this time
-
-
-> >         ->rdp =3D this_cpu_ptr(&rcu_data);
-> >         ->rdp->cpu_no_qs.b.norm =3D false;
-> >
-> >                  by interrupt and return invoke rcu_core():
-> >                  ->rcu_check_quiescent_state()
-> >                       ->rdp =3D raw_cpu_ptr(&rcu_data);
-> >                       -> rcu_check_quiescent_state(rdp);
-> >                             ->note_gp_changes(rdp);
-> >                                 -> __note_gp_changes(rnp, rdp)
-> >                                 start new gp
-> >                                 ->rdp->cpu_no_qs.b.norm =3D true;
-> >
-> >         ->rcu_report_qs_rdp(rdp);
-> >            ->if (rdp->cpu_no_qs.b.norm || ...)
->
-> I've already seen this scenario, But I think something is missing in my v=
-iew.
-> What I couldn't catch is
->
->                   ->rcu_check_quiescent_state()
->                        ->rdp =3D raw_cpu_ptr(&rcu_data);
->                        -> rcu_check_quiescent_state(rdp);
->                              ->note_gp_changes(rdp);
->                                  -> __note_gp_changes(rnp, rdp)
->                                  start new gp
->
-> the new gp is started.
->
->
-
-Maybe this "start new gp"  note misunderstood you.
-For built with CONFIG_RCU_STRICT_GRACE_PERIOD=3Dy and CONFIG_PREEMPT=3Dn ke=
-rnels=EF=BC=8C
-if the gp kthread start a new GP before we exit the RCU read critical secti=
-on,
-and just before we call rcu_report_qs_rdp() in
-rcu_read_unlock_strict(), at this time if the clock irq
-happens and find that the "rcu_seq_current(&rnp->gp_seq) !=3D
-rdp->gp_seq" is true in rcu_pening(),
-will trigger RCU softirq and find that the rcu_seq_new_gp(rdp->gp_seq,
-rnp->gp_seq) is true,
-will  set rdp->cpu_no_qs.b.norm is true. when we return from the
-softirq and call rcu_report_qs_rdp()
-in rcu_read_unlock_strict(), find that the rdp->cpu_no_qs.b.norm is true.
-so there is a situation where the rdp->cpu_no_qs.b.norm is true.
-
-
->
-> to set cpu_no_qs.b.norm as true, below condition should be true
->
-> 1201 >---if (rcu_seq_new_gp(rdp->gp_seq, rnp->gp_seq) ||
->   1202 >---    unlikely(READ_ONCE(rdp->gpwrap))) {
->
-> Here,
-> How rcu_seq_new_gp could return true and new gp already started via
-> rcu_gp_kthread.
-> IIUC, because rcu_gp_fqs_loop couldn't see the root rnp->qsmask is
-> zero, it couldn't call rcu_gp_init.
->
->
-> Sorry to make noise, but would you correct me what I'm thinking wrong?
->
-> Many thanks..!
->
-> -----------
-> Sincerely,
-> Levi.
->
-> On Mon, Jul 24, 2023 at 4:21=E2=80=AFAM Z qiang <qiang.zhang1211@gmail.co=
-m> wrote:
-> >
-> > >
-> > > Thanks for replying to reply Paul :)
-> > >
-> > > > And try testing with CONFIG_RCU_STRICT_GRACE_PERIOD=3Dy and CONFIG_=
-PREEMPT=3Dn.
-> > > > Though there might be better Kconfig options to use.  Those two com=
-e
-> > > > immediately to mind.
-> > >
-> > > I've tested with this option via rcu torture.
-> > > and it doesn't report any problems.
-> > > and after commit 6d60ea03ac2d3 ("rcu: Report QS for outermost
-> > > PREEMPT=3Dn rcu_read_unlock() for strict GPs")
-> > > it always makes cpu_no_qs.b.norm false whenever it calls
-> > > rcu_report_qs_rdp in rcu_read_unlock.
-> > >
-> > > > But one critical piece is that softirq handlers, including the RCU_=
-SOFTIRQ
-> > > > handler rcu_core_si(), can be invoked upon return from interrupts.
-> > >
-> > > I think in that case, no problem because if it reports qs already,
-> > > rcu_check_quiescent_state wouldn't call rcu_report_qs_rdp again.
-> > > And if RCU_SOFTIRQ is called as soon as RCU interrupt is finished,
-> > > it seems the fastest one to notify qs to related tree.
-> > >
-> > > > Another critical piece is that if a CPU is idle during any part of =
-a
-> > > > grace period, the grace-period kthread can report a quiescent state=
- on
-> > > > its behalf.
-> > >
-> > > I think
-> > >     1) If timer interrupt is still programed,
-> > >           - when rcu_sched_clock_irq first reports qs, no problem
-> > >           - If qs is reported via grace period thread first,
-> > > note_gp_chagned in rcu interrupt
-> > >             will recognize this situation by setting core_needs_qs as=
- false,
-> > >             it doesn't call rcu_report_qs_rdp thou cpu_no_qs.b.norm i=
-s true.
-> > >
-> > >      2) If the timer interrupt isn't programmed,
-> > >           - rcu_gp_kthreaad reports its qs, no problem.
-> > >
-> > > So, I think there's no problem removing
-> > >       "rdp->cpu_no_qs.b.norm" check in rcu_report_qs_rdp.
-> > > or wrap this condition check as WARN_ON_ONCE.
-> > >
-> > > > Does that help?
-> > > Many thanks always :)
-> > >
-> >
-> >
-> > Hi Levi
-> >
-> > For built with CONFIG_RCU_STRICT_GRACE_PERIOD=3Dy and CONFIG_PREEMPT=3D=
-n kernels
-> > Consider the following scenario:
-> >
-> > __rcu_read_unlock()
-> >    -> rcu_read_unlock_strict()
-> >         ->rdp =3D this_cpu_ptr(&rcu_data);
-> >         ->rdp->cpu_no_qs.b.norm =3D false;
-> >
-> >                  by interrupt and return invoke rcu_core():
-> >                  ->rcu_check_quiescent_state()
-> >                       ->rdp =3D raw_cpu_ptr(&rcu_data);
-> >                       -> rcu_check_quiescent_state(rdp);
-> >                             ->note_gp_changes(rdp);
-> >                                 -> __note_gp_changes(rnp, rdp)
-> >                                 start new gp
-> >                                 ->rdp->cpu_no_qs.b.norm =3D true;
-> >
-> >         ->rcu_report_qs_rdp(rdp);
-> >            ->if (rdp->cpu_no_qs.b.norm || ...)
-> >
-> >
-> > Thanks
-> > Zqiang
-> >
-> >
-> > >
-> > > --------
-> > > SIncerely,
-> > > Levi.
+DQo+IA0KPiBPbiBGcmksIEp1bCAwNywgMjAyMyBhdCAwMjo0NzowMFBNICswODAwLCBTdGFubGV5
+IENoYW5nIHdyb3RlOg0KPiA+IEluIFJlYWx0ZWsgU29DLCB0aGUgcGFyYW1ldGVyIG9mIHVzYiBw
+aHkgaXMgZGVzaWduZWQgdG8gY2FuIGR5bmFtaWMNCj4gPiB0dW5pbmcgYmFzZSBvbiBwb3J0IHN0
+YXR1cy4gVGhlcmVmb3JlLCBhZGQgYSBub3RpZnkgY2FsbGJhY2sgb2YgcGh5DQo+ID4gZHJpdmVy
+IHdoZW4gdXNiIHBvcnQgc3RhdHVzIGNoYW5nZS4NCj4gPg0KPiA+IFRoZSBSZWFsdGVrIHBoeSBk
+cml2ZXIgaXMgZGVzaWduZWQgdG8gZHluYW1pY2FsbHkgYWRqdXN0IGRpc2Nvbm5lY3Rpb24NCj4g
+PiBsZXZlbCBhbmQgY2FsaWJyYXRlIHBoeSBwYXJhbWV0ZXJzLiBXaGVuIHRoZSBkZXZpY2UgY29u
+bmVjdGVkIGJpdA0KPiA+IGNoYW5nZXMgYW5kIHdoZW4gdGhlIGRpc2Nvbm5lY3RlZCBiaXQgY2hh
+bmdlcywgZG8gcG9ydCBzdGF0dXMgY2hhbmdlDQo+IG5vdGlmaWNhdGlvbjoNCj4gPg0KPiA+IENo
+ZWNrIGlmIHBvcnRzdGF0dXMgaXMgVVNCX1BPUlRfU1RBVF9DT05ORUNUSU9OIGFuZCBwb3J0Y2hh
+bmdlIGlzDQo+ID4gVVNCX1BPUlRfU1RBVF9DX0NPTk5FQ1RJT04uDQo+ID4gMS4gVGhlIGRldmlj
+ZSBpcyBjb25uZWN0ZWQsIHRoZSBkcml2ZXIgbG93ZXJzIHRoZSBkaXNjb25uZWN0aW9uIGxldmVs
+IGFuZA0KPiA+ICAgIGNhbGlicmF0ZXMgdGhlIHBoeSBwYXJhbWV0ZXJzLg0KPiA+IDIuIFRoZSBk
+ZXZpY2UgZGlzY29ubmVjdHMsIHRoZSBkcml2ZXIgaW5jcmVhc2VzIHRoZSBkaXNjb25uZWN0IGxl
+dmVsIGFuZA0KPiA+ICAgIGNhbGlicmF0ZXMgdGhlIHBoeSBwYXJhbWV0ZXJzLg0KPiA+DQo+ID4g
+V2hlbiBjb250cm9sbGVyIHRvIG5vdGlmeSBjb25uZWN0IHRoYXQgZGV2aWNlIGlzIGFscmVhZHkg
+cmVhZHkuIElmIHdlDQo+ID4gYWRqdXN0IHRoZSBkaXNjb25uZWN0aW9uIGxldmVsIGluIG5vdGlm
+eV9jb25uZWN0LCB0aGUgZGlzY29ubmVjdCBtYXkNCj4gPiBoYXZlIGJlZW4gdHJpZ2dlcmVkIGF0
+IHRoaXMgc3RhZ2UuIFNvIHdlIG5lZWQgdG8gY2hhbmdlIHRoYXQgYXMgZWFybHkNCj4gPiBhcyBw
+b3NzaWJsZS4gVGhlcmVmb3JlLCB3ZSBhZGQgYW4gYXBpIHRvIG5vdGlmeSBwaHkgdGhlIHBvcnQg
+c3RhdHVzIGNoYW5nZXMuDQo+IA0KPiBIb3cgZG8geW91IGtub3cgdGhhdCB0aGUgZGlzY29ubmVj
+dCB3aWxsIG5vdCBoYXZlIGFscmVhZHkgYmVlbiB0cmlnZ2VyZWQgYXQNCj4gdGhpcyBwb2ludCwg
+d2hlbiB0aGUgc3RhdHVzIGNoYW5nZXM/DQoNClRoZSBzdGF0dXMgY2hhbmdlIG9mIGNvbm5lY3Rp
+b24gaXMgYmVmb3JlIHBvcnQgcmVzZXQuDQpJbiB0aGlzIHN0YWdlLCB0aGUgZGV2aWNlIGlzIG5v
+dCBwb3J0IGVuYWJsZSwgYW5kIGl0IHdpbGwgbm90IHRyaWdnZXIgZGlzY29ubmVjdGlvbi4NCg0K
+PiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogU3RhbmxleSBDaGFuZyA8c3RhbmxleV9jaGFuZ0ByZWFs
+dGVrLmNvbT4NCj4gPiAtLS0NCj4gPiB2NiB0byB2NyBjaGFuZ2U6DQo+ID4gICAgIE5vIGNoYW5n
+ZQ0KPiA+IHY1IHRvIHY2IGNoYW5nZToNCj4gPiAgICAgTm8gY2hhbmdlDQo+ID4gdjQgdG8gdjUg
+Y2hhbmdlOg0KPiA+ICAgICBObyBjaGFuZ2UNCj4gPiB2MyB0byB2NCBjaGFuZ2U6DQo+ID4gICAg
+IEZpeCB0aGUgd2FybmluZyBmb3IgY2hlY2twYXRjaCB3aXRoIHN0cmljdC4NCj4gPiB2MiB0byB2
+MyBjaGFuZ2U6DQo+ID4gICAgIEFkZCBtb3JlIGNvbW1lbnRzIGFib3V0IHRoZSByZWFzb24gZm9y
+IGFkZGluZyB0aGlzIGFwaQ0KPiA+IHYxIHRvIHYyIGNoYW5nZToNCj4gPiAgICAgTm8gY2hhbmdl
+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvdXNiL2NvcmUvaHViLmMgIHwgMTMgKysrKysrKysrKysr
+KyAgaW5jbHVkZS9saW51eC91c2IvcGh5LmggfA0KPiA+IDEzICsrKysrKysrKysrKysNCj4gPiAg
+MiBmaWxlcyBjaGFuZ2VkLCAyNiBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy91c2IvY29yZS9odWIuYyBiL2RyaXZlcnMvdXNiL2NvcmUvaHViLmMgaW5kZXgNCj4g
+PiBhNzM5NDAzYTllNDUuLjg0MzNmZjg5ZGVhNiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3Vz
+Yi9jb3JlL2h1Yi5jDQo+ID4gKysrIGIvZHJpdmVycy91c2IvY29yZS9odWIuYw0KPiA+IEBAIC02
+MTQsNiArNjE0LDE5IEBAIHN0YXRpYyBpbnQgaHViX2V4dF9wb3J0X3N0YXR1cyhzdHJ1Y3QgdXNi
+X2h1YiAqaHViLA0KPiBpbnQgcG9ydDEsIGludCB0eXBlLA0KPiA+ICAgICAgICAgICAgICAgcmV0
+ID0gMDsNCj4gPiAgICAgICB9DQo+ID4gICAgICAgbXV0ZXhfdW5sb2NrKCZodWItPnN0YXR1c19t
+dXRleCk7DQo+ID4gKw0KPiA+ICsgICAgIGlmICghcmV0KSB7DQo+ID4gKyAgICAgICAgICAgICBz
+dHJ1Y3QgdXNiX2RldmljZSAqaGRldiA9IGh1Yi0+aGRldjsNCj4gPiArDQo+ID4gKyAgICAgICAg
+ICAgICBpZiAoaGRldiAmJiAhaGRldi0+cGFyZW50KSB7DQo+IA0KPiBXaHkgdGhlIGNoZWNrIGZv
+ciBubyBwYXJlbnQ/ICBQbGVhc2UgZG9jdW1lbnQgdGhhdCBoZXJlIGluIGEgY29tbWVudC4NCg0K
+SSB3aWxsIGFkZCBhIGNvbW1lbnQgOg0KLyogT25seSBub3RpZnkgcm9vdGh1Yi4gVGhhdCBpcywg
+d2hlbiBoZGV2LT5wYXJlbnQgaXMgZW1wdHkuICovDQoNCg0KPiA+ICsgICAgICAgICAgICAgICAg
+ICAgICBzdHJ1Y3QgdXNiX2hjZCAqaGNkID0gYnVzX3RvX2hjZChoZGV2LT5idXMpOw0KPiA+ICsN
+Cj4gPiArICAgICAgICAgICAgICAgICAgICAgaWYgKGhjZC0+dXNiX3BoeSkNCj4gPiArDQo+IHVz
+Yl9waHlfbm90aWZ5X3BvcnRfc3RhdHVzKGhjZC0+dXNiX3BoeSwNCj4gPiArICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwb3J0MSAtDQo+IDEs
+ICpzdGF0dXMsICpjaGFuZ2UpOw0KPiA+ICsgICAgICAgICAgICAgfQ0KPiA+ICsgICAgIH0NCj4g
+PiArDQo+IA0KPiBUaGlzIGlzIHNhZmUgdG8gbm90aWZ5IHdpdGggdGhlIGh1YiBtdXRleCB1bmxv
+Y2tlZD8gIEFnYWluLCBhIGNvbW1lbnQgd291bGQNCj4gYmUgaGVscGZ1bCB0byBmdXR1cmUgcGVv
+cGxlIGV4cGxhaW5pbmcgd2h5IHRoYXQgaXMgc28uDQo+IA0KDQpJIHdpbGwgYWRkIGEgY29tbWVu
+dDogDQovKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICANCiAqIFRoZXJlIGlzIG5vIG5lZWQgdG8gbG9jayBzdGF0dXNf
+bXV0ZXggaGVyZSwgYmVjYXVzZSBzdGF0dXNfbXV0ZXggICAgIA0KICogcHJvdGVjdHMgaHViLT5z
+dGF0dXMsIGFuZCB0aGUgcGh5IGRyaXZlciBvbmx5IGNoZWNrcyB0aGUgcG9ydCAgICAgICAgDQog
+KiBzdGF0dXMgd2l0aG91dCBjaGFuZ2luZyB0aGUgc3RhdHVzLiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICANCiAqLyAgDQoNClRoYW5rcywNClN0YW5sZXkNCg0KLg0K
