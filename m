@@ -2,159 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EFA760204
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89FA76020C
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbjGXWIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 18:08:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        id S230203AbjGXWOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 18:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbjGXWIa (ORCPT
+        with ESMTP id S229789AbjGXWOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 18:08:30 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A306819A0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:08:28 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bb8e45185bso9690345ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:08:28 -0700 (PDT)
+        Mon, 24 Jul 2023 18:14:22 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E2710EC;
+        Mon, 24 Jul 2023 15:14:21 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fdfefdf5abso463853e87.1;
+        Mon, 24 Jul 2023 15:14:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1690236508; x=1690841308;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YiVLpoqRBSUKN+9FWsFBB1zWbxDt+GF5JFvfD+9xwvQ=;
-        b=IsnQRu4gLa6XZH4i8mAcdMuH1PvZahVQhG7uaMFWzE5NQYY7cYwBovrK2ePjpSBFg6
-         AWEENSUJUVg6nzQug4aLpnOuOkrvfMhLacHxR4qXAHXAxqa5dFINgbN5Ttg/1f82p3H5
-         FyK86rylKoC3btv2Zxs0nyvwCT68Fg3fXrQEFP8z2PY/53JvNhUv5mM7ZSnJDBk9sAXf
-         JwstgMaugLMuQ0LY2yjKwz7l+o4ItdLPddsBJbalVTkkUc4/Z7gWdcd23R1rWeFZBriN
-         jo8AciZUR0I3rqJoXf5UMmfog7GJGSAyy8AIspX4a3ikNsX1aHCrLIPksEpIS7jWG0tK
-         HuNA==
+        d=gmail.com; s=20221208; t=1690236859; x=1690841659;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yAsZdb1l2a00omNbaFLi6X9Z1M8KVaOQyZOE0+c0Tbc=;
+        b=hYUPPntxc6s6ZI4Cv6z9ft0y9WjAHYLbjp4SyKtPI00sUEkmzSHvNUNDypAdtXKVn7
+         ynUhu6KxwYHAZvUCNW+2HRJbaTFRlavjUeajGgTnONjK0MlNiaz5r1Y/geWjqRs1Q1rq
+         KwrxAF55ex3j2qhvNLaDm9k6H78/5KU79/fipttlxE9I422PoXt70UVSBB8ey9ClHTr9
+         9ju9MM0jTVFy/FPIdtBqZbEYxjJMe5861wtQvpkW/htfOqRfHjGj1vkujcN+phTOa2jY
+         fZTh60p+kt1nY5Jw7Y9wBB39JPD2XHqJuHEefozlnjfVXVqWATdaczWsvYN0K1BsJrjl
+         oReQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690236508; x=1690841308;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YiVLpoqRBSUKN+9FWsFBB1zWbxDt+GF5JFvfD+9xwvQ=;
-        b=iSJLTjW9oKT45Q10cIz0QAxgkEmYuqzOhA13AOvHOEtX8QZMrGI9aYXzqdyivyyo84
-         97o3tHAkZcAjML4W4DvsZZLsVjA9wEXRD/v4V/4WkPg0IKiiHL0ZVtRGURNlbcPAvxUd
-         ri1Rx21gziX0dCdMbcwAS1cyPZPYygZEnybh7PK0IDaPeeDkZ3MQ9y3cCSINJZJIb/9l
-         J/ddc/sef1nGN/uWWSecvgrf4dcf/kv+SWJNPscAuiN/nuFuheUJshxOuzg8JmiD0Ru5
-         iCp9IGsWj9cryMw1SEJUpQExf+xzRANRSGOA+GTLuQheYoPAihPl/HrwRjguWeKg9APO
-         SXRw==
-X-Gm-Message-State: ABy/qLZjhgVTjx2nHjIOQRSK+m+IWcutfBgJrKYrdv1TnudU6DEl+5mP
-        Y7Vk1OL0e6UT5X/BX3/wVqDfVw==
-X-Google-Smtp-Source: APBJJlFL7IL5vlAW4dKgeOmKmmNUCeLrE4HqWcCSK+s5M0r3YESnNOQX7pVoll5fhQI/4j0tYoOEGA==
-X-Received: by 2002:a17:902:a58b:b0:1bb:bb70:c23e with SMTP id az11-20020a170902a58b00b001bbbb70c23emr241901plb.18.1690236507746;
-        Mon, 24 Jul 2023 15:08:27 -0700 (PDT)
-Received: from dread.disaster.area (pa49-186-119-116.pa.vic.optusnet.com.au. [49.186.119.116])
-        by smtp.gmail.com with ESMTPSA id jw22-20020a170903279600b001b9da42cd7dsm9427325plb.279.2023.07.24.15.08.27
+        d=1e100.net; s=20221208; t=1690236859; x=1690841659;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yAsZdb1l2a00omNbaFLi6X9Z1M8KVaOQyZOE0+c0Tbc=;
+        b=WqFX6LQsYfSuSrr6XvjYZzBe014m1JPKaKXnvqiVW61njLo1htHYA91Aq0tjNHRjCr
+         8zfOxlCaNiKEWmi5/pEK+M2Dh2iu3g0GDaBhaslNy6NfTGvF9XVoUr2+n1fC8ec5hmBU
+         mc8U6X9i8OwQ/7EUxrbXW6CodVWHVGzR9oM3TnDC4dF1ZBf7swhQyWxnCxdyXg9mxqk0
+         nPoeVu9PSij6Gicj072L+iNsSeQ8S4/FAJzWpIUtUusNt1nb2/mGLXbiZaTl1XxjoCHO
+         GUsJiNg805RcJ/zjvX44UbNwpy3IHpSvaMsxerrM78JjsvJSCV322rna2u49mIFAuivD
+         E8vA==
+X-Gm-Message-State: ABy/qLZiQVJxtoXTS3ao11ih01AewU1UhoABGiIiU8bWWsv8DBlL/DlM
+        oiKNf6yZ4PDpwH5chYnWDwI=
+X-Google-Smtp-Source: APBJJlHAx+uI4qxDU4os4KVjWZLmaw4hsPui/tQzNXMFfBkFTUJUsBeQZifK5GQTbHM+kZ5qOj9tyg==
+X-Received: by 2002:a05:6512:6d4:b0:4f9:58ed:7bba with SMTP id u20-20020a05651206d400b004f958ed7bbamr7337865lff.16.1690236859228;
+        Mon, 24 Jul 2023 15:14:19 -0700 (PDT)
+Received: from localhost.localdomain ([77.222.25.78])
+        by smtp.gmail.com with ESMTPSA id v2-20020a056512048200b004fba077e654sm2401130lfq.194.2023.07.24.15.14.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 15:08:27 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qO3j6-00A72u-2Y;
-        Tue, 25 Jul 2023 08:08:24 +1000
-Date:   Tue, 25 Jul 2023 08:08:24 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Nitesh Shetty <nj.shetty@samsung.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>, gost.dev@samsung.com,
-        Anuj Gupta <anuj20.g@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/read_write: Enable copy_file_range for block device.
-Message-ID: <ZL72WJ31DtAjgcFd@dread.disaster.area>
-References: <CGME20230724060655epcas5p24f21ce77480885c746b9b86d27585492@epcas5p2.samsung.com>
- <20230724060336.8939-1-nj.shetty@samsung.com>
- <ZL4cpDxr450zomJ0@dread.disaster.area>
- <20230724163838.GB26430@lst.de>
+        Mon, 24 Jul 2023 15:14:18 -0700 (PDT)
+From:   Andrew Kanner <andrew.kanner@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, jasowang@redhat.com, netdev@vger.kernel.org,
+        brouer@redhat.com, linux-kernel@vger.kernel.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com,
+        Andrew Kanner <andrew.kanner@gmail.com>
+Subject: [PATCH 1/2] drivers: net: use xdp only inside tun_build_skb()
+Date:   Tue, 25 Jul 2023 01:13:25 +0300
+Message-Id: <20230724221326.384-1-andrew.kanner@gmail.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724163838.GB26430@lst.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 06:38:38PM +0200, Christoph Hellwig wrote:
-> > > Change generic_copy_file_checks to use ->f_mapping->host for both inode_in
-> > > and inode_out. Allow block device in generic_file_rw_checks.
-> > 
-> > Why? copy_file_range() is for copying a range of a regular file to
-> > another regular file - why do we want to support block devices for
-> > somethign that is clearly intended for copying data files?
-> 
-> Nitesh has a series to add block layer copy offload,
+Syzkaller reported the following issue:
+=======================================
+Too BIG xdp->frame_sz = 131072
+WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
+  ____bpf_xdp_adjust_tail net/core/filter.c:4121 [inline]
+WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
+  bpf_xdp_adjust_tail+0x466/0xa10 net/core/filter.c:4103
+...
+Call Trace:
+ <TASK>
+ bpf_prog_4add87e5301a4105+0x1a/0x1c
+ __bpf_prog_run include/linux/filter.h:600 [inline]
+ bpf_prog_run_xdp include/linux/filter.h:775 [inline]
+ bpf_prog_run_generic_xdp+0x57e/0x11e0 net/core/dev.c:4721
+ netif_receive_generic_xdp net/core/dev.c:4807 [inline]
+ do_xdp_generic+0x35c/0x770 net/core/dev.c:4866
+ tun_get_user+0x2340/0x3ca0 drivers/net/tun.c:1919
+ tun_chr_write_iter+0xe8/0x210 drivers/net/tun.c:2043
+ call_write_iter include/linux/fs.h:1871 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x650/0xe40 fs/read_write.c:584
+ ksys_write+0x12f/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Yes, I know.
+frame_sz < PAGE_SIZE check was introduced in commit c8741e2bfe87
+("xdp: Allow bpf_xdp_adjust_tail() to grow packet size"). But
+tun_get_user() still provides an execution path to exceed XDP limits
+for packet size. The way to mitigate this is to reduce xdp to be used
+only in tun_build_skb(), without falling in tun_alloc_skb(), etc.
 
-> and uses that to
-> implement copy_file_range on block device nodes,
+Reported-and-tested-by: syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/000000000000774b9205f1d8a80d@google.com/T/
+Link: https://syzkaller.appspot.com/bug?id=5335c7c62bfff89bbb1c8f14cdabebe91909060f
+Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
+---
+ drivers/net/tun.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-Yes, I know.
-
-> which seems like a
-> sensible use case for copy_file_range on block device nodes,
-
-Except for the fact it's documented and implemented as for copying
-data ranges of *regular files*. Block devices are not regular
-files...
-
-There is nothing in this patchset that explains why this syscall
-feature creep is desired, why it is the best solution, what benefits
-it provides, how this new feature is discoverable, etc. It also does
-not mention that user facing documentation needs to change, etc
-
-> and that
-> series was hiding a change like this deep down in a "block" title
-> patch,
-
-I know.
-
-> so I asked for it to be split out.  It still really should
-> be in that series, as there's very little point in changing this
-> check without an actual implementation making use of it.
-
-And that's because it's the wrong way to be implementing block
-device copy offloads.
-
-That patchset originally added ioctls to issue block copy offloads
-to block devices from userspace - that's the way block device
-specific functionality is generally added and I have no problems
-with that.
-
-However, when I originally suggested that the generic
-copy_file_range() fallback path that filesystems use (i.e.
-generic_copy_file_range()) should try to use the block copy offload
-path before falling back to using splice to copy the data through
-host memory, things went off the rails.
-
-That has turned into "copy_file_range() should support block devices
-directly" and the ioctl interfaces were removed. The block copy
-offload patchset still doesn't have a generic path for filesystems
-to use this block copy offload. This is *not* what I originally
-suggested, and provides none of the benefit to users that would come
-from what I originally suggested.  Block device copy offload is
-largely useless to users if file data copies within a filesystem
-don't make use of it - very few applications ever copy data directly
-to/from block devices directly...
-
-So from a system level point of view, expanding copy_file_range() to
-do direct block device data copies doesn't make any sense. Expanding
-the existing copy_file_range() generic fallback to attempt block
-copy offload (i.e. hardware accel) makes much more sense, and will
-make copy_file_range() much more useful to users on filesystem like
-ext4 that don't have reflink support...
-
-So, yeah, this patch, regardless of how it is presented, needs to a
-whole lot more justification that "we want to do this" in the commit
-message...
-
--Dave.
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index d75456adc62a..18ccbbe9830a 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1580,8 +1580,14 @@ static void tun_rx_batched(struct tun_struct *tun, struct tun_file *tfile,
+ }
+ 
+ static bool tun_can_build_skb(struct tun_struct *tun, struct tun_file *tfile,
+-			      int len, int noblock, bool zerocopy)
++			      int len, int noblock, bool zerocopy, int *skb_xdp)
+ {
++	if (SKB_DATA_ALIGN(len + TUN_RX_PAD) +
++	    SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) > PAGE_SIZE) {
++		*skb_xdp = 0;
++		return false;
++	}
++
+ 	if ((tun->flags & TUN_TYPE_MASK) != IFF_TAP)
+ 		return false;
+ 
+@@ -1594,10 +1600,6 @@ static bool tun_can_build_skb(struct tun_struct *tun, struct tun_file *tfile,
+ 	if (zerocopy)
+ 		return false;
+ 
+-	if (SKB_DATA_ALIGN(len + TUN_RX_PAD) +
+-	    SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) > PAGE_SIZE)
+-		return false;
+-
+ 	return true;
+ }
+ 
+@@ -1809,7 +1811,7 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
+ 			zerocopy = true;
+ 	}
+ 
+-	if (!frags && tun_can_build_skb(tun, tfile, len, noblock, zerocopy)) {
++	if (tun_can_build_skb(tun, tfile, len, noblock, zerocopy, &skb_xdp) && !frags) {
+ 		/* For the packet that is not easy to be processed
+ 		 * (e.g gso or jumbo packet), we will do it at after
+ 		 * skb was created with generic XDP routine.
 -- 
-Dave Chinner
-david@fromorbit.com
+2.39.3
+
