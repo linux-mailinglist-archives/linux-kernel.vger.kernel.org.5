@@ -2,52 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B540A75FE77
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6BB75FE7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbjGXRtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46074 "EHLO
+        id S232007AbjGXRuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231869AbjGXRsc (ORCPT
+        with ESMTP id S231985AbjGXRuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:48:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2145D4203
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:45:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CDE4F61312
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 17:45:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04EDAC433C7;
-        Mon, 24 Jul 2023 17:45:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690220725;
-        bh=i/3ARKu2v/GvD5MJ/ESSUDjGzezlHuJEXEcQosWyGxw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=giw/2Q3xI3BJd+qXlnT5waP43ZXAgYm5VhgjSj8yRAByRpbbHrtlZsqiolfmNQk0i
-         9HJLQz5NPiV08MPYrJ6x7nH2ect7N6NvRMGZghRrPOgaRLIrlqOZf5EJOYlc9RzX/4
-         5ngKvNYTRf4aUYODIPD7qPFn7Y4ZiMkWyCYXtnWpN3tqYtZtSn0epwmlsWWRxu5lAo
-         kjX90gJ3/G07/dWqJg69QhS8+ZXaP3V7B4jfPrg/32i814sfzCN5TmHSsTTxhaqp/O
-         obRFovv3/hPnlQlKKgkUK8vWusSRcFQ6PvhrSzwDXAMRjFCIhMGBKd7xf9v391UjHE
-         d8CHYroZ1sJNg==
-From:   Will Deacon <will@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        John Stultz <jstultz@google.com>
-Subject: [PATCH 2/2] scripts/faddr2line: Use LLVM addr2line and readelf if LLVM=1
-Date:   Mon, 24 Jul 2023 18:45:17 +0100
-Message-Id: <20230724174517.15736-3-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230724174517.15736-1-will@kernel.org>
-References: <20230724174517.15736-1-will@kernel.org>
+        Mon, 24 Jul 2023 13:50:13 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84CCF26B7
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:47:11 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-c2cf4e61bc6so5253003276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:47:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690220783; x=1690825583;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jGALWlWRmNXsoEbN3b+Tsx/4LBd65om9fdbI43IPJSQ=;
+        b=yPju5M+Iv8zlSqSRN8NkZ/yaY4qNd5PEyKZ6GihXBTYJu4Oi5zHjrSx9mDNXxXBubD
+         JAPRwFk+gjIMK8tmIdZCD2E/ZFej3XpUtcL29RiU9C9+RvxF/J0GwvqaWC7exge3Gy/e
+         pH7xd9OpQt5T+s0ev/unKrdhzaX0O0uvsA9QTg3gMUo+dzD3gIsAobi0UPld+cdbsVhu
+         kBykcbwzT5oFROLwGEFhbuKKF7A+tzce+wWvDetiQ6MRSK03TBFJVS1yx0QCz+nD0rgQ
+         mIstMK31i5aMMLm6xu1I2Brtj8G5E0X+XOyLZIxfQYmVu4hZYGNQrDQE5sprT/8CBmsi
+         kE2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690220783; x=1690825583;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jGALWlWRmNXsoEbN3b+Tsx/4LBd65om9fdbI43IPJSQ=;
+        b=PZVdjIvQP1AGHos5taoNfwTZJMLLZzyncJ0pK0Nu/zyXpRabxj2NINH6zpuUEeooUQ
+         tSxZGOJywhyrXXS2rUpTVXUHZ26Ih4U/Ydh8U5NRh1GMuqm7bw8l3FpdUUtCyvrBtNSZ
+         qfUlWeliAGhPgt1bkCy5rhCsBK1/t51j7gpKJAmczK+U1ZOSb2RK1ug1r0/OhtasjkT6
+         AZHzESg940jw0tmRYYXoSBgVs0BS/FSDvl2mtHbYttsQHbg1elqZGDl4FTtIa1zWiYmI
+         BKL2U2P//9csfWAaU15ksGiDnoT10nwXeVP4yfhu3XaLxIC1/slsNbkv4fqGvPSveBqO
+         XdWw==
+X-Gm-Message-State: ABy/qLaQD7iDCc/YbH0I+XLoTi0D+eb4ALpf80ijYF7BO/+6knyH3jmV
+        rTFXb3r++HusNZZmi0AoFblNG8glO50eLXizhxddew==
+X-Google-Smtp-Source: APBJJlH8543Uiuv9stapIH1RgQRbeQXKG/JYL5CYIdoKUw61G/5g7iNnYPJzhBnZUIogAwXmNNV751ON/7/ITO3he7o=
+X-Received: by 2002:a25:ab12:0:b0:d12:3108:f90f with SMTP id
+ u18-20020a25ab12000000b00d123108f90fmr2934909ybi.24.1690220782953; Mon, 24
+ Jul 2023 10:46:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+References: <20230721093342.1532531-1-victor.liu@nxp.com>
+In-Reply-To: <20230721093342.1532531-1-victor.liu@nxp.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 24 Jul 2023 19:46:10 +0200
+Message-ID: <CACRpkda+kWcaeF1WMetDp3ppbrbQmuFEiUbpTdq2kH7o7wN68Q@mail.gmail.com>
+Subject: Re: [PATCH v4] backlight: gpio_backlight: Drop output GPIO direction
+ check for initial power state
+To:     Ying Liu <victor.liu@nxp.com>
+Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lee@kernel.org" <lee@kernel.org>,
+        "daniel.thompson@linaro.org" <daniel.thompson@linaro.org>,
+        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
+        "deller@gmx.de" <deller@gmx.de>,
+        "andy@kernel.org" <andy@kernel.org>,
+        "brgl@bgdev.pl" <brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,49 +77,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GNU utilities cannot necessarily parse objects built by LLVM, which can
-result in confusing errors when using 'faddr2line':
+On Fri, Jul 21, 2023 at 11:29=E2=80=AFAM Ying Liu <victor.liu@nxp.com> wrot=
+e:
 
-$ CROSS_COMPILE=aarch64-linux-gnu- ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
-aarch64-linux-gnu-addr2line: vmlinux: unknown type [0x13] section `.relr.dyn'
-aarch64-linux-gnu-addr2line: DWARF error: invalid or unhandled FORM value: 0x25
-do_one_initcall+0xf4/0x260:
-aarch64-linux-gnu-addr2line: vmlinux: unknown type [0x13] section `.relr.dyn'
-aarch64-linux-gnu-addr2line: DWARF error: invalid or unhandled FORM value: 0x25
-$x.73 at main.c:?
+> If GPIO pin is in input state but backlight is currently off due to
+> default pull downs,
 
-Although this can be worked around by setting CROSS_COMPILE to "llvm=-",
-it's cleaner to follow the same syntax as the top-level Makefile and
-accept LLVM=1 as an indication to use the llvm- tools.
+Oh what an interesting corner case!
 
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: John Stultz <jstultz@google.com>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- scripts/faddr2line | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+> then initial power state is set to FB_BLANK_UNBLANK
+> in DT boot mode with phandle link and the backlight is effectively
+> turned on in gpio_backlight_probe(), which is undesirable according to
+> patch description of commit ec665b756e6f ("backlight: gpio-backlight:
+> Correct initial power state handling").
+>
+> Quote:
+> ---8<---
+> If in DT boot we have phandle link then leave the GPIO in a state which t=
+he
+> bootloader left it and let the user of the backlight to configure it furt=
+her.
+> ---8<---
+>
+> So, let's drop output GPIO direction check and only check GPIO value to s=
+et
+> the initial power state.
+>
+> Fixes: 706dc68102bc ("backlight: gpio: Explicitly set the direction of th=
+e GPIO")
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
 
-diff --git a/scripts/faddr2line b/scripts/faddr2line
-index 60368a1cdaed..24845267efb2 100755
---- a/scripts/faddr2line
-+++ b/scripts/faddr2line
-@@ -58,8 +58,14 @@ die() {
- 	exit 1
- }
- 
--READELF="${CROSS_COMPILE:-}readelf"
--ADDR2LINE="${CROSS_COMPILE:-}addr2line"
-+if [ "${LLVM:-}" == "1" ]; then
-+	UTIL_PREFIX=llvm-
-+else
-+	UTIL_PREFIX=${CROSS_COMPILE:-}
-+fi
-+
-+READELF="${UTIL_PREFIX}readelf"
-+ADDR2LINE="${UTIL_PREFIX}addr2line"
- AWK="awk"
- GREP="grep"
- 
--- 
-2.41.0.487.g6d72f3e995-goog
+The solutions seems fine.
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
+Yours,
+Linus Walleij
