@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3286B760154
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D20B760158
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbjGXVkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33578 "EHLO
+        id S230312AbjGXVko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbjGXVkI (ORCPT
+        with ESMTP id S229834AbjGXVkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:40:08 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC8810D9
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:40:06 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bb83eb84e5so22995915ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:40:06 -0700 (PDT)
+        Mon, 24 Jul 2023 17:40:42 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442611987
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:40:27 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-565db4666d7so3019575eaf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:40:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690234805; x=1690839605;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8BXNvlgPl86R5u1hRBm87aT1u2p7UCsAkEmDEcFG3FM=;
-        b=WQVwrhACND8PT5c7alEIYasKcI4Gp7ux8sDxSBc+Z2bJbXkeTQ5jBOUHXIeOX7mlDT
-         IA9pzFYjQzEITJml3F0PjSrEsUo05ZsNqrb8ZwrdQPd0nMVfILzegzYolD0BGNic81Gz
-         s/fdxjhr9ssohjwdFcYBZFpTEIY+Cqf0ZgzvRQr8pLNrIFSvHblY82xsimwQ5Hoxpxag
-         ZEchK0cmfSc5EC0KjP2jeYQcYdm/+0G52yT8+C/fGHF0OSFhlgDympjozQGmHyuKGxkf
-         fMrqX+sFQNcqhs5SEIEVfG4p8fZpQ9QGuGj6l2J8Jvr1lkwN+TT1rHadFW5PB+D/1gaQ
-         ICdg==
+        d=gmail.com; s=20221208; t=1690234826; x=1690839626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YMfua460X0apacBl5wqrH5vgW/88RJ55cY6fU8YFXfA=;
+        b=lYGdh2YK5Fg5BkCX4oqNyWwUPhziLbMzoDETdbKONtA8QpFD85AFZjCKIcbkmTVQjw
+         A5RqQGx5iyo2Z9yBn8ODp0Uh3rOiv4RrRXgfB8zqxF351PtJ1FkbDMXLcpmqeZsF9o29
+         sSN68FinuSEYXQzJdt4aJvOyV4ebADAxreHn57F4uRnuYYCrnxFnXs0242YDPBTIdwe2
+         zf91jhq+OmAGmLVUT2zmW/JIjDb/KR6gdQhpD8uYkVu6era/3U1tS8qzl7d9AJVfutNN
+         E2TZUe4gQlfOA9F45aV8ifXO/7n07blK0+bzPw88tZ1KHPT35L2PZxKyWAt6Rbv3xG6p
+         RSkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690234805; x=1690839605;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8BXNvlgPl86R5u1hRBm87aT1u2p7UCsAkEmDEcFG3FM=;
-        b=MZASTdlhsFhirLEjvad3v73hXYabIfBa5+U6uw3k7JQcm3c0hiTe1DZb/T4bkXg/zd
-         +a8F3GN8xLf4naHdmYI8cgpluGhookkSXKOMg+s4X8+3JaHspmYtP4oDypAR+/gqpcyi
-         Zxn6k3RssJpbirqyEsZy7p6r8sQIbR1bDCldsIGBpNVaC/aA03W9iwzivaNZtjuJWBSZ
-         KKuP5x1B4wwdBEjQyxENPf4WDZ5Kqs4SS+SHS1rZGFDZs4JC1NjHDdsC29AEdVQL5P9Q
-         oYvU0hoavWftdkrVajiKlUqg3ED2JYVqsYCFPh6aAjI8CspqZag/avs8yuvD3pFSvQ9w
-         uyow==
-X-Gm-Message-State: ABy/qLbvRnyMmFGiVSwsF51Qi/o8n75TQkLN66+8pEVYBDB/iaBEakId
-        p1Zr7YPdH38y7PGv8Eag0jlMTWSruU0=
-X-Google-Smtp-Source: APBJJlGr3Xi9CBngHaiIYWxM1PJJW9h3BT6/cv5dUH1y6ZztFyeHVEzhLcBu5fYxBfWr79u2kv7wLBA+Mcw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:32c3:b0:1b9:e338:a90d with SMTP id
- i3-20020a17090332c300b001b9e338a90dmr44909plr.3.1690234805271; Mon, 24 Jul
- 2023 14:40:05 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 14:40:03 -0700
-In-Reply-To: <20230724212150.GH3745454@hirez.programming.kicks-ass.net>
-Mime-Version: 1.0
-References: <20230721201859.2307736-1-seanjc@google.com> <20230721201859.2307736-15-seanjc@google.com>
- <20230724212150.GH3745454@hirez.programming.kicks-ass.net>
-Message-ID: <ZL7vs9zMatFRl6IH@google.com>
-Subject: Re: [PATCH v4 14/19] KVM: SVM: Check that the current CPU supports
- SVM in kvm_is_svm_supported()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Andrew Cooper <Andrew.Cooper3@citrix.com>,
-        Kai Huang <kai.huang@intel.com>, Chao Gao <chao.gao@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20221208; t=1690234826; x=1690839626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YMfua460X0apacBl5wqrH5vgW/88RJ55cY6fU8YFXfA=;
+        b=RkGXGtu12T2kG67t8s3cFSb/WspvYe5lOg1abwTtdswkM3iZRzw9nclMAL0dUfKoKF
+         ZVOj+7br+yyZ2SfaqPYFy0UGaPUytIGYt77krMhql0IvmKKwaTKxT1krOttWQLyQ1HVA
+         JoJTTt2om1JyUBkUlLGqaH5oYiczozCvGgXN9gj3AGqkdzRg/DnVyMVrTRMUQdI+G/mY
+         P62PJvZsfGHPLidwCDIrbsoMZQ8uZTLlBwcDXTOE4MDUIbNUmRXeB9MQsJbZj8eGyV6D
+         zpsiiQ5sx16FkuVBk+ySVJ/QKfIaZWvfy4fQEkqaTEI8/rW/SY+gW7LEUzEhXFpTtob7
+         7z+A==
+X-Gm-Message-State: ABy/qLYMNS/uYpWvSwc5JrIGksUaPlljf4RcU02VJXoqDiEnSMQHWPdf
+        1JcjzTRQvfcCjKXRWbgHV5itWiVTCwvx3+c2TUU=
+X-Google-Smtp-Source: APBJJlE8rJYaFVv1WEucDG903MNh9x+vPzM+y7XkVmyGxftiixebysG6dVf3Mz8h4nHXdpxCd9ypl8ARGVcIR5CCaFU=
+X-Received: by 2002:a4a:7607:0:b0:566:6b6a:e1f with SMTP id
+ t7-20020a4a7607000000b005666b6a0e1fmr8635081ooc.7.1690234826537; Mon, 24 Jul
+ 2023 14:40:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230724033555.8039-1-xujianghui@cdjrlc.com> <e30b4bea0907fe4f94459e0afd5c24a9@208suo.com>
+In-Reply-To: <e30b4bea0907fe4f94459e0afd5c24a9@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 24 Jul 2023 17:40:15 -0400
+Message-ID: <CADnq5_M_Mu+L2HNBbWn5Q1jEmxXSPAd-=0hg9+smWV6oG0i5tA@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon: that open brace { should be on the previous line
+To:     sunran001@208suo.com
+Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,27 +69,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023, Peter Zijlstra wrote:
-> On Fri, Jul 21, 2023 at 01:18:54PM -0700, Sean Christopherson wrote:
-> > Check "this" CPU instead of the boot CPU when querying SVM support so that
-> > the per-CPU checks done during hardware enabling actually function as
-> > intended, i.e. will detect issues where SVM isn't support on all CPUs.
-> 
-> Is that a realistic concern?
+Applied.  Thanks!
 
-It's not a concern in the sense that it should never happen, but I know of at
-least one example where VMX on Intel completely disappeared[1].  The "compatibility"
-checks are really more about the entire VMX/SVM feature set, the base VMX/SVM
-support check is just an easy and obvious precursor to the full compatibility
-checks.
-
-Of course, SVM doesn't currently have compatibility checks on the full SVM feature
-set, but that's more due to lack of a forcing function than a desire to _not_ have
-them.  Intel CPUs have a pesky habit of bugs, ucode updates, and/or in-field errors
-resulting in VMX features randomly appearing or disappearing.  E.g. there's an
-ongoing buzilla (sorry) issue[2] where a user is only able to load KVM *after* a
-suspend+resume cycle, because TSC scaling only shows up on one socket immediately
-after boot, which is then somehow resolved by suspend+resume.
-
-[1] 009bce1df0bb ("x86/split_lock: Don't write MSR_TEST_CTRL on CPUs that aren't whitelisted")
-[2] https://bugzilla.kernel.org/show_bug.cgi?id=217574
+On Sun, Jul 23, 2023 at 11:37=E2=80=AFPM <sunran001@208suo.com> wrote:
+>
+> ERROR: that open brace { should be on the previous line
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>   drivers/gpu/drm/radeon/clearstate_si.h | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/clearstate_si.h
+> b/drivers/gpu/drm/radeon/clearstate_si.h
+> index 356219c6c7f2..7da8418704fe 100644
+> --- a/drivers/gpu/drm/radeon/clearstate_si.h
+> +++ b/drivers/gpu/drm/radeon/clearstate_si.h
+> @@ -23,8 +23,7 @@
+>
+>   #include "clearstate_defs.h"
+>
+> -static const u32 si_SECT_CONTEXT_def_1[] =3D
+> -{
+> +static const u32 si_SECT_CONTEXT_def_1[] =3D {
+>       0x00000000, // DB_RENDER_CONTROL
+>       0x00000000, // DB_COUNT_CONTROL
+>       0x00000000, // DB_DEPTH_VIEW
