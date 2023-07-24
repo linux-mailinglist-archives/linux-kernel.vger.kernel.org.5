@@ -2,114 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3840E76031B
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 01:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3214C760329
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 01:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbjGXX0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 19:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41552 "EHLO
+        id S230466AbjGXXbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 19:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjGXX02 (ORCPT
+        with ESMTP id S229459AbjGXXbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 19:26:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E65E7B;
-        Mon, 24 Jul 2023 16:26:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 24 Jul 2023 19:31:21 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9ED10F0;
+        Mon, 24 Jul 2023 16:31:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690241474;
+        bh=rUL962e/sq0yjskMcWvQ79vbePqOGQRbrHppxbF7p0A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=StrA6aO7PYmq8dEi9fVpzKjd1B9x3Lo5cSdRkqIPGQOwkDt8ce9hS3jy8zr6SxI+j
+         4SHxeRKDH2xZ/DNXP9mS2GAqbB4uJKWXxQrAhkCw2QO8QFqHlpPAjSE+5GcEXEyWSg
+         JcvM9//Ueqss/l/pPfHDLn91msrIur0BqE45DR6mWWAqGmD9VC2H0kQBRnThG7uUI/
+         K+eJV4i40MDKJPW4xvUlgCa2ehsweioSZGLtHLfCSEwU11WyYA4erSud41W30Y4V/u
+         bIFzP23Fz5I5KvdlpD3U1odHpVm70nQifTt0WfFFR4BGvaWAbTGf7fy4N11bPWqELU
+         16gLZ6LZnBTLg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BD3F761463;
-        Mon, 24 Jul 2023 23:26:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60DCFC433C8;
-        Mon, 24 Jul 2023 23:26:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690241187;
-        bh=4KSq1+MwOBFiXF30dhtmS7Fj1Uen43j4cbGhaxzDkQ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AVl0guQBTKgPU625eTtTiJ730ZEWk7Y7+8PLfxgxYRhJk9+ktGWz3b306R3LK8Heg
-         L5g6xPDWJyM0EB7e0GlDoGR9kmlt5H3dE6q81sx4C7Ju1thz0PdaKdYfwP7xOLXA6Y
-         RGrBj5+Iz8N0rNN8SyvwvWDsgnsKdBLI5s8XmcCnvDXmuHh+9udH0VRpm+28ZFoZYG
-         baB2Vv3XExVU2KQUsO9vFNMpwiiNzyQrXJRP6uuSukARjfty/1k1YEjsuc6BpVsh6p
-         dnArt6BOWuU3gl6Glu2BW0Nm+nHiHAZhldyqu+m5InAVFou0GdIXNqethlH29s389V
-         onJqHwhLpZzSw==
-Received: (nullmailer pid 1114814 invoked by uid 1000);
-        Mon, 24 Jul 2023 23:26:24 -0000
-Date:   Mon, 24 Jul 2023 17:26:24 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Jisheng Zhang <jszhang@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next 07/10] dt-bindings: net: snps,dwmac: add safety
- irq support
-Message-ID: <20230724232624.GA1112850-robh@kernel.org>
-References: <20230723161029.1345-1-jszhang@kernel.org>
- <20230723161029.1345-8-jszhang@kernel.org>
- <20230724-cleat-tricolor-e455afa60b14@spud>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R8xHj0BYvz4wZw;
+        Tue, 25 Jul 2023 09:31:12 +1000 (AEST)
+Date:   Tue, 25 Jul 2023 09:31:10 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Hector Martin <marcan@marcan.st>, Olof Johansson <olof@lixom.net>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: linux-next: manual merge of the asahi-soc tree with the arm-soc
+ tree
+Message-ID: <20230725093110.285eb858@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724-cleat-tricolor-e455afa60b14@spud>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/aKZPabUw3Yk/quRw_hIncWV";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 06:23:13PM +0100, Conor Dooley wrote:
-> On Mon, Jul 24, 2023 at 12:10:26AM +0800, Jisheng Zhang wrote:
-> > The snps dwmac IP support safety features, and those Safety Feature
-> > Correctible Error and Uncorrectible Error irqs may be separate irqs.
-> > 
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > ---
-> >  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > index ddf9522a5dc2..bb80ca205d26 100644
-> > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > @@ -107,6 +107,8 @@ properties:
-> >        - description: Combined signal for various interrupt events
-> >        - description: The interrupt to manage the remote wake-up packet detection
-> >        - description: The interrupt that occurs when Rx exits the LPI state
-> > +      - description: The interrupt that occurs when Safety Feature Correctible Errors happen
-> > +      - description: The interrupt that occurs when Safety Feature Uncorrectible Errors happen
-> >  
-> >    interrupt-names:
-> >      minItems: 1
-> > @@ -114,6 +116,8 @@ properties:
-> >        - const: macirq
-> >        - enum: [eth_wake_irq, eth_lpi]
-> >        - const: eth_lpi
-> > +      - const: sfty_ce_irq
-> > +      - const: sfty_ue_irq
-> 
-> Putting _irq in an interrupt name seems rather redundant to me although,
-> clearly not the first time for it here.
+--Sig_/aKZPabUw3Yk/quRw_hIncWV
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It's already inconsistent, so don't follow that pattern. Drop '_irq'.
+Hi all,
 
-> 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> 
-> Thanks,
-> Conor.
+Today's linux-next merge of the asahi-soc tree got a conflict in:
 
+  drivers/soc/apple/Makefile
 
+between commit:
+
+  869b9dd3339a ("soc: apple: Move power-domain driver to the genpd dir")
+
+from the arm-soc tree and commits:
+
+  6fca0adc61cf ("soc: apple: mailbox: Add ASC/M3 mailbox driver")
+  eaf935fa48ec ("soc: apple: mailbox: Rename config symbol to APPLE_MAILBOX=
+")
+
+from the asahi-soc tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/soc/apple/Makefile
+index b241e6a65e5b,20feee6f3943..000000000000
+--- a/drivers/soc/apple/Makefile
++++ b/drivers/soc/apple/Makefile
+@@@ -1,4 -1,9 +1,7 @@@
+  # SPDX-License-Identifier: GPL-2.0-only
+ -obj-$(CONFIG_APPLE_PMGR_PWRSTATE)	+=3D apple-pmgr-pwrstate.o
+ -
++ obj-$(CONFIG_APPLE_MAILBOX) +=3D apple-mailbox.o
++ apple-mailbox-y =3D mailbox.o
++=20
+  obj-$(CONFIG_APPLE_RTKIT) +=3D apple-rtkit.o
+  apple-rtkit-y =3D rtkit.o rtkit-crashlog.o
+ =20
+
+--Sig_/aKZPabUw3Yk/quRw_hIncWV
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS/Cb4ACgkQAVBC80lX
+0Gz6DwgAmKYg8IRz4CNEXlo3WdMloXpKt65ayB0GHrGxe9ElRGSuuDEvIc/6CUIH
+HwbgrjlX24M/Jlid++BXTGe5En+LKwsilZpgX5sgSWyiWy6mTJKiRe5nPmO2LjR3
+gStcDdtC9op5nVpsgbH1ssK2VqaLoTTbNEsof4mUGEF5U8Ys8DQdLUQ6Qx3zMMOE
+GFElXHNOoIzAoUCZxVTwqYG70bG0/C+ACpVOej5wpd02BASR+912+c+WCa9HDbue
+2J/lec6XVXriaDCatqUw88syz1pGBItixCV6PLF3wBcajya6N5LsaissZvxfno9c
+7BrZaBbmrhN8Q6S5pymcbWU4PTihxQ==
+=eePt
+-----END PGP SIGNATURE-----
+
+--Sig_/aKZPabUw3Yk/quRw_hIncWV--
