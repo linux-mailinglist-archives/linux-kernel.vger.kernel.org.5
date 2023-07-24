@@ -2,134 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D713B760062
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 22:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C276F76006C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 22:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbjGXUQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 16:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58030 "EHLO
+        id S229922AbjGXUW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 16:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbjGXUQe (ORCPT
+        with ESMTP id S229655AbjGXUW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 16:16:34 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BE9172B
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 13:16:29 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d0c9fea7efeso2435028276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 13:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690229788; x=1690834588;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CpyeHlxyK/Wxza2B0XbnLOYUqgpeakiOlUVm3eRpM6Q=;
-        b=j6FiLWVW1BEQWGRGDCNKnMdB/uBrkbSbLa1K1EDw/LiBM7C6eVkoRkCUsQ09WI8/Mv
-         Fny2LhZv1neNQ3Jabn3zYbY6YAZITRpwrzXHx4zZI9u5ceWLtCDmcrZMemFoU3tDb+fK
-         QbZ10Y+HN6R5WqhLtydaZX/6MwLGX2RVH/oHsL6aYKs8GIgi9WZA1x9l1MEoJwLIL1vk
-         itEK9g3ya0QTjILKmAA+DLMdCsEqRbStG5n7GR6YMdTn19PRPfIIB/OUkoR8GuYkump5
-         Op2hTrJXwr4NruPzzDOUA9+Du2VRB5PlDnJFULu7iJPUU+tT8iGY+bsTsCFdJfYvGyo6
-         5PLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690229788; x=1690834588;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CpyeHlxyK/Wxza2B0XbnLOYUqgpeakiOlUVm3eRpM6Q=;
-        b=BRhEhOJGN4j9NXv7t9eEepJiGtoZmu31EC28UXKciysPsCFK4uQznaD+2C6Zt/jiGj
-         wwask82hMhaNdzEk+Gm+aSfAY/q0AO/4L3r+X+QrwXLRKz8tXPK/R1iLjV3b4qUHHH9y
-         oLBnUJ9b9KwroA2Rm7B3OW4n4v+kJBWVixUxUhEP4dBi47guhJTOBdGWSV2uuWEOnA+C
-         vMuvHRGwqbzxTJ5/g6FjlrDRjMbxF1sn1KgOq9Smzd1DEPUiOMiDECEh3eB/36uq/b8y
-         P9cpElU5HNxsZ25uuLnrva+PHd8XEkZGNjaXCac++aPjE3f47ge40rJza3czO9T/LokF
-         ih6A==
-X-Gm-Message-State: ABy/qLaCvStR32z6BvjhNkSo0Gh4+pZqtK3o9T8rl6KJVc3c7nBCKnd8
-        oFLocWkJ//OzncWTusk2GWCjCG0/yPs=
-X-Google-Smtp-Source: APBJJlETEm+sUDMdwBxTQh+PqsroqqaXQ8T9Z3RbdwPygXWQyA0h4pdWgzZRNvYOpLPGkfrhzs9fYbXOMr8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:100f:b0:cf2:ad45:2084 with SMTP id
- w15-20020a056902100f00b00cf2ad452084mr67527ybt.12.1690229788310; Mon, 24 Jul
- 2023 13:16:28 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 13:16:26 -0700
-In-Reply-To: <20230718234512.1690985-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230718234512.1690985-1-seanjc@google.com>
-Message-ID: <ZL7cGrJNV3//wsXD@google.com>
-Subject: Re: [RFC PATCH v11 00/29]  KVM: guest_memfd() and per-page attributes
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Mon, 24 Jul 2023 16:22:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE49B10EC
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 13:22:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690230132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ShKXd85SOx0saxITqxIawBxKdACPZs/8Qk1lelqQbIY=;
+        b=MIWUAYpN1TNV4KnRTdl1AOvTso9JaeVWfGvHQr3TBs80Q2qK4jEDPDRDBio7HZHMsrHYTn
+        YkVwT3EMVZq9ROPj+wBnfuPGzyJgAWu5NO3JyO6+52rKHtr9yzdqg0c2BjwNDjUEtUMAqP
+        ls/kyByqvZIzYLlf0Nmm9iluil04xWQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-543-7eNZMO9ONJuqpUPYsJfYuw-1; Mon, 24 Jul 2023 16:22:05 -0400
+X-MC-Unique: 7eNZMO9ONJuqpUPYsJfYuw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B2B56802666;
+        Mon, 24 Jul 2023 20:22:04 +0000 (UTC)
+Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1B701492CA6;
+        Mon, 24 Jul 2023 20:22:04 +0000 (UTC)
+From:   Jeff Moyer <jmoyer@redhat.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Greg KH <gregkh@linuxfoundation.org>,
+        Phil Elwell <phil@raspberrypi.com>, andres@anarazel.de,
+        david@fromorbit.com, hch@lst.de, io-uring@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-xfs@vger.kernel.org,
+        stable <stable@vger.kernel.org>, riel@surriel.com
+Subject: Re: [PATCH] io_uring: Use io_schedule* in cqring wait
+References: <CAMEGJJ2RxopfNQ7GNLhr7X9=bHXKo+G5OOe0LUq=+UgLXsv1Xg@mail.gmail.com>
+        <2023072438-aftermath-fracture-3dff@gregkh>
+        <140065e3-0368-0b5d-8a0d-afe49b741ad2@kernel.dk>
+        <ecb821a2-e90a-fec1-d2ca-b355c16b7515@kernel.dk>
+        <0f63b072-840c-db5d-13cd-7faa554975d3@gmail.com>
+X-PGP-KeyID: 1F78E1B4
+X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
+Date:   Mon, 24 Jul 2023 16:27:53 -0400
+In-Reply-To: <0f63b072-840c-db5d-13cd-7faa554975d3@gmail.com> (Pavel
+        Begunkov's message of "Mon, 24 Jul 2023 20:22:28 +0100")
+Message-ID: <x49cz0hxdfa.fsf@segfault.boston.devel.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dropped non-KVM folks from Cc: so as not to bother them too much.
+Pavel Begunkov <asml.silence@gmail.com> writes:
 
-On Tue, Jul 18, 2023, Sean Christopherson wrote:
-> This is the next iteration of implementing fd-based (instead of vma-based)
-> memory for KVM guests.  If you want the full background of why we are doing
-> this, please go read the v10 cover letter[1].
-> 
-> The biggest change from v10 is to implement the backing storage in KVM
-> itself, and expose it via a KVM ioctl() instead of a "generic" sycall.
-> See link[2] for details on why we pivoted to a KVM-specific approach.
-> 
-> Key word is "biggest".  Relative to v10, there are many big changes.
-> Highlights below (I can't remember everything that got changed at
-> this point).
-> 
-> Tagged RFC as there are a lot of empty changelogs, and a lot of missing
-> documentation.  And ideally, we'll have even more tests before merging.
-> There are also several gaps/opens (to be discussed in tomorrow's PUCK).
+> On 7/24/23 16:58, Jens Axboe wrote:
+>> Even though I don't think this is an actual problem, it is a bit
+>> confusing that you get 100% iowait while waiting without having IO
+>> pending. So I do think the suggested patch is probably worthwhile
+>> pursuing. I'll post it and hopefully have Andres test it too, if he's
+>> available.
+>
+> Emmm, what's the definition of the "IO" state? Unless we can say what exactly
+> it is there will be no end to adjustments, because I can easily argue that
+> CQ waiting by itself is IO.
+> Do we consider sleep(N) to be "IO"? I don't think the kernel uses io
+> schedule around that, and so it'd be different from io_uring waiting for
+> a timeout request. What about epoll waiting, etc.?
 
-I've pushed this to
+See Documentation/filesystems/proc.rst (and mainly commit 9c240d757658
+("Change the document about iowait")):
 
-  https://github.com/kvm-x86/linux/tree/guest_memfd
+- iowait: In a word, iowait stands for waiting for I/O to complete. But there
+  are several problems:
 
-along with Isaku's fix for the lock ordering bug on top.
+  1. CPU will not wait for I/O to complete, iowait is the time that a task is
+     waiting for I/O to complete. When CPU goes into idle state for
+     outstanding task I/O, another task will be scheduled on this CPU.
+  2. In a multi-core CPU, the task waiting for I/O to complete is not running
+     on any CPU, so the iowait of each CPU is difficult to calculate.
+  3. The value of iowait field in /proc/stat will decrease in certain
+     conditions.
 
-As discussed at PUCK, I'll apply fixes/tweaks/changes on top until development
-stabilizes, and will only squash/fixup when we're ready to post v12 for broad
-review.
+  So, the iowait is not reliable by reading from /proc/stat.
 
-Please "formally" post patches just like you normally would do, i.e. don't *just*
-repond to the buggy mail (though that is also helpful).  Standalone patches make
-it easier for me to manage things via lore/b4.
+Also, vmstat(8):
+       wa: Time spent waiting for IO.  Prior to Linux 2.5.41, included in idle.
 
-If you can, put gmem or guest_memfd inside the square braces, e.g.
+iostat/mpstat man pages:
+              %iowait
+                     Show the percentage of time that the  CPU  or  CPUs  were
+                     idle  during which the system had an outstanding disk I/O
+                     request.
 
-  [PATCH gmem] KVM: <shortlog>
+sar(1):
+              %iowait
+                     Percentage of time that the CPU or CPUs were idle  during
+                     which the system had an outstanding disk I/O request.
 
-so that it's obvious the patch is intended for the guest_memfd branch.  For fixes,
-please also be sure to use Fixes: tags and split patches to fix exactly one base
-commit, again to make my life easier.
+iowait was initially introduced in 2002 by Rik van Riel in historical
+git commit 7b88e5e0bdf25 ("[PATCH] "io wait" process accounting").  The
+changelog from akpm reads:
 
-I'll likely add my own annotations when applying, e.g. [FIXUP] and whatnot, but
-that's purely notes for myself for the future squash/rebase.
+    Patch from Rik adds "I/O wait" statistics to /proc/stat.
+    
+    This allows us to determine how much system time is being spent
+    awaiting IO completion.  This is an important statistic, as it tends to
+    directly subtract from job completion time.
+    
+    procps-2.0.9 is OK with this, but doesn't report it.
 
-Thanks!
+I vaguely recall there was confusion from users about why the system was
+idle when running database workloads.  Maybe Rik can remember more
+clearly.
+
+Anyway, as you can see, the definition is murky, at best.  I don't think
+we should overthink it.  I agree with the principle of Jens'
+patch--let's just not surprise users with a change in behavior.
+
+Cheers,
+Jeff
+
