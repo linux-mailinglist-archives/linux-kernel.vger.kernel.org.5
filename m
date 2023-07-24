@@ -2,352 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E09875FFD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E146E75FFDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbjGXTc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 15:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
+        id S230116AbjGXThn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 15:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbjGXTc1 (ORCPT
+        with ESMTP id S229541AbjGXThl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 15:32:27 -0400
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4ECD10E4;
-        Mon, 24 Jul 2023 12:32:25 -0700 (PDT)
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7653bd3ff2fso509104385a.3;
-        Mon, 24 Jul 2023 12:32:25 -0700 (PDT)
+        Mon, 24 Jul 2023 15:37:41 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37B51B3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 12:37:39 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-573cacf4804so60234257b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 12:37:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690227459; x=1690832259;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O4VWgPiua4ZmSDkThmKhRK2lyYjlOypYwlqtCHhU3qo=;
+        b=F/34vdGPJzVdninBmHaaYps8MkTJYqcn8LiDiws1Gv9uty0wqqclSdi5PAck/jLSQ8
+         EcvJd0MXjWq+ozQp31NWYaFd+VTGDlut71Qqrqv/Qg4H1ujvRnubTaajPpFNnoBweu0M
+         oD4S1+sp8BqCqEuaH6IQAGP81DI3GAPBZhuBKv0CoLbXzC/z+R+Wd2Ag72X9NzgeOl5Q
+         lMXjB8hE6JbU6/PZRlXHvU7xkq9MdpO9Csy+OLjbBwzxy5pLFWwNIK9tfQ46O3+mDDnZ
+         ABbVfHKJBmLVtKzHA1Fe/rCU4NvdrZ6ogNs+M3yzlpLaPX+2qfVUk9U1m5xDOTr3BasY
+         3dsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690227145; x=1690831945;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=snIuRlpqRdn7Uzqe0GJNOw+a8Zw/s3ZtXUk/2L64uAA=;
-        b=XS3En4NWsbn2269FsI0rV4mQu0mpvsZqv1sHFbxOZ8qE7B2ebcEVMm64pQ210AFFJ7
-         we9MVpX7s0bZrbJKAszufkjlHTibLPnpho+EReW9ly/ZbbDGF9OV5Bp3412bDxD+AW/m
-         JtohP8jw1frt4OZrI9ERfTTmhj8E4KFQ34FWx+R9LA58c0ImWffIjuY+n7AyMEhI3JaX
-         6iILO/Bf2cmlUQEm3EhdcA15gEQ/i6q43DnrMnAuct7KB2Gxv9bzmVjMpp/ocgY+ibhu
-         psV6jyhh4is0xrHXEDyj+4JCXLenF3Zfefs8B2Iiyg4pusXY9KBBLdfuZPJmK+G8MFI0
-         g2Sw==
-X-Gm-Message-State: ABy/qLYeghk3k4iYojCDCC2m6c26gPnQXgmG4/iuxvNZcOPnzLZt9CFO
-        MgWpXGq6z4GUAEihXpvfI/Q=
-X-Google-Smtp-Source: APBJJlGX6E7tIF2IevxuDF8AY7Ip2Kl11BPrppogixZjAKcFqjVa5GBZSecZ4Os5uhXP2ETzOwU9HQ==
-X-Received: by 2002:a05:620a:248c:b0:76c:4d4c:7942 with SMTP id i12-20020a05620a248c00b0076c4d4c7942mr919919qkn.21.1690227144448;
-        Mon, 24 Jul 2023 12:32:24 -0700 (PDT)
-Received: from costa-tp.bos2.lab ([2a00:a040:199:8930:2c90:cb9e:b154:73dc])
-        by smtp.gmail.com with ESMTPSA id u11-20020a0cdd0b000000b00636d2482dd4sm3749283qvk.17.2023.07.24.12.32.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 12:32:24 -0700 (PDT)
-From:   Costa Shulyupin <costa.shul@redhat.com>
-To:     Jonathan Corbet <corbet@lwn.net>, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-        linux-kernel@vger.kernel.org (open list),
-        workflows@vger.kernel.org (open list:DOCUMENTATION PROCESS),
-        rust-for-linux@vger.kernel.org (open list:RUST)
-Cc:     Costa Shulyupin <costa.shul@redhat.com>
-Subject: [RFC PATCH] rework top page and organize toc on the sidebar
-Date:   Mon, 24 Jul 2023 22:31:16 +0300
-Message-ID: <20230724193118.2204673-1-costa.shul@redhat.com>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=true
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690227459; x=1690832259;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O4VWgPiua4ZmSDkThmKhRK2lyYjlOypYwlqtCHhU3qo=;
+        b=cjounjF9sNbHGoPCyuZxbenjnQXLFCdxdDEiOHhnesbM68cPgT4UoBhLEBAAgDBBxt
+         jEaWPN64p/PWAo6sDhajDJKcQz0DgOpUUVVNJspn1RtdGnqlB1YD0X2DDLqOT81HYq8j
+         emydPu3sfrY2ktxgLSmbg7Jyjkk2JRgJGqPJhAE+9mg9b73dkNVpxFAoKE869JNHLjhH
+         ssY/m6i/Ni9UMGG1G8NV2FsKuZCERt0MMigpZMyefBKg+r2nmm2XjJUEBrgsasLyruDv
+         Wg1+9d3l/a+PVpTu9UqA6eleT5l3ej2OtjjFY5GFARsawN1PuTyBRvk6PxzwUTsXeB6N
+         ROkQ==
+X-Gm-Message-State: ABy/qLasaU8uLShkjStp0aBwGDoUnI2lvhR1ige+sgGi2UnjcpN1ckVk
+        WVMoo1qp5TF8WdEZRVxcZHvNRrdiK4Y=
+X-Google-Smtp-Source: APBJJlG4XX11fRNdTWxSIJ1x78nNmOIsCxonkuectk9GCCLaduDufbvEPsVji3+TYABpm1rQkYjd/u9/tRY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ae54:0:b0:576:6e4e:b87f with SMTP id
+ g20-20020a81ae54000000b005766e4eb87fmr73392ywk.10.1690227458870; Mon, 24 Jul
+ 2023 12:37:38 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Mon, 24 Jul 2023 12:37:00 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230724193700.54825-1-seanjc@google.com>
+Subject: [ANNOUNCE / CFP] KVM Microconference at LPC 2023
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Template {{ toctree(maxdepth=3) }} in
-Documentation/sphinx/templates/kernel-toc.html
-uses directives toctree and doesn't use sections on the top page
-Documentation/index.rst
-to generate expandable toc on the sidebar.
+We are excited to announce the first KVM MC at Plumbers 2023!
 
-BTW, other template {{ toc }} uses only sections, and doesn't
-use directives toctree.
+The KVM microconference will focus on KVM itself, as well as KVM's touchpoints
+with other kernel subsystems.  The purpose of the KVM MC is to supplement KVM
+Forum by providing developers with a dedicated vehicle for discussing kernel
+internals.  Topics that are primarily aimed at something other than KVM are
+firmly out of scope and will be rejected.  Please consider the Confidential
+Computing MC, the VFIO/IOMMU/PCI MC, or KVM Forum 2024 for virtualization topics
+that aren't directly related to KVM internals.
 
-Summary of changes:
-- split top page index.rst to several pages
-- convert sections of Documentation/index.rst to hierarchical toctree
-- vertical bars '|' add empty lines
+The KVM MC will be comprised of ~3 "big" topics, and ~6 (+/-2) "small" topics.
+Big topics will be allotted 30-40 minutes, and small topics 10-20 minutes.
+Please add a note in your submission if you would like your topic to be
+considered for a big slot (consider it a hint to help us rough in the scedule).
 
-Benefits:
-- collapsed toc is just seven short lines length
-- toc is expandable
+Below is a list of *ideas* for topics.  Topics that are not on the list are more
+than welcome!  If we were omniscient, we wouldn't need this CFP!
 
-References:
-- https://www.sphinx-doc.org/en/master/development/templating.html#toctree
-- https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree
-- https://www.sphinx-doc.org/en/master/development/templating.html#toc
-- https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
-- https://sphinx-rtd-theme.readthedocs.io/
+Note, priority will be given to open problems, i.e. things that have already
+been posted/discussed on LKML, but posting before LPC is NOT a hard requirement.
 
-Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
----
- Documentation/development.rst  | 19 +++++++++
- Documentation/index.rst        | 78 +++++++++-------------------------
- Documentation/internal-api.rst | 12 ++++++
- Documentation/low-level.rst    | 24 +++++++++++
- Documentation/process/main.rst | 16 +++++++
- Documentation/user.rst         | 21 +++++++++
- 6 files changed, 112 insertions(+), 58 deletions(-)
- create mode 100644 Documentation/development.rst
- create mode 100644 Documentation/internal-api.rst
- create mode 100644 Documentation/low-level.rst
- create mode 100644 Documentation/process/main.rst
- create mode 100644 Documentation/user.rst
+Potential Topics:
+  - Serving inaccessible/unmappable memory for KVM guests (a.k.a. guest_memfd)
+  - Optimizing mmu_notifiers, e.g. reducing TLB flushes and spurious zapping
+  - Supporting multiple KVM modules (for non-disruptive upgrades)
+  - Improving and hardening KVM+perf interactions
+  - Implementing arch-agnostic abstractions in KVM (e.g. MMU)
+  - Defining KVM requirements for hardware vendors
+  - Utilizing "fault" injection to increase test coverage of edge cases
+  - KVM vs VFIO (e.g. memory types, a rather hot topic on the ARM side)
 
-diff --git a/Documentation/development.rst b/Documentation/development.rst
-new file mode 100644
-index 000000000000..8d8eea6d4491
---- /dev/null
-+++ b/Documentation/development.rst
-@@ -0,0 +1,19 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Development processes
-+=====================
-+
-+Various other manuals with useful information for all kernel developers.
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   process/license-rules
-+   doc-guide/index
-+   dev-tools/index
-+   dev-tools/testing-overview
-+   kernel-hacking/index
-+   trace/index
-+   fault-injection/index
-+   livepatch/index
-+   rust/index
-diff --git a/Documentation/index.rst b/Documentation/index.rst
-index 9dfdc826618c..3c0efebba9e9 100644
---- a/Documentation/index.rst
-+++ b/Documentation/index.rst
-@@ -13,94 +13,56 @@ documents into a coherent whole.  Please note that improvements to the
- documentation are welcome; join the linux-doc list at vger.kernel.org if
- you want to help out.
- 
--Working with the development community
--======================================
-+|
- 
- The essential guides for interacting with the kernel's development
--community and getting your work upstream.
-+community and getting your work upstream:
- 
- .. toctree::
--   :maxdepth: 1
--
--   process/development-process
--   process/submitting-patches
--   Code of conduct <process/code-of-conduct>
--   maintainer/index
--   All development-process docs <process/index>
-+   :maxdepth: 2
- 
-+   process/main
- 
--Internal API manuals
--====================
-+|
- 
- Manuals for use by developers working to interface with the rest of the
--kernel.
-+kernel:
- 
- .. toctree::
--   :maxdepth: 1
-+   :maxdepth: 2
- 
--   core-api/index
--   driver-api/index
--   subsystem-apis
--   Locking in the kernel <locking/index>
-+   internal-api
- 
--Development tools and processes
--===============================
-+|
- 
--Various other manuals with useful information for all kernel developers.
-+Various other manuals with useful information for all kernel developers:
- 
- .. toctree::
--   :maxdepth: 1
--
--   process/license-rules
--   doc-guide/index
--   dev-tools/index
--   dev-tools/testing-overview
--   kernel-hacking/index
--   trace/index
--   fault-injection/index
--   livepatch/index
--   rust/index
-+   :maxdepth: 2
- 
-+   development
- 
--User-oriented documentation
--===========================
-+|
- 
- The following manuals are written for *users* of the kernel — those who are
- trying to get it to work optimally on a given system and application
--developers seeking information on the kernel's user-space APIs.
-+developers seeking information on the kernel's user-space APIs:
- 
- .. toctree::
--   :maxdepth: 1
--
--   admin-guide/index
--   The kernel build system <kbuild/index>
--   admin-guide/reporting-issues.rst
--   User-space tools <tools/index>
--   userspace-api/index
--
--See also: the `Linux man pages <https://www.kernel.org/doc/man-pages/>`_,
--which are kept separately from the kernel's own documentation.
--
--Firmware-related documentation
--==============================
--The following holds information on the kernel's expectations regarding the
--platform firmwares.
--
--.. toctree::
--   :maxdepth: 1
-+   :maxdepth: 2
- 
--   firmware-guide/index
--   devicetree/index
-+   user
- 
-+|
- 
--Architecture-specific documentation
--===================================
-+Low level heardware depended documentation:
- 
- .. toctree::
-    :maxdepth: 2
- 
--   arch/index
-+   low-level
- 
-+|
- 
- Other documentation
- ===================
-diff --git a/Documentation/internal-api.rst b/Documentation/internal-api.rst
-new file mode 100644
-index 000000000000..c4aa757cbca7
---- /dev/null
-+++ b/Documentation/internal-api.rst
-@@ -0,0 +1,12 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Internal API manuals
-+====================
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   core-api/index
-+   driver-api/index
-+   subsystem-apis
-+   Locking in the kernel <locking/index>
-diff --git a/Documentation/low-level.rst b/Documentation/low-level.rst
-new file mode 100644
-index 000000000000..4288633b37af
---- /dev/null
-+++ b/Documentation/low-level.rst
-@@ -0,0 +1,24 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Low level
-+=========
-+
-+Firmware-related documentation
-+------------------------------
-+The following holds information on the kernel's expectations regarding the
-+platform firmwares.
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   firmware-guide/index
-+   devicetree/index
-+
-+
-+Architecture-specific documentation
-+-----------------------------------
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+   arch/index
-diff --git a/Documentation/process/main.rst b/Documentation/process/main.rst
-new file mode 100644
-index 000000000000..732dab311d6d
---- /dev/null
-+++ b/Documentation/process/main.rst
-@@ -0,0 +1,16 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Community
-+=========
-+
-+Working with the development community
-+
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   development-process
-+   submitting-patches
-+   Code of conduct <code-of-conduct>
-+   ../maintainer/index
-+   All development-process docs <../process/index>
-diff --git a/Documentation/user.rst b/Documentation/user.rst
-new file mode 100644
-index 000000000000..22151edc5bcc
---- /dev/null
-+++ b/Documentation/user.rst
-@@ -0,0 +1,21 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+User-oriented documentation
-+===========================
-+
-+The following manuals are written for *users* of the kernel — those who are
-+trying to get it to work optimally on a given system and application
-+developers seeking information on the kernel's user-space APIs.
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   admin-guide/index
-+   The kernel build system <kbuild/index>
-+   admin-guide/reporting-issues.rst
-+   User-space tools <tools/index>
-+   userspace-api/index
-+
-+See also: the `Linux man pages <https://www.kernel.org/doc/man-pages/>`_,
-+which are kept separately from the kernel's own documentation.
-+
--- 
-2.41.0
+Abstracts can be submitted via https://lpc.events/event/17/abstracts.  Don't
+forget to select "KVM MC" as the track!
 
+Thanks!
