@@ -2,213 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B4975E9AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3FC75E9B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbjGXC0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 22:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35362 "EHLO
+        id S230015AbjGXC2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 22:28:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjGXCZ4 (ORCPT
+        with ESMTP id S229753AbjGXC2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 22:25:56 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0989A6
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 19:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690165535; x=1721701535;
-  h=date:from:to:subject:message-id:references:in-reply-to:
-   mime-version;
-  bh=lUCta+26jqDbeYHTQfK/cSnp5PJTGG36JXi5JkKvqHg=;
-  b=S1lIoOtDzF6A6N57eaKH/uYcfLCO9qU8YDmx5QOxkfh9SkfdKtbobZuG
-   Er61ix2lzj024OfqL5cq9l1CCTakNpMWpEbGZpCEM6fBGSHAm+JnlA66z
-   wfnZkBtteKn6YVEhzWAWJHMVLBHje3e1y1LPu76HYOvV4KxdjCYXHFSse
-   JBabLHxfUY1GFiFP+wrl0bS1DGuAK0JJF/MCrnhHejncGGIFzk+BHQBxk
-   6nRjTNvyTPz+Jgt00JGN2zHBhgoqg9XbOrIVN+/jZUicN/YPgSRPJ07rw
-   5k9wLRXDF3ME7LhnLX2z8Ha5m6oizOyNdrSyzORC0t/f0oMsTBtLOtBtz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="398230245"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="398230245"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2023 19:25:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="839271096"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="839271096"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga002.fm.intel.com with ESMTP; 23 Jul 2023 19:25:18 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sun, 23 Jul 2023 19:25:17 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Sun, 23 Jul 2023 19:25:17 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Sun, 23 Jul 2023 19:25:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J7ML6EOxotF1vA31kGWjM4jeIgWWmYvzchM6IvDP52v4hbKAiNDOCZP2mpx6qTbEZU3X7KWgopOXlfKPgZPb3uv9zHoGTIVIEb0HQHmFiOl28w5FviKggS53V5DaS0VB/iOYXp9MgTQc/WylzH/8YhuHMpCLpTmGitR7rAK4ajznCDJ2GmSuxqJjztRpTBx+GAA8PVCuK+m5ahfp7CB/krREocsjPsnCcyO1ixD6f7C8ebavmBf1fElhNkMEhJRd3ShXHRBZzWTJQDdbFt6PvVUMAPtC3Vgkxte6igFHR46LjUQuJZds47+DzhTpt9rm2jrYLSB7l+TL1JUv5I5wTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=o8PbJm35CpaBCw0d3WBf2dKR3iT/9kbp23QGchXvS94=;
- b=dV7gwDE57l1WTcVqc908+ip95O0Ed10nuDbQBgaPs5sE/YwZAPDrjuiV2tfWrUyaaClBBwl7iD73FTdgi8MHdB3bnRXCnNXm3ygVyiQFze0MybTatEApms6Ihsz0uoMEF2/VdPmuFv6F/NiLJpdfdw34zTtd9EPQZQyrM3k0iuJrQYrQFMEA0NocXPyi9eF7JdiiaYfSiOc5eVDb1UH/y3m4v4DZQ/SdyJt5/ijUWj4RqSgNouFXNXnWrI7i7kf7Aj3HTnSQXawzv1XdZYzYURS9pMBF+QkqNmy2mXDBioZ+wDdt96UZ7eTjWWUWuwlXl00S1Kn5QmPJDiP5HOAocw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by PH7PR11MB8480.namprd11.prod.outlook.com (2603:10b6:510:2fe::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Mon, 24 Jul
- 2023 02:25:10 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::6da5:f747:ba54:6938]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::6da5:f747:ba54:6938%6]) with mapi id 15.20.6609.032; Mon, 24 Jul 2023
- 02:25:10 +0000
-Date:   Sun, 23 Jul 2023 19:25:06 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Sumitra Sharma <sumitraartsy@gmail.com>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Fabio <fmdefrancesco@gmail.com>, Deepak R Varma <drv@mailo.com>,
-        Alison Schofield <alison.schofield@intel.com>
-Subject: Re: [PATCH] Remove unnecessary calls to kmap{,_local_page}() when
- acquiring pages using GFP_DMA32.
-Message-ID: <64bde1026a0af_7a6c729452@iweiny-mobl.notmuch>
-References: <20230719134314.GA7590@ubuntu>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230719134314.GA7590@ubuntu>
-X-ClientProxiedBy: SJ0P220CA0011.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:a03:41b::31) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+        Sun, 23 Jul 2023 22:28:50 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC232E7;
+        Sun, 23 Jul 2023 19:28:47 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R8PH00XvBz4f3pBd;
+        Mon, 24 Jul 2023 10:28:44 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgCX_7LY4b1k4_awOg--.28306S4;
+        Mon, 24 Jul 2023 10:28:44 +0800 (CST)
+From:   thunder.leizhen@huaweicloud.com
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v2 0/1] rcu: Simplify check_cpu_stall()
+Date:   Mon, 24 Jul 2023 10:26:50 +0800
+Message-Id: <20230724022651.899-1-thunder.leizhen@huaweicloud.com>
+X-Mailer: git-send-email 2.37.3.windows.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|PH7PR11MB8480:EE_
-X-MS-Office365-Filtering-Correlation-Id: c2f3fa96-5fa5-4e3a-c561-08db8bed33dd
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8eyaPjdrjrdqLzR3ByFSevdxslRkaph1+lpGKLuuacmFKMZH4Im+dXDwK9Lk7GhljM3kh9jhhbl1LOYo0pscfKr/6OA5Qhd+UTRLZQLs15m3HWfHbliJ+Xpy/tQJDcx0lOtqHQUMNHxi2Wi0XaMECJwqSa/J/pdof8Vm2podAQBTSIdJKAURdfXvMr2y+5+fBNqKW4z4/CWjGEe3SPYwXTD6WEsDAoGlFhrsmSpupvvhVvIj7q4dAAUX7DyOAyVNuzNCZAkp+vmdwIgnK7PiCOiHGK87sl6tTAGn6w5zzAKaJKgj4DHYmeomy7clSbElpt8NHFno05F+019dL4TIGZ8Cr8C4oeRNrsHjL+fnp+L/nYTubrWwjZN0pcA7SLZKT4zTJN6LIW60MpZL3NZ6tgnbIWtv4IFaATOdus2hUr7Z+Nr16IvMCCj8GXpVawwzZfNn1iXc2Axcgi5Ern5iOHtugb0LuYIwm4rox/dMURHjxqoISgdOEqcT0N1En6NyVUuq2I302ZABzji5h4eGjixLJrFynfuqrRTLimR++gzr6I3VQ4/xKlq2rogCAMphsrLszxF5qzU9DFv5sBb3bA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(136003)(376002)(366004)(39860400002)(346002)(451199021)(5660300002)(6506007)(186003)(26005)(316002)(6636002)(66476007)(66946007)(66556008)(41300700001)(6486002)(966005)(9686003)(2906002)(6512007)(6666004)(8676002)(478600001)(8936002)(44832011)(83380400001)(110136005)(86362001)(82960400001)(921005)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZHMe14Vhi/fXkS3sL3L+XPEYeJzcfYKdyMLmvTb67S/LvLQ/d5XEcEQldi27?=
- =?us-ascii?Q?Fm8wFf10BmnBpinnVosOBX0xA/kVgK4KWgJbeI4BDjvDJWFJkv0RkB0h5LuI?=
- =?us-ascii?Q?XtkCR3haBJO8K2/+oD94h7RRLHGMQMFWAuL1yt4p9Gh/085r4tFnCrx9sAF5?=
- =?us-ascii?Q?2p4kPK8aCpEYcbgkdS5YeknUo4TLaV0fUt1bo4HLlwpmT8yNWmZSB8aSIVUL?=
- =?us-ascii?Q?/2PRCqgXDF2JOJsX4HO2yTZP72i2WVlIqj3SrZLoa+dSTF56h9MGVVYFYK2e?=
- =?us-ascii?Q?0aIqbXW3ty9Haw3FUk6iHX7/nIFSy6sqZcfsXoFQTtHdhmLqIhzEvPjmr2Ky?=
- =?us-ascii?Q?mR8pUF6ONle4jf4KrCkDk/gOmJgfNwU8SB+Mphao6XqGjscon1doHKUPOOfu?=
- =?us-ascii?Q?6n9lWET6l6HHXwEzq7JUpOvRgF33rFEeU1mDbspfqtYIADUA6ScKa9+hDHgP?=
- =?us-ascii?Q?nvcYHjE/4O5A11b7P1dtpbkV54Bh/wWMTiDQMWAjjHOfkmnxD7Hnt5aztg9w?=
- =?us-ascii?Q?FRcYhog4XmT90ZekgoPVud0m92BzgLvez6YvZUoJGvZV06S8NInxC/SIjVBG?=
- =?us-ascii?Q?rcnVcH3uzo1qNd9yGqfTv4C4O0y3eoXf93VwA8GcrD7j6pLg0lTX5Ki9AM5H?=
- =?us-ascii?Q?3RIpCReJTPi9tRxCfNCdpikC4byFgiSGDEiIr2Wx5EwK43XVKdRfEfzU1MOj?=
- =?us-ascii?Q?pCVIId2NmaIEt4xjS1BFpCJByD6cdWz0Kbgl/nfw0ktUxadM9EK5ndv7qZme?=
- =?us-ascii?Q?nEkQvktsPXUDaCJEq421c1pEpWaGQdonvOZPW/rqqwBH5Mn5D2lflew0U9+G?=
- =?us-ascii?Q?KhjoHrhEUnrUVwyfjnsC/Ap5L8SYItHNlwA0KMAzM6NOrCTUVOwUzi2HYglq?=
- =?us-ascii?Q?GwYu8ZZtg8lfC1aax1lrdEdPCuRAQkOwbEI4FXSNirzJ+Z/iGPxxHHUfeSIG?=
- =?us-ascii?Q?J7Bvgp1azIKNWGvKUdLI2FtU6SFPlbKxJzt2ZUG4eaxpN2M/AScQJROnqkQq?=
- =?us-ascii?Q?56f+uERYbCAabk2H2H8MMVUxbBBGgdAWTpQVLP48kqU2kelgJA2HMBQZuxlM?=
- =?us-ascii?Q?WtdxWIJdDDqtjEZgVn7MbsDnDKgUkLkTCnntnz9M4GGY5cmxq9wwjRh8X21X?=
- =?us-ascii?Q?0BkitoxXQ0X0SqGLNTkZC5nsOOUeEYBeJBdOB3oqGObT2fVbO6xJVjqkPbNv?=
- =?us-ascii?Q?QLYrjPueLxy6/+c8dixt9yHGNNFXuTBft8H0SCpd+aRI6NJvBwJFQ4nPku/E?=
- =?us-ascii?Q?nFjIluQukXB55TM/OBL6N8C2bIaTknLOWniN1ZbdTlrAdYHdhU6780AGcmFd?=
- =?us-ascii?Q?QReZpLRbIsLwUEAZEjklzFnCs63xVtbPhAPFh28TV1t40krCP/zJ27v+O6Q3?=
- =?us-ascii?Q?/89Q+YjVejlUTnSsDswoHriDBm0bJHE5kyZ0f/Db0PkMam76Xq4Vqdlpz7oO?=
- =?us-ascii?Q?vxT48MucnvlRSPq93c9oYPaBXYcGbIhcXOZkltgCJmTHE994wJiKC4FXYJQJ?=
- =?us-ascii?Q?5hfhap3d2CUl5bluqClHtp9bBVaXEKeUyi8l01Yw46hugjXzH6I3VxrfyfvC?=
- =?us-ascii?Q?YCeYlqAa+3dlky56hHHpmSP+U2LNjelu+N80GfYv?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2f3fa96-5fa5-4e3a-c561-08db8bed33dd
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 02:25:10.0716
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xxqJzR5Gcn7iaykXaBSbL9F/5xBEMrPPKoFDcGA2Js7Fgcy+gVYXoXg3RLR8QmjIOLxsYzYWM9m5Hq9NmlR67w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8480
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCX_7LY4b1k4_awOg--.28306S4
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYc7kC6x804xWl14x267AKxVW8JVW5JwAF
+        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWUWVWUuwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628v
+        n2kIc2xKxwAKzVCY07xG64k0F24l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+        evJa73UjIFyTuYvjxUFCJmUUUUU
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sumitra Sharma wrote:
-> The GFP_DMA32 uses the DMA32 zone to satisfy the allocation
-> requests. Therefore, pages allocated with GFP_DMA32 cannot
-> come from Highmem.
-> 
-> Avoid using calls to kmap() / kunmap() as the kmap() is being
-> deprecated [1].
-> 
-> Avoid using calls to kmap_local_page() / kunmap_local() as the
-> code does not depends on the implicit disable of migration of
-> local mappings and is, in fact, an unnecessary overhead for
-> the main code [2].
-> 
-> Hence, use a plain page_address() directly in the
-> psb_mmu_alloc_pd function.
-> 
-> [1]: https://lore.kernel.org/all/20220813220034.806698-1-ira.weiny@intel.com/
-> [2]: https://lwn.net/Articles/836503/
-> 
-> Suggested-by: Ira Weiny <ira.weiny@intel.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+v2:
+Keep the check "READ_ONCE(rcu_state.jiffies_stall) == jn", drop patch 1/2 in v1.
 
-> Signed-off-by: Sumitra Sharma <sumitraartsy@gmail.com>
-> ---
->  drivers/gpu/drm/gma500/mmu.c | 11 +++--------
->  1 file changed, 3 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/gma500/mmu.c b/drivers/gpu/drm/gma500/mmu.c
-> index a70b01ccdf70..1a44dd062fd1 100644
-> --- a/drivers/gpu/drm/gma500/mmu.c
-> +++ b/drivers/gpu/drm/gma500/mmu.c
-> @@ -184,20 +184,15 @@ struct psb_mmu_pd *psb_mmu_alloc_pd(struct psb_mmu_driver *driver,
->  		pd->invalid_pte = 0;
->  	}
->  
-> -	v = kmap_local_page(pd->dummy_pt);
-> +	v = page_address(pd->dummy_pt);
->  	for (i = 0; i < (PAGE_SIZE / sizeof(uint32_t)); ++i)
->  		v[i] = pd->invalid_pte;
->  
-> -	kunmap_local(v);
-> -
-> -	v = kmap_local_page(pd->p);
-> +	v = page_address(pd->p);
->  	for (i = 0; i < (PAGE_SIZE / sizeof(uint32_t)); ++i)
->  		v[i] = pd->invalid_pde;
->  
-> -	kunmap_local(v);
-> -
-> -	clear_page(kmap(pd->dummy_page));
-> -	kunmap(pd->dummy_page);
-> +	clear_page(page_address(pd->dummy_page));
->  
->  	pd->tables = vmalloc_user(sizeof(struct psb_mmu_pt *) * 1024);
->  	if (!pd->tables)
-> -- 
-> 2.25.1
-> 
+v1:
+Eliminate the duplicated code and comments.
 
+Zhen Lei (1):
+  rcu: Simplify check_cpu_stall()
+
+ kernel/rcu/tree_stall.h | 42 +++++++++++++++--------------------------
+ 1 file changed, 15 insertions(+), 27 deletions(-)
+
+-- 
+2.25.1
 
