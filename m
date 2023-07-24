@@ -2,112 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C820F75EB44
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A18CB75EB36
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbjGXGLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 02:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50342 "EHLO
+        id S230172AbjGXGF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 02:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjGXGLR (ORCPT
+        with ESMTP id S229538AbjGXGFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 02:11:17 -0400
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C5F18E
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 23:11:16 -0700 (PDT)
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20230724061114epoutp02fc70c4300338a32c1eaf01a9fb984f32~0uOnehTit0241602416epoutp02b
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:11:14 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20230724061114epoutp02fc70c4300338a32c1eaf01a9fb984f32~0uOnehTit0241602416epoutp02b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1690179074;
-        bh=IK3dxHmN4H0mrKlZYjtF8HydO/F3EynIGSvvTtPQyYo=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=gaU9lxo5L2d62LSVOkqafz2Tm3GaNW/u8Wz7NQBvvei2c10rcQbGxIf674pqoAJ/q
-         KGZ8jnGONHlWU26Sy0kN7KNU9gT4NcUb2WwTEu/53YoQLyetVfbNKJiut6cQKaJU48
-         DMa8lTG8uicmNRXp5h3KfRBB0CuhkEUXX8p4xwd0=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20230724061114epcas5p2ede7af22d682b0b0ca9a2d78aad5e658~0uOnG8x--0258702587epcas5p2D;
-        Mon, 24 Jul 2023 06:11:14 +0000 (GMT)
-Received: from epsmges5p2new.samsung.com (unknown [182.195.38.178]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4R8VCh1rD9z4x9Py; Mon, 24 Jul
-        2023 06:11:12 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        64.49.44250.0061EB46; Mon, 24 Jul 2023 15:11:12 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20230724060655epcas5p24f21ce77480885c746b9b86d27585492~0uK2VvzRT2148421484epcas5p25;
-        Mon, 24 Jul 2023 06:06:55 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230724060655epsmtrp12375dce4a7600f368a4d6c2ea1201731~0uK2VCzLu0052600526epsmtrp1P;
-        Mon, 24 Jul 2023 06:06:55 +0000 (GMT)
-X-AuditID: b6c32a4a-c4fff7000000acda-5e-64be1600b2e0
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6C.95.34491.FF41EB46; Mon, 24 Jul 2023 15:06:55 +0900 (KST)
-Received: from green245.sa.corp.samsungelectronics.net (unknown
-        [107.99.41.245]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20230724060654epsmtip2702415b5f52b1f1a85a44b20693599a6~0uK1JO11Z2599125991epsmtip2X;
-        Mon, 24 Jul 2023 06:06:54 +0000 (GMT)
-From:   Nitesh Shetty <nj.shetty@samsung.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     hch@lst.de, gost.dev@samsung.com,
-        Anuj Gupta <anuj20.g@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/read_write: Enable copy_file_range for block device.
-Date:   Mon, 24 Jul 2023 11:33:36 +0530
-Message-Id: <20230724060336.8939-1-nj.shetty@samsung.com>
-X-Mailer: git-send-email 2.35.1.500.gb896f729e2
+        Mon, 24 Jul 2023 02:05:55 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24464CF;
+        Sun, 23 Jul 2023 23:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690178755; x=1721714755;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vylbDBiUo92wTd3+gPFxJnLpv6qYxlLpsvd6wc9dEQI=;
+  b=R65RzQj9ByzhnP5ukT4nufVqmcaXm8ocE5FOS7vbVtmb7e2xK2pHNNZ5
+   bvxc6l8JKG8bfgRiy742cTFsRDu2fAULHEp4+p7mhFRNnU7LafKw7gME3
+   8/Wq5WPFKBFONd6s7a8nOz8y88UTxe7l/TiS6FVW27GJ5MjUeUy+kr7ze
+   d7qyu53w06tECp9VSX1U8049Osj1xtEWRK6c5Jks/Y2r+NmOkD3pbnIfF
+   9+cpLj2C6hybchv6YQ1Pr4lYCc6ZgfUowir8zKdtv4ijprtREUhF1ueFy
+   BU7P8TLgukpkP1ba70DTtdOnjXkqyT5AGr9c38YEeLHmS6Ums7HwGoQm8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="346955240"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="346955240"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2023 23:05:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="972134565"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="972134565"
+Received: from allen-box.sh.intel.com ([10.239.159.127])
+  by fmsmga006.fm.intel.com with ESMTP; 23 Jul 2023 23:05:52 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Nicolin Chen <nicolinc@nvidia.com>
+Cc:     iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v3 0/2] Prevent RESV_DIRECT devices from user assignment
+Date:   Mon, 24 Jul 2023 14:03:50 +0800
+Message-Id: <20230724060352.113458-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnk+LIzCtJLcpLzFFi42LZdlhTXZdBbF+Kwe7ZHBZNE/4yW7w+/InR
-        4uaBnUwWK1cfZbLYs/cki8XlXXPYLLb9ns9scf7vcVYHDo9NqzrZPHbfbGDz6NuyitHj8yY5
-        j01P3jIFsEZl22SkJqakFimk5iXnp2TmpdsqeQfHO8ebmhkY6hpaWpgrKeQl5qbaKrn4BOi6
-        ZeYA3aKkUJaYUwoUCkgsLlbSt7Mpyi8tSVXIyC8usVVKLUjJKTAp0CtOzC0uzUvXy0stsTI0
-        MDAyBSpMyM64+Hslc8F97ooz2y0bGF9ydjFyckgImEhsu/WeuYuRi0NIYDejxPmptxkhnE+M
-        ErvmXGKCcL4xSqz4d5wdpqVv3VtGEFtIYC+jxL4zBhBFrUwSxye9BEpwcLAJaEuc/s8BUiMi
-        ECbx5G0XK0gNs8B6RokL6+YzgSSEBTwkXn9sZQGxWQRUJc7c/MwGYvMKWEq0XvrABDJHQkBf
-        ov++IERYUOLkzCdg5cwC8hLNW2eDnS0hcI1d4vOr00wQx7lI7P73jQ3CFpZ4dXwL1NFSEi/7
-        26DscomVU1awQTS3MErMuj6LESJhL9F6qp8ZZDGzgKbE+l36EGFZiamn1jFBLOaT6P39BGoX
-        r8SOeTC2ssSa9Qug9kpKXPveCGV7SDxavZMVElixEge+f2KfwCg/C8k/s5D8Mwth8wJG5lWM
-        kqkFxbnpqcWmBUZ5qeXweE3Oz93ECE6RWl47GB8++KB3iJGJg/EQowQHs5IIb3r6rhQh3pTE
-        yqrUovz4otKc1OJDjKbAMJ7ILCWanA9M0nkl8YYmlgYmZmZmJpbGZoZK4ryvW+emCAmkJ5ak
-        ZqemFqQWwfQxcXBKNTAt7/D4pjhZOcpCU8vVjqlf7/m+LVebtz7vZJhr9/Bb4PnFBx0NN/gU
-        F8j9vpB29nfdUvPeRxOU3OOYM+q+3Ty7pmTvrOy7N360TD14sHZn9YWY2w71JxQZ3q1Mfb33
-        X6VgrOc7zSyjiBUZr/znezAdnF8280ztEsuJCZsZLHgWN59a435HNpK3s6TzyllDV9GDe8QY
-        V7iEKyRKm6/ZlPu1K/rwYinRC2m1TJt8amLdf5aofUjvfhR/dlNZdo/K3ad6Juz7eOzfiy8/
-        /Z7r5bOfq3kENfrN6puPNOifjXq9bL7C7wdMmrrapfs55aWMDRo1u7sdKqWjpV/frbv/VunA
-        5WWJ8X7txUvXGH3svaXEUpyRaKjFXFScCADqmQdCGgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrILMWRmVeSWpSXmKPExsWy7bCSvO5/kX0pBt+7DSyaJvxltnh9+BOj
-        xc0DO5ksVq4+ymSxZ+9JFovLu+awWWz7PZ/Z4vzf46wOHB6bVnWyeey+2cDm0bdlFaPH501y
-        HpuevGUKYI3isklJzcksSy3St0vgyrj4eyVzwX3uijPbLRsYX3J2MXJySAiYSPSte8vYxcjF
-        ISSwm1Hi8aU3bBAJSYllf48wQ9jCEiv/PWeHKGpmkujfcw3I4eBgE9CWOP2fA8QUEQiTOPeQ
-        H6SEWWAro8TXY6/ZQXqFBTwkXn9sZQGxWQRUJc7c/Aw2n1fAUqL10gcmkF4JAX2J/vuCEGFB
-        iZMzn4CVMwvISzRvnc08gZFvFpLULCSpBYxMqxglUwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLz
-        czcxgkNVS3MH4/ZVH/QOMTJxMB5ilOBgVhLhTU/flSLEm5JYWZValB9fVJqTWnyIUZqDRUmc
-        V/xFb4qQQHpiSWp2ampBahFMlomDU6qBqcBD+NQfXfdlOdZCmw6tTH1oGcT7urTxgXycVNTR
-        hcflF86X1rNzU1iV0HQn68yHtZyyolcKORIcYxfXTfUPfXp39W6/qFiO9U+Upjm0THzK4fiy
-        dYoOd0bfnEDfX9X+NYcdPZauaZ9+8fRnfvWX98TzZQ2rD0laB8mvbAv231Sxdca/ZtviR4vP
-        CU5hCM3in3JmGp9cL9PCclbrc+8XMbNKFN3c3f4x9ypXrUKbtMdx8Y97bH+ztXS6fnmq9mX7
-        Ws9rLs7NzD72tnunOGyQF9p8fe1MO4WVy/PnK3Lw+/3y+PNqc4W6S/VPh7mZzAm2y7hnd+xR
-        WXHvxeMnNfNr29Isl/xsDQvVbd6+tu22EktxRqKhFnNRcSIAE2JtBsQCAAA=
-X-CMS-MailID: 20230724060655epcas5p24f21ce77480885c746b9b86d27585492
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230724060655epcas5p24f21ce77480885c746b9b86d27585492
-References: <CGME20230724060655epcas5p24f21ce77480885c746b9b86d27585492@epcas5p2.samsung.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,43 +63,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anuj Gupta <anuj20.g@samsung.com>
+These are follow-up patches on this discussion:
 
-Change generic_copy_file_checks to use ->f_mapping->host for both inode_in
-and inode_out. Allow block device in generic_file_rw_checks.
+https://lore.kernel.org/linux-iommu/BN9PR11MB5276E84229B5BD952D78E9598C639@BN9PR11MB5276.namprd11.prod.outlook.com
 
-Signed-off-by: Anuj Gupta <anuj20.g@samsung.com>
-Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
----
- fs/read_write.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+I just summarized the ideas and code into a real patch series. Please
+help to review and merge.
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index b07de77ef126..eaeb481477f4 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -1405,8 +1405,8 @@ static int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
- 				    struct file *file_out, loff_t pos_out,
- 				    size_t *req_count, unsigned int flags)
- {
--	struct inode *inode_in = file_inode(file_in);
--	struct inode *inode_out = file_inode(file_out);
-+	struct inode *inode_in = file_in->f_mapping->host;
-+	struct inode *inode_out = file_out->f_mapping->host;
- 	uint64_t count = *req_count;
- 	loff_t size_in;
- 	int ret;
-@@ -1708,7 +1708,9 @@ int generic_file_rw_checks(struct file *file_in, struct file *file_out)
- 	/* Don't copy dirs, pipes, sockets... */
- 	if (S_ISDIR(inode_in->i_mode) || S_ISDIR(inode_out->i_mode))
- 		return -EISDIR;
--	if (!S_ISREG(inode_in->i_mode) || !S_ISREG(inode_out->i_mode))
-+	if (!S_ISREG(inode_in->i_mode) && !S_ISBLK(inode_in->i_mode))
-+		return -EINVAL;
-+	if ((inode_in->i_mode & S_IFMT) != (inode_out->i_mode & S_IFMT))
- 		return -EINVAL;
- 
- 	if (!(file_in->f_mode & FMODE_READ) ||
+Change log:
+v3:
+ - Rename "requires_direct" to "require_direct".
+ - Refine some comments.
+ - Rebase on the top of iommu next branch.
+
+v2: https://lore.kernel.org/linux-iommu/20230713043248.41315-1-baolu.lu@linux.intel.com/
+ - Move "pg_size == 0" check out of the loop.
+ - Rebase on the top of v6.5-rc1.
+
+v1: https://lore.kernel.org/linux-iommu/20230607035145.343698-1-baolu.lu@linux.intel.com/
+
+Lu Baolu (2):
+  iommu: Prevent RESV_DIRECT devices from blocking domains
+  iommu/vt-d: Remove rmrr check in domain attaching device path
+
+ include/linux/iommu.h       |  2 ++
+ drivers/iommu/intel/iommu.c | 58 -------------------------------------
+ drivers/iommu/iommu.c       | 37 ++++++++++++++++-------
+ 3 files changed, 29 insertions(+), 68 deletions(-)
+
 -- 
-2.25.1
+2.34.1
 
