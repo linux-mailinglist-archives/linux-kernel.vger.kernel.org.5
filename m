@@ -2,245 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC26F75F35B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB2875F357
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbjGXKcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33288 "EHLO
+        id S229721AbjGXKbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbjGXKcX (ORCPT
+        with ESMTP id S231327AbjGXKbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:32:23 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ED38A8;
-        Mon, 24 Jul 2023 03:32:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690194743; x=1721730743;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Lt4RYDKYShWvY/DNvMQR4dkw+fjyykoYTrkZnSyjjeE=;
-  b=dSCgcCsZIl6tDrfrZPiZkrxVeAEGlKBeeJBSsy6jZE1Xih/Q7IzEvqCg
-   AbFnfUdeQm8QIWJmSpgrtCPQc9TzXsRGfAv7a8Id/FQYPQV8QUNIpTJrA
-   Mg5xgdVQeM1h3wM8lf0+ri6MK0FNO0Jv1mngovf+FIKdfBYMTPaB//qhV
-   rKWVdP5q5oMYekpLg+DzsVSVrIAf0nMc0s8CY8aOpU2UOcfrK2y/vysKF
-   1o0182LXgwlpmku7BJlzasj+MB3pWCpYKLdqLlT9qhQ4Cynx8pl8Y4Exl
-   MyvbrttiM/W998L86CoN2Yxcg8hY8jWVQA3C2f1VBMg86NhjL/mbaFRma
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="398307013"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="398307013"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 03:32:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="675782640"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="675782640"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga003.jf.intel.com with ESMTP; 24 Jul 2023 03:32:21 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 24 Jul 2023 03:32:21 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 24 Jul 2023 03:32:21 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 24 Jul 2023 03:32:21 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.170)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 24 Jul 2023 03:32:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H+KqF0M1olahAHbkULDHkWN7ONBMv9C38hR+ewxsjCJ6AS7jHzlAvj3o2+hBPx/MlmFBXMsDlod4jADluc23zRfGSGfMttVpJ5xPwtrAME37ugQd4hq9V71QlQpYEs9B3RQSGIeTGI/0yswmfo2XFZCDyrzaIeZua4c6/Yo7mE5gJB8C4L6xM7LVU8FVwm7fx2yMkeBQnJb8JqmWtsONFGHsW+bklUsCa3HJTBhHKdi5mpA13iRwb9QRgPDisjrDFymmGLOGdn3r9XBni7IeFFkQjJA6cNVyxPKBuYyAtSQta1mmITWJMAmDjjE2sqqh1TPpDo0EE62dyqM5rfr+Hg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7T+xG1CgvbTtCIf1LC52917utqo6/df/qVTk76XO38A=;
- b=lX+rf2/aQ5lMSlJq8AN9MavgoRDwtPw5Mh1iLunbpM0KqGa81E0j92Ad1Zk+YKI603tauK4p31N4mEL9ypBckJieicv0sPOFwLqqxJ9JrnNoAXg2ARPvytx4AqcJ/ecTowMfjV/1pra272txWKoAuNNFpix8etdA3HnYbgXQ9YUY1rcEsRhkpCkBpbuqyRzpPUG5vepidu9gnXyu5vsWbb/d8HpN4RJt91B0cEA1LiNPypjj+Fkgu7CRFEEH7YFh1l9HjZFTxPO9OLLVPg8MhR2KeDN94S8KHFA8yf5n9xxynHOR2pq64WTzhGjMCXyn/BgboL5FGHoSrl0wsP94vA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by PH0PR11MB5928.namprd11.prod.outlook.com (2603:10b6:510:144::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.30; Mon, 24 Jul
- 2023 10:32:18 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::44ff:6a5:9aa4:124a]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::44ff:6a5:9aa4:124a%7]) with mapi id 15.20.6609.031; Mon, 24 Jul 2023
- 10:32:17 +0000
-Message-ID: <6ce978c1-825f-c1fd-41e3-eba2324cfd56@intel.com>
-Date:   Mon, 24 Jul 2023 12:30:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2] scripts/link-vmlinux.sh: Add alias to duplicate
- symbols for kallsyms
-Content-Language: en-US
-To:     Alessandro Carminati <alessandro.carminati@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Nick Alcock <nick.alcock@oracle.com>
-CC:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Nicolas Schier" <nicolas@fjasle.eu>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Daniel Bristot de Oliveira" <bristot@kernel.org>,
-        Viktor Malik <vmalik@redhat.com>,
-        Kris Van Hees <kris.van.hees@oracle.com>,
-        Luis Chamberlain <mcgrof@kernel.org>, <eugene.loh@oracle.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-kbuild@vger.kernel.org>,
-        <live-patching@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>
-References: <20230718125523.2fc05491@gandalf.local.home>
- <20230721092127.1931028-1-alessandro.carminati@gmail.com>
- <CAPp5cGRBW6WDm9ku3nsr0x=rhEOGAUx==BctCo+DJ+498Tz2Sw@mail.gmail.com>
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <CAPp5cGRBW6WDm9ku3nsr0x=rhEOGAUx==BctCo+DJ+498Tz2Sw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DB8PR03CA0010.eurprd03.prod.outlook.com
- (2603:10a6:10:be::23) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
+        Mon, 24 Jul 2023 06:31:16 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E6510F
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:31:10 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b70bfc8db5so58163431fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:31:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690194669; x=1690799469;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=RiHIilmtHLP/QavO+OGO0GXl45X3ep1zM9w6gfMfPkI=;
+        b=hb13hJgDOvjkCYKa88uF+9cle2s96UA6EUmELfaeULfNKkImo3jN7y6WVsFAZIhKGS
+         /wn7vUinRseTBqMz6b1uSvW6etMkD+xtfiONU6KDJU8ss7W+r/QNIx4Ga7h1DCbDqlKp
+         7BaJ7GpNlXoHJNNGNAiaqpPvy/TtkVOdgX01W0VNKMMbzIRy1u9toFWkUzY+aArm3egc
+         qNfhJ0Ulj2cBHN/ftuQnjzhFXLHZR5711P7pEzwC4/EmAKsCCM9bofj3s8eiXqUlvuWS
+         Y1zc8El9RX6ikctkQjzI5fkATFaq1lctpvdShJkhWYQOyB31ins7IZ2B8ObXu9wdPsG4
+         p8Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690194669; x=1690799469;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RiHIilmtHLP/QavO+OGO0GXl45X3ep1zM9w6gfMfPkI=;
+        b=ZlvaLHwjj90TgEep076QxUTcf2XgS3GJEUgYqIyXhu6LVvY6/RDBuPCSMe24qphjVK
+         2JAh56XwUGfou+JVd5SM1I4fodK2ZFmHXxgLNB1Zy7n4sLWyyOOjqyp7scNXdsgATYcz
+         9L1NVqDsAktjq/0H8xtk8rQ6CCMmEatMBoO0CHbq5KKyJ5lO2Kz9pOpIibE2442PsiTr
+         DK4NnfbtERaamIQBwAZimmgvqNX9XNlU1UhZxdCjlVAFAl4bLDdqItLrWbcoFs395mBQ
+         teZPbklHdfaB1SCwu4e8vVjG1usH0/OqHp0YKfdIKmpNVY3I5GFzghyeKFdb2bMi/JU/
+         Jc7A==
+X-Gm-Message-State: ABy/qLZqBrJN4BjIVNSjsB1bICXOvCqgyFISxGp0A5KrDXu63HckBxyR
+        XoqpyqsG3VrAt/Sg6eia6AYIpA==
+X-Google-Smtp-Source: APBJJlHKAzgTcZxkzYS3fSGQXQBlZ9mX3fhV1WNe2d3EY3lX3vQxMHj32kTI+ExC1ULbKMplpm78QA==
+X-Received: by 2002:a2e:8097:0:b0:2b7:339c:f791 with SMTP id i23-20020a2e8097000000b002b7339cf791mr5860487ljg.25.1690194669057;
+        Mon, 24 Jul 2023 03:31:09 -0700 (PDT)
+Received: from [192.168.1.101] (abyl203.neoplus.adsl.tpnet.pl. [83.9.31.203])
+        by smtp.gmail.com with ESMTPSA id w12-20020a2e998c000000b002b724063010sm2774991lji.47.2023.07.24.03.31.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 03:31:08 -0700 (PDT)
+Message-ID: <96573f47-d38c-2886-e408-ce463550308e@linaro.org>
+Date:   Mon, 24 Jul 2023 12:31:04 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|PH0PR11MB5928:EE_
-X-MS-Office365-Filtering-Correlation-Id: ae45dcff-5f3f-4217-a3f0-08db8c314103
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Hs04UAFAs6xaYJM/v0skeRLZEPv1rhmQlUSng3euU2UP9bLqWG23+7/KZ3vFPr3KxizPLXTAEnp+BwFEIeKFFgQqVUtf7LXIcfeg1HKc6sz/EWjLkMFbM4JWRZk8eCewjXlCr/sn+8+BSnTJFJjCoXxH9rZUK7mdon5Dfieu7AwkadVv3qsXo2fknF3i630Z/UHa8btouNvOmxHjjnJpXorsKysnVUtP8+aUZNfI3h1uktHiAqaSuR2oJ/GZFSpN3ehbwLj/i9+QTb8ws8aufzjyaBzPQHnjBynt6IYNUYPTqeisxNdOD9sHctQ7dbDpjkXBu1XE0sHN9Y+0GgJrI7X3mBrFXiVr2pjkbO8V4pTDEHNYWG86XMt5/H4rTASiJajpOyrsMz6IB5P9F9Gjv59+38LXk7GOXhMaNbrhEYDrF35/ciKaFD/m7ZHWUCU1VSXkq6awXvX0qgA4ye9daleu+WGzJFnCksqeAEIL5AfiZhp7FFbnSa1jHM5nQ3K+oiGURXa58amTougARFOqElthaqhRX0euIiENW9d8G34cwuOK1O5rIrP/zc31Cp+L/w20Hr4hBDFr5wee/hAgPirOyurQakuZMY4f1CGJzRsEYuUEGXHIRiQ0df2/jC/lUkH9znCcqdIzC1dfAtEILA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(346002)(376002)(39860400002)(136003)(366004)(451199021)(2906002)(66946007)(66556008)(66476007)(6666004)(478600001)(6486002)(31696002)(6512007)(966005)(110136005)(86362001)(54906003)(83380400001)(36756003)(186003)(82960400001)(2616005)(6506007)(38100700002)(26005)(4326008)(41300700001)(8936002)(7416002)(31686004)(8676002)(5660300002)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U1NYUHI1cnAzR25zSjBGQ0ZIbnBaMElhWFdxN3RuQjJGVzQxWk4zSVkrTzBr?=
- =?utf-8?B?ZFhQdElLS2szckpNUWF6SmZ4MG1XNEI3M1FnNXBVZC93YlFlRnVnNDB3Q2NM?=
- =?utf-8?B?VHJRQm1qMkdhUnRkbUFXQ2lpSUc1Ym1QamZLS0lEZElWVGwwNVBhZXYyYUlB?=
- =?utf-8?B?SFd1TjNrS01uSVFqQjU1OFcwdUE3S1dBa2NZTzNRUVJkWitHTzU3Ri8vaTNB?=
- =?utf-8?B?a2x2WVdVZVk4WnNUNWFPb3liRkNSQ1dMT3puUkV4Y3MyWGlyU0g4Z043VE94?=
- =?utf-8?B?V0xKSEE2QmE2VDVPOURCWDVoV0lwS2NrVUs0ZFdFQWEzSkViQ2lPb2JXSmp2?=
- =?utf-8?B?aWNWNmI1NFdaYUpaVHV0MDFhWk5uWEtmenhSTVlFOWQzUVVHYXAwZTVZS1Fr?=
- =?utf-8?B?c3RZSysxdUhvVG1LQWpFMmJENU1TaytUV2xaeFdSbjAxYWpTa3dEc1cwR0Np?=
- =?utf-8?B?dDdUbGFHMC83NjFJY0hoVHZNVXBKbGF6ZTBDeFFhY0VqRlloSUI4b0VieXVL?=
- =?utf-8?B?V3AxUmhqVnlSTDBKTUdFUzhad0NZcXlrb0R6bUtCZit4MmJhVWJEeW1QYjRU?=
- =?utf-8?B?TVZVbGNQbUZIR3dBZmpnWUc1TW1XRVd3cGZZNlVGWE1hcnpoTnpaZzlXN1Rx?=
- =?utf-8?B?aG5ndldlTm5qQmpQZWQ5em9KVEFDZlhxZmhyanFkbExwVXl0dHFhN08wbjll?=
- =?utf-8?B?WjhORDRTbmVicDBOTFk5RDhITkxzS3lldm4rVmliUUU2L0FIUStMNVJzRU0v?=
- =?utf-8?B?Z016MStXZitIREQ3aGlSeU1oTG1JeWIvTkI0RXROeExEbVRVWmxybTJwZUtz?=
- =?utf-8?B?Ylg3anZXeFY1bndjWUhCZjFBcEN2ckhzY3ZJWm1PbnRwdzlKcE1ibW5ySnM5?=
- =?utf-8?B?ZFQyVHF4SEQ5MkMwTysyZG1Udmc3WS9Ba1A3disrVk43TGV0WVhaYVZtU1ZO?=
- =?utf-8?B?ZEs1Wmg1eFRnZ0ZJdC9oM25qQWh0ZDdCalUraExFZkRsdzdYYnNRbndHRUtk?=
- =?utf-8?B?TW5OSk1VVnNOem5SaU5ORDNSaU1welJFRHRmTC9vbEpHZU9aMjFYZ0NQTzlV?=
- =?utf-8?B?VENURjEybjZBM0NRRVFLUWFzZElPb1FHUDhjaGNQbUtvaitIdjdGSnVaMEg0?=
- =?utf-8?B?NzRBYWMzUjBodkcxL3BMRkVmUFg1NFNxYlYrSUJWZWlYcEJsdTdjYTRpdkZG?=
- =?utf-8?B?alhsVXE0Z0JONGg2L3doYzB6RlF3L2d5VDhMT3RSejFqVWJydE0rWnlGRTd1?=
- =?utf-8?B?bEttSTNaTm9KR2NIRGVKU0QrdWwrNEZpd25JMnRIcGhhVWNnNkpJUjU3cjhC?=
- =?utf-8?B?aStzNTFlTFlwRVpvdWRuVHA4RnhMUXh4QzhFUWtTWmI5RDYzY0ZFVWpSd2FC?=
- =?utf-8?B?NmZqbUdPUHVBWFMwTFlqeDJCYk05WUUxaWJpanB0Yk1WKzVHT2RFcDdIY1FG?=
- =?utf-8?B?Y0lEQ0Q0eGQ3MkptQ2NvUmJuVm5sSEFkSVVwZXd1SWFDVGRDelV4Z0lnUlZs?=
- =?utf-8?B?MEpSeFRZdjJtaUNSRDdHMmlCeENQcVVheXNxNmtuU0xtZXBtZE9NbS9wR0Nm?=
- =?utf-8?B?eUJaU2R4THk3MjE1MkxTKzNBTHNSdGhOTFovRjZsTm5oQ1RTUW9qbk5ha3N5?=
- =?utf-8?B?dWFlN3QxWDlqT3lLV1ZBWkhzeGJqLzgwWjZaUG9SWDRtNk5oVEsrRFZ4K2FR?=
- =?utf-8?B?ZW03Rlc4V0NxemxpZ1BpYjRIVDljZ0ZkaUYzdFZvQWVPUVV5TFU5WFFTd2hT?=
- =?utf-8?B?NnJuK1VXd3BiN0NnQUFuclA5bEh0STI1VFhOTUJucmQ2bWxPTzVtbURJSEJ5?=
- =?utf-8?B?U3FEV3NhUlJCanA2MzhMSGxSd0JONlBYSmRzbnAzRDhWV0Z2dk94eDBiTUc1?=
- =?utf-8?B?TTBzb1ZaTG9UNHBiT1hBaUxrTVpIeHZtQUtVSDgreWdyZ3hYOEdaRGF3V2Fl?=
- =?utf-8?B?L1ZOQWhGRERtSmEzbGdzWFQ1UC9veDArd0JqdllrcUswc3ZJdmRBLzhsNzVT?=
- =?utf-8?B?ZzJnVklQTHhScjlIam5rZnNZenFNQ0lVY3hEQ2ZtTVY1MHNFZWM4cW93YmZH?=
- =?utf-8?B?RFNWWGFGdjBEMG03cGN6ZlQzUHhydkNqK0ZPaGpYSGFMSW1RaTdTeW9JQkdL?=
- =?utf-8?B?ai9Jelg2cS9yekNGb1lnelV3a3dTSWcxaktxMHFYbEJaSDU0ZUQvYVRMak9w?=
- =?utf-8?B?T2c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae45dcff-5f3f-4217-a3f0-08db8c314103
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 10:32:17.7463
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zTxfY+5TP21iBL7F3Uz5jtgI0Iej6H0ZkDfUxq2m4szVepT3g+NuZe27Q6dtZj+CtezFZtyi21DXHqoZRYVKy3+kraatnriy9DORbnVb95M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5928
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] interconnect: qcom: qcm2290: Enable sync state
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230720-topic-qcm2290_icc-v1-0-7f67f2e259c1@linaro.org>
+ <20230720-topic-qcm2290_icc-v1-2-7f67f2e259c1@linaro.org>
+ <ZLmQdjDgIbbhyTMJ@gerhold.net>
+ <3e1d650d-7c5b-381c-464f-3c464c056a1b@linaro.org>
+ <ZL0InL6slLRNcVkI@gerhold.net>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <ZL0InL6slLRNcVkI@gerhold.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alessandro Carminati <alessandro.carminati@gmail.com>
-Date: Fri, 21 Jul 2023 14:40:54 +0200
-
-> Hello,
+On 23.07.2023 13:01, Stephan Gerhold wrote:
+> On Fri, Jul 21, 2023 at 02:03:16PM +0200, Konrad Dybcio wrote:
+>> On 20.07.2023 21:52, Stephan Gerhold wrote:
+>>> On Thu, Jul 20, 2023 at 08:24:01PM +0200, Konrad Dybcio wrote:
+>>>> Very surprisingly, qcm2290 does not seem to require any interface
+>>>> clocks.
+>>>
+>>> What does this mean exactly? The interconnect .sync_state() is
+>>> responsible to drop the initial maximum bandwidth votes, with the
+>>> assumption that all active devices have voted for the bandwidth they
+>>> need. How does this relate to "requiring interface clocks"?
+>> If it required such clocks to be present, sync_state could not
+>> complete, as trying to access some nodes would crash the platform
+>> due to unclocked access.
 > 
-> I apologize for being noisy today.
+> You mean something like the IPA clock that must be active to do the QoS
+> writes?
 > 
-> In an effort to be collaborative, I would like to share my thoughts on why I
-> see duplicate symbols in fs/binfmt_elf.c.
+> Wouldn't it already crash before .sync_state() then, when the initial
+> max bandwidth votes are being made?
+No, the bandwidth votes are fully handled by RPM with no external deps.
 
-[...]
+Only accessing the QoS registers from the AP seems to trigger crashes
+on unclocked access. But surprisingly, not on this SoC.
 
-> ~ $ nm -n built-in.a | grep set_brk -B100| egrep "set_brk|\.o:$"
-> fs/binfmt_elf.o:
-> 00000000000000d4 t set_brk
-> fs/compat_binfmt_elf.o:
-> 00000000000000d4 t set_brk
-> ```
+>>>> It's therefore safe to enable sync_state to park unused devices.
+>>>> Do so.
+>>>
+>>> Doesn't this make everything painfully slow? There are no interconnect
+>>> consumers at all in qcm2290.dtsi. I would expect that all bandwidths
+>>> end up at minimum.
+>> There are no interconnect providers defined in qcm2290.dtsi.
 > 
-> These two symbols come from fs/binfmt_elf.o and fs/compat_binfmt_elf.o, and
-> they are just two symbols that happen to share the same name, as is common
-> in the kernel.
-> 
-> at the same time, addr2line reports symbols to be generated from the same file.
-> 
-> ```
-> ~ $ llvm-addr2line-14 -fe vmlinux ffff8000082f1d2c ffff8000082f4454
-> set_brk
-> /home/alessandro/src/lka64/linux-6.4/fs/binfmt_elf.c:114
-> set_brk
-> /home/alessandro/src/lka64/linux-6.4/fs/binfmt_elf.c:114
-> ~ $
-> ~ $ addr2line -fe vmlinux ffff8000082f1d2c ffff8000082f4454
-> set_brk
-> /home/alessandro/src/lka64/linux-6.4/fs/binfmt_elf.c:114
-> set_brk
-> /home/alessandro/src/lka64/linux-6.4/fs/binfmt_elf.c:114
-> ```
-> looking at the source code:
-> https://elixir.bootlin.com/linux/v6.4/source/fs/compat_binfmt_elf.c#L144
-> the cause of this behavior, which is unexpected but correct.
-
-Oh man, that's some deep investigation!
-Let me go back to my old tree I was sending RFC from and check that
-particular case there...
-
-$ grep set_brk test_ksyms
-ffffffff814b46c0 t fs/binfmt_elf.c:set_brk
-ffffffff814b7040 t fs/compat_binfmt_elf.c:set_brk
-
-Looks a bit better :D
+> Ack, so I guess you're going to add them together with the actual
+> consumers?
+Correct.
 
 > 
-> The rationale is that using source file + line number iproduces better kallsyms
-> table, but it is still do not produce unique names.
-> 
-> BR
-> Alessandro
->> As a final note, please understand that my patch was not intended to undermine
->> anyone's work. I simply encountered a problem that I wanted to help solve.
->> Attached to this message is my code, in case anyone wants to replicate it.
->> I would appreciate being kept in the loop, as I genuinely want to assist in
->> fixing this problem.
+> I think the patch itself is fine. Only the commit message is a bit
+> misleading. The actual change that is being done here is enabling the
+> bandwidth scaling (dropping the max bandwidth votes after
+> .sync_state()). Can you try to clarify the commit message a bit?
+Yes, I'll resend.
 
-Thanks,
-Olek
+Konrad
