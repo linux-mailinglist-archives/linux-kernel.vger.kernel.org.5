@@ -2,170 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0FB760048
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 22:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD0D76004C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 22:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230441AbjGXUJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 16:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54336 "EHLO
+        id S230263AbjGXUM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 16:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbjGXUJp (ORCPT
+        with ESMTP id S230502AbjGXUMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 16:09:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB3C10E0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 13:09:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690229341;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kOK3VNMDEhYbwTWfQtq0KlS34ajRoQ4mypTKeCUsMYk=;
-        b=TSW0nrtPR6VuO+gOQ6uoIoc7AKaM6FlWpYxeFce38FaD4txujelrq0vhRo6bW5fWbibKdG
-        AmUlmge5YUUm8xBqNvgEHj0omqp7qIVzHlEE9ues9OVAZrzLt+GYVcSw4EHsFxmme4FhMZ
-        ZY35fmGkXgWpO46wzsr40NbycpXo8Ag=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-41-DDEIwmPXPUexBd4KN3NBTQ-1; Mon, 24 Jul 2023 16:08:59 -0400
-X-MC-Unique: DDEIwmPXPUexBd4KN3NBTQ-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-98e1085308eso200454266b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 13:08:59 -0700 (PDT)
+        Mon, 24 Jul 2023 16:12:54 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7571E10D1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 13:12:53 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c64ef5bde93so5343958276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 13:12:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690229572; x=1690834372;
+        h=content-transfer-encoding:cc:to:from:subject:mime-version
+         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=++qd83SvYx4O+g1mfcaqYz4UeSIRNutVl7jKxeFEywY=;
+        b=pjmhJI2UMVSo0ZLkueSW/j/h4CPCqUEQHkXsiBIOVsLlCz7xAxezyPdSi7tryxRfog
+         +EnkGX5/jNxb4KJ87EmOK86b7C1swlhBsp6732VqlaX+RSq7zlB7iWlN2B2R6X/qaRci
+         zAum1rwT6cCZ5FBNhzodpUe4nNOwLN9aKrzcJIeogtc8Va3ng2W6Yx/B4zqTWDHhyN6d
+         Q4QzOqFgFRjRqGYRNOlE3XfRe4mvND2e18Z5NmqUCJGT/iZo3/Vvy02afXUbFbkk8Gth
+         DRe516Jy3euJ4KsAii07QamDiuQzdU2p2dM1P52WMY66T0vaX89+Cu+NOu8yXMBow1J3
+         LGwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690229338; x=1690834138;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kOK3VNMDEhYbwTWfQtq0KlS34ajRoQ4mypTKeCUsMYk=;
-        b=IqJSbVwChPvj57b7H0ZyXr2XMX+DFs6i8RLGMo+TplWv17ODS/T37UJrK4FQYPagTu
-         ek4mIogJT1gP4o3EixIisHVFHgzg04zk+qhItfN5Tuic0iZQ/thcQT5Y8mbl08bNgYiP
-         xgMPhhFcbhFxsHNJqYKB2eCNPXWeOASKr0CBG5kJQ3c5j4n4AGf/zx+Zgwi6V8kurqmm
-         VKZJRhU3z7uHB3QLD6GWawSxwUU5ddzqtZOHYkAjzGFQekkvNgBU2gZ+Jurg2fDTmRRd
-         WNuUPmYLJZ3P35uarzfxHwD+0VWJTbuV7DoAyT0fayrIKulMQcYtbwiBMZnBzlo0spKy
-         cRHQ==
-X-Gm-Message-State: ABy/qLbuZ2M9ptK2xAPzmbTXrHJ4utTEmYBYdtytWohOvB6KofPN2rR8
-        YzP8eXlxubRRZ1FcAoKIGEdtMDf+IQ+9tu2xu7j9ILFBUYGlpITWlaerG9QwBUHzzEcxk4nUcLV
-        ukdEpfFjdDRJEvzYLu8/ntltMwNNJ99+G
-X-Received: by 2002:a17:907:7842:b0:993:da0b:8783 with SMTP id lb2-20020a170907784200b00993da0b8783mr267688ejc.3.1690229337974;
-        Mon, 24 Jul 2023 13:08:57 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGrvXhzOPkOHGgAkG8J2sNtDRwC7cMGTPcbiWhXRtw55DcqDqX8Mw31Z+/l2pn2sf19GTmPPA==
-X-Received: by 2002:a17:907:7842:b0:993:da0b:8783 with SMTP id lb2-20020a170907784200b00993da0b8783mr267670ejc.3.1690229337700;
-        Mon, 24 Jul 2023 13:08:57 -0700 (PDT)
-Received: from redhat.com ([2.55.164.187])
-        by smtp.gmail.com with ESMTPSA id lc28-20020a170906dffc00b0098e422d6758sm7145529ejc.219.2023.07.24.13.08.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 13:08:57 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 16:08:53 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Dragos Tatulea <dtatulea@nvidia.com>
-Cc:     "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "linma@zju.edu.cn" <linma@zju.edu.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Eli Cohen <elic@nvidia.com>,
-        "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
-        Parav Pandit <parav@nvidia.com>
-Subject: Re: [PATCH v1] vdpa: Complement vdpa_nl_policy for nlattr length
- check
-Message-ID: <20230724160836-mutt-send-email-mst@kernel.org>
-References: <20230723080507.3716924-1-linma@zju.edu.cn>
- <20230723050656-mutt-send-email-mst@kernel.org>
- <729f5c17.e4079.18982192866.Coremail.linma@zju.edu.cn>
- <8ecec51.e40ad.1898226c545.Coremail.linma@zju.edu.cn>
- <20230723055820-mutt-send-email-mst@kernel.org>
- <CACGkMEuGHMu6te3jRfEhhwTrWR1mpqp3hbVhDKQiXK9tgwz3qw@mail.gmail.com>
- <56aa7d5c6d5840aedef83d3dc39f0bb3162bbb58.camel@nvidia.com>
- <20230724050005-mutt-send-email-mst@kernel.org>
- <280068e9c684f0ae644d195d3a4d3f5a1351c366.camel@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <280068e9c684f0ae644d195d3a4d3f5a1351c366.camel@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20221208; t=1690229572; x=1690834372;
+        h=content-transfer-encoding:cc:to:from:subject:mime-version
+         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=++qd83SvYx4O+g1mfcaqYz4UeSIRNutVl7jKxeFEywY=;
+        b=TdSGzQB5dMrj/2YMcNlRBQypyEc6kRPJr0vCuOXyLJ8YnLa6Z3TBj1WTfhDfOnrlZB
+         2DJZk/aNcLNHN5ud46YrfVYMOC8QzeoexLTmR1RpFqTmYj8XB1v2sVCBRbsIAElfMhMO
+         K7ed4UgvZM7+nsVhXomhHt1EPrZ1LnzWSFqNQAhJ+afIXqK0gF6jxH5NVV1N9RMAd4yk
+         T5g9HQ+kj+hO3JoqhWijM+qOOesv8fpZ/IyIuvXNuBmXnPzibBcNbR2L1tXbLR7X+IZA
+         SeOZTLKHa3Op3Ogx3FskOLC4MaEbYshD3h6IwO/3W14Dl1AFUenxdzYVEqtR4Lg5njcz
+         JVYA==
+X-Gm-Message-State: ABy/qLb3TE5cTPtF/AyJ9hTXNVLXwMXHH92JjskOX3qqt5ecfZmCeRfQ
+        G1nUB8nI6/xTV9GJnkUmTuZktCfTyqFO
+X-Google-Smtp-Source: APBJJlEwAq/rZS1ckxZoRCzDTn4+i1Vkf44RQCvwMa2Lq6CVP6f9fOQqpMnxMsHhzBYsRzrTUqd96mIv9LJv
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:5724:8dc0:46f0:f963])
+ (user=irogers job=sendgmr) by 2002:a5b:643:0:b0:c4e:3060:41f9 with SMTP id
+ o3-20020a5b0643000000b00c4e306041f9mr78575ybq.9.1690229572729; Mon, 24 Jul
+ 2023 13:12:52 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 13:12:43 -0700
+Message-Id: <20230724201247.748146-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Subject: [PATCH v1 0/4] Perf tool LTO support
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+Cc:     maskray@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 11:42:42AM +0000, Dragos Tatulea wrote:
-> On Mon, 2023-07-24 at 05:16 -0400, Michael S. Tsirkin wrote:
-> > On Mon, Jul 24, 2023 at 08:38:04AM +0000, Dragos Tatulea wrote:
-> > > 
-> > > On Mon, 2023-07-24 at 15:11 +0800, Jason Wang wrote:
-> > > > On Sun, Jul 23, 2023 at 6:02 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > > > 
-> > > > > On Sun, Jul 23, 2023 at 05:48:46PM +0800, Lin Ma wrote:
-> > > > > > 
-> > > > > > > Sure, that is another undergoing task I'm working on. If the nlattr
-> > > > > > > is
-> > > > > > > parsed with
-> > > > > > > NL_VALIDATE_UNSPEC, any forgotten nlattr will be rejected, therefore
-> > > > > > > (which is the default
-> > > > > > > for modern nla_parse).
-> > > > > > 
-> > > > > > For the general netlink interface, the deciding flag should be
-> > > > > > genl_ops.validate defined in
-> > > > > > each ops. The default validate flag is strict, while the developer can
-> > > > > > overwrite the flag
-> > > > > > with GENL_DONT_VALIDATE_STRICT to ease the validation. That is to say,
-> > > > > > safer code should
-> > > > > > enforce NL_VALIDATE_STRICT by not overwriting the validate flag.
-> > > > > > 
-> > > > > > Regrads
-> > > > > > Lin
-> > > > > 
-> > > > > 
-> > > > > Oh I see.
-> > > > > 
-> > > > > It started here:
-> > > > > 
-> > > > > commit 33b347503f014ebf76257327cbc7001c6b721956
-> > > > > Author: Parav Pandit <parav@nvidia.com>
-> > > > > Date:   Tue Jan 5 12:32:00 2021 +0200
-> > > > > 
-> > > > >     vdpa: Define vdpa mgmt device, ops and a netlink interface
-> > > > > 
-> > > > > which did:
-> > > > > 
-> > > > > +               .validate = GENL_DONT_VALIDATE_STRICT |
-> > > > > GENL_DONT_VALIDATE_DUMP,
-> > > > > 
-> > > > > 
-> > > > > which was most likely just a copy paste from somewhere, right Parav?
-> > > > > 
-> > > > > and then everyone kept copying this around.
-> > > > > 
-> > > > > Parav, Eli can we drop these? There's a tiny chance of breaking
-> > > > > something
-> > > > > but I feel there aren't that many users outside mlx5 yet, so if you
-> > > > > guys can test on mlx5 and confirm no breakage, I think we are good.
-> > > > 
-> > > > Adding Dragos.
-> > > > 
-> > > I will check. Just to make sure I understand correctly: you want me to drop
-> > > the
-> > > .validate flags all together in all vdpa ops and check, right?
-> > > 
-> > > Thanks,
-> > > Dragos
-> > 
-> > yes - I suspect you will then need this patch to make things work.
-> > 
-> Yep. Adding the patch and removing the .validate config on the vdpa_nl_ops
-> seems to work just fine.
-> 
-> Thanks,
-> Dragos
+Add a build flag, LTO=3D1, so that perf is built with the -flto
+flag. Address some build errors this configuration throws up.
 
-OK, post a patch?
+For me on my Debian derived OS, "CC=3Dclang CXX=3Dclang++ LD=3Dld.lld" work=
+s
+fine. With GCC LTO this fails with:
+```
+lto-wrapper: warning: using serial compilation of 50 LTRANS jobs
+lto-wrapper: note: see the =E2=80=98-flto=E2=80=99 option documentation for=
+ more information
+/usr/bin/ld: /tmp/ccK8kXAu.ltrans10.ltrans.o:(.data.rel.ro+0x28): undefined=
+ reference to `memset_orig'
+/usr/bin/ld: /tmp/ccK8kXAu.ltrans10.ltrans.o:(.data.rel.ro+0x40): undefined=
+ reference to `__memset'
+/usr/bin/ld: /tmp/ccK8kXAu.ltrans10.ltrans.o:(.data.rel+0x28): undefined re=
+ference to `memcpy_orig'
+/usr/bin/ld: /tmp/ccK8kXAu.ltrans10.ltrans.o:(.data.rel+0x40): undefined re=
+ference to `__memcpy'
+/usr/bin/ld: /tmp/ccK8kXAu.ltrans44.ltrans.o: in function `test__arch_unwin=
+d_sample':
+/home/irogers/kernel.org/tools/perf/arch/x86/tests/dwarf-unwind.c:72: undef=
+ined reference to `perf_regs_load'
+collect2: error: ld returned 1 exit status
+```
 
--- 
-MST
+The issue is that we build multiple .o files in a directory and then
+link them into a .o with "ld -r" (cmd_ld_multi). This early link step
+appears to trigger GCC to remove the .S file definition of the symbol
+and break the later link step (the perf-in.o shows perf_regs_load, for
+example, going from the text section to being undefined at the link
+step which doesn't happen with clang or without LTO). It is possible
+to work around this by taking the final perf link command and adding
+the .o files generated from .S back into it, namely:
+arch/x86/tests/regs_load.o
+bench/mem-memset-x86-64-asm.o
+bench/mem-memcpy-x86-64-asm.o
+
+A quick performance check and the performance improvements from LTO
+are noticeable:
+
+Non-LTO
+```
+$ perf bench internals synthesize
+ # Running 'internals/synthesize' benchmark:
+Computing performance of single threaded perf event synthesis by
+synthesizing events on the perf process itself:
+  Average synthesis took: 202.216 usec (+- 0.160 usec)
+  Average num. events: 51.000 (+- 0.000)
+  Average time per event 3.965 usec
+  Average data synthesis took: 230.875 usec (+- 0.285 usec)
+  Average num. events: 271.000 (+- 0.000)
+  Average time per event 0.852 usec
+```
+
+LTO
+```
+$ perf bench internals synthesize
+ # Running 'internals/synthesize' benchmark:
+Computing performance of single threaded perf event synthesis by
+synthesizing events on the perf process itself:
+  Average synthesis took: 104.530 usec (+- 0.074 usec)
+  Average num. events: 51.000 (+- 0.000)
+  Average time per event 2.050 usec
+  Average data synthesis took: 112.660 usec (+- 0.114 usec)
+  Average num. events: 273.000 (+- 0.000)
+  Average time per event 0.413 usec
+```
+
+Ian Rogers (4):
+  perf stat: Avoid uninitialized use of perf_stat_config
+  perf parse-events: Avoid use uninitialized warning
+  perf test: Avoid weak symbol for arch_tests
+  perf build: Add LTO build option
+
+ tools/perf/Makefile.config      |  5 +++++
+ tools/perf/tests/builtin-test.c | 11 ++++++++++-
+ tools/perf/tests/stat.c         |  2 +-
+ tools/perf/util/parse-events.c  |  2 +-
+ tools/perf/util/stat.c          |  2 +-
+ 5 files changed, 18 insertions(+), 4 deletions(-)
+
+--=20
+2.41.0.487.g6d72f3e995-goog
 
