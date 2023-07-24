@@ -2,86 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9437B75ED37
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C3475ED3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbjGXIRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47010 "EHLO
+        id S230118AbjGXIS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbjGXIRG (ORCPT
+        with ESMTP id S229468AbjGXISz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:17:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A314BE40
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:17:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D88260FB5
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:17:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E5A5C433C8;
-        Mon, 24 Jul 2023 08:17:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690186624;
-        bh=Qi/DymkSC6mDUS+3IIFJJcXGnZB5VSfohCNuw53J69s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uB9tusxWtz2OC/IP+hp4pJTgoKnHXbz0Cv10cctchAB7XGxmXhWbaRW/VkAHr4Nzr
-         NtKlx9d9REjD3ytXyfGZITZXCkDegadwn/pykN4AUIGZeee7JlG8RWJdW1wJOZHPfo
-         j66WB7tbUntSL/YVboQ2a/NwaCbeQjm6S4FdZ4UP6QiucXN5YjorCysA6qqCGP2NlC
-         El7aokJc3Wj6A7MI8HpMnWP/Ainxq6XrfZm43eNgWC7raE4ZyVQyRqmIbbWpeRtli6
-         w6qrWRjw80cJlN7OgTv+bDpVrqaEMd8YY0xp5KXYfZCvcdXP0750pACYbVW1wteCis
-         8pmr7cqYg2A7A==
-From:   Robert Foss <rfoss@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Xin Ji <xji@analogixsemi.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
-        <nfraprado@collabora.com>, Jonas Karlman <jonas@kwiboo.se>
-Cc:     Robert Foss <rfoss@kernel.org>, dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        David Airlie <airlied@gmail.com>
-Subject: Re: [PATCH v2] drm/bridge: anx7625: Drop device lock before drm_helper_hpd_irq_event()
-Date:   Mon, 24 Jul 2023 10:16:56 +0200
-Message-ID: <169018660964.606978.4469347765082724733.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230710085922.1871465-1-wenst@chromium.org>
-References: <20230710085922.1871465-1-wenst@chromium.org>
+        Mon, 24 Jul 2023 04:18:55 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB61D93;
+        Mon, 24 Jul 2023 01:18:53 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9926623e367so723726366b.0;
+        Mon, 24 Jul 2023 01:18:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690186732; x=1690791532;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7buxcMDQbXYavYttmKzovI7MVKRmkAiMGJ3Ho5r5lNY=;
+        b=K+gsHI9j9r5lM9XR5WMABpbPvZlKmXj9i8awMb9HkIEa50nkUIRf2zcqCu/VonB6pr
+         PsFFF9JmFN6t32dktfPlGOi4b0/k6/hsfQr73Zgn4fW1Dkt5My77WJsXR9Ipc/JeVokw
+         ko5Awlouhbsuwp1TtlL+dGDxGLvZC3M3aN7VKH8K4hHO0QMwYE84iv8mOwJ43pIaHnzE
+         j4z+wYwstI9IMtOWD9M8vuQuEFyhjSLqm8uS6gurwmoxQ1dY6JSi5/bLG6Y4zKFZQwhU
+         24zHhYW3fGOSqIZU4AVeJgPt4gI32ED6/cBUcsMB5rYdLAgJ6EHi22z5tkgwdAW/1rrK
+         zYlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690186732; x=1690791532;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7buxcMDQbXYavYttmKzovI7MVKRmkAiMGJ3Ho5r5lNY=;
+        b=YfJ7zXSvFlMTl2XOpXBO7fHTCzEAQrFbj1lH7TUFuZ+z+gP9Dsl05kwmGANKQoq89d
+         N7vuJWC8nvEw95UKNF98F+2veuMuZiGnIW3V/j+nJiizbU9HfA+9KMPf5/DnkyXgsSLs
+         US+x8QGpWg0n2leBHaqLt7gyDEgoJ+VpD7bbbO//jwC56ru33VEG9gWhzMbj0ADkZu5s
+         BGeFPY+6CnwyYmhhGwrBo2lkIDoVkrousYTeY4RnD0X62i2xej/RwYz/FG1k4hDgrx53
+         MUcsxRrO/5uWvESNDleLxk7Q04YtjBTomEusR2hxEPqLnEIYDLmf1jcvAgI8kyWB6f9L
+         qfKg==
+X-Gm-Message-State: ABy/qLa4sy1qSdhVqrllKeHBe5u2VFA58ZP/AIFI2UURGyLucAZtrCc1
+        ZfSDXOqM1WtlUaImS06S694Hxk6Zyac=
+X-Google-Smtp-Source: APBJJlGho1sN/bOHW+RH6k1NPxhZen/9JhFicpH04PsIewBGNWPrEjS7LDmgv8rz/WQW9yb2ay9KJw==
+X-Received: by 2002:a17:907:7758:b0:988:a578:4d65 with SMTP id kx24-20020a170907775800b00988a5784d65mr9049507ejc.32.1690186732037;
+        Mon, 24 Jul 2023 01:18:52 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id kg8-20020a17090776e800b0099329b3ab67sm6337302ejc.71.2023.07.24.01.18.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 01:18:51 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 24 Jul 2023 10:18:48 +0200
+To:     Baoquan He <bhe@redhat.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Jiri Olsa <olsajiri@gmail.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v8 1/4] fs/proc/kcore: avoid bounce buffer for ktext data
+Message-ID: <ZL4z6LVzrbMvXwyl@krava>
+References: <cover.1679566220.git.lstoakes@gmail.com>
+ <fd39b0bfa7edc76d360def7d034baaee71d90158.1679566220.git.lstoakes@gmail.com>
+ <ZHc2fm+9daF6cgCE@krava>
+ <ZLqMtcPXAA8g/4JI@MiWiFi-R3L-srv>
+ <86fd0ccb-f460-651f-8048-1026d905a2d6@redhat.com>
+ <ZL4xif/LX6ZhRqtf@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZL4xif/LX6ZhRqtf@MiWiFi-R3L-srv>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 Jul 2023 16:59:21 +0800, Chen-Yu Tsai wrote:
-> The device lock is used to serialize the low level power sequencing
-> operations. Since drm_helper_hpd_irq_event() could end up calling
-> .atomic_enable, which also calls power sequencing functions through
-> runtime PM, this results in a real deadlock. This was observed on an
-> MT8192-based Chromebook's external display (with appropriate patches [1]
-> and DT changes applied).
+On Mon, Jul 24, 2023 at 04:08:41PM +0800, Baoquan He wrote:
+> On 07/24/23 at 08:23am, David Hildenbrand wrote:
+> > Hi,
+> > 
+> > > 
+> > > I met this too when I executed below command to trigger a kcore reading.
+> > > I wanted to do a simple testing during system running and got this.
+> > > 
+> > >    makedumpfile --mem-usage /proc/kcore
+> > > 
+> > > Later I tried your above objdump testing, it corrupted system too.
+> > > 
+> > 
+> > What do you mean with "corrupted system too" --  did it not only fail to
+> > dump the system, but also actually harmed the system?
 > 
-> [...]
+> From my testing, reading kcore will cause system panic, then reboot. Not
+> sure if Jiri saw the same phenomenon.
 
-Applied, thanks!
+it did not crash for me, just the read error
+could you get console output from that?
 
-[1/1] drm/bridge: anx7625: Drop device lock before drm_helper_hpd_irq_event()
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=f2cca20f1fa3
+jirka
 
-
-
-Rob
-
+> 
+> > 
+> > @Lorenzo do you plan on reproduce + fix, or should we consider reverting
+> > that change?
+> 
+> When tested on a arm64 system, the reproducution is stable. I will have
+> a look too to see if I have some finding this week.
+> 
