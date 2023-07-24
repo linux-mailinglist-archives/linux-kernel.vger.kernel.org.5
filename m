@@ -2,47 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF9A75E718
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D02675E725
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbjGXBYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
+        id S231340AbjGXBZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230499AbjGXBXx (ORCPT
+        with ESMTP id S231172AbjGXBYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:23:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83C7E7E;
-        Sun, 23 Jul 2023 18:22:56 -0700 (PDT)
+        Sun, 23 Jul 2023 21:24:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4556019A9;
+        Sun, 23 Jul 2023 18:22:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5426060F16;
-        Mon, 24 Jul 2023 01:22:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 344DEC433CC;
-        Mon, 24 Jul 2023 01:22:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0AA1460F1D;
+        Mon, 24 Jul 2023 01:22:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C892AC433C9;
+        Mon, 24 Jul 2023 01:22:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161765;
-        bh=pipj35J1cxmcWg+1B6OqVjY2vDHh5dIsPs1xkoLxH/4=;
+        s=k20201202; t=1690161769;
+        bh=SryEwRecL/h/LuGScixb9fHQTh1zrXN+ikgoNGQ2X3w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jJ1x7SOol9p1HDGD4mmHM7zYy+veeGF213zqmwdUDSY4zX7Z3xLH4facmz5iV0IN3
-         6c9Z2XeoquxOR8T4AhFr5OKhPudrgdPcrsL7OJeqaim9ncNtKyPuYeRNXp/VDzvzT3
-         OtcpKfnPIkmv8cE7V5chJB4wF6Uylm4pdNBgmaQtx2kVNv406Tf3FQFRc7u6kez/OK
-         GdUHQylWt/eOehK7sHHIx19mANaa690FJEP0bUnJ/SkNlEYzkZ/nkBtR/scRQ16CKr
-         0eFXInv+KIA8dbUZ/9hlPYgFhVOYANBLErs1Gl7itNhHSdB9tHSWWQTcrO9Lzj4z2B
-         Sr54arJObxplQ==
+        b=TU92PNTQ2Fy3dN5oeAelgI7702RtgATfUf4B0Mz44imHpl/HP2R4jlhm0aNx8Dvei
+         VlXvahrcHVypd3pg5gvtOptrrATLP72JoXefxv8zndqz5AjS+6DDabDec23QjGHWAr
+         wYC0Kvs972pP1XcGuchVhxtlxDGlmnVG2LNsKdWplZ1E/oaqXfTqOVxba6z3N9B41w
+         ODJqzaneZNliy711NVVSDQqJSWH/XFSL0gtNbvHdA1lT54kUMfc9Wj5PRU1kEMpVzi
+         /rAvuqX7O0E3RnUB1R3N2KLeTLbyaqrFhQpDWQaWBtSP5LJOpjEPf73WDfyXHXMqaO
+         pKZsoFUAlCdXQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     stuarthayhurst <stuart.a.hayhurst@gmail.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>,
-        jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 24/41] HID: logitech-hidpp: Add USB and Bluetooth IDs for the Logitech G915 TKL Keyboard
-Date:   Sun, 23 Jul 2023 21:20:57 -0400
-Message-Id: <20230724012118.2316073-24-sashal@kernel.org>
+Cc:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Alejandro Jimenez <alejandro.j.jimenez@oracle.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Sasha Levin <sashal@kernel.org>, corbet@lwn.net,
+        joro@8bytes.org, will@kernel.org, gregkh@linuxfoundation.org,
+        kim.phillips@amd.com, bp@suse.de, eiichi.tsukata@nutanix.com,
+        stephen@networkplumber.org, linux-doc@vger.kernel.org,
+        iommu@lists.linux-foundation.org, iommu@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.1 25/41] iommu/amd: Introduce Disable IRTE Caching Support
+Date:   Sun, 23 Jul 2023 21:20:58 -0400
+Message-Id: <20230724012118.2316073-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012118.2316073-1-sashal@kernel.org>
 References: <20230724012118.2316073-1-sashal@kernel.org>
@@ -51,53 +55,173 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.40
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: stuarthayhurst <stuart.a.hayhurst@gmail.com>
+From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 
-[ Upstream commit 48aea8b445c422a372cf15915101035a47105421 ]
+[ Upstream commit 66419036f68a838c00cbccacd6cb2e99da6e5710 ]
 
-Adds the USB and Bluetooth IDs for the Logitech G915 TKL keyboard, for device detection
-For this device, this provides battery reporting on top of hid-generic
+An Interrupt Remapping Table (IRT) stores interrupt remapping configuration
+for each device. In a normal operation, the AMD IOMMU caches the table
+to optimize subsequent data accesses. This requires the IOMMU driver to
+invalidate IRT whenever it updates the table. The invalidation process
+includes issuing an INVALIDATE_INTERRUPT_TABLE command following by
+a COMPLETION_WAIT command.
 
-Reviewed-by: Bastien Nocera <hadess@hadess.net>
-Signed-off-by: Stuart Hayhurst <stuart.a.hayhurst@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+However, there are cases in which the IRT is updated at a high rate.
+For example, for IOMMU AVIC, the IRTE[IsRun] bit is updated on every
+vcpu scheduling (i.e. amd_iommu_update_ga()). On system with large
+amount of vcpus and VFIO PCI pass-through devices, the invalidation
+process could potentially become a performance bottleneck.
+
+Introducing a new kernel boot option:
+
+    amd_iommu=irtcachedis
+
+which disables IRTE caching by setting the IRTCachedis bit in each IOMMU
+Control register, and bypass the IRT invalidation process.
+
+Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Co-developed-by: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
+Signed-off-by: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Link: https://lore.kernel.org/r/20230530141137.14376-4-suravee.suthikulpanit@amd.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-logitech-hidpp.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../admin-guide/kernel-parameters.txt         |  1 +
+ drivers/iommu/amd/amd_iommu_types.h           |  4 +++
+ drivers/iommu/amd/init.c                      | 36 +++++++++++++++++++
+ 3 files changed, 41 insertions(+)
 
-diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
-index b2cd7527de195..28761272afe52 100644
---- a/drivers/hid/hid-logitech-hidpp.c
-+++ b/drivers/hid/hid-logitech-hidpp.c
-@@ -4403,6 +4403,8 @@ static const struct hid_device_id hidpp_devices[] = {
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC086) },
- 	{ /* Logitech G903 Hero Gaming Mouse over USB */
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC091) },
-+	{ /* Logitech G915 TKL Keyboard over USB */
-+	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC343) },
- 	{ /* Logitech G920 Wheel over USB */
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_LOGITECH_G920_WHEEL),
- 		.driver_data = HIDPP_QUIRK_CLASS_G920 | HIDPP_QUIRK_FORCE_OUTPUT_REPORTS},
-@@ -4418,6 +4420,8 @@ static const struct hid_device_id hidpp_devices[] = {
- 	{ /* MX5500 keyboard over Bluetooth */
- 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb30b),
- 	  .driver_data = HIDPP_QUIRK_HIDPP_CONSUMER_VENDOR_KEYS },
-+	{ /* Logitech G915 TKL keyboard over Bluetooth */
-+	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb35f) },
- 	{ /* M-RCQ142 V470 Cordless Laser Mouse over Bluetooth */
- 	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb008) },
- 	{ /* MX Master mouse over Bluetooth */
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 6b838869554b1..71e93d8e2c130 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -323,6 +323,7 @@
+ 				       option with care.
+ 			pgtbl_v1     - Use v1 page table for DMA-API (Default).
+ 			pgtbl_v2     - Use v2 page table for DMA-API.
++			irtcachedis  - Disable Interrupt Remapping Table (IRT) caching.
+ 
+ 	amd_iommu_dump=	[HW,X86-64]
+ 			Enable AMD IOMMU driver option to dump the ACPI table
+diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
+index 5ecc17240eff5..f5e9377b55212 100644
+--- a/drivers/iommu/amd/amd_iommu_types.h
++++ b/drivers/iommu/amd/amd_iommu_types.h
+@@ -172,6 +172,7 @@
+ #define CONTROL_GAINT_EN	29
+ #define CONTROL_XT_EN		50
+ #define CONTROL_INTCAPXT_EN	51
++#define CONTROL_IRTCACHEDIS	59
+ #define CONTROL_SNPAVIC_EN	61
+ 
+ #define CTRL_INV_TO_MASK	(7 << CONTROL_INV_TIMEOUT)
+@@ -708,6 +709,9 @@ struct amd_iommu {
+ 	/* if one, we need to send a completion wait command */
+ 	bool need_sync;
+ 
++	/* true if disable irte caching */
++	bool irtcachedis_enabled;
++
+ 	/* Handle for IOMMU core code */
+ 	struct iommu_device iommu;
+ 
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index b0af8b5967e0d..f6e64c9858021 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -160,6 +160,7 @@ static int amd_iommu_xt_mode = IRQ_REMAP_XAPIC_MODE;
+ static bool amd_iommu_detected;
+ static bool amd_iommu_disabled __initdata;
+ static bool amd_iommu_force_enable __initdata;
++static bool amd_iommu_irtcachedis;
+ static int amd_iommu_target_ivhd_type;
+ 
+ /* Global EFR and EFR2 registers */
+@@ -477,6 +478,9 @@ static void iommu_disable(struct amd_iommu *iommu)
+ 
+ 	/* Disable IOMMU hardware itself */
+ 	iommu_feature_disable(iommu, CONTROL_IOMMU_EN);
++
++	/* Clear IRTE cache disabling bit */
++	iommu_feature_disable(iommu, CONTROL_IRTCACHEDIS);
+ }
+ 
+ /*
+@@ -2700,6 +2704,33 @@ static void iommu_enable_ga(struct amd_iommu *iommu)
+ #endif
+ }
+ 
++static void iommu_disable_irtcachedis(struct amd_iommu *iommu)
++{
++	iommu_feature_disable(iommu, CONTROL_IRTCACHEDIS);
++}
++
++static void iommu_enable_irtcachedis(struct amd_iommu *iommu)
++{
++	u64 ctrl;
++
++	if (!amd_iommu_irtcachedis)
++		return;
++
++	/*
++	 * Note:
++	 * The support for IRTCacheDis feature is dertermined by
++	 * checking if the bit is writable.
++	 */
++	iommu_feature_enable(iommu, CONTROL_IRTCACHEDIS);
++	ctrl = readq(iommu->mmio_base +  MMIO_CONTROL_OFFSET);
++	ctrl &= (1ULL << CONTROL_IRTCACHEDIS);
++	if (ctrl)
++		iommu->irtcachedis_enabled = true;
++	pr_info("iommu%d (%#06x) : IRT cache is %s\n",
++		iommu->index, iommu->devid,
++		iommu->irtcachedis_enabled ? "disabled" : "enabled");
++}
++
+ static void early_enable_iommu(struct amd_iommu *iommu)
+ {
+ 	iommu_disable(iommu);
+@@ -2710,6 +2741,7 @@ static void early_enable_iommu(struct amd_iommu *iommu)
+ 	iommu_set_exclusion_range(iommu);
+ 	iommu_enable_ga(iommu);
+ 	iommu_enable_xt(iommu);
++	iommu_enable_irtcachedis(iommu);
+ 	iommu_enable(iommu);
+ 	iommu_flush_all_caches(iommu);
+ }
+@@ -2760,10 +2792,12 @@ static void early_enable_iommus(void)
+ 		for_each_iommu(iommu) {
+ 			iommu_disable_command_buffer(iommu);
+ 			iommu_disable_event_buffer(iommu);
++			iommu_disable_irtcachedis(iommu);
+ 			iommu_enable_command_buffer(iommu);
+ 			iommu_enable_event_buffer(iommu);
+ 			iommu_enable_ga(iommu);
+ 			iommu_enable_xt(iommu);
++			iommu_enable_irtcachedis(iommu);
+ 			iommu_set_device_table(iommu);
+ 			iommu_flush_all_caches(iommu);
+ 		}
+@@ -3411,6 +3445,8 @@ static int __init parse_amd_iommu_options(char *str)
+ 			amd_iommu_pgtable = AMD_IOMMU_V1;
+ 		} else if (strncmp(str, "pgtbl_v2", 8) == 0) {
+ 			amd_iommu_pgtable = AMD_IOMMU_V2;
++		} else if (strncmp(str, "irtcachedis", 11) == 0) {
++			amd_iommu_irtcachedis = true;
+ 		} else {
+ 			pr_notice("Unknown option - '%s'\n", str);
+ 		}
 -- 
 2.39.2
 
