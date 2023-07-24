@@ -2,62 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE13775EBE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F2B75EBE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbjGXGpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 02:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40850 "EHLO
+        id S231147AbjGXGpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 02:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230452AbjGXGpE (ORCPT
+        with ESMTP id S231169AbjGXGp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 02:45:04 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 55069E70;
-        Sun, 23 Jul 2023 23:44:42 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E159DE0;
-        Sun, 23 Jul 2023 23:45:25 -0700 (PDT)
-Received: from [10.162.41.7] (a077893.blr.arm.com [10.162.41.7])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 743AD3F67D;
-        Sun, 23 Jul 2023 23:44:34 -0700 (PDT)
-Message-ID: <d746ccf2-1982-38ca-ee0c-bd321becf4f3@arm.com>
-Date:   Mon, 24 Jul 2023 12:14:31 +0530
+        Mon, 24 Jul 2023 02:45:28 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBE7107;
+        Sun, 23 Jul 2023 23:45:27 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R8VwC4S0xzHqc5;
+        Mon, 24 Jul 2023 14:42:51 +0800 (CST)
+Received: from [10.174.179.215] (10.174.179.215) by
+ canpemm500007.china.huawei.com (7.192.104.62) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 24 Jul 2023 14:45:23 +0800
+Subject: Re: [PATCH -next] sunrpc: Remove unused extern declarations
+To:     NeilBrown <neilb@suse.de>
+CC:     <chuck.lever@oracle.com>, <jlayton@kernel.org>, <kolga@netapp.com>,
+        <Dai.Ngo@oracle.com>, <tom@talpey.com>,
+        <trond.myklebust@hammerspace.com>, <anna@kernel.org>,
+        <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230722033116.17988-1-yuehaibing@huawei.com>
+ <169017533908.11078.1160756498004010060@noble.neil.brown.name>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <d8178e7c-d0ec-9e5d-9367-53f554e0392e@huawei.com>
+Date:   Mon, 24 Jul 2023 14:45:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v1 1/3] arm64: Add Cortex-X4 CPU part definitions
+In-Reply-To: <169017533908.11078.1160756498004010060@noble.neil.brown.name>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        John Garry <john.g.garry@oracle.com>,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        D Scott Phillips <scott@os.amperecomputing.com>,
-        Marc Zyngier <maz@kernel.org>,
-        German Gomez <german.gomez@arm.com>,
-        Ali Saidi <alisaidi@amazon.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, fissure2010@gmail.com
-References: <20230717054327.79815-1-leo.yan@linaro.org>
- <20230717054327.79815-2-leo.yan@linaro.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20230717054327.79815-2-leo.yan@linaro.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,38 +53,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/17/23 11:13, Leo Yan wrote:
-> Add the part number and MIDR definitions for Cortex-X4.
+On 2023/7/24 13:08, NeilBrown wrote:
+> On Sat, 22 Jul 2023, YueHaibing wrote:
+>> Since commit 49b28684fdba ("nfsd: Remove deprecated nfsctl system call and related code.")
+>> these declarations are unused, so can remove it.
+>>
+>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 > 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> Thanks.
+> Could you remove the declaration of auth_unix_lookup too?
+> It was removed in that commit, but the declaration is still with us.
 
-LGTM per https://developer.arm.com/documentation/102484/0001/AArch64-registers/AArch64-Identification-registers-summary/MIDR-EL1--Main-ID-Register
-
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-
-> ---
->  arch/arm64/include/asm/cputype.h | 2 ++
->  1 file changed, 2 insertions(+)
+Sure, will do this.
 > 
-> diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
-> index 5f6f84837a49..415be1a000c6 100644
-> --- a/arch/arm64/include/asm/cputype.h
-> +++ b/arch/arm64/include/asm/cputype.h
-> @@ -84,6 +84,7 @@
->  #define ARM_CPU_PART_CORTEX_X2		0xD48
->  #define ARM_CPU_PART_NEOVERSE_N2	0xD49
->  #define ARM_CPU_PART_CORTEX_A78C	0xD4B
-> +#define ARM_CPU_PART_CORTEX_X4		0xD82
->  
->  #define APM_CPU_PART_POTENZA		0x000
->  
-> @@ -153,6 +154,7 @@
->  #define MIDR_CORTEX_X2 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_X2)
->  #define MIDR_NEOVERSE_N2 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_NEOVERSE_N2)
->  #define MIDR_CORTEX_A78C	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A78C)
-> +#define MIDR_CORTEX_X4 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_X4)
->  #define MIDR_THUNDERX	MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX)
->  #define MIDR_THUNDERX_81XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_81XX)
->  #define MIDR_THUNDERX_83XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_83XX)
+> Thanks!
+> NeilBrown
+> 
+>> ---
+>>  include/linux/sunrpc/svcauth.h | 2 --
+>>  1 file changed, 2 deletions(-)
+>>
+>> diff --git a/include/linux/sunrpc/svcauth.h b/include/linux/sunrpc/svcauth.h
+>> index 6d9cc9080aca..2402b7ca5d1a 100644
+>> --- a/include/linux/sunrpc/svcauth.h
+>> +++ b/include/linux/sunrpc/svcauth.h
+>> @@ -157,11 +157,9 @@ extern void	svc_auth_unregister(rpc_authflavor_t flavor);
+>>  
+>>  extern struct auth_domain *unix_domain_find(char *name);
+>>  extern void auth_domain_put(struct auth_domain *item);
+>> -extern int auth_unix_add_addr(struct net *net, struct in6_addr *addr, struct auth_domain *dom);
+>>  extern struct auth_domain *auth_domain_lookup(char *name, struct auth_domain *new);
+>>  extern struct auth_domain *auth_domain_find(char *name);
+>>  extern struct auth_domain *auth_unix_lookup(struct net *net, struct in6_addr *addr);
+>> -extern int auth_unix_forget_old(struct auth_domain *dom);
+>>  extern void svcauth_unix_purge(struct net *net);
+>>  extern void svcauth_unix_info_release(struct svc_xprt *xpt);
+>>  extern int svcauth_unix_set_client(struct svc_rqst *rqstp);
+>> -- 
+>> 2.34.1
+>>
+>>
+> 
+> .
+> 
