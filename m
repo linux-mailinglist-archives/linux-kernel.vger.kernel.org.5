@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0295B75F7DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6119575F7E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbjGXNJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
+        id S229504AbjGXNLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbjGXNJ0 (ORCPT
+        with ESMTP id S229479AbjGXNLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:09:26 -0400
+        Mon, 24 Jul 2023 09:11:07 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC85E0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:09:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67184C6;
+        Mon, 24 Jul 2023 06:11:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 08CAE6115B
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 13:09:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 594C1C433C8;
-        Mon, 24 Jul 2023 13:09:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 022606115B;
+        Mon, 24 Jul 2023 13:11:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF83DC433C8;
+        Mon, 24 Jul 2023 13:11:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690204164;
-        bh=vOoS4+QCamT+iY9Eh00e7Wk/cycC5ntyQTwsVvFI2q4=;
-        h=From:Date:Subject:To:Cc:From;
-        b=jIJ9kqx2u1LVG1cRWEMVxcpo0D5fwEqLKDI69U/N2aJb7hu0IHRKHL4IYd5N2wYa7
-         S7qFOf3gpAuIiBC1v/DANwlmFssJcCUsrGu2AN/whbQYpXlKKKek8Wjiy6AHrzl9/T
-         PbGHTiL/VbFnZDYbwvRiH3Rw+9DiqNwgceG7sCHLcFOqEEDGMs6lOwCWO8iqEGpaGc
-         AO7rTvQlQywxDtdDr04t3wiPU1hQd8vA8minUQxcbMSaBuF85wB4Og6S5NCLYqBNk/
-         iY0W6hMh2zedb4ioeYfWwubBJqJ7T0+SNqSrdxqQFrOshRtTAm6LNPuAgrIpfeH2Bc
-         gAXkjaTTiDQPQ==
+        s=k20201202; t=1690204265;
+        bh=YjJlTY1pKMB9FfrkO75nHA3/x0kYhk1ZjY0oocFIbWY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tGcTy0vObwsbyfCNQgm66Pc4lebeQYW6RnHeANdXRbCsWVM4TQ5dpkk/k7We4Q49P
+         q6zGsrmts4XUeiqCLNR43zzIOLGjd3vV3Wrz5F2nUAD8GFuV2IyJdHMeLi9StTJ4uK
+         jijJFAEwb+tEsyztsBchvMWGMozvjkkWnxivrJUfHEx5am+3/7sZlBuY7dKB7F+Z+7
+         ghhpaacuP1nep9Fw/oIeOYeJ4TZaVHkV8UzDn1bbppkPkt/8JMBteFWqgnVtBgF1ww
+         j8bnKyjegVHd6S/cAaGnefyUjZhVwNSBfGK9kCKFRcjzcnETXRgrZWVaQUtUVg7aD0
+         vT4ZCxNzo/FyA==
+Date:   Mon, 24 Jul 2023 14:11:00 +0100
 From:   Mark Brown <broonie@kernel.org>
-Date:   Mon, 24 Jul 2023 14:09:19 +0100
-Subject: [PATCH] arm64/fpsimd: Don't flush SME register hardware state
- along with thread
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: linux-next: build warning after merge of the sound-asoc tree
+Message-ID: <43862e72-eeb2-4670-8cd6-0e334044583d@sirena.org.uk>
+References: <20230713121627.17990c86@canb.auug.org.au>
+ <ZK/ruOD4QFPQ3Q5q@smile.fi.intel.com>
+ <ZK/w5LFanElxZazG@smile.fi.intel.com>
+ <ZLES/6iNcmR7H+f7@smile.fi.intel.com>
+ <20230724135858.3c1abb01@canb.auug.org.au>
+ <ZL410jAw2ksuBx56@smile.fi.intel.com>
+ <cbff36d5-cde7-43bd-b0d5-ede8950fd885@sirena.org.uk>
+ <ZL53HkIWuE4byo+R@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230724-arm64-dont-flush-smstate-v1-1-9a8b637ace6c@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAP53vmQC/x3MTQqDMBBA4avIrB3Ij1jaq4iLNE50oImSSUshe
- HeDy2/xXgWhzCTw6ipk+rHwnhp034HfXFoJeWkGo4xVD6PR5TgOuOypYPh8ZUOJUlwh9Fo9w/C
- 2wWoPLT8yBf7f62k+zwudgPsIagAAAA==
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1539; i=broonie@kernel.org;
- h=from:subject:message-id; bh=vOoS4+QCamT+iY9Eh00e7Wk/cycC5ntyQTwsVvFI2q4=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkvngCwWE6M+lN0TnXXRFYNF2vmSQ5VYdPvZFw+ryv
- W2+UtS6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZL54AgAKCRAk1otyXVSH0LIYB/
- 9BK5jBXbULTxIkm3pOuPbvc7kZ/wFFXmHwGdyUCCmNv/cxJKzwrpwRUsfDulAVw5m6feoaRwhOYljV
- SGRO2AbuWqCLKH3o/DSjiaNhd+PONLZGStojz7spQAPf7ROmrOLQEixWsmPAoh4hVENqa5H/7nG00/
- TZD2kS/7quMdswhdkpfUGC4UREPyFYooao87jgoC+Ia0/gEenjTX1c400cCbS5XQRSv4Xr5KPNEteU
- LiqekWbdushF+vMvqWy0D3wXtX4jYU7wP0Lf+FqsTda/OCFILJxeNSHVpIQE9kxxmxN9wzlqahhknw
- cg7sELNZxb47RTSFFiq34S0wDhjhIT
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="grxtHfRk6t/sHSNy"
+Content-Disposition: inline
+In-Reply-To: <ZL53HkIWuE4byo+R@smile.fi.intel.com>
+X-Cookie: Please go away.
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -70,44 +67,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We recently changed the fpsimd thread flush to flush the physical SME
-state as well as the thread state for the current thread.  Unfortunately
-this leads to intermittent corruption in interaction with the lazy
-FPSIMD register switching.  When under heavy load such as can be
-triggered by the startup phase of fp-stress it is possible that the
-current thread may not be scheduled prior to returning to userspace, and
-indeed we may end up returning to the last thread that was scheduled on
-the PE without ever exiting the kernel to any other task.  If that
-happens then we will not reload the register state from memory, leading
-to loss of any SME register state.
 
-Since this was purely an attempt to defensively close off potential
-problems revert the change.
+--grxtHfRk6t/sHSNy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: af3215fd0230 Fixes: ("arm64/fpsimd: Exit streaming mode when flushing tasks")
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- arch/arm64/kernel/fpsimd.c | 1 -
- 1 file changed, 1 deletion(-)
+On Mon, Jul 24, 2023 at 04:05:34PM +0300, Andy Shevchenko wrote:
+> On Mon, Jul 24, 2023 at 01:36:53PM +0100, Mark Brown wrote:
 
-diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-index 89d54a5242d1..9d7d10d60bfd 100644
---- a/arch/arm64/kernel/fpsimd.c
-+++ b/arch/arm64/kernel/fpsimd.c
-@@ -1666,7 +1666,6 @@ void fpsimd_flush_thread(void)
- 
- 		fpsimd_flush_thread_vl(ARM64_VEC_SME);
- 		current->thread.svcr = 0;
--		sme_smstop();
- 	}
- 
- 	current->thread.fp_type = FP_STATE_FPSIMD;
+> > Jon's usually fairly responsive, perhaps there's something worrying
+> > there,
 
----
-base-commit: 6eaae198076080886b9e7d57f4ae06fa782f90ef
-change-id: 20230721-arm64-dont-flush-smstate-c109f4b3f31c
+> Hmm... maybe my understanding of the :export: is wrong? Or what do you suggest?
 
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
+I have no idea what any of that is doing.  I'm hoping Jon does.
 
+> > though I do note you only sent it a bit more than a week ago.
+
+> I fully aware of that and you can see that this reply has been induced by
+> the ping from Stephen.
+
+Sure, but that means that it's possible he's just not got round to it
+yet rather than that there's a problem.
+
+--grxtHfRk6t/sHSNy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS+eGQACgkQJNaLcl1U
+h9B5IQf+LGzWPflmK7aQKUcZzp+6yHCq/wH1eYJjFlzEc7cDkZOT7YbVqBCETSUv
+ydrZTskK6AW5C54ubBxwoc4UDSrh5OK0RzSlKY6GSRME9U7I3GI0Hzkb7Mbi5QP8
+afFfQ3D9BZprgMzDqR+FDrYIpdLTsgxasGdsL6LJMg89O2Dm0hmq400BH2KyBxvR
+RbN3+HVr/N2FZI9dgqkaYVf+VbjdyZjPoSsLjWxK23Pcop76UnD9iK5VmDJD11/u
+KJbcK1RlkzJvi7nYSoVBhcSeOLuKjCC4S/cje9fFnk1SH+vchTpUNg8VHOM8vGNR
+0y6P7/dKSDOCPrArzwt2RzA+Xxzs8Q==
+=cbDd
+-----END PGP SIGNATURE-----
+
+--grxtHfRk6t/sHSNy--
