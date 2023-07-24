@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEC575EF0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CEA75EF06
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbjGXJXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 05:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
+        id S232250AbjGXJWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 05:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbjGXJXh (ORCPT
+        with ESMTP id S229889AbjGXJWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 05:23:37 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079D8FD;
-        Mon, 24 Jul 2023 02:23:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=nHwERRNohuUhZsb3fsbGJZNV/wqpb0sJjOXJGxj/gFU=; b=0eTCGmkFvYRanCjqIruUc+gFHD
-        eb0YjlozDEULA37j7v5qY4zn7oNzSJHyKS6Mu3lubDRF2RaMczkF4f0lJh//Gw6lfNr0hipZSgCGS
-        JIWlEQVkw7RyvqjD3Uxd4RuJG7sAceLde0p86r2jFr/kdLPlkftX1hnSBOxxVBlLMicc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qNrmC-0026m1-D4; Mon, 24 Jul 2023 11:22:48 +0200
-Date:   Mon, 24 Jul 2023 11:22:48 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Evan Quan <evan.quan@amd.com>
-Cc:     rafael@kernel.org, lenb@kernel.org, Alexander.Deucher@amd.com,
-        Christian.Koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, johannes@sipsolutions.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        Mario.Limonciello@amd.com, mdaenzer@redhat.com,
-        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
-        hdegoede@redhat.com, jingyuwang_vip@163.com, Lijo.Lazar@amd.com,
-        jim.cromie@gmail.com, bellosilicio@gmail.com,
-        andrealmeid@igalia.com, trix@redhat.com, jsg@jsg.id.au,
-        arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH V7 4/9] wifi: mac80211: Add support for ACPI WBRF
-Message-ID: <9b1f45f9-02a3-4c03-b9d5-cc3b9ab3a058@lunn.ch>
-References: <20230719090020.2716892-1-evan.quan@amd.com>
- <20230719090020.2716892-5-evan.quan@amd.com>
+        Mon, 24 Jul 2023 05:22:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6019E122;
+        Mon, 24 Jul 2023 02:22:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E79F461005;
+        Mon, 24 Jul 2023 09:22:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9505C433C8;
+        Mon, 24 Jul 2023 09:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690190572;
+        bh=LnDt7R7jTXpWTe6bODtY9gDITIrapEEFQ0ZVh17zgK4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uztC49EA0tnh8I9TcWEVXOgl1OohWN/sr4mqjrDFUc2OTpprHSfvgFz1j3L4px6PB
+         OUJxuGokiM3RlFg4qq0dpTAklHWMDkzU7L6qZQXErg321siY+LDTI3Z0ssZvxU678J
+         1AArjGHr1FOhubynN7Gv5iHg7MYTjQNJG+WcbvuI=
+Date:   Mon, 24 Jul 2023 11:22:49 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Franziska =?iso-8859-1?Q?N=E4pelt?= 
+        <franziska.naepelt@googlemail.com>, linux-staging@lists.linux.dev,
+        kernel-janitors@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Emily Peri <eperi1024@gmail.com>,
+        Guo Zihua <guozihua@huawei.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Kang Minchul <tegongkang@gmail.com>,
+        Philipp Hortmann <philipp.g.hortmann@gmail.com>,
+        Veerendranath Jakkam <quic_vjakkam@quicinc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [v4 1/3] staging: rtl8723bs: Fix space issues
+Message-ID: <2023072440-dimple-slicer-3fd7@gregkh>
+References: <20230701102538.5359-1-franziska.naepelt@googlemail.com>
+ <5ad04b3a-7c77-cadb-13b4-509a086cf04d@web.de>
+ <2023070123-unburned-worsening-0713@gregkh>
+ <CAAUT3iNqwgtFJz2Q1bRN+MsSna26KC1FJc3jchu=8B09A2SkvQ@mail.gmail.com>
+ <4b9fdaa7-bdcf-ef41-0d54-ba41520cde4c@web.de>
+ <CAAUT3iPUaNRUyvqP1O97M0AmKri7Ghc06ku4TS6vcHQ=Sb4ycg@mail.gmail.com>
+ <67b16362-aace-28e3-6776-aefdeab0f183@web.de>
+ <2023072453-steam-scotch-bc17@gregkh>
+ <c6374bc6-2a56-23b0-6ef9-def092aaed4a@web.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230719090020.2716892-5-evan.quan@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <c6374bc6-2a56-23b0-6ef9-def092aaed4a@web.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @@ -1395,6 +1395,8 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
->  	debugfs_hw_add(local);
->  	rate_control_add_debugfs(local);
->  
-> +	ieee80211_check_wbrf_support(local);
-> +
->  	rtnl_lock();
->  	wiphy_lock(hw->wiphy);
->  
+On Mon, Jul 24, 2023 at 10:44:15AM +0200, Markus Elfring wrote:
+> > Everyone please note, Markus has been banned from most kernel mailing lists,
+> 
+> I hope that this ban can still be reconsidered.
 
-> +void ieee80211_check_wbrf_support(struct ieee80211_local *local)
-> +{
-> +	struct wiphy *wiphy = local->hw.wiphy;
-> +	struct device *dev;
-> +
-> +	if (!wiphy)
-> +		return;
-> +
-> +	dev = wiphy->dev.parent;
-> +	if (!dev)
-> +		return;
-> +
-> +	local->wbrf_supported = wbrf_supported_producer(dev);
-> +	dev_dbg(dev, "WBRF is %s supported\n",
-> +		local->wbrf_supported ? "" : "not");
-> +}
-
-This seems wrong. wbrf_supported_producer() is about "Should this
-device report the frequencies it is using?" The answer to that depends
-on a combination of: Are there consumers registered with the core, and
-is the policy set so WBRF should take actions.
-
-The problem here is, you have no idea of the probe order. It could be
-this device probes before others, so wbrf_supported_producer() reports
-false, but a few second later would report true, once other devices
-have probed.
-
-It should be an inexpensive call into the core, so can be made every
-time the channel changes. All the core needs to do is check if the
-list of consumers is empty, and if not, check a Boolean policy value.
-
-     Andrew
+At this point in time, sorry, but no.
