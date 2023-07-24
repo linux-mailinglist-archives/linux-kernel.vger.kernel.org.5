@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CAC275E896
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E41B75E899
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbjGXBm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
+        id S232216AbjGXBmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232203AbjGXBlp (ORCPT
+        with ESMTP id S232209AbjGXBlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 23 Jul 2023 21:41:45 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B860419BF;
-        Sun, 23 Jul 2023 18:36:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2684EEC;
+        Sun, 23 Jul 2023 18:36:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5AC8260F3C;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C87C160FE4;
+        Mon, 24 Jul 2023 01:33:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55874C43391;
         Mon, 24 Jul 2023 01:33:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2DA1C433CB;
-        Mon, 24 Jul 2023 01:33:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162388;
-        bh=GtI7Xn86CJJEpQ7HU9Pm51q5IZp6MIdv4UJn6+FBfAc=;
+        s=k20201202; t=1690162390;
+        bh=3qfegOLY+LWipIZ0W3y/6zKcsNnz1UzrM0r5/zgWu5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jODLUkrIgFxr3oamDKiqhMoDEgpX4iWRKBFTpuJJuz9l2Aok2L1jxdO5IOXkN9Ozg
-         eZU1dxFW4b6Xs9S4nYPFbuek8/aqHgtQIOa8KIHZlYBeCCG0jUiplSbQFGjB/cEn6G
-         PRPXrD5apwU9r029/xVYEoj18MvpejeYtYiAi360xob7V82lU6r5n92dooFQ/ZCG/J
-         tZ+Na043I6MxmN7NSJuIT4nkUgcOoz+V/Wk07MgXiG4DElbkU1aXgN5st90vPx9b7h
-         gLowp+h982DSe3u9O5QaQK6PVMjquxcOYy62mIA0Azzdpo9EqxftUJhk5ufxzrDguM
-         VonRfovoO4Glg==
+        b=iGrn/NAlUD6CDu+yMdGX+SMZVThbEvx+Z4KweORrK0pGMeELSu+AC0F6hngi6R1pj
+         dqKv0E6KjmZbJf0j/PF3rmZ9RPDaawYE2NvtzL7bcO6YpCX/6O2vsrWTwkKfFb2RDd
+         Yni7MTQ+9wIoHuryh4zT6oZiEE0RLZ26WKaPJrKSPYs5XuwWTWIQZIbWH60J96Cj3a
+         QDHqAoEYNatQkPVUVg4L6LrJpglVdpmge/G38ObYyv6Lu2TCUWs4ZQpzRgpn4A9Q6b
+         RbYlw5g2SMqFUZu42NThieQ7xRSpHpvTmo8FymOBtJqbO1WWQk1/uvKHZRjv7deyVd
+         C9qoClREB5aEQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xiubo Li <xiubli@redhat.com>,
-        Milind Changire <mchangir@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, zyan@redhat.com,
-        sage@redhat.com, ceph-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 22/34] ceph: try to dump the msgs when decoding fails
-Date:   Sun, 23 Jul 2023 21:32:25 -0400
-Message-Id: <20230724013238.2329166-22-sashal@kernel.org>
+Cc:     shanzhulig <shanzhulig@gmail.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, airlied@linux.ie,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.1 23/34] drm/amdgpu: Fix potential fence use-after-free v2
+Date:   Sun, 23 Jul 2023 21:32:26 -0400
+Message-Id: <20230724013238.2329166-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013238.2329166-1-sashal@kernel.org>
 References: <20230724013238.2329166-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.40
@@ -61,57 +62,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiubo Li <xiubli@redhat.com>
+From: shanzhulig <shanzhulig@gmail.com>
 
-[ Upstream commit 8b0da5c549ae63ba1debd92a350f90773cb4bfe7 ]
+[ Upstream commit 2e54154b9f27262efd0cb4f903cc7d5ad1fe9628 ]
 
-When the msgs are corrupted we need to dump them and then it will
-be easier to dig what has happened and where the issue is.
+fence Decrements the reference count before exiting.
+Avoid Race Vulnerabilities for fence use-after-free.
 
-Signed-off-by: Xiubo Li <xiubli@redhat.com>
-Reviewed-by: Milind Changire <mchangir@redhat.com>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+v2 (chk): actually fix the use after free and not just move it.
+
+Signed-off-by: shanzhulig <shanzhulig@gmail.com>
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/mds_client.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-index 1989c8deea55a..c3632a22348a3 100644
---- a/fs/ceph/mds_client.c
-+++ b/fs/ceph/mds_client.c
-@@ -645,6 +645,7 @@ static int parse_reply_info(struct ceph_mds_session *s, struct ceph_msg *msg,
- 	err = -EIO;
- out_bad:
- 	pr_err("mds parse_reply err %d\n", err);
-+	ceph_msg_dump(msg);
- 	return err;
- }
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+index 365e3fb6a9e5b..7464054692b7c 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+@@ -1606,15 +1606,15 @@ static int amdgpu_cs_wait_all_fences(struct amdgpu_device *adev,
+ 			continue;
  
-@@ -3534,6 +3535,7 @@ static void handle_forward(struct ceph_mds_client *mdsc,
+ 		r = dma_fence_wait_timeout(fence, true, timeout);
++		if (r > 0 && fence->error)
++			r = fence->error;
++
+ 		dma_fence_put(fence);
+ 		if (r < 0)
+ 			return r;
  
- bad:
- 	pr_err("mdsc_handle_forward decode error err=%d\n", err);
-+	ceph_msg_dump(msg);
- }
+ 		if (r == 0)
+ 			break;
+-
+-		if (fence->error)
+-			return fence->error;
+ 	}
  
- static int __decode_session_metadata(void **p, void *end,
-@@ -5254,6 +5256,7 @@ void ceph_mdsc_handle_fsmap(struct ceph_mds_client *mdsc, struct ceph_msg *msg)
- bad:
- 	pr_err("error decoding fsmap %d. Shutting down mount.\n", err);
- 	ceph_umount_begin(mdsc->fsc->sb);
-+	ceph_msg_dump(msg);
- err_out:
- 	mutex_lock(&mdsc->mutex);
- 	mdsc->mdsmap_err = err;
-@@ -5322,6 +5325,7 @@ void ceph_mdsc_handle_mdsmap(struct ceph_mds_client *mdsc, struct ceph_msg *msg)
- bad:
- 	pr_err("error decoding mdsmap %d. Shutting down mount.\n", err);
- 	ceph_umount_begin(mdsc->fsc->sb);
-+	ceph_msg_dump(msg);
- 	return;
- }
- 
+ 	memset(wait, 0, sizeof(*wait));
 -- 
 2.39.2
 
