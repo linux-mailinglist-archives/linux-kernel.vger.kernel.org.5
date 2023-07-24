@@ -2,118 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62814760192
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F3D760194
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbjGXVxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
+        id S229748AbjGXVyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:54:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbjGXVxq (ORCPT
+        with ESMTP id S229541AbjGXVyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:53:46 -0400
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26806118
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:53:45 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1b05d63080cso3804532fac.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:53:45 -0700 (PDT)
+        Mon, 24 Jul 2023 17:54:19 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D68194
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:54:18 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-583b0637c04so39358857b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:54:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690235624; x=1690840424;
+        d=paul-moore.com; s=google; t=1690235657; x=1690840457;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r4SHNWvonq3pTdPu5w/9lA9SaPd7vXM0OcBb+UX7Zcc=;
-        b=Totw2DOP+aVvqwlywvLYSHlv7/hFnTw5PoZMFmPdshevUEe+e96+tR5JCJrBTv/7AR
-         5H5ZZNZagYQ3qPvvNO2xhWG0QzO0Y90y/UUIvYFpOuVn3YAkv5LE7HTfyd59/lGlqf8x
-         trnruv82xA7s3X1xOVLk7oLBCU0dI0p6bukMxZrIbeA2FxMFPYiZJdDwsTJis4Coze1J
-         x2624MmavfBFkqursl/yboRQGV2e9bNu+pkNR7/ZdNjxNxQTS4Op9t0qPNAsHqc2Szm9
-         HWeHrHDA32xz0vFCCAi4MH0qIr3vac7JLQ9ZDwYq6uRa5Y0gDWTZU8isLOk/Bwi1dH37
-         9LvQ==
+        bh=DQnZVWxKX+0CXafj6SJn4lekIqwhPXUIrLSw0b0Ful8=;
+        b=So/G3KZGtWFl9G3u0VtRaafKXrXKTw3kIG1uGlCrkctZh0r+yc2/8579W4gqddkPoQ
+         YiXM8tpjpD/vewR3GLr8W9tjOFqzKpDAAyj5Y11QjzoGUdyVjEJTx52CUfAdevLX/0+k
+         gct2e/EsQf0zqd6IK6R4kwjbVYDOMd3j3IYvEyyyILHoHZau1+EWVQDxhn+3/H3OHJML
+         Qg4XcL4oJQtg+Ij2VnE/5sGBARqipnRvYyrfMEqXMzsbuy4tPGsXAbrtVEfxSZ7pOXM4
+         qEBwUFiP45QxGgGTE1mFGVDxPz7pq1+HsF4hD4gBKTiyr1ta/YTYZfVW/ERMzVkpznEO
+         qVOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690235624; x=1690840424;
+        d=1e100.net; s=20221208; t=1690235657; x=1690840457;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=r4SHNWvonq3pTdPu5w/9lA9SaPd7vXM0OcBb+UX7Zcc=;
-        b=bcJQk9uuoPY/VbYZY682ZJ9LpggatvDVI+lDb9+jcWTWcWD3UFdcjqZXZ6t43m1yF6
-         AQ/tkzs4NJNXM057Pbsh3Ro1Li6lR3xVyZ7ZD8uHBKRM6i0/0brelL19yaxLIwe1oe2u
-         pSxdhhrGQi8IREfu6UFeLTlDhA5dsTM3u2kecpB/MGjn6m6EbwBAliBgowjZYtRjaGTB
-         LJjgb1zY6zrEJ490zlUhm2itdk8EgGf/FsnN1BWo7hUJVu1JFUDdPpA6/1TWPTbEBx7a
-         bB880SQjjJDpyeY4IGJT1Au8dzdCVJPx5nOcLpyRdpx2DQSkL5vNkH9dZ51vY1r5GCgU
-         8byw==
-X-Gm-Message-State: ABy/qLZ17DHjGOFt0Moi2gp8PvHa4ZZsxyV0krusY6+o2PbJE4DZDw8P
-        osipqBTSoxS698r5T8fkJjHQwc4uIzDrxj0C074=
-X-Google-Smtp-Source: APBJJlFIfsDwrK83y95RbhA0I4iIT2y/sEJO0jQBfv+G0amgLdB9nh2cRiNGnstNhk1bHnNuKe9VEbs5ZY6xrwU4tWw=
-X-Received: by 2002:a05:6870:b50b:b0:1b3:eec8:fa87 with SMTP id
- v11-20020a056870b50b00b001b3eec8fa87mr12990007oap.42.1690235624460; Mon, 24
- Jul 2023 14:53:44 -0700 (PDT)
+        bh=DQnZVWxKX+0CXafj6SJn4lekIqwhPXUIrLSw0b0Ful8=;
+        b=ZRquZskfFgb2TGOu4HHUNqqn0EbxVUdnhBF8b+MAzTPFMemuo2Ah45+N0y73NxIoHx
+         IX5MVMCU/lOuCMFzHRQRfw1mN03vSe3Q7lY9VPluTf/qjObKrnn1u4R9ZSOpItHkt3AT
+         uZD8O4vgDHGTwB5/YDuv7Dla6IlqURlBz7GWYAvl+h9dTpz4s8genRIln4gIQJZRHbQx
+         v2FFq/IGZTiyicgI6RhPc2WqZvKHt2rLQEXi17VQUQEdQ9iemh9WyAxBz3mWP9JQqBLr
+         oTHwRfwdGj8T+/1jgqMrzEJbpXgEoNybT7BGbKdyk32JLcffb+6sOdbCfkbYU9Cz9pBE
+         hcRQ==
+X-Gm-Message-State: ABy/qLY5xEzC6SLKffKlOqWnh3epDc2jIbArJ4AaJewJQpmH/F6tlFzs
+        GVsQlX1weYX1p/cOK0dsvUDi8hd1tNmHfIeDNUmT
+X-Google-Smtp-Source: APBJJlGm86O3vRSyfJo7FzGkguVP9DN/0Kx7zG8LSr+E4dwbB1z1OOAPei8bpFNceBvParOi32TeB3Kmh32RVv+jcWQ=
+X-Received: by 2002:a81:6d88:0:b0:583:821b:603a with SMTP id
+ i130-20020a816d88000000b00583821b603amr587409ywc.20.1690235657596; Mon, 24
+ Jul 2023 14:54:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230724084109.9496-1-xujianghui@cdjrlc.com> <7fde0c4213bf401813918ac05f313fbb@208suo.com>
-In-Reply-To: <7fde0c4213bf401813918ac05f313fbb@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 24 Jul 2023 17:53:33 -0400
-Message-ID: <CADnq5_MUvvpznMhVB5DabVuNYgiyjbn_QEvTRr=ne7-8Ypc+xg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: that open brace { should be on the previous line
-To:     sunran001@208suo.com
-Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230724145204.534703-1-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20230724145204.534703-1-roberto.sassu@huaweicloud.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 24 Jul 2023 17:54:06 -0400
+Message-ID: <CAHC9VhQcVSX+kZ3PMJGJ3i-qxv9g3iP_Y4At5VCV8qSoJYj8Cg@mail.gmail.com>
+Subject: Re: [PATCH] security: Fix ret values doc for security_inode_init_security()
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     jmorris@namei.org, serge@hallyn.com,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
-
-On Mon, Jul 24, 2023 at 4:42=E2=80=AFAM <sunran001@208suo.com> wrote:
+On Mon, Jul 24, 2023 at 10:52=E2=80=AFAM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
 >
-> ERROR: that open brace { should be on the previous line
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 >
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> Commit 6bcdfd2cac55 ("security: Allow all LSMs to provide xattrs for
+> inode_init_security hook") unified the !initxattrs and initxattrs cases. =
+By
+> doing that, security_inode_init_security() cannot return -EOPNOTSUPP
+> anymore, as it is always replaced with zero at the end of the function.
+>
+> Also, mentioning -ENOMEM as the only possible error is not correct. For
+> example, evm_inode_init_security() could return -ENOKEY.
+>
+> Fix these issues in the documentation of security_inode_init_security().
+>
+> Fixes: 6bcdfd2cac55 ("security: Allow all LSMs to provide xattrs for inod=
+e_init_security hook")
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 > ---
->   drivers/gpu/drm/amd/pm/swsmu/inc/smu_11_0_cdr_table.h | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
+>  security/security.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_11_0_cdr_table.h
-> b/drivers/gpu/drm/amd/pm/swsmu/inc/smu_11_0_cdr_table.h
-> index beab6d7b28b7..630132c4a76b 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_11_0_cdr_table.h
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/inc/smu_11_0_cdr_table.h
-> @@ -52,8 +52,7 @@ static unsigned int DbiPrbs7[] =3D
->
->
->   //4096 bytes, 256 byte aligned
-> -static unsigned int NoDbiPrbs7[] =3D
-> -{
-> +static unsigned int NoDbiPrbs7[] =3D {
->       0x0f0f0f0f, 0x0f0f0f0f, 0x0f0f0f0f, 0xf0f00f0f, 0x0f0f0f0f,
-> 0x0f0f0f0f, 0xf0f0f0f0, 0x0f0f0f0f, 0x0f0f0f0f, 0xf0f00f0f, 0xf0f00f0f,
-> 0x0f0f0f0f, 0xf0f0f0f0, 0xf0f0f0f0, 0x0f0f0f0f, 0xf0f00f0f,
->       0x0f0f0f0f, 0xf0f00f0f, 0xf0f0f0f0, 0x0f0f0f0f, 0xf0f0f0f0,
-> 0xf0f00f0f, 0xf0f00f0f, 0xf0f00f0f, 0x0f0ff0f0, 0xf0f0f0f0, 0xf0f0f0f0,
-> 0x0f0ff0f0, 0x0f0f0f0f, 0x0f0f0f0f, 0xf0f0f0f0, 0xf0f00f0f,
->       0x0f0f0f0f, 0xf0f00f0f, 0x0f0ff0f0, 0x0f0f0f0f, 0xf0f0f0f0,
-> 0x0f0ff0f0, 0xf0f00f0f, 0xf0f00f0f, 0xf0f0f0f0, 0x0f0ff0f0, 0xf0f0f0f0,
-> 0xf0f00f0f, 0xf0f0f0f0, 0x0f0f0f0f, 0x0f0ff0f0, 0xf0f00f0f,
-> @@ -121,8 +120,7 @@ static unsigned int NoDbiPrbs7[] =3D
->   };
->
->   // 4096 bytes, 256 byte aligned
-> -static unsigned int DbiPrbs7[] =3D
-> -{
-> +static unsigned int DbiPrbs7[] =3D {
->       0xffffffff, 0xffffffff, 0xffffffff, 0x0000ffff, 0xffffffff,
-> 0xffffffff, 0x00000000, 0xffffffff, 0xffffffff, 0x0000ffff, 0x0000ffff,
-> 0xffffffff, 0x00000000, 0x00000000, 0xffffffff, 0x0000ffff,
->       0xffffffff, 0x0000ffff, 0x00000000, 0xffffffff, 0x00000000,
-> 0x0000ffff, 0x0000ffff, 0x0000ffff, 0xffff0000, 0x00000000, 0x00000000,
-> 0xffff0000, 0xffffffff, 0xffffffff, 0x00000000, 0x0000ffff,
->       0xffffffff, 0x0000ffff, 0xffff0000, 0xffffffff, 0x00000000,
-> 0xffff0000, 0x0000ffff, 0x0000ffff, 0x00000000, 0xffff0000, 0x00000000,
-> 0x0000ffff, 0x00000000, 0xffffffff, 0xffff0000, 0x0000ffff,
+> diff --git a/security/security.c b/security/security.c
+> index cfdd0cbbcb9..5aa9cb91f0f 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -1604,8 +1604,8 @@ EXPORT_SYMBOL(security_dentry_create_files_as);
+>   * a security attribute on this particular inode, then it should return
+>   * -EOPNOTSUPP to skip this processing.
+>   *
+> - * Return: Returns 0 on success, -EOPNOTSUPP if no security attribute is
+> - * needed, or -ENOMEM on memory allocation failure.
+> + * Return: Returns 0 on success or on -EOPNOTSUPP error, a negative valu=
+e other
+> + *         than -EOPNOTSUPP otherwise.
+
+How about "Returns 0 if the LSM successfully initialized all of the
+inode security attributes that are required, negative values
+otherwise."?  The caller doesn't need to worry about the individual
+LSMs returning -EOPNOTSUPP in the case of no security attributes, and
+if they really care, they are likely reading the description above (or
+the code) which explains it in much better detail.
+
+Thoughts?
+
+--
+paul-moore.com
