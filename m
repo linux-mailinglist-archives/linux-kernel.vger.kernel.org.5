@@ -2,129 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1CE75F4D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE2475F4DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbjGXLTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 07:19:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
+        id S231395AbjGXLTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 07:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbjGXLTS (ORCPT
+        with ESMTP id S229813AbjGXLTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:19:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDFD10E0;
-        Mon, 24 Jul 2023 04:19:08 -0700 (PDT)
+        Mon, 24 Jul 2023 07:19:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE29FE5C;
+        Mon, 24 Jul 2023 04:19:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EDDC061022;
-        Mon, 24 Jul 2023 11:19:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10A99C433C8;
-        Mon, 24 Jul 2023 11:19:06 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 61C4D610A5;
+        Mon, 24 Jul 2023 11:19:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57AD2C433C7;
+        Mon, 24 Jul 2023 11:19:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690197547;
-        bh=eGy6WqfVIqQPgGPKAvW81QoB/ySKTHMD8LagMZuvVeI=;
+        s=k20201202; t=1690197581;
+        bh=GzUaJfQLXiclBu5jTUskyxqPGnBUzb/0S3OOXRP7gV0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RHzmUKfDX0RqsMSw4+UXlmUaQUik1fGzIrw7OkY5/eBelHFVDPIJKS3wvfgBRJ/mq
-         QUQxVXV3n2Snr5fqcXXOlRXANyayo/dGFKRCr7EuCKcblCl5oXkQ3i3mqbPmZtezG1
-         qLh0yJpb0ZlWzdqqg/XquKFpEZpSZ9AuCwh21WFVzXnATY8IdML8xKmLiYznPvPfV7
-         IrXY/lCZh2sD7GKaQ7H8mPifPkKqGAG8Cglnrv1CjFqm1oYBI+S3rISRfjieX9bmLb
-         eDUFNwfGr+c39A6DuVrrkxTFJq0T6HcJe64O8jhWH3w2txiYdpHE91I1yHbmQvdT4m
-         QGyuv0lIt5lQw==
-Date:   Mon, 24 Jul 2023 13:19:04 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>, llvm@lists.linux.dev,
-        oe-kbuild-all@lists.linux.dev, linux-kselftest@vger.kernel.org,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        =?utf-8?B?TWHDrXJh?= Canal <mairacanal@riseup.net>,
-        kunit-dev@googlegroups.com
-Subject: Re: [PATCH v2 01/11] drm/tests: helpers: Switch to kunit actions
-Message-ID: <v2uvmcc2buyc3enmnholj4jgfw2viywmnv4jxwzx2xlcuwuyxu@sdaxiwnkdrmo>
-References: <20230720-kms-kunit-actions-rework-v2-1-175017bd56ab@kernel.org>
- <202307210148.7gWzLOtn-lkp@intel.com>
+        b=itt39rI+Jj9TmkMjiihJU2dMhEyjo86bbK+X8Z5iWL6eihJ4Vw+duMVFBoDso9XkW
+         JE0nS9mjs5Ez0Kdu+csF6hknbLQrI4BdszAAHZXX4y2GJYbmSvN6ErjStXQ0Z4O213
+         zfin6Z8cRyJa9X0Q0/lHzXG8ddYGL5MQR7AN3GniRyXsl1vWJqhoLJfdb3uHM13r1L
+         AEhHx18DRA+Blvba3GlrlDluqYsN2WNlWN3YaEduCm2Zt/6zFt9IGfsHmc8H6BL77H
+         lmxYvlvnvDQTa83qzGuAbVdPh4PK1XCOlU0MkwehCItz6BWhJXjrsxd4vlKHsMj9cb
+         wJlEOFUs3ZSdQ==
+Date:   Mon, 24 Jul 2023 14:19:38 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Junxian Huang <huangjunxian6@hisilicon.com>
+Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 for-next] RDMA/core: Get IB width and speed from netdev
+Message-ID: <20230724111938.GB9776@unreal>
+References: <20230721092052.2090449-1-huangjunxian6@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ysvrjn47vocn3ezn"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202307210148.7gWzLOtn-lkp@intel.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230721092052.2090449-1-huangjunxian6@hisilicon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 21, 2023 at 05:20:52PM +0800, Junxian Huang wrote:
+> From: Haoyue Xu <xuhaoyue1@hisilicon.com>
+> 
+> Previously, there was no way to query the number of lanes for a network
+> card, so the same netdev_speed would result in a fixed pair of width and
+> speed. As network card specifications become more diverse, such fixed
+> mode is no longer suitable, so a method is needed to obtain the correct
+> width and speed based on the number of lanes.
+> 
+> This patch retrieves netdev lanes and speed from net_device and
+> translates them to IB width and speed.
+> 
+> Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
+> Signed-off-by: Luoyouming <luoyouming@huawei.com>
+> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> ---
+>  drivers/infiniband/core/verbs.c | 100 +++++++++++++++++++++++++-------
+>  1 file changed, 79 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+> index b99b3cc283b6..25367bd6dd97 100644
+> --- a/drivers/infiniband/core/verbs.c
+> +++ b/drivers/infiniband/core/verbs.c
+> @@ -1880,6 +1880,80 @@ int ib_modify_qp_with_udata(struct ib_qp *ib_qp, struct ib_qp_attr *attr,
+>  }
+>  EXPORT_SYMBOL(ib_modify_qp_with_udata);
+>  
+> +static void ib_get_width_and_speed(u32 netdev_speed, u32 lanes,
+> +				   u16 *speed, u8 *width)
 
---ysvrjn47vocn3ezn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+<...>
 
-Hi David, Brendan,
+> +	switch (netdev_speed / lanes) {
+> +	case SPEED_2500:
+> +		*speed = IB_SPEED_SDR;
+> +		break;
+> +	case SPEED_5000:
+> +		*speed = IB_SPEED_DDR;
+> +		break;
+> +	case SPEED_10000:
+> +		*speed = IB_SPEED_FDR10;
+> +		break;
+> +	case SPEED_14000:
+> +		*speed = IB_SPEED_FDR;
+> +		break;
+> +	case SPEED_25000:
+> +		*speed = IB_SPEED_EDR;
+> +		break;
+> +	case SPEED_50000:
+> +		*speed = IB_SPEED_HDR;
+> +		break;
+> +	case SPEED_100000:
+> +		*speed = IB_SPEED_NDR;
+> +		break;
+> +	default:
+> +		*speed = IB_SPEED_SDR;
+> +	}
 
-On Fri, Jul 21, 2023 at 01:14:41AM +0800, kernel test robot wrote:
-> Hi Maxime,
->=20
-> kernel test robot noticed the following build warnings:
->=20
-> [auto build test WARNING on c58c49dd89324b18a812762a2bfa5a0458e4f252]
->=20
-> url:    https://github.com/intel-lab-lkp/linux/commits/Maxime-Ripard/drm-=
-tests-helpers-Switch-to-kunit-actions/20230720-191901
-> base:   c58c49dd89324b18a812762a2bfa5a0458e4f252
-> patch link:    https://lore.kernel.org/r/20230720-kms-kunit-actions-rewor=
-k-v2-1-175017bd56ab%40kernel.org
-> patch subject: [PATCH v2 01/11] drm/tests: helpers: Switch to kunit actio=
-ns
-> config: arm64-randconfig-r022-20230720 (https://download.01.org/0day-ci/a=
-rchive/20230721/202307210148.7gWzLOtn-lkp@intel.com/config)
-> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git =
-4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-> reproduce: (https://download.01.org/0day-ci/archive/20230721/202307210148=
-=2E7gWzLOtn-lkp@intel.com/reproduce)
->=20
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202307210148.7gWzLOtn-lkp=
-@intel.com/
->=20
-> All warnings (new ones prefixed by >>):
->=20
-> >> drivers/gpu/drm/tests/drm_kunit_helpers.c:53:6: warning: cast from 'vo=
-id (*)(struct platform_driver *)' to 'kunit_action_t *' (aka 'void (*)(void=
- *)') converts to incompatible function type [-Wcast-function-type-strict]
->       53 |                                         (kunit_action_t *)plat=
-form_driver_unregister,
->          |                                         ^~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~~~~~~~~~~~~
+How did you come to these translation values?
 
-I missed that warning before, and I don't think we can address that
-easily. Should we give up on kunit_action_t entirely?
-
-Maxime
-
---ysvrjn47vocn3ezn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZL5eKAAKCRDj7w1vZxhR
-xbDXAQCzzG3lszYEUk6OTrkeopYKRMhD5DWQkj4bxS7jDlfp+wEAliilztZzak6w
-syeBeoK9ukIhtHWM2yFxJNj+irZJtw4=
-=0xh1
------END PGP SIGNATURE-----
-
---ysvrjn47vocn3ezn--
+Thanks
