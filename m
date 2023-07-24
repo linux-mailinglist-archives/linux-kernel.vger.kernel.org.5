@@ -2,163 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3950175FCCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B71F75FCD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbjGXRA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
+        id S231508AbjGXRAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbjGXRAU (ORCPT
+        with ESMTP id S229767AbjGXRAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:00:20 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0FE19AD
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:00:01 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-4863752ec88so76158e0c.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:00:01 -0700 (PDT)
+        Mon, 24 Jul 2023 13:00:38 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018031702
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:00:37 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b89e3715acso24750615ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:00:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690217999; x=1690822799;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GpPVCGUI1b90lVt/J/Pv7H5HNHNL2Yxzz8z+9HV7W0Q=;
-        b=wk5hu72Jiuc9eXzgdq9U9kZjMic0UlwRZmLcw52kAaqHqscqKpv6LmH1Zt0Q9m4qiB
-         ihVmOc1c7GkMAYGEzRTlUAnIWsZG+pW8QSrk1ljcOPcchdMMgJB7aMeaBlUHhqPUBx4+
-         070RUcTe9y/gvICn2a3nUoL07bRnaEy/taGuNLy8OvMPkR2pTy6151pWRVt6azYCC3fM
-         +KvlOnr1OV7pObpEHoIH3gNTW+1AfkXb4WesiBW0lAS6GlvZB7N6pr/5NbHtfZU7lRxs
-         2MkP2WDQj9nIh1sANzx8Evp5H3lgEDggSRB8NHy27/d1bwksh7rXrr74TBsHoYQySQuW
-         PrWg==
+        d=google.com; s=20221208; t=1690218036; x=1690822836;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RiFFb9olEr1IXMurVCQB0i8J9xB8UVFiN6yE37xYj5w=;
+        b=iUh3Wr2Es7ZayOSlRIyCXv0ISRPLliUqI/wxpz9npizX1RGnl3Zt97AZrYUR8pVjnH
+         OwuM0g2/mnG2Ws1vH1RTNrF8tqURzEVkr4hahdERkph4Nww3rEaO/unCqdjsW1luIjbU
+         y9Vd6q8CcxdQP+GEmRHglSZNO6vM+UxAwTBpxBMCbqTq0hlf3MD2sKnPBjpHoFEjKPFr
+         Tmb3ea8A/X/JO92m7TD8v5eZc4l7fpKAQniXW7MS+8KISe8P4Nbdl//npN/iD7LNKC4a
+         rVBOiRv2FN5pQA6p+V2In5eaYYH21fAVeDedlt36+Mezc1EEot9BPPcgeqHdCs8LHv6O
+         cdZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690217999; x=1690822799;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GpPVCGUI1b90lVt/J/Pv7H5HNHNL2Yxzz8z+9HV7W0Q=;
-        b=LFEFE0J8eZ98pDij7xOFp77gVkH3lFFVl7J7+3YfjH+jxKZI6WgioPEcwW/hFM4Upt
-         Mc14lmdn04RVbOMnXcLlsGpi2cy4HW36ikdLdvg963q/watBtOVgmLHyR5325vtIXshF
-         jui4d3S68fjoX0ile+l5TfgkRBYDoRaL/cz1o5jUz1/hQS0AuLf3Ne/Z3CmBlXGExJCr
-         JbnG2wj0Y3JimS5D6WkxkJbuiTD0IXm5WNd1vtGt7BPGHRkeVv8/zGxgUPzEuTigbBGj
-         CoZyW2eRKJWG+OiNTJNhsPxzivcWDCrwFvUxZx5Wb6tIisJ/ZVMZDD/2os8bllVsFC4h
-         Gg+w==
-X-Gm-Message-State: ABy/qLYwoEzszv+7rsREfMguD345G9W+79UGyo07MUdHbddQ6bEB9hka
-        Nl68q8pyNSraRpLbuKSpoqK6pw==
-X-Google-Smtp-Source: APBJJlGr5YdRbZFwfgpR+uAkVkdDg8Zhuqzwv6fN+rTT3TvIjaBLedt5Ool2PRzhUNzGGti8BXJ9TA==
-X-Received: by 2002:a05:6102:1357:b0:430:e0:ac2e with SMTP id j23-20020a056102135700b0043000e0ac2emr2813621vsl.15.1690217999665;
-        Mon, 24 Jul 2023 09:59:59 -0700 (PDT)
-Received: from fedora (072-189-067-006.res.spectrum.com. [72.189.67.6])
-        by smtp.gmail.com with ESMTPSA id x24-20020a67c098000000b0044360ff4275sm1364969vsi.28.2023.07.24.09.59.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 09:59:58 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 12:59:56 -0400
-From:   William Breathitt Gray <william.gray@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: Re: [patch 00/58] x86/apic: Decrapification and static calls
-Message-ID: <ZL6uDN4KmYTk8R1J@fedora>
-References: <20230717223049.327865981@linutronix.de>
- <CACRpkda2T2gxfjmHYqMNk-De7phRzeMFvenH84XJMK7BXbdv0Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xO/vnO/Wn5eDLd10"
-Content-Disposition: inline
-In-Reply-To: <CACRpkda2T2gxfjmHYqMNk-De7phRzeMFvenH84XJMK7BXbdv0Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690218036; x=1690822836;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RiFFb9olEr1IXMurVCQB0i8J9xB8UVFiN6yE37xYj5w=;
+        b=SrDrLFsL3nq6X2ZAObkWRv0D18aFNIjkTLm5GyYcrcBQ3Q7aeo3QXL6V0ySdM9G6IL
+         c9en26tM869tIZtZ1aFkRMcriScb6P/j0hZ4XBnmWQRfkv1ja/m7zU94H94wVYlSSUfO
+         Kgqk91r4t40sxenVLfsxPv0fk0H6+5g1RSE+EvrE3DFjAfuFhs8uYFepIBm+sjEKPMUW
+         6ZmQZ0D16lQp2sC3BTgamFuLo6ZiYdosJyQgefBhuUMAR4jnHgO9fwhTsbDbSifcDGl6
+         CAOvwmKCg9HXpRPHMtSQnfJCx/6IegSvINOBkxZHhqvt6vkbXA94NF8iZ04pRts+JenP
+         7xPg==
+X-Gm-Message-State: ABy/qLay9kp42Z7E5GXiGWiL4gLbo24u9rZJLxTzuXWvPXDifo49wZM1
+        gk1CB3P73fTnAl7bjkjzG7X1z1f267I=
+X-Google-Smtp-Source: APBJJlGFNY8Nsd+UpmzZCGDOgI47OKk03bkzsFP32ko2G/RNTdNXayC/49Rk0sPPfbjIVmYJcM3mAoRuscc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:2308:b0:1b8:80c9:a98e with SMTP id
+ d8-20020a170903230800b001b880c9a98emr42778plh.13.1690218036394; Mon, 24 Jul
+ 2023 10:00:36 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 10:00:34 -0700
+In-Reply-To: <110f1aa0-7fcd-1287-701a-89c2203f0ac2@amd.com>
+Mime-Version: 1.0
+References: <20230718234512.1690985-1-seanjc@google.com> <110f1aa0-7fcd-1287-701a-89c2203f0ac2@amd.com>
+Message-ID: <ZL6uMk/8UeuGj8CP@google.com>
+Subject: Re: [RFC PATCH v11 00/29] KVM: guest_memfd() and per-page attributes
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Nikunj A. Dadhania" <nikunj@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 24, 2023, Nikunj A. Dadhania wrote:
+> On 7/19/2023 5:14 AM, Sean Christopherson wrote:
+> > This is the next iteration of implementing fd-based (instead of vma-based)
+> > memory for KVM guests.  If you want the full background of why we are doing
+> > this, please go read the v10 cover letter[1].
+> > 
+> > The biggest change from v10 is to implement the backing storage in KVM
+> > itself, and expose it via a KVM ioctl() instead of a "generic" sycall.
+> > See link[2] for details on why we pivoted to a KVM-specific approach.
+> > 
+> > Key word is "biggest".  Relative to v10, there are many big changes.
+> > Highlights below (I can't remember everything that got changed at
+> > this point).
+> > 
+> > Tagged RFC as there are a lot of empty changelogs, and a lot of missing
+> > documentation.  And ideally, we'll have even more tests before merging.
+> > There are also several gaps/opens (to be discussed in tomorrow's PUCK).
+> 
+> As per our discussion on the PUCK call, here are the memory/NUMA accounting 
+> related observations that I had while working on SNP guest secure page migration:
+> 
+> * gmem allocations are currently treated as file page allocations
+>   accounted to the kernel and not to the QEMU process.
 
---xO/vnO/Wn5eDLd10
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We need to level set on terminology: these are all *stats*, not accounting.  That
+distinction matters because we have wiggle room on stats, e.g. we can probably get
+away with just about any definition of how guest_memfd memory impacts stats, so
+long as the information that is surfaced to userspace is useful and expected.
 
-On Tue, Jul 18, 2023 at 04:29:23PM +0200, Linus Walleij wrote:
-> On Tue, Jul 18, 2023 at 1:14=E2=80=AFAM Thomas Gleixner <tglx@linutronix.=
-de> wrote:
->=20
-> > This builds and boots on 32bit and 64bit, but obviously needs a larger =
-test
-> > base especially on those old 32bit systems which are just museum pieces.
->=20
-> These things are indeed museum pieces if you think servers, desktops
-> and laptops. They will at max be glorified terminals.
->=20
-> What we noticed on ARM32 is that it used for:
-> 1. Running 32-bit kernels as guests in virtual machines (I don't know if
->   x86 has this problem, sorry I'm ignorant there)
-> 2. Embedded systems with very long support cycles
->=20
-> For x86 there is PC104, I think William Breathitt Gray knows more about
-> those, scope and usage etc. The typical usecase is industrial embedded
-> (I've seen quite a few e.g biochemical lab equipment set-ups) which are
-> running on a "it works don't fix it"-basis but they are network connected
-> so they may need new kernels for security reasons, or to fix bugs.
-> https://en.wikipedia.org/wiki/PC/104
->=20
-> These things have lifecycles that easily outspans any server, desktop or
-> laptop. 30+ years easily. They are just sitting there, making whatever
-> blood cleaning agent or medical.
->=20
-> I think the automation people have mostly switched over to using
-> ARM things such as RaspberryXYZ for new plants, but there is some
-> poor guy with the job of keeping all the PC104 plants running on recent
-> kernels for the next 20 years or so.
->=20
-> Yours,
-> Linus Walleij
+But we absolutely need to get accounting correct, specifically the allocations
+need to be correctly accounted in memcg.  And unless I'm missing something,
+nothing in here shows anything related to memcg.
 
-It's true that there a still a good number of PC104 setups still running
-out there in the manufacturing sector. However, it should be noted that
-these are typically systems that are configured and set once, left to
-run indefinitely doing their specific manufacturing task until the
-machines invariably break down from wear a decade or so later.
+>   Starting an SNP guest with 40G memory with memory interleave between
+>   Node2 and Node3
+> 
+>   $ numactl -i 2,3 ./bootg_snp.sh
+> 
+>     PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+>  242179 root      20   0   40.4g  99580  51676 S  78.0   0.0   0:56.58 qemu-system-x86
+> 
+>   -> Incorrect process resident memory and shared memory is reported
 
-It's rare for the software of these systems to be updated; where a
-machine fails, the owner will usually repair or replace the particular
-mechanical component and reload that same ancient software they have
-been using for years. The cases where software is updated may be out of
-necessity to support a replacement device for a component that is no
-longer in production. In these situations, you would find newer PC104
-devices to fill that gap: where compatibility is needed with the ancient
-core machine featuring only an ISA bus, but which the plant owner
-doesn't want to throw away because "it still runs just fine with a
-little spit shining."
+I don't know that I would call these "incorrect".  Shared memory definitely is
+correct, because by definition guest_memfd isn't shared.  RSS is less clear cut;
+gmem memory is resident in RAM, but if we show gmem in RSS then we'll end up with
+scenarios where RSS > VIRT, which will be quite confusing for unaware users (I'm
+assuming the 40g of VIRT here comes from QEMU mapping the shared half of gmem
+memslots).
 
-Perhaps some years ago I would have said there was still demand for
-PC104 support, but now with the motherboards of these older systems
-finally failing due to age, the owners of these machines are forced to
-upgrade to something newer. As mentioned, I've also seen a general trend
-in this sector to move towards ARM products, perhaps out of a desire for
-lower power consumption or maybe their industrial line of features.
-Overall I don't see much future for PC104 in newer kernels because as
-the systems using it fail, users are switching to platforms without it.
+>   Accounting of the memory happens in the host page fault handler path,
+>   but for private guest pages we will never hit that.
+> 
+> * NUMA allocation does use the process mempolicy for appropriate node 
+>   allocation (Node2 and Node3), but they again do not get attributed to 
+>   the QEMU process
+> 
+>   Every 1.0s: sudo numastat  -m -p qemu-system-x86 | egrep -i "qemu|PID|Node|Filepage"   gomati: Mon Jul 24 11:51:34 2023
+> 
+>   Per-node process memory usage (in MBs)
+>   PID                               Node 0          Node 1          Node 2          Node 3           Total
+>   242179 (qemu-system-x86)           21.14            1.61           39.44           39.38          101.57
+>   Per-node system memory usage (in MBs):
+>                             Node 0          Node 1          Node 2          Node 3           Total
+>   FilePages                2475.63         2395.83        23999.46        23373.22        52244.14
+> 
+> 
+> * Most of the memory accounting relies on the VMAs and as private-fd of 
+>   gmem doesn't have a VMA(and that was the design goal), user-space fails 
+>   to attribute the memory appropriately to the process.
+>
+>   /proc/<qemu pid>/numa_maps
+>   7f528be00000 interleave:2-3 file=/memfd:memory-backend-memfd-shared\040(deleted) anon=1070 dirty=1070 mapped=1987 mapmax=256 active=1956 N2=582 N3=1405 kernelpagesize_kB=4
+>   7f5c90200000 interleave:2-3 file=/memfd:rom-backend-memfd-shared\040(deleted)
+>   7f5c90400000 interleave:2-3 file=/memfd:rom-backend-memfd-shared\040(deleted) dirty=32 active=0 N2=32 kernelpagesize_kB=4
+>   7f5c90800000 interleave:2-3 file=/memfd:rom-backend-memfd-shared\040(deleted) dirty=892 active=0 N2=512 N3=380 kernelpagesize_kB=4
+> 
+>   /proc/<qemu pid>/smaps
+>   7f528be00000-7f5c8be00000 rw-p 00000000 00:01 26629                      /memfd:memory-backend-memfd-shared (deleted)
+>   7f5c90200000-7f5c90220000 rw-s 00000000 00:01 44033                      /memfd:rom-backend-memfd-shared (deleted)
+>   7f5c90400000-7f5c90420000 rw-s 00000000 00:01 44032                      /memfd:rom-backend-memfd-shared (deleted)
+>   7f5c90800000-7f5c90b7c000 rw-s 00000000 00:01 1025                       /memfd:rom-backend-memfd-shared (deleted)
 
-William Breathitt Gray
+This is all expected, and IMO correct.  There are no userspace mappings, and so
+not accounting anything is working as intended.
 
---xO/vnO/Wn5eDLd10
-Content-Type: application/pgp-signature; name="signature.asc"
+> * QEMU based NUMA bindings will not work. Memory backend uses mbind() 
+>   to set the policy for a particular virtual memory range but gmem 
+>   private-FD does not have a virtual memory range visible in the host.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZL6uDAAKCRC1SFbKvhIj
-K7GCAQDt3t3mXYN4MsY7+iG1Bi5mLtGZsbJ2KZk8hUR+BOPPQQEA1IanGc9NwAvr
-F9QorNPnTv1vBT1pXnpllbl9GmpXFAA=
-=JlPR
------END PGP SIGNATURE-----
-
---xO/vnO/Wn5eDLd10--
+Yes, adding a generic fbind() is the way to solve silve.
