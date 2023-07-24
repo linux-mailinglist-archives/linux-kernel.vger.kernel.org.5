@@ -2,201 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B42275F817
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F9675F826
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbjGXNTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60014 "EHLO
+        id S229441AbjGXNXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjGXNTn (ORCPT
+        with ESMTP id S230335AbjGXNXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:19:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DF0FA;
-        Mon, 24 Jul 2023 06:19:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C65D16117C;
-        Mon, 24 Jul 2023 13:19:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D76AC433C7;
-        Mon, 24 Jul 2023 13:19:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690204781;
-        bh=zTYrYfuIhDLccrN9QL20ThimI4OI5TmqW3BW1i0cnkQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cdaPaJlDzf6l99eaSnCCkx6Q1+VMDLk6XZVYtVQAP9OPUm7ZTYhl0+FfuYFZjUsDe
-         HPil2p68YsKZgexov5c8FRpmuwlF07N7x5FVIZPUSd9iZ2OpAuJGuxP7b6lE5oGjz/
-         QZuPHhAd3QFq1U7NlfiBYLAVUuqFNYyPWGT07FWNPv4K4tha90HglRPc/lTWTZLHPI
-         r6LjBgfsJQ8Evzk+1ts/e/tyNm+SQQA68q3Iulb4t7gTBb5nHdZrnS2Fv+hxDVCroN
-         vXUlunbUQQwb1SYBYfl7RFJJ9nqeurLiiJxDLzOyivr7NeZM5KQg/tXdvDpecHfdKt
-         7bPpMo2uvG90Q==
-Date:   Mon, 24 Jul 2023 15:19:38 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Frank Oltmanns <frank@oltmanns.dev>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Roman Beranek <me@crly.cz>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 08/11] clk: sunxi-ng: nkm: Support finding closest rate
-Message-ID: <walqtnf2dektptg4uimfmyth5e4l5xod4kavx3bwzmndyekfmd@l5mb2ukuhvza>
-References: <20230717-pll-mipi_set_rate_parent-v4-0-04acf1d39765@oltmanns.dev>
- <20230717-pll-mipi_set_rate_parent-v4-8-04acf1d39765@oltmanns.dev>
- <ho2bblo2hzizst74hfqog3ga4cjf7eead2ntbl4e7xi5c32bhq@qpttu7ayv7vy>
- <87ilabqecp.fsf@oltmanns.dev>
+        Mon, 24 Jul 2023 09:23:49 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C960DF5;
+        Mon, 24 Jul 2023 06:23:47 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R8gpj3RJ1z4f3jqb;
+        Mon, 24 Jul 2023 21:23:41 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgBn0LNbe75kcavTOg--.2237S4;
+        Mon, 24 Jul 2023 21:23:41 +0800 (CST)
+From:   thunder.leizhen@huaweicloud.com
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 0/2] softirq: redefine the type of kernel_stat.softirqs[] as unsigned long
+Date:   Mon, 24 Jul 2023 21:22:22 +0800
+Message-Id: <20230724132224.916-1-thunder.leizhen@huaweicloud.com>
+X-Mailer: git-send-email 2.37.3.windows.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zdha6ty5qkdyadob"
-Content-Disposition: inline
-In-Reply-To: <87ilabqecp.fsf@oltmanns.dev>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBn0LNbe75kcavTOg--.2237S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gw17Zw1fXw13Aw13WFy3urg_yoW3Grc_Zw
+        s7tr1UGw1IqFZay3W3Gr47XryjyFWj9F97Cas0qFZ0934qyF98ZFWfAF95Wrsrur4vkFZI
+        vr98ZwnIgw1SvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_JrC_JFWl1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0
+        rVAKj4xxMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCI
+        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
+        AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWU
+        JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFC
+        JmUUUUU
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
---zdha6ty5qkdyadob
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The type of member softirqs in structure kernel_stat is unsigned int, its
+accumulated value can easily overflow. Changing to unsigned long can safely 
+solve the problem on 64-bit processors.
 
-On Sun, Jul 23, 2023 at 09:25:10AM +0200, Frank Oltmanns wrote:
-> On 2023-07-17 at 16:14:58 +0200, Maxime Ripard <mripard@kernel.org> wrote:
-> > [[PGP Signed Part:Undecided]]
-> > On Mon, Jul 17, 2023 at 03:34:32PM +0200, Frank Oltmanns wrote:
-> >> When finding the best rate for a NKM clock, consider rates that are
-> >> higher than the requested rate, if the CCU_FEATURE_CLOSEST_RATE flag is
-> >> set by using the helper function ccu_is_better_rate().
-> >>
-> >> Accommodate ccu_mux_helper_determine_rate to this change.
-> >>
-> >> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
-> >> ---
-> >>  drivers/clk/sunxi-ng/ccu_mux.c |  2 +-
-> >>  drivers/clk/sunxi-ng/ccu_nkm.c | 18 ++++++++----------
-> >>  2 files changed, 9 insertions(+), 11 deletions(-)
-> >>
-> >> diff --git a/drivers/clk/sunxi-ng/ccu_mux.c b/drivers/clk/sunxi-ng/ccu=
-_mux.c
-> >> index 1d557e323169..3ca695439620 100644
-> >> --- a/drivers/clk/sunxi-ng/ccu_mux.c
-> >> +++ b/drivers/clk/sunxi-ng/ccu_mux.c
-> >> @@ -139,7 +139,7 @@ int ccu_mux_helper_determine_rate(struct ccu_commo=
-n *common,
-> >>  			goto out;
-> >>  		}
-> >>
-> >> -		if ((req->rate - tmp_rate) < (req->rate - best_rate)) {
-> >> +		if (ccu_is_better_rate(common, req->rate, tmp_rate, best_rate)) {
-> >>  			best_rate =3D tmp_rate;
-> >>  			best_parent_rate =3D parent_rate;
-> >>  			best_parent =3D parent;
-> >> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu=
-_nkm.c
-> >> index 793160bc2d47..5439b9351cd7 100644
-> >> --- a/drivers/clk/sunxi-ng/ccu_nkm.c
-> >> +++ b/drivers/clk/sunxi-ng/ccu_nkm.c
-> >> @@ -39,6 +39,7 @@ static unsigned long ccu_nkm_optimal_parent_rate(uns=
-igned long rate, unsigned lo
-> >>  }
-> >>
-> >>  static unsigned long ccu_nkm_find_best_with_parent_adj(struct clk_hw =
-*phw, struct _ccu_nkm *nkm,
-> >> +						       struct ccu_common *common,
-> >>  						       unsigned long *parent, unsigned long rate)
-> >>  {
-> >>  	unsigned long best_rate =3D 0, best_parent_rate =3D *parent, tmp_par=
-ent =3D *parent;
-> >> @@ -54,10 +55,8 @@ static unsigned long ccu_nkm_find_best_with_parent_=
-adj(struct clk_hw *phw, struc
-> >>  				tmp_parent =3D clk_hw_round_rate(phw, tmp_parent);
-> >>
-> >>  				tmp_rate =3D tmp_parent * _n * _k / _m;
-> >> -				if (tmp_rate > rate)
-> >> -					continue;
-> >>
-> >> -				if ((rate - tmp_rate) < (rate - best_rate)) {
-> >> +				if (ccu_is_better_rate(common, rate, tmp_rate, best_rate)) {
-> >>  					best_rate =3D tmp_rate;
-> >>  					best_parent_rate =3D tmp_parent;
-> >>  					best_n =3D _n;
-> >> @@ -78,7 +77,7 @@ static unsigned long ccu_nkm_find_best_with_parent_a=
-dj(struct clk_hw *phw, struc
-> >>  }
-> >>
-> >>  static unsigned long ccu_nkm_find_best(unsigned long parent, unsigned=
- long rate,
-> >> -				       struct _ccu_nkm *nkm)
-> >> +				       struct _ccu_nkm *nkm, struct ccu_common *common)
-> >
-> > Same comment than on patch 7, common should be first in those two funct=
-ions.
-> >
->=20
-> Ok, I wasn't sure what your expectation is for existing functions. For
-> ccu_find_best_with_parent_adj the order is:
->   1. *phw
->   2. *nkm
->   3. *common
->   4. *parent
->   5. rate
+ struct kernel_stat {
+ 	unsigned long irqs_sum;
+-	unsigned int softirqs[NR_SOFTIRQS];
++	unsigned long softirqs[NR_SOFTIRQS];
 
-Arguments are generally ordered by putting first what the function will
-act upon, and then from generic to specific, and output last.
 
-Which I guess would make the ideal one something like:
-*common
-*parent_hw
-*parent
-rate
-nkm
+Zhen Lei (2):
+  softirq: fix integer overflow in function show_stat()
+  softirq: redefine the type of kernel_stat.softirqs[] as unsigned long
 
-> We don't have the parent hw in ccu_nkm_find_best. The order prior to
-> this patch is:
->   1. parent
->   2. rate
->   3. *nkm
->=20
-> We need to add *common to that, so I could add it to the beginning as
-> per your suggestion:
->   1. *common
->   2. parent
->   3. rate
->   4. *nkm
+ fs/proc/softirqs.c          | 2 +-
+ fs/proc/stat.c              | 4 ++--
+ include/linux/kernel_stat.h | 8 ++++----
+ kernel/rcu/tree.h           | 2 +-
+ kernel/rcu/tree_stall.h     | 6 +++---
+ 5 files changed, 11 insertions(+), 11 deletions(-)
 
-Those two make sense to me
+-- 
+2.25.1
 
-> I could also pull *nkm to the beginning (similar to the parent_adj
-> version):
->   4. *nkm
->   1. *common
->   2. parent
->   3. rate
-
-nkm is an output, it needs to be last.
-
-Maxime
-
---zdha6ty5qkdyadob
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZL56ZQAKCRDj7w1vZxhR
-xfD6AQD86VqzwQL+X8K+LWwG3JTQsowVtUM7Izo4LH6eAGEXgQD/dBlKWVEEWFJ8
-Ok8JkQvJuavPFcF9gyIMwt1OzExLTA0=
-=+YIW
------END PGP SIGNATURE-----
-
---zdha6ty5qkdyadob--
