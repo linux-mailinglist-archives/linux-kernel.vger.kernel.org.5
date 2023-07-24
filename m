@@ -2,208 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9616676015C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E38376015A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbjGXVlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
+        id S231283AbjGXVl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbjGXVla (ORCPT
+        with ESMTP id S229576AbjGXVlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:41:30 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BEB126
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:41:29 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3a426e70575so2582280b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:41:29 -0700 (PDT)
+        Mon, 24 Jul 2023 17:41:25 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD1EE9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:41:24 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5840614b107so11109577b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:41:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690234888; x=1690839688;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sV2E65JaJ+s2Te44qQqNGa/qcFLI/Mc9cc9UlCLk1yo=;
-        b=GPueKY01EuAz5CMCO8DVmG7WZNEehAvdLh3dPoiaOC/5mxUocQPPqsLbjmnwj51vZM
-         XTL5/+qsDQ6iIX2BfIbktDLUjYGzMIIm3YXDIssjjMi57RiPbyQhbECcSJf/Ly5fXRoj
-         TcduYsi+raYIO5ML3EHpw18e2XErIPQdsq6usxjQcO3qfGCYXlF5+fvERuB7LyWzUPN/
-         HaL5rIb0HMpqVtUOn5R7WeU4y3z+TabHogMfV7tFbiZLxtLtRDzbWzsJAjvhSwtR3HW3
-         /EyICUStP8/7c3+iZUN4dyZMHDgDJxNV+VzJKYsGfbzCDndI0RwXtFeyBMD5GdNGbXNF
-         eAyA==
+        d=google.com; s=20221208; t=1690234883; x=1690839683;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=36znb1AgwXW7YPa8eTrHAJute7NJ/NQXlr4adS1nJ34=;
+        b=efsYJR9IR9Gs/SpQ/phcv2041HFN9J9ks0Atuke0PXmiIx3vpIOp+GhslFLn7GUXJA
+         iyAyNNHAo+VEpo6ofhtnQS+P/sDwE41gGvypw7Vem8cLFwRSCb8Ja+fpFb2RpoQbHamg
+         9phY5xroECemVhCXdFKUJTqAP0rVw5W7gkuJyHCjJyxjJlH3EsJAR6f44fp/jLl8ZI/b
+         X2IuMD6SuCnnO1rlmNptGUTrfpGzofbUXWr7ZLW/yfvctKKZKBlNHmxGnJDl8Skc5wAO
+         74LpsDitUiXVrrvG4Vm2vhGtCXlS6nkZYr8FAC7B97uvNmKX9BujsC+roWxYJ0th9lAm
+         mVUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690234888; x=1690839688;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sV2E65JaJ+s2Te44qQqNGa/qcFLI/Mc9cc9UlCLk1yo=;
-        b=EzWc5b4qVPZtdWj6bZLkdLYFOil6hjYpuP9oFgtAdiceCQeClxxv9RqG2tY2XYmI/L
-         85fE7/QeQNewcvW2fsoQwDXLDbXGXb/k2qaz2DxBT4zV7HV6rMxzeSmqNQdPB9EceEfK
-         I/dLVOszQlNdx0gZkk8y2tRv7hXwRYYbI2zcxh3FKjmfA3QclZ4ovjGikAN6vNUKOYyj
-         3UD4M5rJm8pn9xSjXUL5Dy/RlNM71y+s1nwl9TmSSo+0U+TH3hAhFdsmB40q5Rqy0A/g
-         K533uyFue6sHtHmG96lj4Yr0qGmrAUUkfxF8MWIgKoizN0a5fxbTj4VxdGK9QOusv5FK
-         dD+g==
-X-Gm-Message-State: ABy/qLbiPT7ogNvzMfaD6H2N7puZr/gpZB7Atc1ZxlQeMOQBDB6n811J
-        SVrIaz/a2qz/PphUt0um+nvw/SgPEt3A8PLy6xKAPb6P
-X-Google-Smtp-Source: APBJJlGRK3JQkS6TAmrMGjYqZYkyOwEqDWLq903A43VQpZ6r+BMC+w/yDYw1dk8djnSIsynnaK1MgbuLQTKxNiQ3j4o=
-X-Received: by 2002:aca:1e0d:0:b0:3a3:fa64:bb8d with SMTP id
- m13-20020aca1e0d000000b003a3fa64bb8dmr7967436oic.10.1690234888364; Mon, 24
- Jul 2023 14:41:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230724033939.8147-1-xujianghui@cdjrlc.com> <f558b5bf6037d0e0eadcaee9448ad4c6@208suo.com>
-In-Reply-To: <f558b5bf6037d0e0eadcaee9448ad4c6@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 24 Jul 2023 17:41:17 -0400
-Message-ID: <CADnq5_ONmrbaSwjzcoQ17qW8F8ShH3xgz58vv=uciVu8aePZ7g@mail.gmail.com>
-Subject: Re: [PATCH] drm/radeon: that open brace { should be on the previous line
-To:     sunran001@208suo.com
-Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690234883; x=1690839683;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=36znb1AgwXW7YPa8eTrHAJute7NJ/NQXlr4adS1nJ34=;
+        b=fqgGcB6ATZiNPrJVgjfVI2A41dmdkPhJ0uWksq1UzcQnXY8aCajM/ISg73cSQF0kqj
+         GtpxMxy0G4lsjwA8D/4dv1TItQNohbN6kQLOAg8NN6biQN/ur0jBMJNUj/cPgZ+xpGlA
+         atep0P5Vfm4FHLeMhRr0C5f7RftkYRyfZI8hGPas3eRzJeMvKUdZaxgr9AJEOmRjLtJ9
+         WjbqgUdsGNkLQrHd580C3Sxu11yEbbNedIl8HvcKW4Qlle6JbmUt/JBXXJoDwEqt1aBl
+         4fm+NC85L/PsZ3n/QGlq1v0REdQ6edEpjTJDLosKvgEqk+UBphf7BhchzdoQtN0HHIur
+         D7gw==
+X-Gm-Message-State: ABy/qLbmm2RujcgvZX2cstEjfFkMhTjvCtDcqEsteHNjQxKLksw7G1K9
+        rFQV11ijfTjZNsHQx9hiPZHwrEtQbI0=
+X-Google-Smtp-Source: APBJJlEW1UfjxVevO5/Hz66FWzQCqpO1qe3uLktWl4O1jS2k4hKJk2bK4icxgLsda09AouKDrgdfZWXwKo4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1610:b0:d0c:77a8:1f6d with SMTP id
+ bw16-20020a056902161000b00d0c77a81f6dmr39083ybb.10.1690234883445; Mon, 24 Jul
+ 2023 14:41:23 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 14:41:21 -0700
+In-Reply-To: <20230724211949.GG3745454@hirez.programming.kicks-ass.net>
+Mime-Version: 1.0
+References: <20230721201859.2307736-1-seanjc@google.com> <20230721201859.2307736-6-seanjc@google.com>
+ <20230724211949.GG3745454@hirez.programming.kicks-ass.net>
+Message-ID: <ZL7wAXyF5A8i5He7@google.com>
+Subject: Re: [PATCH v4 05/19] x86/reboot: Assert that IRQs are disabled when
+ turning off virtualization
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Andrew Cooper <Andrew.Cooper3@citrix.com>,
+        Kai Huang <kai.huang@intel.com>, Chao Gao <chao.gao@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  thanks!
+On Mon, Jul 24, 2023, Peter Zijlstra wrote:
+> On Fri, Jul 21, 2023 at 01:18:45PM -0700, Sean Christopherson wrote:
+> > Assert that IRQs are disabled when turning off virtualization in an
+> > emergency.  KVM enables hardware via on_each_cpu(), i.e. could re-enable
+> > hardware if a pending IPI were delivered after disabling virtualization.
+> > 
+> > Remove a misleading comment from emergency_reboot_disable_virtualization()
+> > about "just" needing to guarantee the CPU is stable (see above).
+> > 
+> > Reviewed-by: Kai Huang <kai.huang@intel.com>
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  arch/x86/kernel/reboot.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+> > index 48ad2d1ff83d..4cad7183b89e 100644
+> > --- a/arch/x86/kernel/reboot.c
+> > +++ b/arch/x86/kernel/reboot.c
+> > @@ -532,7 +532,6 @@ static inline void nmi_shootdown_cpus_on_restart(void);
+> >  
+> >  static void emergency_reboot_disable_virtualization(void)
+> >  {
+> > -	/* Just make sure we won't change CPUs while doing this */
+> >  	local_irq_disable();
+> >  
+> >  	/*
+> > @@ -821,6 +820,13 @@ void cpu_emergency_disable_virtualization(void)
+> >  {
+> >  	cpu_emergency_virt_cb *callback;
+> >  
+> > +	/*
+> > +	 * IRQs must be disabled as KVM enables virtualization in hardware via
+> > +	 * function call IPIs, i.e. IRQs need to be disabled to guarantee
+> > +	 * virtualization stays disabled.
+> > +	 */
+> > +	lockdep_assert_irqs_disabled();
+> > +
+> >  	rcu_read_lock();
+> >  	callback = rcu_dereference(cpu_emergency_virt_callback);
+> >  	if (callback)
+> 
+> Strictly speaking you don't need rcu_read_lock() when IRQs are already
+> disabled, but since this is non-performance critical code, it might be
+> best to keep it super obvious. IOW, carry on.
 
-Alex
-
-On Sun, Jul 23, 2023 at 11:40=E2=80=AFPM <sunran001@208suo.com> wrote:
->
-> ERROR: that open brace { should be on the previous line
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->   drivers/gpu/drm/radeon/rv770_smc.c | 36 ++++++++++--------------------
->   1 file changed, 12 insertions(+), 24 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/rv770_smc.c
-> b/drivers/gpu/drm/radeon/rv770_smc.c
-> index 45575c0d0a1d..09fa7f5e7c41 100644
-> --- a/drivers/gpu/drm/radeon/rv770_smc.c
-> +++ b/drivers/gpu/drm/radeon/rv770_smc.c
-> @@ -34,8 +34,7 @@
->   #define FIRST_SMC_INT_VECT_REG 0xFFD8
->   #define FIRST_INT_VECT_S19     0xFFC0
->
-> -static const u8 rv770_smc_int_vectors[] =3D
-> -{
-> +static const u8 rv770_smc_int_vectors[] =3D {
->         0x08, 0x10, 0x08, 0x10,
->         0x08, 0x10, 0x08, 0x10,
->         0x08, 0x10, 0x08, 0x10,
-> @@ -54,8 +53,7 @@ static const u8 rv770_smc_int_vectors[] =3D
->         0x03, 0x51, 0x03, 0x51
->   };
->
-> -static const u8 rv730_smc_int_vectors[] =3D
-> -{
-> +static const u8 rv730_smc_int_vectors[] =3D {
->         0x08, 0x15, 0x08, 0x15,
->         0x08, 0x15, 0x08, 0x15,
->         0x08, 0x15, 0x08, 0x15,
-> @@ -74,8 +72,7 @@ static const u8 rv730_smc_int_vectors[] =3D
->         0x03, 0x56, 0x03, 0x56
->   };
->
-> -static const u8 rv710_smc_int_vectors[] =3D
-> -{
-> +static const u8 rv710_smc_int_vectors[] =3D {
->         0x08, 0x04, 0x08, 0x04,
->         0x08, 0x04, 0x08, 0x04,
->         0x08, 0x04, 0x08, 0x04,
-> @@ -94,8 +91,7 @@ static const u8 rv710_smc_int_vectors[] =3D
->         0x03, 0x51, 0x03, 0x51
->   };
->
-> -static const u8 rv740_smc_int_vectors[] =3D
-> -{
-> +static const u8 rv740_smc_int_vectors[] =3D {
->         0x08, 0x10, 0x08, 0x10,
->         0x08, 0x10, 0x08, 0x10,
->         0x08, 0x10, 0x08, 0x10,
-> @@ -114,8 +110,7 @@ static const u8 rv740_smc_int_vectors[] =3D
->         0x03, 0x51, 0x03, 0x51
->   };
->
-> -static const u8 cedar_smc_int_vectors[] =3D
-> -{
-> +static const u8 cedar_smc_int_vectors[] =3D {
->         0x0B, 0x05, 0x0B, 0x05,
->         0x0B, 0x05, 0x0B, 0x05,
->         0x0B, 0x05, 0x0B, 0x05,
-> @@ -134,8 +129,7 @@ static const u8 cedar_smc_int_vectors[] =3D
->         0x04, 0xF6, 0x04, 0xF6
->   };
->
-> -static const u8 redwood_smc_int_vectors[] =3D
-> -{
-> +static const u8 redwood_smc_int_vectors[] =3D {
->         0x0B, 0x05, 0x0B, 0x05,
->         0x0B, 0x05, 0x0B, 0x05,
->         0x0B, 0x05, 0x0B, 0x05,
-> @@ -154,8 +148,7 @@ static const u8 redwood_smc_int_vectors[] =3D
->         0x04, 0xF6, 0x04, 0xF6
->   };
->
-> -static const u8 juniper_smc_int_vectors[] =3D
-> -{
-> +static const u8 juniper_smc_int_vectors[] =3D {
->         0x0B, 0x05, 0x0B, 0x05,
->         0x0B, 0x05, 0x0B, 0x05,
->         0x0B, 0x05, 0x0B, 0x05,
-> @@ -174,8 +167,7 @@ static const u8 juniper_smc_int_vectors[] =3D
->         0x04, 0xF6, 0x04, 0xF6
->   };
->
-> -static const u8 cypress_smc_int_vectors[] =3D
-> -{
-> +static const u8 cypress_smc_int_vectors[] =3D {
->         0x0B, 0x05, 0x0B, 0x05,
->         0x0B, 0x05, 0x0B, 0x05,
->         0x0B, 0x05, 0x0B, 0x05,
-> @@ -194,8 +186,7 @@ static const u8 cypress_smc_int_vectors[] =3D
->         0x04, 0xF6, 0x04, 0xF6
->   };
->
-> -static const u8 barts_smc_int_vectors[] =3D
-> -{
-> +static const u8 barts_smc_int_vectors[] =3D {
->         0x0C, 0x14, 0x0C, 0x14,
->         0x0C, 0x14, 0x0C, 0x14,
->         0x0C, 0x14, 0x0C, 0x14,
-> @@ -214,8 +205,7 @@ static const u8 barts_smc_int_vectors[] =3D
->         0x05, 0x0A, 0x05, 0x0A
->   };
->
-> -static const u8 turks_smc_int_vectors[] =3D
-> -{
-> +static const u8 turks_smc_int_vectors[] =3D {
->         0x0C, 0x14, 0x0C, 0x14,
->         0x0C, 0x14, 0x0C, 0x14,
->         0x0C, 0x14, 0x0C, 0x14,
-> @@ -234,8 +224,7 @@ static const u8 turks_smc_int_vectors[] =3D
->         0x05, 0x0A, 0x05, 0x0A
->   };
->
-> -static const u8 caicos_smc_int_vectors[] =3D
-> -{
-> +static const u8 caicos_smc_int_vectors[] =3D {
->         0x0C, 0x14, 0x0C, 0x14,
->         0x0C, 0x14, 0x0C, 0x14,
->         0x0C, 0x14, 0x0C, 0x14,
-> @@ -254,8 +243,7 @@ static const u8 caicos_smc_int_vectors[] =3D
->         0x05, 0x0A, 0x05, 0x0A
->   };
->
-> -static const u8 cayman_smc_int_vectors[] =3D
-> -{
-> +static const u8 cayman_smc_int_vectors[] =3D {
->         0x12, 0x05, 0x12, 0x05,
->         0x12, 0x05, 0x12, 0x05,
->         0x12, 0x05, 0x12, 0x05,
+Ha!  IIRC, I even had a patch to drop the explicit rcu_read_lock(), but decided
+I didn't want to tie the use of cpu_emergency_virt_callback to KVM's behavior of
+enabling virtualization via IPIs.
