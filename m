@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC1275FA93
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E751E75FA9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbjGXPTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 11:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42638 "EHLO
+        id S229666AbjGXPTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 11:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbjGXPS5 (ORCPT
+        with ESMTP id S230008AbjGXPTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 11:18:57 -0400
-Received: from frasgout11.his.huawei.com (unknown [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2DA10EC;
-        Mon, 24 Jul 2023 08:18:51 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4R8k6V1swTz9yGhH;
-        Mon, 24 Jul 2023 23:07:30 +0800 (CST)
+        Mon, 24 Jul 2023 11:19:06 -0400
+Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2C51729;
+        Mon, 24 Jul 2023 08:18:56 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4R8k4N5s47z9ycNT;
+        Mon, 24 Jul 2023 23:05:40 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwCHTlU3lr5kJcTzBA--.28220S4;
-        Mon, 24 Jul 2023 16:18:38 +0100 (CET)
+        by APP2 (Coremail) with SMTP id GxC2BwCHTlU3lr5kJcTzBA--.28220S5;
+        Mon, 24 Jul 2023 16:18:42 +0100 (CET)
 From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
 To:     casey@schaufler-ca.com, paul@paul-moore.com, jmorris@namei.org,
         serge@hallyn.com
 Cc:     linux-kernel@vger.kernel.org,
         linux-security-module@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v2 2/5] smack: Handle SMACK64TRANSMUTE in smack_inode_setsecurity()
-Date:   Mon, 24 Jul 2023 17:13:38 +0200
-Message-Id: <20230724151341.538889-3-roberto.sassu@huaweicloud.com>
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v2 3/5] smack: Always determine inode labels in smack_inode_init_security()
+Date:   Mon, 24 Jul 2023 17:13:39 +0200
+Message-Id: <20230724151341.538889-4-roberto.sassu@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230724151341.538889-1-roberto.sassu@huaweicloud.com>
 References: <20230724151341.538889-1-roberto.sassu@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GxC2BwCHTlU3lr5kJcTzBA--.28220S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Wr15tF17uw4xtrWfZFyxXwb_yoWkZFg_Wr
-        1jya4kXrs8A3W3Wa97Ar1Fvr92g3y8Xr1rW3Wft343Za4rXr1kta15Jry5WFW5Zw1xJ397
-        CFn8WFyfJw12qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbsAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r15M2
-        8IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK
-        021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r
-        4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4U
-        JVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7V
-        C0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j
-        6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-        UI43ZEXa7IU8fcTPUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAIBF1jj5DcNQAAsF
+X-CM-TRANSID: GxC2BwCHTlU3lr5kJcTzBA--.28220S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxJFWkWr1rKry7tr1xGF1rJFb_yoWrGr17pa
+        yUWa9xCF1DtFnxu3y0yF47Ww4a9as5Cr4UWr9Fqr9avFsrtryIgFW0qryYgFyxXr97Zrn0
+        qr4avryrZ3WY9wUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvlb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
+        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVWx
+        Jr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
+        0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
+        JVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj4zfjQAAsh
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
         MAY_BE_FORGED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
@@ -67,36 +66,117 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Roberto Sassu <roberto.sassu@huawei.com>
 
-If the SMACK64TRANSMUTE xattr is provided, and the inode is a directory,
-update the in-memory inode flags by setting SMK_INODE_TRANSMUTE.
+The inode_init_security hook is already a good place to initialize the
+in-memory inode. And that is also what SELinux does.
 
-Cc: stable@vger.kernel.org
-Fixes: 5c6d1125f8db ("Smack: Transmute labels on specified directories") # v2.6.38.x
+In preparation for this, move the existing smack_inode_init_security() code
+outside the 'if (xattr)' condition, and set the xattr, if provided.
+
+This change does not have any impact on the current code, since every time
+security_inode_init_security() is called, the initxattr() callback is
+passed and, thus, xattr is non-NULL.
+
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- security/smack/smack_lsm.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ security/smack/smack_lsm.c | 80 +++++++++++++++++++-------------------
+ 1 file changed, 40 insertions(+), 40 deletions(-)
 
 diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index e599ce9453c..9eae830527d 100644
+index 9eae830527d..5a31d005c6d 100644
 --- a/security/smack/smack_lsm.c
 +++ b/security/smack/smack_lsm.c
-@@ -2804,6 +2804,15 @@ static int smack_inode_setsecurity(struct inode *inode, const char *name,
- 	if (value == NULL || size > SMK_LONGLABEL || size == 0)
- 		return -EINVAL;
+@@ -948,51 +948,51 @@ static int smack_inode_init_security(struct inode *inode, struct inode *dir,
+ 	struct xattr *xattr = lsm_get_xattr_slot(xattrs, xattr_count);
+ 	int may;
  
-+	if (strcmp(name, XATTR_SMACK_TRANSMUTE) == 0) {
-+		if (!S_ISDIR(inode->i_mode) || size != TRANS_TRUE_SIZE ||
-+		    strncmp(value, TRANS_TRUE, TRANS_TRUE_SIZE) != 0)
-+			return -EINVAL;
-+
-+		nsp->smk_flags |= SMK_INODE_TRANSMUTE;
-+		return 0;
+-	if (xattr) {
+-		/*
+-		 * If equal, transmuting already occurred in
+-		 * smack_dentry_create_files_as(). No need to check again.
+-		 */
+-		if (tsp->smk_task != tsp->smk_transmuted) {
+-			rcu_read_lock();
+-			may = smk_access_entry(skp->smk_known, dsp->smk_known,
+-					       &skp->smk_rules);
+-			rcu_read_unlock();
+-		}
++	/*
++	 * If equal, transmuting already occurred in
++	 * smack_dentry_create_files_as(). No need to check again.
++	 */
++	if (tsp->smk_task != tsp->smk_transmuted) {
++		rcu_read_lock();
++		may = smk_access_entry(skp->smk_known, dsp->smk_known,
++				       &skp->smk_rules);
++		rcu_read_unlock();
 +	}
 +
- 	skp = smk_import_entry(value, size);
- 	if (IS_ERR(skp))
- 		return PTR_ERR(skp);
++	/*
++	 * In addition to having smk_task equal to smk_transmuted,
++	 * if the access rule allows transmutation and the directory
++	 * requests transmutation then by all means transmute.
++	 * Mark the inode as changed.
++	 */
++	if ((tsp->smk_task == tsp->smk_transmuted) ||
++	    (may > 0 && ((may & MAY_TRANSMUTE) != 0) &&
++	     smk_inode_transmutable(dir))) {
++		struct xattr *xattr_transmute;
+ 
+ 		/*
+-		 * In addition to having smk_task equal to smk_transmuted,
+-		 * if the access rule allows transmutation and the directory
+-		 * requests transmutation then by all means transmute.
+-		 * Mark the inode as changed.
++		 * The caller of smack_dentry_create_files_as()
++		 * should have overridden the current cred, so the
++		 * inode label was already set correctly in
++		 * smack_inode_alloc_security().
+ 		 */
+-		if ((tsp->smk_task == tsp->smk_transmuted) ||
+-		    (may > 0 && ((may & MAY_TRANSMUTE) != 0) &&
+-		     smk_inode_transmutable(dir))) {
+-			struct xattr *xattr_transmute;
+-
+-			/*
+-			 * The caller of smack_dentry_create_files_as()
+-			 * should have overridden the current cred, so the
+-			 * inode label was already set correctly in
+-			 * smack_inode_alloc_security().
+-			 */
+-			if (tsp->smk_task != tsp->smk_transmuted)
+-				isp = dsp;
+-			xattr_transmute = lsm_get_xattr_slot(xattrs,
+-							     xattr_count);
+-			if (xattr_transmute) {
+-				xattr_transmute->value = kmemdup(TRANS_TRUE,
+-								 TRANS_TRUE_SIZE,
+-								 GFP_NOFS);
+-				if (!xattr_transmute->value)
+-					return -ENOMEM;
+-
+-				xattr_transmute->value_len = TRANS_TRUE_SIZE;
+-				xattr_transmute->name = XATTR_SMACK_TRANSMUTE;
+-			}
++		if (tsp->smk_task != tsp->smk_transmuted)
++			isp = dsp;
++		xattr_transmute = lsm_get_xattr_slot(xattrs,
++						     xattr_count);
++		if (xattr_transmute) {
++			xattr_transmute->value = kmemdup(TRANS_TRUE,
++							 TRANS_TRUE_SIZE,
++							 GFP_NOFS);
++			if (!xattr_transmute->value)
++				return -ENOMEM;
++
++			xattr_transmute->value_len = TRANS_TRUE_SIZE;
++			xattr_transmute->name = XATTR_SMACK_TRANSMUTE;
+ 		}
++	}
+ 
++	if (xattr) {
+ 		xattr->value = kstrdup(isp->smk_known, GFP_NOFS);
+ 		if (!xattr->value)
+ 			return -ENOMEM;
 -- 
 2.34.1
 
