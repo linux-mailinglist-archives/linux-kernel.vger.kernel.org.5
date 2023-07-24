@@ -2,162 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBDE760151
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3286B760154
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbjGXVj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
+        id S231280AbjGXVkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbjGXVjz (ORCPT
+        with ESMTP id S229834AbjGXVkI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:39:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18DCD8;
-        Mon, 24 Jul 2023 14:39:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8ABD861423;
-        Mon, 24 Jul 2023 21:39:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4394C433C9;
-        Mon, 24 Jul 2023 21:39:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690234793;
-        bh=xzsk77oa/MmXqkkg6zmkBhwbeHVVBpPaTZBJoL2yiSk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mE3pj1jcdJGd2420B2MZzLHNvk5nkkEfWuzFXJ3om9Bj15J4etmG1pPdOd62aqnZ7
-         cOkyC0FqEXXEuGki++nrrpMe/LhUTorHF5UAavZXj97HMbK0Xdgscq9tkc4HyfmTDm
-         rhgeFoMfxIfXaa8KUrxgJsAOmaBiBozZQLuOg4qfFjtPig+9XDlXCNtkhuAGkJivVh
-         JKCOmpOJWu4MILtwCS+H+WCEWxtJ90JrFwX7P6JB/O6wqM0Wb+H2q0MtatzrI25GJl
-         srk/+oSfn8Lb6AghWfDz/CGcUB04U25Rr4od0BYDbT8eljmf5NoOxBJUNbp5rLw1wj
-         5f8SBBKVCb4yA==
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5774098f16eso61049547b3.0;
-        Mon, 24 Jul 2023 14:39:53 -0700 (PDT)
-X-Gm-Message-State: ABy/qLbHn7QRhvStCprjsEyKePCtzbzNdVF3QDNhl06MStAGqEioYkyp
-        vQkYO31EOYpI41pdXAbXQwG+JaBIevMtB1A6Mr8=
-X-Google-Smtp-Source: APBJJlEtzh0Zak8DLTD3txHST1gAslj5+/hgXN8oWWMtjOhMRXd56KETGfklYbd7TsB4WlRAn/u8WQrGL5jyuFYaIuA=
-X-Received: by 2002:a81:66c4:0:b0:568:d63e:dd2c with SMTP id
- a187-20020a8166c4000000b00568d63edd2cmr9620907ywc.11.1690234792843; Mon, 24
- Jul 2023 14:39:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230716-fixes-overly-restrictive-mmap-v3-0-769791f474fd@kernel.org>
- <ZL7qbTU7D1mAJePi@pengutronix.de>
-In-Reply-To: <ZL7qbTU7D1mAJePi@pengutronix.de>
-From:   Eric Van Hensbergen <ericvh@kernel.org>
-Date:   Mon, 24 Jul 2023 16:39:41 -0500
-X-Gmail-Original-Message-ID: <CAFkjPT=x7y0USLTXPGbC382NoD=eXd18TbRgaB8S=GX0-_AZ+w@mail.gmail.com>
-Message-ID: <CAFkjPT=x7y0USLTXPGbC382NoD=eXd18TbRgaB8S=GX0-_AZ+w@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] fs/9p: fix mmap regression
-To:     Robert Schwebel <r.schwebel@pengutronix.de>
-Cc:     Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        v9fs@lists.linux.dev, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, kernel@pengutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 24 Jul 2023 17:40:08 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC8810D9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:40:06 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bb83eb84e5so22995915ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:40:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690234805; x=1690839605;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8BXNvlgPl86R5u1hRBm87aT1u2p7UCsAkEmDEcFG3FM=;
+        b=WQVwrhACND8PT5c7alEIYasKcI4Gp7ux8sDxSBc+Z2bJbXkeTQ5jBOUHXIeOX7mlDT
+         IA9pzFYjQzEITJml3F0PjSrEsUo05ZsNqrb8ZwrdQPd0nMVfILzegzYolD0BGNic81Gz
+         s/fdxjhr9ssohjwdFcYBZFpTEIY+Cqf0ZgzvRQr8pLNrIFSvHblY82xsimwQ5Hoxpxag
+         ZEchK0cmfSc5EC0KjP2jeYQcYdm/+0G52yT8+C/fGHF0OSFhlgDympjozQGmHyuKGxkf
+         fMrqX+sFQNcqhs5SEIEVfG4p8fZpQ9QGuGj6l2J8Jvr1lkwN+TT1rHadFW5PB+D/1gaQ
+         ICdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690234805; x=1690839605;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8BXNvlgPl86R5u1hRBm87aT1u2p7UCsAkEmDEcFG3FM=;
+        b=MZASTdlhsFhirLEjvad3v73hXYabIfBa5+U6uw3k7JQcm3c0hiTe1DZb/T4bkXg/zd
+         +a8F3GN8xLf4naHdmYI8cgpluGhookkSXKOMg+s4X8+3JaHspmYtP4oDypAR+/gqpcyi
+         Zxn6k3RssJpbirqyEsZy7p6r8sQIbR1bDCldsIGBpNVaC/aA03W9iwzivaNZtjuJWBSZ
+         KKuP5x1B4wwdBEjQyxENPf4WDZ5Kqs4SS+SHS1rZGFDZs4JC1NjHDdsC29AEdVQL5P9Q
+         oYvU0hoavWftdkrVajiKlUqg3ED2JYVqsYCFPh6aAjI8CspqZag/avs8yuvD3pFSvQ9w
+         uyow==
+X-Gm-Message-State: ABy/qLbvRnyMmFGiVSwsF51Qi/o8n75TQkLN66+8pEVYBDB/iaBEakId
+        p1Zr7YPdH38y7PGv8Eag0jlMTWSruU0=
+X-Google-Smtp-Source: APBJJlGr3Xi9CBngHaiIYWxM1PJJW9h3BT6/cv5dUH1y6ZztFyeHVEzhLcBu5fYxBfWr79u2kv7wLBA+Mcw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:32c3:b0:1b9:e338:a90d with SMTP id
+ i3-20020a17090332c300b001b9e338a90dmr44909plr.3.1690234805271; Mon, 24 Jul
+ 2023 14:40:05 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 14:40:03 -0700
+In-Reply-To: <20230724212150.GH3745454@hirez.programming.kicks-ass.net>
+Mime-Version: 1.0
+References: <20230721201859.2307736-1-seanjc@google.com> <20230721201859.2307736-15-seanjc@google.com>
+ <20230724212150.GH3745454@hirez.programming.kicks-ass.net>
+Message-ID: <ZL7vs9zMatFRl6IH@google.com>
+Subject: Re: [PATCH v4 14/19] KVM: SVM: Check that the current CPU supports
+ SVM in kvm_is_svm_supported()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Andrew Cooper <Andrew.Cooper3@citrix.com>,
+        Kai Huang <kai.huang@intel.com>, Chao Gao <chao.gao@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Awesome, thanks for verifying Robert.  Will send a pull request for
-this in a few days.
+On Mon, Jul 24, 2023, Peter Zijlstra wrote:
+> On Fri, Jul 21, 2023 at 01:18:54PM -0700, Sean Christopherson wrote:
+> > Check "this" CPU instead of the boot CPU when querying SVM support so that
+> > the per-CPU checks done during hardware enabling actually function as
+> > intended, i.e. will detect issues where SVM isn't support on all CPUs.
+> 
+> Is that a realistic concern?
 
-      -eric
+It's not a concern in the sense that it should never happen, but I know of at
+least one example where VMX on Intel completely disappeared[1].  The "compatibility"
+checks are really more about the entire VMX/SVM feature set, the base VMX/SVM
+support check is just an easy and obvious precursor to the full compatibility
+checks.
 
-On Mon, Jul 24, 2023 at 4:17=E2=80=AFPM Robert Schwebel
-<r.schwebel@pengutronix.de> wrote:
->
-> Hi Eric,
->
-> On Wed, Jul 19, 2023 at 03:17:04PM +0000, Eric Van Hensbergen wrote:
-> > This series attempts to fix a reported exception with mmap
-> > on newer kernels.
-> >
-> > Fixes: 1543b4c5071c ("fs/9p: remove writeback fid and fix per-file mode=
-s")
-> > Link: https://lore.kernel.org/v9fs/ZK25XZ%2BGpR3KHIB%2F@pengutronix.de/
-> > Reported-by: Robert Schwebel <r.schwebel@pengutronix.de>
-> > Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
-> > ---
-> > Changes in v3:
-> > - Clarify debug print to read-only mmap mode versus no mmap mode in
-> >   v9fs_file_mmap
-> > - Fix suggested regression tags and propagate across series
-> > - Link to v2: https://lore.kernel.org/r/20230716-fixes-overly-restricti=
-ve-mmap-v2-0-147d6b93f699@kernel.org
-> >
-> > Changes in v2:
-> > - fix requested changes in commit messages
-> > - add patch to remove unnecessary invalidate_inode_pages in mmap readon=
-ly path
-> > - Link to v1: https://lore.kernel.org/r/20230716-fixes-overly-restricti=
-ve-mmap-v1-0-0683b283b932@kernel.org
->
-> I've tested this patch series with my qemu setup and it resolves the
-> issue. Thanks for taking care!
->
-> Tested-by: Robert Schwebel <r.schwebel@pengutronix.de>
->
-> ----------8<----------
->
-> rsc@dude05:~/work/DistroKit$ configs/platform-v7a/run
-> Forwarding SSH port 127.0.0.1:24910 -> qemu:22
-> [    0.000000] L2C: platform modifies aux control register: 0x02020000 ->=
- 0x02420000
-> [    0.000000] L2C: DT/platform modifies aux control register: 0x02020000=
- -> 0x02420000
-> [    0.004896] smp_twd: clock not found -2
-> [    0.726397] simple-pm-bus bus@40000000:motherboard-bus@40000000:iofpga=
-@7,00000000: Failed to create device link (0x180) with dcc:tcrefclk
-> [    0.742338] simple-pm-bus bus@40000000:motherboard-bus@40000000:iofpga=
-@7,00000000: Failed to create device link (0x180) with dcc:tcrefclk
-> [    0.809910] physmap-flash 48000000.psram: map_probe failed
-> [    1.201306] 9pnet_virtio: no channels available for device root
->
->  ____                        _                   _
-> |  _ \ ___ _ __   __ _ _   _| |_ _ __ ___  _ __ (_)_  __
-> | |_) / _ \ '_ \ / _` | | | | __| '__/ _ \| '_ \| \ \/ /
-> |  __/  __/ | | | (_| | |_| | |_| | | (_) | | | | |>  <
-> |_|   \___|_| |_|\__, |\__,_|\__|_|  \___/|_| |_|_/_/\_\
->                  |___/
->
->  ____  _     _             _  ___ _
-> |  _ \(_)___| |_ _ __ ___ | |/ (_) |_
-> | | | | / __| __| '__/ _ \| ' /| | __|
-> | |_| | \__ \ |_| | | (_) | . \| | |_
-> |____/|_|___/\__|_|  \___/|_|\_\_|\__|
->
->
-> OSELAS(R)-DistroKit-2019.12.0-00429-g57ffae760eb9 / v7a-2019.12.0-00429-g=
-57ffae760eb9
-> ptxdist-2023.07.1/2023-07-11T19:56:50+0200
->
-> DistroKit login: root
-> root@DistroKit:~ mount / -o remount,rw
-> root@DistroKit:~ ldconfig
-> root@DistroKit:~ uname -a
-> Linux DistroKit 6.4.0 #1 SMP PREEMPT 2023-07-01T00:00:00+00:00 armv7l GNU=
-/Linux
->
-> ----------8<----------
->
-> rsc
-> --
-> Pengutronix e.K.                           | Dipl.-Ing. Robert Schwebel  =
-|
-> Steuerwalder Str. 21                       | https://www.pengutronix.de/ =
-|
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    =
-|
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-9    =
-|
->
+Of course, SVM doesn't currently have compatibility checks on the full SVM feature
+set, but that's more due to lack of a forcing function than a desire to _not_ have
+them.  Intel CPUs have a pesky habit of bugs, ucode updates, and/or in-field errors
+resulting in VMX features randomly appearing or disappearing.  E.g. there's an
+ongoing buzilla (sorry) issue[2] where a user is only able to load KVM *after* a
+suspend+resume cycle, because TSC scaling only shows up on one socket immediately
+after boot, which is then somehow resolved by suspend+resume.
+
+[1] 009bce1df0bb ("x86/split_lock: Don't write MSR_TEST_CTRL on CPUs that aren't whitelisted")
+[2] https://bugzilla.kernel.org/show_bug.cgi?id=217574
