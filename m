@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC1D75FE3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1529475FE3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbjGXRqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
+        id S231460AbjGXRqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:46:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231570AbjGXRpR (ORCPT
+        with ESMTP id S230220AbjGXRpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:45:17 -0400
+        Mon, 24 Jul 2023 13:45:23 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F031FF0;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9001FF7;
         Mon, 24 Jul 2023 10:44:18 -0700 (PDT)
-Message-ID: <20230724172844.573913057@linutronix.de>
+Message-ID: <20230724172844.631464270@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690220654;
+        s=2020; t=1690220656;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=8j9Csrsczl1+89ZENZFtTchVmi22SuFWjwFyU4WiA04=;
-        b=YDb5v+O494aJ4RQ+VMPPPal+QNfYQIrm+BfHcK4PzNsYn/4yHP5piBS3Ekvy3r9Y+oUHJR
-        hV0NPmwhXQZBlFQITLnml/s1us83aAeWjkHu2lXT2vHjPtJAkXmDeXXdr8786TzXWa6Vlc
-        WrK3WafCfY6bEVY4eJJow/2U2ka70GbsoPmhUzQWabo/QjUsXIktTX3w2cb3bJst3eiV5j
-        zPfLu3/xi1ioWa48qCngkmzS8mSTJmzLg0Cnh0XRsIHaBwJEOD773NDZloMA2m9RAwFMzi
-        F1cwnJooH8mIxbGT7acnhS4/iQgu5owfwv8rZs09hYHgcvqHneVVJ6TyBxg9JA==
+         references:references; bh=R30kgmHCGWHq0zLlNoJY82eQjQTUWAtGppL/g8UfpDM=;
+        b=xusIPNMrsSpPxMX7Avb7S0L9JXepWrpXcOfYKwGAUpQyN91U68gBk9FtQuIKz21tkEapzE
+        HJyrb7isB74dHo3/784UKqfnInxY7HONp9PFxunx4dg+gkTcfB6P1sWwEEdy8eApaLYNxL
+        Md74SUr8Sp9hO132cYnd+m06SsEf835bjM5EQ1ILltvgGp5b8HtB0a+yrTvtWxe2n8nJtU
+        4NTbhyBjeiywURUYb0pc7KSu7HLrqFxABfPoukMVFtVu6HklQ0S/QzCnUJVD3LLx2bhJ7p
+        LEVyQiX3di53yC3LdNMb+iB3qy5UQIlL7Vwkm1KVqpqaFEFWO43PLQ7rtkyMJw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690220654;
+        s=2020e; t=1690220656;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=8j9Csrsczl1+89ZENZFtTchVmi22SuFWjwFyU4WiA04=;
-        b=kCJGQ/5WJB4iVkXUeJPyDDik+x7GzLuVyzvKm8TCwd9mEeO15OlI3YalnMdDMzo7wcIJGP
-        u4oMPe5sIsGymYDg==
+         references:references; bh=R30kgmHCGWHq0zLlNoJY82eQjQTUWAtGppL/g8UfpDM=;
+        b=7H4yd3qVc4czF5nq59Jzu0N1ThwbjKezF5j8xeJGLO0zAKEMa3+P5h2nqM+hU/G+Tz+BhB
+        0hGUQ5LoMDO57SCw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
@@ -50,12 +50,11 @@ Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
         Mike Travis <mike.travis@hpe.com>,
         Dimitri Sivanich <dimitri.sivanich@hpe.com>,
         Russ Anderson <russ.anderson@hpe.com>
-Subject: [patch 15/29] x86/cpu: Use common topology code for Centaur and
- Zhaoxin
+Subject: [patch 16/29] x86/cpu: Move __max_die_per_package to common.c
 References: <20230724155329.474037902@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 24 Jul 2023 19:44:14 +0200 (CEST)
+Date:   Mon, 24 Jul 2023 19:44:15 +0200 (CEST)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -66,78 +65,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Centaur and Zhaoxin CPUs use only the legacy SMP detection. Remove the
-invocations from their 32bit path and exempt them from the call 64bit.
+In preparation of a complete replacement for the topology leaf 0xb/0x1f
+evaluation, move __max_die_per_package into the common code.
 
-No functional change intended.
+Will be removed once everything is converted over.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/cpu/centaur.c         |    4 ----
- arch/x86/kernel/cpu/topology_common.c |   11 ++++++++---
- arch/x86/kernel/cpu/zhaoxin.c         |    4 ----
- 3 files changed, 8 insertions(+), 11 deletions(-)
+ arch/x86/kernel/cpu/common.c   |    3 +++
+ arch/x86/kernel/cpu/topology.c |    3 ---
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/x86/kernel/cpu/centaur.c
-+++ b/arch/x86/kernel/cpu/centaur.c
-@@ -128,10 +128,6 @@ static void init_centaur(struct cpuinfo_
- #endif
- 	early_init_centaur(c);
- 	init_intel_cacheinfo(c);
--	detect_num_cpu_cores(c);
--#ifdef CONFIG_X86_32
--	detect_ht(c);
--#endif
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -75,6 +75,9 @@ u32 elf_hwcap2 __read_mostly;
+ int smp_num_siblings = 1;
+ EXPORT_SYMBOL(smp_num_siblings);
  
- 	if (c->cpuid_level > 9) {
- 		unsigned int eax = cpuid_eax(10);
---- a/arch/x86/kernel/cpu/topology_common.c
-+++ b/arch/x86/kernel/cpu/topology_common.c
-@@ -42,7 +42,7 @@ static unsigned int parse_num_cores(stru
- 	return eax.ncores + 1;
- }
- 
--static void __maybe_unused parse_legacy(struct topo_scan *tscan)
-+static void parse_legacy(struct topo_scan *tscan)
- {
- 	unsigned int cores, core_shift, smt_shift = 0;
- 	struct cpuinfo_x86 *c = tscan->c;
-@@ -64,10 +64,8 @@ bool topo_is_converted(struct cpuinfo_x8
- 	/* Temporary until everything is converted over. */
- 	switch (boot_cpu_data.x86_vendor) {
- 	case X86_VENDOR_AMD:
--	case X86_VENDOR_CENTAUR:
- 	case X86_VENDOR_INTEL:
- 	case X86_VENDOR_HYGON:
--	case X86_VENDOR_ZHAOXIN:
- 		return false;
- 	default:
- 		/* Let all UP systems use the below */
-@@ -125,6 +123,13 @@ static void parse_topology(struct topo_s
- 		return;
- 
- 	tscan->ebx1_nproc_shift = get_count_order(ebx.nproc);
++unsigned int __max_die_per_package __read_mostly = 1;
++EXPORT_SYMBOL(__max_die_per_package);
 +
-+	switch (c->x86_vendor) {
-+	case X86_VENDOR_CENTAUR:
-+	case X86_VENDOR_ZHAOXIN:
-+		parse_legacy(tscan);
-+		break;
-+	}
- }
+ static struct ppin_info {
+ 	int	feature;
+ 	int	msr_ppin_ctl;
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -25,9 +25,6 @@
+ #define BITS_SHIFT_NEXT_LEVEL(eax)	((eax) & 0x1f)
+ #define LEVEL_MAX_SIBLINGS(ebx)		((ebx) & 0xffff)
  
- static void topo_set_ids(struct topo_scan *tscan)
---- a/arch/x86/kernel/cpu/zhaoxin.c
-+++ b/arch/x86/kernel/cpu/zhaoxin.c
-@@ -71,10 +71,6 @@ static void init_zhaoxin(struct cpuinfo_
- {
- 	early_init_zhaoxin(c);
- 	init_intel_cacheinfo(c);
--	detect_num_cpu_cores(c);
--#ifdef CONFIG_X86_32
--	detect_ht(c);
--#endif
- 
- 	if (c->cpuid_level > 9) {
- 		unsigned int eax = cpuid_eax(10);
+-unsigned int __max_die_per_package __read_mostly = 1;
+-EXPORT_SYMBOL(__max_die_per_package);
+-
+ #ifdef CONFIG_SMP
+ /*
+  * Check if given CPUID extended topology "leaf" is implemented
 
