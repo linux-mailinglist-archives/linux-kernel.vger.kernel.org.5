@@ -2,77 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A75AE75FB1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2291A75FB1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbjGXPr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 11:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
+        id S230527AbjGXPrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 11:47:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbjGXPrY (ORCPT
+        with ESMTP id S230472AbjGXPrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 11:47:24 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEFF121
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:47:23 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-78706966220so35730539f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1690213643; x=1690818443;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a2SXCjszCcNvyzagTPBmmTB8ZVmLpsS/Ne8xQ61QXVQ=;
-        b=LvsvN3sJTEyyyWOJlfact5mtY0XZUi4lZ17qzGpKD5YVloXaCiTsX3KAaeXXtGhpWn
-         r3FqdN0NGgz1e5C5SANi6zOugXBBmbsErWYz6s+9PCQJ3Rxvsh/VjRQNziz1YcOsS83B
-         QwA0k9O8j2/FFMWWs2RU6zH0nGqA/exwk+vCyVX18O7IXU2GplNfgT+W2XjbDuhjVEaD
-         DUivAMb+tLZCmO2orJ7YPtU2GFBp2MIYzoa1QViJWkAbY5tqRss5wnJJO3nJN2aWoXNJ
-         Cg10LI0MhR6/4X/JPwa8xUZ+wwce6fQ/Y+pF3m/VNhiAdxHs8klwMw/jHIUq1KoTkhIU
-         7/0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690213643; x=1690818443;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a2SXCjszCcNvyzagTPBmmTB8ZVmLpsS/Ne8xQ61QXVQ=;
-        b=MCb8bnlw34nDjGfBMOGlMHtgW/HhWz3Zgm7DpXzQFKq+ew52b/4LPWJtkelHJgtYEv
-         GTvuVfY0tojrKZEF43BOvlc64Au/g0zX18I9mdWS3IDxDUlgYsNOr2CZrxwzKOt6JQ1m
-         RcvU0CNPKcAWx/BCOWltb7EuLQxr7T+WPNf2MPLCV72Q6DJwMrZttc9dIZRovuYIIwpP
-         cvCqgXq7fqgxGc3yPe2mqUW6jZLj022hWhlXWnYAvQKboOYC7gwPeml9IiFEE2oZldQ3
-         VjxVsaJYZeY2vv7KfgN2f9JiXO9YtvKyVMDTQ/nKqFUg0A3kYyTzGtZorAqCd9P3WqGY
-         TOeQ==
-X-Gm-Message-State: ABy/qLY9X5+TNc9573p9SVgeJZhei/DL/++cyoDYsH48rguqIbVDw0AA
-        L5ptQjraRWEEQcBOurdQBHdnMg==
-X-Google-Smtp-Source: APBJJlEQZcsdjdB1LpnJi4+5q+nQ/Hbb7uF1D1blb0hPZ7O53jf1TRm2UdSfqrVo9m6vUQV7fZ1cPQ==
-X-Received: by 2002:a05:6602:4809:b0:77a:ee79:652 with SMTP id ed9-20020a056602480900b0077aee790652mr8087301iob.1.1690213642756;
-        Mon, 24 Jul 2023 08:47:22 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id g19-20020a056638061300b0042b6a760c31sm3038815jar.28.2023.07.24.08.47.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 08:47:22 -0700 (PDT)
-Message-ID: <11ded843-ac08-2306-ad0f-586978d038b1@kernel.dk>
-Date:   Mon, 24 Jul 2023 09:47:21 -0600
+        Mon, 24 Jul 2023 11:47:49 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D24C8E
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:47:48 -0700 (PDT)
+Received: from notapiano.myfiosgateway.com (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id DD9E366070FA;
+        Mon, 24 Jul 2023 16:47:44 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690213666;
+        bh=flPkR3SRjDLi+RNF2WkNTZKoq2tsI/OK155ZonGqn4A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Qy5xx3gGDwqwBrZBgp56f6+q2TqOzrXFEq94G5S1SGm/UZbw9pAvkbgAcunHvvbfz
+         EoLSy3/W1Mba17Wbof7ha6IbzSbLkyW5u01VvV0E9XtsIlnjAXioBwD/JNY129NOQs
+         oiFaJm6GYdzKqmI8nu8eKg367AYQGmtxlqgis/f3gg/r2F9sDPuCETZ+obAN2+DYYF
+         b7zLnqvykrnGejPEV0A1TjPtRRWBaUrsKFay7UN0+xu9BYg97pqrq4k8r2V27DiOR1
+         2ZKF5xj4Bi5cBIIFxBcKuobX1Zd3JMIDlgrWlfUVQnfqFTedcnXu7/vMfE6gDQ39H8
+         sl/X2d93RShdg==
+From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Chen-Yu Tsai <wenst@google.com>, kernel@collabora.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        James Lo <james.lo@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v3] spmi: mtk-pmif: Serialize PMIF status check and command submission
+Date:   Mon, 24 Jul 2023 11:47:33 -0400
+Message-ID: <20230724154739.493724-1-nfraprado@collabora.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 6.4 800/800] io_uring: Use io_schedule* in cqring wait
-Content-Language: en-US
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        stable@vger.kernel.org, Genes Lists <lists@sapience.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andres Freund <andres@anarazel.de>
-References: <20230716194949.099592437@linuxfoundation.org>
- <538065ee-4130-6a00-dcc8-f69fbc7d7ba0@kernel.dk>
- <70e5349a-87af-a2ea-f871-95270f57c6e3@sapience.com>
- <2691683.mvXUDI8C0e@natalenko.name>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <2691683.mvXUDI8C0e@natalenko.name>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,115 +62,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/23/23 12:06?PM, Oleksandr Natalenko wrote:
-> Hello.
-> 
-> On ned?le 23. ?ervence 2023 19:43:50 CEST Genes Lists wrote:
->> On 7/23/23 11:31, Jens Axboe wrote:
->> ...
->>> Just read the first one, but this is very much expected. It's now just
->>> correctly reflecting that one thread is waiting on IO. IO wait being
->>> 100% doesn't mean that one core is running 100% of the time, it just
->>> means it's WAITING on IO 100% of the time.
->>>
->>
->> Seems reasonable thank you.
->>
->> Question - do you expect the iowait to stay high for a freshly created 
->> mariadb doing nothing (as far as I can tell anyway) until process 
->> exited? Or Would you think it would drop in this case prior to the 
->> process exiting.
->>
->> For example I tried the following - is the output what you expect?
->>
->> Create a fresh mariab with no databases - monitor the core showing the 
->> iowaits with:
->>
->>     mpstat -P ALL 2 100
->>
->> # rm -f /var/lib/mysql/*
->> # mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
->>
->> # systemctl start mariadb      (iowaits -> 100%) 
->>  
->>
->> # iotop -bo |grep maria        (shows no output, iowait stays 100%)
->>
->> (this persists until mariadb process exits)
->>  
->>
->> # systemctl stop mariadb       (iowait drops to 0%) 
-> 
-> This is a visible userspace behaviour change with no changes in the
-> userspace itself, so we cannot just ignore it. If for some reason this
-> is how it should be now, how do we explain it to MariaDB devs to get
-> this fixed?
+Before writing the read or write command to the SPMI arbiter through the
+PMIF interface, the current status of the channel is checked to ensure
+it is idle. However, since the status only changes from idle when the
+command is written, it is possible for two concurrent calls to determine
+that the channel is idle and simultaneously send their commands. At this
+point the PMIF interface hangs, with the status register no longer being
+updated, and thus causing all subsequent operations to time out.
 
-It's not a behavioural change, it's a reporting change. There's no
-functionality changing here. That said, I do think we should narrow it a
-bit so we're only marked as in iowait if the task waiting has pending
-IO. That should still satisfy the initial problem, and it won't flag
-iowait on mariadb like cases where they have someone else just
-perpetually waiting on requests.
+This was observed on the mt8195-cherry-tomato-r2 machine, particularly
+after commit 46600ab142f8 ("regulator: Set PROBE_PREFER_ASYNCHRONOUS for
+drivers between 5.10 and 5.15") was applied, since then the two MT6315
+devices present on the SPMI bus would probe assynchronously and
+sometimes (during probe or at a later point) read the bus
+simultaneously, breaking the PMIF interface and consequently slowing
+down the whole system.
 
-As a side effect, this also removes the flush that wasn't at all
-necessary on io_uring.
+To fix the issue at its root cause, introduce locking around the channel
+status check and the command write, so that both become an atomic
+operation, preventing race conditions between two (or more) SPMI bus
+read/write operations. A spinlock is used since this is a fast bus, as
+indicated by the usage of the atomic variant of readl_poll, and
+'.fast_io = true' being used in the mt6315 driver, so spinlocks are
+already used for the regmap access.
 
-If folks are able to test the below, that would be appreciated.
+Fixes: b45b3ccef8c0 ("spmi: mediatek: Add support for MT6873/8192")
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
+---
 
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index 89a611541bc4..f4591b912ea8 100644
---- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -2493,11 +2493,20 @@ int io_run_task_work_sig(struct io_ring_ctx *ctx)
- 	return 0;
- }
+Changes in v3:
+- Switched to raw spinlock to avoid overhead in PREEMPT_RT
+- Moved spin_unlock to after marking the channel ready on the error
+  paths
+
+Changes in v2:
+- Added missing spin_unlocks to error paths
+- Moved memcpy outside spinlock region in the write_cmd function
+- Reworded commit message to make clear that issue can happen at any
+  point in runtime, not only during boot
+
+ drivers/spmi/spmi-mtk-pmif.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/spmi/spmi-mtk-pmif.c b/drivers/spmi/spmi-mtk-pmif.c
+index b3c991e1ea40..54c35f5535cb 100644
+--- a/drivers/spmi/spmi-mtk-pmif.c
++++ b/drivers/spmi/spmi-mtk-pmif.c
+@@ -50,6 +50,7 @@ struct pmif {
+ 	struct clk_bulk_data clks[PMIF_MAX_CLKS];
+ 	size_t nclks;
+ 	const struct pmif_data *data;
++	raw_spinlock_t lock;
+ };
  
-+static bool current_pending_io(void)
-+{
-+	struct io_uring_task *tctx = current->io_uring;
-+
-+	if (!tctx)
-+		return false;
-+	return percpu_counter_read_positive(&tctx->inflight);
-+}
-+
- /* when returns >0, the caller should retry */
- static inline int io_cqring_wait_schedule(struct io_ring_ctx *ctx,
- 					  struct io_wait_queue *iowq)
- {
--	int token, ret;
-+	int io_wait, ret;
+ static const char * const pmif_clock_names[] = {
+@@ -314,6 +315,7 @@ static int pmif_spmi_read_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 	struct ch_reg *inf_reg;
+ 	int ret;
+ 	u32 data, cmd;
++	unsigned long flags;
  
- 	if (unlikely(READ_ONCE(ctx->check_cq)))
- 		return 1;
-@@ -2511,17 +2520,19 @@ static inline int io_cqring_wait_schedule(struct io_ring_ctx *ctx,
- 		return 0;
+ 	/* Check for argument validation. */
+ 	if (sid & ~0xf) {
+@@ -334,6 +336,7 @@ static int pmif_spmi_read_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 	else
+ 		return -EINVAL;
+ 
++	raw_spin_lock_irqsave(&arb->lock, flags);
+ 	/* Wait for Software Interface FSM state to be IDLE. */
+ 	inf_reg = &arb->chan;
+ 	ret = readl_poll_timeout_atomic(arb->base + arb->data->regs[inf_reg->ch_sta],
+@@ -343,6 +346,7 @@ static int pmif_spmi_read_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 		/* set channel ready if the data has transferred */
+ 		if (pmif_is_fsm_vldclr(arb))
+ 			pmif_writel(arb, 1, inf_reg->ch_rdy);
++		raw_spin_unlock_irqrestore(&arb->lock, flags);
+ 		dev_err(&ctrl->dev, "failed to wait for SWINF_IDLE\n");
+ 		return ret;
+ 	}
+@@ -350,6 +354,7 @@ static int pmif_spmi_read_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 	/* Send the command. */
+ 	cmd = (opc << 30) | (sid << 24) | ((len - 1) << 16) | addr;
+ 	pmif_writel(arb, cmd, inf_reg->ch_send);
++	raw_spin_unlock_irqrestore(&arb->lock, flags);
  
  	/*
--	 * Use io_schedule_prepare/finish, so cpufreq can take into account
--	 * that the task is waiting for IO - turns out to be important for low
--	 * QD IO.
-+	 * Mark us as being in io_wait if we have pending requests, so cpufreq
-+	 * can take into account that the task is waiting for IO - turns out
-+	 * to be important for low QD IO.
- 	 */
--	token = io_schedule_prepare();
-+	io_wait = current->in_iowait;
-+	if (current_pending_io())
-+		current->in_iowait = 1;
- 	ret = 0;
- 	if (iowq->timeout == KTIME_MAX)
- 		schedule();
- 	else if (!schedule_hrtimeout(&iowq->timeout, HRTIMER_MODE_ABS))
- 		ret = -ETIME;
--	io_schedule_finish(token);
-+	current->in_iowait = io_wait;
- 	return ret;
- }
+ 	 * Wait for Software Interface FSM state to be WFVLDCLR,
+@@ -376,7 +381,8 @@ static int pmif_spmi_write_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 	struct pmif *arb = spmi_controller_get_drvdata(ctrl);
+ 	struct ch_reg *inf_reg;
+ 	int ret;
+-	u32 data, cmd;
++	u32 data, wdata, cmd;
++	unsigned long flags;
  
-
+ 	if (len > 4) {
+ 		dev_err(&ctrl->dev, "pmif supports 1..4 bytes per trans, but:%zu requested", len);
+@@ -394,6 +400,10 @@ static int pmif_spmi_write_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 	else
+ 		return -EINVAL;
+ 
++	/* Set the write data. */
++	memcpy(&wdata, buf, len);
++
++	raw_spin_lock_irqsave(&arb->lock, flags);
+ 	/* Wait for Software Interface FSM state to be IDLE. */
+ 	inf_reg = &arb->chan;
+ 	ret = readl_poll_timeout_atomic(arb->base + arb->data->regs[inf_reg->ch_sta],
+@@ -403,17 +413,17 @@ static int pmif_spmi_write_cmd(struct spmi_controller *ctrl, u8 opc, u8 sid,
+ 		/* set channel ready if the data has transferred */
+ 		if (pmif_is_fsm_vldclr(arb))
+ 			pmif_writel(arb, 1, inf_reg->ch_rdy);
++		raw_spin_unlock_irqrestore(&arb->lock, flags);
+ 		dev_err(&ctrl->dev, "failed to wait for SWINF_IDLE\n");
+ 		return ret;
+ 	}
+ 
+-	/* Set the write data. */
+-	memcpy(&data, buf, len);
+-	pmif_writel(arb, data, inf_reg->wdata);
++	pmif_writel(arb, wdata, inf_reg->wdata);
+ 
+ 	/* Send the command. */
+ 	cmd = (opc << 30) | BIT(29) | (sid << 24) | ((len - 1) << 16) | addr;
+ 	pmif_writel(arb, cmd, inf_reg->ch_send);
++	raw_spin_unlock_irqrestore(&arb->lock, flags);
+ 
+ 	return 0;
+ }
+@@ -488,6 +498,8 @@ static int mtk_spmi_probe(struct platform_device *pdev)
+ 	arb->chan.ch_send = PMIF_SWINF_0_ACC + chan_offset;
+ 	arb->chan.ch_rdy = PMIF_SWINF_0_VLD_CLR + chan_offset;
+ 
++	raw_spin_lock_init(&arb->lock);
++
+ 	platform_set_drvdata(pdev, ctrl);
+ 
+ 	err = spmi_controller_add(ctrl);
 -- 
-Jens Axboe
+2.41.0
 
