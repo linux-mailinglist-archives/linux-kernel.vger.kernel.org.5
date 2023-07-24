@@ -2,110 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EF875EEAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE31E75EEB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbjGXJGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 05:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
+        id S231186AbjGXJHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 05:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbjGXJGt (ORCPT
+        with ESMTP id S231527AbjGXJHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 05:06:49 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4672F1A2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:06:46 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fb7589b187so5986381e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:06:46 -0700 (PDT)
+        Mon, 24 Jul 2023 05:07:30 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6989B10C3;
+        Mon, 24 Jul 2023 02:07:28 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fdd515cebcso5993327e87.0;
+        Mon, 24 Jul 2023 02:07:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690189604; x=1690794404;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=MWiZQGtEoDd6vYkaCeUUHjlAedCnBQMw8cP5GB7UACs=;
-        b=T9je4nDcYplTvk7qGBjMRHyCVdXOwnMahnWtLXKXhBoorgvTE/t5sdwcXUZiBncr6U
-         bLqrke6vUMhkeBL6adwaYPqoRzfb7M6Vmm2/Vh7dlQ1lwqgr8m6WPZb0stCWt3q5jbE8
-         kAy1+N8x8aEiDHWJF1FclVDmfZFoksV7OJrap7krdYpWSmzBAMXKYX5S3W8OTJBQbgn6
-         aTvAktMm7eey+yYsXs1il/63EvZnlg70B6SD8LTUDdW4BMpChes/r/SzVm//lDlbBx8+
-         xUG5p+szFz5jJJ/VtJNOFrr0YzY4AnjQEB/M161fAMQJaXgS+XYKlJD+liV3ErxJrtGy
-         whnA==
+        d=gmail.com; s=20221208; t=1690189647; x=1690794447;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GW4IPYVW8Zq83RgacffHLZpPhSAB6bm+nS5zZOv0Rrg=;
+        b=Y06cROcc4tgb+taRDoEcqWhvsTgl4WBCVaMm7ygcueZwYD2OR93/MLkAjw4wengjI5
+         QtVj9aHllNyWwfAnEArDZIpxcGcF6j3oodzLQ4jVNl3xCw6JtamGfqJK7a8U8IS+iJMY
+         VmP8pmgTw3QOpqbeB0MOLvTpG7i+2HR10OYdNyz9E3ghFyfkLPN9qdINi3VKK14WsUGN
+         3NEGD3gppPf63+4tprut9Vn7Z+zf9TeCZduciU1prQsAIhDKz3kDmAgfFXy6GKyoOAW3
+         umBNTAC2mtYesW55NVMxeLGe5VNrNGLJq0EzhITVbkvwpxXuBOvSwRrg2+5PvlPfgeLK
+         h5BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690189604; x=1690794404;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MWiZQGtEoDd6vYkaCeUUHjlAedCnBQMw8cP5GB7UACs=;
-        b=Gq6Cw6XWhQFyiM8LYoWqOh/PcB2aRW3qsQ5vt60Z2rvj8sJiXGgC6gO3iPVEtq8xml
-         vXvAy5ypZo53XW4TiCt4v7kfw+VvK/4oxeNmpurPzi9RoC4of510d5PTb3uw9gmFX2iq
-         GdGVWcWOj73eqnRjsEhYni6mBKuvsfsuaBzl3QzGbbfNKZAHNXt19oOeYffkJeDTm5gp
-         V8fwC9nzPh6sqO+X90eQvLGUxfnOucj3jE6UlRDohmB8KaNv/6yeiqrHmp9V3DrnXYmu
-         BVFDOxPUF2cOCqN5ZJH7oh6H/uo3qTQyxG+po99ZQwpOrxBRRvh9fDI0qNZqIIQXP1ce
-         5vxw==
-X-Gm-Message-State: ABy/qLY8Shw/el5mIQbJiOVuNm5Mopk3Nt2DiluIpFTwW4L9OEmCVNbn
-        6UGo2z3R91fFEB5+k1xQPw1mVw==
-X-Google-Smtp-Source: APBJJlGtZfuY7Kf4FYV4ziuMtTtkHqU8SSVKob/5rCL8zHjE3hyY370Fx8+xNu+OdiqC5x51a1zcgw==
-X-Received: by 2002:a05:6512:ac2:b0:4f7:6a40:9fd7 with SMTP id n2-20020a0565120ac200b004f76a409fd7mr5296059lfu.47.1690189604320;
-        Mon, 24 Jul 2023 02:06:44 -0700 (PDT)
-Received: from blmsp ([2001:4091:a247:82fa:b762:4f68:e1ed:5041])
-        by smtp.gmail.com with ESMTPSA id t18-20020aa7d4d2000000b0051de3c6c5e5sm5824932edr.94.2023.07.24.02.06.43
+        d=1e100.net; s=20221208; t=1690189647; x=1690794447;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GW4IPYVW8Zq83RgacffHLZpPhSAB6bm+nS5zZOv0Rrg=;
+        b=VTz6H2b3y2TZA4CNFvr5MvCqqp8VR0gCE/vVj7PlGslGqqhqm4NeiXFMWt2wdk+TMt
+         2S1khUSWmvTgoPxOIo3QXZwKmJGyI2AW81M9NUQkmMpAtRoxm0ezYGJMm/CCJP2Ed5wr
+         bTrhbqLT03a4Z26LM83DYOboYpvYWU9Fn4liEczFJGgP7175VQaOikdpU8j+mQ8wMdBi
+         GKx8QTEJ0CDOTY4h0AayZhzuwh2VoIrHOTclNe3cN0lTAklWRk2uw3pDmFb06AnbMfKO
+         NRI8mF9hJEPSo01fqYM5cUcvnh1WcSr6iU+3JndYWpFIkxjg+py0HYr8DaezPyrTMqhH
+         rGgA==
+X-Gm-Message-State: ABy/qLZqIl2c4MxIs7TktPVpxm8ZotrSZgca5S/K78dgalHHc59L7zb9
+        jdO4B6mKY5bb+EzEtzicmVs=
+X-Google-Smtp-Source: APBJJlFz15rC9PKvoxHO9kL9YanMvNfktF9sIkGqfiEwJoZLoBD5zaOA6orVATYdTLeT76gAdlSS8w==
+X-Received: by 2002:a05:6512:2345:b0:4f8:7772:3dfd with SMTP id p5-20020a056512234500b004f877723dfdmr4817005lfu.11.1690189646339;
+        Mon, 24 Jul 2023 02:07:26 -0700 (PDT)
+Received: from localhost.localdomain ([86.57.157.184])
+        by smtp.gmail.com with ESMTPSA id j14-20020ac2550e000000b004fc863a0bf6sm2092473lfk.223.2023.07.24.02.07.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 02:06:43 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 11:06:42 +0200
-From:   Markus Schneider-Pargmann <msp@baylibre.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Mon, 24 Jul 2023 02:07:25 -0700 (PDT)
+From:   Viktar Simanenka <viteosen@gmail.com>
+To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
         Conor Dooley <conor+dt@kernel.org>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Vivek Yadav <vivek.2311@samsung.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Simon Horman <simon.horman@corigine.com>
-Subject: Re: [PATCH v3 6/6] can: tcan4x5x: Add error messages in probe
-Message-ID: <20230724090642.o7qzib5onl53nmqc@blmsp>
-References: <20230721135009.1120562-1-msp@baylibre.com>
- <20230721135009.1120562-7-msp@baylibre.com>
- <20230724-switch-mulch-3ba56c15997e-mkl@pengutronix.de>
+        Viktar Simanenka <viteosen@gmail.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/2] dt-bindings: display: add bindings for pcd8544 displays
+Date:   Mon, 24 Jul 2023 12:07:12 +0300
+Message-Id: <20230724090713.1489-1-viteosen@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230724-switch-mulch-3ba56c15997e-mkl@pengutronix.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 10:37:51AM +0200, Marc Kleine-Budde wrote:
-> On 21.07.2023 15:50:09, Markus Schneider-Pargmann wrote:
-> > To be able to understand issues during probe easier, add error messages
-> > if something fails.
-> 
-> Can you print the error codes as "%pe", ERR_PTR(err)?
+Add device tree binding documentation for PCD8544 LCD display controller.
 
-Yes, thank you, I will use that instead.
+Signed-off-by: Viktar Simanenka <viteosen@gmail.com>
+---
+v4:remove reference to panel/panel-common.yaml
+add optional backlight property
+v3 link: https://lore.kernel.org/linux-devicetree/20230720124026.356603-1-viteosen@gmail.com/
+ .../bindings/display/nxp,pcd8544.yaml         | 100 ++++++++++++++++++
+ 1 file changed, 100 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/nxp,pcd8544.yaml
 
-Best,
-Markus
-
-> 
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                 | Marc Kleine-Budde          |
-> Embedded Linux                   | https://www.pengutronix.de |
-> Vertretung Nürnberg              | Phone: +49-5121-206917-129 |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
+diff --git a/Documentation/devicetree/bindings/display/nxp,pcd8544.yaml b/Documentation/devicetree/bindings/display/nxp,pcd8544.yaml
+new file mode 100644
+index 000000000000..236eb4f4b3a8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/nxp,pcd8544.yaml
+@@ -0,0 +1,100 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/nxp,pcd8544.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Philips Semiconductors PCD8544 LCD Display Controller
++
++maintainers:
++  - Viktar Simanenka <viteosen@gmail.com>
++
++description: |
++  Philips Semiconductors PCD8544 LCD Display Controller with SPI control bus.
++  Designed to drive a graphic display of 48 rows and 84 columns,
++  such as Nokia 5110/3310 LCDs.
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++properties:
++  compatible:
++    enum:
++      - nxp,pcd8544
++
++  dc-gpios:
++    maxItems: 1
++    description: Data/Command selection pin (D/CX).
++
++  reset-gpios:
++    maxItems: 1
++    description: Display Reset pin (RST).
++
++  backlight:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: |
++      Phandle of the backlight device. The display may have an LED pin that
++      controls the backlight through GPIO or PWM.
++
++  nxp,inverted:
++    type: boolean
++    description: Display color inversion.
++
++  nxp,voltage-op:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0
++    maximum: 127
++    description: |
++      Liquid crystall voltage operation coefficient. Determines the LCD
++      controlling voltage on display segments. Should be adjusted according
++      to the ambient temperature. Adjusts the contrast of the display.
++
++  nxp,temperature-coeff:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0
++    maximum: 3
++    description: |
++      Display temperature compensation coefficient. Increases LCD controlling
++      voltage at lower temperatures to maintain optimum contrast.
++
++  nxp,bias:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0
++    maximum: 7
++    description: |
++      Display bias system coefficient. Should only be changed if an external
++      oscillator is used for the display.
++
++required:
++  - compatible
++  - reg
++  - dc-gpios
++  - reset-gpios
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        display@0 {
++            compatible = "nxp,pcd8544";
++            reg = <0>;
++            spi-max-frequency = <8000000>;
++
++            dc-gpios = <&pio 0 3 GPIO_ACTIVE_HIGH>; /* DC=PA3 */
++            reset-gpios = <&pio 0 1 GPIO_ACTIVE_HIGH>; /* RESET=PA1 */
++            backlight = <&backlight>;
++
++            nxp,inverted;
++            nxp,voltage-op = <0>;
++            nxp,bias = <4>;
++            nxp,temperature-coeff = <0>;
++        };
++    };
++
++...
+-- 
+2.34.1
 
