@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B27975E7E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E897A75E819
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbjGXBgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
+        id S231991AbjGXBhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:37:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbjGXBfq (ORCPT
+        with ESMTP id S231796AbjGXBhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:35:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E175346BB;
-        Sun, 23 Jul 2023 18:32:12 -0700 (PDT)
+        Sun, 23 Jul 2023 21:37:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FFD10FD;
+        Sun, 23 Jul 2023 18:33:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2EAA760F64;
-        Mon, 24 Jul 2023 01:31:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 120AEC433C8;
-        Mon, 24 Jul 2023 01:31:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BB0E060F4E;
+        Mon, 24 Jul 2023 01:31:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51998C433C7;
+        Mon, 24 Jul 2023 01:31:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162277;
-        bh=xjRhSRMp6VdciOc6tWlcw99tdKKtP7C1wSFs+qZqTk8=;
+        s=k20201202; t=1690162317;
+        bh=AaXuJUr7oqDHLbAwjAs73CMWWl1hdvFCvH8k344jYsY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rkwfZ0t/sY2ALqrnPzSUbkBKJGynEEZY7cLilmAnqH0/zDyDB3UU1puWuo81hv2BY
-         mn2lEV77TSl0UyQzM+X2EzruauYNhCBboR34eysFwRPKtCTfHWwbJU7WoDwl5kMLJN
-         pohHnPV0tofFRES8Hi3fjA9NYAZxlOqfA5ndaoTouAzFw7irwzoz/KdHg/s92jRDmN
-         Q0rs6HnJ+jvCYDZpkT7bgNcbNbZdHXqMS3Ro7N+0+cqjcXmBxlTdFcxrnzv12sQfPC
-         TzsphlQw3OzmRxzs5xyEN2FEK22g28R/do5reOOfuCYCD9EtFuRpfMiIrFLMwMviwY
-         ssl+ATwqIu8ww==
+        b=eE39czfDQ8VqB4vsLvaBVQV9HfIRwonWkfcLUftw4UEqTp+RbUZyjtIUztinI6VmO
+         /AACUbVK5P/TZBgtPAyfXvTClF0HWzqZnIMpJt0cajEuz1+qnKFJCBbuTqt4xm7LJM
+         9gQ4ZfvJq1D/8xtFWJGAyE3MEe+fmUl1TT25BPRo5XOP/qmjCoUbDUGTIK243Ifkr3
+         rht6QHPMVcxzHRIss0dTy8XQHlUgcVgkMMPVhNU4Wa7c30dekc2K/5IHeopy40QCXv
+         ifgtAJM2kWHGAOkTvBTtR0RDWJSq3JanShatsGMP6iMeEjwmLRPAZvmA0k0BKMfOmn
+         JJDH7mE7hjNaA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Paulo Alcantara <pc@manguebit.com>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.4 3/4] smb: client: fix warning in cifs_smb3_do_mount()
-Date:   Sun, 23 Jul 2023 21:31:10 -0400
-Message-Id: <20230724013111.2327251-3-sashal@kernel.org>
+Cc:     Xu Yang <xu.yang_2@nxp.com>, Li Jun <jun.li@nxp.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, Peter.Chen@nxp.com,
+        linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 11/40] usb: chipidea: imx: don't request QoS for imx8ulp
+Date:   Sun, 23 Jul 2023 21:31:11 -0400
+Message-Id: <20230724013140.2327815-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230724013111.2327251-1-sashal@kernel.org>
-References: <20230724013111.2327251-1-sashal@kernel.org>
+In-Reply-To: <20230724013140.2327815-1-sashal@kernel.org>
+References: <20230724013140.2327815-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.5
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,86 +61,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paulo Alcantara <pc@manguebit.com>
+From: Xu Yang <xu.yang_2@nxp.com>
 
-[ Upstream commit 12c30f33cc6769bf411088a2872843c4f9ea32f9 ]
+[ Upstream commit 9a070e8e208995a9d638b538ed7abf28bd6ea6f0 ]
 
-This fixes the following warning reported by kernel test robot
+Use dedicated imx8ulp usb compatible to remove QoS request
+since imx8ulp has no such limitation of imx7ulp: DMA will
+not work if system enters idle.
 
-  fs/smb/client/cifsfs.c:982 cifs_smb3_do_mount() warn: possible
-  memory leak of 'cifs_sb'
-
-Link: https://lore.kernel.org/all/202306170124.CtQqzf0I-lkp@intel.com/
-Signed-off-by: Paulo Alcantara (SUSE) <pc@manguebit.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+Signed-off-by: Li Jun <jun.li@nxp.com>
+Acked-by: Peter Chen <peter.chen@kernel.org>
+Message-ID: <20230530104007.1294702-2-xu.yang_2@nxp.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/smb/client/cifsfs.c | 28 ++++++++++------------------
- 1 file changed, 10 insertions(+), 18 deletions(-)
+ drivers/usb/chipidea/ci_hdrc_imx.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/smb/client/cifsfs.c b/fs/smb/client/cifsfs.c
-index 43a4d8603db34..30b03938f6d1d 100644
---- a/fs/smb/client/cifsfs.c
-+++ b/fs/smb/client/cifsfs.c
-@@ -884,11 +884,11 @@ struct dentry *
- cifs_smb3_do_mount(struct file_system_type *fs_type,
- 	      int flags, struct smb3_fs_context *old_ctx)
- {
--	int rc;
--	struct super_block *sb = NULL;
--	struct cifs_sb_info *cifs_sb = NULL;
- 	struct cifs_mnt_data mnt_data;
-+	struct cifs_sb_info *cifs_sb;
-+	struct super_block *sb;
- 	struct dentry *root;
-+	int rc;
+diff --git a/drivers/usb/chipidea/ci_hdrc_imx.c b/drivers/usb/chipidea/ci_hdrc_imx.c
+index 2855ac3030014..f7577f2bd2c5d 100644
+--- a/drivers/usb/chipidea/ci_hdrc_imx.c
++++ b/drivers/usb/chipidea/ci_hdrc_imx.c
+@@ -70,6 +70,10 @@ static const struct ci_hdrc_imx_platform_flag imx7ulp_usb_data = {
+ 		CI_HDRC_PMQOS,
+ };
  
- 	if (cifsFYI) {
- 		cifs_dbg(FYI, "%s: devname=%s flags=0x%x\n", __func__,
-@@ -897,11 +897,9 @@ cifs_smb3_do_mount(struct file_system_type *fs_type,
- 		cifs_info("Attempting to mount %s\n", old_ctx->source);
- 	}
- 
--	cifs_sb = kzalloc(sizeof(struct cifs_sb_info), GFP_KERNEL);
--	if (cifs_sb == NULL) {
--		root = ERR_PTR(-ENOMEM);
--		goto out;
--	}
-+	cifs_sb = kzalloc(sizeof(*cifs_sb), GFP_KERNEL);
-+	if (!cifs_sb)
-+		return ERR_PTR(-ENOMEM);
- 
- 	cifs_sb->ctx = kzalloc(sizeof(struct smb3_fs_context), GFP_KERNEL);
- 	if (!cifs_sb->ctx) {
-@@ -938,10 +936,8 @@ cifs_smb3_do_mount(struct file_system_type *fs_type,
- 
- 	sb = sget(fs_type, cifs_match_super, cifs_set_super, flags, &mnt_data);
- 	if (IS_ERR(sb)) {
--		root = ERR_CAST(sb);
- 		cifs_umount(cifs_sb);
--		cifs_sb = NULL;
--		goto out;
-+		return ERR_CAST(sb);
- 	}
- 
- 	if (sb->s_root) {
-@@ -972,13 +968,9 @@ cifs_smb3_do_mount(struct file_system_type *fs_type,
- 	deactivate_locked_super(sb);
- 	return root;
- out:
--	if (cifs_sb) {
--		if (!sb || IS_ERR(sb)) {  /* otherwise kill_sb will handle */
--			kfree(cifs_sb->prepath);
--			smb3_cleanup_fs_context(cifs_sb->ctx);
--			kfree(cifs_sb);
--		}
--	}
-+	kfree(cifs_sb->prepath);
-+	smb3_cleanup_fs_context(cifs_sb->ctx);
-+	kfree(cifs_sb);
- 	return root;
- }
- 
++static const struct ci_hdrc_imx_platform_flag imx8ulp_usb_data = {
++	.flags = CI_HDRC_SUPPORTS_RUNTIME_PM,
++};
++
+ static const struct of_device_id ci_hdrc_imx_dt_ids[] = {
+ 	{ .compatible = "fsl,imx23-usb", .data = &imx23_usb_data},
+ 	{ .compatible = "fsl,imx28-usb", .data = &imx28_usb_data},
+@@ -80,6 +84,7 @@ static const struct of_device_id ci_hdrc_imx_dt_ids[] = {
+ 	{ .compatible = "fsl,imx6ul-usb", .data = &imx6ul_usb_data},
+ 	{ .compatible = "fsl,imx7d-usb", .data = &imx7d_usb_data},
+ 	{ .compatible = "fsl,imx7ulp-usb", .data = &imx7ulp_usb_data},
++	{ .compatible = "fsl,imx8ulp-usb", .data = &imx8ulp_usb_data},
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, ci_hdrc_imx_dt_ids);
 -- 
 2.39.2
 
