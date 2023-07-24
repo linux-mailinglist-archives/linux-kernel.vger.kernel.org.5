@@ -2,59 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0296C760128
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B20EE76012D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbjGXVXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56688 "EHLO
+        id S231213AbjGXV3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjGXVXq (ORCPT
+        with ESMTP id S229485AbjGXV3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:23:46 -0400
+        Mon, 24 Jul 2023 17:29:36 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AD710D8;
-        Mon, 24 Jul 2023 14:23:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BABD8;
+        Mon, 24 Jul 2023 14:29:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 60EC76140C;
-        Mon, 24 Jul 2023 21:23:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 304F1C433C8;
-        Mon, 24 Jul 2023 21:23:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D1C13613DC;
+        Mon, 24 Jul 2023 21:29:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4513C433C7;
+        Mon, 24 Jul 2023 21:29:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690233824;
-        bh=277o7f0Eb5yT07JMUAo4G4auNkjWPRK6+486ZkvEfT4=;
+        s=k20201202; t=1690234174;
+        bh=fqARBeO4c2YTPeSk975Ka86xirYABo69PGISN4e7vLI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g12HtrGDHpNU+dZZ7V4D4w2CoiKZK/lwm4GJyEKn2LC+Fa9PcvHO04XZGwlL5M9pT
-         hk4W6t73YseH0qfHDFXwbFlAAfwLQe05U7CDMZPC/L/0S9gX3LBssBuCe7Gm9XfF/Q
-         iBdw0FjWVGYTLOxzNWUsJKSpvJ5TQhpTBd0ipkAHcmIgK65giX9jkA9cZKiAcWzjte
-         4pHKq+VdEKlLitptfVsjWw4GuvjIXp2p9sff5lLUUjz9y4Urh6jL64udUMOelMs6RO
-         8xHgOZE+enRHAxueb4EBMXnK1GJhMJEEs1RHPingnldAt0/aXrsTF8YIJf5zQZ6fRG
-         18oU0sDvFDoFg==
-Date:   Mon, 24 Jul 2023 22:23:37 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, Shuah Khan <shuah@kernel.org>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 0/8] selftests/mm fixes for arm64
-Message-ID: <8da61bee-41c1-4718-aef1-71790a48e3e6@sirena.org.uk>
-References: <20230724082522.1202616-1-ryan.roberts@arm.com>
- <20230724093804.bbe8bc2a83d4575f17778eb0@linux-foundation.org>
- <ef907f64-f7aa-3759-1adc-3fb7e3f3487b@arm.com>
- <20230724120145.b0d985e6f926db587a7debd1@linux-foundation.org>
+        b=N3HQrz3JW8g3YO8EdzbLFeYf1mrY/Yawvo/WMzv/qkz0xPca4NstPDjimzDip1S8g
+         nw39gZSxGmRk/c/9EDQOdKC1OGyX0djizdVuLTFy8KdUOepoE2r2QCo6LPi8AD08Hf
+         I5w0NF6wY0diODvSoN3fyDgk+6D5S64SEsHYiv3OB+W2o7cXiOsjJnm0IotuaSmVnJ
+         6ZlSQq/eTQX9HFXKx64wcF/CL79FgOW4P3qpBw22LbkCPDDCgX2G3omtzW7DLv1HNO
+         63kpv6ofoqyMXwxEHg7/ihcB3grujPrtFNhHaB7FDlWXrZRAP344c3DSU2ZU9/Zhkk
+         e3QuQhHl45esQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 22F5240516; Mon, 24 Jul 2023 18:29:31 -0300 (-03)
+Date:   Mon, 24 Jul 2023 18:29:31 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev, maskray@google.com
+Subject: Re: [PATCH v1 0/4] Perf tool LTO support
+Message-ID: <ZL7tO4pwpfX8n0gZ@kernel.org>
+References: <20230724201247.748146-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wudCvQllCxaWY7aH"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230724120145.b0d985e6f926db587a7debd1@linux-foundation.org>
-X-Cookie: Please go away.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230724201247.748146-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -65,65 +75,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Mon, Jul 24, 2023 at 01:12:43PM -0700, Ian Rogers escreveu:
+> Add a build flag, LTO=1, so that perf is built with the -flto
+> flag. Address some build errors this configuration throws up.
+> 
+> For me on my Debian derived OS, "CC=clang CXX=clang++ LD=ld.lld" works
+> fine. With GCC LTO this fails with:
+> ```
+> lto-wrapper: warning: using serial compilation of 50 LTRANS jobs
+> lto-wrapper: note: see the ‘-flto’ option documentation for more information
+> /usr/bin/ld: /tmp/ccK8kXAu.ltrans10.ltrans.o:(.data.rel.ro+0x28): undefined reference to `memset_orig'
+> /usr/bin/ld: /tmp/ccK8kXAu.ltrans10.ltrans.o:(.data.rel.ro+0x40): undefined reference to `__memset'
+> /usr/bin/ld: /tmp/ccK8kXAu.ltrans10.ltrans.o:(.data.rel+0x28): undefined reference to `memcpy_orig'
+> /usr/bin/ld: /tmp/ccK8kXAu.ltrans10.ltrans.o:(.data.rel+0x40): undefined reference to `__memcpy'
+> /usr/bin/ld: /tmp/ccK8kXAu.ltrans44.ltrans.o: in function `test__arch_unwind_sample':
+> /home/irogers/kernel.org/tools/perf/arch/x86/tests/dwarf-unwind.c:72: undefined reference to `perf_regs_load'
+> collect2: error: ld returned 1 exit status
+> ```
+> 
+> The issue is that we build multiple .o files in a directory and then
+> link them into a .o with "ld -r" (cmd_ld_multi). This early link step
+> appears to trigger GCC to remove the .S file definition of the symbol
+> and break the later link step (the perf-in.o shows perf_regs_load, for
+> example, going from the text section to being undefined at the link
+> step which doesn't happen with clang or without LTO). It is possible
+> to work around this by taking the final perf link command and adding
+> the .o files generated from .S back into it, namely:
+> arch/x86/tests/regs_load.o
+> bench/mem-memset-x86-64-asm.o
+> bench/mem-memcpy-x86-64-asm.o
+> 
+> A quick performance check and the performance improvements from LTO
+> are noticeable:
+> 
+> Non-LTO
+> ```
+> $ perf bench internals synthesize
+>  # Running 'internals/synthesize' benchmark:
+> Computing performance of single threaded perf event synthesis by
+> synthesizing events on the perf process itself:
+>   Average synthesis took: 202.216 usec (+- 0.160 usec)
+>   Average num. events: 51.000 (+- 0.000)
+>   Average time per event 3.965 usec
+>   Average data synthesis took: 230.875 usec (+- 0.285 usec)
+>   Average num. events: 271.000 (+- 0.000)
+>   Average time per event 0.852 usec
+> ```
+> 
+> LTO
+> ```
+> $ perf bench internals synthesize
+>  # Running 'internals/synthesize' benchmark:
+> Computing performance of single threaded perf event synthesis by
+> synthesizing events on the perf process itself:
+>   Average synthesis took: 104.530 usec (+- 0.074 usec)
+>   Average num. events: 51.000 (+- 0.000)
+>   Average time per event 2.050 usec
+>   Average data synthesis took: 112.660 usec (+- 0.114 usec)
+>   Average num. events: 273.000 (+- 0.000)
+>   Average time per event 0.413 usec
 
---wudCvQllCxaWY7aH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 24, 2023 at 12:01:45PM -0700, Andrew Morton wrote:
-> On Mon, 24 Jul 2023 19:49:13 +0100 Ryan Roberts <ryan.roberts@arm.com> wr=
-ote:
-> > On 24/07/2023 17:38, Andrew Morton wrote:
-> > > On Mon, 24 Jul 2023 09:25:14 +0100 Ryan Roberts <ryan.roberts@arm.com=
-> wrote:
+Cool stuff! Applied locally, test building now on the container suite.
 
-> > >> This is v3 of my series to clean up mm selftests so that they run co=
-rrectly on
-> > >> arm64. See [1] for full explanation.
+- Arnaldo
 
-> > > Please don't do that.  Please maintain the [0/n] description alongsid=
-e the
-> > > patchset and resend it each time you resend the series.
+> ```
+> 
+> Ian Rogers (4):
+>   perf stat: Avoid uninitialized use of perf_stat_config
+>   perf parse-events: Avoid use uninitialized warning
+>   perf test: Avoid weak symbol for arch_tests
+>   perf build: Add LTO build option
+> 
+>  tools/perf/Makefile.config      |  5 +++++
+>  tools/perf/tests/builtin-test.c | 11 ++++++++++-
+>  tools/perf/tests/stat.c         |  2 +-
+>  tools/perf/util/parse-events.c  |  2 +-
+>  tools/perf/util/stat.c          |  2 +-
+>  5 files changed, 18 insertions(+), 4 deletions(-)
+> 
+> -- 
+> 2.41.0.487.g6d72f3e995-goog
+> 
 
-> > I previously thought that the cover letter was primarily for the email
-> > recipients and the description on each patch was the part that went int=
-o git?
-> > Clearly I'm wrong, but can't see anything in submitting-patches.rst so =
-guess the
-> > mm process is a bit different?
+-- 
 
-> I expect all subsystem maintainers would like the [0/N] intro to be
-> maintained and resent as the patchset evolves.
-
-Speaking for myself having everything directly in the e-mail makes the=20
-whole process easier, it means that everything that's needed is there
-immediately without having to go locate some external information or
-dredge things up from memory.  This is especially useful when whoever's
-reading the series has poor connectivity for whatever reason (eg, I
-often go through my patch backlog while on trains).
-
-Cover letters that I get do also tend up to find their way into git in
-some form, generally edited a bit, due to the way I CI incoming changes:
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit=
-/?h=3Dfor-6.6&id=3D85d12eda2382cd5b93eed720b5a08f39d42cfef4
-
-though most people don't do anything like that.
-
---wudCvQllCxaWY7aH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS+69gACgkQJNaLcl1U
-h9AGGQf/QSTLsJMpPjesovUVDXEZCC+Tv8JaESt/Wi8b5hp15Opt0MJK1Gh+D3CQ
-ko2TyNyYoYZ8LnOr15LXo0rL2D7e3YSXL4BHGyr3N5SxoZeJhrF2LL8kt4OasJHi
-sw38DE05VhUpgfyZjioPnKpFcx4GL4mV6eXsd+QhHGWV3suh2M1UBka/m00wjV/s
-K4HGpoBkUVytKDyW7wKJJmB4INhSP3HsLKFLiVA1U7EkhQQtHN3mctWyJ+rTcPbw
-4ANNAOu3fej8SsVf5j4fLzDRsLZwy1jIbTp5qTaLlrQaq6bU4zWsuekntfeWNN+T
-1lm/OCfhfWte719dYnvBoboyeop+uQ==
-=URhA
------END PGP SIGNATURE-----
-
---wudCvQllCxaWY7aH--
+- Arnaldo
