@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C16C7600B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 22:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5323D7600BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 22:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbjGXUzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 16:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39994 "EHLO
+        id S230382AbjGXUzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 16:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjGXUy6 (ORCPT
+        with ESMTP id S230291AbjGXUzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 16:54:58 -0400
+        Mon, 24 Jul 2023 16:55:08 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B27B10FA;
-        Mon, 24 Jul 2023 13:54:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98ED01993;
+        Mon, 24 Jul 2023 13:55:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B21C261388;
-        Mon, 24 Jul 2023 20:54:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E5CBC433C8;
-        Mon, 24 Jul 2023 20:54:51 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 049D0613EA;
+        Mon, 24 Jul 2023 20:55:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22E68C433C7;
+        Mon, 24 Jul 2023 20:55:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690232094;
-        bh=PqG02llCgZ9VpiulkAw9SbHjsMZyptESkJfDPu8r0sk=;
+        s=k20201202; t=1690232102;
+        bh=A8VV04hZFGARzYXaorqPchLa3txkbwjn0jFkVvUjSbM=;
         h=From:To:Cc:Subject:Date:From;
-        b=KEYlKVgE0KEik1UotnBrnE59qDZIx0wRSmhMIeTDYJcZwzm/i/ecXS86J0fVu62+8
-         ee8Xm0h01OX+iWmD+nrxlnyeaaaBKZEP1KPZcZ/yUYs8Fxu1z6vEeCX2Zy3zDGtslO
-         kVO3No53mMujdHB2CeJMg26IhI3UyuLCZRbcADCopxFAUVxRJ4ltIbM1sbgP62lUCV
-         Nnc/GRqvyqpfwIB/6rMqxMbhCulyRq8FqHuUCUmKIdUTnuhiudmkGfZuUrdBO26Kzd
-         2es0AVEHcYEm2Ce4u7/1vuIrzvHek+MNTkOuU310+nKmhUYTZfjHbjlNp/h4E/GR+6
-         OqRhWrQXfBNjA==
-Received: (nullmailer pid 767331 invoked by uid 1000);
-        Mon, 24 Jul 2023 20:54:50 -0000
+        b=ZqAC+fcTUPM6w5OzGEOFPyg8asPmpgwf4q34EfDeQkOoMvgTUeSJiUNZGmO1YBt5x
+         CzqY4+u27xjELWUkP7Fjk0Uqe06g2Ki4R/oCdxVZirsXtWtV29F0A/wz9PAMq5i9Kp
+         d1bi6y4yjIk0xGIFuwP0hQbNv1ahTCvAyeZEu1VRsw+0WFgEGj9PRmE6BYJ9Kdd1sp
+         id+c0SWLCal20yF/87NSNZTekyCkJ9im9dLmYRoiyVwVKwCvOm03+hdbjk0GPNq5Tz
+         pIDp+kEkFLvneie0Lsem/Y5b4D+xnqymLEzFvG18uXldOtD1hTLtkDh8gyYB+fpWcp
+         bZYf1qdzNzUdQ==
+Received: (nullmailer pid 767567 invoked by uid 1000);
+        Mon, 24 Jul 2023 20:54:58 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Richard Genoud <richard.genoud@gmail.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
+To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
         Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Gabriel Somlo <gsomlo@gmail.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jacky Huang <ychuang3@nuvoton.com>,
-        Shan-Chun Hung <schung@nuvoton.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Korsgaard <jacmet@sunsite.dk>,
-        Timur Tabi <timur@kernel.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        sparclinux@vger.kernel.org
-Subject: [PATCH v2] tty: Explicitly include correct DT includes
-Date:   Mon, 24 Jul 2023 14:54:38 -0600
-Message-Id: <20230724205440.767071-1-robh@kernel.org>
+        Paul Cercueil <paul@crapouillou.net>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-sunxi@lists.linux.dev
+Subject: [PATCH v2] rtc: Explicitly include correct DT includes
+Date:   Mon, 24 Jul 2023 14:54:54 -0600
+Message-Id: <20230724205456.767430-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -103,436 +90,431 @@ explicitly include the correct includes.
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
 v2:
- - Add mpc52xx_uart
+- Add rtc-mpc5121.c
 ---
- drivers/tty/hvc/hvc_opal.c             | 2 +-
- drivers/tty/serial/8250/8250_early.c   | 1 -
- drivers/tty/serial/8250/8250_ingenic.c | 1 -
- drivers/tty/serial/8250/8250_omap.c    | 1 -
- drivers/tty/serial/amba-pl011.c        | 2 +-
- drivers/tty/serial/apbuart.c           | 3 ---
- drivers/tty/serial/atmel_serial.c      | 1 -
- drivers/tty/serial/fsl_linflexuart.c   | 2 +-
- drivers/tty/serial/fsl_lpuart.c        | 2 +-
- drivers/tty/serial/imx.c               | 1 -
- drivers/tty/serial/lantiq.c            | 3 ++-
- drivers/tty/serial/liteuart.c          | 3 +--
- drivers/tty/serial/ma35d1_serial.c     | 2 +-
- drivers/tty/serial/mpc52xx_uart.c      | 2 +-
- drivers/tty/serial/mps2-uart.c         | 1 -
- drivers/tty/serial/mxs-auart.c         | 2 +-
- drivers/tty/serial/pic32_uart.c        | 1 -
- drivers/tty/serial/qcom_geni_serial.c  | 1 -
- drivers/tty/serial/serial-tegra.c      | 1 -
- drivers/tty/serial/sh-sci.c            | 1 -
- drivers/tty/serial/sunhv.c             | 4 ++--
- drivers/tty/serial/sunsab.c            | 3 ++-
- drivers/tty/serial/sunsu.c             | 4 ++--
- drivers/tty/serial/sunzilog.c          | 4 ++--
- drivers/tty/serial/tegra-tcu.c         | 1 -
- drivers/tty/serial/uartlite.c          | 3 ---
- drivers/tty/serial/ucc_uart.c          | 3 ++-
- drivers/tty/serial/vt8500_serial.c     | 2 +-
- 28 files changed, 21 insertions(+), 36 deletions(-)
+ drivers/rtc/rtc-abx80x.c        | 2 +-
+ drivers/rtc/rtc-armada38x.c     | 1 -
+ drivers/rtc/rtc-at91rm9200.c    | 1 -
+ drivers/rtc/rtc-ds1742.c        | 1 -
+ drivers/rtc/rtc-fsl-ftm-alarm.c | 5 +----
+ drivers/rtc/rtc-isl12026.c      | 1 -
+ drivers/rtc/rtc-isl1208.c       | 2 +-
+ drivers/rtc/rtc-jz4740.c        | 2 +-
+ drivers/rtc/rtc-lpc24xx.c       | 3 +--
+ drivers/rtc/rtc-m41t80.c        | 2 +-
+ drivers/rtc/rtc-mpc5121.c       | 4 +---
+ drivers/rtc/rtc-mt6397.c        | 2 +-
+ drivers/rtc/rtc-mt7622.c        | 4 ++--
+ drivers/rtc/rtc-mxc.c           | 1 -
+ drivers/rtc/rtc-pcf85063.c      | 2 +-
+ drivers/rtc/rtc-pcf85363.c      | 1 -
+ drivers/rtc/rtc-pxa.c           | 1 -
+ drivers/rtc/rtc-rs5c372.c       | 2 +-
+ drivers/rtc/rtc-rv3028.c        | 2 +-
+ drivers/rtc/rtc-rv3032.c        | 2 +-
+ drivers/rtc/rtc-rv8803.c        | 2 +-
+ drivers/rtc/rtc-rx6110.c        | 1 -
+ drivers/rtc/rtc-rx8581.c        | 1 -
+ drivers/rtc/rtc-rzn1.c          | 2 +-
+ drivers/rtc/rtc-s3c.c           | 1 -
+ drivers/rtc/rtc-stm32.c         | 3 ++-
+ drivers/rtc/rtc-stmp3xxx.c      | 1 -
+ drivers/rtc/rtc-sun6i.c         | 1 -
+ drivers/rtc/rtc-sunxi.c         | 2 --
+ drivers/rtc/rtc-ti-k3.c         | 2 +-
+ 30 files changed, 19 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/tty/hvc/hvc_opal.c b/drivers/tty/hvc/hvc_opal.c
-index 794c7b18aa06..992e199e0ea8 100644
---- a/drivers/tty/hvc/hvc_opal.c
-+++ b/drivers/tty/hvc/hvc_opal.c
-@@ -14,7 +14,7 @@
- #include <linux/console.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/export.h>
- #include <linux/interrupt.h>
- 
-diff --git a/drivers/tty/serial/8250/8250_early.c b/drivers/tty/serial/8250/8250_early.c
-index 4299a8bd83d9..9837a27739fd 100644
---- a/drivers/tty/serial/8250/8250_early.c
-+++ b/drivers/tty/serial/8250/8250_early.c
-@@ -27,7 +27,6 @@
- #include <linux/init.h>
- #include <linux/console.h>
- #include <linux/of.h>
+diff --git a/drivers/rtc/rtc-abx80x.c b/drivers/rtc/rtc-abx80x.c
+index e08d3181bd2a..fde2b8054c2e 100644
+--- a/drivers/rtc/rtc-abx80x.c
++++ b/drivers/rtc/rtc-abx80x.c
+@@ -15,7 +15,7 @@
+ #include <linux/i2c.h>
+ #include <linux/kstrtox.h>
+ #include <linux/module.h>
 -#include <linux/of_device.h>
- #include <linux/serial_reg.h>
- #include <linux/serial.h>
- #include <linux/serial_8250.h>
-diff --git a/drivers/tty/serial/8250/8250_ingenic.c b/drivers/tty/serial/8250/8250_ingenic.c
-index 617b8ce60d6b..4c4c4da73ad0 100644
---- a/drivers/tty/serial/8250/8250_ingenic.c
-+++ b/drivers/tty/serial/8250/8250_ingenic.c
-@@ -13,7 +13,6 @@
++#include <linux/of.h>
+ #include <linux/rtc.h>
+ #include <linux/watchdog.h>
+ 
+diff --git a/drivers/rtc/rtc-armada38x.c b/drivers/rtc/rtc-armada38x.c
+index b4139c200676..8abcad38b10c 100644
+--- a/drivers/rtc/rtc-armada38x.c
++++ b/drivers/rtc/rtc-armada38x.c
+@@ -11,7 +11,6 @@
+ #include <linux/io.h>
  #include <linux/module.h>
  #include <linux/of.h>
- #include <linux/of_fdt.h>
 -#include <linux/of_device.h>
  #include <linux/platform_device.h>
- #include <linux/serial_8250.h>
- #include <linux/serial_core.h>
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-index d48a82f1634e..26dd089d8e82 100644
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -18,7 +18,6 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_gpio.h>
- #include <linux/of_irq.h>
- #include <linux/delay.h>
-diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index c5c3f4674459..a1e594b79890 100644
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -20,6 +20,7 @@
- #include <linux/ioport.h>
- #include <linux/init.h>
- #include <linux/console.h>
-+#include <linux/platform_device.h>
- #include <linux/sysrq.h>
- #include <linux/device.h>
- #include <linux/tty.h>
-@@ -36,7 +37,6 @@
- #include <linux/delay.h>
- #include <linux/types.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/sizes.h>
+ #include <linux/rtc.h>
+ 
+diff --git a/drivers/rtc/rtc-at91rm9200.c b/drivers/rtc/rtc-at91rm9200.c
+index e9d17232d0a8..245588a7b417 100644
+--- a/drivers/rtc/rtc-at91rm9200.c
++++ b/drivers/rtc/rtc-at91rm9200.c
+@@ -22,7 +22,6 @@
  #include <linux/io.h>
-diff --git a/drivers/tty/serial/apbuart.c b/drivers/tty/serial/apbuart.c
-index 915ee4b0d594..f3defc6da3df 100644
---- a/drivers/tty/serial/apbuart.c
-+++ b/drivers/tty/serial/apbuart.c
-@@ -22,9 +22,6 @@
- #include <linux/kthread.h>
- #include <linux/device.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/rtc.h>
+diff --git a/drivers/rtc/rtc-ds1742.c b/drivers/rtc/rtc-ds1742.c
+index a5026b0514e7..6ae8b9a294fe 100644
+--- a/drivers/rtc/rtc-ds1742.c
++++ b/drivers/rtc/rtc-ds1742.c
+@@ -16,7 +16,6 @@
+ #include <linux/jiffies.h>
+ #include <linux/rtc.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
--#include <linux/of_platform.h>
+ #include <linux/platform_device.h>
+ #include <linux/io.h>
+ #include <linux/module.h>
+diff --git a/drivers/rtc/rtc-fsl-ftm-alarm.c b/drivers/rtc/rtc-fsl-ftm-alarm.c
+index 3d7c4077fe1c..a72c4ad0cec6 100644
+--- a/drivers/rtc/rtc-fsl-ftm-alarm.c
++++ b/drivers/rtc/rtc-fsl-ftm-alarm.c
+@@ -11,11 +11,8 @@
+ #include <linux/err.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+-#include <linux/of_address.h>
 -#include <linux/of_irq.h>
  #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/serial_core.h>
-diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
-index 3467a875641a..7ac477344aa3 100644
---- a/drivers/tty/serial/atmel_serial.c
-+++ b/drivers/tty/serial/atmel_serial.c
-@@ -21,7 +21,6 @@
- #include <linux/tty_flip.h>
- #include <linux/platform_device.h>
+-#include <linux/of.h>
+-#include <linux/of_device.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/fsl/ftm.h>
+ #include <linux/rtc.h>
+diff --git a/drivers/rtc/rtc-isl12026.c b/drivers/rtc/rtc-isl12026.c
+index 5abff5d348ac..8b00659fc955 100644
+--- a/drivers/rtc/rtc-isl12026.c
++++ b/drivers/rtc/rtc-isl12026.c
+@@ -11,7 +11,6 @@
+ #include <linux/mutex.h>
+ #include <linux/nvmem-provider.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
- #include <linux/atmel_pdc.h>
-diff --git a/drivers/tty/serial/fsl_linflexuart.c b/drivers/tty/serial/fsl_linflexuart.c
-index 6fc21b6684e6..f697751c2ad5 100644
---- a/drivers/tty/serial/fsl_linflexuart.c
-+++ b/drivers/tty/serial/fsl_linflexuart.c
+ #include <linux/rtc.h>
+ #include <linux/slab.h>
+ 
+diff --git a/drivers/rtc/rtc-isl1208.c b/drivers/rtc/rtc-isl1208.c
+index b0712b4e3648..57e65e1b11f0 100644
+--- a/drivers/rtc/rtc-isl1208.c
++++ b/drivers/rtc/rtc-isl1208.c
+@@ -9,7 +9,7 @@
+ #include <linux/clk.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/of_irq.h>
+ #include <linux/rtc.h>
+ 
+diff --git a/drivers/rtc/rtc-jz4740.c b/drivers/rtc/rtc-jz4740.c
+index 36453b008139..6ba889d7d4c4 100644
+--- a/drivers/rtc/rtc-jz4740.c
++++ b/drivers/rtc/rtc-jz4740.c
 @@ -11,7 +11,7 @@
- #include <linux/irq.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- #include <linux/serial_core.h>
- #include <linux/slab.h>
- #include <linux/tty_flip.h>
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index 4d80fae20177..e1a8d5415718 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -18,9 +18,9 @@
- #include <linux/irq.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_dma.h>
- #include <linux/pinctrl/consumer.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/serial_core.h>
- #include <linux/slab.h>
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index 7341d060f85c..3ed5083a7108 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -25,7 +25,6 @@
- #include <linux/rational.h>
- #include <linux/slab.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/io.h>
- #include <linux/dma-mapping.h>
- 
-diff --git a/drivers/tty/serial/lantiq.c b/drivers/tty/serial/lantiq.c
-index bcaa479608d8..3adb60c683f7 100644
---- a/drivers/tty/serial/lantiq.c
-+++ b/drivers/tty/serial/lantiq.c
-@@ -17,7 +17,8 @@
- #include <linux/ioport.h>
- #include <linux/lantiq.h>
- #include <linux/module.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/serial.h>
- #include <linux/serial_core.h>
- #include <linux/slab.h>
-diff --git a/drivers/tty/serial/liteuart.c b/drivers/tty/serial/liteuart.c
-index 80de3a42b67b..d881cdd2a58f 100644
---- a/drivers/tty/serial/liteuart.c
-+++ b/drivers/tty/serial/liteuart.c
-@@ -11,8 +11,7 @@
- #include <linux/litex.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_address.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/serial.h>
- #include <linux/serial_core.h>
- #include <linux/slab.h>
-diff --git a/drivers/tty/serial/ma35d1_serial.c b/drivers/tty/serial/ma35d1_serial.c
-index 2604b4d9fb78..789593495a80 100644
---- a/drivers/tty/serial/ma35d1_serial.c
-+++ b/drivers/tty/serial/ma35d1_serial.c
-@@ -8,7 +8,7 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/of.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
  #include <linux/iopoll.h>
- #include <linux/serial_core.h>
- #include <linux/slab.h>
-diff --git a/drivers/tty/serial/mpc52xx_uart.c b/drivers/tty/serial/mpc52xx_uart.c
-index 384ca195e3d5..916507b8f31d 100644
---- a/drivers/tty/serial/mpc52xx_uart.c
-+++ b/drivers/tty/serial/mpc52xx_uart.c
-@@ -40,7 +40,7 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_wakeirq.h>
+ #include <linux/property.h>
+diff --git a/drivers/rtc/rtc-lpc24xx.c b/drivers/rtc/rtc-lpc24xx.c
+index a4612e543f35..df17c48ff086 100644
+--- a/drivers/rtc/rtc-lpc24xx.c
++++ b/drivers/rtc/rtc-lpc24xx.c
+@@ -9,9 +9,8 @@
  #include <linux/clk.h>
- 
- #include <asm/mpc52xx.h>
-diff --git a/drivers/tty/serial/mps2-uart.c b/drivers/tty/serial/mps2-uart.c
-index 860d161fa594..5da88cbeec73 100644
---- a/drivers/tty/serial/mps2-uart.c
-+++ b/drivers/tty/serial/mps2-uart.c
-@@ -16,7 +16,6 @@
- #include <linux/console.h>
  #include <linux/io.h>
  #include <linux/kernel.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of.h>
 -#include <linux/of_device.h>
- #include <linux/of.h>
  #include <linux/platform_device.h>
- #include <linux/serial_core.h>
-diff --git a/drivers/tty/serial/mxs-auart.c b/drivers/tty/serial/mxs-auart.c
-index a368f4293967..3974ca6ad86c 100644
---- a/drivers/tty/serial/mxs-auart.c
-+++ b/drivers/tty/serial/mxs-auart.c
-@@ -30,7 +30,7 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/io.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
+ #include <linux/rtc.h>
  
-diff --git a/drivers/tty/serial/pic32_uart.c b/drivers/tty/serial/pic32_uart.c
-index 196a4e678451..e308d5022b3f 100644
---- a/drivers/tty/serial/pic32_uart.c
-+++ b/drivers/tty/serial/pic32_uart.c
-@@ -11,7 +11,6 @@
+diff --git a/drivers/rtc/rtc-m41t80.c b/drivers/rtc/rtc-m41t80.c
+index 3cc5151e0986..866489ad56d6 100644
+--- a/drivers/rtc/rtc-m41t80.c
++++ b/drivers/rtc/rtc-m41t80.c
+@@ -17,7 +17,7 @@
+ #include <linux/init.h>
  #include <linux/kernel.h>
- #include <linux/platform_device.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_irq.h>
- #include <linux/of_gpio.h>
- #include <linux/init.h>
-diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-index 444c74eeab7d..5607b668588b 100644
---- a/drivers/tty/serial/qcom_geni_serial.c
-+++ b/drivers/tty/serial/qcom_geni_serial.c
-@@ -11,7 +11,6 @@
- #include <linux/irq.h>
  #include <linux/module.h>
- #include <linux/of.h>
 -#include <linux/of_device.h>
- #include <linux/pm_opp.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/tty/serial/serial-tegra.c b/drivers/tty/serial/serial-tegra.c
-index 1cf08b33456c..cbe641727f2a 100644
---- a/drivers/tty/serial/serial-tegra.c
-+++ b/drivers/tty/serial/serial-tegra.c
-@@ -20,7 +20,6 @@
- #include <linux/irq.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/pagemap.h>
- #include <linux/platform_device.h>
- #include <linux/reset.h>
-diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
-index 7c9457962a3d..115271d2f82d 100644
---- a/drivers/tty/serial/sh-sci.c
-+++ b/drivers/tty/serial/sh-sci.c
-@@ -35,7 +35,6 @@
- #include <linux/module.h>
- #include <linux/mm.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
-diff --git a/drivers/tty/serial/sunhv.c b/drivers/tty/serial/sunhv.c
-index 7d38c33ef506..c671d674bce4 100644
---- a/drivers/tty/serial/sunhv.c
-+++ b/drivers/tty/serial/sunhv.c
-@@ -17,11 +17,11 @@
++#include <linux/of.h>
+ #include <linux/rtc.h>
  #include <linux/slab.h>
- #include <linux/delay.h>
- #include <linux/init.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/hypervisor.h>
- #include <asm/spitfire.h>
--#include <asm/prom.h>
- #include <asm/irq.h>
- #include <asm/setup.h>
- 
-diff --git a/drivers/tty/serial/sunsab.c b/drivers/tty/serial/sunsab.c
-index 48b39fdb0397..40eeaf835bba 100644
---- a/drivers/tty/serial/sunsab.c
-+++ b/drivers/tty/serial/sunsab.c
-@@ -33,7 +33,8 @@
- #include <linux/slab.h>
- #include <linux/delay.h>
- #include <linux/init.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- 
- #include <linux/io.h>
- #include <asm/irq.h>
-diff --git a/drivers/tty/serial/sunsu.c b/drivers/tty/serial/sunsu.c
-index fed052a0b931..58a4342ad0f9 100644
---- a/drivers/tty/serial/sunsu.c
-+++ b/drivers/tty/serial/sunsu.c
-@@ -37,11 +37,11 @@
- #include <linux/serial_reg.h>
- #include <linux/init.h>
- #include <linux/delay.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- 
- #include <linux/io.h>
- #include <asm/irq.h>
--#include <asm/prom.h>
- #include <asm/setup.h>
- 
- #include <linux/serial_core.h>
-diff --git a/drivers/tty/serial/sunzilog.c b/drivers/tty/serial/sunzilog.c
-index 0fbeb3dbd843..c8c71c56264c 100644
---- a/drivers/tty/serial/sunzilog.c
-+++ b/drivers/tty/serial/sunzilog.c
-@@ -33,11 +33,11 @@
- #include <linux/serio.h>
- #endif
- #include <linux/init.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- 
- #include <linux/io.h>
- #include <asm/irq.h>
--#include <asm/prom.h>
- #include <asm/setup.h>
- 
- #include <linux/serial_core.h>
-diff --git a/drivers/tty/serial/tegra-tcu.c b/drivers/tty/serial/tegra-tcu.c
-index 23500b342da7..65069daf36ec 100644
---- a/drivers/tty/serial/tegra-tcu.c
-+++ b/drivers/tty/serial/tegra-tcu.c
-@@ -7,7 +7,6 @@
- #include <linux/mailbox_client.h>
+ #include <linux/mutex.h>
+diff --git a/drivers/rtc/rtc-mpc5121.c b/drivers/rtc/rtc-mpc5121.c
+index 07df43e4c4d0..28858fcaea8f 100644
+--- a/drivers/rtc/rtc-mpc5121.c
++++ b/drivers/rtc/rtc-mpc5121.c
+@@ -11,10 +11,8 @@
  #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/serial.h>
- #include <linux/serial_core.h>
-diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
-index 679574893ebe..b225a78f6175 100644
---- a/drivers/tty/serial/uartlite.c
-+++ b/drivers/tty/serial/uartlite.c
-@@ -20,9 +20,6 @@
- #include <linux/io.h>
- #include <linux/iopoll.h>
+ #include <linux/rtc.h>
  #include <linux/of.h>
 -#include <linux/of_address.h>
 -#include <linux/of_device.h>
--#include <linux/of_platform.h>
- #include <linux/clk.h>
- #include <linux/pm_runtime.h>
- 
-diff --git a/drivers/tty/serial/ucc_uart.c b/drivers/tty/serial/ucc_uart.c
-index 404230c1ebb2..284b293fade6 100644
---- a/drivers/tty/serial/ucc_uart.c
-+++ b/drivers/tty/serial/ucc_uart.c
-@@ -17,15 +17,16 @@
-  */
- 
- #include <linux/module.h>
-+#include <linux/platform_device.h>
- #include <linux/serial.h>
- #include <linux/serial_core.h>
- #include <linux/slab.h>
- #include <linux/tty.h>
- #include <linux/tty_flip.h>
- #include <linux/io.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
  #include <linux/of_irq.h>
 -#include <linux/of_platform.h>
- #include <linux/dma-mapping.h>
- 
- #include <linux/fs_uart_pd.h>
-diff --git a/drivers/tty/serial/vt8500_serial.c b/drivers/tty/serial/vt8500_serial.c
-index cc9157df732f..32433e9b3e5f 100644
---- a/drivers/tty/serial/vt8500_serial.c
-+++ b/drivers/tty/serial/vt8500_serial.c
-@@ -14,6 +14,7 @@
- #include <linux/irq.h>
- #include <linux/init.h>
- #include <linux/console.h>
 +#include <linux/platform_device.h>
- #include <linux/tty.h>
- #include <linux/tty_flip.h>
- #include <linux/serial_core.h>
-@@ -21,7 +22,6 @@
+ #include <linux/io.h>
  #include <linux/slab.h>
+ 
+diff --git a/drivers/rtc/rtc-mt6397.c b/drivers/rtc/rtc-mt6397.c
+index 1d297af80f87..1617063669cc 100644
+--- a/drivers/rtc/rtc-mt6397.c
++++ b/drivers/rtc/rtc-mt6397.c
+@@ -9,7 +9,7 @@
+ #include <linux/mfd/mt6397/core.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/rtc.h>
+diff --git a/drivers/rtc/rtc-mt7622.c b/drivers/rtc/rtc-mt7622.c
+index 81857a457c32..094c649fc137 100644
+--- a/drivers/rtc/rtc-mt7622.c
++++ b/drivers/rtc/rtc-mt7622.c
+@@ -7,9 +7,9 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of_address.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/rtc.h>
+ 
+diff --git a/drivers/rtc/rtc-mxc.c b/drivers/rtc/rtc-mxc.c
+index 762cf03345f1..dbb935dbbd8a 100644
+--- a/drivers/rtc/rtc-mxc.c
++++ b/drivers/rtc/rtc-mxc.c
+@@ -11,7 +11,6 @@
+ #include <linux/pm_wakeirq.h>
  #include <linux/clk.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
- #include <linux/err.h>
+ 
+ #define RTC_INPUT_CLK_32768HZ	(0x00 << 5)
+ #define RTC_INPUT_CLK_32000HZ	(0x01 << 5)
+diff --git a/drivers/rtc/rtc-pcf85063.c b/drivers/rtc/rtc-pcf85063.c
+index e517abfaee2a..073977d71b18 100644
+--- a/drivers/rtc/rtc-pcf85063.c
++++ b/drivers/rtc/rtc-pcf85063.c
+@@ -14,7 +14,7 @@
+ #include <linux/bcd.h>
+ #include <linux/rtc.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/pm_wakeirq.h>
+ #include <linux/regmap.h>
+ 
+diff --git a/drivers/rtc/rtc-pcf85363.c b/drivers/rtc/rtc-pcf85363.c
+index 65b8b1338dbb..569c79bac0ee 100644
+--- a/drivers/rtc/rtc-pcf85363.c
++++ b/drivers/rtc/rtc-pcf85363.c
+@@ -15,7 +15,6 @@
+ #include <linux/errno.h>
+ #include <linux/bcd.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/regmap.h>
  
  /*
+diff --git a/drivers/rtc/rtc-pxa.c b/drivers/rtc/rtc-pxa.c
+index eeacf480cf36..e400c78252e8 100644
+--- a/drivers/rtc/rtc-pxa.c
++++ b/drivers/rtc/rtc-pxa.c
+@@ -14,7 +14,6 @@
+ #include <linux/io.h>
+ #include <linux/slab.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ 
+ #include "rtc-sa1100.h"
+ 
+diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
+index a5a6c8772ecd..ecabeef09196 100644
+--- a/drivers/rtc/rtc-rs5c372.c
++++ b/drivers/rtc/rtc-rs5c372.c
+@@ -12,7 +12,7 @@
+ #include <linux/bcd.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ 
+ /*
+  * Ricoh has a family of I2C based RTCs, which differ only slightly from
+diff --git a/drivers/rtc/rtc-rv3028.c b/drivers/rtc/rtc-rv3028.c
+index 076e56f4e01a..68d86d06c3c3 100644
+--- a/drivers/rtc/rtc-rv3028.c
++++ b/drivers/rtc/rtc-rv3028.c
+@@ -17,7 +17,7 @@
+ #include <linux/kernel.h>
+ #include <linux/log2.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/regmap.h>
+ #include <linux/rtc.h>
+ 
+diff --git a/drivers/rtc/rtc-rv3032.c b/drivers/rtc/rtc-rv3032.c
+index 6b8eb2039a33..35b2e36b426a 100644
+--- a/drivers/rtc/rtc-rv3032.c
++++ b/drivers/rtc/rtc-rv3032.c
+@@ -19,7 +19,7 @@
+ #include <linux/kernel.h>
+ #include <linux/log2.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/regmap.h>
+ #include <linux/rtc.h>
+ 
+diff --git a/drivers/rtc/rtc-rv8803.c b/drivers/rtc/rtc-rv8803.c
+index 98679cae13e8..fd8ab0b2f731 100644
+--- a/drivers/rtc/rtc-rv8803.c
++++ b/drivers/rtc/rtc-rv8803.c
+@@ -15,7 +15,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/rtc.h>
+ 
+ #define RV8803_I2C_TRY_COUNT		4
+diff --git a/drivers/rtc/rtc-rx6110.c b/drivers/rtc/rtc-rx6110.c
+index 8702db6096ba..834274db8c3f 100644
+--- a/drivers/rtc/rtc-rx6110.c
++++ b/drivers/rtc/rtc-rx6110.c
+@@ -13,7 +13,6 @@
+ #include <linux/regmap.h>
+ #include <linux/rtc.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/spi/spi.h>
+ #include <linux/i2c.h>
+ 
+diff --git a/drivers/rtc/rtc-rx8581.c b/drivers/rtc/rtc-rx8581.c
+index 82881fd2e14a..48efd61a114d 100644
+--- a/drivers/rtc/rtc-rx8581.c
++++ b/drivers/rtc/rtc-rx8581.c
+@@ -13,7 +13,6 @@
+ #include <linux/i2c.h>
+ #include <linux/bcd.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/regmap.h>
+ #include <linux/rtc.h>
+ #include <linux/log2.h>
+diff --git a/drivers/rtc/rtc-rzn1.c b/drivers/rtc/rtc-rzn1.c
+index dca736caba85..6f98969eedca 100644
+--- a/drivers/rtc/rtc-rzn1.c
++++ b/drivers/rtc/rtc-rzn1.c
+@@ -15,7 +15,7 @@
+ #include <linux/init.h>
+ #include <linux/iopoll.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/rtc.h>
+diff --git a/drivers/rtc/rtc-s3c.c b/drivers/rtc/rtc-s3c.c
+index 70e1a18e5efd..282238818f63 100644
+--- a/drivers/rtc/rtc-s3c.c
++++ b/drivers/rtc/rtc-s3c.c
+@@ -23,7 +23,6 @@
+ #include <linux/log2.h>
+ #include <linux/slab.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/uaccess.h>
+ #include <linux/io.h>
+ 
+diff --git a/drivers/rtc/rtc-stm32.c b/drivers/rtc/rtc-stm32.c
+index 3d36e11cff80..2c114e3b0f66 100644
+--- a/drivers/rtc/rtc-stm32.c
++++ b/drivers/rtc/rtc-stm32.c
+@@ -10,7 +10,8 @@
+ #include <linux/ioport.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
+ #include <linux/pm_wakeirq.h>
+ #include <linux/regmap.h>
+ #include <linux/rtc.h>
+diff --git a/drivers/rtc/rtc-stmp3xxx.c b/drivers/rtc/rtc-stmp3xxx.c
+index 6f11b745f34d..7566d0a44af8 100644
+--- a/drivers/rtc/rtc-stmp3xxx.c
++++ b/drivers/rtc/rtc-stmp3xxx.c
+@@ -18,7 +18,6 @@
+ #include <linux/delay.h>
+ #include <linux/rtc.h>
+ #include <linux/slab.h>
+-#include <linux/of_device.h>
+ #include <linux/of.h>
+ #include <linux/stmp_device.h>
+ #include <linux/stmp3xxx_rtc_wdt.h>
+diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
+index 71548dd59a3a..753a2d9c8a17 100644
+--- a/drivers/rtc/rtc-sun6i.c
++++ b/drivers/rtc/rtc-sun6i.c
+@@ -24,7 +24,6 @@
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/rtc.h>
+ #include <linux/slab.h>
+diff --git a/drivers/rtc/rtc-sunxi.c b/drivers/rtc/rtc-sunxi.c
+index 5d019e3a835a..5cab9953c44f 100644
+--- a/drivers/rtc/rtc-sunxi.c
++++ b/drivers/rtc/rtc-sunxi.c
+@@ -14,8 +14,6 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_address.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/rtc.h>
+ #include <linux/types.h>
+diff --git a/drivers/rtc/rtc-ti-k3.c b/drivers/rtc/rtc-ti-k3.c
+index 0d90fe923355..ec759d8f7023 100644
+--- a/drivers/rtc/rtc-ti-k3.c
++++ b/drivers/rtc/rtc-ti-k3.c
+@@ -9,7 +9,7 @@
+ #include <linux/delay.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/sys_soc.h>
+ #include <linux/property.h>
 -- 
 2.40.1
 
