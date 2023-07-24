@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3674F75FACD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B407575FACE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbjGXPbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 11:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
+        id S231345AbjGXPbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 11:31:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbjGXPbQ (ORCPT
+        with ESMTP id S229479AbjGXPbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 11:31:16 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 713551B3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:31:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690212675; x=1721748675;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=cLWYEIOLUkMR+23sbC2x2DkVkXQMCKymOp7tgMJ7YL0=;
-  b=M+AdrrXaCGkE/nQZGZjfAODT68kw3OwSvD0IrR3d7mHOwNA00H4Yz5sj
-   WmC5McCqhDivn1btW9AH2g9wEIhw75Ivz9gRmUjZq3Zb4dfi5J3IbPIdo
-   SgSyV7fT//A+0RnUewzNSijcfpTlU1nDfEXl+4qtXo9q9lnpCINenz8VN
-   PY8CG+qgpo0Dih7bgTJ3B9Hw25fK5ld8TOmqS9vjVFgAQ+xY42vjSpKvT
-   BtX5t0srMgd66HmIn8AlRMF2IH+xCKJZM3h23gIXNEKtw6HDnOq2pWAth
-   rCHJzMOuJa6b6Uwd41nChpU1lVWIJj99h+uVDpb08XGIk2oS3Ojiyg3OZ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="453848029"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="453848029"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 08:31:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="675861684"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="675861684"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 24 Jul 2023 08:31:13 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qNxWi-0009ok-16;
-        Mon, 24 Jul 2023 15:31:12 +0000
-Date:   Mon, 24 Jul 2023 23:31:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Subject: drivers/remoteproc/stm32_rproc.c:662:34: warning: unused variable
- 'stm32_rproc_match'
-Message-ID: <202307242300.ia82qBTp-lkp@intel.com>
+        Mon, 24 Jul 2023 11:31:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BE5E57
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:31:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C9D2F611E9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:31:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A563C433C7;
+        Mon, 24 Jul 2023 15:31:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690212698;
+        bh=a324P+M3DLkB7pmLUT2cGrkjY2jYG99N/9ZZ6Lhnack=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=W0jSKEbh7OmSg97XQc37nDQKIaPpptIAfLZE76dfzFF9gqiIxaL1e+qmjewh2BQtv
+         Djj32OXFrEj1mJ2+90jIPs9MbPANA7YIyJDCv2jiNRirGq6TuGUluFAw6Flcabg+td
+         VLSeDHb0s+Oczv/nh7dqWTsmsc+QgIOv6HaVEpSIBY33MXcVfw4U8uMeHGaj5mUBRq
+         /0rLDnRWeATeAxDSqgRSnJPj+eiX60GAhAKReLJ0eovvvQPCBIdw5xSMw70vYAGvKg
+         an3ybZSjBc4p4V1jD63Rosvln1c+qcesj2LvSRp6ucWczlvCmBiHp266ty5lW/ZbIB
+         aUjWZkkLjE2PA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B9FE0CE0C4B; Mon, 24 Jul 2023 08:31:37 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 08:31:37 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Willy Tarreau <w@1wt.eu>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Upcoming nolibc pull request for the next merge window
+Message-ID: <b15fa4c4-cb1f-4bf6-af04-5d549f326f95@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <7afafb6c-9664-44a1-bc8f-d20239db1dd5@paulmck-laptop>
+ <20230722130120.6e4c0eab@canb.auug.org.au>
+ <2c54d017-226e-41c3-a767-a607942ecba5@paulmck-laptop>
+ <5d9f724d-4c45-f843-04b3-60a907b9b127@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5d9f724d-4c45-f843-04b3-60a907b9b127@linuxfoundation.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,43 +65,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6eaae198076080886b9e7d57f4ae06fa782f90ef
-commit: 03bd158e1535e68bcd2b1e095b0ebcad7c84bd20 remoteproc: stm32: use correct format strings on 64-bit
-date:   5 weeks ago
-config: x86_64-buildonly-randconfig-r001-20230723 (https://download.01.org/0day-ci/archive/20230724/202307242300.ia82qBTp-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230724/202307242300.ia82qBTp-lkp@intel.com/reproduce)
+On Mon, Jul 24, 2023 at 08:49:40AM -0600, Shuah Khan wrote:
+> On 7/21/23 22:48, Paul E. McKenney wrote:
+> > On Sat, Jul 22, 2023 at 01:01:20PM +1000, Stephen Rothwell wrote:
+> > > Hi Paul,
+> > > 
+> > > On Fri, 21 Jul 2023 10:39:48 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > > 
+> > > > This is just to let you know that Willy and I are adding co-maintainers
+> > > > for nolibc.  Shuah Khan will join me as administrative maintainer,
+> > > > and will be sending the pull request to you for the next merge window.
+> > > > 
+> > > > Similarly, Thomas Weißschuh will be joining Willy as technical maintainer
+> > > > for nolibc.  With luck, this won't affect you, but in case you come across
+> > > > a nolibc issue, please reach out to Thomas as well as Willy, Shuah,
+> > > > and myself.  There will of course be an update to the MAINTAINERS file
+> > > > in the near future, but just to let you know in the meantime.
+> > > 
+> > > Would it make sense to add a separate nolibc branch to linux-next (and
+> > > no longer merge it into the rcu branch?  Or are there dependencies
+> > > between the two?
+> > 
+> > Dependencies between nolibc and RCU are extremely rare, so it might well
+> > make sense to have a separate branch.
+> > 
+> > Maybe nolibc/next from either the -rcu tree or Shuah's tree?  Shuah,
+> > would something else work better for you?
+> > 
+> 
+> We probably have to add linux-kselftest nolibc and rcu nolibc since
+> we are planning to alternating pull requests?
+> 
+> Paul, you and I have to make sure we don't have duplicate patches
+> in our nolibc branches.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307242300.ia82qBTp-lkp@intel.com/
+If the duplicate patches all have the same SHA-1 hashes, we should be
+good, right?  Or am I missing something subtle here?
 
-All warnings (new ones prefixed by >>):
-
->> drivers/remoteproc/stm32_rproc.c:662:34: warning: unused variable 'stm32_rproc_match' [-Wunused-const-variable]
-   static const struct of_device_id stm32_rproc_match[] = {
-                                    ^
-   1 warning generated.
-
-
-vim +/stm32_rproc_match +662 drivers/remoteproc/stm32_rproc.c
-
-13140de09cc2dd Fabien Dessenne 2019-05-14  661  
-13140de09cc2dd Fabien Dessenne 2019-05-14 @662  static const struct of_device_id stm32_rproc_match[] = {
-13140de09cc2dd Fabien Dessenne 2019-05-14  663  	{ .compatible = "st,stm32mp1-m4" },
-13140de09cc2dd Fabien Dessenne 2019-05-14  664  	{},
-13140de09cc2dd Fabien Dessenne 2019-05-14  665  };
-13140de09cc2dd Fabien Dessenne 2019-05-14  666  MODULE_DEVICE_TABLE(of, stm32_rproc_match);
-13140de09cc2dd Fabien Dessenne 2019-05-14  667  
-
-:::::: The code at line 662 was first introduced by commit
-:::::: 13140de09cc2dd5e5166ad42292bb82af4e23cef remoteproc: stm32: add an ST stm32_rproc driver
-
-:::::: TO: Fabien Dessenne <fabien.dessenne@st.com>
-:::::: CC: Bjorn Andersson <bjorn.andersson@linaro.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+							Thanx, Paul
