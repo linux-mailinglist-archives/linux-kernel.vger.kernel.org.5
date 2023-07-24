@@ -2,164 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 659C875F8E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2880575F8EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbjGXNvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55606 "EHLO
+        id S229831AbjGXNwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbjGXNvX (ORCPT
+        with ESMTP id S229710AbjGXNwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:51:23 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742A83A9B
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:48:24 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-991c786369cso694608966b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690206503; x=1690811303;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+lEDKhusGdw1782Vez2SrPDAzeSLm2L/BTPf8C05jH8=;
-        b=VsS3uEedy8IJ+nzZiLKn+YXPGocfXhv0LzQMetVQqWk4xC2uHlcr/IP4tieBORitrw
-         nUpu7RcCzHMtqpiWBd8Krd6zGcjpa2VyaPxxG6SUvrffRjD5iFdirgekjDx7vDNe4RCN
-         J9Dn0kQuikzyMxHSjQk8BVBDSPKN0v67dGPOuo34GAtHXNPXW2ZIMidelaW8EWFUuB8u
-         nQBMy1jonUHN48wI0kgXSgm4Kl5W4TgvGeFkdj9FRQeOFqubvv3h/w+KvkwlPgKjiCSf
-         Cl+RLMgFkZFAZwUh/dspBYYyXqJzU2QHWEaCL9oB40FPP9hyfV228P4BtEDaFt1Uxu9d
-         qlzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690206503; x=1690811303;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+lEDKhusGdw1782Vez2SrPDAzeSLm2L/BTPf8C05jH8=;
-        b=f2CcLD+S5BUYyLEYK1wqgtrFGVZErbcC3mmSfLEzcJmAIi5X81hwmQrImPrggl+nGL
-         yHbC44nzMUM4bD1OexEDAf9AhkimoDX7ipjK8jKVSzPS2+tdpDZjvSquynzCrCX0dN64
-         TaMAzCtKZHSKSG0SLMUkJaIp2oVXzRARx6RWejxfJ2bglBjbTtTn8/hN/nybWx6C67Cu
-         6HN4jGr4b4qQnGoDkW7olVO18u249q0QX8xT/ddU/NL0gJKGtmJ66GRQe1qz4VMcKSEr
-         DmRRy+Ftbf08NZCl+/CRifr4tnJpLW/VJuwFnNddzchHxlMd9TZY7uqriNPWyfE14dy2
-         NWoQ==
-X-Gm-Message-State: ABy/qLZblIIYHXW+ALZvCKg5aHISVdC/sYvWBuE2uYEPAcXHrXrePM6o
-        rL7FD3C9bFcsHoqgHgmeDjmWFg==
-X-Google-Smtp-Source: APBJJlGHaYWtbVst3kdQOSAVE2F2B9ShZrP9PACMM5JjtwkyjQsa3Kn5Sj06PcSKFXgSG/BNeW6suw==
-X-Received: by 2002:a17:906:9bf6:b0:988:6e75:6b3d with SMTP id de54-20020a1709069bf600b009886e756b3dmr9402624ejc.33.1690206502780;
-        Mon, 24 Jul 2023 06:48:22 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id xo22-20020a170907bb9600b0098860721959sm6715356ejc.198.2023.07.24.06.48.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 06:48:22 -0700 (PDT)
-Message-ID: <c9dd3840-a1e3-79ad-23ea-12cdf683376d@linaro.org>
-Date:   Mon, 24 Jul 2023 15:48:20 +0200
+        Mon, 24 Jul 2023 09:52:07 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C1059CA
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:49:10 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R8hN21W7bz4f3mWK
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 21:49:06 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgCHK59Ngb5kXQPVOg--.36407S3;
+        Mon, 24 Jul 2023 21:49:02 +0800 (CST)
+Subject: Re: [PATCH 1/3] arm64: kdump: Allocate crash low memory in the
+ bottom-up direction
+To:     kernel test robot <lkp@intel.com>, Dave Young <dyoung@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Zhen Lei <thunder.leizhen@huawei.com>
+References: <20230721081726.882-2-thunder.leizhen@huaweicloud.com>
+ <202307220500.1I73fZ5Z-lkp@intel.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <ea4b5f96-617a-96ff-094e-7f21d4ddc176@huaweicloud.com>
+Date:   Mon, 24 Jul 2023 21:49:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 35/42] ARM: dts: ep93xx: add ts7250 board
+In-Reply-To: <202307220500.1I73fZ5Z-lkp@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Nikita Shubin <nikita.shubin@maquefel.me>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Michael Peters <mpeters@embeddedTS.com>,
-        Kris Bahnsen <kris@embeddedTS.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-35-3d63a5f1103e@maquefel.me>
- <4b0f8b39-bec5-6f5d-1b98-8145e334ed94@linaro.org>
- <2c7e838ae4e49b72185626935f886d07895e8192.camel@maquefel.me>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <2c7e838ae4e49b72185626935f886d07895e8192.camel@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgCHK59Ngb5kXQPVOg--.36407S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFWDCr48ZrWkXr17XFyfCrg_yoWrCF48pa
+        1Uua1xKw18XFWrCa97t3y3uw4rWasFqFyfWrW8Jr10gF9Fkr93JasagFWfXryDGr1vgay8
+        Cw1jqFZ8X34UAFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUrR6zUUUUU
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/2023 15:41, Nikita Shubin wrote:
->>> diff --git a/arch/arm/boot/dts/cirrus/ep93xx-ts7250.dts
->>> b/arch/arm/boot/dts/cirrus/ep93xx-ts7250.dts
->>> new file mode 100644
->>> index 000000000000..625202f8cd25
->>> --- /dev/null
->>> +++ b/arch/arm/boot/dts/cirrus/ep93xx-ts7250.dts
->>> @@ -0,0 +1,145 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + * Device Tree file for Technologic Systems ts7250 board based on
->>> Cirrus EP9302 SoC
->>> + */
->>> +/dts-v1/;
->>> +#include "ep93xx.dtsi"
->>> +#include <dt-bindings/dma/cirrus,ep93xx-dma.h>
->>> +
->>> +/ {
->>> +       compatible = "technologic,ts7250", "cirrus,ep9301";
->>> +       model = "TS-7250 SBC";
->>> +       #address-cells = <1>;
->>> +       #size-cells = <1>;
->>> +
->>> +       chosen {
->>> +       };
->>> +
->>> +       memory@0 {
->>> +               device_type = "memory";
->>> +               /* should be set from ATAGS */
->>> +               reg = <0x00000000 0x02000000>,
->>> +                     <0x000530c0 0x01fdd000>;
->>> +       };
->>> +
->>> +       nand-controller@60000000 {
->>
->> Where is this address? It does not work like that. If this is part of
->> SoC, then should be in DTSI and part of soc node. If not, then it is
->> some other bus which needs some description. Top-level is not a bus.
->>
+
+
+On 2023/7/22 5:22, kernel test robot wrote:
+> Hi,
 > 
-> It's some kind of EBI, but it doesn't need a driver it is transparent 
-
-I did not mention any drivers. It's not really important here.
-
-
-> on ts7250, the logic is controlled through installed CPLD.
+> kernel test robot noticed the following build errors:
 > 
-> The EBI it self is a part of the SoC through:
+> [auto build test ERROR on arm64/for-next/core]
+> [also build test ERROR on linus/master v6.5-rc2 next-20230721]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/thunder-leizhen-huaweicloud-com/arm64-kdump-Allocate-crash-low-memory-in-the-bottom-up-direction/20230721-162312
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+> patch link:    https://lore.kernel.org/r/20230721081726.882-2-thunder.leizhen%40huaweicloud.com
+> patch subject: [PATCH 1/3] arm64: kdump: Allocate crash low memory in the bottom-up direction
+> config: arm64-allnoconfig (https://download.01.org/0day-ci/archive/20230722/202307220500.1I73fZ5Z-lkp@intel.com/config)
+> compiler: aarch64-linux-gcc (GCC) 12.3.0
+> reproduce: (https://download.01.org/0day-ci/archive/20230722/202307220500.1I73fZ5Z-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202307220500.1I73fZ5Z-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
 
-So should be in soc.
+Oh, thanks. I got it. The CONFIG_KEXEC_CORE build control is move into reserve_crashkernel().
+Function late_reserve_crashkernel() needs to do the same. I forgot to test turning off options
+like CONFIG_KEXEC_CORE. I will do it tomorrow. Sorry.
+
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index b544ed0ab04193d..d444721011d0b2f 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -122,6 +122,9 @@ static void __init late_reserve_crashkernel(void)
+        unsigned long long low_base, low_size;
+        unsigned long long crash_base, crash_size;
+
++       if (!IS_ENABLED(CONFIG_KEXEC_CORE))
++               return;
+
 
 > 
-> https://elixir.bootlin.com/linux/v6.5-rc3/source/arch/arm/mach-ep93xx/soc.h#L35
+>    aarch64-linux-ld: arch/arm64/mm/init.o: in function `late_reserve_crashkernel':
+>>> init.c:(.init.text+0x58): undefined reference to `crashk_res'
+>    aarch64-linux-ld: arch/arm64/mm/init.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `crashk_res' which may bind externally can not be used when making a shared object; recompile with -fPIC
+>    init.c:(.init.text+0x58): dangerous relocation: unsupported relocation
+>>> aarch64-linux-ld: init.c:(.init.text+0x5c): undefined reference to `crashk_res'
+>>> aarch64-linux-ld: init.c:(.init.text+0x88): undefined reference to `crashk_low_res'
+>    aarch64-linux-ld: arch/arm64/mm/init.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `crashk_low_res' which may bind externally can not be used when making a shared object; recompile with -fPIC
+>    init.c:(.init.text+0x88): dangerous relocation: unsupported relocation
+>    aarch64-linux-ld: init.c:(.init.text+0x90): undefined reference to `crashk_res'
+>    aarch64-linux-ld: init.c:(.init.text+0x9c): undefined reference to `crashk_low_res'
+>    aarch64-linux-ld: init.c:(.init.text+0xd0): undefined reference to `crashk_res'
+>    aarch64-linux-ld: init.c:(.init.text+0x13c): undefined reference to `crashk_res'
+>    aarch64-linux-ld: init.c:(.init.text+0x150): undefined reference to `crashk_res'
+>    aarch64-linux-ld: init.c:(.init.text+0x18c): undefined reference to `crashk_low_res'
+>    aarch64-linux-ld: init.c:(.init.text+0x1b0): undefined reference to `crashk_low_res'
+>    aarch64-linux-ld: init.c:(.init.text+0x204): undefined reference to `crashk_low_res'
+>    aarch64-linux-ld: init.c:(.init.text+0x234): undefined reference to `crashk_low_res'
+>    aarch64-linux-ld: init.c:(.init.text+0x248): undefined reference to `crashk_low_res'
+>    aarch64-linux-ld: arch/arm64/mm/init.o:init.c:(.init.text+0x25c): more undefined references to `crashk_low_res' follow
 > 
-> EP93XX_CS0_PHYS_BASE_ASYNC to EP93XX_CS0_PHYS_BASE_SYNC.
-> 
-> So for ts7250 this includes:
-> 
-> - NAND
-> - m48t86
-> - watchdog
-> 
-> I don't even know how to represent it correctly, would "simple-bus"
-> with "ranges" defined suit here, so it will represent hierarchy but
-> won't do anything ?
 
-You said it is part of soc, so why shouldn't it be in the soc?
-
-> 
->> You should see errors when testing dtbs with W=1.
-> 
-> Strangely - i don't see any, but anyway the above will change.
-
-
-
-Best regards,
-Krzysztof
+-- 
+Regards,
+  Zhen Lei
 
