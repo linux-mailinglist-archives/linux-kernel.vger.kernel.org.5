@@ -2,71 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB8575FC4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FCF75FC50
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbjGXQiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
+        id S231428AbjGXQio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbjGXQiH (ORCPT
+        with ESMTP id S231260AbjGXQim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:38:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65274125;
-        Mon, 24 Jul 2023 09:38:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0343C6126D;
-        Mon, 24 Jul 2023 16:38:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAE2BC433C8;
-        Mon, 24 Jul 2023 16:38:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1690216685;
-        bh=OvYkPoZW+1SHJA0MsHLxvmm52xGTvCvbDEGY8hy65AM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=2Wwk5JpmDGrFnpm+gtjLVk/HOmKFqx0Lhy2yJ9WRAeH4JhrPuJ2cMlOCFUUo2a0c6
-         jIIwQ06fq9FaWJrutjtsikmd5nHQZyq9zcvExonjQvZGf8z6gpbc9Q3DMPifUnr8Ke
-         anmR03lkDFx+gPnpmLjjG+dTzNiIttA+OOoH24fE=
-Date:   Mon, 24 Jul 2023 09:38:04 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     "Shuah Khan" <shuah@kernel.org>,
-        =?ISO-8859-1?Q?J=E9r=F4me?= Glisse <jglisse@redhat.com>,
-        "David Hildenbrand" <david@redhat.com>,
-        "Mark Brown" <broonie@kernel.org>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        "Florent Revest" <revest@chromium.org>,
-        "Peter Xu" <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 0/8] selftests/mm fixes for arm64
-Message-Id: <20230724093804.bbe8bc2a83d4575f17778eb0@linux-foundation.org>
-In-Reply-To: <20230724082522.1202616-1-ryan.roberts@arm.com>
-References: <20230724082522.1202616-1-ryan.roberts@arm.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 24 Jul 2023 12:38:42 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D43125;
+        Mon, 24 Jul 2023 09:38:41 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 9B45567373; Mon, 24 Jul 2023 18:38:38 +0200 (CEST)
+Date:   Mon, 24 Jul 2023 18:38:38 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Nitesh Shetty <nj.shetty@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, hch@lst.de,
+        gost.dev@samsung.com, Anuj Gupta <anuj20.g@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs/read_write: Enable copy_file_range for block device.
+Message-ID: <20230724163838.GB26430@lst.de>
+References: <CGME20230724060655epcas5p24f21ce77480885c746b9b86d27585492@epcas5p2.samsung.com> <20230724060336.8939-1-nj.shetty@samsung.com> <ZL4cpDxr450zomJ0@dread.disaster.area>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZL4cpDxr450zomJ0@dread.disaster.area>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023 09:25:14 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
+> > Change generic_copy_file_checks to use ->f_mapping->host for both inode_in
+> > and inode_out. Allow block device in generic_file_rw_checks.
+> 
+> Why? copy_file_range() is for copying a range of a regular file to
+> another regular file - why do we want to support block devices for
+> somethign that is clearly intended for copying data files?
 
-> This is v3 of my series to clean up mm selftests so that they run correctly on
-> arm64. See [1] for full explanation.
+Nitesh has a series to add block layer copy offload, and uses that to
+implement copy_file_range on block device nodes, which seems like a
+sensible use case for copy_file_range on block device nodes, and that
+series was hiding a change like this deep down in a "block" title
+patch, so I asked for it to be split out.  It still really should
+be in that series, as there's very little point in changing this
+check without an actual implementation making use of it.
 
-Please don't do that.  Please maintain the [0/n] description alongside the
-patchset and resend it each time you resend the series.
-
-I could go over and copy-paste [1] into this patchset, but I don't know if it
-is fully up to date.   I'll leave the patchset intro blank for now - please
-review/edit [1] and send the result in reply to this email, thanks. 
