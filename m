@@ -2,190 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0C475FAD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3AF75FADB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 17:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbjGXPdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 11:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51146 "EHLO
+        id S231254AbjGXPeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 11:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjGXPdt (ORCPT
+        with ESMTP id S229544AbjGXPeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 11:33:49 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0170B1;
-        Mon, 24 Jul 2023 08:33:47 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A35DFEC;
-        Mon, 24 Jul 2023 08:34:30 -0700 (PDT)
-Received: from [10.34.100.101] (e126645.nice.arm.com [10.34.100.101])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 04D383F67D;
-        Mon, 24 Jul 2023 08:33:44 -0700 (PDT)
-Message-ID: <18b0d54b-f8d2-ff38-f5c8-697dc838e3ce@arm.com>
-Date:   Mon, 24 Jul 2023 17:33:34 +0200
+        Mon, 24 Jul 2023 11:34:17 -0400
+Received: from bee.tesarici.cz (bee.tesarici.cz [IPv6:2a03:3b40:fe:2d4::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9052FB1;
+        Mon, 24 Jul 2023 08:34:15 -0700 (PDT)
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by bee.tesarici.cz (Postfix) with ESMTPSA id 3E6C916DD52;
+        Mon, 24 Jul 2023 17:34:10 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+        t=1690212850; bh=CFxh3d477oOhYZ3uvUhGHQpP6GUzR0mq4w1y/nNw4og=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=yUexeB26xN5tLOCfdVZM7bR3qhrCqYJbvGmRWeskacpy4hE4VsOwhKDawqemC+iqc
+         j+BbOBuU06Iyg7ey3yPsZZJSPm+LMtouN7R1QJQv8/0zq5WqWGJHXdoiFkLW0So5qF
+         uLFMGBpl8zi8v/C6B3aogibXccHxoZKbAO8gFM/hnd7zWXMNuRR/rz8JnjsOZq2B/j
+         l0bx6ahgHKJxLyHo7bkKwU00qOOhrBPwWYaIz0PSIfW+IdzVtPIK/TLls0q5EOyRH3
+         EEvr0/dKKm09Xr46DwzLkQaAQZYvRJqmvnZUR4CbmnW1ydSpjck5w1F6ot+yP2O63/
+         08qaj0iEcFRfg==
+Date:   Mon, 24 Jul 2023 17:34:08 +0200
+From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+Cc:     Petr Tesarik <petrtesarik@huaweicloud.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>
+Subject: Re: [PATCH v1] sh: boards: fix CEU buffer size passed to
+ dma_declare_coherent_memory()
+Message-ID: <20230724173408.5d951e8c@meshulam.tesarici.cz>
+In-Reply-To: <jang73ontcdxo7zliixfeyll7za5e7es2rfjc53kpube7bq5nv@fhbxuk37o7kb>
+References: <20230724120742.2187-1-petrtesarik@huaweicloud.com>
+        <jang73ontcdxo7zliixfeyll7za5e7es2rfjc53kpube7bq5nv@fhbxuk37o7kb>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] cpufreq: schedutil: next_freq need update when
- cpufreq_limits changed
-Content-Language: en-US
-To:     Xuewen Yan <xuewen.yan94@gmail.com>,
-        Qais Yousef <qyousef@layalina.io>
-Cc:     Xuewen Yan <xuewen.yan@unisoc.com>, rafael@kernel.org,
-        viresh.kumar@linaro.org, mingo@redhat.com, peterz@infradead.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, guohua.yan@unisoc.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230719130527.8074-1-xuewen.yan@unisoc.com>
- <20230721221944.dthg3tf25j4qgc2z@airbuntu>
- <CAB8ipk8b8ZfwXN7KK-zFVPQ-8i37h64v-wz2ErB3AANaZ9w7aA@mail.gmail.com>
-From:   Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <CAB8ipk8b8ZfwXN7KK-zFVPQ-8i37h64v-wz2ErB3AANaZ9w7aA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 24 Jul 2023 15:22:50 +0200
+Jacopo Mondi <jacopo.mondi@ideasonboard.com> wrote:
 
+> Hi Petr,
+> 
+> On Mon, Jul 24, 2023 at 02:07:42PM +0200, Petr Tesarik wrote:
+> > From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> >
+> > In all these cases, the last argument to dma_declare_coherent_memory() is
+> > the buffer end address, but the expected value should be the size of the
+> > reserved region.
+> >
+> > Fixes: 39fb993038e1 ("media: arch: sh: ap325rxa: Use new renesas-ceu camera driver")
+> > Fixes: c2f9b05fd5c1 ("media: arch: sh: ecovec: Use new renesas-ceu camera driver")
+> > Fixes: f3590dc32974 ("media: arch: sh: kfr2r09: Use new renesas-ceu camera driver")
+> > Fixes: 186c446f4b84 ("media: arch: sh: migor: Use new renesas-ceu camera driver")
+> > Fixes: 1a3c230b4151 ("media: arch: sh: ms7724se: Use new renesas-ceu camera driver")  
+> 
+> Ups, seems like I have introduced all of these! thanks for fixing
 
-On 7/24/23 05:36, Xuewen Yan wrote:
-> On Sat, Jul 22, 2023 at 7:02 AM Qais Yousef <qyousef@layalina.io> wrote:
->>
->> On 07/19/23 21:05, Xuewen Yan wrote:
->>> When cpufreq's policy is single, there is a scenario that will
->>> cause sg_policy's next_freq to be unable to update.
->>>
->>> When the cpu's util is always max, the cpufreq will be max,
->>> and then if we change the policy's scaling_max_freq to be a
->>> lower freq, indeed, the sg_policy's next_freq need change to
->>> be the lower freq, however, because the cpu_is_busy, the next_freq
->>> would keep the max_freq.
->>>
->>> For example:
->>> The cpu7 is single cpu:
->>>
->>> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # while true;do done&
->>> [1] 4737
->>> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # taskset -p 80 4737
->>> pid 4737's current affinity mask: ff
->>> pid 4737's new affinity mask: 80
->>> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_freq
->>> 2301000
->>> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_cur_freq
->>> 2301000
->>> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # echo 2171000 > scaling_max_freq
->>> unisoc:/sys/devices/system/cpu/cpufreq/policy7 # cat scaling_max_freq
->>> 2171000
->>>
->>> At this time, the sg_policy's next_freq would keep 2301000.
->>>
->>> To prevent the case happen, add the judgment of the need_freq_update flag.
->>>
->>> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
->>> Co-developed-by: Guohua Yan <guohua.yan@unisoc.com>
->>> Signed-off-by: Guohua Yan <guohua.yan@unisoc.com>
->>> ---
->>>   kernel/sched/cpufreq_schedutil.c | 3 ++-
->>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
->>> index 4492608b7d7f..458d359f5991 100644
->>> --- a/kernel/sched/cpufreq_schedutil.c
->>> +++ b/kernel/sched/cpufreq_schedutil.c
->>> @@ -350,7 +350,8 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
->>>         * Except when the rq is capped by uclamp_max.
->>>         */
->>>        if (!uclamp_rq_is_capped(cpu_rq(sg_cpu->cpu)) &&
->>> -         sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
->>> +         sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq &&
->>> +         !sg_policy->need_freq_update) {
->>
->> What about sugov_update_single_perf()? It seems to have the same problem, no?
-> 
-> There is no problem in sugov_update_single_perf, because the next_freq
-> is updated by drivers, maybe the next_freq is not used when using
-> sugov_update_single_perf..
-> 
-> But  for the last_freq_update_time, I think there are some problems
-> when using sugov_update_single_perf:
-> Now, there is no judgment condition for the update of the
-> last_freq_update_time. That means the last_freq_update_time is always
-> updated in sugov_update_single_perf.
-> And in sugov_should_update_freq: it would judge the
-> freq_update_delay_ns. As a result, If we use the
-> sugov_update_single_perf, the cpu frequency would only be periodically
-> updated according to freq_update_delay_ns.
-> Maybe we should judge the cpufreq_driver_adjust_perf's return value,
-> if the freq is not updated, the last_freq_update_time also does not
-> have to update.
-> 
-> Just like:
-> ---
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index 458d359f5991..10f18b054f01 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -381,6 +381,7 @@ static void sugov_update_single_perf(struct
-> update_util_data *hook, u64 time,
->          struct sugov_cpu *sg_cpu = container_of(hook, struct
-> sugov_cpu, update_util);
->          unsigned long prev_util = sg_cpu->util;
->          unsigned long max_cap;
-> +       bool freq_updated;
-> 
->          /*
->           * Fall back to the "frequency" path if frequency invariance is not
-> @@ -407,10 +408,11 @@ static void sugov_update_single_perf(struct
-> update_util_data *hook, u64 time,
->              sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
->                  sg_cpu->util = prev_util;
-> 
-> -       cpufreq_driver_adjust_perf(sg_cpu->cpu, map_util_perf(sg_cpu->bw_dl),
-> +       freq_updated = cpufreq_driver_adjust_perf(sg_cpu->cpu,
-> map_util_perf(sg_cpu->bw_dl),
->                                     map_util_perf(sg_cpu->util), max_cap);
-> 
-> -       sg_cpu->sg_policy->last_freq_update_time = time;
-> +       if (freq_updated)
-> +               sg_cpu->sg_policy->last_freq_update_time = time;
->   }
-> 
+No problem. The same code was obviously copied to all boards that have
+a renesas-ceu camera. ;-)
 
-Hello Xuewen,
-FWIW, the patch and explanation for sugov_update_single_perf() seem sensible to
-me. Just a comment about cpufreq_driver_adjust_perf() and
-(struct cpufreq_driver)->adjust_perf(): wouldn't their prototype need to be
-updated (i.e. not return void) to do the change suggested above ?
+Petr T
 
-Regards,
-Pierre
+> Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+> 
+> Thanks
+>   j
+> 
+> > Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> > ---
+> >  arch/sh/boards/mach-ap325rxa/setup.c | 2 +-
+> >  arch/sh/boards/mach-ecovec24/setup.c | 6 ++----
+> >  arch/sh/boards/mach-kfr2r09/setup.c  | 2 +-
+> >  arch/sh/boards/mach-migor/setup.c    | 2 +-
+> >  arch/sh/boards/mach-se/7724/setup.c  | 6 ++----
+> >  5 files changed, 7 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/arch/sh/boards/mach-ap325rxa/setup.c b/arch/sh/boards/mach-ap325rxa/setup.c
+> > index 151792162152..645cccf3da88 100644
+> > --- a/arch/sh/boards/mach-ap325rxa/setup.c
+> > +++ b/arch/sh/boards/mach-ap325rxa/setup.c
+> > @@ -531,7 +531,7 @@ static int __init ap325rxa_devices_setup(void)
+> >  	device_initialize(&ap325rxa_ceu_device.dev);
+> >  	dma_declare_coherent_memory(&ap325rxa_ceu_device.dev,
+> >  			ceu_dma_membase, ceu_dma_membase,
+> > -			ceu_dma_membase + CEU_BUFFER_MEMORY_SIZE - 1);
+> > +			CEU_BUFFER_MEMORY_SIZE);
+> >
+> >  	platform_device_add(&ap325rxa_ceu_device);
+> >
+> > diff --git a/arch/sh/boards/mach-ecovec24/setup.c b/arch/sh/boards/mach-ecovec24/setup.c
+> > index 674da7ebd8b7..7ec03d4a4edf 100644
+> > --- a/arch/sh/boards/mach-ecovec24/setup.c
+> > +++ b/arch/sh/boards/mach-ecovec24/setup.c
+> > @@ -1454,15 +1454,13 @@ static int __init arch_setup(void)
+> >  	device_initialize(&ecovec_ceu_devices[0]->dev);
+> >  	dma_declare_coherent_memory(&ecovec_ceu_devices[0]->dev,
+> >  				    ceu0_dma_membase, ceu0_dma_membase,
+> > -				    ceu0_dma_membase +
+> > -				    CEU_BUFFER_MEMORY_SIZE - 1);
+> > +				    CEU_BUFFER_MEMORY_SIZE);
+> >  	platform_device_add(ecovec_ceu_devices[0]);
+> >
+> >  	device_initialize(&ecovec_ceu_devices[1]->dev);
+> >  	dma_declare_coherent_memory(&ecovec_ceu_devices[1]->dev,
+> >  				    ceu1_dma_membase, ceu1_dma_membase,
+> > -				    ceu1_dma_membase +
+> > -				    CEU_BUFFER_MEMORY_SIZE - 1);
+> > +				    CEU_BUFFER_MEMORY_SIZE);
+> >  	platform_device_add(ecovec_ceu_devices[1]);
+> >
+> >  	gpiod_add_lookup_table(&cn12_power_gpiod_table);
+> > diff --git a/arch/sh/boards/mach-kfr2r09/setup.c b/arch/sh/boards/mach-kfr2r09/setup.c
+> > index 20f4db778ed6..c6d556dfbbbe 100644
+> > --- a/arch/sh/boards/mach-kfr2r09/setup.c
+> > +++ b/arch/sh/boards/mach-kfr2r09/setup.c
+> > @@ -603,7 +603,7 @@ static int __init kfr2r09_devices_setup(void)
+> >  	device_initialize(&kfr2r09_ceu_device.dev);
+> >  	dma_declare_coherent_memory(&kfr2r09_ceu_device.dev,
+> >  			ceu_dma_membase, ceu_dma_membase,
+> > -			ceu_dma_membase + CEU_BUFFER_MEMORY_SIZE - 1);
+> > +			CEU_BUFFER_MEMORY_SIZE);
+> >
+> >  	platform_device_add(&kfr2r09_ceu_device);
+> >
+> > diff --git a/arch/sh/boards/mach-migor/setup.c b/arch/sh/boards/mach-migor/setup.c
+> > index f60061283c48..773ee767d0c4 100644
+> > --- a/arch/sh/boards/mach-migor/setup.c
+> > +++ b/arch/sh/boards/mach-migor/setup.c
+> > @@ -604,7 +604,7 @@ static int __init migor_devices_setup(void)
+> >  	device_initialize(&migor_ceu_device.dev);
+> >  	dma_declare_coherent_memory(&migor_ceu_device.dev,
+> >  			ceu_dma_membase, ceu_dma_membase,
+> > -			ceu_dma_membase + CEU_BUFFER_MEMORY_SIZE - 1);
+> > +			CEU_BUFFER_MEMORY_SIZE);
+> >
+> >  	platform_device_add(&migor_ceu_device);
+> >
+> > diff --git a/arch/sh/boards/mach-se/7724/setup.c b/arch/sh/boards/mach-se/7724/setup.c
+> > index b60a2626e18b..6495f9354065 100644
+> > --- a/arch/sh/boards/mach-se/7724/setup.c
+> > +++ b/arch/sh/boards/mach-se/7724/setup.c
+> > @@ -940,15 +940,13 @@ static int __init devices_setup(void)
+> >  	device_initialize(&ms7724se_ceu_devices[0]->dev);
+> >  	dma_declare_coherent_memory(&ms7724se_ceu_devices[0]->dev,
+> >  				    ceu0_dma_membase, ceu0_dma_membase,
+> > -				    ceu0_dma_membase +
+> > -				    CEU_BUFFER_MEMORY_SIZE - 1);
+> > +				    CEU_BUFFER_MEMORY_SIZE);
+> >  	platform_device_add(ms7724se_ceu_devices[0]);
+> >
+> >  	device_initialize(&ms7724se_ceu_devices[1]->dev);
+> >  	dma_declare_coherent_memory(&ms7724se_ceu_devices[1]->dev,
+> >  				    ceu1_dma_membase, ceu1_dma_membase,
+> > -				    ceu1_dma_membase +
+> > -				    CEU_BUFFER_MEMORY_SIZE - 1);
+> > +				    CEU_BUFFER_MEMORY_SIZE);
+> >  	platform_device_add(ms7724se_ceu_devices[1]);
+> >
+> >  	return platform_add_devices(ms7724se_devices,
+> > --
+> > 2.25.1
+> >  
 
-> 
-> BR
-> Thanks!
-> 
-> ---
-> xuewen
->>
->> LGTM otherwise.
->>
->>
->> Cheers
->>
->> --
->> Qais Yousef
->>
->>>                next_f = sg_policy->next_freq;
->>>
->>>                /* Restore cached freq as next_freq has changed */
->>> --
->>> 2.25.1
->>>
-> 
