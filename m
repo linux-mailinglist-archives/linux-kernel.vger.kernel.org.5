@@ -2,124 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 791F075F5A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D7875F5E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbjGXMHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
+        id S229851AbjGXMQD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 Jul 2023 08:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjGXMHS (ORCPT
+        with ESMTP id S230317AbjGXMQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:07:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2B31A1;
-        Mon, 24 Jul 2023 05:07:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CACCA61113;
-        Mon, 24 Jul 2023 12:07:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26DBFC433C8;
-        Mon, 24 Jul 2023 12:07:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690200436;
-        bh=mUzc4Ur1XvYCglWORhoouHVsGfP5Zuo7LALNOIroXA8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nD+C2LDdhcXj+EtTw57POQ+IRCZqZyhOq0jbissoR4ryS62oI6EG7Mz9vZAQLBQMI
-         sFWQfJh8Jkwhk/GaFvnHlTLw6MaOnHniHuBAR8HhUO6rlxqMzXxV38ZWbd/Adwt0bL
-         sy+tT0k1wTEWcgl1RtFYyur4szZLlHaYTE8IWzOhnWywNL09/3jIGE5/qGnWlQL4La
-         xZeUrKGqpXg2WELoQ43FjBTl0RjZCz6NIpoYiFRGGlasaVaG8NRU+gKiTT6RD3v0jj
-         ov1kEP0NNpSzVsuR8mWZbK4nvv6kq17AMWKLt1zt0ntCHT40JwUOkoxGbgnW/hOmDj
-         Q50yENGLj/umw==
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-99357737980so727016966b.2;
-        Mon, 24 Jul 2023 05:07:16 -0700 (PDT)
-X-Gm-Message-State: ABy/qLYYMsJMca6lU/hPrtWr5XYlBYhEIMPMKKPVop6Ugh/WlXGuMacp
-        2CLCWYwdk/sQR6mO6FUIPo8PN6lGnjuik1Xcqg4=
-X-Google-Smtp-Source: APBJJlEyloc5DakAYqh6G8yHellhKgyr+9w2ynhQc6zoeQUHTTaspueWL6G8z+BSg5VtR0UUv51nNMHOKZoM0BoQTTg=
-X-Received: by 2002:a17:906:3193:b0:994:5592:ba61 with SMTP id
- 19-20020a170906319300b009945592ba61mr10340385ejy.0.1690200434376; Mon, 24 Jul
- 2023 05:07:14 -0700 (PDT)
+        Mon, 24 Jul 2023 08:16:00 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B63110E4;
+        Mon, 24 Jul 2023 05:15:34 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6bb140cd5a5so2034274a34.3;
+        Mon, 24 Jul 2023 05:15:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690200925; x=1690805725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9nNGOJzgymf6gQYpdxd2UIkw90HSJ+oAIVzOwuAShWk=;
+        b=Uy62wyMg9w8t+mqXu0QFMNYQLHegY1Q65joGU4ncPvQPGwYptIiN2f6DmsYUouk6+7
+         JtAWmLG197KYoHDOmAfg3ZxOMrjHz4xE3hYyT76AcEWP1/NbfEO6q8JRB5nr/BxAzOyg
+         a7+QOuyPI2rhvw7/jP5F4BBg9IY8T8XHLcAMM5ohppGtr7R86x2IuaPjPO9X/nWI0OoX
+         EtvgGcsk0r/ueEy3TzgJuT1uDqG0x03uxNtyt02jDdb+T8/6bg+fyCYc4tnNsnN92/Ld
+         LEs75sY2hdIgCGspHVn8/auJuTwf5Te67YoZrN0CdTPjjYJTQVBra4cPZU4AkhkcKXZg
+         UqmA==
+X-Gm-Message-State: ABy/qLbLYusZCq828Ib/fOAikT1ZT1JurJbDna2ZiunMDfG28vkcu73f
+        FuQTMKLHFf9zJHCLdakK0mBA/eVijJEt8w==
+X-Google-Smtp-Source: APBJJlGibdh4VyCHZRuKbHeK83kZpT8FPuPgZrxRhKw6BlST+Wy1ddPXguufHTrmJ8wIiimetINKUg==
+X-Received: by 2002:a05:6830:188:b0:6b9:91da:484f with SMTP id q8-20020a056830018800b006b991da484fmr8804468ota.27.1690200924916;
+        Mon, 24 Jul 2023 05:15:24 -0700 (PDT)
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com. [209.85.161.50])
+        by smtp.gmail.com with ESMTPSA id d9-20020a056830004900b006b8c6eb962esm3835164otp.52.2023.07.24.05.15.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 05:15:24 -0700 (PDT)
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-56368c40e8eso2620523eaf.0;
+        Mon, 24 Jul 2023 05:15:24 -0700 (PDT)
+X-Received: by 2002:a25:238e:0:b0:d05:abaf:9933 with SMTP id
+ j136-20020a25238e000000b00d05abaf9933mr7019302ybj.36.1690200457350; Mon, 24
+ Jul 2023 05:07:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230722-upstream-beaglev-ahead-dts-v1-0-ccda511357f4@baylibre.com>
- <20230722-upstream-beaglev-ahead-dts-v1-1-ccda511357f4@baylibre.com>
- <20230723-savor-trolling-e35ed4a7a751@spud> <ZL1jlacHj7sgNg8M@x1>
- <ZL3Eenj4lGZDhZTM@xhacker> <20230724-census-party-0a50d1563075@wendy>
-In-Reply-To: <20230724-census-party-0a50d1563075@wendy>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 24 Jul 2023 20:07:02 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQrdM2+u=ek_dCYZHVAgJHvzpCknZ14xRR=s_yCFRJcTQ@mail.gmail.com>
-Message-ID: <CAJF2gTQrdM2+u=ek_dCYZHVAgJHvzpCknZ14xRR=s_yCFRJcTQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] riscv: dts: thead: add BeagleV Ahead board device tree
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Jisheng Zhang <jszhang@kernel.org>,
-        Drew Fustini <dfustini@baylibre.com>,
-        Conor Dooley <conor@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+References: <20230719123944.3438363-1-arnd@kernel.org> <20230719123944.3438363-2-arnd@kernel.org>
+ <87pm4lj1w3.fsf@mail.lhotse> <19631e74-415e-4dcb-b79d-33dcf03d2dfc@app.fastmail.com>
+In-Reply-To: <19631e74-415e-4dcb-b79d-33dcf03d2dfc@app.fastmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 24 Jul 2023 14:07:25 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVszR+oZi8x8L0iXx=ydTiaNUZxToBSdf=2ZH5t85+D_Q@mail.gmail.com>
+Message-ID: <CAMuHMdVszR+oZi8x8L0iXx=ydTiaNUZxToBSdf=2ZH5t85+D_Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/9] vgacon: rework Kconfig dependencies
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Arnd Bergmann <arnd@kernel.org>, linux-fbdev@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Helge Deller <deller@gmx.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Deepak Rawat <drawat.floss@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        guoren <guoren@kernel.org>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Khalid Aziz <khalid@gonehiking.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        WANG Xuerui <kernel@xen0n.name>, Wei Liu <wei.liu@kernel.org>,
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, dri-devel@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 6:38=E2=80=AFPM Conor Dooley <conor.dooley@microchi=
-p.com> wrote:
->
-> On Mon, Jul 24, 2023 at 08:23:22AM +0800, Jisheng Zhang wrote:
-> > On Sun, Jul 23, 2023 at 10:29:57AM -0700, Drew Fustini wrote:
-> > > On Sun, Jul 23, 2023 at 11:32:17AM +0100, Conor Dooley wrote:
-> > > > On Sat, Jul 22, 2023 at 02:55:39PM -0700, Drew Fustini wrote:
-> > > >
-> > > > > +++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> > > > > @@ -0,0 +1,61 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0
-> > > >
-> > > > Hmm, should this not be dual licensed?
-> > > > I notice the other th1520 stuff isn't either..
-> > >
-> > > Good point, I'll resubmit with a dual license.
-> > >
-> > > Jisheng: are you okay with the other arch/riscv/boot/dts/thead files
-> > > changing to a dual license?
+Hi Arnd,
+
+On Fri, Jul 21, 2023 at 10:29 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Fri, Jul 21, 2023, at 06:59, Michael Ellerman wrote:
+> > Arnd Bergmann <arnd@kernel.org> writes:
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >>
+> >> The list of dependencies here is phrased as an opt-out, but this is missing
+> >> a lot of architectures that don't actually support VGA consoles, and some
+> >> of the entries are stale:
+> >>
+> >>  - powerpc used to support VGA consoles in the old arch/ppc codebase, but
+> >>    the merged arch/powerpc never did
 > >
-> > When cooking the initial patch, I wrote the lpi4a dts files from
-> > scratch based on sipeed opened sch file, and currently only I made
-> > contributions to them, so it's easy to make the lpi4a dts files
-> > dual license.
-> >
-> > However, when constructing the th1520.dtsi, I refered the T-HEAD's
-> > opensourced yocto repo(in fact, that's the only sourcecode/doc I have
-> > at that time), and the license there is GPL-2.0. That's
-> > also the reason why copyright of Alibaba Group Holding Limited is
-> > added to th1520.dtsi. I'm not sure how to make th1520.dtsi dual
-> > license. At least, this needs help from Guo Ren. Any suggestion is
-> > appreciated.
+> > Not disputing this, but how did you come to that conclusion? I grepped
+> > around and couldn't convince myself whether it can work on powerpc or
+> > not. ie. currently it's possible to enable CONFIG_VGA_CONSOLE and
+> > powerpc does have a struct screen_info defined which seems like it would
+> > allow vgacon_startup() to complete.
 >
-> I think Guo Ren Acking the change should be sufficient. It'd be good to
-> have them dual licensed to make it easier for other projects to include
-> the dts files from Linux. Almost all of what we have at the moment is
-> dual licensed, other than the Canaan stuff & some board dts files I got
-> from customers that were only GPLed.
-Yes, dual license is okay for us.
+> The VGA console needs both screen_info and vga_con to work. In arch/ppc
+> we had both, but in arch/powerpc we only retained the screen_info:
+>
+> $ git grep vga_con v2.6.26 -- arch/ppc arch/ppc64 arch/powerpc
+> v2.6.26:arch/ppc/platforms/pplus.c:     conswitchp = &vga_con;
+> v2.6.26:arch/ppc/platforms/prep_setup.c:        conswitchp = &vga_con;
+>
+> so after arch/ppc was removed, this became impossible to use on both
+> pplus and prep. These two platforms were also (as far as I can tell)
+> the only ones to support vga16fb as an alternative to vgacon, but
+> both platforms were removed later on.
 
+I did use vgacon and vga16fb on CHRP on a second video card
+(initialized using Gabriel Paubert's x86 BIOS emulator), but that was
+definitely before the advent of arch/powerpc/.
 
+Gr{oetje,eeting}s,
 
---=20
-Best Regards
- Guo Ren
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
