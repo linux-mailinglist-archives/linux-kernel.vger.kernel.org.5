@@ -2,119 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8CC75EA4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C354475EA50
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 06:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjGXD7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 23:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
+        id S229508AbjGXEAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 00:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjGXD7D (ORCPT
+        with ESMTP id S229486AbjGXEAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 23:59:03 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1501CB0;
-        Sun, 23 Jul 2023 20:59:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1690171140;
-        bh=W86ZLaZwdyVATmon5YX5XAipgk3WHeaX4q7xnup33HI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CPQUhClFQlcV96NnwkLIOsv82b5N9aXFKX6q4G0zsEB0wc347Rc2LdJYXwhp68xbU
-         3y7bx5oVelPIu7cWmuEtaFxiHWE9kO1c1slsxp+9TPPilfA0gKkggswZhovOjV4sbf
-         T1VM8aCQ9yq08NZBLds1cG/NelSkYJk22Ea1klTJtr6kaICVaoZPCqCNd6OX89qI9l
-         XA0HfP3hPWla6GJFntvp1N3mo9cpLU47iLrFDwYoK+frwRuwwk8KWpCBi815ahJVgb
-         1xweK6Prqo/bKPjU029h7Mpn3i3eQLkN0u69+0qNpnEniZb0WSZtt95KuKA2qm5QKI
-         gKvUIsmR+x42A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R8RH83R9Zz4wxx;
-        Mon, 24 Jul 2023 13:58:59 +1000 (AEST)
-Date:   Mon, 24 Jul 2023 13:58:58 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: linux-next: build warning after merge of the sound-asoc tree
-Message-ID: <20230724135858.3c1abb01@canb.auug.org.au>
-In-Reply-To: <ZLES/6iNcmR7H+f7@smile.fi.intel.com>
-References: <20230713121627.17990c86@canb.auug.org.au>
-        <ZK/ruOD4QFPQ3Q5q@smile.fi.intel.com>
-        <ZK/w5LFanElxZazG@smile.fi.intel.com>
-        <ZLES/6iNcmR7H+f7@smile.fi.intel.com>
+        Mon, 24 Jul 2023 00:00:31 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D682BB0
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 21:00:28 -0700 (PDT)
+Received: from kwepemm600005.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R8RHq5cyqzrRrk;
+        Mon, 24 Jul 2023 11:59:35 +0800 (CST)
+Received: from [10.67.103.158] (10.67.103.158) by
+ kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 24 Jul 2023 12:00:25 +0800
+Subject: Re: [PATCH v11 4/4] Documentation: add debugfs description for vfio
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
+        <jonathan.cameron@huawei.com>, <cohuck@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
+References: <20230630092457.54902-1-liulongfang@huawei.com>
+ <20230630092457.54902-5-liulongfang@huawei.com>
+ <20230714160752.78735c4a.alex.williamson@redhat.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <8d670c89-833d-ef9a-ce87-b46ef8915b37@huawei.com>
+Date:   Mon, 24 Jul 2023 12:00:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rI=3qm6trKPaAueSFxtHepy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230714160752.78735c4a.alex.williamson@redhat.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.103.158]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600005.china.huawei.com (7.193.23.191)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rI=3qm6trKPaAueSFxtHepy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Aall,
-
-On Fri, 14 Jul 2023 12:18:55 +0300 Andy Shevchenko <andriy.shevchenko@linux=
-.intel.com> wrote:
+On 2023/7/15 6:07, Alex Williamson write:
+> On Fri, 30 Jun 2023 17:24:57 +0800
+> liulongfang <liulongfang@huawei.com> wrote:
+> 
+>> From: Longfang Liu <liulongfang@huawei.com>
+>>
+>> 1.Add two debugfs document description file to help users understand
+>> how to use the accelerator live migration driver's debugfs.
+>> 2.Update the file paths that need to be maintained in MAINTAINERS
+>>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>> ---
+>>  .../ABI/testing/debugfs-hisi-migration        | 32 +++++++++++++++++++
+>>  Documentation/ABI/testing/debugfs-vfio        | 25 +++++++++++++++
+>>  MAINTAINERS                                   |  2 ++
+>>  3 files changed, 59 insertions(+)
+>>  create mode 100644 Documentation/ABI/testing/debugfs-hisi-migration
+>>  create mode 100644 Documentation/ABI/testing/debugfs-vfio
+>>
+>> diff --git a/Documentation/ABI/testing/debugfs-hisi-migration b/Documentation/ABI/testing/debugfs-hisi-migration
+>> new file mode 100644
+>> index 000000000000..0dfc7008a3e1
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/debugfs-hisi-migration
+>> @@ -0,0 +1,32 @@
+>> +What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/data
+>> +Date:		June 2023
+>> +KernelVersion:  6.4
+> 
+> At best we'd be looking at introducing this for 6.6, where it might get
+> into mainline in late August for all of these.
 >
-> On Thu, Jul 13, 2023 at 03:41:09PM +0300, Andy Shevchenko wrote:
-> > On Thu, Jul 13, 2023 at 03:19:04PM +0300, Andy Shevchenko wrote: =20
-> > > On Thu, Jul 13, 2023 at 12:16:27PM +1000, Stephen Rothwell wrote: =20
-> > > >=20
-> > > > After merging the sound-asoc tree, today's linux-next build (htmldo=
-cs)
-> > > > produced this warning:
-> > > >=20
-> > > > include/linux/int_log.h:1: warning: no structured comments found
-> > > >=20
-> > > > Introduced by commit
-> > > >=20
-> > > >   f97fa3dcb2db ("lib/math: Move dvb_math.c into lib/math/int_log.c"=
-) =20
-> > >=20
-> > > Can you elaborate a bit, please?
-> > >=20
-> > > Seems to me to be a false positive, or unveils a bug somewhere else. =
-=20
-> >=20
-> > Ah, now I understand. There is a header file that has descriptions but
-> > EXPORT_SYMBOL. We have to drop keyword export from the index.
-> >=20
-> > Thank you for the report, I'll cook the patch ASAP. =20
->=20
-> The 20230713165320.14199-1-andriy.shevchenko@linux.intel.com had been sen=
-t.
+OK, so does this KernelVersion need to be marked as 6.6?
 
-But not yet applied by anyone :-(
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	Read the live migration data of the vfio device.
+>> +		The output format of the data is defined by the live
+>> +		migration driver.
+> 
+> This attribute is specific to the hisi_acc driver, so should the data
+> be detailed here?
+> 
+OK I'll add a description of the role type of the data.
 
---=20
-Cheers,
-Stephen Rothwell
+>> +
+>> +What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/attr
+>> +Date:		June 2023
+>> +KernelVersion:  6.4
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	Read the live migration attributes of the vfio device.
+>> +		The output format of the attributes is defined by the live
+>> +		migration driver.
+> 
+> Same here.
+> 
+OK.
 
---Sig_/rI=3qm6trKPaAueSFxtHepy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+>> +
+>> +What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/io_test
+>> +Date:		June 2023
+>> +KernelVersion:  6.4
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	Trigger the HiSilicon accelerator device to perform
+>> +		the io test through the read operation, and directly output
+>> +		the test result.
+> 
+> This has essentially been reduced to reading the mailbox value AIUI,
+> should this simply document that and the resulting possible values?
+>
+OK,This can add information.
 
------BEGIN PGP SIGNATURE-----
+>> +
+>> +What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/save
+>> +Date:		June 2023
+>> +KernelVersion:  6.4
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	Trigger the Hisilicon accelerator device to perform
+>> +		the state saving operation of live migration through the read
+>> +		operation, and directly output the operation result.
+> 
+> It's unclear to me why we need to parse a returned string from the
+> debugfs seq file rather than read returns zero on success or errno on
+> failure.
+>
+It is impossible to know the reason for the failure just by returning true or false.
+Through the string obtained by seq_printf, the user can know the cause of the error.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmS99wMACgkQAVBC80lX
-0GxhaQf/fOfnO3y4pBpJLf6Zk9CE6jSKZjECrLlYfCn5OhxysagIUQ+N49gmcqda
-aCcoXBBIUhbGq3VLQqa7IOdl0g+tYL3gzi2ga8sV6bFhEX2awhVAO9I5Ra96HsQO
-A46MoQapPi+cuaSMeG4Hvjt4iddAhgpaJ1u6ER6hbK9olebocYJiLr4W+o54ZFCt
-tQ63qz145MO+fUjpc0EeRKLnaLX9bEPVl1rMWZckef59qnwuK/hzIlfE7XU4OZEG
-ckbh0cPVZQzSYWkFh6gY815zuZKVEGEJ4IC3qLN0eQSAym2LW4zHPhnfZ+u9iBiH
-jq4pwihM+VYe0VlDKlnxzdUyfJ1Oyg==
-=ZOi3
------END PGP SIGNATURE-----
+>> +
+>> diff --git a/Documentation/ABI/testing/debugfs-vfio b/Documentation/ABI/testing/debugfs-vfio
+>> new file mode 100644
+>> index 000000000000..e2132a2f602b
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/debugfs-vfio
+>> @@ -0,0 +1,25 @@
+>> +What:		/sys/kernel/debug/vfio
+>> +Date:		June 2023
+>> +KernelVersion:  6.4
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	This debugfs file directory is used for debugging
+>> +		of vfio devices.
+>> +		Each device can create a device subdirectory under this
+>> +		directory by referencing the public registration interface.
+> 
+> This suggests it's the device driver's responsibility to create those
+> subdirectories, but we've delegated that to the core currently.  Maybe
+> this is suggesting that each driver can create a driver subdirectory
+> under the core created device directory?
+>
+OK This vfio directory file is added in vfio_main. All vfio devices share this
+device directory.
+Then each device creates its own device directory with its own dev_name.
 
---Sig_/rI=3qm6trKPaAueSFxtHepy--
+Thanks.
+Longfang.
+> Thanks,
+> Alex
+> 
+>> +
+>> +What:		/sys/kernel/debug/vfio/<device>/migration
+>> +Date:		June 2023
+>> +KernelVersion:  6.4
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	This debugfs file directory is used for debugging
+>> +		of vfio devices that support live migration.
+>> +		The debugfs of each vfio device that supports live migration
+>> +		could be created under this directory.
+>> +
+>> +What:		/sys/kernel/debug/vfio/<device>/migration/state
+>> +Date:		June 2023
+>> +KernelVersion:  6.4
+>> +Contact:	Longfang Liu <liulongfang@huawei.com>
+>> +Description:	Read the live migration status of the vfio device.
+>> +		The status of these live migrations includes:
+>> +		ERROR, RUNNING, STOP, STOP_COPY, RESUMING.
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index ce6ac552d8f6..bdd6a5e7350f 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -22098,6 +22098,7 @@ L:	kvm@vger.kernel.org
+>>  S:	Maintained
+>>  T:	git https://github.com/awilliam/linux-vfio.git
+>>  F:	Documentation/ABI/testing/sysfs-devices-vfio-dev
+>> +F:	Documentation/ABI/testing/debugfs-vfio
+>>  F:	Documentation/driver-api/vfio.rst
+>>  F:	drivers/vfio/
+>>  F:	include/linux/vfio.h
+>> @@ -22115,6 +22116,7 @@ M:	Longfang Liu <liulongfang@huawei.com>
+>>  M:	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+>>  L:	kvm@vger.kernel.org
+>>  S:	Maintained
+>> +F:	Documentation/ABI/testing/debugfs-hisi-migration
+>>  F:	drivers/vfio/pci/hisilicon/
+>>  
+>>  VFIO MEDIATED DEVICE DRIVERS
+> 
+> .
+> 
