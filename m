@@ -2,152 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7C97600E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9897600E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbjGXVJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46814 "EHLO
+        id S229914AbjGXVLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjGXVJd (ORCPT
+        with ESMTP id S229608AbjGXVLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:09:33 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE411700
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:09:31 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-63d09d886a3so5690916d6.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690232970; x=1690837770;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F4R7OXxyA6++6H908qvwT/4xVlAoInx/mRJrgLvZp3I=;
-        b=7VPLC3FM4ARsMPpxFByktScwoRDHY1+O3k6ji1oMHXcyc6BWzJO2kc65fqEz/njpKS
-         1e7OlV2JEjMDqg5/b/8JhzaVftGznHjCljWM27BrP56UMgo4L8DdTIELZGyd7UD9rWPk
-         qQbnqI5NpI7yY40RMK0+86Sbiiv6BJBD6PmxYo61TZv00unQD3dW63wIjlZ4uU5YLag4
-         6T0PNkCCqQKY3fRRiocbDQLEC+UAeiYQ8kf5hL3Z5wM+rOMs1zhoGu6GcqpFEj1KU9Dh
-         YSpeA+8GtomB9U/LAI/r00dP87tOUdSYkkqZmSXVpqurgoIAKEF3A5KjksJiib/fhSTg
-         muAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690232970; x=1690837770;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F4R7OXxyA6++6H908qvwT/4xVlAoInx/mRJrgLvZp3I=;
-        b=ayHYjHPDoni+SkA4ANX6blk+AZlo1ik2UQqBhfjxM990EgvgaSoBdR7NTs4+6nOZrk
-         qB6MrdeLNE/pS9GNR9LHFjQdyw6hyudSmGaxAsDp66XsRuUtJDdrfT2oBVPo6in5gwpD
-         +sFQi13iUvjENoFK4RWGsaFKWM6gfEQSXbkbCl5N3KhtLgbSrLgm+D9oMxvyB9QA2JOu
-         DBdrohG3l+nWBAotq2AgOTxZqg5mFcGkSzypkK5B3OUce9CwPQDwx52CpQACMHxUHZtu
-         kl6gTWy4LXVWaNr0ovH1WribnxdO7yatrSf1PReJ6SYvJ3i3T5xan8pmiAkdvp7g7byN
-         5fLA==
-X-Gm-Message-State: ABy/qLa08ww8T551bsBeaZ8Y0pOcCJZaT5Nnzh8GJcfAUozaYC9vgvQD
-        /VbefazVE7XTvv2bcGdekJdhmWq1bG4YTUnnpbDqjQ==
-X-Google-Smtp-Source: APBJJlEVIiJyEgN+QVsm2PLjyvD1Ou20SgK8rwynWuqyeHMek9W1M6VLm3dl9IiVVE8IhJUcTcukic+uVZi3kHIPE+c=
-X-Received: by 2002:a05:6214:11b0:b0:63c:fac8:ec0b with SMTP id
- u16-20020a05621411b000b0063cfac8ec0bmr786313qvv.39.1690232970451; Mon, 24 Jul
- 2023 14:09:30 -0700 (PDT)
+        Mon, 24 Jul 2023 17:11:43 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 21D271BC
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:11:42 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C96ECFEC;
+        Mon, 24 Jul 2023 14:12:24 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C55063F67D;
+        Mon, 24 Jul 2023 14:11:39 -0700 (PDT)
+Message-ID: <cb0ddea0-2c85-f0ec-f726-14a29cf51fad@arm.com>
+Date:   Mon, 24 Jul 2023 23:11:38 +0200
 MIME-Version: 1.0
-References: <20230724201247.748146-1-irogers@google.com> <20230724201247.748146-2-irogers@google.com>
-In-Reply-To: <20230724201247.748146-2-irogers@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 24 Jul 2023 14:09:19 -0700
-Message-ID: <CAKwvOdnNgd9QgvrR5H2rL8eb1Qc--ELCcOie8Bv=xTFqg9Zh-A@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] perf stat: Avoid uninitialized use of perf_stat_config
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Carsten Haitzler <carsten.haitzler@arm.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev, maskray@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] sched/fair: remove util_est boosting
+Content-Language: en-US
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Qais Yousef <qyousef@layalina.io>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        vschneid@redhat.com, linux-kernel@vger.kernel.org
+References: <20230706135144.324311-1-vincent.guittot@linaro.org>
+ <20230711154718.gudn32sru5opwvlw@airbuntu>
+ <CAKfTPtC2NyZcVukzsYAEdhyxv__AURVuJ1JUoh8NGBmq0mL1hQ@mail.gmail.com>
+ <39d63092-0e1d-2a0b-37e4-eea6789f8055@arm.com>
+ <CAKfTPtB5VCLcKpmFpdq5Yq4ypAyoiv04t=ab6f2RnGodhNp5kA@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <CAKfTPtB5VCLcKpmFpdq5Yq4ypAyoiv04t=ab6f2RnGodhNp5kA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 1:12=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
->
-> perf_event__read_stat_config will assign values based on number of
-> tags and tag values. Initialize the structs to zero before they are
-> assigned so that no uninitialized values can be seen.
->
-> This potential error was reported by GCC with LTO enabled.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/tests/stat.c | 2 +-
->  tools/perf/util/stat.c  | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/tests/stat.c b/tools/perf/tests/stat.c
-> index 500974040fe3..706780fb5695 100644
-> --- a/tools/perf/tests/stat.c
-> +++ b/tools/perf/tests/stat.c
-> @@ -27,7 +27,7 @@ static int process_stat_config_event(struct perf_tool *=
-tool __maybe_unused,
->                                      struct machine *machine __maybe_unus=
-ed)
->  {
->         struct perf_record_stat_config *config =3D &event->stat_config;
-> -       struct perf_stat_config stat_config;
-> +       struct perf_stat_config stat_config =3D {};
+On 24/07/2023 15:06, Vincent Guittot wrote:
+> On Fri, 21 Jul 2023 at 18:09, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>>
+>> On 12/07/2023 17:30, Vincent Guittot wrote:
+>>> On Tue, 11 Jul 2023 at 17:47, Qais Yousef <qyousef@layalina.io> wrote:
+>>>>
+>>>> On 07/06/23 15:51, Vincent Guittot wrote:
 
-^ how did this code ever work?
+[...]
 
-1. stat_config is not initialized
-2. perf_event__read_stat_config maybe assigns to &stat_config->__val
-3. process_stat_config_event() tests other members of stat_config
+>> -->
+>>
+>> I need the util_est = max(util_est, runnable) further down as well. Just
+>> want to fetch runnable only once.
+>>
+>> util = 50, task_util = 5, util_est = 60, task_util_est = 10, runnable = 70
+>>
+>> max(70 + 5, 60 + 10) != max (70 + 5, 70 + 10) when dst_cpu == cpu
+>>
+> 
+> Hmm, I don't get your point here. Why should they be equal ?
+> 
+> Below is a example to describe my problem:
+> 
+> task A with util_avg=200 util_est=300 runnable=200
+> task A is attached to CPU0 so it contributes to CPU0's util_avg and
+> runnable_avg.
+> 
+> In eenv_pd_max_util() we call cpu_util(cpu, p, dst_cpu, 1) to get the
+> max utilization and the OPP to use to compute energy.
+> 
+> Let say that there is nothing else running on CPU0 and CPU1 and the
+> both belong to the same performance domain so
+> CPU0 util_avg= 200 util_est=0 runnable_avg=200
+> CPU1 util_avg=0 util_est=0 runnable_avg=0
+> 
+> For CPU0, cpu_util(cpu, p, dst_cpu, 1) will return (200 + 300) = 500
+> For CPU1, cpu_util(cpu, p, dst_cpu, 1) will return (0 + 300) = 300
+> 
+> If there is an OPP with a capacity between these 2 values, CPU1 will
+> use a lower OPP than CPU0 and its computed energy will be lower.
+> 
+> The condition  if (max_spare_cap_cpu >= 0 && max_spare_cap >
+> prev_spare_cap) filters some cases when CPU0 and CPU1 have the exact
+> same spare capacity. But we often see a smaller spare capacity for
+> CPU0 because of small side activities like cpufreq, timer, irq, rcu
+> ... The difference is often only 1 but enough to bypass the condition
+> above. task A will migrate to CPU1 whereas there is no need. Then it
+> will move back to CPU0 once CPU1 will have a smaller spare capacity
+> 
+> I ran a test on snapdragon RB5 with the latest tip/sched/core. I start
+> 3 tasks: 1 large enough to be on medium CPUs and 2 small enough to
+> stay on little CPUs during 30 seconds
+> With tip/sched/core, the 3 tasks are migrating around 3665
+> With the patch, there is only 8 migration at the beginning of the test
 
-I hope I've missed something obvious.
+I agree with this. The fact that cfs_rq->avg.runnable_avg contains
+blocked contributions from task A makes it unsuitable for the util_est
+(no blocked contributions) if condition (dst_cpu == cpu) since we don't
+want to add A's util_est to util_est to simulate during wakeup that A is
+enqueued.
+
+>> <--
+>>
+>> But I assume your point is that:
+>>
+>> 7327       if (boost)
+>> 7328           util_est = max(util_est, runnable);
+>>
+>> 7356       if (dst_cpu == cpu)                                   <-- (1)
+>> 7357           util_est += _task_util_est(p);
+>> 7358       else if (p && unlikely(task_on_rq_queued(p) || current == p))
+>> 7359           lsub_positive(&util_est, _task_util_est(p));
+>> 7360
+>> 7361       util = max(util, util_est);
+>>
+>> --> (1) doesn't work anymore in case `util_est == runnable`.
+>>
+>> It will break the assumption for the if condition depicted in
+>> cpu_util()'s comment:
+> 
+> exactly
+
+OK.
+
+>>
+>> 7331  * During wake-up (2) @p isn't enqueued yet and doesn't contribute
+>> 7332  * to any cpu_rq(cpu)->cfs.avg.util_est.enqueued.
+>> 7333  * If @dst_cpu == @cpu add it to "simulate" cpu_util after @p
+>> 7334  * has been enqueued.
+>>
+>> (2) eenv_pd_max_util() and find_energy_efficient_cpu() call-site.
+>>
+>> <---
+>>
+>> Rerunning Jankbench tests on Pix6 will tell if boosting util_avg instead
+>> of both will still show the anticipated results. Likelihood is high that
+>> it will since we do `util = max(util, util_est)` at the end of cpu_util().
+> 
+>  I think the same
+
+Reran the Jankbench test with the patch (fix) on exactly the same
+platform (Pixel6, Android 12) I used for v3 (base, runnable):
+
+https://lkml.kernel.org/r/20230515115735.296329-1-dietmar.eggemann@arm.com
+
+Max_frame_duration:
++-----------------+------------+
+|     kernel      | value [ms] |
++-----------------+------------+
+|      base       |   163.1    |
+|    runnable     |   162.0    |
+|       fix       |   157.1    |
++-----------------+------------+
+
+Mean_frame_duration:
++-----------------+------------+----------+
+|     kernel      | value [ms] | diff [%] |
++-----------------+------------+----------+
+|      base       |    18.0    |    0.0   |
+|    runnable     |    12.7    |  -29.43  |
+|       fix       |    13.0    |  -27.78  |
++-----------------+------------+----------+
+
+Jank percentage (Jank deadline 16ms):
++-----------------+------------+----------+
+|     kernel      | value [%]  | diff [%] |
++-----------------+------------+----------+
+|      base       |     3.6    |    0.0   |
+|    runnable     |     1.0    |  -68.86  |
+|       fix       |     1.0    |  -68.86  |
++-----------------+------------+----------+
+
+Power usage [mW] (total - all CPUs):
++-----------------+------------+----------+
+|     kernel      | value [mW] | diff [%] |
++-----------------+------------+----------+
+|      base       |    129.5   |    0.0   |
+|    runnable     |    134.3   |   3.71   |
+|       fix       |    129.9   |   0.31   |
++-----------------+------------+----------+
+
+Test results look good to me.
+
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+
+[...]
 
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
->
->  #define HAS(term, val) \
->         has_term(config, PERF_STAT_CONFIG_TERM__##term, val)
-> diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
-> index 967e583392c7..ec3506042217 100644
-> --- a/tools/perf/util/stat.c
-> +++ b/tools/perf/util/stat.c
-> @@ -729,7 +729,7 @@ size_t perf_event__fprintf_stat_round(union perf_even=
-t *event, FILE *fp)
->
->  size_t perf_event__fprintf_stat_config(union perf_event *event, FILE *fp=
-)
->  {
-> -       struct perf_stat_config sc;
-> +       struct perf_stat_config sc =3D {};
->         size_t ret;
->
->         perf_event__read_stat_config(&sc, &event->stat_config);
-> --
-> 2.41.0.487.g6d72f3e995-goog
->
 
 
---=20
-Thanks,
-~Nick Desaulniers
+
