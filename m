@@ -2,49 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F63B75E6F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A7C75E6F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbjGXBXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
+        id S230514AbjGXBX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbjGXBWz (ORCPT
+        with ESMTP id S231140AbjGXBW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:22:55 -0400
+        Sun, 23 Jul 2023 21:22:56 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAB019BD;
-        Sun, 23 Jul 2023 18:22:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C971BC5;
+        Sun, 23 Jul 2023 18:22:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AA68060F37;
-        Mon, 24 Jul 2023 01:22:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 028D1C433C7;
-        Mon, 24 Jul 2023 01:22:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1310960EF3;
+        Mon, 24 Jul 2023 01:22:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B9BDC433C8;
+        Mon, 24 Jul 2023 01:22:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161727;
-        bh=3EMk2o0Q0xBharwdoEGgunrjb5LYrw1JPMEvYbiz/5s=;
+        s=k20201202; t=1690161731;
+        bh=U1z3VtG0pGPvExFdvOAtlP5ooExECdMsVdDb35dBOsI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iuQNGc/XdMB1X6qh6tOW/r9nHUuFn8ic7dSsKI9fg/loM/4WDKJJhLhfpvfvLNLD8
-         YA3V30ecTuy8YAxxAd/mSS3Wam4vJT1NPBmq5JzhCSbr0CVDrQHzz7h4JLxgR+vGAP
-         iGUtO2LM1O6ViRJLKj0c8fCtOyscDpXHyKYWxuJ9aFnKQ5NfHTofQIaKjLh4d0YvPJ
-         S2QAEDQJ0nrr/MtTebX6qhnhG2vJxjS1rswGrQfEXwGgGot4ocOpLIDtcxiqcIrW5w
-         gN0AzT293V+y0To8nvbArlBhf8HlQAWxHzzrw2ZSGqP44tgmYTX7LkGYfYnLu45rKV
-         fp/qjV0Fow4Aw==
+        b=o0pS9zXbmxpcc5y+TtcC1XOwyWcbwzcqHWs5BQBYI6l9TAO5+niARLTWG9hVcnQID
+         9fB7oKLP9Do8bHasg27LOenKDLruN5qSVwsYaJ2hzHWOu1DynTN3/u6VlV266DJ/y6
+         CTaaKVsDYgXngNblJ37xpmkRpE5ibc7DihQMGPJEbAb4RY4rGnwC/TzX9IXJcNdJfj
+         tNRTLEAch+/PuzOjYFDEwso27RoTKgDiNio3xw4YNH7Oc7Bm8gUPlKnzH5VjeAbLRQ
+         apFFjTyhn4rYDftv+CDOJ3A86gJnR7CrMhkH/jFZeuuiKGZu8WGHKNZolycs+CKCVj
+         IfyekALokCPNw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Sasha Levin <sashal@kernel.org>,
-        laurent.pinchart@ideasonboard.com, airlied@gmail.com,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 12/41] drm: rcar-du: remove R-Car H3 ES1.* workarounds
-Date:   Sun, 23 Jul 2023 21:20:45 -0400
-Message-Id: <20230724012118.2316073-12-sashal@kernel.org>
+Cc:     Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 6.1 13/41] ASoC: amd: vangogh: Add check for acp config flags in vangogh platform
+Date:   Sun, 23 Jul 2023 21:20:46 -0400
+Message-Id: <20230724012118.2316073-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012118.2316073-1-sashal@kernel.org>
 References: <20230724012118.2316073-1-sashal@kernel.org>
@@ -63,200 +60,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
 
-[ Upstream commit 2da4b728f994a1f9189a8066b0be90b615768764 ]
+[ Upstream commit e89f45edb747ed88e97a5771dd6d3dd1eb517873 ]
 
-R-Car H3 ES1.* was only available to an internal development group and
-needed a lot of quirks and workarounds. These become a maintenance
-burden now, so our development group decided to remove upstream support
-for this SoC and prevent booting it. Public users only have ES2 onwards.
+We have SOF and generic ACP support enabled for Vangogh platform
+on some machines. Since we have same PCI id used for probing,
+add check for machine configuration flag to avoid conflict with
+newer pci drivers. Such machine flag has been initialized via
+dmi match on few Vangogh based machines. If no flag is
+specified probe and register older platform device.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Signed-off-by: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+Link: https://lore.kernel.org/r/20230530110802.674939-1-venkataprasad.potturu@amd.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/rcar-du/rcar_du_crtc.c | 37 ++------------------
- drivers/gpu/drm/rcar-du/rcar_du_drv.c  | 48 --------------------------
- drivers/gpu/drm/rcar-du/rcar_du_drv.h  |  2 --
- drivers/gpu/drm/rcar-du/rcar_du_regs.h |  3 +-
- 4 files changed, 4 insertions(+), 86 deletions(-)
+ sound/soc/amd/vangogh/acp5x.h     | 2 ++
+ sound/soc/amd/vangogh/pci-acp5x.c | 7 ++++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/rcar-du/rcar_du_crtc.c b/drivers/gpu/drm/rcar-du/rcar_du_crtc.c
-index b7dd59fe119e6..9edb5edb2bad9 100644
---- a/drivers/gpu/drm/rcar-du/rcar_du_crtc.c
-+++ b/drivers/gpu/drm/rcar-du/rcar_du_crtc.c
-@@ -223,20 +223,6 @@ static void rcar_du_crtc_set_display_timing(struct rcar_du_crtc *rcrtc)
- 		 * DU channels that have a display PLL can't use the internal
- 		 * system clock, and have no internal clock divider.
- 		 */
--
--		/*
--		 * The H3 ES1.x exhibits dot clock duty cycle stability issues.
--		 * We can work around them by configuring the DPLL to twice the
--		 * desired frequency, coupled with a /2 post-divider. Restrict
--		 * the workaround to H3 ES1.x as ES2.0 and all other SoCs have
--		 * no post-divider when a display PLL is present (as shown by
--		 * the workaround breaking HDMI output on M3-W during testing).
--		 */
--		if (rcdu->info->quirks & RCAR_DU_QUIRK_H3_ES1_PCLK_STABILITY) {
--			target *= 2;
--			div = 1;
--		}
--
- 		extclk = clk_get_rate(rcrtc->extclock);
- 		rcar_du_dpll_divider(rcrtc, &dpll, extclk, target);
+diff --git a/sound/soc/amd/vangogh/acp5x.h b/sound/soc/amd/vangogh/acp5x.h
+index bd9f1c5684d17..ac1936a8c43ff 100644
+--- a/sound/soc/amd/vangogh/acp5x.h
++++ b/sound/soc/amd/vangogh/acp5x.h
+@@ -147,6 +147,8 @@ static inline void acp_writel(u32 val, void __iomem *base_addr)
+ 	writel(val, base_addr - ACP5x_PHY_BASE_ADDRESS);
+ }
  
-@@ -245,30 +231,13 @@ static void rcar_du_crtc_set_display_timing(struct rcar_du_crtc *rcrtc)
- 		       | DPLLCR_N(dpll.n) | DPLLCR_M(dpll.m)
- 		       | DPLLCR_STBY;
- 
--		if (rcrtc->index == 1) {
-+		if (rcrtc->index == 1)
- 			dpllcr |= DPLLCR_PLCS1
- 			       |  DPLLCR_INCS_DOTCLKIN1;
--		} else {
--			dpllcr |= DPLLCR_PLCS0_PLL
-+		else
-+			dpllcr |= DPLLCR_PLCS0
- 			       |  DPLLCR_INCS_DOTCLKIN0;
- 
--			/*
--			 * On ES2.x we have a single mux controlled via bit 21,
--			 * which selects between DCLKIN source (bit 21 = 0) and
--			 * a PLL source (bit 21 = 1), where the PLL is always
--			 * PLL1.
--			 *
--			 * On ES1.x we have an additional mux, controlled
--			 * via bit 20, for choosing between PLL0 (bit 20 = 0)
--			 * and PLL1 (bit 20 = 1). We always want to use PLL1,
--			 * so on ES1.x, in addition to setting bit 21, we need
--			 * to set the bit 20.
--			 */
--
--			if (rcdu->info->quirks & RCAR_DU_QUIRK_H3_ES1_PLL)
--				dpllcr |= DPLLCR_PLCS0_H3ES1X_PLL1;
--		}
--
- 		rcar_du_group_write(rcrtc->group, DPLLCR, dpllcr);
- 
- 		escr = ESCR_DCLKSEL_DCLKIN | div;
-diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.c b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-index 6381578c4db58..bd7003d6e0753 100644
---- a/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-+++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.c
-@@ -16,7 +16,6 @@
- #include <linux/platform_device.h>
- #include <linux/pm.h>
- #include <linux/slab.h>
--#include <linux/sys_soc.h>
- #include <linux/wait.h>
- 
- #include <drm/drm_atomic_helper.h>
-@@ -387,43 +386,6 @@ static const struct rcar_du_device_info rcar_du_r8a7795_info = {
- 	.dpll_mask =  BIT(2) | BIT(1),
- };
- 
--static const struct rcar_du_device_info rcar_du_r8a7795_es1_info = {
--	.gen = 3,
--	.features = RCAR_DU_FEATURE_CRTC_IRQ
--		  | RCAR_DU_FEATURE_CRTC_CLOCK
--		  | RCAR_DU_FEATURE_VSP1_SOURCE
--		  | RCAR_DU_FEATURE_INTERLACED
--		  | RCAR_DU_FEATURE_TVM_SYNC,
--	.quirks = RCAR_DU_QUIRK_H3_ES1_PCLK_STABILITY
--		| RCAR_DU_QUIRK_H3_ES1_PLL,
--	.channels_mask = BIT(3) | BIT(2) | BIT(1) | BIT(0),
--	.routes = {
--		/*
--		 * R8A7795 has one RGB output, two HDMI outputs and one
--		 * LVDS output.
--		 */
--		[RCAR_DU_OUTPUT_DPAD0] = {
--			.possible_crtcs = BIT(3),
--			.port = 0,
--		},
--		[RCAR_DU_OUTPUT_HDMI0] = {
--			.possible_crtcs = BIT(1),
--			.port = 1,
--		},
--		[RCAR_DU_OUTPUT_HDMI1] = {
--			.possible_crtcs = BIT(2),
--			.port = 2,
--		},
--		[RCAR_DU_OUTPUT_LVDS0] = {
--			.possible_crtcs = BIT(0),
--			.port = 3,
--		},
--	},
--	.num_lvds = 1,
--	.num_rpf = 5,
--	.dpll_mask =  BIT(2) | BIT(1),
--};
--
- static const struct rcar_du_device_info rcar_du_r8a7796_info = {
- 	.gen = 3,
- 	.features = RCAR_DU_FEATURE_CRTC_IRQ
-@@ -592,11 +554,6 @@ static const struct of_device_id rcar_du_of_table[] = {
- 
- MODULE_DEVICE_TABLE(of, rcar_du_of_table);
- 
--static const struct soc_device_attribute rcar_du_soc_table[] = {
--	{ .soc_id = "r8a7795", .revision = "ES1.*", .data = &rcar_du_r8a7795_es1_info },
--	{ /* sentinel */ }
--};
--
- const char *rcar_du_output_name(enum rcar_du_output output)
++int snd_amd_acp_find_config(struct pci_dev *pci);
++
+ static inline u64 acp_get_byte_count(struct i2s_stream_instance *rtd,
+ 				     int direction)
  {
- 	static const char * const names[] = {
-@@ -688,7 +645,6 @@ static void rcar_du_shutdown(struct platform_device *pdev)
- 
- static int rcar_du_probe(struct platform_device *pdev)
+diff --git a/sound/soc/amd/vangogh/pci-acp5x.c b/sound/soc/amd/vangogh/pci-acp5x.c
+index e0df17c88e8e0..c4634a8a17cdc 100644
+--- a/sound/soc/amd/vangogh/pci-acp5x.c
++++ b/sound/soc/amd/vangogh/pci-acp5x.c
+@@ -125,10 +125,15 @@ static int snd_acp5x_probe(struct pci_dev *pci,
  {
--	const struct soc_device_attribute *soc_attr;
- 	struct rcar_du_device *rcdu;
- 	unsigned int mask;
- 	int ret;
-@@ -706,10 +662,6 @@ static int rcar_du_probe(struct platform_device *pdev)
+ 	struct acp5x_dev_data *adata;
+ 	struct platform_device_info pdevinfo[ACP5x_DEVS];
+-	unsigned int irqflags;
++	unsigned int irqflags, flag;
+ 	int ret, i;
+ 	u32 addr, val;
  
- 	rcdu->info = of_device_get_match_data(rcdu->dev);
- 
--	soc_attr = soc_device_match(rcar_du_soc_table);
--	if (soc_attr)
--		rcdu->info = soc_attr->data;
--
- 	platform_set_drvdata(pdev, rcdu);
- 
- 	/* I/O resources */
-diff --git a/drivers/gpu/drm/rcar-du/rcar_du_drv.h b/drivers/gpu/drm/rcar-du/rcar_du_drv.h
-index acc3673fefe18..5cfa2bb7ad93d 100644
---- a/drivers/gpu/drm/rcar-du/rcar_du_drv.h
-+++ b/drivers/gpu/drm/rcar-du/rcar_du_drv.h
-@@ -34,8 +34,6 @@ struct rcar_du_device;
- #define RCAR_DU_FEATURE_NO_BLENDING	BIT(5)	/* PnMR.SPIM does not have ALP nor EOR bits */
- 
- #define RCAR_DU_QUIRK_ALIGN_128B	BIT(0)	/* Align pitches to 128 bytes */
--#define RCAR_DU_QUIRK_H3_ES1_PCLK_STABILITY BIT(1)	/* H3 ES1 has pclk stability issue */
--#define RCAR_DU_QUIRK_H3_ES1_PLL	BIT(2)	/* H3 ES1 PLL setup differs from non-ES1 */
- 
- enum rcar_du_output {
- 	RCAR_DU_OUTPUT_DPAD0,
-diff --git a/drivers/gpu/drm/rcar-du/rcar_du_regs.h b/drivers/gpu/drm/rcar-du/rcar_du_regs.h
-index 789ae9285108e..288eff12b2b1a 100644
---- a/drivers/gpu/drm/rcar-du/rcar_du_regs.h
-+++ b/drivers/gpu/drm/rcar-du/rcar_du_regs.h
-@@ -283,8 +283,7 @@
- #define DPLLCR			0x20044
- #define DPLLCR_CODE		(0x95 << 24)
- #define DPLLCR_PLCS1		(1 << 23)
--#define DPLLCR_PLCS0_PLL	(1 << 21)
--#define DPLLCR_PLCS0_H3ES1X_PLL1	(1 << 20)
-+#define DPLLCR_PLCS0		(1 << 21)
- #define DPLLCR_CLKE		(1 << 18)
- #define DPLLCR_FDPLL(n)		((n) << 12)
- #define DPLLCR_N(n)		((n) << 5)
++	/* Return if acp config flag is defined */
++	flag = snd_amd_acp_find_config(pci);
++	if (flag)
++		return -ENODEV;
++
+ 	irqflags = IRQF_SHARED;
+ 	if (pci->revision != 0x50)
+ 		return -ENODEV;
 -- 
 2.39.2
 
