@@ -2,144 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6738575F91B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CECD975F918
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbjGXOAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
+        id S230091AbjGXN7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjGXN75 (ORCPT
+        with ESMTP id S229798AbjGXN7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:59:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8D8133
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:59:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690207149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P2aZVU7pPnDc/RmZQW4iakWRtXamS7FJFx+fSy45nyM=;
-        b=QymtMmsTSY3Ev2cIqp6Ix7MseEEcWqIwRWNx3PhIqH2fSbt3fa+2F/JBee0l6rYM1grPHV
-        3EWyDEDk0QvVdHs/p01w/F0Xg5T67hU5WBkgPKmU5DM38YssvZLUS2tnoNGEjsnyKUjQW/
-        DcGQRxYVNKyb88niZ/CjiXBEupfsMgM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-122-NK6o2GkLNmuwifLXGGNa6Q-1; Mon, 24 Jul 2023 09:59:05 -0400
-X-MC-Unique: NK6o2GkLNmuwifLXGGNa6Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 51785800159;
-        Mon, 24 Jul 2023 13:59:05 +0000 (UTC)
-Received: from dell-r430-03.lab.eng.brq2.redhat.com (dell-r430-03.lab.eng.brq2.redhat.com [10.37.153.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 67ED040C2063;
-        Mon, 24 Jul 2023 13:59:04 +0000 (UTC)
-From:   Igor Mammedov <imammedo@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     terraluna977@gmail.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, imammedo@redhat.com, mst@redhat.com
-Subject: [PATCH] hack to debug acpiphp crash
-Date:   Mon, 24 Jul 2023 15:59:02 +0200
-Message-Id: <20230724135902.2217991-1-imammedo@redhat.com>
-In-Reply-To: <11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com>
-References: <11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com>
+        Mon, 24 Jul 2023 09:59:34 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50676FF;
+        Mon, 24 Jul 2023 06:59:32 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R8hY52FDPzHqc7;
+        Mon, 24 Jul 2023 21:56:57 +0800 (CST)
+Received: from [10.174.179.215] (10.174.179.215) by
+ canpemm500007.china.huawei.com (7.192.104.62) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 24 Jul 2023 21:59:29 +0800
+Subject: Re: [PATCH -next] sunrpc: Remove unused extern declarations
+To:     Chuck Lever <chuck.lever@oracle.com>
+CC:     NeilBrown <neilb@suse.de>, <jlayton@kernel.org>,
+        <kolga@netapp.com>, <Dai.Ngo@oracle.com>, <tom@talpey.com>,
+        <trond.myklebust@hammerspace.com>, <anna@kernel.org>,
+        <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230722033116.17988-1-yuehaibing@huawei.com>
+ <169017533908.11078.1160756498004010060@noble.neil.brown.name>
+ <d8178e7c-d0ec-9e5d-9367-53f554e0392e@huawei.com>
+ <ZL573hzgHEfp+gbb@tissot.1015granger.net>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <6c56d747-84c4-5f7d-86ba-b3d5ac377c42@huawei.com>
+Date:   Mon, 24 Jul 2023 21:59:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <ZL573hzgHEfp+gbb@tissot.1015granger.net>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/7/24 21:25, Chuck Lever wrote:
+> On Mon, Jul 24, 2023 at 02:45:07PM +0800, YueHaibing wrote:
+>> On 2023/7/24 13:08, NeilBrown wrote:
+>>> On Sat, 22 Jul 2023, YueHaibing wrote:
+>>>> Since commit 49b28684fdba ("nfsd: Remove deprecated nfsctl system call and related code.")
+>>>> these declarations are unused, so can remove it.
+>>>>
+>>>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>>>
+>>> Thanks.
+>>> Could you remove the declaration of auth_unix_lookup too?
+>>> It was removed in that commit, but the declaration is still with us.
+> 
+> Thanks, Neil. I thought there might be one or two others, but none stood
+> out to me.
+> 
+> 
+>> Sure, will do this.
+> 
+> Yue, I can just fold that into the applied patch. No need to send another.
 
-Woody thanks for testing,
-
-can you try following patch which will try to workaround NULL bus->self if it's
-a really cuplrit and print an extra debug information.
-Add following to kernel command line(make sure that CONFIG_DYNAMIC_DEBUG is enabled):
-
-dyndbg="file drivers/pci/access.c +p; file drivers/pci/hotplug/acpiphp_glue.c +p; file drivers/pci/bus.c +p; file drivers/pci/pci.c +p; file drivers/pci/setup-bus.c +p" ignore_loglevel
-
-What I find odd in you logs is that enable_slot() is called while native PCIe
-should be used. Additional info might help to understand what's going on:
-  1: 'lspci' output
-  2:  DSDT and all SSDT ACPI tables (you can use 'acpidump -b' to get them).
-
-Signed-off-by: Igor Mammedov <imammedo@redhat.com>
----
- drivers/pci/hotplug/acpiphp_glue.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
-index 328d1e416014..9ce3fd9d72a9 100644
---- a/drivers/pci/hotplug/acpiphp_glue.c
-+++ b/drivers/pci/hotplug/acpiphp_glue.c
-@@ -485,7 +485,10 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
- 	struct pci_bus *bus = slot->bus;
- 	struct acpiphp_func *func;
- 
-+WARN(1, "enable_slot");
-+pci_info(bus, "enable_slot bus\n");
- 	if (bridge && bus->self && hotplug_is_native(bus->self)) {
-+pr_err("enable_slot: bridge branch\n");
- 		/*
- 		 * If native hotplug is used, it will take care of hotplug
- 		 * slot management and resource allocation for hotplug
-@@ -498,8 +501,10 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
- 				acpiphp_native_scan_bridge(dev);
- 		}
- 	} else {
-+		LIST_HEAD(add_list);
- 		int max, pass;
- 
-+pr_err("enable_slot: acpiphp_rescan_slot branch\n");
- 		acpiphp_rescan_slot(slot);
- 		max = acpiphp_max_busnr(bus);
- 		for (pass = 0; pass < 2; pass++) {
-@@ -508,13 +513,23 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
- 					continue;
- 
- 				max = pci_scan_bridge(bus, dev, max, pass);
-+pci_info(dev, "enable_slot: pci_scan_bridge: max: %d\n", max);
- 				if (pass && dev->subordinate) {
- 					check_hotplug_bridge(slot, dev);
- 					pcibios_resource_survey_bus(dev->subordinate);
-+                                        if (bus->self)
-+						__pci_bus_size_bridges(dev->subordinate,
-+								       &add_list);
- 				}
- 			}
- 		}
--		pci_assign_unassigned_bridge_resources(bus->self);
-+                if (bus->self) {
-+pci_info(bus->self, "enable_slot: pci_assign_unassigned_bridge_resources:\n");
-+			pci_assign_unassigned_bridge_resources(bus->self);
-+                } else {
-+pci_info(bus, "enable_slot: __pci_bus_assign_resources:\n");
-+			__pci_bus_assign_resources(bus, &add_list, NULL);
-+		}
- 	}
- 
- 	acpiphp_sanitize_bus(bus);
-@@ -541,6 +556,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
- 		}
- 		pci_dev_put(dev);
- 	}
-+pr_err("enable_slot: end\n");
- }
- 
- /**
--- 
-2.39.3
-
+Ok.
+> 
+> 
+>>> Thanks!
+>>> NeilBrown
+>>>
+>>>> ---
+>>>>  include/linux/sunrpc/svcauth.h | 2 --
+>>>>  1 file changed, 2 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/sunrpc/svcauth.h b/include/linux/sunrpc/svcauth.h
+>>>> index 6d9cc9080aca..2402b7ca5d1a 100644
+>>>> --- a/include/linux/sunrpc/svcauth.h
+>>>> +++ b/include/linux/sunrpc/svcauth.h
+>>>> @@ -157,11 +157,9 @@ extern void	svc_auth_unregister(rpc_authflavor_t flavor);
+>>>>  
+>>>>  extern struct auth_domain *unix_domain_find(char *name);
+>>>>  extern void auth_domain_put(struct auth_domain *item);
+>>>> -extern int auth_unix_add_addr(struct net *net, struct in6_addr *addr, struct auth_domain *dom);
+>>>>  extern struct auth_domain *auth_domain_lookup(char *name, struct auth_domain *new);
+>>>>  extern struct auth_domain *auth_domain_find(char *name);
+>>>>  extern struct auth_domain *auth_unix_lookup(struct net *net, struct in6_addr *addr);
+>>>> -extern int auth_unix_forget_old(struct auth_domain *dom);
+>>>>  extern void svcauth_unix_purge(struct net *net);
+>>>>  extern void svcauth_unix_info_release(struct svc_xprt *xpt);
+>>>>  extern int svcauth_unix_set_client(struct svc_rqst *rqstp);
+>>>> -- 
+>>>> 2.34.1
+>>>>
+>>>>
+>>>
+>>> .
+>>>
+> 
