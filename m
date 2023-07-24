@@ -2,126 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0615D75ED97
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2C775ED9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbjGXIaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
+        id S231611AbjGXIag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231543AbjGXIaO (ORCPT
+        with ESMTP id S231572AbjGXIa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:30:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C02133
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:29:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690187367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6DNzHbGom77n0zpxl+676gi9KyXFJ85R3IBrxW//ask=;
-        b=K8kmA+7dSOblqZadST5t/3eJ4VGRbLlp2oUN00eDKQIGR1spm5Nq6A62il1JjEuSuAsXqS
-        Ayrgda/ypu7909N1w+mpX/4k8cAz65W8GdjoY+PzWfw8++1t+K8fY9y7XvzynL/Nga5U8u
-        zKKZLBt4bcAzaB8KQCQr7xheqKWBmZs=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-121-7pJngeyrMSSoh4pATWiHIA-1; Mon, 24 Jul 2023 04:29:25 -0400
-X-MC-Unique: 7pJngeyrMSSoh4pATWiHIA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fbb0fdd060so25617385e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:29:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690187365; x=1690792165;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6DNzHbGom77n0zpxl+676gi9KyXFJ85R3IBrxW//ask=;
-        b=RGyn0IkzVVVNfw40p065UUki85fNN6WfbOGyjpCGVlZnChutEG5amkkRlvodk7OSZG
-         PPuyDPBsvQIVvEjcr49cb4GbNh5iLpAdqcTAHQX7xz+CEdvpt6GB76IIUJzBfVPcHtZX
-         3bK/J7mmHZ9zQu6AH2UGD+v44wxekjj5Cmy9rsZpFGNJI4AU1Fclq47hYHH/f0ugqH4q
-         9YiY76Hyy4aJU7vFoaPhFZrS1h5BTaQ+tY46b6X+x1ErqZjhFqG1b+twvZ7chzh5f8Fn
-         lsdJRA8oSpHlJ3ylQ5ifV9V4TNZ73Am3fltwXC0p0n0FYPoX3q3JmUD8FjTI6X7JdGBD
-         seUA==
-X-Gm-Message-State: ABy/qLanBqsx2tfvVGwSoR7GpdMLZTGS85W3FqFVdJ9vjGHrdBRTszUO
-        9RBXJRkDPPGh41+9lSGzoEWfZ2GsUbS4+jNQWKqwVOxFXExi6+Esf1+zodQRRCA0u2XSxzW3sU3
-        2lr08z7zmu5w2EKtVPm6bT4YL
-X-Received: by 2002:a05:600c:2308:b0:3f7:3991:e12e with SMTP id 8-20020a05600c230800b003f73991e12emr7402837wmo.1.1690187364803;
-        Mon, 24 Jul 2023 01:29:24 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFJflnC/NPtGCRbFCR9C92TkIUPD7R5nWkt94QfcSqyyptU/48AkbkWHtvlGEwx8uIuiIpKVQ==
-X-Received: by 2002:a05:600c:2308:b0:3f7:3991:e12e with SMTP id 8-20020a05600c230800b003f73991e12emr7402823wmo.1.1690187364547;
-        Mon, 24 Jul 2023 01:29:24 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f45:d000:62f2:4df0:704a:e859? (p200300d82f45d00062f24df0704ae859.dip0.t-ipconnect.de. [2003:d8:2f45:d000:62f2:4df0:704a:e859])
-        by smtp.gmail.com with ESMTPSA id n11-20020a7bcbcb000000b003fba92fad35sm12223151wmi.26.2023.07.24.01.29.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 01:29:24 -0700 (PDT)
-Message-ID: <dbf871ad-1768-18d0-318f-86df33df7446@redhat.com>
-Date:   Mon, 24 Jul 2023 10:29:22 +0200
+        Mon, 24 Jul 2023 04:30:26 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDF41B4;
+        Mon, 24 Jul 2023 01:30:24 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36O7AxqJ007886;
+        Mon, 24 Jul 2023 08:30:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=MdybWXpnwON4r3kpNey8g0weJJhEXvuN9YA51hELc+Y=;
+ b=K6pY7uta1VL+xnXaDZENQmz68KTIx8SqAdO2qy/1bcVQLN8ZzDbzkeNC16U0NAGxo9JZ
+ AMuqU4GZST4zBU66MJwC5yG1Oq+wPdKTgNJ8lExy4OyN/Wb0yXkYz1HcqbVxJBeX+YU2
+ aGty9w5gwGpMsFil+T99RYEL6lxNx6cGznsim5XZQz6koV+7OG7HQ3Ljnk3OXdYm2+Y0
+ mmjhz6gnojYQ6ltyhNHq9yCbnK5uXJLFDKrNv7BuQHsKHbUYKj/S3gTHWhKjaEOI84B4
+ 0LWnvuzCTSI9rl6/QIaxSHYHPsXrVz+ooz9I+y7rT+bbPxD1FEqgfxEORXiES0fH0rP7 Qg== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s06q9asfh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 24 Jul 2023 08:30:15 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36O8UETN022662
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 24 Jul 2023 08:30:14 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 24 Jul 2023 01:30:10 -0700
+From:   Komal Bajaj <quic_kbajaj@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <srinivas.kandagatla@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>
+Subject: [PATCH v5 0/2] nvmem: sec-qfprom: Add Qualcomm secure QFPROM support
+Date:   Mon, 24 Jul 2023 13:59:44 +0530
+Message-ID: <20230724082946.7441-1-quic_kbajaj@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 5/6] KVM: s390: interrupt: Fix single-stepping ISKE
-Content-Language: en-US
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     Sven Schnelle <svens@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Freimann <jfreimann@redhat.com>
-References: <20230721120046.2262291-1-iii@linux.ibm.com>
- <20230721120046.2262291-6-iii@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230721120046.2262291-6-iii@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: v-oYAvIR7xXnd2VOF4n9Jan_7vFYfli5
+X-Proofpoint-GUID: v-oYAvIR7xXnd2VOF4n9Jan_7vFYfli5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-24_06,2023-07-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ phishscore=0 clxscore=1015 adultscore=0 priorityscore=1501 impostorscore=0
+ spamscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=613
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307240074
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.07.23 13:57, Ilya Leoshkevich wrote:
-> kvm_s390_skey_check_enable() does not emulate any instructions, rather,
-> it clears CPUSTAT_KSS and arranges for ISKE to run again. Therefore,
-> skip the PER check and let ISKE run happen. Otherwise a debugger will
-> see two single-step events on the same ISKE.
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->   arch/s390/kvm/intercept.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/s390/kvm/intercept.c b/arch/s390/kvm/intercept.c
-> index d2f7940c5d03..8793cec066a6 100644
-> --- a/arch/s390/kvm/intercept.c
-> +++ b/arch/s390/kvm/intercept.c
-> @@ -630,8 +630,7 @@ int kvm_handle_sie_intercept(struct kvm_vcpu *vcpu)
->   		rc = handle_partial_execution(vcpu);
->   		break;
->   	case ICPT_KSS:
-> -		rc = kvm_s390_skey_check_enable(vcpu);
-> -		break;
-> +		return kvm_s390_skey_check_enable(vcpu);
->   	case ICPT_MCHKREQ:
->   	case ICPT_INT_ENABLE:
->   		/*
+Changes in v5 -
+ - Separating this from original series [1].
+ - Added description of driver to secure qfprom binding.
+ - Replaced pm_runtime_enable() withh devm_pm_runtime_enable().
+ - Changed module license to GPL instead of GPL v2.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+This series introduces a new driver for reading secure fuse region and adding
+dt-bindings for same.
 
--- 
-Cheers,
+[1] https://lore.kernel.org/linux-arm-msm/20230623141806.13388-1-quic_kbajaj@quicinc.com/
 
-David / dhildenb
+
+Komal Bajaj (2):
+  dt-bindings: nvmem: sec-qfprom: Add bindings for secure qfprom
+  nvmem: sec-qfprom: Add Qualcomm secure QFPROM support
+
+ .../bindings/nvmem/qcom,sec-qfprom.yaml       |  58 ++++++++++
+ drivers/nvmem/Kconfig                         |  13 +++
+ drivers/nvmem/Makefile                        |   2 +
+ drivers/nvmem/sec-qfprom.c                    | 101 ++++++++++++++++++
+ 4 files changed, 174 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/nvmem/qcom,sec-qfprom.yaml
+ create mode 100644 drivers/nvmem/sec-qfprom.c
+
+--
+2.40.1
 
