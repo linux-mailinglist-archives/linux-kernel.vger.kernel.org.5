@@ -2,143 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C136375F583
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E4A75F58C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbjGXL4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 07:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36104 "EHLO
+        id S230095AbjGXL5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 07:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjGXL4a (ORCPT
+        with ESMTP id S229522AbjGXL5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:56:30 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2104.outbound.protection.outlook.com [40.107.243.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E38FE61;
-        Mon, 24 Jul 2023 04:56:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PxsdpCWV7hEMyjGg+/bDn5JkzGsgTyT1sUz8CjCW5HmVU83q2JyXSr3bTo0IKhPAmouuJD9toy+ks/uXhfSQAzHwtKm22Ioli8EMh4/brNOifLdhpOLLVA1rYA/3ogiTFdC1ERcLAtNZLY4FVnt3S+IOAF14FVUt8cczdcBmWWOJ9uGkTvt8rPsu9Vj8kormvaPSfpN9z5rFKk51BwzAQSoLLqpbeCwPnOSCl3x6LwaMyKzpzDaulPk2/1Lqm1lVkFtkAaSJNiQGPfAGx0n6scTyz3xmmS4FJhkOwPZC/GpO2Uby9EREIlE16EAtqnSeCT2FimbQxNFu6TvGfabx8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J3+wOufDe5H/I19ScnS+/hXwQ6Zb/ocokL+OovOxQGg=;
- b=Abhct9t0xlBOErxpwGeYvQ9WKyai/9urD19kX7SRsIACumOz5TTXNVuU7AyHbWPxM+xKSL1p4UqHM40AaSR9fNkTILelh/29vSFeM/+ty/voyIn8pXlofMHTSp+iPisLUqF5enHqB/8bVtwh7Vu9VFxepRW1m/73/MeRmXS+shYyLfKYSVg4NG2+fJkhvuIj83HcLoOfJypY8SY++qEFdYXRg40Nx8jcOKsJRGr306sb5snL1vGLQ8KB09rz945keYp8KZ+dr+BL6AdoF6QXeIDVN0UkoHJduZWB+F4ASOp1GLclxpeYJOqf8K9neKgGsxHhSRFbL9wm0jgF0jUL3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J3+wOufDe5H/I19ScnS+/hXwQ6Zb/ocokL+OovOxQGg=;
- b=WhnggHGoX50GSOBo0ut6p5v0LrUq15XmAEKdJHdtZT/aZ8I1KEU2anHhP+t3M5o5QzkRUDJ/4P26oZb55fppowWrmvYw69opQit5we5w6TeeFzXYK0yQrCFbzEorT8vXdVjll9Q6LnDoNuk5aTxZWEdLuZydzKAvni8lkVY0fHw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by PH0PR13MB4954.namprd13.prod.outlook.com (2603:10b6:510:74::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Mon, 24 Jul
- 2023 11:56:23 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.032; Mon, 24 Jul 2023
- 11:56:23 +0000
-Date:   Mon, 24 Jul 2023 13:56:15 +0200
-From:   Simon Horman <simon.horman@corigine.com>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Subject: Re: [PATCH net] net: stmmac: Apply redundant write work around on
- 4.xx too
-Message-ID: <ZL5m35qSRyjM8Zbk@corigine.com>
-References: <20230721-stmmac-tx-workaround-v1-1-9411cbd5ee07@axis.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230721-stmmac-tx-workaround-v1-1-9411cbd5ee07@axis.com>
-X-ClientProxiedBy: AM0PR04CA0130.eurprd04.prod.outlook.com
- (2603:10a6:208:55::35) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+        Mon, 24 Jul 2023 07:57:00 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0CD28E5D;
+        Mon, 24 Jul 2023 04:56:57 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxV_EHZ75k5jEJAA--.23479S3;
+        Mon, 24 Jul 2023 19:56:55 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx7yPzZr5koiM5AA--.49373S3;
+        Mon, 24 Jul 2023 19:56:54 +0800 (CST)
+Message-ID: <49618cce-8c3f-7f25-20b1-eecfc3c70cd0@loongson.cn>
+Date:   Mon, 24 Jul 2023 19:56:35 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|PH0PR13MB4954:EE_
-X-MS-Office365-Filtering-Correlation-Id: 03b59413-333c-4156-c073-08db8c3d0021
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: t570FtQxhPO1rEg16Fukk31JK7TiLh9y1sesF9zWtVzpN/tmn+BivBVYVZLUzJEk/3xxqs8xmODwbWbjtd4pOgDllHmbnwn2/m93bv8o8m7n5fmvbRnSpb3SIyDo7uqyUdSx+0vQb5SEhgt+zAuC+bMXUu7tlqAjy5meeytA5mfn5taGpsgrH3AJ4QVBILk3BeBzLaBgkZryJ1QTwU/bcoTar1FyzHIaRkEq0YERqVQegj149YuC613G5ZBO+otNXpaacIsb1Ted8l2kqxZgn/o087pRHrm4oq5rLo1CicvSQrKo6MoKkGy1UTwfOONtHbgz/n36b4k4bnM2BI9qOjo6N1ckyvsNbMdt+qWfwEqfrYqWv/uIe8r7dz/WARrxOlZX8fVupI8U8ItiVYW7AXauEEVqd11/0ymffPA5awhhbAsuMDJMdhynCm9z8WIwskVklbbgnclmzsvq5/0J0lf9qXGL0hSXW3vJEDfVKkVCnY+h+lL6pKWBloFMYYL08hYtiYJnOSUak1+yqaRouYA4wYOvw+R8ov1Z5Czq26J1iIS8Wpl5MyIAPRZE3ot4wuXXDRTG0VVcQEbpoeldAYNcPHaMSbJkuMNP6Ceysmk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39830400003)(376002)(396003)(136003)(366004)(451199021)(6486002)(6512007)(54906003)(478600001)(6666004)(2616005)(186003)(6506007)(4744005)(44832011)(2906002)(41300700001)(66946007)(6916009)(4326008)(66476007)(7416002)(5660300002)(8936002)(8676002)(66556008)(316002)(38100700002)(36756003)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3BtQKC5s9Ajn9mAQSbskbiZH+gLNWzuGYkgnkBZ1mPONQZOgZD1WLSPQbRqb?=
- =?us-ascii?Q?9DqOML36Y1Gg59ZpQQUD1T/jU7+YVmwRYej4CC5PnB896ZSaRAXhXxwb/5W8?=
- =?us-ascii?Q?sYJl6fJJSbMR7ecTG777K/XOLzqZwFBrOuKsaE3qPo/r0/lS8TlgCdb5pj9N?=
- =?us-ascii?Q?eCaHmHhRCtaMBSK049s7zcu/7q7noBT88lcRx78UmXiTMiXOIwdh1Mq8a/im?=
- =?us-ascii?Q?UVDha2INjTb0DgnlXahcssXe+2IMrbU+HT0CmcMqUL40f/reCLmdpQ6thsCw?=
- =?us-ascii?Q?CJ7HE7ip4P5J4BEa+8O9XlK4oyIiKiNs9eLKHd9qID26yMVZSGUO9E9HDtnZ?=
- =?us-ascii?Q?4SYZ2ejnOOXyeyX8pXhVwjE9Wk93PgyKDQ1w36wG0y21HvRRn/irAUbhdZTV?=
- =?us-ascii?Q?oL6HX5QGy5nFyiA8m/O2+piGMRIc8zXv75ICWgWQ1FKjlVOHs5ptRC2hMF3M?=
- =?us-ascii?Q?a1EwY+M3PFMK/3R2CHdvuzgjSv7fhVr5auqmJOyKC+4pxKUWbeSGMq27Co3h?=
- =?us-ascii?Q?l/PaqxTmKw7fCq+LGqX52Wmnqwph93edZzX9y997mirKf0cS90reIc6CLZ0B?=
- =?us-ascii?Q?VhPk3/kDg2SE4b/nB9hCmC1KFY62LoS8aV4SP1SdF6Lrc+K79UnmrZxVSBT7?=
- =?us-ascii?Q?sxtJbjuS46p5rxtyoitsBiaA/YXtmzSZYiYThxmQrzB4JFV3i12hI1wb66VN?=
- =?us-ascii?Q?b7OtzST2vnamDJnmido5ww9JORbTr0F9yu8xO84cEfk8e7WZlzLIS5/2RzBu?=
- =?us-ascii?Q?Zkptxgz2x0jAL6t7+KtkF8Go0gOnZdSoJDEfjYG0DJWDo37prsGeyBhdvgpp?=
- =?us-ascii?Q?2c9U8CVHL0qAzOReRoh3MYdv6sJtnXOZG9gTJy9CCD4uzLMmFXiWtBFEFkp5?=
- =?us-ascii?Q?thaCqCogTYfzlbtWITa2b//EVVKVUNF3B2MCQXFgGnKkCEGrsXpj6k3ia05S?=
- =?us-ascii?Q?DKliDWWV5V1tDWIoMgCloPjPsPrMqpoUYAcP0mdUVzIZAomMwyP19/z+5+IH?=
- =?us-ascii?Q?1AtiEaOLPkFhUaov7YKdJ5fVcD4TSeJPZaLlaRClxG/szYbQlkHOy8agyuUn?=
- =?us-ascii?Q?VXRaTuaQHASZ4Y1hu2zmFfhUlmOvIICDfiB8TZ9i3cZJdjbsMUjJioQ+44j8?=
- =?us-ascii?Q?f1ZmblPWynYF4zjIR9Q5oLrJgLU0wBsJ7VIepJEM5ANAA32TmwqiwEYQTlkb?=
- =?us-ascii?Q?o6sBi6Qq+K3e6H93+PFZ+dxCCLXiJZ1EYh4GvMrRvH2Lg253N/qNNAMAvd4Y?=
- =?us-ascii?Q?GAeHmOuzi0iUqEQKpul34moTzvSu4DeRG+bv+5qqzpEWhhosGzMmK/5yfaGd?=
- =?us-ascii?Q?BxFVD5nssrBKpUj4bEdUgpJJPxe30/goAkUMZzMCma530FTp8fqeGTKuLyIs?=
- =?us-ascii?Q?COJIEC4vZgoChdaQ+4xZmbpf0etOkHWvnbiaJpec8ZWTQ5xmjGM9jeBX7lWc?=
- =?us-ascii?Q?Qe/2bQeSM7AiPuOtRO5fHOyniR+soFLFPyJSVU2Y4iZopViF25bf+zD/9sWE?=
- =?us-ascii?Q?+gc5SWJ+A1h0yvieyhO3uHR5HtPA3c20sYUuRjby8+qluBEzLnhAmqW7G/bv?=
- =?us-ascii?Q?oTfvRSU6IPSfg8uxLQsO8I4AeYPL4XTT+4dneCmjc4zRHmUYQRrQVXHWH2Ri?=
- =?us-ascii?Q?lLn34tF0zFcwTUFPZlqJ2vIyJY+nfhQs5pCP9kWMPZOyxA16c6eYeCXxGSjI?=
- =?us-ascii?Q?S0QMzg=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03b59413-333c-4156-c073-08db8c3d0021
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 11:56:22.9727
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FzlosflHYfv0MExb+hp+7Pn0tOsKCcSz3HF9OQVOAs80Em8JG9Z0Kpaan3vqWW0+u60Yon9itSqfH4YKviksIRXVqcXSkrz8d54Q0wo1OlE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR13MB4954
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 4/9] PCI/VGA: Improve the default VGA device selection
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc:     David Airlie <airlied@gmail.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian Konig <christian.koenig@amd.com>,
+        Pan Xinhui <Xinhui.Pan@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Lijo Lazar <lijo.lazar@amd.com>,
+        YiPeng Chai <YiPeng.Chai@amd.com>,
+        Bokun Zhang <Bokun.Zhang@amd.com>,
+        Likun Gao <Likun.Gao@amd.com>,
+        Ville Syrjala <ville.syrjala@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Abhishek Sahu <abhsahu@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jani Nikula <jani.nikula@intel.com>
+References: <20230719193233.GA511659@bhelgaas>
+Content-Language: en-US
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <20230719193233.GA511659@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8Cx7yPzZr5koiM5AA--.49373S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7Jw43KrW8JrWxXw17Wr13KFX_yoWfKrX_CF
+        sYvrZrCa15ur1xJFyUtw4fZF1SgrWaqrZ8JFW8Wa9aq34YgasxJrZYgry0qF1SgFWkJr4D
+        W3WUAa13u3s0gosvyTuYvTs0mTUanT9S1TB71UUUUbDqnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUbqAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1ln4kS14v26r1q6r43M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q
+        6rW5McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+        1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWrXVW3AwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUtVW8ZwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1UMIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUD1EEUU
+        UUU
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 03:39:20PM +0200, Vincent Whitchurch wrote:
-> commit a3a57bf07de23fe1ff779e0fdf710aa581c3ff73 ("net: stmmac: work
-> around sporadic tx issue on link-up") worked around a problem with TX
-> sometimes not working after a link-up by avoiding a redundant write to
-> MAC_CTRL_REG (aka GMAC_CONFIG), since the IP appeared to have problems
-> with handling multiple writes to that register in some cases.
-> 
-> That commit however only added the work around to dwmac_lib.c (apart
-> from the common code in stmmac_main.c), but my systems with version
-> 4.21a of the IP exhibit the same problem, so add the work around to
-> dwmac4_lib.c too.
-> 
-> Fixes: a3a57bf07de2 ("net: stmmac: work around sporadic tx issue on link-up")
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Hi,
 
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
+
+I was too hurry reply to you. I'm may miss the point for part of your 
+reviews, Sorry.
+
+
+On 2023/7/20 03:32, Bjorn Helgaas wrote:
+> CONFIG_DRM_AST is a tristate.  We're talking about identifying the
+> boot-time console device.
+
+Yes, my patch will only works *after* the module gets loaded successfully.
+
+But generally, vgaarb will select a default boot device before my patch taking into effect.
+
+I means that vgaarb will select a default boot device by calling vga_arbiter_add_pci_device() function.
+
+
+In practice, I still not notice any obvious problems.
+
+I'm lack the knowledge about the boot-time console,
+
+what is the potential problems with such a condition?
+
+
+>   So if CONFIG_DRM_AST=m, I guess we don't
+> get the benefit of the new callback unless the module gets loaded?
+
+Yes, my approach will not works until the device driver kernel module 
+gets loaded successfully.
+
+So what's the problem with such a situation, do you see something weird ?
 
