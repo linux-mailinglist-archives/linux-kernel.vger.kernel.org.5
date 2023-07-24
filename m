@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFFC75F867
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882BD75F869
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbjGXNfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
+        id S231672AbjGXNf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231575AbjGXNer (ORCPT
+        with ESMTP id S231616AbjGXNe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:34:47 -0400
+        Mon, 24 Jul 2023 09:34:56 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB05211E
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:34:22 -0700 (PDT)
-Message-ID: <20230724132045.614331630@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F242683
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:34:26 -0700 (PDT)
+Message-ID: <20230724132045.673477506@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690205653;
+        s=2020; t=1690205655;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=6qIRs7n/9rrrflFIJeawzXHaVLgyJbrokbfl4taony4=;
-        b=yeHEihXy381bMxg0/berhdUeLmV4Qg9sbpFO01ntVycKkAtyqwA9OJJ58t8UxqG9i8dtaz
-        gge4YJEyfgQnvji8/cElTBmP/j2g94LqLZrUadi3aOTwJxhYc5te42NXdt7zRv2HX3BcEU
-        5TAYlvp3rSXNpW6b+YSkFkD0PuvGME1PimooGOk4PQ3z9jqQwxFAJaHsQn9GmaNHthdhhn
-        ZAnxIpYfmvv5IK1niDrCuhRbr+8/ViWGkkZZzJwoKIb4c8Rup6Q0WoJt0TYzDfqUZ8ngjJ
-        H/6O86YehJaqRfRksiE5cTtdQAM95dN9G2Lv/FH2iPBRA+lQdpYKVCqnDQ6EsA==
+         references:references; bh=xYutxZ9rMLywIqqTjqfZZaF9PJm3LP88T/JNH/GhwYU=;
+        b=yEhbpxdZF4G4E66WlkNsz25xLxYxtuM6TKOTmGhCW0gbE0/LAAbSNnmR8WrrxilMcix7GR
+        Mk2d1+dWPMIyDnEHVJtcHdZtrvE7aeR4E6XgDrrCooWX+UqkD+1C9C/7DmRcH59+6kVsqC
+        KX5IsRdAi71fjklAil/MQUJhP0ioRV1SWqyWy6QnCS8OPMBhc9Yavl0AaFv2nr7Kpdw1/h
+        b7opRUA34eZga/UuiFbCZSgq8j0mRjD4HsuZvzjXDiKc8ZHG4MaDo1dEb/5JooeoXIF547
+        aUPXWHvdgEdPjhjzA8q7TlLAZKWSVpvJIlo1eZwtNQItV6vnjx+77TYEyaUYhQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690205653;
+        s=2020e; t=1690205655;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=6qIRs7n/9rrrflFIJeawzXHaVLgyJbrokbfl4taony4=;
-        b=hS+QON+pKFsEgAFNZ2BSK1ClN3+9JScu5V9ULvbIxew7wwmdyIbbotKCCHnd8mRlvyqZz9
-        3r6T1Z04/+H87NCw==
+         references:references; bh=xYutxZ9rMLywIqqTjqfZZaF9PJm3LP88T/JNH/GhwYU=;
+        b=2cu6X8j3VWN1Frn0zPyNqCc3jr3P6ZzpQR+/9fMuPjHJwHUuPxw3UdEd68EinsPSKgTVHn
+        6SZZRw4q4upzd1Cw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
@@ -44,11 +44,11 @@ Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
         Michael Kelley <mikelley@microsoft.com>,
         Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V2 17/58] x86/apic: Nuke another processor check
+Subject: [patch V2 18/58] x86/apic: Remove check_phys_apicid_present()
 References: <20230724131206.500814398@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 24 Jul 2023 15:34:13 +0200 (CEST)
+Date:   Mon, 24 Jul 2023 15:34:14 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,39 +59,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The boot CPUs local APIC is now always registered, so there is no point to
-have another unreadable validatation for it.
+The only silly usage site is gone. Remove the gunk which was even outright
+wrong in the bigsmp_32 case which returned true unconditionally.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/kernel/smpboot.c |   17 -----------------
- 1 file changed, 17 deletions(-)
+ arch/x86/include/asm/apic.h           |    2 --
+ arch/x86/kernel/apic/apic_common.c    |    5 -----
+ arch/x86/kernel/apic/apic_flat_64.c   |    2 --
+ arch/x86/kernel/apic/apic_noop.c      |    2 --
+ arch/x86/kernel/apic/apic_numachip.c  |    2 --
+ arch/x86/kernel/apic/bigsmp_32.c      |    6 ------
+ arch/x86/kernel/apic/probe_32.c       |    1 -
+ arch/x86/kernel/apic/x2apic_cluster.c |    1 -
+ arch/x86/kernel/apic/x2apic_phys.c    |    1 -
+ arch/x86/kernel/apic/x2apic_uv_x.c    |    1 -
+ arch/x86/xen/apic.c                   |    1 -
+ 11 files changed, 24 deletions(-)
 
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1181,23 +1181,6 @@ static void __init smp_sanity_check(void
- 		set_nr_cpu_ids(8);
- 	}
- #endif
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -305,7 +305,6 @@ struct apic {
+ 	void	(*setup_apic_routing)(void);
+ 	int	(*cpu_present_to_apicid)(int mps_cpu);
+ 	void	(*apicid_to_cpu_present)(int phys_apicid, physid_mask_t *retmap);
+-	int	(*check_phys_apicid_present)(int phys_apicid);
+ 	int	(*phys_pkg_id)(int cpuid_apic, int index_msb);
+ 
+ 	u32	(*get_apic_id)(unsigned long x);
+@@ -485,7 +484,6 @@ extern u32 apic_flat_calc_apicid(unsigne
+ extern bool default_check_apicid_used(physid_mask_t *map, int apicid);
+ extern void default_ioapic_phys_id_map(physid_mask_t *phys_map, physid_mask_t *retmap);
+ extern int default_cpu_present_to_apicid(int mps_cpu);
+-extern int default_check_phys_apicid_present(int phys_apicid);
+ 
+ #else /* CONFIG_X86_LOCAL_APIC */
+ 
+--- a/arch/x86/kernel/apic/apic_common.c
++++ b/arch/x86/kernel/apic/apic_common.c
+@@ -35,11 +35,6 @@ int default_cpu_present_to_apicid(int mp
+ }
+ EXPORT_SYMBOL_GPL(default_cpu_present_to_apicid);
+ 
+-int default_check_phys_apicid_present(int phys_apicid)
+-{
+-	return physid_isset(phys_apicid, phys_cpu_present_map);
+-}
 -
--	if (!physid_isset(read_apic_id(), phys_cpu_present_map)) {
--		pr_warn("weird, boot CPU (#%d) not listed by the BIOS\n",
--			read_apic_id());
+ int default_apic_id_valid(u32 apicid)
+ {
+ 	return (apicid < 255);
+--- a/arch/x86/kernel/apic/apic_flat_64.c
++++ b/arch/x86/kernel/apic/apic_flat_64.c
+@@ -124,7 +124,6 @@ static struct apic apic_flat __ro_after_
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+ 	.apicid_to_cpu_present		= NULL,
+-	.check_phys_apicid_present	= default_check_phys_apicid_present,
+ 	.phys_pkg_id			= flat_phys_pkg_id,
+ 
+ 	.get_apic_id			= flat_get_apic_id,
+@@ -213,7 +212,6 @@ static struct apic apic_physflat __ro_af
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+ 	.apicid_to_cpu_present		= NULL,
+-	.check_phys_apicid_present	= default_check_phys_apicid_present,
+ 	.phys_pkg_id			= flat_phys_pkg_id,
+ 
+ 	.get_apic_id			= flat_get_apic_id,
+--- a/arch/x86/kernel/apic/apic_noop.c
++++ b/arch/x86/kernel/apic/apic_noop.c
+@@ -107,8 +107,6 @@ struct apic apic_noop __ro_after_init =
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+ 	.apicid_to_cpu_present		= physid_set_mask_of_physid,
+ 
+-	.check_phys_apicid_present	= default_check_phys_apicid_present,
 -
--		physid_set(read_apic_id(), phys_cpu_present_map);
--	}
--
--	/*
--	 * Should not be necessary because the MP table should list the boot
--	 * CPU too, but we do it for the sake of robustness anyway.
--	 */
--	if (!apic->check_phys_apicid_present(boot_cpu_physical_apicid)) {
--		pr_notice("weird, boot CPU (#%d) not listed by the BIOS\n",
--			  boot_cpu_physical_apicid);
--		physid_set(read_apic_id(), phys_cpu_present_map);
--	}
- 	preempt_enable();
+ 	.phys_pkg_id			= noop_phys_pkg_id,
+ 
+ 	.get_apic_id			= noop_get_apic_id,
+--- a/arch/x86/kernel/apic/apic_numachip.c
++++ b/arch/x86/kernel/apic/apic_numachip.c
+@@ -257,7 +257,6 @@ static const struct apic apic_numachip1
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+ 	.apicid_to_cpu_present		= NULL,
+-	.check_phys_apicid_present	= default_check_phys_apicid_present,
+ 	.phys_pkg_id			= numachip_phys_pkg_id,
+ 
+ 	.get_apic_id			= numachip1_get_apic_id,
+@@ -303,7 +302,6 @@ static const struct apic apic_numachip2
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+ 	.apicid_to_cpu_present		= NULL,
+-	.check_phys_apicid_present	= default_check_phys_apicid_present,
+ 	.phys_pkg_id			= numachip_phys_pkg_id,
+ 
+ 	.get_apic_id			= numachip2_get_apic_id,
+--- a/arch/x86/kernel/apic/bigsmp_32.c
++++ b/arch/x86/kernel/apic/bigsmp_32.c
+@@ -63,11 +63,6 @@ static void bigsmp_ioapic_phys_id_map(ph
+ 	physids_promote(0xFFL, retmap);
  }
  
+-static int bigsmp_check_phys_apicid_present(int phys_apicid)
+-{
+-	return 1;
+-}
+-
+ static int bigsmp_phys_pkg_id(int cpuid_apic, int index_msb)
+ {
+ 	return cpuid_apic >> index_msb;
+@@ -138,7 +133,6 @@ static struct apic apic_bigsmp __ro_afte
+ 	.setup_apic_routing		= bigsmp_setup_apic_routing,
+ 	.cpu_present_to_apicid		= bigsmp_cpu_present_to_apicid,
+ 	.apicid_to_cpu_present		= physid_set_mask_of_physid,
+-	.check_phys_apicid_present	= bigsmp_check_phys_apicid_present,
+ 	.phys_pkg_id			= bigsmp_phys_pkg_id,
+ 
+ 	.get_apic_id			= bigsmp_get_apic_id,
+--- a/arch/x86/kernel/apic/probe_32.c
++++ b/arch/x86/kernel/apic/probe_32.c
+@@ -80,7 +80,6 @@ static struct apic apic_default __ro_aft
+ 	.setup_apic_routing		= setup_apic_flat_routing,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+ 	.apicid_to_cpu_present		= physid_set_mask_of_physid,
+-	.check_phys_apicid_present	= default_check_phys_apicid_present,
+ 	.phys_pkg_id			= default_phys_pkg_id,
+ 
+ 	.get_apic_id			= default_get_apic_id,
+--- a/arch/x86/kernel/apic/x2apic_cluster.c
++++ b/arch/x86/kernel/apic/x2apic_cluster.c
+@@ -250,7 +250,6 @@ static struct apic apic_x2apic_cluster _
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+ 	.apicid_to_cpu_present		= NULL,
+-	.check_phys_apicid_present	= default_check_phys_apicid_present,
+ 	.phys_pkg_id			= x2apic_phys_pkg_id,
+ 
+ 	.get_apic_id			= x2apic_get_apic_id,
+--- a/arch/x86/kernel/apic/x2apic_phys.c
++++ b/arch/x86/kernel/apic/x2apic_phys.c
+@@ -174,7 +174,6 @@ static struct apic apic_x2apic_phys __ro
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+ 	.apicid_to_cpu_present		= NULL,
+-	.check_phys_apicid_present	= default_check_phys_apicid_present,
+ 	.phys_pkg_id			= x2apic_phys_pkg_id,
+ 
+ 	.get_apic_id			= x2apic_get_apic_id,
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -846,7 +846,6 @@ static struct apic apic_x2apic_uv_x __ro
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+ 	.apicid_to_cpu_present		= NULL,
+-	.check_phys_apicid_present	= default_check_phys_apicid_present,
+ 	.phys_pkg_id			= uv_phys_pkg_id,
+ 
+ 	.get_apic_id			= x2apic_get_apic_id,
+--- a/arch/x86/xen/apic.c
++++ b/arch/x86/xen/apic.c
+@@ -154,7 +154,6 @@ static struct apic xen_pv_apic = {
+ 	.setup_apic_routing		= NULL,
+ 	.cpu_present_to_apicid		= xen_cpu_present_to_apicid,
+ 	.apicid_to_cpu_present		= physid_set_mask_of_physid, /* Used on 32-bit */
+-	.check_phys_apicid_present	= default_check_phys_apicid_present, /* smp_sanity_check needs it */
+ 	.phys_pkg_id			= xen_phys_pkg_id, /* detect_ht */
+ 
+ 	.get_apic_id 			= xen_get_apic_id,
 
