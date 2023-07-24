@@ -2,72 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A59976027D
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFE176028A
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbjGXWlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 18:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58486 "EHLO
+        id S229486AbjGXWoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 18:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbjGXWlM (ORCPT
+        with ESMTP id S229628AbjGXWoS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 18:41:12 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5181987
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:41:10 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-785ccf19489so256954439f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:41:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690238470; x=1690843270;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KeP2Bpkp9J7OOE4sWn2E6NWLqeXa4peAEEdE+9mQzSs=;
-        b=uVBTiaICcqS0cbclHhojIy9A/rn1xLF2yWj0IT3eGwYot+z7UEEoFf8vl2QmbV5HZd
-         oZMhnIVX0R9vxalzBDfEdnRYeggfqAWPp4oZ9iIRiYDirNYDPry665l3xLJOv4w9ndoV
-         atAKzCpgip8LDAIXf6qHwji/s1g3JbuWcbuDNTbWkgkfmMoERf1A203T+0pmhikbtKdF
-         ftEXpPbfnz5Wvvbtbdb23i/4K0J3WvPEoAfxj+wRypNZFJmdRvo094Efvgx0Uz399ao+
-         kY/uZo+vG0RSD0FXczITHgWRFih72r4lLaRNLR1zaoxfD2RRB/VOQFv104/3q7VyvDCy
-         wRoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690238470; x=1690843270;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KeP2Bpkp9J7OOE4sWn2E6NWLqeXa4peAEEdE+9mQzSs=;
-        b=hC3bMN7H5/4XFC3ri6t4egdGptG1iFvmZ08dNXTndHOvTiIvw7J/rwkHO/W8xbNaeh
-         WTrHajWYSPpQ+HvKWFGWJg+W5r5BwU23la5kzpaXiSIr3B2y3KjyQ6vGwUXaRgJUHMSq
-         EAUPhtdirnzNYT0+A5SiZHtDCm/MPvgdq6x01hU4MZT0QtgWIw7GejIOF8blnIcSPqz0
-         u8tpOas3zVlmDKCy05rBLjy+h157cloGx2Kgk6ci8hQwY7C2jcEzUYMziT0IbCQtIJiQ
-         8SynBTYJErj7nf9yEz5CWOp+3n4LToQOtfrnBxhixnnYyU7YsuGcwK1Li94uMTf6/XOa
-         ABew==
-X-Gm-Message-State: ABy/qLaf8t9Fm0JfkEEIwsIfclMOck45u5nkVdakfW+oNquluipcrL2f
-        rB1dFoSk7ZMcITeXuIp83A2r6w==
-X-Google-Smtp-Source: APBJJlEhDUh7RSS2Z2tTSspy5ELCXvyGnC/B2CaIbRlOt16SjoWMnBbRRS+8HrDzVxydj5/qeS3lcg==
-X-Received: by 2002:a5d:9b8f:0:b0:783:5e20:768d with SMTP id r15-20020a5d9b8f000000b007835e20768dmr1134570iom.18.1690238469994;
-        Mon, 24 Jul 2023 15:41:09 -0700 (PDT)
-Received: from localhost.localdomain (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
-        by smtp.gmail.com with ESMTPSA id gv18-20020a0566382e5200b0042b1297468esm3103953jab.51.2023.07.24.15.41.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 15:41:08 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     dianders@chromium.org, caleb.connolly@linaro.org, mka@chromium.org,
-        evgreen@chromium.org, andersson@kernel.org,
-        quic_cpratapa@quicinc.com, quic_avuyyuru@quicinc.com,
-        quic_jponduru@quicinc.com, quic_subashab@quicinc.com,
-        elder@kernel.org, netdev@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH net] net: ipa: only reset hashed tables when supported
-Date:   Mon, 24 Jul 2023 17:41:06 -0500
-Message-Id: <20230724224106.1688869-1-elder@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Mon, 24 Jul 2023 18:44:18 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89C310E3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:44:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690238657; x=1721774657;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=1NV52sKnefJZ5RYJNwIEwgBKGeUL3qVqXStivumro6o=;
+  b=kfqCT4Y+bYpF/uNldtCJOsnBu6PnTW0ptcxXb8owUjNqQgtvcx9r1kwb
+   XNIcM+ex4ty8dwrGf4CdAQGKZsjtr/ippdMU9ygVfXRVZua481TTi+B5V
+   /5mD45Fj+wcHS1YRoLR1HZ1j5iNI+E5PdxwuXnyL09LUVzSPphMMgYoBJ
+   gUW9vk5FyQY5ZhDCK8THWGHk/vAqhW+yFBsZMcAxhJCnk/+Vmxgd9JWdk
+   Yxr20jp4TGul3a3Qlfkcs3s4FeCJx7h8pf9m5YxN97AZY9CLVLXubUP5T
+   ZlmaYZiFqSu2DVtdyU/46rZluSoiFqJnmpn6RmVbILmDDaPXHR4y475db
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="367592163"
+X-IronPort-AV: E=Sophos;i="6.01,229,1684825200"; 
+   d="scan'208";a="367592163"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 15:44:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="795915654"
+X-IronPort-AV: E=Sophos;i="6.01,229,1684825200"; 
+   d="scan'208";a="795915654"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Jul 2023 15:44:15 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qO4Hn-000A5I-0N;
+        Mon, 24 Jul 2023 22:44:15 +0000
+Date:   Tue, 25 Jul 2023 06:43:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: drivers/iommu/io-pgtable-arm.c:330:13: error: void value not ignored
+ as it ought to be
+Message-ID: <202307250657.MeXQwmSN-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,101 +64,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Last year, the code that manages GSI channel transactions switched
-from using spinlock-protected linked lists to using indexes into the
-ring buffer used for a channel.  Recently, Google reported seeing
-transaction reference count underflows occasionally during shutdown.
+Hi Mark,
 
-Doug Anderson found a way to reproduce the issue reliably, and
-bisected the issue to the commit that eliminated the linked lists
-and the lock.  The root cause was ultimately determined to be
-related to unused transactions being committed as part of the modem
-shutdown cleanup activity.  Unused transactions are not normally
-expected (except in error cases).
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-The modem uses some ranges of IPA-resident memory, and whenever it
-shuts down we zero those ranges.  In ipa_filter_reset_table() a
-transaction is allocated to zero modem filter table entries.  If
-hashing is not supported, hashed table memory should not be zeroed.
-But currently nothing prevents that, and the result is an unused
-transaction.  Something similar occurs when we zero routing table
-entries for the modem.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   20ea1e7d13c1b544fe67c4a8dc3943bb1ab33e6f
+commit: 9257959a6e5b4fca6fc8e985790bff62c2046f20 locking/atomic: scripts: restructure fallback ifdeffery
+date:   7 weeks ago
+config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20230725/202307250657.MeXQwmSN-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230725/202307250657.MeXQwmSN-lkp@intel.com/reproduce)
 
-By preventing any attempt to clear hashed tables when hashing is not
-supported, the reference count underflow is avoided in this case.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307250657.MeXQwmSN-lkp@intel.com/
 
-Note that there likely remains an issue with properly freeing unused
-transactions (if they occur due to errors).  This patch addresses
-only the underflows that Google originally reported.
+All errors (new ones prefixed by >>):
 
-Fixes: d338ae28d8a8 ("net: ipa: kill all other transaction lists")
-Cc: <stable@vger.kernel.org>    # 6.1.x
-Tested-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_table.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+   drivers/iommu/io-pgtable-arm.c: In function 'arm_lpae_install_table':
+>> drivers/iommu/io-pgtable-arm.c:330:13: error: void value not ignored as it ought to be
+     330 |         old = cmpxchg64_relaxed(ptep, curr, new);
+         |             ^
+--
+   drivers/iommu/io-pgtable-dart.c: In function 'dart_install_table':
+>> drivers/iommu/io-pgtable-dart.c:168:13: error: void value not ignored as it ought to be
+     168 |         old = cmpxchg64_relaxed(ptep, curr, new);
+         |             ^
+   drivers/iommu/io-pgtable-dart.c:157:25: warning: variable 'new' set but not used [-Wunused-but-set-variable]
+     157 |         dart_iopte old, new;
+         |                         ^~~
 
-diff --git a/drivers/net/ipa/ipa_table.c b/drivers/net/ipa/ipa_table.c
-index 510ff2dc8999a..cd81dd916c29e 100644
---- a/drivers/net/ipa/ipa_table.c
-+++ b/drivers/net/ipa/ipa_table.c
-@@ -311,16 +311,15 @@ static int ipa_filter_reset(struct ipa *ipa, bool modem)
- 	if (ret)
- 		return ret;
- 
--	ret = ipa_filter_reset_table(ipa, IPA_MEM_V4_FILTER_HASHED, modem);
--	if (ret)
--		return ret;
--
- 	ret = ipa_filter_reset_table(ipa, IPA_MEM_V6_FILTER, modem);
-+	if (ret || !ipa_table_hash_support(ipa))
-+		return ret;
-+
-+	ret = ipa_filter_reset_table(ipa, IPA_MEM_V4_FILTER_HASHED, modem);
- 	if (ret)
- 		return ret;
--	ret = ipa_filter_reset_table(ipa, IPA_MEM_V6_FILTER_HASHED, modem);
- 
--	return ret;
-+	return ipa_filter_reset_table(ipa, IPA_MEM_V6_FILTER_HASHED, modem);
- }
- 
- /* The AP routes and modem routes are each contiguous within the
-@@ -329,11 +328,12 @@ static int ipa_filter_reset(struct ipa *ipa, bool modem)
-  * */
- static int ipa_route_reset(struct ipa *ipa, bool modem)
- {
-+	bool hash_support = ipa_table_hash_support(ipa);
- 	struct gsi_trans *trans;
- 	u16 first;
- 	u16 count;
- 
--	trans = ipa_cmd_trans_alloc(ipa, 4);
-+	trans = ipa_cmd_trans_alloc(ipa, hash_support ? 4 : 2);
- 	if (!trans) {
- 		dev_err(&ipa->pdev->dev,
- 			"no transaction for %s route reset\n",
-@@ -350,12 +350,14 @@ static int ipa_route_reset(struct ipa *ipa, bool modem)
- 	}
- 
- 	ipa_table_reset_add(trans, false, first, count, IPA_MEM_V4_ROUTE);
--	ipa_table_reset_add(trans, false, first, count,
--			    IPA_MEM_V4_ROUTE_HASHED);
--
- 	ipa_table_reset_add(trans, false, first, count, IPA_MEM_V6_ROUTE);
--	ipa_table_reset_add(trans, false, first, count,
--			    IPA_MEM_V6_ROUTE_HASHED);
-+
-+	if (hash_support) {
-+		ipa_table_reset_add(trans, false, first, count,
-+				    IPA_MEM_V4_ROUTE_HASHED);
-+		ipa_table_reset_add(trans, false, first, count,
-+				    IPA_MEM_V6_ROUTE_HASHED);
-+	}
- 
- 	gsi_trans_commit_wait(trans);
- 
+
+vim +330 drivers/iommu/io-pgtable-arm.c
+
+c896c132b01895 Laurent Pinchart   2014-12-14  310  
+fb3a95795da53d Robin Murphy       2017-06-22  311  static arm_lpae_iopte arm_lpae_install_table(arm_lpae_iopte *table,
+fb3a95795da53d Robin Murphy       2017-06-22  312  					     arm_lpae_iopte *ptep,
+2c3d273eabe8b1 Robin Murphy       2017-06-22  313  					     arm_lpae_iopte curr,
+9abe2ac834851a Hector Martin      2021-11-20  314  					     struct arm_lpae_io_pgtable *data)
+fb3a95795da53d Robin Murphy       2017-06-22  315  {
+2c3d273eabe8b1 Robin Murphy       2017-06-22  316  	arm_lpae_iopte old, new;
+9abe2ac834851a Hector Martin      2021-11-20  317  	struct io_pgtable_cfg *cfg = &data->iop.cfg;
+e1d3c0fd701df8 Will Deacon        2014-11-14  318  
+9abe2ac834851a Hector Martin      2021-11-20  319  	new = paddr_to_iopte(__pa(table), data) | ARM_LPAE_PTE_TYPE_TABLE;
+fb3a95795da53d Robin Murphy       2017-06-22  320  	if (cfg->quirks & IO_PGTABLE_QUIRK_ARM_NS)
+fb3a95795da53d Robin Murphy       2017-06-22  321  		new |= ARM_LPAE_PTE_NSTABLE;
+e1d3c0fd701df8 Will Deacon        2014-11-14  322  
+77f3445866c39d Will Deacon        2017-06-23  323  	/*
+77f3445866c39d Will Deacon        2017-06-23  324  	 * Ensure the table itself is visible before its PTE can be.
+77f3445866c39d Will Deacon        2017-06-23  325  	 * Whilst we could get away with cmpxchg64_release below, this
+77f3445866c39d Will Deacon        2017-06-23  326  	 * doesn't have any ordering semantics when !CONFIG_SMP.
+77f3445866c39d Will Deacon        2017-06-23  327  	 */
+77f3445866c39d Will Deacon        2017-06-23  328  	dma_wmb();
+2c3d273eabe8b1 Robin Murphy       2017-06-22  329  
+2c3d273eabe8b1 Robin Murphy       2017-06-22 @330  	old = cmpxchg64_relaxed(ptep, curr, new);
+2c3d273eabe8b1 Robin Murphy       2017-06-22  331  
+4f41845b340783 Will Deacon        2019-06-25  332  	if (cfg->coherent_walk || (old & ARM_LPAE_PTE_SW_SYNC))
+2c3d273eabe8b1 Robin Murphy       2017-06-22  333  		return old;
+2c3d273eabe8b1 Robin Murphy       2017-06-22  334  
+2c3d273eabe8b1 Robin Murphy       2017-06-22  335  	/* Even if it's not ours, there's no point waiting; just kick it */
+41e1eb2546e9c8 Isaac J. Manjarres 2021-06-16  336  	__arm_lpae_sync_pte(ptep, 1, cfg);
+2c3d273eabe8b1 Robin Murphy       2017-06-22  337  	if (old == curr)
+2c3d273eabe8b1 Robin Murphy       2017-06-22  338  		WRITE_ONCE(*ptep, new | ARM_LPAE_PTE_SW_SYNC);
+2c3d273eabe8b1 Robin Murphy       2017-06-22  339  
+2c3d273eabe8b1 Robin Murphy       2017-06-22  340  	return old;
+e1d3c0fd701df8 Will Deacon        2014-11-14  341  }
+e1d3c0fd701df8 Will Deacon        2014-11-14  342  
+
+:::::: The code at line 330 was first introduced by commit
+:::::: 2c3d273eabe8b1ed3b3cffe2c79643b1bf7e2d4a iommu/io-pgtable-arm: Support lockless operation
+
+:::::: TO: Robin Murphy <robin.murphy@arm.com>
+:::::: CC: Will Deacon <will.deacon@arm.com>
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
