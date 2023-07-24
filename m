@@ -2,51 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 336E575E63E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A2C75E628
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbjGXBQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46506 "EHLO
+        id S229911AbjGXBPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230078AbjGXBQN (ORCPT
+        with ESMTP id S229826AbjGXBPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:16:13 -0400
+        Sun, 23 Jul 2023 21:15:37 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5961722;
-        Sun, 23 Jul 2023 18:15:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D39E6A;
+        Sun, 23 Jul 2023 18:15:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D472060F04;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7DE0E60F13;
+        Mon, 24 Jul 2023 01:15:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFD4CC433CA;
         Mon, 24 Jul 2023 01:15:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D99C7C433C7;
-        Mon, 24 Jul 2023 01:14:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161300;
-        bh=QhZf8toMd5+zDGE1EOIeW6wBNB1VaLLB+7VguP4KCAE=;
+        s=k20201202; t=1690161301;
+        bh=ffiy/BuX+FpebDZznlAWahYjOgiu720u1XXkbgF04/4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OUhAWf0eKyCot2e+mbFe1KQ9YFR0jcjjhPaYFrokV/ojDoCmwWqPeCUSc23cx3kLg
-         UuTj44IuTrAuCyTSajBHo2A4gHYplr6Lvb8UPqKaFj9MIF4Zc5I33ToX+8jVI+mtMx
-         1g+fv93Kz+un6oZV2Zs23SpMDvqpWBKH+/LQ48aNmTesMghmXVoZVNKAJnkJ2w99o/
-         BM8e2HkJpd/p5S+MwivnFg2S5qkDhj8xkZF/24T2NqR+iVXc2/mHXF1+cVhvWeyNf0
-         fzo6Iwce6B4T3FCG+bfFwX+9CxhdTc+kFab1QBVVDh+vXl2pAQ3UrCqkGz3W/b4PR9
-         8dxAlY8RchzgQ==
+        b=EKJEcCnE8HxhxoTWRcA4UQaj1CGuYfVswG2Ye5HrWq7k2VYd9rNPkITv01GINPgvw
+         XMz3t58460XvXPF3E17aye1hv/k2KEf90jJZGiiFQTtIvIDzIFFweA135Xc2lKghkg
+         2uMGbEaROUv53pYfpSZMVVx8xmjUVDoqWWGB/9sJyHXQqgDO2Y8iKkS2eaUbR/xjFQ
+         X8b0WGmBjQq/F8RvcJnQtMR/ij9QzQyDEMHjJuGWvdX/3L2l4SnEu/KNK/BJwPEfyO
+         YWYt7s6iZxXV4qyRnNw6/F5MP2zfzb4hXcPn4X1rQ+JGLpy5zN3tywNwmYUV9z9xIq
+         bMm3N/bSjS0Fw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Philippe Cornu <philippe.cornu@foss.st.com>,
-        Sasha Levin <sashal@kernel.org>, yannick.fertre@foss.st.com,
-        airlied@gmail.com, daniel@ffwll.ch, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, dri-devel@lists.freedesktop.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.4 16/58] drm/stm: ltdc: fix late dereference check
-Date:   Sun, 23 Jul 2023 21:12:44 -0400
-Message-Id: <20230724011338.2298062-16-sashal@kernel.org>
+Cc:     Kathiravan T <quic_kathirav@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, agross@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 17/58] arm64: dts: qcom: ipq5332: add QFPROM node
+Date:   Sun, 23 Jul 2023 21:12:45 -0400
+Message-Id: <20230724011338.2298062-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724011338.2298062-1-sashal@kernel.org>
 References: <20230724011338.2298062-1-sashal@kernel.org>
@@ -65,51 +63,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+From: Kathiravan T <quic_kathirav@quicinc.com>
 
-[ Upstream commit 898a9e3f56db9860ab091d4bf41b6caa99aafc3d ]
+[ Upstream commit 2f34a2aa4c88f4882e3c5df8c9b78f8bbd3f564f ]
 
-In ltdc_crtc_set_crc_source(), struct drm_crtc was dereferenced in a
-container_of() before the pointer check. This could cause a kernel panic.
+IPQ5332 has efuse region to determine the various HW quirks. Lets
+add the initial support and the individual fuses will be added as they
+are required.
 
-Fix this smatch warning:
-drivers/gpu/drm/stm/ltdc.c:1124 ltdc_crtc_set_crc_source() warn: variable dereferenced before check 'crtc' (see line 1119)
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/lkml/202212241802.zeLFZCXB-lkp@intel.com/
-Reported-by: Dan Carpenter <error27@gmail.com>
-Closes: https://lore.kernel.org/lkml/202212241802.zeLFZCXB-lkp@intel.com/
-Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-Acked-by: Philippe Cornu <philippe.cornu@foss.st.com>
-Signed-off-by: Philippe Cornu <philippe.cornu@foss.st.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20230515123818.93971-1-raphael.gallais-pou@foss.st.com
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
+Signed-off-by: Bjorn Andersson <andersson@kernel.org>
+Link: https://lore.kernel.org/r/20230526125305.19626-3-quic_kathirav@quicinc.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/stm/ltdc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/ipq5332.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 03c6becda795c..b8be4c1db4235 100644
---- a/drivers/gpu/drm/stm/ltdc.c
-+++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1145,7 +1145,7 @@ static void ltdc_crtc_disable_vblank(struct drm_crtc *crtc)
+diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+index af4d97143bcf5..c2d6cc65a323a 100644
+--- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+@@ -135,6 +135,13 @@ soc@0 {
+ 		#size-cells = <1>;
+ 		ranges = <0 0 0 0xffffffff>;
  
- static int ltdc_crtc_set_crc_source(struct drm_crtc *crtc, const char *source)
- {
--	struct ltdc_device *ldev = crtc_to_ltdc(crtc);
-+	struct ltdc_device *ldev;
- 	int ret;
- 
- 	DRM_DEBUG_DRIVER("\n");
-@@ -1153,6 +1153,8 @@ static int ltdc_crtc_set_crc_source(struct drm_crtc *crtc, const char *source)
- 	if (!crtc)
- 		return -ENODEV;
- 
-+	ldev = crtc_to_ltdc(crtc);
++		qfprom: efuse@a4000 {
++			compatible = "qcom,ipq5332-qfprom", "qcom,qfprom";
++			reg = <0x000a4000 0x721>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++		};
 +
- 	if (source && strcmp(source, "auto") == 0) {
- 		ldev->crc_active = true;
- 		ret = regmap_set_bits(ldev->regmap, LTDC_GCR, GCR_CRCEN);
+ 		rng: rng@e3000 {
+ 			compatible = "qcom,prng-ee";
+ 			reg = <0x000e3000 0x1000>;
 -- 
 2.39.2
 
