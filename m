@@ -2,159 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AB375E7F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BD775E7F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbjGXBgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
+        id S231806AbjGXBgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231824AbjGXBgS (ORCPT
+        with ESMTP id S230472AbjGXBgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:36:18 -0400
-Received: from out199-10.us.a.mail.aliyun.com (out199-10.us.a.mail.aliyun.com [47.90.199.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B0059C3;
+        Sun, 23 Jul 2023 21:36:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E4C1994;
         Sun, 23 Jul 2023 18:32:45 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R851e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Vo.bCsO_1690162261;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0Vo.bCsO_1690162261)
-          by smtp.aliyun-inc.com;
-          Mon, 24 Jul 2023 09:31:02 +0800
-Date:   Mon, 24 Jul 2023 09:31:01 +0800
-From:   Dust Li <dust.li@linux.alibaba.com>
-To:     Julian Anastasov <ja@ssi.bg>
-Cc:     Simon Horman <horms@verge.net.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jiejian Wu <jiejian@linux.alibaba.com>, netdev@vger.kernel.org,
-        lvs-devel@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [PATCH v2 net-next] ipvs: make ip_vs_svc_table and
- ip_vs_svc_fwm_table per netns
-Message-ID: <20230724013101.GI6751@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20230723154426.81242-1-dust.li@linux.alibaba.com>
- <ff4612e3-bb5a-7acc-1607-5761e5d052c4@ssi.bg>
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1355060F5A;
+        Mon, 24 Jul 2023 01:31:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83D1DC433C9;
+        Mon, 24 Jul 2023 01:31:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690162303;
+        bh=ajbydh6J7RiNdqCXQT3mKx9KBNV0cMbI9Ija70sq5+g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OLl6ozcZiKMZ8Qn5ZfnINaAd4ktJznJ2LUCTYgb6Z7CHwUZepdlMcQnu1B5N20O+E
+         6pz1ZDCmt5iGzGMZmLO1qL08SX+7HMLgBVH4nSzjrM0XdqlFGfhccz43z3cwVKPzmK
+         o5PiTf4iBxAu01Lbdu/wmztImaYcfCucT4ZiP4WdpV+LVm1qxhNMhZkUvTna9Pmplm
+         c6RxgBbiVttgMQYzRRLXzFQs+DDvNCRzId2QkMU3guRhCgMFZauYFw9HvvYJMU1Zm0
+         /i7g6AXIuAAipOkWDeorRGCCbFQl8UpdtOh+nimgzmqivScQ1V8fXIbRaw1eRPIxnj
+         Es6uqc4/KFl8A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, jslaby@suse.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.4 01/40] serial: stm32: Ignore return value of uart_remove_one_port() in .remove()
+Date:   Sun, 23 Jul 2023 21:31:01 -0400
+Message-Id: <20230724013140.2327815-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ff4612e3-bb5a-7acc-1607-5761e5d052c4@ssi.bg>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.4.5
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 08:19:54PM +0300, Julian Anastasov wrote:
->
->	Hello,
->
->On Sun, 23 Jul 2023, Dust Li wrote:
->
->> From: Jiejian Wu <jiejian@linux.alibaba.com>
->> 
->> Current ipvs uses one global mutex "__ip_vs_mutex" to keep the global
->> "ip_vs_svc_table" and "ip_vs_svc_fwm_table" safe. But when there are
->> tens of thousands of services from different netns in the table, it
->> takes a long time to look up the table, for example, using "ipvsadm
->> -ln" from different netns simultaneously.
->> 
->> We make "ip_vs_svc_table" and "ip_vs_svc_fwm_table" per netns, and we
->> add "service_mutex" per netns to keep these two tables safe instead of
->> the global "__ip_vs_mutex" in current version. To this end, looking up
->> services from different netns simultaneously will not get stuck,
->> shortening the time consumption in large-scale deployment. It can be
->> reproduced using the simple scripts below.
->> 
->> init.sh: #!/bin/bash
->> for((i=1;i<=4;i++));do
->>         ip netns add ns$i
->>         ip netns exec ns$i ip link set dev lo up
->>         ip netns exec ns$i sh add-services.sh
->> done
->> 
->> add-services.sh: #!/bin/bash
->> for((i=0;i<30000;i++)); do
->>         ipvsadm -A  -t 10.10.10.10:$((80+$i)) -s rr
->> done
->> 
->> runtest.sh: #!/bin/bash
->> for((i=1;i<4;i++));do
->>         ip netns exec ns$i ipvsadm -ln > /dev/null &
->> done
->> ip netns exec ns4 ipvsadm -ln > /dev/null
->> 
->> Run "sh init.sh" to initiate the network environment. Then run "time
->> ./runtest.sh" to evaluate the time consumption. Our testbed is a 4-core
->> Intel Xeon ECS. The result of the original version is around 8 seconds,
->> while the result of the modified version is only 0.8 seconds.
->> 
->> Signed-off-by: Jiejian Wu <jiejian@linux.alibaba.com>
->> Co-developed-by: Dust Li <dust.li@linux.alibaba.com>
->> Signed-off-by: Dust Li <dust.li@linux.alibaba.com>
->
->	Changes look good to me, thanks! But checkpatch is reporting
->for some cosmetic changes that you have to do in v3:
->
->scripts/checkpatch.pl --strict /tmp/file.patch
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Oh, sorry for that! I ignored the CHECKs checkpatch reported, my checkpatch
-shows:
+[ Upstream commit 6bd6cd29c92401a101993290051fa55078238a52 ]
 
+Returning early from stm32_usart_serial_remove() results in a resource
+leak as several cleanup functions are not called. The driver core ignores
+the return value and there is no possibility to clean up later.
 
-   $./scripts/checkpatch.pl --strict 0001-ipvs-make-ip_vs_svc_table-and-ip_vs_svc_fwm_table-pe.patch
-   CHECK: Prefer using the BIT macro
-   #69: FILE: include/net/ip_vs.h:40:
-   +#define IP_VS_SVC_TAB_SIZE (1 << IP_VS_SVC_TAB_BITS)
+uart_remove_one_port() only returns non-zero if there is some
+inconsistency (i.e. stm32_usart_driver.state[port->line].uart_port == NULL).
+This should never happen, and even if it does it's a bad idea to exit
+early in the remove callback without cleaning up.
 
-We just moved this line from ip_vs_ctl.c to ip_vs.h, so we ignored the
-BIT macro. Do you think we should change it using BIT macro ?
+This prepares changing the prototype of struct platform_driver::remove to
+return void. See commit 5c5a7680e67b ("platform: Provide a remove callback
+that returns no value") for further details about this quest.
 
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Link: https://lore.kernel.org/r/20230512173810.131447-2-u.kleine-koenig@pengutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/tty/serial/stm32-usart.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-   CHECK: struct mutex definition without comment
-   #79: FILE: include/net/ip_vs.h:1051:
-   +       struct mutex service_mutex;
+diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+index 1e38fc9b10c11..e9e11a2596211 100644
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -1755,13 +1755,10 @@ static int stm32_usart_serial_remove(struct platform_device *pdev)
+ 	struct uart_port *port = platform_get_drvdata(pdev);
+ 	struct stm32_port *stm32_port = to_stm32_port(port);
+ 	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+-	int err;
+ 	u32 cr3;
+ 
+ 	pm_runtime_get_sync(&pdev->dev);
+-	err = uart_remove_one_port(&stm32_usart_driver, port);
+-	if (err)
+-		return(err);
++	uart_remove_one_port(&stm32_usart_driver, port);
+ 
+ 	pm_runtime_disable(&pdev->dev);
+ 	pm_runtime_set_suspended(&pdev->dev);
+-- 
+2.39.2
 
-I think we can add comment for it.
-But rethinking a bit on the service_mutex in ip_vs_est.c, I'm a
-wondering why we are using the service_mutex in estimation ? Is est_mutex
-enough for the protecting in ip_vs_est.c ?
-
-
-   CHECK: Logical continuations should be on the previous line
-   #161: FILE: net/netfilter/ipvs/ip_vs_ctl.c:410:
-                       && (svc->port == vport)
-   +                   && (svc->protocol == protocol)) {
-
-This is just the removal of '(svc->ipvs == ipvs)' and kept it as it is.
-So haven't change according to checkpatch. If you prefer, I can modify
-it to make checkpatch happy.
-
-
-   CHECK: Alignment should match open parenthesis
-   #233: FILE: net/netfilter/ipvs/ip_vs_ctl.c:1767:
-   +                       list_for_each_entry(dest, &svc->destinations,
-   +                                               n_list) {
-
-We missed this, will change.
-
-
-   CHECK: Alignment should match open parenthesis
-   #246: FILE: net/netfilter/ipvs/ip_vs_ctl.c:1774:
-   +                       list_for_each_entry(dest, &svc->destinations,
-   +                                               n_list) {
-
-Same above.
-
-   total: 0 errors, 0 warnings, 5 checks, 506 lines checked
-
-
-
->
->Regards
->
->--
->Julian Anastasov <ja@ssi.bg>
