@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FF175FF0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 20:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF6A75FF0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 20:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjGXS20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 14:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
+        id S230250AbjGXS22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 14:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbjGXS2X (ORCPT
+        with ESMTP id S229813AbjGXS20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 14:28:23 -0400
+        Mon, 24 Jul 2023 14:28:26 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB7110EC;
-        Mon, 24 Jul 2023 11:28:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B516F1704;
+        Mon, 24 Jul 2023 11:28:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D7B1C6137C;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3439E6137A;
+        Mon, 24 Jul 2023 18:28:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E1E2C433CA;
         Mon, 24 Jul 2023 18:28:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B60CC433C7;
-        Mon, 24 Jul 2023 18:28:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690223300;
-        bh=PKZT/f9kEO15ObxVb4uDCgsik4xstwNkFBHIeXf5KIc=;
+        s=k20201202; t=1690223302;
+        bh=x/TDji6c9EOf6CdtqHPxOL7LIWME4rsp6ZMLSc+V2yw=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=BT6HEQv0l3zOKhSzGl6ozeNZpY9eq+9cssh/yG+7MhrsUAfnEcOepzg8PSV9x+XK+
-         rv+PhA2ntqsBM9XR/2tFoN5vPdnrFWe3nJhf2a12uEOoi4YvTLr2Ctc6uVanXz+qlC
-         WnyhQ9T2lhFAPvk3n53fIrZWsE0I4qbN/cjhrSlbFytzZW1CpNPoUyvUqIFKb1AlzU
-         hJZ0XisT5k/s+N7rN611k6zWcRkh+FAbHErVClyWuAfu9kdJ8F6Rptupn82+jennli
-         C87wGRDRPE84tIrFvi1/Xme3QVfDgzwwL5fP5p50l7DcPJisvbHym9yueiPTISfa1e
-         ObHyGxL7KwLRQ==
+        b=ufbjpu/OPz+c9IWljebyj/kbvEFAhkQ/7lbv37QKEHtgmItO6wEI7PWeMwakMhAqj
+         ELYflae4MEHz2Yg490tdoHYocAZ6g1UkBXooJMn3x369OaLAd5zuJ81M9S3Eq+y1TB
+         9uS51IHFBmxJWEmVcdu6wSDBpNhpbt/6/oiwl6WdiFgVJlfddOKOFImSFs7FInMmAu
+         H789xXQrvkKkYqhj0bcyN4K9hvXUTTeI3+FkqRlVpsF91P91PL/0/ez9m2AqF/fe1P
+         MdRumk31d4H51OrUg9Wyy6FLgO8tODCruVXgnZ1fBSzASZ3Bjg+0lj1LphiYwnSRFw
+         cRmFq0jE2I09Q==
 From:   Mark Brown <broonie@kernel.org>
 To:     devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
@@ -42,11 +42,11 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Linus Walleij <linus.walleij@linaro.org>
-In-Reply-To: <20230713090015.127541-1-william.qiu@starfivetech.com>
-References: <20230713090015.127541-1-william.qiu@starfivetech.com>
-Subject: Re: (subset) [PATCH v2 0/3] Add SPI module for StarFive JH7110 SoC
-Message-Id: <169022329775.1044366.2232599476103441607.b4-ty@kernel.org>
-Date:   Mon, 24 Jul 2023 19:28:17 +0100
+In-Reply-To: <20230724101054.25268-1-william.qiu@starfivetech.com>
+References: <20230724101054.25268-1-william.qiu@starfivetech.com>
+Subject: Re: (subset) [PATCH v3 0/2] Add SPI module for StarFive JH7110 SoC
+Message-Id: <169022330023.1044366.15536884337765854561.b4-ty@kernel.org>
+Date:   Mon, 24 Jul 2023 19:28:20 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -61,17 +61,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 17:00:12 +0800, William Qiu wrote:
+On Mon, 24 Jul 2023 18:10:52 +0800, William Qiu wrote:
 > This patchset adds initial rudimentary support for the StarFive
 > SPI controller. And this driver will be used in StarFive's
 > VisionFive 2 board. The first patch constrain minItems of clocks
 > for JH7110 SPI and Patch 2 adds support for StarFive JH7110 SPI.
 > 
-> Changes v1->v2:
-> - Rebaed to v6.5rc1.
-> - Submitted reference file separately.
-> - Dropped 'status' node as it was 'okay' by default.
-> - Dropped Co-developed-by message.
+> Changes v2->v3:
+> - Rebaed to v6.5rc3.
+> - Registered one more clock.
+> - Dropped commit that changed the number of clocks in YAML.
+> - Rewrited the commit comment.
 > 
 > [...]
 
@@ -81,10 +81,8 @@ Applied to
 
 Thanks!
 
-[1/3] dt-bindings: spi: add reference file to YAML
+[1/2] dt-bindings: spi: add reference file to YAML
       commit: 8858babff615ee366bf570c1facfbd0845dd924e
-[2/3] dt-bindings: spi: constrain minItems of clocks and clock-names
-      (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
