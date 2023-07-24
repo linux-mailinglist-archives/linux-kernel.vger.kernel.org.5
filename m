@@ -2,140 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A1675EB07
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 07:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD4775EB0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 07:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbjGXFuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 01:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
+        id S230090AbjGXFyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 01:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbjGXFuO (ORCPT
+        with ESMTP id S229546AbjGXFx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 01:50:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D57180;
-        Sun, 23 Jul 2023 22:50:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 24 Jul 2023 01:53:59 -0400
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0791194
+        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 22:53:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1690178038; x=1721714038;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=iAdk/7+R2bSdHduRIpNKb9qEGu6b0y2XoEyzclNICGc=;
+  b=Ok/Ti3XMr8xhNnWyi979leV+DMf08zNlRQgJDojEiDikVKpqjus0f7ft
+   4k/3HEow3vIzJqkpVfbdIUOn8/gSWpUvJY/N4b0vh8briDLGUx/Ib3ryP
+   zhLPYM2iyj5ob5ADHZfnTH47ItIFrguDbKFrUQLsnl5m96ax7OoK2Ghvq
+   3NnFEdmfSpXjRPilYg687rxaeRUEph9SfO9pOs8QI/Vzd15Af74R7UDkS
+   IX07q6x40yZJxnARD1oIxTH+Ru7YpFuj1UlSXGG7PoVAUJUqrAKUQUYIY
+   CJ1fZ5F9G6KJLDhfaBpap8F82B86bQjNAcIsLxYtrKtwyukGpsmfvxsEA
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,228,1684792800"; 
+   d="scan'208";a="32069404"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 24 Jul 2023 07:53:55 +0200
+Received: from steina-w.localnet (unknown [10.123.53.21])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E12D760F24;
-        Mon, 24 Jul 2023 05:50:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFDF1C433C7;
-        Mon, 24 Jul 2023 05:50:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690177812;
-        bh=bFLNepPhPHCswQ9ft0pcj3E1XJXFCkjGVMeXp3+zrvY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BmwbpFPGParIZG7W1TUUE0yYYPD2FBLWu3ib2mFJqFva1McRElxdJv4LGNGcZf3/+
-         YhS0qaQ3Fk7I10AJK0ox0MKRkUYab2sdAGsLZ4zyDj+YFl8VsUHszf1jnmGx1XBavt
-         sL38/5lGbOXFVPHwuCIXa5zjFasgyrfUcpH4iNco=
-Date:   Mon, 24 Jul 2023 07:50:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stanley Chang <stanley_chang@realtek.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Roy Luo <royluo@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        Ray Chi <raychi@google.com>, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v7 1/5] usb: phy: add usb phy notify port status API
-Message-ID: <2023072452-jasmine-palm-7b73@gregkh>
-References: <20230707064725.25291-1-stanley_chang@realtek.com>
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 8333A280078;
+        Mon, 24 Jul 2023 07:53:55 +0200 (CEST)
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH v2] drm/bridge: Add debugfs print for bridge chains
+Date:   Mon, 24 Jul 2023 07:53:55 +0200
+Message-ID: <13315423.uLZWGnKmhe@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20230721-drm-bridge-chain-debugfs-v2-1-76df94347962@ideasonboard.com>
+References: <20230721-drm-bridge-chain-debugfs-v2-1-76df94347962@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230707064725.25291-1-stanley_chang@realtek.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 07, 2023 at 02:47:00PM +0800, Stanley Chang wrote:
-> In Realtek SoC, the parameter of usb phy is designed to can dynamic
-> tuning base on port status. Therefore, add a notify callback of phy
-> driver when usb port status change.
-> 
-> The Realtek phy driver is designed to dynamically adjust disconnection
-> level and calibrate phy parameters. When the device connected bit changes
-> and when the disconnected bit changes, do port status change notification:
-> 
-> Check if portstatus is USB_PORT_STAT_CONNECTION and portchange is
-> USB_PORT_STAT_C_CONNECTION.
-> 1. The device is connected, the driver lowers the disconnection level and
->    calibrates the phy parameters.
-> 2. The device disconnects, the driver increases the disconnect level and
->    calibrates the phy parameters.
-> 
-> When controller to notify connect that device is already ready. If we
-> adjust the disconnection level in notify_connect, the disconnect may have
-> been triggered at this stage. So we need to change that as early as
-> possible. Therefore, we add an api to notify phy the port status changes.
+Hi Tomi,
 
-How do you know that the disconnect will not have already been triggered
-at this point, when the status changes?
+Am Freitag, 21. Juli 2023, 17:01:39 CEST schrieb Tomi Valkeinen:
+> DRM bridges are not visible to the userspace and it may not be
+> immediately clear if the chain is somehow constructed incorrectly. I
+> have had two separate instances of a bridge driver failing to do a
+> drm_bridge_attach() call, resulting in the bridge connector not being
+> part of the chain. In some situations this doesn't seem to cause issues,
+> but it will if DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is used.
+>=20
+> Add a debugfs file to print the bridge chains. For me, on this TI AM62
+> based platform, I get the following output:
+>=20
+> encoder[39]
+> 	bridge[0] type: 0, ops: 0x0
+> 	bridge[1] type: 0, ops: 0x0, OF:
+> /bus@f0000/i2c@20000000/dsi@e:toshiba,tc358778 bridge[2] type: 0, ops: 0x=
+3,
+> OF: /bus@f0000/i2c@20010000/hdmi@48:lontium,lt8912b bridge[3] type: 11,
+> ops: 0x7, OF: /hdmi-connector:hdmi-connector
 
+I like the idea and it works on an imx8mp based board for the DRI display=20
+devices which have connectors attached:
 
-> 
-> Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
+$ cat /sys/kernel/debug/dri/1/bridge_chains=20
+encoder[36]
+        bridge[0] type: 16, ops: 0x0, OF: /soc@0/bus@32c00000/
+dsi@32e60000:fsl,imx8mp-mipi-dsim
+        bridge[1] type: 10, ops: 0x3, OF: /soc@0/bus@30800000/i2c@30a30000/
+bridge@f:toshiba,tc9595
+
+$ cat /sys/kernel/debug/dri/2/bridge_chains=20
+encoder[36]
+        bridge[0] type: 0, ops: 0x0, OF: /soc@0/bus@32c00000/display-
+bridge@32fc4000:fsl,imx8mp-hdmi-pvi
+        bridge[1] type: 0, ops: 0x7, OF: /soc@0/bus@32c00000/
+hdmi@32fd8000:fsl,imx8mp-hdmi
+
+Unfortunately this oopses on GPU device without connectors:
+
+$ cat /sys/kernel/debug/dri/0/name=20
+etnaviv dev=3Detnaviv unique=3Detnaviv
+$ cat /sys/kernel/debug/dri/0/bridge_chains
+Unable to handle kernel NULL pointer dereference at virtual address=20
+0000000000000010
+Mem abort info:
+  ESR =3D 0x0000000096000004
+  EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+  SET =3D 0, FnV =3D 0
+  EA =3D 0, S1PTW =3D 0
+  FSC =3D 0x04: level 0 translation fault
+Data abort info:
+  ISV =3D 0, ISS =3D 0x00000004, ISS2 =3D 0x00000000
+  CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
+  GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
+user pgtable: 4k pages, 48-bit VAs, pgdp=3D0000000045842000
+[0000000000000010] pgd=3D0000000000000000, p4d=3D0000000000000000
+Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+Modules linked in: dw_hdmi_cec mcp320x hantro_vpu snd_soc_fsl_asoc_card=20
+snd_soc_fsl_sai snd_soc_tlv320aic32x4_i2c snd_soc_imx_audmux snd_soc_fsl_ut=
+ils=20
+snd_soc_tlv320aic32x4 snd_soc_simple_card_utils imx_pcm_dma snd_soc_core dw=
+100=20
+v4l2_vp9 8021q snd_pcm_dmaengine v4l2_h264 snd_pcm videobuf2_dma_contig gar=
+p=20
+imx8mp_hdmi crct10dif_ce v4l2_mem2mem mrp dw_hdmi tc358767 videobuf2_memops=
+=20
+stp bluetooth llc synopsys_edac videobuf2_v4l2 cec videobuf2_common=20
+phy_fsl_samsung_hdmi imx8mp_hdmi_pvi samsung_dsim snd_timer cfg80211 snd=20
+flexcan drm_display_helper imx_sdma soundcore virt_dma can_dev=20
+clk_renesas_pcie coresight_etm4x coresight_tmc coresight_funnel pwm_imx27=20
+coresight imx8mm_thermal iio_hwmon fuse ipv6
+CPU: 3 PID: 485 Comm: cat Not tainted 6.5.0-rc3-next-20230724+ #1822=20
+41dd31be02d36f174370d905469174492535c29d
+Hardware name: TQ-Systems i.MX8MPlus TQMa8MPxL on MBa8MPxL (DT)
+pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
+pc : drm_bridge_chains_info+0xfc/0x1d0
+lr : drm_bridge_chains_info+0xf8/0x1d0
+sp : ffff8000831c39e0
+x29: ffff8000831c39e0 x28: ffff8000811759f0 x27: ffff800081175a08
+x26: ffff800081175000 x25: ffff000002d592b0 x24: ffff000002d59000
+x23: ffff800081175a70 x22: ffff800081175a50 x21: fffffffffffffff8
+x20: 0000000000000000 x19: 0000000000000000 x18: 0000000000000000
+x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+x14: 0000000000000000 x13: 3836613136616661 x12: 3030303030303030
+x11: 203a7473696c5f72 x10: 65646f636e65205d x9 : 6c5f7265646f636e
+x8 : 65205d6d72645b20 x7 : 0000000000000003 x6 : ffff8000818627a0
+x5 : 0000000000000000 x4 : 0000000000000000 x3 : 0000000000000000
+x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff8000831c3a68
+Call trace:
+ drm_bridge_chains_info+0xfc/0x1d0
+ seq_read_iter+0x1a8/0x484
+ seq_read+0x88/0xbc
+ full_proxy_read+0x5c/0xa8
+ vfs_read+0xac/0x1e0
+ ksys_read+0x68/0xf4
+ __arm64_sys_read+0x18/0x20
+ invoke_syscall+0x6c/0xec
+ el0_svc_common.constprop.0+0xb8/0xd8
+ do_el0_svc+0x28/0x34
+ el0_svc+0x1c/0x50
+ el0t_64_sync_handler+0xb8/0xbc
+ el0t_64_sync+0x14c/0x150
+Code: aa1903e2 f94037e1 9401d66f 910223e0 (b9401aa2)=20
+=2D--[ end trace 0000000000000000 ]---
+
+This boils down to the connector_list setup incorrectly? Here is some debug=
+=20
+output from drm_bridge_chains_info:
+> etnaviv etnaviv: [drm] encoder_list: 00000000afa61a68
+> etnaviv etnaviv: [drm] num_encoder: 0
+> etnaviv etnaviv: [drm] list_empty: 0
+> etnaviv etnaviv: [drm] encoder: fffffffffffffff8
+> etnaviv etnaviv: [drm] encoder->head: 0000000000000000
+
+list_empty(&config->encoder_list)) not returning true and num_encoder being=
+ 0=20
+seems off to me.
+
+Best regards,
+Alexander
+
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 > ---
-> v6 to v7 change:
->     No change
-> v5 to v6 change:
->     No change
-> v4 to v5 change:
->     No change
-> v3 to v4 change:
->     Fix the warning for checkpatch with strict.
-> v2 to v3 change:
->     Add more comments about the reason for adding this api
-> v1 to v2 change:
->     No change
-> ---
->  drivers/usb/core/hub.c  | 13 +++++++++++++
->  include/linux/usb/phy.h | 13 +++++++++++++
->  2 files changed, 26 insertions(+)
-> 
-> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-> index a739403a9e45..8433ff89dea6 100644
-> --- a/drivers/usb/core/hub.c
-> +++ b/drivers/usb/core/hub.c
-> @@ -614,6 +614,19 @@ static int hub_ext_port_status(struct usb_hub *hub, int port1, int type,
->  		ret = 0;
->  	}
->  	mutex_unlock(&hub->status_mutex);
+> Changes in v2:
+> - Fixed compilation issue when !CONFIG_OF
+> - Link to v1:
+> https://lore.kernel.org/r/20230721-drm-bridge-chain-debugfs-v1-1-8614ff7e=
+89
+> 0d@ideasonboard.com ---
+>  drivers/gpu/drm/drm_bridge.c  | 50
+> +++++++++++++++++++++++++++++++++++++++++++ drivers/gpu/drm/drm_debugfs.c=
+ |
+>  3 +++
+>  include/drm/drm_bridge.h      |  5 +++++
+>  3 files changed, 58 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+> index c3d69af02e79..d3eb62d5ef3b 100644
+> --- a/drivers/gpu/drm/drm_bridge.c
+> +++ b/drivers/gpu/drm/drm_bridge.c
+> @@ -27,8 +27,10 @@
+>  #include <linux/mutex.h>
+>=20
+>  #include <drm/drm_atomic_state_helper.h>
+> +#include <drm/drm_debugfs.h>
+>  #include <drm/drm_bridge.h>
+>  #include <drm/drm_encoder.h>
+> +#include <drm/drm_file.h>
+>  #include <drm/drm_of.h>
+>  #include <drm/drm_print.h>
+>=20
+> @@ -1345,6 +1347,54 @@ struct drm_bridge *of_drm_find_bridge(struct
+> device_node *np) EXPORT_SYMBOL(of_drm_find_bridge);
+>  #endif
+>=20
+> +#ifdef CONFIG_DEBUG_FS
+> +static int drm_bridge_chains_info(struct seq_file *m, void *data)
+> +{
+> +	struct drm_debugfs_entry *entry =3D m->private;
+> +	struct drm_device *dev =3D entry->dev;
+> +	struct drm_printer p =3D drm_seq_file_printer(m);
+> +	struct drm_mode_config *config =3D &dev->mode_config;
+> +	struct drm_encoder *encoder;
+> +	unsigned int bridge_idx =3D 0;
 > +
-> +	if (!ret) {
-> +		struct usb_device *hdev = hub->hdev;
+> +	list_for_each_entry(encoder, &config->encoder_list, head) {
+> +		struct drm_bridge *bridge;
 > +
-> +		if (hdev && !hdev->parent) {
-
-Why the check for no parent?  Please document that here in a comment.
-
-> +			struct usb_hcd *hcd = bus_to_hcd(hdev->bus);
+> +		drm_printf(&p, "encoder[%u]\n", encoder->base.id);
 > +
-> +			if (hcd->usb_phy)
-> +				usb_phy_notify_port_status(hcd->usb_phy,
-> +							   port1 - 1, *status, *change);
+> +		bridge =3D drm_bridge_chain_get_first_bridge(encoder);
+> +
+> +		while (bridge) {
+> +			drm_printf(&p, "\tbridge[%u] type: %u, ops:=20
+%#x",
+> +				   bridge_idx, bridge->type, bridge-
+>ops);
+> +
+> +#ifdef CONFIG_OF
+> +			if (bridge->of_node)
+> +				drm_printf(&p, ", OF: %pOFfc", bridge-
+>of_node);
+> +#endif
+> +
+> +			drm_printf(&p, "\n");
+> +
+> +			bridge_idx++;
+> +			bridge =3D drm_bridge_get_next_bridge(bridge);
 > +		}
 > +	}
 > +
+> +	return 0;
+> +}
+> +
+> +/* any use in debugfs files to dump individual planes/crtc/etc? */
+> +static const struct drm_debugfs_info drm_bridge_debugfs_list[] =3D {
+> +	{"bridge_chains", drm_bridge_chains_info, 0},
+> +};
+> +
+> +void drm_bridge_debugfs_init(struct drm_minor *minor)
+> +{
+> +	drm_debugfs_add_files(minor->dev, drm_bridge_debugfs_list,
+> +			      ARRAY_SIZE(drm_bridge_debugfs_list));
+> +}
+> +#endif
+> +
+>  MODULE_AUTHOR("Ajay Kumar <ajaykumar.rs@samsung.com>");
+>  MODULE_DESCRIPTION("DRM bridge infrastructure");
+>  MODULE_LICENSE("GPL and additional rights");
+> diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
+> index c90dbcffa0dc..3e89559d68cd 100644
+> --- a/drivers/gpu/drm/drm_debugfs.c
+> +++ b/drivers/gpu/drm/drm_debugfs.c
+> @@ -31,6 +31,7 @@
+>=20
+>  #include <drm/drm_atomic.h>
+>  #include <drm/drm_auth.h>
+> +#include <drm/drm_bridge.h>
+>  #include <drm/drm_client.h>
+>  #include <drm/drm_debugfs.h>
+>  #include <drm/drm_device.h>
+> @@ -272,6 +273,8 @@ int drm_debugfs_init(struct drm_minor *minor, int
+> minor_id,
+>=20
+>  	drm_debugfs_add_files(minor->dev, drm_debugfs_list,=20
+DRM_DEBUGFS_ENTRIES);
+>=20
+> +	drm_bridge_debugfs_init(minor);
+> +
+>  	if (drm_drv_uses_atomic_modeset(dev)) {
+>  		drm_atomic_debugfs_init(minor);
+>  	}
+> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+> index bf964cdfb330..60dbee6bd1e6 100644
+> --- a/include/drm/drm_bridge.h
+> +++ b/include/drm/drm_bridge.h
+> @@ -949,4 +949,9 @@ static inline struct drm_bridge
+> *drmm_of_get_bridge(struct drm_device *drm, }
+>  #endif
+>=20
+> +#ifdef CONFIG_DEBUG_FS
+> +struct drm_minor;
+> +void drm_bridge_debugfs_init(struct drm_minor *minor);
+> +#endif
+> +
+>  #endif
+>=20
+> ---
+> base-commit: c7a472297169156252a50d76965eb36b081186e2
+> change-id: 20230721-drm-bridge-chain-debugfs-0bbc1522f57a
+>=20
+> Best regards,
 
-This is safe to notify with the hub mutex unlocked?  Again, a comment
-would be helpful to future people explaining why that is so.
 
-thanks,
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
 
-greg k-h
+
