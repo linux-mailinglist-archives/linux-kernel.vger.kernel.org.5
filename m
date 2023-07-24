@@ -2,57 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4752775FE9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CB575FEA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230449AbjGXR6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
+        id S229998AbjGXR6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:58:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230214AbjGXR6H (ORCPT
+        with ESMTP id S231964AbjGXR6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:58:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89783AA1;
-        Mon, 24 Jul 2023 10:56:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2897361356;
-        Mon, 24 Jul 2023 17:56:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDC6AC433C8;
-        Mon, 24 Jul 2023 17:56:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690221388;
-        bh=EoU2mL1gtuuaXdfBR+KnZtr/Rqd1NuPOSOhdR1Blljk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CTnSuqCqUVG+82HZjo6wV812xv8w1NbG6WQHw95JxygLo14Qz+c4PgKXuG68X/Qx2
-         Pz0d+mPUDuA2NaE+PW/8ROfoT7jbSN3Dhqo1RpGV+ldyvy7BUge/9aw6WFT0BGFdQ1
-         6y91KAtvww1+n3lh/Z4sDEN6Zfeq4U0t5TK91W8b503xeIG+bCD8FvrBNjXYxZwoEc
-         +c4orP4G81N/KUPCuSg7UeRiduSRsBWdOcYEyPWx0RVo/jGsRVY1fJuabeMgOr/B1N
-         4nmlA3Pqzc+BQbM0WB7AUV2Pdk7/9iqZqPSNpetZzxk0y9PmY3nDeojno9Zf5M0eYa
-         6SmniY7KQXFzA==
-Date:   Mon, 24 Jul 2023 18:56:23 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Swapnil Jakhade <sjakhade@cadence.com>
-Cc:     vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, mparab@cadence.com, rogerq@kernel.org,
-        s-vadapalli@ti.com
-Subject: Re: [PATCH 4/5] dt-bindings: phy: cadence-torrent: Add a separate
- compatible for TI J7200
-Message-ID: <20230724-shampoo-junior-f9e0bb095668@spud>
-References: <20230724150002.5645-1-sjakhade@cadence.com>
- <20230724150002.5645-5-sjakhade@cadence.com>
+        Mon, 24 Jul 2023 13:58:19 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781261BE1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:56:53 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d066d72eb12so3888812276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 10:56:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690221412; x=1690826212;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3ZhW5guor5Hz2gkFyNtuQtClYHHtgI1jQRPcPTzIh4g=;
+        b=zBP6/yssRg6JfCnUlMmgDV1KxmrqEtLeMzVKSNMKDdWWkEQDA4EoLBuC84wHvotvY2
+         Qj2MlscVI3d7nbXefmICVw3aBmPAtP9Iy6/OTwfq6JEkjb4vXpdsdgMPwJNqXjAzM1uA
+         MFXXwr7tzsIgdikd7fWjX90eygo11I3J+6EBQEbNzVohHcbLLpYf5mJs93AZcTEDkLv/
+         hdXt2SSH2TxvFPMAkJepU3KPocNnmuOF5kJtVZJ3C/4r7axqfcJUGws70DY0u/15kH28
+         XUBb7ixKkiCBAf69Y+1BvE4u5wVSXEnY6O/cEOFaacU2bmQL5z3uagVZ7j/bj/sUJSGe
+         7Zlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690221412; x=1690826212;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3ZhW5guor5Hz2gkFyNtuQtClYHHtgI1jQRPcPTzIh4g=;
+        b=NF7j58NwAG163BwzQNeyNv7uBH46jhy24IfhjUCAEutN+nrYX7SyHObKvvidcL/bRz
+         w55i6GBT9TNcw0kc3c+LCTP+PkkRUhCRtKUGYqqd+AAPIiA2IBJGSDTRyY2ba0gLxfQZ
+         7OpHx3Qm38athcXaVkqRbB8hJJbVfxBil8pOC1jtbmRVGs62bRwKw+fyZ9DSwijGxwDX
+         J/IO0PnpsjbeMIP9aTwcmffOBBLJH8HFH+x2pZ7hCabWFk+zotCQ7QlVcHX5aDmr4mzT
+         VAnuYVcit5w69/HasRjwrvZSs1WQtN//UrHhv9rIRtkwDLF0laHGwKfk3DuTxdeiOsRV
+         hRDQ==
+X-Gm-Message-State: ABy/qLbanBpTxfhV2UBrGM1Vc9qfnDcuCMsqOm2SWYRm3V2UBuqqyLlx
+        HskVihR78JRXZM8ez12qjy3WU9juW1v+yoVg8HA9IQ==
+X-Google-Smtp-Source: APBJJlEL49lC9Xnmn+AOa8dWCtiGCXwv36+U8j4wMBcZBf0by+9XagUVQLV+jdt1mUay5/9S78Hs2x+mC09ZmIB3kEc=
+X-Received: by 2002:a25:bcc4:0:b0:d07:2183:f547 with SMTP id
+ l4-20020a25bcc4000000b00d072183f547mr5274226ybm.32.1690221412745; Mon, 24 Jul
+ 2023 10:56:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bGIJ911Wz6RGVT1e"
-Content-Disposition: inline
-In-Reply-To: <20230724150002.5645-5-sjakhade@cadence.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+References: <20230719105829.148011-1-luca.ceresoli@bootlin.com>
+In-Reply-To: <20230719105829.148011-1-luca.ceresoli@bootlin.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 24 Jul 2023 19:56:41 +0200
+Message-ID: <CACRpkdYshDD0CmdjdeVk_oG1s1W4BHHFzLmzN9QtZeMaEyvTBg@mail.gmail.com>
+Subject: Re: [PATCH] drm/panel: db7430: remove unused variables
+To:     Luca Ceresoli <luca.ceresoli@bootlin.com>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,47 +73,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 19, 2023 at 12:59=E2=80=AFPM Luca Ceresoli
+<luca.ceresoli@bootlin.com> wrote:
 
---bGIJ911Wz6RGVT1e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> These variables are never referenced in the code.
+>
+> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 
-On Mon, Jul 24, 2023 at 05:00:01PM +0200, Swapnil Jakhade wrote:
-> TI J7200 uses Torrent SD0805 version which is a special version
-> derived from SD0801 that has an additional input reference clock.
-> Add a separate compatible for TI J7200 platforms.
->=20
-> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
-> ---
->  Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/phy/phy-cadence-torrent.ya=
-ml b/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
-> index ddb86ee0cebf..e3a1efd61033 100644
-> --- a/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
-> +++ b/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
-> @@ -20,6 +20,7 @@ properties:
->    compatible:
->      enum:
->        - cdns,torrent-phy
-> +      - ti,j7200-serdes-10g
->        - ti,j721e-serdes-10g
+Patch applied and pushed to drm-misc-next.
 
-Should the number of clocks not be restricted dynamically based on the
-compatible, since only the 7200 requires the extra refclk?
-
-
---bGIJ911Wz6RGVT1e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZL67RwAKCRB4tDGHoIJi
-0vcMAP4noEcvSdlF5E1v6dNB2dJ9iZHEzf31j10soPGA7MlG9wEA8lZWSCFG+Vcx
-cmh3GJkbkHg7ET7cZgc52F/k+9xMGAI=
-=nuHG
------END PGP SIGNATURE-----
-
---bGIJ911Wz6RGVT1e--
+Yours,
+Linus Walleij
