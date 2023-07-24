@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEF97602E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 01:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C04D87602D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 Jul 2023 00:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbjGXXCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 19:02:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
+        id S230236AbjGXW4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 18:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjGXXCS (ORCPT
+        with ESMTP id S230185AbjGXW4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 19:02:18 -0400
-X-Greylist: delayed 376 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 Jul 2023 16:02:17 PDT
-Received: from out-34.mta1.migadu.com (out-34.mta1.migadu.com [95.215.58.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F7CE70
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 16:02:17 -0700 (PDT)
-Message-ID: <4c524936-989b-f679-d9ec-cf374c849c6f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690239359;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H6YN2MhKnObTVNJlwXZBDVh2nU9Nss9o5bGaetiiYLk=;
-        b=OCUfQwf35fGkg4l3oybIH0OevuT0Zex7S9aARt7wwkSawx/N3p+55TqfELamAc59XkvMjd
-        d7IpN68fWVMFNKZi6ikR2rcdDcsxH8tPMrEqc0sDib+tNM+8LPPKLQfT+bVf5ujtSCOD0Y
-        kqnZnwP9B6xmC1zwwimS+v7HKW0BxFw=
-Date:   Mon, 24 Jul 2023 15:55:49 -0700
+        Mon, 24 Jul 2023 18:56:04 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C7A10E6;
+        Mon, 24 Jul 2023 15:56:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Xv427QC+R9vuHVbHCAZjuC2UpYowC4hp3LnREUt/91U=; b=OkjBl1DEAv9p/qikIyDaijwxe/
+        K2tZlk2NPbdwFenUZrX9RMAUdmQj5o4fzjJ/xvhB5g324dyytttePLevseSmopf9vl2V2gcGevDVU
+        GBlWond5QEtZLgq8igwjBDgsmbSSh3c6xjMW5Me2hcJj1FV3U4dT11mNuiefaVtHtUrXjM/KtWFA/
+        7pUEoUip650uHAzBJvdFP+S1Bvr8qd2EIRPH3OH25kO04CaiugnhPhE1/9BP0OKdWwYHp+rKaO4kc
+        GVthT7i+7EebQyq0guGPOYNf6jIQGJ8mStSDOaMgCvTi3bl+c+CcFaqRa7jwZPXHERnZUBirmAqvT
+        kQsViwvQ==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qO4TA-005bDi-1n;
+        Mon, 24 Jul 2023 22:56:00 +0000
+Message-ID: <489f5b97-36fb-75fa-c6eb-c9b36fd116a0@infradead.org>
+Date:   Mon, 24 Jul 2023 15:55:59 -0700
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 4/8] net: remove duplicate reuseport_lookup
- functions
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 0/6] gpio: ge: fixes and cleanups
 Content-Language: en-US
-To:     Lorenz Bauer <lmb@isovalent.com>
-Cc:     Hemanth Malla <hemanthmalla@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Joe Stringer <joe@wand.net.nz>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>
-References: <20230720-so-reuseport-v6-0-7021b683cdae@isovalent.com>
- <20230720-so-reuseport-v6-4-7021b683cdae@isovalent.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20230720-so-reuseport-v6-4-7021b683cdae@isovalent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>
+References: <20230724161320.63876-1-andriy.shevchenko@linux.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230724161320.63876-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/23 8:30 AM, Lorenz Bauer wrote:
-> @@ -452,7 +436,14 @@ static struct sock *udp4_lib_lookup2(struct net *net,
->   				      daddr, hnum, dif, sdif);
->   		if (score > badness) {
->   			badness = score;
-> -			result = lookup_reuseport(net, sk, skb, saddr, sport, daddr, hnum);
-> +
-> +			if (sk->sk_state == TCP_ESTABLISHED) {
-> +				result = sk;
-> +				continue;
-> +			}
 
-Thanks for the cleanup. I also found moving the TCP_ESTABLISHED check here made 
-the score logic easier to reason.
+
+On 7/24/23 09:13, Andy Shevchenko wrote:
+> Randy reported a couple of problems, the first two patches
+> fix that. On top are a few cleanups.
+> 
+
+For the series:
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+Thanks.
+
+> Andy Shevchenko (6):
+>   gpio: ge: Add missing header
+>   gpio: ge: Fix English spelling and grammar
+>   gpio: ge: Make driver OF-independent
+>   gpio: ge: Utilise temporary variable for struct device
+>   gpio: ge: Replace GPLv2 boilerplate with SPDX
+>   gpio: ge: Enable COMPILE_TEST for the driver
+> 
+>  drivers/gpio/Kconfig   |  2 +-
+>  drivers/gpio/gpio-ge.c | 66 +++++++++++++++++++-----------------------
+>  2 files changed, 30 insertions(+), 38 deletions(-)
+> 
+
+-- 
+~Randy
