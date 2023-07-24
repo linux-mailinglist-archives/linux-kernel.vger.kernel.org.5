@@ -2,135 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 161DF75EEC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D74A75EED3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232139AbjGXJMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 05:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34236 "EHLO
+        id S232207AbjGXJOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 05:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbjGXJMj (ORCPT
+        with ESMTP id S229576AbjGXJOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 05:12:39 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C70187
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:12:36 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-993d1f899d7so727243766b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:12:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690189954; x=1690794754;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Fh4EDpkUKXX0i2jSGB1PBtJy0KS6P9QG8sx5m74zofM=;
-        b=k7sd9ry9f7KEkVokM1xv+AAbCPIUgxP9XVqzO2oMvoiFvG/KjABl32DheQa3U+CUC4
-         FiNKfOU4mjEp9GJcI0Im9xwYFtPAIZbXJzoxBZ/rr6RF5MlQJ0kJAVrUTUTeDxI9XkQy
-         qWGaACOxgXzHWqRKbhJnXkE+kOdZMIe41i0vCaZUNjm760cbJH+6w5Ty3z/OHyDLnvEN
-         0EPDsV6gNixv/DBpu2SVDzffU4PrMSt6DhSna0c1zR0eAOASjDQZI/BWq7g2AcuTy7jr
-         2bgX4+HoikeVPH6/aaWveSXFCU0WTMON9pJ61shYVBFC1X5Oxw9lu+khduMMptAw9RbC
-         lGkw==
+        Mon, 24 Jul 2023 05:14:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B081D12A
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:13:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690190000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=//aPJH4zrPdTDxzMzJs7UJ4GFjBaI2aqgPX71P6a5dg=;
+        b=hXiDVIM2mC3M6DJsNh6TsEmcyuphhWW5Y30rCsHVrxAdwAA2WSAZNiGoCgRDi9g8hVRQMZ
+        walFasxW6u2nnMi5jmtvK/FCD5xDt+x/0HTBTtYdfiFv0KCZgaOyu3eGHarGETccSPkor+
+        jDG2F7fOrsKg6HOzd0Xt97+t4S4wV4c=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-369-_cHJUeYQOq2996_vFUj-BQ-1; Mon, 24 Jul 2023 05:13:13 -0400
+X-MC-Unique: _cHJUeYQOq2996_vFUj-BQ-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-26801e9bcdaso439039a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:13:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690189954; x=1690794754;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690189992; x=1690794792;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fh4EDpkUKXX0i2jSGB1PBtJy0KS6P9QG8sx5m74zofM=;
-        b=LYnF8vchv3MwQin3r5rvKnt2qH+ht2h0fMzGFxN3/wRjTwRRlUgxsw+wom950+6I0k
-         /KR22Rw2BbyFpke6zaZEF92qY1Saz7k6gb0/Sm3rJrHku9CunvDTLy4QSh+TBIshrEPQ
-         2MkRNDaMI6MM5Eq5bFkG+pf5LLMtBUAFMWJwjJzTLmzrrRqRYS0e/tmRlVABE8KMvdfe
-         aw+V0M2DS2IIbijZBDmmDrHbO8FjV+0FY86Fn5S78N8NnFIFwxGmMo9vbKzRKDntIix8
-         T+JAo70kT/2325e5hajEwnikIgOwVmoOua1Z6bUnPWlbqWEm9sPnhMoD+z9fbgvq7vmH
-         zn9A==
-X-Gm-Message-State: ABy/qLY/YfGrQde0tzN4ndqdCZ1yH+GPkLvByC2jJwI/k9TElMd2g9RL
-        m8ZZ3tweuVVo0cmHMXOZxBfnFg==
-X-Google-Smtp-Source: APBJJlFyiqbyrtae4oPoU8c9essn66hxwhB/tZ54efWazcZSBJL34UATeiWbByL1xXKVtIQgz5XF7Q==
-X-Received: by 2002:a17:906:64d2:b0:993:d6a7:13b with SMTP id p18-20020a17090664d200b00993d6a7013bmr10019595ejn.22.1690189954456;
-        Mon, 24 Jul 2023 02:12:34 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id j15-20020a170906254f00b00992d122af63sm6445656ejb.89.2023.07.24.02.12.31
+        bh=//aPJH4zrPdTDxzMzJs7UJ4GFjBaI2aqgPX71P6a5dg=;
+        b=R3esfAwQN5vFxRsmCwm2xtk5midy9KvLVakLpQuxFtGeay70L3xh2/5C5pfaa6aJxX
+         w1+xv3sG3x0EvcUrVYI7QoJwG71ksF73fXzkpup++SMbCjJaDL2XE6IUVKX4gaGFp/5w
+         M7Wo3m8Ahd8E7a2cdnm0e6LqVe4AY8HWNewoM3KYW1PiXn1f3/8N2ftlgRjySlR3+H21
+         YK0ai67fic/ff4XuR8MTbJalHVudrzVKJKfCof7AFKgjWDxI6laE7lcE4S188ZDghLy+
+         VBkv3Y0BDtqLZ7yg99lhD7SWCqUrWLurr+iFgbY1/a1Pjjc8xbJjg4Ca/jvzvi4OsXUN
+         iExQ==
+X-Gm-Message-State: ABy/qLau0enwSoehsLUUoEHNppmq6WyGZtWFrJVNBbAQiD7auoEcHwk+
+        0vxhCqiRvYTWBfN/0YXrCEyvzHNV5FpDK/Yi7QQBvBetr9WZWdhuDKvG/d+0wHmKenCCUc2VqA0
+        yfDNvjDx1VsytM6Rt7jZF3e1y
+X-Received: by 2002:a17:902:ce92:b0:1b8:1591:9f81 with SMTP id f18-20020a170902ce9200b001b815919f81mr12102519plg.4.1690189992429;
+        Mon, 24 Jul 2023 02:13:12 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFYYex+PeZplrxlN0jNWs984ysaSZQSKu+vtitozLwa1hyTQD6SfImYNcNMAys3P7/0AANuTw==
+X-Received: by 2002:a17:902:ce92:b0:1b8:1591:9f81 with SMTP id f18-20020a170902ce9200b001b815919f81mr12102507plg.4.1690189992175;
+        Mon, 24 Jul 2023 02:13:12 -0700 (PDT)
+Received: from [10.66.61.39] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id w7-20020a170902e88700b001b06c106844sm8389140plg.151.2023.07.24.02.13.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 02:12:33 -0700 (PDT)
-Message-ID: <4d8143bc-03db-4f6b-9833-44cbaf95ecac@linaro.org>
-Date:   Mon, 24 Jul 2023 11:12:30 +0200
+        Mon, 24 Jul 2023 02:13:11 -0700 (PDT)
+Message-ID: <bab509a1-5096-4ca0-e043-898d941e200a@redhat.com>
+Date:   Mon, 24 Jul 2023 17:13:06 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 09/11] dt-bindings: arm: msm: kpss-acc: Make the optional
- reg truly optional
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Benjamin Li <benl@squareup.com>,
-        James Willcox <jwillcox@squareup.com>,
-        Joseph Gates <jgates@squareup.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Zac Crosby <zac@squareup.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Lee Jones <lee@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Xu Yang <xu.yang_2@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Jun Nie <jun.nie@linaro.org>, Max Chen <mchen@squareup.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vincent Knecht <vincent.knecht@mailoo.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        alsa-devel@alsa-project.org, iommu@lists.linux.dev,
-        linux-usb@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Andy Gross <andy.gross@linaro.org>
-References: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
- <20230627-topic-more_bindings-v1-9-6b4b6cd081e5@linaro.org>
- <c52ee94f-f60b-f8f0-f93c-221beec0224a@linaro.org>
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v7 02/12] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
 Content-Language: en-US
-In-Reply-To: <c52ee94f-f60b-f8f0-f93c-221beec0224a@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <20230722022251.3446223-1-rananta@google.com>
+ <20230722022251.3446223-3-rananta@google.com>
+From:   Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <20230722022251.3446223-3-rananta@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/2023 11:05, Krzysztof Kozlowski wrote:
-> On 27/06/2023 18:24, Konrad Dybcio wrote:
->> The description of reg[1] says that register is optional. Adjust
->> minItems to make it truly optional.
->>
->> Fixes: 12f40018b6a9 ("dt-bindings: arm: msm: Convert kpss-acc driver Documentation to yaml")
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
+
+
+On 7/22/23 10:22, Raghavendra Rao Ananta wrote:
+> Stop depending on CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL and opt to
+> standardize on kvm_arch_flush_remote_tlbs() since it avoids
+> duplicating the generic TLB stats across architectures that implement
+> their own remote TLB flush.
 > 
-> This patch does not make sense. It wasn't also tested. The code
-> (minItems) is already there.
+> This adds an extra function call to the ARM64 kvm_flush_remote_tlbs()
+> path, but that is a small cost in comparison to flushing remote TLBs.
+> 
+> In addition, instead of just incrementing remote_tlb_flush_requests
+> stat, the generic interface would also increment the
+> remote_tlb_flush stat.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>   arch/arm64/include/asm/kvm_host.h | 3 +++
+>   arch/arm64/kvm/Kconfig            | 1 -
+>   arch/arm64/kvm/mmu.c              | 6 +++---
+>   3 files changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 8b6096753740..7281222f24ef 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -1111,6 +1111,9 @@ int __init kvm_set_ipa_limit(void);
+>   #define __KVM_HAVE_ARCH_VM_ALLOC
+>   struct kvm *kvm_arch_alloc_vm(void);
+>   
+> +#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
+> +int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
+> +
+>   static inline bool kvm_vm_is_protected(struct kvm *kvm)
+>   {
+>   	return false;
+> diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
+> index f531da6b362e..6b730fcfee37 100644
+> --- a/arch/arm64/kvm/Kconfig
+> +++ b/arch/arm64/kvm/Kconfig
+> @@ -25,7 +25,6 @@ menuconfig KVM
+>   	select MMU_NOTIFIER
+>   	select PREEMPT_NOTIFIERS
+>   	select HAVE_KVM_CPU_RELAX_INTERCEPT
+> -	select HAVE_KVM_ARCH_TLB_FLUSH_ALL
+>   	select KVM_MMIO
+>   	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
+>   	select KVM_XFER_TO_GUEST_WORK
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 6db9ef288ec3..0ac721fa27f1 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -161,15 +161,15 @@ static bool memslot_is_logging(struct kvm_memory_slot *memslot)
+>   }
+>   
+>   /**
+> - * kvm_flush_remote_tlbs() - flush all VM TLB entries for v7/8
+> + * kvm_arch_flush_remote_tlbs() - flush all VM TLB entries for v7/8
+>    * @kvm:	pointer to kvm structure.
+>    *
+>    * Interface to HYP function to flush all VM TLB entries
+>    */
+> -void kvm_flush_remote_tlbs(struct kvm *kvm)
+> +int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
+>   {
+> -	++kvm->stat.generic.remote_tlb_flush_requests;
+>   	kvm_call_hyp(__kvm_tlb_flush_vmid, &kvm->arch.mmu);
+> +	return 0;
+>   }
+>   
+>   static bool kvm_is_device_pfn(unsigned long pfn)
 
-
-What's more - there is no such commit as 12f40018b6a9!
-
-Bjorn,
-You might find this useful (fake Fixes tag should be detected):
-https://github.com/krzk/tools/blob/master/linux/git-hooks-post-commit
-
-Best regards,
-Krzysztof
+-- 
+Shaoqin
 
