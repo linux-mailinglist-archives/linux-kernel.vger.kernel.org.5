@@ -2,50 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B827C75F8D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6A875F8CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbjGXNtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48574 "EHLO
+        id S230050AbjGXNro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbjGXNsR (ORCPT
+        with ESMTP id S231315AbjGXNrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:48:17 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D5FE03C19;
-        Mon, 24 Jul 2023 06:45:58 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89D53FEC;
-        Mon, 24 Jul 2023 06:45:55 -0700 (PDT)
-Received: from e127643.broadband (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A854A3F67D;
-        Mon, 24 Jul 2023 06:45:09 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     linux-perf-users@vger.kernel.org, irogers@google.com,
-        anshuman.khandual@arm.com, will@kernel.org
-Cc:     James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 0/4] arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capability
-Date:   Mon, 24 Jul 2023 14:44:55 +0100
-Message-Id: <20230724134500.970496-1-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 24 Jul 2023 09:47:11 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EA61FE1;
+        Mon, 24 Jul 2023 06:45:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690206301; x=1721742301;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rY2/R9GFp/Je8rfy5KAQqpLAzPjjeEx7LgTpj02B9e8=;
+  b=N0P+3d/x2OkZtzms2qiSIdMF3G0Pl4BoCicrc67gIKwltndVQ0tzh3Jc
+   xr9S4QD8cbF5LdWOeF7838D6Cc92OmwTJoPinndY4+EE+ljPxL6d87Yju
+   XGrYWnjoxaFOU2xN/ivz5Q1YUiOZOe9p3GjCoZ8DrJmLh5nMYssrp3QCD
+   ncZARnSDuY9gM4ItoKdq9QZNyPU4YODec44OngaqWPkyEtiKHGsthFdmr
+   Ps3nHDdf3WpojxX/pzHw6/r4B5Zg1PG9nwqzB8LjyEj0DG1pdX4VSOxae
+   ebUHoSwVMC7uNSWj/Y93yzD+K4PRKZ/PbtfK2KFlxn248ClsXjaMoQqo3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="367467742"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="367467742"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 06:45:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="719682886"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="719682886"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP; 24 Jul 2023 06:44:58 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qNvrs-00FRjQ-2O;
+        Mon, 24 Jul 2023 16:44:56 +0300
+Date:   Mon, 24 Jul 2023 16:44:56 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: linux-next: build warning after merge of the sound-asoc tree
+Message-ID: <ZL6AWGiabBGyU3Dq@smile.fi.intel.com>
+References: <20230713121627.17990c86@canb.auug.org.au>
+ <ZK/ruOD4QFPQ3Q5q@smile.fi.intel.com>
+ <ZK/w5LFanElxZazG@smile.fi.intel.com>
+ <ZLES/6iNcmR7H+f7@smile.fi.intel.com>
+ <20230724135858.3c1abb01@canb.auug.org.au>
+ <ZL410jAw2ksuBx56@smile.fi.intel.com>
+ <cbff36d5-cde7-43bd-b0d5-ede8950fd885@sirena.org.uk>
+ <ZL53HkIWuE4byo+R@smile.fi.intel.com>
+ <43862e72-eeb2-4670-8cd6-0e334044583d@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <43862e72-eeb2-4670-8cd6-0e334044583d@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,47 +77,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes since v1:
++Cc: Jon
 
-  * Removed "legacy" description of PERF_TYPE_HARDWARE and
-    PERF_TYPE_HW_CACHE events
-  * Shift down remaining capability bits instead of inserting
-    /* Unused */ in the gap (last commit)
+On Mon, Jul 24, 2023 at 02:11:00PM +0100, Mark Brown wrote:
+> On Mon, Jul 24, 2023 at 04:05:34PM +0300, Andy Shevchenko wrote:
+> > On Mon, Jul 24, 2023 at 01:36:53PM +0100, Mark Brown wrote:
+> 
+> > > Jon's usually fairly responsive, perhaps there's something worrying
+> > > there,
+> 
+> > Hmm... maybe my understanding of the :export: is wrong? Or what do you suggest?
+> 
+> I have no idea what any of that is doing.  I'm hoping Jon does.
 
-Applies to v6.5-rc3
+Okay, so far we are waiting for his reply...
 
----------------------
-
-This came out of the discussion here [1]. It seems like we can get some
-extra big.LITTLE stuff working pretty easily. The test issues mentioned
-in the linked thread are actually fairly unrelated and I've fixed them
-in a different set on the list.
-
-After adding it in the first commit, the remaining ones tidy up a
-related capability that doesn't do anything any more.
-
-I've added a fixes tag for the commit where
-PERF_PMU_CAP_EXTENDED_HW_TYPE was originally added because it probably
-should have been added to the Arm PMU at the same time. It doesn't apply
-cleanly that far back because another capability was added between then,
-but the resolution is trivial.
-
-Thanks
-James
-
-[1]: https://lore.kernel.org/linux-perf-users/CAP-5=fVkRc9=ySJ=fG-SQ8oAKmE_1mhHHzSASmGHUsda5Qy92A@mail.gmail.com/T/#t
-
-James Clark (4):
-  arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capability
-  perf/x86: Remove unused PERF_PMU_CAP_HETEROGENEOUS_CPUS capability
-  arm_pmu: Remove unused PERF_PMU_CAP_HETEROGENEOUS_CPUS capability
-  perf: Remove unused PERF_PMU_CAP_HETEROGENEOUS_CPUS capability
-
- arch/x86/events/core.c     |  1 -
- drivers/perf/arm_pmu.c     | 10 ++++++----
- include/linux/perf_event.h |  7 +++----
- 3 files changed, 9 insertions(+), 9 deletions(-)
+> > > though I do note you only sent it a bit more than a week ago.
+> 
+> > I fully aware of that and you can see that this reply has been induced by
+> > the ping from Stephen.
+> 
+> Sure, but that means that it's possible he's just not got round to it
+> yet rather than that there's a problem.
 
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
