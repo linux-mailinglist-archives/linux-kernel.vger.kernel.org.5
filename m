@@ -2,61 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C2875FC0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3632575FC15
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbjGXQ2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55260 "EHLO
+        id S229667AbjGXQ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjGXQ2o (ORCPT
+        with ESMTP id S231325AbjGXQ3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:28:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F331B90;
-        Mon, 24 Jul 2023 09:28:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6EE346126B;
-        Mon, 24 Jul 2023 16:28:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2A57C433C8;
-        Mon, 24 Jul 2023 16:28:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690216122;
-        bh=lxGAMbe4glHJGmlZVuH5/303VTnfVBaqcV1ylcKxjoA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jkjZ53gG+sPiNhbq+gMO5vgg1WnkyLvGTmSrHHFBhD3xtfzU4yfg0ud6W8S/qItKW
-         gh2aZti/Yd/7l4/JJO6UzqVI/nKJusFuzx9EdAvPjAIyRcqUMpaTAwLjC2Ir9Vvz2p
-         1B8/SlUOjQp1HULfTuv4GaB9dDSys35kXNmRy1OSmsNt5OABFFYgMJtywMJxVWdSqf
-         Qqj/6YPLaOO4c2CdgoTmnKxt5IGVW/sH4jozhNq8OBTl5FobkvRw6Nb08oPc++lTvV
-         YKpJF1C9saY32oyjfYd3hhJyC71qbSxnSHtvlpbT55DNtEAePF10McltKVGgR0/eLH
-         vhq7DSPcMWNNQ==
-Received: (nullmailer pid 3789312 invoked by uid 1000);
-        Mon, 24 Jul 2023 16:28:40 -0000
-Date:   Mon, 24 Jul 2023 10:28:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        devicetree@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: Re: [PATCH 1/2] dt-bindings: usb: qcom,dwc3: drop assigned-clocks
-Message-ID: <169021612042.3789253.5446474765514651082.robh@kernel.org>
-References: <20230723141550.90223-1-krzysztof.kozlowski@linaro.org>
+        Mon, 24 Jul 2023 12:29:14 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA3219A9
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:29:03 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-6378cec43ddso28070076d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 09:29:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1690216142; x=1690820942;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UvqRTgPMkZyyUJ/eYLri/dywvbqF1gq/yURWmZL7/6A=;
+        b=JTxlLwpY4B+RxCOA0IT7t0KJtuxqOdUcLBueZqYEwWOGw9vBGNalO2vfSLeha3sDww
+         n23Q2fVF4XLsfCIJ7N2XehDqaKBLbFDRIYGVwcF+/T7FO8WCJIaZAFVHoCu1+ADDppdF
+         J9P/yTyeIu5AmCy7TmwinJWEhwXoPIvY6iS4xyJbx11IBdrOHgxK1FhlslIywkd4rYkp
+         okaSM9B557rsg+oZkzb0HeYzVvEpn2XAqbqS5qz2+aMG/7oTJ1rGBYMonxeaOuyrzZNF
+         ondYg2tvzr8bwYJY2FCAZSKUQnd5qWVtvwL/Mlli9wvr3A4647ZiN6lPyW1GLHxw+hpU
+         9CGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690216142; x=1690820942;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UvqRTgPMkZyyUJ/eYLri/dywvbqF1gq/yURWmZL7/6A=;
+        b=QCBjlgoGYvrIZP1bBXkmJTHh7687+5iFMGzZEyK7UeNrEmVzgqHMCbo4Y6iQj4F6Hf
+         bBFhq9bMnh34iRRg42OVYQivEK51WpeKnREnBHIx2eC94Fyk4MgZC2pOZ5lfSquc5gxN
+         C1rs6JT/gyEIK/LzWW74ENa475bW3FUnseL7LRNl19JgXe5J2EMIKtvHutN/i9X1didA
+         fWhK3vi1uCQTE3v8Zyl4bC25L7YghdYKz1SF0bGGZJhGcC4Q5KClhejmZoWfILWmQN6s
+         aJl42YcS9v9pATMovQLl+1JRLDxVXAAVpegPiuFY7J7t4I3It/punSvJkgl/IbiJP4Aw
+         GLOw==
+X-Gm-Message-State: ABy/qLb3ReEOJLcbDVtDz4KzQd+0VQesH/FmWzA8Ad0EiyV++oTQJ/W3
+        vOne98kbXJvQWuAkj82o4Yha+g==
+X-Google-Smtp-Source: APBJJlEqioDGur2hWJN/oBxGPx39JbASLwLrWEnz70ekshKDJ87a6G6epx0cyhvpPQhxk2uV+XsBHg==
+X-Received: by 2002:a0c:de0a:0:b0:63c:ee13:5adb with SMTP id t10-20020a0cde0a000000b0063cee135adbmr268559qvk.47.1690216141736;
+        Mon, 24 Jul 2023 09:29:01 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id r12-20020a0ccc0c000000b0063003786840sm3659258qvk.99.2023.07.24.09.29.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 09:29:00 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qNyQd-000K2X-UT;
+        Mon, 24 Jul 2023 13:28:59 -0300
+Date:   Mon, 24 Jul 2023 13:28:59 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Mina Almasry <almasrymina@google.com>, brouer@redhat.com,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Hari Ramakrishnan <rharix@google.com>,
+        David Ahern <dsahern@kernel.org>,
+        Samiullah Khawaja <skhawaja@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>, logang@deltatee.com,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
+ page_pool: remove PP_FLAG_PAGE_FRAG flag)
+Message-ID: <ZL6my550xedf/L0Z@ziepe.ca>
+References: <20230711133915.03482fdc@kernel.org>
+ <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
+ <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com>
+ <ZK6kOBl4EgyYPtaD@ziepe.ca>
+ <CAHS8izNuda2DXKTFAov64F7J2_BbMPaqJg1NuMpWpqGA20+S_Q@mail.gmail.com>
+ <143a7ca4-e695-db98-9488-84cf8b78cf86@amd.com>
+ <CAHS8izPm6XRS54LdCDZVd0C75tA1zHSu6jLVO8nzTLXCc=H7Nw@mail.gmail.com>
+ <ZLFv2PIgdeH8gKmh@ziepe.ca>
+ <CAHS8izNMB-H3w0CE9kj6hT5q_F6_XJy_X_HtZwmisOEDhp31yg@mail.gmail.com>
+ <a2569132-393e-0149-f76c-f6de282e1c96@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230723141550.90223-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <a2569132-393e-0149-f76c-f6de282e1c96@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,22 +122,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 24, 2023 at 04:56:27PM +0200, Jesper Dangaard Brouer wrote:
 
-On Sun, 23 Jul 2023 16:15:49 +0200, Krzysztof Kozlowski wrote:
-> The binding does not have to specify assigned-clocks, because they are
-> already allowed by core DT schema.  On the other hand, fixed
-> assigned-clocks in the binding will not fit different boards or SoCs.
-> Exactly this is the case for Qualcomm SuperSpeed DWC3 USB SoC controller
-> binding, where few boards have different assigned-clocks:
-> 
->   ipq8074-hk10-c1.dtb: usb@8cf8800: assigned-clocks: [[5, 131], [5, 132], [5, 133]] is too long
->   sdm660-xiaomi-lavender.dtb: usb@a8f8800: assigned-clocks: [[37, 92], [37, 91], [38, 64]] is too long
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 9 ---------
->  1 file changed, 9 deletions(-)
-> 
+> These massive throughput numbers are important, because they *exceed*
+> the physical host RAM/DIMM memory speeds.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+That's right, this HW is all designed to use the high memory bandwidth
+of the parallel GPUs. The CPU must not be involved in the data
+movement.
 
+If you look at the reference block diagrams for a DGX-H100 you can see
+that the each GPU is directly wired to a 400Gb/s NIC, and there is
+even software that allows the GPU to directly operate its attached
+NIC interface.
+
+Each of the 8 GPUs in the block diagram has 800 Gb/s full duplex RDMA,
+and 7200 Gb/sec full duplex on the nvlink interconnect directly
+connected to it.
+
+The GPU is the center of all the interconnect in these systems.
+
+Jason
