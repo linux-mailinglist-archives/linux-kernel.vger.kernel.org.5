@@ -2,94 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD50375EE61
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E5575EE67
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbjGXIxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:53:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50436 "EHLO
+        id S231940AbjGXIyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232065AbjGXIxQ (ORCPT
+        with ESMTP id S231929AbjGXIyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:53:16 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 099F4E7;
-        Mon, 24 Jul 2023 01:53:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690188795; x=1721724795;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LcRTXW7A98A1iH6wH475L2ndJh4dAaJUqJWpj/zpQZ8=;
-  b=EtRdQvbfhF+roVoOP8fJfn0HTmRtcKFVklDmXO7/2p8LnQphb/gFRlkp
-   1akFkyOSs7dXjH85pMKiZm19JMZRX3ziktTpMgo1jDmhIbQ8kvFX2TzVm
-   vjZlkwE3TxkhWUXWgTr6pQUA9kCBXkaD+Cx2byUVuX24dPeC/+Uz4Rvu5
-   f2PcQxgkZj3y+9823HExsFVz5nF/EmGjiRFW9s/cEgnZT4C2Ex3CB5kGx
-   elnznVeEVSHbluOec5cHLCSrBmIdjljsKq9P4yCDDPcjkD2ZcOaKk2Bc2
-   Fxp3Car/LJCfxIq76OF3tzs7G2yFodlXnVII2FXrKsnv3DLiN6h6dhK+P
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="366279758"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="366279758"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 01:53:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="869003822"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Jul 2023 01:53:13 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qNrJV-005Hoz-2y;
-        Mon, 24 Jul 2023 11:53:09 +0300
-Date:   Mon, 24 Jul 2023 11:53:09 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] serial: core: Controller id cannot be negative
-Message-ID: <ZL479clNYW4YG1mE@smile.fi.intel.com>
-References: <20230724050709.17544-1-tony@atomide.com>
- <20230724050709.17544-2-tony@atomide.com>
- <ZL471yzIKu1xG/PF@smile.fi.intel.com>
+        Mon, 24 Jul 2023 04:54:33 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26308E7
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:54:29 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R8Yr16NmMzBRx5N
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 16:54:25 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1690188865; x=1692780866; bh=chwR9bvFIg7iBGHVcSR9ITXkkoJ
+        jDG51eV1JMt2fqig=; b=SFzxcNQJfmH2iWnlPIODSRbG3ucbAh4R+FuRW4eH1H2
+        xCLYm0bqatfPCsRUMZaQraniglwPE3h4b42OhQ/l2fS814Xikw7YYP/6Sg2hYO6H
+        QB+9lAlOfSPvoc5d7PO6GfoM7Pnkyh3SgHiV0ygy12RlobLuE+hbmDVtPhZsxZOD
+        H5o/yH76RDH/rOxrsYh3Y4AUrj2IjKIXgfaHdfy1bn+rXDvheqc5nsMPTD9QTVDQ
+        OkozNrYdTWPp+jo0HUPOBHSu4EM9qEdRNECXA9mzAlJObAOP0fwcyyzd+0/bCDMH
+        wXbk+gcGEwCrMjHjAdCc1RtOPKB5YcQXR1ElCmI/ilA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 5I3g6DxNccOw for <linux-kernel@vger.kernel.org>;
+        Mon, 24 Jul 2023 16:54:25 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R8Yr14866zBKnld;
+        Mon, 24 Jul 2023 16:54:25 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZL471yzIKu1xG/PF@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Date:   Mon, 24 Jul 2023 16:54:25 +0800
+From:   sunran001@208suo.com
+To:     alexander.deucher@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amd/pm: Clean up errors in smu_v11_0_7_pptable.h
+In-Reply-To: <20230724085303.9607-1-xujianghui@cdjrlc.com>
+References: <20230724085303.9607-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <c5575527bac1642f2cf896ae0ee9f582@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 11:52:39AM +0300, Andy Shevchenko wrote:
-> On Mon, Jul 24, 2023 at 08:07:03AM +0300, Tony Lindgren wrote:
-> > The controller id cannot be negative. Let's fix the ctrl_id in preparation
-> > for adding port_id to fix the device name.
-> > 
-> > Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
-> > Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> > Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> ???
-> Missing Reviewed-by: I suppose?
+Fix the following errors reported by checkpatch:
 
-Seems like it wen in all patches... :-(
+ERROR: trailing whitespace
+ERROR: open brace '{' following struct go on the same line
 
--- 
-With Best Regards,
-Andy Shevchenko
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  .../amd/pm/swsmu/inc/smu_v11_0_7_pptable.h    | 41 +++++++++----------
+  1 file changed, 19 insertions(+), 22 deletions(-)
 
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0_7_pptable.h 
+b/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0_7_pptable.h
+index 1cb399dbc7cc..64d60d48846a 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0_7_pptable.h
++++ b/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0_7_pptable.h
+@@ -42,23 +42,23 @@
+  #define SMU_11_0_7_PP_POWERSAVINGCLOCK_VERSION            0x01          
+  // Power Saving Clock Table Version 1.00
 
+  enum SMU_11_0_7_ODFEATURE_CAP {
+-    SMU_11_0_7_ODCAP_GFXCLK_LIMITS = 0,
+-    SMU_11_0_7_ODCAP_GFXCLK_CURVE,
+-    SMU_11_0_7_ODCAP_UCLK_LIMITS,
+-    SMU_11_0_7_ODCAP_POWER_LIMIT,
+-    SMU_11_0_7_ODCAP_FAN_ACOUSTIC_LIMIT,
+-    SMU_11_0_7_ODCAP_FAN_SPEED_MIN,
+-    SMU_11_0_7_ODCAP_TEMPERATURE_FAN,
+-    SMU_11_0_7_ODCAP_TEMPERATURE_SYSTEM,
+-    SMU_11_0_7_ODCAP_MEMORY_TIMING_TUNE,
+-    SMU_11_0_7_ODCAP_FAN_ZERO_RPM_CONTROL,
+-    SMU_11_0_7_ODCAP_AUTO_UV_ENGINE,
+-    SMU_11_0_7_ODCAP_AUTO_OC_ENGINE,
+-    SMU_11_0_7_ODCAP_AUTO_OC_MEMORY,
++    SMU_11_0_7_ODCAP_GFXCLK_LIMITS = 0,
++    SMU_11_0_7_ODCAP_GFXCLK_CURVE,
++    SMU_11_0_7_ODCAP_UCLK_LIMITS,
++    SMU_11_0_7_ODCAP_POWER_LIMIT,
++    SMU_11_0_7_ODCAP_FAN_ACOUSTIC_LIMIT,
++    SMU_11_0_7_ODCAP_FAN_SPEED_MIN,
++    SMU_11_0_7_ODCAP_TEMPERATURE_FAN,
++    SMU_11_0_7_ODCAP_TEMPERATURE_SYSTEM,
++    SMU_11_0_7_ODCAP_MEMORY_TIMING_TUNE,
++    SMU_11_0_7_ODCAP_FAN_ZERO_RPM_CONTROL,
++    SMU_11_0_7_ODCAP_AUTO_UV_ENGINE,
++    SMU_11_0_7_ODCAP_AUTO_OC_ENGINE,
++    SMU_11_0_7_ODCAP_AUTO_OC_MEMORY,
+      SMU_11_0_7_ODCAP_FAN_CURVE,
+      SMU_11_0_ODCAP_AUTO_FAN_ACOUSTIC_LIMIT,
+-    SMU_11_0_7_ODCAP_POWER_MODE,
+-    SMU_11_0_7_ODCAP_COUNT,
++    SMU_11_0_7_ODCAP_POWER_MODE,
++    SMU_11_0_7_ODCAP_COUNT,
+  };
+
+  enum SMU_11_0_7_ODFEATURE_ID {
+@@ -130,8 +130,7 @@ enum SMU_11_0_7_PWRMODE_SETTING {
+  };
+  #define SMU_11_0_7_MAX_PMSETTING      32        //Maximum Number of 
+PowerMode Settings
+
+-struct smu_11_0_7_overdrive_table
+-{
++struct smu_11_0_7_overdrive_table {
+      uint8_t  revision;                                        
+//Revision = SMU_11_0_7_PP_OVERDRIVE_VERSION
+      uint8_t  reserve[3];                                      //Zero 
+filled field reserved for future use
+      uint32_t feature_count;                                   //Total 
+number of supported features
+@@ -160,8 +159,7 @@ enum SMU_11_0_7_PPCLOCK_ID {
+  };
+  #define SMU_11_0_7_MAX_PPCLOCK      16          //Maximum Number of PP 
+Clocks
+
+-struct smu_11_0_7_power_saving_clock_table
+-{
++struct smu_11_0_7_power_saving_clock_table {
+      uint8_t  revision;                                        
+//Revision = SMU_11_0_7_PP_POWERSAVINGCLOCK_VERSION
+      uint8_t  reserve[3];                                      //Zero 
+filled field reserved for future use
+      uint32_t count;                                           
+//power_saving_clock_count = SMU_11_0_7_PPCLOCK_COUNT
+@@ -169,8 +167,7 @@ struct smu_11_0_7_power_saving_clock_table
+      uint32_t min[SMU_11_0_7_MAX_PPCLOCK];                       
+//PowerSavingClock Mode Clock Minimum array In MHz
+  };
+
+-struct smu_11_0_7_powerplay_table
+-{
++struct smu_11_0_7_powerplay_table {
+        struct atom_common_table_header header;       //For 
+sienna_cichlid, header.format_revision = 15, header.content_revision = 0
+        uint8_t  table_revision;                      //For 
+sienna_cichlid, table_revision = 2
+        uint16_t table_size;                          //Driver portion 
+table size. The offset to smc_pptable including header size
+@@ -178,7 +175,7 @@ struct smu_11_0_7_powerplay_table
+        uint32_t golden_revision;                     //PPGen use only: 
+PP Table Revision on the Golden Data Base
+        uint16_t format_id;                           //PPGen use only: 
+PPTable for different ASICs. For sienna_cichlid this should be 0x80
+        uint32_t platform_caps;                       
+//POWERPLAYABLE::ulPlatformCaps
+-
++
+        uint8_t  thermal_controller_type;             //one of 
+SMU_11_0_7_PP_THERMALCONTROLLER
+
+        uint16_t small_power_limit1;
