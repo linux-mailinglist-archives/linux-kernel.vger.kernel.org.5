@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3624475FA2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C9375FA32
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbjGXOuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33348 "EHLO
+        id S231646AbjGXOwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230078AbjGXOuc (ORCPT
+        with ESMTP id S229650AbjGXOwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:50:32 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8025210C3;
-        Mon, 24 Jul 2023 07:50:28 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6862842a028so2409354b3a.0;
-        Mon, 24 Jul 2023 07:50:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690210228; x=1690815028;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=y9FgIAEGGUhV8Bu4h5u2096wjTv+qpp9D0lv6o0X1Os=;
-        b=ptc2BUxx3eJRL2ESeln4TMtMZ5o5saooTWv+0/B6wgK4hw10z0yrHD9Nw2fsBXrQ1H
-         oX0MT/nKxyWaS3YlZTNku5c4nK9gfkZa4BgbfvItSgMG+J+F1tPBd8zbDb74QdfEzhIb
-         jZ5sybePeyeHF8Rijwb1EGTw8cQJLsbRROaxQgcXn3sdBuwTgVB8PV5aqiAVKqrebhrb
-         tpIz0rA0PtyAY9yoRA/kdSw98AoDU+wd3qJyArnDu5zCbxhid29NK9Xwz4BbzSBrO1f0
-         1YUeMTqXTR0XY8zTDeeG1p4QlDHHRCrgc3XW0s3eMuJyakFvOGHei7QXVF4Y2lKUSqLb
-         UdSg==
+        Mon, 24 Jul 2023 10:52:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C926F10C1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:51:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690210290;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ypOLNcWWYz98bhBvl2u/qys2akcVFXTw8mlGUAqbNFw=;
+        b=PC7gE8Qb1Qya/YXbhRIeMaxZhh8MrDh5C16sQ12KRa+a7Qxd3P6NlUEz24U2qJR2ibBiw3
+        vKcZylLby3KsHh/QBHVe2lXOP7LOL8edp7vPFgqABuUfUQp9oITQ6zgbVxGaAPnxBeSPM0
+        I+/QqH7iVurLmwGcKWwb+i/j8FAFtcM=
+Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
+ [209.85.217.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-497-QdTx1NhJOIynN8_UeHK0wA-1; Mon, 24 Jul 2023 10:51:28 -0400
+X-MC-Unique: QdTx1NhJOIynN8_UeHK0wA-1
+Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-4436d12c318so686019137.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:51:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690210228; x=1690815028;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y9FgIAEGGUhV8Bu4h5u2096wjTv+qpp9D0lv6o0X1Os=;
-        b=hEjIeMBIuWU3a+oAYQs/TO512K0h35M/N2Kf8gIuxnPCCSxi5M8fF6+1m0/h46I7cQ
-         lfDZlPY9LDn9Ch3faOGs9zAz1B/qdghF6rBAQkPtRouRQTy3g0JuGUNn+BUC4oSrYfsC
-         34/gExV29l1+DiQNh1aO4v8liUUqnf/ajVzUlxKvgWgmwOAkbAA/g+jjhUp4aCi1j3YF
-         gjDmkr2X8hvQnI+AJl7pttg6ByK3wDVG6Pygls1J9kHA29V21Z/XqcfahnX+qMTAuPna
-         SMY9ucUeZH2ug7JI9kITXbnRyd0a+2QDig7FbdQYxzASC5Q8wc68dqyIybc06HZU3r3+
-         EbBA==
-X-Gm-Message-State: ABy/qLaWNh5RhIlZFDLJ0SbkhhpzOuwpUDC7x1ppR7l46wjbC2laCZ9x
-        QjP4q+BzlzNlDGOm+hUyamNe2ypy4KY=
-X-Google-Smtp-Source: APBJJlFMZ8RANdQoPHnukFjFwlUwTdQ6RXBdcsp7hN2KNRuVwIr+EPpPeq8lz2UMrzl55cgy1/5Emw==
-X-Received: by 2002:a05:6a00:a8a:b0:643:aa8d:8cd7 with SMTP id b10-20020a056a000a8a00b00643aa8d8cd7mr8363957pfl.32.1690210227606;
-        Mon, 24 Jul 2023 07:50:27 -0700 (PDT)
-Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
-        by smtp.gmail.com with ESMTPSA id 7-20020aa79147000000b0065980654baasm7805653pfi.130.2023.07.24.07.50.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 07:50:26 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Greg Hackmann <ghackmann@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org (open list:SYNC FILE FRAMEWORK)
-Subject: [PATCH] dma-buf/sync_file: Fix docs syntax
-Date:   Mon, 24 Jul 2023 07:49:41 -0700
-Message-ID: <20230724145000.125880-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20221208; t=1690210288; x=1690815088;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ypOLNcWWYz98bhBvl2u/qys2akcVFXTw8mlGUAqbNFw=;
+        b=KpC/G7U9Ik5a6JetGtQ7NjfYvbGq9+/io2DqywaQomJ9Ec5/bbI2/xpeksUCXiOrq+
+         KivASbmW9xj+r4YK5E7pYtdHZ0w9sPgaqnftwcOAU1p6myOI9/PWAYb+SgV5mvvYqeyM
+         t9us/G7dhI5ElqHVf0JQGPBcTvAOjno0QjAf73NmBJlsxzjrfv4kNojJmGUcvQ3t0Zk0
+         y5YH1NBVPkYAdOzRpHCj6aMtsishS+2DJdNCO/9tKncZWtD2hlQ55zsnLK61/f/lzngu
+         N4id56ByXvR4Fzr63hiFLvSVRoQbFqdK1cMq64JWnHTH0Ql5UrhMD0DT/TWN5KQQCxdJ
+         0TZA==
+X-Gm-Message-State: ABy/qLZaHvWsVBpYbfmbQJdq2Z7Z8husuYKhKqecPmXQvj1YCzYDSwOB
+        HRIT4ZrIwhxxiul2hfTnbc26jboVkOP2rnpEN0Sms8sICzzMzCBC+OlyluO28AOl1sUtkZoSV1A
+        YEslhUFBhoTy9QyMaVaMRwOKildkEK5/NBa6KLbszGv71DLi0
+X-Received: by 2002:a05:6102:8c:b0:444:c49c:a95d with SMTP id t12-20020a056102008c00b00444c49ca95dmr2645845vsp.7.1690210288121;
+        Mon, 24 Jul 2023 07:51:28 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHb/CRwpXTAxHsDVnAkHvZhSkiPK0IWoHubqPpofuFvhYjCrJ9ECQRscQK7RQ9Hyf8PkEZsqwrTetpc7DSr1U8=
+X-Received: by 2002:a05:6102:8c:b0:444:c49c:a95d with SMTP id
+ t12-20020a056102008c00b00444c49ca95dmr2645831vsp.7.1690210287901; Mon, 24 Jul
+ 2023 07:51:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <7854000d2ce5ac32b75782a7c4574f25a11b573d.1689757133.git.jstancek@redhat.com>
+ <64434.1690193532@warthog.procyon.org.uk>
+In-Reply-To: <64434.1690193532@warthog.procyon.org.uk>
+From:   Jan Stancek <jstancek@redhat.com>
+Date:   Mon, 24 Jul 2023 16:51:11 +0200
+Message-ID: <CAASaF6yKxWaW6me0Y+vSEo0qUm_LTyL5CPVka75EPg_yq4MO9g@mail.gmail.com>
+Subject: Re: [PATCH] splice, net: Fix splice_to_socket() for O_NONBLOCK socket
+To:     David Howells <dhowells@redhat.com>
+Cc:     kuba@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, brauner@kernel.org,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Mon, Jul 24, 2023 at 12:12=E2=80=AFPM David Howells <dhowells@redhat.com=
+> wrote:
+>
+> Jan Stancek <jstancek@redhat.com> wrote:
+>
+> > LTP sendfile07 [1], which expects sendfile() to return EAGAIN when
+> > transferring data from regular file to a "full" O_NONBLOCK socket,
+> > started failing after commit 2dc334f1a63a ("splice, net: Use
+> > sendmsg(MSG_SPLICE_PAGES) rather than ->sendpage()").
+> > sendfile() no longer immediately returns, but now blocks.
+> >
+> > Removed sock_sendpage() handled this case by setting a MSG_DONTWAIT
+> > flag, fix new splice_to_socket() to do the same for O_NONBLOCK sockets.
+>
+> Does this actually work correctly in all circumstances?
+>
+> The problem might come if you have a splice from a non-rewindable source
+> through a temporary pipe (eg. sendfile() using splice_direct_to_actor()).
 
-Fixes the warning:
-
-  include/uapi/linux/sync_file.h:77: warning: Function parameter or member 'num_fences' not described in 'sync_file_info'
-
-Fixes: 2d75c88fefb2 ("staging/android: refactor SYNC IOCTLs")
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- include/uapi/linux/sync_file.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/sync_file.h b/include/uapi/linux/sync_file.h
-index 7e42a5b7558b..ff0a931833e2 100644
---- a/include/uapi/linux/sync_file.h
-+++ b/include/uapi/linux/sync_file.h
-@@ -56,7 +56,7 @@ struct sync_fence_info {
-  * @name:	name of fence
-  * @status:	status of fence. 1: signaled 0:active <0:error
-  * @flags:	sync_file_info flags
-- * @num_fences	number of fences in the sync_file
-+ * @num_fences:	number of fences in the sync_file
-  * @pad:	padding for 64-bit alignment, should always be zero
-  * @sync_fence_info: pointer to array of struct &sync_fence_info with all
-  *		 fences in the sync_file
--- 
-2.41.0
+I assumed this was safe, since sendfile / splice_direct_to_actor()
+requires input to be seekable.
 
