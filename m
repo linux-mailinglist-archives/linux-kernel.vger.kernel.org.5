@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BF475EE35
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2359A75EF55
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 11:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbjGXIrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:47:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
+        id S230484AbjGXJoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 05:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231800AbjGXIrP (ORCPT
+        with ESMTP id S230138AbjGXJoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:47:15 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A60E7E4A;
-        Mon, 24 Jul 2023 01:47:12 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36O8k7dgD005803, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36O8k7dgD005803
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 24 Jul 2023 16:46:07 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Mon, 24 Jul 2023 16:46:18 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 24 Jul 2023 16:46:18 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
- RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
- 15.01.2375.007; Mon, 24 Jul 2023 16:46:18 +0800
-From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Roy Luo <royluo@google.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        Ray Chi <raychi@google.com>,
-        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: RE: [PATCH v7 1/5] usb: phy: add usb phy notify port status API
-Thread-Topic: [PATCH v7 1/5] usb: phy: add usb phy notify port status API
-Thread-Index: AQHZsJ7kDWGiCOPLRk2HhU7h2LN0sq/H/g6AgACS9CD//4JIgIAAjEhQgAAVD/A=
-Date:   Mon, 24 Jul 2023 08:46:18 +0000
-Message-ID: <832fc6ec78074b49a719221ccefd2d90@realtek.com>
-References: <20230707064725.25291-1-stanley_chang@realtek.com>
- <2023072452-jasmine-palm-7b73@gregkh>
- <47131beec8a24572873aa31e87cfaab6@realtek.com>
- <2023072454-mosaic-ogle-9a27@gregkh> 
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.190.159]
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 24 Jul 2023 05:44:00 -0400
+X-Greylist: delayed 1100 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 Jul 2023 02:44:00 PDT
+Received: from fluorez-com.cfd (fluorez-com.cfd [107.174.244.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4067D1AA
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 02:44:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=re1; d=fluorez-com.cfd;
+ h=Reply-To:From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:
+ Content-Transfer-Encoding; i=info@fluorez-com.cfd;
+ bh=LqAKS0rQcqRhfS2AomqosmxOtHjI8TSd2DPxtKmN8Fo=;
+ b=DGhOplDpc46KXWLx/OQWWOvJyZRHoTq5MOhTDi4Ip8E41pWhSuouO2n5ER/ImdHCMET3cyLTe5NT
+   XuNXuRYpmuQitES7NbdXXEPIrRvSR+0xiORAgGW7+ykkaU/ZfsOjEmQGqIe/l2bfoJPfEf2ijd9X
+   sIfQ09HHV9KQKy2Rbo9+uyz99L7FXijLQTPvhJj/+jYPu8romwhdc2Vx6I+hXZVOc5tl1RIgJo3P
+   AWmXQ8CkuTMgZUSfCyNqdPHA/PtORndz8koaXQA/yfTJaKFzQXVHIxwm2FQlvAFklKz+p0vHtRf3
+   HHsfssJonRI/nSdNdX26HVo3Ap+QnBLDwDsloA==
+Reply-To: info@coinloansupport.online
+From:   Coinloan Support Center <info@fluorez-com.cfd>
+To:     linux-kernel@vger.kernel.org
+Subject: Low Interest loan opportunity
+Date:   24 Jul 2023 10:47:00 +0200
+Message-ID: <20230724104700.BEA4E56DC3647CBD@fluorez-com.cfd>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.1 required=5.0 tests=BAYES_60,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM28,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
+        RCVD_IN_PSBL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_MSPIKE_L4 RBL: Bad reputation (-4)
+        *      [107.174.244.118 listed in bl.mailspike.net]
+        *  2.7 RCVD_IN_PSBL RBL: Received via a relay in PSBL
+        *      [107.174.244.118 listed in psbl.surriel.com]
+        *  1.3 RCVD_IN_BL_SPAMCOP_NET RBL: Received via a relay in
+        *      bl.spamcop.net
+        *      [Blocked - see <https://www.spamcop.net/bl.shtml?107.174.244.118>]
+        *  1.5 BAYES_60 BODY: Bayes spam probability is 60 to 80%
+        *      [score: 0.6237]
+        * -0.0 SPF_HELO_PASS SPF: HELO matches SPF record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.8 FROM_FMBLA_NEWDOM28 From domain was registered in last 14-28
+        *      days
+        *  0.0 RCVD_IN_MSPIKE_BL Mailspike blocklisted
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgR3JlZywNCg0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArICAgICBpZiAoIXJldCkgew0KPiA+
-ID4gPiA+ICsgICAgICAgICAgICAgc3RydWN0IHVzYl9kZXZpY2UgKmhkZXYgPSBodWItPmhkZXY7
-DQo+ID4gPiA+ID4gKw0KPiA+ID4gPiA+ICsgICAgICAgICAgICAgaWYgKGhkZXYgJiYgIWhkZXYt
-PnBhcmVudCkgew0KPiA+ID4gPg0KPiA+ID4gPiBXaHkgdGhlIGNoZWNrIGZvciBubyBwYXJlbnQ/
-ICBQbGVhc2UgZG9jdW1lbnQgdGhhdCBoZXJlIGluIGENCj4gY29tbWVudC4NCj4gPiA+DQo+ID4g
-PiBJIHdpbGwgYWRkIGEgY29tbWVudCA6DQo+ID4gPiAvKiBPbmx5IG5vdGlmeSByb290aHViLiBU
-aGF0IGlzLCB3aGVuIGhkZXYtPnBhcmVudCBpcyBlbXB0eS4gKi8NCj4gPg0KPiA+IEFsc28gZG9j
-dW1lbnQgdGhpcyB0aGF0IHRoaXMgd2lsbCBvbmx5IGhhcHBlbiBmb3Igcm9vdCBodWIgc3RhdHVz
-DQo+ID4gY2hhbmdlcywgdGhhdCdzIG5vdCBvYnZpb3VzIGluIHRoZSBjYWxsYmFjayBuYW1lIG9y
-IGRvY3VtZW50YXRpb24gb3INCj4gYW55d2hlcmUgZWxzZSBoZXJlLg0KPiANCj4gQWxsIHVzYiBw
-aHkgbm90aWZpY2F0aW9ucyAoY29ubmVjdGlvbiwgZGlzY29ubmVjdGlvbikgYXJlIG9ubHkgZm9y
-IHJvb3RodWIuDQo+IFNvIEkgZG9uJ3Qgc3BlY2lhbCB0byBkb2MgdGhpcy4NCg0KSSB3aWxsIGFk
-ZCB0aGUgY29tbWVudDoNCi8qDQogKiBBcHBsaWVzIHRvIHJvb3RodWIgb25seS4gVGhhdCBpcywg
-d2hlbiBoZGV2LT5wYXJlbnQgaXMNCiAqIGVtcHR5LiBPbmx5IHRoZSByb290aHViIHdpbGwgYmUg
-bm90aWZpZWQgb2YgcG9ydCBzdGF0ZQ0KICogY2hhbmdlcywgc2luY2UgdGhlIFVTQiBQSFkgb25s
-eSBjYXJlcyBhYm91dCBjaGFuZ2VzIGF0DQogKiB0aGUgbmV4dCBsZXZlbC4NCiAqLw0KDQoNClRo
-YW5rcywNClN0YW5sZXkNCg==
+Are you looking for a loan to either increase your activity or to=20
+carry out a project.=20
+We offer Crypto Loans at 2-7% interest rate with or without a=20
+credit check.
+Please get back to us if you are interested in more details.
