@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB4C75FBE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9CF75FBEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbjGXQYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51662 "EHLO
+        id S231373AbjGXQYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjGXQYX (ORCPT
+        with ESMTP id S229603AbjGXQYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:24:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31EB690;
-        Mon, 24 Jul 2023 09:24:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B90A66124A;
-        Mon, 24 Jul 2023 16:24:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CF91C433C8;
-        Mon, 24 Jul 2023 16:24:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690215862;
-        bh=6NGzDJNu/uN9rHgETSJqMjm2aZhAn1+hlsqguz+TxYk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YlciR1IC/iFXisfN79U+eBJ7EOQq0RaK9uZFbmi+HWWrrFhU+G1WHkw0tiZcq9sbk
-         xmFzlwCmY//YuageHq76Za2GZ8mnadQNoMHVsHe+uXVYLpYFboo+tGbEKcA8zHHX65
-         980/5SLR1ay+DllILY7dMNOteTRWxjD4y/YNaK9udiDYuyiKXjxDIYpknBOf91oT7i
-         EGRfX2NMeIAEHxJmGrvm7F/OmmU+rExNvmnTR2kjMPxPNEeA96txM2ZzWn7BTyq2HH
-         XusXruOcez2uLVSvQg7fAMCjyjLqWLd9nkjzzDGOCXcAzChbJq8dbBR66S43G1Q8d7
-         nIAOdxUXSJi+A==
-Received: (nullmailer pid 3775609 invoked by uid 1000);
-        Mon, 24 Jul 2023 16:24:19 -0000
-Date:   Mon, 24 Jul 2023 10:24:19 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-kernel@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH 1/3] media: dt-bindings: samsung,exynos4212-fimc-is:
- replace duplicate pmu node with phandle
-Message-ID: <169021585853.3775371.15388589164520572622.robh@kernel.org>
-References: <20230722115441.139628-1-krzysztof.kozlowski@linaro.org>
+        Mon, 24 Jul 2023 12:24:35 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B58E4F;
+        Mon, 24 Jul 2023 09:24:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690215874; x=1721751874;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UrlDO9w/AnWLaZUBmhVjpnmqS7Elf1R30ZuiU+UuJds=;
+  b=UGIL84FIHpqWCh4QivC02xai2GREWppVtJ3YC/OOmQotjoze6PAHxsN3
+   mbWsCuHO52U+EGGQwnStqPq4p/nhu6iO0P6QTLSxydON31ewnf6hoCWll
+   W8f0KedSuTkpAd2KlWdAjJjVlmKx6FHhYyjplFX15Keuf1APfsZav89GZ
+   tqPXx0XX3eBSUPYV4UIU7wfqQAKDd7Wl6ia1EKI1KtgYFiliv5qRmhCcs
+   Yd8Xp435zbe5Rr5UeElFWYLFEr1IRYJ5s7cBtWmJZZI1LEeyVC9orpjK/
+   5Dd4oDGSRtxbLDBkcSwS3UU/VaOLAKvdQ3X7NJKpLlJcUOkeZmCLhipb/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="347093718"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="347093718"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 09:24:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="755362747"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="755362747"
+Received: from gionescu-mobl2.ger.corp.intel.com (HELO intel.com) ([10.252.34.175])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 09:24:27 -0700
+Date:   Mon, 24 Jul 2023 18:24:24 +0200
+From:   Andi Shyti <andi.shyti@linux.intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [Intel-gfx] [PATCH] drm/i915: Fix an error handling path in
+ igt_write_huge()
+Message-ID: <ZL6luGRLCEQs0HKG@ashyti-mobl2.lan>
+References: <7a036b88671312ee9adc01c74ef5b3376f690b76.1689619758.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230722115441.139628-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <7a036b88671312ee9adc01c74ef5b3376f690b76.1689619758.git.christophe.jaillet@wanadoo.fr>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Christophe,
 
-On Sat, 22 Jul 2023 13:54:39 +0200, Krzysztof Kozlowski wrote:
-> The FIMC IS camera must access the PMU (Power Management Unit) IO memory
-> to control camera power.  This was achieved by duplicating the PMU node
-> as its child like:
+On Mon, Jul 17, 2023 at 08:49:31PM +0200, Christophe JAILLET wrote:
+> All error handling paths go to 'out', except this one. Be consistent and
+> also branch to 'out' here.
 > 
->   soc@0 {
->     system-controller@10020000 { ... }; // Real PMU
-> 
->     camera@11800000 {
->       fimc-is@12000000 {
->         // FIMC IS camera node
->         pmu@10020000 {
->           reg = <0x10020000 0x3000>; // Fake PMU node
->         };
->       };
->     };
->   };
-> 
-> This is not a correct representation of the hardware.  Mapping the PMU
-> (Power Management Unit) IO memory should be via syscon-like phandle
-> (samsung,pmu-syscon, already used for other drivers), not by duplicating
-> "pmu" Devicetree node inside the FIMC IS.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Fixes: c10a652e239e ("drm/i915/selftests: Rework context handling in hugepages selftests")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->  .../media/samsung,exynos4212-fimc-is.yaml         | 15 ++++++++++-----
->  .../devicetree/bindings/media/samsung,fimc.yaml   |  5 +----
->  2 files changed, 11 insertions(+), 9 deletions(-)
+> /!\ Speculative /!\
 > 
+>    This patch is based on analysis of the surrounding code and should be
+>    reviewed with care !
+> 
+>    If the patch is wrong, maybe a comment in the code could explain why.
+> 
+> /!\ Speculative /!\
+> ---
+>  drivers/gpu/drm/i915/gem/selftests/huge_pages.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/gem/selftests/huge_pages.c b/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
+> index df6c9a84252c..6b9f6cf50bf6 100644
+> --- a/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
+> +++ b/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
+> @@ -1246,8 +1246,10 @@ static int igt_write_huge(struct drm_i915_private *i915,
+>  	 * times in succession a possibility by enlarging the permutation array.
+>  	 */
+>  	order = i915_random_order(count * count, &prng);
+> -	if (!order)
+> -		return -ENOMEM;
+> +	if (!order) {
+> +		err = -ENOMEM;
+> +		goto out;
+> +	}
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Looks good:
 
+Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com> 
+
+Thanks,
+Andi
