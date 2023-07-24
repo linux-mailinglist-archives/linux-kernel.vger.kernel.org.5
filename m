@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5495175FA29
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3624475FA2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbjGXOtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33006 "EHLO
+        id S231258AbjGXOuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbjGXOtn (ORCPT
+        with ESMTP id S230078AbjGXOuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:49:43 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A56B10C0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:49:42 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-78706966220so34758539f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:49:42 -0700 (PDT)
+        Mon, 24 Jul 2023 10:50:32 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8025210C3;
+        Mon, 24 Jul 2023 07:50:28 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6862842a028so2409354b3a.0;
+        Mon, 24 Jul 2023 07:50:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1690210181; x=1690814981;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HekVCFoY6PgTbs6qruQnobqeJ8w585D3P+8yNHa/vKI=;
-        b=Cqzlt0E4dDO9JHjGZqNzPcPd66+T4Da5ecIKVQwH/RyCYXHjOGz7kr+ymrq8wy4aTX
-         13PCTOZR1NqTdQpEWqJmMTj4OS8tvR1ocH8jwkNtaycRRLIk6smWWZeETgxtrU39tHkL
-         cxdeuWcdqg6j2hTCFcBJFwiofOFYUTCG3cuNw=
+        d=gmail.com; s=20221208; t=1690210228; x=1690815028;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=y9FgIAEGGUhV8Bu4h5u2096wjTv+qpp9D0lv6o0X1Os=;
+        b=ptc2BUxx3eJRL2ESeln4TMtMZ5o5saooTWv+0/B6wgK4hw10z0yrHD9Nw2fsBXrQ1H
+         oX0MT/nKxyWaS3YlZTNku5c4nK9gfkZa4BgbfvItSgMG+J+F1tPBd8zbDb74QdfEzhIb
+         jZ5sybePeyeHF8Rijwb1EGTw8cQJLsbRROaxQgcXn3sdBuwTgVB8PV5aqiAVKqrebhrb
+         tpIz0rA0PtyAY9yoRA/kdSw98AoDU+wd3qJyArnDu5zCbxhid29NK9Xwz4BbzSBrO1f0
+         1YUeMTqXTR0XY8zTDeeG1p4QlDHHRCrgc3XW0s3eMuJyakFvOGHei7QXVF4Y2lKUSqLb
+         UdSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690210181; x=1690814981;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HekVCFoY6PgTbs6qruQnobqeJ8w585D3P+8yNHa/vKI=;
-        b=eQK5rLHJZn7Hp3owdgM1jJfAjuwSA1audpM6EzZyVgIq87MuUk/InfBNXweJyTS8dF
-         sYPr8kNas2i6/f/00rLo/gmRJLdnCWy/U+LDtYyXx+kaROtBcKj/Iw+MRBgWFmrfeIj5
-         kL7LKz5jqLvOrvnTf/hrBTnLzHwvkoyp3uZxB5fhfyaEAk7auO7wyyCwrcZPFlv6FSfW
-         UDLviVJV2RigxO6IDca4uYQ/XBH7Ygv9f2mSdmmp7u5nVoVVZGdvJS+fpNgYfrFOSDEa
-         cTIgYNCw/0UyqiPAAsbZj+/+UKm3G5qhYlBzCGAmYiWWqqaP1QR9LtGpZ2KciCC/p6vw
-         5K5g==
-X-Gm-Message-State: ABy/qLZcRfz/SD/I6V+LHE8UvVZe8RLiuABdg8wnL4DcrsV3nxq8FuPR
-        hSm2B/OPjDZCvphw2VG+0WGAEqoAqpf7R9FVvZjNjA==
-X-Google-Smtp-Source: APBJJlFtOLCKTgjaSiaIiht+RsJIBSdSWSHPCOS2xkAfMgskFfkHiFRYPYUx1IalSdBaRjoJafJ79g==
-X-Received: by 2002:a6b:b4d5:0:b0:788:2d78:813c with SMTP id d204-20020a6bb4d5000000b007882d78813cmr7876542iof.0.1690210181332;
-        Mon, 24 Jul 2023 07:49:41 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id n11-20020a6bf60b000000b00786ea00bdb5sm3336573ioh.2.2023.07.24.07.49.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 07:49:41 -0700 (PDT)
-Message-ID: <5d9f724d-4c45-f843-04b3-60a907b9b127@linuxfoundation.org>
-Date:   Mon, 24 Jul 2023 08:49:40 -0600
+        d=1e100.net; s=20221208; t=1690210228; x=1690815028;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=y9FgIAEGGUhV8Bu4h5u2096wjTv+qpp9D0lv6o0X1Os=;
+        b=hEjIeMBIuWU3a+oAYQs/TO512K0h35M/N2Kf8gIuxnPCCSxi5M8fF6+1m0/h46I7cQ
+         lfDZlPY9LDn9Ch3faOGs9zAz1B/qdghF6rBAQkPtRouRQTy3g0JuGUNn+BUC4oSrYfsC
+         34/gExV29l1+DiQNh1aO4v8liUUqnf/ajVzUlxKvgWgmwOAkbAA/g+jjhUp4aCi1j3YF
+         gjDmkr2X8hvQnI+AJl7pttg6ByK3wDVG6Pygls1J9kHA29V21Z/XqcfahnX+qMTAuPna
+         SMY9ucUeZH2ug7JI9kITXbnRyd0a+2QDig7FbdQYxzASC5Q8wc68dqyIybc06HZU3r3+
+         EbBA==
+X-Gm-Message-State: ABy/qLaWNh5RhIlZFDLJ0SbkhhpzOuwpUDC7x1ppR7l46wjbC2laCZ9x
+        QjP4q+BzlzNlDGOm+hUyamNe2ypy4KY=
+X-Google-Smtp-Source: APBJJlFMZ8RANdQoPHnukFjFwlUwTdQ6RXBdcsp7hN2KNRuVwIr+EPpPeq8lz2UMrzl55cgy1/5Emw==
+X-Received: by 2002:a05:6a00:a8a:b0:643:aa8d:8cd7 with SMTP id b10-20020a056a000a8a00b00643aa8d8cd7mr8363957pfl.32.1690210227606;
+        Mon, 24 Jul 2023 07:50:27 -0700 (PDT)
+Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
+        by smtp.gmail.com with ESMTPSA id 7-20020aa79147000000b0065980654baasm7805653pfi.130.2023.07.24.07.50.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 07:50:26 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg Hackmann <ghackmann@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org (open list:SYNC FILE FRAMEWORK)
+Subject: [PATCH] dma-buf/sync_file: Fix docs syntax
+Date:   Mon, 24 Jul 2023 07:49:41 -0700
+Message-ID: <20230724145000.125880-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Upcoming nolibc pull request for the next merge window
-Content-Language: en-US
-To:     paulmck@kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Willy Tarreau <w@1wt.eu>,
-        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <thomas@t-8ch.de>,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <7afafb6c-9664-44a1-bc8f-d20239db1dd5@paulmck-laptop>
- <20230722130120.6e4c0eab@canb.auug.org.au>
- <2c54d017-226e-41c3-a767-a607942ecba5@paulmck-laptop>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <2c54d017-226e-41c3-a767-a607942ecba5@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,42 +77,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/23 22:48, Paul E. McKenney wrote:
-> On Sat, Jul 22, 2023 at 01:01:20PM +1000, Stephen Rothwell wrote:
->> Hi Paul,
->>
->> On Fri, 21 Jul 2023 10:39:48 -0700 "Paul E. McKenney" <paulmck@kernel.org> wrote:
->>>
->>> This is just to let you know that Willy and I are adding co-maintainers
->>> for nolibc.  Shuah Khan will join me as administrative maintainer,
->>> and will be sending the pull request to you for the next merge window.
->>>
->>> Similarly, Thomas Weißschuh will be joining Willy as technical maintainer
->>> for nolibc.  With luck, this won't affect you, but in case you come across
->>> a nolibc issue, please reach out to Thomas as well as Willy, Shuah,
->>> and myself.  There will of course be an update to the MAINTAINERS file
->>> in the near future, but just to let you know in the meantime.
->>
->> Would it make sense to add a separate nolibc branch to linux-next (and
->> no longer merge it into the rcu branch?  Or are there dependencies
->> between the two?
-> 
-> Dependencies between nolibc and RCU are extremely rare, so it might well
-> make sense to have a separate branch.
-> 
-> Maybe nolibc/next from either the -rcu tree or Shuah's tree?  Shuah,
-> would something else work better for you?
-> 
+From: Rob Clark <robdclark@chromium.org>
 
-We probably have to add linux-kselftest nolibc and rcu nolibc since
-we are planning to alternating pull requests?
+Fixes the warning:
 
-Paul, you and I have to make sure we don't have duplicate patches
-in our nolibc branches.
+  include/uapi/linux/sync_file.h:77: warning: Function parameter or member 'num_fences' not described in 'sync_file_info'
 
-thanks,
--- Shuah
+Fixes: 2d75c88fefb2 ("staging/android: refactor SYNC IOCTLs")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ include/uapi/linux/sync_file.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-
+diff --git a/include/uapi/linux/sync_file.h b/include/uapi/linux/sync_file.h
+index 7e42a5b7558b..ff0a931833e2 100644
+--- a/include/uapi/linux/sync_file.h
++++ b/include/uapi/linux/sync_file.h
+@@ -56,7 +56,7 @@ struct sync_fence_info {
+  * @name:	name of fence
+  * @status:	status of fence. 1: signaled 0:active <0:error
+  * @flags:	sync_file_info flags
+- * @num_fences	number of fences in the sync_file
++ * @num_fences:	number of fences in the sync_file
+  * @pad:	padding for 64-bit alignment, should always be zero
+  * @sync_fence_info: pointer to array of struct &sync_fence_info with all
+  *		 fences in the sync_file
+-- 
+2.41.0
 
