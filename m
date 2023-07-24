@@ -2,418 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B767975E9FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C96975EA02
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbjGXDO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 23:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34936 "EHLO
+        id S229646AbjGXDSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 23:18:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjGXDOz (ORCPT
+        with ESMTP id S229506AbjGXDSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 23:14:55 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24124F3
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 20:14:53 -0700 (PDT)
-Received: from kwepemm600005.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R8QHD6gTVz1KCDJ;
-        Mon, 24 Jul 2023 11:14:00 +0800 (CST)
-Received: from [10.67.103.158] (10.67.103.158) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 24 Jul 2023 11:14:50 +0800
-Subject: Re: [PATCH v11 3/4] hisi_acc_vfio_pci: register debugfs for hisilicon
- migration driver
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
-        <jonathan.cameron@huawei.com>, <cohuck@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <20230630092457.54902-1-liulongfang@huawei.com>
- <20230630092457.54902-4-liulongfang@huawei.com>
- <20230714160751.551df645.alex.williamson@redhat.com>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <f01944a8-5668-8a3e-f384-fb9b0fc3b09f@huawei.com>
-Date:   Mon, 24 Jul 2023 11:14:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sun, 23 Jul 2023 23:18:22 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D92A13D;
+        Sun, 23 Jul 2023 20:18:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690168701; x=1721704701;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=V0GFpi5NOJg6k/sL9m42TEcqn0gYNHYLljSFMHAdJ64=;
+  b=clxgHRvnZGNquz3Fu4PXWul+NR7RTfd7tasvQANT3UplMotmYPf0wSpB
+   taewfPUyBtE8GUOQVEZqgKKxuqeXZ9c6whFGFwItkTwmTLWHTTKNTEFCy
+   eOiYl6xiKr6wuEcpvtFG8yG4wfajlAuF6sD1xzqbsfMwJXRdeoHXO5nRE
+   KnNij1Zc/t96TvC5XsRpcxYazYqXRBJsJa5jeMKgfOoIqtqfZ7Wf6RhNz
+   nektr0iMyLHqBwvWyu28cY0lYe/nxldGYQDCSrtofZ/pOO1FPDKD9Fv7Z
+   feFqVQKzZddzkkcSG35Hs2Jwxa3pkg+IE5mWjKYDY9/h96V8Iu0zchkGp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="453714642"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="453714642"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2023 20:18:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="790806458"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="790806458"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2023 20:18:17 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: Re: [PATCH v2 2/3] mm/memory_hotplug: split memmap_on_memory
+ requests across memblocks
+References: <20230720-vv-kmem_memmap-v2-0-88bdaab34993@intel.com>
+        <20230720-vv-kmem_memmap-v2-2-88bdaab34993@intel.com>
+        <87a5vmadcw.fsf@linux.ibm.com>
+Date:   Mon, 24 Jul 2023 11:16:28 +0800
+In-Reply-To: <87a5vmadcw.fsf@linux.ibm.com> (Aneesh Kumar K. V.'s message of
+        "Sun, 23 Jul 2023 20:23:19 +0530")
+Message-ID: <87351e2e43.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20230714160751.551df645.alex.williamson@redhat.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.158]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600005.china.huawei.com (7.193.23.191)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/15 6:07, Alex Williamson wrote:
-> On Fri, 30 Jun 2023 17:24:56 +0800
-> liulongfang <liulongfang@huawei.com> wrote:
-> 
->> From: Longfang Liu <liulongfang@huawei.com>
+"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com> writes:
+
+> Vishal Verma <vishal.l.verma@intel.com> writes:
+>
+>> The MHP_MEMMAP_ON_MEMORY flag for hotplugged memory is currently
+>> restricted to 'memblock_size' chunks of memory being added. Adding a
+>> larger span of memory precludes memmap_on_memory semantics.
 >>
->> On the debugfs framework of VFIO, if the CONFIG_DEBUG_FS macro is
->> enabled, the debug function is registered for the live migration driver
->> of the HiSilicon accelerator device.
+>> For users of hotplug such as kmem, large amounts of memory might get
+>> added from the CXL subsystem. In some cases, this amount may exceed the
+>> available 'main memory' to store the memmap for the memory being added.
+>> In this case, it is useful to have a way to place the memmap on the
+>> memory being added, even if it means splitting the addition into
+>> memblock-sized chunks.
 >>
->> After registering the HiSilicon accelerator device on the debugfs
->> framework of live migration of vfio, a directory file "hisi_acc"
->> of debugfs is created, and then three debug function files are
->> created in this directory:
+>> Change add_memory_resource() to loop over memblock-sized chunks of
+>> memory if caller requested memmap_on_memory, and if other conditions for
+>> it are met,. Teach try_remove_memory() to also expect that a memory
+>> range being removed might have been split up into memblock sized chunks,
+>> and to loop through those as needed.
 >>
->> data file: used to get the migration data from the driver
->> attr file: used to get device attributes parameters from the driver
->> save file: used to read the data of the live migration device and save
->> it to the driver.
->> io_test: used to test IO read and write for the driver.
->>
->> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: Oscar Salvador <osalvador@suse.de>
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: Dave Jiang <dave.jiang@intel.com>
+>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>> Cc: Huang Ying <ying.huang@intel.com>
+>> Suggested-by: David Hildenbrand <david@redhat.com>
+>> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
 >> ---
->>  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 182 ++++++++++++++++++
->>  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.h    |  11 ++
->>  2 files changed, 193 insertions(+)
+>>  mm/memory_hotplug.c | 154 +++++++++++++++++++++++++++++++---------------------
+>>  1 file changed, 91 insertions(+), 63 deletions(-)
 >>
->> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
->> index a1589947e721..a6f5e94bfaf2 100644
->> --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
->> +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
->> @@ -15,6 +15,7 @@
->>  #include <linux/anon_inodes.h>
->>  
->>  #include "hisi_acc_vfio_pci.h"
->> +#include "../../vfio.h"
->>  
->>  /* Return 0 on VM acc device ready, -ETIMEDOUT hardware timeout */
->>  static int qm_wait_dev_not_ready(struct hisi_qm *qm)
->> @@ -606,6 +607,18 @@ hisi_acc_check_int_state(struct hisi_acc_vf_core_device *hisi_acc_vdev)
->>  	}
+>> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+>> index e9bcacbcbae2..20456f0d28e6 100644
+>> --- a/mm/memory_hotplug.c
+>> +++ b/mm/memory_hotplug.c
+>> @@ -1286,6 +1286,35 @@ bool mhp_supports_memmap_on_memory(unsigned long size)
 >>  }
+>>  EXPORT_SYMBOL_GPL(mhp_supports_memmap_on_memory);
 >>  
->> +static void hisi_acc_vf_migf_save(struct hisi_acc_vf_migration_file *src_migf,
->> +	struct hisi_acc_vf_migration_file *dst_migf)
-> 
-> Consider swapping the args to be more consistent with functions like
-> memcpy() where the destination is the first arg and source is the
-> second.>
-OK, These two parameters can be swapped.
-
+>> +static int add_memory_create_devices(int nid, struct memory_group *group,
+>> +				     u64 start, u64 size, mhp_t mhp_flags)
 >> +{
->> +	if (!dst_migf)
->> +		return;
->> +
->> +	dst_migf->disabled = false;
->> +	dst_migf->total_length = src_migf->total_length;
->> +	memcpy(&dst_migf->vf_data, &src_migf->vf_data,
->> +		    sizeof(struct acc_vf_data));
->> +}
->> +
->>  static void hisi_acc_vf_disable_fd(struct hisi_acc_vf_migration_file *migf)
->>  {
->>  	mutex_lock(&migf->lock);
->> @@ -618,12 +631,16 @@ static void hisi_acc_vf_disable_fd(struct hisi_acc_vf_migration_file *migf)
->>  static void hisi_acc_vf_disable_fds(struct hisi_acc_vf_core_device *hisi_acc_vdev)
->>  {
->>  	if (hisi_acc_vdev->resuming_migf) {
->> +		hisi_acc_vf_migf_save(hisi_acc_vdev->resuming_migf,
->> +						hisi_acc_vdev->debug_migf);
->>  		hisi_acc_vf_disable_fd(hisi_acc_vdev->resuming_migf);
->>  		fput(hisi_acc_vdev->resuming_migf->filp);
->>  		hisi_acc_vdev->resuming_migf = NULL;
->>  	}
->>  
->>  	if (hisi_acc_vdev->saving_migf) {
->> +		hisi_acc_vf_migf_save(hisi_acc_vdev->saving_migf,
->> +						hisi_acc_vdev->debug_migf);
->>  		hisi_acc_vf_disable_fd(hisi_acc_vdev->saving_migf);
->>  		fput(hisi_acc_vdev->saving_migf->filp);
->>  		hisi_acc_vdev->saving_migf = NULL;
->> @@ -1303,6 +1320,164 @@ static long hisi_acc_vfio_pci_ioctl(struct vfio_device *core_vdev, unsigned int
->>  	return vfio_pci_core_ioctl(core_vdev, cmd, arg);
->>  }
->>  
->> +static int hisi_acc_vf_debug_check(struct seq_file *seq, struct vfio_device *vdev)
->> +{
->> +	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(vdev);
->> +	struct hisi_acc_vf_migration_file *migf = hisi_acc_vdev->debug_migf;
->> +
->> +	if (!vdev->mig_ops || !migf) {
->> +		seq_printf(seq, "%s\n", "device not support debugfs!");
-> 
-> "device does not support debugfs"?
-> 
-OK,"device does not support live migration"
-
->> +		return -EINVAL;
->> +	}
->> +
->> +	/* If device not opened, the debugfs operation will trigger calltrace */
->> +	if (!vdev->open_count) {
->> +		seq_printf(seq, "%s\n", "device not opened!");
->> +		return -EINVAL;
->> +	}
-> 
-> What prevents this from racing release of the device?
->
-Now there are only read operations for debugfs. The open_count here only needs
-to be used to prevent read operations when the device is not opened.
-There is no need to deal with competition issues.
-
->> +
->> +	return 0;
->> +}
->> +
->> +static int hisi_acc_vf_debug_io(struct seq_file *seq, void *data)
->> +{
->> +	struct device *vf_dev = seq->private;
->> +	struct vfio_pci_core_device *core_device = dev_get_drvdata(vf_dev);
->> +	struct vfio_device	*vdev = &core_device->vdev;
-> 
-> A tab sneaked in here.
-> 
-Thanks.
-
->> +	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(vdev);
->> +	struct hisi_qm *vf_qm = &hisi_acc_vdev->vf_qm;
->> +	u64 value;
+>> +	struct mhp_params params = { .pgprot = pgprot_mhp(PAGE_KERNEL) };
+>> +	struct vmem_altmap mhp_altmap = {};
 >> +	int ret;
 >> +
->> +	ret = hisi_acc_vf_debug_check(seq, vdev);
->> +	if (ret)
->> +		goto io_err;
+>> +	if ((mhp_flags & MHP_MEMMAP_ON_MEMORY)) {
+>> +		mhp_altmap.free = PHYS_PFN(size);
+>> +		mhp_altmap.base_pfn = PHYS_PFN(start);
+>> +		params.altmap = &mhp_altmap;
+>> +	}
 >> +
->> +	ret = qm_wait_dev_not_ready(vf_qm);
+>> +	/* call arch's memory hotadd */
+>> +	ret = arch_add_memory(nid, start, size, &params);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +
+>> +	/* create memory block devices after memory was added */
+>> +	ret = create_memory_block_devices(start, size, mhp_altmap.alloc,
+>> +					  group);
 >> +	if (ret) {
->> +		seq_printf(seq, "%s\n", "VF device not ready!");
->> +		goto io_err;
->> +	}
->> +
->> +	value = readl(vf_qm->io_base + QM_MB_CMD_SEND_BASE);
->> +	seq_printf(seq, "%s:0x%llx\n", "debug mailbox val", value);
->> +
->> +io_err:
->> +	return 0;
-> 
-> A goto that simply returns seems unnecessary vs return at the error
-Ok, no need to use goto here. The following one is also handled in the same way.
-
-> condition.  Also why don't we return the errno for error cases?  Do we> even need seq_printf() calls for error cases?
->
-
-Added logging of seq_printf only on critical steps.
-
->> +}
->> +
->> +static int hisi_acc_vf_debug_save(struct seq_file *seq, void *data)
->> +{
->> +	struct device *vf_dev = seq->private;
->> +	struct vfio_pci_core_device *core_device = dev_get_drvdata(vf_dev);
->> +	struct vfio_device	*vdev = &core_device->vdev;
-> 
-> Another tab.
-> 
-OK.
-
->> +	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(vdev);
->> +	struct hisi_acc_vf_migration_file *migf = hisi_acc_vdev->debug_migf;
->> +	int ret;
->> +
->> +	ret = hisi_acc_vf_debug_check(seq, vdev);
->> +	if (ret)
->> +		goto save_err;
->> +
->> +	ret = vf_qm_state_save(hisi_acc_vdev, migf);
->> +	if (ret) {
->> +		seq_printf(seq, "%s\n", "failed to save device data!");
->> +		goto save_err;
->> +	}
->> +	seq_printf(seq, "%s\n", "successful to save device data!");
->> +
->> +save_err:
->> +	return 0;
->> +}
->> +
->> +static int hisi_acc_vf_data_read(struct seq_file *seq, void *data)
->> +{
->> +	struct device *vf_dev = seq->private;
->> +	struct vfio_pci_core_device *core_device = dev_get_drvdata(vf_dev);
->> +	struct vfio_device	*vdev = &core_device->vdev;
-> 
-> Tab.
-> 
-OK.
->> +	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(vdev);
->> +	struct hisi_acc_vf_migration_file *debug_migf = hisi_acc_vdev->debug_migf;
->> +	size_t vf_data_sz = offsetofend(struct acc_vf_data, padding);
->> +
->> +	if (debug_migf && debug_migf->total_length)
->> +		seq_hex_dump(seq, "Mig Data:", DUMP_PREFIX_OFFSET, 16, 1,
->> +				(unsigned char *)&debug_migf->vf_data,
->> +				vf_data_sz, false);
->> +	else
->> +		seq_printf(seq, "%s\n", "device not migrated!");
->> +
->> +	return 0;
->> +}
->> +
->> +static int hisi_acc_vf_attr_read(struct seq_file *seq, void *data)
->> +{
->> +	struct device *vf_dev = seq->private;
->> +	struct vfio_pci_core_device *core_device = dev_get_drvdata(vf_dev);
->> +	struct vfio_device	*vdev = &core_device->vdev;
-> 
-> Tab.
-> 
-OK.
->> +	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(vdev);
->> +	struct hisi_acc_vf_migration_file *debug_migf = hisi_acc_vdev->debug_migf;
->> +
->> +	if (debug_migf && debug_migf->total_length) {
->> +		seq_printf(seq,
->> +			 "acc device:\n"
->> +			 "device  state: %d\n"
->> +			 "device  ready: %u\n"
->> +			 "data    valid: %d\n"
->> +			 "data     size: %lu\n",
->> +			 hisi_acc_vdev->mig_state,
->> +			 hisi_acc_vdev->vf_qm_state,
->> +			 debug_migf->disabled,
->> +			 debug_migf->total_length);
->> +	} else {
->> +		seq_printf(seq, "%s\n", "device not migrated!");
+>> +		arch_remove_memory(start, size, NULL);
+>> +		return ret;
 >> +	}
 >> +
 >> +	return 0;
 >> +}
 >> +
->> +static int hisi_acc_vfio_debug_init(struct hisi_acc_vf_core_device *hisi_acc_vdev)
->> +{
->> +	struct vfio_device *vdev = &hisi_acc_vdev->core_device.vdev;
->> +	struct dentry *vfio_dev_migration = NULL;
->> +	struct dentry *vfio_hisi_acc = NULL;
->> +	struct device *dev = vdev->dev;
->> +	void *migf = NULL;
->> +
->> +	if (!debugfs_initialized())
->> +		return 0;
->> +
->> +	migf = kzalloc(sizeof(struct hisi_acc_vf_migration_file), GFP_KERNEL);
->> +	if (!migf)
->> +		return -ENOMEM;
->> +	hisi_acc_vdev->debug_migf = migf;
->> +
->> +	vfio_dev_migration = debugfs_lookup("migration", vdev->debug_root);
->> +	if (!vfio_dev_migration) {
->> +		dev_err(dev, "failed to lookup migration debugfs file!\n");
->> +		return -ENODEV;
->> +	}
->> +
->> +	vfio_hisi_acc = debugfs_create_dir("hisi_acc", vfio_dev_migration);
->> +	debugfs_create_devm_seqfile(dev, "data", vfio_hisi_acc,
->> +				  hisi_acc_vf_data_read);
->> +	debugfs_create_devm_seqfile(dev, "attr", vfio_hisi_acc,
->> +				  hisi_acc_vf_attr_read);
->> +	debugfs_create_devm_seqfile(dev, "io_test", vfio_hisi_acc,
->> +				  hisi_acc_vf_debug_io);
->> +	debugfs_create_devm_seqfile(dev, "save", vfio_hisi_acc,
->> +				  hisi_acc_vf_debug_save);
->> +
->> +	return 0;
->> +}
->> +
->> +static void hisi_acc_vf_debugfs_exit(struct hisi_acc_vf_core_device *hisi_acc_vdev)
->> +{
->> +	if (!debugfs_initialized())
->> +		return;
->> +
->> +	kfree(hisi_acc_vdev->debug_migf);
->> +}
->> +
->>  static int hisi_acc_vfio_pci_open_device(struct vfio_device *core_vdev)
+>>  /*
+>>   * NOTE: The caller must call lock_device_hotplug() to serialize hotplug
+>>   * and online/offline operations (triggered e.g. by sysfs).
+>> @@ -1294,11 +1323,10 @@ EXPORT_SYMBOL_GPL(mhp_supports_memmap_on_memory);
+>>   */
+>>  int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
 >>  {
->>  	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(core_vdev);
->> @@ -1323,6 +1498,7 @@ static int hisi_acc_vfio_pci_open_device(struct vfio_device *core_vdev)
->>  	}
+>> -	struct mhp_params params = { .pgprot = pgprot_mhp(PAGE_KERNEL) };
+>> +	unsigned long memblock_size = memory_block_size_bytes();
+>>  	enum memblock_flags memblock_flags = MEMBLOCK_NONE;
+>> -	struct vmem_altmap mhp_altmap = {};
+>>  	struct memory_group *group = NULL;
+>> -	u64 start, size;
+>> +	u64 start, size, cur_start;
+>>  	bool new_node = false;
+>>  	int ret;
 >>  
->>  	vfio_pci_core_finish_enable(vdev);
->> +
->>  	return 0;
->>  }
->>  
->> @@ -1420,9 +1596,14 @@ static int hisi_acc_vfio_pci_probe(struct pci_dev *pdev, const struct pci_device
->>  	ret = vfio_pci_core_register_device(&hisi_acc_vdev->core_device);
->>  	if (ret)
->>  		goto out_put_vdev;
->> +
->> +	if (ops == &hisi_acc_vfio_pci_migrn_ops)
->> +		hisi_acc_vfio_debug_init(hisi_acc_vdev);
->>  	return 0;
->>  
->>  out_put_vdev:
->> +	if (ops == &hisi_acc_vfio_pci_migrn_ops)
->> +		hisi_acc_vf_debugfs_exit(hisi_acc_vdev);
-> 
-> Why do we need this?  There's no case where debug_init occurs before
-> this goto.
+>> @@ -1339,27 +1367,20 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>>  	/*
+>>  	 * Self hosted memmap array
+>>  	 */
+>> -	if (mhp_flags & MHP_MEMMAP_ON_MEMORY) {
+>> -		if (!mhp_supports_memmap_on_memory(size)) {
+>> -			ret = -EINVAL;
+>> +	if ((mhp_flags & MHP_MEMMAP_ON_MEMORY) &&
+>> +	    mhp_supports_memmap_on_memory(memblock_size)) {
+>> +		for (cur_start = start; cur_start < start + size;
+>> +		     cur_start += memblock_size) {
+>> +			ret = add_memory_create_devices(nid, group, cur_start,
+>> +							memblock_size,
+>> +							mhp_flags);
+>> +			if (ret)
+>> +				goto error;
+>> +		}
 >
+> We should handle the below error details here. 
+>
+> 1) If we hit an error after some blocks got added, should we iterate over rest of the dev_dax->nr_range.
+> 2) With some blocks added if we return a failure here, we remove the
+> resource in dax_kmem. Is that ok? 
+>
+> IMHO error handling with partial creation of memory blocks in a resource range should be
+> documented with this change.
 
-Yes. These two lines are not needed here.
+Or, should we remove all added memory blocks upon error?
 
->>  	vfio_put_device(&hisi_acc_vdev->core_device.vdev);
->>  	return ret;
->>  }
->> @@ -1431,6 +1612,7 @@ static void hisi_acc_vfio_pci_remove(struct pci_dev *pdev)
->>  {
->>  	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_drvdata(pdev);
->>  
->> +	hisi_acc_vf_debugfs_exit(hisi_acc_vdev);
->>  	vfio_pci_core_unregister_device(&hisi_acc_vdev->core_device);
->>  	vfio_put_device(&hisi_acc_vdev->core_device.vdev);
->>  }
->> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
->> index dcabfeec6ca1..ef50b12f018d 100644
->> --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
->> +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
->> @@ -49,6 +49,14 @@
->>  #define QM_EQC_DW0		0X8000
->>  #define QM_AEQC_DW0		0X8020
->>  
->> +#define VFIO_DEV_DBG_LEN		256
->> +
->> +enum mig_debug_cmd {
->> +	STATE_SAVE,
->> +	STATE_RESUME,
->> +	RW_IO_TEST,
->> +};
-> 
-> Unused.
-> 
-OK.
-
-> Thanks,
-> Alex
-> 
-Thanks,
-Longfang.
->> +
->>  struct acc_vf_data {
->>  #define QM_MATCH_SIZE offsetofend(struct acc_vf_data, qm_rsv_state)
->>  	/* QM match information */
->> @@ -113,5 +121,8 @@ struct hisi_acc_vf_core_device {
->>  	spinlock_t reset_lock;
->>  	struct hisi_acc_vf_migration_file *resuming_migf;
->>  	struct hisi_acc_vf_migration_file *saving_migf;
->> +
->> +	/* For debugfs */
->> +	struct hisi_acc_vf_migration_file *debug_migf;
->>  };
->>  #endif /* HISI_ACC_VFIO_PCI_H */
-> 
-> .
-> 
+--
+Best Regards,
+Huang, Ying
