@@ -2,161 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC6375F1F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C73775F2E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 12:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbjGXKE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 06:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35890 "EHLO
+        id S231799AbjGXKUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 06:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233652AbjGXKED (ORCPT
+        with ESMTP id S233335AbjGXKUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 06:04:03 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BC65B85;
-        Mon, 24 Jul 2023 02:56:50 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R8b570dplz6GD5T;
-        Mon, 24 Jul 2023 17:50:51 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 24 Jul
- 2023 10:55:05 +0100
-Date:   Mon, 24 Jul 2023 10:55:05 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-CC:     Jonathan Corbet <corbet@lwn.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mike Rapoport <rppt@kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Bagas Sanjaya" <bagasdotme@gmail.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [RFC PATCH v2] Documentation/page_tables: Add info about
- MMU/TLB and Page Faults
-Message-ID: <20230724105505.000060c7@Huawei.com>
-In-Reply-To: <20230723120721.7139-1-fmdefrancesco@gmail.com>
-References: <20230723120721.7139-1-fmdefrancesco@gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 24 Jul 2023 06:20:09 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD405BAE
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:12:38 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-267711d2b43so578139a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 03:12:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690193557; x=1690798357;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=am2eIoStEhYj6reS+R983QZxh6h3W0xYr71gNNToCQ8=;
+        b=IG/bccY3HqEfbBDIuZvjTnJtDIRh1OcLp83JsiF0pA/+5LL/7C3elosch6MRrawLnE
+         F5ZCbzMoNMxgpOkDtdw2LkO8zh261UAJiIK+lBEv64c5sIqQVcyKIUKwhJV9AE2QSuVe
+         TH3M0RTKnnQA0MNbmQwLob/tq3fLWGzbotel0sztErm7ol0Y4Q0Ed0HfvrDp5pgNECrj
+         CXhN9IdaKngO6xiOQ/+LN8dwY4iuBifx80ip05qb7AFX7C2sqbmHh7RaR01UOZ08QkAx
+         2jc0FQ1sJ1xGNYXfVcMz1dIWXz5A1weOetYfIo7d/I5VXoORHdWmBTCH1J55qPrSdzPu
+         HFmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690193557; x=1690798357;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=am2eIoStEhYj6reS+R983QZxh6h3W0xYr71gNNToCQ8=;
+        b=bJiJmJvYJaAmFqNJ4ay8wIiXGXac3ycw6pgUG8xv7V/pPbaZRw8IqeILc1IZi6zz4m
+         V1kSSab7zy/lpLziJQdLGWbGN/49u1FFR9ehNf9exSWILG51W1aQG+j7IPJVOkr+OrPd
+         QtI5GDwFkhT/1+rNE5ewon4cfm1kI7hIP2yAhYC6ieo01OW+fVkszIjF852jF5EKCjXC
+         KFfEfNtivf7eEFsEKbHBAHpVZqohWSJXdtwRohOz64z9PhQJQtTqBjVgAPV4TZTwBSOT
+         dJNPtiH/LH8AmTO8Cvad7wK+oBY7vVhFdu7Vu/G4c8TPMNrURJHscqEeRbCo6DFvgKpU
+         xuwQ==
+X-Gm-Message-State: ABy/qLY71EZspNd428GfHlZhkhCFGOQavG/dHYqYyvY4EDhjLPIIcl8p
+        q38k/CKMNnbCpOA4dZlwDVBV+ofae3Hl9DsD3PA=
+X-Google-Smtp-Source: APBJJlEtnCzvJ6I1rkWEELadVXHfZtUE/plpWIuGp/MFKpOvTS509ssN84iHDxA1POdeL3+D21rKQg==
+X-Received: by 2002:a05:6a20:8e04:b0:137:3941:17b3 with SMTP id y4-20020a056a208e0400b00137394117b3mr14532126pzj.6.1690192601020;
+        Mon, 24 Jul 2023 02:56:41 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id y1-20020aa78541000000b00682aac1e2b8sm7356787pfn.60.2023.07.24.02.56.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 02:56:40 -0700 (PDT)
+Message-ID: <7b4eb3fa-1ebd-de07-1a16-9533b069a66e@bytedance.com>
+Date:   Mon, 24 Jul 2023 17:56:27 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v2 05/47] binder: dynamically allocate the android-binder
+ shrinker
+Content-Language: en-US
+To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-6-zhengqi.arch@bytedance.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <20230724094354.90817-6-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 23 Jul 2023 14:07:09 +0200
-"Fabio M. De Francesco" <fmdefrancesco@gmail.com> wrote:
 
-> Extend page_tables.rst by adding a section about the role of MMU and TLB
-> in translating between virtual addresses and physical page frames.
-> Furthermore explain the concept behind Page Faults and how the Linux
-> kernel handles TLB misses. Finally briefly explain how and why to disable
-> the page faults handler.
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Bagas Sanjaya <bagasdotme@gmail.com>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-
-Hi Fabio,
-
-Some superficial comments...
-
-> ---
-> 
-> v1->v2: Add further information about lower level functions in the page
-> fault handler and add information about how and why to disable / enable
-> the page fault handler (provided a link to a Ira's patch that make use
-> of pagefault_disable() to prevent deadlocks).
-> 
-> This is an RFC PATCH because of two reasons:
-> 
-> 1) I've heard that there is consensus about the need to revise and
-> extend the MM documentation, but I'm not sure about whether or not
-> developers need these kind of introductory information.
-> 
-> 2) While preparing this little patch I decided to take a quicj look at
-
-Spell check your intro text.
-
-> the code and found out it currently is not how I thought I remembered
-> it. I'm especially speaking about the x86 case. I'm not sure that I've
-> been able to properly understand what I described as a difference in
-> workflow compared to most of the other architecture.
-> 
-> Therefore, for the two reasons explained above, I'd like to hear from
-> people actively involved in MM. If this is not what you want, feel free
-> to throw it away. Otherwise I'd be happy to write more on this and other
-> MM topics. I'm looking forward for comments on this small work.
-> 
->  Documentation/mm/page_tables.rst | 87 ++++++++++++++++++++++++++++++++
->  1 file changed, 87 insertions(+)
-> 
-> diff --git a/Documentation/mm/page_tables.rst b/Documentation/mm/page_tables.rst
-> index 7840c1891751..2be56f50c88f 100644
-> --- a/Documentation/mm/page_tables.rst
-> +++ b/Documentation/mm/page_tables.rst
-> @@ -152,3 +152,90 @@ Page table handling code that wishes to be architecture-neutral, such as the
->  virtual memory manager, will need to be written so that it traverses all of the
->  currently five levels. This style should also be preferred for
->  architecture-specific code, so as to be robust to future changes.
-> +
-> +
-> +MMU, TLB, and Page Faults
-> +=========================
-> +
-> +The Memory Management Unit (MMU) is a hardware component that handles virtual to
-> +physical address translations. It uses a relatively small cache in hardware
-
-It may use a relatively...
-(I doubt Linux supports anything that doesn't have a TLB but they aren't required
- by some architectures - just a performance optmization that you 'can' add to
- an implementation.)
-
-> +called the Translation Lookaside Buffer (TLB) to speed up these translations.
-> +When a process wants to access a memory location, the CPU provides a virtual
-> +address to the MMU, which then uses the TLB to quickly find the corresponding
-> +physical address.
-> +
-> +However, sometimes the MMU can't find a valid translation in the TLB. This
-> +could be because the process is trying to access a range of memory that it's not
-> +allowed to, or because the memory hasn't been loaded into RAM yet.
-
-It might not find it because this is first attempt to do the translation and
-the MMU hasn't filled the TLB entry yet, or a capacity eviction has happened.
-Basically failure to find it in the TLB doesn't mean we get a page fault
-(unless you are on an ancient architecture where TLB entries are software filled
- which is definitely not the case for most modern ones).
-
->  When this
-> +happens, the MMU triggers a page fault, which is a type of interrupt that
-
-Hmm. Whilst similar to an interrupt I'd argue that it's not one..
-
-> +signals the CPU to pause the current process and run a special function to
-> +handle the fault.
-
-...
-
-Jonathan
-
+This patch depends on the patch: 
+https://lore.kernel.org/lkml/20230625154937.64316-1-qi.zheng@linux.dev/
 
