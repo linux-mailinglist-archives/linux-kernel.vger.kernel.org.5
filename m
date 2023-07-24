@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BA676017A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806F076017F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbjGXVqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37130 "EHLO
+        id S230500AbjGXVsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjGXVqQ (ORCPT
+        with ESMTP id S231327AbjGXVr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:46:16 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58F5120
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:46:15 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-558a79941c6so2781942eaf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:46:15 -0700 (PDT)
+        Mon, 24 Jul 2023 17:47:59 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DE110EF
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:47:57 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-563439ea4a2so3305634eaf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:47:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690235175; x=1690839975;
+        d=gmail.com; s=20221208; t=1690235277; x=1690840077;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9NnStTipjate4A8hMy4OAO5j3l8ghoR4SvTd3Ty1jyA=;
-        b=dETYlOp9BARBq6hRFY+R8WX/Iwt59GSuDbKPOaJYNmKrIEJ/aptALOufrEn6ziZI+M
-         aPwnnUkPJU58oBT2NAXQls7+2gxAQ8AL/Iu5qlc0bGVhVWw2LSpC/Yc//qwTa2mcR/0C
-         06nYQffkUtioyMpim1sSeJoJleQS1qMjej6MibXErkHJTGXfv10sk2cjIS5OWcselqBe
-         mNm4f3ag2LGexG5kcUbx5ap7s9DcwOv7zPY3ntzH6yxfPybyocYQHdNnAuWRSemrNVo9
-         p+9N2T+AK5UqnfBsbBbQPXaiG7iIp868qVgAWUluBv6DPCBC3QHKzVo8OMik4elEM7Fr
-         vzWg==
+        bh=QesV14Y8s5g0OhMUI7pqw1Hsk4wA0SJiQn93s5bli88=;
+        b=J5BI7qxCLonnLK3T5LEIolm0ybGbfJ0qjHpQrhg8yyFg1rPqjkh46UpTSQo32eROiz
+         BFHY7LsFZ3jjyAqjdtUTlOJFtizVoYR8A8ip0mQDWZBkVRc3gzdODXNjyhz/AlF1EP92
+         C+1uEYRqOZu51w8rRRDiMKPpjHuVhGRgTtsGOxL6AAe3M0k08e4A+S11/WYRf3T3td6+
+         k7qDJoj0Ld2MPZrjxBJVmLMlXh6YUf/spMvchzsVZMiRRbGxhczZGoI2lq9PH6UDta35
+         rQ0BO9cK/jH5t2IZmKdBqJdvLIvyxdQOn3lr3R/qf+8QW8RDMtiz+9Cm9bAd5W4KxmNK
+         lM6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690235175; x=1690839975;
+        d=1e100.net; s=20221208; t=1690235277; x=1690840077;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9NnStTipjate4A8hMy4OAO5j3l8ghoR4SvTd3Ty1jyA=;
-        b=fmpfufZOiSOwHdSNFzkCgsREHV277LDXx8sbW/XH9iqZy/A3cv38pe9nRYkdUm7Y/P
-         PsEqjzuw8G/4iSYFYkmxsAtYklCVZSKGm1VZuC8E0jYU5R+r8TUl7qdo1YBlagMbB/Py
-         i9Az/3kyeOEXen6xH2iaVF6E3heTihphrNS3ZBue7nDMcA+JzMsjL95MDAPiPGO0ST1d
-         uVKavd3nQdNcJoz5u0moLwYUjK/m7yWcyHST9uAJsKbi4Zve1OFOGqEUhwbc3+Pn/Aob
-         s55uBX6wYiOdP1TvYDFwg4VD9ZGiAH/R9J5/3xBerKQKCHalaGW1Z9L3P48I3HD9ZNFb
-         p7zg==
-X-Gm-Message-State: ABy/qLb7lRkdDJbZlNrsTWFD9ZBQO6Pz5SAvq8um6QKd5OovKxOi+HJ5
-        OGcRrhs/vh1vnNe02X2D/Tlj4CXc+REdFkUk7tCyX1VZ
-X-Google-Smtp-Source: APBJJlFMsa/ns3DFCqUpFXCd4aDEpig5u/kEDwcEKFQTS7TJz776r8oPtP60y4QiG9ksz9ois6VQjAzAeialh7bVvPE=
-X-Received: by 2002:a4a:2449:0:b0:566:f62b:7b91 with SMTP id
- v9-20020a4a2449000000b00566f62b7b91mr8751740oov.8.1690235175070; Mon, 24 Jul
- 2023 14:46:15 -0700 (PDT)
+        bh=QesV14Y8s5g0OhMUI7pqw1Hsk4wA0SJiQn93s5bli88=;
+        b=dGcCJBH1nuHRJm2dufkozZ+vE85Q13o3xWVloH3adIMSybQwD/gcWVzvVNeDjqyASj
+         qgq8dgEdJXqVVYJD/fUvilIN9h6NJfwyx9+K03Ze/cH3Flt5xug5Js9T+hQlGrGT39fw
+         AiS5RvCxxABJBTllmddpjvPulTRE3qud3r9JKAM36bUFKMOvIP4olYfy7JIpbHMlmfsc
+         cz3g9qEKbr9G344wzWRw95pM7MzT8X7c/+4DFPirIudvl/mNcM/cc8YBEPlOtMEe/I7l
+         g43IEtBwj1D5ZGsOxJIEM8tGqQMj0JkNv/gGEFuys2TNQnvEXGEXwQcO/KP9SnrcjSMq
+         bf7A==
+X-Gm-Message-State: ABy/qLaICQmMTfG6VmOqrxgrf+wG1c+M8/PhbLgwly3uKok0FPfY7aS4
+        2lOrPpXAtsfF1pQAulHTMOfa4VrKxBtV+V8Gkpz5tv3r
+X-Google-Smtp-Source: APBJJlEqUYkWRqNTDj4h0jAqZsTYGFXxqivzpmqtVNCUNgCE0iDpXNGPMdFJbyX9kq1Ds8nJdbMceIC+AWvVFDaQbck=
+X-Received: by 2002:a4a:91d1:0:b0:566:ffa7:fd00 with SMTP id
+ e17-20020a4a91d1000000b00566ffa7fd00mr9220728ooh.6.1690235276920; Mon, 24 Jul
+ 2023 14:47:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230724070049.8540-1-xujianghui@cdjrlc.com> <7ad78e88ddb94a0811947b48b04dfb2c@208suo.com>
-In-Reply-To: <7ad78e88ddb94a0811947b48b04dfb2c@208suo.com>
+References: <20230724071955.8822-1-xujianghui@cdjrlc.com> <3175b4fe4a9d8e4c29a39e9099c109ed@208suo.com>
+In-Reply-To: <3175b4fe4a9d8e4c29a39e9099c109ed@208suo.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 24 Jul 2023 17:46:04 -0400
-Message-ID: <CADnq5_MMhpBVbHzaUNNoyxhk-m_2HjF-2kaK3z5mjmrHiORuLg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: add missing spaces before '('
+Date:   Mon, 24 Jul 2023 17:47:45 -0400
+Message-ID: <CADnq5_OcQUUmOzkRfb48Cf6mjRL6N80C6-2EU6HjGORnfoZ=dw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/pm: Clean up errors in navi10_ppt.c
 To:     sunran001@208suo.com
-Cc:     airlied@gmail.com, daniel@ffwll.ch, alexander.deucher@amd.com,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
+Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,37 +71,155 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied.  Thanks!
 
-On Mon, Jul 24, 2023 at 3:02=E2=80=AFAM <sunran001@208suo.com> wrote:
+On Mon, Jul 24, 2023 at 3:21=E2=80=AFAM <sunran001@208suo.com> wrote:
 >
+> Fix the following errors reported by checkpatch:
+>
+> ERROR: open brace '{' following function definitions go on the next line
 > ERROR: space required before the open parenthesis '('
+> ERROR: space required after that ',' (ctx:VxV)
+> ERROR: spaces required around that '=3D' (ctx:VxW)
 >
 > Signed-off-by: Ran Sun <sunran001@208suo.com>
 > ---
->   drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+>   .../gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c   | 25 ++++++++++---------
+>   1 file changed, 13 insertions(+), 12 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
-> b/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
-> index 8a8ba25c9ad7..a7569354229d 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
-> @@ -262,15 +262,15 @@ static int renoir_get_profiling_clk_mask(struct
+> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
+> b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
+> index 95f6d821bacb..e655071516b7 100644
+> --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
+> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
+> @@ -136,7 +136,7 @@ static struct cmn2asic_msg_mapping
+> navi10_message_map[SMU_MSG_MAX_COUNT] =3D {
+>         MSG_MAP(PowerDownJpeg,                  PPSMC_MSG_PowerDownJpeg, =
+               0),
+>         MSG_MAP(BacoAudioD3PME,                 PPSMC_MSG_BacoAudioD3PME,=
+               0),
+>         MSG_MAP(ArmD3,                          PPSMC_MSG_ArmD3,         =
+               0),
+> -       MSG_MAP(DAL_DISABLE_DUMMY_PSTATE_CHANGE,PPSMC_MSG_DALDisableDummy=
+PstateChange,  0),
+> +       MSG_MAP(DAL_DISABLE_DUMMY_PSTATE_CHANGE,
+> PPSMC_MSG_DALDisableDummyPstateChange,  0),
+>
+>         MSG_MAP(DAL_ENABLE_DUMMY_PSTATE_CHANGE, PPSMC_MSG_DALEnableDummyP=
+stateChange,   0),
+>         MSG_MAP(GetVoltageByDpm,                PPSMC_MSG_GetVoltageByDpm=
+,              0),
+>
+>         MSG_MAP(GetVoltageByDpmOverdrive,       PPSMC_MSG_GetVoltageByDpm=
+Overdrive,     0),
+> @@ -556,7 +556,7 @@ static int navi10_get_legacy_smu_metrics_data(struct
 > smu_context *smu,
->                         /* mclk levels are in reverse order */
->                         *mclk_mask =3D NUM_MEMCLK_DPM_LEVELS - 1;
->         } else if (level =3D=3D AMD_DPM_FORCED_LEVEL_PROFILE_PEAK) {
-> -               if(sclk_mask)
-> +               if (sclk_mask)
->                         /* The sclk as gfxclk and has three level about m=
-ax/min/current */
->                         *sclk_mask =3D 3 - 1;
+>                                               MetricsMember_t member,
+>                                               uint32_t *value)
+>   {
+> -       struct smu_table_context *smu_table=3D &smu->smu_table;
+> +       struct smu_table_context *smu_table =3D &smu->smu_table;
+>         SmuMetrics_legacy_t *metrics =3D
+>                 (SmuMetrics_legacy_t *)smu_table->metrics_table;
+>         int ret =3D 0;
+> @@ -642,7 +642,7 @@ static int navi10_get_smu_metrics_data(struct
+> smu_context *smu,
+>                                        MetricsMember_t member,
+>                                        uint32_t *value)
+>   {
+> -       struct smu_table_context *smu_table=3D &smu->smu_table;
+> +       struct smu_table_context *smu_table =3D &smu->smu_table;
+>         SmuMetrics_t *metrics =3D
+>                 (SmuMetrics_t *)smu_table->metrics_table;
+>         int ret =3D 0;
+> @@ -731,7 +731,7 @@ static int navi12_get_legacy_smu_metrics_data(struct
+> smu_context *smu,
+>                                               MetricsMember_t member,
+>                                               uint32_t *value)
+>   {
+> -       struct smu_table_context *smu_table=3D &smu->smu_table;
+> +       struct smu_table_context *smu_table =3D &smu->smu_table;
+>         SmuMetrics_NV12_legacy_t *metrics =3D
+>                 (SmuMetrics_NV12_legacy_t *)smu_table->metrics_table;
+>         int ret =3D 0;
+> @@ -817,7 +817,7 @@ static int navi12_get_smu_metrics_data(struct
+> smu_context *smu,
+>                                        MetricsMember_t member,
+>                                        uint32_t *value)
+>   {
+> -       struct smu_table_context *smu_table=3D &smu->smu_table;
+> +       struct smu_table_context *smu_table =3D &smu->smu_table;
+>         SmuMetrics_NV12_t *metrics =3D
+>                 (SmuMetrics_NV12_t *)smu_table->metrics_table;
+>         int ret =3D 0;
+> @@ -1686,7 +1686,7 @@ static int navi10_force_clk_levels(struct
+> smu_context *smu,
+>                         return 0;
+>                 break;
+>         case SMU_DCEFCLK:
+> -               dev_info(smu->adev->dev,"Setting DCEFCLK min/max dpm leve=
+l is not
+> supported!\n");
+> +               dev_info(smu->adev->dev, "Setting DCEFCLK min/max dpm lev=
+el is not
+> supported!\n");
+>                 break;
 >
-> -               if(mclk_mask)
-> +               if (mclk_mask)
->                         /* mclk levels are in reverse order */
->                         *mclk_mask =3D 0;
+>         default:
+> @@ -2182,7 +2182,7 @@ static int navi10_read_sensor(struct smu_context
+> *smu,
+>         struct smu_table_context *table_context =3D &smu->smu_table;
+>         PPTable_t *pptable =3D table_context->driver_pptable;
 >
-> -               if(soc_mask)
-> +               if (soc_mask)
->                         *soc_mask =3D NUM_SOCCLK_DPM_LEVELS - 1;
+> -       if(!data || !size)
+> +       if (!data || !size)
+>                 return -EINVAL;
+>
+>         switch (sensor) {
+> @@ -2317,15 +2317,15 @@ static int
+> navi10_display_disable_memory_clock_switch(struct smu_context *smu,
+>         uint32_t min_memory_clock =3D smu->hard_min_uclk_req_from_dal;
+>         uint32_t max_memory_clock =3D max_sustainable_clocks->uclock;
+>
+> -       if(smu->disable_uclk_switch =3D=3D disable_memory_clock_switch)
+> +       if (smu->disable_uclk_switch =3D=3D disable_memory_clock_switch)
+>                 return 0;
+>
+> -       if(disable_memory_clock_switch)
+> +       if (disable_memory_clock_switch)
+>                 ret =3D smu_v11_0_set_hard_freq_limited_range(smu, SMU_UC=
+LK,
+> max_memory_clock, 0);
+>         else
+>                 ret =3D smu_v11_0_set_hard_freq_limited_range(smu, SMU_UC=
+LK,
+> min_memory_clock, 0);
+>
+> -       if(!ret)
+> +       if (!ret)
+>                 smu->disable_uclk_switch =3D disable_memory_clock_switch;
+>
+>         return ret;
+> @@ -2559,7 +2559,8 @@ static int navi10_set_default_od_settings(struct
+> smu_context *smu)
+>         return 0;
+>   }
+>
+> -static int navi10_od_edit_dpm_table(struct smu_context *smu, enum
+> PP_OD_DPM_TABLE_COMMAND type, long input[], uint32_t size) {
+> +static int navi10_od_edit_dpm_table(struct smu_context *smu, enum
+> PP_OD_DPM_TABLE_COMMAND type, long input[], uint32_t size)
+> +{
+>         int i;
+>         int ret =3D 0;
+>         struct smu_table_context *table_context =3D &smu->smu_table;
+> @@ -3368,7 +3369,7 @@ static ssize_t navi1x_get_gpu_metrics(struct
+> smu_context *smu,
+>                       ((adev->ip_versions[MP1_HWIP][0] =3D=3D IP_VERSION(=
+11, 0, 0)) &&
+> smu_version > 0x002A3B00))
+>                         ret =3D navi10_get_gpu_metrics(smu, table);
+>                 else
+> -                       ret =3Dnavi10_get_legacy_gpu_metrics(smu, table);
+> +                       ret =3D navi10_get_legacy_gpu_metrics(smu, table)=
+;
+>                 break;
 >         }
