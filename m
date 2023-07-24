@@ -2,127 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BABAD75F687
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2869975F694
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbjGXMlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34524 "EHLO
+        id S229845AbjGXMnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:43:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjGXMls (ORCPT
+        with ESMTP id S229960AbjGXMm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:41:48 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1103A126;
-        Mon, 24 Jul 2023 05:41:47 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36OCL7pV002178;
-        Mon, 24 Jul 2023 12:41:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=jCWFbZgusrMXhbphtKcugNpgDvk2CdvVNIW780rwknw=;
- b=BJ5ZrvjZ2Pj+1bmUBvXh3objtWg9AqWoFHhWPRPa6XkF7E95z4k2iytzGAcPmK6xmAka
- cYUJgk5Ph3ykAg84gqfTFLZnjU/uloJGH3Pn/pNtJx/3s5t++rkYexkIp0uYRiEF7dxM
- KOZWNo0TY9jpTAjYaXioNFLVaapFE7aOQb6yRDCUn+/JBwaMTeFk99vGHikpHjVbf9AZ
- 6gYoy0iHch61Y2jqPr2t1k+uh6gN/jX9gh/ojsa6SsMTIFxJu8E/Lf1g2nHjMKq63F7c
- /EDPxf+AR9SBBPd2hUO8bOTsmfUCs2Sbyp88HMO6xBqqBLj/Y4bHQh+CNqNnwNKxLcWx 9Q== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s064dkb3y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 12:41:43 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36OCfgTt021645
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jul 2023 12:41:42 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 24 Jul
- 2023 05:41:39 -0700
-Message-ID: <92418b75-6d03-b808-0a6f-06676d177f18@quicinc.com>
-Date:   Mon, 24 Jul 2023 18:11:36 +0530
+        Mon, 24 Jul 2023 08:42:59 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2077.outbound.protection.outlook.com [40.107.237.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE8D126;
+        Mon, 24 Jul 2023 05:42:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cljqggywRtNy1zJ59kmE9KJxCmQrsVLbI9sWq8M6b2m8efa4eUza+BoEpF98uyLchIogEaD+o3Mc1XtOLPcRviDiftFhrENKI6zrDogMBxIzNAKq3AZGOZazDQ8Yh5G8f+mZJ8JE4noIKKxnNrre2czkLLYAEPJkWnwJjHYZwM+QZp6dXW52+KQNYu71za3S1WP1po97Sfg/5EuBTMlTnc0odB/rvzm9xvcK19GtNsYgfovHw5h9pBq0y7HEFv3Icg8jI/wvshSvWEzMvSKOMYCRMPxk1OJuM308tdvUSJl+LW8TdpXU50l1swmHWrum75fj49fjpL14e4719q0N7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oDcp3h0/2tdkX418XPo23sD6+TWSLWd17s0QQJ0DKOw=;
+ b=Y2TVBLi4QZUOzs2IQ8fN/E9Y6XVJjdiAH0EitccyZbqsyAZVKwPEkxokM0XjovryK6TnbhB7zw2x3b8OC8KKT/PFw/IfF01yUM7KdqiLn/duCtWBdOASfX67JrzQsDV8cao4UAkVQs61A/9o1dCNJyHUIYMnf13ZIHHdfZcde09kHialxSw9nxTjoTyj2cNJ110ARDm5upJ0oBGNEkXmy/MaWPcjAxDw0kgqHYWSSj5QWsFGl2ROdSnr/G66EqBFas1DvKDhhc5mNlRcu30gxRKvhKDrMm9iJskPHlB31wbhGocZXbKri7hCZ2lTKyuBb9Kvfp8beZa8LMtdafvumA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oDcp3h0/2tdkX418XPo23sD6+TWSLWd17s0QQJ0DKOw=;
+ b=wV0D4z8YeBVWGdjFE94lGzoI2XiHla5rRCEMoutdOv6TzCrJEXwi1d88yrOTROz0gtxrzI+MfR5xM6K7oTXNsAYFrF7mVxSs3k94VsfAG8Rd72hC4VZGKJ0LVJzfCHJgJvDNfyRxeHLzsCDGIZ1JC0epjJcBDUbqvu1NY6+NuRc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3657.namprd12.prod.outlook.com (2603:10b6:5:149::18)
+ by MN2PR12MB4207.namprd12.prod.outlook.com (2603:10b6:208:1d9::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Mon, 24 Jul
+ 2023 12:42:55 +0000
+Received: from DM6PR12MB3657.namprd12.prod.outlook.com
+ ([fe80::6cf0:e179:9f0b:edd9]) by DM6PR12MB3657.namprd12.prod.outlook.com
+ ([fe80::6cf0:e179:9f0b:edd9%5]) with mapi id 15.20.6609.032; Mon, 24 Jul 2023
+ 12:42:54 +0000
+Date:   Mon, 24 Jul 2023 14:42:48 +0200
+From:   Robert Richter <rrichter@amd.com>
+To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cxl@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        oohall@gmail.com, Lukas Wunner <lukas@wunner.de>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Ben Widawsky <bwidawsk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Terry Bowman <terry.bowman@amd.com>
+Subject: Re: [PATCH v2 2/3] PCI/AER: Export pcie_aer_is_native()
+Message-ID: <ZL5xyC9L0Bx/nrde@rric.localdomain>
+References: <20230721214740.256602-1-Smita.KoralahalliChannabasappa@amd.com>
+ <20230721214740.256602-3-Smita.KoralahalliChannabasappa@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721214740.256602-3-Smita.KoralahalliChannabasappa@amd.com>
+X-ClientProxiedBy: FRYP281CA0011.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::21)
+ To DM6PR12MB3657.namprd12.prod.outlook.com (2603:10b6:5:149::18)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 5/6] soc: qcom: llcc: Updating the macro name
-Content-Language: en-US
-To:     Komal Bajaj <quic_kbajaj@quicinc.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <srinivas.kandagatla@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230724084155.8682-1-quic_kbajaj@quicinc.com>
- <20230724084155.8682-6-quic_kbajaj@quicinc.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20230724084155.8682-6-quic_kbajaj@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: mfQweTS4jBqaabPsJ97GEwfOnlvJHJ0E
-X-Proofpoint-ORIG-GUID: mfQweTS4jBqaabPsJ97GEwfOnlvJHJ0E
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-24_09,2023-07-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
- phishscore=0 mlxscore=0 spamscore=0 adultscore=0 bulkscore=0
- lowpriorityscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307240112
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3657:EE_|MN2PR12MB4207:EE_
+X-MS-Office365-Filtering-Correlation-Id: 03a4daac-d757-4b88-0d89-08db8c438058
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jmAdjMAKWPrgZr3dHjAlSGXJ2ifil9YiBZFK3KvPwPQ0KNSOfuXrWMc0lQSuiFH8EOIMj4yD9JUia/lNt39ZU3m9e2pxt89X/PPDem9IqwsSk7aYNDq/6bixK9XNQvlghdaoQpMz7QjdHc8K/dbyoycMw3/l785BlwO9fb5BwKcTVx5grFl7LUhdnydPber27SK/LcVxZ0nim2izijCcRh9pll2njizr4HXL3HjRxRzRNgzoDlRLxcLtty98Fsm6NQ/99rBKZn3LeN+Sa8vV2/28d49wQt/QP549CM3k9IUZ00Un4wDSDZibiKaFc0seGxM8Kk8fTZKsfk8dOpNUiCWK+iVxi0pOiuJQFKq0Swne46psRWY32N+tNGOj9WLY1OsokPvAePXaUnJ4Dkxqi2SzwK8GQB//mIDOMN9s7sdyJyapqjY9m6JtYLGu+pFHFsYxEgK50s5RRN11++Gle6vTR/gnNjuXYo3dUKiF1cGLqPcy9Vce/2X7kM/nfCLs8TbHNbxwQhK+SzcXr8NYTDdaSc57bUvVKcwtsV/V+e1RmIhyI09jwsjAmS3bfNoD
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3657.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(346002)(366004)(396003)(136003)(451199021)(26005)(186003)(41300700001)(478600001)(6506007)(53546011)(9686003)(66556008)(66946007)(66476007)(6636002)(4326008)(316002)(6512007)(6666004)(54906003)(38100700002)(6486002)(5660300002)(2906002)(7416002)(8676002)(6862004)(8936002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8cZrcZJh6qD/27CFkpDG/s2CMv81b3yc3TsYDOFSLgy3vuyjuRkE7UrtLOBk?=
+ =?us-ascii?Q?gLn66/p61UMUrUZdiHJiSDMiiz05lPbuPocmTy2BRJgyfHraJOm29xdYxpwG?=
+ =?us-ascii?Q?jk0KSC3S/p5vUE503l/QWCPkmsk1uXklxam+aHU1xtOSwDCLhmM4HkGcwt3y?=
+ =?us-ascii?Q?2OuyHBFZyaZ7W42LgczAZIa/VAp+3lLu3zbQ1ItlyS7/y0UJhyMHoYjkf96B?=
+ =?us-ascii?Q?KPr3rG9P2A1TMsts11tsJruWUagRHrsSrzADw8bVLl1QcqJrdEKaqc51jgIT?=
+ =?us-ascii?Q?6159yZu/OjMFvr4BAlIAv/wTm9uhhsSXasrrgPWzB4FdSD8APIi2o7cb0+dG?=
+ =?us-ascii?Q?+ZME+9R+hfXZXiDAi7/MlMhWMp/Y3rkFP5t0hyRoIAyfbTIx+tbFNfEX1zHV?=
+ =?us-ascii?Q?L+MCvuyjeHTc85m+V8x9uoTRUo7rX7S+K0e98MzfhvxRsnt8TkCcOAeDS03S?=
+ =?us-ascii?Q?Fi9qT1sbAHXZVpwIPkXdsAP2VEN6555dyNFio/0dZrMD1tuh2PHVL+JwRCxy?=
+ =?us-ascii?Q?2H1Zy60gS2eYZNNg06aIPOzfHatJAyjAy7Oj7aCeQhx4gDX4XFjpc52Cmsb3?=
+ =?us-ascii?Q?M8M+mmhVoZ6P3mfnYM6ygzTUKp1/USg7f+eUaB6jtRRyF/aFxkU8yySMMQZy?=
+ =?us-ascii?Q?a3fofYqtuz/Fh6oFhVTIvONQUC3FUJPaUPSdGg4q/s3M2X7DmXCPBCEBPoKu?=
+ =?us-ascii?Q?amJKSwwnhZelRyr+YnXQJg+na7sYN2JgLymQJojNRcrt7pJbWLSYYA0Pcxyf?=
+ =?us-ascii?Q?3JZVQO8wm42v8Tr7B/avlch7Prs1eqPWtzzcg4YYJO8HBFypDKk+Z9GDrwQt?=
+ =?us-ascii?Q?QvUtYTPlsx/+lkyO8oMfQn2vifKWRRmmGFm9If0SC5ROq1kf7d0kDUVBUzF1?=
+ =?us-ascii?Q?9y3o/YuZ/uw6oy1nFMnnJMKJiN2KKQyR/SkV6I0FzSQg7lGfbJWTIh8o5h/q?=
+ =?us-ascii?Q?u+8BlN+LbGpUZdOvbr/aITBkRgT5X+vhinAZJVeXwflFfUKTnrwmjy5FXRDH?=
+ =?us-ascii?Q?JbbwIXDMm03VkfoxAE/cZkGjUaNf502a7De/NtG09ClSXMWwJi/u/ejMv2G6?=
+ =?us-ascii?Q?BnsuosNT3Th6nZcJIS1xD6PwPHf2XaSbsIK+BniwT3WQcNKBwL9jVini2ljI?=
+ =?us-ascii?Q?3XbdLU1Bo5cvBVIs+q0+p/cd8YBZj/pmUUcVxE2TYQr5tU/3Qndzh5bazEXD?=
+ =?us-ascii?Q?97fAaXqynBFGLbpMj3uhdwJUuipW7RptIpobAe1h+Tt1smdaPfJSBEVnmnX7?=
+ =?us-ascii?Q?LWtUKjCQYp4cESGrd3HOB3iGvJv/NVfEyfjgN1dlXLAun6Fw6lZlx9oMjz9e?=
+ =?us-ascii?Q?gCiKWOxIjs0/q/RYUb2zQ48HmbeBJpa2hixQa5wRiyqFtZMXCzbNe2kEW5GU?=
+ =?us-ascii?Q?tA3TPd9bICjVrPJr1QC4Bgn61L9kgGjSd57LtvzssksdJ9j+HPzSKpa/J2wG?=
+ =?us-ascii?Q?Jk+bsOWbQpTGU6lwI+QMr98EHRYfL+vsRMo/kfa7EbyZB3UcjYJXKWLb+YkQ?=
+ =?us-ascii?Q?ZnWlQLA68VZF7Fd5zDlbQXQEFpTy/RpASJqkxTmtzMsd07E76Xl2raZou/fx?=
+ =?us-ascii?Q?FZWHl/SbD/ph0UxBIyuo76LUaWJNf4RknBL9vzAq?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 03a4daac-d757-4b88-0d89-08db8c438058
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3657.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 12:42:54.8841
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9i31O2CQ0pu3mE7GgqlDZeVa3jLXjc+ABsic62IghQGlzk6J7ew6W1eb3TK2pB9diNXwP4JPWrLmZYOFY1aemw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4207
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/24/2023 2:11 PM, Komal Bajaj wrote:
-> Updating macro name for LLCC_DRE to LLCC_ECC as per
-> the latest specification.
+On 21.07.23 21:47:39, Smita Koralahalli wrote:
+> Export and move the declaration of pcie_aer_is_native() to a common header
+> file to be reused by cxl/pci module.
 > 
-> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
-
--Mukesh
+Reviewed-by: Robert Richter <rrichter@amd.com>
 
 > ---
->   drivers/soc/qcom/llcc-qcom.c       | 2 +-
->   include/linux/soc/qcom/llcc-qcom.h | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
+> v2:
+> 	Fixed $SUBJECT
+> ---
+>  drivers/pci/pcie/aer.c     | 1 +
+>  drivers/pci/pcie/portdrv.h | 2 --
+>  include/linux/aer.h        | 2 ++
+>  3 files changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
-> index 1d2b08dfecea..228ffb4a8971 100644
-> --- a/drivers/soc/qcom/llcc-qcom.c
-> +++ b/drivers/soc/qcom/llcc-qcom.c
-> @@ -193,7 +193,7 @@ static const struct llcc_slice_config sc8280xp_data[] = {
->   	{ LLCC_MMUHWT,   13, 1024, 1, 1, 0xfff, 0x0, 0, 0, 0, 0, 1, 0 },
->   	{ LLCC_DISP,     16, 6144, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0 },
->   	{ LLCC_AUDHW,    22, 2048, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0 },
-> -	{ LLCC_DRE,      26, 1024, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0 },
-> +	{ LLCC_ECC,      26, 1024, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0 },
->   	{ LLCC_CVP,      28, 512,  3, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0 },
->   	{ LLCC_APTCM,    30, 1024, 3, 1, 0x0,   0x1, 1, 0, 0, 1, 0, 0 },
->   	{ LLCC_WRCACHE,  31, 1024, 1, 1, 0xfff, 0x0, 0, 0, 0, 0, 1, 0 },
-> diff --git a/include/linux/soc/qcom/llcc-qcom.h b/include/linux/soc/qcom/llcc-qcom.h
-> index 93417ba1ead4..1a886666bbb6 100644
-> --- a/include/linux/soc/qcom/llcc-qcom.h
-> +++ b/include/linux/soc/qcom/llcc-qcom.h
-> @@ -30,7 +30,7 @@
->   #define LLCC_NPU         23
->   #define LLCC_WLHW        24
->   #define LLCC_PIMEM       25
-> -#define LLCC_DRE         26
-> +#define LLCC_ECC         26
->   #define LLCC_CVP         28
->   #define LLCC_MODPE       29
->   #define LLCC_APTCM       30
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index f6c24ded134c..87d90dbda023 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -229,6 +229,7 @@ int pcie_aer_is_native(struct pci_dev *dev)
+>  
+>  	return pcie_ports_native || host->native_aer;
+>  }
+> +EXPORT_SYMBOL_GPL(pcie_aer_is_native);
+>  
+>  int pci_enable_pcie_error_reporting(struct pci_dev *dev)
+>  {
+> diff --git a/drivers/pci/pcie/portdrv.h b/drivers/pci/pcie/portdrv.h
+> index 58a2b1a1cae4..1f3803bde7ee 100644
+> --- a/drivers/pci/pcie/portdrv.h
+> +++ b/drivers/pci/pcie/portdrv.h
+> @@ -29,10 +29,8 @@ extern bool pcie_ports_dpc_native;
+>  
+>  #ifdef CONFIG_PCIEAER
+>  int pcie_aer_init(void);
+> -int pcie_aer_is_native(struct pci_dev *dev);
+>  #else
+>  static inline int pcie_aer_init(void) { return 0; }
+> -static inline int pcie_aer_is_native(struct pci_dev *dev) { return 0; }
+>  #endif
+>  
+>  #ifdef CONFIG_HOTPLUG_PCI_PCIE
+> diff --git a/include/linux/aer.h b/include/linux/aer.h
+> index 3a3ab05e13fd..94ce49a5f8d5 100644
+> --- a/include/linux/aer.h
+> +++ b/include/linux/aer.h
+> @@ -45,6 +45,7 @@ struct aer_capability_regs {
+>  int pci_enable_pcie_error_reporting(struct pci_dev *dev);
+>  int pci_disable_pcie_error_reporting(struct pci_dev *dev);
+>  int pci_aer_clear_nonfatal_status(struct pci_dev *dev);
+> +int pcie_aer_is_native(struct pci_dev *dev);
+>  #else
+>  static inline int pci_enable_pcie_error_reporting(struct pci_dev *dev)
+>  {
+> @@ -58,6 +59,7 @@ static inline int pci_aer_clear_nonfatal_status(struct pci_dev *dev)
+>  {
+>  	return -EINVAL;
+>  }
+> +static inline int pcie_aer_is_native(struct pci_dev *dev) { return 0; }
+>  #endif
+>  
+>  void cper_print_aer(struct pci_dev *dev, int aer_severity,
+> -- 
+> 2.17.1
+> 
