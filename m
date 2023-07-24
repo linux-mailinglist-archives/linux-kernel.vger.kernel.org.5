@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4A675FFB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E75D75FFB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbjGXTQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 15:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36020 "EHLO
+        id S230510AbjGXTRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 15:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjGXTQz (ORCPT
+        with ESMTP id S229926AbjGXTRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 15:16:55 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA21E10F7;
-        Mon, 24 Jul 2023 12:16:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1690226211;
-        bh=64pZcItTjZxIjDEl8EzEjacmRIVQb6Kl/2RNtm+3W3o=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=qKdPPK5SWzbg6WweegJVPDc+Y14TqL+xjdi2NAAyaPnKlINuO2LVdAJtG3j1y+8qb
-         flzU/ZpZSHJeosLdho0eb8gGduWqm1q1MOJR4QdQgWxzbmVyM1BjmGALwIhPXOvu7j
-         7qr5WH1ClnTJPI3SWLD1sdEDB3nLABEvUrGh4bAk=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id D439A128605E;
-        Mon, 24 Jul 2023 15:16:51 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id C0372O34OdMU; Mon, 24 Jul 2023 15:16:51 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1690226209;
-        bh=64pZcItTjZxIjDEl8EzEjacmRIVQb6Kl/2RNtm+3W3o=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=JAwdcEEyF8qhlBRdqM4TQyqzai8kydFBA5oKexXMNAy2J8yww4cZt4nKQyboPAgLt
-         mWM8SXpt/m8sPX+3+XqAUFuxrvhkTZBqHBgmUnRh25yVamP9iR4nxno58zLFWSLVKb
-         5k77VmlanMLliPfinv2+0r8DC9s8d4yMDtBeAVBs=
-Received: from [IPv6:2601:5c4:4302:c21::a774] (unknown [IPv6:2601:5c4:4302:c21::a774])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 60AA11281F5F;
-        Mon, 24 Jul 2023 15:16:49 -0400 (EDT)
-Message-ID: <d75dc295e6ddaebc988f5af3ad6d12fa96948f5e.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 6.5-rc3
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Mon, 24 Jul 2023 15:16:47 -0400
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Mon, 24 Jul 2023 15:17:03 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6100910F5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 12:17:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fD8k9MJukbJAshMIcLKZEEu2SAeyY9acI66XfQU35Ek=; b=sxnyzx3VQpm/cp4YgIBl65ihk8
+        IiCLmsDvQjeY6Qi9IKGETOXrQAQvF9fJAXo03ZvxjCEM8gZ1b6pdfG9jgzSzTNxrs0wY+TIB6R9wm
+        RAU3Au+rfyV7zPqDZsctTPQM74a+i5QBSV800egyEaDtTs4ZWeY9a1kJ6r+plac6eIaCWw/PyWu0D
+        TrIpv7Gp8jflmyX/rYInQGQB2TzW8XVO/nBtQNlJSqQnGAQHoY4DrQAzhQvqI+hz8RmnsBTNhwXHI
+        3lx+HzxKyEOHjBmyOU42r61KoWLhZRTF6O29uf00biavZba+dfqJhgvQxLait+tOCTV+ppd6XHajt
+        ByRbnn2g==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qO137-005I6r-0Y;
+        Mon, 24 Jul 2023 19:16:53 +0000
+Date:   Mon, 24 Jul 2023 12:16:53 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Rong Tao <rtoax@foxmail.com>, prasad@linux.vnet.ibm.com,
+        ast@kernel.org, frederic@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, mbenes@suse.cz, qperret@google.com,
+        rongtao@cestc.cn, tglx@linutronix.de, will@kernel.org,
+        mhiramat@kernel.org
+Subject: Re: [PATCH] samples/hw_breakpoint: Fix kernel BUG 'invalid opcode:
+ 0000'
+Message-ID: <ZL7OJQBXBz1a3Sk3@bombadil.infradead.org>
+References: <tencent_E626A858BED28C4E21C219780BC566015D0A@qq.com>
+ <ZL51o59_yYS_3Yal@alley>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZL51o59_yYS_3Yal@alley>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Single fix for a potential regression over a misunderstanding of the
-blk_get_queue() api.
+On Mon, Jul 24, 2023 at 02:59:15PM +0200, Petr Mladek wrote:
+> On Mon 2023-07-24 18:47:58, Rong Tao wrote:
+> > From: Rong Tao <rongtao@cestc.cn>
+> > 
+> > Macro symbol_put() is defined as __symbol_put(__stringify(x))
+> > 
+> >     ksym_name = "jiffies"
+> >     symbol_put(ksym_name)
+> > 
+> > will be resolved as
+> > 
+> >     __symbol_put("ksym_name")
+> > 
+> > which is clearly wrong. So symbol_put must be replaced with __symbol_put.
+> > 
+> > When we uninstall hw_breakpoint.ko (rmmod), a kernel bug occurs with the
+> > following error:
+> > 
+> > [11381.854152] kernel BUG at kernel/module/main.c:779!
+> > [11381.854159] invalid opcode: 0000 [#2] PREEMPT SMP PTI
+> > [11381.854163] CPU: 8 PID: 59623 Comm: rmmod Tainted: G      D    OE      6.2.9-200.fc37.x86_64 #1
+> > [11381.854167] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./B360M-HDV, BIOS P3.20 10/23/2018
+> > [11381.854169] RIP: 0010:__symbol_put+0xa2/0xb0
+> > [11381.854175] Code: 00 e8 92 d2 f7 ff 65 8b 05 c3 2f e6 78 85 c0 74 1b 48 8b 44 24 30 65 48 2b 04 25 28 00 00 00 75 12 48 83 c4 38 c3 cc cc cc cc <0f> 0b 0f 1f 44 00 00 eb de e8 c0 df d8 00 90 90 90 90 90 90 90 90
+> > [11381.854178] RSP: 0018:ffffad8ec6ae7dd0 EFLAGS: 00010246
+> > [11381.854181] RAX: 0000000000000000 RBX: ffffffffc1fd1240 RCX: 000000000000000c
+> > [11381.854184] RDX: 000000000000006b RSI: ffffffffc02bf7c7 RDI: ffffffffc1fd001c
+> > [11381.854186] RBP: 000055a38b76e7c8 R08: ffffffff871ccfe0 R09: 0000000000000000
+> > [11381.854188] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> > [11381.854190] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> > [11381.854192] FS:  00007fbf7c62c740(0000) GS:ffff8c5badc00000(0000) knlGS:0000000000000000
+> > [11381.854195] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [11381.854197] CR2: 000055a38b7793f8 CR3: 0000000363e1e001 CR4: 00000000003726e0
+> > [11381.854200] DR0: ffffffffb3407980 DR1: 0000000000000000 DR2: 0000000000000000
+> > [11381.854202] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+> > [11381.854204] Call Trace:
+> > [11381.854207]  <TASK>
+> > [11381.854212]  s_module_exit+0xc/0xff0 [symbol_getput]
+> > [11381.854219]  __do_sys_delete_module.constprop.0+0x198/0x2f0
+> > [11381.854225]  do_syscall_64+0x58/0x80
+> > [11381.854231]  ? exit_to_user_mode_prepare+0x180/0x1f0
+> > [11381.854237]  ? syscall_exit_to_user_mode+0x17/0x40
+> > [11381.854241]  ? do_syscall_64+0x67/0x80
+> > [11381.854245]  ? syscall_exit_to_user_mode+0x17/0x40
+> > [11381.854248]  ? do_syscall_64+0x67/0x80
+> > [11381.854252]  ? exc_page_fault+0x70/0x170
+> > [11381.854256]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> > 
+> > Signed-off-by: Rong Tao <rongtao@cestc.cn>
+> 
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-The patch is available here:
+Applied and pushed, as this is just samples/ directory I won't send
+right away to Linus as its not that critical.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-
-The short changelog is:
-
-Yu Kuai (1):
-      scsi: sg: Fix checking return value of blk_get_queue()
-
-And the diffstat:
-
- drivers/scsi/sg.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-With full diff below.
-
-James
-
----
-
-diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
-index 89fa046c7158..0d8afffd1683 100644
---- a/drivers/scsi/sg.c
-+++ b/drivers/scsi/sg.c
-@@ -1497,9 +1497,10 @@ sg_add_device(struct device *cl_dev)
- 	int error;
- 	unsigned long iflags;
- 
--	error = blk_get_queue(scsidp->request_queue);
--	if (error)
--		return error;
-+	if (!blk_get_queue(scsidp->request_queue)) {
-+		pr_warn("%s: get scsi_device queue failed\n",
-__func__);
-+		return -ENODEV;
-+	}
- 
- 	error = -ENOMEM;
- 	cdev = cdev_alloc();
-
+  Luis
