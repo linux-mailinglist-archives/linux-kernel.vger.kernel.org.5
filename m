@@ -2,121 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B9475E98E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D6375E9BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbjGXCMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 22:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
+        id S229974AbjGXC3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 22:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbjGXCM1 (ORCPT
+        with ESMTP id S230178AbjGXC3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 22:12:27 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159A15269;
-        Sun, 23 Jul 2023 19:08:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690164535; x=1721700535;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=tl4MlhnuH+gxd1QJIB7HxSdpTHBpYZOJ42p6SMXaSlc=;
-  b=fvke2/zZzgPz2ahbQsyWl65J14TcL4Tm3xe0hdXKbSxkJ2eYQ2m08QvP
-   dkhHXqxf+6NGu7Jhf2cXM5qj7j4PAq+X/27Wt3ONfz3TeoHQBzCzkpYHD
-   rDA9lA8Ti3aGRsgf9IJJXeVAnmrMwzlr70ekpo2p/sijdTkqwiIFm2Rus
-   MqaKQg2XmQIuviVILDN0Z8phE1Uoyf64Ntrp69W5yIlyTjvg8uihrWlhf
-   rVmj8a9pe8gizUTDHudp5V77j0oLaPb3C0gXFa2i0vrXv4dXiEfzfw2jT
-   vyCv7EbwuN/K2ZZ+vH1PsJRmOBJO74QDBNgaIfdInE0T+L3ScaIyf/aHp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="367357843"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="367357843"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2023 19:07:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="760613679"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="760613679"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.9.27]) ([10.238.9.27])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2023 19:07:51 -0700
-Message-ID: <6086d09d-f218-d962-18dc-7b1a0390f258@linux.intel.com>
-Date:   Mon, 24 Jul 2023 10:07:49 +0800
+        Sun, 23 Jul 2023 22:29:33 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163D6180;
+        Sun, 23 Jul 2023 19:29:24 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R8NvS0qN1z4f3jq6;
+        Mon, 24 Jul 2023 10:11:48 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgAHoZTj3b1kkguwOg--.21875S3;
+        Mon, 24 Jul 2023 10:11:48 +0800 (CST)
+Subject: Re: [PATCH v2] md: raid1: fix potential OOB in raid1_remove_disk()
+To:     Zhang Shurong <zhang_shurong@foxmail.com>, song@kernel.org,
+        yukuai1@huaweicloud.com
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <tencent_0D24426FAC6A21B69AC0C03CE4143A508F09@qq.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <d8fde5d9-3ac5-0945-dc8e-315092a67528@huaweicloud.com>
+Date:   Mon, 24 Jul 2023 10:11:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v10 2/9] KVM: x86: Add & use kvm_vcpu_is_legal_cr3() to
- check CR3's legality
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Isaku Yamahata <isaku.yamahata@gmail.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        chao.gao@intel.com, kai.huang@intel.com, David.Laight@aculab.com,
-        robert.hu@linux.intel.com, guang.zeng@intel.com
-References: <20230719144131.29052-1-binbin.wu@linux.intel.com>
- <20230719144131.29052-3-binbin.wu@linux.intel.com>
- <20230720235352.GH25699@ls.amr.corp.intel.com>
- <e84129b1-603b-a6c4-ade5-8cf529929675@linux.intel.com>
- <ZLqeUXerpNlri7Px@google.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ZLqeUXerpNlri7Px@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <tencent_0D24426FAC6A21B69AC0C03CE4143A508F09@qq.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAHoZTj3b1kkguwOg--.21875S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7XrWfJw15Ww47KFykWryrCrg_yoWktrcE9F
+        yjva4rXF4IqryIkw47Ww1fZr9Ika4kWa1rZayFgF98Wa4Duw4Fgryku348XasxKryaqr17
+        Ar1DW348Ars3ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUU
+        UU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ÔÚ 2023/07/22 15:53, Zhang Shurong Ð´µÀ:
+> If rddev->raid_disk is greater than mddev->raid_disks, there will be
+> an out-of-bounds in raid1_remove_disk(). We have already found
+> similar reports as follows:
+> 
+> 1) commit d17f744e883b ("md-raid10: fix KASAN warning")
+> 2) commit 1ebc2cec0b7d ("dm raid: fix KASAN warning in raid5_remove_disk")
+> 
+> Fix this bug by checking whether the "number" variable is
+> valid.
 
+LGTM
 
-On 7/21/2023 11:03 PM, Sean Christopherson wrote:
-> On Fri, Jul 21, 2023, Binbin Wu wrote:
->>
->> On 7/21/2023 7:53 AM, Isaku Yamahata wrote:
->>> On Wed, Jul 19, 2023 at 10:41:24PM +0800,
->>> Binbin Wu <binbin.wu@linux.intel.com> wrote:
->>>
->>>> Add and use kvm_vcpu_is_legal_cr3() to check CR3's legality to provide
->>>> a clear distinction b/t CR3 and GPA checks. So that kvm_vcpu_is_legal_cr3()
->>>> can be adjusted according to new feature(s).
->>>>
->>>> No functional change intended.
->>>>
->>>> Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
->>>> ---
->>>>    arch/x86/kvm/cpuid.h      | 5 +++++
->>>>    arch/x86/kvm/svm/nested.c | 4 ++--
->>>>    arch/x86/kvm/vmx/nested.c | 4 ++--
->>>>    arch/x86/kvm/x86.c        | 4 ++--
->>>>    4 files changed, 11 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
->>>> index f61a2106ba90..8b26d946f3e3 100644
->>>> --- a/arch/x86/kvm/cpuid.h
->>>> +++ b/arch/x86/kvm/cpuid.h
->>>> @@ -283,4 +283,9 @@ static __always_inline bool guest_can_use(struct kvm_vcpu *vcpu,
->>>>    	return vcpu->arch.governed_features.enabled & kvm_governed_feature_bit(x86_feature);
->>>>    }
->>>> +static inline bool kvm_vcpu_is_legal_cr3(struct kvm_vcpu *vcpu, unsigned long cr3)
->>>> +{
->>>> +	return kvm_vcpu_is_legal_gpa(vcpu, cr3);
->>>> +}
->>>> +
->>> The remaining user of kvm_vcpu_is_illegal_gpa() is one left.  Can we remove it
->>> by replacing !kvm_vcpu_is_legal_gpa()?
->> There are still two callsites of kvm_vcpu_is_illegal_gpa() left (basing on
->> Linux 6.5-rc2), in handle_ept_violation() and nested_vmx_check_eptp().
->> But they could be replaced by !kvm_vcpu_is_legal_gpa() and then remove
->> kvm_vcpu_is_illegal_gpa().
->> I am neutral to this.
-> I'm largely neutral on this as well, though I do like the idea of having only
-> "legal" APIs.  I think it makes sense to throw together a patch, we can always
-> ignore the patch if end we up deciding to keep kvm_vcpu_is_illegal_gpa().
-OK. Thanks for the advice.
-Should I send a seperate patch or add a patch to remove 
-kvm_vcpu_is_illegal_gpa() in next version?
-
+Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+> 
+> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+> ---
+> Changes in v2:
+>   - Using conf->raid_disks instead of mddev->raid_disks.
+> 
+>   drivers/md/raid1.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> index dd25832eb045..80aeee63dfb7 100644
+> --- a/drivers/md/raid1.c
+> +++ b/drivers/md/raid1.c
+> @@ -1829,6 +1829,10 @@ static int raid1_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
+>   	struct r1conf *conf = mddev->private;
+>   	int err = 0;
+>   	int number = rdev->raid_disk;
+> +
+> +	if (unlikely(number >= conf->raid_disks))
+> +		goto abort;
+> +
+>   	struct raid1_info *p = conf->mirrors + number;
+>   
+>   	if (rdev != p->rdev)
+> 
 
