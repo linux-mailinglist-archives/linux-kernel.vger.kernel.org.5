@@ -2,155 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E337F75EC86
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A0F75EC8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbjGXH3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 03:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
+        id S231196AbjGXHaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 03:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjGXH3m (ORCPT
+        with ESMTP id S230481AbjGXHaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 03:29:42 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11F2186
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:29:39 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R8Wy81hM9zBRx5B
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:29:36 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1690183776; x=1692775777; bh=bZxSJWL9gZxd3WjJGHW8DK8u/U3
-        6n7xiHmXhkTl1aFY=; b=O8EsWJ9l91SgOoq9KBTYlK1s9g3UoKPqyiKS4HM2Rv4
-        DWofj04WUFpj/76O4E8smi/ou+ZeNeKBv11YWE1cYrQsCdlgcmK/l/Z4cRvCEEVu
-        8+mh0LopektOMRigWAVKfAqIHRr1levUQmEq8L2pkyK3ERyFke/7/8xu7KF2LlRt
-        jWwBUdMxQZf+irjwBUb7iolLxBeAzcf/EOE/p9rzfiZE/7FSL1rYnng3cvT11OWL
-        vJOXrT+o633EsKNogWm15QNi5S4kt4qK/cV1LYHHipVNnk97pr0rF14AZ88SC4bl
-        PEctlXF4NXrTPuicLRsOiL2Bs1CHOc80t49P/iMzY9g==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Gqbmf__Jyf0J for <linux-kernel@vger.kernel.org>;
-        Mon, 24 Jul 2023 15:29:36 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R8Wy76SW0zBRx4g;
-        Mon, 24 Jul 2023 15:29:35 +0800 (CST)
+        Mon, 24 Jul 2023 03:30:19 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09643186
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:30:18 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52229d3b8c8so1291656a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:30:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690183816; x=1690788616;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eed6DWLt+PAEv2fzjhFaM4EpHWh4NNsUY/bR4Sum1Qg=;
+        b=EmZgAehGQ97/7mCNx9Vh4rXZQJcq1j3xQYqIFIr5TzLHKf9EoUo2a0OM13XHKRWmoO
+         wNJymeEVAkOy7CkiuWPXHku39fqur6sFta09jHEwYX2ZE1Fz0s0Ljidbj5SNnElE6ijQ
+         y1p74Ik8p3rw3wN/2Ftn04UwSkFSjXiAqjnrkOMgAZzXtooaOoJ7AgnCWrCR2lIxzUg6
+         EvY7azry2ww+y7w6yfjja3fNmWHBIdvxfZ881+z2y2NZn6BmjlnReCEixqnzJ3tNB45d
+         ASFCA63fD7ZsB5r43yBmsXWcTpEhqYk1Xe0QFXWQ2mGEA4V3jk465pEqejM15Y0jQC5m
+         QYlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690183816; x=1690788616;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eed6DWLt+PAEv2fzjhFaM4EpHWh4NNsUY/bR4Sum1Qg=;
+        b=jNC67KzSgvcOEU1+nuApbCDfHGwCGOem2IqoseXR6eWjPfbB5mxxgSGod7uNSyp+8f
+         md6wAJo7XCNUh9IWsmjhF/Jd7oTZxKpvMn7ATfVeX0b15leOYYyQ9HQE+EqTS4zfU6Zm
+         xXZFrkMBCQGZSpQKQVmW5AbVsYvSoJ578yZtrTJ6bAKrtlBsqWY0wJY5ybCchxqzyy+I
+         sguiOkZ54u6P5lxcj10jKY5vP9h8z8mkwaJHRPhErP6LcEMBz1VIOp1OnczuaJZCaFqf
+         RI30VrIbHY/bg5Z+Hp6+XYBVGijndec1cJUShm/OSJ8AozcBfLiOzWzjKBdrQKkrCqcy
+         n3GA==
+X-Gm-Message-State: ABy/qLYikY2fMtMghvrzhBZzTSYHeZEhUUPTgiLfX8zXlYEVUCPJZ+s2
+        dFzQgJadknx954dJhH/wx+tqAQ==
+X-Google-Smtp-Source: APBJJlHN5lEzBHCiCy4veV+lfNob/NcWAOyoO7Ae0VmOjJ2HIf52w8Jy/W8Xuq9xRA3IolmjYuCDkg==
+X-Received: by 2002:aa7:c753:0:b0:51e:1a51:d414 with SMTP id c19-20020aa7c753000000b0051e1a51d414mr7133256eds.32.1690183816446;
+        Mon, 24 Jul 2023 00:30:16 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id q16-20020aa7cc10000000b0051e0eba608bsm5717511edt.19.2023.07.24.00.30.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 00:30:15 -0700 (PDT)
+Message-ID: <22ebee3c-c11e-ed0b-bade-c9a845f3ca41@linaro.org>
+Date:   Mon, 24 Jul 2023 09:30:13 +0200
 MIME-Version: 1.0
-Date:   Mon, 24 Jul 2023 15:29:35 +0800
-From:   sunran001@208suo.com
-To:     alexander.deucher@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd/pm: Clean up errors in sienna_cichlid_ppt.c
-In-Reply-To: <20230724072835.8913-1-xujianghui@cdjrlc.com>
-References: <20230724072835.8913-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <ea1cf43d5545fa917127694a294a57da@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 4/7] dt-bindings: clock: qcom,hfpll: Document MSM8976
+ compatibles
+Content-Language: en-US
+To:     Adam Skladowski <a39.skl@gmail.com>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230723160827.22660-1-a39.skl@gmail.com>
+ <20230723160827.22660-5-a39.skl@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230723160827.22660-5-a39.skl@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
+On 23/07/2023 18:08, Adam Skladowski wrote:
+> Document MSM8976 HFPLL compatibles.
+> 
+> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/clock/qcom,hfpll.txt | 3 +++
+>  1 file changed, 3 insertions(+)
 
-ERROR: space required after that ',' (ctx:VxV)
-ERROR: space required before the open parenthesis '('
-ERROR: spaces required around that '=' (ctx:VxW)
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  .../drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c  | 16 ++++++++--------
-  1 file changed, 8 insertions(+), 8 deletions(-)
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c 
-b/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-index 0cda3b276f61..5c233eda09ee 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-@@ -78,7 +78,7 @@
-  		(*member) = (smu->smu_table.driver_pptable + 
-offsetof(PPTable_beige_goby_t, field));\
-  	else\
-  		(*member) = (smu->smu_table.driver_pptable + offsetof(PPTable_t, 
-field));\
--} while(0)
-+} while (0)
+Best regards,
+Krzysztof
 
-  /* STB FIFO depth is in 64bit units */
-  #define SIENNA_CICHLID_STB_DEPTH_UNIT_BYTES 8
-@@ -590,7 +590,7 @@ static int sienna_cichlid_tables_init(struct 
-smu_context *smu)
-
-  static uint32_t sienna_cichlid_get_throttler_status_locked(struct 
-smu_context *smu)
-  {
--	struct smu_table_context *smu_table= &smu->smu_table;
-+	struct smu_table_context *smu_tabl = &smu->smu_table;
-  	SmuMetricsExternal_t *metrics_ext =
-  		(SmuMetricsExternal_t *)(smu_table->metrics_table);
-  	uint32_t throttler_status = 0;
-@@ -711,7 +711,7 @@ static int 
-sienna_cichlid_get_smu_metrics_data(struct smu_context *smu,
-  					       MetricsMember_t member,
-  					       uint32_t *value)
-  {
--	struct smu_table_context *smu_table= &smu->smu_table;
-+	struct smu_table_context *smu_table = &smu->smu_table;
-  	SmuMetrics_t *metrics =
-  		&(((SmuMetricsExternal_t *)(smu_table->metrics_table))->SmuMetrics);
-  	SmuMetrics_V2_t *metrics_v2 =
-@@ -1461,7 +1461,7 @@ static int sienna_cichlid_force_clk_levels(struct 
-smu_context *smu,
-  			goto forec_level_out;
-  		break;
-  	case SMU_DCEFCLK:
--		dev_info(smu->adev->dev,"Setting DCEFCLK min/max dpm level is not 
-supported!\n");
-+		dev_info(smu->adev->dev, "Setting DCEFCLK min/max dpm level is not 
-supported!\n");
-  		break;
-  	default:
-  		break;
-@@ -1881,7 +1881,7 @@ static int sienna_cichlid_read_sensor(struct 
-smu_context *smu,
-  	uint16_t *temp;
-  	struct amdgpu_device *adev = smu->adev;
-
--	if(!data || !size)
-+	if (!data || !size)
-  		return -EINVAL;
-
-  	switch (sensor) {
-@@ -2067,15 +2067,15 @@ static int 
-sienna_cichlid_display_disable_memory_clock_switch(struct smu_context
-  	uint32_t min_memory_clock = smu->hard_min_uclk_req_from_dal;
-  	uint32_t max_memory_clock = max_sustainable_clocks->uclock;
-
--	if(smu->disable_uclk_switch == disable_memory_clock_switch)
-+	if (smu->disable_uclk_switch == disable_memory_clock_switch)
-  		return 0;
-
--	if(disable_memory_clock_switch)
-+	if (disable_memory_clock_switch)
-  		ret = smu_v11_0_set_hard_freq_limited_range(smu, SMU_UCLK, 
-max_memory_clock, 0);
-  	else
-  		ret = smu_v11_0_set_hard_freq_limited_range(smu, SMU_UCLK, 
-min_memory_clock, 0);
-
--	if(!ret)
-+	if (!ret)
-  		smu->disable_uclk_switch = disable_memory_clock_switch;
-
-  	return ret;
