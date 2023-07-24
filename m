@@ -2,50 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C1175FDD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F3975FDD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbjGXReX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
+        id S230347AbjGXRfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 13:35:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbjGXReV (ORCPT
+        with ESMTP id S229581AbjGXRfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:34:21 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01113188;
-        Mon, 24 Jul 2023 10:34:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1RR7SJ5J9bSabO2nn8ri1D3skM02qsCIJVqOYYsqxxM=; b=ObOKjtJ/THa+xqWvy7oYFf9v1F
-        T1jW7wp0gQh1KChroWUqIsXM2WD6qHEjUlVhy1EXQn+y2hxVI8iF1zCbTv5liX9EwkOvfd9uLZ1DE
-        nfqrtlYWV/MYoJGOC4jhjB/XXMW4MCdMEL3h2i0H7Z/ifAXtYbbpLBh9QI24+qa8H0q7Vk8QNRtGS
-        OAYzoUDt/quatb9MyXKQmfXwj7s0rSuPymo08nhQ5qY4AA+hIQIy4VU7sbfUwGrrrxL104Es3d1rR
-        0k3G7Y+VKToa54/y+PSAsQ9Qcw9vZ2rSma6Kpw4etEox2eXO1JuPbFqd6nOhUydeAjpQ7s6TVAz2q
-        AsmhqVuA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qNzRs-0054IL-2J;
-        Mon, 24 Jul 2023 17:34:20 +0000
-Date:   Mon, 24 Jul 2023 10:34:20 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH 05/20] block: Allow bio_iov_iter_get_pages() with
- bio->bi_bdev unset
-Message-ID: <ZL62HKrAJapXfcaR@infradead.org>
-References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
- <20230712211115.2174650-6-kent.overstreet@linux.dev>
+        Mon, 24 Jul 2023 13:35:36 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E202598;
+        Mon, 24 Jul 2023 10:35:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690220135; x=1721756135;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kwYTilEARt1N1V34eJr55Ya9rMistbgI1FoRnG+ZV2g=;
+  b=AXlVKEqODM+4JZm+HoB7TJLQStQGmiFgXI/BsVtOAwAIFsupFTCoBrrR
+   KfM5j6fiXwSoMdp79H5bW4MyB0MS8aqPMgxRYzDuK6QUrUPZH+Y+13Wc7
+   2fqOOVOYIVuUiSs3n4F0YEUB5fO/4PyQFSXIVmmteVPZ6rbGwuGavr+2G
+   D2rGCfhu6ebkFuLi65fzW0yaYloXXJBGjvIOIK0fvJJv+0/wgiKzqQByo
+   YUgEBpnOAAbHdLMMjbS6qHM+kvhH3A25cowk5vg6hcCt7Oy8sfPJKDiwJ
+   xGe/dGjwZyeQd2JRW4hVOkCHmNNBDEQeOctQQqjSehvIPGUOJRyXblGrJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="371107580"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="371107580"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 10:35:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="791042033"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="791042033"
+Received: from gionescu-mobl2.ger.corp.intel.com (HELO intel.com) ([10.252.34.175])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 10:35:31 -0700
+Date:   Mon, 24 Jul 2023 19:35:27 +0200
+From:   Andi Shyti <andi.shyti@linux.intel.com>
+To:     Su Hui <suhui@nfschina.com>
+Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
+        airlied@gmail.com, daniel@ffwll.ch, nathan@kernel.org,
+        ndesaulniers@google.com, trix@redhat.com, andrzej.hajda@intel.com,
+        intel-gfx@lists.freedesktop.org, llvm@lists.linux.dev,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, mripard@kernel.org
+Subject: Re: [Intel-gfx] [PATCH v2] drm/i915/tv: avoid possible division by
+ zero
+Message-ID: <ZL62X3/CnsJcWWU4@ashyti-mobl2.lan>
+References: <20230718013216.495830-1-suhui@nfschina.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230712211115.2174650-6-kent.overstreet@linux.dev>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+In-Reply-To: <20230718013216.495830-1-suhui@nfschina.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,25 +67,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 05:11:00PM -0400, Kent Overstreet wrote:
-> bio_iov_iter_get_pages() trims the IO based on the block size of the
-> block device the IO will be issued to.
+On Tue, Jul 18, 2023 at 09:32:17AM +0800, Su Hui wrote:
+> Clang warning: drivers/gpu/drm/i915/display/intel_tv.c:
+> line 991, column 22 Division by zero.
+> Assuming tv_mode->oversample=1 and (!tv_mode->progressive)=1,
+> then division by zero will happen.
 > 
-> However, bcachefs is a multi device filesystem; when we're creating the
-> bio we don't yet know which block device the bio will be submitted to -
-> we have to handle the alignment checks elsewhere.
+> Fixes: 1bba5543e4fe ("drm/i915: Fix TV encoder clock computation")
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+> ---
+>  drivers/gpu/drm/i915/display/intel_tv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_tv.c b/drivers/gpu/drm/i915/display/intel_tv.c
+> index 36b479b46b60..f59553f7c132 100644
+> --- a/drivers/gpu/drm/i915/display/intel_tv.c
+> +++ b/drivers/gpu/drm/i915/display/intel_tv.c
+> @@ -988,7 +988,7 @@ intel_tv_mode_to_mode(struct drm_display_mode *mode,
+>  		      const struct tv_mode *tv_mode,
+>  		      int clock)
+>  {
+> -	mode->clock = clock / (tv_mode->oversample >> !tv_mode->progressive);
+> +	mode->clock = clock / tv_mode->oversample << !tv_mode->progressive;
 
-So, we've been trying really hard to always make sure to pass a bdev
-to anything that allocates a bio, mostly due due the fact that we
-actually derive information like the blk-cgroup associations from it.
+but this does not provide the same value. Try with:
 
-The whole blk-cgroup stuff is actually a problem for non-trivial
-multi-device setups.  XFS gets away fine because each file just
-sits on either the main or RT device and no user I/O goes to the
-log device, and btrfs papers over it in a weird way by always
-associating with the last added device, which is in many ways gross
-and wrong, but at least satisfies the assumptions made in blk-cgroup.
+	8 / (2 >> 1)
 
-How do you plan to deal with this?  Because I really don't want folks
-just to go ahead and ignore the issues, we need to actually sort this
-out.
+and
+
+	8 / 2 << 1
+
+They are definitely different.
+
+The real check could be:
+
+	if (!(tv_mode->oversample >> 1))
+		return ...
+
+But first I would check if that's actually possible.
+
+Andi
