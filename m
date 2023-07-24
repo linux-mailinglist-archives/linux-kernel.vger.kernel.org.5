@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D974575FB5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAC875FB5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 18:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbjGXQAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 12:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36576 "EHLO
+        id S231175AbjGXQBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 12:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbjGXQAn (ORCPT
+        with ESMTP id S230139AbjGXQBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 12:00:43 -0400
+        Mon, 24 Jul 2023 12:01:42 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 364F5E76;
-        Mon, 24 Jul 2023 09:00:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC9619A;
+        Mon, 24 Jul 2023 09:01:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7D19061234;
-        Mon, 24 Jul 2023 16:00:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC40AC433C8;
-        Mon, 24 Jul 2023 16:00:40 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1BF296123A;
+        Mon, 24 Jul 2023 16:01:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14399C433C9;
+        Mon, 24 Jul 2023 16:01:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690214440;
-        bh=HiWKiSQHyMaDEa0UiXE1Jt4gJBcBxoHYQfLcTXtdLDQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JsgYAt5GJCqyn3QYlUMN4EXGVsqVeZ/6C2hqUKN5bwIJ89GPa3ZpLKd/CJxVCxk3G
-         RW63NxZSjsP1SotXymG3DgXJPnK3OoGlO3+451CjPs0BWhbm/TjbsmCtZZV28zN2HR
-         DvqSZLQDDC6Ab5kxW69aS6BidQ4NRRoTB5/Vb2JipHYwYA/tZ4R0S9JOG2VRDxOtZD
-         yH/OX7MtDrBX+Q9l8ykUQq/s3geiWJafOaho7zT8/cumXa8IiNVarDork0te5btsX/
-         VE8AMUkSdmE0SRCAPlOVR//hO38orIK9rNu/ZwSvicxH7sCDT7y614CY+O91Dt8e/q
-         kcCMpTlo/V3Cw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6D342CE0C4B; Mon, 24 Jul 2023 09:00:40 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 09:00:40 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        rcu@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [BUG] Re: Linux 6.4.4
-Message-ID: <4b231ce5-7bb8-4abf-9c40-04aa676d1e45@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <32aec6d1-bf25-7b47-8f31-7b6318d5238d@joelfernandes.org>
- <9b42cb38-8375-fc41-475a-2bd26c60a7b9@joelfernandes.org>
- <5dcf7117-cec7-4772-8aad-e100484a84dc@paulmck-laptop>
- <7bfde9f4-2bd6-7337-b9ca-94a9253d847f@joelfernandes.org>
- <ad82995c-061e-4f97-a972-c13a85ad0b72@paulmck-laptop>
- <a7bcbcf2-9b34-4326-822f-e1f2aa5c5668@joelfernandes.org>
- <ebde8612-95de-4eaf-aa56-34e9b3a3fa86@paulmck-laptop>
- <20230724003257.GA60074@google.com>
- <381862e5-153c-4641-a60e-8175acae971d@paulmck-laptop>
- <CAEXW_YQsP_j9ZBAYKGk0mBfa3x-RikMoWE01Z6q1GXkLug2xoQ@mail.gmail.com>
+        s=k20201202; t=1690214500;
+        bh=obEOVXewu49VHgFG99DmRcFBdBiVyJBWFXsPB3r31fU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OojbEwQeuKb6QLqK6xMwGZ+fLq0y6ggK/tEkfAkegcfDu+8CKzOPOnuFdZePmmFWT
+         8hMsA2mSyXl2bzJd6bKTm1ew8RsSgBYz8qt/EaxqgFvdvS8dvRfiesUvQvRMQBF7FO
+         9GhbXLzIVKH4iDo8A3E5Erf9xLofT70hZzRtH9Hh0J9bSwiZ0wPOsgoE4Amd27eEKA
+         FMD5phjLHByS4SRc8y82CK1So8dFE4GD5i2KhNZQWL+4t/G1E5dF3nQAUGwsO5dKPR
+         SXSyeiVAQveObzPk/v/94s43da2MCi0JzEgEvGDRtCGL2D1o3hUn8jyOrpZM3L8WJF
+         bX5xpTCFzPFMw==
+Received: (nullmailer pid 3620992 invoked by uid 1000);
+        Mon, 24 Jul 2023 16:01:36 -0000
+Date:   Mon, 24 Jul 2023 10:01:36 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
+        konrad.dybcio@linaro.org, vkoul@kernel.org, kishon@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        gregkh@linuxfoundation.org, catalin.marinas@arm.com,
+        will@kernel.org, p.zabel@pengutronix.de, arnd@arndb.de,
+        geert+renesas@glider.be, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        quic_srichara@quicinc.com, quic_wcheng@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 2/6] dt-bindings: phy: qcom,m31: Document qcom,m31 USB
+ phy
+Message-ID: <20230724160136.GA3619408-robh@kernel.org>
+References: <cover.1689913334.git.quic_varada@quicinc.com>
+ <131eb1694229436919ac88bb9920fb54d6808388.1689913334.git.quic_varada@quicinc.com>
+ <ymbcafqqhc6hgrfhpef4byehvfyjzovs5zeprmj343erdv5ti5@tj2iunu6whvi>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YQsP_j9ZBAYKGk0mBfa3x-RikMoWE01Z6q1GXkLug2xoQ@mail.gmail.com>
+In-Reply-To: <ymbcafqqhc6hgrfhpef4byehvfyjzovs5zeprmj343erdv5ti5@tj2iunu6whvi>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -68,86 +69,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 09:36:02AM -0400, Joel Fernandes wrote:
-> On Sun, Jul 23, 2023 at 11:35 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Mon, Jul 24, 2023 at 12:32:57AM +0000, Joel Fernandes wrote:
-> > > On Sun, Jul 23, 2023 at 10:19:27AM -0700, Paul E. McKenney wrote:
-> > > > On Sun, Jul 23, 2023 at 10:50:26AM -0400, Joel Fernandes wrote:
-> > > > >
-> > > > >
-> > > > > On 7/22/23 13:27, Paul E. McKenney wrote:
-> > > > > [..]
-> > > > > >
-> > > > > > OK, if this kernel is non-preemptible, you are not running TREE03,
-> > > > > > correct?
-> > > > > >
-> > > > > >> Next plan of action is to get sched_waking stack traces since I have a
-> > > > > >> very reliable repro of this now.
-> > > > > >
-> > > > > > Too much fun!  ;-)
-> > > > >
-> > > > > For TREE07 issue, it is actually the schedule_timeout_interruptible(1)
-> > > > > in stutter_wait() that is beating up the CPU0 for 4 seconds.
-> > > > >
-> > > > > This is very similar to the issue I fixed in New year in d52d3a2bf408
-> > > > > ("torture: Fix hang during kthread shutdown phase")
-> > > >
-> > > > Agreed, if there are enough kthreads, and all the kthreads are on a
-> > > > single CPU, this could consume that CPU.
-> > > >
-> > > > > Adding a cond_resched() there also did not help.
-> > > > >
-> > > > > I think the issue is the stutter thread fails to move spt forward
-> > > > > because it does not get CPU time. But spt == 1 should be very brief
-> > > > > AFAIU. I was wondering if we could set that to RT.
-> > > >
-> > > > Or just use a single hrtimer-based wait for each kthread?
-> > >
-> > > [Joel]
-> > > Yes this might be better, but there's still the issue that spt may not be set
-> > > back to 0 in some future release where the thread gets starved.
-> >
-> > But if each thread knows the absolute time at which the current stutter
-> > period is supposed to end, there should not be any need for the spt
-> > variable, correct?
+On Fri, Jul 21, 2023 at 10:10:57PM -0700, Bjorn Andersson wrote:
+> On Fri, Jul 21, 2023 at 10:05:27AM +0530, Varadarajan Narayanan wrote:
+> > Document the M31 USB2 phy present in IPQ5332.
+> > 
+> > Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
 > 
-> Yes.
+> As Sricharan is the first one to certify the patch's origin, it seems
+> likely that he's the author. Please add a Co-developed-by: Sricharan.
 > 
-> > > > > But also maybe the following will cure it like it did for the shutdown
-> > > > > issue, giving the stutter thread just enough CPU time to move spt forward.
-> > > > >
-> > > > > Now I am trying the following and will let it run while I go do other
-> > > > > family related things. ;)
-> > > >
-> > > > Good point, if this avoids the problem, that gives a strong indication
-> > > > that your hypothesis on the root cause is correct.
-> > >
-> > > [Joel]
-> > > And the TREE07 issue is gone with that change!
-> [...]
-> > > Let me know what you think, thanks!
-> >
-> > If we can make the stutter kthread set an absolute time for the current
-> > stutter period to end, then we should be able to simplify the code quite
-> > a bit and get rid of the CPU consumption entirely.  (Give or take the
-> > possible need for a given thread to check whether it was erroneously
-> > awakened early.)
-> >
-> > But what specifically did you have in mind?
+> [..]
+> > diff --git a/Documentation/devicetree/bindings/phy/qcom,ipq5332-usb-hsphy.yaml b/Documentation/devicetree/bindings/phy/qcom,ipq5332-usb-hsphy.yaml
+> > new file mode 100644
+> > index 0000000..e0b282b
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/phy/qcom,ipq5332-usb-hsphy.yaml
+> > @@ -0,0 +1,51 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/phy/qcom,ipq5332-usb-hsphy.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: M31 USB PHY
+> > +
+> > +maintainers:
+> > +  - Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> > +  - Varadarajan Narayanan <quic_varada@quicinc.com>
+> > +
+> > +description:
+> > +  USB M31 PHY (https://www.m31tech.com) found in Qualcomm
+> > +  IPQ5018, IPQ5332 SoCs.
+> > +
+> > +properties:
+> > +  "#phy-cells":
+> > +    const: 0
+> > +
+> > +  compatible:
+> > +    enum:
 > 
-> I was thinking of a 2 counter approach storing the absolute time. Use
-> an alternative counter for different stuttering sessions. But yes,
-> generally I agree with the absolute time idea. What do you think Paul?
+> const?
 > 
-> Do we want to just do  the simpler schedule_timeout at HZ / 20 to keep stable
-> green, and do the absolute-time approach for mainline? That might be better
-> from a process PoV. But I think stable requires patches to be upstream. Greg?
+> > +      - qcom,ipq5332-usb-hsphy
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    maxItems: 1
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: cfg_ahb
+> > +
+> > +  resets:
+> > +    maxItems: 1
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/qcom,ipq5332-gcc.h>
+> > +    usbphy0: usb-phy@7b000 {
 > 
-> I will try to send out patches this week to discuss this, thanks,
+> usb@
 
-Heh!!!
+You mean phy@? But 'usb2-phy' is accepted too.
 
-Me, I was just thinking of mainline.  ;-)
-
-							Thanx, Paul
+> 
+> And you don't need to give the node a label in the example.
+> 
+> > +        compatible = "qcom,ipq5332-usb-hsphy";
+> > +        reg = <0x0007b000 0x12c>;
+> > +
+> > +        clocks = <&gcc GCC_USB0_PHY_CFG_AHB_CLK>;
+> > +        clock-names = "cfg_ahb";
+> > +
+> 
+> No #phy-cells?
+> 
+> Regards,
+> Bjorn
+> 
+> > +        resets = <&gcc GCC_QUSB2_0_PHY_BCR>;
+> > +    };
+> > -- 
+> > 2.7.4
+> > 
