@@ -2,201 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDC475F4CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04E075F4D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbjGXLSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 07:18:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
+        id S231904AbjGXLSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 07:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbjGXLSI (ORCPT
+        with ESMTP id S231605AbjGXLSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:18:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 24B84E65;
-        Mon, 24 Jul 2023 04:17:47 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B206CDE0;
-        Mon, 24 Jul 2023 04:18:29 -0700 (PDT)
-Received: from [10.57.34.62] (unknown [10.57.34.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C518B3F5A1;
-        Mon, 24 Jul 2023 04:17:39 -0700 (PDT)
-Message-ID: <cdd08c9e-81d3-a85f-5426-5db738aa73ec@arm.com>
-Date:   Mon, 24 Jul 2023 12:17:40 +0100
+        Mon, 24 Jul 2023 07:18:24 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F801133;
+        Mon, 24 Jul 2023 04:18:11 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36OBHrih069702;
+        Mon, 24 Jul 2023 06:17:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690197473;
+        bh=0BErsuaEIKbeL37YxBiy8FvaJoxzWcjiVfUldm4NGLI=;
+        h=From:To:CC:Subject:Date;
+        b=Q+O+jMWhx6AjaWYX2s+LoXAlQYMyZ1126ZU2rNPruPGe5XCOPf2QxhXSEIyPhr1g6
+         iPe82DLEiFoqlaPmM9+XBPVIFMa79e8JDhcFrIr/xqe6MKPUVoRiEw1zIS39QmH3KE
+         We/CKwQMR/W/vSp6LbBQK1oZTl7u96vpCybaZPeY=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36OBHrwK041990
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 Jul 2023 06:17:53 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 24
+ Jul 2023 06:17:53 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 24 Jul 2023 06:17:53 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36OBHqeN055390;
+        Mon, 24 Jul 2023 06:17:52 -0500
+From:   Bhavya Kapoor <b-kapoor@ti.com>
+To:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <robh+dt@kernel.org>, <kristo@kernel.org>, <vigneshr@ti.com>,
+        <nm@ti.com>, <u-kumar1@ti.com>, <b-kapoor@ti.com>
+Subject: [PATCH v5] arm64: dts: ti: k3-j721s2: Add support for CAN instances 3 and 5 in main domain
+Date:   Mon, 24 Jul 2023 16:47:51 +0530
+Message-ID: <20230724111751.86422-1-b-kapoor@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 24/47] drm/panfrost: dynamically allocate the
- drm-panfrost shrinker
-To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, cel@kernel.org,
-        senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org, muchun.song@linux.dev
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-25-zhengqi.arch@bytedance.com>
-Content-Language: en-GB
-From:   Steven Price <steven.price@arm.com>
-In-Reply-To: <20230724094354.90817-25-zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/2023 10:43, Qi Zheng wrote:
-> In preparation for implementing lockless slab shrink, use new APIs to
-> dynamically allocate the drm-panfrost shrinker, so that it can be freed
-> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-> read-side critical section when releasing the struct panfrost_device.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+CAN instances 3 and 5 in the main domain are brought on the common
+processor board through header J27 and J28. The CAN High and Low lines
+from the SoC are routed through a mux on the SoM. The select lines need
+to be set for the CAN signals to get connected to the transceivers on
+the common processor board. Threfore, add respective mux, transceiver
+dt nodes to add support for these CAN instances.
 
-One nit below, but otherwise:
+Reviewed-by: Udit Kumar <u-kumar1@ti.com>
+Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
+---
 
-Reviewed-by: Steven Price <steven.price@arm.com>
+Changelog v4->v5 : Modfied Mux Controller names
 
-> ---
->  drivers/gpu/drm/panfrost/panfrost_device.h    |  2 +-
->  drivers/gpu/drm/panfrost/panfrost_drv.c       |  6 +++-
->  drivers/gpu/drm/panfrost/panfrost_gem.h       |  2 +-
->  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  | 32 ++++++++++++-------
->  4 files changed, 27 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-> index b0126b9fbadc..e667e5689353 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> @@ -118,7 +118,7 @@ struct panfrost_device {
->  
->  	struct mutex shrinker_lock;
->  	struct list_head shrinker_list;
-> -	struct shrinker shrinker;
-> +	struct shrinker *shrinker;
->  
->  	struct panfrost_devfreq pfdevfreq;
->  };
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> index bbada731bbbd..f705bbdea360 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> @@ -598,10 +598,14 @@ static int panfrost_probe(struct platform_device *pdev)
->  	if (err < 0)
->  		goto err_out1;
->  
-> -	panfrost_gem_shrinker_init(ddev);
-> +	err = panfrost_gem_shrinker_init(ddev);
-> +	if (err)
-> +		goto err_out2;
->  
->  	return 0;
->  
-> +err_out2:
-> +	drm_dev_unregister(ddev);
->  err_out1:
->  	pm_runtime_disable(pfdev->dev);
->  	panfrost_device_fini(pfdev);
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.h b/drivers/gpu/drm/panfrost/panfrost_gem.h
-> index ad2877eeeccd..863d2ec8d4f0 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gem.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.h
-> @@ -81,7 +81,7 @@ panfrost_gem_mapping_get(struct panfrost_gem_object *bo,
->  void panfrost_gem_mapping_put(struct panfrost_gem_mapping *mapping);
->  void panfrost_gem_teardown_mappings_locked(struct panfrost_gem_object *bo);
->  
-> -void panfrost_gem_shrinker_init(struct drm_device *dev);
-> +int panfrost_gem_shrinker_init(struct drm_device *dev);
->  void panfrost_gem_shrinker_cleanup(struct drm_device *dev);
->  
->  #endif /* __PANFROST_GEM_H__ */
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
-> index bf0170782f25..9a90dfb5301f 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
-> @@ -18,8 +18,7 @@
->  static unsigned long
->  panfrost_gem_shrinker_count(struct shrinker *shrinker, struct shrink_control *sc)
->  {
-> -	struct panfrost_device *pfdev =
-> -		container_of(shrinker, struct panfrost_device, shrinker);
-> +	struct panfrost_device *pfdev = shrinker->private_data;
->  	struct drm_gem_shmem_object *shmem;
->  	unsigned long count = 0;
->  
-> @@ -65,8 +64,7 @@ static bool panfrost_gem_purge(struct drm_gem_object *obj)
->  static unsigned long
->  panfrost_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
->  {
-> -	struct panfrost_device *pfdev =
-> -		container_of(shrinker, struct panfrost_device, shrinker);
-> +	struct panfrost_device *pfdev = shrinker->private_data;
->  	struct drm_gem_shmem_object *shmem, *tmp;
->  	unsigned long freed = 0;
->  
-> @@ -97,13 +95,24 @@ panfrost_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
->   *
->   * This function registers and sets up the panfrost shrinker.
->   */
-> -void panfrost_gem_shrinker_init(struct drm_device *dev)
-> +int panfrost_gem_shrinker_init(struct drm_device *dev)
->  {
->  	struct panfrost_device *pfdev = dev->dev_private;
-> -	pfdev->shrinker.count_objects = panfrost_gem_shrinker_count;
-> -	pfdev->shrinker.scan_objects = panfrost_gem_shrinker_scan;
-> -	pfdev->shrinker.seeks = DEFAULT_SEEKS;
-> -	WARN_ON(register_shrinker(&pfdev->shrinker, "drm-panfrost"));
-> +
-> +	pfdev->shrinker = shrinker_alloc(0, "drm-panfrost");
-> +	if (!pfdev->shrinker) {
-> +		WARN_ON(1);
+Link to v4 : https://lore.kernel.org/all/0070e00a-89c0-9b2b-8753-e1835b5aad15@ti.com/
 
-I don't think this WARN_ON is particularly useful - if there's a failed
-memory allocation we should see output from the kernel anyway. And we're
-changing the semantics from "continue just without a shrinker" (which
-argueably justifies the warning) to "probe fails, device doesn't work"
-which will be obvious to the user so I don't feel we need the additional
-warn.
+ .../dts/ti/k3-j721s2-common-proc-board.dts    | 46 +++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi  | 12 +++++
+ 2 files changed, 58 insertions(+)
 
-> +		return -ENOMEM;
-> +	}
-> +
-> +	pfdev->shrinker->count_objects = panfrost_gem_shrinker_count;
-> +	pfdev->shrinker->scan_objects = panfrost_gem_shrinker_scan;
-> +	pfdev->shrinker->seeks = DEFAULT_SEEKS;
-> +	pfdev->shrinker->private_data = pfdev;
-> +
-> +	shrinker_register(pfdev->shrinker);
-> +
-> +	return 0;
->  }
->  
->  /**
-> @@ -116,7 +125,6 @@ void panfrost_gem_shrinker_cleanup(struct drm_device *dev)
->  {
->  	struct panfrost_device *pfdev = dev->dev_private;
->  
-> -	if (pfdev->shrinker.nr_deferred) {
-> -		unregister_shrinker(&pfdev->shrinker);
-> -	}
-> +	if (pfdev->shrinker)
-> +		shrinker_unregister(pfdev->shrinker);
->  }
+diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts
+index 04d4739d7245..e715fa12f9ca 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts
+@@ -29,6 +29,8 @@ aliases {
+ 		can0 = &main_mcan16;
+ 		can1 = &mcu_mcan0;
+ 		can2 = &mcu_mcan1;
++		can3 = &main_mcan3;
++		can4 = &main_mcan5;
+ 	};
+ 
+ 	evm_12v0: fixedregulator-evm12v0 {
+@@ -109,6 +111,22 @@ transceiver2: can-phy2 {
+ 		standby-gpios = <&wkup_gpio0 2 GPIO_ACTIVE_HIGH>;
+ 	};
+ 
++	transceiver3: can-phy3 {
++		compatible = "ti,tcan1043";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		standby-gpios = <&exp2 7 GPIO_ACTIVE_LOW>;
++		enable-gpios = <&exp2 6 GPIO_ACTIVE_HIGH>;
++		mux-states = <&mux0 1>;
++	};
++
++	transceiver4: can-phy4 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		standby-gpios = <&exp_som 7 GPIO_ACTIVE_HIGH>;
++		mux-states = <&mux1 1>;
++	};
+ };
+ 
+ &main_pmx0 {
+@@ -152,6 +170,20 @@ main_usbss0_pins_default: main-usbss0-default-pins {
+ 			J721S2_IOPAD(0x0ec, PIN_OUTPUT, 6) /* (AG25) TIMER_IO1.USB0_DRVVBUS */
+ 		>;
+ 	};
++
++	main_mcan3_pins_default: main-mcan3-pins-default {
++		pinctrl-single,pins = <
++			J721S2_IOPAD(0x080, PIN_INPUT, 0) /* (U26) MCASP0_AXR4.MCAN3_RX */
++			J721S2_IOPAD(0x07c, PIN_OUTPUT, 0) /* (T27) MCASP0_AXR3.MCAN3_TX */
++		>;
++	};
++
++	main_mcan5_pins_default: main-mcan5-pins-default {
++		pinctrl-single,pins = <
++			J721S2_IOPAD(0x03c, PIN_INPUT, 0) /* (U27) MCASP0_AFSX.MCAN5_RX */
++			J721S2_IOPAD(0x038, PIN_OUTPUT, 0) /* (AB28) MCASP0_ACLKX.MCAN5_TX */
++		>;
++	};
+ };
+ 
+ &wkup_pmx2 {
+@@ -460,3 +492,17 @@ adc {
+ 		ti,adc-channels = <0 1 2 3 4 5 6 7>;
+ 	};
+ };
++
++&main_mcan3 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mcan3_pins_default>;
++	phys = <&transceiver3>;
++};
++
++&main_mcan5 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mcan5_pins_default>;
++	phys = <&transceiver4>;
++};
+diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
+index d57dd43da0ef..594766482071 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
+@@ -31,6 +31,18 @@ secure_ddr: optee@9e800000 {
+ 		};
+ 	};
+ 
++	mux0: mux-controller {
++		compatible = "gpio-mux";
++		#mux-state-cells = <1>;
++		mux-gpios = <&exp_som 1 GPIO_ACTIVE_HIGH>;
++	};
++
++	mux1: mux-controller {
++		compatible = "gpio-mux";
++		#mux-state-cells = <1>;
++		mux-gpios = <&exp_som 2 GPIO_ACTIVE_HIGH>;
++	};
++
+ 	transceiver0: can-phy0 {
+ 		/* standby pin has been grounded by default */
+ 		compatible = "ti,tcan1042";
+-- 
+2.34.1
 
