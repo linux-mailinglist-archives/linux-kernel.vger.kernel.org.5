@@ -2,49 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45ACA75E79B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D41E75E79C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbjGXB3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
+        id S231657AbjGXB3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbjGXB2F (ORCPT
+        with ESMTP id S231696AbjGXB2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:28:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C7249C7;
-        Sun, 23 Jul 2023 18:25:18 -0700 (PDT)
+        Sun, 23 Jul 2023 21:28:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BD349D0;
+        Sun, 23 Jul 2023 18:25:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C2D8F60EF9;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B6BD60F02;
+        Mon, 24 Jul 2023 01:24:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94032C433C7;
         Mon, 24 Jul 2023 01:24:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1015AC433C8;
-        Mon, 24 Jul 2023 01:24:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161868;
-        bh=nB9sY8X/582vVWL2LbmgPFirUzquFq34/rstMIeanBI=;
+        s=k20201202; t=1690161869;
+        bh=4R0+W1fgg+0tYuNuTNsVnNDYQV9lCk4hbYmh/NN+z4I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QWZ6Sa56GIM6ggUgzJNm2e1v9LynMpjOCG3uIxU33Pirf5wDWkVPpXKq4OME7XKts
-         JbqXnU1Q3sq8dmbQFx8REbMY9/RzZOY9pA1YuDSyItDQrjb7M1I7MpfLuNu0V+W8nR
-         ZnUlIPi+KXFPmO5pPrYLYvfnqh3GAVVRsFQi4TNvx0P95e9nRlIPoY1hnQD89yan2x
-         M2W4GFrwVJzASz70NOYf6i8OTjgCz7YbVTclYSjYJXMFan3+QJxwMKMCBw/f+9ORVe
-         85tngEgdm3CFGlwOd3QHNv8bI/WHXNFFxCGpo/B95nqNe9pvEPU1EfRflFd9/GKjqf
-         a1a06JMkYxkMA==
+        b=Ju7n9ywQnq4KoyJsr5ckiwJ8ci3jRD4a4fdkjcJv+APlDYPXiA3WFusirBsfo/Xfc
+         C0zwOvEkZYbvcQiObGUqq2oelPioGcUEkoBd08TB42YhG/LUhMv7gkBU/5VSXsZ9Cv
+         nHzFdY14bDInXzeNkfaHR+JotB8fYFVItTOYChCa3mjaOhDdHc/075/SKZ3RgMVZLT
+         eDlKdyXs68p3kRoN8KJ8+mZvJklf2Ic5prc2vqVla4Q7CAMrnbTx+d1Cw2jcex3CNk
+         Ve4Zl2fqHawDbyN/MNKNs6PBH+8f3K2VEkl0puWfKx2T+gvG4ex/IvhQSpaIwK3/AK
+         7J6usvhwx/4HQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sumit Gupta <sumitg@nvidia.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, bhelgaas@google.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 05/22] PCI: tegra194: Fix possible array out of bounds access
-Date:   Sun, 23 Jul 2023 21:24:02 -0400
-Message-Id: <20230724012419.2317649-5-sashal@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, kernel@pengutronix.de,
+        robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 06/22] ARM: dts: imx6dl: prtrvt, prtvt7, prti6q, prtwd2: fix USB related warnings
+Date:   Sun, 23 Jul 2023 21:24:03 -0400
+Message-Id: <20230724012419.2317649-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012419.2317649-1-sashal@kernel.org>
 References: <20230724012419.2317649-1-sashal@kernel.org>
@@ -53,74 +51,86 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.186
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumit Gupta <sumitg@nvidia.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-[ Upstream commit 205b3d02d57ce6dce96f6d2b9c230f56a9bf9817 ]
+[ Upstream commit 1d14bd943fa2bbdfda1efbcc080b298fed5f1803 ]
 
-Add check to fix the possible array out of bounds violation by
-making speed equal to GEN1_CORE_CLK_FREQ when its value is more
-than the size of "pcie_gen_freq" array. This array has size of
-four but possible speed (CLS) values are from "0 to 0xF". So,
-"speed - 1" values are "-1 to 0xE".
+Fix USB-related warnings in prtrvt, prtvt7, prti6q and prtwd2 device trees
+by disabling unused usbphynop1 and usbphynop2 USB PHYs and providing proper
+configuration for the over-current detection. This fixes the following
+warnings with the current kernel:
+ usb_phy_generic usbphynop1: dummy supplies not allowed for exclusive requests
+ usb_phy_generic usbphynop2: dummy supplies not allowed for exclusive requests
+ imx_usb 2184200.usb: No over current polarity defined
 
-Suggested-by: Bjorn Helgaas <helgaas@kernel.org>
-Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-Link: https://lore.kernel.org/lkml/72b9168b-d4d6-4312-32ea-69358df2f2d0@nvidia.com/
-Acked-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+By the way, fix over-current detection on usbotg port for prtvt7, prti6q
+and prtwd2 boards. Only prtrvt do not have OC on USB OTG port.
+
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/dwc/pcie-tegra194.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/imx6dl-prtrvt.dts   |  4 ++++
+ arch/arm/boot/dts/imx6qdl-prti6q.dtsi | 11 ++++++++++-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index 1222f5749bc67..a215777df96c7 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -239,6 +239,7 @@
- #define EP_STATE_ENABLED	1
+diff --git a/arch/arm/boot/dts/imx6dl-prtrvt.dts b/arch/arm/boot/dts/imx6dl-prtrvt.dts
+index 5ac84445e9cc1..90e01de8c2c15 100644
+--- a/arch/arm/boot/dts/imx6dl-prtrvt.dts
++++ b/arch/arm/boot/dts/imx6dl-prtrvt.dts
+@@ -126,6 +126,10 @@
+ 	status = "disabled";
+ };
  
- static const unsigned int pcie_gen_freq[] = {
-+	GEN1_CORE_CLK_FREQ,	/* PCI_EXP_LNKSTA_CLS == 0; undefined */
- 	GEN1_CORE_CLK_FREQ,
- 	GEN2_CORE_CLK_FREQ,
- 	GEN3_CORE_CLK_FREQ,
-@@ -470,7 +471,11 @@ static irqreturn_t tegra_pcie_ep_irq_thread(int irq, void *arg)
- 
- 	speed = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKSTA) &
- 		PCI_EXP_LNKSTA_CLS;
--	clk_set_rate(pcie->core_clk, pcie_gen_freq[speed - 1]);
++&usbotg {
++	disable-over-current;
++};
 +
-+	if (speed >= ARRAY_SIZE(pcie_gen_freq))
-+		speed = 0;
+ &vpu {
+ 	status = "disabled";
+ };
+diff --git a/arch/arm/boot/dts/imx6qdl-prti6q.dtsi b/arch/arm/boot/dts/imx6qdl-prti6q.dtsi
+index 19578f660b092..70dfa07a16981 100644
+--- a/arch/arm/boot/dts/imx6qdl-prti6q.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-prti6q.dtsi
+@@ -69,6 +69,7 @@
+ 	vbus-supply = <&reg_usb_h1_vbus>;
+ 	phy_type = "utmi";
+ 	dr_mode = "host";
++	disable-over-current;
+ 	status = "okay";
+ };
+ 
+@@ -78,10 +79,18 @@
+ 	pinctrl-0 = <&pinctrl_usbotg>;
+ 	phy_type = "utmi";
+ 	dr_mode = "host";
+-	disable-over-current;
++	over-current-active-low;
+ 	status = "okay";
+ };
+ 
++&usbphynop1 {
++	status = "disabled";
++};
 +
-+	clk_set_rate(pcie->core_clk, pcie_gen_freq[speed]);
- 
- 	/* If EP doesn't advertise L1SS, just return */
- 	val = dw_pcie_readl_dbi(pci, pcie->cfg_link_cap_l1sub);
-@@ -973,7 +978,11 @@ static int tegra_pcie_dw_host_init(struct pcie_port *pp)
- 
- 	speed = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKSTA) &
- 		PCI_EXP_LNKSTA_CLS;
--	clk_set_rate(pcie->core_clk, pcie_gen_freq[speed - 1]);
++&usbphynop2 {
++	status = "disabled";
++};
 +
-+	if (speed >= ARRAY_SIZE(pcie_gen_freq))
-+		speed = 0;
-+
-+	clk_set_rate(pcie->core_clk, pcie_gen_freq[speed]);
- 
- 	tegra_pcie_enable_interrupts(pp);
- 
+ &usdhc1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_usdhc1>;
 -- 
 2.39.2
 
