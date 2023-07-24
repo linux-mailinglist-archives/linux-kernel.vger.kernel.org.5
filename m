@@ -2,99 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 157B475F69A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608A575F69D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbjGXMnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
+        id S229847AbjGXMo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbjGXMnG (ORCPT
+        with ESMTP id S229504AbjGXMoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:43:06 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD24126
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:43:04 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:e908:444e:5a23:b79e])
-        by baptiste.telenet-ops.be with bizsmtp
-        id R0j22A00H26vpYY010j2rR; Mon, 24 Jul 2023 14:43:02 +0200
-Received: from geert (helo=localhost)
-        by ramsan.of.borg with local-esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qNuty-002O66-6f;
-        Mon, 24 Jul 2023 14:43:02 +0200
-Date:   Mon, 24 Jul 2023 14:43:02 +0200 (CEST)
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org
-Subject: Re: Build regressions/improvements in v6.5-rc3
-In-Reply-To: <20230724122626.1701631-1-geert@linux-m68k.org>
-Message-ID: <88f83d73-781d-bdc-126-aa629cb368c@linux-m68k.org>
-References: <CAHk-=wi4Yau-3Bsv2rXYmtXMTLaj3=Wyf4cdM6d89czFvkVsRQ@mail.gmail.com> <20230724122626.1701631-1-geert@linux-m68k.org>
+        Mon, 24 Jul 2023 08:44:54 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2062f.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5b::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674EFD8;
+        Mon, 24 Jul 2023 05:44:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W6W3oc7TYWzlUSjNTSPdhYeNly2i8/CnfgCSByekIrzLb1oPx/2SmsTkyGNsa34Cnoz/CXtRyiP6DcY6sVNHGX/c4J0QacWwOlfrMX+ACXdKLZ7Stjw7OcCoJ0cwmvnFWKnFVCj+jc0Ie/CLvkNJvArx5HWzmf4nf2TgvmzI9mqDZPqI2XCvzvHIYLTU9Z7Go6oPq0/WhlKzMx9hLsrfzXaoJu+VeRsF3BdPiMWSNeeeUGh2GXVA72Xoasrwg+VhxJmn8aCRISA0DnA7Uf48aSBPWtCkSkb6flk99vgD2CgKvJ/ANJoR/9EiEjpc/Hd3DI+czJ0J7wyQ816ymQ5WTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UKVkdi8qFFDzAlbiGKSU2yXpO3Roo2PPQIXZWVSX+nM=;
+ b=UF31w0L1U1JcegJGNrlLQNpkZyXtX6+eJKq4B1KBNrbPOr6PA33SdvNjmHF2yQ0KyfIE2Rh59L7tCnXb+yOLCRhYTTQ+F6J80ptHSGpEhkwLd3jQzR1S+Oui65CJ+04gzX8N5BhvQK8KPnDyhEQB3KQ60U3DUqqiUhXO9BjApalg2kJ15aB4w0hYI666XExPf4yTosVd4r/ujnunsX48Sbtz+zj0rFxUMFLMd2xisz3iw+1xBGp4381JIF1LDF6pKDAmcj+DP14b1tEr5DQbmLfDsM2mc/q4O8e82FnT/RUf38U7/huh00iCNUKv9RbwbCk0LWK7tLItg5G9UnbYMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UKVkdi8qFFDzAlbiGKSU2yXpO3Roo2PPQIXZWVSX+nM=;
+ b=ZO5F52fcQe9CeRF9tRA8iXsyuqClI3uw8RwkxRkCo4JPh0uCoeddvWM0FSbB3ovtHbCDWGC2s2sgs4qsKHWZMavObuwocmRRQ9zHEqZyPBbmR2WNNVwHYLOhe5Y+G1pmdxSWIi0Kf6JOKN8sHC5O5KZ+sCXHqZXhVM7vc/KYKTQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3657.namprd12.prod.outlook.com (2603:10b6:5:149::18)
+ by MN2PR12MB4207.namprd12.prod.outlook.com (2603:10b6:208:1d9::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Mon, 24 Jul
+ 2023 12:44:48 +0000
+Received: from DM6PR12MB3657.namprd12.prod.outlook.com
+ ([fe80::6cf0:e179:9f0b:edd9]) by DM6PR12MB3657.namprd12.prod.outlook.com
+ ([fe80::6cf0:e179:9f0b:edd9%5]) with mapi id 15.20.6609.032; Mon, 24 Jul 2023
+ 12:44:48 +0000
+Date:   Mon, 24 Jul 2023 14:44:41 +0200
+From:   Robert Richter <rrichter@amd.com>
+To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cxl@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        oohall@gmail.com, Lukas Wunner <lukas@wunner.de>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Ben Widawsky <bwidawsk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Terry Bowman <terry.bowman@amd.com>
+Subject: Re: [PATCH v2 3/3] cxl/pci: Replace host_bridge->native_aer with
+ pcie_aer_is_native()
+Message-ID: <ZL5yOXI4XkappwTL@rric.localdomain>
+References: <20230721214740.256602-1-Smita.KoralahalliChannabasappa@amd.com>
+ <20230721214740.256602-4-Smita.KoralahalliChannabasappa@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230721214740.256602-4-Smita.KoralahalliChannabasappa@amd.com>
+X-ClientProxiedBy: FR2P281CA0112.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9d::14) To DM6PR12MB3657.namprd12.prod.outlook.com
+ (2603:10b6:5:149::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3657:EE_|MN2PR12MB4207:EE_
+X-MS-Office365-Filtering-Correlation-Id: 87cb9c3a-0f4c-467a-c08f-08db8c43c404
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fqc33bX16EB2QWiqsvoR8QJwgZiWQZ835J6zqFNK1SnDsUFPXbbfHqqWn9nmac/VJG6jT8BJLAyZRytq9WZzVzJWh7/HPW5yiQoRa81cDaaavHsX9LgP2lByLoHcORBm9ZaQMI64AJw+xI+5CncR/cY0ucBIz4vxsitgGrX93Ahi0hHjc16NRus9CPwB+vq1QRCfosS0A+vgWxtYt7hnSDf6NVX32/ZOhVsuCrdvL6/+4upGTDMwejP/57VwVNYyigXtq3hp40a4VoPqgwA/EMrYeCvvPApiYgrW/utVXk3lA1BeMtRUksODCSk1WgHovlT1bPJh23+ZeE6E1Em1sz56gJFJX0tkSM1FeFiTa41eJ88ubFYBgAN41zw06kjByhp9oaIyIkMGHY2YcYEW0+ueHaIau1Nx4LcEqKPj2+kQT/FwFrQg+wD7DaSTZZaFN9gABCd3YHiodFb1sh/7aZfBoAT/PpMgRUwoIPEop7kffTbcZrC7oHw2NB1IYF/J6O7NX3aCPu6imvJqZMC4KqkdjJokHpHUzV+WNhPQRHUU5EVg3vyEMl8UdxTfJU/o
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3657.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(346002)(366004)(396003)(136003)(451199021)(26005)(186003)(41300700001)(478600001)(6506007)(53546011)(9686003)(66556008)(66946007)(66476007)(6636002)(4326008)(316002)(6512007)(6666004)(54906003)(38100700002)(6486002)(5660300002)(2906002)(7416002)(8676002)(6862004)(8936002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6lZPxejb1QDHIYd7z8A0dnX1NMvr3qdu6urUVuW0Hv3z1NSWX6YlSx5d5nSM?=
+ =?us-ascii?Q?o8h/dzExjLlqW7AuqWUEs+e8mOUpgVif/cZAFmuXwIYgXahXCRdkajTN9V7f?=
+ =?us-ascii?Q?zdlNDhUhXHL1l3ovDRlp1+pssVqw3DjrpyEaAT9OP8N24YkmO47VUcHiZlam?=
+ =?us-ascii?Q?xtfoV6Xx/S8Ay2pVsH/O5elh66e8Bf0ytMSt5ylbyDa4Bw1qaUTcRAMjBhHw?=
+ =?us-ascii?Q?FkrAhSNkl9Ng6LUOsmX287e40XQpNwEUmoIQgOjr4FwLVQePqub4fOrisOGI?=
+ =?us-ascii?Q?V+DExAiNQQVevsMJfmsmY7zseuQHLdxZvPdWXW6voFZWxEDLHwrSeQQI9GjS?=
+ =?us-ascii?Q?BJNcYRehAf4lyHShLmdG0SeFiAwEZyHyQ72ZwRKYiZUOl9mymvZjDAwpe6Fo?=
+ =?us-ascii?Q?DYmLb6zREPdmXgOSSwr4qsxBmQ6MkoFL1LIgDNJa6VA1TwnWn1ffelDbYqWG?=
+ =?us-ascii?Q?hZKaXomsWLfId74H1D8XxKVyrsglK76AHWWDhaaF0qc6xTmUVbhoBfiBM1d9?=
+ =?us-ascii?Q?k3p1YIy+BlDlHA2dq7ymYsEId8yF1EwQM/Gip9ShIT9swEAyQZaWlEYeItu0?=
+ =?us-ascii?Q?N1vs6MMxhlBUtaB5EXdUYfPDTZqqCXjJweqZ8YHluW3hbmygwR3jU2edqWy1?=
+ =?us-ascii?Q?8RSmM347juhtQeMmmk++o064ML7S7GJqYZqym7FicQ/PkXSw7XpG4vWpa75h?=
+ =?us-ascii?Q?GET93h/pPxe5zdJqbjsb2vx+il6+NoW9arzaAE9Jz6Jg5o+88U/Wqg5DP27Z?=
+ =?us-ascii?Q?oPm7wwFLIqJF3LyF9WMm2SdKnHWZUGVvBJkbPKfIsU6myjE2DOGDXEBjTEuf?=
+ =?us-ascii?Q?IKLnLP3V+NbeE9JrnNRuB6CqDm6G/1yJ1GTS0AZOX9peE0rH/4nLegzQ1rFI?=
+ =?us-ascii?Q?vziOxevXP17UrwQ2Wow+hBk/Q4iYTzbRtJolJFWjEeA+Qtwy6mVp71f9Nyun?=
+ =?us-ascii?Q?EafLny9tOO2GG8Zt4VNNgaWI8F9evlK4vPhDyC+HV4Cniejh22yQ36zmZOKn?=
+ =?us-ascii?Q?0H5/g3x6EoDMnrqPzwEApIAuCBH5Xh2tooQWOYM0Gbw9F4moOw5OPTw9H6Ec?=
+ =?us-ascii?Q?YR8/XASWqV8U5Wndyeo2ho5jZ2SnBWkuNm6cnPnalj+M7BJznt5qB3wCEEb/?=
+ =?us-ascii?Q?c0thLd1qYrgWP2hcCcxHX2jdJy5PN6udpffjIVTsNKS62HzegK8ltuyKltO7?=
+ =?us-ascii?Q?oKdk6xqqRJO4gb6m2M77yOJhK0bOGA0Pzp9TfjfDTFgKZ/gN2NB/Nl4iwO+E?=
+ =?us-ascii?Q?SGq9BKvg8POz6kB/JO69YnICw8iLCp+qy5qR/JFQhjjAbPYczCirvOCU/V9f?=
+ =?us-ascii?Q?F7UfzL+KscPklNk02nhCWJ4ThnN/QLyZoz9N3BVG2GyDG99qdGHIMNTJKgea?=
+ =?us-ascii?Q?/6xSXvA9avabXrodcETKJaNOYI5LrOCBtV1atYGJ9FsRiV0irG5b4a+wRPf7?=
+ =?us-ascii?Q?6OBS+ZxTHuzl4o3BdDLXfXSWVl+MCDvfnX2V9e8J11M1DjZouXRG8lF0IZ+3?=
+ =?us-ascii?Q?hzl/GtNdp2MDUojtXfolDkWwPg4i7BULAQEuv12NRPzQGlHV552RIP2GgXa+?=
+ =?us-ascii?Q?mxtrGYj0yklzpgYcWyw+kXVf0i9AwEJMViSEecUK?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87cb9c3a-0f4c-467a-c08f-08db8c43c404
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3657.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 12:44:48.4257
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pT12dwubNQilwiGT1AeMFH066B2wITK7EmscIEFNFL4HjmC7uchLxYZUL/Y5J2Egrx9K3hDHsiOGe+RbD4uuYg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4207
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023, Geert Uytterhoeven wrote:
-> JFYI, when comparing v6.5-rc3[1] to v6.5-rc2[3], the summaries are:
->  - build errors: +5/-0
+On 21.07.23 21:47:40, Smita Koralahalli wrote:
+> Reuse pcie_aer_is_native() to determine the native AER ownership.
+> 
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
 
-   + /kisskb/src/include/linux/fortify-string.h: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]:  => 583:25, 493:25
+With Sathyanarayanan comments addressed:
 
-mips-gcc13/mips-allmodconfig
+Reviewed-by: Robert Richter <rrichter@amd.com>
 
-Full context:
-
-     In function 'fortify_memset_chk',
- 	inlined from 'memset_io' at /kisskb/src/arch/mips/include/asm/io.h:486:2,
- 	inlined from 'build_auth_frame' at /kisskb/src/drivers/net/wireless/legacy/ray_cs.c:2697:2:
-     /kisskb/src/include/linux/fortify-string.h:493:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
-       493 |                         __write_overflow_field(p_size_field, size);
- 	  |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     In function 'fortify_memcpy_chk',
- 	inlined from 'memcpy_toio' at /kisskb/src/arch/mips/include/asm/io.h:494:2,
- 	inlined from 'translate_frame' at /kisskb/src/drivers/net/wireless/legacy/ray_cs.c:955:3,
- 	inlined from 'ray_hw_xmit.constprop' at /kisskb/src/drivers/net/wireless/legacy/ray_cs.c:912:12:
-     /kisskb/src/include/linux/fortify-string.h:583:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
-       583 |                         __write_overflow_field(p_size_field, size);
- 	  |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Single-element flexible array abuse in drivers/net/wireless/legacy/rayctl.h:tx_msg.var
-
-   + error: modpost: ".L856" [drivers/mtd/nand/raw/nand.ko] undefined!:  => N/A
-
-parisc-gcc13/parisc-allmodconfig
-
-   + {standard input}: Error: Missing symbol name in directive:  => 1096
-   + {standard input}: Error: unrecognized symbol type "":  => 1096
-
-sh4-gcc12/sh-allmodconfig (ICE)
-
-   + {standard input}: Error: unknown opcode:  => 1091
-
-sh4-gcc13/sh-allmodconfig (ICE)
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/6eaae198076080886b9e7d57f4ae06fa782f90ef/ (all 235 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fdf0eaf11452d72945af31804e2a1048ee1b574c/ (161 out of 235 configs)
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
+> ---
+> v2:
+> 	Replaced pcie_aer_is_native() at a later stage for automated
+> 	backports.
+> ---
+>  drivers/cxl/pci.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> index 2323169b6e5f..44a21ab7add5 100644
+> --- a/drivers/cxl/pci.c
+> +++ b/drivers/cxl/pci.c
+> @@ -529,7 +529,6 @@ static int cxl_pci_setup_regs(struct pci_dev *pdev, enum cxl_regloc_type type,
+>  
+>  static int cxl_pci_ras_unmask(struct pci_dev *pdev)
+>  {
+> -	struct pci_host_bridge *host_bridge = pci_find_host_bridge(pdev->bus);
+>  	struct cxl_dev_state *cxlds = pci_get_drvdata(pdev);
+>  	void __iomem *addr;
+>  	u32 orig_val, val, mask;
+> @@ -542,7 +541,7 @@ static int cxl_pci_ras_unmask(struct pci_dev *pdev)
+>  	}
+>  
+>  	/* BIOS has PCIe AER error control */
+> -	if (!host_bridge->native_aer)
+> +	if (!pcie_aer_is_native(pdev))
+>  		return 0;
+>  
+>  	rc = pcie_capability_read_word(pdev, PCI_EXP_DEVCTL, &cap);
+> -- 
+> 2.17.1
+> 
