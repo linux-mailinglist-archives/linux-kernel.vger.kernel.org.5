@@ -2,53 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B16B075E803
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA96575E840
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231785AbjGXBhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
+        id S232014AbjGXBjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231917AbjGXBgh (ORCPT
+        with ESMTP id S232016AbjGXBip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:36:37 -0400
+        Sun, 23 Jul 2023 21:38:45 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6137A59F2;
-        Sun, 23 Jul 2023 18:33:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F644C1C;
+        Sun, 23 Jul 2023 18:34:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 023F560F29;
-        Mon, 24 Jul 2023 01:31:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E549C433CC;
-        Mon, 24 Jul 2023 01:31:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 57C1160F9C;
+        Mon, 24 Jul 2023 01:31:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14823C433C8;
+        Mon, 24 Jul 2023 01:31:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690162306;
-        bh=sPgqBc9MDblYXPHS71Myl2hrzTAGjCrucv1FSII+xSY=;
+        s=k20201202; t=1690162307;
+        bh=S15+AbMxQ5Xyr3RT5XwQiLJB6O9wdJaVQ9670ztnQZc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PtQYyWlGdOnS/jH+ZGCJWimp1grJZ870ZbuAmtEcoGrx0nrxAL7SvjUYHdKg6zQ/7
-         Np8RA9UxpR97BtTkCcF5YOMfrIXaN33he67Perlix7m6rFZNPM8XwHqQU34UF3OSMj
-         LGXgMy8+6dbF3RO2KgZ3jnJZu8X3HSrN13mx5nTtOcq2gLF3scOxYyNpQpD7cIxwwW
-         0EExZx8tkUGTVe0DPgs7wwGgyabBw4X91xi/TvDIcSaRhKi3E5yoBCMYjuCrl4qCTl
-         JxXS9ddCIk8/Q5VnFSYZWrvXvLt7m10uwjIPCMbfoLxXUP6kiwuUtPB6UPljOH26U2
-         1O8tG11yY7yHQ==
+        b=q9x6vPIozLixGVYXxp5RRTcHkrgB508BEBtQEwS7QMjJoviyCkLvK383eqM/YdhDv
+         ZrGblNDrw1E67M0PXx3ZfxC3QhPnYHE/m/V/frNi0CsgCfY5ZAHWA53WKRIBDK6Isr
+         khHypyVkCCaWqFXU6hNI6rf8qs0WNzyJsqfWiZfbNOawXoBczqCx50RNtEzU7H1gdS
+         gZ9NjKDNQjKL68Rrob0Efax0L6Jyt4vz0DmLu15IZsbw0sFmtLb58lguoWXr06Z9tD
+         rjfJeqntYgHt4dGhI/PNjaVzdU8IX0VwJsbuP0LT4P7ed34EXK5Yl76NwkSLap+WiK
+         VD+ik2zqdjfRg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Pina Chen <pina.chen@mediatek.com>,
+Cc:     Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sasha Levin <sashal@kernel.org>, matthias.bgg@gmail.com,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.4 03/40] media: v4l2-mem2mem: add lock to protect parameter num_rdy
-Date:   Sun, 23 Jul 2023 21:31:03 -0400
-Message-Id: <20230724013140.2327815-3-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 04/40] media: camss: set VFE bpl_alignment to 16 for sdm845 and sm8250
+Date:   Sun, 23 Jul 2023 21:31:04 -0400
+Message-Id: <20230724013140.2327815-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013140.2327815-1-sashal@kernel.org>
 References: <20230724013140.2327815-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.5
@@ -63,64 +60,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunfei Dong <yunfei.dong@mediatek.com>
+From: Andrey Konovalov <andrey.konovalov@linaro.org>
 
-[ Upstream commit 56b5c3e67b0f9af3f45cf393be048ee8d8a92694 ]
+[ Upstream commit d5b7eb477c286f6ceccbb38704136eea0e6b09ca ]
 
-Getting below error when using KCSAN to check the driver. Adding lock to
-protect parameter num_rdy when getting the value with function:
-v4l2_m2m_num_src_bufs_ready/v4l2_m2m_num_dst_bufs_ready.
+From the experiments with camera sensors using SGRBG10_1X10/3280x2464 and
+SRGGB10_1X10/3280x2464 formats, it becomes clear that on sdm845 and sm8250
+VFE outputs the lines padded to a length multiple of 16 bytes. As in the
+current driver the value of the bpl_alignment is set to 8 bytes, the frames
+captured in formats with the bytes-per-line value being not a multiple of
+16 get corrupted.
 
-kworker/u16:3: [name:report&]BUG: KCSAN: data-race in v4l2_m2m_buf_queue
-kworker/u16:3: [name:report&]
+Set the bpl_alignment of the camss video output device to 16 for sdm845 and
+sm8250 to fix that.
 
-kworker/u16:3: [name:report&]read-write to 0xffffff8105f35b94 of 1 bytes by task 20865 on cpu 7:
-kworker/u16:3:  v4l2_m2m_buf_queue+0xd8/0x10c
-
-Signed-off-by: Pina Chen <pina.chen@mediatek.com>
-Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Acked-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/media/v4l2-mem2mem.h | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ drivers/media/platform/qcom/camss/camss-vfe.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2mem.h
-index bb9de6a899e07..d6c8eb2b52019 100644
---- a/include/media/v4l2-mem2mem.h
-+++ b/include/media/v4l2-mem2mem.h
-@@ -593,7 +593,14 @@ void v4l2_m2m_buf_queue(struct v4l2_m2m_ctx *m2m_ctx,
- static inline
- unsigned int v4l2_m2m_num_src_bufs_ready(struct v4l2_m2m_ctx *m2m_ctx)
- {
--	return m2m_ctx->out_q_ctx.num_rdy;
-+	unsigned int num_buf_rdy;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&m2m_ctx->out_q_ctx.rdy_spinlock, flags);
-+	num_buf_rdy = m2m_ctx->out_q_ctx.num_rdy;
-+	spin_unlock_irqrestore(&m2m_ctx->out_q_ctx.rdy_spinlock, flags);
-+
-+	return num_buf_rdy;
- }
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+index e0832f3f4f25c..06c95568e5af4 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+@@ -1541,7 +1541,11 @@ int msm_vfe_register_entities(struct vfe_device *vfe,
+ 		}
  
- /**
-@@ -605,7 +612,14 @@ unsigned int v4l2_m2m_num_src_bufs_ready(struct v4l2_m2m_ctx *m2m_ctx)
- static inline
- unsigned int v4l2_m2m_num_dst_bufs_ready(struct v4l2_m2m_ctx *m2m_ctx)
- {
--	return m2m_ctx->cap_q_ctx.num_rdy;
-+	unsigned int num_buf_rdy;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&m2m_ctx->cap_q_ctx.rdy_spinlock, flags);
-+	num_buf_rdy = m2m_ctx->cap_q_ctx.num_rdy;
-+	spin_unlock_irqrestore(&m2m_ctx->cap_q_ctx.rdy_spinlock, flags);
-+
-+	return num_buf_rdy;
- }
- 
- /**
+ 		video_out->ops = &vfe->video_ops;
+-		video_out->bpl_alignment = 8;
++		if (vfe->camss->version == CAMSS_845 ||
++		    vfe->camss->version == CAMSS_8250)
++			video_out->bpl_alignment = 16;
++		else
++			video_out->bpl_alignment = 8;
+ 		video_out->line_based = 0;
+ 		if (i == VFE_LINE_PIX) {
+ 			video_out->bpl_alignment = 16;
 -- 
 2.39.2
 
