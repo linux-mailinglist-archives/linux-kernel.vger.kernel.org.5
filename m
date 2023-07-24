@@ -2,195 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E1075EA1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C1975EA20
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 05:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbjGXDkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 23:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40156 "EHLO
+        id S230050AbjGXDlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 23:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjGXDki (ORCPT
+        with ESMTP id S229469AbjGXDld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 23:40:38 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69776191
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 20:40:36 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R8Qst0dqKzBRDrF
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 11:40:34 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1690170033; x=1692762034; bh=KABsKwhWlx/kqYu0QsaS+UFrAdw
-        /erZjiOwJTTEi4ag=; b=agiJFlnJzEzP5+bDy/xKfQ+BLhY/qznmGP9OfLxQtta
-        NKQlHXWLH/m2gguSEt2Yl34VJ+EwNVXU6lGuXGqKzP8oUDP4M/5dfHucxEepxwMx
-        ElEYElXlzVYduJOdr00UQU/jO/PXYEqd5kvHxrQDIbz5KPD3FQbRZEum/bH/uZET
-        oU5IkzZeUHCq+L511Q6HwuM0z0nd6XDkIyvlkC49e8qwzn1CutJS5Q+cEowpVa+P
-        bd4DkYnBxULPt/n2kqeEwl7BBajpdjZPdThcBKZcpdU6B4BxPhtyhnLkGze6sJLg
-        vwUj2tUFVmXPa5esIEF5phCg0UgPbgx39lIBzZH2Jpg==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id c2vFPq4zL02M for <linux-kernel@vger.kernel.org>;
-        Mon, 24 Jul 2023 11:40:33 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R8Qss5zx9zBJTF7;
-        Mon, 24 Jul 2023 11:40:33 +0800 (CST)
+        Sun, 23 Jul 2023 23:41:33 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2057.outbound.protection.outlook.com [40.107.220.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF216191;
+        Sun, 23 Jul 2023 20:41:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M1/2E61IhGEs7dyuvkDt7R0Cd11G0mQ1u+ZekuqX7ugoKSbk+E2Qr7sfFY1KVc9fBeGnjj1k1zF/J+vC+97am7yy+cpcSGFGzsMCaF5im47MzPdD7meMAipfkjmGC6Di3EQz36lH8f4F7XuvZ3VZJR6g2ZkC3/ZQFYxq4xB9JzlgODxtQ89NwmGNUwA6V+IrkdZMb2lXrEfzGKjcZwMISzodei+Wlf/8PMLTRewdfjJckQCMWnJrZQG5XMmF0CdLXNd4gBLLoz9Lfl6qtMm5p2Doa9ssFcU2QAfWvQiXZYNa2XzUr2d5zxeHduf/6hOoK6oAsLfgECTLG4a3zW2OuQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TukpwDkspVzbKAYx1mKpALHfem9avZFKyvq4puhxA74=;
+ b=iiKcHtXGzKy+JE906YGUVAkUJ7GMyoABsD13EifDOQAnJtPirBqykPmJw1YvRNH5J5QllUZ+r7vN8E5yBCdTfxgi6RuhPChLIz7aHVfWpZuUckclZqsydBob4dNMef3DX4TfAJ2wu47NvQjfupTGPBAd9VWFYg4MqxtAC23jIT+5twtNajzkQMlviZutyCY7pV+Xgm/Czan7PloeR+/udMlSgUtiUnpRQvRKSzXAB4WFLoUdFhzrIh10wwVOlafFxAr6vFP9pZNbYxKyFukxbBHmv22rPSRM1e9c7qJ5ChGml3TptYyT+tH1CrDR5yroIV8BWguOlZoJuOifW+dJiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TukpwDkspVzbKAYx1mKpALHfem9avZFKyvq4puhxA74=;
+ b=ivKKLyGEVfRmrvA1mOJduJ6ZXPJpHnd/w92llVGobmJw8N9FOQ4mIKr5H9oLdI/NR49giJCdvyU1BTINAqjZu+iv85/3jXuV2XsKwAsq645tCm91WTiwbGeF9MKy6GvbhvRCR6ouqjiBdihF70Wx5ypZ2ApHQZjQrSa9p/A5QTRBQ4doe0IvfIi+FD5N1MXlVbnMsirvuan41AtIojyJbHdo0OOZmAXu30TQs0gKsaYrCNEY4W/zrakmGzdHSV7MM8BklJJuy5D5Rhxdgu0IXRVBpH964/JjQ2Bj5VGPDU5vF9WM70Qt0GTvbdWlJKyRldczJzpeooPst2MRbg6ILA==
+Received: from MW2PR16CA0072.namprd16.prod.outlook.com (2603:10b6:907:1::49)
+ by BL1PR12MB5873.namprd12.prod.outlook.com (2603:10b6:208:395::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Mon, 24 Jul
+ 2023 03:41:29 +0000
+Received: from CO1NAM11FT097.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:907:1:cafe::1f) by MW2PR16CA0072.outlook.office365.com
+ (2603:10b6:907:1::49) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32 via Frontend
+ Transport; Mon, 24 Jul 2023 03:41:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CO1NAM11FT097.mail.protection.outlook.com (10.13.175.185) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.24 via Frontend Transport; Mon, 24 Jul 2023 03:41:29 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Sun, 23 Jul 2023
+ 20:41:16 -0700
+Received: from nvidia.com (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Sun, 23 Jul
+ 2023 20:41:11 -0700
+From:   Gavin Li <gavinl@nvidia.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>,
+        <xuanzhuo@linux.alibaba.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <jiri@nvidia.com>,
+        <dtatulea@nvidia.com>
+CC:     <gavi@nvidia.com>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: [PATCH net-next V3 0/4] virtio_net: add per queue interrupt coalescing support
+Date:   Mon, 24 Jul 2023 06:40:44 +0300
+Message-ID: <20230724034048.51482-1-gavinl@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Date:   Mon, 24 Jul 2023 11:40:33 +0800
-From:   sunran001@208suo.com
-To:     alexander.deucher@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/radeon: that open brace { should be on the previous line
-In-Reply-To: <20230724033939.8147-1-xujianghui@cdjrlc.com>
-References: <20230724033939.8147-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <f558b5bf6037d0e0eadcaee9448ad4c6@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.126.231.35]
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT097:EE_|BL1PR12MB5873:EE_
+X-MS-Office365-Filtering-Correlation-Id: fe122a90-8f56-4ba4-2210-08db8bf7ddbd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Autz09lFlj9MlzVIZSbzA1Jsl6N8arUC/46s/iu5yqwbc6zyjJ+LcqOQFaGqM22arKaqJm8e7gcFrtJ762XKO4UmyukOs1WDtz5NrktdFSSWfUo6Z0Ym5DCa1vOSCoJbT7eEkvjHlea7LFZmEfg/I5ALSD54pd//OhrYrUTULIIAWjjfu1eMhFkOaRy1nwioEml08YBQT7BlwiPH4nfYR+qADkJvjG+i7YhPPrtK34r+ugIVocB2YUiX4xvW2SRKmmAul+TVefTSzeyNgZsZ+ITihQb/ncHf7Nj1VVAAWdGNJPwd4I/6t0GTDPvqn+UvLZ4RaT9LqkQz2dlRwlE9+Q8znX3EgBFUiP423T9VbWJuRO0S2xCh932ooLJgBb5iv+KF0rXI5UO3Vm8WpfZs4xzfsNjgm0vOtkQ49NdQ/pRziamMXo31V//Wdjt5nJ0m/XW5AwMFNgl9L/E7rXpcLzAqgEkEnNs/1NeWiryodHfYXm7PIgnkl7FXSVDqTHq9J/cPsXiT/Mht7G/D3FlAJO9SD2kgh7mECt0iHI3Y2HSqkoKhG2O6iFGPVFxtvGP94tO8vofCwRuP+SSkKKEw6Rjwv48y3I06sfMCVhpzz9D5OTtnUBjYhHSgxoODOCXuLY5awlO5txIS62CPgCXNz91HaUgT28QyA81oEYFKIFkjW+LbG65G77aWt36WhbOS5uv6YCNyB6XkZm75RUoWw8Z1GVcRKvBmcpOQzYFng2NdYEfEHet/Ir4E/j0oEpqzbY1v6pah4+ALDeALNwhEWGLiw/wVTW8gG09NBHstEtb5pYpAOoFvUOx4hpFaTbM7
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(396003)(136003)(346002)(451199021)(82310400008)(36840700001)(46966006)(40470700004)(8676002)(8936002)(110136005)(7416002)(478600001)(40480700001)(2906002)(40460700003)(70586007)(70206006)(4326008)(6636002)(316002)(41300700001)(55016003)(5660300002)(54906003)(36756003)(82740400003)(6286002)(1076003)(16526019)(336012)(186003)(86362001)(26005)(47076005)(2616005)(426003)(7636003)(356005)(921005)(7696005)(6666004)(36860700001)(83380400001)(83996005)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 03:41:29.4993
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe122a90-8f56-4ba4-2210-08db8bf7ddbd
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT097.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5873
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: that open brace { should be on the previous line
+Currently, coalescing parameters are grouped for all transmit and receive
+virtqueues. This patch series add support to set or get the parameters for
+a specified virtqueue.
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
+When the traffic between virtqueues is unbalanced, for example, one virtqueue
+is busy and another virtqueue is idle, then it will be very useful to
+control coalescing parameters at the virtqueue granularity.
+
+Example command:
+$ ethtool -Q eth5 queue_mask 0x1 --coalesce tx-packets 10
+Would set max_packets=10 to VQ 1.
+$ ethtool -Q eth5 queue_mask 0x1 --coalesce rx-packets 10
+Would set max_packets=10 to VQ 0.
+$ ethtool -Q eth5 queue_mask 0x1 --show-coalesce
+ Queue: 0
+ Adaptive RX: off  TX: off
+ stats-block-usecs: 0
+ sample-interval: 0
+ pkt-rate-low: 0
+ pkt-rate-high: 0
+
+ rx-usecs: 222
+ rx-frames: 0
+ rx-usecs-irq: 0
+ rx-frames-irq: 256
+
+ tx-usecs: 222
+ tx-frames: 0
+ tx-usecs-irq: 0
+ tx-frames-irq: 256
+
+ rx-usecs-low: 0
+ rx-frame-low: 0
+ tx-usecs-low: 0
+ tx-frame-low: 0
+
+ rx-usecs-high: 0
+ rx-frame-high: 0
+ tx-usecs-high: 0
+ tx-frame-high: 0
+
+Gavin Li (4):
+  virtio_net: extract interrupt coalescing settings to a structure
+  virtio_net: extract get/set interrupt coalesce to a function
+  virtio_net: support per queue interrupt coalesce command
 ---
-  drivers/gpu/drm/radeon/rv770_smc.c | 36 ++++++++++--------------------
-  1 file changed, 12 insertions(+), 24 deletions(-)
+changelog:
+v1->v2
+- Addressed the comment from Xuan Zhuo
+- Allocate memory from heap instead of using stack memory for control vq
+	messages
+v2->v3
+- Addressed the comment from Heng Qi
+- Use control_buf for control vq messages
+---
+  virtio_net: enable per queue interrupt coalesce feature
 
-diff --git a/drivers/gpu/drm/radeon/rv770_smc.c 
-b/drivers/gpu/drm/radeon/rv770_smc.c
-index 45575c0d0a1d..09fa7f5e7c41 100644
---- a/drivers/gpu/drm/radeon/rv770_smc.c
-+++ b/drivers/gpu/drm/radeon/rv770_smc.c
-@@ -34,8 +34,7 @@
-  #define FIRST_SMC_INT_VECT_REG 0xFFD8
-  #define FIRST_INT_VECT_S19     0xFFC0
+ drivers/net/virtio_net.c        | 172 ++++++++++++++++++++++++++------
+ include/uapi/linux/virtio_net.h |  14 +++
+ 2 files changed, 157 insertions(+), 29 deletions(-)
 
--static const u8 rv770_smc_int_vectors[] =
--{
-+static const u8 rv770_smc_int_vectors[] = {
-  	0x08, 0x10, 0x08, 0x10,
-  	0x08, 0x10, 0x08, 0x10,
-  	0x08, 0x10, 0x08, 0x10,
-@@ -54,8 +53,7 @@ static const u8 rv770_smc_int_vectors[] =
-  	0x03, 0x51, 0x03, 0x51
-  };
+-- 
+2.39.1
 
--static const u8 rv730_smc_int_vectors[] =
--{
-+static const u8 rv730_smc_int_vectors[] = {
-  	0x08, 0x15, 0x08, 0x15,
-  	0x08, 0x15, 0x08, 0x15,
-  	0x08, 0x15, 0x08, 0x15,
-@@ -74,8 +72,7 @@ static const u8 rv730_smc_int_vectors[] =
-  	0x03, 0x56, 0x03, 0x56
-  };
-
--static const u8 rv710_smc_int_vectors[] =
--{
-+static const u8 rv710_smc_int_vectors[] = {
-  	0x08, 0x04, 0x08, 0x04,
-  	0x08, 0x04, 0x08, 0x04,
-  	0x08, 0x04, 0x08, 0x04,
-@@ -94,8 +91,7 @@ static const u8 rv710_smc_int_vectors[] =
-  	0x03, 0x51, 0x03, 0x51
-  };
-
--static const u8 rv740_smc_int_vectors[] =
--{
-+static const u8 rv740_smc_int_vectors[] = {
-  	0x08, 0x10, 0x08, 0x10,
-  	0x08, 0x10, 0x08, 0x10,
-  	0x08, 0x10, 0x08, 0x10,
-@@ -114,8 +110,7 @@ static const u8 rv740_smc_int_vectors[] =
-  	0x03, 0x51, 0x03, 0x51
-  };
-
--static const u8 cedar_smc_int_vectors[] =
--{
-+static const u8 cedar_smc_int_vectors[] = {
-  	0x0B, 0x05, 0x0B, 0x05,
-  	0x0B, 0x05, 0x0B, 0x05,
-  	0x0B, 0x05, 0x0B, 0x05,
-@@ -134,8 +129,7 @@ static const u8 cedar_smc_int_vectors[] =
-  	0x04, 0xF6, 0x04, 0xF6
-  };
-
--static const u8 redwood_smc_int_vectors[] =
--{
-+static const u8 redwood_smc_int_vectors[] = {
-  	0x0B, 0x05, 0x0B, 0x05,
-  	0x0B, 0x05, 0x0B, 0x05,
-  	0x0B, 0x05, 0x0B, 0x05,
-@@ -154,8 +148,7 @@ static const u8 redwood_smc_int_vectors[] =
-  	0x04, 0xF6, 0x04, 0xF6
-  };
-
--static const u8 juniper_smc_int_vectors[] =
--{
-+static const u8 juniper_smc_int_vectors[] = {
-  	0x0B, 0x05, 0x0B, 0x05,
-  	0x0B, 0x05, 0x0B, 0x05,
-  	0x0B, 0x05, 0x0B, 0x05,
-@@ -174,8 +167,7 @@ static const u8 juniper_smc_int_vectors[] =
-  	0x04, 0xF6, 0x04, 0xF6
-  };
-
--static const u8 cypress_smc_int_vectors[] =
--{
-+static const u8 cypress_smc_int_vectors[] = {
-  	0x0B, 0x05, 0x0B, 0x05,
-  	0x0B, 0x05, 0x0B, 0x05,
-  	0x0B, 0x05, 0x0B, 0x05,
-@@ -194,8 +186,7 @@ static const u8 cypress_smc_int_vectors[] =
-  	0x04, 0xF6, 0x04, 0xF6
-  };
-
--static const u8 barts_smc_int_vectors[] =
--{
-+static const u8 barts_smc_int_vectors[] = {
-  	0x0C, 0x14, 0x0C, 0x14,
-  	0x0C, 0x14, 0x0C, 0x14,
-  	0x0C, 0x14, 0x0C, 0x14,
-@@ -214,8 +205,7 @@ static const u8 barts_smc_int_vectors[] =
-  	0x05, 0x0A, 0x05, 0x0A
-  };
-
--static const u8 turks_smc_int_vectors[] =
--{
-+static const u8 turks_smc_int_vectors[] = {
-  	0x0C, 0x14, 0x0C, 0x14,
-  	0x0C, 0x14, 0x0C, 0x14,
-  	0x0C, 0x14, 0x0C, 0x14,
-@@ -234,8 +224,7 @@ static const u8 turks_smc_int_vectors[] =
-  	0x05, 0x0A, 0x05, 0x0A
-  };
-
--static const u8 caicos_smc_int_vectors[] =
--{
-+static const u8 caicos_smc_int_vectors[] = {
-  	0x0C, 0x14, 0x0C, 0x14,
-  	0x0C, 0x14, 0x0C, 0x14,
-  	0x0C, 0x14, 0x0C, 0x14,
-@@ -254,8 +243,7 @@ static const u8 caicos_smc_int_vectors[] =
-  	0x05, 0x0A, 0x05, 0x0A
-  };
-
--static const u8 cayman_smc_int_vectors[] =
--{
-+static const u8 cayman_smc_int_vectors[] = {
-  	0x12, 0x05, 0x12, 0x05,
-  	0x12, 0x05, 0x12, 0x05,
-  	0x12, 0x05, 0x12, 0x05,
