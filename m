@@ -2,94 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D72BD75EC25
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D1475EC2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbjGXHC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 03:02:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
+        id S229486AbjGXHGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 03:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjGXHC1 (ORCPT
+        with ESMTP id S229468AbjGXHGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 03:02:27 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA54D2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:02:23 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R8WLg290MzBRx4g
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:02:19 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1690182139; x=1692774140; bh=D+4P5p5qab67/2JnjNtYcP9Rkun
-        WsCExLiGCPkJOU9k=; b=jzyg4Ed4QSZ6URKfdmyUmjgSyc+iFU+jR8RBGOeUfSo
-        tJHjbKPHToRyMpccgA2nU98kEAsTgxrhfPaa988QNjx8IQFMO5y8kBl0yWdxwwYj
-        bLlkJOvx5ckGDo2XlTFqLZGeQ8t9QNpLDO7ewGngQfsvztd2VUwd9IN0JPzKJVP0
-        c/m6jrTVcgk6oG8QSxTHOq3dj37QmtWtDzq4BSVOkc2HbU6ZBQ8aPBcAgyWPp25c
-        1mlQXWMdNBLmjv+KKMhL0BGaGEJAKgegBMrtIn7oSdDuQWr8EMScBP8jXC2rsbhD
-        xU3Lt4LsoaXbicQIxt0c0KjFQBzwOftvp/TvJdRCrGA==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 5EYduOiadZQr for <linux-kernel@vger.kernel.org>;
-        Mon, 24 Jul 2023 15:02:19 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R8WLf5QW2zBRYmB;
-        Mon, 24 Jul 2023 15:02:18 +0800 (CST)
+        Mon, 24 Jul 2023 03:06:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B4C133;
+        Mon, 24 Jul 2023 00:06:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AFC9060F59;
+        Mon, 24 Jul 2023 07:06:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 862B9C433C8;
+        Mon, 24 Jul 2023 07:06:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690182372;
+        bh=bXFbzDGRsLJzol8Y088QZs2hbY4BTS9fB8XOAo5P7pM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=x/hXPZkjJNK3wZD1Xpmk/Yxs4AEAdaEAnvsfPYpCwjK9UjONk8HYYE1U1pOE3kPpK
+         /rfjnXJuxxQs2KwyTWJ4FMlsQ566oYZgaJb69pvEMdIcrtA1RzVcmRTBxhtJWyI8oh
+         9i612V0vaCWUKGzs3ifPh6Xt0C5LwexotGtYT1NY=
+Date:   Mon, 24 Jul 2023 09:06:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stanley =?utf-8?B?Q2hhbmdb5piM6IKy5b63XQ==?= 
+        <stanley_chang@realtek.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Roy Luo <royluo@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Flavio Suligoi <f.suligoi@asem.it>,
+        Ray Chi <raychi@google.com>,
+        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH v7 1/5] usb: phy: add usb phy notify port status API
+Message-ID: <2023072454-mosaic-ogle-9a27@gregkh>
+References: <20230707064725.25291-1-stanley_chang@realtek.com>
+ <2023072452-jasmine-palm-7b73@gregkh>
+ <47131beec8a24572873aa31e87cfaab6@realtek.com>
 MIME-Version: 1.0
-Date:   Mon, 24 Jul 2023 15:02:18 +0800
-From:   sunran001@208suo.com
-To:     airlied@gmail.com, daniel@ffwll.ch, alexander.deucher@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd/pm: add missing spaces before '('
-In-Reply-To: <20230724070049.8540-1-xujianghui@cdjrlc.com>
-References: <20230724070049.8540-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <7ad78e88ddb94a0811947b48b04dfb2c@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <47131beec8a24572873aa31e87cfaab6@realtek.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: space required before the open parenthesis '('
+On Mon, Jul 24, 2023 at 06:49:50AM +0000, Stanley Chang[昌育德] wrote:
+> 
+> > 
+> > On Fri, Jul 07, 2023 at 02:47:00PM +0800, Stanley Chang wrote:
+> > > In Realtek SoC, the parameter of usb phy is designed to can dynamic
+> > > tuning base on port status. Therefore, add a notify callback of phy
+> > > driver when usb port status change.
+> > >
+> > > The Realtek phy driver is designed to dynamically adjust disconnection
+> > > level and calibrate phy parameters. When the device connected bit
+> > > changes and when the disconnected bit changes, do port status change
+> > notification:
+> > >
+> > > Check if portstatus is USB_PORT_STAT_CONNECTION and portchange is
+> > > USB_PORT_STAT_C_CONNECTION.
+> > > 1. The device is connected, the driver lowers the disconnection level and
+> > >    calibrates the phy parameters.
+> > > 2. The device disconnects, the driver increases the disconnect level and
+> > >    calibrates the phy parameters.
+> > >
+> > > When controller to notify connect that device is already ready. If we
+> > > adjust the disconnection level in notify_connect, the disconnect may
+> > > have been triggered at this stage. So we need to change that as early
+> > > as possible. Therefore, we add an api to notify phy the port status changes.
+> > 
+> > How do you know that the disconnect will not have already been triggered at
+> > this point, when the status changes?
+> 
+> The status change of connection is before port reset.
+> In this stage, the device is not port enable, and it will not trigger disconnection.
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c | 6 +++---
-  1 file changed, 3 insertions(+), 3 deletions(-)
+Ok, then say that here please :)
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c 
-b/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
-index 8a8ba25c9ad7..a7569354229d 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
-@@ -262,15 +262,15 @@ static int renoir_get_profiling_clk_mask(struct 
-smu_context *smu,
-  			/* mclk levels are in reverse order */
-  			*mclk_mask = NUM_MEMCLK_DPM_LEVELS - 1;
-  	} else if (level == AMD_DPM_FORCED_LEVEL_PROFILE_PEAK) {
--		if(sclk_mask)
-+		if (sclk_mask)
-  			/* The sclk as gfxclk and has three level about max/min/current */
-  			*sclk_mask = 3 - 1;
+> > >
+> > > Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
+> > > ---
+> > > v6 to v7 change:
+> > >     No change
+> > > v5 to v6 change:
+> > >     No change
+> > > v4 to v5 change:
+> > >     No change
+> > > v3 to v4 change:
+> > >     Fix the warning for checkpatch with strict.
+> > > v2 to v3 change:
+> > >     Add more comments about the reason for adding this api
+> > > v1 to v2 change:
+> > >     No change
+> > > ---
+> > >  drivers/usb/core/hub.c  | 13 +++++++++++++  include/linux/usb/phy.h |
+> > > 13 +++++++++++++
+> > >  2 files changed, 26 insertions(+)
+> > >
+> > > diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c index
+> > > a739403a9e45..8433ff89dea6 100644
+> > > --- a/drivers/usb/core/hub.c
+> > > +++ b/drivers/usb/core/hub.c
+> > > @@ -614,6 +614,19 @@ static int hub_ext_port_status(struct usb_hub *hub,
+> > int port1, int type,
+> > >               ret = 0;
+> > >       }
+> > >       mutex_unlock(&hub->status_mutex);
+> > > +
+> > > +     if (!ret) {
+> > > +             struct usb_device *hdev = hub->hdev;
+> > > +
+> > > +             if (hdev && !hdev->parent) {
+> > 
+> > Why the check for no parent?  Please document that here in a comment.
+> 
+> I will add a comment :
+> /* Only notify roothub. That is, when hdev->parent is empty. */
 
--		if(mclk_mask)
-+		if (mclk_mask)
-  			/* mclk levels are in reverse order */
-  			*mclk_mask = 0;
+Also document this that this will only happen for root hub status
+changes, that's not obvious in the callback name or documentation or
+anywhere else here.
 
--		if(soc_mask)
-+		if (soc_mask)
-  			*soc_mask = NUM_SOCCLK_DPM_LEVELS - 1;
-  	}
+> > > +                     struct usb_hcd *hcd = bus_to_hcd(hdev->bus);
+> > > +
+> > > +                     if (hcd->usb_phy)
+> > > +
+> > usb_phy_notify_port_status(hcd->usb_phy,
+> > > +                                                        port1 -
+> > 1, *status, *change);
+> > > +             }
+> > > +     }
+> > > +
+> > 
+> > This is safe to notify with the hub mutex unlocked?  Again, a comment would
+> > be helpful to future people explaining why that is so.
+> > 
+> 
+> I will add a comment: 
+> /*                                                                      
+>  * There is no need to lock status_mutex here, because status_mutex     
+>  * protects hub->status, and the phy driver only checks the port        
+>  * status without changing the status.                                  
+>  */  
+
+Looks good, if you do it without the trailing whitespace :)
+
+thanks,
+
+greg k-h
