@@ -2,80 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5A975FEA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 19:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C750575FEAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 20:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbjGXR7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 13:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55784 "EHLO
+        id S229999AbjGXSAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 14:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbjGXR7I (ORCPT
+        with ESMTP id S229747AbjGXSA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 13:59:08 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A2D1BE8;
-        Mon, 24 Jul 2023 10:58:41 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36OHwV0m029686;
-        Mon, 24 Jul 2023 12:58:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690221511;
-        bh=QNtGpwtkUx8jhQ4t9YZRGDbpO50+R+pfQ0fdzsAIIYs=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=cWoSkinfZ1tM8w4Ubq6lsiwumpead/M917SxZzZr1cQswljnGithQDv2FcGnK6mv6
-         nhXTtJ7t+b9Wb42aUH/+yVEAZjvV+dXHgfDnoppIjcQ54XDDDzZjeq7i0Whla5Png0
-         lMZ+bqm2sUdqZOLPnheSLfztopPEuTrtJlMlfL+E=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36OHwV3L013900
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Jul 2023 12:58:31 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 24
- Jul 2023 12:58:31 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 24 Jul 2023 12:58:30 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36OHwUYL128228;
-        Mon, 24 Jul 2023 12:58:30 -0500
-Date:   Mon, 24 Jul 2023 12:58:30 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Siddharth Vadapalli <s-vadapalli@ti.com>
-CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <afd@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-j721e: Add overlay to enable
- CPSW9G ports with GESI
-Message-ID: <20230724175830.mdly3o44xvqlzvf3@agreeable>
-References: <20230710075551.1109024-1-s-vadapalli@ti.com>
+        Mon, 24 Jul 2023 14:00:26 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86590172D;
+        Mon, 24 Jul 2023 11:00:25 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b72161c6e9so71276461fa.0;
+        Mon, 24 Jul 2023 11:00:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690221624; x=1690826424;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KKpNqY8f0mYa5U7e/O0Zjuwp+qRiTKpk1WGgmDNW+UA=;
+        b=FbvwyX+AsInXMX78Myxy7I9+awMLOiQcB/aIRdDKHB9IxVBEg5p4aQTqtWhvcdzmGC
+         gXuEePJrW9qJYWN2iqHS/bM8pm0aOQNRmXoodpJH3ZzBmy7Ulp4agyjRXtE08EDcZFu0
+         CEe3zGmNRTnLu9IMtDrJO2EIyO0W3v5PiBZB0I6XIwAhtoegGRf53vnjzXEM9VxpDpWg
+         UR9Qw7n4eDCPAo25RkrP0X5oWad3qMwXFocs41TsLg2HRV7zQPEehY6Tm/9ZCbUF9TCm
+         FOlh2I0gfiOYfSPtO8xkcsvmFrltHWVlfPeHfS4T9zJYDgPWGMuTvDAhE4ndd6ifITj3
+         iDNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690221624; x=1690826424;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KKpNqY8f0mYa5U7e/O0Zjuwp+qRiTKpk1WGgmDNW+UA=;
+        b=Y/mK3ynXEpSIWcy2Pf7WF/oahX3OGk6mj5+Tg0ICED1JIzSQzYN/f2FEFFiR3FLM1C
+         yN0eie9WKx09GyNTCsG/LFbLe+ko6qkVMAxLBXz1qX+EHW6+X7ozDj5Ws7clyohveOaq
+         up02gOnFWOAoS+oJ7LW0g3t+pkXEKdC5JR9uOQg93sp2I7TvMwcPJxb+rO+AEe8wPLpV
+         MSnfiPt380/e8NGdY7UwdSWPQSF1son2v3SJ+aIMhzskAfpXprYC+qWxW5hu594eEjoE
+         XcKQb9Xxxt4EV4RV2qP09ORzJ3Ce0LrGBPnJVSUsgkBdReYXUC4CAX9ztiPBiYFNeiBA
+         QfnA==
+X-Gm-Message-State: ABy/qLZ8bMPgDBoxjwdCkL3bBEDtT+Wbr9Va47TA0w38dzgrWp+BvRKh
+        FKblwJkqx9lFf3uLjO4WlKtpwIUSjgUfvFEu+wfy/CYbKOg=
+X-Google-Smtp-Source: APBJJlGG8Y8e6dULSlz63EvXQGy4YB1ETqEmsIT8QVfD3RSr2wLtndkuG+l5yepNg2/InFB0JX9CpteBKIcDVBvar00=
+X-Received: by 2002:a2e:b54a:0:b0:2b8:3974:60fb with SMTP id
+ a10-20020a2eb54a000000b002b8397460fbmr5269655ljn.3.1690221623453; Mon, 24 Jul
+ 2023 11:00:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230710075551.1109024-1-s-vadapalli@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230722074753.568696-1-arnd@kernel.org> <CALOAHbCV2v3X7g1TD42yve0juhRD2vhq=DMtDz9P6+mX8Dae_w@mail.gmail.com>
+ <CAADnVQKGe8DN+Zs387UVwpij3ROGqNEnc5r940h5ueqQYHTYCA@mail.gmail.com> <fa5e9098-d6f9-48a2-bb77-2620b6bb6556@app.fastmail.com>
+In-Reply-To: <fa5e9098-d6f9-48a2-bb77-2620b6bb6556@app.fastmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 24 Jul 2023 11:00:11 -0700
+Message-ID: <CAADnVQ+p4wpd=tKJAiwB34O1y5vv4mibtkt9D-F7sG=rQapcew@mail.gmail.com>
+Subject: Re: [PATCH] bpf: force inc_active()/dec_active() to be inline functions
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Hou Tao <houtao1@huawei.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13:25-20230710, Siddharth Vadapalli wrote:
-[...]
+On Sun, Jul 23, 2023 at 11:32=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrot=
+e:
+>
+> >> If so, why can't we improve the compiler ?
+> >
+> > Agree.
+> > Sounds like a compiler bug.
+>
+> I don't know what you might want to change in the compiler
+> to avoid this. Compilers are free to decide which functions to
+> inline in the absence of noinline or always_inline flags.
 
-> +	rgmii4_pins_default: rgmii4-pins-default {
+Clearly a compiler bug.
+Compilers should not produce false positive warnings regardless
+how inlining went and optimizations performed.
 
-Could you make sure that the node names matches up with the json-schema
-conversion:
-https://lore.kernel.org/all/169021456020.3622493.10284534202541859578.robh@kernel.org/
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
+> One difference between gcc and clang is that gcc tries to
+> be smart about warnings by using information from inlining
+> to produce better warnings, while clang never uses information
+> across function boundaries for generated warnings, so it won't
+> find this one, but also would ignore an unconditional use
+> of the uninitialized variable.
+>
+> >> If we have to change the kernel, what about the change below?
+> >
+> > To workaround the compiler bug we can simply init flag=3D0 to silence
+> > the warn, but even that is silly. Passing flag=3D0 into irqrestore is b=
+uggy.
+>
+> Maybe inc_active() could return the flags instead of modifying
+> the stack variable? that would also result in slightly better
+> code when it's not inlined.
+
+Which gcc are we talking about here that is so buggy?
