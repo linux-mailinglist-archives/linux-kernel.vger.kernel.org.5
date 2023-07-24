@@ -2,124 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA8D75F9EA
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB8575F9EB
 	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjGXOby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54770 "EHLO
+        id S231330AbjGXOb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbjGXObv (ORCPT
+        with ESMTP id S230223AbjGXOb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:31:51 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51686A4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 07:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690209110; x=1721745110;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=+5gG+0+scvDqbfX5/L0lqS4BwovP5AcRlSaFF9Lgp1c=;
-  b=fchlWQPx2n/WHU9ps3TAMGDgiDhxgrdns4ok+8ShBg9gnGLW9nzZj1lt
-   /38vPeUk1pKOsyTR0RJaDne6UGl/hEwdwX/qRsiQEv/iBELVox46SQFsD
-   tkW+KObP/RcU38Br3cIrHOY5g08ANyVOUa0geWfuFInTk6fVvfQWxxIm6
-   1zhQIT30z/3H4yhZpz7PnxdblTCPYw3BAJ85zVbHitQM0jtcpGKGcm0Wk
-   LsJrQA8J7htvyQb8ApoKKZ1n2/vqbH9WFAGV6oSkwYqRfZ2V0+TSzUG46
-   0y0ofH+C1bWy1Nuf4hSyrbkpajMIbAJc1gjz9ajXiA7EigBY36ES3Z4Wp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="398362893"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="398362893"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 07:31:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="790986713"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="790986713"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Jul 2023 07:31:24 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 08F591A6; Mon, 24 Jul 2023 17:31:32 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Herve Codina <herve.codina@bootlin.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Yang Guang <yang.guang5@zte.com.cn>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2 1/1] Revert "um: Use swap() to make code cleaner"
-Date:   Mon, 24 Jul 2023 17:31:31 +0300
-Message-Id: <20230724143131.30090-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Mon, 24 Jul 2023 10:31:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CDDA4;
+        Mon, 24 Jul 2023 07:31:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CBDE6611AB;
+        Mon, 24 Jul 2023 14:31:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E419C433C8;
+        Mon, 24 Jul 2023 14:31:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690209114;
+        bh=dksxXLhwSPe4BRdGB7wqMekFr7I5vTyPJlU/kSDu0ZE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BuB5PeayfbKDQdYIOdkQ+l8yPS/3V7cliz69ztIy4uV4GUk12s1+he55o+Mgv7pT3
+         OiRCD6Xuqz+tg7z9bS9F3z4v4a+2uX/oIgIu9W7GkumIWtHQLJM+bf2+f+FJuaymGA
+         anIUtwF7K+UVaA2vlV8QnYF4cdypZQx13x7fpxc1HBuZNuXPHkF8bP+kacyo/Sy5A2
+         Gl/4ceGLKE7PBQ1rORZ7ELXUj+FapLowpiV86RFZ+hvmQxudrMK5r99Dk98Pajx311
+         ivFYuuCqmxzJ+Z6kWT8bM7ES0pkT8HAXkpwnIP4n9BzXOqb/TLQO4gME6jonIVn9dY
+         xDQTtIc7f7UIQ==
+Received: (nullmailer pid 3432565 invoked by uid 1000);
+        Mon, 24 Jul 2023 14:31:52 -0000
+Date:   Mon, 24 Jul 2023 08:31:52 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Luca Ceresoli <luca.ceresoli@bootlin.com>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Subject: Re: [PATCH 2/3] dt-bindings: display: panel: Add panels based on
+ ILITEK ILI9806E
+Message-ID: <20230724143152.GA3430423-robh@kernel.org>
+References: <20230719152147.355486-1-luca.ceresoli@bootlin.com>
+ <20230719152147.355486-2-luca.ceresoli@bootlin.com>
+ <20230719190254.GA578754-robh@kernel.org>
+ <20230720155238.6fb8ac8c@booty>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720155238.6fb8ac8c@booty>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 9b0da3f22307af693be80f5d3a89dc4c7f360a85.
+On Thu, Jul 20, 2023 at 03:52:38PM +0200, Luca Ceresoli wrote:
+> Hello Rob,
+> 
+> thanks for reviewing.
+> 
+> On Wed, 19 Jul 2023 13:02:54 -0600
+> Rob Herring <robh@kernel.org> wrote:
+> 
+> > On Wed, Jul 19, 2023 at 05:21:46PM +0200, Luca Ceresoli wrote:
+> > > Add bindings for LCD panels based on the ILITEK ILI9806E RGB controller
+> > > connected over SPI and the "ShenZhen New Display Co NDS040480800-V3"
+> > > 480x800 panel based on it.
+> > > 
+> > > Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> > > ---
+> > >  .../display/panel/ilitek,ili9806e.yaml        | 69 +++++++++++++++++++
+> > >  MAINTAINERS                                   |  6 ++
+> > >  2 files changed, 75 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml
+> > > new file mode 100644
+> > > index 000000000000..42abc6923065
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml
+> > > @@ -0,0 +1,69 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/display/panel/ilitek,ili9806e.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Ilitek ILI9806E display panels
+> > > +
+> > > +maintainers:
+> > > +  - Luca Ceresoli <luca.ceresoli@bootlin.com>
+> > > +
+> > > +description:
+> > > +  This binding is for display panels using an Ilitek ILI9806E controller in
+> > > +  SPI mode.
+> > > +
+> > > +allOf:
+> > > +  - $ref: panel-common.yaml#  
+> > 
+> > A SPI device should reference spi-peripheral-props.yaml as well.
+> > 
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    items:
+> > > +      - enum:
+> > > +          # ShenZhen New Display Co 3.97" 480x800 RGB a-SI TFT LCD
+> > > +          - newdisplay,nds040480800-v3
+> > > +      - const: ilitek,ili9806e
+> > > +
+> > > +  reg: true  
+> > 
+> > maxItems: 1
+> > 
+> > > +  spi-max-frequency: true
+> > > +  reset-gpios: true
+> > > +  backlight: true
+> > > +  port: true  
+> > 
+> > Drop all these and ...
+> > 
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - port
+> > > +
+> > > +additionalProperties: false  
+> > 
+> > ... use "unevaluatedProperties" instead.
+> > 
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    #include <dt-bindings/gpio/gpio.h>
+> > > +
+> > > +    backlight: backlight {
+> > > +        compatible = "gpio-backlight";
+> > > +        gpios = <&gpio 22 GPIO_ACTIVE_HIGH>;
+> > > +    };  
+> > 
+> > The exact backlight is outside the scope of this binding and should be 
+> > dropped from the example.
+> 
+> As this comes from copy-pasting from the bindings yaml for another
+> panel, would it be useful if I send a patch to remove it?
 
-The sigio.c is clearly user space code which is handled by
-arch/um/scripts/Makefile.rules (see USER_OBJS rule).
+Yes.
 
-The above mentioned commit simply broke this agreement,
-we may not use Linux kernel internal headers in them without
-thorough thinking.
-
-Hence, revert the wrong commit.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202307212304.cH79zJp1-lkp@intel.com/
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: fixed typo (h --> c), added Reported-by tag
- arch/um/os-Linux/sigio.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
-index 37d60e72cf26..9e71794839e8 100644
---- a/arch/um/os-Linux/sigio.c
-+++ b/arch/um/os-Linux/sigio.c
-@@ -3,7 +3,6 @@
-  * Copyright (C) 2002 - 2008 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  */
- 
--#include <linux/minmax.h>
- #include <unistd.h>
- #include <errno.h>
- #include <fcntl.h>
-@@ -51,7 +50,7 @@ static struct pollfds all_sigio_fds;
- 
- static int write_sigio_thread(void *unused)
- {
--	struct pollfds *fds;
-+	struct pollfds *fds, tmp;
- 	struct pollfd *p;
- 	int i, n, respond_fd;
- 	char c;
-@@ -78,7 +77,9 @@ static int write_sigio_thread(void *unused)
- 					       "write_sigio_thread : "
- 					       "read on socket failed, "
- 					       "err = %d\n", errno);
--				swap(current_poll, next_poll);
-+				tmp = current_poll;
-+				current_poll = next_poll;
-+				next_poll = tmp;
- 				respond_fd = sigio_private[1];
- 			}
- 			else {
--- 
-2.40.0.1.gaa8946217a0b
-
+Rob
