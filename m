@@ -2,63 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C3775F6DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B6E75F6FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbjGXMtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
+        id S231334AbjGXMvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231207AbjGXMsU (ORCPT
+        with ESMTP id S231197AbjGXMuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:48:20 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EE2531FF2;
-        Mon, 24 Jul 2023 05:47:50 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8AxDOv1cr5k_zUJAA--.17747S3;
-        Mon, 24 Jul 2023 20:47:49 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxLCP0cr5kczY5AA--.5514S3;
-        Mon, 24 Jul 2023 20:47:48 +0800 (CST)
-Message-ID: <4cb6fd14-4661-4285-ac5f-c8f6ea1f4208@loongson.cn>
-Date:   Mon, 24 Jul 2023 20:47:48 +0800
+        Mon, 24 Jul 2023 08:50:24 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FD53C01
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:48:53 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fdd7d09576so6406996e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:48:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690202931; x=1690807731;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p5p01CBEk6N5LoiGI1thkandCTta/KHBrFssvPX1Gq0=;
+        b=WDxa0a/fst+1y6KdlyNMlQsclolO6LHpAjcIgEfDIMI2U5gTxt+0rWfYnVTxuHbhKg
+         KKcNje4YteovEtUVCRY/LTsLvmN8ZK1ptpbVO7PZ3J0k7gUJr6/kAUoxIx22IOmLq6Qo
+         zwuc8bZzQzurzyPJTr3H/25zVesjy2z32PO30BRVUqRIdWhyc83Imnqpc4GnzkYz08e5
+         CDQoW2CqvwvoncCNhwZKXT4eD6OO8D2CerNoZsj4yzQ57w9gIEzG8rcrPNyW6+Ekr9Hs
+         281cEZ2TVCxCYd61Gx3+H/P7EctmCYrtPOoXQSxNZq+9sl0T5Q/bvT6cw9Mw2zEfSvje
+         Fpew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690202931; x=1690807731;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p5p01CBEk6N5LoiGI1thkandCTta/KHBrFssvPX1Gq0=;
+        b=he6Xx50sTbxej0Isgk8lj418+AGAkiRYgiYqgbUT/DChvGe24siGtbbLUkOPg4BoMA
+         rRjdLeAK9RX7pQmkEoZya8flvTXK77oJPzIijRa8v3LmoGAllE9jvbMPb0DAqLM63NKB
+         qj4XmAFeriFKH1918VjMJO+HM9ZXEemDk4Y9EB1nDQrUuilCj1t5eZa8IwYX9YtSrYCE
+         xXCGLEgnH8qceTVBKZG1Iz7YyUyVKgyeuRV8tJ+2rUYq9vJHzIDlmIIXpGYGETRpNU8d
+         ijani+8MA3qdb6DqwSiZZggIGVcxZLuXrFOXrGQM7DMhS9MqQLBmpKeIfNvECWTN370E
+         2CJA==
+X-Gm-Message-State: ABy/qLYCkeAXeHBxhiKtmU/45DGdI/v1O4F66cszpvNEUJy0lEGdTnOT
+        +Qu3RnzfsM6Ld19TA5TIgfnUM2z69JaoAa12YTBDzQ==
+X-Google-Smtp-Source: APBJJlFoJMa2q5/Q2cvqJyq/LmF9oRE6175R03JSV3Bgf8jJ+/jAnfQRbBmpDqKJFw0RvEIBtw60Cw==
+X-Received: by 2002:a05:6512:3087:b0:4f9:5781:8628 with SMTP id z7-20020a056512308700b004f957818628mr5937650lfd.24.1690202931166;
+        Mon, 24 Jul 2023 05:48:51 -0700 (PDT)
+Received: from [192.168.1.101] (abxj221.neoplus.adsl.tpnet.pl. [83.9.3.221])
+        by smtp.gmail.com with ESMTPSA id q19-20020ac246f3000000b004fb7cd9651bsm2192458lfo.98.2023.07.24.05.48.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 05:48:50 -0700 (PDT)
+Message-ID: <dfddee27-9f7c-e5e5-8794-45f01c4b64af@linaro.org>
+Date:   Mon, 24 Jul 2023 14:48:49 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 0/9] PCI/VGA: Improve the default VGA device selection
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 5/6] soc: qcom: llcc: Updating the macro name
 Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     David Airlie <airlied@gmail.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-pci@vger.kernel.org
-References: <20230719193241.GA510805@bhelgaas>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <20230719193241.GA510805@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxLCP0cr5kczY5AA--.5514S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Cw4UGrWxCFWrXF1ftFyUXFc_yoW8Xr4Upr
-        1rXF4UKry8Jr18Jr1DJr1UJryDJF47J34UJr1UGF1UJr1UJryjq348Xr1jgr47Jr4kXr4U
-        Xr4UJF1UZF1jywbCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
-        67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
-        AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
-        F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GF
-        ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
-        xVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
-        4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxU
-        2ID7UUUUU
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+To:     Komal Bajaj <quic_kbajaj@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        srinivas.kandagatla@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230724084155.8682-1-quic_kbajaj@quicinc.com>
+ <20230724084155.8682-6-quic_kbajaj@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230724084155.8682-6-quic_kbajaj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,42 +113,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 24.07.2023 10:41, Komal Bajaj wrote:
+> Updating macro name for LLCC_DRE to LLCC_ECC as per
+> the latest specification.
+> 
+> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+> ---
+Nit: "updating" -> "update", as the action is complete.
 
+On top of that, please wrap your commit messages at +/- 72 characters,
+not 50.
 
-On 2023/7/20 03:32, Bjorn Helgaas wrote:
-> "drm/loongson: Add an implement for ..." also solves a problem, but it
-> lacks a commit log, so I don't know what the problem is.
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-
-I have already telling you one yeas ago.
-
-I want remove the pci_fixup_vgadev() function in arch/loongarch/pci/pci.c
-
-I was the original author of this workaround at our downstream kernel.
-
-While the time is not mature until this patch set be merged.
-
-I don't want mention this, as you asked this question.
-
-So, I think I have to explain.
-
-
--static void pci_fixup_vgadev(struct pci_dev *pdev)
--{
--       struct pci_dev *devp = NULL;
--
--       while ((devp = pci_get_class(PCI_CLASS_DISPLAY_VGA << 8, devp))) {
--               if (devp->vendor != PCI_VENDOR_ID_LOONGSON) {
--                       vga_set_default_device(devp);
--                       dev_info(&pdev->dev,
--                               "Overriding boot device as %X:%X\n",
--                               devp->vendor, devp->device);
--               }
--       }
--}
--DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_LOONGSON, 
-PCI_DEVICE_ID_LOONGSON_DC1, pci_fixup_vgadev);
--DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_LOONGSON, 
-PCI_DEVICE_ID_LOONGSON_DC2, pci_fixup_vgadev);
-
+Konrad
+>  drivers/soc/qcom/llcc-qcom.c       | 2 +-
+>  include/linux/soc/qcom/llcc-qcom.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
+> index 1d2b08dfecea..228ffb4a8971 100644
+> --- a/drivers/soc/qcom/llcc-qcom.c
+> +++ b/drivers/soc/qcom/llcc-qcom.c
+> @@ -193,7 +193,7 @@ static const struct llcc_slice_config sc8280xp_data[] = {
+>  	{ LLCC_MMUHWT,   13, 1024, 1, 1, 0xfff, 0x0, 0, 0, 0, 0, 1, 0 },
+>  	{ LLCC_DISP,     16, 6144, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0 },
+>  	{ LLCC_AUDHW,    22, 2048, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0 },
+> -	{ LLCC_DRE,      26, 1024, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0 },
+> +	{ LLCC_ECC,      26, 1024, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0 },
+>  	{ LLCC_CVP,      28, 512,  3, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0 },
+>  	{ LLCC_APTCM,    30, 1024, 3, 1, 0x0,   0x1, 1, 0, 0, 1, 0, 0 },
+>  	{ LLCC_WRCACHE,  31, 1024, 1, 1, 0xfff, 0x0, 0, 0, 0, 0, 1, 0 },
+> diff --git a/include/linux/soc/qcom/llcc-qcom.h b/include/linux/soc/qcom/llcc-qcom.h
+> index 93417ba1ead4..1a886666bbb6 100644
+> --- a/include/linux/soc/qcom/llcc-qcom.h
+> +++ b/include/linux/soc/qcom/llcc-qcom.h
+> @@ -30,7 +30,7 @@
+>  #define LLCC_NPU         23
+>  #define LLCC_WLHW        24
+>  #define LLCC_PIMEM       25
+> -#define LLCC_DRE         26
+> +#define LLCC_ECC         26
+>  #define LLCC_CVP         28
+>  #define LLCC_MODPE       29
+>  #define LLCC_APTCM       30
