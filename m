@@ -2,44 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0391975EAAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 06:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D2875EAAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 07:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229593AbjGXExd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 00:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55308 "EHLO
+        id S229650AbjGXFHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 01:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjGXExa (ORCPT
+        with ESMTP id S229456AbjGXFHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 00:53:30 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B02411BF;
-        Sun, 23 Jul 2023 21:53:29 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 261B8809F;
-        Mon, 24 Jul 2023 04:53:29 +0000 (UTC)
-Date:   Mon, 24 Jul 2023 07:53:27 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Update TTY layer for lists and recently
- added files
-Message-ID: <20230724045327.GV5194@atomide.com>
-References: <20230721072334.59272-1-tony@atomide.com>
- <ZLpboaXKVOOjeGJ+@smile.fi.intel.com>
+        Mon, 24 Jul 2023 01:07:04 -0400
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5CBE40;
+        Sun, 23 Jul 2023 22:07:02 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=yuhaixin.yhx@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0Vo0jtO7_1690175215;
+Received: from B-Q60VQ05P-2326.local(mailfrom:yuhaixin.yhx@linux.alibaba.com fp:SMTPD_---0Vo0jtO7_1690175215)
+          by smtp.aliyun-inc.com;
+          Mon, 24 Jul 2023 13:06:58 +0800
+Date:   Mon, 24 Jul 2023 13:06:54 +0800
+From:   Haixin Yu <yuhaixin.yhx@linux.alibaba.com>
+To:     John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf arm64: Fix read PMU cpu slots
+Message-ID: <ZL4G7rWXkfv-Ectq@B-Q60VQ05P-2326.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZLpboaXKVOOjeGJ+@smile.fi.intel.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,17 +52,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Andy Shevchenko <andriy.shevchenko@intel.com> [230721 10:19]:
-> On Fri, Jul 21, 2023 at 10:23:32AM +0300, Tony Lindgren wrote:
-> > Add mailing lists for linux-serial and lkml for the TTY layer. And let's
-> > list the recently added files. This makes it easier for get_maintainer.pl
-> > to include linux-serial for patches.
-> 
-> Shouldn't serial_* stuff go to the "SERIAL DRIVERS" section?
+Commit f8ad6018ce3c ("perf pmu: Remove duplication around
+ EVENT_SOURCE_DEVICE_PATH") uses sysfs__read_ull to read a full
+sysfs path, which will never success. Fix it by read file directly.
 
-Not sure if there's some reason we have "TTY LAYER" with serial_core
-files. If not, yeah let's move the serial files.
+Signed-off-by: Haixin Yu <yuhaixin.yhx@linux.alibaba.com>
+---
+ tools/perf/arch/arm64/util/pmu.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Regards,
+diff --git a/tools/perf/arch/arm64/util/pmu.c b/tools/perf/arch/arm64/util/pmu.c
+index 561de0cb6b95..512a8f13c4de 100644
+--- a/tools/perf/arch/arm64/util/pmu.c
++++ b/tools/perf/arch/arm64/util/pmu.c
+@@ -54,10 +54,11 @@ double perf_pmu__cpu_slots_per_cycle(void)
+ 		perf_pmu__pathname_scnprintf(path, sizeof(path),
+ 					     pmu->name, "caps/slots");
+ 		/*
+-		 * The value of slots is not greater than 32 bits, but sysfs__read_int
+-		 * can't read value with 0x prefix, so use sysfs__read_ull instead.
++		 * The value of slots is not greater than 32 bits, but
++		 * filename__read_int can't read value with 0x prefix,
++		 * so use filename__read_ull instead.
+ 		 */
+-		sysfs__read_ull(path, &slots);
++		filename__read_ull(path, &slots);
+ 	}
+ 
+ 	return slots ? (double)slots : NAN;
+-- 
+2.34.1
 
-Tony
