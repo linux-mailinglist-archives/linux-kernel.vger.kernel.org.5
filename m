@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A96875EDB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A2B75EDBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbjGXIey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33566 "EHLO
+        id S231641AbjGXIfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbjGXIet (ORCPT
+        with ESMTP id S231204AbjGXIfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:34:49 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E022A0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:34:48 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R8YPH66RXzBRx55
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 16:34:43 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1690187683; x=1692779684; bh=xivezc9+8JHiL00mjjAuXmu9/dh
-        6CnD4VSummcQwwCI=; b=oWaxq45Ozhy0XRIkwsph6ljsedBLPbXkY+NRRSkVFKn
-        pGajiMAgayA4DV00tcw6V5clYeTsa3Ykd6DTbajnm1UDDxRRABwdk0D2ScUnVas5
-        y5iFjuQcf0Xt3SUBardnqmDWZLfgpWg2EGGpmojPmBkeet8l1dJL7aoo6iY2tcr0
-        DJsE8ofwcGrSIs+DcrsfSJ40ktsvCR55NPFblEg2PCRvsd8CDzTS6RDWNpwNBxxd
-        RYOHO4qykFKSyEc/9Qo/inAvqSUvWBJ4/wuOSsysNznk9wkg/HDp/ZjAX5qugYcp
-        SisL4sERndhJxlskaCvk3DCO2mIa6FibhYW+6kx896A==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id o-lx48Ygr152 for <linux-kernel@vger.kernel.org>;
-        Mon, 24 Jul 2023 16:34:43 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R8YPH40vFzBR1P0;
-        Mon, 24 Jul 2023 16:34:43 +0800 (CST)
+        Mon, 24 Jul 2023 04:35:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CA7E74;
+        Mon, 24 Jul 2023 01:35:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 759B360FA1;
+        Mon, 24 Jul 2023 08:35:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21924C433C8;
+        Mon, 24 Jul 2023 08:35:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690187702;
+        bh=ne7tk1khFVWf1DrNJLr/0lBfX1iyufLPJA4BWhCI0Vk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pQ6+HgKz+Old8TWsdMEPMfR46/Pfclw6QcF5QLXXrtgFJ1n9Qe55q4GGtvL7jdlDY
+         yjdvSTMxe/B11PYvPI+xWRpvtBWR/PKFHcnJxvHI/TSGa/4rOvcfNXfSBSN4uf0nEh
+         qERnHsqM9r9XYcGqpvSlmquJrTg7wHWakxQqz7XsVhw1MgE2kAimibWFzipi8wMFn/
+         k0OSqInoXfdLxAboPkVx17ELO5GSZ+KotpQ95lbXxnbfCjJGaPepgv79zoGxnkQYdS
+         K1wbtml35ihiuXINizioUS0h9raob1VYdu5ZirUsry9SiGvYK7mXCkXwNbHCi2Lb1/
+         68p+JmQP+vdmw==
+Date:   Mon, 24 Jul 2023 10:34:58 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v2] ext4: fix the time handling macros when ext4 is using
+ small inodes
+Message-ID: <20230724-waldlauf-hermelin-58df07b2e2dd@brauner>
+References: <20230719-ctime-v2-1-869825696d6d@kernel.org>
+ <20230720144807.GC5764@mit.edu>
+ <f541027cca189c42550136aab27b89889cd2fdd3.camel@kernel.org>
 MIME-Version: 1.0
-Date:   Mon, 24 Jul 2023 16:34:43 +0800
-From:   sunran001@208suo.com
-To:     alexander.deucher@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd/pm: Clean up errors in
- smu11_driver_if_sienna_cichlid.h
-In-Reply-To: <20230724083344.9285-1-xujianghui@cdjrlc.com>
-References: <20230724083344.9285-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <8e6eda082855e1b928253669fbb49316@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f541027cca189c42550136aab27b89889cd2fdd3.camel@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
+On Thu, Jul 20, 2023 at 10:54:16AM -0400, Jeff Layton wrote:
+> On Thu, 2023-07-20 at 10:48 -0400, Theodore Ts'o wrote:
+> > On Wed, Jul 19, 2023 at 06:32:19AM -0400, Jeff Layton wrote:
+> > > If ext4 is using small on-disk inodes, then it may not be able to store
+> > > fine grained timestamps. It also can't store the i_crtime at all in that
+> > > case since that fully lives in the extended part of the inode.
+> > > 
+> > > 979492850abd got the EXT4_EINODE_{GET,SET}_XTIME macros wrong, and would
+> > > still store the tv_sec field of the i_crtime into the raw_inode, even
+> > > when they were small, corrupting adjacent memory.
+> > > 
+> > > This fixes those macros to skip setting anything in the raw_inode if the
+> > > tv_sec field doesn't fit, and to properly return a {0,0} timestamp when
+> > > the raw_inode doesn't support it.
+> > > 
+> > > Also, fix a bug in ctime handling during rename. It was updating the
+> > > renamed inode's ctime twice rather than the old directory.
+> > > 
+> > > Cc: Jan Kara <jack@suse.cz>
+> > > Fixes: 979492850abd ("ext4: convert to ctime accessor functions")
+> > > Reported-by: Hugh Dickins <hughd@google.com>
+> > > Tested-by: Hugh Dickins <hughd@google.com>
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > 
+> > Acked-by: Theodore Ts'o <tytso@mit.edu>
+> > 
+> > I assume this is will be applied to the vfs.ctime branch, yes?
+> > 
+> >   	      	      	 	    	- Ted
+> 
+> Yes. Ideally it'll be folded into the ext4 patch there.
 
-ERROR: trailing whitespace
-
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_1_pmfw.h | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_1_pmfw.h 
-b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_1_pmfw.h
-index c5e26d619bf0..8ec588248aac 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_1_pmfw.h
-+++ b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_1_pmfw.h
-@@ -30,7 +30,7 @@
-
-  #define ENABLE_DEBUG_FEATURES
-
--// Firmware features
-+// Firmware features
-  // Feature Control Defines
-  #define FEATURE_CCLK_DPM_BIT                 0
-  #define FEATURE_FAN_CONTROLLER_BIT           1
-@@ -92,7 +92,7 @@
-  #define FEATURE_ZSTATES_ECO_BIT             57
-  #define FEATURE_CC6_BIT                     58
-  #define FEATURE_DS_UMCCLK_BIT               59
--#define FEATURE_DS_HSPCLK_BIT               60
-+#define FEATURE_DS_HSPCLK_BIT               60
-  #define NUM_FEATURES                        61
-
-  typedef struct {
+Done now, thanks!
