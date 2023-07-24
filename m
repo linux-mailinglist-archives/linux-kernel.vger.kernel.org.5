@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E99D675EE89
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D52175EE8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbjGXI5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53774 "EHLO
+        id S232016AbjGXI5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjGXI5V (ORCPT
+        with ESMTP id S231976AbjGXI51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:57:21 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9142E10D7
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:57:08 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99454855de1so610270466b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:57:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690189027; x=1690793827;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=owG6OHIwikfnxyddtRAYGrs5TFXY1YqI1q2T1OmAufw=;
-        b=HkQCoTDd6APCNCBfEHGJeKiIM5LEFIe2lR7tQPRUotVV4SAkiw5N08guAqpX9fknNX
-         MILkXQKxAmkQp0y+WDxAa3nw70d9XaFOf/0mgyexOfeYI4MDfHuUFXtXf8hfHidEiu9v
-         VuZ/R446wIpQApn2xmE2BRhzKGCyZafm9qmOGHKlgc1xbiO81XxX4/XExlHgrgWcOy/w
-         apQq0Sfmc2mC+Sd6f6E+7hMWCwcNxurWvzMOEKOpr9x8Shxlon0kVTkxM87Kxtm05nhy
-         4S59SlUQ5CO2piu+X9w7pyMG4+TzJEzH0zubjwGd0NoBBlZY09NWjHfetCgfzC9WfNLV
-         RUWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690189027; x=1690793827;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=owG6OHIwikfnxyddtRAYGrs5TFXY1YqI1q2T1OmAufw=;
-        b=AIoj9zA5eNshDjPB9yIieUX2E47fP+1Cn+rQO8TJyYdBDgfHCzVc9wfqgByd2eCEen
-         DGQUVZvFg+t3RMsdT4KIQ2iUvf9dkHD3vajfwXdDSR0vs9TeFBXY/MhVF1oCx9p3LN9s
-         OV8dqREciELkigY4B4urnXeKWnD8sb5qTDJsjxGAG5YX3BNsut5eJI1tHw9Z5gH1vyQT
-         J0PZyVO9fYVneLTf314zTXDdOXO1ERfT6FN6aHWtb4pE+BjFzSIATV5FwYSet8X0hiAr
-         oKx4yCuaWfM2v85JwKi8AVUV09C0e6aKYBcuVj0352NstrNWfHSKyQqrkEWFvK2woX79
-         4miw==
-X-Gm-Message-State: ABy/qLZhIXqTnLLWuGBbEIalx2cj7Tz7GPOJTVsA6Eyn9Cesn22noBjO
-        /pTbllBcJyODyetRu22DF5BuQiDAxl2U+jzf6vHs6Q==
-X-Google-Smtp-Source: APBJJlEM3lq1JFdQgmAyuMscN6S6KogpTMrAJRbJpDsQAF+3oubQ6gVynSJ/RMaGXgp5plWWzolmWw==
-X-Received: by 2002:a17:907:7631:b0:993:e9b8:90f5 with SMTP id jy17-20020a170907763100b00993e9b890f5mr7994896ejc.8.1690189027087;
-        Mon, 24 Jul 2023 01:57:07 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id s6-20020a170906960600b0098cf565d98asm6363259ejx.22.2023.07.24.01.57.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 01:57:06 -0700 (PDT)
-Message-ID: <82d45863-d48a-1eab-a3e0-142f46d4863c@linaro.org>
-Date:   Mon, 24 Jul 2023 10:57:04 +0200
+        Mon, 24 Jul 2023 04:57:27 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0552E7
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:57:25 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R8YvR3P9tzBRx5P
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 16:57:23 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1690189043; x=1692781044; bh=xivezc9+8JHiL00mjjAuXmu9/dh
+        6CnD4VSummcQwwCI=; b=Ya+vjcJtXItCFpr45KLzkeaU+9IEOl4dqQIscZkT2BN
+        IOeCP3LYrQMCJKAIWx8oW5VBQ7v1lvsgK1fnQiGuWiBzGXKeQUqQciq4VVN6DYfi
+        56XEvCmQzECasKhXPbSl81WFItw0MDq5e3n3y12FlFxfqxDn7PrTqX4Kh8qnZJTz
+        I3xxYrU+lJzo6TpVfOaQhpMasLmbJ+EDJNYCpcSdfFM42wkSMCFUXZU95QUWWdbA
+        JZ76S4ZkA8+d/k3fJpTW9wAig3OHSwnVtbcQ9nUwbHmWy6OAYPt/vHmTkAZw9GKF
+        t+860evOWu8dTk5Ev3sXra3I8zmpD/OTM6UgcVskbLA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 4LAsxi-vdODt for <linux-kernel@vger.kernel.org>;
+        Mon, 24 Jul 2023 16:57:23 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R8YvR182NzBKnld;
+        Mon, 24 Jul 2023 16:57:23 +0800 (CST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V3 2/2] dt-bindings: arm: qcom,ids: drop the IPQ5019 SoC
- ID
-Content-Language: en-US
-To:     Kathiravan T <quic_kathirav@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     quic_saahtoma@quicinc.com
-References: <20230724083745.1015321-1-quic_kathirav@quicinc.com>
- <20230724083745.1015321-3-quic_kathirav@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230724083745.1015321-3-quic_kathirav@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 24 Jul 2023 16:57:23 +0800
+From:   sunran001@208suo.com
+To:     alexander.deucher@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amd/pm: Clean up errors in smu_v13_0_1_pmfw.h
+In-Reply-To: <20230724083344.9285-1-xujianghui@cdjrlc.com>
+References: <20230724083344.9285-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <7e638628f942fe7989fe2da3da537c28@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/2023 10:37, Kathiravan T wrote:
-> IPQ5019 SoC is never productized. So lets drop it.
-> 
-> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
-> ---
+Fix the following errors reported by checkpatch:
 
+ERROR: trailing whitespace
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_1_pmfw.h | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_1_pmfw.h 
+b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_1_pmfw.h
+index c5e26d619bf0..8ec588248aac 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_1_pmfw.h
++++ b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu_v13_0_1_pmfw.h
+@@ -30,7 +30,7 @@
 
+  #define ENABLE_DEBUG_FEATURES
+
+-// Firmware features
++// Firmware features
+  // Feature Control Defines
+  #define FEATURE_CCLK_DPM_BIT                 0
+  #define FEATURE_FAN_CONTROLLER_BIT           1
+@@ -92,7 +92,7 @@
+  #define FEATURE_ZSTATES_ECO_BIT             57
+  #define FEATURE_CC6_BIT                     58
+  #define FEATURE_DS_UMCCLK_BIT               59
+-#define FEATURE_DS_HSPCLK_BIT               60
++#define FEATURE_DS_HSPCLK_BIT               60
+  #define NUM_FEATURES                        61
+
+  typedef struct {
