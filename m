@@ -2,65 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F567600E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1455C7600EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbjGXVMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48162 "EHLO
+        id S230413AbjGXVPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbjGXVMp (ORCPT
+        with ESMTP id S229598AbjGXVPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:12:45 -0400
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D05C10D3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:12:44 -0700 (PDT)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6b9e5ee1565so9744445a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:12:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690233163; x=1690837963;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BPnHeXIwNFVyZ0AE0V37vyCdAnCc/H92GAheB3cJ/4w=;
-        b=azV9WWOFGVh5WG1SIw9A9t75YyZNWU9msN7Huy4Y7VK/Qubbah9FC1SCeYHLJqw73r
-         pZmEtqaRul8Xx1/cDETY91qYPRk/VIXbOd2zEeODQ/INP60p6oki6HwuDw+Lu8anxYqm
-         EWxS9TRqMKA6GjMsMOSmUGy/CZRINlvG3EIhc7fL5eUlITMdWbYLsAF12rbzFFOmpnyW
-         nk2DOC3ljNmfiPx+HwoFZr1kUTVuLlogf1KaLkMlvpPCcj8izqpMQyn0/g8EkZo7/B+U
-         fOQbrWX0Qg9OP9djpObHKAifSdI7xhm4qiYtNVMlKOyWd2xl6Q6x5EkCl8SzEfXdlXrK
-         sF1Q==
-X-Gm-Message-State: ABy/qLaceFXPu2GCCiGeGC8UQ/4PzJbnk05pKYsZ8i9dGRiilpXnE/Ld
-        BALf4/JWmswgdeCn2AvHzuCr7kLZBW4tQOOZerS+lAwSgIx2
-X-Google-Smtp-Source: APBJJlEZpLKV/q4LE1/Q6WrdC8aon0BK6TGJhCbOn7xtLIBXrY8K3tRXJk7fN+kSn3DROS/NbpXFthJZJvUNqcYGhZ07hm7fnWGG
-MIME-Version: 1.0
-X-Received: by 2002:a05:6830:1519:b0:6bb:2244:cb72 with SMTP id
- k25-20020a056830151900b006bb2244cb72mr7592465otp.2.1690233163775; Mon, 24 Jul
- 2023 14:12:43 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 14:12:43 -0700
-In-Reply-To: <19655.1690233158@warthog.procyon.org.uk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000050862c0601421343@google.com>
-Subject: Re: [syzbot] [block?] KASAN: slab-out-of-bounds Read in bio_split_rw
-From:   syzbot <syzbot+6f66f3e78821b0fff882@syzkaller.appspotmail.com>
-To:     dhowells@redhat.com
-Cc:     akpm@linux-foundation.org, axboe@kernel.dk, dhowells@redhat.com,
-        herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+        Mon, 24 Jul 2023 17:15:16 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE112139
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690233315; x=1721769315;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=B6id4GPlRwNQMBPfGUFjOIgWBk04MtAGDGnMFKfF4U8=;
+  b=ILABV0PgswBThC5LSVT4+KM1tGcfEddSNDuDb+Qpj7sa/z0ANi0LUCrB
+   OEucB7/mmiCOB1P6BUbIC1WOxXrFjJKz7EP4ogrr3E3Sedn/p9qYJAkv6
+   oYEjL2vIT0A1V/SgIrWCtS+fvUpOsdGvprjNw0MUrC1JMZiNb4v+U0V54
+   BFPuGbUZA98ULyzZ/4KpYE/knrCk6nIlBHClpaCEVaa/EvFO+j5HEnj1F
+   LrLLdbNEnWymv9ea7HR2xn1FjplCkL5n1NG/F34GpqiYTozHKy88dAIyc
+   D6z9O2cTrDrATP1ITHdBgCyqFluiuJV0a5ZmWrennTVdT4p9DsxdMuxVG
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="367579147"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="367579147"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 14:15:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="791111256"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="791111256"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Jul 2023 14:15:15 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 24 Jul 2023 14:15:14 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 24 Jul 2023 14:15:14 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 24 Jul 2023 14:15:14 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 24 Jul 2023 14:15:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UnTppDci07MNFg+G5Em+o1IaXQQhxk+7MwFJGZMMKSXL+4afw0lLiC7DIYyytu8zifzVjt6vXhC//2KHfDM8IGOGHDulxv6iYXfwB8PmW5Xde6N8N2x/RMlcMwdtmY0KSxEqS3APGhGT/0ZwitM/WSfTPraFh/4ejEkBUVAY30i9/jkPl7AGO+p9G4blHtoGobtZuU8cuIBcC4Zz9IZlIVW/t1mbfSEQEDnI5wSJ8LruC/R1T2uDHcaC0/Ub1y4UJw0ZrSXnp/m6oR9WXGlVcyBRboniX4M4ZC2vnPIuk3fsdKRzsH5XU8M7hsukjASbJ0LHIXkBhAaRSL3CkcqHXg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=F0ySB63ikAtIPbbSJkzGZy5qAk+y2IDV6KCkuJ8M//E=;
+ b=NHRh6q5oTS0e91yz971bj+UzWg9GeVuiT4fqGbg+Aatci322NF79/gKsvUxk7U2qBmBCFTR8S1KPrzSPK0/SLPR78en5638k5w6B6lgSHcMQsxNUq07NeuHWWyJf0dAdJg0YvsSe9XHhBwt0wny/Efe/tQH7JZ0WankzTZYgfPanRi/NQemnfRuTWxlVwVqy+7BwsqEAVwq3PY0w9GKfdg8sy3BpyK3p09LQQxmKZlntZTKX4063xwaVvR5Ep8LvTBO4JKFpUa89QonFIVTx3/8ZxGdf1CiNkeYv+0aQt00oyuoKyz0GDLFRz5qVKxAU+SaoJwUI7UsChluc0KsvEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5373.namprd11.prod.outlook.com (2603:10b6:5:394::7) by
+ MW5PR11MB5809.namprd11.prod.outlook.com (2603:10b6:303:197::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6609.32; Mon, 24 Jul 2023 21:15:12 +0000
+Received: from DM4PR11MB5373.namprd11.prod.outlook.com
+ ([fe80::1127:c109:d888:f6d1]) by DM4PR11MB5373.namprd11.prod.outlook.com
+ ([fe80::1127:c109:d888:f6d1%5]) with mapi id 15.20.6609.031; Mon, 24 Jul 2023
+ 21:15:10 +0000
+From:   =?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
+To:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <intel-gfx@lists.freedesktop.org>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Simon Ser <contact@emersion.fr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        James Zhu <James.Zhu@amd.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Emil Velikov <emil.l.velikov@gmail.com>,
+        =?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
+Subject: [PATCH v6 0/4] drm: Use full allocated minor range for DRM
+Date:   Mon, 24 Jul 2023 23:14:24 +0200
+Message-ID: <20230724211428.3831636-1-michal.winiarski@intel.com>
+X-Mailer: git-send-email 2.41.0
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BE1P281CA0323.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:87::8) To DM4PR11MB5373.namprd11.prod.outlook.com
+ (2603:10b6:5:394::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB5373:EE_|MW5PR11MB5809:EE_
+X-MS-Office365-Filtering-Correlation-Id: bff82bf3-b5dd-4a6b-3086-08db8c8b1048
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xlcYFWwlg6ZYRvSsQIvZiSoXFEAY3JYAQBvshUNsihQIjz675qM0hllqYTeWHI/rU8mjNwJt1hm6kms+W1QSv754g3h0s0mYDtighVbRn6lSpwaf6S9AizuiOv4Qn/u95AxJXdWPZOfLReF+jq0YZaDNFuRCulfWLthZ/0LiF6d/RBat4x7hsxFGI7/zoqcQEAHFxQJEdhW3TJSZrvXPXSbMoLEAxAMYnmo8dLnjcJccFiebnoB85OmSF1sleRAzAW9uN7DABRx5i7P2yx2BC4fcqqYFDziORM6u+gSXoSl7E24OUTh3sFg+6+JuFvnbJREN5sCJruHhGFv1Y9aZB4q1QqSDrKERYLLB/l25RCNlA4iRIGKNQaivdBlFGjXiKxKP+BYpNrGLn+jmpBP6QnA/4vwG4oyiw6cL2KOgERODcK/VTHJxv0u7FdFS5X8K7k+jlsGehVYB3srFZ7VrzLs5QRejtUX89fKT0aTDIv5ynr1sp2KmzH6BEwLiLSyaTOsArgRMQ8ddED59qbdZVTzg0LbCk+KXlc4nUFy+5MM9K/EBGoV7ENvm0uUG4esy
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(346002)(376002)(39860400002)(396003)(366004)(451199021)(83380400001)(38100700002)(36756003)(82960400001)(86362001)(54906003)(2906002)(186003)(6506007)(1076003)(26005)(6666004)(6512007)(6486002)(8936002)(5660300002)(8676002)(7416002)(478600001)(316002)(41300700001)(66476007)(66946007)(66556008)(4326008)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dEJPK0d5SU1scm90U2NCWk8rVnpBWWtZS0wxUForMW1taS9VdEp3SHl6Q3pq?=
+ =?utf-8?B?T2w2WVRpL1ZhWXh4RVpaRHV2M1JYQjRoQm9NTFJ0YWJEQ0JtUWVLUTBMcUJM?=
+ =?utf-8?B?UU5LZWQvUlFtNmJEL05YODR5YTJNdklNMXdjTnVMbGU4M3lncmlRckhqdjJH?=
+ =?utf-8?B?aWY0ZFoyTldVSEpGRE9jbjI4M1JoeTIvOER6MTB5RW9nOEc4REZMUk8zam1V?=
+ =?utf-8?B?WnplR3JzL2hhMllweEhlbWk5VnFibFNBUFJESmt5UzNZb0cxTHVxRFF2WVc1?=
+ =?utf-8?B?blRFWXpubDBCY3NWeEhQUmtlc3hScXpzRmhRNm9La01GZ05VcXFTdDU2VFJY?=
+ =?utf-8?B?QVZTM0owUmVOL1UrMEIyZS8vU04yMVV3ZnY1bFl1dzkxczZaZjZQTzRWUWIr?=
+ =?utf-8?B?aGVNbzI0RmNiaGsvUndQZXkwUlBSaGNOb005YlNGUEhvYmZha1dtYnU0ckpJ?=
+ =?utf-8?B?MCt5ZHdMMUVFL3JVMkRuN3Zyb3M2Rm5JZDFmYXluamtlT3ZCZ0tNMXZHRG9C?=
+ =?utf-8?B?c3dmbko3UE1EbFloR3Z6Sis0cUJBZmJnVE9vMjFXYmR0U0lZZnRvcWtlQXNQ?=
+ =?utf-8?B?VmNWbnBtdEtmQVhIblVKczR6dmR6TXJRek1YRUpjZkxETWh6U3JvQm5DS0Fs?=
+ =?utf-8?B?dVBkcGdYUzRXZGplaStzeEE5R3NqMXQvYzNGSy9ueElORGt3SWpSd2tNYjNV?=
+ =?utf-8?B?azdXaENTcjlmK3FnN2swVytQTlZIeEFnNVludzBiSnpyYVFUdk9yL2tUL1ls?=
+ =?utf-8?B?bDBIRjJmQTVoMEF5WWRBRndwWngvcVNWU2k1NXZVRG9MRHE5SU5mWG5NaUFk?=
+ =?utf-8?B?OGFBa0VHNkFYU3ptdSs4T09iazkweERxOExqYjg0bzBDSkIrVTYxVXZieFhE?=
+ =?utf-8?B?N2RlODNxRklwQWtvSkk0cTdMRTQ0TFNIYUdwcWhCdlU5T3VFNFkydjFaZE9a?=
+ =?utf-8?B?YTlrdjh3WlFKM1E4QjhOYy9BZzJFRW9CZjJqMlJrbkNvRGhzL3FlUDBlR0FG?=
+ =?utf-8?B?UVBiYU0vQlh2K1piSCt0ZDhta2RNUDNOd2h0akZocGJsSDBhNGtmN1dUTkU3?=
+ =?utf-8?B?RU1lTjBPZmx3aXpmNk1KU3YyRjdUcmh2NnNLdmlHM0h3cnZQakcwY1JBRGJp?=
+ =?utf-8?B?cCtXSkcrUTJ6elk5UkdFWWlib3pDcERFamFJaXV3WGtmSzA2b3dmTDZLM21H?=
+ =?utf-8?B?MW1lT0IzcEhiK1VwaHE3WGdueWpMdzdTbVhDc0sxUGRTK1JmcXFPU2VQZGRU?=
+ =?utf-8?B?SitDOUdWSVNNbmMyOW9waEx0aTJHKzRmVHNWKy9oRlhNTHBUb1ovUk5hazlG?=
+ =?utf-8?B?QnRTM3BHZ3NxcmRHem15dWFvcEhiWjJsSTZoaFVPNFdaRlduZzN5T0lyNTNR?=
+ =?utf-8?B?ekpnQi9lZnhZZkd1Y2J0RE9hbmpSMDFSajIvQU9DUUNsK000NXNVa1ZORTZ4?=
+ =?utf-8?B?Q0U0ZUJyQjdobmZxWlVPMUo0WGtYTXRwQXF2eEZVbWdPYUZHazBEMVhaTWZT?=
+ =?utf-8?B?TDg5L3hzUkZjSkp2aVp3ZXcvM2dYS0xCUXROalN2NUF5SWpTUi9JdHkybUZ2?=
+ =?utf-8?B?R095OVFXQTBrSDlhZk5CTlJVS3VJd25jOUNSVVJKV3NiNGlVWFVDL1JvSVlx?=
+ =?utf-8?B?dkFGSTN6MXpydU0rWXNpNlV2NXUyeE1HMFUwbWw4WE9DdDJFREE4dDhwY1hO?=
+ =?utf-8?B?dHgyNEpENUE1VnpCVC9Hc2UvNGpyMWNiVkQxTUcyMXRVKytWZDVpR1JRZTFt?=
+ =?utf-8?B?V0xncEhWanZsSnFTOXhVOEx0MzJ4YUVEZG0zcEV6Kys4SUR5SzlUZ1YxUVBh?=
+ =?utf-8?B?d0JhWlVIODRNRE5sNkE5ZjBoMTZRdW5HNlh2M296U1NuV2QrTVpIbVFNWEdR?=
+ =?utf-8?B?NzJsTVZGd3lza2t3V3podzZzeEthL0ZVYmZ3eVpuU1dwMzhIUkgxK1cwVnRN?=
+ =?utf-8?B?RVF2a0gzRjQ1ZHhZK3VCYnZpcjJ1Sy9nb1RTSjE3VVptb2RqR0Y4SU1UTm4z?=
+ =?utf-8?B?WTJtR3Eyck9hQlo2MzNEMEFaMGdsVTU0MmkxZElWODE0MzB5aVlHeER2MCt1?=
+ =?utf-8?B?SDFudW4zNnhGaWpQUmo0Qm4xRVRsQ1ZsZGRQR0RsckhPR1psaTFoRGoyMDNj?=
+ =?utf-8?B?V1JncS9Odk9FMzR3Um5IV1ZtZHJXRnA5a3RjZWRsaXIxMW1UTU92T1VQTXFJ?=
+ =?utf-8?B?U1E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: bff82bf3-b5dd-4a6b-3086-08db8c8b1048
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5373.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2023 21:15:10.6054
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: u2nSljDzDgpTW+SdOQEagzR+D3ls0d91AXLkeMYBH/N14x47tXy7oLfHZGubu5P1BAN5t/iuXjnvt//X0V4dU0AtxLmWRYz58VweTN5yxVs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR11MB5809
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> #syz dup: [syzbot] [ext4?] general protection fault in ext4_finish_bio
+64 DRM device nodes is not enough for everyone.
+Upgrade it to ~512K (which definitely is more than enough).
 
-can't find the dup bug
+To allow testing userspace support for >64 devices, add additional DRM
+modparam (force_extended_minors) which causes DRM to skip allocating minors
+in 0-192 range.
+Additionally - convert minors to use XArray instead of IDR to simplify the
+locking.
 
->
+v1 -> v2:
+Don't touch DRM_MINOR_CONTROL and its range (Simon Ser)
+
+v2 -> v3:
+Don't use legacy scheme for >=192 minor range (Dave Airlie)
+Add modparam for testing (Dave Airlie)
+Add lockdep annotation for IDR (Daniel Vetter)
+
+v3 -> v4:
+Convert from IDR to XArray (Matthew Wilcox)
+
+v4 -> v5:
+Fixup IDR to XArray conversion (Matthew Wilcox)
+
+v5 -> v6:
+Also convert Accel to XArray
+Rename skip_legacy_minors to force_extended_minors
+
+Michał Winiarski (4):
+  drm: Use XArray instead of IDR for minors
+  accel: Use XArray instead of IDR for minors
+  drm: Expand max DRM device number to full MINORBITS
+  drm: Introduce force_extended_minors modparam
+
+ drivers/accel/drm_accel.c      | 110 +++------------------------------
+ drivers/gpu/drm/drm_drv.c      | 105 ++++++++++++++++---------------
+ drivers/gpu/drm/drm_file.c     |   2 +-
+ drivers/gpu/drm/drm_internal.h |   4 --
+ include/drm/drm_accel.h        |  18 +-----
+ include/drm/drm_file.h         |   5 ++
+ 6 files changed, 69 insertions(+), 175 deletions(-)
+
+-- 
+2.41.0
+
