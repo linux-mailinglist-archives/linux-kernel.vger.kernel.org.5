@@ -2,156 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D976B75EA8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 06:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EE975EAA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 06:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbjGXEhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 00:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52726 "EHLO
+        id S229552AbjGXEpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 00:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjGXEhn (ORCPT
+        with ESMTP id S229456AbjGXEpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 00:37:43 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444B8122
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 21:37:42 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3172144c084so3483384f8f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 21:37:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690173461; x=1690778261;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from:sender
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5ZHcL0SOTF6CbMrr4QYrXlvClPug/NnsMz11+ZmmbM8=;
-        b=pRVTF3y5289BhDzNt9u0jcEPcvWzv2e5agYEpVHKjp4efAMhzU2Y1KWeEc3iBjmOTB
-         GHjpZBZhk6E+dmCxwx5g252rJDoX5bH2xPwGCGFS11GdMrooViXyS5uRpb4jo661utty
-         1surwvYC2qjVcs5TwnuA6hd93zdqMCMXqtK37FNTaqgHWJ9NX/3xDpuhY408BuW+7kqc
-         aVd+JVpI5W0BiOM9JXLS3gy2VrrTYGh43+jdXnuiQ0u/TDQLofcY8AZhHXGU4H43jrFf
-         wmqC2ja0a5h9ydRc+3C5S4TJjCuzopW8WRU98k/D896e7bHN5kG9TDdsl/JcE4DdDkUC
-         8M0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690173461; x=1690778261;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from:sender
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5ZHcL0SOTF6CbMrr4QYrXlvClPug/NnsMz11+ZmmbM8=;
-        b=fYq/KVO3brLOl433JDJGeOz2CvETka7carnw8XJ8HtsufhBUnVTpiJtx56VcijRSXs
-         cJPTkEG5rISCqdix2W3dJOqVrp8IUv2EqZjnx1KBHbLVGnT2PMCqNH8jWhPschnfVedh
-         3igyO9w/sP8ar22Vitsl7FWzGOHJoPNTnv3I+bzEA6pLYsIgGJwwnDiFzdmesVbSHD/Q
-         oh8ub4tN0zuMwI2OqMK0RiTIUsyE9FadbFkaOl6kOW6nS5tWzq0jxn7ibsI5BFr609UY
-         SUCncddB/OpgWXSsu5JVPhkGrexG2dD/jrHPrOWFQOzXGVwjJDnLYZ+HE5wadOho+1pJ
-         mzwA==
-X-Gm-Message-State: ABy/qLav4javuPtxMtnnnhoGLpiIbNZyjROo4gYQM+O75xy6DaXoWuF3
-        +yHl3o3G9vW88vqtNVBi4c+opIXFKkfWn2kTZY4=
-X-Google-Smtp-Source: APBJJlGHPpCnwMtrNElXUBUj21Qff5jmiBqj+wqa8ukljjni3UpLKAZtNKnTPej6J40hrX4O+CJ19fB1vaMTvf9LoH4=
-X-Received: by 2002:adf:ea0f:0:b0:313:f957:bf29 with SMTP id
- q15-20020adfea0f000000b00313f957bf29mr8589889wrm.65.1690173460414; Sun, 23
- Jul 2023 21:37:40 -0700 (PDT)
+        Mon, 24 Jul 2023 00:45:51 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157E31B6;
+        Sun, 23 Jul 2023 21:45:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690173950; x=1721709950;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=q9qzwcL7N7viHeki30qyeMCUuWnJ87fuGcM4hbUg7Mg=;
+  b=NtpaCJWf6JJa6XKHuLRhKK7pFYUMMQofEh2yTs7d9WA3ZIjgFpTCtoO8
+   Edq8KDCrQHBYbTHzNoEKucA3E/6cCWGpY+/cHVV3MX4ik/jHgQCEORqb7
+   wSvC3eAiwOb9mxxDhb2CFyIoMeZLOYM/+LtMn7OQ5nxM9W4wZ/sPTI1tK
+   rK2afDRyd8OL3KOXO4edKYiz4plKbrPXt9jP806iSOeAifT4wf4mrQrJT
+   P+1iFE9zVghp6PjgfNxT1AKG3HPWrObiD8mhr5u8bIAStC5OxIqIhqmVJ
+   9oPghZ7iu+7LX+G8RepHnjlob953+e312EqqjRnbgQpH2pS+GLieZdvYo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="352240346"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="352240346"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2023 21:45:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="972119310"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="972119310"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmsmga006.fm.intel.com with ESMTP; 23 Jul 2023 21:45:40 -0700
+Date:   Mon, 24 Jul 2023 12:43:53 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFC PATCH v11 08/29] KVM: Introduce per-page memory attributes
+Message-ID: <ZL4BiQWihfrD0TOJ@yilunxu-OptiPlex-7050>
+References: <20230718234512.1690985-1-seanjc@google.com>
+ <20230718234512.1690985-9-seanjc@google.com>
 MIME-Version: 1.0
-References: <CAKZGPAOYPp3ANWfBWxcsT3TJdPt8jH-f2ZJzpin=UZ=-b_-QFg@mail.gmail.com>
- <CAKZGPAOY9uxvSTuta+4a41=GGqTxus8YDcv54T7iAL9P-fj_+w@mail.gmail.com> <20230720103746.GC3569127@hirez.programming.kicks-ass.net>
-In-Reply-To: <20230720103746.GC3569127@hirez.programming.kicks-ass.net>
-Sender: getarunks@gmail.com
-X-Google-Sender-Delegation: getarunks@gmail.com
-From:   Arun KS <arunks.linux@gmail.com>
-Date:   Mon, 24 Jul 2023 10:07:28 +0530
-X-Google-Sender-Auth: ah61y3xgMv4f2_-0Sl_0CKUkub8
-Message-ID: <CAKZGPAPuPQkpaZr4kMEg56VXAV+Ug7auxB2brb1=sbzdRz72rw@mail.gmail.com>
-Subject: Re: Question on sched_clock
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Arun KS <getarunks@gmail.com>, pmladek@suse.com,
-        tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718234512.1690985-9-seanjc@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 4:07=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
+On 2023-07-18 at 16:44:51 -0700, Sean Christopherson wrote:
+> From: Chao Peng <chao.p.peng@linux.intel.com>
+> 
+> In confidential computing usages, whether a page is private or shared is
+> necessary information for KVM to perform operations like page fault
+> handling, page zapping etc. There are other potential use cases for
+> per-page memory attributes, e.g. to make memory read-only (or no-exec,
+> or exec-only, etc.) without having to modify memslots.
+> 
+> Introduce two ioctls (advertised by KVM_CAP_MEMORY_ATTRIBUTES) to allow
+> userspace to operate on the per-page memory attributes.
+>   - KVM_SET_MEMORY_ATTRIBUTES to set the per-page memory attributes to
+>     a guest memory range.
+>   - KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES to return the KVM supported
+>     memory attributes.
+> 
+> Use an xarray to store the per-page attributes internally, with a naive,
+> not fully optimized implementation, i.e. prioritize correctness over
+> performance for the initial implementation.
+> 
+> Because setting memory attributes is roughly analogous to mprotect() on
+> memory that is mapped into the guest, zap existing mappings prior to
+> updating the memory attributes.  Opportunistically provide an arch hook
+> for the post-set path (needed to complete invalidation anyways) in
+> anticipation of x86 needing the hook to update metadata related to
+> determining whether or not a given gfn can be backed with various sizes
+> of hugepages.
+> 
+> It's possible that future usages may not require an invalidation, e.g.
+> if KVM ends up supporting RWX protections and userspace grants _more_
+> protections, but again opt for simplicity and punt optimizations to
+> if/when they are needed.
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Link: https://lore.kernel.org/all/Y2WB48kD0J4VGynX@google.com
+> Cc: Fuad Tabba <tabba@google.com>
+> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
+> Co-developed-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  Documentation/virt/kvm/api.rst |  60 ++++++++++++
+>  include/linux/kvm_host.h       |  14 +++
+>  include/uapi/linux/kvm.h       |  14 +++
+>  virt/kvm/Kconfig               |   4 +
+>  virt/kvm/kvm_main.c            | 170 +++++++++++++++++++++++++++++++++
+>  5 files changed, 262 insertions(+)
 >
-> On Thu, Jul 20, 2023 at 03:54:56PM +0530, Arun KS wrote:
-> > CCing maintainers
-> >
-> > On Wed, Jul 19, 2023 at 10:36=E2=80=AFAM Arun KS <arunks.linux@gmail.co=
-m> wrote:
-> > >
-> > > Hi,
-> > >
-> > > Kernel=E2=80=99s printk uses local_clock() for timestamps and it is m=
-apped to
-> > > sched_clock(). Two problems/requirements I see,
-> > >
-> > > One, Kernel=E2=80=99s printk timestamps start from 0, I want to chang=
-e this to
-> > > match with actual time since boot.
->
-> You can fundamentally only consistently tell time since the clock gets
-> initialized. Starting at 0 is what you get.
->
-> > > Two, sched_clock() doesn=E2=80=99t account for time spend in low powe=
-r
-> > > state(suspend to ram)
->
-> Why would we do that? The next person will complain that they don't want
-> this. Then another person complains they also want time spend in
-> suspend-to-disk, and another person wants a pony.
 
-Thanks Peter, Got your point. I was trying to understand if there are
-any other side effects of doing this downstream.
+Only some trivial concerns below.
 
->
-> > >
-> > > Could workout patches to modify these behaviours and found working in
-> > > my system. But need to hear expert opinion on why this is not done in
-> > > the upstream.
-> > >
-> > > diff --git a/kernel/time/sched_clock.c b/kernel/time/sched_clock.c
-> > > index 68d6c1190ac7..b63b2ded5727 100644
-> > > --- a/kernel/time/sched_clock.c
-> > > +++ b/kernel/time/sched_clock.c
->
-> This is only one of many sched_clock implementations...
->
-> > > @@ -190,7 +190,10 @@ sched_clock_register(u64 (*read)(void), int bits=
-,
-> > > unsigned long rate)
-> > >         /* Update epoch for new counter and update 'epoch_ns' from ol=
-d counter*/
-> > >         new_epoch =3D read();
-> > >         cyc =3D cd.actual_read_sched_clock();
-> > > -       ns =3D rd.epoch_ns + cyc_to_ns((cyc - rd.epoch_cyc) &
-> > > rd.sched_clock_mask, rd.mult, rd.shift);
-> > > +       if (!cyc)
-> > > +               ns =3D cyc_to_ns(new_epoch, new_mult, new_shift)
-> > > +       else
-> > > +               ns =3D rd.epoch_ns + cyc_to_ns((cyc - rd.epoch_cyc) &
-> > > rd.sched_clock_mask, rd.mult, rd.shift);
-> > >         cd.actual_read_sched_clock =3D read;
-> > >
-> > >         rd.read_sched_clock     =3D read;
-> > >
-> > > @@ -287,7 +290,6 @@ void sched_clock_resume(void)
-> > >  {
-> > >         struct clock_read_data *rd =3D &cd.read_data[0];
-> > >
-> > > -       rd->epoch_cyc =3D cd.actual_read_sched_clock();
->
-> And what if you've been suspended long enough to wrap the clock ?!?
-Fair point. Will take a note.
+[...]
+ 
+> @@ -1175,6 +1176,9 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
+>  	spin_lock_init(&kvm->mn_invalidate_lock);
+>  	rcuwait_init(&kvm->mn_memslots_update_rcuwait);
+>  	xa_init(&kvm->vcpu_array);
+> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
+> +	xa_init(&kvm->mem_attr_array);
+> +#endif
+>  
+>  	INIT_LIST_HEAD(&kvm->gpc_list);
+>  	spin_lock_init(&kvm->gpc_lock);
+> @@ -1346,6 +1350,9 @@ static void kvm_destroy_vm(struct kvm *kvm)
+>  		kvm_free_memslots(kvm, &kvm->__memslots[i][0]);
+>  		kvm_free_memslots(kvm, &kvm->__memslots[i][1]);
+>  	}
+> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
+> +	xa_destroy(&kvm->mem_attr_array);
+> +#endif
 
->
-> > >         hrtimer_start(&sched_clock_timer, cd.wrap_kt, HRTIMER_MODE_RE=
-L_HARD);
-> > >         rd->read_sched_clock =3D cd.actual_read_sched_clock;
-> > >  }
-> > >
-> > > Regards,
-> > > Arun
+Is it better to make the destruction in reverse order from the creation?
+To put xa_destroy(&kvm->mem_attr_array) after cleanup_srcu_struct(&kvm->srcu),
+or put xa_init(&kvm->mem_attr_array) after init_srcu_struct(&kvm->irq_srcu).
+
+>  	cleanup_srcu_struct(&kvm->irq_srcu);
+>  	cleanup_srcu_struct(&kvm->srcu);
+>  	kvm_arch_free_vm(kvm);
+> @@ -2346,6 +2353,145 @@ static int kvm_vm_ioctl_clear_dirty_log(struct kvm *kvm,
+>  }
+>  #endif /* CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT */
+
+[...]
+
+> +static int kvm_vm_ioctl_set_mem_attributes(struct kvm *kvm,
+> +					   struct kvm_memory_attributes *attrs)
+> +{
+> +	gfn_t start, end;
+> +
+> +	/* flags is currently not used. */
+> +	if (attrs->flags)
+> +		return -EINVAL;
+> +	if (attrs->attributes & ~kvm_supported_mem_attributes(kvm))
+> +		return -EINVAL;
+> +	if (attrs->size == 0 || attrs->address + attrs->size < attrs->address)
+> +		return -EINVAL;
+> +	if (!PAGE_ALIGNED(attrs->address) || !PAGE_ALIGNED(attrs->size))
+> +		return -EINVAL;
+> +
+> +	start = attrs->address >> PAGE_SHIFT;
+> +	end = (attrs->address + attrs->size - 1 + PAGE_SIZE) >> PAGE_SHIFT;
+
+As the attrs->address/size are both garanteed to be non-zero, non-wrap
+and page aligned in prevous check. Is it OK to simplify the calculation,
+like:
+
+  end = (attrs->address + attrs->size) >> PAGE_SHIFT;
+
+> +
+> +	if (WARN_ON_ONCE(start == end))
+> +		return -EINVAL;
+
+Also, is this check possible to be hit? Maybe remove it?
+
+Thanks,
+Yilun
+
+> +
+> +	/*
+> +	 * xarray tracks data using "unsigned long", and as a result so does
+> +	 * KVM.  For simplicity, supports generic attributes only on 64-bit
+> +	 * architectures.
+> +	 */
+> +	BUILD_BUG_ON(sizeof(attrs->attributes) != sizeof(unsigned long));
+> +
+> +	return kvm_vm_set_mem_attributes(kvm, attrs->attributes, start, end);
+> +}
+> +#endif /* CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES */
