@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1512760118
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E672F76011A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbjGXVVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
+        id S231151AbjGXVVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbjGXVVY (ORCPT
+        with ESMTP id S231145AbjGXVVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:21:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F911AA
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:20:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690233636;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CVwkfPUpFSXUbI4e0RCN90tgfefnC8zInlyZN7AoFF4=;
-        b=F+SVjwFfkfkLHU5okO+M7pc8pI1OzU6wH3vzCFKrpZAsvSwfFGPx/bft4ik/pvExk59SwQ
-        GNOyW/nZjuraitfE9xM8kvCNuEkug6nFtD/tyJQKtQE5TdWK/b8gwOwiJlbf2Uuwrds4hw
-        erqsVV3HGLrASj7D8FPB1M2+sOOsupw=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-270-I_GAWX1eN7ij9MzPAOoN7g-1; Mon, 24 Jul 2023 17:20:33 -0400
-X-MC-Unique: I_GAWX1eN7ij9MzPAOoN7g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 24 Jul 2023 17:21:46 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57AB1737;
+        Mon, 24 Jul 2023 14:21:40 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A01B11C068D8;
-        Mon, 24 Jul 2023 21:20:32 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.205])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 69BB2200BA63;
-        Mon, 24 Jul 2023 21:20:31 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <000000000000836b2805fffd6d7e@google.com>
-References: <000000000000836b2805fffd6d7e@google.com>
-To:     syzbot <syzbot+6f66f3e78821b0fff882@syzkaller.appspotmail.com>
-Cc:     dhowells@redhat.com, akpm@linux-foundation.org, axboe@kernel.dk,
-        herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [block?] KASAN: slab-out-of-bounds Read in bio_split_rw
+        by ms.lwn.net (Postfix) with ESMTPSA id 1603A733;
+        Mon, 24 Jul 2023 21:21:40 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1603A733
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1690233700; bh=gaNKVqyvP22L4mM+8WXVkl4QkXFivhR0y8i1kXszzPQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Imyn4jnOBa86K/OaOKITI/KBfz9yvh0y9ALfYriy5qxu4LN+yV24qqe3iRsQWGXet
+         Z0x30JO9siMaPYMDEly+xc1qoNp45ZaUQ1D85j9tUoC6C5NVbGLODqkfajJaPYXs0N
+         KFT7VVC9eI8oduNvf/yvbgOi9hQ5JCJuSm9uDzMiQMhkAigNV1uBCRBERqqny9mtXY
+         VcQdMGxkwxZcXHjLPVM7yP2kJyq7AqvEX51t1e0q6hb47Ba7f6fiodQUqvxe7mcXT2
+         a/TsUs0wUQQIY8VUy/Uurzj1/RQMIhvRoz77GY4o2+QyPG0ySzzrSOxjoLuOcPIxdP
+         3iGu6Y+qoYdXw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Costa Shulyupin <costa.shul@redhat.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION PROCESS" <workflows@vger.kernel.org>,
+        "open list:RUST" <rust-for-linux@vger.kernel.org>
+Cc:     Costa Shulyupin <costa.shul@redhat.com>
+Subject: Re: [RFC PATCH] rework top page and organize toc on the sidebar
+In-Reply-To: <20230724193118.2204673-1-costa.shul@redhat.com>
+References: <20230724193118.2204673-1-costa.shul@redhat.com>
+Date:   Mon, 24 Jul 2023 15:21:39 -0600
+Message-ID: <87ila9atuk.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <20205.1690233630.1@warthog.procyon.org.uk>
-Date:   Mon, 24 Jul 2023 22:20:30 +0100
-Message-ID: <20206.1690233630@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz fix: crypto: algif_hash - Fix race between MORE and non-MORE sends
+Costa Shulyupin <costa.shul@redhat.com> writes:
 
+> Template {{ toctree(maxdepth=3) }} in
+> Documentation/sphinx/templates/kernel-toc.html
+> uses directives toctree and doesn't use sections on the top page
+> Documentation/index.rst
+> to generate expandable toc on the sidebar.
+>
+> BTW, other template {{ toc }} uses only sections, and doesn't
+> use directives toctree.
+>
+> Summary of changes:
+> - split top page index.rst to several pages
+> - convert sections of Documentation/index.rst to hierarchical toctree
+> - vertical bars '|' add empty lines
+>
+> Benefits:
+> - collapsed toc is just seven short lines length
+> - toc is expandable
+>
+> References:
+> - https://www.sphinx-doc.org/en/master/development/templating.html#toctree
+> - https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree
+> - https://www.sphinx-doc.org/en/master/development/templating.html#toc
+> - https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
+> - https://sphinx-rtd-theme.readthedocs.io/
+
+What is the purpose of all these links in a patch changelog?
+
+This patch is somewhat difficult to apply, as a result of:
+
+> Content-Type: text/plain; charset=true
+
+But the real problem is that you seem to have ignored my last message.
+The purpose of the front page isn't to create a nice-looking sidebar, it
+is the entry point to our documentation as a whole.  I am all for a
+better sidebar, but this is not the way to do it.
+
+jon
