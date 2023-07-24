@@ -2,112 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BB675FA18
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E308D75FA1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 16:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbjGXOoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 10:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59542 "EHLO
+        id S231484AbjGXOp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 10:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjGXOox (ORCPT
+        with ESMTP id S231424AbjGXOpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 10:44:53 -0400
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BC010F;
-        Mon, 24 Jul 2023 07:44:51 -0700 (PDT)
-Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7C34961E5FE01;
-        Mon, 24 Jul 2023 16:44:10 +0200 (CEST)
-Message-ID: <45cf294e-3124-9a0d-864f-ba7c605405c0@molgen.mpg.de>
-Date:   Mon, 24 Jul 2023 16:44:10 +0200
+        Mon, 24 Jul 2023 10:45:55 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547CB19A;
+        Mon, 24 Jul 2023 07:45:53 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 0D4FB5C0061;
+        Mon, 24 Jul 2023 10:45:50 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 24 Jul 2023 10:45:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690209950; x=1690296350; bh=JonMW/RttbU7c
+        j/gvymAJ0f+J/+wO0y76uBsx5y83Q0=; b=ZP/iFU+u97xsr5Ff/zAD0vtdCWaZc
+        3IAKV2Bl8nfQDpPrSgkROFCLiKHUsyvFqmUB1KkRc/iUUZoNieb8vjFOElEmUYn0
+        J0J6x3iqxtECaytroUsibWlzDPTd508iNzX9ehDhCa2K4e/309He3JrknrN5S0yn
+        NsRoSwSakt1aCnFldyo2q6ADge5GSadAmGtUMlVhtU5pGEjt69C4+ql8ISUsd0qZ
+        uDHqCHy+p+/SVahhmOyARsnCZLixeexXeLJ3cfxJFkpBvv3xGm7kI+iw6H0ID2Rk
+        9+xxlVWFMAfv7ziVoJxUUOz5FI7ImsJPtEbZAe37Ecy5P08Ae55LIQKlg==
+X-ME-Sender: <xms:nI6-ZOebbLoTjQAT2sEQD4qJKPN91Q4h2JfxMD7AdG0yVSSeVK7W5A>
+    <xme:nI6-ZIMHOkfTFx_DrRy2-YgqeGOGhW-QumkJc-iBoFIheQV-mQmZkVIUT4vI6e1eW
+    1_0iEB8ubeimUM>
+X-ME-Received: <xmr:nI6-ZPg8mfS5zSHw2p8YtxrUDdMTnkYloDt5PQUB72pFWlmPvhH5ie-Agz2u>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrheekgdejlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
+    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
+    gvrhhnpefhffejgefhjeehjeevheevhfetveevfefgueduueeivdeijeeihfegheeljefg
+    ueenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:nI6-ZL8xiVtSdcB66pDPAXaki2vHz3LAcyMrxdFwRPPN1QhkQ6EzMA>
+    <xmx:nI6-ZKuMc_ZB2sYWweCJWahCalcp8ogShGTGZPFNd41taVJNCROjDA>
+    <xmx:nI6-ZCEjHzgKWKS_tKVXiaN64HMVc1k35zT_L8lFOX3ol3ACMhggfQ>
+    <xmx:no6-ZH94kAPqKB4shfcVnahLg4WRDm4qcmGjzQoxkLsNvFaghn8aIw>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 24 Jul 2023 10:45:47 -0400 (EDT)
+Date:   Mon, 24 Jul 2023 17:45:42 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v1 01/11] selftests: forwarding:
+ custom_multipath_hash.sh: add cleanup for SIGTERM sent by timeout
+Message-ID: <ZL6OljQubhVtQjcD@shredder>
+References: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
+ <ZLzj5oYrbHGvCMkq@shredder>
+ <0550924e-dce9-f90d-df8a-db810fd2499f@alu.unizg.hr>
+ <adc5e40d-d040-a65e-eb26-edf47dac5b02@alu.unizg.hr>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 1/3] gpio: nuvoton: Add Nuvoton NPCM sgpio driver
-Content-Language: en-US
-To:     Jim Liu <jim.t90615@gmail.com>
-Cc:     JJLIU0@nuvoton.com, KWLIU@nuvoton.com, linus.walleij@linaro.org,
-        brgl@bgdev.pl, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-gpio@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20230314092311.8924-1-jim.t90615@gmail.com>
- <20230314092311.8924-2-jim.t90615@gmail.com>
- <519312b6-f28c-7482-21c1-d9628f0295cb@molgen.mpg.de>
- <CAKUZ0+FGSEgzbK6H_sHaGpP9JnvrLeBRQViqmViR1OVXoVs7vA@mail.gmail.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <CAKUZ0+FGSEgzbK6H_sHaGpP9JnvrLeBRQViqmViR1OVXoVs7vA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <adc5e40d-d040-a65e-eb26-edf47dac5b02@alu.unizg.hr>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Jim,
-
-
-Am 24.07.23 um 05:04 schrieb Jim Liu:
-
-> sorry for reply late.
-
-No problem. Thank you for your reply. Some minor comments below.
-
-> First, thanks for your review.
+On Sun, Jul 23, 2023 at 11:37:46PM +0200, Mirsad Todorovac wrote:
+> Some tests however exited with error:
 > 
-> the description is as below:
-> 
-> The SGPIO module can be programmed to support from zero (none) to
-> eight external output ports ,
+> marvin@defiant:~/linux/kernel/linux_torvalds$ grep "not ok" ../kselftest-6.5-rc2-net-forwarding-11.log
+> not ok 3 selftests: net/forwarding: bridge_mdb.sh # exit=1
+> not ok 5 selftests: net/forwarding: bridge_mdb_max.sh # exit=1
+> not ok 11 selftests: net/forwarding: bridge_vlan_mcast.sh # exit=1
 
-No space before the comma.
+I can't reproduce these three.
 
-> each with eight output pins (for a total of 64 output pins). The
-> output ports must be serial-to-parallel devices (such as the HC595 or
-> a faster equivalent).
-> 
-> The SGPIO can be programmed to accept from zero to eight external
-> input ports (IXPp), each with eight input pins, supporting a total of
-> 64 input pins. The input ports must be parallel-to-serial devices
-> (such as the HC165 or a faster equivalent).
-> 
-> you can add hc595 and hc165 ic to get the serial data from BMC and
-> send serial data to BMC.
-> This driver can expand  extra gpio pins up to 64 input and 64 output.
+Do you have systemd-networkd running? If so, by default it tries to
+take over interfaces unless you tell it not to. For example, on my
+system I have:
 
-One space before “extra”. Maybe:
+$ cat /etc/systemd/network/10-ignore.link 
+[Match]
+OriginalName=*
 
-hc595 and c165 ic allow to transmit serial data from and to the BMC. 
-This driver can expand extra GPIO pins up to 64 inputs and 64 outputs.
+[Link]
+MACAddressPolicy=none
 
-> i will use jim.t90615@gmail.com this mail to upstream this driver not
-> company mail.
+This tells systemd not to assign a persistent MAC address on virtual
+interfaces.
 
-If this is paid work, using your company email address should be 
-preferred in my opinion.
+And (redacted):
 
-> The driver needs to fix the length of the variables, because the reg
-> size is one byte.
+$ cat /etc/systemd/network/80-dhcp.network 
+[Match]
+...
 
-One byte would also fit into `unsigned int`, wouldn’t it?
+This tells systemd to only manage the interfaces matching the match
+criteria and ignore the rest.
 
-> I will follow your suggestion to modify and upstream again. If you
-> have any questions please let me know.
+> not ok 15 selftests: net/forwarding: ethtool_extended_state.sh # exit=1
+> not ok 17 selftests: net/forwarding: ethtool.sh # exit=1
+> not ok 25 selftests: net/forwarding: hw_stats_l3_gre.sh # exit=1
 
-If you could use Mozilla Thunderbird to reply easily in interleaved 
-style, that would great.
+Fixed these three.
 
-Otherwise, I am looking forward to the next revision.
+> not ok 26 selftests: net/forwarding: ip6_forward_instats_vrf.sh # exit=1
 
+Fixed.
 
-Kind regards,
+> not ok 80 selftests: net/forwarding: tc_actions.sh # exit=1
+> not ok 83 selftests: net/forwarding: tc_flower.sh # exit=1
+> not ok 84 selftests: net/forwarding: tc_flower_l2_miss.sh # exit=1
+> not ok 89 selftests: net/forwarding: tc_tunnel_key.sh # exit=1
 
-Paul
+Can't reproduce these.
+
+Pushed the fixes on top of the fixes from yesterday:
+
+https://github.com/idosch/linux/commits/submit/sefltests_fix_v1
