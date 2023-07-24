@@ -2,115 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BCE775E5E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 02:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E59075E5E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 02:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjGXAko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 20:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
+        id S229493AbjGXAmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 20:42:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjGXAkm (ORCPT
+        with ESMTP id S229469AbjGXAmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 20:40:42 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758F010D
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 17:40:39 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R8LtC2g3VzBRDtQ
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 08:40:35 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1690159233; x=1692751234; bh=QsKucN7um2wSg3VJdhbboiTHbpM
-        KyR824zes2RdZRmg=; b=jrvLEplgI2k471PCIotvecCPXML3Rsp0FqmHVQPNTaR
-        l2EePHZWp4lsDp6fHVXTU24lXNimnBdA2flNoOnn0p9R/TgE48QMCIJv1psYrDna
-        FUyK5QOPq+ftC+DCuvhJ3DpmwkFG9Z/4RAuKEKGVLUFATcCTnm5WvWYgOsz5e3bO
-        J/Oe5FOfx1+YvmKZPC9pTTXpVmFqHsCE+UKLh1Cul/8TvuvboCEb2cTlXTOsPOdr
-        6seKnQPjXdvx6jnQqvxwG61QuRSRzyg0HdLQdUjQE5OLv/557fHNCW8+Cexns+6v
-        Cq88bCX4Ho9LmuJteDX0whSvXXO53a2UjSY+ZAAZ9Ug==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id hmFDdMd7THz8 for <linux-kernel@vger.kernel.org>;
-        Mon, 24 Jul 2023 08:40:33 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R8Lt90TqHzBRDsK;
-        Mon, 24 Jul 2023 08:40:33 +0800 (CST)
-MIME-Version: 1.0
-Date:   Mon, 24 Jul 2023 08:40:32 +0800
-From:   huzhi001@208suo.com
-To:     gerg@linux-m68k.org, geert@linux-m68k.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] m68knommu: Fix warnings in io_no.h: Delete one of repeated
- word 'readw readl writew writel' in comment. WARNING: Possible repeated word:
- 'readw' WARNING: Possible repeated word: 'readl' WARNING: Possible repeated
- word: 'writew' WARNING: Possible repeated word: 'writel'
-In-Reply-To: <tencent_816D5035481D1083943D8E965A59860D5E06@qq.com>
-References: <tencent_816D5035481D1083943D8E965A59860D5E06@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <9e13fec02524afde21bdf5783dcf7246@208suo.com>
-X-Sender: huzhi001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+        Sun, 23 Jul 2023 20:42:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FAC107;
+        Sun, 23 Jul 2023 17:42:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BF3B560EEA;
+        Mon, 24 Jul 2023 00:42:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 980D9C433C8;
+        Mon, 24 Jul 2023 00:42:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1690159329;
+        bh=sxdEGclz4Xf0qnA1MozhK1hB0aUV6i9zLLImahVNvcc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=K5t7aujHVfp7cwlHnTEAaMpERZb2wyfgUQXBQXAMGRWwGajG1+sUuB0LfGoJtAQ0B
+         UPBIfPOe9mkBTMzAG898v/NOfQzoevvEiZN6bk/vJoDIJzfrMdddHbCtFSdgk5BiF4
+         I0/Sd/U3ivZwNH/XxWfwjv/2bPXeoBxHWcaI7efE=
+Date:   Sun, 23 Jul 2023 17:42:07 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Yajun Deng <yajun.deng@linux.dev>, corbet@lwn.net,
+        m.szyprowski@samsung.com, robin.murphy@arm.com, paulmck@kernel.org,
+        catalin.marinas@arm.com, rdunlap@infradead.org,
+        peterz@infradead.org, rostedt@goodmis.org, kim.phillips@amd.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev, linux-mm@kvack.org
+Subject: Re: [PATCH v3] dma-contiguous: support numa CMA for specified node
+Message-Id: <20230723174207.cfa7ea5e73197399d9521583@linux-foundation.org>
+In-Reply-To: <20230721074209.GA22859@lst.de>
+References: <20230720082517.GA7057@lst.de>
+        <20230712074758.1133272-1-yajun.deng@linux.dev>
+        <25942dafbc7f52488a30c807b6322109539442cf@linux.dev>
+        <20230720115408.GA13114@lst.de>
+        <20230720095941.76803bbda5ad0c5103713d0c@linux-foundation.org>
+        <20230721074209.GA22859@lst.de>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: ZhiHu <huzhi001@208suo.com>
----
-  arch/m68k/include/asm/io_no.h | 8 ++++----
-  1 file changed, 4 insertions(+), 4 deletions(-)
+On Fri, 21 Jul 2023 09:42:09 +0200 Christoph Hellwig <hch@lst.de> wrote:
 
-diff --git a/arch/m68k/include/asm/io_no.h 
-b/arch/m68k/include/asm/io_no.h
-index 2c96e8480173..b24eb741e666 100644
---- a/arch/m68k/include/asm/io_no.h
-+++ b/arch/m68k/include/asm/io_no.h
-@@ -62,7 +62,7 @@ static int cf_internalio(const volatile void __iomem 
-*addr)
-   * endian on m68k/ColdFire. Bus based address ranges, like the PCI bus,
-   * are accessed little endian - so we need to byte swap those.
-   */
--#define readw readw
-+#define readw
-  static inline u16 readw(const volatile void __iomem *addr)
-  {
-      if (cf_internalio(addr))
-@@ -70,7 +70,7 @@ static inline u16 readw(const volatile void __iomem 
-*addr)
-      return swab16(__raw_readw(addr));
-  }
+> On Thu, Jul 20, 2023 at 09:59:41AM -0700, Andrew Morton wrote:
+> > > Where did this land?  dma patches really should be going through
+> > > the DMA tree..
+> > 
+> > It's in mm-unstable with a note "hch" :)
+> > 
+> > I'll drop it.
+> 
+> Ah.  And looking at the patch is isn't even pure dma but also has
+> a significant mm side.  If you're fine with it I'll pick it up in
+> the dma-mapping tree in addition to the follow up.
 
--#define readl readl
-+#define readl
-  static inline u32 readl(const volatile void __iomem *addr)
-  {
-      if (cf_internalio(addr))
-@@ -78,7 +78,7 @@ static inline u32 readl(const volatile void __iomem 
-*addr)
-      return swab32(__raw_readl(addr));
-  }
-
--#define writew writew
-+#define writew
-  static inline void writew(u16 value, volatile void __iomem *addr)
-  {
-      if (cf_internalio(addr))
-@@ -87,7 +87,7 @@ static inline void writew(u16 value, volatile void 
-__iomem *addr)
-          __raw_writew(swab16(value), addr);
-  }
-
--#define writel writel
-+#define writel
-  static inline void writel(u32 value, volatile void __iomem *addr)
-  {
-      if (cf_internalio(addr))
+Please do.
