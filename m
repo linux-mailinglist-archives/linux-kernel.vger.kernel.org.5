@@ -2,124 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E38376015A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F04760160
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 23:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjGXVl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 17:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34604 "EHLO
+        id S231142AbjGXVlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 17:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjGXVlZ (ORCPT
+        with ESMTP id S231286AbjGXVlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 17:41:25 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD1EE9
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:41:24 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5840614b107so11109577b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:41:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690234883; x=1690839683;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=36znb1AgwXW7YPa8eTrHAJute7NJ/NQXlr4adS1nJ34=;
-        b=efsYJR9IR9Gs/SpQ/phcv2041HFN9J9ks0Atuke0PXmiIx3vpIOp+GhslFLn7GUXJA
-         iyAyNNHAo+VEpo6ofhtnQS+P/sDwE41gGvypw7Vem8cLFwRSCb8Ja+fpFb2RpoQbHamg
-         9phY5xroECemVhCXdFKUJTqAP0rVw5W7gkuJyHCjJyxjJlH3EsJAR6f44fp/jLl8ZI/b
-         X2IuMD6SuCnnO1rlmNptGUTrfpGzofbUXWr7ZLW/yfvctKKZKBlNHmxGnJDl8Skc5wAO
-         74LpsDitUiXVrrvG4Vm2vhGtCXlS6nkZYr8FAC7B97uvNmKX9BujsC+roWxYJ0th9lAm
-         mVUw==
+        Mon, 24 Jul 2023 17:41:40 -0400
+Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com [209.85.160.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682321725
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:41:37 -0700 (PDT)
+Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-187959a901eso9503717fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 14:41:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690234883; x=1690839683;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=36znb1AgwXW7YPa8eTrHAJute7NJ/NQXlr4adS1nJ34=;
-        b=fqgGcB6ATZiNPrJVgjfVI2A41dmdkPhJ0uWksq1UzcQnXY8aCajM/ISg73cSQF0kqj
-         GtpxMxy0G4lsjwA8D/4dv1TItQNohbN6kQLOAg8NN6biQN/ur0jBMJNUj/cPgZ+xpGlA
-         atep0P5Vfm4FHLeMhRr0C5f7RftkYRyfZI8hGPas3eRzJeMvKUdZaxgr9AJEOmRjLtJ9
-         WjbqgUdsGNkLQrHd580C3Sxu11yEbbNedIl8HvcKW4Qlle6JbmUt/JBXXJoDwEqt1aBl
-         4fm+NC85L/PsZ3n/QGlq1v0REdQ6edEpjTJDLosKvgEqk+UBphf7BhchzdoQtN0HHIur
-         D7gw==
-X-Gm-Message-State: ABy/qLbmm2RujcgvZX2cstEjfFkMhTjvCtDcqEsteHNjQxKLksw7G1K9
-        rFQV11ijfTjZNsHQx9hiPZHwrEtQbI0=
-X-Google-Smtp-Source: APBJJlEW1UfjxVevO5/Hz66FWzQCqpO1qe3uLktWl4O1jS2k4hKJk2bK4icxgLsda09AouKDrgdfZWXwKo4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1610:b0:d0c:77a8:1f6d with SMTP id
- bw16-20020a056902161000b00d0c77a81f6dmr39083ybb.10.1690234883445; Mon, 24 Jul
- 2023 14:41:23 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 14:41:21 -0700
-In-Reply-To: <20230724211949.GG3745454@hirez.programming.kicks-ass.net>
-Mime-Version: 1.0
-References: <20230721201859.2307736-1-seanjc@google.com> <20230721201859.2307736-6-seanjc@google.com>
- <20230724211949.GG3745454@hirez.programming.kicks-ass.net>
-Message-ID: <ZL7wAXyF5A8i5He7@google.com>
-Subject: Re: [PATCH v4 05/19] x86/reboot: Assert that IRQs are disabled when
- turning off virtualization
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Andrew Cooper <Andrew.Cooper3@citrix.com>,
-        Kai Huang <kai.huang@intel.com>, Chao Gao <chao.gao@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690234896; x=1690839696;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=di6kLt4kiOi9HIX9Zl3sHUse4426YeJyuKx98IZXml0=;
+        b=XtIW/CRQG/a2S+dulRamy2oy39hWWuUeRn3jzBN/nXaeaQg7XgTTa2V4KQSUfPbRyx
+         t2O/j51RsEG6yxNYtCP+BCaIgXB3+Yj1xsYx59DeKkWZIH79/1fvw1LC+cmQHW6ZCS1G
+         Z7RDZaO33EyTkdfCmTlDVif4hg8Fm0sQGfyN/6tyqNPoX/1Uc8xXRYWF6ctZtSL3Jj7N
+         Myn3gsEzNQRQgpDIZPRbOSOdC8RwMB8yPKsfQutDgvfgbQsfjDvJSHykLuWtYC1TEHpu
+         8wKOZ4DdVJFousIR1UROB5GkxfTg5CDGsYDiISI5cu8DNzBtj0vmeM9NcHPHLn/TuvuC
+         kC/g==
+X-Gm-Message-State: ABy/qLbbEmnI1Cdc/JmvqfYuXlnAK8XlvCnOiXnyk4MucmHlEC2FWiWH
+        38EZZd++oaO5mhGBE+VxnrG1VOrZAVFTMd+kicfYMpQB+xN4
+X-Google-Smtp-Source: APBJJlEHgKxbiRqzAo1p5ExJxSaFpMdx4xL8bTDt7lWT7iVoKpAvcWJPdTYgcDdzSeBNd2JY6Wg309G2oeLjLyHxKN+KQCnnhWMe
+MIME-Version: 1.0
+X-Received: by 2002:a05:6870:c7af:b0:1bb:470c:901c with SMTP id
+ dy47-20020a056870c7af00b001bb470c901cmr7990684oab.7.1690234896203; Mon, 24
+ Jul 2023 14:41:36 -0700 (PDT)
+Date:   Mon, 24 Jul 2023 14:41:36 -0700
+In-Reply-To: <ZL7fogwmV+JJcrVN@bombadil.infradead.org>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009347d50601427a92@google.com>
+Subject: Re: [syzbot] [modules?] general protection fault in sys_finit_module
+From:   syzbot <syzbot+9e4e94a2689427009d35@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, chris@chrisdown.name,
+        linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
+        llvm@lists.linux.dev, mcgrof@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        trix@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023, Peter Zijlstra wrote:
-> On Fri, Jul 21, 2023 at 01:18:45PM -0700, Sean Christopherson wrote:
-> > Assert that IRQs are disabled when turning off virtualization in an
-> > emergency.  KVM enables hardware via on_each_cpu(), i.e. could re-enable
-> > hardware if a pending IPI were delivered after disabling virtualization.
-> > 
-> > Remove a misleading comment from emergency_reboot_disable_virtualization()
-> > about "just" needing to guarantee the CPU is stable (see above).
-> > 
-> > Reviewed-by: Kai Huang <kai.huang@intel.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/kernel/reboot.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-> > index 48ad2d1ff83d..4cad7183b89e 100644
-> > --- a/arch/x86/kernel/reboot.c
-> > +++ b/arch/x86/kernel/reboot.c
-> > @@ -532,7 +532,6 @@ static inline void nmi_shootdown_cpus_on_restart(void);
-> >  
-> >  static void emergency_reboot_disable_virtualization(void)
-> >  {
-> > -	/* Just make sure we won't change CPUs while doing this */
-> >  	local_irq_disable();
-> >  
-> >  	/*
-> > @@ -821,6 +820,13 @@ void cpu_emergency_disable_virtualization(void)
-> >  {
-> >  	cpu_emergency_virt_cb *callback;
-> >  
-> > +	/*
-> > +	 * IRQs must be disabled as KVM enables virtualization in hardware via
-> > +	 * function call IPIs, i.e. IRQs need to be disabled to guarantee
-> > +	 * virtualization stays disabled.
-> > +	 */
-> > +	lockdep_assert_irqs_disabled();
-> > +
-> >  	rcu_read_lock();
-> >  	callback = rcu_dereference(cpu_emergency_virt_callback);
-> >  	if (callback)
-> 
-> Strictly speaking you don't need rcu_read_lock() when IRQs are already
-> disabled, but since this is non-performance critical code, it might be
-> best to keep it super obvious. IOW, carry on.
+Hello,
 
-Ha!  IIRC, I even had a patch to drop the explicit rcu_read_lock(), but decided
-I didn't want to tie the use of cpu_emergency_virt_callback to KVM's behavior of
-enabling virtualization via IPIs.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+
+Reported-and-tested-by: syzbot+9e4e94a2689427009d35@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         910e230d samples/hw_breakpoint: Fix kernel BUG 'invali..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=156bed06a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d182f762168e165e
+dashboard link: https://syzkaller.appspot.com/bug?extid=9e4e94a2689427009d35
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
