@@ -2,44 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E365475E79D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACADF75E79F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbjGXB3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:29:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59206 "EHLO
+        id S231678AbjGXB3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231775AbjGXB2Q (ORCPT
+        with ESMTP id S231788AbjGXB2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:28:16 -0400
+        Sun, 23 Jul 2023 21:28:18 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5F249F9;
-        Sun, 23 Jul 2023 18:25:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95181171E;
+        Sun, 23 Jul 2023 18:25:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A7C5760F59;
-        Mon, 24 Jul 2023 01:24:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79617C433CA;
-        Mon, 24 Jul 2023 01:24:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E26B60F1B;
+        Mon, 24 Jul 2023 01:24:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17788C433C8;
+        Mon, 24 Jul 2023 01:24:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161875;
-        bh=sFbD9wjyWQ5X0O+ciS3AHB0OMhlsUnmPFYpNsmI1zGA=;
+        s=k20201202; t=1690161877;
+        bh=sBhbt8uzCKA9A2iTjhFHhhqHH3IHMBsBCpiHJkgpwXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G4wlTkbqYZUuBB9TeqbPfre/Tj9W1SX7PTPTT0P9hjZmxw2j7cX9/U3ltl7s9JD5l
-         l9zkCzJUqGiWHmpr9tIpw52pbKrx9vubnko1tnw3cZMfi8KVhkbSHI4/q8mORUQ/lN
-         tzK0EJkfcfwiM6DQAPc0SvKJ4kJ4mmccClmB+1ljUE65BbCrsBHQFct/X9Qn6xkuVz
-         3cBm7dpkTXRq/sypZRuef7xGgErnDO3W7iEnkzMsWeTD2Ve1X7jkR02AK1Ip7PqSbh
-         Vhhd8f1VdAh5DHl9jHxJJGaZIuxkxxDYut0Uw3QyHRMD3mhlv7zd4pzCTKgQNfKhw5
-         jtK3MFNUwAHDQ==
+        b=QVVWoUt5TlchygaX136TCg1lOcFet/ZuFPyqTdx/tRCBNiSlbcvpQNsz1DR45lvvr
+         X+tGS/YrKLmSuxzqIh8rO+rFMw/vhLS7GMjsuXs02u4X85mbx5F4OMRLIOZXcZ4GQD
+         FZ02DoxwJozFUwSQnHrnqEOGXBYoWMuxmVMxaIXQ8FM576R9VvDsgLoBzeePPYS5go
+         nwcVfBMJ17zYKg4CE/nS3FgMJtz3KVVPIPFQ+H7eCYuhuwN0eXWmAVEubCKa7T7XpS
+         XLhLheK8twDhw1udSBJzZVtkkERpojCoqm6WQW7ICncNxLPSjJufZYhxpBrLYzKt6I
+         J4ApAsH7Myo/Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ye Bin <yebin10@huawei.com>, Jan Kara <jack@suse.cz>,
-        Sasha Levin <sashal@kernel.org>, jack@suse.com
-Subject: [PATCH AUTOSEL 5.10 10/22] quota: fix warning in dqgrab()
-Date:   Sun, 23 Jul 2023 21:24:07 -0400
-Message-Id: <20230724012419.2317649-10-sashal@kernel.org>
+Cc:     Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        bhelgaas@google.com, perex@perex.cz, tiwai@suse.com,
+        gregkh@linuxfoundation.org, kai.vehmanen@linux.intel.com,
+        mkumard@nvidia.com, nmahale@nvidia.com, linux-pci@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.10 11/22] ALSA: hda: Add Loongson LS7A HD-Audio support
+Date:   Sun, 23 Jul 2023 21:24:08 -0400
+Message-Id: <20230724012419.2317649-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012419.2317649-1-sashal@kernel.org>
 References: <20230724012419.2317649-1-sashal@kernel.org>
@@ -58,102 +63,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+From: Yanteng Si <siyanteng@loongson.cn>
 
-[ Upstream commit d6a95db3c7ad160bc16b89e36449705309b52bcb ]
+[ Upstream commit 28bd137a3c8e105587ba8c55b68ef43b519b270f ]
 
-There's issue as follows when do fault injection:
-WARNING: CPU: 1 PID: 14870 at include/linux/quotaops.h:51 dquot_disable+0x13b7/0x18c0
-Modules linked in:
-CPU: 1 PID: 14870 Comm: fsconfig Not tainted 6.3.0-next-20230505-00006-g5107a9c821af-dirty #541
-RIP: 0010:dquot_disable+0x13b7/0x18c0
-RSP: 0018:ffffc9000acc79e0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff88825e41b980
-RDX: 0000000000000000 RSI: ffff88825e41b980 RDI: 0000000000000002
-RBP: ffff888179f68000 R08: ffffffff82087ca7 R09: 0000000000000000
-R10: 0000000000000001 R11: ffffed102f3ed026 R12: ffff888179f68130
-R13: ffff888179f68110 R14: dffffc0000000000 R15: ffff888179f68118
-FS:  00007f450a073740(0000) GS:ffff88882fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffe96f2efd8 CR3: 000000025c8ad000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- dquot_load_quota_sb+0xd53/0x1060
- dquot_resume+0x172/0x230
- ext4_reconfigure+0x1dc6/0x27b0
- reconfigure_super+0x515/0xa90
- __x64_sys_fsconfig+0xb19/0xd20
- do_syscall_64+0x39/0xb0
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Add the new PCI ID 0x0014 0x7a07 and the new PCI ID 0x0014 0x7a37
+Loongson HDA controller.
 
-Above issue may happens as follows:
-ProcessA              ProcessB                    ProcessC
-sys_fsconfig
-  vfs_fsconfig_locked
-   reconfigure_super
-     ext4_remount
-      dquot_suspend -> suspend all type quota
-
-                 sys_fsconfig
-                  vfs_fsconfig_locked
-                    reconfigure_super
-                     ext4_remount
-                      dquot_resume
-                       ret = dquot_load_quota_sb
-                        add_dquot_ref
-                                           do_open  -> open file O_RDWR
-                                            vfs_open
-                                             do_dentry_open
-                                              get_write_access
-                                               atomic_inc_unless_negative(&inode->i_writecount)
-                                              ext4_file_open
-                                               dquot_file_open
-                                                dquot_initialize
-                                                  __dquot_initialize
-                                                   dqget
-						    atomic_inc(&dquot->dq_count);
-
-                          __dquot_initialize
-                           __dquot_initialize
-                            dqget
-                             if (!test_bit(DQ_ACTIVE_B, &dquot->dq_flags))
-                               ext4_acquire_dquot
-			        -> Return error DQ_ACTIVE_B flag isn't set
-                         dquot_disable
-			  invalidate_dquots
-			   if (atomic_read(&dquot->dq_count))
-	                    dqgrab
-			     WARN_ON_ONCE(!test_bit(DQ_ACTIVE_B, &dquot->dq_flags))
-	                      -> Trigger warning
-
-In the above scenario, 'dquot->dq_flags' has no DQ_ACTIVE_B is normal when
-dqgrab().
-To solve above issue just replace the dqgrab() use in invalidate_dquots() with
-atomic_inc(&dquot->dq_count).
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Message-Id: <20230605140731.2427629-3-yebin10@huawei.com>
+Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
+Acked-by: Huacai Chen <chenhuacai@loongson.cn>
+Link: https://lore.kernel.org/r/993587483b9509796b29a416f257fcfb4b15c6ea.1686128807.git.siyanteng@loongson.cn
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/quota/dquot.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/pci_ids.h    | 3 +++
+ sound/hda/hdac_device.c    | 1 +
+ sound/pci/hda/hda_intel.c  | 7 +++++++
+ sound/pci/hda/patch_hdmi.c | 1 +
+ 4 files changed, 12 insertions(+)
 
-diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-index 135984a1a52f4..8d0cd68fc90a4 100644
---- a/fs/quota/dquot.c
-+++ b/fs/quota/dquot.c
-@@ -557,7 +557,7 @@ static void invalidate_dquots(struct super_block *sb, int type)
- 			continue;
- 		/* Wait for dquot users */
- 		if (atomic_read(&dquot->dq_count)) {
--			dqgrab(dquot);
-+			atomic_inc(&dquot->dq_count);
- 			spin_unlock(&dq_list_lock);
- 			/*
- 			 * Once dqput() wakes us up, we know it's time to free
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 4b34a5c125999..84cb7b32aa26f 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -153,6 +153,9 @@
+ 
+ #define PCI_VENDOR_ID_LOONGSON		0x0014
+ 
++#define PCI_DEVICE_ID_LOONGSON_HDA      0x7a07
++#define PCI_DEVICE_ID_LOONGSON_HDMI     0x7a37
++
+ #define PCI_VENDOR_ID_TTTECH		0x0357
+ #define PCI_DEVICE_ID_TTTECH_MC322	0x000a
+ 
+diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+index bfd8585776767..5315a3eb114ee 100644
+--- a/sound/hda/hdac_device.c
++++ b/sound/hda/hdac_device.c
+@@ -645,6 +645,7 @@ struct hda_vendor_id {
+ };
+ 
+ static const struct hda_vendor_id hda_vendor_ids[] = {
++	{ 0x0014, "Loongson" },
+ 	{ 0x1002, "ATI" },
+ 	{ 0x1013, "Cirrus Logic" },
+ 	{ 0x1057, "Motorola" },
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 1f641712233ef..13226f4f2d119 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -274,6 +274,7 @@ enum {
+ 	AZX_DRIVER_CTHDA,
+ 	AZX_DRIVER_CMEDIA,
+ 	AZX_DRIVER_ZHAOXIN,
++	AZX_DRIVER_LOONGSON,
+ 	AZX_DRIVER_GENERIC,
+ 	AZX_NUM_DRIVERS, /* keep this as last entry */
+ };
+@@ -397,6 +398,7 @@ static const char * const driver_short_names[] = {
+ 	[AZX_DRIVER_CTHDA] = "HDA Creative",
+ 	[AZX_DRIVER_CMEDIA] = "HDA C-Media",
+ 	[AZX_DRIVER_ZHAOXIN] = "HDA Zhaoxin",
++	[AZX_DRIVER_LOONGSON] = "HDA Loongson",
+ 	[AZX_DRIVER_GENERIC] = "HD-Audio Generic",
+ };
+ 
+@@ -2838,6 +2840,11 @@ static const struct pci_device_id azx_ids[] = {
+ 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_HDMI },
+ 	/* Zhaoxin */
+ 	{ PCI_DEVICE(0x1d17, 0x3288), .driver_data = AZX_DRIVER_ZHAOXIN },
++	/* Loongson HDAudio*/
++	{PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_HDA),
++	  .driver_data = AZX_DRIVER_LOONGSON },
++	{PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_HDMI),
++	  .driver_data = AZX_DRIVER_LOONGSON },
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, azx_ids);
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index c19afe4861949..5ff7e93024154 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -4307,6 +4307,7 @@ static int patch_gf_hdmi(struct hda_codec *codec)
+  * patch entries
+  */
+ static const struct hda_device_id snd_hda_id_hdmi[] = {
++HDA_CODEC_ENTRY(0x00147a47, "Loongson HDMI",	patch_generic_hdmi),
+ HDA_CODEC_ENTRY(0x1002793c, "RS600 HDMI",	patch_atihdmi),
+ HDA_CODEC_ENTRY(0x10027919, "RS600 HDMI",	patch_atihdmi),
+ HDA_CODEC_ENTRY(0x1002791a, "RS690/780 HDMI",	patch_atihdmi),
 -- 
 2.39.2
 
