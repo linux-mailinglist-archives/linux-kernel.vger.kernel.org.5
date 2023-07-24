@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC5675FF9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 069C875FFA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 21:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbjGXTLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 15:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34316 "EHLO
+        id S230466AbjGXTMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 15:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjGXTLW (ORCPT
+        with ESMTP id S229479AbjGXTMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 15:11:22 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD242F3;
-        Mon, 24 Jul 2023 12:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ukFXm9LjVouF4sTkaQ0Peg6EJLKXJvg9PuXymtzQWeU=; b=3FLzdREMYs6LJ/EPDLQL7Pw5L1
-        AbKhJ2ApmLcYJsSxl70sOMMwz6uo1kZ7TvfEwgtVkk2x+DjMrjBJ3uadWKlDjT7/SoNqUlzCjxV0g
-        Mlq92+8lN/kzF5PCyjMWmsC6+fvj1M0QBBF4m84s0dXyV+2ZCVYLpM4zSdEGf9EExoyZnOGtAdHus
-        1h49Di2C3q1kgHZeBeaIPygYEX7EYcsmM+2PRiMXob6WARt17zTwyeuzB4Ovow3kej68AMS2T86MK
-        5GIFS6Uj8QGaAE0LtOph+3vYqNbwbHU3eOdusEHoHe3PyVvIvNgS78CUIl58Gb6M7Iw8hwuSvBTsC
-        cbLJnU8Q==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qO0xi-005HcY-20;
-        Mon, 24 Jul 2023 19:11:18 +0000
-Date:   Mon, 24 Jul 2023 12:11:18 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the modules tree
-Message-ID: <ZL7M1kK+uGsJg4p2@bombadil.infradead.org>
-References: <20230724083348.5f7cd58a@canb.auug.org.au>
+        Mon, 24 Jul 2023 15:12:47 -0400
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9D194;
+        Mon, 24 Jul 2023 12:12:45 -0700 (PDT)
+Received: from [193.138.155.172] (helo=phil.sntech)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1qO0z0-00009J-F5; Mon, 24 Jul 2023 21:12:38 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        linux-arm-kernel@lists.infradead.org, Qu Wenruo <wqu@suse.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Simon Xue <xxm@rock-chips.com>, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        devicetree@vger.kernel.org, Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        linux-pci@vger.kernel.org, John Clark <inindev@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>, kernel@collabora.com,
+        Vinod Koul <vkoul@kernel.org>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Conor Dooley <conor+dt@kernel.org>
+Subject: Re: (subset) [PATCH v2 0/2] RK3588 PCIe3 support
+Date:   Mon, 24 Jul 2023 21:12:35 +0200
+Message-Id: <169022594803.2911118.12432442062352790360.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230717173512.65169-1-sebastian.reichel@collabora.com>
+References: <20230717173512.65169-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724083348.5f7cd58a@canb.auug.org.au>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 08:33:48AM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Mon, 17 Jul 2023 19:35:10 +0200, Sebastian Reichel wrote:
+> This adds PCIe v3 support for RK3588. The series depends on the PCIe
+> v2 series [0], since the the same binding is used. It has been tested
+> on Rockchip EVB1 and Radxa Rock 5B.
 > 
-> In commit
+> Note, that the PCIe3 PHY driver is currently missing bifurcation
+> support for RK3588. Thus after this series only PCIe3x4 is usable
+> (in aggregated x4 mode) without adding support for the PHY's
+> "rockchip,pcie30-phymode" DT property, which allows configuring
+> how the lanes are distributed. Aggregated 3x4 mode seems to be the
+> most common configuration. Both EVB1 and Rock 5B use it, so I
+> cannot test anything else anyways.
 > 
->   3d917b5d3ba5 ("modpost, kallsyms: Treat add '$'-prefixed symbols as mapping symbols")
-> 
-> Fixes tag
-> 
->   Fixes: c05780ef3c1 ("module: Ignore RISC-V mapping symbols too")
-> 
-> has these problem(s):
-> 
->   - SHA1 should be at least 12 digits long
+> [...]
 
-Fixed, thanks.
+Applied, thanks!
 
-  Luis
+[2/2] arm64: dts: rockchip: rk3588: add PCIe3 support
+      commit: 0acf4fa7f187cd7e3dad93f1ee14e9509687621e
+
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
