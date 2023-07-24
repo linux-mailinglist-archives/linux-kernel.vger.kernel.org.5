@@ -2,117 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE2475F4DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D08575F4DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 13:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbjGXLTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 07:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        id S231206AbjGXLVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 07:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbjGXLTq (ORCPT
+        with ESMTP id S229813AbjGXLVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 07:19:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE29FE5C;
-        Mon, 24 Jul 2023 04:19:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 24 Jul 2023 07:21:32 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B18E3;
+        Mon, 24 Jul 2023 04:21:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 61C4D610A5;
-        Mon, 24 Jul 2023 11:19:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57AD2C433C7;
-        Mon, 24 Jul 2023 11:19:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690197581;
-        bh=GzUaJfQLXiclBu5jTUskyxqPGnBUzb/0S3OOXRP7gV0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=itt39rI+Jj9TmkMjiihJU2dMhEyjo86bbK+X8Z5iWL6eihJ4Vw+duMVFBoDso9XkW
-         JE0nS9mjs5Ez0Kdu+csF6hknbLQrI4BdszAAHZXX4y2GJYbmSvN6ErjStXQ0Z4O213
-         zfin6Z8cRyJa9X0Q0/lHzXG8ddYGL5MQR7AN3GniRyXsl1vWJqhoLJfdb3uHM13r1L
-         AEhHx18DRA+Blvba3GlrlDluqYsN2WNlWN3YaEduCm2Zt/6zFt9IGfsHmc8H6BL77H
-         lmxYvlvnvDQTa83qzGuAbVdPh4PK1XCOlU0MkwehCItz6BWhJXjrsxd4vlKHsMj9cb
-         wJlEOFUs3ZSdQ==
-Date:   Mon, 24 Jul 2023 14:19:38 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Junxian Huang <huangjunxian6@hisilicon.com>
-Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 for-next] RDMA/core: Get IB width and speed from netdev
-Message-ID: <20230724111938.GB9776@unreal>
-References: <20230721092052.2090449-1-huangjunxian6@hisilicon.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 30B7C229C0;
+        Mon, 24 Jul 2023 11:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690197689; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fSuQy8bgPAwBhTJEjrrJpwdZYxA+welDhb6P1mNOaMA=;
+        b=DOsJNhznvKbk71xWrPn+4V30Fv7N/9tvnpp+vtcO5CeP4f5UE6ucWMhB3rdQFN205fVI6T
+        ujDGfTpCXoEGKRtf9X8j53fFdVq6hN3OW+yINcudrKNKr4+p+ca7G9s6sCWGN4n1hsCp2P
+        TJjzrlWhFKKTQG8qTrJ0G4Ixb6h5qyI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690197689;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fSuQy8bgPAwBhTJEjrrJpwdZYxA+welDhb6P1mNOaMA=;
+        b=Pww+kgyGf/qgb+NiljCZY9krEDdOvePfpydZYKiaz0ura6o1m/x6lbIxe+wkm+HIBRUGgb
+        uqfOWYgN9KwTI2AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A940D13476;
+        Mon, 24 Jul 2023 11:21:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YCQkJrhevmT/awAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Mon, 24 Jul 2023 11:21:28 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id 8fe5094a;
+        Mon, 24 Jul 2023 11:21:24 +0000 (UTC)
+From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Filipe Manana <fdmanana@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+Subject: [PATCH v3] btrfs: propagate error from function unpin_extent_cache()
+Date:   Mon, 24 Jul 2023 12:21:23 +0100
+Message-Id: <20230724112123.1879-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230721092052.2090449-1-huangjunxian6@hisilicon.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 05:20:52PM +0800, Junxian Huang wrote:
-> From: Haoyue Xu <xuhaoyue1@hisilicon.com>
-> 
-> Previously, there was no way to query the number of lanes for a network
-> card, so the same netdev_speed would result in a fixed pair of width and
-> speed. As network card specifications become more diverse, such fixed
-> mode is no longer suitable, so a method is needed to obtain the correct
-> width and speed based on the number of lanes.
-> 
-> This patch retrieves netdev lanes and speed from net_device and
-> translates them to IB width and speed.
-> 
-> Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
-> Signed-off-by: Luoyouming <luoyouming@huawei.com>
-> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-> ---
->  drivers/infiniband/core/verbs.c | 100 +++++++++++++++++++++++++-------
->  1 file changed, 79 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-> index b99b3cc283b6..25367bd6dd97 100644
-> --- a/drivers/infiniband/core/verbs.c
-> +++ b/drivers/infiniband/core/verbs.c
-> @@ -1880,6 +1880,80 @@ int ib_modify_qp_with_udata(struct ib_qp *ib_qp, struct ib_qp_attr *attr,
->  }
->  EXPORT_SYMBOL(ib_modify_qp_with_udata);
->  
-> +static void ib_get_width_and_speed(u32 netdev_speed, u32 lanes,
-> +				   u16 *speed, u8 *width)
+Function unpin_extent_cache() currently never returns any error, even in
+the event of an extent lookup failure.  This commit fixes this by returning
+-EINVAL when no extent is found.  Additionally, it adds extra information
+that may help debug any (hopefully) rare occasion when a lookup fails.  The
+only caller of this function is also modified to handle this error
+condition.
 
-<...>
+Signed-off-by: Luís Henriques <lhenriques@suse.de>
+---
 
-> +	switch (netdev_speed / lanes) {
-> +	case SPEED_2500:
-> +		*speed = IB_SPEED_SDR;
-> +		break;
-> +	case SPEED_5000:
-> +		*speed = IB_SPEED_DDR;
-> +		break;
-> +	case SPEED_10000:
-> +		*speed = IB_SPEED_FDR10;
-> +		break;
-> +	case SPEED_14000:
-> +		*speed = IB_SPEED_FDR;
-> +		break;
-> +	case SPEED_25000:
-> +		*speed = IB_SPEED_EDR;
-> +		break;
-> +	case SPEED_50000:
-> +		*speed = IB_SPEED_HDR;
-> +		break;
-> +	case SPEED_100000:
-> +		*speed = IB_SPEED_NDR;
-> +		break;
-> +	default:
-> +		*speed = IB_SPEED_SDR;
-> +	}
+Changes since v2:
+- As per Filipe's suggestion, provide as much debug info as possible.
+  This required modifying the function to get the inode instead of the
+  ext map tree.
+- Since Filipe mentioned this WARN_ON() has been hit before, I guess it's
+  better to also handle this error in the caller instead of just continue.
+  But this is a change of the current behaviour and I may be wrong.
 
-How did you come to these translation values?
+Changes since v1:
+Instead of changing unpin_extent_cache() into a void function, make it
+propagate an error code instead.
 
-Thanks
+ fs/btrfs/extent_map.c | 26 +++++++++++++++++++++-----
+ fs/btrfs/extent_map.h |  2 +-
+ fs/btrfs/inode.c      |  8 +++++---
+ 3 files changed, 27 insertions(+), 9 deletions(-)
+
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index 0cdb3e86f29b..1a2e791cbfb4 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -292,20 +292,37 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+  * to the generation that actually added the file item to the inode so we know
+  * we need to sync this extent when we call fsync().
+  */
+-int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
++int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len,
+ 		       u64 gen)
+ {
+ 	int ret = 0;
++	struct extent_map_tree *tree = &inode->extent_tree;
+ 	struct extent_map *em;
+ 	bool prealloc = false;
+ 
+ 	write_lock(&tree->lock);
+ 	em = lookup_extent_mapping(tree, start, len);
+ 
+-	WARN_ON(!em || em->start != start);
++	if (!em || em->start != start) {
++		struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 
+-	if (!em)
+-		goto out;
++		if (!em)
++			btrfs_warn(fs_info,
++				   "failed to find extent map");
++		else
++			btrfs_warn(fs_info,
++		"extent with wrong offset: start: %llu len: %llu flags: %lu",
++				   em->start, em->len, em->flags);
++		btrfs_warn(fs_info,
++			   "root %lld inode %llu offset %llu len: %llu",
++			   inode->root->root_key.objectid, btrfs_ino(inode),
++			   start, len);
++		WARN_ON(1);
++		if (!em) {
++			ret = -EINVAL;
++			goto out;
++		}
++	}
+ 
+ 	em->generation = gen;
+ 	clear_bit(EXTENT_FLAG_PINNED, &em->flags);
+@@ -328,7 +345,6 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
+ out:
+ 	write_unlock(&tree->lock);
+ 	return ret;
+-
+ }
+ 
+ void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em)
+diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+index 35d27c756e08..7a4ff55ee133 100644
+--- a/fs/btrfs/extent_map.h
++++ b/fs/btrfs/extent_map.h
+@@ -97,7 +97,7 @@ struct extent_map *alloc_extent_map(void);
+ void free_extent_map(struct extent_map *em);
+ int __init extent_map_init(void);
+ void __cold extent_map_exit(void);
+-int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len, u64 gen);
++int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len, u64 gen);
+ void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em);
+ struct extent_map *search_extent_mapping(struct extent_map_tree *tree,
+ 					 u64 start, u64 len);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 49cef61f6a39..90efc2582f81 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3181,7 +3181,7 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+ 	struct extent_state *cached_state = NULL;
+ 	u64 start, end;
+ 	int compress_type = 0;
+-	int ret = 0;
++	int ret = 0, ret2;
+ 	u64 logical_len = ordered_extent->num_bytes;
+ 	bool freespace_inode;
+ 	bool truncated = false;
+@@ -3273,8 +3273,10 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+ 						ordered_extent->disk_num_bytes);
+ 		}
+ 	}
+-	unpin_extent_cache(&inode->extent_tree, ordered_extent->file_offset,
+-			   ordered_extent->num_bytes, trans->transid);
++	ret2 = unpin_extent_cache(inode, ordered_extent->file_offset,
++				  ordered_extent->num_bytes, trans->transid);
++	if (ret >= 0)
++		ret = ret2;
+ 	if (ret < 0) {
+ 		btrfs_abort_transaction(trans, ret);
+ 		goto out;
