@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6740C75ED29
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C5275ED2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbjGXINm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
+        id S231246AbjGXIN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:13:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbjGXIN0 (ORCPT
+        with ESMTP id S230172AbjGXINb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:13:26 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39E110DC
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:13:09 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9891c73e0fbso849854966b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:13:09 -0700 (PDT)
+        Mon, 24 Jul 2023 04:13:31 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FFEF1705
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:13:13 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-992e22c09edso596709766b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:13:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690186387; x=1690791187;
+        d=linaro.org; s=google; t=1690186391; x=1690791191;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0zR/M8U1wHDKNH5FK18SqWQfcxUTegtHbVe9hHuhxRk=;
-        b=gSFQ/HpK5N6H/8kytfRh2+IX2a3eYAbeGHw5wmyZ/Q4cegnjB7xhpYXGDLuZRjRA5X
-         fsH3lktwBPTPkQQhnj508dZGvPlzSF3WqdRXM1IwjnuW/azppW2sJiLQeaGywEl7rX0C
-         HpobsrPlf/jbuwR7c43IgxGuiT5ExiQRMevZxhnrdRTBxuKbE6FM8LueSHyNsATzxahX
-         3x0IlzZfeMPVJQ9CdVH6gOxGmFs6+URZGyAitNvAMrgMUuMVL31Nkl75IYeB+8EjizNM
-         vdHk2Ra4FRfqZH4rUbSOD7h/NeA/1Z4FGhD6XniVXhWCZSwlMPaCvdArYZrQo2m+i2bZ
-         9CHw==
+        bh=RkHM3RFGQ0WIr5v2TWHAHkTdJrhHVucyrUvsad9WfOo=;
+        b=deuRTZstRG4cjvLu+clvj8bi6F+b/ABQ00rFEdb/nZpASZp4DaGZWenjE4cGdrRm4M
+         9htdKtMmA21QkObKsHHKINz2Oi0+UZDHkq02z0kM8zRu/LXF64qf6r/ISUdS0H5W9Zom
+         QV0nxQycoAYQIcYpFqow0Szavf7JSW2OYa9OnlOjWcaAeeKv6deuP29rLjFcNs0acE8Q
+         Zyhriv5zVWhdoaBXowGFJZSdRbmfvR5rtT2u3fNdq+g8PsopZCOxY/6I5c7SPZLEAgkt
+         U09FFJzvp2lnk73nmBPpG4uD5VU3bvLaPjLdG7M8ghECJKRpGNsYy++jqaBtoDJQCpOu
+         VnnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690186387; x=1690791187;
+        d=1e100.net; s=20221208; t=1690186391; x=1690791191;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0zR/M8U1wHDKNH5FK18SqWQfcxUTegtHbVe9hHuhxRk=;
-        b=eutg8aObJPfQXcJ2ndBW02+FRQBcBy/lrbasrKxSg9/yn0zWyBekOmMoSxMul76aNT
-         WEHMksbR8Ia2+XcZVL9ExF5dInOh4fYsb8RVUtkIEY0PSgP5I7coFy479vq96ViSfqMe
-         ECrN06VQCSW5aQxTaY8iAy7r+YV+lXcX5eNSefbr8gXSV7zibOgkxJITorAkZoiz3HWP
-         J6muf6hTV5DMrFG4fYimNJYKQm2oDkuUNYBiKY/8Ct4UrlmUb3vQtGfN+GbnjEMtwxaZ
-         tPA3uNxAyuMsPMgU64884NxMEsSTvL6SKiDJmGSnuZ7Omp++MCdQb90nENn8qdpKDAr9
-         wz6w==
-X-Gm-Message-State: ABy/qLbdeuWsTWB4QQg9jPhcAWcIzUaIkr76kjViJIO8Q9pdl+HIBGMQ
-        SZVN8zHZWP6DayUnreXftGNOrw==
-X-Google-Smtp-Source: APBJJlF2heJfl8MQDDlm7U5LJn0RmLJ7fM7Slrql6tkji5QwnlxEqIZI61hThIeekB1eqyZykKJMrw==
-X-Received: by 2002:a17:907:75e2:b0:99b:4bab:2841 with SMTP id jz2-20020a17090775e200b0099b4bab2841mr9525489ejc.26.1690186387421;
-        Mon, 24 Jul 2023 01:13:07 -0700 (PDT)
+        bh=RkHM3RFGQ0WIr5v2TWHAHkTdJrhHVucyrUvsad9WfOo=;
+        b=DephssKUAabpGaTe1D9fu866wHYos+t7izLhIM6Sn9OS3IyrAxzYtArwbmIJIL/33u
+         ACjVcT+l3GzJBC167MpMaHFRQLAQNdjdW4lYUAMO1Haa1FBfxFLjVFmlSPmsCZYGJMNu
+         XLpoD6r1IhWwfRh6j8zMIwDna7sROTIbKjF914R6HGGNf+j3kC6qgL1b5123/RSziNHa
+         ExqrS4kbcvRBsr44CHPqs3i3QAfkpyfiffCiia/bDr6jF4XJVdurqUJLKIdinYE9agkC
+         elPeckz2XAPPuT4GPCTwjCGLOnDKVObjifZccjoMLMDRTxP5BEwUtbE/LUwymbDEnbqO
+         LHTw==
+X-Gm-Message-State: ABy/qLZwpe/D+OOR01uM91u5F3dbTUVhMznlW24C1r2J2acPbbOnUDbb
+        GYQsWJZ+4hxH48vSVcrG57VwVg==
+X-Google-Smtp-Source: APBJJlHSxOp0xPKToV9ONheJ//o5w9GLr/jPtmw5rrpfHCOWAJ13ocXV1lLD8LOrgl9iQBS3bEGs4w==
+X-Received: by 2002:a17:906:31d3:b0:993:f90b:e549 with SMTP id f19-20020a17090631d300b00993f90be549mr8877382ejf.37.1690186391119;
+        Mon, 24 Jul 2023 01:13:11 -0700 (PDT)
 Received: from 1.. ([79.115.63.48])
-        by smtp.gmail.com with ESMTPSA id a6-20020a1709065f8600b0098ec690e6d7sm6355395eju.73.2023.07.24.01.13.05
+        by smtp.gmail.com with ESMTPSA id a6-20020a1709065f8600b0098ec690e6d7sm6355395eju.73.2023.07.24.01.13.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 01:13:06 -0700 (PDT)
+        Mon, 24 Jul 2023 01:13:08 -0700 (PDT)
 From:   Tudor Ambarus <tudor.ambarus@linaro.org>
 To:     tkuw584924@gmail.com, takahiro.kuwano@infineon.com,
         michael@walle.cc
@@ -57,14 +57,14 @@ Cc:     pratyush@kernel.org, linux-mtd@lists.infradead.org,
         linux-kernel@vger.kernel.org, bacem.daassi@infineon.com,
         miquel.raynal@bootlin.com, richard@nod.at,
         Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [RESEND PATCH v3 06/11] mtd: spi-nor: spansion: add MCP support in set_octal_dtr()
-Date:   Mon, 24 Jul 2023 11:12:42 +0300
-Message-Id: <20230724081247.4779-7-tudor.ambarus@linaro.org>
+Subject: [RESEND PATCH v3 07/11] mtd: spi-nor: spansion: add octal DTR support in RD_ANY_REG_OP
+Date:   Mon, 24 Jul 2023 11:12:43 +0300
+Message-Id: <20230724081247.4779-8-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230724081247.4779-1-tudor.ambarus@linaro.org>
 References: <20230724081247.4779-1-tudor.ambarus@linaro.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2370; i=tudor.ambarus@linaro.org; h=from:subject; bh=Wrd7TgCxXlMqnk/UDwQEgLVdRWdaYJRKC05Rf/3Xxx0=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkvjJ+6rh7ujEX5KOJrzAwohHe3MP6fhRRPEZAn HCFY1KuZRqJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZL4yfgAKCRBLVU9HpY0U 6bOzB/9ghK8NGTdi3IxM8Df5fdqtBbV5rzTB4CsDwL1WCLfQ09LY+dMOZpq3FoZpgwYwi3O/9Co nC4s1mzWjdxGCrY5XXgEUwu06zIvJqn4uhHm1frKCOByHs2LuvDh4BHsjnEXeaPzaJCf8o4xOcV 3VKswMoEvYd51FNnzQognRKtxlTr+2hAf7tqRciVUWQjk/MqfXM4011rfGRKXc1WLdgrNN+N9FQ QY++8UKrFkpJ1UifZoresZHuZUStoqYfGdZKY1Ar+s+0wgCg9Ib3yu/A/c2mRfQYW6b6l++2PrT PMYrBuwSBbfSoUceEHPA0ubhdk3drrFXomwplP/ggMXQDwf+
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1173; i=tudor.ambarus@linaro.org; h=from:subject; bh=ARtE+Fv/l4a+BkMfBrTfq2ov79VZLg+i8bYbcphxQmM=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkvjJ+bqmEDqHMfs1PJlBNahV34jcDlLvGaPX+Z cKEiovvOcyJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZL4yfgAKCRBLVU9HpY0U 6ed+CACMM3slBgYr2/UDm63/4pQWiMj1acdFTz6d2k3eD13QyQClOeGJIqfqwPCSfGWO94K8CAh h7DmAjYFrttVS6/Lb5HLhPkhtEY0holI46g6IRpyvipqRcdTK8hf7nQPejfO49PuwfnCosiEUzu zLJ2tBN5s3OUsZauWrCmBeC3Wpp4P6DIGfDQ4N5vxuwwAa4EFLvrRGHB7XzmK52llClTWmxDSmB 0IILcuxRBw9mqRytpVm+RGKB+cJg7WrDFkroIA43qvK7PVLJ20c5iLUJp7T1UVqy48Sz+zftLtI nh6dFLVBmFWwrHZVEQWZhiUbgkscQIdx8i9dARJ1bfXnrXdo
 X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,72 +79,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-Infineon multi-chip package (MCP) devices require the Octal DTR
-configuraion to be set on each die. We can access to configuration
-registers in each die by using params->n_dice and params->vreg_offset[]
-populated from SFDP. Add MCP support in set_octal_dtr().
+S28HS02GT uses RD_ANY_REG_OP to read status of each die. In Octal DTR
+mode, RD_ANY_REG_OP needs dummy cycles (same as params->rdsr_dummy) and
+data length should be 2.
 
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
- drivers/mtd/spi-nor/spansion.c | 33 +++++++++++++++++++--------------
- 1 file changed, 19 insertions(+), 14 deletions(-)
+ drivers/mtd/spi-nor/spansion.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 5b6f36b56e9f..28d0a995f3b9 100644
+index 28d0a995f3b9..2fc3e65686b3 100644
 --- a/drivers/mtd/spi-nor/spansion.c
 +++ b/drivers/mtd/spi-nor/spansion.c
-@@ -206,17 +206,19 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
- 	const struct spi_nor_flash_parameter *params = nor->params;
- 	u8 *buf = nor->bouncebuf;
- 	u64 addr;
--	int ret;
-+	int i, ret;
+@@ -104,11 +104,17 @@ static void spansion_nor_clear_sr(struct spi_nor *nor)
  
--	addr = params->vreg_offset[0] + SPINOR_REG_CYPRESS_CFR2;
--	ret = cypress_nor_set_memlat(nor, addr);
--	if (ret)
--		return ret;
-+	for (i = 0; i < params->n_dice; i++) {
-+		addr = params->vreg_offset[i] + SPINOR_REG_CYPRESS_CFR2;
-+		ret = cypress_nor_set_memlat(nor, addr);
-+		if (ret)
-+			return ret;
- 
--	addr = params->vreg_offset[0] + SPINOR_REG_CYPRESS_CFR5;
--	ret = cypress_nor_set_octal_dtr_bits(nor, addr);
--	if (ret)
--		return ret;
-+		addr = params->vreg_offset[i] + SPINOR_REG_CYPRESS_CFR5;
-+		ret = cypress_nor_set_octal_dtr_bits(nor, addr);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	/* Read flash ID to make sure the switch was successful. */
- 	ret = spi_nor_read_id(nor, nor->addr_nbytes, 3, buf,
-@@ -251,14 +253,17 @@ static int cypress_nor_set_single_spi_bits(struct spi_nor *nor, u64 addr)
- 
- static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
+ static int cypress_nor_sr_ready_and_clear_reg(struct spi_nor *nor, u64 addr)
  {
-+	const struct spi_nor_flash_parameter *params = nor->params;
- 	u8 *buf = nor->bouncebuf;
- 	u64 addr;
--	int ret;
-+	int i, ret;
++	struct spi_nor_flash_parameter *params = nor->params;
+ 	struct spi_mem_op op =
+-		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes, addr,
++		CYPRESS_NOR_RD_ANY_REG_OP(params->addr_mode_nbytes, addr,
+ 					  0, nor->bouncebuf);
+ 	int ret;
  
--	addr = nor->params->vreg_offset[0] + SPINOR_REG_CYPRESS_CFR5;
--	ret = cypress_nor_set_single_spi_bits(nor, addr);
--	if (ret)
--		return ret;
-+	for (i = 0; i < params->n_dice; i++) {
-+		addr = params->vreg_offset[i] + SPINOR_REG_CYPRESS_CFR5;
-+		ret = cypress_nor_set_single_spi_bits(nor, addr);
-+		if (ret)
-+			return ret;
++	if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
++		op.dummy.nbytes = params->rdsr_dummy;
++		op.data.nbytes = 2;
 +	}
- 
- 	/* Read flash ID to make sure the switch was successful. */
- 	ret = spi_nor_read_id(nor, 0, 0, buf, SNOR_PROTO_1_1_1);
++
+ 	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
+ 	if (ret)
+ 		return ret;
 -- 
 2.34.1
 
