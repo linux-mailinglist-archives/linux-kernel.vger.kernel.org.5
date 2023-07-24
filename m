@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D0F75EC96
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3D275EC99
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbjGXHdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 03:33:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
+        id S230245AbjGXHea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 03:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbjGXHdx (ORCPT
+        with ESMTP id S229661AbjGXHe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 03:33:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03421A2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:32:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690183978;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=obJKEr7PPFK0pLw7ZGOQfDHbqPEfj1yDCcKlqGnAfNY=;
-        b=isgWf84nq2zW75OZo68IreQZ1lFD9rId/lj5Ehw7+Xuc/z7NEWb847Ea3hmcSAekp1gT31
-        WmRy7zOKcgb0Ys0DwX6w4Zco9KLd1ZNdqSySfozA1RHLwsQjFEkYx67s3y1owonI7lJHJL
-        QRL2xT5555RB9cwJjDmG40WwYmnkJng=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-594-F49BqY30ObOTgW7whFIyew-1; Mon, 24 Jul 2023 03:32:56 -0400
-X-MC-Unique: F49BqY30ObOTgW7whFIyew-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b6fdbe2efdso36011321fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:32:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690183975; x=1690788775;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=obJKEr7PPFK0pLw7ZGOQfDHbqPEfj1yDCcKlqGnAfNY=;
-        b=lWqKlknkMgCZBcHzU0f4GlIX6uUXG4ocrbHAv1ynUSHLPgp9yB0dDzvheifNb0dONL
-         Trvlk2i277eury92nvGcAIrllglLot3KVD8yqqAARveZmXTvzDlj1FUknJlovVk7JEch
-         craO5hftiyHwoSGfWqq6NKlVGZALbIQPpq7WSOorYpSAmmgCwp++zCuQtHDP3hZd2PuJ
-         ZNFhyw5c1pKF6zigWGsQndBCgimav+hvQofQsAAUJ8ecJESwFzAVxJAkpUf5P7XfHt7F
-         jYopG+khwUiszO1HLXcMgvHNoWm75bdX/6clcLjuHpjrv+hvIzb1MOTzg8q6qMrP7UyW
-         t/jw==
-X-Gm-Message-State: ABy/qLaEcgCEsqsGGACKqlw6zVWFMfU4432mrs9QmfU7JRyN38pS/y1S
-        YTSsllr9W7jhMPZJpOlVOMx7kMtCUHe8zpKyuDU/iI/N4sS5j6gE8IDCYfvUuhBeeHtMa7uGRVM
-        ojK7gQyWCTI9vXK7KU5sVzF18
-X-Received: by 2002:a2e:988d:0:b0:2b6:fa92:479e with SMTP id b13-20020a2e988d000000b002b6fa92479emr5540264ljj.42.1690183975468;
-        Mon, 24 Jul 2023 00:32:55 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFha0kr3za1tiulXuUUpmLoGr/15/UKVQHTMghA8BLPnDMFKNbxFPtb4c1QICku3M6nKSRLrA==
-X-Received: by 2002:a2e:988d:0:b0:2b6:fa92:479e with SMTP id b13-20020a2e988d000000b002b6fa92479emr5540249ljj.42.1690183975012;
-        Mon, 24 Jul 2023 00:32:55 -0700 (PDT)
-Received: from redhat.com ([2a06:c701:73e0:3800:a16e:b2a0:7d06:58aa])
-        by smtp.gmail.com with ESMTPSA id h19-20020a1ccc13000000b003fbcdba1a63sm4012097wmb.12.2023.07.24.00.32.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 00:32:54 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 03:32:50 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Gavin Li <gavinl@nvidia.com>
-Cc:     jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, jiri@nvidia.com,
-        dtatulea@nvidia.com, gavi@nvidia.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next V3 3/4] virtio_net: support per queue interrupt
- coalesce command
-Message-ID: <20230724032451-mutt-send-email-mst@kernel.org>
-References: <20230724034048.51482-1-gavinl@nvidia.com>
- <20230724034048.51482-4-gavinl@nvidia.com>
+        Mon, 24 Jul 2023 03:34:28 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D5FA2C6;
+        Mon, 24 Jul 2023 00:34:26 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36O7XSXZ0019428, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36O7XSXZ0019428
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 24 Jul 2023 15:33:28 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Mon, 24 Jul 2023 15:33:39 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Mon, 24 Jul 2023 15:33:39 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Mon, 24 Jul 2023 15:33:39 +0800
+From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
+        <stanley_chang@realtek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Roy Luo <royluo@google.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Flavio Suligoi <f.suligoi@asem.it>,
+        Ray Chi <raychi@google.com>,
+        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: RE: [PATCH v7 1/5] usb: phy: add usb phy notify port status API
+Thread-Topic: [PATCH v7 1/5] usb: phy: add usb phy notify port status API
+Thread-Index: AQHZsJ7kDWGiCOPLRk2HhU7h2LN0sq/H/g6AgACS9CD//4JIgIAAjEhQ
+Date:   Mon, 24 Jul 2023 07:33:39 +0000
+Message-ID: <8d6ee5765dc34d5fa042195b27aa7eec@realtek.com>
+References: <20230707064725.25291-1-stanley_chang@realtek.com>
+ <2023072452-jasmine-palm-7b73@gregkh>
+ <47131beec8a24572873aa31e87cfaab6@realtek.com>
+ <2023072454-mosaic-ogle-9a27@gregkh>
+In-Reply-To: <2023072454-mosaic-ogle-9a27@gregkh>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.190.159]
+x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724034048.51482-4-gavinl@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,279 +81,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 06:40:47AM +0300, Gavin Li wrote:
-> Add interrupt_coalesce config in send_queue and receive_queue to cache user
-> config.
-> 
-> Send per virtqueue interrupt moderation config to underline device in order
-> to have more efficient interrupt moderation and cpu utilization of guest
-> VM.
-> 
-> Signed-off-by: Gavin Li <gavinl@nvidia.com>
-> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->  drivers/net/virtio_net.c        | 120 ++++++++++++++++++++++++++++----
->  include/uapi/linux/virtio_net.h |  14 ++++
->  2 files changed, 122 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 802ed21453f5..0c3ee1e26ece 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -144,6 +144,8 @@ struct send_queue {
->  
->  	struct virtnet_sq_stats stats;
->  
-> +	struct virtnet_interrupt_coalesce intr_coal;
-> +
->  	struct napi_struct napi;
->  
->  	/* Record whether sq is in reset state. */
-> @@ -161,6 +163,8 @@ struct receive_queue {
->  
->  	struct virtnet_rq_stats stats;
->  
-> +	struct virtnet_interrupt_coalesce intr_coal;
-> +
->  	/* Chain pages by the private ptr. */
->  	struct page *pages;
->  
-> @@ -212,6 +216,7 @@ struct control_buf {
->  	struct virtio_net_ctrl_rss rss;
->  	struct virtio_net_ctrl_coal_tx coal_tx;
->  	struct virtio_net_ctrl_coal_rx coal_rx;
-> +	struct virtio_net_ctrl_coal_vq coal_vq;
->  };
->  
->  struct virtnet_info {
-> @@ -3078,6 +3083,55 @@ static int virtnet_send_notf_coal_cmds(struct virtnet_info *vi,
->  	return 0;
->  }
->  
-> +static int virtnet_send_ctrl_coal_vq_cmd(struct virtnet_info *vi,
-> +					 u16 vqn, u32 max_usecs, u32 max_packets)
-> +{
-> +	struct scatterlist sgs;
-> +
-> +	vi->ctrl->coal_vq.vqn = cpu_to_le16(vqn);
-> +	vi->ctrl->coal_vq.coal.max_usecs = cpu_to_le32(max_usecs);
-> +	vi->ctrl->coal_vq.coal.max_packets = cpu_to_le32(max_packets);
-> +	sg_init_one(&sgs, &vi->ctrl->coal_vq, sizeof(vi->ctrl->coal_vq));
-> +
-> +	if (!virtnet_send_command(vi, VIRTIO_NET_CTRL_NOTF_COAL,
-> +				  VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET,
-> +				  &sgs))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +static int virtnet_send_notf_coal_vq_cmds(struct virtnet_info *vi,
-> +					  struct ethtool_coalesce *ec,
-> +					  u16 queue)
-> +{
-> +	int err;
-> +
-> +	if (ec->rx_coalesce_usecs || ec->rx_max_coalesced_frames) {
-> +		err = virtnet_send_ctrl_coal_vq_cmd(vi, rxq2vq(queue),
-> +						    ec->rx_coalesce_usecs,
-> +						    ec->rx_max_coalesced_frames);
-> +		if (err)
-> +			return err;
-> +		/* Save parameters */
-> +		vi->rq[queue].intr_coal.max_usecs = ec->rx_coalesce_usecs;
-> +		vi->rq[queue].intr_coal.max_packets = ec->rx_max_coalesced_frames;
-> +	}
-> +
-> +	if (ec->tx_coalesce_usecs || ec->tx_max_coalesced_frames) {
-> +		err = virtnet_send_ctrl_coal_vq_cmd(vi, txq2vq(queue),
-> +						    ec->tx_coalesce_usecs,
-> +						    ec->tx_max_coalesced_frames);
-> +		if (err)
-> +			return err;
-> +		/* Save parameters */
-> +		vi->sq[queue].intr_coal.max_usecs = ec->tx_coalesce_usecs;
-> +		vi->sq[queue].intr_coal.max_packets = ec->tx_max_coalesced_frames;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
->  {
->  	/* usecs coalescing is supported only if VIRTIO_NET_F_NOTF_COAL
-> @@ -3094,23 +3148,39 @@ static int virtnet_coal_params_supported(struct ethtool_coalesce *ec)
->  }
->  
->  static int virtnet_set_coalesce_one(struct net_device *dev,
-> -				    struct ethtool_coalesce *ec)
-> +				    struct ethtool_coalesce *ec,
-> +				    bool per_queue,
-> +				    u32 queue)
->  {
->  	struct virtnet_info *vi = netdev_priv(dev);
-> -	int ret, i, napi_weight;
-> +	int queue_count = per_queue ? 1 : vi->max_queue_pairs;
-> +	int queue_number = per_queue ? queue : 0;
-
-Actually can't we refactor this? This whole function is littered
-with if/else branches. just code it separately - the only
-common part is:
-
-        napi_weight = ec->tx_max_coalesced_frames ? NAPI_POLL_WEIGHT : 0;
-        if (napi_weight ^ vi->sq[0].napi.weight) {
-                if (dev->flags & IFF_UP)
-                        return -EBUSY;
-                else
-                        update_napi = true;
-        }
-
-so just move this to a helper and have two functions - global and
-per queue.
-
-
-
->  	bool update_napi = false;
-> +	int ret, i, napi_weight;
-> +
-> +	if (queue >= vi->max_queue_pairs)
-> +		return -EINVAL;
->  
->  	/* Can't change NAPI weight if the link is up */
->  	napi_weight = ec->tx_max_coalesced_frames ? NAPI_POLL_WEIGHT : 0;
-> -	if (napi_weight ^ vi->sq[0].napi.weight) {
-> -		if (dev->flags & IFF_UP)
-> -			return -EBUSY;
-> -		else
-> +	for (i = queue_number; i < queue_count; i++) {
-> +		if (napi_weight ^ vi->sq[i].napi.weight) {
-> +			if (dev->flags & IFF_UP)
-> +				return -EBUSY;
-> +
->  			update_napi = true;
-> +			/* All queues that belong to [queue_number, queue_count] will be
-> +			 * updated for the sake of simplicity, which might not be necessary
-> +			 */
-> +			queue_number = i;
-> +			break;
-> +		}
->  	}
->  
-> -	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
-> +	if (!per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL))
->  		ret = virtnet_send_notf_coal_cmds(vi, ec);
-> +	else if (per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_VQ_NOTF_COAL))
-> +		ret = virtnet_send_notf_coal_vq_cmds(vi, ec, queue);
->  	else
->  		ret = virtnet_coal_params_supported(ec);
->  
-> @@ -3118,7 +3188,7 @@ static int virtnet_set_coalesce_one(struct net_device *dev,
->  		return ret;
->  
->  	if (update_napi) {
-> -		for (i = 0; i < vi->max_queue_pairs; i++)
-> +		for (i = queue_number; i < queue_count; i++)
->  			vi->sq[i].napi.weight = napi_weight;
->  	}
->  
-> @@ -3130,19 +3200,29 @@ static int virtnet_set_coalesce(struct net_device *dev,
->  				struct kernel_ethtool_coalesce *kernel_coal,
->  				struct netlink_ext_ack *extack)
->  {
-> -	return virtnet_set_coalesce_one(dev, ec);
-> +	return virtnet_set_coalesce_one(dev, ec, false, 0);
->  }
->  
->  static int virtnet_get_coalesce_one(struct net_device *dev,
-> -				    struct ethtool_coalesce *ec)
-> +				    struct ethtool_coalesce *ec,
-> +				    bool per_queue,
-> +				    u32 queue)
->  {
->  	struct virtnet_info *vi = netdev_priv(dev);
->  
-> -	if (virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
-> +	if (queue >= vi->max_queue_pairs)
-> +		return -EINVAL;
-> +
-> +	if (!per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_NOTF_COAL)) {
->  		ec->rx_coalesce_usecs = vi->intr_coal_rx.max_usecs;
->  		ec->tx_coalesce_usecs = vi->intr_coal_tx.max_usecs;
->  		ec->tx_max_coalesced_frames = vi->intr_coal_tx.max_packets;
->  		ec->rx_max_coalesced_frames = vi->intr_coal_rx.max_packets;
-> +	} else if (per_queue && virtio_has_feature(vi->vdev, VIRTIO_NET_F_VQ_NOTF_COAL)) {
-> +		ec->rx_coalesce_usecs = vi->rq[queue].intr_coal.max_usecs;
-> +		ec->tx_coalesce_usecs = vi->sq[queue].intr_coal.max_usecs;
-> +		ec->tx_max_coalesced_frames = vi->sq[queue].intr_coal.max_packets;
-> +		ec->rx_max_coalesced_frames = vi->rq[queue].intr_coal.max_packets;
->  	} else {
->  		ec->rx_max_coalesced_frames = 1;
->  
-> @@ -3158,7 +3238,21 @@ static int virtnet_get_coalesce(struct net_device *dev,
->  				struct kernel_ethtool_coalesce *kernel_coal,
->  				struct netlink_ext_ack *extack)
->  {
-> -	return virtnet_get_coalesce_one(dev, ec);
-> +	return virtnet_get_coalesce_one(dev, ec, false, 0);
-> +}
-> +
-> +static int virtnet_set_per_queue_coalesce(struct net_device *dev,
-> +					  u32 queue,
-> +					  struct ethtool_coalesce *ec)
-> +{
-> +	return virtnet_set_coalesce_one(dev, ec, true, queue);
-> +}
-> +
-> +static int virtnet_get_per_queue_coalesce(struct net_device *dev,
-> +					  u32 queue,
-> +					  struct ethtool_coalesce *ec)
-> +{
-> +	return virtnet_get_coalesce_one(dev, ec, true, queue);
->  }
->  
->  static void virtnet_init_settings(struct net_device *dev)
-> @@ -3291,6 +3385,8 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
->  	.set_link_ksettings = virtnet_set_link_ksettings,
->  	.set_coalesce = virtnet_set_coalesce,
->  	.get_coalesce = virtnet_get_coalesce,
-> +	.set_per_queue_coalesce = virtnet_set_per_queue_coalesce,
-> +	.get_per_queue_coalesce = virtnet_get_per_queue_coalesce,
->  	.get_rxfh_key_size = virtnet_get_rxfh_key_size,
->  	.get_rxfh_indir_size = virtnet_get_rxfh_indir_size,
->  	.get_rxfh = virtnet_get_rxfh,
-> diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
-> index 12c1c9699935..cc65ef0f3c3e 100644
-> --- a/include/uapi/linux/virtio_net.h
-> +++ b/include/uapi/linux/virtio_net.h
-> @@ -56,6 +56,7 @@
->  #define VIRTIO_NET_F_MQ	22	/* Device supports Receive Flow
->  					 * Steering */
->  #define VIRTIO_NET_F_CTRL_MAC_ADDR 23	/* Set MAC address */
-> +#define VIRTIO_NET_F_VQ_NOTF_COAL 52	/* Device supports virtqueue notification coalescing */
->  #define VIRTIO_NET_F_NOTF_COAL	53	/* Device supports notifications coalescing */
->  #define VIRTIO_NET_F_GUEST_USO4	54	/* Guest can handle USOv4 in. */
->  #define VIRTIO_NET_F_GUEST_USO6	55	/* Guest can handle USOv6 in. */
-> @@ -391,5 +392,18 @@ struct virtio_net_ctrl_coal_rx {
->  };
->  
->  #define VIRTIO_NET_CTRL_NOTF_COAL_RX_SET		1
-> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_SET		2
-> +#define VIRTIO_NET_CTRL_NOTF_COAL_VQ_GET		3
-> +
-> +struct virtio_net_ctrl_coal {
-> +	__le32 max_packets;
-> +	__le32 max_usecs;
-> +};
-> +
-> +struct  virtio_net_ctrl_coal_vq {
-> +	__le16 vqn;
-> +	__le16 reserved;
-> +	struct virtio_net_ctrl_coal coal;
-> +};
->  
->  #endif /* _UAPI_LINUX_VIRTIO_NET_H */
-> -- 
-> 2.39.1
-
+SGkgR3JlZywNCg0KPiA+ID4NCj4gPiA+IEhvdyBkbyB5b3Uga25vdyB0aGF0IHRoZSBkaXNjb25u
+ZWN0IHdpbGwgbm90IGhhdmUgYWxyZWFkeSBiZWVuDQo+ID4gPiB0cmlnZ2VyZWQgYXQgdGhpcyBw
+b2ludCwgd2hlbiB0aGUgc3RhdHVzIGNoYW5nZXM/DQo+ID4NCj4gPiBUaGUgc3RhdHVzIGNoYW5n
+ZSBvZiBjb25uZWN0aW9uIGlzIGJlZm9yZSBwb3J0IHJlc2V0Lg0KPiA+IEluIHRoaXMgc3RhZ2Us
+IHRoZSBkZXZpY2UgaXMgbm90IHBvcnQgZW5hYmxlLCBhbmQgaXQgd2lsbCBub3QgdHJpZ2dlcg0K
+PiBkaXNjb25uZWN0aW9uLg0KPiANCj4gT2ssIHRoZW4gc2F5IHRoYXQgaGVyZSBwbGVhc2UgOikN
+Cg0KT2theS4gSSB3aWxsIGFkZCBpdC4NCg0KPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91
+c2IvY29yZS9odWIuYyBiL2RyaXZlcnMvdXNiL2NvcmUvaHViLmMgaW5kZXgNCj4gPiA+ID4gYTcz
+OTQwM2E5ZTQ1Li44NDMzZmY4OWRlYTYgMTAwNjQ0DQo+ID4gPiA+IC0tLSBhL2RyaXZlcnMvdXNi
+L2NvcmUvaHViLmMNCj4gPiA+ID4gKysrIGIvZHJpdmVycy91c2IvY29yZS9odWIuYw0KPiA+ID4g
+PiBAQCAtNjE0LDYgKzYxNCwxOSBAQCBzdGF0aWMgaW50IGh1Yl9leHRfcG9ydF9zdGF0dXMoc3Ry
+dWN0IHVzYl9odWINCj4gPiA+ID4gKmh1YiwNCj4gPiA+IGludCBwb3J0MSwgaW50IHR5cGUsDQo+
+ID4gPiA+ICAgICAgICAgICAgICAgcmV0ID0gMDsNCj4gPiA+ID4gICAgICAgfQ0KPiA+ID4gPiAg
+ICAgICBtdXRleF91bmxvY2soJmh1Yi0+c3RhdHVzX211dGV4KTsNCj4gPiA+ID4gKw0KPiA+ID4g
+PiArICAgICBpZiAoIXJldCkgew0KPiA+ID4gPiArICAgICAgICAgICAgIHN0cnVjdCB1c2JfZGV2
+aWNlICpoZGV2ID0gaHViLT5oZGV2Ow0KPiA+ID4gPiArDQo+ID4gPiA+ICsgICAgICAgICAgICAg
+aWYgKGhkZXYgJiYgIWhkZXYtPnBhcmVudCkgew0KPiA+ID4NCj4gPiA+IFdoeSB0aGUgY2hlY2sg
+Zm9yIG5vIHBhcmVudD8gIFBsZWFzZSBkb2N1bWVudCB0aGF0IGhlcmUgaW4gYSBjb21tZW50Lg0K
+PiA+DQo+ID4gSSB3aWxsIGFkZCBhIGNvbW1lbnQgOg0KPiA+IC8qIE9ubHkgbm90aWZ5IHJvb3Ro
+dWIuIFRoYXQgaXMsIHdoZW4gaGRldi0+cGFyZW50IGlzIGVtcHR5LiAqLw0KPiANCj4gQWxzbyBk
+b2N1bWVudCB0aGlzIHRoYXQgdGhpcyB3aWxsIG9ubHkgaGFwcGVuIGZvciByb290IGh1YiBzdGF0
+dXMgY2hhbmdlcywgdGhhdCdzDQo+IG5vdCBvYnZpb3VzIGluIHRoZSBjYWxsYmFjayBuYW1lIG9y
+IGRvY3VtZW50YXRpb24gb3IgYW55d2hlcmUgZWxzZSBoZXJlLg0KDQpBbGwgdXNiIHBoeSBub3Rp
+ZmljYXRpb25zIChjb25uZWN0aW9uLCBkaXNjb25uZWN0aW9uKSBhcmUgb25seSBmb3Igcm9vdGh1
+Yi4NClNvIEkgZG9uJ3Qgc3BlY2lhbCB0byBkb2MgdGhpcy4NCg0KPiA+ID4gPiArICAgICAgICAg
+ICAgICAgICAgICAgc3RydWN0IHVzYl9oY2QgKmhjZCA9IGJ1c190b19oY2QoaGRldi0+YnVzKTsN
+Cj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgaWYgKGhjZC0+dXNiX3Bo
+eSkNCj4gPiA+ID4gKw0KPiA+ID4gdXNiX3BoeV9ub3RpZnlfcG9ydF9zdGF0dXMoaGNkLT51c2Jf
+cGh5LA0KPiA+ID4gPiArDQo+IHBvcnQxIC0NCj4gPiA+IDEsICpzdGF0dXMsICpjaGFuZ2UpOw0K
+PiA+ID4gPiArICAgICAgICAgICAgIH0NCj4gPiA+ID4gKyAgICAgfQ0KPiA+ID4gPiArDQo+ID4g
+Pg0KPiA+ID4gVGhpcyBpcyBzYWZlIHRvIG5vdGlmeSB3aXRoIHRoZSBodWIgbXV0ZXggdW5sb2Nr
+ZWQ/ICBBZ2FpbiwgYQ0KPiA+ID4gY29tbWVudCB3b3VsZCBiZSBoZWxwZnVsIHRvIGZ1dHVyZSBw
+ZW9wbGUgZXhwbGFpbmluZyB3aHkgdGhhdCBpcyBzby4NCj4gPiA+DQo+ID4NCj4gPiBJIHdpbGwg
+YWRkIGEgY29tbWVudDoNCj4gPiAvKg0KPiA+ICAqIFRoZXJlIGlzIG5vIG5lZWQgdG8gbG9jayBz
+dGF0dXNfbXV0ZXggaGVyZSwgYmVjYXVzZSBzdGF0dXNfbXV0ZXgNCj4gPiAgKiBwcm90ZWN0cyBo
+dWItPnN0YXR1cywgYW5kIHRoZSBwaHkgZHJpdmVyIG9ubHkgY2hlY2tzIHRoZSBwb3J0DQo+ID4g
+ICogc3RhdHVzIHdpdGhvdXQgY2hhbmdpbmcgdGhlIHN0YXR1cy4NCj4gPiAgKi8NCj4gDQo+IExv
+b2tzIGdvb2QsIGlmIHlvdSBkbyBpdCB3aXRob3V0IHRoZSB0cmFpbGluZyB3aGl0ZXNwYWNlIDop
+DQo+IA0KT2theQ0KDQoNClRoYW5rcywNClN0YW5sZXkNCg==
