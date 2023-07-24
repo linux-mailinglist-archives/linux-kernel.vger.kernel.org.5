@@ -2,48 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5087275E74D
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F089975E74C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 03:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbjGXB0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 21:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53270 "EHLO
+        id S230490AbjGXB0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 21:26:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231207AbjGXB0S (ORCPT
+        with ESMTP id S231422AbjGXB0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 21:26:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCB43C1B;
+        Sun, 23 Jul 2023 21:26:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561AF3C1D;
         Sun, 23 Jul 2023 18:24:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 258DF60F02;
-        Mon, 24 Jul 2023 01:23:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB4C7C433C7;
-        Mon, 24 Jul 2023 01:23:49 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 39AA460EF9;
+        Mon, 24 Jul 2023 01:23:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA546C433BB;
+        Mon, 24 Jul 2023 01:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690161830;
-        bh=qhh8Lf1XCfAF8rtfnerjBiHBNF3y9GF83zIN60JVDwI=;
+        s=k20201202; t=1690161831;
+        bh=PPENnfwyAeazDRdtN66ooDkywVMamO38yXbagVEW5yc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NggVVS3CnqugiicMebbiSALrFr3emloe+Xc5QD18TMbxpUWQS0fEWHuVlhyw/2MU0
-         wKE0dk3M6q/kmhRsxLV6FMFSvRymRvr9pQ/Isva1qUvUrhjuc2RZLFzYHG2EGfFzun
-         6Jd9gCS6oWkFkP/wUsaZG7R9R8pziZKVafSU3pFvQV8cuTSnuDyUGkmoK0a84cVs2O
-         JPmWOUGiNnUQHGAN+bpAUnyXl1XAsbWkqSqfFOoRbJE3Bskt5e87HvF6Ts0L2VaWfr
-         xuyBlZzDfgUjuxCaYzzdzUn7IeP7b63QWAb5NEU8yIzORXKt8wg+g18EY2vQwKNPi7
-         JihsLlwEKlesQ==
+        b=ME6pWIYt9nfxiLUGR0XiOwCo8nln4LLUaIM28JB1hEVNgYi2fAoRj3OSLt+2cXs5O
+         CK8uizwHdiPytuq/TqMi+BgW8RKIudj+2UIbMw9s/31c0P2aHx2AiA4FupPxuE2ciG
+         g42VT+37y2LcbaGU7iptAqoDlhlDAPdcTsiiH/KzJhOpTb3rAM6jkbXG2f1Tc9Efr2
+         m9Oq4pWz3cOnE6qKi+yNMIig/V1kGIdKq31Esyl+BhgyVvGgsJjKd9G8YwuKBxJrgB
+         ZRpeZnIcx4tGfzobu3oCkohCM+vU4vqF90rGaDGHRjHqFzxH8WRglpaoI09Tsn0Lqd
+         2U3SgejqbWVow==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Tony Lindgren <tony@atomide.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.15 06/23] iopoll: Call cpu_relax() in busy loops
-Date:   Sun, 23 Jul 2023 21:23:17 -0400
-Message-Id: <20230724012334.2317140-6-sashal@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Ye Bin <yebin10@huawei.com>,
+        syzbot+e633c79ceaecbf479854@syzkaller.appspotmail.com,
+        Sasha Levin <sashal@kernel.org>, jack@suse.com
+Subject: [PATCH AUTOSEL 5.15 07/23] quota: Properly disable quotas when add_dquot_ref() fails
+Date:   Sun, 23 Jul 2023 21:23:18 -0400
+Message-Id: <20230724012334.2317140-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012334.2317140-1-sashal@kernel.org>
 References: <20230724012334.2317140-1-sashal@kernel.org>
@@ -52,85 +49,51 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.121
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit b407460ee99033503993ac7437d593451fcdfe44 ]
+[ Upstream commit 6a4e3363792e30177cc3965697e34ddcea8b900b ]
 
-It is considered good practice to call cpu_relax() in busy loops, see
-Documentation/process/volatile-considered-harmful.rst.  This can not
-only lower CPU power consumption or yield to a hyperthreaded twin
-processor, but also allows an architecture to mitigate hardware issues
-(e.g. ARM Erratum 754327 for Cortex-A9 prior to r2p0) in the
-architecture-specific cpu_relax() implementation.
+When add_dquot_ref() fails (usually due to IO error or ENOMEM), we want
+to disable quotas we are trying to enable. However dquot_disable() call
+was passed just the flags we are enabling so in case flags ==
+DQUOT_USAGE_ENABLED dquot_disable() call will just fail with EINVAL
+instead of properly disabling quotas. Fix the problem by always passing
+DQUOT_LIMITS_ENABLED | DQUOT_USAGE_ENABLED to dquot_disable() in this
+case.
 
-In addition, cpu_relax() is also a compiler barrier.  It is not
-immediately obvious that the @op argument "function" will result in an
-actual function call (e.g. in case of inlining).
-
-Where a function call is a C sequence point, this is lost on inlining.
-Therefore, with agressive enough optimization it might be possible for
-the compiler to hoist the:
-
-        (val) = op(args);
-
-"load" out of the loop because it doesn't see the value changing. The
-addition of cpu_relax() would inhibit this.
-
-As the iopoll helpers lack calls to cpu_relax(), people are sometimes
-reluctant to use them, and may fall back to open-coded polling loops
-(including cpu_relax() calls) instead.
-
-Fix this by adding calls to cpu_relax() to the iopoll helpers:
-  - For the non-atomic case, it is sufficient to call cpu_relax() in
-    case of a zero sleep-between-reads value, as a call to
-    usleep_range() is a safe barrier otherwise.  However, it doesn't
-    hurt to add the call regardless, for simplicity, and for similarity
-    with the atomic case below.
-  - For the atomic case, cpu_relax() must be called regardless of the
-    sleep-between-reads value, as there is no guarantee all
-    architecture-specific implementations of udelay() handle this.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Tony Lindgren <tony@atomide.com>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Link: https://lore.kernel.org/r/45c87bec3397fdd704376807f0eec5cc71be440f.1685692810.git.geert+renesas@glider.be
+Reported-and-tested-by: Ye Bin <yebin10@huawei.com>
+Reported-by: syzbot+e633c79ceaecbf479854@syzkaller.appspotmail.com
+Signed-off-by: Jan Kara <jack@suse.cz>
+Message-Id: <20230605140731.2427629-2-yebin10@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/iopoll.h | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/quota/dquot.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/iopoll.h b/include/linux/iopoll.h
-index 2c8860e406bd8..0417360a6db9b 100644
---- a/include/linux/iopoll.h
-+++ b/include/linux/iopoll.h
-@@ -53,6 +53,7 @@
- 		} \
- 		if (__sleep_us) \
- 			usleep_range((__sleep_us >> 2) + 1, __sleep_us); \
-+		cpu_relax(); \
- 	} \
- 	(cond) ? 0 : -ETIMEDOUT; \
- })
-@@ -95,6 +96,7 @@
- 		} \
- 		if (__delay_us) \
- 			udelay(__delay_us); \
-+		cpu_relax(); \
- 	} \
- 	(cond) ? 0 : -ETIMEDOUT; \
- })
+diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+index cddd07b7d1329..da6e53fac0c48 100644
+--- a/fs/quota/dquot.c
++++ b/fs/quota/dquot.c
+@@ -2413,7 +2413,8 @@ int dquot_load_quota_sb(struct super_block *sb, int type, int format_id,
+ 
+ 	error = add_dquot_ref(sb, type);
+ 	if (error)
+-		dquot_disable(sb, type, flags);
++		dquot_disable(sb, type,
++			      DQUOT_USAGE_ENABLED | DQUOT_LIMITS_ENABLED);
+ 
+ 	return error;
+ out_fmt:
 -- 
 2.39.2
 
