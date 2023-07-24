@@ -2,132 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC00B75F78A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9374775F78B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 14:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbjGXM7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 08:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48614 "EHLO
+        id S231419AbjGXM7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 08:59:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbjGXM6B (ORCPT
+        with ESMTP id S231883AbjGXM6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 08:58:01 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072DC5BBD
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:54:42 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fd32e611e0so5431691e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:54:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690203219; x=1690808019;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a2Ax+g4Vq22atUQfE+CrYPUiHKIfw129Y1mAPVdfhrk=;
-        b=yIjEagSPzyrV4pnOzGUMMfEoceZFbE4b2sE2bDD34FCS9owCq5V48XdsU3g05ebZAd
-         1rdKzRxjTXXlk8BAaIU/FYi6gf4ly6wUBZ87I+2zs1toMcGk3mcfmltS90FnjYZf2PM+
-         zWmYpWGqIXMDcxhu/KHB8jUHxNXfeXimh1aWxjChWy6OfZezytgZrvzZTXQa2E29l1iQ
-         EkOUKoO4jKZPPBwyxpFh+othkKSu/BkQ63tb3Nuyp01uLqNcpCxJTI2A2QJnSmAECKP+
-         LBwKMkqIkylWf74OoEOrFYOo1Ax74/TUnpbJKFcMgqLHpk73Aps09ydWTHMEYv5zwJhw
-         PQ7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690203219; x=1690808019;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a2Ax+g4Vq22atUQfE+CrYPUiHKIfw129Y1mAPVdfhrk=;
-        b=ihD5vS08VpdfOh6A+Z9TFhq81AnuquJd3BZU8gKBzv5f+XM9tIkdjyHo5eO4iZSD44
-         qEovwL7k3G6PH1yZpIO9xbpmpewaSN/HS0hRGqZ6YIm5E/OniNlXJQJTMTOe1u+3ymR0
-         qT5it54hnWYNFFBPpR1pkqdXc8xi/VAIhJg6TF+REoaCvX0Qi3SFkFb4E5kc58WUdnwT
-         jbNKg4uERmbuQwZ258ihxtqIAMHCDoj8XK7IHgmHuazHxiY5GHdAU2WyGWa2ABjxCWyb
-         yffic1B49OH7D+FFTsXi9RtoQnLZI3mXInY5+EY4G0JKGfP52D6HTJ8kfEPObSkoTd6+
-         QRlQ==
-X-Gm-Message-State: ABy/qLYsQLqbw5KAyPxSTyNoyttLg1LoSZK2yZ73PebtrXagCSIOI6fx
-        2HnADNOrSF4cOrExbAbXZSOHHQ==
-X-Google-Smtp-Source: APBJJlF3M0XAIIrNjCgd3lRmor0h1II8rIjFWnG7yMxjXazt29zxHtYqTKVQn1cYI8S8IR2Mgzm7Nw==
-X-Received: by 2002:a05:6512:e8c:b0:4fb:8ff3:1f74 with SMTP id bi12-20020a0565120e8c00b004fb8ff31f74mr3971328lfb.20.1690203219568;
-        Mon, 24 Jul 2023 05:53:39 -0700 (PDT)
-Received: from [192.168.1.101] (abxj221.neoplus.adsl.tpnet.pl. [83.9.3.221])
-        by smtp.gmail.com with ESMTPSA id m8-20020a195208000000b004fb86662871sm2166604lfb.233.2023.07.24.05.53.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 05:53:39 -0700 (PDT)
-Message-ID: <af7d1db2-8bbe-e078-6b17-7f841fb7f475@linaro.org>
-Date:   Mon, 24 Jul 2023 14:53:37 +0200
+        Mon, 24 Jul 2023 08:58:19 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C889D49CD
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 05:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690203305; x=1721739305;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=59lBABGnLV6MzK+WPMHDE8sj5hLFTrGGq/cKKmOkBRM=;
+  b=g145Z2CHMtk56zkvCgS9ciJLFo/qS7tY0H4UeGuokhBZ9PGFrV/YK01x
+   n6o8s0BHEwLFTorR1YPPcTfaSMvgUhSy7TqDrb9xchz6oQQEznYxjtmtI
+   MCgBuueoAhuAejxVBhdxOf07To34DPs6EsdD7p7W3s5vtDkCDiGqXiKVn
+   MmY8TzJgK3fMOyAs3HAdZEoNzU8S7U6T5valJNb7/6qR3A/AjpkUstl29
+   ZuTaSKT1ygLVt5ikO8xBLCctAD7PxF8Cpd7ZNhhlh/uv3Gs7aCEu40nAJ
+   oJ9bKjGXy+85J2l/KqRWeNrqQue4SHitAibugBa+nfrCjRW7QDHBl13pB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="357429686"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="357429686"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 05:54:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="719674063"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="719674063"
+Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 24 Jul 2023 05:54:30 -0700
+Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qNv54-0009jY-0b;
+        Mon, 24 Jul 2023 12:54:30 +0000
+Date:   Mon, 24 Jul 2023 20:54:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yingkun Meng <mengyingkun@loongson.cn>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: sound/soc/loongson/loongson_card.c:212:34: warning: unused variable
+ 'loongson_asoc_dt_ids'
+Message-ID: <202307242008.xqdjgk04-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] PCI: qcom: Add early fixup to set the max payload
- size for IPQ9574
-Content-Language: en-US
-To:     Praveenkumar I <quic_ipkumar@quicinc.com>, mani@kernel.org,
-        agross@kernel.org, andersson@kernel.org, lpieralisi@kernel.org,
-        kw@linux.com, robh@kernel.org, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     quic_varada@quicinc.com, quic_devipriy@quicinc.com
-References: <20230724124711.2346886-1-quic_ipkumar@quicinc.com>
- <20230724124711.2346886-2-quic_ipkumar@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230724124711.2346886-2-quic_ipkumar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.07.2023 14:47, Praveenkumar I wrote:
-> Set 256 bytes as payload size for IPQ9574 via early fixup. This allows
-> PCIe RC to use the max payload size when a capable link partner is
-> connected.
-> 
-> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
-> ---
-[...]
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6eaae198076080886b9e7d57f4ae06fa782f90ef
+commit: d24028606e7642261d33ad2a50aed940d35cfb66 ASoC: loongson: Add Loongson ASoC Sound Card Support
+date:   6 weeks ago
+config: s390-randconfig-r014-20230724 (https://download.01.org/0day-ci/archive/20230724/202307242008.xqdjgk04-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230724/202307242008.xqdjgk04-lkp@intel.com/reproduce)
 
-> 
-> +static void qcom_fixup_mps_256(struct pci_dev *dev)
-> +{
-> +	pcie_set_mps(dev, 256);
-Looks like setting "dev->pcie_mpss = 1" here would make the PCIe generic
-code take care of this.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307242008.xqdjgk04-lkp@intel.com/
 
-Konrad
+All warnings (new ones prefixed by >>):
+
+   In file included from sound/soc/loongson/loongson_card.c:10:
+   In file included from include/sound/soc.h:20:
+   In file included from include/linux/regmap.h:20:
+   In file included from include/linux/iopoll.h:14:
+   In file included from include/linux/io.h:13:
+   In file included from arch/s390/include/asm/io.h:75:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     547 |         val = __raw_readb(PCI_IOBASE + addr);
+         |                           ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
+      37 | #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
+         |                                                           ^
+   include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
+     102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+         |                                                      ^
+   In file included from sound/soc/loongson/loongson_card.c:10:
+   In file included from include/sound/soc.h:20:
+   In file included from include/linux/regmap.h:20:
+   In file included from include/linux/iopoll.h:14:
+   In file included from include/linux/io.h:13:
+   In file included from arch/s390/include/asm/io.h:75:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
+         |                                                           ^
+   include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
+     115 | #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
+         |                                                      ^
+   In file included from sound/soc/loongson/loongson_card.c:10:
+   In file included from include/sound/soc.h:20:
+   In file included from include/linux/regmap.h:20:
+   In file included from include/linux/iopoll.h:14:
+   In file included from include/linux/io.h:13:
+   In file included from arch/s390/include/asm/io.h:75:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     692 |         readsb(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     700 |         readsw(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     708 |         readsl(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     717 |         writesb(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     726 |         writesw(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     735 |         writesl(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+>> sound/soc/loongson/loongson_card.c:212:34: warning: unused variable 'loongson_asoc_dt_ids' [-Wunused-const-variable]
+     212 | static const struct of_device_id loongson_asoc_dt_ids[] = {
+         |                                  ^
+   13 warnings generated.
+
+
+vim +/loongson_asoc_dt_ids +212 sound/soc/loongson/loongson_card.c
+
+   211	
+ > 212	static const struct of_device_id loongson_asoc_dt_ids[] = {
+   213		{ .compatible = "loongson,ls-audio-card" },
+   214		{ /* sentinel */ },
+   215	};
+   216	MODULE_DEVICE_TABLE(of, loongson_asoc_dt_ids);
+   217	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
