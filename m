@@ -2,93 +2,1243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F367D75EDA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4582D75EDA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbjGXIbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58702 "EHLO
+        id S231620AbjGXIba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 04:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbjGXIak (ORCPT
+        with ESMTP id S231685AbjGXIbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:30:40 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0ACA1AD
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:30:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690187437; x=1721723437;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=I+7ZJBTyINxTgdRGb0ljCHg6K/ZZstKslMZLFH9uXhU=;
-  b=UeecHnYURB93p484KUc2i3zuPmyi1RV8Th4iKfIz6busIatsQcQD9VhK
-   znioBBY+23R6Gt/Rhxa4xcBlt/MEvt0jDnLFizzfgnq9Os7FNI9vZGzDk
-   S2Ez2OvhBvjaP4lFx39RiHUzRB3goJAtOzfl831uhHsGqKK/19V5PHLvD
-   EKSf1LTkqsS80a+SWDSrNul+WCP2wL6Ffwpw0psI+TpFO+hWKggBC1wgQ
-   5zlt0wMzWMc8Uhk8F2HfvzUKRDDxKxcvsPxC7EThCfupQy3bxHnQg/scx
-   ItCwSNnJIZc1O/fCBUrB6rDwdKPN0cWSgT0X4fZwafhdxkv+vYqPfyHTp
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="453759911"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="453759911"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 01:30:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="719583712"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="719583712"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 24 Jul 2023 01:30:34 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qNqxd-004UiL-00;
-        Mon, 24 Jul 2023 11:30:33 +0300
-Date:   Mon, 24 Jul 2023 11:30:32 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH] cpumask: fix typos and kernel-doc warnings in cpumask.h
-Message-ID: <ZL42qItwNebssuBN@smile.fi.intel.com>
-References: <20230724023403.24869-1-rdunlap@infradead.org>
+        Mon, 24 Jul 2023 04:31:16 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA5910D5
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:30:52 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R8YJn0KP8zBRx5B
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 16:30:49 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1690187448; x=1692779449; bh=CXAOH37MK5HKECdLhb28ngNmQqv
+        WIqiMlxmmc7IxEcI=; b=bKrfuDGVhpA4ZT0siTYdNPXOEIaSuBZKG5mK7XKFPVK
+        ay+ZHmQhkZ0w+odxdJ4xu8F0gYIqM0OWRluf3qpS0teyxh4cpWP7MEs+Hnp/poW8
+        FgyKJOGkGrwqjkceIbdECXIN4WO/dbhJ7JUUUeJTxgf702awVweh469WDA9Eel80
+        B3PV28uHka8L3wwSBZ92JL8cixnTUxAL8BDgfEnWea6ZytlgY+JgRq33Fjv2uGDH
+        6lPgx2qVjCdUSED6GTndsDlS3abVw34z/W5d3U9Sz694xpYR8lL9tQlD2NL+7MwA
+        4xDubuov3E/VUKF2iAewBrO/nM+vNWoNyahC7bNegZQ==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Ke9AwGTRwwxn for <linux-kernel@vger.kernel.org>;
+        Mon, 24 Jul 2023 16:30:48 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R8YJm4LDjzBR1P0;
+        Mon, 24 Jul 2023 16:30:48 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724023403.24869-1-rdunlap@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Date:   Mon, 24 Jul 2023 16:30:48 +0800
+From:   sunran001@208suo.com
+To:     alexander.deucher@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amd/pm: Clean up errors in
+ smu11_driver_if_sienna_cichlid.h
+In-Reply-To: <20230724082935.9199-1-xujianghui@cdjrlc.com>
+References: <20230724082935.9199-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <3ba625a965a2bf900c0f63f3c77bb072@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 07:34:03PM -0700, Randy Dunlap wrote:
-> Fix some punctuation (plural vs. possessive).
-> Fix some abbreviations (ie. -> i.e., id -> ID).
-> 
-> Fix 35 warnings like this:
-> include/linux/cpumask.h:161: warning: No description found for return value of 'cpumask_first'
+Fix the following errors reported by checkpatch:
 
-I wouldn't explicitly change Returns -> Return, but since the latter is one
-mentioned in the documentation and we have no actual Return section anyway
-(means we need to touch those lines), I'm fine with that.
+ERROR: trailing whitespace
+ERROR: space prohibited before open square bracket '['
+ERROR: space prohibited before that close square bracket ']'
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  .../pmfw_if/smu11_driver_if_sienna_cichlid.h  | 386 +++++++++---------
+  1 file changed, 193 insertions(+), 193 deletions(-)
 
-Thank you!
+diff --git 
+a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu11_driver_if_sienna_cichlid.h 
+b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu11_driver_if_sienna_cichlid.h
+index aa6d29de4002..703ade13d9f4 100644
+--- 
+a/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu11_driver_if_sienna_cichlid.h
++++ 
+b/drivers/gpu/drm/amd/pm/swsmu/inc/pmfw_if/smu11_driver_if_sienna_cichlid.h
+@@ -225,33 +225,33 @@ typedef enum {
+  #define FW_DSTATE_MP1_WHISPER_MODE_BIT      6
+  #define FW_DSTATE_SOC_LIV_MIN_BIT           7
+  #define FW_DSTATE_SOC_PLL_PWRDN_BIT         8
+-#define FW_DSTATE_MEM_PLL_PWRDN_BIT         9
++#define FW_DSTATE_MEM_PLL_PWRDN_BIT         9
+  #define FW_DSTATE_OPTIMIZE_MALL_REFRESH_BIT 10
+  #define FW_DSTATE_MEM_PSI_BIT               11
+  #define FW_DSTATE_HSR_NON_STROBE_BIT        12
+  #define FW_DSTATE_MP0_ENTER_WFI_BIT         13
 
-P.S. For out of curiosity the command line to check this is like
+-#define FW_DSTATE_SOC_ULV_MASK                    (1 << 
+FW_DSTATE_SOC_ULV_BIT          )
+-#define FW_DSTATE_G6_HSR_MASK                     (1 << 
+FW_DSTATE_G6_HSR_BIT           )
+-#define FW_DSTATE_G6_PHY_VDDCI_OFF_MASK           (1 << 
+FW_DSTATE_G6_PHY_VDDCI_OFF_BIT )
+-#define FW_DSTATE_MP1_DS_MASK                     (1 << 
+FW_DSTATE_MP1_DS_BIT           )
+-#define FW_DSTATE_MP0_DS_MASK                     (1 << 
+FW_DSTATE_MP0_DS_BIT           )
+-#define FW_DSTATE_SMN_DS_MASK                     (1 << 
+FW_DSTATE_SMN_DS_BIT           )
+-#define FW_DSTATE_MP1_WHISPER_MODE_MASK           (1 << 
+FW_DSTATE_MP1_WHISPER_MODE_BIT )
+-#define FW_DSTATE_SOC_LIV_MIN_MASK                (1 << 
+FW_DSTATE_SOC_LIV_MIN_BIT      )
+-#define FW_DSTATE_SOC_PLL_PWRDN_MASK              (1 << 
+FW_DSTATE_SOC_PLL_PWRDN_BIT    )
+-#define FW_DSTATE_MEM_PLL_PWRDN_MASK              (1 << 
+FW_DSTATE_MEM_PLL_PWRDN_BIT    )
+-#define FW_DSTATE_OPTIMIZE_MALL_REFRESH_MASK      (1 << 
+FW_DSTATE_OPTIMIZE_MALL_REFRESH_BIT    )
+-#define FW_DSTATE_MEM_PSI_MASK                    (1 << 
+FW_DSTATE_MEM_PSI_BIT    )
+-#define FW_DSTATE_HSR_NON_STROBE_MASK             (1 << 
+FW_DSTATE_HSR_NON_STROBE_BIT    )
+-#define FW_DSTATE_MP0_ENTER_WFI_MASK              (1 << 
+FW_DSTATE_MP0_ENTER_WFI_BIT    )
++#define FW_DSTATE_SOC_ULV_MASK                    (1 << 
+FW_DSTATE_SOC_ULV_BIT)
++#define FW_DSTATE_G6_HSR_MASK                     (1 << 
+FW_DSTATE_G6_HSR_BIT)
++#define FW_DSTATE_G6_PHY_VDDCI_OFF_MASK           (1 << 
+FW_DSTATE_G6_PHY_VDDCI_OFF_BIT)
++#define FW_DSTATE_MP1_DS_MASK                     (1 << 
+FW_DSTATE_MP1_DS_BIT)
++#define FW_DSTATE_MP0_DS_MASK                     (1 << 
+FW_DSTATE_MP0_DS_BIT)
++#define FW_DSTATE_SMN_DS_MASK                     (1 << 
+FW_DSTATE_SMN_DS_BIT)
++#define FW_DSTATE_MP1_WHISPER_MODE_MASK           (1 << 
+FW_DSTATE_MP1_WHISPER_MODE_BIT)
++#define FW_DSTATE_SOC_LIV_MIN_MASK                (1 << 
+FW_DSTATE_SOC_LIV_MIN_BIT)
++#define FW_DSTATE_SOC_PLL_PWRDN_MASK              (1 << 
+FW_DSTATE_SOC_PLL_PWRDN_BIT)
++#define FW_DSTATE_MEM_PLL_PWRDN_MASK              (1 << 
+FW_DSTATE_MEM_PLL_PWRDN_BIT)
++#define FW_DSTATE_OPTIMIZE_MALL_REFRESH_MASK      (1 << 
+FW_DSTATE_OPTIMIZE_MALL_REFRESH_BIT)
++#define FW_DSTATE_MEM_PSI_MASK                    (1 << 
+FW_DSTATE_MEM_PSI_BIT)
++#define FW_DSTATE_HSR_NON_STROBE_MASK             (1 << 
+FW_DSTATE_HSR_NON_STROBE_BIT)
++#define FW_DSTATE_MP0_ENTER_WFI_MASK              (1 << 
+FW_DSTATE_MP0_ENTER_WFI_BIT)
 
-	scripts/kernel-doc -v -none -Wall ...
+  // GFX GPO Feature Contains PACE and DEM sub features
+  #define GFX_GPO_PACE_BIT                   0
+  #define GFX_GPO_DEM_BIT                    1
 
-but I have no idea which one Randy used.
+  #define GFX_GPO_PACE_MASK                  (1 << GFX_GPO_PACE_BIT)
+-#define GFX_GPO_DEM_MASK                   (1 << GFX_GPO_DEM_BIT )
++#define GFX_GPO_DEM_MASK                   (1 << GFX_GPO_DEM_BIT)
 
--- 
-With Best Regards,
-Andy Shevchenko
+  #define GPO_UPDATE_REQ_UCLKDPM_MASK  0x1
+  #define GPO_UPDATE_REQ_FCLKDPM_MASK  0x2
+@@ -312,10 +312,10 @@ typedef enum {
+    I2C_CONTROLLER_NAME_VR_VDDCI,
+    I2C_CONTROLLER_NAME_VR_MVDD,
+    I2C_CONTROLLER_NAME_LIQUID0,
+-  I2C_CONTROLLER_NAME_LIQUID1,
++  I2C_CONTROLLER_NAME_LIQUID1,
+    I2C_CONTROLLER_NAME_PLX,
+    I2C_CONTROLLER_NAME_OTHER,
+-  I2C_CONTROLLER_NAME_COUNT,
++  I2C_CONTROLLER_NAME_COUNT,
+  } I2cControllerName_e;
 
+  typedef enum {
+@@ -325,10 +325,10 @@ typedef enum {
+    I2C_CONTROLLER_THROTTLER_VR_VDDCI,
+    I2C_CONTROLLER_THROTTLER_VR_MVDD,
+    I2C_CONTROLLER_THROTTLER_LIQUID0,
+-  I2C_CONTROLLER_THROTTLER_LIQUID1,
++  I2C_CONTROLLER_THROTTLER_LIQUID1,
+    I2C_CONTROLLER_THROTTLER_PLX,
+    I2C_CONTROLLER_THROTTLER_INA3221,
+-  I2C_CONTROLLER_THROTTLER_COUNT,
++  I2C_CONTROLLER_THROTTLER_COUNT,
+  } I2cControllerThrottler_e;
+
+  typedef enum {
+@@ -336,24 +336,24 @@ typedef enum {
+    I2C_CONTROLLER_PROTOCOL_VR_IR35217,
+    I2C_CONTROLLER_PROTOCOL_TMP_TMP102A,
+    I2C_CONTROLLER_PROTOCOL_INA3221,
+-  I2C_CONTROLLER_PROTOCOL_COUNT,
++  I2C_CONTROLLER_PROTOCOL_COUNT,
+  } I2cControllerProtocol_e;
+
+  typedef struct {
+    uint8_t   Enabled;
+    uint8_t   Speed;
+-  uint8_t   SlaveAddress;
++  uint8_t   SlaveAddress;
+    uint8_t   ControllerPort;
+    uint8_t   ControllerName;
+    uint8_t   ThermalThrotter;
+    uint8_t   I2cProtocol;
+-  uint8_t   PaddingConfig;
++  uint8_t   PaddingConfig;
+  } I2cControllerConfig_t;
+
+  typedef enum {
+-  I2C_PORT_SVD_SCL = 0,
+-  I2C_PORT_GPIO,
+-} I2cPort_e;
++  I2C_PORT_SVD_SCL = 0,
++  I2C_PORT_GPIO,
++} I2cPort_e;
+
+  typedef enum {
+    I2C_SPEED_FAST_50K = 0,      //50  Kbits/s
+@@ -362,13 +362,13 @@ typedef enum {
+    I2C_SPEED_FAST_PLUS_1M,      //1   Mbits/s (in fast mode)
+    I2C_SPEED_HIGH_1M,           //1   Mbits/s (in high speed mode)
+    I2C_SPEED_HIGH_2M,           //2.3 Mbits/s
+-  I2C_SPEED_COUNT,
++  I2C_SPEED_COUNT,
+  } I2cSpeed_e;
+
+  typedef enum {
+    I2C_CMD_READ = 0,
+    I2C_CMD_WRITE,
+-  I2C_CMD_COUNT,
++  I2C_CMD_COUNT,
+  } I2cCmdType_e;
+
+  typedef enum {
+@@ -426,24 +426,24 @@ typedef enum {
+    PG_POWER_UP,
+  } PowerGatingSettings_e;
+
+-typedef struct {
++typedef struct {
+    uint32_t a;  // store in IEEE float format in this variable
+    uint32_t b;  // store in IEEE float format in this variable
+    uint32_t c;  // store in IEEE float format in this variable
+  } QuadraticInt_t;
+
+-typedef struct {
++typedef struct {
+    uint32_t a;  // store in fixed point, [31:20] signed integer, [19:0] 
+fractional bits
+    uint32_t b;  // store in fixed point, [31:20] signed integer, [19:0] 
+fractional bits
+    uint32_t c;  // store in fixed point, [31:20] signed integer, [19:0] 
+fractional bits
+  } QuadraticFixedPoint_t;
+
+-typedef struct {
++typedef struct {
+    uint32_t m;  // store in IEEE float format in this variable
+    uint32_t b;  // store in IEEE float format in this variable
+  } LinearInt_t;
+
+-typedef struct {
++typedef struct {
+    uint32_t a;  // store in IEEE float format in this variable
+    uint32_t b;  // store in IEEE float format in this variable
+    uint32_t c;  // store in IEEE float format in this variable
+@@ -455,7 +455,7 @@ typedef enum {
+    PIECEWISE_LINEAR_FUSED_MODEL = 0,
+    PIECEWISE_LINEAR_PP_MODEL,
+    QUADRATIC_PP_MODEL,
+-  PERPART_PIECEWISE_LINEAR_PP_MODEL,
++  PERPART_PIECEWISE_LINEAR_PP_MODEL,
+  } DfllDroopModelSelect_e;
+
+  typedef struct {
+@@ -464,10 +464,10 @@ typedef struct {
+  }PiecewiseLinearDroopInt_t;
+
+  typedef enum {
+-  GFXCLK_SOURCE_PLL = 0,
+-  GFXCLK_SOURCE_DFLL,
+-  GFXCLK_SOURCE_COUNT,
+-} GFXCLK_SOURCE_e;
++  GFXCLK_SOURCE_PLL = 0,
++  GFXCLK_SOURCE_DFLL,
++  GFXCLK_SOURCE_COUNT,
++} GFXCLK_SOURCE_e;
+
+  //Only Clks that have DPM descriptors are listed here
+  typedef enum {
+@@ -552,18 +552,18 @@ typedef struct {
+    uint8_t        VoltageMode;         // 0 - AVFS only, 1- 
+min(AVFS,SS), 2-SS only
+    uint8_t        SnapToDiscrete;      // 0 - Fine grained DPM, 1 - 
+Discrete DPM
+    uint8_t        NumDiscreteLevels;   // Set to 2 (Fmin, Fmax) when 
+using fine grained DPM, otherwise set to # discrete levels used
+-  uint8_t        Padding;
++  uint8_t        Padding;
+    LinearInt_t    ConversionToAvfsClk; // Transfer function to AVFS 
+Clock (GHz->GHz)
+    QuadraticInt_t SsCurve;             // Slow-slow curve (GHz->V)
+    uint16_t       SsFmin;              // Fmin for SS curve. If SS curve 
+is selected, will use V@SSFmin for F <= Fmin
+-  uint16_t       Padding16;
++  uint16_t       Padding16;
+  } DpmDescriptor_t;
+
+  typedef enum  {
+    PPT_THROTTLER_PPT0,
+    PPT_THROTTLER_PPT1,
+    PPT_THROTTLER_PPT2,
+-  PPT_THROTTLER_PPT3,
++  PPT_THROTTLER_PPT3,
+    PPT_THROTTLER_COUNT
+  } PPT_THROTTLER_e;
+
+@@ -574,9 +574,9 @@ typedef enum  {
+    TEMP_VR_GFX,
+    TEMP_VR_MEM0,
+    TEMP_VR_MEM1,
+-  TEMP_VR_SOC,
++  TEMP_VR_SOC,
+    TEMP_LIQUID0,
+-  TEMP_LIQUID1,
++  TEMP_LIQUID1,
+    TEMP_PLX,
+    TEMP_COUNT,
+  } TEMP_e;
+@@ -592,7 +592,7 @@ typedef enum {
+    CUSTOMER_VARIANT_FALCON,
+    CUSTOMER_VARIANT_COUNT,
+  } CUSTOMER_VARIANT_e;
+-
++
+  // Used for 2-step UCLK DPM change workaround
+  typedef struct {
+    uint16_t Fmin;
+@@ -623,14 +623,14 @@ typedef struct {
+
+    // SECTION: Power Configuration
+    uint8_t      TotalPowerConfig;    //0-TDP, 1-TGP, 2-TCP Estimated, 
+3-TCP Measured. Use defines from PwrConfig_e
+-  uint8_t      TotalPowerPadding[3];
++  uint8_t      TotalPowerPadding[3];
+
+    // SECTION: APCC Settings
+    uint32_t     ApccPlusResidencyLimit;
+
+    //SECTION: SMNCLK DPM
+-  uint16_t       SmnclkDpmFreq        [NUM_SMNCLK_DPM_LEVELS];       // 
+in MHz
+-  uint16_t       SmnclkDpmVoltage     [NUM_SMNCLK_DPM_LEVELS];       // 
+mV(Q2)
++  uint16_t       SmnclkDpmFreq[NUM_SMNCLK_DPM_LEVELS];       // in MHz
++  uint16_t       SmnclkDpmVoltage[NUM_SMNCLK_DPM_LEVELS];       // 
+mV(Q2)
+
+    uint32_t       PaddingAPCC;
+    uint16_t       
+PerPartDroopVsetGfxDfll[NUM_PIECE_WISE_LINEAR_DROOP_MODEL_VF_POINTS];  
+//In mV(Q2)
+@@ -639,14 +639,14 @@ typedef struct {
+    // SECTION: Throttler settings
+    uint32_t ThrottlerControlMask;   // See Throtter masks defines
+
+-  // SECTION: FW DSTATE Settings
++  // SECTION: FW DSTATE Settings
+    uint32_t FwDStateMask;           // See FW DState masks defines
+
+    // SECTION: ULV Settings
+    uint16_t  UlvVoltageOffsetSoc; // In mV(Q2)
+    uint16_t  UlvVoltageOffsetGfx; // In mV(Q2)
+
+-  uint16_t     MinVoltageUlvGfx; // In mV(Q2)  Minimum Voltage ("Vmin") 
+of VDD_GFX in ULV mode
++  uint16_t     MinVoltageUlvGfx; // In mV(Q2)  Minimum Voltage ("Vmin") 
+of VDD_GFX in ULV mode
+    uint16_t     MinVoltageUlvSoc; // In mV(Q2)  Minimum Voltage ("Vmin") 
+of VDD_SOC in ULV mode
+
+    uint16_t     SocLIVmin;        // In mV(Q2)  Long Idle Vmin (deep 
+ULV), for VDD_SOC
+@@ -678,62 +678,62 @@ typedef struct {
+    //SECTION: DPM Config 1
+    DpmDescriptor_t DpmDescriptor[PPCLK_COUNT];
+
+-  uint16_t       FreqTableGfx      [NUM_GFXCLK_DPM_LEVELS  ];     // In 
+MHz
+-  uint16_t       FreqTableVclk     [NUM_VCLK_DPM_LEVELS    ];     // In 
+MHz
+-  uint16_t       FreqTableDclk     [NUM_DCLK_DPM_LEVELS    ];     // In 
+MHz
+-  uint16_t       FreqTableSocclk   [NUM_SOCCLK_DPM_LEVELS  ];     // In 
+MHz
+-  uint16_t       FreqTableUclk     [NUM_UCLK_DPM_LEVELS    ];     // In 
+MHz
+-  uint16_t       FreqTableDcefclk  [NUM_DCEFCLK_DPM_LEVELS ];     // In 
+MHz
+-  uint16_t       FreqTableDispclk  [NUM_DISPCLK_DPM_LEVELS ];     // In 
+MHz
+-  uint16_t       FreqTablePixclk   [NUM_PIXCLK_DPM_LEVELS  ];     // In 
+MHz
+-  uint16_t       FreqTablePhyclk   [NUM_PHYCLK_DPM_LEVELS  ];     // In 
+MHz
+-  uint16_t       FreqTableDtbclk   [NUM_DTBCLK_DPM_LEVELS  ];     // In 
+MHz
+-  uint16_t       FreqTableFclk     [NUM_FCLK_DPM_LEVELS    ];     // In 
+MHz
++  uint16_t       FreqTableGfx[NUM_GFXCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableVclk[NUM_VCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableDclk[NUM_DCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableSocclk[NUM_SOCCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableUclk[NUM_UCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableDcefclk[NUM_DCEFCLK_DPM_LEVELS];     // In 
+MHz
++  uint16_t       FreqTableDispclk[NUM_DISPCLK_DPM_LEVELS];     // In 
+MHz
++  uint16_t       FreqTablePixclk[NUM_PIXCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTablePhyclk[NUM_PHYCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableDtbclk[NUM_DTBCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableFclk[NUM_FCLK_DPM_LEVELS];     // In MHz
+    uint32_t       Paddingclks;
+
+    DroopInt_t     
+PerPartDroopModelGfxDfll[NUM_PIECE_WISE_LINEAR_DROOP_MODEL_VF_POINTS]; 
+//GHz ->Vstore in IEEE float format
+
+-  uint32_t       DcModeMaxFreq     [PPCLK_COUNT            ];     // In 
+MHz
++  uint32_t       DcModeMaxFreq[PPCLK_COUNT];     // In MHz
+
+-  uint8_t        FreqTableUclkDiv  [NUM_UCLK_DPM_LEVELS    ];     // 
+0:Div-1, 1:Div-1/2, 2:Div-1/4, 3:Div-1/8
++  uint8_t        FreqTableUclkDiv[NUM_UCLK_DPM_LEVELS];     // 0:Div-1, 
+1:Div-1/2, 2:Div-1/4, 3:Div-1/8
+
+    // Used for MALL performance boost
+    uint16_t       FclkBoostFreq;                                   // In 
+Mhz
+    uint16_t       FclkParamPadding;
+
+    // SECTION: DPM Config 2
+-  uint16_t       Mp0clkFreq        [NUM_MP0CLK_DPM_LEVELS];       // in 
+MHz
+-  uint16_t       Mp0DpmVoltage     [NUM_MP0CLK_DPM_LEVELS];       // 
+mV(Q2)
+-  uint16_t       MemVddciVoltage   [NUM_UCLK_DPM_LEVELS];         // 
+mV(Q2)
+-  uint16_t       MemMvddVoltage    [NUM_UCLK_DPM_LEVELS];         // 
+mV(Q2)
++  uint16_t       Mp0clkFreq[NUM_MP0CLK_DPM_LEVELS];       // in MHz
++  uint16_t       Mp0DpmVoltage[NUM_MP0CLK_DPM_LEVELS];       // mV(Q2)
++  uint16_t       MemVddciVoltage[NUM_UCLK_DPM_LEVELS];         // 
+mV(Q2)
++  uint16_t       MemMvddVoltage[NUM_UCLK_DPM_LEVELS];         // mV(Q2)
+    // GFXCLK DPM
+    uint16_t        GfxclkFgfxoffEntry;   // in Mhz
+-  uint16_t        GfxclkFinit;          // in Mhz
+-  uint16_t        GfxclkFidle;          // in MHz
++  uint16_t        GfxclkFinit;          // in Mhz
++  uint16_t        GfxclkFidle;          // in MHz
+    uint8_t         GfxclkSource;         // 0 = PLL, 1 = DFLL
+    uint8_t         GfxclkPadding;
+
+-  // GFX GPO
++  // GFX GPO
+    uint8_t         GfxGpoSubFeatureMask; // bit 0 = PACE, bit 1 = DEM
+    uint8_t         GfxGpoEnabledWorkPolicyMask; //Any policy that GPO 
+can be enabled
+    uint8_t         GfxGpoDisabledWorkPolicyMask; //Any policy that GPO 
+can be disabled
+    uint8_t         GfxGpoPadding[1];
+    uint32_t        GfxGpoVotingAllow;    //For indicating which feature 
+changes should result in a GPO table recalculation
+
+-  uint32_t        GfxGpoPadding32[4];
++  uint32_t        GfxGpoPadding32[4];
+
+    uint16_t        GfxDcsFopt;           // Optimal GFXCLK for DCS in 
+Mhz
+    uint16_t        GfxDcsFclkFopt;       // Optimal FCLK for DCS in Mhz
+    uint16_t        GfxDcsUclkFopt;       // Optimal UCLK for DCS in Mhz
+-
+-  uint16_t        DcsGfxOffVoltage;     //Voltage in mV(Q2) applied to 
+VDDGFX when entering DCS GFXOFF phase
++
++  uint16_t        DcsGfxOffVoltage;     //Voltage in mV(Q2) applied to 
+VDDGFX when entering DCS GFXOFF phase
+
+    uint16_t        DcsMinGfxOffTime;     //Minimum amount of time PMFW 
+shuts GFX OFF as part of GFX DCS phase
+    uint16_t        DcsMaxGfxOffTime;      //Maximum amount of time PMFW 
+can shut GFX OFF as part of GFX DCS phase at a stretch.
+
+    uint32_t        DcsMinCreditAccum;    //Min amount of positive credit 
+accumulation before waking GFX up as part of DCS.
+
+-  uint16_t        DcsExitHysteresis;    //The min amount of time power 
+credit accumulator should have a value > 0 before SMU exits the DCS 
+throttling phase.
++  uint16_t        DcsExitHysteresis;    //The min amount of time power 
+credit accumulator should have a value > 0 before SMU exits the DCS 
+throttling phase.
+    uint16_t        DcsTimeout;           //This is the amount of time 
+SMU FW waits for RLC to put GFX into GFXOFF before reverting to the 
+fallback mechanism of throttling GFXCLK to Fmin.
+
+    uint32_t        DcsParamPadding[5];
+@@ -743,9 +743,9 @@ typedef struct {
+    // UCLK section
+    uint8_t      LowestUclkReservedForUlv; // Set this to 1 if UCLK DPM0 
+is reserved for ULV-mode only
+    uint8_t      PaddingMem[3];
+-
+-  uint8_t      UclkDpmPstates     [NUM_UCLK_DPM_LEVELS];     // 4 DPM 
+states, 0-P0, 1-P1, 2-P2, 3-P3.
+-
++
++  uint8_t      UclkDpmPstates[NUM_UCLK_DPM_LEVELS];     // 4 DPM 
+states, 0-P0, 1-P1, 2-P2, 3-P3.
++
+    // Used for 2-Step UCLK change workaround
+    UclkDpmChangeRange_t UclkDpmSrcFreqRange;  // In Mhz
+    UclkDpmChangeRange_t UclkDpmTargFreqRange; // In Mhz
+@@ -755,8 +755,8 @@ typedef struct {
+    // Link DPM Settings
+    uint8_t      PcieGenSpeed[NUM_LINK_LEVELS];           ///< 
+0:PciE-gen1 1:PciE-gen2 2:PciE-gen3 3:PciE-gen4
+    uint8_t      PcieLaneCount[NUM_LINK_LEVELS];          ///< 1=x1, 
+2=x2, 3=x4, 4=x8, 5=x12, 6=x16
+-  uint16_t     LclkFreq[NUM_LINK_LEVELS];
+-
++  uint16_t     LclkFreq[NUM_LINK_LEVELS];
++
+    // SECTION: Fan Control
+    uint16_t     FanStopTemp;          //Celcius
+    uint16_t     FanStartTemp;         //Celcius
+@@ -767,36 +767,36 @@ typedef struct {
+    uint16_t     FanAcousticLimitRpm;
+    uint16_t     FanThrottlingRpm;
+    uint16_t     FanMaximumRpm;
+-  uint16_t     MGpuFanBoostLimitRpm;
++  uint16_t     MGpuFanBoostLimitRpm;
+    uint16_t     FanTargetTemperature;
+    uint16_t     FanTargetGfxclk;
+    uint16_t     FanPadding16;
+    uint8_t      FanTempInputSelect;
+    uint8_t      FanPadding;
+-  uint8_t      FanZeroRpmEnable;
++  uint8_t      FanZeroRpmEnable;
+    uint8_t      FanTachEdgePerRev;
+-
++
+    // The following are AFC override parameters. Leave at 0 to use FW 
+defaults.
+    int16_t      FuzzyFan_ErrorSetDelta;
+    int16_t      FuzzyFan_ErrorRateSetDelta;
+    int16_t      FuzzyFan_PwmSetDelta;
+    uint16_t     FuzzyFan_Reserved;
+
+-  // SECTION: AVFS
++  // SECTION: AVFS
+    // Overrides
+    uint8_t           OverrideAvfsGb[AVFS_VOLTAGE_COUNT];
+-  uint8_t           dBtcGbGfxDfllModelSelect;  //0 -> fused piece-wise 
+model, 1 -> piece-wise linear(PPTable), 2 -> quadratic model(PPTable)
++  uint8_t           dBtcGbGfxDfllModelSelect;  //0 -> fused piece-wise 
+model, 1 -> piece-wise linear(PPTable), 2 -> quadratic model(PPTable)
+    uint8_t           Padding8_Avfs;
+
+-  QuadraticInt_t    qAvfsGb[AVFS_VOLTAGE_COUNT];              // GHz->V 
+Override of fused curve
++  QuadraticInt_t    qAvfsGb[AVFS_VOLTAGE_COUNT];              // GHz->V 
+Override of fused curve
+    DroopInt_t        dBtcGbGfxPll;         // GHz->V BtcGb
+    DroopInt_t        dBtcGbGfxDfll;        // GHz->V BtcGb
+    DroopInt_t        dBtcGbSoc;            // GHz->V BtcGb
+-  LinearInt_t       qAgingGb[AVFS_VOLTAGE_COUNT];          // GHz->V
++  LinearInt_t       qAgingGb[AVFS_VOLTAGE_COUNT];          // GHz->V
+
+    PiecewiseLinearDroopInt_t   PiecewiseLinearDroopIntGfxDfll; //GHz 
+->Vstore in IEEE float format
+
+-  QuadraticInt_t    qStaticVoltageOffset[AVFS_VOLTAGE_COUNT]; // GHz->V
++  QuadraticInt_t    qStaticVoltageOffset[AVFS_VOLTAGE_COUNT]; // GHz->V
+
+    uint16_t          DcTol[AVFS_VOLTAGE_COUNT];            // mV Q2
+
+@@ -807,17 +807,17 @@ typedef struct {
+    uint16_t          DcBtcMax[AVFS_VOLTAGE_COUNT];       // mV Q2
+
+    uint16_t          DcBtcGb[AVFS_VOLTAGE_COUNT];       // mV Q2
+-
++
+    // SECTION: XGMI
+    uint8_t           XgmiDpmPstates[NUM_XGMI_LEVELS]; // 2 DPM states, 
+high and low.  0-P0, 1-P1, 2-P2, 3-P3.
+    uint8_t           XgmiDpmSpare[2];
+
+    // SECTION: Advanced Options
+    uint32_t          DebugOverrides;
+-  QuadraticInt_t    ReservedEquation0;
+-  QuadraticInt_t    ReservedEquation1;
+-  QuadraticInt_t    ReservedEquation2;
+-  QuadraticInt_t    ReservedEquation3;
++  QuadraticInt_t    ReservedEquation0;
++  QuadraticInt_t    ReservedEquation1;
++  QuadraticInt_t    ReservedEquation2;
++  QuadraticInt_t    ReservedEquation3;
+
+    // SECTION: Sku Reserved
+    uint8_t          CustomerVariant;
+@@ -825,17 +825,17 @@ typedef struct {
+    //VC BTC parameters are only applicable to VDD_GFX domain
+    uint8_t          VcBtcEnabled;
+    uint16_t         VcBtcVminT0;                 // T0_VMIN
+-  uint16_t         VcBtcFixedVminAgingOffset;   // 
+FIXED_VMIN_AGING_OFFSET
+-  uint16_t         VcBtcVmin2PsmDegrationGb;    // 
+VMIN_TO_PSM_DEGRADATION_GB
++  uint16_t         VcBtcFixedVminAgingOffset;   // 
+FIXED_VMIN_AGING_OFFSET
++  uint16_t         VcBtcVmin2PsmDegrationGb;    // 
+VMIN_TO_PSM_DEGRADATION_GB
+    uint32_t         VcBtcPsmA;                   // A_PSM
+    uint32_t         VcBtcPsmB;                   // B_PSM
+    uint32_t         VcBtcVminA;                  // A_VMIN
+-  uint32_t         VcBtcVminB;                  // B_VMIN
+-
++  uint32_t         VcBtcVminB;                  // B_VMIN
++
+    //GPIO Board feature
+    uint16_t         LedGpio;            //GeneriA GPIO flag used to 
+control the radeon LEDs
+-  uint16_t         GfxPowerStagesGpio; //Genlk_vsync GPIO flag used to 
+control gfx power stages
+-
++  uint16_t         GfxPowerStagesGpio; //Genlk_vsync GPIO flag used to 
+control gfx power stages
++
+    uint32_t         SkuReserved[8];
+
+
+@@ -845,7 +845,7 @@ typedef struct {
+    uint32_t     GamingClk[6];
+
+    // SECTION: I2C Control
+-  I2cControllerConfig_t  I2cControllers[NUM_I2C_CONTROLLERS];
++  I2cControllerConfig_t  I2cControllers[NUM_I2C_CONTROLLERS];
+
+    uint8_t      GpioScl;  // GPIO Number for SCL Line, used only for 
+CKSVII2C1
+    uint8_t      GpioSda;  // GPIO Number for SDA Line, used only for 
+CKSVII2C1
+@@ -875,21 +875,21 @@ typedef struct {
+    uint16_t     Mem0MaxCurrent;   // in Amps
+    int8_t       Mem0Offset;       // in Amps
+    uint8_t      Padding_TelemetryMem0;
+-
++
+    uint16_t     Mem1MaxCurrent;   // in Amps
+    int8_t       Mem1Offset;       // in Amps
+    uint8_t      Padding_TelemetryMem1;
+
+    uint32_t     MvddRatio; // This is used for MVDD  Svi2 Div Ratio 
+workaround. It has 16 fractional bits (Q16.16)
+-
++
+    // SECTION: GPIO Settings
+    uint8_t      AcDcGpio;        // GPIO pin configured for AC/DC 
+switching
+    uint8_t      AcDcPolarity;    // GPIO polarity for AC/DC switching
+    uint8_t      VR0HotGpio;      // GPIO pin configured for VR0 HOT 
+event
+    uint8_t      VR0HotPolarity;  // GPIO polarity for VR0 HOT event
+
+-  uint8_t      VR1HotGpio;      // GPIO pin configured for VR1 HOT 
+event
+-  uint8_t      VR1HotPolarity;  // GPIO polarity for VR1 HOT event
++  uint8_t      VR1HotGpio;      // GPIO pin configured for VR1 HOT 
+event
++  uint8_t      VR1HotPolarity;  // GPIO polarity for VR1 HOT event
+    uint8_t      GthrGpio;        // GPIO pin configured for GTHR Event
+    uint8_t      GthrPolarity;    // replace GPIO polarity for GTHR
+
+@@ -914,7 +914,7 @@ typedef struct {
+    uint8_t      DfllGfxclkSpreadEnabled;   // on or off
+    uint8_t      DfllGfxclkSpreadPercent;   // Q4.4
+    uint16_t     DfllGfxclkSpreadFreq;      // kHz
+-
++
+    // UCLK Spread Spectrum
+    uint16_t     UclkSpreadPadding;
+    uint16_t     UclkSpreadFreq;      // kHz
+@@ -923,23 +923,23 @@ typedef struct {
+    uint8_t      FclkSpreadEnabled;   // on or off
+    uint8_t      FclkSpreadPercent;   // Q4.4
+    uint16_t     FclkSpreadFreq;      // kHz
+-
++
+    // Section: Memory Config
+-  uint32_t     MemoryChannelEnabled; // For DRAM use only, Max 32 
+channels enabled bit mask.
+-
++  uint32_t     MemoryChannelEnabled; // For DRAM use only, Max 32 
+channels enabled bit mask.
++
+    uint8_t      DramBitWidth; // For DRAM use only.  See Dram Bit width 
+type defines
+    uint8_t      PaddingMem1[3];
+
+    // Section: Total Board Power
+    uint16_t     TotalBoardPower;     //Only needed for TCP Estimated 
+case, where TCP = TGP+Total Board Power
+-  uint16_t     BoardPowerPadding;
+-
++  uint16_t     BoardPowerPadding;
++
+    // SECTION: XGMI Training
+-  uint8_t      XgmiLinkSpeed   [NUM_XGMI_PSTATE_LEVELS];
+-  uint8_t      XgmiLinkWidth   [NUM_XGMI_PSTATE_LEVELS];
++  uint8_t      XgmiLinkSpeed[NUM_XGMI_PSTATE_LEVELS];
++  uint8_t      XgmiLinkWidth[NUM_XGMI_PSTATE_LEVELS];
+
+-  uint16_t     XgmiFclkFreq    [NUM_XGMI_PSTATE_LEVELS];
+-  uint16_t     XgmiSocVoltage  [NUM_XGMI_PSTATE_LEVELS];
++  uint16_t     XgmiFclkFreq[NUM_XGMI_PSTATE_LEVELS];
++  uint16_t     XgmiSocVoltage[NUM_XGMI_PSTATE_LEVELS];
+
+    // SECTION: UMC feature flags
+    uint8_t      HsrEnabled;
+@@ -947,7 +947,7 @@ typedef struct {
+    uint8_t      PaddingUmcFlags[2];
+
+    // UCLK Spread Spectrum
+-  uint8_t      UclkSpreadPercent[16];
++  uint8_t      UclkSpreadPercent[16];
+
+    // SECTION: Board Reserved
+    uint32_t     BoardReserved[11];
+@@ -983,14 +983,14 @@ typedef struct {
+
+    // SECTION: Power Configuration
+    uint8_t      TotalPowerConfig;    //0-TDP, 1-TGP, 2-TCP Estimated, 
+3-TCP Measured. Use defines from PwrConfig_e
+-  uint8_t      TotalPowerPadding[3];
++  uint8_t      TotalPowerPadding[3];
+
+    // SECTION: APCC Settings
+    uint32_t     ApccPlusResidencyLimit;
+
+    //SECTION: SMNCLK DPM
+-  uint16_t       SmnclkDpmFreq        [NUM_SMNCLK_DPM_LEVELS];       // 
+in MHz
+-  uint16_t       SmnclkDpmVoltage     [NUM_SMNCLK_DPM_LEVELS];       // 
+mV(Q2)
++  uint16_t       SmnclkDpmFreq[NUM_SMNCLK_DPM_LEVELS];       // in MHz
++  uint16_t       SmnclkDpmVoltage[NUM_SMNCLK_DPM_LEVELS];       // 
+mV(Q2)
+
+    uint32_t       PaddingAPCC;
+    uint16_t       
+PerPartDroopVsetGfxDfll[NUM_PIECE_WISE_LINEAR_DROOP_MODEL_VF_POINTS];  
+//In mV(Q2)
+@@ -999,14 +999,14 @@ typedef struct {
+    // SECTION: Throttler settings
+    uint32_t ThrottlerControlMask;   // See Throtter masks defines
+
+-  // SECTION: FW DSTATE Settings
++  // SECTION: FW DSTATE Settings
+    uint32_t FwDStateMask;           // See FW DState masks defines
+
+    // SECTION: ULV Settings
+    uint16_t  UlvVoltageOffsetSoc; // In mV(Q2)
+    uint16_t  UlvVoltageOffsetGfx; // In mV(Q2)
+
+-  uint16_t     MinVoltageUlvGfx; // In mV(Q2)  Minimum Voltage ("Vmin") 
+of VDD_GFX in ULV mode
++  uint16_t     MinVoltageUlvGfx; // In mV(Q2)  Minimum Voltage ("Vmin") 
+of VDD_GFX in ULV mode
+    uint16_t     MinVoltageUlvSoc; // In mV(Q2)  Minimum Voltage ("Vmin") 
+of VDD_SOC in ULV mode
+
+    uint16_t     SocLIVmin;
+@@ -1038,42 +1038,42 @@ typedef struct {
+    //SECTION: DPM Config 1
+    DpmDescriptor_t DpmDescriptor[PPCLK_COUNT];
+
+-  uint16_t       FreqTableGfx      [NUM_GFXCLK_DPM_LEVELS  ];     // In 
+MHz
+-  uint16_t       FreqTableVclk     [NUM_VCLK_DPM_LEVELS    ];     // In 
+MHz
+-  uint16_t       FreqTableDclk     [NUM_DCLK_DPM_LEVELS    ];     // In 
+MHz
+-  uint16_t       FreqTableSocclk   [NUM_SOCCLK_DPM_LEVELS  ];     // In 
+MHz
+-  uint16_t       FreqTableUclk     [NUM_UCLK_DPM_LEVELS    ];     // In 
+MHz
+-  uint16_t       FreqTableDcefclk  [NUM_DCEFCLK_DPM_LEVELS ];     // In 
+MHz
+-  uint16_t       FreqTableDispclk  [NUM_DISPCLK_DPM_LEVELS ];     // In 
+MHz
+-  uint16_t       FreqTablePixclk   [NUM_PIXCLK_DPM_LEVELS  ];     // In 
+MHz
+-  uint16_t       FreqTablePhyclk   [NUM_PHYCLK_DPM_LEVELS  ];     // In 
+MHz
+-  uint16_t       FreqTableDtbclk   [NUM_DTBCLK_DPM_LEVELS  ];     // In 
+MHz
+-  uint16_t       FreqTableFclk     [NUM_FCLK_DPM_LEVELS    ];     // In 
+MHz
++  uint16_t       FreqTableGfx[NUM_GFXCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableVclk[NUM_VCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableDclk[NUM_DCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableSocclk[NUM_SOCCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableUclk[NUM_UCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableDcefclk[NUM_DCEFCLK_DPM_LEVELS];     // In 
+MHz
++  uint16_t       FreqTableDispclk[NUM_DISPCLK_DPM_LEVELS];     // In 
+MHz
++  uint16_t       FreqTablePixclk[NUM_PIXCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTablePhyclk[NUM_PHYCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableDtbclk[NUM_DTBCLK_DPM_LEVELS];     // In MHz
++  uint16_t       FreqTableFclk[NUM_FCLK_DPM_LEVELS];     // In MHz
+    uint32_t       Paddingclks;
+
+    DroopInt_t     
+PerPartDroopModelGfxDfll[NUM_PIECE_WISE_LINEAR_DROOP_MODEL_VF_POINTS]; 
+//GHz ->Vstore in IEEE float format
+
+-  uint32_t       DcModeMaxFreq     [PPCLK_COUNT            ];     // In 
+MHz
++  uint32_t       DcModeMaxFreq[PPCLK_COUNT];     // In MHz
+
+-  uint8_t        FreqTableUclkDiv  [NUM_UCLK_DPM_LEVELS    ];     // 
+0:Div-1, 1:Div-1/2, 2:Div-1/4, 3:Div-1/8
++  uint8_t        FreqTableUclkDiv[NUM_UCLK_DPM_LEVELS];     // 0:Div-1, 
+1:Div-1/2, 2:Div-1/4, 3:Div-1/8
+
+    // Used for MALL performance boost
+    uint16_t       FclkBoostFreq;                                   // In 
+Mhz
+    uint16_t       FclkParamPadding;
+
+    // SECTION: DPM Config 2
+-  uint16_t       Mp0clkFreq        [NUM_MP0CLK_DPM_LEVELS];       // in 
+MHz
+-  uint16_t       Mp0DpmVoltage     [NUM_MP0CLK_DPM_LEVELS];       // 
+mV(Q2)
+-  uint16_t       MemVddciVoltage   [NUM_UCLK_DPM_LEVELS];         // 
+mV(Q2)
+-  uint16_t       MemMvddVoltage    [NUM_UCLK_DPM_LEVELS];         // 
+mV(Q2)
++  uint16_t       Mp0clkFreq[NUM_MP0CLK_DPM_LEVELS];       // in MHz
++  uint16_t       Mp0DpmVoltage[NUM_MP0CLK_DPM_LEVELS];       // mV(Q2)
++  uint16_t       MemVddciVoltage[NUM_UCLK_DPM_LEVELS];         // 
+mV(Q2)
++  uint16_t       MemMvddVoltage[NUM_UCLK_DPM_LEVELS];         // mV(Q2)
+    // GFXCLK DPM
+    uint16_t        GfxclkFgfxoffEntry;   // in Mhz
+-  uint16_t        GfxclkFinit;          // in Mhz
+-  uint16_t        GfxclkFidle;          // in MHz
++  uint16_t        GfxclkFinit;          // in Mhz
++  uint16_t        GfxclkFidle;          // in MHz
+    uint8_t         GfxclkSource;         // 0 = PLL, 1 = DFLL
+    uint8_t         GfxclkPadding;
+
+-  // GFX GPO
++  // GFX GPO
+    uint8_t         GfxGpoSubFeatureMask; // bit 0 = PACE, bit 1 = DEM
+    uint8_t         GfxGpoEnabledWorkPolicyMask; //Any policy that GPO 
+can be enabled
+    uint8_t         GfxGpoDisabledWorkPolicyMask; //Any policy that GPO 
+can be disabled
+@@ -1086,14 +1086,14 @@ typedef struct {
+    uint16_t        GfxDcsFclkFopt;       // Optimal FCLK for DCS in Mhz
+    uint16_t        GfxDcsUclkFopt;       // Optimal UCLK for DCS in Mhz
+
+-  uint16_t        DcsGfxOffVoltage;     //Voltage in mV(Q2) applied to 
+VDDGFX when entering DCS GFXOFF phase
++  uint16_t        DcsGfxOffVoltage;     //Voltage in mV(Q2) applied to 
+VDDGFX when entering DCS GFXOFF phase
+
+    uint16_t        DcsMinGfxOffTime;     //Minimum amount of time PMFW 
+shuts GFX OFF as part of GFX DCS phase
+    uint16_t        DcsMaxGfxOffTime;      //Maximum amount of time PMFW 
+can shut GFX OFF as part of GFX DCS phase at a stretch.
+
+    uint32_t        DcsMinCreditAccum;    //Min amount of positive credit 
+accumulation before waking GFX up as part of DCS.
+
+-  uint16_t        DcsExitHysteresis;    //The min amount of time power 
+credit accumulator should have a value > 0 before SMU exits the DCS 
+throttling phase.
++  uint16_t        DcsExitHysteresis;    //The min amount of time power 
+credit accumulator should have a value > 0 before SMU exits the DCS 
+throttling phase.
+    uint16_t        DcsTimeout;           //This is the amount of time 
+SMU FW waits for RLC to put GFX into GFXOFF before reverting to the 
+fallback mechanism of throttling GFXCLK to Fmin.
+
+    uint32_t        DcsParamPadding[5];
+@@ -1104,7 +1104,7 @@ typedef struct {
+    uint8_t      LowestUclkReservedForUlv; // Set this to 1 if UCLK DPM0 
+is reserved for ULV-mode only
+    uint8_t      PaddingMem[3];
+
+-  uint8_t      UclkDpmPstates     [NUM_UCLK_DPM_LEVELS];     // 4 DPM 
+states, 0-P0, 1-P1, 2-P2, 3-P3.
++  uint8_t      UclkDpmPstates[NUM_UCLK_DPM_LEVELS];     // 4 DPM 
+states, 0-P0, 1-P1, 2-P2, 3-P3.
+
+    // Used for 2-Step UCLK change workaround
+    UclkDpmChangeRange_t UclkDpmSrcFreqRange;  // In Mhz
+@@ -1115,7 +1115,7 @@ typedef struct {
+    // Link DPM Settings
+    uint8_t      PcieGenSpeed[NUM_LINK_LEVELS];           ///< 
+0:PciE-gen1 1:PciE-gen2 2:PciE-gen3 3:PciE-gen4
+    uint8_t      PcieLaneCount[NUM_LINK_LEVELS];          ///< 1=x1, 
+2=x2, 3=x4, 4=x8, 5=x12, 6=x16
+-  uint16_t     LclkFreq[NUM_LINK_LEVELS];
++  uint16_t     LclkFreq[NUM_LINK_LEVELS];
+
+    // SECTION: Fan Control
+    uint16_t     FanStopTemp;          //Celcius
+@@ -1133,7 +1133,7 @@ typedef struct {
+    uint16_t     FanPadding16;
+    uint8_t      FanTempInputSelect;
+    uint8_t      FanPadding;
+-  uint8_t      FanZeroRpmEnable;
++  uint8_t      FanZeroRpmEnable;
+    uint8_t      FanTachEdgePerRev;
+
+    // The following are AFC override parameters. Leave at 0 to use FW 
+defaults.
+@@ -1142,21 +1142,21 @@ typedef struct {
+    int16_t      FuzzyFan_PwmSetDelta;
+    uint16_t     FuzzyFan_Reserved;
+
+-  // SECTION: AVFS
++  // SECTION: AVFS
+    // Overrides
+    uint8_t           OverrideAvfsGb[AVFS_VOLTAGE_COUNT];
+-  uint8_t           dBtcGbGfxDfllModelSelect;  //0 -> fused piece-wise 
+model, 1 -> piece-wise linear(PPTable), 2 -> quadratic model(PPTable)
++  uint8_t           dBtcGbGfxDfllModelSelect;  //0 -> fused piece-wise 
+model, 1 -> piece-wise linear(PPTable), 2 -> quadratic model(PPTable)
+    uint8_t           Padding8_Avfs;
+
+-  QuadraticInt_t    qAvfsGb[AVFS_VOLTAGE_COUNT];              // GHz->V 
+Override of fused curve
++  QuadraticInt_t    qAvfsGb[AVFS_VOLTAGE_COUNT];              // GHz->V 
+Override of fused curve
+    DroopInt_t        dBtcGbGfxPll;         // GHz->V BtcGb
+    DroopInt_t        dBtcGbGfxDfll;        // GHz->V BtcGb
+    DroopInt_t        dBtcGbSoc;            // GHz->V BtcGb
+-  LinearInt_t       qAgingGb[AVFS_VOLTAGE_COUNT];          // GHz->V
++  LinearInt_t       qAgingGb[AVFS_VOLTAGE_COUNT];          // GHz->V
+
+    PiecewiseLinearDroopInt_t   PiecewiseLinearDroopIntGfxDfll; //GHz 
+->Vstore in IEEE float format
+
+-  QuadraticInt_t    qStaticVoltageOffset[AVFS_VOLTAGE_COUNT]; // GHz->V
++  QuadraticInt_t    qStaticVoltageOffset[AVFS_VOLTAGE_COUNT]; // GHz->V
+
+    uint16_t          DcTol[AVFS_VOLTAGE_COUNT];            // mV Q2
+
+@@ -1185,16 +1185,16 @@ typedef struct {
+      //VC BTC parameters are only applicable to VDD_GFX domain
+    uint8_t          VcBtcEnabled;
+    uint16_t         VcBtcVminT0;                 // T0_VMIN
+-  uint16_t         VcBtcFixedVminAgingOffset;   // 
+FIXED_VMIN_AGING_OFFSET
+-  uint16_t         VcBtcVmin2PsmDegrationGb;    // 
+VMIN_TO_PSM_DEGRADATION_GB
++  uint16_t         VcBtcFixedVminAgingOffset;   // 
+FIXED_VMIN_AGING_OFFSET
++  uint16_t         VcBtcVmin2PsmDegrationGb;    // 
+VMIN_TO_PSM_DEGRADATION_GB
+    uint32_t         VcBtcPsmA;                   // A_PSM
+    uint32_t         VcBtcPsmB;                   // B_PSM
+    uint32_t         VcBtcVminA;                  // A_VMIN
+-  uint32_t         VcBtcVminB;                  // B_VMIN
++  uint32_t         VcBtcVminB;                  // B_VMIN
+
+    //GPIO Board feature
+    uint16_t         LedGpio;            //GeneriA GPIO flag used to 
+control the radeon LEDs
+-  uint16_t         GfxPowerStagesGpio; //Genlk_vsync GPIO flag used to 
+control gfx power stages
++  uint16_t         GfxPowerStagesGpio; //Genlk_vsync GPIO flag used to 
+control gfx power stages
+
+    uint32_t         SkuReserved[63];
+
+@@ -1206,7 +1206,7 @@ typedef struct {
+    uint32_t     GamingClk[6];
+
+    // SECTION: I2C Control
+-  I2cControllerConfig_t  I2cControllers[NUM_I2C_CONTROLLERS];
++  I2cControllerConfig_t  I2cControllers[NUM_I2C_CONTROLLERS];
+
+    uint8_t      GpioScl;  // GPIO Number for SCL Line, used only for 
+CKSVII2C1
+    uint8_t      GpioSda;  // GPIO Number for SDA Line, used only for 
+CKSVII2C1
+@@ -1249,8 +1249,8 @@ typedef struct {
+    uint8_t      VR0HotGpio;      // GPIO pin configured for VR0 HOT 
+event
+    uint8_t      VR0HotPolarity;  // GPIO polarity for VR0 HOT event
+
+-  uint8_t      VR1HotGpio;      // GPIO pin configured for VR1 HOT 
+event
+-  uint8_t      VR1HotPolarity;  // GPIO polarity for VR1 HOT event
++  uint8_t      VR1HotGpio;      // GPIO pin configured for VR1 HOT 
+event
++  uint8_t      VR1HotPolarity;  // GPIO polarity for VR1 HOT event
+    uint8_t      GthrGpio;        // GPIO pin configured for GTHR Event
+    uint8_t      GthrPolarity;    // replace GPIO polarity for GTHR
+
+@@ -1286,21 +1286,21 @@ typedef struct {
+    uint16_t     FclkSpreadFreq;      // kHz
+
+    // Section: Memory Config
+-  uint32_t     MemoryChannelEnabled; // For DRAM use only, Max 32 
+channels enabled bit mask.
++  uint32_t     MemoryChannelEnabled; // For DRAM use only, Max 32 
+channels enabled bit mask.
+
+    uint8_t      DramBitWidth; // For DRAM use only.  See Dram Bit width 
+type defines
+    uint8_t      PaddingMem1[3];
+
+    // Section: Total Board Power
+    uint16_t     TotalBoardPower;     //Only needed for TCP Estimated 
+case, where TCP = TGP+Total Board Power
+-  uint16_t     BoardPowerPadding;
++  uint16_t     BoardPowerPadding;
+
+    // SECTION: XGMI Training
+-  uint8_t      XgmiLinkSpeed   [NUM_XGMI_PSTATE_LEVELS];
+-  uint8_t      XgmiLinkWidth   [NUM_XGMI_PSTATE_LEVELS];
++  uint8_t      XgmiLinkSpeed[NUM_XGMI_PSTATE_LEVELS];
++  uint8_t      XgmiLinkWidth[NUM_XGMI_PSTATE_LEVELS];
+
+-  uint16_t     XgmiFclkFreq    [NUM_XGMI_PSTATE_LEVELS];
+-  uint16_t     XgmiSocVoltage  [NUM_XGMI_PSTATE_LEVELS];
++  uint16_t     XgmiFclkFreq[NUM_XGMI_PSTATE_LEVELS];
++  uint16_t     XgmiSocVoltage[NUM_XGMI_PSTATE_LEVELS];
+
+    // SECTION: UMC feature flags
+    uint8_t      HsrEnabled;
+@@ -1328,15 +1328,15 @@ typedef struct {
+    uint16_t     UclkAverageLpfTau;
+    uint16_t     GfxActivityLpfTau;
+    uint16_t     UclkActivityLpfTau;
+-  uint16_t     SocketPowerLpfTau;
++  uint16_t     SocketPowerLpfTau;
+    uint16_t     VcnClkAverageLpfTau;
+-  uint16_t     padding16;
++  uint16_t     padding16;
+  } DriverSmuConfig_t;
+
+  typedef struct {
+    DriverSmuConfig_t DriverSmuConfig;
+
+-  uint32_t     Spare[7];
++  uint32_t     Spare[7];
+    // Padding - ignore
+    uint32_t     MmHubPadding[8]; // SMU internal use
+  } DriverSmuConfigExternal_t;
+@@ -1345,14 +1345,14 @@ typedef struct {
+    uint16_t               GfxclkFmin;           // MHz
+    uint16_t               GfxclkFmax;           // MHz
+    QuadraticInt_t         CustomGfxVfCurve;     // a: mV/MHz^2, b: 
+mv/MHz, c: mV
+-  uint16_t               CustomCurveFmin;      // MHz
+-  uint16_t               UclkFmin;             // MHz
++  uint16_t               CustomCurveFmin;      // MHz
++  uint16_t               UclkFmin;             // MHz
+    uint16_t               UclkFmax;             // MHz
+    int16_t                OverDrivePct;         // %
+    uint16_t               FanMaximumRpm;
+    uint16_t               FanMinimumPwm;
+    uint16_t               FanAcousticLimitRpm;
+-  uint16_t               FanTargetTemperature; // Degree Celcius
++  uint16_t               FanTargetTemperature; // Degree Celcius
+    uint8_t                FanLinearPwmPoints[NUM_OD_FAN_MAX_POINTS];
+    uint8_t                FanLinearTempPoints[NUM_OD_FAN_MAX_POINTS];
+    uint16_t               MaxOpTemp;            // Degree Celcius
+@@ -1361,13 +1361,13 @@ typedef struct {
+    uint8_t                FanZeroRpmStopTemp;
+    uint8_t                FanMode;
+    uint8_t                Padding[1];
+-} OverDriveTable_t;
++} OverDriveTable_t;
+
+  typedef struct {
+    OverDriveTable_t OverDriveTable;
+-  uint32_t      Spare[8];
++  uint32_t      Spare[8];
+
+-  uint32_t     MmHubPadding[8]; // SMU internal use
++  uint32_t     MmHubPadding[8]; // SMU internal use
+  } OverDriveTableExternal_t;
+
+  typedef struct {
+@@ -1380,7 +1380,7 @@ typedef struct {
+    uint16_t AverageUclkFrequencyPreDs  ;
+    uint16_t AverageUclkFrequencyPostDs  ;
+
+-
++
+    uint16_t AverageGfxActivity    ;
+    uint16_t AverageUclkActivity   ;
+    uint8_t  CurrSocVoltageOffset  ;
+@@ -1393,14 +1393,14 @@ typedef struct {
+    uint16_t TemperatureMem        ;
+    uint16_t TemperatureVrGfx      ;
+    uint16_t TemperatureVrMem0     ;
+-  uint16_t TemperatureVrMem1     ;
++  uint16_t TemperatureVrMem1     ;
+    uint16_t TemperatureVrSoc      ;
+    uint16_t TemperatureLiquid0    ;
+-  uint16_t TemperatureLiquid1    ;
++  uint16_t TemperatureLiquid1    ;
+    uint16_t TemperaturePlx        ;
+    uint16_t Padding16             ;
+-  uint32_t ThrottlerStatus       ;
+-
++  uint32_t ThrottlerStatus       ;
++
+    uint8_t  LinkDpmLevel;
+    uint8_t  CurrFanPwm;
+    uint16_t CurrFanSpeed;
+@@ -1416,7 +1416,7 @@ typedef struct {
+    uint16_t AverageVclk0Frequency  ;
+    uint16_t AverageDclk0Frequency  ;
+    uint16_t AverageVclk1Frequency  ;
+-  uint16_t AverageDclk1Frequency  ;
++  uint16_t AverageDclk1Frequency  ;
+    uint16_t VcnActivityPercentage  ; //place holder, David N. to provide 
+full sequence
+    uint8_t  PcieRate               ;
+    uint8_t  PcieWidth              ;
+@@ -1614,7 +1614,7 @@ typedef struct {
+    uint32_t Spare[1];
+
+    // Padding - ignore
+-  uint32_t     MmHubPadding[8]; // SMU internal use
++  uint32_t     MmHubPadding[8]; // SMU internal use
+  } SmuMetricsExternal_t;
+
+  typedef struct {
+@@ -1622,7 +1622,7 @@ typedef struct {
+    uint16_t MaxClock; // This is either DCEFCLK or SOCCLK (in MHz)
+    uint16_t MinUclk;
+    uint16_t MaxUclk;
+-
++
+    uint8_t  WmSetting;
+    uint8_t  Flags;
+    uint8_t  Padding[2];
+@@ -1658,7 +1658,7 @@ typedef struct {
+  typedef struct {
+    uint16_t avgPsmCount[67];
+    uint16_t minPsmCount[67];
+-  float    avgPsmVoltage[67];
++  float    avgPsmVoltage[67];
+    float    minPsmVoltage[67];
+  } AvfsDebugTable_t;
+
+@@ -1673,7 +1673,7 @@ typedef struct {
+    uint8_t  Padding;
+
+    uint8_t  AvfsEn[AVFS_VOLTAGE_COUNT];
+-
++
+    uint8_t  OverrideVFT[AVFS_VOLTAGE_COUNT];
+    uint8_t  OverrideAvfsGb[AVFS_VOLTAGE_COUNT];
+
+@@ -1729,7 +1729,7 @@ typedef struct {
+    uint8_t   Gfx_IdleHystLimit;
+    uint8_t   Gfx_FPS;
+    uint8_t   Gfx_MinActiveFreqType;
+-  uint8_t   Gfx_BoosterFreqType;
++  uint8_t   Gfx_BoosterFreqType;
+    uint8_t   Gfx_MinFreqStep;                // Minimum delta between 
+current and target frequeny in order for FW to change clock.
+    uint16_t  Gfx_MinActiveFreq;              // MHz
+    uint16_t  Gfx_BoosterFreq;                // MHz
+@@ -1744,7 +1744,7 @@ typedef struct {
+    uint8_t   Fclk_IdleHystLimit;
+    uint8_t   Fclk_FPS;
+    uint8_t   Fclk_MinActiveFreqType;
+-  uint8_t   Fclk_BoosterFreqType;
++  uint8_t   Fclk_BoosterFreqType;
+    uint8_t   Fclk_MinFreqStep;                // Minimum delta between 
+current and target frequeny in order for FW to change clock.
+    uint16_t  Fclk_MinActiveFreq;              // MHz
+    uint16_t  Fclk_BoosterFreq;                // MHz
+@@ -1780,19 +1780,19 @@ typedef struct {
+
+  typedef struct {
+    DpmActivityMonitorCoeffInt_t DpmActivityMonitorCoeffInt;
+-  uint32_t     MmHubPadding[8]; // SMU internal use
++  uint32_t     MmHubPadding[8]; // SMU internal use
+  } DpmActivityMonitorCoeffIntExternal_t;
+
+  // Workload bits
+-#define WORKLOAD_PPLIB_DEFAULT_BIT        0
+-#define WORKLOAD_PPLIB_FULL_SCREEN_3D_BIT 1
+-#define WORKLOAD_PPLIB_POWER_SAVING_BIT   2
+-#define WORKLOAD_PPLIB_VIDEO_BIT          3
+-#define WORKLOAD_PPLIB_VR_BIT             4
+-#define WORKLOAD_PPLIB_COMPUTE_BIT        5
+-#define WORKLOAD_PPLIB_CUSTOM_BIT         6
+-#define WORKLOAD_PPLIB_W3D_BIT            7
+-#define WORKLOAD_PPLIB_COUNT              8
++#define WORKLOAD_PPLIB_DEFAULT_BIT        0
++#define WORKLOAD_PPLIB_FULL_SCREEN_3D_BIT 1
++#define WORKLOAD_PPLIB_POWER_SAVING_BIT   2
++#define WORKLOAD_PPLIB_VIDEO_BIT          3
++#define WORKLOAD_PPLIB_VR_BIT             4
++#define WORKLOAD_PPLIB_COMPUTE_BIT        5
++#define WORKLOAD_PPLIB_CUSTOM_BIT         6
++#define WORKLOAD_PPLIB_W3D_BIT            7
++#define WORKLOAD_PPLIB_COUNT              8
+
+
+  // These defines are used with the following messages:
+@@ -1824,8 +1824,8 @@ typedef struct {
+
+  typedef struct {
+    RlcPaceFlopsPerByteOverride_t RlcPaceFlopsPerByteOverride;
+-
+-  uint32_t     MmHubPadding[8]; // SMU internal use
++
++  uint32_t     MmHubPadding[8]; // SMU internal use
+  } RlcPaceFlopsPerByteOverrideExternal_t;
+
+  // These defines are used with the SMC_MSG_SetUclkFastSwitch message.
 
