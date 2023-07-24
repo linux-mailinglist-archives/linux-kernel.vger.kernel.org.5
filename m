@@ -2,120 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C151D75F8DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DD075F8DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 15:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbjGXNuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 09:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
+        id S229676AbjGXNuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 09:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbjGXNto (ORCPT
+        with ESMTP id S230290AbjGXNtt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 09:49:44 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 52979421A;
-        Mon, 24 Jul 2023 06:47:02 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AF3FA1655;
-        Mon, 24 Jul 2023 06:47:22 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1E8893F67D;
-        Mon, 24 Jul 2023 06:46:37 -0700 (PDT)
-Message-ID: <5876adba-0507-6bfd-6ede-74f8e7aa55f2@arm.com>
-Date:   Mon, 24 Jul 2023 14:46:35 +0100
+        Mon, 24 Jul 2023 09:49:49 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50C81BD4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:46:49 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbc0609cd6so33483545e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 06:46:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690206407; x=1690811207;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=m7WubRds7jbJgkABDaAVUdckubvdEH0her0SUPsLcCQ=;
+        b=dkYXlVu6q4UXC1OOZTn+s9EHl4DQIRFghcEm3PtTNXR7R7GxhNE5qRwO2R6JV+9aHU
+         Rg+4kpM9w7Nc0l3IHmIWyyw9lVON9WE2tDfO9rM9vZOzXsJvEF9uJ8+EKW/JLqtMa3s/
+         moYx0FJ63BA2p52KAv5X67j04zVoOQ+RHrPbulnRNUIa/ettBTa8ixpqwliJqpCJHxLU
+         4BeRa5neK3F4JMafNap4hsVRhP6bQRPBhngyWwsbUQXTdf8ox0YY5NtemI2bKbXFvW1v
+         AGKZxuchTpfjKxZA02S5JPPhCVjfaEPrQrl+SURDMpYKPPd1Pt8za0jSq7Vvh6ggeO5D
+         WL0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690206407; x=1690811207;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m7WubRds7jbJgkABDaAVUdckubvdEH0her0SUPsLcCQ=;
+        b=XnPzdMB/2zj33irS+ZG8Y0/Etp7wz6LsrjpR3TLqMuQXrwQemVOAEIOswLefwpcj2C
+         e6YFe3fFoosNRIipiIeUGtYmHSULVSTTLCI6f8u/wpqnU2IV0dTuqAatqpPj1h2X2M3R
+         AxMyTVEoUnAyQoHZe3zjlqNSwwsN+N6bjW2mYBmOihWloVLPbFlMF1TjTacMLxq0ujPi
+         uucNByVBLaxN+p04XENkSaETwZfJO78X16QqPgoXXNtLxW7vyDKI1ICpfnylz5Gmf31y
+         jv6zQUUPvM6hNGZ6eloWLZJ4/4OjSEo6Uu9iuDDuPCv3Ha8QXJrG79CeDcyjO7mIArMT
+         01lg==
+X-Gm-Message-State: ABy/qLbfpNmVCleSZSxHEqltq2mjW8e/A6l0jX6d7MOfzH9Z+kk88on8
+        3E9exOwz9QCHMdNOdhC9UbKUqQ==
+X-Google-Smtp-Source: APBJJlE5M4jqNLdKVr+3iEYsqXcArR84aVgz3V+mrWWyTgSXnQO7ZHsYYjyxSBvWiT7bVaWRb3Lyxw==
+X-Received: by 2002:a05:600c:11c9:b0:3fc:4e0:be97 with SMTP id b9-20020a05600c11c900b003fc04e0be97mr5772449wmi.6.1690206407724;
+        Mon, 24 Jul 2023 06:46:47 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:6b6a:b465:0:d7c4:7f46:8fed:f874])
+        by smtp.gmail.com with ESMTPSA id e19-20020a05600c219300b003fbe791a0e8sm10209354wme.0.2023.07.24.06.46.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 06:46:47 -0700 (PDT)
+From:   Usama Arif <usama.arif@bytedance.com>
+To:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
+        rppt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
+        liangma@liangbit.com, simon.evans@bytedance.com,
+        punit.agrawal@bytedance.com, Usama Arif <usama.arif@bytedance.com>
+Subject: [RFC 0/4] mm/memblock: Skip prep and initialization of struct pages freed later by HVO
+Date:   Mon, 24 Jul 2023 14:46:40 +0100
+Message-Id: <20230724134644.1299963-1-usama.arif@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH 1/4] arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capability
-To:     Will Deacon <will@kernel.org>, Ian Rogers <irogers@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-References: <20230710122138.1450930-1-james.clark@arm.com>
- <20230710122138.1450930-2-james.clark@arm.com>
- <e111d9ac-c4f6-c541-313b-7a3a6acfb5d2@arm.com>
- <597f53e0-5a5b-75a1-4054-253630a941f2@arm.com>
- <CAP-5=fVpjJLBNCd4LJ7krX1tpqUT-S_DCRebXR1ioTCGFsF6Pw@mail.gmail.com>
- <20230721102131.GA12457@willie-the-truck>
-Content-Language: en-US
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20230721102131.GA12457@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If the region is for gigantic hugepages and if HVO is enabled, then those
+struct pages which will be freed later by HVO don't need to be prepared and
+initialized. This can save significant time when a large number of hugepages
+are allocated at boot time.
 
+For a 1G hugepage, this series avoid initialization and preparation of
+262144 - 64 = 262080 struct pages per hugepage.
 
-On 21/07/2023 11:21, Will Deacon wrote:
-> On Thu, Jul 20, 2023 at 10:12:21AM -0700, Ian Rogers wrote:
->> On Tue, Jul 11, 2023 at 7:12 AM James Clark <james.clark@arm.com> wrote:
->>>
->>>
->>>
->>> On 11/07/2023 13:01, Anshuman Khandual wrote:
->>>>
->>>>
->>>> On 7/10/23 17:51, James Clark wrote:
->>>>> This capability gives us the ability to open PERF_TYPE_HARDWARE and
->>>>> PERF_TYPE_HW_CACHE events on a specific PMU for free. All the
->>>>> implementation is contained in the Perf core and tool code so no change
->>>>> to the Arm PMU driver is needed.
->>>>>
->>>>> The following basic use case now results in Perf opening the event on
->>>>> all PMUs rather than picking only one in an unpredictable way:
->>>>>
->>>>>   $ perf stat -e cycles -- taskset --cpu-list 0,1 stress -c 2
->>>>>
->>>>>    Performance counter stats for 'taskset --cpu-list 0,1 stress -c 2':
->>>>>
->>>>>          963279620      armv8_cortex_a57/cycles/                (99.19%)
->>>>>          752745657      armv8_cortex_a53/cycles/                (94.80%)
->>>>>
->>>>> Fixes: 55bcf6ef314a ("perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE")
->>>>> Suggested-by: Ian Rogers <irogers@google.com>
->>>>> Signed-off-by: James Clark <james.clark@arm.com>
->>
->> Hi ARM Linux and ARM Linux PMU people,
->>
->> Could this patch be picked up for Linux 6.5? I don't see it in the
->> tree and it seems a shame to have to wait for it. The other patches do
->> cleanup and so waiting for 6.6 seems okay.
-> 
-> I'm only taking fixes for 6.5 and I don't think this qualifies.
-> 
-> If it was an oversight introduced during the recent merge window, then
-> I'd be happier fixing it up, but 55bcf6ef314a was merged ages ago (v5.12?),
-> so I think we can wait.
-> 
-> I'll be queuing perf changes for 6.6 next week, so I'll look at this
-> then.
-> 
-> Cheers,
-> 
-> Will
+When tested on a 512G system (which can allocate max 500 1G hugepages), the
+kexec-boot time with HVO and DEFERRED_STRUCT_PAGE_INIT enabled without this
+patchseries to running init is 3.9 seconds. With this patch it is 1.2 seconds.
+This represents an approximately 70% reduction in boot time and will
+significantly reduce server downtime when using a large number of
+gigantic pages.
 
-Hi Will,
+Thanks,
+Usama
 
-Thanks for looking at this. I've sent a v2 with Anshuman's fixes.
+Usama Arif (4):
+  mm/hugetlb: Skip prep of tail pages when HVO is enabled
+  mm/memblock: Add hugepage_size member to struct memblock_region
+  mm/hugetlb_vmemmap: Use nid of the head page to reallocate it
+  mm/memblock: Skip initialization of struct pages freed later by HVO
 
-James
+ arch/arm64/mm/kasan_init.c                   |  2 +-
+ arch/powerpc/platforms/pasemi/iommu.c        |  2 +-
+ arch/powerpc/platforms/pseries/setup.c       |  4 +-
+ arch/powerpc/sysdev/dart_iommu.c             |  2 +-
+ include/linux/memblock.h                     |  8 +-
+ mm/cma.c                                     |  4 +-
+ mm/hugetlb.c                                 | 36 +++++---
+ mm/hugetlb_vmemmap.c                         |  6 +-
+ mm/hugetlb_vmemmap.h                         |  4 +
+ mm/memblock.c                                | 87 +++++++++++++-------
+ mm/mm_init.c                                 |  2 +-
+ mm/sparse-vmemmap.c                          |  2 +-
+ tools/testing/memblock/tests/alloc_nid_api.c |  2 +-
+ 13 files changed, 106 insertions(+), 55 deletions(-)
+
+-- 
+2.25.1
+
