@@ -2,489 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F07875E9C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBBA75E9CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 04:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbjGXCeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 Jul 2023 22:34:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
+        id S230203AbjGXCeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 Jul 2023 22:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjGXCeK (ORCPT
+        with ESMTP id S230147AbjGXCeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 Jul 2023 22:34:10 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8185A8
-        for <linux-kernel@vger.kernel.org>; Sun, 23 Jul 2023 19:34:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=T1bAxNNyG9l/sWp/9/GRbHmZd4r2muzRzHY6YbAmwTM=; b=O3cZReELeN3bC+9t1LumBrq9eF
-        Yqwhs3XLylyCDMQomL3YwV9vgz9SfyHX8VJF7QKACDDa2dlIBSyv8qEExzMyNmPUQ6rJ5BNUpsVDQ
-        xqOmq7E9OH9DJFLYk9ISpgBmO23Y8rD1Nkqys173pLM2uOcDSwPZnIX0lryW5vS2012LXWDFS9KHU
-        aJ4CoboYbtlcBbgDWQtb5EroMgz1PkuTH5jzzE6DlxztbCJZ95jaB5d83ez3a0cqhe7XoWJ7qNd/d
-        maXQW7mM0ZQkG5stBeha0DH0KM0WCr3IHwr/MweUQyxNcMELM5vE0P5elZPFQ/hH3TtwBbbPeA5Pf
-        0DKTYJtg==;
-Received: from 50-198-160-193-static.hfc.comcastbusiness.net ([50.198.160.193] helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qNlOe-002XrF-2I;
-        Mon, 24 Jul 2023 02:34:04 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org, Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] cpumask: fix typos and kernel-doc warnings in cpumask.h
-Date:   Sun, 23 Jul 2023 19:34:03 -0700
-Message-ID: <20230724023403.24869-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.41.0
+        Sun, 23 Jul 2023 22:34:19 -0400
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533D9183;
+        Sun, 23 Jul 2023 19:34:15 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vo.u9II_1690166049;
+Received: from 30.240.115.26(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vo.u9II_1690166049)
+          by smtp.aliyun-inc.com;
+          Mon, 24 Jul 2023 10:34:10 +0800
+Message-ID: <5db5aaf0-4fb7-a017-3b6f-017d04a93d33@linux.alibaba.com>
+Date:   Mon, 24 Jul 2023 10:34:08 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v6 0/4] drivers/perf: add Synopsys DesignWare PCIe PMU
+ driver support
+Content-Language: en-US
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+To:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
+        helgaas@kernel.org, yangyicong@huawei.com, will@kernel.org,
+        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com
+References: <20230606074938.97724-1-xueshuai@linux.alibaba.com>
+ <204e3891-c041-53ae-a965-f3abec2cc091@linux.alibaba.com>
+ <161dc5b6-7c20-ea8c-2efb-9594e94df2d3@linux.alibaba.com>
+In-Reply-To: <161dc5b6-7c20-ea8c-2efb-9594e94df2d3@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some punctuation (plural vs. possessive).
-Fix some abbreviations (ie. -> i.e., id -> ID).
 
-Fix 35 warnings like this:
-include/linux/cpumask.h:161: warning: No description found for return value of 'cpumask_first'
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
----
- include/linux/cpumask.h |  113 +++++++++++++++++++++++---------------
- 1 file changed, 69 insertions(+), 44 deletions(-)
+On 2023/7/10 20:04, Shuai Xue wrote:
+> 
+> 
+> On 2023/6/16 16:39, Shuai Xue wrote:
+>>
+>>
+>> On 2023/6/6 15:49, Shuai Xue wrote:
+>>> changes since v5:
+>>> - Rewrite the commit log to follow policy in pci_ids.h (Bjorn Helgaas)
+>>> - return error code when __dwc_pcie_pmu_probe failed (Baolin Wang)
+>>> - call 'cpuhp_remove_multi_state()' when exiting the driver. (Baolin Wang)
+>>> - pick up Review-by tag from Baolin for Patch 1 and 3
+>>>
+>>> changes since v4:
+>>>
+>>> 1. addressing commens from Bjorn Helgaas:
+>>> - reorder the includes by alpha
+>>> - change all macros with upper-case hex
+>>> - change ras_des type into u16
+>>> - remove unnecessary outer "()"
+>>> - minor format changes
+>>>
+>>> 2. Address commensts from Jonathan Cameron:
+>>> - rewrite doc and add a example to show how to use lane event
+>>>
+>>> 3. fix compile error reported by: kernel test robot
+>>> - remove COMPILE_TEST and add depend on PCI in kconfig
+>>> - add Reported-by: kernel test robot <lkp@intel.com>
+>>>
+>>> Changes since v3:
+>>>
+>>> 1. addressing comments from Robin Murphy:
+>>> - add a prepare patch to define pci id in linux/pci_ids.h
+>>> - remove unnecessary 64BIT dependency
+>>> - fix DWC_PCIE_PER_EVENT_OFF/ON macro
+>>> - remove dwc_pcie_pmu struct and move all its fileds into dwc_pcie_rp_info
+>>> - remove unnecessary format field show
+>>> - use sysfs_emit() instead of all the assorted sprintf() and snprintf() calls.
+>>> - remove unnecessary spaces and remove unnecessary cast to follow event show convention
+>>> - remove pcie_pmu_event_attr_is_visible
+>>> - fix a refcout leak on error branch when walk pci device in for_each_pci_dev
+>>> - remove bdf field from dwc_pcie_rp_info and calculate it at runtime
+>>> - finish all the checks before allocating rp_info to avoid hanging wasted memory
+>>> - remove some unused fields
+>>> - warp out control register configuration from sub function to .add()
+>>> - make function return type with a proper signature
+>>> - fix lane event count enable by clear DWC_PCIE_CNT_ENABLE field first
+>>> - pass rp_info directly to the read_*_counter helpers and in start, stop and add callbacks
+>>> - move event type validtion into .event_init()
+>>> - use is_sampling_event() to be consistent with everything else of pmu drivers
+>>> - remove unnecessary dev_err message in .event_init()
+>>> - return EINVAL instead EOPNOTSUPP for not a valid event 
+>>> - finish all the checks before start modifying the event
+>>> - fix sibling event check by comparing event->pmu with sibling->pmu
+>>> - probe PMU for each rootport independently
+>>> - use .update() as .read() directly
+>>> - remove dynamically generating symbolic name of lane event
+>>> - redefine static symbolic name of lane event and leave lane filed to user
+>>> - add CPU hotplug support
+>>>
+>>> 2. addressing comments from Baolin:
+>>> - add a mask to avoid possible overflow
+>>>
+>>> Changes since v2 addressing comments from Baolin:
+>>> - remove redundant macro definitions
+>>> - use dev_err to print error message
+>>> - change pmu_is_register to boolean
+>>> - use PLATFORM_DEVID_NONE macro
+>>> - fix module author format
+>>>
+>>> Changes since v1:
+>>>
+>>> 1. address comments from Jonathan:
+>>> - drop marco for PMU name and VSEC version
+>>> - simplify code with PCI standard marco
+>>> - simplify code with FIELD_PREP()/FIELD_GET() to replace shift marco
+>>> - name register filed with single _ instead double
+>>> - wrap dwc_pcie_pmu_{write}_dword out and drop meaningless snaity check 
+>>> - check vendor id while matching vesc with pci_find_vsec_capability()
+>>> - remove RP_NUM_MAX and use a list to organize PMU devices for rootports
+>>> - replace DWC_PCIE_CREATE_BDF with standard PCI_DEVID
+>>> - comments on riping register together
+>>>
+>>> 2. address comments from Bjorn:
+>>> - rename DWC_PCIE_VSEC_ID to DWC_PCIE_VSEC_RAS_DES_ID
+>>> - rename cap_pos to ras_des
+>>> - simplify declare of device_attribute with DEVICE_ATTR_RO
+>>> - simplify code with PCI standard macro and API like pcie_get_width_cap()
+>>> - fix some code style problem and typo
+>>> - drop meaningless snaity check of container_of
+>>>
+>>> 3. address comments from Yicong:
+>>> - use sysfs_emit() to replace sprintf()
+>>> - simplify iteration of pci device with for_each_pci_dev
+>>> - pick preferred CPUs on a near die and add comments
+>>> - unregister PMU drivers only for failed ones
+>>> - log on behalf PMU device and give more hint
+>>> - fix some code style problem
+>>>
+>>> (Thanks for all comments and they are very valuable to me)
+>>>
+>>> This patchset adds the PCIe Performance Monitoring Unit (PMU) driver support
+>>> for T-Head Yitian 710 SoC chip. Yitian 710 is based on the Synopsys PCI Express
+>>> Core controller IP which provides statistics feature.
+>>>
+>>> Shuai Xue (4):
+>>>   docs: perf: Add description for Synopsys DesignWare PCIe PMU driver
+>>>   PCI: Add Alibaba Vendor ID to linux/pci_ids.h
+>>>   drivers/perf: add DesignWare PCIe PMU driver
+>>>   MAINTAINERS: add maintainers for DesignWare PCIe PMU driver
+>>>
+>>>  .../admin-guide/perf/dwc_pcie_pmu.rst         |  97 +++
+>>>  Documentation/admin-guide/perf/index.rst      |   1 +
+>>>  MAINTAINERS                                   |   6 +
+>>>  drivers/infiniband/hw/erdma/erdma_hw.h        |   2 -
+>>>  drivers/perf/Kconfig                          |   7 +
+>>>  drivers/perf/Makefile                         |   1 +
+>>>  drivers/perf/dwc_pcie_pmu.c                   | 706 ++++++++++++++++++
+>>>  include/linux/pci_ids.h                       |   2 +
+>>>  8 files changed, 820 insertions(+), 2 deletions(-)
+>>>  create mode 100644 Documentation/admin-guide/perf/dwc_pcie_pmu.rst
+>>>  create mode 100644 drivers/perf/dwc_pcie_pmu.c
+>>>
+>>
+>> Hi, all,
+>>
+>> Gently ping. Any comments are welcomed.
+> 
+> 
+> Hi, all,
+> 
+> Gentle ping.
+> 
 
---- linux-next-20230720.orig/include/linux/cpumask.h
-+++ linux-next-20230720/include/linux/cpumask.h
-@@ -4,7 +4,7 @@
- 
- /*
-  * Cpumasks provide a bitmap suitable for representing the
-- * set of CPU's in a system, one bit position per CPU number.  In general,
-+ * set of CPUs in a system, one bit position per CPU number.  In general,
-  * only nr_cpu_ids (<= NR_CPUS) bits are valid.
-  */
- #include <linux/kernel.h>
-@@ -97,7 +97,7 @@ static inline void set_nr_cpu_ids(unsign
-  *
-  *  If !CONFIG_HOTPLUG_CPU, present == possible, and active == online.
-  *
-- *  The cpu_possible_mask is fixed at boot time, as the set of CPU id's
-+ *  The cpu_possible_mask is fixed at boot time, as the set of CPU IDs
-  *  that it is possible might ever be plugged in at anytime during the
-  *  life of that system boot.  The cpu_present_mask is dynamic(*),
-  *  representing which CPUs are currently plugged in.  And
-@@ -112,7 +112,7 @@ static inline void set_nr_cpu_ids(unsign
-  *      hotplug, it's a copy of cpu_possible_mask, hence fixed at boot.
-  *
-  * Subtleties:
-- * 1) UP arch's (NR_CPUS == 1, CONFIG_SMP not defined) hardcode
-+ * 1) UP ARCHes (NR_CPUS == 1, CONFIG_SMP not defined) hardcode
-  *    assumption that their single CPU is online.  The UP
-  *    cpu_{online,possible,present}_masks are placebos.  Changing them
-  *    will have no useful affect on the following num_*_cpus()
-@@ -155,7 +155,7 @@ static __always_inline unsigned int cpum
-  * cpumask_first - get the first cpu in a cpumask
-  * @srcp: the cpumask pointer
-  *
-- * Returns >= nr_cpu_ids if no cpus set.
-+ * Return: >= nr_cpu_ids if no cpus set.
-  */
- static inline unsigned int cpumask_first(const struct cpumask *srcp)
- {
-@@ -166,7 +166,7 @@ static inline unsigned int cpumask_first
-  * cpumask_first_zero - get the first unset cpu in a cpumask
-  * @srcp: the cpumask pointer
-  *
-- * Returns >= nr_cpu_ids if all cpus are set.
-+ * Return: >= nr_cpu_ids if all cpus are set.
-  */
- static inline unsigned int cpumask_first_zero(const struct cpumask *srcp)
- {
-@@ -178,7 +178,7 @@ static inline unsigned int cpumask_first
-  * @srcp1: the first input
-  * @srcp2: the second input
-  *
-- * Returns >= nr_cpu_ids if no cpus set in both.  See also cpumask_next_and().
-+ * Return: >= nr_cpu_ids if no cpus set in both.  See also cpumask_next_and().
-  */
- static inline
- unsigned int cpumask_first_and(const struct cpumask *srcp1, const struct cpumask *srcp2)
-@@ -190,7 +190,7 @@ unsigned int cpumask_first_and(const str
-  * cpumask_last - get the last CPU in a cpumask
-  * @srcp:	- the cpumask pointer
-  *
-- * Returns	>= nr_cpumask_bits if no CPUs set.
-+ * Return:	>= nr_cpumask_bits if no CPUs set.
-  */
- static inline unsigned int cpumask_last(const struct cpumask *srcp)
- {
-@@ -199,10 +199,10 @@ static inline unsigned int cpumask_last(
- 
- /**
-  * cpumask_next - get the next cpu in a cpumask
-- * @n: the cpu prior to the place to search (ie. return will be > @n)
-+ * @n: the cpu prior to the place to search (i.e. return will be > @n)
-  * @srcp: the cpumask pointer
-  *
-- * Returns >= nr_cpu_ids if no further cpus set.
-+ * Return: >= nr_cpu_ids if no further cpus set.
-  */
- static inline
- unsigned int cpumask_next(int n, const struct cpumask *srcp)
-@@ -215,10 +215,10 @@ unsigned int cpumask_next(int n, const s
- 
- /**
-  * cpumask_next_zero - get the next unset cpu in a cpumask
-- * @n: the cpu prior to the place to search (ie. return will be > @n)
-+ * @n: the cpu prior to the place to search (i.e. return will be > @n)
-  * @srcp: the cpumask pointer
-  *
-- * Returns >= nr_cpu_ids if no further cpus unset.
-+ * Return: >= nr_cpu_ids if no further cpus unset.
-  */
- static inline unsigned int cpumask_next_zero(int n, const struct cpumask *srcp)
- {
-@@ -254,11 +254,11 @@ unsigned int cpumask_any_distribute(cons
- 
- /**
-  * cpumask_next_and - get the next cpu in *src1p & *src2p
-- * @n: the cpu prior to the place to search (ie. return will be > @n)
-+ * @n: the cpu prior to the place to search (i.e. return will be > @n)
-  * @src1p: the first cpumask pointer
-  * @src2p: the second cpumask pointer
-  *
-- * Returns >= nr_cpu_ids if no further cpus set in both.
-+ * Return: >= nr_cpu_ids if no further cpus set in both.
-  */
- static inline
- unsigned int cpumask_next_and(int n, const struct cpumask *src1p,
-@@ -373,7 +373,7 @@ unsigned int __pure cpumask_next_wrap(in
-  * @cpu: the cpu to ignore.
-  *
-  * Often used to find any cpu but smp_processor_id() in a mask.
-- * Returns >= nr_cpu_ids if no cpus set.
-+ * Return: >= nr_cpu_ids if no cpus set.
-  */
- static inline
- unsigned int cpumask_any_but(const struct cpumask *mask, unsigned int cpu)
-@@ -388,11 +388,11 @@ unsigned int cpumask_any_but(const struc
- }
- 
- /**
-- * cpumask_nth - get the first cpu in a cpumask
-+ * cpumask_nth - get the Nth cpu in a cpumask
-  * @srcp: the cpumask pointer
-- * @cpu: the N'th cpu to find, starting from 0
-+ * @cpu: the Nth cpu to find, starting from 0
-  *
-- * Returns >= nr_cpu_ids if such cpu doesn't exist.
-+ * Return: >= nr_cpu_ids if such cpu doesn't exist.
-  */
- static inline unsigned int cpumask_nth(unsigned int cpu, const struct cpumask *srcp)
- {
-@@ -400,12 +400,12 @@ static inline unsigned int cpumask_nth(u
- }
- 
- /**
-- * cpumask_nth_and - get the first cpu in 2 cpumasks
-+ * cpumask_nth_and - get the Nth cpu in 2 cpumasks
-  * @srcp1: the cpumask pointer
-  * @srcp2: the cpumask pointer
-- * @cpu: the N'th cpu to find, starting from 0
-+ * @cpu: the Nth cpu to find, starting from 0
-  *
-- * Returns >= nr_cpu_ids if such cpu doesn't exist.
-+ * Return: >= nr_cpu_ids if such cpu doesn't exist.
-  */
- static inline
- unsigned int cpumask_nth_and(unsigned int cpu, const struct cpumask *srcp1,
-@@ -416,12 +416,12 @@ unsigned int cpumask_nth_and(unsigned in
- }
- 
- /**
-- * cpumask_nth_andnot - get the first cpu set in 1st cpumask, and clear in 2nd.
-+ * cpumask_nth_andnot - get the Nth cpu set in 1st cpumask, and clear in 2nd.
-  * @srcp1: the cpumask pointer
-  * @srcp2: the cpumask pointer
-- * @cpu: the N'th cpu to find, starting from 0
-+ * @cpu: the Nth cpu to find, starting from 0
-  *
-- * Returns >= nr_cpu_ids if such cpu doesn't exist.
-+ * Return: >= nr_cpu_ids if such cpu doesn't exist.
-  */
- static inline
- unsigned int cpumask_nth_andnot(unsigned int cpu, const struct cpumask *srcp1,
-@@ -436,9 +436,9 @@ unsigned int cpumask_nth_andnot(unsigned
-  * @srcp1: the cpumask pointer
-  * @srcp2: the cpumask pointer
-  * @srcp3: the cpumask pointer
-- * @cpu: the N'th cpu to find, starting from 0
-+ * @cpu: the Nth cpu to find, starting from 0
-  *
-- * Returns >= nr_cpu_ids if such cpu doesn't exist.
-+ * Return: >= nr_cpu_ids if such cpu doesn't exist.
-  */
- static __always_inline
- unsigned int cpumask_nth_and_andnot(unsigned int cpu, const struct cpumask *srcp1,
-@@ -497,7 +497,7 @@ static __always_inline void __cpumask_cl
-  * @cpu: cpu number (< nr_cpu_ids)
-  * @cpumask: the cpumask pointer
-  *
-- * Returns true if @cpu is set in @cpumask, else returns false
-+ * Return: true if @cpu is set in @cpumask, else returns false
-  */
- static __always_inline bool cpumask_test_cpu(int cpu, const struct cpumask *cpumask)
- {
-@@ -509,9 +509,9 @@ static __always_inline bool cpumask_test
-  * @cpu: cpu number (< nr_cpu_ids)
-  * @cpumask: the cpumask pointer
-  *
-- * Returns true if @cpu is set in old bitmap of @cpumask, else returns false
-- *
-  * test_and_set_bit wrapper for cpumasks.
-+ *
-+ * Return: true if @cpu is set in old bitmap of @cpumask, else returns false
-  */
- static __always_inline bool cpumask_test_and_set_cpu(int cpu, struct cpumask *cpumask)
- {
-@@ -523,9 +523,9 @@ static __always_inline bool cpumask_test
-  * @cpu: cpu number (< nr_cpu_ids)
-  * @cpumask: the cpumask pointer
-  *
-- * Returns true if @cpu is set in old bitmap of @cpumask, else returns false
-- *
-  * test_and_clear_bit wrapper for cpumasks.
-+ *
-+ * Return: true if @cpu is set in old bitmap of @cpumask, else returns false
-  */
- static __always_inline bool cpumask_test_and_clear_cpu(int cpu, struct cpumask *cpumask)
- {
-@@ -560,7 +560,7 @@ static inline void cpumask_clear(struct
-  * @src1p: the first input
-  * @src2p: the second input
-  *
-- * If *@dstp is empty, returns false, else returns true
-+ * Return: false if *@dstp is empty, else returns true
-  */
- static inline bool cpumask_and(struct cpumask *dstp,
- 			       const struct cpumask *src1p,
-@@ -603,7 +603,7 @@ static inline void cpumask_xor(struct cp
-  * @src1p: the first input
-  * @src2p: the second input
-  *
-- * If *@dstp is empty, returns false, else returns true
-+ * Return: false if *@dstp is empty, else returns true
-  */
- static inline bool cpumask_andnot(struct cpumask *dstp,
- 				  const struct cpumask *src1p,
-@@ -617,6 +617,8 @@ static inline bool cpumask_andnot(struct
-  * cpumask_equal - *src1p == *src2p
-  * @src1p: the first input
-  * @src2p: the second input
-+ *
-+ * Return: true if the cpumasks are equal, false if not
-  */
- static inline bool cpumask_equal(const struct cpumask *src1p,
- 				const struct cpumask *src2p)
-@@ -630,6 +632,9 @@ static inline bool cpumask_equal(const s
-  * @src1p: the first input
-  * @src2p: the second input
-  * @src3p: the third input
-+ *
-+ * Return: true if first cpumask ORed with second cpumask == third cpumask,
-+ *	   otherwise false
-  */
- static inline bool cpumask_or_equal(const struct cpumask *src1p,
- 				    const struct cpumask *src2p,
-@@ -643,6 +648,9 @@ static inline bool cpumask_or_equal(cons
-  * cpumask_intersects - (*src1p & *src2p) != 0
-  * @src1p: the first input
-  * @src2p: the second input
-+ *
-+ * Return: true if first cpumask ANDed with second cpumask is non-empty,
-+ *	   otherwise false
-  */
- static inline bool cpumask_intersects(const struct cpumask *src1p,
- 				     const struct cpumask *src2p)
-@@ -656,7 +664,7 @@ static inline bool cpumask_intersects(co
-  * @src1p: the first input
-  * @src2p: the second input
-  *
-- * Returns true if *@src1p is a subset of *@src2p, else returns false
-+ * Return: true if *@src1p is a subset of *@src2p, else returns false
-  */
- static inline bool cpumask_subset(const struct cpumask *src1p,
- 				 const struct cpumask *src2p)
-@@ -668,6 +676,8 @@ static inline bool cpumask_subset(const
- /**
-  * cpumask_empty - *srcp == 0
-  * @srcp: the cpumask to that all cpus < nr_cpu_ids are clear.
-+ *
-+ * Return: true if srcp is empty (has no bits set), else false
-  */
- static inline bool cpumask_empty(const struct cpumask *srcp)
- {
-@@ -677,6 +687,8 @@ static inline bool cpumask_empty(const s
- /**
-  * cpumask_full - *srcp == 0xFFFFFFFF...
-  * @srcp: the cpumask to that all cpus < nr_cpu_ids are set.
-+ *
-+ * Return: true if srcp is full (has all bits set), else false
-  */
- static inline bool cpumask_full(const struct cpumask *srcp)
- {
-@@ -686,6 +698,8 @@ static inline bool cpumask_full(const st
- /**
-  * cpumask_weight - Count of bits in *srcp
-  * @srcp: the cpumask to count bits (< nr_cpu_ids) in.
-+ *
-+ * Return: count of bits set in *srcp
-  */
- static inline unsigned int cpumask_weight(const struct cpumask *srcp)
- {
-@@ -696,6 +710,8 @@ static inline unsigned int cpumask_weigh
-  * cpumask_weight_and - Count of bits in (*srcp1 & *srcp2)
-  * @srcp1: the cpumask to count bits (< nr_cpu_ids) in.
-  * @srcp2: the cpumask to count bits (< nr_cpu_ids) in.
-+ *
-+ * Return: count of bits set in both *srcp1 and *srcp2
-  */
- static inline unsigned int cpumask_weight_and(const struct cpumask *srcp1,
- 						const struct cpumask *srcp2)
-@@ -744,7 +760,7 @@ static inline void cpumask_copy(struct c
-  * cpumask_any - pick a "random" cpu from *srcp
-  * @srcp: the input cpumask
-  *
-- * Returns >= nr_cpu_ids if no cpus set.
-+ * Return: >= nr_cpu_ids if no cpus set.
-  */
- #define cpumask_any(srcp) cpumask_first(srcp)
- 
-@@ -753,7 +769,7 @@ static inline void cpumask_copy(struct c
-  * @mask1: the first input cpumask
-  * @mask2: the second input cpumask
-  *
-- * Returns >= nr_cpu_ids if no cpus set.
-+ * Return: >= nr_cpu_ids if no cpus set.
-  */
- #define cpumask_any_and(mask1, mask2) cpumask_first_and((mask1), (mask2))
- 
-@@ -769,7 +785,7 @@ static inline void cpumask_copy(struct c
-  * @len: the length of the buffer
-  * @dstp: the cpumask to set.
-  *
-- * Returns -errno, or 0 for success.
-+ * Return: -errno, or 0 for success.
-  */
- static inline int cpumask_parse_user(const char __user *buf, int len,
- 				     struct cpumask *dstp)
-@@ -783,7 +799,7 @@ static inline int cpumask_parse_user(con
-  * @len: the length of the buffer
-  * @dstp: the cpumask to set.
-  *
-- * Returns -errno, or 0 for success.
-+ * Return: -errno, or 0 for success.
-  */
- static inline int cpumask_parselist_user(const char __user *buf, int len,
- 				     struct cpumask *dstp)
-@@ -797,7 +813,7 @@ static inline int cpumask_parselist_user
-  * @buf: the buffer to extract from
-  * @dstp: the cpumask to set.
-  *
-- * Returns -errno, or 0 for success.
-+ * Return: -errno, or 0 for success.
-  */
- static inline int cpumask_parse(const char *buf, struct cpumask *dstp)
- {
-@@ -809,7 +825,7 @@ static inline int cpumask_parse(const ch
-  * @buf: the buffer to extract from
-  * @dstp: the cpumask to set.
-  *
-- * Returns -errno, or 0 for success.
-+ * Return: -errno, or 0 for success.
-  */
- static inline int cpulist_parse(const char *buf, struct cpumask *dstp)
- {
-@@ -817,7 +833,9 @@ static inline int cpulist_parse(const ch
- }
- 
- /**
-- * cpumask_size - size to allocate for a 'struct cpumask' in bytes
-+ * cpumask_size - calculate size to allocate for a 'struct cpumask' in bytes
-+ *
-+ * Return: size to allocate for a &struct cpumask in bytes
-  */
- static inline unsigned int cpumask_size(void)
- {
-@@ -831,7 +849,7 @@ static inline unsigned int cpumask_size(
-  * little more difficult, we typedef cpumask_var_t to an array or a
-  * pointer: doing &mask on an array is a noop, so it still works.
-  *
-- * ie.
-+ * i.e.
-  *	cpumask_var_t tmpmask;
-  *	if (!alloc_cpumask_var(&tmpmask, GFP_KERNEL))
-  *		return -ENOMEM;
-@@ -887,6 +905,8 @@ bool zalloc_cpumask_var_node(cpumask_var
-  * a nop returning a constant 1 (in <linux/cpumask.h>).
-  *
-  * See alloc_cpumask_var_node.
-+ *
-+ * Return: %true if allocation succeeded, %false if not
-  */
- static inline
- bool alloc_cpumask_var(cpumask_var_t *mask, gfp_t flags)
-@@ -1025,7 +1045,7 @@ set_cpu_dying(unsigned int cpu, bool dyi
- }
- 
- /**
-- * to_cpumask - convert an NR_CPUS bitmap to a struct cpumask *
-+ * to_cpumask - convert a NR_CPUS bitmap to a struct cpumask *
-  * @bitmap: the bitmap
-  *
-  * There are a few places where cpumask_var_t isn't appropriate and
-@@ -1068,6 +1088,8 @@ static inline const struct cpumask *get_
-  * interface gives only a momentary snapshot and is not protected against
-  * concurrent CPU hotplug operations unless invoked from a cpuhp_lock held
-  * region.
-+ *
-+ * Return: momentary snapshot of the number of online CPUs
-  */
- static __always_inline unsigned int num_online_cpus(void)
- {
-@@ -1160,7 +1182,7 @@ static inline bool cpu_dying(unsigned in
-  * @mask: the cpumask to copy
-  * @buf: the buffer to copy into
-  *
-- * Returns the length of the (null-terminated) @buf string, zero if
-+ * Return: the length of the (null-terminated) @buf string, zero if
-  * nothing is copied.
-  */
- static inline ssize_t
-@@ -1183,7 +1205,7 @@ cpumap_print_to_pagebuf(bool list, char
-  * cpumask; Typically used by bin_attribute to export cpumask bitmask
-  * ABI.
-  *
-- * Returns the length of how many bytes have been copied, excluding
-+ * Return: the length of how many bytes have been copied, excluding
-  * terminating '\0'.
-  */
- static inline ssize_t
-@@ -1204,6 +1226,9 @@ cpumap_print_bitmask_to_buf(char *buf, c
-  *
-  * Everything is same with the above cpumap_print_bitmask_to_buf()
-  * except the print format.
-+ *
-+ * Return: the length of how many bytes have been copied, excluding
-+ * terminating '\0'.
-  */
- static inline ssize_t
- cpumap_print_list_to_buf(char *buf, const struct cpumask *mask,
+Hi, all
+
+Gentle reminder, thank you.
+
+>>
+>> Thank you.
+>>
+>>
+>> Best Regards,
+>> Shuai
+>>
+>>
