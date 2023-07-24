@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D278175ED09
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 10:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B745775EBA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 08:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbjGXICr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 04:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
+        id S229572AbjGXGhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 02:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbjGXICe (ORCPT
+        with ESMTP id S229898AbjGXGhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 04:02:34 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87DFB1B4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:02:25 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b8b4749013so32639455ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 01:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690185745; x=1690790545;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Po9pQRZ/q0l1v90fsouYbF4Y7A8coEOIwxXQK/g5x80=;
-        b=Mo7fY7TnjVvd3tMfcTkVQSB95u/uNJ1NSTBjUA0p3K0DUMv2uFXwSpe3aGjKQK2VnA
-         dB9YJ0pjMUk2BhJLRhrjo1ppVL9KkesLTbe7b+6GJ7HKvLbJCh/uOxIDo6x79HaAILW/
-         4OXqEMzasa/Z2Yx+hn4hciFPT1Z+sM0CgIhbNeX8U41WpgY3cgh9xXKWC/S+xTmvlFlj
-         UisCf0eisyfrJbVMJQJZ16dnDruKyAVlMT8NAQbxiWiO2xhEqMSvaYNe0zhWzfdeePEd
-         2ShLCnWWe7MjIwn5nQiq0wExfSHzy1FlvKLyv8OqkDuri5KnXJt5kza3n2TpJFaGvTO9
-         4JTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690185745; x=1690790545;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Po9pQRZ/q0l1v90fsouYbF4Y7A8coEOIwxXQK/g5x80=;
-        b=EFcPP+sYH95lkg8eL2LfGRjYK7hzlqhBnk7fa3rLv1UG4fMHgOC6J7o29ap5f0g5ql
-         /4+BcJnlk4D8E7uJ46KiKOxPI+4CL+iUxV53SA+rlBGqnWAkwwVyQGO9d8009K7JiNVX
-         4fNKj74vGhMFyaIQn/rFqe2TVO4iJuobycNz4c86VaOCXU1sMPlSjyiOEcpQeukcFJsE
-         w2zq2iS7KsyqJMXRt9v5r0vapp6ah9r1kN1H5IaWbq+KFxeqs/ss+eo0Wbza0wFYpt5O
-         zEgLqRpjZLFiA2GBWv0AAHOADup784yQjI5yW+got8f+B0QQcpIM0KT6P+uxWZ5d9NvE
-         XWFw==
-X-Gm-Message-State: ABy/qLa0+kL3OHHFY46mQPck5EfNAwvG8FBBjoV94r+YseG/1MA1ktOk
-        2eFIBWWUz+7qRyBougDjm0Mvlw==
-X-Google-Smtp-Source: APBJJlG1kMDbQVntm5M1zd32dTabRF9d4QCoISaVRhQUWeX3UV8ag6YZvPTEjHK1pFZZ/tOTYO2IFQ==
-X-Received: by 2002:a17:902:ea08:b0:1ac:aba5:7885 with SMTP id s8-20020a170902ea0800b001acaba57885mr12533742plg.47.1690185744988;
-        Mon, 24 Jul 2023 01:02:24 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id u2-20020a170902e80200b001b6740207d2sm8149549plg.215.2023.07.24.01.02.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 01:02:24 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 13:32:22 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] OPP: Couple of smatch warning fixes
-Message-ID: <20230724080222.pn7iuzi2ku5q6efp@vireshk-i7>
-References: <20230721124634.63612-1-manivannan.sadhasivam@linaro.org>
+        Mon, 24 Jul 2023 02:37:05 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9380AE70;
+        Sun, 23 Jul 2023 23:36:29 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R8Vl44jCzzrRjF;
+        Mon, 24 Jul 2023 14:34:56 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
+ (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 24 Jul
+ 2023 14:35:46 +0800
+From:   Ruan Jinjie <ruanjinjie@huawei.com>
+To:     <thierry.reding@gmail.com>, <mperttunen@nvidia.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>, <jonathanh@nvidia.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ruanjinjie@huawei.com>
+Subject: [PATCH -next] drm/tegra: hdmi: Use devm_platform_ioremap_resource()
+Date:   Mon, 24 Jul 2023 14:36:26 +0000
+Message-ID: <20230724143626.2582615-1-ruanjinjie@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230721124634.63612-1-manivannan.sadhasivam@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.73]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-07-23, 18:16, Manivannan Sadhasivam wrote:
-> Hi Viresh,
-> 
-> This series has a couple of fixes spotted by smatch tool in the OPP core.
-> This is on top of v6.5-rc1, so could be merged separately.
-> 
-> - Mani
-> 
-> Manivannan Sadhasivam (2):
->   OPP: Fix potential null ptr dereference in
->     dev_pm_opp_get_required_pstate()
->   OPP: Fix passing 0 to PTR_ERR in _opp_attach_genpd()
-> 
->  drivers/opp/core.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
+From: ruanjinjie <ruanjinjie@huawei.com>
 
-Applied. Thanks.
+Use the devm_platform_ioremap_resource() helper instead of calling
+platform_get_resource() and devm_ioremap_resource() separately.
 
+Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
+---
+ drivers/gpu/drm/tegra/hdmi.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/tegra/hdmi.c b/drivers/gpu/drm/tegra/hdmi.c
+index 6eac54ae1205..f3a44ca87151 100644
+--- a/drivers/gpu/drm/tegra/hdmi.c
++++ b/drivers/gpu/drm/tegra/hdmi.c
+@@ -1769,7 +1769,6 @@ static irqreturn_t tegra_hdmi_irq(int irq, void *data)
+ static int tegra_hdmi_probe(struct platform_device *pdev)
+ {
+ 	struct tegra_hdmi *hdmi;
+-	struct resource *regs;
+ 	int err;
+ 
+ 	hdmi = devm_kzalloc(&pdev->dev, sizeof(*hdmi), GFP_KERNEL);
+@@ -1831,8 +1830,7 @@ static int tegra_hdmi_probe(struct platform_device *pdev)
+ 	if (err < 0)
+ 		return err;
+ 
+-	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	hdmi->regs = devm_ioremap_resource(&pdev->dev, regs);
++	hdmi->regs = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(hdmi->regs))
+ 		return PTR_ERR(hdmi->regs);
+ 
 -- 
-viresh
+2.34.1
+
