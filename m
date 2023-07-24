@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7940275EC8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E49B75EC90
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 Jul 2023 09:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbjGXHb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 Jul 2023 03:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59572 "EHLO
+        id S231231AbjGXHct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 Jul 2023 03:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231204AbjGXHb4 (ORCPT
+        with ESMTP id S231204AbjGXHcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 Jul 2023 03:31:56 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6362F180
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:31:51 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b9ecf0cb4cso21855815ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:31:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690183911; x=1690788711;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hzb9R8lCU0AMrRnJNl8Sap3uv+cEIqbaHFcd9LXeQuY=;
-        b=af8d+656EfuW1izH08jTFZGpa1xT7Acz/ZGK5yvTSZ83ZfvOHOl1rUs/OorIUCcPhn
-         V15EIJHl59wDoHczKz+UOoG1KIN+/nCqC6mE4aDU5r12ms5KJtzqUHX515I1i68DlOGb
-         cB5IAChcfxaz/8Aeakbur/2ejqYO7CCSmZ3IC3qBuwqYFR3Khq3n/cLz9IRXgy5YKdDX
-         TZc5vOKhR/Syj9xkwWO9nmEkwT5gwfzXkvsCoDEHXQVTsm+JLMmlGuui9/Rbryr5WFpQ
-         cEqS67ONoT+0IEQ0T/+iY1PICPDiXKtCifnVFk64y9+2aQhUJdkOF6NxIdMMvOfyrFta
-         Dtow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690183911; x=1690788711;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hzb9R8lCU0AMrRnJNl8Sap3uv+cEIqbaHFcd9LXeQuY=;
-        b=HbI2zJvION0HEvRXtwKrrhtNd3zEiNUFeu8fPjgAcnkfKBF1AfYiFQIe0FgXJ97Ljo
-         BDtjtRLDzgiKA5wt65oSeoTvThuSHag8DhlSko+71LJLCd8Y8uUfkdwKlUj0cXxNmL0K
-         wN9stSfnKsqhtwucqqgAjRaCU7zawn6Qm/bXeHoLM8+x7q5rejM7pSiMN81E5DMTNJ2j
-         0jtj+DEjoGIA0pE1jL5oa78Yrh2r1vf77NIUnW4yqp+Q8JTUlDWQH7acpW9FGs8mDHue
-         SN07bEuw4wif/mvtHMttxYtlP4cfDzJJpym/Jm1cpVSDZ5yOsl5DRNxhlggyY/6cs2Ag
-         YIrA==
-X-Gm-Message-State: ABy/qLZnKISCxM21WaX6Lb9HMjvdML7j7/5Sq+kss02b/6MCQ/Qgx/IQ
-        j7so3Ni3oIZOcI2qmbSyCUYvuQ==
-X-Google-Smtp-Source: APBJJlFCRl2GEyTwOCqo1TnJTpEbjheY6LyaUz5t6tx2VEpuopNGwYsI7RzVxeF1LbI06X75CVTGlw==
-X-Received: by 2002:a17:902:e843:b0:1b8:a569:f980 with SMTP id t3-20020a170902e84300b001b8a569f980mr7320059plg.65.1690183910886;
-        Mon, 24 Jul 2023 00:31:50 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id n5-20020a170902d2c500b001b89466a5f4sm8080711plc.105.2023.07.24.00.31.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 00:31:50 -0700 (PDT)
-Date:   Mon, 24 Jul 2023 13:01:48 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] OPP: Add dev_pm_opp_find_freq_exact_indexed()
-Message-ID: <20230724073148.c4pmnqc5h42wsma6@vireshk-i7>
-References: <cover.1689932341.git.viresh.kumar@linaro.org>
- <852a47c0e7a795bdf6424519ab7fadfdeb5b4a3c.1689932341.git.viresh.kumar@linaro.org>
- <20230724062405.GJ2370@thinkpad>
+        Mon, 24 Jul 2023 03:32:47 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1080018C
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 00:32:46 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R8X1l6JCbzBRx57
+        for <linux-kernel@vger.kernel.org>; Mon, 24 Jul 2023 15:32:43 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1690183963; x=1692775964; bh=S9tFFcFdxC3EfuKS841EZfUjDnN
+        6RZk4grIKnUJ88MA=; b=JNpDSiJfxvqunsECsmaImwqu58zbRVWQG1PQDcBUhmr
+        UflbDfvmfrH7XhDSOSDAssxX8qJnNag8x57qDIdLQ5yxWBrWTvzVGiL9OZZVaTPD
+        LEyzotFQztuGIJo21LLojjgtsSxjKJyGhFbGLWMmM6nwJ34hNLMdR6BKJ+a1avrL
+        wGjP17Ppwk3/e8n01t73OKLhpUGaWqjpizx0gaSX+lVDCdguLAbcMg0BiG0yfxV5
+        xgx3psQwmEskqN4t0tMCI09oW/J43nmdZxql6OhgXn2YuGK2nzAqOBrvvKzYw2js
+        8N4X/VL7OYZZpR+hGq/CTFJy8AMUZVCV4CNyaJk4Qqg==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id h2C9NHMj4AsB for <linux-kernel@vger.kernel.org>;
+        Mon, 24 Jul 2023 15:32:43 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R8X1l4TNBzBHBPw;
+        Mon, 24 Jul 2023 15:32:43 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724062405.GJ2370@thinkpad>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Date:   Mon, 24 Jul 2023 15:32:43 +0800
+From:   sunran001@208suo.com
+To:     alexander.deucher@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amd/pm: Clean up errors in arcturus_ppt.c
+In-Reply-To: <20230724073153.9003-1-xujianghui@cdjrlc.com>
+References: <20230724073153.9003-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <71605c0ae02fcfd1d044aa9e52088543@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-07-23, 11:54, Manivannan Sadhasivam wrote:
-> On Fri, Jul 21, 2023 at 03:10:57PM +0530, Viresh Kumar wrote:
-> > The indexed version of the API is added for other floor and ceil, add
-> > the same for exact as well for completeness.
-> > 
-> 
-> Well, "completeness" makes sense to me but I always heard that you should add
-> an API when there is a user. That was the reason I didn't add it in my patch.
+Fix the following errors reported by checkpatch:
 
-Yes that is true for any new API I guess. But since we support multiple clocks,
-it made sense to support all three variants here.
+ERROR: spaces required around that '=' (ctx:VxW)
+ERROR: spaces required around that '>=' (ctx:WxV)
 
--- 
-viresh
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c 
+b/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
+index 3bb18396d2f9..c49f770c97b3 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
+@@ -598,7 +598,7 @@ static int arcturus_get_smu_metrics_data(struct 
+smu_context *smu,
+  					 MetricsMember_t member,
+  					 uint32_t *value)
+  {
+-	struct smu_table_context *smu_table= &smu->smu_table;
++	struct smu_table_context *smu_table = &smu->smu_table;
+  	SmuMetrics_t *metrics = (SmuMetrics_t *)smu_table->metrics_table;
+  	int ret = 0;
+
+@@ -1482,7 +1482,7 @@ static int arcturus_set_power_profile_mode(struct 
+smu_context *smu,
+  		return ret;
+
+  	if ((profile_mode == PP_SMC_POWER_PROFILE_CUSTOM) &&
+-	     (smu_version >=0x360d00)) {
++	     (smu_version >= 0x360d00)) {
+  		ret = smu_cmn_update_table(smu,
+  				       SMU_TABLE_ACTIVITY_MONITOR_COEFF,
+  				       WORKLOAD_PPLIB_CUSTOM_BIT,
